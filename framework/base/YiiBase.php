@@ -3,9 +3,9 @@
 namespace yii;
 
 /**
- * Gets the application start timestamp.
+ * This constant defines the application start timestamp.
  */
-defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME',microtime(true));
+defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
 /**
  * This constant defines whether the application should be in debug mode or not. Defaults to false.
  */
@@ -15,7 +15,7 @@ defined('YII_DEBUG') or define('YII_DEBUG',false);
  * Defaults to 0, meaning no backtrace information. If it is greater than 0,
  * at most that number of call stacks will be logged. Note, only user application call stacks are considered.
  */
-defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',0);
+defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 0);
 /**
  * This constant defines whether exception handling should be enabled. Defaults to true.
  */
@@ -28,10 +28,6 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER',true);
  * Defines the Yii framework installation path.
  */
 defined('YII_PATH') or define('YII_PATH',dirname(__FILE__));
-/**
- * Defines the Zii library installation path.
- */
-defined('YII_ZII_PATH') or define('YII_ZII_PATH',YII_PATH.DIRECTORY_SEPARATOR.'zii');
 
 /**
  * YiiBase is a helper class serving common framework functionalities.
