@@ -3,7 +3,7 @@
 namespace yii\base;
 
 /**
- * CEvent is the base class for all event classes.
+ * Event is the base class for all event classes.
  *
  * It encapsulates the parameters associated with an event.
  * The {@link sender} property describes who raises the event.
@@ -16,7 +16,7 @@ namespace yii\base;
  * @package system.base
  * @since 1.0
  */
-class CEvent extends CComponent
+class Event extends Component
 {
 	/**
 	 * @var object the sender of this event

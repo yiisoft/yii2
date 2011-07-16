@@ -5,7 +5,7 @@ namespace yii\base;
 class Component
 {
 	private $_e;
-	private $_m;
+	private $_b;
 
 	/**
 	 * Returns a property value, an event handler list or a behavior based on its name.
@@ -23,26 +23,27 @@ class Component
 	public function __get($name)
 	{
 		$getter = 'get' . $name;
-		if(method_exists($this, $getter))
+		if (method_exists($this, $getter)) { // read property, e.g. getName()
 			return $this->$getter();
-		else if(method_exists($this, $name) && strncasecmp($name, 'on', 2)===0)
-		{
-			$name=strtolower($name);
-			if(!isset($this->_e[$name]))
-				$this->_e[$name]=new yii\collections\Vector;
+		}
+		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event, e.g. onClick()
+			$name = strtolower($name);
+			if (!isset($this->_e[$name])) {
+				$this->_e[$name] = new \yii\collections\Vector;
+			}
 			return $this->_e[$name];
 		}
-		else if(isset($this->_m[$name]))
-			return $this->_m[$name];
-		else if(is_array($this->_m)) // has attached behaviors
-		{
-			foreach($this->_m as $object)
-			{
-				if($object->getEnabled() && $object->canGetProperty($name))
+		elseif (isset($this->_b[$name])) { // behavior
+			return $this->_b[$name];
+		}
+		elseif (is_array($this->_b)) { // a behavior property
+			foreach ($this->_b as $object) {
+				if ($object->getEnabled() && $object->canGetProperty($name)) {
 					return $object->$name;
+				}
 			}
 		}
-		throw new Exception('Undefined property: ' . get_class($this) . '.' $name);
+		throw new Exception('Getting unknown property: ' . get_class($this) . '.' $name);
 	}
 
 	/**
@@ -58,30 +59,32 @@ class Component
 	 * @throws CException if the property/event is not defined or the property is read only.
 	 * @see __get
 	 */
-	public function __set($name,$value)
+	public function __set($name, $value)
 	{
-		$setter='set'.$name;
-		if(method_exists($this,$setter))
+		$setter = 'set' . $name;
+		if (method_exists($this, $setter)) {
 			return $this->$setter($value);
-		else if(method_exists($this,$name) && strncasecmp($name,'on',2)===0)
-		{
-			$name=strtolower($name);
-			if(!isset($this->_e[$name]))
-				$this->_e[$name]=new yii\collections\Vector;
+		}
+		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {
+			$name = strtolower($name);
+			if (!isset($this->_e[$name])) {
+				$this->_e[$name] = new \yii\collections\Vector;
+			}
 			return $this->_e[$name]->add($value);
 		}
-		else if(is_array($this->_m))
-		{
-			foreach($this->_m as $object)
-			{
-				if($object->getEnabled() && $object->canSetProperty($name))
-					return $object->$name=$value;
+		elseif (is_array($this->_b)) {
+			foreach ($this->_b as $object) {
+				if ($object->getEnabled() && $object->canSetProperty($name)) {
+					return $object->$name = $value;
+				}
 			}
 		}
-		if(method_exists($this,'get'.$name))
-			throw new Exception('Unable to set read-only property: ' . get_class($this) . '.' $name);
-		else
-			throw new Exception('Undefined property: ' . get_class($this) . '.' $name);
+		if (method_exists($this, 'get' . $name)) {
+			throw new Exception('Setting read-only property: ' . get_class($this) . '.' $name);
+		}
+		else {
+			throw new Exception('Setting unknown property: ' . get_class($this) . '.' $name);
+		}
 	}
 
 	/**
@@ -93,22 +96,22 @@ class Component
 	 */
 	public function __isset($name)
 	{
-		$getter='get'.$name;
-		if(method_exists($this,$getter))
-			return $this->$getter()!==null;
-		else if(method_exists($this,$name) && strncasecmp($name,'on',2)===0)
-		{
-			$name=strtolower($name);
+		$getter = 'get' . $name;
+		if (method_exists($this, $getter)) { // property is not null
+			return $this->$getter() !== null;
+		}
+		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // has event handler
+			$name = strtolower($name);
 			return isset($this->_e[$name]) && $this->_e[$name]->getCount();
 		}
- 		else if(isset($this->_m[$name]))
+ 		elseif (isset($this->_b[$name])) { // has behavior
  			return true;
-		else if(is_array($this->_m))
-		{
-			foreach($this->_m as $object)
-			{
-				if($object->getEnabled() && $object->canGetProperty($name))
-					return true;
+ 		}
+		elseif (is_array($this->_b)) {
+			foreach ($this->_b as $object) {
+				if ($object->getEnabled() && $object->canGetProperty($name)) {
+					return $object->$name !== null;
+				}
 			}
 		}
 		return false;
@@ -124,23 +127,26 @@ class Component
 	 */
 	public function __unset($name)
 	{
-		$setter='set'.$name;
-		if(method_exists($this,$setter))
+		$setter = 'set' . $name;
+		if (method_exists($this, $setter)) {
 			$this->$setter(null);
-		else if(method_exists($this,$name) && strncasecmp($name,'on',2)===0)
+		}
+		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {
 			unset($this->_e[strtolower($name)]);
-		else if(isset($this->_m[$name]))
+		}
+		elseif (isset($this->_b[$name])) {
 			$this->detachBehavior($name);
-		else if(is_array($this->_m))
-		{
-			foreach($this->_m as $object)
+		}
+		elseif (is_array($this->_b)) {
+			foreach ($this->_b as $object)
 			{
-				if($object->getEnabled() && $object->canSetProperty($name))
-					return $object->$name=null;
+				if ($object->getEnabled() && $object->canSetProperty($name)) {
+					return $object->$name = null;
+				}
 			}
 		}
-		else if(method_exists($this,'get'.$name))
-			throw new Exception('Unable to unset read-only property: ' . get_class($this) . '.' $name);
+		elseif (method_exists($this, 'get' . $name))
+			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' $name);
 	}
 
 	/**
@@ -152,18 +158,23 @@ class Component
 	 * @return mixed the method return value
 	 * @since 1.0.2
 	 */
-	public function __call($name,$parameters)
+	public function __call($name, $parameters)
 	{
-		if($this->_m!==null)
+		if ($this->_b !== null)
 		{
-			foreach($this->_m as $object)
+			foreach ($this->_b as $object)
 			{
-				if($object->getEnabled() && method_exists($object,$name))
-					return call_user_func_array(array($object,$name),$parameters);
+				if ($object->getEnabled() && method_exists($object, $name)) {
+					return call_user_func_array(array($object, $name), $parameters);
+				}
 			}
 		}
-		if($this->canGetProperty($name) && $this->$name instanceof \Closure)
-			return call_user_func_array($this->$name, $parameters);
+		if ($this->canGetProperty($name)) {
+			$func = $this->$name;
+			if ($func instanceof \Closure) {
+				return call_user_func_array($func, $parameters);
+			}
+		}
 		throw new Exception('Unknown method: ' . get_class($this) . '::' $name . '()');
 	}
 
@@ -176,7 +187,7 @@ class Component
 	 */
 	public function asa($behavior)
 	{
-		return isset($this->_m[$behavior]) ? $this->_m[$behavior] : null;
+		return isset($this->_b[$behavior]) ? $this->_b[$behavior] : null;
 	}
 
 	/**
@@ -196,8 +207,8 @@ class Component
 	 */
 	public function attachBehaviors($behaviors)
 	{
-		foreach($behaviors as $name=>$behavior)
-			$this->attachBehavior($name,$behavior);
+		foreach ($behaviors as $name => $behavior)
+			$this->attachBehavior($name, $behavior);
 	}
 
 	/**
@@ -206,11 +217,11 @@ class Component
 	 */
 	public function detachBehaviors()
 	{
-		if($this->_m!==null)
+		if ($this->_b !== null)
 		{
-			foreach($this->_m as $name=>$behavior)
+			foreach ($this->_b as $name => $behavior)
 				$this->detachBehavior($name);
-			$this->_m=null;
+			$this->_b = null;
 		}
 	}
 
@@ -225,13 +236,13 @@ class Component
 	 * @return IBehavior the behavior object
 	 * @since 1.0.2
 	 */
-	public function attachBehavior($name,$behavior)
+	public function attachBehavior($name, $behavior)
 	{
-		if(!($behavior instanceof IBehavior))
-			$behavior=Yii::createComponent($behavior);
+		if (!($behavior instanceof IBehavior))
+			$behavior = Yii::createComponent($behavior);
 		$behavior->setEnabled(true);
 		$behavior->attach($this);
-		return $this->_m[$name]=$behavior;
+		return $this->_b[$name] = $behavior;
 	}
 
 	/**
@@ -243,11 +254,11 @@ class Component
 	 */
 	public function detachBehavior($name)
 	{
-		if(isset($this->_m[$name]))
+		if (isset($this->_b[$name]))
 		{
-			$this->_m[$name]->detach($this);
-			$behavior=$this->_m[$name];
-			unset($this->_m[$name]);
+			$this->_b[$name]->detach($this);
+			$behavior = $this->_b[$name];
+			unset($this->_b[$name]);
 			return $behavior;
 		}
 	}
@@ -258,9 +269,9 @@ class Component
 	 */
 	public function enableBehaviors()
 	{
-		if($this->_m!==null)
+		if ($this->_b !== null)
 		{
-			foreach($this->_m as $behavior)
+			foreach ($this->_b as $behavior)
 				$behavior->setEnabled(true);
 		}
 	}
@@ -271,9 +282,9 @@ class Component
 	 */
 	public function disableBehaviors()
 	{
-		if($this->_m!==null)
+		if ($this->_b !== null)
 		{
-			foreach($this->_m as $behavior)
+			foreach ($this->_b as $behavior)
 				$behavior->setEnabled(false);
 		}
 	}
@@ -287,8 +298,8 @@ class Component
 	 */
 	public function enableBehavior($name)
 	{
-		if(isset($this->_m[$name]))
-			$this->_m[$name]->setEnabled(true);
+		if (isset($this->_b[$name]))
+			$this->_b[$name]->setEnabled(true);
 	}
 
 	/**
@@ -299,8 +310,8 @@ class Component
 	 */
 	public function disableBehavior($name)
 	{
-		if(isset($this->_m[$name]))
-			$this->_m[$name]->setEnabled(false);
+		if (isset($this->_b[$name]))
+			$this->_b[$name]->setEnabled(false);
 	}
 
 	/**
@@ -308,13 +319,14 @@ class Component
 	 * A property is defined if there is a getter or setter method
 	 * defined in the class. Note, property names are case-insensitive.
 	 * @param string $name the property name
+	 * @param boolean $checkVar whether to check class properties. If false, only properties declared by getters will be checked.
 	 * @return boolean whether the property is defined
 	 * @see canGetProperty
 	 * @see canSetProperty
 	 */
-	public function hasProperty($name)
+	public function hasProperty($name, $checkVar = true)
 	{
-		return method_exists($this,'get'.$name) || method_exists($this,'set'.$name);
+		return method_exists($this, 'get' . $name) || method_exists($this, 'set' . $name) || property_exists($this, $name);
 	}
 
 	/**
@@ -326,9 +338,9 @@ class Component
 	 * @return boolean whether the property can be read
 	 * @see canSetProperty
 	 */
-	public function canGetProperty($name, $checkVar=true)
+	public function canGetProperty($name, $checkVar = true)
 	{
-		return method_exists($this,'get'.$name) || $checkVar && property_exists($this,$name);
+		return method_exists($this, 'get' . $name) || $checkVar && property_exists($this, $name);
 	}
 
 	/**
@@ -340,9 +352,9 @@ class Component
 	 * @return boolean whether the property can be written
 	 * @see canGetProperty
 	 */
-	public function canSetProperty($name, $checkVar=true)
+	public function canSetProperty($name, $checkVar = true)
 	{
-		return method_exists($this,'set'.$name) || $checkVar && property_exists($this,$name);
+		return method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name);
 	}
 
 	/**
@@ -354,7 +366,7 @@ class Component
 	 */
 	public function hasEvent($name)
 	{
-		return !strncasecmp($name,'on',2) && method_exists($this,$name);
+		return !strncasecmp($name, 'on', 2) && method_exists($this, $name);
 	}
 
 	/**
@@ -364,8 +376,8 @@ class Component
 	 */
 	public function hasEventHandler($name)
 	{
-		$name=strtolower($name);
-		return isset($this->_e[$name]) && $this->_e[$name]->getCount()>0;
+		$name = strtolower($name);
+		return isset($this->_e[$name]) && $this->_e[$name]->getCount() > 0;
 	}
 
 	/**
@@ -376,16 +388,16 @@ class Component
 	 */
 	public function getEventHandlers($name)
 	{
-		if($this->hasEvent($name))
+		if ($this->hasEvent($name))
 		{
-			$name=strtolower($name);
-			if(!isset($this->_e[$name]))
-				$this->_e[$name]=new CList;
+			$name = strtolower($name);
+			if (!isset($this->_e[$name]))
+				$this->_e[$name] = new CList;
 			return $this->_e[$name];
 		}
 		else
-			throw new CException(Yii::t('yii','Event "{class}.{event}" is not defined.',
-				array('{class}'=>get_class($this), '{event}'=>$name)));
+			throw new CException(Yii::t('yii', 'Event "{class}.{event}" is not defined.',
+				array('{class}' => get_class($this), '{event}' => $name)));
 	}
 
 	/**
@@ -420,7 +432,7 @@ class Component
 	 * @throws CException if the event is not defined
 	 * @see detachEventHandler
 	 */
-	public function attachEventHandler($name,$handler)
+	public function attachEventHandler($name, $handler)
 	{
 		$this->getEventHandlers($name)->add($handler);
 	}
@@ -433,10 +445,10 @@ class Component
 	 * @return boolean if the detachment process is successful
 	 * @see attachEventHandler
 	 */
-	public function detachEventHandler($name,$handler)
+	public function detachEventHandler($name, $handler)
 	{
-		if($this->hasEventHandler($name))
-			return $this->getEventHandlers($name)->remove($handler)!==false;
+		if ($this->hasEventHandler($name))
+			return $this->getEventHandlers($name)->remove($handler) !== false;
 		else
 			return false;
 	}
@@ -449,43 +461,43 @@ class Component
 	 * @param CEvent $event the event parameter
 	 * @throws CException if the event is undefined or an event handler is invalid.
 	 */
-	public function raiseEvent($name,$event)
+	public function raiseEvent($name, $event)
 	{
-		$name=strtolower($name);
-		if(isset($this->_e[$name]))
+		$name = strtolower($name);
+		if (isset($this->_e[$name]))
 		{
-			foreach($this->_e[$name] as $handler)
+			foreach ($this->_e[$name] as $handler)
 			{
-				if(is_string($handler))
-					call_user_func($handler,$event);
-				else if(is_callable($handler,true))
+				if (is_string($handler))
+					call_user_func($handler, $event);
+				elseif (is_callable($handler, true))
 				{
-					if(is_array($handler))
+					if (is_array($handler))
 					{
 						// an array: 0 - object, 1 - method name
-						list($object,$method)=$handler;
-						if(is_string($object))	// static method call
-							call_user_func($handler,$event);
-						else if(method_exists($object,$method))
+						list($object, $method) = $handler;
+						if (is_string($object))	// static method call
+							call_user_func($handler, $event);
+						elseif (method_exists($object, $method))
 							$object->$method($event);
 						else
-							throw new CException(Yii::t('yii','Event "{class}.{event}" is attached with an invalid handler "{handler}".',
-								array('{class}'=>get_class($this), '{event}'=>$name, '{handler}'=>$handler[1])));
+							throw new CException(Yii::t('yii', 'Event "{class}.{event}" is attached with an invalid handler "{handler}".',
+								array('{class}' => get_class($this), '{event}' => $name, '{handler}' => $handler[1])));
 					}
 					else // PHP 5.3: anonymous function
-						call_user_func($handler,$event);
+						call_user_func($handler, $event);
 				}
 				else
-					throw new CException(Yii::t('yii','Event "{class}.{event}" is attached with an invalid handler "{handler}".',
-						array('{class}'=>get_class($this), '{event}'=>$name, '{handler}'=>gettype($handler))));
+					throw new CException(Yii::t('yii', 'Event "{class}.{event}" is attached with an invalid handler "{handler}".',
+						array('{class}' => get_class($this), '{event}' => $name, '{handler}' => gettype($handler))));
 				// stop further handling if param.handled is set true
-				if(($event instanceof CEvent) && $event->handled)
+				if (($event instanceof CEvent) && $event->handled)
 					return;
 			}
 		}
-		else if(YII_DEBUG && !$this->hasEvent($name))
-			throw new CException(Yii::t('yii','Event "{class}.{event}" is not defined.',
-				array('{class}'=>get_class($this), '{event}'=>$name)));
+		elseif (YII_DEBUG && !$this->hasEvent($name))
+			throw new CException(Yii::t('yii', 'Event "{class}.{event}" is not defined.',
+				array('{class}' => get_class($this), '{event}' => $name)));
 	}
 
 	/**
@@ -510,16 +522,16 @@ class Component
 	 * @return mixed the expression result
 	 * @since 1.1.0
 	 */
-	public function evaluateExpression($_expression_,$_data_=array())
+	public function evaluateExpression($_expression_, $_data_ = array())
 	{
-		if(is_string($_expression_))
+		if (is_string($_expression_))
 		{
 			extract($_data_);
-			return eval('return '.$_expression_.';');
+			return eval('return ' . $_expression_ . ';');
 		}
 		else
 		{
-			$_data_[]=$this;
+			$_data_[] = $this;
 			return call_user_func_array($_expression_, $_data_);
 		}
 	}
