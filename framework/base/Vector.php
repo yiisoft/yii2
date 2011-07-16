@@ -58,7 +58,7 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	 * Constructor.
 	 * Initializes the vector with an array or an iterable object.
 	 * @param mixed $data the initial data to be populated into the vector.
-	 * This can be an array or an iterable object. If null, the vector will be set as empty.
+	 * This can be an array or an iterable object.
 	 * @param boolean $readOnly whether the vector should be marked as read-only.
 	 * @throws Exception if data is not well formed (neither an array nor an iterable object)
 	 */
@@ -115,8 +115,9 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 		elseif ($index >= 0 && $index < $this->_c) { // in case the value is null
 			return $this->_d[$index];
 		}
-
-		throw new Exception('Index out of range: ' . $index);
+		else {
+			throw new Exception('Index out of range: ' . $index);
+		}
 	}
 
 	/**
@@ -149,9 +150,13 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 				array_splice($this->_d, $index, 0, array($item));
 				$this->_c++;
 			}
-			throw new Exception('Index out of range: ' . $index);
+			else {
+				throw new Exception('Index out of range: ' . $index);
+			}
 		}
-		throw new Exception('Vector is read only.');
+		else {
+			throw new Exception('Vector is read only.');
+		}
 	}
 
 	/**
@@ -170,8 +175,9 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 			$this->removeAt($index);
 			return $index;
 		}
-		else
+		else {
 			return false;
+		}
 	}
 
 	/**
@@ -194,9 +200,13 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 					return $item;
 				}
 			}
-			throw new Exception('Index out of range: ' . $index);
+			else {
+				throw new Exception('Index out of range: ' . $index);
+			}
 		}
-		throw new Exception('Vector is read only.');
+		else {
+			throw new Exception('Vector is read only.');
+		}
 	}
 
 	/**
@@ -261,7 +271,9 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 				$this->add($item);
 			}
 		}
-		throw new Exception('Data must be either an array or an object implementing Traversable.');
+		else {
+			throw new Exception('Data must be either an array or an object implementing Traversable.');
+		}
 	}
 
 	/**
@@ -280,7 +292,9 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 				$this->add($item);
 			}
 		}
-		throw new Exception('Data must be either an array or an object implementing Traversable.');
+		else {
+			throw new Exception('Data must be either an array or an object implementing Traversable.');
+		}
 	}
 
 	/**
@@ -299,6 +313,7 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	 * Returns the item at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
 	 * It is implicitly called when you use something like `$value = $vector[$index];`.
+	 * This is equivalent to [[itemAt]].
 	 * @param integer $offset the offset to retrieve item.
 	 * @return mixed the item at the offset
 	 * @throws Exception if the offset is out of range

@@ -1,25 +1,23 @@
 <?php
+/**
+ * DictionaryIterator class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\base;
 
 /**
- * CMapIterator class file.
+ * DictionaryIterator implements the SPL `Iterator` interface for [[Dictionary]].
+ *
+ * It allows [[Dictionary]] to return a new iterator for data traversing purpose.
+ * You normally do not use this class directly.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
-/**
- * CMapIterator implements an interator for {@link CMap}.
- *
- * It allows CMap to return a new iterator for traversing the items in the map.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CMapIterator.php 3186 2011-04-15 22:34:55Z alexander.makarow $
- * @package system.collections
- * @since 1.0
+ * @since 2.0
  */
 class DictionaryIterator implements \Iterator
 {
@@ -42,23 +40,23 @@ class DictionaryIterator implements \Iterator
 	 */
 	public function __construct(&$data)
 	{
-		$this->_d=&$data;
-		$this->_keys=array_keys($data);
-		$this->_key=reset($this->_keys);
+		$this->_d = &$data;
+		$this->_keys = array_keys($data);
+		$this->_key = reset($this->_keys);
 	}
 
 	/**
-	 * Rewinds internal array pointer.
-	 * This method is required by the interface Iterator.
+	 * Rewinds the index of the current item.
+	 * This method is required by the SPL interface `Iterator`.
 	 */
 	public function rewind()
 	{
-		$this->_key=reset($this->_keys);
+		$this->_key = reset($this->_keys);
 	}
 
 	/**
 	 * Returns the key of the current array element.
-	 * This method is required by the interface Iterator.
+	 * This method is required by the SPL interface `Iterator`.
 	 * @return mixed the key of the current array element
 	 */
 	public function key()
@@ -68,7 +66,7 @@ class DictionaryIterator implements \Iterator
 
 	/**
 	 * Returns the current array element.
-	 * This method is required by the interface Iterator.
+	 * This method is required by the SPL interface `Iterator`.
 	 * @return mixed the current array element
 	 */
 	public function current()
@@ -77,21 +75,21 @@ class DictionaryIterator implements \Iterator
 	}
 
 	/**
-	 * Moves the internal pointer to the next array element.
-	 * This method is required by the interface Iterator.
+	 * Moves the internal pointer to the next element.
+	 * This method is required by the SPL interface `Iterator`.
 	 */
 	public function next()
 	{
-		$this->_key=next($this->_keys);
+		$this->_key = next($this->_keys);
 	}
 
 	/**
 	 * Returns whether there is an element at current position.
-	 * This method is required by the interface Iterator.
-	 * @return boolean
+	 * This method is required by the SPL interface `Iterator`.
+	 * @return boolean whether there is an item at current position.
 	 */
 	public function valid()
 	{
-		return $this->_key!==false;
+		return $this->_key !== false;
 	}
 }
