@@ -68,7 +68,7 @@ namespace yii\base;
  * public function foo($event) { ... }
  * ~~~
  *
- * where `$event` is an [[Event]] object which  includes parameters associated with the event.
+ * where `$event` is an [[Event]] object which includes parameters associated with the event.
  *
  * To attach an event handler to an event, call [[attachEventHandler]].
  * Alternatively, you can also do the following:
@@ -89,26 +89,21 @@ namespace yii\base;
  *
  * Both property names and event names are *case-insensitive*.
  *
- * A behavior is an object implementing the [[IBehavior]] interface. It is usually attached
- * to a component instance of {@link IBehavior} which is attached to a component. The methods of
- * the behavior can be invoked as if they belong to the component. Multiple behaviors
- * can be attached to the same component.
+ * A behavior is an instance of [[Behavior]] or its child class. When a behavior is
+ * attached to a component, its public properties and methods can be accessed via the
+ * component directly, as if the component owns those properties and methods. For example,
  *
- * To attach a behavior to a component, call {@link attachBehavior}; and to detach the behavior
- * from the component, call {@link detachBehavior}.
+ * Multiple behaviors can be attached to the same component.
  *
- * A behavior can be temporarily enabled or disabled by calling {@link enableBehavior}
- * or {@link disableBehavior}, respectively. When disabled, the behavior methods cannot
- * be invoked via the component.
+ * To attach a behavior to a component, call [[attachBehavior]]; and to detach the behavior
+ * from the component, call [[detachBehavior]].
  *
- * Starting from version 1.1.0, a behavior's properties (either its public member variables or
- * its properties defined via getters and/or setters) can be accessed through the component it
- * is attached to.
+ * A behavior can be temporarily enabled or disabled by calling [[enableBehavior]] or
+ * [[disableBehavior]], respectively. When disabled, the behavior's public properties and methods
+ * cannot be accessed via the component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: Component.php 3204 2011-05-05 21:36:32Z alexander.makarow $
- * @package system.base
- * @since 1.0
+ * @since 2.0
  */
 class Component
 {
@@ -116,16 +111,20 @@ class Component
 	private $_b;
 
 	/**
-	 * Returns a property value, an event handler list or a behavior based on its name.
-	 * Do not call this method. This is a PHP magic method that we override
-	 * to allow using the following syntax to read a property or obtain event handlers:
-	 * <pre>
-	 * $value=$component->propertyName;
-	 * $handlers=$component->eventName;
-	 * </pre>
-	 * @param string $name the property name or event name
-	 * @return mixed the property value, event handlers attached to the event, or the named behavior (since version 1.0.2)
-	 * @throws CException if the property or event is not defined
+	 * Returns the value of a component property.
+	 * This method will check in the following order and act accordingly:
+	 *
+	 *  - a property defined by a getter: return the getter result
+	 *  - an event: return a vector containing the attached event handlers
+	 *  - a behavior: return the behavior object
+	 *  - a property of a behavior: return the behavior property value
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when executing `$value = $component->property;`.
+	 * @param string $name the property name
+	 * @return mixed the property value, event handlers attached to the event,
+	 * the named behavior, or the value of a behavior's property
+	 * @throws Exception if the property is not defined
 	 * @see __set
 	 */
 	public function __get($name)
@@ -156,15 +155,17 @@ class Component
 
 	/**
 	 * Sets value of a component property.
-	 * Do not call this method. This is a PHP magic method that we override
-	 * to allow using the following syntax to set a property or attach an event handler
-	 * <pre>
-	 * $this->propertyName=$value;
-	 * $this->eventName=$callback;
-	 * </pre>
+	 * This method will check in the following order and act accordingly:
+	 *
+	 *  - a property defined by a setter: set the property value
+	 *  - an event: attach the handler to the event
+	 *  - a property of a behavior: set the behavior property value
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when executing `$component->property = $value;`.
 	 * @param string $name the property name or the event name
-	 * @param mixed $value the property value or callback
-	 * @throws CException if the property/event is not defined or the property is read only.
+	 * @param mixed $value the property value
+	 * @throws Exception if the property is not defined or read-only.
 	 * @see __get
 	 */
 	public function __set($name, $value)
@@ -197,10 +198,16 @@ class Component
 
 	/**
 	 * Checks if a property value is null.
-	 * Do not call this method. This is a PHP magic method that we override
-	 * to allow using isset() to detect if a component property is set or not.
+	 * This method will check in the following order and act accordingly:
+	 *
+	 *  - a property defined by a setter: return whether the property value is null
+	 *  - an event: return whether the event has any handler attached
+	 *  - a property of a behavior: return whether the property value is null
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when executing `isset($component->property)`.
 	 * @param string $name the property name or the event name
-	 * @since 1.0.1
+	 * @return boolean whether the named property is null
 	 */
 	public function __isset($name)
 	{
@@ -227,11 +234,16 @@ class Component
 
 	/**
 	 * Sets a component property to be null.
-	 * Do not call this method. This is a PHP magic method that we override
-	 * to allow using unset() to set a component property to be null.
-	 * @param string $name the property name or the event name
-	 * @throws CException if the property is read only.
-	 * @since 1.0.1
+	 * This method will check in the following order and act accordingly:
+	 *
+	 *  - a property defined by a setter: set the property value to be null
+	 *  - an event: remove all attached event handlers
+	 *  - a property of a behavior: set the property value to be null
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when executing `unset($component->property)`.
+	 * @param string $name the property name
+	 * @throws Exception if the property is read only.
 	 */
 	public function __unset($name)
 	{
@@ -264,15 +276,26 @@ class Component
 
 	/**
 	 * Calls the named method which is not a class method.
-	 * Do not call this method. This is a PHP magic method that we override
-	 * to implement the behavior feature.
+	 * If the name refers to a component property whose value is
+	 * an anonymous function, the method will execute the function.
+	 * Otherwise, it will check if any attached behavior has
+	 * the named method and will execute it if available.
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when an unknown method is being invoked.
 	 * @param string $name the method name
 	 * @param array $parameters method parameters
 	 * @return mixed the method return value
-	 * @since 1.0.2
 	 */
 	public function __call($name, $parameters)
 	{
+		if ($this->canGetProperty($name)) {
+			$func = $this->$name;
+			if ($func instanceof \Closure) {
+				return call_user_func_array($func, $parameters);
+			}
+		}
+
 		if ($this->_b !== null)
 		{
 			foreach ($this->_b as $object)
@@ -282,153 +305,11 @@ class Component
 				}
 			}
 		}
-		if ($this->canGetProperty($name)) {
-			$func = $this->$name;
-			if ($func instanceof \Closure) {
-				return call_user_func_array($func, $parameters);
-			}
-		}
 		throw new Exception('Unknown method: ' . get_class($this) . '::' $name . '()');
 	}
 
 	/**
-	 * Returns the named behavior object.
-	 * The name 'asa' stands for 'as a'.
-	 * @param string $behavior the behavior name
-	 * @return IBehavior the behavior object, or null if the behavior does not exist
-	 * @since 1.0.2
-	 */
-	public function asa($behavior)
-	{
-		return isset($this->_b[$behavior]) ? $this->_b[$behavior] : null;
-	}
-
-	/**
-	 * Attaches a list of behaviors to the component.
-	 * Each behavior is indexed by its name and should be an instance of
-	 * {@link IBehavior}, a string specifying the behavior class, or an
-	 * array of the following structure:
-	 * <pre>
-	 * array(
-	 *     'class'=>'path.to.BehaviorClass',
-	 *     'property1'=>'value1',
-	 *     'property2'=>'value2',
-	 * )
-	 * </pre>
-	 * @param array $behaviors list of behaviors to be attached to the component
-	 * @since 1.0.2
-	 */
-	public function attachBehaviors($behaviors)
-	{
-		foreach ($behaviors as $name => $behavior)
-			$this->attachBehavior($name, $behavior);
-	}
-
-	/**
-	 * Detaches all behaviors from the component.
-	 * @since 1.0.2
-	 */
-	public function detachBehaviors()
-	{
-		if ($this->_b !== null)
-		{
-			foreach ($this->_b as $name => $behavior)
-				$this->detachBehavior($name);
-			$this->_b = null;
-		}
-	}
-
-	/**
-	 * Attaches a behavior to this component.
-	 * This method will create the behavior object based on the given
-	 * configuration. After that, the behavior object will be initialized
-	 * by calling its {@link IBehavior::attach} method.
-	 * @param string $name the behavior's name. It should uniquely identify this behavior.
-	 * @param mixed $behavior the behavior configuration. This is passed as the first
-	 * parameter to {@link YiiBase::createComponent} to create the behavior object.
-	 * @return IBehavior the behavior object
-	 * @since 1.0.2
-	 */
-	public function attachBehavior($name, $behavior)
-	{
-		if (!($behavior instanceof IBehavior))
-			$behavior = Yii::createComponent($behavior);
-		$behavior->setEnabled(true);
-		$behavior->attach($this);
-		return $this->_b[$name] = $behavior;
-	}
-
-	/**
-	 * Detaches a behavior from the component.
-	 * The behavior's {@link IBehavior::detach} method will be invoked.
-	 * @param string $name the behavior's name. It uniquely identifies the behavior.
-	 * @return IBehavior the detached behavior. Null if the behavior does not exist.
-	 * @since 1.0.2
-	 */
-	public function detachBehavior($name)
-	{
-		if (isset($this->_b[$name]))
-		{
-			$this->_b[$name]->detach($this);
-			$behavior = $this->_b[$name];
-			unset($this->_b[$name]);
-			return $behavior;
-		}
-	}
-
-	/**
-	 * Enables all behaviors attached to this component.
-	 * @since 1.0.2
-	 */
-	public function enableBehaviors()
-	{
-		if ($this->_b !== null)
-		{
-			foreach ($this->_b as $behavior)
-				$behavior->setEnabled(true);
-		}
-	}
-
-	/**
-	 * Disables all behaviors attached to this component.
-	 * @since 1.0.2
-	 */
-	public function disableBehaviors()
-	{
-		if ($this->_b !== null)
-		{
-			foreach ($this->_b as $behavior)
-				$behavior->setEnabled(false);
-		}
-	}
-
-	/**
-	 * Enables an attached behavior.
-	 * A behavior is only effective when it is enabled.
-	 * A behavior is enabled when first attached.
-	 * @param string $name the behavior's name. It uniquely identifies the behavior.
-	 * @since 1.0.2
-	 */
-	public function enableBehavior($name)
-	{
-		if (isset($this->_b[$name]))
-			$this->_b[$name]->setEnabled(true);
-	}
-
-	/**
-	 * Disables an attached behavior.
-	 * A behavior is only effective when it is enabled.
-	 * @param string $name the behavior's name. It uniquely identifies the behavior.
-	 * @since 1.0.2
-	 */
-	public function disableBehavior($name)
-	{
-		if (isset($this->_b[$name]))
-			$this->_b[$name]->setEnabled(false);
-	}
-
-	/**
-	 * Determines whether a property is defined.
+	 * Returns a value indicating whether a property is defined.
 	 * A property is defined if there is a getter or setter method
 	 * defined in the class. Note, property names are case-insensitive.
 	 * @param string $name the property name
@@ -442,7 +323,7 @@ class Component
 	}
 
 	/**
-	 * Determines whether a property can be read.
+	 * Returns a value indicating whether a property can be read.
 	 * A property can be read if the class has a getter method
 	 * for the property name. Note, property name is case-insensitive.
 	 * @param string $name the property name
@@ -455,7 +336,7 @@ class Component
 	}
 
 	/**
-	 * Determines whether a property can be set.
+	 * Returns a value indicating whether a property can be set.
 	 * A property can be written if the class has a setter method
 	 * for the property name. Note, property name is case-insensitive.
 	 * @param string $name the property name
@@ -468,9 +349,9 @@ class Component
 	}
 
 	/**
-	 * Determines whether an event is defined.
-	 * An event is defined if the class has a method named like 'onXXX'.
-	 * Note, event name is case-insensitive.
+	 * Returns a value indicating whether an event is defined.
+	 * An event is defined if the class has a method whose name starts with `on` (e.g. `onClick`).
+	 * Note that event name is case-insensitive.
 	 * @param string $name the event name
 	 * @return boolean whether an event is defined
 	 */
@@ -480,66 +361,70 @@ class Component
 	}
 
 	/**
-	 * Checks whether the named event has attached handlers.
+	 * Returns a value indicating whether there is any handler attached to the event.
 	 * @param string $name the event name
-	 * @return boolean whether an event has been attached one or several handlers
+	 * @return boolean whether there is any handler attached to the event.
 	 */
 	public function hasEventHandler($name)
 	{
 		$name = strtolower($name);
-		return isset($this->_e[$name]) && $this->_e[$name]->getCount() > 0;
+		return isset($this->_e[$name]) && $this->_e[$name]->getCount();
 	}
 
 	/**
 	 * Returns the list of attached event handlers for an event.
+	 * You may manipulate the returned [[Vector]] object by adding or removing handlers.
+	 * For example,
+	 *
+	 * ~~~php
+	 * $component->getEventHandlers($eventName)->insertAt(0, $eventHandler);
+	 * ~~~
 	 * @param string $name the event name
-	 * @return CList list of attached event handlers for the event
-	 * @throws CException if the event is not defined
+	 * @return Vector list of attached event handlers for the event
+	 * @throws Exception if the event is not defined
 	 */
 	public function getEventHandlers($name)
 	{
-		if ($this->hasEvent($name))
-		{
+		if ($this->hasEvent($name)) {
 			$name = strtolower($name);
-			if (!isset($this->_e[$name]))
-				$this->_e[$name] = new CList;
+			if (!isset($this->_e[$name])) {
+				$this->_e[$name] = new Vector;
+			}
 			return $this->_e[$name];
 		}
-		else
-			throw new CException(Yii::t('yii', 'Event "{class}.{event}" is not defined.',
-				array('{class}' => get_class($this), '{event}' => $name)));
+		throw new Exception('Undefined event: ' . $name);
 	}
 
 	/**
 	 * Attaches an event handler to an event.
 	 *
-	 * An event handler must be a valid PHP callback, i.e., a string referring to
-	 * a global function name, or an array containing two elements with
-	 * the first element being an object and the second element a method name
-	 * of the object.
+	 * This is equivalent to the following code:
+	 *
+	 * ~~~php
+	 * $component->getEventHandlers($eventName)->add($eventHandler);
+	 * ~~~
+	 *
+	 * An event handler must be a valid PHP callback. The followings are
+	 * some examples:
+	 *
+	 * ~~~php
+	 * 'handleOnClick'                    // handleOnClick() is a global function
+	 * array($object, 'handleOnClick')    // $object->handleOnClick()
+	 * array('Page', 'handleOnClick')     // Page::handleOnClick()
+	 * function($event) { ... }           // anonymous function
+	 * ~~~
 	 *
 	 * An event handler must be defined with the following signature,
-	 * <pre>
+	 *
+	 * ~~~php
 	 * function handlerName($event) {}
-	 * </pre>
-	 * where $event includes parameters associated with the event.
+	 * ~~~
 	 *
-	 * This is a convenient method of attaching a handler to an event.
-	 * It is equivalent to the following code:
-	 * <pre>
-	 * $component->getEventHandlers($eventName)->add($eventHandler);
-	 * </pre>
-	 *
-	 * Using {@link getEventHandlers}, one can also specify the excution order
-	 * of multiple handlers attaching to the same event. For example:
-	 * <pre>
-	 * $component->getEventHandlers($eventName)->insertAt(0,$eventHandler);
-	 * </pre>
-	 * makes the handler to be invoked first.
+	 * where `$event` is an [[Event]] object which includes parameters associated with the event.
 	 *
 	 * @param string $name the event name
 	 * @param callback $handler the event handler
-	 * @throws CException if the event is not defined
+	 * @throws Exception if the event is not defined
 	 * @see detachEventHandler
 	 */
 	public function attachEventHandler($name, $handler)
@@ -549,7 +434,7 @@ class Component
 
 	/**
 	 * Detaches an existing event handler.
-	 * This method is the opposite of {@link attachEventHandler}.
+	 * This method is the opposite of [[attachEventHandler]].
 	 * @param string $name event name
 	 * @param callback $handler the event handler to be removed
 	 * @return boolean if the detachment process is successful
@@ -557,10 +442,7 @@ class Component
 	 */
 	public function detachEventHandler($name, $handler)
 	{
-		if ($this->hasEventHandler($name))
-			return $this->getEventHandlers($name)->remove($handler) !== false;
-		else
-			return false;
+		return $this->getEventHandlers($name)->remove($handler) !== false;
 	}
 
 	/**
@@ -568,79 +450,203 @@ class Component
 	 * This method represents the happening of an event. It invokes
 	 * all attached handlers for the event.
 	 * @param string $name the event name
-	 * @param CEvent $event the event parameter
-	 * @throws CException if the event is undefined or an event handler is invalid.
+	 * @param Event $event the event parameter
+	 * @throws Exception if the event is undefined or an event handler is invalid.
 	 */
 	public function raiseEvent($name, $event)
 	{
 		$name = strtolower($name);
-		if (isset($this->_e[$name]))
-		{
-			foreach ($this->_e[$name] as $handler)
-			{
-				if (is_string($handler))
+		if (isset($this->_e[$name])) {
+			foreach ($this->_e[$name] as $handler) {
+				if (is_string($handler) || $handler instanceof \Closure) {
 					call_user_func($handler, $event);
-				elseif (is_callable($handler, true))
-				{
-					if (is_array($handler))
-					{
-						// an array: 0 - object, 1 - method name
-						list($object, $method) = $handler;
-						if (is_string($object))	// static method call
-							call_user_func($handler, $event);
-						elseif (method_exists($object, $method))
-							$object->$method($event);
-						else
-							throw new CException(Yii::t('yii', 'Event "{class}.{event}" is attached with an invalid handler "{handler}".',
-								array('{class}' => get_class($this), '{event}' => $name, '{handler}' => $handler[1])));
-					}
-					else // PHP 5.3: anonymous function
-						call_user_func($handler, $event);
 				}
-				else
-					throw new CException(Yii::t('yii', 'Event "{class}.{event}" is attached with an invalid handler "{handler}".',
-						array('{class}' => get_class($this), '{event}' => $name, '{handler}' => gettype($handler))));
-				// stop further handling if param.handled is set true
-				if (($event instanceof CEvent) && $event->handled)
+				elseif (is_callable($handler, true)) {
+					// an array: 0 - object, 1 - method name
+					list($object, $method) = $handler;
+					if (is_string($object)) {	// static method call
+						call_user_func($handler, $event);
+					}
+					elseif (method_exists($object, $method)) {
+						$object->$method($event);
+					}
+					else {
+						throw new Exception('Event "' . get_class($this) . '.' . $name . '" is attached with an invalid handler.');
+					}
+				}
+				else {
+					throw new Exception('Event "' . get_class($this) . '.' . $name . '" is attached with an invalid handler.');
+				}
+
+				// stop further handling if the event is handled
+				if ($event instanceof Event && $event->handled) {
 					return;
+				}
 			}
 		}
-		elseif (YII_DEBUG && !$this->hasEvent($name))
-			throw new CException(Yii::t('yii', 'Event "{class}.{event}" is not defined.',
-				array('{class}' => get_class($this), '{event}' => $name)));
+		elseif (!$this->hasEvent($name)) {
+			throw new Exception('Undefined event: ' . get_class($this) . '.' . $name);
+		}
+	}
+
+	/**
+	 * Returns the named behavior object.
+	 * The name 'asa' stands for 'as a'.
+	 * @param string $behavior the behavior name
+	 * @return Behavior the behavior object, or null if the behavior does not exist
+	 */
+	public function asa($behavior)
+	{
+		return isset($this->_b[$behavior]) ? $this->_b[$behavior] : null;
+	}
+
+	/**
+	 * Attaches a behavior to this component.
+	 * This method will create the behavior object based on the given
+	 * configuration. After that, the behavior object will be attached to
+	 * this component by calling the [[Behavior::attach]] method.
+	 * @param string $name the behavior's name. It should uniquely identify this behavior.
+	 * @param mixed $behavior the behavior configuration. This can be one of the following:
+	 *
+	 *  - a [[Behavior]] object
+	 *  - a string specifying the behavior class
+	 *  - an object configuration array
+	 *
+	 * parameter to [[\Yii::createComponent]] to create the behavior object.
+	 * @return Behavior the behavior object
+	 * @see detachBehavior
+	 */
+	public function attachBehavior($name, $behavior)
+	{
+		if (!($behavior instanceof Behavior)) {
+			$behavior = \Yii::createComponent($behavior);
+		}
+		$behavior->attach($this);
+		return $this->_b[$name] = $behavior;
+	}
+
+	/**
+	 * Attaches a list of behaviors to the component.
+	 * Each behavior is indexed by its name and should be a [[Behavior]] object,
+	 * a string specifying the behavior class, or an
+	 * configuration array for creating the behavior.
+	 * @param array $behaviors list of behaviors to be attached to the component
+	 * @see attachBehavior
+	 */
+	public function attachBehaviors($behaviors)
+	{
+		foreach ($behaviors as $name => $behavior) {
+			$this->attachBehavior($name, $behavior);
+		}
+	}
+
+	/**
+	 * Detaches a behavior from the component.
+	 * The behavior's [[Behavior::detach]] method will be invoked.
+	 * @param string $name the behavior's name.
+	 * @return Behavior the detached behavior. Null if the behavior does not exist.
+	 */
+	public function detachBehavior($name)
+	{
+		if (isset($this->_b[$name])) {
+			$this->_b[$name]->detach($this);
+			$behavior = $this->_b[$name];
+			unset($this->_b[$name]);
+			return $behavior;
+		}
+	}
+
+	/**
+	 * Detaches all behaviors from the component.
+	 */
+	public function detachBehaviors()
+	{
+		if ($this->_b !== null) {
+			foreach ($this->_b as $name => $behavior) {
+				$this->detachBehavior($name);
+			}
+			$this->_b = null;
+		}
+	}
+
+	/**
+	 * Enables all behaviors attached to this component.
+	 */
+	public function enableBehaviors()
+	{
+		if ($this->_b !== null) {
+			foreach ($this->_b as $behavior) {
+				$behavior->setEnabled(true);
+			}
+		}
+	}
+
+	/**
+	 * Disables all behaviors attached to this component.
+	 */
+	public function disableBehaviors()
+	{
+		if ($this->_b !== null) {
+			foreach ($this->_b as $behavior) {
+				$behavior->setEnabled(false);
+			}
+		}
+	}
+
+	/**
+	 * Enables an attached behavior.
+	 * A behavior is only effective when it is enabled.
+	 * @param string $name the behavior's name. It uniquely identifies the behavior.
+	 */
+	public function enableBehavior($name)
+	{
+		if (isset($this->_b[$name])) {
+			$this->_b[$name]->setEnabled(true);
+		}
+	}
+
+	/**
+	 * Disables an attached behavior.
+	 * A behavior is only effective when it is enabled.
+	 * @param string $name the behavior's name. It uniquely identifies the behavior.
+	 */
+	public function disableBehavior($name)
+	{
+		if (isset($this->_b[$name])) {
+			$this->_b[$name]->setEnabled(false);
+		}
 	}
 
 	/**
 	 * Evaluates a PHP expression or callback under the context of this component.
 	 *
 	 * Valid PHP callback can be class method name in the form of
-	 * array(ClassName/Object, MethodName), or anonymous function (only available in PHP 5.3.0 or above).
+	 * array(ClassName/Object, MethodName), or anonymous function.
 	 *
 	 * If a PHP callback is used, the corresponding function/method signature should be
-	 * <pre>
+	 *
+	 * ~~~php
 	 * function foo($param1, $param2, ..., $component) { ... }
-	 * </pre>
+	 * ~~~
+	 *
 	 * where the array elements in the second parameter to this method will be passed
-	 * to the callback as $param1, $param2, ...; and the last parameter will be the component itself.
+	 * to the callback as `$param1`, `$param2`, ...; and the last parameter will be the component itself.
 	 *
 	 * If a PHP expression is used, the second parameter will be "extracted" into PHP variables
-	 * that can be directly accessed in the expression. See {@link http://us.php.net/manual/en/function.extract.php PHP extract}
-	 * for more details. In the expression, the component object can be accessed using $this.
+	 * that can be directly accessed in the expression. See [PHP extract](http://us.php.net/manual/en/function.extract.php)
+	 * for more details. In the expression, the component object can be accessed using `$this`.
 	 *
 	 * @param mixed $_expression_ a PHP expression or PHP callback to be evaluated.
 	 * @param array $_data_ additional parameters to be passed to the above expression/callback.
 	 * @return mixed the expression result
-	 * @since 1.1.0
 	 */
-	public function evaluateExpression($_expression_, $_data_ = array())
+	public function evaluateExpression($_expression_, $_data_=array())
 	{
-		if (is_string($_expression_))
-		{
+		if (is_string($_expression_)) {
 			extract($_data_);
 			return eval('return ' . $_expression_ . ';');
 		}
-		else
-		{
+		else {
 			$_data_[] = $this;
 			return call_user_func_array($_expression_, $_data_);
 		}

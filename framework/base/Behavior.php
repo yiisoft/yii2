@@ -1,8 +1,16 @@
 <?php
+/**
+ * Behavior class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\base;
 
-class CBehavior extends CComponent implements IBehavior
+class Behavior extends Component
 {
 	private $_enabled;
 	private $_owner;
