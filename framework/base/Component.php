@@ -1,7 +1,115 @@
 <?php
+/**
+ * Component class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\base;
 
+/**
+ * Component is the base class for all components in Yii.
+ *
+ * Component implements the basis for *properties*, *events* and *behaviors*.
+ *
+ * A property is defined by a getter method (e.g. `getLabel`),
+ * and/or a setter method (e.g. `setLabel`). For example, the following
+ * getter and setter methods define a property named `label`:
+ *
+ * ~~~php
+ * private $_label;
+ *
+ * public function getLabel()
+ * {
+ *     return $this->_label;
+ * }
+ *
+ * public function setLabel($value)
+ * {
+ *     $this->_label = $value;
+ * }
+ * ~~~
+ *
+ * A property can be accessed like a member variable of an object.
+ * Reading or writing a property will cause the invocation of the corresponding
+ * getter or setter method. For example,
+ *
+ * ~~~php
+ * // equivalent to $label = $component->getLabel();
+ * $label = $component->label;
+ * // equivalent to $component->setLabel('abc');
+ * $component->label = 'abc';
+ * ~~~
+ *
+ *
+ * An event is defined by the presence of a method whose name starts with `on`.
+ * The event name is the method name. When an event is raised, functions
+ * (called *event handlers*) attached to the event will be invoked automatically.
+ * The `on` method is typically declared like the following:
+ *
+ * ~~~php
+ * public function onClick($event)
+ * {
+ *     $this->raiseEvent('onClick', $event);
+ * }
+ * ~~~
+ *
+ * An event can be raised by calling the [[raiseEvent]] method, upon which
+ * the attached event handlers will be invoked automatically in the order they
+ * are attached to the event. In the above example, if we call the `onClick` method,
+ * an `onClick` event will be raised.
+ *
+ * An event handler should be defined with the following signature:
+ *
+ * ~~~php
+ * public function foo($event) { ... }
+ * ~~~
+ *
+ * where `$event` is an [[Event]] object which  includes parameters associated with the event.
+ *
+ * To attach an event handler to an event, call [[attachEventHandler]].
+ * Alternatively, you can also do the following:
+ *
+ * ~~~php
+ * $component->onClick = $callback;
+ * // or $component->onClick->add($callback);
+ * ~~~
+ *
+ * where `$callback` refers to a valid PHP callback. Some examples of `$callback` are:
+ *
+ * ~~~php
+ * 'handleOnClick'                    // handleOnClick() is a global function
+ * array($object, 'handleOnClick')    // $object->handleOnClick()
+ * array('Page', 'handleOnClick')     // Page::handleOnClick()
+ * function($event) { ... }           // anonymous function
+ * ~~~
+ *
+ * Both property names and event names are *case-insensitive*.
+ *
+ * A behavior is an object implementing the [[IBehavior]] interface. It is usually attached
+ * to a component instance of {@link IBehavior} which is attached to a component. The methods of
+ * the behavior can be invoked as if they belong to the component. Multiple behaviors
+ * can be attached to the same component.
+ *
+ * To attach a behavior to a component, call {@link attachBehavior}; and to detach the behavior
+ * from the component, call {@link detachBehavior}.
+ *
+ * A behavior can be temporarily enabled or disabled by calling {@link enableBehavior}
+ * or {@link disableBehavior}, respectively. When disabled, the behavior methods cannot
+ * be invoked via the component.
+ *
+ * Starting from version 1.1.0, a behavior's properties (either its public member variables or
+ * its properties defined via getters and/or setters) can be accessed through the component it
+ * is attached to.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @version $Id: Component.php 3204 2011-05-05 21:36:32Z alexander.makarow $
+ * @package system.base
+ * @since 1.0
+ */
 class Component
 {
 	private $_e;
@@ -38,7 +146,7 @@ class Component
 		}
 		elseif (is_array($this->_b)) { // a behavior property
 			foreach ($this->_b as $object) {
-				if ($object->getEnabled() && $object->canGetProperty($name)) {
+				if ($object->getEnabled() && (property_exists($object, $name) || $object->canGetProperty($name))) {
 					return $object->$name;
 				}
 			}
@@ -74,7 +182,7 @@ class Component
 		}
 		elseif (is_array($this->_b)) {
 			foreach ($this->_b as $object) {
-				if ($object->getEnabled() && $object->canSetProperty($name)) {
+				if ($object->getEnabled() && (property_exists($object, $name) || $object->canSetProperty($name))) {
 					return $object->$name = $value;
 				}
 			}
@@ -109,7 +217,7 @@ class Component
  		}
 		elseif (is_array($this->_b)) {
 			foreach ($this->_b as $object) {
-				if ($object->getEnabled() && $object->canGetProperty($name)) {
+				if ($object->getEnabled() && (property_exists($object, $name) || $object->canGetProperty($name))) {
 					return $object->$name !== null;
 				}
 			}
@@ -138,15 +246,20 @@ class Component
 			$this->detachBehavior($name);
 		}
 		elseif (is_array($this->_b)) {
-			foreach ($this->_b as $object)
-			{
-				if ($object->getEnabled() && $object->canSetProperty($name)) {
-					return $object->$name = null;
+			foreach ($this->_b as $object) {
+				if ($object->getEnabled()) {
+					if (property_exists($object, $name)) {
+						return $object->$name = null;
+					}
+					elseif ($object->canSetProperty($name)) {
+						return $object->$setter(null);
+					}
 				}
 			}
 		}
-		elseif (method_exists($this, 'get' . $name))
+		elseif (method_exists($this, 'get' . $name)) {
 			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' $name);
+		}
 	}
 
 	/**
@@ -319,14 +432,13 @@ class Component
 	 * A property is defined if there is a getter or setter method
 	 * defined in the class. Note, property names are case-insensitive.
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to check class properties. If false, only properties declared by getters will be checked.
 	 * @return boolean whether the property is defined
 	 * @see canGetProperty
 	 * @see canSetProperty
 	 */
-	public function hasProperty($name, $checkVar = true)
+	public function hasProperty($name)
 	{
-		return method_exists($this, 'get' . $name) || method_exists($this, 'set' . $name) || property_exists($this, $name);
+		return $this->canGetProperty($name) || $this->canSetProperty($name);
 	}
 
 	/**
@@ -334,13 +446,12 @@ class Component
 	 * A property can be read if the class has a getter method
 	 * for the property name. Note, property name is case-insensitive.
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to check class properties. If false, only properties declared by getters will be checked.
 	 * @return boolean whether the property can be read
 	 * @see canSetProperty
 	 */
-	public function canGetProperty($name, $checkVar = true)
+	public function canGetProperty($name)
 	{
-		return method_exists($this, 'get' . $name) || $checkVar && property_exists($this, $name);
+		return method_exists($this, 'get' . $name);
 	}
 
 	/**
@@ -348,13 +459,12 @@ class Component
 	 * A property can be written if the class has a setter method
 	 * for the property name. Note, property name is case-insensitive.
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to check class properties. If false, only properties declared by setters will be checked.
 	 * @return boolean whether the property can be written
 	 * @see canGetProperty
 	 */
-	public function canSetProperty($name, $checkVar = true)
+	public function canSetProperty($name)
 	{
-		return method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name);
+		return method_exists($this, 'set' . $name);
 	}
 
 	/**
@@ -366,7 +476,7 @@ class Component
 	 */
 	public function hasEvent($name)
 	{
-		return !strncasecmp($name, 'on', 2) && method_exists($this, $name);
+		return method_exists($this, $name) && strncasecmp($name, 'on', 2)===0;
 	}
 
 	/**
