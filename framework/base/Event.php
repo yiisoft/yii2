@@ -32,7 +32,7 @@ class Event extends Component
 	 * @var boolean whether the event is handled. Defaults to false.
 	 * When a handler sets this to be true, the rest of the uninvoked event handlers will be canceled.
 	 */
-	public $handled=false;
+	public $handled = false;
 
 	/**
 	 * Constructor.
