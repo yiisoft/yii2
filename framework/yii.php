@@ -24,6 +24,8 @@ require(__DIR__ . '/base/YiiBase.php');
  * @package system
  * @since 2.0
  */
-class Yii extends \yii\YiiBase
+class Yii extends YiiBase
 {
 }
+
+spl_autoload_register(array('Yii', 'autoload'));
