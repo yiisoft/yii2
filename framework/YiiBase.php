@@ -62,14 +62,15 @@ class YiiBase
 	 * @var yii\base\Application the application instance
 	 */
 	public static $app;
-
-	private static $_aliases = array(
+	/**
+	 * @var array registered path aliases
+	 */
+	public static $aliases = array(
 		'@yii' => YII_PATH,
 	);
-	private static $_imports = array();				 	// alias => class name or directory
-	private static $_app;
-	private static $_logger;
 
+	private static $_imported = array();	// alias => class name or directory
+	private static $_logger;
 
 
 	/**
@@ -114,187 +115,76 @@ class YiiBase
 	}
 
 	/**
-	 * Creates an object and initializes it based on the given configuration.
-	 *
-	 * The specified configuration can be either a string or an array.
-	 * If the former, the string is treated as the object type which can
-	 * be either the class name or {@link YiiBase::getPathOfAlias class path alias}.
-	 * If the latter, the 'class' element is treated as the object type,
-	 * and the rest name-value pairs in the array are used to initialize
-	 * the corresponding object properties.
-	 *
-	 * Any additional parameters passed to this method will be
-	 * passed to the constructor of the object being created.
-	 *
-	 * NOTE: the array-typed configuration has been supported since version 1.0.1.
-	 *
-	 * @param mixed $config the configuration. It can be either a string or an array.
-	 * @return mixed the created object
-	 * @throws CException if the configuration does not have a 'class' element.
-	 */
-	public static function createComponent($config)
-	{
-		if (is_string($config))
-		{
-			$type = $config;
-			$config = array();
-		}
-		elseif (isset($config['class']))
-		{
-			$type = $config['class'];
-			unset($config['class']);
-		}
-		else
-			throw new CException(Yii::t('yii', 'Object configuration must be an array containing a "class" element.'));
-
-		if (!class_exists($type, false))
-			$type = Yii::import($type, true);
-
-		if (($n = func_num_args()) > 1)
-		{
-			$args = func_get_args();
-			if ($n === 2)
-				$object = new $type($args[1]);
-			elseif ($n === 3)
-				$object = new $type($args[1], $args[2]);
-			elseif ($n === 4)
-				$object = new $type($args[1], $args[2], $args[3]);
-			else
-			{
-				unset($args[0]);
-				$class = new ReflectionClass($type);
-				// Note: ReflectionClass::newInstanceArgs() is available for PHP 5.1.3+
-				// $object=$class->newInstanceArgs($args);
-				$object = call_user_func_array(array($class, 'newInstance'), $args);
-			}
-		}
-		else
-			$object = new $type;
-
-		foreach ($config as $key => $value)
-			$object->$key = $value;
-
-		return $object;
-	}
-
-	/**
 	 * Imports a class or a directory.
 	 *
 	 * Importing a class is like including the corresponding class file.
 	 * The main difference is that importing a class is much lighter because it only
-	 * includes the class file when the class is referenced the first time.
+	 * includes the class file when the class is referenced in the code the first time.
 	 *
-	 * Importing a directory is equivalent to adding a directory into the PHP include path.
-	 * If multiple directories are imported, the directories imported later will take
-	 * precedence in class file searching (i.e., they are added to the front of the PHP include path).
+	 * Importing a directory will add the directory to the front of the [[classPath]] array.
+	 * When [[autoload]] is loading an unknown class, it will search in the directories
+	 * specified in [[classPath]] to find the corresponding class file to include.
+	 * For this reason, if multiple directories are imported, the directories imported later
+	 * will take precedence in class file searching.
 	 *
-	 * Path aliases are used to import a class or directory. For example,
-	 * <ul>
-	 *   <li><code>application.components.GoogleMap</code>: import the <code>GoogleMap</code> class.</li>
-	 *   <li><code>application.components.*</code>: import the <code>components</code> directory.</li>
-	 * </ul>
+	 * The same class or directory can be imported multiple times. Only the first importing
+	 * will count. Importing a directory does not import any of its subdirectories.
 	 *
-	 * The same path alias can be imported multiple times, but only the first time is effective.
-	 * Importing a directory does not import any of its subdirectories.
+	 * To import a class or a directory, one can use either path alias or class name (can be namespaced):
 	 *
-	 * Starting from version 1.1.5, this method can also be used to import a class in namespace format
-	 * (available for PHP 5.3 or above only). It is similar to importing a class in path alias format,
-	 * except that the dot separator is replaced by the backslash separator. For example, importing
-	 * <code>application\components\GoogleMap</code> is similar to importing <code>application.components.GoogleMap</code>.
-	 * The difference is that the former class is using qualified name, while the latter unqualified.
+	 *  - `@app/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
+	 *  - `GoogleMap`: importing the `GoogleMap` class with a class name;
+	 *  - `@app/components/*`: importing the whole `components` directory with a path alias.
 	 *
-	 * Note, importing a class in namespace format requires that the namespace is corresponding to
-	 * a valid path alias if we replace the backslash characters with dot characters.
-	 * For example, the namespace <code>application\components</code> must correspond to a valid
-	 * path alias <code>application.components</code>.
-	 *
-	 * @param string $alias path alias to be imported
+	 * @param string $alias path alias or a simple class name to be imported
 	 * @param boolean $forceInclude whether to include the class file immediately. If false, the class file
 	 * will be included only when the class is being used. This parameter is used only when
 	 * the path alias refers to a class.
 	 * @return string the class name or the directory that this alias refers to
-	 * @throws CException if the alias is invalid
+	 * @throws Exception if the path alias is invalid
 	 */
 	public static function import($alias, $forceInclude = false)
 	{
-		if (isset(self::$_imports[$alias]))  // previously imported
-			return self::$_imports[$alias];
-
-		if (class_exists($alias, false) || interface_exists($alias, false))
-			return self::$_imports[$alias] = $alias;
-
-		if (($pos = strrpos($alias, '\\')) !== false) // a class name in PHP 5.3 namespace format
-		{
-			$namespace = str_replace('\\', '.', ltrim(substr($alias, 0, $pos), '\\'));
-			if (($path = self::getPathOfAlias($namespace)) !== false)
-			{
-				$classFile = $path . DIRECTORY_SEPARATOR . substr($alias, $pos + 1) . '.php';
-				if ($forceInclude)
-				{
-					if (is_file($classFile))
-						require($classFile);
-					else
-						throw new CException(Yii::t('yii', 'Alias "{alias}" is invalid. Make sure it points to an existing PHP file.', array('{alias}' => $alias)));
-					self::$_imports[$alias] = $alias;
-				}
-				else
-					self::$classMap[$alias] = $classFile;
-				return $alias;
-			}
-			else
-				throw new CException(Yii::t('yii', 'Alias "{alias}" is invalid. Make sure it points to an existing directory.',
-					array('{alias}' => $namespace)));
+		if (isset(self::$_imported[$alias])) {
+			return self::$_imported[$alias];
 		}
 
-		if (($pos = strrpos($alias, '.')) === false)  // a simple class name
-		{
-			if ($forceInclude && self::autoload($alias))
-				self::$_imports[$alias] = $alias;
+		if (class_exists($alias, false) || interface_exists($alias, false)) {
+			return self::$_imported[$alias] = $alias;
+		}
+
+		if ($alias[0] !== '@') { // a simple class name
+			if ($forceInclude && self::autoload($alias)) {
+				self::$_imported[$alias] = $alias;
+			}
 			return $alias;
 		}
 
-		$className = (string)substr($alias, $pos + 1);
+		$className = basename($alias);
 		$isClass = $className !== '*';
 
-		if ($isClass && (class_exists($className, false) || interface_exists($className, false)))
-			return self::$_imports[$alias] = $className;
-
-		if (($path = self::getPathOfAlias($alias)) !== false)
-		{
-			if ($isClass)
-			{
-				if ($forceInclude)
-				{
-					if (is_file($path . '.php'))
-						require($path . '.php');
-					else
-						throw new CException(Yii::t('yii', 'Alias "{alias}" is invalid. Make sure it points to an existing PHP file.', array('{alias}' => $alias)));
-					self::$_imports[$alias] = $className;
-				}
-				else
-					self::$classMap[$className] = $path . '.php';
-				return $className;
-			}
-			else  // a directory
-			{
-				if (self::$classPath === null)
-				{
-					self::$classPath = array_unique(explode(PATH_SEPARATOR, get_include_path()));
-					if (($pos = array_search('.', self::$classPath, true)) !== false)
-						unset(self::$classPath[$pos]);
-				}
-
-				array_unshift(self::$classPath, $path);
-
-				if (self::$useIncludePath && set_include_path('.' . PATH_SEPARATOR . implode(PATH_SEPARATOR, self::$classPath)) === false)
-					self::$useIncludePath = false;
-
-				return self::$_imports[$alias] = $path;
-			}
+		if ($isClass && (class_exists($className, false) || interface_exists($className, false))) {
+			return self::$_imported[$alias] = $className;
 		}
-		else
-			throw new CException(Yii::t('yii', 'Alias "{alias}" is invalid. Make sure it points to an existing directory or file.',
-				array('{alias}' => $alias)));
+
+		if (($path = self::getPathOfAlias(dirname($alias))) === false) {
+			throw new \yii\base\Exception('Invalid path alias: ' . $alias);
+		}
+
+		if ($isClass) {
+			if ($forceInclude) {
+				require($path . "/$className.php");
+				self::$_imported[$alias] = $className;
+			}
+			else {
+				self::$classMap[$className] = $path . "/$className.php";
+			}
+			return $className;
+		}
+		else { // a directory
+			array_unshift(self::$classPath, $path);
+			return self::$_imported[$alias] = $path;
+		}
 	}
 
 	/**
@@ -310,13 +200,13 @@ class YiiBase
 	 */
 	public static function getPathOfAlias($alias)
 	{
-		if (isset(self::$_aliases[$alias])) {
-			return self::$_aliases[$alias];
+		if (isset(self::$aliases[$alias])) {
+			return self::$aliases[$alias];
 		}
 		elseif (($pos = strpos($alias, '/')) !== false) {
 			$rootAlias = substr($alias, 0, $pos);
-			if (isset(self::$_aliases[$rootAlias])) {
-				return self::$_aliases[$alias] = self::$_aliases[$rootAlias] . substr($alias, $pos);
+			if (isset(self::$aliases[$rootAlias])) {
+				return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
 			}
 		}
 		return false;
@@ -335,10 +225,10 @@ class YiiBase
 	public static function setPathOfAlias($alias, $path)
 	{
 		if ($path === null) {
-			unset(self::$_aliases[$alias]);
+			unset(self::$aliases[$alias]);
 		}
 		else {
-			self::$_aliases[$alias] = rtrim($path, '\\/');
+			self::$aliases[$alias] = rtrim($path, '\\/');
 		}
 	}
 
@@ -370,7 +260,7 @@ class YiiBase
 		// namespaced class, e.g. yii\base\Component
 		if (strpos($className, '\\') !== false) {
 			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
-			$alias = '@' . str_replace('\\', '/', $className);
+			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
 			if (($path = self::getPathOfAlias($alias)) !== false) {
 				include($path . '.php');
 				return true;
@@ -398,6 +288,79 @@ class YiiBase
 		}
 
 		return false;
+	}
+
+	/**
+	 * Creates an object and initializes its properties based on the given configuration.
+	 *
+	 * The specified configuration can be either a string or an array.
+	 * If the former, the string is treated as the object type which can
+	 * be either a class name or [[getPathOfAlias|path alias]].
+	 * If the latter, the array must contain a `class` element which refers
+	 * to a class name or [[getPathOfAlias|path alias]]. The rest of the name-value
+	 * pairs in the array will be used to initialize the corresponding object properties.
+	 * For example,
+	 *
+	 * Any additional parameters passed to this method will be
+	 * passed to the constructor of the object being created.
+	 *
+	 * ~~~php
+	 * $component = Yii::createComponent('@app/components/GoogleMap');
+	 * $component = Yii::createComponent('\application\components\GoogleMap');
+	 * $component = Yii::createComponent(array(
+	 *     'class' => '@app/components/GoogleMap',
+	 *     'apiKey' => 'xyz',
+	 * ));
+	 * ~~~
+	 *
+	 * @param mixed $config the configuration. It can be either a string or an array.
+	 * @return mixed the created object
+	 * @throws Exception if the configuration does not have a 'class' element.
+	 */
+	public static function createComponent($config)
+	{
+		if (is_string($config)) {
+			$type = $config;
+			$config = array();
+		}
+		elseif (isset($config['class'])) {
+			$type = $config['class'];
+			unset($config['class']);
+		}
+		else {
+			throw new \yii\base\Exception('Object configuration must be an array containing a "class" element.');
+		}
+
+		if (!class_exists($type, false)) {
+			$type = Yii::import($type, true);
+		}
+
+		if (($n = func_num_args()) > 1) {
+			$args = func_get_args();
+			if ($n === 2) {
+				$object = new $type($args[1]);
+			}
+			elseif ($n === 3) {
+				$object = new $type($args[1], $args[2]);
+			}
+			elseif ($n === 4) {
+				$object = new $type($args[1], $args[2], $args[3]);
+			}
+			else {
+				unset($args[0]);
+				$class = new ReflectionClass($type);
+				$object = $class->newInstanceArgs($args);
+			}
+		}
+		else {
+			$object = new $type;
+		}
+
+		foreach ($config as $key => $value) {
+			$object->$key = $value;
+		}
+
+		return $object;
 	}
 
 	/**
@@ -484,20 +447,22 @@ class YiiBase
 	}
 
 	/**
-	 * @return CLogger message logger
+	 * Returns the message logger object.
+	 * @return \yii\logging\Logger message logger
 	 */
 	public static function getLogger()
 	{
-		if (self::$_logger !== null)
+		if (self::$_logger !== null) {
 			return self::$_logger;
-		else
-			return self::$_logger = new CLogger;
+		}
+		else {
+			return self::$_logger = new \yii\logging\Logger;
+		}
 	}
 
 	/**
 	 * Sets the logger object.
-	 * @param CLogger $logger the logger object.
-	 * @since 1.1.8
+	 * @param \yii\logging\Logger $logger the logger object.
 	 */
 	public static function setLogger($logger)
 	{
@@ -505,8 +470,8 @@ class YiiBase
 	}
 
 	/**
-	 * Returns a string that can be displayed on your Web page showing Powered-by-Yii information
-	 * @return string a string that can be displayed on your Web page showing Powered-by-Yii information
+	 * Returns an HTML hyperlink that can be displayed on your Web page showing Powered by Yii" information.
+	 * @return string an HTML hyperlink that can be displayed on your Web page showing Powered by Yii" information
 	 */
 	public static function powered()
 	{
@@ -539,11 +504,11 @@ class YiiBase
 	 */
 	public static function t($category, $message, $params = array(), $source = null, $language = null)
 	{
-		if (self::$_app !== null)
+		if (self::$app !== null)
 		{
 			if ($source === null)
-				$source = ($category === 'yii' || $category === 'zii') ? 'coreMessages' : 'messages';
-			if (($source = self::$_app->getComponent($source)) !== null)
+				$source = $category === 'yii' ? 'coreMessages' : 'messages';
+			if (($source = self::$app->getComponent($source)) !== null)
 				$message = $source->translate($category, $message, $language);
 		}
 		if ($params === array())
@@ -557,7 +522,7 @@ class YiiBase
 				if (strpos($message, '#') === false)
 				{
 					$chunks = explode('|', $message);
-					$expressions = self::$_app->getLocale($language)->getPluralRules();
+					$expressions = self::$app->getLocale($language)->getPluralRules();
 					if ($n = min(count($chunks), count($expressions)))
 					{
 						for ($i = 0;$i < $n;$i++)
