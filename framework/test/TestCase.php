@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\test\TestCase;
+namespace yii\test;
 
 require_once('PHPUnit/Runner/Version.php');
 require_once('PHPUnit/Autoload.php');

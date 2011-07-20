@@ -135,7 +135,7 @@ class Component
 		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event, e.g. onClick()
 			$name = strtolower($name);
 			if (!isset($this->_e[$name])) {
-				$this->_e[$name] = new \yii\collections\Vector;
+				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name];
 		}
@@ -149,7 +149,7 @@ class Component
 				}
 			}
 		}
-		throw new Exception('Getting unknown property: ' . get_class($this) . '.' $name);
+		throw new Exception('Getting unknown property: ' . get_class($this) . '.' . $name);
 	}
 
 	/**
@@ -176,7 +176,7 @@ class Component
 		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {
 			$name = strtolower($name);
 			if (!isset($this->_e[$name])) {
-				$this->_e[$name] = new \yii\collections\Vector;
+				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name]->add($value);
 		}
@@ -188,10 +188,10 @@ class Component
 			}
 		}
 		if (method_exists($this, 'get' . $name)) {
-			throw new Exception('Setting read-only property: ' . get_class($this) . '.' $name);
+			throw new Exception('Setting read-only property: ' . get_class($this) . '.' . $name);
 		}
 		else {
-			throw new Exception('Setting unknown property: ' . get_class($this) . '.' $name);
+			throw new Exception('Setting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
 
@@ -269,7 +269,7 @@ class Component
 			}
 		}
 		elseif (method_exists($this, 'get' . $name)) {
-			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' $name);
+			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 		}
 	}
 
@@ -304,7 +304,7 @@ class Component
 				}
 			}
 		}
-		throw new Exception('Unknown method: ' . get_class($this) . '::' $name . '()');
+		throw new Exception('Unknown method: ' . get_class($this) . "::$name()");
 	}
 
 	/**
