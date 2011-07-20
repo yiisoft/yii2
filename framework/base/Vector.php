@@ -259,7 +259,7 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	 */
 	public function copyFrom($data)
 	{
-		if (is_array($data) || ($data instanceof Traversable)) {
+		if (is_array($data) || $data instanceof \Traversable) {
 			if ($this->_c > 0) {
 				$this->clear();
 			}
@@ -283,7 +283,7 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	 */
 	public function mergeWith($data)
 	{
-		if (is_array($data) || ($data instanceof Traversable)) {
+		if (is_array($data) || ($data instanceof \Traversable)) {
 			if ($data instanceof Vector) {
 				$data = $data->_d;
 			}

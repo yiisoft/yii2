@@ -49,7 +49,7 @@ class ComponentTest extends \yii\test\TestCase
 	public function testGetProperty()
 	{
 		$this->assertTrue('default'===$this->component->Text);
-		$this->setExpectedException('CException');
+		$this->setExpectedException('yii\base\Exception');
 		$value2=$this->component->Caption;
 	}
 
@@ -59,7 +59,7 @@ class ComponentTest extends \yii\test\TestCase
 		$this->component->Text=$value;
 		$text=$this->component->Text;
 		$this->assertTrue($value===$this->component->Text);
-		$this->setExpectedException('CException');
+		$this->setExpectedException('yii\base\Exception');
 		$this->component->NewMember=$value;
 	}
 
@@ -97,7 +97,7 @@ class ComponentTest extends \yii\test\TestCase
 		$this->assertEquals($list->getCount(),0);
 		$this->component->attachEventHandler('OnMyEvent','foo');
 		$this->assertEquals($list->getCount(),1);
-		$this->setExpectedException('CException');
+		$this->setExpectedException('yii\base\Exception');
 		$list=$this->component->getEventHandlers('YourEvent');
 	}
 
@@ -105,7 +105,7 @@ class ComponentTest extends \yii\test\TestCase
 	{
 		$this->component->attachEventHandler('OnMyEvent','foo');
 		$this->assertTrue($this->component->getEventHandlers('OnMyEvent')->getCount()===1);
-		$this->setExpectedException('CException');
+		$this->setExpectedException('yii\base\Exception');
 		$this->component->attachEventHandler('YourEvent','foo');
 	}
 
@@ -134,8 +134,8 @@ class ComponentTest extends \yii\test\TestCase
 		$this->component->raiseEvent('OnMyEvent',new \yii\base\Event($this));
 		$this->assertTrue($this->component->eventHandled);
 
-		//$this->setExpectedException('CException');
-		//$this->component->raiseEvent('OnUnknown',new CEvent($this));
+		$this->setExpectedException('yii\base\Exception');
+		$this->component->raiseEvent('OnUnknown',new \yii\base\Event($this));
 	}
 
 	public function testEventAccessor()
@@ -165,14 +165,14 @@ class ComponentTest extends \yii\test\TestCase
 	public function testInvalidHandler1()
 	{
 		$this->component->onMyEvent=array(1,2,3);
-		$this->setExpectedException('CException');
+		$this->setExpectedException('yii\base\Exception');
 		$this->component->onMyEvent();
 	}
 
 	public function testInvalidHandler2()
 	{
 		$this->component->onMyEvent=array($this->component,'nullHandler');
-		$this->setExpectedException('CException');
+		$this->setExpectedException('yii\base\Exception');
 		$this->component->onMyEvent();
 	}
 	public function testDetachBehavior() {
@@ -186,7 +186,7 @@ class ComponentTest extends \yii\test\TestCase
 		$behavior = new NewBehavior;
 		$component->attachBehavior('a',$behavior);
 		$component->detachBehaviors();
-		$this->setExpectedException('CException');
+		$this->setExpectedException('yii\base\Exception');
 		$component->test();
 	}
 	public function testEnablingBehavior() {

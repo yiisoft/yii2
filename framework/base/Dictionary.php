@@ -193,9 +193,9 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	 */
 	public function copyFrom($data)
 	{
-		if (is_array($data) || $data instanceof Traversable)
+		if (is_array($data) || $data instanceof \Traversable)
 		{
-			if (($this->_d !== array()) {
+			if ($this->_d !== array()) {
 				$this->clear();
 			}
 			if ($data instanceof self) {
@@ -227,32 +227,33 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	 *
 	 * @throws CException If data is neither an array nor an iterator.
 	 */
-	public function mergeWith($data,$recursive=true)
+	public function mergeWith($data, $recursive=true)
 	{
-		if (is_array($data) || $data instanceof Traversable)
-		{
-			if ($data instanceof Dictionary)
-				$data=$data->_d;
-			if ($recursive)
-			{
-				if ($data instanceof Traversable)
-				{
-					$d=array();
-					foreach($data as $key=>$value)
-						$d[$key]=$value;
-					$this->_d=self::mergeArray($this->_d,$d);
-				}
-				else
-					$this->_d=self::mergeArray($this->_d,$data);
+		if (is_array($data) || $data instanceof \Traversable) {
+			if ($data instanceof self) {
+				$data = $data->_d;
 			}
-			else
-			{
-				foreach($data as $key=>$value)
-					$this->add($key,$value);
+			if ($recursive) {
+				if ($data instanceof \Traversable) {
+					$d=array();
+					foreach($data as $key => $value) {
+						$d[$key] = $value;
+					}
+					$this->_d = self::mergeArray($this->_d, $d);
+				}
+				else {
+					$this->_d = self::mergeArray($this->_d, $data);
+				}
+			}
+			else {
+				foreach($data as $key => $value) {
+					$this->add($key, $value);
+				}
 			}
 		}
-		else if ($data!==null)
-			throw new CException(Yii::t('yii','Dictionary data must be an array or an object implementing Traversable.'));
+		else {
+			throw new Exception('Dictionary data must be an array or an object implementing Traversable.');
+		}
 	}
 
 	/**
@@ -321,16 +322,17 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	 * @return array the merged array (the original arrays are not changed.)
 	 * @see mergeWith
 	 */
-	public static function mergeArray($a,$b)
+	public static function mergeArray($a, $b)
 	{
-		foreach($b as $k=>$v)
-		{
-			if(is_integer($k))
-				isset($a[$k]) ? $a[]=$v : $a[$k]=$v;
-			else if(is_array($v) && isset($a[$k]) && is_array($a[$k]))
-				$a[$k]=self::mergeArray($a[$k],$v);
+		foreach($b as $k=>$v) {
+			if(is_integer($k)) {
+				isset($a[$k]) ? $a[] = $v : $a[$k] = $v;
+			}
+			elseif(is_array($v) && isset($a[$k]) && is_array($a[$k])) {
+				$a[$k] = self::mergeArray($a[$k], $v);
+			}
 			else
-				$a[$k]=$v;
+				$a[$k] = $v;
 		}
 		return $a;
 	}
