@@ -259,7 +259,7 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	/**
 	 * Returns whether there is an element at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `isset($vector[$index])`.
+	 * It is implicitly called when you use something like `isset($dictionary[$offset])`.
 	 * This is equivalent to [[contains]].
 	 * @param mixed $offset the offset to check on
 	 * @return boolean
@@ -272,7 +272,7 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	/**
 	 * Returns the element at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$value = $dictionary[$index];`.
+	 * It is implicitly called when you use something like `$value = $dictionary[$offset];`.
 	 * This is equivalent to [[itemAt]].
 	 * @param integer $offset the offset to retrieve element.
 	 * @return mixed the element at the offset, null if no element is found at the offset
@@ -285,7 +285,7 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	/**
 	 * Sets the element at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$dictionary[$key] = $value;`.
+	 * It is implicitly called when you use something like `$dictionary[$offset] = $item;`.
 	 * If the offset is null, the new item will be appended to the dictionary.
 	 * Otherwise, the existing item at the offset will be replaced with the new item.
 	 * This is equivalent to [[add]].
@@ -300,7 +300,7 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	/**
 	 * Unsets the element at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `unset($dictionary[$index])`.
+	 * It is implicitly called when you use something like `unset($dictionary[$offset])`.
 	 * This is equivalent to [[remove]].
 	 * @param mixed $offset the offset to unset element
 	 */

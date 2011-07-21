@@ -141,7 +141,7 @@ class YiiBase
 	 * will be included only when the class is being used. This parameter is used only when
 	 * the path alias refers to a class.
 	 * @return string the class name or the directory that this alias refers to
-	 * @throws Exception if the path alias is invalid
+	 * @throws \yii\base\Exception if the path alias is invalid
 	 */
 	public static function import($alias, $forceInclude = false)
 	{
@@ -315,7 +315,7 @@ class YiiBase
 	 *
 	 * @param mixed $config the configuration. It can be either a string or an array.
 	 * @return mixed the created object
-	 * @throws Exception if the configuration does not have a 'class' element.
+	 * @throws \yii\base\Exception if the configuration does not have a 'class' element.
 	 */
 	public static function createComponent($config)
 	{

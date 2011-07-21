@@ -28,9 +28,9 @@ class CModelBehavior extends CBehavior
 	public function events()
 	{
 		return array(
-			'onAfterConstruct'=>'afterConstruct',
-			'onBeforeValidate'=>'beforeValidate',
-			'onAfterValidate'=>'afterValidate',
+			'onAfterConstruct' => 'afterConstruct',
+			'onBeforeValidate' => 'beforeValidate',
+			'onAfterValidate' => 'afterValidate',
 		);
 	}
 

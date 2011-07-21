@@ -28,7 +28,7 @@ class CModelEvent extends CEvent
 	 * If true, the normal execution cycles will continue, including performing the real validations and calling
 	 * {@link CModel::afterValidate}.
 	 */
-	public $isValid=true;
+	public $isValid = true;
 	/**
 	 * @var CDbCrireria the query criteria that is passed as a parameter to a find method of {@link CActiveRecord}.
 	 * Note that this property is only used by {@link CActiveRecord::onBeforeFind} event.

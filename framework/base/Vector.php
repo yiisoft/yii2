@@ -299,7 +299,7 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	/**
 	 * Returns a value indicating whether there is an item at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `isset($vector[$index])`.
+	 * It is implicitly called when you use something like `isset($vector[$offset])`.
 	 * @param integer $offset the offset to be checked
 	 * @return boolean whether there is an item at the specified offset.
 	 */
@@ -311,7 +311,7 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	/**
 	 * Returns the item at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$value = $vector[$index];`.
+	 * It is implicitly called when you use something like `$value = $vector[$offset];`.
 	 * This is equivalent to [[itemAt]].
 	 * @param integer $offset the offset to retrieve item.
 	 * @return mixed the item at the offset
@@ -325,7 +325,7 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	/**
 	 * Sets the item at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$vector[$index] = $value;`.
+	 * It is implicitly called when you use something like `$vector[$offset] = $item;`.
 	 * If the offset is null or equal to the number of the existing items,
 	 * the new item will be appended to the vector.
 	 * Otherwise, the existing item at the offset will be replaced with the new item.
@@ -347,7 +347,7 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	/**
 	 * Unsets the item at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `unset($vector[$index])`.
+	 * It is implicitly called when you use something like `unset($vector[$offset])`.
 	 * This is equivalent to [[removeAt]].
 	 * @param integer $offset the offset to unset item
 	 * @throws Exception if the offset is out of range, or the vector is read only.
