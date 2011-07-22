@@ -364,7 +364,7 @@ class Component
 	 * @param string $name the event name
 	 * @return boolean whether there is any handler attached to the event.
 	 */
-	public function hasEventHandler($name)
+	public function hasEventHandlers($name)
 	{
 		$name = strtolower($name);
 		return isset($this->_e[$name]) && $this->_e[$name]->getCount();

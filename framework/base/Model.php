@@ -205,7 +205,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 			$this->clearErrors();
 		}
 		if ($this->beforeValidate()) {
-			foreach ($this->getValidators() as $validator) {
+			foreach ($this->getActiveValidators() as $validator) {
 				$validator->validate($this, $attributes);
 			}
 			$this->afterValidate();
@@ -222,7 +222,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function afterConstruct()
 	{
-		if ($this->hasEventHandler('onAfterConstruct')) {
+		if ($this->hasEventHandlers('onAfterConstruct')) {
 			$this->onAfterConstruct(new Event($this));
 		}
 	}
@@ -237,7 +237,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function beforeValidate()
 	{
-		if ($this->hasEventHandler('onBeforeValidate')) {
+		if ($this->hasEventHandlers('onBeforeValidate')) {
 			$event = new ValidationEvent($this);
 			$this->onBeforeValidate($event);
 			return $event->isValid;
@@ -253,7 +253,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function afterValidate()
 	{
-		if ($this->hasEventHandler('onAfterValidate')) {
+		if ($this->hasEventHandlers('onAfterValidate')) {
 			$this->onAfterValidate(new CEvent($this));
 		}
 	}
@@ -286,42 +286,44 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Returns all the validators declared in the model.
-	 * This method differs from {@link getValidators} in that the latter
-	 * would only return the validators applicable to the current {@link scenario}.
-	 * Also, since this method return a {@link CList} object, you may
-	 * manipulate it by inserting or removing validators (useful in behaviors).
-	 * For example, <code>$model->validatorList->add($newValidator)</code>.
-	 * The change made to the {@link CList} object will persist and reflect
-	 * in the result of the next call of {@link getValidators}.
-	 * @return CList all the validators declared in the model.
+	 * Returns all the validators declared in [[rules]].
+	 *
+	 * This method differs from [[getActiveValidators]] in that the latter
+	 * only returns the validators applicable to the current [[scenario]].
+	 *
+	 * Because this method returns a [[Vector]] object, you may
+	 * manipulate it by inserting or removing validators (useful in model behaviors).
+	 * For example,
+	 *
+	 * ~~~php
+	 * $model->validators->add($newValidator);
+	 * ~~~
+	 *
+	 * @return Vector all the validators declared in the model.
 	 */
-	public function getValidatorList()
+	public function getValidators()
 	{
-		if ($this->_validators === null)
+		if ($this->_validators === null) {
 			$this->_validators = $this->createValidators();
+		}
 		return $this->_validators;
 	}
 
 	/**
-	 * Returns the validators applicable to the current {@link scenario}.
-	 * @param string $attribute the name of the attribute whose validators should be returned.
+	 * Returns the validators applicable to the current [[scenario]].
+	 * @param string $attribute the name of the attribute whose applicable validators should be returned.
 	 * If this is null, the validators for ALL attributes in the model will be returned.
-	 * @return array the validators applicable to the current {@link scenario}.
+	 * @return array the validators applicable to the current [[scenario]].
 	 */
-	public function getValidators($attribute = null)
+	public function getActiveValidators($attribute = null)
 	{
-		if ($this->_validators === null)
-			$this->_validators = $this->createValidators();
-
 		$validators = array();
 		$scenario = $this->getScenario();
-		foreach ($this->_validators as $validator)
-		{
-			if ($validator->applyTo($scenario))
-			{
-				if ($attribute === null || in_array($attribute, $validator->attributes, true))
+		foreach ($this->getValidators() as $validator) {
+			if ($validator->applyTo($scenario)) {
+				if ($attribute === null || in_array($attribute, $validator->attributes, true)) {
 					$validators[] = $validator;
+				}
 			}
 		}
 		return $validators;
@@ -330,18 +332,19 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	/**
 	 * Creates validator objects based on the specification in {@link rules}.
 	 * This method is mainly used internally.
-	 * @return CList validators built based on {@link rules()}.
+	 * @return Vector validators built based on {@link rules()}.
 	 */
 	public function createValidators()
 	{
-		$validators = new CList;
-		foreach ($this->rules() as $rule)
-		{
-			if (isset($rule[0], $rule[1]))  // attributes, validator name
-				$validators->add(CValidator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2)));
-			else
-				throw new CException(Yii::t('yii', '{class} has an invalid validation rule. The rule must specify attributes to be validated and the validator name.',
+		$validators = new Vector;
+		foreach ($this->rules() as $rule) {
+			if (isset($rule[0], $rule[1])) {  // attributes, validator type
+				$validators->add(\yii\validators\Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2)));
+			}
+			else {
+				throw new Exception(spr'{class} has an invalid validation rule. The rule must specify attributes to be validated and the validator name.',
 					array('{class}' => get_class($this))));
+			}
 		}
 		return $validators;
 	}
@@ -355,7 +358,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function isAttributeRequired($attribute)
 	{
-		foreach ($this->getValidators($attribute) as $validator)
+		foreach ($this->getActiveValidators($attribute) as $validator)
 		{
 			if ($validator instanceof CRequiredValidator)
 				return true;
@@ -623,7 +626,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$attributes = array();
 		$unsafe = array();
-		foreach ($this->getValidators() as $validator) {
+		foreach ($this->getActiveValidators() as $validator) {
 			if (!$validator->safe) {
 				foreach ($validator->attributes as $name) {
 					$unsafe[] = $name;
