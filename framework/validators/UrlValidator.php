@@ -17,7 +17,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CUrlValidator extends CValidator
+class CUrlValidator extends Validator
 {
 	/**
 	 * @var string the regular expression used to validate the attribute value.
@@ -50,7 +50,7 @@ class CUrlValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -112,14 +112,14 @@ class CUrlValidator extends CValidator
 
 		$js = "
 if(!value.match($pattern)) {
-	messages.push(" . CJSON::encode($message) . ");
+	messages.push(" . json_encode($message) . ");
 }
 ";
 		if ($this->defaultScheme !== null)
 		{
 			$js = "
 if(!value.match(/:\\/\\//)) {
-	value=" . CJSON::encode($this->defaultScheme) . "+'://'+value;
+	value=" . json_encode($this->defaultScheme) . "+'://'+value;
 }
 $js
 ";

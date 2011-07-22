@@ -17,7 +17,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CNumberValidator extends CValidator
+class CNumberValidator extends Validator
 {
 	/**
 	 * @var boolean whether the attribute value can only be an integer. Defaults to false.
@@ -62,7 +62,7 @@ class CNumberValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -130,14 +130,14 @@ class CNumberValidator extends CValidator
 		$pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
 		$js = "
 if(!value.match($pattern)) {
-	messages.push(" . CJSON::encode($message) . ");
+	messages.push(" . json_encode($message) . ");
 }
 ";
 		if ($this->min !== null)
 		{
 			$js .= "
 if(value< {$this->min}) {
-	messages.push(" . CJSON::encode($tooSmall) . ");
+	messages.push(" . json_encode($tooSmall) . ");
 }
 ";
 		}
@@ -145,7 +145,7 @@ if(value< {$this->min}) {
 		{
 			$js .= "
 if(value> {$this->max}) {
-	messages.push(" . CJSON::encode($tooBig) . ");
+	messages.push(" . json_encode($tooBig) . ");
 }
 ";
 		}

@@ -17,7 +17,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CUniqueValidator extends CValidator
+class CUniqueValidator extends Validator
 {
 	/**
 	 * @var boolean whether the comparison is case sensitive. Defaults to true.
@@ -72,7 +72,7 @@ class CUniqueValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))

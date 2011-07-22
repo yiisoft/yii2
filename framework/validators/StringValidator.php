@@ -19,7 +19,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CStringValidator extends CValidator
+class CStringValidator extends Validator
 {
 	/**
 	 * @var integer maximum length. Defaults to null, meaning no maximum limit.
@@ -63,7 +63,7 @@ class CStringValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -129,7 +129,7 @@ class CStringValidator extends CValidator
 		{
 			$js .= "
 if(value.length< {$this->min}) {
-	messages.push(" . CJSON::encode($tooShort) . ");
+	messages.push(" . json_encode($tooShort) . ");
 }
 ";
 		}
@@ -137,7 +137,7 @@ if(value.length< {$this->min}) {
 		{
 			$js .= "
 if(value.length> {$this->max}) {
-	messages.push(" . CJSON::encode($tooLong) . ");
+	messages.push(" . json_encode($tooLong) . ");
 }
 ";
 		}
@@ -145,7 +145,7 @@ if(value.length> {$this->max}) {
 		{
 			$js .= "
 if(value.length!= {$this->is}) {
-	messages.push(" . CJSON::encode($message) . ");
+	messages.push(" . json_encode($message) . ");
 }
 ";
 		}

@@ -17,7 +17,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0.10
  */
-class CBooleanValidator extends CValidator
+class CBooleanValidator extends Validator
 {
 	/**
 	 * @var mixed the value representing true status. Defaults to '1'.
@@ -45,7 +45,7 @@ class CBooleanValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -78,8 +78,8 @@ class CBooleanValidator extends CValidator
 			'{false}' => $this->falseValue,
 		));
 		return "
-if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . "value!=" . CJSON::encode($this->trueValue) . " && value!=" . CJSON::encode($this->falseValue) . ") {
-	messages.push(" . CJSON::encode($message) . ");
+if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . "value!=" . json_encode($this->trueValue) . " && value!=" . json_encode($this->falseValue) . ") {
+	messages.push(" . json_encode($message) . ");
 }
 ";
 	}

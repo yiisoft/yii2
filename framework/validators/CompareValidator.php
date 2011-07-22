@@ -29,7 +29,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CCompareValidator extends CValidator
+class CCompareValidator extends Validator
 {
 	/**
 	 * @var string the name of the attribute to be compared with
@@ -72,7 +72,7 @@ class CCompareValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -149,7 +149,7 @@ class CCompareValidator extends CValidator
 		if ($this->compareValue !== null)
 		{
 			$compareTo = $this->compareValue;
-			$compareValue = CJSON::encode($this->compareValue);
+			$compareValue = json_encode($this->compareValue);
 		}
 		else
 		{
@@ -203,7 +203,7 @@ class CCompareValidator extends CValidator
 
 		return "
 if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
-	messages.push(" . CJSON::encode($message) . ");
+	messages.push(" . json_encode($message) . ");
 }
 ";
 	}

@@ -28,7 +28,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CFilterValidator extends CValidator
+class CFilterValidator extends Validator
 {
 	/**
 	 * @var callback the filter method
@@ -41,7 +41,7 @@ class CFilterValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		if ($this->filter === null || !is_callable($this->filter))
 			throw new CException(Yii::t('yii', 'The "filter" property must be specified with a valid callback.'));

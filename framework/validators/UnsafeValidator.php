@@ -17,7 +17,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CUnsafeValidator extends CValidator
+class CUnsafeValidator extends Validator
 {
 	/**
 	 * @var boolean whether attributes listed with this validator should be considered safe for massive assignment.
@@ -31,7 +31,7 @@ class CUnsafeValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 	}
 }

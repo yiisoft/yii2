@@ -18,7 +18,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CRegularExpressionValidator extends CValidator
+class CRegularExpressionValidator extends Validator
 {
 	/**
 	 * @var string the regular expression to be matched with
@@ -42,7 +42,7 @@ class CRegularExpressionValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -88,7 +88,7 @@ class CRegularExpressionValidator extends CValidator
 
 		return "
 if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? '' : '!') . "value.match($pattern)) {
-	messages.push(" . CJSON::encode($message) . ");
+	messages.push(" . json_encode($message) . ");
 }
 ";
 	}

@@ -1,6 +1,6 @@
 <?php
 /**
- * CInlineValidator class file.
+ * InlineValidator class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,14 +10,21 @@
 namespace yii\validators;
 
 /**
- * CInlineValidator represents a validator which is defined as a method in the object being validated.
+ * InlineValidator represents a validator which is defined as a method in the object being validated.
+ *
+ * The validation method must have the following signature:
+ *
+ * ~~~
+ * function foo($attribute, $params)
+ * ~~~
+ *
+ * where `$attribute` refers to the name of the attribute being validated, while `$params`
+ * is an array representing the additional parameters supplied in the validation rule.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CInlineValidator.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.validators
- * @since 1.0
+ * @since 2.0
  */
-class CInlineValidator extends CValidator
+class InlineValidator extends Validator
 {
 	/**
 	 * @var string the name of the validation method defined in the active record class
@@ -30,11 +37,10 @@ class CInlineValidator extends CValidator
 
 	/**
 	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param CModel $object the object being validated
+	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$method = $this->method;
 		$object->$method($attribute, $this->params);

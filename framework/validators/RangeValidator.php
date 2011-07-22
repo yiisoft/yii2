@@ -18,7 +18,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CRangeValidator extends CValidator
+class CRangeValidator extends Validator
 {
 	/**
 	 * @var array list of valid values that the attribute value should be among
@@ -46,7 +46,7 @@ class CRangeValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -87,11 +87,11 @@ class CRangeValidator extends CValidator
 		$range = array();
 		foreach ($this->range as $value)
 			$range[] = (string)$value;
-		$range = CJSON::encode($range);
+		$range = json_encode($range);
 
 		return "
 if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? "$.inArray(value, $range)>=0" : "$.inArray(value, $range)<0") . ") {
-	messages.push(" . CJSON::encode($message) . ");
+	messages.push(" . json_encode($message) . ");
 }
 ";
 	}

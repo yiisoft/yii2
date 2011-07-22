@@ -12,50 +12,44 @@ namespace yii\validators;
 /**
  * Validator is the base class for all validators.
  *
- * Child classes must implement the {@link validateAttribute} method.
+ * Child classes may override the [[validateValue]] method to provide the actual
+ * logic of performing data validation.
  *
- * The following properties are defined in CValidator:
- * <ul>
- * <li>{@link attributes}: array, list of attributes to be validated;</li>
- * <li>{@link message}: string, the customized error message. The message
- *   may contain placeholders that will be replaced with the actual content.
- *   For example, the "{attribute}" placeholder will be replaced with the label
- *   of the problematic attribute. Different validators may define additional
- *   placeholders.</li>
- * <li>{@link on}: string, in which scenario should the validator be in effect.
- *   This is used to match the 'on' parameter supplied when calling {@link CModel::validate}.</li>
- * </ul>
+ * Validator defines the following properties that are common among concrete validators:
  *
- * When using {@link createValidator} to create a validator, the following aliases
- * are recognized as the corresponding built-in validator classes:
- * <ul>
- * <li>required: {@link CRequiredValidator}</li>
- * <li>filter: {@link CFilterValidator}</li>
- * <li>match: {@link CRegularExpressionValidator}</li>
- * <li>email: {@link CEmailValidator}</li>
- * <li>url: {@link CUrlValidator}</li>
- * <li>unique: {@link CUniqueValidator}</li>
- * <li>compare: {@link CCompareValidator}</li>
- * <li>length: {@link CStringValidator}</li>
- * <li>in: {@link CRangeValidator}</li>
- * <li>numerical: {@link CNumberValidator}</li>
- * <li>captcha: {@link CCaptchaValidator}</li>
- * <li>type: {@link CTypeValidator}</li>
- * <li>file: {@link CFileValidator}</li>
- * <li>default: {@link CDefaultValueValidator}</li>
- * <li>exist: {@link CExistValidator}</li>
- * <li>boolean: {@link CBooleanValidator}</li>
- * <li>date: {@link CDateValidator}</li>
- * <li>safe: {@link CSafeValidator}</li>
- * <li>unsafe: {@link CUnsafeValidator}</li>
- * </ul>
+ * - [[attributes]]: array, list of attributes to be validated;
+ * - [[message]]: string, the error message used when validation fails;
+ * - [[on]]: string, scenarios on which the validator applies.
+ *
+ * Validator also declares a set of [[builtInValidators|built-in validators] which can
+ * be referenced using short names. They are listed as follows:
+ *
+ * - `required`: [[RequiredValidator]]
+ * - `filter`: [[FilterValidator]]
+ * - `match`: [[RegularExpressionValidator]]
+ * - `email`: [[EmailValidator]]
+ * - `url`: [[UrlValidator]]
+ * - `unique`: [[UniqueValidator]]
+ * - `compare`: [[CompareValidator]]
+ * - `length`: [[StringValidator]]
+ * - `in`: [[RangeValidator]]
+ * - `numerical`: [[NumberValidator]]
+ * - `captcha`: [[CaptchaValidator]]
+ * - `type`: [[TypeValidator]]
+ * - `file`: [[FileValidator]]
+ * - `default`: [[DefaultValueValidator]]
+ * - `exist`: [[ExistValidator]]
+ * - `boolean`: [[BooleanValidator]]
+ * - `date`: [[DateValidator]]
+ * - `safe`: [[SafeValidator]]
+ * - `unsafe`: [[UnsafeValidator]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @version $Id: CValidator.php 3160 2011-04-03 01:08:23Z qiang.xue $
  * @package system.validators
  * @since 2.0
  */
-abstract class Validator extends \yii\base\Component
+class Validator extends \yii\base\Component
 {
 	/**
 	 * @var array list of built-in validators (name => class or configuration)
@@ -125,10 +119,14 @@ abstract class Validator extends \yii\base\Component
 	/**
 	 * Validates a value.
 	 * Child classes should override this method to implement the actual validation logic.
+	 * The default implementation simply returns true.
 	 * @param mixed $value the value being validated.
 	 * @return boolean whether the value is valid.
 	 */
-	abstract public function validateValue($value);
+	public function validateValue($value)
+	{
+		return true;
+	}
 
 	/**
 	 * Validates a single attribute.
@@ -265,7 +263,7 @@ abstract class Validator extends \yii\base\Component
 	 * @param string $message the error message
 	 * @param array $params values for the placeholders in the error message
 	 */
-	protected function addError($object, $attribute, $message, $params = array())
+	public function addError($object, $attribute, $message, $params = array())
 	{
 		$params['{attribute}'] = $object->getAttributeLabel($attribute);
 		$params['{value}'] = $object->$attribute;
@@ -280,7 +278,7 @@ abstract class Validator extends \yii\base\Component
 	 * @param boolean $trim whether to perform trimming before checking if the string is empty. Defaults to false.
 	 * @return boolean whether the value is empty
 	 */
-	protected function isEmpty($value, $trim = false)
+	public function isEmpty($value, $trim = false)
 	{
 		return $value === null || $value === array() || $value === ''
 				|| $trim && is_scalar($value) && trim($value) === '';

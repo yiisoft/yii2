@@ -17,7 +17,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.1
  */
-class CSafeValidator extends CValidator
+class CSafeValidator extends Validator
 {
 	/**
 	 * Validates the attribute of the object.
@@ -25,7 +25,7 @@ class CSafeValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 	}
 }

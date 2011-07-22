@@ -19,7 +19,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0.2
  */
-class CDefaultValueValidator extends CValidator
+class CDefaultValueValidator extends Validator
 {
 	/**
 	 * @var mixed the default value to be set to the specified attributes.
@@ -37,7 +37,7 @@ class CDefaultValueValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		if (!$this->setOnEmpty)
 			$object->$attribute = $this->value;

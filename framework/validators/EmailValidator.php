@@ -17,7 +17,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CEmailValidator extends CValidator
+class CEmailValidator extends Validator
 {
 	/**
 	 * @var string the regular expression used to validate the attribute value.
@@ -61,7 +61,7 @@ class CEmailValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -115,7 +115,7 @@ class CEmailValidator extends CValidator
 
 		return "
 if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
-	messages.push(" . CJSON::encode($message) . ");
+	messages.push(" . json_encode($message) . ");
 }
 ";
 	}

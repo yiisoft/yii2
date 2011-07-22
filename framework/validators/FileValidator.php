@@ -44,7 +44,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CFileValidator extends CValidator
+class CFileValidator extends Validator
 {
 	/**
 	 * @var boolean whether the attribute requires a file to be uploaded or not.
@@ -106,7 +106,7 @@ class CFileValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		if ($this->maxFiles > 1)
 		{
@@ -143,7 +143,7 @@ class CFileValidator extends CValidator
 	 * @param string $attribute the attribute being validated
 	 * @param CUploadedFile $file uploaded file passed to check against a set of rules
 	 */
-	protected function validateFile($object, $attribute, $file)
+	public function validateFile($object, $attribute, $file)
 	{
 		if (null === $file || ($error = $file->getError()) == UPLOAD_ERR_NO_FILE)
 			return $this->emptyAttribute($object, $attribute);
@@ -186,7 +186,7 @@ class CFileValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function emptyAttribute($object, $attribute)
+	public function emptyAttribute($object, $attribute)
 	{
 		if (!$this->allowEmpty)
 		{
@@ -206,7 +206,7 @@ class CFileValidator extends CValidator
 	 *
 	 * @return integer the size limit for uploaded files.
 	 */
-	protected function getSizeLimit()
+	public function getSizeLimit()
 	{
 		$limit = ini_get('upload_max_filesize');
 		$limit = $this->sizeToBytes($limit);

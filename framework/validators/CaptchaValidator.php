@@ -19,7 +19,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CCaptchaValidator extends CValidator
+class CCaptchaValidator extends Validator
 {
 	/**
 	 * @var boolean whether the comparison is case sensitive. Defaults to false.
@@ -43,7 +43,7 @@ class CCaptchaValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
@@ -61,7 +61,7 @@ class CCaptchaValidator extends CValidator
 	 * @return CCaptchaAction the action object
 	 * @since 1.1.7
 	 */
-	protected function getCaptchaAction()
+	public function getCaptchaAction()
 	{
 		if (($captcha = Yii::app()->getController()->createAction($this->captchaAction)) === null)
 		{
@@ -105,7 +105,7 @@ else
 	hash = hash[" . ($this->caseSensitive ? 0 : 1) . "];
 for(var i=value.length-1, h=0; i >= 0; --i) h+=value." . ($this->caseSensitive ? '' : 'toLowerCase().') . "charCodeAt(i);
 if(h != hash) {
-	messages.push(" . CJSON::encode($message) . ");
+	messages.push(" . json_encode($message) . ");
 }
 ";
 

@@ -20,7 +20,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.1.7
  */
-class CDateValidator extends CValidator
+class CDateValidator extends Validator
 {
 	/**
 	 * @var mixed the format pattern that the date value should follow.
@@ -47,7 +47,7 @@ class CDateValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))

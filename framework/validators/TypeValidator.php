@@ -35,7 +35,7 @@ namespace yii\validators;
  * @package system.validators
  * @since 1.0
  */
-class CTypeValidator extends CValidator
+class CTypeValidator extends Validator
 {
 	/**
 	 * @var string the data type that the attribute should be. Defaults to 'string'.
@@ -75,7 +75,7 @@ class CTypeValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
 		if ($this->allowEmpty && $this->isEmpty($value))
