@@ -12,8 +12,9 @@ namespace yii\validators;
 /**
  * Validator is the base class for all validators.
  *
- * Child classes may override the [[validateValue]] method to provide the actual
- * logic of performing data validation.
+ * Child classes must override the [[validateAttribute]] method to provide the actual
+ * logic of performing data validation. Child classes may also override [[clientValidateAttribute]]
+ * to provide client-side validation support.
  *
  * Validator defines the following properties that are common among concrete validators:
  *
@@ -45,42 +46,39 @@ namespace yii\validators;
  * - `unsafe`: [[UnsafeValidator]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CValidator.php 3160 2011-04-03 01:08:23Z qiang.xue $
- * @package system.validators
  * @since 2.0
  */
-class Validator extends \yii\base\Component
+abstract class Validator extends \yii\base\Component
 {
 	/**
 	 * @var array list of built-in validators (name => class or configuration)
 	 */
 	public static $builtInValidators = array(
 		'required' => '\yii\validators\RequiredValidator',
-		'filter' => '\yii\validators\FilterValidator',
 		'match' => '\yii\validators\RegularExpressionValidator',
 		'email' => '\yii\validators\EmailValidator',
 		'url' => '\yii\validators\UrlValidator',
-		'compare' => '\yii\validators\CompareValidator',
-		'length' => '\yii\validators\StringValidator',
-		'in' => '\yii\validators\RangeValidator',
-		'numerical' => '\yii\validators\NumberValidator',
+		'safe' => '\yii\validators\SafeValidator',
+		'unsafe' => '\yii\validators\UnsafeValidator',
 
+		'numerical' => '\yii\validators\NumberValidator',
 		'boolean' => '\yii\validators\BooleanValidator',
 		'integer' => '\yii\validators\IntegerValidator',
 		'float' => '\yii\validators\FloatValidator',
 		'string' => '\yii\validators\StringValidator',
 		'date' => '\yii\validators\DateValidator',
+		'file' => '\yii\validators\FileValidator',
 
+		'filter' => '\yii\validators\FilterValidator',
+		'compare' => '\yii\validators\CompareValidator',
+		'length' => '\yii\validators\StringValidator',
+		'in' => '\yii\validators\RangeValidator',
 		'captcha' => '\yii\validators\CaptchaValidator',
 		'type' => '\yii\validators\TypeValidator',
-		'file' => '\yii\validators\FileValidator',
 		'default' => '\yii\validators\DefaultValueValidator',
-
 		'unique' => '\yii\validators\UniqueValidator',
 		'exist' => '\yii\validators\ExistValidator',
 
-		'safe' => '\yii\validators\SafeValidator',
-		'unsafe' => '\yii\validators\UnsafeValidator',
 	);
 
 	/**
@@ -117,31 +115,12 @@ class Validator extends \yii\base\Component
 	public $enableClientValidation = true;
 
 	/**
-	 * Validates a value.
-	 * Child classes should override this method to implement the actual validation logic.
-	 * The default implementation simply returns true.
-	 * @param mixed $value the value being validated.
-	 * @return boolean whether the value is valid.
-	 */
-	public function validateValue($value)
-	{
-		return true;
-	}
-
-	/**
 	 * Validates a single attribute.
-	 * The default implementation will call [[validateValue]] to determine if
-	 * the attribute value is valid or not. If not, the [[message|error message]]
-	 * will be added to the model object.
+	 * Child classes must implement this method to provide the actual validation logic.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 */
-	public function validateAttribute($object, $attribute)
-	{
-		if (!$this->validateValue($object->$attribute)) {
-			$this->addError($object, $attribute, $this->message);
-		}
-	}
+	abstract public function validateAttribute($object, $attribute);
 
 	/**
 	 * Creates a validator object.

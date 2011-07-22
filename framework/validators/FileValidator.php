@@ -103,7 +103,7 @@ class CFileValidator extends Validator
 	/**
 	 * Set the attribute and then validates using {@link validateFile}.
 	 * If there is any error, the error message is added to the object.
-	 * @param CModel $object the object being validated
+	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
 	public function validateAttribute($object, $attribute)
@@ -139,7 +139,7 @@ class CFileValidator extends Validator
 
 	/**
 	 * Internally validates a file object.
-	 * @param CModel $object the object being validated
+	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 * @param CUploadedFile $file uploaded file passed to check against a set of rules
 	 */
@@ -183,7 +183,7 @@ class CFileValidator extends Validator
 
 	/**
 	 * Raises an error to inform end user about blank attribute.
-	 * @param CModel $object the object being validated
+	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
 	public function emptyAttribute($object, $attribute)
