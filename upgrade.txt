@@ -10,3 +10,6 @@
 - `CList` is renamed to `Vector`, and `CMap` is renamed to `Dictionary`.
   Other collection classes are dropped in favor of SPL classes.
 
+- `CFormModel` is removed. Please use `yii\base\Model` instead.
+
+

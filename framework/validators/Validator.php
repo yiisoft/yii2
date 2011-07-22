@@ -1,15 +1,16 @@
 <?php
 /**
- * CValidator class file.
+ * Validator class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\validators;
+
 /**
- * CValidator is the base class for all validators.
+ * Validator is the base class for all validators.
  *
  * Child classes must implement the {@link validateAttribute} method.
  *
@@ -52,33 +53,40 @@
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @version $Id: CValidator.php 3160 2011-04-03 01:08:23Z qiang.xue $
  * @package system.validators
- * @since 1.0
+ * @since 2.0
  */
-abstract class CValidator extends CComponent
+abstract class Validator extends \yii\base\Component
 {
 	/**
-	 * @var array list of built-in validators (name=>class)
+	 * @var array list of built-in validators (name => class or configuration)
 	 */
 	public static $builtInValidators = array(
-		'required' => 'CRequiredValidator',
-		'filter' => 'CFilterValidator',
-		'match' => 'CRegularExpressionValidator',
-		'email' => 'CEmailValidator',
-		'url' => 'CUrlValidator',
-		'unique' => 'CUniqueValidator',
-		'compare' => 'CCompareValidator',
-		'length' => 'CStringValidator',
-		'in' => 'CRangeValidator',
-		'numerical' => 'CNumberValidator',
-		'captcha' => 'CCaptchaValidator',
-		'type' => 'CTypeValidator',
-		'file' => 'CFileValidator',
-		'default' => 'CDefaultValueValidator',
-		'exist' => 'CExistValidator',
-		'boolean' => 'CBooleanValidator',
-		'safe' => 'CSafeValidator',
-		'unsafe' => 'CUnsafeValidator',
-		'date' => 'CDateValidator',
+		'required' => '\yii\validators\RequiredValidator',
+		'filter' => '\yii\validators\FilterValidator',
+		'match' => '\yii\validators\RegularExpressionValidator',
+		'email' => '\yii\validators\EmailValidator',
+		'url' => '\yii\validators\UrlValidator',
+		'compare' => '\yii\validators\CompareValidator',
+		'length' => '\yii\validators\StringValidator',
+		'in' => '\yii\validators\RangeValidator',
+		'numerical' => '\yii\validators\NumberValidator',
+
+		'boolean' => '\yii\validators\BooleanValidator',
+		'integer' => '\yii\validators\IntegerValidator',
+		'float' => '\yii\validators\FloatValidator',
+		'string' => '\yii\validators\StringValidator',
+		'date' => '\yii\validators\DateValidator',
+
+		'captcha' => '\yii\validators\CaptchaValidator',
+		'type' => '\yii\validators\TypeValidator',
+		'file' => '\yii\validators\FileValidator',
+		'default' => '\yii\validators\DefaultValueValidator',
+
+		'unique' => '\yii\validators\UniqueValidator',
+		'exist' => '\yii\validators\ExistValidator',
+
+		'safe' => '\yii\validators\SafeValidator',
+		'unsafe' => '\yii\validators\UnsafeValidator',
 	);
 
 	/**
@@ -86,126 +94,149 @@ abstract class CValidator extends CComponent
 	 */
 	public $attributes;
 	/**
-	 * @var string the user-defined error message. Different validators may define various
-	 * placeholders in the message that are to be replaced with actual values. All validators
-	 * recognize "{attribute}" placeholder, which will be replaced with the label of the attribute.
+	 * @var string the user-defined error message. Error message may contain some placeholders
+	 * that will be replaced with the actual values by the validator.
+	 * The `{attribute}` and `{value}` are placeholders supported by all validators.
+	 * They will be replaced with the attribute label and value, respectively.
 	 */
 	public $message;
-	/**
-	 * @var boolean whether this validation rule should be skipped if when there is already a validation
-	 * error for the current attribute. Defaults to false.
-	 * @since 1.1.1
-	 */
-	public $skipOnError = false;
 	/**
 	 * @var array list of scenarios that the validator should be applied.
 	 * Each array value refers to a scenario name with the same name as its array key.
 	 */
 	public $on;
 	/**
-	 * @var boolean whether attributes listed with this validator should be considered safe for massive assignment.
-	 * Defaults to true.
-	 * @since 1.1.4
+	 * @var boolean whether this validation rule should be skipped if the attribute being validated
+	 * already has some validation error according to the previous rules. Defaults to false.
+	 */
+	public $skipOnError = false;
+	/**
+	 * @var boolean whether attributes listed with this validator should be considered safe for
+	 * massive assignment. Defaults to true.
 	 */
 	public $safe = true;
 	/**
-	 * @var boolean whether to perform client-side validation. Defaults to true.
-	 * Please refer to {@link CActiveForm::enableClientValidation} for more details about client-side validation.
-	 * @since 1.1.7
+	 * @var boolean whether to enable client-side validation. Defaults to true.
+	 * Please refer to [[\yii\web\ActiveForm::enableClientValidation]] for more details about
+	 * client-side validation.
 	 */
 	public $enableClientValidation = true;
 
 	/**
+	 * Validates a value.
+	 * Child classes should override this method to implement the actual validation logic.
+	 * @param mixed $value the value being validated.
+	 * @return boolean whether the value is valid.
+	 */
+	abstract public function validateValue($value);
+
+	/**
 	 * Validates a single attribute.
-	 * This method should be overridden by child classes.
-	 * @param CModel $object the data object being validated
+	 * The default implementation will call [[validateValue]] to determine if
+	 * the attribute value is valid or not. If not, the [[message|error message]]
+	 * will be added to the model object.
+	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 */
-	abstract protected function validateAttribute($object, $attribute);
-
+	public function validateAttribute($object, $attribute)
+	{
+		if (!$this->validateValue($object->$attribute)) {
+			$this->addError($object, $attribute, $this->message);
+		}
+	}
 
 	/**
 	 * Creates a validator object.
-	 * @param string $name the name or class of the validator
-	 * @param CModel $object the data object being validated that may contain the inline validation method
+	 * @param string $type the validator type. This can be a method name,
+	 * a built-in validator name, a class name, or a path alias of validator class.
+	 * @param \yii\base\Model $object the data object being validated.
 	 * @param mixed $attributes list of attributes to be validated. This can be either an array of
 	 * the attribute names or a string of comma-separated attribute names.
 	 * @param array $params initial values to be applied to the validator properties
-	 * @return CValidator the validator
+	 * @return Validator the validator
 	 */
-	public static function createValidator($name, $object, $attributes, $params = array())
+	public static function createValidator($type, $object, $attributes, $params = array())
 	{
-		if (is_string($attributes))
+		if (!is_array($attributes)) {
 			$attributes = preg_split('/[\s,]+/', $attributes, -1, PREG_SPLIT_NO_EMPTY);
+		}
 
-		if (isset($params['on']))
-		{
-			if (is_array($params['on']))
+		if (isset($params['on'])) {
+			if (is_array($params['on'])) {
 				$on = $params['on'];
-			else
+			}
+			else {
 				$on = preg_split('/[\s,]+/', $params['on'], -1, PREG_SPLIT_NO_EMPTY);
+			}
+			$params['on'] = empty($on) ? array() : array_combine($on, $on);
 		}
-		else
-			$on = array();
-
-		if (method_exists($object, $name))
-		{
-			$validator = new CInlineValidator;
-			$validator->attributes = $attributes;
-			$validator->method = $name;
-			$validator->params = $params;
-			if (isset($params['skipOnError']))
-				$validator->skipOnError = $params['skipOnError'];
-		}
-		else
-		{
-			$params['attributes'] = $attributes;
-			if (isset(self::$builtInValidators[$name]))
-				$className = Yii::import(self::$builtInValidators[$name], true);
-			else
-				$className = Yii::import($name, true);
-			$validator = new $className;
-			foreach ($params as $name => $value)
-				$validator->$name = $value;
+		else {
+			$params['on'] = array();
 		}
 
-		$validator->on = empty($on) ? array() : array_combine($on, $on);
+		if (method_exists($object, $type)) {  // method-based validator
+			$config = array(
+				'class'	=> '\yii\validators\InlineValidator',
+				'method' => $type,
+				'attributes' => $attributes,
+			);
+		}
+		else {
+			if (is_string($type) && isset(self::$builtInValidators[$type])) {
+				$type = self::$builtInValidators[$type];
+			}
+			$config = array(
+				'class'	=> $type,
+				'attributes' => $attributes,
+			);
+		}
+		$validator = \Yii::createComponent($config);
+		foreach ($params as $name => $value) {
+			$validator->$name = $value;
+		}
 
 		return $validator;
 	}
 
 	/**
 	 * Validates the specified object.
-	 * @param CModel $object the data object being validated
+	 * @param \yii\base\Model $object the data object being validated
 	 * @param array $attributes the list of attributes to be validated. Defaults to null,
-	 * meaning every attribute listed in {@link attributes} will be validated.
+	 * meaning every attribute listed in [[attributes]] will be validated.
 	 */
 	public function validate($object, $attributes = null)
 	{
-		if (is_array($attributes))
+		if (is_array($attributes)) {
 			$attributes = array_intersect($this->attributes, $attributes);
-		else
+		}
+		else {
 			$attributes = $this->attributes;
-		foreach ($attributes as $attribute)
-		{
-			if (!$this->skipOnError || !$object->hasErrors($attribute))
+		}
+		foreach ($attributes as $attribute) {
+			if (!$this->skipOnError || !$object->hasErrors($attribute)) {
 				$this->validateAttribute($object, $attribute);
+			}
 		}
 	}
 
 	/**
 	 * Returns the JavaScript needed for performing client-side validation.
-	 * Do not override this method if the validator does not support client-side validation.
-	 * Two predefined JavaScript variables can be used:
-	 * <ul>
-	 * <li>value: the value to be validated</li>
-	 * <li>messages: an array used to hold the validation error messages for the value</li>
-	 * </ul>
-	 * @param CModel $object the data object being validated
+	 *
+	 * You may override this method to return the JavaScript validation code if
+	 * the validator can support client-side validation.
+	 *
+	 * The following JavaScript variables are predefined and can be used in the validation code:
+	 *
+	 * - `attribute`: the name of the attribute being validated.
+	 * - `value`: the value being validated.
+	 * - `messages`: an array used to hold the validation error messages for the attribute.
+	 *
+	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @return string the client-side validation script. Null if the validator does not support client-side validation.
-	 * @see CActiveForm::enableClientValidation
-	 * @since 1.1.7
+	 * @return string the client-side validation script. Null if the validator does not support
+	 * client-side validation.
+	 * @see enableClientValidation
+	 * @see \yii\web\ActiveForm::enableClientValidation
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
@@ -214,13 +245,12 @@ abstract class CValidator extends CComponent
 	/**
 	 * Returns a value indicating whether the validator applies to the specified scenario.
 	 * A validator applies to a scenario as long as any of the following conditions is met:
-	 * <ul>
-	 * <li>the validator's "on" property is empty</li>
-	 * <li>the validator's "on" property contains the specified scenario</li>
-	 * </ul>
+	 *
+	 * - the validator's `on` property is empty
+	 * - the validator's `on` property contains the specified scenario
+	 *
 	 * @param string $scenario scenario name
 	 * @return boolean whether the validator applies to the specified scenario.
-	 * @since 1.0.2
 	 */
 	public function applyTo($scenario)
 	{
@@ -228,9 +258,9 @@ abstract class CValidator extends CComponent
 	}
 
 	/**
-	 * Adds an error about the specified attribute to the active record.
+	 * Adds an error about the specified attribute to the model object.
 	 * This is a helper method that performs message selection and internationalization.
-	 * @param CModel $object the data object being validated
+	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the attribute being validated
 	 * @param string $message the error message
 	 * @param array $params values for the placeholders in the error message
@@ -238,6 +268,7 @@ abstract class CValidator extends CComponent
 	protected function addError($object, $attribute, $message, $params = array())
 	{
 		$params['{attribute}'] = $object->getAttributeLabel($attribute);
+		$params['{value}'] = $object->$attribute;
 		$object->addError($attribute, strtr($message, $params));
 	}
 
@@ -248,11 +279,10 @@ abstract class CValidator extends CComponent
 	 * @param mixed $value the value to be checked
 	 * @param boolean $trim whether to perform trimming before checking if the string is empty. Defaults to false.
 	 * @return boolean whether the value is empty
-	 * @since 1.0.9
 	 */
 	protected function isEmpty($value, $trim = false)
 	{
-		return $value === null || $value === array() || $value === '' || $trim && is_scalar($value) && trim($value) === '';
+		return $value === null || $value === array() || $value === ''
+				|| $trim && is_scalar($value) && trim($value) === '';
 	}
 }
-
