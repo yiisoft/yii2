@@ -78,7 +78,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *
 	 * Each rule is an array with the following structure:
 	 *
-	 * ~~~php
+	 * ~~~
 	 * array(
 	 *     'attribute list',
 	 *     'validator type',
@@ -100,7 +100,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * A validator can be either a model class method or an object.
 	 * If the former, the method must have the following signature:
 	 *
-	 * ~~~php
+	 * ~~~
 	 * // $params refers to validation parameters given in the rule
 	 * function validatorName($attribute, $params)
 	 * ~~~
@@ -111,7 +111,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *
 	 * The following are some examples:
 	 *
-	 * ~~~php
+	 * ~~~
 	 * array(
 	 *     array('username', 'required'),
 	 *     array('username', 'length', 'min'=>3, 'max'=>12),
@@ -136,7 +136,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * behavior names. Each behavior configuration can be either a string specifying
 	 * the behavior class or an array of the following structure:
 	 *
-	 * ~~~php
+	 * ~~~
 	 * 'behaviorName' => array(
 	 *     'class' => 'BehaviorClass',
 	 *     'property1' => 'value1',
@@ -295,7 +295,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * manipulate it by inserting or removing validators (useful in model behaviors).
 	 * For example,
 	 *
-	 * ~~~php
+	 * ~~~
 	 * $model->validators->add($newValidator);
 	 * ~~~
 	 *
@@ -412,7 +412,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
 	 * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
 	 *
-	 * ~~~php
+	 * ~~~
 	 * array(
 	 *     'username' => array(
 	 *         'Username is required.',

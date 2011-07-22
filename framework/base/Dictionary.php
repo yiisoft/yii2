@@ -20,7 +20,7 @@ namespace yii\base;
  * Because Dictionary implements a set of SPL interfaces, it can be used
  * like a regular PHP array as follows,
  *
- * ~~~php
+ * ~~~
  * $dictionary[$key] = $value;           // add a key-value pair
  * unset($dictionary[$key]);             // remove the value with the specified key
  * if (isset($dictionary[$key]))         // if the dictionary contains the key

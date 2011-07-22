@@ -18,7 +18,7 @@ namespace yii\base;
  * and/or a setter method (e.g. `setLabel`). For example, the following
  * getter and setter methods define a property named `label`:
  *
- * ~~~php
+ * ~~~
  * private $_label;
  *
  * public function getLabel()
@@ -36,7 +36,7 @@ namespace yii\base;
  * Reading or writing a property will cause the invocation of the corresponding
  * getter or setter method. For example,
  *
- * ~~~php
+ * ~~~
  * // equivalent to $label = $component->getLabel();
  * $label = $component->label;
  * // equivalent to $component->setLabel('abc');
@@ -49,7 +49,7 @@ namespace yii\base;
  * (called *event handlers*) attached to the event will be invoked automatically.
  * The `on` method is typically declared like the following:
  *
- * ~~~php
+ * ~~~
  * public function onClick($event)
  * {
  *     $this->raiseEvent('onClick', $event);
@@ -63,7 +63,7 @@ namespace yii\base;
  *
  * An event handler should be defined with the following signature:
  *
- * ~~~php
+ * ~~~
  * public function foo($event) { ... }
  * ~~~
  *
@@ -72,14 +72,14 @@ namespace yii\base;
  * To attach an event handler to an event, call [[attachEventHandler]].
  * Alternatively, you can also do the following:
  *
- * ~~~php
+ * ~~~
  * $component->onClick = $callback;
  * // or $component->onClick->add($callback);
  * ~~~
  *
  * where `$callback` refers to a valid PHP callback. Some examples of `$callback` are:
  *
- * ~~~php
+ * ~~~
  * 'handleOnClick'                    // handleOnClick() is a global function
  * array($object, 'handleOnClick')    // $object->handleOnClick()
  * array('Page', 'handleOnClick')     // Page::handleOnClick()
@@ -375,9 +375,10 @@ class Component
 	 * You may manipulate the returned [[Vector]] object by adding or removing handlers.
 	 * For example,
 	 *
-	 * ~~~php
+	 * ~~~
 	 * $component->getEventHandlers($eventName)->insertAt(0, $eventHandler);
 	 * ~~~
+	 *
 	 * @param string $name the event name
 	 * @return Vector list of attached event handlers for the event
 	 * @throws Exception if the event is not defined
@@ -399,14 +400,14 @@ class Component
 	 *
 	 * This is equivalent to the following code:
 	 *
-	 * ~~~php
+	 * ~~~
 	 * $component->getEventHandlers($eventName)->add($eventHandler);
 	 * ~~~
 	 *
 	 * An event handler must be a valid PHP callback. The followings are
 	 * some examples:
 	 *
-	 * ~~~php
+	 * ~~~
 	 * 'handleOnClick'                    // handleOnClick() is a global function
 	 * array($object, 'handleOnClick')    // $object->handleOnClick()
 	 * array('Page', 'handleOnClick')     // Page::handleOnClick()
@@ -415,7 +416,7 @@ class Component
 	 *
 	 * An event handler must be defined with the following signature,
 	 *
-	 * ~~~php
+	 * ~~~
 	 * function handlerName($event) {}
 	 * ~~~
 	 *
@@ -624,7 +625,7 @@ class Component
 	 *
 	 * If a PHP callback is used, the corresponding function/method signature should be
 	 *
-	 * ~~~php
+	 * ~~~
 	 * function foo($param1, $param2, ..., $component) { ... }
 	 * ~~~
 	 *

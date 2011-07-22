@@ -304,7 +304,7 @@ class YiiBase
 	 * Any additional parameters passed to this method will be
 	 * passed to the constructor of the object being created.
 	 *
-	 * ~~~php
+	 * ~~~
 	 * $component = Yii::createComponent('@app/components/GoogleMap');
 	 * $component = Yii::createComponent('\application\components\GoogleMap');
 	 * $component = Yii::createComponent(array(

@@ -21,7 +21,7 @@ namespace yii\base;
  * Because Vector implements a set of SPL interfaces, it can be used
  * like a regular PHP array as follows,
  *
- * ~~~php
+ * ~~~
  * $vector[] = $item;                 // append new item at the end
  * $vector[$index] = $item;           // set new item at $index
  * unset($vector[$index]);            // remove the item at $index
