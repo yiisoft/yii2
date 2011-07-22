@@ -84,11 +84,11 @@ class ComponentTest extends \yii\test\TestCase
 		$this->assertFalse($this->component->hasEvent('onYourEvent'));
 	}
 
-	public function testHasEventHandler()
+	public function testHasEventHandlers()
 	{
-		$this->assertFalse($this->component->hasEventHandler('OnMyEvent'));
+		$this->assertFalse($this->component->hasEventHandlers('OnMyEvent'));
 		$this->component->attachEventHandler('OnMyEvent','foo');
-		$this->assertTrue($this->component->hasEventHandler('OnMyEvent'));
+		$this->assertTrue($this->component->hasEventHandlers('OnMyEvent'));
 	}
 
 	public function testGetEventHandlers()
