@@ -1,29 +1,35 @@
 <?php
 /**
- * CModelBehavior class file.
+ * ModelBehavior class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\base;
+
 /**
- * CModelBehavior is a base class for behaviors that are attached to a model component.
- * The model should extend from {@link CModel} or its child classes.
+ * ModelBehavior class.
+ *
+ * ModelBehavior is a base class for behaviors that are attached to a model object.
+ * The model should be an instance of [[Model]] or its child classes.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CModelBehavior.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.base
- * @since 1.0.2
+ * @since 2.0
  */
-class CModelBehavior extends CBehavior
+class ModelBehavior extends Behavior
 {
 	/**
-	 * Declares events and the corresponding event handler methods.
-	 * The default implementation returns 'onBeforeValidate' and 'onAfterValidate' events and handlers.
-	 * If you override this method, make sure you merge the parent result to the return value.
+	 * Declares event handlers for owner's events.
+	 * The default implementation returns three event handlers:
+	 *
+	 * - `onAfterConstruct` event: [[afterConstruct]]
+	 * - `onBeforeValidate` event: [[beforeValidate]]
+	 * - `onAfterValidate` event: [[afterValidate]]
+	 *
+	 * You may override these event handler methods to respond to the corresponding owner events.
 	 * @return array events (array keys) and the corresponding event handler methods (array values).
-	 * @see CBehavior::events
 	 */
 	public function events()
 	{
@@ -35,28 +41,29 @@ class CModelBehavior extends CBehavior
 	}
 
 	/**
-	 * Responds to {@link CModel::onAfterConstruct} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * @param CEvent $event event parameter
+	 * Responds to [[Model::onAfterConstruct]] event.
+	 * Overrides this method if you want to handle the corresponding event of the [[owner]].
+	 * @param Event $event event parameter
 	 */
 	public function afterConstruct($event)
 	{
 	}
 
 	/**
-	 * Responds to {@link CModel::onBeforeValidate} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link owner}.
-	 * You may set {@link CModelEvent::isValid} to be false to quit the validation process.
-	 * @param CModelEvent $event event parameter
+	 * Responds to [[Model::onBeforeValidate]] event.
+	 * Overrides this method if you want to handle the corresponding event of the [[owner]].
+	 * You may set the [[ValidationEvent::isValid|isValid]] property of the event parameter
+	 * to be false to cancel the validation process.
+	 * @param ValidationEvent $event event parameter
 	 */
 	public function beforeValidate($event)
 	{
 	}
 
 	/**
-	 * Responds to {@link CModel::onAfterValidate} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link owner}.
-	 * @param CEvent $event event parameter
+	 * Responds to [[Model::onAfterValidate]] event.
+	 * Overrides this method if you want to handle the corresponding event of the [[owner]].
+	 * @param Event $event event parameter
 	 */
 	public function afterValidate($event)
 	{

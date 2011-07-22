@@ -20,9 +20,9 @@ namespace yii\base;
 class Model extends Component implements \IteratorAggregate, \ArrayAccess
 {
 	private static $_attributes = array(); // class name => array of attribute names
-	private $_errors = array();            // attribute name => array of errors
+	private $_errors;                      // attribute name => array of errors
 	private $_validators;                  // validators
-	private $_scenario;               // scenario
+	private $_scenario;                    // scenario
 
 	/**
 	 * Constructor.
@@ -238,7 +238,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function beforeValidate()
 	{
 		if ($this->hasEventHandler('onBeforeValidate')) {
-			$event = new ModelEvent($this);
+			$event = new ValidationEvent($this);
 			$this->onBeforeValidate($event);
 			return $event->isValid;
 		}
@@ -269,7 +269,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * This event is raised before the validation is performed.
-	 * @param ModelEvent $event the event parameter
+	 * @param ValidationEvent $event the event parameter
 	 */
 	public function onBeforeValidate($event)
 	{
@@ -384,10 +384,12 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function getAttributeLabel($attribute)
 	{
 		$labels = $this->attributeLabels();
-		if (isset($labels[$attribute]))
+		if (isset($labels[$attribute])) {
 			return $labels[$attribute];
-		else
+		}
+		else {
 			return $this->generateAttributeLabel($attribute);
+		}
 	}
 
 	/**
@@ -398,7 +400,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function hasErrors($attribute = null)
 	{
 		if ($attribute === null) {
-			return $this->_errors !== array();
+			return !empty($this->_errors);
 		}
 		else {
 			return isset($this->_errors[$attribute]);
@@ -409,11 +411,26 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * Returns the errors for all attribute or a single attribute.
 	 * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
 	 * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
+	 * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
+	 *
+	 * ~~~php
+	 * array(
+	 *     'username' => array(
+	 *         'Username is required.',
+	 *         'Username must contain only word characters.',
+	 *     ),
+	 *     'email' => array(
+	 *         'Email address is invalid.',
+	 *     )
+	 * )
+	 * ~~~
+	 *
+	 * @see getError
 	 */
 	public function getErrors($attribute = null)
 	{
 		if ($attribute === null) {
-			return $this->_errors;
+			return $this->_errors === null ? array() : $this->_errors;
 		}
 		else {
 			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
@@ -424,6 +441,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * Returns the first error of the specified attribute.
 	 * @param string $attribute attribute name.
 	 * @return string the error message. Null is returned if no error.
+	 * @see getErrors
 	 */
 	public function getError($attribute)
 	{
@@ -445,19 +463,18 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * @param array $errors a list of errors. The array keys must be attribute names.
 	 * The array values should be error messages. If an attribute has multiple errors,
 	 * these errors must be given in terms of an array.
-	 * You may use the result of {@link getErrors} as the value for this parameter.
 	 */
 	public function addErrors($errors)
 	{
-		foreach ($errors as $attribute => $error)
-		{
-			if (is_array($error))
-			{
-				foreach ($error as $e)
+		foreach ($errors as $attribute => $error) {
+			if (is_array($error)) {
+				foreach ($error as $e) {
 					$this->_errors[$attribute][] = $e;
+				}
 			}
-			else
+			else {
 				$this->_errors[$attribute][] = $error;
+			}
 		}
 	}
 
@@ -476,10 +493,10 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Generates a user friendly attribute label.
-	 * This is done by replacing underscores or dashes with blanks and
+	 * Generates a user friendly attribute label based on the give attribute name.
+	 * This is done by replacing underscores, dashes and dots with blanks and
 	 * changing the first letter of each word to upper case.
-	 * For example, 'department_name' or 'DepartmentName' becomes 'Department Name'.
+	 * For example, 'department_name' or 'DepartmentName' will generate 'Department Name'.
 	 * @param string $name the column name
 	 * @return string the attribute label
 	 */
@@ -489,9 +506,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Returns all attribute values.
+	 * Returns attribute values.
 	 * @param array $names list of attributes whose value needs to be returned.
-	 * Defaults to null, meaning all attributes as listed in {@link attributeNames} will be returned.
+	 * Defaults to null, meaning all attributes listed in [[attributeNames]] will be returned.
 	 * If it is an array, only the attributes in the array will be returned.
 	 * @return array attribute values (name=>value).
 	 */
@@ -517,9 +534,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Sets the attribute values in a massive way.
-	 * @param array $values attribute values (name=>value) to be set.
+	 * @param array $values attribute values (name=>value) to be assigned to the model.
 	 * @param boolean $safeOnly whether the assignments should only be done to the safe attributes.
-	 * A safe attribute is one that is associated with a validation rule in the current {@link scenario}.
+	 * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
 	 * @see getSafeAttributeNames
 	 * @see attributeNames
 	 */
@@ -563,7 +580,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function onUnsafeAttribute($name, $value)
 	{
 		if (YII_DEBUG)
-			\Yii::warning(sprintf('Failed to set unsafe attribute "%s" of "%s".', $name, get_class($this));
+			\Yii::warning(sprintf('Failed to set unsafe attribute "%s" in "%s".', $name, get_class($this));
 	}
 
 	/**
