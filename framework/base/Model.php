@@ -222,8 +222,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function afterConstruct()
 	{
-		if ($this->hasEventHandler('onAfterConstruct'))
-			$this->onAfterConstruct(new CEvent($this));
+		if ($this->hasEventHandler('onAfterConstruct')) {
+			$this->onAfterConstruct(new Event($this));
+		}
 	}
 
 	/**
@@ -236,9 +237,12 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function beforeValidate()
 	{
-		$event = new ModelEvent($this);
-		$this->onBeforeValidate($event);
-		return $event->isValid;
+		if ($this->hasEventHandler('onBeforeValidate')) {
+			$event = new ModelEvent($this);
+			$this->onBeforeValidate($event);
+			return $event->isValid;
+		}
+		return true;
 	}
 
 	/**
@@ -249,7 +253,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function afterValidate()
 	{
-		$this->onAfterValidate(new CEvent($this));
+		if ($this->hasEventHandler('onAfterValidate')) {
+			$this->onAfterValidate(new CEvent($this));
+		}
 	}
 
 	/**
@@ -258,7 +264,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function onAfterConstruct($event)
 	{
-		$this->raiseEvent('onAfterConstruct', $event);
+		$this->raiseEvent(__METHOD__, $event);
 	}
 
 	/**
@@ -267,7 +273,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function onBeforeValidate($event)
 	{
-		$this->raiseEvent('onBeforeValidate', $event);
+		$this->raiseEvent(__METHOD__, $event);
 	}
 
 	/**
@@ -276,7 +282,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function onAfterValidate($event)
 	{
-		$this->raiseEvent('onAfterValidate', $event);
+		$this->raiseEvent(__METHOD__, $event);
 	}
 
 	/**
@@ -391,10 +397,12 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function hasErrors($attribute = null)
 	{
-		if ($attribute === null)
+		if ($attribute === null) {
 			return $this->_errors !== array();
-		else
+		}
+		else {
 			return isset($this->_errors[$attribute]);
+		}
 	}
 
 	/**
@@ -404,10 +412,12 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function getErrors($attribute = null)
 	{
-		if ($attribute === null)
+		if ($attribute === null) {
 			return $this->_errors;
-		else
+		}
+		else {
 			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
+		}
 	}
 
 	/**
@@ -457,10 +467,12 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function clearErrors($attribute = null)
 	{
-		if ($attribute === null)
+		if ($attribute === null) {
 			$this->_errors = array();
-		else
+		}
+		else {
 			unset($this->_errors[$attribute]);
+		}
 	}
 
 	/**
@@ -486,18 +498,21 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function getAttributes($names = null)
 	{
 		$values = array();
-		foreach ($this->attributeNames() as $name)
-			$values[$name] = $this->$name;
 
-		if (is_array($names))
-		{
-			$values2 = array();
-			foreach ($names as $name)
-				$values2[$name] = isset($values[$name]) ? $values[$name] : null;
-			return $values2;
+		if (is_array($names)) {
+			foreach ($this->attributeNames() as $name) {
+				if (in_array($name, $names, true)) {
+					$values[$name] = $this->$name;
+				}
+			}
 		}
-		else
-			return $values;
+		else {
+			foreach ($this->attributeNames() as $name) {
+				$values[$name] = $this->$name;
+			}
+		}
+
+		return $values;
 	}
 
 	/**
@@ -510,15 +525,16 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function setAttributes($values, $safeOnly = true)
 	{
-		if (!is_array($values))
-			return;
-		$attributes = array_flip($safeOnly ? $this->getSafeAttributeNames() : $this->attributeNames());
-		foreach ($values as $name => $value)
-		{
-			if (isset($attributes[$name]))
-				$this->$name = $value;
-			elseif ($safeOnly)
-				$this->onUnsafeAttribute($name, $value);
+		if (is_array($values)) {
+			$attributes = array_flip($safeOnly ? $this->getSafeAttributeNames() : $this->attributeNames());
+			foreach ($values as $name => $value) {
+				if (isset($attributes[$name])) {
+					$this->$name = $value;
+				}
+				elseif ($safeOnly) {
+					$this->onUnsafeAttribute($name, $value);
+				}
+			}
 		}
 	}
 
@@ -590,22 +606,22 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$attributes = array();
 		$unsafe = array();
-		foreach ($this->getValidators() as $validator)
-		{
-			if (!$validator->safe)
-			{
-				foreach ($validator->attributes as $name)
+		foreach ($this->getValidators() as $validator) {
+			if (!$validator->safe) {
+				foreach ($validator->attributes as $name) {
 					$unsafe[] = $name;
+				}
 			}
-			else
-			{
-				foreach ($validator->attributes as $name)
+			else {
+				foreach ($validator->attributes as $name) {
 					$attributes[$name] = true;
+				}
 			}
 		}
 
-		foreach ($unsafe as $name)
+		foreach ($unsafe as $name) {
 			unset($attributes[$name]);
+		}
 		return array_keys($attributes);
 	}
 
@@ -636,7 +652,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * Returns the element at the specified offset.
 	 * This method is required by the SPL interface `ArrayAccess`.
 	 * It is implicitly called when you use something like `$value = $model[$offset];`.
-	 * @param integer $offset the offset to retrieve element.
+	 * @param mixed $offset the offset to retrieve element.
 	 * @return mixed the element at the offset, null if no element is found at the offset
 	 */
 	public function offsetGet($offset)

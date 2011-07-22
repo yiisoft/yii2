@@ -167,7 +167,7 @@ class YiiBase
 			return self::$_imported[$alias] = $className;
 		}
 
-		if (($path = self::getPathOfAlias(dirname($alias))) === false) {
+		if (($path = self::getAlias(dirname($alias))) === false) {
 			throw new \yii\base\Exception('Invalid path alias: ' . $alias);
 		}
 
@@ -189,16 +189,16 @@ class YiiBase
 
 	/**
 	 * Translates a path alias into an actual path.
-	 * The path alias can be either a root alias registered via [[setPathOfAlias]] or an
+	 * The path alias can be either a root alias registered via [[setAlias]] or an
 	 * alias starting with a root alias (e.g. `@yii/base/Component.php`).
 	 * In the latter case, the root alias will be replaced by the corresponding registered path
 	 * and the remaining part will be appended to it.
 	 * Note, this method does not ensure the existence of the resulting path.
 	 * @param string $alias alias
 	 * @return mixed path corresponding to the alias, false if the root alias is not previously registered.
-	 * @see setPathOfAlias
+	 * @see setAlias
 	 */
-	public static function getPathOfAlias($alias)
+	public static function getAlias($alias)
 	{
 		if (isset(self::$aliases[$alias])) {
 			return self::$aliases[$alias];
@@ -220,9 +220,9 @@ class YiiBase
 	 * @param string $alias alias to the path. The alias must start with '@'.
 	 * @param string $path the path corresponding to the alias. If this is null, the corresponding
 	 * path alias will be removed. The path can be a file path (e.g. `/tmp`) or a URL (e.g. `http://www.yiiframework.com`).
-	 * @see getPathOfAlias
+	 * @see getAlias
 	 */
-	public static function setPathOfAlias($alias, $path)
+	public static function setAlias($alias, $path)
 	{
 		if ($path === null) {
 			unset(self::$aliases[$alias]);
@@ -261,7 +261,7 @@ class YiiBase
 		if (strpos($className, '\\') !== false) {
 			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
 			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
-			if (($path = self::getPathOfAlias($alias)) !== false) {
+			if (($path = self::getAlias($alias)) !== false) {
 				include($path . '.php');
 				return true;
 			}
@@ -272,7 +272,7 @@ class YiiBase
 		if (($pos = strpos($className, '_')) !== false) {
 			// convert class name to path alias, e.g. PHPUnit_Framework_TestCase to @PHPUnit/Framework/TestCase
 			$alias = '@' . str_replace('_', '/', $className);
-			if (($path = self::getPathOfAlias($alias)) !== false) {
+			if (($path = self::getAlias($alias)) !== false) {
 				include($path . '.php');
 				return true;
 			}
@@ -295,9 +295,9 @@ class YiiBase
 	 *
 	 * The specified configuration can be either a string or an array.
 	 * If the former, the string is treated as the object type which can
-	 * be either a class name or [[getPathOfAlias|path alias]].
+	 * be either a class name or [[getAlias|path alias]].
 	 * If the latter, the array must contain a `class` element which refers
-	 * to a class name or [[getPathOfAlias|path alias]]. The rest of the name-value
+	 * to a class name or [[getAlias|path alias]]. The rest of the name-value
 	 * pairs in the array will be used to initialize the corresponding object properties.
 	 * For example,
 	 *

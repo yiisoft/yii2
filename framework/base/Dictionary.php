@@ -274,7 +274,7 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	 * This method is required by the SPL interface `ArrayAccess`.
 	 * It is implicitly called when you use something like `$value = $dictionary[$offset];`.
 	 * This is equivalent to [[itemAt]].
-	 * @param integer $offset the offset to retrieve element.
+	 * @param mixed $offset the offset to retrieve element.
 	 * @return mixed the element at the offset, null if no element is found at the offset
 	 */
 	public function offsetGet($offset)
