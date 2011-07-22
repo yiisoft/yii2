@@ -330,20 +330,20 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Creates validator objects based on the specification in {@link rules}.
-	 * This method is mainly used internally.
-	 * @return Vector validators built based on {@link rules()}.
+	 * Creates validator objects based on the validation rules specified in [[rules]].
+	 * Unlike [[getValidators]], calling this method each time, it will return a new list of validators.
+	 * @return Vector validators
 	 */
 	public function createValidators()
 	{
 		$validators = new Vector;
 		foreach ($this->rules() as $rule) {
 			if (isset($rule[0], $rule[1])) {  // attributes, validator type
-				$validators->add(\yii\validators\Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2)));
+				$validator = \yii\validators\Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
+				$validators->add($validator);
 			}
 			else {
-				throw new Exception(spr'{class} has an invalid validation rule. The rule must specify attributes to be validated and the validator name.',
-					array('{class}' => get_class($this))));
+				throw new Exception('Invalid validation rule: a rule must specify both attribute names and validator type.');
 			}
 		}
 		return $validators;
@@ -352,16 +352,17 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	/**
 	 * Returns a value indicating whether the attribute is required.
 	 * This is determined by checking if the attribute is associated with a
-	 * {@link CRequiredValidator} validation rule in the current {@link scenario}.
+	 * [[\yii\validators\RequiredValidator|required]] validation rule in the
+	 * current {@link scenario}.
 	 * @param string $attribute attribute name
 	 * @return boolean whether the attribute is required
 	 */
 	public function isAttributeRequired($attribute)
 	{
-		foreach ($this->getActiveValidators($attribute) as $validator)
-		{
-			if ($validator instanceof CRequiredValidator)
+		foreach ($this->getActiveValidators($attribute) as $validator) {
+			if ($validator instanceof \yii\validators\RequiredValidator) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -373,8 +374,13 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function isAttributeSafe($attribute)
 	{
-		$attributes = $this->getSafeAttributeNames();
-		return in_array($attribute, $attributes);
+		$validators = $this->getActiveValidators();
+		foreach ($validators as $validator) {
+			if (!$validator->safe) {
+				return false;
+			}
+		}
+		return $validators !== array();
 	}
 
 	/**
@@ -387,12 +393,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function getAttributeLabel($attribute)
 	{
 		$labels = $this->attributeLabels();
-		if (isset($labels[$attribute])) {
-			return $labels[$attribute];
-		}
-		else {
-			return $this->generateAttributeLabel($attribute);
-		}
+		return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute)
 	}
 
 	/**
@@ -402,12 +403,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function hasErrors($attribute = null)
 	{
-		if ($attribute === null) {
-			return !empty($this->_errors);
-		}
-		else {
-			return isset($this->_errors[$attribute]);
-		}
+		return $attribute === null ? !empty($this->_errors) : isset($this->_errors[$attribute]);
 	}
 
 	/**
@@ -559,21 +555,6 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Sets the attributes to be null.
-	 * @param array $names list of attributes to be set null. If this parameter is not given,
-	 * all attributes as specified by [[attributeNames]] will have their values unset.
-	 */
-	public function unsetAttributes($names = null)
-	{
-		if ($names === null) {
-			$names = $this->attributeNames();
-		}
-		foreach ($names as $name) {
-			$this->$name = null;
-		}
-	}
-
-	/**
 	 * This method is invoked when an unsafe attribute is being massively assigned.
 	 * The default implementation will log a warning message if YII_DEBUG is on.
 	 * It does nothing otherwise.
@@ -582,8 +563,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function onUnsafeAttribute($name, $value)
 	{
-		if (YII_DEBUG)
+		if (YII_DEBUG) {
 			\Yii::warning(sprintf('Failed to set unsafe attribute "%s" in "%s".', $name, get_class($this));
+		}
 	}
 
 	/**
