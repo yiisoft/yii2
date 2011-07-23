@@ -189,10 +189,12 @@ class YiiBase
 
 	/**
 	 * Translates a path alias into an actual path.
+	 *
 	 * The path alias can be either a root alias registered via [[setAlias]] or an
 	 * alias starting with a root alias (e.g. `@yii/base/Component.php`).
 	 * In the latter case, the root alias will be replaced by the corresponding registered path
 	 * and the remaining part will be appended to it.
+	 *
 	 * Note, this method does not ensure the existence of the resulting path.
 	 * @param string $alias alias
 	 * @return mixed path corresponding to the alias, false if the root alias is not previously registered.
@@ -214,12 +216,20 @@ class YiiBase
 
 	/**
 	 * Registers a path alias.
+	 *
 	 * A path alias is a short name representing a path (a file path, a URL, etc.)
 	 * A path alias must start with '@' (e.g. '@yii').
+	 *
 	 * Note that this method neither checks the existence of the path nor normalizes the path.
+	 * Any trailing '/' and '\' characters in the path will be trimmed.
+	 *
 	 * @param string $alias alias to the path. The alias must start with '@'.
-	 * @param string $path the path corresponding to the alias. If this is null, the corresponding
-	 * path alias will be removed. The path can be a file path (e.g. `/tmp`) or a URL (e.g. `http://www.yiiframework.com`).
+	 * @param string $path the path corresponding to the alias. This can be
+	 *
+	 * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
+	 * - a URL (e.g. `http://www.yiiframework.com`)
+	 * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
+	 *   actual path first by calling [[getAlias]].
 	 * @see getAlias
 	 */
 	public static function setAlias($alias, $path)
@@ -227,8 +237,14 @@ class YiiBase
 		if ($path === null) {
 			unset(self::$aliases[$alias]);
 		}
-		else {
+		elseif ($path[0] !== '@') {
 			self::$aliases[$alias] = rtrim($path, '\\/');
+		}
+		elseif (($p = self::getAlias($path)) !== false) {
+			self::$aliases[$alias] = $p;
+		}
+		else {
+			throw new \yii\base\Exception('Invalid path: ' . $path);
 		}
 	}
 

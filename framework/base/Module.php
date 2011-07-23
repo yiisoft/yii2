@@ -21,17 +21,24 @@ namespace yii\base;
 abstract class Module extends Component
 {
 	/**
+	 * @var string the ID of this module. This should follow the same rule as naming PHP variables.
+	 */
+	public $id;
+	/**
+	 * @var array custom module parameters (name => value).
+	 */
+	public $params = array();
+	/**
 	 * @var array the IDs of the application components that should be preloaded.
 	 */
 	public $preload = array();
 	/**
 	 * @var array the behaviors that should be attached to the module.
-	 * The behaviors will be attached to the module when {@link init} is called.
-	 * Please refer to {@link CModel::behaviors} on how to specify the value of this property.
+	 * The behaviors will be attached to the module when [[init]] is called.
+	 * Please refer to [[Model::behaviors]] on how to specify the value of this property.
 	 */
 	public $behaviors = array();
 
-	private $_id;
 	private $_parentModule;
 	private $_basePath;
 	private $_modulePath;
@@ -104,32 +111,13 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Returns the module ID.
-	 * @return string the module ID.
-	 */
-	public function getId()
-	{
-		return $this->_id;
-	}
-
-	/**
-	 * Sets the module ID.
-	 * @param string $id the module ID
-	 */
-	public function setId($id)
-	{
-		$this->_id = $id;
-	}
-
-	/**
 	 * Returns the root directory of the module.
 	 * @return string the root directory of the module. Defaults to the directory containing the module class.
 	 */
 	public function getBasePath()
 	{
-		if ($this->_basePath === null)
-		{
-			$class = new ReflectionClass(get_class($this));
+		if ($this->_basePath === null) {
+			$class = new ReflectionClass($this);
 			$this->_basePath = dirname($class->getFileName());
 		}
 		return $this->_basePath;
@@ -139,74 +127,51 @@ abstract class Module extends Component
 	 * Sets the root directory of the module.
 	 * This method can only be invoked at the beginning of the constructor.
 	 * @param string $path the root directory of the module.
-	 * @throws CException if the directory does not exist.
+	 * @throws Exception if the directory does not exist.
 	 */
 	public function setBasePath($path)
 	{
-		if (($this->_basePath = realpath($path)) === false || !is_dir($this->_basePath))
-			throw new CException(Yii::t('yii', 'Base path "{path}" is not a valid directory.',
-				array('{path}' => $path)));
-	}
-
-	/**
-	 * Returns user-defined parameters.
-	 * @return CAttributeCollection the list of user-defined parameters
-	 */
-	public function getParams()
-	{
-		if ($this->_params !== null)
-			return $this->_params;
-		else
-		{
-			$this->_params = new CAttributeCollection;
-			$this->_params->caseSensitive = true;
-			return $this->_params;
+		if (($this->_basePath = realpath($path)) === false || !is_dir($this->_basePath)) {
+			throw new Exception('Invalid base path: ' . $path);
 		}
 	}
 
 	/**
-	 * Sets user-defined parameters.
-	 * @param array $value user-defined parameters. This should be in name-value pairs.
-	 */
-	public function setParams($value)
-	{
-		$params = $this->getParams();
-		foreach ($value as $k => $v)
-			$params->add($k, $v);
-	}
-
-	/**
-	 * Returns the directory that contains the application modules.
-	 * @return string the directory that contains the application modules. Defaults to the 'modules' subdirectory of {@link basePath}.
+	 * Returns the directory that contains child modules.
+	 * @return string the directory that contains child modules. Defaults to the `modules` subdirectory under [[basePath]].
 	 */
 	public function getModulePath()
 	{
-		if ($this->_modulePath !== null)
+		if ($this->_modulePath !== null) {
 			return $this->_modulePath;
-		else
+		}
+		else {
 			return $this->_modulePath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'modules';
+		}
 	}
 
 	/**
-	 * Sets the directory that contains the application modules.
-	 * @param string $value the directory that contains the application modules.
-	 * @throws CException if the directory is invalid
+	 * Sets the directory that contains child modules.
+	 * @param string $value the directory that contains child modules.
+	 * @throws Exception if the directory is invalid
 	 */
 	public function setModulePath($value)
 	{
-		if (($this->_modulePath = realpath($value)) === false || !is_dir($this->_modulePath))
-			throw new CException(Yii::t('yii', 'The module path "{path}" is not a valid directory.',
-				array('{path}' => $value)));
+		if (($this->_modulePath = realpath($value)) === false || !is_dir($this->_modulePath)) {
+			throw new Exception('Invalid module path: ' . $value);
+		}
 	}
 
 	/**
-	 * Sets the aliases that are used in the module.
-	 * @param array $aliases list of aliases to be imported
+	 * Imports the specified path aliases.
+	 * This method is provided so that you can import a set of path aliases by module configuration.
+	 * @param array $aliases list of path aliases to be imported
 	 */
 	public function setImport($aliases)
 	{
-		foreach ($aliases as $alias)
-			Yii::import($alias);
+		foreach ($aliases as $alias) {
+			\Yii::import($alias);
+		}
 	}
 
 	/**

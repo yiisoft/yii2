@@ -16,7 +16,8 @@ namespace yii\base;
  * The [[sender]] property describes who raises the event.
  * And the [[handled]] property indicates if the event is handled.
  * If an event handler sets [[handled]] to be true, the rest of the
- * uninvoked handlers will be canceled.
+ * uninvoked handlers will no longer be called to handle the event.
+ * Additionally, an event may specify extra parameters via the [[params]] property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -32,6 +33,10 @@ class Event extends Component
 	 * When a handler sets this to be true, the rest of the uninvoked event handlers will be canceled.
 	 */
 	public $handled = false;
+	/**
+	 * @var mixed extra parameters associated with the event.
+	 */
+	public $params;
 
 	/**
 	 * Constructor.
