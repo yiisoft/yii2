@@ -1,6 +1,6 @@
 <?php
 /**
- * CRangeValidator class file.
+ * RangeValidator class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,15 +10,16 @@
 namespace yii\validators;
 
 /**
- * CRangeValidator validates that the attribute value is among the list (specified via {@link range}).
- * You may invert the validation logic with help of the {@link not} property (available since 1.1.5).
+ * RangeValidator validates that the attribute value is among a list of values.
+ *
+ * The range can be specified via the [[range]] property.
+ * If the [[not]] property is set true, the validator will ensure the attribute value
+ * is NOT among the specified range.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CRangeValidator.php 3120 2011-03-25 01:50:48Z qiang.xue $
- * @package system.validators
- * @since 1.0
+ * @since 2.0
  */
-class CRangeValidator extends Validator
+class RangeValidator extends Validator
 {
 	/**
 	 * @var array list of valid values that the attribute value should be among
@@ -35,8 +36,7 @@ class CRangeValidator extends Validator
 	public $allowEmpty = true;
 	/**
 	 * @var boolean whether to invert the validation logic. Defaults to false. If set to true,
-	 * the attribute value should NOT be among the list of values defined via {@link range}.
-	 * @since 1.1.5
+	 * the attribute value should NOT be among the list of values defined via [[range]].
 	 **/
  	public $not = false;
 
@@ -49,18 +49,18 @@ class CRangeValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value))
+		if ($this->allowEmpty && $this->isEmpty($value)) {
 			return;
-		if (!is_array($this->range))
-			throw new CException(Yii::t('yii', 'The "range" property must be specified with a list of values.'));
-		if (!$this->not && !in_array($value, $this->range, $this->strict))
-		{
-			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is not in the list.');
+		}
+		if (!is_array($this->range)) {
+			throw new \yii\base\Exception('The "range" property must be specified as an array.');
+		}
+		if (!$this->not && !in_array($value, $this->range, $this->strict)) {
+			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} should be in the list.');
 			$this->addError($object, $attribute, $message);
 		}
-		elseif ($this->not && in_array($value, $this->range, $this->strict))
-		{
-			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is in the list.');
+		elseif ($this->not && in_array($value, $this->range, $this->strict)) {
+			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} should NOT be in the list.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -70,27 +70,29 @@ class CRangeValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script.
-	 * @see CActiveForm::enableClientValidation
-	 * @since 1.1.7
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		if (!is_array($this->range))
-			throw new CException(Yii::t('yii', 'The "range" property must be specified with a list of values.'));
+		if (!is_array($this->range)) {
+			throw new \yii\base\Exception('The "range" property must be specified as an array.');
+		}
 
-		if (($message = $this->message) === null)
-			$message = $this->not ? Yii::t('yii', '{attribute} is in the list.') : Yii::t('yii', '{attribute} is not in the list.');
+		if (($message = $this->message) === null) {
+			$message = $this->not ? Yii::t('yii', '{attribute} should NOT be in the list.') : Yii::t('yii', '{attribute} should be in the list.');
+		}
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
+			'{value}' => $object->$attribute,
 		));
 
 		$range = array();
-		foreach ($this->range as $value)
+		foreach ($this->range as $value) {
 			$range[] = (string)$value;
+		}
 		$range = json_encode($range);
 
 		return "
-if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? "$.inArray(value, $range)>=0" : "$.inArray(value, $range)<0") . ") {
+if (" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? "$.inArray(value, $range)>=0" : "$.inArray(value, $range)<0") . ") {
 	messages.push(" . json_encode($message) . ");
 }
 ";

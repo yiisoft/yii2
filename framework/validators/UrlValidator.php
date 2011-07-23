@@ -102,6 +102,7 @@ class UrlValidator extends Validator
 		$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is not a valid URL.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
+			'{value}' => $object->$attribute,
 		));
 
 		if (strpos($this->pattern, '{schemes}') !== false)

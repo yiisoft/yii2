@@ -102,6 +102,7 @@ class EmailValidator extends Validator
 		$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is not a valid email address.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
+			'{value}' => $object->$attribute,
 		));
 
 		$condition = "!value.match( {$this->pattern})";

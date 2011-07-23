@@ -12,7 +12,7 @@ namespace yii\validators;
 /**
  * RegularExpressionValidator validates that the attribute value matches the specified [[pattern]].
  *
- * If [[not]] is set true, the validator will ensure the attribute value do NOT match the [[pattern]].
+ * If the [[not]] property is set true, the validator will ensure the attribute value do NOT match the [[pattern]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -64,12 +64,13 @@ class RegularExpressionValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		if ($this->pattern === null) {
-			throw new \yii\base\Exception(Yii::t('yii', 'The "pattern" property must be specified with a valid regular expression.'));
+			throw new \yii\base\Exception('The "pattern" property must be specified with a valid regular expression.');
 		}
 
 		$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is invalid.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
+			'{value}' => $object->$attribute,
 		));
 
 		$pattern = $this->pattern;

@@ -75,6 +75,7 @@ class RequiredValidator extends Validator
 			}
 			$message = strtr($message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
+				'{value}' => $object->$attribute,
 				'{requiredValue}' => $this->requiredValue,
 			));
 			return "
@@ -89,6 +90,7 @@ if (value != " . json_encode($this->requiredValue) . ") {
 			}
 			$message = strtr($message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
+				'{value}' => $object->$attribute,
 			));
 			return "
 if($.trim(value) == '') {

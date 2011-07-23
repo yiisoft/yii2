@@ -1,6 +1,6 @@
 <?php
 /**
- * CBooleanValidator class file.
+ * BooleanValidator class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,14 +10,15 @@
 namespace yii\validators;
 
 /**
- * CBooleanValidator validates that the attribute value is either {@link trueValue}  or {@link falseValue}.
+ * BooleanValidator checks if the attribute value is a boolean value.
+ *
+ * Possible boolean values can be configured via the [[trueValue]] and [[falseValue]] properties.
+ * And the comparison can be either [[strict]] or not.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CBooleanValidator.php 3120 2011-03-25 01:50:48Z qiang.xue $
- * @package system.validators
- * @since 1.0.10
+ * @since 2.0
  */
-class CBooleanValidator extends Validator
+class BooleanValidator extends Validator
 {
 	/**
 	 * @var mixed the value representing true status. Defaults to '1'.
@@ -28,8 +29,8 @@ class CBooleanValidator extends Validator
 	 */
 	public $falseValue = '0';
 	/**
-	 * @var boolean whether the comparison to {@link trueValue} and {@link falseValue} is strict.
-	 * When this is true, the attribute value and type must both match those of {@link trueValue} or {@link falseValue}.
+	 * @var boolean whether the comparison to [[trueValue]] and [[falseValue]] is strict.
+	 * When this is true, the attribute value and type must both match those of [[trueValue]] or [[falseValue]].
 	 * Defaults to false, meaning only the value needs to be matched.
 	 */
 	public $strict = false;
@@ -48,11 +49,11 @@ class CBooleanValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value))
+		if ($this->allowEmpty && $this->isEmpty($value)) {
 			return;
+		}
 		if (!$this->strict && $value != $this->trueValue && $value != $this->falseValue
-			|| $this->strict && $value !== $this->trueValue && $value !== $this->falseValue)
-		{
+				|| $this->strict && $value !== $this->trueValue && $value !== $this->falseValue) {
 			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be either {true} or {false}.');
 			$this->addError($object, $attribute, $message, array(
 				'{true}' => $this->trueValue,
@@ -66,14 +67,13 @@ class CBooleanValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script.
-	 * @see CActiveForm::enableClientValidation
-	 * @since 1.1.7
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be either {true} or {false}.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
+			'{value}' => $object->$attribute,
 			'{true}' => $this->trueValue,
 			'{false}' => $this->falseValue,
 		));

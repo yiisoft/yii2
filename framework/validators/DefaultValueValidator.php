@@ -1,6 +1,6 @@
 <?php
 /**
- * CDefaultValueValidator class file.
+ * DefaultValueValidator class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,25 +10,28 @@
 namespace yii\validators;
 
 /**
- * CDefaultValueValidator sets the attributes with the specified value.
- * It does not do validation. Its existence is mainly to allow
+ * DefaultValueValidator sets the attribute to be the specified default value.
+ *
+ * By default, when the attribute being validated is [[isEmpty|empty]], the validator
+ * will assign a default [[value]] to it. However, if [[setOnEmpty]] is false, the validator
+ * will always assign the default [[value]] to the attribute, no matter it is empty or not.
+ *
+ * DefaultValueValidator is not really a validator. It is provided mainly to allow
  * specifying attribute default values in a dynamic way.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDefaultValueValidator.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.validators
- * @since 1.0.2
+ * @since 2.0
  */
-class CDefaultValueValidator extends Validator
+class DefaultValueValidator extends Validator
 {
 	/**
 	 * @var mixed the default value to be set to the specified attributes.
 	 */
 	public $value;
 	/**
-	 * @var boolean whether to set the default value only when the attribute value is null or empty string.
-	 * Defaults to true. If false, the attribute will always be assigned with the default value,
-	 * even if it is already explicitly assigned a value.
+	 * @var boolean whether to set the default [[value]] only when the attribute is [[isEmpty|empty]].
+	 * Defaults to true. If false, the attribute will always be assigned with the default [[value]],
+	 * no matter it is empty or not.
 	 */
 	public $setOnEmpty = true;
 
@@ -39,13 +42,8 @@ class CDefaultValueValidator extends Validator
 	 */
 	public function validateAttribute($object, $attribute)
 	{
-		if (!$this->setOnEmpty)
+		if (!$this->setOnEmpty || $this->isEmpty($object->$attribute)) {
 			$object->$attribute = $this->value;
-		else
-		{
-			$value = $object->$attribute;
-			if ($value === null || $value === '')
-				$object->$attribute = $this->value;
 		}
 	}
 }

@@ -1,0 +1,2 @@
+- CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
+- FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
