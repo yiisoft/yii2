@@ -66,10 +66,7 @@ abstract class Validator extends \yii\base\Component
 		'in' => '\yii\validators\RangeValidator',
 		'boolean' => '\yii\validators\BooleanValidator',
 		'string' => '\yii\validators\StringValidator',
-		'integer' => array(
-			'class'	=> '\yii\validators\NumberValidator',
-			'integerOnly' => true,
-		),
+		'integer' => '\yii\validators\IntegerValidator',
 		'double' => '\yii\validators\NumberValidator',
 		'compare' => '\yii\validators\CompareValidator',
 
@@ -166,10 +163,10 @@ abstract class Validator extends \yii\base\Component
 				'attributes' => $attributes,
 			);
 		}
-		$validator = \Yii::createComponent($config);
 		foreach ($params as $name => $value) {
-			$validator->$name = $value;
+			$config[$name] = $value;
 		}
+		$validator = \Yii::createComponent($config);
 
 		return $validator;
 	}

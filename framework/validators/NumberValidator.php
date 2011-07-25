@@ -12,15 +12,15 @@ namespace yii\validators;
 /**
  * NumberValidator validates that the attribute value is a number.
  *
+ * The format of the number must match the regular expression specified in [[pattern]].
+ * Optionally, you may configure the [[max]] and [[min]] properties to ensure the number
+ * is within certain range.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class NumberValidator extends Validator
 {
-	/**
-	 * @var boolean whether the attribute value can only be an integer. Defaults to false.
-	 */
-	public $integerOnly = false;
 	/**
 	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
 	 * meaning that if the attribute is empty, it is considered valid.
@@ -43,13 +43,10 @@ class NumberValidator extends Validator
 	 */
 	public $tooSmall;
 	/**
-	 * @var string the regular expression for matching integers.
+	 * @var string the regular expression for matching numbers. It defaults to a pattern
+	 * that matches floating numbers with optional exponential part (e.g. -1.23e-10).
 	 */
-	public $integerPattern = '/^\s*[+-]?\d+\s*$/';
-	/**
-	 * @var string the regular expression for matching numbers.
-	 */
-	public $numberPattern = '/^\s*[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/';
+	public $pattern = '/^\s*[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/';
 
 
 	/**
@@ -64,17 +61,9 @@ class NumberValidator extends Validator
 		if ($this->allowEmpty && $this->isEmpty($value)) {
 			return;
 		}
-		if ($this->integerOnly) {
-			if (!preg_match($this->integerPattern, "$value")) {
-				$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be an integer.');
-				$this->addError($object, $attribute, $message);
-			}
-		}
-		else {
-			if (!preg_match($this->numberPattern, "$value")) {
-				$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be a number.');
-				$this->addError($object, $attribute, $message);
-			}
+		if (!preg_match($this->pattern, "$value")) {
+			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be a number.');
+			$this->addError($object, $attribute, $message);
 		}
 		if ($this->min !== null && $value < $this->min) {
 			$message = $this->tooSmall !== null ? $this->tooSmall : Yii::t('yii', '{attribute} is too small (minimum is {min}).');
@@ -98,7 +87,7 @@ class NumberValidator extends Validator
 		$value = $object->$attribute;
 
 		if (($message = $this->message) === null) {
-			$message = $this->integerOnly ? Yii::t('yii', '{attribute} must be an integer.') : Yii::t('yii', '{attribute} must be a number.');
+			$message = Yii::t('yii', '{attribute} must be a number.');
 		}
 		$message = strtr($message, array(
 			'{attribute}' => $label,
@@ -123,9 +112,8 @@ class NumberValidator extends Validator
 			'{min}' => $this->min,
 		));
 
-		$pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
 		$js = "
-if(!value.match($pattern)) {
+if(!value.match({$this->pattern})) {
 	messages.push(" . json_encode($message) . ");
 }
 ";

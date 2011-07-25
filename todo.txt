@@ -1,2 +1,3 @@
 - CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
 - FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
+- Can consider merging UniqueValidator and ExistValidator and using a NOT property.
