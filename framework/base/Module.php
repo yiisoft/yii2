@@ -21,10 +21,6 @@ namespace yii\base;
 abstract class Module extends Component
 {
 	/**
-	 * @var string the ID of this module. This should follow the same rule as naming PHP variables.
-	 */
-	public $id;
-	/**
 	 * @var array custom module parameters (name => value).
 	 */
 	public $params = array();
@@ -39,6 +35,7 @@ abstract class Module extends Component
 	 */
 	public $behaviors = array();
 
+	private $_id;
 	private $_parentModule;
 	private $_basePath;
 	private $_modulePath;
@@ -89,10 +86,12 @@ abstract class Module extends Component
 	 */
 	public function __get($name)
 	{
-		if ($this->hasComponent($name))
+		if ($this->hasComponent($name)) {
 			return $this->getComponent($name);
-		else
+		}
+		else {
 			return parent::__get($name);
+		}
 	}
 
 	/**
@@ -104,10 +103,43 @@ abstract class Module extends Component
 	 */
 	public function __isset($name)
 	{
-		if ($this->hasComponent($name))
+		if ($this->hasComponent($name)) {
 			return $this->getComponent($name) !== null;
-		else
+		}
+		else {
 			return parent::__isset($name);
+		}
+	}
+
+	/**
+	 * Returns a list of behaviors that this model should behave as.
+	 * The return value of this method should be an array of behavior configurations
+	 * indexed by behavior names. For more details, please refer to [[Model::behaviors]].
+	 *
+	 * The declared behaviors will be attached to the module when [[init]] is called.
+	 * @return array the behavior configurations.
+	 */
+	public function behaviors()
+	{
+		return array();
+	}
+
+	/**
+	 * Returns the module ID.
+	 * @return string the module ID.
+	 */
+	public function getId()
+	{
+		return $this->_id;
+	}
+
+	/**
+	 * Sets the module ID.
+	 * @param string $id the module ID
+	 */
+	public function setId($id)
+	{
+		$this->_id=$id;
 	}
 
 	/**
@@ -175,27 +207,24 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Defines the root aliases.
-	 * @param array $mappings list of aliases to be defined. The array keys are root aliases,
-	 * while the array values are paths or aliases corresponding to the root aliases.
+	 * Defines path aliases.
+	 * This method calls [[\Yii::setPathOfAlias]] to register the path aliases.
+	 * This method is provided so that you can define path aliases by module configuration.
+	 * @param array $aliases list of path aliases to be defined. The array keys are alias names
+	 * (must start with '@') while the array values are the corresponding paths or aliases.
 	 * For example,
-	 * <pre>
+	 *
+	 * ~~~
 	 * array(
-	 *    'models'=>'application.models',              // an existing alias
-	 *    'extensions'=>'application.extensions',      // an existing alias
-	 *    'backend'=>dirname(__FILE__).'/../backend',  // a directory
+	 *    '@models' => '@app/models',             // an existing alias
+	 *    '@backend' => __DIR__ . '/../backend',  // a directory
 	 * )
-	 * </pre>
-	 * @since 1.0.5
+	 * ~~~
 	 */
-	public function setAliases($mappings)
+	public function setAliases($aliases)
 	{
-		foreach ($mappings as $name => $alias)
-		{
-			if (($path = Yii::getPathOfAlias($alias)) !== false)
-				Yii::setPathOfAlias($name, $path);
-			else
-				Yii::setPathOfAlias($name, $alias);
+		foreach ($aliases as $name => $alias) {
+			\Yii::setAlias($name, $alias);
 		}
 	}
 
@@ -436,7 +465,7 @@ abstract class Module extends Component
 	/**
 	 * Loads static application components.
 	 */
-	protected function preloadComponents()
+	public function preloadComponents()
 	{
 		foreach ($this->preload as $id)
 			$this->getComponent($id);
@@ -449,7 +478,7 @@ abstract class Module extends Component
 	 * Note that at this moment, the module is not configured yet.
 	 * @see init
 	 */
-	protected function preinit()
+	public function preinit()
 	{
 	}
 
@@ -460,7 +489,7 @@ abstract class Module extends Component
 	 * have been attached and the application components have been registered.
 	 * @see preinit
 	 */
-	protected function init()
+	public function init()
 	{
 	}
 }
