@@ -12,3 +12,29 @@
 	* destruct
 - get/setFlash() should be moved to session component
 - support optional parameter in URL patterns
+- api doc builder
+	* support for markdown syntax
+	* support for [[name]]
+	* consider to be released as a separate tool for user app docs
+- cache components
+	* a way to invalidate/clear cached data
+	* a command to clear cached data
+- console command support
+- db
+	* DAO
+	* AR
+	* document-based
+	* key-value-based
+- gii
+- logging
+- i18n
+	* consider using PHP built-in support and data
+	* message translations, choice format
+	* formatting: number and date
+	* parsing??
+- error/exception handling
+- helpers
+	* array
+	* image
+	* string
+- web: TBD

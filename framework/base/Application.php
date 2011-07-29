@@ -45,9 +45,6 @@
  * Starting from lifecycle 3, if a PHP error or an uncaught exception occurs,
  * the application will switch to its error handling logic and jump to step 6 afterwards.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- *
  * @property string $basePath Returns the root path of the application.
  * @property CCache $cache Returns the cache component.
  * @property CPhpMessageSource $coreMessages Returns the core message translations.
@@ -69,6 +66,9 @@
  * @property CUrlManager $urlManager Returns the URL manager component.
  * @property string $baseUrl Returns the relative URL for the application
  * @property string $homeUrl the homepage URL
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
  */
 abstract class Application extends Module
 {
