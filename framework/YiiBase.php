@@ -372,8 +372,16 @@ class YiiBase
 			$object = new $type;
 		}
 
+		if ($object instanceof \yii\base\Component) {
+			$object->preinit();
+		}
+
 		foreach ($config as $key => $value) {
 			$object->$key = $value;
+		}
+
+		if ($object instanceof \yii\base\Component) {
+			$object->init();
 		}
 
 		return $object;

@@ -31,19 +31,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function __construct($scenario='')
 	{
 		$this->_scenario = $scenario;
-		$this->init();
-		$this->attachBehaviors($this->behaviors());
 		$this->afterConstruct();
-	}
-
-	/**
-	 * Initializes this model.
-	 * This method is invoked in the constructor right after [[scenario]] is set.
-	 * You may override this method to provide code that is needed to initialize the model (e.g. setting
-	 * initial property values.)
-	 */
-	public function init()
-	{
 	}
 
 	/**
@@ -73,7 +61,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	/**
 	 * Returns the validation rules for attributes.
 	 *
-	 * Validation rules are used by [[validate()]] to check if attribute values are valid.
+	 * Validation rules are used by [[validate]] to check if attribute values are valid.
 	 * Child classes may override this method to declare different validation rules.
 	 *
 	 * Each rule is an array with the following structure:
@@ -126,32 +114,6 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * @return array validation rules
 	 */
 	public function rules()
-	{
-		return array();
-	}
-
-	/**
-	 * Returns a list of behaviors that this model should behave as.
-	 * The return value should be an array of behavior configurations indexed by
-	 * behavior names. Each behavior configuration can be either a string specifying
-	 * the behavior class or an array of the following structure:
-	 *
-	 * ~~~
-	 * 'behaviorName' => array(
-	 *     'class' => 'BehaviorClass',
-	 *     'property1' => 'value1',
-	 *     'property2' => 'value2',
-	 * )
-	 * ~~~
-	 *
-	 * Note, the behavior classes must extend from [[Behavior]]. Behaviors declared
-	 * in this method will be attached to the model when it is instantiated.
-	 *
-	 * For more details about behaviors, see [[Component]].
-	 *
-	 * @return array the behavior configurations.
-	 */
-	public function behaviors()
 	{
 		return array();
 	}
@@ -215,8 +177,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * This method is invoked after a model instance is created by new operator.
-	 * The default implementation raises the {@link onAfterConstruct} event.
+	 * This method is invoked at the end of model constructor.
+	 * The default implementation raises the [[onAfterConstruct]] event.
 	 * You may override this method to do postprocessing after model creation.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
@@ -229,7 +191,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * This method is invoked before validation starts.
-	 * The default implementation calls {@link onBeforeValidate} to raise an event.
+	 * The default implementation raises the [[onBeforeValidate]] event.
 	 * You may override this method to do preliminary checks before validation.
 	 * Make sure the parent implementation is invoked so that the event can be raised.
 	 * @return boolean whether validation should be executed. Defaults to true.
@@ -247,7 +209,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * This method is invoked after validation ends.
-	 * The default implementation calls {@link onAfterValidate} to raise an event.
+	 * The default implementation raises the [[onAfterValidate]] event.
 	 * You may override this method to do postprocessing after validation.
 	 * Make sure the parent implementation is invoked so that the event can be raised.
 	 */
@@ -353,7 +315,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * Returns a value indicating whether the attribute is required.
 	 * This is determined by checking if the attribute is associated with a
 	 * [[\yii\validators\RequiredValidator|required]] validation rule in the
-	 * current {@link scenario}.
+	 * current [[scenario]].
 	 * @param string $attribute attribute name
 	 * @return boolean whether the attribute is required
 	 */
@@ -601,7 +563,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Returns the attribute names that are safe to be massively assigned.
-	 * A safe attribute is one that is associated with a validation rule in the current {@link scenario}.
+	 * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
 	 * @return array safe attribute names
 	 */
 	public function getSafeAttributeNames()

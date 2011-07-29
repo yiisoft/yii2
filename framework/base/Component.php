@@ -101,6 +101,8 @@ namespace yii\base;
  * [[disableBehavior]], respectively. When disabled, the behavior's public properties and methods
  * cannot be accessed via the component.
  *
+ * Components created via [[\Yii::createComponent]] have life cycles. In particular,
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -170,17 +172,17 @@ class Component
 	public function __set($name, $value)
 	{
 		$setter = 'set' . $name;
-		if (method_exists($this, $setter)) {
+		if (method_exists($this, $setter)) {  // write property
 			return $this->$setter($value);
 		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {
+		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {  // event
 			$name = strtolower($name);
 			if (!isset($this->_e[$name])) {
 				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name]->add($value);
 		}
-		elseif (is_array($this->_b)) {
+		elseif (is_array($this->_b)) {  // behavior
 			foreach ($this->_b as $object) {
 				if ($object->getEnabled() && (property_exists($object, $name) || $object->canSetProperty($name))) {
 					return $object->$name = $value;
@@ -247,16 +249,16 @@ class Component
 	public function __unset($name)
 	{
 		$setter = 'set' . $name;
-		if (method_exists($this, $setter)) {
+		if (method_exists($this, $setter)) {  // write property
 			$this->$setter(null);
 		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {
+		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {  // event
 			unset($this->_e[strtolower($name)]);
 		}
-		elseif (isset($this->_b[$name])) {
+		elseif (isset($this->_b[$name])) {  // behavior
 			$this->detachBehavior($name);
 		}
-		elseif (is_array($this->_b)) {
+		elseif (is_array($this->_b)) {  // behavior property
 			foreach ($this->_b as $object) {
 				if ($object->getEnabled()) {
 					if (property_exists($object, $name)) {
@@ -305,6 +307,46 @@ class Component
 			}
 		}
 		throw new Exception('Unknown method: ' . get_class($this) . "::$name()");
+	}
+
+	/**
+	 * Initializes this component.
+	 * This method is invoked by [[\Yii::createComponent]] after its creates the new
+	 * component instance and initializes the component properties. In other words,
+	 * at this stage, the component has been fully configured.
+	 *
+	 * The default implementation calls [[behaviors]] and registers any available behaviors.
+	 * You may override this method with additional initialization logic (e.g. establish DB connection).
+	 * Make sure you call the parent implementation.
+	 */
+	public function init()
+	{
+		$this->attachBehaviors($this->behaviors());
+	}
+
+	/**
+	 * Returns a list of behaviors that this component should behave as.
+	 * The return value should be an array of behavior configurations indexed by
+	 * behavior names. Each behavior configuration can be either a string specifying
+	 * the behavior class or an array of the following structure:
+	 *
+	 * ~~~
+	 * 'behaviorName' => array(
+	 *     'class' => 'BehaviorClass',
+	 *     'property1' => 'value1',
+	 *     'property2' => 'value2',
+	 * )
+	 * ~~~
+	 *
+	 * Note that the behavior classes must extend from [[Behavior]]. Behaviors declared
+	 * in this method will be attached to the model when [[init]] is invoked.
+	 *
+	 * @return array the behavior configurations.
+	 * @see init
+	 */
+	public function behaviors()
+	{
+		return array();
 	}
 
 	/**
