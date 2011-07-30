@@ -10,9 +10,25 @@
 namespace yii\base;
 
 /**
- * Model is the base class providing the common features needed by data model objects.
+ * Model is the base class for data models.
  *
- * Model defines the basic framework for data models that need to be validated.
+ * Model implements the following commonly used features:
+ *
+ * - attribute declaration: by default, every public class member is considered as
+ *   a model attribute
+ * - attribute labels: each attribute may be associated with a label for display purpose
+ * - massive attribute assignment
+ * - scenario-based validation
+ *
+ * Model also provides a set of events for further customization:
+ *
+ * - [[onAfterConstruct]]: an event raised at the end of constructor
+ * - [[onInit]]: an event raised when [[init]] is called
+ * - [[onBeforeValidate]]: an event raised at the beginning of [[validate]]
+ * - [[onAfterValidate]]: an event raised at the end of [[validate]]
+ *
+ * You may directly use Model to store model data, or extend it with customization.
+ * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -140,6 +156,19 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
+	 * Initializes the model.
+	 * The default implementation raises the [[onInit]] event.
+	 * If you override this method, make sure you call the parent implementation.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->hasEventHandlers('onInit')) {
+			$this->onInit(new Event($this));
+		}
+	}
+
+	/**
 	 * Performs the data validation.
 	 *
 	 * This method executes the validation rules as declared in [[rules]].
@@ -216,13 +245,22 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function afterValidate()
 	{
 		if ($this->hasEventHandlers('onAfterValidate')) {
-			$this->onAfterValidate(new CEvent($this));
+			$this->onAfterValidate(new Event($this));
 		}
 	}
 
 	/**
+	 * This event is raised by [[init]] when initializing the model.
+	 * @param Event $event the event parameter
+	 */
+	public function onInit($event)
+	{
+		$this->raiseEvent(__METHOD__, $event);
+	}
+
+	/**
 	 * This event is raised after the model instance is created by new operator.
-	 * @param CEvent $event the event parameter
+	 * @param Event $event the event parameter
 	 */
 	public function onAfterConstruct($event)
 	{
@@ -240,7 +278,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * This event is raised after the validation is performed.
-	 * @param CEvent $event the event parameter
+	 * @param Event $event the event parameter
 	 */
 	public function onAfterValidate($event)
 	{
