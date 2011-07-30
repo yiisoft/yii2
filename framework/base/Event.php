@@ -25,12 +25,19 @@ namespace yii\base;
 class Event extends Component
 {
 	/**
+	 * @var string the event name. This property is set by [[Component::raiseEvent]].
+	 * Event handlers may use this property to check what event it is handling.
+	 * The event name is in lower case.
+	 */
+	public $name;
+	/**
 	 * @var object the sender of this event
 	 */
 	public $sender;
 	/**
 	 * @var boolean whether the event is handled. Defaults to false.
-	 * When a handler sets this to be true, the rest of the uninvoked event handlers will be canceled.
+	 * When a handler sets this to be true, the event processing will stop and
+	 * ignore the rest of the uninvoked event handlers.
 	 */
 	public $handled = false;
 	/**

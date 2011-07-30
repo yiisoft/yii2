@@ -97,10 +97,6 @@ namespace yii\base;
  * To attach a behavior to a component, call [[attachBehavior]]; and to detach the behavior
  * from the component, call [[detachBehavior]].
  *
- * A behavior can be temporarily enabled or disabled by calling [[enableBehavior]] or
- * [[disableBehavior]], respectively. When disabled, the behavior's public properties and methods
- * cannot be accessed via the component.
- *
  * Components created via [[\Yii::createComponent]] have life cycles. In particular,
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -146,7 +142,7 @@ class Component
 		}
 		elseif (is_array($this->_b)) { // a behavior property
 			foreach ($this->_b as $object) {
-				if ($object->getEnabled() && (property_exists($object, $name) || $object->canGetProperty($name))) {
+				if (property_exists($object, $name) || $object->canGetProperty($name)) {
 					return $object->$name;
 				}
 			}
@@ -184,7 +180,7 @@ class Component
 		}
 		elseif (is_array($this->_b)) {  // behavior
 			foreach ($this->_b as $object) {
-				if ($object->getEnabled() && (property_exists($object, $name) || $object->canSetProperty($name))) {
+				if (property_exists($object, $name) || $object->canSetProperty($name)) {
 					return $object->$name = $value;
 				}
 			}
@@ -225,7 +221,7 @@ class Component
  		}
 		elseif (is_array($this->_b)) {
 			foreach ($this->_b as $object) {
-				if ($object->getEnabled() && (property_exists($object, $name) || $object->canGetProperty($name))) {
+				if (property_exists($object, $name) || $object->canGetProperty($name)) {
 					return $object->$name !== null;
 				}
 			}
@@ -260,13 +256,11 @@ class Component
 		}
 		elseif (is_array($this->_b)) {  // behavior property
 			foreach ($this->_b as $object) {
-				if ($object->getEnabled()) {
-					if (property_exists($object, $name)) {
-						return $object->$name = null;
-					}
-					elseif ($object->canSetProperty($name)) {
-						return $object->$setter(null);
-					}
+				if (property_exists($object, $name)) {
+					return $object->$name = null;
+				}
+				elseif ($object->canSetProperty($name)) {
+					return $object->$setter(null);
 				}
 			}
 		}
@@ -301,7 +295,7 @@ class Component
 		{
 			foreach ($this->_b as $object)
 			{
-				if ($object->getEnabled() && method_exists($object, $name)) {
+				if (method_exists($object, $name)) {
 					return call_user_func_array(array($object, $name), $parameters);
 				}
 			}
@@ -498,6 +492,9 @@ class Component
 	public function raiseEvent($name, $event)
 	{
 		$name = strtolower($name);
+		if ($event instanceof Event) {
+			$event->name = $name;
+		}
 		if (isset($this->_e[$name])) {
 			foreach ($this->_e[$name] as $handler) {
 				if (is_string($handler) || $handler instanceof \Closure) {
@@ -608,54 +605,6 @@ class Component
 				$this->detachBehavior($name);
 			}
 			$this->_b = null;
-		}
-	}
-
-	/**
-	 * Enables all behaviors attached to this component.
-	 */
-	public function enableBehaviors()
-	{
-		if ($this->_b !== null) {
-			foreach ($this->_b as $behavior) {
-				$behavior->setEnabled(true);
-			}
-		}
-	}
-
-	/**
-	 * Disables all behaviors attached to this component.
-	 */
-	public function disableBehaviors()
-	{
-		if ($this->_b !== null) {
-			foreach ($this->_b as $behavior) {
-				$behavior->setEnabled(false);
-			}
-		}
-	}
-
-	/**
-	 * Enables an attached behavior.
-	 * A behavior is only effective when it is enabled.
-	 * @param string $name the behavior's name. It uniquely identifies the behavior.
-	 */
-	public function enableBehavior($name)
-	{
-		if (isset($this->_b[$name])) {
-			$this->_b[$name]->setEnabled(true);
-		}
-	}
-
-	/**
-	 * Disables an attached behavior.
-	 * A behavior is only effective when it is enabled.
-	 * @param string $name the behavior's name. It uniquely identifies the behavior.
-	 */
-	public function disableBehavior($name)
-	{
-		if (isset($this->_b[$name])) {
-			$this->_b[$name]->setEnabled(false);
 		}
 	}
 

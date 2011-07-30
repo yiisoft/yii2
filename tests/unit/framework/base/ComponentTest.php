@@ -175,13 +175,17 @@ class ComponentTest extends \yii\test\TestCase
 		$this->setExpectedException('yii\base\Exception');
 		$this->component->onMyEvent();
 	}
-	public function testDetachBehavior() {
+
+	public function testDetachBehavior()
+	{
 		$component=new NewComponent;
 		$behavior = new NewBehavior;
 		$component->attachBehavior('a',$behavior);
 		$this->assertSame($behavior,$component->detachBehavior('a'));
 	}
-	public function testDetachingBehaviors() {
+
+	public function testDetachingBehaviors()
+	{
 		$component=new NewComponent;
 		$behavior = new NewBehavior;
 		$component->attachBehavior('a',$behavior);
@@ -189,31 +193,17 @@ class ComponentTest extends \yii\test\TestCase
 		$this->setExpectedException('yii\base\Exception');
 		$component->test();
 	}
-	public function testEnablingBehavior() {
-		$component=new NewComponent;
-		$behavior = new NewBehavior;
-		$component->attachBehavior('a',$behavior);
-		$component->disableBehavior('a');
-		$this->assertFalse($behavior->getEnabled());
-		$component->enableBehavior('a');
-		$this->assertTrue($behavior->getEnabled());
-	}
-	public function testEnablingBehaviors() {
-		$component=new NewComponent;
-		$behavior = new NewBehavior;
-		$component->attachBehavior('a',$behavior);
-		$component->disableBehaviors();
-		$this->assertFalse($behavior->getEnabled());
-		$component->enableBehaviors();
-		$this->assertTrue($behavior->getEnabled());
-	}
-	public function testAsa() {
+
+	public function testAsa()
+	{
 		$component=new NewComponent;
 		$behavior = new NewBehavior;
 		$component->attachBehavior('a',$behavior);
 		$this->assertSame($behavior,$component->asa('a'));
 	}
-	public function testEvaluateExpression() {
+
+	public function testEvaluateExpression()
+	{
 		$component = new NewComponent;
 		$this->assertEquals('Hello world',$component->evaluateExpression('"Hello $who"',array('who' => 'world')));
 		$this->assertEquals('Hello world',$component->evaluateExpression(array($component,'exprEvaluator'),array('who' => 'world')));

@@ -1,40 +1,37 @@
-- add more doc to Model
-- CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
-- FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
-- Can consider merging UniqueValidator and ExistValidator and using a NOT property.
-- design of component life cycles: init() and afterConstruct()
-	* construct object
-	* preinit
-	* attachBehaviors
-	* initialize properties
-	* init
-	* ...
-	* destruct
-- get/setFlash() should be moved to session component
-- support optional parameter in URL patterns
-- api doc builder
-	* support for markdown syntax
-	* support for [[name]]
-	* consider to be released as a separate tool for user app docs
-- cache components
+- base
+	* add more doc to Model
+	* error/exception handling
+- validators
+	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
+	* FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
+	* consider merging UniqueValidator and ExistValidator and using a NOT property.
+- console command support
+- built-in console commands
+	+ api doc builder
+		* support for markdown syntax
+		* support for [[name]]
+		* consider to be released as a separate tool for user app docs
+- caching
 	* a way to invalidate/clear cached data
 	* a command to clear cached data
-- console command support
 - db
 	* DAO
+	* schema
 	* AR
 	* document-based
 	* key-value-based
-- gii
 - logging
 - i18n
 	* consider using PHP built-in support and data
 	* message translations, choice format
 	* formatting: number and date
 	* parsing??
-- error/exception handling
 - helpers
 	* array
 	* image
 	* string
+	* file
 - web: TBD
+	* get/setFlash() should be moved to session component
+	* support optional parameter in URL patterns
+- gii

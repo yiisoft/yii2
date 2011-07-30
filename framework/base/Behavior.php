@@ -21,7 +21,6 @@ namespace yii\base;
  */
 class Behavior extends Component
 {
-	private $_enabled;
 	private $_owner;
 
 	/**
@@ -34,7 +33,14 @@ class Behavior extends Component
 	 * the behavior is detached from the component.
 	 *
 	 * The method should return an array whose keys are the names of the owner's events
-	 * and values are the names of the behavior methods.
+	 * and values are the names of the behavior methods. For example,
+	 *
+	 * ~~~
+	 * array(
+	 *     'onBeforeValidate' => 'myBeforeValidate',
+	 *     'onAfterValidate' => 'myAfterValidate',
+	 * )
+	 * ~~~
 	 *
 	 * @return array events (keys) and the corresponding behavior method names (values).
 	 */
@@ -80,35 +86,5 @@ class Behavior extends Component
 	public function getOwner()
 	{
 		return $this->_owner;
-	}
-
-	/**
-	 * Returns a value indicating whether this behavior is enabled.
-	 * @return boolean whether this behavior is enabled
-	 */
-	public function getEnabled()
-	{
-		return $this->_enabled;
-	}
-
-	/**
-	 * Enables or disables the behavior.
-	 * @param boolean $value whether this behavior should be enabled.
-	 */
-	public function setEnabled($value)
-	{
-		if($this->_enabled!=$value && $this->_owner) {
-			if($value) {
-				foreach($this->events() as $event=>$handler) {
-					$this->_owner->attachEventHandler($event, array($this, $handler));
-				}
-			}
-			else {
-				foreach($this->events() as $event=>$handler) {
-					$this->_owner->detachEventHandler($event, array($this, $handler));
-				}
-			}
-		}
-		$this->_enabled = $value;
 	}
 }
