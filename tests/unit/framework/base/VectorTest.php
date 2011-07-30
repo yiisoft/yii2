@@ -37,14 +37,6 @@ class VectorTest extends \yii\test\TestCase
 		$this->assertEquals(2,$vector2->getCount());
 	}
 
-	public function testReadOnly()
-	{
-		$vector = new \yii\base\Vector(array(), true);
-		$this->assertEquals(true, $vector->readOnly, 'List is not read-only');
-		$vector = new \yii\base\Vector(array(), false);
-		$this->assertEquals(false, $vector->readOnly, 'List is read-only');
-	}
-
 	public function testGetCount()
 	{
 		$this->assertEquals(2,$this->vector->getCount());
@@ -70,13 +62,6 @@ class VectorTest extends \yii\test\TestCase
 		$this->vector->insertAt(4,$this->item3);
 	}
 
-	public function testCanNotInsertWhenReadOnly()
-	{
-		$vector = new \yii\base\Vector(array(), true);
-		$this->setExpectedException('yii\base\Exception');
-		$vector->insertAt(1, 2);
-	}
-
 	public function testRemove()
 	{
 		$this->vector->remove($this->item1);
@@ -97,13 +82,6 @@ class VectorTest extends \yii\test\TestCase
 		$this->assertEquals(0,$this->vector->indexOf($this->item1));
 		$this->setExpectedException('yii\base\Exception');
 		$this->vector->removeAt(2);
-	}
-
-	public function testCanNotRemoveWhenReadOnly()
-	{
-		$vector = new \yii\base\Vector(array(1, 2, 3), true);
-		$this->setExpectedException('yii\base\Exception');
-		$vector->removeAt(2);
 	}
 
 	public function testClear()

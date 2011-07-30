@@ -34,11 +34,6 @@ namespace yii\base;
 class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
-	 * @var boolean whether this vector is read-only or not.
-	 * If the vector is read-only, adding or moving items will throw an exception.
-	 */
-	public $readOnly;
-	/**
 	 * @var array internal data storage
 	 */
 	private $_d = array();
@@ -48,15 +43,13 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	 * Initializes the dictionary with an array or an iterable object.
 	 * @param mixed $data the initial data to be populated into the dictionary.
 	 * This can be an array or an iterable object.
-	 * @param boolean $readOnly whether the dictionary is read-only
 	 * @throws Exception if data is not well formed (neither an array nor an iterable object)
 	 */
-	public function __construct($data = array(), $readOnly = false)
+	public function __construct($data = array())
 	{
 		if ($data !== array()) {
 			$this->copyFrom($data);
 		}
-		$this->readOnly = $readOnly;
 	}
 
 	/**
@@ -119,16 +112,11 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	 */
 	public function add($key, $value)
 	{
-		if (!$this->readOnly) {
-			if ($key === null) {
-				$this->_d[] = $value;
-			}
-			else {
-				$this->_d[$key] = $value;
-			}
+		if ($key === null) {
+			$this->_d[] = $value;
 		}
 		else {
-			throw new Exception('Dictionary is read only.');
+			$this->_d[$key] = $value;
 		}
 	}
 
@@ -140,19 +128,14 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	 */
 	public function remove($key)
 	{
-		if (!$this->readOnly) {
-			if (isset($this->_d[$key])) {
-				$value = $this->_d[$key];
-				unset($this->_d[$key]);
-				return $value;
-			}
-			else { // the value is null
-				unset($this->_d[$key]);
-				return null;
-			}
+		if (isset($this->_d[$key])) {
+			$value = $this->_d[$key];
+			unset($this->_d[$key]);
+			return $value;
 		}
-		else {
-			throw new Exception('Dictionary is read only.');
+		else { // the value is null
+			unset($this->_d[$key]);
+			return null;
 		}
 	}
 

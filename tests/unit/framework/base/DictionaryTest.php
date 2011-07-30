@@ -37,12 +37,6 @@ class DictionaryTest extends \yii\test\TestCase
 		$this->assertEquals(2,$dictionary2->getCount());
 	}
 
-	public function testReadOnly()
-	{
-		$dictionary = new \yii\base\Dictionary(array(), true);
-		self::assertEquals(true, $dictionary->readOnly, 'List is not read-only');
-	}
-
 	public function testGetCount()
 	{
 		$this->assertEquals(2,$this->dictionary->getCount());
@@ -63,26 +57,12 @@ class DictionaryTest extends \yii\test\TestCase
 		$this->assertTrue($this->dictionary->contains('key3'));
 	}
 
-	public function testCanNotAddWhenReadOnly()
-	{
-		$dictionary = new \yii\base\Dictionary(array(), true);
-		$this->setExpectedException('yii\base\Exception');
-		$dictionary->add('key', 'value');
-	}
-
 	public function testRemove()
 	{
 		$this->dictionary->remove('key1');
 		$this->assertEquals(1,$this->dictionary->getCount());
 		$this->assertTrue(!$this->dictionary->contains('key1'));
 		$this->assertTrue($this->dictionary->remove('unknown key')===null);
-	}
-
-	public function testCanNotRemoveWhenReadOnly()
-	{
-		$dictionary = new \yii\base\Dictionary(array('key' => 'value'), true);
-		$this->setExpectedException('yii\base\Exception');
-		$dictionary->remove('key');
 	}
 
 	public function testClear()

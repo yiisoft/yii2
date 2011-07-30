@@ -40,11 +40,6 @@ namespace yii\base;
 class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
-	 * @var boolean whether this vector is read-only or not.
-	 * If the vector is read-only, adding or moving items will throw an exception.
-	 */
-	public $readOnly;
-	/**
 	 * @var array internal data storage
 	 */
 	private $_d = array();
@@ -58,15 +53,13 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	 * Initializes the vector with an array or an iterable object.
 	 * @param mixed $data the initial data to be populated into the vector.
 	 * This can be an array or an iterable object.
-	 * @param boolean $readOnly whether the vector should be marked as read-only.
 	 * @throws Exception if data is not well formed (neither an array nor an iterable object)
 	 */
-	public function __construct($data = array(), $readOnly = false)
+	public function __construct($data = array())
 	{
 		if ($data !== array()) {
 			$this->copyFrom($data);
 		}
-		$this->readOnly = $readOnly;
 	}
 
 	/**
@@ -141,20 +134,15 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	 */
 	public function insertAt($index, $item)
 	{
-		if (!$this->readOnly) {
-			if ($index === $this->_c) {
-				$this->_d[$this->_c++] = $item;
-			}
-			elseif ($index >= 0 && $index < $this->_c) {
-				array_splice($this->_d, $index, 0, array($item));
-				$this->_c++;
-			}
-			else {
-				throw new Exception('Index out of range: ' . $index);
-			}
+		if ($index === $this->_c) {
+			$this->_d[$this->_c++] = $item;
+		}
+		elseif ($index >= 0 && $index < $this->_c) {
+			array_splice($this->_d, $index, 0, array($item));
+			$this->_c++;
 		}
 		else {
-			throw new Exception('Vector is read only.');
+			throw new Exception('Index out of range: ' . $index);
 		}
 	}
 
@@ -187,24 +175,19 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 	 */
 	public function removeAt($index)
 	{
-		if (!$this->readOnly) {
-			if ($index >= 0 && $index < $this->_c) {
-				$this->_c--;
-				if ($index === $this->_c) {
-					return array_pop($this->_d);
-				}
-				else {
-					$item = $this->_d[$index];
-					array_splice($this->_d, $index, 1);
-					return $item;
-				}
+		if ($index >= 0 && $index < $this->_c) {
+			$this->_c--;
+			if ($index === $this->_c) {
+				return array_pop($this->_d);
 			}
 			else {
-				throw new Exception('Index out of range: ' . $index);
+				$item = $this->_d[$index];
+				array_splice($this->_d, $index, 1);
+				return $item;
 			}
 		}
 		else {
-			throw new Exception('Vector is read only.');
+			throw new Exception('Index out of range: ' . $index);
 		}
 	}
 
