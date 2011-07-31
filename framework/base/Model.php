@@ -23,7 +23,6 @@ namespace yii\base;
  * Model also provides a set of events for further customization:
  *
  * - [[onAfterConstruct]]: an event raised at the end of constructor
- * - [[onInit]]: an event raised when [[init]] is called
  * - [[onBeforeValidate]]: an event raised at the beginning of [[validate]]
  * - [[onAfterValidate]]: an event raised at the end of [[validate]]
  *
@@ -33,7 +32,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements \IteratorAggregate, \ArrayAccess
+class Model extends Component implements Initable, \IteratorAggregate, \ArrayAccess
 {
 	private static $_attributes = array(); // class name => array of attribute names
 	private $_errors;                      // attribute name => array of errors
@@ -48,6 +47,46 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$this->_scenario = $scenario;
 		$this->afterConstruct();
+	}
+
+	/**
+	 * Initializes this model.
+	 *
+	 * This method is required by the [[Initable]] interface. It is invoked by [[\Yii::createComponent]]
+	 * after its creates the new model instance and initializes the model properties.
+	 *
+	 * The default implementation calls [[behaviors]] and registers any available behaviors.
+	 * You may override this method with additional initialization logic (e.g. establish DB connection).
+	 * Make sure you call the parent implementation.
+	 */
+	public function init()
+	{
+		$this->attachBehaviors($this->behaviors());
+	}
+
+	/**
+	 * Returns a list of behaviors that this model should behave as.
+	 * The return value should be an array of behavior configurations indexed by
+	 * behavior names. Each behavior configuration can be either a string specifying
+	 * the behavior class or an array of the following structure:
+	 *
+	 * ~~~
+	 * 'behaviorName' => array(
+	 *     'class' => 'BehaviorClass',
+	 *     'property1' => 'value1',
+	 *     'property2' => 'value2',
+	 * )
+	 * ~~~
+	 *
+	 * Note that a behavior class must extend from [[Behavior]]. Behaviors declared
+	 * in this method will be attached to the model when [[init]] is invoked.
+	 *
+	 * @return array the behavior configurations.
+	 * @see init
+	 */
+	public function behaviors()
+	{
+		return array();
 	}
 
 	/**
@@ -153,19 +192,6 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function attributeLabels()
 	{
 		return array();
-	}
-
-	/**
-	 * Initializes the model.
-	 * The default implementation raises the [[onInit]] event.
-	 * If you override this method, make sure you call the parent implementation.
-	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->hasEventHandlers('onInit')) {
-			$this->onInit(new Event($this));
-		}
 	}
 
 	/**

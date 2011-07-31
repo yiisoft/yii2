@@ -380,7 +380,7 @@ class YiiBase
 			$object->$key = $value;
 		}
 
-		if ($object instanceof \yii\base\Component) {
+		if ($object instanceof \yii\base\Initable) {
 			$object->init();
 		}
 

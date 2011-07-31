@@ -1,6 +1,9 @@
 - base
-	* add more doc to Model
 	* error/exception handling
+	* security
+	* module
+	* application
+	* http exception
 - validators
 	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
 	* FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD

@@ -332,7 +332,7 @@ class Component
 	 * )
 	 * ~~~
 	 *
-	 * Note that the behavior classes must extend from [[Behavior]]. Behaviors declared
+	 * Note that a behavior class must extend from [[Behavior]]. Behaviors declared
 	 * in this method will be attached to the model when [[init]] is invoked.
 	 *
 	 * @return array the behavior configurations.
