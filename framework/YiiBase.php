@@ -317,9 +317,6 @@ class YiiBase
 	 * pairs in the array will be used to initialize the corresponding object properties.
 	 * For example,
 	 *
-	 * Any additional parameters passed to this method will be
-	 * passed to the constructor of the object being created.
-	 *
 	 * ~~~
 	 * $component = Yii::createComponent('@app/components/GoogleMap');
 	 * $component = Yii::createComponent('\application\components\GoogleMap');
@@ -328,6 +325,13 @@ class YiiBase
 	 *     'apiKey' => 'xyz',
 	 * ));
 	 * ~~~
+	 *
+	 * Any additional parameters passed to this method will be
+	 * passed to the constructor of the object being created.
+	 *
+	 * If a component class implements the [[\yii\base\Initable]] interface,
+	 * its [[\yii\base\Initable::init|init]] method will be invoked after
+	 * its properties have been initialized.
 	 *
 	 * @param mixed $config the configuration. It can be either a string or an array.
 	 * @return mixed the created object

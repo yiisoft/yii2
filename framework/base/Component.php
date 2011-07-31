@@ -304,46 +304,6 @@ class Component
 	}
 
 	/**
-	 * Initializes this component.
-	 * This method is invoked by [[\Yii::createComponent]] after its creates the new
-	 * component instance and initializes the component properties. In other words,
-	 * at this stage, the component has been fully configured.
-	 *
-	 * The default implementation calls [[behaviors]] and registers any available behaviors.
-	 * You may override this method with additional initialization logic (e.g. establish DB connection).
-	 * Make sure you call the parent implementation.
-	 */
-	public function init()
-	{
-		$this->attachBehaviors($this->behaviors());
-	}
-
-	/**
-	 * Returns a list of behaviors that this component should behave as.
-	 * The return value should be an array of behavior configurations indexed by
-	 * behavior names. Each behavior configuration can be either a string specifying
-	 * the behavior class or an array of the following structure:
-	 *
-	 * ~~~
-	 * 'behaviorName' => array(
-	 *     'class' => 'BehaviorClass',
-	 *     'property1' => 'value1',
-	 *     'property2' => 'value2',
-	 * )
-	 * ~~~
-	 *
-	 * Note that a behavior class must extend from [[Behavior]]. Behaviors declared
-	 * in this method will be attached to the model when [[init]] is invoked.
-	 *
-	 * @return array the behavior configurations.
-	 * @see init
-	 */
-	public function behaviors()
-	{
-		return array();
-	}
-
-	/**
 	 * Returns a value indicating whether a property is defined.
 	 * A property is defined if there is a getter or setter method
 	 * defined in the class. Note, property names are case-insensitive.
