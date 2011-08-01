@@ -154,7 +154,7 @@ class YiiBase
 		}
 
 		if ($alias[0] !== '@') { // a simple class name
-			if ($forceInclude && self::autoload($alias)) {
+			if ($forceInclude && static::autoload($alias)) {
 				self::$_imported[$alias] = $alias;
 			}
 			return $alias;
@@ -167,7 +167,7 @@ class YiiBase
 			return self::$_imported[$alias] = $className;
 		}
 
-		if (($path = self::getAlias(dirname($alias))) === false) {
+		if (($path = static::getAlias(dirname($alias))) === false) {
 			throw new \yii\base\Exception('Invalid path alias: ' . $alias);
 		}
 
@@ -240,7 +240,7 @@ class YiiBase
 		elseif ($path[0] !== '@') {
 			self::$aliases[$alias] = rtrim($path, '\\/');
 		}
-		elseif (($p = self::getAlias($path)) !== false) {
+		elseif (($p = static::getAlias($path)) !== false) {
 			self::$aliases[$alias] = $p;
 		}
 		else {
@@ -277,7 +277,7 @@ class YiiBase
 		if (strpos($className, '\\') !== false) {
 			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
 			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
-			if (($path = self::getAlias($alias)) !== false) {
+			if (($path = static::getAlias($alias)) !== false) {
 				include($path . '.php');
 				return true;
 			}
@@ -288,7 +288,7 @@ class YiiBase
 		if (($pos = strpos($className, '_')) !== false) {
 			// convert class name to path alias, e.g. PHPUnit_Framework_TestCase to @PHPUnit/Framework/TestCase
 			$alias = '@' . str_replace('_', '/', $className);
-			if (($path = self::getAlias($alias)) !== false) {
+			if (($path = static::getAlias($alias)) !== false) {
 				include($path . '.php');
 				return true;
 			}
@@ -307,15 +307,16 @@ class YiiBase
 	}
 
 	/**
-	 * Creates an object and initializes its properties based on the given configuration.
+	 * Creates a new component instance using the given configuration.
 	 *
 	 * The specified configuration can be either a string or an array.
-	 * If the former, the string is treated as the object type which can
-	 * be either a class name or [[getAlias|path alias]].
-	 * If the latter, the array must contain a `class` element which refers
-	 * to a class name or [[getAlias|path alias]]. The rest of the name-value
-	 * pairs in the array will be used to initialize the corresponding object properties.
-	 * For example,
+	 * If the former, the string is treated as the object type; if the latter,
+	 * the array must contain a `class` element specifying the object type, and
+	 * the rest of the name-value pairs in the array will be used to initialize
+	 * the corresponding object properties.
+	 *
+	 * The object type can be either a class name or [[getAlias|path alias]] of
+	 * the class. For example,
 	 *
 	 * ~~~
 	 * $component = Yii::createComponent('@app/components/GoogleMap');
@@ -330,62 +331,64 @@ class YiiBase
 	 * passed to the constructor of the object being created.
 	 *
 	 * If a component class implements the [[\yii\base\Initable]] interface,
-	 * its [[\yii\base\Initable::init|init]] method will be invoked after
-	 * its properties have been initialized.
+	 * its [[\yii\base\Initable::preinit|preinit]] and [[\yii\base\Initable::init|init]]
+	 * methods will be invoked BEFORE and AFTER the component properties are initialized,
+	 * respectively.
 	 *
 	 * @param mixed $config the configuration. It can be either a string or an array.
 	 * @return mixed the created object
-	 * @throws \yii\base\Exception if the configuration does not have a 'class' element.
+	 * @throws \yii\base\Exception if the configuration is invalid.
 	 */
 	public static function createComponent($config)
 	{
 		if (is_string($config)) {
-			$type = $config;
+			$class = $config;
 			$config = array();
 		}
 		elseif (isset($config['class'])) {
-			$type = $config['class'];
+			$class = $config['class'];
 			unset($config['class']);
 		}
 		else {
 			throw new \yii\base\Exception('Object configuration must be an array containing a "class" element.');
 		}
 
-		if (!class_exists($type, false)) {
-			$type = Yii::import($type, true);
+		if (!class_exists($class, false)) {
+			$class = static::import($class, true);
 		}
 
 		if (($n = func_num_args()) > 1) {
 			$args = func_get_args();
 			if ($n === 2) {
-				$object = new $type($args[1]);
+				$object = new $class($args[1]);
 			}
 			elseif ($n === 3) {
-				$object = new $type($args[1], $args[2]);
+				$object = new $class($args[1], $args[2]);
 			}
 			elseif ($n === 4) {
-				$object = new $type($args[1], $args[2], $args[3]);
+				$object = new $class($args[1], $args[2], $args[3]);
 			}
 			else {
 				unset($args[0]);
-				$class = new ReflectionClass($type);
-				$object = $class->newInstanceArgs($args);
+				$r = new ReflectionClass($class);
+				$object = $r->newInstanceArgs($args);
 			}
 		}
 		else {
-			$object = new $type;
+			$object = new $class;
 		}
 
-		if ($object instanceof \yii\base\Component) {
+		if ($object instanceof Initable) {
 			$object->preinit();
-		}
-
-		foreach ($config as $key => $value) {
-			$object->$key = $value;
-		}
-
-		if ($object instanceof \yii\base\Initable) {
+			foreach ($config as $name => $value) {
+				$object->$name = $value;
+			}
 			$object->init();
+		}
+		else {
+			foreach ($config as $name => $value) {
+				$object->$name = $value;
+			}
 		}
 
 		return $object;
@@ -401,7 +404,7 @@ class YiiBase
 	public static function trace($msg, $category = 'application')
 	{
 		if (YII_DEBUG) {
-			self::log($msg, CLogger::LEVEL_TRACE, $category);
+			static::log($msg, CLogger::LEVEL_TRACE, $category);
 		}
 	}
 
@@ -459,7 +462,7 @@ class YiiBase
 	 */
 	public static function beginProfile($token, $category = 'application')
 	{
-		self::log('begin:' . $token, CLogger::LEVEL_PROFILE, $category);
+		static::log('begin:' . $token, CLogger::LEVEL_PROFILE, $category);
 	}
 
 	/**
@@ -471,7 +474,7 @@ class YiiBase
 	 */
 	public static function endProfile($token, $category = 'application')
 	{
-		self::log('end:' . $token, CLogger::LEVEL_PROFILE, $category);
+		static::log('end:' . $token, CLogger::LEVEL_PROFILE, $category);
 	}
 
 	/**

@@ -304,6 +304,41 @@ class Component
 	}
 
 	/**
+	 * Creates a new component instance.
+	 *
+	 * This method differs from the PHP `new` operator in that it does the following
+	 * additional work after the component is created:
+	 *
+	 * - Call [[Initable::preinit|preinit]] if the class implements [[Initable]];
+	 * - Initialize the component properties using the name-value pairs given as the
+	 *   first parameter to this method;
+	 * - Call [[Initable::init|init]] if the class implements [[Initable]].
+	 *
+	 * Any additional parameters passed to this method will be
+	 * passed to the constructor of the component being created. For example,
+	 *
+	 * @param array $config the name-value pairs that will be used to initialize component properties.
+	 * @return object the created component
+	 * @throws Exception if the configuration is invalid.
+	 */
+	public static function create($config = array())
+	{
+		if (!is_array($config)) {
+			throw new Exception('The $config parameter must be an array.');
+		}
+
+		if (($n = func_num_args()) > 1) {
+			$args = func_get_args();
+			$args[0]['class'] = '\\' . get_called_class();
+			return call_user_func_array('\Yii::createComponent', $args);
+		}
+		else {
+			$config['class'] = '\\' . get_called_class();
+			return \Yii::createComponent($config);
+		}
+	}
+
+	/**
 	 * Returns a value indicating whether a property is defined.
 	 * A property is defined if there is a getter or setter method
 	 * defined in the class. Note, property names are case-insensitive.

@@ -50,6 +50,18 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	}
 
 	/**
+	 * Pre-initializes this model.
+	 * This method is required by the [[Initable]] interface. It is invoked by
+	 * [[\Yii::createComponent]] after its creates the new model instance but
+	 * BEFORE the model properties are initialized.
+	 *
+	 * You may override this method to do work such as setting property default values.
+	 */
+	public function preinit()
+	{
+	}
+
+	/**
 	 * Initializes this model.
 	 *
 	 * This method is required by the [[Initable]] interface. It is invoked by [[\Yii::createComponent]]

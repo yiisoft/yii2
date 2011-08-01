@@ -23,6 +23,15 @@ namespace yii\base;
 interface Initable
 {
 	/**
+	 * Pre-initializes this component.
+	 * This method is invoked by [[\Yii::createComponent]] after its creates the new
+	 * component instance, but BEFORE the component properties are initialized.
+	 *
+	 * You may implement this method to do work such as setting property default values.
+	 */
+	public function preinit();
+
+	/**
 	 * Initializes this component.
 	 * This method is invoked by [[\Yii::createComponent]] after its creates the new
 	 * component instance and initializes the component properties. In other words,
