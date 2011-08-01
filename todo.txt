@@ -5,6 +5,7 @@
 	* application
 	* http exception
 - validators
+	* type conversion rules
 	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
 	* FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
 	* consider merging UniqueValidator and ExistValidator and using a NOT property.

@@ -8,6 +8,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db\dao;
+
 /**
  * Connection represents a connection to a database.
  *
