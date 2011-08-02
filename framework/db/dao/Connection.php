@@ -11,74 +11,72 @@
 namespace yii\db\dao;
 
 /**
- * Connection represents a connection to a database.
+ * Connection represents a connection to a database via [PDO](http://www.php.net/manual/en/ref.pdo.php).
  *
- * Connection works together with {@link CDbCommand}, {@link CDbDataReader}
- * and {@link CDbTransaction} to provide data access to various DBMS
- * in a common set of APIs. They are a thin wrapper of the {@link http://www.php.net/manual/en/ref.pdo.php PDO}
- * PHP extension.
+ * Connection works together with [[Command]], [[DataReader]] and [[Transaction]]
+ * to provide data access to various DBMS in a common set of APIs. They are a thin wrapper
+ * of the [[PDO PHP extension]](http://www.php.net/manual/en/ref.pdo.php).
  *
- * To establish a connection, set {@link setActive active} to true after
- * specifying {@link connectionString}, {@link username} and {@link password}.
+ * To establish a DB connection, set [[dsn]], [[username]] and [[password]], and then
+ * call [[open]] or set [[active]] to be true.
  *
  * The following example shows how to create a Connection instance and establish
- * the actual connection:
- * <pre>
- * $connection=new Connection($dsn,$username,$password);
- * $connection->active=true;
- * </pre>
+ * the DB connection:
  *
- * After the DB connection is established, one can execute an SQL statement like the following:
- * <pre>
- * $command=$connection->createCommand($sqlStatement);
+ * ~~~
+ * $connection = \yii\db\dao\Connection::create($dsn, $username, $password);
+ * $connection->open();  // same as: $connection->active = true;
+ * ~~~
+ *
+ * After the DB connection is established, one can execute a SQL statement like the following:
+ *
+ * ~~~
+ * $command = $connection->createCommand('SELECT * FROM tbl_post');
  * $command->execute();   // a non-query SQL statement execution
- * // or execute an SQL query and fetch the result set
- * $reader=$command->query();
+ * // or execute an SQL query and return the results as an array
+ * $rows = $command->queryAll();
+ * ~~~
  *
- * // each $row is an array representing a row of data
- * foreach($reader as $row) ...
- * </pre>
+ * One can also do prepared SQL execution and bind parameters to the prepared SQL:
  *
- * One can do prepared SQL execution and bind parameters to the prepared SQL:
- * <pre>
- * $command=$connection->createCommand($sqlStatement);
- * $command->bindParam($name1,$value1);
- * $command->bindParam($name2,$value2);
- * $command->execute();
- * </pre>
+ * ~~~
+ * $command = $connection->createCommand('SELECT * FROM tbl_post WHERE id=:id');
+ * $command->bindValue(':id', $_GET['id']);
+ * $post = $command->query();
+ * ~~~
  *
- * To use transaction, do like the following:
- * <pre>
- * $transaction=$connection->beginTransaction();
- * try
- * {
- *    $connection->createCommand($sql1)->execute();
- *    $connection->createCommand($sql2)->execute();
- *    //.... other SQL executions
- *    $transaction->commit();
+ * DB transaction may also be used for DBMS that supports it. For example,
+ *
+ * ~~~
+ * $transaction = $connection->beginTransaction();
+ * try {
+ *     $connection->createCommand($sql1)->execute();
+ *     $connection->createCommand($sql2)->execute();
+ *     // ... executing other SQL statements ...
+ *     $transaction->commit();
  * }
- * catch(Exception $e)
- * {
+ * catch(Exception $e) {
  *    $transaction->rollBack();
  * }
- * </pre>
+ * ~~~
  *
- * Connection also provides a set of methods to support setting and querying
- * of certain DBMS attributes, such as {@link getNullConversion nullConversion}.
- *
- * Since Connection implements the interface IApplicationComponent, it can
+ * Since Connection extends from [[\yii\base\ApplicationComponent]], it can
  * be used as an application component and be configured in application configuration,
  * like the following,
- * <pre>
+ *
+ * ~~~
  * array(
- *     'components'=>array(
- *         'db'=>array(
- *             'class'=>'Connection',
- *             'connectionString'=>'sqlite:path/to/dbfile',
+ *     'components' => array(
+ *         'db' => array(
+ *             'class' => '\yii\db\dao\Connection',
+ *             'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+ *             'username' => 'root',
+ *             'password' => '',
+ *             'charset' => 'utf8',
  *         ),
  *     ),
  * )
- * </pre>
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -86,8 +84,9 @@ namespace yii\db\dao;
 class Connection extends \yii\base\ApplicationComponent
 {
 	/**
-	 * @var string The Data Source Name, or DSN, contains the information required to connect to the database.
-	 * @see http://www.php.net/manual/en/function.PDO-construct.php
+	 * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
+	 * Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) on
+	 * the format of the DSN string.
 	 *
 	 * Note that if your database is using GBK or BIG5 charset, we highly recommend you
 	 * to upgrade to PHP 5.3.6+ and specify charset via DSN like the following to prevent
@@ -103,12 +102,30 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public $password = '';
 	/**
-	 * @var integer number of seconds that table metadata can remain valid in cache.
-	 * Use 0 or negative value to indicate not caching schema.
-	 * If greater than 0 and the primary cache is enabled, the table metadata will be cached.
-	 * @see schemaCachingExclude
+	 * @var array PDO attributes (name=>value) that should be set when calling [[open]]
+	 * to establish a DB connection. Please refer to the
+	 * [PHP manual](http://www.php.net/manual/en/function.PDO-setAttribute.php) for
+	 * details about available attributes.
 	 */
-	public $schemaCachingDuration = 0;
+	public $attributes;
+	/**
+	 * @var \PDO the PHP PDO instance associated with this DB connection.
+	 * This property is mainly managed by [[open]] and [[close]] methods.
+	 * When a DB connection is active, this property will represent a PDO instance;
+	 * otherwise, it will be null.
+	 */
+	public $pdo;
+	/**
+	 * @var integer number of seconds that table metadata can remain valid in cache.
+	 * Defaults to -1, meaning schema caching is disabled.
+	 * Use 0 to indicate that the cached data will never expire.
+	 *
+	 * Note that in order to enable schema caching, a valid cache component as specified
+	 * by [[schemaCacheID]] must be enabled.
+	 * @see schemaCachingExclude
+	 * @see schemaCacheID
+	 */
+	public $schemaCachingDuration = -1;
 	/**
 	 * @var array list of tables whose metadata should NOT be cached. Defaults to empty array.
 	 * @see schemaCachingDuration
@@ -116,54 +133,46 @@ class Connection extends \yii\base\ApplicationComponent
 	public $schemaCachingExclude = array();
 	/**
 	 * @var string the ID of the cache application component that is used to cache the table metadata.
-	 * Defaults to 'cache' which refers to the primary cache application component.
-	 * Set this property to false if you want to disable caching table metadata.
-	 * @since 1.0.10
+	 * Defaults to 'cache'.
+	 * @see schemaCachingDuration
 	 */
 	public $schemaCacheID = 'cache';
 	/**
 	 * @var integer number of seconds that query results can remain valid in cache.
-	 * Use 0 or negative value to indicate not caching query results (the default behavior).
+	 * Defaults to -1, meaning query caching is disabled.
+	 * Use 0 to indicate that the cached data will never expire.
 	 *
-	 * In order to enable query caching, this property must be a positive
-	 * integer and {@link queryCacheID} must point to a valid cache component ID.
+	 * Note that in order to enable query caching, a valid cache component as specified
+	 * by [[queryCacheID]] must be enabled.
 	 *
-	 * The method {@link cache()} is provided as a convenient way of setting this property
-	 * and {@link queryCachingDependency} on the fly.
+	 * The method [[cache()]] is provided as a convenient way of setting this property
+	 * and [[queryCachingDependency]] on the fly.
 	 *
 	 * @see cache
 	 * @see queryCachingDependency
 	 * @see queryCacheID
-	 * @since 1.1.7
 	 */
-	public $queryCachingDuration = 0;
+	public $queryCachingDuration = -1;
 	/**
 	 * @var CCacheDependency the dependency that will be used when saving query results into cache.
+	 * Defaults to null, meaning no dependency.
 	 * @see queryCachingDuration
-	 * @since 1.1.7
 	 */
 	public $queryCachingDependency;
 	/**
-	 * @var integer the number of SQL statements that need to be cached next.
-	 * If this is 0, then even if query caching is enabled, no query will be cached.
+	 * @var integer the number of SQL statements that need to be cached when they are executed next.
+	 * Defaults to 0, meaning the query result of the next SQL statement will NOT be cached.
 	 * Note that each time after executing a SQL statement (whether executed on DB server or fetched from
 	 * query cache), this property will be reduced by 1 until 0.
-	 * @since 1.1.7
+	 * @see queryCachingDuration
 	 */
 	public $queryCachingCount = 0;
 	/**
 	 * @var string the ID of the cache application component that is used for query caching.
-	 * Defaults to 'cache' which refers to the primary cache application component.
-	 * Set this property to false if you want to disable query caching.
-	 * @since 1.1.7
+	 * Defaults to 'cache'.
+	 * @see queryCachingDuration
 	 */
 	public $queryCacheID = 'cache';
-	/**
-	 * @var boolean whether the database connection should be automatically established
-	 * the component is being initialized. Defaults to true. Note, this property is only
-	 * effective when the Connection object is used as an application component.
-	 */
-	public $autoConnect = true;
 	/**
 	 * @var string the charset used for database connection. The property is only used
 	 * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
@@ -188,77 +197,69 @@ class Connection extends \yii\base\ApplicationComponent
 	 * so that parameter values bound to SQL statements are logged for debugging purpose.
 	 * You should be aware that logging parameter values could be expensive and have significant
 	 * impact on the performance of your application.
-	 * @since 1.0.5
 	 */
 	public $enableParamLogging = false;
 	/**
-	 * @var boolean whether to enable profiling the SQL statements being executed.
+	 * @var boolean whether to enable profiling for the SQL statements being executed.
 	 * Defaults to false. This should be mainly enabled and used during development
 	 * to find out the bottleneck of SQL executions.
-	 * @since 1.0.6
+	 * @see getStats
 	 */
 	public $enableProfiling = false;
 	/**
 	 * @var string the default prefix for table names. Defaults to null, meaning no table prefix.
-	 * By setting this property, any token like '{{tableName}}' in {@link CDbCommand::text} will
-	 * be replaced by 'prefixTableName', where 'prefix' refers to this property value.
-	 * @since 1.1.0
+	 * By setting this property, any token like '{{tableName}}' in [[Command::text]] will
+	 * be replaced with 'prefixTableName', where 'prefix' refers to this property value.
+	 * For example, '{{post}}' becomes 'tbl_post', if 'tbl_' is set as the table prefix.
 	 */
 	public $tablePrefix;
 	/**
 	 * @var array list of SQL statements that should be executed right after the DB connection is established.
-	 * @since 1.1.1
 	 */
 	public $initSQLs;
 	/**
-	 * @var array mapping between PDO driver and schema class name.
-	 * A schema class can be specified using path alias.
-	 * @since 1.1.6
+	 * @var array mapping between PDO drivers and schema classes.
+	 * The keys of the array are PDO driver names while the values the corresponding
+	 * schema class name or configuration. Please refer to [[\Yii::createComponent]] for
+	 * details on how to specify a configuration.
+	 *
+	 * This property is mainly used by [[getSchema]] when fetching the database schema information.
 	 */
-	public $driverMap = array(
-		'pgsql' => 'CPgsqlSchema',    // PostgreSQL
-		'mysqli' => 'CMysqlSchema',   // MySQL
-		'mysql' => 'CMysqlSchema',    // MySQL
-		'sqlite' => 'CSqliteSchema',  // sqlite 3
-		'sqlite2' => 'CSqliteSchema', // sqlite 2
-		'mssql' => 'CMssqlSchema',    // Mssql driver on windows hosts
-		'dblib' => 'CMssqlSchema',    // dblib drivers on linux (and maybe others os) hosts
-		'sqlsrv' => 'CMssqlSchema',   // Mssql
-		'oci' => 'COciSchema',        // Oracle driver
+	public $schemaMap = array(
+		'pgsql' => '\yii\db\dao\pgsql\Schema',     // PostgreSQL
+		'mysqli' => '\yii\db\dao\mysql\Schema',    // MySQL
+		'mysql' => '\yii\db\dao\mysql\Schema',     // MySQL
+		'sqlite' => '\yii\db\dao\sqlite\Schema',   // sqlite 3
+		'sqlite2' => '\yii\db\dao\\sqlite\Schema', // sqlite 2
+		'mssql' => '\yii\db\dao\mssql\Schema',     // Mssql driver on windows hosts
+		'dblib' => '\yii\db\dao\mssql\Schema',     // dblib drivers on linux (and maybe others os) hosts
+		'sqlsrv' => '\yii\db\dao\mssql\Schema',    // Mssql
+		'oci' => '\yii\db\dao\oci\Schema',         // Oracle driver
 	);
 
-	/**
-	 * @var string Custom PDO wrapper class.
-	 * @since 1.1.8
-	 */
-	public $pdoClass = 'PDO';
-
-	private $_attributes = array();
-	private $_active = false;
-	private $_pdo;
 	private $_transaction;
 	private $_schema;
-
 
 	/**
 	 * Constructor.
 	 * Note, the DB connection is not established when this connection
-	 * instance is created. Set {@link setActive active} property to true
+	 * instance is created. You may set [[active]] to be true or call [[open]]
 	 * to establish the connection.
-	 * @param string $dsn The Data Source Name, or DSN, contains the information required to connect to the database.
-	 * @param string $username The user name for the DSN string.
-	 * @param string $password The password for the DSN string.
+	 * @param string $dsn the Data Source Name, or DSN, contains the information
+	 * required to connect to the database.
+	 * @param string $username the user name for the DSN string.
+	 * @param string $password the password for the DSN string.
 	 * @see http://www.php.net/manual/en/function.PDO-construct.php
 	 */
 	public function __construct($dsn = '', $username = '', $password = '')
 	{
-		$this->connectionString = $dsn;
+		$this->dsn = $dsn;
 		$this->username = $username;
 		$this->password = $password;
 	}
 
 	/**
-	 * Close the connection when serializing.
+	 * Closes the connection when this component is being serialized.
 	 * @return array
 	 */
 	public function __sleep()
@@ -278,61 +279,38 @@ class Connection extends \yii\base\ApplicationComponent
 	}
 
 	/**
-	 * Initializes the component.
-	 * This method is required by {@link IApplicationComponent} and is invoked by application
-	 * when the Connection is used as an application component.
-	 * If you override this method, make sure to call the parent implementation
-	 * so that the component can be marked as initialized.
-	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->autoConnect)
-			$this->setActive(true);
-	}
-
-	/**
-	 * Returns whether the DB connection is established.
+	 * Returns a value indicating whether the DB connection is established.
 	 * @return boolean whether the DB connection is established
 	 */
 	public function getActive()
 	{
-		return $this->_active;
+		return $this->pdo !== null;
 	}
 
 	/**
-	 * Open or close the DB connection.
-	 * @param boolean $value whether to open or close DB connection
-	 * @throws CException if connection fails
+	 * Opens or closes the DB connection.
+	 * @param boolean $value whether to open or close the DB connection
+	 * @throws Exception if there is any error when establishing the connection
 	 */
 	public function setActive($value)
 	{
-		if ($value != $this->_active)
-		{
-			if ($value)
-				$this->open();
-			else
-				$this->close();
-		}
+		$value ? $this->open() : $this->close();
 	}
 
 	/**
 	 * Sets the parameters about query caching.
-	 * This method can be used to enable or disable query caching.
-	 * By setting the $duration parameter to be 0, the query caching will be disabled.
-	 * Otherwise, query results of the new SQL statements executed next will be saved in cache
-	 * and remain valid for the specified duration.
-	 * If the same query is executed again, the result may be fetched from cache directly
-	 * without actually executing the SQL statement.
+	 * This method is provided as a shortcut to setting three properties that are related
+	 * with query caching: [[queryCachingDuration]], [[queryCachingDependency]] and
+	 * [[queryCachingCount]].
 	 * @param integer $duration the number of seconds that query results may remain valid in cache.
-	 * If this is 0, the caching will be disabled.
-	 * @param CCacheDependency $dependency the dependency that will be used when saving the query results into cache.
-	 * @param integer $queryCount number of SQL queries that need to be cached after calling this method. Defaults to 1,
-	 * meaning that the next SQL query will be cached.
+	 * See [[queryCachingDuration]] for more details.
+	 * @param CCacheDependency $dependency the dependency for the cached query result.
+	 * See [[queryCachingDependency]] for more details.
+	 * @param integer $queryCount number of SQL queries that need to be cached after calling this method.
+	 * See [[queryCachingCount]] for more details.
 	 * @return Connection the connection instance itself.
-	 * @since 1.1.7
 	 */
-	public function cache($duration, $dependency = null, $queryCount = 1)
+	public function cache($duration = 300, $dependency = null, $queryCount = 1)
 	{
 		$this->queryCachingDuration = $duration;
 		$this->queryCachingDependency = $dependency;
@@ -341,33 +319,28 @@ class Connection extends \yii\base\ApplicationComponent
 	}
 
 	/**
-	 * Opens DB connection if it is currently not
-	 * @throws CException if connection fails
+	 * Establishes a DB connection.
+	 * It does nothing if a DB connection has already been established.
+	 * @throws Exception if connection fails
 	 */
-	protected function open()
+	public function open()
 	{
-		if ($this->_pdo === null)
-		{
-			if (empty($this->connectionString))
-				throw new CDbException(Yii::t('yii', 'Connection.connectionString cannot be empty.'));
-			try
-			{
-				Yii::trace('Opening DB connection', 'system.db.Connection');
-				$this->_pdo = $this->createPdoInstance();
-				$this->initConnection($this->_pdo);
-				$this->_active = true;
+		if ($this->pdo === null) {
+			if (empty($this->dsn)) {
+				throw new Exception('Connection.dsn cannot be empty.');
 			}
-			catch(PDOException $e)
-			{
-				if (YII_DEBUG)
-				{
-					throw new CDbException(Yii::t('yii', 'Connection failed to open the DB connection: {error}',
-						array('{error}' => $e->getMessage())), (int)$e->getCode(), $e->errorInfo);
+			try {
+				\Yii::trace('Opening DB connection', __CLASS__);
+				$this->pdo = $this->createPdoInstance();
+				$this->initConnection($this->pdo);
+			}
+			catch (\PDOException $e) {
+				if (YII_DEBUG) {
+					throw new Exception('Failed to open DB connection: ' . $e->getMessage(), (int)$e->getCode(), $e->errorInfo);
 				}
-				else
-				{
-					Yii::log($e->getMessage(), CLogger::LEVEL_ERROR, 'exception.CDbException');
-					throw new CDbException(Yii::t('yii', 'Connection failed to open the DB connection.'), (int)$e->getCode(), $e->errorInfo);
+				else {
+					\Yii::error($e->getMessage(), __CLASS__);
+					throw new Exception('Failed to open DB connection.', (int)$e->getCode(), $e->errorInfo);
 				}
 			}
 		}
@@ -377,93 +350,82 @@ class Connection extends \yii\base\ApplicationComponent
 	 * Closes the currently active DB connection.
 	 * It does nothing if the connection is already closed.
 	 */
-	protected function close()
+	public function close()
 	{
-		Yii::trace('Closing DB connection', 'system.db.Connection');
-		$this->_pdo = null;
-		$this->_active = false;
-		$this->_schema = null;
+		if ($this->pdo !== null) {
+			\Yii::trace('Closing DB connection', __CLASS__);
+			$this->pdo = null;
+			$this->_schema = null;
+		}
 	}
 
 	/**
 	 * Creates the PDO instance.
-	 * When some functionalities are missing in the pdo driver, we may use
-	 * an adapter class to provides them.
-	 * @return PDO the pdo instance
-	 * @since 1.0.4
+	 * This method is called by [[open]] to establish a DB connection.
+	 * The default implementation will create a PHP `PDO` instance.
+	 * You may override this method if the default `PDO` needs to be adapted for certain DBMS.
+	 * @return \PDO the pdo instance
 	 */
 	protected function createPdoInstance()
 	{
-		$pdoClass = $this->pdoClass;
-		if (($pos = strpos($this->connectionString, ':')) !== false)
-		{
-			$driver = strtolower(substr($this->connectionString, 0, $pos));
-			if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv')
-				$pdoClass = 'CMssqlPdoAdapter';
+		$pdoClass = '\PDO';
+		if (($pos = strpos($this->dsn, ':')) !== false) {
+			$driver = strtolower(substr($this->dsn, 0, $pos));
+			if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
+				$pdoClass = '\yii\db\dao\mssql\PDO';
+			}
 		}
-		return new $pdoClass($this->connectionString, $this->username,
-									$this->password, $this->_attributes);
+		return new $pdoClass($this->dsn, $this->username, $this->password, $this->attributes);
 	}
 
 	/**
-	 * Initializes the open db connection.
-	 * This method is invoked right after the db connection is established.
-	 * The default implementation is to set the charset for MySQL and PostgreSQL database connections.
-	 * @param PDO $pdo the PDO instance
+	 * Initializes the DB connection.
+	 * This method is invoked right after the DB connection is established.
+	 * The default implementation sets the [[charset]] and executes SQLs specified
+	 * in [[initSQLs]].
 	 */
-	protected function initConnection($pdo)
+	protected function initConnection()
 	{
-		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES'))
-			$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
-		if ($this->charset !== null)
-		{
-			$driver = strtolower($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
-			if (in_array($driver, array('pgsql', 'mysql', 'mysqli')))
-				$pdo->exec('SET NAMES ' . $pdo->quote($this->charset));
+		$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		if ($this->emulatePrepare !== null && constant('\PDO::ATTR_EMULATE_PREPARES')) {
+			$this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
 		}
-		if ($this->initSQLs !== null)
-		{
-			foreach ($this->initSQLs as $sql)
-				$pdo->exec($sql);
+		if ($this->charset !== null) {
+			$driver = strtolower($this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME));
+			if (in_array($driver, array('pgsql', 'mysql', 'mysqli'))) {
+				$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
+			}
 		}
-	}
-
-	/**
-	 * Returns the PDO instance.
-	 * @return PDO the PDO instance, null if the connection is not established yet
-	 */
-	public function getPdoInstance()
-	{
-		return $this->_pdo;
+		if (!empty($this->initSQLs)) {
+			foreach ($this->initSQLs as $sql) {
+				$this->pdo->exec($sql);
+			}
+		}
 	}
 
 	/**
 	 * Creates a command for execution.
 	 * @param mixed $query the DB query to be executed. This can be either a string representing a SQL statement,
-	 * or an array representing different fragments of a SQL statement. Please refer to {@link CDbCommand::__construct}
+	 * or an array representing different fragments of a SQL statement. Please refer to [[Command::__construct]]
 	 * for more details about how to pass an array as the query. If this parameter is not given,
-	 * you will have to call query builder methods of {@link CDbCommand} to build the DB query.
-	 * @return CDbCommand the DB command
+	 * you will have to call query builder methods in [[Command]] to build the DB query.
+	 * @return Command the DB command
 	 */
 	public function createCommand($query = null)
 	{
-		$this->setActive(true);
-		return new CDbCommand($this, $query);
+		$this->open();
+		return new Command($this, $query);
 	}
 
 	/**
 	 * Returns the currently active transaction.
-	 * @return CDbTransaction the currently active transaction. Null if no active transaction.
+	 * @return Transaction the currently active transaction. Null if no active transaction.
 	 */
 	public function getCurrentTransaction()
 	{
-		if ($this->_transaction !== null)
-		{
-			if ($this->_transaction->getActive())
-				return $this->_transaction;
+		if ($this->_transaction !== null && $this->_transaction->getActive()) {
+			return $this->_transaction;
 		}
-		return null;
 	}
 
 	/**
@@ -472,10 +434,10 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function beginTransaction()
 	{
-		Yii::trace('Starting transaction', 'system.db.Connection');
-		$this->setActive(true);
-		$this->_pdo->beginTransaction();
-		return $this->_transaction = new CDbTransaction($this);
+		\Yii::trace('Starting transaction', __CLASS__);
+		$this->open();
+		$this->pdo->beginTransaction();
+		return $this->_transaction = new Transaction($this);
 	}
 
 	/**
@@ -484,27 +446,17 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function getSchema()
 	{
-		if ($this->_schema !== null)
+		if ($this->_schema !== null) {
 			return $this->_schema;
-		else
-		{
+		}
+		else {
 			$driver = $this->getDriverName();
-			if (isset($this->driverMap[$driver]))
-				return $this->_schema = Yii::createComponent($this->driverMap[$driver], $this);
+			if (isset($this->schemaMap[$driver]))
+				return $this->_schema = Yii::createComponent($this->schemaMap[$driver], $this);
 			else
 				throw new CDbException(Yii::t('yii', 'Connection does not support reading schema for {driver} database.',
 					array('{driver}' => $driver)));
 		}
-	}
-
-	/**
-	 * Returns the SQL command builder for the current DB connection.
-	 * @return CDbCommandBuilder the command builder
-	 * @since 1.0.4
-	 */
-	public function getCommandBuilder()
-	{
-		return $this->getSchema()->getCommandBuilder();
 	}
 
 	/**
@@ -515,8 +467,8 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function getLastInsertID($sequenceName = '')
 	{
-		$this->setActive(true);
-		return $this->_pdo->lastInsertId($sequenceName);
+		$this->open();
+		return $this->pdo->lastInsertId($sequenceName);
 	}
 
 	/**
@@ -527,14 +479,17 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function quoteValue($str)
 	{
-		if (is_int($str) || is_float($str))
+		if (is_int($str) || is_float($str) || is_bool($str)) {
 			return $str;
+		}
 
-		$this->setActive(true);
-		if (($value = $this->_pdo->quote($str)) !== false)
+		$this->open();
+		if (($value = $this->pdo->quote($str)) !== false) {
 			return $value;
-		else  // the driver doesn't support quote (e.g. oci)
+		}
+		else {  // the driver doesn't support quote (e.g. oci)
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
+		}
 	}
 
 	/**
@@ -560,166 +515,34 @@ class Connection extends \yii\base\ApplicationComponent
 	}
 
 	/**
-	 * Determines the PDO type for the specified PHP type.
-	 * @param string $type The PHP type (obtained by gettype() call).
+	 * Determines the PDO type for the give PHP data type.
+	 * @param string $type The PHP type (obtained by `gettype()` call).
 	 * @return integer the corresponding PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
 	 */
 	public function getPdoType($type)
 	{
-		static $map = array
-		(
-			'boolean' => PDO::PARAM_BOOL,
-			'integer' => PDO::PARAM_INT,
-			'string' => PDO::PARAM_STR,
-			'NULL' => PDO::PARAM_NULL,
+		static $map = array(
+			'boolean' => \PDO::PARAM_BOOL,
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'NULL' => \PDO::PARAM_NULL,
 		);
 		return isset($map[$type]) ? $map[$type] : PDO::PARAM_STR;
 	}
 
 	/**
-	 * Returns the case of the column names
-	 * @return mixed the case of the column names
-	 * @see http://www.php.net/manual/en/pdo.setattribute.php
-	 */
-	public function getColumnCase()
-	{
-		return $this->getAttribute(PDO::ATTR_CASE);
-	}
-
-	/**
-	 * Sets the case of the column names.
-	 * @param mixed $value the case of the column names
-	 * @see http://www.php.net/manual/en/pdo.setattribute.php
-	 */
-	public function setColumnCase($value)
-	{
-		$this->setAttribute(PDO::ATTR_CASE, $value);
-	}
-
-	/**
-	 * Returns how the null and empty strings are converted.
-	 * @return mixed how the null and empty strings are converted
-	 * @see http://www.php.net/manual/en/pdo.setattribute.php
-	 */
-	public function getNullConversion()
-	{
-		return $this->getAttribute(PDO::ATTR_ORACLE_NULLS);
-	}
-
-	/**
-	 * Sets how the null and empty strings are converted.
-	 * @param mixed $value how the null and empty strings are converted
-	 * @see http://www.php.net/manual/en/pdo.setattribute.php
-	 */
-	public function setNullConversion($value)
-	{
-		$this->setAttribute(PDO::ATTR_ORACLE_NULLS, $value);
-	}
-
-	/**
-	 * Returns whether creating or updating a DB record will be automatically committed.
-	 * Some DBMS (such as sqlite) may not support this feature.
-	 * @return boolean whether creating or updating a DB record will be automatically committed.
-	 */
-	public function getAutoCommit()
-	{
-		return $this->getAttribute(PDO::ATTR_AUTOCOMMIT);
-	}
-
-	/**
-	 * Sets whether creating or updating a DB record will be automatically committed.
-	 * Some DBMS (such as sqlite) may not support this feature.
-	 * @param boolean $value whether creating or updating a DB record will be automatically committed.
-	 */
-	public function setAutoCommit($value)
-	{
-		$this->setAttribute(PDO::ATTR_AUTOCOMMIT, $value);
-	}
-
-	/**
-	 * Returns whether the connection is persistent or not.
-	 * Some DBMS (such as sqlite) may not support this feature.
-	 * @return boolean whether the connection is persistent or not
-	 */
-	public function getPersistent()
-	{
-		return $this->getAttribute(PDO::ATTR_PERSISTENT);
-	}
-
-	/**
-	 * Sets whether the connection is persistent or not.
-	 * Some DBMS (such as sqlite) may not support this feature.
-	 * @param boolean $value whether the connection is persistent or not
-	 */
-	public function setPersistent($value)
-	{
-		return $this->setAttribute(PDO::ATTR_PERSISTENT, $value);
-	}
-
-	/**
-	 * Returns the name of the DB driver
+	 * Returns the name of the DB driver for the current [[dsn]].
 	 * @return string name of the DB driver
 	 */
 	public function getDriverName()
 	{
-		if (($pos = strpos($this->connectionString, ':')) !== false)
-			return strtolower(substr($this->connectionString, 0, $pos));
-		// return $this->getAttribute(PDO::ATTR_DRIVER_NAME);
-	}
-
-	/**
-	 * Returns the version information of the DB driver.
-	 * @return string the version information of the DB driver
-	 */
-	public function getClientVersion()
-	{
-		return $this->getAttribute(PDO::ATTR_CLIENT_VERSION);
-	}
-
-	/**
-	 * Returns the status of the connection.
-	 * Some DBMS (such as sqlite) may not support this feature.
-	 * @return string the status of the connection
-	 */
-	public function getConnectionStatus()
-	{
-		return $this->getAttribute(PDO::ATTR_CONNECTION_STATUS);
-	}
-
-	/**
-	 * Returns whether the connection performs data prefetching.
-	 * @return boolean whether the connection performs data prefetching
-	 */
-	public function getPrefetch()
-	{
-		return $this->getAttribute(PDO::ATTR_PREFETCH);
-	}
-
-	/**
-	 * Returns the information of DBMS server.
-	 * @return string the information of DBMS server
-	 */
-	public function getServerInfo()
-	{
-		return $this->getAttribute(PDO::ATTR_SERVER_INFO);
-	}
-
-	/**
-	 * Returns the version information of DBMS server.
-	 * @return string the version information of DBMS server
-	 */
-	public function getServerVersion()
-	{
-		return $this->getAttribute(PDO::ATTR_SERVER_VERSION);
-	}
-
-	/**
-	 * Returns the timeout settings for the connection.
-	 * @return integer timeout settings for the connection
-	 */
-	public function getTimeout()
-	{
-		return $this->getAttribute(PDO::ATTR_TIMEOUT);
+		if (($pos = strpos($this->dsn, ':')) !== false) {
+			return strtolower(substr($this->dsn, 0, $pos));
+		}
+		else {
+			return $this->getAttribute(\PDO::ATTR_DRIVER_NAME);
+		}
 	}
 
 	/**
@@ -730,8 +553,8 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function getAttribute($name)
 	{
-		$this->setActive(true);
-		return $this->_pdo->getAttribute($name);
+		$this->open();
+		return $this->pdo->getAttribute($name);
 	}
 
 	/**
@@ -742,51 +565,25 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function setAttribute($name, $value)
 	{
-		if ($this->_pdo instanceof PDO)
-			$this->_pdo->setAttribute($name, $value);
-		else
-			$this->_attributes[$name] = $value;
-	}
-
-	/**
-	 * Returns the attributes that are previously explicitly set for the DB connection.
-	 * @return array attributes (name=>value) that are previously explicitly set for the DB connection.
-	 * @see setAttributes
-	 * @since 1.1.7
-	 */
-	public function getAttributes()
-	{
-		return $this->_attributes;
-	}
-
-	/**
-	 * Sets a set of attributes on the database connection.
-	 * @param array $values attributes (name=>value) to be set.
-	 * @see setAttribute
-	 * @since 1.1.7
-	 */
-	public function setAttributes($values)
-	{
-		foreach ($values as $name => $value)
-			$this->_attributes[$name] = $value;
+		$this->open();
+		$this->pdo->setAttribute($name, $value);
 	}
 
 	/**
 	 * Returns the statistical results of SQL executions.
 	 * The results returned include the number of SQL statements executed and
 	 * the total time spent.
-	 * In order to use this method, {@link enableProfiling} has to be set true.
+	 * In order to use this method, [[enableProfiling]] has to be set true.
 	 * @return array the first element indicates the number of SQL statements executed,
 	 * and the second element the total time spent in SQL execution.
-	 * @since 1.0.6
 	 */
 	public function getStats()
 	{
-		$logger = Yii::getLogger();
-		$timings = $logger->getProfilingResults(null, 'system.db.CDbCommand.query');
+		$logger = \Yii::getLogger();
+		$timings = $logger->getProfilingResults(null, 'yii\db\dao\Command::query');
 		$count = count($timings);
 		$time = array_sum($timings);
-		$timings = $logger->getProfilingResults(null, 'system.db.CDbCommand.execute');
+		$timings = $logger->getProfilingResults(null, 'yii\db\dao\Command::execute');
 		$count += count($timings);
 		$time += array_sum($timings);
 		return array($count, $time);
