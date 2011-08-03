@@ -311,30 +311,51 @@ class Component
 	 *
 	 * - Call [[Initable::preinit|preinit]] if the class implements [[Initable]];
 	 * - Initialize the component properties using the name-value pairs given as the
-	 *   first parameter to this method;
+	 *   last parameter to this method;
 	 * - Call [[Initable::init|init]] if the class implements [[Initable]].
 	 *
-	 * Any additional parameters passed to this method will be
-	 * passed to the constructor of the component being created. For example,
+	 * Parameters passed to this method will be used as the parameters to the object
+	 * constructor. If, however, the last parameter is an array and the count of the parameters
+	 * is one more than the count of declared constructor parameters, that parameter
+	 * will be treated as name-value pairs for initializing the component properties.
+	 * For example,
 	 *
-	 * @param array $config the name-value pairs that will be used to initialize component properties.
+	 * ~~~
+	 * class Foo extends \yii\base\Component {
+	 *     public $c;
+	 *     public function __construct($a, $b) { ... }
+	 * }
+	 *
+	 * $model = Foo::create(1, 2, array('c' => 3));
+	 * // which is equivalent to the following lines:
+	 * $model = new Foo(1, 2);
+	 * $model->preinit();
+	 * $model->c = 3;
+	 * $model->init();
+	 * ~~~
+	 *
 	 * @return object the created component
 	 * @throws Exception if the configuration is invalid.
 	 */
-	public static function create($config = array())
+	public static function create()
 	{
-		if (!is_array($config)) {
-			throw new Exception('The $config parameter must be an array.');
-		}
-
-		if (($n = func_num_args()) > 1) {
+		$class = '\\' . get_called_class();
+		if (($n = func_num_args()) > 0) {
 			$args = func_get_args();
-			$args[0]['class'] = '\\' . get_called_class();
+			if (is_array($args[$n-1])) {
+				// the last parameter could be configuration array
+				$method = new \ReflectionMethod($class, '__construct');
+				if ($method->getNumberOfParameters()+1 == $n) {
+					$config = $args[$n-1];
+					array_pop($args);
+				}
+			}
+			$config['class'] = $class;
+			array_unshift($args, $config);
 			return call_user_func_array('\Yii::createComponent', $args);
 		}
 		else {
-			$config['class'] = '\\' . get_called_class();
-			return \Yii::createComponent($config);
+			return \Yii::createComponent($class);
 		}
 	}
 

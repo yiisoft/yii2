@@ -1,9 +1,10 @@
+- logging
 - base
 	* error/exception handling
-	* security
 	* module
 	* application
 	* http exception
+	* security
 - validators
 	* type conversion rules
 	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
@@ -24,7 +25,6 @@
 	* AR
 	* document-based
 	* key-value-based
-- logging
 - i18n
 	* consider using PHP built-in support and data
 	* message translations, choice format

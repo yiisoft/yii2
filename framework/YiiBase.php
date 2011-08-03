@@ -72,37 +72,12 @@ class YiiBase
 	private static $_imported = array();	// alias => class name or directory
 	private static $_logger;
 
-
 	/**
 	 * @return string the version of Yii framework
 	 */
 	public static function getVersion()
 	{
 		return '2.0-dev';
-	}
-
-	/**
-	 * Creates a Web application instance.
-	 * @param mixed $config application configuration. This can be either an array representing
-	 * the configuration to be applied to the newly created application instance, or a string
-	 * referring to a PHP file returning the configuration array.
-	 * @return yii\web\Application the newly created application instance.
-	 */
-	public static function createWebApplication($config = null)
-	{
-		return new yii\web\Application($config);
-	}
-
-	/**
-	 * Creates a console application instance.
-	 * @param mixed $config application configuration. This can be either an array representing
-	 * the configuration to be applied to the newly created application instance, or a string
-	 * referring to a PHP file returning the configuration array.
-	 * @return yii\console\Application the newly created application instance.
-	 */
-	public static function createConsoleApplication($config = null)
-	{
-		return new yii\console\Application($config);
 	}
 
 	/**

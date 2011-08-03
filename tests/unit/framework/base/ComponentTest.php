@@ -208,6 +208,14 @@ class ComponentTest extends \yii\test\TestCase
 		$this->assertEquals('Hello world',$component->evaluateExpression('"Hello $who"',array('who' => 'world')));
 		$this->assertEquals('Hello world',$component->evaluateExpression(array($component,'exprEvaluator'),array('who' => 'world')));
 	}
+
+	public function testCreate()
+	{
+		$component = NewComponent2::create(1, 2, array('a'=>3));
+		$this->assertEquals(1, $component->b);
+		$this->assertEquals(2, $component->c);
+		$this->assertEquals(3, $component->a);
+	}
 }
 
 class NewComponent extends \yii\base\Component
@@ -257,5 +265,17 @@ class NewBehavior extends \yii\base\Behavior
 	{
 		$this->owner->behaviorCalled=true;
 		return 2;
+	}
+}
+
+class NewComponent2 extends \yii\base\Component
+{
+	public $a;
+	public $b;
+	public $c;
+	public function __construct($b, $c)
+	{
+		$this->b = $b;
+		$this->c = $c;
 	}
 }
