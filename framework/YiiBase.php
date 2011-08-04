@@ -30,10 +30,9 @@ defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER'
  */
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 /**
- * Defines the Yii framework installation path.
+ * This constant defines the framework installation directory.
  */
 defined('YII_PATH') or define('YII_PATH', __DIR__);
-
 
 /**
  * YiiBase is the core helper class for the Yii framework.
@@ -66,7 +65,7 @@ class YiiBase
 	 * @var array registered path aliases
 	 */
 	public static $aliases = array(
-		'@yii' => YII_PATH,
+		'@yii' => __DIR__,
 	);
 
 	private static $_imported = array();	// alias => class name or directory
@@ -78,15 +77,6 @@ class YiiBase
 	public static function getVersion()
 	{
 		return '2.0-dev';
-	}
-
-	/**
-	 * Returns the installation directory of the Yii framework.
-	 * @return string the path of the framework
-	 */
-	public static function getFrameworkPath()
-	{
-		return YII_PATH;
 	}
 
 	/**
@@ -370,86 +360,83 @@ class YiiBase
 	}
 
 	/**
-	 * Writes a trace message.
-	 * This method will only log a message when the application is in debug mode.
-	 * @param string $msg message to be logged
-	 * @param string $category category of the message
-	 * @see log
+	 * Logs a trace message.
+	 * Trace messages are logged mainly for development purpose to see
+	 * the execution work flow of some code.
+	 * @param string $message the message to be logged.
+	 * @param string $category the category of the message.
 	 */
-	public static function trace($msg, $category = 'application')
+	public static function trace($message, $category = 'application')
 	{
 		if (YII_DEBUG) {
-			static::log($msg, CLogger::LEVEL_TRACE, $category);
+			self::getLogger()->trace($message, $category);
 		}
 	}
 
 	/**
-	 * Logs a message.
-	 * Messages logged by this method may be retrieved via {@link CLogger::getLogs}
-	 * and may be recorded in different media, such as file, email, database, using
-	 * {@link CLogRouter}.
-	 * @param string $msg message to be logged
-	 * @param string $level level of the message (e.g. 'trace', 'warning', 'error'). It is case-insensitive.
-	 * @param string $category category of the message (e.g. 'system.web'). It is case-insensitive.
+	 * Logs an error message.
+	 * An error message is typically logged when an unrecoverable error occurs
+	 * during the execution of an application.
+	 * @param string $message the message to be logged.
+	 * @param string $category the category of the message.
 	 */
-	public static function log($msg, $level = CLogger::LEVEL_INFO, $category = 'application')
+	public function error($message, $category = 'application')
 	{
-		if (self::$_logger === null) {
-			self::$_logger = new CLogger;
-		}
-		if (YII_DEBUG && YII_TRACE_LEVEL > 0 && $level !== CLogger::LEVEL_PROFILE)
-		{
-			$traces = debug_backtrace();
-			$count = 0;
-			foreach ($traces as $trace)
-			{
-				if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII_PATH) !== 0)
-				{
-					$msg .= "\nin " . $trace['file'] . ' (' . $trace['line'] . ')';
-					if (++$count >= YII_TRACE_LEVEL)
-						break;
-				}
-			}
-		}
-		self::$_logger->log($msg, $level, $category);
+		self::getLogger()->error($message, $category);
 	}
 
 	/**
-	 * Marks the begin of a code block for profiling.
-	 * This has to be matched with a call to {@link endProfile()} with the same token.
-	 * The begin- and end- calls must also be properly nested, e.g.,
-	 * <pre>
-	 * Yii::beginProfile('block1');
-	 * Yii::beginProfile('block2');
-	 * Yii::endProfile('block2');
-	 * Yii::endProfile('block1');
-	 * </pre>
-	 * The following sequence is not valid:
-	 * <pre>
-	 * Yii::beginProfile('block1');
-	 * Yii::beginProfile('block2');
-	 * Yii::endProfile('block1');
-	 * Yii::endProfile('block2');
-	 * </pre>
-	 * @param string $token token for the code block
-	 * @param string $category the category of this log message
+	 * Logs a warning message.
+	 * A warning message is typically logged when an error occurs while the execution
+	 * can still continue.
+	 * @param string $message the message to be logged.
+	 * @param string $category the category of the message.
+	 */
+	public function warn($message, $category = 'application')
+	{
+		self::getLogger()->warn($message, $category);
+	}
+
+	/**
+	 * Logs an informative message.
+	 * An informative message is typically logged by an application to keep record of
+	 * something important (e.g. an administrator logs in).
+	 * @param string $message the message to be logged.
+	 * @param string $category the category of the message.
+	 */
+	public function info($message, $category = 'application')
+	{
+		self::getLogger()->info($message, $category);
+	}
+
+	/**
+	 * Marks the beginning of a code block for profiling.
+	 * This has to be matched with a call to [[endProfile]] with the same category name.
+	 * The begin- and end- calls must also be properly nested. For example,
+	 *
+	 * ~~~
+	 * \Yii::beginProfile('block1');
+	 * \Yii::beginProfile('block2');
+	 * \Yii::endProfile('block2');
+	 * \Yii::endProfile('block1');
+	 * ~~~
+	 * @param string $category the category of this profile block
 	 * @see endProfile
 	 */
-	public static function beginProfile($token, $category = 'application')
+	public static function beginProfile($category)
 	{
-		static::log('begin:' . $token, CLogger::LEVEL_PROFILE, $category);
+		self::getLogger()->beginProfile($category);
 	}
 
 	/**
 	 * Marks the end of a code block for profiling.
-	 * This has to be matched with a previous call to {@link beginProfile()} with the same token.
-	 * @param string $token token for the code block
-	 * @param string $category the category of this log message
+	 * This has to be matched with a previous call to [[beginProfile]] with the same category name.
+	 * @param string $category the category of this profile block
 	 * @see beginProfile
 	 */
-	public static function endProfile($token, $category = 'application')
+	public static function endProfile($category)
 	{
-		static::log('end:' . $token, CLogger::LEVEL_PROFILE, $category);
+		self::getLogger()->endProfile($category);
 	}
 
 	/**
