@@ -1,4 +1,7 @@
 - logging
+	* WebTarget
+	* ProfileTarget
+	* Toolbar ?
 - base
 	* error/exception handling
 	* module

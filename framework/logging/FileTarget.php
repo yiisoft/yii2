@@ -8,6 +8,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\logging;
+
 /**
  * FileTarget records log messages in files.
  *

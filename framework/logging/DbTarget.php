@@ -1,156 +1,101 @@
 <?php
 /**
- * CDbLogRoute class file.
+ * DbTarget class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\logging;
 
 /**
- * CDbLogRoute stores log messages in a database table.
+ * DbTarget stores log messages in a database table.
  *
- * To specify the database table for storing log messages, set {@link logTableName} as
- * the name of the table and specify {@link connectionID} to be the ID of a {@link CDbConnection}
- * application component. If they are not set, a SQLite3 database named 'log-YiiVersion.db' will be created
- * and used under the application runtime directory.
+ * By default, DbTarget will use the database specified by [[connectionID]] and save
+ * messages into a table named by [[tableName]]. Please refer to [[tableName]] for the required
+ * table structure. Note that this table must be created beforehand. Otherwise an exception
+ * will be thrown when DbTarget is saving messages into DB.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbLogRoute.php 3069 2011-03-14 00:28:38Z qiang.xue $
- * @package system.logging
- * @since 1.0
+ * @since 2.0
  */
-class CDbLogRoute extends CLogRoute
+class DbTarget extends Target
 {
 	/**
-	 * @var string the ID of CDbConnection application component. If not set, a SQLite database
-	 * will be automatically created and used. The SQLite database file is
-	 * <code>protected/runtime/log-YiiVersion.db</code>.
+	 * @var string the ID of [[\yii\db\dao\Connection]] application component.
+	 * Defaults to 'db'. Please make sure that your database contains a table
+	 * whose name is as specified in [[tableName]] and has the required table structure.
+	 * @see tableName
 	 */
-	public $connectionID;
+	public $connectionID = 'db';
 	/**
-	 * @var string the name of the DB table that stores log content. Defaults to 'YiiLog'.
-	 * If {@link autoCreateLogTable} is false and you want to create the DB table manually by yourself,
-	 * you need to make sure the DB table is of the following structure:
-	 * <pre>
-	 *  (
-	 *		id       INTEGER NOT NULL PRIMARY KEY,
-	 *		level    VARCHAR(128),
-	 *		category VARCHAR(128),
-	 *		logtime  INTEGER,
-	 *		message  TEXT
-	 *   )
-	 * </pre>
-	 * Note, the 'id' column must be created as an auto-incremental column.
-	 * In MySQL, this means it should be <code>id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY</code>;
-	 * In PostgreSQL, it is <code>id SERIAL PRIMARY KEY</code>.
-	 * @see autoCreateLogTable
+	 * @var string the name of the DB table that stores log messages. Defaults to '{{log}}'.
+	 * If you are using table prefix 'tbl_' (configured via [[\yii\db\dao\Connection::tablePrefix]]),
+	 * it means the DB table would be named as 'tbl_log'.
+	 *
+	 * The DB table must have the following structure:
+	 *
+	 * ~~~
+	 * CREATE TABLE tbl_log (
+	 *	   id       INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	 *	   level    VARCHAR(32),
+	 *	   category VARCHAR(255),
+	 *	   log_time INTEGER,
+	 *	   message  TEXT,
+	 *     INDEX idx_log_level (level),
+	 *     INDEX idx_log_category (category)
+	 * )
+	 * ~~~
+	 *
+	 * Note that the 'id' column must be created as an auto-incremental column.
+	 * The above SQL shows the syntax of MySQL. If you are using other DBMS, you need
+	 * to adjust it accordingly. For example, in PosgreSQL, it should be `id SERIAL PRIMARY KEY`.
+	 *
+	 * The indexes declared above are not required. They are mainly used to improve the performance
+	 * of some queries about message levels and categories. Depending on your actual needs, you may
+	 * want to create other indexes.
 	 */
-	public $logTableName = 'YiiLog';
-	/**
-	 * @var boolean whether the log DB table should be automatically created if not exists. Defaults to true.
-	 * @see logTableName
-	 */
-	public $autoCreateLogTable = true;
-	/**
-	 * @var CDbConnection the DB connection instance
-	 */
+	public $tableName = '{{log}}';
+
 	private $_db;
 
 	/**
-	 * Initializes the route.
-	 * This method is invoked after the route is created by the route manager.
+	 * Returns the DB connection used for saving log messages.
+	 * @return \yii\db\dao\Connection the DB connection instance
+	 * @throws \yii\base\Exception if [[connectionID]] does not refer to a valid application component ID.
 	 */
-	public function init()
+	public function getDbConnection()
 	{
-		parent::init();
-
-		if ($this->autoCreateLogTable)
-		{
-			$db = $this->getDbConnection();
-			$sql = "DELETE FROM  {$this->logTableName} WHERE 0=1";
-			try
-			{
-				$db->createCommand($sql)->execute();
-			}
-			catch(Exception $e)
-			{
-				$this->createLogTable($db, $this->logTableName);
-			}
-		}
-	}
-
-	/**
-	 * Creates the DB table for storing log messages.
-	 * @param CDbConnection $db the database connection
-	 * @param string $tableName the name of the table to be created
-	 */
-	protected function createLogTable($db, $tableName)
-	{
-		$driver = $db->getDriverName();
-		if ($driver === 'mysql')
-			$logID = 'id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY';
-		elseif ($driver === 'pgsql')
-			$logID = 'id SERIAL PRIMARY KEY';
-		else
-			$logID = 'id INTEGER NOT NULL PRIMARY KEY';
-
-		$sql = "
-CREATE TABLE $tableName
-(
-	$logID,
-	level VARCHAR(128),
-	category VARCHAR(128),
-	logtime INTEGER,
-	message TEXT
-)";
-		$db->createCommand($sql)->execute();
-	}
-
-	/**
-	 * @return CDbConnection the DB connection instance
-	 * @throws CException if {@link connectionID} does not point to a valid application component.
-	 */
-	protected function getDbConnection()
-	{
-		if ($this->_db !== null)
+		if ($this->_db !== null) {
 			return $this->_db;
-		elseif (($id = $this->connectionID) !== null)
-		{
-			if (($this->_db = Yii::app()->getComponent($id)) instanceof CDbConnection)
-				return $this->_db;
-			else
-				throw new CException(Yii::t('yii', 'CDbLogRoute.connectionID "{id}" does not point to a valid CDbConnection application component.',
-					array('{id}' => $id)));
 		}
-		else
-		{
-			$dbFile = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'log-' . Yii::getVersion() . '.db';
-			return $this->_db = new CDbConnection('sqlite:' . $dbFile);
+		$this->_db = \Yii::app()->getComponent($this->connectionID);
+		if (!$this->_db instanceof \yii\db\dao\Connection) {
+			throw new \yii\base\Exception('DbTarget.connectionID must refer to a valid application component ID');
 		}
 	}
 
 	/**
-	 * Stores log messages into database.
-	 * @param array $logs list of log messages
+	 * Stores log [[messages]] to DB.
+	 * @param boolean $final whether this method is called at the end of the current application
 	 */
-	protected function processLogs($logs)
+	public function exportMessages($final)
 	{
-		$sql = "
-INSERT INTO  {$this->logTableName}
-(level, category, logtime, message) VALUES
-(:level, :category, :logtime, :message)
-";
+		$sql = "INSERT INTO {$this->tableName}
+			(level, category, log_time, message) VALUES
+			(:level, :category, :log_time, :message)";
 		$command = $this->getDbConnection()->createCommand($sql);
-		foreach ($logs as $log)
-		{
-			$command->bindValue(':level', $log[1]);
-			$command->bindValue(':category', $log[2]);
-			$command->bindValue(':logtime', (int)$log[3]);
-			$command->bindValue(':message', $log[0]);
-			$command->execute();
+		foreach ($this->messages as $message) {
+			$command->bindValues(array(
+				':level' => $message[1],
+				':category' => $message[2],
+				':log_time' => $message[3],
+				':message' => $message[0],
+			))->execute();
 		}
+
+		$this->messages = array();
 	}
 }
