@@ -38,20 +38,26 @@ class Logger extends \yii\base\Component
 	public $flushInterval = 1000;
 	/**
 	 * @var boolean this property will be passed as the parameter to [[flush]] when it is
-	 * called due to the [[flushInterval]] is reached. Defaults to false, meaning the flushed
-	 * messages are still kept in the memory by each log target. If this is true, they will
-	 * be exported to the actual storage medium (e.g. DB, email) defined by each log target.
+	 * called due to the [[flushInterval]] is reached. Defaults to true, meaning the flushed
+	 * messages will be exported to the actual storage medium (e.g. DB, email) defined by each
+	 * log target. If false, the flushed messages will be kept in the memory of each log target.
 	 * @see flushInterval
 	 */
-	public $autoExport = false;
+	public $autoExport = true;
 	/**
 	 * @var array logged messages. This property is mainly managed by [[log]] and [[flush]].
+	 * Each log message is of the following structure:
+	 *
+	 * ~~~
+	 * array(
+	 *   [0] => message (string)
+	 *   [1] => level (string)
+	 *   [2] => category (string)
+	 *   [3] => timestamp (float, obtained by microtime(true))
+	 * )
+	 * ~~~
 	 */
 	public $messages = array();
-	/**
-	 * @var array the profiling results (category, token => time in seconds)
-	 */
-	private $_timings;
 
 	/**
 	 * Logs an error message.
@@ -155,72 +161,24 @@ class Logger extends \yii\base\Component
 	}
 
 	/**
-	 * Retrieves log messages.
-	 *
-	 * Messages may be filtered by log levels and/or categories.
-	 * A level filter is specified by a list of levels separated by comma or space
-	 * (e.g. 'trace, error'). A category filter is similar to level filter
-	 * (e.g. 'system, system.web'). A difference is that in category filter
-	 * you can use pattern like 'system.*' to indicate all categories starting
-	 * with 'system'.
-	 *
-	 * If you do not specify level filter, it will bring back logs at all levels.
-	 * The same applies to category filter.
-	 *
-	 * Level filter and category filter are combinational, i.e., only messages
-	 * satisfying both filter conditions will be returned.
-	 *
-	 * @param string $levels level filter
-	 * @param string $categories category filter
-	 * @return array list of messages. Each array elements represents one message
-	 * with the following structure:
-	 * array(
-	 *   [0] => message (string)
-	 *   [1] => level (string)
-	 *   [2] => category (string)
-	 *   [3] => timestamp (float, obtained by microtime(true));
+	 * Removes all recorded messages from the memory.
+	 * This method will raise an {@link onFlush} event.
+	 * The attached event handlers can process the log messages before they are removed.
+	 * @param boolean $export whether to notify log targets to export the filtered messages they have received.
 	 */
-	public function getLogs($levels = '', $categories = '')
+	public function flush($export = false)
 	{
-		$this->_levels = preg_split('/[\s,]+/', strtolower($levels), -1, PREG_SPLIT_NO_EMPTY);
-		$this->_categories = preg_split('/[\s,]+/', strtolower($categories), -1, PREG_SPLIT_NO_EMPTY);
-		if (empty($levels) && empty($categories))
-			return $this->_logs;
-		elseif (empty($levels))
-			return array_values(array_filter(array_filter($this->_logs, array($this, 'filterByCategory'))));
-		elseif (empty($categories))
-			return array_values(array_filter(array_filter($this->_logs, array($this, 'filterByLevel'))));
-		else
-		{
-			$ret = array_values(array_filter(array_filter($this->_logs, array($this, 'filterByLevel'))));
-			return array_values(array_filter(array_filter($ret, array($this, 'filterByCategory'))));
-		}
+		$this->onFlush(new \yii\base\Event($this, array('export' => $export, 'flush' => true)));
+		$this->messages = array();
 	}
 
 	/**
-	 * Filter function used by {@link getLogs}
-	 * @param array $value element to be filtered
-	 * @return array valid log, false if not.
+	 * Raises an `onFlush` event.
+	 * @param \yii\base\Event $event the event parameter
 	 */
-	private function filterByCategory($value)
+	public function onFlush($event)
 	{
-		foreach ($this->_categories as $category)
-		{
-			$cat = strtolower($value[2]);
-			if ($cat === $category || (($c = rtrim($category, '.*')) !== $category && strpos($cat, $c) === 0))
-				return $value;
-		}
-		return false;
-	}
-
-	/**
-	 * Filter function used by {@link getLogs}
-	 * @param array $value element to be filtered
-	 * @return array valid log, false if not.
-	 */
-	private function filterByLevel($value)
-	{
-		return in_array(strtolower($value[1]), $this->_levels) ? $value : false;
+		$this->raiseEvent('onFlush', $event);
 	}
 
 	/**
@@ -237,36 +195,58 @@ class Logger extends \yii\base\Component
 
 	/**
 	 * Returns the profiling results.
-	 * The results may be filtered by token and/or category.
-	 * If no filter is specified, the returned results would be an array with each element
-	 * being `array($token, $category, $time)`.
-	 * If a filter is specified, the results would be an array of timings.
-	 * @param string $token token filter. Defaults to null, meaning not filtered by token.
-	 * @param string $category category filter. Defaults to null, meaning not filtered by category.
-	 * @param boolean $refresh whether to refresh the internal timing calculations. If false,
-	 * only the first time calling this method will the timings be calculated internally.
-	 * @return array the profiling results.
+	 *
+	 * By default, all profiling results will be returned. You may provide
+	 * `$categories` and `$excludeCategories` as parameters to retrieve the
+	 * results that you are interested in.
+	 *
+	 * @param array $categories list of categories that you are interested in.
+	 * You can use an asterisk at the end of a category to do a prefix match.
+	 * For example, 'yii\db\*' will match categories starting with 'yii\db\',
+	 * such as 'yii\db\dao\Connection'.
+	 * @param array $excludeCategories list of categories that you are interested in.
+	 * @return array the profiling results. Each array element has the following structure:
+	 *  `array($category, $time)`.
 	 */
-	public function getProfilingResults($token = null, $category = null, $refresh = false)
+	public function getProfiling($categories = array(), $excludeCategories = array())
 	{
-		if ($this->_timings === null || $refresh) {
-			$this->calculateTimings();
+		$timings = $this->calculateTimings();
+		if (empty($categories) && empty($excludeCategories)) {
+			return $timings;
 		}
-		if ($token === null && $category === null) {
-			return $this->_timings;
-		}
-		$results = array();
-		foreach ($this->_timings as $timing) {
-			if (($category === null || $timing[1] === $category) && ($token === null || $timing[0] === $token)) {
-				$results[] = $timing[2];
+
+		foreach ($timings as $i => $timing) {
+			$matched = empty($categories);
+			foreach ($categories as $category) {
+				$prefix = rtrim($category, '*');
+				if (strpos($timing[0], $prefix) === 0 && ($timing[0] === $category || $prefix !== $category)) {
+					$matched = true;
+					break;
+				}
+			}
+
+			if ($matched) {
+				foreach ($excludeCategories as $category) {
+					$prefix = rtrim($category, '*');
+					foreach ($timings as $i => $timing) {
+						if (strpos($timing[0], $prefix) === 0 && ($timing[0] === $category || $prefix !== $category)) {
+							$matched = false;
+							break;
+						}
+					}
+				}
+			}
+
+			if (!$matched) {
+				unset($timings[$i]);
 			}
 		}
-		return $results;
+		return array_values($timings);
 	}
 
 	private function calculateTimings()
 	{
-		$this->_timings = array();
+		$timings = array();
 
 		$stack = array();
 		foreach ($this->messages as $log) {
@@ -274,18 +254,16 @@ class Logger extends \yii\base\Component
 				continue;
 			}
 			list($message, $level, $category, $timestamp) = $log;
-			if (!strncasecmp($message, 'begin:', 6)) {
-				$log[0] = substr($message, 6);
+			if ($message === 'begin') {
 				$stack[] = $log;
 			}
-			elseif (!strncasecmp($message, 'end:', 4)) {
-				$token = substr($message, 4);
-				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$delta = $log[3] - $last[3];
-					$this->_timings[] = array($message, $category, $delta);
+			else { // $message === 'end'
+				if (($last = array_pop($stack)) !== null && $last[2] === $category) {
+					$delta = $timestamp - $last[3];
+					$timings[] = array($category, $delta);
 				}
 				else {
-					throw new \yii\base\Exception('Found a mismatching profiling block: ' . $token);
+					throw new \yii\base\Exception('Found a mismatching profiling block: ' . $category);
 				}
 			}
 		}
@@ -293,28 +271,10 @@ class Logger extends \yii\base\Component
 		$now = microtime(true);
 		while (($last = array_pop($stack)) !== null) {
 			$delta = $now - $last[3];
-			$this->_timings[] = array($last[0], $last[2], $delta);
+			$timings[] = array($last[2], $delta);
 		}
+
+		return $timings;
 	}
 
-	/**
-	 * Removes all recorded messages from the memory.
-	 * This method will raise an {@link onFlush} event.
-	 * The attached event handlers can process the log messages before they are removed.
-	 * @param boolean $export whether to notify log targets to export the filtered messages they have received.
-	 */
-	public function flush($export = false)
-	{
-		$this->onFlush(new \yii\base\Event($this, array('export' => $export)));
-		$this->messages = array();
-	}
-
-	/**
-	 * Raises an `onFlush` event.
-	 * @param \yii\base\Event $event the event parameter
-	 */
-	public function onFlush($event)
-	{
-		$this->raiseEvent('onFlush', $event);
-	}
 }

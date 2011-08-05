@@ -125,11 +125,12 @@ class Router extends \yii\base\ApplicationComponent
 	 */
 	public function processMessages($event)
 	{
-		$logger = Yii::getLogger();
+		$messages = \Yii::getLogger()->messages;
 		$export = !isset($event->params['export']) || $event->params['export'];
+		$final = !isset($event-params['flush']) || !$event->params['flush'];
 		foreach ($this->_targets as $target) {
 			if ($target->enabled) {
-				$target->processMessages($logger, $export);
+				$target->processMessages($messages, $export, $final);
 			}
 		}
 	}

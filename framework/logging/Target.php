@@ -13,18 +13,15 @@ namespace yii\logging;
 /**
  * Target is the base class for all log target classes.
  *
- * A log target object retrieves log messages from a logger and sends it
- * somewhere, such as files, emails.
- * The messages being retrieved may be filtered first before being sent
- * to the destination. The filters include log level filter and log category filter.
- *
- * To specify level filter, set {@link levels} property,
- * which takes a string of comma-separated desired level names (e.g. 'Error, Debug').
- * To specify category filter, set {@link categories} property,
- * which takes a string of comma-separated desired category names (e.g. 'System.Web, System.IO').
+ * A log target object will filter the messages logged by [[Logger]] according
+ * to its [[levels]] and [[categories]] properties. It may also export the filtered
+ * messages to specific destination defined by the target, such as emails, files.
  *
  * Level filter and category filter are combinational, i.e., only messages
- * satisfying both filter conditions will they be returned.
+ * satisfying both filter conditions will they be returned.  Additionally, you
+ * may specify [[excludeCategories]]. If a message's category falls within the excluded
+ * categories, it will be filtered out, even if it passes the [[levels]] and
+ * [[categories]] filters.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -36,42 +33,57 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 	 */
 	public $enabled = true;
 	/**
-	 * @var string list of levels separated by comma or space. Defaults to empty, meaning all levels.
+	 * @var array list of message levels that this target is interested in. Defaults to empty, meaning all levels.
 	 */
-	public $levels;
+	public $levels = array();
 	/**
-	 * @var string list of categories separated by comma or space. Defaults to empty, meaning all categories.
+	 * @var array list of message categories that this target is interested in. Defaults to empty, meaning all categories.
+	 * You can use an asterisk at the end of a category so that the category may be used to
+	 * match those categories sharing the same common prefix. For example, 'yii\db\*' will match
+	 * categories starting with 'yii\db\', such as 'yii\db\dao\Connection'.
 	 */
-	public $categories;
+	public $categories = array();
 	/**
-	 * @var string list of categories that should be excluded.
+	 * @var array list of message categories that this target is NOT interested in. Defaults to empty, meaning no uninteresting messages.
+	 * If this property is not empty, then any category listed here will be excluded from [[categories]].
+	 * You can use an asterisk at the end of a category so that the category can be used to
+	 * match those categories sharing the same common prefix. For example, 'yii\db\*' will match
+	 * categories starting with 'yii\db\', such as 'yii\db\dao\Connection'.
+	 * @see categories
 	 */
-	public $excludeCategories;
+	public $excludeCategories = array();
 	/**
-	 * @var mixed the additional filter (eg {@link CLogFilter}) that can be applied to the log messages.
-	 * The value of this property will be passed to {@link Yii::createComponent} to create
-	 * a log filter object. As a result, this can be either a string representing the
-	 * filter class name or an array representing the filter configuration.
-	 * In general, the log filter class should be {@link CLogFilter} or a child class of it.
-	 * Defaults to null, meaning no filter will be used.
+	 * @var boolean whether to prefix each log message with the current session ID. Defaults to false.
 	 */
-	public $filter;
+	public $prefixSession = false;
 	/**
-	 * @var array the messages that are collected so far by this log target.
+	 * @var boolean whether to prefix each log message with the current user name and ID. Defaults to false.
+	 * @see \yii\web\User
 	 */
-	public $messages;
+	public $prefixUser = false;
+	/**
+	 * @var boolean whether to log a message containing the current user name and ID. Defaults to true.
+	 * @see \yii\web\User
+	 */
+	public $logUser = false;
+	/**
+	 * @var array list of the PHP predefined variables that should be logged in a message.
+	 * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
+	 * Defaults to `array('_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER')`.
+	 */
+	public $logVars = array('_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER');
+	/**
+	 * @var array the messages that are retrieved from the logger so far by this log target.
+	 */
+	public $messages = array();
 
 	/**
-	 * Pre-initializes this component.
-	 * This method is required by the [[Initable]] interface. It is invoked by
-	 * [[\Yii::createComponent]] after its creates the new component instance but
-	 * BEFORE the component properties are initialized.
-	 *
-	 * You may override this method to do work such as setting property default values.
+	 * Exports log messages to a specific destination.
+	 * Child classes must implement this method. Note that you may need
+	 * to clean up [[messages]] in this method to avoid re-exporting messages.
+	 * @param boolean $final whether this method is called at the end of the current application
 	 */
-	public function preinit()
-	{
-	}
+	abstract public function exportMessages($final);
 
 	/**
 	 * Initializes this component.
@@ -83,89 +95,126 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 	}
 
 	/**
-	 * Formats a log message given different fields.
-	 * @param string $message message content
-	 * @param integer $level message level
-	 * @param string $category message category
-	 * @param integer $time timestamp
-	 * @return string formatted message
+	 * Processes the given log messages.
+	 * This method will filter the given messages with [[levels]] and [[categories]].
+	 * And if requested, it will also export the filtering result to specific medium (e.g. email).
+	 * @param array $messages log messages to be processed. See [[Logger::messages]] for the structure
+	 * of each message.
+	 * @param boolean $export whether to export the processing result
+	 * @param boolean $final whether this method is called at the end of the current application
 	 */
-	protected function formatMessage($message, $level, $category, $time)
+	public function processMessages($messages, $export, $final)
 	{
-		return @date('Y/m/d H:i:s', $time) . " [$level] [$category] $message\n";
-	}
+		$messages = $this->filterMessages($messages);
+		$this->messages = array_merge($this->messages, $messages);
 
-	/**
-	 * Retrieves filtered log messages from logger for further processing.
-	 * @param CLogger $logger logger instance
-	 * @param boolean $processLogs whether to process the messages after they are collected from the logger
-	 */
-	public function processMessages($logger, $export)
-	{
-		$messages = $logger->getLogs($this->levels, $this->categories);
-		$this->messages = empty($this->messages) ? $messages : array_merge($this->messages, $messages);
-		if ($processLogs && !empty($this->messages))
-		{
-			if ($this->filter !== null)
-				Yii::createComponent($this->filter)->filter($this->messages);
-			$this->processLogs($this->messages);
-			$this->messages = array();
-		}
-	}
-
-	protected function filterMessages($levels = '', $categories = '')
-	{
-		$this->_levels = preg_split('/[\s,]+/', strtolower($levels), -1, PREG_SPLIT_NO_EMPTY);
-		$this->_categories = preg_split('/[\s,]+/', strtolower($categories), -1, PREG_SPLIT_NO_EMPTY);
-		if (empty($levels) && empty($categories))
-			return $this->_logs;
-		elseif (empty($levels))
-			return array_values(array_filter(array_filter($this->_logs, array($this, 'filterByCategory'))));
-		elseif (empty($categories))
-			return array_values(array_filter(array_filter($this->_logs, array($this, 'filterByLevel'))));
-		else
-		{
-			$ret = array_values(array_filter(array_filter($this->_logs, array($this, 'filterByLevel'))));
-			return array_values(array_filter(array_filter($ret, array($this, 'filterByCategory'))));
+		if ($export && !empty($this->messages)) {
+			$this->prepareExport($final);
+			$this->exportMessages($final);
 		}
 	}
 
 	/**
-	 * Filter function used by {@link getLogs}
-	 * @param array $value element to be filtered
-	 * @return array valid log, false if not.
+	 * Prepares the [[messages]] for exporting.
+	 * This method will modify each message by prependding extra information
+	 * if [[prefixSession]] and/or [[prefixUser]] are set true.
+	 * It will also add an additional message showing context information if
+	 * [[logUser]] and/or [[logVars]] are set.
+	 * @param boolean $final whether this method is called at the end of the current application
 	 */
-	protected function filterByCategory($value)
+	protected function prepareExport($final)
 	{
-		foreach ($this->_categories as $category)
-		{
-			$cat = strtolower($value[2]);
-			if ($cat === $category || (($c = rtrim($category, '.*')) !== $category && strpos($cat, $c) === 0))
-				return $value;
+		$prefix = array();
+		if ($this->prefixSession && ($id = session_id()) !== '') {
+			$prefix[] = "[$id]";
 		}
-		return false;
+		if ($this->prefixUser && ($user = \Yii::app()->getComponent('user', false)) !== null) {
+			$prefix[] = '[' . $user->getName() . ']';
+			$prefix[] = '[' . $user->getId() . ']';
+		}
+		if ($prefix !== array()) {
+			$prefix = implode(' ', $prefix);
+			foreach ($this->messages as $i => $message) {
+				$this->messages[$i][0] = $prefix . ' ' . $this->messages[$i][0];
+			}
+		}
+		if ($final && ($context = $this->getContextMessage()) !== '') {
+			$this->messages[] = array($context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME);
+		}
 	}
 
 	/**
-	 * Filter function used by {@link getLogs}
-	 * @param array $value element to be filtered
-	 * @return array valid log, false if not.
+	 * Generates the context information to be logged.
+	 * The default implementation will dump user information, system variables, etc.
+	 * @return string the context information. If an empty string, it means no context information.
 	 */
-	protected function filterByLevel($value)
+	protected function getContextMessage()
 	{
-		return in_array(strtolower($value[1]), $this->_levels) ? $value : false;
+		$context = array();
+		if ($this->logUser && ($user = \Yii::app()->getComponent('user', false)) !== null) {
+			$context[] = 'User: ' . $user->getName() . ' (ID: ' . $user->getId() . ')';
+		}
+
+		foreach ($this->logVars as $name) {
+			if (!empty($GLOBALS[$name])) {
+				$context[] = "\${$name} = " . var_export($GLOBALS[$name], true);
+			}
+		}
+
+		return implode("\n\n", $context);
 	}
 
 	/**
-	 * Processes log messages and sends them to specific destination.
-	 * Derived child classes must implement this method.
-	 * @param array $messages list of messages.  Each array elements represents one message
-	 * with the following structure:
-	 * array(
-	 *   [0] => message (string)
-	 *   [1] => level (string)
-	 *   [2] => category (string)
-	 *   [3] => timestamp (float, obtained by microtime(true));
+	 * Filters the given messages according to their categories and levels.
+	 * @param array $messages messages to be filtered
+	 * @return array the filtered messages.
+	 * @see filterByCategory
+	 * @see filterByLevel
 	 */
-	abstract protected function processLogs($messages);
+	protected function filterMessages($messages)
+	{
+		foreach ($messages as $i => $message) {
+			if (!empty($this->levels) && !in_array($message[1], $this->levels)) {
+				unset($messages[$i]);
+				continue;
+			}
+
+			$matched = empty($this->categories);
+			foreach ($this->categories as $category) {
+				$prefix = rtrim($category, '*');
+				if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
+					$matched = true;
+					break;
+				}
+			}
+
+			if ($matched) {
+				foreach ($this->excludeCategories as $category) {
+					$prefix = rtrim($category, '*');
+					foreach ($messages as $i => $message) {
+						if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
+							$matched = false;
+							break;
+						}
+					}
+				}
+			}
+
+			if (!$matched) {
+				unset($messages[$i]);
+			}
+		}
+		return $messages;
+	}
+
+	/**
+	 * Formats a log message.
+	 * The message structure follows that in [[Logger::messages]].
+	 * @param array $message the log message to be formatted.
+	 * @return string the formatted message
+	 */
+	public function formatMessage($message)
+	{
+		return @date('Y/m/d H:i:s', $message[3]) . " [{$message[1]}] [{$message[2]}] {$message[0]}\n";
+	}
 }

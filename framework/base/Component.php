@@ -307,9 +307,9 @@ class Component
 	 * Creates a new component instance.
 	 *
 	 * This method differs from the PHP `new` operator in that it does the following
-	 * additional work after the component is created:
+	 * steps to create a new component instance:
 	 *
-	 * - Call [[Initable::preinit|preinit]] if the class implements [[Initable]];
+	 * - Call class constructor (same the `new` operator);
 	 * - Initialize the component properties using the name-value pairs given as the
 	 *   last parameter to this method;
 	 * - Call [[Initable::init|init]] if the class implements [[Initable]].
@@ -329,7 +329,6 @@ class Component
 	 * $model = Foo::create(1, 2, array('c' => 3));
 	 * // which is equivalent to the following lines:
 	 * $model = new Foo(1, 2);
-	 * $model->preinit();
 	 * $model->c = 3;
 	 * $model->init();
 	 * ~~~
