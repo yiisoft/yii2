@@ -160,8 +160,8 @@ class YiiBase
 	 * In the latter case, the root alias will be replaced by the corresponding registered path
 	 * and the remaining part will be appended to it.
 	 *
-	 * In case the given alias is not an alias (i.e., not starting with '@'),
-	 * it will be returned back as is.
+	 * In case the given parameter is not an alias (i.e., not starting with '@'),
+	 * it will be returned back without change.
 	 *
 	 * Note, this method does not ensure the existence of the resulting path.
 	 * @param string $alias alias
@@ -173,13 +173,13 @@ class YiiBase
 		if (isset(self::$aliases[$alias])) {
 			return self::$aliases[$alias];
 		}
+		elseif ($alias[0] !== '@') { // not an alias
+			return $alias;
+		}
 		elseif (($pos = strpos($alias, '/')) !== false) {
 			$rootAlias = substr($alias, 0, $pos);
 			if (isset(self::$aliases[$rootAlias])) {
 				return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
-			}
-			else if($alias[0] !== '@') { // not an alias
-				return $alias;
 			}
 		}
 		return false;
