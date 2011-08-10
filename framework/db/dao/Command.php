@@ -1,34 +1,33 @@
 <?php
 /**
- * This file contains the CDbCommand class.
+ * This file contains the Command class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 /**
- * CDbCommand represents an SQL statement to execute against a database.
+ * Command represents a SQL statement to be executed against a database.
  *
- * It is usually created by calling {@link CDbConnection::createCommand}.
- * The SQL statement to be executed may be set via {@link setText Text}.
+ * A command object is usually created by calling [[Connection::createCommand]].
+ * The SQL statement it represents can be set via the [[text]] property.
  *
- * To execute a non-query SQL (such as insert, delete, update), call
- * {@link execute}. To execute an SQL statement that returns result data set
- * (such as SELECT), use {@link query} or its convenient versions {@link queryRow},
- * {@link queryColumn}, or {@link queryScalar}.
+ * To execute a non-query SQL (such as insert, delete, update), call [[execute]].
+ * To execute an SQL statement that returns result data set (such as SELECT),
+ * use [[query]], [[queryRow]], [[queryColumn]], or [[queryScalar]].
  *
  * If an SQL statement returns results (such as a SELECT SQL), the results
  * can be accessed via the returned {@link CDbDataReader}.
  *
- * CDbCommand supports SQL statment preparation and parameter binding.
+ * Command supports SQL statment preparation and parameter binding.
  * Call {@link bindParam} to bind a PHP variable to a parameter in SQL.
  * Call {@link bindValue} to bind a value to an SQL parameter.
  * When binding a parameter, the SQL statement is automatically prepared.
  * You may also call {@link prepare} to explicitly prepare an SQL statement.
  *
- * Starting from version 1.1.6, CDbCommand can also be used as a query builder
+ * Starting from version 1.1.6, Command can also be used as a query builder
  * that builds a SQL statement from code fragments. For example,
  * <pre>
  * $user = Yii::app()->db->createCommand()
@@ -39,11 +38,9 @@
  * </pre>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbCommand.php 3240 2011-05-25 19:22:47Z qiang.xue $
- * @package system.db
- * @since 1.0
+ * @since 2.0
  */
-class CDbCommand extends CComponent
+class Command extends CComponent
 {
 	/**
 	 * @var array the parameters (name=>value) to be bound to the current query.
@@ -104,7 +101,7 @@ class CDbCommand extends CComponent
 	/**
 	 * Set the default fetch mode for this statement
 	 * @param mixed $mode fetch mode
-	 * @return CDbCommand
+	 * @return Command
 	 * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
 	 * @since 1.1.7
 	 */
@@ -120,7 +117,7 @@ class CDbCommand extends CComponent
 	 * This method is mainly used when a command object is being reused
 	 * multiple times for building different queries.
 	 * Calling this method will clean up all internal states of the command object.
-	 * @return CDbCommand this command instance
+	 * @return Command this command instance
 	 * @since 1.1.6
 	 */
 	public function reset()
@@ -147,7 +144,7 @@ class CDbCommand extends CComponent
 	 * Specifies the SQL statement to be executed.
 	 * Any previous execution will be terminated or cancel.
 	 * @param string $value the SQL statement to be executed
-	 * @return CDbCommand this command instance
+	 * @return Command this command instance
 	 */
 	public function setText($value)
 	{
@@ -194,9 +191,9 @@ class CDbCommand extends CComponent
 			}
 			catch(Exception $e)
 			{
-				Yii::log('Error in preparing SQL: ' . $this->getText(), CLogger::LEVEL_ERROR, 'system.db.CDbCommand');
+				Yii::log('Error in preparing SQL: ' . $this->getText(), CLogger::LEVEL_ERROR, 'system.db.Command');
                 $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
-				throw new CDbException(Yii::t('yii', 'CDbCommand failed to prepare the SQL statement: {error}',
+				throw new CDbException(Yii::t('yii', 'Command failed to prepare the SQL statement: {error}',
 					array('{error}' => $e->getMessage())), (int)$e->getCode(), $errorInfo);
 			}
 		}
@@ -220,7 +217,7 @@ class CDbCommand extends CComponent
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
 	 * @param integer $length length of the data type
 	 * @param mixed $driverOptions the driver-specific options (this is available since version 1.1.6)
-	 * @return CDbCommand the current command being executed (this is available since version 1.0.8)
+	 * @return Command the current command being executed (this is available since version 1.0.8)
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
 	 */
 	public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
@@ -246,7 +243,7 @@ class CDbCommand extends CComponent
 	 * placeholders, this will be the 1-indexed position of the parameter.
 	 * @param mixed $value The value to bind to the parameter
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-	 * @return CDbCommand the current command being executed (this is available since version 1.0.8)
+	 * @return Command the current command being executed (this is available since version 1.0.8)
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
 	 */
 	public function bindValue($name, $value, $dataType = null)
@@ -267,7 +264,7 @@ class CDbCommand extends CComponent
 	 * @param array $values the values to be bound. This must be given in terms of an associative
 	 * array with array keys being the parameter names, and array values the corresponding parameter values.
 	 * For example, <code>array(':name'=>'John', ':age'=>25)</code>.
-	 * @return CDbCommand the current command being executed
+	 * @return Command the current command being executed
 	 * @since 1.1.5
 	 */
 	public function bindValues($values)
@@ -305,11 +302,11 @@ class CDbCommand extends CComponent
 		}
 		else
 			$par = '';
-		Yii::trace('Executing SQL: ' . $this->getText() . $par, 'system.db.CDbCommand');
+		Yii::trace('Executing SQL: ' . $this->getText() . $par, 'system.db.Command');
 		try
 		{
 			if ($this->_connection->enableProfiling)
-				Yii::beginProfile('system.db.CDbCommand.execute(' . $this->getText() . ')', 'system.db.CDbCommand.execute');
+				Yii::beginProfile('system.db.Command.execute(' . $this->getText() . ')', 'system.db.Command.execute');
 
 			$this->prepare();
 			if ($params === array())
@@ -319,21 +316,21 @@ class CDbCommand extends CComponent
 			$n = $this->_statement->rowCount();
 
 			if ($this->_connection->enableProfiling)
-				Yii::endProfile('system.db.CDbCommand.execute(' . $this->getText() . ')', 'system.db.CDbCommand.execute');
+				Yii::endProfile('system.db.Command.execute(' . $this->getText() . ')', 'system.db.Command.execute');
 
 			return $n;
 		}
 		catch(Exception $e)
 		{
 			if ($this->_connection->enableProfiling)
-				Yii::endProfile('system.db.CDbCommand.execute(' . $this->getText() . ')', 'system.db.CDbCommand.execute');
+				Yii::endProfile('system.db.Command.execute(' . $this->getText() . ')', 'system.db.Command.execute');
             $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
             $message = $e->getMessage();
-			Yii::log(Yii::t('yii', 'CDbCommand::execute() failed: {error}. The SQL statement executed was: {sql}.',
-				array('{error}' => $message, '{sql}' => $this->getText() . $par)), CLogger::LEVEL_ERROR, 'system.db.CDbCommand');
+			Yii::log(Yii::t('yii', 'Command::execute() failed: {error}. The SQL statement executed was: {sql}.',
+				array('{error}' => $message, '{sql}' => $this->getText() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
             if (YII_DEBUG)
             	$message .= '. The SQL statement executed was: ' . $this->getText() . $par;
-			throw new CDbException(Yii::t('yii', 'CDbCommand failed to execute the SQL statement: {error}',
+			throw new CDbException(Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
 				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
 		}
 	}
@@ -458,7 +455,7 @@ class CDbCommand extends CComponent
 		else
 			$par = '';
 
-		Yii::trace('Querying SQL: ' . $this->getText() . $par, 'system.db.CDbCommand');
+		Yii::trace('Querying SQL: ' . $this->getText() . $par, 'system.db.Command');
 
 		if ($this->_connection->queryCachingCount > 0 && $method !== ''
 				&& $this->_connection->queryCachingDuration > 0
@@ -470,7 +467,7 @@ class CDbCommand extends CComponent
 			$cacheKey .= ':' . $this->getText() . ':' . serialize(array_merge($this->_paramLog, $params));
 			if (($result = $cache->get($cacheKey)) !== false)
 			{
-				Yii::trace('Query result found in cache', 'system.db.CDbCommand');
+				Yii::trace('Query result found in cache', 'system.db.Command');
 				return $result;
 			}
 		}
@@ -478,7 +475,7 @@ class CDbCommand extends CComponent
 		try
 		{
 			if ($this->_connection->enableProfiling)
-				Yii::beginProfile('system.db.CDbCommand.query(' . $this->getText() . $par . ')', 'system.db.CDbCommand.query');
+				Yii::beginProfile('system.db.Command.query(' . $this->getText() . $par . ')', 'system.db.Command.query');
 
 			$this->prepare();
 			if ($params === array())
@@ -496,7 +493,7 @@ class CDbCommand extends CComponent
 			}
 
 			if ($this->_connection->enableProfiling)
-				Yii::endProfile('system.db.CDbCommand.query(' . $this->getText() . $par . ')', 'system.db.CDbCommand.query');
+				Yii::endProfile('system.db.Command.query(' . $this->getText() . $par . ')', 'system.db.Command.query');
 
 			if (isset($cache, $cacheKey))
 				$cache->set($cacheKey, $result, $this->_connection->queryCachingDuration, $this->_connection->queryCachingDependency);
@@ -506,14 +503,14 @@ class CDbCommand extends CComponent
 		catch(Exception $e)
 		{
 			if ($this->_connection->enableProfiling)
-				Yii::endProfile('system.db.CDbCommand.query(' . $this->getText() . $par . ')', 'system.db.CDbCommand.query');
+				Yii::endProfile('system.db.Command.query(' . $this->getText() . $par . ')', 'system.db.Command.query');
             $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
             $message = $e->getMessage();
-			Yii::log(Yii::t('yii', 'CDbCommand::{method}() failed: {error}. The SQL statement executed was: {sql}.',
-				array('{method}' => $method, '{error}' => $message, '{sql}' => $this->getText() . $par)), CLogger::LEVEL_ERROR, 'system.db.CDbCommand');
+			Yii::log(Yii::t('yii', 'Command::{method}() failed: {error}. The SQL statement executed was: {sql}.',
+				array('{method}' => $method, '{error}' => $message, '{sql}' => $this->getText() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
             if (YII_DEBUG)
             	$message .= '. The SQL statement executed was: ' . $this->getText() . $par;
-			throw new CDbException(Yii::t('yii', 'CDbCommand failed to execute the SQL statement: {error}',
+			throw new CDbException(Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
 				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
 		}
 	}
@@ -572,7 +569,7 @@ class CDbCommand extends CComponent
 	 * (which means the column contains a DB expression).
 	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used. This parameter is supported since version 1.1.8.
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function select($columns = '*', $option = '')
@@ -628,7 +625,7 @@ class CDbCommand extends CComponent
 	 * Sets the SELECT part of the query with the DISTINCT flag turned on.
 	 * This is the same as {@link select} except that the DISTINCT flag is turned on.
 	 * @param mixed $columns the columns to be selected. See {@link select} for more details.
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function selectDistinct($columns = '*')
@@ -664,7 +661,7 @@ class CDbCommand extends CComponent
 	 * Table names can contain schema prefixes (e.g. 'public.tbl_user') and/or table aliases (e.g. 'tbl_user u').
 	 * The method will automatically quote the table names unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function from($tables)
@@ -746,7 +743,7 @@ class CDbCommand extends CComponent
 	 * </ul>
 	 * @param mixed $conditions the conditions that should be put in the WHERE part.
 	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function where($conditions, $params = array())
@@ -787,7 +784,7 @@ class CDbCommand extends CComponent
 	 * @param mixed $conditions the join condition that should appear in the ON part.
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function join($table, $conditions, $params = array())
@@ -828,7 +825,7 @@ class CDbCommand extends CComponent
 	 * @param mixed $conditions the join condition that should appear in the ON part.
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function leftJoin($table, $conditions, $params = array())
@@ -845,7 +842,7 @@ class CDbCommand extends CComponent
 	 * @param mixed $conditions the join condition that should appear in the ON part.
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function rightJoin($table, $conditions, $params = array())
@@ -860,7 +857,7 @@ class CDbCommand extends CComponent
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function crossJoin($table)
@@ -875,7 +872,7 @@ class CDbCommand extends CComponent
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function naturalJoin($table)
@@ -889,7 +886,7 @@ class CDbCommand extends CComponent
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function group($columns)
@@ -938,7 +935,7 @@ class CDbCommand extends CComponent
 	 * @param mixed $conditions the conditions to be put after HAVING.
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function having($conditions, $params = array())
@@ -976,7 +973,7 @@ class CDbCommand extends CComponent
 	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function order($columns)
@@ -1029,7 +1026,7 @@ class CDbCommand extends CComponent
 	 * Sets the LIMIT part of the query.
 	 * @param integer $limit the limit
 	 * @param integer $offset the offset
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function limit($limit, $offset = null)
@@ -1064,7 +1061,7 @@ class CDbCommand extends CComponent
 	/**
 	 * Sets the OFFSET part of the query.
 	 * @param integer $offset the offset
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function offset($offset)
@@ -1097,7 +1094,7 @@ class CDbCommand extends CComponent
 	/**
 	 * Appends a SQL statement using UNION operator.
 	 * @param string $sql the SQL statement to be appended using UNION
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	public function union($sql)
@@ -1470,7 +1467,7 @@ class CDbCommand extends CComponent
 	 * @param mixed $conditions the join condition that should appear in the ON part.
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return CDbCommand the command object itself
+	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
 	private function joinInternal($type, $table, $conditions = '', $params = array())

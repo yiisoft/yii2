@@ -56,7 +56,7 @@ namespace yii\db\dao;
  *     $transaction->commit();
  * }
  * catch(Exception $e) {
- *    $transaction->rollBack();
+ *     $transaction->rollBack();
  * }
  * ~~~
  *
@@ -580,12 +580,12 @@ class Connection extends \yii\base\ApplicationComponent
 	public function getStats()
 	{
 		$logger = \Yii::getLogger();
-		$timings = $logger->getProfilingResults(null, 'yii\db\dao\Command::query');
+		$timings = $logger->getProfiling(array('yii\db\dao\Command::query', 'yii\db\dao\Command::execute'));
 		$count = count($timings);
-		$time = array_sum($timings);
-		$timings = $logger->getProfilingResults(null, 'yii\db\dao\Command::execute');
-		$count += count($timings);
-		$time += array_sum($timings);
+		$time = 0;
+		foreach ($timings as $timing) {
+			$time += $timing[1];
+		}
 		return array($count, $time);
 	}
 }

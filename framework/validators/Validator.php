@@ -95,9 +95,9 @@ abstract class Validator extends \yii\base\Component
 	public $on;
 	/**
 	 * @var boolean whether this validation rule should be skipped if the attribute being validated
-	 * already has some validation error according to the previous rules. Defaults to false.
+	 * already has some validation error according to the previous rules. Defaults to true.
 	 */
-	public $skipOnError = false;
+	public $skipOnError = true;
 	/**
 	 * @var boolean whether attributes listed with this validator should be considered safe for
 	 * massive assignment. Defaults to true.

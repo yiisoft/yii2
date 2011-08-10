@@ -1,36 +1,37 @@
 <?php
 /**
- * CDbDataReader class file
+ * DataReader class file
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 /**
- * CDbDataReader represents a forward-only stream of rows from a query result set.
+ * DataReader represents a forward-only stream of rows from a query result set.
  *
- * To read the current row of data, call {@link read}. The method {@link readAll}
+ * To read the current row of data, call [[read]]. The method [[readAll]]
  * returns all the rows in a single array.
  *
- * One can also retrieve the rows of data in CDbDataReader by using foreach:
- * <pre>
- * foreach($reader as $row)
+ * One can also retrieve the rows of data in DataReader by using `foreach`:
+ *
+ * ~~~
+ * foreach($reader as $row) {
  *     // $row represents a row of data
- * </pre>
- * Since CDbDataReader is a forward-only stream, you can only traverse it once.
+ * }
+ * ~~~
+ *
+ * Since DataReader is a forward-only stream, you can only traverse it once.
  *
  * It is possible to use a specific mode of data fetching by setting
- * {@link setFetchMode FetchMode}. See {@link http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php}
- * for more details.
+ * [[fetchMode]]. See the [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+ * for more details about possible fetch mode.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbDataReader.php 3204 2011-05-05 21:36:32Z alexander.makarow $
- * @package system.db
- * @since 1.0
+ * @since 2.0
  */
-class CDbDataReader extends CComponent implements Iterator, Countable
+class DataReader extends \yii\base\Component implements \Iterator, \Countable
 {
 	private $_statement;
 	private $_closed = false;
@@ -39,12 +40,12 @@ class CDbDataReader extends CComponent implements Iterator, Countable
 
 	/**
 	 * Constructor.
-	 * @param CDbCommand $command the command generating the query result
+	 * @param Command $command the command generating the query result
 	 */
-	public function __construct(CDbCommand $command)
+	public function __construct(Command $command)
 	{
 		$this->_statement = $command->getPdoStatement();
-		$this->_statement->setFetchMode(PDO::FETCH_ASSOC);
+		$this->_statement->setFetchMode(\PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -60,10 +61,12 @@ class CDbDataReader extends CComponent implements Iterator, Countable
 	 */
 	public function bindColumn($column, &$value, $dataType = null)
 	{
-		if ($dataType === null)
+		if ($dataType === null) {
 			$this->_statement->bindColumn($column, $value);
-		else
+		}
+		else {
 			$this->_statement->bindColumn($column, $value, $dataType);
+		}
 	}
 
 	/**
@@ -125,8 +128,9 @@ class CDbDataReader extends CComponent implements Iterator, Countable
 	 */
 	public function nextResult()
 	{
-		if (($result = $this->_statement->nextRowset()) !== false)
+		if (($result = $this->_statement->nextRowset()) !== false) {
 			$this->_index = -1;
+		}
 		return $result;
 	}
 
@@ -186,17 +190,17 @@ class CDbDataReader extends CComponent implements Iterator, Countable
 	/**
 	 * Resets the iterator to the initial state.
 	 * This method is required by the interface Iterator.
-	 * @throws CException if this method is invoked twice
+	 * @throws Exception if this method is invoked twice
 	 */
 	public function rewind()
 	{
-		if ($this->_index < 0)
-		{
+		if ($this->_index < 0) {
 			$this->_row = $this->_statement->fetch();
 			$this->_index = 0;
 		}
-		else
-			throw new CDbException(Yii::t('yii', 'CDbDataReader cannot rewind. It is a forward-only reader.'));
+		else {
+			throw new Exception('DataReader cannot rewind. It is a forward-only reader.');
+		}
 	}
 
 	/**
