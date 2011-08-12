@@ -8,6 +8,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db\dao;
+
 /**
  * Command represents a SQL statement to be executed against a database.
  *
@@ -40,7 +42,7 @@
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Command extends CComponent
+class Command extends \yii\base\Component
 {
 	/**
 	 * @var array the parameters (name=>value) to be bound to the current query.
