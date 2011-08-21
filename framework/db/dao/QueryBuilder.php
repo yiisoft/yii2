@@ -20,7 +20,7 @@ class QueryBuilder extends \yii\base\Component
 {
 	private $_connection;
 
-	public function __construct(Connection $connection)
+	public function __construct($connection)
 	{
 		$this->_connection = $connection;
 	}
@@ -36,24 +36,228 @@ class QueryBuilder extends \yii\base\Component
 	public function build($query)
 	{
 		$clauses = array(
-			$this->buildSelect($query->select, $query->distinct),
-			$this->buildFrom($query->from),
-			$this->buildJoin($query->join),
-			$this->buildWhere($query->where),
-			$this->buildGroupBy($query->groupBy),
-			$this->buildHaving($query->having),
-			$this->buildOrderBy($query->orderBy),
-			$this->buildLimit($query->offset, $query->limit),
-			$this->buildUnion($query->union),
+			$this->buildSelect($query),
+			$this->buildFrom($query),
+			$this->buildJoin($query),
+			$this->buildWhere($query),
+			$this->buildGroupBy($query),
+			$this->buildHaving($query),
+			$this->buildUnion($query),
+			$this->buildOrderBy($query),
+			$this->buildLimit($query),
 		);
 
 		return implode("\n", array_filter($clauses));
 	}
 
-	protected function buildSelect($columns, $distinct)
+	/**
+	 * Builds a SQL statement for creating a new DB table.
+	 *
+	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name'=>'string'),
+	 * where name stands for a column name which will be properly quoted by the method, and definition
+	 * stands for the column type which can contain an abstract DB type.
+	 * The {@link getColumnType} method will be invoked to convert any abstract type into a physical one.
+	 *
+	 * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
+	 * inserted into the generated SQL.
+	 *
+	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
+	 * @param array $columns the columns (name=>definition) in the new table.
+	 * @param string $options additional SQL fragment that will be appended to the generated SQL.
+	 * @return string the SQL statement for creating a new DB table.
+	 */
+	public function createTable($table, $columns, $options = null)
 	{
-		$select = $distinct ? 'SELECT DISTINCT' : 'SELECT';
+		$cols = array();
+		foreach ($columns as $name => $type)
+		{
+			if (is_string($name))
+				$cols[] = "\t" . $this->quoteColumnName($name) . ' ' . $this->getColumnType($type);
+			else
+				$cols[] = "\t" . $type;
+		}
+		$sql = "CREATE TABLE " . $this->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
+		return $options === null ? $sql : $sql . ' ' . $options;
+	}
 
+	/**
+	 * Builds a SQL statement for renaming a DB table.
+	 * @param string $table the table to be renamed. The name will be properly quoted by the method.
+	 * @param string $newName the new table name. The name will be properly quoted by the method.
+	 * @return string the SQL statement for renaming a DB table.
+	 */
+	public function renameTable($table, $newName)
+	{
+		return 'RENAME TABLE ' . $this->quoteTableName($table) . ' TO ' . $this->quoteTableName($newName);
+	}
+
+	/**
+	 * Builds a SQL statement for dropping a DB table.
+	 * @param string $table the table to be dropped. The name will be properly quoted by the method.
+	 * @return string the SQL statement for dropping a DB table.
+	 */
+	public function dropTable($table)
+	{
+		return "DROP TABLE " . $this->quoteTableName($table);
+	}
+
+	/**
+	 * Builds a SQL statement for truncating a DB table.
+	 * @param string $table the table to be truncated. The name will be properly quoted by the method.
+	 * @return string the SQL statement for truncating a DB table.
+	 */
+	public function truncateTable($table)
+	{
+		return "TRUNCATE TABLE " . $this->quoteTableName($table);
+	}
+
+	/**
+	 * Builds a SQL statement for adding a new DB column.
+	 * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
+	 * @param string $column the name of the new column. The name will be properly quoted by the method.
+	 * @param string $type the column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
+	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+	 * @return string the SQL statement for adding a new column.
+	 * @since 1.1.6
+	 */
+	public function addColumn($table, $column, $type)
+	{
+		return 'ALTER TABLE ' . $this->quoteTableName($table)
+			. ' ADD ' . $this->quoteColumnName($column) . ' '
+			. $this->getColumnType($type);
+	}
+
+	/**
+	 * Builds a SQL statement for dropping a DB column.
+	 * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
+	 * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
+	 * @return string the SQL statement for dropping a DB column.
+	 * @since 1.1.6
+	 */
+	public function dropColumn($table, $column)
+	{
+		return "ALTER TABLE " . $this->quoteTableName($table)
+			. " DROP COLUMN " . $this->quoteColumnName($column);
+	}
+
+	/**
+	 * Builds a SQL statement for renaming a column.
+	 * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+	 * @param string $name the old name of the column. The name will be properly quoted by the method.
+	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
+	 * @return string the SQL statement for renaming a DB column.
+	 * @since 1.1.6
+	 */
+	public function renameColumn($table, $name, $newName)
+	{
+		return "ALTER TABLE " . $this->quoteTableName($table)
+			. " RENAME COLUMN " . $this->quoteColumnName($name)
+			. " TO " . $this->quoteColumnName($newName);
+	}
+
+	/**
+	 * Builds a SQL statement for changing the definition of a column.
+	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+	 * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
+	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+	 * @return string the SQL statement for changing the definition of a column.
+	 */
+	public function alterColumn($table, $column, $type)
+	{
+		return 'ALTER TABLE ' . $this->quoteTableName($table) . ' CHANGE '
+			. $this->quoteColumnName($column) . ' '
+			. $this->quoteColumnName($column) . ' '
+			. $this->getColumnType($type);
+	}
+
+	/**
+	 * Builds a SQL statement for adding a foreign key constraint to an existing table.
+	 * The method will properly quote the table and column names.
+	 * @param string $name the name of the foreign key constraint.
+	 * @param string $table the table that the foreign key constraint will be added to.
+	 * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
+	 * @param string $refTable the table that the foreign key references to.
+	 * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
+	 * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+	 * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+	 * @return string the SQL statement for adding a foreign key constraint to an existing table.
+	 */
+	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
+	{
+		$columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+		foreach ($columns as $i => $col)
+			$columns[$i] = $this->quoteColumnName($col);
+		$refColumns = preg_split('/\s*,\s*/', $refColumns, -1, PREG_SPLIT_NO_EMPTY);
+		foreach ($refColumns as $i => $col)
+			$refColumns[$i] = $this->quoteColumnName($col);
+		$sql = 'ALTER TABLE ' . $this->quoteTableName($table)
+			. ' ADD CONSTRAINT ' . $this->quoteColumnName($name)
+			. ' FOREIGN KEY (' . implode(', ', $columns) . ')'
+			. ' REFERENCES ' . $this->quoteTableName($refTable)
+			. ' (' . implode(', ', $refColumns) . ')';
+		if ($delete !== null)
+			$sql .= ' ON DELETE ' . $delete;
+		if ($update !== null)
+			$sql .= ' ON UPDATE ' . $update;
+		return $sql;
+	}
+
+	/**
+	 * Builds a SQL statement for dropping a foreign key constraint.
+	 * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
+	 * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
+	 * @return string the SQL statement for dropping a foreign key constraint.
+	 */
+	public function dropForeignKey($name, $table)
+	{
+		return 'ALTER TABLE ' . $this->quoteTableName($table)
+			. ' DROP CONSTRAINT ' . $this->quoteColumnName($name);
+	}
+
+	/**
+	 * Builds a SQL statement for creating a new index.
+	 * @param string $name the name of the index. The name will be properly quoted by the method.
+	 * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+	 * @param string $column the column(s) that should be included in the index. If there are multiple columns, please separate them
+	 * by commas. Each column name will be properly quoted by the method, unless a parenthesis is found in the name.
+	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
+	 * @return string the SQL statement for creating a new index.
+	 */
+	public function createIndex($name, $table, $column, $unique = false)
+	{
+		$cols = array();
+		$columns = preg_split('/\s*,\s*/', $column, -1, PREG_SPLIT_NO_EMPTY);
+		foreach ($columns as $col)
+		{
+			if (strpos($col, '(') !== false)
+				$cols[] = $col;
+			else
+				$cols[] = $this->quoteColumnName($col);
+		}
+		return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
+			. $this->quoteTableName($name) . ' ON '
+			. $this->quoteTableName($table) . ' (' . implode(', ', $cols) . ')';
+	}
+
+	/**
+	 * Builds a SQL statement for dropping an index.
+	 * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+	 * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+	 * @return string the SQL statement for dropping an index.
+	 */
+	public function dropIndex($name, $table)
+	{
+		return 'DROP INDEX ' . $this->quoteTableName($name) . ' ON ' . $this->quoteTableName($table);
+	}
+
+	protected function buildSelect($query)
+	{
+		$select = $query->distinct ? 'SELECT DISTINCT' : 'SELECT';
+
+		$columns = $query->select;
 		if (empty($columns)) {
 			return $select . ' *';
 		}
@@ -70,8 +274,8 @@ class QueryBuilder extends \yii\base\Component
 				$columns[$i] = (string)$column;
 			}
 			elseif (strpos($column, '(') === false) {
-				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $column, $matches)) {
-					$columns[$i] = $this->_connection->quoteColumnName($matches[1]) . ' AS ' . $this->_connection->quoteColumnName($matches[2]);
+				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-\.])$/', $column, $matches)) {
+					$columns[$i] = $this->_connection->quoteColumnName($matches[1]) . ' AS ' . $this->_connection->quoteSimpleColumnName($matches[2]);
 				}
 				else {
 					$columns[$i] = $this->_connection->quoteColumnName($column);
@@ -82,10 +286,11 @@ class QueryBuilder extends \yii\base\Component
 		return $select . ' ' . implode(', ', $columns);
 	}
 
-	protected function buildFrom($tables)
+	protected function buildFrom($query)
 	{
+		$tables = $query->from;
 		if (is_string($tables) && strpos($tables, '(') !== false) {
-			return $tables;
+			return 'FROM ' . $tables;
 		}
 
 		if (!is_array($tables)) {
@@ -93,7 +298,7 @@ class QueryBuilder extends \yii\base\Component
 		}
 		foreach ($tables as $i => $table) {
 			if (strpos($table, '(') === false) {
-				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
+				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
 					$tables[$i] = $this->_connection->quoteTableName($matches[1]) . ' ' . $this->_connection->quoteTableName($matches[2]);
 				}
 				else {
@@ -101,302 +306,211 @@ class QueryBuilder extends \yii\base\Component
 				}
 			}
 		}
-		return implode(', ', $tables);
+
+		return 'FROM ' . implode(', ', $tables);
 	}
 
-			$this->buildJoin($query->join),
-			$this->buildWhere($query->where),
-			$this->buildGroupBy($query->groupBy),
-			$this->buildHaving($query->having),
-			$this->buildOrderBy($query->orderBy),
-			$this->buildLimit($query->offset, $query->limit),
-
-
-		if (isset($query['union']))
-			$sql .= "\nUNION (\n" . (is_array($query['union']) ? implode("\n) UNION (\n", $query['union']) : $query['union']) . ')';
-
-		return $sql;
-	}
-
-
-	/**
-	 * Sets the WHERE part of the query.
-	 *
-	 * The method requires a $conditions parameter, and optionally a $params parameter
-	 * specifying the values to be bound to the query.
-	 *
-	 * The $conditions parameter should be either a string (e.g. 'id=1') or an array.
-	 * If the latter, it must be of the format <code>array(operator, operand1, operand2, ...)</code>,
-	 * where the operator can be one of the followings, and the possible operands depend on the corresponding
-	 * operator:
-	 * <ul>
-	 * <li><code>and</code>: the operands should be concatenated together using AND. For example,
-	 * array('and', 'id=1', 'id=2') will generate 'id=1 AND id=2'. If an operand is an array,
-	 * it will be converted into a string using the same rules described here. For example,
-	 * array('and', 'type=1', array('or', 'id=1', 'id=2')) will generate 'type=1 AND (id=1 OR id=2)'.
-	 * The method will NOT do any quoting or escaping.</li>
-	 * <li><code>or</code>: similar as the <code>and</code> operator except that the operands are concatenated using OR.</li>
-	 * <li><code>in</code>: operand 1 should be a column or DB expression, and operand 2 be an array representing
-	 * the range of the values that the column or DB expression should be in. For example,
-	 * array('in', 'id', array(1,2,3)) will generate 'id IN (1,2,3)'.
-	 * The method will properly quote the column name and escape values in the range.</li>
-	 * <li><code>not in</code>: similar as the <code>in</code> operator except that IN is replaced with NOT IN in the generated condition.</li>
-	 * <li><code>like</code>: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
-	 * the values that the column or DB expression should be like.
-	 * For example, array('like', 'name', '%tester%') will generate "name LIKE '%tester%'".
-	 * When the value range is given as an array, multiple LIKE predicates will be generated and concatenated using AND.
-	 * For example, array('like', 'name', array('%test%', '%sample%')) will generate
-	 * "name LIKE '%test%' AND name LIKE '%sample%'".
-	 * The method will properly quote the column name and escape values in the range.</li>
-	 * <li><code>not like</code>: similar as the <code>like</code> operator except that LIKE is replaced with NOT LIKE in the generated condition.</li>
-	 * <li><code>or like</code>: similar as the <code>like</code> operator except that OR is used to concatenated the LIKE predicates.</li>
-	 * <li><code>or not like</code>: similar as the <code>not like</code> operator except that OR is used to concatenated the NOT LIKE predicates.</li>
-	 * </ul>
-	 * @param mixed $conditions the conditions that should be put in the WHERE part.
-	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return Command the command object itself
-	 * @since 1.1.6
-	 */
-	public function where($conditions, $params = array())
+	protected function buildJoin($query)
 	{
-		$this->_query['where'] = $this->processConditions($conditions);
-		foreach ($params as $name => $value)
-			$this->params[$name] = $value;
-		return $this;
-	}
-
-	/**
-	 * Appends an INNER JOIN part to the query.
-	 * @param string $table the table to be joined.
-	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
-	 * The method will automatically quote the table name unless it contains some parenthesis
-	 * (which means the table is given as a sub-query or DB expression).
-	 * @param mixed $conditions the join condition that should appear in the ON part.
-	 * Please refer to {@link where} on how to specify conditions.
-	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return Command the command object itself
-	 * @since 1.1.6
-	 */
-	public function join($table, $conditions, $params = array())
-	{
-		return $this->joinInternal('join', $table, $conditions, $params);
-	}
-
-	/**
-	 * Sets the GROUP BY part of the query.
-	 * @param mixed $columns the columns to be grouped by.
-	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
-	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @return Command the command object itself
-	 * @since 1.1.6
-	 */
-	public function group($columns)
-	{
-		if (is_string($columns) && strpos($columns, '(') !== false)
-			$this->_query['group'] = $columns;
-		else
-		{
-			if (!is_array($columns))
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			foreach ($columns as $i => $column)
-			{
-				if (is_object($column))
-					$columns[$i] = (string)$column;
-				elseif (strpos($column, '(') === false)
-					$columns[$i] = $this->_connection->quoteColumnName($column);
-			}
-			$this->_query['group'] = implode(', ', $columns);
+		$joins = $query->join;
+		if (empty($joins)) {
+			return '';
 		}
-		return $this;
-	}
+		if (is_string($joins)) {
+			return $joins;
+		}
 
-	/**
-	 * Sets the HAVING part of the query.
-	 * @param mixed $conditions the conditions to be put after HAVING.
-	 * Please refer to {@link where} on how to specify conditions.
-	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return Command the command object itself
-	 * @since 1.1.6
-	 */
-	public function having($conditions, $params = array())
-	{
-		$this->_query['having'] = $this->processConditions($conditions);
-		foreach ($params as $name => $value)
-			$this->params[$name] = $value;
-		return $this;
-	}
-
-	/**
-	 * Sets the ORDER BY part of the query.
-	 * @param mixed $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
-	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @return Command the command object itself
-	 * @since 1.1.6
-	 */
-	public function order($columns)
-	{
-		if (is_string($columns) && strpos($columns, '(') !== false)
-			$this->_query['order'] = $columns;
-		else
-		{
-			if (!is_array($columns))
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			foreach ($columns as $i => $column)
-			{
-				if (is_object($column))
-					$columns[$i] = (string)$column;
-				elseif (strpos($column, '(') === false)
-				{
-					if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches))
-						$columns[$i] = $this->_connection->quoteColumnName($matches[1]) . ' ' . strtoupper($matches[2]);
-					else
-						$columns[$i] = $this->_connection->quoteColumnName($column);
+		foreach ($joins as $i => $join) {
+			if (is_array($join)) {  // join type, table name, on-condition
+				if (isset($join[0], $join[1])) {
+					$table = $join[1];
+					if (strpos($table,'(')===false) {
+						if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) {  // with alias
+							$table = $this->_connection->quoteTableName($matches[1]).' '.$this->_connection->quoteTableName($matches[2]);
+						}
+						else {
+							$table = $this->_connection->quoteTableName($table);
+						}
+					}
+					$joins[$i] = strtoupper($join[0]) . ' ' . $table;
+					if (isset($join[2])) {  // join condition
+						$condition = $this->processCondition($join[2]);
+						$joins[$i] .= ' ON ' . $condition;
+					}
+				}
+				else {
+					throw new Exception('The join clause may be specified as an array of at least two elements.');
 				}
 			}
-			$this->_query['order'] = implode(', ', $columns);
 		}
-		return $this;
+
+		return implode("\n", $joins);
 	}
 
-	/**
-	 * Sets the LIMIT part of the query.
-	 * @param integer $limit the limit
-	 * @param integer $offset the offset
-	 * @return Command the command object itself
-	 * @since 1.1.6
-	 */
-	public function limit($limit, $offset = null)
+	protected function buildWhere($query)
 	{
-		$this->_query['limit'] = (int)$limit;
-		if ($offset !== null)
-			$this->offset($offset);
-		return $this;
+		$where = $this->processConditions($query->where);
+		return empty($where) ? '' : 'WHERE ' . $where;
 	}
 
-	/**
-	 * Appends a SQL statement using UNION operator.
-	 * @param string $sql the SQL statement to be appended using UNION
-	 * @return Command the command object itself
-	 * @since 1.1.6
-	 */
-	public function union($sql)
+	protected function buildGroupBy($query)
 	{
-		if (isset($this->_query['union']) && is_string($this->_query['union']))
-			$this->_query['union'] = array($this->_query['union']);
-
-		$this->_query['union'][] = $sql;
-
-		return $this;
-	}
-
-	/**
-	 * Generates the condition string that will be put in the WHERE part
-	 * @param mixed $conditions the conditions that will be put in the WHERE part.
-	 * @return string the condition string to put in the WHERE part
-	 */
-	private function buildConditions($conditions)
-	{
-		if (!is_array($conditions))
-			return $conditions;
-		elseif ($conditions === array())
+		$columns = $query->groupBy;
+		if (empty($columns)) {
 			return '';
+		}
+		if (is_string($columns) && strpos($columns, '(') !== false) {
+			return 'GROUP BY ' . $columns;
+		}
+
+		if (!is_array($columns)) {
+			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+		}
+		foreach ($columns as $i => $column) {
+			if (is_object($column)) {
+				$columns[$i] = (string)$column;
+			}
+			elseif (strpos($column, '(') === false) {
+				$columns[$i] = $this->_connection->quoteColumnName($column);
+			}
+		}
+		return 'GROUP BY ' . implode(', ', $columns);
+	}
+
+	protected function buildHaving($query)
+	{
+		$having = $this->processConditions($query->having);
+		return empty($having) ? '' : 'HAVING ' . $having;
+	}
+
+	protected function buildOrderBy($query)
+	{
+		$columns = $query->orderBy;
+		if (empty($columns)) {
+			return '';
+		}
+		if (is_string($columns) && strpos($columns, '(') !== false) {
+			return 'ORDER BY ' . $columns;
+		}
+
+		if (!is_array($columns)) {
+			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+		}
+		foreach ($columns as $i => $column) {
+			if (is_object($column)) {
+				$columns[$i] = (string)$column;
+			}
+			elseif (strpos($column, '(') === false) {
+				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
+					$columns[$i] = $this->_connection->quoteColumnName($matches[1]) . ' ' . strtoupper($matches[2]);
+				}
+				else {
+					$columns[$i] = $this->_connection->quoteColumnName($column);
+				}
+			}
+		}
+		return 'ORDER BY ' . implode(', ', $columns);
+	}
+
+	protected function buildLimit($query)
+	{
+		$sql = '';
+		if ($query->limit !== null && $query->limit >= 0) {
+			$sql = 'LIMIT ' . (int)$query->limit;
+		}
+		if ($query->offset>0) {
+			$sql .= ' OFFSET '.(int)$query->offset;
+		}
+		return ltrim($sql);
+	}
+
+	protected function buildUnion($query)
+	{
+		$unions = $query->union;
+		if (empty($unions)) {
+			return '';
+		}
+		if (!is_array($unions)) {
+			$unions = array($unions);
+		}
+		foreach ($unions as $i => $union) {
+			if ($union instanceof Query) {
+				$unions[$i] = $union->getSql($this->_connection);
+			}
+		}
+		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
+	}
+
+	protected function processCondition($conditions)
+	{
+		if (!is_array($conditions)) {
+			return $conditions;
+		}
+		elseif ($conditions === array()) {
+			return '';
+		}
+
 		$n = count($conditions);
 		$operator = strtoupper($conditions[0]);
-		if ($operator === 'OR' || $operator === 'AND')
-		{
+		if ($operator === 'OR' || $operator === 'AND') {
 			$parts = array();
-			for ($i = 1;$i < $n;++$i)
-			{
-				$condition = $this->processConditions($conditions[$i]);
-				if ($condition !== '')
+			for ($i = 1; $i < $n; ++$i) {
+				$condition = $this->processCondition($conditions[$i]);
+				if ($condition !== '') {
 					$parts[] = '(' . $condition . ')';
+				}
 			}
 			return $parts === array() ? '' : implode(' ' . $operator . ' ', $parts);
 		}
 
-		if (!isset($conditions[1], $conditions[2]))
+		if (!isset($conditions[1], $conditions[2])) {
 			return '';
+		}
 
 		$column = $conditions[1];
-		if (strpos($column, '(') === false)
+		if (strpos($column, '(') === false) {
 			$column = $this->_connection->quoteColumnName($column);
+		}
 
 		$values = $conditions[2];
-		if (!is_array($values))
+		if (!is_array($values)) {
 			$values = array($values);
+		}
 
-		if ($operator === 'IN' || $operator === 'NOT IN')
-		{
-			if ($values === array())
+		if ($operator === 'IN' || $operator === 'NOT IN') {
+			if ($values === array()) {
 				return $operator === 'IN' ? '0=1' : '';
-			foreach ($values as $i => $value)
-			{
-				if (is_string($value))
+			}
+			foreach ($values as $i => $value) {
+				if (is_string($value)) {
 					$values[$i] = $this->_connection->quoteValue($value);
-				else
+				}
+				else {
 					$values[$i] = (string)$value;
+				}
 			}
 			return $column . ' ' . $operator . ' (' . implode(', ', $values) . ')';
 		}
 
-		if ($operator === 'LIKE' || $operator === 'NOT LIKE' || $operator === 'OR LIKE' || $operator === 'OR NOT LIKE')
-		{
-			if ($values === array())
+		if ($operator === 'LIKE' || $operator === 'NOT LIKE' || $operator === 'OR LIKE' || $operator === 'OR NOT LIKE') {
+			if ($values === array()) {
 				return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
+			}
 
-			if ($operator === 'LIKE' || $operator === 'NOT LIKE')
+			if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
 				$andor = ' AND ';
-			else
-			{
+			}
+			else {
 				$andor = ' OR ';
 				$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
 			}
 			$expressions = array();
-			foreach ($values as $value)
+			foreach ($values as $value) {
 				$expressions[] = $column . ' ' . $operator . ' ' . $this->_connection->quoteValue($value);
+			}
 			return implode($andor, $expressions);
 		}
 
-		throw new CDbException(Yii::t('yii', 'Unknown operator "{operator}".', array('{operator}' => $operator)));
-	}
-
-	/**
-	 * Appends an JOIN part to the query.
-	 * @param string $type the join type ('join', 'left join', 'right join', 'cross join', 'natural join')
-	 * @param string $table the table to be joined.
-	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
-	 * The method will automatically quote the table name unless it contains some parenthesis
-	 * (which means the table is given as a sub-query or DB expression).
-	 * @param mixed $conditions the join condition that should appear in the ON part.
-	 * Please refer to {@link where} on how to specify conditions.
-	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return Command the command object itself
-	 * @since 1.1.6
-	 */
-	private function joinInternal($type, $table, $conditions = '', $params = array())
-	{
-		if (strpos($table, '(') === false)
-		{
-			if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches))  // with alias
-				$table = $this->_connection->quoteTableName($matches[1]) . ' ' . $this->_connection->quoteTableName($matches[2]);
-			else
-				$table = $this->_connection->quoteTableName($table);
-		}
-
-		$conditions = $this->processConditions($conditions);
-		if ($conditions != '')
-			$conditions = ' ON ' . $conditions;
-
-		if (isset($this->_query['join']) && is_string($this->_query['join']))
-			$this->_query['join'] = array($this->_query['join']);
-
-		$this->_query['join'][] = strtoupper($type) . ' ' . $table . $conditions;
-
-		foreach ($params as $name => $value)
-			$this->params[$name] = $value;
-		return $this;
+		throw new Exception('Unknown operator: ' . $operator);
 	}
 }

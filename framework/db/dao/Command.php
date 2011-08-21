@@ -78,7 +78,7 @@ class Command extends \yii\base\Component
  	 * {@link setFetchMode FetchMode}. See {@link http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php}
  	 * for more details.
 	 */
-	public function __construct(CDbConnection $connection, $query = null)
+	public function __construct($connection, $query = null)
 	{
 		$this->_connection = $connection;
 		if (is_array($query))

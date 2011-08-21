@@ -24,6 +24,11 @@ class Query extends CComponent
 	 * or an array of column names. Defaults to '*', meaning all columns.
 	 */
 	public $select;
+	/**
+	 * @var string additional option that should be appended to the 'SELECT' keyword. For example,
+	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
+	 */
+	public $selectOption;
 
 	public $from;
 	/**

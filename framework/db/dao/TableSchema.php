@@ -1,6 +1,6 @@
 <?php
 /**
- * CDbTableSchema class file.
+ * TableSchema class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
@@ -8,12 +8,14 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db\dao;
+
 /**
- * CDbTableSchema is the base class for representing the metadata of a database table.
+ * TableSchema is the base class for representing the metadata of a database table.
  *
  * It may be extended by different DBMS driver to provide DBMS-specific table metadata.
  *
- * CDbTableSchema provides the following information about a table:
+ * TableSchema provides the following information about a table:
  * <ul>
  * <li>{@link name}</li>
  * <li>{@link rawName}</li>
@@ -24,20 +26,22 @@
  * </ul>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbTableSchema.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.db.schema
- * @since 1.0
+ * @since 2.0
  */
-class CDbTableSchema extends CComponent
+class TableSchema extends \yii\base\Component
 {
+	/**
+	 * @var string name of the schema that this table belongs to.
+	 */
+	public $schemaName;
 	/**
 	 * @var string name of this table.
 	 */
 	public $name;
 	/**
-	 * @var string raw name of this table. This is the quoted version of table name with optional schema name. It can be directly used in SQLs.
+	 * @var string quoted name of this table. This may include [[schemaName]] if it is not empty.
 	 */
-	public $rawName;
+	public $quotedName;
 	/**
 	 * @var string|array primary key name of this table. If composite key, an array of key names is returned.
 	 */
@@ -51,7 +55,7 @@ class CDbTableSchema extends CComponent
 	 */
 	public $foreignKeys = array();
 	/**
-	 * @var array column metadata of this table. Each array element is a CDbColumnSchema object, indexed by column names.
+	 * @var array column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
 	 */
 	public $columns = array();
 

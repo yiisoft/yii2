@@ -1,6 +1,6 @@
 <?php
 /**
- * CDbSchema class file.
+ * Schema class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
@@ -8,15 +8,15 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db\dao;
+
 /**
- * CDbSchema is the base class for retrieving metadata information.
+ * Schema is the base class for retrieving metadata information.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbSchema.php 3359 2011-07-18 11:25:17Z qiang.xue $
- * @package system.db.schema
- * @since 1.0
+ * @since 2.0
  */
-abstract class CDbSchema extends CComponent
+abstract class Schema extends \yii\base\Component
 {
 	/**
 	 * @var array the abstract column types mapped to physical column types.
@@ -41,10 +41,10 @@ abstract class CDbSchema extends CComponent
 	 * Constructor.
 	 * @param CDbConnection $conn database connection.
 	 */
-	public function __construct($conn)
+	public function __construct($connection)
 	{
-		$this->_connection = $conn;
-		foreach ($conn->schemaCachingExclude as $name)
+		$this->_connection = $connection;
+		foreach ($connection->schemaCachingExclude as $name)
 			$this->_cacheExclude[$name] = true;
 	}
 
@@ -342,215 +342,4 @@ abstract class CDbSchema extends CComponent
     		return $type;
     }
 
-	/**
-	 * Builds a SQL statement for creating a new DB table.
-	 *
-	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name'=>'string'),
-	 * where name stands for a column name which will be properly quoted by the method, and definition
-	 * stands for the column type which can contain an abstract DB type.
-	 * The {@link getColumnType} method will be invoked to convert any abstract type into a physical one.
-	 *
-	 * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
-	 * inserted into the generated SQL.
-	 *
-	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
-	 * @param array $columns the columns (name=>definition) in the new table.
-	 * @param string $options additional SQL fragment that will be appended to the generated SQL.
-	 * @return string the SQL statement for creating a new DB table.
-	 * @since 1.1.6
-	 */
-	public function createTable($table, $columns, $options = null)
-	{
-		$cols = array();
-		foreach ($columns as $name => $type)
-		{
-			if (is_string($name))
-				$cols[] = "\t" . $this->quoteColumnName($name) . ' ' . $this->getColumnType($type);
-			else
-				$cols[] = "\t" . $type;
-		}
-		$sql = "CREATE TABLE " . $this->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
-		return $options === null ? $sql : $sql . ' ' . $options;
-	}
-
-	/**
-	 * Builds a SQL statement for renaming a DB table.
-	 * @param string $table the table to be renamed. The name will be properly quoted by the method.
-	 * @param string $newName the new table name. The name will be properly quoted by the method.
-	 * @return string the SQL statement for renaming a DB table.
-	 * @since 1.1.6
-	 */
-	public function renameTable($table, $newName)
-	{
-		return 'RENAME TABLE ' . $this->quoteTableName($table) . ' TO ' . $this->quoteTableName($newName);
-	}
-
-	/**
-	 * Builds a SQL statement for dropping a DB table.
-	 * @param string $table the table to be dropped. The name will be properly quoted by the method.
-	 * @return string the SQL statement for dropping a DB table.
-	 * @since 1.1.6
-	 */
-	public function dropTable($table)
-	{
-		return "DROP TABLE " . $this->quoteTableName($table);
-	}
-
-	/**
-	 * Builds a SQL statement for truncating a DB table.
-	 * @param string $table the table to be truncated. The name will be properly quoted by the method.
-	 * @return string the SQL statement for truncating a DB table.
-	 * @since 1.1.6
-	 */
-	public function truncateTable($table)
-	{
-		return "TRUNCATE TABLE " . $this->quoteTableName($table);
-	}
-
-	/**
-	 * Builds a SQL statement for adding a new DB column.
-	 * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
-	 * @param string $column the name of the new column. The name will be properly quoted by the method.
-	 * @param string $type the column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
-	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
-	 * @return string the SQL statement for adding a new column.
-	 * @since 1.1.6
-	 */
-	public function addColumn($table, $column, $type)
-	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' ADD ' . $this->quoteColumnName($column) . ' '
-			. $this->getColumnType($type);
-	}
-
-	/**
-	 * Builds a SQL statement for dropping a DB column.
-	 * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
-	 * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
-	 * @return string the SQL statement for dropping a DB column.
-	 * @since 1.1.6
-	 */
-	public function dropColumn($table, $column)
-	{
-		return "ALTER TABLE " . $this->quoteTableName($table)
-			. " DROP COLUMN " . $this->quoteColumnName($column);
-	}
-
-	/**
-	 * Builds a SQL statement for renaming a column.
-	 * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-	 * @param string $name the old name of the column. The name will be properly quoted by the method.
-	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
-	 * @return string the SQL statement for renaming a DB column.
-	 * @since 1.1.6
-	 */
-	public function renameColumn($table, $name, $newName)
-	{
-		return "ALTER TABLE " . $this->quoteTableName($table)
-			. " RENAME COLUMN " . $this->quoteColumnName($name)
-			. " TO " . $this->quoteColumnName($newName);
-	}
-
-	/**
-	 * Builds a SQL statement for changing the definition of a column.
-	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-	 * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
-	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
-	 * @return string the SQL statement for changing the definition of a column.
-	 * @since 1.1.6
-	 */
-	public function alterColumn($table, $column, $type)
-	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table) . ' CHANGE '
-			. $this->quoteColumnName($column) . ' '
-			. $this->quoteColumnName($column) . ' '
-			. $this->getColumnType($type);
-	}
-
-	/**
-	 * Builds a SQL statement for adding a foreign key constraint to an existing table.
-	 * The method will properly quote the table and column names.
-	 * @param string $name the name of the foreign key constraint.
-	 * @param string $table the table that the foreign key constraint will be added to.
-	 * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
-	 * @param string $refTable the table that the foreign key references to.
-	 * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
-	 * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-	 * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-	 * @return string the SQL statement for adding a foreign key constraint to an existing table.
-	 * @since 1.1.6
-	 */
-	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
-	{
-		$columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
-		foreach ($columns as $i => $col)
-			$columns[$i] = $this->quoteColumnName($col);
-		$refColumns = preg_split('/\s*,\s*/', $refColumns, -1, PREG_SPLIT_NO_EMPTY);
-		foreach ($refColumns as $i => $col)
-			$refColumns[$i] = $this->quoteColumnName($col);
-		$sql = 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' ADD CONSTRAINT ' . $this->quoteColumnName($name)
-			. ' FOREIGN KEY (' . implode(', ', $columns) . ')'
-			. ' REFERENCES ' . $this->quoteTableName($refTable)
-			. ' (' . implode(', ', $refColumns) . ')';
-		if ($delete !== null)
-			$sql .= ' ON DELETE ' . $delete;
-		if ($update !== null)
-			$sql .= ' ON UPDATE ' . $update;
-		return $sql;
-	}
-
-	/**
-	 * Builds a SQL statement for dropping a foreign key constraint.
-	 * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-	 * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
-	 * @return string the SQL statement for dropping a foreign key constraint.
-	 * @since 1.1.6
-	 */
-	public function dropForeignKey($name, $table)
-	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' DROP CONSTRAINT ' . $this->quoteColumnName($name);
-	}
-
-	/**
-	 * Builds a SQL statement for creating a new index.
-	 * @param string $name the name of the index. The name will be properly quoted by the method.
-	 * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
-	 * @param string $column the column(s) that should be included in the index. If there are multiple columns, please separate them
-	 * by commas. Each column name will be properly quoted by the method, unless a parenthesis is found in the name.
-	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
-	 * @return string the SQL statement for creating a new index.
-	 * @since 1.1.6
-	 */
-	public function createIndex($name, $table, $column, $unique = false)
-	{
-		$cols = array();
-		$columns = preg_split('/\s*,\s*/', $column, -1, PREG_SPLIT_NO_EMPTY);
-		foreach ($columns as $col)
-		{
-			if (strpos($col, '(') !== false)
-				$cols[] = $col;
-			else
-				$cols[] = $this->quoteColumnName($col);
-		}
-		return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
-			. $this->quoteTableName($name) . ' ON '
-			. $this->quoteTableName($table) . ' (' . implode(', ', $cols) . ')';
-	}
-
-	/**
-	 * Builds a SQL statement for dropping an index.
-	 * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
-	 * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
-	 * @return string the SQL statement for dropping an index.
-	 * @since 1.1.6
-	 */
-	public function dropIndex($name, $table)
-	{
-		return 'DROP INDEX ' . $this->quoteTableName($name) . ' ON ' . $this->quoteTableName($table);
-	}
 }
