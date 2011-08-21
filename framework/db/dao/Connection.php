@@ -451,11 +451,12 @@ class Connection extends \yii\base\ApplicationComponent
 		}
 		else {
 			$driver = $this->getDriverName();
-			if (isset($this->schemaMap[$driver]))
-				return $this->_schema = Yii::createComponent($this->schemaMap[$driver], $this);
-			else
-				throw new CDbException(Yii::t('yii', 'Connection does not support reading schema for {driver} database.',
-					array('{driver}' => $driver)));
+			if (isset($this->schemaMap[$driver])) {
+				return $this->_schema = \Yii::createComponent($this->schemaMap[$driver], $this);
+			}
+			else {
+				throw new Exception("Connection does not support reading schema for '$driver' database.");
+			}
 		}
 	}
 

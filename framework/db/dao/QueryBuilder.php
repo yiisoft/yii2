@@ -18,19 +18,32 @@ namespace yii\db\dao;
  */
 class QueryBuilder extends \yii\base\Component
 {
-	private $_connection;
-
-	public function __construct($connection)
-	{
-		$this->_connection = $connection;
-	}
-
 	/**
-	 * @return CDbConnection the connection associated with this command
+	 * @var array the abstract column types mapped to physical column types.
 	 */
-	public function getConnection()
+    public $columnTypes = array(
+        'pk' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        'string' => 'varchar(255)',
+        'text' => 'text',
+        'integer' => 'int(11)',
+        'float' => 'float',
+        'decimal' => 'decimal',
+        'datetime' => 'datetime',
+        'timestamp' => 'timestamp',
+        'time' => 'time',
+        'date' => 'date',
+        'binary' => 'blob',
+        'boolean' => 'tinyint(1)',
+		'money' => 'decimal(19,4)',
+    );
+
+	public $connection;
+	public $schema;
+
+	public function __construct($schema)
 	{
-		return $this->_connection;
+		$this->connection = $schema->getDbConnection();
+		$this->schema = $schema;
 	}
 
 	public function build($query)
@@ -69,14 +82,14 @@ class QueryBuilder extends \yii\base\Component
 	public function createTable($table, $columns, $options = null)
 	{
 		$cols = array();
-		foreach ($columns as $name => $type)
-		{
-			if (is_string($name))
-				$cols[] = "\t" . $this->quoteColumnName($name) . ' ' . $this->getColumnType($type);
+		foreach ($columns as $name => $type) {
+			if (is_string($name)) {
+				$cols[] = "\t" . $this->schema->quoteColumnName($name) . ' ' . $this->schema->getColumnType($type);
+			}
 			else
 				$cols[] = "\t" . $type;
 		}
-		$sql = "CREATE TABLE " . $this->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
+		$sql = "CREATE TABLE " . $this->schema->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
 		return $options === null ? $sql : $sql . ' ' . $options;
 	}
 
@@ -253,6 +266,67 @@ class QueryBuilder extends \yii\base\Component
 		return 'DROP INDEX ' . $this->quoteTableName($name) . ' ON ' . $this->quoteTableName($table);
 	}
 
+	/**
+	 * Resets the sequence value of a table's primary key.
+	 * The sequence will be reset such that the primary key of the next new row inserted
+	 * will have the specified value or 1.
+	 * @param CDbTableSchema $table the table schema whose primary key sequence will be reset
+	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+	 * the next new row's primary key will have a value 1.
+	 */
+	public function resetSequence($table, $value = null)
+	{
+	}
+
+	/**
+	 * Enables or disables integrity check.
+	 * @param boolean $check whether to turn on or off the integrity check.
+	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 */
+	public function checkIntegrity($check = true, $schema = '')
+	{
+	}
+
+	/**
+	 * Converts an abstract column type into a physical column type.
+	 * The conversion is done using the type map specified in {@link columnTypes}.
+	 * These abstract column types are supported (using MySQL as example to explain the corresponding
+	 * physical types):
+	 * <ul>
+	 * <li>pk: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"</li>
+	 * <li>string: string type, will be converted into "varchar(255)"</li>
+	 * <li>text: a long string type, will be converted into "text"</li>
+	 * <li>integer: integer type, will be converted into "int(11)"</li>
+	 * <li>boolean: boolean type, will be converted into "tinyint(1)"</li>
+	 * <li>float: float number type, will be converted into "float"</li>
+	 * <li>decimal: decimal number type, will be converted into "decimal"</li>
+	 * <li>datetime: datetime type, will be converted into "datetime"</li>
+	 * <li>timestamp: timestamp type, will be converted into "timestamp"</li>
+	 * <li>time: time type, will be converted into "time"</li>
+	 * <li>date: date type, will be converted into "date"</li>
+	 * <li>binary: binary data type, will be converted into "blob"</li>
+	 * </ul>
+	 *
+	 * If the abstract type contains two or more parts separated by spaces (e.g. "string NOT NULL"), then only
+	 * the first part will be converted, and the rest of the parts will be appended to the conversion result.
+	 * For example, 'string NOT NULL' is converted to 'varchar(255) NOT NULL'.
+	 * @param string $type abstract column type
+	 * @return string physical column type.
+	 */
+    public function getColumnType($type)
+    {
+		if (isset($this->columnTypes[$type])) {
+			return $this->columnTypes[$type];
+		}
+		elseif (($pos = strpos($type, ' ')) !== false) {
+			$t = substr($type, 0, $pos);
+			return (isset($this->columnTypes[$t]) ? $this->columnTypes[$t] : $t) . substr($type, $pos);
+		}
+		else {
+			return $type;
+		}
+	}
+
 	protected function buildSelect($query)
 	{
 		$select = $query->distinct ? 'SELECT DISTINCT' : 'SELECT';
@@ -275,10 +349,10 @@ class QueryBuilder extends \yii\base\Component
 			}
 			elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-\.])$/', $column, $matches)) {
-					$columns[$i] = $this->_connection->quoteColumnName($matches[1]) . ' AS ' . $this->_connection->quoteSimpleColumnName($matches[2]);
+					$columns[$i] = $this->connection->quoteColumnName($matches[1]) . ' AS ' . $this->connection->quoteSimpleColumnName($matches[2]);
 				}
 				else {
-					$columns[$i] = $this->_connection->quoteColumnName($column);
+					$columns[$i] = $this->connection->quoteColumnName($column);
 				}
 			}
 		}
@@ -299,10 +373,10 @@ class QueryBuilder extends \yii\base\Component
 		foreach ($tables as $i => $table) {
 			if (strpos($table, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
-					$tables[$i] = $this->_connection->quoteTableName($matches[1]) . ' ' . $this->_connection->quoteTableName($matches[2]);
+					$tables[$i] = $this->connection->quoteTableName($matches[1]) . ' ' . $this->connection->quoteTableName($matches[2]);
 				}
 				else {
-					$tables[$i] = $this->_connection->quoteTableName($table);
+					$tables[$i] = $this->connection->quoteTableName($table);
 				}
 			}
 		}
@@ -326,10 +400,10 @@ class QueryBuilder extends \yii\base\Component
 					$table = $join[1];
 					if (strpos($table,'(')===false) {
 						if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) {  // with alias
-							$table = $this->_connection->quoteTableName($matches[1]).' '.$this->_connection->quoteTableName($matches[2]);
+							$table = $this->connection->quoteTableName($matches[1]).' '.$this->connection->quoteTableName($matches[2]);
 						}
 						else {
-							$table = $this->_connection->quoteTableName($table);
+							$table = $this->connection->quoteTableName($table);
 						}
 					}
 					$joins[$i] = strtoupper($join[0]) . ' ' . $table;
@@ -371,7 +445,7 @@ class QueryBuilder extends \yii\base\Component
 				$columns[$i] = (string)$column;
 			}
 			elseif (strpos($column, '(') === false) {
-				$columns[$i] = $this->_connection->quoteColumnName($column);
+				$columns[$i] = $this->connection->quoteColumnName($column);
 			}
 		}
 		return 'GROUP BY ' . implode(', ', $columns);
@@ -402,10 +476,10 @@ class QueryBuilder extends \yii\base\Component
 			}
 			elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-					$columns[$i] = $this->_connection->quoteColumnName($matches[1]) . ' ' . strtoupper($matches[2]);
+					$columns[$i] = $this->connection->quoteColumnName($matches[1]) . ' ' . strtoupper($matches[2]);
 				}
 				else {
-					$columns[$i] = $this->_connection->quoteColumnName($column);
+					$columns[$i] = $this->connection->quoteColumnName($column);
 				}
 			}
 		}
@@ -435,7 +509,7 @@ class QueryBuilder extends \yii\base\Component
 		}
 		foreach ($unions as $i => $union) {
 			if ($union instanceof Query) {
-				$unions[$i] = $union->getSql($this->_connection);
+				$unions[$i] = $union->getSql($this->connection);
 			}
 		}
 		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
@@ -469,7 +543,7 @@ class QueryBuilder extends \yii\base\Component
 
 		$column = $conditions[1];
 		if (strpos($column, '(') === false) {
-			$column = $this->_connection->quoteColumnName($column);
+			$column = $this->connection->quoteColumnName($column);
 		}
 
 		$values = $conditions[2];
@@ -483,7 +557,7 @@ class QueryBuilder extends \yii\base\Component
 			}
 			foreach ($values as $i => $value) {
 				if (is_string($value)) {
-					$values[$i] = $this->_connection->quoteValue($value);
+					$values[$i] = $this->connection->quoteValue($value);
 				}
 				else {
 					$values[$i] = (string)$value;
@@ -506,7 +580,7 @@ class QueryBuilder extends \yii\base\Component
 			}
 			$expressions = array();
 			foreach ($values as $value) {
-				$expressions[] = $column . ' ' . $operator . ' ' . $this->_connection->quoteValue($value);
+				$expressions[] = $column . ' ' . $operator . ' ' . $this->connection->quoteValue($value);
 			}
 			return implode($andor, $expressions);
 		}

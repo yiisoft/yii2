@@ -18,12 +18,6 @@ namespace yii\db\dao;
  */
 abstract class Schema extends \yii\base\Component
 {
-	/**
-	 * @var array the abstract column types mapped to physical column types.
-	 * @since 1.1.6
-	 */
-    public $columnTypes = array();
-
 	private $_tableNames = array();
 	private $_tables = array();
 	private $_connection;
@@ -49,55 +43,58 @@ abstract class Schema extends \yii\base\Component
 	}
 
 	/**
-	 * @return CDbConnection database connection. The connection is active.
+	 * @return Connection database connection. The connection is active.
 	 */
-	public function getDbConnection()
+	public function getConnection()
 	{
 		return $this->_connection;
 	}
 
 	/**
 	 * Obtains the metadata for the named table.
-	 * @param string $name table name
+	 * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
 	 * @return CDbTableSchema table metadata. Null if the named table does not exist.
 	 */
-	public function getTable($name)
+	public function getTableSchema($name)
 	{
-		if (isset($this->_tables[$name]))
+		if (isset($this->_tables[$name])) {
 			return $this->_tables[$name];
-		else
-		{
-			if ($this->_connection->tablePrefix !== null && strpos($name, '{{') !== false)
-				$realName = preg_replace('/\{\{(.*?)\}\}/', $this->_connection->tablePrefix . '$1', $name);
-			else
-				$realName = $name;
-
-			// temporarily disable query caching
-			if ($this->_connection->queryCachingDuration > 0)
-			{
-				$qcDuration = $this->_connection->queryCachingDuration;
-				$this->_connection->queryCachingDuration = 0;
-			}
-
-			if (!isset($this->_cacheExclude[$name]) && ($duration = $this->_connection->schemaCachingDuration) > 0 && $this->_connection->schemaCacheID !== false && ($cache = Yii::app()->getComponent($this->_connection->schemaCacheID)) !== null)
-			{
-				$key = 'yii:dbschema' . $this->_connection->connectionString . ':' . $this->_connection->username . ':' . $name;
-				if (($table = $cache->get($key)) === false)
-				{
-					$table = $this->loadTable($realName);
-					if ($table !== null)
-						$cache->set($key, $table, $duration);
-				}
-				$this->_tables[$name] = $table;
-			}
-			else
-				$this->_tables[$name] = $table = $this->loadTable($realName);
-
-			if (isset($qcDuration))  // re-enable query caching
-				$this->_connection->queryCachingDuration = $qcDuration;
-
-			return $table;
 		}
+
+		if (strpos($name, '{{') !== false) {
+			$realName = preg_replace('/\{\{(.*?)\}\}/', $this->_connection->tablePrefix . '$1', $name);
+		}
+		else {
+			$realName = $name;
+		}
+		
+		$db = $this->_connection;
+
+		// temporarily disable query caching
+		if ($db->queryCachingDuration >= 0) {
+			$qcDuration = $db->queryCachingDuration;
+			$db->queryCachingDuration = -1;
+		}
+
+		if (!in_array($name, $db->schemaCachingExclude) && $db->schemaCachingDuration >= 0 && ($cache = \Yii::app()->getComponent($db->schemaCacheID)) !== null) {
+			$key = __CLASS__ . ":{$db->dsn}/{$db->username}/{$name}";
+			if (($table = $cache->get($key)) === false) {
+				$table = $this->loadTableSchema($realName);
+				if ($table !== null) {
+					$cache->set($key, $table, $db->schemaCachingDuration);
+				}
+			}
+			$this->_tables[$name] = $table;
+		}
+		else {
+			$this->_tables[$name] = $table = $this->loadTableSchema($realName);
+		}
+
+		if (isset($qcDuration)) { // re-enable query caching
+			$db->queryCachingDuration = $qcDuration;
+		}
+
+		return $table;
 	}
 
 	/**
@@ -106,7 +103,6 @@ abstract class Schema extends \yii\base\Component
 	 * @return array the metadata for all tables in the database.
 	 * Each array element is an instance of {@link CDbTableSchema} (or its child class).
 	 * The array keys are table names.
-	 * @since 1.0.2
 	 */
 	public function getTables($schema = '')
 	{
@@ -124,7 +120,6 @@ abstract class Schema extends \yii\base\Component
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * If not empty, the returned table names will be prefixed with the schema name.
 	 * @return array all table names in the database.
-	 * @since 1.0.2
 	 */
 	public function getTableNames($schema = '')
 	{
@@ -151,15 +146,11 @@ abstract class Schema extends \yii\base\Component
 	 */
 	public function refresh()
 	{
-		if (($duration = $this->_connection->schemaCachingDuration) > 0 && $this->_connection->schemaCacheID !== false && ($cache = Yii::app()->getComponent($this->_connection->schemaCacheID)) !== null)
-		{
-			foreach (array_keys($this->_tables) as $name)
-			{
-				if (!isset($this->_cacheExclude[$name]))
-				{
-					$key = 'yii:dbschema' . $this->_connection->connectionString . ':' . $this->_connection->username . ':' . $name;
-					$cache->delete($key);
-				}
+		$db = $this->_connection;
+		if ($db->schemaCachingDuration >= 0 && ($cache = \Yii::app()->getComponent($db->schemaCacheID)) !== null) {
+			foreach ($this->_tables as $name => $table) {
+				$key = __CLASS__ . ":{$db->dsn}/{$db->username}/{$name}";
+				$cache->delete($key);
 			}
 		}
 		$this->_tables = array();
@@ -190,7 +181,6 @@ abstract class Schema extends \yii\base\Component
 	 * A simple table name does not schema prefix.
 	 * @param string $name table name
 	 * @return string the properly quoted table name
-	 * @since 1.1.6
 	 */
 	public function quoteSimpleTableName($name)
 	{
@@ -255,36 +245,13 @@ abstract class Schema extends \yii\base\Component
 	}
 
 	/**
-	 * Resets the sequence value of a table's primary key.
-	 * The sequence will be reset such that the primary key of the next new row inserted
-	 * will have the specified value or 1.
-	 * @param CDbTableSchema $table the table schema whose primary key sequence will be reset
-	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-	 * the next new row's primary key will have a value 1.
-	 * @since 1.1
-	 */
-	public function resetSequence($table, $value = null)
-	{
-	}
-
-	/**
-	 * Enables or disables integrity check.
-	 * @param boolean $check whether to turn on or off the integrity check.
-	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * @since 1.1
-	 */
-	public function checkIntegrity($check = true, $schema = '')
-	{
-	}
-
-	/**
 	 * Creates a command builder for the database.
 	 * This method may be overridden by child classes to create a DBMS-specific command builder.
 	 * @return CDbCommandBuilder command builder instance
 	 */
-	protected function createCommandBuilder()
+	protected function createQueryBuilder()
 	{
-		return new CDbCommandBuilder($this);
+		return new QueryBuilder($this);
 	}
 
 	/**
@@ -294,52 +261,10 @@ abstract class Schema extends \yii\base\Component
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * If not empty, the returned table names will be prefixed with the schema name.
 	 * @return array all table names in the database.
-	 * @since 1.0.2
 	 */
 	protected function findTableNames($schema = '')
 	{
-		throw new CDbException(Yii::t('yii', '{class} does not support fetching all table names.',
-			array('{class}' => get_class($this))));
+		throw new Exception(get_class($this) . 'does not support fetching all table names.');
 	}
-
-	/**
-	 * Converts an abstract column type into a physical column type.
-	 * The conversion is done using the type map specified in {@link columnTypes}.
-	 * These abstract column types are supported (using MySQL as example to explain the corresponding
-	 * physical types):
-	 * <ul>
-	 * <li>pk: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"</li>
-	 * <li>string: string type, will be converted into "varchar(255)"</li>
-	 * <li>text: a long string type, will be converted into "text"</li>
-	 * <li>integer: integer type, will be converted into "int(11)"</li>
-	 * <li>boolean: boolean type, will be converted into "tinyint(1)"</li>
-	 * <li>float: float number type, will be converted into "float"</li>
-	 * <li>decimal: decimal number type, will be converted into "decimal"</li>
-	 * <li>datetime: datetime type, will be converted into "datetime"</li>
-	 * <li>timestamp: timestamp type, will be converted into "timestamp"</li>
-	 * <li>time: time type, will be converted into "time"</li>
-	 * <li>date: date type, will be converted into "date"</li>
-	 * <li>binary: binary data type, will be converted into "blob"</li>
-	 * </ul>
-	 *
-	 * If the abstract type contains two or more parts separated by spaces (e.g. "string NOT NULL"), then only
-	 * the first part will be converted, and the rest of the parts will be appended to the conversion result.
-	 * For example, 'string NOT NULL' is converted to 'varchar(255) NOT NULL'.
-	 * @param string $type abstract column type
-	 * @return string physical column type.
-	 * @since 1.1.6
-	 */
-    public function getColumnType($type)
-    {
-    	if (isset($this->columnTypes[$type]))
-    		return $this->columnTypes[$type];
-    	elseif (($pos = strpos($type, ' ')) !== false)
-    	{
-    		$t = substr($type, 0, $pos);
-    		return (isset($this->columnTypes[$t]) ? $this->columnTypes[$t] : $t) . substr($type, $pos);
-    	}
-    	else
-    		return $type;
-    }
 
 }
