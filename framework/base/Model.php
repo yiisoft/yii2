@@ -419,7 +419,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	public function getAttributeLabel($attribute)
 	{
 		$labels = $this->attributeLabels();
-		return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute)
+		return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute);
 	}
 
 	/**
@@ -590,7 +590,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	public function onUnsafeAttribute($name, $value)
 	{
 		if (YII_DEBUG) {
-			\Yii::warning(sprintf('Failed to set unsafe attribute "%s" in "%s".', $name, get_class($this));
+			\Yii::warning(sprintf('Failed to set unsafe attribute "%s" in "%s".', $name, get_class($this)));
 		}
 	}
 

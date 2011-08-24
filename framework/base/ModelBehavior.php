@@ -42,7 +42,7 @@ class ModelBehavior extends Behavior
 
 	/**
 	 * Responds to [[Model::onAfterConstruct]] event.
-	 * Overrides this method if you want to handle the corresponding event of the [[owner]].
+	 * Override this method if you want to handle the corresponding event of the [[owner]].
 	 * @param Event $event event parameter
 	 */
 	public function afterConstruct($event)
@@ -51,7 +51,7 @@ class ModelBehavior extends Behavior
 
 	/**
 	 * Responds to [[Model::onBeforeValidate]] event.
-	 * Overrides this method if you want to handle the corresponding event of the [[owner]].
+	 * Override this method if you want to handle the corresponding event of the [[owner]].
 	 * You may set the [[ValidationEvent::isValid|isValid]] property of the event parameter
 	 * to be false to cancel the validation process.
 	 * @param ValidationEvent $event event parameter
@@ -62,7 +62,7 @@ class ModelBehavior extends Behavior
 
 	/**
 	 * Responds to [[Model::onAfterValidate]] event.
-	 * Overrides this method if you want to handle the corresponding event of the [[owner]].
+	 * Override this method if you want to handle the corresponding event of the [[owner]].
 	 * @param Event $event event parameter
 	 */
 	public function afterValidate($event)
