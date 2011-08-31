@@ -151,7 +151,7 @@ class QueryBuilder extends \yii\base\Component
 	public function dropColumn($table, $column)
 	{
 		return "ALTER TABLE " . $this->quoteTableName($table)
-			. " DROP COLUMN " . $this->quoteColumnName($column);
+			. " DROP COLUMN " . $this->quoteSimpleColumnName($column);
 	}
 
 	/**
@@ -165,8 +165,8 @@ class QueryBuilder extends \yii\base\Component
 	public function renameColumn($table, $name, $newName)
 	{
 		return "ALTER TABLE " . $this->quoteTableName($table)
-			. " RENAME COLUMN " . $this->quoteColumnName($name)
-			. " TO " . $this->quoteColumnName($newName);
+			. " RENAME COLUMN " . $this->quoteSimpleColumnName($name)
+			. " TO " . $this->quoteSimpleColumnName($newName);
 	}
 
 	/**
@@ -181,8 +181,8 @@ class QueryBuilder extends \yii\base\Component
 	public function alterColumn($table, $column, $type)
 	{
 		return 'ALTER TABLE ' . $this->quoteTableName($table) . ' CHANGE '
-			. $this->quoteColumnName($column) . ' '
-			. $this->quoteColumnName($column) . ' '
+			. $this->quoteSimpleColumnName($column) . ' '
+			. $this->quoteSimpleColumnName($column) . ' '
 			. $this->getColumnType($type);
 	}
 

@@ -8,6 +8,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db\dao\mysql;
+
 /**
  * ColumnSchema class describes the column meta data of a MySQL table.
  *
@@ -20,18 +22,76 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 	 * Extracts the PHP type from DB type.
 	 * @param string $dbType DB type
 	 */
-	protected function extractType($dbType)
+	public function initTypes($dbType)
 	{
-		if (strncmp($dbType, 'enum', 4) === 0)
-			$this->type = 'string';
-		elseif (strpos($dbType, 'float') !== false || strpos($dbType, 'double') !== false)
-			$this->type = 'double';
-		elseif (strpos($dbType, 'bool') !== false)
-			$this->type = 'boolean';
-		elseif (strpos($dbType, 'int') === 0 && strpos($dbType, 'unsigned') === false || preg_match('/(bit|tinyint|smallint|mediumint)/', $dbType))
-			$this->type = 'integer';
-		else
-			$this->type = 'string';
+		static $typeMap = array(  // dbType => type
+			'tinyint' => 'smallint',
+			'bit' => 'smallint',
+			'smallint' => 'smallint',
+			'mediumint' => 'integer',
+			'int' => 'integer',
+			'integer' => 'integer',
+			'bigint' => 'bigint',
+			'float' => 'float',
+			'double' => 'float',
+			'real' => 'float',
+			'decimal' => 'decimal',
+			'numeric' => 'decimal',
+            'tinytext' => 'text',
+            'mediumtext' => 'text',
+            'longtext' => 'text',
+            'text' => 'text',
+            'varchar' => 'string',
+            'string' => 'string',
+            'char' => 'string',
+			'datetime' => 'datetime',
+			'year' => 'date',
+			'date' => 'date',
+			'time' => 'time',
+			'timestamp' => 'timestamp',
+			'enum' => 'enum',
+		);
+
+		$this->dbType = $dbType;
+		$this->type = 'string';
+		$this->unsigned = strpos($this->dbType, 'unsigned') !== false;
+
+		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $this->dbType, $matches)) {
+			$type = $matches[1];
+			if (isset($typeMap[$type])) {
+				$this->type = $typeMap[$type];
+			}
+
+			if (!empty($matches[2])) {
+				if ($this->type === 'enum') {
+					$values = explode(',', $matches[2]);
+					foreach ($values as $i => $value) {
+						$values[$i] = trim($value, "'");
+					}
+					$this->enumValues = $values;
+				}
+				else {
+					$values = explode(',', $matches[2]);
+					$this->size = $this->precision = (int)$values[0];
+					if (isset($values[1])) {
+						$this->scale = (int)$values[1];
+					}
+					if ($this->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
+						$this->type = 'boolean';
+					}
+					elseif ($type === 'bit') {
+						if ($this->size > 32) {
+							$this->type = 'bigint';
+						}
+						elseif ($this->size === 32) {
+							$this->type = 'integer';
+						}
+					}
+				}
+			}
+		}
+
+		$this->phpType = $this->getPhpType();
 	}
 
 	/**
@@ -39,32 +99,13 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 	 * The value is typecasted to correct PHP type.
 	 * @param mixed $defaultValue the default value obtained from metadata
 	 */
-	protected function extractDefault($defaultValue)
+	public function initDefaultValue($defaultValue)
 	{
-		if ($this->dbType === 'timestamp' && $defaultValue === 'CURRENT_TIMESTAMP')
+		if ($this->type === 'timestamp' && $defaultValue === 'CURRENT_TIMESTAMP') {
 			$this->defaultValue = null;
-		else
-			parent::extractDefault($defaultValue);
-	}
-
-	/**
-	 * Extracts size, precision and scale information from column's DB type.
-	 * @param string $dbType the column's DB type
-	 */
-	protected function extractLimit($dbType)
-	{
-		if (strncmp($dbType, 'enum', 4) === 0 && preg_match('/\((.*)\)/', $dbType, $matches))
-		{
-			$values = explode(',', $matches[1]);
-			$size = 0;
-			foreach ($values as $value)
-			{
-				if (($n = strlen($value)) > $size)
-					$size = $n;
-			}
-			$this->size = $this->precision = $size-2;
 		}
-		else
-			parent::extractLimit($dbType);
+		else {
+			$this->defaultValue = $this->typecast($defaultValue);
+		}
 	}
 }

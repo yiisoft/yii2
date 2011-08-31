@@ -39,7 +39,7 @@ class TableSchema extends \yii\base\Component
 	 */
 	public $name;
 	/**
-	 * @var string quoted name of this table. This may include [[schemaName]] if it is not empty.
+	 * @var string quoted name of this table. This will include [[schemaName]] if it is not empty.
 	 */
 	public $quotedName;
 	/**
@@ -51,7 +51,15 @@ class TableSchema extends \yii\base\Component
 	 */
 	public $sequenceName;
 	/**
-	 * @var array foreign keys of this table. The array is indexed by column name. Each value is an array of foreign table name and foreign column name.
+	 * @var array foreign keys of this table. Each array element is of the following structure:
+	 *
+	 * ~~~
+	 * array(
+	 *     'ForeignTableName',
+	 *     'fk1' => 'pk1',  // pk1 is in foreign table
+	 *     'fk2' => 'pk2',  // if composite foreign key
+	 * )
+	 * ~~~
 	 */
 	public $foreignKeys = array();
 	/**
