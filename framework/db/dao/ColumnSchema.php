@@ -8,13 +8,15 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db\dao;
+
 /**
  * ColumnSchema class describes the column meta data of a database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ColumnSchema extends CComponent
+class ColumnSchema extends \yii\base\Component
 {
 	/**
 	 * @var string name of this column (without quotes).
@@ -30,7 +32,7 @@ class ColumnSchema extends CComponent
 	public $allowNull;
 	/**
 	 * @var string logical type of this column. Possible logic types include:
-	 * string, text, boolean, integer, float, decimal, datetime, timestamp, time, date, binary
+	 * string, text, boolean, smallint, integer, bigint, float, decimal, datetime, timestamp, time, date, binary
 	 */
 	public $type;
 	/**
@@ -46,6 +48,10 @@ class ColumnSchema extends CComponent
 	 * @var mixed default value of this column
 	 */
 	public $defaultValue;
+	/**
+	 * @var array enumerable values
+	 */
+	public $enumValues;
 	/**
 	 * @var integer size of the column.
 	 */
@@ -63,69 +69,37 @@ class ColumnSchema extends CComponent
 	 */
 	public $isPrimaryKey;
 	/**
-	 * @var boolean whether this column is a foreign key
-	 */
-	public $isForeignKey;
-	/**
 	 * @var boolean whether this column is auto-incremental
 	 */
 	public $autoIncrement = false;
-
-
 	/**
-	 * Initializes the column with its DB type and default value.
-	 * This sets up the column's PHP type, size, precision, scale as well as default value.
-	 * @param string $dbType the column's DB type
-	 * @param mixed $defaultValue the default value
+	 * @var boolean whether this column is unsigned. This is only meaningful
+	 * when [[type]] is `integer` or `bigint`.
 	 */
-	public function init($dbType, $defaultValue)
-	{
-		$this->dbType = $dbType;
-		$this->extractType($dbType);
-		$this->extractLimit($dbType);
-		if ($defaultValue !== null)
-			$this->extractDefault($defaultValue);
-	}
+	public $unsigned;
 
 	/**
 	 * Extracts the PHP type from DB type.
-	 * @param string $dbType DB type
 	 */
-	protected function extractType($dbType)
+	protected function getPhpType()
 	{
-		if (stripos($dbType, 'int') !== false && stripos($dbType, 'unsigned int') === false)
-			$this->type = 'integer';
-		elseif (stripos($dbType, 'bool') !== false)
-			$this->type = 'boolean';
-		elseif (preg_match('/(real|floa|doub)/i', $dbType))
-			$this->type = 'double';
-		else
-			$this->type = 'string';
-	}
-
-	/**
-	 * Extracts size, precision and scale information from column's DB type.
-	 * @param string $dbType the column's DB type
-	 */
-	protected function extractLimit($dbType)
-	{
-		if (strpos($dbType, '(') && preg_match('/\((.*)\)/', $dbType, $matches))
-		{
-			$values = explode(',', $matches[1]);
-			$this->size = $this->precision = (int)$values[0];
-			if (isset($values[1]))
-				$this->scale = (int)$values[1];
+		static $typeMap = array( // logical type => php type
+			'smallint' => 'integer',
+	        'integer' => 'integer',
+	        'bigint' => 'integer',
+	        'boolean' => 'boolean',
+	        'float' => 'double',
+		);
+		if (isset($typeMap[$this->type])) {
+			if ($this->type === 'bigint') {
+				return PHP_INT_SIZE == 8 && !$this->unsigned ? 'integer' : 'string';
+			}
+			elseif ($this->type === 'integer') {
+				return PHP_INT_SIZE == 4 && $this->unsigned ? 'string' : 'integer';
+			}
+			return $typeMap[$this->type];
 		}
-	}
-
-	/**
-	 * Extracts the default value for the column.
-	 * The value is typecasted to correct PHP type.
-	 * @param mixed $defaultValue the default value obtained from metadata
-	 */
-	protected function extractDefault($defaultValue)
-	{
-		$this->defaultValue = $this->typecast($defaultValue);
+		return 'string';
 	}
 
 	/**
@@ -135,17 +109,14 @@ class ColumnSchema extends CComponent
 	 */
 	public function typecast($value)
 	{
-		if (gettype($value) === $this->type || $value === null || $value instanceof CDbExpression)
+		if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
 			return $value;
-		if ($value === '')
-			return $this->type === 'string' ? '' : null;
-		switch ($this->type)
-		{
+		}
+		switch ($this->phpType) {
 			case 'string': return (string)$value;
 			case 'integer': return (integer)$value;
 			case 'boolean': return (boolean)$value;
-			case 'double':
-			default: return $value;
 		}
+		return $value;
 	}
 }

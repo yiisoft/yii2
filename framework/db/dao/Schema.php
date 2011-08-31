@@ -18,18 +18,18 @@ namespace yii\db\dao;
  */
 abstract class Schema extends \yii\base\Component
 {
+	public $connection;
+
 	private $_tableNames = array();
 	private $_tables = array();
-	private $_connection;
 	private $_builder;
-	private $_cacheExclude = array();
 
 	/**
 	 * Loads the metadata for the specified table.
 	 * @param string $name table name
-	 * @return CDbTableSchema driver dependent table metadata, null if the table does not exist.
+	 * @return TableSchema driver dependent table metadata, null if the table does not exist.
 	 */
-	abstract protected function loadTable($name);
+	abstract protected function loadTableSchema($name);
 
 	/**
 	 * Constructor.
@@ -37,17 +37,7 @@ abstract class Schema extends \yii\base\Component
 	 */
 	public function __construct($connection)
 	{
-		$this->_connection = $connection;
-		foreach ($connection->schemaCachingExclude as $name)
-			$this->_cacheExclude[$name] = true;
-	}
-
-	/**
-	 * @return Connection database connection. The connection is active.
-	 */
-	public function getConnection()
-	{
-		return $this->_connection;
+		$this->connection = $connection;
 	}
 
 	/**
@@ -62,13 +52,13 @@ abstract class Schema extends \yii\base\Component
 		}
 
 		if (strpos($name, '{{') !== false) {
-			$realName = preg_replace('/\{\{(.*?)\}\}/', $this->_connection->tablePrefix . '$1', $name);
+			$realName = preg_replace('/\{\{(.*?)\}\}/', $this->connection->tablePrefix . '$1', $name);
 		}
 		else {
 			$realName = $name;
 		}
-		
-		$db = $this->_connection;
+
+		$db = $this->connection;
 
 		// temporarily disable query caching
 		if ($db->queryCachingDuration >= 0) {
@@ -77,7 +67,7 @@ abstract class Schema extends \yii\base\Component
 		}
 
 		if (!in_array($name, $db->schemaCachingExclude) && $db->schemaCachingDuration >= 0 && ($cache = \Yii::app()->getComponent($db->schemaCacheID)) !== null) {
-			$key = __CLASS__ . ":{$db->dsn}/{$db->username}/{$name}";
+			$key = __CLASS__ . "/{$db->dsn}/{$db->username}/{$name}";
 			if (($table = $cache->get($key)) === false) {
 				$table = $this->loadTableSchema($realName);
 				if ($table !== null) {
@@ -102,15 +92,14 @@ abstract class Schema extends \yii\base\Component
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * @return array the metadata for all tables in the database.
 	 * Each array element is an instance of {@link CDbTableSchema} (or its child class).
-	 * The array keys are table names.
 	 */
-	public function getTables($schema = '')
+	public function getTableSchemas($schema = '')
 	{
 		$tables = array();
-		foreach ($this->getTableNames($schema) as $name)
-		{
-			if (($table = $this->getTable($name)) !== null)
-				$tables[$name] = $table;
+		foreach ($this->getTableNames($schema) as $name) {
+			if (($table = $this->getTableSchema($name)) !== null) {
+				$tables[] = $table;
+			}
 		}
 		return $tables;
 	}
@@ -123,20 +112,21 @@ abstract class Schema extends \yii\base\Component
 	 */
 	public function getTableNames($schema = '')
 	{
-		if (!isset($this->_tableNames[$schema]))
+		if (!isset($this->_tableNames[$schema])) {
 			$this->_tableNames[$schema] = $this->findTableNames($schema);
+		}
 		return $this->_tableNames[$schema];
 	}
 
 	/**
-	 * @return CDbCommandBuilder the SQL command builder for this connection.
+	 * @return QueryBuilder the query builder for this connection.
 	 */
-	public function getCommandBuilder()
+	public function getQueryBuilder()
 	{
-		if ($this->_builder !== null)
-			return $this->_builder;
-		else
-			return $this->_builder = $this->createCommandBuilder();
+		if ($this->_builder === null) {
+			$this->_builder = $this->createQueryBuilder();
+		}
+		return $this->_builder;
 	}
 
 	/**
@@ -146,7 +136,7 @@ abstract class Schema extends \yii\base\Component
 	 */
 	public function refresh()
 	{
-		$db = $this->_connection;
+		$db = $this->connection;
 		if ($db->schemaCachingDuration >= 0 && ($cache = \Yii::app()->getComponent($db->schemaCacheID)) !== null) {
 			foreach ($this->_tables as $name => $table) {
 				$key = __CLASS__ . ":{$db->dsn}/{$db->username}/{$name}";
@@ -155,7 +145,6 @@ abstract class Schema extends \yii\base\Component
 		}
 		$this->_tables = array();
 		$this->_tableNames = array();
-		$this->_builder = null;
 	}
 
 	/**
@@ -167,11 +156,13 @@ abstract class Schema extends \yii\base\Component
 	 */
 	public function quoteTableName($name)
 	{
-		if (strpos($name, '.') === false)
+		if (strpos($name, '.') === false) {
 			return $this->quoteSimpleTableName($name);
+		}
 		$parts = explode('.', $name);
-		foreach ($parts as $i => $part)
+		foreach ($parts as $i => $part) {
 			$parts[$i] = $this->quoteSimpleTableName($part);
+		}
 		return implode('.', $parts);
 
 	}
@@ -184,7 +175,7 @@ abstract class Schema extends \yii\base\Component
 	 */
 	public function quoteSimpleTableName($name)
 	{
-		return "'" . $name . "'";
+		return strpos($name, "'") !== false ? $name : "'" . $name . "'";
 	}
 
 	/**
@@ -196,14 +187,13 @@ abstract class Schema extends \yii\base\Component
 	 */
 	public function quoteColumnName($name)
 	{
-		if (($pos = strrpos($name, '.')) !== false)
-		{
+		if (($pos = strrpos($name, '.')) !== false) {
 			$prefix = $this->quoteTableName(substr($name, 0, $pos)) . '.';
 			$name = substr($name, $pos + 1);
 		}
 		else
 			$prefix = '';
-		return $prefix . ($name === '*' ? $name : $this->quoteSimpleColumnName($name));
+		return $prefix . $this->quoteSimpleColumnName($name);
 	}
 
 	/**
@@ -211,45 +201,18 @@ abstract class Schema extends \yii\base\Component
 	 * A simple column name does not contain prefix.
 	 * @param string $name column name
 	 * @return string the properly quoted column name
-	 * @since 1.1.6
 	 */
 	public function quoteSimpleColumnName($name)
 	{
-		return '"' . $name . '"';
+		return strpos($name, '"') !== false || $name === '*' ? $name : '"' . $name . '"';
 	}
 
 	/**
-	 * Compares two table names.
-	 * The table names can be either quoted or unquoted. This method
-	 * will consider both cases.
-	 * @param string $name1 table name 1
-	 * @param string $name2 table name 2
-	 * @return boolean whether the two table names refer to the same table.
+	 * Creates a query builder for the database.
+	 * This method may be overridden by child classes to create a DBMS-specific query builder.
+	 * @return QueryBuilder query builder instance
 	 */
-	public function compareTableNames($name1, $name2)
-	{
-		$name1 = str_replace(array('"', '`', "'"), '', $name1);
-		$name2 = str_replace(array('"', '`', "'"), '', $name2);
-		if (($pos = strrpos($name1, '.')) !== false)
-			$name1 = substr($name1, $pos + 1);
-		if (($pos = strrpos($name2, '.')) !== false)
-			$name2 = substr($name2, $pos + 1);
-		if ($this->_connection->tablePrefix !== null)
-		{
-			if (strpos($name1, '{') !== false)
-				$name1 = $this->_connection->tablePrefix . str_replace(array('{', '}'), '', $name1);
-			if (strpos($name2, '{') !== false)
-				$name2 = $this->_connection->tablePrefix . str_replace(array('{', '}'), '', $name2);
-		}
-		return $name1 === $name2;
-	}
-
-	/**
-	 * Creates a command builder for the database.
-	 * This method may be overridden by child classes to create a DBMS-specific command builder.
-	 * @return CDbCommandBuilder command builder instance
-	 */
-	protected function createQueryBuilder()
+	public function createQueryBuilder()
 	{
 		return new QueryBuilder($this);
 	}
