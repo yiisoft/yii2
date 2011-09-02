@@ -32,7 +32,7 @@ namespace yii\db\dao;
  * Starting from version 1.1.6, Command can also be used as a query builder
  * that builds a SQL statement from code fragments. For example,
  * <pre>
- * $user = Yii::app()->db->createCommand()
+ * $user = \Yii::app()->db->createCommand()
  *     ->select('username, password')
  *     ->from('tbl_user')
  *     ->where('id=:id', array(':id'=>1))
@@ -46,7 +46,6 @@ class Command extends \yii\base\Component
 {
 	/**
 	 * @var array the parameters (name=>value) to be bound to the current query.
-	 * @since 1.1.6
 	 */
 	public $params = array();
 
@@ -163,8 +162,8 @@ class Command extends \yii\base\Component
 				$this->pdoStatement = $this->connection->pdo->prepare($this->getSql());
 				$this->_paramLog = array();
 			}
-			catch(Exception $e) {
-				Yii::log('Error in preparing SQL: ' . $this->getSql(), CLogger::LEVEL_ERROR, 'system.db.Command');
+			catch(\Exception $e) {
+				\Yii::log('Error in preparing SQL: ' . $this->getSql(), CLogger::LEVEL_ERROR, 'system.db.Command');
                 $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 				throw new Exception('Unable to prepare the SQL statement: {error}',
 					array('{error}' => $e->getMessage())), (int)$e->getCode(), $errorInfo);
@@ -275,11 +274,11 @@ class Command extends \yii\base\Component
 		}
 		else
 			$par = '';
-		Yii::trace('Executing SQL: ' . $this->getSql() . $par, 'system.db.Command');
+		\Yii::trace('Executing SQL: ' . $this->getSql() . $par, 'system.db.Command');
 		try
 		{
 			if ($this->connection->enableProfiling)
-				Yii::beginProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
+				\Yii::beginProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
 
 			$this->prepare();
 			if ($params === array())
@@ -289,21 +288,21 @@ class Command extends \yii\base\Component
 			$n = $this->pdoStatement->rowCount();
 
 			if ($this->connection->enableProfiling)
-				Yii::endProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
+				\Yii::endProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
 
 			return $n;
 		}
 		catch(Exception $e)
 		{
 			if ($this->connection->enableProfiling)
-				Yii::endProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
+				\Yii::endProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
             $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
             $message = $e->getMessage();
-			Yii::log(Yii::t('yii', 'Command::execute() failed: {error}. The SQL statement executed was: {sql}.',
+			\Yii::log(\Yii::t('yii', 'Command::execute() failed: {error}. The SQL statement executed was: {sql}.',
 				array('{error}' => $message, '{sql}' => $this->getSql() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
             if (YII_DEBUG)
             	$message .= '. The SQL statement executed was: ' . $this->getSql() . $par;
-			throw new CDbException(Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
+			throw new CDbException(\Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
 				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
 		}
 	}
@@ -430,19 +429,19 @@ class Command extends \yii\base\Component
 		else
 			$par = '';
 
-		Yii::trace('Querying SQL: ' . $this->getSql() . $par, 'system.db.Command');
+		\Yii::trace('Querying SQL: ' . $this->getSql() . $par, 'system.db.Command');
 
 		if ($this->connection->queryCachingCount > 0 && $method !== ''
 				&& $this->connection->queryCachingDuration > 0
 				&& $this->connection->queryCacheID !== false
-				&& ($cache = Yii::app()->getComponent($this->connection->queryCacheID)) !== null)
+				&& ($cache = \Yii::app()->getComponent($this->connection->queryCacheID)) !== null)
 		{
 			$this->connection->queryCachingCount--;
 			$cacheKey = 'yii:dbquery' . $this->connection->connectionString . ':' . $this->connection->username;
 			$cacheKey .= ':' . $this->getSql() . ':' . serialize(array_merge($this->_paramLog, $params));
 			if (($result = $cache->get($cacheKey)) !== false)
 			{
-				Yii::trace('Query result found in cache', 'system.db.Command');
+				\Yii::trace('Query result found in cache', 'system.db.Command');
 				return $result;
 			}
 		}
@@ -450,7 +449,7 @@ class Command extends \yii\base\Component
 		try
 		{
 			if ($this->connection->enableProfiling)
-				Yii::beginProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
+				\Yii::beginProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
 
 			$this->prepare();
 			if ($params === array())
@@ -470,7 +469,7 @@ class Command extends \yii\base\Component
 			}
 
 			if ($this->connection->enableProfiling)
-				Yii::endProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
+				\Yii::endProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
 
 			if (isset($cache, $cacheKey))
 				$cache->set($cacheKey, $result, $this->connection->queryCachingDuration, $this->connection->queryCachingDependency);
@@ -480,14 +479,14 @@ class Command extends \yii\base\Component
 		catch(Exception $e)
 		{
 			if ($this->connection->enableProfiling)
-				Yii::endProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
+				\Yii::endProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
             $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
             $message = $e->getMessage();
-			Yii::log(Yii::t('yii', 'Command::{method}() failed: {error}. The SQL statement executed was: {sql}.',
+			\Yii::log(\Yii::t('yii', 'Command::{method}() failed: {error}. The SQL statement executed was: {sql}.',
 				array('{method}' => $method, '{error}' => $message, '{sql}' => $this->getSql() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
             if (YII_DEBUG)
             	$message .= '. The SQL statement executed was: ' . $this->getSql() . $par;
-			throw new CDbException(Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
+			throw new CDbException(\Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
 				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
 		}
 	}
