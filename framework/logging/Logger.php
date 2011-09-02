@@ -23,7 +23,7 @@ namespace yii\logging;
 class Logger extends \yii\base\Component
 {
 	const LEVEL_TRACE = 'trace';
-	const LEVEL_WARN = 'warn';
+	const LEVEL_WARNING = 'warning';
 	const LEVEL_ERROR = 'error';
 	const LEVEL_INFO = 'info';
 	const LEVEL_PROFILE = 'profile';
@@ -90,7 +90,7 @@ class Logger extends \yii\base\Component
 	 * @param string $message the message to be logged.
 	 * @param string $category the category of the message.
 	 */
-	public function warn($message, $category = 'application')
+	public function warning($message, $category = 'application')
 	{
 		$this->log($message, self::LEVEL_TRACE, $category);
 	}
@@ -136,7 +136,7 @@ class Logger extends \yii\base\Component
 	 * call stack information about application code will be appended to the message.
 	 * @param string $message the message to be logged.
 	 * @param string $level the level of the message. This must be one of the following:
-	 * 'trace', 'info', 'warn', 'error', 'profile'.
+	 * 'trace', 'info', 'warning', 'error', 'profile'.
 	 * @param string $category the category of the message.
 	 */
 	public function log($message, $level, $category)
