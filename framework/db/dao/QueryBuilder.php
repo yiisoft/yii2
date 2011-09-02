@@ -21,7 +21,7 @@ class QueryBuilder extends \yii\base\Component
 	/**
 	 * @var array the abstract column types mapped to physical column types.
 	 */
-    public $columnTypes = array(
+    public $typeMap = array(
         'pk' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
         'string' => 'varchar(255)',
         'text' => 'text',
@@ -379,7 +379,7 @@ class QueryBuilder extends \yii\base\Component
 
 	/**
 	 * Converts an abstract column type into a physical column type.
-	 * The conversion is done using the type map specified in {@link columnTypes}.
+	 * The conversion is done using the type map specified in {@link typeMap}.
 	 * These abstract column types are supported (using MySQL as example to explain the corresponding
 	 * physical types):
 	 * <ul>
@@ -405,12 +405,12 @@ class QueryBuilder extends \yii\base\Component
 	 */
     public function getColumnType($type)
     {
-		if (isset($this->columnTypes[$type])) {
-			return $this->columnTypes[$type];
+		if (isset($this->typeMap[$type])) {
+			return $this->typeMap[$type];
 		}
 		elseif (($pos = strpos($type, ' ')) !== false) {
 			$t = substr($type, 0, $pos);
-			return (isset($this->columnTypes[$t]) ? $this->columnTypes[$t] : $t) . substr($type, $pos);
+			return (isset($this->typeMap[$t]) ? $this->typeMap[$t] : $t) . substr($type, $pos);
 		}
 		else {
 			return $type;

@@ -49,33 +49,27 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function renameColumn($table, $name, $newName)
 	{
-		$db = $this->getDbConnection();
-		$row = $db->createCommand('SHOW CREATE TABLE ' . $db->quoteTableName($table))->queryRow();
+		$quotedTable = $this->schema->quoteTableName($table);
+		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
 		if ($row === false)
 			throw new CDbException(Yii::t('yii', 'Unable to find "{column}" in table "{table}".', array('{column}' => $name, '{table}' => $table)));
-		if (isset($row['Create Table']))
+		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
-		else
-		{
+		}
+		else {
 			$row = array_values($row);
 			$sql = $row[1];
 		}
-		if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches))
-		{
-			foreach ($matches[1] as $i => $c)
-			{
-				if ($c === $name)
-				{
-					return "ALTER TABLE " . $db->quoteTableName($table)
-						. " CHANGE " . $db->quoteColumnName($name)
-						. ' ' . $db->quoteColumnName($newName) . ' ' . $matches[2][$i];
+		if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches)) {
+			foreach ($matches[1] as $i => $c) {
+				if ($c === $name) {
+					return "ALTER TABLE $quotedTable CHANGE " . $this->schema->quoteColumnName($name)
+						. ' ' . $this->schema->quoteColumnName($newName) . ' ' . $matches[2][$i];
 				}
 			}
 		}
-
 		// try to give back a SQL anyway
-		return "ALTER TABLE " . $db->quoteTableName($table)
-			. " CHANGE " . $db->quoteColumnName($name) . ' ' . $newName;
+		return "ALTER TABLE $quotedTable CHANGE " . $this->schema->quoteColumnName($name) . ' ' . $newName;
 	}
 
 	/**
@@ -87,7 +81,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' DROP FOREIGN KEY ' . $this->quoteColumnName($name);
+		return 'ALTER TABLE ' . $this->schema->quoteTableName($table)
+			. ' DROP FOREIGN KEY ' . $this->schema->quoteColumnName($name);
 	}
 }
