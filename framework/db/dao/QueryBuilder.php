@@ -42,7 +42,7 @@ class QueryBuilder extends \yii\base\Component
 
 	public function __construct($schema)
 	{
-		$this->connection = $schema->getDbConnection();
+		$this->connection = $schema->connection;
 		$this->schema = $schema;
 	}
 
@@ -59,8 +59,98 @@ class QueryBuilder extends \yii\base\Component
 			$this->buildOrderBy($query),
 			$this->buildLimit($query),
 		);
+		$sql = implode("\n", array_filter($clauses));
+		if ($this->connection->tablePrefix !== null && strpos($sql, '{') !== false) {
+			$sql = preg_replace('/{{(.*?)}}/', $this->connection->tablePrefix . '\1', $sql);
+		}
+		return $sql;
+	}
 
-		return implode("\n", array_filter($clauses));
+	/**
+	 * Creates and executes an INSERT SQL statement.
+	 * The method will properly escape the column names, and bind the values to be inserted.
+	 * @param string $table the table that new rows will be inserted into.
+	 * @param array $columns the column data (name=>value) to be inserted into the table.
+	 * @return integer number of rows affected by the execution.
+	 * @since 1.1.6
+	 */
+	public function insert($table, $columns, &$params = array())
+	{
+		$names = array();
+		$placeholders = array();
+		$count = 0;
+		foreach ($columns as $name => $value) {
+			$names[] = $this->schema->quoteColumnName($name);
+			if ($value instanceof Expression) {
+				$placeholders[] = $value->expression;
+				foreach ($value->params as $n => $v) {
+					$params[$n] = $v;
+				}
+			}
+			else {
+				$placeholders[] = ':p' . $count;
+				$params[':p' . $count] = $value;
+				$count++;
+			}
+		}
+
+		return 'INSERT INTO ' . $this->schema->quoteTableName($table)
+			. ' (' . implode(', ', $names) . ') VALUES ('
+			. implode(', ', $placeholders) . ')';
+	}
+
+	/**
+	 * Creates and executes an UPDATE SQL statement.
+	 * The method will properly escape the column names and bind the values to be updated.
+	 * @param string $table the table to be updated.
+	 * @param array $columns the column data (name=>value) to be updated.
+	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
+	 * refer to {@link where} on how to specify conditions.
+	 * @param array $params the parameters to be bound to the query.
+	 * @return integer number of rows affected by the execution.
+	 * @since 1.1.6
+	 */
+	public function update($table, $columns, $conditions = '', &$params = array())
+	{
+		$lines = array();
+		$count = 0;
+		foreach ($columns as $name => $value) {
+			if ($value instanceof Expression) {
+				$lines[] = $this->schema->quoteSimpleColumnName($name) . '=' . $value->expression;
+				foreach ($value->params as $n => $v) {
+					$params[$n] = $v;
+				}
+			}
+			else {
+				$lines[] = $this->schema->quoteSimpleColumnName($name) . '=:p' . $count;
+				$params[':p' . $count] = $value;
+				$count++;
+			}
+		}
+		$sql = 'UPDATE ' . $this->schema->quoteTableName($table) . ' SET ' . implode(', ', $lines);
+		if (($where = $this->buildCondition($conditions)) != '') {
+			$sql .= ' WHERE ' . $where;
+		}
+
+		return $sql;
+	}
+
+	/**
+	 * Creates and executes a DELETE SQL statement.
+	 * @param string $table the table where the data will be deleted from.
+	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
+	 * refer to {@link where} on how to specify conditions.
+	 * @param array $params the parameters to be bound to the query.
+	 * @return integer number of rows affected by the execution.
+	 * @since 1.1.6
+	 */
+	public function delete($table, $conditions = '')
+	{
+		$sql = 'DELETE FROM ' . $this->schema->quoteTableName($table);
+		if (($where = $this->buildCondition($conditions)) != '') {
+			$sql .= ' WHERE ' . $where;
+		}
+		return $sql;
 	}
 
 	/**
@@ -101,7 +191,7 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function renameTable($table, $newName)
 	{
-		return 'RENAME TABLE ' . $this->quoteTableName($table) . ' TO ' . $this->quoteTableName($newName);
+		return 'RENAME TABLE ' . $this->schema->quoteTableName($table) . ' TO ' . $this->schema->quoteTableName($newName);
 	}
 
 	/**
@@ -111,7 +201,7 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function dropTable($table)
 	{
-		return "DROP TABLE " . $this->quoteTableName($table);
+		return "DROP TABLE " . $this->schema->quoteTableName($table);
 	}
 
 	/**
@@ -121,7 +211,7 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function truncateTable($table)
 	{
-		return "TRUNCATE TABLE " . $this->quoteTableName($table);
+		return "TRUNCATE TABLE " . $this->schema->quoteTableName($table);
 	}
 
 	/**
@@ -136,8 +226,8 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function addColumn($table, $column, $type)
 	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' ADD ' . $this->quoteColumnName($column) . ' '
+		return 'ALTER TABLE ' . $this->schema->quoteTableName($table)
+			. ' ADD ' . $this->schema->quoteColumnName($column) . ' '
 			. $this->getColumnType($type);
 	}
 
@@ -150,8 +240,8 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function dropColumn($table, $column)
 	{
-		return "ALTER TABLE " . $this->quoteTableName($table)
-			. " DROP COLUMN " . $this->quoteSimpleColumnName($column);
+		return "ALTER TABLE " . $this->schema->quoteTableName($table)
+			. " DROP COLUMN " . $this->schema->quoteSimpleColumnName($column);
 	}
 
 	/**
@@ -164,9 +254,9 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function renameColumn($table, $name, $newName)
 	{
-		return "ALTER TABLE " . $this->quoteTableName($table)
-			. " RENAME COLUMN " . $this->quoteSimpleColumnName($name)
-			. " TO " . $this->quoteSimpleColumnName($newName);
+		return "ALTER TABLE " . $this->schema->quoteTableName($table)
+			. " RENAME COLUMN " . $this->schema->quoteSimpleColumnName($name)
+			. " TO " . $this->schema->quoteSimpleColumnName($newName);
 	}
 
 	/**
@@ -180,9 +270,9 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table) . ' CHANGE '
-			. $this->quoteSimpleColumnName($column) . ' '
-			. $this->quoteSimpleColumnName($column) . ' '
+		return 'ALTER TABLE ' . $this->schema->quoteTableName($table) . ' CHANGE '
+			. $this->schema->quoteSimpleColumnName($column) . ' '
+			. $this->schema->quoteSimpleColumnName($column) . ' '
 			. $this->getColumnType($type);
 	}
 
@@ -202,14 +292,14 @@ class QueryBuilder extends \yii\base\Component
 	{
 		$columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($columns as $i => $col)
-			$columns[$i] = $this->quoteColumnName($col);
+			$columns[$i] = $this->schema->quoteColumnName($col);
 		$refColumns = preg_split('/\s*,\s*/', $refColumns, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($refColumns as $i => $col)
-			$refColumns[$i] = $this->quoteColumnName($col);
-		$sql = 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' ADD CONSTRAINT ' . $this->quoteColumnName($name)
+			$refColumns[$i] = $this->schema->quoteColumnName($col);
+		$sql = 'ALTER TABLE ' . $this->schema->quoteTableName($table)
+			. ' ADD CONSTRAINT ' . $this->schema->quoteColumnName($name)
 			. ' FOREIGN KEY (' . implode(', ', $columns) . ')'
-			. ' REFERENCES ' . $this->quoteTableName($refTable)
+			. ' REFERENCES ' . $this->schema->quoteTableName($refTable)
 			. ' (' . implode(', ', $refColumns) . ')';
 		if ($delete !== null)
 			$sql .= ' ON DELETE ' . $delete;
@@ -226,8 +316,8 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' DROP CONSTRAINT ' . $this->quoteColumnName($name);
+		return 'ALTER TABLE ' . $this->schema->quoteTableName($table)
+			. ' DROP CONSTRAINT ' . $this->schema->quoteColumnName($name);
 	}
 
 	/**
@@ -248,11 +338,11 @@ class QueryBuilder extends \yii\base\Component
 			if (strpos($col, '(') !== false)
 				$cols[] = $col;
 			else
-				$cols[] = $this->quoteColumnName($col);
+				$cols[] = $this->schema->quoteColumnName($col);
 		}
 		return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
-			. $this->quoteTableName($name) . ' ON '
-			. $this->quoteTableName($table) . ' (' . implode(', ', $cols) . ')';
+			. $this->schema->quoteTableName($name) . ' ON '
+			. $this->schema->quoteTableName($table) . ' (' . implode(', ', $cols) . ')';
 	}
 
 	/**
@@ -263,7 +353,7 @@ class QueryBuilder extends \yii\base\Component
 	 */
 	public function dropIndex($name, $table)
 	{
-		return 'DROP INDEX ' . $this->quoteTableName($name) . ' ON ' . $this->quoteTableName($table);
+		return 'DROP INDEX ' . $this->schema->quoteTableName($name) . ' ON ' . $this->schema->quoteTableName($table);
 	}
 
 	/**
@@ -330,6 +420,9 @@ class QueryBuilder extends \yii\base\Component
 	protected function buildSelect($query)
 	{
 		$select = $query->distinct ? 'SELECT DISTINCT' : 'SELECT';
+		if ($query->selectOption != '') {
+			$select .= ' ' . $query->selectOption;
+		}
 
 		$columns = $query->select;
 		if (empty($columns)) {
@@ -408,7 +501,7 @@ class QueryBuilder extends \yii\base\Component
 					}
 					$joins[$i] = strtoupper($join[0]) . ' ' . $table;
 					if (isset($join[2])) {  // join condition
-						$condition = $this->processCondition($join[2]);
+						$condition = $this->buildCondition($join[2]);
 						$joins[$i] .= ' ON ' . $condition;
 					}
 				}
@@ -423,7 +516,7 @@ class QueryBuilder extends \yii\base\Component
 
 	protected function buildWhere($query)
 	{
-		$where = $this->processConditions($query->where);
+		$where = $this->buildCondition($query->where);
 		return empty($where) ? '' : 'WHERE ' . $where;
 	}
 
@@ -453,7 +546,7 @@ class QueryBuilder extends \yii\base\Component
 
 	protected function buildHaving($query)
 	{
-		$having = $this->processConditions($query->having);
+		$having = $this->buildCondition($query->having);
 		return empty($having) ? '' : 'HAVING ' . $having;
 	}
 
@@ -515,7 +608,7 @@ class QueryBuilder extends \yii\base\Component
 		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
 	}
 
-	protected function processCondition($conditions)
+	protected function buildCondition($conditions)
 	{
 		if (!is_array($conditions)) {
 			return $conditions;
@@ -529,7 +622,7 @@ class QueryBuilder extends \yii\base\Component
 		if ($operator === 'OR' || $operator === 'AND') {
 			$parts = array();
 			for ($i = 1; $i < $n; ++$i) {
-				$condition = $this->processCondition($conditions[$i]);
+				$condition = $this->buildCondition($conditions[$i]);
 				if ($condition !== '') {
 					$parts[] = '(' . $condition . ')';
 				}
