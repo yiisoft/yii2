@@ -50,12 +50,19 @@ class Command extends \yii\base\Component
 	 */
 	public $params = array();
 
-	private $_connection;
-	private $_text;
-	private $_statement;
+	public $connection;
+	public $query;
+	public $pdoStatement;
+
+	private $_sql;
 	private $_paramLog = array();
-	private $_query;
-	private $_fetchMode = array(PDO::FETCH_ASSOC);
+	/**
+	 * Set the default fetch mode for this statement
+	 * @param mixed $mode fetch mode
+	 * @return Command
+	 * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
+	 */
+	public $fetchMode = \PDO::FETCH_ASSOC;
 
 	/**
 	 * Constructor.
@@ -80,38 +87,19 @@ class Command extends \yii\base\Component
 	 */
 	public function __construct($connection, $query = null)
 	{
-		$this->_connection = $connection;
-		if (is_array($query))
-		{
-			foreach ($query as $name => $value)
-				$this->$name = $value;
+		$this->connection = $connection;
+		if (is_object($query)) {
+			$this->query = $query;
 		}
-		else
-			$this->setText($query);
-	}
-
-	/**
-	 * Set the statement to null when serializing.
-	 * @return array
-	 */
-	public function __sleep()
-	{
-		$this->_statement = null;
-		return array_keys(get_object_vars($this));
-	}
-
-	/**
-	 * Set the default fetch mode for this statement
-	 * @param mixed $mode fetch mode
-	 * @return Command
-	 * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
-	 * @since 1.1.7
-	 */
-	public function setFetchMode($mode)
-	{
-		$params = func_get_args();
-		$this->_fetchMode = $params;
-		return $this;
+		else {
+			$this->query = new Query;
+			if (is_array($this->query)) {
+				$this->query->fromArray($this->query);
+			}
+			else {
+				$this->_sql = $query;
+			}
+		}
 	}
 
 	/**
@@ -124,9 +112,9 @@ class Command extends \yii\base\Component
 	 */
 	public function reset()
 	{
-		$this->_text = null;
-		$this->_query = null;
-		$this->_statement = null;
+		$this->_sql = null;
+		$this->query = new Query;
+		$this->pdoStatement = null;
 		$this->_paramLog = array();
 		$this->params = array();
 		return $this;
@@ -135,11 +123,12 @@ class Command extends \yii\base\Component
 	/**
 	 * @return string the SQL statement to be executed
 	 */
-	public function getText()
+	public function getSql()
 	{
-		if ($this->_text == '' && !empty($this->_query))
-			$this->setText($this->buildQuery($this->_query));
-		return $this->_text;
+		if ($this->_sql == '' && is_object($this->query)) {
+			$this->_sql = $this->query->getSql($this->connection);
+		}
+		return $this->_sql;
 	}
 
 	/**
@@ -148,31 +137,16 @@ class Command extends \yii\base\Component
 	 * @param string $value the SQL statement to be executed
 	 * @return Command this command instance
 	 */
-	public function setText($value)
+	public function setSql($value)
 	{
-		if ($this->_connection->tablePrefix !== null && $value != '')
-			$this->_text = preg_replace('/{{(.*?)}}/', $this->_connection->tablePrefix . '\1', $value);
-		else
-			$this->_text = $value;
+		if ($this->connection->tablePrefix !== null && strpos($value, '{') !== false) {
+			$this->_sql = preg_replace('/{{(.*?)}}/', $this->connection->tablePrefix . '\1', $value);
+		}
+		else {
+			$this->_sql = $value;
+		}
 		$this->cancel();
 		return $this;
-	}
-
-	/**
-	 * @return CDbConnection the connection associated with this command
-	 */
-	public function getConnection()
-	{
-		return $this->_connection;
-	}
-
-	/**
-	 * @return PDOStatement the underlying PDOStatement for this command
-	 * It could be null if the statement is not prepared yet.
-	 */
-	public function getPdoStatement()
-	{
-		return $this->_statement;
 	}
 
 	/**
@@ -184,18 +158,15 @@ class Command extends \yii\base\Component
 	 */
 	public function prepare()
 	{
-		if ($this->_statement == null)
-		{
-			try
-			{
-				$this->_statement = $this->getConnection()->getPdoInstance()->prepare($this->getText());
+		if ($this->pdoStatement == null) {
+			try {
+				$this->pdoStatement = $this->connection->pdo->prepare($this->getSql());
 				$this->_paramLog = array();
 			}
-			catch(Exception $e)
-			{
-				Yii::log('Error in preparing SQL: ' . $this->getText(), CLogger::LEVEL_ERROR, 'system.db.Command');
-                $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
-				throw new CDbException(Yii::t('yii', 'Command failed to prepare the SQL statement: {error}',
+			catch(Exception $e) {
+				Yii::log('Error in preparing SQL: ' . $this->getSql(), CLogger::LEVEL_ERROR, 'system.db.Command');
+                $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+				throw new Exception('Unable to prepare the SQL statement: {error}',
 					array('{error}' => $e->getMessage())), (int)$e->getCode(), $errorInfo);
 			}
 		}
@@ -206,7 +177,7 @@ class Command extends \yii\base\Component
 	 */
 	public function cancel()
 	{
-		$this->_statement = null;
+		$this->pdoStatement = null;
 	}
 
 	/**
@@ -226,13 +197,13 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null)
-			$this->_statement->bindParam($name, $value, $this->_connection->getPdoType(gettype($value)));
+			$this->pdoStatement->bindParam($name, $value, $this->connection->getPdoType(gettype($value)));
 		elseif ($length === null)
-			$this->_statement->bindParam($name, $value, $dataType);
+			$this->pdoStatement->bindParam($name, $value, $dataType);
 		elseif ($driverOptions === null)
-			$this->_statement->bindParam($name, $value, $dataType, $length);
+			$this->pdoStatement->bindParam($name, $value, $dataType, $length);
 		else
-			$this->_statement->bindParam($name, $value, $dataType, $length, $driverOptions);
+			$this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
 		$this->_paramLog[$name] =& $value;
 		return $this;
 	}
@@ -252,9 +223,9 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null)
-			$this->_statement->bindValue($name, $value, $this->_connection->getPdoType(gettype($value)));
+			$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
 		else
-			$this->_statement->bindValue($name, $value, $dataType);
+			$this->pdoStatement->bindValue($name, $value, $dataType);
 		$this->_paramLog[$name] = $value;
 		return $this;
 	}
@@ -274,7 +245,7 @@ class Command extends \yii\base\Component
 		$this->prepare();
 		foreach ($values as $name => $value)
 		{
-			$this->_statement->bindValue($name, $value, $this->_connection->getPdoType(gettype($value)));
+			$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
 			$this->_paramLog[$name] = $value;
 		}
 		return $this;
@@ -295,7 +266,7 @@ class Command extends \yii\base\Component
 	 */
 	public function execute($params = array())
 	{
-		if ($this->_connection->enableParamLogging && ($pars = array_merge($this->_paramLog, $params)) !== array())
+		if ($this->connection->enableParamLogging && ($pars = array_merge($this->_paramLog, $params)) !== array())
 		{
 			$p = array();
 			foreach ($pars as $name => $value)
@@ -304,34 +275,34 @@ class Command extends \yii\base\Component
 		}
 		else
 			$par = '';
-		Yii::trace('Executing SQL: ' . $this->getText() . $par, 'system.db.Command');
+		Yii::trace('Executing SQL: ' . $this->getSql() . $par, 'system.db.Command');
 		try
 		{
-			if ($this->_connection->enableProfiling)
-				Yii::beginProfile('system.db.Command.execute(' . $this->getText() . ')', 'system.db.Command.execute');
+			if ($this->connection->enableProfiling)
+				Yii::beginProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
 
 			$this->prepare();
 			if ($params === array())
-				$this->_statement->execute();
+				$this->pdoStatement->execute();
 			else
-				$this->_statement->execute($params);
-			$n = $this->_statement->rowCount();
+				$this->pdoStatement->execute($params);
+			$n = $this->pdoStatement->rowCount();
 
-			if ($this->_connection->enableProfiling)
-				Yii::endProfile('system.db.Command.execute(' . $this->getText() . ')', 'system.db.Command.execute');
+			if ($this->connection->enableProfiling)
+				Yii::endProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
 
 			return $n;
 		}
 		catch(Exception $e)
 		{
-			if ($this->_connection->enableProfiling)
-				Yii::endProfile('system.db.Command.execute(' . $this->getText() . ')', 'system.db.Command.execute');
+			if ($this->connection->enableProfiling)
+				Yii::endProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
             $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
             $message = $e->getMessage();
 			Yii::log(Yii::t('yii', 'Command::execute() failed: {error}. The SQL statement executed was: {sql}.',
-				array('{error}' => $message, '{sql}' => $this->getText() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
+				array('{error}' => $message, '{sql}' => $this->getSql() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
             if (YII_DEBUG)
-            	$message .= '. The SQL statement executed was: ' . $this->getText() . $par;
+            	$message .= '. The SQL statement executed was: ' . $this->getSql() . $par;
 			throw new CDbException(Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
 				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
 		}
@@ -351,7 +322,7 @@ class Command extends \yii\base\Component
 	 */
 	public function query($params = array())
 	{
-		return $this->queryInternal('', 0, $params);
+		return $this->queryInternal('', $params);
 	}
 
 	/**
@@ -368,9 +339,9 @@ class Command extends \yii\base\Component
 	 * An empty array is returned if the query results in nothing.
 	 * @throws CException execution failed
 	 */
-	public function queryAll($fetchAssociative = true, $params = array())
+	public function queryAll($params = array(), $fetchMode = null)
 	{
-		return $this->queryInternal('fetchAll', $fetchAssociative ? $this->_fetchMode : PDO::FETCH_NUM, $params);
+		return $this->queryInternal('fetchAll', $params, $fetchMode);
 	}
 
 	/**
@@ -387,9 +358,9 @@ class Command extends \yii\base\Component
 	 * @return mixed the first row (in terms of an array) of the query result, false if no result.
 	 * @throws CException execution failed
 	 */
-	public function queryRow($fetchAssociative = true, $params = array())
+	public function queryRow($params = array(), $fetchMode = null)
 	{
-		return $this->queryInternal('fetch', $fetchAssociative ? $this->_fetchMode : PDO::FETCH_NUM, $params);
+		return $this->queryInternal('fetch', $params, $fetchMode);
 	}
 
 	/**
@@ -407,11 +378,13 @@ class Command extends \yii\base\Component
 	 */
 	public function queryScalar($params = array())
 	{
-		$result = $this->queryInternal('fetchColumn', 0, $params);
-		if (is_resource($result) && get_resource_type($result) === 'stream')
+		$result = $this->queryInternal('fetchColumn', $params);
+		if (is_resource($result) && get_resource_type($result) === 'stream') {
 			return stream_get_contents($result);
-		else
+		}
+		else {
 			return $result;
+		}
 	}
 
 	/**
@@ -429,7 +402,7 @@ class Command extends \yii\base\Component
 	 */
 	public function queryColumn($params = array())
 	{
-		return $this->queryInternal('fetchAll', PDO::FETCH_COLUMN, $params);
+		return $this->queryInternal('fetchAll', $params, \PDO::FETCH_COLUMN);
 	}
 
 	/**
@@ -443,11 +416,11 @@ class Command extends \yii\base\Component
 	 * This parameter has been available since version 1.0.10.
 	 * @return mixed the method execution result
 	 */
-	private function queryInternal($method, $mode, $params = array())
+	private function queryInternal($method, $params, $fetchMode = null)
 	{
 		$params = array_merge($this->params, $params);
 
-		if ($this->_connection->enableParamLogging && ($pars = array_merge($this->_paramLog, $params)) !== array())
+		if ($this->connection->enableParamLogging && ($pars = array_merge($this->_paramLog, $params)) !== array())
 		{
 			$p = array();
 			foreach ($pars as $name => $value)
@@ -457,16 +430,16 @@ class Command extends \yii\base\Component
 		else
 			$par = '';
 
-		Yii::trace('Querying SQL: ' . $this->getText() . $par, 'system.db.Command');
+		Yii::trace('Querying SQL: ' . $this->getSql() . $par, 'system.db.Command');
 
-		if ($this->_connection->queryCachingCount > 0 && $method !== ''
-				&& $this->_connection->queryCachingDuration > 0
-				&& $this->_connection->queryCacheID !== false
-				&& ($cache = Yii::app()->getComponent($this->_connection->queryCacheID)) !== null)
+		if ($this->connection->queryCachingCount > 0 && $method !== ''
+				&& $this->connection->queryCachingDuration > 0
+				&& $this->connection->queryCacheID !== false
+				&& ($cache = Yii::app()->getComponent($this->connection->queryCacheID)) !== null)
 		{
-			$this->_connection->queryCachingCount--;
-			$cacheKey = 'yii:dbquery' . $this->_connection->connectionString . ':' . $this->_connection->username;
-			$cacheKey .= ':' . $this->getText() . ':' . serialize(array_merge($this->_paramLog, $params));
+			$this->connection->queryCachingCount--;
+			$cacheKey = 'yii:dbquery' . $this->connection->connectionString . ':' . $this->connection->username;
+			$cacheKey .= ':' . $this->getSql() . ':' . serialize(array_merge($this->_paramLog, $params));
 			if (($result = $cache->get($cacheKey)) !== false)
 			{
 				Yii::trace('Query result found in cache', 'system.db.Command');
@@ -476,90 +449,47 @@ class Command extends \yii\base\Component
 
 		try
 		{
-			if ($this->_connection->enableProfiling)
-				Yii::beginProfile('system.db.Command.query(' . $this->getText() . $par . ')', 'system.db.Command.query');
+			if ($this->connection->enableProfiling)
+				Yii::beginProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
 
 			$this->prepare();
 			if ($params === array())
-				$this->_statement->execute();
+				$this->pdoStatement->execute();
 			else
-				$this->_statement->execute($params);
+				$this->pdoStatement->execute($params);
 
 			if ($method === '')
-				$result = new CDbDataReader($this);
+				$result = new DataReader($this);
 			else
 			{
-				$mode = (array)$mode;
-				$result = call_user_func_array(array($this->_statement, $method), $mode);
-				$this->_statement->closeCursor();
+		 		if ($fetchMode === null) {
+		 			$fetchMode = $this->fetchMode;
+		 		}
+				$result = call_user_func_array(array($this->pdoStatement, $method), (array)$fetchMode);
+				$this->pdoStatement->closeCursor();
 			}
 
-			if ($this->_connection->enableProfiling)
-				Yii::endProfile('system.db.Command.query(' . $this->getText() . $par . ')', 'system.db.Command.query');
+			if ($this->connection->enableProfiling)
+				Yii::endProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
 
 			if (isset($cache, $cacheKey))
-				$cache->set($cacheKey, $result, $this->_connection->queryCachingDuration, $this->_connection->queryCachingDependency);
+				$cache->set($cacheKey, $result, $this->connection->queryCachingDuration, $this->connection->queryCachingDependency);
 
 			return $result;
 		}
 		catch(Exception $e)
 		{
-			if ($this->_connection->enableProfiling)
-				Yii::endProfile('system.db.Command.query(' . $this->getText() . $par . ')', 'system.db.Command.query');
+			if ($this->connection->enableProfiling)
+				Yii::endProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
             $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
             $message = $e->getMessage();
 			Yii::log(Yii::t('yii', 'Command::{method}() failed: {error}. The SQL statement executed was: {sql}.',
-				array('{method}' => $method, '{error}' => $message, '{sql}' => $this->getText() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
+				array('{method}' => $method, '{error}' => $message, '{sql}' => $this->getSql() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
             if (YII_DEBUG)
-            	$message .= '. The SQL statement executed was: ' . $this->getText() . $par;
+            	$message .= '. The SQL statement executed was: ' . $this->getSql() . $par;
 			throw new CDbException(Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
 				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
 		}
-	}
-
-	/**
-	 * Builds a SQL SELECT statement from the given query specification.
-	 * @param array $query the query specification in name-value pairs. The following
-	 * query options are supported: {@link select}, {@link distinct}, {@link from},
-	 * {@link where}, {@link join}, {@link group}, {@link having}, {@link order},
-	 * {@link limit}, {@link offset} and {@link union}.
-	 * @return string the SQL statement
-	 * @since 1.1.6
-	 */
-	public function buildQuery($query)
-	{
-		$sql = isset($query['distinct']) && $query['distinct'] ? 'SELECT DISTINCT' : 'SELECT';
-		$sql .= ' ' . (isset($query['select']) ? $query['select'] : '*');
-
-		if (isset($query['from']))
-			$sql .= "\nFROM " . $query['from'];
-		else
-			throw new CDbException(Yii::t('yii', 'The DB query must contain the "from" portion.'));
-
-		if (isset($query['join']))
-			$sql .= "\n" . (is_array($query['join']) ? implode("\n", $query['join']) : $query['join']);
-
-		if (isset($query['where']))
-			$sql .= "\nWHERE " . $query['where'];
-
-		if (isset($query['group']))
-			$sql .= "\nGROUP BY " . $query['group'];
-
-		if (isset($query['having']))
-			$sql .= "\nHAVING " . $query['having'];
-
-		if (isset($query['order']))
-			$sql .= "\nORDER BY " . $query['order'];
-
-		$limit = isset($query['limit']) ? (int)$query['limit'] : -1;
-		$offset = isset($query['offset']) ? (int)$query['offset'] : -1;
-		if ($limit >= 0 || $offset > 0)
-			$sql = $this->_connection->getCommandBuilder()->applyLimit($sql, $limit, $offset);
-
-		if (isset($query['union']))
-			$sql .= "\nUNION (\n" . (is_array($query['union']) ? implode("\n) UNION (\n", $query['union']) : $query['union']) . ')';
-
-		return $sql;
 	}
 
 	/**
@@ -576,51 +506,9 @@ class Command extends \yii\base\Component
 	 */
 	public function select($columns = '*', $option = '')
 	{
-		if (is_string($columns) && strpos($columns, '(') !== false)
-			$this->_query['select'] = $columns;
-		else
-		{
-			if (!is_array($columns))
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-
-			foreach ($columns as $i => $column)
-			{
-				if (is_object($column))
-					$columns[$i] = (string)$column;
-				elseif (strpos($column, '(') === false)
-				{
-					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $column, $matches))
-						$columns[$i] = $this->_connection->quoteColumnName($matches[1]) . ' AS ' . $this->_connection->quoteColumnName($matches[2]);
-					else
-						$columns[$i] = $this->_connection->quoteColumnName($column);
-				}
-			}
-			$this->_query['select'] = implode(', ', $columns);
-		}
-		if ($option != '')
-			$this->_query['select'] = $option . ' ' . $this->_query['select'];
+		$this->query->select = $columns;
+		$this->query->selectOption = $option;
 		return $this;
-	}
-
-	/**
-	 * Returns the SELECT part in the query.
-	 * @return string the SELECT part (without 'SELECT') in the query.
-	 * @since 1.1.6
-	 */
-	public function getSelect()
-	{
-		return isset($this->_query['select']) ? $this->_query['select'] : '';
-	}
-
-	/**
-	 * Sets the SELECT part in the query.
-	 * @param mixed $value the data to be selected. Please refer to {@link select()} for details
-	 * on how to specify this parameter.
-	 * @since 1.1.6
-	 */
-	public function setSelect($value)
-	{
-		$this->select($value);
 	}
 
 	/**
@@ -630,30 +518,10 @@ class Command extends \yii\base\Component
 	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
-	public function selectDistinct($columns = '*')
+	public function selectDistinct($columns = '*', $option = '')
 	{
-		$this->_query['distinct'] = true;
-		return $this->select($columns);
-	}
-
-	/**
-	 * Returns a value indicating whether SELECT DISTINCT should be used.
-	 * @return boolean a value indicating whether SELECT DISTINCT should be used.
-	 * @since 1.1.6
-	 */
-	public function getDistinct()
-	{
-		return isset($this->_query['distinct']) ? $this->_query['distinct'] : false;
-	}
-
-	/**
-	 * Sets a value indicating whether SELECT DISTINCT should be used.
-	 * @param boolean $value a value indicating whether SELECT DISTINCT should be used.
-	 * @since 1.1.6
-	 */
-	public function setDistinct($value)
-	{
-		$this->_query['distinct'] = $value;
+		$this->query->distinct = true;
+		return $this->select($columns, $option);
 	}
 
 	/**
@@ -668,46 +536,8 @@ class Command extends \yii\base\Component
 	 */
 	public function from($tables)
 	{
-		if (is_string($tables) && strpos($tables, '(') !== false)
-			$this->_query['from'] = $tables;
-		else
-		{
-			if (!is_array($tables))
-				$tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
-			foreach ($tables as $i => $table)
-			{
-				if (strpos($table, '(') === false)
-				{
-					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches))  // with alias
-						$tables[$i] = $this->_connection->quoteTableName($matches[1]) . ' ' . $this->_connection->quoteTableName($matches[2]);
-					else
-						$tables[$i] = $this->_connection->quoteTableName($table);
-				}
-			}
-			$this->_query['from'] = implode(', ', $tables);
-		}
+		$this->query->from = $tables;
 		return $this;
-	}
-
-	/**
-	 * Returns the FROM part in the query.
-	 * @return string the FROM part (without 'FROM' ) in the query.
-	 * @since 1.1.6
-	 */
-	public function getFrom()
-	{
-		return isset($this->_query['from']) ? $this->_query['from'] : '';
-	}
-
-	/**
-	 * Sets the FROM part in the query.
-	 * @param mixed $value the tables to be selected from. Please refer to {@link from()} for details
-	 * on how to specify this parameter.
-	 * @since 1.1.6
-	 */
-	public function setFrom($value)
-	{
-		$this->from($value);
 	}
 
 	/**
@@ -750,31 +580,9 @@ class Command extends \yii\base\Component
 	 */
 	public function where($conditions, $params = array())
 	{
-		$this->_query['where'] = $this->processConditions($conditions);
-		foreach ($params as $name => $value)
-			$this->params[$name] = $value;
+		$this->query->where = $conditions;
+		$this->query->addParams($params);
 		return $this;
-	}
-
-	/**
-	 * Returns the WHERE part in the query.
-	 * @return string the WHERE part (without 'WHERE' ) in the query.
-	 * @since 1.1.6
-	 */
-	public function getWhere()
-	{
-		return isset($this->_query['where']) ? $this->_query['where'] : '';
-	}
-
-	/**
-	 * Sets the WHERE part in the query.
-	 * @param mixed $value the where part. Please refer to {@link where()} for details
-	 * on how to specify this parameter.
-	 * @since 1.1.6
-	 */
-	public function setWhere($value)
-	{
-		$this->where($value);
 	}
 
 	/**
@@ -791,31 +599,7 @@ class Command extends \yii\base\Component
 	 */
 	public function join($table, $conditions, $params = array())
 	{
-		return $this->joinInternal('join', $table, $conditions, $params);
-	}
-
-	/**
-	 * Returns the join part in the query.
-	 * @return mixed the join part in the query. This can be an array representing
-	 * multiple join fragments, or a string representing a single jojin fragment.
-	 * Each join fragment will contain the proper join operator (e.g. LEFT JOIN).
-	 * @since 1.1.6
-	 */
-	public function getJoin()
-	{
-		return isset($this->_query['join']) ? $this->_query['join'] : '';
-	}
-
-	/**
-	 * Sets the join part in the query.
-	 * @param mixed $value the join part in the query. This can be either a string or
-	 * an array representing multiple join parts in the query. Each part must contain
-	 * the proper join operator (e.g. 'LEFT JOIN tbl_profile ON tbl_user.id=tbl_profile.id')
-	 * @since 1.1.6
-	 */
-	public function setJoin($value)
-	{
-		$this->_query['join'] = $value;
+		return $this->joinInternal('JOIN', $table, $conditions, $params);
 	}
 
 	/**
@@ -832,7 +616,7 @@ class Command extends \yii\base\Component
 	 */
 	public function leftJoin($table, $conditions, $params = array())
 	{
-		return $this->joinInternal('left join', $table, $conditions, $params);
+		return $this->joinInternal('LEFT JOIN', $table, $conditions, $params);
 	}
 
 	/**
@@ -849,7 +633,7 @@ class Command extends \yii\base\Component
 	 */
 	public function rightJoin($table, $conditions, $params = array())
 	{
-		return $this->joinInternal('right join', $table, $conditions, $params);
+		return $this->joinInternal('RIGHT JOIN', $table, $conditions, $params);
 	}
 
 	/**
@@ -864,7 +648,7 @@ class Command extends \yii\base\Component
 	 */
 	public function crossJoin($table)
 	{
-		return $this->joinInternal('cross join', $table);
+		return $this->joinInternal('CROSS JOIN', $table);
 	}
 
 	/**
@@ -879,7 +663,7 @@ class Command extends \yii\base\Component
 	 */
 	public function naturalJoin($table)
 	{
-		return $this->joinInternal('natural join', $table);
+		return $this->joinInternal('NATURAL JOIN', $table);
 	}
 
 	/**
@@ -891,45 +675,10 @@ class Command extends \yii\base\Component
 	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
-	public function group($columns)
+	public function groupBy($columns)
 	{
-		if (is_string($columns) && strpos($columns, '(') !== false)
-			$this->_query['group'] = $columns;
-		else
-		{
-			if (!is_array($columns))
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			foreach ($columns as $i => $column)
-			{
-				if (is_object($column))
-					$columns[$i] = (string)$column;
-				elseif (strpos($column, '(') === false)
-					$columns[$i] = $this->_connection->quoteColumnName($column);
-			}
-			$this->_query['group'] = implode(', ', $columns);
-		}
+		$this->query->groupBy = $columns;
 		return $this;
-	}
-
-	/**
-	 * Returns the GROUP BY part in the query.
-	 * @return string the GROUP BY part (without 'GROUP BY' ) in the query.
-	 * @since 1.1.6
-	 */
-	public function getGroup()
-	{
-		return isset($this->_query['group']) ? $this->_query['group'] : '';
-	}
-
-	/**
-	 * Sets the GROUP BY part in the query.
-	 * @param mixed $value the GROUP BY part. Please refer to {@link group()} for details
-	 * on how to specify this parameter.
-	 * @since 1.1.6
-	 */
-	public function setGroup($value)
-	{
-		$this->group($value);
 	}
 
 	/**
@@ -942,31 +691,9 @@ class Command extends \yii\base\Component
 	 */
 	public function having($conditions, $params = array())
 	{
-		$this->_query['having'] = $this->processConditions($conditions);
-		foreach ($params as $name => $value)
-			$this->params[$name] = $value;
+		$this->query->having = $conditions;
+		$this->query->addParams($params);
 		return $this;
-	}
-
-	/**
-	 * Returns the HAVING part in the query.
-	 * @return string the HAVING part (without 'HAVING' ) in the query.
-	 * @since 1.1.6
-	 */
-	public function getHaving()
-	{
-		return isset($this->_query['having']) ? $this->_query['having'] : '';
-	}
-
-	/**
-	 * Sets the HAVING part in the query.
-	 * @param mixed $value the HAVING part. Please refer to {@link having()} for details
-	 * on how to specify this parameter.
-	 * @since 1.1.6
-	 */
-	public function setHaving($value)
-	{
-		$this->having($value);
 	}
 
 	/**
@@ -978,50 +705,10 @@ class Command extends \yii\base\Component
 	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
-	public function order($columns)
+	public function orderBy($columns)
 	{
-		if (is_string($columns) && strpos($columns, '(') !== false)
-			$this->_query['order'] = $columns;
-		else
-		{
-			if (!is_array($columns))
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			foreach ($columns as $i => $column)
-			{
-				if (is_object($column))
-					$columns[$i] = (string)$column;
-				elseif (strpos($column, '(') === false)
-				{
-					if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches))
-						$columns[$i] = $this->_connection->quoteColumnName($matches[1]) . ' ' . strtoupper($matches[2]);
-					else
-						$columns[$i] = $this->_connection->quoteColumnName($column);
-				}
-			}
-			$this->_query['order'] = implode(', ', $columns);
-		}
+		$this->query->orderBy = $columns;
 		return $this;
-	}
-
-	/**
-	 * Returns the ORDER BY part in the query.
-	 * @return string the ORDER BY part (without 'ORDER BY' ) in the query.
-	 * @since 1.1.6
-	 */
-	public function getOrder()
-	{
-		return isset($this->_query['order']) ? $this->_query['order'] : '';
-	}
-
-	/**
-	 * Sets the ORDER BY part in the query.
-	 * @param mixed $value the ORDER BY part. Please refer to {@link order()} for details
-	 * on how to specify this parameter.
-	 * @since 1.1.6
-	 */
-	public function setOrder($value)
-	{
-		$this->order($value);
 	}
 
 	/**
@@ -1031,33 +718,10 @@ class Command extends \yii\base\Component
 	 * @return Command the command object itself
 	 * @since 1.1.6
 	 */
-	public function limit($limit, $offset = null)
+	public function limit($limit)
 	{
-		$this->_query['limit'] = (int)$limit;
-		if ($offset !== null)
-			$this->offset($offset);
+		$this->query->limit = $limit;
 		return $this;
-	}
-
-	/**
-	 * Returns the LIMIT part in the query.
-	 * @return string the LIMIT part (without 'LIMIT' ) in the query.
-	 * @since 1.1.6
-	 */
-	public function getLimit()
-	{
-		return isset($this->_query['limit']) ? $this->_query['limit'] : -1;
-	}
-
-	/**
-	 * Sets the LIMIT part in the query.
-	 * @param integer $value the LIMIT part. Please refer to {@link limit()} for details
-	 * on how to specify this parameter.
-	 * @since 1.1.6
-	 */
-	public function setLimit($value)
-	{
-		$this->limit($value);
 	}
 
 	/**
@@ -1068,29 +732,8 @@ class Command extends \yii\base\Component
 	 */
 	public function offset($offset)
 	{
-		$this->_query['offset'] = (int)$offset;
+		$this->query->offset = $offset;
 		return $this;
-	}
-
-	/**
-	 * Returns the OFFSET part in the query.
-	 * @return string the OFFSET part (without 'OFFSET' ) in the query.
-	 * @since 1.1.6
-	 */
-	public function getOffset()
-	{
-		return isset($this->_query['offset']) ? $this->_query['offset'] : -1;
-	}
-
-	/**
-	 * Sets the OFFSET part in the query.
-	 * @param integer $value the OFFSET part. Please refer to {@link offset()} for details
-	 * on how to specify this parameter.
-	 * @since 1.1.6
-	 */
-	public function setOffset($value)
-	{
-		$this->offset($value);
 	}
 
 	/**
@@ -1101,34 +744,8 @@ class Command extends \yii\base\Component
 	 */
 	public function union($sql)
 	{
-		if (isset($this->_query['union']) && is_string($this->_query['union']))
-			$this->_query['union'] = array($this->_query['union']);
-
-		$this->_query['union'][] = $sql;
-
-		return $this;
-	}
-
-	/**
-	 * Returns the UNION part in the query.
-	 * @return mixed the UNION part (without 'UNION' ) in the query.
-	 * This can be either a string or an array representing multiple union parts.
-	 * @since 1.1.6
-	 */
-	public function getUnion()
-	{
-		return isset($this->_query['union']) ? $this->_query['union'] : '';
-	}
-
-	/**
-	 * Sets the UNION part in the query.
-	 * @param mixed $value the UNION part. This can be either a string or an array
-	 * representing multiple SQL statements to be unioned together.
-	 * @since 1.1.6
-	 */
-	public function setUnion($value)
-	{
-		$this->_query['union'] = $value;
+		$this->query->union[] = $sql;
+		return $this->query;
 	}
 
 	/**
@@ -1141,28 +758,8 @@ class Command extends \yii\base\Component
 	 */
 	public function insert($table, $columns)
 	{
-		$params = array();
-		$names = array();
-		$placeholders = array();
-		foreach ($columns as $name => $value)
-		{
-			$names[] = $this->_connection->quoteColumnName($name);
-			if ($value instanceof CDbExpression)
-			{
-				$placeholders[] = $value->expression;
-				foreach ($value->params as $n => $v)
-					$params[$n] = $v;
-			}
-			else
-			{
-				$placeholders[] = ':' . $name;
-				$params[':' . $name] = $value;
-			}
-		}
-		$sql = 'INSERT INTO ' . $this->_connection->quoteTableName($table)
-			. ' (' . implode(', ', $names) . ') VALUES ('
-			. implode(', ', $placeholders) . ')';
-		return $this->setText($sql)->execute($params);
+		$sql = $this->connection->getQueryBuilder()->insert($table, $columns, $params);
+		return $this->setSql($sql)->execute($params);
 	}
 
 	/**
@@ -1178,25 +775,8 @@ class Command extends \yii\base\Component
 	 */
 	public function update($table, $columns, $conditions = '', $params = array())
 	{
-		$lines = array();
-		foreach ($columns as $name => $value)
-		{
-			if ($value instanceof CDbExpression)
-			{
-				$lines[] = $this->_connection->quoteColumnName($name) . '=' . $value->expression;
-				foreach ($value->params as $n => $v)
-					$params[$n] = $v;
-			}
-			else
-			{
-				$lines[] = $this->_connection->quoteColumnName($name) . '=:' . $name;
-				$params[':' . $name] = $value;
-			}
-		}
-		$sql = 'UPDATE ' . $this->_connection->quoteTableName($table) . ' SET ' . implode(', ', $lines);
-		if (($where = $this->processConditions($conditions)) != '')
-			$sql .= ' WHERE ' . $where;
-		return $this->setText($sql)->execute($params);
+		$sql = $this->connection->getQueryBuilder()->update($table, $columns, $conditions, $params);
+		return $this->setSql($sql)->execute($params);
 	}
 
 	/**
@@ -1210,10 +790,8 @@ class Command extends \yii\base\Component
 	 */
 	public function delete($table, $conditions = '', $params = array())
 	{
-		$sql = 'DELETE FROM ' . $this->_connection->quoteTableName($table);
-		if (($where = $this->processConditions($conditions)) != '')
-			$sql .= ' WHERE ' . $where;
-		return $this->setText($sql)->execute($params);
+		$sql = $this->connection->getQueryBuilder()->delete($table, $conditions);
+		return $this->setSql($sql)->execute($params);
 	}
 
 	/**
@@ -1235,7 +813,8 @@ class Command extends \yii\base\Component
 	 */
 	public function createTable($table, $columns, $options = null)
 	{
-		return $this->setText($this->getConnection()->getSchema()->createTable($table, $columns, $options))->execute();
+		$sql = $this->connection->getQueryBuilder()->createTable($table, $columns, $options);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1247,7 +826,8 @@ class Command extends \yii\base\Component
 	 */
 	public function renameTable($table, $newName)
 	{
-		return $this->setText($this->getConnection()->getSchema()->renameTable($table, $newName))->execute();
+		$sql = $this->connection->getQueryBuilder()->renameTable($table, $newName);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1258,7 +838,8 @@ class Command extends \yii\base\Component
 	 */
 	public function dropTable($table)
 	{
-		return $this->setText($this->getConnection()->getSchema()->dropTable($table))->execute();
+		$sql = $this->connection->getQueryBuilder()->dropTable($table);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1269,11 +850,8 @@ class Command extends \yii\base\Component
 	 */
 	public function truncateTable($table)
 	{
-		$schema = $this->getConnection()->getSchema();
-		$n = $this->setText($schema->truncateTable($table))->execute();
-		if (strncasecmp($this->getConnection()->getDriverName(), 'sqlite', 6) === 0)
-			$schema->resetSequence($schema->getTable($table));
-		return $n;
+		$sql = $this->connection->getQueryBuilder()->truncateTable($table);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1288,7 +866,8 @@ class Command extends \yii\base\Component
 	 */
 	public function addColumn($table, $column, $type)
 	{
-		return $this->setText($this->getConnection()->getSchema()->addColumn($table, $column, $type))->execute();
+		$sql = $this->connection->getQueryBuilder()->addColumn($table, $column, $type);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1300,7 +879,8 @@ class Command extends \yii\base\Component
 	 */
 	public function dropColumn($table, $column)
 	{
-		return $this->setText($this->getConnection()->getSchema()->dropColumn($table, $column))->execute();
+		$sql = $this->connection->getQueryBuilder()->dropColumn($table, $column);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1313,7 +893,8 @@ class Command extends \yii\base\Component
 	 */
 	public function renameColumn($table, $name, $newName)
 	{
-		return $this->setText($this->getConnection()->getSchema()->renameColumn($table, $name, $newName))->execute();
+		$sql = $this->connection->getQueryBuilder()->renameColumn($table, $name, $newName);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1328,7 +909,8 @@ class Command extends \yii\base\Component
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		return $this->setText($this->getConnection()->getSchema()->alterColumn($table, $column, $type))->execute();
+		$sql = $this->connection->getQueryBuilder()->alterColumn($table, $column, $type);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1346,7 +928,8 @@ class Command extends \yii\base\Component
 	 */
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
-		return $this->setText($this->getConnection()->getSchema()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update))->execute();
+		$sql = $this->connection->getQueryBuilder()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1358,7 +941,8 @@ class Command extends \yii\base\Component
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		return $this->setText($this->getConnection()->getSchema()->dropForeignKey($name, $table))->execute();
+		$sql = $this->connection->getQueryBuilder()->dropForeignKey($name, $table);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1373,7 +957,8 @@ class Command extends \yii\base\Component
 	 */
 	public function createIndex($name, $table, $column, $unique = false)
 	{
-		return $this->setText($this->getConnection()->getSchema()->createIndex($name, $table, $column, $unique))->execute();
+		$sql = $this->connection->getQueryBuilder()->createIndex($name, $table, $column, $unique);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1385,78 +970,8 @@ class Command extends \yii\base\Component
 	 */
 	public function dropIndex($name, $table)
 	{
-		return $this->setText($this->getConnection()->getSchema()->dropIndex($name, $table))->execute();
-	}
-
-	/**
-	 * Generates the condition string that will be put in the WHERE part
-	 * @param mixed $conditions the conditions that will be put in the WHERE part.
-	 * @return string the condition string to put in the WHERE part
-	 */
-	private function processConditions($conditions)
-	{
-		if (!is_array($conditions))
-			return $conditions;
-		elseif ($conditions === array())
-			return '';
-		$n = count($conditions);
-		$operator = strtoupper($conditions[0]);
-		if ($operator === 'OR' || $operator === 'AND')
-		{
-			$parts = array();
-			for ($i = 1;$i < $n;++$i)
-			{
-				$condition = $this->processConditions($conditions[$i]);
-				if ($condition !== '')
-					$parts[] = '(' . $condition . ')';
-			}
-			return $parts === array() ? '' : implode(' ' . $operator . ' ', $parts);
-		}
-
-		if (!isset($conditions[1], $conditions[2]))
-			return '';
-
-		$column = $conditions[1];
-		if (strpos($column, '(') === false)
-			$column = $this->_connection->quoteColumnName($column);
-
-		$values = $conditions[2];
-		if (!is_array($values))
-			$values = array($values);
-
-		if ($operator === 'IN' || $operator === 'NOT IN')
-		{
-			if ($values === array())
-				return $operator === 'IN' ? '0=1' : '';
-			foreach ($values as $i => $value)
-			{
-				if (is_string($value))
-					$values[$i] = $this->_connection->quoteValue($value);
-				else
-					$values[$i] = (string)$value;
-			}
-			return $column . ' ' . $operator . ' (' . implode(', ', $values) . ')';
-		}
-
-		if ($operator === 'LIKE' || $operator === 'NOT LIKE' || $operator === 'OR LIKE' || $operator === 'OR NOT LIKE')
-		{
-			if ($values === array())
-				return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
-
-			if ($operator === 'LIKE' || $operator === 'NOT LIKE')
-				$andor = ' AND ';
-			else
-			{
-				$andor = ' OR ';
-				$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
-			}
-			$expressions = array();
-			foreach ($values as $value)
-				$expressions[] = $column . ' ' . $operator . ' ' . $this->_connection->quoteValue($value);
-			return implode($andor, $expressions);
-		}
-
-		throw new CDbException(Yii::t('yii', 'Unknown operator "{operator}".', array('{operator}' => $operator)));
+		$sql = $this->connection->getQueryBuilder()->dropIndex($name, $table);
+		return $this->setSql($sql)->execute();
 	}
 
 	/**
@@ -1474,25 +989,8 @@ class Command extends \yii\base\Component
 	 */
 	private function joinInternal($type, $table, $conditions = '', $params = array())
 	{
-		if (strpos($table, '(') === false)
-		{
-			if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches))  // with alias
-				$table = $this->_connection->quoteTableName($matches[1]) . ' ' . $this->_connection->quoteTableName($matches[2]);
-			else
-				$table = $this->_connection->quoteTableName($table);
-		}
-
-		$conditions = $this->processConditions($conditions);
-		if ($conditions != '')
-			$conditions = ' ON ' . $conditions;
-
-		if (isset($this->_query['join']) && is_string($this->_query['join']))
-			$this->_query['join'] = array($this->_query['join']);
-
-		$this->_query['join'][] = strtoupper($type) . ' ' . $table . $conditions;
-
-		foreach ($params as $name => $value)
-			$this->params[$name] = $value;
+		$this->query->join[] = array($type, $table, $conditions);
+		$this->query->addParams($params);
 		return $this;
 	}
 }

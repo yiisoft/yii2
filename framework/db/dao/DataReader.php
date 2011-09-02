@@ -8,6 +8,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db\dao;
+
 /**
  * DataReader represents a forward-only stream of rows from a query result set.
  *

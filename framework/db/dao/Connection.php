@@ -460,6 +460,11 @@ class Connection extends \yii\base\ApplicationComponent
 		}
 	}
 
+	public function getQueryBuilder()
+	{
+		return $this->getSchema()->getQueryBuilder();
+	}
+
 	/**
 	 * Returns the ID of the last inserted row or sequence value.
 	 * @param string $sequenceName name of the sequence object (required by some DBMS)
