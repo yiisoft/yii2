@@ -1,18 +1,20 @@
 <?php
 
+use yii\base\Vector;
+
 class ListItem
 {
 	public $data='data';
 }
 
-class VectorTest extends \yii\test\TestCase
+class VectorTest extends TestCase
 {
 	protected $vector;
 	protected $item1, $item2, $item3;
 
 	public function setUp()
 	{
-		$this->vector=new \yii\base\Vector;
+		$this->vector=new Vector;
 		$this->item1=new ListItem;
 		$this->item2=new ListItem;
 		$this->item3=new ListItem;
@@ -31,9 +33,9 @@ class VectorTest extends \yii\test\TestCase
 	public function testConstruct()
 	{
 		$a=array(1,2,3);
-		$vector=new \yii\base\Vector($a);
+		$vector=new Vector($a);
 		$this->assertEquals(3,$vector->getCount());
-		$vector2=new \yii\base\Vector($this->vector);
+		$vector2=new Vector($this->vector);
 		$this->assertEquals(2,$vector2->getCount());
 	}
 
@@ -163,28 +165,28 @@ class VectorTest extends \yii\test\TestCase
 
 	public function testOffsetSetAdd()
 	{
-		$vector = new \yii\base\Vector(array(1, 2, 3));
+		$vector = new Vector(array(1, 2, 3));
 		$vector->offsetSet(null, 4);
 		$this->assertEquals(array(1, 2, 3, 4), $vector->toArray());
 	}
 
 	public function testOffsetSetReplace()
 	{
-		$vector = new \yii\base\Vector(array(1, 2, 3));
+		$vector = new Vector(array(1, 2, 3));
 		$vector->offsetSet(1, 4);
 		$this->assertEquals(array(1, 4, 3), $vector->toArray());
 	}
 
 	public function testOffsetUnset()
 	{
-		$vector = new \yii\base\Vector(array(1, 2, 3));
+		$vector = new Vector(array(1, 2, 3));
 		$vector->offsetUnset(1);
 		$this->assertEquals(array(1, 3), $vector->toArray());
 	}
 
 	public function testIteratorCurrent()
 	{
-		$vector = new \yii\base\Vector(array('value1', 'value2'));
+		$vector = new Vector(array('value1', 'value2'));
 		$val = $vector->getIterator()->current();
 		$this->assertEquals('value1', $val);
 	}

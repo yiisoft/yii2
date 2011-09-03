@@ -10,6 +10,8 @@
 
 namespace yii\db\dao;
 
+use yii\db\Exception;
+
 /**
  * DataReader represents a forward-only stream of rows from a query result set.
  *

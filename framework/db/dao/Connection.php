@@ -10,6 +10,8 @@
 
 namespace yii\db\dao;
 
+use yii\db\Exception;
+
 /**
  * Connection represents a connection to a database via [PDO](http://www.php.net/manual/en/ref.pdo.php).
  *
@@ -275,7 +277,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public static function getAvailableDrivers()
 	{
-		return PDO::getAvailableDrivers();
+		return \PDO::getAvailableDrivers();
 	}
 
 	/**
@@ -485,7 +487,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function quoteValue($str)
 	{
-		if (is_int($str) || is_float($str) || is_bool($str)) {
+		if (!is_string($str)) {
 			return $str;
 		}
 
@@ -504,9 +506,9 @@ class Connection extends \yii\base\ApplicationComponent
 	 * @param string $name table name
 	 * @return string the properly quoted table name
 	 */
-	public function quoteTableName($name)
+	public function quoteTableName($name, $simple = false)
 	{
-		return $this->getSchema()->quoteTableName($name);
+		return $simple ? $this->getSchema()->quoteSimpleTableName($name) : $this->getSchema()->quoteTableName($name);
 	}
 
 	/**
@@ -515,9 +517,9 @@ class Connection extends \yii\base\ApplicationComponent
 	 * @param string $name column name
 	 * @return string the properly quoted column name
 	 */
-	public function quoteColumnName($name)
+	public function quoteColumnName($name, $simple = false)
 	{
-		return $this->getSchema()->quoteColumnName($name);
+		return $simple ? $this->getSchema()->quoteColumnName($name) : $this->getSchema()->quoteSimpleColumnName($name);
 	}
 
 	/**
@@ -528,13 +530,13 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function getPdoType($type)
 	{
-		static $map = array(
+		static $typeMap = array(
 			'boolean' => \PDO::PARAM_BOOL,
 			'integer' => \PDO::PARAM_INT,
 			'string' => \PDO::PARAM_STR,
 			'NULL' => \PDO::PARAM_NULL,
 		);
-		return isset($map[$type]) ? $map[$type] : PDO::PARAM_STR;
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 
 	/**
@@ -547,7 +549,7 @@ class Connection extends \yii\base\ApplicationComponent
 			return strtolower(substr($this->dsn, 0, $pos));
 		}
 		else {
-			return $this->getAttribute(\PDO::ATTR_DRIVER_NAME);
+			return strtolower($this->getAttribute(\PDO::ATTR_DRIVER_NAME));
 		}
 	}
 

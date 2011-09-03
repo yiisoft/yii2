@@ -11,7 +11,7 @@ function globalEventHandler2($event)
 	$event->handled=true;
 }
 
-class ComponentTest extends \yii\test\TestCase
+class ComponentTest extends TestCase
 {
 	protected $component;
 
