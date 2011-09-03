@@ -10,6 +10,8 @@
 
 namespace yii\db\dao;
 
+use yii\db\Exception;
+
 /**
  * QueryBuilder builds a SQL statement based on the specification given as a [[Query]] object.
  *

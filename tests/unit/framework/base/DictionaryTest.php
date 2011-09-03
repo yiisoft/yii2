@@ -1,18 +1,20 @@
 <?php
 
+use yii\base\Dictionary;
+
 class MapItem
 {
 	public $data='data';
 }
 
-class DictionaryTest extends \yii\test\TestCase
+class DictionaryTest extends TestCase
 {
 	protected $dictionary;
 	protected $item1,$item2,$item3;
 
 	public function setUp()
 	{
-		$this->dictionary=new \yii\base\Dictionary;
+		$this->dictionary=new Dictionary;
 		$this->item1=new MapItem;
 		$this->item2=new MapItem;
 		$this->item3=new MapItem;
@@ -31,9 +33,9 @@ class DictionaryTest extends \yii\test\TestCase
 	public function testConstruct()
 	{
 		$a=array(1,2,'key3'=>3);
-		$dictionary=new \yii\base\Dictionary($a);
+		$dictionary=new Dictionary($a);
 		$this->assertEquals(3,$dictionary->getCount());
-		$dictionary2=new \yii\base\Dictionary($this->dictionary);
+		$dictionary2=new Dictionary($this->dictionary);
 		$this->assertEquals(2,$dictionary2->getCount());
 	}
 
@@ -97,8 +99,8 @@ class DictionaryTest extends \yii\test\TestCase
 		$a=array('a'=>'v1','v2',array('2'),'c'=>array('3','c'=>'a'));
 		$b=array('v22','a'=>'v11',array('2'),'c'=>array('c'=>'3','a'));
 		$c=array('a'=>'v11','v2',array('2'),'c'=>array('3','c'=>'3','a'),'v22',array('2'));
-		$dictionary=new \yii\base\Dictionary($a);
-		$dictionary2=new \yii\base\Dictionary($b);
+		$dictionary=new Dictionary($a);
+		$dictionary2=new Dictionary($b);
 		$dictionary->mergeWith($dictionary2);
 		$this->assertTrue($dictionary->toArray()===$c);
 
@@ -112,7 +114,7 @@ class DictionaryTest extends \yii\test\TestCase
 	}
 
 	public function testRecursiveMergeWithTraversable(){
-		$dictionary = new \yii\base\Dictionary();
+		$dictionary = new Dictionary();
 		$obj = new ArrayObject(array(
 			'k1' => $this->item1,
 			'k2' => $this->item2,
@@ -176,13 +178,13 @@ class DictionaryTest extends \yii\test\TestCase
 
 	public function testToArray()
 	{
-		$dictionary = new \yii\base\Dictionary(array('key' => 'value'));
+		$dictionary = new Dictionary(array('key' => 'value'));
 		$this->assertEquals(array('key' => 'value'), $dictionary->toArray());
 	}
 
 	public function testIteratorCurrent()
 	{
-		$dictionary = new \yii\base\Dictionary(array('key1' => 'value1', 'key2' => 'value2'));
+		$dictionary = new Dictionary(array('key1' => 'value1', 'key2' => 'value2'));
 		$val = $dictionary->getIterator()->current();
 		$this->assertEquals('value1', $val);
 	}

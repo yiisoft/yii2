@@ -10,6 +10,8 @@
 
 namespace yii\db\dao;
 
+use yii\db\Exception;
+
 /**
  * Transaction represents a DB transaction.
  *

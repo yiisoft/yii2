@@ -10,6 +10,8 @@
 
 namespace yii\db\dao;
 
+use yii\db\Exception;
+
 /**
  * Schema is the base class for retrieving metadata information.
  *

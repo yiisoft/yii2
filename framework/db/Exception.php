@@ -1,22 +1,22 @@
 <?php
 /**
- * CDbException class file.
+ * Exception class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\db;
 
 /**
  * CDbException represents an exception that is caused by some DB-related operations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbException.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.db
- * @since 1.0
+ * @since 2.0
  */
-class CDbException extends CException
+class Exception extends \yii\base\Exception
 {
 	/**
 	 * @var mixed the error info provided by a PDO exception. This is the same as returned
