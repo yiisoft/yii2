@@ -349,16 +349,12 @@ class YiiBase
 			$object = new $class;
 		}
 
-		if ($object instanceof Initable) {
-			foreach ($config as $name => $value) {
-				$object->$name = $value;
-			}
-			$object->init();
+		foreach ($config as $name => $value) {
+			$object->$name = $value;
 		}
-		else {
-			foreach ($config as $name => $value) {
-				$object->$name = $value;
-			}
+
+		if ($object instanceof \yii\base\Initable) {
+			$object->init();
 		}
 
 		return $object;

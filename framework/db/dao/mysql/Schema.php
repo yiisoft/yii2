@@ -143,7 +143,7 @@ class Schema extends \yii\db\dao\Schema
 				foreach ($matches as $match) {
 					$fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
 					$pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
-					$constraint = array(str_replace('`', '', $match[2])),
+					$constraint = array(str_replace('`', '', $match[2]));
 					foreach ($fks as $k => $name) {
 						$constraint[$name] = $pks[$k];
 					}

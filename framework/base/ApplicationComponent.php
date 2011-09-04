@@ -28,18 +28,6 @@ abstract class ApplicationComponent extends Component implements Initable
 	public $behaviors = array();
 
 	/**
-	 * Pre-initializes this component.
-	 * This method is required by the [[Initable]] interface. It is invoked by
-	 * [[\Yii::createComponent]] after its creates the new component instance but
-	 * BEFORE the component properties are initialized.
-	 *
-	 * You may override this method to do work such as setting property default values.
-	 */
-	public function preinit()
-	{
-	}
-
-	/**
 	 * Initializes the application component.
 	 * This method is invoked after the component is created and its property values are
 	 * initialized. The default implementation will call [[Component::attachBehaviors]]
