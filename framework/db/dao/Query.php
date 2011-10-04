@@ -94,6 +94,136 @@ class Query extends \yii\base\Component
 		}
 	}
 
+	public function mergeWith($query, $useAnd = true)
+	{
+		$and = $useAnd ? 'AND' : 'OR';
+		if (is_array($query)) {
+			$query = new self($query);
+		}
+
+		if ($this->select !== $query->select) {
+			if($this->select === '*') {
+				$this->select = $query->select;
+			}
+			elseif($query->select!=='*') {
+				$select1 = is_string($this->select) ? preg_split('/\s*,\s*/', trim($this->select), -1, PREG_SPLIT_NO_EMPTY) : $this->select;
+				$select2 = is_string($query->select) ? preg_split('/\s*,\s*/', trim($query->select), -1, PREG_SPLIT_NO_EMPTY) : $query->select;
+				$this->select = array_merge($select1, array_diff($select2, $select1));
+			}
+		}
+
+		if ($this->selectOption !== $query->selectOption) {
+			if ($this->selectOption === null) {
+				$this->selectOption = $query->selectOption;
+			}
+			elseif ($query->selectOption !== null) {
+				$this->selectOption .= ' ' . $query->selectOption;
+			}
+		}
+
+		if ($query->distinct) {
+			$this->distinct = $query->distinct;
+		}
+
+		if ($this->where !== $query->where) {
+			if (empty($this->where)) {
+				$this->where = $query->where;
+			}
+			elseif (!empty($query->where)) {
+				$this->where = array('AND', $this->where, $query->where);
+			}
+		}
+
+		if ($this->params !== $query->params) {
+			$this->params = $this->addParams($query->params);
+		}
+
+		if ($query->limit !== null) {
+			$this->limit = $query->limit;
+		}
+
+		if ($query->offset !== null) {
+			$this->offset = $query->offset;
+		}
+
+		if ($this->orderBy !== $query->orderBy) {
+			if (empty($this->orderBy)) {
+				$this->orderBy = $query->orderBy;
+			}
+			elseif (!empty($query->orderBy)) {
+				if (!is_array($this->orderBy)) {
+					$this->orderBy = array($this->orderBy);
+				}
+				if (is_array($query->orderBy)) {
+					$this->orderBy = array_merge($this->orderBy, $query->orderBy);
+				}
+				else {
+					$this->orderBy[] = $query->orderBy;
+				}
+			}
+		}
+
+		if ($this->groupBy !== $query->groupBy) {
+			if (empty($this->groupBy)) {
+				$this->groupBy = $query->groupBy;
+			}
+			elseif (!empty($query->groupBy)) {
+				if (!is_array($this->groupBy)) {
+					$this->groupBy = array($this->groupBy);
+				}
+				if (is_array($query->groupBy)) {
+					$this->groupBy = array_merge($this->groupBy, $query->groupBy);
+				}
+				else {
+					$this->groupBy[] = $query->groupBy;
+				}
+			}
+		}
+
+		if ($this->join !== $query->join) {
+			if (empty($this->join)) {
+				$this->join = $query->join;
+			}
+			elseif (!empty($query->join)) {
+				if (!is_array($this->join)) {
+					$this->join = array($this->join);
+				}
+				if (is_array($query->join)) {
+					$this->join = array_merge($this->join, $query->join);
+				}
+				else {
+					$this->join[] = $query->join;
+				}
+			}
+		}
+
+		if ($this->having !== $query->having) {
+			if (empty($this->having)) {
+				$this->having = $query->having;
+			}
+			elseif (!empty($query->having)) {
+				$this->having = array('AND', $this->having, $query->having);
+			}
+		}
+
+		if ($this->union !== $query->union) {
+			if (empty($this->union)) {
+				$this->union = $query->union;
+			}
+			elseif (!empty($query->union)) {
+				if (!is_array($this->union)) {
+					$this->union = array($this->union);
+				}
+				if (is_array($query->union)) {
+					$this->union = array_merge($this->union, $query->union);
+				}
+				else {
+					$this->union[] = $query->union;
+				}
+			}
+		}
+	}
+
 	/**
 	 * Appends a condition to the existing {@link condition}.
 	 * The new condition and the existing condition will be concatenated via the specified operator
@@ -372,15 +502,44 @@ class Query extends \yii\base\Component
 		return $this;
 	}
 
+	public function reset()
+	{
+		$this->select = null;
+		$this->selectOption = null;
+		$this->from = null;
+		$this->distinct = null;
+		$this->where = null;
+		$this->limit = null;
+		$this->offset = null;
+		$this->orderBy = null;
+		$this->groupBy = null;
+		$this->join = null;
+		$this->having = null;
+		$this->params = array();
+		$this->union = null;
+	}
+
+	public function fromArray($array)
+	{
+		$this->reset();
+		foreach (array('select', 'selectOption', 'from', 'distinct', 'where', 'limit', 'offset', 'orderBy', 'groupBy', 'join', 'having', 'params', 'union') as $name) {
+			if (isset($array[$name])) {
+				$this->$name = $array[$name];
+			}
+		}
+	}
+
 	/**
 	 * @return array the array representation of the criteria
-	 * @since 1.0.6
 	 */
 	public function toArray()
 	{
 		$result = array();
-		foreach (array('select', 'condition', 'params', 'limit', 'offset', 'order', 'group', 'join', 'having', 'distinct', 'scopes', 'with', 'alias', 'index', 'together') as $name)
-			$result[$name] = $this->$name;
+		foreach (array('select', 'selectOption', 'from', 'distinct', 'where', 'limit', 'offset', 'orderBy', 'groupBy', 'join', 'having', 'params', 'union') as $name) {
+			if (!empty($this->$name)) {
+				$result[$name] = $this->$name;
+			}
+		}
 		return $result;
 	}
 }

@@ -102,11 +102,11 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 			return self::$_attributes[$className];
 		}
 
-		$class = new ReflectionClass($this);
+		$class = new \ReflectionClass($this);
 		$names = array();
-		foreach ($class->getProperties() as $property) {
+		foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
 			$name = $property->getName();
-			if ($property->isPublic() && !$property->isStatic()) {
+			if (!$property->isStatic()) {
 				$names[] = $name;
 			}
 		}

@@ -94,8 +94,8 @@ class Command extends \yii\base\Component
 		}
 		else {
 			$this->query = new Query;
-			if (is_array($this->query)) {
-				$this->query->fromArray($this->query);
+			if (is_array($query)) {
+				$this->query->fromArray($query);
 			}
 			else {
 				$this->_sql = $query;
@@ -124,9 +124,9 @@ class Command extends \yii\base\Component
 	/**
 	 * @return string the SQL statement to be executed
 	 */
-	public function getSql()
+	public function getSql($rebuild = false)
 	{
-		if ($this->_sql == '' && is_object($this->query)) {
+		if ($this->_sql === null || $rebuild) {
 			$this->_sql = $this->query->getSql($this->connection);
 		}
 		return $this->_sql;
@@ -168,7 +168,7 @@ class Command extends \yii\base\Component
 				\Yii::log('Error in preparing SQL: ' . $this->getSql(), CLogger::LEVEL_ERROR, 'system.db.Command');
                 $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 				throw new Exception('Unable to prepare the SQL statement: {error}',
-					array('{error}' => $e->getMessage())), (int)$e->getCode(), $errorInfo);
+					array('{error}' => $e->getMessage()), (int)$e->getCode(), $errorInfo);
 			}
 		}
 	}
