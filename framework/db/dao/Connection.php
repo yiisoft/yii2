@@ -471,6 +471,11 @@ class Connection extends \yii\base\ApplicationComponent
 		}
 	}
 
+	public function getQueryBuilder()
+	{
+		return $this->getSchema()->getQueryBuilder();
+	}
+
 	/**
 	 * Returns the query builder for the current DB connection.
 	 * @return QueryBuilder the query builder for the current DB connection.
