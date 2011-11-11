@@ -51,8 +51,11 @@
 - gii
     * move generation API out of gii, provide yiic commands to use it. Use same templates for gii/yiic.
 	* i18n variant of templates
+	* allow to generate module-specific CRUD
 - markup and HTML helpers
     * use HTML5 instead of XHTML
 - assets
     * ability to manage scripts order (store these in a vector?)
 	* http://ryanbigg.com/guides/asset_pipeline.html, use content hash instead of mtime + directory hash.
+- collections
+    * http://code.google.com/p/yii/source/detail?r=3428
