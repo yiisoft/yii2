@@ -19,7 +19,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Behavior extends Component
+class Behavior extends Object
 {
 	private $_owner;
 

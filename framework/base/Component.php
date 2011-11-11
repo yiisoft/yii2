@@ -10,44 +10,14 @@
 namespace yii\base;
 
 /**
- * Component is the base class for all components in Yii.
+ * Component is the base class for all component classes in Yii.
  *
- * Component implements the basis for *properties*, *events* and *behaviors*.
- *
- * A property is defined by a getter method (e.g. `getLabel`),
- * and/or a setter method (e.g. `setLabel`). For example, the following
- * getter and setter methods define a property named `label`:
- *
- * ~~~
- * private $_label;
- *
- * public function getLabel()
- * {
- *     return $this->_label;
- * }
- *
- * public function setLabel($value)
- * {
- *     $this->_label = $value;
- * }
- * ~~~
- *
- * A property can be accessed like a member variable of an object.
- * Reading or writing a property will cause the invocation of the corresponding
- * getter or setter method. For example,
- *
- * ~~~
- * // equivalent to $label = $component->getLabel();
- * $label = $component->label;
- * // equivalent to $component->setLabel('abc');
- * $component->label = 'abc';
- * ~~~
- *
+ * Extending from [[Object]], Component implements the *event* and *behavior*
+ * features in addition to the *property* feature.
  *
  * An event is defined by the presence of a method whose name starts with `on`.
- * The event name is the method name. When an event is raised, functions
- * (called *event handlers*) attached to the event will be invoked automatically.
- * The `on` method is typically declared like the following:
+ * The event name is the method name. For example, the following method defines
+ * the `onClick` event:
  *
  * ~~~
  * public function onClick($event)
@@ -56,53 +26,52 @@ namespace yii\base;
  * }
  * ~~~
  *
- * An event can be raised by calling the [[raiseEvent]] method, upon which
- * the attached event handlers will be invoked automatically in the order they
- * are attached to the event. In the above example, if we call the `onClick` method,
- * an `onClick` event will be raised.
+ * Event names are case-insensitive.
  *
- * An event handler should be defined with the following signature:
+ * An event can be attached with one or multiple PHP callbacks, called *event handlers*.
+ * One can call [[raiseEvent]] to raise an event. When an event is raised, the attached
+ * event handlers will be invoked automatically in the order they are attached to the event.
  *
+ * To attach an event handler to an event, call [[attachEventHandler]]. Alternatively,
+ * you can use the assignment syntax: `$component->onClick = $callback;`,
+ * where `$callback` refers to a valid PHP callback, which can be one of the followings:
+ *
+ * - global function: `'handleOnClick'`
+ * - object method: `array($object, 'handleOnClick')`
+ * - static method: `array('Page', 'handleOnClick')`
+ * - anonymous function: `function($event) { ... }`
+ *
+ * The signature of an event handler should be like the following:
  * ~~~
- * public function foo($event) { ... }
+ * function foo($event)
  * ~~~
  *
  * where `$event` is an [[Event]] object which includes parameters associated with the event.
  *
- * To attach an event handler to an event, call [[attachEventHandler]].
- * Alternatively, you can also do the following:
+ * Because `$component->onClick` is returned as a [[Vector]] with each item in the vector being
+ * an attached event handler, one can manipulate this [[Vector]] object to attach/detach event
+ * handlers, or adjust their relative orders. For example,
  *
  * ~~~
- * $component->onClick = $callback;
- * // or $component->onClick->add($callback);
+ * $component->onClick->insertAt(0, $callback);  // attach a handler as the first one
+ * $component->onClick[] = $callback;            // attach a handler as the last one
+ * unset($component->onClick[0]);                // detach the first handler
  * ~~~
  *
- * where `$callback` refers to a valid PHP callback. Some examples of `$callback` are:
- *
- * ~~~
- * 'handleOnClick'                    // handleOnClick() is a global function
- * array($object, 'handleOnClick')    // $object->handleOnClick()
- * array('Page', 'handleOnClick')     // Page::handleOnClick()
- * function($event) { ... }           // anonymous function
- * ~~~
- *
- * Both property names and event names are *case-insensitive*.
  *
  * A behavior is an instance of [[Behavior]] or its child class. When a behavior is
  * attached to a component, its public properties and methods can be accessed via the
- * component directly, as if the component owns those properties and methods. For example,
+ * component directly, as if the component owns those properties and methods.
  *
  * Multiple behaviors can be attached to the same component.
  *
- * To attach a behavior to a component, call [[attachBehavior]]; and to detach the behavior
+ * To attach a behavior to a component, call [[attachBehavior]]; to detach a behavior
  * from the component, call [[detachBehavior]].
- *
- * Components created via [[\Yii::createComponent]] have life cycles. In particular,
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component
+class Component extends Object
 {
 	private $_e;
 	private $_b;
@@ -129,18 +98,15 @@ class Component
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // read property, e.g. getName()
 			return $this->$getter();
-		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event, e.g. onClick()
+		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event, e.g. onClick()
 			$name = strtolower($name);
 			if (!isset($this->_e[$name])) {
 				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name];
-		}
-		elseif (isset($this->_b[$name])) { // behavior
+		} elseif (isset($this->_b[$name])) { // behavior
 			return $this->_b[$name];
-		}
-		elseif (is_array($this->_b)) { // a behavior property
+		} elseif (is_array($this->_b)) { // a behavior property
 			foreach ($this->_b as $object) {
 				if (property_exists($object, $name) || $object->canGetProperty($name)) {
 					return $object->$name;
@@ -151,7 +117,7 @@ class Component
 	}
 
 	/**
-	 * Sets value of a component property.
+	 * Sets the value of a component property.
 	 * This method will check in the following order and act accordingly:
 	 *
 	 *  - a property defined by a setter: set the property value
@@ -170,15 +136,13 @@ class Component
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {  // write property
 			return $this->$setter($value);
-		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {  // event
+		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {  // event
 			$name = strtolower($name);
 			if (!isset($this->_e[$name])) {
 				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name]->add($value);
-		}
-		elseif (is_array($this->_b)) {  // behavior
+		} elseif (is_array($this->_b)) {  // behavior
 			foreach ($this->_b as $object) {
 				if (property_exists($object, $name) || $object->canSetProperty($name)) {
 					return $object->$name = $value;
@@ -187,8 +151,7 @@ class Component
 		}
 		if (method_exists($this, 'get' . $name)) {
 			throw new Exception('Setting read-only property: ' . get_class($this) . '.' . $name);
-		}
-		else {
+		} else {
 			throw new Exception('Setting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -211,15 +174,12 @@ class Component
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // property is not null
 			return $this->$getter() !== null;
-		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // has event handler
+		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // has event handler
 			$name = strtolower($name);
 			return isset($this->_e[$name]) && $this->_e[$name]->getCount();
-		}
- 		elseif (isset($this->_b[$name])) { // has behavior
+		} elseif (isset($this->_b[$name])) { // has behavior
  			return true;
- 		}
-		elseif (is_array($this->_b)) {
+ 		} elseif (is_array($this->_b)) {
 			foreach ($this->_b as $object) {
 				if (property_exists($object, $name) || $object->canGetProperty($name)) {
 					return $object->$name !== null;
@@ -247,24 +207,19 @@ class Component
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {  // write property
 			$this->$setter(null);
-		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {  // event
+		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {  // event
 			unset($this->_e[strtolower($name)]);
-		}
-		elseif (isset($this->_b[$name])) {  // behavior
+		} elseif (isset($this->_b[$name])) {  // behavior
 			$this->detachBehavior($name);
-		}
-		elseif (is_array($this->_b)) {  // behavior property
+		} elseif (is_array($this->_b)) {  // behavior property
 			foreach ($this->_b as $object) {
 				if (property_exists($object, $name)) {
 					return $object->$name = null;
-				}
-				elseif ($object->canSetProperty($name)) {
+				} elseif ($object->canSetProperty($name)) {
 					return $object->$setter(null);
 				}
 			}
-		}
-		elseif (method_exists($this, 'get' . $name)) {
+		} elseif (method_exists($this, 'get' . $name)) {
 			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -301,101 +256,6 @@ class Component
 			}
 		}
 		throw new Exception('Unknown method: ' . get_class($this) . "::$name()");
-	}
-
-	/**
-	 * Creates a new component instance.
-	 *
-	 * This method differs from the PHP `new` operator in that it does the following
-	 * steps to create a new component instance:
-	 *
-	 * - Call class constructor (same the `new` operator);
-	 * - Initialize the component properties using the name-value pairs given as the
-	 *   last parameter to this method;
-	 * - Call [[Initable::init|init]] if the class implements [[Initable]].
-	 *
-	 * Parameters passed to this method will be used as the parameters to the object
-	 * constructor. If, however, the last parameter is an array and the count of the parameters
-	 * is one more than the count of declared constructor parameters, that parameter
-	 * will be treated as name-value pairs for initializing the component properties.
-	 * For example,
-	 *
-	 * ~~~
-	 * class Foo extends \yii\base\Component {
-	 *     public $c;
-	 *     public function __construct($a, $b) { ... }
-	 * }
-	 *
-	 * $model = Foo::create(1, 2, array('c' => 3));
-	 * // which is equivalent to the following lines:
-	 * $model = new Foo(1, 2);
-	 * $model->c = 3;
-	 * $model->init();
-	 * ~~~
-	 *
-	 * @return object the created component
-	 * @throws Exception if the configuration is invalid.
-	 */
-	public static function create()
-	{
-		$class = '\\' . get_called_class();
-		if (($n = func_num_args()) > 0) {
-			$args = func_get_args();
-			if (is_array($args[$n-1])) {
-				// the last parameter could be configuration array
-				$method = new \ReflectionMethod($class, '__construct');
-				if ($method->getNumberOfParameters()+1 == $n) {
-					$config = $args[$n-1];
-					array_pop($args);
-				}
-			}
-			$config['class'] = $class;
-			array_unshift($args, $config);
-			return call_user_func_array('\Yii::createComponent', $args);
-		}
-		else {
-			return \Yii::createComponent($class);
-		}
-	}
-
-	/**
-	 * Returns a value indicating whether a property is defined.
-	 * A property is defined if there is a getter or setter method
-	 * defined in the class. Note, property names are case-insensitive.
-	 * @param string $name the property name
-	 * @return boolean whether the property is defined
-	 * @see canGetProperty
-	 * @see canSetProperty
-	 */
-	public function hasProperty($name)
-	{
-		return $this->canGetProperty($name) || $this->canSetProperty($name);
-	}
-
-	/**
-	 * Returns a value indicating whether a property can be read.
-	 * A property can be read if the class has a getter method
-	 * for the property name. Note, property name is case-insensitive.
-	 * @param string $name the property name
-	 * @return boolean whether the property can be read
-	 * @see canSetProperty
-	 */
-	public function canGetProperty($name)
-	{
-		return method_exists($this, 'get' . $name);
-	}
-
-	/**
-	 * Returns a value indicating whether a property can be set.
-	 * A property can be written if the class has a setter method
-	 * for the property name. Note, property name is case-insensitive.
-	 * @param string $name the property name
-	 * @return boolean whether the property can be written
-	 * @see canGetProperty
-	 */
-	public function canSetProperty($name)
-	{
-		return method_exists($this, 'set' . $name);
 	}
 
 	/**
@@ -509,26 +369,23 @@ class Component
 		$name = strtolower($name);
 		if ($event instanceof Event) {
 			$event->name = $name;
+			$event->handled = false;
 		}
 		if (isset($this->_e[$name])) {
 			foreach ($this->_e[$name] as $handler) {
 				if (is_string($handler) || $handler instanceof \Closure) {
 					call_user_func($handler, $event);
-				}
-				elseif (is_callable($handler, true)) {
+				} elseif (is_callable($handler, true)) {
 					// an array: 0 - object, 1 - method name
 					list($object, $method) = $handler;
 					if (is_string($object)) {	// static method call
 						call_user_func($handler, $event);
-					}
-					elseif (method_exists($object, $method)) {
+					} elseif (method_exists($object, $method)) {
 						$object->$method($event);
-					}
-					else {
+					} else {
 						throw new Exception('Event "' . get_class($this) . '.' . $name . '" is attached with an invalid handler.');
 					}
-				}
-				else {
+				} else {
 					throw new Exception('Event "' . get_class($this) . '.' . $name . '" is attached with an invalid handler.');
 				}
 
@@ -537,9 +394,8 @@ class Component
 					return;
 				}
 			}
-		}
-		elseif (!$this->hasEvent($name)) {
-			throw new Exception('Undefined event: ' . get_class($this) . '.' . $name);
+		} elseif (!$this->hasEvent($name)) {
+			throw new Exception('Raising unknown event: ' . get_class($this) . '.' . $name);
 		}
 	}
 
@@ -566,14 +422,14 @@ class Component
 	 *  - a string specifying the behavior class
 	 *  - an object configuration array
 	 *
-	 * parameter to [[\Yii::createComponent]] to create the behavior object.
+	 * parameter to [[\Yii::create]] to create the behavior object.
 	 * @return Behavior the behavior object
 	 * @see detachBehavior
 	 */
 	public function attachBehavior($name, $behavior)
 	{
 		if (!($behavior instanceof Behavior)) {
-			$behavior = \Yii::createComponent($behavior);
+			$behavior = \Yii::create($behavior);
 		}
 		$behavior->attach($this);
 		return $this->_b[$name] = $behavior;
@@ -620,41 +476,6 @@ class Component
 				$this->detachBehavior($name);
 			}
 			$this->_b = null;
-		}
-	}
-
-	/**
-	 * Evaluates a PHP expression or callback under the context of this component.
-	 *
-	 * Valid PHP callback can be class method name in the form of
-	 * array(ClassName/Object, MethodName), or anonymous function.
-	 *
-	 * If a PHP callback is used, the corresponding function/method signature should be
-	 *
-	 * ~~~
-	 * function foo($param1, $param2, ..., $component) { ... }
-	 * ~~~
-	 *
-	 * where the array elements in the second parameter to this method will be passed
-	 * to the callback as `$param1`, `$param2`, ...; and the last parameter will be the component itself.
-	 *
-	 * If a PHP expression is used, the second parameter will be "extracted" into PHP variables
-	 * that can be directly accessed in the expression. See [PHP extract](http://us.php.net/manual/en/function.extract.php)
-	 * for more details. In the expression, the component object can be accessed using `$this`.
-	 *
-	 * @param mixed $_expression_ a PHP expression or PHP callback to be evaluated.
-	 * @param array $_data_ additional parameters to be passed to the above expression/callback.
-	 * @return mixed the expression result
-	 */
-	public function evaluateExpression($_expression_, $_data_=array())
-	{
-		if (is_string($_expression_)) {
-			extract($_data_);
-			return eval('return ' . $_expression_ . ';');
-		}
-		else {
-			$_data_[] = $this;
-			return call_user_func_array($_expression_, $_data_);
 		}
 	}
 }

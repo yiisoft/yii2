@@ -290,9 +290,9 @@ class YiiBase
 	 * the class. For example,
 	 *
 	 * ~~~
-	 * $component = Yii::createComponent('@app/components/GoogleMap');
-	 * $component = Yii::createComponent('\application\components\GoogleMap');
-	 * $component = Yii::createComponent(array(
+	 * $component = Yii::create('@app/components/GoogleMap');
+	 * $component = Yii::create('\application\components\GoogleMap');
+	 * $component = Yii::create(array(
 	 *     'class' => '@app/components/GoogleMap',
 	 *     'apiKey' => 'xyz',
 	 * ));
@@ -310,7 +310,7 @@ class YiiBase
 	 * @return mixed the created object
 	 * @throws \yii\base\Exception if the configuration is invalid.
 	 */
-	public static function createComponent($config)
+	public static function create($config)
 	{
 		if (is_string($config)) {
 			$class = $config;

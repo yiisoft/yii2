@@ -31,7 +31,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
+class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
 	 * @var array internal data storage
@@ -140,12 +140,19 @@ class Dictionary extends Component implements \IteratorAggregate, \ArrayAccess, 
 	}
 
 	/**
-	 * Removes all items in the dictionary.
+	 * Removes all items from the dictionary.
+	 * @param boolean $safeClear whether to clear every item by calling [[remove]].
+	 * Defaults to false, meaning all items in the dictionary will be cleared directly
+	 * without calling [[remove]].
 	 */
-	public function clear()
+	public function clear($safeClear = false)
 	{
-		foreach (array_keys($this->_d) as $key) {
-			$this->remove($key);
+		if ($safeClear) {
+			foreach (array_keys($this->_d) as $key) {
+				$this->remove($key);
+			}
+		} else {
+			$this->_d = array();
 		}
 	}
 

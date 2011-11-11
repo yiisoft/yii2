@@ -22,7 +22,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Event extends Component
+class Event extends Object
 {
 	/**
 	 * @var string the event name. This property is set by [[Component::raiseEvent]].

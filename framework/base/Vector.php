@@ -37,7 +37,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
+class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
 	 * @var array internal data storage
@@ -193,11 +193,19 @@ class Vector extends Component implements \IteratorAggregate, \ArrayAccess, \Cou
 
 	/**
 	 * Removes all items from the vector.
+	 * @param boolean $safeClear whether to clear every item by calling [[removeAt]].
+	 * Defaults to false, meaning all items in the vector will be cleared directly
+	 * without calling [[removeAt]].
 	 */
-	public function clear()
+	public function clear($safeClear = false)
 	{
-		for ($i = $this->_c-1;$i >= 0;--$i) {
-			$this->removeAt($i);
+		if ($safeClear) {
+			for ($i = $this->_c-1;$i >= 0;--$i) {
+				$this->removeAt($i);
+			}
+		} else {
+			$this->_d = array();
+			$this->_c = 0;
 		}
 	}
 

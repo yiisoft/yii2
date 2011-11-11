@@ -227,7 +227,7 @@ class Connection extends \yii\base\ApplicationComponent
 	/**
 	 * @var array mapping between PDO driver names and [[Schema]] classes.
 	 * The keys of the array are PDO driver names while the values the corresponding
-	 * schema class name or configuration. Please refer to [[\Yii::createComponent]] for
+	 * schema class name or configuration. Please refer to [[\Yii::create]] for
 	 * details on how to specify a configuration.
 	 *
 	 * This property is mainly used by [[getSchema]] when fetching the database schema information.
@@ -463,7 +463,7 @@ class Connection extends \yii\base\ApplicationComponent
 		else {
 			$driver = $this->getDriverName();
 			if (isset($this->schemaMap[$driver])) {
-				return $this->_schema = \Yii::createComponent($this->schemaMap[$driver], $this);
+				return $this->_schema = \Yii::create($this->schemaMap[$driver], $this);
 			}
 			else {
 				throw new Exception("Connection does not support reading schema for '$driver' database.");

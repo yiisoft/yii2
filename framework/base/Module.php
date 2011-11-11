@@ -257,9 +257,9 @@ abstract class Module extends Component
 				$class = $config['class'];
 				unset($config['class'], $config['enabled']);
 				if ($this === Yii::app())
-					$module = Yii::createComponent($class, $id, null, $config);
+					$module = Yii::create($class, $id, null, $config);
 				else
-					$module = Yii::createComponent($class, $this->getId() . '/' . $id, $this, $config);
+					$module = Yii::create($class, $this->getId() . '/' . $id, $this, $config);
 				return $this->_modules[$id] = $module;
 			}
 		}
@@ -362,7 +362,7 @@ abstract class Module extends Component
 			{
 				Yii::trace("Loading \"$id\" application component", 'system.CModule');
 				unset($config['enabled']);
-				$component = Yii::createComponent($config);
+				$component = Yii::create($config);
 				$component->init();
 				return $this->_components[$id] = $component;
 			}
