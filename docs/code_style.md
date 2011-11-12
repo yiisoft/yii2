@@ -1,7 +1,14 @@
 Yii2 core code style
 ====================
 
+
+Proposals
+---------
+
 ### Brackets
+
+It's better to be consistent with brackets not to remember where should we use
+newline and where not:
 
 ~~~
 class MyClass
@@ -20,9 +27,7 @@ class MyClass
 }
 ~~~
 
-
-Proposals
----------
+Use brackets even for one line `if`s.
 
 ### Use type hinting like
 
