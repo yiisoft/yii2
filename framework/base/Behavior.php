@@ -21,19 +21,29 @@ namespace yii\base;
  */
 class Behavior extends Object
 {
+	/**
+	 * @var Component the owner component
+	 */
 	private $_owner;
 
 	/**
 	 * Declares event handlers for the [[owner]]'s events.
 	 *
-	 * Child classes may override this method to declare which methods in this behavior
-	 * should be attached to which events of the [[owner]] component.
-	 * The methods will be attached to the [[owner]]'s events when the behavior is
+	 * Child classes may override this method to declare what PHP callbacks should
+	 * be attached to the events of the [[owner]] component.
+	 *
+	 * The callbacks will be attached to the [[owner]]'s events when the behavior is
 	 * attached to the owner; and they will be detached from the events when
 	 * the behavior is detached from the component.
 	 *
-	 * The method should return an array whose keys are the names of the owner's events
-	 * and values are the names of the behavior methods. For example,
+	 * The callbacks can be any of the followings:
+	 *
+	 * - method in this behavior: `'handleOnClick'`, equivalent to `array($this, 'handleOnClick')`
+	 * - object method: `array($object, 'handleOnClick')`
+	 * - static method: `array('Page', 'handleOnClick')`
+	 * - anonymous function: `function($event) { ... }`
+	 *
+	 * The following is an example:
 	 *
 	 * ~~~
 	 * array(
@@ -59,8 +69,8 @@ class Behavior extends Object
 	public function attach($owner)
 	{
 		$this->_owner = $owner;
-		foreach($this->events() as $event=>$handler) {
-			$owner->attachEventHandler($event, array($this, $handler));
+		foreach ($this->events() as $event => $handler) {
+			$owner->attachEventHandler($event, is_string($handler) ? array($this, $handler) : $handler);
 		}
 	}
 
@@ -73,8 +83,8 @@ class Behavior extends Object
 	 */
 	public function detach($owner)
 	{
-		foreach($this->events() as $event=>$handler) {
-			$owner->detachEventHandler($event, array($this, $handler));
+		foreach ($this->events() as $event => $handler) {
+			$owner->detachEventHandler($event, is_string($handler) ? array($this, $handler) : $handler);
 		}
 		$this->_owner = null;
 	}
