@@ -102,7 +102,7 @@ class CommandTest extends TestCase
 
 	}
 
-s	/*
+	/*
 	function testPrepare()
 	{
 		$sql='SELECT title FROM posts';
