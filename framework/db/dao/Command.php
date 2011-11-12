@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the Command class.
+ * Command class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
@@ -16,30 +16,28 @@ use yii\db\Exception;
  * Command represents a SQL statement to be executed against a database.
  *
  * A command object is usually created by calling [[Connection::createCommand]].
- * The SQL statement it represents can be set via the [[text]] property.
+ * The SQL statement it represents can be set via the [[sql]] property.
  *
- * To execute a non-query SQL (such as insert, delete, update), call [[execute]].
- * To execute an SQL statement that returns result data set (such as SELECT),
+ * To execute a non-query SQL (such as INSERT, DELETE, UPDATE), call [[execute]].
+ * To execute a SQL statement that returns result data set (such as SELECT),
  * use [[query]], [[queryRow]], [[queryColumn]], or [[queryScalar]].
  *
- * If an SQL statement returns results (such as a SELECT SQL), the results
- * can be accessed via the returned {@link CDbDataReader}.
- *
- * Command supports SQL statment preparation and parameter binding.
- * Call {@link bindParam} to bind a PHP variable to a parameter in SQL.
- * Call {@link bindValue} to bind a value to an SQL parameter.
+ * Command supports SQL statement preparation and parameter binding.
+ * Call [[bindValue]] to bind a value to a SQL parameter;
+ * Call [[bindParam]] to bind a PHP variable to a SQL parameter.
  * When binding a parameter, the SQL statement is automatically prepared.
- * You may also call {@link prepare} to explicitly prepare an SQL statement.
+ * You may also call [[prepare]] to explicitly prepare a SQL statement.
  *
- * Starting from version 1.1.6, Command can also be used as a query builder
- * that builds a SQL statement from code fragments. For example,
- * <pre>
+ * Command can also be used as a query builder that builds and executes a SQL statement
+ * from code fragments. For example,
+ *
+ * ~~~
  * $user = \Yii::app()->db->createCommand()
  *     ->select('username, password')
  *     ->from('tbl_user')
  *     ->where('id=:id', array(':id'=>1))
  *     ->queryRow();
- * </pre>
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -50,24 +48,36 @@ class Command extends \yii\base\Component
 	 * @var array the parameters (name=>value) to be bound to the current query.
 	 */
 	public $params = array();
-
-	public $connection;
-	public $query;
-	public $pdoStatement;
-
-	private $_sql;
-	private $_paramLog = array();
 	/**
-	 * Set the default fetch mode for this statement
-	 * @param mixed $mode fetch mode
-	 * @return Command
+	 * @var Connection the DB connection that this command is associated with
+	 */
+	public $connection;
+	/**
+	 * @var Query the database query that this command is currently representing
+	 */
+	public $query;
+	/**
+	 * @var \PDOStatement the PDOStatement object that this command contains
+	 */
+	public $pdoStatement;
+	/**
+	 * @var mixed the default fetch mode for this command.
 	 * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
 	 */
 	public $fetchMode = \PDO::FETCH_ASSOC;
 
 	/**
+	 * @var string the SQL statement that this command represents
+	 */
+	private $_sql;
+	/**
+	 * @var array the parameter log information
+	 */
+	private $_paramLog = array();
+
+	/**
 	 * Constructor.
-	 * @param CDbConnection $connection the database connection
+	 * @param Connection $connection the database connection
 	 * @param mixed $query the DB query to be executed. This can be either
 	 * a string representing a SQL statement, or an array whose name-value pairs
 	 * will be used to set the corresponding properties of the created command object.
@@ -91,13 +101,11 @@ class Command extends \yii\base\Component
 		$this->connection = $connection;
 		if (is_object($query)) {
 			$this->query = $query;
-		}
-		else {
+		} else {
 			$this->query = new Query;
 			if (is_array($query)) {
 				$this->query->fromArray($query);
-			}
-			else {
+			} else {
 				$this->_sql = $query;
 			}
 		}
@@ -109,15 +117,14 @@ class Command extends \yii\base\Component
 	 * multiple times for building different queries.
 	 * Calling this method will clean up all internal states of the command object.
 	 * @return Command this command instance
-	 * @since 1.1.6
 	 */
 	public function reset()
 	{
-		$this->_sql = null;
 		$this->query = new Query;
 		$this->pdoStatement = null;
-		$this->_paramLog = array();
 		$this->params = array();
+		$this->_paramLog = array();
+		$this->_sql = null;
 		return $this;
 	}
 
@@ -135,15 +142,14 @@ class Command extends \yii\base\Component
 	/**
 	 * Specifies the SQL statement to be executed.
 	 * Any previous execution will be terminated or cancel.
-	 * @param string $value the SQL statement to be executed
+	 * @param string $value the SQL statement to be set.
 	 * @return Command this command instance
 	 */
 	public function setSql($value)
 	{
-		if ($this->connection->tablePrefix !== null && strpos($value, '{') !== false) {
+		if ($this->connection->tablePrefix !== null && strpos($value, '{{') !== false) {
 			$this->_sql = preg_replace('/{{(.*?)}}/', $this->connection->tablePrefix . '\1', $value);
-		}
-		else {
+		} else {
 			$this->_sql = $value;
 		}
 		$this->cancel();
@@ -160,15 +166,16 @@ class Command extends \yii\base\Component
 	public function prepare()
 	{
 		if ($this->pdoStatement == null) {
+			$sql = $this->getSql();
 			try {
-				$this->pdoStatement = $this->connection->pdo->prepare($this->getSql());
+				$this->pdoStatement = $this->connection->pdo->prepare($sql);
 				$this->_paramLog = array();
 			}
 			catch(\Exception $e) {
-				\Yii::log('Error in preparing SQL: ' . $this->getSql(), CLogger::LEVEL_ERROR, 'system.db.Command');
+				\Yii::error("Failed to prepare SQL ($sql): " . $e->getMessage(), __CLASS__);
                 $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				throw new Exception('Unable to prepare the SQL statement: {error}',
-					array('{error}' => $e->getMessage()), (int)$e->getCode(), $errorInfo);
+				$message = YII_DEBUG ? 'Failed to prepare SQL: ' . $e->getMessage() : 'Failed to prepare SQL.';
+				throw new Exception($message, (int)$e->getCode(), $errorInfo);
 			}
 		}
 	}
@@ -197,14 +204,15 @@ class Command extends \yii\base\Component
 	public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
 	{
 		$this->prepare();
-		if ($dataType === null)
+		if ($dataType === null) {
 			$this->pdoStatement->bindParam($name, $value, $this->connection->getPdoType(gettype($value)));
-		elseif ($length === null)
+		} elseif ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
-		elseif ($driverOptions === null)
+		} elseif ($driverOptions === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length);
-		else
+		} else {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
+		}
 		$this->_paramLog[$name] =& $value;
 		return $this;
 	}
@@ -223,10 +231,11 @@ class Command extends \yii\base\Component
 	public function bindValue($name, $value, $dataType = null)
 	{
 		$this->prepare();
-		if ($dataType === null)
+		if ($dataType === null) {
 			$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
-		else
+		} else {
 			$this->pdoStatement->bindValue($name, $value, $dataType);
+		}
 		$this->_paramLog[$name] = $value;
 		return $this;
 	}
@@ -244,8 +253,7 @@ class Command extends \yii\base\Component
 	public function bindValues($values)
 	{
 		$this->prepare();
-		foreach ($values as $name => $value)
-		{
+		foreach ($values as $name => $value) {
 			$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
 			$this->_paramLog[$name] = $value;
 		}
@@ -311,7 +319,7 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement and returns query result.
-	 * This method is for executing an SQL query that returns result set.
+	 * This method is for executing a SQL query that returns result set.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
 	 * to {@link bindParam} and {@link bindValue}. If you have multiple input parameters, passing
 	 * them in this way can improve the performance. Note that if you pass parameters in this way,

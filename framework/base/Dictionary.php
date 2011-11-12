@@ -114,8 +114,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	{
 		if ($key === null) {
 			$this->_d[] = $value;
-		}
-		else {
+		} else {
 			$this->_d[$key] = $value;
 		}
 	}
@@ -132,8 +131,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 			$value = $this->_d[$key];
 			unset($this->_d[$key]);
 			return $value;
-		}
-		else { // the value is null
+		} else { // the value is null
 			unset($this->_d[$key]);
 			return null;
 		}
@@ -194,8 +192,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 			foreach ($data as $key => $value) {
 				$this->add($key, $value);
 			}
-		}
-		else {
+		} else {
 			throw new Exception('Data must be either an array or an object implementing Traversable.');
 		}
 	}
@@ -230,18 +227,15 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 						$d[$key] = $value;
 					}
 					$this->_d = self::mergeArray($this->_d, $d);
-				}
-				else {
+				} else {
 					$this->_d = self::mergeArray($this->_d, $data);
 				}
-			}
-			else {
+			} else {
 				foreach($data as $key => $value) {
 					$this->add($key, $value);
 				}
 			}
-		}
-		else {
+		} else {
 			throw new Exception('Dictionary data must be an array or an object implementing Traversable.');
 		}
 	}
@@ -317,12 +311,11 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 		foreach($b as $k=>$v) {
 			if(is_integer($k)) {
 				isset($a[$k]) ? $a[] = $v : $a[$k] = $v;
-			}
-			elseif(is_array($v) && isset($a[$k]) && is_array($a[$k])) {
+			} elseif(is_array($v) && isset($a[$k]) && is_array($a[$k])) {
 				$a[$k] = self::mergeArray($a[$k], $v);
-			}
-			else
+			} else {
 				$a[$k] = $v;
+			}
 		}
 		return $a;
 	}

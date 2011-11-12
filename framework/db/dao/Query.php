@@ -16,7 +16,7 @@ namespace yii\db\dao;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Query extends \yii\base\Component
+class Query extends \yii\base\Object
 {
 	/**
 	 * @var mixed the columns being selected. This refers to the SELECT clause in an SQL

@@ -36,7 +36,7 @@ use yii\db\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Transaction extends \yii\base\Component
+class Transaction extends \yii\base\Object
 {
 	/**
 	 * @var boolean whether this transaction is active. Only an active transaction
@@ -67,7 +67,7 @@ class Transaction extends \yii\base\Component
 	public function commit()
 	{
 		if ($this->active && $this->connection->getActive()) {
-			Yii::trace('Committing transaction', __CLASS__);
+			\Yii::trace('Committing transaction', __CLASS__);
 			$this->connection->pdo->commit();
 			$this->active = false;
 		}
@@ -83,7 +83,7 @@ class Transaction extends \yii\base\Component
 	public function rollback()
 	{
 		if ($this->active && $this->connection->getActive()) {
-			Yii::trace('Rolling back transaction', __CLASS__);
+			\Yii::trace('Rolling back transaction', __CLASS__);
 			$this->connection->pdo->rollBack();
 			$this->active = false;
 		}

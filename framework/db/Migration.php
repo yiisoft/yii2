@@ -46,14 +46,13 @@ abstract class CDbMigration extends CComponent
 		$transaction = $this->getDbConnection()->beginTransaction();
 		try
 		{
-			if ($this->safeUp() === false)
-			{
+			if ($this->safeUp() === false) {
 				$transaction->rollBack();
 				return false;
 			}
 			$transaction->commit();
 		}
-		catch(Exception $e)
+		catch (Exception $e)
 		{
 			echo "Exception: " . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
 			echo $e->getTraceAsString() . "\n";
@@ -73,14 +72,13 @@ abstract class CDbMigration extends CComponent
 		$transaction = $this->getDbConnection()->beginTransaction();
 		try
 		{
-			if ($this->safeDown() === false)
-			{
+			if ($this->safeDown() === false) {
 				$transaction->rollBack();
 				return false;
 			}
 			$transaction->commit();
 		}
-		catch(Exception $e)
+		catch (Exception $e)
 		{
 			echo "Exception: " . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
 			echo $e->getTraceAsString() . "\n";
@@ -125,8 +123,7 @@ abstract class CDbMigration extends CComponent
 	 */
 	public function getDbConnection()
 	{
-		if ($this->_db === null)
-		{
+		if ($this->_db === null) {
 			$this->_db = Yii::app()->getComponent('db');
 			if (!$this->_db instanceof CDbConnection)
 				throw new CException(Yii::t('yii', 'The "db" application component must be configured to be a CDbConnection object.'));

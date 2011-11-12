@@ -246,7 +246,13 @@ class Connection extends \yii\base\ApplicationComponent
 		'oci' => '\yii\db\dao\oci\Schema',         // Oracle driver
 	);
 
+	/**
+	 * @var Transaction the currently active transaction
+	 */
 	private $_transaction;
+	/**
+	 * @var Schema the database schema
+	 */
 	private $_schema;
 
 	/**
@@ -344,13 +350,9 @@ class Connection extends \yii\base\ApplicationComponent
 				$this->initConnection($this->pdo);
 			}
 			catch (\PDOException $e) {
-				if (YII_DEBUG) {
-					throw new Exception('Failed to open DB connection: ' . $e->getMessage(), (int)$e->getCode(), $e->errorInfo);
-				}
-				else {
-					\Yii::error($e->getMessage(), __CLASS__);
-					throw new Exception('Failed to open DB connection.', (int)$e->getCode(), $e->errorInfo);
-				}
+				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __CLASS__);
+				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
+				throw new Exception($message, (int)$e->getCode(), $e->errorInfo);
 			}
 		}
 	}
@@ -400,10 +402,8 @@ class Connection extends \yii\base\ApplicationComponent
 		if ($this->emulatePrepare !== null && constant('\PDO::ATTR_EMULATE_PREPARES')) {
 			$this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
 		}
-		if ($this->charset !== null) {
-			if (in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli'))) {
-				$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
-			}
+		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli'))) {
+			$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
 		}
 		if (!empty($this->initSQLs)) {
 			foreach ($this->initSQLs as $sql) {
@@ -434,7 +434,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function getCurrentTransaction()
 	{
-		if ($this->_transaction !== null && $this->_transaction->getActive()) {
+		if ($this->_transaction !== null && $this->_transaction->active) {
 			return $this->_transaction;
 		}
 	}
@@ -459,21 +459,14 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->_schema !== null) {
 			return $this->_schema;
-		}
-		else {
+		} else {
 			$driver = $this->getDriverName();
 			if (isset($this->schemaMap[$driver])) {
 				return $this->_schema = \Yii::create($this->schemaMap[$driver], $this);
-			}
-			else {
+			} else {
 				throw new Exception("Connection does not support reading schema for '$driver' database.");
 			}
 		}
-	}
-
-	public function getQueryBuilder()
-	{
-		return $this->getSchema()->getQueryBuilder();
 	}
 
 	/**
@@ -513,8 +506,7 @@ class Connection extends \yii\base\ApplicationComponent
 		$this->open();
 		if (($value = $this->pdo->quote($str)) !== false) {
 			return $value;
-		}
-		else {  // the driver doesn't support quote (e.g. oci)
+		} else {  // the driver doesn't support quote (e.g. oci)
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
 		}
 	}
@@ -568,8 +560,7 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if (($pos = strpos($this->dsn, ':')) !== false) {
 			return strtolower(substr($this->dsn, 0, $pos));
-		}
-		else {
+		} else {
 			return strtolower($this->getAttribute(\PDO::ATTR_DRIVER_NAME));
 		}
 	}

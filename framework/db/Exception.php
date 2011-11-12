@@ -11,7 +11,7 @@
 namespace yii\db;
 
 /**
- * CDbException represents an exception that is caused by some DB-related operations.
+ * Exception represents an exception that is caused by some DB-related operations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -20,8 +20,7 @@ class Exception extends \yii\base\Exception
 {
 	/**
 	 * @var mixed the error info provided by a PDO exception. This is the same as returned
-	 * by {@link http://www.php.net/manual/en/pdo.errorinfo.php PDO::errorInfo}.
-	 * @since 1.1.4
+	 * by [PDO::errorInfo](http://www.php.net/manual/en/pdo.errorinfo.php).
 	 */
 	public $errorInfo;
 

@@ -18,7 +18,7 @@ use yii\db\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\base\Component
+class QueryBuilder extends \yii\base\Object
 {
 	/**
 	 * @var array the abstract column types mapped to physical column types.

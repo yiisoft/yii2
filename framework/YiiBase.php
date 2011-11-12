@@ -381,7 +381,7 @@ class YiiBase
 	 * @param string $message the message to be logged.
 	 * @param string $category the category of the message.
 	 */
-	public function error($message, $category = 'application')
+	public static function error($message, $category = 'application')
 	{
 		self::getLogger()->error($message, $category);
 	}
@@ -393,7 +393,7 @@ class YiiBase
 	 * @param string $message the message to be logged.
 	 * @param string $category the category of the message.
 	 */
-	public function warning($message, $category = 'application')
+	public static function warning($message, $category = 'application')
 	{
 		self::getLogger()->warning($message, $category);
 	}
@@ -405,7 +405,7 @@ class YiiBase
 	 * @param string $message the message to be logged.
 	 * @param string $category the category of the message.
 	 */
-	public function info($message, $category = 'application')
+	public static function info($message, $category = 'application')
 	{
 		self::getLogger()->info($message, $category);
 	}

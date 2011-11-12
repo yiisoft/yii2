@@ -18,7 +18,7 @@ use yii\db\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Schema extends \yii\base\Component
+abstract class Schema extends \yii\base\Object
 {
 	public $connection;
 

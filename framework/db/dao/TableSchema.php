@@ -28,7 +28,7 @@ namespace yii\db\dao;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class TableSchema extends \yii\base\Component
+class TableSchema extends \yii\base\Object
 {
 	/**
 	 * @var string name of the schema that this table belongs to.

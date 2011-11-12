@@ -35,7 +35,7 @@ use yii\db\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DataReader extends \yii\base\Component implements \Iterator, \Countable
+class DataReader extends \yii\base\Object implements \Iterator, \Countable
 {
 	private $_statement;
 	private $_closed = false;
