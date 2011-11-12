@@ -128,6 +128,7 @@ class Component extends Object
 	 * will be implicitly called when executing `$component->property = $value;`.
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
+	 * @return mixed value that was set
 	 * @throws Exception if the property is not defined or read-only.
 	 * @see __get
 	 */
@@ -200,6 +201,7 @@ class Component extends Object
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `unset($component->property)`.
 	 * @param string $name the property name
+	 * @return null
 	 * @throws Exception if the property is read only.
 	 */
 	public function __unset($name)

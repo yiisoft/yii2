@@ -80,6 +80,7 @@ class ColumnSchema extends \yii\base\Component
 
 	/**
 	 * Extracts the PHP type from DB type.
+	 * @return string PHP type name.
 	 */
 	protected function getPhpType()
 	{
