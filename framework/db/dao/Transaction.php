@@ -45,7 +45,6 @@ class Transaction extends \yii\base\Object
 	public $active;
 	/**
 	 * @var Connection the database connection that this transaction is associated with.
-	 * This property is set true when the transaction is started.
 	 */
 	public $connection;
 
@@ -70,9 +69,8 @@ class Transaction extends \yii\base\Object
 			\Yii::trace('Committing transaction', __CLASS__);
 			$this->connection->pdo->commit();
 			$this->active = false;
-		}
-		else {
-			throw new Exception('Transaction is inactive and cannot perform commit operation.');
+		} else {
+			throw new Exception('Failed to commit transaction: transaction was inactive.');
 		}
 	}
 
@@ -86,9 +84,8 @@ class Transaction extends \yii\base\Object
 			\Yii::trace('Rolling back transaction', __CLASS__);
 			$this->connection->pdo->rollBack();
 			$this->active = false;
-		}
-		else {
-			throw new Exception('Transaction is inactive and cannot perform roll back operation.');
+		} else {
+			throw new Exception('Failed to roll back transaction: transaction was inactive.');
 		}
 	}
 }

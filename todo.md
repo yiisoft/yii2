@@ -58,6 +58,4 @@
 - assets
     * ability to manage scripts order (store these in a vector?)
 	* http://ryanbigg.com/guides/asset_pipeline.html, http://guides.rubyonrails.org/asset_pipeline.html, use content hash instead of mtime + directory hash.
-- collections
-    * http://code.google.com/p/yii/source/detail?r=3428
 - Requirement checker

@@ -108,7 +108,7 @@ class Component extends Object
 			return $this->_b[$name];
 		} elseif (is_array($this->_b)) { // a behavior property
 			foreach ($this->_b as $object) {
-				if (property_exists($object, $name) || $object->canGetProperty($name)) {
+				if ($object->canGetProperty($name)) {
 					return $object->$name;
 				}
 			}
@@ -145,7 +145,7 @@ class Component extends Object
 			return $this->_e[$name]->add($value);
 		} elseif (is_array($this->_b)) {  // behavior
 			foreach ($this->_b as $object) {
-				if (property_exists($object, $name) || $object->canSetProperty($name)) {
+				if ($object->canSetProperty($name)) {
 					return $object->$name = $value;
 				}
 			}
@@ -182,7 +182,7 @@ class Component extends Object
  			return true;
  		} elseif (is_array($this->_b)) {
 			foreach ($this->_b as $object) {
-				if (property_exists($object, $name) || $object->canGetProperty($name)) {
+				if ($object->canGetProperty($name)) {
 					return $object->$name !== null;
 				}
 			}
@@ -201,27 +201,25 @@ class Component extends Object
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `unset($component->property)`.
 	 * @param string $name the property name
-	 * @return null
 	 * @throws Exception if the property is read only.
 	 */
 	public function __unset($name)
 	{
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {  // write property
-			$this->$setter(null);
+			return $this->$setter(null);
 		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {  // event
-			unset($this->_e[strtolower($name)]);
+			return unset($this->_e[strtolower($name)]);
 		} elseif (isset($this->_b[$name])) {  // behavior
-			$this->detachBehavior($name);
+			return $this->detachBehavior($name);
 		} elseif (is_array($this->_b)) {  // behavior property
 			foreach ($this->_b as $object) {
-				if (property_exists($object, $name)) {
+				if ($object->canSetProperty($name)) {
 					return $object->$name = null;
-				} elseif ($object->canSetProperty($name)) {
-					return $object->$setter(null);
 				}
 			}
-		} elseif (method_exists($this, 'get' . $name)) {
+		}
+		if (method_exists($this, 'get' . $name)) {
 			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -236,24 +234,22 @@ class Component extends Object
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when an unknown method is being invoked.
 	 * @param string $name the method name
-	 * @param array $parameters method parameters
+	 * @param array $params method parameters
 	 * @return mixed the method return value
 	 */
-	public function __call($name, $parameters)
+	public function __call($name, $params)
 	{
-		if ($this->canGetProperty($name)) {
+		if ($this->canGetProperty($name, false)) {
 			$func = $this->$name;
 			if ($func instanceof \Closure) {
-				return call_user_func_array($func, $parameters);
+				return call_user_func_array($func, $params);
 			}
 		}
 
-		if ($this->_b !== null)
-		{
-			foreach ($this->_b as $object)
-			{
+		if ($this->_b !== null) {
+			foreach ($this->_b as $object) {
 				if (method_exists($object, $name)) {
-					return call_user_func_array(array($object, $name), $parameters);
+					return call_user_func_array(array($object, $name), $params);
 				}
 			}
 		}

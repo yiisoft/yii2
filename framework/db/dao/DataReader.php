@@ -37,6 +37,9 @@ use yii\db\Exception;
  */
 class DataReader extends \yii\base\Object implements \Iterator, \Countable
 {
+	/**
+	 * @var \PDOStatement the PDOStatement associated with the command
+	 */
 	private $_statement;
 	private $_closed = false;
 	private $_row;
@@ -48,7 +51,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	 */
 	public function __construct(Command $command)
 	{
-		$this->_statement = $command->getPdoStatement();
+		$this->_statement = $command->pdoStatement;
 		$this->_statement->setFetchMode(\PDO::FETCH_ASSOC);
 	}
 

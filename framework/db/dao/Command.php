@@ -20,15 +20,20 @@ use yii\db\Exception;
  *
  * To execute a non-query SQL (such as INSERT, DELETE, UPDATE), call [[execute]].
  * To execute a SQL statement that returns result data set (such as SELECT),
- * use [[query]], [[queryRow]], [[queryColumn]], or [[queryScalar]].
+ * use [[queryAll]], [[queryRow]], [[queryColumn]], [[queryScalar]], or [[query]].
+ * For example,
+ *
+ * ~~~
+ * $users = \Yii::app()->db->createCommand('SELECT * FROM tbl_user')->queryAll();
+ * ~~~
  *
  * Command supports SQL statement preparation and parameter binding.
  * Call [[bindValue]] to bind a value to a SQL parameter;
  * Call [[bindParam]] to bind a PHP variable to a SQL parameter.
  * When binding a parameter, the SQL statement is automatically prepared.
- * You may also call [[prepare]] to explicitly prepare a SQL statement.
+ * You may also call [[prepare]] explicitly to prepare a SQL statement.
  *
- * Command can also be used as a query builder that builds and executes a SQL statement
+ * Command can be used as a query builder that builds and executes a SQL statement
  * from code fragments. For example,
  *
  * ~~~

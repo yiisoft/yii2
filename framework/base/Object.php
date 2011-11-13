@@ -63,6 +63,13 @@ namespace yii\base;
 class Object
 {
 	/**
+	 * Constructor.
+	 */
+	public function __construct()
+	{
+	}
+
+	/**
 	 * Returns the value of a object property.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
@@ -78,8 +85,9 @@ class Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
 			return $this->$getter();
+		} else {
+			throw new Exception('Getting unknown property: ' . get_class($this) . '.' . $name);
 		}
-		throw new Exception('Getting unknown property: ' . get_class($this) . '.' . $name);
 	}
 
 	/**
@@ -89,7 +97,6 @@ class Object
 	 * will be implicitly called when executing `$object->property = $value;`.
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
-	 * @return mixed value that was set
 	 * @throws Exception if the property is not defined or read-only.
 	 * @see __get
 	 */
@@ -97,9 +104,8 @@ class Object
 	{
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {
-			return $this->$setter($value);
-		}
-		if (method_exists($this, 'get' . $name)) {
+			$this->$setter($value);
+		} elseif (method_exists($this, 'get' . $name)) {
 			throw new Exception('Setting read-only property: ' . get_class($this) . '.' . $name);
 		} else {
 			throw new Exception('Setting unknown property: ' . get_class($this) . '.' . $name);
@@ -121,8 +127,9 @@ class Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // property is not null
 			return $this->$getter() !== null;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -147,17 +154,42 @@ class Object
 	}
 
 	/**
+	 * Calls the named method which is not a class method.
+	 * If the name refers to a component property whose value is
+	 * an anonymous function, the method will execute the function.
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when an unknown method is being invoked.
+	 * @param string $name the method name
+	 * @param array $params method parameters
+	 * @return mixed the method return value
+	 */
+	public function __call($name, $params)
+	{
+		if ($this->canGetProperty($name, false)) {
+			$getter = 'get' . $name;
+			$func = $this->$getter;
+			if ($func instanceof \Closure) {
+				return call_user_func_array($func, $params);
+			}
+		}
+		throw new Exception('Unknown method: ' . get_class($this) . "::$name()");
+	}
+
+	/**
 	 * Returns a value indicating whether a property is defined.
 	 * A property is defined if there is a getter or setter method
 	 * defined in the class. Note that property names are case-insensitive.
 	 * @param string $name the property name
+	 * @param boolean $checkVar whether to treat member variables as properties
 	 * @return boolean whether the property is defined
 	 * @see canGetProperty
 	 * @see canSetProperty
 	 */
-	public function hasProperty($name)
+	public function hasProperty($name, $checkVar = true)
 	{
-		return $this->canGetProperty($name) || $this->canSetProperty($name);
+		return $this->canGetProperty($name, false) || $this->canSetProperty($name, false)
+			|| $checkVar && property_exists($this, $name);
 	}
 
 	/**
@@ -165,12 +197,13 @@ class Object
 	 * A property can be read if the class has a getter method
 	 * for the property name. Note that property name is case-insensitive.
 	 * @param string $name the property name
+	 * @param boolean $checkVar whether to treat member variables as properties
 	 * @return boolean whether the property can be read
 	 * @see canSetProperty
 	 */
-	public function canGetProperty($name)
+	public function canGetProperty($name, $checkVar = true)
 	{
-		return method_exists($this, 'get' . $name);
+		return method_exists($this, 'get' . $name) || $checkVar && property_exists($this, $name);
 	}
 
 	/**
@@ -178,12 +211,13 @@ class Object
 	 * A property can be written if the class has a setter method
 	 * for the property name. Note that property name is case-insensitive.
 	 * @param string $name the property name
+	 * @param boolean $checkVar whether to treat member variables as properties
 	 * @return boolean whether the property can be written
 	 * @see canGetProperty
 	 */
-	public function canSetProperty($name)
+	public function canSetProperty($name, $checkVar = true)
 	{
-		return method_exists($this, 'set' . $name);
+		return method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name);
 	}
 
 	/**
