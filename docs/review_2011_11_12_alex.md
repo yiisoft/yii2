@@ -35,6 +35,11 @@ where possible.
 > The purpose of evaluateExpression() is to provide a way of evaluating a PHP expression
 > in the context of an object. Will remove it before release if we find no use of it.
 
+>> mdomba:
+>> As eval() is controversial, and anonymous functions can replace all Yii 1 usage of eval()
+>> how about removing it from the beginning and add it only if we find it necessary.
+>> This way we would not be tempted to stick with eval() and will be forced to first try to find alternatives
+
 ### Object::create()
 
 #### `__construct` issue

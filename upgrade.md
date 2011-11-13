@@ -9,7 +9,7 @@ version B between A and C, you need to following the instructions
 for both A and B.
 
 
-General upgrade intructions
+General upgrade instructions
 ---------------------------
 
 - Make a backup.

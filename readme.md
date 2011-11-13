@@ -16,7 +16,7 @@ directory. You shall see the following files and directories:
       changelog.md         describing changes in every Yii release
       license.md           license of Yii
       readme.md            this file
-      updgrade.md          upgrading instructions
+      upgrade.md           upgrading instructions
 
 
 REQUIREMENTS
@@ -38,13 +38,15 @@ QUICK START
 Yii comes with a command line tool called "yiic" that can create
 a skeleton Yii application for you to start with.
 
-On command line, type in the following commands:
+On a command line, type in the following commands:
 
-        $ cd YiiPath/framework                (Linux)
-        cd YiiPath\framework                  (Windows)
+   for Linux
+        $ cd YiiPath/framework
+        $ ./yiic webapp ../testdrive
 
-        $ ./yiic webapp ../testdrive          (Linux)
-        yiic webapp ..\testdrive              (Windows)
+   for Windows
+        cd YiiPath\framework
+        yiic webapp ..\testdrive
 
 The new Yii application will be created at "YiiPath/testdrive".
 You can access it with the following URL:
