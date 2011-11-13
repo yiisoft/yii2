@@ -41,7 +41,7 @@ namespace yii\base;
  * $object->label = 'abc';
  * ~~~
  *
- * If a property only has a getter method and has no setter method, it is
+ * If a property has only a getter method and has no setter method, it is
  * considered as *read-only*. In this case, trying to modify the property value
  * will cause an exception.
  *
@@ -70,7 +70,7 @@ class Object
 	}
 
 	/**
-	 * Returns the value of a object property.
+	 * Returns the value of an object property.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `$value = $object->property;`.
@@ -91,7 +91,7 @@ class Object
 	}
 
 	/**
-	 * Sets value of a object property.
+	 * Sets value of an object property.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `$object->property = $value;`.
@@ -133,7 +133,7 @@ class Object
 	}
 
 	/**
-	 * Sets a object property to be null.
+	 * Sets an object property to null.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `unset($object->property)`.
@@ -263,7 +263,7 @@ class Object
 	 * This method differs from the PHP `new` operator in that it does the following
 	 * steps to create a new object instance:
 	 *
-	 * - Call class constructor (same the `new` operator);
+	 * - Call class constructor (same as the `new` operator);
 	 * - Initialize the object properties using the name-value pairs given as the
 	 *   last parameter to this method;
 	 * - Call [[Initable::init|init]] if the class implements [[Initable]].
