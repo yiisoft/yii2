@@ -53,7 +53,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 * Initializes this model.
 	 *
 	 * This method is required by the [[Initable]] interface. It is invoked by [[\Yii::create]]
-	 * after its creates the new model instance and initializes the model properties.
+	 * after it creates the new model instance and initializes the model properties.
 	 *
 	 * The default implementation calls [[behaviors]] and registers any available behaviors.
 	 * You may override this method with additional initialization logic (e.g. establish DB connection).
