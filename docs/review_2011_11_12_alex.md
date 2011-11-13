@@ -7,22 +7,21 @@ Overall hierarchy
 Generally is OK. Like that `Object` and `Component` are now separated.
 I've generated 2 diagrams under `docs/` to see it better as a whole.
 
+> The purpose of separating `Object` from `Component` is to make `Object`
+> a super-light base class that supports properties defined by getter/setters.
+> Note that `Component` is a bit of heavy because it uses two extra member
+> variables to support events and behaviors.
+
+
 Object
 ------
 
 ### property feature
 
-Why returning anything when setting a value?
-
-~~~
-if (method_exists($this, $setter)) {
-	// ???
-	return $this->$setter($value);
-}
-~~~
-
 Is it OK that `canGetProperty` and `canSetProperty` will return `false` for real
 class members?
+
+> Added $checkVar parameter
 
 ### callbacks and expressions
 
@@ -33,6 +32,9 @@ If we're going to get rid of `eval()`, cosider remaning method to something abou
 If not then we definitely need to use anonymous functions in API docs and the guide
 where possible.
 
+> The purpose of evaluateExpression() is to provide a way of evaluating a PHP expression
+> in the context of an object. Will remove it before release if we find no use of it.
+
 ### Object::create()
 
 #### `__construct` issue
@@ -40,6 +42,8 @@ where possible.
 Often a class doesn't have `__construct` implementation and `stdClass` doesn't have
 default one either but Object::create() always expects constructor to be
 defined. See `ObjectTest`. Either `method_exists` call or `Object::__construct` needed.
+
+> Added Object::__construct.
 
 #### How to support object factory like we do with CWidgetFactory?
 
@@ -80,6 +84,10 @@ class Object
 
 This way we'll be able to set defaults for any object.
 
+> The key issue here is about how to process the config file. Clearly, we cannot
+> do this for every type of component because it would mean an extra file access
+> for every component type
+
 #### Do we need to support lazy class injection?
 
 Currently there's no way to lazy-inject class into another class property via
@@ -111,40 +119,44 @@ echo $foo->bar->prop;
 
 Should it support infinite nesting level?
 
+> I don't think we need this. Foo::$prop cannot be an object unless it needs it to be.
+> In that case, it can be defined with a setter in which it can handle the object creation
+> based on a configuration array. This is a bit inconvenient, but I think such usage is
+> not very common.
+
 ### Why `Event` is `Object`?
 
 There's no need to extend from `Object`. Is there a plan to use `Object` features
 later?
 
-Initable
---------
+> To use properties defined via getter/setter.
 
-Interface itself looks OK. Its usage is OK too.
-
-`Initable::preinit` mentioned in `Yii::create()` docs but neither defined in
-the interface nor called in the code.
 
 Behaviors
 ---------
 
 Overall I wasn't able to use behaviors. See `BehaviorTest`.
 
-### Wrong API docs at Behavior
-
-Docs mention properties and events but not methods.
-
 ### Should behaviors be able to define events for owner components?
 
 Why not? Should be a very good feature in order to make behaviors customizable.
+
+> It's a bit hard to implement it efficiently. I tend not to support it for now
+> unless enough people are requesting for it.
 
 ### Multiple behaviors can be attached to the same component
 
 What if we'll have multiple methods / properties / events with the same name?
 
+> The first one takes precedence. This is the same as we do in 1.1.
+
 ### How to use Behavior::attach?
 
 Looks like it is used by `Component::attachBehavior` but can't be used without it.
 Why it's public then? Can we move it to `Component?`
+
+> It's public because it is called by Component. It is in Behavior such that
+> it can be overridden by behavior classes to customize the attach process.
 
 Events
 ------
@@ -164,6 +176,10 @@ Exceptions
 ----------
 
 - Should we convert all errors, warnings and notices to exceptions?
+
+> I think not. We used to do this in early versions of 1.0. We found sometimes
+> very mysterious things would happen which makes error fixing harder rather than
+> easier.
 
 Coding style
 ------------

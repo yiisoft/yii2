@@ -29,6 +29,10 @@ class MyClass
 
 Use brackets even for one line `if`s.
 
+> I chose to use the style as shown in Component.php because I want to make the
+> curly brackets consistent with array brackets regarding newlines. Similar coding
+> style is also used in Symfony 2.
+
 ### Use type hinting like
 
 ~~~

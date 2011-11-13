@@ -13,7 +13,7 @@ namespace yii\base;
  * Behavior is the base class for all behavior classes.
  *
  * A behavior can be used to enhance the functionality of an existing component.
- * In particular, it can "inject" its own properties and events into the component
+ * In particular, it can "inject" its own methods and properties into the component
  * and make them directly accessible via the component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

@@ -302,9 +302,8 @@ class YiiBase
 	 * passed to the constructor of the object being created.
 	 *
 	 * If a component class implements the [[\yii\base\Initable]] interface,
-	 * its [[\yii\base\Initable::preinit|preinit]] and [[\yii\base\Initable::init|init]]
-	 * methods will be invoked BEFORE and AFTER the component properties are initialized,
-	 * respectively.
+	 * its [[\yii\base\Initable::init|init]] method will be invoked AFTER
+	 * the component properties are initialized.
 	 *
 	 * @param mixed $config the configuration. It can be either a string or an array.
 	 * @return mixed the created object
