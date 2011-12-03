@@ -1,8 +1,10 @@
 <?php
 
+namespace yiiunit\framework\db\dao;
+
 use yii\db\dao\Connection;
 
-class ConnectionTest extends TestCase
+class ConnectionTest extends \yiiunit\TestCase
 {
 	function setUp()
 	{
@@ -29,7 +31,7 @@ class ConnectionTest extends TestCase
 
 		$connection->open();
 		$this->assertTrue($connection->active);
-		$this->assertTrue($connection->pdo instanceof PDO);
+		$this->assertTrue($connection->pdo instanceof \PDO);
 
 		$connection->close();
 		$this->assertFalse($connection->active);

@@ -1,10 +1,12 @@
 <?php
 
+namespace yiiunit\framework\db\dao;
+
 use yii\db\dao\Connection;
 use yii\db\dao\Command;
 use yii\db\dao\Query;
 
-class CommandTest extends TestCase
+class CommandTest extends \yiiunit\TestCase
 {
 	private $connection;
 

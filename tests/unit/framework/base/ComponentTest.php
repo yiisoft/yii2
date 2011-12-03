@@ -1,5 +1,7 @@
 <?php
 
+namespace yiiunit\framework\base;
+
 function globalEventHandler($event)
 {
 	$event->sender->eventHandled=true;
@@ -11,7 +13,7 @@ function globalEventHandler2($event)
 	$event->handled=true;
 }
 
-class ComponentTest extends TestCase
+class ComponentTest extends \yiiunit\TestCase
 {
 	protected $component;
 
@@ -142,7 +144,7 @@ class ComponentTest extends TestCase
 	{
 		$component=new NewComponent;
 		$this->assertEquals($component->onMyEvent->getCount(),0);
-		$component->onMyEvent='globalEventHandler';
+		$component->onMyEvent='yiiunit\framework\base\globalEventHandler';
 		$component->onMyEvent=array($this->component,'myEventHandler');
 		$this->assertEquals($component->onMyEvent->getCount(),2);
 		$this->assertFalse($component->eventHandled);
@@ -155,7 +157,7 @@ class ComponentTest extends TestCase
 	public function testStopEvent()
 	{
 		$component=new NewComponent;
-		$component->onMyEvent='globalEventHandler2';
+		$component->onMyEvent='yiiunit\framework\base\globalEventHandler2';
 		$component->onMyEvent=array($this->component,'myEventHandler');
 		$component->onMyEvent();
 		$this->assertTrue($component->eventHandled);
@@ -200,13 +202,6 @@ class ComponentTest extends TestCase
 		$behavior = new NewBehavior;
 		$component->attachBehavior('a',$behavior);
 		$this->assertSame($behavior,$component->asa('a'));
-	}
-
-	public function testEvaluateExpression()
-	{
-		$component = new NewComponent;
-		$this->assertEquals('Hello world',$component->evaluateExpression('"Hello $who"',array('who' => 'world')));
-		$this->assertEquals('Hello world',$component->evaluateExpression(array($component,'exprEvaluator'),array('who' => 'world')));
 	}
 
 	public function testCreate()

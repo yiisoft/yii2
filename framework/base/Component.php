@@ -209,7 +209,8 @@ class Component extends Object
 		if (method_exists($this, $setter)) {  // write property
 			return $this->$setter(null);
 		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) {  // event
-			return unset($this->_e[strtolower($name)]);
+			unset($this->_e[strtolower($name)]);
+			return;
 		} elseif (isset($this->_b[$name])) {  // behavior
 			return $this->detachBehavior($name);
 		} elseif (is_array($this->_b)) {  // behavior property

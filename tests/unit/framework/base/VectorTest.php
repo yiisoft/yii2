@@ -1,5 +1,7 @@
 <?php
 
+namespace yiiunit\framework\base;
+
 use yii\base\Vector;
 
 class ListItem
@@ -7,7 +9,7 @@ class ListItem
 	public $data='data';
 }
 
-class VectorTest extends TestCase
+class VectorTest extends \yiiunit\TestCase
 {
 	protected $vector;
 	protected $item1, $item2, $item3;

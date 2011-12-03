@@ -1,5 +1,7 @@
 <?php
 
+namespace yiiunit\framework\base;
+
 use yii\base\Dictionary;
 
 class MapItem
@@ -7,7 +9,7 @@ class MapItem
 	public $data='data';
 }
 
-class DictionaryTest extends TestCase
+class DictionaryTest extends \yiiunit\TestCase
 {
 	protected $dictionary;
 	protected $item1,$item2,$item3;
@@ -115,10 +117,10 @@ class DictionaryTest extends TestCase
 
 	public function testRecursiveMergeWithTraversable(){
 		$dictionary = new Dictionary();
-		$obj = new ArrayObject(array(
+		$obj = new \ArrayObject(array(
 			'k1' => $this->item1,
 			'k2' => $this->item2,
-			'k3' => new ArrayObject(array(
+			'k3' => new \ArrayObject(array(
 				'k4' => $this->item3,
 			))
 		));

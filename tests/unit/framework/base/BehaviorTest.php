@@ -1,4 +1,7 @@
 <?php
+
+namespace yiiunit\framework\base;
+
 class BarClass extends \yii\base\Component
 {
 
@@ -14,19 +17,16 @@ class BarBehavior extends \yii\base\Behavior
 	}
 }
 
-/**
- * BehaviorTest
- */
-class BehaviorTest extends \yii\test\TestCase
+class BehaviorTest extends \yiiunit\TestCase
 {
 	public function testAttachAndAccessing()
 	{
 		$bar = BarClass::create();
 		$behavior = new BarBehavior();
-		$bar->attachBehavior('bar', $bar);
+		$bar->attachBehavior('bar', $behavior);
 		$this->assertEquals('behavior property', $bar->behaviorProperty);
-		$this->assertEquals('behavior method', $bar->behaviorMethod);
+		$this->assertEquals('behavior method', $bar->behaviorMethod());
 		$this->assertEquals('behavior property', $bar->bar->behaviorProperty);
-		$this->assertEquals('behavior method', $bar->bar->behaviorMethod);
+		$this->assertEquals('behavior method', $bar->bar->behaviorMethod());
 	}
 }
