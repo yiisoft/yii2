@@ -8,6 +8,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\base;
+
 /**
  * Application is the base class for all application classes.
  *
@@ -114,7 +116,7 @@ abstract class Application extends Module
 	 */
 	public function __construct($config = null)
 	{
-		Yii::setApplication($this);
+		\Yii::$app = $this;
 
 		// set basePath at early as possible to avoid trouble
 		if (is_string($config))
@@ -126,9 +128,9 @@ abstract class Application extends Module
 		}
 		else
 			$this->setBasePath('protected');
-		Yii::setPathOfAlias('application', $this->getBasePath());
-		Yii::setPathOfAlias('webroot', dirname($_SERVER['SCRIPT_FILENAME']));
-		Yii::setPathOfAlias('ext', $this->getBasePath() . DIRECTORY_SEPARATOR . 'extensions');
+		\Yii::setAlias('application', $this->getBasePath());
+		\Yii::setAlias('webroot', dirname($_SERVER['SCRIPT_FILENAME']));
+		\Yii::setAlias('ext', $this->getBasePath() . DIRECTORY_SEPARATOR . 'extensions');
 
 		$this->preinit();
 
@@ -151,10 +153,10 @@ abstract class Application extends Module
 	 */
 	public function run()
 	{
-		if ($this->hasEventHandler('onBeginRequest'))
+		if ($this->hasEventHandlers('onBeginRequest'))
 			$this->onBeginRequest(new CEvent($this));
 		$this->processRequest();
-		if ($this->hasEventHandler('onEndRequest'))
+		if ($this->hasEventHandlers('onEndRequest'))
 			$this->onEndRequest(new CEvent($this));
 	}
 
@@ -168,7 +170,7 @@ abstract class Application extends Module
 	 */
 	public function end($status = 0, $exit = true)
 	{
-		if ($this->hasEventHandler('onEndRequest'))
+		if ($this->hasEventHandlers('onEndRequest'))
 			$this->onEndRequest(new CEvent($this));
 		if ($exit)
 			exit($status);
@@ -235,7 +237,7 @@ abstract class Application extends Module
 	public function setBasePath($path)
 	{
 		if (($this->_basePath = realpath($path)) === false || !is_dir($this->_basePath))
-			throw new CException(Yii::t('yii', 'Application base path "{path}" is not a valid directory.',
+			throw new \yii\base\Exception(\Yii::t('yii', 'Application base path "{path}" is not a valid directory.',
 				array('{path}' => $path)));
 	}
 
@@ -262,7 +264,7 @@ abstract class Application extends Module
 	public function setRuntimePath($path)
 	{
 		if (($runtimePath = realpath($path)) === false || !is_dir($runtimePath) || !is_writable($runtimePath))
-			throw new CException(Yii::t('yii', 'Application runtime path "{path}" is not valid. Please make sure it is a directory writable by the Web server process.',
+			throw new \yii\base\Exception(\Yii::t('yii', 'Application runtime path "{path}" is not valid. Please make sure it is a directory writable by the Web server process.',
 				array('{path}' => $path)));
 		$this->_runtimePath = $runtimePath;
 	}
@@ -273,7 +275,7 @@ abstract class Application extends Module
 	 */
 	public function getExtensionPath()
 	{
-		return Yii::getPathOfAlias('ext');
+		return \Yii::getPathOfAlias('ext');
 	}
 
 	/**
@@ -283,9 +285,9 @@ abstract class Application extends Module
 	public function setExtensionPath($path)
 	{
 		if (($extensionPath = realpath($path)) === false || !is_dir($extensionPath))
-			throw new CException(Yii::t('yii', 'Extension path "{path}" does not exist.',
+			throw new \yii\base\Exception(\Yii::t('yii', 'Extension path "{path}" does not exist.',
 				array('{path}' => $path)));
-		Yii::setPathOfAlias('ext', $extensionPath);
+		\Yii::setAlias('ext', $extensionPath);
 	}
 
 	/**
@@ -386,7 +388,7 @@ abstract class Application extends Module
 	 */
 	public function getLocaleDataPath()
 	{
-		return CLocale::$dataPath === null ? Yii::getPathOfAlias('system.i18n.data') : CLocale::$dataPath;
+		return CLocale::$dataPath === null ? \Yii::getPathOfAlias('system.i18n.data') : CLocale::$dataPath;
 	}
 
 	/**
@@ -641,7 +643,7 @@ abstract class Application extends Module
 	/**
 	 * Loads the global state data from persistent storage.
 	 * @see getStatePersister
-	 * @throws CException if the state persister is not available
+	 * @throws \yii\base\Exception if the state persister is not available
 	 */
 	public function loadGlobalState()
 	{
@@ -688,25 +690,31 @@ abstract class Application extends Module
 		restore_exception_handler();
 
 		$category = 'exception.' . get_class($exception);
-		if ($exception instanceof CHttpException)
+		if ($exception instanceof \yii\web\HttpException)
 			$category .= '.' . $exception->statusCode;
 		// php <5.2 doesn't support string conversion auto-magically
 		$message = $exception->__toString();
 		if (isset($_SERVER['REQUEST_URI']))
 			$message .= ' REQUEST_URI=' . $_SERVER['REQUEST_URI'];
-		Yii::log($message, CLogger::LEVEL_ERROR, $category);
+		\Yii::error($message, $category);
 
 		try
 		{
-			$event = new CExceptionEvent($this, $exception);
+			// TODO: do we need separate exception class as it was in 1.1?
+			//$event = new CExceptionEvent($this, $exception);
+			$event = new Event($this, array('exception' => $exception));
 			$this->onException($event);
 			if (!$event->handled)
 			{
 				// try an error handler
 				if (($handler = $this->getErrorHandler()) !== null)
+				{
 					$handler->handle($event);
+				}
 				else
+				{
 					$this->displayException($exception);
+				}
 			}
 		}
 		catch(Exception $e)
@@ -777,11 +785,11 @@ abstract class Application extends Module
 			}
 			if (isset($_SERVER['REQUEST_URI']))
 				$log .= 'REQUEST_URI=' . $_SERVER['REQUEST_URI'];
-			Yii::log($log, CLogger::LEVEL_ERROR, 'php');
+			\Yii::error($log, 'php');
 
 			try
 			{
-				Yii::import('CErrorEvent', true);
+				\Yii::import('CErrorEvent', true);
 				$event = new CErrorEvent($this, $code, $message, $file, $line);
 				$this->onError($event);
 				if (!$event->handled)
@@ -940,9 +948,10 @@ abstract class Application extends Module
 			'messages' => array(
 				'class' => 'CPhpMessageSource',
 			),
-			'errorHandler' => array(
-				'class' => 'CErrorHandler',
-			),
+			// TODO: uncomment when error handler is properly implemented
+//			'errorHandler' => array(
+//				'class' => 'CErrorHandler',
+//			),
 			'securityManager' => array(
 				'class' => 'CSecurityManager',
 			),
