@@ -235,7 +235,6 @@ class Query extends \yii\base\Object
 	 * @param mixed $condition the new condition. It can be either a string or an array of strings.
 	 * @param string $operator the operator to join different conditions. Defaults to 'AND'.
 	 * @return Query the criteria object itself
-	 * @since 1.0.9
 	 */
 	public function addCondition($condition, $operator = 'AND')
 	{
@@ -269,7 +268,6 @@ class Query extends \yii\base\Object
 	 * Defaults to 'AND'.
 	 * @param string $like the LIKE operator. Defaults to 'LIKE'. You may also set this to be 'NOT LIKE'.
 	 * @return Query the criteria object itself
-	 * @since 1.0.10
 	 */
 	public function addSearchCondition($column, $keyword, $escape = true, $operator = 'AND', $like = 'LIKE')
 	{
@@ -293,7 +291,6 @@ class Query extends \yii\base\Object
 	 * @param string $operator the operator used to concatenate the new condition with the existing one.
 	 * Defaults to 'AND'.
 	 * @return Query the criteria object itself
-	 * @since 1.0.10
 	 */
 	public function addInCondition($column, $values, $operator = 'AND')
 	{
@@ -331,7 +328,6 @@ class Query extends \yii\base\Object
 	 * @param string $operator the operator used to concatenate the new condition with the existing one.
 	 * Defaults to 'AND'.
 	 * @return Query the criteria object itself
-	 * @since 1.1.1
 	 */
 	public function addNotInCondition($column, $values, $operator = 'AND')
 	{
@@ -368,7 +364,6 @@ class Query extends \yii\base\Object
 	 * @param string $operator the operator used to concatenate the new condition with the existing one.
 	 * Defaults to 'AND'.
 	 * @return Query the criteria object itself
-	 * @since 1.0.10
 	 */
 	public function addColumnCondition($columns, $columnOperator = 'AND', $operator = 'AND')
 	{
@@ -428,7 +423,6 @@ class Query extends \yii\base\Object
 	 * character on both ends. When this parameter is false, the value will be directly used for
 	 * matching without any change.
 	 * @return Query the criteria object itself
-	 * @since 1.1.1
 	 */
 	public function compare($column, $value, $partialMatch = false, $operator = 'AND', $escape = true)
 	{
@@ -482,7 +476,6 @@ class Query extends \yii\base\Object
 	 * @param string $operator the operator used to concatenate the new condition with the existing one.
 	 * Defaults to 'AND'.
 	 * @return Query the criteria object itself
-	 * @since 1.1.2
 	 */
 	public function addBetweenCondition($column, $valueStart, $valueEnd, $operator = 'AND')
 	{

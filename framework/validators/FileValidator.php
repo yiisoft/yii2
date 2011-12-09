@@ -42,7 +42,7 @@ namespace yii\validators;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @version $Id: CFileValidator.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.validators
- * @since 1.0
+ * @since 2.0
  */
 class CFileValidator extends Validator
 {

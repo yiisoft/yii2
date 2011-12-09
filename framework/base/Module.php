@@ -273,7 +273,6 @@ abstract class Module extends Component
 	 * Returns a value indicating whether the specified module is installed.
 	 * @param string $id the module ID
 	 * @return boolean whether the specified module is installed.
-	 * @since 1.1.2
 	 */
 	public function hasModule($id)
 	{

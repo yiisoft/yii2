@@ -23,7 +23,7 @@
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @version $Id: CProfileLogRoute.php 3204 2011-05-05 21:36:32Z alexander.makarow $
  * @package system.logging
- * @since 1.0
+ * @since 2.0
  */
 class CProfileLogRoute extends CWebLogRoute
 {
@@ -32,7 +32,6 @@ class CProfileLogRoute extends CWebLogRoute
 	 * If false, the results will be aggregated by categories.
 	 * Defaults to true. Note that this property only affects the summary report
 	 * that is enabled when {@link report} is 'summary'.
-	 * @since 1.0.6
 	 */
 	public $groupByToken = true;
 	/**

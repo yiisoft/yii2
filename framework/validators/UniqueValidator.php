@@ -35,7 +35,6 @@ class CUniqueValidator extends Validator
 	 * the class of the object currently being validated.
 	 * You may use path alias to reference a class name here.
 	 * @see attributeName
-	 * @since 1.0.8
 	 */
 	public $className;
 	/**
@@ -43,14 +42,12 @@ class CUniqueValidator extends Validator
 	 * used to look for the attribute value being validated. Defaults to null,
 	 * meaning using the name of the attribute being validated.
 	 * @see className
-	 * @since 1.0.8
 	 */
 	public $attributeName;
 	/**
 	 * @var array additional query criteria. This will be combined with the condition
 	 * that checks if the attribute value exists in the corresponding table column.
 	 * This array will be used to instantiate a {@link CDbCriteria} object.
-	 * @since 1.0.8
 	 */
 	public $criteria = array();
 	/**
@@ -61,7 +58,6 @@ class CUniqueValidator extends Validator
 	/**
 	 * @var boolean whether this validation rule should be skipped if when there is already a validation
 	 * error for the current attribute. Defaults to true.
-	 * @since 1.1.1
 	 */
 	public $skipOnError = true;
 

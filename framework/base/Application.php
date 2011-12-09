@@ -321,7 +321,6 @@ abstract class Application extends Module
 	 * This is a simple wrapper of PHP function date_default_timezone_get().
 	 * @return string the time zone used by this application.
 	 * @see http://php.net/manual/en/function.date-default-timezone-get.php
-	 * @since 1.0.9
 	 */
 	public function getTimeZone()
 	{
@@ -333,7 +332,6 @@ abstract class Application extends Module
 	 * This is a simple wrapper of PHP function date_default_timezone_set().
 	 * @param string $value the time zone used by this application.
 	 * @see http://php.net/manual/en/function.date-default-timezone-set.php
-	 * @since 1.0.9
 	 */
 	public function setTimeZone($value)
 	{
@@ -384,7 +382,6 @@ abstract class Application extends Module
 	/**
 	 * Returns the directory that contains the locale data.
 	 * @return string the directory that contains the locale data. It defaults to 'framework/i18n/data'.
-	 * @since 1.1.0
 	 */
 	public function getLocaleDataPath()
 	{
@@ -394,7 +391,6 @@ abstract class Application extends Module
 	/**
 	 * Sets the directory that contains the locale data.
 	 * @param string $value the directory that contains the locale data.
-	 * @since 1.1.0
 	 */
 	public function setLocaleDataPath($value)
 	{
@@ -503,7 +499,6 @@ abstract class Application extends Module
 
 	/**
 	 * @return CController the currently active controller. Null is returned in this base class.
-	 * @since 1.1.8
 	 */
 	public function getController()
 	{

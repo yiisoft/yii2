@@ -253,7 +253,6 @@ class Command extends \yii\base\Component
 	 * array with array keys being the parameter names, and array values the corresponding parameter values.
 	 * For example, <code>array(':name'=>'John', ':age'=>25)</code>.
 	 * @return Command the current command being executed
-	 * @since 1.1.5
 	 */
 	public function bindValues($values)
 	{
@@ -516,7 +515,6 @@ class Command extends \yii\base\Component
 	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used. This parameter is supported since version 1.1.8.
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function select($columns = '*', $option = '')
 	{
@@ -530,7 +528,6 @@ class Command extends \yii\base\Component
 	 * This is the same as {@link select} except that the DISTINCT flag is turned on.
 	 * @param mixed $columns the columns to be selected. See {@link select} for more details.
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function selectDistinct($columns = '*', $option = '')
 	{
@@ -546,7 +543,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table names unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function from($tables)
 	{
@@ -590,7 +586,6 @@ class Command extends \yii\base\Component
 	 * @param mixed $conditions the conditions that should be put in the WHERE part.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function where($conditions, $params = array())
 	{
@@ -609,7 +604,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function join($table, $conditions, $params = array())
 	{
@@ -626,7 +620,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function leftJoin($table, $conditions, $params = array())
 	{
@@ -643,7 +636,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function rightJoin($table, $conditions, $params = array())
 	{
@@ -658,7 +650,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function crossJoin($table)
 	{
@@ -673,7 +664,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function naturalJoin($table)
 	{
@@ -687,7 +677,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function groupBy($columns)
 	{
@@ -701,7 +690,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function having($conditions, $params = array())
 	{
@@ -717,7 +705,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function orderBy($columns)
 	{
@@ -728,9 +715,7 @@ class Command extends \yii\base\Component
 	/**
 	 * Sets the LIMIT part of the query.
 	 * @param integer $limit the limit
-	 * @param integer $offset the offset
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function limit($limit)
 	{
@@ -742,7 +727,6 @@ class Command extends \yii\base\Component
 	 * Sets the OFFSET part of the query.
 	 * @param integer $offset the offset
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function offset($offset)
 	{
@@ -754,7 +738,6 @@ class Command extends \yii\base\Component
 	 * Appends a SQL statement using UNION operator.
 	 * @param string $sql the SQL statement to be appended using UNION
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function union($sql)
 	{
@@ -768,7 +751,6 @@ class Command extends \yii\base\Component
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function insert($table, $columns)
 	{
@@ -785,7 +767,6 @@ class Command extends \yii\base\Component
 	 * refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function update($table, $columns, $conditions = '', $params = array())
 	{
@@ -800,7 +781,6 @@ class Command extends \yii\base\Component
 	 * refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function delete($table, $conditions = '', $params = array())
 	{
@@ -823,7 +803,6 @@ class Command extends \yii\base\Component
 	 * @param array $columns the columns (name=>definition) in the new table.
 	 * @param string $options additional SQL fragment that will be appended to the generated SQL.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function createTable($table, $columns, $options = null)
 	{
@@ -836,7 +815,6 @@ class Command extends \yii\base\Component
 	 * @param string $table the table to be renamed. The name will be properly quoted by the method.
 	 * @param string $newName the new table name. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function renameTable($table, $newName)
 	{
@@ -848,7 +826,6 @@ class Command extends \yii\base\Component
 	 * Builds and executes a SQL statement for dropping a DB table.
 	 * @param string $table the table to be dropped. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function dropTable($table)
 	{
@@ -860,7 +837,6 @@ class Command extends \yii\base\Component
 	 * Builds and executes a SQL statement for truncating a DB table.
 	 * @param string $table the table to be truncated. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function truncateTable($table)
 	{
@@ -876,7 +852,6 @@ class Command extends \yii\base\Component
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function addColumn($table, $column, $type)
 	{
@@ -889,7 +864,6 @@ class Command extends \yii\base\Component
 	 * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
 	 * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function dropColumn($table, $column)
 	{
@@ -903,7 +877,6 @@ class Command extends \yii\base\Component
 	 * @param string $name the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function renameColumn($table, $name, $newName)
 	{
@@ -919,7 +892,6 @@ class Command extends \yii\base\Component
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function alterColumn($table, $column, $type)
 	{
@@ -938,7 +910,6 @@ class Command extends \yii\base\Component
 	 * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
 	 * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
@@ -951,7 +922,6 @@ class Command extends \yii\base\Component
 	 * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
 	 * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function dropForeignKey($name, $table)
 	{
@@ -967,7 +937,6 @@ class Command extends \yii\base\Component
 	 * by commas. The column names will be properly quoted by the method.
 	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function createIndex($name, $table, $column, $unique = false)
 	{
@@ -980,7 +949,6 @@ class Command extends \yii\base\Component
 	 * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
 	 * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function dropIndex($name, $table)
 	{
@@ -999,7 +967,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	private function joinInternal($type, $table, $conditions = '', $params = array())
 	{

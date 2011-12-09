@@ -45,7 +45,6 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 * @param string $name the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return string the SQL statement for renaming a DB column.
-	 * @since 1.1.6
 	 */
 	public function renameColumn($table, $name, $newName)
 	{
@@ -77,7 +76,6 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
 	 * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
 	 * @return string the SQL statement for dropping a foreign key constraint.
-	 * @since 1.1.6
 	 */
 	public function dropForeignKey($name, $table)
 	{
