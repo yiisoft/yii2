@@ -28,11 +28,9 @@
  * applying migrations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbMigration.php 3218 2011-05-13 00:06:44Z alexander.makarow $
- * @package system.db
- * @since 1.1.6
+ * @since 2.0
  */
-abstract class CDbMigration extends CComponent
+abstract class CDbMigration extends yii\base\Component
 {
 	private $_db;
 
@@ -94,7 +92,6 @@ abstract class CDbMigration extends CComponent
 	 * Child classes may implement this method instead of {@link up} if the DB logic
 	 * needs to be within a transaction.
 	 * @return boolean
-	 * @since 1.1.7
 	 */
 	public function safeUp()
 	{
@@ -107,7 +104,6 @@ abstract class CDbMigration extends CComponent
 	 * Child classes may implement this method instead of {@link up} if the DB logic
 	 * needs to be within a transaction.
 	 * @return boolean
-	 * @since 1.1.7
 	 */
 	public function safeDown()
 	{
@@ -146,7 +142,6 @@ abstract class CDbMigration extends CComponent
 	 * This method executes the specified SQL statement using {@link dbConnection}.
 	 * @param string $sql the SQL statement to be executed
 	 * @param array $params input parameters (name=>value) for the SQL execution. See {@link CDbCommand::execute} for more details.
-	 * @since 1.1.7
 	 */
 	public function execute($sql, $params = array())
 	{

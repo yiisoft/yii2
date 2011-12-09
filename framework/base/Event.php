@@ -47,7 +47,9 @@ class Event extends Object
 
 	/**
 	 * Constructor.
+	 *
 	 * @param mixed $sender sender of the event
+	 * @param mixed $params parameters of the event
 	 */
 	public function __construct($sender=null, $params=null)
 	{

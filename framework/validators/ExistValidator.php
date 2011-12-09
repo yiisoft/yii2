@@ -16,9 +16,7 @@ namespace yii\validators;
  * that can be found in the foreign table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CExistValidator.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.validators
- * @since 1.0.4
+ * @since 2.0
  */
 class CExistValidator extends Validator
 {
@@ -41,7 +39,6 @@ class CExistValidator extends Validator
 	 * @var array additional query criteria. This will be combined with the condition
 	 * that checks if the attribute value exists in the corresponding table column.
 	 * This array will be used to instantiate a {@link CDbCriteria} object.
-	 * @since 1.0.8
 	 */
 	public $criteria = array();
 	/**

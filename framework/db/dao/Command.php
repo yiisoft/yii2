@@ -671,7 +671,6 @@ class Command extends \yii\base\Component
 	/**
 	 * Sets the LIMIT part of the query.
 	 * @param integer $limit the limit
-	 * @param integer $offset the offset
 	 * @return Command the command object itself
 	 */
 	public function limit($limit)

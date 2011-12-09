@@ -253,13 +253,17 @@ abstract class Module extends Component
 			$config = $this->_moduleConfig[$id];
 			if (!isset($config['enabled']) || $config['enabled'])
 			{
-				Yii::trace("Loading \"$id\" module", 'system.base.CModule');
+				\Yii::trace("Loading \"$id\" module", 'system.base.CModule');
 				$class = $config['class'];
 				unset($config['class'], $config['enabled']);
-				if ($this === Yii::app())
+				if ($this === \Yii::$app)
+				{
 					$module = Yii::create($class, $id, null, $config);
+				}
 				else
+				{
 					$module = Yii::create($class, $this->getId() . '/' . $id, $this, $config);
+				}
 				return $this->_modules[$id] = $module;
 			}
 		}
@@ -269,7 +273,6 @@ abstract class Module extends Component
 	 * Returns a value indicating whether the specified module is installed.
 	 * @param string $id the module ID
 	 * @return boolean whether the specified module is installed.
-	 * @since 1.1.2
 	 */
 	public function hasModule($id)
 	{
@@ -360,10 +363,9 @@ abstract class Module extends Component
 			$config = $this->_componentConfig[$id];
 			if (!isset($config['enabled']) || $config['enabled'])
 			{
-				Yii::trace("Loading \"$id\" application component", 'system.CModule');
+				\Yii::trace("Loading \"$id\" application component", 'system.CModule');
 				unset($config['enabled']);
-				$component = Yii::create($config);
-				$component->init();
+				$component = \Yii::create($config);
 				return $this->_components[$id] = $component;
 			}
 		}

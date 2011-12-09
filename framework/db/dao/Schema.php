@@ -35,7 +35,7 @@ abstract class Schema extends \yii\base\Object
 
 	/**
 	 * Constructor.
-	 * @param CDbConnection $conn database connection.
+	 * @param CDbConnection $connection database connection.
 	 */
 	public function __construct($connection)
 	{

@@ -51,9 +51,7 @@ $post->save();
  * about this class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0
+ * @since 2.0
  *
  * @property array $attributes
  */
@@ -111,7 +109,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param integer $queryCount number of SQL queries that need to be cached after calling this method. Defaults to 1,
 	 * meaning that the next SQL query will be cached.
 	 * @return ActiveRecord the active record instance itself.
-	 * @since 1.1.7
 	 */
 	public function cache($duration, $dependency = null, $queryCount = 1)
 	{
@@ -174,7 +171,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * if the named attribute is null or not.
 	 * @param string $name the property name or the event name
 	 * @return boolean whether the property value is null
-	 * @since 1.0.1
 	 */
 	public function __isset($name)
 	{
@@ -195,7 +191,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This method overrides the parent implementation by clearing
 	 * the specified attribute value.
 	 * @param string $name the property name or the event name
-	 * @since 1.0.1
 	 */
 	public function __unset($name)
 	{
@@ -214,7 +209,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param string $name the method name
 	 * @param array $parameters method parameters
 	 * @return mixed the method return value
-	 * @since 1.0.5
 	 */
 	public function __call($name, $parameters)
 	{
@@ -249,7 +243,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This parameter has been available since version 1.0.5.
 	 * @return mixed the related object(s).
 	 * @throws CDbException if the relation is not specified in {@link relations}.
-	 * @since 1.0.2
 	 */
 	public function getRelated($name, $refresh = false, $params = array())
 	{
@@ -307,7 +300,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * Returns a value indicating whether the named related object(s) has been loaded.
 	 * @param string $name the relation name
 	 * @return boolean a value indicating whether the named related object(s) has been loaded.
-	 * @since 1.0.3
 	 */
 	public function hasRelated($name)
 	{
@@ -320,7 +312,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @return CDbCriteria the query criteria that is associated with this model.
 	 * This criteria is mainly used by {@link scopes named scope} feature to accumulate
 	 * different criteria specifications.
-	 * @since 1.0.5
 	 */
 	public function getDbCriteria($createIfNull = true)
 	{
@@ -335,7 +326,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * Sets the query criteria for the current model.
 	 * @param CDbCriteria $criteria the query criteria
-	 * @since 1.1.3
 	 */
 	public function setDbCriteria($criteria)
 	{
@@ -349,7 +339,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * if the model needs to be queried with some default criteria (e.g. only active records should be returned).
 	 * @return array the query criteria. This will be used as the parameter to the constructor
 	 * of {@link CDbCriteria}.
-	 * @since 1.0.5
 	 */
 	public function defaultScope()
 	{
@@ -360,7 +349,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * Resets all scopes and criterias applied including default scope.
 	 *
 	 * @return ActiveRecord
-	 * @since 1.1.2
 	 */
 	public function resetScope()
 	{
@@ -415,7 +403,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This is useful if the table schema has been changed and you want to use the latest
 	 * available table schema. Make sure you have called {@link CDbSchema::refresh}
 	 * before you call this method. Otherwise, old table schema data will still be used.
-	 * @since 1.0.8
 	 */
 	public function refreshMetaData()
 	{
@@ -446,7 +433,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * If the key is a single column, it should return the column name;
 	 * If the key is a composite one consisting of several columns, it should
 	 * return the array of the key column names.
-	 * @since 1.0.4
 	 */
 	public function primaryKey()
 	{
@@ -566,7 +552,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @return array the scope definition. The array keys are scope names; the array
 	 * values are the corresponding scope definitions. Each scope definition is represented
 	 * as an array whose keys must be properties of {@link CDbCriteria}.
-	 * @since 1.0.5
 	 */
 	public function scopes()
 	{
@@ -577,7 +562,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * Returns the list of all attribute names of the model.
 	 * This would return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
-	 * @since 1.0.1
 	 */
 	public function attributeNames()
 	{
@@ -593,7 +577,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param string $attribute the attribute name
 	 * @return string the attribute label
 	 * @see generateAttributeLabel
-	 * @since 1.1.4
 	 */
 	public function getAttributeLabel($attribute)
 	{
@@ -834,7 +817,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This event is raised before the record is saved.
 	 * By setting {@link CModelEvent::isValid} to be false, the normal {@link save()} process will be stopped.
 	 * @param CModelEvent $event the event parameter
-	 * @since 1.0.2
 	 */
 	public function onBeforeSave($event)
 	{
@@ -844,7 +826,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * This event is raised after the record is saved.
 	 * @param CEvent $event the event parameter
-	 * @since 1.0.2
 	 */
 	public function onAfterSave($event)
 	{
@@ -855,7 +836,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This event is raised before the record is deleted.
 	 * By setting {@link CModelEvent::isValid} to be false, the normal {@link delete()} process will be stopped.
 	 * @param CModelEvent $event the event parameter
-	 * @since 1.0.2
 	 */
 	public function onBeforeDelete($event)
 	{
@@ -865,7 +845,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * This event is raised after the record is deleted.
 	 * @param CEvent $event the event parameter
-	 * @since 1.0.2
 	 */
 	public function onAfterDelete($event)
 	{
@@ -880,7 +859,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * You can modify either criteria to customize them based on needs.
 	 * @param CModelEvent $event the event parameter
 	 * @see beforeFind
-	 * @since 1.0.9
 	 */
 	public function onBeforeFind($event)
 	{
@@ -890,7 +868,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * This event is raised after the record is instantiated by a find method.
 	 * @param CEvent $event the event parameter
-	 * @since 1.0.2
 	 */
 	public function onAfterFind($event)
 	{
@@ -971,8 +948,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 *
 	 * Starting from version 1.1.5, this method may be called with a hidden {@link CDbCriteria}
 	 * parameter which represents the current query criteria as passed to a find method of AR.
-	 *
-	 * @since 1.0.9
 	 */
 	protected function beforeFind()
 	{
@@ -1000,7 +975,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * Calls {@link beforeFind}.
 	 * This method is internally used.
-	 * @since 1.0.11
 	 */
 	public function beforeFindInternal()
 	{
@@ -1010,7 +984,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * Calls {@link afterFind}.
 	 * This method is internally used.
-	 * @since 1.0.3
 	 */
 	public function afterFindInternal()
 	{
@@ -1153,7 +1126,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param array $counters the counters to be updated (column name=>increment value)
 	 * @return boolean whether the saving is successful
 	 * @see updateCounters
-	 * @since 1.1.8
 	 */
 	public function saveCounters($counters)
 	{
@@ -1256,7 +1228,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * After calling this method, the old primary key value can be obtained from {@link oldPrimaryKey}.
 	 * @param mixed $value the new primary key value. If the primary key is composite, the new value
 	 * should be provided as an array (column name=>column value).
-	 * @since 1.1.0
 	 */
 	public function setPrimaryKey($value)
 	{
@@ -1278,7 +1249,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
 	 * @return mixed the old primary key value. An array (column name=>column value) is returned if the primary key is composite.
 	 * If primary key is not defined, null will be returned.
-	 * @since 1.1.0
 	 */
 	public function getOldPrimaryKey()
 	{
@@ -1288,7 +1258,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * Sets the old primary key value.
 	 * @param mixed $value the old primary key value.
-	 * @since 1.1.3
 	 */
 	public function setOldPrimaryKey($value)
 	{
@@ -1301,7 +1270,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param CDbCriteria $criteria the query criteria
 	 * @param boolean $all whether to return all data
 	 * @return mixed the AR objects populated with the query result
-	 * @since 1.1.7
 	 */
 	protected function query($criteria, $all = false)
 	{
@@ -1326,7 +1294,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This method merges {@link dbCriteria} with the given criteria parameter.
 	 * It then resets {@link dbCriteria} to be null.
 	 * @param CDbCriteria $criteria the query criteria. This parameter may be modified by merging {@link dbCriteria}.
-	 * @since 1.0.12
 	 */
 	public function applyScopes(&$criteria)
 	{
@@ -1382,7 +1349,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This parameter must be set false when calling this method in {@link defaultScope}.
 	 * An infinite loop would be formed otherwise.
 	 * @return string the default table alias
-	 * @since 1.1.1
 	 */
 	public function getTableAlias($quote = false, $checkScopes = true)
 	{
@@ -1396,7 +1362,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * Sets the table alias to be used in queries.
 	 * @param string $alias the table alias to be used in queries. The alias should NOT be quoted.
-	 * @since 1.1.3
 	 */
 	public function setTableAlias($alias)
 	{
@@ -1578,7 +1543,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param mixed $condition query condition or criteria.
 	 * @param array $params parameters to be bound to an SQL statement.
 	 * @return string the number of rows satisfying the specified query condition. Note: type is string to keep max. precision.
-	 * @since 1.1.4
 	 */
 	public function countByAttributes($attributes, $condition = '', $params = array())
 	{
@@ -1686,7 +1650,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This is only used in relational AR query. Please refer to {@link CDbCriteria::together}
 	 * for more details.
 	 * @return ActiveRecord the AR object itself
-	 * @since 1.1.4
 	 */
 	public function together()
 	{
@@ -1792,7 +1755,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param mixed $condition query condition or criteria.
 	 * @param array $params parameters to be bound to an SQL statement.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.0.9
 	 */
 	public function deleteAllByAttributes($attributes, $condition = '', $params = array())
 	{
@@ -1873,7 +1835,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * you may implement the so-called single-table inheritance mapping.
 	 * @param array $attributes list of attribute values for the active records.
 	 * @return ActiveRecord the active record
-	 * @since 1.0.2
 	 */
 	protected function instantiate($attributes)
 	{
@@ -1887,7 +1848,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * This method is required by the interface ArrayAccess.
 	 * @param mixed $offset the offset to check on
 	 * @return boolean
-	 * @since 1.0.2
 	 */
 	public function offsetExists($offset)
 	{
@@ -1899,9 +1859,6 @@ abstract class ActiveRecord extends \yii\base\Model
 /**
  * CBaseActiveRelation is the base class for all active relations.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0.4
  */
 class CBaseActiveRelation extends CComponent
 {
@@ -1941,7 +1898,6 @@ class CBaseActiveRelation extends CComponent
 	/**
 	 * @var string how to join with other tables. This refers to the JOIN clause in an SQL statement.
 	 * For example, <code>'LEFT JOIN users ON users.id=authorID'</code>.
-	 * @since 1.1.3
 	 */
 	public $join = '';
 	/**
@@ -1975,7 +1931,6 @@ class CBaseActiveRelation extends CComponent
 	 * Merges this relation with a criteria specified dynamically.
 	 * @param array $criteria the dynamically specified criteria
 	 * @param boolean $fromScope whether the criteria to be merged is from scopes
-	 * @since 1.0.5
 	 */
 	public function mergeWith($criteria, $fromScope = false)
 	{
@@ -2042,9 +1997,6 @@ class CBaseActiveRelation extends CComponent
 /**
  * CStatRelation represents a statistical relational query.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0.4
  */
 class CStatRelation extends CBaseActiveRelation
 {
@@ -2063,7 +2015,6 @@ class CStatRelation extends CBaseActiveRelation
 	 * Merges this relation with a criteria specified dynamically.
 	 * @param array $criteria the dynamically specified criteria
 	 * @param boolean $fromScope whether the criteria to be merged is from scopes
-	 * @since 1.0.5
 	 */
 	public function mergeWith($criteria, $fromScope = false)
 	{
@@ -2080,9 +2031,7 @@ class CStatRelation extends CBaseActiveRelation
 /**
  * CActiveRelation is the base class for representing active relations that bring back related objects.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0
+ * @since 2.0
  */
 class CActiveRelation extends CBaseActiveRelation
 {
@@ -2092,13 +2041,11 @@ class CActiveRelation extends CBaseActiveRelation
 	public $joinType = 'LEFT OUTER JOIN';
 	/**
 	 * @var string ON clause. The condition specified here will be appended to the joining condition using AND operator.
-	 * @since 1.0.2
 	 */
 	public $on = '';
 	/**
 	 * @var string the alias for the table that this relation refers to. Defaults to null, meaning
 	 * the alias will be the same as the relation name.
-	 * @since 1.0.1
 	 */
 	public $alias;
 	/**
@@ -2123,7 +2070,6 @@ class CActiveRelation extends CBaseActiveRelation
 	 * <li>Single scope: 'scopes'=>'scopeName'.</li>
 	 * <li>Multiple scopes: 'scopes'=>array('scopeName1','scopeName2').</li>
 	 * </ul>
-	 * @since 1.1.9
 	 */
 	 public $scopes;
 
@@ -2131,7 +2077,6 @@ class CActiveRelation extends CBaseActiveRelation
 	 * Merges this relation with a criteria specified dynamically.
 	 * @param array $criteria the dynamically specified criteria
 	 * @param boolean $fromScope whether the criteria to be merged is from scopes
-	 * @since 1.0.5
 	 */
 	public function mergeWith($criteria, $fromScope = false)
 	{
@@ -2177,9 +2122,7 @@ class CActiveRelation extends CBaseActiveRelation
 /**
  * CBelongsToRelation represents the parameters specifying a BELONGS_TO relation.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0
+ * @since 2.0
  */
 class CBelongsToRelation extends CActiveRelation
 {
@@ -2189,16 +2132,13 @@ class CBelongsToRelation extends CActiveRelation
 /**
  * CHasOneRelation represents the parameters specifying a HAS_ONE relation.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0
+ * @since 2.0
  */
 class CHasOneRelation extends CActiveRelation
 {
 	/**
 	 * @var string the name of the relation that should be used as the bridge to this relation.
 	 * Defaults to null, meaning don't use any bridge.
-	 * @since 1.1.7
 	 */
 	public $through;
 }
@@ -2207,9 +2147,7 @@ class CHasOneRelation extends CActiveRelation
 /**
  * CHasManyRelation represents the parameters specifying a HAS_MANY relation.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0
+ * @since 2.0
  */
 class CHasManyRelation extends CActiveRelation
 {
@@ -2224,13 +2162,11 @@ class CHasManyRelation extends CActiveRelation
 	/**
 	 * @var string the name of the column that should be used as the key for storing related objects.
 	 * Defaults to null, meaning using zero-based integer IDs.
-	 * @since 1.0.7
 	 */
 	public $index;
 	/**
 	 * @var string the name of the relation that should be used as the bridge to this relation.
 	 * Defaults to null, meaning don't use any bridge.
-	 * @since 1.1.7
 	 */
 	public $through;
 
@@ -2238,7 +2174,6 @@ class CHasManyRelation extends CActiveRelation
 	 * Merges this relation with a criteria specified dynamically.
 	 * @param array $criteria the dynamically specified criteria
 	 * @param boolean $fromScope whether the criteria to be merged is from scopes
-	 * @since 1.0.5
 	 */
 	public function mergeWith($criteria, $fromScope = false)
 	{
@@ -2260,9 +2195,7 @@ class CHasManyRelation extends CActiveRelation
 /**
  * CManyManyRelation represents the parameters specifying a MANY_MANY relation.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0
+ * @since 2.0
  */
 class CManyManyRelation extends CHasManyRelation
 {
@@ -2273,9 +2206,7 @@ class CManyManyRelation extends CHasManyRelation
  * ActiveRecordMetaData represents the meta-data for an Active Record class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
- * @since 1.0
+ * @since 2.0
  */
 class ActiveRecordMetaData
 {
@@ -2349,7 +2280,6 @@ class ActiveRecordMetaData
 	 * @param string $name $name Name of the relation.
 	 * @param array $config $config Relation parameters.
      * @return void
-	 * @since 1.1.2
 	 */
 	public function addRelation($name, $config)
 	{
@@ -2364,7 +2294,6 @@ class ActiveRecordMetaData
 	 *
 	 * @param string $name $name Name of the relation.
 	 * @return boolean
-	 * @since 1.1.2
 	 */
 	public function hasRelation($name)
 	{
@@ -2376,7 +2305,6 @@ class ActiveRecordMetaData
 	 *
 	 * @param string $name $name
 	 * @return void
-	 * @since 1.1.2
 	 */
 	public function removeRelation($name)
 	{

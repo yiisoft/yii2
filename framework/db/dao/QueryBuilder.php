@@ -110,7 +110,6 @@ class QueryBuilder extends \yii\base\Object
 	 * refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function update($table, $columns, $conditions = '', &$params = array())
 	{
@@ -144,7 +143,6 @@ class QueryBuilder extends \yii\base\Object
 	 * refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function delete($table, $conditions = '')
 	{
@@ -224,7 +222,6 @@ class QueryBuilder extends \yii\base\Object
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 * @return string the SQL statement for adding a new column.
-	 * @since 1.1.6
 	 */
 	public function addColumn($table, $column, $type)
 	{
@@ -238,7 +235,6 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
 	 * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
 	 * @return string the SQL statement for dropping a DB column.
-	 * @since 1.1.6
 	 */
 	public function dropColumn($table, $column)
 	{
@@ -252,7 +248,6 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $name the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return string the SQL statement for renaming a DB column.
-	 * @since 1.1.6
 	 */
 	public function renameColumn($table, $name, $newName)
 	{

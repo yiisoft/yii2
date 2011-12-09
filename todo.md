@@ -59,3 +59,5 @@
     * ability to manage scripts order (store these in a vector?)
 	* http://ryanbigg.com/guides/asset_pipeline.html, http://guides.rubyonrails.org/asset_pipeline.html, use content hash instead of mtime + directory hash.
 - Requirement checker
+- widgets
+    * if we're going to supply default ones, these should generate really unique IDs. This will solve a lot of AJAX-nesting problems.
