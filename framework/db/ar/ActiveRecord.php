@@ -51,8 +51,6 @@ $post->save();
  * about this class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  * @since 2.0
  *
  * @property array $attributes
@@ -1861,8 +1859,6 @@ abstract class ActiveRecord extends \yii\base\Model
 /**
  * CBaseActiveRelation is the base class for all active relations.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  */
 class CBaseActiveRelation extends CComponent
 {
@@ -2001,8 +1997,6 @@ class CBaseActiveRelation extends CComponent
 /**
  * CStatRelation represents a statistical relational query.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  */
 class CStatRelation extends CBaseActiveRelation
 {
@@ -2037,8 +2031,6 @@ class CStatRelation extends CBaseActiveRelation
 /**
  * CActiveRelation is the base class for representing active relations that bring back related objects.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  * @since 2.0
  */
 class CActiveRelation extends CBaseActiveRelation
@@ -2130,8 +2122,6 @@ class CActiveRelation extends CBaseActiveRelation
 /**
  * CBelongsToRelation represents the parameters specifying a BELONGS_TO relation.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  * @since 2.0
  */
 class CBelongsToRelation extends CActiveRelation
@@ -2142,8 +2132,6 @@ class CBelongsToRelation extends CActiveRelation
 /**
  * CHasOneRelation represents the parameters specifying a HAS_ONE relation.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  * @since 2.0
  */
 class CHasOneRelation extends CActiveRelation
@@ -2159,8 +2147,6 @@ class CHasOneRelation extends CActiveRelation
 /**
  * CHasManyRelation represents the parameters specifying a HAS_MANY relation.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  * @since 2.0
  */
 class CHasManyRelation extends CActiveRelation
@@ -2209,8 +2195,6 @@ class CHasManyRelation extends CActiveRelation
 /**
  * CManyManyRelation represents the parameters specifying a MANY_MANY relation.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  * @since 2.0
  */
 class CManyManyRelation extends CHasManyRelation
@@ -2222,8 +2206,6 @@ class CManyManyRelation extends CHasManyRelation
  * ActiveRecordMetaData represents the meta-data for an Active Record class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: ActiveRecord.php 3344 2011-07-06 22:04:50Z alexander.makarow $
- * @package system.db.ar
  * @since 2.0
  */
 class ActiveRecordMetaData

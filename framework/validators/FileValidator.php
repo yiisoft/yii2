@@ -40,8 +40,6 @@ namespace yii\validators;
  * You can use {@link CFileValidator} to validate the file attribute.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CFileValidator.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.validators
  * @since 2.0
  */
 class CFileValidator extends Validator

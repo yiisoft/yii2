@@ -15,8 +15,6 @@
  * or in FireBug console window (if {@link showInFireBug} is set true).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CWebLogRoute.php 3001 2011-02-24 16:42:44Z alexander.makarow $
- * @package system.logging
  * @since 2.0
  */
 class CWebLogRoute extends CLogRoute

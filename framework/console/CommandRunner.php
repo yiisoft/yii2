@@ -16,8 +16,6 @@ namespace yii\console;
  * @property string $scriptName The entry script name.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CConsoleCommandRunner.php 3426 2011-10-25 00:01:09Z alexander.makarow $
- * @package system.console
  * @since 2.0
  */
 class CommandRunner extends \yii\base\Component

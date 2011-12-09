@@ -21,8 +21,6 @@
  * </ul>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CProfileLogRoute.php 3204 2011-05-05 21:36:32Z alexander.makarow $
- * @package system.logging
  * @since 2.0
  */
 class CProfileLogRoute extends CWebLogRoute

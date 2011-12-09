@@ -14,8 +14,6 @@
  * that are only defined by {@link CActiveRecord}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CActiveRecordBehavior.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.db.ar
  * @since 2.0
  */
 class CActiveRecordBehavior extends CModelBehavior

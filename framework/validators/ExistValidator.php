@@ -16,8 +16,6 @@ namespace yii\validators;
  * that can be found in the foreign table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CExistValidator.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.validators
  * @since 2.0
  */
 class CExistValidator extends Validator

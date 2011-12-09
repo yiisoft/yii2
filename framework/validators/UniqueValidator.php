@@ -13,8 +13,6 @@ namespace yii\validators;
  * CUniqueValidator validates that the attribute value is unique in the corresponding database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CUniqueValidator.php 3260 2011-06-13 20:56:54Z alexander.makarow $
- * @package system.validators
  * @since 1.0
  */
 class CUniqueValidator extends Validator

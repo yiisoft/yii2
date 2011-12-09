@@ -16,8 +16,6 @@ namespace yii\validators;
  * must be in. If the given date value doesn't follow the format, the attribute is considered as invalid.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDateValidator.php 2799 2011-01-01 19:31:13Z qiang.xue $
- * @package system.validators
  * @since 2.0
  */
 class CDateValidator extends Validator

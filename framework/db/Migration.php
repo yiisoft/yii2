@@ -28,8 +28,6 @@
  * applying migrations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbMigration.php 3218 2011-05-13 00:06:44Z alexander.makarow $
- * @package system.db
  * @since 2.0
  */
 abstract class CDbMigration extends yii\base\Component

@@ -26,8 +26,6 @@ namespace yii\console;
  * @property string $help The command description.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CHelpCommand.php 3426 2011-10-25 00:01:09Z alexander.makarow $
- * @package system.console
  * @since 2.0
  */
 class HelpCommand extends Command
