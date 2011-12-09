@@ -50,10 +50,6 @@ use yii\db\Exception;
 class Command extends \yii\base\Component
 {
 	/**
-	 * @var array the parameters (name=>value) to be bound to the current query.
-	 */
-	public $params = array();
-	/**
 	 * @var Connection the DB connection that this command is associated with
 	 */
 	public $connection;
@@ -76,30 +72,21 @@ class Command extends \yii\base\Component
 	 */
 	private $_sql;
 	/**
-	 * @var array the parameter log information
+	 * @var array the parameter log information (name=>value)
 	 */
-	private $_paramLog = array();
+	private $_params = array();
 
 	/**
 	 * Constructor.
+	 * Instead of explicitly creating a Command object using `new` operator,
+	 * you should use [[Connection::createCommand]] to get a new Command object.
 	 * @param Connection $connection the database connection
-	 * @param mixed $query the DB query to be executed. This can be either
-	 * a string representing a SQL statement, or an array whose name-value pairs
-	 * will be used to set the corresponding properties of the created command object.
+	 * @param mixed $query the DB query to be executed. This can be:
 	 *
-	 * For example, you can pass in either <code>'SELECT * FROM tbl_user'</code>
-	 * or <code>array('select'=>'*', 'from'=>'tbl_user')</code>. They are equivalent
-	 * in terms of the final query result.
-	 *
-	 * When passing the query as an array, the following properties are commonly set:
-	 * {@link select}, {@link distinct}, {@link from}, {@link where}, {@link join},
-	 * {@link group}, {@link having}, {@link order}, {@link limit}, {@link offset} and
-	 * {@link union}. Please refer to the setter of each of these properties for details
-	 * about valid property values. This feature has been available since version 1.1.6.
-	 *
-	 * Since 1.1.7 it is possible to use a specific mode of data fetching by setting
- 	 * {@link setFetchMode FetchMode}. See {@link http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php}
- 	 * for more details.
+	 * - a string representing the SQL statement to be executed
+	 * - a [[Query]] object representing the SQL query
+	 * - an array that will be used to initialize [[Query]]
+	 * - null (default) if the query needs to be built using query builder methods next.
 	 */
 	public function __construct($connection, $query = null)
 	{
@@ -120,20 +107,24 @@ class Command extends \yii\base\Component
 	 * Cleans up the command and prepares for building a new query.
 	 * This method is mainly used when a command object is being reused
 	 * multiple times for building different queries.
-	 * Calling this method will clean up all internal states of the command object.
+	 * Calling this method will clean up these properties: [[sql]], [[query]],
+	 * [[pdoStatement]] and [[params]].
 	 * @return Command this command instance
 	 */
 	public function reset()
 	{
 		$this->query = new Query;
 		$this->pdoStatement = null;
-		$this->params = array();
-		$this->_paramLog = array();
+		$this->_params = array();
 		$this->_sql = null;
 		return $this;
 	}
 
 	/**
+	 * Returns the SQL statement for this command.
+	 * When this method is called, a new SQL statement will be built from [[query]]
+	 * if it has not been done before or if `$rebuild` is `true`.
+	 * @param boolean $rebuild whether to rebuild the SQL statement from [[query]].
 	 * @return string the SQL statement to be executed
 	 */
 	public function getSql($rebuild = false)
@@ -152,11 +143,7 @@ class Command extends \yii\base\Component
 	 */
 	public function setSql($value)
 	{
-		if ($this->connection->tablePrefix !== null && strpos($value, '{{') !== false) {
-			$this->_sql = preg_replace('/{{(.*?)}}/', $this->connection->tablePrefix . '\1', $value);
-		} else {
-			$this->_sql = $value;
-		}
+		$this->_sql = $this->connection->expandTablePrefix($value);
 		$this->cancel();
 		return $this;
 	}
@@ -174,19 +161,18 @@ class Command extends \yii\base\Component
 			$sql = $this->getSql();
 			try {
 				$this->pdoStatement = $this->connection->pdo->prepare($sql);
-				$this->_paramLog = array();
-			}
-			catch(\Exception $e) {
-				\Yii::error("Failed to prepare SQL ($sql): " . $e->getMessage(), __CLASS__);
+			} catch(\Exception $e) {
+				\Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
                 $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				$message = YII_DEBUG ? 'Failed to prepare SQL: ' . $e->getMessage() : 'Failed to prepare SQL.';
-				throw new Exception($message, (int)$e->getCode(), $errorInfo);
+				throw new Exception($e->getMessage(), (int)$e->getCode(), $errorInfo);
 			}
 		}
 	}
 
 	/**
 	 * Cancels the execution of the SQL statement.
+	 * This method mainly sets [[pdoStatement]] to be null.
+	 * Please call [[reset]] if you want to run a different SQL statement.
 	 */
 	public function cancel()
 	{
@@ -195,15 +181,15 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Binds a parameter to the SQL statement to be executed.
-	 * @param mixed $name Parameter identifier. For a prepared statement
+	 * @param mixed $name parameter identifier. For a prepared statement
 	 * using named placeholders, this will be a parameter name of
-	 * the form :name. For a prepared statement using question mark
+	 * the form `:name`. For a prepared statement using question mark
 	 * placeholders, this will be the 1-indexed position of the parameter.
 	 * @param mixed $value Name of the PHP variable to bind to the SQL statement parameter
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
 	 * @param integer $length length of the data type
-	 * @param mixed $driverOptions the driver-specific options (this is available since version 1.1.6)
-	 * @return Command the current command being executed (this is available since version 1.0.8)
+	 * @param mixed $driverOptions the driver-specific options
+	 * @return Command the current command being executed
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
 	 */
 	public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
@@ -218,7 +204,7 @@ class Command extends \yii\base\Component
 		} else {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
 		}
-		$this->_paramLog[$name] =& $value;
+		$this->_params[$name] =& $value;
 		return $this;
 	}
 
@@ -226,11 +212,11 @@ class Command extends \yii\base\Component
 	 * Binds a value to a parameter.
 	 * @param mixed $name Parameter identifier. For a prepared statement
 	 * using named placeholders, this will be a parameter name of
-	 * the form :name. For a prepared statement using question mark
+	 * the form `:name`. For a prepared statement using question mark
 	 * placeholders, this will be the 1-indexed position of the parameter.
 	 * @param mixed $value The value to bind to the parameter
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-	 * @return Command the current command being executed (this is available since version 1.0.8)
+	 * @return Command the current command being executed
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
 	 */
 	public function bindValue($name, $value, $dataType = null)
@@ -241,98 +227,84 @@ class Command extends \yii\base\Component
 		} else {
 			$this->pdoStatement->bindValue($name, $value, $dataType);
 		}
-		$this->_paramLog[$name] = $value;
+		$this->_params[$name] = $value;
 		return $this;
 	}
 
 	/**
 	 * Binds a list of values to the corresponding parameters.
-	 * This is similar to {@link bindValue} except that it binds multiple values.
+	 * This is similar to [[bindValue]] except that it binds multiple values at a time.
 	 * Note that the SQL data type of each value is determined by its PHP type.
 	 * @param array $values the values to be bound. This must be given in terms of an associative
-	 * array with array keys being the parameter names, and array values the corresponding parameter values.
-	 * For example, <code>array(':name'=>'John', ':age'=>25)</code>.
+	 * array with array keys being the parameter names, and array values the corresponding parameter values,
+	 * e.g. `array(':name'=>'John', ':age'=>25)`.
 	 * @return Command the current command being executed
-	 * @since 1.1.5
 	 */
 	public function bindValues($values)
 	{
-		$this->prepare();
-		foreach ($values as $name => $value) {
-			$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
-			$this->_paramLog[$name] = $value;
-		}
+		$this->query->addParams($values);
 		return $this;
 	}
 
 	/**
 	 * Executes the SQL statement.
-	 * This method is meant only for executing non-query SQL statement.
+	 * This method is meant only for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
 	 * No result set will be returned.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to {@link bindParam} and {@link bindValue}. If you have multiple input parameters, passing
-	 * them in this way can improve the performance. Note that if you pass parameters in this way,
-	 * you cannot bind parameters or values using {@link bindParam} or {@link bindValue}, and vice versa.
-	 * binding methods and  the input parameters this way can improve the performance.
-	 * This parameter has been available since version 1.0.10.
+	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
+	 * or [[bindValue]] will be ignored.
 	 * @return integer number of rows affected by the execution.
-	 * @throws CException execution failed
+	 * @throws Exception execution failed
 	 */
 	public function execute($params = array())
 	{
-		if ($this->connection->enableParamLogging && ($pars = array_merge($this->_paramLog, $params)) !== array())
-		{
-			$p = array();
-			foreach ($pars as $name => $value)
-				$p[$name] = $name . '=' . var_export($value, true);
-			$par = '. Bound with ' . implode(', ', $p);
+		$sql = $this->getSql();
+		$params = array_merge($this->query->params, $params);
+		$this->_params = array_merge($this->_params, $params);
+		if ($this->_params === array()) {
+			$paramLog = '';
+		} else {
+			$paramLog = "Parameters: " . var_export($this->_params, true);
 		}
-		else
-			$par = '';
-		\Yii::trace('Executing SQL: ' . $this->getSql() . $par, 'system.db.Command');
-		try
-		{
-			if ($this->connection->enableProfiling)
-				\Yii::beginProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
+
+		\Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
+
+		try {
+			if ($this->connection->enableProfiling) {
+				\Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
+			}
 
 			$this->prepare();
-			if ($params === array())
+			if ($params === array()) {
 				$this->pdoStatement->execute();
-			else
+			} else {
 				$this->pdoStatement->execute($params);
+			}
 			$n = $this->pdoStatement->rowCount();
 
-			if ($this->connection->enableProfiling)
-				\Yii::endProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
-
+			if ($this->connection->enableProfiling) {
+				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+			}
 			return $n;
-		}
-		catch(Exception $e)
-		{
-			if ($this->connection->enableProfiling)
-				\Yii::endProfile('system.db.Command.execute(' . $this->getSql() . ')', 'system.db.Command.execute');
-            $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
-            $message = $e->getMessage();
-			\Yii::log(\Yii::t('yii', 'Command::execute() failed: {error}. The SQL statement executed was: {sql}.',
-				array('{error}' => $message, '{sql}' => $this->getSql() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
-            if (YII_DEBUG)
-            	$message .= '. The SQL statement executed was: ' . $this->getSql() . $par;
-			throw new CDbException(\Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
-				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
+		} catch (Exception $e) {
+			if ($this->connection->enableProfiling) {
+				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+			}
+			$message = $e->getMessage();
+			\Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
+			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+			throw new Exception($message, (int)$e->getCode(), $errorInfo);
 		}
 	}
 
 	/**
 	 * Executes the SQL statement and returns query result.
-	 * This method is for executing a SQL query that returns result set.
+	 * This method is for executing a SQL query that returns result set, such as `SELECT`.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to {@link bindParam} and {@link bindValue}. If you have multiple input parameters, passing
-	 * them in this way can improve the performance. Note that if you pass parameters in this way,
-	 * you cannot bind parameters or values using {@link bindParam} or {@link bindValue}, and vice versa.
-	 * binding methods and  the input parameters this way can improve the performance.
-	 * This parameter has been available since version 1.0.10.
-	 * @return CDbDataReader the reader object for fetching the query result
-	 * @throws CException execution failed
+	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
+	 * or [[bindValue]] will be ignored.
+	 * @return DataReader the reader object for fetching the query result
+	 * @throws Exception execution failed
 	 */
 	public function query($params = array())
 	{
@@ -341,17 +313,14 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement and returns all rows.
+	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
+	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
+	 * or [[bindValue]] will be ignored.
 	 * @param boolean $fetchAssociative whether each row should be returned as an associated array with
 	 * column names as the keys or the array keys are column indexes (0-based).
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to {@link bindParam} and {@link bindValue}. If you have multiple input parameters, passing
-	 * them in this way can improve the performance. Note that if you pass parameters in this way,
-	 * you cannot bind parameters or values using {@link bindParam} or {@link bindValue}, and vice versa.
-	 * binding methods and  the input parameters this way can improve the performance.
-	 * This parameter has been available since version 1.0.10.
 	 * @return array all rows of the query result. Each array element is an array representing a row.
 	 * An empty array is returned if the query results in nothing.
-	 * @throws CException execution failed
+	 * @throws Exception execution failed
 	 */
 	public function queryAll($params = array(), $fetchMode = null)
 	{
@@ -361,16 +330,13 @@ class Command extends \yii\base\Component
 	/**
 	 * Executes the SQL statement and returns the first row of the result.
 	 * This is a convenient method of {@link query} when only the first row of data is needed.
+	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
+	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
+	 * or [[bindValue]] will be ignored.
 	 * @param boolean $fetchAssociative whether the row should be returned as an associated array with
 	 * column names as the keys or the array keys are column indexes (0-based).
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to {@link bindParam} and {@link bindValue}. If you have multiple input parameters, passing
-	 * them in this way can improve the performance. Note that if you pass parameters in this way,
-	 * you cannot bind parameters or values using {@link bindParam} or {@link bindValue}, and vice versa.
-	 * binding methods and  the input parameters this way can improve the performance.
-	 * This parameter has been available since version 1.0.10.
 	 * @return mixed the first row (in terms of an array) of the query result, false if no result.
-	 * @throws CException execution failed
+	 * @throws Exception execution failed
 	 */
 	public function queryRow($params = array(), $fetchMode = null)
 	{
@@ -382,13 +348,10 @@ class Command extends \yii\base\Component
 	 * This is a convenient method of {@link query} when only a single scalar
 	 * value is needed (e.g. obtaining the count of the records).
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to {@link bindParam} and {@link bindValue}. If you have multiple input parameters, passing
-	 * them in this way can improve the performance. Note that if you pass parameters in this way,
-	 * you cannot bind parameters or values using {@link bindParam} or {@link bindValue}, and vice versa.
-	 * binding methods and  the input parameters this way can improve the performance.
-	 * This parameter has been available since version 1.0.10.
+	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
+	 * or [[bindValue]] will be ignored.
 	 * @return mixed the value of the first column in the first row of the query result. False is returned if there is no value.
-	 * @throws CException execution failed
+	 * @throws Exception execution failed
 	 */
 	public function queryScalar($params = array())
 	{
@@ -406,13 +369,10 @@ class Command extends \yii\base\Component
 	 * This is a convenient method of {@link query} when only the first column of data is needed.
 	 * Note, the column returned will contain the first element in each row of result.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to {@link bindParam} and {@link bindValue}. If you have multiple input parameters, passing
-	 * them in this way can improve the performance. Note that if you pass parameters in this way,
-	 * you cannot bind parameters or values using {@link bindParam} or {@link bindValue}, and vice versa.
-	 * binding methods and  the input parameters this way can improve the performance.
-	 * This parameter has been available since version 1.0.10.
+	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
+	 * or [[bindValue]] will be ignored.
 	 * @return array the first column of the query result. Empty array if no result.
-	 * @throws CException execution failed
+	 * @throws Exception execution failed
 	 */
 	public function queryColumn($params = array())
 	{
@@ -423,85 +383,80 @@ class Command extends \yii\base\Component
 	 * @param string $method method of PDOStatement to be called
 	 * @param mixed $mode parameters to be passed to the method
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to {@link bindParam} and {@link bindValue}. If you have multiple input parameters, passing
-	 * them in this way can improve the performance. Note that you pass parameters in this way,
-	 * you cannot bind parameters or values using {@link bindParam} or {@link bindValue}, and vice versa.
-	 * binding methods and  the input parameters this way can improve the performance.
-	 * This parameter has been available since version 1.0.10.
+	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
+	 * or [[bindValue]] will be ignored.
 	 * @return mixed the method execution result
 	 */
 	private function queryInternal($method, $params, $fetchMode = null)
 	{
-		$params = array_merge($this->params, $params);
-
-		if ($this->connection->enableParamLogging && ($pars = array_merge($this->_paramLog, $params)) !== array())
-		{
-			$p = array();
-			foreach ($pars as $name => $value)
-				$p[$name] = $name . '=' . var_export($value, true);
-			$par = '. Bound with ' . implode(', ', $p);
+		$db = $this->connection;
+		$sql = $this->getSql();
+		$params = array_merge($this->query->params, $params);
+		$this->_params = array_merge($this->_params, $params);
+		if ($this->_params === array()) {
+			$paramLog = '';
+		} else {
+			$paramLog = "Parameters: " . var_export($this->_params, true);
 		}
-		else
-			$par = '';
 
-		\Yii::trace('Querying SQL: ' . $this->getSql() . $par, 'system.db.Command');
+		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
 
-		if ($this->connection->queryCachingCount > 0 && $method !== ''
-				&& $this->connection->queryCachingDuration > 0
-				&& $this->connection->queryCacheID !== false
-				&& ($cache = \Yii::app()->getComponent($this->connection->queryCacheID)) !== null)
-		{
-			$this->connection->queryCachingCount--;
-			$cacheKey = 'yii:dbquery' . $this->connection->connectionString . ':' . $this->connection->username;
-			$cacheKey .= ':' . $this->getSql() . ':' . serialize(array_merge($this->_paramLog, $params));
-			if (($result = $cache->get($cacheKey)) !== false)
-			{
+		$cachingEnabled = $db->queryCachingCount > 0 && $method !== ''
+				&& $db->queryCachingDuration >= 0
+				&& ($cache = \Yii::app()->getComponent($db->queryCacheID)) !== null;
+		if ($cachingEnabled) {
+			$db->queryCachingCount--;
+			$cacheKey = 'yii:dbquery' . $db->connectionString . ':' . $db->username;
+			$cacheKey .= ':' . $sql . ':' . $paramLog;
+			if (($result = $cache->get($cacheKey)) !== false) {
 				\Yii::trace('Query result found in cache', 'system.db.Command');
 				return $result;
 			}
 		}
 
-		try
-		{
-			if ($this->connection->enableProfiling)
-				\Yii::beginProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
+		try {
+			if ($db->enableProfiling) {
+				\Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
+			}
 
 			$this->prepare();
-			if ($params === array())
+			if ($params === array()) {
 				$this->pdoStatement->execute();
-			else
+			} else {
 				$this->pdoStatement->execute($params);
+			}
 
-			if ($method === '')
+			if ($method === '') {
 				$result = new DataReader($this);
-			else
-			{
-		 		if ($fetchMode === null) {
-		 			$fetchMode = $this->fetchMode;
-		 		}
+			} else {
+				if ($fetchMode === null) {
+					$fetchMode = $this->fetchMode;
+				}
 				$result = call_user_func_array(array($this->pdoStatement, $method), (array)$fetchMode);
 				$this->pdoStatement->closeCursor();
 			}
 
-			if ($this->connection->enableProfiling)
-				\Yii::endProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
+			if ($db->enableProfiling) {
+				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+			}
 
-			if (isset($cache, $cacheKey))
-				$cache->set($cacheKey, $result, $this->connection->queryCachingDuration, $this->connection->queryCachingDependency);
+			if ($cachingEnabled) {
+				$cache->set($cacheKey, $result, $db->queryCachingDuration, $db->queryCachingDependency);
+			}
 
 			return $result;
-		}
-		catch(Exception $e)
-		{
-			if ($this->connection->enableProfiling)
-				\Yii::endProfile('system.db.Command.query(' . $this->getSql() . $par . ')', 'system.db.Command.query');
-            $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
-            $message = $e->getMessage();
+		} catch (Exception $e) {
+			if ($db->enableProfiling) {
+				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+			}
+			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+			$message = $e->getMessage();
 			\Yii::log(\Yii::t('yii', 'Command::{method}() failed: {error}. The SQL statement executed was: {sql}.',
 				array('{method}' => $method, '{error}' => $message, '{sql}' => $this->getSql() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
-            if (YII_DEBUG)
-            	$message .= '. The SQL statement executed was: ' . $this->getSql() . $par;
-			throw new CDbException(\Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
+			if (YII_DEBUG) {
+				$message .= '. The SQL statement executed was: ' . $this->getSql() . $par;
+			}
+			throw new Exception(\Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
 				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
 		}
 	}
@@ -516,7 +471,6 @@ class Command extends \yii\base\Component
 	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used. This parameter is supported since version 1.1.8.
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function select($columns = '*', $option = '')
 	{
@@ -530,7 +484,6 @@ class Command extends \yii\base\Component
 	 * This is the same as {@link select} except that the DISTINCT flag is turned on.
 	 * @param mixed $columns the columns to be selected. See {@link select} for more details.
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function selectDistinct($columns = '*', $option = '')
 	{
@@ -546,7 +499,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table names unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function from($tables)
 	{
@@ -590,7 +542,6 @@ class Command extends \yii\base\Component
 	 * @param mixed $conditions the conditions that should be put in the WHERE part.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function where($conditions, $params = array())
 	{
@@ -609,7 +560,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function join($table, $conditions, $params = array())
 	{
@@ -626,7 +576,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function leftJoin($table, $conditions, $params = array())
 	{
@@ -643,7 +592,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function rightJoin($table, $conditions, $params = array())
 	{
@@ -658,7 +606,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function crossJoin($table)
 	{
@@ -673,7 +620,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function naturalJoin($table)
 	{
@@ -687,7 +633,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function groupBy($columns)
 	{
@@ -701,7 +646,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function having($conditions, $params = array())
 	{
@@ -717,7 +661,6 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function orderBy($columns)
 	{
@@ -730,7 +673,6 @@ class Command extends \yii\base\Component
 	 * @param integer $limit the limit
 	 * @param integer $offset the offset
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function limit($limit)
 	{
@@ -742,7 +684,6 @@ class Command extends \yii\base\Component
 	 * Sets the OFFSET part of the query.
 	 * @param integer $offset the offset
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function offset($offset)
 	{
@@ -754,7 +695,6 @@ class Command extends \yii\base\Component
 	 * Appends a SQL statement using UNION operator.
 	 * @param string $sql the SQL statement to be appended using UNION
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	public function union($sql)
 	{
@@ -768,7 +708,6 @@ class Command extends \yii\base\Component
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function insert($table, $columns)
 	{
@@ -785,7 +724,6 @@ class Command extends \yii\base\Component
 	 * refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function update($table, $columns, $conditions = '', $params = array())
 	{
@@ -800,7 +738,6 @@ class Command extends \yii\base\Component
 	 * refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function delete($table, $conditions = '', $params = array())
 	{
@@ -823,7 +760,6 @@ class Command extends \yii\base\Component
 	 * @param array $columns the columns (name=>definition) in the new table.
 	 * @param string $options additional SQL fragment that will be appended to the generated SQL.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function createTable($table, $columns, $options = null)
 	{
@@ -836,7 +772,6 @@ class Command extends \yii\base\Component
 	 * @param string $table the table to be renamed. The name will be properly quoted by the method.
 	 * @param string $newName the new table name. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function renameTable($table, $newName)
 	{
@@ -848,7 +783,6 @@ class Command extends \yii\base\Component
 	 * Builds and executes a SQL statement for dropping a DB table.
 	 * @param string $table the table to be dropped. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function dropTable($table)
 	{
@@ -860,7 +794,6 @@ class Command extends \yii\base\Component
 	 * Builds and executes a SQL statement for truncating a DB table.
 	 * @param string $table the table to be truncated. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function truncateTable($table)
 	{
@@ -876,7 +809,6 @@ class Command extends \yii\base\Component
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function addColumn($table, $column, $type)
 	{
@@ -889,7 +821,6 @@ class Command extends \yii\base\Component
 	 * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
 	 * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function dropColumn($table, $column)
 	{
@@ -903,7 +834,6 @@ class Command extends \yii\base\Component
 	 * @param string $name the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function renameColumn($table, $name, $newName)
 	{
@@ -919,7 +849,6 @@ class Command extends \yii\base\Component
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function alterColumn($table, $column, $type)
 	{
@@ -938,7 +867,6 @@ class Command extends \yii\base\Component
 	 * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
 	 * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
@@ -951,7 +879,6 @@ class Command extends \yii\base\Component
 	 * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
 	 * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function dropForeignKey($name, $table)
 	{
@@ -967,7 +894,6 @@ class Command extends \yii\base\Component
 	 * by commas. The column names will be properly quoted by the method.
 	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function createIndex($name, $table, $column, $unique = false)
 	{
@@ -980,7 +906,6 @@ class Command extends \yii\base\Component
 	 * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
 	 * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function dropIndex($name, $table)
 	{
@@ -999,7 +924,6 @@ class Command extends \yii\base\Component
 	 * Please refer to {@link where} on how to specify conditions.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
-	 * @since 1.1.6
 	 */
 	private function joinInternal($type, $table, $conditions = '', $params = array())
 	{

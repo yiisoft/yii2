@@ -116,7 +116,7 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 
 	/**
 	 * Prepares the [[messages]] for exporting.
-	 * This method will modify each message by prependding extra information
+	 * This method will modify each message by prepending extra information
 	 * if [[prefixSession]] and/or [[prefixUser]] are set true.
 	 * It will also add an additional message showing context information if
 	 * [[logUser]] and/or [[logVars]] are set.

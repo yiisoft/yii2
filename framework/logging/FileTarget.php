@@ -96,8 +96,7 @@ class FileTarget extends Target
 				// suppress errors because it's possible multiple processes enter into this section
 				if ($i === $this->maxLogFiles) {
 					@unlink($rotateFile);
-				}
-				else {
+				} else {
 					@rename($rotateFile, $file . '.' . ($i + 1));
 				}
 			}

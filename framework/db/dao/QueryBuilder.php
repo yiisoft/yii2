@@ -38,8 +38,13 @@ class QueryBuilder extends \yii\base\Object
         'boolean' => 'tinyint(1)',
 		'money' => 'decimal(19,4)',
     );
-
+	/**
+	 * @var Connection the database connection.
+	 */
 	public $connection;
+	/**
+	 * @var Schema the database schema
+	 */
 	public $schema;
 
 	public function __construct($schema)
@@ -61,11 +66,7 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildOrderBy($query),
 			$this->buildLimit($query),
 		);
-		$sql = implode("\n", array_filter($clauses));
-		if ($this->connection->tablePrefix !== null && strpos($sql, '{') !== false) {
-			$sql = preg_replace('/{{(.*?)}}/', $this->connection->tablePrefix . '\1', $sql);
-		}
-		return $sql;
+		return $this->connection->expandTablePrefix(implode("\n", array_filter($clauses)));
 	}
 
 	/**
@@ -74,7 +75,6 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
 	 * @return integer number of rows affected by the execution.
-	 * @since 1.1.6
 	 */
 	public function insert($table, $columns, &$params = array())
 	{

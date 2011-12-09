@@ -196,14 +196,6 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public $emulatePrepare;
 	/**
-	 * @var boolean whether to log the values that are bound to a prepare SQL statement.
-	 * Defaults to false. During development, you may consider setting this property to true
-	 * so that parameter values bound to SQL statements are logged for debugging purpose.
-	 * You should be aware that logging parameter values could be expensive and have significant
-	 * impact on the performance of your application.
-	 */
-	public $enableParamLogging = false;
-	/**
 	 * @var boolean whether to enable profiling for the SQL statements being executed.
 	 * Defaults to false. This should be mainly enabled and used during development
 	 * to find out the bottleneck of SQL executions.
@@ -436,6 +428,8 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->_transaction !== null && $this->_transaction->active) {
 			return $this->_transaction;
+		} else {
+			return null;
 		}
 	}
 
@@ -533,6 +527,24 @@ class Connection extends \yii\base\ApplicationComponent
 	public function quoteColumnName($name, $simple = false)
 	{
 		return $simple ? $this->getSchema()->quoteSimpleColumnName($name) : $this->getSchema()->quoteColumnName($name);
+	}
+
+	/**
+	 * Prefixes table names in a SQL statement with [[tablePrefix]].
+	 * By calling this method, tokens like '{{TableName}}' in the given SQL statement will
+	 * be replaced with 'prefixTableName', where 'prefix' refers to [[tablePrefix]].
+	 * Note that if [[tablePrefix]] is null, this method will do nothing.
+	 * @param string $sql the SQL statement whose table names need to be prefixed with [[tablePrefix]].
+	 * @return string the expanded SQL statement
+	 * @see tablePrefix
+	 */
+	public function expandTablePrefix($sql)
+	{
+		if ($this->tablePrefix !== null && strpos($sql, '{{') !== false) {
+			return preg_replace('/{{(.*?)}}/', $this->tablePrefix . '\1', $sql);
+		} else {
+			return $sql;
+		}
 	}
 
 	/**

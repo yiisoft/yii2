@@ -96,33 +96,33 @@ class CProfileLogRoute extends CWebLogRoute
 		$n = 0;
 		foreach ($logs as $log)
 		{
-			if ($log[1] !== CLogger::LEVEL_PROFILE)
+			if ($log[1] !== CLogger::LEVEL_PROFILE) {
 				continue;
+			}
 			$message = $log[0];
-			if (!strncasecmp($message, 'begin:', 6))
-			{
+			if (!strncasecmp($message, 'begin:', 6)) {
 				$log[0] = substr($message, 6);
 				$log[4] = $n;
 				$stack[] = $log;
 				$n++;
-			}
-			elseif (!strncasecmp($message, 'end:', 4))
-			{
+			} elseif (!strncasecmp($message, 'end:', 4)) {
 				$token = substr($message, 4);
-				if (($last = array_pop($stack)) !== null && $last[0] === $token)
-				{
+				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
 					$delta = $log[3] - $last[3];
 					$results[$last[4]] = array($token, $delta, count($stack));
 				}
 				else
+				{
 					throw new CException(Yii::t('yii', 'CProfileLogRoute found a mismatching code block "{token}". Make sure the calls to Yii::beginProfile() and Yii::endProfile() be properly nested.',
 						array('{token}' => $token)));
+				}
 			}
 		}
 		// remaining entries should be closed here
 		$now = microtime(true);
-		while (($last = array_pop($stack)) !== null)
+		while (($last = array_pop($stack)) !== null) {
 			$results[$last[4]] = array($last[0], $now - $last[3], count($stack));
+		}
 		ksort($results);
 		$this->render('profile-callstack', $results);
 	}

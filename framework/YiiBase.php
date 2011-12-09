@@ -416,27 +416,31 @@ class YiiBase
 	 *
 	 * ~~~
 	 * \Yii::beginProfile('block1');
-	 * \Yii::beginProfile('block2');
-	 * \Yii::endProfile('block2');
+	 * // some code to be profiled
+	 *     \Yii::beginProfile('block2');
+	 *     // some other code to be profiled
+	 *     \Yii::endProfile('block2');
 	 * \Yii::endProfile('block1');
 	 * ~~~
-	 * @param string $category the category of this profile block
+	 * @param string $token token for the code block
+	 * @param string $category the category of this log message
 	 * @see endProfile
 	 */
-	public static function beginProfile($category)
+	public static function beginProfile($token, $category)
 	{
-		self::getLogger()->beginProfile($category);
+		self::getLogger()->beginProfile($token, $category);
 	}
 
 	/**
 	 * Marks the end of a code block for profiling.
 	 * This has to be matched with a previous call to [[beginProfile]] with the same category name.
-	 * @param string $category the category of this profile block
+	 * @param string $token token for the code block
+	 * @param string $category the category of this log message
 	 * @see beginProfile
 	 */
-	public static function endProfile($category)
+	public static function endProfile($token, $category)
 	{
-		self::getLogger()->endProfile($category);
+		self::getLogger()->endProfile($token, $category);
 	}
 
 	/**

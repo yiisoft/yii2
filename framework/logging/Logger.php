@@ -22,11 +22,12 @@ namespace yii\logging;
  */
 class Logger extends \yii\base\Component
 {
-	const LEVEL_TRACE = 'trace';
-	const LEVEL_WARNING = 'warning';
-	const LEVEL_ERROR = 'error';
-	const LEVEL_INFO = 'info';
-	const LEVEL_PROFILE = 'profile';
+	const LEVEL_ERROR = 1;
+	const LEVEL_WARNING = 2;
+	const LEVEL_INFO = 3;
+	const LEVEL_TRACE = 4;
+	const LEVEL_PROFILE_BEGIN = 5;
+	const LEVEL_PROFILE_END = 6;
 
 	/**
 	 * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
@@ -111,23 +112,25 @@ class Logger extends \yii\base\Component
 	 * Marks the beginning of a code block for profiling.
 	 * This has to be matched with a call to [[endProfile]] with the same category name.
 	 * The begin- and end- calls must also be properly nested. For example,
-	 * @param string $category the category of this profile block
+	 * @param string $token token for the code block
+	 * @param string $category the category of this log message
 	 * @see endProfile
 	 */
-	public function beginProfile($category)
+	public function beginProfile($token, $category)
 	{
-		$this->log('begin', self::LEVEL_PROFILE, $category);
+		$this->log($token, self::LEVEL_PROFILE_BEGIN, $category);
 	}
 
 	/**
 	 * Marks the end of a code block for profiling.
 	 * This has to be matched with a previous call to [[beginProfile]] with the same category name.
-	 * @param string $category the category of this profile block
+	 * @param string $token token for the code block
+	 * @param string $category the category of this log message
 	 * @see beginProfile
 	 */
-	public function endProfile($category)
+	public function endProfile($token, $category)
 	{
-		$this->log('end', self::LEVEL_PROFILE, $category);
+		$this->log($token, self::LEVEL_PROFILE_END, $category);
 	}
 
 	/**
@@ -141,11 +144,11 @@ class Logger extends \yii\base\Component
 	 */
 	public function log($message, $level, $category)
 	{
-		if (YII_DEBUG && YII_TRACE_LEVEL > 0 && $level !== self::LEVEL_PROFILE) {
+		if (YII_DEBUG && YII_TRACE_LEVEL > 0 && $level <= self::LEVEL_TRACE) {
 			$traces = debug_backtrace();
 			$count = 0;
 			foreach ($traces as $trace) {
-				if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII_DIR) !== 0) {
+				if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII_PATH) !== 0) {
 					$message .= "\nin " . $trace['file'] . ' (' . $trace['line'] . ')';
 					if (++$count >= YII_TRACE_LEVEL) {
 						break;
@@ -206,7 +209,7 @@ class Logger extends \yii\base\Component
 	 * such as 'yii\db\dao\Connection'.
 	 * @param array $excludeCategories list of categories that you are interested in.
 	 * @return array the profiling results. Each array element has the following structure:
-	 *  `array($category, $time)`.
+	 *  `array($token, $category, $time)`.
 	 */
 	public function getProfiling($categories = array(), $excludeCategories = array())
 	{
@@ -219,7 +222,7 @@ class Logger extends \yii\base\Component
 			$matched = empty($categories);
 			foreach ($categories as $category) {
 				$prefix = rtrim($category, '*');
-				if (strpos($timing[0], $prefix) === 0 && ($timing[0] === $category || $prefix !== $category)) {
+				if (strpos($timing[1], $prefix) === 0 && ($timing[1] === $category || $prefix !== $category)) {
 					$matched = true;
 					break;
 				}
@@ -229,7 +232,7 @@ class Logger extends \yii\base\Component
 				foreach ($excludeCategories as $category) {
 					$prefix = rtrim($category, '*');
 					foreach ($timings as $i => $timing) {
-						if (strpos($timing[0], $prefix) === 0 && ($timing[0] === $category || $prefix !== $category)) {
+						if (strpos($timing[1], $prefix) === 0 && ($timing[1] === $category || $prefix !== $category)) {
 							$matched = false;
 							break;
 						}
@@ -250,20 +253,17 @@ class Logger extends \yii\base\Component
 
 		$stack = array();
 		foreach ($this->messages as $log) {
-			if ($log[1] !== self::LEVEL_PROFILE) {
+			if ($log[1] < self::LEVEL_PROFILE_BEGIN) {
 				continue;
 			}
-			list($message, $level, $category, $timestamp) = $log;
-			if ($message === 'begin') {
+			list($token, $level, $category, $timestamp) = $log;
+			if ($level === self::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
-			}
-			else { // $message === 'end'
-				if (($last = array_pop($stack)) !== null && $last[2] === $category) {
-					$delta = $timestamp - $last[3];
-					$timings[] = array($category, $delta);
-				}
-				else {
-					throw new \yii\base\Exception('Found a mismatching profiling block: ' . $category);
+			} else {
+				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
+					$timings[] = array($token, $category, $timestamp - $last[3]);
+				} else {
+					throw new \yii\base\Exception("Unmatched profiling block: $token");
 				}
 			}
 		}
@@ -271,7 +271,7 @@ class Logger extends \yii\base\Component
 		$now = microtime(true);
 		while (($last = array_pop($stack)) !== null) {
 			$delta = $now - $last[3];
-			$timings[] = array($last[2], $delta);
+			$timings[] = array($last[0], $last[2], $delta);
 		}
 
 		return $timings;

@@ -50,7 +50,7 @@ class EmailTarget extends Target
 			$body .= $this->formatMessage($message);
 		}
 		$body = wordwrap($body, 70);
-		$subject = $this->subject === null ? Yii::t('yii', 'Application Log') : $this->subject;
+		$subject = $this->subject === null ? \Yii::t('yii', 'Application Log') : $this->subject;
 		foreach ($this->emails as $email) {
 			$this->sendEmail($subject, $body, $email, $this->sentFrom, $this->headers);
 		}
@@ -71,6 +71,6 @@ class EmailTarget extends Target
 		if ($sentFrom !== null) {
 			$headers[] = "From:  {$sentFrom}";
 		}
-		mail($email, $subject, $body, implode("\r\n", $headers));
+		mail($sentTo, $subject, $body, implode("\r\n", $headers));
 	}
 }
