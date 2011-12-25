@@ -22,22 +22,9 @@ class QueryBuilder extends \yii\base\Object
 {
 	/**
 	 * @var array the abstract column types mapped to physical column types.
+	 * Child classes should override this property to declare possible type mappings.
 	 */
-	public $typeMap = array(
-		'pk' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-		'string' => 'varchar(255)',
-		'text' => 'text',
-		'integer' => 'int(11)',
-		'float' => 'float',
-		'decimal' => 'decimal',
-		'datetime' => 'datetime',
-		'timestamp' => 'timestamp',
-		'time' => 'time',
-		'date' => 'date',
-		'binary' => 'blob',
-		'boolean' => 'tinyint(1)',
-		'money' => 'decimal(19,4)',
-	);
+	public $typeMap = array();
 	/**
 	 * @var Connection the database connection.
 	 */

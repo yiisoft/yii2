@@ -61,8 +61,7 @@ use yii\db\Exception;
  *	 $connection->createCommand($sql2)->execute();
  *	 // ... executing other SQL statements ...
  *	 $transaction->commit();
- * }
- * catch(Exception $e) {
+ * } catch(Exception $e) {
  *	 $transaction->rollBack();
  * }
  * ~~~

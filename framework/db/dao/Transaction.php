@@ -27,8 +27,7 @@ use yii\db\Exception;
  *	 $connection->createCommand($sql2)->execute();
  *	 //.... other SQL executions
  *	 $transaction->commit();
- * }
- * catch(Exception $e) {
+ * } catch(Exception $e) {
  *	 $transaction->rollBack();
  * }
  * ~~~

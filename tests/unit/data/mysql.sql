@@ -43,18 +43,18 @@ CREATE TABLE yii_post
 (
 	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	title VARCHAR(128) NOT NULL,
-	create_time TIMESTAMP NOT NULL,
+	create_time INTEGER NOT NULL,
 	author_id INTEGER NOT NULL,
 	content TEXT,
 	CONSTRAINT FK_post_author FOREIGN KEY (author_id)
 		REFERENCES yii_user (id) ON DELETE CASCADE ON UPDATE RESTRICT
 ) TYPE=INNODB;
 
-INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 1','2000-01-01',1,'content 1');
-INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 2','2000-01-02',2,'content 2');
-INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 3','2000-01-03',2,'content 3');
-INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 4','2000-01-04',2,'content 4');
-INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 5','2000-01-05',3,'content 5');
+INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 1','1324854194',1,'content 1');
+INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 2','1324855194',2,'content 2');
+INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 3','1324856194',2,'content 3');
+INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 4','1324857194',2,'content 4');
+INSERT INTO yii_post (title, create_time, author_id, content) VALUES ('post 5','1324858194',3,'content 5');
 
 CREATE TABLE yii_comment
 (

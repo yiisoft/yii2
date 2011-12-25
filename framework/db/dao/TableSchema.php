@@ -15,16 +15,6 @@ namespace yii\db\dao;
  *
  * It may be extended by different DBMS driver to provide DBMS-specific table metadata.
  *
- * TableSchema provides the following information about a table:
- * <ul>
- * <li>{@link name}</li>
- * <li>{@link rawName}</li>
- * <li>{@link columns}</li>
- * <li>{@link primaryKey}</li>
- * <li>{@link foreignKeys}</li>
- * <li>{@link sequenceName}</li>
- * </ul>
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

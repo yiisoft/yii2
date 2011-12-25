@@ -77,6 +77,10 @@ class Query extends \yii\base\Object
 	public $union;
 
 
+	/**
+	 * @param Connection $connection
+	 * @return string
+	 */
 	public function getSql($connection)
 	{
 		return $connection->getQueryBuilder()->build($this);

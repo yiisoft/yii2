@@ -5,6 +5,7 @@ namespace yiiunit\framework\db\dao;
 use yii\db\dao\Connection;
 use yii\db\dao\Command;
 use yii\db\dao\Query;
+use yii\db\dao\DataReader;
 
 class CommandTest extends \yiiunit\MysqlTestCase
 {
@@ -15,7 +16,7 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$command = $db->createCommand();
 		$this->assertEquals("SELECT *\nFROM ", $command->sql);
 
-		$sql='SELECT * FROM posts';
+		$sql = 'SELECT * FROM yii_post';
 		$command = $db->createCommand($sql);
 		$this->assertEquals($sql, $command->sql);
 
@@ -23,7 +24,7 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$command = $db->createCommand($query);
 		$this->assertEquals($query, $command->query);
 
-		$query = array('select'=>'id', 'from'=>'posts');
+		$query = array('select' => 'id', 'from' => 'yii_post');
 		$command = $db->createCommand($query);
 		$this->assertEquals($query, $command->query->toArray());
 	}
@@ -44,248 +45,190 @@ class CommandTest extends \yiiunit\MysqlTestCase
 
 	function testGetSetSql()
 	{
+		$db = $this->getConnection(false);
 
+		$sql = 'SELECT * FROM yii_user';
+		$command = $db->createCommand($sql);
+		$this->assertEquals($sql, $command->sql);
+
+		$sql2 = 'SELECT * FROM yii_yii_post';
+		$command->sql = $sql2;
+		$this->assertEquals($sql2, $command->sql);
 	}
 
-	function testPrepare()
+	function testPrepareCancel()
 	{
+		$db = $this->getConnection(false);
 
-	}
-
-	function testBindParam()
-	{
-
-	}
-
-	function testBindValue()
-	{
-
+		$command = $db->createCommand('SELECT * FROM yii_user');
+		$this->assertEquals(null, $command->pdoStatement);
+		$command->prepare();
+		$this->assertNotEquals(null, $command->pdoStatement);
+		$command->cancel();
+		$this->assertEquals(null, $command->pdoStatement);
 	}
 
 	function testExecute()
 	{
+		$db = $this->getConnection();
 
+		$sql = 'INSERT INTO yii_comment(content,post_id,author_id) VALUES (\'test comment\', 1, 1)';
+		$command = $db->createCommand($sql);
+		$this->assertEquals(1, $command->execute());
+
+		$sql = 'SELECT COUNT(*) FROM yii_comment WHERE content=\'test comment\'';
+		$command = $db->createCommand($sql);
+		$this->assertEquals(1, $command->queryScalar());
+
+		$command = $db->createCommand('bad SQL');
+		$this->setExpectedException('\yii\db\Exception');
+		$command->execute();
 	}
 
 	function testQuery()
 	{
+		$db = $this->getConnection();
 
+		// query
+		$sql = 'SELECT * FROM yii_post';
+		$reader = $db->createCommand($sql)->query();
+		$this->assertTrue($reader instanceof DataReader);
+
+		// queryAll
+		$rows = $db->createCommand('SELECT * FROM yii_post')->queryAll();
+		$this->assertEquals(5, count($rows));
+		$row = $rows[2];
+		$this->assertEquals(3, $row['id']);
+		$this->assertEquals($row['title'], 'post 3');
+
+		$rows = $db->createCommand('SELECT * FROM yii_post WHERE id=10')->queryAll();
+		$this->assertEquals(array(), $rows);
+
+		// queryRow
+		$sql = 'SELECT * FROM yii_post';
+		$row = $db->createCommand($sql)->queryRow();
+		$this->assertEquals(1, $row['id']);
+		$this->assertEquals('post 1', $row['title'], 'post 1');
+
+		$sql = 'SELECT * FROM yii_post';
+		$command = $db->createCommand($sql);
+		$command->prepare();
+		$row = $command->queryRow();
+		$this->assertEquals(1, $row['id']);
+		$this->assertEquals('post 1', $row['title']);
+
+		$sql = 'SELECT * FROM yii_post WHERE id=10';
+		$command = $db->createCommand($sql);
+		$this->assertFalse($command->queryRow());
+
+		// queryColumn
+		$sql = 'SELECT * FROM yii_post';
+		$column = $db->createCommand($sql)->queryColumn();
+		$this->assertEquals(range(1, 5), $column);
+
+		$command = $db->createCommand('SELECT id FROM yii_post WHERE id=10');
+		$this->assertEquals(array(), $command->queryColumn());
+
+		// queryScalar
+		$sql = 'SELECT * FROM yii_post';
+		$this->assertEquals($db->createCommand($sql)->queryScalar(), 1);
+
+		$sql = 'SELECT id FROM yii_post';
+		$command = $db->createCommand($sql);
+		$command->prepare();
+		$this->assertEquals(1, $command->queryScalar());
+
+		$command = $db->createCommand('SELECT id FROM yii_post WHERE id=10');
+		$this->assertFalse($command->queryScalar());
+
+		$command = $db->createCommand('bad SQL');
+		$this->setExpectedException('\yii\db\Exception');
+		$command->query();
 	}
 
-	function testQueryRow()
+	function testBindParamValue()
 	{
+		$db = $this->getConnection();
 
-	}
+		// bindParam
+		$sql = 'INSERT INTO yii_post(title,create_time,author_id) VALUES (:title, :create_time, 1)';
+		$command = $db->createCommand($sql);
+		$title = 'test title';
+		$createTime = time();
+		$command->bindParam(':title', $title);
+		$command->bindParam(':create_time', $createTime);
+		$command->execute();
 
-	function testQueryAll()
-	{
+		$sql = 'SELECT create_time FROM yii_post WHERE title=:title';
+		$command = $db->createCommand($sql);
+		$command->bindParam(':title', $title);
+		$this->assertEquals($createTime, $command->queryScalar());
 
-	}
+		$sql = 'INSERT INTO yii_type (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)';
+		$command = $db->createCommand($sql);
+		$intCol = 123;
+		$charCol = 'abc';
+		$floatCol = 1.23;
+		$blobCol = "\x10\x11\x12";
+		$numericCol = '1.23';
+		$boolCol = false;
+		$command->bindParam(':int_col', $intCol);
+		$command->bindParam(':char_col', $charCol);
+		$command->bindParam(':float_col', $floatCol);
+		$command->bindParam(':blob_col', $blobCol);
+		$command->bindParam(':numeric_col', $numericCol);
+		$command->bindParam(':bool_col', $boolCol);
+		$this->assertEquals(1, $command->execute());
 
-	function testQueryColumn()
-	{
+		$sql = 'SELECT * FROM yii_type';
+		$row = $db->createCommand($sql)->queryRow();
+		$this->assertEquals($intCol, $row['int_col']);
+		$this->assertEquals($charCol, $row['char_col']);
+		$this->assertEquals($floatCol, $row['float_col']);
+		$this->assertEquals($blobCol, $row['blob_col']);
+		$this->assertEquals($numericCol, $row['numeric_col']);
 
-	}
+		// bindValue
+		$sql = 'INSERT INTO yii_comment(content,post_id,author_id) VALUES (:content, 1, 1)';
+		$command = $db->createCommand($sql);
+		$command->bindValue(':content', 'test comment');
+		$command->execute();
 
-	function testQueryScalar()
-	{
+		$sql = 'SELECT post_id FROM yii_comment WHERE content=:content';
+		$command = $db->createCommand($sql);
+		$command->bindValue(':content', 'test comment');
+		$this->assertEquals(1, $command->queryScalar());
 
+		// bind value via query or execute method
+		$sql = 'INSERT INTO yii_comment(content,post_id,author_id) VALUES (:content, 1, 1)';
+		$command = $db->createCommand($sql);
+		$command->execute(array(':content' => 'test comment2'));
+		$sql = 'SELECT post_id FROM yii_comment WHERE content=:content';
+		$command = $db->createCommand($sql);
+		$this->assertEquals(1, $command->queryScalar(array(':content' => 'test comment2')));
 	}
 
 	function testFetchMode()
 	{
+		$db = $this->getConnection();
 
-	}
-
-	/*
-	function testPrepare()
-	{
-		$sql='SELECT title FROM posts';
-		$command=$db->createCommand($sql);
-		$this->assertEquals($command->pdoStatement,null);
-		$command->prepare();
-		$this->assertTrue($command->pdoStatement instanceof PDOStatement);
-		$this->assertEquals($command->queryScalar(),'post 1');
-
-		$command->text='Bad SQL';
-		$this->setExpectedException('CException');
-		$command->prepare();
-	}
-
-	function testCancel()
-	{
-		$sql='SELECT title FROM posts';
-		$command=$db->createCommand($sql);
-		$command->prepare();
-		$this->assertTrue($command->pdoStatement instanceof PDOStatement);
-		$command->cancel();
-		$this->assertEquals($command->pdoStatement,null);
-	}
-
-	function testExecute()
-	{
-		$sql='INSERT INTO comments(content,post_id,author_id) VALUES (\'test comment\', 1, 1)';
-		$command=$db->createCommand($sql);
-		$this->assertEquals($command->execute(),1);
-		$this->assertEquals($command->execute(),1);
-		$command=$db->createCommand('SELECT * FROM comments WHERE content=\'test comment\'');
-		$this->assertEquals($command->execute(),0);
-		$command=$db->createCommand('SELECT COUNT(*) FROM comments WHERE content=\'test comment\'');
-		$this->assertEquals($command->queryScalar(),2);
-
-		$command=$db->createCommand('bad SQL');
-		$this->setExpectedException('CException');
-		$command->execute();
-	}
-
-	function testQuery()
-	{
-		$sql='SELECT * FROM posts';
-		$reader=$db->createCommand($sql)->query();
-		$this->assertTrue($reader instanceof CDbDataReader);
-
-		$sql='SELECT * FROM posts';
-		$command=$db->createCommand($sql);
-		$command->prepare();
-		$reader=$command->query();
-		$this->assertTrue($reader instanceof CDbDataReader);
-
-		$command=$db->createCommand('bad SQL');
-		$this->setExpectedException('CException');
-		$command->query();
-	}
-
-	function testBindParam()
-	{
-		$sql='INSERT INTO posts(title,create_time,author_id) VALUES (:title, :create_time, 1)';
-		$command=$db->createCommand($sql);
-		$title='test title';
-		$createTime=time();
-		$command->bindParam(':title',$title);
-		$command->bindParam(':create_time',$createTime);
-		$command->execute();
-
-		$sql='SELECT create_time FROM posts WHERE title=:title';
-		$command=$db->createCommand($sql);
-		$command->bindParam(':title',$title);
-		$this->assertEquals($command->queryScalar(),$createTime);
-
-		$sql='INSERT INTO types (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)';
-		$command=$db->createCommand($sql);
-		$intCol=123;
-		$charCol='abc';
-		$floatCol=1.23;
-		$blobCol="\x10\x11\x12";
-		$numericCol='1.23';
-		$boolCol=false;
-		$command->bindParam(':int_col',$intCol);
-		$command->bindParam(':char_col',$charCol);
-		$command->bindParam(':float_col',$floatCol);
-		$command->bindParam(':blob_col',$blobCol);
-		$command->bindParam(':numeric_col',$numericCol);
-		$command->bindParam(':bool_col',$boolCol);
-		$this->assertEquals(1,$command->execute());
-
-		$sql='SELECT * FROM types';
-		$row=$db->createCommand($sql)->queryRow();
-		$this->assertEquals($row['int_col'],$intCol);
-		$this->assertEquals($row['char_col'],$charCol);
-		$this->assertEquals($row['float_col'],$floatCol);
-		$this->assertEquals($row['blob_col'],$blobCol);
-		$this->assertEquals($row['numeric_col'],$numericCol);
-	}
-
-	function testBindValue()
-	{
-		$sql='INSERT INTO comments(content,post_id,author_id) VALUES (:content, 1, 1)';
-		$command=$db->createCommand($sql);
-		$command->bindValue(':content','test comment');
-		$command->execute();
-
-		$sql='SELECT post_id FROM comments WHERE content=:content';
-		$command=$db->createCommand($sql);
-		$command->bindValue(':content','test comment');
-		$this->assertEquals($command->queryScalar(),1);
-	}
-
-	function testQueryAll()
-	{
-		$rows=$db->createCommand('SELECT * FROM posts')->queryAll();
-		$this->assertEquals(count($rows),5);
-		$row=$rows[2];
-		$this->assertEquals($row['id'],3);
-		$this->assertEquals($row['title'],'post 3');
-
-		$rows=$db->createCommand('SELECT * FROM posts WHERE id=10')->queryAll();
-		$this->assertEquals($rows,array());
-	}
-
-	function testQueryRow()
-	{
-		$sql='SELECT * FROM posts';
-		$row=$db->createCommand($sql)->queryRow();
-		$this->assertEquals($row['id'],1);
-		$this->assertEquals($row['title'],'post 1');
-
-		$sql='SELECT * FROM posts';
-		$command=$db->createCommand($sql);
-		$command->prepare();
-		$row=$command->queryRow();
-		$this->assertEquals($row['id'],1);
-		$this->assertEquals($row['title'],'post 1');
-
-		$sql='SELECT * FROM posts WHERE id=10';
-		$command=$db->createCommand($sql);
-		$this->assertFalse($command->queryRow());
-
-		$command=$db->createCommand('bad SQL');
-		$this->setExpectedException('CException');
-		$command->queryRow();
-	}
-
-	function testQueryColumn()
-	{
-		$sql='SELECT * FROM posts';
-		$column=$db->createCommand($sql)->queryColumn();
-		$this->assertEquals($column,range(1,5));
-
-		$command=$db->createCommand('SELECT id FROM posts WHERE id=10');
-		$this->assertEquals($command->queryColumn(),array());
-
-		$command=$db->createCommand('bad SQL');
-		$this->setExpectedException('CException');
-		$command->queryColumn();
-	}
-
-	function testQueryScalar()
-	{
-		$sql='SELECT * FROM posts';
-		$this->assertEquals($db->createCommand($sql)->queryScalar(),1);
-
-		$sql='SELECT id FROM posts';
-		$command=$db->createCommand($sql);
-		$command->prepare();
-		$this->assertEquals($command->queryScalar(),1);
-
-		$command=$db->createCommand('SELECT id FROM posts WHERE id=10');
-		$this->assertFalse($command->queryScalar());
-
-		$command=$db->createCommand('bad SQL');
-		$this->setExpectedException('CException');
-		$command->queryScalar();
-	}
-
-	function testFetchMode(){
-		$sql='SELECT * FROM posts';
-		$command=$db->createCommand($sql);
+		// default: FETCH_ASSOC
+		$sql = 'SELECT * FROM yii_post';
+		$command = $db->createCommand($sql);
 		$result = $command->queryRow();
-		$this->assertTrue(is_array($result));
+		$this->assertTrue(is_array($result) && isset($result['id']));
 
-		$sql='SELECT * FROM posts';
-		$command=$db->createCommand($sql);
-		$command->setFetchMode(PDO::FETCH_OBJ);
+		// FETCH_OBJ, customized via fetchMode property
+		$sql = 'SELECT * FROM yii_post';
+		$command = $db->createCommand($sql);
+		$command->fetchMode = \PDO::FETCH_OBJ;
 		$result = $command->queryRow();
 		$this->assertTrue(is_object($result));
+
+		// FETCH_NUM, customized in query method
+		$sql = 'SELECT * FROM yii_post';
+		$command = $db->createCommand($sql);
+		$result = $command->queryRow(array(), \PDO::FETCH_NUM);
+		$this->assertTrue(is_array($result) && isset($result[0]));
 	}
-	*/
 }

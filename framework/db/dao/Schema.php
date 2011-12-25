@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -20,6 +20,22 @@ use yii\db\Exception;
  */
 abstract class Schema extends \yii\base\Object
 {
+	const TYPE_PK = 'pk';
+	const TYPE_STRING = 'string';
+	const TYPE_TEXT = 'text';
+	const TYPE_SMALLINT = 'smallint';
+	const TYPE_INTEGER = 'integer';
+	const TYPE_BIGINT = 'bigint';
+	const TYPE_FLOAT = 'float';
+	const TYPE_DECIMAL = 'decimal';
+	const TYPE_DATETIME = 'datetime';
+	const TYPE_TIMESTAMP = 'timestamp';
+	const TYPE_TIME = 'time';
+	const TYPE_DATE = 'date';
+	const TYPE_BINARY = 'binary';
+	const TYPE_BOOLEAN = 'boolean';
+	const TYPE_MONEY = 'money';
+
 	/**
 	 * @var \yii\db\dao\Connection the database connection
 	 */
@@ -38,7 +54,7 @@ abstract class Schema extends \yii\base\Object
 
 	/**
 	 * Constructor.
-	 * @param CDbConnection $connection database connection.
+	 * @param Connection $connection database connection.
 	 */
 	public function __construct($connection)
 	{
@@ -48,7 +64,7 @@ abstract class Schema extends \yii\base\Object
 	/**
 	 * Obtains the metadata for the named table.
 	 * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-	 * @return CDbTableSchema table metadata. Null if the named table does not exist.
+	 * @return TableSchema table metadata. Null if the named table does not exist.
 	 */
 	public function getTableSchema($name)
 	{

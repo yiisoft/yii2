@@ -163,8 +163,7 @@ class Command extends \yii\base\Component
 			$sql = $this->getSql();
 			try {
 				$this->pdoStatement = $this->connection->pdo->prepare($sql);
-			}
-			catch (\Exception $e) {
+			} catch (\Exception $e) {
 				\Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 				throw new Exception($e->getMessage(), (int)$e->getCode(), $errorInfo);
@@ -289,8 +288,7 @@ class Command extends \yii\base\Component
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			return $n;
-		}
-		catch (Exception $e) {
+		} catch (\Exception $e) {
 			if ($this->connection->enableProfiling) {
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
@@ -360,7 +358,7 @@ class Command extends \yii\base\Component
 	 */
 	public function queryScalar($params = array())
 	{
-		$result = $this->queryInternal('fetchColumn', $params);
+		$result = $this->queryInternal('fetchColumn', $params, 0);
 		if (is_resource($result) && get_resource_type($result) === 'stream') {
 			return stream_get_contents($result);
 		} else {
@@ -452,8 +450,7 @@ class Command extends \yii\base\Component
 			}
 
 			return $result;
-		}
-		catch (Exception $e) {
+		} catch (\Exception $e) {
 			if ($db->enableProfiling) {
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}

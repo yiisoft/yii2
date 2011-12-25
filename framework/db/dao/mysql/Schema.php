@@ -10,6 +10,8 @@
 
 namespace yii\db\dao\mysql;
 
+use yii\db\dao\TableSchema;
+
 /**
  * Schema is the class for retrieving metadata information from a MySQL database (version 4.1.x and 5.x).
  *
@@ -43,7 +45,7 @@ class Schema extends \yii\db\dao\Schema
 	/**
 	 * Loads the metadata for the specified table.
 	 * @param string $name table name
-	 * @return TableSchema driver dependent table metadata. Null if the table does not exist.
+	 * @return \yii\db\dao\TableSchema driver dependent table metadata. Null if the table does not exist.
 	 */
 	protected function loadTableSchema($name)
 	{
@@ -58,7 +60,7 @@ class Schema extends \yii\db\dao\Schema
 
 	/**
 	 * Generates various kinds of table names.
-	 * @param CMysqlTableSchema $table the table instance
+	 * @param \yii\db\dao\TableSchema $table the table instance
 	 * @param string $name the unquoted table name
 	 */
 	protected function resolveTableNames($table, $name)
@@ -96,7 +98,7 @@ class Schema extends \yii\db\dao\Schema
 
 	/**
 	 * Collects the table column metadata.
-	 * @param CMysqlTableSchema $table the table metadata
+	 * @param \yii\db\dao\TableSchema $table the table metadata
 	 * @return boolean whether the table exists in the database
 	 */
 	protected function findColumns($table)
@@ -128,7 +130,7 @@ class Schema extends \yii\db\dao\Schema
 
 	/**
 	 * Collects the foreign key column details for the given table.
-	 * @param CMysqlTableSchema $table the table metadata
+	 * @param \yii\db\dao\TableSchema $table the table metadata
 	 */
 	protected function findConstraints($table)
 	{

@@ -32,7 +32,7 @@ class ColumnSchema extends \yii\base\Component
 	public $allowNull;
 	/**
 	 * @var string logical type of this column. Possible logic types include:
-	 * string, text, boolean, smallint, integer, bigint, float, decimal, datetime, timestamp, time, date, binary
+	 * string, text, boolean, smallint, integer, bigint, float, decimal, datetime, timestamp, time, date, binary, money
 	 */
 	public $type;
 	/**

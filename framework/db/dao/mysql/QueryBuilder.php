@@ -21,22 +21,22 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	/**
 	 * @var array the abstract column types mapped to physical column types.
 	 */
-    public $columnTypes = array(
-        'pk' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        'string' => 'varchar(255)',
-        'text' => 'text',
-		'smallint' => 'smallint',
-        'integer' => 'int(11)',
-		'bigint'=> 'bigint',
-        'boolean' => 'tinyint(1)',
-        'float' => 'float',
-        'decimal' => 'decimal',
-		'money' => 'decimal(19,4)',
-        'datetime' => 'datetime',
-        'timestamp' => 'timestamp',
-        'time' => 'time',
-        'date' => 'date',
-        'binary' => 'blob',
+    public $typeMap = array(
+		Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		Schema::TYPE_STRING => 'varchar(255)',
+		Schema::TYPE_TEXT => 'text',
+		Schema::TYPE_SMALLINT => 'smallint(6)',
+		Schema::TYPE_INTEGER => 'int(11)',
+		Schema::TYPE_BIGINT => 'bigint(20)',
+		Schema::TYPE_FLOAT => 'float',
+		Schema::TYPE_DECIMAL => 'decimal',
+		Schema::TYPE_DATETIME => 'datetime',
+		Schema::TYPE_TIMESTAMP => 'timestamp',
+		Schema::TYPE_TIME => 'time',
+		Schema::TYPE_DATE => 'date',
+		Schema::TYPE_BINARY => 'blob',
+		Schema::TYPE_BOOLEAN => 'tinyint(1)',
+		Schema::TYPE_MONEY => 'decimal(19,4)',
     );
 
 	/**
