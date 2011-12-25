@@ -88,8 +88,7 @@ class QueryBuilder extends \yii\base\Object
 				foreach ($value->params as $n => $v) {
 					$params[$n] = $v;
 				}
-			}
-			else {
+			} else {
 				$placeholders[] = ':p' . $count;
 				$params[':p' . $count] = $value;
 				$count++;
@@ -121,8 +120,7 @@ class QueryBuilder extends \yii\base\Object
 				foreach ($value->params as $n => $v) {
 					$params[$n] = $v;
 				}
-			}
-			else {
+			} else {
 				$lines[] = $this->schema->quoteSimpleColumnName($name) . '=:p' . $count;
 				$params[':p' . $count] = $value;
 				$count++;
@@ -175,8 +173,7 @@ class QueryBuilder extends \yii\base\Object
 		foreach ($columns as $name => $type) {
 			if (is_string($name)) {
 				$cols[] = "\t" . $this->schema->quoteColumnName($name) . ' ' . $this->schema->getColumnType($type);
-			}
-			else
+			} else
 			{
 				$cols[] = "\t" . $type;
 			}
@@ -340,8 +337,7 @@ class QueryBuilder extends \yii\base\Object
 		{
 			if (strpos($col, '(') !== false) {
 				$cols[] = $col;
-			}
-			else
+			} else
 			{
 				$cols[] = $this->schema->quoteColumnName($col);
 			}
@@ -413,12 +409,10 @@ class QueryBuilder extends \yii\base\Object
 	{
 		if (isset($this->typeMap[$type])) {
 			return $this->typeMap[$type];
-		}
-		elseif (($pos = strpos($type, ' ')) !== false) {
+		} elseif (($pos = strpos($type, ' ')) !== false) {
 			$t = substr($type, 0, $pos);
 			return (isset($this->typeMap[$t]) ? $this->typeMap[$t] : $t) . substr($type, $pos);
-		}
-		else {
+		} else {
 			return $type;
 		}
 	}
@@ -445,12 +439,10 @@ class QueryBuilder extends \yii\base\Object
 		foreach ($columns as $i => $column) {
 			if (is_object($column)) {
 				$columns[$i] = (string)$column;
-			}
-			elseif (strpos($column, '(') === false) {
+			} elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-\.])$/', $column, $matches)) {
 					$columns[$i] = $this->connection->quoteColumnName($matches[1]) . ' AS ' . $this->connection->quoteSimpleColumnName($matches[2]);
-				}
-				else {
+				} else {
 					$columns[$i] = $this->connection->quoteColumnName($column);
 				}
 			}
@@ -473,8 +465,7 @@ class QueryBuilder extends \yii\base\Object
 			if (strpos($table, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
 					$tables[$i] = $this->connection->quoteTableName($matches[1]) . ' ' . $this->connection->quoteTableName($matches[2]);
-				}
-				else {
+				} else {
 					$tables[$i] = $this->connection->quoteTableName($table);
 				}
 			}
@@ -500,8 +491,7 @@ class QueryBuilder extends \yii\base\Object
 					if (strpos($table, '(') === false) {
 						if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
 							$table = $this->connection->quoteTableName($matches[1]) . ' ' . $this->connection->quoteTableName($matches[2]);
-						}
-						else {
+						} else {
 							$table = $this->connection->quoteTableName($table);
 						}
 					}
@@ -510,8 +500,7 @@ class QueryBuilder extends \yii\base\Object
 						$condition = $this->buildCondition($join[2]);
 						$joins[$i] .= ' ON ' . $condition;
 					}
-				}
-				else {
+				} else {
 					throw new Exception('The join clause may be specified as an array of at least two elements.');
 				}
 			}
@@ -542,8 +531,7 @@ class QueryBuilder extends \yii\base\Object
 		foreach ($columns as $i => $column) {
 			if (is_object($column)) {
 				$columns[$i] = (string)$column;
-			}
-			elseif (strpos($column, '(') === false) {
+			} elseif (strpos($column, '(') === false) {
 				$columns[$i] = $this->connection->quoteColumnName($column);
 			}
 		}
@@ -572,12 +560,10 @@ class QueryBuilder extends \yii\base\Object
 		foreach ($columns as $i => $column) {
 			if (is_object($column)) {
 				$columns[$i] = (string)$column;
-			}
-			elseif (strpos($column, '(') === false) {
+			} elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
 					$columns[$i] = $this->connection->quoteColumnName($matches[1]) . ' ' . strtoupper($matches[2]);
-				}
-				else {
+				} else {
 					$columns[$i] = $this->connection->quoteColumnName($column);
 				}
 			}
@@ -618,8 +604,7 @@ class QueryBuilder extends \yii\base\Object
 	{
 		if (!is_array($conditions)) {
 			return $conditions;
-		}
-		elseif ($conditions === array()) {
+		} elseif ($conditions === array()) {
 			return '';
 		}
 
@@ -657,8 +642,7 @@ class QueryBuilder extends \yii\base\Object
 			foreach ($values as $i => $value) {
 				if (is_string($value)) {
 					$values[$i] = $this->connection->quoteValue($value);
-				}
-				else {
+				} else {
 					$values[$i] = (string)$value;
 				}
 			}
@@ -672,8 +656,7 @@ class QueryBuilder extends \yii\base\Object
 
 			if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
 				$andor = ' AND ';
-			}
-			else {
+			} else {
 				$andor = ' OR ';
 				$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
 			}

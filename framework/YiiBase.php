@@ -386,6 +386,8 @@ class YiiBase
 		if ($object instanceof \yii\base\Initable) {
 			$object->init();
 		}
+
+		return $object;
 	}
 
 	/**

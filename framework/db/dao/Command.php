@@ -44,6 +44,8 @@ use yii\db\Exception;
  *	 ->queryRow();
  * ~~~
  *
+ * @property string $sql the SQL statement to be executed
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -93,13 +95,11 @@ class Command extends \yii\base\Component
 		$this->connection = $connection;
 		if (is_object($query)) {
 			$this->query = $query;
-		}
-		else {
+		} else {
 			$this->query = new Query;
 			if (is_array($query)) {
 				$this->query->fromArray($query);
-			}
-			else {
+			} else {
 				$this->_sql = $query;
 			}
 		}
@@ -200,14 +200,11 @@ class Command extends \yii\base\Component
 		$this->prepare();
 		if ($dataType === null) {
 			$this->pdoStatement->bindParam($name, $value, $this->connection->getPdoType(gettype($value)));
-		}
-		elseif ($length === null) {
+		} elseif ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
-		}
-		elseif ($driverOptions === null) {
+		} elseif ($driverOptions === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length);
-		}
-		else {
+		} else {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
 		}
 		$this->_params[$name] =& $value;
@@ -230,8 +227,7 @@ class Command extends \yii\base\Component
 		$this->prepare();
 		if ($dataType === null) {
 			$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
-		}
-		else {
+		} else {
 			$this->pdoStatement->bindValue($name, $value, $dataType);
 		}
 		$this->_params[$name] = $value;
@@ -270,8 +266,7 @@ class Command extends \yii\base\Component
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
-		}
-		else {
+		} else {
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
@@ -285,8 +280,7 @@ class Command extends \yii\base\Component
 			$this->prepare();
 			if ($params === array()) {
 				$this->pdoStatement->execute();
-			}
-			else {
+			} else {
 				$this->pdoStatement->execute($params);
 			}
 			$n = $this->pdoStatement->rowCount();
@@ -369,8 +363,7 @@ class Command extends \yii\base\Component
 		$result = $this->queryInternal('fetchColumn', $params);
 		if (is_resource($result) && get_resource_type($result) === 'stream') {
 			return stream_get_contents($result);
-		}
-		else {
+		} else {
 			return $result;
 		}
 	}
@@ -408,8 +401,7 @@ class Command extends \yii\base\Component
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
-		}
-		else {
+		} else {
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
@@ -436,15 +428,13 @@ class Command extends \yii\base\Component
 			$this->prepare();
 			if ($params === array()) {
 				$this->pdoStatement->execute();
-			}
-			else {
+			} else {
 				$this->pdoStatement->execute($params);
 			}
 
 			if ($method === '') {
 				$result = new DataReader($this);
-			}
-			else {
+			} else {
 				if ($fetchMode === null) {
 					$fetchMode = $this->fetchMode;
 				}

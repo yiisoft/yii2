@@ -54,8 +54,7 @@ class UrlValidator extends Validator
 		}
 		if (($value = $this->validateValue($value)) !== false) {
 			$object->$attribute = $value;
-		}
-		else {
+		} else {
 			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is not a valid URL.');
 			$this->addError($object, $attribute, $message);
 		}
@@ -78,8 +77,7 @@ class UrlValidator extends Validator
 
 			if (strpos($this->pattern, '{schemes}') !== false) {
 				$pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
-			}
-			else {
+			} else {
 				$pattern = $this->pattern;
 			}
 

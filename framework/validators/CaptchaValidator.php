@@ -66,8 +66,7 @@ class CaptchaValidator extends Validator
 				list($controller, $actionID) = $ca;
 				$action = $controller->createAction($actionID);
 			}
-		}
-		else {
+		} else {
 			$action = Yii::app()->getController()->createAction($this->captchaAction);
 		}
 

@@ -137,13 +137,11 @@ abstract class Validator extends \yii\base\Component
 		if (isset($params['on'])) {
 			if (is_array($params['on'])) {
 				$on = $params['on'];
-			}
-			else {
+			} else {
 				$on = preg_split('/[\s,]+/', $params['on'], -1, PREG_SPLIT_NO_EMPTY);
 			}
 			$params['on'] = empty($on) ? array() : array_combine($on, $on);
-		}
-		else {
+		} else {
 			$params['on'] = array();
 		}
 
@@ -153,8 +151,7 @@ abstract class Validator extends \yii\base\Component
 				'method' => $type,
 				'attributes' => $attributes,
 			);
-		}
-		else {
+		} else {
 			if (is_string($type) && isset(self::$builtInValidators[$type])) {
 				$type = self::$builtInValidators[$type];
 			}
@@ -181,8 +178,7 @@ abstract class Validator extends \yii\base\Component
 	{
 		if (is_array($attributes)) {
 			$attributes = array_intersect($this->attributes, $attributes);
-		}
-		else {
+		} else {
 			$attributes = $this->attributes;
 		}
 		foreach ($attributes as $attribute) {

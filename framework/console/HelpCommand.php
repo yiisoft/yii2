@@ -54,15 +54,13 @@ class HelpCommand extends Command
 				echo ' - '.implode("\n - ",$commandNames);
 				echo "\n\nTo see individual command help, use the following:\n";
 				echo "   ".$runner->getScriptName()." help <command-name>\n";
-			}
-			else
+			} else
 			{
 				echo "No available commands.\n";
 				echo "Please define them under the following directory:\n";
 				echo "\t".\Yii::$app->getCommandPath()."\n";
 			}
-		}
-		else
+		} else
 			echo $runner->createCommand($name)->getHelp();
 	}
 

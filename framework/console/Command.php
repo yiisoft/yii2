@@ -103,8 +103,7 @@ abstract class Command extends \yii\base\Component
 					$params[]=$options[$name];
 				else
 					$this->usageError("Option --$name requires a scalar. Array is given.");
-			}
-			else if($name==='args')
+			} else if($name==='args')
 				$params[]=$args;
 			else if($param->isDefaultValueAvailable())
 				$params[]=$param->getDefaultValue();
@@ -183,11 +182,9 @@ abstract class Command extends \yii\base\Component
 					if(!is_array($options[$name]))
 						$options[$name]=array($options[$name]);
 					$options[$name][]=$value;
-				}
-				else
+				} else
 					$options[$name]=$value;
-			}
-			else if(isset($action))
+			} else if(isset($action))
 				$params[]=$arg;
 			else
 				$action=$arg;
@@ -299,8 +296,7 @@ abstract class Command extends \yii\base\Component
 			ob_implicit_flush(false);
 			require($_viewFile_);
 			return ob_get_clean();
-		}
-		else
+		} else
 			require($_viewFile_);
 	}
 
@@ -317,8 +313,7 @@ abstract class Command extends \yii\base\Component
 			$input = readline($message.' ');
 			readline_add_history($input);
 			return $input;
-		}
-		else
+		} else
 		{
 			echo $message.' ';
 			return trim(fgets(STDIN));

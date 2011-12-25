@@ -77,8 +77,7 @@ class CompareValidator extends Validator
 		}
 		if ($this->compareValue !== null) {
 			$compareTo = $compareValue = $this->compareValue;
-		}
-		else {
+		} else {
 			$compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
 			$compareValue = $object->$compareAttribute;
 			$compareTo = $object->getAttributeLabel($compareAttribute);
@@ -138,8 +137,7 @@ class CompareValidator extends Validator
 		if ($this->compareValue !== null) {
 			$compareTo = $this->compareValue;
 			$compareValue = json_encode($this->compareValue);
-		}
-		else {
+		} else {
 			$compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
 			$compareValue = "\$('#" . (CHtml::activeId($object, $compareAttribute)) . "').val()";
 			$compareTo = $object->getAttributeLabel($compareAttribute);

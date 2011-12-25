@@ -79,15 +79,13 @@ class File
 					{
 						echo "  overwrite $name\n";
 						$overwriteAll=true;
-					}
-					else
+					} else
 					{
 						echo "       skip $name\n";
 						continue;
 					}
 				}
-			}
-			else
+			} else
 			{
 				$this->ensureDirectory(dirname($target));
 				echo "   generate $name\n";

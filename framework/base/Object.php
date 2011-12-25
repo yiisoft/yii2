@@ -85,8 +85,7 @@ class Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
 			return $this->$getter();
-		}
-		else {
+		} else {
 			throw new Exception('Getting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -106,11 +105,9 @@ class Object
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {
 			$this->$setter($value);
-		}
-		elseif (method_exists($this, 'get' . $name)) {
+		} elseif (method_exists($this, 'get' . $name)) {
 			throw new Exception('Setting read-only property: ' . get_class($this) . '.' . $name);
-		}
-		else {
+		} else {
 			throw new Exception('Setting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -130,8 +127,7 @@ class Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // property is not null
 			return $this->$getter() !== null;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -152,8 +148,7 @@ class Object
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) { // write property
 			$this->$setter(null);
-		}
-		elseif (method_exists($this, 'get' . $name)) {
+		} elseif (method_exists($this, 'get' . $name)) {
 			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -254,8 +249,7 @@ class Object
 		if (is_string($_expression_)) {
 			extract($_data_);
 			return eval('return ' . $_expression_ . ';');
-		}
-		else {
+		} else {
 			$_data_[] = $this;
 			return call_user_func_array($_expression_, $_data_);
 		}
@@ -321,17 +315,13 @@ class Object
 
 		if ($n === 0) {
 			$object = new $class;
-		}
-		elseif ($n === 1) {
+		} elseif ($n === 1) {
 			$object = new $class($args[0]);
-		}
-		elseif ($n === 2) {
+		} elseif ($n === 2) {
 			$object = new $class($args[0], $args[1]);
-		}
-		elseif ($n === 3) {
+		} elseif ($n === 3) {
 			$object = new $class($args[0], $args[1], $args[2]);
-		}
-		else {
+		} else {
 			$r = new \ReflectionClass($class);
 			$object = $r->newInstanceArgs($args);
 		}

@@ -55,8 +55,7 @@ class CommandRunner extends \yii\base\Component
 		{
 			$name=$args[0];
 			array_shift($args);
-		}
-		else
+		} else
 			$name='help';
 
 		if(($command=$this->createCommand($name))===null)
@@ -126,15 +125,12 @@ class CommandRunner extends \yii\base\Component
 					$className=substr(basename($this->commands[$name]),0,-4);
 					if(!class_exists($className,false))
 						require_once($this->commands[$name]);
-				}
-				else // an alias
+				} else // an alias
 					$className=\Yii::import($this->commands[$name]);
 				return new $className($name,$this);
-			}
-			else // an array configuration
+			} else // an array configuration
 				return \Yii::create($this->commands[$name],$name,$this);
-		}
-		else if($name==='help')
+		} else if($name==='help')
 			return new HelpCommand('help',$this);
 		else
 			return null;

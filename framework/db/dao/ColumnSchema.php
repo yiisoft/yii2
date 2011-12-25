@@ -94,8 +94,7 @@ class ColumnSchema extends \yii\base\Component
 		if (isset($typeMap[$this->type])) {
 			if ($this->type === 'bigint') {
 				return PHP_INT_SIZE == 8 && !$this->unsigned ? 'integer' : 'string';
-			}
-			elseif ($this->type === 'integer') {
+			} elseif ($this->type === 'integer') {
 				return PHP_INT_SIZE == 4 && $this->unsigned ? 'string' : 'integer';
 			}
 			return $typeMap[$this->type];

@@ -103,11 +103,9 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	{
 		if (isset($this->_d[$index])) {
 			return $this->_d[$index];
-		}
-		elseif ($index >= 0 && $index < $this->_c) { // in case the value is null
+		} elseif ($index >= 0 && $index < $this->_c) { // in case the value is null
 			return $this->_d[$index];
-		}
-		else {
+		} else {
 			throw new Exception('Index out of range: ' . $index);
 		}
 	}
@@ -136,12 +134,10 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	{
 		if ($index === $this->_c) {
 			$this->_d[$this->_c++] = $item;
-		}
-		elseif ($index >= 0 && $index < $this->_c) {
+		} elseif ($index >= 0 && $index < $this->_c) {
 			array_splice($this->_d, $index, 0, array($item));
 			$this->_c++;
-		}
-		else {
+		} else {
 			throw new Exception('Index out of range: ' . $index);
 		}
 	}
@@ -160,8 +156,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 		if (($index = $this->indexOf($item)) >= 0) {
 			$this->removeAt($index);
 			return $index;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -178,14 +173,12 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 			$this->_c--;
 			if ($index === $this->_c) {
 				return array_pop($this->_d);
-			}
-			else {
+			} else {
 				$item = $this->_d[$index];
 				array_splice($this->_d, $index, 1);
 				return $item;
 			}
-		}
-		else {
+		} else {
 			throw new Exception('Index out of range: ' . $index);
 		}
 	}
@@ -202,8 +195,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 			for ($i = $this->_c - 1; $i >= 0; --$i) {
 				$this->removeAt($i);
 			}
-		}
-		else {
+		} else {
 			$this->_d = array();
 			$this->_c = 0;
 		}
@@ -260,8 +252,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 			foreach ($data as $item) {
 				$this->add($item);
 			}
-		}
-		else {
+		} else {
 			throw new Exception('Data must be either an array or an object implementing Traversable.');
 		}
 	}
@@ -281,8 +272,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 			foreach ($data as $item) {
 				$this->add($item);
 			}
-		}
-		else {
+		} else {
 			throw new Exception('Data must be either an array or an object implementing Traversable.');
 		}
 	}
@@ -328,8 +318,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	{
 		if ($offset === null || $offset === $this->_c) {
 			$this->insertAt($this->_c, $item);
-		}
-		else {
+		} else {
 			$this->removeAt($offset);
 			$this->insertAt($offset, $item);
 		}

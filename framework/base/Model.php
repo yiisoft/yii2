@@ -367,8 +367,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 			if (isset($rule[0], $rule[1])) { // attributes, validator type
 				$validator = \yii\validators\Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
 				$validators->add($validator);
-			}
-			else {
+			} else {
 				throw new Exception('Invalid validation rule: a rule must specify both attribute names and validator type.');
 			}
 		}
@@ -456,8 +455,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	{
 		if ($attribute === null) {
 			return $this->_errors === null ? array() : $this->_errors;
-		}
-		else {
+		} else {
 			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
 		}
 	}
@@ -496,8 +494,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 				foreach ($error as $e) {
 					$this->_errors[$attribute][] = $e;
 				}
-			}
-			else {
+			} else {
 				$this->_errors[$attribute][] = $error;
 			}
 		}
@@ -511,8 +508,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	{
 		if ($attribute === null) {
 			$this->_errors = array();
-		}
-		else {
+		} else {
 			unset($this->_errors[$attribute]);
 		}
 	}
@@ -547,8 +543,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 					$values[$name] = $this->$name;
 				}
 			}
-		}
-		else {
+		} else {
 			foreach ($this->attributeNames() as $name) {
 				$values[$name] = $this->$name;
 			}
@@ -572,8 +567,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 			foreach ($values as $name => $value) {
 				if (isset($attributes[$name])) {
 					$this->$name = $value;
-				}
-				elseif ($safeOnly) {
+				} elseif ($safeOnly) {
 					$this->onUnsafeAttribute($name, $value);
 				}
 			}
@@ -639,8 +633,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 				foreach ($validator->attributes as $name) {
 					$unsafe[] = $name;
 				}
-			}
-			else {
+			} else {
 				foreach ($validator->attributes as $name) {
 					$attributes[$name] = true;
 				}

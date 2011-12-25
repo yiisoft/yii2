@@ -88,8 +88,7 @@ abstract class Module extends Component
 	{
 		if ($this->hasComponent($name)) {
 			return $this->getComponent($name);
-		}
-		else {
+		} else {
 			return parent::__get($name);
 		}
 	}
@@ -105,8 +104,7 @@ abstract class Module extends Component
 	{
 		if ($this->hasComponent($name)) {
 			return $this->getComponent($name) !== null;
-		}
-		else {
+		} else {
 			return parent::__isset($name);
 		}
 	}
@@ -176,8 +174,7 @@ abstract class Module extends Component
 	{
 		if ($this->_modulePath !== null) {
 			return $this->_modulePath;
-		}
-		else {
+		} else {
 			return $this->_modulePath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'modules';
 		}
 	}
@@ -248,8 +245,7 @@ abstract class Module extends Component
 	{
 		if (isset($this->_modules[$id]) || array_key_exists($id, $this->_modules)) {
 			return $this->_modules[$id];
-		}
-		elseif (isset($this->_moduleConfig[$id]))
+		} elseif (isset($this->_moduleConfig[$id]))
 		{
 			$config = $this->_moduleConfig[$id];
 			if (!isset($config['enabled']) || $config['enabled']) {
@@ -258,8 +254,7 @@ abstract class Module extends Component
 				unset($config['class'], $config['enabled']);
 				if ($this === \Yii::$app) {
 					$module = \Yii::createObject($class, $id, null, $config);
-				}
-				else
+				} else
 				{
 					$module = \Yii::createObject($class, $this->getId() . '/' . $id, $this, $config);
 				}
@@ -328,8 +323,7 @@ abstract class Module extends Component
 
 			if (isset($this->_moduleConfig[$id])) {
 				$this->_moduleConfig[$id] = CMap::mergeArray($this->_moduleConfig[$id], $module);
-			}
-			else
+			} else
 			{
 				$this->_moduleConfig[$id] = $module;
 			}
@@ -358,8 +352,7 @@ abstract class Module extends Component
 	{
 		if (isset($this->_components[$id])) {
 			return $this->_components[$id];
-		}
-		elseif (isset($this->_componentConfig[$id]) && $createIfNull)
+		} elseif (isset($this->_componentConfig[$id]) && $createIfNull)
 		{
 			$config = $this->_componentConfig[$id];
 			if (!isset($config['enabled']) || $config['enabled']) {
@@ -383,8 +376,7 @@ abstract class Module extends Component
 	{
 		if ($component === null) {
 			unset($this->_components[$id]);
-		}
-		else {
+		} else {
 			$this->_components[$id] = $component;
 			if (!$component->getIsInitialized()) {
 				$component->init();
@@ -404,8 +396,7 @@ abstract class Module extends Component
 	{
 		if ($loadedOnly) {
 			return $this->_components;
-		}
-		else {
+		} else {
 			return array_merge($this->_componentConfig, $this->_components);
 		}
 	}
@@ -447,12 +438,10 @@ abstract class Module extends Component
 		{
 			if ($component instanceof IApplicationComponent) {
 				$this->setComponent($id, $component);
-			}
-			elseif (isset($this->_componentConfig[$id]) && $merge)
+			} elseif (isset($this->_componentConfig[$id]) && $merge)
 			{
 				$this->_componentConfig[$id] = CMap::mergeArray($this->_componentConfig[$id], $component);
-			}
-			else
+			} else
 			{
 				$this->_componentConfig[$id] = $component;
 			}

@@ -69,8 +69,7 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 						$values[$i] = trim($value, "'");
 					}
 					$this->enumValues = $values;
-				}
-				else {
+				} else {
 					$values = explode(',', $matches[2]);
 					$this->size = $this->precision = (int)$values[0];
 					if (isset($values[1])) {
@@ -78,12 +77,10 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 					}
 					if ($this->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
 						$this->type = 'boolean';
-					}
-					elseif ($type === 'bit') {
+					} elseif ($type === 'bit') {
 						if ($this->size > 32) {
 							$this->type = 'bigint';
-						}
-						elseif ($this->size === 32) {
+						} elseif ($this->size === 32) {
 							$this->type = 'integer';
 						}
 					}
@@ -103,8 +100,7 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 	{
 		if ($this->type === 'timestamp' && $defaultValue === 'CURRENT_TIMESTAMP') {
 			$this->defaultValue = null;
-		}
-		else {
+		} else {
 			$this->defaultValue = $this->typecast($defaultValue);
 		}
 	}

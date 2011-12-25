@@ -83,8 +83,7 @@ class StringValidator extends Validator
 
 		if (function_exists('mb_strlen') && $this->encoding !== false) {
 			$length = mb_strlen($value, $this->encoding ? $this->encoding : Yii::app()->charset);
-		}
-		else {
+		} else {
 			$length = strlen($value);
 		}
 

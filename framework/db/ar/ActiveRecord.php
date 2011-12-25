@@ -265,8 +265,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			if ($exists)
 				$save = $this->_related[$name];
 			$r = array($name => $params);
-		}
-		else
+		} else
 			$r = $name;
 		unset($this->_related[$name]);
 
@@ -291,8 +290,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			else
 				unset($this->_related[$name]);
 			return $results;
-		}
-		else
+		} else
 			return $this->_related[$name];
 	}
 
@@ -597,8 +595,7 @@ abstract class ActiveRecord extends \yii\base\Model
 					break;
 			}
 			return $model->getAttributeLabel($name);
-		}
-		else
+		} else
 			return $this->generateAttributeLabel($attribute);
 	}
 
@@ -720,8 +717,7 @@ abstract class ActiveRecord extends \yii\base\Model
 				else
 					$this->_related[$name][$index] = $record;
 			}
-		}
-		elseif (!isset($this->_related[$name]))
+		} elseif (!isset($this->_related[$name]))
 			$this->_related[$name] = $record;
 	}
 
@@ -755,8 +751,7 @@ abstract class ActiveRecord extends \yii\base\Model
 					$attrs[$name] = isset($attributes[$name]) ? $attributes[$name] : null;
 			}
 			return $attrs;
-		}
-		else
+		} else
 			return $attributes;
 	}
 
@@ -890,8 +885,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			$event = new CModelEvent($this);
 			$this->onBeforeSave($event);
 			return $event->isValid;
-		}
-		else
+		} else
 			return true;
 	}
 
@@ -921,8 +915,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			$event = new CModelEvent($this);
 			$this->onBeforeDelete($event);
 			return $event->isValid;
-		}
-		else
+		} else
 			return true;
 	}
 
@@ -1063,8 +1056,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			$this->_pk = $this->getPrimaryKey();
 			$this->afterSave();
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
 
@@ -1105,11 +1097,9 @@ abstract class ActiveRecord extends \yii\base\Model
 			{
 				$this->_pk = $this->getPrimaryKey();
 				return true;
-			}
-			else
+			} else
 				return false;
-		}
-		else
+		} else
 			throw new CDbException(Yii::t('yii', 'The active record cannot be updated because it is new.'));
 	}
 
@@ -1139,8 +1129,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			foreach ($counters as $name => $value)
 				$this->$name = $this->$name + $value;
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
 
@@ -1159,11 +1148,9 @@ abstract class ActiveRecord extends \yii\base\Model
 				$result = $this->deleteByPk($this->getPrimaryKey()) > 0;
 				$this->afterDelete();
 				return $result;
-			}
-			else
+			} else
 				return false;
-		}
-		else
+		} else
 			throw new CDbException(Yii::t('yii', 'The active record cannot be deleted because it is new.'));
 	}
 
@@ -1186,8 +1173,7 @@ abstract class ActiveRecord extends \yii\base\Model
 					$this->_attributes[$name] = $record->$name;
 			}
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
 
@@ -1218,8 +1204,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			foreach ($table->primaryKey as $name)
 				$values[$name] = $this->$name;
 			return $values;
-		}
-		else
+		} else
 			return null;
 	}
 
@@ -1281,8 +1266,7 @@ abstract class ActiveRecord extends \yii\base\Model
 				$criteria->limit = 1;
 			$command = $this->getCommandBuilder()->createFindCommand($this->getTableSchema(), $criteria);
 			return $all ? $this->populateRecords($command->queryAll(), true, $criteria->index) : $this->populateRecord($command->queryRow());
-		}
-		else
+		} else
 		{
 			$finder = new CActiveFinder($this, $criteria->with);
 			return $finder->query($criteria, $all);
@@ -1314,14 +1298,12 @@ abstract class ActiveRecord extends \yii\base\Model
 						}
 						$scope = $v;
 						$params = array();
-					}
-					elseif (is_array($v))
+					} elseif (is_array($v))
 					{
 						$scope = key($v);
 						$params = current($v);
 					}
-				}
-				elseif (is_string($k))
+				} elseif (is_string($k))
 				{
 					$scope = $k;
 					$params = $v;
@@ -1481,8 +1463,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			$this->_c = null;
 			$finder = new CActiveFinder($this, $criteria->with);
 			return $finder->findBySql($sql, $params);
-		}
-		else
+		} else
 		{
 			$command = $this->getCommandBuilder()->createSqlCommand($sql, $params);
 			return $this->populateRecord($command->queryRow());
@@ -1504,8 +1485,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			$this->_c = null;
 			$finder = new CActiveFinder($this, $criteria->with);
 			return $finder->findAllBySql($sql, $params);
-		}
-		else
+		} else
 		{
 			$command = $this->getCommandBuilder()->createSqlCommand($sql, $params);
 			return $this->populateRecords($command->queryAll());
@@ -1795,8 +1775,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			if ($callAfterFind)
 				$record->afterFind();
 			return $record;
-		}
-		else
+		} else
 			return null;
 	}
 

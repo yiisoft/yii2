@@ -98,18 +98,15 @@ class Component extends Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // read property, e.g. getName()
 			return $this->$getter();
-		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event, e.g. onClick()
+		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event, e.g. onClick()
 			$name = strtolower($name);
 			if (!isset($this->_e[$name])) {
 				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name];
-		}
-		elseif (isset($this->_b[$name])) { // behavior
+		} elseif (isset($this->_b[$name])) { // behavior
 			return $this->_b[$name];
-		}
-		elseif (is_array($this->_b)) { // a behavior property
+		} elseif (is_array($this->_b)) { // a behavior property
 			foreach ($this->_b as $object) {
 				if ($object->canGetProperty($name)) {
 					return $object->$name;
@@ -140,15 +137,13 @@ class Component extends Object
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) { // write property
 			return $this->$setter($value);
-		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event
+		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event
 			$name = strtolower($name);
 			if (!isset($this->_e[$name])) {
 				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name]->add($value);
-		}
-		elseif (is_array($this->_b)) { // behavior
+		} elseif (is_array($this->_b)) { // behavior
 			foreach ($this->_b as $object) {
 				if ($object->canSetProperty($name)) {
 					return $object->$name = $value;
@@ -157,8 +152,7 @@ class Component extends Object
 		}
 		if (method_exists($this, 'get' . $name)) {
 			throw new Exception('Setting read-only property: ' . get_class($this) . '.' . $name);
-		}
-		else {
+		} else {
 			throw new Exception('Setting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -181,15 +175,12 @@ class Component extends Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // property is not null
 			return $this->$getter() !== null;
-		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // has event handler
+		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // has event handler
 			$name = strtolower($name);
 			return isset($this->_e[$name]) && $this->_e[$name]->getCount();
-		}
-		elseif (isset($this->_b[$name])) { // has behavior
+		} elseif (isset($this->_b[$name])) { // has behavior
 			return true;
-		}
-		elseif (is_array($this->_b)) {
+		} elseif (is_array($this->_b)) {
 			foreach ($this->_b as $object) {
 				if ($object->canGetProperty($name)) {
 					return $object->$name !== null;
@@ -217,15 +208,12 @@ class Component extends Object
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) { // write property
 			return $this->$setter(null);
-		}
-		elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event
+		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event
 			unset($this->_e[strtolower($name)]);
 			return;
-		}
-		elseif (isset($this->_b[$name])) { // behavior
+		} elseif (isset($this->_b[$name])) { // behavior
 			return $this->detachBehavior($name);
-		}
-		elseif (is_array($this->_b)) { // behavior property
+		} elseif (is_array($this->_b)) { // behavior property
 			foreach ($this->_b as $object) {
 				if ($object->canSetProperty($name)) {
 					return $object->$name = null;
@@ -386,21 +374,17 @@ class Component extends Object
 			foreach ($this->_e[$name] as $handler) {
 				if (is_string($handler) || $handler instanceof \Closure) {
 					call_user_func($handler, $event);
-				}
-				elseif (is_callable($handler, true)) {
+				} elseif (is_callable($handler, true)) {
 					// an array: 0 - object, 1 - method name
 					list($object, $method) = $handler;
 					if (is_string($object)) { // static method call
 						call_user_func($handler, $event);
-					}
-					elseif (method_exists($object, $method)) {
+					} elseif (method_exists($object, $method)) {
 						$object->$method($event);
-					}
-					else {
+					} else {
 						throw new Exception('Event "' . get_class($this) . '.' . $name . '" is attached with an invalid handler.');
 					}
-				}
-				else {
+				} else {
 					throw new Exception('Event "' . get_class($this) . '.' . $name . '" is attached with an invalid handler.');
 				}
 
@@ -409,8 +393,7 @@ class Component extends Object
 					return;
 				}
 			}
-		}
-		elseif (!$this->hasEvent($name)) {
+		} elseif (!$this->hasEvent($name)) {
 			throw new Exception('Raising unknown event: ' . get_class($this) . '.' . $name);
 		}
 	}

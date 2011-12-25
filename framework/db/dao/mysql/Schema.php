@@ -68,8 +68,7 @@ class Schema extends \yii\db\dao\Schema
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
 			$table->quotedName = $this->quoteSimpleTableName($table->schemaName) . '.' . $this->quoteSimpleTableName($table->name);
-		}
-		else {
+		} else {
 			$table->name = $parts[0];
 			$table->quotedName = $this->quoteSimpleTableName($table->name);
 		}
@@ -114,11 +113,9 @@ class Schema extends \yii\db\dao\Schema
 			if ($c->isPrimaryKey) {
 				if ($table->primaryKey === null) {
 					$table->primaryKey = $c->name;
-				}
-				elseif (is_string($table->primaryKey)) {
+				} elseif (is_string($table->primaryKey)) {
 					$table->primaryKey = array($table->primaryKey, $c->name);
-				}
-				else {
+				} else {
 					$table->primaryKey[] = $c->name;
 				}
 				if ($c->autoIncrement) {

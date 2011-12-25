@@ -55,8 +55,7 @@ class CWebLogRoute extends CLogRoute
 			if ($isAjax && $this->ignoreAjaxInFireBug)
 				return;
 			$view .= '-firebug';
-		}
-		elseif (!($app instanceof CWebApplication) || $isAjax)
+		} elseif (!($app instanceof CWebApplication) || $isAjax)
 			return;
 
 		$viewFile = YII_PATH . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $view . '.php';

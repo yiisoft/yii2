@@ -58,8 +58,7 @@ abstract class Schema extends \yii\base\Object
 
 		if (strpos($name, '{{') !== false) {
 			$realName = preg_replace('/\{\{(.*?)\}\}/', $this->connection->tablePrefix . '$1', $name);
-		}
-		else {
+		} else {
 			$realName = $name;
 		}
 
@@ -80,8 +79,7 @@ abstract class Schema extends \yii\base\Object
 				}
 			}
 			$this->_tables[$name] = $table;
-		}
-		else {
+		} else {
 			$this->_tables[$name] = $table = $this->loadTableSchema($realName);
 		}
 
@@ -195,8 +193,7 @@ abstract class Schema extends \yii\base\Object
 		if (($pos = strrpos($name, '.')) !== false) {
 			$prefix = $this->quoteTableName(substr($name, 0, $pos)) . '.';
 			$name = substr($name, $pos + 1);
-		}
-		else
+		} else
 		{
 			$prefix = '';
 		}

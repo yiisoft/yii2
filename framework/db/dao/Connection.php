@@ -84,6 +84,15 @@ use yii\db\Exception;
  * )
  * ~~~
  *
+ * @property boolean $active Whether the DB connection is established.
+ * @property Transaction $currentTransaction The currently active transaction. Null if no active transaction.
+ * @property Schema $schema The database schema for the current connection.
+ * @property QueryBuilder $queryBuilder The query builder.
+ * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the sequence object.
+ * @property string $driverName Name of the DB driver currently being used.
+ * @property string $clientVersion The version information of the DB driver.
+ * @property array $stats The statistical results of SQL executions.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -428,8 +437,7 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->_transaction !== null && $this->_transaction->active) {
 			return $this->_transaction;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -454,13 +462,11 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->_schema !== null) {
 			return $this->_schema;
-		}
-		else {
+		} else {
 			$driver = $this->getDriverName();
 			if (isset($this->schemaMap[$driver])) {
 				return $this->_schema = \Yii::createObject($this->schemaMap[$driver], $this);
-			}
-			else {
+			} else {
 				throw new Exception("Connection does not support reading schema for '$driver' database.");
 			}
 		}
@@ -503,8 +509,7 @@ class Connection extends \yii\base\ApplicationComponent
 		$this->open();
 		if (($value = $this->pdo->quote($str)) !== false) {
 			return $value;
-		}
-		else { // the driver doesn't support quote (e.g. oci)
+		} else { // the driver doesn't support quote (e.g. oci)
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
 		}
 	}
@@ -546,8 +551,7 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->tablePrefix !== null && strpos($sql, '{{') !== false) {
 			return preg_replace('/{{(.*?)}}/', $this->tablePrefix . '\1', $sql);
-		}
-		else {
+		} else {
 			return $sql;
 		}
 	}
@@ -577,8 +581,7 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if (($pos = strpos($this->dsn, ':')) !== false) {
 			return strtolower(substr($this->dsn, 0, $pos));
-		}
-		else {
+		} else {
 			return strtolower($this->getAttribute(\PDO::ATTR_DRIVER_NAME));
 		}
 	}

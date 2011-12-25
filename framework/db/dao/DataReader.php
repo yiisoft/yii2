@@ -70,8 +70,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	{
 		if ($dataType === null) {
 			$this->_statement->bindColumn($column, $value);
-		}
-		else {
+		} else {
 			$this->_statement->bindColumn($column, $value, $dataType);
 		}
 	}
@@ -204,8 +203,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 		if ($this->_index < 0) {
 			$this->_row = $this->_statement->fetch();
 			$this->_index = 0;
-		}
-		else {
+		} else {
 			throw new Exception('DataReader cannot rewind. It is a forward-only reader.');
 		}
 	}

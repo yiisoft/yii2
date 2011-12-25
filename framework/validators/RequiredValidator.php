@@ -50,8 +50,7 @@ class RequiredValidator extends Validator
 				$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} cannot be blank.');
 				$this->addError($object, $attribute, $message);
 			}
-		}
-		else {
+		} else {
 			if (!$this->strict && $value != $this->requiredValue || $this->strict && $value !== $this->requiredValue) {
 				$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be "{requiredValue}".',
 					array('{requiredValue}' => $this->requiredValue));
@@ -83,8 +82,7 @@ if (value != " . json_encode($this->requiredValue) . ") {
 	messages.push(" . json_encode($message) . ");
 }
 ";
-		}
-		else {
+		} else {
 			if ($message === null) {
 				$message = Yii::t('yii', '{attribute} cannot be blank.');
 			}

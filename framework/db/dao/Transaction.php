@@ -69,8 +69,7 @@ class Transaction extends \yii\base\Object
 			\Yii::trace('Committing transaction', __CLASS__);
 			$this->connection->pdo->commit();
 			$this->active = false;
-		}
-		else {
+		} else {
 			throw new Exception('Failed to commit transaction: transaction was inactive.');
 		}
 	}
@@ -85,8 +84,7 @@ class Transaction extends \yii\base\Object
 			\Yii::trace('Rolling back transaction', __CLASS__);
 			$this->connection->pdo->rollBack();
 			$this->active = false;
-		}
-		else {
+		} else {
 			throw new Exception('Failed to roll back transaction: transaction was inactive.');
 		}
 	}

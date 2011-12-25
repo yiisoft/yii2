@@ -117,12 +117,10 @@ class CFileValidator extends Validator
 			{
 				$message = $this->tooMany !== null ? $this->tooMany : Yii::t('yii', '{attribute} cannot accept more than {limit} files.');
 				$this->addError($object, $attribute, $message, array('{attribute}' => $attribute, '{limit}' => $this->maxFiles));
-			}
-			else
+			} else
 				foreach ($files as $file)
 					$this->validateFile($object, $attribute, $file);
-		}
-		else
+		} else
 		{
 			$file = $object->$attribute;
 			if (!$file instanceof CUploadedFile)
@@ -149,8 +147,7 @@ class CFileValidator extends Validator
 		{
 			$message = $this->tooLarge !== null ? $this->tooLarge : Yii::t('yii', 'The file "{file}" is too large. Its size cannot exceed {limit} bytes.');
 			$this->addError($object, $attribute, $message, array('{file}' => $file->getName(), '{limit}' => $this->getSizeLimit()));
-		}
-		elseif ($error == UPLOAD_ERR_PARTIAL)
+		} elseif ($error == UPLOAD_ERR_PARTIAL)
 			throw new CException(Yii::t('yii', 'The file "{file}" was only partially uploaded.', array('{file}' => $file->getName())));
 		elseif ($error == UPLOAD_ERR_NO_TMP_DIR)
 			throw new CException(Yii::t('yii', 'Missing the temporary folder to store the uploaded file "{file}".', array('{file}' => $file->getName())));

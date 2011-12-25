@@ -125,8 +125,7 @@ abstract class Application extends Module
 		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
 			unset($config['basePath']);
-		}
-		else
+		} else
 		{
 			$this->setBasePath('protected');
 		}
@@ -211,8 +210,7 @@ abstract class Application extends Module
 	{
 		if ($this->_id !== null) {
 			return $this->_id;
-		}
-		else
+		} else
 		{
 			return $this->_id = sprintf('%x', crc32($this->getBasePath() . $this->name));
 		}
@@ -258,8 +256,7 @@ abstract class Application extends Module
 	{
 		if ($this->_runtimePath !== null) {
 			return $this->_runtimePath;
-		}
-		else
+		} else
 		{
 			$this->setRuntimePath($this->getBasePath() . DIRECTORY_SEPARATOR . 'runtime');
 			return $this->_runtimePath;
@@ -545,8 +542,7 @@ abstract class Application extends Module
 		$url = $this->createUrl($route, $params, $ampersand);
 		if (strpos($url, 'http') === 0) {
 			return $url;
-		}
-		else
+		} else
 		{
 			return $this->getRequest()->getHostInfo($schema) . $url;
 		}
@@ -573,13 +569,11 @@ abstract class Application extends Module
 		if ($this->_homeUrl === null) {
 			if ($this->getUrlManager()->showScriptName) {
 				return $this->getRequest()->getScriptUrl();
-			}
-			else
+			} else
 			{
 				return $this->getRequest()->getBaseUrl() . '/';
 			}
-		}
-		else
+		} else
 		{
 			return $this->_homeUrl;
 		}
@@ -609,8 +603,7 @@ abstract class Application extends Module
 		}
 		if (isset($this->_globalState[$key])) {
 			return $this->_globalState[$key];
-		}
-		else
+		} else
 		{
 			return $defaultValue;
 		}
@@ -638,8 +631,7 @@ abstract class Application extends Module
 				unset($this->_globalState[$key]);
 				$this->_stateChanged = true;
 			}
-		}
-		elseif (!isset($this->_globalState[$key]) || $this->_globalState[$key] !== $value)
+		} elseif (!isset($this->_globalState[$key]) || $this->_globalState[$key] !== $value)
 		{
 			$this->_globalState[$key] = $value;
 			$this->_stateChanged = true;
@@ -731,8 +723,7 @@ abstract class Application extends Module
 				// try an error handler
 				if (($handler = $this->getErrorHandler()) !== null) {
 					$handler->handle($event);
-				}
-				else
+				} else
 				{
 					$this->displayException($exception);
 				}
@@ -822,8 +813,7 @@ abstract class Application extends Module
 					// try an error handler
 					if (($handler = $this->getErrorHandler()) !== null) {
 						$handler->handle($event);
-					}
-					else
+					} else
 					{
 						$this->displayError($code, $message, $file, $line);
 					}
@@ -922,8 +912,7 @@ abstract class Application extends Module
 			}
 
 			echo '</pre>';
-		}
-		else
+		} else
 		{
 			echo "<h1>PHP Error [$code]</h1>\n";
 			echo "<p>$message</p>\n";
@@ -942,8 +931,7 @@ abstract class Application extends Module
 			echo '<h1>' . get_class($exception) . "</h1>\n";
 			echo '<p>' . $exception->getMessage() . ' (' . $exception->getFile() . ':' . $exception->getLine() . ')</p>';
 			echo '<pre>' . $exception->getTraceAsString() . '</pre>';
-		}
-		else
+		} else
 		{
 			echo '<h1>' . get_class($exception) . "</h1>\n";
 			echo '<p>' . $exception->getMessage() . '</p>';

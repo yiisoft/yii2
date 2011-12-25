@@ -80,8 +80,7 @@ class RegularExpressionValidator extends Validator
 		$flag = substr($pattern, $endpos + 1);
 		if ($delim !== '/') {
 			$pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $endpos - 1)) . '/';
-		}
-		else {
+		} else {
 			$pattern = substr($pattern, 0, $endpos + 1);
 		}
 		if (!empty($flag)) {

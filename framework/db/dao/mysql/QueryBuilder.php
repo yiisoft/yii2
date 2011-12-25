@@ -54,8 +54,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 			throw new CDbException(Yii::t('yii', 'Unable to find "{column}" in table "{table}".', array('{column}' => $name, '{table}' => $table)));
 		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
-		}
-		else {
+		} else {
 			$row = array_values($row);
 			$sql = $row[1];
 		}

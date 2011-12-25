@@ -4,17 +4,11 @@ namespace yiiunit\framework\db\dao;
 
 use yii\db\dao\Connection;
 
-class ConnectionTest extends \yiiunit\TestCase
+class ConnectionTest extends \yiiunit\MysqlTestCase
 {
-	function setUp()
-	{
-		if(!extension_loaded('pdo') || !extension_loaded('pdo_mysql'))
-			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');
-	}
-
 	function testConstruct()
 	{
-		$connection = $this->createConnection();
+		$connection = $this->getConnection();
 		$params = $this->getParam('mysql');
 
 		$this->assertEquals($params['dsn'], $connection->dsn);
@@ -24,7 +18,7 @@ class ConnectionTest extends \yiiunit\TestCase
 
 	function testOpenClose()
 	{
-		$connection = $this->createConnection();
+		$connection = $this->getConnection();
 
 		$this->assertFalse($connection->active);
 		$this->assertEquals(null, $connection->pdo);
@@ -44,14 +38,14 @@ class ConnectionTest extends \yiiunit\TestCase
 
 	function testGetDriverName()
 	{
-		$connection = $this->createConnection();
+		$connection = $this->getConnection();
 		$this->assertEquals('mysql', $connection->driverName);
 		$this->assertFalse($connection->active);
 	}
 
 	function testQuoteValue()
 	{
-		$connection = $this->createConnection();
+		$connection = $this->getConnection();
 		$this->assertEquals(123, $connection->quoteValue(123));
 		$this->assertEquals("'string'", $connection->quoteValue('string'));
 		$this->assertEquals("'It\'s interesting'", $connection->quoteValue("It's interesting"));
@@ -59,23 +53,25 @@ class ConnectionTest extends \yiiunit\TestCase
 
 	function testQuoteTableName()
 	{
-		$connection = $this->createConnection();
+		$connection = $this->getConnection();
 		$this->assertEquals('`table`', $connection->quoteTableName('table'));
 		$this->assertEquals('`table`', $connection->quoteTableName('`table`'));
 		$this->assertEquals('`schema`.`table`', $connection->quoteTableName('schema.table'));
+		$this->assertEquals('`schema.table`', $connection->quoteTableName('schema.table', true));
 	}
 
 	function testQuoteColumnName()
 	{
-		$connection = $this->createConnection();
+		$connection = $this->getConnection();
 		$this->assertEquals('`column`', $connection->quoteColumnName('column'));
 		$this->assertEquals('`column`', $connection->quoteColumnName('`column`'));
 		$this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.column'));
+		$this->assertEquals('`table.column`', $connection->quoteColumnName('table.column', true));
 	}
 
 	function testGetPdoType()
 	{
-		$connection = $this->createConnection();
+		$connection = $this->getConnection();
 		$this->assertEquals(\PDO::PARAM_BOOL, $connection->getPdoType('boolean'));
 		$this->assertEquals(\PDO::PARAM_INT, $connection->getPdoType('integer'));
 		$this->assertEquals(\PDO::PARAM_STR, $connection->getPdoType('string'));
@@ -85,11 +81,5 @@ class ConnectionTest extends \yiiunit\TestCase
 	function testAttribute()
 	{
 
-	}
-
-	function createConnection()
-	{
-		$params = $this->getParam('mysql');
-		return new Connection($params['dsn'], $params['username'], $params['password']);
 	}
 }

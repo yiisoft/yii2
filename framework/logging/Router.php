@@ -108,8 +108,7 @@ class Router extends \yii\base\ApplicationComponent
 		foreach ($config as $name => $target) {
 			if ($target instanceof Target) {
 				$this->_targets[$name] = $target;
-			}
-			else {
+			} else {
 				$this->_targets[$name] = \Yii::createObject($target);
 			}
 		}

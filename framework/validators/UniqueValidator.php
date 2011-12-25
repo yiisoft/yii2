@@ -104,8 +104,7 @@ class CUniqueValidator extends Validator
 					// non-primary key, need to exclude the current record based on PK
 					$exists = array_shift($objects)->getPrimaryKey() != $object->getOldPrimaryKey();
 				}
-			}
-			else
+			} else
 				$exists = $n > 1;
 		}
 

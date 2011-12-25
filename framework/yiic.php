@@ -19,8 +19,7 @@ if(isset($config))
 	$env=@getenv('YII_CONSOLE_COMMANDS');
 	if(!empty($env))
 		$app->commandRunner->addCommands($env);
-}
-else
+} else
 {
 	$app=new \yii\console\Application(array(
 		'basePath'=>__DIR__.'/cli',

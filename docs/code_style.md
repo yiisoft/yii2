@@ -15,12 +15,9 @@ class MyClass
 {
 	public function myClassMethod()
 	{
-		if($x)
-		{
+		if($x) {
 			// do it
-		}
-		else
-		{
+		} else {
 			// some code
 		}
 	}
