@@ -8,7 +8,7 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 {
 	function testConstruct()
 	{
-		$connection = $this->getConnection();
+		$connection = $this->getConnection(false);
 		$params = $this->getParam('mysql');
 
 		$this->assertEquals($params['dsn'], $connection->dsn);
@@ -18,7 +18,7 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 
 	function testOpenClose()
 	{
-		$connection = $this->getConnection();
+		$connection = $this->getConnection(false);
 
 		$this->assertFalse($connection->active);
 		$this->assertEquals(null, $connection->pdo);
@@ -38,14 +38,14 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 
 	function testGetDriverName()
 	{
-		$connection = $this->getConnection();
+		$connection = $this->getConnection(false);
 		$this->assertEquals('mysql', $connection->driverName);
 		$this->assertFalse($connection->active);
 	}
 
 	function testQuoteValue()
 	{
-		$connection = $this->getConnection();
+		$connection = $this->getConnection(false);
 		$this->assertEquals(123, $connection->quoteValue(123));
 		$this->assertEquals("'string'", $connection->quoteValue('string'));
 		$this->assertEquals("'It\'s interesting'", $connection->quoteValue("It's interesting"));
@@ -53,7 +53,7 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 
 	function testQuoteTableName()
 	{
-		$connection = $this->getConnection();
+		$connection = $this->getConnection(false);
 		$this->assertEquals('`table`', $connection->quoteTableName('table'));
 		$this->assertEquals('`table`', $connection->quoteTableName('`table`'));
 		$this->assertEquals('`schema`.`table`', $connection->quoteTableName('schema.table'));
@@ -62,7 +62,7 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 
 	function testQuoteColumnName()
 	{
-		$connection = $this->getConnection();
+		$connection = $this->getConnection(false);
 		$this->assertEquals('`column`', $connection->quoteColumnName('column'));
 		$this->assertEquals('`column`', $connection->quoteColumnName('`column`'));
 		$this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.column'));
@@ -71,7 +71,7 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 
 	function testGetPdoType()
 	{
-		$connection = $this->getConnection();
+		$connection = $this->getConnection(false);
 		$this->assertEquals(\PDO::PARAM_BOOL, $connection->getPdoType('boolean'));
 		$this->assertEquals(\PDO::PARAM_INT, $connection->getPdoType('integer'));
 		$this->assertEquals(\PDO::PARAM_STR, $connection->getPdoType('string'));
