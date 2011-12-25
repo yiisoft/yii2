@@ -55,9 +55,9 @@ class TableSchema extends \yii\base\Object
 	 *
 	 * ~~~
 	 * array(
-	 *     'ForeignTableName',
-	 *     'fk1' => 'pk1',  // pk1 is in foreign table
-	 *     'fk2' => 'pk2',  // if composite foreign key
+	 *	 'ForeignTableName',
+	 *	 'fk1' => 'pk1',  // pk1 is in foreign table
+	 *	 'fk2' => 'pk2',  // if composite foreign key
 	 * )
 	 * ~~~
 	 */

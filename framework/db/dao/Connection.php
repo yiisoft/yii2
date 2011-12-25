@@ -26,7 +26,7 @@ use yii\db\Exception;
  * the DB connection:
  *
  * ~~~
- * $connection = \yii\db\dao\Connection::create($dsn, $username, $password);
+ * $connection = \yii\db\dao\Connection::newInstance($dsn, $username, $password);
  * $connection->active = true;  // same as: $connection->open();
  * ~~~
  *
@@ -57,13 +57,13 @@ use yii\db\Exception;
  * ~~~
  * $transaction = $connection->beginTransaction();
  * try {
- *     $connection->createCommand($sql1)->execute();
- *     $connection->createCommand($sql2)->execute();
- *     // ... executing other SQL statements ...
- *     $transaction->commit();
+ *	 $connection->createCommand($sql1)->execute();
+ *	 $connection->createCommand($sql2)->execute();
+ *	 // ... executing other SQL statements ...
+ *	 $transaction->commit();
  * }
  * catch(Exception $e) {
- *     $transaction->rollBack();
+ *	 $transaction->rollBack();
  * }
  * ~~~
  *
@@ -72,15 +72,15 @@ use yii\db\Exception;
  *
  * ~~~
  * array(
- *     'components' => array(
- *         'db' => array(
- *             'class' => '\yii\db\dao\Connection',
- *             'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
- *             'username' => 'root',
- *             'password' => '',
- *             'charset' => 'utf8',
- *         ),
- *     ),
+ *	 'components' => array(
+ *		 'db' => array(
+ *			 'class' => '\yii\db\dao\Connection',
+ *			 'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+ *			 'username' => 'root',
+ *			 'password' => '',
+ *			 'charset' => 'utf8',
+ *		 ),
+ *	 ),
  * )
  * ~~~
  *
@@ -219,7 +219,7 @@ class Connection extends \yii\base\ApplicationComponent
 	/**
 	 * @var array mapping between PDO driver names and [[Schema]] classes.
 	 * The keys of the array are PDO driver names while the values the corresponding
-	 * schema class name or configuration. Please refer to [[\Yii::create]] for
+	 * schema class name or configuration. Please refer to [[\Yii::createObject]] for
 	 * details on how to specify a configuration.
 	 *
 	 * This property is mainly used by [[getSchema]] when fetching the database schema information.
@@ -227,15 +227,15 @@ class Connection extends \yii\base\ApplicationComponent
 	 * [[Schema]] class to support DBMS that is not supported by Yii.
 	 */
 	public $schemaMap = array(
-		'pgsql' => '\yii\db\dao\pgsql\Schema',     // PostgreSQL
-		'mysqli' => '\yii\db\dao\mysql\Schema',    // MySQL
-		'mysql' => '\yii\db\dao\mysql\Schema',     // MySQL
-		'sqlite' => '\yii\db\dao\sqlite\Schema',   // sqlite 3
-		'sqlite2' => '\yii\db\dao\sqlite\Schema',  // sqlite 2
-		'mssql' => '\yii\db\dao\mssql\Schema',     // Mssql driver on windows hosts
-		'dblib' => '\yii\db\dao\mssql\Schema',     // dblib drivers on linux (and maybe others os) hosts
-		'sqlsrv' => '\yii\db\dao\mssql\Schema',    // Mssql
-		'oci' => '\yii\db\dao\oci\Schema',         // Oracle driver
+		'pgsql' => '\yii\db\dao\pgsql\Schema', // PostgreSQL
+		'mysqli' => '\yii\db\dao\mysql\Schema', // MySQL
+		'mysql' => '\yii\db\dao\mysql\Schema', // MySQL
+		'sqlite' => '\yii\db\dao\sqlite\Schema', // sqlite 3
+		'sqlite2' => '\yii\db\dao\sqlite\Schema', // sqlite 2
+		'mssql' => '\yii\db\dao\mssql\Schema', // Mssql driver on windows hosts
+		'dblib' => '\yii\db\dao\mssql\Schema', // dblib drivers on linux (and maybe others os) hosts
+		'sqlsrv' => '\yii\db\dao\mssql\Schema', // Mssql
+		'oci' => '\yii\db\dao\oci\Schema', // Oracle driver
 	);
 
 	/**
@@ -428,7 +428,8 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->_transaction !== null && $this->_transaction->active) {
 			return $this->_transaction;
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -453,11 +454,13 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->_schema !== null) {
 			return $this->_schema;
-		} else {
+		}
+		else {
 			$driver = $this->getDriverName();
 			if (isset($this->schemaMap[$driver])) {
-				return $this->_schema = \Yii::create($this->schemaMap[$driver], $this);
-			} else {
+				return $this->_schema = \Yii::createObject($this->schemaMap[$driver], $this);
+			}
+			else {
 				throw new Exception("Connection does not support reading schema for '$driver' database.");
 			}
 		}
@@ -500,7 +503,8 @@ class Connection extends \yii\base\ApplicationComponent
 		$this->open();
 		if (($value = $this->pdo->quote($str)) !== false) {
 			return $value;
-		} else {  // the driver doesn't support quote (e.g. oci)
+		}
+		else { // the driver doesn't support quote (e.g. oci)
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
 		}
 	}
@@ -542,7 +546,8 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->tablePrefix !== null && strpos($sql, '{{') !== false) {
 			return preg_replace('/{{(.*?)}}/', $this->tablePrefix . '\1', $sql);
-		} else {
+		}
+		else {
 			return $sql;
 		}
 	}
@@ -572,7 +577,8 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if (($pos = strpos($this->dsn, ':')) !== false) {
 			return strtolower(substr($this->dsn, 0, $pos));
-		} else {
+		}
+		else {
 			return strtolower($this->getAttribute(\PDO::ATTR_DRIVER_NAME));
 		}
 	}

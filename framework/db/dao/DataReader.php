@@ -22,7 +22,7 @@ use yii\db\Exception;
  *
  * ~~~
  * foreach($reader as $row) {
- *     // $row represents a row of data
+ *	 // $row represents a row of data
  * }
  * ~~~
  *

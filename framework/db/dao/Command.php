@@ -38,10 +38,10 @@ use yii\db\Exception;
  *
  * ~~~
  * $user = \Yii::app()->db->createCommand()
- *     ->select('username, password')
- *     ->from('tbl_user')
- *     ->where('id=:id', array(':id'=>1))
- *     ->queryRow();
+ *	 ->select('username, password')
+ *	 ->from('tbl_user')
+ *	 ->where('id=:id', array(':id'=>1))
+ *	 ->queryRow();
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -93,11 +93,13 @@ class Command extends \yii\base\Component
 		$this->connection = $connection;
 		if (is_object($query)) {
 			$this->query = $query;
-		} else {
+		}
+		else {
 			$this->query = new Query;
 			if (is_array($query)) {
 				$this->query->fromArray($query);
-			} else {
+			}
+			else {
 				$this->_sql = $query;
 			}
 		}
@@ -161,9 +163,10 @@ class Command extends \yii\base\Component
 			$sql = $this->getSql();
 			try {
 				$this->pdoStatement = $this->connection->pdo->prepare($sql);
-			} catch(\Exception $e) {
+			}
+			catch (\Exception $e) {
 				\Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
-                $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 				throw new Exception($e->getMessage(), (int)$e->getCode(), $errorInfo);
 			}
 		}
@@ -197,11 +200,14 @@ class Command extends \yii\base\Component
 		$this->prepare();
 		if ($dataType === null) {
 			$this->pdoStatement->bindParam($name, $value, $this->connection->getPdoType(gettype($value)));
-		} elseif ($length === null) {
+		}
+		elseif ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
-		} elseif ($driverOptions === null) {
+		}
+		elseif ($driverOptions === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length);
-		} else {
+		}
+		else {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
 		}
 		$this->_params[$name] =& $value;
@@ -224,7 +230,8 @@ class Command extends \yii\base\Component
 		$this->prepare();
 		if ($dataType === null) {
 			$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
-		} else {
+		}
+		else {
 			$this->pdoStatement->bindValue($name, $value, $dataType);
 		}
 		$this->_params[$name] = $value;
@@ -248,7 +255,7 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement.
-	 * This method is meant only for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
+	 * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
 	 * No result set will be returned.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
 	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
@@ -263,8 +270,9 @@ class Command extends \yii\base\Component
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
-		} else {
-			$paramLog = "Parameters: " . var_export($this->_params, true);
+		}
+		else {
+			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
 		\Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
@@ -277,7 +285,8 @@ class Command extends \yii\base\Component
 			$this->prepare();
 			if ($params === array()) {
 				$this->pdoStatement->execute();
-			} else {
+			}
+			else {
 				$this->pdoStatement->execute($params);
 			}
 			$n = $this->pdoStatement->rowCount();
@@ -286,7 +295,8 @@ class Command extends \yii\base\Component
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			return $n;
-		} catch (Exception $e) {
+		}
+		catch (Exception $e) {
 			if ($this->connection->enableProfiling) {
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
@@ -312,13 +322,13 @@ class Command extends \yii\base\Component
 	}
 
 	/**
-	 * Executes the SQL statement and returns all rows.
+	 * Executes the SQL statement and returns ALL rows at once.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
 	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
 	 * or [[bindValue]] will be ignored.
-	 * @param boolean $fetchAssociative whether each row should be returned as an associated array with
-	 * column names as the keys or the array keys are column indexes (0-based).
-	 * @return array all rows of the query result. Each array element is an array representing a row.
+	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
+	 * @return array all rows of the query result. Each array element is an array representing a row of data.
 	 * An empty array is returned if the query results in nothing.
 	 * @throws Exception execution failed
 	 */
@@ -329,13 +339,14 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement and returns the first row of the result.
-	 * This is a convenient method of {@link query} when only the first row of data is needed.
+	 * This method is best used when only the first row of result is needed for a query.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
 	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
 	 * or [[bindValue]] will be ignored.
-	 * @param boolean $fetchAssociative whether the row should be returned as an associated array with
-	 * column names as the keys or the array keys are column indexes (0-based).
-	 * @return mixed the first row (in terms of an array) of the query result, false if no result.
+	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
+	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+	 * results in nothing.
 	 * @throws Exception execution failed
 	 */
 	public function queryRow($params = array(), $fetchMode = null)
@@ -345,12 +356,12 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement and returns the value of the first column in the first row of data.
-	 * This is a convenient method of {@link query} when only a single scalar
-	 * value is needed (e.g. obtaining the count of the records).
+	 * This method is best used when only a single value is needed for a query.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
 	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
 	 * or [[bindValue]] will be ignored.
-	 * @return mixed the value of the first column in the first row of the query result. False is returned if there is no value.
+	 * @return mixed the value of the first column in the first row of the query result.
+	 * False is returned if there is no value.
 	 * @throws Exception execution failed
 	 */
 	public function queryScalar($params = array())
@@ -366,12 +377,12 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement and returns the first column of the result.
-	 * This is a convenient method of {@link query} when only the first column of data is needed.
-	 * Note, the column returned will contain the first element in each row of result.
+	 * This method is best used when only the first column of result (i.e. the first element in each row)
+	 * is needed for a query.
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
 	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
 	 * or [[bindValue]] will be ignored.
-	 * @return array the first column of the query result. Empty array if no result.
+	 * @return array the first column of the query result. Empty array is returned if the query results in nothing.
 	 * @throws Exception execution failed
 	 */
 	public function queryColumn($params = array())
@@ -380,11 +391,13 @@ class Command extends \yii\base\Component
 	}
 
 	/**
+	 * Performs the actual DB query of a SQL statement.
 	 * @param string $method method of PDOStatement to be called
-	 * @param mixed $mode parameters to be passed to the method
 	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
 	 * to [[bindValues]]. Note that if you pass parameters in this way, any previous call to [[bindParam]]
 	 * or [[bindValue]] will be ignored.
+	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return mixed the method execution result
 	 */
 	private function queryInternal($method, $params, $fetchMode = null)
@@ -395,21 +408,22 @@ class Command extends \yii\base\Component
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
-		} else {
-			$paramLog = "Parameters: " . var_export($this->_params, true);
+		}
+		else {
+			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
 		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
 
-		$cachingEnabled = $db->queryCachingCount > 0 && $method !== ''
-				&& $db->queryCachingDuration >= 0
-				&& ($cache = \Yii::app()->getComponent($db->queryCacheID)) !== null;
-		if ($cachingEnabled) {
+		if ($db->queryCachingCount > 0 && $db->queryCachingDuration >= 0 && $method !== '') {
+			$cache = \Yii::app()->getComponent($db->queryCacheID);
+		}
+
+		if (isset($cache)) {
 			$db->queryCachingCount--;
-			$cacheKey = 'yii:dbquery' . $db->connectionString . ':' . $db->username;
-			$cacheKey .= ':' . $sql . ':' . $paramLog;
+			$cacheKey = __CLASS__ . "/{$db->dsn}/{$db->username}/$sql/$paramLog";
 			if (($result = $cache->get($cacheKey)) !== false) {
-				\Yii::trace('Query result found in cache', 'system.db.Command');
+				\Yii::trace('Query result found in cache', __CLASS__);
 				return $result;
 			}
 		}
@@ -422,13 +436,15 @@ class Command extends \yii\base\Component
 			$this->prepare();
 			if ($params === array()) {
 				$this->pdoStatement->execute();
-			} else {
+			}
+			else {
 				$this->pdoStatement->execute($params);
 			}
 
 			if ($method === '') {
 				$result = new DataReader($this);
-			} else {
+			}
+			else {
 				if ($fetchMode === null) {
 					$fetchMode = $this->fetchMode;
 				}
@@ -440,27 +456,25 @@ class Command extends \yii\base\Component
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
-			if ($cachingEnabled) {
+			if (isset($cache)) {
 				$cache->set($cacheKey, $result, $db->queryCachingDuration, $db->queryCachingDependency);
+				\Yii::trace('Saved query result in cache', __CLASS__);
 			}
 
 			return $result;
-		} catch (Exception $e) {
+		}
+		catch (Exception $e) {
 			if ($db->enableProfiling) {
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
-			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			$message = $e->getMessage();
-			\Yii::log(\Yii::t('yii', 'Command::{method}() failed: {error}. The SQL statement executed was: {sql}.',
-				array('{method}' => $method, '{error}' => $message, '{sql}' => $this->getSql() . $par)), CLogger::LEVEL_ERROR, 'system.db.Command');
-			if (YII_DEBUG) {
-				$message .= '. The SQL statement executed was: ' . $this->getSql() . $par;
-			}
-			throw new Exception(\Yii::t('yii', 'Command failed to execute the SQL statement: {error}',
-				array('{error}' => $message)), (int)$e->getCode(), $errorInfo);
+			\Yii::error("$message\nCommand::$method() failed: {$sql}{$paramLog}", __CLASS__);
+			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+			throw new Exception($message, (int)$e->getCode(), $errorInfo);
 		}
 	}
 
+	/**
 	/**
 	 * Sets the SELECT part of the query.
 	 * @param mixed $columns the columns to be selected. Defaults to '*', meaning all columns.
@@ -468,27 +482,17 @@ class Command extends \yii\base\Component
 	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
+	 * @param boolean $distinct whether to use 'SELECT DISTINCT'.
 	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
-	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used. This parameter is supported since version 1.1.8.
+	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
 	 * @return Command the command object itself
 	 */
-	public function select($columns = '*', $option = '')
+	public function select($columns = '*', $distinct = false, $option = '')
 	{
 		$this->query->select = $columns;
+		$this->query->distinct = $distinct;
 		$this->query->selectOption = $option;
 		return $this;
-	}
-
-	/**
-	 * Sets the SELECT part of the query with the DISTINCT flag turned on.
-	 * This is the same as {@link select} except that the DISTINCT flag is turned on.
-	 * @param mixed $columns the columns to be selected. See {@link select} for more details.
-	 * @return Command the command object itself
-	 */
-	public function selectDistinct($columns = '*', $option = '')
-	{
-		$this->query->distinct = true;
-		return $this->select($columns, $option);
 	}
 
 	/**
@@ -513,32 +517,42 @@ class Command extends \yii\base\Component
 	 * specifying the values to be bound to the query.
 	 *
 	 * The $conditions parameter should be either a string (e.g. 'id=1') or an array.
-	 * If the latter, it must be of the format <code>array(operator, operand1, operand2, ...)</code>,
+	 * If the latter, it must be in the format `array(operator, operand1, operand2, ...)`,
 	 * where the operator can be one of the followings, and the possible operands depend on the corresponding
 	 * operator:
-	 * <ul>
-	 * <li><code>and</code>: the operands should be concatenated together using AND. For example,
-	 * array('and', 'id=1', 'id=2') will generate 'id=1 AND id=2'. If an operand is an array,
-	 * it will be converted into a string using the same rules described here. For example,
-	 * array('and', 'type=1', array('or', 'id=1', 'id=2')) will generate 'type=1 AND (id=1 OR id=2)'.
-	 * The method will NOT do any quoting or escaping.</li>
-	 * <li><code>or</code>: similar as the <code>and</code> operator except that the operands are concatenated using OR.</li>
-	 * <li><code>in</code>: operand 1 should be a column or DB expression, and operand 2 be an array representing
+	 *
+	 * - `and`: the operands should be concatenated together using `AND`. For example,
+	 * `array('and', 'id=1', 'id=2')` will generate `id=1 AND id=2`. If an operand is an array,
+	 * it will be converted into a string using the rules described here. For example,
+	 * `array('and', 'type=1', array('or', 'id=1', 'id=2'))` will generate `type=1 AND (id=1 OR id=2)`.
+	 * The method will NOT do any quoting or escaping.
+	 *
+	 * - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
+	 *
+	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
 	 * the range of the values that the column or DB expression should be in. For example,
-	 * array('in', 'id', array(1,2,3)) will generate 'id IN (1,2,3)'.
-	 * The method will properly quote the column name and escape values in the range.</li>
-	 * <li><code>not in</code>: similar as the <code>in</code> operator except that IN is replaced with NOT IN in the generated condition.</li>
-	 * <li><code>like</code>: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
+	 * `array('in', 'id', array(1,2,3))` will generate `id IN (1,2,3)`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
+	 *
+	 * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
 	 * the values that the column or DB expression should be like.
-	 * For example, array('like', 'name', '%tester%') will generate "name LIKE '%tester%'".
-	 * When the value range is given as an array, multiple LIKE predicates will be generated and concatenated using AND.
-	 * For example, array('like', 'name', array('%test%', '%sample%')) will generate
-	 * "name LIKE '%test%' AND name LIKE '%sample%'".
-	 * The method will properly quote the column name and escape values in the range.</li>
-	 * <li><code>not like</code>: similar as the <code>like</code> operator except that LIKE is replaced with NOT LIKE in the generated condition.</li>
-	 * <li><code>or like</code>: similar as the <code>like</code> operator except that OR is used to concatenated the LIKE predicates.</li>
-	 * <li><code>or not like</code>: similar as the <code>not like</code> operator except that OR is used to concatenated the NOT LIKE predicates.</li>
-	 * </ul>
+	 * For example, `array('like', 'name', '%tester%')` will generate `name LIKE '%tester%'`.
+	 * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
+	 * using `AND`. For example, `array('like', 'name', array('%test%', '%sample%'))` will generate
+	 * `name LIKE '%test%' AND name LIKE '%sample%'`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
+	 * predicates when operand 2 is an array.
+	 *
+	 * - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
+	 * in the generated condition.
+	 *
+	 * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
+	 * the `NOT LIKE` predicates.
+	 *
 	 * @param mixed $conditions the conditions that should be put in the WHERE part.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
@@ -557,7 +571,7 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param mixed $conditions the join condition that should appear in the ON part.
-	 * Please refer to {@link where} on how to specify conditions.
+	 * Please refer to [[where]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
 	 */
@@ -573,7 +587,7 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param mixed $conditions the join condition that should appear in the ON part.
-	 * Please refer to {@link where} on how to specify conditions.
+	 * Please refer to [[where]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
 	 */
@@ -589,7 +603,7 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param mixed $conditions the join condition that should appear in the ON part.
-	 * Please refer to {@link where} on how to specify conditions.
+	 * Please refer to [[where]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
 	 */
@@ -643,7 +657,7 @@ class Command extends \yii\base\Component
 	/**
 	 * Sets the HAVING part of the query.
 	 * @param mixed $conditions the conditions to be put after HAVING.
-	 * Please refer to {@link where} on how to specify conditions.
+	 * Please refer to [[where]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
 	 */
@@ -719,8 +733,8 @@ class Command extends \yii\base\Component
 	 * The method will properly escape the column names and bind the values to be updated.
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name=>value) to be updated.
-	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
-	 * refer to {@link where} on how to specify conditions.
+	 * @param mixed $conditions the conditions that will be put in the WHERE part.
+	 * Please refer to [[where]] on how to specify this parameter.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
@@ -733,8 +747,8 @@ class Command extends \yii\base\Component
 	/**
 	 * Creates and executes a DELETE SQL statement.
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
-	 * refer to {@link where} on how to specify conditions.
+	 * @param mixed $conditions the conditions that will be put in the WHERE part.
+	 * Please refer to [[where]] on how to specify this parameter.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
@@ -750,7 +764,9 @@ class Command extends \yii\base\Component
 	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name'=>'string'),
 	 * where name stands for a column name which will be properly quoted by the method, and definition
 	 * stands for the column type which can contain an abstract DB type.
-	 * The {@link getColumnType} method will be invoked to convert any abstract type into a physical one.
+	 * The method [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * to convert the abstract column types to physical ones. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
 	 *
 	 * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
 	 * inserted into the generated SQL.
@@ -804,9 +820,9 @@ class Command extends \yii\base\Component
 	 * Builds and executes a SQL statement for adding a new DB column.
 	 * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
 	 * @param string $column the name of the new column. The name will be properly quoted by the method.
-	 * @param string $type the column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
-	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+	 * @param string $type the column type. [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * to convert the give column type to the physical one. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
 	 * @return integer number of rows affected by the execution.
 	 */
 	public function addColumn($table, $column, $type)
@@ -844,9 +860,9 @@ class Command extends \yii\base\Component
 	 * Builds and executes a SQL statement for changing the definition of a column.
 	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
 	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-	 * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
-	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+	 * @param string $type the column type. [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * to convert the give column type to the physical one. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
 	 * @return integer number of rows affected by the execution.
 	 */
 	public function alterColumn($table, $column, $type)
@@ -920,7 +936,7 @@ class Command extends \yii\base\Component
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param mixed $conditions the join condition that should appear in the ON part.
-	 * Please refer to {@link where} on how to specify conditions.
+	 * Please refer to [[where]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Command the command object itself
 	 */

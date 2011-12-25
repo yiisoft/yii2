@@ -102,10 +102,10 @@ class Query extends \yii\base\Object
 		}
 
 		if ($this->select !== $query->select) {
-			if($this->select === '*') {
+			if ($this->select === '*') {
 				$this->select = $query->select;
 			}
-			elseif($query->select!=='*') {
+			elseif ($query->select !== '*') {
 				$select1 = is_string($this->select) ? preg_split('/\s*,\s*/', trim($this->select), -1, PREG_SPLIT_NO_EMPTY) : $this->select;
 				$select2 = is_string($query->select) ? preg_split('/\s*,\s*/', trim($query->select), -1, PREG_SPLIT_NO_EMPTY) : $query->select;
 				$this->select = array_merge($select1, array_diff($select2, $select1));
@@ -238,16 +238,19 @@ class Query extends \yii\base\Object
 	 */
 	public function addCondition($condition, $operator = 'AND')
 	{
-		if (is_array($condition))
-		{
-			if ($condition === array())
+		if (is_array($condition)) {
+			if ($condition === array()) {
 				return $this;
+			}
 			$condition = '(' . implode(') ' . $operator . ' (', $condition) . ')';
 		}
-		if ($this->condition === '')
+		if ($this->condition === '') {
 			$this->condition = $condition;
+		}
 		else
+		{
 			$this->condition = '(' . $this->condition . ') ' . $operator . ' (' . $condition . ')';
+		}
 		return $this;
 	}
 
@@ -271,10 +274,12 @@ class Query extends \yii\base\Object
 	 */
 	public function addSearchCondition($column, $keyword, $escape = true, $operator = 'AND', $like = 'LIKE')
 	{
-		if ($keyword == '')
+		if ($keyword == '') {
 			return $this;
-		if ($escape)
+		}
+		if ($escape) {
 			$keyword = '%' . strtr($keyword, array('%' => '\%', '_' => '\_', '\\' => '\\\\')) . '%';
+		}
 		$condition = $column . " $like " . self::PARAM_PREFIX . self::$paramCount;
 		$this->params[self::PARAM_PREFIX . self::$paramCount++] = $keyword;
 		return $this->addCondition($condition, $operator);
@@ -294,13 +299,14 @@ class Query extends \yii\base\Object
 	 */
 	public function addInCondition($column, $values, $operator = 'AND')
 	{
-		if (($n = count($values)) < 1)
-			return $this->addCondition('0=1', $operator); // 0=1 is used because in MSSQL value alone can't be used in WHERE
-		if ($n === 1)
-		{
+		if (($n = count($values)) < 1) {
+			return $this->addCondition('0=1', $operator);
+		} // 0=1 is used because in MSSQL value alone can't be used in WHERE
+		if ($n === 1) {
 			$value = reset($values);
-			if ($value === null)
+			if ($value === null) {
 				return $this->addCondition($column . ' IS NULL');
+			}
 			$condition = $column . '=' . self::PARAM_PREFIX . self::$paramCount;
 			$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
 		}
@@ -331,13 +337,14 @@ class Query extends \yii\base\Object
 	 */
 	public function addNotInCondition($column, $values, $operator = 'AND')
 	{
-		if (($n = count($values)) < 1)
+		if (($n = count($values)) < 1) {
 			return $this;
-		if ($n === 1)
-		{
+		}
+		if ($n === 1) {
 			$value = reset($values);
-			if ($value === null)
+			if ($value === null) {
 				return $this->addCondition($column . ' IS NOT NULL');
+			}
 			$condition = $column . '!=' . self::PARAM_PREFIX . self::$paramCount;
 			$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
 		}
@@ -370,8 +377,9 @@ class Query extends \yii\base\Object
 		$params = array();
 		foreach ($columns as $name => $value)
 		{
-			if ($value === null)
+			if ($value === null) {
 				$params[] = $name . ' IS NULL';
+			}
 			else
 			{
 				$params[] = $name . '=' . self::PARAM_PREFIX . self::$paramCount;
@@ -426,35 +434,42 @@ class Query extends \yii\base\Object
 	 */
 	public function compare($column, $value, $partialMatch = false, $operator = 'AND', $escape = true)
 	{
-		if (is_array($value))
-		{
-			if ($value === array())
+		if (is_array($value)) {
+			if ($value === array()) {
 				return $this;
+			}
 			return $this->addInCondition($column, $value, $operator);
 		}
 		else
-			$value = "$value";
-
-		if (preg_match('/^(?:\s*(<>|<=|>=|<|>|=))?(.*)$/', $value, $matches))
 		{
+			$value = "$value";
+		}
+
+		if (preg_match('/^(?:\s*(<>|<=|>=|<|>|=))?(.*)$/', $value, $matches)) {
 			$value = $matches[2];
 			$op = $matches[1];
 		}
 		else
-			$op = '';
-
-		if ($value === '')
-			return $this;
-
-		if ($partialMatch)
 		{
-			if ($op === '')
+			$op = '';
+		}
+
+		if ($value === '') {
+			return $this;
+		}
+
+		if ($partialMatch) {
+			if ($op === '') {
 				return $this->addSearchCondition($column, $value, $escape, $operator);
-			if ($op === '<>')
+			}
+			if ($op === '<>') {
 				return $this->addSearchCondition($column, $value, $escape, $operator, 'NOT LIKE');
+			}
 		}
 		elseif ($op === '')
+		{
 			$op = '=';
+		}
 
 		$this->addCondition($column . $op . self::PARAM_PREFIX . self::$paramCount, $operator);
 		$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
@@ -479,8 +494,9 @@ class Query extends \yii\base\Object
 	 */
 	public function addBetweenCondition($column, $valueStart, $valueEnd, $operator = 'AND')
 	{
-		if ($valueStart === '' || $valueEnd === '')
+		if ($valueStart === '' || $valueEnd === '') {
 			return $this;
+		}
 
 		$paramStart = self::PARAM_PREFIX . self::$paramCount++;
 		$paramEnd = self::PARAM_PREFIX . self::$paramCount++;
@@ -488,10 +504,13 @@ class Query extends \yii\base\Object
 		$this->params[$paramEnd] = $valueEnd;
 		$condition = "$column BETWEEN $paramStart AND $paramEnd";
 
-		if ($this->condition === '')
+		if ($this->condition === '') {
 			$this->condition = $condition;
+		}
 		else
+		{
 			$this->condition = '(' . $this->condition . ') ' . $operator . ' (' . $condition . ')';
+		}
 		return $this;
 	}
 

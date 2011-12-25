@@ -7,6 +7,23 @@ class Foo extends \yii\base\Object
 	public $prop;
 }
 
+class Bar extends \yii\base\Component implements \yii\base\Initable
+{
+	public $prop1;
+	public $prop2;
+	public $prop3;
+
+	public function __construct($a, $b)
+	{
+		$this->prop1 = $a + $b;
+	}
+
+	public function init()
+	{
+		$this->prop3 = 3;
+	}
+}
+
 /**
  * ObjectTest
  */
@@ -24,15 +41,28 @@ class ObjectTest extends \yiiunit\TestCase
 		$this->object = null;
 	}
 
-	public function testCreate()
+	public function testNewInstance()
 	{
-		$foo = Foo::create(array(
+		$foo = Foo::newInstance(array(
 			'prop' => array(
 				'test' => 'test',
 			),
 		));
 
 		$this->assertEquals('test', $foo->prop['test']);
+
+		$bar = Bar::newInstance(10, 20);
+		$this->assertEquals(30, $bar->prop1);
+		$this->assertEquals(null, $bar->prop2);
+		$this->assertEquals(3, $bar->prop3);
+
+		$bar = Bar::newInstance(100, 200, array(
+			'prop2' => 'x',
+			'prop3' => 400,
+		));
+		$this->assertEquals(300, $bar->prop1);
+		$this->assertEquals('x', $bar->prop2);
+		$this->assertEquals(3, $bar->prop3);
 	}
 
 	public function testHasProperty()

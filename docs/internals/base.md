@@ -16,7 +16,7 @@ change API. Results in less repetitive code. Performance drop isn't significant.
 
 ### callbacks and expressions
 
-### [[Object::create()]|create] method
+### [[Object::newInstance|newInstance]] method
 
 This method is a powerful way to instantiate a class. Differences from `new`:
 

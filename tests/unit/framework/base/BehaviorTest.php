@@ -21,7 +21,7 @@ class BehaviorTest extends \yiiunit\TestCase
 {
 	public function testAttachAndAccessing()
 	{
-		$bar = BarClass::create();
+		$bar = BarClass::newInstance();
 		$behavior = new BarBehavior();
 		$bar->attachBehavior('bar', $behavior);
 		$this->assertEquals('behavior property', $bar->behaviorProperty);

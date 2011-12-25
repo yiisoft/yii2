@@ -20,6 +20,9 @@ use yii\db\Exception;
  */
 abstract class Schema extends \yii\base\Object
 {
+	/**
+	 * @var \yii\db\dao\Connection the database connection
+	 */
 	public $connection;
 
 	private $_tableNames = array();
@@ -194,7 +197,9 @@ abstract class Schema extends \yii\base\Object
 			$name = substr($name, $pos + 1);
 		}
 		else
+		{
 			$prefix = '';
+		}
 		return $prefix . $this->quoteSimpleColumnName($name);
 	}
 

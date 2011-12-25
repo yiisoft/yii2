@@ -23,13 +23,13 @@ use yii\db\Exception;
  * ~~~
  * $transaction = $connection->beginTransaction();
  * try {
- *     $connection->createCommand($sql1)->execute();
- *     $connection->createCommand($sql2)->execute();
- *     //.... other SQL executions
- *     $transaction->commit();
+ *	 $connection->createCommand($sql1)->execute();
+ *	 $connection->createCommand($sql2)->execute();
+ *	 //.... other SQL executions
+ *	 $transaction->commit();
  * }
  * catch(Exception $e) {
- *     $transaction->rollBack();
+ *	 $transaction->rollBack();
  * }
  * ~~~
  *
@@ -69,7 +69,8 @@ class Transaction extends \yii\base\Object
 			\Yii::trace('Committing transaction', __CLASS__);
 			$this->connection->pdo->commit();
 			$this->active = false;
-		} else {
+		}
+		else {
 			throw new Exception('Failed to commit transaction: transaction was inactive.');
 		}
 	}
@@ -84,7 +85,8 @@ class Transaction extends \yii\base\Object
 			\Yii::trace('Rolling back transaction', __CLASS__);
 			$this->connection->pdo->rollBack();
 			$this->active = false;
-		} else {
+		}
+		else {
 			throw new Exception('Failed to roll back transaction: transaction was inactive.');
 		}
 	}

@@ -23,21 +23,21 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @var array the abstract column types mapped to physical column types.
 	 */
-    public $typeMap = array(
-        'pk' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        'string' => 'varchar(255)',
-        'text' => 'text',
-        'integer' => 'int(11)',
-        'float' => 'float',
-        'decimal' => 'decimal',
-        'datetime' => 'datetime',
-        'timestamp' => 'timestamp',
-        'time' => 'time',
-        'date' => 'date',
-        'binary' => 'blob',
-        'boolean' => 'tinyint(1)',
+	public $typeMap = array(
+		'pk' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		'string' => 'varchar(255)',
+		'text' => 'text',
+		'integer' => 'int(11)',
+		'float' => 'float',
+		'decimal' => 'decimal',
+		'datetime' => 'datetime',
+		'timestamp' => 'timestamp',
+		'time' => 'time',
+		'date' => 'date',
+		'binary' => 'blob',
+		'boolean' => 'tinyint(1)',
 		'money' => 'decimal(19,4)',
-    );
+	);
 	/**
 	 * @var Connection the database connection.
 	 */
@@ -177,7 +177,9 @@ class QueryBuilder extends \yii\base\Object
 				$cols[] = "\t" . $this->schema->quoteColumnName($name) . ' ' . $this->schema->getColumnType($type);
 			}
 			else
+			{
 				$cols[] = "\t" . $type;
+			}
 		}
 		$sql = "CREATE TABLE " . $this->schema->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
 		return $options === null ? $sql : $sql . ' ' . $options;
@@ -288,20 +290,24 @@ class QueryBuilder extends \yii\base\Object
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
 		$columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
-		foreach ($columns as $i => $col)
+		foreach ($columns as $i => $col) {
 			$columns[$i] = $this->schema->quoteColumnName($col);
+		}
 		$refColumns = preg_split('/\s*,\s*/', $refColumns, -1, PREG_SPLIT_NO_EMPTY);
-		foreach ($refColumns as $i => $col)
+		foreach ($refColumns as $i => $col) {
 			$refColumns[$i] = $this->schema->quoteColumnName($col);
+		}
 		$sql = 'ALTER TABLE ' . $this->schema->quoteTableName($table)
 			. ' ADD CONSTRAINT ' . $this->schema->quoteColumnName($name)
 			. ' FOREIGN KEY (' . implode(', ', $columns) . ')'
 			. ' REFERENCES ' . $this->schema->quoteTableName($refTable)
 			. ' (' . implode(', ', $refColumns) . ')';
-		if ($delete !== null)
+		if ($delete !== null) {
 			$sql .= ' ON DELETE ' . $delete;
-		if ($update !== null)
+		}
+		if ($update !== null) {
 			$sql .= ' ON UPDATE ' . $update;
+		}
 		return $sql;
 	}
 
@@ -332,10 +338,13 @@ class QueryBuilder extends \yii\base\Object
 		$columns = preg_split('/\s*,\s*/', $column, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($columns as $col)
 		{
-			if (strpos($col, '(') !== false)
+			if (strpos($col, '(') !== false) {
 				$cols[] = $col;
+			}
 			else
+			{
 				$cols[] = $this->schema->quoteColumnName($col);
+			}
 		}
 		return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
 			. $this->schema->quoteTableName($name) . ' ON '
@@ -400,8 +409,8 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $type abstract column type
 	 * @return string physical column type.
 	 */
-    public function getColumnType($type)
-    {
+	public function getColumnType($type)
+	{
 		if (isset($this->typeMap[$type])) {
 			return $this->typeMap[$type];
 		}
@@ -485,19 +494,19 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		foreach ($joins as $i => $join) {
-			if (is_array($join)) {  // join type, table name, on-condition
+			if (is_array($join)) { // join type, table name, on-condition
 				if (isset($join[0], $join[1])) {
 					$table = $join[1];
-					if (strpos($table,'(')===false) {
-						if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) {  // with alias
-							$table = $this->connection->quoteTableName($matches[1]).' '.$this->connection->quoteTableName($matches[2]);
+					if (strpos($table, '(') === false) {
+						if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
+							$table = $this->connection->quoteTableName($matches[1]) . ' ' . $this->connection->quoteTableName($matches[2]);
 						}
 						else {
 							$table = $this->connection->quoteTableName($table);
 						}
 					}
 					$joins[$i] = strtoupper($join[0]) . ' ' . $table;
-					if (isset($join[2])) {  // join condition
+					if (isset($join[2])) { // join condition
 						$condition = $this->buildCondition($join[2]);
 						$joins[$i] .= ' ON ' . $condition;
 					}
@@ -582,8 +591,8 @@ class QueryBuilder extends \yii\base\Object
 		if ($query->limit !== null && $query->limit >= 0) {
 			$sql = 'LIMIT ' . (int)$query->limit;
 		}
-		if ($query->offset>0) {
-			$sql .= ' OFFSET '.(int)$query->offset;
+		if ($query->offset > 0) {
+			$sql .= ' OFFSET ' . (int)$query->offset;
 		}
 		return ltrim($sql);
 	}

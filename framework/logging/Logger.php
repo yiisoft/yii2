@@ -22,12 +22,12 @@ namespace yii\logging;
  */
 class Logger extends \yii\base\Component
 {
-	const LEVEL_ERROR = 1;
-	const LEVEL_WARNING = 2;
-	const LEVEL_INFO = 3;
-	const LEVEL_TRACE = 4;
-	const LEVEL_PROFILE_BEGIN = 5;
-	const LEVEL_PROFILE_END = 6;
+	const LEVEL_ERROR = 'error';
+	const LEVEL_WARNING = 'warning';
+	const LEVEL_INFO = 'info';
+	const LEVEL_TRACE = 'trace';
+	const LEVEL_PROFILE_BEGIN = 'profile-begin';
+	const LEVEL_PROFILE_END = 'profile-end';
 
 	/**
 	 * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
@@ -253,13 +253,10 @@ class Logger extends \yii\base\Component
 
 		$stack = array();
 		foreach ($this->messages as $log) {
-			if ($log[1] < self::LEVEL_PROFILE_BEGIN) {
-				continue;
-			}
-			list($token, $level, $category, $timestamp) = $log;
-			if ($level === self::LEVEL_PROFILE_BEGIN) {
+			if ($log[1] === self::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
-			} else {
+			} elseif ($log[1] === self::LEVEL_PROFILE_END) {
+				list($token, $level, $category, $timestamp) = $log;
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
 					$timings[] = array($token, $category, $timestamp - $last[3]);
 				} else {

@@ -119,15 +119,17 @@ abstract class Application extends Module
 		\Yii::$app = $this;
 
 		// set basePath at early as possible to avoid trouble
-		if (is_string($config))
+		if (is_string($config)) {
 			$config = require($config);
-		if (isset($config['basePath']))
-		{
+		}
+		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
 			unset($config['basePath']);
 		}
 		else
+		{
 			$this->setBasePath('protected');
+		}
 		\Yii::setAlias('application', $this->getBasePath());
 		\Yii::setAlias('webroot', dirname($_SERVER['SCRIPT_FILENAME']));
 		\Yii::setAlias('ext', $this->getBasePath() . DIRECTORY_SEPARATOR . 'extensions');
@@ -153,11 +155,13 @@ abstract class Application extends Module
 	 */
 	public function run()
 	{
-		if ($this->hasEventHandlers('onBeginRequest'))
+		if ($this->hasEventHandlers('onBeginRequest')) {
 			$this->onBeginRequest(new CEvent($this));
+		}
 		$this->processRequest();
-		if ($this->hasEventHandlers('onEndRequest'))
+		if ($this->hasEventHandlers('onEndRequest')) {
 			$this->onEndRequest(new CEvent($this));
+		}
 	}
 
 	/**
@@ -170,10 +174,12 @@ abstract class Application extends Module
 	 */
 	public function end($status = 0, $exit = true)
 	{
-		if ($this->hasEventHandlers('onEndRequest'))
+		if ($this->hasEventHandlers('onEndRequest')) {
 			$this->onEndRequest(new CEvent($this));
-		if ($exit)
+		}
+		if ($exit) {
 			exit($status);
+		}
 	}
 
 	/**
@@ -191,8 +197,7 @@ abstract class Application extends Module
 	 */
 	public function onEndRequest($event)
 	{
-		if (!$this->_ended)
-		{
+		if (!$this->_ended) {
 			$this->_ended = true;
 			$this->raiseEvent('onEndRequest', $event);
 		}
@@ -204,10 +209,13 @@ abstract class Application extends Module
 	 */
 	public function getId()
 	{
-		if ($this->_id !== null)
+		if ($this->_id !== null) {
 			return $this->_id;
+		}
 		else
+		{
 			return $this->_id = sprintf('%x', crc32($this->getBasePath() . $this->name));
+		}
 	}
 
 	/**
@@ -236,9 +244,10 @@ abstract class Application extends Module
 	 */
 	public function setBasePath($path)
 	{
-		if (($this->_basePath = realpath($path)) === false || !is_dir($this->_basePath))
+		if (($this->_basePath = realpath($path)) === false || !is_dir($this->_basePath)) {
 			throw new \yii\base\Exception(\Yii::t('yii', 'Application base path "{path}" is not a valid directory.',
 				array('{path}' => $path)));
+		}
 	}
 
 	/**
@@ -247,8 +256,9 @@ abstract class Application extends Module
 	 */
 	public function getRuntimePath()
 	{
-		if ($this->_runtimePath !== null)
+		if ($this->_runtimePath !== null) {
 			return $this->_runtimePath;
+		}
 		else
 		{
 			$this->setRuntimePath($this->getBasePath() . DIRECTORY_SEPARATOR . 'runtime');
@@ -263,9 +273,10 @@ abstract class Application extends Module
 	 */
 	public function setRuntimePath($path)
 	{
-		if (($runtimePath = realpath($path)) === false || !is_dir($runtimePath) || !is_writable($runtimePath))
+		if (($runtimePath = realpath($path)) === false || !is_dir($runtimePath) || !is_writable($runtimePath)) {
 			throw new \yii\base\Exception(\Yii::t('yii', 'Application runtime path "{path}" is not valid. Please make sure it is a directory writable by the Web server process.',
 				array('{path}' => $path)));
+		}
 		$this->_runtimePath = $runtimePath;
 	}
 
@@ -284,9 +295,10 @@ abstract class Application extends Module
 	 */
 	public function setExtensionPath($path)
 	{
-		if (($extensionPath = realpath($path)) === false || !is_dir($extensionPath))
+		if (($extensionPath = realpath($path)) === false || !is_dir($extensionPath)) {
 			throw new \yii\base\Exception(\Yii::t('yii', 'Extension path "{path}" does not exist.',
 				array('{path}' => $path)));
+		}
 		\Yii::setAlias('ext', $extensionPath);
 	}
 
@@ -359,12 +371,15 @@ abstract class Application extends Module
 	 */
 	public function findLocalizedFile($srcFile, $srcLanguage = null, $language = null)
 	{
-		if ($srcLanguage === null)
+		if ($srcLanguage === null) {
 			$srcLanguage = $this->sourceLanguage;
-		if ($language === null)
+		}
+		if ($language === null) {
 			$language = $this->getLanguage();
-		if ($language === $srcLanguage)
+		}
+		if ($language === $srcLanguage) {
 			return $srcFile;
+		}
 		$desiredFile = dirname($srcFile) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($srcFile);
 		return is_file($desiredFile) ? $desiredFile : $srcFile;
 	}
@@ -528,10 +543,13 @@ abstract class Application extends Module
 	public function createAbsoluteUrl($route, $params = array(), $schema = '', $ampersand = '&')
 	{
 		$url = $this->createUrl($route, $params, $ampersand);
-		if (strpos($url, 'http') === 0)
+		if (strpos($url, 'http') === 0) {
 			return $url;
+		}
 		else
+		{
 			return $this->getRequest()->getHostInfo($schema) . $url;
+		}
 	}
 
 	/**
@@ -552,15 +570,19 @@ abstract class Application extends Module
 	 */
 	public function getHomeUrl()
 	{
-		if ($this->_homeUrl === null)
-		{
-			if ($this->getUrlManager()->showScriptName)
+		if ($this->_homeUrl === null) {
+			if ($this->getUrlManager()->showScriptName) {
 				return $this->getRequest()->getScriptUrl();
+			}
 			else
+			{
 				return $this->getRequest()->getBaseUrl() . '/';
+			}
 		}
 		else
+		{
 			return $this->_homeUrl;
+		}
 	}
 
 	/**
@@ -582,12 +604,16 @@ abstract class Application extends Module
 	 */
 	public function getGlobalState($key, $defaultValue = null)
 	{
-		if ($this->_globalState === null)
+		if ($this->_globalState === null) {
 			$this->loadGlobalState();
-		if (isset($this->_globalState[$key]))
+		}
+		if (isset($this->_globalState[$key])) {
 			return $this->_globalState[$key];
+		}
 		else
+		{
 			return $defaultValue;
+		}
 	}
 
 	/**
@@ -602,14 +628,13 @@ abstract class Application extends Module
 	 */
 	public function setGlobalState($key, $value, $defaultValue = null)
 	{
-		if ($this->_globalState === null)
+		if ($this->_globalState === null) {
 			$this->loadGlobalState();
+		}
 
 		$changed = $this->_stateChanged;
-		if ($value === $defaultValue)
-		{
-			if (isset($this->_globalState[$key]))
-			{
+		if ($value === $defaultValue) {
+			if (isset($this->_globalState[$key])) {
 				unset($this->_globalState[$key]);
 				$this->_stateChanged = true;
 			}
@@ -620,8 +645,9 @@ abstract class Application extends Module
 			$this->_stateChanged = true;
 		}
 
-		if ($this->_stateChanged !== $changed)
+		if ($this->_stateChanged !== $changed) {
 			$this->attachEventHandler('onEndRequest', array($this, 'saveGlobalState'));
+		}
 	}
 
 	/**
@@ -643,8 +669,9 @@ abstract class Application extends Module
 	public function loadGlobalState()
 	{
 		$persister = $this->getStatePersister();
-		if (($this->_globalState = $persister->load()) === null)
+		if (($this->_globalState = $persister->load()) === null) {
 			$this->_globalState = array();
+		}
 		$this->_stateChanged = false;
 		$this->detachEventHandler('onEndRequest', array($this, 'saveGlobalState'));
 	}
@@ -656,8 +683,7 @@ abstract class Application extends Module
 	 */
 	public function saveGlobalState()
 	{
-		if ($this->_stateChanged)
-		{
+		if ($this->_stateChanged) {
 			$this->_stateChanged = false;
 			$this->detachEventHandler('onEndRequest', array($this, 'saveGlobalState'));
 			$this->getStatePersister()->save($this->_globalState);
@@ -685,12 +711,14 @@ abstract class Application extends Module
 		restore_exception_handler();
 
 		$category = 'exception.' . get_class($exception);
-		if ($exception instanceof \yii\web\HttpException)
+		if ($exception instanceof \yii\web\HttpException) {
 			$category .= '.' . $exception->statusCode;
+		}
 		// php <5.2 doesn't support string conversion auto-magically
 		$message = $exception->__toString();
-		if (isset($_SERVER['REQUEST_URI']))
+		if (isset($_SERVER['REQUEST_URI'])) {
 			$message .= ' REQUEST_URI=' . $_SERVER['REQUEST_URI'];
+		}
 		\Yii::error($message, $category);
 
 		try
@@ -699,11 +727,9 @@ abstract class Application extends Module
 			//$event = new CExceptionEvent($this, $exception);
 			$event = new Event($this, array('exception' => $exception));
 			$this->onException($event);
-			if (!$event->handled)
-			{
+			if (!$event->handled) {
 				// try an error handler
-				if (($handler = $this->getErrorHandler()) !== null)
-				{
+				if (($handler = $this->getErrorHandler()) !== null) {
 					$handler->handle($event);
 				}
 				else
@@ -712,7 +738,7 @@ abstract class Application extends Module
 				}
 			}
 		}
-		catch(Exception $e)
+		catch (Exception $e)
 		{
 			$this->displayException($e);
 		}
@@ -721,7 +747,7 @@ abstract class Application extends Module
 		{
 			$this->end(1);
 		}
-		catch(Exception $e)
+		catch (Exception $e)
 		{
 			// use the most primitive way to log error
 			$msg = get_class($e) . ': ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
@@ -754,8 +780,7 @@ abstract class Application extends Module
 	 */
 	public function handleError($code, $message, $file, $line)
 	{
-		if ($code & error_reporting())
-		{
+		if ($code & error_reporting()) {
 			// disable error capturing to avoid recursive errors
 			restore_error_handler();
 			restore_exception_handler();
@@ -763,23 +788,29 @@ abstract class Application extends Module
 			$log = "$message ($file:$line)\nStack trace:\n";
 			$trace = debug_backtrace();
 			// skip the first 3 stacks as they do not tell the error position
-			if (count($trace) > 3)
+			if (count($trace) > 3) {
 				$trace = array_slice($trace, 3);
+			}
 			foreach ($trace as $i => $t)
 			{
-				if (!isset($t['file']))
+				if (!isset($t['file'])) {
 					$t['file'] = 'unknown';
-				if (!isset($t['line']))
+				}
+				if (!isset($t['line'])) {
 					$t['line'] = 0;
-				if (!isset($t['function']))
+				}
+				if (!isset($t['function'])) {
 					$t['function'] = 'unknown';
+				}
 				$log .= "#$i  {$t['file']}( {$t['line']}): ";
-				if (isset($t['object']) && is_object($t['object']))
+				if (isset($t['object']) && is_object($t['object'])) {
 					$log .= get_class($t['object']) . '->';
+				}
 				$log .= " {$t['function']}()\n";
 			}
-			if (isset($_SERVER['REQUEST_URI']))
+			if (isset($_SERVER['REQUEST_URI'])) {
 				$log .= 'REQUEST_URI=' . $_SERVER['REQUEST_URI'];
+			}
 			\Yii::error($log, 'php');
 
 			try
@@ -787,16 +818,18 @@ abstract class Application extends Module
 				\Yii::import('CErrorEvent', true);
 				$event = new CErrorEvent($this, $code, $message, $file, $line);
 				$this->onError($event);
-				if (!$event->handled)
-				{
+				if (!$event->handled) {
 					// try an error handler
-					if (($handler = $this->getErrorHandler()) !== null)
+					if (($handler = $this->getErrorHandler()) !== null) {
 						$handler->handle($event);
+					}
 					else
+					{
 						$this->displayError($code, $message, $file, $line);
+					}
 				}
 			}
-			catch(Exception $e)
+			catch (Exception $e)
 			{
 				$this->displayException($e);
 			}
@@ -805,7 +838,7 @@ abstract class Application extends Module
 			{
 				$this->end(1);
 			}
-			catch(Exception $e)
+			catch (Exception $e)
 			{
 				// use the most primitive way to log error
 				$msg = get_class($e) . ': ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
@@ -860,27 +893,31 @@ abstract class Application extends Module
 	 */
 	public function displayError($code, $message, $file, $line)
 	{
-		if (YII_DEBUG)
-		{
+		if (YII_DEBUG) {
 			echo "<h1>PHP Error [$code]</h1>\n";
 			echo "<p>$message ($file:$line)</p>\n";
 			echo '<pre>';
 
 			$trace = debug_backtrace();
 			// skip the first 3 stacks as they do not tell the error position
-			if (count($trace) > 3)
+			if (count($trace) > 3) {
 				$trace = array_slice($trace, 3);
+			}
 			foreach ($trace as $i => $t)
 			{
-				if (!isset($t['file']))
+				if (!isset($t['file'])) {
 					$t['file'] = 'unknown';
-				if (!isset($t['line']))
+				}
+				if (!isset($t['line'])) {
 					$t['line'] = 0;
-				if (!isset($t['function']))
+				}
+				if (!isset($t['function'])) {
 					$t['function'] = 'unknown';
+				}
 				echo "#$i  {$t['file']}( {$t['line']}): ";
-				if (isset($t['object']) && is_object($t['object']))
+				if (isset($t['object']) && is_object($t['object'])) {
 					echo get_class($t['object']) . '->';
+				}
 				echo " {$t['function']}()\n";
 			}
 
@@ -901,8 +938,7 @@ abstract class Application extends Module
 	 */
 	public function displayException($exception)
 	{
-		if (YII_DEBUG)
-		{
+		if (YII_DEBUG) {
 			echo '<h1>' . get_class($exception) . "</h1>\n";
 			echo '<p>' . $exception->getMessage() . ' (' . $exception->getFile() . ':' . $exception->getLine() . ')</p>';
 			echo '<pre>' . $exception->getTraceAsString() . '</pre>';
@@ -919,10 +955,12 @@ abstract class Application extends Module
 	 */
 	protected function initSystemHandlers()
 	{
-		if (YII_ENABLE_EXCEPTION_HANDLER)
+		if (YII_ENABLE_EXCEPTION_HANDLER) {
 			set_exception_handler(array($this, 'handleException'));
-		if (YII_ENABLE_ERROR_HANDLER)
+		}
+		if (YII_ENABLE_ERROR_HANDLER) {
 			set_error_handler(array($this, 'handleError'), error_reporting());
+		}
 	}
 
 	/**

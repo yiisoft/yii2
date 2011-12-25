@@ -51,7 +51,7 @@ class Event extends Object
 	 * @param mixed $sender sender of the event
 	 * @param mixed $params parameters of the event
 	 */
-	public function __construct($sender=null, $params=null)
+	public function __construct($sender = null, $params = null)
 	{
 		$this->sender = $sender;
 		$this->params = $params;

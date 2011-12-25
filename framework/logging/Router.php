@@ -101,7 +101,7 @@ class Router extends \yii\base\ApplicationComponent
 	 * Sets the log targets.
 	 * @param array $config list of log target configurations. Each array element
 	 * represents the configuration for creating a single log target. It will be
-	 * passed to [[\Yii::create]] to create the target instance.
+	 * passed to [[\Yii::createObject]] to create the target instance.
 	 */
 	public function setTargets($config)
 	{
@@ -110,7 +110,7 @@ class Router extends \yii\base\ApplicationComponent
 				$this->_targets[$name] = $target;
 			}
 			else {
-				$this->_targets[$name] = \Yii::create($target);
+				$this->_targets[$name] = \Yii::createObject($target);
 			}
 		}
 	}

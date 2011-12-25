@@ -21,12 +21,12 @@ namespace yii\base;
  *
  * public function getLabel()
  * {
- *     return $this->_label;
+ *	 return $this->_label;
  * }
  *
  * public function setLabel($value)
  * {
- *     $this->_label = $value;
+ *	 $this->_label = $value;
  * }
  * ~~~
  *
@@ -85,7 +85,8 @@ class Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
 			return $this->$getter();
-		} else {
+		}
+		else {
 			throw new Exception('Getting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -105,9 +106,11 @@ class Object
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {
 			$this->$setter($value);
-		} elseif (method_exists($this, 'get' . $name)) {
+		}
+		elseif (method_exists($this, 'get' . $name)) {
 			throw new Exception('Setting read-only property: ' . get_class($this) . '.' . $name);
-		} else {
+		}
+		else {
 			throw new Exception('Setting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -127,7 +130,8 @@ class Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // property is not null
 			return $this->$getter() !== null;
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
@@ -146,9 +150,10 @@ class Object
 	public function __unset($name)
 	{
 		$setter = 'set' . $name;
-		if (method_exists($this, $setter)) {  // write property
+		if (method_exists($this, $setter)) { // write property
 			$this->$setter(null);
-		} elseif (method_exists($this, 'get' . $name)) {
+		}
+		elseif (method_exists($this, 'get' . $name)) {
 			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 		}
 	}
@@ -244,74 +249,107 @@ class Object
 	 * @param array $_data_ additional parameters to be passed to the above expression/callback.
 	 * @return mixed the expression result
 	 */
-	public function evaluateExpression($_expression_, $_data_=array())
+	public function evaluateExpression($_expression_, $_data_ = array())
 	{
 		if (is_string($_expression_)) {
 			extract($_data_);
 			return eval('return ' . $_expression_ . ';');
-		} else {
+		}
+		else {
 			$_data_[] = $this;
 			return call_user_func_array($_expression_, $_data_);
 		}
 	}
 
 	/**
-	 * Creates a new object instance.
-	 *
-	 * This method calls [[\Yii::create]] to create the new object instance.
-	 *
-	 * This method differs from the PHP `new` operator in that it does the following
-	 * steps to create a new object instance:
-	 *
-	 * - Call class constructor (same as the `new` operator);
-	 * - Initialize the object properties using the name-value pairs given as the
-	 *   last parameter to this method;
-	 * - Call [[Initable::init|init]] if the class implements [[Initable]].
+	 * Creates a new instance of the calling class.
 	 *
 	 * Parameters passed to this method will be used as the parameters to the object
 	 * constructor.
 	 *
-	 * Additionally, one can pass in an associative array as the last parameter to
-	 * this method. This method will treat the array as name-value pairs that initialize
-	 * the corresponding object properties. For example,
+	 * This method does the following steps to create a object:
+	 *
+	 * - create the object using the PHP `new` operator;
+	 * - if [[Yii::objectConfig]] contains the configuration for the object class,
+	 *   initialize the object properties with that configuration;
+	 * - if the number of the given parameters is more than the number of the parameters
+	 *   listed in the object constructor and the last given parameter is an array,
+	 *   initialize the object properties using that array;
+	 * - call the `init` method of the object if it implements the [[yii\base\Initable]] interface.
+	 *
+	 * For example,
 	 *
 	 * ~~~
-	 * class Foo extends \yii\base\Object
+	 * class Foo extends \yii\base\Object implements \yii\base\Initable
 	 * {
-	 *     public $c;
-	 *     public function __construct($a, $b)
-	 *     {
-	 *         ...
-	 *     }
+	 *	 public $c;
+	 *	 public function __construct($a, $b)
+	 *	 {
+	 *		 ...
+	 *	 }
+	 *	 public function init()
+	 *	 {
+	 *		 ...
+	 *	 }
 	 * }
 	 *
-	 * $model = Foo::create(1, 2, array('c' => 3));
+	 * $model = Foo::newInstance(1, 2, array('c' => 3));
 	 * // which is equivalent to the following lines:
 	 * $model = new Foo(1, 2);
 	 * $model->c = 3;
+	 * $model->init();
 	 * ~~~
 	 *
 	 * @return object the created object
 	 * @throws Exception if the configuration is invalid.
 	 */
-	public static function create()
+	public static function newInstance()
 	{
-		$class = '\\' . get_called_class();
+		$c = get_called_class();
+		$class = '\\' . $c;
 		if (($n = func_num_args()) > 0) {
 			$args = func_get_args();
-			if (is_array($args[$n-1])) {
-				// the last parameter could be configuration array
+			if (is_array($args[$n - 1])) {
 				$method = new \ReflectionMethod($class, '__construct');
-				if ($method->getNumberOfParameters()+1 == $n) {
-					$config = $args[$n-1];
-					array_pop($args);
+				if ($method->getNumberOfParameters() < $n) {
+					// the last EXTRA parameter is a configuration array
+					$config = $args[--$n];
+					unset($args[$n]);
 				}
 			}
-			$config['class'] = $class;
-			array_unshift($args, $config);
-			return call_user_func_array('\Yii::create', $args);
-		} else {
-			return \Yii::create($class);
 		}
+
+		if ($n === 0) {
+			$object = new $class;
+		}
+		elseif ($n === 1) {
+			$object = new $class($args[0]);
+		}
+		elseif ($n === 2) {
+			$object = new $class($args[0], $args[1]);
+		}
+		elseif ($n === 3) {
+			$object = new $class($args[0], $args[1], $args[2]);
+		}
+		else {
+			$r = new \ReflectionClass($class);
+			$object = $r->newInstanceArgs($args);
+		}
+
+		if (isset(\Yii::$objectConfig[$c])) {
+			$config = isset($config) ? array_merge(\Yii::$objectConfig[$c], $config) : \Yii::$objectConfig[$c];
+		}
+
+		if (!empty($config)) {
+			foreach ($config as $name => $value) {
+				$object->$name = $value;
+			}
+		}
+
+		if ($object instanceof \yii\base\Initable) {
+			$object->init();
+		}
+
+		return $object;
 	}
 }

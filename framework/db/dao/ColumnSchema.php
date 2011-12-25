@@ -86,10 +86,10 @@ class ColumnSchema extends \yii\base\Component
 	{
 		static $typeMap = array( // logical type => php type
 			'smallint' => 'integer',
-	        'integer' => 'integer',
-	        'bigint' => 'integer',
-	        'boolean' => 'boolean',
-	        'float' => 'double',
+			'integer' => 'integer',
+			'bigint' => 'integer',
+			'boolean' => 'boolean',
+			'float' => 'double',
 		);
 		if (isset($typeMap[$this->type])) {
 			if ($this->type === 'bigint') {
@@ -114,9 +114,12 @@ class ColumnSchema extends \yii\base\Component
 			return $value;
 		}
 		switch ($this->phpType) {
-			case 'string': return (string)$value;
-			case 'integer': return (integer)$value;
-			case 'boolean': return (boolean)$value;
+			case 'string':
+				return (string)$value;
+			case 'integer':
+				return (integer)$value;
+			case 'boolean':
+				return (boolean)$value;
 		}
 		return $value;
 	}

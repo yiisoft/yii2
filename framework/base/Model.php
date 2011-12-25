@@ -35,15 +35,15 @@ namespace yii\base;
 class Model extends Component implements Initable, \IteratorAggregate, \ArrayAccess
 {
 	private static $_attributes = array(); // class name => array of attribute names
-	private $_errors;                      // attribute name => array of errors
-	private $_validators;                  // validators
-	private $_scenario;                    // scenario
+	private $_errors; // attribute name => array of errors
+	private $_validators; // validators
+	private $_scenario; // scenario
 
 	/**
 	 * Constructor.
 	 * @param string $scenario name of the [[scenario]] that this model is used in.
 	 */
-	public function __construct($scenario='')
+	public function __construct($scenario = '')
 	{
 		$this->_scenario = $scenario;
 		$this->afterConstruct();
@@ -52,7 +52,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	/**
 	 * Initializes this model.
 	 *
-	 * This method is required by the [[Initable]] interface. It is invoked by [[\Yii::create]]
+	 * This method is required by the [[Initable]] interface. It is invoked by [[\Yii::createObject]]
 	 * after it creates the new model instance and initializes the model properties.
 	 *
 	 * The default implementation calls [[behaviors]] and registers any available behaviors.
@@ -72,9 +72,9 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 *
 	 * ~~~
 	 * 'behaviorName' => array(
-	 *     'class' => 'BehaviorClass',
-	 *     'property1' => 'value1',
-	 *     'property2' => 'value2',
+	 *	 'class' => 'BehaviorClass',
+	 *	 'property1' => 'value1',
+	 *	 'property2' => 'value2',
 	 * )
 	 * ~~~
 	 *
@@ -123,10 +123,10 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 *
 	 * ~~~
 	 * array(
-	 *     'attribute list',
-	 *     'validator type',
-	 *     'on'=>'scenario name',
-	 *     ...other parameters...
+	 *	 'attribute list',
+	 *	 'validator type',
+	 *	 'on'=>'scenario name',
+	 *	 ...other parameters...
 	 * )
 	 * ~~~
 	 *
@@ -134,11 +134,11 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 *
 	 *  - attribute list: required, specifies the attributes (separated by commas) to be validated;
 	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
-	 *    class method, the name of a built-in validator, or a validator class (or its path alias).
+	 *	class method, the name of a built-in validator, or a validator class (or its path alias).
 	 *  - on: optional, specifies the [[scenario|scenarios]] (separated by commas) when the validation
-	 *    rule can be applied. If this option is not set, the rule will apply to any scenario.
+	 *	rule can be applied. If this option is not set, the rule will apply to any scenario.
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
-	 *    Please refer to individual validator class API for possible properties.
+	 *	Please refer to individual validator class API for possible properties.
 	 *
 	 * A validator can be either a model class method or an object.
 	 * If the former, the method must have the following signature:
@@ -156,10 +156,10 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 *
 	 * ~~~
 	 * array(
-	 *     array('username', 'required'),
-	 *     array('username', 'length', 'min'=>3, 'max'=>12),
-	 *     array('password', 'compare', 'compareAttribute'=>'password2', 'on'=>'register'),
-	 *     array('password', 'authenticate', 'on'=>'login'),
+	 *	 array('username', 'required'),
+	 *	 array('username', 'length', 'min'=>3, 'max'=>12),
+	 *	 array('password', 'compare', 'compareAttribute'=>'password2', 'on'=>'register'),
+	 *	 array('password', 'authenticate', 'on'=>'login'),
 	 * );
 	 * ~~~
 	 *
@@ -364,10 +364,11 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	{
 		$validators = new Vector;
 		foreach ($this->rules() as $rule) {
-			if (isset($rule[0], $rule[1])) {  // attributes, validator type
+			if (isset($rule[0], $rule[1])) { // attributes, validator type
 				$validator = \yii\validators\Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
 				$validators->add($validator);
-			} else {
+			}
+			else {
 				throw new Exception('Invalid validation rule: a rule must specify both attribute names and validator type.');
 			}
 		}
@@ -439,13 +440,13 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 *
 	 * ~~~
 	 * array(
-	 *     'username' => array(
-	 *         'Username is required.',
-	 *         'Username must contain only word characters.',
-	 *     ),
-	 *     'email' => array(
-	 *         'Email address is invalid.',
-	 *     )
+	 *	 'username' => array(
+	 *		 'Username is required.',
+	 *		 'Username must contain only word characters.',
+	 *	 ),
+	 *	 'email' => array(
+	 *		 'Email address is invalid.',
+	 *	 )
 	 * )
 	 * ~~~
 	 *
@@ -455,7 +456,8 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	{
 		if ($attribute === null) {
 			return $this->_errors === null ? array() : $this->_errors;
-		} else {
+		}
+		else {
 			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
 		}
 	}
@@ -494,7 +496,8 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 				foreach ($error as $e) {
 					$this->_errors[$attribute][] = $e;
 				}
-			} else {
+			}
+			else {
 				$this->_errors[$attribute][] = $error;
 			}
 		}
@@ -508,7 +511,8 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	{
 		if ($attribute === null) {
 			$this->_errors = array();
-		} else {
+		}
+		else {
 			unset($this->_errors[$attribute]);
 		}
 	}
@@ -543,7 +547,8 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 					$values[$name] = $this->$name;
 				}
 			}
-		} else {
+		}
+		else {
 			foreach ($this->attributeNames() as $name) {
 				$values[$name] = $this->$name;
 			}
@@ -567,7 +572,8 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 			foreach ($values as $name => $value) {
 				if (isset($attributes[$name])) {
 					$this->$name = $value;
-				} elseif ($safeOnly) {
+				}
+				elseif ($safeOnly) {
 					$this->onUnsafeAttribute($name, $value);
 				}
 			}
@@ -633,7 +639,8 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 				foreach ($validator->attributes as $name) {
 					$unsafe[] = $name;
 				}
-			} else {
+			}
+			else {
 				foreach ($validator->attributes as $name) {
 					$attributes[$name] = true;
 				}

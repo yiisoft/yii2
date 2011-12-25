@@ -166,7 +166,7 @@ abstract class Validator extends \yii\base\Component
 		foreach ($params as $name => $value) {
 			$config[$name] = $value;
 		}
-		$validator = \Yii::create($config);
+		$validator = \Yii::createObject($config);
 
 		return $validator;
 	}

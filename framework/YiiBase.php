@@ -49,12 +49,16 @@ class YiiBase
 	 * @var array class map used by the Yii autoloading mechanism.
 	 * The array keys are the class names, and the array values are the corresponding class file paths.
 	 * This property mainly affects how [[autoload]] works.
+	 * @see import
+	 * @see autoload
 	 */
 	public static $classMap = array();
 	/**
 	 * @var array list of directories where Yii will search for new classes to be included.
 	 * The first directory in the array will be searched first, and so on.
 	 * This property mainly affects how [[autoload]] works.
+	 * @see import
+	 * @see autoload
 	 */
 	public static $classPath = array();
 	/**
@@ -63,10 +67,34 @@ class YiiBase
 	public static $app;
 	/**
 	 * @var array registered path aliases
+	 * @see getAlias
+	 * @see setAlias
 	 */
 	public static $aliases = array(
 		'@yii' => __DIR__,
 	);
+	/**
+	 * @var array initial property values that will be applied to objects newly created via [[createObject]].
+	 * The array keys are fully qualified namespaced class names, and the array values are the corresponding
+	 * name-value pairs for initializing the created class instances. Make sure the class names do not have
+	 * the leading backslashes. For example,
+	 *
+	 * ~~~
+	 * array(
+	 *     'mycompany\foo\Bar' => array(
+	 *         'prop1' => 'value1',
+	 *         'prop2' => 'value2',
+	 *     ),
+	 *     'mycompany\foo\Car' => array(
+	 *         'prop1' => 'value1',
+	 *         'prop2' => 'value2',
+	 *     ),
+	 * )
+	 * ~~~
+	 *
+	 * @see createObject
+	 */
+	public static $objectConfig = array();
 
 	private static $_imported = array();	// alias => class name or directory
 	private static $_logger;
@@ -140,13 +168,11 @@ class YiiBase
 			if ($forceInclude) {
 				require($path . "/$className.php");
 				self::$_imported[$alias] = $className;
-			}
-			else {
+			} else {
 				self::$classMap[$className] = $path . "/$className.php";
 			}
 			return $className;
-		}
-		else { // a directory
+		} else { // a directory
 			array_unshift(self::$classPath, $path);
 			return self::$_imported[$alias] = $path;
 		}
@@ -172,11 +198,9 @@ class YiiBase
 	{
 		if (isset(self::$aliases[$alias])) {
 			return self::$aliases[$alias];
-		}
-		elseif ($alias[0] !== '@') { // not an alias
+		} elseif ($alias[0] !== '@') { // not an alias
 			return $alias;
-		}
-		elseif (($pos = strpos($alias, '/')) !== false) {
+		} elseif (($pos = strpos($alias, '/')) !== false) {
 			$rootAlias = substr($alias, 0, $pos);
 			if (isset(self::$aliases[$rootAlias])) {
 				return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
@@ -207,14 +231,11 @@ class YiiBase
 	{
 		if ($path === null) {
 			unset(self::$aliases[$alias]);
-		}
-		elseif ($path[0] !== '@') {
+		} elseif ($path[0] !== '@') {
 			self::$aliases[$alias] = rtrim($path, '\\/');
-		}
-		elseif (($p = static::getAlias($path)) !== false) {
+		} elseif (($p = static::getAlias($path)) !== false) {
 			self::$aliases[$alias] = $p;
-		}
-		else {
+		} else {
 			throw new \yii\base\Exception('Invalid path: ' . $path);
 		}
 	}
@@ -278,22 +299,34 @@ class YiiBase
 	}
 
 	/**
-	 * Creates a new component instance using the given configuration.
+	 * Creates a new object using the given configuration.
 	 *
-	 * The specified configuration can be either a string or an array.
-	 * If the former, the string is treated as the object type; if the latter,
-	 * the array must contain a `class` element specifying the object type, and
+	 * The configuration can be either a string or an array.
+	 * If a string, it is treated as the *object type*; if an array,
+	 * it must contain a `class` element specifying the *object type*, and
 	 * the rest of the name-value pairs in the array will be used to initialize
 	 * the corresponding object properties.
 	 *
-	 * The object type can be either a class name or [[getAlias|path alias]] of
+	 * The object type can be either a class name or the [[getAlias|alias]] of
 	 * the class. For example,
 	 *
+	 * - `\app\components\GoogleMap`: namespaced class
+	 * - `@app/components/GoogleMap`: an alias
+	 *
+	 * This method does the following steps to create an object:
+	 *
+	 * - create the object using the PHP `new` operator;
+	 * - if [[objectConfig]] contains the configuration for the object class,
+	 *   initialize the object properties with that configuration;
+	 * - initialize the object properties using the configuration passed to this method;
+	 * - call the `init` method of the object if it implements the [[yii\base\Initable]] interface.
+	 *
+	 * Below are some usage examples:
+	 *
 	 * ~~~
-	 * $component = Yii::create('@app/components/GoogleMap');
-	 * $component = Yii::create('\application\components\GoogleMap');
-	 * $component = Yii::create(array(
-	 *     'class' => '@app/components/GoogleMap',
+	 * $object = \Yii::createObject('@app/components/GoogleMap');
+	 * $object = \Yii::createObject(array(
+	 *     'class' => '\app\components\GoogleMap',
 	 *     'apiKey' => 'xyz',
 	 * ));
 	 * ~~~
@@ -301,25 +334,19 @@ class YiiBase
 	 * Any additional parameters passed to this method will be
 	 * passed to the constructor of the object being created.
 	 *
-	 * If a component class implements the [[\yii\base\Initable]] interface,
-	 * its [[\yii\base\Initable::init|init]] method will be invoked AFTER
-	 * the component properties are initialized.
-	 *
 	 * @param mixed $config the configuration. It can be either a string or an array.
 	 * @return mixed the created object
 	 * @throws \yii\base\Exception if the configuration is invalid.
 	 */
-	public static function create($config)
+	public static function createObject($config)
 	{
 		if (is_string($config)) {
 			$class = $config;
 			$config = array();
-		}
-		elseif (isset($config['class'])) {
+		} elseif (isset($config['class'])) {
 			$class = $config['class'];
 			unset($config['class']);
-		}
-		else {
+		} else {
 			throw new \yii\base\Exception('Object configuration must be an array containing a "class" element.');
 		}
 
@@ -327,36 +354,38 @@ class YiiBase
 			$class = static::import($class, true);
 		}
 
-		if (($n = func_num_args()) > 1) {
+		if (($n = func_num_args()-1) > 0) {
 			$args = func_get_args();
-			if ($n === 2) {
-				$object = new $class($args[1]);
-			}
-			elseif ($n === 3) {
-				$object = new $class($args[1], $args[2]);
-			}
-			elseif ($n === 4) {
-				$object = new $class($args[1], $args[2], $args[3]);
-			}
-			else {
-				unset($args[0]);
-				$r = new ReflectionClass($class);
-				$object = $r->newInstanceArgs($args);
-			}
-		}
-		else {
-			$object = new $class;
+			array_shift($args); // remove $config
 		}
 
-		foreach ($config as $name => $value) {
-			$object->$name = $value;
+		if ($n === 0) {
+			$object = new $class;
+		} elseif ($n === 1) {
+			$object = new $class($args[0]);
+		} elseif ($n === 2) {
+			$object = new $class($args[0], $args[1]);
+		} elseif ($n === 3) {
+			$object = new $class($args[0], $args[1], $args[2]);
+		} else {
+			$r = new \ReflectionClass($class);
+			$object = $r->newInstanceArgs($args);
+		}
+
+		$c = get_class($object);
+		if (isset(\Yii::$objectConfig[$c])) {
+			$config = isset($config) ? array_merge(\Yii::$objectConfig[$c], $config) : \Yii::$objectConfig[$c];
+		}
+
+		if (!empty($config)) {
+			foreach ($config as $name => $value) {
+				$object->$name = $value;
+			}
 		}
 
 		if ($object instanceof \yii\base\Initable) {
 			$object->init();
 		}
-
-		return $object;
 	}
 
 	/**
@@ -426,7 +455,7 @@ class YiiBase
 	 * @param string $category the category of this log message
 	 * @see endProfile
 	 */
-	public static function beginProfile($token, $category)
+	public static function beginProfile($token, $category = 'application')
 	{
 		self::getLogger()->beginProfile($token, $category);
 	}
@@ -438,7 +467,7 @@ class YiiBase
 	 * @param string $category the category of this log message
 	 * @see beginProfile
 	 */
-	public static function endProfile($token, $category)
+	public static function endProfile($token, $category = 'application')
 	{
 		self::getLogger()->endProfile($token, $category);
 	}
@@ -451,8 +480,7 @@ class YiiBase
 	{
 		if (self::$_logger !== null) {
 			return self::$_logger;
-		}
-		else {
+		} else {
 			return self::$_logger = new \yii\logging\Logger;
 		}
 	}

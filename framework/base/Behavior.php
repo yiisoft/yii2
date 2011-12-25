@@ -47,8 +47,8 @@ class Behavior extends Object
 	 *
 	 * ~~~
 	 * array(
-	 *     'onBeforeValidate' => 'myBeforeValidate',
-	 *     'onAfterValidate' => 'myAfterValidate',
+	 *	 'onBeforeValidate' => 'myBeforeValidate',
+	 *	 'onAfterValidate' => 'myAfterValidate',
 	 * )
 	 * ~~~
 	 *

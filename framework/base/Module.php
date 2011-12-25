@@ -59,10 +59,10 @@ abstract class Module extends Component
 		$this->_parentModule = $parent;
 
 		// set basePath at early as possible to avoid trouble
-		if (is_string($config))
+		if (is_string($config)) {
 			$config = require($config);
-		if (isset($config['basePath']))
-		{
+		}
+		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
 			unset($config['basePath']);
 		}
@@ -139,7 +139,7 @@ abstract class Module extends Component
 	 */
 	public function setId($id)
 	{
-		$this->_id=$id;
+		$this->_id = $id;
 	}
 
 	/**
@@ -216,8 +216,8 @@ abstract class Module extends Component
 	 *
 	 * ~~~
 	 * array(
-	 *    '@models' => '@app/models',             // an existing alias
-	 *    '@backend' => __DIR__ . '/../backend',  // a directory
+	 *	'@models' => '@app/models',			 // an existing alias
+	 *	'@backend' => __DIR__ . '/../backend',  // a directory
 	 * )
 	 * ~~~
 	 */
@@ -246,23 +246,22 @@ abstract class Module extends Component
 	 */
 	public function getModule($id)
 	{
-		if (isset($this->_modules[$id]) || array_key_exists($id, $this->_modules))
+		if (isset($this->_modules[$id]) || array_key_exists($id, $this->_modules)) {
 			return $this->_modules[$id];
+		}
 		elseif (isset($this->_moduleConfig[$id]))
 		{
 			$config = $this->_moduleConfig[$id];
-			if (!isset($config['enabled']) || $config['enabled'])
-			{
+			if (!isset($config['enabled']) || $config['enabled']) {
 				\Yii::trace("Loading \"$id\" module", 'system.base.CModule');
 				$class = $config['class'];
 				unset($config['class'], $config['enabled']);
-				if ($this === \Yii::$app)
-				{
-					$module = Yii::create($class, $id, null, $config);
+				if ($this === \Yii::$app) {
+					$module = \Yii::createObject($class, $id, null, $config);
 				}
 				else
 				{
-					$module = Yii::create($class, $this->getId() . '/' . $id, $this, $config);
+					$module = \Yii::createObject($class, $this->getId() . '/' . $id, $this, $config);
 				}
 				return $this->_modules[$id] = $module;
 			}
@@ -299,10 +298,10 @@ abstract class Module extends Component
 	 * For example, the following array declares two modules:
 	 * <pre>
 	 * array(
-	 *     'admin',                // a single module ID
-	 *     'payment'=>array(       // ID-configuration pair
-	 *         'server'=>'paymentserver.com',
-	 *     ),
+	 *	 'admin',				// a single module ID
+	 *	 'payment'=>array(	   // ID-configuration pair
+	 *		 'server'=>'paymentserver.com',
+	 *	 ),
 	 * )
 	 * </pre>
 	 *
@@ -318,21 +317,22 @@ abstract class Module extends Component
 	{
 		foreach ($modules as $id => $module)
 		{
-			if (is_int($id))
-			{
+			if (is_int($id)) {
 				$id = $module;
 				$module = array();
 			}
-			if (!isset($module['class']))
-			{
+			if (!isset($module['class'])) {
 				Yii::setPathOfAlias($id, $this->getModulePath() . DIRECTORY_SEPARATOR . $id);
 				$module['class'] = $id . '.' . ucfirst($id) . 'Module';
 			}
 
-			if (isset($this->_moduleConfig[$id]))
+			if (isset($this->_moduleConfig[$id])) {
 				$this->_moduleConfig[$id] = CMap::mergeArray($this->_moduleConfig[$id], $module);
+			}
 			else
+			{
 				$this->_moduleConfig[$id] = $module;
+			}
 		}
 	}
 
@@ -356,16 +356,16 @@ abstract class Module extends Component
 	 */
 	public function getComponent($id, $createIfNull = true)
 	{
-		if (isset($this->_components[$id]))
+		if (isset($this->_components[$id])) {
 			return $this->_components[$id];
+		}
 		elseif (isset($this->_componentConfig[$id]) && $createIfNull)
 		{
 			$config = $this->_componentConfig[$id];
-			if (!isset($config['enabled']) || $config['enabled'])
-			{
+			if (!isset($config['enabled']) || $config['enabled']) {
 				\Yii::trace("Loading \"$id\" application component", 'system.CModule');
 				unset($config['enabled']);
-				$component = \Yii::create($config);
+				$component = \Yii::createObject($config);
 				return $this->_components[$id] = $component;
 			}
 		}
@@ -381,13 +381,14 @@ abstract class Module extends Component
 	 */
 	public function setComponent($id, $component)
 	{
-		if ($component === null)
+		if ($component === null) {
 			unset($this->_components[$id]);
-		else
-		{
+		}
+		else {
 			$this->_components[$id] = $component;
-			if (!$component->getIsInitialized())
+			if (!$component->getIsInitialized()) {
 				$component->init();
+			}
 		}
 	}
 
@@ -401,10 +402,12 @@ abstract class Module extends Component
 	 */
 	public function getComponents($loadedOnly = true)
 	{
-		if ($loadedOnly)
+		if ($loadedOnly) {
 			return $this->_components;
-		else
+		}
+		else {
 			return array_merge($this->_componentConfig, $this->_components);
+		}
 	}
 
 	/**
@@ -421,15 +424,15 @@ abstract class Module extends Component
 	 * The following is the configuration for two components:
 	 * <pre>
 	 * array(
-	 *     'db'=>array(
-	 *         'class'=>'CDbConnection',
-	 *         'connectionString'=>'sqlite:path/to/file.db',
-	 *     ),
-	 *     'cache'=>array(
-	 *         'class'=>'CDbCache',
-	 *         'connectionID'=>'db',
-	 *         'enabled'=>!YII_DEBUG,  // enable caching in non-debug mode
-	 *     ),
+	 *	 'db'=>array(
+	 *		 'class'=>'CDbConnection',
+	 *		 'connectionString'=>'sqlite:path/to/file.db',
+	 *	 ),
+	 *	 'cache'=>array(
+	 *		 'class'=>'CDbCache',
+	 *		 'connectionID'=>'db',
+	 *		 'enabled'=>!YII_DEBUG,  // enable caching in non-debug mode
+	 *	 ),
 	 * )
 	 * </pre>
 	 *
@@ -442,12 +445,17 @@ abstract class Module extends Component
 	{
 		foreach ($components as $id => $component)
 		{
-			if ($component instanceof IApplicationComponent)
+			if ($component instanceof IApplicationComponent) {
 				$this->setComponent($id, $component);
+			}
 			elseif (isset($this->_componentConfig[$id]) && $merge)
+			{
 				$this->_componentConfig[$id] = CMap::mergeArray($this->_componentConfig[$id], $component);
+			}
 			else
+			{
 				$this->_componentConfig[$id] = $component;
+			}
 		}
 	}
 
@@ -457,10 +465,11 @@ abstract class Module extends Component
 	 */
 	public function configure($config)
 	{
-		if (is_array($config))
-		{
+		if (is_array($config)) {
 			foreach ($config as $key => $value)
+			{
 				$this->$key = $value;
+			}
 		}
 	}
 
@@ -470,7 +479,9 @@ abstract class Module extends Component
 	public function preloadComponents()
 	{
 		foreach ($this->preload as $id)
+		{
 			$this->getComponent($id);
+		}
 	}
 
 	/**
