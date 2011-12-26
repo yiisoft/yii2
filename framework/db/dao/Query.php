@@ -19,9 +19,9 @@ namespace yii\db\dao;
 class Query extends \yii\base\Object
 {
 	/**
-	 * @var mixed the columns being selected. This refers to the SELECT clause in an SQL
-	 * statement. The property can be either a string (column names separated by commas)
-	 * or an array of column names. Defaults to '*', meaning all columns.
+	 * @var string|array the columns being selected. This refers to the SELECT clause in a SQL
+	 * statement. It can be either a string (e.g. `'id, name'`) or an array (e.g. `array('id', 'name')`).
+	 * If not set, if means all columns.
 	 */
 	public $select;
 	/**
@@ -29,7 +29,10 @@ class Query extends \yii\base\Object
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
 	 */
 	public $selectOption;
-
+	/**
+	 * @var string|array the table(s) to be selected from. This refers to the FROM clause in a SQL statement.
+	 * It can be either a string (e.g. `'tbl_user, tbl_post'`) or an array (e.g. `array('tbl_user', 'tbl_post')`).
+	 */
 	public $from;
 	/**
 	 * @var boolean whether to select distinct rows of data only. If this is set true,
@@ -37,43 +40,50 @@ class Query extends \yii\base\Object
 	 */
 	public $distinct;
 	/**
-	 * @var string query condition. This refers to the WHERE clause in an SQL statement.
-	 * For example, <code>age>31 AND team=1</code>.
+	 * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
+	 * For example, `age > 31 AND team = 1`.
 	 */
 	public $where;
 	/**
-	 * @var integer maximum number of records to be returned. If less than 0, it means no limit.
+	 * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit.
 	 */
 	public $limit;
 	/**
-	 * @var integer zero-based offset from where the records are to be returned. If less than 0, it means starting from the beginning.
+	 * @var integer zero-based offset from where the records are to be returned. If not set or
+	 * less than 0, it means starting from the beginning.
 	 */
 	public $offset;
 	/**
-	 * @var string how to sort the query results. This refers to the ORDER BY clause in an SQL statement.
+	 * @var string|array how to sort the query results. This refers to the ORDER BY clause in a SQL statement.
+	 * It can be either a string (e.g. `'id ASC, name DESC'`) or an array (e.g. `array('id ASC', 'name DESC')`).
 	 */
 	public $orderBy;
 	/**
-	 * @var string how to group the query results. This refers to the GROUP BY clause in an SQL statement.
-	 * For example, <code>'projectID, teamID'</code>.
+	 * @var string|array how to group the query results. This refers to the GROUP BY clause in a SQL statement.
+	 * It can be either a string (e.g. `'company, department'`) or an array (e.g. `array('company', 'department')`).
 	 */
 	public $groupBy;
 	/**
-	 * @var string how to join with other tables. This refers to the JOIN clause in an SQL statement.
-	 * For example, <code>'LEFT JOIN users ON users.id=authorID'</code>.
+	 * @var string|array how to join with other tables. This refers to the JOIN clause in a SQL statement.
+	 * It can either a string (e.g. `'LEFT JOIN tbl_user ON tbl_user.id=author_id'`) or an array (e.g.
+	 * `array('LEFT JOIN tbl_user ON tbl_user.id=author_id', 'LEFT JOIN tbl_team ON tbl_team.id=team_id')`).
 	 */
 	public $join;
 	/**
-	 * @var string the condition to be applied with GROUP-BY clause.
-	 * For example, <code>'SUM(revenue)<50000'</code>.
+	 * @var string|array the condition to be applied in the GROUP BY clause.
+	 * It can be either a string or an array. Please refer to [[where]] on how to specify the condition.
 	 */
 	public $having;
 	/**
 	 * @var array list of query parameter values indexed by parameter placeholders.
-	 * For example, <code>array(':name'=>'Dan', ':age'=>31)</code>.
+	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
 	 */
 	public $params = array();
-
+	/**
+	 * @var string|array the UNION clause(s) in a SQL statement. This can be either a string
+	 * representing a single UNION clause or an array representing multiple UNION clauses.
+	 * Each union clause can be a string or a `Query` object which refers to the SQL statement.
+	 */
 	public $union;
 
 
