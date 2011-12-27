@@ -33,7 +33,15 @@ class QueryBuilder extends \yii\base\Object
 	 * @var Schema the database schema
 	 */
 	public $schema;
+	/**
+	 * @var Query the Query object. This is set when calling [[build()]] to generate a non-SELECT SQL statement.
+	 */
+	private $_query;
 
+	/**
+	 * Constructor.
+	 * @param Schema $schema the database schema information
+	 */
 	public function __construct($schema)
 	{
 		$this->connection = $schema->connection;
@@ -46,10 +54,15 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function build($query)
 	{
-		if ($this->operation !== null) {
-			$method = array_shift($this->operation);
-			return call_user_func_array(array($this, $method), $this->operation);
+		// non-SELECT query
+		if ($query->operation !== null) {
+			$this->_query = $query;
+			$method = array_shift($query->operation);
+			$sql = call_user_func_array(array($this, $method), $query->operation);
+			$this->_query = null;
+			return $sql;
 		}
+		// SELECT query
 		$clauses = array(
 			$this->buildSelect($query),
 			$this->buildFrom($query),
@@ -61,7 +74,7 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildOrderBy($query),
 			$this->buildLimit($query),
 		);
-		return $this->connection->expandTablePrefix(implode("\n", array_filter($clauses)));
+		return implode("\n", array_filter($clauses));
 	}
 
 	/**
@@ -69,6 +82,7 @@ class QueryBuilder extends \yii\base\Object
 	 * The method will properly escape the column names, and bind the values to be inserted.
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
+	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
 	public function insert($table, $columns, &$params = array())
@@ -89,6 +103,9 @@ class QueryBuilder extends \yii\base\Object
 				$count++;
 			}
 		}
+		if ($this->_query instanceof Query) {
+			$this->_query->addParams($params);
+		}
 
 		return 'INSERT INTO ' . $this->schema->quoteTableName($table)
 			. ' (' . implode(', ', $names) . ') VALUES ('
@@ -100,12 +117,12 @@ class QueryBuilder extends \yii\base\Object
 	 * The method will properly escape the column names and bind the values to be updated.
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name=>value) to be updated.
-	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
-	 * refer to {@link where} on how to specify conditions.
+	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
-	public function update($table, $columns, $conditions = '', &$params = array())
+	public function update($table, $columns, $condition = '', &$params = array())
 	{
 		$lines = array();
 		$count = 0;
@@ -121,8 +138,11 @@ class QueryBuilder extends \yii\base\Object
 				$count++;
 			}
 		}
+		if ($this->_query instanceof Query) {
+			$this->_query->addParams($params);
+		}
 		$sql = 'UPDATE ' . $this->schema->quoteTableName($table) . ' SET ' . implode(', ', $lines);
-		if (($where = $this->buildCondition($conditions)) != '') {
+		if (($where = $this->buildCondition($condition)) != '') {
 			$sql .= ' WHERE ' . $where;
 		}
 
@@ -132,14 +152,14 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * Creates and executes a DELETE SQL statement.
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
-	 * refer to {@link where} on how to specify conditions.
+	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * refer to [[Query::where()]] on how to specify condition.
 	 * @return integer number of rows affected by the execution.
 	 */
-	public function delete($table, $conditions = '')
+	public function delete($table, $condition = '')
 	{
 		$sql = 'DELETE FROM ' . $this->schema->quoteTableName($table);
-		if (($where = $this->buildCondition($conditions)) != '') {
+		if (($where = $this->buildCondition($condition)) != '') {
 			$sql .= ' WHERE ' . $where;
 		}
 		return $sql;
@@ -495,8 +515,7 @@ class QueryBuilder extends \yii\base\Object
 					}
 					$joins[$i] = strtoupper($join[0]) . ' ' . $table;
 					if (isset($join[2])) { // join condition
-						$condition = $this->buildCondition($join[2]);
-						$joins[$i] .= ' ON ' . $condition;
+						$joins[$i] .= ' ON ' . $this->buildCondition($join[2]);
 					}
 				} else {
 					throw new Exception('The join clause may be specified as an array of at least two elements.');
@@ -598,46 +617,46 @@ class QueryBuilder extends \yii\base\Object
 		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
 	}
 
-	protected function buildCondition($conditions)
+	protected function buildCondition($condition)
 	{
-		if (!is_array($conditions)) {
-			return $conditions;
-		} elseif ($conditions === array()) {
+		if (!is_array($condition)) {
+			return $condition;
+		} elseif ($condition === array()) {
 			return '';
 		}
 
-		$n = count($conditions);
-		$operator = strtoupper($conditions[0]);
+		$n = count($condition);
+		$operator = strtoupper($condition[0]);
 		if ($operator === 'OR' || $operator === 'AND') {
 			$parts = array();
 			for ($i = 1; $i < $n; ++$i) {
-				$condition = $this->buildCondition($conditions[$i]);
-				if ($condition !== '') {
-					$parts[] = '(' . $condition . ')';
+				$part = $this->buildCondition($condition[$i]);
+				if ($part !== '') {
+					$parts[] = '(' . $part . ')';
 				}
 			}
 			return $parts === array() ? '' : implode(' ' . $operator . ' ', $parts);
 		}
 
-		if (!isset($conditions[1], $conditions[2])) {
+		if (!isset($condition[1], $condition[2])) {
 			throw new Exception("Operator $operator requires at least two operands.");
 		}
 
-		$column = $conditions[1];
+		$column = $condition[1];
 		if (strpos($column, '(') === false) {
 			$column = $this->connection->quoteColumnName($column);
 		}
 
 		if ($operator === 'BETWEEN' || $operator === 'NOT BETWEEN') {
-			if (!isset($conditions[3])) {
+			if (!isset($condition[3])) {
 				throw new Exception("Operator $operator requires three operands.");
 			}
-			$value1 = is_string($conditions[2]) ? $this->connection->quoteValue($conditions[2]) : (string)$conditions[2];
-			$value2 = is_string($conditions[3]) ? $this->connection->quoteValue($conditions[3]) : (string)$conditions[3];
+			$value1 = is_string($condition[2]) ? $this->connection->quoteValue($condition[2]) : (string)$condition[2];
+			$value2 = is_string($condition[3]) ? $this->connection->quoteValue($condition[3]) : (string)$condition[3];
 			return "$column $operator $value1 AND $value2";
 		}
 
-		$values = $conditions[2];
+		$values = $condition[2];
 		if (!is_array($values)) {
 			$values = array($values);
 		}

@@ -104,7 +104,7 @@ class Command extends \yii\base\Component
 	 */
 	public function setSql($value)
 	{
-		$this->_sql = $this->connection->expandTablePrefix($value);
+		$this->_sql = $value;
 		$this->_params = array();
 		$this->cancel();
 		return $this;
@@ -120,7 +120,7 @@ class Command extends \yii\base\Component
 	public function prepare()
 	{
 		if ($this->pdoStatement == null) {
-			$sql = $this->getSql();
+			$sql = $this->connection->expandTablePrefix($this->getSql());
 			try {
 				$this->pdoStatement = $this->connection->pdo->prepare($sql);
 			} catch (\Exception $e) {
@@ -225,7 +225,7 @@ class Command extends \yii\base\Component
 	 */
 	public function execute($params = array())
 	{
-		$sql = $this->getSql();
+		$sql = $this->connection->expandTablePrefix($this->getSql());
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
@@ -358,7 +358,7 @@ class Command extends \yii\base\Component
 	private function queryInternal($method, $params, $fetchMode = null)
 	{
 		$db = $this->connection;
-		$sql = $this->getSql();
+		$sql = $db->expandTablePrefix($this->getSql());
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';

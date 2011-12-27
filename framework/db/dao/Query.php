@@ -520,7 +520,7 @@ class Query extends \yii\base\Object
 	 */
 	public function insert($table, $columns)
 	{
-		$this->operation = array('insert', $table, $columns);
+		$this->operation = array('insert', $table, $columns, array());
 		return $this;
 	}
 
@@ -536,7 +536,8 @@ class Query extends \yii\base\Object
 	 */
 	public function update($table, $columns, $condition = '', $params = array())
 	{
-		$this->operation = array('update', $table, $columns, $condition, $params);
+		$this->addParams($params);
+		$this->operation = array('update', $table, $columns, $condition, array());
 		return $this;
 	}
 
@@ -550,8 +551,8 @@ class Query extends \yii\base\Object
 	 */
 	public function delete($table, $condition = '', $params = array())
 	{
-		$this->operation = array('delete', $table, $condition, $params);
-		return $this;
+		$this->operation = array('delete', $table, $condition);
+		return $this->addParams($params);
 	}
 
 	/**
