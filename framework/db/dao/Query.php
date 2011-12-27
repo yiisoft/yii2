@@ -11,7 +11,28 @@
 namespace yii\db\dao;
 
 /**
- * Query represents the components in a DB query.
+ * Query represents a SQL statement in a way that is independent of DBMS.
+ *
+ * Query not only can represent a SELECT statement, it can also represent INSERT, UPDATE, DELETE,
+ * and other commonly used DDL statements, such as CREATE TABLE, CREATE INDEX, etc.
+ *
+ * Query provides a set of methods to facilitate the specification of different clauses.
+ * These methods can be chained together. For example,
+ *
+ * ~~~
+ * $query = new Query;
+ * $query->select('id, name')
+ *     ->from('tbl_user')
+ *     ->limit(10);
+ * // get the actual SQL statement
+ * echo $query->getSql();
+ * // or execute the query
+ * $users = $query->createCommand()->queryAll();
+ * ~~~
+ *
+ * By calling [[getSql()]], we can obtain the actual SQL statement from a Query object.
+ * And by calling [[createCommand()]], we can get a [[Command]] instance which can be further
+ * used to perform/execute the DB query against a database.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,6 +43,7 @@ class Query extends \yii\base\Object
 	 * @var string|array the columns being selected. This refers to the SELECT clause in a SQL
 	 * statement. It can be either a string (e.g. `'id, name'`) or an array (e.g. `array('id', 'name')`).
 	 * If not set, if means all columns.
+	 * @see select()
 	 */
 	public $select;
 	/**
@@ -32,6 +54,7 @@ class Query extends \yii\base\Object
 	/**
 	 * @var string|array the table(s) to be selected from. This refers to the FROM clause in a SQL statement.
 	 * It can be either a string (e.g. `'tbl_user, tbl_post'`) or an array (e.g. `array('tbl_user', 'tbl_post')`).
+	 * @see from()
 	 */
 	public $from;
 	/**
@@ -42,6 +65,7 @@ class Query extends \yii\base\Object
 	/**
 	 * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
 	 * For example, `age > 31 AND team = 1`.
+	 * @see where()
 	 */
 	public $where;
 	/**
@@ -67,6 +91,7 @@ class Query extends \yii\base\Object
 	 * @var string|array how to join with other tables. This refers to the JOIN clause in a SQL statement.
 	 * It can either a string (e.g. `'LEFT JOIN tbl_user ON tbl_user.id=author_id'`) or an array (e.g.
 	 * `array('LEFT JOIN tbl_user ON tbl_user.id=author_id', 'LEFT JOIN tbl_team ON tbl_team.id=team_id')`).
+	 * @see join()
 	 */
 	public $join;
 	/**
@@ -78,7 +103,7 @@ class Query extends \yii\base\Object
 	 * @var array list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
 	 */
-	public $params = array();
+	public $params;
 	/**
 	 * @var string|array the UNION clause(s) in a SQL statement. This can be either a string
 	 * representing a single UNION clause or an array representing multiple UNION clauses.
@@ -87,9 +112,9 @@ class Query extends \yii\base\Object
 	public $union;
 	/**
 	 * @var array the operation that this query represents. This refers to the method call as well as
-	 * the corresponding parameters for constructing non-query SQL statements (e.g. INSERT, CREATE TABLE).
+	 * the corresponding parameters for constructing a non-query SQL statement (e.g. INSERT, CREATE TABLE).
 	 * This property is mainly maintained by methods such as [[insert()]], [[update()]], [[createTable()]].
-	 * When this property is not set, it means this query represents a SELECT statement.
+	 * If this property is not set, it means this query represents a SELECT statement.
 	 */
 	public $operation;
 
@@ -759,47 +784,70 @@ class Query extends \yii\base\Object
 		return $connection->createCommand($this);
 	}
 
-	// -----------------------------------------------------
-
-	public function mergeWith($query, $useAnd = true)
+	/**
+	 * Resets the query object to its original state.
+	 * @return Query the query object itself
+	 */
+	public function reset()
 	{
-		$and = $useAnd ? 'AND' : 'OR';
+		foreach (get_object_vars($this) as $name => $value) {
+			$this->$name = null;
+		}
+		return $this;
+	}
+
+	/**
+	 * Returns the query in terms of an array.
+	 * The array keys are the query property names, and the array values
+	 * the corresponding property values.
+	 * @param boolean $includeEmptyValues whether to include empty property values in the result.
+	 * @return array the array representation of the criteria
+	 */
+	public function toArray($includeEmptyValues = false)
+	{
+		return $includeEmptyValues ? get_object_vars($this) : array_filter(get_object_vars($this));
+	}
+
+	/**
+	 * Merges this query with another one.
+	 *
+	 * The merging is done according to the following rules:
+	 *
+	 * - [[select]]: the union of both queries' [[select]] property values.
+	 * - [[selectOption]], [[distinct]], [[limit]], [[offset]]: the new query
+	 * takes precedence over this query.
+	 *  - [[where]], [[having]]: the new query's corresponding property value
+	 * will be 'AND' together with the existing one.
+	 * - [[params]], [[orderBy]], [[groupBy]], [[join]], [[union]]: the new query's
+	 * corresponding property value will be appended to the existing one.
+	 *
+	 * In general, the merging makes the resulting query more restrictive and specific.
+	 * @param array|Query $query the new query to be merged with this query.
+	 * @return Query the query object itself
+	 */
+	public function mergeWith($query)
+	{
 		if (is_array($query)) {
-			$query = new self($query);
+			$class = '\\' . get_class($this);
+			$query = $class::newInstance($query);
 		}
 
 		if ($this->select !== $query->select) {
-			if ($this->select === '*') {
+			if (empty($this->select)) {
 				$this->select = $query->select;
-			} elseif ($query->select !== '*') {
+			} elseif (!empty($query->select)) {
 				$select1 = is_string($this->select) ? preg_split('/\s*,\s*/', trim($this->select), -1, PREG_SPLIT_NO_EMPTY) : $this->select;
 				$select2 = is_string($query->select) ? preg_split('/\s*,\s*/', trim($query->select), -1, PREG_SPLIT_NO_EMPTY) : $query->select;
 				$this->select = array_merge($select1, array_diff($select2, $select1));
 			}
 		}
 
-		if ($this->selectOption !== $query->selectOption) {
-			if ($this->selectOption === null) {
-				$this->selectOption = $query->selectOption;
-			} elseif ($query->selectOption !== null) {
-				$this->selectOption .= ' ' . $query->selectOption;
-			}
+		if ($query->selectOption !== null) {
+			$this->selectOption = $query->selectOption;
 		}
 
-		if ($query->distinct) {
+		if ($query->distinct !== null) {
 			$this->distinct = $query->distinct;
-		}
-
-		if ($this->where !== $query->where) {
-			if (empty($this->where)) {
-				$this->where = $query->where;
-			} elseif (!empty($query->where)) {
-				$this->where = array('AND', $this->where, $query->where);
-			}
-		}
-
-		if ($this->params !== $query->params) {
-			$this->params = $this->addParams($query->params);
 		}
 
 		if ($query->limit !== null) {
@@ -810,40 +858,30 @@ class Query extends \yii\base\Object
 			$this->offset = $query->offset;
 		}
 
-		if ($this->orderBy !== $query->orderBy) {
-			if (empty($this->orderBy)) {
-				$this->orderBy = $query->orderBy;
-			} elseif (!empty($query->orderBy)) {
-				if (!is_array($this->orderBy)) {
-					$this->orderBy = array($this->orderBy);
-				}
-				if (is_array($query->orderBy)) {
-					$this->orderBy = array_merge($this->orderBy, $query->orderBy);
-				} else {
-					$this->orderBy[] = $query->orderBy;
-				}
-			}
+		if ($query->where !== null) {
+			$this->andWhere($query->where);
 		}
 
-		if ($this->groupBy !== $query->groupBy) {
-			if (empty($this->groupBy)) {
-				$this->groupBy = $query->groupBy;
-			} elseif (!empty($query->groupBy)) {
-				if (!is_array($this->groupBy)) {
-					$this->groupBy = array($this->groupBy);
-				}
-				if (is_array($query->groupBy)) {
-					$this->groupBy = array_merge($this->groupBy, $query->groupBy);
-				} else {
-					$this->groupBy[] = $query->groupBy;
-				}
-			}
+		if ($query->having !== null) {
+			$this->andHaving($query->having);
 		}
 
-		if ($this->join !== $query->join) {
+		if ($query->params !== null) {
+			$this->addParams($query->params);
+		}
+
+		if ($query->orderBy !== null) {
+			$this->addOrderBy($query->orderBy);
+		}
+
+		if ($query->groupBy !== null) {
+			$this->addGroupBy($query->groupBy);
+		}
+
+		if ($query->join !== null) {
 			if (empty($this->join)) {
 				$this->join = $query->join;
-			} elseif (!empty($query->join)) {
+			} else {
 				if (!is_array($this->join)) {
 					$this->join = array($this->join);
 				}
@@ -855,18 +893,10 @@ class Query extends \yii\base\Object
 			}
 		}
 
-		if ($this->having !== $query->having) {
-			if (empty($this->having)) {
-				$this->having = $query->having;
-			} elseif (!empty($query->having)) {
-				$this->having = array('AND', $this->having, $query->having);
-			}
-		}
-
-		if ($this->union !== $query->union) {
+		if ($query->union !== null) {
 			if (empty($this->union)) {
 				$this->union = $query->union;
-			} elseif (!empty($query->union)) {
+			} else {
 				if (!is_array($this->union)) {
 					$this->union = array($this->union);
 				}
@@ -877,46 +907,7 @@ class Query extends \yii\base\Object
 				}
 			}
 		}
-	}
 
-	public function reset()
-	{
-		$this->select = null;
-		$this->selectOption = null;
-		$this->from = null;
-		$this->distinct = null;
-		$this->where = null;
-		$this->limit = null;
-		$this->offset = null;
-		$this->orderBy = null;
-		$this->groupBy = null;
-		$this->join = null;
-		$this->having = null;
-		$this->params = array();
-		$this->union = null;
-	}
-
-	public function fromArray($array)
-	{
-		$this->reset();
-		foreach (array('select', 'selectOption', 'from', 'distinct', 'where', 'limit', 'offset', 'orderBy', 'groupBy', 'join', 'having', 'params', 'union') as $name) {
-			if (isset($array[$name])) {
-				$this->$name = $array[$name];
-			}
-		}
-	}
-
-	/**
-	 * @return array the array representation of the criteria
-	 */
-	public function toArray()
-	{
-		$result = array();
-		foreach (array('select', 'selectOption', 'from', 'distinct', 'where', 'limit', 'offset', 'orderBy', 'groupBy', 'join', 'having', 'params', 'union') as $name) {
-			if (!empty($this->$name)) {
-				$result[$name] = $this->$name;
-			}
-		}
-		return $result;
+		return $this;
 	}
 }

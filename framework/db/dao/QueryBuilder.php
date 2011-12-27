@@ -46,6 +46,10 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function build($query)
 	{
+		if ($this->operation !== null) {
+			$method = array_shift($this->operation);
+			return call_user_func_array(array($this, $method), $this->operation);
+		}
 		$clauses = array(
 			$this->buildSelect($query),
 			$this->buildFrom($query),

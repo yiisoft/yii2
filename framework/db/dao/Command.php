@@ -203,7 +203,7 @@ class Command extends \yii\base\Component
 	 */
 	public function bindValues($values)
 	{
-		if ($values !== array()) {
+		if (!empty($values)) {
 			$this->prepare();
 			foreach ($values as $name => $value) {
 				$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
