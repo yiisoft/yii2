@@ -120,7 +120,7 @@ abstract class CDbMigration extends yii\base\Component
 	public function getDbConnection()
 	{
 		if ($this->_db === null) {
-			$this->_db = Yii::app()->getComponent('db');
+			$this->_db = \Yii::$application->getComponent('db');
 			if (!$this->_db instanceof CDbConnection)
 				throw new CException(Yii::t('yii', 'The "db" application component must be configured to be a CDbConnection object.'));
 		}

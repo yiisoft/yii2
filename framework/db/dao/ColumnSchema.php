@@ -23,7 +23,7 @@ class ColumnSchema extends \yii\base\Component
 	 */
 	public $name;
 	/**
-	 * @var string raw name of this column. This is the quoted name that can be used in SQL queries.
+	 * @var string raw name of this column. This is the quoted name that can be directly used in SQL queries.
 	 */
 	public $quotedName;
 	/**
@@ -32,7 +32,8 @@ class ColumnSchema extends \yii\base\Component
 	public $allowNull;
 	/**
 	 * @var string logical type of this column. Possible logic types include:
-	 * string, text, boolean, smallint, integer, bigint, float, decimal, datetime, timestamp, time, date, binary, money
+	 * string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
+	 * timestamp, time, date, binary, and money.
 	 */
 	public $type;
 	/**
@@ -41,7 +42,7 @@ class ColumnSchema extends \yii\base\Component
 	 */
 	public $phpType;
 	/**
-	 * @var string the DB type of this column.
+	 * @var string the DB type of this column. Possible DB types vary according to the DBMS.
 	 */
 	public $dbType;
 	/**

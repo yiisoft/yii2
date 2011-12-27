@@ -30,7 +30,7 @@ abstract class ApplicationComponent extends Component implements Initable
 	/**
 	 * Initializes the application component.
 	 * This method is invoked after the component is created and its property values are
-	 * initialized. The default implementation will call [[Component::attachBehaviors]]
+	 * initialized. The default implementation will call [[Component::attachBehaviors()]]
 	 * to attach behaviors declared in [[behaviors]].
 	 * If you override this method, make sure to call the parent implementation.
 	 */

@@ -64,7 +64,7 @@ class YiiBase
 	/**
 	 * @var yii\base\Application the application instance
 	 */
-	public static $app;
+	public static $application;
 	/**
 	 * @var array registered path aliases
 	 * @see getAlias

@@ -86,7 +86,7 @@ abstract class Schema extends \yii\base\Object
 			$db->queryCachingDuration = -1;
 		}
 
-		if (!in_array($name, $db->schemaCachingExclude) && $db->schemaCachingDuration >= 0 && ($cache = \Yii::app()->getComponent($db->schemaCacheID)) !== null) {
+		if (!in_array($name, $db->schemaCachingExclude) && $db->schemaCachingDuration >= 0 && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
 			$key = __CLASS__ . "/{$db->dsn}/{$db->username}/{$name}";
 			if (($table = $cache->get($key)) === false) {
 				$table = $this->loadTableSchema($realName);
@@ -156,7 +156,7 @@ abstract class Schema extends \yii\base\Object
 	public function refresh()
 	{
 		$db = $this->connection;
-		if ($db->schemaCachingDuration >= 0 && ($cache = \Yii::app()->getComponent($db->schemaCacheID)) !== null) {
+		if ($db->schemaCachingDuration >= 0 && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
 			foreach ($this->_tables as $name => $table) {
 				$key = __CLASS__ . ":{$db->dsn}/{$db->username}/{$name}";
 				$cache->delete($key);

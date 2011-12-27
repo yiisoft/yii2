@@ -611,7 +611,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			return self::$db;
 		else
 		{
-			self::$db = Yii::app()->getDb();
+			self::$db = \Yii::$application->getDb();
 			if (self::$db instanceof CDbConnection)
 				return self::$db;
 			else

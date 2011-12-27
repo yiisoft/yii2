@@ -40,6 +40,10 @@ class QueryBuilder extends \yii\base\Object
 		$this->schema = $schema;
 	}
 
+	/**
+	 * @param Query $query
+	 * @return string
+	 */
 	public function build($query)
 	{
 		$clauses = array(
@@ -126,7 +130,6 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $table the table where the data will be deleted from.
 	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
 	 * refer to {@link where} on how to specify conditions.
-	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
 	public function delete($table, $conditions = '')
@@ -440,6 +443,10 @@ class QueryBuilder extends \yii\base\Object
 
 	protected function buildFrom($query)
 	{
+		if (empty($query->from)) {
+			return '';
+		}
+
 		$tables = $query->from;
 		if (is_string($tables) && strpos($tables, '(') !== false) {
 			return 'FROM ' . $tables;
@@ -609,12 +616,21 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		if (!isset($conditions[1], $conditions[2])) {
-			return '';
+			throw new Exception("Operator $operator requires at least two operands.");
 		}
 
 		$column = $conditions[1];
 		if (strpos($column, '(') === false) {
 			$column = $this->connection->quoteColumnName($column);
+		}
+
+		if ($operator === 'BETWEEN' || $operator === 'NOT BETWEEN') {
+			if (!isset($conditions[3])) {
+				throw new Exception("Operator $operator requires three operands.");
+			}
+			$value1 = is_string($conditions[2]) ? $this->connection->quoteValue($conditions[2]) : (string)$conditions[2];
+			$value2 = is_string($conditions[3]) ? $this->connection->quoteValue($conditions[3]) : (string)$conditions[3];
+			return "$column $operator $value1 AND $value2";
 		}
 
 		$values = $conditions[2];

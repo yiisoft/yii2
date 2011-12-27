@@ -52,7 +52,7 @@ class FileTarget extends Target
 	{
 		parent::init();
 		if ($this->logPath === null) {
-			$this->logPath = \Yii::app()->getRuntimePath();
+			$this->logPath = \Yii::$application->getRuntimePath();
 		}
 		if (!is_dir($this->logPath) || !is_writable($this->logPath)) {
 			throw new \yii\base\Exception("Directory '{$this->logPath}' does not exist or is not writable.");

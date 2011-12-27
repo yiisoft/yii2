@@ -116,7 +116,7 @@ abstract class Application extends Module
 	 */
 	public function __construct($config = null)
 	{
-		\Yii::$app = $this;
+		\Yii::$application = $this;
 
 		// set basePath at early as possible to avoid trouble
 		if (is_string($config)) {

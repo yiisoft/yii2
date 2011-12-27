@@ -49,7 +49,7 @@ namespace yii\logging;
  * as follows:
  *
  * ~~~
- * \Yii::app()->log->targets['file']->enabled = false;
+ * \Yii::$application->log->targets['file']->enabled = false;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -77,7 +77,7 @@ class Router extends \yii\base\ApplicationComponent
 	{
 		parent::init();
 		\Yii::getLogger()->attachEventHandler('onFlush', array($this, 'processMessages'));
-		if (($app = \Yii::app()) !== null) {
+		if (($app = \Yii::$application) !== null) {
 			$app->attachEventHandler('onEndRequest', array($this, 'processMessages'));
 		}
 	}

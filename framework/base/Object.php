@@ -294,7 +294,7 @@ class Object
 	 * $model->init();
 	 * ~~~
 	 *
-	 * @return object the created object
+	 * @return Object the created object
 	 * @throws Exception if the configuration is invalid.
 	 */
 	public static function newInstance()

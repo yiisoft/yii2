@@ -72,7 +72,7 @@ class CProfileLogRoute extends CWebLogRoute
 	 */
 	public function processLogs($logs)
 	{
-		$app = Yii::app();
+		$app = \Yii::$application;
 		if (!($app instanceof CWebApplication) || $app->getRequest()->getIsAjaxRequest())
 			return;
 

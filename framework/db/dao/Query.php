@@ -71,7 +71,7 @@ class Query extends \yii\base\Object
 	public $join;
 	/**
 	 * @var string|array the condition to be applied in the GROUP BY clause.
-	 * It can be either a string or an array. Please refer to [[where]] on how to specify the condition.
+	 * It can be either a string or an array. Please refer to [[where()]] on how to specify the condition.
 	 */
 	public $having;
 	/**
@@ -85,17 +85,640 @@ class Query extends \yii\base\Object
 	 * Each union clause can be a string or a `Query` object which refers to the SQL statement.
 	 */
 	public $union;
-
+	/**
+	 * @var array the operation that this query represents. This refers to the method call as well as
+	 * the corresponding parameters for constructing non-query SQL statements (e.g. INSERT, CREATE TABLE).
+	 * This property is mainly maintained by methods such as [[insert()]], [[update()]], [[createTable()]].
+	 * When this property is not set, it means this query represents a SELECT statement.
+	 */
+	public $operation;
 
 	/**
-	 * @param Connection $connection
-	 * @return string
+	/**
+	 * Sets the SELECT part of the query.
+	 * @param mixed $columns the columns to be selected. Defaults to '*', meaning all columns.
+	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
+	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @param boolean $distinct whether to use 'SELECT DISTINCT'.
+	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
+	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
+	 * @return Query the query object itself
 	 */
-	public function getSql($connection)
+	public function select($columns = '*', $distinct = false, $option = '')
 	{
-		return $connection->getQueryBuilder()->build($this);
+		$this->select = $columns;
+		$this->distinct = $distinct;
+		$this->selectOption = $option;
+		return $this;
 	}
 
+	/**
+	 * Sets the FROM part of the query.
+	 * @param mixed $tables the table(s) to be selected from. This can be either a string (e.g. 'tbl_user')
+	 * or an array (e.g. array('tbl_user', 'tbl_profile')) specifying one or several table names.
+	 * Table names can contain schema prefixes (e.g. 'public.tbl_user') and/or table aliases (e.g. 'tbl_user u').
+	 * The method will automatically quote the table names unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @return Query the query object itself
+	 */
+	public function from($tables)
+	{
+		$this->from = $tables;
+		return $this;
+	}
+
+	/**
+	 * Sets the WHERE part of the query.
+	 *
+	 * The method requires a $condition parameter, and optionally a $params parameter
+	 * specifying the values to be bound to the query.
+	 *
+	 * The $condition parameter should be either a string (e.g. 'id=1') or an array.
+	 * If the latter, it must be in the format of `array(operator, operand1, operand2, ...)`,
+	 * where the operator can be one of the followings, and the possible operands depend on the corresponding
+	 * operator:
+	 *
+	 * - `and`: the operands should be concatenated together using `AND`. For example,
+	 * `array('and', 'id=1', 'id=2')` will generate `id=1 AND id=2`. If an operand is an array,
+	 * it will be converted into a string using the rules described here. For example,
+	 * `array('and', 'type=1', array('or', 'id=1', 'id=2'))` will generate `type=1 AND (id=1 OR id=2)`.
+	 * The method will NOT do any quoting or escaping.
+	 *
+	 * - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
+	 *
+	 * - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
+	 * starting and ending values of the range that the column is in.
+	 * For example, `array('between', 'id', 1, 10)` will generate `id BETWEEN 1 AND 10`.
+	 *
+	 * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
+	 * in the generated condition.
+	 *
+	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
+	 * the range of the values that the column or DB expression should be in. For example,
+	 * `array('in', 'id', array(1,2,3))` will generate `id IN (1,2,3)`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
+	 *
+	 * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
+	 * the values that the column or DB expression should be like.
+	 * For example, `array('like', 'name', '%tester%')` will generate `name LIKE '%tester%'`.
+	 * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
+	 * using `AND`. For example, `array('like', 'name', array('%test%', '%sample%'))` will generate
+	 * `name LIKE '%test%' AND name LIKE '%sample%'`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
+	 * predicates when operand 2 is an array.
+	 *
+	 * - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
+	 * in the generated condition.
+	 *
+	 * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
+	 * the `NOT LIKE` predicates.
+	 *
+	 * @param string|array $condition the conditions that should be put in the WHERE part.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 * @see andWhere()
+	 * @see orWhere()
+	 */
+	public function where($condition, $params = array())
+	{
+		$this->where = $condition;
+		$this->addParams($params);
+		return $this;
+	}
+
+	/**
+	 * Adds an additional WHERE condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'AND' operator.
+	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 * @see where()
+	 * @see orWhere()
+	 */	
+	public function andWhere($condition, $params = array())
+	{
+		if ($this->where === null) {
+			$this->where = $condition;
+		} else {
+			$this->where = array('and', $this->where, $condition);
+		}
+		$this->addParams($params);
+		return $this;
+	}
+
+	/**
+	 * Adds an additional WHERE condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'OR' operator.
+	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 * @see where()
+	 * @see andWhere()
+	 */
+	public function orWhere($condition, $params = array())
+	{
+		if ($this->where === null) {
+			$this->where = $condition;
+		} else {
+			$this->where = array('or', $this->where, $condition);
+		}
+		$this->addParams($params);
+		return $this;
+	}
+
+	/**
+	 * Appends an INNER JOIN part to the query.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 */
+	public function join($table, $condition, $params = array())
+	{
+		$this->join[] = array('JOIN', $table, $condition);
+		return $this->addParams($params);
+	}
+
+	/**
+	 * Appends a LEFT OUTER JOIN part to the query.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 */
+	public function leftJoin($table, $condition, $params = array())
+	{
+		$this->join[] = array('LEFT JOIN', $table, $condition);
+		return $this->addParams($params);
+	}
+
+	/**
+	 * Appends a RIGHT OUTER JOIN part to the query.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 */
+	public function rightJoin($table, $condition, $params = array())
+	{
+		$this->join[] = array('RIGHT JOIN', $table, $condition);
+		return $this->addParams($params);
+	}
+
+	/**
+	 * Appends a CROSS JOIN part to the query.
+	 * Note that not all DBMS support CROSS JOIN.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @return Query the query object itself
+	 */
+	public function crossJoin($table)
+	{
+		$this->join[] = array('CROSS JOIN', $table);
+		return $this;
+	}
+
+	/**
+	 * Appends a NATURAL JOIN part to the query.
+	 * Note that not all DBMS support NATURAL JOIN.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @return Query the query object itself
+	 */
+	public function naturalJoin($table)
+	{
+		$this->join[] = array('NATURAL JOIN', $table);
+		return $this;
+	}
+
+	/**
+	 * Sets the GROUP BY part of the query.
+	 * @param string|array $columns the columns to be grouped by.
+	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return Query the query object itself
+	 * @see addGroupBy()
+	 */
+	public function groupBy($columns)
+	{
+		$this->groupBy = $columns;
+		return $this;
+	}
+
+	/**
+	 * Adds additional group-by columns to the existing ones.
+	 * @param string|array $columns additional columns to be grouped by.
+	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return Query the query object itself
+	 * @see groupBy()
+	 */
+	public function addGroupBy($columns)
+	{
+		if (empty($this->groupBy)) {
+			$this->groupBy = $columns;
+		} else {
+			if (!is_array($this->groupBy)) {
+				$this->groupBy = preg_split('/\s*,\s*/', trim($this->groupBy), -1, PREG_SPLIT_NO_EMPTY);
+			}
+			if (!is_array($columns)) {
+				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+			}
+			$this->groupBy = array_merge($this->groupBy, $columns);
+		}
+		return $this;
+	}
+
+	/**
+	 * Sets the HAVING part of the query.
+	 * @param string|array $condition the conditions to be put after HAVING.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 * @see andHaving()
+	 * @see orHaving()
+	 */
+	public function having($condition, $params = array())
+	{
+		$this->having = $condition;
+		$this->addParams($params);
+		return $this;
+	}
+
+	/**
+	 * Adds an additional HAVING condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'AND' operator.
+	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 * @see having()
+	 * @see orHaving()
+	 */
+	public function andHaving($condition, $params = array())
+	{
+		if ($this->having === null) {
+			$this->having = $condition;
+		} else {
+			$this->having = array('and', $this->having, $condition);
+		}
+		$this->addParams($params);
+		return $this;
+	}
+
+	/**
+	 * Adds an additional HAVING condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'OR' operator.
+	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return Query the query object itself
+	 * @see having()
+	 * @see andHaving()
+	 */
+	public function orHaving($condition, $params = array())
+	{
+		if ($this->having === null) {
+			$this->having = $condition;
+		} else {
+			$this->having = array('or', $this->having, $condition);
+		}
+		$this->addParams($params);
+		return $this;
+	}
+
+	/**
+	 * Sets the ORDER BY part of the query.
+	 * @param string|array $columns the columns (and the directions) to be ordered by.
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return Query the query object itself
+	 * @see addOrderBy()
+	 */
+	public function orderBy($columns)
+	{
+		$this->orderBy = $columns;
+		return $this;
+	}
+
+	/**
+	 * Adds additional ORDER BY columns to the query.
+	 * @param string|array $columns the columns (and the directions) to be ordered by.
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return Query the query object itself
+	 * @see orderBy()
+	 */
+	public function addOrderBy($columns)
+	{
+		if (empty($this->orderBy)) {
+			$this->orderBy = $columns;
+		} else {
+			if (!is_array($this->orderBy)) {
+				$this->orderBy = preg_split('/\s*,\s*/', trim($this->orderBy), -1, PREG_SPLIT_NO_EMPTY);
+			}
+			if (!is_array($columns)) {
+				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+			}
+			$this->orderBy = array_merge($this->orderBy, $columns);
+		}
+		return $this;
+	}
+
+	/**
+	 * Sets the LIMIT part of the query.
+	 * @param integer $limit the limit
+	 * @return Query the query object itself
+	 */
+	public function limit($limit)
+	{
+		$this->limit = $limit;
+		return $this;
+	}
+
+	/**
+	 * Sets the OFFSET part of the query.
+	 * @param integer $offset the offset
+	 * @return Query the query object itself
+	 */
+	public function offset($offset)
+	{
+		$this->offset = $offset;
+		return $this;
+	}
+
+	/**
+	 * Appends a SQL statement using UNION operator.
+	 * @param string $sql the SQL statement to be appended using UNION
+	 * @return Query the query object itself
+	 */
+	public function union($sql)
+	{
+		$this->union[] = $sql;
+		return $this;
+	}
+
+	/**
+	 * Creates and executes an INSERT SQL statement.
+	 * The method will properly escape the column names, and bind the values to be inserted.
+	 * @param string $table the table that new rows will be inserted into.
+	 * @param array $columns the column data (name=>value) to be inserted into the table.
+	 * @return Query the query object itself
+	 */
+	public function insert($table, $columns)
+	{
+		$this->operation = array('insert', $table, $columns);
+		return $this;
+	}
+
+	/**
+	 * Creates and executes an UPDATE SQL statement.
+	 * The method will properly escape the column names and bind the values to be updated.
+	 * @param string $table the table to be updated.
+	 * @param array $columns the column data (name=>value) to be updated.
+	 * @param string|array $condition the conditions that will be put in the WHERE part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters to be bound to the query.
+	 * @return Query the query object itself
+	 */
+	public function update($table, $columns, $condition = '', $params = array())
+	{
+		$this->operation = array('update', $table, $columns, $condition, $params);
+		return $this;
+	}
+
+	/**
+	 * Creates and executes a DELETE SQL statement.
+	 * @param string $table the table where the data will be deleted from.
+	 * @param string|array $condition the conditions that will be put in the WHERE part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters to be bound to the query.
+	 * @return Query the query object itself
+	 */
+	public function delete($table, $condition = '', $params = array())
+	{
+		$this->operation = array('delete', $table, $condition, $params);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for creating a new DB table.
+	 *
+	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name'=>'string'),
+	 * where name stands for a column name which will be properly quoted by the method, and definition
+	 * stands for the column type which can contain an abstract DB type.
+	 * The method [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * to convert the abstract column types to physical ones. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
+	 *
+	 * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
+	 * inserted into the generated SQL.
+	 *
+	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
+	 * @param array $columns the columns (name=>definition) in the new table.
+	 * @param string $options additional SQL fragment that will be appended to the generated SQL.
+	 * @return Query the query object itself
+	 */
+	public function createTable($table, $columns, $options = null)
+	{
+		$this->operation = array('createTable', $table, $columns, $options);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for renaming a DB table.
+	 * @param string $table the table to be renamed. The name will be properly quoted by the method.
+	 * @param string $newName the new table name. The name will be properly quoted by the method.
+	 * @return Query the query object itself
+	 */
+	public function renameTable($table, $newName)
+	{
+		$this->operation = array('renameTable', $table, $newName);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for dropping a DB table.
+	 * @param string $table the table to be dropped. The name will be properly quoted by the method.
+	 * @return Query the query object itself
+	 */
+	public function dropTable($table)
+	{
+		$this->operation = array('dropTable', $table);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for truncating a DB table.
+	 * @param string $table the table to be truncated. The name will be properly quoted by the method.
+	 * @return Query the query object itself
+	 */
+	public function truncateTable($table)
+	{
+		$this->operation = array('truncateTable', $table);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for adding a new DB column.
+	 * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
+	 * @param string $column the name of the new column. The name will be properly quoted by the method.
+	 * @param string $type the column type. [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * to convert the give column type to the physical one. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
+	 * @return Query the query object itself
+	 */
+	public function addColumn($table, $column, $type)
+	{
+		$this->operation = array('addColumn', $table, $column, $type);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for dropping a DB column.
+	 * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
+	 * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
+	 * @return Query the query object itself
+	 */
+	public function dropColumn($table, $column)
+	{
+		$this->operation = array('dropColumn', $table, $column);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for renaming a column.
+	 * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+	 * @param string $name the old name of the column. The name will be properly quoted by the method.
+	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
+	 * @return Query the query object itself
+	 */
+	public function renameColumn($table, $name, $newName)
+	{
+		$this->operation = array('renameColumn', $table, $name, $newName);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for changing the definition of a column.
+	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+	 * @param string $type the column type. [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * to convert the give column type to the physical one. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
+	 * @return Query the query object itself
+	 */
+	public function alterColumn($table, $column, $type)
+	{
+		$this->operation = array('alterColumn', $table, $column, $type);
+		return $this;
+	}
+
+	/**
+	 * Builds a SQL statement for adding a foreign key constraint to an existing table.
+	 * The method will properly quote the table and column names.
+	 * @param string $name the name of the foreign key constraint.
+	 * @param string $table the table that the foreign key constraint will be added to.
+	 * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
+	 * @param string $refTable the table that the foreign key references to.
+	 * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
+	 * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+	 * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+	 * @return Query the query object itself
+	 */
+	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
+	{
+		$this->operation = array('addForeignKey', $name, $table, $columns, $refTable, $refColumns, $delete, $update);
+		return $this;
+	}
+
+	/**
+	 * Builds a SQL statement for dropping a foreign key constraint.
+	 * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
+	 * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
+	 * @return Query the query object itself
+	 */
+	public function dropForeignKey($name, $table)
+	{
+		$this->operation = array('dropForeignKey', $name, $table);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for creating a new index.
+	 * @param string $name the name of the index. The name will be properly quoted by the method.
+	 * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+	 * @param string $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+	 * by commas. The column names will be properly quoted by the method.
+	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
+	 * @return Query the query object itself
+	 */
+	public function createIndex($name, $table, $columns, $unique = false)
+	{
+		$this->operation = array('createIndex', $name, $table, $columns, $unique);
+		return $this;
+	}
+
+	/**
+	 * Builds and executes a SQL statement for dropping an index.
+	 * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+	 * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+	 * @return Query the query object itself
+	 */
+	public function dropIndex($name, $table)
+	{
+		$this->operation = array('dropIndex', $name, $table);
+		return $this;
+	}
+
+	/**
+	 * Sets the parameters to be bound to the query.
+	 * @param array list of query parameter values indexed by parameter placeholders.
+	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * @return Query the query object itself
+	 * @see addParams()
+	 */
+	public function params($params)
+	{
+		$this->params = $params;
+		return $this;
+	}
+
+	/**
+	 * Adds additional parameters to be bound to the query.
+	 * @param array list of query parameter values indexed by parameter placeholders.
+	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * @return Query the query object itself
+	 * @see params()
+	 */
 	public function addParams($params)
 	{
 		foreach ($params as $name => $value) {
@@ -105,7 +728,38 @@ class Query extends \yii\base\Object
 				$this->params[$name] = $value;
 			}
 		}
+		return $this;
 	}
+
+	/**
+	 * Generates and returns the SQL statement according to this query.
+	 * @param Connection $connection the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return string the generated SQL statement
+	 */
+	public function getSql($connection = null)
+	{
+		if ($connection === null) {
+			$connection = \Yii::$application->db;
+		}
+		return $connection->getQueryBuilder()->build($this);
+	}
+
+	/**
+	 * Creates a DB command that can be used to execute this query.
+	 * @param Connection $connection the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return Command the created DB command instance.
+	 */
+	public function createCommand($connection = null)
+	{
+		if ($connection === null) {
+			$connection = \Yii::$application->db;
+		}
+		return $connection->createCommand($this);
+	}
+
+	// -----------------------------------------------------
 
 	public function mergeWith($query, $useAnd = true)
 	{
@@ -223,288 +877,6 @@ class Query extends \yii\base\Object
 				}
 			}
 		}
-	}
-
-	/**
-	 * Appends a condition to the existing {@link condition}.
-	 * The new condition and the existing condition will be concatenated via the specified operator
-	 * which defaults to 'AND'.
-	 * The new condition can also be an array. In this case, all elements in the array
-	 * will be concatenated together via the operator.
-	 * This method handles the case when the existing condition is empty.
-	 * After calling this method, the {@link condition} property will be modified.
-	 * @param mixed $condition the new condition. It can be either a string or an array of strings.
-	 * @param string $operator the operator to join different conditions. Defaults to 'AND'.
-	 * @return Query the criteria object itself
-	 */
-	public function addCondition($condition, $operator = 'AND')
-	{
-		if (is_array($condition)) {
-			if ($condition === array()) {
-				return $this;
-			}
-			$condition = '(' . implode(') ' . $operator . ' (', $condition) . ')';
-		}
-		if ($this->condition === '') {
-			$this->condition = $condition;
-		} else
-		{
-			$this->condition = '(' . $this->condition . ') ' . $operator . ' (' . $condition . ')';
-		}
-		return $this;
-	}
-
-	/**
-	 * Appends a search condition to the existing {@link condition}.
-	 * The search condition and the existing condition will be concatenated via the specified operator
-	 * which defaults to 'AND'.
-	 * The search condition is generated using the SQL LIKE operator with the given column name and
-	 * search keyword.
-	 * @param string $column the column name (or a valid SQL expression)
-	 * @param string $keyword the search keyword. This interpretation of the keyword is affected by the next parameter.
-	 * @param boolean $escape whether the keyword should be escaped if it contains characters % or _.
-	 * When this parameter is true (default), the special characters % (matches 0 or more characters)
-	 * and _ (matches a single character) will be escaped, and the keyword will be surrounded with a %
-	 * character on both ends. When this parameter is false, the keyword will be directly used for
-	 * matching without any change.
-	 * @param string $operator the operator used to concatenate the new condition with the existing one.
-	 * Defaults to 'AND'.
-	 * @param string $like the LIKE operator. Defaults to 'LIKE'. You may also set this to be 'NOT LIKE'.
-	 * @return Query the criteria object itself
-	 */
-	public function addSearchCondition($column, $keyword, $escape = true, $operator = 'AND', $like = 'LIKE')
-	{
-		if ($keyword == '') {
-			return $this;
-		}
-		if ($escape) {
-			$keyword = '%' . strtr($keyword, array('%' => '\%', '_' => '\_', '\\' => '\\\\')) . '%';
-		}
-		$condition = $column . " $like " . self::PARAM_PREFIX . self::$paramCount;
-		$this->params[self::PARAM_PREFIX . self::$paramCount++] = $keyword;
-		return $this->addCondition($condition, $operator);
-	}
-
-	/**
-	 * Appends an IN condition to the existing {@link condition}.
-	 * The IN condition and the existing condition will be concatenated via the specified operator
-	 * which defaults to 'AND'.
-	 * The IN condition is generated by using the SQL IN operator which requires the specified
-	 * column value to be among the given list of values.
-	 * @param string $column the column name (or a valid SQL expression)
-	 * @param array $values list of values that the column value should be in
-	 * @param string $operator the operator used to concatenate the new condition with the existing one.
-	 * Defaults to 'AND'.
-	 * @return Query the criteria object itself
-	 */
-	public function addInCondition($column, $values, $operator = 'AND')
-	{
-		if (($n = count($values)) < 1) {
-			return $this->addCondition('0=1', $operator);
-		} // 0=1 is used because in MSSQL value alone can't be used in WHERE
-		if ($n === 1) {
-			$value = reset($values);
-			if ($value === null) {
-				return $this->addCondition($column . ' IS NULL');
-			}
-			$condition = $column . '=' . self::PARAM_PREFIX . self::$paramCount;
-			$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
-		} else
-		{
-			$params = array();
-			foreach ($values as $value)
-			{
-				$params[] = self::PARAM_PREFIX . self::$paramCount;
-				$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
-			}
-			$condition = $column . ' IN (' . implode(', ', $params) . ')';
-		}
-		return $this->addCondition($condition, $operator);
-	}
-
-	/**
-	 * Appends an NOT IN condition to the existing {@link condition}.
-	 * The NOT IN condition and the existing condition will be concatenated via the specified operator
-	 * which defaults to 'AND'.
-	 * The NOT IN condition is generated by using the SQL NOT IN operator which requires the specified
-	 * column value to be among the given list of values.
-	 * @param string $column the column name (or a valid SQL expression)
-	 * @param array $values list of values that the column value should not be in
-	 * @param string $operator the operator used to concatenate the new condition with the existing one.
-	 * Defaults to 'AND'.
-	 * @return Query the criteria object itself
-	 */
-	public function addNotInCondition($column, $values, $operator = 'AND')
-	{
-		if (($n = count($values)) < 1) {
-			return $this;
-		}
-		if ($n === 1) {
-			$value = reset($values);
-			if ($value === null) {
-				return $this->addCondition($column . ' IS NOT NULL');
-			}
-			$condition = $column . '!=' . self::PARAM_PREFIX . self::$paramCount;
-			$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
-		} else
-		{
-			$params = array();
-			foreach ($values as $value)
-			{
-				$params[] = self::PARAM_PREFIX . self::$paramCount;
-				$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
-			}
-			$condition = $column . ' NOT IN (' . implode(', ', $params) . ')';
-		}
-		return $this->addCondition($condition, $operator);
-	}
-
-	/**
-	 * Appends a condition for matching the given list of column values.
-	 * The generated condition will be concatenated to the existing {@link condition}
-	 * via the specified operator which defaults to 'AND'.
-	 * The condition is generated by matching each column and the corresponding value.
-	 * @param array $columns list of column names and values to be matched (name=>value)
-	 * @param string $columnOperator the operator to concatenate multiple column matching condition. Defaults to 'AND'.
-	 * @param string $operator the operator used to concatenate the new condition with the existing one.
-	 * Defaults to 'AND'.
-	 * @return Query the criteria object itself
-	 */
-	public function addColumnCondition($columns, $columnOperator = 'AND', $operator = 'AND')
-	{
-		$params = array();
-		foreach ($columns as $name => $value)
-		{
-			if ($value === null) {
-				$params[] = $name . ' IS NULL';
-			} else
-			{
-				$params[] = $name . '=' . self::PARAM_PREFIX . self::$paramCount;
-				$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
-			}
-		}
-		return $this->addCondition(implode(" $columnOperator ", $params), $operator);
-	}
-
-	/**
-	 * Adds a comparison expression to the {@link condition} property.
-	 *
-	 * This method is a helper that appends to the {@link condition} property
-	 * with a new comparison expression. The comparison is done by comparing a column
-	 * with the given value using some comparison operator.
-	 *
-	 * The comparison operator is intelligently determined based on the first few
-	 * characters in the given value. In particular, it recognizes the following operators
-	 * if they appear as the leading characters in the given value:
-	 * <ul>
-	 * <li><code>&lt;</code>: the column must be less than the given value.</li>
-	 * <li><code>&gt;</code>: the column must be greater than the given value.</li>
-	 * <li><code>&lt;=</code>: the column must be less than or equal to the given value.</li>
-	 * <li><code>&gt;=</code>: the column must be greater than or equal to the given value.</li>
-	 * <li><code>&lt;&gt;</code>: the column must not be the same as the given value.
-	 * Note that when $partialMatch is true, this would mean the value must not be a substring
-	 * of the column.</li>
-	 * <li><code>=</code>: the column must be equal to the given value.</li>
-	 * <li>none of the above: the column must be equal to the given value. Note that when $partialMatch
-	 * is true, this would mean the value must be the same as the given value or be a substring of it.</li>
-	 * </ul>
-	 *
-	 * Note that any surrounding white spaces will be removed from the value before comparison.
-	 * When the value is empty, no comparison expression will be added to the search condition.
-	 *
-	 * @param string $column the name of the column to be searched
-	 * @param mixed $value the column value to be compared with. If the value is a string, the aforementioned
-	 * intelligent comparison will be conducted. If the value is an array, the comparison is done
-	 * by exact match of any of the value in the array. If the string or the array is empty,
-	 * the existing search condition will not be modified.
-	 * @param boolean $partialMatch whether the value should consider partial text match (using LIKE and NOT LIKE operators).
-	 * Defaults to false, meaning exact comparison.
-	 * @param string $operator the operator used to concatenate the new condition with the existing one.
-	 * Defaults to 'AND'.
-	 * @param boolean $escape whether the value should be escaped if $partialMatch is true and
-	 * the value contains characters % or _. When this parameter is true (default),
-	 * the special characters % (matches 0 or more characters)
-	 * and _ (matches a single character) will be escaped, and the value will be surrounded with a %
-	 * character on both ends. When this parameter is false, the value will be directly used for
-	 * matching without any change.
-	 * @return Query the criteria object itself
-	 */
-	public function compare($column, $value, $partialMatch = false, $operator = 'AND', $escape = true)
-	{
-		if (is_array($value)) {
-			if ($value === array()) {
-				return $this;
-			}
-			return $this->addInCondition($column, $value, $operator);
-		} else
-		{
-			$value = "$value";
-		}
-
-		if (preg_match('/^(?:\s*(<>|<=|>=|<|>|=))?(.*)$/', $value, $matches)) {
-			$value = $matches[2];
-			$op = $matches[1];
-		} else
-		{
-			$op = '';
-		}
-
-		if ($value === '') {
-			return $this;
-		}
-
-		if ($partialMatch) {
-			if ($op === '') {
-				return $this->addSearchCondition($column, $value, $escape, $operator);
-			}
-			if ($op === '<>') {
-				return $this->addSearchCondition($column, $value, $escape, $operator, 'NOT LIKE');
-			}
-		} elseif ($op === '')
-		{
-			$op = '=';
-		}
-
-		$this->addCondition($column . $op . self::PARAM_PREFIX . self::$paramCount, $operator);
-		$this->params[self::PARAM_PREFIX . self::$paramCount++] = $value;
-
-		return $this;
-	}
-
-	/**
-	 * Adds a between condition to the {@link condition} property.
-	 *
-	 * The new between condition and the existing condition will be concatenated via
-	 * the specified operator which defaults to 'AND'.
-	 * If one or both values are empty then the condition is not added to the existing condition.
-	 * This method handles the case when the existing condition is empty.
-	 * After calling this method, the {@link condition} property will be modified.
-	 * @param string $column the name of the column to search between.
-	 * @param string $valueStart the beginning value to start the between search.
-	 * @param string $valueEnd the ending value to end the between search.
-	 * @param string $operator the operator used to concatenate the new condition with the existing one.
-	 * Defaults to 'AND'.
-	 * @return Query the criteria object itself
-	 */
-	public function addBetweenCondition($column, $valueStart, $valueEnd, $operator = 'AND')
-	{
-		if ($valueStart === '' || $valueEnd === '') {
-			return $this;
-		}
-
-		$paramStart = self::PARAM_PREFIX . self::$paramCount++;
-		$paramEnd = self::PARAM_PREFIX . self::$paramCount++;
-		$this->params[$paramStart] = $valueStart;
-		$this->params[$paramEnd] = $valueEnd;
-		$condition = "$column BETWEEN $paramStart AND $paramEnd";
-
-		if ($this->condition === '') {
-			$this->condition = $condition;
-		} else
-		{
-			$this->condition = '(' . $this->condition . ') ' . $operator . ' (' . $condition . ')';
-		}
-		return $this;
 	}
 
 	public function reset()

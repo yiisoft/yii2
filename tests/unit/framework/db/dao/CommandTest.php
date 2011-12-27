@@ -13,34 +13,27 @@ class CommandTest extends \yiiunit\MysqlTestCase
 	{
 		$db = $this->getConnection(false);
 
+		// null
 		$command = $db->createCommand();
-		$this->assertEquals("SELECT *\nFROM ", $command->sql);
+		$this->assertEquals(null, $command->sql);
 
+		// string
 		$sql = 'SELECT * FROM yii_post';
 		$command = $db->createCommand($sql);
 		$this->assertEquals($sql, $command->sql);
 
+		// Query object
 		$query = new Query;
+		$query->select('id')->from('tbl_user');
 		$command = $db->createCommand($query);
-		$this->assertEquals($query, $command->query);
+		$this->assertEquals("SELECT `id`\nFROM `tbl_user`", $command->sql);
 
-		$query = array('select' => 'id', 'from' => 'yii_post');
-		$command = $db->createCommand($query);
-		$this->assertEquals($query, $command->query->toArray());
-	}
-
-	function testReset()
-	{
-		$db = $this->getConnection();
-
-		$command = $db->createCommand('SELECT * FROM yii_user');
-		$command->queryRow();
-		$this->assertNotEquals(null, $command->pdoStatement);
-		$this->assertEquals('SELECT * FROM yii_user', $command->sql);
-
-		$command->reset();
-		$this->assertEquals(null, $command->pdoStatement);
-		$this->assertNotEquals('SELECT * FROM yii_user', $command->sql);
+		// array
+		$command = $db->createCommand(array(
+			'select' => 'name',
+			'from' => 'tbl_user',
+		));
+		$this->assertEquals("SELECT `name`\nFROM `tbl_user`", $command->sql);
 	}
 
 	function testGetSetSql()
