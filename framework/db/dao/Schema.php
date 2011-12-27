@@ -13,7 +13,13 @@ namespace yii\db\dao;
 use yii\db\Exception;
 
 /**
- * Schema is the base class for retrieving metadata information.
+ * Schema represents the meta data of a database.
+ *
+ * Schema retrieves and maintains the meta data of database tables and columns.
+ *
+ * @property QueryBuilder $queryBuilder the query builder for this connection.
+ * @property array $tableNames the names of all tables in this database.
+ * @property array $tableSchemas the meta data for all tables in this database.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -37,18 +43,26 @@ abstract class Schema extends \yii\base\Object
 	const TYPE_MONEY = 'money';
 
 	/**
-	 * @var \yii\db\dao\Connection the database connection
+	 * @var Connection the database connection
 	 */
 	public $connection;
-
+	/**
+	 * @var array list of ALL table names in the database
+	 */
 	private $_tableNames = array();
+	/**
+	 * @var array list of loaded table meta data (table name => TableSchema)
+	 */
 	private $_tables = array();
+	/**
+	 * @var QueryBuilder the query builder for this database
+	 */
 	private $_builder;
 
 	/**
 	 * Loads the metadata for the specified table.
 	 * @param string $name table name
-	 * @return TableSchema driver dependent table metadata, null if the table does not exist.
+	 * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
 	 */
 	abstract protected function loadTableSchema($name);
 
@@ -64,21 +78,18 @@ abstract class Schema extends \yii\base\Object
 	/**
 	 * Obtains the metadata for the named table.
 	 * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
+	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
 	 * @return TableSchema table metadata. Null if the named table does not exist.
 	 */
-	public function getTableSchema($name)
+	public function getTableSchema($name, $refresh = false)
 	{
-		if (isset($this->_tables[$name])) {
+		if (isset($this->_tables[$name]) && !$refresh) {
 			return $this->_tables[$name];
 		}
 
-		if (strpos($name, '{{') !== false) {
-			$realName = preg_replace('/\{\{(.*?)\}\}/', $this->connection->tablePrefix . '$1', $name);
-		} else {
-			$realName = $name;
-		}
-
 		$db = $this->connection;
+
+		$realName = $db->expandTablePrefix($name);
 
 		// temporarily disable query caching
 		if ($db->queryCachingDuration >= 0) {
@@ -86,9 +97,9 @@ abstract class Schema extends \yii\base\Object
 			$db->queryCachingDuration = -1;
 		}
 
-		if (!in_array($name, $db->schemaCachingExclude) && $db->schemaCachingDuration >= 0 && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
-			$key = __CLASS__ . "/{$db->dsn}/{$db->username}/{$name}";
-			if (($table = $cache->get($key)) === false) {
+		if (!in_array($name, $db->schemaCachingExclude, true) && $db->schemaCachingDuration >= 0 && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
+			$key = $this->getCacheKey($name);
+			if ($refresh || ($table = $cache->get($key)) === false) {
 				$table = $this->loadTableSchema($realName);
 				if ($table !== null) {
 					$cache->set($key, $table, $db->schemaCachingDuration);
@@ -107,10 +118,20 @@ abstract class Schema extends \yii\base\Object
 	}
 
 	/**
+	 * Returns the cache key for the specified table name.
+	 * @param string $name the table name
+	 * @return string the cache key
+	 */
+	public function getCacheKey($name)
+	{
+		return  __CLASS__ . "/{$this->connection->dsn}/{$this->connection->username}/{$name}";
+	}
+
+	/**
 	 * Returns the metadata for all tables in the database.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * @return array the metadata for all tables in the database.
-	 * Each array element is an instance of {@link CDbTableSchema} (or its child class).
+	 * Each array element is an instance of [[TableSchema]] (or its child class).
 	 */
 	public function getTableSchemas($schema = '')
 	{
@@ -158,8 +179,7 @@ abstract class Schema extends \yii\base\Object
 		$db = $this->connection;
 		if ($db->schemaCachingDuration >= 0 && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
 			foreach ($this->_tables as $name => $table) {
-				$key = __CLASS__ . ":{$db->dsn}/{$db->username}/{$name}";
-				$cache->delete($key);
+				$cache->delete($this->getCacheKey($name));
 			}
 		}
 		$this->_tables = array();
@@ -209,8 +229,7 @@ abstract class Schema extends \yii\base\Object
 		if (($pos = strrpos($name, '.')) !== false) {
 			$prefix = $this->quoteTableName(substr($name, 0, $pos)) . '.';
 			$name = substr($name, $pos + 1);
-		} else
-		{
+		} else {
 			$prefix = '';
 		}
 		return $prefix . $this->quoteSimpleColumnName($name);

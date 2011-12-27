@@ -15,7 +15,7 @@ use yii\db\Exception;
 /**
  * Transaction represents a DB transaction.
  *
- * It is usually created by calling [[Connection::beginTransaction]].
+ * It is usually created by calling [[Connection::beginTransaction()]].
  *
  * The following code is a typical example of using transactions (note that some
  * DBMS may not support transactions):
@@ -39,7 +39,7 @@ class Transaction extends \yii\base\Object
 {
 	/**
 	 * @var boolean whether this transaction is active. Only an active transaction
-	 * can [[commit]] or [[rollBack]]. This property is set true when the transaction is started.
+	 * can [[commit()]] or [[rollBack()]]. This property is set true when the transaction is started.
 	 */
 	public $active;
 	/**

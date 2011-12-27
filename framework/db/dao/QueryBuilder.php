@@ -34,6 +34,11 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public $schema;
 	/**
+	 * @var string the separator between different fragments of a SQL statement.
+	 * Defaults to an empty space. This is mainly used by [[build()]] when generating a SQL statement.
+	 */
+	public $separator = " ";
+	/**
 	 * @var Query the Query object. This is set when calling [[build()]] to generate a non-SELECT SQL statement.
 	 */
 	private $_query;
@@ -49,32 +54,36 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * @param Query $query
-	 * @return string
+	 * Generates a SQL statement from a [[Query]] object.
+	 * Note that when generating SQL statements for INSERT and UPDATE queries,
+	 * the query object's [[Query::params]] property may be appended with new parameters.
+	 * @param Query $query the [[Query]] object from which the SQL statement will be generated
+	 * @return string the generated SQL statement
 	 */
 	public function build($query)
 	{
-		// non-SELECT query
 		if ($query->operation !== null) {
+			// non-SELECT query
 			$this->_query = $query;
 			$method = array_shift($query->operation);
 			$sql = call_user_func_array(array($this, $method), $query->operation);
 			$this->_query = null;
 			return $sql;
+		} else {
+			// SELECT query
+			$clauses = array(
+				$this->buildSelect($query),
+				$this->buildFrom($query),
+				$this->buildJoin($query),
+				$this->buildWhere($query),
+				$this->buildGroupBy($query),
+				$this->buildHaving($query),
+				$this->buildUnion($query),
+				$this->buildOrderBy($query),
+				$this->buildLimit($query),
+			);
+			return implode($this->separator, array_filter($clauses));
 		}
-		// SELECT query
-		$clauses = array(
-			$this->buildSelect($query),
-			$this->buildFrom($query),
-			$this->buildJoin($query),
-			$this->buildWhere($query),
-			$this->buildGroupBy($query),
-			$this->buildHaving($query),
-			$this->buildUnion($query),
-			$this->buildOrderBy($query),
-			$this->buildLimit($query),
-		);
-		return implode("\n", array_filter($clauses));
 	}
 
 	/**
@@ -82,7 +91,8 @@ class QueryBuilder extends \yii\base\Object
 	 * The method will properly escape the column names, and bind the values to be inserted.
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
-	 * @param array $params the parameters to be bound to the query.
+	 * @param array $params the parameters to be bound to the query. This method will modify
+	 * this parameter by appending new parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
 	public function insert($table, $columns, &$params = array())
@@ -119,7 +129,8 @@ class QueryBuilder extends \yii\base\Object
 	 * @param array $columns the column data (name=>value) to be updated.
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
-	 * @param array $params the parameters to be bound to the query.
+	 * @param array $params the parameters to be bound to the query. This method will modify
+	 * this parameter by appending new parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
 	public function update($table, $columns, $condition = '', &$params = array())

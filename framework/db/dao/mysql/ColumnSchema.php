@@ -88,7 +88,7 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 			}
 		}
 
-		$this->phpType = $this->getPhpType();
+		$this->phpType = $this->extractPhpType();
 	}
 
 	/**

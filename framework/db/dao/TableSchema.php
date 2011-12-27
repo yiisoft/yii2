@@ -13,7 +13,9 @@ namespace yii\db\dao;
 /**
  * TableSchema is the base class for representing the metadata of a database table.
  *
- * It may be extended by different DBMS driver to provide DBMS-specific table metadata.
+ * It may be extended by different DBMS driver to represent DBMS-specific table metadata.
+ *
+ * @property array $columnNames list of column names
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -61,7 +63,7 @@ class TableSchema extends \yii\base\Object
 	 * Gets the named column metadata.
 	 * This is a convenient method for retrieving a named column even if it does not exist.
 	 * @param string $name column name
-	 * @return CDbColumnSchema metadata of the named column. Null if the named column does not exist.
+	 * @return ColumnSchema metadata of the named column. Null if the named column does not exist.
 	 */
 	public function getColumn($name)
 	{
@@ -69,6 +71,7 @@ class TableSchema extends \yii\base\Object
 	}
 
 	/**
+	 * Returns the names of all columns in this table.
 	 * @return array list of column names
 	 */
 	public function getColumnNames()

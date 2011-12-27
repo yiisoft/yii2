@@ -11,7 +11,7 @@
 namespace yii\db\dao;
 
 /**
- * ColumnSchema class describes the column meta data of a database table.
+ * ColumnSchema class describes the meta data of a column in a database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,7 +23,7 @@ class ColumnSchema extends \yii\base\Component
 	 */
 	public $name;
 	/**
-	 * @var string raw name of this column. This is the quoted name that can be directly used in SQL queries.
+	 * @var string the quoted name of this column.
 	 */
 	public $quotedName;
 	/**
@@ -42,7 +42,7 @@ class ColumnSchema extends \yii\base\Component
 	 */
 	public $phpType;
 	/**
-	 * @var string the DB type of this column. Possible DB types vary according to the DBMS.
+	 * @var string the DB type of this column. Possible DB types vary according to the type of DBMS.
 	 */
 	public $dbType;
 	/**
@@ -50,11 +50,11 @@ class ColumnSchema extends \yii\base\Component
 	 */
 	public $defaultValue;
 	/**
-	 * @var array enumerable values
+	 * @var array enumerable values. This is set only if the column is declared to be an enumerable type.
 	 */
 	public $enumValues;
 	/**
-	 * @var integer size of the column.
+	 * @var integer display size of the column.
 	 */
 	public $size;
 	/**
@@ -75,7 +75,7 @@ class ColumnSchema extends \yii\base\Component
 	public $autoIncrement = false;
 	/**
 	 * @var boolean whether this column is unsigned. This is only meaningful
-	 * when [[type]] is `integer` or `bigint`.
+	 * when [[type]] is `smallint`, `integer` or `bigint`.
 	 */
 	public $unsigned;
 
@@ -83,7 +83,7 @@ class ColumnSchema extends \yii\base\Component
 	 * Extracts the PHP type from DB type.
 	 * @return string PHP type name.
 	 */
-	protected function getPhpType()
+	protected function extractPhpType()
 	{
 		static $typeMap = array( // logical type => php type
 			'smallint' => 'integer',
@@ -104,7 +104,8 @@ class ColumnSchema extends \yii\base\Component
 	}
 
 	/**
-	 * Converts the input value to the type that this column is of.
+	 * Converts the input value according to [[phpType]].
+	 * If the value is null or an [[Expression]], it will not be converted.
 	 * @param mixed $value input value
 	 * @return mixed converted value
 	 */

@@ -281,7 +281,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 */
 	public function onInit($event)
 	{
-		$this->raiseEvent(__METHOD__, $event);
+		$this->raiseEvent(__FUNCTION__, $event);
 	}
 
 	/**
@@ -290,7 +290,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 */
 	public function onAfterConstruct($event)
 	{
-		$this->raiseEvent(__METHOD__, $event);
+		$this->raiseEvent(__FUNCTION__, $event);
 	}
 
 	/**
@@ -299,7 +299,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 */
 	public function onBeforeValidate($event)
 	{
-		$this->raiseEvent(__METHOD__, $event);
+		$this->raiseEvent(__FUNCTION__, $event);
 	}
 
 	/**
@@ -308,7 +308,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 */
 	public function onAfterValidate($event)
 	{
-		$this->raiseEvent(__METHOD__, $event);
+		$this->raiseEvent(__FUNCTION__, $event);
 	}
 
 	/**
