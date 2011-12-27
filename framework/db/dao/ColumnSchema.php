@@ -19,24 +19,6 @@ namespace yii\db\dao;
 class ColumnSchema extends \yii\base\Component
 {
 	/**
-	 * The followings are the supported abstract column data types.
-	 */
-	const TYPE_STRING = 'string';
-	const TYPE_TEXT = 'text';
-	const TYPE_SMALLINT = 'smallint';
-	const TYPE_INTEGER = 'integer';
-	const TYPE_BIGINT = 'bigint';
-	const TYPE_FLOAT = 'float';
-	const TYPE_DECIMAL = 'decimal';
-	const TYPE_DATETIME = 'datetime';
-	const TYPE_TIMESTAMP = 'timestamp';
-	const TYPE_TIME = 'time';
-	const TYPE_DATE = 'date';
-	const TYPE_BINARY = 'binary';
-	const TYPE_BOOLEAN = 'boolean';
-	const TYPE_MONEY = 'money';
-
-	/**
 	 * @var string name of this column (without quotes).
 	 */
 	public $name;
@@ -99,9 +81,8 @@ class ColumnSchema extends \yii\base\Component
 
 	/**
 	 * Extracts the PHP type from DB type.
-	 * @return string PHP type name.
 	 */
-	protected function extractPhpType()
+	public function resolvePhpType()
 	{
 		static $typeMap = array( // logical type => php type
 			'smallint' => 'integer',
@@ -112,13 +93,15 @@ class ColumnSchema extends \yii\base\Component
 		);
 		if (isset($typeMap[$this->type])) {
 			if ($this->type === 'bigint') {
-				return PHP_INT_SIZE == 8 && !$this->unsigned ? 'integer' : 'string';
+				$this->phpType = PHP_INT_SIZE == 8 && !$this->unsigned ? 'integer' : 'string';
 			} elseif ($this->type === 'integer') {
-				return PHP_INT_SIZE == 4 && $this->unsigned ? 'string' : 'integer';
+				$this->phpType = PHP_INT_SIZE == 4 && $this->unsigned ? 'string' : 'integer';
+			} else {
+				$this->phpType = $typeMap[$this->type];
 			}
-			return $typeMap[$this->type];
+		} else {
+			$this->phpType = 'string';
 		}
-		return 'string';
 	}
 
 	/**

@@ -27,6 +27,24 @@ use yii\db\Exception;
 abstract class Driver extends \yii\base\Object
 {
 	/**
+	 * The followings are the supported abstract column data types.
+	 */
+	const TYPE_STRING = 'string';
+	const TYPE_TEXT = 'text';
+	const TYPE_SMALLINT = 'smallint';
+	const TYPE_INTEGER = 'integer';
+	const TYPE_BIGINT = 'bigint';
+	const TYPE_FLOAT = 'float';
+	const TYPE_DECIMAL = 'decimal';
+	const TYPE_DATETIME = 'datetime';
+	const TYPE_TIMESTAMP = 'timestamp';
+	const TYPE_TIME = 'time';
+	const TYPE_DATE = 'date';
+	const TYPE_BINARY = 'binary';
+	const TYPE_BOOLEAN = 'boolean';
+	const TYPE_MONEY = 'money';
+
+	/**
 	 * @var Connection the database connection
 	 */
 	public $connection;
@@ -260,5 +278,4 @@ abstract class Driver extends \yii\base\Object
 	{
 		throw new Exception(get_class($this) . 'does not support fetching all table names.');
 	}
-
 }

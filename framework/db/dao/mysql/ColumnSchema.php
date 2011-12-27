@@ -11,7 +11,7 @@
 namespace yii\db\dao\mysql;
 
 /**
- * ColumnSchema class describes the column meta data of a MySQL table.
+ * ColumnSchema class describes the meta data of a MySQL table column.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

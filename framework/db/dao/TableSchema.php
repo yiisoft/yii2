@@ -11,9 +11,7 @@
 namespace yii\db\dao;
 
 /**
- * TableSchema is the base class for representing the metadata of a database table.
- *
- * It may be extended by different DBMS driver to represent DBMS-specific table metadata.
+ * TableSchema represents the meta data of a database table.
  *
  * @property array $columnNames list of column names
  *
@@ -22,6 +20,12 @@ namespace yii\db\dao;
  */
 class TableSchema extends \yii\base\Object
 {
+	/**
+	 * @var string name of the catalog (database) that this table belongs to.
+	 * Defaults to null, meaning no catalog (or the current database).
+	 * This property is only meaningful for MSSQL.
+	 */
+	public $catalogName;
 	/**
 	 * @var string name of the schema that this table belongs to.
 	 */

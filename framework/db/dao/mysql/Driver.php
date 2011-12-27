@@ -11,6 +11,7 @@
 namespace yii\db\dao\mysql;
 
 use yii\db\dao\TableSchema;
+use yii\db\dao\ColumnSchema;
 
 /**
  * Driver is the class for retrieving meta data from a MySQL database (version 4.1.x and 5.x).
@@ -20,6 +21,37 @@ use yii\db\dao\TableSchema;
  */
 class Driver extends \yii\db\dao\Driver
 {
+	/**
+	 * @var array mapping from physical types (keys) to abstract types (values)
+	 */
+	public $typeMap = array( // dbType => type
+		'tinyint' => self::TYPE_SMALLINT,
+		'bit' => self::TYPE_SMALLINT,
+		'smallint' => self::TYPE_SMALLINT,
+		'mediumint' => self::TYPE_INTEGER,
+		'int' => self::TYPE_INTEGER,
+		'integer' => self::TYPE_INTEGER,
+		'bigint' => self::TYPE_BIGINT,
+		'float' => self::TYPE_FLOAT,
+		'double' => self::TYPE_FLOAT,
+		'real' => self::TYPE_FLOAT,
+		'decimal' => self::TYPE_DECIMAL,
+		'numeric' => self::TYPE_DECIMAL,
+		'tinytext' => self::TYPE_TEXT,
+		'mediumtext' => self::TYPE_TEXT,
+		'longtext' => self::TYPE_TEXT,
+		'text' => self::TYPE_TEXT,
+		'varchar' => self::TYPE_STRING,
+		'string' => self::TYPE_STRING,
+		'char' => self::TYPE_STRING,
+		'datetime' => self::TYPE_DATETIME,
+		'year' => self::TYPE_DATE,
+		'date' => self::TYPE_DATE,
+		'time' => self::TYPE_TIME,
+		'timestamp' => self::TYPE_TIMESTAMP,
+		'enum' => self::TYPE_STRING,
+	);
+
 	/**
 	 * Quotes a table name for use in a query.
 	 * A simple table name has no schema prefix.
@@ -79,7 +111,7 @@ class Driver extends \yii\db\dao\Driver
 	/**
 	 * Creates a table column.
 	 * @param array $column column metadata
-	 * @return CDbColumnSchema normalized column metadata
+	 * @return ColumnSchema normalized column metadata
 	 */
 	protected function createColumn($column)
 	{
@@ -90,10 +122,67 @@ class Driver extends \yii\db\dao\Driver
 		$c->allowNull = $column['Null'] === 'YES';
 		$c->isPrimaryKey = strpos($column['Key'], 'PRI') !== false;
 		$c->autoIncrement = stripos($column['Extra'], 'auto_increment') !== false;
-		$c->initTypes($column['Type']);
-		$c->initDefaultValue($column['Default']);
+
+		$c->dbType = $column['Type'];
+		$this->resolveColumnType($c);
+		$c->resolvePhpType();
+
+		$this->resolveDefaultValue($c, $column['Default']);
 
 		return $c;
+	}
+
+	/**
+	 * @param \yii\db\dao\ColumnSchema $column
+	 * @param string $value
+	 */
+	protected function resolveDefaultValue($column, $value)
+	{
+		if ($column->type !== 'timestamp' || $value !== 'CURRENT_TIMESTAMP') {
+			$column->defaultValue = $column->typecast($value);
+		}
+	}
+
+	/**
+	 * Extracts the PHP type from DB type.
+	 * @param \yii\db\dao\ColumnSchema $column the column
+	 */
+	public function resolveColumnType($column)
+	{
+		$column->type = self::TYPE_STRING;
+		$column->unsigned = strpos($column->dbType, 'unsigned') !== false;
+
+		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
+			$type = $matches[1];
+			if (isset($this->typeMap[$type])) {
+				$column->type = $this->typeMap[$type];
+			}
+
+			if (!empty($matches[2])) {
+				if ($type === 'enum') {
+					$values = explode(',', $matches[2]);
+					foreach ($values as $i => $value) {
+						$values[$i] = trim($value, "'");
+					}
+					$column->enumValues = $values;
+				} else {
+					$values = explode(',', $matches[2]);
+					$column->size = $column->precision = (int)$values[0];
+					if (isset($values[1])) {
+						$column->scale = (int)$values[1];
+					}
+					if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
+						$column->type = 'boolean';
+					} elseif ($type === 'bit') {
+						if ($column->size > 32) {
+							$column->type = 'bigint';
+						} elseif ($column->size === 32) {
+							$column->type = 'integer';
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -107,7 +196,7 @@ class Driver extends \yii\db\dao\Driver
 		try {
 			$columns = $this->connection->createCommand($sql)->queryAll();
 		}
-		catch(\Exception $e) {
+		catch (\Exception $e) {
 			return false;
 		}
 		foreach ($columns as $column) {
@@ -164,7 +253,8 @@ class Driver extends \yii\db\dao\Driver
 		if ($schema === '') {
 			return $this->connection->createCommand('SHOW TABLES')->queryColumn();
 		}
-		$names = $this->connection->createCommand('SHOW TABLES FROM ' . $this->quoteSimpleTableName($schema))->queryColumn();
+		$sql = 'SHOW TABLES FROM ' . $this->quoteSimpleTableName($schema);
+		$names = $this->connection->createCommand($sql)->queryColumn();
 		foreach ($names as &$name) {
 			$name = $schema . '.' . $name;
 		}
