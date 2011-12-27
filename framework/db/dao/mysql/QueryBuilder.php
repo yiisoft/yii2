@@ -19,10 +19,10 @@ namespace yii\db\dao\mysql;
 class QueryBuilder extends \yii\db\dao\QueryBuilder
 {
 	/**
-	 * @var array the abstract column types mapped to physical column types.
+	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
     public $typeMap = array(
-		'pk' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		Driver::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
 		Driver::TYPE_STRING => 'varchar(255)',
 		Driver::TYPE_TEXT => 'text',
 		Driver::TYPE_SMALLINT => 'smallint(6)',

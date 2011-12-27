@@ -22,7 +22,7 @@ use yii\db\dao\ColumnSchema;
 class Driver extends \yii\db\dao\Driver
 {
 	/**
-	 * @var array mapping from physical types (keys) to abstract types (values)
+	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
 	public $typeMap = array( // dbType => type
 		'tinyint' => self::TYPE_SMALLINT,
@@ -259,5 +259,15 @@ class Driver extends \yii\db\dao\Driver
 			$name = $schema . '.' . $name;
 		}
 		return $names;
+	}
+
+	/**
+	 * Creates a query builder for the database.
+	 * This method may be overridden by child classes to create a DBMS-specific query builder.
+	 * @return QueryBuilder query builder instance
+	 */
+	public function createQueryBuilder()
+	{
+		return new QueryBuilder($this->connection);
 	}
 }
