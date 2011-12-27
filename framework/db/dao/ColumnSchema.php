@@ -19,7 +19,7 @@ namespace yii\db\dao;
 class ColumnSchema extends \yii\base\Component
 {
 	/**
-	 * The followings are supported abstract column data types.
+	 * The followings are the supported abstract column data types.
 	 */
 	const TYPE_STRING = 'string';
 	const TYPE_TEXT = 'text';
