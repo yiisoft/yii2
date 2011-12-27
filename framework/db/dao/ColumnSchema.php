@@ -19,6 +19,24 @@ namespace yii\db\dao;
 class ColumnSchema extends \yii\base\Component
 {
 	/**
+	 * The followings are supported abstract column data types.
+	 */
+	const TYPE_STRING = 'string';
+	const TYPE_TEXT = 'text';
+	const TYPE_SMALLINT = 'smallint';
+	const TYPE_INTEGER = 'integer';
+	const TYPE_BIGINT = 'bigint';
+	const TYPE_FLOAT = 'float';
+	const TYPE_DECIMAL = 'decimal';
+	const TYPE_DATETIME = 'datetime';
+	const TYPE_TIMESTAMP = 'timestamp';
+	const TYPE_TIME = 'time';
+	const TYPE_DATE = 'date';
+	const TYPE_BINARY = 'binary';
+	const TYPE_BOOLEAN = 'boolean';
+	const TYPE_MONEY = 'money';
+
+	/**
 	 * @var string name of this column (without quotes).
 	 */
 	public $name;

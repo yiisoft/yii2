@@ -25,35 +25,35 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 	public function initTypes($dbType)
 	{
 		static $typeMap = array(  // dbType => type
-			'tinyint' => 'smallint',
-			'bit' => 'smallint',
-			'smallint' => 'smallint',
-			'mediumint' => 'integer',
-			'int' => 'integer',
-			'integer' => 'integer',
-			'bigint' => 'bigint',
-			'float' => 'float',
-			'double' => 'float',
-			'real' => 'float',
-			'decimal' => 'decimal',
-			'numeric' => 'decimal',
-            'tinytext' => 'text',
-            'mediumtext' => 'text',
-            'longtext' => 'text',
-            'text' => 'text',
-            'varchar' => 'string',
-            'string' => 'string',
-            'char' => 'string',
-			'datetime' => 'datetime',
-			'year' => 'date',
-			'date' => 'date',
-			'time' => 'time',
-			'timestamp' => 'timestamp',
-			'enum' => 'enum',
+			'tinyint' => self::TYPE_SMALLINT,
+			'bit' => self::TYPE_SMALLINT,
+			'smallint' => self::TYPE_SMALLINT,
+			'mediumint' => self::TYPE_INTEGER,
+			'int' => self::TYPE_INTEGER,
+			'integer' => self::TYPE_INTEGER,
+			'bigint' => self::TYPE_BIGINT,
+			'float' => self::TYPE_FLOAT,
+			'double' => self::TYPE_FLOAT,
+			'real' => self::TYPE_FLOAT,
+			'decimal' => self::TYPE_DECIMAL,
+			'numeric' => self::TYPE_DECIMAL,
+            'tinytext' => self::TYPE_TEXT,
+            'mediumtext' => self::TYPE_TEXT,
+            'longtext' => self::TYPE_TEXT,
+            'text' => self::TYPE_TEXT,
+            'varchar' => self::TYPE_STRING,
+            'string' => self::TYPE_STRING,
+            'char' => self::TYPE_STRING,
+			'datetime' => self::TYPE_DATETIME,
+			'year' => self::TYPE_DATE,
+			'date' => self::TYPE_DATE,
+			'time' => self::TYPE_TIME,
+			'timestamp' => self::TYPE_TIMESTAMP,
+			'enum' => self::TYPE_STRING,
 		);
 
 		$this->dbType = $dbType;
-		$this->type = 'string';
+		$this->type = self::TYPE_STRING;
 		$this->unsigned = strpos($this->dbType, 'unsigned') !== false;
 
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $this->dbType, $matches)) {
@@ -63,7 +63,7 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 			}
 
 			if (!empty($matches[2])) {
-				if ($this->type === 'enum') {
+				if ($type === 'enum') {
 					$values = explode(',', $matches[2]);
 					foreach ($values as $i => $value) {
 						$values[$i] = trim($value, "'");
@@ -93,7 +93,7 @@ class ColumnSchema extends \yii\db\dao\ColumnSchema
 
 	/**
 	 * Extracts the default value for the column.
-	 * The value is typecasted to correct PHP type.
+	 * The value is typecast to correct PHP type.
 	 * @param mixed $defaultValue the default value obtained from metadata
 	 */
 	public function initDefaultValue($defaultValue)

@@ -22,21 +22,21 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 * @var array the abstract column types mapped to physical column types.
 	 */
     public $typeMap = array(
-		Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-		Schema::TYPE_STRING => 'varchar(255)',
-		Schema::TYPE_TEXT => 'text',
-		Schema::TYPE_SMALLINT => 'smallint(6)',
-		Schema::TYPE_INTEGER => 'int(11)',
-		Schema::TYPE_BIGINT => 'bigint(20)',
-		Schema::TYPE_FLOAT => 'float',
-		Schema::TYPE_DECIMAL => 'decimal',
-		Schema::TYPE_DATETIME => 'datetime',
-		Schema::TYPE_TIMESTAMP => 'timestamp',
-		Schema::TYPE_TIME => 'time',
-		Schema::TYPE_DATE => 'date',
-		Schema::TYPE_BINARY => 'blob',
-		Schema::TYPE_BOOLEAN => 'tinyint(1)',
-		Schema::TYPE_MONEY => 'decimal(19,4)',
+		'pk' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		ColumnSchema::TYPE_STRING => 'varchar(255)',
+		ColumnSchema::TYPE_TEXT => 'text',
+		ColumnSchema::TYPE_SMALLINT => 'smallint(6)',
+		ColumnSchema::TYPE_INTEGER => 'int(11)',
+		ColumnSchema::TYPE_BIGINT => 'bigint(20)',
+		ColumnSchema::TYPE_FLOAT => 'float',
+		ColumnSchema::TYPE_DECIMAL => 'decimal',
+		ColumnSchema::TYPE_DATETIME => 'datetime',
+		ColumnSchema::TYPE_TIMESTAMP => 'timestamp',
+		ColumnSchema::TYPE_TIME => 'time',
+		ColumnSchema::TYPE_DATE => 'date',
+		ColumnSchema::TYPE_BINARY => 'blob',
+		ColumnSchema::TYPE_BOOLEAN => 'tinyint(1)',
+		ColumnSchema::TYPE_MONEY => 'decimal(19,4)',
     );
 
 	/**

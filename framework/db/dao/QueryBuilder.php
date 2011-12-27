@@ -15,6 +15,9 @@ use yii\db\Exception;
 /**
  * QueryBuilder builds a SQL statement based on the specification given as a [[Query]] object.
  *
+ * QueryBuilder is often used behind the scenes by [[Query]] to build a DBMS-dependent SQL statement
+ * from a [[Query]] object.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -22,7 +25,8 @@ class QueryBuilder extends \yii\base\Object
 {
 	/**
 	 * @var array the abstract column types mapped to physical column types.
-	 * Child classes should override this property to declare possible type mappings.
+	 * This is mainly used to support creating/modifying tables using DB-independent data type specifications.
+	 * Child classes should override this property to declare supported type mappings.
 	 */
 	public $typeMap = array();
 	/**
@@ -45,12 +49,12 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * Constructor.
-	 * @param Schema $schema the database schema information
+	 * @param Connection $connection the database connection.
 	 */
-	public function __construct($schema)
+	public function __construct($connection)
 	{
-		$this->connection = $schema->connection;
-		$this->schema = $schema;
+		$this->connection = $connection;
+		$this->schema = $connection->getSchema();
 	}
 
 	/**
@@ -182,7 +186,7 @@ class QueryBuilder extends \yii\base\Object
 	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name'=>'string'),
 	 * where name stands for a column name which will be properly quoted by the method, and definition
 	 * stands for the column type which can contain an abstract DB type.
-	 * The {@link getColumnType} method will be invoked to convert any abstract type into a physical one.
+	 * The [[getColumnType()]] method will be invoked to convert any abstract type into a physical one.
 	 *
 	 * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
 	 * inserted into the generated SQL.
@@ -242,7 +246,7 @@ class QueryBuilder extends \yii\base\Object
 	 * Builds a SQL statement for adding a new DB column.
 	 * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
 	 * @param string $column the name of the new column. The name will be properly quoted by the method.
-	 * @param string $type the column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+	 * @param string $type the column type. The [[getColumnType()]] method will be invoked to convert abstract column type (if any)
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 * @return string the SQL statement for adding a new column.
@@ -284,7 +288,7 @@ class QueryBuilder extends \yii\base\Object
 	 * Builds a SQL statement for changing the definition of a column.
 	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
 	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-	 * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+	 * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 * @return string the SQL statement for changing the definition of a column.
@@ -406,7 +410,7 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * Converts an abstract column type into a physical column type.
-	 * The conversion is done using the type map specified in {@link typeMap}.
+	 * The conversion is done using the type map specified in [[typeMap]].
 	 * These abstract column types are supported (using MySQL as example to explain the corresponding
 	 * physical types):
 	 * <ul>

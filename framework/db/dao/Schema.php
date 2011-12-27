@@ -26,22 +26,6 @@ use yii\db\Exception;
  */
 abstract class Schema extends \yii\base\Object
 {
-	const TYPE_PK = 'pk';
-	const TYPE_STRING = 'string';
-	const TYPE_TEXT = 'text';
-	const TYPE_SMALLINT = 'smallint';
-	const TYPE_INTEGER = 'integer';
-	const TYPE_BIGINT = 'bigint';
-	const TYPE_FLOAT = 'float';
-	const TYPE_DECIMAL = 'decimal';
-	const TYPE_DATETIME = 'datetime';
-	const TYPE_TIMESTAMP = 'timestamp';
-	const TYPE_TIME = 'time';
-	const TYPE_DATE = 'date';
-	const TYPE_BINARY = 'binary';
-	const TYPE_BOOLEAN = 'boolean';
-	const TYPE_MONEY = 'money';
-
 	/**
 	 * @var Connection the database connection
 	 */
@@ -148,11 +132,13 @@ abstract class Schema extends \yii\base\Object
 	 * Returns all table names in the database.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * If not empty, the returned table names will be prefixed with the schema name.
+	 * @param boolean $refresh whether to fetch the latest available table names. If this is false,
+	 * table names fetched previously (if available) will be returned.
 	 * @return array all table names in the database.
 	 */
-	public function getTableNames($schema = '')
+	public function getTableNames($schema = '', $refresh = false)
 	{
-		if (!isset($this->_tableNames[$schema])) {
+		if (!isset($this->_tableNames[$schema]) || $refresh) {
 			$this->_tableNames[$schema] = $this->findTableNames($schema);
 		}
 		return $this->_tableNames[$schema];
@@ -171,19 +157,25 @@ abstract class Schema extends \yii\base\Object
 
 	/**
 	 * Refreshes the schema.
-	 * This method resets the loaded table metadata and command builder
-	 * so that they can be recreated to reflect the change of schema.
+	 * This method cleans up the cached table schema and names
+	 * so that they can be recreated to reflect the database schema change.
+	 * @param string $tableName the name of the table that needs to be refreshed.
+	 * If null, all currently loaded tables will be refreshed.
 	 */
-	public function refresh()
+	public function refresh($tableName = null)
 	{
 		$db = $this->connection;
 		if ($db->schemaCachingDuration >= 0 && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
-			foreach ($this->_tables as $name => $table) {
-				$cache->delete($this->getCacheKey($name));
+			if ($tableName === null) {
+				foreach ($this->_tables as $name => $table) {
+					$cache->delete($this->getCacheKey($name));
+				}
+				$this->_tables = array();
+			} else {
+				$cache->delete($this->getCacheKey($tableName));
+				unset($this->_tables[$tableName]);
 			}
 		}
-		$this->_tables = array();
-		$this->_tableNames = array();
 	}
 
 	/**
@@ -253,7 +245,7 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function createQueryBuilder()
 	{
-		return new QueryBuilder($this);
+		return new QueryBuilder($this->connection);
 	}
 
 	/**
