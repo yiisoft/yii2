@@ -1,6 +1,6 @@
 <?php
 /**
- * Schema class file.
+ * Driver class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
@@ -13,16 +13,16 @@ namespace yii\db\dao\mysql;
 use yii\db\dao\TableSchema;
 
 /**
- * Schema is the class for retrieving metadata information from a MySQL database (version 4.1.x and 5.x).
+ * Driver is the class for retrieving meta data from a MySQL database (version 4.1.x and 5.x).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\dao\Schema
+class Driver extends \yii\db\dao\Driver
 {
 	/**
 	 * Quotes a table name for use in a query.
-	 * A simple table name does not schema prefix.
+	 * A simple table name has no schema prefix.
 	 * @param string $name table name
 	 * @return string the properly quoted table name
 	 */
@@ -33,7 +33,7 @@ class Schema extends \yii\db\dao\Schema
 
 	/**
 	 * Quotes a column name for use in a query.
-	 * A simple column name does not contain prefix.
+	 * A simple column name has no prefix.
 	 * @param string $name column name
 	 * @return string the properly quoted column name
 	 */

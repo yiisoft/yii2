@@ -34,9 +34,9 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public $connection;
 	/**
-	 * @var Schema the database schema
+	 * @var Driver the database driver
 	 */
-	public $schema;
+	public $driver;
 	/**
 	 * @var string the separator between different fragments of a SQL statement.
 	 * Defaults to an empty space. This is mainly used by [[build()]] when generating a SQL statement.
@@ -54,7 +54,7 @@ class QueryBuilder extends \yii\base\Object
 	public function __construct($connection)
 	{
 		$this->connection = $connection;
-		$this->schema = $connection->getSchema();
+		$this->driver = $connection->getDriver();
 	}
 
 	/**
@@ -105,7 +105,7 @@ class QueryBuilder extends \yii\base\Object
 		$placeholders = array();
 		$count = 0;
 		foreach ($columns as $name => $value) {
-			$names[] = $this->schema->quoteColumnName($name);
+			$names[] = $this->driver->quoteColumnName($name);
 			if ($value instanceof Expression) {
 				$placeholders[] = $value->expression;
 				foreach ($value->params as $n => $v) {
@@ -121,7 +121,7 @@ class QueryBuilder extends \yii\base\Object
 			$this->_query->addParams($params);
 		}
 
-		return 'INSERT INTO ' . $this->schema->quoteTableName($table)
+		return 'INSERT INTO ' . $this->driver->quoteTableName($table)
 			. ' (' . implode(', ', $names) . ') VALUES ('
 			. implode(', ', $placeholders) . ')';
 	}
@@ -143,12 +143,12 @@ class QueryBuilder extends \yii\base\Object
 		$count = 0;
 		foreach ($columns as $name => $value) {
 			if ($value instanceof Expression) {
-				$lines[] = $this->schema->quoteSimpleColumnName($name) . '=' . $value->expression;
+				$lines[] = $this->driver->quoteSimpleColumnName($name) . '=' . $value->expression;
 				foreach ($value->params as $n => $v) {
 					$params[$n] = $v;
 				}
 			} else {
-				$lines[] = $this->schema->quoteSimpleColumnName($name) . '=:p' . $count;
+				$lines[] = $this->driver->quoteSimpleColumnName($name) . '=:p' . $count;
 				$params[':p' . $count] = $value;
 				$count++;
 			}
@@ -156,7 +156,7 @@ class QueryBuilder extends \yii\base\Object
 		if ($this->_query instanceof Query) {
 			$this->_query->addParams($params);
 		}
-		$sql = 'UPDATE ' . $this->schema->quoteTableName($table) . ' SET ' . implode(', ', $lines);
+		$sql = 'UPDATE ' . $this->driver->quoteTableName($table) . ' SET ' . implode(', ', $lines);
 		if (($where = $this->buildCondition($condition)) != '') {
 			$sql .= ' WHERE ' . $where;
 		}
@@ -173,7 +173,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function delete($table, $condition = '')
 	{
-		$sql = 'DELETE FROM ' . $this->schema->quoteTableName($table);
+		$sql = 'DELETE FROM ' . $this->driver->quoteTableName($table);
 		if (($where = $this->buildCondition($condition)) != '') {
 			$sql .= ' WHERE ' . $where;
 		}
@@ -201,13 +201,13 @@ class QueryBuilder extends \yii\base\Object
 		$cols = array();
 		foreach ($columns as $name => $type) {
 			if (is_string($name)) {
-				$cols[] = "\t" . $this->schema->quoteColumnName($name) . ' ' . $this->schema->getColumnType($type);
+				$cols[] = "\t" . $this->driver->quoteColumnName($name) . ' ' . $this->driver->getColumnType($type);
 			} else
 			{
 				$cols[] = "\t" . $type;
 			}
 		}
-		$sql = "CREATE TABLE " . $this->schema->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
+		$sql = "CREATE TABLE " . $this->driver->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
 		return $options === null ? $sql : $sql . ' ' . $options;
 	}
 
@@ -219,7 +219,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function renameTable($table, $newName)
 	{
-		return 'RENAME TABLE ' . $this->schema->quoteTableName($table) . ' TO ' . $this->schema->quoteTableName($newName);
+		return 'RENAME TABLE ' . $this->driver->quoteTableName($table) . ' TO ' . $this->driver->quoteTableName($newName);
 	}
 
 	/**
@@ -229,7 +229,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function dropTable($table)
 	{
-		return "DROP TABLE " . $this->schema->quoteTableName($table);
+		return "DROP TABLE " . $this->driver->quoteTableName($table);
 	}
 
 	/**
@@ -239,7 +239,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function truncateTable($table)
 	{
-		return "TRUNCATE TABLE " . $this->schema->quoteTableName($table);
+		return "TRUNCATE TABLE " . $this->driver->quoteTableName($table);
 	}
 
 	/**
@@ -253,8 +253,8 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function addColumn($table, $column, $type)
 	{
-		return 'ALTER TABLE ' . $this->schema->quoteTableName($table)
-			. ' ADD ' . $this->schema->quoteColumnName($column) . ' '
+		return 'ALTER TABLE ' . $this->driver->quoteTableName($table)
+			. ' ADD ' . $this->driver->quoteColumnName($column) . ' '
 			. $this->getColumnType($type);
 	}
 
@@ -266,8 +266,8 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function dropColumn($table, $column)
 	{
-		return "ALTER TABLE " . $this->schema->quoteTableName($table)
-			. " DROP COLUMN " . $this->schema->quoteSimpleColumnName($column);
+		return "ALTER TABLE " . $this->driver->quoteTableName($table)
+			. " DROP COLUMN " . $this->driver->quoteSimpleColumnName($column);
 	}
 
 	/**
@@ -279,9 +279,9 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function renameColumn($table, $name, $newName)
 	{
-		return "ALTER TABLE " . $this->schema->quoteTableName($table)
-			. " RENAME COLUMN " . $this->schema->quoteSimpleColumnName($name)
-			. " TO " . $this->schema->quoteSimpleColumnName($newName);
+		return "ALTER TABLE " . $this->driver->quoteTableName($table)
+			. " RENAME COLUMN " . $this->driver->quoteSimpleColumnName($name)
+			. " TO " . $this->driver->quoteSimpleColumnName($newName);
 	}
 
 	/**
@@ -295,9 +295,9 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		return 'ALTER TABLE ' . $this->schema->quoteTableName($table) . ' CHANGE '
-			. $this->schema->quoteSimpleColumnName($column) . ' '
-			. $this->schema->quoteSimpleColumnName($column) . ' '
+		return 'ALTER TABLE ' . $this->driver->quoteTableName($table) . ' CHANGE '
+			. $this->driver->quoteSimpleColumnName($column) . ' '
+			. $this->driver->quoteSimpleColumnName($column) . ' '
 			. $this->getColumnType($type);
 	}
 
@@ -317,16 +317,16 @@ class QueryBuilder extends \yii\base\Object
 	{
 		$columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($columns as $i => $col) {
-			$columns[$i] = $this->schema->quoteColumnName($col);
+			$columns[$i] = $this->driver->quoteColumnName($col);
 		}
 		$refColumns = preg_split('/\s*,\s*/', $refColumns, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($refColumns as $i => $col) {
-			$refColumns[$i] = $this->schema->quoteColumnName($col);
+			$refColumns[$i] = $this->driver->quoteColumnName($col);
 		}
-		$sql = 'ALTER TABLE ' . $this->schema->quoteTableName($table)
-			. ' ADD CONSTRAINT ' . $this->schema->quoteColumnName($name)
+		$sql = 'ALTER TABLE ' . $this->driver->quoteTableName($table)
+			. ' ADD CONSTRAINT ' . $this->driver->quoteColumnName($name)
 			. ' FOREIGN KEY (' . implode(', ', $columns) . ')'
-			. ' REFERENCES ' . $this->schema->quoteTableName($refTable)
+			. ' REFERENCES ' . $this->driver->quoteTableName($refTable)
 			. ' (' . implode(', ', $refColumns) . ')';
 		if ($delete !== null) {
 			$sql .= ' ON DELETE ' . $delete;
@@ -345,8 +345,8 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		return 'ALTER TABLE ' . $this->schema->quoteTableName($table)
-			. ' DROP CONSTRAINT ' . $this->schema->quoteColumnName($name);
+		return 'ALTER TABLE ' . $this->driver->quoteTableName($table)
+			. ' DROP CONSTRAINT ' . $this->driver->quoteColumnName($name);
 	}
 
 	/**
@@ -368,12 +368,12 @@ class QueryBuilder extends \yii\base\Object
 				$cols[] = $col;
 			} else
 			{
-				$cols[] = $this->schema->quoteColumnName($col);
+				$cols[] = $this->driver->quoteColumnName($col);
 			}
 		}
 		return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
-			. $this->schema->quoteTableName($name) . ' ON '
-			. $this->schema->quoteTableName($table) . ' (' . implode(', ', $cols) . ')';
+			. $this->driver->quoteTableName($name) . ' ON '
+			. $this->driver->quoteTableName($table) . ' (' . implode(', ', $cols) . ')';
 	}
 
 	/**
@@ -384,7 +384,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function dropIndex($name, $table)
 	{
-		return 'DROP INDEX ' . $this->schema->quoteTableName($name) . ' ON ' . $this->schema->quoteTableName($table);
+		return 'DROP INDEX ' . $this->driver->quoteTableName($name) . ' ON ' . $this->driver->quoteTableName($table);
 	}
 
 	/**
@@ -470,7 +470,7 @@ class QueryBuilder extends \yii\base\Object
 				$columns[$i] = (string)$column;
 			} elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-\.])$/', $column, $matches)) {
-					$columns[$i] = $this->connection->quoteColumnName($matches[1]) . ' AS ' . $this->connection->quoteSimpleColumnName($matches[2]);
+					$columns[$i] = $this->connection->quoteColumnName($matches[1]) . ' AS ' . $this->driver->quoteSimpleColumnName($matches[2]);
 				} else {
 					$columns[$i] = $this->connection->quoteColumnName($column);
 				}

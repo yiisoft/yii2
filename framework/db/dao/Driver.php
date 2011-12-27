@@ -1,6 +1,6 @@
 <?php
 /**
- * Schema class file.
+ * Driver class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
@@ -13,9 +13,9 @@ namespace yii\db\dao;
 use yii\db\Exception;
 
 /**
- * Schema represents the meta data of a database.
+ * Driver is the base class for all database driver classes.
  *
- * Schema retrieves and maintains the meta data of database tables and columns.
+ * Driver implements the DBMS-specific methods to support retrieving meta data of a database.
  *
  * @property QueryBuilder $queryBuilder the query builder for this connection.
  * @property array $tableNames the names of all tables in this database.
@@ -24,7 +24,7 @@ use yii\db\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Schema extends \yii\base\Object
+abstract class Driver extends \yii\base\Object
 {
 	/**
 	 * @var Connection the database connection

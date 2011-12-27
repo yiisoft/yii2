@@ -24,6 +24,7 @@ Upgrading from v1.1.x
 ---------------------
 
 - All framework classes are now namespaced, and the name prefix `C` is removed.
+
 - The format of path alias is changed to `@yii/base/Component`.
   In 1.x, this would be `system.base.CComponent`. See guide for more details.
 
@@ -36,4 +37,7 @@ Upgrading from v1.1.x
 
 - `CFormModel` is removed. Please use `yii\base\Model` instead.
 
+- `CDbCriteria` is replaced by `yii\db\dao\Query` which includes methods for
+  building a query. `CDbCommandBuilder` is replaced by `yii\db\dao\QueryBuilder`
+  which has cleaner and more complete support of query building capabilities.
 
