@@ -309,14 +309,14 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * Builds a SQL statement for renaming a column.
 	 * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-	 * @param string $name the old name of the column. The name will be properly quoted by the method.
+	 * @param string $oldName the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return string the SQL statement for renaming a DB column.
 	 */
-	public function renameColumn($table, $name, $newName)
+	public function renameColumn($table, $oldName, $newName)
 	{
 		return "ALTER TABLE " . $this->driver->quoteTableName($table)
-			. " RENAME COLUMN " . $this->driver->quoteSimpleColumnName($name)
+			. " RENAME COLUMN " . $this->driver->quoteSimpleColumnName($oldName)
 			. " TO " . $this->driver->quoteSimpleColumnName($newName);
 	}
 

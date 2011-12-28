@@ -75,8 +75,7 @@ class Driver extends \yii\db\dao\Driver
 	}
 
 	/**
-	 * Creates a query builder for the database.
-	 * This method may be overridden by child classes to create a DBMS-specific query builder.
+	 * Creates a query builder for the MySQL database.
 	 * @return QueryBuilder query builder instance
 	 */
 	public function createQueryBuilder()

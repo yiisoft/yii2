@@ -13,7 +13,7 @@ namespace yii\db\dao\mysql;
 use yii\db\Exception;
 
 /**
- * QueryBuilder builds a SQL statement based on the specification given as a [[Query]] object.
+ * QueryBuilder is the query builder for MySQL databases.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,7 +23,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-    public $typeMap = array(
+	public $typeMap = array(
 		Driver::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
 		Driver::TYPE_STRING => 'varchar(255)',
 		Driver::TYPE_TEXT => 'text',
@@ -39,7 +39,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 		Driver::TYPE_BINARY => 'blob',
 		Driver::TYPE_BOOLEAN => 'tinyint(1)',
 		Driver::TYPE_MONEY => 'decimal(19,4)',
-    );
+	);
 
 	/**
 	 * Builds a SQL statement for renaming a column.

@@ -1,0 +1,210 @@
+<?php
+/**
+ * Driver class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
+namespace yii\db\dao\sqlite;
+
+use yii\db\dao\TableSchema;
+use yii\db\dao\ColumnSchema;
+
+/**
+ * Driver is the class for retrieving metadata from a SQLite (2/3) database.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
+ */
+class Driver extends \yii\db\dao\Driver
+{
+	/**
+	 * @var array mapping from physical column types (keys) to abstract column types (values)
+	 */
+	public $typeMap = array(
+		'tinyint' => self::TYPE_SMALLINT,
+		'bit' => self::TYPE_SMALLINT,
+		'smallint' => self::TYPE_SMALLINT,
+		'mediumint' => self::TYPE_INTEGER,
+		'int' => self::TYPE_INTEGER,
+		'integer' => self::TYPE_INTEGER,
+		'bigint' => self::TYPE_BIGINT,
+		'float' => self::TYPE_FLOAT,
+		'double' => self::TYPE_FLOAT,
+		'real' => self::TYPE_FLOAT,
+		'decimal' => self::TYPE_DECIMAL,
+		'numeric' => self::TYPE_DECIMAL,
+		'tinytext' => self::TYPE_TEXT,
+		'mediumtext' => self::TYPE_TEXT,
+		'longtext' => self::TYPE_TEXT,
+		'text' => self::TYPE_TEXT,
+		'varchar' => self::TYPE_STRING,
+		'string' => self::TYPE_STRING,
+		'char' => self::TYPE_STRING,
+		'datetime' => self::TYPE_DATETIME,
+		'year' => self::TYPE_DATE,
+		'date' => self::TYPE_DATE,
+		'time' => self::TYPE_TIME,
+		'timestamp' => self::TYPE_TIMESTAMP,
+		'enum' => self::TYPE_STRING,
+	);
+
+	/**
+	 * Creates a query builder for the MySQL database.
+	 * This method may be overridden by child classes to create a DBMS-specific query builder.
+	 * @return QueryBuilder query builder instance
+	 */
+	public function createQueryBuilder()
+	{
+		return new QueryBuilder($this->connection);
+	}
+
+	/**
+	 * Returns all table names in the database.
+	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * If not empty, the returned table names will be prefixed with the schema name.
+	 * @return array all table names in the database.
+	 */
+	protected function findTableNames($schema = '')
+	{
+		$sql = "SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name<>'sqlite_sequence'";
+		return $this->connection->createCommand($sql)->queryColumn();
+	}
+
+	/**
+	 * Loads the metadata for the specified table.
+	 * @param string $name table name
+	 * @return \yii\db\dao\TableSchema driver dependent table metadata. Null if the table does not exist.
+	 */
+	protected function loadTableSchema($name)
+	{
+		$table = new TableSchema;
+		$table->name = $name;
+		$table->quotedName = $this->quoteTableName($name);
+
+		if ($this->findColumns($table)) {
+			$this->findConstraints($table);
+			return $table;
+		}
+	}
+
+	/**
+	 * Collects the table column metadata.
+	 * @param \yii\db\dao\TableSchema $table the table metadata
+	 * @return boolean whether the table exists in the database
+	 */
+	protected function findColumns($table)
+	{
+		$sql = "PRAGMA table_info({$table->quotedName})";
+		$columns = $this->connection->createCommand($sql)->queryAll();
+		if (empty($columns)) {
+			return false;
+		}
+
+		foreach ($columns as $column) {
+			$column = $this->createColumn($column);
+			$table->columns[$column->name] = $column;
+			if ($column->isPrimaryKey) {
+				if ($table->primaryKey === null) {
+					$table->primaryKey = $column->name;
+				} elseif (is_string($table->primaryKey)) {
+					$table->primaryKey = array($table->primaryKey, $column->name);
+				} else {
+					$table->primaryKey[] = $column->name;
+				}
+			}
+		}
+		if (is_string($table->primaryKey) && !strncasecmp($table->columns[$table->primaryKey]->dbType, 'int', 3)) {
+			$table->sequenceName = '';
+			$table->columns[$table->primaryKey]->autoIncrement = true;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Collects the foreign key column details for the given table.
+	 * @param \yii\db\dao\TableSchema $table the table metadata
+	 */
+	protected function findConstraints($table)
+	{
+		$sql = "PRAGMA foreign_key_list({$table->quotedName})";
+		$keys = $this->connection->createCommand($sql)->queryAll();
+		foreach ($keys as $key) {
+			$table->foreignKeys[] = array($key['table'], $key['from'] => $key['to']);
+		}
+	}
+
+	/**
+	 * Creates a table column.
+	 * @param array $column column metadata
+	 * @return ColumnSchema normalized column metadata
+	 */
+	protected function createColumn($column)
+	{
+		$c = new ColumnSchema;
+		$c->name = $column['name'];
+		$c->quotedName = $this->quoteSimpleColumnName($c->name);
+		$c->allowNull = !$column['notnull'];
+		$c->isPrimaryKey = $column['pk'] != 0;
+
+		$c->dbType = $column['type'];
+		$this->resolveColumnType($c);
+		$c->resolvePhpType();
+
+		$this->resolveColumnDefault($c, $column['dflt_value']);
+
+		return $c;
+	}
+
+	/**
+	 * Resolves the abstract data type for the column.
+	 * @param \yii\db\dao\ColumnSchema $column the column metadata object
+	 */
+	public function resolveColumnType($column)
+	{
+		$column->type = self::TYPE_STRING;
+		$column->unsigned = strpos($column->dbType, 'unsigned') !== false;
+
+		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
+			$type = $matches[1];
+			if (isset($this->typeMap[$type])) {
+				$column->type = $this->typeMap[$type];
+			}
+
+			if (!empty($matches[2])) {
+				$values = explode(',', $matches[2]);
+				$column->size = $column->precision = (int)$values[0];
+				if (isset($values[1])) {
+					$column->scale = (int)$values[1];
+				}
+				if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
+					$column->type = 'boolean';
+				} elseif ($type === 'bit') {
+					if ($column->size > 32) {
+						$column->type = 'bigint';
+					} elseif ($column->size === 32) {
+						$column->type = 'integer';
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Resolves the default value for the column.
+	 * @param \yii\db\dao\ColumnSchema $column the column metadata object
+	 * @param string $value the default value fetched from database
+	 */
+	protected function resolveColumnDefault($column, $value)
+	{
+		if ($column->type === 'string') {
+			$column->defaultValue = trim($value, "'\"");
+		} else {
+			$column->defaultValue = $column->typecast(strcasecmp($value, 'null') ? $value : null);
+		}
+	}
+}
