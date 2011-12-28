@@ -464,7 +464,7 @@ class Connection extends \yii\base\ApplicationComponent
 			if (isset($this->driverMap[$driver])) {
 				return $this->_driver = \Yii::createObject($this->driverMap[$driver], $this);
 			} else {
-				throw new Exception("Connection does not support reading meta data for '$driver' database.");
+				throw new Exception("Connection does not support reading metadata for '$driver' database.");
 			}
 		}
 	}

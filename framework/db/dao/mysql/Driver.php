@@ -14,7 +14,7 @@ use yii\db\dao\TableSchema;
 use yii\db\dao\ColumnSchema;
 
 /**
- * Driver is the class for retrieving meta data from a MySQL database (version 4.1.x and 5.x).
+ * Driver is the class for retrieving metadata from a MySQL database (version 4.1.x and 5.x).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -24,7 +24,7 @@ class Driver extends \yii\db\dao\Driver
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
-	public $typeMap = array( // dbType => type
+	public $typeMap = array(
 		'tinyint' => self::TYPE_SMALLINT,
 		'bit' => self::TYPE_SMALLINT,
 		'smallint' => self::TYPE_SMALLINT,
@@ -75,6 +75,16 @@ class Driver extends \yii\db\dao\Driver
 	}
 
 	/**
+	 * Creates a query builder for the database.
+	 * This method may be overridden by child classes to create a DBMS-specific query builder.
+	 * @return QueryBuilder query builder instance
+	 */
+	public function createQueryBuilder()
+	{
+		return new QueryBuilder($this->connection);
+	}
+
+	/**
 	 * Loads the metadata for the specified table.
 	 * @param string $name table name
 	 * @return \yii\db\dao\TableSchema driver dependent table metadata. Null if the table does not exist.
@@ -91,9 +101,9 @@ class Driver extends \yii\db\dao\Driver
 	}
 
 	/**
-	 * Generates various kinds of table names.
-	 * @param \yii\db\dao\TableSchema $table the table instance
-	 * @param string $name the unquoted table name
+	 * Resolves the table name and schema name (if any).
+	 * @param \yii\db\dao\TableSchema $table the table metadata object
+	 * @param string $name the table name
 	 */
 	protected function resolveTableNames($table, $name)
 	{
@@ -127,16 +137,17 @@ class Driver extends \yii\db\dao\Driver
 		$this->resolveColumnType($c);
 		$c->resolvePhpType();
 
-		$this->resolveDefaultValue($c, $column['Default']);
+		$this->resolveColumnDefault($c, $column['Default']);
 
 		return $c;
 	}
 
 	/**
-	 * @param \yii\db\dao\ColumnSchema $column
-	 * @param string $value
+	 * Resolves the default value for the column.
+	 * @param \yii\db\dao\ColumnSchema $column the column metadata object
+	 * @param string $value the default value fetched from database
 	 */
-	protected function resolveDefaultValue($column, $value)
+	protected function resolveColumnDefault($column, $value)
 	{
 		if ($column->type !== 'timestamp' || $value !== 'CURRENT_TIMESTAMP') {
 			$column->defaultValue = $column->typecast($value);
@@ -144,8 +155,8 @@ class Driver extends \yii\db\dao\Driver
 	}
 
 	/**
-	 * Extracts the PHP type from DB type.
-	 * @param \yii\db\dao\ColumnSchema $column the column
+	 * Resolves the abstract data type for the column.
+	 * @param \yii\db\dao\ColumnSchema $column the column metadata object
 	 */
 	public function resolveColumnType($column)
 	{
@@ -186,7 +197,7 @@ class Driver extends \yii\db\dao\Driver
 	}
 
 	/**
-	 * Collects the table column metadata.
+	 * Collects the metadata of table columns.
 	 * @param \yii\db\dao\TableSchema $table the table metadata
 	 * @return boolean whether the table exists in the database
 	 */
@@ -195,21 +206,21 @@ class Driver extends \yii\db\dao\Driver
 		$sql = 'SHOW COLUMNS FROM ' . $table->quotedName;
 		try {
 			$columns = $this->connection->createCommand($sql)->queryAll();
-		}
-		catch (\Exception $e) {
+		} catch (\Exception $e) {
 			return false;
 		}
 		foreach ($columns as $column) {
-			$table->columns[$c->name] = $c = $this->createColumn($column);
-			if ($c->isPrimaryKey) {
+			$column = $this->createColumn($column);
+			$table->columns[$column->name] = $column;
+			if ($column->isPrimaryKey) {
 				if ($table->primaryKey === null) {
-					$table->primaryKey = $c->name;
+					$table->primaryKey = $column->name;
 				} elseif (is_string($table->primaryKey)) {
-					$table->primaryKey = array($table->primaryKey, $c->name);
+					$table->primaryKey = array($table->primaryKey, $column->name);
 				} else {
-					$table->primaryKey[] = $c->name;
+					$table->primaryKey[] = $column->name;
 				}
-				if ($c->autoIncrement) {
+				if ($column->autoIncrement) {
 					$table->sequenceName = '';
 				}
 			}
@@ -224,20 +235,23 @@ class Driver extends \yii\db\dao\Driver
 	protected function findConstraints($table)
 	{
 		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $table->quotedName)->queryRow();
-		$matches = array();
+		if (isset($row['Create Table'])) {
+			$sql = $row['Create Table'];
+		} else {
+			$row = array_values($row);
+			$sql = $row[1];
+		}
+
 		$regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
-		foreach ($row as $sql) {
-			if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
-				foreach ($matches as $match) {
-					$fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
-					$pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
-					$constraint = array(str_replace('`', '', $match[2]));
-					foreach ($fks as $k => $name) {
-						$constraint[$name] = $pks[$k];
-					}
-					$table->foreignKeys[] = $constraint;
+		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
+				$pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
+				$constraint = array(str_replace('`', '', $match[2]));
+				foreach ($fks as $k => $name) {
+					$constraint[$name] = $pks[$k];
 				}
-				break;
+				$table->foreignKeys[] = $constraint;
 			}
 		}
 	}
@@ -255,19 +269,9 @@ class Driver extends \yii\db\dao\Driver
 		}
 		$sql = 'SHOW TABLES FROM ' . $this->quoteSimpleTableName($schema);
 		$names = $this->connection->createCommand($sql)->queryColumn();
-		foreach ($names as &$name) {
-			$name = $schema . '.' . $name;
+		foreach ($names as $i => $name) {
+			$names[$i] = $schema . '.' . $name;
 		}
 		return $names;
-	}
-
-	/**
-	 * Creates a query builder for the database.
-	 * This method may be overridden by child classes to create a DBMS-specific query builder.
-	 * @return QueryBuilder query builder instance
-	 */
-	public function createQueryBuilder()
-	{
-		return new QueryBuilder($this->connection);
 	}
 }

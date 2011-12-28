@@ -10,6 +10,8 @@
 
 namespace yii\db\dao\mysql;
 
+use yii\db\Exception;
+
 /**
  * QueryBuilder builds a SQL statement based on the specification given as a [[Query]] object.
  *
@@ -42,16 +44,17 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	/**
 	 * Builds a SQL statement for renaming a column.
 	 * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-	 * @param string $name the old name of the column. The name will be properly quoted by the method.
+	 * @param string $oldName the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return string the SQL statement for renaming a DB column.
 	 */
-	public function renameColumn($table, $name, $newName)
+	public function renameColumn($table, $oldName, $newName)
 	{
 		$quotedTable = $this->driver->quoteTableName($table);
 		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
-		if ($row === false)
-			throw new CDbException(Yii::t('yii', 'Unable to find "{column}" in table "{table}".', array('{column}' => $name, '{table}' => $table)));
+		if ($row === false) {
+			throw new Exception("Unable to find '$oldName' in table '$table'.");
+		}
 		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
 		} else {
@@ -60,14 +63,14 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 		}
 		if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches)) {
 			foreach ($matches[1] as $i => $c) {
-				if ($c === $name) {
-					return "ALTER TABLE $quotedTable CHANGE " . $this->driver->quoteColumnName($name)
+				if ($c === $oldName) {
+					return "ALTER TABLE $quotedTable CHANGE " . $this->driver->quoteColumnName($oldName)
 						. ' ' . $this->driver->quoteColumnName($newName) . ' ' . $matches[2][$i];
 				}
 			}
 		}
 		// try to give back a SQL anyway
-		return "ALTER TABLE $quotedTable CHANGE " . $this->driver->quoteColumnName($name) . ' ' . $newName;
+		return "ALTER TABLE $quotedTable CHANGE " . $this->driver->quoteColumnName($oldName) . ' ' . $newName;
 	}
 
 	/**

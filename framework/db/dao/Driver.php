@@ -15,11 +15,11 @@ use yii\db\Exception;
 /**
  * Driver is the base class for all database driver classes.
  *
- * Driver implements the DBMS-specific methods to support retrieving meta data of a database.
+ * Driver implements the DBMS-specific methods to support retrieving metadata of a database.
  *
  * @property QueryBuilder $queryBuilder the query builder for this connection.
  * @property array $tableNames the names of all tables in this database.
- * @property array $tableSchemas the meta data for all tables in this database.
+ * @property array $tableSchemas the metadata for all tables in this database.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -54,7 +54,7 @@ abstract class Driver extends \yii\base\Object
 	 */
 	private $_tableNames = array();
 	/**
-	 * @var array list of loaded table meta data (table name => TableSchema)
+	 * @var array list of loaded table metadata (table name => TableSchema)
 	 */
 	private $_tables = array();
 	/**

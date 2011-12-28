@@ -11,7 +11,7 @@
 namespace yii\db\dao;
 
 /**
- * ColumnSchema class describes the meta data of a column in a database table.
+ * ColumnSchema class describes the metadata of a column in a database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

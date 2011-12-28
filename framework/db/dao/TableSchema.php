@@ -11,7 +11,7 @@
 namespace yii\db\dao;
 
 /**
- * TableSchema represents the meta data of a database table.
+ * TableSchema represents the metadata of a database table.
  *
  * @property array $columnNames list of column names
  *
