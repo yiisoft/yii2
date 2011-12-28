@@ -22,9 +22,9 @@ namespace yii\base;
  *
  * Model also provides a set of events for further customization:
  *
- * - [[onAfterConstruct]]: an event raised at the end of constructor
- * - [[onBeforeValidate]]: an event raised at the beginning of [[validate]]
- * - [[onAfterValidate]]: an event raised at the end of [[validate]]
+ * - [[onAfterInit]]: an event raised at the end of [[init()]]
+ * - [[onBeforeValidate]]: an event raised at the beginning of [[validate()]]
+ * - [[onAfterValidate]]: an event raised at the end of [[validate()]]
  *
  * You may directly use Model to store model data, or extend it with customization.
  * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
@@ -46,7 +46,6 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	public function __construct($scenario = '')
 	{
 		$this->_scenario = $scenario;
-		$this->afterConstruct();
 	}
 
 	/**
@@ -62,6 +61,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	public function init()
 	{
 		$this->attachBehaviors($this->behaviors());
+		$this->afterInit();
 	}
 
 	/**
@@ -136,7 +136,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
 	 *	class method, the name of a built-in validator, or a validator class (or its path alias).
 	 *  - on: optional, specifies the [[scenario|scenarios]] (separated by commas) when the validation
-	 *	rule can be applied. If this option is not set, the rule will apply to any scenario.
+	 *	rule can be applied. If this option is not set, the rule will apply to all scenarios.
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
 	 *	Please refer to individual validator class API for possible properties.
 	 *
@@ -232,15 +232,15 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	}
 
 	/**
-	 * This method is invoked at the end of model constructor.
-	 * The default implementation raises the [[onAfterConstruct]] event.
+	 * This method is invoked at the end of [[init()]].
+	 * The default implementation raises the [[onAfterInit]] event.
 	 * You may override this method to do postprocessing after model creation.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
-	public function afterConstruct()
+	public function afterInit()
 	{
-		if ($this->hasEventHandlers('onAfterConstruct')) {
-			$this->onAfterConstruct(new Event($this));
+		if ($this->hasEventHandlers('onAfterInit')) {
+			$this->onAfterInit(new Event($this));
 		}
 	}
 
@@ -285,10 +285,10 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	}
 
 	/**
-	 * This event is raised after the model instance is created by new operator.
+	 * This event is raised at the end of [[init()]].
 	 * @param Event $event the event parameter
 	 */
-	public function onAfterConstruct($event)
+	public function onAfterInit($event)
 	{
 		$this->raiseEvent(__FUNCTION__, $event);
 	}
@@ -584,7 +584,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	public function onUnsafeAttribute($name, $value)
 	{
 		if (YII_DEBUG) {
-			\Yii::warning(sprintf('Failed to set unsafe attribute "%s" in "%s".', $name, get_class($this)));
+			\Yii::warning("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.");
 		}
 	}
 

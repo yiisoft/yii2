@@ -26,14 +26,14 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$query = new Query;
 		$query->select('id')->from('tbl_user');
 		$command = $db->createCommand($query);
-		$this->assertEquals("SELECT `id`\nFROM `tbl_user`", $command->sql);
+		$this->assertEquals("SELECT `id` FROM `tbl_user`", $command->sql);
 
 		// array
 		$command = $db->createCommand(array(
 			'select' => 'name',
 			'from' => 'tbl_user',
 		));
-		$this->assertEquals("SELECT `name`\nFROM `tbl_user`", $command->sql);
+		$this->assertEquals("SELECT `name` FROM `tbl_user`", $command->sql);
 	}
 
 	function testGetSetSql()

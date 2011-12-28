@@ -50,7 +50,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function renameColumn($table, $oldName, $newName)
 	{
-		$quotedTable = $this->driver->quoteTableName($table);
+		$quotedTable = $this->quoteTableName($table);
 		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
 		if ($row === false) {
 			throw new Exception("Unable to find '$oldName' in table '$table'.");
@@ -64,13 +64,17 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 		if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches)) {
 			foreach ($matches[1] as $i => $c) {
 				if ($c === $oldName) {
-					return "ALTER TABLE $quotedTable CHANGE " . $this->driver->quoteColumnName($oldName)
-						. ' ' . $this->driver->quoteColumnName($newName) . ' ' . $matches[2][$i];
+					return "ALTER TABLE $quotedTable CHANGE "
+						. $this->quoteColumnName($oldName, true) . ' '
+						. $this->quoteColumnName($newName, true) . ' '
+						. $matches[2][$i];
 				}
 			}
 		}
 		// try to give back a SQL anyway
-		return "ALTER TABLE $quotedTable CHANGE " . $this->driver->quoteColumnName($oldName) . ' ' . $newName;
+		return "ALTER TABLE $quotedTable CHANGE "
+			. $this->quoteColumnName($oldName, true) . ' '
+			. $this->quoteColumnName($newName, true);
 	}
 
 	/**
@@ -81,7 +85,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		return 'ALTER TABLE ' . $this->driver->quoteTableName($table)
-			. ' DROP FOREIGN KEY ' . $this->driver->quoteColumnName($name);
+		return 'ALTER TABLE ' . $this->quoteTableName($table)
+			. ' DROP FOREIGN KEY ' . $this->quoteColumnName($name);
 	}
 }

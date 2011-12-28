@@ -83,7 +83,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function truncateTable($table)
 	{
-		return "DELETE FROM " . $this->driver->quoteTableName($table);
+		return "DELETE FROM " . $this->quoteTableName($table);
 	}
 
 	/**
@@ -94,7 +94,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function dropIndex($name, $table)
 	{
-		return 'DROP INDEX ' . $this->driver->quoteTableName($name);
+		return 'DROP INDEX ' . $this->quoteTableName($name);
 	}
 
 	/**
@@ -105,7 +105,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function dropColumn($table, $column)
 	{
-		throw new Exception('Dropping DB column is not supported by SQLite.');
+		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -117,7 +117,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function renameColumn($table, $oldName, $newName)
 	{
-		throw new Exception('Renaming a DB column is not supported by SQLite.');
+		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -136,7 +136,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
-		throw new Exception('Adding a foreign key constraint to an existing table is not supported by SQLite.');
+		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -147,7 +147,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		throw new Exception('Dropping a foreign key constraint is not supported by SQLite.');
+		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -162,6 +162,6 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		throw new Exception('Altering a DB column is not supported by SQLite.');
+		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
 	}
 }
