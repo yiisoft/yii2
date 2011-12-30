@@ -342,4 +342,27 @@ class Object
 
 		return $object;
 	}
+
+	/**
+	 * Configures the object properties with the specified array.
+	 * @param array $array name-value pairs to be used to initialize the properties of this object.
+	 * @return Object the object itself
+	 */
+	public function fromArray($array)
+	{
+		foreach ($array as $name => $value) {
+			$this->$name = $value;
+		}
+		return $this;
+	}
+
+	/**
+	 * Returns the object in terms of an array.
+	 * The default implementation will return the result of PHP function `get_object_vars()`.
+	 * @return array the array representation of this object.
+	 */
+	public function toArray()
+	{
+		return get_object_vars($this);
+	}
 }

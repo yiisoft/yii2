@@ -220,7 +220,9 @@ class Query extends \yii\base\Object
 	 * the `NOT LIKE` predicates.
 	 *
 	 * @param string|array $condition the conditions that should be put in the WHERE part.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * For anonymous parameters, they can alternatively be specified as separate parameters to this method.
+	 * For example, `where('type=? AND status=?', 100, 1)`.
 	 * @return Query the query object itself
 	 * @see andWhere()
 	 * @see orWhere()
@@ -228,6 +230,10 @@ class Query extends \yii\base\Object
 	public function where($condition, $params = array())
 	{
 		$this->where = $condition;
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+		}
 		$this->addParams($params);
 		return $this;
 	}
@@ -237,7 +243,8 @@ class Query extends \yii\base\Object
 	 * The new condition and the existing one will be joined using the 'AND' operator.
 	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see where()
 	 * @see orWhere()
@@ -249,6 +256,10 @@ class Query extends \yii\base\Object
 		} else {
 			$this->where = array('and', $this->where, $condition);
 		}
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+		}
 		$this->addParams($params);
 		return $this;
 	}
@@ -258,7 +269,8 @@ class Query extends \yii\base\Object
 	 * The new condition and the existing one will be joined using the 'OR' operator.
 	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see where()
 	 * @see andWhere()
@@ -269,6 +281,10 @@ class Query extends \yii\base\Object
 			$this->where = $condition;
 		} else {
 			$this->where = array('or', $this->where, $condition);
+		}
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
 		}
 		$this->addParams($params);
 		return $this;
@@ -282,12 +298,18 @@ class Query extends \yii\base\Object
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param string|array $condition the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 */
 	public function join($table, $condition, $params = array())
 	{
 		$this->join[] = array('JOIN', $table, $condition);
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+			array_shift($params);
+		}
 		return $this->addParams($params);
 	}
 
@@ -305,6 +327,11 @@ class Query extends \yii\base\Object
 	public function leftJoin($table, $condition, $params = array())
 	{
 		$this->join[] = array('LEFT JOIN', $table, $condition);
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+			array_shift($params);
+		}
 		return $this->addParams($params);
 	}
 
@@ -322,6 +349,11 @@ class Query extends \yii\base\Object
 	public function rightJoin($table, $condition, $params = array())
 	{
 		$this->join[] = array('RIGHT JOIN', $table, $condition);
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+			array_shift($params);
+		}
 		return $this->addParams($params);
 	}
 
@@ -399,7 +431,8 @@ class Query extends \yii\base\Object
 	 * Sets the HAVING part of the query.
 	 * @param string|array $condition the conditions to be put after HAVING.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see andHaving()
 	 * @see orHaving()
@@ -407,6 +440,10 @@ class Query extends \yii\base\Object
 	public function having($condition, $params = array())
 	{
 		$this->having = $condition;
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+		}
 		$this->addParams($params);
 		return $this;
 	}
@@ -416,7 +453,8 @@ class Query extends \yii\base\Object
 	 * The new condition and the existing one will be joined using the 'AND' operator.
 	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see having()
 	 * @see orHaving()
@@ -428,6 +466,10 @@ class Query extends \yii\base\Object
 		} else {
 			$this->having = array('and', $this->having, $condition);
 		}
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+		}
 		$this->addParams($params);
 		return $this;
 	}
@@ -437,7 +479,8 @@ class Query extends \yii\base\Object
 	 * The new condition and the existing one will be joined using the 'OR' operator.
 	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see having()
 	 * @see andHaving()
@@ -448,6 +491,10 @@ class Query extends \yii\base\Object
 			$this->having = $condition;
 		} else {
 			$this->having = array('or', $this->having, $condition);
+		}
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
 		}
 		$this->addParams($params);
 		return $this;
@@ -530,11 +577,15 @@ class Query extends \yii\base\Object
 	 * Sets the parameters to be bound to the query.
 	 * @param array list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see addParams()
 	 */
 	public function params($params)
 	{
+		if (!is_array($params)) {
+			$params = func_get_args();
+		}
 		$this->params = $params;
 		return $this;
 	}
@@ -543,11 +594,15 @@ class Query extends \yii\base\Object
 	 * Adds additional parameters to be bound to the query.
 	 * @param array list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see params()
 	 */
 	public function addParams($params)
 	{
+		if (!is_array($params)) {
+			$params = func_get_args();
+		}
 		foreach ($params as $name => $value) {
 			if (is_integer($name)) {
 				$this->params[] = $value;
@@ -578,11 +633,18 @@ class Query extends \yii\base\Object
 	 * @param array $columns the column data (name=>value) to be updated.
 	 * @param string|array $condition the conditions that will be put in the WHERE part.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters to be bound to the query.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 */
 	public function update($table, $columns, $condition = '', $params = array())
 	{
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+			array_shift($params);
+			array_shift($params);
+		}
 		$this->addParams($params);
 		$this->operation = array(__FUNCTION__, $table, $columns, $condition, array());
 		return $this;
@@ -593,11 +655,17 @@ class Query extends \yii\base\Object
 	 * @param string $table the table where the data will be deleted from.
 	 * @param string|array $condition the conditions that will be put in the WHERE part.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters to be bound to the query.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 */
 	public function delete($table, $condition = '', $params = array())
 	{
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
+			array_shift($params);
+		}
 		$this->operation = array(__FUNCTION__, $table, $condition);
 		return $this->addParams($params);
 	}
@@ -690,13 +758,13 @@ class Query extends \yii\base\Object
 	/**
 	 * Builds and executes a SQL statement for renaming a column.
 	 * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-	 * @param string $name the old name of the column. The name will be properly quoted by the method.
+	 * @param string $oldName the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return Query the query object itself
 	 */
-	public function renameColumn($table, $name, $newName)
+	public function renameColumn($table, $oldName, $newName)
 	{
-		$this->operation = array(__FUNCTION__, $table, $name, $newName);
+		$this->operation = array(__FUNCTION__, $table, $oldName, $newName);
 		return $this;
 	}
 
@@ -810,18 +878,6 @@ class Query extends \yii\base\Object
 			$this->$name = null;
 		}
 		return $this;
-	}
-
-	/**
-	 * Returns the query in terms of an array.
-	 * The array keys are the query property names, and the array values
-	 * the corresponding property values.
-	 * @param boolean $includeEmptyValues whether to include empty property values in the result.
-	 * @return array the array representation of the criteria
-	 */
-	public function toArray($includeEmptyValues = false)
-	{
-		return $includeEmptyValues ? get_object_vars($this) : array_filter(get_object_vars($this));
 	}
 
 	/**

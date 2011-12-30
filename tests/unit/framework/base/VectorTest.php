@@ -110,13 +110,13 @@ class VectorTest extends \yiiunit\TestCase
 		$this->assertEquals(-1,$this->vector->indexOf($this->item3));
 	}
 
-	public function testCopyFrom()
+	public function testFromArray()
 	{
 		$array=array($this->item3,$this->item1);
-		$this->vector->copyFrom($array);
+		$this->vector->fromArray($array);
 		$this->assertTrue(count($array)==2 && $this->vector[0]===$this->item3 && $this->vector[1]===$this->item1);
 		$this->setExpectedException('yii\base\Exception');
-		$this->vector->copyFrom($this);
+		$this->vector->fromArray($this);
 	}
 
 	public function testMergeWith()

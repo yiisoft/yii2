@@ -83,17 +83,17 @@ class DictionaryTest extends \yiiunit\TestCase
 		$this->assertFalse($this->dictionary->contains('key3'));
 	}
 
-	public function testCopyFrom()
+	public function testFromArray()
 	{
 		$array=array('key3'=>$this->item3,'key4'=>$this->item1);
-		$this->dictionary->copyFrom($array);
+		$this->dictionary->fromArray($array);
 
 		$this->assertEquals(2, $this->dictionary->getCount());
 		$this->assertEquals($this->item3, $this->dictionary['key3']);
 		$this->assertEquals($this->item1, $this->dictionary['key4']);
 
 		$this->setExpectedException('yii\base\Exception');
-		$this->dictionary->copyFrom($this);
+		$this->dictionary->fromArray($this);
 	}
 
 	public function testMergeWith()

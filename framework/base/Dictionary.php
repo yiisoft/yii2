@@ -179,7 +179,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @param mixed $data the data to be copied from, must be an array or an object implementing `Traversable`
 	 * @throws Exception if data is neither an array nor an iterator.
 	 */
-	public function copyFrom($data)
+	public function fromArray($data)
 	{
 		if (is_array($data) || $data instanceof \Traversable) {
 			if ($this->_d !== array()) {
@@ -211,7 +211,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @param mixed $data the data to be merged with, must be an array or object implementing Traversable
 	 * @param boolean $recursive whether the merging should be recursive.
 	 *
-	 * @throws CException If data is neither an array nor an iterator.
+	 * @throws Exception If data is neither an array nor an iterator.
 	 */
 	public function mergeWith($data, $recursive = true)
 	{
