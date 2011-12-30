@@ -163,9 +163,22 @@ class Query extends \yii\base\Object
 	 * specifying the values to be bound to the query.
 	 *
 	 * The $condition parameter should be either a string (e.g. 'id=1') or an array.
-	 * If the latter, it must be in the format of `array(operator, operand1, operand2, ...)`,
-	 * where the operator can be one of the followings, and the possible operands depend on the corresponding
-	 * operator:
+	 * If the latter, it must be in one of the following two formats:
+	 *
+	 * - hash format: `array('column1' => value1, 'column2' => value2, ...)`
+	 * - operator format: `array(operator, operand1, operand2, ...)`
+	 *
+	 * A condition in hash format represents the following SQL expression in general:
+	 * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+	 * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
+	 * in the generated expression. Below are some examples:
+	 *
+	 * - `array('type'=>1, 'status'=>2)` generates `(type=1) AND (status=2)`.
+	 * - `array('id'=>array(1,2,3), 'status'=>2)` generates `(id IN (1,2,3)) AND (status=2)`.
+	 * - `array('status'=>null) generates `status IS NULL`.
+	 *
+	 * A condition in operator format generates the SQL expression according to the specified operator, which
+	 * can be one of the followings:
 	 *
 	 * - `and`: the operands should be concatenated together using `AND`. For example,
 	 * `array('and', 'id=1', 'id=2')` will generate `id=1 AND id=2`. If an operand is an array,

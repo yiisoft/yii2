@@ -476,87 +476,163 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * Generates a SQL condition from the given PHP representation.
-	 * @param string|array $condition the PHP representation of the SQL condition
-	 * @return string the generated SQL condition.
+	 * Parses the condition specification and generates the corresponding SQL expression.
+	 * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
+	 * on how to specify a condition.
+	 * @return string the generated SQL expression
+	 * @throws \yii\db\Exception if the condition is in bad format
 	 */
 	public function buildCondition($condition)
 	{
+		static $builders = array(
+			'and' => 'buildAndCondition',
+			'or' => 'buildAndCondition',
+			'between' => 'buildBetweenCondition',
+			'not between' => 'buildBetweenCondition',
+			'in' => 'buildInCondition',
+			'not in' => 'buildInCondition',
+			'like' => 'buildLikeCondition',
+			'not like' => 'buildLikeCondition',
+			'or like' => 'buildLikeCondition',
+			'or not like' => 'buildLikeCondition',
+		);
+
 		if (!is_array($condition)) {
 			return $condition;
 		} elseif ($condition === array()) {
 			return '';
 		}
+		if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
+			$operator = $condition[0];
+			if (isset($builders[$operator])) {
+				$method = $builders[$operator];
+				array_shift($condition);
+				return $this->$method($operator, $condition);
+			} else {
+				throw new Exception('Found unknown operator in query: ' . $operator);
+			}
+		} else { // hash format: 'column1'=>'value1', 'column2'=>'value2', ...
+			return $this->buildHashCondition($condition);
+		}
+	}
 
-		$n = count($condition);
-		$operator = strtoupper($condition[0]);
-		if ($operator === 'OR' || $operator === 'AND') {
-			$parts = array();
-			for ($i = 1; $i < $n; ++$i) {
-				$part = $this->buildCondition($condition[$i]);
-				if ($part !== '') {
-					$parts[] = '(' . $part . ')';
+	private function buildHashCondition($condition)
+	{
+		$parts = array();
+		foreach ($condition as $column => $value) {
+			if (is_array($value)) { // IN condition
+				$parts[] = $this->buildInCondition('in', array($column, $value));
+			} else {
+				if (strpos($column, '(') === false) {
+					$column = $this->quoteColumnName($column);
+				}
+				if ($value === null) {
+					$parts[] = "$column IS NULL";
+				} elseif (is_string($value)) {
+					$parts[] = "$column=" . $this->connection->quoteValue($value);
+				} else {
+					$parts[] = "$column=$value";
 				}
 			}
-			return $parts === array() ? '' : implode(' ' . $operator . ' ', $parts);
+		}
+		return '(' . implode(') AND (', $parts) . ')';
+	}
+
+	private function buildAndCondition($operator, $operands)
+	{
+		$parts = array();
+		foreach ($operands as $operand) {
+			if (is_array($operand)) {
+				$operand = $this->buildCondition($operand);
+			}
+			if ($operand !== '') {
+				$parts[] = $operand;
+			}
+		}
+		if ($parts !== array()) {
+			return '(' . implode(") $operator (", $parts) . ')';
+		} else {
+			return '';
+		}
+	}
+
+	private function buildBetweenCondition($operator, $operands)
+	{
+		if (!isset($operands[0], $operands[1], $operands[2])) {
+			throw new Exception("Operator '$operator' requires three operands.");
 		}
 
-		if (!isset($condition[1], $condition[2])) {
-			throw new Exception("Operator $operator requires at least two operands.");
-		}
+		list($column, $value1, $value2) = $operands;
 
-		$column = $condition[1];
 		if (strpos($column, '(') === false) {
 			$column = $this->quoteColumnName($column);
 		}
+		$value1 = is_string($value1) ? $this->connection->quoteValue($value1) : (string)$value1;
+		$value2 = is_string($value2) ? $this->connection->quoteValue($value2) : (string)$value2;
 
-		if ($operator === 'BETWEEN' || $operator === 'NOT BETWEEN') {
-			if (!isset($condition[3])) {
-				throw new Exception("Operator $operator requires three operands.");
-			}
-			$value1 = is_string($condition[2]) ? $this->connection->quoteValue($condition[2]) : (string)$condition[2];
-			$value2 = is_string($condition[3]) ? $this->connection->quoteValue($condition[3]) : (string)$condition[3];
-			return "$column $operator $value1 AND $value2";
+		return "$column $operator $value1 AND $value2";
+	}
+
+	private function buildInCondition($operator, $operands)
+	{
+		if (!isset($operands[0], $operands[1])) {
+			throw new Exception("Operator '$operator' requires two operands.");
 		}
 
-		$values = $condition[2];
+		list($column, $values) = $operands;
+
 		if (!is_array($values)) {
 			$values = array($values);
 		}
 
-		if ($operator === 'IN' || $operator === 'NOT IN') {
-			if ($values === array()) {
-				return $operator === 'IN' ? '0=1' : '';
-			}
-			foreach ($values as $i => $value) {
-				if (is_string($value)) {
-					$values[$i] = $this->connection->quoteValue($value);
-				} else {
-					$values[$i] = (string)$value;
-				}
-			}
-			return $column . ' ' . $operator . ' (' . implode(', ', $values) . ')';
+		if ($values === array()) {
+			return $operator === 'in' ? '0=1' : '';
 		}
 
-		if ($operator === 'LIKE' || $operator === 'NOT LIKE' || $operator === 'OR LIKE' || $operator === 'OR NOT LIKE') {
-			if ($values === array()) {
-				return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
-			}
-
-			if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
-				$andor = ' AND ';
-			} else {
-				$andor = ' OR ';
-				$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
-			}
-			$expressions = array();
-			foreach ($values as $value) {
-				$expressions[] = $column . ' ' . $operator . ' ' . $this->connection->quoteValue($value);
-			}
-			return implode($andor, $expressions);
+		foreach ($values as $i => $value) {
+			$values[$i] = is_string($value) ? $this->connection->quoteValue($value) : (string)$value;
 		}
 
-		throw new Exception('Unknown operator: ' . $operator);
+		if (strpos($column, '(') === false) {
+			$column = $this->quoteColumnName($column);
+		}
+
+		return "$column $operator (" . implode(', ', $values) . ')';
+	}
+
+	private function buildLikeCondition($operator, $operands)
+	{
+		if (!isset($operands[0], $operands[1])) {
+			throw new Exception("Operator '$operator' requires two operands.");
+		}
+
+		list($column, $values) = $operands;
+
+		if (!is_array($values)) {
+			$values = array($values);
+		}
+
+		if ($values === array()) {
+			return $operator === 'like' || $operator === 'or like' ? '0=1' : '';
+		}
+
+		if ($operator === 'like' || $operator === 'not like') {
+			$andor = ' and ';
+		} else {
+			$andor = ' or ';
+			$operator = $operator === 'or like' ? 'like' : 'not like';
+		}
+
+		if (strpos($column, '(') === false) {
+			$column = $this->quoteColumnName($column);
+		}
+
+		$parts = array();
+		foreach ($values as $value) {
+			$parts[] = "$column $operator " . $this->connection->quoteValue($value);
+		}
+
+		return implode($andor, $parts);
 	}
 
 	/**
