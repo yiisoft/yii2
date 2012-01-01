@@ -18,33 +18,33 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(null, $command->sql);
 
 		// string
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
 		$this->assertEquals($sql, $command->sql);
 
 		// Query object
 		$query = new Query;
-		$query->select('id')->from('tbl_user');
+		$query->select('id')->from('tbl_customer');
 		$command = $db->createCommand($query);
-		$this->assertEquals("SELECT `id` FROM `tbl_user`", $command->sql);
+		$this->assertEquals("SELECT `id` FROM `tbl_customer`", $command->sql);
 
 		// array
 		$command = $db->createCommand(array(
 			'select' => 'name',
-			'from' => 'tbl_user',
+			'from' => 'tbl_customer',
 		));
-		$this->assertEquals("SELECT `name` FROM `tbl_user`", $command->sql);
+		$this->assertEquals("SELECT `name` FROM `tbl_customer`", $command->sql);
 	}
 
 	function testGetSetSql()
 	{
 		$db = $this->getConnection(false);
 
-		$sql = 'SELECT * FROM yii_user';
+		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
 		$this->assertEquals($sql, $command->sql);
 
-		$sql2 = 'SELECT * FROM yii_yii_post';
+		$sql2 = 'SELECT * FROM tbl_order';
 		$command->sql = $sql2;
 		$this->assertEquals($sql2, $command->sql);
 	}
@@ -53,7 +53,7 @@ class CommandTest extends \yiiunit\MysqlTestCase
 	{
 		$db = $this->getConnection(false);
 
-		$command = $db->createCommand('SELECT * FROM yii_user');
+		$command = $db->createCommand('SELECT * FROM tbl_customer');
 		$this->assertEquals(null, $command->pdoStatement);
 		$command->prepare();
 		$this->assertNotEquals(null, $command->pdoStatement);
@@ -65,11 +65,11 @@ class CommandTest extends \yiiunit\MysqlTestCase
 	{
 		$db = $this->getConnection();
 
-		$sql = 'INSERT INTO yii_comment(content,post_id,author_id) VALUES (\'test comment\', 1, 1)';
+		$sql = 'INSERT INTO tbl_customer(email, name , address) VALUES (\'user4@example.com\', \'user4\', \'address4\')';
 		$command = $db->createCommand($sql);
 		$this->assertEquals(1, $command->execute());
 
-		$sql = 'SELECT COUNT(*) FROM yii_comment WHERE content=\'test comment\'';
+		$sql = 'SELECT COUNT(*) FROM tbl_customer WHERE name =\'user4\'';
 		$command = $db->createCommand($sql);
 		$this->assertEquals(1, $command->queryScalar());
 
@@ -83,55 +83,55 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$db = $this->getConnection();
 
 		// query
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer';
 		$reader = $db->createCommand($sql)->query();
 		$this->assertTrue($reader instanceof DataReader);
 
 		// queryAll
-		$rows = $db->createCommand('SELECT * FROM yii_post')->queryAll();
-		$this->assertEquals(5, count($rows));
+		$rows = $db->createCommand('SELECT * FROM tbl_customer')->queryAll();
+		$this->assertEquals(3, count($rows));
 		$row = $rows[2];
 		$this->assertEquals(3, $row['id']);
-		$this->assertEquals($row['title'], 'post 3');
+		$this->assertEquals('user3', $row['name']);
 
-		$rows = $db->createCommand('SELECT * FROM yii_post WHERE id=10')->queryAll();
+		$rows = $db->createCommand('SELECT * FROM tbl_customer WHERE id=10')->queryAll();
 		$this->assertEquals(array(), $rows);
 
 		// queryRow
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
 		$row = $db->createCommand($sql)->queryRow();
 		$this->assertEquals(1, $row['id']);
-		$this->assertEquals('post 1', $row['title'], 'post 1');
+		$this->assertEquals('user1', $row['name']);
 
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
 		$command = $db->createCommand($sql);
 		$command->prepare();
 		$row = $command->queryRow();
 		$this->assertEquals(1, $row['id']);
-		$this->assertEquals('post 1', $row['title']);
+		$this->assertEquals('user1', $row['name']);
 
-		$sql = 'SELECT * FROM yii_post WHERE id=10';
+		$sql = 'SELECT * FROM tbl_customer WHERE id=10';
 		$command = $db->createCommand($sql);
 		$this->assertFalse($command->queryRow());
 
 		// queryColumn
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer';
 		$column = $db->createCommand($sql)->queryColumn();
-		$this->assertEquals(range(1, 5), $column);
+		$this->assertEquals(range(1, 3), $column);
 
-		$command = $db->createCommand('SELECT id FROM yii_post WHERE id=10');
+		$command = $db->createCommand('SELECT id FROM tbl_customer WHERE id=10');
 		$this->assertEquals(array(), $command->queryColumn());
 
 		// queryScalar
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
 		$this->assertEquals($db->createCommand($sql)->queryScalar(), 1);
 
-		$sql = 'SELECT id FROM yii_post';
+		$sql = 'SELECT id FROM tbl_customer ORDER BY id';
 		$command = $db->createCommand($sql);
 		$command->prepare();
 		$this->assertEquals(1, $command->queryScalar());
 
-		$command = $db->createCommand('SELECT id FROM yii_post WHERE id=10');
+		$command = $db->createCommand('SELECT id FROM tbl_customer WHERE id=10');
 		$this->assertFalse($command->queryScalar());
 
 		$command = $db->createCommand('bad SQL');
@@ -144,20 +144,22 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$db = $this->getConnection();
 
 		// bindParam
-		$sql = 'INSERT INTO yii_post(title,create_time,author_id) VALUES (:title, :create_time, 1)';
+		$sql = 'INSERT INTO tbl_customer(email,name,address) VALUES (:email, :name, :address)';
 		$command = $db->createCommand($sql);
-		$title = 'test title';
-		$createTime = time();
-		$command->bindParam(':title', $title);
-		$command->bindParam(':create_time', $createTime);
+		$email = 'user4@example.com';
+		$name = 'user4';
+		$address = 'address4';
+		$command->bindParam(':email', $email);
+		$command->bindParam(':name', $name);
+		$command->bindParam(':address', $address);
 		$command->execute();
 
-		$sql = 'SELECT create_time FROM yii_post WHERE title=:title';
+		$sql = 'SELECT name FROM tbl_customer WHERE email=:email';
 		$command = $db->createCommand($sql);
-		$command->bindParam(':title', $title);
-		$this->assertEquals($createTime, $command->queryScalar());
+		$command->bindParam(':email', $email);
+		$this->assertEquals($name, $command->queryScalar());
 
-		$sql = 'INSERT INTO yii_type (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)';
+		$sql = 'INSERT INTO tbl_type (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)';
 		$command = $db->createCommand($sql);
 		$intCol = 123;
 		$charCol = 'abc';
@@ -173,7 +175,7 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$command->bindParam(':bool_col', $boolCol);
 		$this->assertEquals(1, $command->execute());
 
-		$sql = 'SELECT * FROM yii_type';
+		$sql = 'SELECT * FROM tbl_type';
 		$row = $db->createCommand($sql)->queryRow();
 		$this->assertEquals($intCol, $row['int_col']);
 		$this->assertEquals($charCol, $row['char_col']);
@@ -182,23 +184,23 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals($numericCol, $row['numeric_col']);
 
 		// bindValue
-		$sql = 'INSERT INTO yii_comment(content,post_id,author_id) VALUES (:content, 1, 1)';
+		$sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
 		$command = $db->createCommand($sql);
-		$command->bindValue(':content', 'test comment');
+		$command->bindValue(':email', 'user5@example.com');
 		$command->execute();
 
-		$sql = 'SELECT post_id FROM yii_comment WHERE content=:content';
+		$sql = 'SELECT email FROM tbl_customer WHERE name=:name';
 		$command = $db->createCommand($sql);
-		$command->bindValue(':content', 'test comment');
-		$this->assertEquals(1, $command->queryScalar());
+		$command->bindValue(':name', 'user5');
+		$this->assertEquals('user5@example.com', $command->queryScalar());
 
 		// bind value via query or execute method
-		$sql = 'INSERT INTO yii_comment(content,post_id,author_id) VALUES (:content, 1, 1)';
+		$sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, \'user6\', \'address6\')';
 		$command = $db->createCommand($sql);
-		$command->execute(array(':content' => 'test comment2'));
-		$sql = 'SELECT post_id FROM yii_comment WHERE content=:content';
+		$command->execute(array(':email' => 'user6@example.com'));
+		$sql = 'SELECT email FROM tbl_customer WHERE name=:name';
 		$command = $db->createCommand($sql);
-		$this->assertEquals(1, $command->queryScalar(array(':content' => 'test comment2')));
+		$this->assertEquals('user5@example.com', $command->queryScalar(array(':name' => 'user5')));
 	}
 
 	function testFetchMode()
@@ -206,20 +208,20 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$db = $this->getConnection();
 
 		// default: FETCH_ASSOC
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
 		$result = $command->queryRow();
 		$this->assertTrue(is_array($result) && isset($result['id']));
 
 		// FETCH_OBJ, customized via fetchMode property
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
 		$command->fetchMode = \PDO::FETCH_OBJ;
 		$result = $command->queryRow();
 		$this->assertTrue(is_object($result));
 
 		// FETCH_NUM, customized in query method
-		$sql = 'SELECT * FROM yii_post';
+		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
 		$result = $command->queryRow(array(), \PDO::FETCH_NUM);
 		$this->assertTrue(is_array($result) && isset($result[0]));

@@ -117,7 +117,6 @@ class ObjectTest extends \yiiunit\TestCase
 		$this->assertTrue(empty($this->object->Text));
 	}
 
-
 	public function testEvaluateExpression()
 	{
 		$object = new NewObject;

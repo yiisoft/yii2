@@ -179,7 +179,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @param mixed $data the data to be copied from, must be an array or an object implementing `Traversable`
 	 * @throws Exception if data is neither an array nor an iterator.
 	 */
-	public function fromArray($data)
+	public function copyFrom($data)
 	{
 		if (is_array($data) || $data instanceof \Traversable) {
 			if ($this->_d !== array()) {

@@ -10,6 +10,8 @@
 
 namespace yii\db\dao;
 
+use yii\db\Exception;
+
 /**
  * TableSchema represents the metadata of a database table.
  *
@@ -81,5 +83,19 @@ class TableSchema extends \yii\base\Object
 	public function getColumnNames()
 	{
 		return array_keys($this->columns);
+	}
+
+	public function fixPrimaryKey($keys)
+	{
+		if (!is_array($keys)) {
+			$keys = array($keys);
+		}
+		foreach ($keys as $key) {
+			if (isset($this->columns[$key])) {
+				$this->columns[$key]->isPrimaryKey = true;
+			} else {
+				throw new Exception("Primary key '$key' cannot be found in table '{$this->name}'.");
+			}
+		}
 	}
 }

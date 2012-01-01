@@ -14,6 +14,8 @@ namespace yii\util;
 /**
  * Text helper
  *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
 class Text
@@ -23,9 +25,9 @@ class Text
 	 * @param string $name the word to be pluralized
 	 * @return string the pluralized word
 	 */
-	public function pluralize($name)
+	public static function pluralize($name)
 	{
-		$rules=array(
+		$rules = array(
 			'/(x|ch|ss|sh|us|as|is|os)$/i' => '\1es',
 			'/(?:([^f])fe|([lr])f)$/i' => '\1\2ves',
 			'/(m)an$/i' => '\1en',
@@ -33,11 +35,17 @@ class Text
 			'/(r)y$/i' => '\1ies',
 			'/s$/' => 's',
 		);
-		foreach($rules as $rule=>$replacement)
+		foreach ($rules as $rule => $replacement)
 		{
-			if(preg_match($rule,$name))
-				return preg_replace($rule,$replacement,$name);
+			if (preg_match($rule, $name)) {
+				return preg_replace($rule, $replacement, $name);
+			}
 		}
-		return $name.'s';
+		return $name . 's';
+	}
+
+	public static function dd($value)
+	{
+		return trim(strtolower(str_replace(array('-', '_', '.'), ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $value))));
 	}
 }

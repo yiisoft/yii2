@@ -4,51 +4,19 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\db\ar;
 
-/*
-1. query
-$finder = Post::model()->find(array(
-	'select' => 'id,  title',
-	'where' => 'id=123',
-	'with' => array(
-		'creator' => array(
-
-		),
-	),
-));
-$post = $finder->first();
-$posts = $finder->all();
-foreach($finder as $post) {
-
-}
-foreach($finder->next(5) as $posts) {
-
-}
-
-
-2. insert
-$post = Post::create();
-$post->attributes = $_POST['Post'];
-$post->save();
-
-3. update
-
-4. delete
-
-
-*/
+use yii\db\Exception;
+use yii\db\dao\Connection;
+use yii\db\dao\TableSchema;
+use yii\db\dao\Query;
 
 /**
  * ActiveRecord is the base class for classes representing relational data.
- *
- * It implements the active record design pattern, a popular Object-Relational Mapping (ORM) technique.
- * Please check {@link http://www.yiiframework.com/doc/guide/database.ar the Guide} for more details
- * about this class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -57,277 +25,88 @@ $post->save();
  */
 abstract class ActiveRecord extends \yii\base\Model
 {
-	const BELONGS_TO = 'CBelongsToRelation';
-	const HAS_ONE = 'CHasOneRelation';
-	const HAS_MANY = 'CHasManyRelation';
-	const MANY_MANY = 'CManyManyRelation';
+	/**
+	 * @var
+	 */
+	private static $_md;
+
+	private $_new = false; // whether this instance is new or not
+	private $_attributes = array(); // attribute name => attribute value
+	private $_oldAttributes;
+	private $_related = array(); // attribute name => related objects
+	private $_pk; // old primary key value
 
 	/**
-	 * @var CDbConnection the default database connection for all active record classes.
-	 * By default, this is the 'db' application component.
-	 * @see getDbConnection
+	 * Returns the metadata for this AR class.
+	 * @param boolean $refresh whether to rebuild the metadata.
+	 * @return ActiveMetaData the meta for this AR class.
 	 */
-	public static $db;
-
-	private static $_models = array();			// class name => model
-
-	private $_md;								// meta data
-	private $_new = false;						// whether this instance is new or not
-	private $_attributes = array();				// attribute name => attribute value
-	private $_related = array();					// attribute name => related objects
-	private $_c;								// query criteria (used by finder only)
-	private $_pk;								// old primary key value
-	private $_alias = 't';						// the table alias being used for query
-
-
-	/**
-	 * Constructor.
-	 * @param string $scenario scenario name. See {@link CModel::scenario} for more details about this parameter.
-	 */
-	public function __construct($scenario = 'insert')
+	public static function getMetaData($refresh = false)
 	{
-		if ($scenario === null) // internally used by populateRecord() and model()
-			return;
-
-		$this->setScenario($scenario);
-		$this->setIsNewRecord(true);
-		$this->_attributes = $this->getMetaData()->attributeDefaults;
-
-		$this->init();
-
-		$this->attachBehaviors($this->behaviors());
-		$this->afterConstruct();
-	}
-
-	/**
-	 * Sets the parameters about query caching.
-	 * This is a shortcut method to {@link CDbConnection::cache()}.
-	 * It changes the query caching parameter of the {@link dbConnection} instance.
-	 * @param integer $duration the number of seconds that query results may remain valid in cache.
-	 * If this is 0, the caching will be disabled.
-	 * @param CCacheDependency $dependency the dependency that will be used when saving the query results into cache.
-	 * @param integer $queryCount number of SQL queries that need to be cached after calling this method. Defaults to 1,
-	 * meaning that the next SQL query will be cached.
-	 * @return ActiveRecord the active record instance itself.
-	 */
-	public function cache($duration, $dependency = null, $queryCount = 1)
-	{
-		$this->getDbConnection()->cache($duration, $dependency, $queryCount);
-		return $this;
-	}
-
-	/**
-	 * PHP sleep magic method.
-	 * This method ensures that the model meta data reference is set to null.
-	 * @return array
-	 */
-	public function __sleep()
-	{
-		$this->_md = null;
-		return array_keys((array)$this);
-	}
-
-	/**
-	 * PHP getter magic method.
-	 * This method is overridden so that AR attributes can be accessed like properties.
-	 * @param string $name property name
-	 * @return mixed property value
-	 * @see getAttribute
-	 */
-	public function __get($name)
-	{
-		if (isset($this->_attributes[$name]))
-			return $this->_attributes[$name];
-		elseif (isset($this->getMetaData()->columns[$name]))
-			return null;
-		elseif (isset($this->_related[$name]))
-			return $this->_related[$name];
-		elseif (isset($this->getMetaData()->relations[$name]))
-			return $this->getRelated($name);
-		else
-			return parent::__get($name);
-	}
-
-	/**
-	 * PHP setter magic method.
-	 * This method is overridden so that AR attributes can be accessed like properties.
-	 * @param string $name property name
-	 * @param mixed $value property value
-	 */
-	public function __set($name, $value)
-	{
-		if ($this->setAttribute($name, $value) === false)
-		{
-			if (isset($this->getMetaData()->relations[$name]))
-				$this->_related[$name] = $value;
-			else
-				parent::__set($name, $value);
+		$class = get_called_class();
+		if (!$refresh && isset(self::$_md[$class])) {
+			return self::$_md[$class];
+		} else {
+			return self::$_md[$class] = new ActiveMetaData('\\' . $class);
 		}
 	}
 
-	/**
-	 * Checks if a property value is null.
-	 * This method overrides the parent implementation by checking
-	 * if the named attribute is null or not.
-	 * @param string $name the property name or the event name
-	 * @return boolean whether the property value is null
-	 */
-	public function __isset($name)
+	public static function find($query = null)
 	{
-		if (isset($this->_attributes[$name]))
-			return true;
-		elseif (isset($this->getMetaData()->columns[$name]))
-			return false;
-		elseif (isset($this->_related[$name]))
-			return true;
-		elseif (isset($this->getMetaData()->relations[$name]))
-			return $this->getRelated($name) !== null;
-		else
-			return parent::__isset($name);
-	}
-
-	/**
-	 * Sets a component property to be null.
-	 * This method overrides the parent implementation by clearing
-	 * the specified attribute value.
-	 * @param string $name the property name or the event name
-	 */
-	public function __unset($name)
-	{
-		if (isset($this->getMetaData()->columns[$name]))
-			unset($this->_attributes[$name]);
-		elseif (isset($this->getMetaData()->relations[$name]))
-			unset($this->_related[$name]);
-		else
-			parent::__unset($name);
-	}
-
-	/**
-	 * Calls the named method which is not a class method.
-	 * Do not call this method. This is a PHP magic method that we override
-	 * to implement the named scope feature.
-	 * @param string $name the method name
-	 * @param array $parameters method parameters
-	 * @return mixed the method return value
-	 */
-	public function __call($name, $parameters)
-	{
-		if (isset($this->getMetaData()->relations[$name]))
-		{
-			if (empty($parameters))
-				return $this->getRelated($name, false);
-			else
-				return $this->getRelated($name, false, $parameters[0]);
+		$finder = static::createFinder();
+		if ($query instanceof Query) {
+			$finder->query = $query;
+		} elseif ($query !== null) {
+			// todo: findByPk
 		}
+		return $finder;
+	}
 
-		$scopes = $this->scopes();
-		if (isset($scopes[$name]))
-		{
-			$this->getDbCriteria()->mergeWith($scopes[$name]);
-			return $this;
+	public static function findBySql($sql, $params = array())
+	{
+		$finder = static::createFinder();
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_shift($params);
 		}
+		$finder->setSql($sql);
+		return $finder->params($params);
+	}
 
-		return parent::__call($name, $parameters);
+	public static function exists($condition, $params)
+	{
+
+	}
+
+	public static function updateAll()
+	{
+
+	}
+
+	public static function updateCounters()
+	{
+
+	}
+
+	public static function deleteAll()
+	{
+
+	}
+
+	public static function createFinder()
+	{
+		return new ActiveFinder('\\' . get_called_class());
 	}
 
 	/**
-	 * Returns the related record(s).
-	 * This method will return the related record(s) of the current record.
-	 * If the relation is HAS_ONE or BELONGS_TO, it will return a single object
-	 * or null if the object does not exist.
-	 * If the relation is HAS_MANY or MANY_MANY, it will return an array of objects
-	 * or an empty array.
-	 * @param string $name the relation name (see {@link relations})
-	 * @param boolean $refresh whether to reload the related objects from database. Defaults to false.
-	 * @param array $params additional parameters that customize the query conditions as specified in the relation declaration.
-	 * This parameter has been available since version 1.0.5.
-	 * @return mixed the related object(s).
-	 * @throws CDbException if the relation is not specified in {@link relations}.
+	 * Returns the database connection used by active record.
+	 * By default, the "db" application component is used as the database connection.
+	 * You may override this method if you want to use a different database connection.
+	 * @return Connection the database connection used by active record.
 	 */
-	public function getRelated($name, $refresh = false, $params = array())
+	public static function getDbConnection()
 	{
-		if (!$refresh && $params === array() && (isset($this->_related[$name]) || array_key_exists($name, $this->_related)))
-			return $this->_related[$name];
-
-		$md = $this->getMetaData();
-		if (!isset($md->relations[$name]))
-			throw new CDbException(Yii::t('yii', '{class} does not have relation "{name}".',
-				array('{class}' => get_class($this), '{name}' => $name)));
-
-		Yii::trace('lazy loading ' . get_class($this) . '.' . $name, 'system.db.ar.ActiveRecord');
-		$relation = $md->relations[$name];
-		if ($this->getIsNewRecord() && !$refresh && ($relation instanceof CHasOneRelation || $relation instanceof CHasManyRelation))
-			return $relation instanceof CHasOneRelation ? null : array();
-
-		if ($params !== array()) // dynamic query
-		{
-			$exists = isset($this->_related[$name]) || array_key_exists($name, $this->_related);
-			if ($exists)
-				$save = $this->_related[$name];
-			$r = array($name => $params);
-		} else
-			$r = $name;
-		unset($this->_related[$name]);
-
-		$finder = new CActiveFinder($this, $r);
-		$finder->lazyFind($this);
-
-		if (!isset($this->_related[$name]))
-		{
-			if ($relation instanceof CHasManyRelation)
-				$this->_related[$name] = array();
-			elseif ($relation instanceof CStatRelation)
-				$this->_related[$name] = $relation->defaultValue;
-			else
-				$this->_related[$name] = null;
-		}
-
-		if ($params !== array())
-		{
-			$results = $this->_related[$name];
-			if ($exists)
-				$this->_related[$name] = $save;
-			else
-				unset($this->_related[$name]);
-			return $results;
-		} else
-			return $this->_related[$name];
-	}
-
-	/**
-	 * Returns a value indicating whether the named related object(s) has been loaded.
-	 * @param string $name the relation name
-	 * @return boolean a value indicating whether the named related object(s) has been loaded.
-	 */
-	public function hasRelated($name)
-	{
-		return isset($this->_related[$name]) || array_key_exists($name, $this->_related);
-	}
-
-	/**
-	 * Returns the query criteria associated with this model.
-	 * @param boolean $createIfNull whether to create a criteria instance if it does not exist. Defaults to true.
-	 * @return CDbCriteria the query criteria that is associated with this model.
-	 * This criteria is mainly used by {@link scopes named scope} feature to accumulate
-	 * different criteria specifications.
-	 */
-	public function getDbCriteria($createIfNull = true)
-	{
-		if ($this->_c === null)
-		{
-			if (($c = $this->defaultScope()) !== array() || $createIfNull)
-				$this->_c = new CDbCriteria($c);
-		}
-		return $this->_c;
-	}
-
-	/**
-	 * Sets the query criteria for the current model.
-	 * @param CDbCriteria $criteria the query criteria
-	 */
-	public function setDbCriteria($criteria)
-	{
-		$this->_c = $criteria;
+		return \Yii::$application->getDb();
 	}
 
 	/**
@@ -338,76 +117,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @return array the query criteria. This will be used as the parameter to the constructor
 	 * of {@link CDbCriteria}.
 	 */
-	public function defaultScope()
+	public static function defaultScope()
 	{
 		return array();
-	}
-
-	/**
-	 * Resets all scopes and criterias applied including default scope.
-	 *
-	 * @return ActiveRecord
-	 */
-	public function resetScope()
-	{
-		$this->_c = new CDbCriteria();
-		return $this;
-	}
-
-	/**
-	 * Returns the static model of the specified AR class.
-	 * The model returned is a static instance of the AR class.
-	 * It is provided for invoking class-level methods (something similar to static class methods.)
-	 *
-	 * EVERY derived AR class must override this method as follows,
-	 * <pre>
-	 * public static function model($className=__CLASS__)
-	 * {
-	 *     return parent::model($className);
-	 * }
-	 * </pre>
-	 *
-	 * @param string $className active record class name.
-	 * @return ActiveRecord active record model instance.
-	 */
-	public static function model($className = __CLASS__)
-	{
-		if (isset(self::$_models[$className]))
-			return self::$_models[$className];
-		else
-		{
-			$model = self::$_models[$className] = new $className(null);
-			$model->_md = new ActiveRecordMetaData($model);
-			$model->attachBehaviors($model->behaviors());
-			return $model;
-		}
-	}
-
-	/**
-	 * Returns the meta-data for this AR
-	 * @return ActiveRecordMetaData the meta for this AR class.
-	 */
-	public function getMetaData()
-	{
-		if ($this->_md !== null)
-			return $this->_md;
-		else
-			return $this->_md = self::model(get_class($this))->_md;
-	}
-
-	/**
-	 * Refreshes the meta data for this AR class.
-	 * By calling this method, this AR class will regenerate the meta data needed.
-	 * This is useful if the table schema has been changed and you want to use the latest
-	 * available table schema. Make sure you have called {@link CDbSchema::refresh}
-	 * before you call this method. Otherwise, old table schema data will still be used.
-	 */
-	public function refreshMetaData()
-	{
-		$finder = self::model(get_class($this));
-		$finder->_md = new ActiveRecordMetaData($finder);
-		if ($this !== $finder)
-			$this->_md = $finder->_md;
 	}
 
 	/**
@@ -416,15 +128,15 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
-	public function tableName()
+	public static function tableName()
 	{
-		return get_class($this);
+		return basename(get_called_class());
 	}
 
 	/**
 	 * Returns the primary key of the associated database table.
 	 * This method is meant to be overridden in case when the table is not defined with a primary key
-	 * (for some legency database). If the table is already defined with a primary key,
+	 * (for some legacy database). If the table is already defined with a primary key,
 	 * you do not need to override this method. The default implementation simply returns null,
 	 * meaning using the primary key defined in the database.
 	 * @return mixed the primary key of the associated database table.
@@ -432,7 +144,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * If the key is a composite one consisting of several columns, it should
 	 * return the array of the key column names.
 	 */
-	public function primaryKey()
+	public static function primaryKey()
 	{
 	}
 
@@ -479,7 +191,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * <li>'alias': the alias for the table associated with this relationship.
 	 *   This option has been available since version 1.0.1. It defaults to null,
 	 *   meaning the table alias is the same as the relation name.</li>
-     * <li>'params': the parameters to be bound to the generated SQL statement.
+	 * <li>'params': the parameters to be bound to the generated SQL statement.
 	 *   This should be given as an array of name-value pairs. This option has been
 	 *   available since version 1.0.3.</li>
 	 * <li>'on': the ON clause. The condition specified here will be appended
@@ -507,15 +219,15 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * Below is an example declaring related objects for 'Post' active record class:
 	 * <pre>
 	 * return array(
-	 *     'author'=>array(self::BELONGS_TO, 'User', 'author_id'),
-	 *     'comments'=>array(self::HAS_MANY, 'Comment', 'post_id', 'with'=>'author', 'order'=>'create_time DESC'),
-	 *     'tags'=>array(self::MANY_MANY, 'Tag', 'post_tag(post_id, tag_id)', 'order'=>'name'),
+	 *	 'author'=>array(self::BELONGS_TO, 'User', 'author_id'),
+	 *	 'comments'=>array(self::HAS_MANY, 'Comment', 'post_id', 'with'=>'author', 'order'=>'create_time DESC'),
+	 *	 'tags'=>array(self::MANY_MANY, 'Tag', 'post_tag(post_id, tag_id)', 'order'=>'name'),
 	 * );
 	 * </pre>
 	 *
 	 * @return array list of related object declarations. Defaults to empty array.
 	 */
-	public function relations()
+	public static function relations()
 	{
 		return array();
 	}
@@ -529,13 +241,13 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * 'published'.
 	 * <pre>
 	 * return array(
-	 *     'published'=>array(
-	 *           'condition'=>'status=1',
-	 *     ),
-	 *     'recently'=>array(
-	 *           'order'=>'create_time DESC',
-	 *           'limit'=>5,
-	 *     ),
+	 *	 'published'=>array(
+	 *		   'condition'=>'status=1',
+	 *	 ),
+	 *	 'recently'=>array(
+	 *		   'order'=>'create_time DESC',
+	 *		   'limit'=>5,
+	 *	 ),
 	 * );
 	 * </pre>
 	 * If the above scopes are declared in a 'Post' model, we can perform the following
@@ -551,9 +263,241 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * values are the corresponding scope definitions. Each scope definition is represented
 	 * as an array whose keys must be properties of {@link CDbCriteria}.
 	 */
-	public function scopes()
+	public static function scopes()
 	{
 		return array();
+	}
+
+	/**
+	 * Constructor.
+	 * @param string $scenario scenario name. See {@link CModel::scenario} for more details about this parameter.
+	 */
+	public function __construct($scenario = 'insert')
+	{
+		if ($scenario === null) // internally used by populateRecord() and model()
+		{
+			return;
+		}
+
+		$this->setScenario($scenario);
+		$this->setIsNewRecord(true);
+	}
+
+	/**
+	 * PHP sleep magic method.
+	 * This method ensures that the model meta data reference is set to null.
+	 * @return array
+	 */
+	public function __sleep()
+	{
+		return array_keys((array)$this);
+	}
+
+	/**
+	 * PHP getter magic method.
+	 * This method is overridden so that AR attributes can be accessed like properties.
+	 * @param string $name property name
+	 * @return mixed property value
+	 * @see getAttribute
+	 */
+	public function __get($name)
+	{
+		if (isset($this->_attributes[$name])) {
+			return $this->_attributes[$name];
+		} elseif (isset($this->getMetaData()->table->columns[$name])) {
+			return null;
+		} elseif (isset($this->_related[$name])) {
+			return $this->_related[$name];
+		} elseif (isset($this->getMetaData()->relations[$name])) {
+			return $this->getRelatedRecord($name);
+		} else {
+			return parent::__get($name);
+		}
+	}
+
+	/**
+	 * PHP setter magic method.
+	 * This method is overridden so that AR attributes can be accessed like properties.
+	 * @param string $name property name
+	 * @param mixed $value property value
+	 */
+	public function __set($name, $value)
+	{
+		if (isset($this->getMetaData()->table->columns[$name])) {
+			$this->_attributes[$name] = $value;
+		} elseif (isset($this->getMetaData()->relations[$name])) {
+			$this->_related[$name] = $value;
+		} else {
+			parent::__set($name, $value);
+		}
+	}
+
+	/**
+	 * Checks if a property value is null.
+	 * This method overrides the parent implementation by checking
+	 * if the named attribute is null or not.
+	 * @param string $name the property name or the event name
+	 * @return boolean whether the property value is null
+	 */
+	public function __isset($name)
+	{
+		if (isset($this->_attributes[$name])) {
+			return true;
+		}
+		elseif (isset($this->getMetaData()->columns[$name]))
+		{
+			return false;
+		}
+		elseif (isset($this->_related[$name]))
+		{
+			return true;
+		}
+		elseif (isset($this->getMetaData()->relations[$name]))
+		{
+			return $this->getRelatedRecord($name) !== null;
+		}
+		else
+		{
+			return parent::__isset($name);
+		}
+	}
+
+	/**
+	 * Sets a component property to be null.
+	 * This method overrides the parent implementation by clearing
+	 * the specified attribute value.
+	 * @param string $name the property name or the event name
+	 */
+	public function __unset($name)
+	{
+		if (isset($this->getMetaData()->columns[$name])) {
+			unset($this->_attributes[$name]);
+		}
+		elseif (isset($this->getMetaData()->relations[$name]))
+		{
+			unset($this->_related[$name]);
+		}
+		else
+		{
+			parent::__unset($name);
+		}
+	}
+
+	/**
+	 * Calls the named method which is not a class method.
+	 * Do not call this method. This is a PHP magic method that we override
+	 * to implement the named scope feature.
+	 * @param string $name the method name
+	 * @param array $parameters method parameters
+	 * @return mixed the method return value
+	 */
+	public function __call($name, $parameters)
+	{
+		if (isset($this->getMetaData()->relations[$name])) {
+			if (empty($parameters)) {
+				return $this->getRelatedRecord($name, false);
+			}
+			else
+			{
+				return $this->getRelatedRecord($name, false, $parameters[0]);
+			}
+		}
+
+		$scopes = $this->scopes();
+		if (isset($scopes[$name])) {
+			$this->getDbCriteria()->mergeWith($scopes[$name]);
+			return $this;
+		}
+
+		return parent::__call($name, $parameters);
+	}
+
+	/**
+	 * Returns the related record(s).
+	 * This method will return the related record(s) of the current record.
+	 * If the relation is HAS_ONE or BELONGS_TO, it will return a single object
+	 * or null if the object does not exist.
+	 * If the relation is HAS_MANY or MANY_MANY, it will return an array of objects
+	 * or an empty array.
+	 * @param string $name the relation name (see {@link relations})
+	 * @param boolean $refresh whether to reload the related objects from database. Defaults to false.
+	 * @param array $params additional parameters that customize the query conditions as specified in the relation declaration.
+	 * This parameter has been available since version 1.0.5.
+	 * @return mixed the related object(s).
+	 * @throws Exception if the relation is not specified in {@link relations}.
+	 */
+	public function getRelatedRecord($name, $refresh = false, $params = array())
+	{
+		if (!$refresh && $params === array() && (isset($this->_related[$name]) || array_key_exists($name, $this->_related))) {
+			return $this->_related[$name];
+		}
+
+		$md = $this->getMetaData();
+		if (!isset($md->relations[$name])) {
+			throw new Exception(Yii::t('yii', '{class} does not have relation "{name}".',
+				array('{class}' => get_class($this), '{name}' => $name)));
+		}
+
+		Yii::trace('lazy loading ' . get_class($this) . '.' . $name, 'system.db.ar.ActiveRecord');
+		$relation = $md->relations[$name];
+		if ($this->getIsNewRecord() && !$refresh && ($relation instanceof CHasOneRelation || $relation instanceof CHasManyRelation)) {
+			return $relation instanceof CHasOneRelation ? null : array();
+		}
+
+		if ($params !== array()) // dynamic query
+		{
+			$exists = isset($this->_related[$name]) || array_key_exists($name, $this->_related);
+			if ($exists) {
+				$save = $this->_related[$name];
+			}
+			$r = array($name => $params);
+		} else
+		{
+			$r = $name;
+		}
+		unset($this->_related[$name]);
+
+		$finder = new CActiveFinder($this, $r);
+		$finder->lazyFind($this);
+
+		if (!isset($this->_related[$name])) {
+			if ($relation instanceof CHasManyRelation) {
+				$this->_related[$name] = array();
+			}
+			elseif ($relation instanceof CStatRelation)
+			{
+				$this->_related[$name] = $relation->defaultValue;
+			}
+			else
+			{
+				$this->_related[$name] = null;
+			}
+		}
+
+		if ($params !== array()) {
+			$results = $this->_related[$name];
+			if ($exists) {
+				$this->_related[$name] = $save;
+			}
+			else
+			{
+				unset($this->_related[$name]);
+			}
+			return $results;
+		} else
+		{
+			return $this->_related[$name];
+		}
+	}
+
+	/**
+	 * Returns a value indicating whether the named related object(s) has been loaded.
+	 * @param string $name the relation name
+	 * @return boolean a value indicating whether the named related object(s) has been loaded.
+	 */
+	public function hasRelated($name)
+	{
+		return isset($this->_related[$name]) || array_key_exists($name, $this->_related);
 	}
 
 	/**
@@ -579,43 +523,23 @@ abstract class ActiveRecord extends \yii\base\Model
 	public function getAttributeLabel($attribute)
 	{
 		$labels = $this->attributeLabels();
-		if (isset($labels[$attribute]))
+		if (isset($labels[$attribute])) {
 			return $labels[$attribute];
-		elseif (strpos($attribute, '.') !== false)
-		{
+		} elseif (strpos($attribute, '.') !== false) {
 			$segs = explode('.', $attribute);
 			$name = array_pop($segs);
 			$model = $this;
-			foreach ($segs as $seg)
-			{
+			foreach ($segs as $seg) {
 				$relations = $model->getMetaData()->relations;
-				if (isset($relations[$seg]))
+				if (isset($relations[$seg])) {
 					$model = ActiveRecord::model($relations[$seg]->className);
-				else
+				} else {
 					break;
+				}
 			}
 			return $model->getAttributeLabel($name);
-		} else
+		} else {
 			return $this->generateAttributeLabel($attribute);
-	}
-
-	/**
-	 * Returns the database connection used by active record.
-	 * By default, the "db" application component is used as the database connection.
-	 * You may override this method if you want to use a different database connection.
-	 * @return CDbConnection the database connection used by active record.
-	 */
-	public function getDbConnection()
-	{
-		if (self::$db !== null)
-			return self::$db;
-		else
-		{
-			self::$db = \Yii::$application->getDb();
-			if (self::$db instanceof CDbConnection)
-				return self::$db;
-			else
-				throw new CDbException(Yii::t('yii', 'Active Record requires a "db" CDbConnection application component.'));
 		}
 	}
 
@@ -636,15 +560,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	public function getTableSchema()
 	{
 		return $this->getMetaData()->tableSchema;
-	}
-
-	/**
-	 * Returns the command builder used by this AR.
-	 * @return CDbCommandBuilder the command builder used by this AR
-	 */
-	public function getCommandBuilder()
-	{
-		return $this->getDbConnection()->getSchema()->getCommandBuilder();
 	}
 
 	/**
@@ -670,10 +585,13 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function getAttribute($name)
 	{
-		if (property_exists($this, $name))
+		if (property_exists($this, $name)) {
 			return $this->$name;
+		}
 		elseif (isset($this->_attributes[$name]))
+		{
 			return $this->_attributes[$name];
+		}
 	}
 
 	/**
@@ -686,39 +604,18 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function setAttribute($name, $value)
 	{
-		if (property_exists($this, $name))
+		if (property_exists($this, $name)) {
 			$this->$name = $value;
-		elseif (isset($this->getMetaData()->columns[$name]))
-			$this->_attributes[$name] = $value;
-		else
-			return false;
-		return true;
-	}
-
-	/**
-	 * Do not call this method. This method is used internally by {@link CActiveFinder} to populate
-	 * related objects. This method adds a related object to this record.
-	 * @param string $name attribute name
-	 * @param mixed $record the related record
-	 * @param mixed $index the index value in the related object collection.
-	 * If true, it means using zero-based integer index.
-	 * If false, it means a HAS_ONE or BELONGS_TO object and no index is needed.
-	 */
-	public function addRelatedRecord($name, $record, $index)
-	{
-		if ($index !== false)
+		}
+		elseif (isset($this->getMetaData()->table->columns[$name]))
 		{
-			if (!isset($this->_related[$name]))
-				$this->_related[$name] = array();
-			if ($record instanceof ActiveRecord)
-			{
-				if ($index === true)
-					$this->_related[$name][] = $record;
-				else
-					$this->_related[$name][$index] = $record;
-			}
-		} elseif (!isset($this->_related[$name]))
-			$this->_related[$name] = $record;
+			$this->_attributes[$name] = $value;
+		}
+		else
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -735,24 +632,31 @@ abstract class ActiveRecord extends \yii\base\Model
 		$attributes = $this->_attributes;
 		foreach ($this->getMetaData()->columns as $name => $column)
 		{
-			if (property_exists($this, $name))
+			if (property_exists($this, $name)) {
 				$attributes[$name] = $this->$name;
+			}
 			elseif ($names === true && !isset($attributes[$name]))
+			{
 				$attributes[$name] = null;
+			}
 		}
-		if (is_array($names))
-		{
+		if (is_array($names)) {
 			$attrs = array();
 			foreach ($names as $name)
 			{
-				if (property_exists($this, $name))
+				if (property_exists($this, $name)) {
 					$attrs[$name] = $this->$name;
+				}
 				else
+				{
 					$attrs[$name] = isset($attributes[$name]) ? $attributes[$name] : null;
+				}
 			}
 			return $attrs;
 		} else
+		{
 			return $attributes;
+		}
 	}
 
 	/**
@@ -780,10 +684,13 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function save($runValidation = true, $attributes = null)
 	{
-		if (!$runValidation || $this->validate($attributes))
+		if (!$runValidation || $this->validate($attributes)) {
 			return $this->getIsNewRecord() ? $this->insert($attributes) : $this->update($attributes);
+		}
 		else
+		{
 			return false;
+		}
 	}
 
 	/**
@@ -847,29 +754,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
-	 * This event is raised before an AR finder performs a find call.
-	 * In this event, the {@link CModelEvent::criteria} property contains the query criteria
-	 * passed as parameters to those find methods. If you want to access
-	 * the query criteria specified in scopes, please use {@link getDbCriteria()}.
-	 * You can modify either criteria to customize them based on needs.
-	 * @param CModelEvent $event the event parameter
-	 * @see beforeFind
-	 */
-	public function onBeforeFind($event)
-	{
-		$this->raiseEvent('onBeforeFind', $event);
-	}
-
-	/**
-	 * This event is raised after the record is instantiated by a find method.
-	 * @param CEvent $event the event parameter
-	 */
-	public function onAfterFind($event)
-	{
-		$this->raiseEvent('onAfterFind', $event);
-	}
-
-	/**
 	 * This method is invoked before saving a record (after validation, if any).
 	 * The default implementation raises the {@link onBeforeSave} event.
 	 * You may override this method to do any preparation work for record saving.
@@ -880,13 +764,14 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	protected function beforeSave()
 	{
-		if ($this->hasEventHandler('onBeforeSave'))
-		{
+		if ($this->hasEventHandler('onBeforeSave')) {
 			$event = new CModelEvent($this);
 			$this->onBeforeSave($event);
 			return $event->isValid;
 		} else
+		{
 			return true;
+		}
 	}
 
 	/**
@@ -897,8 +782,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	protected function afterSave()
 	{
-		if ($this->hasEventHandler('onAfterSave'))
+		if ($this->hasEventHandler('onAfterSave')) {
 			$this->onAfterSave(new CEvent($this));
+		}
 	}
 
 	/**
@@ -910,13 +796,14 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	protected function beforeDelete()
 	{
-		if ($this->hasEventHandler('onBeforeDelete'))
-		{
+		if ($this->hasEventHandler('onBeforeDelete')) {
 			$event = new CModelEvent($this);
 			$this->onBeforeDelete($event);
 			return $event->isValid;
 		} else
+		{
 			return true;
+		}
 	}
 
 	/**
@@ -927,8 +814,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	protected function afterDelete()
 	{
-		if ($this->hasEventHandler('onAfterDelete'))
+		if ($this->hasEventHandler('onAfterDelete')) {
 			$this->onAfterDelete(new CEvent($this));
+		}
 	}
 
 	/**
@@ -944,8 +832,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	protected function beforeFind()
 	{
-		if ($this->hasEventHandler('onBeforeFind'))
-		{
+		if ($this->hasEventHandler('onBeforeFind')) {
 			$event = new CModelEvent($this);
 			// for backward compatibility
 			$event->criteria = func_num_args() > 0 ? func_get_arg(0) : null;
@@ -961,26 +848,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	protected function afterFind()
 	{
-		if ($this->hasEventHandler('onAfterFind'))
+		if ($this->hasEventHandler('onAfterFind')) {
 			$this->onAfterFind(new CEvent($this));
-	}
-
-	/**
-	 * Calls {@link beforeFind}.
-	 * This method is internally used.
-	 */
-	public function beforeFindInternal()
-	{
-		$this->beforeFind();
-	}
-
-	/**
-	 * Calls {@link afterFind}.
-	 * This method is internally used.
-	 */
-	public function afterFindInternal()
-	{
-		$this->afterFind();
+		}
 	}
 
 	/**
@@ -997,27 +867,25 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function insert($attributes = null)
 	{
-		if (!$this->getIsNewRecord())
-			throw new CDbException(Yii::t('yii', 'The active record cannot be inserted to database because it is not new.'));
-		if ($this->beforeSave())
-		{
+		if (!$this->getIsNewRecord()) {
+			throw new Exception(Yii::t('yii', 'The active record cannot be inserted to database because it is not new.'));
+		}
+		if ($this->beforeSave()) {
 			Yii::trace(get_class($this) . '.insert()', 'system.db.ar.ActiveRecord');
 			$builder = $this->getCommandBuilder();
 			$table = $this->getMetaData()->tableSchema;
 			$command = $builder->createInsertCommand($table, $this->getAttributes($attributes));
-			if ($command->execute())
-			{
+			if ($command->execute()) {
 				$primaryKey = $table->primaryKey;
-				if ($table->sequenceName !== null)
-				{
-					if (is_string($primaryKey) && $this->$primaryKey === null)
+				if ($table->sequenceName !== null) {
+					if (is_string($primaryKey) && $this->$primaryKey === null) {
 						$this->$primaryKey = $builder->getLastInsertID($table);
+					}
 					elseif (is_array($primaryKey))
 					{
 						foreach ($primaryKey as $pk)
 						{
-							if ($this->$pk === null)
-							{
+							if ($this->$pk === null) {
 								$this->$pk = $builder->getLastInsertID($table);
 								break;
 							}
@@ -1045,19 +913,22 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function update($attributes = null)
 	{
-		if ($this->getIsNewRecord())
-			throw new CDbException(Yii::t('yii', 'The active record cannot be updated because it is new.'));
-		if ($this->beforeSave())
-		{
+		if ($this->getIsNewRecord()) {
+			throw new Exception(Yii::t('yii', 'The active record cannot be updated because it is new.'));
+		}
+		if ($this->beforeSave()) {
 			Yii::trace(get_class($this) . '.update()', 'system.db.ar.ActiveRecord');
-			if ($this->_pk === null)
+			if ($this->_pk === null) {
 				$this->_pk = $this->getPrimaryKey();
+			}
 			$this->updateByPk($this->getOldPrimaryKey(), $this->getAttributes($attributes));
 			$this->_pk = $this->getPrimaryKey();
 			$this->afterSave();
 			return true;
 		} else
+		{
 			return false;
+		}
 	}
 
 	/**
@@ -1080,27 +951,33 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function saveAttributes($attributes)
 	{
-		if (!$this->getIsNewRecord())
-		{
+		if (!$this->getIsNewRecord()) {
 			Yii::trace(get_class($this) . '.saveAttributes()', 'system.db.ar.ActiveRecord');
 			$values = array();
 			foreach ($attributes as $name => $value)
 			{
-				if (is_integer($name))
+				if (is_integer($name)) {
 					$values[$value] = $this->$value;
+				}
 				else
+				{
 					$values[$name] = $this->$name = $value;
+				}
 			}
-			if ($this->_pk === null)
+			if ($this->_pk === null) {
 				$this->_pk = $this->getPrimaryKey();
-			if ($this->updateByPk($this->getOldPrimaryKey(), $values) > 0)
-			{
+			}
+			if ($this->updateByPk($this->getOldPrimaryKey(), $values) > 0) {
 				$this->_pk = $this->getPrimaryKey();
 				return true;
 			} else
+			{
 				return false;
+			}
 		} else
-			throw new CDbException(Yii::t('yii', 'The active record cannot be updated because it is new.'));
+		{
+			throw new Exception(Yii::t('yii', 'The active record cannot be updated because it is new.'));
+		}
 	}
 
 	/**
@@ -1124,13 +1001,16 @@ abstract class ActiveRecord extends \yii\base\Model
 		$table = $this->getTableSchema();
 		$criteria = $builder->createPkCriteria($table, $this->getOldPrimaryKey());
 		$command = $builder->createUpdateCounterCommand($this->getTableSchema(), $counters, $criteria);
-		if ($command->execute())
-		{
+		if ($command->execute()) {
 			foreach ($counters as $name => $value)
+			{
 				$this->$name = $this->$name + $value;
+			}
 			return true;
 		} else
+		{
 			return false;
+		}
 	}
 
 	/**
@@ -1140,18 +1020,20 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function delete()
 	{
-		if (!$this->getIsNewRecord())
-		{
+		if (!$this->getIsNewRecord()) {
 			Yii::trace(get_class($this) . '.delete()', 'system.db.ar.ActiveRecord');
-			if ($this->beforeDelete())
-			{
+			if ($this->beforeDelete()) {
 				$result = $this->deleteByPk($this->getPrimaryKey()) > 0;
 				$this->afterDelete();
 				return $result;
 			} else
+			{
 				return false;
+			}
 		} else
-			throw new CDbException(Yii::t('yii', 'The active record cannot be deleted because it is new.'));
+		{
+			throw new Exception(Yii::t('yii', 'The active record cannot be deleted because it is new.'));
+		}
 	}
 
 	/**
@@ -1161,20 +1043,24 @@ abstract class ActiveRecord extends \yii\base\Model
 	public function refresh()
 	{
 		Yii::trace(get_class($this) . '.refresh()', 'system.db.ar.ActiveRecord');
-		if (!$this->getIsNewRecord() && ($record = $this->findByPk($this->getPrimaryKey())) !== null)
-		{
+		if (!$this->getIsNewRecord() && ($record = $this->findByPk($this->getPrimaryKey())) !== null) {
 			$this->_attributes = array();
 			$this->_related = array();
 			foreach ($this->getMetaData()->columns as $name => $column)
 			{
-				if (property_exists($this, $name))
+				if (property_exists($this, $name)) {
 					$this->$name = $record->$name;
+				}
 				else
+				{
 					$this->_attributes[$name] = $record->$name;
+				}
 			}
 			return true;
 		} else
+		{
 			return false;
+		}
 	}
 
 	/**
@@ -1195,17 +1081,22 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function getPrimaryKey()
 	{
-		$table = $this->getMetaData()->tableSchema;
-		if (is_string($table->primaryKey))
-			return $this-> {$table->primaryKey};
+		$table = static::getMetaData()->table;
+		if (is_string($table->primaryKey)) {
+			return $this->{$table->primaryKey};
+		}
 		elseif (is_array($table->primaryKey))
 		{
 			$values = array();
 			foreach ($table->primaryKey as $name)
+			{
 				$values[$name] = $this->$name;
+			}
 			return $values;
 		} else
+		{
 			return null;
+		}
 	}
 
 	/**
@@ -1218,12 +1109,15 @@ abstract class ActiveRecord extends \yii\base\Model
 	{
 		$this->_pk = $this->getPrimaryKey();
 		$table = $this->getMetaData()->tableSchema;
-		if (is_string($table->primaryKey))
-			$this-> {$table->primaryKey} = $value;
+		if (is_string($table->primaryKey)) {
+			$this->{$table->primaryKey} = $value;
+		}
 		elseif (is_array($table->primaryKey))
 		{
 			foreach ($table->primaryKey as $name)
+			{
 				$this->$name = $value[$name];
+			}
 		}
 	}
 
@@ -1250,503 +1144,6 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
-	 * Performs the actual DB query and populates the AR objects with the query result.
-	 * This method is mainly internally used by other AR query methods.
-	 * @param CDbCriteria $criteria the query criteria
-	 * @param boolean $all whether to return all data
-	 * @return mixed the AR objects populated with the query result
-	 */
-	protected function query($criteria, $all = false)
-	{
-        $this->beforeFind();
-		$this->applyScopes($criteria);
-		if (empty($criteria->with))
-		{
-			if (!$all)
-				$criteria->limit = 1;
-			$command = $this->getCommandBuilder()->createFindCommand($this->getTableSchema(), $criteria);
-			return $all ? $this->populateRecords($command->queryAll(), true, $criteria->index) : $this->populateRecord($command->queryRow());
-		} else
-		{
-			$finder = new CActiveFinder($this, $criteria->with);
-			return $finder->query($criteria, $all);
-		}
-	}
-
-	/**
-	 * Applies the query scopes to the given criteria.
-	 * This method merges {@link dbCriteria} with the given criteria parameter.
-	 * It then resets {@link dbCriteria} to be null.
-	 * @param CDbCriteria $criteria the query criteria. This parameter may be modified by merging {@link dbCriteria}.
-	 */
-	public function applyScopes(&$criteria)
-	{
-		if (!empty($criteria->scopes))
-		{
-			$scs = $this->scopes();
-			$c = $this->getDbCriteria();
-			foreach ((array)$criteria->scopes as $k => $v)
-			{
-				if (is_integer($k))
-				{
-					if (is_string($v))
-					{
-						if (isset($scs[$v]))
-						{
-							$c->mergeWith($scs[$v], true);
-							continue;
-						}
-						$scope = $v;
-						$params = array();
-					} elseif (is_array($v))
-					{
-						$scope = key($v);
-						$params = current($v);
-					}
-				} elseif (is_string($k))
-				{
-					$scope = $k;
-					$params = $v;
-				}
-
-				call_user_func_array(array($this, $scope), (array)$params);
-			}
-		}
-
-		if (isset($c) || ($c = $this->getDbCriteria(false)) !== null)
-		{
-			$c->mergeWith($criteria);
-			$criteria = $c;
-			$this->_c = null;
-		}
-	}
-
-	/**
-	 * Returns the table alias to be used by the find methods.
-	 * In relational queries, the returned table alias may vary according to
-	 * the corresponding relation declaration. Also, the default table alias
-	 * set by {@link setTableAlias} may be overridden by the applied scopes.
-	 * @param boolean $quote whether to quote the alias name
-	 * @param boolean $checkScopes whether to check if a table alias is defined in the applied scopes so far.
-	 * This parameter must be set false when calling this method in {@link defaultScope}.
-	 * An infinite loop would be formed otherwise.
-	 * @return string the default table alias
-	 */
-	public function getTableAlias($quote = false, $checkScopes = true)
-	{
-		if ($checkScopes && ($criteria = $this->getDbCriteria(false)) !== null && $criteria->alias != '')
-			$alias = $criteria->alias;
-		else
-			$alias = $this->_alias;
-		return $quote ? $this->getDbConnection()->getSchema()->quoteTableName($alias) : $alias;
-	}
-
-	/**
-	 * Sets the table alias to be used in queries.
-	 * @param string $alias the table alias to be used in queries. The alias should NOT be quoted.
-	 */
-	public function setTableAlias($alias)
-	{
-		$this->_alias = $alias;
-	}
-
-	/**
-	 * Finds a single active record with the specified condition.
-	 * @param mixed $condition query condition or criteria.
-	 * If a string, it is treated as query condition (the WHERE clause);
-	 * If an array, it is treated as the initial values for constructing a {@link CDbCriteria} object;
-	 * Otherwise, it should be an instance of {@link CDbCriteria}.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * This is only used when the first parameter is a string (query condition).
-	 * In other cases, please use {@link CDbCriteria::params} to set parameters.
-	 * @return ActiveRecord the record found. Null if no record is found.
-	 */
-	public function find($condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.find()', 'system.db.ar.ActiveRecord');
-		$criteria = $this->getCommandBuilder()->createCriteria($condition, $params);
-		return $this->query($criteria);
-	}
-
-	/**
-	 * Finds all active records satisfying the specified condition.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return array list of active records satisfying the specified condition. An empty array is returned if none is found.
-	 */
-	public function findAll($condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.findAll()', 'system.db.ar.ActiveRecord');
-		$criteria = $this->getCommandBuilder()->createCriteria($condition, $params);
-		return $this->query($criteria, true);
-	}
-
-	/**
-	 * Finds a single active record with the specified primary key.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param mixed $pk primary key value(s). Use array for multiple primary keys. For composite key, each key value must be an array (column name=>column value).
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return ActiveRecord the record found. Null if none is found.
-	 */
-	public function findByPk($pk, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.findByPk()', 'system.db.ar.ActiveRecord');
-		$prefix = $this->getTableAlias(true) . '.';
-		$criteria = $this->getCommandBuilder()->createPkCriteria($this->getTableSchema(), $pk, $condition, $params, $prefix);
-		return $this->query($criteria);
-	}
-
-	/**
-	 * Finds all active records with the specified primary keys.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param mixed $pk primary key value(s). Use array for multiple primary keys. For composite key, each key value must be an array (column name=>column value).
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return array the records found. An empty array is returned if none is found.
-	 */
-	public function findAllByPk($pk, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.findAllByPk()', 'system.db.ar.ActiveRecord');
-		$prefix = $this->getTableAlias(true) . '.';
-		$criteria = $this->getCommandBuilder()->createPkCriteria($this->getTableSchema(), $pk, $condition, $params, $prefix);
-		return $this->query($criteria, true);
-	}
-
-	/**
-	 * Finds a single active record that has the specified attribute values.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param array $attributes list of attribute values (indexed by attribute names) that the active records should match.
-	 * Since version 1.0.8, an attribute value can be an array which will be used to generate an IN condition.
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return ActiveRecord the record found. Null if none is found.
-	 */
-	public function findByAttributes($attributes, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.findByAttributes()', 'system.db.ar.ActiveRecord');
-		$prefix = $this->getTableAlias(true) . '.';
-		$criteria = $this->getCommandBuilder()->createColumnCriteria($this->getTableSchema(), $attributes, $condition, $params, $prefix);
-		return $this->query($criteria);
-	}
-
-	/**
-	 * Finds all active records that have the specified attribute values.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param array $attributes list of attribute values (indexed by attribute names) that the active records should match.
-	 * Since version 1.0.8, an attribute value can be an array which will be used to generate an IN condition.
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return array the records found. An empty array is returned if none is found.
-	 */
-	public function findAllByAttributes($attributes, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.findAllByAttributes()', 'system.db.ar.ActiveRecord');
-		$prefix = $this->getTableAlias(true) . '.';
-		$criteria = $this->getCommandBuilder()->createColumnCriteria($this->getTableSchema(), $attributes, $condition, $params, $prefix);
-		return $this->query($criteria, true);
-	}
-
-	/**
-	 * Finds a single active record with the specified SQL statement.
-	 * @param string $sql the SQL statement
-	 * @param array $params parameters to be bound to the SQL statement
-	 * @return ActiveRecord the record found. Null if none is found.
-	 */
-	public function findBySql($sql, $params = array())
-	{
-		Yii::trace(get_class($this) . '.findBySql()', 'system.db.ar.ActiveRecord');
-		$this->beforeFind();
-		if (($criteria = $this->getDbCriteria(false)) !== null && !empty($criteria->with))
-		{
-			$this->_c = null;
-			$finder = new CActiveFinder($this, $criteria->with);
-			return $finder->findBySql($sql, $params);
-		} else
-		{
-			$command = $this->getCommandBuilder()->createSqlCommand($sql, $params);
-			return $this->populateRecord($command->queryRow());
-		}
-	}
-
-	/**
-	 * Finds all active records using the specified SQL statement.
-	 * @param string $sql the SQL statement
-	 * @param array $params parameters to be bound to the SQL statement
-	 * @return array the records found. An empty array is returned if none is found.
-	 */
-	public function findAllBySql($sql, $params = array())
-	{
-		Yii::trace(get_class($this) . '.findAllBySql()', 'system.db.ar.ActiveRecord');
-		$this->beforeFind();
-		if (($criteria = $this->getDbCriteria(false)) !== null && !empty($criteria->with))
-		{
-			$this->_c = null;
-			$finder = new CActiveFinder($this, $criteria->with);
-			return $finder->findAllBySql($sql, $params);
-		} else
-		{
-			$command = $this->getCommandBuilder()->createSqlCommand($sql, $params);
-			return $this->populateRecords($command->queryAll());
-		}
-	}
-
-	/**
-	 * Finds the number of rows satisfying the specified query condition.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return string the number of rows satisfying the specified query condition. Note: type is string to keep max. precision.
-	 */
-	public function count($condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.count()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$criteria = $builder->createCriteria($condition, $params);
-		$this->applyScopes($criteria);
-
-		if (empty($criteria->with))
-			return $builder->createCountCommand($this->getTableSchema(), $criteria)->queryScalar();
-		else
-		{
-			$finder = new CActiveFinder($this, $criteria->with);
-			return $finder->count($criteria);
-		}
-	}
-
-	/**
-	 * Finds the number of rows that have the specified attribute values.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param array $attributes list of attribute values (indexed by attribute names) that the active records should match.
-	 * An attribute value can be an array which will be used to generate an IN condition.
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return string the number of rows satisfying the specified query condition. Note: type is string to keep max. precision.
-	 */
-	public function countByAttributes($attributes, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.countByAttributes()', 'system.db.ar.ActiveRecord');
-		$prefix = $this->getTableAlias(true) . '.';
-		$builder = $this->getCommandBuilder();
-		$criteria = $builder->createColumnCriteria($this->getTableSchema(), $attributes, $condition, $params, $prefix);
-		$this->applyScopes($criteria);
-
-		if (empty($criteria->with))
-			return $builder->createCountCommand($this->getTableSchema(), $criteria)->queryScalar();
-		else
-		{
-			$finder = new CActiveFinder($this, $criteria->with);
-			return $finder->count($criteria);
-		}
-	}
-
-	/**
-	 * Finds the number of rows using the given SQL statement.
-	 * This is equivalent to calling {@link CDbCommand::queryScalar} with the specified
-	 * SQL statement and the parameters.
-	 * @param string $sql the SQL statement
-	 * @param array $params parameters to be bound to the SQL statement
-	 * @return string the number of rows using the given SQL statement. Note: type is string to keep max. precision.
-	 */
-	public function countBySql($sql, $params = array())
-	{
-		Yii::trace(get_class($this) . '.countBySql()', 'system.db.ar.ActiveRecord');
-		return $this->getCommandBuilder()->createSqlCommand($sql, $params)->queryScalar();
-	}
-
-	/**
-	 * Checks whether there is row satisfying the specified condition.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return boolean whether there is row satisfying the specified condition.
-	 */
-	public function exists($condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.exists()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$criteria = $builder->createCriteria($condition, $params);
-		$table = $this->getTableSchema();
-		$criteria->select = '1';
-		$criteria->limit = 1;
-		$this->applyScopes($criteria);
-
-		if (empty($criteria->with))
-			return $builder->createFindCommand($table, $criteria)->queryRow() !== false;
-		else
-		{
-			$criteria->select = '*';
-			$finder = new CActiveFinder($this, $criteria->with);
-			return $finder->count($criteria) > 0;
-		}
-	}
-
-	/**
-	 * Specifies which related objects should be eagerly loaded.
-	 * This method takes variable number of parameters. Each parameter specifies
-	 * the name of a relation or child-relation. For example,
-	 * <pre>
-	 * // find all posts together with their author and comments
-	 * Post::model()->with('author','comments')->findAll();
-	 * // find all posts together with their author and the author's profile
-	 * Post::model()->with('author','author.profile')->findAll();
-	 * </pre>
-	 * The relations should be declared in {@link relations()}.
-	 *
-	 * By default, the options specified in {@link relations()} will be used
-	 * to do relational query. In order to customize the options on the fly,
-	 * we should pass an array parameter to the with() method. The array keys
-	 * are relation names, and the array values are the corresponding query options.
-	 * For example,
-	 * <pre>
-	 * Post::model()->with(array(
-	 *     'author'=>array('select'=>'id, name'),
-	 *     'comments'=>array('condition'=>'approved=1', 'order'=>'create_time'),
-	 * ))->findAll();
-	 * </pre>
-	 *
-	 * Note, the possible parameters to this method have been changed since version 1.0.2.
-	 * Previously, it was not possible to specify on-th-fly query options,
-	 * and child-relations were specified as hierarchical arrays.
-	 *
-	 * @return ActiveRecord the AR object itself.
-	 */
-	public function with()
-	{
-		if (func_num_args() > 0)
-		{
-			$with = func_get_args();
-			if (is_array($with[0]))  // the parameter is given as an array
-				$with = $with[0];
-			if (!empty($with))
-				$this->getDbCriteria()->mergeWith(array('with' => $with));
-		}
-		return $this;
-	}
-
-	/**
-	 * Sets {@link CDbCriteria::together} property to be true.
-	 * This is only used in relational AR query. Please refer to {@link CDbCriteria::together}
-	 * for more details.
-	 * @return ActiveRecord the AR object itself
-	 */
-	public function together()
-	{
-		$this->getDbCriteria()->together = true;
-		return $this;
-	}
-
-	/**
-	 * Updates records with the specified primary key(s).
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * Note, the attributes are not checked for safety and validation is NOT performed.
-	 * @param mixed $pk primary key value(s). Use array for multiple primary keys. For composite key, each key value must be an array (column name=>column value).
-	 * @param array $attributes list of attributes (name=>$value) to be updated
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return integer the number of rows being updated
-	 */
-	public function updateByPk($pk, $attributes, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.updateByPk()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$table = $this->getTableSchema();
-		$criteria = $builder->createPkCriteria($table, $pk, $condition, $params);
-		$command = $builder->createUpdateCommand($table, $attributes, $criteria);
-		return $command->execute();
-	}
-
-	/**
-	 * Updates records with the specified condition.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * Note, the attributes are not checked for safety and no validation is done.
-	 * @param array $attributes list of attributes (name=>$value) to be updated
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return integer the number of rows being updated
-	 */
-	public function updateAll($attributes, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.updateAll()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$criteria = $builder->createCriteria($condition, $params);
-		$command = $builder->createUpdateCommand($this->getTableSchema(), $attributes, $criteria);
-		return $command->execute();
-	}
-
-	/**
-	 * Updates one or several counter columns.
-	 * Note, this updates all rows of data unless a condition or criteria is specified.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param array $counters the counters to be updated (column name=>increment value)
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return integer the number of rows being updated
-	 * @see saveCounters
-	 */
-	public function updateCounters($counters, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.updateCounters()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$criteria = $builder->createCriteria($condition, $params);
-		$command = $builder->createUpdateCounterCommand($this->getTableSchema(), $counters, $criteria);
-		return $command->execute();
-	}
-
-	/**
-	 * Deletes rows with the specified primary key.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param mixed $pk primary key value(s). Use array for multiple primary keys. For composite key, each key value must be an array (column name=>column value).
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return integer the number of rows deleted
-	 */
-	public function deleteByPk($pk, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.deleteByPk()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$criteria = $builder->createPkCriteria($this->getTableSchema(), $pk, $condition, $params);
-		$command = $builder->createDeleteCommand($this->getTableSchema(), $criteria);
-		return $command->execute();
-	}
-
-	/**
-	 * Deletes rows with the specified condition.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return integer the number of rows deleted
-	 */
-	public function deleteAll($condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.deleteAll()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$criteria = $builder->createCriteria($condition, $params);
-		$command = $builder->createDeleteCommand($this->getTableSchema(), $criteria);
-		return $command->execute();
-	}
-
-	/**
-	 * Deletes rows which match the specified attribute values.
-	 * See {@link find()} for detailed explanation about $condition and $params.
-	 * @param array $attributes list of attribute values (indexed by attribute names) that the active records should match.
-	 * Since version 1.0.8, an attribute value can be an array which will be used to generate an IN condition.
-	 * @param mixed $condition query condition or criteria.
-	 * @param array $params parameters to be bound to an SQL statement.
-	 * @return integer number of rows affected by the execution.
-	 */
-	public function deleteAllByAttributes($attributes, $condition = '', $params = array())
-	{
-		Yii::trace(get_class($this) . '.deleteAllByAttributes()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$table = $this->getTableSchema();
-		$criteria = $builder->createColumnCriteria($table, $attributes, $condition, $params);
-		$command = $builder->createDeleteCommand($table, $criteria);
-		return $command->execute();
-	}
-
-	/**
 	 * Creates an active record with the given attributes.
 	 * This method is internally used by the find methods.
 	 * @param array $attributes attribute values (column name=>column value)
@@ -1755,54 +1152,20 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @return ActiveRecord the newly created active record. The class of the object is the same as the model class.
 	 * Null is returned if the input data is false.
 	 */
-	public function populateRecord($attributes, $callAfterFind = true)
+	public static function populateRecord($row)
 	{
-		if ($attributes !== false)
-		{
-			$record = $this->instantiate($attributes);
-			$record->setScenario('update');
-			$record->init();
-			$md = $record->getMetaData();
-			foreach ($attributes as $name => $value)
-			{
-				if (property_exists($record, $name))
-					$record->$name = $value;
-				elseif (isset($md->columns[$name]))
-					$record->_attributes[$name] = $value;
-			}
-			$record->_pk = $record->getPrimaryKey();
-			$record->attachBehaviors($record->behaviors());
-			if ($callAfterFind)
-				$record->afterFind();
-			return $record;
-		} else
-			return null;
-	}
-
-	/**
-	 * Creates a list of active records based on the input data.
-	 * This method is internally used by the find methods.
-	 * @param array $data list of attribute values for the active records.
-	 * @param boolean $callAfterFind whether to call {@link afterFind} after each record is populated.
-	 * This parameter is added in version 1.0.3.
-	 * @param string $index the name of the attribute whose value will be used as indexes of the query result array.
-	 * If null, it means the array will be indexed by zero-based integers.
-	 * @return array list of active records.
-	 */
-	public function populateRecords($data, $callAfterFind = true, $index = null)
-	{
-		$records = array();
-		foreach ($data as $attributes)
-		{
-			if (($record = $this->populateRecord($attributes, $callAfterFind)) !== null)
-			{
-				if ($index === null)
-					$records[] = $record;
-				else
-					$records[$record->$index] = $record;
+		$record = static::instantiate($row);
+		$record->setScenario('update');
+		$columns = static::getMetaData()->table->columns;
+		foreach ($row as $name => $value) {
+			if (property_exists($record, $name)) {
+				$record->$name = $value;
+			} elseif (isset($columns[$name])) {
+				$record->_attributes[$name] = $value;
 			}
 		}
-		return $records;
+		$record->_pk = $record->getPrimaryKey();
+		return $record;
 	}
 
 	/**
@@ -1815,11 +1178,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param array $attributes list of attribute values for the active records.
 	 * @return ActiveRecord the active record
 	 */
-	protected function instantiate($attributes)
+	protected static function instantiate($row)
 	{
-		$class = get_class($this);
-		$model = new $class(null);
-		return $model;
+		return static::newInstance();
 	}
 
 	/**
@@ -1839,7 +1200,7 @@ abstract class ActiveRecord extends \yii\base\Model
  * CBaseActiveRelation is the base class for all active relations.
  * @author Qiang Xue <qiang.xue@gmail.com>
  */
-class CBaseActiveRelation extends CComponent
+class CBaseActiveRelation extends \yii\base\Component
 {
 	/**
 	 * @var string name of the related object
@@ -1903,7 +1264,9 @@ class CBaseActiveRelation extends CComponent
 		$this->className = $className;
 		$this->foreignKey = $foreignKey;
 		foreach ($options as $name => $value)
+		{
 			$this->$name = $value;
+		}
 	}
 
 	/**
@@ -1913,12 +1276,13 @@ class CBaseActiveRelation extends CComponent
 	 */
 	public function mergeWith($criteria, $fromScope = false)
 	{
-		if ($criteria instanceof CDbCriteria)
+		if ($criteria instanceof CDbCriteria) {
 			$criteria = $criteria->toArray();
-		if (isset($criteria['select']) && $this->select !== $criteria['select'])
-		{
-			if ($this->select === '*')
+		}
+		if (isset($criteria['select']) && $this->select !== $criteria['select']) {
+			if ($this->select === '*') {
 				$this->select = $criteria['select'];
+			}
 			elseif ($criteria['select'] !== '*')
 			{
 				$select1 = is_string($this->select) ? preg_split('/\s*,\s*/', trim($this->select), -1, PREG_SPLIT_NO_EMPTY) : $this->select;
@@ -1927,47 +1291,58 @@ class CBaseActiveRelation extends CComponent
 			}
 		}
 
-		if (isset($criteria['condition']) && $this->condition !== $criteria['condition'])
-		{
-			if ($this->condition === '')
+		if (isset($criteria['condition']) && $this->condition !== $criteria['condition']) {
+			if ($this->condition === '') {
 				$this->condition = $criteria['condition'];
+			}
 			elseif ($criteria['condition'] !== '')
+			{
 				$this->condition = "( {$this->condition}) AND ( {$criteria['condition']})";
+			}
 		}
 
-		if (isset($criteria['params']) && $this->params !== $criteria['params'])
+		if (isset($criteria['params']) && $this->params !== $criteria['params']) {
 			$this->params = array_merge($this->params, $criteria['params']);
+		}
 
-		if (isset($criteria['order']) && $this->order !== $criteria['order'])
-		{
-			if ($this->order === '')
+		if (isset($criteria['order']) && $this->order !== $criteria['order']) {
+			if ($this->order === '') {
 				$this->order = $criteria['order'];
+			}
 			elseif ($criteria['order'] !== '')
+			{
 				$this->order = $criteria['order'] . ', ' . $this->order;
+			}
 		}
 
-		if (isset($criteria['group']) && $this->group !== $criteria['group'])
-		{
-			if ($this->group === '')
+		if (isset($criteria['group']) && $this->group !== $criteria['group']) {
+			if ($this->group === '') {
 				$this->group = $criteria['group'];
+			}
 			elseif ($criteria['group'] !== '')
+			{
 				$this->group .= ', ' . $criteria['group'];
+			}
 		}
 
-		if (isset($criteria['join']) && $this->join !== $criteria['join'])
-		{
-			if ($this->join === '')
+		if (isset($criteria['join']) && $this->join !== $criteria['join']) {
+			if ($this->join === '') {
 				$this->join = $criteria['join'];
+			}
 			elseif ($criteria['join'] !== '')
+			{
 				$this->join .= ' ' . $criteria['join'];
+			}
 		}
 
-		if (isset($criteria['having']) && $this->having !== $criteria['having'])
-		{
-			if ($this->having === '')
+		if (isset($criteria['having']) && $this->having !== $criteria['having']) {
+			if ($this->having === '') {
 				$this->having = $criteria['having'];
+			}
 			elseif ($criteria['having'] !== '')
+			{
 				$this->having = "( {$this->having}) AND ( {$criteria['having']})";
+			}
 		}
 	}
 }
@@ -1997,12 +1372,14 @@ class CStatRelation extends CBaseActiveRelation
 	 */
 	public function mergeWith($criteria, $fromScope = false)
 	{
-		if ($criteria instanceof CDbCriteria)
+		if ($criteria instanceof CDbCriteria) {
 			$criteria = $criteria->toArray();
+		}
 		parent::mergeWith($criteria, $fromScope);
 
-		if (isset($criteria['defaultValue']))
+		if (isset($criteria['defaultValue'])) {
 			$this->defaultValue = $criteria['defaultValue'];
+		}
 	}
 }
 
@@ -2050,7 +1427,7 @@ class CActiveRelation extends CBaseActiveRelation
 	 * <li>Multiple scopes: 'scopes'=>array('scopeName1','scopeName2').</li>
 	 * </ul>
 	 */
-	 public $scopes;
+	public $scopes;
 
 	/**
 	 * Merges this relation with a criteria specified dynamically.
@@ -2059,41 +1436,49 @@ class CActiveRelation extends CBaseActiveRelation
 	 */
 	public function mergeWith($criteria, $fromScope = false)
 	{
-		if ($criteria instanceof CDbCriteria)
+		if ($criteria instanceof CDbCriteria) {
 			$criteria = $criteria->toArray();
-		if ($fromScope)
-		{
-			if (isset($criteria['condition']) && $this->on !== $criteria['condition'])
-			{
-				if ($this->on === '')
+		}
+		if ($fromScope) {
+			if (isset($criteria['condition']) && $this->on !== $criteria['condition']) {
+				if ($this->on === '') {
 					$this->on = $criteria['condition'];
+				}
 				elseif ($criteria['condition'] !== '')
+				{
 					$this->on = "( {$this->on}) AND ( {$criteria['condition']})";
+				}
 			}
 			unset($criteria['condition']);
 		}
 
 		parent::mergeWith($criteria);
 
-		if (isset($criteria['joinType']))
+		if (isset($criteria['joinType'])) {
 			$this->joinType = $criteria['joinType'];
-
-		if (isset($criteria['on']) && $this->on !== $criteria['on'])
-		{
-			if ($this->on === '')
-				$this->on = $criteria['on'];
-			elseif ($criteria['on'] !== '')
-				$this->on = "( {$this->on}) AND ( {$criteria['on']})";
 		}
 
-		if (isset($criteria['with']))
+		if (isset($criteria['on']) && $this->on !== $criteria['on']) {
+			if ($this->on === '') {
+				$this->on = $criteria['on'];
+			}
+			elseif ($criteria['on'] !== '')
+			{
+				$this->on = "( {$this->on}) AND ( {$criteria['on']})";
+			}
+		}
+
+		if (isset($criteria['with'])) {
 			$this->with = $criteria['with'];
+		}
 
-		if (isset($criteria['alias']))
+		if (isset($criteria['alias'])) {
 			$this->alias = $criteria['alias'];
+		}
 
-		if (isset($criteria['together']))
+		if (isset($criteria['together'])) {
 			$this->together = $criteria['together'];
+		}
 	}
 }
 
@@ -2156,17 +1541,21 @@ class CHasManyRelation extends CActiveRelation
 	 */
 	public function mergeWith($criteria, $fromScope = false)
 	{
-		if ($criteria instanceof CDbCriteria)
+		if ($criteria instanceof CDbCriteria) {
 			$criteria = $criteria->toArray();
+		}
 		parent::mergeWith($criteria, $fromScope);
-		if (isset($criteria['limit']) && $criteria['limit'] > 0)
+		if (isset($criteria['limit']) && $criteria['limit'] > 0) {
 			$this->limit = $criteria['limit'];
+		}
 
-		if (isset($criteria['offset']) && $criteria['offset'] >= 0)
+		if (isset($criteria['offset']) && $criteria['offset'] >= 0) {
 			$this->offset = $criteria['offset'];
+		}
 
-		if (isset($criteria['index']))
+		if (isset($criteria['index'])) {
 			$this->index = $criteria['index'];
+		}
 	}
 }
 
@@ -2182,69 +1571,44 @@ class CManyManyRelation extends CHasManyRelation
 
 
 /**
- * ActiveRecordMetaData represents the meta-data for an Active Record class.
+ * ActiveMetaData represents the meta-data for an Active Record class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveRecordMetaData
+class ActiveMetaData
 {
 	/**
-	 * @var CDbTableSchema the table schema information
+	 * @var TableSchema the table schema information
 	 */
-	public $tableSchema;
-	/**
-	 * @var array table columns
-	 */
-	public $columns;
+	public $table;
 	/**
 	 * @var array list of relations
 	 */
 	public $relations = array();
-	/**
-	 * @var array attribute default values
-	 */
-	public $attributeDefaults = array();
-
-	private $_model;
 
 	/**
 	 * Constructor.
-	 * @param ActiveRecord $model the model instance
+	 * @param string $modelClass the model class name
 	 */
-	public function __construct($model)
+	public function __construct($modelClass)
 	{
-		$this->_model = $model;
-
-		$tableName = $model->tableName();
-		if (($table = $model->getDbConnection()->getSchema()->getTable($tableName)) === null)
-			throw new CDbException(Yii::t('yii', 'The table "{table}" for active record class "{class}" cannot be found in the database.',
-				array('{class}' => get_class($model), '{table}' => $tableName)));
-		if ($table->primaryKey === null)
-		{
-			$table->primaryKey = $model->primaryKey();
-			if (is_string($table->primaryKey) && isset($table->columns[$table->primaryKey]))
-				$table->columns[$table->primaryKey]->isPrimaryKey = true;
-			elseif (is_array($table->primaryKey))
-			{
-				foreach ($table->primaryKey as $name)
-				{
-					if (isset($table->columns[$name]))
-						$table->columns[$name]->isPrimaryKey = true;
-				}
+		$tableName = $modelClass::tableName();
+		$table = $modelClass::getDbConnection()->getDriver()->getTableSchema($tableName);
+		if ($table === null) {
+			throw new Exception("Unable to find table '$tableName' for ActiveRecord class '$modelClass'.");
+		}
+		if ($table->primaryKey === null) {
+			$primaryKey = $modelClass::primaryKey();
+			if ($primaryKey !== null) {
+				$table->fixPrimaryKey($primaryKey);
+			} else {
+				throw new Exception("The table '$tableName' for ActiveRecord class '$modelClass' does not have a primary key.");
 			}
 		}
-		$this->tableSchema = $table;
-		$this->columns = $table->columns;
+		$this->table = $table;
 
-		foreach ($table->columns as $name => $column)
-		{
-			if (!$column->isPrimaryKey && $column->defaultValue !== null)
-				$this->attributeDefaults[$name] = $column->defaultValue;
-		}
-
-		foreach ($model->relations() as $name => $config)
-		{
+		foreach ($modelClass::relations() as $name => $config) {
 			$this->addRelation($name, $config);
 		}
 	}
@@ -2255,38 +1619,18 @@ class ActiveRecordMetaData
 	 * $config is an array with three elements:
 	 * relation type, the related active record class and the foreign key.
 	 *
-	 * @throws CDbException
+	 * @throws Exception
 	 * @param string $name $name Name of the relation.
 	 * @param array $config $config Relation parameters.
-     * @return void
+	 * @return void
 	 */
 	public function addRelation($name, $config)
 	{
-		if (isset($config[0], $config[1], $config[2]))  // relation class, AR class, FK
+		// relation class, AR class, FK
+		if (isset($config[0], $config[1], $config[2])) {
 			$this->relations[$name] = new $config[0]($name, $config[1], $config[2], array_slice($config, 3));
-		else
-			throw new CDbException(Yii::t('yii', 'Active record "{class}" has an invalid configuration for relation "{relation}". It must specify the relation type, the related active record class and the foreign key.', array('{class}' => get_class($this->_model), '{relation}' => $name)));
-	}
-
-	/**
-	 * Checks if there is a relation with specified name defined.
-	 *
-	 * @param string $name $name Name of the relation.
-	 * @return boolean
-	 */
-	public function hasRelation($name)
-	{
-		return isset($this->relations[$name]);
-	}
-
-	/**
-	 * Deletes a relation with specified name.
-	 *
-	 * @param string $name $name
-	 * @return void
-	 */
-	public function removeRelation($name)
-	{
-		unset($this->relations[$name]);
+		} else {
+			throw new Exception(Yii::t('yii', 'Active record "{class}" has an invalid configuration for relation "{relation}". It must specify the relation type, the related active record class and the foreign key.', array('{class}' => get_class($this->_model), '{relation}' => $name)));
+		}
 	}
 }
