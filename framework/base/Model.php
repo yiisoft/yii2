@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use yii\util\Text;
+
 /**
  * Model is the base class for data models.
  *
@@ -22,7 +24,6 @@ namespace yii\base;
  *
  * Model also provides a set of events for further customization:
  *
- * - [[onAfterInit]]: an event raised at the end of [[init()]]
  * - [[onBeforeValidate]]: an event raised at the beginning of [[validate()]]
  * - [[onAfterValidate]]: an event raised at the end of [[validate()]]
  *
@@ -32,7 +33,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements Initable, \IteratorAggregate, \ArrayAccess
+class Model extends Component implements \IteratorAggregate, \ArrayAccess
 {
 	private static $_attributes = array(); // class name => array of attribute names
 	private $_errors; // attribute name => array of errors
@@ -49,50 +50,9 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	}
 
 	/**
-	 * Initializes this model.
-	 *
-	 * This method is required by the [[Initable]] interface. It is invoked by [[\Yii::createObject]]
-	 * after it creates the new model instance and initializes the model properties.
-	 *
-	 * The default implementation calls [[behaviors]] and registers any available behaviors.
-	 * You may override this method with additional initialization logic (e.g. establish DB connection).
-	 * Make sure you call the parent implementation.
-	 */
-	public function init()
-	{
-		$this->attachBehaviors($this->behaviors());
-		$this->afterInit();
-	}
-
-	/**
-	 * Returns a list of behaviors that this model should behave as.
-	 * The return value should be an array of behavior configurations indexed by
-	 * behavior names. Each behavior configuration can be either a string specifying
-	 * the behavior class or an array of the following structure:
-	 *
-	 * ~~~
-	 * 'behaviorName' => array(
-	 *	 'class' => 'BehaviorClass',
-	 *	 'property1' => 'value1',
-	 *	 'property2' => 'value2',
-	 * )
-	 * ~~~
-	 *
-	 * Note that a behavior class must extend from [[Behavior]]. Behaviors declared
-	 * in this method will be attached to the model when [[init]] is invoked.
-	 *
-	 * @return array the behavior configurations.
-	 * @see init
-	 */
-	public function behaviors()
-	{
-		return array();
-	}
-
-	/**
 	 * Returns the list of attribute names.
 	 * By default, this method returns all public non-static properties of the class.
-	 * You may override this method to change the default.
+	 * You may override this method to change the default behavior.
 	 * @return array list of attribute names.
 	 */
 	public function attributeNames()
@@ -116,7 +76,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	/**
 	 * Returns the validation rules for attributes.
 	 *
-	 * Validation rules are used by [[validate]] to check if attribute values are valid.
+	 * Validation rules are used by [[validate()]] to check if attribute values are valid.
 	 * Child classes may override this method to declare different validation rules.
 	 *
 	 * Each rule is an array with the following structure:
@@ -140,26 +100,31 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
 	 *	Please refer to individual validator class API for possible properties.
 	 *
-	 * A validator can be either a model class method or an object.
-	 * If the former, the method must have the following signature:
+	 * A validator can be either an object of a class extending [[\yii\validators\Validator]],
+	 * or a model class method (called *inline validator*) that has the following signature:
 	 *
 	 * ~~~
 	 * // $params refers to validation parameters given in the rule
 	 * function validatorName($attribute, $params)
 	 * ~~~
 	 *
-	 * If the latter, the object must be extending from [[\yii\validators\Validator]].
-	 * Yii provides a set of [[\yii\validators\Validator::builtInValidators|built-in validators]].
-	 * They each have an alias name which can be used when specifying a validation rule.
+	 * Yii also provides a set of [[\yii\validators\Validator::builtInValidators|built-in validators]].
+	 * They each has an alias name which can be used when specifying a validation rule.
 	 *
-	 * The following are some examples:
+	 * Below are some examples:
 	 *
 	 * ~~~
 	 * array(
+	 *   // built-in "required" validator
 	 *	 array('username', 'required'),
+	 *   // built-in "length" validator customized with "min" and "max" properties
 	 *	 array('username', 'length', 'min'=>3, 'max'=>12),
+	 *   // built-in "compare" validator that is used in "register" scenario only
 	 *	 array('password', 'compare', 'compareAttribute'=>'password2', 'on'=>'register'),
+	 *   // an inline validator defined via the "authenticate()" method in the model class
 	 *	 array('password', 'authenticate', 'on'=>'login'),
+	 *   // a validator of class "CaptchaValidator"
+	 *   array('captcha', 'CaptchaValidator'),
 	 * );
 	 * ~~~
 	 *
@@ -180,7 +145,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 * `firstName`, we can declare a label `First Name` which is more user-friendly and can
 	 * be displayed to end users.
 	 *
-	 * By default an attribute label is generated using [[generateAttributeLabel]].
+	 * By default an attribute label is generated using [[generateAttributeLabel()]].
 	 * This method allows you to explicitly specify attribute labels.
 	 *
 	 * Note, in order to inherit labels defined in the parent class, a child class needs to
@@ -197,21 +162,21 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	/**
 	 * Performs the data validation.
 	 *
-	 * This method executes the validation rules as declared in [[rules]].
+	 * This method executes the validation rules as declared in [[rules()]].
 	 * Only the rules applicable to the current [[scenario]] will be executed.
 	 * A rule is considered applicable to a scenario if its `on` option is not set
 	 * or contains the scenario.
 	 *
-	 * This method will call [[beforeValidate]] and [[afterValidate]] before and
-	 * after actual validation, respectively. If [[beforeValidate]] returns false,
-	 * the validation and [[afterValidate]] will be cancelled.
+	 * This method will call [[beforeValidate()]] and [[afterValidate()]] before and
+	 * after actual validation, respectively. If [[beforeValidate()]] returns false,
+	 * the validation and [[afterValidate()]] will be cancelled.
 	 *
-	 * Errors found during the validation can be retrieved via [[getErrors]].
+	 * Errors found during the validation can be retrieved via [[getErrors()]].
 	 *
 	 * @param array $attributes list of attributes that should be validated.
 	 * If this parameter is empty, it means any attribute listed in the applicable
 	 * validation rules should be validated.
-	 * @param boolean $clearErrors whether to call [[clearErrors]] before performing validation
+	 * @param boolean $clearErrors whether to call [[clearErrors()]] before performing validation
 	 * @return boolean whether the validation is successful without any error.
 	 * @see beforeValidate
 	 * @see afterValidate
@@ -229,19 +194,6 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 			return !$this->hasErrors();
 		}
 		return false;
-	}
-
-	/**
-	 * This method is invoked at the end of [[init()]].
-	 * The default implementation raises the [[onAfterInit]] event.
-	 * You may override this method to do postprocessing after model creation.
-	 * Make sure you call the parent implementation so that the event is raised properly.
-	 */
-	public function afterInit()
-	{
-		if ($this->hasEventHandlers('onAfterInit')) {
-			$this->onAfterInit(new Event($this));
-		}
 	}
 
 	/**
@@ -276,24 +228,6 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	}
 
 	/**
-	 * This event is raised by [[init]] when initializing the model.
-	 * @param Event $event the event parameter
-	 */
-	public function onInit($event)
-	{
-		$this->raiseEvent(__FUNCTION__, $event);
-	}
-
-	/**
-	 * This event is raised at the end of [[init()]].
-	 * @param Event $event the event parameter
-	 */
-	public function onAfterInit($event)
-	{
-		$this->raiseEvent(__FUNCTION__, $event);
-	}
-
-	/**
 	 * This event is raised before the validation is performed.
 	 * @param ValidationEvent $event the event parameter
 	 */
@@ -312,9 +246,9 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	}
 
 	/**
-	 * Returns all the validators declared in [[rules]].
+	 * Returns all the validators declared in [[rules()]].
 	 *
-	 * This method differs from [[getActiveValidators]] in that the latter
+	 * This method differs from [[getActiveValidators()]] in that the latter
 	 * only returns the validators applicable to the current [[scenario]].
 	 *
 	 * Because this method returns a [[Vector]] object, you may
@@ -339,7 +273,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 * Returns the validators applicable to the current [[scenario]].
 	 * @param string $attribute the name of the attribute whose applicable validators should be returned.
 	 * If this is null, the validators for ALL attributes in the model will be returned.
-	 * @return array the validators applicable to the current [[scenario]].
+	 * @return \yii\validators\Validator[] the validators applicable to the current [[scenario]].
 	 */
 	public function getActiveValidators($attribute = null)
 	{
@@ -356,8 +290,8 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	}
 
 	/**
-	 * Creates validator objects based on the validation rules specified in [[rules]].
-	 * Unlike [[getValidators]], calling this method each time, it will return a new list of validators.
+	 * Creates validator objects based on the validation rules specified in [[rules()]].
+	 * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
 	 * @return Vector validators
 	 */
 	public function createValidators()
@@ -399,7 +333,7 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 */
 	public function isAttributeSafe($attribute)
 	{
-		$validators = $this->getActiveValidators();
+		$validators = $this->getActiveValidators($attribute);
 		foreach ($validators as $validator) {
 			if (!$validator->safe) {
 				return false;
@@ -523,13 +457,13 @@ class Model extends Component implements Initable, \IteratorAggregate, \ArrayAcc
 	 */
 	public function generateAttributeLabel($name)
 	{
-		return ucwords(trim(strtolower(str_replace(array('-', '_', '.'), ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name)))));
+		return Text::name2words($name, true);
 	}
 
 	/**
 	 * Returns attribute values.
 	 * @param array $names list of attributes whose value needs to be returned.
-	 * Defaults to null, meaning all attributes listed in [[attributeNames]] will be returned.
+	 * Defaults to null, meaning all attributes listed in [[attributeNames()]] will be returned.
 	 * If it is an array, only the attributes in the array will be returned.
 	 * @return array attribute values (name=>value).
 	 */

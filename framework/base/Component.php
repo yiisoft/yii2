@@ -29,12 +29,12 @@ namespace yii\base;
  * Event names are case-insensitive.
  *
  * An event can be attached with one or multiple PHP callbacks, called *event handlers*.
- * One can call [[raiseEvent]] to raise an event. When an event is raised, the attached
+ * One can call [[raiseEvent()]] to raise an event. When an event is raised, the attached
  * event handlers will be invoked automatically in the order they are attached to the event.
  *
  * To attach an event handler to an event, call [[attachEventHandler]]. Alternatively,
  * you can use the assignment syntax: `$component->onClick = $callback;`,
- * where `$callback` refers to a valid PHP callback, which can be one of the followings:
+ * where `$callback` refers to a valid PHP callback which can be one of the followings:
  *
  * - global function: `'handleOnClick'`
  * - object method: `array($object, 'handleOnClick')`
@@ -59,21 +59,25 @@ namespace yii\base;
  * ~~~
  *
  *
- * A behavior is an instance of [[Behavior]] or its child class. When a behavior is
- * attached to a component, its public properties and methods can be accessed via the
- * component directly, as if the component owns those properties and methods.
+ * A behavior is an instance of [[Behavior]] or its child class. A component can be attached
+ * with one or multiple behaviors. When a behavior is attached to a component, its public
+ * properties and methods can be accessed via the component directly, as if the component owns
+ * those properties and methods.
  *
- * Multiple behaviors can be attached to the same component.
- *
- * To attach a behavior to a component, call [[attachBehavior]]; to detach a behavior
- * from the component, call [[detachBehavior]].
+ * To attach a behavior to a component, declare it in [[behaviors()]], or explicitly call [[attachBehavior]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Component extends Object
 {
+	/**
+	 * @var Vector[] the attached event handlers (event name => handlers)
+	 */
 	private $_e;
+	/**
+	 * @var Behavior[] the attached behaviors (behavior name => behavior)
+	 */
 	private $_b;
 
 	/**
@@ -104,12 +108,11 @@ class Component extends Object
 				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name];
-		} elseif (isset($this->_b[$name])) { // behavior
-			return $this->_b[$name];
-		} elseif (is_array($this->_b)) { // a behavior property
-			foreach ($this->_b as $object) {
-				if ($object->canGetProperty($name)) {
-					return $object->$name;
+		} else { // behavior property
+			$this->ensureBehaviors();
+			foreach ($this->_b as $behavior) {
+				if ($behavior->canGetProperty($name)) {
+					return $behavior->$name;
 				}
 			}
 		}
@@ -143,10 +146,11 @@ class Component extends Object
 				$this->_e[$name] = new Vector;
 			}
 			return $this->_e[$name]->add($value);
-		} elseif (is_array($this->_b)) { // behavior
-			foreach ($this->_b as $object) {
-				if ($object->canSetProperty($name)) {
-					return $object->$name = $value;
+		} else { // behavior property
+			$this->ensureBehaviors();
+			foreach ($this->_b as $behavior) {
+				if ($behavior->canSetProperty($name)) {
+					return $behavior->$name = $value;
 				}
 			}
 		}
@@ -178,12 +182,11 @@ class Component extends Object
 		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // has event handler
 			$name = strtolower($name);
 			return isset($this->_e[$name]) && $this->_e[$name]->getCount();
-		} elseif (isset($this->_b[$name])) { // has behavior
-			return true;
-		} elseif (is_array($this->_b)) {
-			foreach ($this->_b as $object) {
-				if ($object->canGetProperty($name)) {
-					return $object->$name !== null;
+		} else { // behavior property
+			$this->ensureBehaviors();
+			foreach ($this->_b as $behavior) {
+				if ($behavior->canGetProperty($name)) {
+					return $behavior->$name !== null;
 				}
 			}
 		}
@@ -207,16 +210,17 @@ class Component extends Object
 	{
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) { // write property
-			return $this->$setter(null);
+			$this->$setter(null);
+			return;
 		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event
 			unset($this->_e[strtolower($name)]);
 			return;
-		} elseif (isset($this->_b[$name])) { // behavior
-			return $this->detachBehavior($name);
-		} elseif (is_array($this->_b)) { // behavior property
-			foreach ($this->_b as $object) {
-				if ($object->canSetProperty($name)) {
-					return $object->$name = null;
+		} else { // behavior property
+			$this->ensureBehaviors();
+			foreach ($this->_b as $behavior) {
+				if ($behavior->canSetProperty($name)) {
+					$behavior->$name = null;
+					return;
 				}
 			}
 		}
@@ -247,14 +251,42 @@ class Component extends Object
 			}
 		}
 
-		if ($this->_b !== null) {
-			foreach ($this->_b as $object) {
-				if (method_exists($object, $name)) {
-					return call_user_func_array(array($object, $name), $params);
-				}
+		$this->ensureBehaviors();
+		foreach ($this->_b as $object) {
+			if (method_exists($object, $name)) {
+				return call_user_func_array(array($object, $name), $params);
 			}
 		}
-		throw new Exception('Unknown method: ' . get_class($this) . "::$name()");
+
+		throw new Exception('Calling unknown method: ' . get_class($this) . "::$name()");
+	}
+
+	/**
+	 * Returns a list of behaviors that this component should behave as.
+	 *
+	 * Child classes may override this method to specify the behaviors they want to behave as.
+	 *
+	 * The return value of this method should be an array of behavior objects or configurations
+	 * indexed by behavior names. A behavior configuration can be either a string specifying
+	 * the behavior class or an array of the following structure:
+	 *
+	 * ~~~
+	 * 'behaviorName' => array(
+	 *	 'class' => 'BehaviorClass',
+	 *	 'property1' => 'value1',
+	 *	 'property2' => 'value2',
+	 * )
+	 * ~~~
+	 *
+	 * Note that a behavior class must extend from [[Behavior]].
+	 *
+	 * Behaviors declared in this method will be attached to the component on demand.
+	 *
+	 * @return array the behavior configurations.
+	 */
+	public function behaviors()
+	{
+		return array();
 	}
 
 	/**
@@ -270,12 +302,13 @@ class Component extends Object
 	}
 
 	/**
-	 * Returns a value indicating whether there is any handler attached to the event.
+	 * Returns a value indicating whether there is any handler attached to the named event.
 	 * @param string $name the event name
 	 * @return boolean whether there is any handler attached to the event.
 	 */
 	public function hasEventHandlers($name)
 	{
+		$this->ensureBehaviors();
 		$name = strtolower($name);
 		return isset($this->_e[$name]) && $this->_e[$name]->getCount();
 	}
@@ -365,6 +398,7 @@ class Component extends Object
 	 */
 	public function raiseEvent($name, $event)
 	{
+		$this->ensureBehaviors();
 		$name = strtolower($name);
 		if ($event instanceof Event) {
 			$event->name = $name;
@@ -406,6 +440,7 @@ class Component extends Object
 	 */
 	public function asa($behavior)
 	{
+		$this->ensureBehaviors();
 		return isset($this->_b[$behavior]) ? $this->_b[$behavior] : null;
 	}
 
@@ -415,11 +450,11 @@ class Component extends Object
 	 * configuration. After that, the behavior object will be attached to
 	 * this component by calling the [[Behavior::attach]] method.
 	 * @param string $name the behavior's name. It should uniquely identify this behavior.
-	 * @param mixed $behavior the behavior configuration. This can be one of the following:
+	 * @param string|array|Behavior $behavior the behavior configuration. This can be one of the following:
 	 *
 	 *  - a [[Behavior]] object
 	 *  - a string specifying the behavior class
-	 *  - an object configuration array that will be passed to [[\Yii::createObject]] to create the behavior object.
+	 *  - an object configuration array that will be passed to [[\Yii::createObject()]] to create the behavior object.
 	 *
 	 * @return Behavior the behavior object
 	 * @see detachBehavior
@@ -457,10 +492,12 @@ class Component extends Object
 	public function detachBehavior($name)
 	{
 		if (isset($this->_b[$name])) {
-			$this->_b[$name]->detach($this);
 			$behavior = $this->_b[$name];
 			unset($this->_b[$name]);
+			$behavior->detach($this);
 			return $behavior;
+		} else {
+			return null;
 		}
 	}
 
@@ -470,10 +507,24 @@ class Component extends Object
 	public function detachBehaviors()
 	{
 		if ($this->_b !== null) {
-			foreach ($this->_b as $name => $behavior) {
+			$behaviors = $this->_b;
+			$this->_b = null;
+			foreach ($behaviors as $name => $behavior) {
 				$this->detachBehavior($name);
 			}
-			$this->_b = null;
+		}
+	}
+
+	/**
+	 * Makes sure that the behaviors declared in [[behaviors()]] are attached to this component.
+	 */
+	public function ensureBehaviors()
+	{
+		if ($this->_b === null) {
+			$this->_b = array();
+			foreach ($this->behaviors() as $name => $behavior) {
+				$this->attachBehavior($name, $behavior);
+			}
 		}
 	}
 }

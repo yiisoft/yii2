@@ -51,26 +51,40 @@ abstract class ActiveRecord extends \yii\base\Model
 		}
 	}
 
-	public static function find($query = null)
+	/**
+	 * @static
+	 * @param string|array|ActiveQuery $q
+	 * @return ActiveQuery
+	 * @throws \yii\db\Exception
+	 */
+	public static function find($q = null)
 	{
-		$finder = static::createFinder();
-		if ($query instanceof Query) {
-			$finder->query = $query;
-		} elseif ($query !== null) {
-			// todo: findByPk
+		$query = $q instanceof ActiveQuery? $q : static::createQuery();
+		$query->modelClass = '\\' . get_called_class();
+		$query->from = static::tableName();
+		if (is_array($q)) {
+			$query->where($q);
+		} elseif ($q !== null && $query !== $q) {
+			$primaryKey = static::getMetaData()->table->primaryKey;
+			if (is_string($primaryKey)) {
+				$query->where(array($primaryKey => $q));
+			} else {
+				throw new Exception("Multiple column values are required to find by composite primary keys.");
+			}
 		}
-		return $finder;
+		return $query;
 	}
 
 	public static function findBySql($sql, $params = array())
 	{
-		$finder = static::createFinder();
+		$query = static::createQuery();
 		if (!is_array($params)) {
 			$params = func_get_args();
 			array_shift($params);
 		}
-		$finder->setSql($sql);
-		return $finder->params($params);
+		$query->setSql($sql);
+		$query->modelClass = '\\' . get_called_class();
+		return $query->params($params);
 	}
 
 	public static function exists($condition, $params)
@@ -93,9 +107,9 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	}
 
-	public static function createFinder()
+	public static function createQuery()
 	{
-		return new ActiveFinder('\\' . get_called_class());
+		return new ActiveQuery('\\' . get_called_class());
 	}
 
 	/**
@@ -149,6 +163,26 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
+	 * Declares the relations for this ActiveRecord class.
+	 *
+	 * Child classes may want to override this method to specify their relations.
+	 *
+	 * The following shows how to declare relations for a Programmer AR class:
+	 *
+	 * ~~~
+	 * return array(
+	 *     'manager:Manager' => '?.manager_id = manager.id',
+	 *     'assignments:Assignment[]' => array(
+	 *         'on' => '?.id = assignments.owner_id AND assignments.status=1',
+	 *         'orderBy' => 'assignments.create_time DESC',
+	 *     ),
+	 *     'projects:Project[]' => array(
+	 *         'via' => 'assignments',
+	 *         'on' => 'projects.id = assignments.project_id',
+	 *     ),
+	 * );
+	 * ~~~
+	 *
 	 * This method should be overridden to declare related objects.
 	 *
 	 * There are four types of relations that may exist between two active record objects:
@@ -1192,445 +1226,5 @@ abstract class ActiveRecord extends \yii\base\Model
 	public function offsetExists($offset)
 	{
 		return $this->__isset($offset);
-	}
-}
-
-
-/**
- * CBaseActiveRelation is the base class for all active relations.
- * @author Qiang Xue <qiang.xue@gmail.com>
- */
-class CBaseActiveRelation extends \yii\base\Component
-{
-	/**
-	 * @var string name of the related object
-	 */
-	public $name;
-	/**
-	 * @var string name of the related active record class
-	 */
-	public $className;
-	/**
-	 * @var string the foreign key in this relation
-	 */
-	public $foreignKey;
-	/**
-	 * @var mixed list of column names (an array, or a string of names separated by commas) to be selected.
-	 * Do not quote or prefix the column names unless they are used in an expression.
-	 * In that case, you should prefix the column names with 'relationName.'.
-	 */
-	public $select = '*';
-	/**
-	 * @var string WHERE clause. For {@link CActiveRelation} descendant classes, column names
-	 * referenced in the condition should be disambiguated with prefix 'relationName.'.
-	 */
-	public $condition = '';
-	/**
-	 * @var array the parameters that are to be bound to the condition.
-	 * The keys are parameter placeholder names, and the values are parameter values.
-	 */
-	public $params = array();
-	/**
-	 * @var string GROUP BY clause. For {@link CActiveRelation} descendant classes, column names
-	 * referenced in this property should be disambiguated with prefix 'relationName.'.
-	 */
-	public $group = '';
-	/**
-	 * @var string how to join with other tables. This refers to the JOIN clause in an SQL statement.
-	 * For example, <code>'LEFT JOIN users ON users.id=authorID'</code>.
-	 */
-	public $join = '';
-	/**
-	 * @var string HAVING clause. For {@link CActiveRelation} descendant classes, column names
-	 * referenced in this property should be disambiguated with prefix 'relationName.'.
-	 */
-	public $having = '';
-	/**
-	 * @var string ORDER BY clause. For {@link CActiveRelation} descendant classes, column names
-	 * referenced in this property should be disambiguated with prefix 'relationName.'.
-	 */
-	public $order = '';
-
-	/**
-	 * Constructor.
-	 * @param string $name name of the relation
-	 * @param string $className name of the related active record class
-	 * @param string $foreignKey foreign key for this relation
-	 * @param array $options additional options (name=>value). The keys must be the property names of this class.
-	 */
-	public function __construct($name, $className, $foreignKey, $options = array())
-	{
-		$this->name = $name;
-		$this->className = $className;
-		$this->foreignKey = $foreignKey;
-		foreach ($options as $name => $value)
-		{
-			$this->$name = $value;
-		}
-	}
-
-	/**
-	 * Merges this relation with a criteria specified dynamically.
-	 * @param array $criteria the dynamically specified criteria
-	 * @param boolean $fromScope whether the criteria to be merged is from scopes
-	 */
-	public function mergeWith($criteria, $fromScope = false)
-	{
-		if ($criteria instanceof CDbCriteria) {
-			$criteria = $criteria->toArray();
-		}
-		if (isset($criteria['select']) && $this->select !== $criteria['select']) {
-			if ($this->select === '*') {
-				$this->select = $criteria['select'];
-			}
-			elseif ($criteria['select'] !== '*')
-			{
-				$select1 = is_string($this->select) ? preg_split('/\s*,\s*/', trim($this->select), -1, PREG_SPLIT_NO_EMPTY) : $this->select;
-				$select2 = is_string($criteria['select']) ? preg_split('/\s*,\s*/', trim($criteria['select']), -1, PREG_SPLIT_NO_EMPTY) : $criteria['select'];
-				$this->select = array_merge($select1, array_diff($select2, $select1));
-			}
-		}
-
-		if (isset($criteria['condition']) && $this->condition !== $criteria['condition']) {
-			if ($this->condition === '') {
-				$this->condition = $criteria['condition'];
-			}
-			elseif ($criteria['condition'] !== '')
-			{
-				$this->condition = "( {$this->condition}) AND ( {$criteria['condition']})";
-			}
-		}
-
-		if (isset($criteria['params']) && $this->params !== $criteria['params']) {
-			$this->params = array_merge($this->params, $criteria['params']);
-		}
-
-		if (isset($criteria['order']) && $this->order !== $criteria['order']) {
-			if ($this->order === '') {
-				$this->order = $criteria['order'];
-			}
-			elseif ($criteria['order'] !== '')
-			{
-				$this->order = $criteria['order'] . ', ' . $this->order;
-			}
-		}
-
-		if (isset($criteria['group']) && $this->group !== $criteria['group']) {
-			if ($this->group === '') {
-				$this->group = $criteria['group'];
-			}
-			elseif ($criteria['group'] !== '')
-			{
-				$this->group .= ', ' . $criteria['group'];
-			}
-		}
-
-		if (isset($criteria['join']) && $this->join !== $criteria['join']) {
-			if ($this->join === '') {
-				$this->join = $criteria['join'];
-			}
-			elseif ($criteria['join'] !== '')
-			{
-				$this->join .= ' ' . $criteria['join'];
-			}
-		}
-
-		if (isset($criteria['having']) && $this->having !== $criteria['having']) {
-			if ($this->having === '') {
-				$this->having = $criteria['having'];
-			}
-			elseif ($criteria['having'] !== '')
-			{
-				$this->having = "( {$this->having}) AND ( {$criteria['having']})";
-			}
-		}
-	}
-}
-
-
-/**
- * CStatRelation represents a statistical relational query.
- * @author Qiang Xue <qiang.xue@gmail.com>
- */
-class CStatRelation extends CBaseActiveRelation
-{
-	/**
-	 * @var string the statistical expression. Defaults to 'COUNT(*)', meaning
-	 * the count of child objects.
-	 */
-	public $select = 'COUNT(*)';
-	/**
-	 * @var mixed the default value to be assigned to those records that do not
-	 * receive a statistical query result. Defaults to 0.
-	 */
-	public $defaultValue = 0;
-
-	/**
-	 * Merges this relation with a criteria specified dynamically.
-	 * @param array $criteria the dynamically specified criteria
-	 * @param boolean $fromScope whether the criteria to be merged is from scopes
-	 */
-	public function mergeWith($criteria, $fromScope = false)
-	{
-		if ($criteria instanceof CDbCriteria) {
-			$criteria = $criteria->toArray();
-		}
-		parent::mergeWith($criteria, $fromScope);
-
-		if (isset($criteria['defaultValue'])) {
-			$this->defaultValue = $criteria['defaultValue'];
-		}
-	}
-}
-
-
-/**
- * CActiveRelation is the base class for representing active relations that bring back related objects.
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- */
-class CActiveRelation extends CBaseActiveRelation
-{
-	/**
-	 * @var string join type. Defaults to 'LEFT OUTER JOIN'.
-	 */
-	public $joinType = 'LEFT OUTER JOIN';
-	/**
-	 * @var string ON clause. The condition specified here will be appended to the joining condition using AND operator.
-	 */
-	public $on = '';
-	/**
-	 * @var string the alias for the table that this relation refers to. Defaults to null, meaning
-	 * the alias will be the same as the relation name.
-	 */
-	public $alias;
-	/**
-	 * @var string|array specifies which related objects should be eagerly loaded when this related object is lazily loaded.
-	 * For more details about this property, see {@link ActiveRecord::with()}.
-	 */
-	public $with = array();
-	/**
-	 * @var boolean whether this table should be joined with the primary table.
-	 * When setting this property to be false, the table associated with this relation will
-	 * appear in a separate JOIN statement.
-	 * If this property is set true, then the corresponding table will ALWAYS be joined together
-	 * with the primary table, no matter the primary table is limited or not.
-	 * If this property is not set, the corresponding table will be joined with the primary table
-	 * only when the primary table is not limited.
-	 */
-	public $together;
-	/**
-	 * @var mixed scopes to apply
-	 * Can be set to the one of the following:
-	 * <ul>
-	 * <li>Single scope: 'scopes'=>'scopeName'.</li>
-	 * <li>Multiple scopes: 'scopes'=>array('scopeName1','scopeName2').</li>
-	 * </ul>
-	 */
-	public $scopes;
-
-	/**
-	 * Merges this relation with a criteria specified dynamically.
-	 * @param array $criteria the dynamically specified criteria
-	 * @param boolean $fromScope whether the criteria to be merged is from scopes
-	 */
-	public function mergeWith($criteria, $fromScope = false)
-	{
-		if ($criteria instanceof CDbCriteria) {
-			$criteria = $criteria->toArray();
-		}
-		if ($fromScope) {
-			if (isset($criteria['condition']) && $this->on !== $criteria['condition']) {
-				if ($this->on === '') {
-					$this->on = $criteria['condition'];
-				}
-				elseif ($criteria['condition'] !== '')
-				{
-					$this->on = "( {$this->on}) AND ( {$criteria['condition']})";
-				}
-			}
-			unset($criteria['condition']);
-		}
-
-		parent::mergeWith($criteria);
-
-		if (isset($criteria['joinType'])) {
-			$this->joinType = $criteria['joinType'];
-		}
-
-		if (isset($criteria['on']) && $this->on !== $criteria['on']) {
-			if ($this->on === '') {
-				$this->on = $criteria['on'];
-			}
-			elseif ($criteria['on'] !== '')
-			{
-				$this->on = "( {$this->on}) AND ( {$criteria['on']})";
-			}
-		}
-
-		if (isset($criteria['with'])) {
-			$this->with = $criteria['with'];
-		}
-
-		if (isset($criteria['alias'])) {
-			$this->alias = $criteria['alias'];
-		}
-
-		if (isset($criteria['together'])) {
-			$this->together = $criteria['together'];
-		}
-	}
-}
-
-
-/**
- * CBelongsToRelation represents the parameters specifying a BELONGS_TO relation.
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- */
-class CBelongsToRelation extends CActiveRelation
-{
-}
-
-
-/**
- * CHasOneRelation represents the parameters specifying a HAS_ONE relation.
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- */
-class CHasOneRelation extends CActiveRelation
-{
-	/**
-	 * @var string the name of the relation that should be used as the bridge to this relation.
-	 * Defaults to null, meaning don't use any bridge.
-	 */
-	public $through;
-}
-
-
-/**
- * CHasManyRelation represents the parameters specifying a HAS_MANY relation.
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- */
-class CHasManyRelation extends CActiveRelation
-{
-	/**
-	 * @var integer limit of the rows to be selected. It is effective only for lazy loading this related object. Defaults to -1, meaning no limit.
-	 */
-	public $limit = -1;
-	/**
-	 * @var integer offset of the rows to be selected. It is effective only for lazy loading this related object. Defaults to -1, meaning no offset.
-	 */
-	public $offset = -1;
-	/**
-	 * @var string the name of the column that should be used as the key for storing related objects.
-	 * Defaults to null, meaning using zero-based integer IDs.
-	 */
-	public $index;
-	/**
-	 * @var string the name of the relation that should be used as the bridge to this relation.
-	 * Defaults to null, meaning don't use any bridge.
-	 */
-	public $through;
-
-	/**
-	 * Merges this relation with a criteria specified dynamically.
-	 * @param array $criteria the dynamically specified criteria
-	 * @param boolean $fromScope whether the criteria to be merged is from scopes
-	 */
-	public function mergeWith($criteria, $fromScope = false)
-	{
-		if ($criteria instanceof CDbCriteria) {
-			$criteria = $criteria->toArray();
-		}
-		parent::mergeWith($criteria, $fromScope);
-		if (isset($criteria['limit']) && $criteria['limit'] > 0) {
-			$this->limit = $criteria['limit'];
-		}
-
-		if (isset($criteria['offset']) && $criteria['offset'] >= 0) {
-			$this->offset = $criteria['offset'];
-		}
-
-		if (isset($criteria['index'])) {
-			$this->index = $criteria['index'];
-		}
-	}
-}
-
-
-/**
- * CManyManyRelation represents the parameters specifying a MANY_MANY relation.
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- */
-class CManyManyRelation extends CHasManyRelation
-{
-}
-
-
-/**
- * ActiveMetaData represents the meta-data for an Active Record class.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- */
-class ActiveMetaData
-{
-	/**
-	 * @var TableSchema the table schema information
-	 */
-	public $table;
-	/**
-	 * @var array list of relations
-	 */
-	public $relations = array();
-
-	/**
-	 * Constructor.
-	 * @param string $modelClass the model class name
-	 */
-	public function __construct($modelClass)
-	{
-		$tableName = $modelClass::tableName();
-		$table = $modelClass::getDbConnection()->getDriver()->getTableSchema($tableName);
-		if ($table === null) {
-			throw new Exception("Unable to find table '$tableName' for ActiveRecord class '$modelClass'.");
-		}
-		if ($table->primaryKey === null) {
-			$primaryKey = $modelClass::primaryKey();
-			if ($primaryKey !== null) {
-				$table->fixPrimaryKey($primaryKey);
-			} else {
-				throw new Exception("The table '$tableName' for ActiveRecord class '$modelClass' does not have a primary key.");
-			}
-		}
-		$this->table = $table;
-
-		foreach ($modelClass::relations() as $name => $config) {
-			$this->addRelation($name, $config);
-		}
-	}
-
-	/**
-	 * Adds a relation.
-	 *
-	 * $config is an array with three elements:
-	 * relation type, the related active record class and the foreign key.
-	 *
-	 * @throws Exception
-	 * @param string $name $name Name of the relation.
-	 * @param array $config $config Relation parameters.
-	 * @return void
-	 */
-	public function addRelation($name, $config)
-	{
-		// relation class, AR class, FK
-		if (isset($config[0], $config[1], $config[2])) {
-			$this->relations[$name] = new $config[0]($name, $config[1], $config[2], array_slice($config, 3));
-		} else {
-			throw new Exception(Yii::t('yii', 'Active record "{class}" has an invalid configuration for relation "{relation}". It must specify the relation type, the related active record class and the foreign key.', array('{class}' => get_class($this->_model), '{relation}' => $name)));
-		}
 	}
 }

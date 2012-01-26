@@ -44,8 +44,27 @@ class Text
 		return $name . 's';
 	}
 
-	public static function dd($value)
+	/**
+	 * Converts a class name into space-separated words.
+	 * For example, 'PostTag' will be converted as 'Post Tag'.
+	 * @param string $name the string to be converted
+	 * @param boolean $ucwords whether to capitalize the first letter in each word
+	 * @return string the resulting words
+	 */
+	public static function name2words($name, $ucwords = true)
 	{
-		return trim(strtolower(str_replace(array('-', '_', '.'), ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $value))));
+		$label = trim(strtolower(str_replace(array('-', '_', '.'), ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
+		return $ucwords ? ucwords($label) : $label;
+	}
+
+	/**
+	 * Converts a class name into a HTML ID.
+	 * For example, 'PostTag' will be converted as 'post-tag'.
+	 * @param string $name the string to be converted
+	 * @return string the resulting ID
+	 */
+	public static function name2id($name)
+	{
+		return trim(strtolower(str_replace('_','-',preg_replace('/(?<![A-Z])[A-Z]/', '-\0', $name))),'-');
 	}
 }
