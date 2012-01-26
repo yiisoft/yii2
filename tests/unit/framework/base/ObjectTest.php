@@ -51,15 +51,15 @@ class ObjectTest extends \yiiunit\TestCase
 
 		$this->assertEquals('test', $foo->prop['test']);
 
-		$bar = Bar::newInstance(10, 20);
+		$bar = Bar::newInstance(array(), 10, 20);
 		$this->assertEquals(30, $bar->prop1);
 		$this->assertEquals(null, $bar->prop2);
 		$this->assertEquals(3, $bar->prop3);
 
-		$bar = Bar::newInstance(100, 200, array(
+		$bar = Bar::newInstance(array(
 			'prop2' => 'x',
 			'prop3' => 400,
-		));
+		), 100, 200);
 		$this->assertEquals(300, $bar->prop1);
 		$this->assertEquals('x', $bar->prop2);
 		$this->assertEquals(3, $bar->prop3);

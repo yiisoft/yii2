@@ -26,7 +26,11 @@ use yii\db\Exception;
  * the DB connection:
  *
  * ~~~
- * $connection = \yii\db\dao\Connection::newInstance($dsn, $username, $password);
+ * $connection = \yii\db\dao\Connection::newInstance(array(
+ * 	'dsn' => $dsn,
+ * 	'username' => $username,
+ * 	'password' => $password,
+ * ));
  * $connection->active = true;  // same as: $connection->open();
  * ~~~
  *
@@ -253,24 +257,6 @@ class Connection extends \yii\base\ApplicationComponent
 	 * @var Driver the database driver
 	 */
 	private $_driver;
-
-	/**
-	 * Constructor.
-	 * Note, the DB connection is not established when this connection
-	 * instance is created. You may set [[active]] to be true or call [[open]]
-	 * to establish the connection.
-	 * @param string $dsn the Data Source Name, or DSN, contains the information
-	 * required to connect to the database.
-	 * @param string $username the user name for the DSN string.
-	 * @param string $password the password for the DSN string.
-	 * @see http://www.php.net/manual/en/function.PDO-construct.php
-	 */
-	public function __construct($dsn = '', $username = '', $password = '')
-	{
-		$this->dsn = $dsn;
-		$this->username = $username;
-		$this->password = $password;
-	}
 
 	/**
 	 * Closes the connection when this component is being serialized.

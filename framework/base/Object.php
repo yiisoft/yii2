@@ -258,17 +258,17 @@ class Object
 	/**
 	 * Creates a new instance of the calling class.
 	 *
-	 * Parameters passed to this method will be used as the parameters to the object
+	 * The newly created object will be initialized with the specified configuration.
+	 *
+	 * Extra parameters passed to this method will be used as the parameters to the object
 	 * constructor.
 	 *
 	 * This method does the following steps to create a object:
 	 *
 	 * - create the object using the PHP `new` operator;
 	 * - if [[Yii::objectConfig]] contains the configuration for the object class,
-	 *   initialize the object properties with that configuration;
-	 * - if the number of the given parameters is more than the number of the parameters
-	 *   listed in the object constructor and the last given parameter is an array,
-	 *   initialize the object properties using that array;
+	 *   it will be merged with the $config parameter;
+	 * - initialize the object properties using the configuration passed to this method;
 	 * - call the `init` method of the object if it implements the [[yii\base\Initable]] interface.
 	 *
 	 * For example,
@@ -287,30 +287,25 @@ class Object
 	 *	 }
 	 * }
 	 *
-	 * $model = Foo::newInstance(1, 2, array('c' => 3));
+	 * $model = Foo::newInstance(array('c' => 3), 1, 2);
 	 * // which is equivalent to the following lines:
 	 * $model = new Foo(1, 2);
 	 * $model->c = 3;
 	 * $model->init();
 	 * ~~~
 	 *
+	 * @param array $config the object configuration (name-value pairs that will be used to initialize the object)
 	 * @return Object the created object
 	 * @throws Exception if the configuration is invalid.
 	 */
-	public static function newInstance()
+	public static function newInstance($config = array())
 	{
 		$c = get_called_class();
 		$class = '\\' . $c;
-		if (($n = func_num_args()) > 0) {
+
+		if (($n = func_num_args()-1) > 0) {
 			$args = func_get_args();
-			if (is_array($args[$n - 1])) {
-				$method = new \ReflectionMethod($class, '__construct');
-				if ($method->getNumberOfParameters() < $n) {
-					// the last EXTRA parameter is a configuration array
-					$config = $args[--$n];
-					unset($args[$n]);
-				}
-			}
+			array_shift($args); // remove $config
 		}
 
 		if ($n === 0) {
@@ -327,13 +322,11 @@ class Object
 		}
 
 		if (isset(\Yii::$objectConfig[$c])) {
-			$config = isset($config) ? array_merge(\Yii::$objectConfig[$c], $config) : \Yii::$objectConfig[$c];
+			$config = array_merge(\Yii::$objectConfig[$c], $config);
 		}
 
-		if (!empty($config)) {
-			foreach ($config as $name => $value) {
-				$object->$name = $value;
-			}
+		foreach ($config as $name => $value) {
+			$object->$name = $value;
 		}
 
 		if ($object instanceof \yii\base\Initable) {

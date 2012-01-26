@@ -76,7 +76,7 @@ class YiiBase
 	/**
 	 * @var array initial property values that will be applied to objects newly created via [[createObject]].
 	 * The array keys are fully qualified namespaced class names, and the array values are the corresponding
-	 * name-value pairs for initializing the created class instances. Make sure the class names do not have
+	 * name-value pairs for initializing the created class instances. Make sure the class names do NOT have
 	 * the leading backslashes. For example,
 	 *
 	 * ~~~
@@ -317,7 +317,7 @@ class YiiBase
 	 *
 	 * - create the object using the PHP `new` operator;
 	 * - if [[objectConfig]] contains the configuration for the object class,
-	 *   initialize the object properties with that configuration;
+	 *   it will be merged with the configuration passed to this method;
 	 * - initialize the object properties using the configuration passed to this method;
 	 * - call the `init` method of the object if it implements the [[yii\base\Initable]] interface.
 	 *
@@ -374,13 +374,11 @@ class YiiBase
 
 		$c = get_class($object);
 		if (isset(\Yii::$objectConfig[$c])) {
-			$config = isset($config) ? array_merge(\Yii::$objectConfig[$c], $config) : \Yii::$objectConfig[$c];
+			$config = array_merge(\Yii::$objectConfig[$c], $config);
 		}
 
-		if (!empty($config)) {
-			foreach ($config as $name => $value) {
-				$object->$name = $value;
-			}
+		foreach ($config as $name => $value) {
+			$object->$name = $value;
 		}
 
 		if ($object instanceof \yii\base\Initable) {

@@ -206,7 +206,7 @@ class ComponentTest extends \yiiunit\TestCase
 
 	public function testCreate()
 	{
-		$component = NewComponent2::newInstance(1, 2, array('a'=>3));
+		$component = NewComponent2::newInstance(array('a'=>3), 1, 2);
 		$this->assertEquals(1, $component->b);
 		$this->assertEquals(2, $component->c);
 		$this->assertEquals(3, $component->a);
