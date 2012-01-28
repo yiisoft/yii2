@@ -29,25 +29,26 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	public $indexBy;
 	public $asArray;
 
-	private $_count;
-	private $_sql;
-	private $_countSql;
-	private $_records;
+	public $records;
+	public $sql;
 
-	public function all()
+	public function all($refresh = false)
 	{
-		return $this->performQuery();
+		if ($this->records === null || $refresh) {
+			$this->records = $this->performQuery();
+		}
+		return $this->records;
 	}
 
-	public function one()
+	public function one($refresh = false)
 	{
-		$this->limit = 1;
-		$records = $this->performQuery();
-		if (isset($records[0])) {
-			$this->_count = 1;
-			return $records[0];
+		if ($this->records === null || $refresh) {
+			$this->limit = 1;
+			$this->records = $this->performQuery();
+		}
+		if (isset($this->records[0])) {
+			return $this->records[0];
 		} else {
-			$this->_count = 0;
 			return null;
 		}
 	}
@@ -76,45 +77,15 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 		return $this;
 	}
 
-	protected function performQuery()
+	/**
+	 * Returns the database connection used by this query.
+	 * This method returns the connection used by the [[modelClass]].
+	 * @return \yii\db\dao\Connection the database connection used by this query
+	 */
+	public function getDbConnection()
 	{
 		$class = $this->modelClass;
-		$db = $class::getDbConnection();
-		$this->_sql = $this->getSql($db);
-		$command = $db->createCommand($this->_sql);
-		$command->bindValues($this->params);
-		$rows = $command->queryAll();
-		if ($this->_asArray) {
-			$records = $rows;
-		} else {
-			$records = array();
-			foreach ($rows as $row) {
-				$records[] = $class::populateRecord($row);
-			}
-		}
-		$this->_count = count($records);
-		return $records;
-	}
-
-//
-//	public function getSql($connection = null)
-//	{
-//
-//	}
-
-	public function setSql($value)
-	{
-		$this->_sql = $value;
-	}
-
-	public function getCountSql()
-	{
-
-	}
-
-	public function getOneSql()
-	{
-
+		return $class::getDbConnection();
 	}
 
 	/**
@@ -123,23 +94,7 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public function getCount()
 	{
-		if ($this->_count !== null) {
-			return $this->_count;
-		} else {
-			return $this->_count = $this->performCountQuery();
-		}
-	}
-
-	protected function performCountQuery()
-	{
-		$select = $this->select;
-		$this->select = 'COUNT(*)';
-		$class = $this->modelClass;
-		$command = $this->createCommand($class::getDbConnection());
-		$this->_countSql = $command->getSql();
-		$count = $command->queryScalar();
-		$this->select = $select;
-		return $count;
+		return $this->count();
 	}
 
 	/**
@@ -155,7 +110,7 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public function cache($duration, $dependency = null, $queryCount = 1)
 	{
-		$this->connection->cache($duration, $dependency, $queryCount);
+		$this->getDbConnection()->cache($duration, $dependency, $queryCount);
 		return $this;
 	}
 
@@ -167,19 +122,30 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public function getIterator()
 	{
-		$records = $this->performQuery();
-		return new VectorIterator($records);
+		if ($this->records === null) {
+			$this->records = $this->performQuery();
+		}
+		return new VectorIterator($this->records);
 	}
 
 	/**
 	 * Returns the number of items in the vector.
 	 * This method is required by the SPL `Countable` interface.
 	 * It will be implicitly called when you use `count($vector)`.
+	 * @param boolean $bySql whether to get the count by performing a SQL COUNT query.
+	 * If this is false, it will count the number of records brought back by this query.
 	 * @return integer number of items in the vector.
 	 */
-	public function count()
+	public function count($bySql = false)
 	{
-		return $this->getCount();
+		if ($bySql) {
+			return $this->performCountQuery();
+		} else {
+			if ($this->records === null) {
+				$this->records = $this->performQuery();
+			}
+			return count($this->records);
+		}
 	}
 
 	/**
@@ -191,10 +157,10 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public function offsetExists($offset)
 	{
-		if ($this->_records === null) {
-			$this->_records = $this->performQuery();
+		if ($this->records === null) {
+			$this->records = $this->performQuery();
 		}
-		return isset($this->_records[$offset]);
+		return isset($this->records[$offset]);
 	}
 
 	/**
@@ -208,10 +174,10 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public function offsetGet($offset)
 	{
-		if ($this->_records === null) {
-			$this->_records = $this->performQuery();
+		if ($this->records === null) {
+			$this->records = $this->performQuery();
 		}
-		return isset($this->_records[$offset]) ? $this->_records[$offset] : null;
+		return isset($this->records[$offset]) ? $this->records[$offset] : null;
 	}
 
 	/**
@@ -227,10 +193,10 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public function offsetSet($offset, $item)
 	{
-		if ($this->_records === null) {
-			$this->_records = $this->performQuery();
+		if ($this->records === null) {
+			$this->records = $this->performQuery();
 		}
-		$this->_records[$offset] = $item;
+		$this->records[$offset] = $item;
 	}
 
 	/**
@@ -243,9 +209,38 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public function offsetUnset($offset)
 	{
-		if ($this->_records === null) {
-			$this->_records = $this->performQuery();
+		if ($this->records === null) {
+			$this->records = $this->performQuery();
 		}
-		unset($this->_records[$offset]);
+		unset($this->records[$offset]);
+	}
+
+	protected function performQuery()
+	{
+		$db = $this->getDbConnection();
+		$this->sql = $this->getSql($db);
+		$command = $db->createCommand($this->sql);
+		$command->bindValues($this->params);
+		$rows = $command->queryAll();
+		if ($this->asArray) {
+			$records = $rows;
+		} else {
+			$records = array();
+			$class = $this->modelClass;
+			foreach ($rows as $row) {
+				$records[] = $class::populateData($row);
+			}
+		}
+		return $records;
+	}
+
+	protected function performCountQuery()
+	{
+		$this->select = 'COUNT(*)';
+		$class = $this->modelClass;
+		$command = $this->createCommand($class::getDbConnection());
+		$this->sql = $command->getSql();
+		$count = $command->queryScalar();
+		return $count;
 	}
 }
