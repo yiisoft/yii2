@@ -68,13 +68,13 @@ class DbTarget extends Target
 	 */
 	public function getDbConnection()
 	{
-		if ($this->_db !== null) {
-			return $this->_db;
+		if ($this->_db === null) {
+			$this->_db = \Yii::$application->getComponent($this->connectionID);
+			if (!$this->_db instanceof \yii\db\dao\Connection) {
+				throw new \yii\base\Exception('DbTarget.connectionID must refer to a valid application component ID');
+			}
 		}
-		$this->_db = \Yii::$application->getComponent($this->connectionID);
-		if (!$this->_db instanceof \yii\db\dao\Connection) {
-			throw new \yii\base\Exception('DbTarget.connectionID must refer to a valid application component ID');
-		}
+		return $this->_db;
 	}
 
 	/**
