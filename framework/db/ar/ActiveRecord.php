@@ -1180,9 +1180,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * Creates an active record with the given attributes.
 	 * This method is internally used by the find methods.
-	 * @param array $attributes attribute values (column name=>column value)
-	 * @param boolean $callAfterFind whether to call {@link afterFind} after the record is populated.
-	 * This parameter is added in version 1.0.3.
+	 *
+	 * @param array $row attribute values (column name=>column value)
+	 *
 	 * @return ActiveRecord the newly created active record. The class of the object is the same as the model class.
 	 * Null is returned if the input data is false.
 	 */
@@ -1209,7 +1209,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * depends the attributes that are to be populated to the record.
 	 * For example, by creating a record based on the value of a column,
 	 * you may implement the so-called single-table inheritance mapping.
-	 * @param array $attributes list of attribute values for the active records.
+	 * @param array $row list of attribute values for the active records.
 	 * @return ActiveRecord the active record
 	 */
 	protected static function instantiate($row)
