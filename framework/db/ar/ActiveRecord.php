@@ -308,7 +308,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function __construct($scenario = 'insert')
 	{
-		if ($scenario === null) // internally used by populateRecord() and model()
+		if ($scenario === null) // internally used by populateData() and model()
 		{
 			return;
 		}
@@ -1186,7 +1186,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @return ActiveRecord the newly created active record. The class of the object is the same as the model class.
 	 * Null is returned if the input data is false.
 	 */
-	public static function populateRecord($row)
+	public static function populateData($row)
 	{
 		$record = static::instantiate($row);
 		$record->setScenario('update');
@@ -1204,7 +1204,7 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	/**
 	 * Creates an active record instance.
-	 * This method is called by {@link populateRecord} and {@link populateRecords}.
+	 * This method is called by {@link populateData}.
 	 * You may override this method if the instance being created
 	 * depends the attributes that are to be populated to the record.
 	 * For example, by creating a record based on the value of a column,

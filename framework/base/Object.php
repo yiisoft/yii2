@@ -300,8 +300,7 @@ class Object
 	 */
 	public static function newInstance($config = array())
 	{
-		$c = get_called_class();
-		$class = '\\' . $c;
+		$class = '\\' . get_called_class();
 
 		if (($n = func_num_args()-1) > 0) {
 			$args = func_get_args();
@@ -321,8 +320,8 @@ class Object
 			$object = $r->newInstanceArgs($args);
 		}
 
-		if (isset(\Yii::$objectConfig[$c])) {
-			$config = array_merge(\Yii::$objectConfig[$c], $config);
+		if (isset(\Yii::$objectConfig[$class])) {
+			$config = array_merge(\Yii::$objectConfig[$class], $config);
 		}
 
 		foreach ($config as $name => $value) {

@@ -461,11 +461,8 @@ class Component extends Object
 	 */
 	public function attachBehavior($name, $behavior)
 	{
-		if (!($behavior instanceof Behavior)) {
-			$behavior = \Yii::createObject($behavior);
-		}
-		$behavior->attach($this);
-		return $this->_b[$name] = $behavior;
+		$this->ensureBehaviors();
+		return $this->attachBehaviorInternal($name, $behavior);
 	}
 
 	/**
@@ -478,8 +475,9 @@ class Component extends Object
 	 */
 	public function attachBehaviors($behaviors)
 	{
+		$this->ensureBehaviors();
 		foreach ($behaviors as $name => $behavior) {
-			$this->attachBehavior($name, $behavior);
+			$this->attachBehaviorInternal($name, $behavior);
 		}
 	}
 
@@ -523,8 +521,23 @@ class Component extends Object
 		if ($this->_b === null) {
 			$this->_b = array();
 			foreach ($this->behaviors() as $name => $behavior) {
-				$this->attachBehavior($name, $behavior);
+				$this->attachBehaviorInternal($name, $behavior);
 			}
 		}
+	}
+
+	/**
+	 * Attaches a behavior to this component.
+	 * @param string $name the name of the behavior.
+	 * @param string|array|Behavior $behavior the behavior to be attached
+	 * @return Behavior the attached behavior.
+	 */
+	private function attachBehaviorInternal($name, $behavior)
+	{
+		if (!($behavior instanceof Behavior)) {
+			$behavior = \Yii::createObject($behavior);
+		}
+		$behavior->attach($this);
+		return $this->_b[$name] = $behavior;
 	}
 }
