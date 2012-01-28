@@ -10,6 +10,9 @@
 
 namespace yii\db\ar;
 
+use yii\db\dao\BaseQuery;
+use yii\base\VectorIterator;
+
 /**
  * ActiveFinder.php is ...
  * todo: add SQL monitor
@@ -17,18 +20,18 @@ namespace yii\db\ar;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveQuery extends \yii\db\dao\BaseQuery implements \IteratorAggregate, \ArrayAccess, \Countable
+class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	public $modelClass;
 
 	public $with;
 	public $alias;
-	public $index;
+	public $indexBy;
+	public $asArray;
 
 	private $_count;
 	private $_sql;
 	private $_countSql;
-	private $_asArray;
 	private $_records;
 
 	public function all()
@@ -51,7 +54,26 @@ class ActiveQuery extends \yii\db\dao\BaseQuery implements \IteratorAggregate, \
 
 	public function asArray($value = true)
 	{
-		$this->_asArray = $value;
+		$this->asArray = $value;
+		return $this;
+	}
+
+	public function with()
+	{
+		$this->with = func_get_args();
+		return $this;
+	}
+
+	public function indexBy($column)
+	{
+		$this->indexBy = $column;
+		return $this;
+	}
+
+	public function alias($tableAlias)
+	{
+		$this->alias = $tableAlias;
+		return $this;
 	}
 
 	protected function performQuery()
@@ -74,10 +96,6 @@ class ActiveQuery extends \yii\db\dao\BaseQuery implements \IteratorAggregate, \
 		return $records;
 	}
 
-	public function with()
-	{
-
-	}
 //
 //	public function getSql($connection = null)
 //	{
@@ -150,7 +168,7 @@ class ActiveQuery extends \yii\db\dao\BaseQuery implements \IteratorAggregate, \
 	public function getIterator()
 	{
 		$records = $this->performQuery();
-		return new \yii\base\VectorIterator($records);
+		return new VectorIterator($records);
 	}
 
 	/**

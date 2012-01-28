@@ -43,7 +43,7 @@ class Query extends BaseQuery
 {
 	/**
 	 * @var array the operation that this query represents. This refers to the method call as well as
-	 * the corresponding parameters for constructing a non-query SQL statement (e.g. INSERT, CREATE TABLE).
+	 * the corresponding parameters for constructing a non-select SQL statement (e.g. INSERT, CREATE TABLE).
 	 * This property is mainly maintained by methods such as [[insert()]], [[update()]], [[createTable()]].
 	 * If this property is not set, it means this query represents a SELECT statement.
 	 */

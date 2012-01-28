@@ -76,16 +76,16 @@ class YiiBase
 	/**
 	 * @var array initial property values that will be applied to objects newly created via [[createObject]].
 	 * The array keys are fully qualified namespaced class names, and the array values are the corresponding
-	 * name-value pairs for initializing the created class instances. Make sure the class names do NOT have
-	 * the leading backslashes. For example,
+	 * name-value pairs for initializing the created class instances. Please make sure class names are starting
+	 * with a backslash. For example,
 	 *
 	 * ~~~
 	 * array(
-	 *     'mycompany\foo\Bar' => array(
+	 *     '\Bar' => array(
 	 *         'prop1' => 'value1',
 	 *         'prop2' => 'value2',
 	 *     ),
-	 *     'mycompany\foo\Car' => array(
+	 *     '\mycompany\foo\Car' => array(
 	 *         'prop1' => 'value1',
 	 *         'prop2' => 'value2',
 	 *     ),
@@ -301,6 +301,9 @@ class YiiBase
 	/**
 	 * Creates a new object using the given configuration.
 	 *
+	 * The class of the object can be any class. It does not have to
+	 * extend from [[Object]] or [[Component]].
+	 *
 	 * The configuration can be either a string or an array.
 	 * If a string, it is treated as the *object type*; if an array,
 	 * it must contain a `class` element specifying the *object type*, and
@@ -310,7 +313,7 @@ class YiiBase
 	 * The object type can be either a class name or the [[getAlias|alias]] of
 	 * the class. For example,
 	 *
-	 * - `\app\components\GoogleMap`: namespaced class
+	 * - `\app\components\GoogleMap`: full qualified namespaced class.
 	 * - `@app/components/GoogleMap`: an alias
 	 *
 	 * This method does the following steps to create an object:
@@ -319,7 +322,7 @@ class YiiBase
 	 * - if [[objectConfig]] contains the configuration for the object class,
 	 *   it will be merged with the configuration passed to this method;
 	 * - initialize the object properties using the configuration passed to this method;
-	 * - call the `init` method of the object if it implements the [[yii\base\Initable]] interface.
+	 * - call the `init` method of the object if it implements the [[\yii\base\Initable]] interface.
 	 *
 	 * Below are some usage examples:
 	 *
@@ -337,6 +340,7 @@ class YiiBase
 	 * @param mixed $config the configuration. It can be either a string or an array.
 	 * @return mixed the created object
 	 * @throws \yii\base\Exception if the configuration is invalid.
+	 * @see \yii\base\Object::newInstance()
 	 */
 	public static function createObject($config)
 	{
@@ -372,9 +376,9 @@ class YiiBase
 			$object = $r->newInstanceArgs($args);
 		}
 
-		$c = get_class($object);
-		if (isset(\Yii::$objectConfig[$c])) {
-			$config = array_merge(\Yii::$objectConfig[$c], $config);
+		$class = '\\' . get_class($object);
+		if (isset(\Yii::$objectConfig[$class])) {
+			$config = array_merge(\Yii::$objectConfig[$class], $config);
 		}
 
 		foreach ($config as $name => $value) {
