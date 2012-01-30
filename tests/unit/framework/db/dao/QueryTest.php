@@ -15,11 +15,11 @@ class QueryTest extends \yiiunit\MysqlTestCase
 		$query = new Query;
 		$query->select();
 		$this->assertEquals('*', $query->select);
-		$this->assertFalse($query->distinct);
+		$this->assertNull($query->distinct);
 		$this->assertEquals(null, $query->selectOption);
 
 		$query = new Query;
-		$query->select('id, name', true, 'something');
+		$query->select('id, name', 'something')->distinct(true);
 		$this->assertEquals('id, name', $query->select);
 		$this->assertTrue($query->distinct);
 		$this->assertEquals('something', $query->selectOption);

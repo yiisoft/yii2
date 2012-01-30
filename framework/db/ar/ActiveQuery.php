@@ -683,16 +683,24 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 		 * 	public $with;
 		 */
 
-		if ($this->query->from === null) {
-			$modelClass = $this->modelClass;
-			$this->query->from = $modelClass::tableName();
-			if ($this->tableAlias !== null) {
-				$this->query->from .= $this->tableAlias;
+		if ($this->sql === null) {
+			if ($this->query->from === null) {
+				$modelClass = $this->modelClass;
+				$tableName = $modelClass::tableName();
+				if ($this->tableAlias !== null) {
+					$tableName .= ' ' . $this->tableAlias;
+				}
+				$this->query->from = array($tableName);
 			}
+			$command = $this->query->createCommand($this->getDbConnection());
+			$this->sql = $command->getSql();
+		} else {
+			$command = $this->getDbConnection()->createCommand($this->sql);
+			$command->bindValues($this->query->params);
 		}
-		$command = $this->query->createCommand($this->getDbConnection());
-		$this->sql = $command->getSql();
+
 		$rows = $command->queryAll();
+
 		if ($this->asArray) {
 			if ($this->indexBy === null) {
 				return $rows;

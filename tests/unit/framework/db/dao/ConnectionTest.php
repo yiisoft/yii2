@@ -31,7 +31,8 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 		$this->assertFalse($connection->active);
 		$this->assertEquals(null, $connection->pdo);
 
-		$connection = new Connection('unknown::memory:');
+		$connection = new Connection;
+		$connection->dsn = 'unknown::memory:';
 		$this->setExpectedException('yii\db\Exception');
 		$connection->open();
 	}

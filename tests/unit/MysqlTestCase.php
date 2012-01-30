@@ -18,7 +18,10 @@ class MysqlTestCase extends TestCase
 	function getConnection($reset = true)
 	{
 		$params = $this->getParam('mysql');
-		$db = new \yii\db\dao\Connection($params['dsn'], $params['username'], $params['password']);
+		$db = new \yii\db\dao\Connection;
+		$db->dsn = $params['dsn'];
+		$db->username = $params['username'];
+		$db->password = $params['password'];
 		if ($reset) {
 			$db->active = true;
 			$lines = explode(';', file_get_contents($params['fixture']));
