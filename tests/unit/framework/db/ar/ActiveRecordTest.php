@@ -32,13 +32,14 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue($customers[1] instanceof Customer);
 		$this->assertTrue($customers[2] instanceof Customer);
 		$this->assertEquals(3, $result->count);
+		$this->assertEquals(3, count($result));
 
 		// check count first
 		$result = Customer::find();
 		$this->assertEquals(3, $result->count);
 		$customer = $result->one();
 		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals(1, $result->count);
+		$this->assertEquals(3, $result->count);
 
 		// iterator
 		$result = Customer::find();
@@ -66,11 +67,14 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(2, $customer->id);
 
 		// find by Query
-		$query = new ActiveQuery;
+		$query = new Query;
 		$query->where('id=:id', array(':id'=>2));
 		$customer = Customer::find($query)->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
+
+		// find count
+		$this->assertEquals(3, Customer::find()->count(true));
 	}
 
 	public function testFindBySql()
@@ -92,10 +96,9 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		// count
 		$finder = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC');
 		$finder->one();
-		$this->assertEquals(1, $finder->count);
+		$this->assertEquals(3, $finder->count);
 		$finder = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC');
-		// todo
-//		$this->assertEquals(3, $finder->count);
+		$this->assertEquals(3, $finder->count);
 	}
 
 	public function testQueryMethods()
@@ -113,12 +116,12 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(3, $customer->id);
 		$this->assertEquals(null, $customer->name);
 	}
-
+/*
 	public function testGetSql()
 	{
 		// sql for all
 		$sql = Customer::find()->sql;
-		$this->assertEquals('SELECT * FROM tbl_customer', $sql);
+		$this->assertEquals('SELECT * FROM `tbl_customer`', $sql);
 
 		// sql for one row
 		$sql = Customer::find()->oneSql;
@@ -137,12 +140,10 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 
 	public function testMisc()
 	{
-		/*
-		 * Customer::exists()
-		 * Customer::updateAll()
-		 * Customer::updateCounters()
-		 * Customer::deleteAll()
-		 */
+//		 Customer::exists()
+//		 Customer::updateAll()
+//		 Customer::updateCounters()
+//		 Customer::deleteAll()
 	}
 
 	public function testInsert()
@@ -170,4 +171,5 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 	{
 
 	}
+*/
 }

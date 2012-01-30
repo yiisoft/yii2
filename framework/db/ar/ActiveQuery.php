@@ -243,7 +243,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * (which means the column contains a DB expression).
 	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function select($columns = '*', $option = '')
 	{
@@ -254,7 +254,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	/**
 	 * Sets the value indicating whether to SELECT DISTINCT or not.
 	 * @param bool $value whether to SELECT DISTINCT or not.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function distinct($value = true)
 	{
@@ -269,7 +269,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Table names can contain schema prefixes (e.g. 'public.tbl_user') and/or table aliases (e.g. 'tbl_user u').
 	 * The method will automatically quote the table names unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function from($tables)
 	{
@@ -344,7 +344,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * For anonymous parameters, they can alternatively be specified as separate parameters to this method.
 	 * For example, `where('type=? AND status=?', 100, 1)`.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see andWhere()
 	 * @see orWhere()
 	 */
@@ -365,7 +365,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see where()
 	 * @see orWhere()
 	 */
@@ -386,7 +386,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see where()
 	 * @see andWhere()
 	 */
@@ -410,7 +410,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function join($table, $condition, $params = array())
 	{
@@ -431,7 +431,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * @param string|array $condition the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function leftJoin($table, $condition, $params = array())
 	{
@@ -452,7 +452,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * @param string|array $condition the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function rightJoin($table, $condition, $params = array())
 	{
@@ -471,7 +471,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function crossJoin($table)
 	{
@@ -486,7 +486,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function naturalJoin($table)
 	{
@@ -500,7 +500,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see addGroupBy()
 	 */
 	public function groupBy($columns)
@@ -515,7 +515,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see groupBy()
 	 */
 	public function addGroupBy($columns)
@@ -530,7 +530,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see andHaving()
 	 * @see orHaving()
 	 */
@@ -551,7 +551,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see having()
 	 * @see orHaving()
 	 */
@@ -572,7 +572,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see having()
 	 * @see andHaving()
 	 */
@@ -592,7 +592,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see addOrderBy()
 	 */
 	public function orderBy($columns)
@@ -607,7 +607,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see orderBy()
 	 */
 	public function addOrderBy($columns)
@@ -619,7 +619,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	/**
 	 * Sets the LIMIT part of the query.
 	 * @param integer $limit the limit
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function limit($limit)
 	{
@@ -630,7 +630,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	/**
 	 * Sets the OFFSET part of the query.
 	 * @param integer $offset the offset
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function offset($offset)
 	{
@@ -641,7 +641,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	/**
 	 * Appends a SQL statement using UNION operator.
 	 * @param string|Query $sql the SQL statement to be appended using UNION
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function union($sql)
 	{
@@ -654,7 +654,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * @param array list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see addParams()
 	 */
 	public function params($params)
@@ -668,7 +668,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * @param array list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
-	 * @return BaseQuery the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see params()
 	 */
 	public function addParams($params)
@@ -730,9 +730,22 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 
 	protected function performCountQuery()
 	{
-		$this->query->select = 'COUNT(*)';
-		$command = $this->query->createCommand($this->getDbConnection());
-		$this->sql = $command->getSql();
+		if ($this->sql === null) {
+			if ($this->query->from === null) {
+				$modelClass = $this->modelClass;
+				$tableName = $modelClass::tableName();
+				if ($this->tableAlias !== null) {
+					$tableName .= ' ' . $this->tableAlias;
+				}
+				$this->query->from = array($tableName);
+			}
+			$this->query->select = 'COUNT(*)';
+			$command = $this->query->createCommand($this->getDbConnection());
+			$this->sql = $command->getSql();
+		} else {
+			$command = $this->getDbConnection()->createCommand($this->sql);
+			$command->bindValues($this->query->params);
+		}
 		return $command->queryScalar();
 	}
 }
