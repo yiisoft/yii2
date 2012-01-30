@@ -17,5 +17,22 @@ namespace yii\db\ar;
  */
 class ActiveQueryBuilder extends \yii\base\Object
 {
+	/**
+	 * @var \yii\db\dao\QueryBuilder
+	 */
+	public $queryBuilder;
+	/**
+	 * @var ActiveQuery
+	 */
+	public $query;
 
+	public function __construct($query)
+	{
+		$this->query = $query;
+	}
+
+	public function build()
+	{
+
+	}
 }

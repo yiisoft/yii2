@@ -24,33 +24,28 @@ use yii\db\Exception;
 class QueryBuilder extends \yii\base\Object
 {
 	/**
-	 * @var array the abstract column types mapped to physical column types.
-	 * This is mainly used to support creating/modifying tables using DB-independent data type specifications.
-	 * Child classes should override this property to declare supported type mappings.
-	 */
-	public $typeMap = array();
-	/**
 	 * @var Connection the database connection.
 	 */
 	public $connection;
-	/**
-	 * @var Driver the database driver used for this query builder.
-	 */
-	public $driver;
 	/**
 	 * @var string the separator between different fragments of a SQL statement.
 	 * Defaults to an empty space. This is mainly used by [[build()]] when generating a SQL statement.
 	 */
 	public $separator = " ";
 	/**
-	 * @var Query the Query object that is currently processed by the query builder to generate a SQL statement.
-	 * This property will be set null upon completion of [[build()]].
-	 */
-	public $query;
-	/**
 	 * @var boolean whether to automatically quote table and column names when generating SQL statements.
 	 */
 	public $autoQuote = true;
+	/**
+	 * @var array the abstract column types mapped to physical column types.
+	 * This is mainly used to support creating/modifying tables using DB-independent data type specifications.
+	 * Child classes should override this property to declare supported type mappings.
+	 */
+	public $typeMap = array();
+	/**
+	 * @var Query the Query object that is currently processed by the query builder to generate a SQL statement.
+	 */
+	public $query;
 
 	/**
 	 * Constructor.
@@ -59,7 +54,6 @@ class QueryBuilder extends \yii\base\Object
 	public function __construct($connection)
 	{
 		$this->connection = $connection;
-		$this->driver = $connection->getDriver();
 	}
 
 	/**
@@ -74,8 +68,9 @@ class QueryBuilder extends \yii\base\Object
 		$this->query = $query;
 		if ($query->operation !== null) {
 			// non-SELECT query
-			$method = array_shift($query->operation);
-			$sql = call_user_func_array(array($this, $method), $query->operation);
+			$params = $query->operation;
+			$method = array_shift($params);
+			return call_user_func_array(array($this, $method), $params);
 		} else {
 			// SELECT query
 			$clauses = array(
@@ -89,10 +84,8 @@ class QueryBuilder extends \yii\base\Object
 				$this->buildOrderBy(),
 				$this->buildLimit(),
 			);
-			$sql = implode($this->separator, array_filter($clauses));
+			return implode($this->separator, array_filter($clauses));
 		}
-		$this->query = null;
-		return $sql;
 	}
 
 	/**
@@ -477,7 +470,7 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * Parses the condition specification and generates the corresponding SQL expression.
-	 * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
+	 * @param string|array $condition the condition specification. Please refer to [[BaseQuery::where()]]
 	 * on how to specify a condition.
 	 * @return string the generated SQL expression
 	 * @throws \yii\db\Exception if the condition is in bad format
@@ -651,6 +644,7 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		if ($this->autoQuote) {
+			$driver = $this->connection->driver;
 			if (!is_array($columns)) {
 				if (strpos($columns, '(') !== false) {
 					return $select . ' ' . $columns;
@@ -663,9 +657,9 @@ class QueryBuilder extends \yii\base\Object
 					$columns[$i] = (string)$column;
 				} elseif (strpos($column, '(') === false) {
 					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-\.])$/', $column, $matches)) {
-						$columns[$i] = $this->driver->quoteColumnName($matches[1]) . ' AS ' . $this->driver->quoteSimpleColumnName($matches[2]);
+						$columns[$i] = $driver->quoteColumnName($matches[1]) . ' AS ' . $driver->quoteSimpleColumnName($matches[2]);
 					} else {
-						$columns[$i] = $this->driver->quoteColumnName($column);
+						$columns[$i] = $driver->quoteColumnName($column);
 					}
 				}
 			}
@@ -690,6 +684,7 @@ class QueryBuilder extends \yii\base\Object
 		$tables = $this->query->from;
 
 		if ($this->autoQuote) {
+			$driver = $this->connection->driver;
 			if (!is_array($tables)) {
 				if (strpos($tables, '(') !== false) {
 					return 'FROM ' . $tables;
@@ -700,9 +695,9 @@ class QueryBuilder extends \yii\base\Object
 			foreach ($tables as $i => $table) {
 				if (strpos($table, '(') === false) {
 					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
-						$tables[$i] = $this->driver->quoteTableName($matches[1]) . ' ' . $this->driver->quoteTableName($matches[2]);
+						$tables[$i] = $driver->quoteTableName($matches[1]) . ' ' . $driver->quoteTableName($matches[2]);
 					} else {
-						$tables[$i] = $this->driver->quoteTableName($table);
+						$tables[$i] = $driver->quoteTableName($table);
 					}
 				}
 			}
@@ -733,10 +728,11 @@ class QueryBuilder extends \yii\base\Object
 				if (isset($join[0], $join[1])) {
 					$table = $join[1];
 					if ($this->autoQuote && strpos($table, '(') === false) {
+						$driver = $this->connection->driver;
 						if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
-							$table = $this->driver->quoteTableName($matches[1]) . ' ' . $this->driver->quoteTableName($matches[2]);
+							$table = $driver->quoteTableName($matches[1]) . ' ' . $driver->quoteTableName($matches[2]);
 						} else {
-							$table = $this->driver->quoteTableName($table);
+							$table = $driver->quoteTableName($table);
 						}
 					}
 					$joins[$i] = strtoupper($join[0]) . ' ' . $table;
@@ -792,6 +788,7 @@ class QueryBuilder extends \yii\base\Object
 		}
 		$columns = $this->query->orderBy;
 		if ($this->autoQuote) {
+			$driver = $this->connection->driver;
 			if (!is_array($columns)) {
 				if (strpos($columns, '(') !== false) {
 					return 'ORDER BY ' . $columns;
@@ -804,9 +801,9 @@ class QueryBuilder extends \yii\base\Object
 					$columns[$i] = (string)$column;
 				} elseif (strpos($column, '(') === false) {
 					if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-						$columns[$i] = $this->driver->quoteColumnName($matches[1]) . ' ' . $matches[2];
+						$columns[$i] = $driver->quoteColumnName($matches[1]) . ' ' . $matches[2];
 					} else {
-						$columns[$i] = $this->driver->quoteColumnName($column);
+						$columns[$i] = $driver->quoteColumnName($column);
 					}
 				}
 			}
@@ -873,7 +870,7 @@ class QueryBuilder extends \yii\base\Object
 				if (is_object($column)) {
 					$columns[$i] = (string)$column;
 				} elseif (strpos($column, '(') === false) {
-					$columns[$i] = $this->driver->quoteColumnName($column);
+					$columns[$i] = $this->quoteColumnName($column);
 				}
 			}
 		}
@@ -890,7 +887,7 @@ class QueryBuilder extends \yii\base\Object
 	protected function quoteTableName($name, $simple = false)
 	{
 		if ($this->autoQuote) {
-			return $simple ? $this->driver->quoteSimpleTableName($name) : $this->driver->quoteTableName($name);
+			return $this->connection->quoteTableName($name, $simple);
 		} else {
 			return $name;
 		}
@@ -906,7 +903,7 @@ class QueryBuilder extends \yii\base\Object
 	protected function quoteColumnName($name, $simple = false)
 	{
 		if ($this->autoQuote) {
-			return $simple ? $this->driver->quoteSimpleColumnName($name) : $this->driver->quoteColumnName($name);
+			return $this->connection->quoteColumnName($name, $simple);
 		} else {
 			return $name;
 		}

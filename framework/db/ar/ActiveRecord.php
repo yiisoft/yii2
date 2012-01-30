@@ -53,23 +53,25 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	/**
 	 * @static
-	 * @param string|array|ActiveQuery $q
+	 * @param string|array|Query $q
 	 * @return ActiveQuery
 	 * @throws \yii\db\Exception
 	 */
 	public static function find($q = null)
 	{
-		$query = $q instanceof ActiveQuery? $q : static::createQuery();
-		$query->modelClass = '\\' . get_called_class();
-		$query->from = static::tableName();
-		if (is_array($q)) {
+		$query = static::createActiveQuery();
+		if ($q instanceof Query) {
+			$query->query = $q;
+		} elseif (is_array($q)) {
+			// query by attributes
 			$query->where($q);
-		} elseif ($q !== null && $query !== $q) {
+		} elseif ($q !== null) {
+			// query by primary key
 			$primaryKey = static::getMetaData()->table->primaryKey;
 			if (is_string($primaryKey)) {
 				$query->where(array($primaryKey => $q));
 			} else {
-				throw new Exception("Multiple column values are required to find by composite primary keys.");
+				throw new Exception('Composite primary keys require multiple column values.');
 			}
 		}
 		return $query;
@@ -77,19 +79,13 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	public static function findBySql($sql, $params = array())
 	{
-		$query = static::createQuery();
 		if (!is_array($params)) {
 			$params = func_get_args();
 			array_shift($params);
 		}
-		$query->setSql($sql);
-		$query->modelClass = '\\' . get_called_class();
+		$query = static::createActiveQuery();
+		$query->sql = $sql;
 		return $query->params($params);
-	}
-
-	public static function exists($condition, $params)
-	{
-
 	}
 
 	public static function updateAll()
@@ -107,7 +103,7 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	}
 
-	public static function createQuery()
+	public static function createActiveQuery()
 	{
 		return new ActiveQuery('\\' . get_called_class());
 	}

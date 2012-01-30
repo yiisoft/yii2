@@ -10,8 +10,8 @@
 
 namespace yii\db\ar;
 
-use yii\db\dao\BaseQuery;
 use yii\base\VectorIterator;
+use yii\db\dao\Query;
 
 /**
  * ActiveFinder.php is ...
@@ -20,37 +20,56 @@ use yii\base\VectorIterator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess, \Countable
+class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	public $modelClass;
 
+	/**
+	 * @var \yii\db\dao\Query the Query object
+	 */
+	public $query;
+
 	public $with;
-	public $alias;
+	public $tableAlias;
 	public $indexBy;
 	public $asArray;
+	public $scopes;
 
 	public $records;
 	public $sql;
 
+	public function __construct($modelClass)
+	{
+		$this->modelClass = $modelClass;
+		$this->query = new Query;
+	}
+
 	public function all($refresh = false)
 	{
 		if ($this->records === null || $refresh) {
-			$this->records = $this->performQuery();
+			$this->records = $this->findRecords();
 		}
 		return $this->records;
 	}
 
-	public function one($refresh = false)
+	public function one($refresh = false, $limitOne = true)
 	{
 		if ($this->records === null || $refresh) {
-			$this->limit = 1;
-			$this->records = $this->performQuery();
+			if ($limitOne) {
+				$this->limit(1);
+			}
+			$this->records = $this->findRecords();
 		}
 		if (isset($this->records[0])) {
 			return $this->records[0];
 		} else {
 			return null;
 		}
+	}
+
+	public function exists()
+	{
+
 	}
 
 	public function asArray($value = true)
@@ -71,9 +90,9 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 		return $this;
 	}
 
-	public function alias($tableAlias)
+	public function tableAlias($value)
 	{
-		$this->alias = $tableAlias;
+		$this->tableAlias = $value;
 		return $this;
 	}
 
@@ -123,7 +142,7 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	public function getIterator()
 	{
 		if ($this->records === null) {
-			$this->records = $this->performQuery();
+			$this->records = $this->findRecords();
 		}
 		return new VectorIterator($this->records);
 	}
@@ -142,7 +161,7 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 			return $this->performCountQuery();
 		} else {
 			if ($this->records === null) {
-				$this->records = $this->performQuery();
+				$this->records = $this->findRecords();
 			}
 			return count($this->records);
 		}
@@ -158,7 +177,7 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	public function offsetExists($offset)
 	{
 		if ($this->records === null) {
-			$this->records = $this->performQuery();
+			$this->records = $this->findRecords();
 		}
 		return isset($this->records[$offset]);
 	}
@@ -175,7 +194,7 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	public function offsetGet($offset)
 	{
 		if ($this->records === null) {
-			$this->records = $this->performQuery();
+			$this->records = $this->findRecords();
 		}
 		return isset($this->records[$offset]) ? $this->records[$offset] : null;
 	}
@@ -194,7 +213,7 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	public function offsetSet($offset, $item)
 	{
 		if ($this->records === null) {
-			$this->records = $this->performQuery();
+			$this->records = $this->findRecords();
 		}
 		$this->records[$offset] = $item;
 	}
@@ -210,37 +229,502 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	public function offsetUnset($offset)
 	{
 		if ($this->records === null) {
-			$this->records = $this->performQuery();
+			$this->records = $this->findRecords();
 		}
 		unset($this->records[$offset]);
 	}
 
-	protected function performQuery()
+	/**
+	 * Sets the SELECT part of the query.
+	 * @param mixed $columns the columns to be selected. Defaults to '*', meaning all columns.
+	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
+	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
+	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
+	 * @return BaseQuery the query object itself
+	 */
+	public function select($columns = '*', $option = '')
 	{
-		$db = $this->getDbConnection();
-		$this->sql = $this->getSql($db);
-		$command = $db->createCommand($this->sql);
-		$command->bindValues($this->params);
+		$this->query->select($columns, $option);
+		return $this;
+	}
+
+	/**
+	 * Sets the value indicating whether to SELECT DISTINCT or not.
+	 * @param bool $value whether to SELECT DISTINCT or not.
+	 * @return BaseQuery the query object itself
+	 */
+	public function distinct($value = true)
+	{
+		$this->query->distinct($value);
+		return $this;
+	}
+
+	/**
+	 * Sets the FROM part of the query.
+	 * @param mixed $tables the table(s) to be selected from. This can be either a string (e.g. 'tbl_user')
+	 * or an array (e.g. array('tbl_user', 'tbl_profile')) specifying one or several table names.
+	 * Table names can contain schema prefixes (e.g. 'public.tbl_user') and/or table aliases (e.g. 'tbl_user u').
+	 * The method will automatically quote the table names unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @return BaseQuery the query object itself
+	 */
+	public function from($tables)
+	{
+		$this->query->from($tables);
+		return $this;
+	}
+
+	/**
+	 * Sets the WHERE part of the query.
+	 *
+	 * The method requires a $condition parameter, and optionally a $params parameter
+	 * specifying the values to be bound to the query.
+	 *
+	 * The $condition parameter should be either a string (e.g. 'id=1') or an array.
+	 * If the latter, it must be in one of the following two formats:
+	 *
+	 * - hash format: `array('column1' => value1, 'column2' => value2, ...)`
+	 * - operator format: `array(operator, operand1, operand2, ...)`
+	 *
+	 * A condition in hash format represents the following SQL expression in general:
+	 * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+	 * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
+	 * in the generated expression. Below are some examples:
+	 *
+	 * - `array('type'=>1, 'status'=>2)` generates `(type=1) AND (status=2)`.
+	 * - `array('id'=>array(1,2,3), 'status'=>2)` generates `(id IN (1,2,3)) AND (status=2)`.
+	 * - `array('status'=>null) generates `status IS NULL`.
+	 *
+	 * A condition in operator format generates the SQL expression according to the specified operator, which
+	 * can be one of the followings:
+	 *
+	 * - `and`: the operands should be concatenated together using `AND`. For example,
+	 * `array('and', 'id=1', 'id=2')` will generate `id=1 AND id=2`. If an operand is an array,
+	 * it will be converted into a string using the rules described here. For example,
+	 * `array('and', 'type=1', array('or', 'id=1', 'id=2'))` will generate `type=1 AND (id=1 OR id=2)`.
+	 * The method will NOT do any quoting or escaping.
+	 *
+	 * - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
+	 *
+	 * - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
+	 * starting and ending values of the range that the column is in.
+	 * For example, `array('between', 'id', 1, 10)` will generate `id BETWEEN 1 AND 10`.
+	 *
+	 * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
+	 * in the generated condition.
+	 *
+	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
+	 * the range of the values that the column or DB expression should be in. For example,
+	 * `array('in', 'id', array(1,2,3))` will generate `id IN (1,2,3)`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
+	 *
+	 * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
+	 * the values that the column or DB expression should be like.
+	 * For example, `array('like', 'name', '%tester%')` will generate `name LIKE '%tester%'`.
+	 * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
+	 * using `AND`. For example, `array('like', 'name', array('%test%', '%sample%'))` will generate
+	 * `name LIKE '%test%' AND name LIKE '%sample%'`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
+	 * predicates when operand 2 is an array.
+	 *
+	 * - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
+	 * in the generated condition.
+	 *
+	 * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
+	 * the `NOT LIKE` predicates.
+	 *
+	 * @param string|array $condition the conditions that should be put in the WHERE part.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * For anonymous parameters, they can alternatively be specified as separate parameters to this method.
+	 * For example, `where('type=? AND status=?', 100, 1)`.
+	 * @return BaseQuery the query object itself
+	 * @see andWhere()
+	 * @see orWhere()
+	 */
+	public function where($condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->where($condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Adds an additional WHERE condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'AND' operator.
+	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
+	 * @return BaseQuery the query object itself
+	 * @see where()
+	 * @see orWhere()
+	 */
+	public function andWhere($condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->andWhere($condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Adds an additional WHERE condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'OR' operator.
+	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
+	 * @return BaseQuery the query object itself
+	 * @see where()
+	 * @see andWhere()
+	 */
+	public function orWhere($condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->orWhere($condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Appends an INNER JOIN part to the query.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
+	 * @return BaseQuery the query object itself
+	 */
+	public function join($table, $condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->join($table, $condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Appends a LEFT OUTER JOIN part to the query.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return BaseQuery the query object itself
+	 */
+	public function leftJoin($table, $condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->leftJoin($table, $condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Appends a RIGHT OUTER JOIN part to the query.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @return BaseQuery the query object itself
+	 */
+	public function rightJoin($table, $condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->rightJoin($table, $condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Appends a CROSS JOIN part to the query.
+	 * Note that not all DBMS support CROSS JOIN.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @return BaseQuery the query object itself
+	 */
+	public function crossJoin($table)
+	{
+		$this->query->crossJoin($table);
+		return $this;
+	}
+
+	/**
+	 * Appends a NATURAL JOIN part to the query.
+	 * Note that not all DBMS support NATURAL JOIN.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @return BaseQuery the query object itself
+	 */
+	public function naturalJoin($table)
+	{
+		$this->query->naturalJoin($table);
+		return $this;
+	}
+
+	/**
+	 * Sets the GROUP BY part of the query.
+	 * @param string|array $columns the columns to be grouped by.
+	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return BaseQuery the query object itself
+	 * @see addGroupBy()
+	 */
+	public function groupBy($columns)
+	{
+		$this->query->groupBy($columns);
+		return $this;
+	}
+
+	/**
+	 * Adds additional group-by columns to the existing ones.
+	 * @param string|array $columns additional columns to be grouped by.
+	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return BaseQuery the query object itself
+	 * @see groupBy()
+	 */
+	public function addGroupBy($columns)
+	{
+		$this->query->addGroupBy($columns);
+		return $this;
+	}
+
+	/**
+	 * Sets the HAVING part of the query.
+	 * @param string|array $condition the conditions to be put after HAVING.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
+	 * @return BaseQuery the query object itself
+	 * @see andHaving()
+	 * @see orHaving()
+	 */
+	public function having($condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->having($condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Adds an additional HAVING condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'AND' operator.
+	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
+	 * @return BaseQuery the query object itself
+	 * @see having()
+	 * @see orHaving()
+	 */
+	public function andHaving($condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->andHaving($condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Adds an additional HAVING condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'OR' operator.
+	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
+	 * @return BaseQuery the query object itself
+	 * @see having()
+	 * @see andHaving()
+	 */
+	public function orHaving($condition, $params = array())
+	{
+		if (is_array($params)) {
+			$this->query->orHaving($condition, $params);
+		} else {
+			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
+		}
+		return $this;
+	}
+
+	/**
+	 * Sets the ORDER BY part of the query.
+	 * @param string|array $columns the columns (and the directions) to be ordered by.
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return BaseQuery the query object itself
+	 * @see addOrderBy()
+	 */
+	public function orderBy($columns)
+	{
+		$this->query->orderBy($columns);
+		return $this;
+	}
+
+	/**
+	 * Adds additional ORDER BY columns to the query.
+	 * @param string|array $columns the columns (and the directions) to be ordered by.
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return BaseQuery the query object itself
+	 * @see orderBy()
+	 */
+	public function addOrderBy($columns)
+	{
+		$this->query->addOrderBy($columns);
+		return $this;
+	}
+
+	/**
+	 * Sets the LIMIT part of the query.
+	 * @param integer $limit the limit
+	 * @return BaseQuery the query object itself
+	 */
+	public function limit($limit)
+	{
+		$this->query->limit($limit);
+		return $this;
+	}
+
+	/**
+	 * Sets the OFFSET part of the query.
+	 * @param integer $offset the offset
+	 * @return BaseQuery the query object itself
+	 */
+	public function offset($offset)
+	{
+		$this->query->offset($offset);
+		return $this;
+	}
+
+	/**
+	 * Appends a SQL statement using UNION operator.
+	 * @param string|Query $sql the SQL statement to be appended using UNION
+	 * @return BaseQuery the query object itself
+	 */
+	public function union($sql)
+	{
+		$this->query->union($sql);
+		return $this;
+	}
+
+	/**
+	 * Sets the parameters to be bound to the query.
+	 * @param array list of query parameter values indexed by parameter placeholders.
+	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
+	 * @return BaseQuery the query object itself
+	 * @see addParams()
+	 */
+	public function params($params)
+	{
+		$this->query->params($params);
+		return $this;
+	}
+
+	/**
+	 * Adds additional parameters to be bound to the query.
+	 * @param array list of query parameter values indexed by parameter placeholders.
+	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
+	 * @return BaseQuery the query object itself
+	 * @see params()
+	 */
+	public function addParams($params)
+	{
+		$this->query->addParams($params);
+		return $this;
+	}
+
+	protected function findRecords()
+	{
+		/*
+		 * 	public $with;
+		 */
+
+		if ($this->query->from === null) {
+			$modelClass = $this->modelClass;
+			$this->query->from = $modelClass::tableName();
+			if ($this->tableAlias !== null) {
+				$this->query->from .= $this->tableAlias;
+			}
+		}
+		$command = $this->query->createCommand($this->getDbConnection());
+		$this->sql = $command->getSql();
 		$rows = $command->queryAll();
 		if ($this->asArray) {
-			$records = $rows;
+			if ($this->indexBy === null) {
+				return $rows;
+			}
+			$records = array();
+			foreach ($rows as $row) {
+				$records[$row[$this->indexBy]] = $row;
+			}
+			return $records;
 		} else {
 			$records = array();
 			$class = $this->modelClass;
-			foreach ($rows as $row) {
-				$records[] = $class::populateData($row);
+			if ($this->indexBy === null) {
+				foreach ($rows as $row) {
+					$records[] = $class::populateData($row);
+				}
+			} else {
+				$attribute = $this->indexBy;
+				foreach ($rows as $row) {
+					$record = $class::populateData($row);
+					$records[$record->$attribute] = $record;
+				}
 			}
+			return $records;
 		}
-		return $records;
 	}
 
 	protected function performCountQuery()
 	{
-		$this->select = 'COUNT(*)';
-		$class = $this->modelClass;
-		$command = $this->createCommand($class::getDbConnection());
+		$this->query->select = 'COUNT(*)';
+		$command = $this->query->createCommand($this->getDbConnection());
 		$this->sql = $command->getSql();
-		$count = $command->queryScalar();
-		return $count;
+		return $command->queryScalar();
 	}
 }

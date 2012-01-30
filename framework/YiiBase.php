@@ -358,25 +358,25 @@ class YiiBase
 			$class = static::import($class, true);
 		}
 
-		if (($n = func_num_args()-1) > 0) {
+		if (($n = func_num_args()) > 1) {
 			$args = func_get_args();
-			array_shift($args); // remove $config
-		}
-
-		if ($n === 0) {
-			$object = new $class;
-		} elseif ($n === 1) {
-			$object = new $class($args[0]);
-		} elseif ($n === 2) {
-			$object = new $class($args[0], $args[1]);
-		} elseif ($n === 3) {
-			$object = new $class($args[0], $args[1], $args[2]);
+			if ($n === 2) {
+				$object = new $class($args[1]);
+			} elseif ($n === 3) {
+				$object = new $class($args[1], $args[2]);
+			} elseif ($n === 4) {
+				$object = new $class($args[1], $args[2], $args[3]);
+			} else {
+				array_shift($args); // remove $config
+				$r = new \ReflectionClass($class);
+				$object = $r->newInstanceArgs($args);
+			}
 		} else {
-			$r = new \ReflectionClass($class);
-			$object = $r->newInstanceArgs($args);
+			$object = new $class;
 		}
 
 		$class = '\\' . get_class($object);
+
 		if (isset(\Yii::$objectConfig[$class])) {
 			$config = array_merge(\Yii::$objectConfig[$class], $config);
 		}
