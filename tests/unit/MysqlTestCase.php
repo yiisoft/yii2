@@ -6,7 +6,7 @@ class MysqlTestCase extends TestCase
 {
 	function __construct()
 	{
-		if(!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
+		if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
 			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');
 		}
 	}

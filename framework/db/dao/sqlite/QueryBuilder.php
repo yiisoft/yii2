@@ -23,23 +23,7 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-	public $typeMap = array(
-		Driver::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
-		Driver::TYPE_STRING => 'varchar(255)',
-		Driver::TYPE_TEXT => 'text',
-		Driver::TYPE_SMALLINT => 'smallint',
-		Driver::TYPE_INTEGER => 'integer',
-		Driver::TYPE_BIGINT => 'bigint',
-		Driver::TYPE_FLOAT => 'float',
-		Driver::TYPE_DECIMAL => 'decimal',
-		Driver::TYPE_DATETIME => 'datetime',
-		Driver::TYPE_TIMESTAMP => 'timestamp',
-		Driver::TYPE_TIME => 'time',
-		Driver::TYPE_DATE => 'date',
-		Driver::TYPE_BINARY => 'blob',
-		Driver::TYPE_BOOLEAN => 'tinyint(1)',
-		Driver::TYPE_MONEY => 'decimal(19,4)',
-	);
+	public $typeMap = array(Driver::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL', Driver::TYPE_STRING => 'varchar(255)', Driver::TYPE_TEXT => 'text', Driver::TYPE_SMALLINT => 'smallint', Driver::TYPE_INTEGER => 'integer', Driver::TYPE_BIGINT => 'bigint', Driver::TYPE_FLOAT => 'float', Driver::TYPE_DECIMAL => 'decimal', Driver::TYPE_DATETIME => 'datetime', Driver::TYPE_TIMESTAMP => 'timestamp', Driver::TYPE_TIME => 'time', Driver::TYPE_DATE => 'date', Driver::TYPE_BINARY => 'blob', Driver::TYPE_BOOLEAN => 'tinyint(1)', Driver::TYPE_MONEY => 'decimal(19,4)',);
 
 	/**
 	 * Resets the sequence value of a table's primary key.
@@ -53,9 +37,8 @@ class QueryBuilder extends \yii\db\dao\QueryBuilder
 	{
 		if ($table->sequenceName !== null) {
 			if ($value === null) {
-				$value = $this->connection->createCommand("SELECT MAX(`{$table->primaryKey}`) FROM {$table->quotedName}")->queryScalar();
-			}
-			else {
+				$value = $this->connection->createCommand("SELECT MAX(`{$table->primaryKey[0]}`) FROM {$table->quotedName}")->queryScalar();
+			} else {
 				$value = (int)$value - 1;
 			}
 			try {

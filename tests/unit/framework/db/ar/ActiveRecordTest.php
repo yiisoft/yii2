@@ -62,13 +62,13 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals('user2', $customer->name);
 
 		// find by attributes
-		$customer = Customer::find(array('name'=>'user2'))->one();
+		$customer = Customer::find(array('name' => 'user2'))->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(2, $customer->id);
 
 		// find by Query
 		$query = new Query;
-		$query->where('id=:id', array(':id'=>2));
+		$query->where('id=:id', array(':id' => 2));
 		$customer = Customer::find($query)->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
@@ -89,7 +89,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(3, count($customers));
 
 		// find with parameter binding
-		$customer = Customer::findBySql('SELECT * FROM tbl_customer WHERE id=:id', array(':id'=>2))->one();
+		$customer = Customer::findBySql('SELECT * FROM tbl_customer WHERE id=:id', array(':id' => 2))->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 
@@ -116,60 +116,60 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(3, $customer->id);
 		$this->assertEquals(null, $customer->name);
 	}
-/*
-	public function testGetSql()
-	{
-		// sql for all
-		$sql = Customer::find()->sql;
-		$this->assertEquals('SELECT * FROM `tbl_customer`', $sql);
+	/*
+	 public function testGetSql()
+	 {
+		 // sql for all
+		 $sql = Customer::find()->sql;
+		 $this->assertEquals('SELECT * FROM `tbl_customer`', $sql);
 
-		// sql for one row
-		$sql = Customer::find()->oneSql;
-		$this->assertEquals('SELECT * FROM tbl_customer LIMIT 1', $sql);
+		 // sql for one row
+		 $sql = Customer::find()->oneSql;
+		 $this->assertEquals('SELECT * FROM tbl_customer LIMIT 1', $sql);
 
-		// sql for count
-		$sql = Customer::find()->countSql;
-		$this->assertEquals('SELECT COUNT(*) FROM tbl_customer', $sql);
-	}
+		 // sql for count
+		 $sql = Customer::find()->countSql;
+		 $this->assertEquals('SELECT COUNT(*) FROM tbl_customer', $sql);
+	 }
 
-	public function testArrayResult()
-	{
-		Customer::find()->asArray()->one();
-		Customer::find()->asArray()->all();
-	}
+	 public function testArrayResult()
+	 {
+		 Customer::find()->asArray()->one();
+		 Customer::find()->asArray()->all();
+	 }
 
-	public function testMisc()
-	{
-//		 Customer::exists()
-//		 Customer::updateAll()
-//		 Customer::updateCounters()
-//		 Customer::deleteAll()
-	}
+	 public function testMisc()
+	 {
+ //		 Customer::exists()
+ //		 Customer::updateAll()
+ //		 Customer::updateCounters()
+ //		 Customer::deleteAll()
+	 }
 
-	public function testInsert()
-	{
+	 public function testInsert()
+	 {
 
-	}
+	 }
 
-	public function testUpdate()
-	{
+	 public function testUpdate()
+	 {
 
 
-	}
+	 }
 
-	public function testDelete()
-	{
+	 public function testDelete()
+	 {
 
-	}
+	 }
 
-	public function testLazyLoading()
-	{
+	 public function testLazyLoading()
+	 {
 
-	}
+	 }
 
-	public function testEagerLoading()
-	{
+	 public function testEagerLoading()
+	 {
 
-	}
-*/
+	 }
+ */
 }

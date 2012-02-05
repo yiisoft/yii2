@@ -188,8 +188,7 @@ class Object
 	 */
 	public function hasProperty($name, $checkVar = true)
 	{
-		return $this->canGetProperty($name, false) || $this->canSetProperty($name, false)
-			|| $checkVar && property_exists($this, $name);
+		return $this->canGetProperty($name, false) || $this->canSetProperty($name, false) || $checkVar && property_exists($this, $name);
 	}
 
 	/**

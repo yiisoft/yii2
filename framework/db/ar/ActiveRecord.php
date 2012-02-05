@@ -68,10 +68,10 @@ abstract class ActiveRecord extends \yii\base\Model
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::getMetaData()->table->primaryKey;
-			if (is_string($primaryKey)) {
-				$query->where(array($primaryKey => $q));
+			if (count($primaryKey) === 1) {
+				$query->where(array($primaryKey[0] => $q));
 			} else {
-				throw new Exception('Composite primary keys require multiple column values.');
+				throw new Exception('Multiple values are required to query by composite keys.');
 			}
 		}
 		return $query;
@@ -1112,20 +1112,14 @@ abstract class ActiveRecord extends \yii\base\Model
 	public function getPrimaryKey()
 	{
 		$table = static::getMetaData()->table;
-		if (is_string($table->primaryKey)) {
-			return $this->{$table->primaryKey};
-		}
-		elseif (is_array($table->primaryKey))
-		{
+		if (count($table->primaryKey) === 1) {
+			return $this->{$table->primaryKey[0]};
+		} else {
 			$values = array();
-			foreach ($table->primaryKey as $name)
-			{
+			foreach ($table->primaryKey as $name) {
 				$values[$name] = $this->$name;
 			}
 			return $values;
-		} else
-		{
-			return null;
 		}
 	}
 
@@ -1138,14 +1132,11 @@ abstract class ActiveRecord extends \yii\base\Model
 	public function setPrimaryKey($value)
 	{
 		$this->_pk = $this->getPrimaryKey();
-		$table = $this->getMetaData()->tableSchema;
-		if (is_string($table->primaryKey)) {
-			$this->{$table->primaryKey} = $value;
-		}
-		elseif (is_array($table->primaryKey))
-		{
-			foreach ($table->primaryKey as $name)
-			{
+		$table = $this->getMetaData()->table;
+		if (count($table->primaryKey) === 1) {
+			$this->{$table->primaryKey[0]} = $value;
+		} else {
+			foreach ($table->primaryKey as $name) {
 				$this->$name = $value[$name];
 			}
 		}

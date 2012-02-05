@@ -41,9 +41,9 @@ class TableSchema extends \yii\base\Object
 	 */
 	public $quotedName;
 	/**
-	 * @var string|array primary key name of this table. If composite key, an array of key names is returned.
+	 * @var array primary keys of this table.
 	 */
-	public $primaryKey;
+	public $primaryKey = array();
 	/**
 	 * @var string sequence name for the primary key. Null if no sequence.
 	 */
@@ -85,10 +85,19 @@ class TableSchema extends \yii\base\Object
 		return array_keys($this->columns);
 	}
 
+	/**
+	 * Manually specifies the primary key for this table.
+	 * @param string|array $keys the primary key (can be composite)
+	 * @throws \yii\db\Exception if the specified key cannot be found in the table.
+	 */
 	public function fixPrimaryKey($keys)
 	{
 		if (!is_array($keys)) {
 			$keys = array($keys);
+		}
+		$this->primaryKey = $keys;
+		foreach ($this->columns as $column) {
+			$column->isPrimaryKey = false;
 		}
 		foreach ($keys as $key) {
 			if (isset($this->columns[$key])) {

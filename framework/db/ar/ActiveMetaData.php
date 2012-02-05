@@ -3,6 +3,7 @@
 namespace yii\db\ar;
 
 use yii\db\Exception;
+use yii\db\dao\TableSchema;
 
 /**
  * ActiveMetaData represents the meta-data for an Active Record class.
@@ -28,19 +29,16 @@ class ActiveMetaData
 	public function __construct($modelClass)
 	{
 		$tableName = $modelClass::tableName();
-		$table = $modelClass::getDbConnection()->getDriver()->getTableSchema($tableName);
-		if ($table === null) {
+		$this->table = $modelClass::getDbConnection()->getDriver()->getTableSchema($tableName);
+		if ($this->table === null) {
 			throw new Exception("Unable to find table '$tableName' for ActiveRecord class '$modelClass'.");
 		}
-		if ($table->primaryKey === null) {
-			$primaryKey = $modelClass::primaryKey();
-			if ($primaryKey !== null) {
-				$table->fixPrimaryKey($primaryKey);
-			} else {
-				throw new Exception("The table '$tableName' for ActiveRecord class '$modelClass' does not have a primary key.");
-			}
+		$primaryKey = $modelClass::primaryKey();
+		if ($primaryKey !== null) {
+			$this->table->fixPrimaryKey($primaryKey);
+		} elseif ($this->table->primaryKey === null) {
+			throw new Exception("The table '$tableName' for ActiveRecord class '$modelClass' does not have a primary key.");
 		}
-		$this->table = $table;
 
 		foreach ($modelClass::relations() as $name => $config) {
 			$this->addRelation($name, $config);

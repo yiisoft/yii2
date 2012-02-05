@@ -12,6 +12,7 @@ namespace yii\db\ar;
 
 use yii\base\VectorIterator;
 use yii\db\dao\Query;
+use yii\db\Exception;
 
 /**
  * ActiveFinder.php is ...
@@ -44,32 +45,28 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 		$this->query = new Query;
 	}
 
-	public function all($refresh = false)
+	public function all()
 	{
-		if ($this->records === null || $refresh) {
+		if ($this->records === null) {
 			$this->records = $this->findRecords();
 		}
 		return $this->records;
 	}
 
-	public function one($refresh = false, $limitOne = true)
+	public function one($limitOne = true)
 	{
-		if ($this->records === null || $refresh) {
+		if ($this->records === null) {
 			if ($limitOne) {
 				$this->limit(1);
 			}
 			$this->records = $this->findRecords();
 		}
-		if (isset($this->records[0])) {
-			return $this->records[0];
-		} else {
-			return null;
-		}
+		return isset($this->records[0]) ? $this->records[0] : null;
 	}
 
 	public function exists()
 	{
-
+		return $this->select(array('1'))->asArray(true)->one() !== null;
 	}
 
 	public function asArray($value = true)
@@ -81,6 +78,10 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	public function with()
 	{
 		$this->with = func_get_args();
+		if (isset($this->with[0]) && is_array($this->with[0])) {
+			// the parameter is given as an array
+			$this->with = $this->with[0];
+		}
 		return $this;
 	}
 
@@ -649,6 +650,11 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 		return $this;
 	}
 
+	public function getParams()
+	{
+		return $this->query->params;
+	}
+
 	/**
 	 * Sets the parameters to be bound to the query.
 	 * @param array list of query parameter values indexed by parameter placeholders.
@@ -677,21 +683,20 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 		return $this;
 	}
 
+	public function joinWith()
+	{
+		// todo: inner join with one or multiple relations
+	}
+
 	protected function findRecords()
 	{
-		/*
-		 * 	public $with;
-		 */
+		if (!empty($this->with)) {
+			// todo: handle findBySql() and limit cases
+			$this->initRelationalQuery();
+		}
 
 		if ($this->sql === null) {
-			if ($this->query->from === null) {
-				$modelClass = $this->modelClass;
-				$tableName = $modelClass::tableName();
-				if ($this->tableAlias !== null) {
-					$tableName .= ' ' . $this->tableAlias;
-				}
-				$this->query->from = array($tableName);
-			}
+			$this->initFrom($this->query);
 			$command = $this->query->createCommand($this->getDbConnection());
 			$this->sql = $command->getSql();
 		} else {
@@ -731,14 +736,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	protected function performCountQuery()
 	{
 		if ($this->sql === null) {
-			if ($this->query->from === null) {
-				$modelClass = $this->modelClass;
-				$tableName = $modelClass::tableName();
-				if ($this->tableAlias !== null) {
-					$tableName .= ' ' . $this->tableAlias;
-				}
-				$this->query->from = array($tableName);
-			}
+			$this->initFrom($this->query);
 			$this->query->select = 'COUNT(*)';
 			$command = $this->query->createCommand($this->getDbConnection());
 			$this->sql = $command->getSql();
@@ -747,5 +745,80 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 			$command->bindValues($this->query->params);
 		}
 		return $command->queryScalar();
+	}
+
+	protected function initFrom($query)
+	{
+		if ($query->from === null) {
+			$modelClass = $this->modelClass;
+			$tableName = $modelClass::tableName();
+			if ($this->tableAlias !== null) {
+				$tableName .= ' ' . $this->tableAlias;
+			}
+			$query->from = array($tableName);
+		}
+	}
+
+	protected function initRelationalQuery()
+	{
+		$joinTree = new JoinElement(null, null);
+		$joinCount = 0;
+		$this->buildJoinTree($joinTree, $this->with, $joinCount);
+		$query = new Query;
+		foreach ($joinTree->children as $child) {
+			$child->buildQuery($query);
+		}
+	}
+
+	/**
+	 * @param JoinElement $parent
+	 * @param array|string $with
+	 * @param integer $joinCount
+	 * @param array $config
+	 * @return null|JoinElement
+	 * @throws \yii\db\Exception
+	 */
+	protected function buildJoinTree($parent, $with, &$joinCount, $config = array())
+	{
+		if (is_array($with)) {
+			foreach ($with as $name => $value) {
+				if (is_string($value)) {
+					$this->buildJoinTree($parent, $value, $joinCount);
+				} elseif (is_string($name) && is_array($value)) {
+					$this->buildJoinTree($parent, $name, $joinCount, $value);
+				}
+			}
+			return null;
+		}
+
+		if (($pos = strrpos($with, '.')) !== false) {
+			$parent = $this->buildJoinTree($parent, substr($with, 0, $pos), $joinCount);
+			$with = substr($with, $pos + 1);
+		}
+
+		if (isset($parent->children[$with])) {
+			$child = $parent->children[$with];
+		} else {
+			$modelClass = $parent->relation->modelClass;
+			$relations = $modelClass::getMetaData()->relations;
+			if (!isset($relations[$with])) {
+				throw new Exception("$modelClass has no relation named '$with'.");
+			}
+			$relation = clone $relations[$with];
+			if ($relation->tableAlias === null) {
+				$relation->tableAlias = 't' . ($joinCount++);
+			}
+			$child = new JoinElement($parent, $relation);
+		}
+
+		foreach ($config as $name => $value) {
+			$child->relation->$name = $value;
+		}
+
+		if (!empty($child->relation->with)) {
+			$this->buildJoinTree($child, $child->relation->with, $joinCount);
+		}
+
+		return $child;
 	}
 }

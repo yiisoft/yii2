@@ -377,7 +377,7 @@ class Query extends \yii\base\Object
 
 	/**
 	 * Sets the SELECT part of the query.
-	 * @param mixed $columns the columns to be selected. Defaults to '*', meaning all columns.
+	 * @param string|array $columns the columns to be selected. Defaults to '*', meaning all columns.
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
 	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
 	 * The method will automatically quote the column names unless a column contains some parenthesis
@@ -882,7 +882,7 @@ class Query extends \yii\base\Object
 	 * The merging is done according to the following rules:
 	 *
 	 * - [[select]]: the union of both queries' [[select]] property values.
-	 * - [[selectOption]], [[distinct]], [[limit]], [[offset]]: the new query
+	 * - [[selectOption]], [[distinct]], [[from]], [[limit]], [[offset]]: the new query
 	 * takes precedence over this query.
 	 *  - [[where]], [[having]]: the new query's corresponding property value
 	 * will be 'AND' together with the existing one.
@@ -911,6 +911,10 @@ class Query extends \yii\base\Object
 
 		if ($query->distinct !== null) {
 			$this->distinct = $query->distinct;
+		}
+
+		if ($query->from !== null) {
+			$this->from = $query->from;
 		}
 
 		if ($query->limit !== null) {

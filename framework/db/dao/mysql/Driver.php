@@ -212,13 +212,7 @@ class Driver extends \yii\db\dao\Driver
 			$column = $this->createColumn($column);
 			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey) {
-				if ($table->primaryKey === null) {
-					$table->primaryKey = $column->name;
-				} elseif (is_string($table->primaryKey)) {
-					$table->primaryKey = array($table->primaryKey, $column->name);
-				} else {
-					$table->primaryKey[] = $column->name;
-				}
+				$table->primaryKey[] = $column->name;
 				if ($column->autoIncrement) {
 					$table->sequenceName = '';
 				}
