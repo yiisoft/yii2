@@ -18,6 +18,10 @@ class ActiveMetaData
 	 */
 	public $table;
 	/**
+	 * @var string the model class name
+	 */
+	public $modelClass;
+	/**
 	 * @var array list of relations
 	 */
 	public $relations = array();
@@ -30,6 +34,7 @@ class ActiveMetaData
 	{
 		$tableName = $modelClass::tableName();
 		$this->table = $modelClass::getDbConnection()->getDriver()->getTableSchema($tableName);
+		$this->modelClass = $modelClass;
 		if ($this->table === null) {
 			throw new Exception("Unable to find table '$tableName' for ActiveRecord class '$modelClass'.");
 		}
@@ -64,11 +69,16 @@ class ActiveMetaData
 			}
 			$relation = ActiveRelation::newInstance($config);
 			$relation->name = $matches[1];
-			$relation->modelClass = '\\' . $matches[2];
+			$modelClass = $matches[2];
+			if (strpos($modelClass, '\\') !== false) {
+				$relation->modelClass = '\\' . ltrim($modelClass, '\\');
+			} else {
+				$relation->modelClass = dirname($this->modelClass) . '\\' . $modelClass;
+			}
 			$relation->hasMany = isset($matches[3]);
 			$this->relations[$relation->name] = $relation;
 		} else {
-			throw new Exception("Relation name in bad format: $name");
+			throw new Exception("{$this->modelClass} has an invalid relation: $name");
 		}
 	}
 }

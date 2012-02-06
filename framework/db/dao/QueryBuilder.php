@@ -656,7 +656,7 @@ class QueryBuilder extends \yii\base\Object
 				if (is_object($column)) {
 					$columns[$i] = (string)$column;
 				} elseif (strpos($column, '(') === false) {
-					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-\.])$/', $column, $matches)) {
+					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
 						$columns[$i] = $driver->quoteColumnName($matches[1]) . ' AS ' . $driver->quoteSimpleColumnName($matches[2]);
 					} else {
 						$columns[$i] = $driver->quoteColumnName($column);

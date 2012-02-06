@@ -8,4 +8,13 @@ class Customer extends ActiveRecord
 	{
 		return 'tbl_customer';
 	}
+
+	public static function relations()
+	{
+		return array(
+			'orders:Order[]' => array(
+				'on' => '@.customer_id = ?.id',
+			),
+		);
+	}
 }

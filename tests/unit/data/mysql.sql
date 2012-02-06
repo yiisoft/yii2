@@ -86,7 +86,7 @@ INSERT INTO tbl_item (name, category_id) VALUES ('Cars', 2);
 
 INSERT INTO tbl_order (customer_id, create_time, total) VALUES (1, 1325282384, 110.0);
 INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (3, 1325502201, 40.0);
+INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325502201, 40.0);
 
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);

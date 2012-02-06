@@ -167,15 +167,15 @@ abstract class ActiveRecord extends \yii\base\Model
 	 *
 	 * ~~~
 	 * return array(
-	 *     'manager:Manager' => '?.manager_id = manager.id',
-	 *     'assignments:Assignment[]' => array(
-	 *         'on' => '?.id = assignments.owner_id AND assignments.status=1',
-	 *         'orderBy' => 'assignments.create_time DESC',
-	 *     ),
-	 *     'projects:Project[]' => array(
-	 *         'via' => 'assignments',
-	 *         'on' => 'projects.id = assignments.project_id',
-	 *     ),
+	 *	 'manager:Manager' => '?.manager_id = manager.id',
+	 *	 'assignments:Assignment[]' => array(
+	 *		 'on' => '?.id = assignments.owner_id AND assignments.status=1',
+	 *		 'orderBy' => 'assignments.create_time DESC',
+	 *	 ),
+	 *	 'projects:Project[]' => array(
+	 *		 'via' => 'assignments',
+	 *		 'on' => 'projects.id = assignments.project_id',
+	 *	 ),
 	 * );
 	 * ~~~
 	 *
@@ -373,21 +373,13 @@ abstract class ActiveRecord extends \yii\base\Model
 	{
 		if (isset($this->_attributes[$name])) {
 			return true;
-		}
-		elseif (isset($this->getMetaData()->columns[$name]))
-		{
+		} elseif (isset($this->getMetaData()->columns[$name])) {
 			return false;
-		}
-		elseif (isset($this->_related[$name]))
-		{
+		} elseif (isset($this->_related[$name])) {
 			return true;
-		}
-		elseif (isset($this->getMetaData()->relations[$name]))
-		{
+		} elseif (isset($this->getMetaData()->relations[$name])) {
 			return $this->getRelatedRecord($name) !== null;
-		}
-		else
-		{
+		} else {
 			return parent::__isset($name);
 		}
 	}
@@ -402,13 +394,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	{
 		if (isset($this->getMetaData()->columns[$name])) {
 			unset($this->_attributes[$name]);
-		}
-		elseif (isset($this->getMetaData()->relations[$name]))
-		{
+		} elseif (isset($this->getMetaData()->relations[$name])) {
 			unset($this->_related[$name]);
-		}
-		else
-		{
+		} else {
 			parent::__unset($name);
 		}
 	}
@@ -426,9 +414,7 @@ abstract class ActiveRecord extends \yii\base\Model
 		if (isset($this->getMetaData()->relations[$name])) {
 			if (empty($parameters)) {
 				return $this->getRelatedRecord($name, false);
-			}
-			else
-			{
+			} else {
 				return $this->getRelatedRecord($name, false, $parameters[0]);
 			}
 		}
@@ -440,6 +426,20 @@ abstract class ActiveRecord extends \yii\base\Model
 		}
 
 		return parent::__call($name, $parameters);
+	}
+
+	public function initRelatedRecord($relation)
+	{
+		$this->_related[$relation->name] = $relation->hasMany ? array() : null;
+	}
+
+	public function addRelatedRecord($relation, $record)
+	{
+		if ($relation->hasMany) {
+			$this->_related[$relation->name][] = $record;
+		} else {
+			$this->_related[$relation->name] = $record;
+		}
 	}
 
 	/**
@@ -464,8 +464,7 @@ abstract class ActiveRecord extends \yii\base\Model
 
 		$md = $this->getMetaData();
 		if (!isset($md->relations[$name])) {
-			throw new Exception(Yii::t('yii', '{class} does not have relation "{name}".',
-				array('{class}' => get_class($this), '{name}' => $name)));
+			throw new Exception(Yii::t('yii', '{class} does not have relation "{name}".', array('{class}' => get_class($this), '{name}' => $name)));
 		}
 
 		Yii::trace('lazy loading ' . get_class($this) . '.' . $name, 'system.db.ar.ActiveRecord');
@@ -481,8 +480,7 @@ abstract class ActiveRecord extends \yii\base\Model
 				$save = $this->_related[$name];
 			}
 			$r = array($name => $params);
-		} else
-		{
+		} else {
 			$r = $name;
 		}
 		unset($this->_related[$name]);
@@ -493,13 +491,9 @@ abstract class ActiveRecord extends \yii\base\Model
 		if (!isset($this->_related[$name])) {
 			if ($relation instanceof CHasManyRelation) {
 				$this->_related[$name] = array();
-			}
-			elseif ($relation instanceof CStatRelation)
-			{
+			} elseif ($relation instanceof CStatRelation) {
 				$this->_related[$name] = $relation->defaultValue;
-			}
-			else
-			{
+			} else {
 				$this->_related[$name] = null;
 			}
 		}
@@ -508,14 +502,11 @@ abstract class ActiveRecord extends \yii\base\Model
 			$results = $this->_related[$name];
 			if ($exists) {
 				$this->_related[$name] = $save;
-			}
-			else
-			{
+			} else {
 				unset($this->_related[$name]);
 			}
 			return $results;
-		} else
-		{
+		} else {
 			return $this->_related[$name];
 		}
 	}
@@ -617,9 +608,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	{
 		if (property_exists($this, $name)) {
 			return $this->$name;
-		}
-		elseif (isset($this->_attributes[$name]))
-		{
+		} elseif (isset($this->_attributes[$name])) {
 			return $this->_attributes[$name];
 		}
 	}
@@ -636,13 +625,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	{
 		if (property_exists($this, $name)) {
 			$this->$name = $value;
-		}
-		elseif (isset($this->getMetaData()->table->columns[$name]))
-		{
+		} elseif (isset($this->getMetaData()->table->columns[$name])) {
 			$this->_attributes[$name] = $value;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 		return true;
@@ -660,31 +645,24 @@ abstract class ActiveRecord extends \yii\base\Model
 	public function getAttributes($names = true)
 	{
 		$attributes = $this->_attributes;
-		foreach ($this->getMetaData()->columns as $name => $column)
-		{
+		foreach ($this->getMetaData()->columns as $name => $column) {
 			if (property_exists($this, $name)) {
 				$attributes[$name] = $this->$name;
-			}
-			elseif ($names === true && !isset($attributes[$name]))
-			{
+			} elseif ($names === true && !isset($attributes[$name])) {
 				$attributes[$name] = null;
 			}
 		}
 		if (is_array($names)) {
 			$attrs = array();
-			foreach ($names as $name)
-			{
+			foreach ($names as $name) {
 				if (property_exists($this, $name)) {
 					$attrs[$name] = $this->$name;
-				}
-				else
-				{
+				} else {
 					$attrs[$name] = isset($attributes[$name]) ? $attributes[$name] : null;
 				}
 			}
 			return $attrs;
-		} else
-		{
+		} else {
 			return $attributes;
 		}
 	}
@@ -716,9 +694,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	{
 		if (!$runValidation || $this->validate($attributes)) {
 			return $this->getIsNewRecord() ? $this->insert($attributes) : $this->update($attributes);
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -798,8 +774,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			$event = new CModelEvent($this);
 			$this->onBeforeSave($event);
 			return $event->isValid;
-		} else
-		{
+		} else {
 			return true;
 		}
 	}
@@ -830,8 +805,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			$event = new CModelEvent($this);
 			$this->onBeforeDelete($event);
 			return $event->isValid;
-		} else
-		{
+		} else {
 			return true;
 		}
 	}
@@ -910,11 +884,8 @@ abstract class ActiveRecord extends \yii\base\Model
 				if ($table->sequenceName !== null) {
 					if (is_string($primaryKey) && $this->$primaryKey === null) {
 						$this->$primaryKey = $builder->getLastInsertID($table);
-					}
-					elseif (is_array($primaryKey))
-					{
-						foreach ($primaryKey as $pk)
-						{
+					} elseif (is_array($primaryKey)) {
+						foreach ($primaryKey as $pk) {
 							if ($this->$pk === null) {
 								$this->$pk = $builder->getLastInsertID($table);
 								break;
@@ -955,8 +926,7 @@ abstract class ActiveRecord extends \yii\base\Model
 			$this->_pk = $this->getPrimaryKey();
 			$this->afterSave();
 			return true;
-		} else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -984,13 +954,10 @@ abstract class ActiveRecord extends \yii\base\Model
 		if (!$this->getIsNewRecord()) {
 			Yii::trace(get_class($this) . '.saveAttributes()', 'system.db.ar.ActiveRecord');
 			$values = array();
-			foreach ($attributes as $name => $value)
-			{
+			foreach ($attributes as $name => $value) {
 				if (is_integer($name)) {
 					$values[$value] = $this->$value;
-				}
-				else
-				{
+				} else {
 					$values[$name] = $this->$name = $value;
 				}
 			}
@@ -1000,12 +967,10 @@ abstract class ActiveRecord extends \yii\base\Model
 			if ($this->updateByPk($this->getOldPrimaryKey(), $values) > 0) {
 				$this->_pk = $this->getPrimaryKey();
 				return true;
-			} else
-			{
+			} else {
 				return false;
 			}
-		} else
-		{
+		} else {
 			throw new Exception(Yii::t('yii', 'The active record cannot be updated because it is new.'));
 		}
 	}
@@ -1032,13 +997,11 @@ abstract class ActiveRecord extends \yii\base\Model
 		$criteria = $builder->createPkCriteria($table, $this->getOldPrimaryKey());
 		$command = $builder->createUpdateCounterCommand($this->getTableSchema(), $counters, $criteria);
 		if ($command->execute()) {
-			foreach ($counters as $name => $value)
-			{
+			foreach ($counters as $name => $value) {
 				$this->$name = $this->$name + $value;
 			}
 			return true;
-		} else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -1056,12 +1019,10 @@ abstract class ActiveRecord extends \yii\base\Model
 				$result = $this->deleteByPk($this->getPrimaryKey()) > 0;
 				$this->afterDelete();
 				return $result;
-			} else
-			{
+			} else {
 				return false;
 			}
-		} else
-		{
+		} else {
 			throw new Exception(Yii::t('yii', 'The active record cannot be deleted because it is new.'));
 		}
 	}
@@ -1076,19 +1037,15 @@ abstract class ActiveRecord extends \yii\base\Model
 		if (!$this->getIsNewRecord() && ($record = $this->findByPk($this->getPrimaryKey())) !== null) {
 			$this->_attributes = array();
 			$this->_related = array();
-			foreach ($this->getMetaData()->columns as $name => $column)
-			{
+			foreach ($this->getMetaData()->columns as $name => $column) {
 				if (property_exists($this, $name)) {
 					$this->$name = $record->$name;
-				}
-				else
-				{
+				} else {
 					$this->_attributes[$name] = $record->$name;
 				}
 			}
 			return true;
-		} else
-		{
+		} else {
 			return false;
 		}
 	}
