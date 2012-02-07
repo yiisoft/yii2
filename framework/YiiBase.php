@@ -337,7 +337,7 @@ class YiiBase
 	 * Any additional parameters passed to this method will be
 	 * passed to the constructor of the object being created.
 	 *
-	 * @param mixed $config the configuration. It can be either a string or an array.
+	 * @param string|array $config the configuration. It can be either a string or an array.
 	 * @return mixed the created object
 	 * @throws \yii\base\Exception if the configuration is invalid.
 	 * @see \yii\base\Object::newInstance()

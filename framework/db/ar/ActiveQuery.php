@@ -35,22 +35,43 @@ use yii\db\Exception;
  */
 class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
+	/**
+	 * @var string the name of the ActiveRecord class.
+	 */
 	public $modelClass;
-
 	/**
 	 * @var \yii\db\dao\Query the Query object
 	 */
 	public $query;
-
+	/**
+	 * @var array list of relations that this query should be performed with
+	 */
 	public $with;
+	/**
+	 * @var string the table alias to be used for query
+	 */
 	public $tableAlias;
+	/**
+	 * @var string the name of the column that the result should be indexed by
+	 */
 	public $indexBy;
+	/**
+	 * @var boolean whether to return query results as arrays
+	 */
 	public $asArray;
+	/**
+	 * @var array list of scopes that should be applied to this query
+	 */
 	public $scopes;
-
+	/**
+	 * @var array list of query results
+	 */
 	public $records;
 	public $sql;
 
+	/**
+	 * @param string $modelClass the name of the ActiveRecord class.
+	 */
 	public function __construct($modelClass)
 	{
 		$this->modelClass = $modelClass;
@@ -78,6 +99,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 
 	public function exists()
 	{
+		// todo
 		return $this->select(array('1'))->asArray(true)->one() !== null;
 	}
 
@@ -150,7 +172,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * Returns an iterator for traversing the items in the vector.
 	 * This method is required by the SPL interface `IteratorAggregate`.
 	 * It will be implicitly called when you use `foreach` to traverse the vector.
-	 * @return Iterator an iterator for traversing the items in the vector.
+	 * @return VectorIterator an iterator for traversing the items in the vector.
 	 */
 	public function getIterator()
 	{
@@ -201,7 +223,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * It is implicitly called when you use something like `$value = $vector[$offset];`.
 	 * This is equivalent to [[itemAt]].
 	 * @param integer $offset the offset to retrieve item.
-	 * @return mixed the item at the offset
+	 * @return ActiveRecord the item at the offset
 	 * @throws Exception if the offset is out of range
 	 */
 	public function offsetGet($offset)
@@ -220,7 +242,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * the new item will be appended to the vector.
 	 * Otherwise, the existing item at the offset will be replaced with the new item.
 	 * @param integer $offset the offset to set item
-	 * @param mixed $item the item value
+	 * @param ActiveRecord $item the item value
 	 * @throws Exception if the offset is out of range, or the vector is read only.
 	 */
 	public function offsetSet($offset, $item)
@@ -249,7 +271,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 
 	/**
 	 * Sets the SELECT part of the query.
-	 * @param mixed $columns the columns to be selected. Defaults to '*', meaning all columns.
+	 * @param string|array $columns the columns to be selected.
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
 	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
 	 * The method will automatically quote the column names unless a column contains some parenthesis
@@ -258,7 +280,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
 	 * @return ActiveQuery the query object itself
 	 */
-	public function select($columns = '*', $option = '')
+	public function select($columns, $option = '')
 	{
 		$this->query->select($columns, $option);
 		return $this;
@@ -277,7 +299,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 
 	/**
 	 * Sets the FROM part of the query.
-	 * @param mixed $tables the table(s) to be selected from. This can be either a string (e.g. 'tbl_user')
+	 * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. 'tbl_user')
 	 * or an array (e.g. array('tbl_user', 'tbl_profile')) specifying one or several table names.
 	 * Table names can contain schema prefixes (e.g. 'public.tbl_user') and/or table aliases (e.g. 'tbl_user u').
 	 * The method will automatically quote the table names unless it contains some parenthesis
@@ -697,7 +719,7 @@ class ActiveQuery extends \yii\base\Object implements \IteratorAggregate, \Array
 
 	public function joinWith()
 	{
-		// todo: inner join with one or multiple relations
+		// todo: inner join with one or multiple relations as filters
 	}
 
 	protected function findRecords()

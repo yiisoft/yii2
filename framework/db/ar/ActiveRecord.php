@@ -26,7 +26,7 @@ use yii\db\dao\Query;
 abstract class ActiveRecord extends \yii\base\Model
 {
 	/**
-	 * @var
+	 * @var ActiveMetaData[] list of AR metadata indexed by AR class names
 	 */
 	private static $_md;
 
@@ -52,10 +52,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
-	 * @static
 	 * @param string|array|Query $q
 	 * @return ActiveQuery
-	 * @throws \yii\db\Exception
+	 * @throws Exception
 	 */
 	public static function find($q = null)
 	{
@@ -103,9 +102,12 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	}
 
-	public static function createActiveQuery()
+	/**
+	 * @return ActiveFinder
+	 */
+	public static function createActiveFinder()
 	{
-		return new ActiveQuery('\\' . get_called_class());
+		return new ActiveFinder('\\' . get_called_class());
 	}
 
 	/**

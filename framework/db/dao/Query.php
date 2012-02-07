@@ -377,7 +377,7 @@ class Query extends \yii\base\Object
 
 	/**
 	 * Sets the SELECT part of the query.
-	 * @param string|array $columns the columns to be selected. Defaults to '*', meaning all columns.
+	 * @param string|array $columns the columns to be selected.
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
 	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
 	 * The method will automatically quote the column names unless a column contains some parenthesis
@@ -386,7 +386,7 @@ class Query extends \yii\base\Object
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
 	 * @return Query the query object itself
 	 */
-	public function select($columns = '*', $option = '')
+	public function select($columns, $option = '')
 	{
 		$this->select = $columns;
 		$this->selectOption = $option;
@@ -406,7 +406,7 @@ class Query extends \yii\base\Object
 
 	/**
 	 * Sets the FROM part of the query.
-	 * @param mixed $tables the table(s) to be selected from. This can be either a string (e.g. 'tbl_user')
+	 * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. 'tbl_user')
 	 * or an array (e.g. array('tbl_user', 'tbl_profile')) specifying one or several table names.
 	 * Table names can contain schema prefixes (e.g. 'public.tbl_user') and/or table aliases (e.g. 'tbl_user u').
 	 * The method will automatically quote the table names unless it contains some parenthesis
@@ -838,7 +838,7 @@ class Query extends \yii\base\Object
 
 	/**
 	 * Sets the parameters to be bound to the query.
-	 * @param array list of query parameter values indexed by parameter placeholders.
+	 * @param array $params list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
@@ -852,7 +852,7 @@ class Query extends \yii\base\Object
 
 	/**
 	 * Adds additional parameters to be bound to the query.
-	 * @param array list of query parameter values indexed by parameter placeholders.
+	 * @param array $params list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
