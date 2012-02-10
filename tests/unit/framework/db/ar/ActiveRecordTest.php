@@ -41,6 +41,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$customer->name = 'user2x';
 		$customer->save();
 		$this->assertEquals('user2x', $customer->name);
+		$this->assertFalse($customer->isNewRecord);
 		$customer2 = Customer::find(2)->one();
 		$this->assertEquals('user2x', $customer2->name);
 
@@ -89,19 +90,20 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 
 	public function testDelete()
 	{
-		$post=Post2::model()->findByPk(1);
-		$this->assertTrue($post->delete());
-		$this->assertNull(Post2::model()->findByPk(1));
+		// delete
+		$customer = Customer::find(2)->one();
+		$this->assertTrue($customer instanceof Customer);
+		$this->assertEquals('user2', $customer->name);
+		$customer->delete();
+		$customer = Customer::find(2)->one();
+		$this->assertNull($customer);
 
-		$this->assertTrue(Post2::model()->findByPk(2) instanceof Post2);
-		$this->assertTrue(Post2::model()->findByPk(3) instanceof Post2);
-		$this->assertEquals(2,Post2::model()->deleteByPk(array(2,3)));
-		$this->assertNull(Post2::model()->findByPk(2));
-		$this->assertNull(Post2::model()->findByPk(3));
-
-		$this->assertTrue(Post2::model()->findByPk(5) instanceof Post2);
-		$this->assertEquals(1,Post2::model()->deleteAll('id=5'));
-		$this->assertNull(Post2::model()->findByPk(5));
+		// deleteAll
+		$customers = Customer::find()->all();
+		$this->assertEquals(2, count($customers));
+		Customer::deleteAll();
+		$customers = Customer::find()->all();
+		$this->assertEquals(0, count($customers));
 	}
 
 	public function testFind()
@@ -248,21 +250,6 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
  //		 Customer::deleteAll()
 	 }
 
-	 public function testInsert()
-	 {
-
-	 }
-
-	 public function testUpdate()
-	 {
-
-
-	 }
-
-	 public function testDelete()
-	 {
-
-	 }
 
 	 public function testLazyLoading()
 	 {
