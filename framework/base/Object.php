@@ -299,7 +299,7 @@ class Object
 	 */
 	public static function newInstance($config = array())
 	{
-		$class = '\\' . get_called_class();
+		$class = get_called_class();
 
 		if (($n = func_num_args()) > 1) {
 			$args = func_get_args();

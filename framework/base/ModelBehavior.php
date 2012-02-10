@@ -52,9 +52,9 @@ class ModelBehavior extends Behavior
 	/**
 	 * Responds to [[Model::onBeforeValidate]] event.
 	 * Override this method if you want to handle the corresponding event of the [[owner]].
-	 * You may set the [[ValidationEvent::isValid|isValid]] property of the event parameter
+	 * You may set the [[ModelEvent::isValid|isValid]] property of the event parameter
 	 * to be false to cancel the validation process.
-	 * @param ValidationEvent $event event parameter
+	 * @param ModelEvent $event event parameter
 	 */
 	public function beforeValidate($event)
 	{

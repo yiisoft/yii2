@@ -14,6 +14,10 @@ use yii\db\dao\TableSchema;
 class ActiveMetaData
 {
 	/**
+	 * @var ActiveMetaData[] list of ActiveMetaData instances indexed by the model class names
+	 */
+	public static $instances;
+	/**
 	 * @var TableSchema the table schema information
 	 */
 	public $table;
@@ -27,14 +31,32 @@ class ActiveMetaData
 	public $relations = array();
 
 	/**
+	 * Returns an instance of ActiveMetaData for the specified model class.
+	 * Note that each model class only has a single ActiveMetaData instance.
+	 * This method will only create the ActiveMetaData instance if it is not previously
+	 * done so for the specified model class.
+	 * @param string $modelClass the model class name. Make sure the class name do NOT have a leading backslash "\".
+	 * @param boolean $refresh whether to recreate the ActiveMetaData instance. Defaults to false.
+	 * @return ActiveMetaData the ActiveMetaData instance for the specified model class.
+	 */
+	public static function getInstance($modelClass, $refresh = false)
+	{
+		if (isset(self::$instances[$modelClass]) && !$refresh) {
+			return self::$instances[$modelClass];
+		} else {
+			return self::$instances[$modelClass] = new self($modelClass);
+		}
+	}
+
+	/**
 	 * Constructor.
 	 * @param string $modelClass the model class name
 	 */
 	public function __construct($modelClass)
 	{
+		$this->modelClass = $modelClass;
 		$tableName = $modelClass::tableName();
 		$this->table = $modelClass::getDbConnection()->getDriver()->getTableSchema($tableName);
-		$this->modelClass = $modelClass;
 		if ($this->table === null) {
 			throw new Exception("Unable to find table '$tableName' for ActiveRecord class '$modelClass'.");
 		}
@@ -71,7 +93,7 @@ class ActiveMetaData
 			$relation->name = $matches[1];
 			$modelClass = $matches[2];
 			if (strpos($modelClass, '\\') !== false) {
-				$relation->modelClass = '\\' . ltrim($modelClass, '\\');
+				$relation->modelClass = ltrim($modelClass, '\\');
 			} else {
 				$relation->modelClass = dirname($this->modelClass) . '\\' . $modelClass;
 			}

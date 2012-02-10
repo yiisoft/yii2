@@ -207,7 +207,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function beforeValidate()
 	{
 		if ($this->hasEventHandlers('onBeforeValidate')) {
-			$event = new ValidationEvent($this);
+			$event = new ModelEvent($this);
 			$this->onBeforeValidate($event);
 			return $event->isValid;
 		}
@@ -229,7 +229,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * This event is raised before the validation is performed.
-	 * @param ValidationEvent $event the event parameter
+	 * @param ModelEvent $event the event parameter
 	 */
 	public function onBeforeValidate($event)
 	{
@@ -457,7 +457,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function generateAttributeLabel($name)
 	{
-		return Text::name2words($name, true);
+		return Text::camel2words($name, true);
 	}
 
 	/**
@@ -583,7 +583,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	/**
 	 * Returns an iterator for traversing the attributes in the model.
 	 * This method is required by the interface IteratorAggregate.
-	 * @return CMapIterator an iterator for traversing the items in the list.
+	 * @return DictionaryIterator an iterator for traversing the items in the list.
 	 */
 	public function getIterator()
 	{

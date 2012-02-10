@@ -1,6 +1,6 @@
 <?php
 /**
- * ActiveQuery class file.
+ * JoinElement class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
@@ -80,7 +80,7 @@ class JoinElement extends \yii\base\Object
 			$record = $modelClass::populateData($attributes);
 			foreach ($this->children as $child) {
 				if ($child->relation->select !== false) {
-					$record->initRelatedRecord($child->relation);
+					$record->initRelation($child->relation);
 				}
 			}
 			$this->records[$pk] = $record;

@@ -75,17 +75,16 @@ class YiiBase
 	);
 	/**
 	 * @var array initial property values that will be applied to objects newly created via [[createObject]].
-	 * The array keys are fully qualified namespaced class names, and the array values are the corresponding
-	 * name-value pairs for initializing the created class instances. Please make sure class names are starting
-	 * with a backslash. For example,
+	 * The array keys are class names without leading backslashes "\", and the array values are the corresponding
+	 * name-value pairs for initializing the created class instances. For example,
 	 *
 	 * ~~~
 	 * array(
-	 *     '\Bar' => array(
+	 *     'Bar' => array(
 	 *         'prop1' => 'value1',
 	 *         'prop2' => 'value2',
 	 *     ),
-	 *     '\mycompany\foo\Car' => array(
+	 *     'mycompany\foo\Car' => array(
 	 *         'prop1' => 'value1',
 	 *         'prop2' => 'value2',
 	 *     ),
@@ -375,7 +374,7 @@ class YiiBase
 			$object = new $class;
 		}
 
-		$class = '\\' . get_class($object);
+		$class = get_class($object);
 
 		if (isset(\Yii::$objectConfig[$class])) {
 			$config = array_merge(\Yii::$objectConfig[$class], $config);

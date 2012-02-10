@@ -10,10 +10,15 @@
 
 namespace yii\db\ar;
 
+use yii\base\Model;
+use yii\base\Event;
+use yii\base\ModelEvent;
 use yii\db\Exception;
 use yii\db\dao\Connection;
 use yii\db\dao\TableSchema;
 use yii\db\dao\Query;
+use yii\db\dao\Expression;
+use yii\util\Text;
 
 /**
  * ActiveRecord is the base class for classes representing relational data.
@@ -23,18 +28,16 @@ use yii\db\dao\Query;
  *
  * @property array $attributes
  */
-abstract class ActiveRecord extends \yii\base\Model
+abstract class ActiveRecord extends Model
 {
 	/**
-	 * @var ActiveMetaData[] list of AR metadata indexed by AR class names
+	 * @var array attribute values indexed by attribute names
 	 */
-	private static $_md;
-
-	private $_new = false; // whether this instance is new or not
-	private $_attributes = array(); // attribute name => attribute value
+	private $_attributes = array();
+	/**
+	 * @var array old attribute values indexed by attribute names.
+	 */
 	private $_oldAttributes;
-	private $_related = array(); // attribute name => related objects
-	private $_pk; // old primary key value
 
 	/**
 	 * Returns the metadata for this AR class.
@@ -43,78 +46,119 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public static function getMetaData($refresh = false)
 	{
-		$class = get_called_class();
-		if (!$refresh && isset(self::$_md[$class])) {
-			return self::$_md[$class];
-		} else {
-			return self::$_md[$class] = new ActiveMetaData('\\' . $class);
-		}
+		return ActiveMetaData::getInstance(get_called_class(), $refresh);
 	}
 
 	/**
-	 * @param string|array|Query $q
-	 * @return ActiveQuery
-	 * @throws Exception
+	 * Creates an [[ActiveFinder]] instance for query purpose.
+	 *
+	 * Because [[ActiveFinder]] implements a set of query building methods,
+	 * additional query conditions can be specified by calling these methods.
+	 *
+	 * Below are some usage examples:
+	 *
+	 * ~~~
+	 * // find all customers
+	 * $customers = Customer::find()->all();
+	 * // find a single customer whose ID is 10
+	 * $customer = Customer::find(10)->one();
+	 * // find all active customers and order them by their age:
+	 * $customers = Customer::find(array('status' => 1))->orderBy('age')->all();
+	 * ~~~
+	 *
+	 * @param mixed $q the query parameter. This can be one of the followings:
+	 *
+	 *  - a scalar value (integer, string): query by a single primary key value.
+	 *  - an array of name-value pairs: query by a set of column values.
+	 *  - a [[Query]] object: query by a full query object.
+	 *
+	 * @return ActiveFinder the [[ActiveFinder]] instance for query purpose.
+	 * @throws Exception if the query parameter is invalid.
 	 */
 	public static function find($q = null)
 	{
-		$query = static::createActiveQuery();
+		$finder = static::createActiveFinder();
 		if ($q instanceof Query) {
-			$query->query = $q;
+			$finder->query = $q;
 		} elseif (is_array($q)) {
-			// query by attributes
-			$query->where($q);
+			// query by a set of column values
+			$finder->where($q);
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::getMetaData()->table->primaryKey;
 			if (count($primaryKey) === 1) {
-				$query->where(array($primaryKey[0] => $q));
+				$finder->where(array($primaryKey[0] => $q));
 			} else {
-				throw new Exception('Multiple values are required to query by composite keys.');
+				throw new Exception('Multiple values are required to query by composite primary keys.');
 			}
 		}
-		return $query;
+		return $finder;
 	}
 
+	/**
+	 * Creates an [[ActiveFinder]] instance and query by a given SQL statement.
+	 * Note that because the SQL statement is already specified, calling further
+	 * query methods (such as `where()`, `orderBy()`) on [[ActiveFinder]] will have no effect.
+	 * @param string $sql the SQL statement to be executed
+	 * @param array $params parameters to be bound to the SQL statement during execution.
+	 * @return ActiveFinder the [[ActiveFinder]] instance
+	 */
 	public static function findBySql($sql, $params = array())
 	{
 		if (!is_array($params)) {
 			$params = func_get_args();
-			array_shift($params);
+			unset($params[0]);
 		}
-		$query = static::createActiveQuery();
-		$query->sql = $sql;
-		return $query->params($params);
+		$finder = static::createActiveFinder();
+		$finder->sql = $sql;
+		return $finder->params($params);
 	}
 
-	public static function updateAll()
+	public static function updateAll($attributes, $condition = '', $params = array())
 	{
-
+		$class = get_called_class();
+		$query = new Query;
+		$query->update($class::tableName(), $attributes, $condition, $params);
+		return $query->createCommand($class::getDbConnection())->execute();
 	}
 
-	public static function updateCounters()
+	public static function updateCounters($counters, $condition = '', $params = array())
 	{
-
+		$class = get_called_class();
+		$db = $class::getDbConnection();
+		foreach ($counters as $name => $value) {
+			$value = (int)$value;
+			$quotedName = $db->quoteColumnName($name, true);
+			$counters[$name] = new Expression($value >= 0 ? "$quotedName+$value" : "$quotedName$value");
+		}
+		$query = new Query;
+		$query->update($class::tableName(), $counters, $condition, $params);
+		return $query->createCommand($class::getDbConnection())->execute();
 	}
 
-	public static function deleteAll()
+	public static function deleteAll($condition = '', $params = array())
 	{
-
+		$class = get_called_class();
+		$query = new Query;
+		$query->delete($class::tableName(), $condition, $params);
+		return $query->createCommand($class::getDbConnection())->execute();
 	}
 
 	/**
-	 * @return ActiveFinder
+	 * Creates a [[ActiveFinder]] instance.
+	 * This method is mainly called by [[find()]] and [[findBySql()]].
+	 * @return ActiveFinder the newly created [[ActiveFinder]] instance.
 	 */
 	public static function createActiveFinder()
 	{
-		return new ActiveFinder('\\' . get_called_class());
+		return new ActiveFinder(get_called_class());
 	}
 
 	/**
-	 * Returns the database connection used by active record.
+	 * Returns the database connection used by this AR class.
 	 * By default, the "db" application component is used as the database connection.
 	 * You may override this method if you want to use a different database connection.
-	 * @return Connection the database connection used by active record.
+	 * @return Connection the database connection used by this AR class.
 	 */
 	public static function getDbConnection()
 	{
@@ -122,36 +166,24 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
-	 * Returns the default named scope that should be implicitly applied to all queries for this model.
-	 * Note, default scope only applies to SELECT queries. It is ignored for INSERT, UPDATE and DELETE queries.
-	 * The default implementation simply returns an empty array. You may override this method
-	 * if the model needs to be queried with some default criteria (e.g. only active records should be returned).
-	 * @return array the query criteria. This will be used as the parameter to the constructor
-	 * of {@link CDbCriteria}.
-	 */
-	public static function defaultScope()
-	{
-		return array();
-	}
-
-	/**
-	 * Returns the name of the associated database table.
-	 * By default this method returns the class name as the table name.
+	 * Declares the name of the database table associated with this AR class.
+	 * By default this method returns the class name as the table name by calling [[Text::camel2id()]].
+	 * For example, 'Customer' becomes 'customer', and 'OrderDetail' becomes 'order_detail'.
 	 * You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
 	public static function tableName()
 	{
-		return basename(get_called_class());
+		return Text::camel2id(basename(get_called_class()), '_');
 	}
 
 	/**
-	 * Returns the primary key of the associated database table.
+	 * Declares the primary key name for this AR class.
 	 * This method is meant to be overridden in case when the table is not defined with a primary key
 	 * (for some legacy database). If the table is already defined with a primary key,
 	 * you do not need to override this method. The default implementation simply returns null,
-	 * meaning using the primary key defined in the database.
-	 * @return mixed the primary key of the associated database table.
+	 * meaning using the primary key defined in the database table.
+	 * @return string|array the primary key of the associated database table.
 	 * If the key is a single column, it should return the column name;
 	 * If the key is a composite one consisting of several columns, it should
 	 * return the array of the key column names.
@@ -161,22 +193,22 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
-	 * Declares the relations for this ActiveRecord class.
+	 * Declares the relations for this AR class.
 	 *
-	 * Child classes may want to override this method to specify their relations.
+	 * Child classes may override this method to specify their relations.
 	 *
-	 * The following shows how to declare relations for a Programmer AR class:
+	 * The following shows how to declare relations for a `Programmer` AR class:
 	 *
 	 * ~~~
 	 * return array(
-	 *	 'manager:Manager' => '?.manager_id = manager.id',
+	 *	 'manager:Manager' => '@.id = ?.manager_id',
 	 *	 'assignments:Assignment[]' => array(
-	 *		 'on' => '?.id = assignments.owner_id AND assignments.status=1',
-	 *		 'orderBy' => 'assignments.create_time DESC',
+	 *		 'on' => '@.owner_id = ?.id AND @.status = 1',
+	 *		 'orderBy' => '@.create_time DESC',
 	 *	 ),
 	 *	 'projects:Project[]' => array(
 	 *		 'via' => 'assignments',
-	 *		 'on' => 'projects.id = assignments.project_id',
+	 *		 'on' => '@.id = ?.project_id',
 	 *	 ),
 	 * );
 	 * ~~~
@@ -265,6 +297,19 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
+	 * Returns the default named scope that should be implicitly applied to all queries for this model.
+	 * Note, default scope only applies to SELECT queries. It is ignored for INSERT, UPDATE and DELETE queries.
+	 * The default implementation simply returns an empty array. You may override this method
+	 * if the model needs to be queried with some default criteria (e.g. only active records should be returned).
+	 * @return array the query criteria. This will be used as the parameter to the constructor
+	 * of {@link CDbCriteria}.
+	 */
+	public static function defaultScope()
+	{
+		return array();
+	}
+
+	/**
 	 * Returns the declaration of named scopes.
 	 * A named scope represents a query criteria that can be chained together with
 	 * other named scopes and applied to a query. This method should be overridden
@@ -301,50 +346,25 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
-	 * Constructor.
-	 * @param string $scenario scenario name. See {@link CModel::scenario} for more details about this parameter.
-	 */
-	public function __construct($scenario = 'insert')
-	{
-		if ($scenario === null) // internally used by populateData() and model()
-		{
-			return;
-		}
-
-		$this->setScenario($scenario);
-		$this->setIsNewRecord(true);
-	}
-
-	/**
-	 * PHP sleep magic method.
-	 * This method ensures that the model meta data reference is set to null.
-	 * @return array
-	 */
-	public function __sleep()
-	{
-		return array_keys((array)$this);
-	}
-
-	/**
 	 * PHP getter magic method.
-	 * This method is overridden so that AR attributes can be accessed like properties.
+	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
 	 * @return mixed property value
 	 * @see getAttribute
 	 */
 	public function __get($name)
 	{
-		if (isset($this->_attributes[$name])) {
+		if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
 			return $this->_attributes[$name];
-		} elseif (isset($this->getMetaData()->table->columns[$name])) {
-			return null;
-		} elseif (isset($this->_related[$name])) {
-			return $this->_related[$name];
-		} elseif (isset($this->getMetaData()->relations[$name])) {
-			return $this->getRelatedRecord($name);
 		} else {
-			return parent::__get($name);
+			$md = $this->getMetaData();
+			if (isset($md->table->columns[$name])) {
+				return null;
+			} elseif (isset($md->relations[$name])) {
+				return $this->_attributes[$name] = $this->loadRelatedRecord($md->relations[$name]);
+			}
 		}
+		return parent::__get($name);
 	}
 
 	/**
@@ -355,10 +375,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function __set($name, $value)
 	{
-		if (isset($this->getMetaData()->table->columns[$name])) {
+		$md = $this->getMetaData();
+		if (isset($md->table->columns[$name]) || isset($md->relations[$name])) {
 			$this->_attributes[$name] = $value;
-		} elseif (isset($this->getMetaData()->relations[$name])) {
-			$this->_related[$name] = $value;
 		} else {
 			parent::__set($name, $value);
 		}
@@ -375,12 +394,8 @@ abstract class ActiveRecord extends \yii\base\Model
 	{
 		if (isset($this->_attributes[$name])) {
 			return true;
-		} elseif (isset($this->getMetaData()->columns[$name])) {
+		} elseif (isset($this->getMetaData()->table->columns[$name]) || isset($this->getMetaData()->relations[$name])) {
 			return false;
-		} elseif (isset($this->_related[$name])) {
-			return true;
-		} elseif (isset($this->getMetaData()->relations[$name])) {
-			return $this->getRelatedRecord($name) !== null;
 		} else {
 			return parent::__isset($name);
 		}
@@ -394,10 +409,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function __unset($name)
 	{
-		if (isset($this->getMetaData()->columns[$name])) {
+		$md = $this->getMetaData();
+		if (isset($md->table->columns[$name]) || isset($md->relations[$name])) {
 			unset($this->_attributes[$name]);
-		} elseif (isset($this->getMetaData()->relations[$name])) {
-			unset($this->_related[$name]);
 		} else {
 			parent::__unset($name);
 		}
@@ -408,39 +422,34 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * Do not call this method. This is a PHP magic method that we override
 	 * to implement the named scope feature.
 	 * @param string $name the method name
-	 * @param array $parameters method parameters
+	 * @param array $params method parameters
 	 * @return mixed the method return value
 	 */
-	public function __call($name, $parameters)
+	public function __call($name, $params)
 	{
-		if (isset($this->getMetaData()->relations[$name])) {
-			if (empty($parameters)) {
-				return $this->getRelatedRecord($name, false);
-			} else {
-				return $this->getRelatedRecord($name, false, $parameters[0]);
-			}
+		$md = $this->getMetaData();
+		if (isset($md->relations[$name])) {
+			return $this->loadRelatedRecord($md->relations[$name], isset($params[0]) ? $params[0] : array());
 		}
-
-		$scopes = $this->scopes();
-		if (isset($scopes[$name])) {
-			$this->getDbCriteria()->mergeWith($scopes[$name]);
-			return $this;
-		}
-
-		return parent::__call($name, $parameters);
+		return parent::__call($name, $params);
 	}
 
-	public function initRelatedRecord($relation)
+	/**
+	 * Initializes the internal storage for the relation.
+	 * This method is internally used by [[ActiveFinder]] when populating relation data.
+	 * @param ActiveRelation $relation the relation object
+	 */
+	public function initRelation($relation)
 	{
-		$this->_related[$relation->name] = $relation->hasMany ? array() : null;
+		$this->_attributes[$relation->name] = $relation->hasMany ? array() : null;
 	}
 
 	public function addRelatedRecord($relation, $record)
 	{
 		if ($relation->hasMany) {
-			$this->_related[$relation->name][] = $record;
+			$this->_attributes[$relation->name][] = $record;
 		} else {
-			$this->_related[$relation->name] = $record;
+			$this->_attributes[$relation->name] = $record;
 		}
 	}
 
@@ -458,69 +467,16 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @return mixed the related object(s).
 	 * @throws Exception if the relation is not specified in {@link relations}.
 	 */
-	public function getRelatedRecord($name, $refresh = false, $params = array())
+	public function loadRelatedRecord($relation, $params = array())
 	{
-		if (!$refresh && $params === array() && (isset($this->_related[$name]) || array_key_exists($name, $this->_related))) {
-			return $this->_related[$name];
-		}
-
-		$md = $this->getMetaData();
-		if (!isset($md->relations[$name])) {
-			throw new Exception(Yii::t('yii', '{class} does not have relation "{name}".', array('{class}' => get_class($this), '{name}' => $name)));
-		}
-
-		Yii::trace('lazy loading ' . get_class($this) . '.' . $name, 'system.db.ar.ActiveRecord');
-		$relation = $md->relations[$name];
-		if ($this->getIsNewRecord() && !$refresh && ($relation instanceof CHasOneRelation || $relation instanceof CHasManyRelation)) {
-			return $relation instanceof CHasOneRelation ? null : array();
-		}
-
-		if ($params !== array()) // dynamic query
-		{
-			$exists = isset($this->_related[$name]) || array_key_exists($name, $this->_related);
-			if ($exists) {
-				$save = $this->_related[$name];
+		if (is_string($relation)) {
+			$md = $this->getMetaData();
+			if (!isset($md->relations[$relation])) {
+				throw new Exception(get_class($this) . ' has no relation named "' . $relation . '".');
 			}
-			$r = array($name => $params);
-		} else {
-			$r = $name;
+			$relation = $md->relations[$relation];
 		}
-		unset($this->_related[$name]);
-
-		$finder = new CActiveFinder($this, $r);
-		$finder->lazyFind($this);
-
-		if (!isset($this->_related[$name])) {
-			if ($relation instanceof CHasManyRelation) {
-				$this->_related[$name] = array();
-			} elseif ($relation instanceof CStatRelation) {
-				$this->_related[$name] = $relation->defaultValue;
-			} else {
-				$this->_related[$name] = null;
-			}
-		}
-
-		if ($params !== array()) {
-			$results = $this->_related[$name];
-			if ($exists) {
-				$this->_related[$name] = $save;
-			} else {
-				unset($this->_related[$name]);
-			}
-			return $results;
-		} else {
-			return $this->_related[$name];
-		}
-	}
-
-	/**
-	 * Returns a value indicating whether the named related object(s) has been loaded.
-	 * @param string $name the relation name
-	 * @return boolean a value indicating whether the named related object(s) has been loaded.
-	 */
-	public function hasRelated($name)
-	{
-		return isset($this->_related[$name]) || array_key_exists($name, $this->_related);
+		$finder = $this->createActiveFinder();
 	}
 
 	/**
@@ -530,69 +486,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function attributeNames()
 	{
-		return array_keys($this->getMetaData()->columns);
-	}
-
-	/**
-	 * Returns the text label for the specified attribute.
-	 * This method overrides the parent implementation by supporting
-	 * returning the label defined in relational object.
-	 * In particular, if the attribute name is in the form of "post.author.name",
-	 * then this method will derive the label from the "author" relation's "name" attribute.
-	 * @param string $attribute the attribute name
-	 * @return string the attribute label
-	 * @see generateAttributeLabel
-	 */
-	public function getAttributeLabel($attribute)
-	{
-		$labels = $this->attributeLabels();
-		if (isset($labels[$attribute])) {
-			return $labels[$attribute];
-		} elseif (strpos($attribute, '.') !== false) {
-			$segs = explode('.', $attribute);
-			$name = array_pop($segs);
-			$model = $this;
-			foreach ($segs as $seg) {
-				$relations = $model->getMetaData()->relations;
-				if (isset($relations[$seg])) {
-					$model = ActiveRecord::model($relations[$seg]->className);
-				} else {
-					break;
-				}
-			}
-			return $model->getAttributeLabel($name);
-		} else {
-			return $this->generateAttributeLabel($attribute);
-		}
-	}
-
-	/**
-	 * Returns the named relation declared for this AR class.
-	 * @param string $name the relation name
-	 * @return CActiveRelation the named relation declared for this AR class. Null if the relation does not exist.
-	 */
-	public function getActiveRelation($name)
-	{
-		return isset($this->getMetaData()->relations[$name]) ? $this->getMetaData()->relations[$name] : null;
-	}
-
-	/**
-	 * Returns the metadata of the table that this AR belongs to
-	 * @return CDbTableSchema the metadata of the table that this AR belongs to
-	 */
-	public function getTableSchema()
-	{
-		return $this->getMetaData()->tableSchema;
-	}
-
-	/**
-	 * Checks whether this AR has the named attribute
-	 * @param string $name attribute name
-	 * @return boolean whether this AR has the named attribute (table column).
-	 */
-	public function hasAttribute($name)
-	{
-		return isset($this->getMetaData()->columns[$name]);
+		return array_keys($this->getMetaData()->table->columns);
 	}
 
 	/**
@@ -608,11 +502,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function getAttribute($name)
 	{
-		if (property_exists($this, $name)) {
-			return $this->$name;
-		} elseif (isset($this->_attributes[$name])) {
-			return $this->_attributes[$name];
-		}
+		return isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
 	}
 
 	/**
@@ -620,53 +510,47 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * You may also use $this->AttributeName to set the attribute value.
 	 * @param string $name the attribute name
 	 * @param mixed $value the attribute value.
-	 * @return boolean whether the attribute exists and the assignment is conducted successfully
 	 * @see hasAttribute
 	 */
 	public function setAttribute($name, $value)
 	{
-		if (property_exists($this, $name)) {
-			$this->$name = $value;
-		} elseif (isset($this->getMetaData()->table->columns[$name])) {
-			$this->_attributes[$name] = $value;
-		} else {
-			return false;
-		}
-		return true;
+		$this->_attributes[$name] = $value;
 	}
 
 	/**
 	 * Returns all column attribute values.
 	 * Note, related objects are not returned.
-	 * @param mixed $names names of attributes whose value needs to be returned.
+	 * @param null|array $names names of attributes whose value needs to be returned.
 	 * If this is true (default), then all attribute values will be returned, including
 	 * those that are not loaded from DB (null will be returned for those attributes).
 	 * If this is null, all attributes except those that are not loaded from DB will be returned.
 	 * @return array attribute values indexed by attribute names.
 	 */
-	public function getAttributes($names = true)
+	public function getAttributes($names = null)
 	{
-		$attributes = $this->_attributes;
-		foreach ($this->getMetaData()->columns as $name => $column) {
-			if (property_exists($this, $name)) {
-				$attributes[$name] = $this->$name;
-			} elseif ($names === true && !isset($attributes[$name])) {
-				$attributes[$name] = null;
+		if ($names === null) {
+			$names = $this->attributeNames();
+		}
+		$values = array();
+		foreach ($names as $name) {
+			$values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
+		}
+		return $values;
+	}
+
+	public function getChangedAttributes($names = null)
+	{
+		if ($names === null) {
+			$names = $this->attributeNames();
+		}
+		$names = array_flip($names);
+		$attributes = array();
+		foreach ($this->_attributes as $name => $value) {
+			if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+				$attributes[$name] = $value;
 			}
 		}
-		if (is_array($names)) {
-			$attrs = array();
-			foreach ($names as $name) {
-				if (property_exists($this, $name)) {
-					$attrs[$name] = $this->$name;
-				} else {
-					$attrs[$name] = isset($attributes[$name]) ? $attributes[$name] : null;
-				}
-			}
-			return $attrs;
-		} else {
-			return $attributes;
-		}
+		return $attributes;
 	}
 
 	/**
@@ -710,7 +594,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function getIsNewRecord()
 	{
-		return $this->_new;
+		return empty($this->_oldAttributes);
 	}
 
 	/**
@@ -720,13 +604,22 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function setIsNewRecord($value)
 	{
-		$this->_new = $value;
+		if ($value) {
+			$this->_oldAttributes = null;
+		} else {
+			$this->_oldAttributes = array();
+			foreach ($this->attributeNames() as $name) {
+				if (isset($this->_attributes[$name])) {
+					$this->_oldAttributes[$name] = $this->_attributes[$name];
+				}
+			}
+		}
 	}
 
 	/**
 	 * This event is raised before the record is saved.
-	 * By setting {@link CModelEvent::isValid} to be false, the normal {@link save()} process will be stopped.
-	 * @param CModelEvent $event the event parameter
+	 * By setting {@link ModelEvent::isValid} to be false, the normal {@link save()} process will be stopped.
+	 * @param ModelEvent $event the event parameter
 	 */
 	public function onBeforeSave($event)
 	{
@@ -735,7 +628,7 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	/**
 	 * This event is raised after the record is saved.
-	 * @param CEvent $event the event parameter
+	 * @param Event $event the event parameter
 	 */
 	public function onAfterSave($event)
 	{
@@ -744,8 +637,8 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	/**
 	 * This event is raised before the record is deleted.
-	 * By setting {@link CModelEvent::isValid} to be false, the normal {@link delete()} process will be stopped.
-	 * @param CModelEvent $event the event parameter
+	 * By setting {@link ModelEvent::isValid} to be false, the normal {@link delete()} process will be stopped.
+	 * @param ModelEvent $event the event parameter
 	 */
 	public function onBeforeDelete($event)
 	{
@@ -754,7 +647,7 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	/**
 	 * This event is raised after the record is deleted.
-	 * @param CEvent $event the event parameter
+	 * @param Event $event the event parameter
 	 */
 	public function onAfterDelete($event)
 	{
@@ -770,15 +663,11 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 * @return boolean whether the saving should be executed. Defaults to true.
 	 */
-	protected function beforeSave()
+	public function beforeSave()
 	{
-		if ($this->hasEventHandler('onBeforeSave')) {
-			$event = new CModelEvent($this);
-			$this->onBeforeSave($event);
-			return $event->isValid;
-		} else {
-			return true;
-		}
+		$event = new ModelEvent($this);
+		$this->onBeforeSave($event);
+		return $event->isValid;
 	}
 
 	/**
@@ -787,11 +676,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * You may override this method to do postprocessing after record saving.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
-	protected function afterSave()
+	public function afterSave()
 	{
-		if ($this->hasEventHandler('onAfterSave')) {
-			$this->onAfterSave(new CEvent($this));
-		}
+		$this->onAfterSave(new Event($this));
 	}
 
 	/**
@@ -801,15 +688,11 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 * @return boolean whether the record should be deleted. Defaults to true.
 	 */
-	protected function beforeDelete()
+	public function beforeDelete()
 	{
-		if ($this->hasEventHandler('onBeforeDelete')) {
-			$event = new CModelEvent($this);
-			$this->onBeforeDelete($event);
-			return $event->isValid;
-		} else {
-			return true;
-		}
+		$event = new ModelEvent($this);
+		$this->onBeforeDelete($event);
+		return $event->isValid;
 	}
 
 	/**
@@ -818,45 +701,9 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * You may override this method to do postprocessing after the record is deleted.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
-	protected function afterDelete()
+	public function afterDelete()
 	{
-		if ($this->hasEventHandler('onAfterDelete')) {
-			$this->onAfterDelete(new CEvent($this));
-		}
-	}
-
-	/**
-	 * This method is invoked before an AR finder executes a find call.
-	 * The find calls include {@link find}, {@link findAll}, {@link findByPk},
-	 * {@link findAllByPk}, {@link findByAttributes} and {@link findAllByAttributes}.
-	 * The default implementation raises the {@link onBeforeFind} event.
-	 * If you override this method, make sure you call the parent implementation
-	 * so that the event is raised properly.
-	 *
-	 * Starting from version 1.1.5, this method may be called with a hidden {@link CDbCriteria}
-	 * parameter which represents the current query criteria as passed to a find method of AR.
-	 */
-	protected function beforeFind()
-	{
-		if ($this->hasEventHandler('onBeforeFind')) {
-			$event = new CModelEvent($this);
-			// for backward compatibility
-			$event->criteria = func_num_args() > 0 ? func_get_arg(0) : null;
-			$this->onBeforeFind($event);
-		}
-	}
-
-	/**
-	 * This method is invoked after each record is instantiated by a find method.
-	 * The default implementation raises the {@link onAfterFind} event.
-	 * You may override this method to do postprocessing after each newly found record is instantiated.
-	 * Make sure you call the parent implementation so that the event is raised properly.
-	 */
-	protected function afterFind()
-	{
-		if ($this->hasEventHandler('onAfterFind')) {
-			$this->onAfterFind(new CEvent($this));
-		}
+		$this->onAfterDelete(new Event($this));
 	}
 
 	/**
@@ -869,36 +716,30 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
-	 * @throws CException if the record is not new
+	 * @throws Exception if the record is not new
 	 */
 	public function insert($attributes = null)
 	{
-		if (!$this->getIsNewRecord()) {
-			throw new Exception(Yii::t('yii', 'The active record cannot be inserted to database because it is not new.'));
-		}
 		if ($this->beforeSave()) {
-			Yii::trace(get_class($this) . '.insert()', 'system.db.ar.ActiveRecord');
-			$builder = $this->getCommandBuilder();
-			$table = $this->getMetaData()->tableSchema;
-			$command = $builder->createInsertCommand($table, $this->getAttributes($attributes));
+			$db = $this->getDbConnection();
+			$query = new Query;
+			$values = $this->getChangedAttributes($attributes);
+			$command = $query->insert($this->tableName(), $values)->createCommand($db);
 			if ($command->execute()) {
-				$primaryKey = $table->primaryKey;
+				$table = $this->getMetaData()->table;
 				if ($table->sequenceName !== null) {
-					if (is_string($primaryKey) && $this->$primaryKey === null) {
-						$this->$primaryKey = $builder->getLastInsertID($table);
-					} elseif (is_array($primaryKey)) {
-						foreach ($primaryKey as $pk) {
-							if ($this->$pk === null) {
-								$this->$pk = $builder->getLastInsertID($table);
-								break;
-							}
+					foreach ($table->primaryKey as $name) {
+						if ($this->$name === null) {
+							$this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
+							break;
 						}
 					}
 				}
-				$this->_pk = $this->getPrimaryKey();
+				foreach ($values as $name => $value) {
+					$this->_oldAttributes[$name] = $this->_attributes[$name];
+				}
 				$this->afterSave();
 				$this->setIsNewRecord(false);
-				$this->setScenario('update');
 				return true;
 			}
 		}
@@ -912,21 +753,20 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
 	 * @return boolean whether the update is successful
-	 * @throws CException if the record is new
+	 * @throws Exception if the record is new
 	 */
 	public function update($attributes = null)
 	{
-		if ($this->getIsNewRecord()) {
-			throw new Exception(Yii::t('yii', 'The active record cannot be updated because it is new.'));
-		}
 		if ($this->beforeSave()) {
-			Yii::trace(get_class($this) . '.update()', 'system.db.ar.ActiveRecord');
-			if ($this->_pk === null) {
-				$this->_pk = $this->getPrimaryKey();
+			$values = $this->getChangedAttributes($attributes);
+			if ($values !== array()) {
+				$this->updateAll($values, $this->getOldPrimaryKey(true));
+				foreach ($values as $name => $value) {
+					$this->_oldAttributes[$name] = $this->_attributes[$name];
+				}
 			}
-			$this->updateByPk($this->getOldPrimaryKey(), $this->getAttributes($attributes));
-			$this->_pk = $this->getPrimaryKey();
 			$this->afterSave();
+			$this->setIsNewRecord(false);
 			return true;
 		} else {
 			return false;
@@ -936,25 +776,26 @@ abstract class ActiveRecord extends \yii\base\Model
 	/**
 	 * Saves a selected list of attributes.
 	 * Unlike {@link save}, this method only saves the specified attributes
-	 * of an existing row dataset and does NOT call either {@link beforeSave} or {@link afterSave}.
-	 * Also note that this method does neither attribute filtering nor validation.
+	 * of an existing row and does NOT call either {@link beforeSave} or {@link afterSave}.
+	 * Also note that this method does not validate attributes.
 	 * So do not use this method with untrusted data (such as user posted data).
 	 * You may consider the following alternative if you want to do so:
-	 * <pre>
-	 * $postRecord=Post::model()->findByPk($postID);
-	 * $postRecord->attributes=$_POST['post'];
-	 * $postRecord->save();
-	 * </pre>
+	 *
+	 * ~~~
+	 * $user = User::find($id)->one;
+	 * $user->attributes = $_POST['User'];
+	 * $user->save();
+	 * ~~~
+	 *
 	 * @param array $attributes attributes to be updated. Each element represents an attribute name
 	 * or an attribute value indexed by its name. If the latter, the record's
 	 * attribute will be changed accordingly before saving.
 	 * @return boolean whether the update is successful
-	 * @throws CException if the record is new or any database error
+	 * @throws Exception if the record is new or any database error
 	 */
 	public function saveAttributes($attributes)
 	{
 		if (!$this->getIsNewRecord()) {
-			Yii::trace(get_class($this) . '.saveAttributes()', 'system.db.ar.ActiveRecord');
 			$values = array();
 			foreach ($attributes as $name => $value) {
 				if (is_integer($name)) {
@@ -963,17 +804,13 @@ abstract class ActiveRecord extends \yii\base\Model
 					$values[$name] = $this->$name = $value;
 				}
 			}
-			if ($this->_pk === null) {
-				$this->_pk = $this->getPrimaryKey();
+			$this->updateAll($values, $this->getOldPrimaryKey(true));
+			foreach ($values as $name => $value) {
+				$this->_oldAttributes[$name] = $value;
 			}
-			if ($this->updateByPk($this->getOldPrimaryKey(), $values) > 0) {
-				$this->_pk = $this->getPrimaryKey();
-				return true;
-			} else {
-				return false;
-			}
+			return true;
 		} else {
-			throw new Exception(Yii::t('yii', 'The active record cannot be updated because it is new.'));
+			throw new Exception('The active record cannot be updated because it is new.');
 		}
 	}
 
@@ -993,59 +830,55 @@ abstract class ActiveRecord extends \yii\base\Model
 	 */
 	public function saveCounters($counters)
 	{
-		Yii::trace(get_class($this) . '.saveCounters()', 'system.db.ar.ActiveRecord');
-		$builder = $this->getCommandBuilder();
-		$table = $this->getTableSchema();
-		$criteria = $builder->createPkCriteria($table, $this->getOldPrimaryKey());
-		$command = $builder->createUpdateCounterCommand($this->getTableSchema(), $counters, $criteria);
-		if ($command->execute()) {
+		if (!$this->getIsNewRecord()) {
+			$this->updateCounters($counters, $this->getOldPrimaryKey(true));
 			foreach ($counters as $name => $value) {
-				$this->$name = $this->$name + $value;
+				$this->$name += $value;
+				$this->_oldAttributes[$name] = $this->$name;
 			}
 			return true;
 		} else {
-			return false;
+			throw new Exception('The active record cannot be updated because it is new.');
 		}
 	}
 
 	/**
 	 * Deletes the row corresponding to this active record.
 	 * @return boolean whether the deletion is successful.
-	 * @throws CException if the record is new
+	 * @throws Exception if the record is new
 	 */
 	public function delete()
 	{
 		if (!$this->getIsNewRecord()) {
-			Yii::trace(get_class($this) . '.delete()', 'system.db.ar.ActiveRecord');
 			if ($this->beforeDelete()) {
-				$result = $this->deleteByPk($this->getPrimaryKey()) > 0;
+				$result = $this->deleteAll($this->getPrimaryKey(true)) > 0;
+				$this->_oldAttributes = null;
 				$this->afterDelete();
 				return $result;
 			} else {
 				return false;
 			}
 		} else {
-			throw new Exception(Yii::t('yii', 'The active record cannot be deleted because it is new.'));
+			throw new Exception('The active record cannot be deleted because it is new.');
 		}
 	}
 
 	/**
 	 * Repopulates this active record with the latest data.
+	 * @param array $attributes
 	 * @return boolean whether the row still exists in the database. If true, the latest data will be populated to this active record.
 	 */
-	public function refresh()
+	public function refresh($attributes = null)
 	{
-		Yii::trace(get_class($this) . '.refresh()', 'system.db.ar.ActiveRecord');
-		if (!$this->getIsNewRecord() && ($record = $this->findByPk($this->getPrimaryKey())) !== null) {
-			$this->_attributes = array();
-			$this->_related = array();
-			foreach ($this->getMetaData()->columns as $name => $column) {
-				if (property_exists($this, $name)) {
-					$this->$name = $record->$name;
-				} else {
-					$this->_attributes[$name] = $record->$name;
-				}
+		if (!$this->getIsNewRecord() && ($record = $this->find($this->getPrimaryKey(true))) !== null) {
+			if ($attributes === null) {
+				$attributes = $this->attributeNames();
 			}
+			$this->_attributes = array();
+			foreach ($attributes as $name) {
+				$this->_attributes[$name] = $record->_attributes[$name];
+			}
+			$this->_oldAttributes = $this->_attributes;
 			return true;
 		} else {
 			return false;
@@ -1065,13 +898,15 @@ abstract class ActiveRecord extends \yii\base\Model
 
 	/**
 	 * Returns the primary key value.
+	 * @param boolean $asArray whether to return the primary key value as an array. If true,
+	 * the return value will be an array with column name as key and column value as value.
 	 * @return mixed the primary key value. An array (column name=>column value) is returned if the primary key is composite.
 	 * If primary key is not defined, null will be returned.
 	 */
-	public function getPrimaryKey()
+	public function getPrimaryKey($asArray = false)
 	{
 		$table = static::getMetaData()->table;
-		if (count($table->primaryKey) === 1) {
+		if (count($table->primaryKey) === 1 && !$asArray) {
 			return $this->{$table->primaryKey[0]};
 		} else {
 			$values = array();
@@ -1083,44 +918,27 @@ abstract class ActiveRecord extends \yii\base\Model
 	}
 
 	/**
-	 * Sets the primary key value.
-	 * After calling this method, the old primary key value can be obtained from {@link oldPrimaryKey}.
-	 * @param mixed $value the new primary key value. If the primary key is composite, the new value
-	 * should be provided as an array (column name=>column value).
-	 */
-	public function setPrimaryKey($value)
-	{
-		$this->_pk = $this->getPrimaryKey();
-		$table = $this->getMetaData()->table;
-		if (count($table->primaryKey) === 1) {
-			$this->{$table->primaryKey[0]} = $value;
-		} else {
-			foreach ($table->primaryKey as $name) {
-				$this->$name = $value[$name];
-			}
-		}
-	}
-
-	/**
 	 * Returns the old primary key value.
 	 * This refers to the primary key value that is populated into the record
 	 * after executing a find method (e.g. find(), findAll()).
 	 * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
+	 * @param boolean $asArray whether to return the primary key value as an array. If true,
+	 * the return value will be an array with column name as key and column value as value.
 	 * @return mixed the old primary key value. An array (column name=>column value) is returned if the primary key is composite.
 	 * If primary key is not defined, null will be returned.
 	 */
-	public function getOldPrimaryKey()
+	public function getOldPrimaryKey($asArray = false)
 	{
-		return $this->_pk;
-	}
-
-	/**
-	 * Sets the old primary key value.
-	 * @param mixed $value the old primary key value.
-	 */
-	public function setOldPrimaryKey($value)
-	{
-		$this->_pk = $value;
+		$table = static::getMetaData()->table;
+		if (count($table->primaryKey) === 1 && !$asArray) {
+			return isset($this->_oldAttributes[$table->primaryKey[0]]) ? $this->_oldAttributes[$table->primaryKey[0]] : null;
+		} else {
+			$values = array();
+			foreach ($table->primaryKey as $name) {
+				$values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
+			}
+			return $values;
+		}
 	}
 
 	/**
@@ -1135,16 +953,13 @@ abstract class ActiveRecord extends \yii\base\Model
 	public static function populateData($row)
 	{
 		$record = static::instantiate($row);
-		$record->setScenario('update');
 		$columns = static::getMetaData()->table->columns;
 		foreach ($row as $name => $value) {
-			if (property_exists($record, $name)) {
-				$record->$name = $value;
-			} elseif (isset($columns[$name])) {
+			if (isset($columns[$name])) {
 				$record->_attributes[$name] = $value;
 			}
 		}
-		$record->_pk = $record->getPrimaryKey();
+		$record->_oldAttributes = $record->_attributes;
 		return $record;
 	}
 
@@ -1158,7 +973,7 @@ abstract class ActiveRecord extends \yii\base\Model
 	 * @param array $row list of attribute values for the active records.
 	 * @return ActiveRecord the active record
 	 */
-	protected static function instantiate($row)
+	public static function instantiate($row)
 	{
 		return static::newInstance();
 	}
