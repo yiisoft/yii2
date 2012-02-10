@@ -3,9 +3,10 @@
 namespace yiiunit\framework\db\ar;
 
 use yii\db\dao\Query;
-use yii\db\ar\ActiveQuery;
+use yii\db\ar\ActiveFinder;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\OrderItem;
 
 class ActiveRecordTest extends \yiiunit\MysqlTestCase
 {
@@ -14,11 +15,100 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		ActiveRecord::$db = $this->getConnection();
 	}
 
+	public function testInsert()
+	{
+		$customer = new Customer;
+		$customer->email = 'user4@example.com';
+		$customer->name = 'user4';
+		$customer->address = 'address4';
+
+		$this->assertNull($customer->id);
+		$this->assertTrue($customer->isNewRecord);
+
+		$customer->save();
+
+		$this->assertEquals(4, $customer->id);
+		$this->assertFalse($customer->isNewRecord);
+	}
+
+	public function testUpdate()
+	{
+		// save
+		$customer = Customer::find(2)->one();
+		$this->assertTrue($customer instanceof Customer);
+		$this->assertEquals('user2', $customer->name);
+		$this->assertFalse($customer->isNewRecord);
+		$customer->name = 'user2x';
+		$customer->save();
+		$this->assertEquals('user2x', $customer->name);
+		$customer2 = Customer::find(2)->one();
+		$this->assertEquals('user2x', $customer2->name);
+
+		// saveAttributes
+		$customer = Customer::find(1)->one();
+		$this->assertEquals('user1', $customer->name);
+		$this->assertEquals('address1', $customer->address);
+		$customer->saveAttributes(array(
+			'name' => 'user1x',
+			'address' => 'address1x',
+		));
+		$this->assertEquals('user1x', $customer->name);
+		$this->assertEquals('address1x', $customer->address);
+		$customer = Customer::find(1)->one();
+		$this->assertEquals('user1x', $customer->name);
+		$this->assertEquals('address1x', $customer->address);
+
+		// saveCounters
+		$pk = array('order_id' => 2, 'item_id' => 4);
+		$orderItem = OrderItem::find($pk)->one();
+		$this->assertEquals(1, $orderItem->quantity);
+		$orderItem->saveCounters(array('quantity' => -1));
+		$this->assertEquals(0, $orderItem->quantity);
+		$orderItem = OrderItem::find($pk)->one();
+		$this->assertEquals(0, $orderItem->quantity);
+
+		// updateAll
+		$customer = Customer::find(3)->one();
+		$this->assertEquals('user3', $customer->name);
+		Customer::updateAll(array(
+			'name' => 'temp',
+		), array('id' => 3));
+		$customer = Customer::find(3)->one();
+		$this->assertEquals('temp', $customer->name);
+
+		// updateCounters
+		$pk = array('order_id' => 1, 'item_id' => 2);
+		$orderItem = OrderItem::find($pk)->one();
+		$this->assertEquals(2, $orderItem->quantity);
+		OrderItem::updateCounters(array(
+			'quantity' => 3,
+		), $pk);
+		$orderItem = OrderItem::find($pk)->one();
+		$this->assertEquals(5, $orderItem->quantity);
+	}
+
+	public function testDelete()
+	{
+		$post=Post2::model()->findByPk(1);
+		$this->assertTrue($post->delete());
+		$this->assertNull(Post2::model()->findByPk(1));
+
+		$this->assertTrue(Post2::model()->findByPk(2) instanceof Post2);
+		$this->assertTrue(Post2::model()->findByPk(3) instanceof Post2);
+		$this->assertEquals(2,Post2::model()->deleteByPk(array(2,3)));
+		$this->assertNull(Post2::model()->findByPk(2));
+		$this->assertNull(Post2::model()->findByPk(3));
+
+		$this->assertTrue(Post2::model()->findByPk(5) instanceof Post2);
+		$this->assertEquals(1,Post2::model()->deleteAll('id=5'));
+		$this->assertNull(Post2::model()->findByPk(5));
+	}
+
 	public function testFind()
 	{
 		// find one
 		$result = Customer::find();
-		$this->assertTrue($result instanceof ActiveQuery);
+		$this->assertTrue($result instanceof ActiveFinder);
 		$customer = $result->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(1, $result->count);

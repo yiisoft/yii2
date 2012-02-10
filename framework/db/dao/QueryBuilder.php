@@ -94,24 +94,22 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $params = array();
 	 * $sql = $queryBuilder->insert('tbl_user', array(
 	 *	 'name' => 'Sam',
 	 *	 'age' => 30,
-	 * ), $params);
+	 * ));
 	 * ~~~
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
-	 * @param array $params the parameters to be bound to the query. This method will modify
-	 * this parameter by appending new parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
-	public function insert($table, $columns, &$params = array())
+	public function insert($table, $columns)
 	{
 		$names = array();
 		$placeholders = array();
 		$count = 0;
+		$params = array();
 		foreach ($columns as $name => $value) {
 			$names[] = $this->quoteColumnName($name);
 			if ($value instanceof Expression) {
@@ -150,11 +148,10 @@ class QueryBuilder extends \yii\base\Object
 	 * @param array $columns the column data (name=>value) to be updated.
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
-	 * @param array $params the parameters to be bound to the query. This method will modify
-	 * this parameter by appending new parameters to be bound to the query.
+	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
-	public function update($table, $columns, $condition = '', &$params = array())
+	public function update($table, $columns, $condition = '', $params = array())
 	{
 		$lines = array();
 		$count = 0;
@@ -528,7 +525,7 @@ class QueryBuilder extends \yii\base\Object
 				}
 			}
 		}
-		return '(' . implode(') AND (', $parts) . ')';
+		return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
 	}
 
 	private function buildAndCondition($operator, $operands)
@@ -745,7 +742,7 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 
-		return implode("\n", $joins);
+		return implode($this->separator, $joins);
 	}
 
 	/**

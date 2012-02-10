@@ -545,9 +545,17 @@ abstract class ActiveRecord extends Model
 		}
 		$names = array_flip($names);
 		$attributes = array();
-		foreach ($this->_attributes as $name => $value) {
-			if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
-				$attributes[$name] = $value;
+		if (empty($this->_oldAttributes)) {
+			foreach ($this->_attributes as $name => $value) {
+				if (isset($names[$name])) {
+					$attributes[$name] = $value;
+				}
+			}
+		} else {
+			foreach ($this->_attributes as $name => $value) {
+				if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+					$attributes[$name] = $value;
+				}
 			}
 		}
 		return $attributes;

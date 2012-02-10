@@ -233,6 +233,8 @@ class Command extends \yii\base\Component
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
+echo "Executing SQL: {$sql}{$paramLog}" . "\n\n";
+
 		\Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
 
 		try {
@@ -365,6 +367,8 @@ class Command extends \yii\base\Component
 		} else {
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
+
+echo "Executing SQL: {$sql}{$paramLog}" . "\n\n";
 
 		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
 

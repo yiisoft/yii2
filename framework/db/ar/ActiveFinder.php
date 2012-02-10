@@ -30,6 +30,8 @@ use yii\db\Exception;
  * todo: scope
  * todo: test via option
  *
+ * @property integer $count
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -86,6 +88,10 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 		return $this->records;
 	}
 
+	/**
+	 * @param boolean $limitOne
+	 * @return null|ActiveRecord
+	 */
 	public function one($limitOne = true)
 	{
 		if ($this->records === null) {
@@ -737,7 +743,7 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 			$command = $this->getDbConnection()->createCommand($this->sql);
 			$command->bindValues($this->query->params);
 		}
-echo $command->sql;
+
 		$rows = $command->queryAll();
 
 		if (!empty($this->with)) {
