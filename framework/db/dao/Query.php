@@ -169,17 +169,10 @@ class Query extends \yii\base\Object
 	 * @param string|array $condition the conditions that will be put in the WHERE part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 */
 	public function update($table, $columns, $condition = '', $params = array())
 	{
-		if (!is_array($params)) {
-			$params = func_get_args();
-			array_shift($params);
-			array_shift($params);
-			unset($params[0]);
-		}
 		$this->addParams($params);
 		$this->operation = array(__FUNCTION__, $table, $columns, $condition, array());
 		return $this;
@@ -191,16 +184,10 @@ class Query extends \yii\base\Object
 	 * @param string|array $condition the conditions that will be put in the WHERE part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 */
 	public function delete($table, $condition = '', $params = array())
 	{
-		if (!is_array($params)) {
-			$params = func_get_args();
-			array_shift($params);
-			unset($params[0]);
-		}
 		$this->operation = array(__FUNCTION__, $table, $condition);
 		return $this->addParams($params);
 	}
@@ -484,8 +471,6 @@ class Query extends \yii\base\Object
 	 *
 	 * @param string|array $condition the conditions that should be put in the WHERE part.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * For anonymous parameters, they can alternatively be specified as separate parameters to this method.
-	 * For example, `where('type=? AND status=?', 100, 1)`.
 	 * @return Query the query object itself
 	 * @see andWhere()
 	 * @see orWhere()
@@ -493,10 +478,6 @@ class Query extends \yii\base\Object
 	public function where($condition, $params = array())
 	{
 		$this->where = $condition;
-		if (!is_array($params)) {
-			$params = func_get_args();
-			unset($params[0]);
-		}
 		$this->addParams($params);
 		return $this;
 	}
@@ -507,7 +488,6 @@ class Query extends \yii\base\Object
 	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see where()
 	 * @see orWhere()
@@ -519,10 +499,6 @@ class Query extends \yii\base\Object
 		} else {
 			$this->where = array('and', $this->where, $condition);
 		}
-		if (!is_array($params)) {
-			$params = func_get_args();
-			unset($params[0]);
-		}
 		$this->addParams($params);
 		return $this;
 	}
@@ -533,7 +509,6 @@ class Query extends \yii\base\Object
 	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see where()
 	 * @see andWhere()
@@ -545,12 +520,27 @@ class Query extends \yii\base\Object
 		} else {
 			$this->where = array('or', $this->where, $condition);
 		}
-		if (!is_array($params)) {
-			$params = func_get_args();
-			unset($params[0]);
-		}
 		$this->addParams($params);
 		return $this;
+	}
+
+	/**
+	 * Appends a JOIN part to the query.
+	 * The first parameter specifies what type of join it is.
+	 * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @param string|array $on the join condition that should appear in the ON part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @return Query the query object itself
+	 */
+	public function join($type, $table, $on = '', $params = array())
+	{
+		$this->join[] = array($type, $table, $on);
+		return $this->addParams($params);
 	}
 
 	/**
@@ -559,20 +549,14 @@ class Query extends \yii\base\Object
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 */
-	public function join($table, $condition, $params = array())
+	public function innerJoin($table, $on = '', $params = array())
 	{
-		$this->join[] = array('JOIN', $table, $condition);
-		if (!is_array($params)) {
-			$params = func_get_args();
-			array_shift($params);
-			unset($params[0]);
-		}
+		$this->join[] = array('INNER JOIN', $table, $on);
 		return $this->addParams($params);
 	}
 
@@ -582,19 +566,14 @@ class Query extends \yii\base\Object
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Query the query object itself
 	 */
-	public function leftJoin($table, $condition, $params = array())
+	public function leftJoin($table, $on = '', $params = array())
 	{
-		$this->join[] = array('LEFT JOIN', $table, $condition);
-		if (!is_array($params)) {
-			$params = func_get_args();
-			array_shift($params);
-			unset($params[0]);
-		}
+		$this->join[] = array('LEFT JOIN', $table, $on);
 		return $this->addParams($params);
 	}
 
@@ -604,50 +583,15 @@ class Query extends \yii\base\Object
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return Query the query object itself
 	 */
-	public function rightJoin($table, $condition, $params = array())
+	public function rightJoin($table, $on = '', $params = array())
 	{
-		$this->join[] = array('RIGHT JOIN', $table, $condition);
-		if (!is_array($params)) {
-			$params = func_get_args();
-			array_shift($params);
-			unset($params[0]);
-		}
+		$this->join[] = array('RIGHT JOIN', $table, $on);
 		return $this->addParams($params);
-	}
-
-	/**
-	 * Appends a CROSS JOIN part to the query.
-	 * Note that not all DBMS support CROSS JOIN.
-	 * @param string $table the table to be joined.
-	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
-	 * The method will automatically quote the table name unless it contains some parenthesis
-	 * (which means the table is given as a sub-query or DB expression).
-	 * @return Query the query object itself
-	 */
-	public function crossJoin($table)
-	{
-		$this->join[] = array('CROSS JOIN', $table);
-		return $this;
-	}
-
-	/**
-	 * Appends a NATURAL JOIN part to the query.
-	 * Note that not all DBMS support NATURAL JOIN.
-	 * @param string $table the table to be joined.
-	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
-	 * The method will automatically quote the table name unless it contains some parenthesis
-	 * (which means the table is given as a sub-query or DB expression).
-	 * @return Query the query object itself
-	 */
-	public function naturalJoin($table)
-	{
-		$this->join[] = array('NATURAL JOIN', $table);
-		return $this;
 	}
 
 	/**
@@ -695,7 +639,6 @@ class Query extends \yii\base\Object
 	 * @param string|array $condition the conditions to be put after HAVING.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see andHaving()
 	 * @see orHaving()
@@ -703,10 +646,6 @@ class Query extends \yii\base\Object
 	public function having($condition, $params = array())
 	{
 		$this->having = $condition;
-		if (!is_array($params)) {
-			$params = func_get_args();
-			unset($params[0]);
-		}
 		$this->addParams($params);
 		return $this;
 	}
@@ -717,7 +656,6 @@ class Query extends \yii\base\Object
 	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see having()
 	 * @see orHaving()
@@ -729,10 +667,6 @@ class Query extends \yii\base\Object
 		} else {
 			$this->having = array('and', $this->having, $condition);
 		}
-		if (!is_array($params)) {
-			$params = func_get_args();
-			unset($params[0]);
-		}
 		$this->addParams($params);
 		return $this;
 	}
@@ -743,7 +677,6 @@ class Query extends \yii\base\Object
 	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see having()
 	 * @see andHaving()
@@ -754,10 +687,6 @@ class Query extends \yii\base\Object
 			$this->having = $condition;
 		} else {
 			$this->having = array('or', $this->having, $condition);
-		}
-		if (!is_array($params)) {
-			$params = func_get_args();
-			unset($params[0]);
 		}
 		$this->addParams($params);
 		return $this;
@@ -840,7 +769,6 @@ class Query extends \yii\base\Object
 	 * Sets the parameters to be bound to the query.
 	 * @param array $params list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see addParams()
 	 */
@@ -854,7 +782,6 @@ class Query extends \yii\base\Object
 	 * Adds additional parameters to be bound to the query.
 	 * @param array $params list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
-	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return Query the query object itself
 	 * @see params()
 	 */

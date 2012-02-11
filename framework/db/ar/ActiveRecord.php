@@ -50,6 +50,17 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
+	 * Returns the database connection used by this AR class.
+	 * By default, the "db" application component is used as the database connection.
+	 * You may override this method if you want to use a different database connection.
+	 * @return Connection the database connection used by this AR class.
+	 */
+	public static function getDbConnection()
+	{
+		return \Yii::$application->getDb();
+	}
+
+	/**
 	 * Creates an [[ActiveFinder]] instance for query purpose.
 	 *
 	 * Because [[ActiveFinder]] implements a set of query building methods,
@@ -105,10 +116,6 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function findBySql($sql, $params = array())
 	{
-		if (!is_array($params)) {
-			$params = func_get_args();
-			unset($params[0]);
-		}
 		$finder = static::createActiveFinder();
 		$finder->sql = $sql;
 		return $finder->params($params);
@@ -152,17 +159,6 @@ abstract class ActiveRecord extends Model
 	public static function createActiveFinder()
 	{
 		return new ActiveFinder(get_called_class());
-	}
-
-	/**
-	 * Returns the database connection used by this AR class.
-	 * By default, the "db" application component is used as the database connection.
-	 * You may override this method if you want to use a different database connection.
-	 * @return Connection the database connection used by this AR class.
-	 */
-	public static function getDbConnection()
-	{
-		return \Yii::$application->getDb();
 	}
 
 	/**

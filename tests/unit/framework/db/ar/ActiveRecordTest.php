@@ -63,7 +63,8 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$pk = array('order_id' => 2, 'item_id' => 4);
 		$orderItem = OrderItem::find($pk)->one();
 		$this->assertEquals(1, $orderItem->quantity);
-		$orderItem->saveCounters(array('quantity' => -1));
+		$ret = $orderItem->saveCounters(array('quantity' => -1));
+		$this->assertTrue($ret);
 		$this->assertEquals(0, $orderItem->quantity);
 		$orderItem = OrderItem::find($pk)->one();
 		$this->assertEquals(0, $orderItem->quantity);
@@ -71,9 +72,10 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		// updateAll
 		$customer = Customer::find(3)->one();
 		$this->assertEquals('user3', $customer->name);
-		Customer::updateAll(array(
+		$ret = Customer::updateAll(array(
 			'name' => 'temp',
 		), array('id' => 3));
+		$this->assertEquals(1, $ret);
 		$customer = Customer::find(3)->one();
 		$this->assertEquals('temp', $customer->name);
 
@@ -81,9 +83,10 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$pk = array('order_id' => 1, 'item_id' => 2);
 		$orderItem = OrderItem::find($pk)->one();
 		$this->assertEquals(2, $orderItem->quantity);
-		OrderItem::updateCounters(array(
+		$ret = OrderItem::updateCounters(array(
 			'quantity' => 3,
 		), $pk);
+		$this->assertEquals(1, $ret);
 		$orderItem = OrderItem::find($pk)->one();
 		$this->assertEquals(5, $orderItem->quantity);
 	}
@@ -101,7 +104,8 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		// deleteAll
 		$customers = Customer::find()->all();
 		$this->assertEquals(2, count($customers));
-		Customer::deleteAll();
+		$ret = Customer::deleteAll();
+		$this->assertEquals(2, $ret);
 		$customers = Customer::find()->all();
 		$this->assertEquals(0, count($customers));
 	}

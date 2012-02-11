@@ -17,7 +17,8 @@ use yii\db\Exception;
 /**
  * ActiveFinder.php is ...
  * todo: add SQL monitor
- *
+ * todo: better handling on join() support in QueryBuilder: use regexp to detect table name and quote it
+ * todo: do not support anonymous parameter binding
  * todo: add ActiveFinderBuilder
  * todo: quote join/on part of the relational query
  * todo: modify QueryBuilder about join() methods
@@ -29,6 +30,7 @@ use yii\db\Exception;
  * todo: lazy loading
  * todo: scope
  * todo: test via option
+ * todo: count, sum, exists
  *
  * @property integer $count
  *
@@ -80,6 +82,10 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 		$this->query = new Query;
 	}
 
+	/**
+	 * Executes query and returns all results as an array.
+	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 */
 	public function all()
 	{
 		if ($this->records === null) {
@@ -89,15 +95,14 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 	}
 
 	/**
-	 * @param boolean $limitOne
-	 * @return null|ActiveRecord
+	 * Executes query and returns a single row of result.
+	 * @return null|array|ActiveRecord the single row of query result. Depending on the setting of [[asArray]],
+	 * the query result may be either an array or an ActiveRecord object. Null will be returned
+	 * if the query results in nothing.
 	 */
-	public function one($limitOne = true)
+	public function one()
 	{
 		if ($this->records === null) {
-			if ($limitOne) {
-				$this->limit(1);
-			}
 			$this->records = $this->findRecords();
 		}
 		return isset($this->records[0]) ? $this->records[0] : null;
@@ -442,24 +447,39 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 	}
 
 	/**
+	 * Appends a JOIN part to the query.
+	 * The first parameter specifies what type of join it is.
+	 * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
+	 * @param string $table the table to be joined.
+	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+	 * The method will automatically quote the table name unless it contains some parenthesis
+	 * (which means the table is given as a sub-query or DB expression).
+	 * @param string|array $on the join condition that should appear in the ON part.
+	 * Please refer to [[where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @return Query the query object itself
+	 */
+	public function join($type, $table, $on = '', $params = array())
+	{
+		$this->query->join($type, $table, $on, $params);
+		return $this;
+	}
+
+	/**
 	 * Appends an INNER JOIN part to the query.
 	 * @param string $table the table to be joined.
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * Please refer to [[where()]] on alternative syntax of specifying anonymous parameters.
 	 * @return ActiveFinder the query object itself
 	 */
-	public function join($table, $condition, $params = array())
+	public function innerJoin($table, $on, $params = array())
 	{
-		if (is_array($params)) {
-			$this->query->join($table, $condition, $params);
-		} else {
-			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
-		}
+		$this->query->join($table, $on, $params);
 		return $this;
 	}
 
@@ -469,18 +489,14 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return ActiveFinder the query object itself
 	 */
-	public function leftJoin($table, $condition, $params = array())
+	public function leftJoin($table, $on, $params = array())
 	{
-		if (is_array($params)) {
-			$this->query->leftJoin($table, $condition, $params);
-		} else {
-			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
-		}
+		$this->query->leftJoin($table, $on, $params);
 		return $this;
 	}
 
@@ -490,48 +506,14 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @param string|array $condition the join condition that should appear in the ON part.
+	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query
 	 * @return ActiveFinder the query object itself
 	 */
-	public function rightJoin($table, $condition, $params = array())
+	public function rightJoin($table, $on, $params = array())
 	{
-		if (is_array($params)) {
-			$this->query->rightJoin($table, $condition, $params);
-		} else {
-			call_user_func_array(array($this->query, __FUNCTION__), func_get_args());
-		}
-		return $this;
-	}
-
-	/**
-	 * Appends a CROSS JOIN part to the query.
-	 * Note that not all DBMS support CROSS JOIN.
-	 * @param string $table the table to be joined.
-	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
-	 * The method will automatically quote the table name unless it contains some parenthesis
-	 * (which means the table is given as a sub-query or DB expression).
-	 * @return ActiveFinder the query object itself
-	 */
-	public function crossJoin($table)
-	{
-		$this->query->crossJoin($table);
-		return $this;
-	}
-
-	/**
-	 * Appends a NATURAL JOIN part to the query.
-	 * Note that not all DBMS support NATURAL JOIN.
-	 * @param string $table the table to be joined.
-	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
-	 * The method will automatically quote the table name unless it contains some parenthesis
-	 * (which means the table is given as a sub-query or DB expression).
-	 * @return ActiveFinder the query object itself
-	 */
-	public function naturalJoin($table)
-	{
-		$this->query->naturalJoin($table);
+		$this->query->rightJoin($table, $on, $params);
 		return $this;
 	}
 
@@ -746,7 +728,7 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 
 		$rows = $command->queryAll();
 
-		if (!empty($this->with)) {
+		if (isset($joinTree)) {
 			foreach ($rows as $row) {
 				$joinTree->populateData($row);
 			}

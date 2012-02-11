@@ -488,7 +488,7 @@ class QueryBuilder extends \yii\base\Object
 		);
 
 		if (!is_array($condition)) {
-			return $condition;
+			return (string)$condition;
 		} elseif ($condition === array()) {
 			return '';
 		}
@@ -733,8 +733,11 @@ class QueryBuilder extends \yii\base\Object
 						}
 					}
 					$joins[$i] = strtoupper($join[0]) . ' ' . $table;
-					if (isset($join[2])) { // join condition
-						$joins[$i] .= ' ON ' . $this->buildCondition($join[2]);
+					if (isset($join[2])) {
+						$condition = $this->buildCondition($join[2]);
+						if ($condition !== '') {
+							$joins[$i] .= ' ON ' . $this->buildCondition($join[2]);
+						}
 					}
 				} else {
 					throw new Exception('A join clause must be specified as an array of at least two elements.');
