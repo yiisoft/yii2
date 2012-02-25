@@ -27,8 +27,10 @@ class CActiveRecordBehavior extends CModelBehavior
 	public function events()
 	{
 		return array_merge(parent::events(), array(
-			'onBeforeSave' => 'beforeSave',
-			'onAfterSave' => 'afterSave',
+			'onBeforeInsert' => 'beforeInsert',
+			'onAfterInsert' => 'afterInsert',
+			'onBeforeUpdate' => 'beforeUpdate',
+			'onAfterUpdate' => 'afterUpdate',
 			'onBeforeDelete' => 'beforeDelete',
 			'onAfterDelete' => 'afterDelete',
 			'onBeforeFind' => 'beforeFind',
@@ -42,7 +44,7 @@ class CActiveRecordBehavior extends CModelBehavior
 	 * You may set {@link CModelEvent::isValid} to be false to quit the saving process.
 	 * @param CModelEvent $event event parameter
 	 */
-	public function beforeSave($event)
+	public function beforeInsert($event)
 	{
 	}
 
@@ -51,7 +53,26 @@ class CActiveRecordBehavior extends CModelBehavior
 	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
 	 * @param CModelEvent $event event parameter
 	 */
-	public function afterSave($event)
+	public function afterInsert($event)
+	{
+	}
+
+	/**
+	 * Responds to {@link CActiveRecord::onBeforeSave} event.
+	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
+	 * You may set {@link CModelEvent::isValid} to be false to quit the saving process.
+	 * @param CModelEvent $event event parameter
+	 */
+	public function beforeUpdate($event)
+	{
+	}
+
+	/**
+	 * Responds to {@link CActiveRecord::onAfterSave} event.
+	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
+	 * @param CModelEvent $event event parameter
+	 */
+	public function afterUpdate($event)
 	{
 	}
 

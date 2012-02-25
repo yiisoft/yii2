@@ -13,9 +13,9 @@ namespace yii\db\dao;
 use yii\db\Exception;
 
 /**
- * QueryBuilder builds a SQL statement based on the specification given as a [[Query]] object.
+ * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[BaseQuery]] object.
  *
- * QueryBuilder is often used behind the scenes by [[Query]] to build a DBMS-dependent SQL statement
+ * QueryBuilder can also be used to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE,
  * from a [[Query]] object.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -57,35 +57,25 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * Generates a SQL statement from a [[Query]] object.
-	 * Note that when generating SQL statements for INSERT and UPDATE queries,
-	 * the query object's [[Query::params]] property may be appended with new parameters.
-	 * @param Query $query the [[Query]] object from which the SQL statement will be generated
+	 * Generates a SELECT SQL statement from a [[BaseQuery]] object.
+	 * @param BaseQuery $query the [[Query]] object from which the SQL statement will be generated
 	 * @return string the generated SQL statement
 	 */
 	public function build($query)
 	{
 		$this->query = $query;
-		if ($query->operation !== null) {
-			// non-SELECT query
-			$params = $query->operation;
-			$method = array_shift($params);
-			return call_user_func_array(array($this, $method), $params);
-		} else {
-			// SELECT query
-			$clauses = array(
-				$this->buildSelect(),
-				$this->buildFrom(),
-				$this->buildJoin(),
-				$this->buildWhere(),
-				$this->buildGroupBy(),
-				$this->buildHaving(),
-				$this->buildUnion(),
-				$this->buildOrderBy(),
-				$this->buildLimit(),
-			);
-			return implode($this->separator, array_filter($clauses));
-		}
+		$clauses = array(
+			$this->buildSelect(),
+			$this->buildFrom(),
+			$this->buildJoin(),
+			$this->buildWhere(),
+			$this->buildGroupBy(),
+			$this->buildHaving(),
+			$this->buildUnion(),
+			$this->buildOrderBy(),
+			$this->buildLimit(),
+		);
+		return implode($this->separator, array_filter($clauses));
 	}
 
 	/**
@@ -123,7 +113,7 @@ class QueryBuilder extends \yii\base\Object
 				$count++;
 			}
 		}
-		if ($this->query instanceof Query) {
+		if ($this->query instanceof BaseQuery) {
 			$this->query->addParams($params);
 		}
 
@@ -167,7 +157,7 @@ class QueryBuilder extends \yii\base\Object
 				$count++;
 			}
 		}
-		if ($this->query instanceof Query) {
+		if ($this->query instanceof BaseQuery) {
 			$this->query->addParams($params);
 		}
 		$sql = 'UPDATE ' . $this->quoteTableName($table) . ' SET ' . implode(', ', $lines);
@@ -189,13 +179,17 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $table the table where the data will be deleted from.
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
+	 * @param array $params the parameters to be bound to the query.
 	 * @return integer number of rows affected by the execution.
 	 */
-	public function delete($table, $condition = '')
+	public function delete($table, $condition = '', $params = array())
 	{
 		$sql = 'DELETE FROM ' . $this->quoteTableName($table);
 		if (($where = $this->buildCondition($condition)) != '') {
 			$sql .= ' WHERE ' . $where;
+		}
+		if ($params !== array() && $this->query instanceof BaseQuery) {
+			$this->query->addParams($params);
 		}
 		return $sql;
 	}
@@ -631,7 +625,7 @@ class QueryBuilder extends \yii\base\Object
 	protected function buildSelect()
 	{
 		$select = $this->query->distinct ? 'SELECT DISTINCT' : 'SELECT';
-		if ($this->query->selectOption != '') {
+		if ($this->query->selectOption !== null) {
 			$select .= ' ' . $this->query->selectOption;
 		}
 

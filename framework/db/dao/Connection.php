@@ -399,17 +399,14 @@ class Connection extends \yii\base\ApplicationComponent
 
 	/**
 	 * Creates a command for execution.
-	 * @param string|array|Query $query the DB query to be executed. This can be:
-	 *
-	 * - a string representing the SQL statement to be executed
-	 * - a [[Query]] object representing the SQL query
-	 * - an array that will be used to initialize [[Query]]
+	 * @param string $sql the SQL statement to be executed
+	 * @param array $params the parameters to be bound to the SQL statement
 	 * @return Command the DB command
 	 */
-	public function createCommand($query = null)
+	public function createCommand($sql = null, $params = array())
 	{
 		$this->open();
-		return new Command($this, $query);
+		return new Command($this, $sql, $params);
 	}
 
 	/**

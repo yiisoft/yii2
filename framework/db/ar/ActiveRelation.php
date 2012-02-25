@@ -1,67 +1,64 @@
 <?php
+/**
+ * ActiveRelation class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\ar;
 
-class ActiveRelation extends \yii\base\Object
+use yii\db\dao\BaseQuery;
+
+/**
+ * ActiveRelation represents the specification of a relation declared in [[ActiveRecord::relations()]].
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
+ */
+class ActiveRelation extends BaseQuery
 {
+	/**
+	 * @var string the name of this relation
+	 */
 	public $name;
+	/**
+	 * @var string the name of the model class that this relation represents
+	 */
 	public $modelClass;
+	/**
+	 * @var boolean whether this relation is a one-many relation
+	 */
 	public $hasMany;
-
-	public $joinType;
+	/**
+	 * @var string the join type (e.g. INNER JOIN, LEFT JOIN). Defaults to 'LEFT JOIN'.
+	 */
+	public $joinType = 'LEFT JOIN';
+	/**
+	 * @var string the table alias used for the corresponding table during query
+	 */
 	public $tableAlias;
+	/**
+	 * @var string the name of the column that the result should be indexed by.
+	 * This is only useful when [[hasMany]] is true.
+	 */
+	public $indexBy;
+	/**
+	 * @var string the ON clause of the join query
+	 */
 	public $on;
+	/**
+	 * @var string
+	 */
 	public $via;
+	/**
+	 * @var array the relations that should be queried together (eager loading)
+	 */
 	public $with;
+	/**
+	 * @var array the scopes that should be applied during query
+	 */
 	public $scopes;
-
-	/**
-	 * @var string|array the columns being selected. This refers to the SELECT clause in a SQL
-	 * statement. It can be either a string (e.g. `'id, name'`) or an array (e.g. `array('id', 'name')`).
-	 * If not set, if means all columns.
-	 * @see select()
-	 */
-	public $select;
-	/**
-	 * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
-	 * For example, `age > 31 AND team = 1`.
-	 * @see where()
-	 */
-	public $where;
-	/**
-	 * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit.
-	 */
-	public $limit;
-	/**
-	 * @var integer zero-based offset from where the records are to be returned. If not set or
-	 * less than 0, it means starting from the beginning.
-	 */
-	public $offset;
-	/**
-	 * @var string|array how to sort the query results. This refers to the ORDER BY clause in a SQL statement.
-	 * It can be either a string (e.g. `'id ASC, name DESC'`) or an array (e.g. `array('id ASC', 'name DESC')`).
-	 */
-	public $orderBy;
-	/**
-	 * @var string|array how to group the query results. This refers to the GROUP BY clause in a SQL statement.
-	 * It can be either a string (e.g. `'company, department'`) or an array (e.g. `array('company', 'department')`).
-	 */
-	public $groupBy;
-	/**
-	 * @var string|array how to join with other tables. This refers to the JOIN clause in a SQL statement.
-	 * It can either a string (e.g. `'LEFT JOIN tbl_user ON tbl_user.id=author_id'`) or an array (e.g.
-	 * `array('LEFT JOIN tbl_user ON tbl_user.id=author_id', 'LEFT JOIN tbl_team ON tbl_team.id=team_id')`).
-	 * @see join()
-	 */
-	public $join;
-	/**
-	 * @var string|array the condition to be applied in the GROUP BY clause.
-	 * It can be either a string or an array. Please refer to [[where()]] on how to specify the condition.
-	 */
-	public $having;
-	/**
-	 * @var array list of query parameter values indexed by parameter placeholders.
-	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
-	 */
-	public $params;
 }

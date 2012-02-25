@@ -64,27 +64,15 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Constructor.
-	 * Instead of using the `new` operator, you may use [[Connection::createCommand()]]
-	 * to create a new Command object.
 	 * @param Connection $connection the database connection
-	 * @param string|array|Query $query the DB query to be executed. This can be:
-	 *
-	 * - a string representing the SQL statement to be executed
-	 * - a [[Query]] object representing the SQL query
-	 * - an array that will be used to create and initialize the [[Query]] object
+	 * @param string $sql the SQL statement to be executed
+	 * @param array $params the parameters to be bound to the SQL statement
 	 */
-	public function __construct($connection, $query = null)
+	public function __construct($connection, $sql = null, $params = array())
 	{
 		$this->connection = $connection;
-		if (is_array($query)) {
-			$query = Query::newInstance($query);
-		}
-		if ($query instanceof Query) {
-			$this->_sql = $query->getSql($connection);
-			$this->bindValues($query->params);
-		} else {
-			$this->_sql = $query;
-		}
+		$this->_sql = $sql;
+		$this->bindValues($params);
 	}
 
 	/**
@@ -233,8 +221,6 @@ class Command extends \yii\base\Component
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
-echo "Executing SQL: {$sql}{$paramLog}" . "\n\n";
-
 		\Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
 
 		try {
@@ -367,8 +353,6 @@ echo "Executing SQL: {$sql}{$paramLog}" . "\n\n";
 		} else {
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
-
-echo "Executing SQL: {$sql}{$paramLog}" . "\n\n";
 
 		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
 
