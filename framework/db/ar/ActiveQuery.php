@@ -12,6 +12,7 @@ namespace yii\db\ar;
 
 use yii\base\VectorIterator;
 use yii\db\dao\BaseQuery;
+use yii\db\dao\Expression;
 use yii\db\Exception;
 
 /**
@@ -136,12 +137,13 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 
 	public function value()
 	{
-		return 0;
+		$result = $this->asArray()->one();
+		return $result === null ? null : reset($result);
 	}
 
 	public function exists()
 	{
-		return $this->select(array('1'))->asArray(true)->one() !== null;
+		return $this->select(array(new Expression('1')))->asArray()->one() !== null;
 	}
 
 	/**
@@ -342,112 +344,6 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 				$tableName .= ' ' . $this->tableAlias;
 			}
 			$query->from = array($tableName);
-		}
-	}
-
-	protected function buildRelationalQuery()
-	{
-		$joinTree = new JoinElement($this, null, null);
-		$this->buildJoinTree($joinTree, $this->with);
-		$this->buildTableAlias($joinTree);
-		$query = new Query;
-		foreach ($joinTree->children as $child) {
-			$child->buildQuery($query);
-		}
-
-		$select = $joinTree->buildSelect($this->query->select);
-		if (!empty($query->select)) {
-			$this->query->select = array_merge($select, $query->select);
-		} else {
-			$this->query->select = $select;
-		}
-		if (!empty($query->where)) {
-			$this->query->andWhere('(' . implode(') AND (', $query->where) . ')');
-		}
-		if (!empty($query->having)) {
-			$this->query->andHaving('(' . implode(') AND (', $query->having) . ')');
-		}
-		if (!empty($query->join)) {
-			if ($this->query->join === null) {
-				$this->query->join = $query->join;
-			} else {
-				$this->query->join = array_merge($this->query->join, $query->join);
-			}
-		}
-		if (!empty($query->orderBy)) {
-			$this->query->addOrderBy($query->orderBy);
-		}
-		if (!empty($query->groupBy)) {
-			$this->query->addGroupBy($query->groupBy);
-		}
-		if (!empty($query->params)) {
-			$this->query->addParams($query->params);
-		}
-
-		return $joinTree;
-	}
-
-	/**
-	 * @param JoinElement $parent
-	 * @param array|string $with
-	 * @param array $config
-	 * @return null|JoinElement
-	 * @throws \yii\db\Exception
-	 */
-	protected function buildJoinTree($parent, $with, $config = array())
-	{
-		if (is_array($with)) {
-			foreach ($with as $name => $value) {
-				if (is_string($value)) {
-					$this->buildJoinTree($parent, $value);
-				} elseif (is_string($name) && is_array($value)) {
-					$this->buildJoinTree($parent, $name, $value);
-				}
-			}
-			return null;
-		}
-
-		if (($pos = strrpos($with, '.')) !== false) {
-			$parent = $this->buildJoinTree($parent, substr($with, 0, $pos));
-			$with = substr($with, $pos + 1);
-		}
-
-		if (isset($parent->children[$with])) {
-			$child = $parent->children[$with];
-			$child->joinOnly = false;
-		} else {
-			$modelClass = $parent->relation->modelClass;
-			$relations = $modelClass::getMetaData()->relations;
-			if (!isset($relations[$with])) {
-				throw new Exception("$modelClass has no relation named '$with'.");
-			}
-			$relation = clone $relations[$with];
-			if ($relation->via !== null && isset($relations[$relation->via])) {
-				$relation->via = null;
-				$parent2 = $this->buildJoinTree($parent, $relation->via);
-				if ($parent2->joinOnly === null) {
-					$parent2->joinOnly = true;
-				}
-				$child = new JoinElement($relation, $parent2, $parent);
-			} else {
-				$child = new JoinElement($relation, $parent, $parent);
-			}
-		}
-
-		foreach ($config as $name => $value) {
-			$child->relation->$name = $value;
-		}
-
-		return $child;
-	}
-
-	protected function buildTableAlias($element, &$count = 0)
-	{
-		if ($element->relation->tableAlias === null) {
-			$element->relation->tableAlias = 't' . ($count++);
-		}
-		foreach ($element->children as $child) {
-			$this->buildTableAlias($child, $count);
 		}
 	}
 }

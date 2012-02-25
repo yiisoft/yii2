@@ -10,6 +10,7 @@
 
 namespace yii\db\ar;
 
+use yii\base\Object;
 use yii\base\VectorIterator;
 use yii\db\dao\Query;
 use yii\db\Exception;
@@ -37,49 +38,19 @@ use yii\db\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \ArrayAccess, \Countable
+class ActiveFinder extends Object
 {
 	/**
-	 * @var string the name of the ActiveRecord class.
-	 */
-	public $modelClass;
-	/**
-	 * @var Query the Query object
+	 * @var ActiveQuery
 	 */
 	public $query;
-	/**
-	 * @var array list of relations that this query should be performed with
-	 */
-	public $with;
-	/**
-	 * @var string the table alias to be used for query
-	 */
-	public $tableAlias;
-	/**
-	 * @var string the name of the column that the result should be indexed by
-	 */
-	public $indexBy;
-	/**
-	 * @var boolean whether to return query results as arrays
-	 */
-	public $asArray;
-	/**
-	 * @var array list of scopes that should be applied to this query
-	 */
-	public $scopes;
-	/**
-	 * @var array list of query results
-	 */
-	public $records;
-	public $sql;
 
 	/**
-	 * @param string $modelClass the name of the ActiveRecord class.
+	 * @param ActiveQuery $query
 	 */
-	public function __construct($modelClass)
+	public function __construct($query)
 	{
-		$this->modelClass = $modelClass;
-		$this->query = new Query;
+		$this->query = $query;
 	}
 
 	/**
@@ -709,7 +680,6 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 	{
 		// todo: inner join with one or multiple relations as filters
 	}
-
 	protected function findRecords()
 	{
 		if (!empty($this->with)) {
@@ -760,20 +730,6 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 			}
 			return $records;
 		}
-	}
-
-	protected function performCountQuery()
-	{
-		if ($this->sql === null) {
-			$this->initFrom($this->query);
-			$this->query->select = 'COUNT(*)';
-			$command = $this->query->createCommand($this->getDbConnection());
-			$this->sql = $command->getSql();
-		} else {
-			$command = $this->getDbConnection()->createCommand($this->sql);
-			$command->bindValues($this->query->params);
-		}
-		return $command->queryScalar();
 	}
 
 	protected function initFrom($query)
@@ -893,4 +849,5 @@ class ActiveFinder extends \yii\base\Object implements \IteratorAggregate, \Arra
 			$this->buildTableAlias($child, $count);
 		}
 	}
+
 }
