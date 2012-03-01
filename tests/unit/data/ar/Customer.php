@@ -4,6 +4,9 @@ namespace yiiunit\data\ar;
 
 class Customer extends ActiveRecord
 {
+	const STATUS_ACTIVE = 1;
+	const STATUS_INACTIVE = 2;
+
 	public static function tableName()
 	{
 		return 'tbl_customer';
@@ -15,6 +18,15 @@ class Customer extends ActiveRecord
 			'orders:Order[]' => array(
 				'on' => '@.customer_id = ?.id',
 			),
+		);
+	}
+
+	public static function scopes()
+	{
+		return array(
+			'active' => function($q) {
+				return $q->andWhere('@.status = 1');
+			},
 		);
 	}
 }

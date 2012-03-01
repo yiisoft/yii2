@@ -19,6 +19,7 @@ CREATE TABLE `tbl_customer` (
   `email` varchar(128) NOT NULL,
   `name` varchar(128) NOT NULL,
   `address` text,
+  `status` int (11) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -71,9 +72,9 @@ CREATE TABLE `tbl_type` (
   `bool_col2` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO tbl_customer (email, name, address) VALUES ('user1@example.com', 'user1', 'address1');
-INSERT INTO tbl_customer (email, name, address) VALUES ('user2@example.com', 'user2', 'address2');
-INSERT INTO tbl_customer (email, name, address) VALUES ('user3@example.com', 'user3', 'address3');
+INSERT INTO tbl_customer (email, name, address, status) VALUES ('user1@example.com', 'user1', 'address1', 1);
+INSERT INTO tbl_customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
+INSERT INTO tbl_customer (email, name, address, status) VALUES ('user3@example.com', 'user3', 'address3', 2);
 
 INSERT INTO tbl_category (name) VALUES ('Books');
 INSERT INTO tbl_category (name) VALUES ('Movies');

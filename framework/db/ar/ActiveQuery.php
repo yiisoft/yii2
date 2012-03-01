@@ -89,6 +89,18 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 		$this->modelClass = $modelClass;
 	}
 
+	public function __call($name, $params)
+	{
+		$class = $this->modelClass;
+		$scopes = $class::scopes();
+		if (isset($scopes[$name])) {
+			array_unshift($params, $this);
+			return call_user_func_array($scopes[$name], $params);
+		} else {
+			return parent::__call($name, $params);
+		}
+	}
+
 	public function asArray($value = true)
 	{
 		$this->asArray = $value;

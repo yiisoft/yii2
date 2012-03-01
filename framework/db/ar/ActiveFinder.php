@@ -188,13 +188,22 @@ class ActiveFinder extends \yii\base\Object
 	protected function applyScopes($query)
 	{
 		if (is_array($query->scopes)) {
-			foreach ($query->scopes as $scope => $params) {
-				if (is_integer($scope)) {
-					$scope = $params;
+			$class = $query->modelClass;
+			$defaultScope = $class::defaultScope();
+			if ($defaultScope !== null) {
+				call_user_func_array($defaultScope, array($query));
+			}
+			$scopes = $class::scopes();
+			foreach ($query->scopes as $name => $params) {
+				if (is_integer($name)) {
+					$name = $params;
 					$params = array();
 				}
+				if (!isset($scopes[$name])) {
+					throw new Exception("$class has no scope named '$name'.");
+				}
 				array_unshift($params, $query);
-				call_user_func_array($scope, $params);
+				call_user_func_array($scopes[$name], $params);
 			}
 		}
 	}

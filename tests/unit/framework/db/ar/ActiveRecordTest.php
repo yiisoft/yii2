@@ -158,7 +158,12 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals('user2', $customer->name);
 
 		// find count
-		$this->assertEquals(3, Customer::find()->count(true));
+		$this->assertEquals(3, Customer::find()->count());
+		$this->assertEquals(3, Customer::count());
+		$this->assertEquals(1, Customer::count(2));
+		$this->assertEquals(2, Customer::count(array(
+			'where' => 'id=1 OR id=2',
+		)));
 	}
 
 	public function testFindBySql()
@@ -199,6 +204,10 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(3, $customer->id);
 		$this->assertEquals(null, $customer->name);
+
+		// scopes
+		$customers = Customer::find()->active()->all();
+		$this->assertEquals(2, count($customers));
 	}
 
 	public function testEagerLoading()
