@@ -296,4 +296,14 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 		}
 		unset($this->records[$offset]);
 	}
+
+	protected function findRecords($all = true)
+	{
+		$finder = new ActiveFinder($this->getDbConnection());
+		if (!empty($this->with)) {
+			return $finder->findRecordsWithRelations();
+		} else {
+			return $finder->findRecords($this, $all);
+		}
+	}
 }
