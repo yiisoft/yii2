@@ -12,6 +12,7 @@ namespace yii\db\ar;
 
 use yii\base\VectorIterator;
 use yii\db\dao\BaseQuery;
+use yii\db\dao\Expression;
 use yii\db\Exception;
 
 /**
@@ -155,12 +156,13 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 
 	public function value()
 	{
-		return 0;
+		$result = $this->asArray()->one();
+		return $result === null ? null : reset($result);
 	}
 
 	public function exists()
 	{
-		return $this->select(array('1'))->asArray(true)->one() !== null;
+		return $this->select(array(new Expression('1')))->asArray()->one() !== null;
 	}
 
 	/**
@@ -293,15 +295,5 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 			$this->records = $this->findRecords();
 		}
 		unset($this->records[$offset]);
-	}
-
-	protected function findRecords($all = true)
-	{
-		$finder = new ActiveFinder($this->getDbConnection());
-		if (!empty($this->with)) {
-			return $finder->findRecordsWithRelations();
-		} else {
-			return $finder->findRecords($this, $all);
-		}
 	}
 }

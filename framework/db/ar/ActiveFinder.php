@@ -10,6 +10,7 @@
 
 namespace yii\db\ar;
 
+use yii\base\Object;
 use yii\base\VectorIterator;
 use yii\db\dao\Query;
 use yii\db\Exception;
@@ -45,6 +46,10 @@ class ActiveFinder extends \yii\base\Object
 	 * @var \yii\db\dao\Connection
 	 */
 	public $connection;
+	/**
+	 * @var ActiveQuery
+	 */
+	public $query;
 
 	public function __construct($connection)
 	{
