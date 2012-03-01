@@ -69,7 +69,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends Object
+class Component extends \yii\base\Object
 {
 	/**
 	 * @var Vector[] the attached event handlers (event name => handlers)

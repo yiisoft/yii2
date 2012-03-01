@@ -3,7 +3,7 @@
 namespace yiiunit\framework\db\ar;
 
 use yii\db\dao\Query;
-use yii\db\ar\ActiveFinder;
+use yii\db\ar\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\OrderItem;
@@ -45,28 +45,14 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$customer2 = Customer::find(2)->one();
 		$this->assertEquals('user2x', $customer2->name);
 
-		// saveAttributes
-		$customer = Customer::find(1)->one();
-		$this->assertEquals('user1', $customer->name);
-		$this->assertEquals('address1', $customer->address);
-		$customer->saveAttributes(array(
-			'name' => 'user1x',
-			'address' => 'address1x',
-		));
-		$this->assertEquals('user1x', $customer->name);
-		$this->assertEquals('address1x', $customer->address);
-		$customer = Customer::find(1)->one();
-		$this->assertEquals('user1x', $customer->name);
-		$this->assertEquals('address1x', $customer->address);
-
-		// saveCounters
+		// updateCounters
 		$pk = array('order_id' => 2, 'item_id' => 4);
-		$orderItem = OrderItem::find($pk)->one();
+		$orderItem = OrderItem::find()->where($pk)->one();
 		$this->assertEquals(1, $orderItem->quantity);
-		$ret = $orderItem->saveCounters(array('quantity' => -1));
+		$ret = $orderItem->updateCounters(array('quantity' => -1));
 		$this->assertTrue($ret);
 		$this->assertEquals(0, $orderItem->quantity);
-		$orderItem = OrderItem::find($pk)->one();
+		$orderItem = OrderItem::find()->where($pk)->one();
 		$this->assertEquals(0, $orderItem->quantity);
 
 		// updateAll
@@ -81,13 +67,13 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 
 		// updateCounters
 		$pk = array('order_id' => 1, 'item_id' => 2);
-		$orderItem = OrderItem::find($pk)->one();
+		$orderItem = OrderItem::find()->where($pk)->one();
 		$this->assertEquals(2, $orderItem->quantity);
-		$ret = OrderItem::updateCounters(array(
+		$ret = OrderItem::updateAllCounters(array(
 			'quantity' => 3,
 		), $pk);
 		$this->assertEquals(1, $ret);
-		$orderItem = OrderItem::find($pk)->one();
+		$orderItem = OrderItem::find()->where($pk)->one();
 		$this->assertEquals(5, $orderItem->quantity);
 	}
 
@@ -114,7 +100,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 	{
 		// find one
 		$result = Customer::find();
-		$this->assertTrue($result instanceof ActiveFinder);
+		$this->assertTrue($result instanceof ActiveQuery);
 		$customer = $result->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(1, $result->count);
@@ -158,13 +144,15 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals('user2', $customer->name);
 
 		// find by attributes
-		$customer = Customer::find(array('name' => 'user2'))->one();
+		$customer = Customer::find()->where(array('name' => 'user2'))->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(2, $customer->id);
 
 		// find by Query
-		$query = new Query;
-		$query->where('id=:id', array(':id' => 2));
+		$query = array(
+			'where' => 'id=:id',
+			'params' => array(':id' => 2),
+		);
 		$customer = Customer::find($query)->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
@@ -190,16 +178,16 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals('user2', $customer->name);
 
 		// count
-		$finder = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC');
-		$finder->one();
-		$this->assertEquals(3, $finder->count);
-		$finder = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC');
-		$this->assertEquals(3, $finder->count);
+		$query = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC');
+		$query->one();
+		$this->assertEquals(1, $query->count);
+		$query = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC');
+		$this->assertEquals(3, $query->count);
 	}
 
 	public function testQueryMethods()
 	{
-		$customer = Customer::find()->where('id=?', 2)->one();
+		$customer = Customer::find()->where('id=:id', array(':id' => 2))->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 

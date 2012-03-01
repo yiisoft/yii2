@@ -427,7 +427,7 @@ abstract class ActiveRecord extends Model
 			if (array_key_exists($name, $this->_related)) {
 				return $this->_related[$name];
 			} else {
-				return $this->_related[$name] = $this->loadRelatedRecord($md->relations[$name]);
+				return $this->_related[$name] = $this->findByRelation($md->relations[$name]);
 			}
 		}
 		return parent::__get($name);
@@ -501,7 +501,7 @@ abstract class ActiveRecord extends Model
 	{
 		$md = $this->getMetaData();
 		if (isset($md->relations[$name])) {
-			return $this->loadRelatedRecord($md->relations[$name], isset($params[0]) ? $params[0] : array());
+			return $this->findByRelation($md->relations[$name], isset($params[0]) ? $params[0] : array());
 		}
 		return parent::__call($name, $params);
 	}
@@ -532,14 +532,12 @@ abstract class ActiveRecord extends Model
 	 * or null if the object does not exist.
 	 * If the relation is HAS_MANY or MANY_MANY, it will return an array of objects
 	 * or an empty array.
-	 * @param string $name the relation name (see {@link relations})
-	 * @param boolean $refresh whether to reload the related objects from database. Defaults to false.
+	 * @param ActiveRelation|string $relation the relation object or the name of the relation
 	 * @param array $params additional parameters that customize the query conditions as specified in the relation declaration.
-	 * This parameter has been available since version 1.0.5.
 	 * @return mixed the related object(s).
-	 * @throws Exception if the relation is not specified in {@link relations}.
+	 * @throws Exception if the relation is not specified in [[relations()]].
 	 */
-	public function loadRelatedRecord($relation, $params = array())
+	public function findByRelation($relation, $params = array())
 	{
 		if (is_string($relation)) {
 			$md = $this->getMetaData();
@@ -548,7 +546,8 @@ abstract class ActiveRecord extends Model
 			}
 			$relation = $md->relations[$relation];
 		}
-		$finder = $this->createActiveQuery();
+		$query = $this->createActiveQuery();
+		return $query->findRelatedRecords($this, $relation, $params);
 	}
 
 	/**

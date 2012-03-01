@@ -33,9 +33,10 @@ class ActiveRelation extends BaseQuery
 	 */
 	public $hasMany;
 	/**
-	 * @var string the join type (e.g. INNER JOIN, LEFT JOIN). Defaults to 'LEFT JOIN'.
+	 * @var string the join type (e.g. INNER JOIN, LEFT JOIN). Defaults to 'LEFT JOIN' when
+	 * this relation is used to load related records, and 'INNER JOIN' when this relation is used as a filter.
 	 */
-	public $joinType = 'LEFT JOIN';
+	public $joinType;
 	/**
 	 * @var string the table alias used for the corresponding table during query
 	 */
@@ -57,6 +58,10 @@ class ActiveRelation extends BaseQuery
 	 * @var array the relations that should be queried together (eager loading)
 	 */
 	public $with;
+	/**
+	 * @var array the relations that should be used as filters for this query
+	 */
+	public $filters;
 	/**
 	 * @var array the scopes that should be applied during query
 	 */

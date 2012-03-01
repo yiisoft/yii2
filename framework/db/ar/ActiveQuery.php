@@ -15,11 +15,12 @@ use yii\db\dao\BaseQuery;
 use yii\db\Exception;
 
 /**
+ * 1. eager loading, base limited and has has_many relations
+ * 2.
  * ActiveFinder.php is ...
  * todo: add SQL monitor
  * todo: better handling on join() support in QueryBuilder: use regexp to detect table name and quote it
  * todo: do not support anonymous parameter binding
- * todo: add ActiveFinderBuilder
  * todo: quote join/on part of the relational query
  * todo: modify QueryBuilder about join() methods
  * todo: unify ActiveFinder and ActiveRelation in query building process
@@ -48,6 +49,10 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public $with;
 	/**
+	 * @var array list of relations that should be used as filters for this query.
+	 */
+	public $filters;
+	/**
 	 * @var string the table alias to be used for query
 	 */
 	public $tableAlias;
@@ -66,10 +71,14 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public $scopes;
 	/**
+	 * @var string the SQL statement to be executed to retrieve primary records.
+	 * This is set by [[ActiveRecord::findBySql()]].
+	 */
+	public $sql;
+	/**
 	 * @var array list of query results
 	 */
 	public $records;
-	public $sql;
 
 	/**
 	 * @param string $modelClass the name of the ActiveRecord class.
@@ -91,6 +100,16 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 		if (isset($this->with[0]) && is_array($this->with[0])) {
 			// the parameter is given as an array
 			$this->with = $this->with[0];
+		}
+		return $this;
+	}
+
+	public function filters()
+	{
+		$this->filters = func_get_args();
+		if (isset($this->filters[0]) && is_array($this->filters[0])) {
+			// the parameter is given as an array
+			$this->filters = $this->filters[0];
 		}
 		return $this;
 	}
@@ -129,7 +148,7 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 	{
 		if ($this->records === null) {
 			// todo: load only one record
-			$this->records = $this->findRecords();
+			$this->records = $this->findRecords(false);
 		}
 		return isset($this->records[0]) ? $this->records[0] : null;
 	}
@@ -276,178 +295,13 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 		unset($this->records[$offset]);
 	}
 
-	public function joinWith()
+	protected function findRecords($all = true)
 	{
-		// todo: inner join with one or multiple relations as filters
-	}
-
-	protected function findRecords()
-	{
+		$finder = new ActiveFinder($this->getDbConnection());
 		if (!empty($this->with)) {
-			// todo: handle findBySql() and limit cases
-			$joinTree = $this->buildRelationalQuery();
-		}
-
-		if ($this->sql === null) {
-			$this->initFrom($this->query);
-			$command = $this->query->createCommand($this->getDbConnection());
-			$this->sql = $command->getSql();
+			return $finder->findRecordsWithRelations();
 		} else {
-			$command = $this->getDbConnection()->createCommand($this->sql);
-			$command->bindValues($this->query->params);
-		}
-
-		$rows = $command->queryAll();
-
-		if (isset($joinTree)) {
-			foreach ($rows as $row) {
-				$joinTree->populateData($row);
-			}
-			return array_values($joinTree->records);
-		}
-
-		if ($this->asArray) {
-			if ($this->indexBy === null) {
-				return $rows;
-			}
-			$records = array();
-			foreach ($rows as $row) {
-				$records[$row[$this->indexBy]] = $row;
-			}
-			return $records;
-		} else {
-			$records = array();
-			$class = $this->modelClass;
-			if ($this->indexBy === null) {
-				foreach ($rows as $row) {
-					$records[] = $class::populateData($row);
-				}
-			} else {
-				$attribute = $this->indexBy;
-				foreach ($rows as $row) {
-					$record = $class::populateData($row);
-					$records[$record->$attribute] = $record;
-				}
-			}
-			return $records;
-		}
-	}
-
-	protected function initFrom($query)
-	{
-		if ($query->from === null) {
-			$modelClass = $this->modelClass;
-			$tableName = $modelClass::tableName();
-			if ($this->tableAlias !== null) {
-				$tableName .= ' ' . $this->tableAlias;
-			}
-			$query->from = array($tableName);
-		}
-	}
-
-	protected function buildRelationalQuery()
-	{
-		$joinTree = new JoinElement($this, null, null);
-		$this->buildJoinTree($joinTree, $this->with);
-		$this->buildTableAlias($joinTree);
-		$query = new Query;
-		foreach ($joinTree->children as $child) {
-			$child->buildQuery($query);
-		}
-
-		$select = $joinTree->buildSelect($this->query->select);
-		if (!empty($query->select)) {
-			$this->query->select = array_merge($select, $query->select);
-		} else {
-			$this->query->select = $select;
-		}
-		if (!empty($query->where)) {
-			$this->query->andWhere('(' . implode(') AND (', $query->where) . ')');
-		}
-		if (!empty($query->having)) {
-			$this->query->andHaving('(' . implode(') AND (', $query->having) . ')');
-		}
-		if (!empty($query->join)) {
-			if ($this->query->join === null) {
-				$this->query->join = $query->join;
-			} else {
-				$this->query->join = array_merge($this->query->join, $query->join);
-			}
-		}
-		if (!empty($query->orderBy)) {
-			$this->query->addOrderBy($query->orderBy);
-		}
-		if (!empty($query->groupBy)) {
-			$this->query->addGroupBy($query->groupBy);
-		}
-		if (!empty($query->params)) {
-			$this->query->addParams($query->params);
-		}
-
-		return $joinTree;
-	}
-
-	/**
-	 * @param JoinElement $parent
-	 * @param array|string $with
-	 * @param array $config
-	 * @return null|JoinElement
-	 * @throws \yii\db\Exception
-	 */
-	protected function buildJoinTree($parent, $with, $config = array())
-	{
-		if (is_array($with)) {
-			foreach ($with as $name => $value) {
-				if (is_string($value)) {
-					$this->buildJoinTree($parent, $value);
-				} elseif (is_string($name) && is_array($value)) {
-					$this->buildJoinTree($parent, $name, $value);
-				}
-			}
-			return null;
-		}
-
-		if (($pos = strrpos($with, '.')) !== false) {
-			$parent = $this->buildJoinTree($parent, substr($with, 0, $pos));
-			$with = substr($with, $pos + 1);
-		}
-
-		if (isset($parent->children[$with])) {
-			$child = $parent->children[$with];
-			$child->joinOnly = false;
-		} else {
-			$modelClass = $parent->relation->modelClass;
-			$relations = $modelClass::getMetaData()->relations;
-			if (!isset($relations[$with])) {
-				throw new Exception("$modelClass has no relation named '$with'.");
-			}
-			$relation = clone $relations[$with];
-			if ($relation->via !== null && isset($relations[$relation->via])) {
-				$relation->via = null;
-				$parent2 = $this->buildJoinTree($parent, $relation->via);
-				if ($parent2->joinOnly === null) {
-					$parent2->joinOnly = true;
-				}
-				$child = new JoinElement($relation, $parent2, $parent);
-			} else {
-				$child = new JoinElement($relation, $parent, $parent);
-			}
-		}
-
-		foreach ($config as $name => $value) {
-			$child->relation->$name = $value;
-		}
-
-		return $child;
-	}
-
-	protected function buildTableAlias($element, &$count = 0)
-	{
-		if ($element->relation->tableAlias === null) {
-			$element->relation->tableAlias = 't' . ($count++);
-		}
-		foreach ($element->children as $child) {
-			$this->buildTableAlias($child, $count);
+			return $finder->findRecords($this, $all);
 		}
 	}
 }
