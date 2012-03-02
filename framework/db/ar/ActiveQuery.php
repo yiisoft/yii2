@@ -11,7 +11,6 @@
 namespace yii\db\ar;
 
 use yii\base\VectorIterator;
-use yii\db\dao\BaseQuery;
 use yii\db\dao\Expression;
 use yii\db\Exception;
 
@@ -39,38 +38,8 @@ use yii\db\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess, \Countable
+class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayAccess, \Countable
 {
-	/**
-	 * @var string the name of the ActiveRecord class.
-	 */
-	public $modelClass;
-	/**
-	 * @var array list of relations that this query should be performed with
-	 */
-	public $with;
-	/**
-	 * @var array list of relations that should be used as filters for this query.
-	 */
-	public $filters;
-	/**
-	 * @var string the table alias to be used for query
-	 */
-	public $tableAlias;
-	/**
-	 * @var string the name of the column that the result should be indexed by.
-	 * This is only useful when the query result is returned as an array.
-	 */
-	public $indexBy;
-	/**
-	 * @var boolean whether to return each record as an array. If false (default), an object
-	 * of [[modelClass]] will be created to represent each record.
-	 */
-	public $asArray;
-	/**
-	 * @var array list of scopes that should be applied to this query
-	 */
-	public $scopes;
 	/**
 	 * @var string the SQL statement to be executed to retrieve primary records.
 	 * This is set by [[ActiveRecord::findBySql()]].
@@ -99,44 +68,6 @@ class ActiveQuery extends BaseQuery implements \IteratorAggregate, \ArrayAccess,
 		} else {
 			return parent::__call($name, $params);
 		}
-	}
-
-	public function asArray($value = true)
-	{
-		$this->asArray = $value;
-		return $this;
-	}
-
-	public function with()
-	{
-		$this->with = func_get_args();
-		if (isset($this->with[0]) && is_array($this->with[0])) {
-			// the parameter is given as an array
-			$this->with = $this->with[0];
-		}
-		return $this;
-	}
-
-	public function filters()
-	{
-		$this->filters = func_get_args();
-		if (isset($this->filters[0]) && is_array($this->filters[0])) {
-			// the parameter is given as an array
-			$this->filters = $this->filters[0];
-		}
-		return $this;
-	}
-
-	public function indexBy($column)
-	{
-		$this->indexBy = $column;
-		return $this;
-	}
-
-	public function tableAlias($value)
-	{
-		$this->tableAlias = $value;
-		return $this;
 	}
 
 	/**

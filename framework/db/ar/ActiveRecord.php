@@ -364,12 +364,13 @@ abstract class ActiveRecord extends Model
 	 * Note, default scope only applies to SELECT queries. It is ignored for INSERT, UPDATE and DELETE queries.
 	 * The default implementation simply returns an empty array. You may override this method
 	 * if the model needs to be queried with some default criteria (e.g. only active records should be returned).
-	 * @return array the query criteria. This will be used as the parameter to the constructor
+	 * @param BaseActiveQuery
+	 * @return BaseActiveQuery the query criteria. This will be used as the parameter to the constructor
 	 * of {@link CDbCriteria}.
 	 */
-	public static function defaultScope()
+	public static function defaultScope($query)
 	{
-		return array();
+		return $query;
 	}
 
 	/**

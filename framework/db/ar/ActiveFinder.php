@@ -68,7 +68,6 @@ class ActiveFinder extends \yii\base\Object
 		} else {
 			$this->initFrom($query);
 			$this->applyScopes($query);
-			// todo: filter
 			$sql = $this->connection->getQueryBuilder()->build($query);
 			if (strpos($sql, '@.') !== false) {
 				if ($query->tableAlias !== null) {
@@ -189,10 +188,7 @@ class ActiveFinder extends \yii\base\Object
 	{
 		if (is_array($query->scopes)) {
 			$class = $query->modelClass;
-			$defaultScope = $class::defaultScope();
-			if ($defaultScope !== null) {
-				call_user_func_array($defaultScope, array($query));
-			}
+			$class::defaultScope($query);
 			$scopes = $class::scopes();
 			foreach ($query->scopes as $name => $params) {
 				if (is_integer($name)) {
