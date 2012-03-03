@@ -18,9 +18,13 @@ use yii\db\Exception;
 class JoinElement extends \yii\base\Object
 {
 	/**
-	 * @var ActiveRelation
+	 * @var integer ID of this join element
 	 */
-	public $relation;
+	public $id;
+	/**
+	 * @var BaseActiveQuery
+	 */
+	public $query;
 	/**
 	 * @var JoinElement the parent element that this element needs to join with
 	 */
@@ -32,9 +36,9 @@ class JoinElement extends \yii\base\Object
 	/**
 	 * @var JoinElement[] the child elements that have relations declared in the AR class of this element
 	 */
-	public $relatedChildren = array();
+	public $relations = array();
 	/**
-	 * @var boolean whether this element is only for join purpose. If true, data will also be populated into the AR of this element.
+	 * @var boolean whether this element is only for join purpose. If false, data will also be populated into the AR of this element.
 	 */
 	public $joinOnly;
 
@@ -44,17 +48,27 @@ class JoinElement extends \yii\base\Object
 	public $records;
 	public $relatedRecords;
 
-	public function __construct($relation, $parent, $relatedParent)
+	/**
+	 * @param ActiveRelation|ActiveQuery $query
+	 * @param JoinElement $parent
+	 * @param JoinElement $container
+	 */
+	public function __construct($id, $query, $parent, $container)
 	{
-		$this->relation = $relation;
+		$this->id = $id;
+		$this->query = $query;
 		if ($parent !== null) {
 			$this->parent = $parent;
-			$parent->children[$relation->name] = $this;
-			$relatedParent->relatedChildren[$relation->name] = $this;
+			$parent->children[$query->name] = $this;
+			$container->relations[$query->name] = $this;
 		}
 	}
 
-	public function populateData($row)
+	/**
+	 * @param array $row
+	 * @return null|ActiveRecord
+	 */
+	public function createRecord($row)
 	{
 		$pk = array();
 		foreach ($this->pkAlias as $alias) {
@@ -66,7 +80,7 @@ class JoinElement extends \yii\base\Object
 		}
 		$pk = count($pk) === 1 ? $pk[0] : serialize($pk);
 
-		// create active record
+		// create record
 		if (isset($this->records[$pk])) {
 			$record = $this->records[$pk];
 		} else {
@@ -76,33 +90,37 @@ class JoinElement extends \yii\base\Object
 					$attributes[$this->columnAliases[$alias]] = $value;
 				}
 			}
-			$modelClass = $this->relation->modelClass;
-			$record = $modelClass::populateData($attributes);
+			$modelClass = $this->query->modelClass;
+			$this->records[$pk] = $record = $modelClass::create($attributes);
 			foreach ($this->children as $child) {
-				if ($child->relation->select !== false) {
-					$record->initRelation($child->relation);
+				if ($child->query->select !== false || $child->joinOnly) {
+					$record->initRelation($child->query);
 				}
 			}
-			$this->records[$pk] = $record;
 		}
 
-		// populate child records
-		foreach ($this->relatedChildren as $child) {
-			if ($child->relation->select === false || $child->joinOnly) {
+		// add related records
+		foreach ($this->relations as $child) {
+			if ($child->query->select === false || $child->joinOnly) {
 				continue;
 			}
-			$childRecord = $child->populateData($row);
+			$childRecord = $child->createRecord($row);
 			if ($childRecord === null) {
 				continue;
 			}
-			if ($child->relation->hasMany) {
-				$fpk = serialize($childRecord->getPrimaryKey());
-				if (isset($this->relatedRecords[$pk][$child->relation->name][$fpk])) {
-					continue;
+			if ($child->query->hasMany) {
+				if ($child->query->indexBy !== null) {
+					$hash = $childRecord->{$child->query->indexBy};
+				} else {
+					$hash = serialize($childRecord->getPrimaryKey());
 				}
-				$this->relatedRecords[$pk][$child->relation->name][$fpk] = true;
+				if (!isset($this->relatedRecords[$pk][$child->query->name][$hash])) {
+					$this->relatedRecords[$pk][$child->query->name][$hash] = true;
+					$record->addRelatedRecord($child->query, $childRecord);
+				}
+			} else {
+				$record->addRelatedRecord($child->query, $childRecord);
 			}
-			$record->addRelatedRecord($child->relation, $childRecord);
 		}
 
 		return $record;
@@ -110,52 +128,53 @@ class JoinElement extends \yii\base\Object
 
 	public function buildQuery($query)
 	{
-		$tokens = array(
-			'@.' => $this->relation->tableAlias . '.',
-			'?.' => $this->parent->relation->tableAlias . '.',
+		$prefixes = array(
+			'@.' => $this->query->tableAlias . '.',
+			'?.' => $this->parent->query->tableAlias . '.',
 		);
-		foreach ($this->buildSelect($this->relation->select) as $column) {
-			$query->select[] = strtr($column, $tokens);
+		$quotedPrefixes = '';
+		foreach ($this->buildSelect($this->query->select) as $column) {
+			$query->select[] = strtr($column, $prefixes);
 		}
 
-		if ($this->relation->where !== null) {
-			$query->where[] = strtr($this->relation->where, $tokens);
+		if ($this->query->where !== null) {
+			$query->where[] = strtr($this->query->where, $prefixes);
 		}
 
-		if ($this->relation->having !== null) {
-			$query->having[] = strtr($this->relation->having, $tokens);
+		if ($this->query->having !== null) {
+			$query->having[] = strtr($this->query->having, $prefixes);
 		}
 
-		if ($this->relation->via !== null) {
-			$query->join[] = $this->relation->via;
+		if ($this->query->via !== null) {
+			$query->join[] = $this->query->via;
 		}
 
-		$modelClass = $this->relation->modelClass;
+		$modelClass = $this->query->modelClass;
 		$tableName = $modelClass::tableName();
-		$joinType = $this->relation->joinType === null ? 'LEFT JOIN' : $this->relation->joinType;
-		$join = "$joinType $tableName {$this->relation->tableAlias}";
-		if ($this->relation->on !== null) {
-			$join .= ' ON ' . strtr($this->relation->on, $tokens);
+		$joinType = $this->query->joinType === null ? 'LEFT JOIN' : $this->query->joinType;
+		$join = "$joinType $tableName {$this->query->tableAlias}";
+		if ($this->query->on !== null) {
+			$join .= ' ON ' . strtr($this->query->on, $prefixes);
 		}
 		$query->join[] = $join;
 
 
-		if ($this->relation->join !== null) {
-			$query->join[] = strtr($this->relation->join, $tokens);
+		if ($this->query->join !== null) {
+			$query->join[] = strtr($this->query->join, $prefixes);
 		}
 
 		// todo: convert orderBy to array first
-		if ($this->relation->orderBy !== null) {
-			$query->orderBy[] = strtr($this->relation->orderBy, $tokens);
+		if ($this->query->orderBy !== null) {
+			$query->orderBy[] = strtr($this->query->orderBy, $prefixes);
 		}
 
 		// todo: convert groupBy to array first
-		if ($this->relation->groupBy !== null) {
-			$query->groupBy[] = strtr($this->relation->groupBy, $tokens);
+		if ($this->query->groupBy !== null) {
+			$query->groupBy[] = strtr($this->query->groupBy, $prefixes);
 		}
 
-		if ($this->relation->params !== null) {
-			foreach ($this->relation->params as $name => $value) {
+		if ($this->query->params !== null) {
+			foreach ($this->query->params as $name => $value) {
 				if (is_integer($name)) {
 					$query->params[] = $value;
 				} else {
@@ -171,14 +190,17 @@ class JoinElement extends \yii\base\Object
 
 	public function buildSelect($select)
 	{
-		$modelClass = $this->relation->modelClass;
-		$tableSchema = $modelClass::getMetaData()->table;
+		if ($select === false) {
+			return array();
+		}
+		$modelClass = $this->query->modelClass;
+		$table = $modelClass::getMetaData()->table;
 		$columns = array();
 		$columnCount = 0;
-		$prefix = $this->relation->tableAlias;
+		$prefix = $this->query->tableAlias;
 		if (empty($select) || $select === '*') {
-			foreach ($tableSchema->columns as $column) {
-				$alias = $this->relation->tableAlias . '_' . ($columnCount++);
+			foreach ($table->columns as $column) {
+				$alias = "t{$this->id}c" . ($columnCount++);
 				$columns[] = "$prefix.{$column->name} AS $alias";
 				$this->columnAliases[$alias] = $column->name;
 				if ($column->isPrimaryKey) {
@@ -189,8 +211,8 @@ class JoinElement extends \yii\base\Object
 			if (is_string($select)) {
 				$select = explode(',', $select);
 			}
-			foreach ($tableSchema->primaryKey as $column) {
-				$alias = $this->relation->tableAlias . '_' . ($columnCount++);
+			foreach ($table->primaryKey as $column) {
+				$alias = "t{$this->id}c" . ($columnCount++);
 				$columns[] = "$prefix.$column AS $alias";
 				$this->pkAlias[$column] = $alias;
 			}
@@ -201,7 +223,7 @@ class JoinElement extends \yii\base\Object
 					$this->columnAliases[$matches[2]] = $matches[2];
 					$columns[] = $column;
 				} elseif (!isset($this->pkAlias[$column])) {
-					$alias = $this->relation->tableAlias . '_' . ($columnCount++);
+					$alias = "t{$this->id}c" . ($columnCount++);
 					$columns[] = "$prefix.$column AS $alias";
 					$this->columnAliases[$alias] = $column;
 				}

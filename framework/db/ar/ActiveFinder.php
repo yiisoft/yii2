@@ -31,7 +31,6 @@ use yii\db\Exception;
  * todo: lazy loading
  * todo: scope
  * todo: test via option
- * todo: count, sum, exists
  todo: inner join with one or multiple relations as filters
  joinType should default to inner join in this case
  *
@@ -61,7 +60,7 @@ class ActiveFinder extends \yii\base\Object
 	 * @param bool $all
 	 * @return array
 	 */
-	public function findRecords($query, $all = true)
+	public function findRecords($query)
 	{
 		if ($query->sql !== null) {
 			$sql = $query->sql;
@@ -81,16 +80,7 @@ class ActiveFinder extends \yii\base\Object
 		}
 		$command = $this->connection->createCommand($sql, $query->params);
 
-		if ($all) {
-			$rows = $command->queryAll();
-		} else {
-			$row = $command->queryRow();
-			if ($row === false) {
-				return array();
-			}
-			$rows = array($row);
-		}
-
+		$rows = $command->queryAll();
 		$records = array();
 		if ($query->asArray) {
 			if ($query->indexBy === null) {
@@ -120,20 +110,18 @@ class ActiveFinder extends \yii\base\Object
 
 	}
 
-	public function findRecordsWithRelations()
+	public function findRecordsWithRelations($query)
 	{
-		if (!empty($this->with)) {
-			// todo: handle findBySql() and limit cases
-			$joinTree = $this->buildRelationalQuery();
-		}
+		// todo: handle findBySql() and limit cases
+		$joinTree = $this->buildRelationalQuery();
 
 		if ($this->sql === null) {
-			$this->initFrom($this->query);
-			$command = $this->query->createCommand($this->getDbConnection());
+			$this->initFrom($element->query);
+			$command = $element->query->createCommand($this->getDbConnection());
 			$this->sql = $command->getSql();
 		} else {
 			$command = $this->getDbConnection()->createCommand($this->sql);
-			$command->bindValues($this->query->params);
+			$command->bindValues($element->query->params);
 		}
 
 		$rows = $command->queryAll();
@@ -204,43 +192,49 @@ class ActiveFinder extends \yii\base\Object
 		}
 	}
 
-	protected function buildRelationalQuery()
+	private $_joinCount;
+	private $_tableAliases;
+
+	protected function buildQuery()
 	{
-		$joinTree = new JoinElement($this, null, null);
-		$this->buildJoinTree($joinTree, $this->with);
+		$this->_joinCount = 0;
+		$joinTree = new JoinElement($this->_joinCount++, $element->query, null, null);
+		$this->buildJoinTree($joinTree, $element->query->with);
+		$this->_tableAliases = array();
 		$this->buildTableAlias($joinTree);
+
 		$query = new Query;
 		foreach ($joinTree->children as $child) {
 			$child->buildQuery($query);
 		}
 
-		$select = $joinTree->buildSelect($this->query->select);
+		$select = $joinTree->buildSelect($element, $element->query->select);
 		if (!empty($query->select)) {
-			$this->query->select = array_merge($select, $query->select);
+			$element->query->select = array_merge($select, $query->select);
 		} else {
-			$this->query->select = $select;
+			$element->query->select = $select;
 		}
 		if (!empty($query->where)) {
-			$this->query->andWhere('(' . implode(') AND (', $query->where) . ')');
+			$element->query->andWhere('(' . implode(') AND (', $query->where) . ')');
 		}
 		if (!empty($query->having)) {
-			$this->query->andHaving('(' . implode(') AND (', $query->having) . ')');
+			$element->query->andHaving('(' . implode(') AND (', $query->having) . ')');
 		}
 		if (!empty($query->join)) {
-			if ($this->query->join === null) {
-				$this->query->join = $query->join;
+			if ($element->query->join === null) {
+				$element->query->join = $query->join;
 			} else {
-				$this->query->join = array_merge($this->query->join, $query->join);
+				$element->query->join = array_merge($element->query->join, $query->join);
 			}
 		}
 		if (!empty($query->orderBy)) {
-			$this->query->addOrderBy($query->orderBy);
+			$element->query->addOrderBy($query->orderBy);
 		}
 		if (!empty($query->groupBy)) {
-			$this->query->addGroupBy($query->groupBy);
+			$element->query->addGroupBy($query->groupBy);
 		}
 		if (!empty($query->params)) {
-			$this->query->addParams($query->params);
+			$element->query->addParams($query->params);
 		}
 
 		return $joinTree;
@@ -257,10 +251,10 @@ class ActiveFinder extends \yii\base\Object
 	{
 		if (is_array($with)) {
 			foreach ($with as $name => $value) {
-				if (is_string($value)) {
-					$this->buildJoinTree($parent, $value);
-				} elseif (is_string($name) && is_array($value)) {
+				if (is_array($value)) {
 					$this->buildJoinTree($parent, $name, $value);
+				} else {
+					$this->buildJoinTree($parent, $value);
 				}
 			}
 			return null;
@@ -275,38 +269,173 @@ class ActiveFinder extends \yii\base\Object
 			$child = $parent->children[$with];
 			$child->joinOnly = false;
 		} else {
-			$modelClass = $parent->relation->modelClass;
+			$modelClass = $parent->query->modelClass;
 			$relations = $modelClass::getMetaData()->relations;
 			if (!isset($relations[$with])) {
 				throw new Exception("$modelClass has no relation named '$with'.");
 			}
 			$relation = clone $relations[$with];
 			if ($relation->via !== null && isset($relations[$relation->via])) {
-				$relation->via = null;
 				$parent2 = $this->buildJoinTree($parent, $relation->via);
+				$relation->via = null;
 				if ($parent2->joinOnly === null) {
 					$parent2->joinOnly = true;
 				}
-				$child = new JoinElement($relation, $parent2, $parent);
+				$child = new JoinElement($this->_joinCount++, $relation, $parent2, $parent);
 			} else {
-				$child = new JoinElement($relation, $parent, $parent);
+				$child = new JoinElement($this->_joinCount++, $relation, $parent, $parent);
 			}
 		}
 
 		foreach ($config as $name => $value) {
-			$child->relation->$name = $value;
+			$child->query->$name = $value;
 		}
 
 		return $child;
 	}
 
-	protected function buildTableAlias($element, &$count = 0)
+	/**
+	 * @param JoinElement $element
+	 */
+	protected function buildTableAlias($element)
 	{
-		if ($element->relation->tableAlias === null) {
-			$element->relation->tableAlias = 't' . ($count++);
+		if ($element->query->tableAlias !== null) {
+			$alias = $element->query->tableAlias;
+		} elseif ($element->query instanceof ActiveRelation) {
+			$alias = $element->query->name;
+		} else {
+			$alias = 't';
 		}
+		$count = 0;
+		while (isset($this->_tableAliases[$alias])) {
+			$alias = 't' . $count++;
+		}
+		$this->_tableAliases[$alias] = true;
+		$element->query->tableAlias = $alias;
+
 		foreach ($element->children as $child) {
 			$this->buildTableAlias($child, $count);
 		}
+	}
+
+	/**
+	 * @param JoinElement $element
+	 * @param Query $query
+	 */
+	protected function buildJoinQuery($element, $query)
+	{
+		$prefixes = array(
+			'@.' => $element->query->tableAlias . '.',
+			'?.' => $element->parent->query->tableAlias . '.',
+		);
+		$quotedPrefixes = array(
+			'@.' => $this->connection->quoteTableName($element->query->tableAlias, true) . '.',
+			'?.' => $this->connection->quoteTableName($element->parent->query->tableAlias, true) . '.',
+		);
+
+		foreach ($this->buildSelect($element, $element->query->select) as $column) {
+			$query->select[] = strtr($column, $prefixes);
+		}
+
+		if ($element->query->where !== null) {
+			$query->where[] = strtr($element->query->where, $quotedPrefixes);
+		}
+
+		if ($element->query->having !== null) {
+			$query->having[] = strtr($element->query->having, $quotedPrefixes);
+		}
+
+		if ($element->query->via !== null) {
+			$query->join[] = strtr($element->query->via, $quotedPrefixes);
+		}
+
+		if ($element->query->joinType === null) {
+			$joinType = $element->query->select === false ? 'INNER JOIN' : 'LEFT JOIN';
+		} else {
+			$joinType = $element->query->joinType;
+		}
+		$modelClass = $element->query->modelClass;
+		$tableName = $this->connection->quoteTableName($modelClass::tableName());
+		$tableAlias = $this->connection->quoteTableName($element->query->tableAlias);
+		$join = "$joinType $tableName $tableAlias";
+		if ($element->query->on !== null) {
+			$join .= ' ON ' . strtr($element->query->on, $quotedPrefixes);
+		}
+		$query->join[] = $join;
+
+		if ($element->query->join !== null) {
+			$query->join[] = strtr($element->query->join, $quotedPrefixes);
+		}
+
+		if ($element->query->orderBy !== null) {
+			if (!is_array($element->query->orderBy)) {
+				$element->query->orderBy = preg_split('/\s*,\s*/', trim($element->query->orderBy), -1, PREG_SPLIT_NO_EMPTY);
+			}
+			foreach ($element->query->orderBy as $orderBy) {
+				$query->orderBy[] = strtr($orderBy, $prefixes);
+			}
+		}
+
+		if ($element->query->groupBy !== null) {
+			if (!is_array($element->query->groupBy)) {
+				$element->query->groupBy = preg_split('/\s*,\s*/', trim($element->query->groupBy), -1, PREG_SPLIT_NO_EMPTY);
+			}
+			foreach ($element->query->groupBy as $groupBy) {
+				$query->groupBy[] = strtr($groupBy, $prefixes);
+			}
+		}
+
+		if ($element->query->params !== null) {
+			$query->addParams($element->query->params);
+		}
+
+		foreach ($element->children as $child) {
+			$this->buildQuery($child, $query);
+		}
+	}
+
+	protected function buildSelect($element, $select)
+	{
+		if ($select === false) {
+			return array();
+		}
+		$modelClass = $element->query->modelClass;
+		$table = $modelClass::getMetaData()->table;
+		$columns = array();
+		$columnCount = 0;
+		$prefix = $element->query->tableAlias;
+		if (empty($select) || $select === '*') {
+			foreach ($table->columns as $column) {
+				$alias = "t{$element->id}c" . ($columnCount++);
+				$columns[] = "$prefix.{$column->name} AS $alias";
+				$element->columnAliases[$alias] = $column->name;
+				if ($column->isPrimaryKey) {
+					$element->pkAlias[$column->name] = $alias;
+				}
+			}
+		} else {
+			if (is_string($select)) {
+				$select = explode(',', $select);
+			}
+			foreach ($table->primaryKey as $column) {
+				$alias = "t{$element->id}c" . ($columnCount++);
+				$columns[] = "$prefix.$column AS $alias";
+				$element->pkAlias[$column] = $alias;
+			}
+			foreach ($select as $column) {
+				$column = trim($column);
+				if (preg_match('/^(.*?)\s+AS\s+(\w+)$/im', $column, $matches)) {
+					// if the column is already aliased
+					$element->columnAliases[$matches[2]] = $matches[2];
+					$columns[] = $column;
+				} elseif (!isset($element->pkAlias[$column])) {
+					$alias = "t{$element->id}c" . ($columnCount++);
+					$columns[] = "$prefix.$column AS $alias";
+					$element->columnAliases[$alias] = $column;
+				}
+			}
+		}
+
+		return $columns;
 	}
 }

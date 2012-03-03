@@ -517,10 +517,18 @@ abstract class ActiveRecord extends Model
 		$this->_related[$relation->name] = $relation->hasMany ? array() : null;
 	}
 
+	/**
+	 * @param ActiveRelation $relation
+	 * @param ActiveRecord $record
+	 */
 	public function addRelatedRecord($relation, $record)
 	{
 		if ($relation->hasMany) {
-			$this->_related[$relation->name][] = $record;
+			if ($relation->indexBy !== null) {
+				$this->_related[$relation->name][$record->{$relation->indexBy}] = $record;
+			} else {
+				$this->_related[$relation->name][] = $record;
+			}
 		} else {
 			$this->_related[$relation->name] = $record;
 		}
@@ -1027,12 +1035,10 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Creates an active record with the given attributes.
-	 * This method is internally used by the find methods.
-	 * @param array $row attribute values (column name=>column value)
-	 * @return ActiveRecord the newly created active record. The class of the object is the same as the model class.
-	 * Null is returned if the input data is false.
+	 * @param array $row attribute values (name => value)
+	 * @return ActiveRecord the newly created active record.
 	 */
-	public static function createRecord($row)
+	public static function create($row)
 	{
 		$record = static::instantiate($row);
 		$columns = static::getMetaData()->table->columns;

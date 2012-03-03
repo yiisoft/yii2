@@ -91,8 +91,8 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 	public function one()
 	{
 		if ($this->records === null) {
-			// todo: load only one record
-			$this->records = $this->findRecords(false);
+			$this->limit = 1;
+			$this->records = $this->findRecords();
 		}
 		return isset($this->records[0]) ? $this->records[0] : null;
 	}
@@ -240,13 +240,13 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 		unset($this->records[$offset]);
 	}
 
-	protected function findRecords($all = true)
+	protected function findRecords()
 	{
 		$finder = new ActiveFinder($this->getDbConnection());
 		if (!empty($this->with)) {
-			return $finder->findRecordsWithRelations();
+			return $finder->findRecordsWithRelations($this);
 		} else {
-			return $finder->findRecords($this, $all);
+			return $finder->findRecords($this);
 		}
 	}
 }
