@@ -43,7 +43,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public $typeMap = array();
 	/**
-	 * @var Query the Query object that is currently processed by the query builder to generate a SQL statement.
+	 * @var Query the Query object that is currently being processed by the query builder to generate a SQL statement.
 	 */
 	public $query;
 
@@ -63,17 +63,16 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function build($query)
 	{
-		$this->query = $query;
 		$clauses = array(
-			$this->buildSelect(),
-			$this->buildFrom(),
-			$this->buildJoin(),
-			$this->buildWhere(),
-			$this->buildGroupBy(),
-			$this->buildHaving(),
-			$this->buildUnion(),
-			$this->buildOrderBy(),
-			$this->buildLimit(),
+			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
+			$this->buildFrom($query->from),
+			$this->buildJoin($query->join),
+			$this->buildWhere($query->where),
+			$this->buildGroupBy($query->groupBy),
+			$this->buildHaving($query->having),
+			$this->buildUnion($query->union),
+			$this->buildOrderBy($query->orderBy),
+			$this->buildLimit($query->limit, $query->offset),
 		);
 		return implode($this->separator, array_filter($clauses));
 	}
@@ -161,7 +160,7 @@ class QueryBuilder extends \yii\base\Object
 			$this->query->addParams($params);
 		}
 		$sql = 'UPDATE ' . $this->quoteTableName($table) . ' SET ' . implode(', ', $lines);
-		if (($where = $this->buildCondition($condition)) != '') {
+		if (($where = $this->buildCondition($condition)) !== '') {
 			$sql .= ' WHERE ' . $where;
 		}
 
@@ -185,7 +184,7 @@ class QueryBuilder extends \yii\base\Object
 	public function delete($table, $condition = '', $params = array())
 	{
 		$sql = 'DELETE FROM ' . $this->quoteTableName($table);
-		if (($where = $this->buildCondition($condition)) != '') {
+		if (($where = $this->buildCondition($condition)) !== '') {
 			$sql .= ' WHERE ' . $where;
 		}
 		if ($params !== array() && $this->query instanceof BaseQuery) {
@@ -620,16 +619,18 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
+	 * @param string|array $columns
+	 * @param boolean $distinct
+	 * @param string $selectOption
 	 * @return string the SELECT clause built from [[query]].
 	 */
-	protected function buildSelect()
+	public function buildSelect($columns, $distinct = false, $selectOption = null)
 	{
-		$select = $this->query->distinct ? 'SELECT DISTINCT' : 'SELECT';
-		if ($this->query->selectOption !== null) {
-			$select .= ' ' . $this->query->selectOption;
+		$select = $distinct ? 'SELECT DISTINCT' : 'SELECT';
+		if ($selectOption !== null) {
+			$select .= ' ' . $selectOption;
 		}
 
-		$columns = $this->query->select;
 		if (empty($columns)) {
 			return $select . ' *';
 		}
@@ -664,15 +665,14 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
+	 * @param string|array $tables
 	 * @return string the FROM clause built from [[query]].
 	 */
-	protected function buildFrom()
+	public function buildFrom($tables)
 	{
-		if (empty($this->query->from)) {
+		if (empty($tables)) {
 			return '';
 		}
-
-		$tables = $this->query->from;
 
 		if ($this->autoQuote) {
 			$driver = $this->connection->driver;
@@ -702,11 +702,11 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
+	 * @param string|array $joins
 	 * @return string the JOIN clause built from [[query]].
 	 */
-	protected function buildJoin()
+	public function buildJoin($joins)
 	{
-		$joins = $this->query->join;
 		if (empty($joins)) {
 			return '';
 		}
@@ -715,7 +715,7 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		foreach ($joins as $i => $join) {
-			if (is_array($join)) { // join type, table name, on-condition
+			if (is_array($join)) { // 0:join type, 1:table name, 2:on-condition
 				if (isset($join[0], $join[1])) {
 					$table = $join[1];
 					if ($this->autoQuote && strpos($table, '(') === false) {
@@ -743,44 +743,47 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
+	 * @param string|array $condition
 	 * @return string the WHERE clause built from [[query]].
 	 */
-	protected function buildWhere()
+	public function buildWhere($condition)
 	{
-		$where = $this->buildCondition($this->query->where);
-		return empty($where) ? '' : 'WHERE ' . $where;
+		$where = $this->buildCondition($condition);
+		return $where === '' ? '' : 'WHERE ' . $where;
 	}
 
 	/**
-	 * @return string the GROUP BY clause built from [[query]].
+	 * @param string|array $columns
+	 * @return string the GROUP BY clause
 	 */
-	protected function buildGroupBy()
+	public function buildGroupBy($columns)
 	{
-		if (empty($this->query->groupBy)) {
+		if (empty($columns)) {
 			return '';
 		} else {
-			return 'GROUP BY ' . $this->buildColumns($this->query->groupBy);
+			return 'GROUP BY ' . $this->buildColumns($columns);
 		}
 	}
 
 	/**
+	 * @param string|array $condition
 	 * @return string the HAVING clause built from [[query]].
 	 */
-	protected function buildHaving()
+	public function buildHaving($condition)
 	{
-		$having = $this->buildCondition($this->query->having);
-		return empty($having) ? '' : 'HAVING ' . $having;
+		$having = $this->buildCondition($condition);
+		return $having === '' ? '' : 'HAVING ' . $having;
 	}
 
 	/**
+	 * @param string|array $columns
 	 * @return string the ORDER BY clause built from [[query]].
 	 */
-	protected function buildOrderBy()
+	public function buildOrderBy($columns)
 	{
-		if (empty($this->query->orderBy)) {
+		if (empty($columns)) {
 			return '';
 		}
-		$columns = $this->query->orderBy;
 		if ($this->autoQuote) {
 			$driver = $this->connection->driver;
 			if (!is_array($columns)) {
@@ -809,26 +812,28 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return string the LIMIT and OFFSET clauses built from [[query]].
 	 */
-	protected function buildLimit()
+	public function buildLimit($limit, $offset)
 	{
 		$sql = '';
-		if ($this->query->limit !== null && $this->query->limit >= 0) {
-			$sql = 'LIMIT ' . (int)$this->query->limit;
+		if ($limit !== null && $limit >= 0) {
+			$sql = 'LIMIT ' . (int)$limit;
 		}
-		if ($this->query->offset > 0) {
-			$sql .= ' OFFSET ' . (int)$this->query->offset;
+		if ($offset > 0) {
+			$sql .= ' OFFSET ' . (int)$offset;
 		}
 		return ltrim($sql);
 	}
 
 	/**
+	 * @param string|array $unions
 	 * @return string the UNION clause built from [[query]].
 	 */
-	protected function buildUnion()
+	public function buildUnion($unions)
 	{
-		$unions = $this->query->union;
 		if (empty($unions)) {
 			return '';
 		}
@@ -836,8 +841,8 @@ class QueryBuilder extends \yii\base\Object
 			$unions = array($unions);
 		}
 		foreach ($unions as $i => $union) {
-			if ($union instanceof Query) {
-				$unions[$i] = $union->getSql($this->connection);
+			if ($union instanceof BaseQuery) {
+				$unions[$i] = $this->build($union);
 			}
 		}
 		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";

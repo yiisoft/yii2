@@ -219,17 +219,18 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 
 		// indexBy
 		$customers = Customer::find()->orderBy('id')->indexBy('name')->all();
+		$this->assertEquals(2, $customers['user2']['id']);
 	}
 
 	public function testEagerLoading()
 	{
-		$customers = Customer::find()->with('orders')->orderBy('t0.id')->all();
+		$customers = Customer::find()->with('orders')->orderBy('@.id')->all();
 		$this->assertEquals(3, count($customers));
 		$this->assertEquals(1, count($customers[0]->orders));
 		$this->assertEquals(2, count($customers[1]->orders));
 		$this->assertEquals(0, count($customers[2]->orders));
 
-		$customers = Customer::find()->with('orders.customer')->orderBy('t0.id')->all();
+		$customers = Customer::find()->with('orders.customer')->orderBy('@.id')->all();
 	}
 
 	/*

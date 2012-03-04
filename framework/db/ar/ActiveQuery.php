@@ -243,10 +243,6 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 	protected function findRecords()
 	{
 		$finder = new ActiveFinder($this->getDbConnection());
-		if (!empty($this->with)) {
-			return $finder->findRecordsWithRelations($this);
-		} else {
-			return $finder->findRecords($this);
-		}
+		return $finder->findRecords($this);
 	}
 }

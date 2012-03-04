@@ -17,22 +17,8 @@ use yii\db\Exception;
 
 /**
  * ActiveFinder.php is ...
- * todo: add SQL monitor
- * todo: better handling on join() support in QueryBuilder: use regexp to detect table name and quote it
- * todo: do not support anonymous parameter binding
- * todo: add ActiveFinderBuilder
- * todo: quote join/on part of the relational query
- * todo: modify QueryBuilder about join() methods
- * todo: unify ActiveFinder and ActiveRelation in query building process
- * todo: intelligent table aliasing (first table name, then relation name, finally t?)
- * todo: allow using tokens in primary query fragments
- * todo: findBySql
- * todo: base limited
- * todo: lazy loading
- * todo: scope
- * todo: test via option
- todo: inner join with one or multiple relations as filters
- joinType should default to inner join in this case
+ * todo: base limited with has_many, bySQL, lazy loading
+ * todo: quoting column names in 'on' clause
  *
  * @property integer $count
  *
@@ -45,10 +31,6 @@ class ActiveFinder extends \yii\base\Object
 	 * @var \yii\db\dao\Connection
 	 */
 	public $connection;
-	/**
-	 * @var ActiveQuery
-	 */
-	public $query;
 
 	public function __construct($connection)
 	{
@@ -56,16 +38,25 @@ class ActiveFinder extends \yii\base\Object
 	}
 
 	/**
-	 * @param \yii\db\ar\ActiveQuery $query
-	 * @param bool $all
-	 * @return array
+	 * @param ActiveQuery $query
 	 */
 	public function findRecords($query)
 	{
+		if (!empty($query->with)) {
+			return $this->findRecordsWithRelations($query);
+		}
+
 		if ($query->sql !== null) {
 			$sql = $query->sql;
 		} else {
-			$this->initFrom($query);
+			if ($query->from === null) {
+				$modelClass = $query->modelClass;
+				$tableName = $modelClass::tableName();
+				if ($query->tableAlias !== null) {
+					$tableName .= ' ' . $query->tableAlias;
+				}
+				$query->from = array($tableName);
+			}
 			$this->applyScopes($query);
 			$sql = $this->connection->getQueryBuilder()->build($query);
 			if (strpos($sql, '@.') !== false) {
@@ -93,11 +84,11 @@ class ActiveFinder extends \yii\base\Object
 			$class = $query->modelClass;
 			if ($query->indexBy === null) {
 				foreach ($rows as $row) {
-					$records[] = $class::createRecord($row);
+					$records[] = $class::create($row);
 				}
 			} else {
 				foreach ($rows as $row) {
-					$records[$row[$query->indexBy]] = $class::createRecord($row);
+					$records[$row[$query->indexBy]] = $class::create($row);
 				}
 			}
 		}
@@ -110,134 +101,50 @@ class ActiveFinder extends \yii\base\Object
 
 	}
 
+	private $_joinCount;
+	private $_tableAliases;
+
+	/**
+	 * @param ActiveQuery $query
+	 * @return array
+	 */
 	public function findRecordsWithRelations($query)
 	{
-		// todo: handle findBySql() and limit cases
-		$joinTree = $this->buildRelationalQuery();
+		$this->_joinCount = 0;
+		$this->_tableAliases = array();
+		$joinTree = new JoinElement($this->_joinCount++, $query, null, null);
+		$this->buildJoinTree($joinTree, $query->with);
+		$this->initJoinTree($joinTree);
 
-		if ($this->sql === null) {
-			$this->initFrom($element->query);
-			$command = $element->query->createCommand($this->getDbConnection());
-			$this->sql = $command->getSql();
-		} else {
-			$command = $this->getDbConnection()->createCommand($this->sql);
-			$command->bindValues($element->query->params);
+		$q = new Query;
+		$this->buildJoinQuery($joinTree, $q);
+		$rows = $q->createCommand($this->connection)->queryAll();
+		foreach ($rows as $row) {
+			$joinTree->createRecord($row);
 		}
 
-		$rows = $command->queryAll();
-
-		if (isset($joinTree)) {
-			foreach ($rows as $row) {
-				$joinTree->populateData($row);
-			}
-			return array_values($joinTree->records);
-		}
-
-		if ($this->asArray) {
-			if ($this->indexBy === null) {
-				return $rows;
-			}
-			$records = array();
-			foreach ($rows as $row) {
-				$records[$row[$this->indexBy]] = $row;
-			}
-			return $records;
-		} else {
-			$records = array();
-			$class = $this->modelClass;
-			if ($this->indexBy === null) {
-				foreach ($rows as $row) {
-					$records[] = $class::populateData($row);
-				}
-			} else {
-				$attribute = $this->indexBy;
-				foreach ($rows as $row) {
-					$record = $class::populateData($row);
-					$records[$record->$attribute] = $record;
-				}
-			}
-			return $records;
-		}
-	}
-
-	protected function initFrom($query)
-	{
-		if ($query->from === null) {
-			$modelClass = $query->modelClass;
-			$tableName = $modelClass::tableName();
-			if ($query->tableAlias !== null) {
-				$tableName .= ' ' . $query->tableAlias;
-			}
-			$query->from = array($tableName);
-		}
+		return $query->indexBy !== null ? $joinTree->records : array_values($joinTree->records);
 	}
 
 	protected function applyScopes($query)
 	{
+		$class = $query->modelClass;
+		$class::defaultScope($query);
 		if (is_array($query->scopes)) {
-			$class = $query->modelClass;
-			$class::defaultScope($query);
 			$scopes = $class::scopes();
 			foreach ($query->scopes as $name => $params) {
 				if (is_integer($name)) {
 					$name = $params;
 					$params = array();
 				}
-				if (!isset($scopes[$name])) {
+				if (isset($scopes[$name])) {
+					array_unshift($params, $query);
+					call_user_func_array($scopes[$name], $params);
+				} else {
 					throw new Exception("$class has no scope named '$name'.");
 				}
-				array_unshift($params, $query);
-				call_user_func_array($scopes[$name], $params);
 			}
 		}
-	}
-
-	private $_joinCount;
-	private $_tableAliases;
-
-	protected function buildQuery()
-	{
-		$this->_joinCount = 0;
-		$joinTree = new JoinElement($this->_joinCount++, $element->query, null, null);
-		$this->buildJoinTree($joinTree, $element->query->with);
-		$this->_tableAliases = array();
-		$this->buildTableAlias($joinTree);
-
-		$query = new Query;
-		foreach ($joinTree->children as $child) {
-			$child->buildQuery($query);
-		}
-
-		$select = $joinTree->buildSelect($element, $element->query->select);
-		if (!empty($query->select)) {
-			$element->query->select = array_merge($select, $query->select);
-		} else {
-			$element->query->select = $select;
-		}
-		if (!empty($query->where)) {
-			$element->query->andWhere('(' . implode(') AND (', $query->where) . ')');
-		}
-		if (!empty($query->having)) {
-			$element->query->andHaving('(' . implode(') AND (', $query->having) . ')');
-		}
-		if (!empty($query->join)) {
-			if ($element->query->join === null) {
-				$element->query->join = $query->join;
-			} else {
-				$element->query->join = array_merge($element->query->join, $query->join);
-			}
-		}
-		if (!empty($query->orderBy)) {
-			$element->query->addOrderBy($query->orderBy);
-		}
-		if (!empty($query->groupBy)) {
-			$element->query->addGroupBy($query->groupBy);
-		}
-		if (!empty($query->params)) {
-			$element->query->addParams($query->params);
-		}
-
-		return $joinTree;
 	}
 
 	/**
@@ -297,7 +204,7 @@ class ActiveFinder extends \yii\base\Object
 	/**
 	 * @param JoinElement $element
 	 */
-	protected function buildTableAlias($element)
+	protected function initJoinTree($element)
 	{
 		if ($element->query->tableAlias !== null) {
 			$alias = $element->query->tableAlias;
@@ -313,58 +220,95 @@ class ActiveFinder extends \yii\base\Object
 		$this->_tableAliases[$alias] = true;
 		$element->query->tableAlias = $alias;
 
+		$this->applyScopes($element->query);
+
 		foreach ($element->children as $child) {
-			$this->buildTableAlias($child, $count);
+			$this->initJoinTree($child, $count);
 		}
 	}
 
 	/**
 	 * @param JoinElement $element
-	 * @param Query $query
+	 * @param \yii\db\dao\Query $query
 	 */
 	protected function buildJoinQuery($element, $query)
 	{
-		$prefixes = array(
-			'@.' => $element->query->tableAlias . '.',
-			'?.' => $element->parent->query->tableAlias . '.',
-		);
-		$quotedPrefixes = array(
-			'@.' => $this->connection->quoteTableName($element->query->tableAlias, true) . '.',
-			'?.' => $this->connection->quoteTableName($element->parent->query->tableAlias, true) . '.',
-		);
+		if ($element->parent) {
+			$prefixes = array(
+				'@.' => $element->query->tableAlias . '.',
+				'?.' => $element->parent->query->tableAlias . '.',
+			);
+			$quotedPrefixes = array(
+				'@.' => $this->connection->quoteTableName($element->query->tableAlias, true) . '.',
+				'?.' => $this->connection->quoteTableName($element->parent->query->tableAlias, true) . '.',
+			);
+		} else {
+			$prefixes = array(
+				'@.' => $element->query->tableAlias . '.',
+			);
+			$quotedPrefixes = array(
+				'@.' => $this->connection->quoteTableName($element->query->tableAlias, true) . '.',
+			);
+		}
+
+		$qb = $this->connection->getQueryBuilder();
 
 		foreach ($this->buildSelect($element, $element->query->select) as $column) {
 			$query->select[] = strtr($column, $prefixes);
 		}
 
-		if ($element->query->where !== null) {
-			$query->where[] = strtr($element->query->where, $quotedPrefixes);
+		if ($element->query instanceof ActiveQuery) {
+			if ($element->query->from === null) {
+				$modelClass = $element->query->modelClass;
+				$tableName = $modelClass::tableName();
+				if ($element->query->tableAlias !== null) {
+					$tableName .= ' ' . $element->query->tableAlias;
+				}
+				$query->from = array($tableName);
+			} else {
+				$query->from = $element->query->from;
+			}
 		}
 
-		if ($element->query->having !== null) {
-			$query->having[] = strtr($element->query->having, $quotedPrefixes);
+		if (($where = $qb->buildCondition($element->query->where)) !== '') {
+			$query->andWhere(strtr($where, $quotedPrefixes));
 		}
 
-		if ($element->query->via !== null) {
-			$query->join[] = strtr($element->query->via, $quotedPrefixes);
+		if (($having = $qb->buildCondition($element->query->having)) !== '') {
+			$query->andHaving(strtr($having, $quotedPrefixes));
 		}
 
-		if ($element->query->joinType === null) {
-			$joinType = $element->query->select === false ? 'INNER JOIN' : 'LEFT JOIN';
-		} else {
-			$joinType = $element->query->joinType;
+		if ($element->query instanceof ActiveRelation) {
+			if ($element->query->via !== null) {
+				$query->join[] = strtr($element->query->via, $quotedPrefixes);
+			}
+
+			if ($element->query->joinType === null) {
+				$joinType = $element->query->select === false ? 'INNER JOIN' : 'LEFT JOIN';
+			} else {
+				$joinType = $element->query->joinType;
+			}
+			$modelClass = $element->query->modelClass;
+			$tableName = $this->connection->quoteTableName($modelClass::tableName());
+			$tableAlias = $this->connection->quoteTableName($element->query->tableAlias);
+			$join = "$joinType $tableName $tableAlias";
+			if ($element->query->on !== null) {
+				$join .= ' ON ' . strtr($qb->buildCondition($element->query->on), $quotedPrefixes);
+			}
+			$query->join[] = $join;
 		}
-		$modelClass = $element->query->modelClass;
-		$tableName = $this->connection->quoteTableName($modelClass::tableName());
-		$tableAlias = $this->connection->quoteTableName($element->query->tableAlias);
-		$join = "$joinType $tableName $tableAlias";
-		if ($element->query->on !== null) {
-			$join .= ' ON ' . strtr($element->query->on, $quotedPrefixes);
-		}
-		$query->join[] = $join;
 
 		if ($element->query->join !== null) {
-			$query->join[] = strtr($element->query->join, $quotedPrefixes);
+			if (is_array($element->query->join)) {
+				foreach ($element->query->join as $join) {
+					if (is_array($join) && isset($join[2])) {
+						$join[2] = strtr($join[2], $quotedPrefixes);
+					}
+					$query->join[] = $join;
+				}
+			} else {
+				$query->join[] = strtr($element->query->join, $quotedPrefixes);
+			}
 		}
 
 		if ($element->query->orderBy !== null) {
@@ -390,7 +334,7 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		foreach ($element->children as $child) {
-			$this->buildQuery($child, $query);
+			$this->buildJoinQuery($child, $query);
 		}
 	}
 
@@ -406,7 +350,7 @@ class ActiveFinder extends \yii\base\Object
 		$prefix = $element->query->tableAlias;
 		if (empty($select) || $select === '*') {
 			foreach ($table->columns as $column) {
-				$alias = "t{$element->id}c" . ($columnCount++);
+				$alias = "c{$element->id}_" . ($columnCount++);
 				$columns[] = "$prefix.{$column->name} AS $alias";
 				$element->columnAliases[$alias] = $column->name;
 				if ($column->isPrimaryKey) {
@@ -418,7 +362,7 @@ class ActiveFinder extends \yii\base\Object
 				$select = explode(',', $select);
 			}
 			foreach ($table->primaryKey as $column) {
-				$alias = "t{$element->id}c" . ($columnCount++);
+				$alias = "c{$element->id}_" . ($columnCount++);
 				$columns[] = "$prefix.$column AS $alias";
 				$element->pkAlias[$column] = $alias;
 			}
@@ -429,7 +373,7 @@ class ActiveFinder extends \yii\base\Object
 					$element->columnAliases[$matches[2]] = $matches[2];
 					$columns[] = $column;
 				} elseif (!isset($element->pkAlias[$column])) {
-					$alias = "t{$element->id}c" . ($columnCount++);
+					$alias = "c{$element->id}_" . ($columnCount++);
 					$columns[] = "$prefix.$column AS $alias";
 					$element->columnAliases[$alias] = $column;
 				}

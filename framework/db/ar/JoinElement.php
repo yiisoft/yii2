@@ -49,9 +49,10 @@ class JoinElement extends \yii\base\Object
 	public $relatedRecords;
 
 	/**
+	 * @param integer $id
 	 * @param ActiveRelation|ActiveQuery $query
-	 * @param JoinElement $parent
-	 * @param JoinElement $container
+	 * @param null|JoinElement $parent
+	 * @param null|JoinElement $container
 	 */
 	public function __construct($id, $query, $parent, $container)
 	{
@@ -70,15 +71,24 @@ class JoinElement extends \yii\base\Object
 	 */
 	public function createRecord($row)
 	{
-		$pk = array();
-		foreach ($this->pkAlias as $alias) {
-			if (isset($row[$alias])) {
-				$pk[] = $row[$alias];
+		if ($this->query->indexBy === null) {
+			$pk = array();
+			foreach ($this->pkAlias as $alias) {
+				if (isset($row[$alias])) {
+					$pk[] = $row[$alias];
+				} else {
+					return null;
+				}
+			}
+			$pk = count($pk) === 1 ? $pk[0] : serialize($pk);
+		} else {
+			$pk = array_search($this->query->indexBy, $this->columnAliases);
+			if ($pk !== false) {
+				$pk = $row[$pk];
 			} else {
-				return null;
+				throw new Exception("Invalid indexBy: {$this->query->modelClass} has no attribute named '{$this->query->indexBy}'.");
 			}
 		}
-		$pk = count($pk) === 1 ? $pk[0] : serialize($pk);
 
 		// create record
 		if (isset($this->records[$pk])) {
@@ -124,112 +134,5 @@ class JoinElement extends \yii\base\Object
 		}
 
 		return $record;
-	}
-
-	public function buildQuery($query)
-	{
-		$prefixes = array(
-			'@.' => $this->query->tableAlias . '.',
-			'?.' => $this->parent->query->tableAlias . '.',
-		);
-		$quotedPrefixes = '';
-		foreach ($this->buildSelect($this->query->select) as $column) {
-			$query->select[] = strtr($column, $prefixes);
-		}
-
-		if ($this->query->where !== null) {
-			$query->where[] = strtr($this->query->where, $prefixes);
-		}
-
-		if ($this->query->having !== null) {
-			$query->having[] = strtr($this->query->having, $prefixes);
-		}
-
-		if ($this->query->via !== null) {
-			$query->join[] = $this->query->via;
-		}
-
-		$modelClass = $this->query->modelClass;
-		$tableName = $modelClass::tableName();
-		$joinType = $this->query->joinType === null ? 'LEFT JOIN' : $this->query->joinType;
-		$join = "$joinType $tableName {$this->query->tableAlias}";
-		if ($this->query->on !== null) {
-			$join .= ' ON ' . strtr($this->query->on, $prefixes);
-		}
-		$query->join[] = $join;
-
-
-		if ($this->query->join !== null) {
-			$query->join[] = strtr($this->query->join, $prefixes);
-		}
-
-		// todo: convert orderBy to array first
-		if ($this->query->orderBy !== null) {
-			$query->orderBy[] = strtr($this->query->orderBy, $prefixes);
-		}
-
-		// todo: convert groupBy to array first
-		if ($this->query->groupBy !== null) {
-			$query->groupBy[] = strtr($this->query->groupBy, $prefixes);
-		}
-
-		if ($this->query->params !== null) {
-			foreach ($this->query->params as $name => $value) {
-				if (is_integer($name)) {
-					$query->params[] = $value;
-				} else {
-					$query->params[$name] = $value;
-				}
-			}
-		}
-
-		foreach ($this->children as $child) {
-			$child->buildQuery($query);
-		}
-	}
-
-	public function buildSelect($select)
-	{
-		if ($select === false) {
-			return array();
-		}
-		$modelClass = $this->query->modelClass;
-		$table = $modelClass::getMetaData()->table;
-		$columns = array();
-		$columnCount = 0;
-		$prefix = $this->query->tableAlias;
-		if (empty($select) || $select === '*') {
-			foreach ($table->columns as $column) {
-				$alias = "t{$this->id}c" . ($columnCount++);
-				$columns[] = "$prefix.{$column->name} AS $alias";
-				$this->columnAliases[$alias] = $column->name;
-				if ($column->isPrimaryKey) {
-					$this->pkAlias[$column->name] = $alias;
-				}
-			}
-		} else {
-			if (is_string($select)) {
-				$select = explode(',', $select);
-			}
-			foreach ($table->primaryKey as $column) {
-				$alias = "t{$this->id}c" . ($columnCount++);
-				$columns[] = "$prefix.$column AS $alias";
-				$this->pkAlias[$column] = $alias;
-			}
-			foreach ($select as $column) {
-				$column = trim($column);
-				if (preg_match('/^(.*?)\s+AS\s+(\w+)$/im', $column, $matches)) {
-					// if the column is already aliased
-					$this->columnAliases[$matches[2]] = $matches[2];
-					$columns[] = $column;
-				} elseif (!isset($this->pkAlias[$column])) {
-					$alias = "t{$this->id}c" . ($columnCount++);
-					$columns[] = "$prefix.$column AS $alias";
-					$this->columnAliases[$alias] = $column;
-				}
-			}
-		}
-
-		return $columns;
 	}
 }
