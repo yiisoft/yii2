@@ -331,7 +331,7 @@ abstract class Command extends \yii\base\Component
 		}
 		else {
 			$input = trim($input);
-			return $input==='' ? $default : $input;
+			return ($input==='' && $default!==null) ? $default : $input;
 		}
 	}
 
