@@ -325,7 +325,7 @@ abstract class Command extends \yii\base\Component
 		} else {
 			echo $message;
 			$input = fgets(STDIN);
-			if($input === false) {
+			if($input !== false) {
 				$input = trim($input);
 			}
 		}
