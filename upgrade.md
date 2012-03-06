@@ -10,14 +10,14 @@ for both A and B.
 
 
 General upgrade instructions
----------------------------
+----------------------------
 
 - Make a backup.
 - Clean up your 'assets' folder.
-- Replace 'framework' dir with the new one or point SVN to a fresh
-  release and update.
-- Check if everything is OK, if not — revert from backup and post
-  issues to Yii issue tracker.
+- Replace 'framework' dir with the new one or point Git to a fresh
+  release tag and checkout.
+- Check if everything is OK, if not — revert to previous stable version and post
+  issues to [Yii issue tracker](https://github.com/yiisoft/yii/issues).
 
 
 Upgrading from v1.1.x
