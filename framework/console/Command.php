@@ -325,15 +325,13 @@ abstract class Command extends \yii\base\Component
 		} else {
 			echo $message;
 			$input = fgets(STDIN);
-			if($input !== false) {
-				$input = trim($input);
-			}
 		}
 		if($input === false) {
 			return false;
 		}
 		else {
-			return empty($input) ? $default : $input;
+			$input = trim($input);
+			return $input==='' ? $default : $input;
 		}
 	}
 
