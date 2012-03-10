@@ -304,19 +304,35 @@ abstract class Command extends \yii\base\Component
 	 * Reads input via the readline PHP extension if that's available, or fgets() if readline is not installed.
 	 *
 	 * @param string $message to echo out before waiting for user input
+	 * @param string $default the default string to be returned when user does not write anything.
+	 * Defaults to null, means that default string is disabled.
 	 * @return mixed line read as a string, or false if input has been closed
 	 */
-	public function prompt($message)
+	public function prompt($message, $default = null)
 	{
+		if($default !== null) {
+			$message .= " [$default] ";
+		}
+		else {
+			$message .= ' ';
+		}
+
 		if(extension_loaded('readline'))
 		{
-			$input = readline($message.' ');
-			readline_add_history($input);
-			return $input;
-		} else
-		{
-			echo $message.' ';
-			return trim(fgets(STDIN));
+			$input = readline($message);
+			if($input) {
+				readline_add_history($input);
+			}
+		} else {
+			echo $message;
+			$input = fgets(STDIN);
+		}
+		if($input === false) {
+			return false;
+		}
+		else {
+			$input = trim($input);
+			return ($input==='' && $default!==null) ? $default : $input;
 		}
 	}
 

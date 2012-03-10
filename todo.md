@@ -1,11 +1,11 @@
 - logging
 	* WebTarget
 	* ProfileTarget
-	* Toolbar ?
 - base
 	* error/exception handling
 	  * Convert all PHP errors into exceptions, remove YII_ENABLE_ERROR_HANDLER and error handler (?)
 	* module
+	  - Module should be able to define its own configuration including routes. Application should be able to overwrite it.
 	* application
 	* http exception
 	* security
@@ -14,7 +14,7 @@
 	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
 	* FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
 	* consider merging UniqueValidator and ExistValidator and using a NOT property.
-- console command support
+- console command support [DONE]
 - built-in console commands
 	+ api doc builder
 		* support for markdown syntax
@@ -49,6 +49,7 @@
 - web: TBD
 	* get/setFlash() should be moved to session component
 	* support optional parameter in URL patterns
+	* Response object.
 - gii
     * move generation API out of gii, provide yiic commands to use it. Use same templates for gii/yiic.
 	* i18n variant of templates
@@ -59,5 +60,9 @@
     * ability to manage scripts order (store these in a vector?)
 	* http://ryanbigg.com/guides/asset_pipeline.html, http://guides.rubyonrails.org/asset_pipeline.html, use content hash instead of mtime + directory hash.
 - Requirement checker
+- Optional configurable input filtering in request
 - widgets
     * if we're going to supply default ones, these should generate really unique IDs. This will solve a lot of AJAX-nesting problems.
+- Make sure type hinting is used when components are passed to methods
+- Decouple controller from application (by passing web application instance to controller and if not passed, using Yii::app())?
+- Decouple view renderer from controller so it can be used separately (useful for sending emails from console etc.)
