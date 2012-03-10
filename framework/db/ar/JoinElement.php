@@ -71,26 +71,18 @@ class JoinElement extends \yii\base\Object
 	 */
 	public function createRecord($row)
 	{
-		if ($this->query->indexBy === null) {
-			$pk = array();
-			foreach ($this->pkAlias as $alias) {
-				if (isset($row[$alias])) {
-					$pk[] = $row[$alias];
-				} else {
-					return null;
-				}
-			}
-			$pk = count($pk) === 1 ? $pk[0] : serialize($pk);
-		} else {
-			$pk = array_search($this->query->indexBy, $this->columnAliases);
-			if ($pk !== false) {
-				$pk = $row[$pk];
+		$pk = array();
+		foreach ($this->pkAlias as $alias) {
+			if (isset($row[$alias])) {
+				$pk[] = $row[$alias];
 			} else {
-				throw new Exception("Invalid indexBy: {$this->query->modelClass} has no attribute named '{$this->query->indexBy}'.");
+				return null;
 			}
 		}
+		$pk = count($pk) === 1 ? $pk[0] : serialize($pk);
 
 		// create record
+		// todo: asArray
 		if (isset($this->records[$pk])) {
 			$record = $this->records[$pk];
 		} else {
@@ -120,7 +112,7 @@ class JoinElement extends \yii\base\Object
 			}
 			if ($child->query->hasMany) {
 				if ($child->query->indexBy !== null) {
-					$hash = $childRecord->{$child->query->indexBy};
+					$hash = $childRecord[$child->query->indexBy];
 				} else {
 					$hash = serialize($childRecord->getPrimaryKey());
 				}

@@ -23,6 +23,13 @@ class ActiveRelation extends BaseActiveQuery
 	 */
 	public $name;
 	/**
+	 * @var array the columns of the primary and foreign tables that establish the relation.
+	 * The array keys must be columns of the table for this relation, and the array values
+	 * must be the corresponding columns from the primary table. Do not prefix or quote the column names.
+	 * They will be done automatically by Yii.
+	 */
+	public $link;
+	/**
 	 * @var boolean whether this relation is a one-many relation
 	 */
 	public $hasMany;
@@ -36,7 +43,7 @@ class ActiveRelation extends BaseActiveQuery
 	 */
 	public $on;
 	/**
-	 * @var string
+	 * @var string|array
 	 */
 	public $via;
 }

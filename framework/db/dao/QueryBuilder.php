@@ -68,10 +68,10 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildFrom($query->from),
 			$this->buildJoin($query->join),
 			$this->buildWhere($query->where),
-			$this->buildGroupBy($query->groupBy),
+			$this->buildGroup($query->group),
 			$this->buildHaving($query->having),
 			$this->buildUnion($query->union),
-			$this->buildOrderBy($query->orderBy),
+			$this->buildOrder($query->order),
 			$this->buildLimit($query->limit, $query->offset),
 		);
 		return implode($this->separator, array_filter($clauses));
@@ -756,7 +756,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string|array $columns
 	 * @return string the GROUP BY clause
 	 */
-	public function buildGroupBy($columns)
+	public function buildGroup($columns)
 	{
 		if (empty($columns)) {
 			return '';
@@ -779,7 +779,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string|array $columns
 	 * @return string the ORDER BY clause built from [[query]].
 	 */
-	public function buildOrderBy($columns)
+	public function buildOrder($columns)
 	{
 		if (empty($columns)) {
 			return '';

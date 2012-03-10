@@ -21,19 +21,6 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
 		$this->assertEquals($sql, $command->sql);
-
-		// Query object
-		$query = new Query;
-		$query->select('id')->from('tbl_customer');
-		$command = $db->createCommand($query);
-		$this->assertEquals("SELECT `id` FROM `tbl_customer`", $command->sql);
-
-		// array
-		$command = $db->createCommand(array(
-			'select' => 'name',
-			'from' => 'tbl_customer',
-		));
-		$this->assertEquals("SELECT `name` FROM `tbl_customer`", $command->sql);
 	}
 
 	function testGetSetSql()

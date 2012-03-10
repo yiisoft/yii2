@@ -200,7 +200,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user3', $customer->name);
 
-		$customer = Customer::find()->select('id')->orderBy('id DESC')->one();
+		$customer = Customer::find()->select('id')->order('id DESC')->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(3, $customer->id);
 		$this->assertEquals(null, $customer->name);
@@ -214,23 +214,27 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(2, count($customers));
 
 		// asArray
-		$customers = Customer::find()->orderBy('id')->asArray()->all();
+		$customers = Customer::find()->order('id')->asArray()->all();
 		$this->assertEquals('user2', $customers[1]['name']);
 
 		// indexBy
-		$customers = Customer::find()->orderBy('id')->indexBy('name')->all();
+		$customers = Customer::find()->order('id')->indexBy('name')->all();
 		$this->assertEquals(2, $customers['user2']['id']);
 	}
 
 	public function testEagerLoading()
 	{
-		$customers = Customer::find()->with('orders')->orderBy('@.id')->all();
+		$customers = Customer::find()->with('orders')->order('@.id')->all();
 		$this->assertEquals(3, count($customers));
 		$this->assertEquals(1, count($customers[0]->orders));
 		$this->assertEquals(2, count($customers[1]->orders));
 		$this->assertEquals(0, count($customers[2]->orders));
 
-		$customers = Customer::find()->with('orders.customer')->orderBy('@.id')->all();
+		$customers = Customer::find()->with('orders.customer')->order('@.id')->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertEquals(1, $customers[0]->orders[0]->customer->id);
+		$this->assertEquals(2, $customers[1]->orders[0]->customer->id);
+		$this->assertEquals(2, $customers[1]->orders[1]->customer->id);
 	}
 
 	/*

@@ -13,7 +13,7 @@ class QueryTest extends \yiiunit\MysqlTestCase
 	{
 		// default
 		$query = new Query;
-		$query->select();
+		$query->select('*');
 		$this->assertEquals('*', $query->select);
 		$this->assertNull($query->distinct);
 		$this->assertEquals(null, $query->selectOption);
@@ -53,17 +53,17 @@ class QueryTest extends \yiiunit\MysqlTestCase
 
 	}
 
-	function testGroupBy()
+	function testGroup()
 	{
 		$query = new Query;
-		$query->groupBy('team');
-		$this->assertEquals('team', $query->groupBy);
+		$query->group('team');
+		$this->assertEquals('team', $query->group);
 
-		$query->addGroupBy('company');
-		$this->assertEquals(array('team', 'company'), $query->groupBy);
+		$query->addGroup('company');
+		$this->assertEquals(array('team', 'company'), $query->group);
 
-		$query->addGroupBy('age');
-		$this->assertEquals(array('team', 'company', 'age'), $query->groupBy);
+		$query->addGroup('age');
+		$this->assertEquals(array('team', 'company', 'age'), $query->group);
 	}
 
 	function testHaving()
@@ -82,17 +82,17 @@ class QueryTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(array(':id' => 1, ':name' => 'something', ':age' => '30'), $query->params);
 	}
 
-	function testOrderBy()
+	function testOrder()
 	{
 		$query = new Query;
-		$query->orderBy('team');
-		$this->assertEquals('team', $query->orderBy);
+		$query->order('team');
+		$this->assertEquals('team', $query->order);
 
-		$query->addOrderBy('company');
-		$this->assertEquals(array('team', 'company'), $query->orderBy);
+		$query->addOrder('company');
+		$this->assertEquals(array('team', 'company'), $query->order);
 
-		$query->addOrderBy('age');
-		$this->assertEquals(array('team', 'company', 'age'), $query->orderBy);
+		$query->addOrder('age');
+		$this->assertEquals(array('team', 'company', 'age'), $query->order);
 	}
 
 	function testLimitOffset()

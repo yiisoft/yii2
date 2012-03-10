@@ -103,6 +103,7 @@ class ActiveFinder extends \yii\base\Object
 
 	private $_joinCount;
 	private $_tableAliases;
+	private $_hasMany;
 
 	/**
 	 * @param ActiveQuery $query
@@ -112,6 +113,7 @@ class ActiveFinder extends \yii\base\Object
 	{
 		$this->_joinCount = 0;
 		$this->_tableAliases = array();
+		$this->_hasMany = false;
 		$joinTree = new JoinElement($this->_joinCount++, $query, null, null);
 		$this->buildJoinTree($joinTree, $query->with);
 		$this->initJoinTree($joinTree);
@@ -123,7 +125,15 @@ class ActiveFinder extends \yii\base\Object
 			$joinTree->createRecord($row);
 		}
 
-		return $query->indexBy !== null ? $joinTree->records : array_values($joinTree->records);
+		if ($query->indexBy !== null) {
+			$records = array();
+			foreach ($joinTree->records as $record) {
+				$records[$record[$query->indexBy]] = $record;
+			}
+			return $records;
+		} else {
+			return array_values($joinTree->records);
+		}
 	}
 
 	protected function applyScopes($query)
@@ -182,7 +192,8 @@ class ActiveFinder extends \yii\base\Object
 				throw new Exception("$modelClass has no relation named '$with'.");
 			}
 			$relation = clone $relations[$with];
-			if ($relation->via !== null && isset($relations[$relation->via])) {
+			if (is_string($relation->via) && isset($relations[$relation->via])) {
+				// join via an existing relation
 				$parent2 = $this->buildJoinTree($parent, $relation->via);
 				$relation->via = null;
 				if ($parent2->joinOnly === null) {
@@ -212,6 +223,14 @@ class ActiveFinder extends \yii\base\Object
 			$alias = $element->query->name;
 		} else {
 			$alias = 't';
+		}
+		if ($element->query instanceof ActiveRelation) {
+			if ($element->query->hasMany) {
+				$this->_hasMany = true;
+			}
+			if ($element->parent->query->asArray !== null && $element->query->asArray === null) {
+				$element->query->asArray = $element->parent->query->asArray;
+			}
 		}
 		$count = 0;
 		while (isset($this->_tableAliases[$alias])) {
@@ -279,8 +298,9 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		if ($element->query instanceof ActiveRelation) {
-			if ($element->query->via !== null) {
-				$query->join[] = strtr($element->query->via, $quotedPrefixes);
+			if (is_array($element->query->via)) {
+				// todo: join via a pivot table
+				// $query->join[] = strtr($element->query->via, $quotedPrefixes);
 			}
 
 			if ($element->query->joinType === null) {
@@ -311,21 +331,21 @@ class ActiveFinder extends \yii\base\Object
 			}
 		}
 
-		if ($element->query->orderBy !== null) {
-			if (!is_array($element->query->orderBy)) {
-				$element->query->orderBy = preg_split('/\s*,\s*/', trim($element->query->orderBy), -1, PREG_SPLIT_NO_EMPTY);
+		if ($element->query->order !== null) {
+			if (!is_array($element->query->order)) {
+				$element->query->order = preg_split('/\s*,\s*/', trim($element->query->order), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			foreach ($element->query->orderBy as $orderBy) {
-				$query->orderBy[] = strtr($orderBy, $prefixes);
+			foreach ($element->query->order as $order) {
+				$query->order[] = strtr($order, $prefixes);
 			}
 		}
 
-		if ($element->query->groupBy !== null) {
-			if (!is_array($element->query->groupBy)) {
-				$element->query->groupBy = preg_split('/\s*,\s*/', trim($element->query->groupBy), -1, PREG_SPLIT_NO_EMPTY);
+		if ($element->query->group !== null) {
+			if (!is_array($element->query->group)) {
+				$element->query->group = preg_split('/\s*,\s*/', trim($element->query->group), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			foreach ($element->query->groupBy as $groupBy) {
-				$query->groupBy[] = strtr($groupBy, $prefixes);
+			foreach ($element->query->group as $group) {
+				$query->group[] = strtr($group, $prefixes);
 			}
 		}
 

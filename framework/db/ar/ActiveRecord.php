@@ -80,12 +80,12 @@ abstract class ActiveRecord extends Model
 	 * // find all active customers and order them by their age:
 	 * $customers = Customer::find()
 	 *     ->where(array('status' => 1))
-	 *     ->orderBy('age')
+	 *     ->order('age')
 	 *     ->all();
 	 * // or alternatively:
 	 * $customers = Customer::find(array(
 	 *     'where' => array('status' => 1),
-	 *     'orderBy' => 'age',
+	 *     'order' => 'age',
 	 * ))->all();
 	 * ~~~
 	 *
@@ -114,7 +114,7 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Creates an [[ActiveQuery]] instance and query by a given SQL statement.
 	 * Note that because the SQL statement is already specified, calling further
-	 * query methods (such as `where()`, `orderBy()`) on [[ActiveQuery]] will have no effect.
+	 * query methods (such as `where()`, `order()`) on [[ActiveQuery]] will have no effect.
 	 * Methods such as `with()`, `asArray()` can still be called though.
 	 * @param string $sql the SQL statement to be executed
 	 * @param array $params parameters to be bound to the SQL statement during execution.
@@ -267,7 +267,7 @@ abstract class ActiveRecord extends Model
 	 *	 'manager:Manager' => '@.id = ?.manager_id',
 	 *	 'assignments:Assignment[]' => array(
 	 *		 'on' => '@.owner_id = ?.id AND @.status = 1',
-	 *		 'orderBy' => '@.create_time DESC',
+	 *		 'order' => '@.create_time DESC',
 	 *	 ),
 	 *	 'projects:Project[]' => array(
 	 *		 'via' => 'assignments',
