@@ -111,8 +111,8 @@ class JoinElement extends \yii\base\Object
 				continue;
 			}
 			if ($child->query->hasMany) {
-				if ($child->query->indexBy !== null) {
-					$hash = $childRecord[$child->query->indexBy];
+				if ($child->query->index !== null) {
+					$hash = $childRecord[$child->query->index];
 				} else {
 					$hash = serialize($childRecord->getPrimaryKey());
 				}

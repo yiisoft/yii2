@@ -74,21 +74,21 @@ class ActiveFinder extends \yii\base\Object
 		$rows = $command->queryAll();
 		$records = array();
 		if ($query->asArray) {
-			if ($query->indexBy === null) {
+			if ($query->index === null) {
 				return $rows;
 			}
 			foreach ($rows as $row) {
-				$records[$row[$query->indexBy]] = $row;
+				$records[$row[$query->index]] = $row;
 			}
 		} else {
 			$class = $query->modelClass;
-			if ($query->indexBy === null) {
+			if ($query->index === null) {
 				foreach ($rows as $row) {
 					$records[] = $class::create($row);
 				}
 			} else {
 				foreach ($rows as $row) {
-					$records[$row[$query->indexBy]] = $class::create($row);
+					$records[$row[$query->index]] = $class::create($row);
 				}
 			}
 		}
@@ -125,10 +125,10 @@ class ActiveFinder extends \yii\base\Object
 			$joinTree->createRecord($row);
 		}
 
-		if ($query->indexBy !== null) {
+		if ($query->index !== null) {
 			$records = array();
 			foreach ($joinTree->records as $record) {
-				$records[$record[$query->indexBy]] = $record;
+				$records[$record[$query->index]] = $record;
 			}
 			return $records;
 		} else {

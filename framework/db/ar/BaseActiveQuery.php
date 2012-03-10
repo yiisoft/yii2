@@ -34,7 +34,7 @@ class BaseActiveQuery extends BaseQuery
 	 * @var string the name of the column that the result should be indexed by.
 	 * This is only useful when the query result is returned as an array.
 	 */
-	public $indexBy;
+	public $index;
 	/**
 	 * @var boolean whether to return each record as an array. If false (default), an object
 	 * of [[modelClass]] will be created to represent each record.
@@ -61,9 +61,9 @@ class BaseActiveQuery extends BaseQuery
 		return $this;
 	}
 
-	public function indexBy($column)
+	public function index($column)
 	{
-		$this->indexBy = $column;
+		$this->index = $column;
 		return $this;
 	}
 

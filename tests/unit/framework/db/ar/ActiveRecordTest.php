@@ -217,8 +217,8 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$customers = Customer::find()->order('id')->asArray()->all();
 		$this->assertEquals('user2', $customers[1]['name']);
 
-		// indexBy
-		$customers = Customer::find()->order('id')->indexBy('name')->all();
+		// index
+		$customers = Customer::find()->order('id')->index('name')->all();
 		$this->assertEquals(2, $customers['user2']['id']);
 	}
 
