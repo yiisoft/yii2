@@ -318,12 +318,7 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		if ($element->query instanceof ActiveRelation) {
-			$joinType =
-			if ($element->query->joinType === null) {
-				$joinType = 'LEFT JOIN';
-			} else {
-				$joinType = $element->query->joinType;
-			}
+			$joinType = $element->query->joinType ?: 'LEFT JOIN';
 			if ($element->query->modelClass !== null) {
 				$modelClass = $element->query->modelClass;
 				$tableName = $this->connection->quoteTableName($modelClass::tableName());
