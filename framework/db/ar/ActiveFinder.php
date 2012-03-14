@@ -192,14 +192,32 @@ class ActiveFinder extends \yii\base\Object
 				throw new Exception("$modelClass has no relation named '$with'.");
 			}
 			$relation = clone $relations[$with];
-			if (is_string($relation->via) && isset($relations[$relation->via])) {
+			if (is_string($relation->via)) {
 				// join via an existing relation
 				$parent2 = $this->buildJoinTree($parent, $relation->via);
-				$relation->via = null;
 				if ($parent2->joinOnly === null) {
 					$parent2->joinOnly = true;
 				}
 				$child = new JoinElement($this->_joinCount++, $relation, $parent2, $parent);
+			} elseif (is_array($relation->via)) {
+				// join via a pivoting table
+				$r = new ActiveRelation;
+				$r->name = 'pt' . $this->_joinCount;
+				$r->hasMany = $relation->hasMany;
+
+				foreach ($relation->via as $name => $value) {
+					$r->$name = $value;
+				}
+
+				$r->select = false;
+				if ($r->joinType === null) {
+					$r->joinType = $relation->joinType;
+				}
+
+				$parent2 = new JoinElement($this->_joinCount++, $r, $parent, $parent);
+				$parent2->joinOnly = true;
+				$child = new JoinElement($this->_joinCount++, $relation, $parent2, $parent);
+
 			} else {
 				$child = new JoinElement($this->_joinCount++, $relation, $parent, $parent);
 			}
@@ -239,7 +257,9 @@ class ActiveFinder extends \yii\base\Object
 		$this->_tableAliases[$alias] = true;
 		$element->query->tableAlias = $alias;
 
-		$this->applyScopes($element->query);
+		if ($element->query->modelClass !== null) {
+			$this->applyScopes($element->query);
+		}
 
 		foreach ($element->children as $child) {
 			$this->initJoinTree($child, $count);
@@ -298,22 +318,41 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		if ($element->query instanceof ActiveRelation) {
-			if (is_array($element->query->via)) {
-				// todo: join via a pivot table
-				// $query->join[] = strtr($element->query->via, $quotedPrefixes);
-			}
-
+			$joinType =
 			if ($element->query->joinType === null) {
-				$joinType = $element->query->select === false ? 'INNER JOIN' : 'LEFT JOIN';
+				$joinType = 'LEFT JOIN';
 			} else {
 				$joinType = $element->query->joinType;
 			}
-			$modelClass = $element->query->modelClass;
-			$tableName = $this->connection->quoteTableName($modelClass::tableName());
+			if ($element->query->modelClass !== null) {
+				$modelClass = $element->query->modelClass;
+				$tableName = $this->connection->quoteTableName($modelClass::tableName());
+			} else {
+				$tableName = $this->connection->quoteTableName($element->query->table);
+			}
 			$tableAlias = $this->connection->quoteTableName($element->query->tableAlias);
 			$join = "$joinType $tableName $tableAlias";
+			$on = '';
+			if (is_array($element->query->link)) {
+				foreach ($element->query->link as $pk => $fk) {
+					$pk = $quotedPrefixes['@.'] . $this->connection->quoteColumnName($pk, true);
+					$fk = $quotedPrefixes['?.'] . $this->connection->quoteColumnName($fk, true);
+					if ($on !== '') {
+						$on .= ' AND ';
+					}
+					$on .= "$pk = $fk";
+				}
+			}
 			if ($element->query->on !== null) {
-				$join .= ' ON ' . strtr($qb->buildCondition($element->query->on), $quotedPrefixes);
+				$condition = strtr($qb->buildCondition($element->query->on), $quotedPrefixes);
+				if ($on !== '') {
+					$on .= " AND ($condition)";
+				} else {
+					$on = $condition;
+				}
+			}
+			if ($on !== '') {
+				$join .= ' ON ' . $on;
 			}
 			$query->join[] = $join;
 		}

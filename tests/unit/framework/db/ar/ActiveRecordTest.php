@@ -7,6 +7,7 @@ use yii\db\ar\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\OrderItem;
+use yiiunit\data\ar\Order;
 
 class ActiveRecordTest extends \yiiunit\MysqlTestCase
 {
@@ -185,7 +186,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		// count
 		$query = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC');
 		$query->one();
-		$this->assertEquals(1, $query->count);
+		$this->assertEquals(3, $query->count);
 		$query = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC');
 		$this->assertEquals(3, $query->count);
 	}
@@ -235,6 +236,20 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(1, $customers[0]->orders[0]->customer->id);
 		$this->assertEquals(2, $customers[1]->orders[0]->customer->id);
 		$this->assertEquals(2, $customers[1]->orders[1]->customer->id);
+
+		$orders = Order::find()->with('items')->order('@.id')->all();
+		$this->assertEquals(3, count($orders));
+		$this->assertEquals(1, $orders[0]->items[0]->id);
+		$this->assertEquals(2, $orders[0]->items[1]->id);
+		$this->assertEquals(3, $orders[1]->items[0]->id);
+		$this->assertEquals(4, $orders[1]->items[1]->id);
+		$this->assertEquals(5, $orders[1]->items[2]->id);
+
+		$orders = Order::find()->with('books')->order('@.id')->all();
+		$this->assertEquals(2, count($orders));
+		$this->assertEquals(1, $orders[0]->books[0]->id);
+		$this->assertEquals(2, $orders[0]->books[1]->id);
+		$this->assertEquals(2, $orders[1]->books[0]->id);
 	}
 
 	/*

@@ -16,7 +16,7 @@ class Customer extends ActiveRecord
 	{
 		return array(
 			'orders:Order[]' => array(
-				'on' => '@.customer_id = ?.id',
+				'link' => array('customer_id' => 'id'),
 			),
 		);
 	}
@@ -25,7 +25,7 @@ class Customer extends ActiveRecord
 	{
 		return array(
 			'active' => function($q) {
-				return $q->andWhere('@.status = ' . self::STATUS_ACTIVE);
+				return $q->andWhere('@.`status` = ' . Customer::STATUS_ACTIVE);
 			},
 		);
 	}

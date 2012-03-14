@@ -23,12 +23,9 @@ class ActiveRelation extends BaseActiveQuery
 	 */
 	public $name;
 	/**
-	 * @var array the columns of the primary and foreign tables that establish the relation.
-	 * The array keys must be columns of the table for this relation, and the array values
-	 * must be the corresponding columns from the primary table. Do not prefix or quote the column names.
-	 * They will be done automatically by Yii.
+	 * @var string the name of the table
 	 */
-	public $link;
+	public $table;
 	/**
 	 * @var boolean whether this relation is a one-many relation
 	 */
@@ -38,6 +35,13 @@ class ActiveRelation extends BaseActiveQuery
 	 * this relation is used to load related records, and 'INNER JOIN' when this relation is used as a filter.
 	 */
 	public $joinType;
+	/**
+	 * @var array the columns of the primary and foreign tables that establish the relation.
+	 * The array keys must be columns of the table for this relation, and the array values
+	 * must be the corresponding columns from the primary table. Do not prefix or quote the column names.
+	 * They will be done automatically by Yii.
+	 */
+	public $link;
 	/**
 	 * @var string the ON clause of the join query
 	 */

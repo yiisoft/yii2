@@ -13,7 +13,30 @@ class Order extends ActiveRecord
 	{
 		return array(
 			'customer:Customer' => array(
-				'on' => '@.id = ?.customer_id',
+				'link' => array('id' => 'customer_id'),
+			),
+			'orderItems:OrderItem' => array(
+				'link' => array('order_id' => 'id'),
+			),
+			'items:Item[]' => array(
+				'via' => 'orderItems',
+				'link' => array(
+					'id' => 'item_id',
+				),
+				'order' => '@.id',
+			),
+			'books:Item[]' => array(
+				'joinType' => 'INNER JOIN',
+				'via' => array(
+					'table' => 'tbl_order_item',
+					'link' => array(
+						'order_id' => 'id',
+					),
+				),
+				'link' => array(
+					'id' => 'item_id',
+				),
+				'on' => '@.category_id = 1',
 			),
 		);
 	}

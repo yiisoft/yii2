@@ -13,10 +13,10 @@ class OrderItem extends ActiveRecord
 	{
 		return array(
 			'order:Order' => array(
-				'on' => '@.order_id = ?.id',
+				'link' => array('order_id' => 'id'),
 			),
 			'item:Item' => array(
-				'on' => '@.item_id = ?.id',
+				'link' => array('item_id' => 'id'),
 			),
 		);
 	}
