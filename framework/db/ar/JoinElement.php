@@ -95,7 +95,7 @@ class JoinElement extends \yii\base\Object
 			$modelClass = $this->query->modelClass;
 			$this->records[$pk] = $record = $modelClass::create($attributes);
 			foreach ($this->children as $child) {
-				if ($child->query->select !== false || $child->joinOnly) {
+				if ($child->query->select !== false && !$child->joinOnly) {
 					$record->initRelation($child->query);
 				}
 			}

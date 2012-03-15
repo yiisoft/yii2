@@ -253,6 +253,9 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 
 		$orders = Order::find()->with('items')->order('@.id')->limit(2)->all();
 		$this->assertEquals(2, count($orders));
+
+		$orders = Order::findBySql('SELECT * FROM tbl_order WHERE customer_id=2')->with('items')->all();
+		$this->assertEquals(2, count($orders));
 	}
 
 	/*

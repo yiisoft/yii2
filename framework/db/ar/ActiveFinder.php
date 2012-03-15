@@ -17,9 +17,10 @@ use yii\db\Exception;
 
 /**
  * ActiveFinder.php is ...
- * todo: base limited with has_many, bySQL, lazy loading
- * todo: quoting column names in 'on' clause
- *
+ * todo: lazy loading
+ * todo: clean up joinOnly and select=false
+ * todo: records for index != null, asArray = true
+ * todo: refactor code
  * @property integer $count
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -72,6 +73,11 @@ class ActiveFinder extends \yii\base\Object
 		$command = $this->connection->createCommand($sql, $query->params);
 
 		$rows = $command->queryAll();
+		return $this->createRecords($query, $rows);
+	}
+
+	protected function createRecords($query, $rows)
+	{
 		$records = array();
 		if ($query->asArray) {
 			if ($query->index === null) {
@@ -111,10 +117,38 @@ class ActiveFinder extends \yii\base\Object
 	 */
 	public function findRecordsWithRelations($query)
 	{
+		if ($query->sql !== null) {
+			$command = $this->connection->createCommand($query->sql, $query->params);
+			$rows = $command->queryAll();
+			$records = $this->createRecords($query, $rows);
+			$q = new ActiveQuery($query->modelClass);
+			$q->with = $query->with;
+			$q->tableAlias = 't';
+			$q->asArray = $query->asArray;
+			$q->index = $query->index;
+			$modelClass = $query->modelClass;
+			$table = $modelClass::getMetaData()->table;
+			$q->select = $table->primaryKey;
+			$this->addPkCondition($q, $table, $rows, 't.');
+			$query = $q;
+		}
+
 		$this->_joinCount = 0;
 		$this->_tableAliases = array();
 		$this->_hasMany = false;
 		$joinTree = new JoinElement($this->_joinCount++, $query, null, null);
+
+		if (isset($records)) {
+			foreach ($records as $record) {
+				$pk = array();
+				foreach ($table->primaryKey as $name) {
+					$pk[] = $record[$name];
+				}
+				$pk = count($pk) === 1 ? $pk[0] : serialize($pk);
+				$joinTree->records[$pk] = $record;
+			}
+		}
+
 		$this->buildJoinTree($joinTree, $query->with);
 		$this->initJoinTree($joinTree);
 
@@ -143,6 +177,9 @@ class ActiveFinder extends \yii\base\Object
 
 	protected function applyScopes($query)
 	{
+		if ($query->modelClass === null || $query instanceof ActiveQuery && $query->sql !== null) {
+			return;
+		}
 		$class = $query->modelClass;
 		$class::defaultScope($query);
 		if (is_array($query->scopes)) {
@@ -262,9 +299,7 @@ class ActiveFinder extends \yii\base\Object
 		$this->_tableAliases[$alias] = true;
 		$element->query->tableAlias = $alias;
 
-		if ($element->query->modelClass !== null) {
-			$this->applyScopes($element->query);
-		}
+		$this->applyScopes($element->query);
 
 		foreach ($element->children as $child) {
 			$this->initJoinTree($child, $count);
@@ -455,29 +490,35 @@ class ActiveFinder extends \yii\base\Object
 		}
 		$q->distinct = true;
 		$rows = $q->createCommand($this->connection)->queryAll();
+		$prefix = $activeQuery->tableAlias . '.';
+		$this->addPkCondition($query, $table, $rows, $prefix);
+		$query->limit = $query->offset = null;
+	}
+
+	protected function addPkCondition($query, $table, $rows, $prefix)
+	{
 		if (count($table->primaryKey) === 1) {
 			$name = $table->primaryKey[0];
 			$values = array();
 			foreach ($rows as $row) {
 				$values[] = $table->columns[$name]->typecast($row[$name]);
 			}
-			$query->andWhere(array('in', $activeQuery->tableAlias . '.' . $name, $values));
+			$query->andWhere(array('in', $prefix . $name, $values));
 		} else {
 			$ors = array('or');
 			$prefix = $this->connection->quoteTableName($activeQuery->tableAlias, true) . '.';
 			foreach ($rows as $row) {
-				$ands = array();
+				$hash = array();
 				foreach ($table->primaryKey as $name) {
 					$value = $table->columns[$name]->typecast($row[$name]);
 					if (is_string($value)) {
 						$value = $this->connection->quoteValue($value);
 					}
-					$ands[] = $prefix . $this->connection->quoteColumnName($name, true) . '=' . $value;
+					$hash[$prefix . $name] = $value;
 				}
-				$ors[] = implode(' AND ', $ands);
+				$ors[] = $hash;
 			}
 			$query->andWhere($ors);
 		}
-		$query->limit = $query->offset = null;
 	}
 }
