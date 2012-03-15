@@ -533,6 +533,7 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 		if ($parts !== array()) {
+			$operator = strtoupper($operator);
 			return '(' . implode(") $operator (", $parts) . ')';
 		} else {
 			return '';
@@ -580,6 +581,7 @@ class QueryBuilder extends \yii\base\Object
 			$column = $this->quoteColumnName($column);
 		}
 
+		$operator = strtoupper($operator);
 		return "$column $operator (" . implode(', ', $values) . ')';
 	}
 
@@ -600,9 +602,9 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		if ($operator === 'like' || $operator === 'not like') {
-			$andor = ' and ';
+			$andor = ' AND ';
 		} else {
-			$andor = ' or ';
+			$andor = ' OR ';
 			$operator = $operator === 'or like' ? 'like' : 'not like';
 		}
 
@@ -610,6 +612,7 @@ class QueryBuilder extends \yii\base\Object
 			$column = $this->quoteColumnName($column);
 		}
 
+		$operator = strtoupper($operator);
 		$parts = array();
 		foreach ($values as $value) {
 			$parts[] = "$column $operator " . $this->connection->quoteValue($value);

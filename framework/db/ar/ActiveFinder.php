@@ -120,6 +120,11 @@ class ActiveFinder extends \yii\base\Object
 
 		$q = new Query;
 		$this->buildJoinQuery($joinTree, $q);
+
+		if ($this->_hasMany && ($query->limit > 0 || $query->offset > 0)) {
+			$this->limitQuery($query, $q);
+		}
+
 		$rows = $q->createCommand($this->connection)->queryAll();
 		foreach ($rows as $row) {
 			$joinTree->createRecord($row);
@@ -202,7 +207,7 @@ class ActiveFinder extends \yii\base\Object
 			} elseif (is_array($relation->via)) {
 				// join via a pivoting table
 				$r = new ActiveRelation;
-				$r->name = 'pt' . $this->_joinCount;
+				$r->name = 'vt' . $this->_joinCount;
 				$r->hasMany = $relation->hasMany;
 
 				foreach ($relation->via as $name => $value) {
@@ -288,6 +293,8 @@ class ActiveFinder extends \yii\base\Object
 			$quotedPrefixes = array(
 				'@.' => $this->connection->quoteTableName($element->query->tableAlias, true) . '.',
 			);
+			$query->limit = $element->query->limit;
+			$query->offset = $element->query->offset;
 		}
 
 		$qb = $this->connection->getQueryBuilder();
@@ -435,5 +442,42 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		return $columns;
+	}
+
+	protected function limitQuery($activeQuery, $query)
+	{
+		$q = clone $query;
+		$modelClass = $activeQuery->modelClass;
+		$table = $modelClass::getMetaData()->table;
+		$q->select = array();
+		foreach ($table->primaryKey as $name) {
+			$q->select[] = $alias = $activeQuery->tableAlias . '.' . $name;
+		}
+		$q->distinct = true;
+		$rows = $q->createCommand($this->connection)->queryAll();
+		if (count($table->primaryKey) === 1) {
+			$name = $table->primaryKey[0];
+			$values = array();
+			foreach ($rows as $row) {
+				$values[] = $table->columns[$name]->typecast($row[$name]);
+			}
+			$query->andWhere(array('in', $activeQuery->tableAlias . '.' . $name, $values));
+		} else {
+			$ors = array('or');
+			$prefix = $this->connection->quoteTableName($activeQuery->tableAlias, true) . '.';
+			foreach ($rows as $row) {
+				$ands = array();
+				foreach ($table->primaryKey as $name) {
+					$value = $table->columns[$name]->typecast($row[$name]);
+					if (is_string($value)) {
+						$value = $this->connection->quoteValue($value);
+					}
+					$ands[] = $prefix . $this->connection->quoteColumnName($name, true) . '=' . $value;
+				}
+				$ors[] = implode(' AND ', $ands);
+			}
+			$query->andWhere($ors);
+		}
+		$query->limit = $query->offset = null;
 	}
 }

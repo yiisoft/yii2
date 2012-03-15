@@ -250,6 +250,9 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(1, $orders[0]->books[0]->id);
 		$this->assertEquals(2, $orders[0]->books[1]->id);
 		$this->assertEquals(2, $orders[1]->books[0]->id);
+
+		$orders = Order::find()->with('items')->order('@.id')->limit(2)->all();
+		$this->assertEquals(2, count($orders));
 	}
 
 	/*

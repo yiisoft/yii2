@@ -41,7 +41,7 @@ class TableSchema extends \yii\base\Object
 	 */
 	public $quotedName;
 	/**
-	 * @var array primary keys of this table.
+	 * @var string[] primary keys of this table.
 	 */
 	public $primaryKey = array();
 	/**
@@ -61,7 +61,7 @@ class TableSchema extends \yii\base\Object
 	 */
 	public $foreignKeys = array();
 	/**
-	 * @var array column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
+	 * @var ColumnSchema[] column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
 	 */
 	public $columns = array();
 
