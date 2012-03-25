@@ -425,7 +425,7 @@ abstract class ActiveRecord extends Model
 		if (isset($md->table->columns[$name])) {
 			return null;
 		} elseif (isset($md->relations[$name])) {
-			if (array_key_exists($name, $this->_related)) {
+			if (isset($this->_related[$name]) || $this->_related !== null && array_key_exists($name, $this->_related)) {
 				return $this->_related[$name];
 			} else {
 				return $this->_related[$name] = $this->findByRelation($md->relations[$name]);
@@ -555,6 +555,7 @@ abstract class ActiveRecord extends Model
 			}
 			$relation = $md->relations[$relation];
 		}
+		$relation = clone $relation;
 		foreach ($params as $name => $value) {
 			$relation->$name = $value;
 		}

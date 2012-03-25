@@ -19,7 +19,6 @@ use yii\db\Exception;
  * ActiveFinder.php is ...
  * todo: lazy loading
  * todo: clean up joinOnly and select=false
- * todo: records for index != null, asArray = true
  * todo: refactor code
  * todo: count with
  * todo: findBySql and lazy loading cannot apply scopes for primary table
@@ -84,14 +83,15 @@ class ActiveFinder extends \yii\base\Object
 			}
 			$this->applyScopes($query);
 			$sql = $this->connection->getQueryBuilder()->build($query);
-			if (strpos($sql, '@.') !== false) {
+			$prefix = $this->connection->quoteTableName('@', true) . '.';
+			if (strpos($sql, $prefix) !== false) {
 				if ($query->tableAlias !== null) {
 					$alias = $this->connection->quoteTableName($query->tableAlias) . '.';
 				} else {
 					$class = $query->modelClass;
 					$alias = $this->connection->quoteTableName($class::tableName()) . '.';
 				}
-				$sql = str_replace('@.', $alias, $sql);
+				$sql = str_replace($prefix, $alias, $sql);
 			}
 		}
 		$command = $this->connection->createCommand($sql, $query->params);
@@ -125,18 +125,31 @@ class ActiveFinder extends \yii\base\Object
 		return $records;
 	}
 
+	/**
+	 * @param ActiveRecord $record
+	 * @param ActiveRelation $relation
+	 * @return array
+	 */
 	public function findRelatedRecords($record, $relation)
 	{
 		$this->_joinCount = 0;
 		$this->_tableAliases = array();
 		$this->_hasMany = false;
 		$query = new ActiveQuery(get_class($record));
+		$modelClass = $query->modelClass;
+		$table = $modelClass::getMetaData()->table;
+		$query->select = $table->primaryKey;
+		$query->limit = $relation->limit;
+		$query->offset = $relation->offset;
 		$joinTree = new JoinElement($this->_joinCount++, $query, null, null);
 		$child = $this->buildJoinTree($joinTree, $relation->name);
+		$child->query = $relation;
+		$child->container = null;
 		$this->buildJoinTree($child, $relation->with);
 		$this->initJoinTree($joinTree);
 
-		// todo: set where by pk
+		$pk = $record->getPrimaryKey(true);
+		$this->addPkCondition($query, $table, array($pk), $query->tableAlias . '.');
 
 		$q = new Query;
 		$this->buildJoinQuery($joinTree, $q);
@@ -146,16 +159,13 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		$rows = $q->createCommand($this->connection)->queryAll();
-		$joinTree->populateData($rows);
+		$child->populateData($rows);
 
-		if ($query->index !== null) {
-			$records = array();
-			foreach ($joinTree->records as $record) {
-				$records[$record[$query->index]] = $record;
-			}
+		$records = $relation->index === null ? array_values($child->records) : $child->records;
+		if ($relation->hasMany) {
 			return $records;
 		} else {
-			return array_values($joinTree->records);
+			return $records === array() ? null : reset($records);
 		}
 	}
 
@@ -563,7 +573,7 @@ class ActiveFinder extends \yii\base\Object
 
 	protected function addPkCondition($query, $table, $rows, $prefix)
 	{
-		if (count($table->primaryKey) === 1) {
+		if (count($table->primaryKey) === 1 && count($rows) > 1) {
 			$name = $table->primaryKey[0];
 			$values = array();
 			foreach ($rows as $row) {

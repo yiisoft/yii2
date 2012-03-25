@@ -267,45 +267,49 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue(is_array($customers[1]['orders'][0]['customer']));
 	}
 
-	/*
-	 public function testGetSql()
-	 {
-		 // sql for all
-		 $sql = Customer::find()->sql;
-		 $this->assertEquals('SELECT * FROM `tbl_customer`', $sql);
+	public function testLazyLoading()
+	{
+		// has one
+		$order = Order::find(3)->one();
+		$this->assertTrue($order->customer instanceof Customer);
+		$this->assertEquals(2, $order->customer->id);
 
-		 // sql for one row
-		 $sql = Customer::find()->oneSql;
-		 $this->assertEquals('SELECT * FROM tbl_customer LIMIT 1', $sql);
+		// has many
+		$customer = Customer::find(2)->one();
+		$orders = $customer->orders;
+		$this->assertEquals(2, count($orders));
+		$this->assertEquals(2, $orders[0]->id);
+		$this->assertEquals(3, $orders[1]->id);
 
-		 // sql for count
-		 $sql = Customer::find()->countSql;
-		 $this->assertEquals('SELECT COUNT(*) FROM tbl_customer', $sql);
-	 }
+		// has many via join table
+		$orders = Order::find()->order('@.id')->all();
+		$this->assertEquals(3, count($orders));
+		$this->assertEquals(2, count($orders[0]->books));
+		$this->assertEquals(1, $orders[0]->books[0]->id);
+		$this->assertEquals(2, $orders[0]->books[1]->id);
+		$this->assertEquals(array(), $orders[1]->books);
+		$this->assertEquals(1, count($orders[2]->books));
+		$this->assertEquals(2, $orders[2]->books[0]->id);
 
-	 public function testArrayResult()
-	 {
-		 Customer::find()->asArray()->one();
-		 Customer::find()->asArray()->all();
-	 }
-
-	 public function testMisc()
-	 {
- //		 Customer::exists()
- //		 Customer::updateAll()
- //		 Customer::updateCounters()
- //		 Customer::deleteAll()
-	 }
-
-
-	 public function testLazyLoading()
-	 {
-
-	 }
-
-	 public function testEagerLoading()
-	 {
-
-	 }
- */
+		// customized relation query
+		$customer = Customer::find(2)->one();
+		$orders = $customer->orders(array(
+			'where' => '@.id = 3',
+		));
+		$this->assertEquals(1, count($orders));
+		$this->assertEquals(3, $orders[0]->id);
+		// original results are kept after customized query
+		$orders = $customer->orders;
+		$this->assertEquals(2, count($orders));
+		$this->assertEquals(2, $orders[0]->id);
+		$this->assertEquals(3, $orders[1]->id);
+		// as array
+		$orders = $customer->orders(array(
+			'asArray' => true,
+		));
+		$this->assertEquals(2, count($orders));
+		$this->assertTrue(is_array($orders[0]));
+		$this->assertEquals(2, $orders[0]['id']);
+		$this->assertEquals(3, $orders[1]['id']);
+	}
 }

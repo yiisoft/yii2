@@ -57,8 +57,8 @@ class JoinElement extends \yii\base\Object
 	/**
 	 * @var array query results for this element (PK value => AR instance or data array)
 	 */
-	public $records;
-	public $related;
+	public $records = array();
+	public $related = array();
 
 	/**
 	 * @param integer $id
