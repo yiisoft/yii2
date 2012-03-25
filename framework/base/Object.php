@@ -216,7 +216,7 @@ class Object
 	 */
 	public function canSetProperty($name, $checkVar = true)
 	{
-		return method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name);
+		return $checkVar && property_exists($this, $name) || method_exists($this, 'set' . $name);
 	}
 
 	/**

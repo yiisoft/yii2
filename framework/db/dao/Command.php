@@ -222,7 +222,7 @@ class Command extends \yii\base\Component
 		}
 
 		\Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
-
+echo $sql . "\n\n";
 		try {
 			if ($this->connection->enableProfiling) {
 				\Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);

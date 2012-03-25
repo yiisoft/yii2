@@ -256,6 +256,15 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 
 		$orders = Order::findBySql('SELECT * FROM tbl_order WHERE customer_id=2')->with('items')->all();
 		$this->assertEquals(2, count($orders));
+
+		$customers = Customer::find()->with('orders.customer')->order('@.id')->index('id')->asArray()->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertTrue(isset($customers[1], $customers[2], $customers[3]));
+		$this->assertTrue(is_array($customers[1]));
+		$this->assertEquals(1, count($customers[1]['orders']));
+		$this->assertEquals(2, count($customers[2]['orders']));
+		$this->assertEquals(0, count($customers[3]['orders']));
+		$this->assertTrue(is_array($customers[1]['orders'][0]['customer']));
 	}
 
 	/*

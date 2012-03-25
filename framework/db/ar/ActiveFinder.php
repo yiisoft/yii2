@@ -21,6 +21,30 @@ use yii\db\Exception;
  * todo: clean up joinOnly and select=false
  * todo: records for index != null, asArray = true
  * todo: refactor code
+ * todo: count with
+ * todo: findBySql and lazy loading cannot apply scopes for primary table
+ *
+ * Four cases:
+ * 1. normal eager loading
+ * 2. eager loading, base limited and has many
+ * 3. findBySql and eager loading
+ * 4. lazy loading
+ *
+ * Build a join tree
+ * Update join tree
+ *     Case 2:
+ *         Find PKs for primary table
+ *         Modify main query with the found PK, reset limit/offset
+ *     Case 3:
+ *         Find records by SQL
+ *         Reset main query and set WHERE with the found PK
+ *         Set root.records = the found records
+ *     Case 4:
+ *         Set root.records = the primary record
+ * Generate join query
+ *     Case 4:
+ *         If
+ *
  * @property integer $count
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -101,10 +125,38 @@ class ActiveFinder extends \yii\base\Object
 		return $records;
 	}
 
-
-	public function findRelatedRecords($record, $relation, $params)
+	public function findRelatedRecords($record, $relation)
 	{
+		$this->_joinCount = 0;
+		$this->_tableAliases = array();
+		$this->_hasMany = false;
+		$query = new ActiveQuery(get_class($record));
+		$joinTree = new JoinElement($this->_joinCount++, $query, null, null);
+		$child = $this->buildJoinTree($joinTree, $relation->name);
+		$this->buildJoinTree($child, $relation->with);
+		$this->initJoinTree($joinTree);
 
+		// todo: set where by pk
+
+		$q = new Query;
+		$this->buildJoinQuery($joinTree, $q);
+
+		if ($this->_hasMany && ($query->limit > 0 || $query->offset > 0)) {
+			$this->limitQuery($query, $q);
+		}
+
+		$rows = $q->createCommand($this->connection)->queryAll();
+		$joinTree->populateData($rows);
+
+		if ($query->index !== null) {
+			$records = array();
+			foreach ($joinTree->records as $record) {
+				$records[$record[$query->index]] = $record;
+			}
+			return $records;
+		} else {
+			return array_values($joinTree->records);
+		}
 	}
 
 	private $_joinCount;
@@ -150,7 +202,7 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		$this->buildJoinTree($joinTree, $query->with);
-		$this->initJoinTree($joinTree);
+		$this->initJoinTree($joinTree, !isset($records));
 
 		$q = new Query;
 		$this->buildJoinQuery($joinTree, $q);
@@ -160,19 +212,9 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		$rows = $q->createCommand($this->connection)->queryAll();
-		foreach ($rows as $row) {
-			$joinTree->createRecord($row);
-		}
+		$joinTree->populateData($rows);
 
-		if ($query->index !== null) {
-			$records = array();
-			foreach ($joinTree->records as $record) {
-				$records[$record[$query->index]] = $record;
-			}
-			return $records;
-		} else {
-			return array_values($joinTree->records);
-		}
+		return $query->index === null ? array_values($joinTree->records) : $joinTree->records;
 	}
 
 	protected function applyScopes($query)
@@ -208,6 +250,9 @@ class ActiveFinder extends \yii\base\Object
 	 */
 	protected function buildJoinTree($parent, $with, $config = array())
 	{
+		if (empty($with)) {
+			return null;
+		}
 		if (is_array($with)) {
 			foreach ($with as $name => $value) {
 				if (is_array($value)) {
@@ -274,8 +319,9 @@ class ActiveFinder extends \yii\base\Object
 
 	/**
 	 * @param JoinElement $element
+	 * @param boolean $applyScopes
 	 */
-	protected function initJoinTree($element)
+	protected function initJoinTree($element, $applyScopes = true)
 	{
 		if ($element->query->tableAlias !== null) {
 			$alias = $element->query->tableAlias;
@@ -299,7 +345,13 @@ class ActiveFinder extends \yii\base\Object
 		$this->_tableAliases[$alias] = true;
 		$element->query->tableAlias = $alias;
 
-		$this->applyScopes($element->query);
+		if ($applyScopes) {
+			$this->applyScopes($element->query);
+		}
+
+		if ($element->container !== null && $element->query->asArray === null) {
+			$element->query->asArray = $element->container->query->asArray;
+		}
 
 		foreach ($element->children as $child) {
 			$this->initJoinTree($child, $count);
@@ -444,23 +496,25 @@ class ActiveFinder extends \yii\base\Object
 		$columns = array();
 		$columnCount = 0;
 		$prefix = $element->query->tableAlias;
+
+		foreach ($table->primaryKey as $column) {
+			$alias = "c{$element->id}_" . ($columnCount++);
+			$columns[] = "$prefix.$column AS $alias";
+			$element->pkAlias[$column] = $alias;
+			$element->columnAliases[$alias] = $column;
+		}
+
 		if (empty($select) || $select === '*') {
 			foreach ($table->columns as $column) {
-				$alias = "c{$element->id}_" . ($columnCount++);
-				$columns[] = "$prefix.{$column->name} AS $alias";
-				$element->columnAliases[$alias] = $column->name;
-				if ($column->isPrimaryKey) {
-					$element->pkAlias[$column->name] = $alias;
+				if (!isset($element->pkAlias[$column->name])) {
+					$alias = "c{$element->id}_" . ($columnCount++);
+					$columns[] = "$prefix.{$column->name} AS $alias";
+					$element->columnAliases[$alias] = $column->name;
 				}
 			}
 		} else {
 			if (is_string($select)) {
 				$select = explode(',', $select);
-			}
-			foreach ($table->primaryKey as $column) {
-				$alias = "c{$element->id}_" . ($columnCount++);
-				$columns[] = "$prefix.$column AS $alias";
-				$element->pkAlias[$column] = $alias;
 			}
 			foreach ($select as $column) {
 				$column = trim($column);
@@ -475,6 +529,18 @@ class ActiveFinder extends \yii\base\Object
 				}
 			}
 		}
+
+		// determine the actual index column(s)
+		if ($element->query->index !== null) {
+			$index = array_search($element->query->index, $element->columnAliases);
+		}
+		if (empty($index)) {
+			$index = $element->pkAlias;
+			if (count($index) === 1) {
+				$index = reset($element->pkAlias);
+			}
+		}
+		$element->key = $index;
 
 		return $columns;
 	}
@@ -506,7 +572,6 @@ class ActiveFinder extends \yii\base\Object
 			$query->andWhere(array('in', $prefix . $name, $values));
 		} else {
 			$ors = array('or');
-			$prefix = $this->connection->quoteTableName($activeQuery->tableAlias, true) . '.';
 			foreach ($rows as $row) {
 				$hash = array();
 				foreach ($table->primaryKey as $name) {

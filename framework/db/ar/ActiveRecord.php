@@ -555,8 +555,12 @@ abstract class ActiveRecord extends Model
 			}
 			$relation = $md->relations[$relation];
 		}
-		$query = $this->createActiveQuery();
-		return $query->findRelatedRecords($this, $relation, $params);
+		foreach ($params as $name => $value) {
+			$relation->$name = $value;
+		}
+
+		$finder = new ActiveFinder($this->getDbConnection());
+		return $finder->findRelatedRecords($this, $relation);
 	}
 
 	/**
@@ -1045,7 +1049,7 @@ abstract class ActiveRecord extends Model
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$record->_attributes[$name] = $value;
-			} elseif ($record->canSetProperty($name)) {
+			} else {
 				$record->$name = $value;
 			}
 		}
