@@ -134,13 +134,17 @@ abstract class ActiveRecord extends Model
 	 *
 	 * ~~~
 	 * // count the total number of customers
-	 * echo Customer::count();
-	 * // count the number of customers whose primary key value is 10.
-	 * echo Customer::count(10);
+	 * echo Customer::count()->value();
 	 * // count the number of active customers:
 	 * echo Customer::count(array(
 	 *     'where' => array('status' => 1),
-	 * ));
+	 * ))->value();
+	 * // equivalent usage:
+	 * echo Customer::count()
+	 *     ->where(array('status' => 1))
+	 *     ->value();
+	 * // customize the count option
+	 * echo Customer::count('COUNT(DISTINCT age)')->value();
 	 * ~~~
 	 *
 	 * @param mixed $q the query parameter. This can be one of the followings:
@@ -157,13 +161,9 @@ abstract class ActiveRecord extends Model
 			foreach ($q as $name => $value) {
 				$query->$name = $value;
 			}
-		} elseif ($q !== null) {
-			// query by primary key
-			$primaryKey = static::getMetaData()->table->primaryKey;
-			$query->where(array($primaryKey[0] => $q));
 		}
 		if ($query->select === null) {
-			$query->select = 'COUNT(*)';
+			$query->select = array('COUNT(*)');
 		}
 		return $query->value();
 	}
@@ -561,7 +561,7 @@ abstract class ActiveRecord extends Model
 		}
 
 		$finder = new ActiveFinder($this->getDbConnection());
-		return $finder->findRelatedRecords($this, $relation);
+		return $finder->findWithRecord($this, $relation);
 	}
 
 	/**

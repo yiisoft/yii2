@@ -39,10 +39,6 @@ class JoinElement extends \yii\base\Object
 	 */
 	public $relations = array();
 	/**
-	 * @var boolean whether this element is only for join purpose. If false, data will be populated into the AR of this element.
-	 */
-	public $joinOnly;
-	/**
 	 * @var array column aliases (alias => original name)
 	 */
 	public $columnAliases = array();

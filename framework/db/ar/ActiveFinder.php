@@ -17,32 +17,6 @@ use yii\db\Exception;
 
 /**
  * ActiveFinder.php is ...
- * todo: lazy loading
- * todo: clean up joinOnly and select=false
- * todo: refactor code
- * todo: count with
- * todo: findBySql and lazy loading cannot apply scopes for primary table
- *
- * Four cases:
- * 1. normal eager loading
- * 2. eager loading, base limited and has many
- * 3. findBySql and eager loading
- * 4. lazy loading
- *
- * Build a join tree
- * Update join tree
- *     Case 2:
- *         Find PKs for primary table
- *         Modify main query with the found PK, reset limit/offset
- *     Case 3:
- *         Find records by SQL
- *         Reset main query and set WHERE with the found PK
- *         Set root.records = the found records
- *     Case 4:
- *         Set root.records = the primary record
- * Generate join query
- *     Case 4:
- *         If
  *
  * @property integer $count
  *
@@ -64,18 +38,18 @@ class ActiveFinder extends \yii\base\Object
 	/**
 	 * @param ActiveQuery $query
 	 */
-	public function findRecords($query)
+	public function find($query, $returnScalar = false)
 	{
 		if (!empty($query->with)) {
-			return $this->findRecordsWithRelations($query);
+			return $this->findWithRelations($query, $returnScalar);
 		}
 
 		if ($query->sql !== null) {
 			$sql = $query->sql;
 		} else {
+			$modelClass = $query->modelClass;
+			$tableName = $modelClass::tableName();
 			if ($query->from === null) {
-				$modelClass = $query->modelClass;
-				$tableName = $modelClass::tableName();
 				if ($query->tableAlias !== null) {
 					$tableName .= ' ' . $query->tableAlias;
 				}
@@ -83,46 +57,88 @@ class ActiveFinder extends \yii\base\Object
 			}
 			$this->applyScopes($query);
 			$sql = $this->connection->getQueryBuilder()->build($query);
-			$prefix = $this->connection->quoteTableName('@', true) . '.';
-			if (strpos($sql, $prefix) !== false) {
-				if ($query->tableAlias !== null) {
-					$alias = $this->connection->quoteTableName($query->tableAlias) . '.';
-				} else {
-					$class = $query->modelClass;
-					$alias = $this->connection->quoteTableName($class::tableName()) . '.';
-				}
-				$sql = str_replace($prefix, $alias, $sql);
+
+			if ($query->tableAlias !== null) {
+				$alias = $this->connection->quoteTableName($query->tableAlias) . '.';
+			} else {
+				$alias = $this->connection->quoteTableName($tableName) . '.';
 			}
+			$tokens = array(
+				'@.' => $alias,
+				$this->connection->quoteTableName('@', true) . '.' => $alias,
+			);
+			$sql = strtr($sql, $tokens);
 		}
 		$command = $this->connection->createCommand($sql, $query->params);
 
-		$rows = $command->queryAll();
-		return $this->createRecords($query, $rows);
+		if ($returnScalar) {
+			return $command->queryScalar();
+		} else {
+			$rows = $command->queryAll();
+			return $this->createRecords($query, $rows);
+		}
 	}
 
-	protected function createRecords($query, $rows)
+	private $_joinCount;
+	private $_tableAliases;
+	private $_hasMany;
+
+	/**
+	 * @param ActiveQuery $query
+	 * @return array
+	 */
+	protected function findWithRelations($query, $returnScalar = false)
 	{
-		$records = array();
-		if ($query->asArray) {
-			if ($query->index === null) {
-				return $rows;
+		$this->_joinCount = 0;
+		$this->_tableAliases = array();
+		$this->_hasMany = false;
+		$joinTree = new JoinElement($this->_joinCount++, $query, null, null);
+
+		if ($query->sql !== null) {
+			$command = $this->connection->createCommand($query->sql, $query->params);
+			if ($returnScalar) {
+				return $command->queryScalar();
 			}
-			foreach ($rows as $row) {
-				$records[$row[$query->index]] = $row;
-			}
-		} else {
-			$class = $query->modelClass;
-			if ($query->index === null) {
-				foreach ($rows as $row) {
-					$records[] = $class::create($row);
+			$rows = $command->queryAll();
+			$records = $this->createRecords($query, $rows);
+			$modelClass = $query->modelClass;
+			$table = $modelClass::getMetaData()->table;
+			foreach ($records as $record) {
+				$pk = array();
+				foreach ($table->primaryKey as $name) {
+					$pk[] = $record[$name];
 				}
-			} else {
-				foreach ($rows as $row) {
-					$records[$row[$query->index]] = $class::create($row);
-				}
+				$pk = count($pk) === 1 ? $pk[0] : serialize($pk);
+				$joinTree->records[$pk] = $record;
 			}
+
+			$q = new ActiveQuery($modelClass);
+			$q->with = $query->with;
+			$q->tableAlias = 't';
+			$q->asArray = $query->asArray;
+			$q->index = $query->index;
+			$q->select = $table->primaryKey;
+			$this->addPkCondition($q, $table, $rows, 't.');
+			$joinTree->query = $query = $q;
 		}
-		return $records;
+
+		$this->buildJoinTree($joinTree, $query->with);
+		$this->initJoinTree($joinTree);
+
+		$q = new Query;
+		$this->buildJoinQuery($joinTree, $q, $returnScalar);
+
+		if ($returnScalar) {
+			return $q->createCommand($this->connection)->queryScalar();
+		} else {
+			if ($this->_hasMany && ($query->limit > 0 || $query->offset > 0)) {
+				$this->limitQuery($query, $q);
+			}
+			$command = $q->createCommand($this->connection);
+			$rows = $command->queryAll();
+			$joinTree->populateData($rows);
+			return $query->index === null ? array_values($joinTree->records) : $joinTree->records;
+		}
 	}
 
 	/**
@@ -130,7 +146,7 @@ class ActiveFinder extends \yii\base\Object
 	 * @param ActiveRelation $relation
 	 * @return array
 	 */
-	public function findRelatedRecords($record, $relation)
+	public function findWithRecord($record, $relation)
 	{
 		$this->_joinCount = 0;
 		$this->_tableAliases = array();
@@ -169,69 +185,33 @@ class ActiveFinder extends \yii\base\Object
 		}
 	}
 
-	private $_joinCount;
-	private $_tableAliases;
-	private $_hasMany;
-
-	/**
-	 * @param ActiveQuery $query
-	 * @return array
-	 */
-	public function findRecordsWithRelations($query)
+	protected function createRecords($query, $rows)
 	{
-		if ($query->sql !== null) {
-			$command = $this->connection->createCommand($query->sql, $query->params);
-			$rows = $command->queryAll();
-			$records = $this->createRecords($query, $rows);
-			$q = new ActiveQuery($query->modelClass);
-			$q->with = $query->with;
-			$q->tableAlias = 't';
-			$q->asArray = $query->asArray;
-			$q->index = $query->index;
-			$modelClass = $query->modelClass;
-			$table = $modelClass::getMetaData()->table;
-			$q->select = $table->primaryKey;
-			$this->addPkCondition($q, $table, $rows, 't.');
-			$query = $q;
-		}
-
-		$this->_joinCount = 0;
-		$this->_tableAliases = array();
-		$this->_hasMany = false;
-		$joinTree = new JoinElement($this->_joinCount++, $query, null, null);
-
-		if (isset($records)) {
-			foreach ($records as $record) {
-				$pk = array();
-				foreach ($table->primaryKey as $name) {
-					$pk[] = $record[$name];
+		$records = array();
+		if ($query->asArray) {
+			if ($query->index === null) {
+				return $rows;
+			}
+			foreach ($rows as $row) {
+				$records[$row[$query->index]] = $row;
+			}
+		} else {
+			$class = $query->modelClass;
+			if ($query->index === null) {
+				foreach ($rows as $row) {
+					$records[] = $class::create($row);
 				}
-				$pk = count($pk) === 1 ? $pk[0] : serialize($pk);
-				$joinTree->records[$pk] = $record;
+			} else {
+				foreach ($rows as $row) {
+					$records[$row[$query->index]] = $class::create($row);
+				}
 			}
 		}
-
-		$this->buildJoinTree($joinTree, $query->with);
-		$this->initJoinTree($joinTree, !isset($records));
-
-		$q = new Query;
-		$this->buildJoinQuery($joinTree, $q);
-
-		if ($this->_hasMany && ($query->limit > 0 || $query->offset > 0)) {
-			$this->limitQuery($query, $q);
-		}
-
-		$rows = $q->createCommand($this->connection)->queryAll();
-		$joinTree->populateData($rows);
-
-		return $query->index === null ? array_values($joinTree->records) : $joinTree->records;
+		return $records;
 	}
 
 	protected function applyScopes($query)
 	{
-		if ($query->modelClass === null || $query instanceof ActiveQuery && $query->sql !== null) {
-			return;
-		}
 		$class = $query->modelClass;
 		$class::defaultScope($query);
 		if (is_array($query->scopes)) {
@@ -281,7 +261,6 @@ class ActiveFinder extends \yii\base\Object
 
 		if (isset($parent->children[$with])) {
 			$child = $parent->children[$with];
-			$child->joinOnly = false;
 		} else {
 			$modelClass = $parent->query->modelClass;
 			$relations = $modelClass::getMetaData()->relations;
@@ -292,8 +271,9 @@ class ActiveFinder extends \yii\base\Object
 			if (is_string($relation->via)) {
 				// join via an existing relation
 				$parent2 = $this->buildJoinTree($parent, $relation->via);
-				if ($parent2->joinOnly === null) {
-					$parent2->joinOnly = true;
+				if ($parent2->query->select === null) {
+					$parent2->query->select = false;
+					unset($parent2->container->relations[$parent2->query->name]);
 				}
 				$child = new JoinElement($this->_joinCount++, $relation, $parent2, $parent);
 			} elseif (is_array($relation->via)) {
@@ -312,7 +292,6 @@ class ActiveFinder extends \yii\base\Object
 				}
 
 				$parent2 = new JoinElement($this->_joinCount++, $r, $parent, $parent);
-				$parent2->joinOnly = true;
 				$child = new JoinElement($this->_joinCount++, $relation, $parent2, $parent);
 
 			} else {
@@ -329,9 +308,8 @@ class ActiveFinder extends \yii\base\Object
 
 	/**
 	 * @param JoinElement $element
-	 * @param boolean $applyScopes
 	 */
-	protected function initJoinTree($element, $applyScopes = true)
+	protected function initJoinTree($element)
 	{
 		if ($element->query->tableAlias !== null) {
 			$alias = $element->query->tableAlias;
@@ -355,7 +333,7 @@ class ActiveFinder extends \yii\base\Object
 		$this->_tableAliases[$alias] = true;
 		$element->query->tableAlias = $alias;
 
-		if ($applyScopes) {
+		if ($element->records !== array()) {
 			$this->applyScopes($element->query);
 		}
 
@@ -364,7 +342,7 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		foreach ($element->children as $child) {
-			$this->initJoinTree($child, $count);
+			$this->initJoinTree($child);
 		}
 	}
 
@@ -372,7 +350,7 @@ class ActiveFinder extends \yii\base\Object
 	 * @param JoinElement $element
 	 * @param \yii\db\dao\Query $query
 	 */
-	protected function buildJoinQuery($element, $query)
+	protected function buildJoinQuery($element, $query, $keepSelect = false)
 	{
 		if ($element->parent) {
 			$prefixes = array(
@@ -396,8 +374,20 @@ class ActiveFinder extends \yii\base\Object
 
 		$qb = $this->connection->getQueryBuilder();
 
-		foreach ($this->buildSelect($element, $element->query->select) as $column) {
-			$query->select[] = strtr($column, $prefixes);
+		if ($keepSelect) {
+			if (!empty($element->query->select)) {
+				$select = $element->query->select;
+				if (is_string($select)) {
+					$select = explode(',', $select);
+				}
+				foreach ($select as $column) {
+					$query->select[] = strtr(trim($column), $prefixes);
+				}
+			}
+		} else {
+			foreach ($this->buildSelect($element, $element->query->select) as $column) {
+				$query->select[] = strtr($column, $prefixes);
+			}
 		}
 
 		if ($element->query instanceof ActiveQuery) {
@@ -492,7 +482,7 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		foreach ($element->children as $child) {
-			$this->buildJoinQuery($child, $query);
+			$this->buildJoinQuery($child, $query, $keepSelect);
 		}
 	}
 
@@ -534,7 +524,11 @@ class ActiveFinder extends \yii\base\Object
 					$columns[] = $column;
 				} elseif (!isset($element->pkAlias[$column])) {
 					$alias = "c{$element->id}_" . ($columnCount++);
-					$columns[] = "$prefix.$column AS $alias";
+					if (strpos($column, '(') !== false) {
+						$columns[] = "$column AS $alias";
+					} else {
+						$columns[] = "$prefix.$column AS $alias";
+					}
 					$element->columnAliases[$alias] = $column;
 				}
 			}

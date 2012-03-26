@@ -225,18 +225,21 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 
 	public function testEagerLoading()
 	{
+		// has many
 		$customers = Customer::find()->with('orders')->order('@.id')->all();
 		$this->assertEquals(3, count($customers));
 		$this->assertEquals(1, count($customers[0]->orders));
 		$this->assertEquals(2, count($customers[1]->orders));
 		$this->assertEquals(0, count($customers[2]->orders));
 
+		// nested
 		$customers = Customer::find()->with('orders.customer')->order('@.id')->all();
 		$this->assertEquals(3, count($customers));
 		$this->assertEquals(1, $customers[0]->orders[0]->customer->id);
 		$this->assertEquals(2, $customers[1]->orders[0]->customer->id);
 		$this->assertEquals(2, $customers[1]->orders[1]->customer->id);
 
+		// has many via relation
 		$orders = Order::find()->with('items')->order('@.id')->all();
 		$this->assertEquals(3, count($orders));
 		$this->assertEquals(1, $orders[0]->items[0]->id);
@@ -245,18 +248,22 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(4, $orders[1]->items[1]->id);
 		$this->assertEquals(5, $orders[1]->items[2]->id);
 
+		// has many via join table
 		$orders = Order::find()->with('books')->order('@.id')->all();
 		$this->assertEquals(2, count($orders));
 		$this->assertEquals(1, $orders[0]->books[0]->id);
 		$this->assertEquals(2, $orders[0]->books[1]->id);
 		$this->assertEquals(2, $orders[1]->books[0]->id);
 
+		// has many and base limited
 		$orders = Order::find()->with('items')->order('@.id')->limit(2)->all();
 		$this->assertEquals(2, count($orders));
 
+		// findBySql with
 		$orders = Order::findBySql('SELECT * FROM tbl_order WHERE customer_id=2')->with('items')->all();
 		$this->assertEquals(2, count($orders));
 
+		// index and array
 		$customers = Customer::find()->with('orders.customer')->order('@.id')->index('id')->asArray()->all();
 		$this->assertEquals(3, count($customers));
 		$this->assertTrue(isset($customers[1], $customers[2], $customers[3]));
@@ -265,6 +272,15 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(2, count($customers[2]['orders']));
 		$this->assertEquals(0, count($customers[3]['orders']));
 		$this->assertTrue(is_array($customers[1]['orders'][0]['customer']));
+
+		// count with
+		$this->assertEquals(3, Order::count());
+		$value = Order::count(array(
+			'select' => array('COUNT(DISTINCT @.id, @.customer_id)'),
+			'with' => 'books',
+		));
+		$this->assertEquals(2, $value);
+
 	}
 
 	public function testLazyLoading()

@@ -18,20 +18,6 @@ use yii\db\Exception;
  * 1. eager loading, base limited and has has_many relations
  * 2.
  * ActiveFinder.php is ...
- * todo: add SQL monitor
- * todo: better handling on join() support in QueryBuilder: use regexp to detect table name and quote it
- * todo: do not support anonymous parameter binding
- * todo: quote join/on part of the relational query
- * todo: modify QueryBuilder about join() methods
- * todo: unify ActiveFinder and ActiveRelation in query building process
- * todo: intelligent table aliasing (first table name, then relation name, finally t?)
- * todo: allow using tokens in primary query fragments
- * todo: findBySql
- * todo: base limited
- * todo: lazy loading
- * todo: scope
- * todo: test via option
- * todo: count, sum, exists
  *
  * @property integer $count
  *
@@ -97,15 +83,21 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 		return isset($this->records[0]) ? $this->records[0] : null;
 	}
 
+	/**
+	 * Returns a scalar value for this query.
+	 * The value returned will be the first column in the first row of the query results.
+	 * @return string|boolean the value of the first column in the first row of the query result.
+	 * False is returned if there is no value.
+	 */
 	public function value()
 	{
-		$result = $this->asArray()->one();
-		return $result === null ? null : reset($result);
+		$finder = new ActiveFinder($this->getDbConnection());
+		return $finder->find($this, true);
 	}
 
 	public function exists()
 	{
-		return $this->select(array(new Expression('1')))->asArray()->one() !== null;
+		return $this->select(array(new Expression('1')))->value() !== false;
 	}
 
 	/**
@@ -243,6 +235,6 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 	protected function findRecords()
 	{
 		$finder = new ActiveFinder($this->getDbConnection());
-		return $finder->findRecords($this);
+		return $finder->find($this);
 	}
 }
