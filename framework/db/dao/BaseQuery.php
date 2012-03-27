@@ -16,7 +16,7 @@ namespace yii\db\dao;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class BaseQuery extends \yii\base\Object
+class BaseQuery extends \yii\base\Component
 {
 	/**
 	 * @var string|array the columns being selected. This refers to the SELECT clause in a SQL

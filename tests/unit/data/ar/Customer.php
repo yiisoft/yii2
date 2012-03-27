@@ -25,7 +25,7 @@ class Customer extends ActiveRecord
 	{
 		return array(
 			'active' => function($q) {
-				return $q->andWhere('@.`status` = ' . Customer::STATUS_ACTIVE);
+				return $q->andWhere('@.`status` = ' . self::STATUS_ACTIVE);
 			},
 		);
 	}
