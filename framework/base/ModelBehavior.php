@@ -24,9 +24,8 @@ class ModelBehavior extends Behavior
 	 * Declares event handlers for owner's events.
 	 * The default implementation returns the following event handlers:
 	 *
-	 * - `onAfterInit` event: [[afterInit]]
-	 * - `onBeforeValidate` event: [[beforeValidate]]
-	 * - `onAfterValidate` event: [[afterValidate]]
+	 * - `beforeValidate` event
+	 * - `afterValidate` event
 	 *
 	 * You may override these event handler methods to respond to the corresponding owner events.
 	 * @return array events (array keys) and the corresponding event handler methods (array values).
@@ -34,19 +33,9 @@ class ModelBehavior extends Behavior
 	public function events()
 	{
 		return array(
-			'onAfterInit' => 'afterInit',
-			'onBeforeValidate' => 'beforeValidate',
-			'onAfterValidate' => 'afterValidate',
+			'beforeValidate' => 'beforeValidate',
+			'afterValidate' => 'afterValidate',
 		);
-	}
-
-	/**
-	 * Responds to [[Model::onAfterInit]] event.
-	 * Override this method if you want to handle the corresponding event of the [[owner]].
-	 * @param Event $event event parameter
-	 */
-	public function afterInit($event)
-	{
 	}
 
 	/**

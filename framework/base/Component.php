@@ -12,34 +12,36 @@ namespace yii\base;
 /**
  * Component is the base class for all component classes in Yii.
  *
- * Extending from [[Object]], Component implements the *event* and *behavior*
- * features in addition to the *property* feature.
+ * Component provides the *event* and *behavior* features, in addition to
+ * the *property* feature which is implemented in its parent class [[Object]].
  *
- * An event is defined by the presence of a method whose name starts with `on`.
- * The event name is the method name. For example, the following method defines
- * the `onClick` event:
+ * Event is a way to "inject" custom code into existing code at certain places.
+ * For example, a button object can trigger a "click" event when the user clicks
+ * on the button. We can write custom code and attach it to this event so that
+ * when the event is triggered, our custom code will be executed.
  *
- * ~~~
- * public function onClick($event)
- * {
- *	 $this->raiseEvent('onClick', $event);
- * }
- * ~~~
- *
- * Event names are case-insensitive.
+ * An event is identified by a name (unique within the class it is defined).
+ * Event names are *case-sensitive*.
  *
  * An event can be attached with one or multiple PHP callbacks, called *event handlers*.
- * One can call [[raiseEvent()]] to raise an event. When an event is raised, the attached
+ * One can call [[trigger()]] to raise an event. When an event is raised, the attached
  * event handlers will be invoked automatically in the order they are attached to the event.
  *
- * To attach an event handler to an event, call [[attachEventHandler]]. Alternatively,
- * you can use the assignment syntax: `$component->onClick = $callback;`,
- * where `$callback` refers to a valid PHP callback which can be one of the followings:
+ * To attach an event handler to an event, call [[on()]]. For example,
  *
- * - global function: `'handleOnClick'`
+ * ~~~
+ * $button->on('click', function($event) {
+ *     echo "I'm clicked!";
+ * });
+ * ~~~
+ *
+ * In the above, we attach an anonymous function to the "click" event of the button.
+ * Valid event handlers include:
+ *
+ * - anonymous function: `function($event) { ... }`
  * - object method: `array($object, 'handleOnClick')`
  * - static method: `array('Page', 'handleOnClick')`
- * - anonymous function: `function($event) { ... }`
+ * - global function: `'handleOnClick'`
  *
  * The signature of an event handler should be like the following:
  * ~~~
@@ -48,14 +50,15 @@ namespace yii\base;
  *
  * where `$event` is an [[Event]] object which includes parameters associated with the event.
  *
- * Because `$component->onClick` is returned as a [[Vector]] with each item in the vector being
- * an attached event handler, one can manipulate this [[Vector]] object to attach/detach event
- * handlers, or adjust their relative orders. For example,
+ * One can call [[getEventHandlers()]] to retrieve all event handlers that are attached
+ * to a specified event. Because this method returns a [[Vector]] object, we can manipulate
+ * this object to attach/detach event handlers, or adjust their relative orders.
  *
  * ~~~
- * $component->onClick->insertAt(0, $callback);  // attach a handler as the first one
- * $component->onClick[] = $callback;			// attach a handler as the last one
- * unset($component->onClick[0]);				// detach the first handler
+ * $handlers = $button->getEventHandlers('click');
+ * $handlers->insertAt(0, $callback); // attach a handler as the first one
+ * $handlers[] = $callback;           // attach a handler as the last one
+ * unset($handlers[0]);               // detach the first handler
  * ~~~
  *
  *
@@ -65,6 +68,7 @@ namespace yii\base;
  * those properties and methods.
  *
  * To attach a behavior to a component, declare it in [[behaviors()]], or explicitly call [[attachBehavior]].
+ * Behaviors declared in [[behaviors()]] are automatically attached to the corresponding component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -85,7 +89,6 @@ class Component extends \yii\base\Object
 	 * This method will check in the following order and act accordingly:
 	 *
 	 *  - a property defined by a getter: return the getter result
-	 *  - an event: return a vector containing the attached event handlers
 	 *  - a behavior: return the behavior object
 	 *  - a property of a behavior: return the behavior property value
 	 *
@@ -102,12 +105,6 @@ class Component extends \yii\base\Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // read property, e.g. getName()
 			return $this->$getter();
-		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event, e.g. onClick()
-			$name = strtolower($name);
-			if (!isset($this->_e[$name])) {
-				$this->_e[$name] = new Vector;
-			}
-			return $this->_e[$name];
 		} else { // behavior property
 			$this->ensureBehaviors();
 			foreach ($this->_b as $behavior) {
@@ -131,7 +128,6 @@ class Component extends \yii\base\Object
 	 * will be implicitly called when executing `$component->property = $value;`.
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
-	 * @return mixed value that was set
 	 * @throws Exception if the property is not defined or read-only.
 	 * @see __get
 	 */
@@ -139,18 +135,18 @@ class Component extends \yii\base\Object
 	{
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) { // write property
-			return $this->$setter($value);
-		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event
-			$name = strtolower($name);
-			if (!isset($this->_e[$name])) {
-				$this->_e[$name] = new Vector;
-			}
-			return $this->_e[$name]->add($value);
+			$this->$setter($value);
+			return;
+		} elseif (strncmp($name, 'on ', 3) === 0) { // on event
+			$name = substr($name, 3);
+			$this->getEventHandlers($name)->add($value);
+			return;
 		} else { // behavior property
 			$this->ensureBehaviors();
 			foreach ($this->_b as $behavior) {
 				if ($behavior->canSetProperty($name)) {
-					return $behavior->$name = $value;
+					$behavior->$name = $value;
+					return;
 				}
 			}
 		}
@@ -166,7 +162,6 @@ class Component extends \yii\base\Object
 	 * This method will check in the following order and act accordingly:
 	 *
 	 *  - a property defined by a setter: return whether the property value is null
-	 *  - an event: return whether the event has any handler attached
 	 *  - a property of a behavior: return whether the property value is null
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
@@ -179,9 +174,6 @@ class Component extends \yii\base\Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) { // property is not null
 			return $this->$getter() !== null;
-		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // has event handler
-			$name = strtolower($name);
-			return isset($this->_e[$name]) && $this->_e[$name]->getCount();
 		} else { // behavior property
 			$this->ensureBehaviors();
 			foreach ($this->_b as $behavior) {
@@ -198,7 +190,6 @@ class Component extends \yii\base\Object
 	 * This method will check in the following order and act accordingly:
 	 *
 	 *  - a property defined by a setter: set the property value to be null
-	 *  - an event: remove all attached event handlers
 	 *  - a property of a behavior: set the property value to be null
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
@@ -211,9 +202,6 @@ class Component extends \yii\base\Object
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) { // write property
 			$this->$setter(null);
-			return;
-		} elseif (method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0) { // event
-			unset($this->_e[strtolower($name)]);
 			return;
 		} else { // behavior property
 			$this->ensureBehaviors();
@@ -280,25 +268,13 @@ class Component extends \yii\base\Object
 	 *
 	 * Note that a behavior class must extend from [[Behavior]].
 	 *
-	 * Behaviors declared in this method will be attached to the component on demand.
+	 * Behaviors declared in this method will be attached to the component automatically (on demand).
 	 *
 	 * @return array the behavior configurations.
 	 */
 	public function behaviors()
 	{
 		return array();
-	}
-
-	/**
-	 * Returns a value indicating whether an event is defined.
-	 * An event is defined if the class has a method whose name starts with `on` (e.g. `onClick`).
-	 * Note that event name is case-insensitive.
-	 * @param string $name the event name
-	 * @return boolean whether an event is defined
-	 */
-	public function hasEvent($name)
-	{
-		return method_exists($this, $name) && strncasecmp($name, 'on', 2) === 0;
 	}
 
 	/**
@@ -309,7 +285,6 @@ class Component extends \yii\base\Object
 	public function hasEventHandlers($name)
 	{
 		$this->ensureBehaviors();
-		$name = strtolower($name);
 		return isset($this->_e[$name]) && $this->_e[$name]->getCount();
 	}
 
@@ -328,14 +303,11 @@ class Component extends \yii\base\Object
 	 */
 	public function getEventHandlers($name)
 	{
-		if ($this->hasEvent($name)) {
-			$name = strtolower($name);
-			if (!isset($this->_e[$name])) {
-				$this->_e[$name] = new Vector;
-			}
-			return $this->_e[$name];
+		if (!isset($this->_e[$name])) {
+			$this->_e[$name] = new Vector;
 		}
-		throw new Exception('Undefined event: ' . $name);
+		$this->ensureBehaviors();
+		return $this->_e[$name];
 	}
 
 	/**
@@ -351,10 +323,10 @@ class Component extends \yii\base\Object
 	 * some examples:
 	 *
 	 * ~~~
-	 * 'handleOnClick'					// handleOnClick() is a global function
-	 * array($object, 'handleOnClick')	// $object->handleOnClick()
-	 * array('Page', 'handleOnClick')	 // Page::handleOnClick()
-	 * function($event) { ... }		   // anonymous function
+	 * function($event) { ... }		    // anonymous function
+	 * array($object, 'handleClick')	// $object->handleClick()
+	 * array('Page', 'handleClick')	    // Page::handleClick()
+	 * 'handleClick'					// global function handleClick()
 	 * ~~~
 	 *
 	 * An event handler must be defined with the following signature,
@@ -367,68 +339,49 @@ class Component extends \yii\base\Object
 	 *
 	 * @param string $name the event name
 	 * @param callback $handler the event handler
-	 * @throws Exception if the event is not defined
-	 * @see detachEventHandler
+	 * @see off
 	 */
-	public function attachEventHandler($name, $handler)
+	public function on($name, $handler)
 	{
 		$this->getEventHandlers($name)->add($handler);
 	}
 
 	/**
 	 * Detaches an existing event handler.
-	 * This method is the opposite of [[attachEventHandler]].
+	 * This method is the opposite of [[on]].
 	 * @param string $name event name
 	 * @param callback $handler the event handler to be removed
-	 * @return boolean if the detachment process is successful
-	 * @see attachEventHandler
+	 * @return boolean if a handler is found and detached
+	 * @see on
 	 */
-	public function detachEventHandler($name, $handler)
+	public function off($name, $handler)
 	{
 		return $this->getEventHandlers($name)->remove($handler) !== false;
 	}
 
 	/**
-	 * Raises an event.
+	 * Triggers an event.
 	 * This method represents the happening of an event. It invokes
 	 * all attached handlers for the event.
 	 * @param string $name the event name
 	 * @param Event $event the event parameter
 	 * @throws Exception if the event is undefined or an event handler is invalid.
 	 */
-	public function raiseEvent($name, $event)
+	public function trigger($name, $event)
 	{
 		$this->ensureBehaviors();
-		$name = strtolower($name);
-		if ($event instanceof Event) {
-			$event->name = $name;
-			$event->handled = false;
-		}
 		if (isset($this->_e[$name])) {
+			if ($event instanceof Event) {
+				$event->name = $name;
+				$event->handled = false;
+			}
 			foreach ($this->_e[$name] as $handler) {
-				if (is_string($handler) || $handler instanceof \Closure) {
-					call_user_func($handler, $event);
-				} elseif (is_callable($handler, true)) {
-					// an array: 0 - object, 1 - method name
-					list($object, $method) = $handler;
-					if (is_string($object)) { // static method call
-						call_user_func($handler, $event);
-					} elseif (method_exists($object, $method)) {
-						$object->$method($event);
-					} else {
-						throw new Exception('Event "' . get_class($this) . '.' . $name . '" is attached with an invalid handler.');
-					}
-				} else {
-					throw new Exception('Event "' . get_class($this) . '.' . $name . '" is attached with an invalid handler.');
-				}
-
+				call_user_func($handler, $event);
 				// stop further handling if the event is handled
 				if ($event instanceof Event && $event->handled) {
 					return;
 				}
 			}
-		} elseif (!$this->hasEvent($name)) {
-			throw new Exception('Raising unknown event: ' . get_class($this) . '.' . $name);
 		}
 	}
 

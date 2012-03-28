@@ -294,7 +294,7 @@ class Object
 	 * ~~~
 	 *
 	 * @param array $config the object configuration (name-value pairs that will be used to initialize the object)
-	 * @return Object the created object
+	 * @return \yii\base\Object the created object
 	 * @throws Exception if the configuration is invalid.
 	 */
 	public static function newInstance($config = array())
@@ -326,7 +326,7 @@ class Object
 			$object->$name = $value;
 		}
 
-		if ($object instanceof \yii\base\Initable) {
+		if ($object instanceof Initable) {
 			$object->init();
 		}
 

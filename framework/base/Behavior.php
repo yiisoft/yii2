@@ -19,7 +19,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Behavior extends Object
+class Behavior extends \yii\base\Object
 {
 	/**
 	 * @var Component the owner component
@@ -38,17 +38,17 @@ class Behavior extends Object
 	 *
 	 * The callbacks can be any of the followings:
 	 *
-	 * - method in this behavior: `'handleOnClick'`, equivalent to `array($this, 'handleOnClick')`
-	 * - object method: `array($object, 'handleOnClick')`
-	 * - static method: `array('Page', 'handleOnClick')`
+	 * - method in this behavior: `'handleClick'`, equivalent to `array($this, 'handleClick')`
+	 * - object method: `array($object, 'handleClick')`
+	 * - static method: `array('Page', 'handleClick')`
 	 * - anonymous function: `function($event) { ... }`
 	 *
 	 * The following is an example:
 	 *
 	 * ~~~
 	 * array(
-	 *	 'onBeforeValidate' => 'myBeforeValidate',
-	 *	 'onAfterValidate' => 'myAfterValidate',
+	 *	 'beforeValidate' => 'myBeforeValidate',
+	 *	 'afterValidate' => 'myAfterValidate',
 	 * )
 	 * ~~~
 	 *
@@ -70,7 +70,7 @@ class Behavior extends Object
 	{
 		$this->_owner = $owner;
 		foreach ($this->events() as $event => $handler) {
-			$owner->attachEventHandler($event, is_string($handler) ? array($this, $handler) : $handler);
+			$owner->on($event, is_string($handler) ? array($this, $handler) : $handler);
 		}
 	}
 
@@ -84,7 +84,7 @@ class Behavior extends Object
 	public function detach($owner)
 	{
 		foreach ($this->events() as $event => $handler) {
-			$owner->detachEventHandler($event, is_string($handler) ? array($this, $handler) : $handler);
+			$owner->off($event, is_string($handler) ? array($this, $handler) : $handler);
 		}
 		$this->_owner = null;
 	}
