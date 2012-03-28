@@ -138,7 +138,7 @@ class Component extends \yii\base\Object
 			$this->$setter($value);
 			return;
 		} elseif (strncmp($name, 'on ', 3) === 0) { // on event
-			$name = substr($name, 3);
+			$name = trim(substr($name, 3));
 			$this->getEventHandlers($name)->add($value);
 			return;
 		} else { // behavior property
@@ -364,14 +364,17 @@ class Component extends \yii\base\Object
 	 * This method represents the happening of an event. It invokes
 	 * all attached handlers for the event.
 	 * @param string $name the event name
-	 * @param Event $event the event parameter
+	 * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
 	 * @throws Exception if the event is undefined or an event handler is invalid.
 	 */
-	public function trigger($name, $event)
+	public function trigger($name, $event = null)
 	{
 		$this->ensureBehaviors();
 		if (isset($this->_e[$name])) {
-			if ($event instanceof Event) {
+			if ($event === null) {
+				$event = new Event($this);
+				$event->name = $name;
+			} elseif ($event instanceof Event) {
 				$event->name = $name;
 				$event->handled = false;
 			}
