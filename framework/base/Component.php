@@ -16,8 +16,8 @@ namespace yii\base;
  * the *property* feature which is implemented in its parent class [[Object]].
  *
  * Event is a way to "inject" custom code into existing code at certain places.
- * For example, a button object can trigger a "click" event when the user clicks
- * on the button. We can write custom code and attach it to this event so that
+ * For example, a comment object can trigger an "add" event when the user adds
+ * a comment. We can write custom code and attach it to this event so that
  * when the event is triggered, our custom code will be executed.
  *
  * An event is identified by a name (unique within the class it is defined).
@@ -30,18 +30,18 @@ namespace yii\base;
  * To attach an event handler to an event, call [[on()]]. For example,
  *
  * ~~~
- * $button->on('click', function($event) {
- *     echo "I'm clicked!";
+ * $comment->on('add', function($event) {
+ *     // send email notification
  * });
  * ~~~
  *
- * In the above, we attach an anonymous function to the "click" event of the button.
+ * In the above, we attach an anonymous function to the "add" event of the comment.
  * Valid event handlers include:
  *
  * - anonymous function: `function($event) { ... }`
- * - object method: `array($object, 'handleOnClick')`
- * - static method: `array('Page', 'handleOnClick')`
- * - global function: `'handleOnClick'`
+ * - object method: `array($object, 'handleAdd')`
+ * - static method: `array('Page', 'handleAdd')`
+ * - global function: `'handleAdd'`
  *
  * The signature of an event handler should be like the following:
  * ~~~
@@ -55,7 +55,7 @@ namespace yii\base;
  * this object to attach/detach event handlers, or adjust their relative orders.
  *
  * ~~~
- * $handlers = $button->getEventHandlers('click');
+ * $handlers = $comment->getEventHandlers('add');
  * $handlers->insertAt(0, $callback); // attach a handler as the first one
  * $handlers[] = $callback;           // attach a handler as the last one
  * unset($handlers[0]);               // detach the first handler
