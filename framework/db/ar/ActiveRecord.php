@@ -27,6 +27,18 @@ use yii\util\Text;
  * @since 2.0
  *
  * @property array $attributes
+ *
+ * Events:
+ * - beforeInsert. Raised before the record is saved.
+ *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[save()]] will be stopped.
+ * - afterInsert. Raised after the record is saved.
+ * - beforeUpdate. Raised before the record is saved.
+ *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[save()]] will be stopped.
+ * - afterUpdate. Raised after the record is saved.
+ * - beforeDelete. Raised before the record is deleted.
+ *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[delete()]] process will be stopped.
+ * - afterDelete. Raised after the record is deleted.
+ *
  */
 abstract class ActiveRecord extends Model
 {
@@ -819,65 +831,8 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * This event is raised before the record is saved.
-	 * By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[save()]] will be stopped.
-	 * @param \yii\base\ModelEvent $event the event parameter
-	 */
-	public function onBeforeInsert($event)
-	{
-		$this->raiseEvent('onBeforeInsert', $event);
-	}
-
-	/**
-	 * This event is raised after the record is saved.
-	 * @param \yii\base\Event $event the event parameter
-	 */
-	public function onAfterInsert($event)
-	{
-		$this->raiseEvent('onAfterInsert', $event);
-	}
-
-	/**
-	 * This event is raised before the record is saved.
-	 * By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[save()]] will be stopped.
-	 * @param \yii\base\ModelEvent $event the event parameter
-	 */
-	public function onBeforeUpdate($event)
-	{
-		$this->raiseEvent('onBeforeUpdate', $event);
-	}
-
-	/**
-	 * This event is raised after the record is saved.
-	 * @param \yii\base\Event $event the event parameter
-	 */
-	public function onAfterUpdate($event)
-	{
-		$this->raiseEvent('onAfterUpdate', $event);
-	}
-
-	/**
-	 * This event is raised before the record is deleted.
-	 * By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[delete()]] process will be stopped.
-	 * @param \yii\base\ModelEvent $event the event parameter
-	 */
-	public function onBeforeDelete($event)
-	{
-		$this->raiseEvent('onBeforeDelete', $event);
-	}
-
-	/**
-	 * This event is raised after the record is deleted.
-	 * @param \yii\base\Event $event the event parameter
-	 */
-	public function onAfterDelete($event)
-	{
-		$this->raiseEvent('onAfterDelete', $event);
-	}
-
-	/**
 	 * This method is invoked before saving a record (after validation, if any).
-	 * The default implementation raises the {@link onBeforeSave} event.
+	 * The default implementation raises the {@link beforeSave} event.
 	 * You may override this method to do any preparation work for record saving.
 	 * Use {@link isNewRecord} to determine whether the saving is
 	 * for inserting or updating record.
@@ -887,24 +842,24 @@ abstract class ActiveRecord extends Model
 	public function beforeInsert()
 	{
 		$event = new ModelEvent($this);
-		$this->onBeforeInsert($event);
+		$this->trigger('beforeInsert', $event);
 		return $event->isValid;
 	}
 
 	/**
 	 * This method is invoked after saving a record successfully.
-	 * The default implementation raises the {@link onAfterSave} event.
+	 * The default implementation raises the {@link afterSave} event.
 	 * You may override this method to do postprocessing after record saving.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
 	public function afterInsert()
 	{
-		$this->onAfterInsert(new Event($this));
+		$this->trigger('afterInsert', new Event($this));
 	}
 
 	/**
 	 * This method is invoked before saving a record (after validation, if any).
-	 * The default implementation raises the {@link onBeforeSave} event.
+	 * The default implementation raises the {@link beforeSave} event.
 	 * You may override this method to do any preparation work for record saving.
 	 * Use {@link isNewRecord} to determine whether the saving is
 	 * for inserting or updating record.
@@ -914,24 +869,24 @@ abstract class ActiveRecord extends Model
 	public function beforeUpdate()
 	{
 		$event = new ModelEvent($this);
-		$this->onBeforeUpdate($event);
+		$this->trigger('beforeUpdate', $event);
 		return $event->isValid;
 	}
 
 	/**
 	 * This method is invoked after saving a record successfully.
-	 * The default implementation raises the {@link onAfterSave} event.
+	 * The default implementation raises the {@link afterSave} event.
 	 * You may override this method to do postprocessing after record saving.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
 	public function afterUpdate()
 	{
-		$this->onAfterUpdate(new Event($this));
+		$this->trigger('afterUpdate', new Event($this));
 	}
 
 	/**
 	 * This method is invoked before deleting a record.
-	 * The default implementation raises the {@link onBeforeDelete} event.
+	 * The default implementation raises the {@link beforeDelete} event.
 	 * You may override this method to do any preparation work for record deletion.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 * @return boolean whether the record should be deleted. Defaults to true.
@@ -939,19 +894,19 @@ abstract class ActiveRecord extends Model
 	public function beforeDelete()
 	{
 		$event = new ModelEvent($this);
-		$this->onBeforeDelete($event);
+		$this->trigger('beforeDelete', $event);
 		return $event->isValid;
 	}
 
 	/**
 	 * This method is invoked after deleting a record.
-	 * The default implementation raises the {@link onAfterDelete} event.
+	 * The default implementation raises the {@link afterDelete} event.
 	 * You may override this method to do postprocessing after the record is deleted.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
 	public function afterDelete()
 	{
-		$this->onAfterDelete(new Event($this));
+		$this->trigger('afterDelete', new Event($this));
 	}
 
 	/**
