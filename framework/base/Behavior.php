@@ -16,6 +16,8 @@ namespace yii\base;
  * In particular, it can "inject" its own methods and properties into the component
  * and make them directly accessible via the component.
  *
+ * @property Component $owner The owner component that this behavior is attached to.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

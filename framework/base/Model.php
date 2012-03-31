@@ -22,13 +22,24 @@ use yii\util\Text;
  * - massive attribute assignment
  * - scenario-based validation
  *
- * Model also provides a set of events for further customization:
+ * Model also raises the following events when performing data validation:
  *
- * - [[onBeforeValidate]]: an event raised at the beginning of [[validate()]]
- * - [[onAfterValidate]]: an event raised at the end of [[validate()]]
+ * - [[beforeValidate]]: an event raised at the beginning of [[validate()]]
+ * - [[afterValidate]]: an event raised at the end of [[validate()]]
  *
  * You may directly use Model to store model data, or extend it with customization.
  * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
+ *
+ * @property Vector $validators All the validators declared in the model.
+ * @property array $activeValidators The validators applicable to the current [[scenario]].
+ * @property array $errors Errors for all attributes or the specified attribute. Empty array is returned if no error.
+ * @property array $attributes Attribute values (name=>value).
+ * @property string $scenario The scenario that this model is in.
+ * @property array $safeAttributeNames Safe attribute names in the current [[scenario]].
+ *
+ * @event ModelEvent beforeValidate an event raised at the beginning of [[validate()]]. You may set
+ * [[ModelEvent::isValid]] to be false to stop the validation.
+ * @event Event afterValidate an event raised at the end of [[validate()]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -42,9 +53,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Constructor.
-	 * @param string $scenario name of the [[scenario]] that this model is used in.
+	 * @param string|null $scenario name of the [[scenario]] that this model is used in.
 	 */
-	public function __construct($scenario = '')
+	public function __construct($scenario = null)
 	{
 		$this->_scenario = $scenario;
 	}
@@ -178,8 +189,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * validation rules should be validated.
 	 * @param boolean $clearErrors whether to call [[clearErrors()]] before performing validation
 	 * @return boolean whether the validation is successful without any error.
-	 * @see beforeValidate
-	 * @see afterValidate
+	 * @see beforeValidate()
+	 * @see afterValidate()
 	 */
 	public function validate($attributes = null, $clearErrors = true)
 	{
@@ -198,7 +209,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * This method is invoked before validation starts.
-	 * The default implementation raises the [[onBeforeValidate]] event.
+	 * The default implementation raises a `beforeValidate` event.
 	 * You may override this method to do preliminary checks before validation.
 	 * Make sure the parent implementation is invoked so that the event can be raised.
 	 * @return boolean whether validation should be executed. Defaults to true.
@@ -206,44 +217,20 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function beforeValidate()
 	{
-		if ($this->hasEventHandlers('onBeforeValidate')) {
-			$event = new ModelEvent($this);
-			$this->onBeforeValidate($event);
-			return $event->isValid;
-		}
-		return true;
+		$event = new ModelEvent($this);
+		$this->trigger('beforeValidate', $event);
+		return $event->isValid;
 	}
 
 	/**
 	 * This method is invoked after validation ends.
-	 * The default implementation raises the [[onAfterValidate]] event.
+	 * The default implementation raises an `afterValidate` event.
 	 * You may override this method to do postprocessing after validation.
 	 * Make sure the parent implementation is invoked so that the event can be raised.
 	 */
 	public function afterValidate()
 	{
 		$this->trigger('afterValidate');
-		if ($this->hasEventHandlers('onAfterValidate')) {
-			$this->onAfterValidate(new Event($this));
-		}
-	}
-
-	/**
-	 * This event is raised before the validation is performed.
-	 * @param ModelEvent $event the event parameter
-	 */
-	public function onBeforeValidate($event)
-	{
-		$this->raiseEvent(__FUNCTION__, $event);
-	}
-
-	/**
-	 * This event is raised after the validation is performed.
-	 * @param Event $event the event parameter
-	 */
-	public function onAfterValidate($event)
-	{
-		$this->raiseEvent(__FUNCTION__, $event);
 	}
 
 	/**
@@ -281,10 +268,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		$validators = array();
 		$scenario = $this->getScenario();
 		foreach ($this->getValidators() as $validator) {
-			if ($validator->applyTo($scenario)) {
-				if ($attribute === null || in_array($attribute, $validator->attributes, true)) {
-					$validators[] = $validator;
-				}
+			if ($validator->applyTo($scenario, $attribute)) {
+				$validators[] = $validator;
 			}
 		}
 		return $validators;
@@ -529,7 +514,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * Scenario affects how validation is performed and which attributes can
 	 * be massively assigned.
 	 *
-	 * A validation rule will be performed when calling [[validate]]
+	 * A validation rule will be performed when calling [[validate()]]
 	 * if its 'on' option is not set or contains the current scenario value.
 	 *
 	 * And an attribute can be massively assigned if it is associated with

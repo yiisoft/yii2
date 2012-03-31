@@ -141,11 +141,11 @@ class YiiBase
 			return self::$_imported[$alias];
 		}
 
-		if (class_exists($alias, false) || interface_exists($alias, false)) {
-			return self::$_imported[$alias] = $alias;
-		}
-
-		if ($alias[0] !== '@') { // a simple class name
+		if ($alias[0] !== '@') {
+			// a simple class name
+			if (class_exists($alias, false) || interface_exists($alias, false)) {
+				return self::$_imported[$alias] = $alias;
+			}
 			if ($forceInclude && static::autoload($alias)) {
 				self::$_imported[$alias] = $alias;
 			}
@@ -171,7 +171,8 @@ class YiiBase
 				self::$classMap[$className] = $path . "/$className.php";
 			}
 			return $className;
-		} else { // a directory
+		} else {
+			// a directory
 			array_unshift(self::$classPath, $path);
 			return self::$_imported[$alias] = $path;
 		}

@@ -31,6 +31,7 @@ use yii\util\ArrayHelper;
  * ~~~
  *
  * @property integer $count the number of items in the dictionary
+ * @property array $keys The keys in the dictionary
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

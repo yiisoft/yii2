@@ -323,10 +323,10 @@ class Component extends \yii\base\Object
 		if (isset($this->_e[$name])) {
 			if ($event === null) {
 				$event = new Event($this);
-				$event->name = $name;
-			} elseif ($event instanceof Event) {
-				$event->name = $name;
+			}
+			if ($event instanceof Event) {
 				$event->handled = false;
+				$event->name = $name;
 			}
 			foreach ($this->_e[$name] as $handler) {
 				call_user_func($handler, $event);

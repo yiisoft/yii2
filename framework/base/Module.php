@@ -14,6 +14,14 @@ namespace yii\base;
  *
  * Module mainly manages application components and sub-modules that belongs to a module.
  *
+ * @property string $id The module ID.
+ * @property string $basePath The root directory of the module. Defaults to the directory containing the module class.
+ * @property Module|null $parentModule The parent module. Null if this module does not have a parent.
+ * @property array $modules The configuration of the currently installed modules (module ID => configuration).
+ * @property array $components The application components (indexed by their IDs).
+ * @property array $import List of aliases to be imported. This property is write-only.
+ * @property array $aliases List of aliases to be defined. This property is write-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -108,7 +116,7 @@ abstract class Module extends Component implements Initable
 
 	/**
 	 * Returns the root directory of the module.
-	 * @return string the root directory of the module. Defaults to the directory containing the module class.
+	 * @return string the root directory of the module. Defaults to the directory containing the module class file.
 	 */
 	public function getBasePath()
 	{
@@ -127,14 +135,17 @@ abstract class Module extends Component implements Initable
 	 */
 	public function setBasePath($path)
 	{
-		if (($this->_basePath = realpath($path)) === false || !is_dir($this->_basePath)) {
+		if (($p = realpath($path)) === false || !is_dir($p)) {
 			throw new Exception('Invalid base path: ' . $path);
+		} else {
+			$this->_basePath = $p;
 		}
 	}
 
 	/**
 	 * Imports the specified path aliases.
-	 * This method is provided so that you can import a set of path aliases by module configuration.
+	 * This method is provided so that you can import a set of path aliases when configuring a module.
+	 * The path aliases will be imported by calling [[\Yii::import()]].
 	 * @param array $aliases list of path aliases to be imported
 	 */
 	public function setImport($aliases)
@@ -146,15 +157,15 @@ abstract class Module extends Component implements Initable
 
 	/**
 	 * Defines path aliases.
-	 * This method calls [[\Yii::setPathOfAlias]] to register the path aliases.
-	 * This method is provided so that you can define path aliases by module configuration.
+	 * This method calls [[\Yii::setAlias()]] to register the path aliases.
+	 * This method is provided so that you can define path aliases when configuring a module.
 	 * @param array $aliases list of path aliases to be defined. The array keys are alias names
-	 * (must start with '@') while the array values are the corresponding paths or aliases.
+	 * (must start with '@') and the array values are the corresponding paths or aliases.
 	 * For example,
 	 *
 	 * ~~~
 	 * array(
-	 *	'@models' => '@app/models',			 // an existing alias
+	 *	'@models' => '@app/models', // an existing alias
 	 *	'@backend' => __DIR__ . '/../backend',  // a directory
 	 * )
 	 * ~~~
