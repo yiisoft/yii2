@@ -12,7 +12,7 @@ namespace yii\base;
 /**
  * Behavior is the base class for all behavior classes.
  *
- * A behavior can be used to enhance the functionality of an existing component.
+ * A behavior can be used to enhance the functionality of an existing component without modifying its code.
  * In particular, it can "inject" its own methods and properties into the component
  * and make them directly accessible via the component.
  *
@@ -52,7 +52,7 @@ class Behavior extends \yii\base\Object
 	 * )
 	 * ~~~
 	 *
-	 * @return array events (keys) and the corresponding behavior method names (values).
+	 * @return array events (array keys) and the corresponding event handler methods (array values).
 	 */
 	public function events()
 	{

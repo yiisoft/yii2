@@ -10,65 +10,9 @@
 namespace yii\base;
 
 /**
- * Component is the base class for all component classes in Yii.
+ * Component is the base class that provides the *property*, *event* and *behavior* features.
  *
- * Component provides the *event* and *behavior* features, in addition to
- * the *property* feature which is implemented in its parent class [[Object]].
- *
- * Event is a way to "inject" custom code into existing code at certain places.
- * For example, a comment object can trigger an "add" event when the user adds
- * a comment. We can write custom code and attach it to this event so that
- * when the event is triggered, our custom code will be executed.
- *
- * An event is identified by a name (unique within the class it is defined).
- * Event names are *case-sensitive*.
- *
- * An event can be attached with one or multiple PHP callbacks, called *event handlers*.
- * One can call [[trigger()]] to raise an event. When an event is raised, the attached
- * event handlers will be invoked automatically in the order they are attached to the event.
- *
- * To attach an event handler to an event, call [[on()]]. For example,
- *
- * ~~~
- * $comment->on('add', function($event) {
- *     // send email notification
- * });
- * ~~~
- *
- * In the above, we attach an anonymous function to the "add" event of the comment.
- * Valid event handlers include:
- *
- * - anonymous function: `function($event) { ... }`
- * - object method: `array($object, 'handleAdd')`
- * - static method: `array('Page', 'handleAdd')`
- * - global function: `'handleAdd'`
- *
- * The signature of an event handler should be like the following:
- * ~~~
- * function foo($event)
- * ~~~
- *
- * where `$event` is an [[Event]] object which includes parameters associated with the event.
- *
- * One can call [[getEventHandlers()]] to retrieve all event handlers that are attached
- * to a specified event. Because this method returns a [[Vector]] object, we can manipulate
- * this object to attach/detach event handlers, or adjust their relative orders.
- *
- * ~~~
- * $handlers = $comment->getEventHandlers('add');
- * $handlers->insertAt(0, $callback); // attach a handler as the first one
- * $handlers[] = $callback;           // attach a handler as the last one
- * unset($handlers[0]);               // detach the first handler
- * ~~~
- *
- *
- * A behavior is an instance of [[Behavior]] or its child class. A component can be attached
- * with one or multiple behaviors. When a behavior is attached to a component, its public
- * properties and methods can be accessed via the component directly, as if the component owns
- * those properties and methods.
- *
- * To attach a behavior to a component, declare it in [[behaviors()]], or explicitly call [[attachBehavior]].
- * Behaviors declared in [[behaviors()]] are automatically attached to the corresponding component.
+ * @include @yii/base/Component.md
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -134,13 +78,19 @@ class Component extends \yii\base\Object
 	public function __set($name, $value)
 	{
 		$setter = 'set' . $name;
-		if (method_exists($this, $setter)) { // write property
+		if (method_exists($this, $setter)) {
+			// set property
 			$this->$setter($value);
 			return;
-		} elseif (strncmp($name, 'on ', 3) === 0) { // on event
+		} elseif (strncmp($name, 'on ', 3) === 0) {
+			// on event: attach event handler
 			$name = trim(substr($name, 3));
 			$this->getEventHandlers($name)->add($value);
 			return;
+		} elseif (strncmp($name, 'as ', 3) === 0) {
+			// as behavior: attach behavior
+			$name = trim(substr($name, 3));
+			$this->attachBehavior($name, \Yii::createObject($value));
 		} else { // behavior property
 			$this->ensureBehaviors();
 			foreach ($this->_b as $behavior) {
@@ -394,7 +344,7 @@ class Component extends \yii\base\Object
 	 * @param string $behavior the behavior name
 	 * @return Behavior the behavior object, or null if the behavior does not exist
 	 */
-	public function asa($behavior)
+	public function getBehavior($behavior)
 	{
 		$this->ensureBehaviors();
 		return isset($this->_b[$behavior]) ? $this->_b[$behavior] : null;
@@ -492,6 +442,9 @@ class Component extends \yii\base\Object
 	{
 		if (!($behavior instanceof Behavior)) {
 			$behavior = \Yii::createObject($behavior);
+		}
+		if (isset($this->_b[$name])) {
+			$this->_b[$name]->detach($this);
 		}
 		$behavior->attach($this);
 		return $this->_b[$name] = $behavior;

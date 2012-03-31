@@ -13,9 +13,9 @@ namespace yii\base;
  * Dictionary implements a collection that stores key-value pairs.
  *
  * You can access, add or remove an item with a key by using
- * [[itemAt]], [[add]], and [[remove]].
+ * [[itemAt()]], [[add()]], and [[remove()]].
  *
- * To get the number of the items in the dictionary, use [[getCount]].
+ * To get the number of the items in the dictionary, use [[getCount()]].
  *
  * Because Dictionary implements a set of SPL interfaces, it can be used
  * like a regular PHP array as follows,
@@ -27,6 +27,8 @@ namespace yii\base;
  * foreach ($dictionary as $key=>$value) // traverse the items in the dictionary
  * $n = count($dictionary);			  // returns the number of items in the dictionary
  * ~~~
+ *
+ * @property integer $count the number of items in the dictionary
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

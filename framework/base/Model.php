@@ -222,6 +222,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function afterValidate()
 	{
+		$this->trigger('afterValidate');
 		if ($this->hasEventHandlers('onAfterValidate')) {
 			$this->onAfterValidate(new Event($this));
 		}

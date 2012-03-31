@@ -1,115 +1,102 @@
 <?php
 /**
- * CActiveRecordBehavior class file.
+ * ActiveRecordBehavior class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db\ar;
+
+use yii\base\ModelBehavior;
+
 /**
- * CActiveRecordBehavior is the base class for behaviors that can be attached to {@link CActiveRecord}.
- * Compared with {@link CModelBehavior}, CActiveRecordBehavior attaches to more events
- * that are only defined by {@link CActiveRecord}.
+ * ActiveRecordBehavior is the base class for behaviors that can be attached to [[ActiveRecord]].
+ *
+ * Compared to [[\yii\base\ModelBehavior]], ActiveRecordBehavior responds to more events
+ * that are specific to [[ActiveRecord]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CActiveRecordBehavior extends CModelBehavior
+class ActiveRecordBehavior extends ModelBehavior
 {
 	/**
 	 * Declares events and the corresponding event handler methods.
 	 * If you override this method, make sure you merge the parent result to the return value.
 	 * @return array events (array keys) and the corresponding event handler methods (array values).
-	 * @see CBehavior::events
+	 * @see \yii\base\Behavior::events()
 	 */
 	public function events()
 	{
 		return array_merge(parent::events(), array(
-			'onBeforeInsert' => 'beforeInsert',
-			'onAfterInsert' => 'afterInsert',
-			'onBeforeUpdate' => 'beforeUpdate',
-			'onAfterUpdate' => 'afterUpdate',
-			'onBeforeDelete' => 'beforeDelete',
-			'onAfterDelete' => 'afterDelete',
-			'onBeforeFind' => 'beforeFind',
-			'onAfterFind' => 'afterFind',
+			'beforeInsert' => 'beforeInsert',
+			'afterInsert' => 'afterInsert',
+			'beforeUpdate' => 'beforeUpdate',
+			'afterUpdate' => 'afterUpdate',
+			'beforeDelete' => 'beforeDelete',
+			'afterDelete' => 'afterDelete',
 		));
 	}
 
 	/**
-	 * Responds to {@link CActiveRecord::onBeforeSave} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * You may set {@link CModelEvent::isValid} to be false to quit the saving process.
-	 * @param CModelEvent $event event parameter
+	 * Responds to the owner's `beforeInsert` event.
+	 * Overrides this method if you want to handle the corresponding event of the owner.
+	 * You may set the [[ModelEvent::isValid|isValid]] property of the event parameter
+	 * to be false to quit the ActiveRecord inserting process.
+	 * @param \yii\base\ModelEvent $event event parameter
 	 */
 	public function beforeInsert($event)
 	{
 	}
 
 	/**
-	 * Responds to {@link CActiveRecord::onAfterSave} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * @param CModelEvent $event event parameter
+	 * Responds to the owner's `afterInsert` event.
+	 * Overrides this method if you want to handle the corresponding event of the owner.
+	 * @param \yii\base\ModelEvent $event event parameter
 	 */
 	public function afterInsert($event)
 	{
 	}
 
 	/**
-	 * Responds to {@link CActiveRecord::onBeforeSave} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * You may set {@link CModelEvent::isValid} to be false to quit the saving process.
-	 * @param CModelEvent $event event parameter
+	 * Responds to the owner's `beforeUpdate` event.
+	 * Overrides this method if you want to handle the corresponding event of the owner.
+	 * You may set the [[ModelEvent::isValid|isValid]] property of the event parameter
+	 * to be false to quit the ActiveRecord updating process.
+	 * @param \yii\base\ModelEvent $event event parameter
 	 */
 	public function beforeUpdate($event)
 	{
 	}
 
 	/**
-	 * Responds to {@link CActiveRecord::onAfterSave} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * @param CModelEvent $event event parameter
+	 * Responds to the owner's `afterUpdate` event.
+	 * Overrides this method if you want to handle the corresponding event of the owner.
+	 * @param \yii\base\ModelEvent $event event parameter
 	 */
 	public function afterUpdate($event)
 	{
 	}
 
 	/**
-	 * Responds to {@link CActiveRecord::onBeforeDelete} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * You may set {@link CModelEvent::isValid} to be false to quit the deletion process.
-	 * @param CEvent $event event parameter
+	 * Responds to the owner's `beforeDelete` event.
+	 * Overrides this method if you want to handle the corresponding event of the owner.
+	 * You may set the [[ModelEvent::isValid|isValid]] property of the event parameter
+	 * to be false to quit the ActiveRecord deleting process.
+	 * @param \yii\base\ModelEvent $event event parameter
 	 */
 	public function beforeDelete($event)
 	{
 	}
 
 	/**
-	 * Responds to {@link CActiveRecord::onAfterDelete} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * @param CEvent $event event parameter
+	 * Responds to the owner's `afterDelete` event.
+	 * Overrides this method if you want to handle the corresponding event of the owner.
+	 * @param \yii\base\ModelEvent $event event parameter
 	 */
 	public function afterDelete($event)
-	{
-	}
-
-	/**
-	 * Responds to {@link CActiveRecord::onBeforeFind} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * @param CEvent $event event parameter
-	 */
-	public function beforeFind($event)
-	{
-	}
-
-	/**
-	 * Responds to {@link CActiveRecord::onAfterFind} event.
-	 * Overrides this method if you want to handle the corresponding event of the {@link CBehavior::owner owner}.
-	 * @param CEvent $event event parameter
-	 */
-	public function afterFind($event)
 	{
 	}
 }
