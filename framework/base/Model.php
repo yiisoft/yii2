@@ -24,8 +24,8 @@ use yii\util\Text;
  *
  * Model also provides a set of events for further customization:
  *
- * - [[onBeforeValidate]]: an event raised at the beginning of [[validate()]]
- * - [[onAfterValidate]]: an event raised at the end of [[validate()]]
+ * - `beforeValidate`: raised at the beginning of [[validate()]]
+ * - `afterValidate`: raised at the end of [[validate()]]
  *
  * You may directly use Model to store model data, or extend it with customization.
  * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
@@ -198,7 +198,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * This method is invoked before validation starts.
-	 * The default implementation raises the [[onBeforeValidate]] event.
+	 * The default implementation raises the `beforeValidate` event.
 	 * You may override this method to do preliminary checks before validation.
 	 * Make sure the parent implementation is invoked so that the event can be raised.
 	 * @return boolean whether validation should be executed. Defaults to true.
@@ -206,9 +206,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function beforeValidate()
 	{
-		if ($this->hasEventHandlers('onBeforeValidate')) {
+		if ($this->hasEventHandlers('beforeValidate')) {
 			$event = new ModelEvent($this);
-			$this->onBeforeValidate($event);
+			$this->trigger('beforeValidate', $event);
 			return $event->isValid;
 		}
 		return true;
@@ -216,33 +216,15 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * This method is invoked after validation ends.
-	 * The default implementation raises the [[onAfterValidate]] event.
+	 * The default implementation raises the `afterValidate` event.
 	 * You may override this method to do postprocessing after validation.
 	 * Make sure the parent implementation is invoked so that the event can be raised.
 	 */
 	public function afterValidate()
 	{
-		if ($this->hasEventHandlers('onAfterValidate')) {
-			$this->onAfterValidate(new Event($this));
+		if ($this->hasEventHandlers('afterValidate')) {
+			$this->trigger('afterValidate', new Event($this));
 		}
-	}
-
-	/**
-	 * This event is raised before the validation is performed.
-	 * @param ModelEvent $event the event parameter
-	 */
-	public function onBeforeValidate($event)
-	{
-		$this->raiseEvent(__FUNCTION__, $event);
-	}
-
-	/**
-	 * This event is raised after the validation is performed.
-	 * @param Event $event the event parameter
-	 */
-	public function onAfterValidate($event)
-	{
-		$this->raiseEvent(__FUNCTION__, $event);
 	}
 
 	/**

@@ -26,18 +26,19 @@ use yii\util\Text;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @property array $attributes
+ * @property array $attributes attribute values indexed by attribute names
  *
- * Events:
- * - beforeInsert. Raised before the record is saved.
+ * ActiveRecord provides a set of events for further customization:
+ *
+ * - `beforeInsert`. Raised before the record is saved.
  *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[save()]] will be stopped.
- * - afterInsert. Raised after the record is saved.
- * - beforeUpdate. Raised before the record is saved.
+ * - `afterInsert`. Raised after the record is saved.
+ * - `beforeUpdate`. Raised before the record is saved.
  *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[save()]] will be stopped.
- * - afterUpdate. Raised after the record is saved.
- * - beforeDelete. Raised before the record is deleted.
+ * - `afterUpdate`. Raised after the record is saved.
+ * - `beforeDelete`. Raised before the record is deleted.
  *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[delete()]] process will be stopped.
- * - afterDelete. Raised after the record is deleted.
+ * - `afterDelete`. Raised after the record is deleted.
  *
  */
 abstract class ActiveRecord extends Model
@@ -832,7 +833,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked before saving a record (after validation, if any).
-	 * The default implementation raises the {@link beforeSave} event.
+	 * The default implementation raises the `beforeSave` event.
 	 * You may override this method to do any preparation work for record saving.
 	 * Use {@link isNewRecord} to determine whether the saving is
 	 * for inserting or updating record.
@@ -848,7 +849,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked after saving a record successfully.
-	 * The default implementation raises the {@link afterSave} event.
+	 * The default implementation raises the `afterSave` event.
 	 * You may override this method to do postprocessing after record saving.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
@@ -859,7 +860,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked before saving a record (after validation, if any).
-	 * The default implementation raises the {@link beforeSave} event.
+	 * The default implementation raises the `beforeSave` event.
 	 * You may override this method to do any preparation work for record saving.
 	 * Use {@link isNewRecord} to determine whether the saving is
 	 * for inserting or updating record.
@@ -875,7 +876,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked after saving a record successfully.
-	 * The default implementation raises the {@link afterSave} event.
+	 * The default implementation raises the `afterSave` event.
 	 * You may override this method to do postprocessing after record saving.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
@@ -886,7 +887,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked before deleting a record.
-	 * The default implementation raises the {@link beforeDelete} event.
+	 * The default implementation raises the `beforeDelete` event.
 	 * You may override this method to do any preparation work for record deletion.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 * @return boolean whether the record should be deleted. Defaults to true.
@@ -900,7 +901,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked after deleting a record.
-	 * The default implementation raises the {@link afterDelete} event.
+	 * The default implementation raises the `afterDelete` event.
 	 * You may override this method to do postprocessing after the record is deleted.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
