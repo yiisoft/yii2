@@ -68,7 +68,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * Returns an iterator for traversing the items in the vector.
 	 * This method is required by the SPL interface `IteratorAggregate`.
 	 * It will be implicitly called when you use `foreach` to traverse the vector.
-	 * @return Iterator an iterator for traversing the items in the vector.
+	 * @return VectorIterator an iterator for traversing the items in the vector.
 	 */
 	public function getIterator()
 	{
@@ -262,7 +262,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	/**
 	 * Merges iterable data into the vector.
 	 * New items will be appended to the end of the existing items.
-	 * @param mixed $data the data to be merged with, must be an array or an object implementing `Traversable`
+	 * @param array|\Traversable $data the data to be merged with. It must be an array or object implementing Traversable
 	 * @throws Exception if data is neither an array nor an object implementing `Traversable`.
 	 */
 	public function mergeWith($data)
@@ -275,7 +275,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 				$this->add($item);
 			}
 		} else {
-			throw new Exception('Data must be either an array or an object implementing Traversable.');
+			throw new Exception('The data to be merged with must be an array or an object implementing Traversable.');
 		}
 	}
 

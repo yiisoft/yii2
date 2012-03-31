@@ -2,8 +2,6 @@
 /**
  * Filesystem helper class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @author Alex Makarov <sam@rmcreative.ru>
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -14,6 +12,8 @@ namespace yii\util;
 /**
  * Filesystem helper
  *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
 class File

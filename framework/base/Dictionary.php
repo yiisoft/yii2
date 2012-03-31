@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use yii\util\ArrayHelper;
+
 /**
  * Dictionary implements a collection that stores key-value pairs.
  *
@@ -203,17 +205,15 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 *
 	 * Existing elements in the dictionary will be overwritten if their keys are the same as those in the source.
 	 * If the merge is recursive, the following algorithm is performed:
-	 * <ul>
-	 * <li>the dictionary data is saved as $a, and the source data is saved as $b;</li>
-	 * <li>if $a and $b both have an array indxed at the same string key, the arrays will be merged using this algorithm;</li>
-	 * <li>any integer-indexed elements in $b will be appended to $a and reindxed accordingly;</li>
-	 * <li>any string-indexed elements in $b will overwrite elements in $a with the same index;</li>
-	 * </ul>
 	 *
-	 * @param mixed $data the data to be merged with, must be an array or object implementing Traversable
+	 * - the dictionary data is saved as $a, and the source data is saved as $b;
+	 * - if $a and $b both have an array indexed at the same string key, the arrays will be merged using this algorithm;
+	 * - any integer-indexed elements in $b will be appended to $a;
+	 * - any string-indexed elements in $b will overwrite elements in $a with the same index;
+	 *
+	 * @param array|\Traversable $data the data to be merged with. It must be an array or object implementing Traversable
 	 * @param boolean $recursive whether the merging should be recursive.
-	 *
-	 * @throws Exception If data is neither an array nor an iterator.
+	 * @throws Exception if data is neither an array nor an object implementing `Traversable`.
 	 */
 	public function mergeWith($data, $recursive = true)
 	{
@@ -227,9 +227,9 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 					foreach ($data as $key => $value) {
 						$d[$key] = $value;
 					}
-					$this->_d = self::mergeArray($this->_d, $d);
+					$this->_d = ArrayHelper::merge($this->_d, $d);
 				} else {
-					$this->_d = self::mergeArray($this->_d, $data);
+					$this->_d = ArrayHelper::merge($this->_d, $data);
 				}
 			} else {
 				foreach ($data as $key => $value) {
@@ -237,7 +237,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 				}
 			}
 		} else {
-			throw new Exception('Dictionary data must be an array or an object implementing Traversable.');
+			throw new Exception('The data to be merged with must be an array or an object implementing Traversable.');
 		}
 	}
 
@@ -292,32 +292,5 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	public function offsetUnset($offset)
 	{
 		$this->remove($offset);
-	}
-
-	/**
-	 * Merges two arrays into one recursively.
-	 * If each array has an element with the same string key value, the latter
-	 * will overwrite the former (different from array_merge_recursive).
-	 * Recursive merging will be conducted if both arrays have an element of array
-	 * type and are having the same key.
-	 * For integer-keyed elements, the elements from the latter array will
-	 * be appended to the former array.
-	 * @param array $a array to be merged to
-	 * @param array $b array to be merged from
-	 * @return array the merged array (the original arrays are not changed.)
-	 * @see mergeWith
-	 */
-	public static function mergeArray($a, $b)
-	{
-		foreach ($b as $k => $v) {
-			if (is_integer($k)) {
-				isset($a[$k]) ? $a[] = $v : $a[$k] = $v;
-			} elseif (is_array($v) && isset($a[$k]) && is_array($a[$k])) {
-				$a[$k] = self::mergeArray($a[$k], $v);
-			} else {
-				$a[$k] = $v;
-			}
-		}
-		return $a;
 	}
 }
