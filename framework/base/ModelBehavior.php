@@ -21,7 +21,7 @@ namespace yii\base;
 class ModelBehavior extends Behavior
 {
 	/**
-	 * Declares event handlers for owner's events.
+	 * Declares event handlers for the owner's events.
 	 * The default implementation returns the following event handlers:
 	 *
 	 * - `beforeValidate` event
@@ -39,8 +39,8 @@ class ModelBehavior extends Behavior
 	}
 
 	/**
-	 * Responds to [[Model::onBeforeValidate]] event.
-	 * Override this method if you want to handle the corresponding event of the [[owner]].
+	 * Responds to the owner's `beforeValidate` event.
+	 * Override this method if you want to handle the `beforeValidate` event of the [[owner]].
 	 * You may set the [[ModelEvent::isValid|isValid]] property of the event parameter
 	 * to be false to cancel the validation process.
 	 * @param ModelEvent $event event parameter
@@ -50,8 +50,8 @@ class ModelBehavior extends Behavior
 	}
 
 	/**
-	 * Responds to [[Model::onAfterValidate]] event.
-	 * Override this method if you want to handle the corresponding event of the [[owner]].
+	 * Responds to the owner's `afterValidate` event.
+	 * Override this method if you want to handle the `beforeValidate` event of the [[owner]].
 	 * @param Event $event event parameter
 	 */
 	public function afterValidate($event)

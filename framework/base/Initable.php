@@ -12,9 +12,9 @@ namespace yii\base;
 /**
  * Initable is an interface indicating a class needs initialization to work properly.
  *
- * Initable requires a class to implement the [[init]] method.
- * When [[\Yii::createObject]] is being used to create a new component which implements
- * Initable, it will call the [[init]] method after setting the initial values of the
+ * Initable requires a class to implement the [[init()]] method.
+ * When [[\Yii::createObject()]] is being used to create a new component which implements
+ * Initable, it will call the [[init()]] method after setting the initial values of the
  * component properties.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

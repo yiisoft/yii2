@@ -17,17 +17,16 @@ namespace yii\base;
  * And the [[handled]] property indicates if the event is handled.
  * If an event handler sets [[handled]] to be true, the rest of the
  * uninvoked handlers will no longer be called to handle the event.
- * Additionally, an event may specify extra parameters via the [[params]] property.
+ * Additionally, an event may specify extra parameters via the [[data]] property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Event extends Object
+class Event extends \yii\base\Object
 {
 	/**
-	 * @var string the event name. This property is set by [[Component::raiseEvent]].
+	 * @var string the event name. This property is set by [[Component::trigger()]].
 	 * Event handlers may use this property to check what event it is handling.
-	 * The event name is in lower case.
 	 */
 	public $name;
 	/**
@@ -41,19 +40,19 @@ class Event extends Object
 	 */
 	public $handled = false;
 	/**
-	 * @var mixed extra parameters associated with the event.
+	 * @var mixed extra data associated with the event.
 	 */
-	public $params;
+	public $data;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param mixed $sender sender of the event
-	 * @param mixed $params parameters of the event
+	 * @param mixed $data extra data associated with the event
 	 */
-	public function __construct($sender = null, $params = null)
+	public function __construct($sender = null, $data = null)
 	{
 		$this->sender = $sender;
-		$this->params = $params;
+		$this->data = $data;
 	}
 }

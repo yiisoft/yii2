@@ -13,10 +13,10 @@ namespace yii\base;
  * Vector implements an integer-indexed collection class.
  *
  * You can access, append, insert, remove an item from the vector
- * by calling methods such as [[itemAt]], [[add]], [[insertAt]],
- * [[remove]] and [[removeAt]].
+ * by calling methods such as [[itemAt()]], [[add()]], [[insertAt()]],
+ * [[remove()]] and [[removeAt()]].
  *
- * To get the number of the items in the vector, use [[getCount]].
+ * To get the number of the items in the vector, use [[getCount()]].
  *
  * Because Vector implements a set of SPL interfaces, it can be used
  * like a regular PHP array as follows,
@@ -32,7 +32,9 @@ namespace yii\base;
  *
  * Note that if you plan to extend Vector by performing additional operations
  * with each addition or removal of an item (e.g. performing type check),
- * please make sure you override [[insertAt]] and [[removeAt]].
+ * please make sure you override [[insertAt()]] and [[removeAt()]].
+ *
+ * @property integer $count the number of items in the vector
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
