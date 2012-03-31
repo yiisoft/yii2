@@ -38,9 +38,9 @@ namespace yii\base;
  * <li>load application configuration;</li>
  * <li>set up class autoloader and error handling;</li>
  * <li>load static application components;</li>
- * <li>{@link onBeginRequest}: preprocess the user request;</li>
+ * <li>{@link beforeRequest}: preprocess the user request; `beforeRequest` event raised.</li>
  * <li>{@link processRequest}: process the user request;</li>
- * <li>{@link onEndRequest}: postprocess the user request;</li>
+ * <li>{@link afterRequest}: postprocess the user request; `afterRequest` event raised.</li>
  * </ol>
  *
  * Starting from lifecycle 3, if a PHP error or an uncaught exception occurs,
@@ -153,12 +153,12 @@ abstract class Application extends Module
 	 */
 	public function run()
 	{
-		if ($this->hasEventHandlers('onBeginRequest')) {
-			$this->onBeginRequest(new CEvent($this));
+		if ($this->hasEventHandlers('beforeRequest')) {
+			$this->beforeRequest(new CEvent($this));
 		}
 		$this->processRequest();
-		if ($this->hasEventHandlers('onEndRequest')) {
-			$this->onEndRequest(new CEvent($this));
+		if ($this->hasEventHandlers('afterRequest')) {
+			$this->afterRequest(new CEvent($this));
 		}
 	}
 
@@ -182,22 +182,22 @@ abstract class Application extends Module
 
 	/**
 	 * Raised right BEFORE the application processes the request.
-	 * @param CEvent $event the event parameter
+	 * @param Event $event the event parameter
 	 */
-	public function onBeginRequest($event)
+	public function beforeRequest($event)
 	{
-		$this->raiseEvent('onBeginRequest', $event);
+		$this->trigger('beforeRequest', $event);
 	}
 
 	/**
 	 * Raised right AFTER the application processes the request.
-	 * @param CEvent $event the event parameter
+	 * @param Event $event the event parameter
 	 */
-	public function onEndRequest($event)
+	public function afterRequest($event)
 	{
 		if (!$this->_ended) {
 			$this->_ended = true;
-			$this->raiseEvent('onEndRequest', $event);
+			$this->trigger('afterRequest', $event);
 		}
 	}
 
@@ -687,7 +687,7 @@ abstract class Application extends Module
 	 * This method is implemented as a PHP exception handler. It requires
 	 * that constant YII_ENABLE_EXCEPTION_HANDLER be defined true.
 	 *
-	 * This method will first raise an {@link onException} event.
+	 * This method will first raise an `exception` event.
 	 * If the exception is not handled by any event handler, it will call
 	 * {@link getErrorHandler errorHandler} to process the exception.
 	 *
@@ -757,7 +757,7 @@ abstract class Application extends Module
 	 * This method is implemented as a PHP error handler. It requires
 	 * that constant YII_ENABLE_ERROR_HANDLER be defined true.
 	 *
-	 * This method will first raise an {@link onError} event.
+	 * This method will first raise an `error` event.
 	 * If the error is not handled by any event handler, it will call
 	 * {@link getErrorHandler errorHandler} to process the error.
 	 *
@@ -844,31 +844,31 @@ abstract class Application extends Module
 	/**
 	 * Raised when an uncaught PHP exception occurs.
 	 *
-	 * An event handler can set the {@link CExceptionEvent::handled handled}
+	 * An event handler can set the {@link ExceptionEvent::handled handled}
 	 * property of the event parameter to be true to indicate no further error
 	 * handling is needed. Otherwise, the {@link getErrorHandler errorHandler}
 	 * application component will continue processing the error.
 	 *
-	 * @param CExceptionEvent $event event parameter
+	 * @param ExceptionEvent $event event parameter
 	 */
 	public function onException($event)
 	{
-		$this->raiseEvent('onException', $event);
+		$this->trigger('exception', $event);
 	}
 
 	/**
 	 * Raised when a PHP execution error occurs.
 	 *
-	 * An event handler can set the {@link CErrorEvent::handled handled}
+	 * An event handler can set the {@link ErrorEvent::handled handled}
 	 * property of the event parameter to be true to indicate no further error
 	 * handling is needed. Otherwise, the {@link getErrorHandler errorHandler}
 	 * application component will continue processing the error.
 	 *
-	 * @param CErrorEvent $event event parameter
+	 * @param ErrorEvent $event event parameter
 	 */
 	public function onError($event)
 	{
-		$this->raiseEvent('onError', $event);
+		$this->trigger('error', $event);
 	}
 
 	/**

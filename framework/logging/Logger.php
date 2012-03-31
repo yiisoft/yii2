@@ -16,6 +16,10 @@ namespace yii\logging;
  * call [[flush]] to send logged messages to different log targets, such as
  * file, email, Web.
  *
+ * Logger provides a set of events for further customization:
+ *
+ * - `flush`. Raised on logs flush.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -164,7 +168,7 @@ class Logger extends \yii\base\Component
 
 	/**
 	 * Removes all recorded messages from the memory.
-	 * This method will raise an {@link onFlush} event.
+	 * This method will raise a `flush` event.
 	 * The attached event handlers can process the log messages before they are removed.
 	 * @param boolean $export whether to notify log targets to export the filtered messages they have received.
 	 */
@@ -175,12 +179,12 @@ class Logger extends \yii\base\Component
 	}
 
 	/**
-	 * Raises an `onFlush` event.
+	 * Raises a `flush` event.
 	 * @param \yii\base\Event $event the event parameter
 	 */
 	public function onFlush($event)
 	{
-		$this->raiseEvent('onFlush', $event);
+		$this->trigger('flush', $event);
 	}
 
 	/**
