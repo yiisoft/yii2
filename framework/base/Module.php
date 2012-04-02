@@ -88,7 +88,8 @@ abstract class Module extends Component implements Initable
 	/**
 	 * Initializes the module.
 	 * This method is called after the module is created and initialized with property values
-	 * given in configuration.
+	 * given in configuration. The default implement will create a path alias using the module [[id]]
+	 * and then call [[preloadComponents()]] to load components that are declared in [[preload]].
 	 */
 	public function init()
 	{

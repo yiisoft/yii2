@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use yii\base\Exception;
+
 /**
  * Application is the base class for all application classes.
  *
@@ -84,18 +86,15 @@ abstract class Application extends Module
 	/**
 	 * @var string the language that the application is written in. This mainly refers to
 	 * the language that the messages and view files are in. Defaults to 'en_us' (US English).
+	 * @see language
 	 */
 	public $sourceLanguage = 'en_us';
 
-	private $_id;
-	private $_basePath;
 	private $_runtimePath;
-	private $_extensionPath;
 	private $_globalState;
 	private $_stateChanged;
 	private $_ended = false;
 	private $_language;
-	private $_homeUrl;
 
 	/**
 	 * Processes the request.
@@ -113,37 +112,24 @@ abstract class Application extends Module
 	 * which should point to the directory containing all application logic, template and data.
 	 * If not, the directory will be defaulted to 'protected'.
 	 */
-	public function __construct($config = null)
+	public function __construct($basePath)
 	{
 		\Yii::$application = $this;
-
-		// set basePath at early as possible to avoid trouble
-		if (is_string($config)) {
-			$config = require($config);
-		}
-		if (isset($config['basePath'])) {
-			$this->setBasePath($config['basePath']);
-			unset($config['basePath']);
-		} else
-		{
-			$this->setBasePath('protected');
-		}
+		$this->setBasePath($basePath);
 		\Yii::setAlias('application', $this->getBasePath());
-		\Yii::setAlias('webroot', dirname($_SERVER['SCRIPT_FILENAME']));
-		\Yii::setAlias('ext', $this->getBasePath() . DIRECTORY_SEPARATOR . 'extensions');
-
-		$this->preinit();
-
 		$this->initSystemHandlers();
 		$this->registerCoreComponents();
-
-		$this->configure($config);
-		$this->attachBehaviors($this->behaviors);
-		$this->preloadComponents();
-
-		$this->init();
 	}
 
+	/**
+	 * Initializes the module.
+	 * This method is called after the module is created and initialized with property values
+	 * given in configuration.
+	 */
+	public function init()
+	{
+		$this->preloadComponents();
+	}
 
 	/**
 	 * Runs the application.
@@ -153,27 +139,23 @@ abstract class Application extends Module
 	 */
 	public function run()
 	{
-		if ($this->hasEventHandlers('beforeRequest')) {
-			$this->beforeRequest(new CEvent($this));
-		}
+		$this->beforeRequest();
 		$this->processRequest();
-		if ($this->hasEventHandlers('afterRequest')) {
-			$this->afterRequest(new CEvent($this));
-		}
+		$this->afterRequest();
 	}
 
 	/**
 	 * Terminates the application.
-	 * This method replaces PHP's exit() function by calling
-	 * {@link onEndRequest} before exiting.
+	 * This method replaces PHP's exit() function by calling [[afterRequest()]] before exiting.
 	 * @param integer $status exit status (value 0 means normal exit while other values mean abnormal exit).
-	 * @param boolean $exit whether to exit the current request. This parameter has been available since version 1.1.5.
+	 * @param boolean $exit whether to exit the current request.
 	 * It defaults to true, meaning the PHP's exit() function will be called at the end of this method.
 	 */
 	public function end($status = 0, $exit = true)
 	{
-		if ($this->hasEventHandlers('onEndRequest')) {
-			$this->onEndRequest(new CEvent($this));
+		if (!$this->_ended) {
+			$this->_ended = true;
+			$this->afterRequest();
 		}
 		if ($exit) {
 			exit($status);
@@ -181,24 +163,19 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * Raised right BEFORE the application processes the request.
-	 * @param Event $event the event parameter
+	 * Raises the [[beforeRequest]] event right BEFORE the application processes the request.
 	 */
-	public function beforeRequest($event)
+	public function beforeRequest()
 	{
-		$this->trigger('beforeRequest', $event);
+		$this->trigger('beforeRequest');
 	}
 
 	/**
-	 * Raised right AFTER the application processes the request.
-	 * @param Event $event the event parameter
+	 * Raises the [[afterRequest]] event right AFTER the application processes the request.
 	 */
-	public function afterRequest($event)
+	public function afterRequest()
 	{
-		if (!$this->_ended) {
-			$this->_ended = true;
-			$this->trigger('afterRequest', $event);
-		}
+		$this->trigger('afterRequest');
 	}
 
 	/**
@@ -207,44 +184,11 @@ abstract class Application extends Module
 	 */
 	public function getId()
 	{
-		if ($this->_id !== null) {
-			return $this->_id;
-		} else
-		{
-			return $this->_id = sprintf('%x', crc32($this->getBasePath() . $this->name));
+		if (($id = parent::getId()) === null) {
+			$id = sprintf('%x', crc32($this->getBasePath() . $this->name));
+			$this->setId($id);
 		}
-	}
-
-	/**
-	 * Sets the unique identifier for the application.
-	 * @param string $id the unique identifier for the application.
-	 */
-	public function setId($id)
-	{
-		$this->_id = $id;
-	}
-
-	/**
-	 * Returns the root path of the application.
-	 * @return string the root directory of the application. Defaults to 'protected'.
-	 */
-	public function getBasePath()
-	{
-		return $this->_basePath;
-	}
-
-	/**
-	 * Sets the root directory of the application.
-	 * This method can only be invoked at the begin of the constructor.
-	 * @param string $path the root directory of the application.
-	 * @throws CException if the directory does not exist.
-	 */
-	public function setBasePath($path)
-	{
-		if (($this->_basePath = realpath($path)) === false || !is_dir($this->_basePath)) {
-			throw new \yii\base\Exception(\Yii::t('yii', 'Application base path "{path}" is not a valid directory.',
-				array('{path}' => $path)));
-		}
+		return $id;
 	}
 
 	/**
@@ -255,8 +199,7 @@ abstract class Application extends Module
 	{
 		if ($this->_runtimePath !== null) {
 			return $this->_runtimePath;
-		} else
-		{
+		} else {
 			$this->setRuntimePath($this->getBasePath() . DIRECTORY_SEPARATOR . 'runtime');
 			return $this->_runtimePath;
 		}
@@ -265,43 +208,20 @@ abstract class Application extends Module
 	/**
 	 * Sets the directory that stores runtime files.
 	 * @param string $path the directory that stores runtime files.
-	 * @throws CException if the directory does not exist or is not writable
+	 * @throws Exception if the directory does not exist or is not writable
 	 */
 	public function setRuntimePath($path)
 	{
-		if (($runtimePath = realpath($path)) === false || !is_dir($runtimePath) || !is_writable($runtimePath)) {
-			throw new \yii\base\Exception(\Yii::t('yii', 'Application runtime path "{path}" is not valid. Please make sure it is a directory writable by the Web server process.',
-				array('{path}' => $path)));
+		if (!is_dir($path) || !is_writable($path)) {
+			throw new \yii\base\Exception("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
 		}
-		$this->_runtimePath = $runtimePath;
+		$this->_runtimePath = $path;
 	}
 
 	/**
-	 * Returns the root directory that holds all third-party extensions.
-	 * @return string the directory that contains all extensions. Defaults to the 'extensions' directory under 'protected'.
-	 */
-	public function getExtensionPath()
-	{
-		return \Yii::getPathOfAlias('ext');
-	}
-
-	/**
-	 * Sets the root directory that holds all third-party extensions.
-	 * @param string $path the directory that contains all third-party extensions.
-	 */
-	public function setExtensionPath($path)
-	{
-		if (($extensionPath = realpath($path)) === false || !is_dir($extensionPath)) {
-			throw new \yii\base\Exception(\Yii::t('yii', 'Extension path "{path}" does not exist.',
-				array('{path}' => $path)));
-		}
-		\Yii::setAlias('ext', $extensionPath);
-	}
-
-	/**
-	 * Returns the language that the user is using and the application should be targeted to.
-	 * @return string the language that the user is using and the application should be targeted to.
-	 * Defaults to the {@link sourceLanguage source language}.
+	 * Returns the language that the end user is using.
+	 * @return string the language that the user is using (e.g. 'en_US', 'zh_CN').
+	 * Defaults to the value of [[sourceLanguage]].
 	 */
 	public function getLanguage()
 	{
@@ -309,13 +229,10 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * Specifies which language the application is targeted to.
-	 *
-	 * This is the language that the application displays to end users.
-	 * If set null, it uses the {@link sourceLanguage source language}.
-	 *
-	 * Unless your application needs to support multiple languages, you should always
-	 * set this language to null to maximize the application's performance.
+	 * Specifies which language the end user is using.
+	 * This is the language that the application should use to display to end users.
+	 * By default, [[language]] and [[sourceLanguage]] are the same.
+	 * Do not set this property unless your application needs to support multiple languages.
 	 * @param string $language the user language (e.g. 'en_US', 'zh_CN').
 	 * If it is null, the {@link sourceLanguage} will be used.
 	 */
@@ -429,7 +346,7 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the database connection component.
-	 * @return CDbConnection the database connection
+	 * @return \yii\db\dao\Connection the database connection
 	 */
 	public function getDb()
 	{
@@ -438,7 +355,7 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the error handler component.
-	 * @return CErrorHandler the error handler application component.
+	 * @return ErrorHandler the error handler application component.
 	 */
 	public function getErrorHandler()
 	{
@@ -447,7 +364,7 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the security manager component.
-	 * @return CSecurityManager the security manager application component.
+	 * @return SecurityManager the security manager application component.
 	 */
 	public function getSecurityManager()
 	{
@@ -465,7 +382,7 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the cache component.
-	 * @return CCache the cache application component. Null if the component is not enabled.
+	 * @return \yii\caching\Cache the cache application component. Null if the component is not enabled.
 	 */
 	public function getCache()
 	{
@@ -474,7 +391,7 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the core message translations component.
-	 * @return CPhpMessageSource the core message translations
+	 * @return \yii\i18n\MessageSource the core message translations
 	 */
 	public function getCoreMessages()
 	{
@@ -483,7 +400,7 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the application message translations component.
-	 * @return CMessageSource the application message translations
+	 * @return \yii\i18n\MessageSource the application message translations
 	 */
 	public function getMessages()
 	{
@@ -492,98 +409,11 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the request component.
-	 * @return CHttpRequest the request component
+	 * @return Request the request component
 	 */
 	public function getRequest()
 	{
 		return $this->getComponent('request');
-	}
-
-	/**
-	 * Returns the URL manager component.
-	 * @return CUrlManager the URL manager component
-	 */
-	public function getUrlManager()
-	{
-		return $this->getComponent('urlManager');
-	}
-
-	/**
-	 * @return CController the currently active controller. Null is returned in this base class.
-	 */
-	public function getController()
-	{
-		return null;
-	}
-
-	/**
-	 * Creates a relative URL based on the given controller and action information.
-	 * @param string $route the URL route. This should be in the format of 'ControllerID/ActionID'.
-	 * @param array $params additional GET parameters (name=>value). Both the name and value will be URL-encoded.
-	 * @param string $ampersand the token separating name-value pairs in the URL.
-	 * @return string the constructed URL
-	 */
-	public function createUrl($route, $params = array(), $ampersand = '&')
-	{
-		return $this->getUrlManager()->createUrl($route, $params, $ampersand);
-	}
-
-	/**
-	 * Creates an absolute URL based on the given controller and action information.
-	 * @param string $route the URL route. This should be in the format of 'ControllerID/ActionID'.
-	 * @param array $params additional GET parameters (name=>value). Both the name and value will be URL-encoded.
-	 * @param string $schema schema to use (e.g. http, https). If empty, the schema used for the current request will be used.
-	 * @param string $ampersand the token separating name-value pairs in the URL.
-	 * @return string the constructed URL
-	 */
-	public function createAbsoluteUrl($route, $params = array(), $schema = '', $ampersand = '&')
-	{
-		$url = $this->createUrl($route, $params, $ampersand);
-		if (strpos($url, 'http') === 0) {
-			return $url;
-		} else
-		{
-			return $this->getRequest()->getHostInfo($schema) . $url;
-		}
-	}
-
-	/**
-	 * Returns the relative URL for the application.
-	 * This is a shortcut method to {@link CHttpRequest::getBaseUrl()}.
-	 * @param boolean $absolute whether to return an absolute URL. Defaults to false, meaning returning a relative one.
-	 * This parameter has been available since 1.0.2.
-	 * @return string the relative URL for the application
-	 * @see CHttpRequest::getBaseUrl()
-	 */
-	public function getBaseUrl($absolute = false)
-	{
-		return $this->getRequest()->getBaseUrl($absolute);
-	}
-
-	/**
-	 * @return string the homepage URL
-	 */
-	public function getHomeUrl()
-	{
-		if ($this->_homeUrl === null) {
-			if ($this->getUrlManager()->showScriptName) {
-				return $this->getRequest()->getScriptUrl();
-			} else
-			{
-				return $this->getRequest()->getBaseUrl() . '/';
-			}
-		} else
-		{
-			return $this->_homeUrl;
-		}
-	}
-
-	/**
-	 * @param string $value the homepage URL
-	 */
-	public function setHomeUrl($value)
-	{
-		$this->_homeUrl = $value;
 	}
 
 	/**
@@ -600,12 +430,7 @@ abstract class Application extends Module
 		if ($this->_globalState === null) {
 			$this->loadGlobalState();
 		}
-		if (isset($this->_globalState[$key])) {
-			return $this->_globalState[$key];
-		} else
-		{
-			return $defaultValue;
-		}
+		return isset($this->_globalState[$key]) ? $this->_globalState[$key] : $defaultValue;
 	}
 
 	/**
@@ -630,14 +455,13 @@ abstract class Application extends Module
 				unset($this->_globalState[$key]);
 				$this->_stateChanged = true;
 			}
-		} elseif (!isset($this->_globalState[$key]) || $this->_globalState[$key] !== $value)
-		{
+		} elseif (!isset($this->_globalState[$key]) || $this->_globalState[$key] !== $value) {
 			$this->_globalState[$key] = $value;
 			$this->_stateChanged = true;
 		}
 
 		if ($this->_stateChanged !== $changed) {
-			$this->attachEventHandler('onEndRequest', array($this, 'saveGlobalState'));
+			$this->on('afterRequest', array($this, 'saveGlobalState'));
 		}
 	}
 
@@ -649,7 +473,7 @@ abstract class Application extends Module
 	 */
 	public function clearGlobalState($key)
 	{
-		$this->setGlobalState($key, true, true);
+		$this->setGlobalState($key, null);
 	}
 
 	/**
@@ -664,19 +488,19 @@ abstract class Application extends Module
 			$this->_globalState = array();
 		}
 		$this->_stateChanged = false;
-		$this->detachEventHandler('onEndRequest', array($this, 'saveGlobalState'));
+		$this->off('afterRequest', array($this, 'saveGlobalState'));
 	}
 
 	/**
 	 * Saves the global state data into persistent storage.
 	 * @see getStatePersister
-	 * @throws CException if the state persister is not available
+	 * @throws \yii\base\Exception if the state persister is not available
 	 */
 	public function saveGlobalState()
 	{
 		if ($this->_stateChanged) {
 			$this->_stateChanged = false;
-			$this->detachEventHandler('onEndRequest', array($this, 'saveGlobalState'));
+			$this->off('afterRequest', array($this, 'saveGlobalState'));
 			$this->getStatePersister()->save($this->_globalState);
 		}
 	}
@@ -954,41 +778,35 @@ abstract class Application extends Module
 	 * Registers the core application components.
 	 * @see setComponents
 	 */
-	protected function registerCoreComponents()
+	public function registerCoreComponents()
 	{
-		$components = array(
+		$this->setComponents(array(
+			'errorHandler' => array(
+				'class' => 'yii\base\ErrorHandler',
+			),
+			'request' => array(
+				'class' => 'yii\base\Request',
+			),
+			'response' => array(
+				'class' => 'yii\base\Request',
+			),
+			'format' => array(
+				'class' => 'yii\base\Formatter',
+			),
 			'coreMessages' => array(
-				'class' => 'CPhpMessageSource',
+				'class' => 'yii\i18n\PhpMessageSource',
 				'language' => 'en_us',
 				'basePath' => YII_PATH . DIRECTORY_SEPARATOR . 'messages',
 			),
-			'db' => array(
-				'class' => 'CDbConnection',
-			),
 			'messages' => array(
-				'class' => 'CPhpMessageSource',
+				'class' => 'yii\i18n\PhpMessageSource',
 			),
-			// TODO: uncomment when error handler is properly implemented
-//			'errorHandler' => array(
-//				'class' => 'CErrorHandler',
-//			),
 			'securityManager' => array(
-				'class' => 'CSecurityManager',
+				'class' => 'yii\base\SecurityManager',
 			),
 			'statePersister' => array(
-				'class' => 'CStatePersister',
+				'class' => 'yii\base\StatePersister',
 			),
-			'urlManager' => array(
-				'class' => 'CUrlManager',
-			),
-			'request' => array(
-				'class' => 'CHttpRequest',
-			),
-			'format' => array(
-				'class' => 'CFormatter',
-			),
-		);
-
-		$this->setComponents($components);
+		));
 	}
 }
