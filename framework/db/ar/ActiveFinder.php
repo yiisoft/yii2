@@ -245,7 +245,7 @@ class ActiveFinder extends \yii\base\Object
 		}
 		if (is_array($with)) {
 			foreach ($with as $name => $value) {
-				if (is_array($value)) {
+				if (is_array($value) || $value instanceof \Closure) {
 					$this->buildJoinTree($parent, $name, $value);
 				} else {
 					$this->buildJoinTree($parent, $value);
@@ -299,8 +299,12 @@ class ActiveFinder extends \yii\base\Object
 			}
 		}
 
-		foreach ($config as $name => $value) {
-			$child->query->$name = $value;
+		if ($config instanceof \Closure) {
+			call_user_func($config, $child->query);
+		} else {
+			foreach ($config as $name => $value) {
+				$child->query->$name = $value;
+			}
 		}
 
 		return $child;

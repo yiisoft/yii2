@@ -393,7 +393,7 @@ abstract class Module extends Component implements Initable
 	 * )
 	 * ~~~
 	 *
-	 * @param array $components application components (id => component configuration or instances)
+	 * @param array $components application components (id => component configuration or instance)
 	 */
 	public function setComponents($components)
 	{
