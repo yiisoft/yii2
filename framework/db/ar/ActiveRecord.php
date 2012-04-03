@@ -555,7 +555,7 @@ abstract class ActiveRecord extends Model
 	 * If the relation is HAS_MANY or MANY_MANY, it will return an array of objects
 	 * or an empty array.
 	 * @param ActiveRelation|string $relation the relation object or the name of the relation
-	 * @param array $params additional parameters that customize the query conditions as specified in the relation declaration.
+	 * @param array|\Closure $params additional parameters that customize the query conditions as specified in the relation declaration.
 	 * @return mixed the related object(s).
 	 * @throws Exception if the relation is not specified in [[relations()]].
 	 */
@@ -569,8 +569,12 @@ abstract class ActiveRecord extends Model
 			$relation = $md->relations[$relation];
 		}
 		$relation = clone $relation;
-		foreach ($params as $name => $value) {
-			$relation->$name = $value;
+		if ($params instanceof \Closure) {
+			call_user_func($params, $relation);
+		} else {
+			foreach ($params as $name => $value) {
+				$relation->$name = $value;
+			}
 		}
 
 		$finder = new ActiveFinder($this->getDbConnection());

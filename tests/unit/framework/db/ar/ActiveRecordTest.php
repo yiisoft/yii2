@@ -258,6 +258,14 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		// has many and base limited
 		$orders = Order::find()->with('items')->order('@.id')->limit(2)->all();
 		$this->assertEquals(2, count($orders));
+		$this->assertEquals(1, $orders[0]->items[0]->id);
+
+		/// customize "with" query
+		$orders = Order::find()->with(array('items' => function($q) {
+			$q->order('@.id DESC');
+		}))->order('@.id')->limit(2)->all();
+		$this->assertEquals(2, count($orders));
+		$this->assertEquals(2, $orders[0]->items[0]->id);
 
 		// findBySql with
 		$orders = Order::findBySql('SELECT * FROM tbl_order WHERE customer_id=2')->with('items')->all();
@@ -314,11 +322,13 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		));
 		$this->assertEquals(1, count($orders));
 		$this->assertEquals(3, $orders[0]->id);
+
 		// original results are kept after customized query
 		$orders = $customer->orders;
 		$this->assertEquals(2, count($orders));
 		$this->assertEquals(2, $orders[0]->id);
 		$this->assertEquals(3, $orders[1]->id);
+
 		// as array
 		$orders = $customer->orders(array(
 			'asArray' => true,
@@ -327,5 +337,14 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue(is_array($orders[0]));
 		$this->assertEquals(2, $orders[0]['id']);
 		$this->assertEquals(3, $orders[1]['id']);
+
+		// using anonymous function to customize query condition
+		$orders = $customer->orders(function($q) {
+			$q->order('@.id DESC')->asArray();
+		});
+		$this->assertEquals(2, count($orders));
+		$this->assertTrue(is_array($orders[0]));
+		$this->assertEquals(3, $orders[0]['id']);
+		$this->assertEquals(2, $orders[1]['id']);
 	}
 }

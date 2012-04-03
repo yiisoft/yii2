@@ -234,7 +234,7 @@ class ActiveFinder extends \yii\base\Object
 	/**
 	 * @param JoinElement $parent
 	 * @param array|string $with
-	 * @param array $config
+	 * @param array|\Closure $config
 	 * @return null|JoinElement
 	 * @throws \yii\db\Exception
 	 */
