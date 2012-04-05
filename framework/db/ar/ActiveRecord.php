@@ -89,7 +89,9 @@ abstract class ActiveRecord extends Model
 	 * // find all customers
 	 * $customers = Customer::find()->all();
 	 * // find a single customer whose primary key value is 10
-	 * $customer = Customer::find(10)->one();
+	 * $customer = Customer::find(10);
+	 * // the above is equivalent to:
+	 * Customer::find()->where(array('id' => 10))->one();
 	 * // find all active customers and order them by their age:
 	 * $customers = Customer::find()
 	 *     ->where(array('status' => 1))
@@ -107,7 +109,9 @@ abstract class ActiveRecord extends Model
 	 *  - a scalar value (integer or string): query by a single primary key value.
 	 *  - an array of name-value pairs: it will be used to configure the [[ActiveQuery]] object.
 	 *
-	 * @return ActiveQuery the [[ActiveQuery]] instance for query purpose.
+	 * @return ActiveQuery|ActiveRecord|null the [[ActiveQuery]] instance for query purpose, or
+	 * the ActiveRecord object when a scalar is passed to this method which is considered to be a
+	 * primary key value (null will be returned if no record is found in this case.)
 	 */
 	public static function find($q = null)
 	{
@@ -119,7 +123,7 @@ abstract class ActiveRecord extends Model
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::getMetaData()->table->primaryKey;
-			$query->where(array($primaryKey[0] => $q));
+			return $query->where(array($primaryKey[0] => $q))->one();
 		}
 		return $query;
 	}

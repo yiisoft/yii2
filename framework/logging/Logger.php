@@ -152,7 +152,7 @@ class Logger extends \yii\base\Component
 			$count = 0;
 			foreach ($traces as $trace) {
 				if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII_PATH) !== 0) {
-					$message .= "\nin " . $trace['file'] . ' (' . $trace['line'] . ')';
+					$message .= "\nin {$trace['file']} ({$trace['line']})";
 					if (++$count >= YII_TRACE_LEVEL) {
 						break;
 					}
@@ -174,17 +174,11 @@ class Logger extends \yii\base\Component
 	 */
 	public function flush($export = false)
 	{
-		$this->onFlush(new \yii\base\Event($this, array('export' => $export, 'flush' => true)));
+		$this->trigger('flush', new \yii\base\Event($this, array(
+			'export' => $export,
+			'flush' => true,
+		)));
 		$this->messages = array();
-	}
-
-	/**
-	 * Raises a `flush` event.
-	 * @param \yii\base\Event $event the event parameter
-	 */
-	public function onFlush($event)
-	{
-		$this->trigger('flush', $event);
 	}
 
 	/**

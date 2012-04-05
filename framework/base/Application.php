@@ -91,8 +91,6 @@ abstract class Application extends Module
 	public $sourceLanguage = 'en_us';
 
 	private $_runtimePath;
-	private $_globalState;
-	private $_stateChanged;
 	private $_ended = false;
 	private $_language;
 
@@ -417,95 +415,6 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * Returns a global value.
-	 *
-	 * A global value is one that is persistent across users sessions and requests.
-	 * @param string $key the name of the value to be returned
-	 * @param mixed $defaultValue the default value. If the named global value is not found, this will be returned instead.
-	 * @return mixed the named global value
-	 * @see setGlobalState
-	 */
-	public function getGlobalState($key, $defaultValue = null)
-	{
-		if ($this->_globalState === null) {
-			$this->loadGlobalState();
-		}
-		return isset($this->_globalState[$key]) ? $this->_globalState[$key] : $defaultValue;
-	}
-
-	/**
-	 * Sets a global value.
-	 *
-	 * A global value is one that is persistent across users sessions and requests.
-	 * Make sure that the value is serializable and unserializable.
-	 * @param string $key the name of the value to be saved
-	 * @param mixed $value the global value to be saved. It must be serializable.
-	 * @param mixed $defaultValue the default value. If the named global value is the same as this value, it will be cleared from the current storage.
-	 * @see getGlobalState
-	 */
-	public function setGlobalState($key, $value, $defaultValue = null)
-	{
-		if ($this->_globalState === null) {
-			$this->loadGlobalState();
-		}
-
-		$changed = $this->_stateChanged;
-		if ($value === $defaultValue) {
-			if (isset($this->_globalState[$key])) {
-				unset($this->_globalState[$key]);
-				$this->_stateChanged = true;
-			}
-		} elseif (!isset($this->_globalState[$key]) || $this->_globalState[$key] !== $value) {
-			$this->_globalState[$key] = $value;
-			$this->_stateChanged = true;
-		}
-
-		if ($this->_stateChanged !== $changed) {
-			$this->on('afterRequest', array($this, 'saveGlobalState'));
-		}
-	}
-
-	/**
-	 * Clears a global value.
-	 *
-	 * The value cleared will no longer be available in this request and the following requests.
-	 * @param string $key the name of the value to be cleared
-	 */
-	public function clearGlobalState($key)
-	{
-		$this->setGlobalState($key, null);
-	}
-
-	/**
-	 * Loads the global state data from persistent storage.
-	 * @see getStatePersister
-	 * @throws \yii\base\Exception if the state persister is not available
-	 */
-	public function loadGlobalState()
-	{
-		$persister = $this->getStatePersister();
-		if (($this->_globalState = $persister->load()) === null) {
-			$this->_globalState = array();
-		}
-		$this->_stateChanged = false;
-		$this->off('afterRequest', array($this, 'saveGlobalState'));
-	}
-
-	/**
-	 * Saves the global state data into persistent storage.
-	 * @see getStatePersister
-	 * @throws \yii\base\Exception if the state persister is not available
-	 */
-	public function saveGlobalState()
-	{
-		if ($this->_stateChanged) {
-			$this->_stateChanged = false;
-			$this->off('afterRequest', array($this, 'saveGlobalState'));
-			$this->getStatePersister()->save($this->_globalState);
-		}
-	}
-
-	/**
 	 * Handles uncaught PHP exceptions.
 	 *
 	 * This method is implemented as a PHP exception handler. It requires
@@ -663,36 +572,6 @@ abstract class Application extends Module
 				exit(1);
 			}
 		}
-	}
-
-	/**
-	 * Raised when an uncaught PHP exception occurs.
-	 *
-	 * An event handler can set the {@link ExceptionEvent::handled handled}
-	 * property of the event parameter to be true to indicate no further error
-	 * handling is needed. Otherwise, the {@link getErrorHandler errorHandler}
-	 * application component will continue processing the error.
-	 *
-	 * @param ExceptionEvent $event event parameter
-	 */
-	public function onException($event)
-	{
-		$this->trigger('exception', $event);
-	}
-
-	/**
-	 * Raised when a PHP execution error occurs.
-	 *
-	 * An event handler can set the {@link ErrorEvent::handled handled}
-	 * property of the event parameter to be true to indicate no further error
-	 * handling is needed. Otherwise, the {@link getErrorHandler errorHandler}
-	 * application component will continue processing the error.
-	 *
-	 * @param ErrorEvent $event event parameter
-	 */
-	public function onError($event)
-	{
-		$this->trigger('error', $event);
 	}
 
 	/**

@@ -56,6 +56,9 @@ namespace yii\logging;
  */
 class Router extends \yii\base\ApplicationComponent
 {
+	/**
+	 * @var \yii\base\Dictionary
+	 */
 	private $_targets;
 
 	/**
@@ -69,15 +72,15 @@ class Router extends \yii\base\ApplicationComponent
 	/**
 	 * Initializes this application component.
 	 * This method is invoked when the Router component is created by the application.
-	 * The method attaches the [[processLogs]] method to both the [[Logger::onFlush]] event
-	 * and the [[\yii\base\Application::onEndRequest]] event.
+	 * The method attaches the [[processLogs]] method to both the [[Logger::flush]] event
+	 * and the [[\yii\base\Application::afterRequest]] event.
 	 */
 	public function init()
 	{
 		parent::init();
-		\Yii::getLogger()->attachEventHandler('onFlush', array($this, 'processMessages'));
+		\Yii::getLogger()->on('flush', array($this, 'processMessages'));
 		if (($app = \Yii::$application) !== null) {
-			$app->attachEventHandler('onEndRequest', array($this, 'processMessages'));
+			$app->on('afterRequest', array($this, 'processMessages'));
 		}
 	}
 
@@ -100,7 +103,7 @@ class Router extends \yii\base\ApplicationComponent
 	 * Sets the log targets.
 	 * @param array $config list of log target configurations. Each array element
 	 * represents the configuration for creating a single log target. It will be
-	 * passed to [[\Yii::createObject]] to create the target instance.
+	 * passed to [[\Yii::createObject()]] to create the target instance.
 	 */
 	public function setTargets($config)
 	{
@@ -124,8 +127,8 @@ class Router extends \yii\base\ApplicationComponent
 	public function processMessages($event)
 	{
 		$messages = \Yii::getLogger()->messages;
-		$export = !isset($event->params['export']) || $event->params['export'];
-		$final = !isset($event->params['flush']) || !$event->params['flush'];
+		$export = !isset($event->data['export']) || $event->data['export'];
+		$final = !isset($event->data['flush']) || !$event->data['flush'];
 		foreach ($this->_targets as $target) {
 			if ($target->enabled) {
 				$target->processMessages($messages, $export, $final);

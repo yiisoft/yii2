@@ -91,8 +91,7 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 	 */
 	public function value()
 	{
-		$finder = new ActiveFinder($this->getDbConnection());
-		return $finder->find($this, true);
+		return $this->createFinder()->find($this, true);
 	}
 
 	public function exists()
@@ -234,7 +233,11 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 
 	protected function findRecords()
 	{
-		$finder = new ActiveFinder($this->getDbConnection());
-		return $finder->find($this);
+		return $this->createFinder()->find($this);
+	}
+
+	protected function createFinder()
+	{
+		return new ActiveFinder($this->getDbConnection());
 	}
 }

@@ -22,14 +22,6 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
  */
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 0);
 /**
- * This constant defines whether exception handling should be enabled. Defaults to true.
- */
-defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER', true);
-/**
- * This constant defines whether error handling should be enabled. Defaults to true.
- */
-defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
-/**
  * This constant defines the framework installation directory.
  */
 defined('YII_PATH') or define('YII_PATH', __DIR__);
