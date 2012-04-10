@@ -165,12 +165,12 @@ class ComponentTest extends \yiiunit\TestCase
 		$component->test();
 	}
 
-	public function testAsa()
+	public function testGetBehavior()
 	{
 		$component = new NewComponent;
 		$behavior = new NewBehavior;
 		$component->attachBehavior('a', $behavior);
-		$this->assertSame($behavior, $component->asa('a'));
+		$this->assertSame($behavior, $component->getBehavior('a'));
 	}
 
 	public function testCreate()

@@ -340,7 +340,6 @@ class Component extends \yii\base\Object
 
 	/**
 	 * Returns the named behavior object.
-	 * The name 'asa' stands for 'as a'.
 	 * @param string $behavior the behavior name
 	 * @return Behavior the behavior object, or null if the behavior does not exist
 	 */

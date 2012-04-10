@@ -36,8 +36,8 @@ class BehaviorTest extends \yiiunit\TestCase
 		$bar->attachBehavior('bar', $behavior);
 		$this->assertEquals('behavior property', $bar->behaviorProperty);
 		$this->assertEquals('behavior method', $bar->behaviorMethod());
-		$this->assertEquals('behavior property', $bar->asa('bar')->behaviorProperty);
-		$this->assertEquals('behavior method', $bar->asa('bar')->behaviorMethod());
+		$this->assertEquals('behavior property', $bar->getBehavior('bar')->behaviorProperty);
+		$this->assertEquals('behavior method', $bar->getBehavior('bar')->behaviorMethod());
 	}
 
 	public function testAutomaticAttach()
