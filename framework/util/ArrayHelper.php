@@ -10,7 +10,8 @@
 namespace yii\util;
 
 /**
- * ArrayHelper is ...
+ * ArrayHelper provides additional array functionality you can use in your
+ * application.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
