@@ -1,19 +1,19 @@
 <?php
 /**
- * CHelpCommand class file.
+ * HelpCommand class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\console;
 
 /**
- * CHelpCommand represents a console help command.
+ * HelpCommand represents a console help command.
  *
- * CHelpCommand displays the available command list or the help instructions
+ * HelpCommand displays the available command list or the help instructions
  * about a specific command.
  *
  * To use this command, enter the following on the command line:
