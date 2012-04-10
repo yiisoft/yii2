@@ -201,17 +201,17 @@ abstract class Module extends Component implements Initable
 	/**
 	 * Retrieves the named module.
 	 * @param string $id module ID (case-sensitive)
-	 * @param boolean $loadIfNot whether to load the module if it is not yet.
+	 * @param boolean $load whether to load the module if it is not yet loaded.
 	 * @return Module|null the module instance, null if the module
 	 * does not exist.
 	 * @see hasModule()
 	 */
-	public function getModule($id, $loadIfNot = true)
+	public function getModule($id, $load = true)
 	{
 		if (isset($this->_modules[$id])) {
 			if ($this->_modules[$id] instanceof Module) {
 				return $this->_modules[$id];
-			} elseif ($loadIfNot) {
+			} elseif ($load) {
 				\Yii::trace("Loading \"$id\" module", __CLASS__);
 				return $this->_modules[$id] = \Yii::createObject($this->_modules[$id], $id, $this);
 			}
@@ -293,7 +293,7 @@ abstract class Module extends Component implements Initable
 			$this->_modules[$id] = $module;
 		}
 	}
-	
+
 	/**
 	 * Checks whether the named component exists.
 	 * @param string $id application component ID
@@ -308,17 +308,17 @@ abstract class Module extends Component implements Initable
 	/**
 	 * Retrieves the named application component.
 	 * @param string $id application component ID (case-sensitive)
-	 * @param boolean $loadIfNot whether to load the component if it is not yet.
+	 * @param boolean $load whether to load the component if it is not yet loaded.
 	 * @return ApplicationComponent|null the application component instance, null if the application component
 	 * does not exist.
 	 * @see hasComponent()
 	 */
-	public function getComponent($id, $loadIfNot = true)
+	public function getComponent($id, $load = true)
 	{
 		if (isset($this->_components[$id])) {
 			if ($this->_components[$id] instanceof ApplicationComponent) {
 				return $this->_components[$id];
-			} elseif ($loadIfNot) {
+			} elseif ($load) {
 				\Yii::trace("Loading \"$id\" application component", __CLASS__);
 				return $this->_components[$id] = \Yii::createObject($this->_components[$id]);
 			}
