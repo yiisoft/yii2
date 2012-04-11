@@ -19,7 +19,7 @@ namespace yii\util;
 class ArrayHelper extends \yii\base\Component
 {
 	/**
-	 * Merges two arrays into one recursively.
+	 * Merges two or more arrays into one recursively.
 	 * If each array has an element with the same string key value, the latter
 	 * will overwrite the former (different from array_merge_recursive).
 	 * Recursive merging will be conducted if both arrays have an element of array
@@ -27,22 +27,27 @@ class ArrayHelper extends \yii\base\Component
 	 * For integer-keyed elements, the elements from the latter array will
 	 * be appended to the former array.
 	 * @param array $a array to be merged to
-	 * @param array $b array to be merged from
+	 * @param array $b array to be merged from. You can specify additional
+	 * arrays via third argument, fourth argument etc.
 	 * @return array the merged array (the original arrays are not changed.)
-	 * @see mergeWith
 	 */
 	public static function merge($a, $b)
 	{
-		foreach ($b as $k => $v) {
-			if (is_integer($k)) {
-				isset($a[$k]) ? $a[] = $v : $a[$k] = $v;
-			} elseif (is_array($v) && isset($a[$k]) && is_array($a[$k])) {
-				$a[$k] = static::merge($a[$k], $v);
-			} else {
-				$a[$k] = $v;
+		$args = func_get_args();
+		$res = array_shift($args);
+		while ($args !== array()) {
+			$next = array_shift($args);
+			foreach ($next as $k => $v) {
+				if (is_integer($k)) {
+					isset($res[$k]) ? $res[] = $v : $res[$k] = $v;
+				} elseif (is_array($v) && isset($res[$k]) && is_array($res[$k])) {
+					$res[$k] = self::merge($res[$k], $v);
+				} else {
+					$res[$k] = $v;
+				}
 			}
 		}
-		return $a;
+		return $res;
 	}
 
 	/**
