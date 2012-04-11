@@ -69,4 +69,52 @@ class ArrayHelper extends \yii\base\Component
 	{
 		return isset($array[$key]) || array_key_exists($key, $array) ? $array[$key] : $default;
 	}
+
+	/**
+	 * Converts an array such that it is indexed by the specified column values or anonymous function results.
+	 * This method should be used only for two or higher dimensional arrays.
+	 * For example,
+	 *
+	 * ~~~
+	 * $array = array(
+	 *     array('id' => '123', 'data' => 'abc'),
+	 *     array('id' => '345', 'data' => 'def'),
+	 * );
+	 * $result = ArrayHelper::index($array, 'id');
+	 * // the result is:
+	 * // array(
+	 * //     '123' => array('id' => '123', 'data' => 'abc'),
+	 * //     '345' => array('id' => '123', 'data' => 'abc'),
+	 * // )
+	 *
+	 * // using anonymous function
+	 * $result = ArrayHelper::index($array, function(element) {
+	 *     return $element['id'];
+	 * });
+	 *
+	 * Note that if an index value is null, it will NOT be added to the resulting array.
+	 *
+	 * @param array $array the multidimensional array that needs to be indexed
+	 * @param mixed $key the column name or anonymous function whose result will be used to index the array
+	 * @return array the indexed array (the input array will be kept intact.)
+	 */
+	public static function index($array, $key)
+	{
+		$result = array();
+		if ($key instanceof \Closure) {
+			foreach ($array as $element) {
+				$key = call_user_func($key, $element);
+				if ($key !== null) {
+					$result[$key] = $element;
+				}
+			}
+		} else {
+			foreach ($array as $element) {
+				if (isset($element[$key]) && $element[$key] !== null) {
+					$result[$element[$key]] = $element;
+				}
+			}
+		}
+		return $result;
+	}
 }
