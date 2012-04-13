@@ -71,8 +71,14 @@ class ArrayHelper extends \yii\base\Component
 	}
 
 	/**
-	 * Converts an array such that it is indexed by the specified column values or anonymous function results.
-	 * This method should be used only for two or higher dimensional arrays.
+	 * Indexes an array according to a specified key.
+	 * The input array should be multidimensional or an array of objects.
+	 *
+	 * The key can be a key name of the sub-array, a property name of object, or an anonymous
+	 * function which returns the key value given an array element.
+	 *
+	 * If a key value is null, the corresponding array element will be discarded and not put in the result.
+	 *
 	 * For example,
 	 *
 	 * ~~~
@@ -84,18 +90,17 @@ class ArrayHelper extends \yii\base\Component
 	 * // the result is:
 	 * // array(
 	 * //     '123' => array('id' => '123', 'data' => 'abc'),
-	 * //     '345' => array('id' => '123', 'data' => 'abc'),
+	 * //     '345' => array('id' => '345', 'data' => 'def'),
 	 * // )
 	 *
 	 * // using anonymous function
 	 * $result = ArrayHelper::index($array, function(element) {
 	 *     return $element['id'];
 	 * });
+	 * ~~~
 	 *
-	 * Note that if an index value is null, it will NOT be added to the resulting array.
-	 *
-	 * @param array $array the multidimensional array that needs to be indexed
-	 * @param mixed $key the column name or anonymous function whose result will be used to index the array
+	 * @param array $array the array that needs to be indexed
+	 * @param string|\Closure $key the column name or anonymous function whose result will be used to index the array
 	 * @return array the indexed array (the input array will be kept intact.)
 	 */
 	public static function index($array, $key)
@@ -110,9 +115,95 @@ class ArrayHelper extends \yii\base\Component
 			}
 		} else {
 			foreach ($array as $element) {
-				if (isset($element[$key]) && $element[$key] !== null) {
-					$result[$element[$key]] = $element;
+				if (is_object($element)) {
+					if (($value = $element->$key) !== null) {
+						$result[$value] = $element;
+					}
+				} elseif (is_array($element)) {
+					if (isset($element[$key]) && $element[$key] !== null) {
+						$result[$element[$key]] = $element;
+					}
 				}
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns the values of a specified column in an array.
+	 * The input array should be multidimensional or an array of objects.
+	 *
+	 * For example,
+	 *
+	 * ~~~
+	 * $array = array(
+	 *     array('id' => '123', 'data' => 'abc'),
+	 *     array('id' => '345', 'data' => 'def'),
+	 * );
+	 * $result = ArrayHelper::column($array, 'id');
+	 * // the result is: array( '123', '345')
+	 *
+	 * // using anonymous function
+	 * $result = ArrayHelper::column($array, function(element) {
+	 *     return $element['id'];
+	 * });
+	 * ~~~
+	 *
+	 * @param array $array
+	 * @param string|\Closure $key
+	 * @return array the list of column values
+	 */
+	public static function column($array, $key)
+	{
+		$result = array();
+		if ($key instanceof \Closure) {
+			foreach ($array as $element) {
+				$result[] = call_user_func($key, $element);
+			}
+		} else {
+			foreach ($array as $element) {
+				if (is_object($element)) {
+					$result[] = $element->$key;
+				} elseif (is_array($element)) {
+					$result[] = $element[$key];
+				}
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Builds a map (key-value pairs) from a multidimensional array or an array of objects.
+	 * The `$from` and `$to` parameters specify the key names or property names to set up the map.
+	 *
+	 * For example,
+	 *
+	 * ~~~
+	 * $array = array(
+	 *     array('id' => '123', 'data' => 'abc'),
+	 *     array('id' => '345', 'data' => 'def'),
+	 * );
+	 * $result = ArrayHelper::map($array, 'id', 'data');
+	 * // the result is:
+	 * // array(
+	 * //     '123' => 'abc',
+	 * //     '345' => 'def',
+	 * // )
+	 * ~~~
+	 *
+	 * @param $array
+	 * @param $from
+	 * @param $to
+	 * @return array
+	 */
+	public static function map($array, $from, $to)
+	{
+		$result = array();
+		foreach ($array as $element) {
+			if (is_object($element)) {
+				$result[$element->$from] = $element->$to;
+			} elseif (is_array($element)) {
+				$result[$element[$from]] = $element[$to];
 			}
 		}
 		return $result;
