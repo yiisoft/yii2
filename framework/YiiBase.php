@@ -117,8 +117,9 @@ class YiiBase
 	 * To import a class or a directory, one can use either path alias or class name (can be namespaced):
 	 *
 	 *  - `@app/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
-	 *  - `GoogleMap`: importing the `GoogleMap` class with a class name;
-	 *  - `@app/components/*`: importing the whole `components` directory with a path alias.
+	 *  - `@app/components/*`: importing the whole `components` directory with a path alias;
+	 *  - `GoogleMap`: importing the `GoogleMap` class with a class name. [[autoload()]] will be used
+	 *  when this class is used for the first time.
 	 *
 	 * @param string $alias path alias or a simple class name to be imported
 	 * @param boolean $forceInclude whether to include the class file immediately. If false, the class file
@@ -160,7 +161,7 @@ class YiiBase
 				require($path . "/$className.php");
 				self::$_imported[$alias] = $className;
 			} else {
-				self::$classMap[$className] = $path . "/$className.php";
+				self::$classMap[$className] = $path . DIRECTORY_SEPARATOR . "$className.php";
 			}
 			return $className;
 		} else {
@@ -257,33 +258,39 @@ class YiiBase
 			return true;
 		}
 
-		// namespaced class, e.g. yii\base\Component
 		if (strpos($className, '\\') !== false) {
+			// namespaced class, e.g. yii\base\Component
 			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
 			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
 			if (($path = static::getAlias($alias)) !== false) {
-				include($path . '.php');
-				return true;
+				$classFile = $path . '.php';
 			}
-			return false;
-		}
-
-		// PEAR-styled class, e.g. PHPUnit_Framework_TestCase
-		if (($pos = strpos($className, '_')) !== false) {
+		} elseif (($pos = strpos($className, '_')) !== false) {
+			// PEAR-styled class, e.g. PHPUnit_Framework_TestCase
 			// convert class name to path alias, e.g. PHPUnit_Framework_TestCase to @PHPUnit/Framework/TestCase
 			$alias = '@' . str_replace('_', '/', $className);
 			if (($path = static::getAlias($alias)) !== false) {
-				include($path . '.php');
-				return true;
+				$classFile = $path . '.php';
 			}
 		}
 
-		// search in include paths
-		foreach (self::$classPath as $path) {
-			$classFile = $path . DIRECTORY_SEPARATOR . $className . '.php';
-			if (is_file($classFile)) {
+		if (!isset($classFile)) {
+			// search in include paths
+			foreach (self::$classPath as $path) {
+				$path .= DIRECTORY_SEPARATOR . $className . '.php';
+				if (is_file($path)) {
+					$classFile = $path;
+					$alias = $className;
+				}
+			}
+		}
+
+		if (isset($classFile, $alias)) {
+			if (!YII_DEBUG || basename(realpath($classFile)) === basename($alias) . '.php') {
 				include($classFile);
 				return true;
+			} else {
+				throw new \yii\base\Exception("Class name '$className' does not match the class file '" . realpath($classFile) . "'. Have you checked their case sensitivity?");
 			}
 		}
 
