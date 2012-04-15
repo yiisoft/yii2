@@ -13,7 +13,8 @@
 	* type conversion rules
 	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
 	* FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
-	* consider merging UniqueValidator and ExistValidator and using a NOT property.
+	* consider merging UniqueValidator and ExistValidator and using a NOT property: array('!exist', …)
+	* when getting errors from getErrors it will be good to have which validator (at least type) failed exactly.
 - console command support [DONE]
 - built-in console commands
 	+ api doc builder
