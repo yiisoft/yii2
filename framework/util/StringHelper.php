@@ -16,7 +16,7 @@ namespace yii\util;
  * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class Text
+class StringHelper
 {
 	/**
 	 * Converts a word to its plural form.
