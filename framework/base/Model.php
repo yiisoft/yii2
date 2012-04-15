@@ -9,7 +9,7 @@
 
 namespace yii\base;
 
-use yii\util\Text;
+use yii\util\StringHelper;
 
 /**
  * Model is the base class for data models.
@@ -443,7 +443,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function generateAttributeLabel($name)
 	{
-		return Text::camel2words($name, true);
+		return StringHelper::camel2words($name, true);
 	}
 
 	/**

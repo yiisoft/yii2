@@ -18,7 +18,7 @@ use yii\db\dao\Connection;
 use yii\db\dao\TableSchema;
 use yii\db\dao\Query;
 use yii\db\dao\Expression;
-use yii\util\Text;
+use yii\util\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data.
@@ -247,14 +247,14 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Declares the name of the database table associated with this AR class.
-	 * By default this method returns the class name as the table name by calling [[Text::camel2id()]].
+	 * By default this method returns the class name as the table name by calling [[StringHelper::camel2id()]].
 	 * For example, 'Customer' becomes 'customer', and 'OrderDetail' becomes 'order_detail'.
 	 * You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
 	public static function tableName()
 	{
-		return Text::camel2id(basename(get_called_class()), '_');
+		return StringHelper::camel2id(basename(get_called_class()), '_');
 	}
 
 	/**
