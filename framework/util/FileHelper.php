@@ -46,22 +46,22 @@ class FileHelper
 	 * in lower case and in the format of LanguageID_RegionID (e.g. "en_us").
 	 *
 	 * @param string $file the original file
-	 * @param string $targetLanguage the target language that the file should be localized to.
+	 * @param string $language the target language that the file should be localized to.
 	 * If not set, the value of [[\yii\base\Application::language]] will be used.
 	 * @param string $sourceLanguage the language that the original file is in.
 	 * If not set, the value of [[\yii\base\Application::sourceLanguage]] will be used.
 	 * @return string the matching localized file, or the original file if the localized version is not found.
 	 * If the target and the source language codes are the same, the original file will be returned.
 	 */
-	public static function localize($file, $targetLanguage = null, $sourceLanguage = null)
+	public static function localize($file, $language = null, $sourceLanguage = null)
 	{
-		if ($targetLanguage === null) {
-			$targetLanguage = \Yii::$application->getLanguage();
+		if ($language === null) {
+			$language = \Yii::$application->getLanguage();
 		}
 		if ($sourceLanguage === null) {
 			$sourceLanguage = \Yii::$application->sourceLanguage;
 		}
-		if ($targetLanguage === $sourceLanguage) {
+		if ($language === $sourceLanguage) {
 			return $file;
 		}
 		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $sourceLanguage . DIRECTORY_SEPARATOR . basename($file);
