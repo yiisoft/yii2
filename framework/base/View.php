@@ -10,6 +10,7 @@
 namespace yii\base;
 
 use yii\util\FileHelper;
+use yii\util\ArrayHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -56,7 +57,8 @@ class View extends Component
 	 * @param string $view the view to be rendered. This can be a path alias or a path relative to [[basePath]].
 	 * @param array $params the parameters that should be made available in the view. The PHP function `extract()`
 	 * will be called on this variable to extract the variables from this parameter.
-	 * @throws Exception
+	 * @return string the rendering result
+	 * @throws Exception if the view  file cannot be found
 	 */
 	public function render($view, $params = array())
 	{
@@ -70,52 +72,157 @@ class View extends Component
 
 	public function renderFile($file, $params = array())
 	{
-		$this->renderFileInternal($file, $params);
+		return $this->renderFileInternal($file, $params);
 	}
 
 	public function widget($class, $properties = array(), $returnOutput = false)
 	{
-		
+		if ($returnOutput) {
+			ob_start();
+			ob_implicit_flush(false);
+			$widget = $this->createWidget($class, $properties);
+			$widget->run();
+			return ob_get_clean();
+		} else {
+			$widget = $this->createWidget($class, $properties);
+			$widget->run();
+			return $widget;
+		}
 	}
+
+	private $_widgetStack = array();
 
 	public function beginWidget($class, $properties = array())
 	{
-
+		ob_start();
+		ob_implicit_flush(false);
+		$widget = $this->createWidget($class, $properties);
+		$this->_widgetStack[] = $widget;
+		return $widget;
 	}
 
 	public function endWidget($returnOutput = false)
 	{
-
+		if (($widget = array_pop($this->_widgetStack)) !== null) {
+			$widget->run();
+			if ($returnOutput) {
+				return ob_get_clean();
+			} else {
+				ob_end_clean();
+				return $widget;
+			}
+		} else {
+			throw new Exception("Unmatched beginWidget() and endWidget() calls.");
+		}
 	}
 
+	public function createWidget($class, $properties = array())
+	{
+		$properties['class'] = $class;
+
+		// todo: widget skin should be something global, similar to theme
+		if ($this->enableSkin) {
+			if ($this->skinnableWidgets === null || in_array($class, $this->skinnableWidgets)) {
+				$skinName = isset($properties['skin']) ? $properties['skin'] : 'default';
+				if ($skinName !== false && ($skin = $this->getSkin($class, $skinName)) !== array()) {
+					$properties = $properties === array() ? $skin : ArrayHelper::merge($skin, $properties);
+				}
+			}
+		}
+
+		return \Yii::createObject($properties, $this->owner);
+	}
+
+	/**
+	 * Begins recording a clip.
+	 * This method is a shortcut to beginning [[yii\web\widgets\ClipWidget]]
+	 * @param string $id the clip ID.
+	 * @param array $properties initial property values for [[yii\web\widgets\ClipWidget]]
+	 */
 	public function beginClip($id, $properties = array())
 	{
-			
+		$properties['id'] = $id;
+		$this->beginWidget('yii\web\widgets\ClipWidget', $properties);
 	}
 
+	/**
+	 * Ends recording a clip.
+	 * This method is an alias to {@link endWidget}.
+	 */
 	public function endClip()
 	{
-		
+		$this->endWidget();
 	}
 	
+	/**
+	 * Begins fragment caching.
+	 * This method will display cached content if it is available.
+	 * If not, it will start caching and would expect an [[endCache()]]
+	 * call to end the cache and save the content into cache.
+	 * A typical usage of fragment caching is as follows,
+	 *
+	 * ~~~
+	 * if($this->beginCache($id)) {
+	 *     // ...generate content here
+	 *     $this->endCache();
+	 * }
+	 * ~~~
+	 *
+	 * @param string $id a unique ID identifying the fragment to be cached.
+	 * @param array $properties initial property values for [[yii\web\widgets\OutputCache]]
+	 * @return boolean whether we need to generate content for caching. False if cached version is available.
+	 * @see endCache
+	 */
 	public function beginCache($id, $properties = array())
 	{
-			
+		$properties['id'] = $id;
+		$cache = $this->beginWidget('yii\web\widgets\OutputCache', $properties);
+		if ($cache->getIsContentCached()) {
+			$this->endCache();
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
+	/**
+	 * Ends fragment caching.
+	 * This is an alias to [[endWidget()]]
+	 * @see beginCache
+	 */
 	public function endCache()
 	{
-		
-	}
-	
-	public function beginContent()
-	{
-		
+		$this->endWidget();
 	}
 
+	/**
+	 * Begins the rendering of content that is to be decorated by the specified view.
+	 * @param mixed $view the name of the view that will be used to decorate the content. The actual view script
+	 * is resolved via {@link getViewFile}. If this parameter is null (default),
+	 * the default layout will be used as the decorative view.
+	 * Note that if the current controller does not belong to
+	 * any module, the default layout refers to the application's {@link CWebApplication::layout default layout};
+	 * If the controller belongs to a module, the default layout refers to the module's
+	 * {@link CWebModule::layout default layout}.
+	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
+	 * @see endContent
+	 * @see yii\web\widgets\ContentDecorator
+	 */
+	public function beginContent($view = null, $params = array())
+	{
+		$this->beginWidget('yii\web\widgets\ContentDecorator', array(
+			'view' => $view,
+			'params' => $params,
+		));
+	}
+
+	/**
+	 * Ends the rendering of content.
+	 * @see beginContent
+	 */
 	public function endContent()
 	{
-
+		$this->endWidget();
 	}
 
 	protected function renderFileInternal($_file_, $_params_ = array())
@@ -140,19 +247,18 @@ class View extends Component
 			$file = \Yii::getAlias($view[0]);
 		} elseif (!empty($this->basePath)) {
 			$basePaths = is_array($this->basePath) ? $this->basePath : array($this->basePath);
-			$found = false;
 			foreach ($basePaths as $basePath) {
 				$file = $basePath . DIRECTORY_SEPARATOR . $view;
 				if (is_file($file)) {
-					$found = true;
 					break;
 				}
 			}
-			if (!$found) {
-				return false;
-			}
 		}
-		$file = FileHelper::localize($file, $this->language, $this->sourceLanguage);
-		return is_file($file) ? $file : false;
+		if (isset($file) && is_file($file)) {
+			$file = FileHelper::localize($file, $this->language, $this->sourceLanguage);
+			return is_file($file) ? $file : false;
+		} else {
+			return false;
+		}
 	}
 }
