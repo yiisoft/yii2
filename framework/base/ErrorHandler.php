@@ -125,7 +125,12 @@ class ErrorHandler extends ApplicationComponent
 			$this->clearOutput();
 		}
 
-		$this->render($exception);
+		try {
+			$this->render($exception);
+		} catch (\Exception $e) {
+			// use the most primitive way to display exception thrown in the error view
+			$this->renderAsText($e);
+		}
 	}
 
 	protected function render($exception)
@@ -318,12 +323,9 @@ class ErrorHandler extends ApplicationComponent
 	public function renderAsText($exception)
 	{
 		if (YII_DEBUG) {
-			echo get_class($exception) . "\n";
-			echo $exception->getMessage() . ' (' . $exception->getFile() . ':' . $exception->getLine() . ")\n";
-			echo $exception->getTraceAsString();
+			echo $exception;
 		} else {
-			echo get_class($exception) . "\n";
-			echo $exception->getMessage();
+			echo get_class($exception) . ':' . $exception->getMessage();
 		}
 	}
 

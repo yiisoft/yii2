@@ -58,10 +58,7 @@ $owner = $this->owner;
 		The above error occurred while the Web server was processing your request.
 	</p>
 	<p>
-		If you think this is a server error, please contact us.
-	</p>
-	<p>
-		Thank you.
+		Please contact us if you think this is a server error. Thank you.
 	</p>
 	<div class="version">
 		<?php echo date('Y-m-d H:i:s', time()); ?>

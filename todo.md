@@ -2,18 +2,15 @@
 	* WebTarget
 	* ProfileTarget
 - base
-	* error/exception handling
-	  * Convert all PHP errors into exceptions, remove YII_ENABLE_ERROR_HANDLER and error handler (?)
 	* module
 	  - Module should be able to define its own configuration including routes. Application should be able to overwrite it.
 	* application
-	* http exception
 	* security
 - validators
 	* type conversion rules
 	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
 	* FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
-	* consider merging UniqueValidator and ExistValidator and using a NOT property: array('!exist', …)
+	* consider merging UniqueValidator and ExistValidator and using a NOT property: array('!exist', â€¦)
 	* when getting errors from getErrors it will be good to have which validator (at least type) failed exactly.
 - console command support [DONE]
 - built-in console commands
@@ -25,8 +22,7 @@
 	* a way to invalidate/clear cached data
 	* a command to clear cached data
 - db
-	* DAO
-	* schema
+	* sqlite, pgsql, sql server, oracle, db2 drivers
 	  * write a guide on creating own schema definitions
 	* AR
 	  * saving related records
@@ -51,6 +47,7 @@
 	* get/setFlash() should be moved to session component
 	* support optional parameter in URL patterns
 	* Response object.
+	* ErrorAction
 - gii
     * move generation API out of gii, provide yiic commands to use it. Use same templates for gii/yiic.
 	* i18n variant of templates

@@ -89,6 +89,7 @@ abstract class Application extends Module
 	 * @see language
 	 */
 	public $sourceLanguage = 'en_us';
+	public $preload = array('errorHandler');
 
 	private $_runtimePath;
 	private $_ended = false;
@@ -115,7 +116,6 @@ abstract class Application extends Module
 		\Yii::$application = $this;
 		$this->setBasePath($basePath);
 		\Yii::setAlias('application', $this->getBasePath());
-		$this->initSystemHandlers();
 		$this->registerCoreComponents();
 	}
 
@@ -637,19 +637,6 @@ abstract class Application extends Module
 		{
 			echo '<h1>' . get_class($exception) . "</h1>\n";
 			echo '<p>' . $exception->getMessage() . '</p>';
-		}
-	}
-
-	/**
-	 * Initializes the class autoloader and error handlers.
-	 */
-	protected function initSystemHandlers()
-	{
-		if (YII_ENABLE_EXCEPTION_HANDLER) {
-			set_exception_handler(array($this, 'handleException'));
-		}
-		if (YII_ENABLE_ERROR_HANDLER) {
-			set_error_handler(array($this, 'handleError'), error_reporting());
 		}
 	}
 

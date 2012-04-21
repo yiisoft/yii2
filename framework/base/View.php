@@ -226,7 +226,7 @@ class View extends Component
 			$view .= '.php';
 		}
 		if ($view[0] === '@') {
-			$file = \Yii::getAlias($view[0]);
+			$file = \Yii::getAlias($view);
 		} elseif (!empty($this->basePath)) {
 			$basePaths = is_array($this->basePath) ? $this->basePath : array($this->basePath);
 			foreach ($basePaths as $basePath) {
