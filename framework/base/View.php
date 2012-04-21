@@ -64,7 +64,7 @@ class View extends Component
 	{
 		$file = $this->findViewFile($view);
 		if ($file !== false) {
-			return $this->renderFile($file, $params);
+			$this->renderFile($file, $params);
 		} else {
 			throw new Exception("Unable to find the view file for view '$view'.");
 		}
@@ -72,45 +72,30 @@ class View extends Component
 
 	public function renderFile($file, $params = array())
 	{
-		return $this->renderFileInternal($file, $params);
+		$this->renderFileInternal($file, $params);
 	}
 
-	public function widget($class, $properties = array(), $returnOutput = false)
+	public function widget($class, $properties = array())
 	{
-		if ($returnOutput) {
-			ob_start();
-			ob_implicit_flush(false);
-			$widget = $this->createWidget($class, $properties);
-			$widget->run();
-			return ob_get_clean();
-		} else {
-			$widget = $this->createWidget($class, $properties);
-			$widget->run();
-			return $widget;
-		}
+		$widget = $this->createWidget($class, $properties);
+		$widget->run();
+		return $widget;
 	}
 
 	private $_widgetStack = array();
 
 	public function beginWidget($class, $properties = array())
 	{
-		ob_start();
-		ob_implicit_flush(false);
 		$widget = $this->createWidget($class, $properties);
 		$this->_widgetStack[] = $widget;
 		return $widget;
 	}
 
-	public function endWidget($returnOutput = false)
+	public function endWidget()
 	{
 		if (($widget = array_pop($this->_widgetStack)) !== null) {
 			$widget->run();
-			if ($returnOutput) {
-				return ob_get_clean();
-			} else {
-				ob_end_clean();
-				return $widget;
-			}
+			return $widget;
 		} else {
 			throw new Exception("Unmatched beginWidget() and endWidget() calls.");
 		}
@@ -153,7 +138,7 @@ class View extends Component
 	{
 		$this->endWidget();
 	}
-	
+
 	/**
 	 * Begins fragment caching.
 	 * This method will display cached content if it is available.
@@ -184,7 +169,7 @@ class View extends Component
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Ends fragment caching.
 	 * This is an alias to [[endWidget()]]
@@ -228,10 +213,7 @@ class View extends Component
 	protected function renderFileInternal($_file_, $_params_ = array())
 	{
 		extract($_params_, EXTR_OVERWRITE);
-		ob_start();
-		ob_implicit_flush(false);
 		require($_file_);
-		return ob_get_clean();
 	}
 
 	public function findViewFile($view)
