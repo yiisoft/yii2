@@ -8,10 +8,9 @@ $owner = $this->owner;
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title><?php echo get_class($exception); ?></title>
-	<style type="text/css">
-	/*<![CDATA[*/
+	<meta charset="utf-8" />
+	<title><?php echo get_class($exception)?></title>
+	<style>
 	html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;margin:0;padding:0;}
 	body{line-height:1;}
 	ol,ul{list-style:none;}
@@ -156,13 +155,12 @@ $owner = $this->owner;
 	.trace-file:hover {
 		background: #f0ffff;
 	}
-	/*]]>*/
 	</style>
 </head>
 
 <body>
 <div class="container">
-	<h1><?php echo get_class($exception); ?></h1>
+	<h1><?php echo get_class($exception)?></h1>
 
 	<p class="message">
 		<?php echo nl2br($owner->htmlEncode($exception->getMessage()))?>
@@ -170,26 +168,25 @@ $owner = $this->owner;
 
 	<div class="source">
 		<p class="file">
-			<?php echo $owner->htmlEncode($exception->getFile()) . '(' . $exception->getLine() . ')'; ?>
+			<?php echo $owner->htmlEncode($exception->getFile()) . '(' . $exception->getLine() . ')'?>
 		</p>
-		<?php if (YII_DEBUG) $owner->renderSourceCode($exception->getFile(), $exception->getLine(), $owner->maxSourceLines); ?>
+		<?php if (YII_DEBUG) $owner->renderSourceCode($exception->getFile(), $exception->getLine(), $owner->maxSourceLines)?>
 	</div>
 
-	<?php if (YII_DEBUG): ?>
+	<?php if (YII_DEBUG):?>
 	<div class="traces">
 		<h2>Stack Trace</h2>
-		<?php $owner->renderTrace($exception->getTrace()); ?>
+		<?php $owner->renderTrace($exception->getTrace())?>
 	</div>
-	<?php endif; ?>
+	<?php endif?>
 
 	<div class="version">
-		<?php echo date('Y-m-d H:i:s', time()); ?>
-		<?php echo YII_DEBUG ? $owner->versionInfo : ''; ?>
+		<?php echo date('Y-m-d H:i:s', time())?>
+		<?php echo YII_DEBUG ? $owner->versionInfo : ''?>
 	</div>
 </div>
 
-<script type="text/javascript">
-/*<![CDATA[*/
+<script>
 var traceReg = new RegExp("(^|\\s)trace-file(\\s|$)");
 var collapsedReg = new RegExp("(^|\\s)collapsed(\\s|$)");
 
@@ -198,14 +195,15 @@ for(var j=0,len=e.length;j<len;j++){
 	if(traceReg.test(e[j].className)){
 		e[j].onclick = function(){
 			var trace = this.parentNode.parentNode;
-			if(collapsedReg.test(trace.className))
+			if(collapsedReg.test(trace.className)){
 				trace.className = trace.className.replace("collapsed", "expanded");
-			else
+			}
+			else{
 				trace.className = trace.className.replace("expanded", "collapsed");
+			}
 		}
 	}
 }
-/*]]>*/
 </script>
 
 </body>
