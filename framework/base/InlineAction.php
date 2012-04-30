@@ -1,53 +1,50 @@
 <?php
 /**
- * CInlineAction class file.
+ * InlineAction class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\base;
 
 /**
- * CInlineAction represents an action that is defined as a controller method.
+ * InlineAction represents an action that is defined as a controller method.
  *
  * The method name is like 'actionXYZ' where 'XYZ' stands for the action name.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web.actions
- * @since 1.0
+ * @since 2.0
  */
-class CInlineAction extends CAction
+class InlineAction extends Action
 {
 	/**
 	 * Runs the action.
-	 * The action method defined in the controller is invoked.
-	 * This method is required by {@link CAction}.
+	 * This method is invoked by the controller to run the action.
+	 * @param array $params the input parameters
 	 */
-	public function run()
+	public function run($params)
 	{
-		$method='action'.$this->getId();
-		$this->getController()->$method();
+		call_user_func_array(array($this->controller, 'action' . $this->id), $params);
 	}
 
 	/**
-	 * Runs the action with the supplied request parameters.
-	 * This method is internally called by {@link CController::runAction()}.
-	 * @param array $params the request parameters (name=>value)
-	 * @return boolean whether the request parameters are valid
-	 * @since 1.1.7
+	 * Extracts the input parameters according to the signature of the controller action method.
+	 * This method is invoked by controller when it attempts to run the action
+	 * with the user supplied parameters.
+	 * @param array $params the parameters in name-value pairs
+	 * @return array|boolean the extracted parameters in the order as declared in the controller action method.
+	 * False is returned if the input parameters do not follow the method declaration.
 	 */
-	public function runWithParams($params)
+	public function normalizeParams($params)
 	{
-		$methodName='action'.$this->getId();
-		$controller=$this->getController();
-		$method=new ReflectionMethod($controller, $methodName);
-		if($method->getNumberOfParameters()>0)
-			return $this->runWithParamsInternal($controller, $method, $params);
-		else
-			return $controller->$methodName();
+		$method = new \ReflectionMethod($this->controller, 'action' . $this->id);
+		$params = $this->normalizeParams($method, $params);
+		if ($params !== false) {
+			return array($params);
+		} else {
+			return false;
+		}
 	}
-
 }

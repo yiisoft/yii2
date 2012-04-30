@@ -221,7 +221,7 @@ abstract class Controller extends Component implements Initable
 	 * Runs an action with the specified filters.
 	 * A filter chain will be created based on the specified filters
 	 * and the action will be executed then.
-	 * @param CAction $action the action to be executed.
+	 * @param Action $action the action to be executed.
 	 * @param array $filters list of filters to be applied to the action.
 	 * @see filters
 	 * @see createAction
@@ -245,18 +245,18 @@ abstract class Controller extends Component implements Initable
 	 * Runs the action after passing through all filters.
 	 * This method is invoked by {@link runActionWithFilters} after all possible filters have been executed
 	 * and the action starts to run.
-	 * @param CAction $action action to run
+	 * @param Action $action action to run
 	 */
 	public function runAction($action)
 	{
 		$priorAction = $this->_action;
 		$this->_action = $action;
 		if ($this->beforeAction($action)) {
-			if ($action->runWithParams($this->getActionParams()) === false) {
+			$params = $action->normalizeParams($this->getActionParams());
+			if ($params === false) {
 				$this->invalidActionParams($action);
-			}
-			else
-			{
+			} else {
+				call_user_func_array(array($action, 'run'), $params);
 				$this->afterAction($action);
 			}
 		}
@@ -265,25 +265,25 @@ abstract class Controller extends Component implements Initable
 
 	/**
 	 * Returns the request parameters that will be used for action parameter binding.
-	 * By default, this method will return $_GET. You may override this method if you
-	 * want to use other request parameters (e.g. $_GET+$_POST).
-	 * @return array the request parameters to be used for action parameter binding
-	 * @since 1.1.7
+	 * Default implementation simply returns an empty array.
+	 * Child classes may override this method to customize the parameters to be provided
+	 * for action parameter binding (e.g. `$_GET`).
+	 * @return array the request parameters (name-value pairs) to be used for action parameter binding
 	 */
 	public function getActionParams()
 	{
-		return $_GET;
+		return array();
 	}
 
 	/**
 	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
 	 * The default implementation will throw a 400 HTTP exception.
-	 * @param CAction $action the action being executed
-	 * @since 1.1.7
+	 * @param Action $action the action being executed
+	 * @throws HttpException a 400 HTTP exception
 	 */
 	public function invalidActionParams($action)
 	{
-		throw new CHttpException(400, Yii::t('yii', 'Your request is invalid.'));
+		throw new HttpException(400, \Yii::t('yii', 'Your request is invalid.'));
 	}
 
 	/**
@@ -291,7 +291,7 @@ abstract class Controller extends Component implements Initable
 	 * The action can be either an inline action or an object.
 	 * The latter is created by looking up the action map specified in {@link actions}.
 	 * @param string $actionID ID of the action. If empty, the {@link defaultAction default action} will be used.
-	 * @return CAction the action instance, null if the action does not exist.
+	 * @return Action the action instance, null if the action does not exist.
 	 * @see actions
 	 */
 	public function createAction($actionID)
@@ -322,7 +322,7 @@ abstract class Controller extends Component implements Initable
 	 * @param string $actionID the action ID that has its prefix stripped off
 	 * @param string $requestActionID the originally requested action ID
 	 * @param array $config the action configuration that should be applied on top of the configuration specified in the map
-	 * @return CAction the action instance, null if the action does not exist.
+	 * @return Action the action instance, null if the action does not exist.
 	 */
 	protected function createActionFromMap($actionMap, $actionID, $requestActionID, $config = array())
 	{
@@ -386,7 +386,7 @@ abstract class Controller extends Component implements Initable
 	}
 
 	/**
-	 * @return CAction the action currently being executed, null if no active action.
+	 * @return Action the action currently being executed, null if no active action.
 	 */
 	public function getAction()
 	{
@@ -394,7 +394,7 @@ abstract class Controller extends Component implements Initable
 	}
 
 	/**
-	 * @param CAction $value the action currently being executed.
+	 * @param Action $value the action currently being executed.
 	 */
 	public function setAction($value)
 	{
@@ -471,7 +471,7 @@ abstract class Controller extends Component implements Initable
 	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
-	 * @param CAction $action the action to be executed.
+	 * @param Action $action the action to be executed.
 	 * @return boolean whether the action should be executed.
 	 */
 	protected function beforeAction($action)
@@ -482,7 +482,7 @@ abstract class Controller extends Component implements Initable
 	/**
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
-	 * @param CAction $action the action just executed.
+	 * @param Action $action the action just executed.
 	 */
 	protected function afterAction($action)
 	{
