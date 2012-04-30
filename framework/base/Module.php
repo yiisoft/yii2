@@ -136,10 +136,11 @@ abstract class Module extends Component implements Initable
 	 */
 	public function setBasePath($path)
 	{
-		if (($p = realpath($path)) === false || !is_dir($p)) {
+		$p = \Yii::getAlias($path);
+		if ($p === false || !is_dir($p)) {
 			throw new Exception('Invalid base path: ' . $path);
 		} else {
-			$this->_basePath = $p;
+			$this->_basePath = realpath($p);
 		}
 	}
 

@@ -12,9 +12,16 @@ namespace yii\base;
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
  *
- * It displays these errors using appropriate views based on the
- * nature of the error and the mode the application runs at.
- * It also chooses the most preferred language for displaying the error.
+ * ErrorHandler displays these errors using appropriate views based on the
+ * nature of the errors and the mode the application runs at.
+ *
+ * ErrorHandler does the following when the application encounters an error or exception:
+ *
+ * - If it is a PHP error, warning or notice, an ErrorException will be thrown which
+ *   if not caught, will be handled in the next few steps
+ * - If it is an uncaught exception, it will invoke the action defined by [[errorAction]]
+ *   to handle the exception;
+ * - If [[errorAction]] is not defined, it will
  *
  * ErrorHandler uses two sets of views:
  * <ul>
@@ -58,7 +65,6 @@ class ErrorHandler extends ApplicationComponent
 	 * @var integer maximum number of source code lines to be displayed. Defaults to 25.
 	 */
 	public $maxSourceLines = 25;
-
 	/**
 	 * @var integer maximum number of trace source code lines to be displayed. Defaults to 10.
 	 */
@@ -90,7 +96,7 @@ class ErrorHandler extends ApplicationComponent
 	/**
 	 * Handles PHP execution errors such as warnings, notices.
 	 *
-	 * This method is implemented as a PHP error handler. It requires
+	 * This method is used as a PHP error handler. It requires
 	 * that constant YII_ENABLE_ERROR_HANDLER be defined true.
 	 *
 	 * This method will first raise an `error` event.
@@ -135,19 +141,17 @@ class ErrorHandler extends ApplicationComponent
 
 	protected function render($exception)
 	{
-		if (\Yii::$application instanceof \yii\web\Application) {
-			if ($this->errorAction !== null) {
-				\Yii::$application->runController($this->errorAction);
+		if ($this->errorAction !== null) {
+			\Yii::$application->runController($this->errorAction);
+		} elseif (\Yii::$application instanceof \yii\web\Application) {
+			if (!headers_sent()) {
+				$errorCode = $exception instanceof HttpException ? $exception->statusCode : 500;
+				header("HTTP/1.0 $errorCode " . get_class($exception));
+			}
+			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+				$this->renderAsText($exception);
 			} else {
-				if (!headers_sent()) {
-					$errorCode = $exception instanceof HttpException ? $exception->statusCode : 500;
-					header("HTTP/1.0 $errorCode " . get_class($exception));
-				}
-				if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-					$this->renderAsText($exception);
-				} else {
-					$this->renderAsHtml($exception);
-				}
+				$this->renderAsHtml($exception);
 			}
 		} else {
 			$this->renderAsText($exception);

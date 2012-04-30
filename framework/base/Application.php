@@ -73,7 +73,7 @@ use yii\base\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Application extends Module
+class Application extends Module
 {
 	/**
 	 * @var string the application name. Defaults to 'My Application'.
@@ -91,25 +91,16 @@ abstract class Application extends Module
 	public $sourceLanguage = 'en_us';
 	public $preload = array('errorHandler');
 
+	public $localeDataPath = '@yii/i18n/data';
+
 	private $_runtimePath;
 	private $_ended = false;
 	private $_language;
 
 	/**
-	 * Processes the request.
-	 * This is the place where the actual request processing work is done.
-	 * Derived classes should override this method.
-	 */
-	abstract public function processRequest();
-
-	/**
 	 * Constructor.
-	 * @param mixed $config application configuration.
-	 * If a string, it is treated as the path of the file that contains the configuration;
-	 * If an array, it is the actual configuration information.
-	 * Please make sure you specify the {@link getBasePath basePath} property in the configuration,
-	 * which should point to the directory containing all application logic, template and data.
-	 * If not, the directory will be defaulted to 'protected'.
+	 * @param string $basePath the base path of this application. This should point to
+	 * the directory containing all application logic, template and data.
 	 */
 	public function __construct($basePath)
 	{
@@ -166,6 +157,15 @@ abstract class Application extends Module
 	public function beforeRequest()
 	{
 		$this->trigger('beforeRequest');
+	}
+
+	/**
+	 * Processes the request.
+	 * This is the place where the actual request processing work is done.
+	 * Derived classes should override this method.
+	 */
+	public function processRequest()
+	{
 	}
 
 	/**
@@ -306,24 +306,6 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * Returns the directory that contains the locale data.
-	 * @return string the directory that contains the locale data. It defaults to 'framework/i18n/data'.
-	 */
-	public function getLocaleDataPath()
-	{
-		return CLocale::$dataPath === null ? \Yii::getPathOfAlias('system.i18n.data') : CLocale::$dataPath;
-	}
-
-	/**
-	 * Sets the directory that contains the locale data.
-	 * @param string $value the directory that contains the locale data.
-	 */
-	public function setLocaleDataPath($value)
-	{
-		CLocale::$dataPath = $value;
-	}
-
-	/**
 	 * @return CNumberFormatter the locale-dependent number formatter.
 	 * The current {@link getLocale application locale} will be used.
 	 */
@@ -415,232 +397,6 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * Handles uncaught PHP exceptions.
-	 *
-	 * This method is implemented as a PHP exception handler. It requires
-	 * that constant YII_ENABLE_EXCEPTION_HANDLER be defined true.
-	 *
-	 * This method will first raise an `exception` event.
-	 * If the exception is not handled by any event handler, it will call
-	 * {@link getErrorHandler errorHandler} to process the exception.
-	 *
-	 * The application will be terminated by this method.
-	 *
-	 * @param Exception $exception exception that is not caught
-	 */
-	public function handleException($exception)
-	{
-		// disable error capturing to avoid recursive errors
-		restore_error_handler();
-		restore_exception_handler();
-
-		$category = 'exception.' . get_class($exception);
-		if ($exception instanceof \yii\web\HttpException) {
-			$category .= '.' . $exception->statusCode;
-		}
-		// php <5.2 doesn't support string conversion auto-magically
-		$message = $exception->__toString();
-		if (isset($_SERVER['REQUEST_URI'])) {
-			$message .= ' REQUEST_URI=' . $_SERVER['REQUEST_URI'];
-		}
-		\Yii::error($message, $category);
-
-		try
-		{
-			// TODO: do we need separate exception class as it was in 1.1?
-			//$event = new CExceptionEvent($this, $exception);
-			$event = new Event($this, array('exception' => $exception));
-			$this->onException($event);
-			if (!$event->handled) {
-				// try an error handler
-				if (($handler = $this->getErrorHandler()) !== null) {
-					$handler->handle($event);
-				} else
-				{
-					$this->displayException($exception);
-				}
-			}
-		}
-		catch (Exception $e)
-		{
-			$this->displayException($e);
-		}
-
-		try
-		{
-			$this->end(1);
-		}
-		catch (Exception $e)
-		{
-			// use the most primitive way to log error
-			$msg = get_class($e) . ': ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
-			$msg .= $e->getTraceAsString() . "\n";
-			$msg .= "Previous exception:\n";
-			$msg .= get_class($exception) . ': ' . $exception->getMessage() . ' (' . $exception->getFile() . ':' . $exception->getLine() . ")\n";
-			$msg .= $exception->getTraceAsString() . "\n";
-			$msg .= '$_SERVER=' . var_export($_SERVER, true);
-			error_log($msg);
-			exit(1);
-		}
-	}
-
-	/**
-	 * Handles PHP execution errors such as warnings, notices.
-	 *
-	 * This method is implemented as a PHP error handler. It requires
-	 * that constant YII_ENABLE_ERROR_HANDLER be defined true.
-	 *
-	 * This method will first raise an `error` event.
-	 * If the error is not handled by any event handler, it will call
-	 * {@link getErrorHandler errorHandler} to process the error.
-	 *
-	 * The application will be terminated by this method.
-	 *
-	 * @param integer $code the level of the error raised
-	 * @param string $message the error message
-	 * @param string $file the filename that the error was raised in
-	 * @param integer $line the line number the error was raised at
-	 */
-	public function handleError($code, $message, $file, $line)
-	{
-		if ($code & error_reporting()) {
-			// disable error capturing to avoid recursive errors
-			restore_error_handler();
-			restore_exception_handler();
-
-			$log = "$message ($file:$line)\nStack trace:\n";
-			$trace = debug_backtrace();
-			// skip the first 3 stacks as they do not tell the error position
-			if (count($trace) > 3) {
-				$trace = array_slice($trace, 3);
-			}
-			foreach ($trace as $i => $t)
-			{
-				if (!isset($t['file'])) {
-					$t['file'] = 'unknown';
-				}
-				if (!isset($t['line'])) {
-					$t['line'] = 0;
-				}
-				if (!isset($t['function'])) {
-					$t['function'] = 'unknown';
-				}
-				$log .= "#$i  {$t['file']}( {$t['line']}): ";
-				if (isset($t['object']) && is_object($t['object'])) {
-					$log .= get_class($t['object']) . '->';
-				}
-				$log .= " {$t['function']}()\n";
-			}
-			if (isset($_SERVER['REQUEST_URI'])) {
-				$log .= 'REQUEST_URI=' . $_SERVER['REQUEST_URI'];
-			}
-			\Yii::error($log, 'php');
-
-			try
-			{
-				\Yii::import('CErrorEvent', true);
-				$event = new CErrorEvent($this, $code, $message, $file, $line);
-				$this->onError($event);
-				if (!$event->handled) {
-					// try an error handler
-					if (($handler = $this->getErrorHandler()) !== null) {
-						$handler->handle($event);
-					} else
-					{
-						$this->displayError($code, $message, $file, $line);
-					}
-				}
-			}
-			catch (Exception $e)
-			{
-				$this->displayException($e);
-			}
-
-			try
-			{
-				$this->end(1);
-			}
-			catch (Exception $e)
-			{
-				// use the most primitive way to log error
-				$msg = get_class($e) . ': ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
-				$msg .= $e->getTraceAsString() . "\n";
-				$msg .= "Previous error:\n";
-				$msg .= $log . "\n";
-				$msg .= '$_SERVER=' . var_export($_SERVER, true);
-				error_log($msg);
-				exit(1);
-			}
-		}
-	}
-
-	/**
-	 * Displays the captured PHP error.
-	 * This method displays the error in HTML when there is
-	 * no active error handler.
-	 * @param integer $code error code
-	 * @param string $message error message
-	 * @param string $file error file
-	 * @param string $line error line
-	 */
-	public function displayError($code, $message, $file, $line)
-	{
-		if (YII_DEBUG) {
-			echo "<h1>PHP Error [$code]</h1>\n";
-			echo "<p>$message ($file:$line)</p>\n";
-			echo '<pre>';
-
-			$trace = debug_backtrace();
-			// skip the first 3 stacks as they do not tell the error position
-			if (count($trace) > 3) {
-				$trace = array_slice($trace, 3);
-			}
-			foreach ($trace as $i => $t)
-			{
-				if (!isset($t['file'])) {
-					$t['file'] = 'unknown';
-				}
-				if (!isset($t['line'])) {
-					$t['line'] = 0;
-				}
-				if (!isset($t['function'])) {
-					$t['function'] = 'unknown';
-				}
-				echo "#$i  {$t['file']}( {$t['line']}): ";
-				if (isset($t['object']) && is_object($t['object'])) {
-					echo get_class($t['object']) . '->';
-				}
-				echo " {$t['function']}()\n";
-			}
-
-			echo '</pre>';
-		} else
-		{
-			echo "<h1>PHP Error [$code]</h1>\n";
-			echo "<p>$message</p>\n";
-		}
-	}
-
-	/**
-	 * Displays the uncaught PHP exception.
-	 * This method displays the exception in HTML when there is
-	 * no active error handler.
-	 * @param Exception $exception the uncaught exception
-	 */
-	public function displayException($exception)
-	{
-		if (YII_DEBUG) {
-			echo '<h1>' . get_class($exception) . "</h1>\n";
-			echo '<p>' . $exception->getMessage() . ' (' . $exception->getFile() . ':' . $exception->getLine() . ')</p>';
-			echo '<pre>' . $exception->getTraceAsString() . '</pre>';
-		} else
-		{
-			echo '<h1>' . get_class($exception) . "</h1>\n";
-			echo '<p>' . $exception->getMessage() . '</p>';
-		}
-	}
-
-	/**
 	 * Registers the core application components.
 	 * @see setComponents
 	 */
@@ -654,7 +410,7 @@ abstract class Application extends Module
 				'class' => 'yii\base\Request',
 			),
 			'response' => array(
-				'class' => 'yii\base\Request',
+				'class' => 'yii\base\Response',
 			),
 			'format' => array(
 				'class' => 'yii\base\Formatter',
@@ -662,7 +418,7 @@ abstract class Application extends Module
 			'coreMessages' => array(
 				'class' => 'yii\i18n\PhpMessageSource',
 				'language' => 'en_us',
-				'basePath' => YII_PATH . DIRECTORY_SEPARATOR . 'messages',
+				'basePath' => '@yii/messages',
 			),
 			'messages' => array(
 				'class' => 'yii\i18n\PhpMessageSource',
