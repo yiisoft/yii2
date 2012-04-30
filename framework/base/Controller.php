@@ -252,12 +252,10 @@ abstract class Controller extends Component implements Initable
 		$priorAction = $this->_action;
 		$this->_action = $action;
 		if ($this->beforeAction($action)) {
-			$params = $action->normalizeParams($this->getActionParams());
-			if ($params === false) {
-				$this->invalidActionParams($action);
-			} else {
-				call_user_func_array(array($action, 'run'), $params);
+			if ($action->runWithParams($this->getActionParams())) {
 				$this->afterAction($action);
+			} else {
+				$this->invalidActionParams($action);
 			}
 		}
 		$this->_action = $priorAction;

@@ -15,10 +15,10 @@ namespace yii\base;
  * Action provides a way to divide a complex controller into
  * smaller actions in separate class files.
  *
- * Derived classes must implement {@link run()} which is invoked by
- * controller when the action is requested.
- *
- * An action instance can access its controller via {@link getController controller} property.
+ * Derived classes must implement a method named `run()`. This method
+ * will be invoked by the controller when the action is requested.
+ * The `run()` method can have parameters which will be filled up
+ * automatically according to their names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -35,17 +35,21 @@ class Action extends Component
 	public $controller;
 
 	/**
-	 * Extracts the input parameters according to the signature of the "run()" method.
-	 * This method is invoked by controller when it attempts to run the action
-	 * with the user supplied parameters.
-	 * @param array $params the parameters in name-value pairs
-	 * @return array|boolean the extracted parameters in the order as declared in the "run()" method.
-	 * False is returned if the input parameters do not follow the method declaration.
+	 * Runs the action with the supplied parameters.
+	 * This method is invoked by the controller.
+	 * @param array $params the input parameters in terms of name-value pairs.
+	 * @return boolean whether the input parameters are valid
 	 */
-	public function normalizeParams($params)
+	public function runWithParams($params)
 	{
 		$method = new \ReflectionMethod($this, 'run');
-		return $this->normalizeParamsByMethod($method, $params);
+		$params = $this->normalizeParamsByMethod($method, $params);
+		if ($params !== false) {
+			call_user_func_array(array($this, 'run'), $params);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**

@@ -1,15 +1,16 @@
 <?php
 /**
- * CFilter class file.
+ * ActionFilter class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\base;
+
 /**
- * CFilter is the base class for all filters.
+ * ActionFilter is the base class for all filters.
  *
  * A filter can be applied before and after an action is executed.
  * It can modify the context that the action is to run or decorate the result that the
@@ -19,11 +20,9 @@
  * before the action, and {@link postFilter()} for filtering logic after the action.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web.filters
- * @since 1.0
+ * @since 2.0
  */
-class CFilter extends CComponent implements IFilter
+class ActionFilter extends CComponent implements IFilter
 {
 	/**
 	 * Performs the filtering.
@@ -32,7 +31,7 @@ class CFilter extends CComponent implements IFilter
 	 * child classes. If a child class needs to override this method,
 	 * make sure it calls <code>$filterChain->run()</code>
 	 * if the action should be executed.
-	 * @param CFilterChain $filterChain the filter chain that the filter is on.
+	 * @param ActionFilterChain $filterChain the filter chain that the filter is on.
 	 */
 	public function filter($filterChain)
 	{
@@ -56,7 +55,7 @@ class CFilter extends CComponent implements IFilter
 
 	/**
 	 * Performs the pre-action filtering.
-	 * @param CFilterChain $filterChain the filter chain that the filter is on.
+	 * @param ActionFilterChain $filterChain the filter chain that the filter is on.
 	 * @return boolean whether the filtering process should continue and the action
 	 * should be executed.
 	 */
@@ -67,7 +66,7 @@ class CFilter extends CComponent implements IFilter
 
 	/**
 	 * Performs the post-action filtering.
-	 * @param CFilterChain $filterChain the filter chain that the filter is on.
+	 * @param ActionFilterChain $filterChain the filter chain that the filter is on.
 	 */
 	protected function postFilter($filterChain)
 	{

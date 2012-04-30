@@ -12,7 +12,8 @@ namespace yii\base;
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
- * The method name is like 'actionXYZ' where 'XYZ' stands for the action name.
+ * The name of the controller method should be in the format of `actionXyz`
+ * where `Xyz` stands for the action ID (e.g. `actionIndex`).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -20,29 +21,18 @@ namespace yii\base;
 class InlineAction extends Action
 {
 	/**
-	 * Runs the action.
-	 * This method is invoked by the controller to run the action.
-	 * @param array $params the input parameters
+	 * Runs the action with the supplied parameters.
+	 * This method is invoked by the controller.
+	 * @param array $params the input parameters in terms of name-value pairs.
+	 * @return boolean whether the input parameters are valid
 	 */
-	public function run($params)
-	{
-		call_user_func_array(array($this->controller, 'action' . $this->id), $params);
-	}
-
-	/**
-	 * Extracts the input parameters according to the signature of the controller action method.
-	 * This method is invoked by controller when it attempts to run the action
-	 * with the user supplied parameters.
-	 * @param array $params the parameters in name-value pairs
-	 * @return array|boolean the extracted parameters in the order as declared in the controller action method.
-	 * False is returned if the input parameters do not follow the method declaration.
-	 */
-	public function normalizeParams($params)
+	public function runWithParams($params)
 	{
 		$method = new \ReflectionMethod($this->controller, 'action' . $this->id);
-		$params = $this->normalizeParams($method, $params);
+		$params = $this->normalizeParamsByMethod($method, $params);
 		if ($params !== false) {
-			return array($params);
+			call_user_func_array(array($this->controller, 'action' . $this->id), $params);
+			return true;
 		} else {
 			return false;
 		}
