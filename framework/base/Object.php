@@ -82,7 +82,8 @@ class Object
 	public function __isset($name)
 	{
 		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) { // property is not null
+		if (method_exists($this, $getter)) {
+			// property is not null
 			return $this->$getter() !== null;
 		} else {
 			return false;
@@ -103,7 +104,8 @@ class Object
 	public function __unset($name)
 	{
 		$setter = 'set' . $name;
-		if (method_exists($this, $setter)) { // write property
+		if (method_exists($this, $setter)) {
+			// write property
 			$this->$setter(null);
 		} elseif (method_exists($this, 'get' . $name)) {
 			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' . $name);
@@ -119,6 +121,7 @@ class Object
 	 * will be implicitly called when an unknown method is being invoked.
 	 * @param string $name the method name
 	 * @param array $params method parameters
+	 * @throws Exception when calling unknown method
 	 * @return mixed the method return value
 	 */
 	public function __call($name, $params)
@@ -267,7 +270,8 @@ class Object
 			} elseif ($n === 4) {
 				$object = new $class($args[1], $args[2], $args[3]);
 			} else {
-				array_shift($args); // remove $config
+				// remove $config
+				array_shift($args);
 				$r = new \ReflectionClass($class);
 				$object = $r->newInstanceArgs($args);
 			}

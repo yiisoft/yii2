@@ -47,9 +47,11 @@ class Component extends \yii\base\Object
 	public function __get($name)
 	{
 		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) { // read property, e.g. getName()
+		if (method_exists($this, $getter)) {
+			// read property, e.g. getName()
 			return $this->$getter();
-		} else { // behavior property
+		} else {
+			// behavior property
 			$this->ensureBehaviors();
 			foreach ($this->_b as $behavior) {
 				if ($behavior->canGetProperty($name)) {
@@ -91,7 +93,8 @@ class Component extends \yii\base\Object
 			// as behavior: attach behavior
 			$name = trim(substr($name, 3));
 			$this->attachBehavior($name, \Yii::createObject($value));
-		} else { // behavior property
+		} else {
+			// behavior property
 			$this->ensureBehaviors();
 			foreach ($this->_b as $behavior) {
 				if ($behavior->canSetProperty($name)) {
@@ -122,9 +125,11 @@ class Component extends \yii\base\Object
 	public function __isset($name)
 	{
 		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) { // property is not null
+		if (method_exists($this, $getter)) {
+			// property is not null
 			return $this->$getter() !== null;
-		} else { // behavior property
+		} else {
+			// behavior property
 			$this->ensureBehaviors();
 			foreach ($this->_b as $behavior) {
 				if ($behavior->canGetProperty($name)) {
@@ -150,10 +155,12 @@ class Component extends \yii\base\Object
 	public function __unset($name)
 	{
 		$setter = 'set' . $name;
-		if (method_exists($this, $setter)) { // write property
+		if (method_exists($this, $setter)) {
+			// write property
 			$this->$setter(null);
 			return;
-		} else { // behavior property
+		} else {
+			// behavior property
 			$this->ensureBehaviors();
 			foreach ($this->_b as $behavior) {
 				if ($behavior->canSetProperty($name)) {
@@ -178,6 +185,7 @@ class Component extends \yii\base\Object
 	 * will be implicitly called when an unknown method is being invoked.
 	 * @param string $name the method name
 	 * @param array $params method parameters
+	 * @throws Exception when calling unknown method
 	 * @return mixed the method return value
 	 */
 	public function __call($name, $params)
