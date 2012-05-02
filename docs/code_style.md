@@ -152,6 +152,7 @@ It's preferrable to define class level constants rather than global ones.
 - Name should be descriptive by itself indicating the purpose of the function.
 - Class methods should always declare visibility using `private`, `protected` and
   `public` modifiers. `var` is not allowed.
+- Opening brace of a function should be on the line after the function declaration.
 
 ~~~
 /**
