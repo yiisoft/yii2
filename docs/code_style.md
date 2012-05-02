@@ -5,25 +5,30 @@ This code standard is used for all the Yii2 core classes and can be applied to
 your application in order to achieve consistency among your team. Also it will
 help in case you want to opensource code.
 
-
 PHP file formatting
 -------------------
 
 ### General
 
-- Do not use `?>` for files containing PHP code only.
+- Do not end file with `?>` if it contains PHP code only.
+- Do not use `<?`. Use `<?php` instead.
 - Files should be encoded in UTF-8.
+- Any file that contains PHP code should end with the extension `.php`.
+- Do not add trailing spaces to the end of the lines.
 
-### Indentation
+#### Indentation
 
 All code must be indented with tabs. That includes both PHP and JavaScript code.
 
-### Maximum Line Length
+#### Maximum Line Length
 
 We're not strictly limiting maximum line length but sticking to 80 characters
 where possible.
 
-### Line Termination
+### PHP types
+
+All PHP types and values should be used lowercase. That includes `true`, `false`,
+`null` and `array`.
 
 ### Strings
 
@@ -104,9 +109,8 @@ $config = array(
 - Every class must have a documentation block that conforms to the PHPDoc.
 - All code in a class must be indented with a signle tab.
 - Only one class is permitted per PHP file.
-- When declaring public class members specify `public` keyword explicitly.
-- Variables should be declared at the top of the class before any method declarations.
-- Private variables should be named like `$_varName`.
+- All classes should be namespaced.
+- Class name should match file name. Class namespace should match directory structure.
 
 ~~~
 /**
@@ -118,11 +122,36 @@ class MyClass extends \yii\Object implements MyInterface
 }
 ~~~
 
+
+### Class members and variables
+
+- When declaring public class members specify `public` keyword explicitly.
+- Variables should be declared at the top of the class before any method declarations.
+- Private and protected variables should be named like `$_varName`.
+- Public class members and standalone variables should be named using `$camelCase`
+  with first letter lowercase.
+- Use descriptive names. Variables such as `$i` and `$j` are better not to be used.
+
+### Constants
+
+Both class level constants and gloval constants should be named in uppercase. Words
+are separated by underscore.
+
+~~~
+class User {
+	const STATUS_ACTIVE = 1;
+	const STATUS_BANNED = 2;
+}
+~~~
+
+It's preferrable to define class level constants rather than global ones.
+
 ### Functions and methods
 
 - Functions and methods should be named using `camelCase` with first letter lowercase.
+- Name should be descriptive by itself indicating the purpose of the function.
 - Class methods should always declare visibility using `private`, `protected` and
-  `public` modifiers.
+  `public` modifiers. `var` is not allowed.
 
 ~~~
 /**
@@ -213,9 +242,10 @@ Do not omit `break`.
 ### Code documentation
 
 - Refer ot [phpDoc](http://phpdoc.org/) for documentation syntax.
-- Code without any documentation is not allowed.
+- Code without documentation is not allowed.
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
+- There is no need to use `@return` if method does return nothing.
 
 #### File
 
@@ -271,7 +301,13 @@ public function getEventHandlers($name)
 }
 ~~~
 
-### Other library and framework standards
+Yii application naming conventions
+----------------------------------
+
+
+
+Other library and framework standards
+-------------------------------------
 
 It's good to be consistent with other frameworks and libraries whose components
 will be possibly used with Yii2. That's why when there are no objective reasons
