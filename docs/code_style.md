@@ -54,10 +54,10 @@ $str3 = "Hello ${username}!";
 
 ### String concatenation
 
-When concatenating strings format it like the following:
+Add spaces around dot when concatenating strings:
 
 ~~~
-$name = 'Yii' . ' ' . 'Framework';
+$name = 'Yii' . ' Framework';
 ~~~
 
 When string is long format is the following:
@@ -301,6 +301,11 @@ public function getEventHandlers($name)
 	return $this->_e[$name];
 }
 ~~~
+
+#### Comments
+
+- One-line comments should be started with `//` and not `#`.
+- One-line comment should be on its own line.
 
 Yii application naming conventions
 ----------------------------------
