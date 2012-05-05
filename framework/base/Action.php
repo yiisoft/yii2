@@ -18,7 +18,7 @@ namespace yii\base;
  * Derived classes must implement a method named `run()`. This method
  * will be invoked by the controller when the action is requested.
  * The `run()` method can have parameters which will be filled up
- * automatically according to their names.
+ * with user input values automatically according to their names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

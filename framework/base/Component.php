@@ -450,6 +450,9 @@ class Component extends \yii\base\Object
 		if (!($behavior instanceof Behavior)) {
 			$behavior = \Yii::createObject($behavior);
 		}
+		if (is_int($name)) {
+			$name = '_b ' . $name; // anonymous behavior
+		}
 		if (isset($this->_b[$name])) {
 			$this->_b[$name]->detach($this);
 		}

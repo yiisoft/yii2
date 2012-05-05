@@ -208,4 +208,31 @@ class ArrayHelper extends \yii\base\Component
 		}
 		return $result;
 	}
+
+	/**
+	 * Searches the array for a given value and returns the corresponding key if found.
+	 * This method is similar to array_search() with the enhancement that it can also
+	 * search for strings in a case-insensitive manner.
+	 * @param mixed $needle the value being searched for
+	 * @param array $haystack the array to be searched through
+	 * @param boolean $caseSensitive whether to perform a case-sensitive search
+	 * @param boolean $strict whether to perform a type-strict search
+	 * @return boolean|mixed the key of the value if it matches $needle. False if the value is not found.
+	 */
+	public static function search($needle, array $haystack, $caseSensitive = true, $strict = true)
+	{
+		if ($caseSensitive || !is_string($needle)) {
+			return array_search($needle, $haystack, $strict);
+		}
+		foreach ($haystack as $key => $value) {
+			if (is_string($value)) {
+				if (strcasecmp($value, $needle) === 0) {
+					return true;
+				}
+			} elseif ($strict && $key === $value || !$strict && $key == $value) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

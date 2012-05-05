@@ -9,66 +9,84 @@
 
 namespace yii\base;
 
+use yii\util\ArrayHelper;
+
 /**
- * ActionFilter is the base class for all filters.
+ * ActionFilter is the base class for all action filters.
  *
- * A filter can be applied before and after an action is executed.
- * It can modify the context that the action is to run or decorate the result that the
- * action generates.
+ * A filter can be applied to a controller action at different stages of its life cycle. In particular,
+ * it responds to the following events that are raised when an action is being executed:
  *
- * Override {@link preFilter()} to specify the filtering logic that should be applied
- * before the action, and {@link postFilter()} for filtering logic after the action.
+ * 1. authorize
+ * 2. beforeAction
+ * 3. beforeRender
+ * 4. afterRender
+ * 5. afterAction
+ *
+ * Derived classes may respond to these events by overriding the corresponding methods in this class.
+ * For example, to create an access control filter, one may override the [[authorize()]] method.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActionFilter extends CComponent implements IFilter
+class ActionFilter extends Behavior
 {
 	/**
-	 * Performs the filtering.
-	 * The default implementation is to invoke {@link preFilter}
-	 * and {@link postFilter} which are meant to be overridden
-	 * child classes. If a child class needs to override this method,
-	 * make sure it calls <code>$filterChain->run()</code>
-	 * if the action should be executed.
-	 * @param ActionFilterChain $filterChain the filter chain that the filter is on.
+	 * @var Controller the owner of this behavior. For action filters, this should be a controller object.
 	 */
-	public function filter($filterChain)
+	public $owner;
+	/**
+	 * @var array IDs (case-insensitive) of actions that this filter applies to.
+	 * If this property is empty or not set, it means this filter applies to all actions.
+	 * Note that if an action appears in [[except]], the filter will not apply to this action, even
+	 * if the action also appears in [[only]].
+	 * @see exception
+	 */
+	public $only;
+	/**
+	 * @var array IDs (case-insensitive) of actions that this filter does NOT apply to.
+	 */
+	public $except;
+
+	public function init()
 	{
-		if($this->preFilter($filterChain))
-		{
-			$filterChain->run();
-			$this->postFilter($filterChain);
+		$this->owner->on('authorize', array($this, 'handleEvent'));
+		$this->owner->on('beforeAction', array($this, 'handleEvent'));
+		$this->owner->on('beforeRender', array($this, 'handleEvent'));
+		$this->owner->getEventHandlers('afterRender')->insertAt(0, array($this, 'handleEvent'));
+		$this->owner->getEventHandlers('afterAction')->insertAt(0, array($this, 'handleEvent'));
+	}
+
+	public function authorize(ActionEvent $event)
+	{
+	}
+
+	public function beforeAction(ActionEvent $event)
+	{
+	}
+
+	public function beforeRender(ActionEvent $event)
+	{
+	}
+
+	public function afterRender(ActionEvent $event)
+	{
+	}
+
+	public function afterAction(ActionEvent $event)
+	{
+	}
+
+	public function handleEvent(ActionEvent $event)
+	{
+		if ($this->applyTo($event->action)) {
+			$this->{$event->name}($event);
 		}
 	}
 
-	/**
-	 * Initializes the filter.
-	 * This method is invoked after the filter properties are initialized
-	 * and before {@link preFilter} is called.
-	 * You may override this method to include some initialization logic.
-	 * @since 1.1.4
-	 */
-	public function init()
+	public function applyTo(Action $action)
 	{
-	}
-
-	/**
-	 * Performs the pre-action filtering.
-	 * @param ActionFilterChain $filterChain the filter chain that the filter is on.
-	 * @return boolean whether the filtering process should continue and the action
-	 * should be executed.
-	 */
-	protected function preFilter($filterChain)
-	{
-		return true;
-	}
-
-	/**
-	 * Performs the post-action filtering.
-	 * @param ActionFilterChain $filterChain the filter chain that the filter is on.
-	 */
-	protected function postFilter($filterChain)
-	{
+		return (empty($this->only) || ArrayHelper::search($action->id, $this->only, false) !== false)
+			&& (empty($this->except) || ArrayHelper::search($action->id, $this->except, false) === false);
 	}
 }

@@ -39,6 +39,10 @@ class View extends Component
 	 * the value of [[Application::sourceLanguage]].
 	 */
 	public $sourceLanguage;
+	/**
+	 * @var mixed custom parameters that are available in the view template
+	 */
+	public $params;
 
 	/**
 	 * Renders a view.

@@ -16,17 +16,15 @@ namespace yii\base;
  * In particular, it can "inject" its own methods and properties into the component
  * and make them directly accessible via the component.
  *
- * @property Component $owner The owner component that this behavior is attached to.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Behavior extends \yii\base\Object
 {
 	/**
-	 * @var Component the owner component
+	 * @var Component the owner of this behavior
 	 */
-	private $_owner;
+	public $owner;
 
 	/**
 	 * Declares event handlers for the [[owner]]'s events.
@@ -70,7 +68,7 @@ class Behavior extends \yii\base\Object
 	 */
 	public function attach($owner)
 	{
-		$this->_owner = $owner;
+		$this->owner = $owner;
 		foreach ($this->events() as $event => $handler) {
 			$owner->on($event, is_string($handler) ? array($this, $handler) : $handler);
 		}
@@ -88,15 +86,6 @@ class Behavior extends \yii\base\Object
 		foreach ($this->events() as $event => $handler) {
 			$owner->off($event, is_string($handler) ? array($this, $handler) : $handler);
 		}
-		$this->_owner = null;
-	}
-
-	/**
-	 * Returns the owner component that this behavior is attached to.
-	 * @return Component the owner component that this behavior is attached to.
-	 */
-	public function getOwner()
-	{
-		return $this->_owner;
+		$this->owner = null;
 	}
 }

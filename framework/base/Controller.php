@@ -71,7 +71,10 @@ abstract class Controller extends Component implements Initable
 	public $defaultAction = 'index';
 
 	private $_id;
-	private $_action;
+	/**
+	 * @var Action the action that is currently being executed
+	 */
+	public $action;
 	private $_module;
 
 
@@ -92,38 +95,6 @@ abstract class Controller extends Component implements Initable
 	 */
 	public function init()
 	{
-	}
-
-	/**
-	 * Returns the filter configurations.
-	 *
-	 * By overriding this method, child classes can specify filters to be applied to actions.
-	 *
-	 * This method returns an array of filter specifications. Each array element specify a single filter.
-	 *
-	 * For a method-based filter (called inline filter), it is specified as 'FilterName[ +|- Action1, Action2, ...]',
-	 * where the '+' ('-') operators describe which actions should be (should not be) applied with the filter.
-	 *
-	 * For a class-based filter, it is specified as an array like the following:
-	 * <pre>
-	 * array(
-	 *	 'FilterClass[ +|- Action1, Action2, ...]',
-	 *	 'name1'=>'value1',
-	 *	 'name2'=>'value2',
-	 *	 ...
-	 * )
-	 * </pre>
-	 * where the name-value pairs will be used to initialize the properties of the filter.
-	 *
-	 * Note, in order to inherit filters defined in the parent class, a child class needs to
-	 * merge the parent filters with child filters using functions like array_merge().
-	 *
-	 * @return array a list of filter configurations.
-	 * @see CFilter
-	 */
-	public function filters()
-	{
-		return array();
 	}
 
 	/**
@@ -182,16 +153,6 @@ abstract class Controller extends Component implements Initable
 	}
 
 	/**
-	 * Returns the access rules for this controller.
-	 * Override this method if you use the {@link filterAccessControl accessControl} filter.
-	 * @return array list of access rules. See {@link CAccessControlFilter} for details about rule specification.
-	 */
-	public function accessRules()
-	{
-		return array();
-	}
-
-	/**
 	 * Runs the named action.
 	 * Filters specified via {@link filters()} will be applied.
 	 * @param string $actionID action ID
@@ -234,10 +195,10 @@ abstract class Controller extends Component implements Initable
 		}
 		else
 		{
-			$priorAction = $this->_action;
-			$this->_action = $action;
+			$priorAction = $this->action;
+			$this->action = $action;
 			CFilterChain::create($this, $action, $filters)->run();
-			$this->_action = $priorAction;
+			$this->action = $priorAction;
 		}
 	}
 
@@ -249,8 +210,8 @@ abstract class Controller extends Component implements Initable
 	 */
 	public function runAction($action)
 	{
-		$priorAction = $this->_action;
-		$this->_action = $action;
+		$priorAction = $this->action;
+		$this->action = $action;
 		if ($this->beforeAction($action)) {
 			if ($action->runWithParams($this->getActionParams())) {
 				$this->afterAction($action);
@@ -258,7 +219,7 @@ abstract class Controller extends Component implements Initable
 				$this->invalidActionParams($action);
 			}
 		}
-		$this->_action = $priorAction;
+		$this->action = $priorAction;
 	}
 
 	/**
@@ -384,22 +345,6 @@ abstract class Controller extends Component implements Initable
 	}
 
 	/**
-	 * @return Action the action currently being executed, null if no active action.
-	 */
-	public function getAction()
-	{
-		return $this->_action;
-	}
-
-	/**
-	 * @param Action $value the action currently being executed.
-	 */
-	public function setAction($value)
-	{
-		$this->_action = $value;
-	}
-
-	/**
 	 * @return string ID of the controller
 	 */
 	public function getId()
@@ -467,14 +412,28 @@ abstract class Controller extends Component implements Initable
 	}
 
 	/**
+	 * This method is invoked when checking the access for the action to be executed.
+	 * @param Action $action the action to be executed.
+	 * @return boolean whether the action is allowed to be executed.
+	 */
+	public function authorize(Action $action)
+	{
+		$event = new ActionEvent($action);
+		$this->trigger(__METHOD__, $event);
+		return $event->isValid;
+	}
+
+	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
 	 * @param Action $action the action to be executed.
-	 * @return boolean whether the action should be executed.
+	 * @return boolean whether the action should continue to be executed.
 	 */
-	protected function beforeAction($action)
+	public function beforeAction(Action $action)
 	{
-		return true;
+		$event = new ActionEvent($action);
+		$this->trigger(__METHOD__, $event);
+		return $event->isValid;
 	}
 
 	/**
@@ -482,7 +441,31 @@ abstract class Controller extends Component implements Initable
 	 * You may override this method to do some postprocessing for the action.
 	 * @param Action $action the action just executed.
 	 */
-	protected function afterAction($action)
+	public function afterAction(Action $action)
 	{
+		$event = new ActionEvent($action);
+		$this->trigger(__METHOD__, $event);
+	}
+
+	/**
+	 * This method is invoked right before an action renders its result using [[render()]].
+	 * @param Action $action the action to be executed.
+	 * @return boolean whether the action should continue to render.
+	 */
+	public function beforeRender(Action $action)
+	{
+		$event = new ActionEvent($action);
+		$this->trigger(__METHOD__, $event);
+		return $event->isValid;
+	}
+
+	/**
+	 * This method is invoked right after an action renders its result using [[render()]].
+	 * @param Action $action the action just executed.
+	 */
+	public function afterRender(Action $action)
+	{
+		$event = new ActionEvent($action);
+		$this->trigger(__METHOD__, $event);
 	}
 }
