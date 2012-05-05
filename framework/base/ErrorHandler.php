@@ -15,47 +15,6 @@ namespace yii\base;
  * ErrorHandler displays these errors using appropriate views based on the
  * nature of the errors and the mode the application runs at.
  *
- * ErrorHandler does the following when the application encounters an error or exception:
- *
- * - If it is a PHP error, warning or notice, an ErrorException will be thrown which
- *   if not caught, will be handled in the next few steps
- * - If it is an uncaught exception, it will invoke the action defined by [[errorAction]]
- *   to handle the exception;
- * - If [[errorAction]] is not defined, it will
- *
- * ErrorHandler uses two sets of views:
- * <ul>
- * <li>development views, named as <code>exception.php</code>;
- * <li>production views, named as <code>error&lt;StatusCode&gt;.php</code>;
- * </ul>
- * where &lt;StatusCode&gt; stands for the HTTP error code (e.g. error500.php).
- * Localized views are named similarly but located under a subdirectory
- * whose name is the language code (e.g. zh_cn/error500.php).
- *
- * Development views are displayed when the application is in debug mode
- * (i.e. YII_DEBUG is defined as true). Detailed error information with source code
- * are displayed in these views. Production views are meant to be shown
- * to end-users and are used when the application is in production mode.
- * For security reasons, they only display the error message without any
- * sensitive information.
- *
- * ErrorHandler looks for the view templates from the following locations in order:
- * <ol>
- * <li><code>themes/ThemeName/views/system</code>: when a theme is active.</li>
- * <li><code>protected/views/system</code></li>
- * <li><code>framework/views</code></li>
- * </ol>
- * If the view is not found in a directory, it will be looked for in the next directory.
- *
- * The property {@link maxSourceLines} can be changed to specify the number
- * of source code lines to be displayed in development views.
- *
- * ErrorHandler is a core application component that can be accessed via
- * {@link CApplication::getErrorHandler()}.
- *
- * @property array $error The error details. Null if there is no error.
- * @property string $versionInfo
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -79,8 +38,13 @@ class ErrorHandler extends ApplicationComponent
 	 * This property defaults to null, meaning ErrorHandler will handle the error display.
 	 */
 	public $errorAction;
-
+	/**
+	 * @var string the path of the view file for rendering exceptions
+	 */
 	public $exceptionView = '@yii/views/exception.php';
+	/**
+	 * @var string the path of the view file for rendering errors
+	 */
 	public $errorView = '@yii/views/error.php';
 	/**
 	 * @var \Exception the exception that is being handled currently
@@ -96,19 +60,13 @@ class ErrorHandler extends ApplicationComponent
 	/**
 	 * Handles PHP execution errors such as warnings, notices.
 	 *
-	 * This method is used as a PHP error handler. It requires
-	 * that constant YII_ENABLE_ERROR_HANDLER be defined true.
-	 *
-	 * This method will first raise an `error` event.
-	 * If the error is not handled by any event handler, it will call
-	 * {@link getErrorHandler errorHandler} to process the error.
-	 *
-	 * The application will be terminated by this method.
+	 * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
 	 *
 	 * @param integer $code the level of the error raised
 	 * @param string $message the error message
 	 * @param string $file the filename that the error was raised in
 	 * @param integer $line the line number the error was raised at
+	 * @throws \ErrorException the error exception
 	 */
 	public function handleError($code, $message, $file, $line)
 	{

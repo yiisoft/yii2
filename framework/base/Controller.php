@@ -10,55 +10,19 @@
 namespace yii\base;
 
 /**
- * Controller is the base class for {@link CController} and {@link CWidget}.
+ * Controller is the base class for classes containing controller logic.
  *
- * It provides the common functionalities shared by controllers who need to render views.
+ * Controller implements the action life cycles, which consist of the following steps:
  *
- * Controller also implements the support for the following features:
- * <ul>
- * <li>{@link CClipWidget Clips} : a clip is a piece of captured output that can be inserted elsewhere.</li>
- * <li>{@link CWidget Widgets} : a widget is a self-contained sub-controller with its own view and model.</li>
- * <li>{@link COutputCache Fragment cache} : fragment cache selectively caches a portion of the output.</li>
- * </ul>
+ * 1. [[authorize]]
+ * 2. [[beforeAction]]
+ * 3. [[beforeRender]]
+ * 4. [[afterRender]]
+ * 5. [[afterAction]]
  *
- * To use a widget in a view, use the following in the view:
- * <pre>
- * $this->widget('path.to.widgetClass',array('property1'=>'value1',...));
- * </pre>
- * or
- * <pre>
- * $this->beginWidget('path.to.widgetClass',array('property1'=>'value1',...));
- * // ... display other contents here
- * $this->endWidget();
- * </pre>
- *
- * To create a clip, use the following:
- * <pre>
- * $this->beginClip('clipID');
- * // ... display the clip contents
- * $this->endClip();
- * </pre>
- * Then, in a different view or place, the captured clip can be inserted as:
- * <pre>
- * echo $this->clips['clipID'];
- * </pre>
- *
- * Note that $this in the code above refers to current controller so, for example,
- * if you need to access clip from a widget where $this refers to widget itself
- * you need to do it the following way:
- *
- * <pre>
- * echo $this->getController()->clips['clipID'];
- * </pre>
- *
- * To use fragment cache, do as follows,
- * <pre>
- * if($this->beginCache('cacheID',array('property1'=>'value1',...))
- * {
- *	 // ... display the content to be cached here
- *	$this->endCache();
- * }
- * </pre>
+ * @property array $actionParams the request parameters (name-value pairs) to be used for action parameter binding
+ * @property string $route the route (module ID, controller ID and action ID) of the current request.
+ * @property string $uniqueId the controller ID that is prefixed with the module ID (if any).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -94,7 +58,7 @@ abstract class Controller extends Component implements Initable
 
 	/**
 	 * Initializes the controller.
-	 * This method is called by the application before the controller starts to execute.
+	 * This method is called by the application before the controller starts to execute an action.
 	 * You may override this method to perform the needed initialization for the controller.
 	 */
 	public function init()
@@ -256,11 +220,9 @@ abstract class Controller extends Component implements Initable
 
 	/**
 	 * Processes the request using another controller action.
-	 * This is like {@link redirect}, but the user browser's URL remains unchanged.
-	 * In most cases, you should call {@link redirect} instead of this method.
 	 * @param string $route the route of the new controller action. This can be an action ID, or a complete route
-	 * with module ID (optional in the current module), controller ID and action ID. If the former, the action is assumed
-	 * to be located within the current controller.
+	 * with module ID (optional in the current module), controller ID and action ID. If the former,
+	 * the action is assumed to be located within the current controller.
 	 * @param boolean $exit whether to end the application after this call. Defaults to true.
 	 */
 	public function forward($route, $exit = true)
