@@ -14,7 +14,8 @@ namespace yii\base;
  *
  * A behavior can be used to enhance the functionality of an existing component without modifying its code.
  * In particular, it can "inject" its own methods and properties into the component
- * and make them directly accessible via the component.
+ * and make them directly accessible via the component. It can also respond to the events triggered in the component
+ * and thus intercept the normal code execution.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

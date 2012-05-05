@@ -53,8 +53,8 @@ class Component extends \yii\base\Object
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
-				if ($behavior->canGetProperty($name)) {
+			foreach ($this->_b as $i => $behavior) {
+				if (is_string($i) && $behavior->canGetProperty($name)) {
 					return $behavior->$name;
 				}
 			}
@@ -96,8 +96,8 @@ class Component extends \yii\base\Object
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
-				if ($behavior->canSetProperty($name)) {
+			foreach ($this->_b as $i => $behavior) {
+				if (is_string($i) && $behavior->canSetProperty($name)) {
 					$behavior->$name = $value;
 					return;
 				}
@@ -131,8 +131,8 @@ class Component extends \yii\base\Object
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
-				if ($behavior->canGetProperty($name)) {
+			foreach ($this->_b as $i => $behavior) {
+				if (is_string($i) && $behavior->canGetProperty($name)) {
 					return $behavior->$name !== null;
 				}
 			}
@@ -162,8 +162,8 @@ class Component extends \yii\base\Object
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
-				if ($behavior->canSetProperty($name)) {
+			foreach ($this->_b as $i => $behavior) {
+				if (is_string($i) && $behavior->canSetProperty($name)) {
 					$behavior->$name = null;
 					return;
 				}
@@ -198,8 +198,8 @@ class Component extends \yii\base\Object
 		}
 
 		$this->ensureBehaviors();
-		foreach ($this->_b as $object) {
-			if (method_exists($object, $name)) {
+		foreach ($this->_b as $i => $object) {
+			if (is_string($i) && method_exists($object, $name)) {
 				return call_user_func_array(array($object, $name), $params);
 			}
 		}
@@ -224,7 +224,10 @@ class Component extends \yii\base\Object
 	 * )
 	 * ~~~
 	 *
-	 * Note that a behavior class must extend from [[Behavior]].
+	 * Note that a behavior class must extend from [[Behavior]]. Behavior names can be strings
+	 * or integers. If the former, they uniquely identify the behaviors. If the latter, the corresponding
+	 * behaviors are anonymous and their properties and methods will NOT be made available via the component
+	 * (however, the behaviors can still respond to the component's events).
 	 *
 	 * Behaviors declared in this method will be attached to the component automatically (on demand).
 	 *
@@ -348,13 +351,23 @@ class Component extends \yii\base\Object
 
 	/**
 	 * Returns the named behavior object.
-	 * @param string $behavior the behavior name
+	 * @param string $name the behavior name
 	 * @return Behavior the behavior object, or null if the behavior does not exist
 	 */
-	public function getBehavior($behavior)
+	public function getBehavior($name)
 	{
 		$this->ensureBehaviors();
-		return isset($this->_b[$behavior]) ? $this->_b[$behavior] : null;
+		return isset($this->_b[$name]) ? $this->_b[$name] : null;
+	}
+
+	/**
+	 * Returns all behaviors attached to this component.
+	 * @return Behavior[] list of behaviors attached to this component
+	 */
+	public function getBehaviors()
+	{
+		$this->ensureBehaviors();
+		return $this->_b;
 	}
 
 	/**
@@ -362,7 +375,9 @@ class Component extends \yii\base\Object
 	 * This method will create the behavior object based on the given
 	 * configuration. After that, the behavior object will be attached to
 	 * this component by calling the [[Behavior::attach]] method.
-	 * @param string $name the behavior's name. It should uniquely identify this behavior.
+	 * @param integer|string $name the name of the behavior. This can be a string or an integer (or empty string).
+	 * If the former, it uniquely identifies this behavior. If the latter, the behavior becomes
+	 * anonymous and its methods and properties will NOT be made available in this component.
 	 * @param string|array|Behavior $behavior the behavior configuration. This can be one of the following:
 	 *
 	 *  - a [[Behavior]] object
@@ -381,8 +396,7 @@ class Component extends \yii\base\Object
 	/**
 	 * Attaches a list of behaviors to the component.
 	 * Each behavior is indexed by its name and should be a [[Behavior]] object,
-	 * a string specifying the behavior class, or an
-	 * configuration array for creating the behavior.
+	 * a string specifying the behavior class, or an configuration array for creating the behavior.
 	 * @param array $behaviors list of behaviors to be attached to the component
 	 * @see attachBehavior
 	 */
@@ -441,7 +455,8 @@ class Component extends \yii\base\Object
 
 	/**
 	 * Attaches a behavior to this component.
-	 * @param string $name the name of the behavior.
+	 * @param integer|string $name the name of the behavior. If it is an integer or an empty string,
+	 * the behavior is anonymous and its methods and properties will NOT be made available to the owner component.
 	 * @param string|array|Behavior $behavior the behavior to be attached
 	 * @return Behavior the attached behavior.
 	 */
@@ -450,13 +465,16 @@ class Component extends \yii\base\Object
 		if (!($behavior instanceof Behavior)) {
 			$behavior = \Yii::createObject($behavior);
 		}
-		if (is_int($name)) {
-			$name = '_b ' . $name; // anonymous behavior
+		if (is_int($name) || $name == '') {
+			// anonymous behavior
+			$behavior->attach($this);
+			return $this->_b[] = $behavior;
+		} else {
+			if (isset($this->_b[$name])) {
+				$this->_b[$name]->detach($this);
+			}
+			$behavior->attach($this);
+			return $this->_b[$name] = $behavior;
 		}
-		if (isset($this->_b[$name])) {
-			$this->_b[$name]->detach($this);
-		}
-		$behavior->attach($this);
-		return $this->_b[$name] = $behavior;
 	}
 }
