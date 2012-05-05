@@ -14,9 +14,9 @@ namespace yii\base;
  *
  * Module mainly manages application components and sub-modules that belongs to a module.
  *
- * @property string $id The module ID.
+ * @property string $uniqueId An ID that uniquely identifies this module among all modules within
+ * the current application.
  * @property string $basePath The root directory of the module. Defaults to the directory containing the module class.
- * @property Module|null $parentModule The parent module. Null if this module does not have a parent.
  * @property array $modules The configuration of the currently installed modules (module ID => configuration).
  * @property array $components The application components (indexed by their IDs).
  * @property array $import List of aliases to be imported. This property is write-only.
@@ -35,10 +35,16 @@ abstract class Module extends Component implements Initable
 	 * @var array the IDs of the application components that should be preloaded when this module is created.
 	 */
 	public $preload = array();
+	/**
+	 * @var string an ID that uniquely identifies this module among other modules which have the same [[parent]].
+	 */
+	public $id;
+	/**
+	 * @var Module the parent module of this module. Null if this module does not have a parent.
+	 */
+	public $module;
 
-	private $_id;
 	private $_basePath;
-	private $_parentModule;
 	private $_modules = array();
 	private $_components = array();
 
@@ -49,8 +55,8 @@ abstract class Module extends Component implements Initable
 	 */
 	public function __construct($id, $parent = null)
 	{
-		$this->_id = $id;
-		$this->_parentModule = $parent;
+		$this->id = $id;
+		$this->module = $parent;
 	}
 
 	/**
@@ -93,26 +99,21 @@ abstract class Module extends Component implements Initable
 	 */
 	public function init()
 	{
-		\Yii::setAlias('@' . $this->getId(), $this->getBasePath());
+		\Yii::setAlias('@' . $this->id, $this->getBasePath());
 		$this->preloadComponents();
 	}
 
 	/**
-	 * Returns the module ID.
-	 * @return string the module ID.
+	 * Returns an ID that uniquely identifies this module among all modules within the current application.
+	 * @return string the unique ID of the module.
 	 */
-	public function getId()
+	public function getUniqueId()
 	{
-		return $this->_id;
-	}
-
-	/**
-	 * Sets the module ID.
-	 * @param string $id the module ID
-	 */
-	public function setId($id)
-	{
-		$this->_id = $id;
+		if ($this->module && !$this->module instanceof Application) {
+			return $this->module->getUniqueId() . "/{$this->id}";
+		} else {
+			return $this->id;
+		}
 	}
 
 	/**
@@ -177,15 +178,6 @@ abstract class Module extends Component implements Initable
 		foreach ($aliases as $name => $alias) {
 			\Yii::setAlias($name, $alias);
 		}
-	}
-
-	/**
-	 * Returns the parent module.
-	 * @return Module|null the parent module. Null is returned if this module does not have a parent.
-	 */
-	public function getParentModule()
-	{
-		return $this->_parentModule;
 	}
 
 	/**

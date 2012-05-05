@@ -35,21 +35,26 @@ class Action extends Component
 	public $controller;
 
 	/**
-	 * Runs the action with the supplied parameters.
-	 * This method is invoked by the controller.
-	 * @param array $params the input parameters in terms of name-value pairs.
-	 * @return boolean whether the input parameters are valid
+	 * @param string $id the ID of this action
+	 * @param Controller $controller the controller that owns this action
 	 */
-	public function runWithParams($params)
+	public function __construct($id, $controller)
+	{
+		$this->id = $id;
+		$this->controller = $controller;
+	}
+
+	/**
+	 * Normalizes the input parameters for the action.
+	 * The parameters will later be passed to the `run()` method of the action.
+	 * This method is mainly called by the controller when running an action.
+	 * @param array $params the input parameters in terms of name-value pairs.
+	 * @return array|boolean the normalized parameters, or false if the input parameters are invalid.
+	 */
+	public function normalizeParams($params)
 	{
 		$method = new \ReflectionMethod($this, 'run');
-		$params = $this->normalizeParamsByMethod($method, $params);
-		if ($params !== false) {
-			call_user_func_array(array($this, 'run'), $params);
-			return true;
-		} else {
-			return false;
-		}
+		return $this->normalizeParamsByMethod($method, $params);
 	}
 
 	/**

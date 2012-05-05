@@ -66,26 +66,30 @@ namespace yii\base;
 abstract class Controller extends Component implements Initable
 {
 	/**
+	 * @var string ID of this controller
+	 */
+	public $id;
+	/**
+	 * @var Module $module the module that this controller belongs to.
+	 */
+	public $module;
+	/**
 	 * @var string the name of the default action. Defaults to 'index'.
 	 */
 	public $defaultAction = 'index';
-
-	private $_id;
 	/**
 	 * @var Action the action that is currently being executed
 	 */
 	public $action;
-	private $_module;
-
 
 	/**
-	 * @param string $id id of this controller
-	 * @param CWebModule $module the module that this controller belongs to.
+	 * @param string $id ID of this controller
+	 * @param Module $module the module that this controller belongs to.
 	 */
-	public function __construct($id, $module = null)
+	public function __construct($id, $module)
 	{
-		$this->_id = $id;
-		$this->_module = $module;
+		$this->id = $id;
+		$this->module = $module;
 	}
 
 	/**
@@ -100,49 +104,26 @@ abstract class Controller extends Component implements Initable
 	/**
 	 * Returns a list of external action classes.
 	 * Array keys are action IDs, and array values are the corresponding
-	 * action class in dot syntax (e.g. 'edit'=>'application.controllers.article.EditArticle')
-	 * or arrays representing the configuration of the actions, such as the following,
-	 * <pre>
+	 * action class names or action configuration arrays. For example,
+	 *
+	 * ~~~
 	 * return array(
-	 *	 'action1'=>'path.to.Action1Class',
-	 *	 'action2'=>array(
-	 *		 'class'=>'path.to.Action2Class',
-	 *		 'property1'=>'value1',
-	 *		 'property2'=>'value2',
-	 *	 ),
+	 *     'action1'=>'@application/components/Action1',
+	 *     'action2'=>array(
+	 *         'class'=>'@application/components/Action2',
+	 *         'property1'=>'value1',
+	 *         'property2'=>'value2',
+	 *     ),
 	 * );
-	 * </pre>
+	 * ~~~
+	 *
+	 * [[\Yii::createObject()]] will be invoked to create the requested action
+	 * using the configuration provided here.
+	 *
 	 * Derived classes may override this method to declare external actions.
 	 *
 	 * Note, in order to inherit actions defined in the parent class, a child class needs to
-	 * merge the parent actions with child actions using functions like array_merge().
-	 *
-	 * You may import actions from an action provider
-	 * (such as a widget, see {@link CWidget::actions}), like the following:
-	 * <pre>
-	 * return array(
-	 *	 ...other actions...
-	 *	 // import actions declared in ProviderClass::actions()
-	 *	 // the action IDs will be prefixed with 'pro.'
-	 *	 'pro.'=>'path.to.ProviderClass',
-	 *	 // similar as above except that the imported actions are
-	 *	 // configured with the specified initial property values
-	 *	 'pro2.'=>array(
-	 *		 'class'=>'path.to.ProviderClass',
-	 *		 'action1'=>array(
-	 *			 'property1'=>'value1',
-	 *		 ),
-	 *		 'action2'=>array(
-	 *			 'property2'=>'value2',
-	 *		 ),
-	 *	 ),
-	 * )
-	 * </pre>
-	 *
-	 * In the above, we differentiate action providers from other action
-	 * declarations by the array keys. For action providers, the array keys
-	 * must contain a dot. As a result, an action ID 'pro2.action1' will
-	 * be resolved as the 'action1' action declared in the 'ProviderClass'.
+	 * merge the parent actions with child actions using functions like `array_merge()`.
 	 *
 	 * @return array list of external action classes
 	 * @see createAction
@@ -153,73 +134,47 @@ abstract class Controller extends Component implements Initable
 	}
 
 	/**
-	 * Runs the named action.
-	 * Filters specified via {@link filters()} will be applied.
+	 * Creates an action with the specified ID and runs it.
+	 * If the action does not exist, [[missingAction()]] will be invoked.
 	 * @param string $actionID action ID
-	 * @throws CHttpException if the action does not exist or the action name is not proper.
-	 * @see filters
+	 * @return integer the exit status of the action. 0 means normal, other values mean abnormal.
 	 * @see createAction
 	 * @see runAction
+	 * @see missingAction
 	 */
 	public function run($actionID)
 	{
 		if (($action = $this->createAction($actionID)) !== null) {
-			if (($parent = $this->getModule()) === null) {
-				$parent = Yii::app();
-			}
-			if ($parent->beforeControllerAction($this, $action)) {
-				$this->runActionWithFilters($action, $this->filters());
-				$parent->afterControllerAction($this, $action);
-			}
-		}
-		else
-		{
+			return $this->runAction($action);
+		} else {
 			$this->missingAction($actionID);
+			return 1;
 		}
 	}
 
 	/**
-	 * Runs an action with the specified filters.
-	 * A filter chain will be created based on the specified filters
-	 * and the action will be executed then.
-	 * @param Action $action the action to be executed.
-	 * @param array $filters list of filters to be applied to the action.
-	 * @see filters
-	 * @see createAction
-	 * @see runAction
-	 */
-	public function runActionWithFilters($action, $filters)
-	{
-		if (empty($filters)) {
-			$this->runAction($action);
-		}
-		else
-		{
-			$priorAction = $this->action;
-			$this->action = $action;
-			CFilterChain::create($this, $action, $filters)->run();
-			$this->action = $priorAction;
-		}
-	}
-
-	/**
-	 * Runs the action after passing through all filters.
-	 * This method is invoked by {@link runActionWithFilters} after all possible filters have been executed
-	 * and the action starts to run.
+	 * Runs the action.
 	 * @param Action $action action to run
+	 * @return integer the exit status of the action. 0 means normal, other values mean abnormal.
 	 */
 	public function runAction($action)
 	{
 		$priorAction = $this->action;
 		$this->action = $action;
-		if ($this->beforeAction($action)) {
-			if ($action->runWithParams($this->getActionParams())) {
-				$this->afterAction($action);
+		$exitStatus = 1;
+		if ($this->authorize($action)) {
+			$params = $action->normalizeParams($this->getActionParams());
+			if ($params !== false) {
+				if ($this->beforeAction($action)) {
+					$exitStatus = (int)call_user_func_array(array($action, 'run'), $params);
+					$this->afterAction($action);
+				}
 			} else {
 				$this->invalidActionParams($action);
 			}
 		}
 		$this->action = $priorAction;
+		return $exitStatus;
 	}
 
 	/**
@@ -235,21 +190,10 @@ abstract class Controller extends Component implements Initable
 	}
 
 	/**
-	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
-	 * The default implementation will throw a 400 HTTP exception.
-	 * @param Action $action the action being executed
-	 * @throws HttpException a 400 HTTP exception
-	 */
-	public function invalidActionParams($action)
-	{
-		throw new HttpException(400, \Yii::t('yii', 'Your request is invalid.'));
-	}
-
-	/**
-	 * Creates the action instance based on the action name.
+	 * Creates the action instance based on the action ID.
 	 * The action can be either an inline action or an object.
-	 * The latter is created by looking up the action map specified in {@link actions}.
-	 * @param string $actionID ID of the action. If empty, the {@link defaultAction default action} will be used.
+	 * The latter is created by looking up the action map specified in [[actions]].
+	 * @param string $actionID ID of the action. If empty, it will take the value of [[defaultAction]].
 	 * @return Action the action instance, null if the action does not exist.
 	 * @see actions
 	 */
@@ -258,77 +202,26 @@ abstract class Controller extends Component implements Initable
 		if ($actionID === '') {
 			$actionID = $this->defaultAction;
 		}
-		if (method_exists($this, 'action' . $actionID) && strcasecmp($actionID, 's')) // we have actions method
-		{
-			return new CInlineAction($this, $actionID);
-		}
-		else
-		{
-			$action = $this->createActionFromMap($this->actions(), $actionID, $actionID);
-			if ($action !== null && !method_exists($action, 'run')) {
-				throw new CException(Yii::t('yii', 'Action class {class} must implement the "run" method.', array('{class}' => get_class($action))));
+		if (method_exists($this, 'action' . $actionID) && strcasecmp($actionID, 's')) {
+			return new InlineAction($actionID, $this);
+		} else {
+			$actions = $this->actions();
+			if (isset($actions[$actionID])) {
+				return \Yii::createObject($actions[$actionID], $actionID, $this);
 			}
-			return $action;
 		}
+		return null;
 	}
 
 	/**
-	 * Creates the action instance based on the action map.
-	 * This method will check to see if the action ID appears in the given
-	 * action map. If so, the corresponding configuration will be used to
-	 * create the action instance.
-	 * @param array $actionMap the action map
-	 * @param string $actionID the action ID that has its prefix stripped off
-	 * @param string $requestActionID the originally requested action ID
-	 * @param array $config the action configuration that should be applied on top of the configuration specified in the map
-	 * @return Action the action instance, null if the action does not exist.
+	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
+	 * The default implementation will throw an exception.
+	 * @param Action $action the action being executed
+	 * @throws Exception whenever this method is invoked
 	 */
-	protected function createActionFromMap($actionMap, $actionID, $requestActionID, $config = array())
+	public function invalidActionParams($action)
 	{
-		if (($pos = strpos($actionID, '.')) === false && isset($actionMap[$actionID])) {
-			$baseConfig = is_array($actionMap[$actionID]) ? $actionMap[$actionID] : array('class' => $actionMap[$actionID]);
-			return Yii::createComponent(empty($config) ? $baseConfig : array_merge($baseConfig, $config), $this, $requestActionID);
-		}
-		else {
-			if ($pos === false) {
-				return null;
-			}
-		}
-
-		// the action is defined in a provider
-		$prefix = substr($actionID, 0, $pos + 1);
-		if (!isset($actionMap[$prefix])) {
-			return null;
-		}
-		$actionID = (string)substr($actionID, $pos + 1);
-
-		$provider = $actionMap[$prefix];
-		if (is_string($provider)) {
-			$providerType = $provider;
-		}
-		else {
-			if (is_array($provider) && isset($provider['class'])) {
-				$providerType = $provider['class'];
-				if (isset($provider[$actionID])) {
-					if (is_string($provider[$actionID])) {
-						$config = array_merge(array('class' => $provider[$actionID]), $config);
-					}
-					else
-					{
-						$config = array_merge($provider[$actionID], $config);
-					}
-				}
-			}
-			else
-			{
-				throw new CException(Yii::t('yii', 'Object configuration must be an array containing a "class" element.'));
-			}
-		}
-
-		$class = Yii::import($providerType, true);
-		$map = call_user_func(array($class, 'actions'));
-
-		return $this->createActionFromMap($map, $actionID, $requestActionID, $config);
+		throw new Exception(\Yii::t('yii', 'Your request is invalid.'));
 	}
 
 	/**
@@ -336,20 +229,12 @@ abstract class Controller extends Component implements Initable
 	 * This method is invoked when the controller cannot find the requested action.
 	 * The default implementation simply throws an exception.
 	 * @param string $actionID the missing action name
-	 * @throws CHttpException whenever this method is invoked
+	 * @throws Exception whenever this method is invoked
 	 */
 	public function missingAction($actionID)
 	{
-		throw new CHttpException(404, Yii::t('yii', 'The system is unable to find the requested action "{action}".',
+		throw new Exception(\Yii::t('yii', 'The system is unable to find the requested action "{action}".',
 			array('{action}' => $actionID == '' ? $this->defaultAction : $actionID)));
-	}
-
-	/**
-	 * @return string ID of the controller
-	 */
-	public function getId()
-	{
-		return $this->_id;
 	}
 
 	/**
@@ -357,31 +242,16 @@ abstract class Controller extends Component implements Initable
 	 */
 	public function getUniqueId()
 	{
-		return $this->_module ? $this->_module->getId() . '/' . $this->_id : $this->_id;
+		return $this->module instanceof Application ? $this->id : $this->module->getUniqueId() . '/' . $this->id;
 	}
 
 	/**
+	 * Returns the route of the current request.
 	 * @return string the route (module ID, controller ID and action ID) of the current request.
-	 * @since 1.1.0
 	 */
 	public function getRoute()
 	{
-		if (($action = $this->getAction()) !== null) {
-			return $this->getUniqueId() . '/' . $action->getId();
-		}
-		else
-		{
-			return $this->getUniqueId();
-		}
-	}
-
-	/**
-	 * @return CWebModule the module that this controller belongs to. It returns null
-	 * if the controller does not belong to any module
-	 */
-	public function getModule()
-	{
-		return $this->_module;
+		return $this->action !== null ? $this->getUniqueId() . '/' . $this->action->id : $this->getUniqueId();
 	}
 
 	/**
@@ -392,22 +262,19 @@ abstract class Controller extends Component implements Initable
 	 * with module ID (optional in the current module), controller ID and action ID. If the former, the action is assumed
 	 * to be located within the current controller.
 	 * @param boolean $exit whether to end the application after this call. Defaults to true.
-	 * @since 1.1.0
 	 */
 	public function forward($route, $exit = true)
 	{
 		if (strpos($route, '/') === false) {
-			$this->run($route);
-		}
-		else
-		{
-			if ($route[0] !== '/' && ($module = $this->getModule()) !== null) {
-				$route = $module->getId() . '/' . $route;
+			$status = $this->run($route);
+		} else {
+			if ($route[0] !== '/' && !$this->module instanceof Application) {
+				$route = '/' . $this->module->getUniqueId() . '/' . $route;
 			}
-			Yii::app()->runController($route);
+			$status = \Yii::$application->runController($route);
 		}
 		if ($exit) {
-			Yii::app()->end();
+			\Yii::$application->end($status);
 		}
 	}
 

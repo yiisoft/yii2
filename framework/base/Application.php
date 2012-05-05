@@ -89,6 +89,11 @@ class Application extends Module
 	 * @see language
 	 */
 	public $sourceLanguage = 'en_us';
+	/**
+	 * @var array IDs of application components that need to be loaded when the application starts.
+	 * The default value is `array('errorHandler')`, which loads the [[errorHandler]] component
+	 * to ensure errors and exceptions can be handled nicely.
+	 */
 	public $preload = array('errorHandler');
 
 	public $localeDataPath = '@yii/i18n/data';
@@ -99,12 +104,14 @@ class Application extends Module
 
 	/**
 	 * Constructor.
+	 * @param string $id the ID of this application. The ID should uniquely identify the application from others.
 	 * @param string $basePath the base path of this application. This should point to
 	 * the directory containing all application logic, template and data.
 	 */
-	public function __construct($basePath)
+	public function __construct($id, $basePath)
 	{
 		\Yii::$application = $this;
+		$this->id = $id;
 		$this->setBasePath($basePath);
 		\Yii::setAlias('application', $this->getBasePath());
 		$this->registerCoreComponents();
@@ -174,19 +181,6 @@ class Application extends Module
 	public function afterRequest()
 	{
 		$this->trigger('afterRequest');
-	}
-
-	/**
-	 * Returns the unique identifier for the application.
-	 * @return string the unique identifier for the application.
-	 */
-	public function getId()
-	{
-		if (($id = parent::getId()) === null) {
-			$id = sprintf('%x', crc32($this->getBasePath() . $this->name));
-			$this->setId($id);
-		}
-		return $id;
 	}
 
 	/**
