@@ -1,6 +1,6 @@
 <?php
 /**
- * CDateValidator class file.
+ * DateValidator class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,7 +10,7 @@
 namespace yii\validators;
 
 /**
- * CDateValidator verifies if the attribute represents a date, time or datetime.
+ * DateValidator verifies if the attribute represents a date, time or datetime.
  *
  * By setting the {@link format} property, one can specify what format the date value
  * must be in. If the given date value doesn't follow the format, the attribute is considered as invalid.
@@ -18,7 +18,7 @@ namespace yii\validators;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CDateValidator extends Validator
+class DateValidator extends Validator
 {
 	/**
 	 * @var mixed the format pattern that the date value should follow.
@@ -48,26 +48,25 @@ class CDateValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value))
+		if ($this->allowEmpty && $this->isEmpty($value)) {
 			return;
+		}
 
 		$formats = is_string($this->format) ? array($this->format) : $this->format;
 		$valid = false;
-		foreach ($formats as $format)
-		{
+		foreach ($formats as $format) {
 			$timestamp = CDateTimeParser::parse($value, $format, array('month' => 1, 'day' => 1, 'hour' => 0, 'minute' => 0, 'second' => 0));
-			if ($timestamp !== false)
-			{
+			if ($timestamp !== false) {
 				$valid = true;
-				if ($this->timestampAttribute !== null)
+				if ($this->timestampAttribute !== null) {
 					$object-> {$this->timestampAttribute} = $timestamp;
+				}
 				break;
 			}
 		}
 
-		if (!$valid)
-		{
-			$message = $this->message !== null ? $this->message : Yii::t('yii', 'The format of {attribute} is invalid.');
+		if (!$valid) {
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', 'The format of {attribute} is invalid.');
 			$this->addError($object, $attribute, $message);
 		}
 	}

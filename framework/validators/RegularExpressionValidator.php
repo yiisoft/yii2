@@ -39,6 +39,7 @@ class RegularExpressionValidator extends Validator
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
+	 * @throws \yii\base\Exception if the "pattern" is not a valid regular expression
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -47,10 +48,10 @@ class RegularExpressionValidator extends Validator
 			return;
 		}
 		if ($this->pattern === null) {
-			throw new \yii\base\Exception(Yii::t('yii', 'The "pattern" property must be specified with a valid regular expression.'));
+			throw new \yii\base\Exception('The "pattern" property must be specified with a valid regular expression.');
 		}
 		if ((!$this->not && !preg_match($this->pattern, $value)) || ($this->not && preg_match($this->pattern, $value))) {
-			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is invalid.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} is invalid.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -60,6 +61,7 @@ class RegularExpressionValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script.
+	 * @throws \yii\base\Exception if the "pattern" is not a valid regular expression
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
@@ -67,7 +69,7 @@ class RegularExpressionValidator extends Validator
 			throw new \yii\base\Exception('The "pattern" property must be specified with a valid regular expression.');
 		}
 
-		$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is invalid.');
+		$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} is invalid.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,

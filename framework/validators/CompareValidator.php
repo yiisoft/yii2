@@ -68,6 +68,7 @@ class CompareValidator extends Validator
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
+	 * @throws \yii\base\Exception if CompareValidator::operator is invalid
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -78,7 +79,7 @@ class CompareValidator extends Validator
 		if ($this->compareValue !== null) {
 			$compareTo = $compareValue = $this->compareValue;
 		} else {
-			$compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
+			$compareAttribute = ($this->compareAttribute === null) ? $attribute . '_repeat' : $this->compareAttribute;
 			$compareValue = $object->$compareAttribute;
 			$compareTo = $object->getAttributeLabel($compareAttribute);
 		}
@@ -87,37 +88,37 @@ class CompareValidator extends Validator
 			case '=':
 			case '==':
 				if (($this->strict && $value !== $compareValue) || (!$this->strict && $value != $compareValue)) {
-					$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be repeated exactly.');
+					$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be repeated exactly.');
 					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareTo));
 				}
 				break;
 			case '!=':
 				if (($this->strict && $value === $compareValue) || (!$this->strict && $value == $compareValue)) {
-					$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must not be equal to "{compareValue}".');
+					$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must not be equal to "{compareValue}".');
 					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareTo, '{compareValue}' => $compareValue));
 				}
 				break;
 			case '>':
 				if ($value <= $compareValue) {
-					$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be greater than "{compareValue}".');
+					$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be greater than "{compareValue}".');
 					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareTo, '{compareValue}' => $compareValue));
 				}
 				break;
 			case '>=':
 				if ($value < $compareValue) {
-					$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be greater than or equal to "{compareValue}".');
+					$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be greater than or equal to "{compareValue}".');
 					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareTo, '{compareValue}' => $compareValue));
 				}
 				break;
 			case '<':
 				if ($value >= $compareValue) {
-					$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be less than "{compareValue}".');
+					$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be less than "{compareValue}".');
 					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareTo, '{compareValue}' => $compareValue));
 				}
 				break;
 			case '<=':
 				if ($value > $compareValue) {
-					$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be less than or equal to "{compareValue}".');
+					$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be less than or equal to "{compareValue}".');
 					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareTo, '{compareValue}' => $compareValue));
 				}
 				break;
@@ -129,8 +130,9 @@ class CompareValidator extends Validator
 	/**
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @return string the client-side validation script.
+	 * @param string $attribute the name of the attribute to be validated
+	 * @return string the client-side validation script
+	 * @throws \yii\base\Exception if CompareValidator::operator is invalid
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
@@ -138,7 +140,7 @@ class CompareValidator extends Validator
 			$compareTo = $this->compareValue;
 			$compareValue = json_encode($this->compareValue);
 		} else {
-			$compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
+			$compareAttribute = ($this->compareAttribute === null) ? $attribute . '_repeat' : $this->compareAttribute;
 			$compareValue = "\$('#" . (CHtml::activeId($object, $compareAttribute)) . "').val()";
 			$compareTo = $object->getAttributeLabel($compareAttribute);
 		}
@@ -148,37 +150,37 @@ class CompareValidator extends Validator
 			case '=':
 			case '==':
 				if ($message === null) {
-					$message = Yii::t('yii', '{attribute} must be repeated exactly.');
+					$message = \Yii::t('yii', '{attribute} must be repeated exactly.');
 				}
 				$condition = 'value!=' . $compareValue;
 				break;
 			case '!=':
 				if ($message === null) {
-					$message = Yii::t('yii', '{attribute} must not be equal to "{compareValue}".');
+					$message = \Yii::t('yii', '{attribute} must not be equal to "{compareValue}".');
 				}
 				$condition = 'value==' . $compareValue;
 				break;
 			case '>':
 				if ($message === null) {
-					$message = Yii::t('yii', '{attribute} must be greater than "{compareValue}".');
+					$message = \Yii::t('yii', '{attribute} must be greater than "{compareValue}".');
 				}
 				$condition = 'value<=' . $compareValue;
 				break;
 			case '>=':
 				if ($message === null) {
-					$message = Yii::t('yii', '{attribute} must be greater than or equal to "{compareValue}".');
+					$message = \Yii::t('yii', '{attribute} must be greater than or equal to "{compareValue}".');
 				}
 				$condition = 'value<' . $compareValue;
 				break;
 			case '<':
 				if ($message === null) {
-					$message = Yii::t('yii', '{attribute} must be less than "{compareValue}".');
+					$message = \Yii::t('yii', '{attribute} must be less than "{compareValue}".');
 				}
 				$condition = 'value>=' . $compareValue;
 				break;
 			case '<=':
 				if ($message === null) {
-					$message = Yii::t('yii', '{attribute} must be less than or equal to "{compareValue}".');
+					$message = \Yii::t('yii', '{attribute} must be less than or equal to "{compareValue}".');
 				}
 				$condition = 'value>' . $compareValue;
 				break;

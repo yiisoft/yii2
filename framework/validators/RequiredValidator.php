@@ -47,12 +47,12 @@ class RequiredValidator extends Validator
 		$value = $object->$attribute;
 		if ($this->requiredValue === null) {
 			if ($this->strict && $value === null || !$this->strict && $this->isEmpty($value, true)) {
-				$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} cannot be blank.');
+				$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} cannot be blank.');
 				$this->addError($object, $attribute, $message);
 			}
 		} else {
 			if (!$this->strict && $value != $this->requiredValue || $this->strict && $value !== $this->requiredValue) {
-				$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} must be "{requiredValue}".',
+				$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be "{requiredValue}".',
 					array('{requiredValue}' => $this->requiredValue));
 				$this->addError($object, $attribute, $message);
 			}
@@ -70,7 +70,7 @@ class RequiredValidator extends Validator
 		$message = $this->message;
 		if ($this->requiredValue !== null) {
 			if ($message === null) {
-				$message = Yii::t('yii', '{attribute} must be "{requiredValue}".');
+				$message = \Yii::t('yii', '{attribute} must be "{requiredValue}".');
 			}
 			$message = strtr($message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
@@ -84,7 +84,7 @@ if (value != " . json_encode($this->requiredValue) . ") {
 ";
 		} else {
 			if ($message === null) {
-				$message = Yii::t('yii', '{attribute} cannot be blank.');
+				$message = \Yii::t('yii', '{attribute} cannot be blank.');
 			}
 			$message = strtr($message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),

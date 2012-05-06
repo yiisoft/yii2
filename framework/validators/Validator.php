@@ -69,7 +69,6 @@ abstract class Validator extends \yii\base\Component
 		'integer' => '\yii\validators\IntegerValidator',
 		'double' => '\yii\validators\NumberValidator',
 		'compare' => '\yii\validators\CompareValidator',
-
 		'file' => '\yii\validators\FileValidator',
 		'date' => '\yii\validators\DateValidator',
 		'unique' => '\yii\validators\UniqueValidator',
@@ -145,7 +144,8 @@ abstract class Validator extends \yii\base\Component
 			$params['on'] = array();
 		}
 
-		if (method_exists($object, $type)) {  // method-based validator
+		if (method_exists($object, $type)) {
+			// method-based validator
 			$config = array(
 				'class'	=> '\yii\validators\InlineValidator',
 				'method' => $type,

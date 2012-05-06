@@ -49,7 +49,7 @@ class CaptchaValidator extends Validator
 		}
 		$captcha = $this->getCaptchaAction();
 		if (!$captcha->validate($value, $this->caseSensitive)) {
-			$message = $this->message !== null ? $this->message : Yii::t('yii', 'The verification code is incorrect.');
+			$message = $this->message !== null ? $this->message : \Yii::t('yii', 'The verification code is incorrect.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -85,7 +85,7 @@ class CaptchaValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$captcha = $this->getCaptchaAction();
-		$message = $this->message !== null ? $this->message : Yii::t('yii', 'The verification code is incorrect.');
+		$message = $this->message !== null ? $this->message : \Yii::t('yii', 'The verification code is incorrect.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,

@@ -27,7 +27,8 @@ namespace yii\validators;
 class InlineValidator extends Validator
 {
 	/**
-	 * @var string the name of the validation method defined in the active record class
+	 * @var string the name of the validation method defined in the
+	 * \yii\base\Model class
 	 */
 	public $method;
 	/**
@@ -81,7 +82,7 @@ class InlineValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		if($this->clientValidate !== null) {
+		if ($this->clientValidate !== null) {
 			$method = $this->clientValidate;
 			return $object->$method($attribute);
 		}

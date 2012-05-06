@@ -31,7 +31,7 @@ class IntegerValidator extends NumberValidator
 	public function validateAttribute($object, $attribute)
 	{
 		if ($this->message === null) {
-			$this->message = Yii::t('yii', '{attribute} must be an integer.');
+			$this->message = \Yii::t('yii', '{attribute} must be an integer.');
 		}
 		parent::validateAttribute($object, $attribute);
 	}
@@ -45,7 +45,7 @@ class IntegerValidator extends NumberValidator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		if ($this->message === null) {
-			$this->message = Yii::t('yii', '{attribute} must be an integer.');
+			$this->message = \Yii::t('yii', '{attribute} must be an integer.');
 		}
 		return parent::clientValidateAttribute($object, $attribute);
 	}

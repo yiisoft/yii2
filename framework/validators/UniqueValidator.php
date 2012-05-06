@@ -1,6 +1,6 @@
 <?php
 /**
- * CUniqueValidator class file.
+ * UniqueValidator class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -13,9 +13,9 @@ namespace yii\validators;
  * CUniqueValidator validates that the attribute value is unique in the corresponding database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 1.0
+ * @since 2.0
  */
-class CUniqueValidator extends Validator
+class UniqueValidator extends Validator
 {
 	/**
 	 * @var boolean whether the comparison is case sensitive. Defaults to true.
@@ -28,10 +28,10 @@ class CUniqueValidator extends Validator
 	 */
 	public $allowEmpty = true;
 	/**
-	 * @var string the ActiveRecord class name that should be used to
-	 * look for the attribute value being validated. Defaults to null, meaning using
-	 * the class of the object currently being validated.
-	 * You may use path alias to reference a class name here.
+	 * @var string the yii\db\ar\ActiveRecord class name or alias of the class
+	 * that should be used to look for the attribute value being validated.
+	 * Defaults to null, meaning using the class of the object currently
+	 * being validated.
 	 * @see attributeName
 	 */
 	public $className;
@@ -43,11 +43,11 @@ class CUniqueValidator extends Validator
 	 */
 	public $attributeName;
 	/**
-	 * @var array additional query criteria. This will be combined with the condition
-	 * that checks if the attribute value exists in the corresponding table column.
-	 * This array will be used to instantiate a {@link CDbCriteria} object.
+	 * @var \yii\db\ar\ActiveQuery additional query criteria. This will be
+	 * combined with the condition that checks if the attribute value exists
+	 * in the corresponding table column.
 	 */
-	public $criteria = array();
+	public $query = null;
 	/**
 	 * @var string the user-defined error message. The placeholders "{attribute}" and "{value}"
 	 * are recognized, which will be replaced with the actual attribute name and value, respectively.
@@ -63,56 +63,60 @@ class CUniqueValidator extends Validator
 	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
+	 * @param \yiiunit\data\ar\ActiveRecord $object the object being validated
 	 * @param string $attribute the attribute being validated
+	 *
+	 * @throws \yii\base\Exception if table doesn't have column specified
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value))
+		if ($this->allowEmpty && $this->isEmpty($value)) {
 			return;
+		}
 
-		$className = $this->className === null ? get_class($object) : Yii::import($this->className);
-		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
-		$finder = CActiveRecord::model($className);
-		$table = $finder->getTableSchema();
-		if (($column = $table->getColumn($attributeName)) === null)
-			throw new CException(Yii::t('yii', 'Table "{table}" does not have a column named "{column}".',
-				array('{column}' => $attributeName, '{table}' => $table->name)));
+		$className = ($this->className === null) ? get_class($object) : \Yii::import($this->className);
+		$attributeName = ($this->attributeName === null) ? $attribute : $this->attributeName;
 
-		$columnName = $column->rawName;
-		$criteria = new CDbCriteria(array(
-			'condition' => $this->caseSensitive ? "$columnName=:value" : "LOWER($columnName)=LOWER(:value)",
-			'params' => array(':value' => $value),
-		));
-		if ($this->criteria !== array())
-			$criteria->mergeWith($this->criteria);
+		$table = $object::getMetaData()->table;
+		if (($column = $table->getColumn($attributeName)) === null) {
+			throw new \yii\base\Exception('Table "' . $table->name . '" does not have a column named "' . $attributeName . '"');
+		}
 
-		if (!$object instanceof CActiveRecord || $object->isNewRecord || $object->tableName() !== $finder->tableName())
-			$exists = $finder->exists($criteria);
-		else
-		{
-			$criteria->limit = 2;
-			$objects = $finder->findAll($criteria);
+		$finder = $object::find();
+		$finder->where($this->caseSensitive ? "{$column->quotedName}=:value" : "LOWER({$column->quotedName})=LOWER(:value)");
+		$finder->params(array(':value' => $value));
+
+		if ($this->query instanceof \yii\db\dao\BaseQuery) {
+			$finder->mergeWith($this->query);
+		}
+
+		if ($object->getIsNewRecord()) {
+			// if current $object isn't in the database yet then it's OK just
+			// to call exists()
+			$exists = $finder->exists();
+		} else {
+			// if current $object is in the database already we can't use exists()
+			$finder->limit(2);
+			$objects = $finder->all();
+
 			$n = count($objects);
-			if ($n === 1)
-			{
-				if ($column->isPrimaryKey)  // primary key is modified and not unique
+			if ($n === 1) {
+				if ($column->isPrimaryKey) {
+					// primary key is modified and not unique
 					$exists = $object->getOldPrimaryKey() != $object->getPrimaryKey();
-				else
-				{
+				} else {
 					// non-primary key, need to exclude the current record based on PK
 					$exists = array_shift($objects)->getPrimaryKey() != $object->getOldPrimaryKey();
 				}
-			} else
+			} else {
 				$exists = $n > 1;
+			}
 		}
 
-		if ($exists)
-		{
-			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} "{value}" has already been taken.');
+		if ($exists) {
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} "{value}" has already been taken.');
 			$this->addError($object, $attribute, $message, array('{value}' => $value));
 		}
 	}
 }
-

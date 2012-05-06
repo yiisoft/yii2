@@ -55,7 +55,7 @@ class UrlValidator extends Validator
 		if (($value = $this->validateValue($value)) !== false) {
 			$object->$attribute = $value;
 		} else {
-			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is not a valid URL.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} is not a valid URL.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -97,24 +97,24 @@ class UrlValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} is not a valid URL.');
+		$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} is not a valid URL.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
 
-		if (strpos($this->pattern, '{schemes}') !== false)
+		if (strpos($this->pattern, '{schemes}') !== false) {
 			$pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
-		else
+		} else {
 			$pattern = $this->pattern;
+		}
 
 		$js = "
 if(!value.match($pattern)) {
 	messages.push(" . json_encode($message) . ");
 }
 ";
-		if ($this->defaultScheme !== null)
-		{
+		if ($this->defaultScheme !== null) {
 			$js = "
 if(!value.match(/:\\/\\//)) {
 	value=" . json_encode($this->defaultScheme) . "+'://'+value;
@@ -123,8 +123,7 @@ $js
 ";
 		}
 
-		if ($this->allowEmpty)
-		{
+		if ($this->allowEmpty) {
 			$js = "
 if($.trim(value)!='') {
 	$js

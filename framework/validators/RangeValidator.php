@@ -45,6 +45,7 @@ class RangeValidator extends Validator
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
+	 * @throws \yii\base\Exception if the "range" property is not an array
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -56,10 +57,10 @@ class RangeValidator extends Validator
 			throw new \yii\base\Exception('The "range" property must be specified as an array.');
 		}
 		if (!$this->not && !in_array($value, $this->range, $this->strict)) {
-			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} should be in the list.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} should be in the list.');
 			$this->addError($object, $attribute, $message);
 		} elseif ($this->not && in_array($value, $this->range, $this->strict)) {
-			$message = $this->message !== null ? $this->message : Yii::t('yii', '{attribute} should NOT be in the list.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} should NOT be in the list.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -69,6 +70,7 @@ class RangeValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script.
+	 * @throws \yii\base\Exception if the "range" property is not an array
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
@@ -77,7 +79,7 @@ class RangeValidator extends Validator
 		}
 
 		if (($message = $this->message) === null) {
-			$message = $this->not ? Yii::t('yii', '{attribute} should NOT be in the list.') : Yii::t('yii', '{attribute} should be in the list.');
+			$message = $this->not ? \Yii::t('yii', '{attribute} should NOT be in the list.') : \Yii::t('yii', '{attribute} should be in the list.');
 		}
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),

@@ -45,6 +45,7 @@ class FilterValidator extends Validator
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
+	 * @throws \yii\base\Exception if filter property is not a valid callback
 	 */
 	public function validateAttribute($object, $attribute)
 	{
