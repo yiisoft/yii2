@@ -21,20 +21,20 @@ namespace yii\base;
 class InlineAction extends Action
 {
 	/**
-	 * Runs the action with the supplied parameters.
-	 * This method is invoked by the controller.
-	 * @param array $params the input parameters in terms of name-value pairs.
-	 * @return boolean whether the input parameters are valid
+	 * Runs this action with the specified parameters.
+	 * This method is mainly invoked by the controller.
+	 * @param array $params action parameters
+	 * @return integer the exit status (0 means normal, non-zero means abnormal).
 	 */
 	public function runWithParams($params)
 	{
 		$method = new \ReflectionMethod($this->controller, 'action' . $this->id);
-		$params = $this->normalizeParamsByMethod($method, $params);
-		if ($params !== false) {
-			call_user_func_array(array($this->controller, 'action' . $this->id), $params);
-			return true;
+		$params = \yii\util\ReflectionHelper::bindParams($method, $params);
+		if ($params === false) {
+			$this->controller->invalidActionParams($this);
+			return 1;
 		} else {
-			return false;
+			return (int)$method->invokeArgs($this, $params);
 		}
 	}
 }

@@ -7,6 +7,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
+// fcgi doesn't have STDIN defined by default
+defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
+
 require(__DIR__ . '/yii.php');
 
 $config = array(

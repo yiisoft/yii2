@@ -45,44 +45,20 @@ class Action extends Component
 	}
 
 	/**
-	 * Normalizes the input parameters for the action.
-	 * The parameters will later be passed to the `run()` method of the action.
-	 * This method is mainly called by the controller when running an action.
-	 * @param array $params the input parameters in terms of name-value pairs.
-	 * @return array|boolean the normalized parameters, or false if the input parameters are invalid.
+	 * Runs this action with the specified parameters.
+	 * This method is mainly invoked by the controller.
+	 * @param array $params action parameters
+	 * @return integer the exit status (0 means normal, non-zero means abnormal).
 	 */
-	public function normalizeParams($params)
+	public function runWithParams($params)
 	{
 		$method = new \ReflectionMethod($this, 'run');
-		return $this->normalizeParamsByMethod($method, $params);
-	}
-
-	/**
-	 * Extracts the input parameters according to the specified method signature.
-	 * @param \ReflectionMethod $method the method reflection
-	 * @param array $params the parameters in name-value pairs
-	 * @return array|boolean the extracted parameters in the order as declared in the "run()" method.
-	 * False is returned if the input parameters do not follow the method declaration.
-	 */
-	protected function normalizeParamsByMethod($method, $params)
-	{
-		$ps = array();
-		foreach ($method->getParameters() as $param) {
-			$name = $param->getName();
-			if (isset($params[$name])) {
-				if ($param->isArray()) {
-					$ps[] = is_array($params[$name]) ? $params[$name] : array($params[$name]);
-				} elseif (!is_array($params[$name])) {
-					$ps[] = $params[$name];
-				} else {
-					return false;
-				}
-			} elseif ($param->isDefaultValueAvailable()) {
-				$ps[] = $param->getDefaultValue();
-			} else {
-				return false;
-			}
+		$params = \yii\util\ReflectionHelper::bindParams($method, $params);
+		if ($params === false) {
+			$this->controller->invalidActionParams($this);
+			return 1;
+		} else {
+			return (int)$method->invokeArgs($this, $params);
 		}
-		return false;
 	}
 }

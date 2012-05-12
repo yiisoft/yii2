@@ -1,6 +1,6 @@
 <?php
 /**
- * Text helper class file.
+ * StringHelper class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,7 +10,7 @@
 namespace yii\util;
 
 /**
- * Text helper
+ * StringHelper
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>

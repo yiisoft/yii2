@@ -11,9 +11,6 @@ namespace yii\console;
 
 use yii\base\Exception;
 
-// fcgi doesn't have STDIN defined by default
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-
 /**
  * Application represents a console application.
  *
@@ -40,9 +37,6 @@ defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
  * ~~~
  * yiic help <command-name>
  * ~~~
- *
- * @property string $commandPath The directory that contains the command classes. Defaults to 'protected/commands'.
- * @property CommandRunner $commandRunner The command runner.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -42,6 +42,30 @@ class Controller extends Component implements Initable
 	 */
 	public $defaultAction = 'index';
 	/**
+	 * @var array mapping from action ID to action configuration.
+	 * Array keys are action IDs, and array values are the corresponding
+	 * action class names or action configuration arrays. For example,
+	 *
+	 * ~~~
+	 * return array(
+	 *     'action1' => '@application/components/Action1',
+	 *     'action2' => array(
+	 *         'class' => '@application/components/Action2',
+	 *         'property1' => 'value1',
+	 *         'property2' => 'value2',
+	 *     ),
+	 * );
+	 * ~~~
+	 *
+	 * [[\Yii::createObject()]] will be invoked to create the requested action
+	 * using the configuration provided here.
+	 *
+	 * Note, in order to inherit actions defined in the parent class, a child class needs to
+	 * merge the parent actions with child actions using functions like `array_merge()`.
+	 * @see createAction
+	 */
+	public $actions = array();
+	/**
 	 * @var Action the action that is currently being executed
 	 */
 	public $action;
@@ -66,45 +90,11 @@ class Controller extends Component implements Initable
 	}
 
 	/**
-	 * Returns a list of external action classes.
-	 * Array keys are action IDs, and array values are the corresponding
-	 * action class names or action configuration arrays. For example,
-	 *
-	 * ~~~
-	 * return array(
-	 *     'action1'=>'@application/components/Action1',
-	 *     'action2'=>array(
-	 *         'class'=>'@application/components/Action2',
-	 *         'property1'=>'value1',
-	 *         'property2'=>'value2',
-	 *     ),
-	 * );
-	 * ~~~
-	 *
-	 * [[\Yii::createObject()]] will be invoked to create the requested action
-	 * using the configuration provided here.
-	 *
-	 * Derived classes may override this method to declare external actions.
-	 *
-	 * Note, in order to inherit actions defined in the parent class, a child class needs to
-	 * merge the parent actions with child actions using functions like `array_merge()`.
-	 *
-	 * @return array list of external action classes
-	 * @see createAction
-	 */
-	public function actions()
-	{
-		return array();
-	}
-
-	/**
 	 * Runs the controller with the specified action and parameters.
 	 * @param Action|string $action the action to be executed. This can be either an action object
 	 * or the ID of the action.
-	 * @param array $params the parameters to be passed to the action.
+	 * @param array $params the parameters (name-value pairs) to be passed to the action.
 	 * If null, the result of [[getActionParams()]] will be used as action parameters.
-	 * Note that the parameters must be name-value pairs with the names corresponding to
-	 * the parameter names as declared by the action.
 	 * @return integer the exit status of the action. 0 means normal, other values mean abnormal.
 	 * @see missingAction
 	 * @see createAction
@@ -122,32 +112,17 @@ class Controller extends Component implements Initable
 
 		$priorAction = $this->action;
 		$this->action = $action;
-		$exitStatus = 1;
-		if ($this->authorize($action)) {
-			$params = $action->normalizeParams($params === null ? $this->getActionParams() : $params);
-			if ($params !== false) {
-				if ($this->beforeAction($action)) {
-					$exitStatus = (int)call_user_func_array(array($action, 'run'), $params);
-					$this->afterAction($action);
-				}
-			} else {
-				$this->invalidActionParams($action);
-			}
-		}
-		$this->action = $priorAction;
-		return $exitStatus;
-	}
 
-	/**
-	 * Returns the request parameters that will be used for action parameter binding.
-	 * Default implementation simply returns an empty array.
-	 * Child classes may override this method to customize the parameters to be provided
-	 * for action parameter binding (e.g. `$_GET`).
-	 * @return array the request parameters (name-value pairs) to be used for action parameter binding
-	 */
-	public function getActionParams()
-	{
-		return array();
+		if ($this->authorize($action) && $this->beforeAction($action)) {
+			$status = $action->runWithParams($params !== null ?: $this->getActionParams());
+			$this->afterAction($action);
+		} else {
+			$status = 1;
+		}
+
+		$this->action = $priorAction;
+
+		return $status;
 	}
 
 	/**
@@ -163,15 +138,25 @@ class Controller extends Component implements Initable
 		if ($actionID === '') {
 			$actionID = $this->defaultAction;
 		}
-		if (method_exists($this, 'action' . $actionID) && strcasecmp($actionID, 's')) {
+		if (isset($this->actions[$actionID])) {
+			return \Yii::createObject($this->actions[$actionID], $actionID, $this);
+		} elseif (method_exists($this, 'action' . $actionID)) {
 			return new InlineAction($actionID, $this);
 		} else {
-			$actions = $this->actions();
-			if (isset($actions[$actionID])) {
-				return \Yii::createObject($actions[$actionID], $actionID, $this);
-			}
+			return null;
 		}
-		return null;
+	}
+
+	/**
+	 * Returns the request parameters that will be used for action parameter binding.
+	 * Default implementation simply returns an empty array.
+	 * Child classes may override this method to customize the parameters to be provided
+	 * for action parameter binding (e.g. `$_GET`).
+	 * @return array the request parameters (name-value pairs) to be used for action parameter binding
+	 */
+	public function getActionParams()
+	{
+		return array();
 	}
 
 	/**
@@ -234,7 +219,7 @@ class Controller extends Component implements Initable
 			if ($route[0] !== '/' && !$this->module instanceof Application) {
 				$route = '/' . $this->module->getUniqueId() . '/' . $route;
 			}
-			$status = \Yii::$application->dispatch($route, $params);
+			$status = \Yii::$application->processRequest($route, $params);
 		}
 		if ($exit) {
 			\Yii::$application->end($status);

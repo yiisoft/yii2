@@ -187,10 +187,10 @@ abstract class Application extends Module
 			throw new Exception(\Yii::t('yii', 'Unable to resolve the request.'));
 		}
 		list($controller, $action) = $result;
-		$oldController = $this->controller;
+		$priorController = $this->controller;
 		$this->controller = $controller;
 		$status = $controller->run($action, $params);
-		$this->controller = $oldController;
+		$this->controller = $priorController;
 		return $status;
 	}
 
