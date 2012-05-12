@@ -20,23 +20,30 @@ use yii\util\ReflectionHelper;
  * through a command-based approach:
  *
  * - A console application consists of one or several possible user commands;
- * - Each user command is implemented as a class extending [[Command]];
+ * - Each user command is implemented as a class extending [[\yii\console\Controller]];
  * - User specifies which command to run on the command line;
  * - The command processes the user request with the specified parameters.
  *
- * The command classes reside in the directory specified by [[commandPath]].
- * The name of the class should be of the form `<command-name>Command` (e.g. `HelpCommand`).
+ * The command classes reside in the directory specified by [[controllerPath]].
+ * Their naming should follow the same naming as controllers. For example, the `help` command
+ * is implemented using the `HelpController` class.
  *
  * To run the console application, enter the following on the command line:
  *
  * ~~~
- * yiic <command-name> [param 1] [param 2] ...
+ * yiic <route> [...options...]
  * ~~~
  *
- * You may use the following line to see help instructions about a command:
+ * where `<route>` refers to a controller route in the form of `ModuleID/ControllerID/ActionID`
+ * (e.g. `sitemap/create`), and `options` refers to a set of named parameters that will be used
+ * to initialize the command controller instance and the corresponding action (e.g. `--since=0`
+ * specifies a `since` parameter whose value is 0).
+ *
+ * A `help` command is provided by default, which may list available commands and show their usage.
+ * To use this command, simply type:
  *
  * ~~~
- * yiic help <command-name>
+ * yiic help
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -66,7 +73,7 @@ class Application extends \yii\base\Application
 			}
 		}
 		// ensure we have the 'help' command so that we can list the available commands
-		if ($this->defaultRoute === 'help' && !isset($this->controllers['help'])) {
+		if (!isset($this->controllers['help'])) {
 			$this->controllers['help'] = 'yii\console\commands\HelpController';
 		}
 	}
@@ -135,68 +142,6 @@ class Application extends \yii\base\Application
 		}
 
 		return array($route, $params);
-	}
-
-	/**
-	 * Searches for commands under the specified directory.
-	 * @param string $path the directory containing the command class files.
-	 * @return array list of commands (command name=>command class file)
-	 */
-	public function findCommands($path)
-	{
-		if (($dir = @opendir($path)) === false)
-			return array();
-		$commands = array();
-		while (($name = readdir($dir)) !== false) {
-			$file = $path . DIRECTORY_SEPARATOR . $name;
-			if (!strcasecmp(substr($name, -11), 'Command.php') && is_file($file))
-				$commands[strtolower(substr($name, 0, -11))] = $file;
-		}
-		closedir($dir);
-		return $commands;
-	}
-
-	/**
-	 * Adds commands from the specified command path.
-	 * If a command already exists, the new one will be ignored.
-	 * @param string $path the alias of the directory containing the command class files.
-	 */
-	public function addCommands($path)
-	{
-		if (($commands = $this->findCommands($path)) !== array()) {
-			foreach ($commands as $name => $file) {
-				if (!isset($this->commands[$name]))
-					$this->commands[$name] = $file;
-			}
-		}
-	}
-
-	/**
-	 * @param string $name command name (case-insensitive)
-	 * @return CConsoleCommand the command object. Null if the name is invalid.
-	 */
-	public function createCommand($name)
-	{
-		$name = strtolower($name);
-		if (isset($this->commands[$name])) {
-			if (is_string($this->commands[$name])) // class file path or alias
-			{
-				if (strpos($this->commands[$name], '/') !== false || strpos($this->commands[$name], '\\') !== false) {
-					$className = substr(basename($this->commands[$name]), 0, -4);
-					if (!class_exists($className, false))
-						require_once($this->commands[$name]);
-				}
-				else // an alias
-					$className = Yii::import($this->commands[$name]);
-				return new $className($name, $this);
-			}
-			else // an array configuration
-				return Yii::createComponent($this->commands[$name], $name, $this);
-		}
-		else if ($name === 'help')
-			return new CHelpCommand('help', $this);
-		else
-			return null;
 	}
 
 	public function coreCommands()

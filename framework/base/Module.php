@@ -488,9 +488,9 @@ abstract class Module extends Component implements Initable
 	 * 2. If the segment matches
 	 *    - an ID in [[controllers]], create a controller instance using the corresponding configuration,
 	 *      and return the controller with the rest part of the route;
+	 *    - an ID in [[modules]], call the [[createController()]] method of the corresponding module.
 	 *    - a controller class under [[controllerPath]], create the controller instance, and return it
 	 *      with the rest part of the route;
-	 *    - an ID in [[modules]], call the [[createController()]] method of the corresponding module.
 	 *
 	 * @param string $route the route which may consist module ID, controller ID and/or action ID (e.g. `post/create`)
 	 * @return array|boolean the array of controller instance and action ID. False if the route cannot be resolved.
@@ -521,6 +521,13 @@ abstract class Module extends Component implements Initable
 			);
 		}
 
+		if (($module = $this->getModule($id)) !== null) {
+			$result = $module->createController($route);
+			if ($result !== false) {
+				return $result;
+			}
+		}
+
 		$className = ucfirst($id) . 'Controller';
 		$classFile = $this->getControllerPath() . DIRECTORY_SEPARATOR . $className . '.php';
 		if (is_file($classFile)) {
@@ -533,10 +540,6 @@ abstract class Module extends Component implements Initable
 					$route,
 				);
 			}
-		}
-
-		if (($module = $this->getModule($id)) !== null) {
-			return $module->createController($route);
 		}
 
 		return false;

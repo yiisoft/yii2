@@ -1,8 +1,7 @@
 <?php
 /**
- * HelpCommand class file.
+ * HelpController class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -17,9 +16,11 @@ namespace yii\console\commands;
  * about a specific command.
  *
  * To use this command, enter the following on the command line:
- * <pre>
- * php path/to/entry_script.php help [command name]
- * </pre>
+ *
+ * ~~~
+ * yiic help [command name]
+ * ~~~
+ *
  * In the above, if the command name is not provided, it will display all
  * available commands.
  *
@@ -32,49 +33,53 @@ class HelpController extends \yii\console\Controller
 {
 	public function actionIndex($args = array())
 	{
-
-	}
-
-	/**
-	 * Execute the action.
-	 * @param array $args command line parameters specific for this command
-	 */
-	public function run($args)
-	{
-		$runner=$this->getCommandRunner();
-		$commands=$runner->commands;
-		if(isset($args[0]))
-		{
-			$name=strtolower($args[0]);
-		}
-		if(!isset($args[0]) || !isset($commands[$name]))
-		{
-			if(!empty($commands))
-			{
-				echo "Yii command runner (based on Yii v".\Yii::getVersion().")\n";
-				echo "Usage: ".$runner->getScriptName()." <command-name> [parameters...]\n";
-				echo "\nThe following commands are available:\n";
-				$commandNames=array_keys($commands);
-				sort($commandNames);
-				echo ' - '.implode("\n - ",$commandNames);
-				echo "\n\nTo see individual command help, use the following:\n";
-				echo "   ".$runner->getScriptName()." help <command-name>\n";
-			} else
-			{
-				echo "No available commands.\n";
-				echo "Please define them under the following directory:\n";
-				echo "\t".\Yii::$app->getCommandPath()."\n";
+		echo "Yii console command helper (based on Yii v" . \Yii::getVersion() . ").\n";
+		$commands = $this->getCommands();
+		if ($commands !== array()) {
+			echo "\n    Usage: yiic <command-name> [...options...]\n\n";
+			echo "The following commands are available:\n";
+			foreach ($commands as $command) {
+				echo " - $command\n";
 			}
-		} else
-			echo $runner->createCommand($name)->getHelp();
+			echo "\nTo see individual command help, enter:\n";
+			echo "\n    yiic help <command-name>\n";
+		} else {
+			echo "\nNo commands are found.\n";
+		}
+	}
+
+	protected function getCommands()
+	{
+		$commands = $this->getModuleCommands(\Yii::$application);
+		sort($commands);
+		return array_unique($commands);
 	}
 
 	/**
-	 * Provides the command description.
-	 * @return string the command description.
+	 * @param \yii\base\Module $module
+	 * @return array
 	 */
-	public function getHelp()
+	protected function getModuleCommands($module)
 	{
-		return parent::getHelp().' [command-name]';
+		if ($module === null) {
+			return array();
+		}
+
+		$commands = array_keys($module->controllers);
+
+		foreach ($module->getModules() as $id => $module) {
+			foreach ($this->getModuleCommands($module->getModule($id)) as $command) {
+				$commands[] = $command;
+			}
+		}
+
+		$files = scandir($module->getControllerPath());
+		foreach ($files as $file) {
+			if(strcmp(substr($file,-14),'Controller.php') === 0 && is_file($file)) {
+				$commands[] = lcfirst(substr(basename($file), 0, -14));
+			}
+		}
+
+		return $commands;
 	}
 }

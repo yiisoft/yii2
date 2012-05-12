@@ -287,7 +287,7 @@ class ErrorHandler extends ApplicationComponent
 		if (YII_DEBUG) {
 			echo $exception;
 		} else {
-			echo get_class($exception) . ':' . $exception->getMessage();
+			echo get_class($exception) . ': ' . $exception->getMessage();
 		}
 	}
 
