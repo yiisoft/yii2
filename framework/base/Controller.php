@@ -27,7 +27,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Controller extends Component implements Initable
+class Controller extends Component implements Initable
 {
 	/**
 	 * @var string ID of this controller
@@ -98,36 +98,33 @@ abstract class Controller extends Component implements Initable
 	}
 
 	/**
-	 * Creates an action with the specified ID and runs it.
-	 * If the action does not exist, [[missingAction()]] will be invoked.
-	 * @param string $actionID action ID
+	 * Runs the controller with the specified action and parameters.
+	 * @param Action|string $action the action to be executed. This can be either an action object
+	 * or the ID of the action.
+	 * @param array $params the parameters to be passed to the action.
+	 * If null, the result of [[getActionParams()]] will be used as action parameters.
+	 * Note that the parameters must be name-value pairs with the names corresponding to
+	 * the parameter names as declared by the action.
 	 * @return integer the exit status of the action. 0 means normal, other values mean abnormal.
-	 * @see createAction
-	 * @see runAction
 	 * @see missingAction
+	 * @see createAction
 	 */
-	public function run($actionID)
+	public function run($action, $params = null)
 	{
-		if (($action = $this->createAction($actionID)) !== null) {
-			return $this->runAction($action);
-		} else {
-			$this->missingAction($actionID);
-			return 1;
+		if (is_string($action)) {
+			if (($a = $this->createAction($action)) !== null) {
+				$action = $a;
+			} else {
+				$this->missingAction($action);
+				return 1;
+			}
 		}
-	}
 
-	/**
-	 * Runs the action.
-	 * @param Action $action action to run
-	 * @return integer the exit status of the action. 0 means normal, other values mean abnormal.
-	 */
-	public function runAction($action)
-	{
 		$priorAction = $this->action;
 		$this->action = $action;
 		$exitStatus = 1;
 		if ($this->authorize($action)) {
-			$params = $action->normalizeParams($this->getActionParams());
+			$params = $action->normalizeParams($params === null ? $this->getActionParams() : $params);
 			if ($params !== false) {
 				if ($this->beforeAction($action)) {
 					$exitStatus = (int)call_user_func_array(array($action, 'run'), $params);
@@ -223,17 +220,21 @@ abstract class Controller extends Component implements Initable
 	 * @param string $route the route of the new controller action. This can be an action ID, or a complete route
 	 * with module ID (optional in the current module), controller ID and action ID. If the former,
 	 * the action is assumed to be located within the current controller.
+	 * @param array $params the parameters to be passed to the action.
+	 * If null, the result of [[getActionParams()]] will be used as action parameters.
+	 * Note that the parameters must be name-value pairs with the names corresponding to
+	 * the parameter names as declared by the action.
 	 * @param boolean $exit whether to end the application after this call. Defaults to true.
 	 */
-	public function forward($route, $exit = true)
+	public function forward($route, $params = array(), $exit = true)
 	{
 		if (strpos($route, '/') === false) {
-			$status = $this->run($route);
+			$status = $this->run($route, $params);
 		} else {
 			if ($route[0] !== '/' && !$this->module instanceof Application) {
 				$route = '/' . $this->module->getUniqueId() . '/' . $route;
 			}
-			$status = \Yii::$application->runController($route);
+			$status = \Yii::$application->dispatch($route, $params);
 		}
 		if ($exit) {
 			\Yii::$application->end($status);

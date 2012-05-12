@@ -2,7 +2,6 @@
 /**
  * Console Application class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -10,33 +9,37 @@
 
 namespace yii\console;
 
+use yii\base\Exception;
+
+// fcgi doesn't have STDIN defined by default
+defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
+
 /**
- * \yii\console\Application represents a console application.
+ * Application represents a console application.
  *
- * \yii\console\Application extends {@link \yii\base\Application} by providing functionalities
+ * Application extends from [[yii\base\Application]] by providing functionalities that are
  * specific to console requests. In particular, it deals with console requests
  * through a command-based approach:
- * <ul>
- * <li>A console application consists of one or several possible user commands;</li>
- * <li>Each user command is implemented as a class extending {@link \yii\console\Command};</li>
- * <li>User specifies which command to run on the command line;</li>
- * <li>The command processes the user request with the specified parameters.</li>
- * </ul>
  *
- * The command classes reside in the directory {@link getCommandPath commandPath}.
- * The name of the class follows the pattern: &lt;command-name&gt;Command, and its
- * file name is the same the class name. For example, the 'ShellCommand' class defines
- * a 'shell' command and the class file name is 'ShellCommand.php'.
+ * - A console application consists of one or several possible user commands;
+ * - Each user command is implemented as a class extending [[Command]];
+ * - User specifies which command to run on the command line;
+ * - The command processes the user request with the specified parameters.
+ *
+ * The command classes reside in the directory specified by [[commandPath]].
+ * The name of the class should be of the form `<command-name>Command` (e.g. `HelpCommand`).
  *
  * To run the console application, enter the following on the command line:
- * <pre>
- * php path/to/entry_script.php <command name> [param 1] [param 2] ...
- * </pre>
  *
- * You may use the following to see help instructions about a command:
- * <pre>
- * php path/to/entry_script.php help <command name>
- * </pre>
+ * ~~~
+ * yiic <command-name> [param 1] [param 2] ...
+ * ~~~
+ *
+ * You may use the following line to see help instructions about a command:
+ *
+ * ~~~
+ * yiic help <command-name>
+ * ~~~
  *
  * @property string $commandPath The directory that contains the command classes. Defaults to 'protected/commands'.
  * @property CommandRunner $commandRunner The command runner.
@@ -47,135 +50,148 @@ namespace yii\console;
 class Application extends \yii\base\Application
 {
 	/**
-	 * @var array mapping from command name to command configurations.
-	 * Each command configuration can be either a string or an array.
-	 * If the former, the string should be the file path of the command class.
-	 * If the latter, the array must contain a 'class' element which specifies
-	 * the command's class name or {@link \YiiBase::getPathOfAlias class path alias}.
-	 * The rest name-value pairs in the array are used to initialize
-	 * the corresponding command properties. For example,
-	 * <pre>
-	 * array(
-	 *   'email'=>array(
-	 *      'class'=>'path.to.Mailer',
-	 *      'interval'=>3600,
-	 *   ),
-	 *   'log'=>'path/to/LoggerCommand.php',
-	 * )
-	 * </pre>
+	 * @var string the default route of this application. Defaults to 'help',
+	 * meaning the `help` command.
 	 */
-	public $commandMap=array();
-
-	private $_commandPath;
-
+	public $defaultRoute = 'help';
 	/**
-	 * @var \yii\console\CommandRunner
+	 * @var boolean whether to enable the commands provided by the core framework.
+	 * Defaults to true.
 	 */
-	private $_runner;
+	public $enableCoreCommands = true;
 
-	/**
-	 * Initializes the application by creating the command runner.
-	 */
 	public function init()
 	{
-		if(!isset($_SERVER['argv']))
-		{
+		parent::init();
+		if ($this->enableCoreCommands) {
+			foreach ($this->coreCommands() as $id => $command) {
+				if (!isset($this->controllers[$id])) {
+					$this->controllers[$id] = $command;
+				}
+			}
+		}
+		// ensure we have the 'help' command so that we can list the available commands
+		if ($this->defaultRoute === 'help' && !isset($this->controllers['help'])) {
+			$this->controllers['help'] = 'yii\console\commands\HelpController';
+		}
+	}
+
+	/**
+	 * Runs the application.
+	 * This is the main entrance of an application.
+	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
+	 */
+	public function run()
+	{
+		if (!isset($_SERVER['argv'])) {
 			die('This script must be run from the command line.');
 		}
-		$this->_runner=$this->createCommandRunner();
-		$this->_runner->commands=$this->commandMap;
-		$this->_runner->addCommands($this->getCommandPath());
+		list($route, $params) = $this->resolveRequest($_SERVER['argv']);
+		$this->beforeRequest();
+		$status = $this->processRequest($route, $params);
+		$this->afterRequest();
+		return $status;
 	}
 
 	/**
-	 * Processes the user request.
-	 * This method creates a console command runner to handle the particular user command.
+	 * Resolves the request.
+	 * @param array $args the arguments passed via the command line
+	 * @return array the controller route and the parameters for the controller action
 	 */
-	public function processRequest()
+	protected function resolveRequest($args)
 	{
-		$this->_runner->run($_SERVER['argv']);
+		array_shift($args);  // the 1st argument is the yiic script name
+
+		if (isset($args[0])) {
+			$route = $args[0];
+			array_shift($args);
+		} else {
+			$route = '';
+		}
+
+		$params = array();
+		foreach ($args as $arg) {
+			if (preg_match('/^--(\w+)(=(.*))?$/', $arg, $matches)) {
+				$name = $matches[1];
+				$params[$name] = isset($matches[3]) ? $matches[3] : true;
+			} else {
+				$params['args'][] = $arg;
+			}
+		}
+
+		return array($route, $params);
 	}
 
 	/**
-	 * Creates the command runner instance.
-	 * @return CommandRunner the command runner
+	 * Searches for commands under the specified directory.
+	 * @param string $path the directory containing the command class files.
+	 * @return array list of commands (command name=>command class file)
 	 */
-	protected function createCommandRunner()
+	public function findCommands($path)
 	{
-		return new CommandRunner();
+		if (($dir = @opendir($path)) === false)
+			return array();
+		$commands = array();
+		while (($name = readdir($dir)) !== false) {
+			$file = $path . DIRECTORY_SEPARATOR . $name;
+			if (!strcasecmp(substr($name, -11), 'Command.php') && is_file($file))
+				$commands[strtolower(substr($name, 0, -11))] = $file;
+		}
+		closedir($dir);
+		return $commands;
 	}
 
 	/**
-	 * Displays the captured PHP error.
-	 * This method displays the error in console mode when there is
-	 * no active error handler.
-	 * @param integer $code error code
-	 * @param string $message error message
-	 * @param string $file error file
-	 * @param string $line error line
+	 * Adds commands from the specified command path.
+	 * If a command already exists, the new one will be ignored.
+	 * @param string $path the alias of the directory containing the command class files.
 	 */
-	public function displayError($code,$message,$file,$line)
+	public function addCommands($path)
 	{
-		echo "PHP Error[$code]: $message\n";
-		echo "    in file $file at line $line\n";
-		$trace=debug_backtrace();
-		// skip the first 4 stacks as they do not tell the error position
-		if(count($trace)>4)
-			$trace=array_slice($trace,4);
-		foreach($trace as $i=>$t)
-		{
-			if(!isset($t['file']))
-				$t['file']='unknown';
-			if(!isset($t['line']))
-				$t['line']=0;
-			if(!isset($t['function']))
-				$t['function']='unknown';
-			echo "#$i {$t['file']}({$t['line']}): ";
-			if(isset($t['object']) && is_object($t['object']))
-				echo get_class($t['object']).'->';
-			echo "{$t['function']}()\n";
+		if (($commands = $this->findCommands($path)) !== array()) {
+			foreach ($commands as $name => $file) {
+				if (!isset($this->commands[$name]))
+					$this->commands[$name] = $file;
+			}
 		}
 	}
 
 	/**
-	 * Displays the uncaught PHP exception.
-	 * This method displays the exception in console mode when there is
-	 * no active error handler.
-	 * @param Exception $exception the uncaught exception
+	 * @param string $name command name (case-insensitive)
+	 * @return CConsoleCommand the command object. Null if the name is invalid.
 	 */
-	public function displayException($exception)
+	public function createCommand($name)
 	{
-		echo $exception;
+		$name = strtolower($name);
+		if (isset($this->commands[$name])) {
+			if (is_string($this->commands[$name])) // class file path or alias
+			{
+				if (strpos($this->commands[$name], '/') !== false || strpos($this->commands[$name], '\\') !== false) {
+					$className = substr(basename($this->commands[$name]), 0, -4);
+					if (!class_exists($className, false))
+						require_once($this->commands[$name]);
+				}
+				else // an alias
+					$className = Yii::import($this->commands[$name]);
+				return new $className($name, $this);
+			}
+			else // an array configuration
+				return Yii::createComponent($this->commands[$name], $name, $this);
+		}
+		else if ($name === 'help')
+			return new CHelpCommand('help', $this);
+		else
+			return null;
 	}
 
-	/**
-	 * @return string the directory that contains the command classes. Defaults to 'protected/commands'.
-	 */
-	public function getCommandPath()
+	public function coreCommands()
 	{
-		$applicationCommandPath = $this->getBasePath().DIRECTORY_SEPARATOR.'commands';
-		if($this->_commandPath===null && file_exists($applicationCommandPath))
-			$this->setCommandPath($applicationCommandPath);
-		return $this->_commandPath;
-	}
-
-	/**
-	 * @param string $value the directory that contains the command classes.
-	 * @throws CException if the directory is invalid
-	 */
-	public function setCommandPath($value)
-	{
-		if(($this->_commandPath=realpath($value))===false || !is_dir($this->_commandPath))
-			throw new \yii\base\Exception(Yii::t('yii','The command path "{path}" is not a valid directory.',
-				array('{path}'=>$value)));
-	}
-
-	/**
-	 * Returns the command runner.
-	 * @return CConsoleCommandRunner the command runner.
-	 */
-	public function getCommandRunner()
-	{
-		return $this->_runner;
+		return array(
+			'message' => 'yii\console\commands\MessageController',
+			'help' => 'yii\console\commands\HelpController',
+			'migrate' => 'yii\console\commands\MigrateController',
+			'shell' => 'yii\console\commands\ShellController',
+			'app' => 'yii\console\commands\AppController',
+		);
 	}
 }

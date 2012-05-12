@@ -73,7 +73,7 @@ use yii\base\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Application extends Module
+abstract class Application extends Module
 {
 	/**
 	 * @var string the application name. Defaults to 'My Application'.
@@ -95,7 +95,12 @@ class Application extends Module
 	 * to ensure errors and exceptions can be handled nicely.
 	 */
 	public $preload = array('errorHandler');
+	/**
+	 * @var Controller the currently active controller instance
+	 */
+	public $controller;
 
+	// todo
 	public $localeDataPath = '@yii/i18n/data';
 
 	private $_runtimePath;
@@ -118,9 +123,8 @@ class Application extends Module
 	}
 
 	/**
-	 * Initializes the module.
-	 * This method is called after the module is created and initialized with property values
-	 * given in configuration.
+	 * Initializes the application by loading components declared in [[preload]].
+	 * If you override this method, make sure the parent implementation is invoked.
 	 */
 	public function init()
 	{
@@ -129,16 +133,10 @@ class Application extends Module
 
 	/**
 	 * Runs the application.
-	 * This method loads static application components. Derived classes usually overrides this
-	 * method to do more application-specific tasks.
-	 * Remember to call the parent implementation so that static application components are loaded.
+	 * This is the main entrance of an application. Derived classes must implement this method.
+	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
 	 */
-	public function run()
-	{
-		$this->beforeRequest();
-		$this->processRequest();
-		$this->afterRequest();
-	}
+	abstract public function run();
 
 	/**
 	 * Terminates the application.
@@ -167,15 +165,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Processes the request.
-	 * This is the place where the actual request processing work is done.
-	 * Derived classes should override this method.
-	 */
-	public function processRequest()
-	{
-	}
-
-	/**
 	 * Raises the [[afterRequest]] event right AFTER the application processes the request.
 	 */
 	public function afterRequest()
@@ -184,17 +173,37 @@ class Application extends Module
 	}
 
 	/**
+	 * Processes the request.
+	 * The request is represented in terms of a controller route and action parameters.
+	 * @param string $route the route of the request. It may contain module ID, controller ID, and/or action ID.
+	 * @param array $params parameters to be bound to the controller action.
+	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
+	 * @throws Exception if the route cannot be resolved into a controller
+	 */
+	public function processRequest($route, $params = array())
+	{
+		$result = $this->parseRoute($route);
+		if ($result === null) {
+			throw new Exception(\Yii::t('yii', 'Unable to resolve the request.'));
+		}
+		list($controller, $action) = $result;
+		$oldController = $this->controller;
+		$this->controller = $controller;
+		$status = $controller->run($action, $params);
+		$this->controller = $oldController;
+		return $status;
+	}
+
+	/**
 	 * Returns the directory that stores runtime files.
 	 * @return string the directory that stores runtime files. Defaults to 'protected/runtime'.
 	 */
 	public function getRuntimePath()
 	{
-		if ($this->_runtimePath !== null) {
-			return $this->_runtimePath;
-		} else {
+		if ($this->_runtimePath === null) {
 			$this->setRuntimePath($this->getBasePath() . DIRECTORY_SEPARATOR . 'runtime');
-			return $this->_runtimePath;
 		}
+		return $this->_runtimePath;
 	}
 
 	/**
@@ -205,7 +214,7 @@ class Application extends Module
 	public function setRuntimePath($path)
 	{
 		if (!is_dir($path) || !is_writable($path)) {
-			throw new \yii\base\Exception("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
+			throw new Exception("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
 		}
 		$this->_runtimePath = $path;
 	}
@@ -226,7 +235,7 @@ class Application extends Module
 	 * By default, [[language]] and [[sourceLanguage]] are the same.
 	 * Do not set this property unless your application needs to support multiple languages.
 	 * @param string $language the user language (e.g. 'en_US', 'zh_CN').
-	 * If it is null, the {@link sourceLanguage} will be used.
+	 * If it is null, the [[sourceLanguage]] will be used.
 	 */
 	public function setLanguage($language)
 	{
@@ -253,40 +262,6 @@ class Application extends Module
 	public function setTimeZone($value)
 	{
 		date_default_timezone_set($value);
-	}
-
-	/**
-	 * Returns the localized version of a specified file.
-	 *
-	 * The searching is based on the specified language code. In particular,
-	 * a file with the same name will be looked for under the subdirectory
-	 * named as the locale ID. For example, given the file "path/to/view.php"
-	 * and locale ID "zh_cn", the localized file will be looked for as
-	 * "path/to/zh_cn/view.php". If the file is not found, the original file
-	 * will be returned.
-	 *
-	 * For consistency, it is recommended that the locale ID is given
-	 * in lower case and in the format of LanguageID_RegionID (e.g. "en_us").
-	 *
-	 * @param string $srcFile the original file
-	 * @param string $srcLanguage the language that the original file is in. If null, the application {@link sourceLanguage source language} is used.
-	 * @param string $language the desired language that the file should be localized to. If null, the {@link getLanguage application language} will be used.
-	 * @return string the matching localized file. The original file is returned if no localized version is found
-	 * or if source language is the same as the desired language.
-	 */
-	public function findLocalizedFile($srcFile, $srcLanguage = null, $language = null)
-	{
-		if ($srcLanguage === null) {
-			$srcLanguage = $this->sourceLanguage;
-		}
-		if ($language === null) {
-			$language = $this->getLanguage();
-		}
-		if ($language === $srcLanguage) {
-			return $srcFile;
-		}
-		$desiredFile = dirname($srcFile) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($srcFile);
-		return is_file($desiredFile) ? $desiredFile : $srcFile;
 	}
 
 	/**
@@ -343,15 +318,6 @@ class Application extends Module
 	public function getSecurityManager()
 	{
 		return $this->getComponent('securityManager');
-	}
-
-	/**
-	 * Returns the state persister component.
-	 * @return CStatePersister the state persister application component.
-	 */
-	public function getStatePersister()
-	{
-		return $this->getComponent('statePersister');
 	}
 
 	/**
@@ -419,9 +385,6 @@ class Application extends Module
 			),
 			'securityManager' => array(
 				'class' => 'yii\base\SecurityManager',
-			),
-			'statePersister' => array(
-				'class' => 'yii\base\StatePersister',
 			),
 		));
 	}

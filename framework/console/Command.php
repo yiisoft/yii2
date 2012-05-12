@@ -2,9 +2,8 @@
 /**
  * Command class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -45,36 +44,8 @@ namespace yii\console;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Command extends \yii\base\Component
+class Command extends \yii\base\Controller
 {
-	/**
-	 * @var string the name of the default action. Defaults to 'index'.
-	 */
-	public $defaultAction='index';
-
-	private $_name;
-	private $_runner;
-
-	/**
-	 * Constructor.
-	 * @param string $name name of the command
-	 * @param CConsoleCommandRunner $runner the command runner
-	 */
-	public function __construct($name,$runner)
-	{
-		$this->_name=$name;
-		$this->_runner=$runner;
-	}
-
-	/**
-	 * Initializes the command object.
-	 * This method is invoked after a command object is created and initialized with configurations.
-	 * You may override this method to further customize the command before it executes.
-	 */
-	public function init()
-	{
-	}
-
 	/**
 	 * Executes the command.
 	 * The default implementation will parse the input parameters and
@@ -84,82 +55,55 @@ abstract class Command extends \yii\base\Component
 	 */
 	public function run($args)
 	{
-		list($action, $options, $args)=$this->resolveRequest($args);
-		$methodName='action'.$action;
-		if(!preg_match('/^\w+$/',$action) || !method_exists($this,$methodName))
-			$this->usageError("Unknown action: ".$action);
+		list($action, $options, $args) = $this->resolveRequest($args);
+		$methodName = 'action' . $action;
+		if (!preg_match('/^\w+$/', $action) || !method_exists($this, $methodName))
+				{
+					$this->usageError("Unknown action: " . $action);
+				}
 
-		$method=new \ReflectionMethod($this,$methodName);
-		$params=array();
+		$method = new \ReflectionMethod($this, $methodName);
+		$params = array();
 		// named and unnamed options
-		foreach($method->getParameters() as $param)
-		{
-			$name=$param->getName();
-			if(isset($options[$name]))
-			{
-				if($param->isArray())
-					$params[]=is_array($options[$name]) ? $options[$name] : array($options[$name]);
-				else if(!is_array($options[$name]))
-					$params[]=$options[$name];
+		foreach ($method->getParameters() as $param) {
+			$name = $param->getName();
+			if (isset($options[$name])) {
+				if ($param->isArray())
+					$params[] = is_array($options[$name]) ? $options[$name] : array($options[$name]);
+				else if (!is_array($options[$name]))
+					$params[] = $options[$name];
 				else
 					$this->usageError("Option --$name requires a scalar. Array is given.");
-			} else if($name==='args')
-				$params[]=$args;
-			else if($param->isDefaultValueAvailable())
-				$params[]=$param->getDefaultValue();
+			} else if ($name === 'args')
+				$params[] = $args;
+			else if ($param->isDefaultValueAvailable())
+				$params[] = $param->getDefaultValue();
 			else
 				$this->usageError("Missing required option --$name.");
 			unset($options[$name]);
 		}
 
 		// try global options
-		if(!empty($options))
-		{
-			$class=new \ReflectionClass(get_class($this));
-			foreach($options as $name=>$value)
-			{
-				if($class->hasProperty($name))
-				{
-					$property=$class->getProperty($name);
-					if($property->isPublic() && !$property->isStatic())
-					{
-						$this->$name=$value;
+		if (!empty($options)) {
+			$class = new \ReflectionClass(get_class($this));
+			foreach ($options as $name => $value) {
+				if ($class->hasProperty($name)) {
+					$property = $class->getProperty($name);
+					if ($property->isPublic() && !$property->isStatic()) {
+						$this->$name = $value;
 						unset($options[$name]);
 					}
 				}
 			}
 		}
 
-		if(!empty($options))
-			$this->usageError("Unknown options: ".implode(', ',array_keys($options)));
+		if (!empty($options))
+			$this->usageError("Unknown options: " . implode(', ', array_keys($options)));
 
-		if($this->beforeAction($action,$params))
-		{
-			$method->invokeArgs($this,$params);
-			$this->afterAction($action,$params);
+		if ($this->beforeAction($action, $params)) {
+			$method->invokeArgs($this, $params);
+			$this->afterAction($action, $params);
 		}
-	}
-
-	/**
-	 * This method is invoked right before an action is to be executed.
-	 * You may override this method to do last-minute preparation for the action.
-	 * @param string $action the action name
-	 * @param array $params the parameters to be passed to the action method.
-	 * @return boolean whether the action should be executed.
-	 */
-	protected function beforeAction($action,$params)
-	{
-		return true;
-	}
-
-	/**
-	 * This method is invoked right after an action finishes execution.
-	 * You may override this method to do some postprocessing for the action.
-	 * @param string $action the action name
-	 * @param array $params the parameters to be passed to the action method.
-	 */
-	protected function afterAction($action,$params)
-	{
 	}
 
 	/**
@@ -169,30 +113,28 @@ abstract class Command extends \yii\base\Component
 	 */
 	protected function resolveRequest($args)
 	{
-		$options=array();	// named parameters
-		$params=array();	// unnamed parameters
-		foreach($args as $arg)
-		{
-			if(preg_match('/^--(\w+)(=(.*))?$/',$arg,$matches))  // an option
+		$options = array(); // named parameters
+		$params = array(); // unnamed parameters
+		foreach ($args as $arg) {
+			if (preg_match('/^--(\w+)(=(.*))?$/', $arg, $matches)) // an option
 			{
-				$name=$matches[1];
-				$value=isset($matches[3]) ? $matches[3] : true;
-				if(isset($options[$name]))
-				{
-					if(!is_array($options[$name]))
-						$options[$name]=array($options[$name]);
-					$options[$name][]=$value;
+				$name = $matches[1];
+				$value = isset($matches[3]) ? $matches[3] : true;
+				if (isset($options[$name])) {
+					if (!is_array($options[$name]))
+						$options[$name] = array($options[$name]);
+					$options[$name][] = $value;
 				} else
-					$options[$name]=$value;
-			} else if(isset($action))
-				$params[]=$arg;
+					$options[$name] = $value;
+			} else if (isset($action))
+				$params[] = $arg;
 			else
-				$action=$arg;
+				$action = $arg;
 		}
-		if(!isset($action))
-			$action=$this->defaultAction;
+		if (!isset($action))
+			$action = $this->defaultAction;
 
-		return array($action,$options,$params);
+		return array($action, $options, $params);
 	}
 
 	/**
@@ -204,29 +146,21 @@ abstract class Command extends \yii\base\Component
 	}
 
 	/**
-	 * @return \yii\console\CommandRunner the command runner instance
-	 */
-	public function getCommandRunner()
-	{
-		return $this->_runner;
-	}
-
-	/**
 	 * Provides the command description.
 	 * This method may be overridden to return the actual command description.
 	 * @return string the command description. Defaults to 'Usage: php entry-script.php command-name'.
 	 */
 	public function getHelp()
 	{
-		$help='Usage: '.$this->getCommandRunner()->getScriptName().' '.$this->getName();
-		$options=$this->getOptionHelp();
-		if(empty($options))
+		$help = 'Usage: ' . $this->getCommandRunner()->getScriptName() . ' ' . $this->getName();
+		$options = $this->getOptionHelp();
+		if (empty($options))
 			return $help;
-		if(count($options)===1)
-			return $help.' '.$options[0];
-		$help.=" <action>\nActions:\n";
-		foreach($options as $option)
-			$help.='    '.$option."\n";
+		if (count($options) === 1)
+			return $help . ' ' . $options[0];
+		$help .= " <action>\nActions:\n";
+		foreach ($options as $option)
+			$help .= '    ' . $option . "\n";
 		return $help;
 	}
 
@@ -239,31 +173,28 @@ abstract class Command extends \yii\base\Component
 	 */
 	public function getOptionHelp()
 	{
-		$options=array();
-		$class=new \ReflectionClass(get_class($this));
-        foreach($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method)
-        {
-        	$name=$method->getName();
-        	if(!strncasecmp($name,'action',6) && strlen($name)>6)
-        	{
-        		$name=substr($name,6);
-        		$name[0]=strtolower($name[0]);
-        		$help=$name;
+		$options = array();
+		$class = new \ReflectionClass(get_class($this));
+		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+			$name = $method->getName();
+			if (!strncasecmp($name, 'action', 6) && strlen($name) > 6) {
+				$name = substr($name, 6);
+				$name[0] = strtolower($name[0]);
+				$help = $name;
 
-				foreach($method->getParameters() as $param)
-				{
-					$optional=$param->isDefaultValueAvailable();
-					$defaultValue=$optional ? $param->getDefaultValue() : null;
-					$name=$param->getName();
-					if($optional)
-						$help.=" [--$name=$defaultValue]";
+				foreach ($method->getParameters() as $param) {
+					$optional = $param->isDefaultValueAvailable();
+					$defaultValue = $optional ? $param->getDefaultValue() : null;
+					$name = $param->getName();
+					if ($optional)
+						$help .= " [--$name=$defaultValue]";
 					else
-						$help.=" --$name=value";
+						$help .= " --$name=value";
 				}
-				$options[]=$help;
-        	}
-        }
-        return $options;
+				$options[] = $help;
+			}
+		}
+		return $options;
 	}
 
 	/**
@@ -273,7 +204,7 @@ abstract class Command extends \yii\base\Component
 	 */
 	public function usageError($message)
 	{
-		echo "Error: $message\n\n".$this->getHelp()."\n";
+		echo "Error: $message\n\n" . $this->getHelp() . "\n";
 		exit(1);
 	}
 
@@ -284,14 +215,13 @@ abstract class Command extends \yii\base\Component
 	 * @param boolean $_return_ whether to return the rendering result instead of displaying it
 	 * @return mixed the rendering result if required. Null otherwise.
 	 */
-	public function renderFile($_viewFile_,$_data_=null,$_return_=false)
+	public function renderFile($_viewFile_, $_data_ = null, $_return_ = false)
 	{
-		if(is_array($_data_))
-			extract($_data_,EXTR_PREFIX_SAME,'data');
+		if (is_array($_data_))
+			extract($_data_, EXTR_PREFIX_SAME, 'data');
 		else
-			$data=$_data_;
-		if($_return_)
-		{
+			$data = $_data_;
+		if ($_return_) {
 			ob_start();
 			ob_implicit_flush(false);
 			require($_viewFile_);
@@ -310,29 +240,28 @@ abstract class Command extends \yii\base\Component
 	 */
 	public function prompt($message, $default = null)
 	{
-		if($default !== null) {
+		if ($default !== null) {
 			$message .= " [$default] ";
 		}
 		else {
 			$message .= ' ';
 		}
 
-		if(extension_loaded('readline'))
-		{
+		if (extension_loaded('readline')) {
 			$input = readline($message);
-			if($input) {
+			if ($input) {
 				readline_add_history($input);
 			}
 		} else {
 			echo $message;
 			$input = fgets(STDIN);
 		}
-		if($input === false) {
+		if ($input === false) {
 			return false;
 		}
 		else {
 			$input = trim($input);
-			return ($input==='' && $default!==null) ? $default : $input;
+			return ($input === '' && $default !== null) ? $default : $input;
 		}
 	}
 
@@ -344,7 +273,7 @@ abstract class Command extends \yii\base\Component
 	 */
 	public function confirm($message)
 	{
-		echo $message.' [yes|no] ';
-		return !strncasecmp(trim(fgets(STDIN)),'y',1);
+		echo $message . ' [yes|no] ';
+		return !strncasecmp(trim(fgets(STDIN)), 'y', 1);
 	}
 }

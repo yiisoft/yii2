@@ -43,10 +43,54 @@ abstract class Module extends Component implements Initable
 	 * @var Module the parent module of this module. Null if this module does not have a parent.
 	 */
 	public $module;
-
-	private $_basePath;
-	private $_modules = array();
-	private $_components = array();
+	/**
+	 * @var array mapping from controller ID to controller configurations.
+	 * Each name-value pair specifies the configuration of a single controller.
+	 * A controller configuration can be either a string or an array.
+	 * If the former, the string should be the class name or path alias of the controller.
+	 * If the latter, the array must contain a 'class' element which specifies
+	 * the controller's class name or path alias, and the rest of the name-value pairs
+	 * in the array are used to initialize the corresponding controller properties. For example,
+	 *
+	 * ~~~
+	 * array(
+	 *   'account' => '@application/controllers/UserController',
+	 *   'article' => array(
+	 *      'class' => '@application/controllers/PostController',
+	 *      'pageTitle' => 'something new',
+	 *   ),
+	 * )
+	 * ~~~
+	 */
+	public $controllers = array();
+	/**
+	 * @return string the default route of this module. Defaults to 'default'.
+	 * The route may consist of child module ID, controller ID, and/or action ID.
+	 * For example, `help`, `post/create`, `admin/post/create`.
+	 * If action ID is not given, it will take the default value as specified in
+	 * [[Controller::defaultAction]].
+	 */
+	public $defaultRoute = 'default';
+	/**
+	 * @var string the root directory of the module.
+	 * @see getBasePath
+	 * @see setBasePath
+	 */
+	protected $_basePath;
+	/**
+	 * @var string the directory containing controller classes in the module.
+	 * @see getControllerPath
+	 * @see setControllerPath
+	 */
+	protected $_controllerPath;
+	/**
+	 * @var array child modules of this module
+	 */
+	protected $_modules = array();
+	/**
+	 * @var array application components of this module
+	 */
+	protected $_components = array();
 
 	/**
 	 * Constructor.
@@ -118,7 +162,8 @@ abstract class Module extends Component implements Initable
 
 	/**
 	 * Returns the root directory of the module.
-	 * @return string the root directory of the module. Defaults to the directory containing the module class file.
+	 * It defaults to the directory containing the module class file.
+	 * @return string the root directory of the module.
 	 */
 	public function getBasePath()
 	{
@@ -132,7 +177,7 @@ abstract class Module extends Component implements Initable
 	/**
 	 * Sets the root directory of the module.
 	 * This method can only be invoked at the beginning of the constructor.
-	 * @param string $path the root directory of the module.
+	 * @param string $path the root directory of the module. This can be either a directory name or a path alias.
 	 * @throws Exception if the directory does not exist.
 	 */
 	public function setBasePath($path)
@@ -142,6 +187,36 @@ abstract class Module extends Component implements Initable
 			throw new Exception('Invalid base path: ' . $path);
 		} else {
 			$this->_basePath = realpath($p);
+		}
+	}
+
+	/**
+	 * Returns the directory that contains the controller classes.
+	 * Defaults to "[[basePath]]/controllers".
+	 * @return string the directory that contains the controller classes.
+	 */
+	public function getControllerPath()
+	{
+		if ($this->_controllerPath !== null) {
+			return $this->_controllerPath;
+		} else {
+			return $this->_controllerPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'controllers';
+		}
+	}
+
+	/**
+	 * Sets the directory that contains the controller classes.
+	 * @param string $path the directory that contains the controller classes.
+	 * This can be either a directory name or a path alias.
+	 * @throws Exception if the directory is invalid
+	 */
+	public function setControllerPath($path)
+	{
+		$p = \Yii::getAlias($path);
+		if ($p === false || !is_dir($p)) {
+			throw new Exception('Invalid controller path: ' . $path);
+		} else {
+			$this->_controllerPath = realpath($p);
 		}
 	}
 
@@ -403,5 +478,84 @@ abstract class Module extends Component implements Initable
 		foreach ($this->preload as $id) {
 			$this->getComponent($id);
 		}
+	}
+
+	/**
+	 * Parses a given route into controller and action ID.
+	 * The parsing process follows the following algorithm:
+	 *
+	 * 1. Get the first segment in route
+	 * 2. If the segment matches
+	 *    - an ID in [[controllers]], create a controller instance using the corresponding configuration,
+	 *      and return the controller with the rest part of the route;
+	 *    - a controller class under [[controllerPath]], create the controller instance, and return it
+	 *      with the rest part of the route;
+	 *    - an ID in [[modules]], let the corresponding module to parse the rest part of the route.
+	 *
+	 * @param string $route the route which may consist module ID, controller ID and/or action ID (e.g. `post/create`)
+	 * @return array|null the controller instance and action ID. Null if the route cannot be resolved.
+	 */
+	public function parseRoute($route)
+	{
+		if (($route = trim($route, '/')) === '') {
+			$route = $this->defaultRoute;
+		}
+
+		if (($pos = strpos($route, '/')) !== false) {
+			$id = substr($route, 0, $pos);
+			$route = (string)substr($route, $pos + 1);
+		} else {
+			$id = $route;
+			$route = '';
+		}
+
+		$controller = $this->createController($id);
+		if ($controller !== null) {
+			return array($controller, $route);
+		}
+
+		if (($module = $this->getModule($id)) !== null) {
+			return $module->parseRoute($route);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Creates a controller instance according to the specified controller ID.
+	 * For security reasons, the controller ID must start with a lower-case letter
+	 * and consist of word characters only.
+	 *
+	 * This method will first match the controller ID in [[controllers]]. If found,
+	 * it will create an instance of controller using the corresponding configuration.
+	 * If not found, it will look for a controller class named `XyzController` under
+	 * the [[controllerPath]] directory, where `xyz` is the controller ID with the first
+	 * letter in upper-case.
+	 * @param string $id the controller ID
+	 * @return Controller|null the created controller instance. Null if the controller ID is invalid.
+	 */
+	public function createController($id)
+	{
+		// Controller IDs must start with a lower-case letter and consist of word characters only
+		if (!preg_match('/^[a-z][a-zA-Z0-9_]*$/', $id)) {
+			return null;
+		}
+
+		if (isset($this->controllers[$id])) {
+			return \Yii::createObject($this->controllers[$id], $id, $this);
+		}
+
+		$className = ucfirst($id) . 'Controller';
+		$classFile = $this->getControllerPath() . DIRECTORY_SEPARATOR . $className . '.php';
+		if (is_file($classFile)) {
+			if (!class_exists($className, false)) {
+				require($classFile);
+			}
+			if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
+				return $className::newInstance(array(), $id, $this);
+			}
+		}
+
+		return null;
 	}
 }
