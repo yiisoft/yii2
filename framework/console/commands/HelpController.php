@@ -8,7 +8,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\console;
+namespace yii\console\commands;
 
 /**
  * HelpCommand represents a console help command.
@@ -28,8 +28,13 @@ namespace yii\console;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HelpCommand extends Command
+class HelpController extends \yii\console\Controller
 {
+	public function actionIndex($args = array())
+	{
+
+	}
+
 	/**
 	 * Execute the action.
 	 * @param array $args command line parameters specific for this command

@@ -44,7 +44,7 @@ namespace yii\console;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Command extends \yii\base\Controller
+class Controller extends \yii\base\Controller
 {
 	/**
 	 * Executes the command.
