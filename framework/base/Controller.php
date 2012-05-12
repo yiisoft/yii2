@@ -175,6 +175,17 @@ class Controller extends Component implements Initable
 	}
 
 	/**
+	 * This method is invoked when extra parameters are provided to an action when it is executed.
+	 * The default implementation does nothing.
+	 * @param Action $action the action being executed
+	 * @param array $expected the expected action parameters (name => value)
+	 * @param array $actual the actual action parameters (name => value)
+	 */
+	public function extraActionParams($action, $expected, $actual)
+	{
+	}
+
+	/**
 	 * Handles the request whose action is not recognized.
 	 * This method is invoked when the controller cannot find the requested action.
 	 * The default implementation simply throws an exception.

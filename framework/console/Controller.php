@@ -9,9 +9,8 @@
 
 namespace yii\console;
 
-use yii\base\InlineAction;
+use yii\base\Action;
 use yii\base\Exception;
-use yii\util\ReflectionHelper;
 
 /**
  * Command represents an executable console command.
@@ -50,6 +49,28 @@ use yii\util\ReflectionHelper;
  */
 class Controller extends \yii\base\Controller
 {
+	/**
+	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
+	 * The default implementation will throw an exception.
+	 * @param Action $action the action being executed
+	 * @param Exception $exception the exception about the invalid parameters
+	 * @throws Exception whenever this method is invoked
+	 */
+	public function invalidActionParams($action, $exception)
+	{
+	}
+
+	/**
+	 * This method is invoked when extra parameters are provided to an action when it is executed.
+	 * The default implementation does nothing.
+	 * @param Action $action the action being executed
+	 * @param array $expected the expected action parameters (name => value)
+	 * @param array $actual the actual action parameters (name => value)
+	 */
+	public function extraActionParams($action, $expected, $actual)
+	{
+	}
+
 	/**
 	 * Provides the command description.
 	 * This method may be overridden to return the actual command description.

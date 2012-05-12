@@ -32,11 +32,14 @@ class InlineAction extends Action
 	{
 		try {
 			$method = 'action' . $this->id;
-			$params = ReflectionHelper::extractMethodParams($this->controller, $method, $params);
-			return (int)call_user_func_array(array($this->controller, $method), $params);
+			$ps = ReflectionHelper::extractMethodParams($this->controller, $method, $params);
 		} catch (Exception $e) {
 			$this->controller->invalidActionParams($this, $e);
 			return 1;
 		}
+		if ($params !== $ps) {
+			$this->controller->extraActionParams($this, $ps, $params);
+		}
+		return (int)call_user_func_array(array($this->controller, $method), $ps);
 	}
 }

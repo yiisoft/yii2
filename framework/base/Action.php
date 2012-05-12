@@ -55,11 +55,14 @@ class Action extends Component
 	public function runWithParams($params)
 	{
 		try {
-			$params = ReflectionHelper::extractMethodParams($this, 'run', $params);
-			return (int)call_user_func_array(array($this, 'run'), $params);
+			$ps = ReflectionHelper::extractMethodParams($this, 'run', $params);
 		} catch (Exception $e) {
 			$this->controller->invalidActionParams($this, $e);
 			return 1;
 		}
+		if ($params !== $ps) {
+			$this->controller->extraActionParams($this, $ps, $params);
+		}
+		return (int)call_user_func_array(array($this, 'run'), $ps);
 	}
 }
