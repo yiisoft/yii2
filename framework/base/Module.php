@@ -481,8 +481,8 @@ abstract class Module extends Component implements Initable
 	}
 
 	/**
-	 * Parses a given route into controller and action ID.
-	 * The parsing process follows the following algorithm:
+	 * Creates a controller instance based on the given route.
+	 * This method tries to parse the given route (e.g. `post/create`) using the following algorithm:
 	 *
 	 * 1. Get the first segment in route
 	 * 2. If the segment matches
@@ -490,12 +490,12 @@ abstract class Module extends Component implements Initable
 	 *      and return the controller with the rest part of the route;
 	 *    - a controller class under [[controllerPath]], create the controller instance, and return it
 	 *      with the rest part of the route;
-	 *    - an ID in [[modules]], let the corresponding module to parse the rest part of the route.
+	 *    - an ID in [[modules]], call the [[createController()]] method of the corresponding module.
 	 *
 	 * @param string $route the route which may consist module ID, controller ID and/or action ID (e.g. `post/create`)
-	 * @return array|null the controller instance and action ID. Null if the route cannot be resolved.
+	 * @return array|boolean the array of controller instance and action ID. False if the route cannot be resolved.
 	 */
-	public function parseRoute($route)
+	public function createController($route)
 	{
 		if (($route = trim($route, '/')) === '') {
 			$route = $this->defaultRoute;
@@ -509,40 +509,16 @@ abstract class Module extends Component implements Initable
 			$route = '';
 		}
 
-		$controller = $this->createController($id);
-		if ($controller !== null) {
-			return array($controller, $route);
-		}
-
-		if (($module = $this->getModule($id)) !== null) {
-			return $module->parseRoute($route);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Creates a controller instance according to the specified controller ID.
-	 * For security reasons, the controller ID must start with a lower-case letter
-	 * and consist of word characters only.
-	 *
-	 * This method will first match the controller ID in [[controllers]]. If found,
-	 * it will create an instance of controller using the corresponding configuration.
-	 * If not found, it will look for a controller class named `XyzController` under
-	 * the [[controllerPath]] directory, where `xyz` is the controller ID with the first
-	 * letter in upper-case.
-	 * @param string $id the controller ID
-	 * @return Controller|null the created controller instance. Null if the controller ID is invalid.
-	 */
-	public function createController($id)
-	{
 		// Controller IDs must start with a lower-case letter and consist of word characters only
 		if (!preg_match('/^[a-z][a-zA-Z0-9_]*$/', $id)) {
-			return null;
+			return false;
 		}
 
 		if (isset($this->controllers[$id])) {
-			return \Yii::createObject($this->controllers[$id], $id, $this);
+			return array(
+				\Yii::createObject($this->controllers[$id], $id, $this),
+				$route,
+			);
 		}
 
 		$className = ucfirst($id) . 'Controller';
@@ -552,10 +528,17 @@ abstract class Module extends Component implements Initable
 				require($classFile);
 			}
 			if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
-				return $className::newInstance(array(), $id, $this);
+				return array(
+					$className::newInstance(array(), $id, $this),
+					$route,
+				);
 			}
 		}
 
-		return null;
+		if (($module = $this->getModule($id)) !== null) {
+			return $module->createController($route);
+		}
+
+		return false;
 	}
 }

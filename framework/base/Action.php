@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use yii\util\ReflectionHelper;
+
 /**
  * Action is the base class for all controller action classes.
  *
@@ -52,13 +54,12 @@ class Action extends Component
 	 */
 	public function runWithParams($params)
 	{
-		$method = new \ReflectionMethod($this, 'run');
-		$params = \yii\util\ReflectionHelper::bindParams($method, $params);
-		if ($params === false) {
-			$this->controller->invalidActionParams($this);
+		try {
+			$params = ReflectionHelper::extractMethodParams($this, 'run', $params);
+			return (int)call_user_func_array(array($this, 'run'), $params);
+		} catch (Exception $e) {
+			$this->controller->invalidActionParams($this, $e);
 			return 1;
-		} else {
-			return (int)$method->invokeArgs($this, $params);
 		}
 	}
 }

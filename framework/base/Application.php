@@ -73,7 +73,7 @@ use yii\base\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Application extends Module
+class Application extends Module
 {
 	/**
 	 * @var string the application name. Defaults to 'My Application'.
@@ -132,13 +132,6 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * Runs the application.
-	 * This is the main entrance of an application. Derived classes must implement this method.
-	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
-	 */
-	abstract public function run();
-
-	/**
 	 * Terminates the application.
 	 * This method replaces PHP's exit() function by calling [[afterRequest()]] before exiting.
 	 * @param integer $status exit status (value 0 means normal exit while other values mean abnormal exit).
@@ -154,6 +147,19 @@ abstract class Application extends Module
 		if ($exit) {
 			exit($status);
 		}
+	}
+
+	/**
+	 * Runs the application.
+	 * This is the main entrance of an application.
+	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
+	 */
+	public function run()
+	{
+		$this->beforeRequest();
+		$status = $this->processRequest();
+		$this->afterRequest();
+		return $status;
 	}
 
 	/**
@@ -174,16 +180,25 @@ abstract class Application extends Module
 
 	/**
 	 * Processes the request.
-	 * The request is represented in terms of a controller route and action parameters.
-	 * @param string $route the route of the request. It may contain module ID, controller ID, and/or action ID.
-	 * @param array $params parameters to be bound to the controller action.
+	 * Child classes should override this method with actual request processing logic.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
+	 */
+	public function processRequest()
+	{
+		return 0;
+	}
+
+	/**
+	 * Runs a controller with the given route and parameters.
+	 * @param string $route the route (e.g. `post/create`)
+	 * @param array $params the parameters to be passed to the controller action
+	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
 	 * @throws Exception if the route cannot be resolved into a controller
 	 */
-	public function processRequest($route, $params = array())
+	public function runController($route, $params = array())
 	{
-		$result = $this->parseRoute($route);
-		if ($result === null) {
+		$result = $this->createController($route);
+		if ($result === false) {
 			throw new Exception(\Yii::t('yii', 'Unable to resolve the request.'));
 		}
 		list($controller, $action) = $result;

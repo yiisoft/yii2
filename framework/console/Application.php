@@ -10,6 +10,7 @@
 namespace yii\console;
 
 use yii\base\Exception;
+use yii\util\ReflectionHelper;
 
 /**
  * Application represents a console application.
@@ -71,19 +72,39 @@ class Application extends \yii\base\Application
 	}
 
 	/**
-	 * Runs the application.
-	 * This is the main entrance of an application.
-	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
+	 * Processes the request.
+	 * The request is represented in terms of a controller route and action parameters.
+	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
+	 * @throws Exception if the route cannot be resolved into a controller
 	 */
-	public function run()
+	public function processRequest()
 	{
 		if (!isset($_SERVER['argv'])) {
 			die('This script must be run from the command line.');
 		}
 		list($route, $params) = $this->resolveRequest($_SERVER['argv']);
-		$this->beforeRequest();
-		$status = $this->processRequest($route, $params);
-		$this->afterRequest();
+		return $this->runController($route, $params);
+	}
+
+	/**
+	 * Runs a controller with the given route and parameters.
+	 * @param string $route the route (e.g. `post/create`)
+	 * @param array $params the parameters to be passed to the controller action
+	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
+	 * @throws Exception if the route cannot be resolved into a controller
+	 */
+	public function runController($route, $params = array())
+	{
+		$result = $this->createController($route);
+		if ($result === false) {
+			throw new Exception(\Yii::t('yii', 'Unable to resolve the request.'));
+		}
+		list($controller, $action) = $result;
+		$priorController = $this->controller;
+		$this->controller = $controller;
+		$params = ReflectionHelper::initObjectWithParams($controller, $params);
+		$status = $controller->run($action, $params);
+		$this->controller = $priorController;
 		return $status;
 	}
 

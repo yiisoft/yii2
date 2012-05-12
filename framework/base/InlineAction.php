@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use yii\util\ReflectionHelper;
+
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
@@ -28,13 +30,13 @@ class InlineAction extends Action
 	 */
 	public function runWithParams($params)
 	{
-		$method = new \ReflectionMethod($this->controller, 'action' . $this->id);
-		$params = \yii\util\ReflectionHelper::bindParams($method, $params);
-		if ($params === false) {
-			$this->controller->invalidActionParams($this);
+		try {
+			$method = 'action' . $this->id;
+			$params = ReflectionHelper::extractMethodParams($this->controller, $method, $params);
+			return (int)call_user_func_array(array($this->controller, $method), $params);
+		} catch (Exception $e) {
+			$this->controller->invalidActionParams($this, $e);
 			return 1;
-		} else {
-			return (int)$method->invokeArgs($this, $params);
 		}
 	}
 }

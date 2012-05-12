@@ -114,7 +114,10 @@ class Controller extends Component implements Initable
 		$this->action = $action;
 
 		if ($this->authorize($action) && $this->beforeAction($action)) {
-			$status = $action->runWithParams($params !== null ?: $this->getActionParams());
+			if ($params === null) {
+				$params = $this->getActionParams();
+			}
+			$status = $action->runWithParams($params);
 			$this->afterAction($action);
 		} else {
 			$status = 1;
@@ -163,11 +166,12 @@ class Controller extends Component implements Initable
 	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
 	 * The default implementation will throw an exception.
 	 * @param Action $action the action being executed
+	 * @param Exception $exception the exception about the invalid parameters
 	 * @throws Exception whenever this method is invoked
 	 */
-	public function invalidActionParams($action)
+	public function invalidActionParams($action, $exception)
 	{
-		throw new Exception(\Yii::t('yii', 'Your request is invalid.'));
+		throw $exception;
 	}
 
 	/**
@@ -219,7 +223,7 @@ class Controller extends Component implements Initable
 			if ($route[0] !== '/' && !$this->module instanceof Application) {
 				$route = '/' . $this->module->getUniqueId() . '/' . $route;
 			}
-			$status = \Yii::$application->processRequest($route, $params);
+			$status = \Yii::$application->runController($route, $params);
 		}
 		if ($exit) {
 			\Yii::$application->end($status);

@@ -9,6 +9,8 @@
 
 namespace yii\util;
 
+use yii\base\Exception;
+
 /**
  * ReflectionHelper
  *
@@ -19,46 +21,83 @@ class ReflectionHelper
 {
 	/**
 	 * Prepares parameters so that they can be bound to the specified method.
-	 * This method mainly helps method parameter binding. It converts `$params`
-	 * into an array which can be passed to `call_user_func_array()` when calling
-	 * the specified method. The conversion is based on the matching of method parameter names
+	 * This method converts the input parameters into an array that can later be
+	 * passed to `call_user_func_array()` when calling the specified method.
+	 * The conversion is based on the matching of method parameter names
 	 * and the input array keys. For example,
 	 *
 	 * ~~~
 	 * class Foo {
 	 *     function bar($a, $b) { ... }
 	 * }
-	 *
-	 * $method = new \ReflectionMethod('Foo', 'bar');
+	 * $object = new Foo;
 	 * $params = array('b' => 2, 'c' => 3, 'a' => 1);
-	 * var_export(ReflectionHelper::bindMethodParams($method, $params));
-	 * // would output: array('a' => 1, 'b' => 2)
+	 * var_export(ReflectionHelper::extractMethodParams($object, 'bar', $params));
+	 * // output: array('a' => 1, 'b' => 2);
 	 * ~~~
 	 *
-	 * @param \ReflectionMethod $method the method reflection
+	 * @param object|string $object the object or class name that owns the specified method
+	 * @param string $method the method name
 	 * @param array $params the parameters in terms of name-value pairs
-	 * @return array|boolean the parameters that can be passed to the method via `call_user_func_array()`.
-	 * False is returned if the input parameters do not follow the method declaration.
+	 * @return array parameters that are needed by the method only and
+	 * can be passed to the method via `call_user_func_array()`.
+	 * @throws Exception if any required method parameter is not found in the given parameters
 	 */
-	public static function bindParams($method, $params)
+	public static function extractMethodParams($object, $method, $params)
 	{
+		$m = new \ReflectionMethod($object, $method);
 		$ps = array();
-		foreach ($method->getParameters() as $param) {
+		foreach ($m->getParameters() as $param) {
 			$name = $param->getName();
 			if (array_key_exists($name, $params)) {
-				if ($param->isArray()) {
-					$ps[$name] = is_array($params[$name]) ? $params[$name] : array($params[$name]);
-				} elseif (!is_array($params[$name])) {
-					$ps[$name] = $params[$name];
-				} else {
-					return false;
-				}
+				$ps[$name] = $params[$name];
 			} elseif ($param->isDefaultValueAvailable()) {
 				$ps[$name] = $param->getDefaultValue();
 			} else {
-				return false;
+				throw new Exception(\Yii::t('yii', 'Missing required parameter "{name}".', array('{name' => $name)));
 			}
 		}
 		return $ps;
+	}
+
+	/**
+	 * Initializes an object with the given parameters.
+	 * Only the public non-static properties of the object will be initialized, and their names must
+	 * match the given parameter names. For example,
+	 *
+	 * ~~~
+	 * class Foo {
+	 *     public $a;
+	 *     protected $b;
+	 * }
+	 * $object = new Foo;
+	 * $params = array('b' => 2, 'c' => 3, 'a' => 1);
+	 * $remaining = ReflectionHelper::bindObjectParams($object, $params);
+	 * var_export($object);    // output: $object->a = 1; $object->b = null;
+	 * var_export($remaining); // output: array('b' => 2, 'c' => 3);
+	 * ~~~
+	 *
+	 * @param object $object the object whose properties are to be initialized
+	 * @param array $params the input parameters to be used to initialize the object
+	 * @return array the remaining unused input parameters
+	 */
+	public static function initObjectWithParams($object, $params)
+	{
+		if (empty($params)) {
+			return array();
+		}
+
+		$class = new \ReflectionClass(get_class($object));
+		foreach ($params as $name => $value) {
+			if ($class->hasProperty($name)) {
+				$property = $class->getProperty($name);
+				if ($property->isPublic() && !$property->isStatic()) {
+					$object->$name = $value;
+					unset($params[$name]);
+				}
+			}
+		}
+
+		return $params;
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Command class file.
+ * Controller class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -8,6 +8,10 @@
  */
 
 namespace yii\console;
+
+use yii\base\InlineAction;
+use yii\base\Exception;
+use yii\util\ReflectionHelper;
 
 /**
  * Command represents an executable console command.
@@ -46,105 +50,6 @@ namespace yii\console;
  */
 class Controller extends \yii\base\Controller
 {
-	/**
-	 * Executes the command.
-	 * The default implementation will parse the input parameters and
-	 * dispatch the command request to an appropriate action with the corresponding
-	 * option values
-	 * @param array $args command line parameters for this command.
-	 */
-	public function run($args)
-	{
-		list($action, $options, $args) = $this->resolveRequest($args);
-		$methodName = 'action' . $action;
-		if (!preg_match('/^\w+$/', $action) || !method_exists($this, $methodName))
-				{
-					$this->usageError("Unknown action: " . $action);
-				}
-
-		$method = new \ReflectionMethod($this, $methodName);
-		$params = array();
-		// named and unnamed options
-		foreach ($method->getParameters() as $param) {
-			$name = $param->getName();
-			if (isset($options[$name])) {
-				if ($param->isArray())
-					$params[] = is_array($options[$name]) ? $options[$name] : array($options[$name]);
-				else if (!is_array($options[$name]))
-					$params[] = $options[$name];
-				else
-					$this->usageError("Option --$name requires a scalar. Array is given.");
-			} else if ($name === 'args')
-				$params[] = $args;
-			else if ($param->isDefaultValueAvailable())
-				$params[] = $param->getDefaultValue();
-			else
-				$this->usageError("Missing required option --$name.");
-			unset($options[$name]);
-		}
-
-		// try global options
-		if (!empty($options)) {
-			$class = new \ReflectionClass(get_class($this));
-			foreach ($options as $name => $value) {
-				if ($class->hasProperty($name)) {
-					$property = $class->getProperty($name);
-					if ($property->isPublic() && !$property->isStatic()) {
-						$this->$name = $value;
-						unset($options[$name]);
-					}
-				}
-			}
-		}
-
-		if (!empty($options))
-			$this->usageError("Unknown options: " . implode(', ', array_keys($options)));
-
-		if ($this->beforeAction($action, $params)) {
-			$method->invokeArgs($this, $params);
-			$this->afterAction($action, $params);
-		}
-	}
-
-	/**
-	 * Parses the command line arguments and determines which action to perform.
-	 * @param array $args command line arguments
-	 * @return array the action name, named options (name=>value), and unnamed options
-	 */
-	protected function resolveRequest($args)
-	{
-		$options = array(); // named parameters
-		$params = array(); // unnamed parameters
-		foreach ($args as $arg) {
-			if (preg_match('/^--(\w+)(=(.*))?$/', $arg, $matches)) // an option
-			{
-				$name = $matches[1];
-				$value = isset($matches[3]) ? $matches[3] : true;
-				if (isset($options[$name])) {
-					if (!is_array($options[$name]))
-						$options[$name] = array($options[$name]);
-					$options[$name][] = $value;
-				} else
-					$options[$name] = $value;
-			} else if (isset($action))
-				$params[] = $arg;
-			else
-				$action = $arg;
-		}
-		if (!isset($action))
-			$action = $this->defaultAction;
-
-		return array($action, $options, $params);
-	}
-
-	/**
-	 * @return string the command name.
-	 */
-	public function getName()
-	{
-		return $this->_name;
-	}
-
 	/**
 	 * Provides the command description.
 	 * This method may be overridden to return the actual command description.
@@ -206,28 +111,6 @@ class Controller extends \yii\base\Controller
 	{
 		echo "Error: $message\n\n" . $this->getHelp() . "\n";
 		exit(1);
-	}
-
-	/**
-	 * Renders a view file.
-	 * @param string $_viewFile_ view file path
-	 * @param array $_data_ optional data to be extracted as local view variables
-	 * @param boolean $_return_ whether to return the rendering result instead of displaying it
-	 * @return mixed the rendering result if required. Null otherwise.
-	 */
-	public function renderFile($_viewFile_, $_data_ = null, $_return_ = false)
-	{
-		if (is_array($_data_))
-			extract($_data_, EXTR_PREFIX_SAME, 'data');
-		else
-			$data = $_data_;
-		if ($_return_) {
-			ob_start();
-			ob_implicit_flush(false);
-			require($_viewFile_);
-			return ob_get_clean();
-		} else
-			require($_viewFile_);
 	}
 
 	/**
