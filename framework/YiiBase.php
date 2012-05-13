@@ -531,11 +531,13 @@ class YiiBase
 	 */
 	public static function t($category, $message, $params = array(), $source = null, $language = null)
 	{
-		if (self::$app !== null)
+		// todo;
+		return $params !== array() ? strtr($message, $params) : $message;
+		if (self::$application !== null)
 		{
 			if ($source === null)
 				$source = $category === 'yii' ? 'coreMessages' : 'messages';
-			if (($source = self::$app->getComponent($source)) !== null)
+			if (($source = self::$application->getComponent($source)) !== null)
 				$message = $source->translate($category, $message, $language);
 		}
 		if ($params === array())
@@ -549,7 +551,7 @@ class YiiBase
 				if (strpos($message, '#') === false)
 				{
 					$chunks = explode('|', $message);
-					$expressions = self::$app->getLocale($language)->getPluralRules();
+					$expressions = self::$application->getLocale($language)->getPluralRules();
 					if ($n = min(count($chunks), count($expressions)))
 					{
 						for ($i = 0;$i < $n;$i++)

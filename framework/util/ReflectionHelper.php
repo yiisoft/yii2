@@ -54,7 +54,7 @@ class ReflectionHelper
 			} elseif ($param->isDefaultValueAvailable()) {
 				$ps[$name] = $param->getDefaultValue();
 			} else {
-				throw new Exception(\Yii::t('yii', 'Missing required parameter "{name}".', array('{name' => $name)));
+				throw new Exception(\Yii::t('yii', 'Missing required parameter "{name}".', array('{name}' => $name)));
 			}
 		}
 		return $ps;

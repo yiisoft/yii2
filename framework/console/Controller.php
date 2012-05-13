@@ -29,12 +29,23 @@ use yii\base\Exception;
 class Controller extends \yii\base\Controller
 {
 	/**
+	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
+	 * The default implementation will throw an exception.
+	 * @param Action $action the action being executed
+	 * @param Exception $exception the exception about the invalid parameters
+	 */
+	public function invalidActionParams($action, $exception)
+	{
+		echo "Error: " . $exception->getMessage() . "\n";
+		\Yii::$application->end(1);
+	}
+
+	/**
 	 * This method is invoked when extra parameters are provided to an action when it is executed.
 	 * The default implementation does nothing.
 	 * @param Action $action the action being executed
 	 * @param array $expected the expected action parameters (name => value)
 	 * @param array $actual the actual action parameters (name => value)
-	 * @throws Exception if any unrecognized parameters are provided
 	 */
 	public function extraActionParams($action, $expected, $actual)
 	{
@@ -42,9 +53,10 @@ class Controller extends \yii\base\Controller
 
 		$keys = array_diff(array_keys($actual), array_keys($expected));
 		if (!empty($keys)) {
-			throw new Exception(\Yii::t('yii', 'Unknown parameters: {params}', array(
+			echo "Error: " . \Yii::t('yii', 'Unknown parameters: {params}', array(
 				'{params}' => implode(', ', $keys),
-			)));
+			)) . "\n";
+			\Yii::$application->end(1);
 		}
 	}
 }
