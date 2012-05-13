@@ -44,7 +44,7 @@ class HelpController extends Controller
 	 * ~~~
 	 *
 	 * @param array $args additional anonymous command line arguments.
-	 * You may provide a command-name to display its detailed information.
+	 * You may provide a command name to display its detailed information.
 	 * @return integer the exit status
 	 */
 	public function actionIndex($args = array())
@@ -315,7 +315,7 @@ class HelpController extends Controller
 	{
 		$options = array();
 		foreach ($class->getProperties() as $property) {
-			if (!$property->isPublic() || $property->isStatic() || $property->getDeclaringClass()->getName() !== get_class($controller)) {
+			if (!$property->isPublic() || $property->isStatic() || $property->getDeclaringClass()->getName() === 'yii\base\Controller') {
 				continue;
 			}
 			$name = $property->getName();
