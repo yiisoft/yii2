@@ -16,7 +16,7 @@ namespace yii\util;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ArrayHelper extends \yii\base\Component
+class ArrayHelper
 {
 	/**
 	 * Merges two or more arrays into one recursively.
@@ -196,7 +196,7 @@ class ArrayHelper extends \yii\base\Component
 	 * // )
 	 * ~~~
 	 *
-	 * @param string|\Closure $array
+	 * @param array $array
 	 * @param string|\Closure $from
 	 * @param string|\Closure $to
 	 * @param string|\Closure $group
