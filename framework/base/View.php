@@ -10,7 +10,6 @@
 namespace yii\base;
 
 use yii\util\FileHelper;
-use yii\util\ArrayHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -47,7 +46,7 @@ class View extends Component
 	/**
 	 * Renders a view.
 	 *
-	 * The method first identifies the actual view file corresponding to the specified view.
+	 * The method first finds the actual view file corresponding to the specified view.
 	 * It then calls [[renderFile()]] to render the view file. The rendering result is returned
 	 * as a string. If the view file does not exist, an exception will be thrown.
 	 *
@@ -58,36 +57,57 @@ class View extends Component
 	 * or a path relative to [[basePath]]. The file suffix is optional and defaults to `.php` if not given
 	 * in the view name.
 	 *
-	 * @param string $view the view to be rendered. This can be a path alias or a path relative to [[basePath]].
+	 * @param string $view the view to be rendered. This can be either a path alias or a path relative to [[basePath]].
 	 * @param array $params the parameters that should be made available in the view. The PHP function `extract()`
 	 * will be called on this variable to extract the variables from this parameter.
 	 * @return string the rendering result
-	 * @throws Exception if the view  file cannot be found
+	 * @throws Exception if the view file cannot be found
 	 */
 	public function render($view, $params = array())
 	{
 		$file = $this->findViewFile($view);
 		if ($file !== false) {
-			$this->renderFile($file, $params);
+			return $this->renderFile($file, $params);
 		} else {
 			throw new Exception("Unable to find the view file for view '$view'.");
 		}
 	}
 
+	/**
+	 * Renders a view file.
+	 * @param string $file the view file path
+	 * @param array $params the parameters to be extracted and made available in the view file
+	 * @return string the rendering result
+	 */
 	public function renderFile($file, $params = array())
 	{
-		$this->renderFileInternal($file, $params);
+		return $this->renderFileInternal($file, $params);
+	}
+
+	public function createWidget($class, $properties = array())
+	{
+		$properties['class'] = $class;
+		return \Yii::createObject($properties, $this->owner);
 	}
 
 	public function widget($class, $properties = array())
 	{
 		$widget = $this->createWidget($class, $properties);
-		$widget->run();
+		echo $widget->run();
 		return $widget;
 	}
 
+	/**
+	 * @var Widget[] the widgets that are currently not ended
+	 */
 	private $_widgetStack = array();
 
+	/**
+	 * Begins a widget.
+	 * @param string $class the widget class
+	 * @param array $properties the initial property values of the widget
+	 * @return Widget the widget instance
+	 */
 	public function beginWidget($class, $properties = array())
 	{
 		$widget = $this->createWidget($class, $properties);
@@ -95,43 +115,34 @@ class View extends Component
 		return $widget;
 	}
 
+	/**
+	 * Ends a widget.
+	 * Note that the rendering result of the widget is directly echoed out.
+	 * If you want to capture the rendering result of a widget, you may use
+	 * [[createWidget()]] and [[Widget::run()]].
+	 * @return Widget the widget instance
+	 * @throws Exception if [[beginWidget()]] and [[endWidget()]] calls are not properly nested
+	 */
 	public function endWidget()
 	{
 		if (($widget = array_pop($this->_widgetStack)) !== null) {
-			$widget->run();
+			echo $widget->run();
 			return $widget;
 		} else {
 			throw new Exception("Unmatched beginWidget() and endWidget() calls.");
 		}
 	}
 
-	public function createWidget($class, $properties = array())
-	{
-		$properties['class'] = $class;
-
-		// todo: widget skin should be something global, similar to theme
-		if ($this->enableSkin) {
-			if ($this->skinnableWidgets === null || in_array($class, $this->skinnableWidgets)) {
-				$skinName = isset($properties['skin']) ? $properties['skin'] : 'default';
-				if ($skinName !== false && ($skin = $this->getSkin($class, $skinName)) !== array()) {
-					$properties = $properties === array() ? $skin : ArrayHelper::merge($skin, $properties);
-				}
-			}
-		}
-
-		return \Yii::createObject($properties, $this->owner);
-	}
-
 	/**
 	 * Begins recording a clip.
-	 * This method is a shortcut to beginning [[yii\web\widgets\ClipWidget]]
+	 * This method is a shortcut to beginning [[yii\widgets\Clip]]
 	 * @param string $id the clip ID.
-	 * @param array $properties initial property values for [[yii\web\widgets\ClipWidget]]
+	 * @param array $properties initial property values for [[yii\widgets\Clip]]
 	 */
 	public function beginClip($id, $properties = array())
 	{
 		$properties['id'] = $id;
-		$this->beginWidget('yii\web\widgets\ClipWidget', $properties);
+		$this->beginWidget('yii\widgets\Clip', $properties);
 	}
 
 	/**
@@ -158,14 +169,14 @@ class View extends Component
 	 * ~~~
 	 *
 	 * @param string $id a unique ID identifying the fragment to be cached.
-	 * @param array $properties initial property values for [[yii\web\widgets\OutputCache]]
+	 * @param array $properties initial property values for [[yii\widgets\OutputCache]]
 	 * @return boolean whether we need to generate content for caching. False if cached version is available.
 	 * @see endCache
 	 */
 	public function beginCache($id, $properties = array())
 	{
 		$properties['id'] = $id;
-		$cache = $this->beginWidget('yii\web\widgets\OutputCache', $properties);
+		$cache = $this->beginWidget('yii\widgets\OutputCache', $properties);
 		if ($cache->getIsContentCached()) {
 			$this->endCache();
 			return false;
@@ -195,11 +206,11 @@ class View extends Component
 	 * {@link CWebModule::layout default layout}.
 	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
 	 * @see endContent
-	 * @see yii\web\widgets\ContentDecorator
+	 * @see yii\widgets\ContentDecorator
 	 */
-	public function beginContent($view = null, $params = array())
+	public function beginContent($view, $params = array())
 	{
-		$this->beginWidget('yii\web\widgets\ContentDecorator', array(
+		$this->beginWidget('yii\widgets\ContentDecorator', array(
 			'view' => $view,
 			'params' => $params,
 		));
@@ -214,17 +225,32 @@ class View extends Component
 		$this->endWidget();
 	}
 
+	/**
+	 * Renders a view file.
+	 * This method will extract the given parameters and include the view file.
+	 * It captures the output of the included view file and returns it as a string.
+	 * @param string $_file_ the view file.
+	 * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return string the rendering result
+	 */
 	protected function renderFileInternal($_file_, $_params_ = array())
 	{
+		ob_start();
+		ob_implicit_flush(false);
 		extract($_params_, EXTR_OVERWRITE);
 		require($_file_);
+		return ob_get_clean();
 	}
 
+	/**
+	 * Finds the view file based on the given view name.
+	 * @param string $view the view name or path alias. If the view name does not specify
+	 * the view file extension name, it will use `.php` as the extension name.
+	 * @return string|boolean the view file if it exists. False if the view file cannot be found.
+	 */
 	public function findViewFile($view)
 	{
-		if ($view[0] === '/') {
-			throw new Exception('The view name "$view" should not start with a slash "/".');
-		}
+		$view = ltrim($view, '/');
 
 		if (($extension = FileHelper::getExtension($view)) === '') {
 			$view .= '.php';

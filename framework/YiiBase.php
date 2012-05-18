@@ -218,6 +218,7 @@ class YiiBase
 	 * - a URL (e.g. `http://www.yiiframework.com`)
 	 * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
 	 *   actual path first by calling [[getAlias]].
+	 * @throws \yii\base\Exception if $path is an invalid alias
 	 * @see getAlias
 	 */
 	public static function setAlias($alias, $path)

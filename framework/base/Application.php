@@ -118,7 +118,9 @@ class Application extends Module
 		\Yii::$application = $this;
 		$this->id = $id;
 		$this->setBasePath($basePath);
-		\Yii::setAlias('application', $this->getBasePath());
+		\Yii::$aliases['@application'] = $this->getBasePath();
+		\Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
+		\Yii::$aliases['@www'] = '';
 		$this->registerCoreComponents();
 	}
 
