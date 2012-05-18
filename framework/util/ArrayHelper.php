@@ -51,23 +51,38 @@ class ArrayHelper extends \yii\base\Component
 	}
 
 	/**
-	 * Retrieves the value of an array element with the specified key.
-	 *
+	 * Retrieves the value of an array element or object property with the given key or property name.
 	 * If the key does not exist in the array, the default value will be returned instead.
-	 * For example,
+	 *
+	 * Below are some usage examples,
 	 *
 	 * ~~~
+	 * // working with array
 	 * $username = \yii\util\ArrayHelper::get($_POST, 'username');
+	 * // working with object
+	 * $username = \yii\util\ArrayHelper::get($user, 'username');
+	 * // working with anonymous function
+	 * $fullName = \yii\util\ArrayHelper::get($user, function($user, $defaultValue) {
+	 *     return $user->firstName . ' ' . $user->lastName;
+	 * });
 	 * ~~~
 	 *
-	 * @param array $array array to extract value from
-	 * @param string $key key name of the array element
+	 * @param array|object $array array or object to extract value from
+	 * @param string|\Closure $key key name of the array element, or property name of the object,
+	 * or an anonymous function returning the value. The anonymous function signature should be:
+	 * `function($array, $defaultValue)`.
 	 * @param mixed $default the default value to be returned if the specified key does not exist
-	 * @return mixed
+	 * @return mixed the value of the
 	 */
 	public static function get($array, $key, $default = null)
 	{
-		return isset($array[$key]) || array_key_exists($key, $array) ? $array[$key] : $default;
+		if ($key instanceof \Closure) {
+			return call_user_func($key, $array, $default);
+		} elseif (is_array($array)) {
+			return isset($array[$key]) || array_key_exists($key, $array) ? $array[$key] : $default;
+		} else {
+			return $array->$key;
+		}
 	}
 
 	/**
@@ -101,30 +116,14 @@ class ArrayHelper extends \yii\base\Component
 	 *
 	 * @param array $array the array that needs to be indexed
 	 * @param string|\Closure $key the column name or anonymous function whose result will be used to index the array
-	 * @return array the indexed array (the input array will be kept intact.)
+	 * @return array the indexed array
 	 */
 	public static function index($array, $key)
 	{
 		$result = array();
-		if ($key instanceof \Closure) {
-			foreach ($array as $element) {
-				$key = call_user_func($key, $element);
-				if ($key !== null) {
-					$result[$key] = $element;
-				}
-			}
-		} else {
-			foreach ($array as $element) {
-				if (is_object($element)) {
-					if (($value = $element->$key) !== null) {
-						$result[$value] = $element;
-					}
-				} elseif (is_array($element)) {
-					if (isset($element[$key]) && $element[$key] !== null) {
-						$result[$element[$key]] = $element;
-					}
-				}
-			}
+		foreach ($array as $element) {
+			$value = static::get($element, $key);
+			$result[$value] = $element;
 		}
 		return $result;
 	}
@@ -156,18 +155,8 @@ class ArrayHelper extends \yii\base\Component
 	public static function column($array, $key)
 	{
 		$result = array();
-		if ($key instanceof \Closure) {
-			foreach ($array as $element) {
-				$result[] = call_user_func($key, $element);
-			}
-		} else {
-			foreach ($array as $element) {
-				if (is_object($element)) {
-					$result[] = $element->$key;
-				} elseif (is_array($element)) {
-					$result[] = $element[$key];
-				}
-			}
+		foreach ($array as $element) {
+			$result[] = static::get($element, $key);
 		}
 		return $result;
 	}
@@ -175,35 +164,54 @@ class ArrayHelper extends \yii\base\Component
 	/**
 	 * Builds a map (key-value pairs) from a multidimensional array or an array of objects.
 	 * The `$from` and `$to` parameters specify the key names or property names to set up the map.
+	 * Optionally, one can further group the map according to a grouping field `$group`.
 	 *
 	 * For example,
 	 *
 	 * ~~~
 	 * $array = array(
-	 *     array('id' => '123', 'data' => 'abc'),
-	 *     array('id' => '345', 'data' => 'def'),
+	 *     array('id' => '123', 'name' => 'aaa', 'class' => 'x'),
+	 *     array('id' => '124', 'name' => 'bbb', 'class' => 'x'),
+	 *     array('id' => '345', 'name' => 'ccc', 'class' => 'y'),
 	 * );
-	 * $result = ArrayHelper::map($array, 'id', 'data');
+	 *
+	 * $result = ArrayHelper::map($array, 'id', 'name');
 	 * // the result is:
 	 * // array(
-	 * //     '123' => 'abc',
-	 * //     '345' => 'def',
+	 * //     '123' => 'aaa',
+	 * //     '124' => 'bbb',
+	 * //     '345' => 'ccc',
+	 * // )
+	 *
+	 * $result = ArrayHelper::map($array, 'id', 'name', 'class');
+	 * // the result is:
+	 * // array(
+	 * //     'x' => array(
+	 * //         '123' => 'aaa',
+	 * //         '124' => 'bbb',
+	 * //     ),
+	 * //     'y' => array(
+	 * //         '345' => 'ccc',
+	 * //     ),
 	 * // )
 	 * ~~~
 	 *
-	 * @param $array
-	 * @param $from
-	 * @param $to
+	 * @param string|\Closure $array
+	 * @param string|\Closure $from
+	 * @param string|\Closure $to
+	 * @param string|\Closure $group
 	 * @return array
 	 */
-	public static function map($array, $from, $to)
+	public static function map($array, $from, $to, $group = null)
 	{
 		$result = array();
 		foreach ($array as $element) {
-			if (is_object($element)) {
-				$result[$element->$from] = $element->$to;
-			} elseif (is_array($element)) {
-				$result[$element[$from]] = $element[$to];
+			$key = static::get($element, $from);
+			$value = static::get($element, $to);
+			if ($group !== null) {
+				$result[static::get($element, $group)][$key] = $value;
+			} else {
+				$result[$key] = $value;
 			}
 		}
 		return $result;
