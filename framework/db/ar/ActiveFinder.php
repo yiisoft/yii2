@@ -300,7 +300,7 @@ class ActiveFinder extends \yii\base\Object
 		}
 
 		if ($config instanceof \Closure) {
-			call_user_func($config, $child->query);
+			$config($child->query);
 		} else {
 			foreach ($config as $name => $value) {
 				$child->query->$name = $value;

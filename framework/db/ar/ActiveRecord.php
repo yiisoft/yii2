@@ -574,7 +574,7 @@ abstract class ActiveRecord extends Model
 		}
 		$relation = clone $relation;
 		if ($params instanceof \Closure) {
-			call_user_func($params, $relation);
+			$params($relation);
 		} else {
 			foreach ($params as $name => $value) {
 				$relation->$name = $value;

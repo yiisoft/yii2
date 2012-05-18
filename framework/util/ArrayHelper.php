@@ -77,7 +77,7 @@ class ArrayHelper
 	public static function get($array, $key, $default = null)
 	{
 		if ($key instanceof \Closure) {
-			return call_user_func($key, $array, $default);
+			return $key($array, $default);
 		} elseif (is_array($array)) {
 			return isset($array[$key]) || array_key_exists($key, $array) ? $array[$key] : $default;
 		} else {
