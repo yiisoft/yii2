@@ -118,9 +118,7 @@ class Application extends Module
 		\Yii::$application = $this;
 		$this->id = $id;
 		$this->setBasePath($basePath);
-		\Yii::$aliases['@application'] = $this->getBasePath();
-		\Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
-		\Yii::$aliases['@www'] = '';
+		$this->registerDefaultAliases();
 		$this->registerCoreComponents();
 	}
 
@@ -217,7 +215,7 @@ class Application extends Module
 	 */
 	public function getRuntimePath()
 	{
-		if ($this->_runtimePath === null) {
+		if ($this->_runtimePath !== null) {
 			$this->setRuntimePath($this->getBasePath() . DIRECTORY_SEPARATOR . 'runtime');
 		}
 		return $this->_runtimePath;
@@ -230,10 +228,12 @@ class Application extends Module
 	 */
 	public function setRuntimePath($path)
 	{
-		if (!is_dir($path) || !is_writable($path)) {
+		$p = \Yii::getAlias($path);
+		if ($p === false || !is_dir($p) || !is_writable($path)) {
 			throw new Exception("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
+		} else {
+			$this->_runtimePath = $p;
 		}
-		$this->_runtimePath = $path;
 	}
 
 	/**
@@ -329,6 +329,15 @@ class Application extends Module
 	}
 
 	/**
+	 * Returns the application theme.
+	 * @return Theme the theme that this application is currently using.
+	 */
+	public function getTheme()
+	{
+		return $this->getComponent('theme');
+	}
+
+	/**
 	 * Returns the security manager component.
 	 * @return SecurityManager the security manager application component.
 	 */
@@ -371,6 +380,16 @@ class Application extends Module
 	public function getRequest()
 	{
 		return $this->getComponent('request');
+	}
+
+	/**
+	 * Sets default path aliases.
+	 */
+	public function registerDefaultAliases()
+	{
+		\Yii::$aliases['@application'] = $this->getBasePath();
+		\Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
+		\Yii::$aliases['@www'] = '';
 	}
 
 	/**

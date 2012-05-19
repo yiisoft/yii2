@@ -57,27 +57,27 @@ class ActionFilter extends Behavior
 		$this->owner->getEventHandlers('afterAction')->insertAt(0, array($this, 'handleEvent'));
 	}
 
-	public function authorize(ActionEvent $event)
+	public function authorize($event)
 	{
 	}
 
-	public function beforeAction(ActionEvent $event)
+	public function beforeAction($event)
 	{
 	}
 
-	public function beforeRender(ActionEvent $event)
+	public function beforeRender($event)
 	{
 	}
 
-	public function afterRender(ActionEvent $event)
+	public function afterRender($event)
 	{
 	}
 
-	public function afterAction(ActionEvent $event)
+	public function afterAction($event)
 	{
 	}
 
-	public function handleEvent(ActionEvent $event)
+	public function handleEvent($event)
 	{
 		if ($this->applyTo($event->action)) {
 			$this->{$event->name}($event);

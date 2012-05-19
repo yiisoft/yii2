@@ -246,7 +246,7 @@ class Controller extends Component implements Initable
 	 * @param Action $action the action to be executed.
 	 * @return boolean whether the action is allowed to be executed.
 	 */
-	public function authorize(Action $action)
+	public function authorize($action)
 	{
 		$event = new ActionEvent($action);
 		$this->trigger(__METHOD__, $event);
@@ -259,7 +259,7 @@ class Controller extends Component implements Initable
 	 * @param Action $action the action to be executed.
 	 * @return boolean whether the action should continue to be executed.
 	 */
-	public function beforeAction(Action $action)
+	public function beforeAction($action)
 	{
 		$event = new ActionEvent($action);
 		$this->trigger(__METHOD__, $event);
@@ -271,31 +271,54 @@ class Controller extends Component implements Initable
 	 * You may override this method to do some postprocessing for the action.
 	 * @param Action $action the action just executed.
 	 */
-	public function afterAction(Action $action)
+	public function afterAction($action)
 	{
-		$event = new ActionEvent($action);
-		$this->trigger(__METHOD__, $event);
+		$this->trigger(__METHOD__, new ActionEvent($action));
 	}
 
 	/**
 	 * This method is invoked right before an action renders its result using [[render()]].
-	 * @param Action $action the action to be executed.
+	 * @param string $view the view to be rendered
 	 * @return boolean whether the action should continue to render.
 	 */
-	public function beforeRender(Action $action)
+	public function beforeRender($view)
 	{
-		$event = new ActionEvent($action);
+		$event = new RenderEvent($view);
 		$this->trigger(__METHOD__, $event);
 		return $event->isValid;
 	}
 
 	/**
 	 * This method is invoked right after an action renders its result using [[render()]].
-	 * @param Action $action the action just executed.
+	 * @param string $view the view just rendered
 	 */
-	public function afterRender(Action $action)
+	public function afterRender($view)
 	{
-		$event = new ActionEvent($action);
-		$this->trigger(__METHOD__, $event);
+		$this->trigger(__METHOD__, new RenderEvent($view));
+	}
+
+	public function render($view, $params = array())
+	{
+		if ($this->beforeRender($view)) {
+			$v = $this->createView();
+			$v->render($view, $params);
+			$this->afterRender($view);
+		}
+	}
+
+	public function renderText($text)
+	{
+
+	}
+
+	public function renderPartial($view, $params = array())
+	{
+
+
+	}
+
+	public function createView()
+	{
+		return new View;
 	}
 }

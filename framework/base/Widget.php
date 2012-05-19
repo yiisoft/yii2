@@ -18,11 +18,6 @@ namespace yii\base;
 class Widget extends Component implements Initable
 {
 	/**
-	 * @var mixed the name of the skin to be used by this widget. Defaults to 'default'.
-	 * If this is set as false, no skin will be applied to this widget.
-	 */
-	public $skin = 'default';
-	/**
 	 * @var Widget|Controller the owner/creator of this widget. It could be either a widget or a controller.
 	 */
 	public $owner;

@@ -191,7 +191,7 @@ class YiiBase
 	{
 		if (isset(self::$aliases[$alias])) {
 			return self::$aliases[$alias];
-		} elseif ($alias[0] !== '@') { // not an alias
+		} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
 			return $alias;
 		} elseif (($pos = strpos($alias, '/')) !== false) {
 			$rootAlias = substr($alias, 0, $pos);

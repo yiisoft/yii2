@@ -25,7 +25,7 @@ class View extends Component
 	 * @var string|array the base path where the view file should be looked for using the specified view name.
 	 * This can be either a string representing a single base path, or an array representing multiple base paths.
 	 * If the latter, the view file will be looked for in the given base paths in the order they are specified.
-	 * This property must be set before calling [[render()]].
+	 * Path aliases can be used. This property must be set before calling [[render()]].
 	 */
 	public $basePath;
 	/**
@@ -250,8 +250,6 @@ class View extends Component
 	 */
 	public function findViewFile($view)
 	{
-		$view = ltrim($view, '/');
-
 		if (($extension = FileHelper::getExtension($view)) === '') {
 			$view .= '.php';
 		}
@@ -260,7 +258,7 @@ class View extends Component
 		} elseif (!empty($this->basePath)) {
 			$basePaths = is_array($this->basePath) ? $this->basePath : array($this->basePath);
 			foreach ($basePaths as $basePath) {
-				$file = $basePath . DIRECTORY_SEPARATOR . $view;
+				$file = \Yii::getAlias($basePath . DIRECTORY_SEPARATOR . $view);
 				if (is_file($file)) {
 					break;
 				}

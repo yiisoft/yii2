@@ -17,45 +17,42 @@ namespace yii\base;
  */
 class Theme extends ApplicationComponent
 {
-	private $_name;
-	private $_basePath;
-	private $_baseUrl;
+	public $basePath;
+	public $baseUrl;
 
-	/**
-	 * Constructor.
-	 * @param string $name name of the theme
-	 * @param string $basePath base theme path
-	 * @param string $baseUrl base theme URL
-	 */
-	public function __construct($name, $basePath, $baseUrl)
+	public function init()
 	{
-		$this->_name = $name;
-		$this->_baseUrl = $baseUrl;
-		$this->_basePath = $basePath;
+		if ($this->basePath !== null) {
+			$this->basePath = \Yii::getAlias($this->basePath);
+		} else {
+			throw new Exception("Theme.basePath must be set.");
+		}
+		if ($this->baseUrl !== null) {
+			$this->baseUrl = \Yii::getAlias($this->baseUrl);
+		} else {
+			throw new Exception("Theme.baseUrl must be set.");
+		}
 	}
 
 	/**
-	 * @return string theme name
+	 * @param Controller $controller
+	 * @return string
 	 */
-	public function getName()
+	public function getViewPath($controller = null)
 	{
-		return $this->_name;
+		$path = $this->basePath . DIRECTORY_SEPARATOR . 'views';
+		return $controller === null ? $path : $path . DIRECTORY_SEPARATOR . $controller->id;
 	}
 
-	/**
-	 * @return string the relative URL to the theme folder (without ending slash)
-	 */
-	public function getBaseUrl()
+	public function getLayoutPath($module = null)
 	{
-		return $this->_baseUrl;
+		$path = $this->getViewPath($module);
+		return $controller === null ? $path : $path . DIRECTORY_SEPARATOR . $controller->id;
 	}
 
-	/**
-	 * @return string the file path to the theme folder
-	 */
-	public function getBasePath()
+	public function getWidgetViewPath($widget)
 	{
-		return $this->_basePath;
+
 	}
 
 	/**
