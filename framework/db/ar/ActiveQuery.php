@@ -94,6 +94,10 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 		return $this->createFinder()->find($this, true);
 	}
 
+	/**
+	 * Executes query and returns if matching row exists in the table.
+	 * @return bool if row exists in the table.
+	 */
 	public function exists()
 	{
 		return $this->select(array(new Expression('1')))->value() !== false;
