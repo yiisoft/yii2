@@ -321,7 +321,7 @@ class ErrorHandler extends ApplicationComponent
 		$view = new View;
 		$view->owner = $this;
 		$name = !YII_DEBUG || $exception instanceof HttpException ? $this->errorView : $this->exceptionView;
-		$view->render($name, array(
+		echo $view->render($name, array(
 			'exception' => $exception,
 		));
 	}
