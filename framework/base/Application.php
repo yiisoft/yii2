@@ -80,6 +80,10 @@ class Application extends Module
 	 */
 	public $name = 'My Application';
 	/**
+	 * @var string the version of this application. Defaults to '1.0'.
+	 */
+	public $version = '1.0';
+	/**
 	 * @var string the charset currently used for the application. Defaults to 'UTF-8'.
 	 */
 	public $charset = 'UTF-8';
@@ -99,6 +103,11 @@ class Application extends Module
 	 * @var Controller the currently active controller instance
 	 */
 	public $controller;
+	/**
+	 * @var mixed the layout that should be applied for views in this application. Defaults to 'main'.
+	 * If this is false, layout will be disabled.
+	 */
+	public $layout = 'main';
 
 	// todo
 	public $localeDataPath = '@yii/i18n/data';

@@ -69,6 +69,10 @@ class Controller extends Component implements Initable
 	 * @var Action the action that is currently being executed
 	 */
 	public $action;
+	/**
+	 * @var View the view currently being used
+	 */
+	private $_view;
 
 	/**
 	 * @param string $id ID of this controller
@@ -301,6 +305,12 @@ class Controller extends Component implements Initable
 	{
 		if ($this->beforeRender($view)) {
 			$v = $this->createView();
+			if (($theme = \Yii::$application->getTheme()) !== null) {
+				$v->basePath[] = $theme->getViewPath($this);
+				$v->rootPath[] = $theme->getViewPath();
+			}
+			$v->basePath[] = $this->getViewPath();
+			$v->rootPath[] = \Yii::$application->getViewPath();
 			$v->render($view, $params);
 			$this->afterRender($view);
 		}
@@ -315,6 +325,32 @@ class Controller extends Component implements Initable
 	{
 
 
+	}
+
+	public function resolveLayout()
+	{
+		$layout = $this->layout;
+		$module = $this->module;
+		while ($layout === null && $module !== null) {
+			$layout = $module->layout;
+			$module = $module->module;
+			$layout = $
+		}
+	}
+
+	public function getView()
+	{
+		if ($this->_view === null) {
+			$this->_view = $this->createView();
+			$this->_view->owner = $this;
+			if (($theme = \Yii::$application->getTheme()) !== null) {
+				$this->_view->basePath[] = $theme->getViewPath($this);
+				$this->_view->rootPath[] = $theme->getViewPath();
+			}
+			$this->_view->basePath[] = $this->getViewPath();
+			$this->_view->rootPath[] = \Yii::$application->getViewPath();
+		}
+		return $this->_view;
 	}
 
 	public function createView()

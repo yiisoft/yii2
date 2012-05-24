@@ -20,9 +20,9 @@ namespace yii\base;
 class RenderEvent extends Event
 {
 	/**
-	 * @var Action the action currently being executed
+	 * @var string the view currently being rendered
 	 */
-	public $action;
+	public $view;
 	/**
 	 * @var boolean whether the action is in valid state and its life cycle should proceed.
 	 */
@@ -30,10 +30,10 @@ class RenderEvent extends Event
 
 	/**
 	 * Constructor.
-	 * @param Action $action the action associated with this action event.
+	 * @param string $view the view currently being rendered
 	 */
-	public function __construct(Action $action)
+	public function __construct($view)
 	{
-		$this->action = $action;
+		$this->view = $view;
 	}
 }

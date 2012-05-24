@@ -22,12 +22,21 @@ class View extends Component
 	 */
 	public $owner;
 	/**
-	 * @var string|array the base path where the view file should be looked for using the specified view name.
-	 * This can be either a string representing a single base path, or an array representing multiple base paths.
-	 * If the latter, the view file will be looked for in the given base paths in the order they are specified.
-	 * Path aliases can be used. This property must be set before calling [[render()]].
+	 * @var string|array the directories where the view file should be looked for a *relative* view name is given.
+	 * This can be either a string representing a single directory, or an array representing multiple directories.
+	 * If the latter, the view file will be looked for in the given directories in the order they are specified.
+	 * Path aliases can be used. This property must be set before calling [[render()]] with a relative view name.
+	 * @see roothPath
 	 */
 	public $basePath;
+	/**
+	 * @var string|array the directories where the view file should be looked for an *absolute* view name is given.
+	 * This can be either a string representing a single directory, or an array representing multiple directories.
+	 * If the latter, the view file will be looked for in the given directories in the order they are specified.
+	 * Path aliases can be used. This property must be set before calling [[render()]] with an absolute view name.
+	 * @see basePath
+	 */
+	public $rootPath;
 	/**
 	 * @var string the language that the view should be rendered in. If not set, it will use
 	 * the value of [[Application::language]].
@@ -255,12 +264,25 @@ class View extends Component
 		}
 		if ($view[0] === '@') {
 			$file = \Yii::getAlias($view);
-		} elseif (!empty($this->basePath)) {
-			$basePaths = is_array($this->basePath) ? $this->basePath : array($this->basePath);
-			foreach ($basePaths as $basePath) {
-				$file = \Yii::getAlias($basePath . DIRECTORY_SEPARATOR . $view);
-				if (is_file($file)) {
-					break;
+			if ($file === false) {
+				return false;
+			}
+		} else {
+			if ($view[0] === '/') {
+				$paths = $this->rootPath;
+				$view = substr($view, 1);
+			} else {
+				$paths = $this->basePath;
+			}
+			if (!empty($paths)) {
+				if (!is_array($paths)) {
+					$paths = array($paths);
+				}
+				foreach ($paths as $path) {
+					$file = \Yii::getAlias($path . '/' . $view);
+					if (is_file($file)) {
+						break;
+					}
 				}
 			}
 		}

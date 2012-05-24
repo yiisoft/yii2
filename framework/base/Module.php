@@ -44,6 +44,12 @@ abstract class Module extends Component implements Initable
 	 */
 	public $module;
 	/**
+	 * @var mixed the layout that should be applied for views within this module. This refers to a view name
+	 * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
+	 * will be taken. If this is false, layout will be disabled within this module.
+	 */
+	public $layout;
+	/**
 	 * @var array mapping from controller ID to controller configurations.
 	 * Each name-value pair specifies the configuration of a single controller.
 	 * A controller configuration can be either a string or an array.
@@ -73,14 +79,18 @@ abstract class Module extends Component implements Initable
 	public $defaultRoute = 'default';
 	/**
 	 * @var string the root directory of the module.
-	 * @see getBasePath
-	 * @see setBasePath
 	 */
 	protected $_basePath;
 	/**
+	 * @var string the root directory that contains view files.
+	 */
+	protected $_viewPath;
+	/**
+	 * @var string the root directory that contains layout view files.
+	 */
+	protected $_layoutPath;
+	/**
 	 * @var string the directory containing controller classes in the module.
-	 * @see getControllerPath
-	 * @see setControllerPath
 	 */
 	protected $_controllerPath;
 	/**
@@ -217,6 +227,56 @@ abstract class Module extends Component implements Initable
 			throw new Exception('Invalid controller path: ' . $path);
 		} else {
 			$this->_controllerPath = realpath($p);
+		}
+	}
+
+	/**
+	 * @return string the root directory of view files. Defaults to 'moduleDir/views' where
+	 * moduleDir is the directory containing the module class.
+	 */
+	public function getViewPath()
+	{
+		if ($this->_viewPath !== null) {
+			return $this->_viewPath;
+		} else {
+			return $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
+		}
+	}
+
+	/**
+	 * @param string $path the root directory of view files.
+	 * @throws CException if the directory does not exist.
+	 */
+	public function setViewPath($path)
+	{
+		if (($this->_viewPath = realpath($path)) === false || !is_dir($this->_viewPath)) {
+			throw new CException(Yii::t('yii', 'The view path "{path}" is not a valid directory.',
+				array('{path}' => $path)));
+		}
+	}
+
+	/**
+	 * @return string the root directory of layout files. Defaults to 'moduleDir/views/layouts' where
+	 * moduleDir is the directory containing the module class.
+	 */
+	public function getLayoutPath()
+	{
+		if ($this->_layoutPath !== null) {
+			return $this->_layoutPath;
+		} else {
+			return $this->_layoutPath = $this->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
+		}
+	}
+
+	/**
+	 * @param string $path the root directory of layout files.
+	 * @throws CException if the directory does not exist.
+	 */
+	public function setLayoutPath($path)
+	{
+		if (($this->_layoutPath = realpath($path)) === false || !is_dir($this->_layoutPath)) {
+			throw new CException(Yii::t('yii', 'The layout path "{path}" is not a valid directory.',
+				array('{path}' => $path)));
 		}
 	}
 
