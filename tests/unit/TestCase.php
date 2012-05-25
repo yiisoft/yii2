@@ -6,7 +6,7 @@ class TestCase extends \yii\test\TestCase
 {
 	public static $params;
 
-	function getParam($name)
+	public function getParam($name)
 	{
 		if (self::$params === null) {
 			self::$params = require(__DIR__ . '/data/config.php');
