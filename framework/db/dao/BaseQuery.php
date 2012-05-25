@@ -547,7 +547,7 @@ class BaseQuery extends \yii\base\Component
 	 * @param BaseQuery $query the new query to be merged with this query.
 	 * @return BaseQuery the query object itself
 	 */
-	public function mergeWith($query)
+	public function mergeWith(BaseQuery $query)
 	{
 		if ($this->select !== $query->select) {
 			if (empty($this->select)) {
