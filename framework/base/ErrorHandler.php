@@ -50,6 +50,11 @@ class ErrorHandler extends ApplicationComponent
 	 * @var \Exception the exception that is being handled currently
 	 */
 	public $exception;
+	/**
+	 * @var boolean whether to log errors also using error_log(). Defaults to true.
+	 * Note that errors captured by the error handler are always logged by [[\Yii::error()]].
+	 */
+	public $logErrors = true;
 
 	public function init()
 	{
@@ -94,6 +99,20 @@ class ErrorHandler extends ApplicationComponent
 		} catch (\Exception $e) {
 			// use the most primitive way to display exception thrown in the error view
 			$this->renderAsText($e);
+		}
+
+
+		try {
+			\Yii::$application->end(1);
+		} catch (Exception $e2) {
+			// use the most primitive way to log error occurred in end()
+			$msg = get_class($e2) . ': ' . $e2->getMessage() . ' (' . $e2->getFile() . ':' . $e2->getLine() . ")\n";
+			$msg .= $e2->getTraceAsString() . "\n";
+			$msg .= "Previous error:\n";
+			$msg .= $e2->getTraceAsString() . "\n";
+			$msg .= '$_SERVER=' . var_export($_SERVER, true);
+			error_log($msg);
+			exit(1);
 		}
 	}
 
@@ -269,6 +288,9 @@ class ErrorHandler extends ApplicationComponent
 			$category .= '\\' . $exception->getSeverity();
 		}
 		\Yii::error((string)$exception, $category);
+		if ($this->logErrors) {
+			error_log($exception);
+		}
 	}
 
 	public function clearOutput()

@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use yii\util\FileHelper;
+
 /**
  * Module is the base class for module and application classes.
  *
@@ -44,6 +46,12 @@ abstract class Module extends Component implements Initable
 	 */
 	public $module;
 	/**
+	 * @var mixed the layout that should be applied for views within this module. This refers to a view name
+	 * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
+	 * will be taken. If this is false, layout will be disabled within this module.
+	 */
+	public $layout;
+	/**
 	 * @var array mapping from controller ID to controller configurations.
 	 * Each name-value pair specifies the configuration of a single controller.
 	 * A controller configuration can be either a string or an array.
@@ -73,14 +81,18 @@ abstract class Module extends Component implements Initable
 	public $defaultRoute = 'default';
 	/**
 	 * @var string the root directory of the module.
-	 * @see getBasePath
-	 * @see setBasePath
 	 */
 	protected $_basePath;
 	/**
+	 * @var string the root directory that contains view files.
+	 */
+	protected $_viewPath;
+	/**
+	 * @var string the root directory that contains layout view files.
+	 */
+	protected $_layoutPath;
+	/**
 	 * @var string the directory containing controller classes in the module.
-	 * @see getControllerPath
-	 * @see setControllerPath
 	 */
 	protected $_controllerPath;
 	/**
@@ -182,12 +194,7 @@ abstract class Module extends Component implements Initable
 	 */
 	public function setBasePath($path)
 	{
-		$p = \Yii::getAlias($path);
-		if ($p === false || !is_dir($p)) {
-			throw new Exception('Invalid base path: ' . $path);
-		} else {
-			$this->_basePath = realpath($p);
-		}
+		$this->_basePath = FileHelper::ensureDirectory($path);
 	}
 
 	/**
@@ -212,12 +219,53 @@ abstract class Module extends Component implements Initable
 	 */
 	public function setControllerPath($path)
 	{
-		$p = \Yii::getAlias($path);
-		if ($p === false || !is_dir($p)) {
-			throw new Exception('Invalid controller path: ' . $path);
+		$this->_controllerPath = FileHelper::ensureDirectory($path);
+	}
+
+	/**
+	 * @return string the root directory of view files. Defaults to 'moduleDir/views' where
+	 * moduleDir is the directory containing the module class.
+	 */
+	public function getViewPath()
+	{
+		if ($this->_viewPath !== null) {
+			return $this->_viewPath;
 		} else {
-			$this->_controllerPath = realpath($p);
+			return $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
 		}
+	}
+
+	/**
+	 * Sets the directory that contains the view files.
+	 * @param string $path the root directory of view files.
+	 * @throws Exception if the directory is invalid
+	 */
+	public function setViewPath($path)
+	{
+		$this->_viewPath = FileHelper::ensureDirectory($path);
+	}
+
+	/**
+	 * @return string the root directory of layout files. Defaults to 'moduleDir/views/layouts' where
+	 * moduleDir is the directory containing the module class.
+	 */
+	public function getLayoutPath()
+	{
+		if ($this->_layoutPath !== null) {
+			return $this->_layoutPath;
+		} else {
+			return $this->_layoutPath = $this->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
+		}
+	}
+
+	/**
+	 * Sets the directory that contains the layout files.
+	 * @param string $path the root directory of layout files.
+	 * @throws Exception if the directory is invalid
+	 */
+	public function setLayoutPath($path)
+	{
+		$this->_layoutPath = FileHelper::ensureDirectory($path);
 	}
 
 	/**
