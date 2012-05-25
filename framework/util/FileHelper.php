@@ -9,6 +9,8 @@
 
 namespace yii\util;
 
+use yii\base\Exception;
+
 /**
  * Filesystem helper
  *
@@ -27,6 +29,24 @@ class FileHelper
 	public static function getExtension($path)
 	{
 		return pathinfo($path, PATHINFO_EXTENSION);
+	}
+
+	/**
+	 * Checks the given path and ensures it is a directory.
+	 * This method will call `realpath()` to "normalize" the given path.
+	 * If the given path does not refer to an existing directory, an exception will be thrown.
+	 * @param string $path the given path. This can also be a path alias.
+	 * @return string the normalized path
+	 * @throws Exception if the path does not refer to an existing directory.
+	 */
+	public static function ensureDirectory($path)
+	{
+		$p = \Yii::getAlias($path);
+		if ($p !== false && ($p = realpath($p)) !== false && is_dir($p)) {
+			return $p;
+		} else {
+			throw new Exception('Directory does not exist: ' . $path);
+		}
 	}
 
 	/**

@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use yii\util\FileHelper;
+
 /**
  * Module is the base class for module and application classes.
  *
@@ -192,12 +194,7 @@ abstract class Module extends Component implements Initable
 	 */
 	public function setBasePath($path)
 	{
-		$p = \Yii::getAlias($path);
-		if ($p === false || !is_dir($p)) {
-			throw new Exception('Invalid base path: ' . $path);
-		} else {
-			$this->_basePath = realpath($p);
-		}
+		$this->_basePath = FileHelper::ensureDirectory($path);
 	}
 
 	/**
@@ -222,12 +219,7 @@ abstract class Module extends Component implements Initable
 	 */
 	public function setControllerPath($path)
 	{
-		$p = \Yii::getAlias($path);
-		if ($p === false || !is_dir($p)) {
-			throw new Exception('Invalid controller path: ' . $path);
-		} else {
-			$this->_controllerPath = realpath($p);
-		}
+		$this->_controllerPath = FileHelper::ensureDirectory($path);
 	}
 
 	/**
@@ -244,15 +236,13 @@ abstract class Module extends Component implements Initable
 	}
 
 	/**
+	 * Sets the directory that contains the view files.
 	 * @param string $path the root directory of view files.
-	 * @throws CException if the directory does not exist.
+	 * @throws Exception if the directory is invalid
 	 */
 	public function setViewPath($path)
 	{
-		if (($this->_viewPath = realpath($path)) === false || !is_dir($this->_viewPath)) {
-			throw new CException(Yii::t('yii', 'The view path "{path}" is not a valid directory.',
-				array('{path}' => $path)));
-		}
+		$this->_viewPath = FileHelper::ensureDirectory($path);
 	}
 
 	/**
@@ -269,15 +259,13 @@ abstract class Module extends Component implements Initable
 	}
 
 	/**
+	 * Sets the directory that contains the layout files.
 	 * @param string $path the root directory of layout files.
-	 * @throws CException if the directory does not exist.
+	 * @throws Exception if the directory is invalid
 	 */
 	public function setLayoutPath($path)
 	{
-		if (($this->_layoutPath = realpath($path)) === false || !is_dir($this->_layoutPath)) {
-			throw new CException(Yii::t('yii', 'The layout path "{path}" is not a valid directory.',
-				array('{path}' => $path)));
-		}
+		$this->_layoutPath = FileHelper::ensureDirectory($path);
 	}
 
 	/**
