@@ -7,6 +7,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+use yii\base\Exception;
+
 /**
  * Gets the application start timestamp.
  */
@@ -126,7 +128,7 @@ class YiiBase
 	 * will be included only when the class is being used. This parameter is used only when
 	 * the path alias refers to a class.
 	 * @return string the class name or the directory that this alias refers to
-	 * @throws \yii\base\Exception if the path alias is invalid
+	 * @throws Exception if the path alias is invalid
 	 */
 	public static function import($alias, $forceInclude = false)
 	{
@@ -153,7 +155,7 @@ class YiiBase
 		}
 
 		if (($path = static::getAlias(dirname($alias))) === false) {
-			throw new \yii\base\Exception('Invalid path alias: ' . $alias);
+			throw new Exception('Invalid path alias: ' . $alias);
 		}
 
 		if ($isClass) {
@@ -184,10 +186,12 @@ class YiiBase
 	 *
 	 * Note, this method does not ensure the existence of the resulting path.
 	 * @param string $alias alias
-	 * @return mixed path corresponding to the alias, false if the root alias is not previously registered.
+	 * @param boolean $throwException whether to throw exception if the alias is invalid.
+	 * @return string|boolean path corresponding to the alias, false if the root alias is not previously registered.
+	 * @throws Exception if the alias is invalid and $throwException is true.
 	 * @see setAlias
 	 */
-	public static function getAlias($alias)
+	public static function getAlias($alias, $throwException = false)
 	{
 		if (isset(self::$aliases[$alias])) {
 			return self::$aliases[$alias];
@@ -199,7 +203,11 @@ class YiiBase
 				return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
 			}
 		}
-		return false;
+		if ($throwException) {
+			throw new Exception("Invalid path alias: $alias");
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -218,7 +226,7 @@ class YiiBase
 	 * - a URL (e.g. `http://www.yiiframework.com`)
 	 * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
 	 *   actual path first by calling [[getAlias]].
-	 * @throws \yii\base\Exception if $path is an invalid alias
+	 * @throws Exception if $path is an invalid alias
 	 * @see getAlias
 	 */
 	public static function setAlias($alias, $path)
@@ -230,7 +238,7 @@ class YiiBase
 		} elseif (($p = static::getAlias($path)) !== false) {
 			self::$aliases[$alias] = $p;
 		} else {
-			throw new \yii\base\Exception('Invalid path: ' . $path);
+			throw new Exception('Invalid path: ' . $path);
 		}
 	}
 
@@ -291,7 +299,7 @@ class YiiBase
 				include($classFile);
 				return true;
 			} else {
-				throw new \yii\base\Exception("Class name '$className' does not match the class file '" . realpath($classFile) . "'. Have you checked their case sensitivity?");
+				throw new Exception("Class name '$className' does not match the class file '" . realpath($classFile) . "'. Have you checked their case sensitivity?");
 			}
 		}
 
@@ -339,7 +347,7 @@ class YiiBase
 	 *
 	 * @param string|array $config the configuration. It can be either a string or an array.
 	 * @return mixed the created object
-	 * @throws \yii\base\Exception if the configuration is invalid.
+	 * @throws Exception if the configuration is invalid.
 	 * @see \yii\base\Object::newInstance()
 	 */
 	public static function createObject($config)
@@ -351,7 +359,7 @@ class YiiBase
 			$class = $config['class'];
 			unset($config['class']);
 		} else {
-			throw new \yii\base\Exception('Object configuration must be an array containing a "class" element.');
+			throw new Exception('Object configuration must be an array containing a "class" element.');
 		}
 
 		if (!class_exists($class, false)) {

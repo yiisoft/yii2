@@ -24,6 +24,10 @@ class RenderEvent extends Event
 	 */
 	public $view;
 	/**
+	 * @var string the content to be displayed
+	 */
+	public $content;
+	/**
 	 * @var boolean whether the action is in valid state and its life cycle should proceed.
 	 */
 	public $isValid = true;

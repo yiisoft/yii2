@@ -10,6 +10,7 @@
 namespace yii\base;
 
 use yii\util\FileHelper;
+use yii\base\Application;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -18,25 +19,17 @@ use yii\util\FileHelper;
 class View extends Component
 {
 	/**
-	 * @var Object the owner of this view
+	 * @var Controller|Widget|Object the context under which this view is being rendered
 	 */
-	public $owner;
+	public $context;
 	/**
-	 * @var string|array the directories where the view file should be looked for a *relative* view name is given.
+	 * @var string|array the directories where the view file should be looked for when a *relative* view name is given.
 	 * This can be either a string representing a single directory, or an array representing multiple directories.
-	 * If the latter, the view file will be looked for in the given directories in the order they are specified.
-	 * Path aliases can be used. This property must be set before calling [[render()]] with a relative view name.
+	 * If the latter, the view file will be looked for in the directories in the order they are specified.
+	 * Path aliases can be used. If this property is not set, relative view names should be treated as absolute ones.
 	 * @see roothPath
 	 */
 	public $basePath;
-	/**
-	 * @var string|array the directories where the view file should be looked for an *absolute* view name is given.
-	 * This can be either a string representing a single directory, or an array representing multiple directories.
-	 * If the latter, the view file will be looked for in the given directories in the order they are specified.
-	 * Path aliases can be used. This property must be set before calling [[render()]] with an absolute view name.
-	 * @see basePath
-	 */
-	public $rootPath;
 	/**
 	 * @var string the language that the view should be rendered in. If not set, it will use
 	 * the value of [[Application::language]].
@@ -48,9 +41,45 @@ class View extends Component
 	 */
 	public $sourceLanguage;
 	/**
+	 * @var boolean whether to localize the view when possible. Defaults to true.
+	 * Note that when this is true, if a localized view cannot be found, the original view will be rendered.
+	 * No error will be reported.
+	 */
+	public $localizeView = true;
+	/**
+	 * @var boolean whether to theme the view when possible. Defaults to true.
+	 * Note that theming will be disabled if [[Application::theme]] is null.
+	 */
+	public $themeView = true;
+	/**
 	 * @var mixed custom parameters that are available in the view template
 	 */
 	public $params;
+
+	/**
+	 * Constructor.
+	 * @param Controller|Widget|Object $context the context under which this view is being rendered (e.g. controller, widget)
+	 */
+	public function __construct($context = null)
+	{
+		$this->context = $context;
+	}
+
+	public function render($view, $params = array())
+	{
+		$content = $this->renderPartial($view, $params);
+		return $this->renderText($content);
+	}
+
+	public function renderText($text)
+	{
+		$layoutFile = $this->findLayoutFile();
+		if ($layoutFile !== false) {
+			return $this->renderFile($layoutFile, array('content' => $text));
+		} else {
+			return $text;
+		}
+	}
 
 	/**
 	 * Renders a view.
@@ -72,7 +101,7 @@ class View extends Component
 	 * @return string the rendering result
 	 * @throws Exception if the view file cannot be found
 	 */
-	public function render($view, $params = array())
+	public function renderPartial($view, $params = array())
 	{
 		$file = $this->findViewFile($view);
 		if ($file !== false) {
@@ -96,7 +125,7 @@ class View extends Component
 	public function createWidget($class, $properties = array())
 	{
 		$properties['class'] = $class;
-		return \Yii::createObject($properties, $this->owner);
+		return \Yii::createObject($properties, $this->context);
 	}
 
 	public function widget($class, $properties = array())
@@ -156,7 +185,6 @@ class View extends Component
 
 	/**
 	 * Ends recording a clip.
-	 * This method is an alias to {@link endWidget}.
 	 */
 	public function endClip()
 	{
@@ -262,35 +290,165 @@ class View extends Component
 		if (($extension = FileHelper::getExtension($view)) === '') {
 			$view .= '.php';
 		}
-		if ($view[0] === '@') {
+		if (strncmp($view, '@', 1) === 0) {
 			$file = \Yii::getAlias($view);
-			if ($file === false) {
-				return false;
-			}
+		} elseif (strncmp($view, '/', 1) !== 0) {
+			$file = $this->findRelativeViewFile($view);
 		} else {
-			if ($view[0] === '/') {
-				$paths = $this->rootPath;
-				$view = substr($view, 1);
-			} else {
-				$paths = $this->basePath;
+			$file = $this->findAbsoluteViewFile($view);
+		}
+
+		if ($file === false || !is_file($file)) {
+			return false;
+		} elseif ($this->localizeView) {
+			return FileHelper::localize($file, $this->language, $this->sourceLanguage);
+		} else {
+			return $file;
+		}
+	}
+
+	/**
+	 * Finds the view file corresponding to the given relative view name.
+	 * The method will look for the view file under a set of directories returned by [[resolveBasePath()]].
+	 * If no base path is given, the view will be treated as an absolute view and the result of
+	 * [[findAbsoluteViewFile()]] will be returned.
+	 * @param string $view the relative view name
+	 * @return string|boolean the view file path, or false if the view file cannot be found
+	 */
+	protected function findRelativeViewFile($view)
+	{
+		$paths = $this->resolveBasePath();
+		if ($paths === array()) {
+			return $this->findAbsoluteViewFile($view);
+		}
+		if ($this->themeView && $this->context !== null && ($theme = \Yii::$application->getTheme()) !== null) {
+			array_unshift($paths, $theme->getViewPath($this->context));
+		}
+		foreach ($paths as $path) {
+			$file = \Yii::getAlias($path . '/' . $view);
+			if ($file !== false && is_file($file)) {
+				return $file;
 			}
-			if (!empty($paths)) {
-				if (!is_array($paths)) {
-					$paths = array($paths);
-				}
-				foreach ($paths as $path) {
-					$file = \Yii::getAlias($path . '/' . $view);
-					if (is_file($file)) {
-						break;
-					}
+		}
+		return $paths === array() ? $this->findAbsoluteViewFile($view) : false;
+	}
+
+	/**
+	 * Finds the view file corresponding to the given absolute view name.
+	 * If the view name starts with double slashes `//`, the method will look for the view file
+	 * under [[Application::getViewPath()]]. Otherwise, it will look for the view file under the
+	 * view path of the currently active module.
+	 * @param string $view the absolute view name
+	 * @return string|boolean the view file path, or false if the view file cannot be found
+	 */
+	protected function findAbsoluteViewFile($view)
+	{
+		$app = \Yii::$application;
+		if (strncmp($view, '//', 2) !== 0 && $app->controller !== null) {
+			$module = $app->controller->module;
+		} else {
+			$module = $app;
+		}
+		if ($this->themeView && ($theme = $app->getTheme()) !== null) {
+			$paths[] = $theme->getViewPath($module);
+		}
+		$paths[] = $module->getViewPath();
+		$view = ltrim($view, '/');
+		foreach ($paths as $path) {
+			$file = \Yii::getAlias($path . '/' . $view);
+			if ($file !== false && is_file($file)) {
+				return $file;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Resolves the base paths that will be used to determine view files for relative view names.
+	 * The method resolves the base path using the following algorithm:
+	 *
+	 * - If [[basePath]] is not empty, it is returned;
+	 * - If [[context]] is a controller, it will return the subdirectory named as
+	 *   [[Controller::uniqueId]] under the controller's module view path;
+	 * - If [[context]] is an object, it will return the `views` subdirectory under
+	 *   the directory containing the object class file.
+	 * - Otherwise, it will return false.
+	 * @return array the base paths
+	 */
+	protected function resolveBasePath()
+	{
+		if (!empty($this->basePath)) {
+			return is_array($this->basePath) ? $this->basePath : array($this->basePath);
+		} elseif ($this->context instanceof Controller) {
+			return $this->context->module->getViewPath() . '/' . $this->context->getUniqueId();
+		} elseif ($this->context !== null) {
+			$class = new \ReflectionClass($this->context);
+			return array(dirname($class->getFileName()) . '/views');
+		} else {
+			return array();
+		}
+	}
+
+	/**
+	 * Finds the layout file for the current [[context]].
+	 * The method will return false if [[context]] is not a controller.
+	 * When [[context]] is a controller, the following algorithm is used to determine the layout file:
+	 *
+	 * - If `context.layout` is false, it will return false;
+	 * - If `context.layout` is a string, it will look for the layout file under the [[Module::layoutPath|layout path]]
+	 *   of the controller's parent module;
+	 * - If `context.layout` is null, the following steps are taken to resolve the actual layout to be returned:
+	 *      * Check the `layout` property of the parent module. If it is null, check the grand parent module and so on
+	 *        until a non-null layout is encountered. Let's call this module the *effective module*.
+	 *      * If the layout is null or false, it will return false;
+	 *      * Otherwise, it will look for the layout file under the layout path of the effective module.
+	 *
+	 * The themed layout file will be returned if theme is enabled and the theme contains such a layout file.
+	 *
+	 * @return string|boolean the layout file path, or false if the context does not need layout.
+	 * @throws Exception if the layout file cannot be found
+	 */
+	public function findLayoutFile()
+	{
+		if (!$this->context instanceof Controller || $this->context->layout === false) {
+			return false;
+		}
+		$module = $this->context->module;
+		while ($module !== null && $module->layout === null) {
+			$module = $module->module;
+		}
+		if ($module === null || $module->layout === null || $module->layout === false) {
+			return false;
+		}
+
+		$view = $module->layout;
+		if (($extension = FileHelper::getExtension($view)) === '') {
+			$view .= '.php';
+		}
+		if (strncmp($view, '@', 1) === 0) {
+			$file = \Yii::getAlias($view);
+		} elseif (strncmp($view, '/', 1) === 0) {
+			$file = $this->findAbsoluteViewFile($view);
+		} else {
+			if ($this->themeView && ($theme = \Yii::$application->getTheme()) !== null) {
+				$paths[] = $theme->getLayoutPath($module);
+			}
+			$paths[] = $module->getLayoutPath();
+			$file = false;
+			foreach ($paths as $path) {
+				$f = \Yii::getAlias($path . '/' . $view);
+				if ($f !== false && is_file($f)) {
+					$file = $f;
+					break;
 				}
 			}
 		}
-		if (isset($file) && is_file($file)) {
-			$file = FileHelper::localize($file, $this->language, $this->sourceLanguage);
-			return is_file($file) ? $file : false;
+		if ($file === false || !is_file($file)) {
+			throw new Exception("Unable to find the layout file for layout '{$module->layout}' (specified by " . get_class($module) . ")");
+		} elseif ($this->localizeView) {
+			return FileHelper::localize($file, $this->language, $this->sourceLanguage);
 		} else {
-			return false;
+			return $file;
 		}
 	}
 }

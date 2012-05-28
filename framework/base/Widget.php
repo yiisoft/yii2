@@ -98,7 +98,7 @@ class Widget extends Component implements Initable
 	 */
 	public function render($view, $params = array())
 	{
-		return $this->createView()->render($view, $params);
+		return $this->createView()->renderPartial($view, $params);
 	}
 
 	/**
@@ -106,12 +106,6 @@ class Widget extends Component implements Initable
 	 */
 	public function createView()
 	{
-		$view = new View;
-		if (($theme = \Yii::$application->getTheme()) !== null) {
-			$view->basePath[] = $theme->getViewPath() . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this));
-		}
-		$class = new \ReflectionClass($this);
-		$view->basePath[] = dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
-		return $view;
+		return new View($this);
 	}
 }

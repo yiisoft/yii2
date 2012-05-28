@@ -70,9 +70,12 @@ class Controller extends Component implements Initable
 	 */
 	public $action;
 	/**
-	 * @var View the view currently being used
+	 * @var string|boolean the name of the layout to be applied to this controller's views.
+	 * This property mainly affects the behavior of [[render()]].
+	 * Defaults to null, meaning the layout specified by the [[module]] should be used.
+	 * If false, no layout will be applied.
 	 */
-	private $_view;
+	public $layout;
 
 	/**
 	 * @param string $id ID of this controller
@@ -295,66 +298,39 @@ class Controller extends Component implements Initable
 	/**
 	 * This method is invoked right after an action renders its result using [[render()]].
 	 * @param string $view the view just rendered
+	 * @param string $content the content to be displayed
+	 * @return string the content to be displayed. This may be the same as the input content or the one
+	 * modified by event handlers.
 	 */
-	public function afterRender($view)
+	public function afterRender($view, $content)
 	{
-		$this->trigger(__METHOD__, new RenderEvent($view));
+		$event = new RenderEvent($view, $content);
+		$this->trigger(__METHOD__, $event);
+		return $event->content;
 	}
 
 	public function render($view, $params = array())
 	{
 		if ($this->beforeRender($view)) {
-			$v = $this->createView();
-			if (($theme = \Yii::$application->getTheme()) !== null) {
-				$v->basePath[] = $theme->getViewPath($this);
-				$v->rootPath[] = $theme->getViewPath();
-			}
-			$v->basePath[] = $this->getViewPath();
-			$v->rootPath[] = \Yii::$application->getViewPath();
-			$v->render($view, $params);
-			$this->afterRender($view);
+			$content = $this->createView()->render($view, $params);
+			$content = $this->afterRender($view, $content);
+			return $content;
 		}
+		return '';
 	}
 
 	public function renderText($text)
 	{
-
+		return $this->createView()->renderText($text);
 	}
 
 	public function renderPartial($view, $params = array())
 	{
-
-
-	}
-
-	public function resolveLayout()
-	{
-		$layout = $this->layout;
-		$module = $this->module;
-		while ($layout === null && $module !== null) {
-			$layout = $module->layout;
-			$module = $module->module;
-			$layout = $
-		}
-	}
-
-	public function getView()
-	{
-		if ($this->_view === null) {
-			$this->_view = $this->createView();
-			$this->_view->owner = $this;
-			if (($theme = \Yii::$application->getTheme()) !== null) {
-				$this->_view->basePath[] = $theme->getViewPath($this);
-				$this->_view->rootPath[] = $theme->getViewPath();
-			}
-			$this->_view->basePath[] = $this->getViewPath();
-			$this->_view->rootPath[] = \Yii::$application->getViewPath();
-		}
-		return $this->_view;
+		return $this->createView()->renderPartial($view, $params);
 	}
 
 	public function createView()
 	{
-		return new View;
+		return new View($this);
 	}
 }
