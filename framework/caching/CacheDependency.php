@@ -1,6 +1,6 @@
 <?php
 /**
- * CCacheDependency class file.
+ * CacheDependency class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,9 +10,9 @@
 namespace yii\caching;
 
 /**
- * CCacheDependency is the base class for cache dependency classes.
+ * CacheDependency is the base class for cache dependency classes.
  *
- * CCacheDependency implements the {@link ICacheDependency} interface.
+ * CacheDependency implements the {@link ICacheDependency} interface.
  * Child classes should override its {@link generateDependentData} for
  * actual dependency checking.
  *
@@ -23,7 +23,7 @@ namespace yii\caching;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CCacheDependency extends CComponent implements ICacheDependency
+class CacheDependency extends \yii\base\Object
 {
 	/**
 	 * @var boolean Whether this dependency is reusable or not.
@@ -33,13 +33,13 @@ class CCacheDependency extends CComponent implements ICacheDependency
 	 * Defaults to false;
 	 * @since 1.1.11
 	 */
-	public $reuseDependentData=false;
+	public $reuseDependentData = false;
 
 	/**
 	 * @var array cached data for reusable dependencies.
 	 * @since 1.1.11
 	 */
-	private static $_reusableData=array();
+	private static $_reusableData = array();
 
 	private $_hash;
 	private $_data;
@@ -50,15 +50,15 @@ class CCacheDependency extends CComponent implements ICacheDependency
 	 */
 	public function evaluateDependency()
 	{
-		if ($this->reuseDependentData)
-		{
-			$hash=$this->getHash();
-			if (!isset(self::$_reusableData[$hash]['dependentData']))
-				self::$_reusableData[$hash]['dependentData']=$this->generateDependentData();
-			$this->_data=self::$_reusableData[$hash]['dependentData'];
+		if ($this->reuseDependentData) {
+			$hash = $this->getHash();
+			if (!isset(self::$_reusableData[$hash]['dependentData'])) {
+				self::$_reusableData[$hash]['dependentData'] = $this->generateDependentData();
+			}
+			$this->_data = self::$_reusableData[$hash]['dependentData'];
+		} else {
+			$this->_data = $this->generateDependentData();
 		}
-		else
-			$this->_data=$this->generateDependentData();
 	}
 
 	/**
@@ -66,19 +66,18 @@ class CCacheDependency extends CComponent implements ICacheDependency
 	 */
 	public function getHasChanged()
 	{
-		if ($this->reuseDependentData)
-		{
-			$hash=$this->getHash();
-			if (!isset(self::$_reusableData[$hash]['hasChanged']))
-			{
-				if (!isset(self::$_reusableData[$hash]['dependentData']))
-					self::$_reusableData[$hash]['dependentData']=$this->generateDependentData();
-				self::$_reusableData[$hash]['hasChanged']=self::$_reusableData[$hash]['dependentData']!=$this->_data;
+		if ($this->reuseDependentData) {
+			$hash = $this->getHash();
+			if (!isset(self::$_reusableData[$hash]['hasChanged'])) {
+				if (!isset(self::$_reusableData[$hash]['dependentData'])) {
+					self::$_reusableData[$hash]['dependentData'] = $this->generateDependentData();
+				}
+				self::$_reusableData[$hash]['hasChanged'] = self::$_reusableData[$hash]['dependentData'] != $this->_data;
 			}
 			return self::$_reusableData[$hash]['hasChanged'];
+		} else {
+			return $this->generateDependentData() != $this->_data;
 		}
-		else
-			return $this->generateDependentData()!=$this->_data;
 	}
 
 	/**
@@ -99,14 +98,16 @@ class CCacheDependency extends CComponent implements ICacheDependency
 	{
 		return null;
 	}
+
 	/**
 	 * Generates a unique hash that identifies this cache dependency.
 	 * @return string the hash for this cache dependency
 	 */
 	private function getHash()
 	{
-		if($this->_hash===null)
-			$this->_hash=sha1(serialize($this));
+		if ($this->_hash === null) {
+			$this->_hash = sha1(serialize($this));
+		}
 		return $this->_hash;
 	}
 }

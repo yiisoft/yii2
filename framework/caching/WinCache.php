@@ -2,11 +2,12 @@
 /**
  * CWinCache class file
  *
- * @author Alexander Makarov <sam@rmcreative.ru>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
 
 /**
  * CWinCache implements a cache application component based on {@link http://www.iis.net/expand/wincacheforphp WinCache}.
@@ -15,10 +16,8 @@
  *
  * See {@link CCache} manual for common cache operations that are supported by CWinCache.
  *
- * @author Alexander Makarov <sam@rmcreative.ru>
- * @version $Id$
- * @package system.caching
- * @since 1.1.2
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
  */
 class CWinCache extends CCache {
 	/**

@@ -2,11 +2,13 @@
 /**
  * CFileCacheDependency class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
+
 
 /**
  * CFileCacheDependency represents a dependency based on a file's last modification time.
@@ -17,9 +19,7 @@
  * last modification time remains unchanged.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.caching.dependencies
- * @since 1.0
+ * @since 2.0
  */
 class CFileCacheDependency extends CCacheDependency
 {

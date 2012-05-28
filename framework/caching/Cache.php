@@ -1,15 +1,19 @@
 <?php
 /**
- * CCache class file.
+ * Cache class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\caching;
+
+use yii\base\ApplicationComponent;
+use yii\base\Exception;
+
 /**
- * CCache is the base class for cache classes with different cache storage implementation.
+ * Cache is the base class for cache classes with different cache storage implementation.
  *
  * A data item can be stored in cache by calling {@link set} and be retrieved back
  * later by {@link get}. In both operations, a key identifying the data item is required.
@@ -20,7 +24,7 @@
  * Note, by definition, cache does not ensure the existence of a value
  * even if it does not expire. Cache is not meant to be a persistent storage.
  *
- * CCache implements the interface {@link ICache} with the following methods:
+ * Cache implements the interface {@link ICache} with the following methods:
  * <ul>
  * <li>{@link get} : retrieve the value with a key (if any) from cache</li>
  * <li>{@link set} : store the value with a key into cache</li>
@@ -40,12 +44,10 @@
  * <li>{@link unserializeValue} (optional)</li>
  * </ul>
  *
- * CCache also implements ArrayAccess so that it can be used like an array.
+ * Cache also implements ArrayAccess so that it can be used like an array.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.caching
- * @since 1.0
+ * @since 2.0
  */
 abstract class Cache extends ApplicationComponent implements \ArrayAccess
 {
@@ -55,36 +57,25 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * pool of cached data, the same prefix should be set for each of the applications explicitly.
 	 */
 	public $keyPrefix;
-
 	/**
-	 * @var boolean whether to md5-hash the cache key for normalization purposes. Defaults to true. Setting this property to false makes sure the cache
+	 * @var boolean whether to hash the cache key for normalization purpose. Defaults to true.
+	 * Setting this property to false makes sure the cache
 	 * key will not be tampered when calling the relevant methods {@link get()}, {@link set()}, {@link add()} and {@link delete()}. This is useful if a Yii
 	 * application as well as an external application need to access the same cache pool (also see description of {@link keyPrefix} regarding this use case).
 	 * However, without normalization you should make sure the affected cache backend does support the structure (charset, length, etc.) of all the provided
 	 * cache keys, otherwise there might be unexpected behavior.
-	 * @since 1.1.11
 	 **/
 	public $hashKey = true;
-
 	/**
-	 * @var boolean whether to automatically serialize/unserialize the cache values. Defaults to true. Setting this property to false makes sure the cache
-	 * value will not be tampered when calling the methods {@link set()} and {@link add()}. This is useful in case you want to store data which simply
-	 * does not require serialization (e.g. integers, strings or raw binary data). Thus there might be a small increase in performance and a smaller overall
-	 * cache size. Take in mind that you will be unable to store PHP structures like arrays or objects, you would have to serialize and unserialize them manually.
-	 * Another negative side effect is that providing a dependency via {@link set()} or {@link add()} will have no effect since dependencies rely on serialization.
-	 * Since all the relevant core application components rely on dependency support, you should be very careful disabling this feature. Usually you want to
-	 * configure a dedicated cache component for the sole purpose of storing raw unserialized data, the main cache component should always support serialization.
-	 * @since 1.1.11
-	 **/
-	public $autoSerialize = true;
-
-	/**
-	 * @var boolean wether to make use of the {@link http://pecl.php.net/package/igbinary igbinary} serializer for cache entry serialization. Defaults to false.
-	 * <strong>NOTE:</strong> If this is set to true while the igbinary extension has not been loaded, cache serialization will silently fall back to PHP's default
-	 * serializer. Since the two serialization formats are incompatible, caches should be purged before switching this on to prevent errors.
-	 * @since 1.1.11
+	 * @var array|boolean the functions used to serialize and unserialize cached data. Defaults to null, meaning
+	 * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
+	 * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
+	 * a two-element array. The first element specifies the serialization function, and the second the deserialization
+	 * function. If this property is set false, data will be directly sent to and retrieved from the underlying
+	 * cache component without any serialization or deserialization. You should not turn off serialization if
+	 * you are using [[CacheDependency|cache dependency]], because it relies on data serialization.
 	 */
-	public $useIgbinarySerializer = false;
+	public $serializer;
 
 	/**
 	 * Initializes the application component.
@@ -94,16 +85,15 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	{
 		parent::init();
 		if ($this->keyPrefix === null) {
-			$this->keyPrefix = Yii::app()->getId();
+			$this->keyPrefix = \Yii::$application->id;
 		}
-		$this->useIgbinarySerializer = $this->useIgbinarySerializer && extension_loaded('igbinary');
 	}
 
 	/**
 	 * @param string $key a key identifying a value to be cached
-	 * @return sring a key generated from the provided key which ensures the uniqueness across applications
+	 * @return string a key generated from the provided key which ensures the uniqueness across applications
 	 */
-	protected function generateUniqueKey($key)
+	protected function generateCacheKey($key)
 	{
 		return $this->hashKey ? md5($this->keyPrefix . $key) : $this->keyPrefix . $key;
 	}
@@ -111,18 +101,24 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	/**
 	 * Retrieves a value from cache with a specified key.
 	 * @param string $id a key identifying the cached value
-	 * @return mixed the value stored in cache, false if the value is not in the cache, expired or the dependency has changed.
+	 * @return mixed the value stored in cache, false if the value is not in the cache, expired,
+	 * or the dependency associated with the cached data has changed.
 	 */
 	public function get($id)
 	{
-		if (($value = $this->getValue($this->generateUniqueKey($id))) !== false) {
-			$data = $this->autoSerialize ? $this->unserializeValue($value) : $value;
-			if (!$this->autoSerialize || (is_array($data) && (!($data[1] instanceof ICacheDependency) || !$data[1]->getHasChanged()))) {
-				Yii::trace('Serving "' . $id . '" from cache', 'system.caching.' . get_class($this));
-				return $this->autoSerialize ? $data[0] : $data;
-			}
+		$value = $this->getValue($this->generateCacheKey($id));
+		if ($value === false || $this->serializer === false) {
+			return $value;
+		} elseif ($this->serializer === null) {
+			$value = unserialize($value);
+		} else {
+			$value = call_user_func($this->serializer[1], $value);
 		}
-		return false;
+		if (is_array($value) && ($value[1] instanceof CacheDependency) || !$value[1]->getHasChanged()) {
+			return $value[0];
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -135,23 +131,27 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * is returned in terms of (key,value) pairs.
 	 * If a value is not cached or expired, the corresponding array value will be false.
 	 */
-	public function mget($ids)
+	public function mget(array $ids)
 	{
-		$uniqueIDs = array();
-		$results = array();
+		$uids = array();
 		foreach ($ids as $id) {
-			$uniqueIDs[$id] = $this->generateUniqueKey($id);
-			$results[$id] = false;
+			$uids[$id] = $this->generateCacheKey($id);
 		}
-		$values = $this->getValues($uniqueIDs);
-		foreach ($uniqueIDs as $id => $uniqueID) {
-			if (!isset($values[$uniqueID])) {
-				continue;
+		$values = $this->getValues($uids);
+		$results = array();
+		if ($this->serializer === false) {
+			foreach ($uids as $id => $uid) {
+				$results[$id] = isset($values[$uid]) ? $values[$uid] : false;
 			}
-			$data = $this->autoSerialize ? $this->unserializeValue($values[$uniqueID]) : $values[$uniqueID];
-			if (!$this->autoSerialize || (is_array($data) && (!($data[1] instanceof ICacheDependency) || !$data[1]->getHasChanged()))) {
-				Yii::trace('Serving "' . $id . '" from cache', 'system.caching.' . get_class($this));
-				$results[$id] = $this->autoSerialize ? $data[0] : $data;
+		} else {
+			foreach ($uids as $id => $uid) {
+				$results[$id] = false;
+				if (isset($values[$uid])) {
+					$value = $this->serializer === null ? unserialize($values[$uid]) : call_user_func($this->serializer[1], $values[$uid]);
+					if (is_array($value) && (!($value[1] instanceof CacheDependency) || !$value[1]->getHasChanged())) {
+						$results[$id] = $value[0];
+					}
+				}
 			}
 		}
 		return $results;
@@ -165,17 +165,20 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * @param string $id the key identifying the value to be cached
 	 * @param mixed $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * @param ICacheDependency $dependency dependency of the cached item. If the dependency changes, the item is labeled invalid.
+	 * @param CacheDependency $dependency dependency of the cached item. If the dependency changes, the item is labeled invalid.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
 	public function set($id, $value, $expire = 0, $dependency = null)
 	{
-		Yii::trace('Saving "' . $id . '" to cache', 'system.caching.' . get_class($this));
-		if ($dependency !== null && $this->autoSerialize) {
+		if ($dependency !== null && $this->serializer !== false) {
 			$dependency->evaluateDependency();
 		}
-		$data = $this->autoSerialize ? $this->serializeValue(array($value, $dependency)) : $value;
-		return $this->setValue($this->generateUniqueKey($id), $data, $expire);
+		if ($this->serializer === null) {
+			$value = array(serialize($value), $dependency);
+		} elseif ($this->serializer !== false) {
+			$value = array(call_user_func($this->serializer[0], $value), $dependency);
+		}
+		return $this->setValue($this->generateCacheKey($id), $value, $expire);
 	}
 
 	/**
@@ -184,17 +187,20 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * @param string $id the key identifying the value to be cached
 	 * @param mixed $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * @param ICacheDependency $dependency dependency of the cached item. If the dependency changes, the item is labeled invalid.
+	 * @param CacheDependency $dependency dependency of the cached item. If the dependency changes, the item is labeled invalid.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
 	public function add($id, $value, $expire = 0, $dependency = null)
 	{
-		Yii::trace('Adding "' . $id . '" to cache', 'system.caching.' . get_class($this));
-		if ($dependency !== null && $this->autoSerialize) {
+		if ($dependency !== null && $this->serializer !== false) {
 			$dependency->evaluateDependency();
 		}
-		$data = $this->autoSerialize ? $this->serializeValue(array($value, $dependency)) : $value;
-		return $this->addValue($this->generateUniqueKey($id), $data, $expire);
+		if ($this->serializer === null) {
+			$value = array(serialize($value), $dependency);
+		} elseif ($this->serializer !== false) {
+			$value = array(call_user_func($this->serializer[0], $value), $dependency);
+		}
+		return $this->addValue($this->generateCacheKey($id), $value, $expire);
 	}
 
 	/**
@@ -204,8 +210,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 */
 	public function delete($id)
 	{
-		Yii::trace('Deleting "' . $id . '" from cache', 'system.caching.' . get_class($this));
-		return $this->deleteValue($this->generateUniqueKey($id));
+		return $this->deleteValue($this->generateCacheKey($id));
 	}
 
 	/**
@@ -215,7 +220,6 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 */
 	public function flush()
 	{
-		Yii::trace('Flushing cache', 'system.caching.' . get_class($this));
 		return $this->flushValues();
 	}
 
@@ -227,12 +231,10 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * is needed.
 	 * @param string $key a unique key identifying the cached value
 	 * @return string the value stored in cache, false if the value is not in the cache or expired.
-	 * @throws CException if this method is not overridden by child classes
 	 */
 	protected function getValue($key)
 	{
-		throw new CException(Yii::t('yii', '{className} does not support get() functionality.',
-			array('{className}' => get_class($this))));
+		return false;
 	}
 
 	/**
@@ -264,12 +266,10 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * @param string $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
-	 * @throws CException if this method is not overridden by child classes
 	 */
 	protected function setValue($key, $value, $expire)
 	{
-		throw new CException(Yii::t('yii', '{className} does not support set() functionality.',
-			array('{className}' => get_class($this))));
+		return true;
 	}
 
 	/**
@@ -283,12 +283,10 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * @param string $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
-	 * @throws CException if this method is not overridden by child classes
 	 */
 	protected function addValue($key, $value, $expire)
 	{
-		throw new CException(Yii::t('yii', '{className} does not support add() functionality.',
-			array('{className}' => get_class($this))));
+		return true;
 	}
 
 	/**
@@ -296,61 +294,20 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * This method should be implemented by child classes to delete the data from actual cache storage.
 	 * @param string $key the key of the value to be deleted
 	 * @return boolean if no error happens during deletion
-	 * @throws CException if this method is not overridden by child classes
 	 */
 	protected function deleteValue($key)
 	{
-		throw new CException(Yii::t('yii', '{className} does not support delete() functionality.',
-			array('{className}' => get_class($this))));
+		return true;
 	}
 
 	/**
 	 * Deletes all values from cache.
 	 * Child classes may implement this method to realize the flush operation.
 	 * @return boolean whether the flush operation was successful.
-	 * @throws CException if this method is not overridden by child classes
-	 * @since 1.1.5
 	 */
 	protected function flushValues()
 	{
-		throw new CException(Yii::t('yii', '{className} does not support flushValues() functionality.',
-			array('{className}' => get_class($this))));
-	}
-
-	/**
-	 * Serializes the value before it will be stored in the actual cache backend.
-	 * This method will be called if {@link autoSerialize} is set to true. Child classes may override this method to change
-	 * the way the value is being serialized. The default implementation simply makes use of the PHP serialize() function
-	 * unless {@link useIgbinarySerializer} is set to true and the igbinary extension is installed.
-	 * Make sure to override {@link unserializeValue()} as well if you want to change the serialization process.
-	 * @param mixed $value the unserialized representation of the value
-	 * @return string the serialized representation of the value
-	 * @since 1.1.11
-	 **/
-	protected function serializeValue($value)
-	{
-		if ($this->useIgbinarySerializer) {
-			return igbinary_serialize($value);
-		}
-		return serialize($value);
-	}
-
-	/**
-	 * Unserializes the value after it was retrieved from the actual cache backend.
-	 * This method will be called if {@link autoSerialize} is set to true. Child classes may override this method to change
-	 * the way the value is being unserialized.  The default implementation simply makes use of the PHP unserialize() function
-	 * unless {@link useIgbinarySerializer} is set to true and the igbinary extension is installed.
-	 * Make sure to override {@link serializeValue()} as well if you want to change the serialization process.
-	 * @param string $value the serialized representation of the value
-	 * @return mixed the unserialized representation of the value
-	 * @since 1.1.11
-	 **/
-	protected function unserializeValue($value)
-	{
-		if ($this->useIgbinarySerializer) {
-			return igbinary_unserialize($value);
-		}
-		return unserialize($value);
+		return true;
 	}
 
 	/**
@@ -392,7 +349,6 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * Deletes the value with the specified key from cache
 	 * This method is required by the interface ArrayAccess.
 	 * @param string $id the key of the value to be deleted
-	 * @return boolean if no error happens during deletion
 	 */
 	public function offsetUnset($id)
 	{

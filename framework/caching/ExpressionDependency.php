@@ -2,11 +2,12 @@
 /**
  * CExpressionDependency class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
 
 /**
  * CExpressionDependency represents a dependency based on the result of a PHP expression.
@@ -17,9 +18,7 @@
  * the same as the one evaluated when storing the data to cache.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.caching.dependencies
- * @since 1.0
+ * @since 2.0
  */
 class CExpressionDependency extends CCacheDependency
 {

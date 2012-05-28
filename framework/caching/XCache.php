@@ -2,11 +2,12 @@
 /**
  * CXCache class file
  *
- * @author Wei Zhuo <weizhuo[at]gmail[dot]com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
 
 /**
  * CXCache implements a cache application module based on {@link http://xcache.lighttpd.net/ xcache}.
@@ -16,9 +17,8 @@
  *
  * See {@link CCache} manual for common cache operations that are supported by CXCache.
  *
- * @author Wei Zhuo <weizhuo[at]gmail[dot]com>
- * @version $Id$
- * @package system.caching
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
  */
 class CXCache extends CCache
 {

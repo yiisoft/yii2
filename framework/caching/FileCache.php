@@ -2,11 +2,12 @@
 /**
  * CFileCache class file
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
 
 /**
  * CFileCache provides a file-based caching mechanism.
@@ -21,8 +22,7 @@
  * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.caching
+ * @since 2.0
  */
 class CFileCache extends CCache
 {
@@ -56,7 +56,7 @@ class CFileCache extends CCache
 	{
 		parent::init();
 		if($this->cachePath===null)
-			$this->cachePath=Yii::app()->getRuntimePath().DIRECTORY_SEPARATOR.'cache';
+			$this->cachePath=\Yii::$application->getRuntimePath().DIRECTORY_SEPARATOR.'cache';
 		if(!is_dir($this->cachePath))
 			mkdir($this->cachePath,0777,true);
 	}

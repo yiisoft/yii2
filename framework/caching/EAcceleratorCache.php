@@ -2,11 +2,13 @@
 /**
  * CEAcceleratorCache class file
  *
- * @author Steffen Dietz <steffo.dietz[at]googlemail[dot]com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
+
 
 /**
  * CEAcceleratorCache implements a cache application module based on {@link http://eaccelerator.net/ eaccelerator}.
@@ -18,9 +20,8 @@
  * Please note that as of v0.9.6, eAccelerator no longer supports data caching.
  * This means if you still want to use this component, your eAccelerator should be of 0.9.5.x or lower version.
  *
- * @author Steffen Dietz <steffo.dietz[at]googlemail[dot]com>
- * @version $Id$
- * @package system.caching
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
  */
 class CEAcceleratorCache extends CCache
 {

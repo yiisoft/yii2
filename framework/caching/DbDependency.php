@@ -2,11 +2,13 @@
 /**
  * CDbCacheDependency class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
+
 
 /**
  * CDbCacheDependency represents a dependency based on the query result of a SQL statement.
@@ -17,9 +19,7 @@
  * component. It is this DB connection that is used to perform the query.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.caching.dependencies
- * @since 1.0
+ * @since 2.0
  */
 class CDbCacheDependency extends CCacheDependency
 {
@@ -102,7 +102,7 @@ class CDbCacheDependency extends CCacheDependency
 			return $this->_db;
 		else
 		{
-			if(($this->_db=Yii::app()->getComponent($this->connectionID)) instanceof CDbConnection)
+			if(($this->_db=\Yii::$application->getComponent($this->connectionID)) instanceof CDbConnection)
 				return $this->_db;
 			else
 				throw new CException(Yii::t('yii','CDbCacheDependency.connectionID "{id}" is invalid. Please make sure it refers to the ID of a CDbConnection application component.',

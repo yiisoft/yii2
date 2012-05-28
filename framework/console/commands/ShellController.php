@@ -112,7 +112,7 @@ EOD;
 		if(($_path_=@getenv('YIIC_SHELL_COMMAND_PATH'))!==false)
 			$_runner_->addCommands($_path_);
 		$_commands_=$_runner_->commands;
-		$log=Yii::app()->log;
+		$log=\Yii::$application->log;
 
 		while(($_line_=$this->prompt("\n>>"))!==false)
 		{

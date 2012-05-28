@@ -2,11 +2,12 @@
 /**
  * CChainedCacheDependency class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
 
 /**
  * CChainedCacheDependency represents a list of cache dependencies.
@@ -22,9 +23,7 @@
  * @property boolean $hasChanged Whether the dependency is changed or not.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.caching.dependencies
- * @since 1.0
+ * @since 2.0
  */
 class CChainedCacheDependency extends CComponent implements ICacheDependency
 {

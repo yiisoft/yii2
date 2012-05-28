@@ -126,7 +126,7 @@ class CTheme extends CComponent
 				$module=$module->getParentModule();
 			}
 			if($module===null)
-				$layoutName=Yii::app()->layout;
+				$layoutName=\Yii::$application->layout;
 			else
 			{
 				$layoutName=$module->layout;

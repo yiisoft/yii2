@@ -2,11 +2,13 @@
 /**
  * CDbCache class file
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
+
 
 /**
  * CDbCache implements a cache application component by storing cached data in a database.
@@ -27,9 +29,7 @@
  * @property CDbConnection $dbConnection The DB connection instance.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.caching
- * @since 1.0
+ * @since 2.0
  */
 class CDbCache extends CCache
 {
@@ -150,7 +150,7 @@ EOD;
 			return $this->_db;
 		else if(($id=$this->connectionID)!==null)
 		{
-			if(($this->_db=Yii::app()->getComponent($id)) instanceof CDbConnection)
+			if(($this->_db=\Yii::$application->getComponent($id)) instanceof CDbConnection)
 				return $this->_db;
 			else
 				throw new CException(Yii::t('yii','CDbCache.connectionID "{id}" is invalid. Please make sure it refers to the ID of a CDbConnection application component.',
@@ -158,7 +158,7 @@ EOD;
 		}
 		else
 		{
-			$dbFile=Yii::app()->getRuntimePath().DIRECTORY_SEPARATOR.'cache-'.Yii::getVersion().'.db';
+			$dbFile=\Yii::$application->getRuntimePath().DIRECTORY_SEPARATOR.'cache-'.Yii::getVersion().'.db';
 			return $this->_db=new CDbConnection('sqlite:'.$dbFile);
 		}
 	}

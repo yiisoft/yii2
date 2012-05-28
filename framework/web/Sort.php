@@ -303,7 +303,7 @@ class CSort extends CComponent
 		else
 			$directions=array($attribute=>$descending);
 
-		$url=$this->createUrl(Yii::app()->getController(),$directions);
+		$url=$this->createUrl(\Yii::$application->getController(),$directions);
 
 		return $this->createLink($attribute,$label,$url,$htmlOptions);
 	}

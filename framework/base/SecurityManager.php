@@ -99,13 +99,13 @@ class SecurityManager extends ApplicationComponent
 			return $this->_validationKey;
 		}
 		else {
-			if (($key = Yii::app()->getGlobalState(self::STATE_VALIDATION_KEY)) !== null) {
+			if (($key = \Yii::$application->getGlobalState(self::STATE_VALIDATION_KEY)) !== null) {
 				$this->setValidationKey($key);
 			}
 			else {
 				$key = $this->generateRandomKey();
 				$this->setValidationKey($key);
-				Yii::app()->setGlobalState(self::STATE_VALIDATION_KEY, $key);
+				\Yii::$application->setGlobalState(self::STATE_VALIDATION_KEY, $key);
 			}
 			return $this->_validationKey;
 		}
@@ -135,13 +135,13 @@ class SecurityManager extends ApplicationComponent
 			return $this->_encryptionKey;
 		}
 		else {
-			if (($key = Yii::app()->getGlobalState(self::STATE_ENCRYPTION_KEY)) !== null) {
+			if (($key = \Yii::$application->getGlobalState(self::STATE_ENCRYPTION_KEY)) !== null) {
 				$this->setEncryptionKey($key);
 			}
 			else {
 				$key = $this->generateRandomKey();
 				$this->setEncryptionKey($key);
-				Yii::app()->setGlobalState(self::STATE_ENCRYPTION_KEY, $key);
+				\Yii::$application->setGlobalState(self::STATE_ENCRYPTION_KEY, $key);
 			}
 			return $this->_encryptionKey;
 		}

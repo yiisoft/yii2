@@ -130,7 +130,7 @@ class CHttpRequest extends CApplicationComponent
 		}
 
 		if($this->enableCsrfValidation)
-			Yii::app()->attachEventHandler('onBeginRequest',array($this,'validateCsrfToken'));
+			\Yii::$application->attachEventHandler('onBeginRequest',array($this,'validateCsrfToken'));
 	}
 
 
@@ -762,7 +762,7 @@ class CHttpRequest extends CApplicationComponent
 			$url=$this->getHostInfo().$url;
 		header('Location: '.$url, true, $statusCode);
 		if($terminate)
-			Yii::app()->end();
+			\Yii::$application->end();
 	}
 
 	/**
@@ -816,7 +816,7 @@ class CHttpRequest extends CApplicationComponent
 		{
 			// clean up the application first because the file downloading could take long time
 			// which may cause timeout of some resources (such as DB connection)
-			Yii::app()->end(0,false);
+			\Yii::$application->end(0,false);
 			echo $content;
 			exit(0);
 		}
@@ -858,7 +858,7 @@ class CHttpRequest extends CApplicationComponent
 	 * <b>Example</b>:
 	 * <pre>
 	 * <?php
-	 *    Yii::app()->request->xSendFile('/home/user/Pictures/picture1.jpg',array(
+	 *    \Yii::$application->request->xSendFile('/home/user/Pictures/picture1.jpg',array(
 	 *        'saveName'=>'image1.jpg',
 	 *        'mimeType'=>'image/jpeg',
 	 *        'terminate'=>false,
@@ -906,7 +906,7 @@ class CHttpRequest extends CApplicationComponent
 		header(trim($options['xHeader']).': '.$filePath);
 
 		if(!isset($options['terminate']) || $options['terminate'])
-			Yii::app()->end();
+			\Yii::$application->end();
 	}
 
 	/**
@@ -1029,7 +1029,7 @@ class CCookieCollection extends CMap
 		$cookies=array();
 		if($this->_request->enableCookieValidation)
 		{
-			$sm=Yii::app()->getSecurityManager();
+			$sm=\Yii::$application->getSecurityManager();
 			foreach($_COOKIE as $name=>$value)
 			{
 				if(is_string($value) && ($value=$sm->validateData($value))!==false)
@@ -1090,7 +1090,7 @@ class CCookieCollection extends CMap
 	{
 		$value=$cookie->value;
 		if($this->_request->enableCookieValidation)
-			$value=Yii::app()->getSecurityManager()->hashData(serialize($value));
+			$value=\Yii::$application->getSecurityManager()->hashData(serialize($value));
 		if(version_compare(PHP_VERSION,'5.2.0','>='))
 			setcookie($cookie->name,$value,$cookie->expire,$cookie->path,$cookie->domain,$cookie->secure,$cookie->httpOnly);
 		else

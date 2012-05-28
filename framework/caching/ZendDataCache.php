@@ -2,11 +2,12 @@
 /**
  * CZendDataCache class file
  *
- * @author Steffen Dietz <steffo.dietz[at]googlemail[dot]com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
+namespace yii\caching;
 
 /**
  * CZendDataCache implements a cache application module based on the Zend Data Cache
@@ -16,9 +17,8 @@
  *
  * See {@link CCache} manual for common cache operations that are supported by CZendDataCache.
  *
- * @author Steffen Dietz <steffo.dietz[at]googlemail[dot]com>
- * @version $Id$
- * @package system.caching
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
  */
 class CZendDataCache extends CCache
 {
