@@ -1,6 +1,6 @@
 <?php
 /**
- * CWinCache class file
+ * WinCache class file
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,31 +10,18 @@
 namespace yii\caching;
 
 /**
- * CWinCache implements a cache application component based on {@link http://www.iis.net/expand/wincacheforphp WinCache}.
+ * WinCache provides XCache caching in terms of an application component.
  *
- * To use this application component, the WinCache PHP extension must be loaded.
+ * To use this application component, the [WinCache PHP extension](http://www.iis.net/expand/wincacheforphp)
+ * must be loaded. Also note that "wincache.ucenabled" should be set to "On" in your php.ini file.
  *
- * See {@link CCache} manual for common cache operations that are supported by CWinCache.
+ * See {@link CCache} manual for common cache operations that are supported by WinCache.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CWinCache extends CCache {
-	/**
-	 * Initializes this application component.
-	 * This method is required by the {@link IApplicationComponent} interface.
-	 * It checks the availability of WinCache extension and WinCache user cache.
-	 * @throws CException if WinCache extension is not loaded or user cache is disabled
-	 */
-	public function init()
-	{
-		parent::init();
-		if(!extension_loaded('wincache'))
-			throw new CException(Yii::t('yii', 'CWinCache requires PHP wincache extension to be loaded.'));
-		if(!ini_get('wincache.ucenabled'))
-			throw new CException(Yii::t('yii', 'CWinCache user cache is disabled. Please set wincache.ucenabled to On in your php.ini.'));
-	}
-
+class WinCache extends Cache
+{
 	/**
 	 * Retrieves a value from cache with a specified key.
 	 * This is the implementation of the method declared in the parent class.
@@ -49,7 +36,7 @@ class CWinCache extends CCache {
 	/**
 	 * Retrieves multiple values from cache with the specified keys.
 	 * @param array $keys a list of keys identifying the cached values
-	 * @return array a list of cached values indexed by the keys	 
+	 * @return array a list of cached values indexed by the keys
 	 */
 	protected function getValues($keys)
 	{
@@ -65,9 +52,9 @@ class CWinCache extends CCache {
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function setValue($key,$value,$expire)
+	protected function setValue($key, $value, $expire)
 	{
-		return wincache_ucache_set($key,$value,$expire);
+		return wincache_ucache_set($key, $value, $expire);
 	}
 
 	/**
@@ -79,9 +66,9 @@ class CWinCache extends CCache {
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function addValue($key,$value,$expire)
+	protected function addValue($key, $value, $expire)
 	{
-		return wincache_ucache_add($key,$value,$expire);
+		return wincache_ucache_add($key, $value, $expire);
 	}
 
 	/**
@@ -99,7 +86,6 @@ class CWinCache extends CCache {
 	 * Deletes all values from cache.
 	 * This is the implementation of the method declared in the parent class.
 	 * @return boolean whether the flush operation was successful.
-	 * @since 1.1.5
 	 */
 	protected function flushValues()
 	{

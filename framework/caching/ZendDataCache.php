@@ -1,6 +1,6 @@
 <?php
 /**
- * CZendDataCache class file
+ * ZendDataCache class file
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,31 +10,18 @@
 namespace yii\caching;
 
 /**
- * CZendDataCache implements a cache application module based on the Zend Data Cache
- * delivered with {@link http://www.zend.com/en/products/server/ ZendServer}.
+ * ZendDataCache provides Zend data caching in terms of an application component.
  *
- * To use this application component, the Zend Data Cache PHP extension must be loaded.
+ * To use this application component, the [Zend Data Cache PHP extensionn](http://www.zend.com/en/products/server/)
+ * must be loaded.
  *
- * See {@link CCache} manual for common cache operations that are supported by CZendDataCache.
+ * See [[Cache]] for common cache operations that ZendDataCache supports.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CZendDataCache extends CCache
+class ZendDataCache extends Cache
 {
-	/**
-	 * Initializes this application component.
-	 * This method is required by the {@link IApplicationComponent} interface.
-	 * It checks the availability of Zend Data Cache.
-	 * @throws CException if Zend Data Cache extension is not loaded.
-	 */
-	public function init()
-	{
-		parent::init();
-		if(!function_exists('zend_shm_cache_store'))
-			throw new CException(Yii::t('yii','CZendDataCache requires PHP Zend Data Cache extension to be loaded.'));
-	}
-
 	/**
 	 * Retrieves a value from cache with a specified key.
 	 * This is the implementation of the method declared in the parent class.
@@ -56,9 +43,9 @@ class CZendDataCache extends CCache
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function setValue($key,$value,$expire)
+	protected function setValue($key, $value, $expire)
 	{
-		return zend_shm_cache_store($key,$value,$expire);
+		return zend_shm_cache_store($key, $value, $expire);
 	}
 
 	/**
@@ -70,9 +57,9 @@ class CZendDataCache extends CCache
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function addValue($key,$value,$expire)
+	protected function addValue($key, $value, $expire)
 	{
-		return (NULL === zend_shm_cache_fetch($key)) ? $this->setValue($key,$value,$expire) : false;
+		return zend_shm_cache_fetch($key) === null ? $this->setValue($key, $value, $expire) : false;
 	}
 
 	/**
@@ -90,7 +77,6 @@ class CZendDataCache extends CCache
 	 * Deletes all values from cache.
 	 * This is the implementation of the method declared in the parent class.
 	 * @return boolean whether the flush operation was successful.
-	 * @since 1.1.5
 	 */
 	protected function flushValues()
 	{

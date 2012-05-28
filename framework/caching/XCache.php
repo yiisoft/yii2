@@ -1,6 +1,6 @@
 <?php
 /**
- * CXCache class file
+ * XCache class file
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,31 +10,19 @@
 namespace yii\caching;
 
 /**
- * CXCache implements a cache application module based on {@link http://xcache.lighttpd.net/ xcache}.
+ * XCache provides XCache caching in terms of an application component.
  *
- * To use this application component, the XCache PHP extension must be loaded.
- * Flush functionality will only work correctly if "xcache.admin.enable_auth" is set to "Off" in php.ini.
+ * To use this application component, the [XCache PHP extension](http://xcache.lighttpd.net/) must be loaded.
+ * Also note that the [[flush()]] functionality will work correctly only if "xcache.admin.enable_auth"
+ * is set to "Off" in php.ini.
  *
- * See {@link CCache} manual for common cache operations that are supported by CXCache.
+ * See [[Cache]] for common cache operations that XCache supports.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CXCache extends CCache
+class XCache extends Cache
 {
-	/**
-	 * Initializes this application component.
-	 * This method is required by the {@link IApplicationComponent} interface.
-	 * It checks the availability of memcache.
-	 * @throws CException if memcache extension is not loaded or is disabled.
-	 */
-	public function init()
-	{
-		parent::init();
-		if(!function_exists('xcache_isset'))
-			throw new CException(Yii::t('yii','CXCache requires PHP XCache extension to be loaded.'));
-	}
-
 	/**
 	 * Retrieves a value from cache with a specified key.
 	 * This is the implementation of the method declared in the parent class.
@@ -55,9 +43,9 @@ class CXCache extends CCache
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function setValue($key,$value,$expire)
+	protected function setValue($key, $value, $expire)
 	{
-		return xcache_set($key,$value,$expire);
+		return xcache_set($key, $value, $expire);
 	}
 
 	/**
@@ -69,9 +57,9 @@ class CXCache extends CCache
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function addValue($key,$value,$expire)
+	protected function addValue($key, $value, $expire)
 	{
-		return !xcache_isset($key) ? $this->setValue($key,$value,$expire) : false;
+		return !xcache_isset($key) ? $this->setValue($key, $value, $expire) : false;
 	}
 
 	/**
@@ -89,14 +77,13 @@ class CXCache extends CCache
 	 * Deletes all values from cache.
 	 * This is the implementation of the method declared in the parent class.
 	 * @return boolean whether the flush operation was successful.
-	 * @since 1.1.5
 	 */
 	protected function flushValues()
 	{
-		for($i=0, $max=xcache_count(XC_TYPE_VAR); $i<$max; $i++)
-		{
-			if(xcache_clear_cache(XC_TYPE_VAR, $i)===false)
+		for ($i = 0, $max = xcache_count(XC_TYPE_VAR); $i < $max; $i++) {
+			if (xcache_clear_cache(XC_TYPE_VAR, $i) === false) {
 				return false;
+			}
 		}
 		return true;
 	}
