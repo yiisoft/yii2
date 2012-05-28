@@ -10,41 +10,30 @@
 namespace yii\caching;
 
 use yii\base\ApplicationComponent;
-use yii\base\Exception;
 
 /**
- * Cache is the base class for cache classes with different cache storage implementation.
+ * Cache is the base class for cache classes supporting different cache storage implementation.
  *
- * A data item can be stored in cache by calling {@link set} and be retrieved back
- * later by {@link get}. In both operations, a key identifying the data item is required.
- * An expiration time and/or a dependency can also be specified when calling {@link set}.
- * If the data item expires or the dependency changes, calling {@link get} will not
- * return back the data item.
+ * A data item can be stored in cache by calling [[set()]] and be retrieved back
+ * later (in the same or different request) by [[get()]]. In both operations,
+ * a key identifying the data item is required. An expiration time and/or a [[CacheDependency|dependency]]
+ * can also be specified when calling [[set()]]. If the data item expires or the dependency
+ * changes at the time of calling [[get()]], the cache will return no data.
  *
- * Note, by definition, cache does not ensure the existence of a value
- * even if it does not expire. Cache is not meant to be a persistent storage.
+ * Derived classes should implement the following methods:
  *
- * Cache implements the interface {@link ICache} with the following methods:
- * <ul>
- * <li>{@link get} : retrieve the value with a key (if any) from cache</li>
- * <li>{@link set} : store the value with a key into cache</li>
- * <li>{@link add} : store the value only if cache does not have this key</li>
- * <li>{@link delete} : delete the value with the specified key from cache</li>
- * <li>{@link flush} : delete all values from cache</li>
- * </ul>
+ * - [[getValue]]: retrieve the value with a key (if any) from cache
+ * - [[setValue]]: store the value with a key into cache
+ * - [[addValue]]: store the value only if the cache does not have this key before
+ * - [[deleteValue]]: delete the value with the specified key from cache
+ * - [[flushValues]]: delete all values from cache
  *
- * Child classes must implement the following methods:
- * <ul>
- * <li>{@link getValue}</li>
- * <li>{@link setValue}</li>
- * <li>{@link addValue}</li>
- * <li>{@link deleteValue}</li>
- * <li>{@link flushValues} (optional)</li>
- * <li>{@link serializeValue} (optional)</li>
- * <li>{@link unserializeValue} (optional)</li>
- * </ul>
+ * Because Cache implements the ArrayAccess interface, it can be used like an array. For example,
  *
- * Cache also implements ArrayAccess so that it can be used like an array.
+ * ~~~
+ * $cache['foo'] = 'some data';
+ * echo $cache['foo'];
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -52,18 +41,16 @@ use yii\base\Exception;
 abstract class Cache extends ApplicationComponent implements \ArrayAccess
 {
 	/**
-	 * @var string a string prefixed to every cache key so that it is unique. Defaults to null which means
-	 * to use the {@link CApplication::getId() application ID}. If different applications need to access the same
-	 * pool of cached data, the same prefix should be set for each of the applications explicitly.
+	 * @var string a string prefixed to every cache key so that it is unique. Defaults to null, meaning using
+	 * the value of [[Application::id]] as the key prefix. You may set this property to be an empty string
+	 * if you don't want to use key prefix. It is recommended that you explicitly set this property to some
+	 * static value if the cached data needs to be shared among multiple applications.
 	 */
 	public $keyPrefix;
 	/**
-	 * @var boolean whether to hash the cache key for normalization purpose. Defaults to true.
-	 * Setting this property to false makes sure the cache
-	 * key will not be tampered when calling the relevant methods {@link get()}, {@link set()}, {@link add()} and {@link delete()}. This is useful if a Yii
-	 * application as well as an external application need to access the same cache pool (also see description of {@link keyPrefix} regarding this use case).
-	 * However, without normalization you should make sure the affected cache backend does support the structure (charset, length, etc.) of all the provided
-	 * cache keys, otherwise there might be unexpected behavior.
+	 * @var boolean whether to hash the cache keys so that they can fit in the underlying cache storage.
+	 * Defaults to true. If you set this to be false, you have to make sure the cache keys are allowed by
+	 * the cache storage.
 	 **/
 	public $hashKey = true;
 	/**
@@ -90,6 +77,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	}
 
 	/**
+	 * Generates a cache key from a given key.
 	 * @param string $key a key identifying a value to be cached
 	 * @return string a key generated from the provided key which ensures the uniqueness across applications
 	 */
@@ -123,9 +111,9 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 
 	/**
 	 * Retrieves multiple values from cache with the specified keys.
-	 * Some caches (such as memcache, apc) allow retrieving multiple cached values at one time,
-	 * which may improve the performance since it reduces the communication cost.
-	 * In case a cache doesn't support this feature natively, it will be simulated by this method.
+	 * Some caches (such as memcache, apc) allow retrieving multiple cached values at the same time,
+	 * which may improve the performance. In case a cache does not support this feature natively,
+	 * this method will try to simulate it.
 	 * @param array $ids list of keys identifying the cached values
 	 * @return array list of cached values corresponding to the specified keys. The array
 	 * is returned in terms of (key,value) pairs.
@@ -160,13 +148,14 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	/**
 	 * Stores a value identified by a key into cache.
 	 * If the cache already contains such a key, the existing value and
-	 * expiration time will be replaced with the new ones.
+	 * expiration time will be replaced with the new ones, respectively.
 	 *
 	 * @param string $id the key identifying the value to be cached
 	 * @param mixed $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * @param CacheDependency $dependency dependency of the cached item. If the dependency changes, the item is labeled invalid.
-	 * @return boolean true if the value is successfully stored into cache, false otherwise
+	 * @param CacheDependency $dependency dependency of the cached item. If the dependency changes,
+	 * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
+	 * @return boolean whether the value is successfully stored into cache
 	 */
 	public function set($id, $value, $expire = 0, $dependency = null)
 	{
@@ -187,8 +176,9 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * @param string $id the key identifying the value to be cached
 	 * @param mixed $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * @param CacheDependency $dependency dependency of the cached item. If the dependency changes, the item is labeled invalid.
-	 * @return boolean true if the value is successfully stored into cache, false otherwise
+	 * @param CacheDependency $dependency dependency of the cached item. If the dependency changes,
+	 * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
+	 * @return boolean whether the value is successfully stored into cache
 	 */
 	public function add($id, $value, $expire = 0, $dependency = null)
 	{
@@ -215,7 +205,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 
 	/**
 	 * Deletes all values from cache.
-	 * Be careful of performing this operation if the cache is shared by multiple applications.
+	 * Be careful of performing this operation if the cache is shared among multiple applications.
 	 * @return boolean whether the flush operation was successful.
 	 */
 	public function flush()
@@ -226,23 +216,54 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	/**
 	 * Retrieves a value from cache with a specified key.
 	 * This method should be implemented by child classes to retrieve the data
-	 * from specific cache storage. The uniqueness and dependency are handled
-	 * in {@link get()} already. So only the implementation of data retrieval
-	 * is needed.
+	 * from specific cache storage.
 	 * @param string $key a unique key identifying the cached value
 	 * @return string the value stored in cache, false if the value is not in the cache or expired.
 	 */
-	protected function getValue($key)
-	{
-		return false;
-	}
+	abstract protected function getValue($key);
+
+	/**
+	 * Stores a value identified by a key in cache.
+	 * This method should be implemented by child classes to store the data
+	 * in specific cache storage.
+	 * @param string $key the key identifying the value to be cached
+	 * @param string $value the value to be cached
+	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+	 * @return boolean true if the value is successfully stored into cache, false otherwise
+	 */
+	abstract protected function setValue($key, $value, $expire);
+
+	/**
+	 * Stores a value identified by a key into cache if the cache does not contain this key.
+	 * This method should be implemented by child classes to store the data
+	 * in specific cache storage.
+	 * @param string $key the key identifying the value to be cached
+	 * @param string $value the value to be cached
+	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+	 * @return boolean true if the value is successfully stored into cache, false otherwise
+	 */
+	abstract protected function addValue($key, $value, $expire);
+
+	/**
+	 * Deletes a value with the specified key from cache
+	 * This method should be implemented by child classes to delete the data from actual cache storage.
+	 * @param string $key the key of the value to be deleted
+	 * @return boolean if no error happens during deletion
+	 */
+	abstract protected function deleteValue($key);
+
+	/**
+	 * Deletes all values from cache.
+	 * Child classes may implement this method to realize the flush operation.
+	 * @return boolean whether the flush operation was successful.
+	 */
+	abstract protected function flushValues();
 
 	/**
 	 * Retrieves multiple values from cache with the specified keys.
-	 * The default implementation simply calls {@link getValue} multiple
-	 * times to retrieve the cached values one by one.
-	 * If the underlying cache storage supports multiget, this method should
-	 * be overridden to exploit that feature.
+	 * The default implementation calls [[getValue()]] multiple times to retrieve
+	 * the cached values one by one. If the underlying cache storage supports multiget,
+	 * this method should be overridden to exploit that feature.
 	 * @param array $keys a list of keys identifying the cached values
 	 * @return array a list of cached values indexed by the keys
 	 */
@@ -253,61 +274,6 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 			$results[$key] = $this->getValue($key);
 		}
 		return $results;
-	}
-
-	/**
-	 * Stores a value identified by a key in cache.
-	 * This method should be implemented by child classes to store the data
-	 * in specific cache storage. The uniqueness and dependency are handled
-	 * in {@link set()} already. So only the implementation of data storage
-	 * is needed.
-	 *
-	 * @param string $key the key identifying the value to be cached
-	 * @param string $value the value to be cached
-	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * @return boolean true if the value is successfully stored into cache, false otherwise
-	 */
-	protected function setValue($key, $value, $expire)
-	{
-		return true;
-	}
-
-	/**
-	 * Stores a value identified by a key into cache if the cache does not contain this key.
-	 * This method should be implemented by child classes to store the data
-	 * in specific cache storage. The uniqueness and dependency are handled
-	 * in {@link add()} already. So only the implementation of data storage
-	 * is needed.
-	 *
-	 * @param string $key the key identifying the value to be cached
-	 * @param string $value the value to be cached
-	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * @return boolean true if the value is successfully stored into cache, false otherwise
-	 */
-	protected function addValue($key, $value, $expire)
-	{
-		return true;
-	}
-
-	/**
-	 * Deletes a value with the specified key from cache
-	 * This method should be implemented by child classes to delete the data from actual cache storage.
-	 * @param string $key the key of the value to be deleted
-	 * @return boolean if no error happens during deletion
-	 */
-	protected function deleteValue($key)
-	{
-		return true;
-	}
-
-	/**
-	 * Deletes all values from cache.
-	 * Child classes may implement this method to realize the flush operation.
-	 * @return boolean whether the flush operation was successful.
-	 */
-	protected function flushValues()
-	{
-		return true;
 	}
 
 	/**
@@ -335,7 +301,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	/**
 	 * Stores the value identified by a key into cache.
 	 * If the cache already contains such a key, the existing value will be
-	 * replaced with the new ones. To add expiration and dependencies, use the set() method.
+	 * replaced with the new ones. To add expiration and dependencies, use the [[set()]] method.
 	 * This method is required by the interface ArrayAccess.
 	 * @param string $id the key identifying the value to be cached
 	 * @param mixed $value the value to be cached
