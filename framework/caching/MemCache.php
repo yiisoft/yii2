@@ -9,20 +9,27 @@
 
 namespace yii\caching;
 
+use yii\base\Exception;
+
 /**
- * MemCache implements a cache application component based on {@link http://memcached.org/ memcached}.
+ * MemCache implements a cache application component based on [memcache](http://pecl.php.net/package/memcache)
+ * and [memcached](http://pecl.php.net/package/memcached).
  *
- * MemCache can be configured with a list of memcache servers by settings
- * its {@link setServers servers} property. By default, MemCache assumes
- * there is a memcache server running on localhost at port 11211.
+ * MemCache supports both [memcache](http://pecl.php.net/package/memcache) and
+ * [memcached](http://pecl.php.net/package/memcached). By setting [[useMemcached]] to be true or false,
+ * one can let MemCache to use either memcached or memcache, respectively.
  *
- * See {@link CCache} manual for common cache operations that are supported by MemCache.
+ * MemCache can be configured with a list of memcache servers by settings its [[servers]] property.
+ * By default, MemCache assumes there is a memcache server running on localhost at port 11211.
+ *
+ * See [[Cache]] for common cache operations that ApcCache supports.
  *
  * Note, there is no security measure to protected data in memcache.
  * All data in memcache can be accessed by any process running in the system.
  *
  * To use MemCache as the cache application component, configure the application as follows,
- * <pre>
+ *
+ * ~~~
  * array(
  *     'components'=>array(
  *         'cache'=>array(
@@ -42,18 +49,13 @@ namespace yii\caching;
  *         ),
  *     ),
  * )
- * </pre>
- * In the above, two memcache servers are used: server1 and server2.
- * You can configure more properties of every server, including:
- * host, port, persistent, weight, timeout, retryInterval, status.
- * See {@link http://www.php.net/manual/en/function.memcache-addserver.php}
- * for more details.
+ * ~~~
  *
- * MemCache can also be used with {@link http://pecl.php.net/package/memcached memcached}.
- * To do so, set {@link useMemcached} to be true.
+ * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
+ * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
  *
- * @property mixed $memCache The memcache instance (or memcached if {@link useMemcached} is true) used by this component.
- * @property array $servers List of memcache server configurations. Each element is a {@link MemCacheServerConfiguration}.
+ * @property mixed $memCache The memcache instance (or memcached if [[useMemcached]] is true) used by this component.
+ * @property MemCacheServer[] $servers List of memcache server configurations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -68,7 +70,7 @@ class MemCache extends Cache
 	 */
 	public $useMemcached = false;
 	/**
-	 * @var Memcache the Memcache instance
+	 * @var \Memcache|\Memcached the Memcache instance
 	 */
 	private $_cache = null;
 	/**
@@ -78,9 +80,7 @@ class MemCache extends Cache
 
 	/**
 	 * Initializes this application component.
-	 * This method is required by the {@link IApplicationComponent} interface.
 	 * It creates the memcache instance and adds memcache servers.
-	 * @throws CException if memcache extension is not loaded
 	 */
 	public function init()
 	{
@@ -89,36 +89,41 @@ class MemCache extends Cache
 		$cache = $this->getMemCache();
 		if (count($servers)) {
 			foreach ($servers as $server) {
+				if ($server->host === null) {
+					throw new Exception("The 'host' property must be specified for every memcache server.");
+				}
 				if ($this->useMemcached) {
 					$cache->addServer($server->host, $server->port, $server->weight);
 				} else {
-					$cache->addServer($server->host, $server->port, $server->persistent, $server->weight, $server->timeout, $server->status);
+					$cache->addServer($server->host, $server->port, $server->persistent,
+						$server->weight, $server->timeout, $server->retryInterval, $server->status);
 				}
 			}
 		} else {
-			$cache->addServer('localhost', 11211);
+			$cache->addServer('127.0.0.1', 11211);
 		}
 	}
 
 	/**
-	 * @throws CException if extension isn't loaded
-	 * @return Memcache|Memcached the memcache instance (or memcached if {@link useMemcached} is true) used by this component.
+	 * Returns the underlying memcache (or memcached) object.
+	 * @return \Memcache|\Memcached the memcache (or memcached) object used by this cache component.
+	 * @throws Exception if memcache or memcached extension is not loaded
 	 */
 	public function getMemCache()
 	{
-		if ($this->_cache !== null) {
-			return $this->_cache;
-		} else {
+		if ($this->_cache === null) {
 			$extension = $this->useMemcached ? 'memcached' : 'memcache';
 			if (!extension_loaded($extension)) {
-				throw new CException(Yii::t('yii', "MemCache requires PHP $extension extension to be loaded."));
+				throw new Exception("MemCache requires PHP $extension extension to be loaded.");
 			}
-			return $this->_cache = $this->useMemcached ? new Memcached : new Memcache;
+			$this->_cache = $this->useMemcached ? new \Memcached : new \Memcache;
 		}
+		return $this->_cache;
 	}
 
 	/**
-	 * @return array list of memcache server configurations. Each element is a {@link MemCacheServerConfiguration}.
+	 * Returns the memcache server configurations.
+	 * @return MemCacheServer[] list of memcache server configurations.
 	 */
 	public function getServers()
 	{
@@ -133,7 +138,7 @@ class MemCache extends Cache
 	public function setServers($config)
 	{
 		foreach ($config as $c) {
-			$this->_servers[] = new MemCacheServerConfiguration($c);
+			$this->_servers[] = MemCacheServer::newInstance($c);
 		}
 	}
 
@@ -213,72 +218,9 @@ class MemCache extends Cache
 	 * Deletes all values from cache.
 	 * This is the implementation of the method declared in the parent class.
 	 * @return boolean whether the flush operation was successful.
-	 * @since 1.1.5
 	 */
 	protected function flushValues()
 	{
 		return $this->_cache->flush();
-	}
-}
-
-/**
- * MemCacheServerConfiguration represents the configuration data for a single memcache server.
- *
- * See {@link http://www.php.net/manual/en/function.Memcache-addServer.php}
- * for detailed explanation of each configuration property.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.caching
- * @since 1.0
- */
-class MemCacheServerConfiguration extends CComponent
-{
-	/**
-	 * @var string memcache server hostname or IP address
-	 */
-	public $host;
-	/**
-	 * @var integer memcache server port
-	 */
-	public $port = 11211;
-	/**
-	 * @var boolean whether to use a persistent connection
-	 */
-	public $persistent = true;
-	/**
-	 * @var integer probability of using this server among all servers.
-	 */
-	public $weight = 1;
-	/**
-	 * @var integer value in seconds which will be used for connecting to the server
-	 */
-	public $timeout = 15;
-	/**
-	 * @var integer how often a failed server will be retried (in seconds)
-	 */
-	public $retryInterval = 15;
-	/**
-	 * @var boolean if the server should be flagged as online upon a failure
-	 */
-	public $status = true;
-
-	/**
-	 * Constructor.
-	 * @param array $config list of memcache server configurations.
-	 * @throws CException if the configuration is not an array
-	 */
-	public function __construct($config)
-	{
-		if (is_array($config)) {
-			foreach ($config as $key => $value) {
-				$this->$key = $value;
-			}
-			if ($this->host === null) {
-				throw new CException(Yii::t('yii', 'MemCache server configuration must have "host" value.'));
-			}
-		} else {
-			throw new CException(Yii::t('yii', 'MemCache server configuration must be an array.'));
-		}
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * CCacheDependency class file.
+ * Dependency class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,9 +10,9 @@
 namespace yii\caching;
 
 /**
- * CCacheDependency is the base class for cache dependency classes.
+ * Dependency is the base class for cache dependency classes.
  *
- * CCacheDependency implements the {@link ICacheDependency} interface.
+ * Dependency implements the {@link ICacheDependency} interface.
  * Child classes should override its {@link generateDependentData} for
  * actual dependency checking.
  *
@@ -23,7 +23,7 @@ namespace yii\caching;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CCacheDependency extends CComponent implements ICacheDependency
+class Dependency extends \yii\base\Object
 {
 	/**
 	 * @var boolean Whether this dependency is reusable or not.
