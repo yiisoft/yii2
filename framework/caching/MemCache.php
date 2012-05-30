@@ -54,7 +54,7 @@ use yii\base\Exception;
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
  * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
  *
- * @property mixed $memCache The memcache instance (or memcached if [[useMemcached]] is true) used by this component.
+ * @property \Memcache|\Memcached $memCache The memcache instance (or memcached if [[useMemcached]] is true) used by this component.
  * @property MemCacheServer[] $servers List of memcache server configurations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

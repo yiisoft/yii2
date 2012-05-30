@@ -1,6 +1,6 @@
 <?php
 /**
- * CFileCache class file
+ * FileCache class file
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -9,92 +9,57 @@
 
 namespace yii\caching;
 
+use yii\base\Exception;
+
 /**
- * CFileCache provides a file-based caching mechanism.
+ * FileCache implements a cache component using files.
  *
- * For each data value being cached, CFileCache will use store it in a separate file
- * under {@link cachePath} which defaults to 'protected/runtime/cache'.
- * CFileCache will perform garbage collection automatically to remove expired cache files.
+ * For each data value being cached, FileCache will store it in a separate file.
+ * The cache files are placed under [[cachePath]]. FileCache will perform garbage collection
+ * automatically to remove expired cache files.
  *
- * See {@link CCache} manual for common cache operations that are supported by CFileCache.
- *
- * @property integer $gCProbability The probability (parts per million) that garbage collection (GC) should be performed
- * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
+ * Please refer to [[Cache]] for common cache operations that are supported by FileCache.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CFileCache extends CCache
+class FileCache extends Cache
 {
 	/**
-	 * @var string the directory to store cache files. Defaults to null, meaning
-	 * using 'protected/runtime/cache' as the directory.
+	 * @var string the directory to store cache files. You may use path alias here.
 	 */
-	public $cachePath;
+	public $cachePath = '@application/runtime/cache';
 	/**
 	 * @var string cache file suffix. Defaults to '.bin'.
 	 */
-	public $cacheFileSuffix='.bin';
+	public $cacheFileSuffix = '.bin';
 	/**
-	 * @var integer the level of sub-directories to store cache files. Defaults to 0,
-	 * meaning no sub-directories. If the system has huge number of cache files (e.g. 10K+),
-	 * you may want to set this value to be 1 or 2 so that the file system is not over burdened.
-	 * The value of this property should not exceed 16 (less than 3 is recommended).
+	 * @var integer the level of sub-directories to store cache files. Defaults to 1.
+	 * If the system has huge number of cache files (e.g. one million), you may use a bigger value
+	 * (usually no bigger than 3). Using sub-directories is mainly to ensure the file system
+	 * is not over burdened with a single directory having too many files.
 	 */
-	public $directoryLevel=0;
-
-	private $_gcProbability=100;
-	private $_gced=false;
+	public $directoryLevel = 1;
+	/**
+	 * @var integer the probability (parts per million) that garbage collection (GC) should be performed
+	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
+	 * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
+	 **/
+	public $gcProbability = 100;
 
 	/**
-	 * Initializes this application component.
-	 * This method is required by the {@link IApplicationComponent} interface.
-	 * It checks the availability of memcache.
-	 * @throws CException if APC cache extension is not loaded or is disabled.
+	 * Initializes this component by ensuring the existence of the cache path.
 	 */
 	public function init()
 	{
 		parent::init();
-		if($this->cachePath===null)
-			$this->cachePath=\Yii::$application->getRuntimePath().DIRECTORY_SEPARATOR.'cache';
-		if(!is_dir($this->cachePath))
-			mkdir($this->cachePath,0777,true);
-	}
-
-	/**
-	 * @return integer the probability (parts per million) that garbage collection (GC) should be performed
-	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
-	 */
-	public function getGCProbability()
-	{
-		return $this->_gcProbability;
-	}
-
-	/**
-	 * @param integer $value the probability (parts per million) that garbage collection (GC) should be performed
-	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
-	 * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
-	 */
-	public function setGCProbability($value)
-	{
-		$value=(int)$value;
-		if($value<0)
-			$value=0;
-		if($value>1000000)
-			$value=1000000;
-		$this->_gcProbability=$value;
-	}
-
-	/**
-	 * Deletes all values from cache.
-	 * This is the implementation of the method declared in the parent class.
-	 * @return boolean whether the flush operation was successful.
-	 * @since 1.1.5
-	 */
-	protected function flushValues()
-	{
-		$this->gc(false);
-		return true;
+		$this->cachePath = \Yii::getAlias($this->cachePath);
+		if ($this->cachePath === false) {
+			throw new Exception('FileCache.cachePath must be a valid path alias.');
+		}
+		if (!is_dir($this->cachePath)) {
+			mkdir($this->cachePath, 0777, true);
+		}
 	}
 
 	/**
@@ -105,12 +70,12 @@ class CFileCache extends CCache
 	 */
 	protected function getValue($key)
 	{
-		$cacheFile=$this->getCacheFile($key);
-		if(($time=@filemtime($cacheFile))>time())
+		$cacheFile = $this->getCacheFile($key);
+		if (($time = @filemtime($cacheFile)) > time()) {
 			return @file_get_contents($cacheFile);
-		else if($time>0)
-			@unlink($cacheFile);
-		return false;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -122,28 +87,23 @@ class CFileCache extends CCache
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function setValue($key,$value,$expire)
+	protected function setValue($key, $value, $expire)
 	{
-		if(!$this->_gced && mt_rand(0,1000000)<$this->_gcProbability)
-		{
-			$this->gc();
-			$this->_gced=true;
+		if ($expire <= 0) {
+			$expire = 31536000; // 1 year
 		}
+		$expire += time();
 
-		if($expire<=0)
-			$expire=31536000; // 1 year
-		$expire+=time();
-
-		$cacheFile=$this->getCacheFile($key);
-		if($this->directoryLevel>0)
-			@mkdir(dirname($cacheFile),0777,true);
-		if(@file_put_contents($cacheFile,$value,LOCK_EX)!==false)
-		{
-			@chmod($cacheFile,0777);
-			return @touch($cacheFile,$expire);
+		$cacheFile = $this->getCacheFile($key);
+		if ($this->directoryLevel > 0) {
+			@mkdir(dirname($cacheFile), 0777, true);
 		}
-		else
+		if (@file_put_contents($cacheFile, $value, LOCK_EX) !== false) {
+			@chmod($cacheFile, 0777);
+			return @touch($cacheFile, $expire);
+		} else {
 			return false;
+		}
 	}
 
 	/**
@@ -155,12 +115,13 @@ class CFileCache extends CCache
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function addValue($key,$value,$expire)
+	protected function addValue($key, $value, $expire)
 	{
-		$cacheFile=$this->getCacheFile($key);
-		if(@filemtime($cacheFile)>time())
+		$cacheFile = $this->getCacheFile($key);
+		if (@filemtime($cacheFile) > time()) {
 			return false;
-		return $this->setValue($key,$value,$expire);
+		}
+		return $this->setValue($key, $value, $expire);
 	}
 
 	/**
@@ -171,7 +132,7 @@ class CFileCache extends CCache
 	 */
 	protected function deleteValue($key)
 	{
-		$cacheFile=$this->getCacheFile($key);
+		$cacheFile = $this->getCacheFile($key);
 		return @unlink($cacheFile);
 	}
 
@@ -182,41 +143,69 @@ class CFileCache extends CCache
 	 */
 	protected function getCacheFile($key)
 	{
-		if($this->directoryLevel>0)
-		{
-			$base=$this->cachePath;
-			for($i=0;$i<$this->directoryLevel;++$i)
-			{
-				if(($prefix=substr($key,$i+$i,2))!==false)
-					$base.=DIRECTORY_SEPARATOR.$prefix;
+		if ($this->directoryLevel > 0) {
+			$base = $this->cachePath;
+			for ($i = 0; $i < $this->directoryLevel; ++$i) {
+				if (($prefix = substr($key, $i + $i, 2)) !== false) {
+					$base .= DIRECTORY_SEPARATOR . $prefix;
+				}
 			}
-			return $base.DIRECTORY_SEPARATOR.$key.$this->cacheFileSuffix;
+			return $base . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
+		} else {
+			return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
 		}
-		else
-			return $this->cachePath.DIRECTORY_SEPARATOR.$key.$this->cacheFileSuffix;
+	}
+
+	/**
+	 * Deletes all values from cache.
+	 * This is the implementation of the method declared in the parent class.
+	 * @return boolean whether the flush operation was successful.
+	 */
+	protected function flushValues()
+	{
+		$this->gc(true, false);
+		return true;
 	}
 
 	/**
 	 * Removes expired cache files.
-	 * @param boolean $expiredOnly whether to removed expired cache files only. If true, all cache files under {@link cachePath} will be removed.
-	 * @param string $path the path to clean with. If null, it will be {@link cachePath}.
+	 * @param boolean $force whether to enforce the garbage collection regardless of [[gcProbability]].
+	 * Defaults to false, meaning the actual deletion happens with the probability as specified by [[gcProbability]].
+	 * @param boolean $expiredOnly whether to removed expired cache files only.
+	 * If true, all cache files under [[cachePath]] will be removed.
 	 */
-	public function gc($expiredOnly=true,$path=null)
+	public function gc($force = false, $expiredOnly = true)
 	{
-		if($path===null)
-			$path=$this->cachePath;
-		if(($handle=opendir($path))===false)
-			return;
-		while(($file=readdir($handle))!==false)
-		{
-			if($file[0]==='.')
-				continue;
-			$fullPath=$path.DIRECTORY_SEPARATOR.$file;
-			if(is_dir($fullPath))
-				$this->gc($expiredOnly,$fullPath);
-			else if($expiredOnly && @filemtime($fullPath)<time() || !$expiredOnly)
-				@unlink($fullPath);
+		if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
+			$this->gcRecursive($this->cachePath, $expiredOnly);
 		}
-		closedir($handle);
+	}
+
+	/**
+	 * Recursively removing expired cache files under a directory.
+	 * This method is mainly used by [[gc()]].
+	 * @param string $path the directory under which expired cache files are removed.
+	 * @param boolean $expiredOnly whether to only remove expired cache files. If false, all files
+	 * under `$path` will be removed.
+	 */
+	protected function gcRecursive($path, $expiredOnly)
+	{
+		if (($handle = opendir($path)) !== false) {
+			while (($file = readdir($handle)) !== false) {
+				if ($file[0] === '.') {
+					continue;
+				}
+				$fullPath = $path . DIRECTORY_SEPARATOR . $file;
+				if (is_dir($fullPath)) {
+					$this->gcRecursive($fullPath, $expiredOnly);
+					if (!$expiredOnly) {
+						@rmdir($fullPath);
+					}
+				} elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
+					@unlink($fullPath);
+				}
+			}
+			closedir($handle);
+		}
 	}
 }

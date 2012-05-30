@@ -16,16 +16,28 @@ use yii\db\dao\Query;
 /**
  * DbCache implements a cache application component by storing cached data in a database.
  *
- * DbCache stores cache data in a DB table named {@link cacheTableName}.
- * If the table does not exist, it will be automatically created.
- * By setting {@link autoCreateCacheTable} to false, you can also manually create the DB table.
+ * DbCache stores cache data in a DB table whose name is specified via [[cacheTableName]].
+ * For MySQL database, the table should be created beforehand as follows :
  *
- * DbCache relies on {@link http://www.php.net/manual/en/ref.pdo.php PDO} to access database.
- * By default, it will use a SQLite3 database under the application runtime directory.
- * You can also specify {@link connectionID} so that it makes use of
- * a DB application component to access database.
+ * ~~~
+ * CREATE TABLE tbl_cache (
+ *   id char(128) NOT NULL,
+ *   expire int(11) DEFAULT NULL,
+ *   data LONGBLOB,
+ *   PRIMARY KEY (id),
+ *   KEY expire (expire)
+ * );
+ * ~~~
  *
- * See {@link CCache} manual for common cache operations that are supported by DbCache.
+ * You should replace `LONGBLOB` as follows if you are using a different DBMS:
+ *
+ * - PostgreSQL: `BYTEA`
+ * - SQLite, SQL server, Oracle: `BLOB`
+ *
+ * DbCache connects to the database via the DB connection specified in [[connectionID]]
+ * which must refer to a valid DB application component.
+ *
+ * Please refer to [[Cache]] for common cache operations that are supported by DbCache.
  *
  * @property Connection $dbConnection The DB connection instance.
  *
@@ -35,29 +47,15 @@ use yii\db\dao\Query;
 class DbCache extends Cache
 {
 	/**
-	 * @var string the ID of the {@link Connection} application component. If not set,
-	 * a SQLite3 database will be automatically created and used. The SQLite database file
-	 * is <code>protected/runtime/cache-YiiVersion.db</code>.
+	 * @var string the ID of the [[Connection|DB connection]] application component.
+	 * Defaults to 'db'.
 	 */
-	public $connectionID;
+	public $connectionID = 'db';
 	/**
-	 * @var string name of the DB table to store cache content. Defaults to 'YiiCache'.
-	 * Note, if {@link autoCreateCacheTable} is false and you want to create the DB table
-	 * manually by yourself, you need to make sure the DB table is of the following structure:
-	 * <pre>
-	 * (id CHAR(128) PRIMARY KEY, expire INTEGER, value BLOB)
-	 * </pre>
-	 * Note, some DBMS might not support BLOB type. In this case, replace 'BLOB' with a suitable
-	 * binary data type (e.g. LONGBLOB in MySQL, BYTEA in PostgreSQL.)
-	 * @see autoCreateCacheTable
+	 * @var string name of the DB table to store cache content. Defaults to 'tbl_cache'.
+	 * The table must be created before using this cache component.
 	 */
 	public $cacheTableName = 'tbl_cache';
-	/**
-	 * @var boolean whether the cache DB table should be created automatically if it does not exist. Defaults to true.
-	 * If you already have the table created, it is recommended you set this property to be false to improve performance.
-	 * @see cacheTableName
-	 */
-	public $autoCreateCacheTable = true;
 	/**
 	 * @var integer the probability (parts per million) that garbage collection (GC) should be performed
 	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
@@ -70,57 +68,6 @@ class DbCache extends Cache
 	private $_db;
 
 	/**
-	 * Initializes this application component.
-	 *
-	 * This method is required by the {@link IApplicationComponent} interface.
-	 * It ensures the existence of the cache DB table.
-	 * It also removes expired data items from the cache.
-	 */
-	public function init()
-	{
-		parent::init();
-
-		$db = $this->getDbConnection();
-		$db->setActive(true);
-		if ($this->autoCreateCacheTable) {
-			$sql = "DELETE FROM {$this->cacheTableName} WHERE expire>0 AND expire<" . time();
-			try {
-				$db->createCommand($sql)->execute();
-			} catch (Exception $e) {
-				$this->createCacheTable($db, $this->cacheTableName);
-			}
-		}
-	}
-
-	/**
-	 * Creates the cache DB table.
-	 * @param Connection $db the database connection
-	 * @param string $tableName the name of the table to be created
-	 */
-	protected function createCacheTable($db, $tableName)
-	{
-		$driver = $db->getDriverName();
-		if ($driver === 'mysql') {
-			$blob = 'LONGBLOB';
-		} else {
-			if ($driver === 'pgsql') {
-				$blob = 'BYTEA';
-			} else {
-				$blob = 'BLOB';
-			}
-		}
-		$sql = <<<EOD
-CREATE TABLE $tableName
-(
-	id CHAR(128) PRIMARY KEY,
-	expire INTEGER,
-	value $blob
-)
-EOD;
-		$db->createCommand($sql)->execute();
-	}
-
-	/**
 	 * Returns the DB connection instance used for caching purpose.
 	 * @return Connection the DB connection instance
 	 * @throws Exception if [[connectionID]] does not point to a valid application component.
@@ -128,7 +75,8 @@ EOD;
 	public function getDbConnection()
 	{
 		if ($this->_db === null) {
-			if ($this->connectionID !== null && ($db = \Yii::$application->getComponent($this->connectionID)) instanceof Connection) {
+			$db = \Yii::$application->getComponent($this->connectionID);
+			if ($db instanceof Connection) {
 				$this->_db = $db;
 			} else {
 				throw new Exception("DbCache.connectionID must refer to the ID of a DB connection application component.");
@@ -155,10 +103,9 @@ EOD;
 	protected function getValue($key)
 	{
 		$query = new Query;
-		$query->select(array('value'))
+		$query->select(array('data'))
 			->from($this->cacheTableName)
-			->where(array('id' => $key))
-			->andWhere('expire = 0 OR expire > ' . time());
+			->where('id = :id AND (expire = 0 OR expire > :time)', array(':id' => $key, ':time' => time()));
 		$db = $this->getDbConnection();
 		if ($db->queryCachingDuration >= 0) {
 			$duration = $db->queryCachingDuration;
@@ -181,19 +128,20 @@ EOD;
 		if (empty($keys)) {
 			return array();
 		}
-
-		$ids = implode("','", $keys);
-		$time = time();
-		$sql = "SELECT id, value FROM {$this->cacheTableName} WHERE id IN ('$ids') AND (expire=0 OR expire>$time)";
+		$query = new Query;
+		$query->select(array('id', 'data'))
+			->from($this->cacheTableName)
+			->where(array('id' => $keys))
+			->andWhere("expire = 0 OR expire > " . time() . ")");
 
 		$db = $this->getDbConnection();
-		if ($db->queryCachingDuration > 0) {
+		if ($db->queryCachingDuration >= 0) {
 			$duration = $db->queryCachingDuration;
-			$db->queryCachingDuration = 0;
-			$rows = $db->createCommand($sql)->queryAll();
+			$db->queryCachingDuration = -1;
+			$rows = $query->createCommand($db)->queryAll();
 			$db->queryCachingDuration = $duration;
 		} else {
-			$rows = $db->createCommand($sql)->queryAll();
+			$rows = $query->createCommand($db)->queryAll();
 		}
 
 		$results = array();
@@ -201,7 +149,7 @@ EOD;
 			$results[$key] = false;
 		}
 		foreach ($rows as $row) {
-			$results[$row['id']] = $row['value'];
+			$results[$row['id']] = $row['data'];
 		}
 		return $results;
 	}
@@ -217,9 +165,21 @@ EOD;
 	 */
 	protected function setValue($key, $value, $expire)
 	{
-		$this->deleteValue($key);
-		return $this->addValue($key, $value, $expire);
-	}
+		$query = new Query;
+		$command = $query->update($this->cacheTableName, array(
+			'expire' => $expire > 0 ? $expire + time() : 0,
+			'data' => array($value, \PDO::PARAM_LOB),
+		), array(
+			'id' => $key,
+		))->createCommand($this->getDbConnection());
+
+		if ($command->execute()) {
+			$this->gc();
+			return true;
+		} else {
+			return $this->addValue($key, $value, $expire);
+		}
+ 	}
 
 	/**
 	 * Stores a value identified by a key into cache if the cache does not contain this key.
@@ -232,19 +192,21 @@ EOD;
 	 */
 	protected function addValue($key, $value, $expire)
 	{
-		if (mt_rand(0, 1000000) < $this->_gcProbability) {
-			$this->gc();
-		}
+		$this->gc();
 
 		if ($expire > 0) {
 			$expire += time();
 		} else {
 			$expire = 0;
 		}
-		$sql = "INSERT INTO {$this->cacheTableName} (id,expire,value) VALUES ('$key',$expire,:value)";
+
+		$query = new Query;
+		$command = $query->insert($this->cacheTableName, array(
+			'id' => $key,
+			'expire' => $expire,
+			'data' => array($value, \PDO::PARAM_LOB),
+		))->createCommand($this->getDbConnection());
 		try {
-			$command = $this->getDbConnection()->createCommand($sql);
-			$command->bindValue(':value', $value, PDO::PARAM_LOB);
 			$command->execute();
 			return true;
 		} catch (Exception $e) {
@@ -260,28 +222,39 @@ EOD;
 	 */
 	protected function deleteValue($key)
 	{
-		$sql = "DELETE FROM {$this->cacheTableName} WHERE id='$key'";
-		$this->getDbConnection()->createCommand($sql)->execute();
+		$query = new Query;
+		$query->delete($this->cacheTableName, array('id' => $key))
+			->createCommand($this->getDbConnection())
+			->execute();
 		return true;
 	}
 
 	/**
 	 * Removes the expired data values.
+	 * @param boolean $force whether to enforce the garbage collection regardless of [[gcProbability]].
+	 * Defaults to false, meaning the actual deletion happens with the probability as specified by [[gcProbability]].
 	 */
-	protected function gc()
+	public function gc($force = false)
 	{
-		$this->getDbConnection()->createCommand("DELETE FROM {$this->cacheTableName} WHERE expire>0 AND expire<" . time())->execute();
+		if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
+			$query = new Query;
+			$query->delete($this->cacheTableName, 'expire > 0 AND expire < ' . time())
+				->createCommand($this->getDbConnection())
+				->execute();
+		}
 	}
 
 	/**
 	 * Deletes all values from cache.
 	 * This is the implementation of the method declared in the parent class.
 	 * @return boolean whether the flush operation was successful.
-	 * @since 1.1.5
 	 */
 	protected function flushValues()
 	{
-		$this->getDbConnection()->createCommand("DELETE FROM {$this->cacheTableName}")->execute();
+		$query = new Query;
+		$query->delete($this->cacheTableName)
+			->createCommand($this->getDbConnection())
+			->execute();
 		return true;
 	}
 }

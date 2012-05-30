@@ -186,7 +186,9 @@ class Command extends \yii\base\Component
 	 * Note that the SQL data type of each value is determined by its PHP type.
 	 * @param array $values the values to be bound. This must be given in terms of an associative
 	 * array with array keys being the parameter names, and array values the corresponding parameter values,
-	 * e.g. `array(':name'=>'John', ':age'=>25)`.
+	 * e.g. `array(':name'=>'John', ':age'=>25)`. By default, the PDO type of each value is determined
+	 * by its PHP type. You may explicitly specify the PDO type by using an array: `array(value, type)`,
+	 * e.g. `array(':name'=>'John', ':profile'=>array($profile, \PDO::PARAM_LOB))`.
 	 * @return Command the current command being executed
 	 */
 	public function bindValues($values)
@@ -194,7 +196,13 @@ class Command extends \yii\base\Component
 		if (!empty($values)) {
 			$this->prepare();
 			foreach ($values as $name => $value) {
-				$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
+				if (is_array($value)) {
+					$type = $value[1];
+					$value = $value[0];
+				} else {
+					$type = $this->connection->getPdoType(gettype($value));
+				}
+				$this->pdoStatement->bindValue($name, $value, $type);
 				$this->_params[$name] = $value;
 			}
 		}
