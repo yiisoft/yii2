@@ -33,7 +33,6 @@ class Component extends \yii\base\Object
 	 * This method will check in the following order and act accordingly:
 	 *
 	 *  - a property defined by a getter: return the getter result
-	 *  - a behavior: return the behavior object
 	 *  - a property of a behavior: return the behavior property value
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
@@ -67,7 +66,8 @@ class Component extends \yii\base\Object
 	 * This method will check in the following order and act accordingly:
 	 *
 	 *  - a property defined by a setter: set the property value
-	 *  - an event: attach the handler to the event
+	 *  - an event in the format of "on xyz": attach the handler to the event "xyz"
+	 *  - a behavior in the format of "as xyz": attach the behavior named as "xyz"
 	 *  - a property of a behavior: set the behavior property value
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
@@ -218,9 +218,9 @@ class Component extends \yii\base\Object
 	 *
 	 * ~~~
 	 * 'behaviorName' => array(
-	 *	 'class' => 'BehaviorClass',
-	 *	 'property1' => 'value1',
-	 *	 'property2' => 'value2',
+	 *     'class' => 'BehaviorClass',
+	 *     'property1' => 'value1',
+	 *     'property2' => 'value2',
 	 * )
 	 * ~~~
 	 *
@@ -284,10 +284,10 @@ class Component extends \yii\base\Object
 	 * some examples:
 	 *
 	 * ~~~
-	 * function($event) { ... }		    // anonymous function
-	 * array($object, 'handleClick')	// $object->handleClick()
-	 * array('Page', 'handleClick')	    // Page::handleClick()
-	 * 'handleClick'					// global function handleClick()
+	 * function($event) { ... }         // anonymous function
+	 * array($object, 'handleClick')    // $object->handleClick()
+	 * array('Page', 'handleClick')     // Page::handleClick()
+	 * 'handleClick'                    // global function handleClick()
 	 * ~~~
 	 *
 	 * An event handler must be defined with the following signature,
