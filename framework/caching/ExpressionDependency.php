@@ -45,7 +45,7 @@ class CExpressionDependency extends CCacheDependency
 	 * This method returns the result of the PHP expression.
 	 * @return mixed the data needed to determine if dependency has been changed.
 	 */
-	protected function generateDependentData()
+	protected function generateDependencyData()
 	{
 		return $this->evaluateExpression($this->expression);
 	}

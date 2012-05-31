@@ -1,6 +1,6 @@
 <?php
 /**
- * CFileCacheDependency class file.
+ * FileDependency class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -9,19 +9,16 @@
 
 namespace yii\caching;
 
-
 /**
- * CFileCacheDependency represents a dependency based on a file's last modification time.
+ * FileDependency represents a dependency based on a file's last modification time.
  *
- * CFileCacheDependency performs dependency checking based on the
- * last modification time of the file specified via {@link fileName}.
- * The dependency is reported as unchanged if and only if the file's
- * last modification time remains unchanged.
+ * If th last modification time of the file specified via [[fileName]] is changed,
+ * the dependency is considered as changed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CFileCacheDependency extends CCacheDependency
+class FileDependency extends Dependency
 {
 	/**
 	 * @var string the name of the file whose last modification time is used to
@@ -33,9 +30,9 @@ class CFileCacheDependency extends CCacheDependency
 	 * Constructor.
 	 * @param string $fileName name of the file whose change is to be checked.
 	 */
-	public function __construct($fileName=null)
+	public function __construct($fileName = null)
 	{
-		$this->fileName=$fileName;
+		$this->fileName = $fileName;
 	}
 
 	/**
@@ -43,11 +40,8 @@ class CFileCacheDependency extends CCacheDependency
 	 * This method returns the file's last modification time.
 	 * @return mixed the data needed to determine if dependency has been changed.
 	 */
-	protected function generateDependentData()
+	protected function generateDependencyData()
 	{
-		if($this->fileName!==null)
-			return @filemtime($this->fileName);
-		else
-			throw new CException(Yii::t('yii','CFileCacheDependency.fileName cannot be empty.'));
+		return $this->fileName !== null ? @filemtime($this->fileName) : 0;
 	}
 }

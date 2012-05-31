@@ -9,8 +9,6 @@
 
 namespace yii\base;
 
-use yii\util\ArrayHelper;
-
 /**
  * ActionFilter is the base class for all action filters.
  *
@@ -36,7 +34,7 @@ class ActionFilter extends Behavior
 	 */
 	public $owner;
 	/**
-	 * @var array IDs (case-insensitive) of actions that this filter applies to.
+	 * @var array IDs of actions that this filter applies to.
 	 * If this property is empty or not set, it means this filter applies to all actions.
 	 * Note that if an action appears in [[except]], the filter will not apply to this action, even
 	 * if the action also appears in [[only]].
@@ -44,7 +42,7 @@ class ActionFilter extends Behavior
 	 */
 	public $only;
 	/**
-	 * @var array IDs (case-insensitive) of actions that this filter does NOT apply to.
+	 * @var array IDs of actions that this filter does NOT apply to.
 	 */
 	public $except;
 
@@ -86,7 +84,7 @@ class ActionFilter extends Behavior
 
 	public function applyTo(Action $action)
 	{
-		return (empty($this->only) || ArrayHelper::search($action->id, $this->only, false) !== false)
-			&& (empty($this->except) || ArrayHelper::search($action->id, $this->except, false) === false);
+		return (empty($this->only) || in_array($action->id, $this->only, false) !== false)
+			&& (empty($this->except) || in_array($action->id, $this->except, false) === false);
 	}
 }

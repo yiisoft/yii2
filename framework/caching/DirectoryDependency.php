@@ -1,6 +1,6 @@
 <?php
 /**
- * CDirectoryCacheDependency class file.
+ * DirectoryDependency class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -11,9 +11,9 @@ namespace yii\caching;
 
 
 /**
- * CDirectoryCacheDependency represents a dependency based on change of a directory.
+ * DirectoryDependency represents a dependency based on change of a directory.
  *
- * CDirectoryCacheDependency performs dependency checking based on the
+ * DirectoryDependency performs dependency checking based on the
  * modification time of the files contained in the specified directory.
  * The directory being checked is specified via {@link directory}.
  *
@@ -29,7 +29,7 @@ namespace yii\caching;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CDirectoryCacheDependency extends CCacheDependency
+class DirectoryDependency extends Dependency
 {
 	/**
 	 * @var string the directory whose change is used to determine if the dependency has been changed.
@@ -41,7 +41,7 @@ class CDirectoryCacheDependency extends CCacheDependency
 	 * If the value is less than 0, it means unlimited depth.
 	 * If the value is 0, it means checking the files directly under the specified directory.
 	 */
-	public $recursiveLevel=-1;
+	public $recursiveLevel = -1;
 	/**
 	 * @var string the regular expression matching valid file/directory names.
 	 * Only the matching files or directories will be checked for changes.
@@ -53,9 +53,9 @@ class CDirectoryCacheDependency extends CCacheDependency
 	 * Constructor.
 	 * @param string $directory the directory to be checked
 	 */
-	public function __construct($directory=null)
+	public function __construct($directory = null)
 	{
-		$this->directory=$directory;
+		$this->directory = $directory;
 	}
 
 	/**
@@ -63,12 +63,13 @@ class CDirectoryCacheDependency extends CCacheDependency
 	 * This method returns the modification timestamps for files under the directory.
 	 * @return mixed the data needed to determine if dependency has been changed.
 	 */
-	protected function generateDependentData()
+	protected function generateDependencyData()
 	{
-		if($this->directory!==null)
+		if ($this->directory !== null) {
 			return $this->generateTimestamps($this->directory);
-		else
-			throw new CException(Yii::t('yii','CDirectoryCacheDependency.directory cannot be empty.'));
+		} else {
+			throw new CException(Yii::t('yii', 'DirectoryDependency.directory cannot be empty.'));
+		}
 	}
 
 	/**
@@ -78,28 +79,29 @@ class CDirectoryCacheDependency extends CCacheDependency
 	 * @param integer $level level of the recursion
 	 * @return array list of file modification time indexed by the file path
 	 */
-	protected function generateTimestamps($directory,$level=0)
+	protected function generateTimestamps($directory, $level = 0)
 	{
-		if(($dir=@opendir($directory))===false)
-			throw new CException(Yii::t('yii','"{path}" is not a valid directory.',
-				array('{path}'=>$directory)));
-		$timestamps=array();
-		while(($file=readdir($dir))!==false)
-		{
-			$path=$directory.DIRECTORY_SEPARATOR.$file;
-			if($file==='.' || $file==='..')
+		if (($dir = @opendir($directory)) === false) {
+			throw new CException(Yii::t('yii', '"{path}" is not a valid directory.',
+				array('{path}' => $directory)));
+		}
+		$timestamps = array();
+		while (($file = readdir($dir)) !== false) {
+			$path = $directory . DIRECTORY_SEPARATOR . $file;
+			if ($file === '.' || $file === '..') {
 				continue;
-			if($this->namePattern!==null && !preg_match($this->namePattern,$file))
-				continue;
-			if(is_file($path))
-			{
-				if($this->validateFile($path))
-					$timestamps[$path]=filemtime($path);
 			}
-			else
-			{
-				if(($this->recursiveLevel<0 || $level<$this->recursiveLevel) && $this->validateDirectory($path))
-					$timestamps=array_merge($timestamps, $this->generateTimestamps($path,$level+1));
+			if ($this->namePattern !== null && !preg_match($this->namePattern, $file)) {
+				continue;
+			}
+			if (is_file($path)) {
+				if ($this->validateFile($path)) {
+					$timestamps[$path] = filemtime($path);
+				}
+			} else {
+				if (($this->recursiveLevel < 0 || $level < $this->recursiveLevel) && $this->validateDirectory($path)) {
+					$timestamps = array_merge($timestamps, $this->generateTimestamps($path, $level + 1));
+				}
 			}
 		}
 		closedir($dir);

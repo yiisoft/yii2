@@ -55,6 +55,10 @@ class View extends Component
 	 * @var mixed custom parameters that are available in the view template
 	 */
 	public $params;
+	/**
+	 * @var Widget[] the widgets that are currently not ended
+	 */
+	protected  $widgetStack = array();
 
 	/**
 	 * Constructor.
@@ -128,17 +132,20 @@ class View extends Component
 		return \Yii::createObject($properties, $this->context);
 	}
 
-	public function widget($class, $properties = array())
+	public function widget($class, $properties = array(), $captureOutput = false)
 	{
-		$widget = $this->createWidget($class, $properties);
-		echo $widget->run();
-		return $widget;
+		if ($captureOutput) {
+			ob_start();
+			ob_implicit_flush(false);
+			$widget = $this->createWidget($class, $properties);
+			$widget->run();
+			return ob_get_clean();
+		} else {
+			$widget = $this->createWidget($class, $properties);
+			$widget->run();
+			return $widget;
+		}
 	}
-
-	/**
-	 * @var Widget[] the widgets that are currently not ended
-	 */
-	private $_widgetStack = array();
 
 	/**
 	 * Begins a widget.
@@ -149,7 +156,7 @@ class View extends Component
 	public function beginWidget($class, $properties = array())
 	{
 		$widget = $this->createWidget($class, $properties);
-		$this->_widgetStack[] = $widget;
+		$this->widgetStack[] = $widget;
 		return $widget;
 	}
 
@@ -163,8 +170,8 @@ class View extends Component
 	 */
 	public function endWidget()
 	{
-		if (($widget = array_pop($this->_widgetStack)) !== null) {
-			echo $widget->run();
+		if (($widget = array_pop($this->widgetStack)) !== null) {
+			$widget->run();
 			return $widget;
 		} else {
 			throw new Exception("Unmatched beginWidget() and endWidget() calls.");

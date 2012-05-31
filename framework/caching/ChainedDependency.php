@@ -1,6 +1,6 @@
 <?php
 /**
- * CChainedCacheDependency class file.
+ * ChainedDependency class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,12 +10,12 @@
 namespace yii\caching;
 
 /**
- * CChainedCacheDependency represents a list of cache dependencies.
+ * ChainedDependency represents a list of cache dependencies.
  *
- * If any of the dependencies reports a dependency change, CChainedCacheDependency
+ * If any of the dependencies reports a dependency change, ChainedDependency
  * will return true for the checking.
  *
- * To add dependencies to CChainedCacheDependency, use {@link getDependencies Dependencies}
+ * To add dependencies to ChainedDependency, use {@link getDependencies Dependencies}
  * which gives a {@link CTypedList} instance and can be used like an array
  * (see {@link CList} for more details}).
  *
@@ -25,7 +25,7 @@ namespace yii\caching;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CChainedCacheDependency extends CComponent implements ICacheDependency
+class ChainedDependency extends Dependency
 {
 	private $_dependencies=null;
 

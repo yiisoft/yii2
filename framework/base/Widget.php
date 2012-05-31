@@ -70,7 +70,6 @@ class Widget extends Component implements Initable
 
 	/**
 	 * Executes the widget.
-	 * @return string the rendering result of the widget
 	 */
 	public function run()
 	{
