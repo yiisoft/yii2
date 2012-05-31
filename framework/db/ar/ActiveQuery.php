@@ -129,7 +129,7 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 	 * It changes the query caching parameter of the {@link dbConnection} instance.
 	 * @param integer $duration the number of seconds that query results may remain valid in cache.
 	 * If this is 0, the caching will be disabled.
-	 * @param CCacheDependency $dependency the dependency that will be used when saving the query results into cache.
+	 * @param \yii\caching\Dependency $dependency the dependency that will be used when saving the query results into cache.
 	 * @param integer $queryCount number of SQL queries that need to be cached after calling this method. Defaults to 1,
 	 * meaning that the next SQL query will be cached.
 	 * @return ActiveRecord the active record instance itself.

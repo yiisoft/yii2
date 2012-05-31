@@ -78,16 +78,16 @@ class BaseQuery extends \yii\base\Component
 	 */
 	public $having;
 	/**
-	 * @var array list of query parameter values indexed by parameter placeholders.
-	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
-	 */
-	public $params;
-	/**
 	 * @var string|BaseQuery[] the UNION clause(s) in a SQL statement. This can be either a string
 	 * representing a single UNION clause or an array representing multiple UNION clauses.
 	 * Each union clause can be a string or a `BaseQuery` object which refers to the SQL statement.
 	 */
 	public $union;
+	/**
+	 * @var array list of query parameter values indexed by parameter placeholders.
+	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 */
+	public $params;
 
 	/**
 	 * Sets the SELECT part of the query.

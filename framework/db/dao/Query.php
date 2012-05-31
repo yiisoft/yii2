@@ -47,6 +47,10 @@ class Query extends BaseQuery
 	 * If this property is not set, it means this query represents a SELECT statement.
 	 */
 	public $operation;
+	/**
+	 * @var string the SQL statement that this query represents. This is directly set by user.
+	 */
+	public $sql;
 
 	/**
 	 * Generates and returns the SQL statement according to this query.
@@ -58,6 +62,9 @@ class Query extends BaseQuery
 	 */
 	public function getSql($connection = null)
 	{
+		if ($this->sql !== null) {
+			return $this->sql;
+		}
 		if ($connection === null) {
 			$connection = \Yii::$application->db;
 		}

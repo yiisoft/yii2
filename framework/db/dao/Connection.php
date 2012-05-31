@@ -238,15 +238,15 @@ class Connection extends \yii\base\ApplicationComponent
 	 * [[Driver]] class to support DBMS that is not supported by Yii.
 	 */
 	public $driverMap = array(
-		'pgsql' => '\yii\db\dao\pgsql\Driver', // PostgreSQL
-		'mysqli' => '\yii\db\dao\mysql\Driver', // MySQL
-		'mysql' => '\yii\db\dao\mysql\Driver', // MySQL
-		'sqlite' => '\yii\db\dao\sqlite\Driver', // sqlite 3
-		'sqlite2' => '\yii\db\dao\sqlite\Driver', // sqlite 2
-		'mssql' => '\yii\db\dao\mssql\Driver', // Mssql driver on windows hosts
-		'dblib' => '\yii\db\dao\mssql\Driver', // dblib drivers on linux (and maybe others os) hosts
-		'sqlsrv' => '\yii\db\dao\mssql\Driver', // Mssql
-		'oci' => '\yii\db\dao\oci\Driver', // Oracle driver
+		'pgsql' => 'yii\db\dao\pgsql\Driver', // PostgreSQL
+		'mysqli' => 'yii\db\dao\mysql\Driver', // MySQL
+		'mysql' => 'yii\db\dao\mysql\Driver', // MySQL
+		'sqlite' => 'yii\db\dao\sqlite\Driver', // sqlite 3
+		'sqlite2' => 'yii\db\dao\sqlite\Driver', // sqlite 2
+		'mssql' => 'yi\db\dao\mssql\Driver', // Mssql driver on windows hosts
+		'dblib' => 'yii\db\dao\mssql\Driver', // dblib drivers on linux (and maybe others os) hosts
+		'sqlsrv' => 'yii\db\dao\mssql\Driver', // Mssql
+		'oci' => 'yii\db\dao\oci\Driver', // Oracle driver
 	);
 	/**
 	 * @var Transaction the currently active transaction

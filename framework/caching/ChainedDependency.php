@@ -10,16 +10,12 @@
 namespace yii\caching;
 
 /**
- * ChainedDependency represents a list of cache dependencies.
+ * ChainedDependency represents a dependency which is composed of a list of other dependencies.
  *
- * If any of the dependencies reports a dependency change, ChainedDependency
- * will return true for the checking.
+ * When [[dependOnAll]] is true, if any of the dependencies has changed, this dependency is
+ * considered changed; When [[dependOnAll]] is false, if one of the dependencies has NOT changed,
+ * this dependency is considered NOT changed.
  *
- * To add dependencies to ChainedDependency, use {@link getDependencies Dependencies}
- * which gives a {@link CTypedList} instance and can be used like an array
- * (see {@link CList} for more details}).
- *
- * @property CTypedList $dependencies List of dependency objects.
  * @property boolean $hasChanged Whether the dependency is changed or not.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -27,43 +23,29 @@ namespace yii\caching;
  */
 class ChainedDependency extends Dependency
 {
-	private $_dependencies=null;
+	/**
+	 * @var array list of dependencies that this dependency is composed of.
+	 * Each array element should be a dependency object or a configuration array
+	 * that can be used to create a dependency object via [[\Yii::createObject()]].
+	 */
+	public $dependencies = array();
+	/**
+	 * @var boolean whether this dependency is depending on every dependency in [[dependencies]].
+	 * Defaults to true, meaning if any of the dependencies has changed, this dependency is considered changed.
+	 * When it is set false, it means if one of the dependencies has NOT changed, this dependency
+	 * is considered NOT changed.
+	 */
+	public $dependOnAll = true;
 
 	/**
 	 * Constructor.
-	 * @param array $dependencies the dependencies to be added to this chain.
-	 * @since 1.1.4
+	 * @param array $dependencies list of dependencies that this dependency is composed of.
+	 * Each array element should be a dependency object or a configuration array
+	 * that can be used to create a dependency object via [[\Yii::createObject()]].
 	 */
-	public function __construct($dependencies=array())
+	public function __construct($dependencies = array())
 	{
-		if(!empty($dependencies))
-			$this->setDependencies($dependencies);
-	}
-
-	/**
-	 * @return CTypedList list of dependency objects
-	 */
-	public function getDependencies()
-	{
-		if($this->_dependencies===null)
-			$this->_dependencies=new CTypedList('ICacheDependency');
-		return $this->_dependencies;
-	}
-
-	/**
-	 * @param array $values list of dependency objects or configurations to be added to this chain.
-	 * If a depedency is specified as a configuration, it must be an array that can be recognized
-	 * by {@link YiiBase::createComponent}.
-	 */
-	public function setDependencies($values)
-	{
-		$dependencies=$this->getDependencies();
-		foreach($values as $value)
-		{
-			if(is_array($value))
-				$value=Yii::createComponent($value);
-			$dependencies->add($value);
-		}
+		$this->dependencies = $dependencies;
 	}
 
 	/**
@@ -71,11 +53,22 @@ class ChainedDependency extends Dependency
 	 */
 	public function evaluateDependency()
 	{
-		if($this->_dependencies!==null)
-		{
-			foreach($this->_dependencies as $dependency)
-				$dependency->evaluateDependency();
+		foreach ($this->dependencies as $dependency) {
+			if (!$dependency instanceof Dependency) {
+				$dependency = \Yii::createObject($dependency);
+			}
+			$dependency->evalulateDependency();
 		}
+	}
+
+	/**
+	 * Generates the data needed to determine if dependency has been changed.
+	 * This method does nothing in this class.
+	 * @return mixed the data needed to determine if dependency has been changed.
+	 */
+	protected function generateDependencyData()
+	{
+		return null;
 	}
 
 	/**
@@ -86,12 +79,16 @@ class ChainedDependency extends Dependency
 	 */
 	public function getHasChanged()
 	{
-		if($this->_dependencies!==null)
-		{
-			foreach($this->_dependencies as $dependency)
-				if($dependency->getHasChanged())
-					return true;
+		foreach ($this->dependencies as $dependency) {
+			if (!$dependency instanceof Dependency) {
+				$dependency = \Yii::createObject($dependency);
+			}
+			if ($this->dependOnAll && $dependency->getHasChanged()) {
+				return true;
+			} elseif (!$this->dependOnAll && !$dependency->getHasChanged()) {
+				return false;
+			}
 		}
-		return false;
+		return !$this->dependOnAll;
 	}
 }

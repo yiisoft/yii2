@@ -16,7 +16,7 @@ use yii\base\ApplicationComponent;
  *
  * A data item can be stored in cache by calling [[set()]] and be retrieved back
  * later (in the same or different request) by [[get()]]. In both operations,
- * a key identifying the data item is required. An expiration time and/or a [[CacheDependency|dependency]]
+ * a key identifying the data item is required. An expiration time and/or a [[Dependency|dependency]]
  * can also be specified when calling [[set()]]. If the data item expires or the dependency
  * changes at the time of calling [[get()]], the cache will return no data.
  *
@@ -60,7 +60,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * a two-element array. The first element specifies the serialization function, and the second the deserialization
 	 * function. If this property is set false, data will be directly sent to and retrieved from the underlying
 	 * cache component without any serialization or deserialization. You should not turn off serialization if
-	 * you are using [[CacheDependency|cache dependency]], because it relies on data serialization.
+	 * you are using [[Dependency|cache dependency]], because it relies on data serialization.
 	 */
 	public $serializer;
 
@@ -102,7 +102,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 		} else {
 			$value = call_user_func($this->serializer[1], $value);
 		}
-		if (is_array($value) && ($value[1] instanceof CacheDependency) || !$value[1]->getHasChanged()) {
+		if (is_array($value) && ($value[1] instanceof Dependency) || !$value[1]->getHasChanged()) {
 			return $value[0];
 		} else {
 			return false;
@@ -136,7 +136,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 				$results[$id] = false;
 				if (isset($values[$uid])) {
 					$value = $this->serializer === null ? unserialize($values[$uid]) : call_user_func($this->serializer[1], $values[$uid]);
-					if (is_array($value) && (!($value[1] instanceof CacheDependency) || !$value[1]->getHasChanged())) {
+					if (is_array($value) && (!($value[1] instanceof Dependency) || !$value[1]->getHasChanged())) {
 						$results[$id] = $value[0];
 					}
 				}
@@ -153,7 +153,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * @param string $id the key identifying the value to be cached
 	 * @param mixed $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * @param CacheDependency $dependency dependency of the cached item. If the dependency changes,
+	 * @param Dependency $dependency dependency of the cached item. If the dependency changes,
 	 * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
 	 * @return boolean whether the value is successfully stored into cache
 	 */
@@ -176,7 +176,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * @param string $id the key identifying the value to be cached
 	 * @param mixed $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * @param CacheDependency $dependency dependency of the cached item. If the dependency changes,
+	 * @param Dependency $dependency dependency of the cached item. If the dependency changes,
 	 * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
 	 * @return boolean whether the value is successfully stored into cache
 	 */

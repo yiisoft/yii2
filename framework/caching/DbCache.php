@@ -47,8 +47,7 @@ use yii\db\dao\Query;
 class DbCache extends Cache
 {
 	/**
-	 * @var string the ID of the [[Connection|DB connection]] application component.
-	 * Defaults to 'db'.
+	 * @var string the ID of the [[Connection|DB connection]] application component. Defaults to 'db'.
 	 */
 	public $connectionID = 'db';
 	/**
@@ -108,6 +107,7 @@ class DbCache extends Cache
 			->where('id = :id AND (expire = 0 OR expire > :time)', array(':id' => $key, ':time' => time()));
 		$db = $this->getDbConnection();
 		if ($db->queryCachingDuration >= 0) {
+			// temporarily disable and re-enable query caching
 			$duration = $db->queryCachingDuration;
 			$db->queryCachingDuration = -1;
 			$result = $query->createCommand($db)->queryScalar();

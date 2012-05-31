@@ -9,44 +9,42 @@
 
 namespace yii\caching;
 
+use yii\base\Exception;
+use yii\db\dao\Connection;
+use yii\db\dao\Query;
 
 /**
  * DbDependency represents a dependency based on the query result of a SQL statement.
  *
- * If the query result (a scalar) changes, the dependency is considered as changed.
- * To specify the SQL statement, set {@link sql} property.
- * The {@link connectionID} property specifies the ID of a {@link CDbConnection} application
- * component. It is this DB connection that is used to perform the query.
+ * If the query result changes, the dependency is considered as changed.
+ * The query is specified via the [[query]] property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DbDependency extends CacheDependency
+class DbDependency extends Dependency
 {
 	/**
-	 * @var string the ID of a {@link CDbConnection} application component. Defaults to 'db'.
+	 * @var string the ID of the [[Connection|DB connection]] application component. Defaults to 'db'.
 	 */
 	public $connectionID = 'db';
 	/**
-	 * @var string the SQL statement whose result is used to determine if the dependency has been changed.
-	 * Note, the SQL statement should return back a single value.
+	 * @var Query the SQL query whose result is used to determine if the dependency has been changed.
+	 * Only the first row of the query result will be used.
 	 */
-	public $sql;
+	public $query;
 	/**
-	 * @var array parameters (name=>value) to be bound to the SQL statement specified by {@link sql}.
-	 * @since 1.1.4
+	 * @var Connection the DB connection instance
 	 */
-	public $params;
-
 	private $_db;
 
 	/**
 	 * Constructor.
-	 * @param string $sql the SQL statement whose result is used to determine if the dependency has been changed.
+	 * @param Query $query the SQL query whose result is used to determine if the dependency has been changed.
 	 */
-	public function __construct($sql = null)
+	public function __construct($query = null)
 	{
-		$this->sql = $sql;
+		$this->query = $query;
 	}
 
 	/**
@@ -67,44 +65,44 @@ class DbDependency extends CacheDependency
 	 */
 	protected function generateDependencyData()
 	{
-		if ($this->sql !== null) {
-			$db = $this->getDbConnection();
-			$command = $db->createCommand($this->sql);
-			if (is_array($this->params)) {
-				foreach ($this->params as $name => $value) {
-					$command->bindValue($name, $value);
-				}
-			}
-			if ($db->queryCachingDuration > 0) {
-				// temporarily disable and re-enable query caching
-				$duration = $db->queryCachingDuration;
-				$db->queryCachingDuration = 0;
-				$result = $command->queryRow();
-				$db->queryCachingDuration = $duration;
-			} else {
-				$result = $command->queryRow();
-			}
-			return $result;
+		$db = $this->getDbConnection();
+		$command = $this->query->createCommand($db);
+		if ($db->queryCachingDuration >= 0) {
+			// temporarily disable and re-enable query caching
+			$duration = $db->queryCachingDuration;
+			$db->queryCachingDuration = -1;
+			$result = $command->queryRow();
+			$db->queryCachingDuration = $duration;
 		} else {
-			throw new CException(Yii::t('yii', 'DbDependency.sql cannot be empty.'));
+			$result = $command->queryRow();
 		}
+		return $result;
 	}
 
 	/**
-	 * @return CDbConnection the DB connection instance
-	 * @throws CException if {@link connectionID} does not point to a valid application component.
+	 * Returns the DB connection instance used for caching purpose.
+	 * @return Connection the DB connection instance
+	 * @throws Exception if [[connectionID]] does not point to a valid application component.
 	 */
-	protected function getDbConnection()
+	public function getDbConnection()
 	{
-		if ($this->_db !== null) {
-			return $this->_db;
-		} else {
-			if (($this->_db = \Yii::$application->getComponent($this->connectionID)) instanceof CDbConnection) {
-				return $this->_db;
+		if ($this->_db === null) {
+			$db = \Yii::$application->getComponent($this->connectionID);
+			if ($db instanceof Connection) {
+				$this->_db = $db;
 			} else {
-				throw new CException(Yii::t('yii', 'DbDependency.connectionID "{id}" is invalid. Please make sure it refers to the ID of a CDbConnection application component.',
-					array('{id}' => $this->connectionID)));
+				throw new Exception("DbDependency.connectionID must refer to the ID of a DB connection application component.");
 			}
 		}
+		return $this->_db;
+	}
+
+	/**
+	 * Sets the DB connection used by the cache component.
+	 * @param Connection $value the DB connection instance
+	 */
+	public function setDbConnection($value)
+	{
+		$this->_db = $value;
 	}
 }

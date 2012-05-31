@@ -42,6 +42,6 @@ class FileDependency extends Dependency
 	 */
 	protected function generateDependencyData()
 	{
-		return $this->fileName !== null ? @filemtime($this->fileName) : 0;
+		return @filemtime($this->fileName);
 	}
 }
