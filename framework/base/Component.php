@@ -416,6 +416,7 @@ class Component extends \yii\base\Object
 	 */
 	public function detachBehavior($name)
 	{
+		$this->ensureBehaviors();
 		if (isset($this->_b[$name])) {
 			$behavior = $this->_b[$name];
 			unset($this->_b[$name]);
@@ -432,12 +433,11 @@ class Component extends \yii\base\Object
 	public function detachBehaviors()
 	{
 		if ($this->_b !== null) {
-			$behaviors = $this->_b;
-			$this->_b = null;
-			foreach ($behaviors as $name => $behavior) {
+			foreach ($this->_b as $name => $behavior) {
 				$this->detachBehavior($name);
 			}
 		}
+		$this->_b = array();
 	}
 
 	/**
