@@ -34,6 +34,3 @@ One can call [[hasProperty]], [[canGetProperty]] and/or [[canSetProperty]] to ch
 
 Besides the property feature, the Object class defines a static method [[create]] which provides a convenient
 alternative way of creating a new object instance.
-
-The Object class also defines the [[evaluateExpression]] method so that a PHP expression or callback can be dynamically
-evaluated within the context of an object.

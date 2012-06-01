@@ -92,7 +92,7 @@ class Component extends \yii\base\Object
 		} elseif (strncmp($name, 'as ', 3) === 0) {
 			// as behavior: attach behavior
 			$name = trim(substr($name, 3));
-			$this->attachBehavior($name, \Yii::createObject($value));
+			$this->attachBehavior($name, $value instanceof Behavior ? $value : \Yii::createObject($value));
 		} else {
 			// behavior property
 			$this->ensureBehaviors();

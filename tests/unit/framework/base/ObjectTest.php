@@ -116,13 +116,6 @@ class ObjectTest extends \yiiunit\TestCase
 		$this->assertTrue(isset($this->object->Text));
 		$this->assertTrue(empty($this->object->Text));
 	}
-
-	public function testEvaluateExpression()
-	{
-		$object = new NewObject;
-		$this->assertEquals('Hello world',$object->evaluateExpression('"Hello $who"',array('who' => 'world')));
-		$this->assertEquals('Hello world',$object->evaluateExpression(array($object,'exprEvaluator'),array('who' => 'world')));
-	}
 }
 
 

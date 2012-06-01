@@ -12,9 +12,8 @@ namespace yii\caching;
 /**
  * ExpressionDependency represents a dependency based on the result of a PHP expression.
  *
- * ExpressionDependency performs dependency checking based on the
- * result of a PHP {@link expression}.
- * The dependency is reported as unchanged if and only if the result is
+ * ExpressionDependency will use `eval()` to evaluate the PHP expression.
+ * The dependency is reported as unchanged if and only if the result of the expression is
  * the same as the one evaluated when storing the data to cache.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -24,10 +23,6 @@ class ExpressionDependency extends Dependency
 {
 	/**
 	 * @var string the PHP expression whose result is used to determine the dependency.
-	 * The expression can also be a valid PHP callback,
-	 * including class method name (array(ClassName/Object, MethodName)),
-	 * or anonymous function (PHP 5.3.0+). The function/method will be passed with a
-	 * parameter which is the dependency object itself.
 	 */
 	public $expression;
 
@@ -47,6 +42,6 @@ class ExpressionDependency extends Dependency
 	 */
 	protected function generateDependencyData()
 	{
-		return $this->evaluateExpression($this->expression);
+		return eval("return {$this->expression};");
 	}
 }

@@ -180,41 +180,6 @@ class Object
 	}
 
 	/**
-	 * Evaluates a PHP expression or callback under the context of this object.
-	 *
-	 * Valid PHP callback can be class method name in the form of
-	 * array(ClassName/Object, MethodName), or anonymous function.
-	 *
-	 * If a PHP callback is used, the corresponding function/method signature should be
-	 *
-	 * ~~~
-	 * function foo($param1, $param2, ..., $object) { ... }
-	 * ~~~
-	 *
-	 * where the array elements in the second parameter to this method will be passed
-	 * to the callback as `$param1`, `$param2`, ...; and the last parameter will be the object itself.
-	 *
-	 * If a PHP expression is used, the second parameter will be "extracted" into PHP variables
-	 * that can be directly accessed in the expression.
-	 * See [PHP extract](http://us.php.net/manual/en/function.extract.php)
-	 * for more details. In the expression, the object can be accessed using `$this`.
-	 *
-	 * @param mixed $_expression_ a PHP expression or PHP callback to be evaluated.
-	 * @param array $_data_ additional parameters to be passed to the above expression/callback.
-	 * @return mixed the expression result
-	 */
-	public function evaluateExpression($_expression_, $_data_ = array())
-	{
-		if (is_string($_expression_)) {
-			extract($_data_);
-			return eval('return ' . $_expression_ . ';');
-		} else {
-			$_data_[] = $this;
-			return call_user_func_array($_expression_, $_data_);
-		}
-	}
-
-	/**
 	 * Creates a new instance of the calling class.
 	 *
 	 * The newly created object will be initialized with the specified configuration.
