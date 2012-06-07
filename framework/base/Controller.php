@@ -16,9 +16,7 @@ namespace yii\base;
  *
  * 1. [[authorize]]
  * 2. [[beforeAction]]
- * 3. [[beforeRender]]
- * 4. [[afterRender]]
- * 5. [[afterAction]]
+ * 3. [[afterAction]]
  *
  * @property array $actionParams the request parameters (name-value pairs) to be used for action parameter binding
  * @property string $route the route (module ID, controller ID and action ID) of the current request.
@@ -283,40 +281,9 @@ class Controller extends Component implements Initable
 		$this->trigger(__METHOD__, new ActionEvent($action));
 	}
 
-	/**
-	 * This method is invoked right before an action renders its result using [[render()]].
-	 * @param string $view the view to be rendered
-	 * @return boolean whether the action should continue to render.
-	 */
-	public function beforeRender($view)
-	{
-		$event = new RenderEvent($view);
-		$this->trigger(__METHOD__, $event);
-		return $event->isValid;
-	}
-
-	/**
-	 * This method is invoked right after an action renders its result using [[render()]].
-	 * @param string $view the view just rendered
-	 * @param string $content the content to be displayed
-	 * @return string the content to be displayed. This may be the same as the input content or the one
-	 * modified by event handlers.
-	 */
-	public function afterRender($view, $content)
-	{
-		$event = new RenderEvent($view, $content);
-		$this->trigger(__METHOD__, $event);
-		return $event->content;
-	}
-
 	public function render($view, $params = array())
 	{
-		if ($this->beforeRender($view)) {
-			$content = $this->createView()->render($view, $params);
-			$content = $this->afterRender($view, $content);
-			return $content;
-		}
-		return '';
+		return $this->createView()->render($view, $params);
 	}
 
 	public function renderText($text)
