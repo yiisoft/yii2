@@ -163,9 +163,9 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 			$dependency->evaluateDependency();
 		}
 		if ($this->serializer === null) {
-			$value = array(serialize($value), $dependency);
+			$value = serialize(array($value, $dependency));
 		} elseif ($this->serializer !== false) {
-			$value = array(call_user_func($this->serializer[0], $value), $dependency);
+			$value = call_user_func($this->serializer[0], array($value, $dependency));
 		}
 		return $this->setValue($this->generateCacheKey($id), $value, $expire);
 	}
@@ -186,9 +186,9 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 			$dependency->evaluateDependency();
 		}
 		if ($this->serializer === null) {
-			$value = array(serialize($value), $dependency);
+			$value = serialize(array($value, $dependency));
 		} elseif ($this->serializer !== false) {
-			$value = array(call_user_func($this->serializer[0], $value), $dependency);
+			$value = call_user_func($this->serializer[0], array($value, $dependency));
 		}
 		return $this->addValue($this->generateCacheKey($id), $value, $expire);
 	}
