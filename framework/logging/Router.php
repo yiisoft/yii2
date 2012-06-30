@@ -57,17 +57,10 @@ namespace yii\logging;
 class Router extends \yii\base\ApplicationComponent
 {
 	/**
-	 * @var \yii\base\Dictionary
+	 * @var Target[] list of log target objects or configurations. If the latter, target objects will
+	 * be created in [[init()]] by calling [[\Yii::createObject()]] with the corresponding object configuration.
 	 */
-	private $_targets;
-
-	/**
-	 * Constructor.
-	 */
-	public function __construct()
-	{
-		$this->_targets = new \yii\base\Dictionary;
-	}
+	public $targets = array();
 
 	/**
 	 * Initializes this application component.
@@ -78,41 +71,16 @@ class Router extends \yii\base\ApplicationComponent
 	public function init()
 	{
 		parent::init();
-		\Yii::getLogger()->on('flush', array($this, 'processMessages'));
-		if (($app = \Yii::$application) !== null) {
-			$app->on('afterRequest', array($this, 'processMessages'));
-		}
-	}
 
-	/**
-	 * Returns the log targets managed by this log router.
-	 * The keys of the dictionary are the names of the log targets.
-	 * You can use the name to access a specific log target. For example,
-	 *
-	 * ~~~
-	 * $target = $router->targets['file'];
-	 * ~~~
-	 * @return \yii\base\Dictionary the targets managed by this log router.
-	 */
-	public function getTargets()
-	{
-		return $this->_targets;
-	}
-
-	/**
-	 * Sets the log targets.
-	 * @param array $config list of log target configurations. Each array element
-	 * represents the configuration for creating a single log target. It will be
-	 * passed to [[\Yii::createObject()]] to create the target instance.
-	 */
-	public function setTargets($config)
-	{
-		foreach ($config as $name => $target) {
-			if ($target instanceof Target) {
-				$this->_targets[$name] = $target;
-			} else {
-				$this->_targets[$name] = \Yii::createObject($target);
+		foreach ($this->targets as $name => $target) {
+			if (!$target instanceof Target) {
+				$this->targets[$name] = \Yii::createObject($target);
 			}
+		}
+
+		\Yii::getLogger()->on('flush', array($this, 'processMessages'));
+		if (\Yii::$application !== null) {
+			\Yii::$application->on('afterRequest', array($this, 'processMessages'));
 		}
 	}
 
@@ -127,11 +95,10 @@ class Router extends \yii\base\ApplicationComponent
 	public function processMessages($event)
 	{
 		$messages = \Yii::getLogger()->messages;
-		$export = !isset($event->data['export']) || $event->data['export'];
-		$final = !isset($event->data['flush']) || !$event->data['flush'];
-		foreach ($this->_targets as $target) {
+		$final = $event->name !== 'flush';
+		foreach ($this->targets as $target) {
 			if ($target->enabled) {
-				$target->processMessages($messages, $export, $final);
+				$target->processMessages($messages, $final);
 			}
 		}
 	}

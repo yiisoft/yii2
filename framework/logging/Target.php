@@ -16,11 +16,9 @@ namespace yii\logging;
  * to its [[levels]] and [[categories]] properties. It may also export the filtered
  * messages to specific destination defined by the target, such as emails, files.
  *
- * Level filter and category filter are combinational, i.e., only messages
- * satisfying both filter conditions will they be returned.  Additionally, you
- * may specify [[excludeCategories]]. If a message's category falls within the excluded
- * categories, it will be filtered out, even if it passes the [[levels]] and
- * [[categories]] filters.
+ * Level filter and category filter are combinatorial, i.e., only messages
+ * satisfying both filter conditions will be handled. Additionally, you
+ * may specify [[except]] to exclude messages of certain categories.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -50,7 +48,7 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 	 * categories starting with 'yii\db\', such as 'yii\db\dao\Connection'.
 	 * @see categories
 	 */
-	public $excludeCategories = array();
+	public $except = array();
 	/**
 	 * @var boolean whether to prefix each log message with the current session ID. Defaults to false.
 	 */
@@ -61,7 +59,7 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 	 */
 	public $prefixUser = false;
 	/**
-	 * @var boolean whether to log a message containing the current user name and ID. Defaults to true.
+	 * @var boolean whether to log a message containing the current user name and ID. Defaults to false.
 	 * @see \yii\web\User
 	 */
 	public $logUser = false;
@@ -72,7 +70,14 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 	 */
 	public $logVars = array('_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER');
 	/**
+	 * @var boolean whether this target should export the collected messages to persistent storage
+	 * (e.g. DB, email) whenever [[processMessages()]] is called. Defaults to true. If false,
+	 * the collected messages will be stored in [[messages]] without any further processing.
+	 */
+	public $autoExport = true;
+	/**
 	 * @var array the messages that are retrieved from the logger so far by this log target.
+	 * @see autoExport
 	 */
 	public $messages = array();
 
@@ -99,17 +104,17 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 	 * And if requested, it will also export the filtering result to specific medium (e.g. email).
 	 * @param array $messages log messages to be processed. See [[Logger::messages]] for the structure
 	 * of each message.
-	 * @param boolean $export whether to export the processing result
 	 * @param boolean $final whether this method is called at the end of the current application
 	 */
-	public function processMessages($messages, $export, $final)
+	public function processMessages($messages, $final)
 	{
 		$messages = $this->filterMessages($messages);
 		$this->messages = array_merge($this->messages, $messages);
 
-		if ($export && !empty($this->messages)) {
+		if (!empty($this->messages) && ($this->autoExport || $final)) {
 			$this->prepareExport($final);
 			$this->exportMessages($final);
+			$this->messages = array();
 		}
 	}
 
@@ -188,7 +193,7 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 			}
 
 			if ($matched) {
-				foreach ($this->excludeCategories as $category) {
+				foreach ($this->except as $category) {
 					$prefix = rtrim($category, '*');
 					foreach ($messages as $i => $message) {
 						if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
@@ -214,6 +219,7 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 	 */
 	public function formatMessage($message)
 	{
-		return @date('Y/m/d H:i:s', $message[3]) . " [{$message[1]}] [{$message[2]}] {$message[0]}\n";
+		$s = is_string($message[0]) ? $message[0] : var_export($message[0], true);
+		return date('Y/m/d H:i:s', $message[3]) . " [{$message[1]}] [{$message[2]}] $s\n";
 	}
 }

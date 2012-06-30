@@ -94,7 +94,5 @@ class DbTarget extends Target
 				':message' => $message[0],
 			))->execute();
 		}
-
-		$this->messages = array();
 	}
 }

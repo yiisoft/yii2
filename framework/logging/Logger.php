@@ -37,24 +37,16 @@ class Logger extends \yii\base\Component
 	 * Defaults to 1000, meaning the [[flush]] method will be invoked once every 1000 messages logged.
 	 * Set this property to be 0 if you don't want to flush messages until the application terminates.
 	 * This property mainly affects how much memory will be taken by the logged messages.
-	 * A smaller value means less memory, but will increase the execution time due to the overhead of [[flush]].
+	 * A smaller value means less memory, but will increase the execution time due to the overhead of [[flush()]].
 	 */
 	public $flushInterval = 1000;
 	/**
-	 * @var boolean this property will be passed as the parameter to [[flush]] when it is
-	 * called due to the [[flushInterval]] is reached. Defaults to true, meaning the flushed
-	 * messages will be exported to the actual storage medium (e.g. DB, email) defined by each
-	 * log target. If false, the flushed messages will be kept in the memory of each log target.
-	 * @see flushInterval
-	 */
-	public $autoExport = true;
-	/**
-	 * @var array logged messages. This property is mainly managed by [[log]] and [[flush]].
+	 * @var array logged messages. This property is mainly managed by [[log()]] and [[flush()]].
 	 * Each log message is of the following structure:
 	 *
 	 * ~~~
 	 * array(
-	 *   [0] => message (string)
+	 *   [0] => message (mixed)
 	 *   [1] => level (string)
 	 *   [2] => category (string)
 	 *   [3] => timestamp (float, obtained by microtime(true))
@@ -67,7 +59,7 @@ class Logger extends \yii\base\Component
 	 * Logs an error message.
 	 * An error message is typically logged when an unrecoverable error occurs
 	 * during the execution of an application.
-	 * @param string $message the message to be logged.
+	 * @param mixed $message the message to be logged.
 	 * @param string $category the category of the message.
 	 */
 	public function error($message, $category = 'application')
@@ -79,7 +71,7 @@ class Logger extends \yii\base\Component
 	 * Logs a trace message.
 	 * Trace messages are logged mainly for development purpose to see
 	 * the execution work flow of some code.
-	 * @param string $message the message to be logged.
+	 * @param mixed $message the message to be logged.
 	 * @param string $category the category of the message.
 	 */
 	public function trace($message, $category = 'application')
@@ -91,24 +83,24 @@ class Logger extends \yii\base\Component
 	 * Logs a warning message.
 	 * A warning message is typically logged when an error occurs while the execution
 	 * can still continue.
-	 * @param string $message the message to be logged.
+	 * @param mixed $message the message to be logged.
 	 * @param string $category the category of the message.
 	 */
 	public function warning($message, $category = 'application')
 	{
-		$this->log($message, self::LEVEL_TRACE, $category);
+		$this->log($message, self::LEVEL_WARNING, $category);
 	}
 
 	/**
 	 * Logs an informative message.
 	 * An informative message is typically logged by an application to keep record of
 	 * something important (e.g. an administrator logs in).
-	 * @param string $message the message to be logged.
+	 * @param mixed $message the message to be logged.
 	 * @param string $category the category of the message.
 	 */
 	public function info($message, $category = 'application')
 	{
-		$this->log($message, self::LEVEL_TRACE, $category);
+		$this->log($message, self::LEVEL_INFO, $category);
 	}
 
 	/**
@@ -119,7 +111,7 @@ class Logger extends \yii\base\Component
 	 * @param string $category the category of this log message
 	 * @see endProfile
 	 */
-	public function beginProfile($token, $category)
+	public function beginProfile($token, $category = 'application')
 	{
 		$this->log($token, self::LEVEL_PROFILE_BEGIN, $category);
 	}
@@ -131,7 +123,7 @@ class Logger extends \yii\base\Component
 	 * @param string $category the category of this log message
 	 * @see beginProfile
 	 */
-	public function endProfile($token, $category)
+	public function endProfile($token, $category = 'application')
 	{
 		$this->log($token, self::LEVEL_PROFILE_END, $category);
 	}
@@ -145,9 +137,10 @@ class Logger extends \yii\base\Component
 	 * 'trace', 'info', 'warning', 'error', 'profile'.
 	 * @param string $category the category of the message.
 	 */
-	public function log($message, $level, $category)
+	public function log($message, $level, $category = 'application')
 	{
-		if (YII_DEBUG && YII_TRACE_LEVEL > 0 && $level <= self::LEVEL_TRACE) {
+		$time = microtime(true);
+		if (YII_DEBUG && YII_TRACE_LEVEL > 0) {
 			$traces = debug_backtrace();
 			$count = 0;
 			foreach ($traces as $trace) {
@@ -159,25 +152,19 @@ class Logger extends \yii\base\Component
 				}
 			}
 		}
-
-		$this->messages[] = array($message, $level, $category, microtime(true));
+		$this->messages[] = array($message, $level, $category, $time);
 		if (count($this->messages) >= $this->flushInterval && $this->flushInterval > 0) {
-			$this->flush($this->autoExport);
+			$this->flush();
 		}
 	}
 
 	/**
 	 * Removes all recorded messages from the memory.
 	 * This method will raise a `flush` event.
-	 * The attached event handlers can process the log messages before they are removed.
-	 * @param boolean $export whether to notify log targets to export the filtered messages they have received.
 	 */
-	public function flush($export = false)
+	public function flush()
 	{
-		$this->trigger('flush', new \yii\base\Event($this, array(
-			'export' => $export,
-			'flush' => true,
-		)));
+		$this->trigger('flush');
 		$this->messages = array();
 	}
 

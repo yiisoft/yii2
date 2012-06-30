@@ -79,8 +79,6 @@ class FileTarget extends Target
 			$messages[] = $this->formatMessage($message);
 		}
 		@file_put_contents($logFile, implode('', $messages), FILE_APPEND | LOCK_EX);
-
-		$this->messages = array();
 	}
 
 	/**

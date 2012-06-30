@@ -53,8 +53,6 @@ class EmailTarget extends Target
 		foreach ($this->emails as $email) {
 			$this->sendEmail($subject, $body, $email, $this->sentFrom, $this->headers);
 		}
-
-		$this->messages = array();
 	}
 
 	/**
