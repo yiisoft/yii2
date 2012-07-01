@@ -1,6 +1,6 @@
 <?php
 /**
- * ApplicationComponent class file.
+ * Response and CCookieCollection class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,17 +10,11 @@
 namespace yii\base;
 
 /**
- * ApplicationComponent is the base class for application component classes.
+ * Response encapsulates the $_SERVER variable and resolves its inconsistency among different Web servers.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ApplicationComponent extends Component
+class Response extends ApplicationComponent
 {
-	/**
-	 * Initializes the application component.
-	 */
-	public function init()
-	{
-	}
 }

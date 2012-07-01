@@ -25,7 +25,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Controller extends Component implements Initable
+class Controller extends Component
 {
 	/**
 	 * @var string ID of this controller
@@ -195,11 +195,11 @@ class Controller extends Component implements Initable
 	 * This method is invoked when the controller cannot find the requested action.
 	 * The default implementation simply throws an exception.
 	 * @param string $actionID the missing action name
-	 * @throws Exception whenever this method is invoked
+	 * @throws BadRequestException whenever this method is invoked
 	 */
 	public function missingAction($actionID)
 	{
-		throw new Exception(\Yii::t('yii', 'The system is unable to find the requested action "{action}".',
+		throw new BadRequestException(\Yii::t('yii', 'The system is unable to find the requested action "{action}".',
 			array('{action}' => $actionID == '' ? $this->defaultAction : $actionID)));
 	}
 

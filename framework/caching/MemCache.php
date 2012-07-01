@@ -138,7 +138,7 @@ class MemCache extends Cache
 	public function setServers($config)
 	{
 		foreach ($config as $c) {
-			$this->_servers[] = MemCacheServer::newInstance($c);
+			$this->_servers[] = new MemCacheServer($c);
 		}
 	}
 

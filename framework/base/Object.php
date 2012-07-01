@@ -21,8 +21,32 @@ class Object
 {
 	/**
 	 * Constructor.
+	 * The default implementation does two things:
+	 *
+	 * - Initializes the object with the given configuration `$config`.
+	 * - Call [[init()]].
+	 *
+	 * If this method is overridden in a child class, it is recommended that
+	 *
+	 * - the last parameter of the constructor is a configuration array, like `$config` here.
+	 * - call the parent implementation at the end of the constructor.
+	 *
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct()
+	public function __construct($config = array())
+	{
+		foreach ($config as $name => $value) {
+			$this->$name = $value;
+		}
+		$this->init();
+	}
+
+	/**
+	 * Initializes the object.
+	 * This method is invoked at the end of the constructor after the object is initialized with the
+	 * given configuration.
+	 */
+	public function init()
 	{
 	}
 
@@ -34,7 +58,7 @@ class Object
 	 * @param string $name the property name
 	 * @return mixed the property value, event handlers attached to the event,
 	 * the named behavior, or the value of a behavior's property
-	 * @throws Exception if the property is not defined
+	 * @throws BadPropertyException if the property is not defined
 	 * @see __set
 	 */
 	public function __get($name)
@@ -43,7 +67,7 @@ class Object
 		if (method_exists($this, $getter)) {
 			return $this->$getter();
 		} else {
-			throw new Exception('Getting unknown property: ' . get_class($this) . '.' . $name);
+			throw new BadPropertyException('Getting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
 
@@ -54,7 +78,7 @@ class Object
 	 * will be implicitly called when executing `$object->property = $value;`.
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
-	 * @throws Exception if the property is not defined or read-only.
+	 * @throws BadPropertyException if the property is not defined or read-only.
 	 * @see __get
 	 */
 	public function __set($name, $value)
@@ -63,9 +87,9 @@ class Object
 		if (method_exists($this, $setter)) {
 			$this->$setter($value);
 		} elseif (method_exists($this, 'get' . $name)) {
-			throw new Exception('Setting read-only property: ' . get_class($this) . '.' . $name);
+			throw new BadPropertyException('Setting read-only property: ' . get_class($this) . '.' . $name);
 		} else {
-			throw new Exception('Setting unknown property: ' . get_class($this) . '.' . $name);
+			throw new BadPropertyException('Setting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
 
@@ -99,7 +123,7 @@ class Object
 	 * Note that if the property is not defined, this method will do nothing.
 	 * If the property is read-only, it will throw an exception.
 	 * @param string $name the property name
-	 * @throws Exception if the property is read only.
+	 * @throws BadPropertyException if the property is read only.
 	 */
 	public function __unset($name)
 	{
@@ -108,7 +132,7 @@ class Object
 			// write property
 			$this->$setter(null);
 		} elseif (method_exists($this, 'get' . $name)) {
-			throw new Exception('Unsetting read-only property: ' . get_class($this) . '.' . $name);
+			throw new BadPropertyException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 		}
 	}
 
@@ -121,7 +145,7 @@ class Object
 	 * will be implicitly called when an unknown method is being invoked.
 	 * @param string $name the method name
 	 * @param array $params method parameters
-	 * @throws Exception when calling unknown method
+	 * @throws BadMethodException when calling unknown method
 	 * @return mixed the method return value
 	 */
 	public function __call($name, $params)
@@ -133,7 +157,7 @@ class Object
 				return call_user_func_array($func, $params);
 			}
 		}
-		throw new Exception('Unknown method: ' . get_class($this) . "::$name()");
+		throw new BadMethodException('Unknown method: ' . get_class($this) . "::$name()");
 	}
 
 	/**
@@ -148,7 +172,7 @@ class Object
 	 */
 	public function hasProperty($name, $checkVar = true)
 	{
-		return $this->canGetProperty($name, false) || $this->canSetProperty($name, false) || $checkVar && property_exists($this, $name);
+		return $this->canGetProperty($name, $checkVar) || $this->canSetProperty($name, false);
 	}
 
 	/**
@@ -176,86 +200,6 @@ class Object
 	 */
 	public function canSetProperty($name, $checkVar = true)
 	{
-		return $checkVar && property_exists($this, $name) || method_exists($this, 'set' . $name);
-	}
-
-	/**
-	 * Creates a new instance of the calling class.
-	 *
-	 * The newly created object will be initialized with the specified configuration.
-	 *
-	 * Extra parameters passed to this method will be used as the parameters to the object
-	 * constructor.
-	 *
-	 * This method does the following steps to create a object:
-	 *
-	 * - create the object using the PHP `new` operator;
-	 * - if [[Yii::objectConfig]] contains the configuration for the object class,
-	 *   it will be merged with the $config parameter;
-	 * - initialize the object properties using the configuration passed to this method;
-	 * - call the `init` method of the object if it implements the [[yii\base\Initable]] interface.
-	 *
-	 * For example,
-	 *
-	 * ~~~
-	 * class Foo extends \yii\base\Object implements \yii\base\Initable
-	 * {
-	 *	 public $c;
-	 *	 public function __construct($a, $b)
-	 *	 {
-	 *		 ...
-	 *	 }
-	 *	 public function init()
-	 *	 {
-	 *		 ...
-	 *	 }
-	 * }
-	 *
-	 * $model = Foo::newInstance(array('c' => 3), 1, 2);
-	 * // which is equivalent to the following lines:
-	 * $model = new Foo(1, 2);
-	 * $model->c = 3;
-	 * $model->init();
-	 * ~~~
-	 *
-	 * @param array $config the object configuration (name-value pairs that will be used to initialize the object)
-	 * @return \yii\base\Object the created object
-	 * @throws Exception if the configuration is invalid.
-	 */
-	public static function newInstance($config = array())
-	{
-		$class = get_called_class();
-
-		if (($n = func_num_args()) > 1) {
-			$args = func_get_args();
-			if ($n === 2) {
-				$object = new $class($args[1]);
-			} elseif ($n === 3) {
-				$object = new $class($args[1], $args[2]);
-			} elseif ($n === 4) {
-				$object = new $class($args[1], $args[2], $args[3]);
-			} else {
-				// remove $config
-				array_shift($args);
-				$r = new \ReflectionClass($class);
-				$object = $r->newInstanceArgs($args);
-			}
-		} else {
-			$object = new $class;
-		}
-
-		if (isset(\Yii::$objectConfig[$class])) {
-			$config = array_merge(\Yii::$objectConfig[$class], $config);
-		}
-
-		foreach ($config as $name => $value) {
-			$object->$name = $value;
-		}
-
-		if ($object instanceof Initable) {
-			$object->init();
-		}
-
-		return $object;
+		return method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name);
 	}
 }

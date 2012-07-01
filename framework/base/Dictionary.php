@@ -182,7 +182,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * Copies iterable data into the dictionary.
 	 * Note, existing data in the dictionary will be cleared first.
 	 * @param mixed $data the data to be copied from, must be an array or an object implementing `Traversable`
-	 * @throws Exception if data is neither an array nor an iterator.
+	 * @throws BadParamException if data is neither an array nor an iterator.
 	 */
 	public function copyFrom($data)
 	{
@@ -197,7 +197,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 				$this->add($key, $value);
 			}
 		} else {
-			throw new Exception('Data must be either an array or an object implementing Traversable.');
+			throw new BadParamException('Data must be either an array or an object implementing Traversable.');
 		}
 	}
 
@@ -214,7 +214,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 *
 	 * @param array|\Traversable $data the data to be merged with. It must be an array or object implementing Traversable
 	 * @param boolean $recursive whether the merging should be recursive.
-	 * @throws Exception if data is neither an array nor an object implementing `Traversable`.
+	 * @throws BadParamException if data is neither an array nor an object implementing `Traversable`.
 	 */
 	public function mergeWith($data, $recursive = true)
 	{
@@ -238,7 +238,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 				}
 			}
 		} else {
-			throw new Exception('The data to be merged with must be an array or an object implementing Traversable.');
+			throw new BadParamException('The data to be merged with must be an array or an object implementing Traversable.');
 		}
 	}
 

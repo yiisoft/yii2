@@ -103,7 +103,7 @@ class View extends Component
 	 * @param array $params the parameters that should be made available in the view. The PHP function `extract()`
 	 * will be called on this variable to extract the variables from this parameter.
 	 * @return string the rendering result
-	 * @throws Exception if the view file cannot be found
+	 * @throws BadParamException if the view file cannot be found
 	 */
 	public function renderPartial($view, $params = array())
 	{
@@ -111,7 +111,7 @@ class View extends Component
 		if ($file !== false) {
 			return $this->renderFile($file, $params);
 		} else {
-			throw new Exception("Unable to find the view file for view '$view'.");
+			throw new BadParamException("Unable to find the view file for view '$view'.");
 		}
 	}
 
@@ -170,6 +170,7 @@ class View extends Component
 	 */
 	public function endWidget()
 	{
+		/** @var $widget Widget */
 		if (($widget = array_pop($this->widgetStack)) !== null) {
 			$widget->run();
 			return $widget;
@@ -413,7 +414,7 @@ class View extends Component
 	 * The themed layout file will be returned if theme is enabled and the theme contains such a layout file.
 	 *
 	 * @return string|boolean the layout file path, or false if the context does not need layout.
-	 * @throws Exception if the layout file cannot be found
+	 * @throws BadParamException if the layout file cannot be found
 	 */
 	public function findLayoutFile()
 	{
@@ -451,7 +452,7 @@ class View extends Component
 			}
 		}
 		if ($file === false || !is_file($file)) {
-			throw new Exception("Unable to find the layout file for layout '{$module->layout}' (specified by " . get_class($module) . ")");
+			throw new BadParamException("Unable to find the layout file for layout '{$module->layout}' (specified by " . get_class($module) . ")");
 		} elseif ($this->localizeView) {
 			return FileHelper::localize($file, $this->language, $this->sourceLanguage);
 		} else {

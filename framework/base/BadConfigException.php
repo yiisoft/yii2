@@ -1,6 +1,6 @@
 <?php
 /**
- * ApplicationComponent class file.
+ * BadConfigException class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,17 +10,12 @@
 namespace yii\base;
 
 /**
- * ApplicationComponent is the base class for application component classes.
+ * BadConfigException represents an exception caused by incorrect object configuration.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ApplicationComponent extends Component
+class BadConfigException extends \Exception
 {
-	/**
-	 * Initializes the application component.
-	 */
-	public function init()
-	{
-	}
 }
+

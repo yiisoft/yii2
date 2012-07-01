@@ -18,4 +18,5 @@ $config = array(
 $id = 'yiic';
 $basePath = __DIR__ . '/console';
 
-yii\console\Application::newInstance($config, $id, $basePath)->run();
+$application = new yii\console\Application($id, $basePath, $config);
+$application->run();

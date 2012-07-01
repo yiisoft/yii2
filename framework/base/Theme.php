@@ -25,12 +25,12 @@ class Theme extends ApplicationComponent
 		if ($this->basePath !== null) {
 			$this->basePath = \Yii::getAlias($this->basePath, true);
 		} else {
-			throw new Exception("Theme.basePath must be set.");
+			throw new BadConfigException("Theme.basePath must be set.");
 		}
 		if ($this->baseUrl !== null) {
 			$this->baseUrl = \Yii::getAlias($this->baseUrl, true);
 		} else {
-			throw new Exception("Theme.baseUrl must be set.");
+			throw new BadConfigException("Theme.baseUrl must be set.");
 		}
 	}
 

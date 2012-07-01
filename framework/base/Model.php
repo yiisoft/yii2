@@ -279,6 +279,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * Creates validator objects based on the validation rules specified in [[rules()]].
 	 * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
 	 * @return Vector validators
+	 * @throws BadConfigException if any validation rule configuration is invalid
 	 */
 	public function createValidators()
 	{
@@ -288,7 +289,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 				$validator = \yii\validators\Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
 				$validators->add($validator);
 			} else {
-				throw new Exception('Invalid validation rule: a rule must specify both attribute names and validator type.');
+				throw new BadConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
 			}
 		}
 		return $validators;

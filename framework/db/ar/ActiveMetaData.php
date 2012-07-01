@@ -89,7 +89,7 @@ class ActiveMetaData
 			if (is_string($config)) {
 				$config = array('on' => $config);
 			}
-			$relation = ActiveRelation::newInstance($config);
+			$relation = new ActiveRelation($config);
 			$relation->name = $matches[1];
 			$modelClass = $matches[2];
 			if (strpos($modelClass, '\\') !== false) {

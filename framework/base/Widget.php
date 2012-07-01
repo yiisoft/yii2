@@ -15,7 +15,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Widget extends Component implements Initable
+class Widget extends Component
 {
 	/**
 	 * @var Widget|Controller the owner/creator of this widget. It could be either a widget or a controller.
@@ -59,13 +59,6 @@ class Widget extends Component implements Initable
 	public function setId($value)
 	{
 		$this->_id = $value;
-	}
-
-	/**
-	 * Initializes the widget.
-	 */
-	public function init()
-	{
 	}
 
 	/**

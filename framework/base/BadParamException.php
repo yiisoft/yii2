@@ -1,6 +1,6 @@
 <?php
 /**
- * ApplicationComponent class file.
+ * BadParamException class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,17 +10,12 @@
 namespace yii\base;
 
 /**
- * ApplicationComponent is the base class for application component classes.
+ * BadParamException represents an exception caused by incorrect method parameters.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ApplicationComponent extends Component
+class BadParamException extends \Exception
 {
-	/**
-	 * Initializes the application component.
-	 */
-	public function init()
-	{
-	}
 }
+

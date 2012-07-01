@@ -1034,7 +1034,8 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function instantiate($row)
 	{
-		return static::newInstance();
+		$class = get_called_class();
+		return new $class;
 	}
 
 	/**

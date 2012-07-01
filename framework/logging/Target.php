@@ -23,7 +23,7 @@ namespace yii\logging;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Target extends \yii\base\Component implements \yii\base\Initable
+abstract class Target extends \yii\base\Component
 {
 	/**
 	 * @var boolean whether to enable this log target. Defaults to true.
@@ -88,15 +88,6 @@ abstract class Target extends \yii\base\Component implements \yii\base\Initable
 	 * @param boolean $final whether this method is called at the end of the current application
 	 */
 	abstract public function exportMessages($final);
-
-	/**
-	 * Initializes this component.
-	 * This method is invoked after the component is created and its property values are
-	 * initialized.
-	 */
-	public function init()
-	{
-	}
 
 	/**
 	 * Processes the given log messages.

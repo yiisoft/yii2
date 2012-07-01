@@ -1,6 +1,6 @@
 <?php
 /**
- * ApplicationComponent class file.
+ * BadMethodException class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,17 +10,12 @@
 namespace yii\base;
 
 /**
- * ApplicationComponent is the base class for application component classes.
+ * BadMethodException represents an exception caused by accessing unknown object methods.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ApplicationComponent extends Component
+class BadMethodException extends \Exception
 {
-	/**
-	 * Initializes the application component.
-	 */
-	public function init()
-	{
-	}
 }
+

@@ -309,9 +309,6 @@ class YiiBase
 	/**
 	 * Creates a new object using the given configuration.
 	 *
-	 * The class of the object can be any class. It does not have to
-	 * extend from [[Object]] or [[Component]].
-	 *
 	 * The configuration can be either a string or an array.
 	 * If a string, it is treated as the *object type*; if an array,
 	 * it must contain a `class` element specifying the *object type*, and
@@ -321,16 +318,8 @@ class YiiBase
 	 * The object type can be either a class name or the [[getAlias|alias]] of
 	 * the class. For example,
 	 *
-	 * - `\app\components\GoogleMap`: full qualified namespaced class.
+	 * - `\app\components\GoogleMap`: fully-qualified namespaced class.
 	 * - `@app/components/GoogleMap`: an alias
-	 *
-	 * This method does the following steps to create an object:
-	 *
-	 * - create the object using the PHP `new` operator;
-	 * - if [[objectConfig]] contains the configuration for the object class,
-	 *   it will be merged with the configuration passed to this method;
-	 * - initialize the object properties using the configuration passed to this method;
-	 * - call the `init` method of the object if it implements the [[\yii\base\Initable]] interface.
 	 *
 	 * Below are some usage examples:
 	 *
@@ -342,16 +331,26 @@ class YiiBase
 	 * ));
 	 * ~~~
 	 *
-	 * Any additional parameters passed to this method will be
-	 * passed to the constructor of the object being created.
+	 * This method can be used to create any object as long as the object's constructor is
+	 * defined like the following:
 	 *
-	 * @param string|array $config the configuration. It can be either a string or an array.
+	 * ~~~
+	 * public function __construct(..., $config = array()) {
+	 * }
+	 * ~~~
+	 *
+	 * The method will pass the given configuration as the last parameter of the constructor,
+	 * and any additional parameters to this method will be passed as the rest of the constructor parameters.
+	 *
+	 * @param string|array $config the configuration. It can be either a string representing the class name
+	 * or an array representing the object configuration.
 	 * @return mixed the created object
-	 * @throws Exception if the configuration is invalid.
-	 * @see \yii\base\Object::newInstance()
+	 * @throws \yii\base\BadConfigException if the configuration is invalid.
 	 */
 	public static function createObject($config)
 	{
+		static $reflections = array();
+
 		if (is_string($config)) {
 			$class = $config;
 			$config = array();
@@ -359,7 +358,7 @@ class YiiBase
 			$class = $config['class'];
 			unset($config['class']);
 		} else {
-			throw new Exception('Object configuration must be an array containing a "class" element.');
+			throw new \yii\base\BadConfigException('Object configuration must be an array containing a "class" element.');
 		}
 
 		if (!class_exists($class, false)) {
@@ -367,37 +366,21 @@ class YiiBase
 		}
 
 		if (($n = func_num_args()) > 1) {
-			$args = func_get_args();
-			if ($n === 2) {
-				$object = new $class($args[1]);
-			} elseif ($n === 3) {
-				$object = new $class($args[1], $args[2]);
-			} elseif ($n === 4) {
-				$object = new $class($args[1], $args[2], $args[3]);
+			/** @var $reflection \ReflectionClass */
+			if (isset($reflections[$class])) {
+				$reflection = $reflections[$class];
 			} else {
-				array_shift($args); // remove $config
-				$r = new \ReflectionClass($class);
-				$object = $r->newInstanceArgs($args);
+				$reflection = $reflections[$class] = new \ReflectionClass($class);
 			}
+			$args = func_get_args();
+			array_shift($args); // remove $config
+			if ($config !== array()) {
+				$args[] = $config;
+			}
+			return $reflection->newInstanceArgs($args);
 		} else {
-			$object = new $class;
+			return $config === array() ? new $class : new $class($config);
 		}
-
-		$class = get_class($object);
-
-		if (isset(\Yii::$objectConfig[$class])) {
-			$config = array_merge(\Yii::$objectConfig[$class], $config);
-		}
-
-		foreach ($config as $name => $value) {
-			$object->$name = $value;
-		}
-
-		if ($object instanceof \yii\base\Initable) {
-			$object->init();
-		}
-
-		return $object;
 	}
 
 	/**
@@ -545,14 +528,22 @@ class YiiBase
 		if (self::$application !== null)
 		{
 			if ($source === null)
-				$source = $category === 'yii' ? 'coreMessages' : 'messages';
+					{
+						$source = $category === 'yii' ? 'coreMessages' : 'messages';
+					}
 			if (($source = self::$application->getComponent($source)) !== null)
-				$message = $source->translate($category, $message, $language);
+					{
+						$message = $source->translate($category, $message, $language);
+					}
 		}
 		if ($params === array())
-			return $message;
+				{
+					return $message;
+				}
 		if (!is_array($params))
-			$params = array($params);
+				{
+					$params = array($params);
+				}
 		if (isset($params[0])) // number choice
 		{
 			if (strpos($message, '|') !== false)
@@ -563,8 +554,10 @@ class YiiBase
 					$expressions = self::$application->getLocale($language)->getPluralRules();
 					if ($n = min(count($chunks), count($expressions)))
 					{
-						for ($i = 0;$i < $n;$i++)
-							$chunks[$i] = $expressions[$i] . '#' . $chunks[$i];
+						for ($i = 0; $i < $n; $i++)
+								{
+									$chunks[$i] = $expressions[$i] . '#' . $chunks[$i];
+								}
 
 						$message = implode('|', $chunks);
 					}
@@ -572,7 +565,9 @@ class YiiBase
 				$message = CChoiceFormat::format($message, $params[0]);
 			}
 			if (!isset($params['{n}']))
-				$params['{n}'] = $params[0];
+					{
+						$params['{n}'] = $params[0];
+					}
 			unset($params[0]);
 		}
 		return $params !== array() ? strtr($message, $params) : $message;

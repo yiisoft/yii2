@@ -27,7 +27,7 @@ use yii\util\FileHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Module extends Component implements Initable
+abstract class Module extends Component
 {
 	/**
 	 * @var array custom module parameters (name => value).
@@ -584,7 +584,7 @@ abstract class Module extends Component implements Initable
 			}
 			if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
 				return array(
-					$className::newInstance(array(), $id, $this),
+					new $className($id, $this),
 					$route,
 				);
 			}

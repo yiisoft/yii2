@@ -202,14 +202,15 @@ class Application extends Module
 	 * @param string $route the route (e.g. `post/create`)
 	 * @param array $params the parameters to be passed to the controller action
 	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
-	 * @throws Exception if the route cannot be resolved into a controller
+	 * @throws BadRequestException if the route cannot be resolved into a controller
 	 */
 	public function runController($route, $params = array())
 	{
 		$result = $this->createController($route);
 		if ($result === false) {
-			throw new Exception(\Yii::t('yii', 'Unable to resolve the request.'));
+			throw new BadRequestException(\Yii::t('yii', 'Unable to resolve the request.'));
 		}
+		/** @var $controller Controller */
 		list($controller, $action) = $result;
 		$priorController = $this->controller;
 		$this->controller = $controller;
@@ -233,13 +234,13 @@ class Application extends Module
 	/**
 	 * Sets the directory that stores runtime files.
 	 * @param string $path the directory that stores runtime files.
-	 * @throws Exception if the directory does not exist or is not writable
+	 * @throws BadParamException if the directory does not exist or is not writable
 	 */
 	public function setRuntimePath($path)
 	{
 		$p = \Yii::getAlias($path);
 		if ($p === false || !is_dir($p) || !is_writable($path)) {
-			throw new Exception("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
+			throw new BadParamException("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
 		} else {
 			$this->_runtimePath = $p;
 		}

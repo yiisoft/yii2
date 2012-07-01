@@ -1,6 +1,6 @@
 <?php
 /**
- * ApplicationComponent class file.
+ * BadPropertyException class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
@@ -10,17 +10,12 @@
 namespace yii\base;
 
 /**
- * ApplicationComponent is the base class for application component classes.
+ * BadPropertyException represents an exception caused by accessing unknown object properties.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ApplicationComponent extends Component
+class BadPropertyException extends \Exception
 {
-	/**
-	 * Initializes the application component.
-	 */
-	public function init()
-	{
-	}
 }
+

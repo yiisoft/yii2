@@ -25,10 +25,10 @@ use yii\db\Exception;
  * the DB connection:
  *
  * ~~~
- * $connection = \yii\db\dao\Connection::newInstance(array(
- * 	'dsn' => $dsn,
- * 	'username' => $username,
- * 	'password' => $password,
+ * $connection = new \yii\db\dao\Connection(array(
+ *     'dsn' => $dsn,
+ *     'username' => $username,
+ *     'password' => $password,
  * ));
  * $connection->active = true;  // same as: $connection->open();
  * ~~~
