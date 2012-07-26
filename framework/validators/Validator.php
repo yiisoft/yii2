@@ -93,6 +93,11 @@ abstract class Validator extends \yii\base\Component
 	 */
 	public $on;
 	/**
+	 * @var array list of scenarios that the validator should not be applied to.
+	 * Each array value refers to a scenario name with the same name as its array key.
+	 */
+	public $except;
+	/**
 	 * @var boolean whether this validation rule should be skipped if the attribute being validated
 	 * already has some validation error according to the previous rules. Defaults to true.
 	 */
@@ -142,6 +147,17 @@ abstract class Validator extends \yii\base\Component
 			$params['on'] = empty($on) ? array() : array_combine($on, $on);
 		} else {
 			$params['on'] = array();
+		}
+
+		if (isset($params['except'])) {
+			if (is_array($params['except'])) {
+				$except = $params['except'];
+			} else {
+				$except = preg_split('/[\s,]+/', $params['except'], -1, PREG_SPLIT_NO_EMPTY);
+			}
+			$params['except'] = empty($on) ? array() : array_combine($except, $except);
+		} else {
+			$params['except'] = array();
 		}
 
 		if (method_exists($object, $type)) {
@@ -225,11 +241,8 @@ abstract class Validator extends \yii\base\Component
 	 */
 	public function applyTo($scenario, $attribute = null)
 	{
-		if ($attribute === null) {
-			return empty($this->on) || isset($this->on[$scenario]);
-		} else {
-			return (empty($this->on) || isset($this->on[$scenario])) && in_array($attribute, $this->attributes, true);
-		}
+		$applies = !isset($this->except[$scenario]) && (empty($this->on) || isset($this->on[$scenario]));
+		return $attribute === null ? $applies : $applies && in_array($attribute, $this->attributes, true);
 	}
 
 	/**

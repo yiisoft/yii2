@@ -15,12 +15,18 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ApplicationComponent extends Component
+class ApplicationComponent extends Component
 {
 	/**
-	 * Initializes the application component.
+	 * @var string unique ID of this application component
 	 */
+	public $id;
+
 	public function init()
 	{
+		parent::init();
+		if ($this->id === null) {
+			$this->id = get_class($this);
+		}
 	}
 }
