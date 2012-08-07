@@ -50,7 +50,7 @@ class HelpController extends Controller
 	public function actionIndex($args = array())
 	{
 		if (empty($args)) {
-			$status = $this->helpIndex();
+			$status = $this->getHelp();
 		} else {
 			$result = \Yii::$application->createController($args[0]);
 			if ($result === false) {
@@ -61,9 +61,9 @@ class HelpController extends Controller
 			list($controller, $action) = $result;
 
 			if ($action === '') {
-				$status = $this->helpController($controller);
+				$status = $this->getControllerHelp($controller);
 			} else {
-				$status = $this->helpAction($controller, $action);
+				$status = $this->getActionHelp($controller, $action);
 			}
 		}
 		return $status;
@@ -90,6 +90,7 @@ class HelpController extends Controller
 		$actions = array_keys($controller->actions);
 		$class = new \ReflectionClass($controller);
 		foreach ($class->getMethods() as $method) {
+			/** @var $method \ReflectionMethod */
 			$name = $method->getName();
 			if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0) {
 				$actions[] = lcfirst(substr($name, 6));
@@ -140,7 +141,7 @@ class HelpController extends Controller
 	 * Displays all available commands.
 	 * @return integer the exit status
 	 */
-	protected function helpIndex()
+	protected function getHelp()
 	{
 		$commands = $this->getCommands();
 		if ($commands !== array()) {
@@ -162,7 +163,7 @@ class HelpController extends Controller
 	 * @param Controller $controller the controller instance
 	 * @return integer the exit status
 	 */
-	protected function helpController($controller)
+	protected function getControllerHelp($controller)
 	{
 		$class = new \ReflectionClass($controller);
 		$comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($class->getDocComment(), '/'))), "\r", '');
@@ -213,7 +214,7 @@ class HelpController extends Controller
 	 * @param string $actionID action ID
 	 * @return integer the exit status
 	 */
-	protected function helpAction($controller, $actionID)
+	protected function getActionHelp($controller, $actionID)
 	{
 		$action = $controller->createAction($actionID);
 		if ($action === null) {
