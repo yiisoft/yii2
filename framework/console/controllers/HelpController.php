@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\console\commands;
+namespace yii\console\controllers;
 
 use yii\base\Application;
 use yii\base\InlineAction;

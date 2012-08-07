@@ -13,7 +13,7 @@ defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 require(__DIR__ . '/yii.php');
 
 $config = array(
-	'controllerPath' => '@yii/console/commands',
+	'controllerPath' => '@yii/console/controllers',
 );
 $id = 'yiic';
 $basePath = __DIR__ . '/console';
