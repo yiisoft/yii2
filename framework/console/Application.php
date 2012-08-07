@@ -62,6 +62,9 @@ class Application extends \yii\base\Application
 	 */
 	public $enableCoreCommands = true;
 
+	/**
+	 * Initialize the application.
+	 */
 	public function init()
 	{
 		parent::init();
@@ -74,7 +77,7 @@ class Application extends \yii\base\Application
 		}
 		// ensure we have the 'help' command so that we can list the available commands
 		if (!isset($this->controllers['help'])) {
-			$this->controllers['help'] = 'yii\console\commands\HelpController';
+			$this->controllers['help'] = 'yii\console\controllers\HelpController';
 		}
 	}
 
@@ -106,6 +109,7 @@ class Application extends \yii\base\Application
 		if ($result === false) {
 			throw new Exception(\Yii::t('yii', 'Unable to resolve the request.'));
 		}
+		/** @var $controller \yii\console\Controller */
 		list($controller, $action) = $result;
 		$priorController = $this->controller;
 		$this->controller = $controller;
@@ -144,14 +148,18 @@ class Application extends \yii\base\Application
 		return array($route, $params);
 	}
 
+	/**
+	 * Returns the configuration of the built-in commands.
+	 * @return array the configuration of the built-in commands.
+	 */
 	public function coreCommands()
 	{
 		return array(
-			'message' => 'yii\console\commands\MessageController',
-			'help' => 'yii\console\commands\HelpController',
-			'migrate' => 'yii\console\commands\MigrateController',
-			'shell' => 'yii\console\commands\ShellController',
-			'app' => 'yii\console\commands\AppController',
+			'message' => 'yii\console\controllers\MessageController',
+			'help' => 'yii\console\controllers\HelpController',
+			'migrate' => 'yii\console\controllers\MigrateController',
+			'shell' => 'yii\console\controllers\ShellController',
+			'app' => 'yii\console\controllers\AppController',
 		);
 	}
 }
