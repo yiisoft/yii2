@@ -208,6 +208,15 @@ class Component extends \yii\base\Object
 	}
 
 	/**
+	 * This method is called after the object is created by cloning an existing one.
+	 * It removes all behaviors because they are attached to the old object.
+	 */
+	public function __clone()
+	{
+		$this->_b = null;
+	}
+
+	/**
 	 * Returns a list of behaviors that this component should behave as.
 	 *
 	 * Child classes may override this method to specify the behaviors they want to behave as.
