@@ -196,6 +196,7 @@ class ActiveFinder extends \yii\base\Object
 				$records[$row[$query->index]] = $row;
 			}
 		} else {
+			/** @var $class ActiveRecord */
 			$class = $query->modelClass;
 			if ($query->index === null) {
 				foreach ($rows as $row) {
@@ -212,18 +213,20 @@ class ActiveFinder extends \yii\base\Object
 
 	protected function applyScopes($query)
 	{
+		/** @var $class ActiveRecord */
 		$class = $query->modelClass;
 		$class::defaultScope($query);
 		if (is_array($query->scopes)) {
-			$scopes = $class::scopes();
+			$model = new $class;
 			foreach ($query->scopes as $name => $params) {
-				if (is_integer($name)) {
+				if (is_string($params)) {
+					// scope name only without parameters
 					$name = $params;
 					$params = array();
 				}
-				if (isset($scopes[$name])) {
+				if (method_exists($class, $name)) {
 					array_unshift($params, $query);
-					call_user_func_array($scopes[$name], $params);
+					call_user_func_array(array($model, $name), $params);
 				} else {
 					throw new Exception("$class has no scope named '$name'.");
 				}

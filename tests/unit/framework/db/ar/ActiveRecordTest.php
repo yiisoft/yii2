@@ -35,7 +35,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 	public function testUpdate()
 	{
 		// save
-		$customer = Customer::find(2)->one();
+		$customer = Customer::find(2);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 		$this->assertFalse($customer->isNewRecord);
@@ -43,7 +43,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$customer->save();
 		$this->assertEquals('user2x', $customer->name);
 		$this->assertFalse($customer->isNewRecord);
-		$customer2 = Customer::find(2)->one();
+		$customer2 = Customer::find(2);
 		$this->assertEquals('user2x', $customer2->name);
 
 		// updateCounters
@@ -57,13 +57,13 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(0, $orderItem->quantity);
 
 		// updateAll
-		$customer = Customer::find(3)->one();
+		$customer = Customer::find(3);
 		$this->assertEquals('user3', $customer->name);
 		$ret = Customer::updateAll(array(
 			'name' => 'temp',
 		), array('id' => 3));
 		$this->assertEquals(1, $ret);
-		$customer = Customer::find(3)->one();
+		$customer = Customer::find(3);
 		$this->assertEquals('temp', $customer->name);
 
 		// updateCounters
@@ -81,11 +81,11 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 	public function testDelete()
 	{
 		// delete
-		$customer = Customer::find(2)->one();
+		$customer = Customer::find(2);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 		$customer->delete();
-		$customer = Customer::find(2)->one();
+		$customer = Customer::find(2);
 		$this->assertNull($customer);
 
 		// deleteAll
@@ -140,7 +140,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue($result[2] instanceof Customer);
 
 		// find by a single primary key
-		$customer = Customer::find(2)->one();
+		$customer = Customer::find(2);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 
@@ -161,7 +161,6 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		// find count
 		$this->assertEquals(3, Customer::find()->count());
 		$this->assertEquals(3, Customer::count());
-		$this->assertEquals(1, Customer::count(2));
 		$this->assertEquals(2, Customer::count(array(
 			'where' => 'id=1 OR id=2',
 		)));
@@ -294,12 +293,12 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 	public function testLazyLoading()
 	{
 		// has one
-		$order = Order::find(3)->one();
+		$order = Order::find(3);
 		$this->assertTrue($order->customer instanceof Customer);
 		$this->assertEquals(2, $order->customer->id);
 
 		// has many
-		$customer = Customer::find(2)->one();
+		$customer = Customer::find(2);
 		$orders = $customer->orders;
 		$this->assertEquals(2, count($orders));
 		$this->assertEquals(2, $orders[0]->id);
@@ -316,7 +315,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(2, $orders[2]->books[0]->id);
 
 		// customized relation query
-		$customer = Customer::find(2)->one();
+		$customer = Customer::find(2);
 		$orders = $customer->orders(array(
 			'where' => '@.id = 3',
 		));

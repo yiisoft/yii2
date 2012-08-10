@@ -46,11 +46,9 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 
 	public function __call($name, $params)
 	{
-		$class = $this->modelClass;
-		$scopes = $class::scopes();
-		if (isset($scopes[$name])) {
-			array_unshift($params, $this);
-			return call_user_func_array($scopes[$name], $params);
+		if (method_exists($this->modelClass, $name)) {
+			$this->scopes[$name] = $params;
+			return $this;
 		} else {
 			return parent::__call($name, $params);
 		}

@@ -21,13 +21,8 @@ class Customer extends ActiveRecord
 		);
 	}
 
-	public static function scopes()
+	public function active($query)
 	{
-		$status = self::STATUS_ACTIVE;
-		return array(
-			'active' => function($q) use ($status){
-				return $q->andWhere('@.`status` = ' . $status);
-			},
-		);
+		return $query->andWhere('@.`status` = ' . self::STATUS_ACTIVE);
 	}
 }

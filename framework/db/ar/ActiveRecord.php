@@ -164,10 +164,8 @@ abstract class ActiveRecord extends Model
 	 * echo Customer::count('COUNT(DISTINCT age)')->value();
 	 * ~~~
 	 *
-	 * @param mixed $q the query parameter. This can be one of the followings:
-	 *
-	 *  - a scalar value (integer or string): query by a single primary key value.
-	 *  - an array of name-value pairs: it will be used to configure the [[ActiveQuery]] object for query purpose.
+	 * @param array $q the query configuration. This should be an array of name-value pairs.
+	 * It will be used to configure the [[ActiveQuery]] object for query purpose.
 	 *
 	 * @return integer the counting result
 	 */
