@@ -17,7 +17,7 @@ General upgrade instructions
 - Replace 'framework' dir with the new one or point Git to a fresh
   release tag and checkout.
 - Check if everything is OK, if not — revert to previous stable version and post
-  issues to [Yii issue tracker](https://github.com/yiisoft/yii/issues).
+  issues to [Yii issue tracker](https://github.com/yiisoft/yii2/issues).
 
 
 Upgrading from v1.1.x
@@ -31,9 +31,9 @@ Upgrading from v1.1.x
 - The root alias `@yii` now represents the framework installation directory.
    In 1.x, this is named as `system`. We also removed `zii` root alias.
 
-- Object serves as the base class that supports properties. And Component extends
-  from Object and supports events and behaviors. Behaviors declared in
-  Component::behaviors() are attached on demand.
+- `Object` serves as the base class that supports properties. And `Component` extends
+  from `Object` and supports events and behaviors. Behaviors declared in
+  `Component::behaviors()` are attached on demand.
 
 - `CList` is renamed to `Vector`, and `CMap` is renamed to `Dictionary`.
   Other collection classes are dropped in favor of SPL classes.
