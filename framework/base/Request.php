@@ -16,124 +16,24 @@ namespace yii\base;
 class Request extends ApplicationComponent
 {
 	private $_scriptFile;
+	private $_isConsoleRequest;
 
 	/**
-	 * Initializes the application component.
-	 * This method overrides the parent implementation by preprocessing
-	 * the user request data.
+	 * Returns a value indicating whether the current request is made via command line
+	 * @return boolean the value indicating whether the current request is made via console
 	 */
-	public function init()
+	public function getIsConsoleRequest()
 	{
+		return isset($this->_isConsoleRequest) ? $this->_isConsoleRequest : PHP_SAPI === 'cli';
 	}
 
 	/**
-	 * Returns the relative URL of the entry script.
-	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
-	 * @return string the relative URL of the entry script.
+	 * Sets the value indicating whether the current request is made via command line
+	 * @param boolean $value the value indicating whether the current request is made via command line
 	 */
-	public function getScriptUrl()
+	public function setIsConsoleRequest($value)
 	{
-		if($this->_scriptUrl===null)
-		{
-			$scriptName=basename($_SERVER['SCRIPT_FILENAME']);
-			if(basename($_SERVER['SCRIPT_NAME'])===$scriptName)
-				$this->_scriptUrl=$_SERVER['SCRIPT_NAME'];
-			else if(basename($_SERVER['PHP_SELF'])===$scriptName)
-				$this->_scriptUrl=$_SERVER['PHP_SELF'];
-			else if(isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME'])===$scriptName)
-				$this->_scriptUrl=$_SERVER['ORIG_SCRIPT_NAME'];
-			else if(($pos=strpos($_SERVER['PHP_SELF'],'/'.$scriptName))!==false)
-				$this->_scriptUrl=substr($_SERVER['SCRIPT_NAME'],0,$pos).'/'.$scriptName;
-			else if(isset($_SERVER['DOCUMENT_ROOT']) && strpos($_SERVER['SCRIPT_FILENAME'],$_SERVER['DOCUMENT_ROOT'])===0)
-				$this->_scriptUrl=str_replace('\\','/',str_replace($_SERVER['DOCUMENT_ROOT'],'',$_SERVER['SCRIPT_FILENAME']));
-			else
-				throw new Exception(Yii::t('yii','CHttpRequest is unable to determine the entry script URL.'));
-		}
-		return $this->_scriptUrl;
-	}
-
-	/**
-	 * Sets the relative URL for the application entry script.
-	 * This setter is provided in case the entry script URL cannot be determined
-	 * on certain Web servers.
-	 * @param string $value the relative URL for the application entry script.
-	 */
-	public function setScriptUrl($value)
-	{
-		$this->_scriptUrl='/'.trim($value,'/');
-	}
-
-	/**
-	 * Returns whether this is an AJAX (XMLHttpRequest) request.
-	 * @return boolean whether this is an AJAX (XMLHttpRequest) request.
-	 */
-	public function getIsAjaxRequest()
-	{
-		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']==='XMLHttpRequest';
-	}
-
-	/**
-	 * Returns whether this is an Adobe Flash or Adobe Flex request.
-	 * @return boolean whether this is an Adobe Flash or Adobe Flex request.
-	 * @since 1.1.11
-	 */
-	public function getIsFlashRequest()
-	{
-		return isset($_SERVER['HTTP_USER_AGENT']) && (stripos($_SERVER['HTTP_USER_AGENT'],'Shockwave')!==false || stripos($_SERVER['HTTP_USER_AGENT'],'Flash')!==false);
-	}
-
-	/**
-	 * Returns the server name.
-	 * @return string server name
-	 */
-	public function getServerName()
-	{
-		return $_SERVER['SERVER_NAME'];
-	}
-
-	/**
-	 * Returns the server port number.
-	 * @return integer server port number
-	 */
-	public function getServerPort()
-	{
-		return $_SERVER['SERVER_PORT'];
-	}
-
-	/**
-	 * Returns the URL referrer, null if not present
-	 * @return string URL referrer, null if not present
-	 */
-	public function getUrlReferrer()
-	{
-		return isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:null;
-	}
-
-	/**
-	 * Returns the user agent, null if not present.
-	 * @return string user agent, null if not present
-	 */
-	public function getUserAgent()
-	{
-		return isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:null;
-	}
-
-	/**
-	 * Returns the user IP address.
-	 * @return string user IP address
-	 */
-	public function getUserHostAddress()
-	{
-		return isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:'127.0.0.1';
-	}
-
-	/**
-	 * Returns the user host name, null if it cannot be determined.
-	 * @return string user host name, null if cannot be determined
-	 */
-	public function getUserHost()
-	{
-		return isset($_SERVER['REMOTE_HOST'])?$_SERVER['REMOTE_HOST']:null;
+		$this->_isConsoleRequest = $value;
 	}
 
 	/**
@@ -142,9 +42,21 @@ class Request extends ApplicationComponent
 	 */
 	public function getScriptFile()
 	{
-		if($this->_scriptFile!==null)
-			return $this->_scriptFile;
-		else
-			return $this->_scriptFile=realpath($_SERVER['SCRIPT_FILENAME']);
+		if ($this->_scriptFile === null) {
+			$this->_scriptFile = realpath($_SERVER['SCRIPT_FILENAME']);
+		}
+		return $this->_scriptFile;
+	}
+
+	/**
+	 * Sets the entry script file path.
+	 * This can be an absolute or relative file path, or a path alias.
+	 * Note that you normally do not have to set the script file path
+	 * as [[getScriptFile()]] can determine it based on `$_SERVER['SCRIPT_FILENAME']`.
+	 * @param string $value the entry script file
+	 */
+	public function setScriptFile($value)
+	{
+		$this->_scriptFile = realpath(\Yii::getAlias($value));
 	}
 }

@@ -20,7 +20,7 @@ use yii\base\Exception;
  * The `yiic` program is used when calling a console command, like the following:
  *
  * ~~~
- * yiic <route> [...options...]
+ * yiic <route> [--param1=value1 --param2 ...]
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -36,13 +36,14 @@ class Controller extends \yii\base\Controller
 	 */
 	public function invalidActionParams($action, $exception)
 	{
-		echo "Error: " . $exception->getMessage() . "\n";
+		echo \Yii::t('yii', 'Error: {message}', array(
+			'{message}' => $exception->getMessage(),
+		));
 		\Yii::$application->end(1);
 	}
 
 	/**
-	 * This method is invoked when extra parameters are provided to an action when it is executed.
-	 * The default implementation does nothing.
+	 * This method is invoked when extra parameters are provided to an action while it is executed.
 	 * @param Action $action the action being executed
 	 * @param array $expected the expected action parameters (name => value)
 	 * @param array $actual the actual action parameters (name => value)
@@ -53,7 +54,7 @@ class Controller extends \yii\base\Controller
 
 		$keys = array_diff(array_keys($actual), array_keys($expected));
 		if (!empty($keys)) {
-			echo "Error: " . \Yii::t('yii', 'Unknown parameters: {params}', array(
+			echo \Yii::t('yii', 'Error: Unknown parameter(s): {params}', array(
 				'{params}' => implode(', ', $keys),
 			)) . "\n";
 			\Yii::$application->end(1);

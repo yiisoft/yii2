@@ -25,21 +25,21 @@ use yii\util\ReflectionHelper;
  * - The command processes the user request with the specified parameters.
  *
  * The command classes reside in the directory specified by [[controllerPath]].
- * Their naming should follow the same naming as controllers. For example, the `help` command
+ * Their naming should follow the same naming convention as controllers. For example, the `help` command
  * is implemented using the `HelpController` class.
  *
  * To run the console application, enter the following on the command line:
  *
  * ~~~
- * yiic <route> [...options...]
+ * yiic <route> [--param1=value1 --param2 ...]
  * ~~~
  *
  * where `<route>` refers to a controller route in the form of `ModuleID/ControllerID/ActionID`
- * (e.g. `sitemap/create`), and `options` refers to a set of named parameters that will be used
- * to initialize the command controller instance and the corresponding action (e.g. `--since=0`
- * specifies a `since` parameter whose value is 0).
+ * (e.g. `sitemap/create`), and `param1`, `param2` refers to a set of named parameters that
+ * will be used to initialize the controller action (e.g. `--since=0` specifies a `since` parameter
+ * whose value is 0 and a corresponding `$since` parameter is passed to the action method).
  *
- * A `help` command is provided by default, which may list available commands and show their usage.
+ * A `help` command is provided by default, which lists available commands and shows their usage.
  * To use this command, simply type:
  *
  * ~~~
@@ -89,11 +89,13 @@ class Application extends \yii\base\Application
 	 */
 	public function processRequest()
 	{
-		if (!isset($_SERVER['argv'])) {
+		/** @var $request Request */
+		$request = $this->getRequest();
+		if ($request->getIsConsoleRequest()) {
+			return $this->runController($request->route, $request->params);
+		} else {
 			die('This script must be run from the command line.');
 		}
-		list($route, $params) = $this->resolveRequest($_SERVER['argv']);
-		return $this->runController($route, $params);
 	}
 
 	/**
@@ -117,35 +119,6 @@ class Application extends \yii\base\Application
 		$status = $controller->run($action, $params);
 		$this->controller = $priorController;
 		return $status;
-	}
-
-	/**
-	 * Resolves the request.
-	 * @param array $args the arguments passed via the command line
-	 * @return array the controller route and the parameters for the controller action
-	 */
-	protected function resolveRequest($args)
-	{
-		array_shift($args);  // the 1st argument is the yiic script name
-
-		if (isset($args[0])) {
-			$route = $args[0];
-			array_shift($args);
-		} else {
-			$route = '';
-		}
-
-		$params = array();
-		foreach ($args as $arg) {
-			if (preg_match('/^--(\w+)(=(.*))?$/', $arg, $matches)) {
-				$name = $matches[1];
-				$params[$name] = isset($matches[3]) ? $matches[3] : true;
-			} else {
-				$params['args'][] = $arg;
-			}
-		}
-
-		return array($route, $params);
 	}
 
 	/**
