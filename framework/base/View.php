@@ -63,10 +63,12 @@ class View extends Component
 	/**
 	 * Constructor.
 	 * @param Controller|Widget|Object $context the context under which this view is being rendered (e.g. controller, widget)
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($context = null)
+	public function __construct($context = null, $config = array())
 	{
 		$this->context = $context;
+		parent::__construct($config);
 	}
 
 	public function render($view, $params = array())

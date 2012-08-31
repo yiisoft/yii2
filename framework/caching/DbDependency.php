@@ -41,10 +41,12 @@ class DbDependency extends Dependency
 	/**
 	 * Constructor.
 	 * @param Query $query the SQL query whose result is used to determine if the dependency has been changed.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($query = null)
+	public function __construct($query = null, $config = array())
 	{
 		$this->query = $query;
+		parent::__construct($config);
 	}
 
 	/**

@@ -33,10 +33,12 @@ class Widget extends Component
 	/**
 	 * Constructor.
 	 * @param Widget|Controller $owner owner/creator of this widget.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($owner)
+	public function __construct($owner, $config = array())
 	{
 		$this->owner = $owner;
+		parent::__construct($config);
 	}
 
 	/**

@@ -24,7 +24,7 @@ class Request extends ApplicationComponent
 	 */
 	public function getIsConsoleRequest()
 	{
-		return isset($this->_isConsoleRequest) ? $this->_isConsoleRequest : PHP_SAPI === 'cli';
+		return $this->_isConsoleRequest !== null ? $this->_isConsoleRequest : PHP_SAPI === 'cli';
 	}
 
 	/**

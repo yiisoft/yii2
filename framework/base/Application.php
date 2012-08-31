@@ -121,14 +121,16 @@ class Application extends Module
 	 * @param string $id the ID of this application. The ID should uniquely identify the application from others.
 	 * @param string $basePath the base path of this application. This should point to
 	 * the directory containing all application logic, template and data.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $basePath)
+	public function __construct($id, $basePath, $config = array())
 	{
 		\Yii::$application = $this;
 		$this->id = $id;
 		$this->setBasePath($basePath);
 		$this->registerDefaultAliases();
 		$this->registerCoreComponents();
+		parent::__construct($config);
 	}
 
 	/**

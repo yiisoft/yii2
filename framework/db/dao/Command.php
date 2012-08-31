@@ -66,12 +66,14 @@ class Command extends \yii\base\Component
 	 * @param Connection $connection the database connection
 	 * @param string $sql the SQL statement to be executed
 	 * @param array $params the parameters to be bound to the SQL statement
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($connection, $sql = null, $params = array())
+	public function __construct($connection, $sql = null, $params = array(), $config = array())
 	{
 		$this->connection = $connection;
 		$this->_sql = $sql;
 		$this->bindValues($params);
+		parent::__construct($config);
 	}
 
 	/**

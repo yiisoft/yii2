@@ -49,12 +49,14 @@ class Transaction extends \yii\base\Object
 	/**
 	 * Constructor.
 	 * @param Connection $connection the connection associated with this transaction
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 * @see Connection::beginTransaction
 	 */
-	public function __construct($connection)
+	public function __construct($connection, $config = array())
 	{
 		$this->active = true;
 		$this->connection = $connection;
+		parent::__construct($config);
 	}
 
 	/**

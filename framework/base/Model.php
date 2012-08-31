@@ -54,10 +54,12 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	/**
 	 * Constructor.
 	 * @param string|null $scenario name of the [[scenario]] that this model is used in.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($scenario = null)
+	public function __construct($scenario = null, $config = array())
 	{
 		$this->_scenario = $scenario;
+		parent::__construct($config);
 	}
 
 	/**

@@ -30,9 +30,10 @@ class ActiveFinder extends \yii\base\Object
 	 */
 	public $connection;
 
-	public function __construct($connection)
+	public function __construct($connection, $config = array())
 	{
 		$this->connection = $connection;
+		parent::__construct($config);
 	}
 
 	/**

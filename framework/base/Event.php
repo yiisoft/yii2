@@ -49,10 +49,12 @@ class Event extends \yii\base\Object
 	 *
 	 * @param mixed $sender sender of the event
 	 * @param mixed $data extra data associated with the event
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($sender = null, $data = null)
+	public function __construct($sender = null, $data = null, $config = array())
 	{
 		$this->sender = $sender;
 		$this->data = $data;
+		parent::__construct($config);
 	}
 }

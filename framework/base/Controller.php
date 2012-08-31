@@ -78,11 +78,13 @@ class Controller extends Component
 	/**
 	 * @param string $id ID of this controller
 	 * @param Module $module the module that this controller belongs to.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $module)
+	public function __construct($id, $module, $config = array())
 	{
 		$this->id = $id;
 		$this->module = $module;
+		parent::__construct($config);
 	}
 
 	/**

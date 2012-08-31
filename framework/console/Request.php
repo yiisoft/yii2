@@ -13,7 +13,7 @@ namespace yii\console;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Request extends \yii\base\ApplicationComponent
+class Request extends \yii\base\Request
 {
 	/**
 	 * @var string the controller route specified by this request. If this is an empty string,

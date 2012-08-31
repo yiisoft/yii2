@@ -38,10 +38,12 @@ class ActiveQuery extends BaseActiveQuery implements \IteratorAggregate, \ArrayA
 
 	/**
 	 * @param string $modelClass the name of the ActiveRecord class.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($modelClass)
+	public function __construct($modelClass, $config = array())
 	{
 		$this->modelClass = $modelClass;
+		parent::__construct($config);
 	}
 
 	public function __call($name, $params)

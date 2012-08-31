@@ -26,9 +26,10 @@ class ActiveQueryBuilder extends \yii\base\Object
 	 */
 	public $query;
 
-	public function __construct($query)
+	public function __construct($query, $config = array())
 	{
 		$this->query = $query;
+		parent::__construct($config);
 	}
 
 	public function build()

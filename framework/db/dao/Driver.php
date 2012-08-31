@@ -71,10 +71,12 @@ abstract class Driver extends \yii\base\Object
 	/**
 	 * Constructor.
 	 * @param Connection $connection database connection.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($connection)
+	public function __construct($connection, $config = array())
 	{
 		$this->connection = $connection;
+		parent::__construct($config);
 	}
 
 	/**

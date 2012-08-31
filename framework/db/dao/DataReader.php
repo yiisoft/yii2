@@ -52,11 +52,13 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	/**
 	 * Constructor.
 	 * @param Command $command the command generating the query result
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct(Command $command)
+	public function __construct(Command $command, $config = array())
 	{
 		$this->_statement = $command->pdoStatement;
 		$this->_statement->setFetchMode(\PDO::FETCH_ASSOC);
+		parent::__construct($config);
 	}
 
 	/**

@@ -55,13 +55,15 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * Initializes the vector with an array or an iterable object.
 	 * @param mixed $data the initial data to be populated into the vector.
 	 * This can be an array or an iterable object.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 * @throws Exception if data is not well formed (neither an array nor an iterable object)
 	 */
-	public function __construct($data = array())
+	public function __construct($data = array(), $config = array())
 	{
 		if ($data !== array()) {
 			$this->copyFrom($data);
 		}
+		parent::__construct($config);
 	}
 
 	/**

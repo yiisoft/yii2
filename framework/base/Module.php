@@ -108,11 +108,13 @@ abstract class Module extends Component
 	 * Constructor.
 	 * @param string $id the ID of this module
 	 * @param Module $parent the parent module (if any)
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $parent = null)
+	public function __construct($id, $parent = null, $config = array())
 	{
 		$this->id = $id;
 		$this->module = $parent;
+		parent::__construct($config);
 	}
 
 	/**

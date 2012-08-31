@@ -42,10 +42,12 @@ class ChainedDependency extends Dependency
 	 * @param array $dependencies list of dependencies that this dependency is composed of.
 	 * Each array element should be a dependency object or a configuration array
 	 * that can be used to create a dependency object via [[\Yii::createObject()]].
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($dependencies = array())
+	public function __construct($dependencies = array(), $config = array())
 	{
 		$this->dependencies = $dependencies;
+		parent::__construct($config);
 	}
 
 	/**

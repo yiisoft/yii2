@@ -135,4 +135,21 @@ class Application extends \yii\base\Application
 			'app' => 'yii\console\controllers\AppController',
 		);
 	}
+
+	/**
+	 * Registers the core application components.
+	 * @see setComponents
+	 */
+	public function registerCoreComponents()
+	{
+		parent::registerCoreComponents();
+		$this->setComponents(array(
+			'request' => array(
+				'class' => 'yii\console\Request',
+			),
+			'response' => array(
+				'class' => 'yii\console\Response',
+			),
+		));
+	}
 }

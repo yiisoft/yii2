@@ -39,11 +39,13 @@ class Action extends Component
 	/**
 	 * @param string $id the ID of this action
 	 * @param Controller $controller the controller that owns this action
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $controller)
+	public function __construct($id, $controller, $config = array())
 	{
 		$this->id = $id;
 		$this->controller = $controller;
+		parent::__construct($config);
 	}
 
 	/**

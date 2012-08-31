@@ -31,4 +31,24 @@ class Application extends \yii\base\Application
 	{
 		return array();
 	}
+
+	/**
+	 * Registers the core application components.
+	 * @see setComponents
+	 */
+	public function registerCoreComponents()
+	{
+		parent::registerCoreComponents();
+		$this->setComponents(array(
+			'urlManager' => array(
+				'class' => 'yii\web\UrlManager',
+			),
+			'request' => array(
+				'class' => 'yii\web\Request',
+			),
+			'response' => array(
+				'class' => 'yii\web\Response',
+			),
+		));
+	}
 }

@@ -15,7 +15,7 @@ use yii\db\dao\Query;
 use yii\db\Exception;
 
 
-class JoinElement extends \yii\base\Object
+class JoinElement
 {
 	/**
 	 * @var integer ID of this join element
