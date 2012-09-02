@@ -87,4 +87,51 @@ class FileHelper
 		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $sourceLanguage . DIRECTORY_SEPARATOR . basename($file);
 		return is_file($desiredFile) ? $desiredFile : $file;
 	}
+
+	/**
+	 * Determines the MIME type of the specified file.
+	 * This method will first try to determine the MIME type based on
+	 * [finfo_open](http://php.net/manual/en/function.finfo-open.php). If this doesn't work, it will
+	 * fall back to [[getMimeTypeByExtension()]].
+	 * @param string $file the file name.
+	 * @param string $magicFile name of the optional magic database file, usually something like `/path/to/magic.mime`.
+	 * This will be passed as the second parameter to [finfo_open](http://php.net/manual/en/function.finfo-open.php).
+	 * @param boolean $checkExtension whether to use the file extension to determine the MIME type in case
+	 * `finfo_open()` cannot determine it.
+	 * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
+	 */
+	public static function getMimeType($file, $magicFile = null, $checkExtension = true)
+	{
+		if (function_exists('finfo_open')) {
+			$info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
+			if ($info && ($result = finfo_file($info, $file)) !== false) {
+				return $result;
+			}
+		}
+
+		return $checkExtension ? self::getMimeTypeByExtension($file) : null;
+	}
+
+	/**
+	 * Determines the MIME type based on the extension name of the specified file.
+	 * This method will use a local map between extension names and MIME types.
+	 * @param string $file the file name.
+	 * @param string $magicFile the path of the file that contains all available MIME type information.
+	 * If this is not set, the default file aliased by `@yii/util/mimeTypes.php` will be used.
+	 * @return string the MIME type. Null is returned if the MIME type cannot be determined.
+	 */
+	public static function getMimeTypeByExtension($file, $magicFile = null)
+	{
+		if ($magicFile === null) {
+			$magicFile = \Yii::getAlias('@yii/util/mimeTypes.php');
+		}
+		$mimeTypes = require($magicFile);
+		if (($ext = pathinfo($file, PATHINFO_EXTENSION)) !== '') {
+			$ext = strtolower($ext);
+			if (isset($mimeTypes[$ext])) {
+				return $mimeTypes[$ext];
+			}
+		}
+		return null;
+	}
 }

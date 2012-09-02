@@ -1,22 +1,19 @@
 <?php
 /**
- * CHttpCookie class file.
+ * Cookie class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 /**
- * A CHttpCookie instance stores a single cookie, including the cookie name, value, domain, path, expire, and secure.
+ * Cookie represents information related with a cookie, such as [[name]], [[value]], [[domain]], etc.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web
- * @since 1.0
+ * @since 2.0
  */
-class CHttpCookie extends CComponent
+class Cookie extends \yii\base\Object
 {
 	/**
 	 * @var string name of the cookie
@@ -25,39 +22,41 @@ class CHttpCookie extends CComponent
 	/**
 	 * @var string value of the cookie
 	 */
-	public $value='';
+	public $value = '';
 	/**
 	 * @var string domain of the cookie
 	 */
-	public $domain='';
+	public $domain = '';
 	/**
-	 * @var integer the timestamp at which the cookie expires. This is the server timestamp. Defaults to 0, meaning "until the browser is closed".
+	 * @var integer the timestamp at which the cookie expires. This is the server timestamp.
+	 * Defaults to 0, meaning "until the browser is closed".
 	 */
-	public $expire=0;
+	public $expire = 0;
 	/**
 	 * @var string the path on the server in which the cookie will be available on. The default is '/'.
 	 */
-	public $path='/';
+	public $path = '/';
 	/**
 	 * @var boolean whether cookie should be sent via secure connection
 	 */
-	public $secure=false;
+	public $secure = false;
 	/**
 	 * @var boolean whether the cookie should be accessible only through the HTTP protocol.
 	 * By setting this property to true, the cookie will not be accessible by scripting languages,
-	 * such as JavaScript, which can effectly help to reduce identity theft through XSS attacks.
-	 * Note, this property is only effective for PHP 5.2.0 or above.
+	 * such as JavaScript, which can effectively help to reduce identity theft through XSS attacks.
 	 */
-	public $httpOnly=false;
+	public $httpOnly = false;
 
 	/**
 	 * Constructor.
 	 * @param string $name name of this cookie
 	 * @param string $value value of this cookie
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($name,$value)
+	public function __construct($name, $value, $config = array())
 	{
-		$this->name=$name;
-		$this->value=$value;
+		$this->name = $name;
+		$this->value = $value;
+		parent::__construct($config);
 	}
 }

@@ -308,7 +308,7 @@ class Component extends \yii\base\Object
 	 * where `$event` is an [[Event]] object which includes parameters associated with the event.
 	 *
 	 * @param string $name the event name
-	 * @param callback $handler the event handler
+	 * @param string|array|\Closure $handler the event handler
 	 * @see off
 	 */
 	public function on($name, $handler)
@@ -320,7 +320,7 @@ class Component extends \yii\base\Object
 	 * Detaches an existing event handler.
 	 * This method is the opposite of [[on]].
 	 * @param string $name event name
-	 * @param callback $handler the event handler to be removed
+	 * @param string|array|\Closure $handler the event handler to be removed
 	 * @return boolean if a handler is found and detached
 	 * @see on
 	 */
