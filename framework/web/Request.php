@@ -9,6 +9,8 @@
 
 namespace yii\web;
 
+use \yii\base\BadConfigException;
+
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -30,6 +32,14 @@ class Request extends \yii\base\Request
 	 */
 	public $enableCsrfValidation = false;
 	/**
+	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
+	 * request tunneled through POST. If false, it means disabling REST request tunneled through POST.
+	 * Default to '_method'.
+	 * @see getRequestMethod
+	 * @see getRestParams
+	 */
+	public $restPostVar = '_method';
+	/**
 	 * @var string the name of the token used to prevent CSRF. Defaults to 'YII_CSRF_TOKEN'.
 	 * This property is effective only when {@link enableCsrfValidation} is true.
 	 */
@@ -41,17 +51,7 @@ class Request extends \yii\base\Request
 	 */
 	public $csrfCookie;
 
-	private $_requestUri;
-	private $_pathInfo;
-	private $_scriptFile;
-	private $_scriptUrl;
-	private $_hostInfo;
-	private $_baseUrl;
 	private $_cookies;
-	private $_preferredLanguage;
-	private $_csrfToken;
-	private $_deleteParams;
-	private $_putParams;
 
 	/**
 	 * Initializes the application component.
@@ -103,6 +103,100 @@ class Request extends \yii\base\Request
 	}
 
 	/**
+	 * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, DELETE).
+	 * @return string request method, such as GET, POST, HEAD, PUT, DELETE.
+	 * The value returned is turned into upper case.
+	 */
+	public function getRequestMethod()
+	{
+		if ($this->restPostVar !== false && isset($_POST[$this->restPostVar])) {
+			return strtoupper($_POST[$this->restPostVar]);
+		} else {
+			return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
+		}
+	}
+
+
+	/**
+	 * Returns whether this is a POST request.
+	 * @return boolean whether this is a POST request.
+	 */
+	public function getIsPostRequest()
+	{
+		return isset($_SERVER['REQUEST_METHOD']) && !strcasecmp($_SERVER['REQUEST_METHOD'], 'POST');
+	}
+
+	/**
+	 * Returns whether this is a DELETE request.
+	 * @return boolean whether this is a DELETE request.
+	 */
+	public function getIsDeleteRequest()
+	{
+		return $this->getRequestMethod() === 'DELETE';
+	}
+
+	/**
+	 * Returns whether this is a PUT request.
+	 * @return boolean whether this is a PUT request.
+	 */
+	public function getIsPutRequest()
+	{
+		return $this->getRequestMethod() === 'PUT';
+	}
+
+	/**
+	 * Returns whether this is an AJAX (XMLHttpRequest) request.
+	 * @return boolean whether this is an AJAX (XMLHttpRequest) request.
+	 */
+	public function getIsAjaxRequest()
+	{
+		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+	}
+
+	/**
+	 * Returns whether this is an Adobe Flash or Adobe Flex request.
+	 * @return boolean whether this is an Adobe Flash or Adobe Flex request.
+	 */
+	public function getIsFlashRequest()
+	{
+		return isset($_SERVER['HTTP_USER_AGENT']) &&
+			(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
+	}
+
+	private $_restParams;
+
+	/**
+	 * Returns the request parameters for the RESTful request.
+	 * @return array the RESTful request parameters
+	 * @see getRequestMethod
+	 */
+	public function getRestParams()
+	{
+		if ($this->_restParams === null) {
+			if ($this->restPostVar !== false && isset($_POST[$this->restPostVar])) {
+				$this->_restParams = $_POST;
+			} else {
+				$this->_restParams = array();
+				if (function_exists('mb_parse_str')) {
+					mb_parse_str(file_get_contents('php://input'), $this->_restParams);
+				} else {
+					parse_str(file_get_contents('php://input'), $this->_restParams);
+				}
+			}
+		}
+		return $this->_restParams;
+	}
+
+	/**
+	 * Sets the RESTful parameters.
+	 * @param array $values the RESTful parameters (name-value pairs)
+	 */
+	public function setRestParams($values)
+	{
+		$this->_restParams = $values;
+	}
+
+	/**
 	 * Returns the named GET or POST parameter value.
 	 * If the GET or POST parameter does not exist, the second parameter to this method will be returned.
 	 * If both GET and POST contains such a named parameter, the GET parameter takes precedence.
@@ -115,6 +209,18 @@ class Request extends \yii\base\Request
 	public function getParam($name, $defaultValue = null)
 	{
 		return isset($_GET[$name]) ? $_GET[$name] : (isset($_POST[$name]) ? $_POST[$name] : $defaultValue);
+	}
+
+	/**
+	 * Returns the named RESTful parameter value.
+	 * @param string $name the parameter name
+	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
+	 * @return mixed the parameter value
+	 */
+	public function getRestParam($name, $defaultValue = null)
+	{
+		$params = $this->getRestParams();
+		return isset($params[$name]) ? $params[$name] : $defaultValue;
 	}
 
 	/**
@@ -147,69 +253,29 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the named DELETE parameter value.
-	 * If the DELETE parameter does not exist or if the current request is not a DELETE request,
-	 * the second parameter to this method will be returned.
-	 * If the DELETE request was tunneled through POST via _method parameter, the POST parameter
-	 * will be returned instead (available since version 1.1.11).
 	 * @param string $name the DELETE parameter name
 	 * @param mixed $defaultValue the default parameter value if the DELETE parameter does not exist.
 	 * @return mixed the DELETE parameter value
-	 * @since 1.1.7
 	 */
 	public function getDelete($name, $defaultValue = null)
 	{
-		if ($this->getIsDeleteViaPostRequest()) {
-			return $this->getPost($name, $defaultValue);
-		}
-
-		if ($this->_deleteParams === null) {
-			$this->_deleteParams = $this->getIsDeleteRequest() ? $this->getRestParams() : array();
-		}
-		return isset($this->_deleteParams[$name]) ? $this->_deleteParams[$name] : $defaultValue;
+		return $this->getIsDeleteRequest() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	/**
 	 * Returns the named PUT parameter value.
-	 * If the PUT parameter does not exist or if the current request is not a PUT request,
-	 * the second parameter to this method will be returned.
-	 * If the PUT request was tunneled through POST via _method parameter, the POST parameter
-	 * will be returned instead (available since version 1.1.11).
 	 * @param string $name the PUT parameter name
 	 * @param mixed $defaultValue the default parameter value if the PUT parameter does not exist.
 	 * @return mixed the PUT parameter value
-	 * @since 1.1.7
 	 */
 	public function getPut($name, $defaultValue = null)
 	{
-		if ($this->getIsPutViaPostReqest()) {
-			return $this->getPost($name, $defaultValue);
-		}
-
-		if ($this->_putParams === null) {
-			$this->_putParams = $this->getIsPutRequest() ? $this->getRestParams() : array();
-		}
-		return isset($this->_putParams[$name]) ? $this->_putParams[$name] : $defaultValue;
-	}
-
-	/**
-	 * Returns the PUT or DELETE request parameters.
-	 * @return array the request parameters
-	 * @since 1.1.7
-	 */
-	protected function getRestParams()
-	{
-		$result = array();
-		if (function_exists('mb_parse_str')) {
-			mb_parse_str(file_get_contents('php://input'), $result);
-		} else {
-			parse_str(file_get_contents('php://input'), $result);
-		}
-		return $result;
+		return $this->getIsPutRequest() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	/**
 	 * Returns the currently requested URL.
-	 * This is the same as {@link getRequestUri}.
+	 * This is the same as [[requestUri]].
 	 * @return string part of the request URL after the host info.
 	 */
 	public function getUrl()
@@ -217,23 +283,21 @@ class Request extends \yii\base\Request
 		return $this->getRequestUri();
 	}
 
+	private $_hostInfo;
+
 	/**
-	 * Returns the schema and host part of the application URL.
+	 * Returns the schema and host part of the current request URL.
 	 * The returned URL does not have an ending slash.
 	 * By default this is determined based on the user request information.
-	 * You may explicitly specify it by setting the {@link setHostInfo hostInfo} property.
-	 * @param string $schema schema to use (e.g. http, https). If empty, the schema used for the current request will be used.
-	 * @return string schema and hostname part (with port number if needed) of the request URL (e.g. http://www.yiiframework.com)
+	 * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
+	 * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.yiiframework.com`)
 	 * @see setHostInfo
 	 */
-	public function getHostInfo($schema = '')
+	public function getHostInfo()
 	{
 		if ($this->_hostInfo === null) {
-			if ($secure = $this->getIsSecureConnection()) {
-				$http = 'https';
-			} else {
-				$http = 'http';
-			}
+			$secure = $this->getIsSecureConnection();
+			$http = $secure ? 'https' : 'http';
 			if (isset($_SERVER['HTTP_HOST'])) {
 				$this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
 			} else {
@@ -244,51 +308,36 @@ class Request extends \yii\base\Request
 				}
 			}
 		}
-		if ($schema !== '') {
-			$secure = $this->getIsSecureConnection();
-			if ($secure && $schema === 'https' || !$secure && $schema === 'http') {
-				return $this->_hostInfo;
-			}
 
-			$port = $schema === 'https' ? $this->getSecurePort() : $this->getPort();
-			if ($port !== 80 && $schema === 'http' || $port !== 443 && $schema === 'https') {
-				$port = ':' . $port;
-			} else {
-				$port = '';
-			}
-
-			$pos = strpos($this->_hostInfo, ':');
-			return $schema . substr($this->_hostInfo, $pos, strcspn($this->_hostInfo, ':', $pos + 1) + 1) . $port;
-		} else {
-			return $this->_hostInfo;
-		}
+		return $this->_hostInfo;
 	}
 
 	/**
 	 * Sets the schema and host part of the application URL.
 	 * This setter is provided in case the schema and hostname cannot be determined
 	 * on certain Web servers.
-	 * @param string $value the schema and host part of the application URL.
+	 * @param string $value the schema and host part of the application URL. The trailing slashes will be removed.
 	 */
 	public function setHostInfo($value)
 	{
 		$this->_hostInfo = rtrim($value, '/');
 	}
 
+	private $_baseUrl;
+
 	/**
 	 * Returns the relative URL for the application.
-	 * This is similar to {@link getScriptUrl scriptUrl} except that
-	 * it does not have the script file name, and the ending slashes are stripped off.
-	 * @param boolean $absolute whether to return an absolute URL. Defaults to false, meaning returning a relative one.
+	 * This is similar to [[scriptUrl]] except that it does not include the script file name,
+	 * and the ending slashes are removed.
 	 * @return string the relative URL for the application
 	 * @see setScriptUrl
 	 */
-	public function getBaseUrl($absolute = false)
+	public function getBaseUrl()
 	{
 		if ($this->_baseUrl === null) {
 			$this->_baseUrl = rtrim(dirname($this->getScriptUrl()), '\\/');
 		}
-		return $absolute ? $this->getHostInfo() . $this->_baseUrl : $this->_baseUrl;
+		return $this->_baseUrl;
 	}
 
 	/**
@@ -302,10 +351,13 @@ class Request extends \yii\base\Request
 		$this->_baseUrl = $value;
 	}
 
+	private $_scriptUrl;
+
 	/**
 	 * Returns the relative URL of the entry script.
 	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
 	 * @return string the relative URL of the entry script.
+	 * @throws BadConfigException if unable to determine the entry script URL
 	 */
 	public function getScriptUrl()
 	{
@@ -313,24 +365,16 @@ class Request extends \yii\base\Request
 			$scriptName = basename($_SERVER['SCRIPT_FILENAME']);
 			if (basename($_SERVER['SCRIPT_NAME']) === $scriptName) {
 				$this->_scriptUrl = $_SERVER['SCRIPT_NAME'];
+			} elseif (basename($_SERVER['PHP_SELF']) === $scriptName) {
+				$this->_scriptUrl = $_SERVER['PHP_SELF'];
+			} elseif (isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME']) === $scriptName) {
+				$this->_scriptUrl = $_SERVER['ORIG_SCRIPT_NAME'];
+			} elseif (($pos = strpos($_SERVER['PHP_SELF'], '/' . $scriptName)) !== false) {
+				$this->_scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
+			} elseif (isset($_SERVER['DOCUMENT_ROOT']) && strpos($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT']) === 0) {
+				$this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']));
 			} else {
-				if (basename($_SERVER['PHP_SELF']) === $scriptName) {
-					$this->_scriptUrl = $_SERVER['PHP_SELF'];
-				} else {
-					if (isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME']) === $scriptName) {
-						$this->_scriptUrl = $_SERVER['ORIG_SCRIPT_NAME'];
-					} else {
-						if (($pos = strpos($_SERVER['PHP_SELF'], '/' . $scriptName)) !== false) {
-							$this->_scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
-						} else {
-							if (isset($_SERVER['DOCUMENT_ROOT']) && strpos($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT']) === 0) {
-								$this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']));
-							} else {
-								throw new CException(Yii::t('yii', 'CHttpRequest is unable to determine the entry script URL.'));
-							}
-						}
-					}
-				}
+				throw new BadConfigException('Unable to determine the entry script URL.');
 			}
 		}
 		return $this->_scriptUrl;
@@ -347,118 +391,135 @@ class Request extends \yii\base\Request
 		$this->_scriptUrl = '/' . trim($value, '/');
 	}
 
+	private $_pathInfo;
+
 	/**
 	 * Returns the path info of the currently requested URL.
-	 * This refers to the part that is after the entry script and before the question mark.
-	 * The starting and ending slashes are stripped off.
+	 * A path info refers to the part that is after the entry script and before the question mark (query string).
+	 * The starting and ending slashes are both removed.
 	 * @return string part of the request URL that is after the entry script and before the question mark.
-	 * Note, the returned pathinfo is decoded starting from 1.1.4.
-	 * Prior to 1.1.4, whether it is decoded or not depends on the server configuration
-	 * (in most cases it is not decoded).
-	 * @throws CException if the request URI cannot be determined due to improper server configuration
+	 * Note, the returned path info is decoded.
+	 * @throws BadConfigException if the path info cannot be determined due to unexpected server configuration
 	 */
 	public function getPathInfo()
 	{
 		if ($this->_pathInfo === null) {
-			$pathInfo = $this->getRequestUri();
-
-			if (($pos = strpos($pathInfo, '?')) !== false) {
-				$pathInfo = substr($pathInfo, 0, $pos);
-			}
-
-			$pathInfo = $this->decodePathInfo($pathInfo);
-
-			$scriptUrl = $this->getScriptUrl();
-			$baseUrl = $this->getBaseUrl();
-			if (strpos($pathInfo, $scriptUrl) === 0) {
-				$pathInfo = substr($pathInfo, strlen($scriptUrl));
-			} else {
-				if ($baseUrl === '' || strpos($pathInfo, $baseUrl) === 0) {
-					$pathInfo = substr($pathInfo, strlen($baseUrl));
-				} else {
-					if (strpos($_SERVER['PHP_SELF'], $scriptUrl) === 0) {
-						$pathInfo = substr($_SERVER['PHP_SELF'], strlen($scriptUrl));
-					} else {
-						throw new CException(Yii::t('yii', 'CHttpRequest is unable to determine the path info of the request.'));
-					}
-				}
-			}
-
-			$this->_pathInfo = trim($pathInfo, '/');
+			$this->_pathInfo = $this->resolvePathInfo();
 		}
 		return $this->_pathInfo;
 	}
 
 	/**
-	 * Decodes the path info.
-	 * This method is an improved variant of the native urldecode() function and used in {@link getPathInfo getPathInfo()} to
-	 * decode the path part of the request URI. You may override this method to change the way the path info is being decoded.
-	 * @param string $pathInfo encoded path info
-	 * @return string decoded path info
-	 * @since 1.1.10
+	 * Resolves the path info part of the currently requested URL.
+	 * A path info refers to the part that is after the entry script and before the question mark (query string).
+	 * The starting and ending slashes are both removed.
+	 * @return string part of the request URL that is after the entry script and before the question mark.
+	 * Note, the returned path info is decoded.
+	 * @throws BadConfigException if the path info cannot be determined due to unexpected server configuration
 	 */
-	protected function decodePathInfo($pathInfo)
+	protected function resolvePathInfo()
 	{
-		$pathInfo = urldecode($pathInfo);
+		$pathInfo = $this->getRequestUri();
+
+		if (($pos = strpos($pathInfo, '?')) !== false) {
+			$pathInfo = substr($pathInfo, 0, $pos);
+		}
+
+		$pathInfo = $this->decodeUrl($pathInfo);
+
+		$scriptUrl = $this->getScriptUrl();
+		$baseUrl = $this->getBaseUrl();
+		if (strpos($pathInfo, $scriptUrl) === 0) {
+			$pathInfo = substr($pathInfo, strlen($scriptUrl));
+		} elseif ($baseUrl === '' || strpos($pathInfo, $baseUrl) === 0) {
+			$pathInfo = substr($pathInfo, strlen($baseUrl));
+		} elseif (strpos($_SERVER['PHP_SELF'], $scriptUrl) === 0) {
+			$pathInfo = substr($_SERVER['PHP_SELF'], strlen($scriptUrl));
+		} else {
+			return false;
+		}
+
+		return trim($pathInfo, '/');
+	}
+
+	/**
+	 * Decodes the given URL.
+	 * This method is an improved variant of the native urldecode() function. It will properly encode
+	 * UTF-8 characters which may be returned by urldecode().
+	 * @param string $url encoded URL
+	 * @return string decoded URL
+	 */
+	public function decodeUrl($url)
+	{
+		$url = urldecode($url);
 
 		// is it UTF-8?
 		// http://w3.org/International/questions/qa-forms-utf-8.html
 		if (preg_match('%^(?:
-		   [\x09\x0A\x0D\x20-\x7E]            # ASCII
-		 | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-		 | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
-		 | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-		 | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
-		 | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
-		 | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-		 | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-		)*$%xs', $pathInfo)
-		) {
-			return $pathInfo;
+				[\x09\x0A\x0D\x20-\x7E]              # ASCII
+				| [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+				| \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
+				| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+				| \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
+				| \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+				| [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+				| \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
+				)*$%xs', $url)) {
+			return $url;
 		} else {
-			return utf8_encode($pathInfo);
+			return utf8_encode($url);
 		}
 	}
 
+	private $_requestUri;
+
 	/**
 	 * Returns the request URI portion for the currently requested URL.
-	 * This refers to the portion that is after the {@link hostInfo host info} part.
-	 * It includes the {@link queryString query string} part if any.
+	 * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
 	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
 	 * @return string the request URI portion for the currently requested URL.
-	 * @throws CException if the request URI cannot be determined due to improper server configuration
+	 * Note that the URI returned is URL-encoded.
+	 * @throws BadConfigException if the request URI cannot be determined due to unusual server configuration
 	 */
 	public function getRequestUri()
 	{
 		if ($this->_requestUri === null) {
-			if (isset($_SERVER['HTTP_X_REWRITE_URL'])) // IIS
-			{
-				$this->_requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
-			} else {
-				if (isset($_SERVER['REQUEST_URI'])) {
-					$this->_requestUri = $_SERVER['REQUEST_URI'];
-					if (!empty($_SERVER['HTTP_HOST'])) {
-						if (strpos($this->_requestUri, $_SERVER['HTTP_HOST']) !== false) {
-							$this->_requestUri = preg_replace('/^\w+:\/\/[^\/]+/', '', $this->_requestUri);
-						}
-					} else {
-						$this->_requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $this->_requestUri);
-					}
-				} else {
-					if (isset($_SERVER['ORIG_PATH_INFO'])) // IIS 5.0 CGI
-					{
-						$this->_requestUri = $_SERVER['ORIG_PATH_INFO'];
-						if (!empty($_SERVER['QUERY_STRING'])) {
-							$this->_requestUri .= '?' . $_SERVER['QUERY_STRING'];
-						}
-					} else {
-						throw new CException(Yii::t('yii', 'CHttpRequest is unable to determine the request URI.'));
-					}
-				}
-			}
+			$this->_requestUri = $this->resolveRequestUri();
 		}
 
 		return $this->_requestUri;
+	}
+
+	/**
+	 * Resolves the request URI portion for the currently requested URL.
+	 * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
+	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
+	 * @return string|boolean the request URI portion for the currently requested URL.
+	 * Note that the URI returned is URL-encoded.
+	 * @throws BadConfigException if the request URI cannot be determined due to unusual server configuration
+	 */
+	protected function resolveRequestUri()
+	{
+		if (isset($_SERVER['HTTP_X_REWRITE_URL'])) { // IIS
+			$requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+		} elseif (isset($_SERVER['REQUEST_URI'])) {
+			$requestUri = $_SERVER['REQUEST_URI'];
+			if (!empty($_SERVER['HTTP_HOST'])) {
+				if (strpos($requestUri, $_SERVER['HTTP_HOST']) !== false) {
+					$requestUri = preg_replace('/^\w+:\/\/[^\/]+/', '', $requestUri);
+				}
+			} else {
+				$requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $requestUri);
+			}
+		} elseif (isset($_SERVER['ORIG_PATH_INFO'])) { // IIS 5.0 CGI
+			$requestUri = $_SERVER['ORIG_PATH_INFO'];
+			if (!empty($_SERVER['QUERY_STRING'])) {
+				$requestUri .= '?' . $_SERVER['QUERY_STRING'];
+			}
+		} else {
+			throw new BadConfigException('Unable to determine the request URI.');
+		}
+		return $requestUri;
 	}
 
 	/**
@@ -476,91 +537,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getIsSecureConnection()
 	{
-		return isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on');
-	}
-
-	/**
-	 * Returns the request type, such as GET, POST, HEAD, PUT, DELETE.
-	 * Request type can be manually set in POST requests with a parameter named _method. Useful
-	 * for RESTful request from older browsers which do not support PUT or DELETE
-	 * natively (available since version 1.1.11).
-	 * @return string request type, such as GET, POST, HEAD, PUT, DELETE.
-	 */
-	public function getRequestType()
-	{
-		if (isset($_POST['_method'])) {
-			return strtoupper($_POST['_method']);
-		}
-
-		return strtoupper(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET');
-	}
-
-	/**
-	 * Returns whether this is a POST request.
-	 * @return boolean whether this is a POST request.
-	 */
-	public function getIsPostRequest()
-	{
-		return isset($_SERVER['REQUEST_METHOD']) && !strcasecmp($_SERVER['REQUEST_METHOD'], 'POST');
-	}
-
-	/**
-	 * Returns whether this is a DELETE request.
-	 * @return boolean whether this is a DELETE request.
-	 * @since 1.1.7
-	 */
-	public function getIsDeleteRequest()
-	{
-		return (isset($_SERVER['REQUEST_METHOD']) && !strcasecmp($_SERVER['REQUEST_METHOD'], 'DELETE')) || $this->getIsDeleteViaPostRequest();
-	}
-
-	/**
-	 * Returns whether this is a DELETE request which was tunneled through POST.
-	 * @return boolean whether this is a DELETE request tunneled through POST.
-	 * @since 1.1.11
-	 */
-	protected function getIsDeleteViaPostRequest()
-	{
-		return isset($_POST['_method']) && !strcasecmp($_POST['_method'], 'DELETE');
-	}
-
-	/**
-	 * Returns whether this is a PUT request.
-	 * @return boolean whether this is a PUT request.
-	 * @since 1.1.7
-	 */
-	public function getIsPutRequest()
-	{
-		return (isset($_SERVER['REQUEST_METHOD']) && !strcasecmp($_SERVER['REQUEST_METHOD'], 'PUT')) || $this->getIsPutViaPostReqest();
-	}
-
-	/**
-	 * Returns whether this is a PUT request which was tunneled through POST.
-	 * @return boolean whether this is a PUT request tunneled through POST.
-	 * @since 1.1.11
-	 */
-	protected function getIsPutViaPostReqest()
-	{
-		return isset($_POST['_method']) && !strcasecmp($_POST['_method'], 'PUT');
-	}
-
-	/**
-	 * Returns whether this is an AJAX (XMLHttpRequest) request.
-	 * @return boolean whether this is an AJAX (XMLHttpRequest) request.
-	 */
-	public function getIsAjaxRequest()
-	{
-		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
-	}
-
-	/**
-	 * Returns whether this is an Adobe Flash or Adobe Flex request.
-	 * @return boolean whether this is an Adobe Flash or Adobe Flex request.
-	 * @since 1.1.11
-	 */
-	public function getIsFlashRequest()
-	{
-		return isset($_SERVER['HTTP_USER_AGENT']) && (stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
+		return !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off');
 	}
 
 	/**
@@ -578,14 +555,14 @@ class Request extends \yii\base\Request
 	 */
 	public function getServerPort()
 	{
-		return $_SERVER['SERVER_PORT'];
+		return (int)$_SERVER['SERVER_PORT'];
 	}
 
 	/**
 	 * Returns the URL referrer, null if not present
 	 * @return string URL referrer, null if not present
 	 */
-	public function getUrlReferrer()
+	public function getReferrer()
 	{
 		return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
 	}
@@ -617,16 +594,34 @@ class Request extends \yii\base\Request
 		return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
 	}
 
+	private $_scriptFile;
+
 	/**
 	 * Returns entry script file path.
 	 * @return string entry script file path (processed w/ realpath())
+	 * @throws BadConfigException if the entry script file path cannot be determined automatically.
 	 */
 	public function getScriptFile()
 	{
-		if ($this->_scriptFile !== null) {
-			return $this->_scriptFile;
-		} else {
-			return $this->_scriptFile = realpath($_SERVER['SCRIPT_FILENAME']);
+		if ($this->_scriptFile === null) {
+			$this->setScriptFile($_SERVER['SCRIPT_FILENAME']);
+		}
+		return $this->_scriptFile;
+	}
+
+	/**
+	 * Sets the entry script file path.
+	 * The entry script file path can normally be determined based on the `SCRIPT_FILENAME` SERVER variable.
+	 * However, in some server configuration, this may not be correct or feasible.
+	 * This setter is provided so that the entry script file path can be manually specified.
+	 * @param string $value the entry script file path
+	 * @throws BadConfigException if the provided entry script file path is invalid.
+	 */
+	public function setScriptFile($value)
+	{
+		$this->_scriptFile = realpath($value);
+		if ($this->_scriptFile === false || !is_file($this->_scriptFile)) {
+			throw new BadConfigException('Unable to determine the entry script file path.');
 		}
 	}
 
@@ -657,10 +652,8 @@ class Request extends \yii\base\Request
 	 * Returns the port to use for insecure requests.
 	 * Defaults to 80, or the port specified by the server if the current
 	 * request is insecure.
-	 * You may explicitly specify it by setting the {@link setPort port} property.
 	 * @return integer port number for insecure requests.
 	 * @see setPort
-	 * @since 1.1.3
 	 */
 	public function getPort()
 	{
@@ -675,12 +668,13 @@ class Request extends \yii\base\Request
 	 * This setter is provided in case a custom port is necessary for certain
 	 * server configurations.
 	 * @param integer $value port number.
-	 * @since 1.1.3
 	 */
 	public function setPort($value)
 	{
-		$this->_port = (int)$value;
-		$this->_hostInfo = null;
+		if ($value != $this->_port) {
+			$this->_port = (int)$value;
+			$this->_hostInfo = null;
+		}
 	}
 
 	private $_securePort;
@@ -689,10 +683,8 @@ class Request extends \yii\base\Request
 	 * Returns the port to use for secure requests.
 	 * Defaults to 443, or the port specified by the server if the current
 	 * request is secure.
-	 * You may explicitly specify it by setting the {@link setSecurePort securePort} property.
 	 * @return integer port number for secure requests.
 	 * @see setSecurePort
-	 * @since 1.1.3
 	 */
 	public function getSecurePort()
 	{
@@ -707,13 +699,51 @@ class Request extends \yii\base\Request
 	 * This setter is provided in case a custom port is necessary for certain
 	 * server configurations.
 	 * @param integer $value port number.
-	 * @since 1.1.3
 	 */
 	public function setSecurePort($value)
 	{
-		$this->_securePort = (int)$value;
-		$this->_hostInfo = null;
+		if ($value != $this->_securePort) {
+			$this->_securePort = (int)$value;
+			$this->_hostInfo = null;
+		}
 	}
+
+	private $_preferredLanguages;
+
+	/**
+	 * Returns the user preferred languages.
+	 * The languages returned are ordered by user's preference, starting with the language that the user
+	 * prefers the most.
+	 * @return string the user preferred languages. An empty array may be returned if the user has no preference.
+	 */
+	public function getPreferredLanguages()
+	{
+		if ($this->_preferredLanguages === null) {
+			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ($n = preg_match_all('/([\w\-_]+)\s*(;\s*q\s*=\s*(\d*\.\d*))?/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches)) > 0) {
+				$languages = array();
+				for ($i = 0; $i < $n; ++$i) {
+					$languages[$matches[1][$i]] = empty($matches[3][$i]) ? 1.0 : floatval($matches[3][$i]);
+				}
+				arsort($languages);
+				$this->_preferredLanguages = array_keys($languages);
+			} else {
+				$this->_preferredLanguages = array();
+			}
+		}
+		return $this->_preferredLanguages;
+	}
+
+	/**
+	 * Returns the language most preferred by the user.
+	 * @return string|boolean the language most preferred by the user. If the user has no preference, false
+	 * will be returned.
+	 */
+	public function getPreferredLanguage()
+	{
+		$languages = $this->getPreferredLanguages();
+		return isset($languages[0]) ? $languages[0] : false;
+	}
+
 
 	/**
 	 * Returns the cookie collection.
@@ -731,173 +761,7 @@ class Request extends \yii\base\Request
 		}
 	}
 
-	/**
-	 * Redirects the browser to the specified URL.
-	 * @param string $url URL to be redirected to. If the URL is a relative one, the base URL of
-	 * the application will be inserted at the beginning.
-	 * @param boolean $terminate whether to terminate the current application
-	 * @param integer $statusCode the HTTP status code. Defaults to 302. See {@link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}
-	 * for details about HTTP status code.
-	 */
-	public function redirect($url, $terminate = true, $statusCode = 302)
-	{
-		if (strpos($url, '/') === 0) {
-			$url = $this->getHostInfo() . $url;
-		}
-		header('Location: ' . $url, true, $statusCode);
-		if ($terminate) {
-			\Yii::$application->end();
-		}
-	}
-
-	/**
-	 * Returns the user preferred language.
-	 * The returned language ID will be canonicalized using {@link CLocale::getCanonicalID}.
-	 * This method returns false if the user does not have language preference.
-	 * @return string the user preferred language.
-	 */
-	public function getPreferredLanguage()
-	{
-		if ($this->_preferredLanguage === null) {
-			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ($n = preg_match_all('/([\w\-_]+)\s*(;\s*q\s*=\s*(\d*\.\d*))?/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches)) > 0) {
-				$languages = array();
-				for ($i = 0; $i < $n; ++$i) {
-					$languages[$matches[1][$i]] = empty($matches[3][$i]) ? 1.0 : floatval($matches[3][$i]);
-				}
-				arsort($languages);
-				foreach ($languages as $language => $pref) {
-					return $this->_preferredLanguage = CLocale::getCanonicalID($language);
-				}
-			}
-			return $this->_preferredLanguage = false;
-		}
-		return $this->_preferredLanguage;
-	}
-
-	/**
-	 * Sends a file to user.
-	 * @param string $fileName file name
-	 * @param string $content content to be set.
-	 * @param string $mimeType mime type of the content. If null, it will be guessed automatically based on the given file name.
-	 * @param boolean $terminate whether to terminate the current application after calling this method
-	 */
-	public function sendFile($fileName, $content, $mimeType = null, $terminate = true)
-	{
-		if ($mimeType === null) {
-			if (($mimeType = CFileHelper::getMimeTypeByExtension($fileName)) === null) {
-				$mimeType = 'text/plain';
-			}
-		}
-		header('Pragma: public');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header("Content-type: $mimeType");
-		if (ob_get_length() === false) {
-			header('Content-Length: ' . (function_exists('mb_strlen') ? mb_strlen($content, '8bit') : strlen($content)));
-		}
-		header("Content-Disposition: attachment; filename=\"$fileName\"");
-		header('Content-Transfer-Encoding: binary');
-
-		if ($terminate) {
-			// clean up the application first because the file downloading could take long time
-			// which may cause timeout of some resources (such as DB connection)
-			\Yii::$application->end(0, false);
-			echo $content;
-			exit(0);
-		} else {
-			echo $content;
-		}
-	}
-
-	/**
-	 * Sends existing file to a browser as a download using x-sendfile.
-	 *
-	 * X-Sendfile is a feature allowing a web application to redirect the request for a file to the webserver
-	 * that in turn processes the request, this way eliminating the need to perform tasks like reading the file
-	 * and sending it to the user. When dealing with a lot of files (or very big files) this can lead to a great
-	 * increase in performance as the web application is allowed to terminate earlier while the webserver is
-	 * handling the request.
-	 *
-	 * The request is sent to the server through a special non-standard HTTP-header.
-	 * When the web server encounters the presence of such header it will discard all output and send the file
-	 * specified by that header using web server internals including all optimizations like caching-headers.
-	 *
-	 * As this header directive is non-standard different directives exists for different web servers applications:
-	 * <ul>
-	 * <li>Apache: {@link http://tn123.org/mod_xsendfile X-Sendfile}</li>
-	 * <li>Lighttpd v1.4: {@link http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file X-LIGHTTPD-send-file}</li>
-	 * <li>Lighttpd v1.5: {@link http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file X-Sendfile}</li>
-	 * <li>Nginx: {@link http://wiki.nginx.org/XSendfile X-Accel-Redirect}</li>
-	 * <li>Cherokee: {@link http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile X-Sendfile and X-Accel-Redirect}</li>
-	 * </ul>
-	 * So for this method to work the X-SENDFILE option/module should be enabled by the web server and
-	 * a proper xHeader should be sent.
-	 *
-	 * <b>Note:</b>
-	 * This option allows to download files that are not under web folders, and even files that are otherwise protected (deny from all) like .htaccess
-	 *
-	 * <b>Side effects</b>:
-	 * If this option is disabled by the web server, when this method is called a download configuration dialog
-	 * will open but the downloaded file will have 0 bytes.
-	 *
-	 * <b>Example</b>:
-	 * <pre>
-	 * <?php
-	 *    \Yii::$application->request->xSendFile('/home/user/Pictures/picture1.jpg',array(
-	 *        'saveName'=>'image1.jpg',
-	 *        'mimeType'=>'image/jpeg',
-	 *        'terminate'=>false,
-	 *    ));
-	 * ?>
-	 * </pre>
-	 * @param string $filePath file name with full path
-	 * @param array $options additional options:
-	 * <ul>
-	 * <li>saveName: file name shown to the user, if not set real file name will be used</li>
-	 * <li>mimeType: mime type of the file, if not set it will be guessed automatically based on the file name, if set to null no content-type header will be sent.</li>
-	 * <li>xHeader: appropriate x-sendfile header, defaults to "X-Sendfile"</li>
-	 * <li>terminate: whether to terminate the current application after calling this method, defaults to true</li>
-	 * <li>forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true. (Since version 1.1.9.)</li>
-	 * <li>addHeaders: an array of additional http headers in header-value pairs (available since version 1.1.10)</li>
-	 * </ul>
-	 */
-	public function xSendFile($filePath, $options = array())
-	{
-		if (!isset($options['forceDownload']) || $options['forceDownload']) {
-			$disposition = 'attachment';
-		} else {
-			$disposition = 'inline';
-		}
-
-		if (!isset($options['saveName'])) {
-			$options['saveName'] = basename($filePath);
-		}
-
-		if (!isset($options['mimeType'])) {
-			if (($options['mimeType'] = CFileHelper::getMimeTypeByExtension($filePath)) === null) {
-				$options['mimeType'] = 'text/plain';
-			}
-		}
-
-		if (!isset($options['xHeader'])) {
-			$options['xHeader'] = 'X-Sendfile';
-		}
-
-		if ($options['mimeType'] !== null) {
-			header('Content-type: ' . $options['mimeType']);
-		}
-		header('Content-Disposition: ' . $disposition . '; filename="' . $options['saveName'] . '"');
-		if (isset($options['addHeaders'])) {
-			foreach ($options['addHeaders'] as $header => $value) {
-				header($header . ': ' . $value);
-			}
-		}
-		header(trim($options['xHeader']) . ': ' . $filePath);
-
-		if (!isset($options['terminate']) || $options['terminate']) {
-			\Yii::$application->end();
-		}
-	}
+	private $_csrfToken;
 
 	/**
 	 * Returns the random token used to perform CSRF validation.
@@ -965,127 +829,3 @@ class Request extends \yii\base\Request
 	}
 }
 
-
-/**
- * CCookieCollection implements a collection class to store cookies.
- *
- * You normally access it via {@link CHttpRequest::getCookies()}.
- *
- * Since CCookieCollection extends from {@link CMap}, it can be used
- * like an associative array as follows:
- * <pre>
- * $cookies[$name]=new CHttpCookie($name,$value); // sends a cookie
- * $value=$cookies[$name]->value; // reads a cookie value
- * unset($cookies[$name]);  // removes a cookie
- * </pre>
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web
- * @since 1.0
- */
-class CCookieCollection extends CMap
-{
-	private $_request;
-	private $_initialized = false;
-
-	/**
-	 * Constructor.
-	 * @param CHttpRequest $request owner of this collection.
-	 */
-	public function __construct(CHttpRequest $request)
-	{
-		$this->_request = $request;
-		$this->copyfrom($this->getCookies());
-		$this->_initialized = true;
-	}
-
-	/**
-	 * @return CHttpRequest the request instance
-	 */
-	public function getRequest()
-	{
-		return $this->_request;
-	}
-
-	/**
-	 * @return array list of validated cookies
-	 */
-	protected function getCookies()
-	{
-		$cookies = array();
-		if ($this->_request->enableCookieValidation) {
-			$sm = \Yii::$application->getSecurityManager();
-			foreach ($_COOKIE as $name => $value) {
-				if (is_string($value) && ($value = $sm->validateData($value)) !== false) {
-					$cookies[$name] = new CHttpCookie($name, @unserialize($value));
-				}
-			}
-		} else {
-			foreach ($_COOKIE as $name => $value) {
-				$cookies[$name] = new CHttpCookie($name, $value);
-			}
-		}
-		return $cookies;
-	}
-
-	/**
-	 * Adds a cookie with the specified name.
-	 * This overrides the parent implementation by performing additional
-	 * operations for each newly added CHttpCookie object.
-	 * @param mixed $name Cookie name.
-	 * @param CHttpCookie $cookie Cookie object.
-	 * @throws CException if the item to be inserted is not a CHttpCookie object.
-	 */
-	public function add($name, $cookie)
-	{
-		if ($cookie instanceof CHttpCookie) {
-			$this->remove($name);
-			parent::add($name, $cookie);
-			if ($this->_initialized) {
-				$this->addCookie($cookie);
-			}
-		} else {
-			throw new CException(Yii::t('yii', 'CHttpCookieCollection can only hold CHttpCookie objects.'));
-		}
-	}
-
-	/**
-	 * Removes a cookie with the specified name.
-	 * This overrides the parent implementation by performing additional
-	 * cleanup work when removing a CHttpCookie object.
-	 * @param mixed $name Cookie name.
-	 * @return CHttpCookie The removed cookie object.
-	 */
-	public function remove($name)
-	{
-		if (($cookie = parent::remove($name)) !== null) {
-			if ($this->_initialized) {
-				$this->removeCookie($cookie);
-			}
-		}
-		return $cookie;
-	}
-
-	/**
-	 * Sends a cookie.
-	 * @param CHttpCookie $cookie cookie to be sent
-	 */
-	protected function addCookie($cookie)
-	{
-		$value = $cookie->value;
-		if ($this->_request->enableCookieValidation) {
-			$value = \Yii::$application->getSecurityManager()->hashData(serialize($value));
-		}
-		setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
-	}
-
-	/**
-	 * Deletes a cookie.
-	 * @param CHttpCookie $cookie cookie to be deleted
-	 */
-	protected function removeCookie($cookie)
-	{
-		setcookie($cookie->name, null, 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
-	}
-}

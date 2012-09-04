@@ -141,4 +141,24 @@ class Response extends \yii\base\Response
 			Yii::app()->end();
 		}
 	}
+
+
+	/**
+	 * Redirects the browser to the specified URL.
+	 * @param string $url URL to be redirected to. If the URL is a relative one, the base URL of
+	 * the application will be inserted at the beginning.
+	 * @param boolean $terminate whether to terminate the current application
+	 * @param integer $statusCode the HTTP status code. Defaults to 302. See {@link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}
+	 * for details about HTTP status code.
+	 */
+	public function redirect($url, $terminate = true, $statusCode = 302)
+	{
+		if (strpos($url, '/') === 0) {
+			$url = $this->getHostInfo() . $url;
+		}
+		header('Location: ' . $url, true, $statusCode);
+		if ($terminate) {
+			Yii::app()->end();
+		}
+	}
 }
