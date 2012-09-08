@@ -56,7 +56,7 @@ class Request extends \yii\base\Request
 				$name = $matches[1];
 				$this->params[$name] = isset($matches[3]) ? $matches[3] : true;
 			} else {
-				$this->params['--args'][] = $param;
+				$this->params['args'][] = $param;
 			}
 		}
 	}
