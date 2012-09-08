@@ -172,9 +172,7 @@ class HelpController extends Controller
 		}
 
 		if ($comment !== '') {
-			echo "\nDESCRIPTION";
-			echo "\n-----------\n\n";
-			echo $comment . "\n";
+			echo "\n" . $comment . "\n";
 		}
 
 		$options = $this->getGlobalOptions($class, $controller);
@@ -235,9 +233,7 @@ class HelpController extends Controller
 		}
 
 		if ($comment !== '') {
-			echo "\nDESCRIPTION";
-			echo "\n-----------\n\n";
-			echo $comment . "\n";
+			echo "\n" . $comment . "\n";
 		}
 
 		$options = $this->getOptions($method, $meta);
