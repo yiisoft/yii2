@@ -1,6 +1,6 @@
 <?php
 /**
- * MessageCommand class file.
+ * MessageController class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/

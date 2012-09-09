@@ -1,6 +1,6 @@
 <?php
 /**
- * WebAppCommand class file.
+ * CreateController class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
@@ -18,21 +18,23 @@ use yii\console\Controller;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class AppController extends Controller
+class CreateController extends Controller
 {
 	private $_rootPath;
 
 	/**
 	 * Generates Yii application at the path specified via appPath parameter.
 	 *
-	 * @param string $appPath the directory where the new application will be created.
+	 * @param string $path the directory where the new application will be created.
 	 * If the directory does not exist, it will be created. After the application
 	 * is created, please make sure the directory has enough permissions.
+	 * @param string $type application type. If not specified default application
+	 * skeleton will be used.
 	 * @return integer the exit status
 	 */
-	public function actionIndex($appPath)
+	public function actionIndex($path, $type = 'default')
 	{
-		$path=strtr($appPath,'/\\',DIRECTORY_SEPARATOR);
+		$path=strtr($path,'/\\',DIRECTORY_SEPARATOR);
 		if(strpos($path,DIRECTORY_SEPARATOR)===false)
 			$path='.'.DIRECTORY_SEPARATOR.$path;
 		$dir=rtrim(realpath(dirname($path)),'\\/');
@@ -42,11 +44,11 @@ class AppController extends Controller
 			$this->_rootPath=$path=$dir;
 		else
 			$this->_rootPath=$path=$dir.DIRECTORY_SEPARATOR.basename($path);
-		if($this->confirm("Create a Web application under '$path'?"))
+		if($this->confirm("Create \"$type\" application under '$path'?"))
 		{
-			$sourceDir=realpath(dirname(__FILE__).'/../views/webapp');
+			$sourceDir=realpath(__DIR__.'/../create/'.$type);
 			if($sourceDir===false)
-				die("\nUnable to locate the source directory.\n");
+				die("\nUnable to locate the source directory for \"$type\".\n");
 			$list=$this->buildFileList($sourceDir,$path);
 			$list['index.php']['callback']=array($this,'generateIndex');
 			$list['index-test.php']['callback']=array($this,'generateIndex');

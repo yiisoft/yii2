@@ -1,6 +1,6 @@
 <?php
 /**
- * ShellCommand class file.
+ * ShellController class file.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
@@ -13,7 +13,7 @@ namespace yii\console\controllers;
 use yii\console\Controller;
 
 /**
- * ShellCommand executes the specified Web application and provides a shell for interaction.
+ * This command executes the specified Web application and provides a shell for interaction.
  *
  * @property string $help The help information for the shell command.
  *
