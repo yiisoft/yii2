@@ -4,79 +4,66 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\console\controllers;
+
+use yii\console\Controller;
+
 /**
- * MessageCommand extracts messages to be translated from source files.
+ * This command extracts messages to be translated from source files.
  * The extracted messages are saved as PHP message source files
  * under the specified directory.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.cli.commands
- * @since 1.0
+ * @since 2.0
  */
-class MessageCommand extends CConsoleCommand
+class MessageController extends Controller
 {
-	public function getHelp()
-	{
-		return <<<EOD
-USAGE
-  yiic message <config-file>
-
-DESCRIPTION
-  This command searches for messages to be translated in the specified
-  source files and compiles them into PHP arrays as message source.
-
-PARAMETERS
- * config-file: required, the path of the configuration file. You can find
-   an example in framework/messages/config.php.
-
-   The file can be placed anywhere and must be a valid PHP script which
-   returns an array of name-value pairs. Each name-value pair represents
-   a configuration option.
-
-   The following options are available:
-
-   - sourcePath: string, root directory of all source files.
-   - messagePath: string, root directory containing message translations.
-   - languages: array, list of language codes that the extracted messages
-     should be translated to. For example, array('zh_cn','en_au').
-   - fileTypes: array, a list of file extensions (e.g. 'php', 'xml').
-     Only the files whose extension name can be found in this list
-     will be processed. If empty, all files will be processed.
-   - exclude: array, a list of directory and file exclusions. Each
-     exclusion can be either a name or a path. If a file or directory name
-     or path matches the exclusion, it will not be copied. For example,
-     an exclusion of '.svn' will exclude all files and directories whose
-     name is '.svn'. And an exclusion of '/a/b' will exclude file or
-     directory 'sourcePath/a/b'.
-   - translator: the name of the function for translating messages.
-     Defaults to 'Yii::t'. This is used as a mark to find messages to be
-     translated.
-   - overwrite: if message file must be overwritten with the merged messages.
-   - removeOld: if message no longer needs translation it will be removed,
-     instead of being enclosed between a pair of '@@' marks.
-   - sort: sort messages by key when merging, regardless of their translation
-     state (new, obsolete, translated.)
-
-EOD;
-	}
-
 	/**
-	 * Execute the action.
-	 * @param array command line parameters specific for this command
+	 * Searches for messages to be translated in the specified
+	 * source files and compiles them into PHP arrays as message source.
+	 *
+	 * @param string $config the path of the configuration file. You can find
+	 * an example in framework/messages/config.php.
+	 *
+	 * The file can be placed anywhere and must be a valid PHP script which
+	 * returns an array of name-value pairs. Each name-value pair represents
+	 * a configuration option.
+	 *
+	 * The following options are available:
+	 *
+	 *  - sourcePath: string, root directory of all source files.
+	 *  - messagePath: string, root directory containing message translations.
+	 *  - languages: array, list of language codes that the extracted messages
+	 *    should be translated to. For example, array('zh_cn','en_au').
+	 *  - fileTypes: array, a list of file extensions (e.g. 'php', 'xml').
+	 *    Only the files whose extension name can be found in this list
+	 *    will be processed. If empty, all files will be processed.
+	 *  - exclude: array, a list of directory and file exclusions. Each
+	 *    exclusion can be either a name or a path. If a file or directory name
+	 *    or path matches the exclusion, it will not be copied. For example,
+	 *    an exclusion of '.svn' will exclude all files and directories whose
+	 *    name is '.svn'. And an exclusion of '/a/b' will exclude file or
+	 *    directory 'sourcePath/a/b'.
+	 *  - translator: the name of the function for translating messages.
+	 *    Defaults to 'Yii::t'. This is used as a mark to find messages to be
+	 *    translated.
+	 *  - overwrite: if message file must be overwritten with the merged messages.
+	 *  - removeOld: if message no longer needs translation it will be removed,
+	 *    instead of being enclosed between a pair of '@@' marks.
+	 *  - sort: sort messages by key when merging, regardless of their translation
+	 *    state (new, obsolete, translated.)
 	 */
-	public function run($args)
+	public function actionIndex($config)
 	{
-		if(!isset($args[0]))
-			$this->usageError('the configuration file is not specified.');
-		if(!is_file($args[0]))
-			$this->usageError("the configuration file {$args[0]} does not exist.");
+		if(!is_file($config))
+			$this->usageError("the configuration file {$config} does not exist.");
 
-		$config=require_once($args[0]);
+		$config=require_once($config);
+
 		$translator='Yii::t';
 		extract($config);
 
@@ -97,7 +84,7 @@ EOD;
 
 		if(!isset($sort))
 			$sort = false;
-		
+
 		$options=array();
 		if(isset($fileTypes))
 			$options['fileTypes']=$fileTypes;
@@ -212,8 +199,6 @@ EOD;
  * of the guide for details.
  *
  * NOTE, this file must be saved in UTF-8 encoding.
- *
- * @version \$Id: \$
  */
 return $array;
 

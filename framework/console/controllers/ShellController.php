@@ -4,10 +4,13 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
- * @version $Id$
  */
+
+namespace yii\console\controllers;
+
+use yii\console\Controller;
 
 /**
  * ShellCommand executes the specified Web application and provides a shell for interaction.
@@ -15,11 +18,9 @@
  * @property string $help The help information for the shell command.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.cli.commands
- * @since 1.0
+ * @since 2.0
  */
-class ShellCommand extends CConsoleCommand
+class ShellController extends Controller
 {
 	/**
 	 * @return string the help information for the shell command

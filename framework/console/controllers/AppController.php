@@ -4,49 +4,35 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
- * @version $Id$
  */
 
+namespace yii\console\controllers;
+
+use yii\console\Controller;
+
 /**
- * WebAppCommand creates an Yii Web application at the specified location.
+ * This command creates an Yii Web application at the specified location.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.cli.commands
- * @since 1.0
+ * @since 2.0
  */
-class WebAppCommand extends CConsoleCommand
+class AppController extends Controller
 {
 	private $_rootPath;
 
-	public function getHelp()
-	{
-		return <<<EOD
-USAGE
-  yiic webapp <app-path>
-
-DESCRIPTION
-  This command generates an Yii Web Application at the specified location.
-
-PARAMETERS
- * app-path: required, the directory where the new application will be created.
-   If the directory does not exist, it will be created. After the application
-   is created, please make sure the directory can be accessed by Web users.
-
-EOD;
-	}
-
 	/**
-	 * Execute the action.
-	 * @param array command line parameters specific for this command
+	 * Generates Yii application at the path specified via appPath parameter.
+	 *
+	 * @param string $appPath the directory where the new application will be created.
+	 * If the directory does not exist, it will be created. After the application
+	 * is created, please make sure the directory has enough permissions.
+	 * @return integer the exit status
 	 */
-	public function run($args)
+	public function actionIndex($appPath)
 	{
-		if(!isset($args[0]))
-			$this->usageError('the Web application location is not specified.');
-		$path=strtr($args[0],'/\\',DIRECTORY_SEPARATOR);
+		$path=strtr($appPath,'/\\',DIRECTORY_SEPARATOR);
 		if(strpos($path,DIRECTORY_SEPARATOR)===false)
 			$path='.'.DIRECTORY_SEPARATOR.$path;
 		$dir=rtrim(realpath(dirname($path)),'\\/');

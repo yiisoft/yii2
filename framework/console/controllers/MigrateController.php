@@ -4,23 +4,61 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\console\controllers;
+
+use yii\console\Controller;
+
 /**
- * MigrateCommand manages the database migrations.
+ * This command provides support for database migrations.
  *
  * The implementation of this command and other supporting classes referenced
  * the yii-dbmigrations extension ((https://github.com/pieterclaerhout/yii-dbmigrations),
  * authored by Pieter Claerhout.
  *
+ * EXAMPLES
+ *
+ * - yiic migrate
+ *   Applies ALL new migrations. This is equivalent to 'yiic migrate up'.
+ *
+ * - yiic migrate create create_user_table
+ *    Creates a new migration named 'create_user_table'.
+ *
+ * - yiic migrate up 3
+ *   Applies the next 3 new migrations.
+ *
+ * - yiic migrate down
+ *   Reverts the last applied migration.
+ *
+ * - yiic migrate down 3
+ *   Reverts the last 3 applied migrations.
+ *
+ * - yiic migrate to 101129_185401
+ *   Migrates up or down to version 101129_185401.
+ *
+ * - yiic migrate mark 101129_185401
+ *   Modifies the migration history up or down to version 101129_185401.
+ *   No actual migration will be performed.
+ *
+ * - yiic migrate history
+ * Shows all previously applied migration information.
+ *
+ * - yiic migrate history 10
+ * Shows the last 10 applied migrations.
+ *
+ * - yiic migrate new
+ * Shows all new migrations.
+ *
+ * - yiic migrate new 10
+ * Shows the next 10 migrations that have not been applied.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.cli.commands
- * @since 1.1.6
+ * @since 2.0
  */
-class MigrateCommand extends CConsoleCommand
+class MigrateController extends Controller
 {
 	const BASE_MIGRATION='m000000_000000_base';
 
@@ -57,31 +95,37 @@ class MigrateCommand extends CConsoleCommand
 	 */
 	public $interactive=true;
 
-	public function beforeAction($action,$params)
+	public function beforeAction($action)
 	{
-		$path=Yii::getPathOfAlias($this->migrationPath);
-		if($path===false || !is_dir($path))
-			die('Error: The migration directory does not exist: '.$this->migrationPath."\n");
+		$path = \Yii::getAlias($this->migrationPath);
+		if($path===false || !is_dir($path)) {
+			echo 'Error: The migration directory does not exist: ' . $this->migrationPath . "\n";
+			\Yii::$application->end(1);
+		}
 		$this->migrationPath=$path;
 
-		$yiiVersion=Yii::getVersion();
-		echo "\nYii Migration Tool v1.0 (based on Yii v{$yiiVersion})\n\n";
+		$yiiVersion = \Yii::getVersion();
+		echo "\nYii Migration Tool v2.0 (based on Yii v{$yiiVersion})\n\n";
 
-		return true;
+		return parent::beforeAction($action);
 	}
 
+	/**
+	 * @param array $args
+	 */
 	public function actionUp($args)
 	{
-		if(($migrations=$this->getNewMigrations())===array())
+		if(($migrations = $this->getNewMigrations())===array())
 		{
 			echo "No new migration found. Your system is up-to-date.\n";
-			return;
+			\Yii::$application->end();
 		}
 
 		$total=count($migrations);
 		$step=isset($args[0]) ? (int)$args[0] : 0;
-		if($step>0)
+		if($step>0) {
 			$migrations=array_slice($migrations,0,$step);
+		}
 
 		$n=count($migrations);
 		if($n===$total)
@@ -471,58 +515,6 @@ class MigrateCommand extends CConsoleCommand
 		closedir($handle);
 		sort($migrations);
 		return $migrations;
-	}
-
-	public function getHelp()
-	{
-		return <<<EOD
-USAGE
-  yiic migrate [action] [parameter]
-
-DESCRIPTION
-  This command provides support for database migrations. The optional
-  'action' parameter specifies which specific migration task to perform.
-  It can take these values: up, down, to, create, history, new, mark.
-  If the 'action' parameter is not given, it defaults to 'up'.
-  Each action takes different parameters. Their usage can be found in
-  the following examples.
-
-EXAMPLES
- * yiic migrate
-   Applies ALL new migrations. This is equivalent to 'yiic migrate up'.
-
- * yiic migrate create create_user_table
-   Creates a new migration named 'create_user_table'.
-
- * yiic migrate up 3
-   Applies the next 3 new migrations.
-
- * yiic migrate down
-   Reverts the last applied migration.
-
- * yiic migrate down 3
-   Reverts the last 3 applied migrations.
-
- * yiic migrate to 101129_185401
-   Migrates up or down to version 101129_185401.
-
- * yiic migrate mark 101129_185401
-   Modifies the migration history up or down to version 101129_185401.
-   No actual migration will be performed.
-
- * yiic migrate history
-   Shows all previously applied migration information.
-
- * yiic migrate history 10
-   Shows the last 10 applied migrations.
-
- * yiic migrate new
-   Shows all new migrations.
-
- * yiic migrate new 10
-   Shows the next 10 migrations that have not been applied.
-
-EOD;
 	}
 
 	protected function getTemplate()
