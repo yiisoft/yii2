@@ -205,7 +205,6 @@ class Controller extends \yii\base\Controller
 
 	/**
 	 * Moves the cursor to an absolute position given as column and row by sending ANSI code CUP or CHA to the terminal.
-	 *
 	 * @param integer $column 1-based column number, 1 is the left edge of the screen.
 	 * @param integer|null $row 1-based row number, 1 is the top edge of the screen. if not set, will move cursor only in current line.
 	 */
@@ -220,7 +219,7 @@ class Controller extends \yii\base\Controller
 
 	/**
 	 * Scrolls whole page up by sending ANSI code SU to the terminal.
-	 * New lines are added at the bottom. This is not supported by ANSI.SYS
+	 * New lines are added at the bottom. This is not supported by ANSI.SYS used in windows.
 	 * @param int $lines number of lines to scroll up
 	 */
 	public function scrollUp($lines=1)
@@ -230,7 +229,7 @@ class Controller extends \yii\base\Controller
 
 	/**
 	 * Scrolls whole page down by sending ANSI code SD to the terminal.
-	 * New lines are added at the top. This is not supported by ANSI.SYS
+	 * New lines are added at the top. This is not supported by ANSI.SYS used in windows.
 	 * @param int $lines number of lines to scroll down
 	 */
 	public function scrollDown($lines=1)
@@ -240,7 +239,7 @@ class Controller extends \yii\base\Controller
 
 	/**
 	 * Saves the current cursor position by sending ANSI code SCP to the terminal.
-	 * Position can then be restored with {@link restoreCursorPosition}
+	 * Position can then be restored with {@link restoreCursorPosition}.
 	 */
 	public function saveCursorPosition()
 	{
@@ -256,8 +255,9 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * Hides the cursor by sending ANSI by sending ANSI DECTCEM code ?25l to the terminal.
+	 * Hides the cursor by sending ANSI DECTCEM code ?25l to the terminal.
 	 * Use {@link showCursor} to bring it back.
+	 * Do not forget to show cursor when your application exits. Cursor might stay hidden in terminal after exit.
 	 */
 	public function hideCursor()
 	{
@@ -273,8 +273,9 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * clears entire screen content by sending ANSI code ED with argument 2 to the terminal
-	 * Cursor position will not be changed (ANSI.SYS implementation used in windows will reset cursor position to upper left corner of the screen).
+	 * Clears entire screen content by sending ANSI code ED with argument 2 to the terminal.
+	 * Cursor position will not be changed.
+	 * **Note:** ANSI.SYS implementation used in windows will reset cursor position to upper left corner of the screen.
 	 */
 	public function clearScreen()
 	{
@@ -282,7 +283,7 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * clears text from cursor to the beginning of the screen by sending ANSI code ED with argument 1 to the terminal
+	 * Clears text from cursor to the beginning of the screen by sending ANSI code ED with argument 1 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public function clearScreenBeforeCursor()
@@ -291,7 +292,7 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * clears text from cursor to the end of the screen by sending ANSI code ED with argument 0 to the terminal
+	 * Clears text from cursor to the end of the screen by sending ANSI code ED with argument 0 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public function clearScreenAfterCursor()
@@ -301,7 +302,7 @@ class Controller extends \yii\base\Controller
 
 
 	/**
-	 * clears entire screen content by sending ANSI code EL with argument 2 to the terminal
+	 * Clears the line, the cursor is currently on by sending ANSI code EL with argument 2 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public function clearLine()
@@ -310,7 +311,7 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * clears text from cursor to the beginning of the screen by sending ANSI code EL with argument 1 to the terminal
+	 * Clears text from cursor position to the beginning of the line by sending ANSI code EL with argument 1 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public function clearLineBeforeCursor()
@@ -319,7 +320,7 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * clears text from cursor to the end of the screen by sending ANSI code EL with argument 0 to the terminal
+	 * Clears text from cursor position to the end of the line by sending ANSI code EL with argument 0 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public function clearLineAfterCursor()
@@ -327,76 +328,73 @@ class Controller extends \yii\base\Controller
 		echo "\033[0K";
 	}
 
-
-
-
-
-
-	//const COLOR_XTERM256 = 38;// http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
-	public function xtermColor($i) {
-
+	/**
+	 * Will send ANSI format for following output
+	 *
+	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also xterm256ColorBg
+	 * TODO: documentation
+	 */
+	public function ansiStyle()
+	{
+		echo "\033[" . implode(';', func_get_args()) . 'm';
 	}
-
-
-
-
-
-
 
 	/**
-	 * This method will turn given string into one colorized with ansi color
+	 * Will return a string formatted with the given ANSI style
+	 *
+	 * See {@link ansiStyle} for possible arguments.
+	 * @param string $string the string to be formatted
+	 * @return string
 	 */
-	public function colorize($string, $foreground = null, $background = null, $style = null)
+	public function ansiStyleString($string)
 	{
-		$codes = array();
-		if ($foreground !== null) {
-			$codes[] = static::FOREGROUND_COLOR + $foreground;
-		}
-		if ($background !== null) {
-			$codes[] = static::BACKGROUND_COLOR + $background;
-		}
-		if ($style !== null) {
-			$codes[] = $style;
-		}
-
-		$code = implode(';', $codes);
-		return "\033[0m" . ($code !== '' ? "\033[" . $code . "m" : '') . $string . "\033[0m";
+		$args = func_get_args();
+		array_shift($args);
+		$code = implode(';', $args);
+		return "\033[0m" . ($code !== '' ? "\033[" . $code . "m" : '') . $string."\033[0m";
 	}
 
-
-	public function style($code)
+	//const COLOR_XTERM256 = 38;// http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
+	public function xterm256ColorFg($i) // TODO naming!
 	{
-		return "\033[{$code}m";
+		return '38;5;'.$i;
 	}
 
-	public function color($foreground, $background=null)
+	public function xterm256ColorBg($i) // TODO naming!
 	{
-		if ($foreground === null && $background === null) {
-			return '';
-		}
-
-		$codes = array();
-		if ($foreground !== null) {
-			$codes[] = static::FOREGROUND_COLOR + $foreground;
-		}
-		if ($background !== null) {
-			$codes[] = static::BACKGROUND_COLOR + $background;
-		}
-
-		return "\033[" . implode(';', $codes) . "m";
+		return '48;5;'.$i;
 	}
 
+	/**
+	 * Usage: list($w, $h) = $this->getScreenSize();
+	 *
+	 * @return array
+	 */
+	public function getScreenSize()
+	{
+		// TODO implement
+		return array(150,50);
+	}
+
+	/**
+	 * resets any ansi style set by previous method {@link ansiStyle}
+	 * Any output after this is will have default text style.
+	 */
 	public function reset()
 	{
-		return "\033[0m";
+		echo "\033[0m";
 	}
 
-
-	public function renderColoredString($string)
+	/**
+	 * Strips ANSI control codes from a string
+	 *
+	 * @param string $string String to strip
+	 * @return string
+	 */
+	function strip($string)
 	{
-
+		return preg_replace('/\033\[[\d;]+m/', '', $string); // TODO currently only strips color
 	}
-
 
 	// TODO refactor and review
 	public function ansiToHtml($string)
@@ -456,5 +454,116 @@ class Controller extends \yii\base\Controller
 			return '<span' . (!empty($styleString) ? 'style="' . implode(';', $styleString) : '') . '>';
 		}, $string);
 	}
+
+	/**
+	 * TODO syntax copied from https://github.com/pear/Console_Color2/blob/master/Console/Color2.php
+	 *
+	 * Converts colorcodes in the format %y (for yellow) into ansi-control
+	 * codes. The conversion table is: ('bold' meaning 'light' on some
+	 * terminals). It's almost the same conversion table irssi uses.
+	 * <pre>
+	 *                  text      text            background
+	 *      ------------------------------------------------
+	 *      %k %K %0    black     dark grey       black
+	 *      %r %R %1    red       bold red        red
+	 *      %g %G %2    green     bold green      green
+	 *      %y %Y %3    yellow    bold yellow     yellow
+	 *      %b %B %4    blue      bold blue       blue
+	 *      %m %M %5    magenta   bold magenta    magenta
+	 *      %p %P       magenta (think: purple)
+	 *      %c %C %6    cyan      bold cyan       cyan
+	 *      %w %W %7    white     bold white      white
+	 *
+	 *      %F     Blinking, Flashing
+	 *      %U     Underline
+	 *      %8     Reverse
+	 *      %_,%9  Bold
+	 *
+	 *      %n     Resets the color
+	 *      %%     A single %
+	 * </pre>
+	 * First param is the string to convert, second is an optional flag if
+	 * colors should be used. It defaults to true, if set to false, the
+	 * colorcodes will just be removed (And %% will be transformed into %)
+	 *
+	 * @param string $string  String to convert
+	 * @param bool   $colored Should the string be colored?
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function renderColoredString($string)
+	{
+		$colored = true;
+
+
+		static $conversions = array ( // static so the array doesn't get built
+		   // everytime
+		// %y - yellow, and so on... {{{
+		'%y' => array('color' => 'yellow'),
+		'%g' => array('color' => 'green' ),
+		'%b' => array('color' => 'blue'  ),
+		'%r' => array('color' => 'red'   ),
+		'%p' => array('color' => 'purple'),
+		'%m' => array('color' => 'purple'),
+		'%c' => array('color' => 'cyan'  ),
+		'%w' => array('color' => 'grey'  ),
+		'%k' => array('color' => 'black' ),
+		'%n' => array('color' => 'reset' ),
+		'%Y' => array('color' => 'yellow',  'style' => 'light'),
+		'%G' => array('color' => 'green',   'style' => 'light'),
+		'%B' => array('color' => 'blue',    'style' => 'light'),
+		'%R' => array('color' => 'red',     'style' => 'light'),
+		'%P' => array('color' => 'purple',  'style' => 'light'),
+		'%M' => array('color' => 'purple',  'style' => 'light'),
+		'%C' => array('color' => 'cyan',    'style' => 'light'),
+		'%W' => array('color' => 'grey',    'style' => 'light'),
+		'%K' => array('color' => 'black',   'style' => 'light'),
+		'%N' => array('color' => 'reset',   'style' => 'light'),
+		'%3' => array('background' => 'yellow'),
+		'%2' => array('background' => 'green' ),
+		'%4' => array('background' => 'blue'  ),
+		'%1' => array('background' => 'red'   ),
+		'%5' => array('background' => 'purple'),
+		'%6' => array('background' => 'cyan'  ),
+		'%7' => array('background' => 'grey'  ),
+		'%0' => array('background' => 'black' ),
+		// Don't use this, I can't stand flashing text
+		'%F' => array('style' => 'blink'),
+		'%U' => array('style' => 'underline'),
+		'%8' => array('style' => 'inverse'),
+		'%9' => array('style' => 'bold'),
+		'%_' => array('style' => 'bold')
+		// }}}
+		);
+
+		if ($colored) {
+			$string = str_replace('%%', '% ', $string);
+			foreach ($conversions as $key => $value) {
+				$string = str_replace($key, Console_Color::color($value),
+				$string);
+			}
+			$string = str_replace('% ', '%', $string);
+
+		} else {
+			$string = preg_replace('/%((%)|.)/', '$2', $string);
+		}
+
+		return $string;
+	}
+
+	/**
+	* Escapes % so they don't get interpreted as color codes
+	*
+	* @param string $string String to escape
+	*
+	* @access public
+	* @return string
+	*/
+	function escape($string)
+	{
+		return str_replace('%', '%%', $string);
+	}
+
 
 }
