@@ -7,6 +7,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\web;
+
 /**
  * Cookie represents information related with a cookie, such as [[name]], [[value]], [[domain]], etc.
  *
@@ -46,17 +48,4 @@ class Cookie extends \yii\base\Object
 	 * such as JavaScript, which can effectively help to reduce identity theft through XSS attacks.
 	 */
 	public $httpOnly = false;
-
-	/**
-	 * Constructor.
-	 * @param string $name name of this cookie
-	 * @param string $value value of this cookie
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($name, $value, $config = array())
-	{
-		$this->name = $name;
-		$this->value = $value;
-		parent::__construct($config);
-	}
 }

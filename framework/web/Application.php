@@ -18,6 +18,15 @@ namespace yii\web;
 class Application extends \yii\base\Application
 {
 	/**
+	 * Sets default path aliases.
+	 */
+	public function registerDefaultAliases()
+	{
+		parent::registerDefaultAliases();
+		\Yii::$aliases['@www'] = dirname($_SERVER['SCRIPT_FILENAME']);
+	}
+
+	/**
 	 * Processes the request.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
 	 */

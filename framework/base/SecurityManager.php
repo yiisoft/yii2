@@ -12,38 +12,8 @@ namespace yii\base;
 /**
  * SecurityManager provides private keys, hashing and encryption functions.
  *
- * SecurityManager is used by Yii components and applications for security-related purpose.
- * For example, it is used in cookie validation feature to prevent cookie data
- * from being tampered.
- *
- * SecurityManager is mainly used to protect data from being tampered and viewed.
- * It can generate HMAC and encrypt the data. The private key used to generate HMAC
- * is set by {@link setValidationKey ValidationKey}. The key used to encrypt data is
- * specified by {@link setEncryptionKey EncryptionKey}. If the above keys are not
- * explicitly set, random keys will be generated and used.
- *
- * To protected data with HMAC, call {@link hashData()}; and to check if the data
- * is tampered, call {@link validateData()}, which will return the real data if
- * it is not tampered. The algorithm used to generated HMAC is specified by
- * {@link validation}.
- *
- * To encrypt and decrypt data, call {@link encrypt()} and {@link decrypt()}
- * respectively, which uses 3DES encryption algorithm.  Note, the PHP Mcrypt
- * extension must be installed and loaded.
- *
- * SecurityManager is a core application component that can be accessed via
- * {@link CApplication::getSecurityManager()}.
- *
- * @property string $validationKey The private key used to generate HMAC.
- * If the key is not explicitly set, a random one is generated and returned.
- * @property string $encryptionKey The private key used to encrypt/decrypt data.
- * If the key is not explicitly set, a random one is generated and returned.
- * @property string $validation
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.base
- * @since 1.0
+ * @since 2.0
  */
 class SecurityManager extends ApplicationComponent
 {
@@ -56,7 +26,6 @@ class SecurityManager extends ApplicationComponent
 	 * hash algorithms. Note that if you are using PHP 5.1.1 or below, you can only use 'sha1' or 'md5'.
 	 *
 	 * Defaults to 'sha1', meaning using SHA1 hash algorithm.
-	 * @since 1.1.3
 	 */
 	public $hashAlgorithm = 'sha1';
 	/**
@@ -67,19 +36,11 @@ class SecurityManager extends ApplicationComponent
 	 * as parameters to mcrypt_module_open. For example, <code>array('rijndael-256', '', 'ofb', '')</code>.
 	 *
 	 * Defaults to 'des', meaning using DES crypt algorithm.
-	 * @since 1.1.3
 	 */
 	public $cryptAlgorithm = 'des';
 
 	private $_validationKey;
 	private $_encryptionKey;
-	private $_mbstring;
-
-	public function init()
-	{
-		parent::init();
-		$this->_mbstring = extension_loaded('mbstring');
-	}
 
 	/**
 	 * @return string a randomly generated private key
@@ -97,12 +58,10 @@ class SecurityManager extends ApplicationComponent
 	{
 		if ($this->_validationKey !== null) {
 			return $this->_validationKey;
-		}
-		else {
+		} else {
 			if (($key = \Yii::$application->getGlobalState(self::STATE_VALIDATION_KEY)) !== null) {
 				$this->setValidationKey($key);
-			}
-			else {
+			} else {
 				$key = $this->generateRandomKey();
 				$this->setValidationKey($key);
 				\Yii::$application->setGlobalState(self::STATE_VALIDATION_KEY, $key);
@@ -119,8 +78,7 @@ class SecurityManager extends ApplicationComponent
 	{
 		if (!empty($value)) {
 			$this->_validationKey = $value;
-		}
-		else {
+		} else {
 			throw new CException(Yii::t('yii', 'SecurityManager.validationKey cannot be empty.'));
 		}
 	}
@@ -133,12 +91,10 @@ class SecurityManager extends ApplicationComponent
 	{
 		if ($this->_encryptionKey !== null) {
 			return $this->_encryptionKey;
-		}
-		else {
+		} else {
 			if (($key = \Yii::$application->getGlobalState(self::STATE_ENCRYPTION_KEY)) !== null) {
 				$this->setEncryptionKey($key);
-			}
-			else {
+			} else {
 				$key = $this->generateRandomKey();
 				$this->setEncryptionKey($key);
 				\Yii::$application->setGlobalState(self::STATE_ENCRYPTION_KEY, $key);
@@ -155,8 +111,7 @@ class SecurityManager extends ApplicationComponent
 	{
 		if (!empty($value)) {
 			$this->_encryptionKey = $value;
-		}
-		else {
+		} else {
 			throw new CException(Yii::t('yii', 'SecurityManager.encryptionKey cannot be empty.'));
 		}
 	}
@@ -231,8 +186,7 @@ class SecurityManager extends ApplicationComponent
 		if (extension_loaded('mcrypt')) {
 			if (is_array($this->cryptAlgorithm)) {
 				$module = @call_user_func_array('mcrypt_module_open', $this->cryptAlgorithm);
-			}
-			else {
+			} else {
 				$module = @mcrypt_module_open($this->cryptAlgorithm, '', MCRYPT_MODE_CBC, '');
 			}
 
@@ -241,8 +195,7 @@ class SecurityManager extends ApplicationComponent
 			}
 
 			return $module;
-		}
-		else {
+		} else {
 			throw new CException(Yii::t('yii', 'SecurityManager requires PHP mcrypt extension to be loaded in order to use data encryption feature.'));
 		}
 	}
@@ -273,8 +226,7 @@ class SecurityManager extends ApplicationComponent
 			$hmac = $this->substr($data, 0, $len);
 			$data2 = $this->substr($data, $len, $this->strlen($data));
 			return $hmac === $this->computeHMAC($data2, $key) ? $data2 : false;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -298,8 +250,7 @@ class SecurityManager extends ApplicationComponent
 		if (!strcasecmp($this->hashAlgorithm, 'sha1')) {
 			$pack = 'H40';
 			$func = 'sha1';
-		}
-		else {
+		} else {
 			$pack = 'H32';
 			$func = 'md5';
 		}
@@ -321,7 +272,7 @@ class SecurityManager extends ApplicationComponent
 	 */
 	private function strlen($string)
 	{
-		return $this->_mbstring ? mb_strlen($string, '8bit') : strlen($string);
+		return function_exists('mb_strlen') ? mb_strlen($string, '8bit') : strlen($string);
 	}
 
 	/**
@@ -334,6 +285,6 @@ class SecurityManager extends ApplicationComponent
 	 */
 	private function substr($string, $start, $length)
 	{
-		return $this->_mbstring ? mb_substr($string, $start, $length, '8bit') : substr($string, $start, $length);
+		return function_exists('mb_substr') ? mb_substr($string, $start, $length, '8bit') : substr($string, $start, $length);
 	}
 }
