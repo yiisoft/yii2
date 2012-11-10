@@ -594,6 +594,18 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
+	 * Returns a list of scenarios and the corresponding relevant attributes.
+	 * Please refer to [[\yii\base\Model::scenarios()]] for more details.
+	 * The implementation here simply returns an empty array. You may override
+	 * this method to return the scenarios that you want to use with this AR class.
+	 * @return array a list of scenarios and the corresponding relevant attributes.
+	 */
+	public function scenarios()
+	{
+		return array();
+	}
+
+	/**
 	 * Returns the named attribute value.
 	 * If this is a new record and the attribute is not set before,
 	 * the default column value will be returned.

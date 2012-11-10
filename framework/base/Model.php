@@ -137,11 +137,20 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * If an attribute should NOT be massively assigned (thus considered unsafe),
 	 * please prefix the attribute with an exclamation character (e.g. '!attribute').
 	 *
+	 * WARNING: The default implementation returns the 'default' scenario and the result of
+	 * [[attributes()]]. This means if the model is in 'default' scenario, all
+	 * public member variables can be massively assigned and will be validated when
+	 * calling [[validate()]]. Make sure you override this method if you do not want
+	 * this behavior (e.g. you only want some of the attributes to be massively assigned
+	 * and validated.)
+	 *
 	 * @return array a list of scenarios and the corresponding relevant attributes.
 	 */
 	public function scenarios()
 	{
-		return array();
+		return array(
+			'default' => $this->attributes(),
+		);
 	}
 
 	/**

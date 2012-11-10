@@ -67,7 +67,7 @@ class BaseQuery extends \yii\base\Component
 	public $group;
 	/**
 	 * @var string|array how to join with other tables. This refers to the JOIN clause in a SQL statement.
-	 * It can either a string (e.g. `'LEFT JOIN tbl_user ON tbl_user.id=author_id'`) or an array (e.g.
+	 * It can be either a string (e.g. `'LEFT JOIN tbl_user ON tbl_user.id=author_id'`) or an array (e.g.
 	 * `array('LEFT JOIN tbl_user ON tbl_user.id=author_id', 'LEFT JOIN tbl_team ON tbl_team.id=team_id')`).
 	 * @see join()
 	 */

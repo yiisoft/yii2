@@ -92,7 +92,7 @@ class QueryBuilder extends \yii\base\Object
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
-	 * @return integer number of rows affected by the execution.
+	 * @return string the INSERT SQL
 	 */
 	public function insert($table, $columns)
 	{
@@ -139,7 +139,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the query.
-	 * @return integer number of rows affected by the execution.
+	 * @return string the UPDATE SQL
 	 */
 	public function update($table, $columns, $condition = '', $params = array())
 	{
@@ -180,7 +180,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the query.
-	 * @return integer number of rows affected by the execution.
+	 * @return string the DELETE SQL
 	 */
 	public function delete($table, $condition = '', $params = array())
 	{
