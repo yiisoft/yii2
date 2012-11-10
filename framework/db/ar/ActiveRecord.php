@@ -588,7 +588,7 @@ abstract class ActiveRecord extends Model
 	 * This would return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
-	public function attributeNames()
+	public function attributes()
 	{
 		return array_keys($this->getMetaData()->table->columns);
 	}
@@ -633,7 +633,7 @@ abstract class ActiveRecord extends Model
 	public function getAttributes($names = null)
 	{
 		if ($names === null) {
-			$names = $this->attributeNames();
+			$names = $this->attributes();
 		}
 		$values = array();
 		foreach ($names as $name) {
@@ -645,7 +645,7 @@ abstract class ActiveRecord extends Model
 	public function getChangedAttributes($names = null)
 	{
 		if ($names === null) {
-			$names = $this->attributeNames();
+			$names = $this->attributes();
 		}
 		$names = array_flip($names);
 		$attributes = array();
@@ -931,7 +931,7 @@ abstract class ActiveRecord extends Model
 			return false;
 		}
 		if ($attributes === null) {
-			foreach ($this->attributeNames() as $name) {
+			foreach ($this->attributes() as $name) {
 				$this->_attributes[$name] = $record->_attributes[$name];
 			}
 			$this->_oldAttributes = $this->_attributes;
