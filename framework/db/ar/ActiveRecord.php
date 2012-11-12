@@ -44,6 +44,10 @@ use yii\util\StringHelper;
 abstract class ActiveRecord extends Model
 {
 	/**
+	 * @var ActiveRecord[] global model instances indexed by model class names
+	 */
+	private static $_models = array();
+	/**
 	 * @var array attribute values indexed by attribute names
 	 */
 	private $_attributes = array();
@@ -55,6 +59,21 @@ abstract class ActiveRecord extends Model
 	 * @var array related records indexed by relation names.
 	 */
 	private $_related;
+
+
+	/**
+	 * Returns a model instance to support accessing non-static methods such as [[table()]], [[primaryKey()]].
+	 * @return ActiveRecord
+	 */
+	public static function model()
+	{
+		$className = get_called_class();
+		if (isset(self::$_models[$className])) {
+			return self::$_models[$className];
+		} else {
+			return self::$_models[$className] = new static;			
+		}
+	}
 
 	/**
 	 * Returns the metadata for this AR class.
@@ -194,7 +213,7 @@ abstract class ActiveRecord extends Model
 	public static function updateAll($attributes, $condition = '', $params = array())
 	{
 		$query = new Query;
-		$query->update(static::tableName(), $attributes, $condition, $params);
+		$query->update(static::model()->tableName(), $attributes, $condition, $params);
 		return $query->createCommand(static::getDbConnection())->execute();
 	}
 
@@ -215,7 +234,7 @@ abstract class ActiveRecord extends Model
 			$counters[$name] = new Expression($value >= 0 ? "$quotedName+$value" : "$quotedName$value");
 		}
 		$query = new Query;
-		$query->update(static::tableName(), $counters, $condition, $params);
+		$query->update(static::model()->tableName(), $counters, $condition, $params);
 		return $query->createCommand($db)->execute();
 	}
 
@@ -229,7 +248,7 @@ abstract class ActiveRecord extends Model
 	public static function deleteAll($condition = '', $params = array())
 	{
 		$query = new Query;
-		$query->delete(static::tableName(), $condition, $params);
+		$query->delete(static::model()->tableName(), $condition, $params);
 		return $query->createCommand(static::getDbConnection())->execute();
 	}
 
@@ -250,9 +269,9 @@ abstract class ActiveRecord extends Model
 	 * You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
-	public static function tableName()
+	public function tableName()
 	{
-		return StringHelper::camel2id(basename(get_called_class()), '_');
+		return StringHelper::camel2id(basename(get_class($this)), '_');
 	}
 
 	/**
@@ -266,7 +285,7 @@ abstract class ActiveRecord extends Model
 	 * If the key is a composite one consisting of several columns, it should
 	 * return the array of the key column names.
 	 */
-	public static function primaryKey()
+	public function primaryKey()
 	{
 	}
 
@@ -631,27 +650,6 @@ abstract class ActiveRecord extends Model
 	public function setAttribute($name, $value)
 	{
 		$this->_attributes[$name] = $value;
-	}
-
-	/**
-	 * Returns all column attribute values.
-	 * Note, related objects are not returned.
-	 * @param null|array $names names of attributes whose value needs to be returned.
-	 * If this is true (default), then all attribute values will be returned, including
-	 * those that are not loaded from DB (null will be returned for those attributes).
-	 * If this is null, all attributes except those that are not loaded from DB will be returned.
-	 * @return array attribute values indexed by attribute names.
-	 */
-	public function getAttributes($names = null)
-	{
-		if ($names === null) {
-			$names = $this->attributes();
-		}
-		$values = array();
-		foreach ($names as $name) {
-			$values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
-		}
-		return $values;
 	}
 
 	public function getChangedAttributes($names = null)

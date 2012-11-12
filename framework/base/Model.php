@@ -119,7 +119,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Returns a list of scenarios and the corresponding relevant attributes.
+	 * Returns a list of scenarios and the corresponding active attributes.
 	 * The returned array should be in the following format:
 	 *
 	 * ~~~
@@ -130,27 +130,14 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * )
 	 * ~~~
 	 *
-	 * Attributes relevant to the current scenario are considered safe and can be
-	 * massively assigned. When [[validate()]] is invoked, these attributes will
-	 * be validated using the rules declared in [[rules()]].
-	 *
 	 * If an attribute should NOT be massively assigned (thus considered unsafe),
 	 * please prefix the attribute with an exclamation character (e.g. '!attribute').
-	 *
-	 * WARNING: The default implementation returns the 'default' scenario and the result of
-	 * [[attributes()]]. This means if the model is in 'default' scenario, all
-	 * public member variables can be massively assigned and will be validated when
-	 * calling [[validate()]]. Make sure you override this method if you do not want
-	 * this behavior (e.g. you only want some of the attributes to be massively assigned
-	 * and validated.)
 	 *
 	 * @return array a list of scenarios and the corresponding relevant attributes.
 	 */
 	public function scenarios()
 	{
-		return array(
-			'default' => $this->attributes(),
-		);
+		return array();
 	}
 
 	/**
@@ -354,8 +341,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function isAttributeSafe($attribute)
 	{
-		$scenarios = $this->scenarios();
-		return in_array($attribute, $scenarios[$this->getScenario()], true);
+		return in_array($attribute, $this->safeAttributes(), true);
 	}
 
 	/**
@@ -481,22 +467,20 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * @param array $names list of attributes whose value needs to be returned.
 	 * Defaults to null, meaning all attributes listed in [[attributes()]] will be returned.
 	 * If it is an array, only the attributes in the array will be returned.
+	 * @param array $except list of attributes whose value should NOT be returned.
 	 * @return array attribute values (name=>value).
 	 */
-	public function getAttributes($names = null)
+	public function getAttributes($names = null, $except = array())
 	{
 		$values = array();
-
-		if (is_array($names)) {
-			foreach ($this->attributes() as $name) {
-				if (in_array($name, $names, true)) {
-					$values[$name] = $this->$name;
-				}
-			}
-		} else {
-			foreach ($this->attributes() as $name) {
-				$values[$name] = $this->$name;
-			}
+		if ($names === null) {
+			$names = $this->attributes();
+		}
+		foreach ($names as $name) {
+			$values[$name] = $this->$name;
+		}
+		foreach ($except as $name) {
+			unset($values[$name]);
 		}
 
 		return $values;
@@ -567,14 +551,19 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function safeAttributes()
 	{
+		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
-		$attributes = array();
-		foreach ($scenarios[$this->getScenario()] as $attribute) {
-			if ($attribute[0] !== '!') {
-				$attributes[] = $attribute;
+		if (isset($scenarios[$scenario])) {
+			$attributes = array();
+			foreach ($scenarios[$scenario] as $attribute) {
+				if ($attribute[0] !== '!') {
+					$attributes[] = $attribute;
+				}
 			}
+			return $attributes;
+		} else {
+			return $this->activeAttributes();
 		}
-		return $attributes;
 	}
 
 	/**
@@ -583,11 +572,23 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function activeAttributes()
 	{
+		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
-		$attributes = $scenarios[$this->getScenario()];
-		foreach ($attributes as $i => $attribute) {
-			if ($attribute[0] === '!') {
-				$attributes[$i] = substr($attribute, 1);
+		if (isset($scenarios[$scenario])) {
+			// scenario declared in scenarios()
+			$attributes = $scenarios[$this->getScenario()];
+			foreach ($attributes as $i => $attribute) {
+				if ($attribute[0] === '!') {
+					$attributes[$i] = substr($attribute, 1);
+				}
+			}
+		} else {
+			// use validators to determine active attributes
+			$attributes = array();
+			foreach ($this->attributes() as $attribute) {
+				if ($this->getActiveValidators($attribue) !== array()) {
+					$attributes[] = $attribute;
+				}
 			}
 		}
 		return $attributes;
