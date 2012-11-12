@@ -71,7 +71,7 @@ abstract class ActiveRecord extends Model
 		if (isset(self::$_models[$className])) {
 			return self::$_models[$className];
 		} else {
-			return self::$_models[$className] = new static;			
+			return self::$_models[$className] = new static;
 		}
 	}
 

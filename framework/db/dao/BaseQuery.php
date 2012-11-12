@@ -59,12 +59,12 @@ class BaseQuery extends \yii\base\Component
 	 * @var string|array how to sort the query results. This refers to the ORDER BY clause in a SQL statement.
 	 * It can be either a string (e.g. `'id ASC, name DESC'`) or an array (e.g. `array('id ASC', 'name DESC')`).
 	 */
-	public $order;
+	public $orderBy;
 	/**
 	 * @var string|array how to group the query results. This refers to the GROUP BY clause in a SQL statement.
 	 * It can be either a string (e.g. `'company, department'`) or an array (e.g. `array('company', 'department')`).
 	 */
-	public $group;
+	public $groupBy;
 	/**
 	 * @var string|array how to join with other tables. This refers to the JOIN clause in a SQL statement.
 	 * It can be either a string (e.g. `'LEFT JOIN tbl_user ON tbl_user.id=author_id'`) or an array (e.g.
@@ -330,9 +330,9 @@ class BaseQuery extends \yii\base\Component
 	 * @return BaseQuery the query object itself
 	 * @see addGroup()
 	 */
-	public function group($columns)
+	public function groupBy($columns)
 	{
-		$this->group = $columns;
+		$this->groupBy = $columns;
 		return $this;
 	}
 
@@ -347,16 +347,16 @@ class BaseQuery extends \yii\base\Component
 	 */
 	public function addGroup($columns)
 	{
-		if (empty($this->group)) {
-			$this->group = $columns;
+		if (empty($this->groupBy)) {
+			$this->groupBy = $columns;
 		} else {
-			if (!is_array($this->group)) {
-				$this->group = preg_split('/\s*,\s*/', trim($this->group), -1, PREG_SPLIT_NO_EMPTY);
+			if (!is_array($this->groupBy)) {
+				$this->groupBy = preg_split('/\s*,\s*/', trim($this->groupBy), -1, PREG_SPLIT_NO_EMPTY);
 			}
 			if (!is_array($columns)) {
 				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			$this->group = array_merge($this->group, $columns);
+			$this->groupBy = array_merge($this->groupBy, $columns);
 		}
 		return $this;
 	}
@@ -428,9 +428,9 @@ class BaseQuery extends \yii\base\Component
 	 * @return BaseQuery the query object itself
 	 * @see addOrder()
 	 */
-	public function order($columns)
+	public function orderBy($columns)
 	{
-		$this->order = $columns;
+		$this->orderBy = $columns;
 		return $this;
 	}
 
@@ -443,18 +443,18 @@ class BaseQuery extends \yii\base\Component
 	 * @return BaseQuery the query object itself
 	 * @see order()
 	 */
-	public function addOrder($columns)
+	public function addOrderBy($columns)
 	{
-		if (empty($this->order)) {
-			$this->order = $columns;
+		if (empty($this->orderBy)) {
+			$this->orderBy = $columns;
 		} else {
-			if (!is_array($this->order)) {
-				$this->order = preg_split('/\s*,\s*/', trim($this->order), -1, PREG_SPLIT_NO_EMPTY);
+			if (!is_array($this->orderBy)) {
+				$this->orderBy = preg_split('/\s*,\s*/', trim($this->orderBy), -1, PREG_SPLIT_NO_EMPTY);
 			}
 			if (!is_array($columns)) {
 				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			$this->order = array_merge($this->order, $columns);
+			$this->orderBy = array_merge($this->orderBy, $columns);
 		}
 		return $this;
 	}
@@ -540,7 +540,7 @@ class BaseQuery extends \yii\base\Component
 	 * takes precedence over this query.
 	 *  - [[where]], [[having]]: the new query's corresponding property value
 	 * will be 'AND' together with the existing one.
-	 * - [[params]], [[order]], [[group]], [[join]], [[union]]: the new query's
+	 * - [[params]], [[orderBy]], [[groupBy]], [[join]], [[union]]: the new query's
 	 * corresponding property value will be appended to the existing one.
 	 *
 	 * In general, the merging makes the resulting query more restrictive and specific.
@@ -591,12 +591,12 @@ class BaseQuery extends \yii\base\Component
 			$this->addParams($query->params);
 		}
 
-		if ($query->order !== null) {
-			$this->addOrder($query->order);
+		if ($query->orderBy !== null) {
+			$this->addOrderBy($query->orderBy);
 		}
 
-		if ($query->group !== null) {
-			$this->addGroup($query->group);
+		if ($query->groupBy !== null) {
+			$this->addGroup($query->groupBy);
 		}
 
 		if ($query->join !== null) {
