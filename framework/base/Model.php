@@ -586,7 +586,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 			// use validators to determine active attributes
 			$attributes = array();
 			foreach ($this->attributes() as $attribute) {
-				if ($this->getActiveValidators($attribue) !== array()) {
+				if ($this->getActiveValidators($attribute) !== array()) {
 					$attributes[] = $attribute;
 				}
 			}
@@ -614,7 +614,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function offsetExists($offset)
 	{
-		return property_exists($this, $offset) && $this->$offset !== null;
+		return $this->$offset !== null;
 	}
 
 	/**

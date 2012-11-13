@@ -4,20 +4,18 @@ namespace yiiunit\data\ar;
 
 class OrderItem extends ActiveRecord
 {
-	public static function tableName()
+	public function tableName()
 	{
 		return 'tbl_order_item';
 	}
 
-	public static function relations()
+	public function order()
 	{
-		return array(
-			'order:Order' => array(
-				'link' => array('order_id' => 'id'),
-			),
-			'item:Item' => array(
-				'link' => array('item_id' => 'id'),
-			),
-		);
+		return $this->hasOne('Order', array('id' => 'order_id'));
+	}
+
+	public function item()
+	{
+		return $this->hasOne('Item', array('id' => 'item_id'));
 	}
 }
