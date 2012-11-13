@@ -429,7 +429,7 @@ class CSort extends CComponent
 			$attributes = $this->attributes;
 		} else {
 			if ($this->modelClass !== null) {
-				$attributes = CActiveRecord::model($this->modelClass)->attributeNames();
+				$attributes = CActiveRecord::model($this->modelClass)->attributes();
 			} else {
 				return false;
 			}

@@ -467,21 +467,21 @@ class ActiveFinder extends \yii\base\Object
 			}
 		}
 
-		if ($element->query->order !== null) {
-			if (!is_array($element->query->order)) {
-				$element->query->order = preg_split('/\s*,\s*/', trim($element->query->order), -1, PREG_SPLIT_NO_EMPTY);
+		if ($element->query->orderBy !== null) {
+			if (!is_array($element->query->orderBy)) {
+				$element->query->orderBy = preg_split('/\s*,\s*/', trim($element->query->orderBy), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			foreach ($element->query->order as $order) {
-				$query->order[] = strtr($order, $prefixes);
+			foreach ($element->query->orderBy as $order) {
+				$query->orderBy[] = strtr($order, $prefixes);
 			}
 		}
 
-		if ($element->query->group !== null) {
-			if (!is_array($element->query->group)) {
-				$element->query->group = preg_split('/\s*,\s*/', trim($element->query->group), -1, PREG_SPLIT_NO_EMPTY);
+		if ($element->query->groupBy !== null) {
+			if (!is_array($element->query->groupBy)) {
+				$element->query->groupBy = preg_split('/\s*,\s*/', trim($element->query->groupBy), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			foreach ($element->query->group as $group) {
-				$query->group[] = strtr($group, $prefixes);
+			foreach ($element->query->groupBy as $group) {
+				$query->groupBy[] = strtr($group, $prefixes);
 			}
 		}
 

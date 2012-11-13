@@ -94,7 +94,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
 	/**
 	 * Advances the reader to the next row in a result set.
-	 * @return array|false the current row, false if no more row available
+	 * @return array the current row, false if no more row available
 	 */
 	public function read()
 	{
@@ -104,7 +104,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	/**
 	 * Returns a single column from the next row of a result set.
 	 * @param integer $columnIndex zero-based column index
-	 * @return mixed|false the column of the current row, false if no more row available
+	 * @return mixed the column of the current row, false if no more row available
 	 */
 	public function readColumn($columnIndex)
 	{
@@ -115,7 +115,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	 * Returns an object populated with the next row of data.
 	 * @param string $className class name of the object to be created and populated
 	 * @param array $fields Elements of this array are passed to the constructor
-	 * @return mixed|false the populated object, false if no more row of data available
+	 * @return mixed the populated object, false if no more row of data available
 	 */
 	public function readObject($className, $fields)
 	{
@@ -149,7 +149,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	/**
 	 * Closes the reader.
 	 * This frees up the resources allocated for executing this SQL statement.
-	 * Read attemps after this method call are unpredictable.
+	 * Read attempts after this method call are unpredictable.
 	 */
 	public function close()
 	{

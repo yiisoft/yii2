@@ -75,6 +75,7 @@ class Query extends BaseQuery
 			$qb->query = $this;
 			return call_user_func_array(array($qb, $method), $params);
 		} else {
+			/** @var $qb QueryBuilder */
 			return $qb->build($this);
 		}
 	}
