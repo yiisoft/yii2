@@ -532,103 +532,23 @@ class BaseQuery extends \yii\base\Component
 
 	/**
 	 * Merges this query with another one.
-	 *
-	 * The merging is done according to the following rules:
-	 *
-	 * - [[select]]: the union of both queries' [[select]] property values.
-	 * - [[selectOption]], [[distinct]], [[from]], [[limit]], [[offset]]: the new query
-	 * takes precedence over this query.
-	 *  - [[where]], [[having]]: the new query's corresponding property value
-	 * will be 'AND' together with the existing one.
-	 * - [[params]], [[orderBy]], [[groupBy]], [[join]], [[union]]: the new query's
-	 * corresponding property value will be appended to the existing one.
-	 *
-	 * In general, the merging makes the resulting query more restrictive and specific.
+	 * If a property of `$query` is not null, it will be used to overwrite
+	 * the corresponding property of `$this`.
 	 * @param BaseQuery $query the new query to be merged with this query.
 	 * @return BaseQuery the query object itself
 	 */
 	public function mergeWith(BaseQuery $query)
 	{
-		if ($this->select !== $query->select) {
-			if (empty($this->select)) {
-				$this->select = $query->select;
-			} elseif (!empty($query->select)) {
-				$select1 = is_string($this->select) ? preg_split('/\s*,\s*/', trim($this->select), -1, PREG_SPLIT_NO_EMPTY) : $this->select;
-				$select2 = is_string($query->select) ? preg_split('/\s*,\s*/', trim($query->select), -1, PREG_SPLIT_NO_EMPTY) : $query->select;
-				$this->select = array_merge($select1, array_diff($select2, $select1));
+		$properties = array(
+			'select', 'selectOption', 'distinct', 'from',
+			'where', 'limit', 'offset', 'orderBy', 'groupBy',
+			'join', 'having', 'union', 'params',
+		);
+		foreach ($properties as $name => $value) {
+			if ($value !== null) {
+				$this->$name = $value;
 			}
 		}
-
-		if ($query->selectOption !== null) {
-			$this->selectOption = $query->selectOption;
-		}
-
-		if ($query->distinct !== null) {
-			$this->distinct = $query->distinct;
-		}
-
-		if ($query->from !== null) {
-			$this->from = $query->from;
-		}
-
-		if ($query->limit !== null) {
-			$this->limit = $query->limit;
-		}
-
-		if ($query->offset !== null) {
-			$this->offset = $query->offset;
-		}
-
-		if ($query->where !== null) {
-			$this->andWhere($query->where);
-		}
-
-		if ($query->having !== null) {
-			$this->andHaving($query->having);
-		}
-
-		if ($query->params !== null) {
-			$this->addParams($query->params);
-		}
-
-		if ($query->orderBy !== null) {
-			$this->addOrderBy($query->orderBy);
-		}
-
-		if ($query->groupBy !== null) {
-			$this->addGroup($query->groupBy);
-		}
-
-		if ($query->join !== null) {
-			if (empty($this->join)) {
-				$this->join = $query->join;
-			} else {
-				if (!is_array($this->join)) {
-					$this->join = array($this->join);
-				}
-				if (is_array($query->join)) {
-					$this->join = array_merge($this->join, $query->join);
-				} else {
-					$this->join[] = $query->join;
-				}
-			}
-		}
-
-		if ($query->union !== null) {
-			if (empty($this->union)) {
-				$this->union = $query->union;
-			} else {
-				if (!is_array($this->union)) {
-					$this->union = array($this->union);
-				}
-				if (is_array($query->union)) {
-					$this->union = array_merge($this->union, $query->union);
-				} else {
-					$this->union[] = $query->union;
-				}
-			}
-		}
-
 		return $this;
 	}
 }

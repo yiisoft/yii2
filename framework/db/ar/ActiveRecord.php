@@ -252,7 +252,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function createActiveQuery()
 	{
-		return new ActiveQuery(get_called_class());
+		return new ActiveQuery(array('modelClass' => get_called_class()));
 	}
 
 	/**
@@ -380,6 +380,35 @@ abstract class ActiveRecord extends Model
 		} else {
 			parent::__unset($name);
 		}
+	}
+
+	public function hasOne($class, $link)
+	{
+		return new HasOneRelation(array(
+			'modelClass' => $class,
+			'parentClass' => get_class($this),
+			'link' => $link,
+		));
+	}
+
+	public function hasMany($class, $link)
+	{
+		return new HasManyRelation(array(
+			'modelClass' => $class,
+			'parentClass' => get_class($this),
+			'link' => $link,
+		));
+	}
+
+	public function manyMany($class, $leftLink, $joinTable, $rightLink)
+	{
+		return new ManyManyRelation(array(
+			'modelClass' => $class,
+			'parentClass' => get_class($this),
+			'leftLink' => $leftLink,
+			'joinTable' => $joinTable,
+			'rightLink' => $rightLink,
+		));
 	}
 
 	/**
