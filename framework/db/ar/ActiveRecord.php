@@ -68,11 +68,10 @@ abstract class ActiveRecord extends Model
 	public static function model()
 	{
 		$className = get_called_class();
-		if (isset(self::$_models[$className])) {
-			return self::$_models[$className];
-		} else {
-			return self::$_models[$className] = new static;
+		if (!isset(self::$_models[$className])) {
+			self::$_models[$className] = new static;
 		}
+		return self::$_models[$className];
 	}
 
 	/**
@@ -252,7 +251,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function createActiveQuery()
 	{
-		return new ActiveQuery(get_called_class());
+		return new ActiveQuery(array('modelClass' => get_called_class()));
 	}
 
 	/**
@@ -380,6 +379,38 @@ abstract class ActiveRecord extends Model
 		} else {
 			parent::__unset($name);
 		}
+	}
+
+	public function hasOne($class, $link)
+	{
+		return new HasOneRelation(array(
+			'modelClass' => $class,
+			'parentClass' => get_class($this),
+			'parentRecords' => array($this),
+			'link' => $link,
+		));
+	}
+
+	public function hasMany($class, $link)
+	{
+		return new HasManyRelation(array(
+			'modelClass' => $class,
+			'parentClass' => get_class($this),
+			'parentRecords' => array($this),
+			'link' => $link,
+		));
+	}
+
+	public function manyMany($class, $leftLink, $joinTable, $rightLink)
+	{
+		return new ManyManyRelation(array(
+			'modelClass' => $class,
+			'parentClass' => get_class($this),
+			'parentRecords' => array($this),
+			'leftLink' => $leftLink,
+			'joinTable' => $joinTable,
+			'rightLink' => $rightLink,
+		));
 	}
 
 	/**
