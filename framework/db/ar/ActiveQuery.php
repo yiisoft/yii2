@@ -107,6 +107,34 @@ class ActiveQuery extends BaseQuery
 		return $class::getDbConnection();
 	}
 
+	public function asArray($value = true)
+	{
+		$this->asArray = $value;
+		return $this;
+	}
+
+	public function with()
+	{
+		$this->with = func_get_args();
+		if (isset($this->with[0]) && is_array($this->with[0])) {
+			// the parameter is given as an array
+			$this->with = $this->with[0];
+		}
+		return $this;
+	}
+
+	public function index($column)
+	{
+		$this->index = $column;
+		return $this;
+	}
+
+	public function scopes($names)
+	{
+		$this->scopes = $names;
+		return $this;
+	}
+
 	/**
 	 * Sets the parameters about query caching.
 	 * This is a shortcut method to {@link CDbConnection::cache()}.
@@ -153,13 +181,14 @@ class ActiveQuery extends BaseQuery
 		$command = $db->createCommand($this->sql, $this->params);
 		$rows = $command->queryAll();
 		$records = $this->createRecords($rows);
-
-		foreach ($this->with as $name => $config) {
-			$relation = $model->$name();
-			foreach ($config as $p => $v) {
-				$relation->$p = $v;
+		if ($records !== array()) {
+			foreach ($this->with as $name => $config) {
+				$relation = $model->$name();
+				foreach ($config as $p => $v) {
+					$relation->$p = $v;
+				}
+				$relation->findWith($records);
 			}
-			$relation->findWith($records);
 		}
 
 		return $records;

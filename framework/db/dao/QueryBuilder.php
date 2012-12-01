@@ -469,16 +469,16 @@ class QueryBuilder extends \yii\base\Object
 	public function buildCondition($condition)
 	{
 		static $builders = array(
-			'and' => 'buildAndCondition',
-			'or' => 'buildAndCondition',
-			'between' => 'buildBetweenCondition',
-			'not between' => 'buildBetweenCondition',
-			'in' => 'buildInCondition',
-			'not in' => 'buildInCondition',
-			'like' => 'buildLikeCondition',
-			'not like' => 'buildLikeCondition',
-			'or like' => 'buildLikeCondition',
-			'or not like' => 'buildLikeCondition',
+			'AND' => 'buildAndCondition',
+			'OR' => 'buildAndCondition',
+			'BETWEEN' => 'buildBetweenCondition',
+			'NOT BETWEEN' => 'buildBetweenCondition',
+			'IN' => 'buildInCondition',
+			'NOT IN' => 'buildInCondition',
+			'LIKE' => 'buildLikeCondition',
+			'NOT LIKE' => 'buildLikeCondition',
+			'OR LIKE' => 'buildLikeCondition',
+			'OR NOT LIKE' => 'buildLikeCondition',
 		);
 
 		if (!is_array($condition)) {
@@ -487,7 +487,7 @@ class QueryBuilder extends \yii\base\Object
 			return '';
 		}
 		if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
-			$operator = $condition[0];
+			$operator = strtoupper($condition[0]);
 			if (isset($builders[$operator])) {
 				$method = $builders[$operator];
 				array_shift($condition);
@@ -534,7 +534,6 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 		if ($parts !== array()) {
-			$operator = strtoupper($operator);
 			return '(' . implode(") $operator (", $parts) . ')';
 		} else {
 			return '';
@@ -570,20 +569,60 @@ class QueryBuilder extends \yii\base\Object
 			$values = array($values);
 		}
 
-		if ($values === array()) {
+		if ($values === array() || $column === array()) {
 			return $operator === 'in' ? '0=1' : '';
 		}
 
+		if (is_array($column)) {
+			if (count($column) > 1) {
+				return $this->buildCompositeInCondition($operator, $column, $values);
+			} else {
+				$column = reset($column);
+				foreach ($values as $i => $value) {
+					if (is_array($value)) {
+						$values[$i] = isset($value[$column]) ? $value[$column] : null;
+					} else {
+						$values[$i] = null;
+					}
+				}
+			}
+		}
+
 		foreach ($values as $i => $value) {
-			$values[$i] = is_string($value) ? $this->connection->quoteValue($value) : (string)$value;
+			if ($value === null) {
+				$values[$i] = 'NULL';
+			} else {
+				$values[$i] = is_string($value) ? $this->connection->quoteValue($value) : (string)$value;
+			}
 		}
 
 		if (strpos($column, '(') === false) {
 			$column = $this->quoteColumnName($column);
 		}
 
-		$operator = strtoupper($operator);
 		return "$column $operator (" . implode(', ', $values) . ')';
+	}
+
+	protected function buildCompositeInCondition($operator, $columns, $values)
+	{
+		foreach ($columns as $i => $column) {
+			if (strpos($column, '(') === false) {
+				$columns[$i] = $this->quoteColumnName($column);
+			}
+		}
+		$vss = array();
+		foreach ($values as $value) {
+			$vs = array();
+			foreach ($columns as $column) {
+				if (isset($value[$column])) {
+					$vs[] = is_string($value[$column]) ? $this->connection->quoteValue($value[$column]) : (string)$value[$column];
+				} else {
+					$vs[] = 'NULL';
+				}
+			}
+			$vss[] = '(' . implode(', ', $vs) . ')';
+		}
+		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
 	}
 
 	private function buildLikeCondition($operator, $operands)
@@ -599,21 +638,20 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		if ($values === array()) {
-			return $operator === 'like' || $operator === 'or like' ? '0=1' : '';
+			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
 		}
 
-		if ($operator === 'like' || $operator === 'not like') {
+		if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
 			$andor = ' AND ';
 		} else {
 			$andor = ' OR ';
-			$operator = $operator === 'or like' ? 'like' : 'not like';
+			$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
 		}
 
 		if (strpos($column, '(') === false) {
 			$column = $this->quoteColumnName($column);
 		}
 
-		$operator = strtoupper($operator);
 		$parts = array();
 		foreach ($values as $value) {
 			$parts[] = "$column $operator " . $this->connection->quoteValue($value);
@@ -730,7 +768,7 @@ class QueryBuilder extends \yii\base\Object
 							$table = $driver->quoteTableName($table);
 						}
 					}
-					$joins[$i] = strtoupper($join[0]) . ' ' . $table;
+					$joins[$i] = $join[0] . ' ' . $table;
 					if (isset($join[2])) {
 						$condition = $this->buildCondition($join[2]);
 						if ($condition !== '') {

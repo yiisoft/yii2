@@ -68,11 +68,10 @@ abstract class ActiveRecord extends Model
 	public static function model()
 	{
 		$className = get_called_class();
-		if (isset(self::$_models[$className])) {
-			return self::$_models[$className];
-		} else {
-			return self::$_models[$className] = new static;
+		if (!isset(self::$_models[$className])) {
+			self::$_models[$className] = new static;
 		}
+		return self::$_models[$className];
 	}
 
 	/**
@@ -387,6 +386,7 @@ abstract class ActiveRecord extends Model
 		return new HasOneRelation(array(
 			'modelClass' => $class,
 			'parentClass' => get_class($this),
+			'parentRecords' => array($this),
 			'link' => $link,
 		));
 	}
@@ -396,6 +396,7 @@ abstract class ActiveRecord extends Model
 		return new HasManyRelation(array(
 			'modelClass' => $class,
 			'parentClass' => get_class($this),
+			'parentRecords' => array($this),
 			'link' => $link,
 		));
 	}
@@ -405,6 +406,7 @@ abstract class ActiveRecord extends Model
 		return new ManyManyRelation(array(
 			'modelClass' => $class,
 			'parentClass' => get_class($this),
+			'parentRecords' => array($this),
 			'leftLink' => $leftLink,
 			'joinTable' => $joinTable,
 			'rightLink' => $rightLink,
