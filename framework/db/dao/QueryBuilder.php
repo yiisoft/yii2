@@ -566,9 +566,7 @@ class QueryBuilder extends \yii\base\Object
 
 		list($column, $values) = $operands;
 
-		if (!is_array($values)) {
-			$values = array($values);
-		}
+		$values = (array)$values;
 
 		if ($values === array()) {
 			return $operator === 'in' ? '0=1' : '';
@@ -594,9 +592,7 @@ class QueryBuilder extends \yii\base\Object
 
 		list($column, $values) = $operands;
 
-		if (!is_array($values)) {
-			$values = array($values);
-		}
+		$values = (array)$values;
 
 		if ($values === array()) {
 			return $operator === 'like' || $operator === 'or like' ? '0=1' : '';
