@@ -56,14 +56,14 @@ class QueryTest extends \yiiunit\MysqlTestCase
 	function testGroup()
 	{
 		$query = new Query;
-		$query->group('team');
-		$this->assertEquals('team', $query->group);
+		$query->groupBy('team');
+		$this->assertEquals('team', $query->groupBy);
 
 		$query->addGroup('company');
-		$this->assertEquals(array('team', 'company'), $query->group);
+		$this->assertEquals(array('team', 'company'), $query->groupBy);
 
 		$query->addGroup('age');
-		$this->assertEquals(array('team', 'company', 'age'), $query->group);
+		$this->assertEquals(array('team', 'company', 'age'), $query->groupBy);
 	}
 
 	function testHaving()
@@ -85,14 +85,14 @@ class QueryTest extends \yiiunit\MysqlTestCase
 	function testOrder()
 	{
 		$query = new Query;
-		$query->order('team');
-		$this->assertEquals('team', $query->order);
+		$query->orderBy('team');
+		$this->assertEquals('team', $query->orderBy);
 
-		$query->addOrder('company');
-		$this->assertEquals(array('team', 'company'), $query->order);
+		$query->addOrderBy('company');
+		$this->assertEquals(array('team', 'company'), $query->orderBy);
 
-		$query->addOrder('age');
-		$this->assertEquals(array('team', 'company', 'age'), $query->order);
+		$query->addOrderBy('age');
+		$this->assertEquals(array('team', 'company', 'age'), $query->orderBy);
 	}
 
 	function testLimitOffset()

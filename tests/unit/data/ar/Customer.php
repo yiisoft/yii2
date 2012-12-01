@@ -8,23 +8,14 @@ class Customer extends ActiveRecord
 	const STATUS_ACTIVE = 1;
 	const STATUS_INACTIVE = 2;
 
-	public static function tableName()
+	public function tableName()
 	{
 		return 'tbl_customer';
 	}
 
-	public static function relations()
-	{
-		return array(
-			'orders:Order[]' => array(
-				'link' => array('customer_id' => 'id'),
-			),
-		);
-	}
-
 	public function orders()
 	{
-		return $this->hasMany('Order', array('id' => 'customer_id'));
+		return $this->hasMany('Order', array('customer_id' => 'id'));
 	}
 
 	/**
@@ -33,6 +24,6 @@ class Customer extends ActiveRecord
 	 */
 	public function active($query)
 	{
-		return $query->andWhere('@.`status` = ' . self::STATUS_ACTIVE);
+		return $query->andWhere('`status` = ' . self::STATUS_ACTIVE);
 	}
 }

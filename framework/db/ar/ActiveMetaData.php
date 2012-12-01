@@ -26,9 +26,9 @@ class ActiveMetaData
 	 */
 	public $modelClass;
 	/**
-	 * @var array list of relations
+	 * @var ActiveRecord the model instance that can be used to access non-static methods
 	 */
-	public $relations = array();
+	public $model;
 
 	/**
 	 * Returns an instance of ActiveMetaData for the specified model class.
@@ -55,20 +55,17 @@ class ActiveMetaData
 	public function __construct($modelClass)
 	{
 		$this->modelClass = $modelClass;
-		$tableName = $modelClass::tableName();
-		$this->table = $modelClass::getDbConnection()->getDriver()->getTableSchema($tableName);
+		$this->model = new $modelClass;
+		$tableName = $this->model->tableName();
+		$this->table = $this->model->getDbConnection()->getDriver()->getTableSchema($tableName);
 		if ($this->table === null) {
 			throw new Exception("Unable to find table '$tableName' for ActiveRecord class '$modelClass'.");
 		}
-		$primaryKey = $modelClass::primaryKey();
-		if ($primaryKey !== null) {
+		$primaryKey = $this->model->primaryKey();
+		if ($primaryKey !== $this->table->primaryKey) {
 			$this->table->fixPrimaryKey($primaryKey);
-		} elseif ($this->table->primaryKey === null) {
+		} elseif ($primaryKey === null) {
 			throw new Exception("The table '$tableName' for ActiveRecord class '$modelClass' does not have a primary key.");
-		}
-
-		foreach ($modelClass::relations() as $name => $config) {
-			$this->addRelation($name, $config);
 		}
 	}
 

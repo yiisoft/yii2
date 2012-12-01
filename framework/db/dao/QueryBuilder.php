@@ -69,10 +69,10 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildFrom($query->from),
 			$this->buildJoin($query->join),
 			$this->buildWhere($query->where),
-			$this->buildGroup($query->group),
+			$this->buildGroup($query->groupBy),
 			$this->buildHaving($query->having),
 			$this->buildUnion($query->union),
-			$this->buildOrder($query->order),
+			$this->buildOrder($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
 		);
 		return implode($this->separator, array_filter($clauses));
@@ -92,7 +92,7 @@ class QueryBuilder extends \yii\base\Object
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
-	 * @return integer number of rows affected by the execution.
+	 * @return string the INSERT SQL
 	 */
 	public function insert($table, $columns)
 	{
@@ -139,7 +139,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the query.
-	 * @return integer number of rows affected by the execution.
+	 * @return string the UPDATE SQL
 	 */
 	public function update($table, $columns, $condition = '', $params = array())
 	{
@@ -180,7 +180,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the query.
-	 * @return integer number of rows affected by the execution.
+	 * @return string the DELETE SQL
 	 */
 	public function delete($table, $condition = '', $params = array())
 	{
@@ -566,9 +566,7 @@ class QueryBuilder extends \yii\base\Object
 
 		list($column, $values) = $operands;
 
-		if (!is_array($values)) {
-			$values = array($values);
-		}
+		$values = (array)$values;
 
 		if ($values === array()) {
 			return $operator === 'in' ? '0=1' : '';
@@ -594,9 +592,7 @@ class QueryBuilder extends \yii\base\Object
 
 		list($column, $values) = $operands;
 
-		if (!is_array($values)) {
-			$values = array($values);
-		}
+		$values = (array)$values;
 
 		if ($values === array()) {
 			return $operator === 'like' || $operator === 'or like' ? '0=1' : '';

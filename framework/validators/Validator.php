@@ -42,8 +42,6 @@ namespace yii\validators;
  * - `captcha`: [[CaptchaValidator]]
  * - `default`: [[DefaultValueValidator]]
  * - `exist`: [[ExistValidator]]
- * - `safe`: [[SafeValidator]]
- * - `unsafe`: [[UnsafeValidator]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -58,8 +56,6 @@ abstract class Validator extends \yii\base\Component
 		'match' => '\yii\validators\RegularExpressionValidator',
 		'email' => '\yii\validators\EmailValidator',
 		'url' => '\yii\validators\UrlValidator',
-		'safe' => '\yii\validators\SafeValidator',
-		'unsafe' => '\yii\validators\UnsafeValidator',
 		'filter' => '\yii\validators\FilterValidator',
 		'captcha' => '\yii\validators\CaptchaValidator',
 		'default' => '\yii\validators\DefaultValueValidator',
@@ -102,11 +98,6 @@ abstract class Validator extends \yii\base\Component
 	 * already has some validation error according to the previous rules. Defaults to true.
 	 */
 	public $skipOnError = true;
-	/**
-	 * @var boolean whether attributes listed with this validator should be considered safe for
-	 * massive assignment. Defaults to true.
-	 */
-	public $safe = true;
 	/**
 	 * @var boolean whether to enable client-side validation. Defaults to true.
 	 * Please refer to [[\yii\web\ActiveForm::enableClientValidation]] for more details about
@@ -187,8 +178,10 @@ abstract class Validator extends \yii\base\Component
 	/**
 	 * Validates the specified object.
 	 * @param \yii\base\Model $object the data object being validated
-	 * @param array $attributes the list of attributes to be validated. Defaults to null,
-	 * meaning every attribute listed in [[attributes]] will be validated.
+	 * @param array|null $attributes the list of attributes to be validated.
+	 * Note that if an attribute is not associated with the validator,
+	 * it will be ignored.
+	 * If this parameter is null, every attribute listed in [[attributes]] will be validated.
 	 */
 	public function validate($object, $attributes = null)
 	{
@@ -228,10 +221,11 @@ abstract class Validator extends \yii\base\Component
 	}
 
 	/**
-	 * Returns a value indicating whether the validator applies to the specified scenario.
-	 * A validator applies to a scenario as long as any of the following conditions is met:
+	 * Returns a value indicating whether the validator is active for the given scenario and attribute.
 	 *
-	 * - the validator's `on` property is empty
+	 * A validator is active if
+	 *
+	 * - the validator's `on` property is empty, or
 	 * - the validator's `on` property contains the specified scenario
 	 *
 	 * @param string $scenario scenario name
@@ -239,7 +233,7 @@ abstract class Validator extends \yii\base\Component
 	 * the method will also check if the attribute appears in [[attributes]].
 	 * @return boolean whether the validator applies to the specified scenario.
 	 */
-	public function applyTo($scenario, $attribute = null)
+	public function isActive($scenario, $attribute = null)
 	{
 		$applies = !isset($this->except[$scenario]) && (empty($this->on) || isset($this->on[$scenario]));
 		return $attribute === null ? $applies : $applies && in_array($attribute, $this->attributes, true);

@@ -461,6 +461,17 @@ class Connection extends \yii\base\ApplicationComponent
 	}
 
 	/**
+	 * Obtains the metadata for the named table.
+	 * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
+	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+	 * @return TableSchema table metadata. Null if the named table does not exist.
+	 */
+	public function getTableSchema($name, $refresh = false)
+	{
+		return $this->getDriver()->getTableSchema($name, $refresh);
+	}
+
+	/**
 	 * Returns the ID of the last inserted row or sequence value.
 	 * @param string $sequenceName name of the sequence object (required by some DBMS)
 	 * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object

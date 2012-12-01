@@ -44,6 +44,10 @@ use yii\util\StringHelper;
 abstract class ActiveRecord extends Model
 {
 	/**
+	 * @var ActiveRecord[] global model instances indexed by model class names
+	 */
+	private static $_models = array();
+	/**
 	 * @var array attribute values indexed by attribute names
 	 */
 	private $_attributes = array();
@@ -56,14 +60,19 @@ abstract class ActiveRecord extends Model
 	 */
 	private $_related;
 
+
 	/**
-	 * Returns the metadata for this AR class.
-	 * @param boolean $refresh whether to rebuild the metadata.
-	 * @return ActiveMetaData the meta for this AR class.
+	 * Returns a model instance to support accessing non-static methods such as [[table()]], [[primaryKey()]].
+	 * @return ActiveRecord
 	 */
-	public static function getMetaData($refresh = false)
+	public static function model()
 	{
-		return ActiveMetaData::getInstance(get_called_class(), $refresh);
+		$className = get_called_class();
+		if (isset(self::$_models[$className])) {
+			return self::$_models[$className];
+		} else {
+			return self::$_models[$className] = new static;
+		}
 	}
 
 	/**
@@ -95,12 +104,12 @@ abstract class ActiveRecord extends Model
 	 * // find all active customers and order them by their age:
 	 * $customers = Customer::find()
 	 *     ->where(array('status' => 1))
-	 *     ->order('age')
+	 *     ->orderBy('age')
 	 *     ->all();
 	 * // or alternatively:
 	 * $customers = Customer::find(array(
 	 *     'where' => array('status' => 1),
-	 *     'order' => 'age',
+	 *     'orderBy' => 'age',
 	 * ))->all();
 	 * ~~~
 	 *
@@ -122,14 +131,14 @@ abstract class ActiveRecord extends Model
 			}
 		} elseif ($q !== null) {
 			// query by primary key
-			$primaryKey = static::getMetaData()->table->primaryKey;
+			$primaryKey = static::model()->primaryKey();
 			return $query->where(array($primaryKey[0] => $q))->one();
 		}
 		return $query;
 	}
 
 	/**
-	 * Creates an [[ActiveQuery]] instance and query by a given SQL statement.
+	 * Creates an [[ActiveQuery]] instance and queries by a given SQL statement.
 	 * Note that because the SQL statement is already specified, calling further
 	 * query methods (such as `where()`, `order()`) on [[ActiveQuery]] will have no effect.
 	 * Methods such as `with()`, `asArray()` can still be called though.
@@ -164,10 +173,12 @@ abstract class ActiveRecord extends Model
 	 * echo Customer::count('COUNT(DISTINCT age)')->value();
 	 * ~~~
 	 *
-	 * @param array $q the query configuration. This should be an array of name-value pairs.
-	 * It will be used to configure the [[ActiveQuery]] object for query purpose.
+	 * @param array|string $q the query option. This can be one of the followings:
 	 *
-	 * @return integer the counting result
+	 *  - an array of name-value pairs: it will be used to configure the [[ActiveQuery]] object.
+	 *  - a string: the count expression, e.g. 'COUNT(DISTINCT age)'.
+	 *
+	 * @return ActiveQuery the [[ActiveQuery]] instance
 	 */
 	public static function count($q = null)
 	{
@@ -176,11 +187,12 @@ abstract class ActiveRecord extends Model
 			foreach ($q as $name => $value) {
 				$query->$name = $value;
 			}
-		}
-		if ($query->select === null) {
+		} elseif ($q !== null) {
+			$query->select = array($q);
+		} elseif ($query->select === null) {
 			$query->select = array('COUNT(*)');
 		}
-		return $query->value();
+		return $query;
 	}
 
 	/**
@@ -194,7 +206,7 @@ abstract class ActiveRecord extends Model
 	public static function updateAll($attributes, $condition = '', $params = array())
 	{
 		$query = new Query;
-		$query->update(static::tableName(), $attributes, $condition, $params);
+		$query->update(static::model()->tableName(), $attributes, $condition, $params);
 		return $query->createCommand(static::getDbConnection())->execute();
 	}
 
@@ -215,7 +227,7 @@ abstract class ActiveRecord extends Model
 			$counters[$name] = new Expression($value >= 0 ? "$quotedName+$value" : "$quotedName$value");
 		}
 		$query = new Query;
-		$query->update(static::tableName(), $counters, $condition, $params);
+		$query->update(static::model()->tableName(), $counters, $condition, $params);
 		return $query->createCommand($db)->execute();
 	}
 
@@ -229,7 +241,7 @@ abstract class ActiveRecord extends Model
 	public static function deleteAll($condition = '', $params = array())
 	{
 		$query = new Query;
-		$query->delete(static::tableName(), $condition, $params);
+		$query->delete(static::model()->tableName(), $condition, $params);
 		return $query->createCommand(static::getDbConnection())->execute();
 	}
 
@@ -250,128 +262,32 @@ abstract class ActiveRecord extends Model
 	 * You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
-	public static function tableName()
+	public function tableName()
 	{
-		return StringHelper::camel2id(basename(get_called_class()), '_');
+		return StringHelper::camel2id(basename(get_class($this)), '_');
 	}
 
 	/**
-	 * Declares the primary key name for this AR class.
-	 * This method is meant to be overridden in case when the table has no primary key defined
-	 * (for some legacy database). If the table already has a primary key,
-	 * you do not need to override this method. The default implementation simply returns null,
-	 * meaning using the primary key defined in the database table.
-	 * @return string|array the primary key of the associated database table.
-	 * If the key is a single column, it should return the column name;
-	 * If the key is a composite one consisting of several columns, it should
-	 * return the array of the key column names.
+	 * Returns the schema information of the DB table associated with this AR class.
+	 * @return TableSchema the schema information of the DB table associated with this AR class.
 	 */
-	public static function primaryKey()
+	public function getTableSchema()
 	{
+		return $this->getDbConnection()->getTableSchema($this->tableName());
 	}
 
 	/**
-	 * Declares the relations for this AR class.
-	 *
-	 * Child classes may override this method to specify their relations.
-	 *
-	 * The following code shows how to declare relations for a `Programmer` AR class:
-	 *
-	 * ~~~
-	 * return array(
-	 *	 'manager:Manager' => '@.id = ?.manager_id',
-	 *	 'assignments:Assignment[]' => array(
-	 *		 'on' => '@.owner_id = ?.id AND @.status = 1',
-	 *		 'order' => '@.create_time DESC',
-	 *	 ),
-	 *	 'projects:Project[]' => array(
-	 *		 'via' => 'assignments',
-	 *		 'on' => '@.id = ?.project_id',
-	 *	 ),
-	 * );
-	 * ~~~
-	 *
-	 * This method should be overridden to declare related objects.
-	 *
-	 * There are four types of relations that may exist between two active record objects:
-	 * <ul>
-	 * <li>BELONGS_TO: e.g. a member belongs to a team;</li>
-	 * <li>HAS_ONE: e.g. a member has at most one profile;</li>
-	 * <li>HAS_MANY: e.g. a team has many members;</li>
-	 * <li>MANY_MANY: e.g. a member has many skills and a skill belongs to a member.</li>
-	 * </ul>
-	 *
-	 * Besides the above relation types, a special relation called STAT is also supported
-	 * that can be used to perform statistical query (or aggregational query).
-	 * It retrieves the aggregational information about the related objects, such as the number
-	 * of comments for each post, the average rating for each product, etc.
-	 *
-	 * Each kind of related objects is defined in this method as an array with the following elements:
-	 * <pre>
-	 * 'varName'=>array('relationType', 'className', 'foreign_key', ...additional options)
-	 * </pre>
-	 * where 'varName' refers to the name of the variable/property that the related object(s) can
-	 * be accessed through; 'relationType' refers to the type of the relation, which can be one of the
-	 * following four constants: self::BELONGS_TO, self::HAS_ONE, self::HAS_MANY and self::MANY_MANY;
-	 * 'className' refers to the name of the active record class that the related object(s) is of;
-	 * and 'foreign_key' states the foreign key that relates the two kinds of active record.
-	 * Note, for composite foreign keys, they must be listed together, separated by commas;
-	 * and for foreign keys used in MANY_MANY relation, the joining table must be declared as well
-	 * (e.g. 'join_table(fk1, fk2)').
-	 *
-	 * Additional options may be specified as name-value pairs in the rest array elements:
-	 * <ul>
-	 * <li>'select': string|array, a list of columns to be selected. Defaults to '*', meaning all columns.
-	 *   Column names should be disambiguated if they appear in an expression (e.g. COUNT(relationName.name) AS name_count).</li>
-	 * <li>'condition': string, the WHERE clause. Defaults to empty. Note, column references need to
-	 *   be disambiguated with prefix 'relationName.' (e.g. relationName.age&gt;20)</li>
-	 * <li>'order': string, the ORDER BY clause. Defaults to empty. Note, column references need to
-	 *   be disambiguated with prefix 'relationName.' (e.g. relationName.age DESC)</li>
-	 * <li>'with': string|array, a list of child related objects that should be loaded together with this object.
-	 *   Note, this is only honored by lazy loading, not eager loading.</li>
-	 * <li>'joinType': type of join. Defaults to 'LEFT OUTER JOIN'.</li>
-	 * <li>'alias': the alias for the table associated with this relationship.
-	 *   This option has been available since version 1.0.1. It defaults to null,
-	 *   meaning the table alias is the same as the relation name.</li>
-	 * <li>'params': the parameters to be bound to the generated SQL statement.
-	 *   This should be given as an array of name-value pairs. This option has been
-	 *   available since version 1.0.3.</li>
-	 * <li>'on': the ON clause. The condition specified here will be appended
-	 *   to the joining condition using the AND operator. This option has been
-	 *   available since version 1.0.2.</li>
-	 * <li>'index': the name of the column whose values should be used as keys
-	 *   of the array that stores related objects. This option is only available to
-	 *   HAS_MANY and MANY_MANY relations. This option has been available since version 1.0.7.</li>
-	 * <li>'scopes': scopes to apply. In case of a single scope can be used like 'scopes'=>'scopeName',
-	 *   in case of multiple scopes can be used like 'scopes'=>array('scopeName1','scopeName2').
-	 *   This option has been available since version 1.1.9.</li>
-	 * </ul>
-	 *
-	 * The following options are available for certain relations when lazy loading:
-	 * <ul>
-	 * <li>'group': string, the GROUP BY clause. Defaults to empty. Note, column references need to
-	 *   be disambiguated with prefix 'relationName.' (e.g. relationName.age). This option only applies to HAS_MANY and MANY_MANY relations.</li>
-	 * <li>'having': string, the HAVING clause. Defaults to empty. Note, column references need to
-	 *   be disambiguated with prefix 'relationName.' (e.g. relationName.age). This option only applies to HAS_MANY and MANY_MANY relations.</li>
-	 * <li>'limit': limit of the rows to be selected. This option does not apply to BELONGS_TO relation.</li>
-	 * <li>'offset': offset of the rows to be selected. This option does not apply to BELONGS_TO relation.</li>
-	 * <li>'through': name of the model's relation that will be used as a bridge when getting related data. Can be set only for HAS_ONE and HAS_MANY. This option has been available since version 1.1.7.</li>
-	 * </ul>
-	 *
-	 * Below is an example declaring related objects for 'Post' active record class:
-	 * <pre>
-	 * return array(
-	 *	 'author'=>array(self::BELONGS_TO, 'User', 'author_id'),
-	 *	 'comments'=>array(self::HAS_MANY, 'Comment', 'post_id', 'with'=>'author', 'order'=>'create_time DESC'),
-	 *	 'tags'=>array(self::MANY_MANY, 'Tag', 'post_tag(post_id, tag_id)', 'order'=>'name'),
-	 * );
-	 * </pre>
-	 *
-	 * @return array list of related object declarations. Defaults to empty array.
+	 * Returns the primary keys for this AR class.
+	 * The default implementation will return the primary keys as declared
+	 * in the DB table that is associated with this AR class.
+	 * If the DB table does not declare any primary key, you should override
+	 * this method to return the attributes that you want to use as primary keys
+	 * for this AR class.
+	 * @return string[] the primary keys of the associated database table.
 	 */
-	public static function relations()
+	public function primaryKey()
 	{
-		return array();
+		return $this->getTableSchema()->primaryKey;
 	}
 
 	/**
@@ -389,42 +305,6 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns the declaration of named scopes.
-	 * A named scope represents a query criteria that can be chained together with
-	 * other named scopes and applied to a query. This method should be overridden
-	 * by child classes to declare named scopes for the particular AR classes.
-	 * For example, the following code declares two named scopes: 'recently' and
-	 * 'published'.
-	 * <pre>
-	 * return array(
-	 *	 'published'=>array(
-	 *		   'condition'=>'status=1',
-	 *	 ),
-	 *	 'recently'=>array(
-	 *		   'order'=>'create_time DESC',
-	 *		   'limit'=>5,
-	 *	 ),
-	 * );
-	 * </pre>
-	 * If the above scopes are declared in a 'Post' model, we can perform the following
-	 * queries:
-	 * <pre>
-	 * $posts=Post::model()->published()->findAll();
-	 * $posts=Post::model()->published()->recently()->findAll();
-	 * $posts=Post::model()->published()->with('comments')->findAll();
-	 * </pre>
-	 * Note that the last query is a relational query.
-	 *
-	 * @return array the scope definition. The array keys are scope names; the array
-	 * values are the corresponding scope definitions. Each scope definition is represented
-	 * as an array whose keys must be properties of {@link CDbCriteria}.
-	 */
-	public static function scopes()
-	{
-		return array();
-	}
-
-	/**
 	 * PHP getter magic method.
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
@@ -436,13 +316,13 @@ abstract class ActiveRecord extends Model
 		if (isset($this->_attributes[$name])) {
 			return $this->_attributes[$name];
 		}
-		$md = $this->getMetaData();
-		if (isset($md->table->columns[$name])) {
+		if (isset($this->getTableSchema()->columns[$name])) {
 			return null;
-		} elseif (isset($md->relations[$name])) {
+		} elseif (method_exists($this, $name)) {
 			if (isset($this->_related[$name]) || $this->_related !== null && array_key_exists($name, $this->_related)) {
 				return $this->_related[$name];
 			} else {
+				// todo
 				return $this->_related[$name] = $this->findByRelation($md->relations[$name]);
 			}
 		}
@@ -457,10 +337,9 @@ abstract class ActiveRecord extends Model
 	 */
 	public function __set($name, $value)
 	{
-		$md = $this->getMetaData();
-		if (isset($md->table->columns[$name])) {
+		if (isset($this->getTableSchema()->columns[$name])) {
 			$this->_attributes[$name] = $value;
-		} elseif (isset($md->relations[$name])) {
+		} elseif (method_exists($this, $name)) {
 			$this->_related[$name] = $value;
 		} else {
 			parent::__set($name, $value);
@@ -479,8 +358,7 @@ abstract class ActiveRecord extends Model
 		if (isset($this->_attributes[$name]) || isset($this->_related[$name])) {
 			return true;
 		}
-		$md = $this->getMetaData();
-		if (isset($md->table->columns[$name]) || isset($md->relations[$name])) {
+		if (isset($this->getTableSchema()->columns[$name]) || method_exists($this, $name)) {
 			return false;
 		} else {
 			return parent::__isset($name);
@@ -495,31 +373,13 @@ abstract class ActiveRecord extends Model
 	 */
 	public function __unset($name)
 	{
-		$md = $this->getMetaData();
-		if (isset($md->table->columns[$name])) {
+		if (isset($this->getTableSchema()->columns[$name])) {
 			unset($this->_attributes[$name]);
-		} elseif (isset($md->relations[$name])) {
+		} elseif (method_exists($this, $name)) {
 			unset($this->_related[$name]);
 		} else {
 			parent::__unset($name);
 		}
-	}
-
-	/**
-	 * Calls the named method which is not a class method.
-	 * Do not call this method. This is a PHP magic method that we override
-	 * to implement the named scope feature.
-	 * @param string $name the method name
-	 * @param array $params method parameters
-	 * @return mixed the method return value
-	 */
-	public function __call($name, $params)
-	{
-		$md = $this->getMetaData();
-		if (isset($md->relations[$name])) {
-			return $this->findByRelation($md->relations[$name], isset($params[0]) ? $params[0] : array());
-		}
-		return parent::__call($name, $params);
 	}
 
 	/**
@@ -588,9 +448,9 @@ abstract class ActiveRecord extends Model
 	 * This would return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
-	public function attributeNames()
+	public function attributes()
 	{
-		return array_keys($this->getMetaData()->table->columns);
+		return array_keys($this->getTableSchema()->columns);
 	}
 
 	/**
@@ -621,31 +481,10 @@ abstract class ActiveRecord extends Model
 		$this->_attributes[$name] = $value;
 	}
 
-	/**
-	 * Returns all column attribute values.
-	 * Note, related objects are not returned.
-	 * @param null|array $names names of attributes whose value needs to be returned.
-	 * If this is true (default), then all attribute values will be returned, including
-	 * those that are not loaded from DB (null will be returned for those attributes).
-	 * If this is null, all attributes except those that are not loaded from DB will be returned.
-	 * @return array attribute values indexed by attribute names.
-	 */
-	public function getAttributes($names = null)
-	{
-		if ($names === null) {
-			$names = $this->attributeNames();
-		}
-		$values = array();
-		foreach ($names as $name) {
-			$values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
-		}
-		return $values;
-	}
-
 	public function getChangedAttributes($names = null)
 	{
 		if ($names === null) {
-			$names = $this->attributeNames();
+			$names = $this->attributes();
 		}
 		$names = array_flip($names);
 		$attributes = array();
@@ -716,7 +555,7 @@ abstract class ActiveRecord extends Model
 			$db = $this->getDbConnection();
 			$command = $query->insert($this->tableName(), $values)->createCommand($db);
 			if ($command->execute()) {
-				$table = $this->getMetaData()->table;
+				$table = $this->getTableSchema();
 				if ($table->sequenceName !== null) {
 					foreach ($table->primaryKey as $name) {
 						if (!isset($this->_attributes[$name])) {
@@ -931,7 +770,7 @@ abstract class ActiveRecord extends Model
 			return false;
 		}
 		if ($attributes === null) {
-			foreach ($this->attributeNames() as $name) {
+			foreach ($this->attributes() as $name) {
 				$this->_attributes[$name] = $record->_attributes[$name];
 			}
 			$this->_oldAttributes = $this->_attributes;
@@ -963,12 +802,12 @@ abstract class ActiveRecord extends Model
 	 */
 	public function getPrimaryKey($asArray = false)
 	{
-		$table = static::getMetaData()->table;
-		if (count($table->primaryKey) === 1 && !$asArray) {
-			return isset($this->_attributes[$table->primaryKey[0]]) ? $this->_attributes[$table->primaryKey[0]] : null;
+		$keys = $this->primaryKey();
+		if (count($keys) === 1 && !$asArray) {
+			return isset($this->_attributes[$keys[0]]) ? $this->_attributes[$keys[0]] : null;
 		} else {
 			$values = array();
-			foreach ($table->primaryKey as $name) {
+			foreach ($keys as $name) {
 				$values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
 			}
 			return $values;
@@ -988,12 +827,12 @@ abstract class ActiveRecord extends Model
 	 */
 	public function getOldPrimaryKey($asArray = false)
 	{
-		$table = static::getMetaData()->table;
-		if (count($table->primaryKey) === 1 && !$asArray) {
-			return isset($this->_oldAttributes[$table->primaryKey[0]]) ? $this->_oldAttributes[$table->primaryKey[0]] : null;
+		$keys = $this->primaryKey();
+		if (count($keys) === 1 && !$asArray) {
+			return isset($this->_oldAttributes[$keys[0]]) ? $this->_oldAttributes[$keys[0]] : null;
 		} else {
 			$values = array();
-			foreach ($table->primaryKey as $name) {
+			foreach ($keys as $name) {
 				$values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
 			}
 			return $values;
@@ -1008,7 +847,7 @@ abstract class ActiveRecord extends Model
 	public static function create($row)
 	{
 		$record = static::instantiate($row);
-		$columns = static::getMetaData()->table->columns;
+		$columns = static::model()->getTableSchema()->columns;
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$record->_attributes[$name] = $value;
@@ -1032,8 +871,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function instantiate($row)
 	{
-		$class = get_called_class();
-		return new $class;
+		return new static;
 	}
 
 	/**
