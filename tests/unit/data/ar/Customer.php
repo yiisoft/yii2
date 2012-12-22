@@ -8,7 +8,7 @@ class Customer extends ActiveRecord
 	const STATUS_ACTIVE = 1;
 	const STATUS_INACTIVE = 2;
 
-	public function tableName()
+	public static function tableName()
 	{
 		return 'tbl_customer';
 	}
@@ -24,6 +24,6 @@ class Customer extends ActiveRecord
 	 */
 	public function active($query)
 	{
-		return $query->andWhere('`status` = ' . self::STATUS_ACTIVE);
+		return $query->andWhere(array('status' => self::STATUS_ACTIVE));
 	}
 }

@@ -58,11 +58,11 @@ class ArrayHelper
 	 *
 	 * ~~~
 	 * // working with array
-	 * $username = \yii\util\ArrayHelper::get($_POST, 'username');
+	 * $username = \yii\util\ArrayHelper::getValue($_POST, 'username');
 	 * // working with object
-	 * $username = \yii\util\ArrayHelper::get($user, 'username');
+	 * $username = \yii\util\ArrayHelper::getValue($user, 'username');
 	 * // working with anonymous function
-	 * $fullName = \yii\util\ArrayHelper::get($user, function($user, $defaultValue) {
+	 * $fullName = \yii\util\ArrayHelper::getValue($user, function($user, $defaultValue) {
 	 *     return $user->firstName . ' ' . $user->lastName;
 	 * });
 	 * ~~~
@@ -74,7 +74,7 @@ class ArrayHelper
 	 * @param mixed $default the default value to be returned if the specified key does not exist
 	 * @return mixed the value of the
 	 */
-	public static function get($array, $key, $default = null)
+	public static function getValue($array, $key, $default = null)
 	{
 		if ($key instanceof \Closure) {
 			return $key($array, $default);
@@ -122,7 +122,7 @@ class ArrayHelper
 	{
 		$result = array();
 		foreach ($array as $element) {
-			$value = static::get($element, $key);
+			$value = static::getValue($element, $key);
 			$result[$value] = $element;
 		}
 		return $result;
@@ -139,11 +139,11 @@ class ArrayHelper
 	 *     array('id' => '123', 'data' => 'abc'),
 	 *     array('id' => '345', 'data' => 'def'),
 	 * );
-	 * $result = ArrayHelper::column($array, 'id');
+	 * $result = ArrayHelper::getColumn($array, 'id');
 	 * // the result is: array( '123', '345')
 	 *
 	 * // using anonymous function
-	 * $result = ArrayHelper::column($array, function(element) {
+	 * $result = ArrayHelper::getColumn($array, function(element) {
 	 *     return $element['id'];
 	 * });
 	 * ~~~
@@ -152,11 +152,11 @@ class ArrayHelper
 	 * @param string|\Closure $key
 	 * @return array the list of column values
 	 */
-	public static function column($array, $key)
+	public static function getColumn($array, $key)
 	{
 		$result = array();
 		foreach ($array as $element) {
-			$result[] = static::get($element, $key);
+			$result[] = static::getValue($element, $key);
 		}
 		return $result;
 	}
@@ -206,10 +206,10 @@ class ArrayHelper
 	{
 		$result = array();
 		foreach ($array as $element) {
-			$key = static::get($element, $from);
-			$value = static::get($element, $to);
+			$key = static::getValue($element, $from);
+			$value = static::getValue($element, $to);
 			if ($group !== null) {
-				$result[static::get($element, $group)][$key] = $value;
+				$result[static::getValue($element, $group)][$key] = $value;
 			} else {
 				$result[$key] = $value;
 			}

@@ -4,7 +4,7 @@ namespace yiiunit\data\ar;
 
 class Item extends ActiveRecord
 {
-	public function tableName()
+	public static function tableName()
 	{
 		return 'tbl_item';
 	}

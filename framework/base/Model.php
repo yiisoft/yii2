@@ -120,6 +120,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Returns a list of scenarios and the corresponding active attributes.
+	 * An active attribute is one that is subject to validation in the current scenario.
 	 * The returned array should be in the following format:
 	 *
 	 * ~~~
@@ -130,14 +131,27 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * )
 	 * ~~~
 	 *
+	 * By default, an active attribute that is considered safe and can be massively assigned.
 	 * If an attribute should NOT be massively assigned (thus considered unsafe),
-	 * please prefix the attribute with an exclamation character (e.g. '!attribute').
+	 * please prefix the attribute with an exclamation character (e.g. '!rank').
 	 *
-	 * @return array a list of scenarios and the corresponding relevant attributes.
+	 * The default implementation of this method will return a 'default' scenario
+	 * which corresponds to all attributes listed in the validation rules applicable
+	 * to the 'default' scenario.
+	 *
+	 * @return array a list of scenarios and the corresponding active attributes.
 	 */
 	public function scenarios()
 	{
-		return array();
+		$attributes = array();
+		foreach ($this->getActiveValidators() as $validator) {
+			foreach ($validator->attributes as $name) {
+				$attributes[$name] = true;
+			}
+		}
+		return array(
+			'default' => array_keys($attributes),
+		);
 	}
 
 	/**
@@ -287,7 +301,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		$scenario = $this->getScenario();
 		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
-			if ($validator->isActive($scenario, $attribute)) {
+			if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->attributes, true))) {
 				$validators[] = $validator;
 			}
 		}
@@ -553,17 +567,15 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
+		$attributes = array();
 		if (isset($scenarios[$scenario])) {
-			$attributes = array();
 			foreach ($scenarios[$scenario] as $attribute) {
 				if ($attribute[0] !== '!') {
 					$attributes[] = $attribute;
 				}
 			}
-			return $attributes;
-		} else {
-			return $this->activeAttributes();
 		}
+		return $attributes;
 	}
 
 	/**
@@ -575,23 +587,16 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (isset($scenarios[$scenario])) {
-			// scenario declared in scenarios()
 			$attributes = $scenarios[$this->getScenario()];
 			foreach ($attributes as $i => $attribute) {
 				if ($attribute[0] === '!') {
 					$attributes[$i] = substr($attribute, 1);
 				}
 			}
+			return $attributes;
 		} else {
-			// use validators to determine active attributes
-			$attributes = array();
-			foreach ($this->attributes() as $attribute) {
-				if ($this->getActiveValidators($attribute) !== array()) {
-					$attributes[] = $attribute;
-				}
-			}
+			return array();
 		}
-		return $attributes;
 	}
 
 	/**

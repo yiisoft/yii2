@@ -78,4 +78,30 @@ class BaseActiveQuery extends BaseQuery
 		$this->scopes = $names;
 		return $this;
 	}
+
+	protected function createModels($rows)
+	{
+		$models = array();
+		if ($this->asArray) {
+			if ($this->index === null) {
+				return $rows;
+			}
+			foreach ($rows as $row) {
+				$models[$row[$this->index]] = $row;
+			}
+		} else {
+			/** @var $class ActiveRecord */
+			$class = $this->modelClass;
+			if ($this->index === null) {
+				foreach ($rows as $row) {
+					$models[] = $class::create($row);
+				}
+			} else {
+				foreach ($rows as $row) {
+					$models[$row[$this->index]] = $class::create($row);
+				}
+			}
+		}
+		return $models;
+	}
 }

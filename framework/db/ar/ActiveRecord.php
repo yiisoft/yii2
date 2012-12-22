@@ -55,10 +55,6 @@ abstract class ActiveRecord extends Model
 	 * @var array old attribute values indexed by attribute names.
 	 */
 	private $_oldAttributes;
-	/**
-	 * @var array related records indexed by relation names.
-	 */
-	private $_related;
 
 
 	/**
@@ -261,18 +257,18 @@ abstract class ActiveRecord extends Model
 	 * You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
-	public function tableName()
+	public static function tableName()
 	{
-		return StringHelper::camel2id(basename(get_class($this)), '_');
+		return StringHelper::camel2id(basename(get_called_class()), '_');
 	}
 
 	/**
 	 * Returns the schema information of the DB table associated with this AR class.
 	 * @return TableSchema the schema information of the DB table associated with this AR class.
 	 */
-	public function getTableSchema()
+	public static function getTableSchema()
 	{
-		return $this->getDbConnection()->getTableSchema($this->tableName());
+		return static::getDbConnection()->getTableSchema(static::tableName());
 	}
 
 	/**
@@ -284,23 +280,21 @@ abstract class ActiveRecord extends Model
 	 * for this AR class.
 	 * @return string[] the primary keys of the associated database table.
 	 */
-	public function primaryKey()
+	public static function primaryKey()
 	{
-		return $this->getTableSchema()->primaryKey;
+		return static::getTableSchema()->primaryKey;
 	}
 
 	/**
 	 * Returns the default named scope that should be implicitly applied to all queries for this model.
-	 * Note, default scope only applies to SELECT queries. It is ignored for INSERT, UPDATE and DELETE queries.
+	 * Note, the default scope only applies to SELECT queries. It is ignored for INSERT, UPDATE and DELETE queries.
 	 * The default implementation simply returns an empty array. You may override this method
-	 * if the model needs to be queried with some default criteria (e.g. only active records should be returned).
-	 * @param BaseActiveQuery
-	 * @return BaseActiveQuery the query criteria. This will be used as the parameter to the constructor
-	 * of {@link CDbCriteria}.
+	 * if the model needs to be queried with some default criteria (e.g. only non-deleted users should be returned).
+	 * @param ActiveQuery
 	 */
 	public static function defaultScope($query)
 	{
-		return $query;
+		// todo: should we drop this?
 	}
 
 	/**
@@ -312,20 +306,17 @@ abstract class ActiveRecord extends Model
 	 */
 	public function __get($name)
 	{
-		if (isset($this->_attributes[$name])) {
+		if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
 			return $this->_attributes[$name];
-		}
-		if (isset($this->getTableSchema()->columns[$name])) {
+		} elseif (isset($this->getTableSchema()->columns[$name])) {
 			return null;
 		} elseif (method_exists($this, $name)) {
-			if (isset($this->_related[$name]) || $this->_related !== null && array_key_exists($name, $this->_related)) {
-				return $this->_related[$name];
-			} else {
-				// todo
-				return $this->_related[$name] = $this->findByRelation($md->relations[$name]);
-			}
+			// lazy loading related records
+			$query = $this->$name();
+			return $this->_attributes[$name] = $query->multiple ? $query->all() : $query->one();
+		} else {
+			return parent::__get($name);
 		}
-		return parent::__get($name);
 	}
 
 	/**
@@ -336,10 +327,8 @@ abstract class ActiveRecord extends Model
 	 */
 	public function __set($name, $value)
 	{
-		if (isset($this->getTableSchema()->columns[$name])) {
+		if (isset($this->getTableSchema()->columns[$name]) || method_exists($this, $name)) {
 			$this->_attributes[$name] = $value;
-		} elseif (method_exists($this, $name)) {
-			$this->_related[$name] = $value;
 		} else {
 			parent::__set($name, $value);
 		}

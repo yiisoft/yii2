@@ -183,40 +183,25 @@ class ActiveQuery extends BaseQuery
 		$records = $this->createRecords($rows);
 		if ($records !== array()) {
 			foreach ($this->with as $name => $config) {
+				/** @var Relation $relation */
 				$relation = $model->$name();
 				foreach ($config as $p => $v) {
 					$relation->$p = $v;
 				}
-				$relation->findWith($records);
+				if ($relation->asArray === null) {
+					// inherit asArray from parent query
+					$relation->asArray = $this->asArray;
+				}
+				$rs = $relation->findWith($records);
+				/*
+				foreach ($rs as $r) {
+					// find the matching parent record(s)
+					// insert into the parent records(s)
+				}
+				*/
 			}
 		}
 
-		return $records;
-	}
-
-	protected function createRecords($rows)
-	{
-		$records = array();
-		if ($this->asArray) {
-			if ($this->index === null) {
-				return $rows;
-			}
-			foreach ($rows as $row) {
-				$records[$row[$this->index]] = $row;
-			}
-		} else {
-			/** @var $class ActiveRecord */
-			$class = $this->modelClass;
-			if ($this->index === null) {
-				foreach ($rows as $row) {
-					$records[] = $class::create($row);
-				}
-			} else {
-				foreach ($rows as $row) {
-					$records[$row[$this->index]] = $class::create($row);
-				}
-			}
-		}
 		return $records;
 	}
 }

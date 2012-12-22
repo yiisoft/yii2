@@ -11,7 +11,10 @@
 namespace yii\db\ar;
 
 /**
- * ActiveRelation represents the specification of a relation declared in [[ActiveRecord::relations()]].
+ * It is used in three scenarios:
+ * - eager loading: User::find()->with('posts')->all();
+ * - lazy loading: $user->posts;
+ * - lazy loading with query options: $user->posts()->where('status=1')->get();
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -19,35 +22,99 @@ namespace yii\db\ar;
 class ActiveRelation extends BaseActiveQuery
 {
 	/**
-	 * @var string the name of this relation
+	 * @var string the class name of the ActiveRecord instances that this relation
+	 * should create and populate query results into
 	 */
-	public $name;
+	public $modelClass;
 	/**
-	 * @var string the name of the table
+	 * @var ActiveRecord the primary record that this relation is associated with.
+	 * This is used only in lazy loading with dynamic query options.
 	 */
-	public $table;
+	public $primaryModel;
 	/**
 	 * @var boolean whether this relation is a one-many relation
 	 */
 	public $hasMany;
 	/**
-	 * @var string the join type (e.g. INNER JOIN, LEFT JOIN). Defaults to 'LEFT JOIN' when
-	 * this relation is used to load related records, and 'INNER JOIN' when this relation is used as a filter.
-	 */
-	public $joinType;
-	/**
 	 * @var array the columns of the primary and foreign tables that establish the relation.
 	 * The array keys must be columns of the table for this relation, and the array values
-	 * must be the corresponding columns from the primary table. Do not prefix or quote the column names.
-	 * They will be done automatically by Yii.
+	 * must be the corresponding columns from the primary table.
+	 * Do not prefix or quote the column names as they will be done automatically by Yii.
 	 */
 	public $link;
 	/**
-	 * @var string the ON clause of the join query
-	 */
-	public $on;
-	/**
-	 * @var string|array
+	 * @var ActiveRelation
 	 */
 	public $via;
+
+	public function get()
+	{
+
+	}
+
+	public function findWith($name, &$primaryRecords)
+	{
+		if (empty($this->link) || !is_array($this->link)) {
+			throw new \yii\base\Exception('invalid link');
+		}
+		$this->addLinkCondition($primaryRecords);
+		$records = $this->find();
+
+		/** @var array $map mapping key(s) to index of $primaryRecords */
+		$index = $this->buildRecordIndex($primaryRecords, array_values($this->link));
+		$this->initRecordRelation($primaryRecords, $name);
+		foreach ($records as $record) {
+			$key = $this->getRecordKey($record, array_keys($this->link));
+			if (isset($index[$key])) {
+				$primaryRecords[$map[$key]][$name] = $record;
+			}
+		}
+	}
+
+	protected function getRecordKey($record, $attributes)
+	{
+		if (isset($attributes[1])) {
+			$key = array();
+			foreach ($attributes as $attribute) {
+				$key[] = is_array($record) ? $record[$attribute] : $record->$attribute;
+			}
+			return serialize($key);
+		} else {
+			$attribute = $attributes[0];
+			return is_array($record) ? $record[$attribute] : $record->$attribute;
+		}
+	}
+
+	protected function buildRecordIndex($records, $attributes)
+	{
+		$map = array();
+		foreach ($records as $i => $record) {
+			$map[$this->getRecordKey($record, $attributes)] = $i;
+		}
+		return $map;
+	}
+
+	protected function addLinkCondition($primaryRecords)
+	{
+		$attributes = array_keys($this->link);
+		$values = array();
+		if (isset($links[1])) {
+			// composite keys
+			foreach ($primaryRecords as $record) {
+				$v = array();
+				foreach ($this->link as $attribute => $link) {
+					$v[$attribute] = is_array($record) ? $record[$link] : $record->$link;
+				}
+				$values[] = $v;
+			}
+		} else {
+			// single key
+			$attribute = $this->link[$links[0]];
+			foreach ($primaryRecords as $record) {
+				$values[] = is_array($record) ? $record[$attribute] : $record->$attribute;
+			}
+		}
+		$this->andWhere(array('in', $attributes, $values));
+	}
+
 }

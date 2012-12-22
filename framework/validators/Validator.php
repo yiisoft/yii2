@@ -229,14 +229,11 @@ abstract class Validator extends \yii\base\Component
 	 * - the validator's `on` property contains the specified scenario
 	 *
 	 * @param string $scenario scenario name
-	 * @param string|null $attribute the attribute name to check. If this is not null,
-	 * the method will also check if the attribute appears in [[attributes]].
 	 * @return boolean whether the validator applies to the specified scenario.
 	 */
-	public function isActive($scenario, $attribute = null)
+	public function isActive($scenario)
 	{
-		$applies = !isset($this->except[$scenario]) && (empty($this->on) || isset($this->on[$scenario]));
-		return $attribute === null ? $applies : $applies && in_array($attribute, $this->attributes, true);
+		return !isset($this->except[$scenario]) && (empty($this->on) || isset($this->on[$scenario]));
 	}
 
 	/**

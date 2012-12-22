@@ -578,19 +578,14 @@ class QueryBuilder extends \yii\base\Object
 				$column = reset($column);
 				foreach ($values as $i => $value) {
 					if (is_array($value)) {
-						$values[$i] = isset($value[$column]) ? $value[$column] : null;
+						$value = isset($value[$column]) ? $value[$column] : null;
+					}
+					if ($value === null) {
+						$values[$i] = 'NULL';
 					} else {
-						$values[$i] = null;
+						$values[$i] = is_string($value) ? $this->connection->quoteValue($value) : (string)$value;
 					}
 				}
-			}
-		}
-
-		foreach ($values as $i => $value) {
-			if ($value === null) {
-				$values[$i] = 'NULL';
-			} else {
-				$values[$i] = is_string($value) ? $this->connection->quoteValue($value) : (string)$value;
 			}
 		}
 
