@@ -184,8 +184,8 @@ class HelpController extends Controller
 				if ($description != '') {
 					echo ": $description\n";
 				}
+				echo "\n";
 			}
-			echo "\n";
 		}
 
 		$actions = $this->getActions($controller);
@@ -334,9 +334,9 @@ class HelpController extends Controller
 						$type = $comment;
 						$doc = '';
 					}
-					$comment = $type === '' ? '' : ($type . '.');
+					$comment = $type === '' ? '' : ($type);
 					if (trim($doc) !== '') {
-						$comment .= "\n" . preg_replace("/^/m", "     ", $doc);
+						$comment .= ', ' . preg_replace("/^/m", "", $doc);
 					}
 					$options[$name] = $comment;
 					break;
