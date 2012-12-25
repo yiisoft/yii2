@@ -1,4 +1,5 @@
 <?php
+define('YII_DEBUG', true);
 /**
  * Yii console bootstrap file.
  *
