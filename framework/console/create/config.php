@@ -10,9 +10,6 @@ return array(
 			},
 			'permissions' => 0777,
 		),
-		'assets' => array(
-			'permissions' => 0777,
-		),
 		'protected/runtime' => array(
 			'permissions' => 0755,
 		),
