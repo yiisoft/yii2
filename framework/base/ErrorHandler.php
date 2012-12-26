@@ -18,6 +18,8 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
+use yii\util\VarDumper;
+
 class ErrorHandler extends ApplicationComponent
 {
 	/**
@@ -252,14 +254,17 @@ class ErrorHandler extends ApplicationComponent
 			} else {
 				$cssClass = 'app expanded';
 			}
-			$hasCode = $t['file'] !== 'unknown' && is_file($t['file']);
+
+			$hasCode = isset($t['file']) && $t['file'] !== 'unknown' && is_file($t['file']);
 			echo "<tr class=\"trace $cssClass\"><td class=\"number\">#$n</td><td class=\"content\">";
 			echo '<div class="trace-file">';
 			if ($hasCode) {
 				echo '<div class="plus">+</div><div class="minus">-</div>';
 			}
 			echo '&nbsp;';
-			echo $this->htmlEncode($t['file']) . '(' . $t['line'] . '): ';
+			if(isset($t['file'])) {
+				echo $this->htmlEncode($t['file']) . '(' . $t['line'] . '): ';
+			}
 			if (!empty($t['class'])) {
 				echo '<strong>' . $t['class'] . '</strong>' . $t['type'];
 			}
