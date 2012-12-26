@@ -388,9 +388,9 @@ class View extends Component
 	protected function resolveBasePath()
 	{
 		if (!empty($this->basePath)) {
-			return is_array($this->basePath) ? $this->basePath : array($this->basePath);
+			return (array)$this->basePath;
 		} elseif ($this->context instanceof Controller) {
-			return $this->context->module->getViewPath() . '/' . $this->context->getUniqueId();
+			return array($this->context->module->getViewPath() . '/' . $this->context->getUniqueId());
 		} elseif ($this->context !== null) {
 			$class = new \ReflectionClass($this->context);
 			return array(dirname($class->getFileName()) . '/views');
