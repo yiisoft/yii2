@@ -2,7 +2,6 @@
 /**
  * CreateController class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -12,18 +11,40 @@ namespace yii\console\controllers;
 
 use yii\console\Controller;
 use yii\util\FileHelper;
+use yii\base\Exception;
 
 /**
  * This command creates an Yii Web application at the specified location.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
 class CreateController extends Controller
 {
-	const EXIT_UNABLE_TO_LOCATE_SOURCE = 1;
-
 	private $_rootPath;
+	private $_config;
+
+	/**
+	 * @var string custom template path. If specified, templates will be
+	 * searched there additionally to `framework/console/create`.
+	 */
+	public $templatesPath;
+
+	/**
+	 * @var string application type. If not specified default application
+	 * skeleton will be used.
+	 */
+	public $type = 'default';
+
+	public function init()
+	{
+		parent::init();
+
+		if($this->templatesPath && !is_dir($this->templatesPath)) {
+			throw new Exception('--templatesPath "'.$this->templatesPath.'" does not exist or can not be read.');
+		}
+	}
 
 	/**
 	 * Generates Yii application at the path specified via appPath parameter.
@@ -31,11 +52,11 @@ class CreateController extends Controller
 	 * @param string $path the directory where the new application will be created.
 	 * If the directory does not exist, it will be created. After the application
 	 * is created, please make sure the directory has enough permissions.
-	 * @param string $type application type. If not specified default application
-	 * skeleton will be used.
+	 *
+	 * @throws \yii\base\Exception if path specified is not valid
 	 * @return integer the exit status
 	 */
-	public function actionIndex($path, $type = 'default')
+	public function actionIndex($path)
 	{
 		$path = strtr($path, '/\\', DIRECTORY_SEPARATOR);
 		if(strpos($path, DIRECTORY_SEPARATOR) === false) {
@@ -43,82 +64,104 @@ class CreateController extends Controller
 		}
 		$dir = rtrim(realpath(dirname($path)), '\\/');
 		if($dir === false || !is_dir($dir)) {
-			$this->usageError("The directory '$path' is not valid. Please make sure the parent directory exists.");
+			throw new Exception("The directory '$path' is not valid. Please make sure the parent directory exists.");
 		}
+
 		if(basename($path) === '.') {
 			$this->_rootPath = $path = $dir;
 		}
 		else {
 			$this->_rootPath = $path = $dir.DIRECTORY_SEPARATOR.basename($path);
 		}
-		if($this->confirm("Create \"$type\" application under '$path'?")) {
-			$sourceDir = realpath(__DIR__.'/../create/'.$type);
-			if($sourceDir === false) {
-				echo "\nUnable to locate the source directory for \"$type\".\n";
-				return self::EXIT_UNABLE_TO_LOCATE_SOURCE;
-			}
+
+		if($this->confirm("Create \"$this->type\" application under '$path'?")) {
+			$sourceDir = $this->getSourceDir();
+			$config = $this->getConfig();
+
 			$list = FileHelper::buildFileList($sourceDir, $path);
-			$list['index.php']['callback'] = array($this, 'generateIndex');
-			$list['index-test.php']['callback'] = array($this, 'generateIndex');
-			$list['protected/tests/bootstrap.php']['callback'] = array($this, 'generateTestBoostrap');
-			$list['protected/yiic.php']['callback'] = array($this, 'generateYiic');
+
+			if(is_array($config)) {
+				foreach($config as $file => $settings) {
+					if(isset($settings['handler'])) {
+						$list[$file]['callback'] = $settings['handler'];
+					}
+				}
+			}
+
 			FileHelper::copyFiles($list);
-			//@chmod($path.'/assets', 0777);
-			//@chmod($path.'/protected/runtime', 0777);
-			//@chmod($path.'/protected/yiic', 0755);
+
+			if(is_array($config)) {
+				foreach($config as $file => $settings) {
+					if(isset($settings['permissions'])) {
+						@chmod($path.'/'.$file, $settings['permissions']);
+					}
+				}
+			}
+
 			echo "\nYour application has been created successfully under {$path}.\n";
 		}
 	}
 
 	/**
-	 * Generates index.php file contents
-	 *
-	 * @param string $source path to index.php template
-	 * @param array $params
-	 *
-	 * @return string final index.php file contents
+	 * @throws \yii\base\Exception if source directory wasn't located
+	 * @return string
 	 */
-	public function generateIndex($source, $params)
+	protected function getSourceDir()
 	{
-		$content = file_get_contents($source);
-		$yii = realpath(dirname(__FILE__).'/../../yii.php');
-		$yii = $this->getRelativePath($yii, $this->_rootPath.DIRECTORY_SEPARATOR.'index.php');
-		$yii = str_replace('\\', '\\\\', $yii);
-		return preg_replace('/\$yii\s*=(.*?);/', "\$yii=$yii;", $content);
+		$customSource = realpath($this->templatesPath.'/'.$this->type);
+		$defaultSource = realpath($this->getDefaultTemplatesPath().'/'.$this->type);
+
+		if($customSource) {
+			return $customSource;
+		}
+		elseif($defaultSource) {
+			return $defaultSource;
+		}
+		else {
+			throw new Exception('Unable to locate the source directory for "'.$this->type.'".');
+		}
 	}
 
 	/**
-	 * Generates index-test.php file contents
-	 *
-	 * @param string $source path to index-test.php template
-	 * @param array $params
-	 *
-	 * @return string final index-test.php file contents
+	 * @return string default templates path
 	 */
-	public function generateTestBoostrap($source, $params)
+	protected function getDefaultTemplatesPath()
 	{
-		$content = file_get_contents($source);
-		$yii = realpath(dirname(__FILE__).'/../../yiit.php');
-		$yii = $this->getRelativePath($yii, $this->_rootPath.DIRECTORY_SEPARATOR.'protected'.DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'bootstrap.php');
-		$yii = str_replace('\\', '\\\\', $yii);
-		return preg_replace('/\$yiit\s*=(.*?);/', "\$yiit=$yii;", $content);
+		return realpath(__DIR__.'/../create');
 	}
 
 	/**
-	 * Generates yiic.php file contents
-	 *
-	 * @param string $source path to yiic.php template
-	 * @param array $params
-	 *
-	 * @return string final yiic.php file contents
+	 * @return array|null template configuration
 	 */
-	public function generateYiic($source, $params)
+	protected function getConfig()
+	{
+		if($this->_config===null) {
+			$this->_config = require $this->getDefaultTemplatesPath().'/config.php';
+			if($this->templatesPath && file_exists($this->templatesPath)) {
+				$this->_config = array_merge($this->_config, require $this->templatesPath.'/config.php');
+			}
+		}
+		if(isset($this->_config[$this->type])) {
+			return $this->_config[$this->type];
+		}
+	}
+
+	/**
+	 * @param string $source path to source file
+	 * @param string $pathTo path to file we want to get relative path for
+	 * @param string $varName variable name w/o $ to replace value with relative path for
+	 *
+	 * @return string target file contetns
+	 */
+	public function replaceRelativePath($source, $pathTo, $varName)
 	{
 		$content = file_get_contents($source);
-		$yiic = realpath(dirname(__FILE__).'/../../yiic.php');
-		$yiic = $this->getRelativePath($yiic, $this->_rootPath.DIRECTORY_SEPARATOR.'protected'.DIRECTORY_SEPARATOR.'yiic.php');
-		$yiic = str_replace('\\', '\\\\', $yiic);
-		return preg_replace('/\$yiic\s*=(.*?);/', "\$yiic=$yiic;", $content);
+		$relativeFile = str_replace($this->getSourceDir(), '', $source);
+
+		$relativePath = $this->getRelativePath($pathTo, $this->_rootPath.$relativeFile);
+		$relativePath = str_replace('\\', '\\\\', $relativePath);
+
+		return preg_replace('/\$'.$varName.'\s*=(.*?);/', "\$".$varName."=$relativePath;", $content);
 	}
 
 	/**
@@ -151,6 +194,6 @@ class CreateController extends Controller
 			$up.='/'.$segs1[$i];
 		}
 
-		return 'dirname(__FILE__).\''.$up.'/'.basename($path1).'\'';
+		return '__DIR__.\''.$up.'/'.basename($path1).'\'';
 	}
 }
