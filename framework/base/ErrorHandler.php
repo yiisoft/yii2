@@ -77,7 +77,9 @@ class ErrorHandler extends ApplicationComponent
 	 */
 	public function handleError($code, $message, $file, $line)
 	{
-		throw new \ErrorException($message, 0, $code, $file, $line);
+		if(error_reporting()!==0) {
+			throw new \ErrorException($message, 0, $code, $file, $line);
+		}
 	}
 
 	/**
