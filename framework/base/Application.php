@@ -66,7 +66,7 @@ use yii\base\Exception;
  * @property CSecurityManager $securityManager Returns the security manager component.
  * @property CStatePersister $statePersister Returns the state persister component.
  * @property string $timeZone Returns the time zone used by this application.
- * @property CUrlManager $urlManager Returns the URL manager component.
+ * @property UrlManager $urlManager Returns the URL manager component.
  * @property string $baseUrl Returns the relative URL for the application
  * @property string $homeUrl the homepage URL
  *
@@ -433,6 +433,9 @@ class Application extends Module
 			),
 			'securityManager' => array(
 				'class' => 'yii\base\SecurityManager',
+			),
+			'urlManager' => array(
+				'class' => 'yii\web\UrlManager',
 			),
 		));
 	}

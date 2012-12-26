@@ -1,32 +1,35 @@
 <?php
 /**
- * CUrlManager class file
+ * UrlManager class file
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2012 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\base;
+
+use \yii\base\ApplicationComponent;
+
 /**
- * CUrlManager manages the URLs of Yii Web applications.
+ * UrlManager manages the URLs of Yii applications.
  *
  * It provides URL construction ({@link createUrl()}) as well as parsing ({@link parseUrl()}) functionality.
  *
- * URLs managed via CUrlManager can be in one of the following two formats,
+ * URLs managed via UrlManager can be in one of the following two formats,
  * by setting {@link setUrlFormat urlFormat} property:
  * <ul>
  * <li>'path' format: /path/to/EntryScript.php/name1/value1/name2/value2...</li>
  * <li>'get' format:  /path/to/EntryScript.php?name1=value1&name2=value2...</li>
  * </ul>
  *
- * When using 'path' format, CUrlManager uses a set of {@link setRules rules} to:
+ * When using 'path' format, UrlManager uses a set of {@link setRules rules} to:
  * <ul>
  * <li>parse the requested URL into a route ('ControllerID/ActionID') and GET parameters;</li>
  * <li>create URLs based on the given route and GET parameters.</li>
  * </ul>
  *
- * A rule consists of a route and a pattern. The latter is used by CUrlManager to determine
+ * A rule consists of a route and a pattern. The latter is used by UrlManager to determine
  * which rule is used for parsing/creating URLs. A pattern is meant to match the path info
  * part of a URL. It may contain named parameters using the syntax '&lt;ParamName:RegExp&gt;'.
  *
@@ -88,28 +91,28 @@
  * )
  * </pre>
  *
- * Starting from version 1.1.8, one can write custom URL rule classes and use them for one or several URL rules.
- * For example,
+ * If you want to customize URL generation and parsing you can write custom
+ * URL rule classes and use them for one or several URL rules. For example,
  * <pre>
  * array(
  *   // a standard rule
  *   '<action:(login|logout)>' => 'site/<action>',
  *   // a custom rule using data in DB
  *   array(
- *     'class' => 'application.components.MyUrlRule',
+ *     'class' => '\application\components\MyUrlRule',
  *     'connectionID' => 'db',
  *   ),
  * )
  * </pre>
- * Please note that the custom URL rule class should extend from {@link CBaseUrlRule} and
+ * Please note that the custom URL rule class should extend from {@link BaseUrlRule} and
  * implement the following two methods,
  * <ul>
- *    <li>{@link CBaseUrlRule::createUrl()}</li>
- *    <li>{@link CBaseUrlRule::parseUrl()}</li>
+ *    <li>{@link BaseUrlRule::createUrl()}</li>
+ *    <li>{@link BaseUrlRule::parseUrl()}</li>
  * </ul>
  *
- * CUrlManager is a default application component that may be accessed via
- * {@link CWebApplication::getUrlManager()}.
+ * UrlManager is a default application component that may be accessed via
+ * {@link \Yii::$application->urlManager}.
  *
  * @property string $baseUrl The base URL of the application (the part after host name and before query string).
  * If {@link showScriptName} is true, it will include the script name part.
@@ -118,13 +121,11 @@
  * Please refer to the guide for more details about the difference between these two formats.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web
- * @since 1.0
+ * @since 2.0
  */
-class CUrlManager extends CApplicationComponent
+class UrlManager extends ApplicationComponent
 {
-	const CACHE_KEY='Yii.CUrlManager.rules';
+	const CACHE_KEY='Yii.UrlManager.rules';
 	const GET_FORMAT='get';
 	const PATH_FORMAT='path';
 
@@ -189,9 +190,8 @@ class CUrlManager extends CApplicationComponent
 	 * If you change this to something else, please make sure that the new class must extend from
 	 * {@link CBaseUrlRule} and have the same constructor signature as {@link CUrlRule}.
 	 * It must also be serializable and autoloadable.
-	 * @since 1.1.8
 	 */
-	public $urlRuleClass='CUrlRule';
+	public $urlRuleClass='UrlRule';
 
 	private $_urlFormat=self::GET_FORMAT;
 	private $_rules=array();
@@ -236,7 +236,6 @@ class CUrlManager extends CApplicationComponent
 	 * @param array $rules new URL rules (pattern=>route).
 	 * @param boolean $append whether the new URL rules should be appended to the existing ones. If false,
 	 * they will be inserted at the beginning.
-	 * @since 1.1.4
 	 */
 	public function addRules($rules, $append=true)
 	{
@@ -258,7 +257,6 @@ class CUrlManager extends CApplicationComponent
 	 * @param mixed $route the route part of the rule. This could be a string or an array
 	 * @param string $pattern the pattern part of the rule
 	 * @return CUrlRule the URL rule instance
-	 * @since 1.1.0
 	 */
 	protected function createUrlRule($route,$pattern)
 	{
@@ -351,7 +349,7 @@ class CUrlManager extends CApplicationComponent
 
 	/**
 	 * Parses the user request.
-	 * @param CHttpRequest $request the request application component
+	 * @param HttpRequest $request the request application component
 	 * @return string the route (controllerID/actionID) and perhaps GET parameters in path format.
 	 */
 	public function parseUrl($request)
@@ -368,7 +366,7 @@ class CUrlManager extends CApplicationComponent
 					return isset($_GET[$this->routeVar]) ? $_GET[$this->routeVar] : $r;
 			}
 			if($this->useStrictParsing)
-				throw new CHttpException(404,Yii::t('yii','Unable to resolve the request "{route}".',
+				throw new HttpException(404,Yii::t('yii','Unable to resolve the request "{route}".',
 					array('{route}'=>$pathInfo)));
 			else
 				return $pathInfo;
@@ -479,7 +477,6 @@ class CUrlManager extends CApplicationComponent
 	 * The ending slashes should be stripped off. And you are also responsible to remove the script name
 	 * if you set {@link showScriptName} to be false.
 	 * @param string $value the base URL of the application
-	 * @since 1.1.1
 	 */
 	public function setBaseUrl($value)
 	{
@@ -517,9 +514,6 @@ class CUrlManager extends CApplicationComponent
  * {@link createUrl} and {@link parseUrl}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web
- * @since 1.1.8
  */
 abstract class CBaseUrlRule extends CComponent
 {
@@ -538,8 +532,8 @@ abstract class CBaseUrlRule extends CComponent
 	abstract public function createUrl($manager,$route,$params,$ampersand);
 	/**
 	 * Parses a URL based on this rule.
-	 * @param CUrlManager $manager the URL manager
-	 * @param CHttpRequest $request the request object
+	 * @param UrlManager $manager the URL manager
+	 * @param HttpRequest $request the request object
 	 * @param string $pathInfo path info part of the URL (URL suffix is already removed based on {@link CUrlManager::urlSuffix})
 	 * @param string $rawPathInfo path info that contains the potential URL suffix
 	 * @return mixed the route that consists of the controller ID and action ID. False if this rule does not apply.
@@ -556,9 +550,6 @@ abstract class CBaseUrlRule extends CComponent
  * may have a set of named parameters.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web
- * @since 1.0
  */
 class CUrlRule extends CBaseUrlRule
 {
@@ -586,7 +577,6 @@ class CUrlRule extends CBaseUrlRule
 	 * a rule will be used for creating a URL if its route and parameter names match the given ones.
 	 * If this property is set true, then the given parameter values must also match the corresponding
 	 * parameter sub-patterns. Note that setting this property to true will degrade performance.
-	 * @since 1.1.0
 	 */
 	public $matchValue;
 	/**
@@ -594,13 +584,11 @@ class CUrlRule extends CBaseUrlRule
 	 * If this rule can match multiple verbs, please separate them with commas.
 	 * If this property is not set, the rule can match any verb.
 	 * Note that this property is only used when parsing a request. It is ignored for URL creation.
-	 * @since 1.1.7
 	 */
 	public $verb;
 	/**
 	 * @var boolean whether this rule is only used for request parsing.
 	 * Defaults to false, meaning the rule is used for both URL parsing and creation.
-	 * @since 1.1.7
 	 */
 	public $parsingOnly=false;
 	/**
@@ -789,8 +777,8 @@ class CUrlRule extends CBaseUrlRule
 
 	/**
 	 * Parses a URL based on this rule.
-	 * @param CUrlManager $manager the URL manager
-	 * @param CHttpRequest $request the request object
+	 * @param UrlManager $manager the URL manager
+	 * @param HttpRequest $request the request object
 	 * @param string $pathInfo path info part of the URL
 	 * @param string $rawPathInfo path info that contains the potential URL suffix
 	 * @return mixed the route that consists of the controller ID and action ID or false on error

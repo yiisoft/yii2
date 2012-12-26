@@ -49,9 +49,6 @@ class Application extends \yii\base\Application
 	{
 		parent::registerCoreComponents();
 		$this->setComponents(array(
-			'urlManager' => array(
-				'class' => 'yii\web\UrlManager',
-			),
 			'request' => array(
 				'class' => 'yii\web\Request',
 			),
