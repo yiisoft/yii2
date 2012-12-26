@@ -22,6 +22,8 @@ use yii\base\HttpException;
  */
 class Controller extends \yii\base\Controller
 {
+	private $_pageTitle;
+
 	/**
 	 * Returns the request parameters that will be used for action parameter binding.
 	 * Default implementation simply returns an empty array.
@@ -44,5 +46,30 @@ class Controller extends \yii\base\Controller
 	public function invalidActionParams($action, $exception)
 	{
 		throw new HttpException(400, \Yii::t('yii', 'Your request is invalid.'));
+	}
+
+	/**
+	 * @return string the page title. Defaults to the controller name and the action name.
+	 */
+	public function getPageTitle()
+	{
+		if($this->_pageTitle !== null) {
+			return $this->_pageTitle;
+		}
+		else {
+			$name = ucfirst(basename($this->id));
+			if($this->action!==null && strcasecmp($this->action->id,$this->defaultAction))
+				return $this->_pageTitle=\Yii::$application->name.' - '.ucfirst($this->action->id).' '.$name;
+			else
+				return $this->_pageTitle=\Yii::$application->name.' - '.$name;
+		}
+	}
+
+	/**
+	 * @param string $value the page title.
+	 */
+	public function setPageTitle($value)
+	{
+		$this->_pageTitle = $value;
 	}
 }
