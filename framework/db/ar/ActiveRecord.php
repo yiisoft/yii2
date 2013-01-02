@@ -44,10 +44,6 @@ use yii\util\StringHelper;
 abstract class ActiveRecord extends Model
 {
 	/**
-	 * @var ActiveRecord[] global model instances indexed by model class names
-	 */
-	private static $_models = array();
-	/**
 	 * @var array attribute values indexed by attribute names
 	 */
 	private $_attributes = array();
@@ -55,20 +51,11 @@ abstract class ActiveRecord extends Model
 	 * @var array old attribute values indexed by attribute names.
 	 */
 	private $_oldAttributes;
-
-
 	/**
-	 * Returns a model instance to support accessing non-static methods such as [[table()]], [[primaryKey()]].
-	 * @return ActiveRecord
+	 * @var array related models indexed by the relation names
 	 */
-	public static function model()
-	{
-		$className = get_called_class();
-		if (!isset(self::$_models[$className])) {
-			self::$_models[$className] = new static;
-		}
-		return self::$_models[$className];
-	}
+	private $_related;
+
 
 	/**
 	 * Returns the database connection used by this AR class.
@@ -87,7 +74,7 @@ abstract class ActiveRecord extends Model
 	 * Because [[ActiveQuery]] implements a set of query building methods,
 	 * additional query conditions can be specified by calling the methods of [[ActiveQuery]].
 	 *
-	 * Below are some usage examples:
+	 * Below are some examples:
 	 *
 	 * ~~~
 	 * // find all customers
@@ -110,7 +97,8 @@ abstract class ActiveRecord extends Model
 	 *
 	 * @param mixed $q the query parameter. This can be one of the followings:
 	 *
-	 *  - a scalar value (integer or string): query by a single primary key value.
+	 *  - a scalar value (integer or string): query by a single primary key value and return the
+	 *    corresponding record.
 	 *  - an array of name-value pairs: it will be used to configure the [[ActiveQuery]] object.
 	 *
 	 * @return ActiveQuery|ActiveRecord|null the [[ActiveQuery]] instance for query purpose, or
@@ -119,14 +107,14 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function find($q = null)
 	{
-		$query = static::createActiveQuery();
+		$query = static::createQuery();
 		if (is_array($q)) {
 			foreach ($q as $name => $value) {
 				$query->$name = $value;
 			}
 		} elseif ($q !== null) {
 			// query by primary key
-			$primaryKey = static::model()->primaryKey();
+			$primaryKey = static::primaryKey();
 			return $query->where(array($primaryKey[0] => $q))->one();
 		}
 		return $query;
@@ -143,7 +131,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function findBySql($sql, $params = array())
 	{
-		$query = static::createActiveQuery();
+		$query = static::createQuery();
 		$query->sql = $sql;
 		return $query->params($params);
 	}
@@ -177,7 +165,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function count($q = null)
 	{
-		$query = static::createActiveQuery();
+		$query = static::createQuery();
 		if (is_array($q)) {
 			foreach ($q as $name => $value) {
 				$query->$name = $value;
@@ -201,7 +189,7 @@ abstract class ActiveRecord extends Model
 	public static function updateAll($attributes, $condition = '', $params = array())
 	{
 		$query = new Query;
-		$query->update(static::model()->tableName(), $attributes, $condition, $params);
+		$query->update(static::tableName(), $attributes, $condition, $params);
 		return $query->createCommand(static::getDbConnection())->execute();
 	}
 
@@ -222,7 +210,7 @@ abstract class ActiveRecord extends Model
 			$counters[$name] = new Expression($value >= 0 ? "$quotedName+$value" : "$quotedName$value");
 		}
 		$query = new Query;
-		$query->update(static::model()->tableName(), $counters, $condition, $params);
+		$query->update(static::tableName(), $counters, $condition, $params);
 		return $query->createCommand($db)->execute();
 	}
 
@@ -236,7 +224,7 @@ abstract class ActiveRecord extends Model
 	public static function deleteAll($condition = '', $params = array())
 	{
 		$query = new Query;
-		$query->delete(static::model()->tableName(), $condition, $params);
+		$query->delete(static::tableName(), $condition, $params);
 		return $query->createCommand(static::getDbConnection())->execute();
 	}
 
@@ -245,7 +233,7 @@ abstract class ActiveRecord extends Model
 	 * This method is called by [[find()]] and [[findBySql()]] to start a SELECT query.
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
-	public static function createActiveQuery()
+	public static function createQuery()
 	{
 		return new ActiveQuery(array('modelClass' => get_called_class()));
 	}
@@ -312,6 +300,7 @@ abstract class ActiveRecord extends Model
 			return null;
 		} elseif (method_exists($this, $name)) {
 			// lazy loading related records
+			/** @var $query ActiveRelation */
 			$query = $this->$name();
 			return $this->_attributes[$name] = $query->multiple ? $query->all() : $query->one();
 		} else {
@@ -465,7 +454,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Returns the list of all attribute names of the model.
-	 * This would return all column names of the table associated with this AR class.
+	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
 	public function attributes()
@@ -501,6 +490,12 @@ abstract class ActiveRecord extends Model
 		$this->_attributes[$name] = $value;
 	}
 
+	/**
+	 * Returns the attribute values that have been modified since they are loaded or saved most recently.
+	 * @param string[]|null $names the names of the attributes whose values may be returned if they are
+	 * changed recently. If null, [[attributes()]] will be used.
+	 * @return array the changed attribute values (name-value pairs)
+	 */
 	public function getChangedAttributes($names = null)
 	{
 		if ($names === null) {
@@ -904,4 +899,6 @@ abstract class ActiveRecord extends Model
 	{
 		return $this->__isset($offset);
 	}
+
+
 }

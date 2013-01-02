@@ -47,9 +47,16 @@ class ActiveRelation extends BaseActiveQuery
 	 */
 	public $via;
 
-	public function get()
+	public function one()
 	{
+		$models = $this->all();
+		return isset($models[0]) ? $models[0] : null;
+	}
 
+	public function all()
+	{
+		$models = array();
+		return $models;
 	}
 
 	public function findWith($name, &$primaryRecords)
