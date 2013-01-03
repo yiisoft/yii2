@@ -299,10 +299,15 @@ abstract class ActiveRecord extends Model
 		} elseif (isset($this->getTableSchema()->columns[$name])) {
 			return null;
 		} elseif (method_exists($this, $name)) {
-			// lazy loading related records
-			/** @var $query ActiveRelation */
-			$query = $this->$name();
-			return $this->_attributes[$name] = $query->multiple ? $query->all() : $query->one();
+			// related records
+			if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+				return $this->_related[$name];
+			} else {
+				// lazy loading related records
+				/** @var $relation ActiveRelation */
+				$relation = $this->$name();
+				return $this->_related[$name] = $relation->multiple ? $relation->all() : $relation->one();
+			}
 		} else {
 			return parent::__get($name);
 		}
@@ -316,8 +321,10 @@ abstract class ActiveRecord extends Model
 	 */
 	public function __set($name, $value)
 	{
-		if (isset($this->getTableSchema()->columns[$name]) || method_exists($this, $name)) {
+		if (isset($this->getTableSchema()->columns[$name])) {
 			$this->_attributes[$name] = $value;
+		} elseif (method_exists($this, $name)) {
+			$this->_related[$name] = $value;
 		} else {
 			parent::__set($name, $value);
 		}
@@ -334,8 +341,7 @@ abstract class ActiveRecord extends Model
 	{
 		if (isset($this->_attributes[$name]) || isset($this->_related[$name])) {
 			return true;
-		}
-		if (isset($this->getTableSchema()->columns[$name]) || method_exists($this, $name)) {
+		} elseif (isset($this->getTableSchema()->columns[$name]) || method_exists($this, $name)) {
 			return false;
 		} else {
 			return parent::__isset($name);
@@ -359,36 +365,46 @@ abstract class ActiveRecord extends Model
 		}
 	}
 
-	public function hasOne($class, $link)
+	/**
+	 * Declares a `has-one` relation.
+	 * The declaration is returned in terms of an [[ActiveRelation]] instance
+	 * through which the related record can be queried and retrieved back.
+	 * @param string $class the class name of the related record
+	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
+	 * the columns in the table associated with the `$class` model, while the values of the
+	 * array refer to the corresponding columns in the table associated with this AR class.
+	 * @param array $properties additional property values that should be used to
+	 * initialize the newly created relation object.
+	 * @return ActiveRelation the relation object.
+	 */
+	public function hasOne($class, $link, $properties = array())
 	{
-		return new HasOneRelation(array(
-			'modelClass' => $class,
-			'parentClass' => get_class($this),
-			'parentRecords' => array($this),
-			'link' => $link,
-		));
+		$properties['primaryModel'] = $this;
+		$properties['modelClass'] = $class;
+		$properties['link'] = $link;
+		$properties['multiple'] = false;
+		return new ActiveRelation($properties);
 	}
 
-	public function hasMany($class, $link)
+	/**
+	 * Declares a `has-many` relation.
+	 * The declaration is returned in terms of an [[ActiveRelation]] instance
+	 * through which the related record can be queried and retrieved back.
+	 * @param string $class the class name of the related record
+	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
+	 * the columns in the table associated with the `$class` model, while the values of the
+	 * array refer to the corresponding columns in the table associated with this AR class.
+	 * @param array $properties additional property values that should be used to
+	 * initialize the newly created relation object.
+	 * @return ActiveRelation the relation object.
+	 */
+	public function hasMany($class, $link, $properties = array())
 	{
-		return new HasManyRelation(array(
-			'modelClass' => $class,
-			'parentClass' => get_class($this),
-			'parentRecords' => array($this),
-			'link' => $link,
-		));
-	}
-
-	public function manyMany($class, $leftLink, $joinTable, $rightLink)
-	{
-		return new ManyManyRelation(array(
-			'modelClass' => $class,
-			'parentClass' => get_class($this),
-			'parentRecords' => array($this),
-			'leftLink' => $leftLink,
-			'joinTable' => $joinTable,
-			'rightLink' => $rightLink,
-		));
+		$properties['primaryModel'] = $this;
+		$properties['modelClass'] = $class;
+		$properties['link'] = $link;
+		$properties['multiple'] = true;
+		return new ActiveRelation($properties);
 	}
 
 	/**

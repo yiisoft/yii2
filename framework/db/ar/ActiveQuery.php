@@ -10,6 +10,9 @@
 
 namespace yii\db\ar;
 
+use yii\db\dao\Connection;
+use yii\db\dao\Command;
+use yii\db\dao\QueryBuilder;
 use yii\db\dao\BaseQuery;
 use yii\base\VectorIterator;
 use yii\db\dao\Expression;
@@ -24,10 +27,10 @@ class ActiveQuery extends BaseQuery
 	/**
 	 * @var array list of relations that this query should be performed with
 	 */
-	public $with = array();
+	public $with;
 	/**
-	 * @var string the name of the column that the result should be indexed by.
-	 * This is only useful when the query result is returned as an array.
+	 * @var string the name of the column by which the query result should be indexed.
+	 * This is only used when the query result is returned as an array when calling [[all()]].
 	 */
 	public $index;
 	/**
@@ -38,7 +41,7 @@ class ActiveQuery extends BaseQuery
 	/**
 	 * @var array list of scopes that should be applied to this query
 	 */
-	public $scopes = array();
+	public $scopes;
 	/**
 	 * @var string the SQL statement to be executed for retrieving AR records.
 	 * This is set by [[ActiveRecord::findBySql()]].
@@ -61,19 +64,30 @@ class ActiveQuery extends BaseQuery
 	 */
 	public function all()
 	{
-		return $this->find();
+		$command = $this->createCommand();
+		$rows = $command->queryAll();
+		$models = $this->createModels($rows);
+		if (empty($this->with)) {
+			return $models;
+		}
 	}
 
 	/**
 	 * Executes query and returns a single row of result.
-	 * @return null|array|ActiveRecord the single row of query result. Depending on the setting of [[asArray]],
-	 * the query result may be either an array or an ActiveRecord object. Null will be returned
+	 * @return ActiveRecord|array|boolean a single row of query result. Depending on the setting of [[asArray]],
+	 * the query result may be either an array or an ActiveRecord object. False will be returned
 	 * if the query results in nothing.
 	 */
 	public function one()
 	{
-		$records = $this->find();
-		return isset($records[0]) ? $records[0] : null;
+		$command = $this->createCommand();
+		$row = $command->queryRow();
+		if ($row === false || $this->asArray) {
+			return $row;
+		} else {
+			$class = $this->modelClass;
+			return $class::create($row);
+		}
 	}
 
 	/**
@@ -84,7 +98,7 @@ class ActiveQuery extends BaseQuery
 	 */
 	public function value()
 	{
-		return $this->createFinder()->find($this, true);
+		return $this->createCommand()->queryScalar();
 	}
 
 	/**
@@ -97,14 +111,38 @@ class ActiveQuery extends BaseQuery
 	}
 
 	/**
-	 * Returns the database connection used by this query.
-	 * This method returns the connection used by the [[modelClass]].
-	 * @return \yii\db\dao\Connection the database connection used by this query
+	 * Creates a DB command that can be used to execute this query.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return Command the created DB command instance.
 	 */
-	public function getDbConnection()
+	public function createCommand($db = null)
 	{
-		$class = $this->modelClass;
-		return $class::getDbConnection();
+		$modelClass = $this->modelClass;
+		if ($db === null) {
+			$db = $modelClass::getDbConnection();
+		}
+		if ($this->sql === null) {
+			if ($this->from === null) {
+				$tableName = $modelClass::tableName();
+				$this->from = array($tableName);
+			}
+			if (!empty($this->scopes)) {
+				foreach ($this->scopes as $name => $config) {
+					if (is_integer($name)) {
+						$modelClass::$config($this);
+					} else {
+						array_unshift($config, $this);
+						call_user_func_array(array($modelClass, $name), $config);
+					}
+				}
+			}
+			/** @var $qb QueryBuilder */
+			$qb = $db->getQueryBuilder();
+			return $db->createCommand($qb->build($this), $this->params);
+		} else {
+			return $db->createCommand($this->sql, $this->params);
+		}
 	}
 
 	public function asArray($value = true)
@@ -135,45 +173,24 @@ class ActiveQuery extends BaseQuery
 		return $this;
 	}
 
-	/**
-	 * Sets the parameters about query caching.
-	 * This is a shortcut method to {@link CDbConnection::cache()}.
-	 * It changes the query caching parameter of the {@link dbConnection} instance.
-	 * @param integer $duration the number of seconds that query results may remain valid in cache.
-	 * If this is 0, the caching will be disabled.
-	 * @param \yii\caching\Dependency $dependency the dependency that will be used when saving the query results into cache.
-	 * @param integer $queryCount number of SQL queries that need to be cached after calling this method. Defaults to 1,
-	 * meaning that the next SQL query will be cached.
-	 * @return ActiveRecord the active record instance itself.
-	 */
-	public function cache($duration, $dependency = null, $queryCount = 1)
-	{
-		$this->getDbConnection()->cache($duration, $dependency, $queryCount);
-		return $this;
-	}
-
 	protected function find()
 	{
 		$modelClass = $this->modelClass;
 		/**
-		 * @var ActiveRecord $model
-		 */
-		$model = $modelClass::model();
-		/**
 		 * @var \yii\db\dao\Connection $db
 		 */
-		$db = $model->getDbConnection();
+		$db = $modelClass::getDbConnection();
 		if ($this->sql === null) {
 			if ($this->from === null) {
-				$tableName = $model->getTableSchema()->name;
+				$tableName = $modelClass::getTableSchema()->name;
 				$this->from = array($tableName);
 			}
 			foreach ($this->scopes as $name => $config) {
 				if (is_integer($name)) {
-					$model->$config($this);
+					$modelClass::$config($this);
 				} else {
 					array_unshift($config, $this);
-					call_user_func_array(array($model, $name), $config);
+					call_user_func_array(array($modelClass, $name), $config);
 				}
 			}
 			$this->sql = $db->getQueryBuilder()->build($this);
@@ -203,5 +220,32 @@ class ActiveQuery extends BaseQuery
 		}
 
 		return $records;
+	}
+
+	protected function createModels($rows)
+	{
+		$models = array();
+		if ($this->asArray) {
+			if ($this->index === null) {
+				return $rows;
+			}
+			foreach ($rows as $row) {
+				$models[$row[$this->index]] = $row;
+			}
+		} else {
+			/** @var $class ActiveRecord */
+			$class = $this->modelClass;
+			if ($this->index === null) {
+				foreach ($rows as $row) {
+					$models[] = $class::create($row);
+				}
+			} else {
+				foreach ($rows as $row) {
+					$model = $class::create($row);
+					$models[$model->{$this->index}] = $model;
+				}
+			}
+		}
+		return $models;
 	}
 }
