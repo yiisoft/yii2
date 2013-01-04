@@ -16,110 +16,110 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		ActiveRecord::$db = $this->getConnection();
 	}
 
-	public function testFind()
-	{
-		// find one
-		$result = Customer::find();
-		$this->assertTrue($result instanceof ActiveQuery);
-		$customer = $result->one();
-		$this->assertTrue($customer instanceof Customer);
-
-		// find all
-		$result = Customer::find();
-		$customers = $result->all();
-		$this->assertEquals(3, count($customers));
-		$this->assertTrue($customers[0] instanceof Customer);
-		$this->assertTrue($customers[1] instanceof Customer);
-		$this->assertTrue($customers[2] instanceof Customer);
-
-		// find by a single primary key
-		$customer = Customer::find(2);
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
-
-		// find by attributes
-		$customer = Customer::find()->where(array('name' => 'user2'))->one();
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals(2, $customer->id);
-
-		// find by Query array
-		$query = array(
-			'where' => 'id=:id',
-			'params' => array(':id' => 2),
-		);
-		$customer = Customer::find($query)->one();
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
-
-		// find count
-		$this->assertEquals(3, Customer::count()->value());
-		$this->assertEquals(2, Customer::count(array(
-			'where' => 'id=1 OR id=2',
-		))->value());
-		$this->assertEquals(2, Customer::find()->select('COUNT(*)')->where('id=1 OR id=2')->value());
-	}
-
-	public function testFindBySql()
-	{
-		// find one
-		$customer = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC')->one();
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user3', $customer->name);
-
-		// find all
-		$customers = Customer::findBySql('SELECT * FROM tbl_customer')->all();
-		$this->assertEquals(3, count($customers));
-
-		// find with parameter binding
-		$customer = Customer::findBySql('SELECT * FROM tbl_customer WHERE id=:id', array(':id' => 2))->one();
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
-	}
-
-	public function testScope()
-	{
-		$customers = Customer::find(array(
-			'scopes' => array('active'),
-		))->all();
-		$this->assertEquals(2, count($customers));
-
-		$customers = Customer::find()->active()->all();
-		$this->assertEquals(2, count($customers));
-	}
-
-	public function testFindLazy()
-	{
-		/** @var $customer Customer */
-		$customer = Customer::find(2);
-		$orders = $customer->orders;
-		$this->assertEquals(2, count($orders));
-
-		$orders = $customer->orders()->where('id=3')->all();
-		$this->assertEquals(1, count($orders));
-		$this->assertEquals(3, $orders[0]->id);
-	}
-
-	public function testFindEager()
-	{
-		$customers = Customer::find()->with('orders')->all();
-		$this->assertEquals(3, count($customers));
-		$this->assertEquals(1, count($customers[0]->orders));
-		$this->assertEquals(2, count($customers[1]->orders));
-	}
-
-	public function testFindLazyVia()
-	{
-		/** @var $order Order */
-		$order = Order::find(1);
-		$this->assertEquals(1, $order->id);
-		$this->assertEquals(2, count($order->items));
-		$this->assertEquals(1, $order->items[0]->id);
-		$this->assertEquals(2, $order->items[1]->id);
-
-		$order = Order::find(1);
-		$order->id = 100;
-		$this->assertEquals(array(), $order->items);
-	}
+//	public function testFind()
+//	{
+//		// find one
+//		$result = Customer::find();
+//		$this->assertTrue($result instanceof ActiveQuery);
+//		$customer = $result->one();
+//		$this->assertTrue($customer instanceof Customer);
+//
+//		// find all
+//		$result = Customer::find();
+//		$customers = $result->all();
+//		$this->assertEquals(3, count($customers));
+//		$this->assertTrue($customers[0] instanceof Customer);
+//		$this->assertTrue($customers[1] instanceof Customer);
+//		$this->assertTrue($customers[2] instanceof Customer);
+//
+//		// find by a single primary key
+//		$customer = Customer::find(2);
+//		$this->assertTrue($customer instanceof Customer);
+//		$this->assertEquals('user2', $customer->name);
+//
+//		// find by attributes
+//		$customer = Customer::find()->where(array('name' => 'user2'))->one();
+//		$this->assertTrue($customer instanceof Customer);
+//		$this->assertEquals(2, $customer->id);
+//
+//		// find by Query array
+//		$query = array(
+//			'where' => 'id=:id',
+//			'params' => array(':id' => 2),
+//		);
+//		$customer = Customer::find($query)->one();
+//		$this->assertTrue($customer instanceof Customer);
+//		$this->assertEquals('user2', $customer->name);
+//
+//		// find count
+//		$this->assertEquals(3, Customer::count()->value());
+//		$this->assertEquals(2, Customer::count(array(
+//			'where' => 'id=1 OR id=2',
+//		))->value());
+//		$this->assertEquals(2, Customer::find()->select('COUNT(*)')->where('id=1 OR id=2')->value());
+//	}
+//
+//	public function testFindBySql()
+//	{
+//		// find one
+//		$customer = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC')->one();
+//		$this->assertTrue($customer instanceof Customer);
+//		$this->assertEquals('user3', $customer->name);
+//
+//		// find all
+//		$customers = Customer::findBySql('SELECT * FROM tbl_customer')->all();
+//		$this->assertEquals(3, count($customers));
+//
+//		// find with parameter binding
+//		$customer = Customer::findBySql('SELECT * FROM tbl_customer WHERE id=:id', array(':id' => 2))->one();
+//		$this->assertTrue($customer instanceof Customer);
+//		$this->assertEquals('user2', $customer->name);
+//	}
+//
+//	public function testScope()
+//	{
+//		$customers = Customer::find(array(
+//			'scopes' => array('active'),
+//		))->all();
+//		$this->assertEquals(2, count($customers));
+//
+//		$customers = Customer::find()->active()->all();
+//		$this->assertEquals(2, count($customers));
+//	}
+//
+//	public function testFindLazy()
+//	{
+//		/** @var $customer Customer */
+//		$customer = Customer::find(2);
+//		$orders = $customer->orders;
+//		$this->assertEquals(2, count($orders));
+//
+//		$orders = $customer->orders()->where('id=3')->all();
+//		$this->assertEquals(1, count($orders));
+//		$this->assertEquals(3, $orders[0]->id);
+//	}
+//
+//	public function testFindEager()
+//	{
+//		$customers = Customer::find()->with('orders')->all();
+//		$this->assertEquals(3, count($customers));
+//		$this->assertEquals(1, count($customers[0]->orders));
+//		$this->assertEquals(2, count($customers[1]->orders));
+//	}
+//
+//	public function testFindLazyVia()
+//	{
+//		/** @var $order Order */
+//		$order = Order::find(1);
+//		$this->assertEquals(1, $order->id);
+//		$this->assertEquals(2, count($order->items));
+//		$this->assertEquals(1, $order->items[0]->id);
+//		$this->assertEquals(2, $order->items[1]->id);
+//
+//		$order = Order::find(1);
+//		$order->id = 100;
+//		$this->assertEquals(array(), $order->items);
+//	}
 
 	public function testFindEagerVia()
 	{

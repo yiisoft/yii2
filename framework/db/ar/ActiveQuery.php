@@ -235,6 +235,7 @@ class ActiveQuery extends BaseQuery
 			if ($relation->via !== null) {
 				$viaName = $relation->via;
 				$viaQuery = $primaryModel->$viaName();
+				$viaQuery->primaryModel = null;
 				$relation->findWith($name, $models, $viaQuery);
 			} else {
 				$relation->findWith($name, $models);

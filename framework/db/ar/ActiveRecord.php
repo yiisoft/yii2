@@ -382,8 +382,8 @@ abstract class ActiveRecord extends Model
 	{
 		if (strpos($class, '\\') === false) {
 			$primaryClass = get_class($this);
-			if (strpos($primaryClass, '\\') !== false) {
-				$class = dirname($primaryClass) . '\\' . $class;
+			if (($pos = strrpos($primaryClass, '\\')) !== false) {
+				$class = substr($primaryClass, 0, $pos + 1) . $class;
 			}
 		}
 

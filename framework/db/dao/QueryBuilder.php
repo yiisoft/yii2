@@ -588,7 +588,6 @@ class QueryBuilder extends \yii\base\Object
 				}
 			}
 		}
-
 		if (strpos($column, '(') === false) {
 			$column = $this->quoteColumnName($column);
 		}
