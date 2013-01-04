@@ -19,22 +19,18 @@ namespace yii\db\ar;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveRelation extends BaseActiveQuery
+class ActiveRelation extends ActiveQuery
 {
 	/**
-	 * @var string the class name of the ActiveRecord instances that this relation
-	 * should create and populate query results into
-	 */
-	public $modelClass;
-	/**
-	 * @var ActiveRecord the primary record that this relation is associated with.
+	 * @var ActiveRecord the primary model that this relation is associated with.
 	 * This is used only in lazy loading with dynamic query options.
 	 */
 	public $primaryModel;
 	/**
-	 * @var boolean whether this relation is a one-many relation
+	 * @var boolean whether this relation should populate all query results into AR instances.
+	 * If false, only the first row of the results will be taken.
 	 */
-	public $hasMany;
+	public $multiple;
 	/**
 	 * @var array the columns of the primary and foreign tables that establish the relation.
 	 * The array keys must be columns of the table for this relation, and the array values
@@ -47,78 +43,85 @@ class ActiveRelation extends BaseActiveQuery
 	 */
 	public $via;
 
-	public function one()
+	public function createCommand($db = null)
 	{
-		$models = $this->all();
-		return isset($models[0]) ? $models[0] : null;
+		if ($this->primaryModel !== null) {
+			$this->filterByPrimaryModels(array($this->primaryModel));
+		}
+		return parent::createCommand($db);
 	}
 
-	public function all()
-	{
-		$models = array();
-		return $models;
-	}
-
-	public function findWith($name, &$primaryRecords)
+	public function findWith($name, &$primaryModels)
 	{
 		if (empty($this->link) || !is_array($this->link)) {
 			throw new \yii\base\Exception('invalid link');
 		}
-		$this->addLinkCondition($primaryRecords);
-		$records = $this->find();
+		$this->filterByPrimaryModels($primaryModels);
 
-		/** @var array $map mapping key(s) to index of $primaryRecords */
-		$index = $this->buildRecordIndex($primaryRecords, array_values($this->link));
-		$this->initRecordRelation($primaryRecords, $name);
-		foreach ($records as $record) {
-			$key = $this->getRecordKey($record, array_keys($this->link));
-			if (isset($index[$key])) {
-				$primaryRecords[$map[$key]][$name] = $record;
+		if (count($primaryModels) === 1 && !$this->multiple) {
+			foreach ($primaryModels as $i => $primaryModel) {
+				$primaryModels[$i][$name] = $this->one();
+			}
+		} else {
+			$models = $this->all();
+			// distribute models into buckets which are indexed by the link keys
+			$buckets = array();
+			foreach ($models as $i => $model) {
+				$key = $this->getModelKey($model, array_keys($this->link));
+				if ($this->index !== null) {
+					$buckets[$key][$i] = $model;
+				} else {
+					$buckets[$key][] = $model;
+				}
+			}
+			if (!$this->multiple) {
+				foreach ($buckets as $i => $bucket) {
+					$buckets[$i] = reset($bucket);
+				}
+			}
+			foreach ($primaryModels as $i => $primaryModel) {
+				$key = $this->getModelKey($primaryModel, array_values($this->link));
+				if (isset($buckets[$key])) {
+					$primaryModels[$i][$name] = $buckets[$key];
+				} else {
+					$primaryModels[$i][$name] = $this->multiple ? array() : null;
+				}
 			}
 		}
 	}
 
-	protected function getRecordKey($record, $attributes)
+	protected function getModelKey($model, $attributes)
 	{
-		if (isset($attributes[1])) {
+		if (count($attributes) > 1) {
 			$key = array();
 			foreach ($attributes as $attribute) {
-				$key[] = is_array($record) ? $record[$attribute] : $record->$attribute;
+				$key[] = $model[$attribute];
 			}
 			return serialize($key);
 		} else {
-			$attribute = $attributes[0];
-			return is_array($record) ? $record[$attribute] : $record->$attribute;
+			$attribute = reset($attributes);
+			return $model[$attribute];
 		}
 	}
 
-	protected function buildRecordIndex($records, $attributes)
-	{
-		$map = array();
-		foreach ($records as $i => $record) {
-			$map[$this->getRecordKey($record, $attributes)] = $i;
-		}
-		return $map;
-	}
-
-	protected function addLinkCondition($primaryRecords)
+	protected function filterByPrimaryModels($primaryModels)
 	{
 		$attributes = array_keys($this->link);
 		$values = array();
 		if (isset($links[1])) {
 			// composite keys
-			foreach ($primaryRecords as $record) {
+			foreach ($primaryModels as $model) {
 				$v = array();
 				foreach ($this->link as $attribute => $link) {
-					$v[$attribute] = is_array($record) ? $record[$link] : $record->$link;
+					$v[$attribute] = is_array($model) ? $model[$link] : $model->$link;
 				}
 				$values[] = $v;
 			}
 		} else {
 			// single key
 			$attribute = $this->link[$links[0]];
-			foreach ($primaryRecords as $record) {
-				$values[] = is_array($record) ? $record[$attribute] : $record->$attribute;
+			foreach ($primaryModels as $model) {
+				$values[] = is_array($model) ? $model[$attribute] : $model->$attribute;
 			}
 		}
 		$this->andWhere(array('in', $attributes, $values));

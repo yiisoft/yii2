@@ -66,27 +66,38 @@ class ActiveQuery extends BaseQuery
 	{
 		$command = $this->createCommand();
 		$rows = $command->queryAll();
-		$models = $this->createModels($rows);
-		if (empty($this->with)) {
-			return $models;
+		if ($rows === array()) {
+			return array();
 		}
+		$models = $this->createModels($rows);
+		if (!empty($this->with)) {
+			$this->fetchRelatedModels($models, $this->with);
+		}
+		return $models;
 	}
 
 	/**
 	 * Executes query and returns a single row of result.
-	 * @return ActiveRecord|array|boolean a single row of query result. Depending on the setting of [[asArray]],
-	 * the query result may be either an array or an ActiveRecord object. False will be returned
+	 * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
+	 * the query result may be either an array or an ActiveRecord object. Null will be returned
 	 * if the query results in nothing.
 	 */
 	public function one()
 	{
 		$command = $this->createCommand();
 		$row = $command->queryRow();
-		if ($row === false || $this->asArray) {
+		if ($row === false) {
+			return false;
+		} elseif ($this->asArray) {
 			return $row;
 		} else {
+			/** @var $class ActiveRecord */
 			$class = $this->modelClass;
-			return $class::create($row);
+			$model = $class::create($row);
+			if (!empty($this->with)) {
+				$this->fetchRelatedModels(array($model), $this->with);
+			}
+			return $model;
 		}
 	}
 
@@ -107,7 +118,8 @@ class ActiveQuery extends BaseQuery
 	 */
 	public function exists()
 	{
-		return $this->select(array(new Expression('1')))->value() !== false;
+		$this->select = array(new Expression('1'));
+		return $this->value() !== false;
 	}
 
 	/**
@@ -118,6 +130,7 @@ class ActiveQuery extends BaseQuery
 	 */
 	public function createCommand($db = null)
 	{
+		/** @var $modelClass ActiveRecord */
 		$modelClass = $this->modelClass;
 		if ($db === null) {
 			$db = $modelClass::getDbConnection();
@@ -139,10 +152,9 @@ class ActiveQuery extends BaseQuery
 			}
 			/** @var $qb QueryBuilder */
 			$qb = $db->getQueryBuilder();
-			return $db->createCommand($qb->build($this), $this->params);
-		} else {
-			return $db->createCommand($this->sql, $this->params);
+			$this->sql = $qb->build($this);
 		}
+		return $db->createCommand($this->sql, $this->params);
 	}
 
 	public function asArray($value = true)
@@ -173,55 +185,6 @@ class ActiveQuery extends BaseQuery
 		return $this;
 	}
 
-	protected function find()
-	{
-		$modelClass = $this->modelClass;
-		/**
-		 * @var \yii\db\dao\Connection $db
-		 */
-		$db = $modelClass::getDbConnection();
-		if ($this->sql === null) {
-			if ($this->from === null) {
-				$tableName = $modelClass::getTableSchema()->name;
-				$this->from = array($tableName);
-			}
-			foreach ($this->scopes as $name => $config) {
-				if (is_integer($name)) {
-					$modelClass::$config($this);
-				} else {
-					array_unshift($config, $this);
-					call_user_func_array(array($modelClass, $name), $config);
-				}
-			}
-			$this->sql = $db->getQueryBuilder()->build($this);
-		}
-		$command = $db->createCommand($this->sql, $this->params);
-		$rows = $command->queryAll();
-		$records = $this->createRecords($rows);
-		if ($records !== array()) {
-			foreach ($this->with as $name => $config) {
-				/** @var Relation $relation */
-				$relation = $model->$name();
-				foreach ($config as $p => $v) {
-					$relation->$p = $v;
-				}
-				if ($relation->asArray === null) {
-					// inherit asArray from parent query
-					$relation->asArray = $this->asArray;
-				}
-				$rs = $relation->findWith($records);
-				/*
-				foreach ($rs as $r) {
-					// find the matching parent record(s)
-					// insert into the parent records(s)
-				}
-				*/
-			}
-		}
-
-		return $records;
-	}
-
 	protected function createModels($rows)
 	{
 		$models = array();
@@ -247,5 +210,27 @@ class ActiveQuery extends BaseQuery
 			}
 		}
 		return $models;
+	}
+
+	protected function fetchRelatedModels(&$models, $relations)
+	{
+		// todo: normalize $relations
+		$primaryModel = new $this->modelClass;
+		foreach ($relations as $name => $properties) {
+			if (!method_exists($primaryModel, $name)) {
+				throw new Exception("Unknown relation: $name");
+			}
+			/** @var $relation ActiveRelation */
+			$relation = $primaryModel->$name();
+			$relation->primaryModel = null;
+			foreach ($properties as $p => $v) {
+				$relation->$p = $v;
+			}
+			if ($relation->asArray === null) {
+				// inherit asArray from primary query
+				$relation->asArray = $this->asArray;
+			}
+			$relation->findWith($name, $models);
+		}
 	}
 }

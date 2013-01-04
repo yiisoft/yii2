@@ -544,6 +544,7 @@ class BaseQuery extends \yii\base\Component
 			'where', 'limit', 'offset', 'orderBy', 'groupBy',
 			'join', 'having', 'union', 'params',
 		);
+		// todo: incorrect, do we need it? should we provide a configure() method instead?
 		foreach ($properties as $name => $value) {
 			if ($value !== null) {
 				$this->$name = $value;

@@ -101,9 +101,9 @@ abstract class ActiveRecord extends Model
 	 *    corresponding record.
 	 *  - an array of name-value pairs: it will be used to configure the [[ActiveQuery]] object.
 	 *
-	 * @return ActiveQuery|ActiveRecord|null the [[ActiveQuery]] instance for query purpose, or
+	 * @return ActiveQuery|ActiveRecord|boolean the [[ActiveQuery]] instance for query purpose, or
 	 * the ActiveRecord object when a scalar is passed to this method which is considered to be a
-	 * primary key value (null will be returned if no record is found in this case.)
+	 * primary key value (false will be returned if no record is found in this case.)
 	 */
 	public static function find($q = null)
 	{
