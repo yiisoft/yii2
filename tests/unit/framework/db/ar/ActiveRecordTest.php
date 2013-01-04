@@ -52,11 +52,11 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals('user2', $customer->name);
 
 		// find count
-//		$this->assertEquals(3, Customer::count());
-//		$this->assertEquals(2, Customer::count(array(
-//			'where' => 'id=1 OR id=2',
-//		)));
-//		$this->assertEquals(2, Customer::find()->select('COUNT(*)')->where('id=1 OR id=2')->value());
+		$this->assertEquals(3, Customer::count()->value());
+		$this->assertEquals(2, Customer::count(array(
+			'where' => 'id=1 OR id=2',
+		))->value());
+		$this->assertEquals(2, Customer::find()->select('COUNT(*)')->where('id=1 OR id=2')->value());
 	}
 
 	public function testFindBySql()
@@ -86,25 +86,52 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$customers = Customer::find()->active()->all();
 		$this->assertEquals(2, count($customers));
 	}
-//
-//	public function testFindLazy()
-//	{
-//		$customer = Customer::find(2);
-//		$orders = $customer->orders;
-//		$this->assertEquals(2, count($orders));
-//
-//		$orders = $customer->orders()->where('id=3')->all();
-//		$this->assertEquals(1, count($orders));
-//		$this->assertEquals(3, $orders[0]->id);
-//	}
-//
-//	public function testFindEager()
-//	{
-//		$customers = Customer::find()->with('orders')->all();
-//		$this->assertEquals(3, count($customers));
-//		$this->assertEquals(1, count($customers[0]->orders));
-//		$this->assertEquals(2, count($customers[1]->orders));
-//	}
+
+	public function testFindLazy()
+	{
+		/** @var $customer Customer */
+		$customer = Customer::find(2);
+		$orders = $customer->orders;
+		$this->assertEquals(2, count($orders));
+
+		$orders = $customer->orders()->where('id=3')->all();
+		$this->assertEquals(1, count($orders));
+		$this->assertEquals(3, $orders[0]->id);
+	}
+
+	public function testFindEager()
+	{
+		$customers = Customer::find()->with('orders')->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertEquals(1, count($customers[0]->orders));
+		$this->assertEquals(2, count($customers[1]->orders));
+	}
+
+	public function testFindLazyVia()
+	{
+		/** @var $order Order */
+		$order = Order::find(1);
+		$this->assertEquals(1, $order->id);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(1, $order->items[0]->id);
+		$this->assertEquals(2, $order->items[1]->id);
+
+		$order = Order::find(1);
+		$order->id = 100;
+		$this->assertEquals(array(), $order->items);
+	}
+
+	public function testFindEagerVia()
+	{
+		$orders = Order::find()->with('items')->orderBy('id')->all();
+		$this->assertEquals(3, count($orders));
+		$order = $orders[0];
+		$this->assertEquals(1, $order->id);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(1, $order->items[0]->id);
+		$this->assertEquals(2, $order->items[1]->id);
+	}
+
 
 //	public function testInsert()
 //	{

@@ -214,6 +214,11 @@ class ActiveQuery extends BaseQuery
 		// todo: normalize $relations
 		$primaryModel = new $this->modelClass;
 		foreach ($relations as $name => $properties) {
+			if (is_integer($name)) {
+				$name = $properties;
+				$properties = array();
+			}
+
 			if (!method_exists($primaryModel, $name)) {
 				throw new Exception("Unknown relation: $name");
 			}
@@ -227,7 +232,13 @@ class ActiveQuery extends BaseQuery
 				// inherit asArray from primary query
 				$relation->asArray = $this->asArray;
 			}
-			$relation->findWith($name, $models);
+			if ($relation->via !== null) {
+				$viaName = $relation->via;
+				$viaQuery = $primaryModel->$viaName();
+				$relation->findWith($name, $models, $viaQuery);
+			} else {
+				$relation->findWith($name, $models);
+			}
 		}
 	}
 }

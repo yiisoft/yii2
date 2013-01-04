@@ -568,7 +568,7 @@ class QueryBuilder extends \yii\base\Object
 		$values = (array)$values;
 
 		if ($values === array() || $column === array()) {
-			return $operator === 'in' ? '0=1' : '';
+			return $operator === 'IN' ? '0=1' : '';
 		}
 
 		if (is_array($column)) {
@@ -593,7 +593,12 @@ class QueryBuilder extends \yii\base\Object
 			$column = $this->quoteColumnName($column);
 		}
 
-		return "$column $operator (" . implode(', ', $values) . ')';
+		if (count($values) > 1) {
+			return "$column $operator (" . implode(', ', $values) . ')';
+		} else {
+			$operator = $operator === 'IN' ? '=' : '<>';
+			return "$column$operator{$values[0]}";
+		}
 	}
 
 	protected function buildCompositeInCondition($operator, $columns, $values)

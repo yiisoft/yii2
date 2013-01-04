@@ -172,7 +172,8 @@ abstract class ActiveRecord extends Model
 			}
 		} elseif ($q !== null) {
 			$query->select = array($q);
-		} elseif ($query->select === null) {
+		}
+		if ($query->select === null) {
 			$query->select = array('COUNT(*)');
 		}
 		return $query;
@@ -300,7 +301,7 @@ abstract class ActiveRecord extends Model
 			return null;
 		} elseif (method_exists($this, $name)) {
 			// related records
-			if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+			if (isset($this->_related[$name]) || isset($this->_related) && array_key_exists($name, $this->_related)) {
 				return $this->_related[$name];
 			} else {
 				// lazy loading related records
@@ -379,8 +380,15 @@ abstract class ActiveRecord extends Model
 	 */
 	public function hasOne($class, $link, $properties = array())
 	{
-		$properties['primaryModel'] = $this;
+		if (strpos($class, '\\') === false) {
+			$primaryClass = get_class($this);
+			if (strpos($primaryClass, '\\') !== false) {
+				$class = dirname($primaryClass) . '\\' . $class;
+			}
+		}
+
 		$properties['modelClass'] = $class;
+		$properties['primaryModel'] = $this;
 		$properties['link'] = $link;
 		$properties['multiple'] = false;
 		return new ActiveRelation($properties);
@@ -400,11 +408,9 @@ abstract class ActiveRecord extends Model
 	 */
 	public function hasMany($class, $link, $properties = array())
 	{
-		$properties['primaryModel'] = $this;
-		$properties['modelClass'] = $class;
-		$properties['link'] = $link;
-		$properties['multiple'] = true;
-		return new ActiveRelation($properties);
+		$relation = $this->hasOne($class, $link, $properties);
+		$relation->multiple = true;
+		return $relation;
 	}
 
 	/**

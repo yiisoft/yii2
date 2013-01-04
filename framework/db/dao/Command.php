@@ -365,7 +365,7 @@ class Command extends \yii\base\Component
 		}
 
 		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
-
+echo $sql."\n\n";
 		if ($db->queryCachingCount > 0 && $db->queryCachingDuration >= 0 && $method !== '') {
 			$cache = \Yii::$application->getComponent($db->queryCacheID);
 		}

@@ -49,7 +49,7 @@ class ActiveRelation extends ActiveQuery
 
 	public function via($modelClass, $properties = array())
 	{
-		$this->via = array($modelClass, $properties);
+		$this->via = $modelClass;
 		return $this;
 	}
 
@@ -65,9 +65,12 @@ class ActiveRelation extends ActiveQuery
 			if ($this->via !== null) {
 				/** @var $viaQuery ActiveRelation */
 				$viaName = $this->via;
-				$viaQuery = $this->$viaName();
-				$primaryModels = array($this->primaryModel);
-				$viaModels = $viaQuery->findWith($viaName, $primaryModels);
+				$viaModels = $this->primaryModel->$viaName;
+				if ($viaModels === null) {
+					$viaModels = array();
+				} elseif (!is_array($viaModels)) {
+					$viaModels = array($viaModels);
+				}
 				$this->filterByModels($viaModels);
 			} else {
 				$this->filterByModels(array($this->primaryModel));
@@ -76,17 +79,14 @@ class ActiveRelation extends ActiveQuery
 		return parent::createCommand();
 	}
 
-	public function findWith($name, &$primaryModels)
+	public function findWith($name, &$primaryModels, $viaQuery = null)
 	{
 		if (!is_array($this->link)) {
 			throw new \yii\base\Exception('invalid link');
 		}
 
-		if ($this->via !== null) {
-			/** @var $viaQuery ActiveRelation */
-			$viaName = $this->via;
-			$viaQuery = $this->$viaName();
-			$viaModels = $viaQuery->findWith($viaName, $primaryModels);
+		if ($viaQuery !== null) {
+			$viaModels = $viaQuery->findWith($this->via, $primaryModels);
 			$this->filterByModels($viaModels);
 		} else {
 			$this->filterByModels($primaryModels);
@@ -178,20 +178,20 @@ class ActiveRelation extends ActiveQuery
 	{
 		$attributes = array_keys($this->link);
 		$values = array();
-		if (isset($links[1])) {
+		if (count($attributes) ===1) {
+			// single key
+			$attribute = reset($this->link);
+			foreach ($models as $model) {
+				$values[] = $model[$attribute];
+			}
+		} else {
 			// composite keys
 			foreach ($models as $model) {
 				$v = array();
 				foreach ($this->link as $attribute => $link) {
-					$v[$attribute] = is_array($model) ? $model[$link] : $model->$link;
+					$v[$attribute] = $model[$link];
 				}
 				$values[] = $v;
-			}
-		} else {
-			// single key
-			$attribute = $this->link[$links[0]];
-			foreach ($models as $model) {
-				$values[] = is_array($model) ? $model[$attribute] : $model->$attribute;
 			}
 		}
 		$this->andWhere(array('in', $attributes, $values));
