@@ -95,7 +95,9 @@ class ActiveQuery extends BaseQuery
 			$class = $this->modelClass;
 			$model = $class::create($row);
 			if (!empty($this->with)) {
-				$this->fetchRelatedModels(array($model), $this->with);
+				$models = array($model);
+				$this->fetchRelatedModels($models, $this->with);
+				$model = $models[0];
 			}
 			return $model;
 		}

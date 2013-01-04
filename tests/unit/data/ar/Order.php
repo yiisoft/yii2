@@ -29,7 +29,7 @@ class Order extends ActiveRecord
 	public function books()
 	{
 		return $this->hasMany('Item', array('id' => 'item_id'))
-			->via('tbl_order_item', array('order_id' => 'id'))
+			->viaTable('tbl_order_item', array('order_id' => 'id'))
 			->where(array('category_id' => 1));
 	}
 }

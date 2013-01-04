@@ -39,9 +39,25 @@ class ActiveRelation extends ActiveQuery
 	 */
 	public $link;
 	/**
-	 * @var ActiveRelation
+	 * @var array
 	 */
 	public $via;
+	/**
+	 * @var array
+	 */
+	public $viaTable;
+
+	public function via($modelClass, $properties = array())
+	{
+		$this->via = array($modelClass, $properties);
+		return $this;
+	}
+
+	public function viaTable($tableName, $link, $properties = array())
+	{
+		$this->viaTable = array($tableName, $link, $properties);
+		return $this;
+	}
 
 	public function createCommand($db = null)
 	{
@@ -53,9 +69,13 @@ class ActiveRelation extends ActiveQuery
 
 	public function findWith($name, &$primaryModels)
 	{
-		if (empty($this->link) || !is_array($this->link)) {
+		if (!is_array($this->link)) {
 			throw new \yii\base\Exception('invalid link');
 		}
+
+		if ($this->via !== null) {
+		}
+
 		$this->filterByPrimaryModels($primaryModels);
 
 		if (count($primaryModels) === 1 && !$this->multiple) {
@@ -64,28 +84,32 @@ class ActiveRelation extends ActiveQuery
 			}
 		} else {
 			$models = $this->all();
-			// distribute models into buckets which are indexed by the link keys
-			$buckets = array();
-			foreach ($models as $i => $model) {
-				$key = $this->getModelKey($model, array_keys($this->link));
-				if ($this->index !== null) {
-					$buckets[$key][$i] = $model;
-				} else {
-					$buckets[$key][] = $model;
-				}
+			$this->bindModels($name, $primaryModels, $models);
+		}
+	}
+
+	protected function bindModels($name, &$primaryModels, $models)
+	{
+		$buckets = array();
+		foreach ($models as $i => $model) {
+			$key = $this->getModelKey($model, array_keys($this->link));
+			if ($this->index !== null) {
+				$buckets[$key][$i] = $model;
+			} else {
+				$buckets[$key][] = $model;
 			}
-			if (!$this->multiple) {
-				foreach ($buckets as $i => $bucket) {
-					$buckets[$i] = reset($bucket);
-				}
+		}
+		if (!$this->multiple) {
+			foreach ($buckets as $i => $bucket) {
+				$buckets[$i] = reset($bucket);
 			}
-			foreach ($primaryModels as $i => $primaryModel) {
-				$key = $this->getModelKey($primaryModel, array_values($this->link));
-				if (isset($buckets[$key])) {
-					$primaryModels[$i][$name] = $buckets[$key];
-				} else {
-					$primaryModels[$i][$name] = $this->multiple ? array() : null;
-				}
+		}
+		foreach ($primaryModels as $i => $primaryModel) {
+			$key = $this->getModelKey($primaryModel, array_values($this->link));
+			if (isset($buckets[$key])) {
+				$primaryModels[$i][$name] = $buckets[$key];
+			} else {
+				$primaryModels[$i][$name] = $this->multiple ? array() : null;
 			}
 		}
 	}
