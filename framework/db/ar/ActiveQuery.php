@@ -66,14 +66,15 @@ class ActiveQuery extends BaseQuery
 	{
 		$command = $this->createCommand();
 		$rows = $command->queryAll();
-		if ($rows === array()) {
+		if ($rows !== array()) {
+			$models = $this->createModels($rows);
+			if (!empty($this->with)) {
+				$this->fetchRelatedModels($models, $this->with);
+			}
+			return $models;
+		} else {
 			return array();
 		}
-		$models = $this->createModels($rows);
-		if (!empty($this->with)) {
-			$this->fetchRelatedModels($models, $this->with);
-		}
-		return $models;
 	}
 
 	/**
@@ -86,11 +87,7 @@ class ActiveQuery extends BaseQuery
 	{
 		$command = $this->createCommand();
 		$row = $command->queryRow();
-		if ($row === false) {
-			return false;
-		} elseif ($this->asArray) {
-			return $row;
-		} else {
+		if ($row !== false && !$this->asArray) {
 			/** @var $class ActiveRecord */
 			$class = $this->modelClass;
 			$model = $class::create($row);
@@ -100,6 +97,8 @@ class ActiveQuery extends BaseQuery
 				$model = $models[0];
 			}
 			return $model;
+		} else {
+			return $row === false ? null : $row;
 		}
 	}
 
@@ -126,17 +125,13 @@ class ActiveQuery extends BaseQuery
 
 	/**
 	 * Creates a DB command that can be used to execute this query.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
 	 * @return Command the created DB command instance.
 	 */
-	public function createCommand($db = null)
+	public function createCommand()
 	{
 		/** @var $modelClass ActiveRecord */
 		$modelClass = $this->modelClass;
-		if ($db === null) {
-			$db = $modelClass::getDbConnection();
-		}
+		$db = $modelClass::getDbConnection();
 		if ($this->sql === null) {
 			if ($this->from === null) {
 				$tableName = $modelClass::tableName();

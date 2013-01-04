@@ -878,7 +878,7 @@ abstract class ActiveRecord extends Model
 	public static function create($row)
 	{
 		$record = static::instantiate($row);
-		$columns = static::model()->getTableSchema()->columns;
+		$columns = static::getTableSchema()->columns;
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$record->_attributes[$name] = $value;

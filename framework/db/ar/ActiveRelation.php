@@ -59,12 +59,21 @@ class ActiveRelation extends ActiveQuery
 		return $this;
 	}
 
-	public function createCommand($db = null)
+	public function createCommand()
 	{
 		if ($this->primaryModel !== null) {
-			$this->filterByPrimaryModels(array($this->primaryModel));
+			if ($this->via !== null) {
+				/** @var $viaQuery ActiveRelation */
+				$viaName = $this->via;
+				$viaQuery = $this->$viaName();
+				$primaryModels = array($this->primaryModel);
+				$viaModels = $viaQuery->findWith($viaName, $primaryModels);
+				$this->filterByModels($viaModels);
+			} else {
+				$this->filterByModels(array($this->primaryModel));
+			}
 		}
-		return parent::createCommand($db);
+		return parent::createCommand();
 	}
 
 	public function findWith($name, &$primaryModels)
@@ -74,44 +83,81 @@ class ActiveRelation extends ActiveQuery
 		}
 
 		if ($this->via !== null) {
+			/** @var $viaQuery ActiveRelation */
+			$viaName = $this->via;
+			$viaQuery = $this->$viaName();
+			$viaModels = $viaQuery->findWith($viaName, $primaryModels);
+			$this->filterByModels($viaModels);
+		} else {
+			$this->filterByModels($primaryModels);
 		}
 
-		$this->filterByPrimaryModels($primaryModels);
-
 		if (count($primaryModels) === 1 && !$this->multiple) {
+			$model = $this->one();
 			foreach ($primaryModels as $i => $primaryModel) {
-				$primaryModels[$i][$name] = $this->one();
+				$primaryModels[$i][$name] = $model;
 			}
+			return array($model);
 		} else {
 			$models = $this->all();
-			$this->bindModels($name, $primaryModels, $models);
+			if (isset($viaModels, $viaQuery)) {
+				$buckets = $this->buildBuckets($models, $this->link, $viaModels, $viaQuery->link);
+			} else {
+				$buckets = $this->buildBuckets($models, $this->link);
+			}
+
+			foreach ($primaryModels as $i => $primaryModel) {
+				if (isset($viaQuery)) {
+					$key = $this->getModelKey($primaryModel, array_values($viaQuery->link));
+				} else {
+					$key = $this->getModelKey($primaryModel, array_values($this->link));
+				}
+				if (isset($buckets[$key])) {
+					$primaryModels[$i][$name] = $buckets[$key];
+				} else {
+					$primaryModels[$i][$name] = $this->multiple ? array() : null;
+				}
+			}
+			return $models;
 		}
 	}
 
-	protected function bindModels($name, &$primaryModels, $models)
+	protected function buildBuckets($models, $link, $viaModels = null, $viaLink = null)
 	{
 		$buckets = array();
 		foreach ($models as $i => $model) {
-			$key = $this->getModelKey($model, array_keys($this->link));
+			$key = $this->getModelKey($model, array_keys($link));
 			if ($this->index !== null) {
 				$buckets[$key][$i] = $model;
 			} else {
 				$buckets[$key][] = $model;
 			}
 		}
+
+		if ($viaModels !== null) {
+			$viaBuckets = array();
+			foreach ($viaModels as $viaModel) {
+				$key1 = $this->getModelKey($viaModel, array_keys($viaLink));
+				$key2 = $this->getModelKey($viaModel, array_values($link));
+				if (isset($buckets[$key2])) {
+					foreach ($buckets[$key2] as $i => $bucket) {
+						if ($this->index !== null) {
+							$viaBuckets[$key1][$i] = $bucket;
+						} else {
+							$viaBuckets[$key1][] = $bucket;
+						}
+					}
+				}
+			}
+			$buckets = $viaBuckets;
+		}
+
 		if (!$this->multiple) {
 			foreach ($buckets as $i => $bucket) {
 				$buckets[$i] = reset($bucket);
 			}
 		}
-		foreach ($primaryModels as $i => $primaryModel) {
-			$key = $this->getModelKey($primaryModel, array_values($this->link));
-			if (isset($buckets[$key])) {
-				$primaryModels[$i][$name] = $buckets[$key];
-			} else {
-				$primaryModels[$i][$name] = $this->multiple ? array() : null;
-			}
-		}
+		return $buckets;
 	}
 
 	protected function getModelKey($model, $attributes)
@@ -128,13 +174,13 @@ class ActiveRelation extends ActiveQuery
 		}
 	}
 
-	protected function filterByPrimaryModels($primaryModels)
+	protected function filterByModels($models)
 	{
 		$attributes = array_keys($this->link);
 		$values = array();
 		if (isset($links[1])) {
 			// composite keys
-			foreach ($primaryModels as $model) {
+			foreach ($models as $model) {
 				$v = array();
 				foreach ($this->link as $attribute => $link) {
 					$v[$attribute] = is_array($model) ? $model[$link] : $model->$link;
@@ -144,7 +190,7 @@ class ActiveRelation extends ActiveQuery
 		} else {
 			// single key
 			$attribute = $this->link[$links[0]];
-			foreach ($primaryModels as $model) {
+			foreach ($models as $model) {
 				$values[] = is_array($model) ? $model[$attribute] : $model->$attribute;
 			}
 		}

@@ -7,7 +7,7 @@ class Foo extends \yii\base\Object
 	public $prop;
 }
 
-class Bar extends \yii\base\Component implements \yii\base\Initable
+class Bar extends \yii\base\Component
 {
 	public $prop1;
 	public $prop2;
@@ -41,30 +41,6 @@ class ObjectTest extends \yiiunit\TestCase
 		$this->object = null;
 	}
 
-	public function testNewInstance()
-	{
-		$foo = Foo::newInstance(array(
-			'prop' => array(
-				'test' => 'test',
-			),
-		));
-
-		$this->assertEquals('test', $foo->prop['test']);
-
-		$bar = Bar::newInstance(array(), 10, 20);
-		$this->assertEquals(30, $bar->prop1);
-		$this->assertEquals(null, $bar->prop2);
-		$this->assertEquals(3, $bar->prop3);
-
-		$bar = Bar::newInstance(array(
-			'prop2' => 'x',
-			'prop3' => 400,
-		), 100, 200);
-		$this->assertEquals(300, $bar->prop1);
-		$this->assertEquals('x', $bar->prop2);
-		$this->assertEquals(3, $bar->prop3);
-	}
-
 	public function testHasProperty()
 	{
 		$this->assertTrue($this->object->hasProperty('Text'), "Component hasn't property Text");
@@ -88,19 +64,19 @@ class ObjectTest extends \yiiunit\TestCase
 
 	public function testGetProperty()
 	{
-		$this->assertTrue('default'===$this->object->Text);
-		$this->setExpectedException('yii\base\Exception');
-		$value2=$this->object->Caption;
+		$this->assertTrue('default' === $this->object->Text);
+		$this->setExpectedException('yii\base\BadPropertyException');
+		$value2 = $this->object->Caption;
 	}
 
 	public function testSetProperty()
 	{
-		$value='new value';
-		$this->object->Text=$value;
-		$text=$this->object->Text;
-		$this->assertTrue($value===$this->object->Text);
-		$this->setExpectedException('yii\base\Exception');
-		$this->object->NewMember=$value;
+		$value = 'new value';
+		$this->object->Text = $value;
+		$text = $this->object->Text;
+		$this->assertTrue($value === $this->object->Text);
+		$this->setExpectedException('yii\base\BadPropertyException');
+		$this->object->NewMember = $value;
 	}
 
 	public function testIsset()
@@ -112,7 +88,7 @@ class ObjectTest extends \yiiunit\TestCase
 		$this->assertFalse(isset($this->object->Text));
 		$this->assertFalse(!empty($this->object->Text));
 
-		$this->object->Text='';
+		$this->object->Text = '';
 		$this->assertTrue(isset($this->object->Text));
 		$this->assertTrue(empty($this->object->Text));
 	}
@@ -131,20 +107,19 @@ class NewObject extends \yii\base\Component
 
 	public function setText($value)
 	{
-		$this->_text=$value;
+		$this->_text = $value;
 	}
 
 	public function getObject()
 	{
-		if(!$this->_object)
-		{
-			$this->_object=new self;
-			$this->_object->_text='object text';
+		if (!$this->_object) {
+			$this->_object = new self;
+			$this->_object->_text = 'object text';
 		}
 		return $this->_object;
 	}
 
-	public function exprEvaluator($p1,$comp)
+	public function exprEvaluator($p1, $comp)
 	{
 		return "Hello $p1";
 	}

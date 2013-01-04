@@ -22,7 +22,7 @@ class Customer extends ActiveRecord
 	 * @param ActiveQuery $query
 	 * @return ActiveQuery
 	 */
-	public function active($query)
+	public static function active($query)
 	{
 		return $query->andWhere(array('status' => self::STATUS_ACTIVE));
 	}
