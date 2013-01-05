@@ -52,7 +52,7 @@ use yii\base\Exception;
  * @property CCache $cache Returns the cache component.
  * @property CPhpMessageSource $coreMessages Returns the core message translations.
  * @property CDateFormatter $dateFormatter Returns the locale-dependent date formatter.
- * @property \yii\db\dao\Connection $db Returns the database connection component.
+ * @property \yii\db\Connection $db Returns the database connection component.
  * @property CErrorHandler $errorHandler Returns the error handler component.
  * @property string $extensionPath Returns the root directory that holds all third-party extensions.
  * @property string $id Returns the unique identifier for the application.
@@ -324,7 +324,7 @@ class Application extends Module
 
 	/**
 	 * Returns the database connection component.
-	 * @return \yii\db\dao\Connection the database connection
+	 * @return \yii\db\Connection the database connection
 	 */
 	public function getDb()
 	{

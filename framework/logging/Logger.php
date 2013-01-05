@@ -190,7 +190,7 @@ class Logger extends \yii\base\Component
 	 * @param array $categories list of categories that you are interested in.
 	 * You can use an asterisk at the end of a category to do a prefix match.
 	 * For example, 'yii\db\*' will match categories starting with 'yii\db\',
-	 * such as 'yii\db\dao\Connection'.
+	 * such as 'yii\db\Connection'.
 	 * @param array $excludeCategories list of categories that you are interested in.
 	 * @return array the profiling results. Each array element has the following structure:
 	 *  `array($token, $category, $time)`.

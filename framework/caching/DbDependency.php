@@ -10,8 +10,8 @@
 namespace yii\caching;
 
 use yii\base\Exception;
-use yii\db\dao\Connection;
-use yii\db\dao\Query;
+use yii\db\Connection;
+use yii\db\Query;
 
 /**
  * DbDependency represents a dependency based on the query result of a SQL statement.

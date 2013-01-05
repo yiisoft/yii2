@@ -8,16 +8,16 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\ar;
+namespace yii\db;
 
 use yii\base\Model;
 use yii\base\Event;
 use yii\base\ModelEvent;
 use yii\db\Exception;
-use yii\db\dao\Connection;
-use yii\db\dao\TableSchema;
-use yii\db\dao\Query;
-use yii\db\dao\Expression;
+use yii\db\Connection;
+use yii\db\TableSchema;
+use yii\db\Query;
+use yii\db\Expression;
 use yii\util\StringHelper;
 
 /**

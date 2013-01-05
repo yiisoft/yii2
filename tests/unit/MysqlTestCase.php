@@ -13,12 +13,12 @@ class MysqlTestCase extends TestCase
 
 	/**
 	 * @param bool $reset whether to clean up the test database
-	 * @return \yii\db\dao\Connection
+	 * @return \yii\db\Connection
 	 */
 	function getConnection($reset = true)
 	{
 		$params = $this->getParam('mysql');
-		$db = new \yii\db\dao\Connection;
+		$db = new \yii\db\Connection;
 		$db->dsn = $params['dsn'];
 		$db->username = $params['username'];
 		$db->password = $params['password'];

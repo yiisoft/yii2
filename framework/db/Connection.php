@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\dao;
+namespace yii\db;
 
 use yii\db\Exception;
 
@@ -25,7 +25,7 @@ use yii\db\Exception;
  * the DB connection:
  *
  * ~~~
- * $connection = new \yii\db\dao\Connection(array(
+ * $connection = new \yii\db\Connection(array(
  *     'dsn' => $dsn,
  *     'username' => $username,
  *     'password' => $password,
@@ -76,7 +76,7 @@ use yii\db\Exception;
  * array(
  *	 'components' => array(
  *		 'db' => array(
- *			 'class' => '\yii\db\dao\Connection',
+ *			 'class' => '\yii\db\Connection',
  *			 'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
  *			 'username' => 'root',
  *			 'password' => '',
@@ -238,15 +238,15 @@ class Connection extends \yii\base\ApplicationComponent
 	 * [[Driver]] class to support DBMS that is not supported by Yii.
 	 */
 	public $driverMap = array(
-		'pgsql' => 'yii\db\dao\pgsql\Driver', // PostgreSQL
-		'mysqli' => 'yii\db\dao\mysql\Driver', // MySQL
-		'mysql' => 'yii\db\dao\mysql\Driver', // MySQL
-		'sqlite' => 'yii\db\dao\sqlite\Driver', // sqlite 3
-		'sqlite2' => 'yii\db\dao\sqlite\Driver', // sqlite 2
+		'pgsql' => 'yii\db\pgsql\Driver', // PostgreSQL
+		'mysqli' => 'yii\db\mysql\Driver', // MySQL
+		'mysql' => 'yii\db\mysql\Driver', // MySQL
+		'sqlite' => 'yii\db\sqlite\Driver', // sqlite 3
+		'sqlite2' => 'yii\db\sqlite\Driver', // sqlite 2
 		'mssql' => 'yi\db\dao\mssql\Driver', // Mssql driver on windows hosts
-		'dblib' => 'yii\db\dao\mssql\Driver', // dblib drivers on linux (and maybe others os) hosts
-		'sqlsrv' => 'yii\db\dao\mssql\Driver', // Mssql
-		'oci' => 'yii\db\dao\oci\Driver', // Oracle driver
+		'dblib' => 'yii\db\mssql\Driver', // dblib drivers on linux (and maybe others os) hosts
+		'sqlsrv' => 'yii\db\mssql\Driver', // Mssql
+		'oci' => 'yii\db\oci\Driver', // Oracle driver
 	);
 	/**
 	 * @var Transaction the currently active transaction
@@ -612,7 +612,7 @@ class Connection extends \yii\base\ApplicationComponent
 	public function getStats()
 	{
 		$logger = \Yii::getLogger();
-		$timings = $logger->getProfiling(array('yii\db\dao\Command::query', 'yii\db\dao\Command::execute'));
+		$timings = $logger->getProfiling(array('yii\db\Command::query', 'yii\db\Command::execute'));
 		$count = count($timings);
 		$time = 0;
 		foreach ($timings as $timing) {

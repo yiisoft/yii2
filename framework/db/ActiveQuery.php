@@ -8,14 +8,14 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\ar;
+namespace yii\db;
 
-use yii\db\dao\Connection;
-use yii\db\dao\Command;
-use yii\db\dao\QueryBuilder;
-use yii\db\dao\BaseQuery;
+use yii\db\Connection;
+use yii\db\Command;
+use yii\db\QueryBuilder;
+use yii\db\BaseQuery;
 use yii\base\VectorIterator;
-use yii\db\dao\Expression;
+use yii\db\Expression;
 use yii\db\Exception;
 
 class ActiveQuery extends BaseQuery

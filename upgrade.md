@@ -40,7 +40,7 @@ Upgrading from v1.1.x
 
 - `CFormModel` is removed. Please use `yii\base\Model` instead.
 
-- `CDbCriteria` is replaced by `yii\db\dao\Query` which includes methods for
-  building a query. `CDbCommandBuilder` is replaced by `yii\db\dao\QueryBuilder`
+- `CDbCriteria` is replaced by `yii\db\Query` which includes methods for
+  building a query. `CDbCommandBuilder` is replaced by `yii\db\QueryBuilder`
   which has cleaner and more complete support of query building capabilities.
 

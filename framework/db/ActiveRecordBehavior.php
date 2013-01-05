@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\ar;
+namespace yii\db;
 
 use yii\base\ModelBehavior;
 

@@ -2,8 +2,8 @@
 
 namespace yiiunit\framework\db\ar;
 
-use yii\db\dao\Query;
-use yii\db\ar\ActiveQuery;
+use yii\db\Query;
+use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\OrderItem;

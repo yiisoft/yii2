@@ -7,10 +7,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\dao\sqlite;
+namespace yii\db\sqlite;
 
-use yii\db\dao\TableSchema;
-use yii\db\dao\ColumnSchema;
+use yii\db\TableSchema;
+use yii\db\ColumnSchema;
 
 /**
  * Driver is the class for retrieving metadata from a SQLite (2/3) database.
@@ -18,7 +18,7 @@ use yii\db\dao\ColumnSchema;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Driver extends \yii\db\dao\Driver
+class Driver extends \yii\db\Driver
 {
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
@@ -76,7 +76,7 @@ class Driver extends \yii\db\dao\Driver
 	/**
 	 * Loads the metadata for the specified table.
 	 * @param string $name table name
-	 * @return \yii\db\dao\TableSchema driver dependent table metadata. Null if the table does not exist.
+	 * @return \yii\db\TableSchema driver dependent table metadata. Null if the table does not exist.
 	 */
 	protected function loadTableSchema($name)
 	{
@@ -92,7 +92,7 @@ class Driver extends \yii\db\dao\Driver
 
 	/**
 	 * Collects the table column metadata.
-	 * @param \yii\db\dao\TableSchema $table the table metadata
+	 * @param \yii\db\TableSchema $table the table metadata
 	 * @return boolean whether the table exists in the database
 	 */
 	protected function findColumns($table)
@@ -120,7 +120,7 @@ class Driver extends \yii\db\dao\Driver
 
 	/**
 	 * Collects the foreign key column details for the given table.
-	 * @param \yii\db\dao\TableSchema $table the table metadata
+	 * @param \yii\db\TableSchema $table the table metadata
 	 */
 	protected function findConstraints($table)
 	{
@@ -155,7 +155,7 @@ class Driver extends \yii\db\dao\Driver
 
 	/**
 	 * Resolves the abstract data type for the column.
-	 * @param \yii\db\dao\ColumnSchema $column the column metadata object
+	 * @param \yii\db\ColumnSchema $column the column metadata object
 	 */
 	public function resolveColumnType($column)
 	{
@@ -189,7 +189,7 @@ class Driver extends \yii\db\dao\Driver
 
 	/**
 	 * Resolves the default value for the column.
-	 * @param \yii\db\dao\ColumnSchema $column the column metadata object
+	 * @param \yii\db\ColumnSchema $column the column metadata object
 	 * @param string $value the default value fetched from database
 	 */
 	protected function resolveColumnDefault($column, $value)

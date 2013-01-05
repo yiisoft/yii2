@@ -23,7 +23,7 @@ namespace yii\logging;
 class DbTarget extends Target
 {
 	/**
-	 * @var string the ID of [[\yii\db\dao\Connection]] application component.
+	 * @var string the ID of [[\yii\db\Connection]] application component.
 	 * Defaults to 'db'. Please make sure that your database contains a table
 	 * whose name is as specified in [[tableName]] and has the required table structure.
 	 * @see tableName
@@ -31,7 +31,7 @@ class DbTarget extends Target
 	public $connectionID = 'db';
 	/**
 	 * @var string the name of the DB table that stores log messages. Defaults to '{{log}}'.
-	 * If you are using table prefix 'tbl_' (configured via [[\yii\db\dao\Connection::tablePrefix]]),
+	 * If you are using table prefix 'tbl_' (configured via [[\yii\db\Connection::tablePrefix]]),
 	 * it means the DB table would be named as 'tbl_log'.
 	 *
 	 * The DB table must have the following structure:
@@ -62,14 +62,14 @@ class DbTarget extends Target
 
 	/**
 	 * Returns the DB connection used for saving log messages.
-	 * @return \yii\db\dao\Connection the DB connection instance
+	 * @return \yii\db\Connection the DB connection instance
 	 * @throws \yii\base\Exception if [[connectionID]] does not refer to a valid application component ID.
 	 */
 	public function getDbConnection()
 	{
 		if ($this->_db === null) {
 			$this->_db = \Yii::$application->getComponent($this->connectionID);
-			if (!$this->_db instanceof \yii\db\dao\Connection) {
+			if (!$this->_db instanceof \yii\db\Connection) {
 				throw new \yii\base\Exception('DbTarget.connectionID must refer to a valid application component ID');
 			}
 		}

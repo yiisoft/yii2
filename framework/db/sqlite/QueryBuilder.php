@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\dao\sqlite;
+namespace yii\db\sqlite;
 
 use yii\db\Exception;
 
@@ -17,7 +17,7 @@ use yii\db\Exception;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\db\dao\QueryBuilder
+class QueryBuilder extends \yii\db\QueryBuilder
 {
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).

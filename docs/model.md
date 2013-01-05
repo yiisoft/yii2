@@ -20,7 +20,7 @@ A model should list all its available attributes in the `attributes()` method.
 
 Attributes may be implemented in various ways. The [[\yii\base\Model]] class
 implements attributes as public member variables of the class, while the
-[[\yii\db\ar\ActiveRecord]] class implements them as DB table columns. For example,
+[[\yii\db\ActiveRecord]] class implements them as DB table columns. For example,
 
 ~~~php
 // LoginForm has two attributes: username and password
@@ -32,7 +32,7 @@ class LoginForm extends \yii\base\Model
 
 // Post is associated with the tbl_post DB table.
 // Its attributes correspond to the columns in tbl_post
-class Post extends \yii\db\ar\ActiveRecord
+class Post extends \yii\db\ActiveRecord
 {
 	public function table()
 	{
@@ -65,7 +65,7 @@ whose keys are the scenario names and whose values are the corresponding
 active attribute lists. Below is an example:
 
 ~~~php
-class User extends \yii\db\ar\ActiveRecord
+class User extends \yii\db\ActiveRecord
 {
 	public function table()
 	{

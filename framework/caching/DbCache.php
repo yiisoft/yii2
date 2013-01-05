@@ -10,8 +10,8 @@
 namespace yii\caching;
 
 use yii\base\Exception;
-use yii\db\dao\Connection;
-use yii\db\dao\Query;
+use yii\db\Connection;
+use yii\db\Query;
 
 /**
  * DbCache implements a cache application component by storing cached data in a database.

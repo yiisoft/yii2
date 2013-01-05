@@ -8,11 +8,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\ar;
+namespace yii\db;
 
-use yii\db\dao\Connection;
-use yii\db\dao\Command;
-use yii\db\dao\QueryBuilder;
+use yii\db\Connection;
+use yii\db\Command;
+use yii\db\QueryBuilder;
 
 /**
  * It is used in three scenarios:

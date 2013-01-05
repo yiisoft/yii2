@@ -37,7 +37,7 @@ abstract class Target extends \yii\base\Component
 	 * @var array list of message categories that this target is interested in. Defaults to empty, meaning all categories.
 	 * You can use an asterisk at the end of a category so that the category may be used to
 	 * match those categories sharing the same common prefix. For example, 'yii\db\*' will match
-	 * categories starting with 'yii\db\', such as 'yii\db\dao\Connection'.
+	 * categories starting with 'yii\db\', such as 'yii\db\Connection'.
 	 */
 	public $categories = array();
 	/**
@@ -45,7 +45,7 @@ abstract class Target extends \yii\base\Component
 	 * If this property is not empty, then any category listed here will be excluded from [[categories]].
 	 * You can use an asterisk at the end of a category so that the category can be used to
 	 * match those categories sharing the same common prefix. For example, 'yii\db\*' will match
-	 * categories starting with 'yii\db\', such as 'yii\db\dao\Connection'.
+	 * categories starting with 'yii\db\', such as 'yii\db\Connection'.
 	 * @see categories
 	 */
 	public $except = array();

@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\dao;
+namespace yii\db;
 
 /**
  * BaseQuery is the base class that represents a SQL SELECT statement in a DBMS-independent way.

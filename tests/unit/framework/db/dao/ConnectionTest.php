@@ -2,7 +2,7 @@
 
 namespace yiiunit\framework\db\dao;
 
-use yii\db\dao\Connection;
+use yii\db\Connection;
 
 class ConnectionTest extends \yiiunit\MysqlTestCase
 {

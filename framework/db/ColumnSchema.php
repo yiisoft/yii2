@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\dao;
+namespace yii\db;
 
 /**
  * ColumnSchema class describes the metadata of a column in a database table.

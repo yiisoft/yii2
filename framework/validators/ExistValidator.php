@@ -21,22 +21,22 @@ namespace yii\validators;
 class ExistValidator extends Validator
 {
 	/**
-	 * @var string the yii\db\ar\ActiveRecord class name or alias of the class
+	 * @var string the yii\db\ActiveRecord class name or alias of the class
 	 * that should be used to look for the attribute value being validated.
-	 * Defaults to null, meaning using the yii\db\ar\ActiveRecord class of
+	 * Defaults to null, meaning using the yii\db\ActiveRecord class of
 	 * the attribute being validated.
 	 * @see attributeName
 	 */
 	public $className;
 	/**
-	 * @var string the yii\db\ar\ActiveRecord class attribute name that should be
+	 * @var string the yii\db\ActiveRecord class attribute name that should be
 	 * used to look for the attribute value being validated. Defaults to null,
 	 * meaning using the name of the attribute being validated.
 	 * @see className
 	 */
 	public $attributeName;
 	/**
-	 * @var \yii\db\dao\BaseQuery additional query criteria. This will be combined
+	 * @var \yii\db\BaseQuery additional query criteria. This will be combined
 	 * with the condition that checks if the attribute value exists in the
 	 * corresponding table column.
 	 */
@@ -51,7 +51,7 @@ class ExistValidator extends Validator
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 *
-	 * @param \yii\db\ar\ActiveRecord $object the object being validated
+	 * @param \yii\db\ActiveRecord $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 *
 	 * @throws \yii\base\Exception if table doesn't have column specified
@@ -72,7 +72,7 @@ class ExistValidator extends Validator
 
 		$finder = $object->find()->where(array($column->name => $value));
 
-		if ($this->query instanceof \yii\db\dao\BaseQuery) {
+		if ($this->query instanceof \yii\db\BaseQuery) {
 			$finder->mergeWith($this->query);
 		}
 

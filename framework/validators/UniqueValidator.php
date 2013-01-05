@@ -28,7 +28,7 @@ class UniqueValidator extends Validator
 	 */
 	public $allowEmpty = true;
 	/**
-	 * @var string the yii\db\ar\ActiveRecord class name or alias of the class
+	 * @var string the yii\db\ActiveRecord class name or alias of the class
 	 * that should be used to look for the attribute value being validated.
 	 * Defaults to null, meaning using the class of the object currently
 	 * being validated.
@@ -43,7 +43,7 @@ class UniqueValidator extends Validator
 	 */
 	public $attributeName;
 	/**
-	 * @var \yii\db\ar\ActiveQuery additional query criteria. This will be
+	 * @var \yii\db\ActiveQuery additional query criteria. This will be
 	 * combined with the condition that checks if the attribute value exists
 	 * in the corresponding table column.
 	 */
@@ -87,7 +87,7 @@ class UniqueValidator extends Validator
 		$finder->where($this->caseSensitive ? "{$column->quotedName}=:value" : "LOWER({$column->quotedName})=LOWER(:value)");
 		$finder->params(array(':value' => $value));
 
-		if ($this->query instanceof \yii\db\dao\BaseQuery) {
+		if ($this->query instanceof \yii\db\BaseQuery) {
 			$finder->mergeWith($this->query);
 		}
 

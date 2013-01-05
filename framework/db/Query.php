@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\dao;
+namespace yii\db;
 
 /**
  * Query represents a SQL statement in a way that is independent of DBMS.
@@ -144,7 +144,7 @@ class Query extends BaseQuery
 	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name'=>'string'),
 	 * where name stands for a column name which will be properly quoted by the method, and definition
 	 * stands for the column type which can contain an abstract DB type.
-	 * The method [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * The method [[\yii\db\QueryBuilder::getColumnType()]] will be called
 	 * to convert the abstract column types to physical ones. For example, `string` will be converted
 	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
 	 *
@@ -200,7 +200,7 @@ class Query extends BaseQuery
 	 * Builds and executes a SQL statement for adding a new DB column.
 	 * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
 	 * @param string $column the name of the new column. The name will be properly quoted by the method.
-	 * @param string $type the column type. [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
 	 * to convert the give column type to the physical one. For example, `string` will be converted
 	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
 	 * @return Query the query object itself
@@ -240,7 +240,7 @@ class Query extends BaseQuery
 	 * Builds and executes a SQL statement for changing the definition of a column.
 	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
 	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-	 * @param string $type the column type. [[\yii\db\dao\QueryBuilder::getColumnType()]] will be called
+	 * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
 	 * to convert the give column type to the physical one. For example, `string` will be converted
 	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
 	 * @return Query the query object itself

@@ -2,10 +2,10 @@
 
 namespace yiiunit\framework\db\dao;
 
-use yii\db\dao\Connection;
-use yii\db\dao\Command;
-use yii\db\dao\Query;
-use yii\db\dao\DataReader;
+use yii\db\Connection;
+use yii\db\Command;
+use yii\db\Query;
+use yii\db\DataReader;
 
 class CommandTest extends \yiiunit\MysqlTestCase
 {
