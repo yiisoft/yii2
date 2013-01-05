@@ -34,18 +34,18 @@ class ActiveRelation extends ActiveQuery
 	 * @var ActiveRecord the primary model that this relation is associated with.
 	 * This is used only in lazy loading with dynamic query options.
 	 */
-	protected $primaryModel;
+	public $primaryModel;
 	/**
 	 * @var array the columns of the primary and foreign tables that establish the relation.
 	 * The array keys must be columns of the table for this relation, and the array values
 	 * must be the corresponding columns from the primary table.
 	 * Do not prefix or quote the column names as they will be done automatically by Yii.
 	 */
-	protected $link;
+	public $link;
 	/**
 	 * @var array|ActiveRelation
 	 */
-	protected $via;
+	public $via;
 
 	/**
 	 * @param string $relationName
@@ -178,7 +178,7 @@ class ActiveRelation extends ActiveQuery
 		$linkKeys = array_keys($link);
 		foreach ($models as $i => $model) {
 			$key = $this->getModelKey($model, $linkKeys);
-			if ($this->index !== null) {
+			if ($this->indexBy !== null) {
 				$buckets[$key][$i] = $model;
 			} else {
 				$buckets[$key][] = $model;
@@ -194,7 +194,7 @@ class ActiveRelation extends ActiveQuery
 				$key2 = $this->getModelKey($viaModel, $linkValues);
 				if (isset($buckets[$key2])) {
 					foreach ($buckets[$key2] as $i => $bucket) {
-						if ($this->index !== null) {
+						if ($this->indexBy !== null) {
 							$viaBuckets[$key1][$i] = $bucket;
 						} else {
 							$viaBuckets[$key1][] = $bucket;

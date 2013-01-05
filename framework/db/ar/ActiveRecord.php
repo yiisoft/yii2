@@ -430,8 +430,8 @@ abstract class ActiveRecord extends Model
 	public function addRelatedRecord($relation, $record)
 	{
 		if ($relation->hasMany) {
-			if ($relation->index !== null) {
-				$this->_related[$relation->name][$record->{$relation->index}] = $record;
+			if ($relation->indexBy !== null) {
+				$this->_related[$relation->name][$record->{$relation->indexBy}] = $record;
 			} else {
 				$this->_related[$relation->name][] = $record;
 			}

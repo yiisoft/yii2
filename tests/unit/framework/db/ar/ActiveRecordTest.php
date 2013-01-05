@@ -25,8 +25,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue($customer instanceof Customer);
 
 		// find all
-		$result = Customer::find();
-		$customers = $result->all();
+		$customers = Customer::find()->all();
 		$this->assertEquals(3, count($customers));
 		$this->assertTrue($customers[0] instanceof Customer);
 		$this->assertTrue($customers[1] instanceof Customer);
@@ -57,6 +56,23 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 			'where' => 'id=1 OR id=2',
 		))->value());
 		$this->assertEquals(2, Customer::find()->select('COUNT(*)')->where('id=1 OR id=2')->value());
+
+		// asArray
+		$customer = Customer::find()->where('id=2')->asArray()->one();
+		$this->assertEquals(array(
+			'id' => '2',
+			'email' => 'user2@example.com',
+			'name' => 'user2',
+			'address' => 'address2',
+			'status' => '1',
+		), $customer);
+
+		// indexBy
+		$customers = Customer::find()->indexBy('name')->orderBy('id')->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertTrue($customers['user1'] instanceof Customer);
+		$this->assertTrue($customers['user2'] instanceof Customer);
+		$this->assertTrue($customers['user3'] instanceof Customer);
 	}
 
 	public function testFindBySql()
@@ -167,6 +183,17 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(2, $order->books[0]->id);
 	}
 
+	public function testFindNestedRelation()
+	{
+		$customers = Customer::find()->with('orders', 'orders.items')->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertEquals(1, count($customers[0]->orders));
+		$this->assertEquals(2, count($customers[1]->orders));
+		$this->assertEquals(0, count($customers[2]->orders));
+		$this->assertEquals(2, count($customers[0]->orders[0]->items));
+		$this->assertEquals(3, count($customers[1]->orders[0]->items));
+		$this->assertEquals(1, count($customers[1]->orders[1]->items));
+	}
 
 //	public function testInsert()
 //	{
@@ -373,129 +400,5 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 //		$customers = Customer::find()->orderBy('id')->index('name')->all();
 //		$this->assertEquals(2, $customers['user2']['id']);
 //	}
-//
-//	public function testEagerLoading()
-//	{
-//		// has many
-//		$customers = Customer::find()->with('orders')->orderBy('@.id')->all();
-//		$this->assertEquals(3, count($customers));
-//		$this->assertEquals(1, count($customers[0]->orders));
-//		$this->assertEquals(2, count($customers[1]->orders));
-//		$this->assertEquals(0, count($customers[2]->orders));
-//
-//		// nested
-//		$customers = Customer::find()->with('orders.customer')->orderBy('@.id')->all();
-//		$this->assertEquals(3, count($customers));
-//		$this->assertEquals(1, $customers[0]->orders[0]->customer->id);
-//		$this->assertEquals(2, $customers[1]->orders[0]->customer->id);
-//		$this->assertEquals(2, $customers[1]->orders[1]->customer->id);
-//
-//		// has many via relation
-//		$orders = Order::find()->with('items')->orderBy('@.id')->all();
-//		$this->assertEquals(3, count($orders));
-//		$this->assertEquals(1, $orders[0]->items[0]->id);
-//		$this->assertEquals(2, $orders[0]->items[1]->id);
-//		$this->assertEquals(3, $orders[1]->items[0]->id);
-//		$this->assertEquals(4, $orders[1]->items[1]->id);
-//		$this->assertEquals(5, $orders[1]->items[2]->id);
-//
-//		// has many via join table
-//		$orders = Order::find()->with('books')->orderBy('@.id')->all();
-//		$this->assertEquals(2, count($orders));
-//		$this->assertEquals(1, $orders[0]->books[0]->id);
-//		$this->assertEquals(2, $orders[0]->books[1]->id);
-//		$this->assertEquals(2, $orders[1]->books[0]->id);
-//
-//		// has many and base limited
-//		$orders = Order::find()->with('items')->orderBy('@.id')->limit(2)->all();
-//		$this->assertEquals(2, count($orders));
-//		$this->assertEquals(1, $orders[0]->items[0]->id);
-//
-//		/// customize "with" query
-//		$orders = Order::find()->with(array('items' => function($q) {
-//			$q->orderBy('@.id DESC');
-//		}))->orderBy('@.id')->limit(2)->all();
-//		$this->assertEquals(2, count($orders));
-//		$this->assertEquals(2, $orders[0]->items[0]->id);
-//
-//		// findBySql with
-//		$orders = Order::findBySql('SELECT * FROM tbl_order WHERE customer_id=2')->with('items')->all();
-//		$this->assertEquals(2, count($orders));
-//
-//		// index and array
-//		$customers = Customer::find()->with('orders.customer')->orderBy('@.id')->index('id')->asArray()->all();
-//		$this->assertEquals(3, count($customers));
-//		$this->assertTrue(isset($customers[1], $customers[2], $customers[3]));
-//		$this->assertTrue(is_array($customers[1]));
-//		$this->assertEquals(1, count($customers[1]['orders']));
-//		$this->assertEquals(2, count($customers[2]['orders']));
-//		$this->assertEquals(0, count($customers[3]['orders']));
-//		$this->assertTrue(is_array($customers[1]['orders'][0]['customer']));
-//
-//		// count with
-//		$this->assertEquals(3, Order::count());
-//		$value = Order::count(array(
-//			'select' => array('COUNT(DISTINCT @.id, @.customer_id)'),
-//			'with' => 'books',
-//		));
-//		$this->assertEquals(2, $value);
-//
-//	}
-//
-//	public function testLazyLoading()
-//	{
-//		// has one
-//		$order = Order::find(3);
-//		$this->assertTrue($order->customer instanceof Customer);
-//		$this->assertEquals(2, $order->customer->id);
-//
-//		// has many
-//		$customer = Customer::find(2);
-//		$orders = $customer->orders;
-//		$this->assertEquals(2, count($orders));
-//		$this->assertEquals(2, $orders[0]->id);
-//		$this->assertEquals(3, $orders[1]->id);
-//
-//		// has many via join table
-//		$orders = Order::find()->orderBy('@.id')->all();
-//		$this->assertEquals(3, count($orders));
-//		$this->assertEquals(2, count($orders[0]->books));
-//		$this->assertEquals(1, $orders[0]->books[0]->id);
-//		$this->assertEquals(2, $orders[0]->books[1]->id);
-//		$this->assertEquals(array(), $orders[1]->books);
-//		$this->assertEquals(1, count($orders[2]->books));
-//		$this->assertEquals(2, $orders[2]->books[0]->id);
-//
-//		// customized relation query
-//		$customer = Customer::find(2);
-//		$orders = $customer->orders(array(
-//			'where' => '@.id = 3',
-//		));
-//		$this->assertEquals(1, count($orders));
-//		$this->assertEquals(3, $orders[0]->id);
-//
-//		// original results are kept after customized query
-//		$orders = $customer->orders;
-//		$this->assertEquals(2, count($orders));
-//		$this->assertEquals(2, $orders[0]->id);
-//		$this->assertEquals(3, $orders[1]->id);
-//
-//		// as array
-//		$orders = $customer->orders(array(
-//			'asArray' => true,
-//		));
-//		$this->assertEquals(2, count($orders));
-//		$this->assertTrue(is_array($orders[0]));
-//		$this->assertEquals(2, $orders[0]['id']);
-//		$this->assertEquals(3, $orders[1]['id']);
-//
-//		// using anonymous function to customize query condition
-//		$orders = $customer->orders(function($q) {
-//			$q->orderBy('@.id DESC')->asArray();
-//		});
-//		$this->assertEquals(2, count($orders));
-//		$this->assertTrue(is_array($orders[0]));
-//		$this->assertEquals(3, $orders[0]['id']);
-//		$this->assertEquals(2, $orders[1]['id']);
-//	}
+
 }
