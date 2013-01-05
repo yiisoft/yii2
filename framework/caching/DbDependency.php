@@ -69,12 +69,11 @@ class DbDependency extends Dependency
 	{
 		$db = $this->getDbConnection();
 		$command = $this->query->createCommand($db);
-		if ($db->queryCachingDuration >= 0) {
+		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
-			$duration = $db->queryCachingDuration;
-			$db->queryCachingDuration = -1;
+			$db->enableQueryCache = false;
 			$result = $command->queryRow();
-			$db->queryCachingDuration = $duration;
+			$db->enableQueryCache = true;
 		} else {
 			$result = $command->queryRow();
 		}

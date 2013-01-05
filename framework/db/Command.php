@@ -405,7 +405,7 @@ class Command extends \yii\base\Component
 			}
 
 			if (isset($cache)) {
-				$cache->set($cacheKey, $result, $db->queryCachingDuration, $db->queryCachingDependency);
+				$cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
 				\Yii::trace('Saved query result in cache', __CLASS__);
 			}
 

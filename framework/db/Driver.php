@@ -95,27 +95,18 @@ abstract class Driver extends \yii\base\Object
 
 		$realName = $db->expandTablePrefix($name);
 
-		// temporarily disable query caching
-		if ($db->queryCachingDuration >= 0) {
-			$qcDuration = $db->queryCachingDuration;
-			$db->queryCachingDuration = -1;
-		}
-
-		if (!in_array($name, $db->schemaCachingExclude, true) && $db->schemaCachingDuration >= 0 && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
+		/** @var $cache \yii\caching\Cache */
+		if ($db->enableSchemaCache && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null && !in_array($name, $db->schemaCacheExclude, true)) {
 			$key = $this->getCacheKey($name);
 			if ($refresh || ($table = $cache->get($key)) === false) {
 				$table = $this->loadTableSchema($realName);
 				if ($table !== null) {
-					$cache->set($key, $table, $db->schemaCachingDuration);
+					$cache->set($key, $table, $db->schemaCacheDuration);
 				}
 			}
 			$this->_tables[$name] = $table;
 		} else {
 			$this->_tables[$name] = $table = $this->loadTableSchema($realName);
-		}
-
-		if (isset($qcDuration)) { // re-enable query caching
-			$db->queryCachingDuration = $qcDuration;
 		}
 
 		return $table;
@@ -185,7 +176,8 @@ abstract class Driver extends \yii\base\Object
 	public function refresh($tableName = null)
 	{
 		$db = $this->connection;
-		if ($db->schemaCachingDuration >= 0 && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
+		/** @var $cache \yii\caching\Cache */
+		if ($db->enableSchemaCache && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
 			if ($tableName === null) {
 				foreach ($this->_tables as $name => $table) {
 					$cache->delete($this->getCacheKey($name));
