@@ -365,13 +365,12 @@ class Command extends \yii\base\Component
 		}
 
 		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
-echo $sql."\n\n";
-		if ($db->queryCachingCount > 0 && $db->queryCachingDuration >= 0 && $method !== '') {
+
+		if ($db->enableQueryCache && $method !== '') {
 			$cache = \Yii::$application->getComponent($db->queryCacheID);
 		}
 
 		if (isset($cache)) {
-			$db->queryCachingCount--;
 			$cacheKey = __CLASS__ . "/{$db->dsn}/{$db->username}/$sql/$paramLog";
 			if (($result = $cache->get($cacheKey)) !== false) {
 				\Yii::trace('Query result found in cache', __CLASS__);

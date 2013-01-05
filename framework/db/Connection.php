@@ -130,62 +130,63 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public $pdo;
 	/**
-	 * @var integer number of seconds that table metadata can remain valid in cache.
-	 * Defaults to -1, meaning schema caching is disabled.
-	 * Use 0 to indicate that the cached data will never expire.
-	 *
-	 * Note that in order to enable schema caching, a valid cache component as specified
-	 * by [[schemaCacheID]] must be enabled.
-	 * @see schemaCachingExclude
+	 * @var boolean whether to enable schema caching.
+	 * Note that in order to enable truly schema caching, a valid cache component as specified
+	 * by [[schemaCacheID]] must be enabled and [[schemaCacheEnabled]] must be set true.
+	 * @see schemaCacheDuration
+	 * @see schemaCacheExclude
 	 * @see schemaCacheID
 	 */
-	public $schemaCachingDuration = -1;
+	public $enableSchemaCache = false;
+	/**
+	 * @var integer number of seconds that table metadata can remain valid in cache.
+	 * Use 0 to indicate that the cached data will never expire.
+	 * @see enableSchemaCache
+	 */
+	public $schemaCacheDuration = 3600;
 	/**
 	 * @var array list of tables whose metadata should NOT be cached. Defaults to empty array.
 	 * The table names may contain schema prefix, if any. Do not quote the table names.
-	 * @see schemaCachingDuration
+	 * @see enableSchemaCache
 	 */
-	public $schemaCachingExclude = array();
+	public $schemaCacheExclude = array();
 	/**
 	 * @var string the ID of the cache application component that is used to cache the table metadata.
 	 * Defaults to 'cache'.
-	 * @see schemaCachingDuration
+	 * @see enableSchemaCache
 	 */
 	public $schemaCacheID = 'cache';
 	/**
-	 * @var integer number of seconds that query results can remain valid in cache.
-	 * Defaults to -1, meaning query caching is disabled.
-	 * Use 0 to indicate that the cached data will never expire.
-	 *
+	 * @var boolean whether to enable query caching.
 	 * Note that in order to enable query caching, a valid cache component as specified
-	 * by [[queryCacheID]] must be enabled.
+	 * by [[queryCacheID]] must be enabled and [[queryCacheEnabled]] must be set true.
 	 *
-	 * The method [[cache()]] is provided as a convenient way of setting this property
-	 * and [[queryCachingDependency]] on the fly.
-	 *
-	 * @see cache
-	 * @see queryCachingDependency
+	 * Methods [[beginCache()]] and [[endCache()]] can be used as shortcuts to turn on
+	 * and off query caching on the fly.
+	 * @see queryCacheDuration
 	 * @see queryCacheID
+	 * @see queryCacheDependency
+	 * @see beginCache()
+	 * @see endCache()
 	 */
-	public $queryCachingDuration = -1;
+	public $enableQueryCache = false;
+	/**
+	 * @var integer number of seconds that query results can remain valid in cache.
+	 * Defaults to 3600, meaning one hour.
+	 * Use 0 to indicate that the cached data will never expire.
+	 * @see enableQueryCache
+	 */
+	public $queryCacheDuration = 3600;
 	/**
 	 * @var \yii\caching\Dependency the dependency that will be used when saving query results into cache.
 	 * Defaults to null, meaning no dependency.
-	 * @see queryCachingDuration
+	 * @see enableQueryCache
 	 */
-	public $queryCachingDependency;
-	/**
-	 * @var integer the number of SQL statements that need to be cached when they are executed next.
-	 * Defaults to 0, meaning the query result of the next SQL statement will NOT be cached.
-	 * Note that each time after executing a SQL statement (whether executed on DB server or fetched from
-	 * query cache), this property will be reduced by 1 until 0.
-	 * @see queryCachingDuration
-	 */
-	public $queryCachingCount = 0;
+	public $queryCacheDependency;
 	/**
 	 * @var string the ID of the cache application component that is used for query caching.
 	 * Defaults to 'cache'.
-	 * @see queryCachingDuration
+	 * @see enableQueryCache
 	 */
 	public $queryCacheID = 'cache';
 	/**
@@ -297,24 +298,29 @@ class Connection extends \yii\base\ApplicationComponent
 	}
 
 	/**
-	 * Sets the parameters about query caching.
-	 * This method is provided as a shortcut to setting three properties that are related
-	 * with query caching: [[queryCachingDuration]], [[queryCachingDependency]] and
-	 * [[queryCachingCount]].
+	 * Turns on query caching.
+	 * This method is provided as a shortcut to setting two properties that are related
+	 * with query caching: [[queryCacheDuration]] and [[queryCacheDependency]].
 	 * @param integer $duration the number of seconds that query results may remain valid in cache.
-	 * See [[queryCachingDuration]] for more details.
+	 * See [[queryCacheDuration]] for more details.
 	 * @param \yii\caching\Dependency $dependency the dependency for the cached query result.
-	 * See [[queryCachingDependency]] for more details.
-	 * @param integer $queryCount the number of SQL queries that need to be cached after calling this method.
-	 * See [[queryCachingCount]] for more details.
-	 * @return Connection the connection instance itself.
+	 * See [[queryCacheDependency]] for more details.
 	 */
-	public function cache($duration = 300, $dependency = null, $queryCount = 1)
+	public function beginCache($duration = null, $dependency = null)
 	{
-		$this->queryCachingDuration = $duration;
-		$this->queryCachingDependency = $dependency;
-		$this->queryCachingCount = $queryCount;
-		return $this;
+		$this->enableQueryCache = true;
+		if ($duration !== null) {
+			$this->queryCacheDuration = $duration;
+		}
+		$this->queryCacheDependency = $dependency;
+	}
+
+	/**
+	 * Turns off query caching.
+	 */
+	public function endCache()
+	{
+		$this->enableQueryCache = false;
 	}
 
 	/**
