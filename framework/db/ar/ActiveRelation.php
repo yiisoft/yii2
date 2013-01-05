@@ -10,6 +10,10 @@
 
 namespace yii\db\ar;
 
+use yii\db\dao\Connection;
+use yii\db\dao\Command;
+use yii\db\dao\QueryBuilder;
+
 /**
  * It is used in three scenarios:
  * - eager loading: User::find()->with('posts')->all();
@@ -22,50 +26,90 @@ namespace yii\db\ar;
 class ActiveRelation extends ActiveQuery
 {
 	/**
-	 * @var ActiveRecord the primary model that this relation is associated with.
-	 * This is used only in lazy loading with dynamic query options.
-	 */
-	public $primaryModel;
-	/**
 	 * @var boolean whether this relation should populate all query results into AR instances.
 	 * If false, only the first row of the results will be taken.
 	 */
 	public $multiple;
+	/**
+	 * @var ActiveRecord the primary model that this relation is associated with.
+	 * This is used only in lazy loading with dynamic query options.
+	 */
+	protected $primaryModel;
 	/**
 	 * @var array the columns of the primary and foreign tables that establish the relation.
 	 * The array keys must be columns of the table for this relation, and the array values
 	 * must be the corresponding columns from the primary table.
 	 * Do not prefix or quote the column names as they will be done automatically by Yii.
 	 */
-	public $link;
+	protected $link;
 	/**
-	 * @var array
+	 * @var array|ActiveRelation
 	 */
-	public $via;
-	/**
-	 * @var array
-	 */
-	public $viaTable;
+	protected $via;
 
-	public function via($modelClass, $properties = array())
+	/**
+	 * @param string $relationName
+	 * @param array|\Closure $options
+	 * @return ActiveRelation
+	 */
+	public function via($relationName, $options = null)
 	{
-		$this->via = $modelClass;
+		/** @var $relation ActiveRelation */
+		$relation = $this->primaryModel->$relationName();
+		$relation->primaryModel = null;
+		$this->via = array($relationName, $relation);
+		if (is_array($options)) {
+			foreach ($options as $name => $value) {
+				$this->$name = $value;
+			}
+		} elseif ($options instanceof \Closure) {
+			$options($relation);
+		}
 		return $this;
 	}
 
-	public function viaTable($tableName, $link, $properties = array())
+	/**
+	 * @param string $tableName
+	 * @param array $link
+	 * @param array|\Closure $options
+	 * @return ActiveRelation
+	 */
+	public function viaTable($tableName, $link, $options = null)
 	{
-		$this->viaTable = array($tableName, $link, $properties);
+		$relation = new ActiveRelation(array(
+			'modelClass' => get_class($this->primaryModel),
+			'from' => array($tableName),
+			'link' => $link,
+			'multiple' => true,
+			'asArray' => true,
+		));
+		$this->via = $relation;
+		if (is_array($options)) {
+			foreach ($options as $name => $value) {
+				$this->$name = $value;
+			}
+		} elseif ($options instanceof \Closure) {
+			$options($relation);
+		}
 		return $this;
 	}
 
+	/**
+	 * Creates a DB command that can be used to execute this query.
+	 * @return Command the created DB command instance.
+	 */
 	public function createCommand()
 	{
 		if ($this->primaryModel !== null) {
-			if ($this->via !== null) {
-				/** @var $viaQuery ActiveRelation */
-				$viaName = $this->via;
-				$viaModels = $this->primaryModel->$viaName;
+			// lazy loading
+			if ($this->via instanceof self) {
+				// via pivot table
+				$viaModels = $this->via->findPivotRows(array($this->primaryModel));
+				$this->filterByModels($viaModels);
+			} elseif (is_array($this->via)) {
+				// via relation
+				$relationName = $this->via[0];
+				$viaModels = $this->primaryModel->$relationName;
 				if ($viaModels === null) {
 					$viaModels = array();
 				} elseif (!is_array($viaModels)) {
@@ -79,14 +123,23 @@ class ActiveRelation extends ActiveQuery
 		return parent::createCommand();
 	}
 
-	public function findWith($name, &$primaryModels, $viaQuery = null)
+	public function findWith($name, &$primaryModels)
 	{
 		if (!is_array($this->link)) {
 			throw new \yii\base\Exception('invalid link');
 		}
 
-		if ($viaQuery !== null) {
-			$viaModels = $viaQuery->findWith($this->via, $primaryModels);
+		if ($this->via instanceof self) {
+			// via pivot table
+			/** @var $viaQuery ActiveRelation */
+			$viaQuery = $this->via;
+			$viaModels = $viaQuery->findPivotRows($primaryModels);
+			$this->filterByModels($viaModels);
+		} elseif (is_array($this->via)) {
+			// via relation
+			/** @var $viaQuery ActiveRelation */
+			list($viaName, $viaQuery) = $this->via;
+			$viaModels = $viaQuery->findWith($viaName, $primaryModels);
 			$this->filterByModels($viaModels);
 		} else {
 			$this->filterByModels($primaryModels);
@@ -106,12 +159,9 @@ class ActiveRelation extends ActiveQuery
 				$buckets = $this->buildBuckets($models, $this->link);
 			}
 
+			$link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
 			foreach ($primaryModels as $i => $primaryModel) {
-				if (isset($viaQuery)) {
-					$key = $this->getModelKey($primaryModel, array_values($viaQuery->link));
-				} else {
-					$key = $this->getModelKey($primaryModel, array_values($this->link));
-				}
+				$key = $this->getModelKey($primaryModel, $link);
 				if (isset($buckets[$key])) {
 					$primaryModels[$i][$name] = $buckets[$key];
 				} else {
@@ -125,8 +175,9 @@ class ActiveRelation extends ActiveQuery
 	protected function buildBuckets($models, $link, $viaModels = null, $viaLink = null)
 	{
 		$buckets = array();
+		$linkKeys = array_keys($link);
 		foreach ($models as $i => $model) {
-			$key = $this->getModelKey($model, array_keys($link));
+			$key = $this->getModelKey($model, $linkKeys);
 			if ($this->index !== null) {
 				$buckets[$key][$i] = $model;
 			} else {
@@ -136,9 +187,11 @@ class ActiveRelation extends ActiveQuery
 
 		if ($viaModels !== null) {
 			$viaBuckets = array();
+			$viaLinkKeys = array_keys($viaLink);
+			$linkValues = array_values($link);
 			foreach ($viaModels as $viaModel) {
-				$key1 = $this->getModelKey($viaModel, array_keys($viaLink));
-				$key2 = $this->getModelKey($viaModel, array_values($link));
+				$key1 = $this->getModelKey($viaModel, $viaLinkKeys);
+				$key2 = $this->getModelKey($viaModel, $linkValues);
 				if (isset($buckets[$key2])) {
 					foreach ($buckets[$key2] as $i => $bucket) {
 						if ($this->index !== null) {
@@ -194,7 +247,23 @@ class ActiveRelation extends ActiveQuery
 				$values[] = $v;
 			}
 		}
-		$this->andWhere(array('in', $attributes, $values));
+		$this->andWhere(array('in', $attributes, array_unique($values, SORT_REGULAR)));
 	}
 
+	/**
+	 * @param ActiveRecord[] $primaryModels
+	 * @return array
+	 */
+	protected function findPivotRows($primaryModels)
+	{
+		if (empty($primaryModels)) {
+			return array();
+		}
+		$this->filterByModels($primaryModels);
+		/** @var $primaryModel ActiveRecord */
+		$primaryModel = reset($primaryModels);
+		$db = $primaryModel->getDbConnection();
+		$sql = $db->getQueryBuilder()->build($this);
+		return $db->createCommand($sql, $this->params)->queryAll();
+	}
 }

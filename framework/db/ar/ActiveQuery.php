@@ -232,14 +232,7 @@ class ActiveQuery extends BaseQuery
 				// inherit asArray from primary query
 				$relation->asArray = $this->asArray;
 			}
-			if ($relation->via !== null) {
-				$viaName = $relation->via;
-				$viaQuery = $primaryModel->$viaName();
-				$viaQuery->primaryModel = null;
-				$relation->findWith($name, $models, $viaQuery);
-			} else {
-				$relation->findWith($name, $models);
-			}
+			$relation->findWith($name, $models);
 		}
 	}
 }
