@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\framework\db\dao;
+namespace yiiunit\framework\db;
 
 use yii\db\Connection;
 

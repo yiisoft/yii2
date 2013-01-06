@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\framework\db\ar;
+namespace yiiunit\framework\db;
 
 use yii\db\Query;
 use yii\db\ActiveQuery;

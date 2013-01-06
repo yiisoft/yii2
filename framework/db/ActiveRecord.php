@@ -189,9 +189,9 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function updateAll($attributes, $condition = '', $params = array())
 	{
-		$query = new Query;
-		$query->update(static::tableName(), $attributes, $condition, $params);
-		return $query->createCommand(static::getDbConnection())->execute();
+		$command = static::getDbConnection()->createCommand();
+		$command->update(static::tableName(), $attributes, $condition, $params);
+		return $command->execute();
 	}
 
 	/**
@@ -210,9 +210,9 @@ abstract class ActiveRecord extends Model
 			$quotedName = $db->quoteColumnName($name, true);
 			$counters[$name] = new Expression($value >= 0 ? "$quotedName+$value" : "$quotedName$value");
 		}
-		$query = new Query;
-		$query->update(static::tableName(), $counters, $condition, $params);
-		return $query->createCommand($db)->execute();
+		$command = $db->createCommand();
+		$command->update(static::tableName(), $counters, $condition, $params);
+		return $command->execute();
 	}
 
 	/**
@@ -224,9 +224,9 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function deleteAll($condition = '', $params = array())
 	{
-		$query = new Query;
-		$query->delete(static::tableName(), $condition, $params);
-		return $query->createCommand(static::getDbConnection())->execute();
+		$command = static::getDbConnection()->createCommand();
+		$command->delete(static::tableName(), $condition, $params);
+		return $command->execute();
 	}
 
 	/**
@@ -587,10 +587,9 @@ abstract class ActiveRecord extends Model
 	public function insert($attributes = null)
 	{
 		if ($this->beforeInsert()) {
-			$query = new Query;
 			$values = $this->getChangedAttributes($attributes);
 			$db = $this->getDbConnection();
-			$command = $query->insert($this->tableName(), $values)->createCommand($db);
+			$command = $db->createCommand()->insert($this->tableName(), $values);
 			if ($command->execute()) {
 				$table = $this->getTableSchema();
 				if ($table->sequenceName !== null) {

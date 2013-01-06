@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\framework\db\dao;
+namespace yiiunit\framework\db;
 
 use yii\db\Connection;
 use yii\db\Command;
@@ -212,5 +212,111 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$command = $db->createCommand($sql);
 		$result = $command->queryRow(array(), \PDO::FETCH_NUM);
 		$this->assertTrue(is_array($result) && isset($result[0]));
+	}
+
+
+	function testInsert()
+	{
+
+	}
+
+	function testUpdate()
+	{
+
+	}
+
+	function testDelete()
+	{
+
+	}
+
+	function testCreateTable()
+	{
+
+	}
+
+	function testRenameTable()
+	{
+
+	}
+
+	function testDropTable()
+	{
+
+	}
+
+	function testTruncateTable()
+	{
+
+	}
+
+	function testAddColumn()
+	{
+
+	}
+
+	function testDropColumn()
+	{
+
+	}
+
+	function testRenameColumn()
+	{
+
+	}
+
+	function testAlterColumn()
+	{
+
+	}
+
+	function testAddForeignKey()
+	{
+
+	}
+
+	function testDropForeignKey()
+	{
+
+	}
+
+	function testCreateIndex()
+	{
+
+	}
+
+	function testDropIndex()
+	{
+
+	}
+
+	function testParams()
+	{
+
+	}
+
+	function testGetSql()
+	{
+
+	}
+
+	function testCreateCommand()
+	{
+
+	}
+
+	function testReset()
+	{
+
+	}
+
+	function testToArray()
+	{
+
+	}
+
+	function testMergeWith()
+	{
+
 	}
 }
