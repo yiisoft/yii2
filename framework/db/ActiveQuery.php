@@ -13,12 +13,11 @@ namespace yii\db;
 use yii\db\Connection;
 use yii\db\Command;
 use yii\db\QueryBuilder;
-use yii\db\BaseQuery;
 use yii\base\VectorIterator;
 use yii\db\Expression;
 use yii\db\Exception;
 
-class ActiveQuery extends BaseQuery
+class ActiveQuery extends Query
 {
 	/**
 	 * @var string the name of the ActiveRecord class.
@@ -125,13 +124,17 @@ class ActiveQuery extends BaseQuery
 
 	/**
 	 * Creates a DB command that can be used to execute this query.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
 	 * @return Command the created DB command instance.
 	 */
-	public function createCommand()
+	public function createCommand($db = null)
 	{
 		/** @var $modelClass ActiveRecord */
 		$modelClass = $this->modelClass;
-		$db = $modelClass::getDbConnection();
+		if ($db === null) {
+			$db = $modelClass::getDbConnection();
+		}
 		if ($this->sql === null) {
 			if ($this->from === null) {
 				$tableName = $modelClass::tableName();

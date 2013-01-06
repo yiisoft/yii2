@@ -366,6 +366,7 @@ class Command extends \yii\base\Component
 
 		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
 
+		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {
 			$cache = \Yii::$application->getComponent($db->queryCacheID);
 		}
@@ -404,7 +405,7 @@ class Command extends \yii\base\Component
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
-			if (isset($cache)) {
+			if (isset($cache, $cacheKey)) {
 				$cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
 				\Yii::trace('Saved query result in cache', __CLASS__);
 			}
@@ -419,5 +420,253 @@ class Command extends \yii\base\Component
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			throw new Exception($message, (int)$e->getCode(), $errorInfo);
 		}
+	}
+
+	/**
+	 * Creates an INSERT command.
+	 * For example,
+	 *
+	 * ~~~
+	 * $db->createCommand()->insert('tbl_user', array(
+	 *	 'name' => 'Sam',
+	 *	 'age' => 30,
+	 * ))->execute();
+	 * ~~~
+	 *
+	 * The method will properly escape the column names, and bind the values to be inserted.
+	 *
+	 * Note that the created command is not executed until [[execute()]] is called.
+	 *
+	 * @param string $table the table that new rows will be inserted into.
+	 * @param array $columns the column data (name=>value) to be inserted into the table.
+	 * @param array $params the parameters to be bound to the command
+	 * @return Command the command object itself
+	 */
+	public function insert($table, $columns, $params = array())
+	{
+		$sql = $this->connection->getQueryBuilder()->insert($table, $columns, $params);
+		return $this->setSql($sql)->bindValues($params);
+	}
+
+	/**
+	 * Creates an UPDATE command.
+	 * For example,
+	 *
+	 * ~~~
+	 * $db->createCommand()->update('tbl_user', array(
+	 *	 'status' => 1,
+	 * ), 'age > 30')->execute();
+	 * ~~~
+	 *
+	 * The method will properly escape the column names and bind the values to be updated.
+	 *
+	 * Note that the created command is not executed until [[execute()]] is called.
+	 *
+	 * @param string $table the table to be updated.
+	 * @param array $columns the column data (name=>value) to be updated.
+	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * refer to [[Query::where()]] on how to specify condition.
+	 * @param array $params the parameters to be bound to the command
+	 * @return Command the command object itself
+	 */
+	public function update($table, $columns, $condition = '', $params = array())
+	{
+		$sql = $this->connection->getQueryBuilder()->update($table, $columns, $condition, $params);
+		return $this->setSql($sql)->bindValues($params);
+	}
+
+	/**
+	 * Creates a DELETE command.
+	 * For example,
+	 *
+	 * ~~~
+	 * $db->createCommand()->delete('tbl_user', 'status = 0')->execute();
+	 * ~~~
+	 *
+	 * The method will properly escape the table and column names.
+	 *
+	 * Note that the created command is not executed until [[execute()]] is called.
+	 *
+	 * @param string $table the table where the data will be deleted from.
+	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * refer to [[Query::where()]] on how to specify condition.
+	 * @param array $params the parameters to be bound to the command
+	 * @return Command the command object itself
+	 */
+	public function delete($table, $condition = '', $params = array())
+	{
+		$sql = $this->connection->getQueryBuilder()->delete($table, $condition);
+		return $this->setSql($sql)->bindValues($params);
+	}
+
+
+	/**
+	 * Creates a SQL command for creating a new DB table.
+	 *
+	 * The columns in the new table should be specified as name-definition pairs (e.g. 'name'=>'string'),
+	 * where name stands for a column name which will be properly quoted by the method, and definition
+	 * stands for the column type which can contain an abstract DB type.
+	 * The method [[\yii\db\QueryBuilder::getColumnType()]] will be called
+	 * to convert the abstract column types to physical ones. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
+	 *
+	 * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
+	 * inserted into the generated SQL.
+	 *
+	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
+	 * @param array $columns the columns (name=>definition) in the new table.
+	 * @param string $options additional SQL fragment that will be appended to the generated SQL.
+	 * @return Command the command object itself
+	 */
+	public function createTable($table, $columns, $options = null)
+	{
+		$sql = $this->connection->getQueryBuilder()->createTable($table, $columns, $options);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for renaming a DB table.
+	 * @param string $table the table to be renamed. The name will be properly quoted by the method.
+	 * @param string $newName the new table name. The name will be properly quoted by the method.
+	 * @return Command the command object itself
+	 */
+	public function renameTable($table, $newName)
+	{
+		$sql = $this->connection->getQueryBuilder()->renameTable($table, $newName);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for dropping a DB table.
+	 * @param string $table the table to be dropped. The name will be properly quoted by the method.
+	 * @return Command the command object itself
+	 */
+	public function dropTable($table)
+	{
+		$sql = $this->connection->getQueryBuilder()->dropTable($table);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for truncating a DB table.
+	 * @param string $table the table to be truncated. The name will be properly quoted by the method.
+	 * @return Command the command object itself
+	 */
+	public function truncateTable($table)
+	{
+		$sql = $this->connection->getQueryBuilder()->truncateTable($table);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for adding a new DB column.
+	 * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
+	 * @param string $column the name of the new column. The name will be properly quoted by the method.
+	 * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
+	 * to convert the give column type to the physical one. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
+	 * @return Command the command object itself
+	 */
+	public function addColumn($table, $column, $type)
+	{
+		$sql = $this->connection->getQueryBuilder()->addColumn($table, $column, $type);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for dropping a DB column.
+	 * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
+	 * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
+	 * @return Command the command object itself
+	 */
+	public function dropColumn($table, $column)
+	{
+		$sql = $this->connection->getQueryBuilder()->dropColumn($table, $column);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for renaming a column.
+	 * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+	 * @param string $oldName the old name of the column. The name will be properly quoted by the method.
+	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
+	 * @return Command the command object itself
+	 */
+	public function renameColumn($table, $oldName, $newName)
+	{
+		$sql = $this->connection->getQueryBuilder()->renameColumn($table, $oldName, $newName);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for changing the definition of a column.
+	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+	 * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
+	 * to convert the give column type to the physical one. For example, `string` will be converted
+	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
+	 * @return Command the command object itself
+	 */
+	public function alterColumn($table, $column, $type)
+	{
+		$sql = $this->connection->getQueryBuilder()->alterColumn($table, $column, $type);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for adding a foreign key constraint to an existing table.
+	 * The method will properly quote the table and column names.
+	 * @param string $name the name of the foreign key constraint.
+	 * @param string $table the table that the foreign key constraint will be added to.
+	 * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
+	 * @param string $refTable the table that the foreign key references to.
+	 * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
+	 * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+	 * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+	 * @return Command the command object itself
+	 */
+	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
+	{
+		$sql = $this->connection->getQueryBuilder()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for dropping a foreign key constraint.
+	 * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
+	 * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
+	 * @return Command the command object itself
+	 */
+	public function dropForeignKey($name, $table)
+	{
+		$sql = $this->connection->getQueryBuilder()->dropForeignKey($name, $table);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for creating a new index.
+	 * @param string $name the name of the index. The name will be properly quoted by the method.
+	 * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+	 * @param string $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+	 * by commas. The column names will be properly quoted by the method.
+	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
+	 * @return Command the command object itself
+	 */
+	public function createIndex($name, $table, $columns, $unique = false)
+	{
+		$sql = $this->connection->getQueryBuilder()->createIndex($name, $table, $columns, $unique);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for dropping an index.
+	 * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+	 * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+	 * @return Command the command object itself
+	 */
+	public function dropIndex($name, $table)
+	{
+		$sql = $this->connection->getQueryBuilder()->dropIndex($name, $table);
+		return $this->setSql($sql);
 	}
 }

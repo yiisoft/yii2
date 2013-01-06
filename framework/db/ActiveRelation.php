@@ -96,9 +96,11 @@ class ActiveRelation extends ActiveQuery
 
 	/**
 	 * Creates a DB command that can be used to execute this query.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
 	 * @return Command the created DB command instance.
 	 */
-	public function createCommand()
+	public function createCommand($db = null)
 	{
 		if ($this->primaryModel !== null) {
 			// lazy loading
@@ -120,7 +122,7 @@ class ActiveRelation extends ActiveQuery
 				$this->filterByModels(array($this->primaryModel));
 			}
 		}
-		return parent::createCommand();
+		return parent::createCommand($db);
 	}
 
 	public function findWith($name, &$primaryModels)

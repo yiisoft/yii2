@@ -36,12 +36,6 @@ class ExistValidator extends Validator
 	 */
 	public $attributeName;
 	/**
-	 * @var \yii\db\BaseQuery additional query criteria. This will be combined
-	 * with the condition that checks if the attribute value exists in the
-	 * corresponding table column.
-	 */
-	public $query = null;
-	/**
 	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
 	 * meaning that if the attribute is empty, it is considered valid.
 	 */
@@ -63,20 +57,17 @@ class ExistValidator extends Validator
 			return;
 		}
 
+		/** @var $className \yii\db\ActiveRecord */
 		$className = ($this->className === null) ? get_class($object) : \Yii::import($this->className);
 		$attributeName = ($this->attributeName === null) ? $attribute : $this->attributeName;
-		$table = $object::getMetaData()->table;
+		$table = $className::getTableSchema();
 		if (($column = $table->getColumn($attributeName)) === null) {
 			throw new \yii\base\Exception('Table "' . $table->name . '" does not have a column named "' . $attributeName . '"');
 		}
 
-		$finder = $object->find()->where(array($column->name => $value));
-
-		if ($this->query instanceof \yii\db\BaseQuery) {
-			$finder->mergeWith($this->query);
-		}
-
-		if (!$finder->exists()) {
+		$query = $className::find();
+		$query->where(array($column->name => $value));
+		if (!$query->exists()) {
 			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} "{value}" is invalid.');
 			$this->addError($object, $attribute, $message, array('{value}' => $value));
 		}
