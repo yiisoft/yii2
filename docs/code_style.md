@@ -134,7 +134,7 @@ class MyClass extends \yii\Object implements MyInterface
 
 ### Constants
 
-Both class level constants and gloval constants should be named in uppercase. Words
+Both class level constants and global constants should be named in uppercase. Words
 are separated by underscore.
 
 ~~~
@@ -144,7 +144,7 @@ class User {
 }
 ~~~
 
-It's preferrable to define class level constants rather than global ones.
+It's preferable to define class level constants rather than global ones.
 
 ### Functions and methods
 
@@ -200,7 +200,7 @@ doIt('a', array(
 - Operators inside of parenthesis should be separated by spaces.
 - Opening brace is on the same line.
 - Closing brace is on a new line.
-- Always use braces for single line staements.
+- Always use braces for single line statements.
 
 ~~~
 if ($event === null) {
@@ -254,7 +254,7 @@ switch ($this->phpType) {
  * Component class file.
  *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2012 Yii Software LLC
+ * @copyright Copyright &copy; 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 ~~~
@@ -265,7 +265,7 @@ switch ($this->phpType) {
 /**
  * Component is the base class that provides the *property*, *event* and *behavior* features.
  *
- * @include @yii/base/Component.md
+ * @include @yii/docs/base-Component.md
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
