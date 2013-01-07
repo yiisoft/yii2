@@ -49,21 +49,17 @@ class ActiveRelation extends ActiveQuery
 
 	/**
 	 * @param string $relationName
-	 * @param array|\Closure $options
+	 * @param callback $callback
 	 * @return ActiveRelation
 	 */
-	public function via($relationName, $options = null)
+	public function via($relationName, $callback = null)
 	{
 		/** @var $relation ActiveRelation */
 		$relation = $this->primaryModel->$relationName();
 		$relation->primaryModel = null;
 		$this->via = array($relationName, $relation);
-		if (is_array($options)) {
-			foreach ($options as $name => $value) {
-				$this->$name = $value;
-			}
-		} elseif ($options instanceof \Closure) {
-			$options($relation);
+		if ($callback !== null) {
+			call_user_func($callback, $relation);
 		}
 		return $this;
 	}
@@ -71,10 +67,10 @@ class ActiveRelation extends ActiveQuery
 	/**
 	 * @param string $tableName
 	 * @param array $link
-	 * @param array|\Closure $options
+	 * @param callback $callback
 	 * @return ActiveRelation
 	 */
-	public function viaTable($tableName, $link, $options = null)
+	public function viaTable($tableName, $link, $callback = null)
 	{
 		$relation = new ActiveRelation(array(
 			'modelClass' => get_class($this->primaryModel),
@@ -84,12 +80,8 @@ class ActiveRelation extends ActiveQuery
 			'asArray' => true,
 		));
 		$this->via = $relation;
-		if (is_array($options)) {
-			foreach ($options as $name => $value) {
-				$this->$name = $value;
-			}
-		} elseif ($options instanceof \Closure) {
-			$options($relation);
+		if ($callback !== null) {
+			call_user_func($callback, $relation);
 		}
 		return $this;
 	}
@@ -110,12 +102,14 @@ class ActiveRelation extends ActiveQuery
 				$this->filterByModels($viaModels);
 			} elseif (is_array($this->via)) {
 				// via relation
-				$relationName = $this->via[0];
-				$viaModels = $this->primaryModel->$relationName;
-				if ($viaModels === null) {
-					$viaModels = array();
-				} elseif (!is_array($viaModels)) {
-					$viaModels = array($viaModels);
+				/** @var $viaQuery ActiveRelation */
+				list($viaName, $viaQuery) = $this->via;
+				$viaQuery->primaryModel = $this->primaryModel;
+				if ($viaQuery->multiple) {
+					$this->primaryModel->$viaName = $viaModels = $viaQuery->all();
+				} else {
+					$this->primaryModel->$viaName = $model = $viaQuery->one();
+					$viaModels = $model === null ? array() : array($model);
 				}
 				$this->filterByModels($viaModels);
 			} else {
