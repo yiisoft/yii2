@@ -46,10 +46,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @param string $oldName the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return string the SQL statement for renaming a DB column.
+	 * @throws Exception
 	 */
 	public function renameColumn($table, $oldName, $newName)
 	{
-		$quotedTable = $this->quoteTableName($table);
+		$quotedTable = $this->connection->quoteTableName($table);
 		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
 		if ($row === false) {
 			throw new Exception("Unable to find '$oldName' in table '$table'.");
@@ -64,16 +65,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
 			foreach ($matches[1] as $i => $c) {
 				if ($c === $oldName) {
 					return "ALTER TABLE $quotedTable CHANGE "
-						. $this->quoteColumnName($oldName, true) . ' '
-						. $this->quoteColumnName($newName, true) . ' '
+						. $this->connection->quoteColumnName($oldName) . ' '
+						. $this->connection->quoteColumnName($newName) . ' '
 						. $matches[2][$i];
 				}
 			}
 		}
 		// try to give back a SQL anyway
 		return "ALTER TABLE $quotedTable CHANGE "
-			. $this->quoteColumnName($oldName, true) . ' '
-			. $this->quoteColumnName($newName, true);
+			. $this->connection->quoteColumnName($oldName) . ' '
+			. $this->connection->quoteColumnName($newName);
 	}
 
 	/**
@@ -84,7 +85,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' DROP FOREIGN KEY ' . $this->quoteColumnName($name);
+		return 'ALTER TABLE ' . $this->connection->quoteTableName($table)
+			. ' DROP FOREIGN KEY ' . $this->connection->quoteColumnName($name);
 	}
 }

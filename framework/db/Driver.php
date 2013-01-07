@@ -92,8 +92,7 @@ abstract class Driver extends \yii\base\Object
 		}
 
 		$db = $this->connection;
-
-		$realName = $db->expandTablePrefix($name);
+		$realName = $this->getRealTableName($name);
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableSchemaCache && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null && !in_array($name, $db->schemaCacheExclude, true)) {
@@ -168,86 +167,18 @@ abstract class Driver extends \yii\base\Object
 
 	/**
 	 * Refreshes the schema.
-	 * This method cleans up the cached table schema and names
-	 * so that they can be recreated to reflect the database schema change.
-	 * @param string $tableName the name of the table that needs to be refreshed.
-	 * If null, all currently loaded tables will be refreshed.
+	 * This method cleans up all cached table schemas so that they can be re-created later
+	 * to reflect the database schema change.
 	 */
-	public function refresh($tableName = null)
+	public function refresh()
 	{
-		$db = $this->connection;
 		/** @var $cache \yii\caching\Cache */
-		if ($db->enableSchemaCache && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null) {
-			if ($tableName === null) {
-				foreach ($this->_tables as $name => $table) {
-					$cache->delete($this->getCacheKey($name));
-				}
-				$this->_tables = array();
-			} else {
-				$cache->delete($this->getCacheKey($tableName));
-				unset($this->_tables[$tableName]);
+		if ($this->connection->enableSchemaCache && ($cache = \Yii::$application->getComponent($this->connection->schemaCacheID)) !== null) {
+			foreach ($this->_tables as $name => $table) {
+				$cache->delete($this->getCacheKey($name));
 			}
 		}
-	}
-
-	/**
-	 * Quotes a table name for use in a query.
-	 * If the table name contains schema prefix, the prefix will also be properly quoted.
-	 * @param string $name table name
-	 * @return string the properly quoted table name
-	 * @see quoteSimpleTableName
-	 */
-	public function quoteTableName($name)
-	{
-		if (strpos($name, '.') === false) {
-			return $this->quoteSimpleTableName($name);
-		}
-		$parts = explode('.', $name);
-		foreach ($parts as $i => $part) {
-			$parts[$i] = $this->quoteSimpleTableName($part);
-		}
-		return implode('.', $parts);
-
-	}
-
-	/**
-	 * Quotes a simple table name for use in a query.
-	 * A simple table name does not schema prefix.
-	 * @param string $name table name
-	 * @return string the properly quoted table name
-	 */
-	public function quoteSimpleTableName($name)
-	{
-		return strpos($name, "'") !== false ? $name : "'" . $name . "'";
-	}
-
-	/**
-	 * Quotes a column name for use in a query.
-	 * If the column name contains prefix, the prefix will also be properly quoted.
-	 * @param string $name column name
-	 * @return string the properly quoted column name
-	 * @see quoteSimpleColumnName
-	 */
-	public function quoteColumnName($name)
-	{
-		if (($pos = strrpos($name, '.')) !== false) {
-			$prefix = $this->quoteTableName(substr($name, 0, $pos)) . '.';
-			$name = substr($name, $pos + 1);
-		} else {
-			$prefix = '';
-		}
-		return $prefix . $this->quoteSimpleColumnName($name);
-	}
-
-	/**
-	 * Quotes a simple column name for use in a query.
-	 * A simple column name does not contain prefix.
-	 * @param string $name column name
-	 * @return string the properly quoted column name
-	 */
-	public function quoteSimpleColumnName($name)
-	{
-		return strpos($name, '"') !== false || $name === '*' ? $name : '"' . $name . '"';
+		$this->_tables = array();
 	}
 
 	/**
@@ -270,6 +201,95 @@ abstract class Driver extends \yii\base\Object
 	 */
 	protected function findTableNames($schema = '')
 	{
-		throw new Exception(get_class($this) . 'does not support fetching all table names.');
+		throw new Exception(get_class($this) . ' does not support fetching all table names.');
+	}
+
+	/**
+	 * Quotes a table name for use in a query.
+	 * If the table name contains schema prefix, the prefix will also be properly quoted.
+	 * If the table name is already quoted or contains special characters including '(', '[[' and '{{',
+	 * then this method will do nothing.
+	 * @param string $name table name
+	 * @return string the properly quoted table name
+	 * @see quoteSimpleTableName
+	 */
+	public function quoteTableName($name)
+	{
+		if (strpos($name, '(') !== false || strpos($name, '[[') !== false || strpos($name, '{{') !== false) {
+			return $name;
+		}
+		if (strpos($name, '.') === false) {
+			return $this->quoteSimpleTableName($name);
+		}
+		$parts = explode('.', $name);
+		foreach ($parts as $i => $part) {
+			$parts[$i] = $this->quoteSimpleTableName($part);
+		}
+		return implode('.', $parts);
+
+	}
+
+	/**
+	 * Quotes a column name for use in a query.
+	 * If the column name contains prefix, the prefix will also be properly quoted.
+	 * If the column name is already quoted or contains special characters including '(', '[[' and '{{',
+	 * then this method will do nothing.
+	 * @param string $name column name
+	 * @return string the properly quoted column name
+	 * @see quoteSimpleColumnName
+	 */
+	public function quoteColumnName($name)
+	{
+		if (strpos($name, '(') !== false || strpos($name, '[[') !== false || strpos($name, '{{') !== false) {
+			return $name;
+		}
+		if (($pos = strrpos($name, '.')) !== false) {
+			$prefix = $this->quoteTableName(substr($name, 0, $pos)) . '.';
+			$name = substr($name, $pos + 1);
+		} else {
+			$prefix = '';
+		}
+		return $prefix . $this->quoteSimpleColumnName($name);
+	}
+
+	/**
+	 * Quotes a simple table name for use in a query.
+	 * A simple table name should contain the table name only without any schema prefix.
+	 * If the table name is already quoted, this method will do nothing.
+	 * @param string $name table name
+	 * @return string the properly quoted table name
+	 */
+	public function quoteSimpleTableName($name)
+	{
+		return strpos($name, "'") !== false ? $name : "'" . $name . "'";
+	}
+
+	/**
+	 * Quotes a simple column name for use in a query.
+	 * A simple column name should contain the column name only without any prefix.
+	 * If the column name is already quoted or is the asterisk character '*', this method will do nothing.
+	 * @param string $name column name
+	 * @return string the properly quoted column name
+	 */
+	public function quoteSimpleColumnName($name)
+	{
+		return strpos($name, '"') !== false || $name === '*' ? $name : '"' . $name . '"';
+	}
+
+	/**
+	 * Returns the real name of a table name.
+	 * This method will strip off curly brackets from the given table name
+	 * and replace the percentage character in the name with [[Connection::tablePrefix]].
+	 * @param string $name the table name to be converted
+	 * @return string the real name of the given table name
+	 */
+	public function getRealTableName($name)
+	{
+		if ($this->connection->enableAutoQuoting && strpos($name, '{{') !== false) {
+			$name = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $name);
+			return str_replace('%', $this->connection->tablePrefix, $name);
+		} else {
+			return $name;
+		}
 	}
 }

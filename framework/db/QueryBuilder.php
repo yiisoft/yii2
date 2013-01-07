@@ -32,10 +32,6 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public $separator = " ";
 	/**
-	 * @var boolean whether to automatically quote table and column names when generating SQL statements.
-	 */
-	public $autoQuote = true;
-	/**
 	 * @var array the abstract column types mapped to physical column types.
 	 * This is mainly used to support creating/modifying tables using DB-independent data type specifications.
 	 * Child classes should override this property to declare supported type mappings.
@@ -99,7 +95,7 @@ class QueryBuilder extends \yii\base\Object
 		$placeholders = array();
 		$count = 0;
 		foreach ($columns as $name => $value) {
-			$names[] = $this->quoteColumnName($name);
+			$names[] = $this->connection->quoteColumnName($name);
 			if ($value instanceof Expression) {
 				$placeholders[] = $value->expression;
 				foreach ($value->params as $n => $v) {
@@ -112,7 +108,7 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 
-		return 'INSERT INTO ' . $this->quoteTableName($table)
+		return 'INSERT INTO ' . $this->connection->quoteTableName($table)
 			. ' (' . implode(', ', $names) . ') VALUES ('
 			. implode(', ', $placeholders) . ')';
 	}
@@ -144,17 +140,17 @@ class QueryBuilder extends \yii\base\Object
 		$count = 0;
 		foreach ($columns as $name => $value) {
 			if ($value instanceof Expression) {
-				$lines[] = $this->quoteColumnName($name, true) . '=' . $value->expression;
+				$lines[] = $this->connection->quoteColumnName($name) . '=' . $value->expression;
 				foreach ($value->params as $n => $v) {
 					$params[$n] = $v;
 				}
 			} else {
-				$lines[] = $this->quoteColumnName($name, true) . '=:p' . $count;
+				$lines[] = $this->connection->quoteColumnName($name) . '=:p' . $count;
 				$params[':p' . $count] = $value;
 				$count++;
 			}
 		}
-		$sql = 'UPDATE ' . $this->quoteTableName($table) . ' SET ' . implode(', ', $lines);
+		$sql = 'UPDATE ' . $this->connection->quoteTableName($table) . ' SET ' . implode(', ', $lines);
 		if (($where = $this->buildCondition($condition)) !== '') {
 			$sql .= ' WHERE ' . $where;
 		}
@@ -179,7 +175,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function delete($table, $condition = '')
 	{
-		$sql = 'DELETE FROM ' . $this->quoteTableName($table);
+		$sql = 'DELETE FROM ' . $this->connection->quoteTableName($table);
 		if (($where = $this->buildCondition($condition)) !== '') {
 			$sql .= ' WHERE ' . $where;
 		}
@@ -217,12 +213,12 @@ class QueryBuilder extends \yii\base\Object
 		$cols = array();
 		foreach ($columns as $name => $type) {
 			if (is_string($name)) {
-				$cols[] = "\t" . $this->quoteColumnName($name) . ' ' . $this->getColumnType($type);
+				$cols[] = "\t" . $this->connection->quoteColumnName($name) . ' ' . $this->getColumnType($type);
 			} else {
 				$cols[] = "\t" . $type;
 			}
 		}
-		$sql = "CREATE TABLE " . $this->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
+		$sql = "CREATE TABLE " . $this->connection->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
 		return $options === null ? $sql : $sql . ' ' . $options;
 	}
 
@@ -234,7 +230,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function renameTable($oldName, $newName)
 	{
-		return 'RENAME TABLE ' . $this->quoteTableName($oldName) . ' TO ' . $this->quoteTableName($newName);
+		return 'RENAME TABLE ' . $this->connection->quoteTableName($oldName) . ' TO ' . $this->connection->quoteTableName($newName);
 	}
 
 	/**
@@ -244,7 +240,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function dropTable($table)
 	{
-		return "DROP TABLE " . $this->quoteTableName($table);
+		return "DROP TABLE " . $this->connection->quoteTableName($table);
 	}
 
 	/**
@@ -254,7 +250,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function truncateTable($table)
 	{
-		return "TRUNCATE TABLE " . $this->quoteTableName($table);
+		return "TRUNCATE TABLE " . $this->connection->quoteTableName($table);
 	}
 
 	/**
@@ -268,8 +264,8 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function addColumn($table, $column, $type)
 	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' ADD ' . $this->quoteColumnName($column) . ' '
+		return 'ALTER TABLE ' . $this->connection->quoteTableName($table)
+			. ' ADD ' . $this->connection->quoteColumnName($column) . ' '
 			. $this->getColumnType($type);
 	}
 
@@ -281,8 +277,8 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function dropColumn($table, $column)
 	{
-		return "ALTER TABLE " . $this->quoteTableName($table)
-			. " DROP COLUMN " . $this->quoteColumnName($column, true);
+		return "ALTER TABLE " . $this->connection->quoteTableName($table)
+			. " DROP COLUMN " . $this->connection->quoteColumnName($column);
 	}
 
 	/**
@@ -294,9 +290,9 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function renameColumn($table, $oldName, $newName)
 	{
-		return "ALTER TABLE " . $this->quoteTableName($table)
-			. " RENAME COLUMN " . $this->quoteColumnName($oldName, true)
-			. " TO " . $this->quoteColumnName($newName, true);
+		return "ALTER TABLE " . $this->connection->quoteTableName($table)
+			. " RENAME COLUMN " . $this->connection->quoteColumnName($oldName)
+			. " TO " . $this->connection->quoteColumnName($newName);
 	}
 
 	/**
@@ -311,9 +307,9 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table) . ' CHANGE '
-			. $this->quoteColumnName($column, true) . ' '
-			. $this->quoteColumnName($column, true) . ' '
+		return 'ALTER TABLE ' . $this->connection->quoteTableName($table) . ' CHANGE '
+			. $this->connection->quoteColumnName($column) . ' '
+			. $this->connection->quoteColumnName($column) . ' '
 			. $this->getColumnType($type);
 	}
 
@@ -333,10 +329,10 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
-		$sql = 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' ADD CONSTRAINT ' . $this->quoteColumnName($name)
+		$sql = 'ALTER TABLE ' . $this->connection->quoteTableName($table)
+			. ' ADD CONSTRAINT ' . $this->connection->quoteColumnName($name)
 			. ' FOREIGN KEY (' . $this->buildColumns($columns) . ')'
-			. ' REFERENCES ' . $this->quoteTableName($refTable)
+			. ' REFERENCES ' . $this->connection->quoteTableName($refTable)
 			. ' (' . $this->buildColumns($refColumns) . ')';
 		if ($delete !== null) {
 			$sql .= ' ON DELETE ' . $delete;
@@ -355,8 +351,8 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		return 'ALTER TABLE ' . $this->quoteTableName($table)
-			. ' DROP CONSTRAINT ' . $this->quoteColumnName($name);
+		return 'ALTER TABLE ' . $this->connection->quoteTableName($table)
+			. ' DROP CONSTRAINT ' . $this->connection->quoteColumnName($name);
 	}
 
 	/**
@@ -372,8 +368,8 @@ class QueryBuilder extends \yii\base\Object
 	public function createIndex($name, $table, $columns, $unique = false)
 	{
 		return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
-			. $this->quoteTableName($name) . ' ON '
-			. $this->quoteTableName($table)
+			. $this->connection->quoteTableName($name) . ' ON '
+			. $this->connection->quoteTableName($table)
 			. ' (' . $this->buildColumns($columns) . ')';
 	}
 
@@ -385,7 +381,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function dropIndex($name, $table)
 	{
-		return 'DROP INDEX ' . $this->quoteTableName($name) . ' ON ' . $this->quoteTableName($table);
+		return 'DROP INDEX ' . $this->connection->quoteTableName($name) . ' ON ' . $this->connection->quoteTableName($table);
 	}
 
 	/**
@@ -500,7 +496,7 @@ class QueryBuilder extends \yii\base\Object
 				$parts[] = $this->buildInCondition('in', array($column, $value));
 			} else {
 				if (strpos($column, '(') === false) {
-					$column = $this->quoteColumnName($column);
+					$column = $this->connection->quoteColumnName($column);
 				}
 				if ($value === null) {
 					$parts[] = "$column IS NULL";
@@ -541,7 +537,7 @@ class QueryBuilder extends \yii\base\Object
 		list($column, $value1, $value2) = $operands;
 
 		if (strpos($column, '(') === false) {
-			$column = $this->quoteColumnName($column);
+			$column = $this->connection->quoteColumnName($column);
 		}
 		$value1 = is_string($value1) ? $this->connection->quoteValue($value1) : (string)$value1;
 		$value2 = is_string($value2) ? $this->connection->quoteValue($value2) : (string)$value2;
@@ -581,7 +577,7 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 		if (strpos($column, '(') === false) {
-			$column = $this->quoteColumnName($column);
+			$column = $this->connection->quoteColumnName($column);
 		}
 
 		if (count($values) > 1) {
@@ -596,7 +592,7 @@ class QueryBuilder extends \yii\base\Object
 	{
 		foreach ($columns as $i => $column) {
 			if (strpos($column, '(') === false) {
-				$columns[$i] = $this->quoteColumnName($column);
+				$columns[$i] = $this->connection->quoteColumnName($column);
 			}
 		}
 		$vss = array();
@@ -636,7 +632,7 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		if (strpos($column, '(') === false) {
-			$column = $this->quoteColumnName($column);
+			$column = $this->connection->quoteColumnName($column);
 		}
 
 		$parts = array();
@@ -664,24 +660,21 @@ class QueryBuilder extends \yii\base\Object
 			return $select . ' *';
 		}
 
-		if ($this->autoQuote) {
-			$driver = $this->connection->driver;
-			if (!is_array($columns)) {
-				if (strpos($columns, '(') !== false) {
-					return $select . ' ' . $columns;
-				} else {
-					$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-				}
+		if (!is_array($columns)) {
+			if (strpos($columns, '(') !== false) {
+				return $select . ' ' . $columns;
+			} else {
+				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			foreach ($columns as $i => $column) {
-				if (is_object($column)) {
-					$columns[$i] = (string)$column;
-				} elseif (strpos($column, '(') === false) {
-					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
-						$columns[$i] = $driver->quoteColumnName($matches[1]) . ' AS ' . $driver->quoteSimpleColumnName($matches[2]);
-					} else {
-						$columns[$i] = $driver->quoteColumnName($column);
-					}
+		}
+		foreach ($columns as $i => $column) {
+			if (is_object($column)) {
+				$columns[$i] = (string)$column;
+			} elseif (strpos($column, '(') === false) {
+				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
+					$columns[$i] = $this->connection->quoteColumnName($matches[1]) . ' AS ' . $this->connection->quoteColumnName($matches[2]);
+				} else {
+					$columns[$i] = $this->connection->quoteColumnName($column);
 				}
 			}
 		}
@@ -703,22 +696,19 @@ class QueryBuilder extends \yii\base\Object
 			return '';
 		}
 
-		if ($this->autoQuote) {
-			$driver = $this->connection->driver;
-			if (!is_array($tables)) {
-				if (strpos($tables, '(') !== false) {
-					return 'FROM ' . $tables;
-				} else {
-					$tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
-				}
+		if (!is_array($tables)) {
+			if (strpos($tables, '(') !== false) {
+				return 'FROM ' . $tables;
+			} else {
+				$tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			foreach ($tables as $i => $table) {
-				if (strpos($table, '(') === false) {
-					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
-						$tables[$i] = $driver->quoteTableName($matches[1]) . ' ' . $driver->quoteTableName($matches[2]);
-					} else {
-						$tables[$i] = $driver->quoteTableName($table);
-					}
+		}
+		foreach ($tables as $i => $table) {
+			if (strpos($table, '(') === false) {
+				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
+					$tables[$i] = $this->connection->quoteTableName($matches[1]) . ' ' . $this->connection->quoteTableName($matches[2]);
+				} else {
+					$tables[$i] = $this->connection->quoteTableName($table);
 				}
 			}
 		}
@@ -747,12 +737,11 @@ class QueryBuilder extends \yii\base\Object
 			if (is_array($join)) { // 0:join type, 1:table name, 2:on-condition
 				if (isset($join[0], $join[1])) {
 					$table = $join[1];
-					if ($this->autoQuote && strpos($table, '(') === false) {
-						$driver = $this->connection->driver;
+					if (strpos($table, '(') === false) {
 						if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
-							$table = $driver->quoteTableName($matches[1]) . ' ' . $driver->quoteTableName($matches[2]);
+							$table = $this->connection->quoteTableName($matches[1]) . ' ' . $this->connection->quoteTableName($matches[2]);
 						} else {
-							$table = $driver->quoteTableName($table);
+							$table = $this->connection->quoteTableName($table);
 						}
 					}
 					$joins[$i] = $join[0] . ' ' . $table;
@@ -813,24 +802,21 @@ class QueryBuilder extends \yii\base\Object
 		if (empty($columns)) {
 			return '';
 		}
-		if ($this->autoQuote) {
-			$driver = $this->connection->driver;
-			if (!is_array($columns)) {
-				if (strpos($columns, '(') !== false) {
-					return 'ORDER BY ' . $columns;
-				} else {
-					$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-				}
+		if (!is_array($columns)) {
+			if (strpos($columns, '(') !== false) {
+				return 'ORDER BY ' . $columns;
+			} else {
+				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
 			}
-			foreach ($columns as $i => $column) {
-				if (is_object($column)) {
-					$columns[$i] = (string)$column;
-				} elseif (strpos($column, '(') === false) {
-					if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-						$columns[$i] = $driver->quoteColumnName($matches[1]) . ' ' . $matches[2];
-					} else {
-						$columns[$i] = $driver->quoteColumnName($column);
-					}
+		}
+		foreach ($columns as $i => $column) {
+			if (is_object($column)) {
+				$columns[$i] = (string)$column;
+			} elseif (strpos($column, '(') === false) {
+				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
+					$columns[$i] = $this->connection->quoteColumnName($matches[1]) . ' ' . $matches[2];
+				} else {
+					$columns[$i] = $this->connection->quoteColumnName($column);
 				}
 			}
 		}
@@ -879,61 +865,26 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * Processes columns and properly quote them if necessary.
-	 * This method will quote columns if [[autoQuote]] is true.
 	 * It will join all columns into a string with comma as separators.
 	 * @param string|array $columns the columns to be processed
 	 * @return string the processing result
 	 */
 	protected function buildColumns($columns)
 	{
-		if ($this->autoQuote) {
-			if (!is_array($columns)) {
-				if (strpos($columns, '(') !== false) {
-					return $columns;
-				} else {
-					$columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
-				}
+		if (!is_array($columns)) {
+			if (strpos($columns, '(') !== false) {
+				return $columns;
+			} else {
+				$columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
 			}
-			foreach ($columns as $i => $column) {
-				if (is_object($column)) {
-					$columns[$i] = (string)$column;
-				} elseif (strpos($column, '(') === false) {
-					$columns[$i] = $this->quoteColumnName($column);
-				}
+		}
+		foreach ($columns as $i => $column) {
+			if (is_object($column)) {
+				$columns[$i] = (string)$column;
+			} elseif (strpos($column, '(') === false) {
+				$columns[$i] = $this->connection->quoteColumnName($column);
 			}
 		}
 		return is_array($columns) ? implode(', ', $columns) : $columns;
-	}
-
-	/**
-	 * Quotes a table name for use in a query.
-	 * This method will perform name quoting only when [[autoQuote]] is true.
-	 * @param string $name table name
-	 * @param boolean $simple whether the name should be treated as a simple table name without any prefix.
-	 * @return string the properly quoted table name
-	 */
-	protected function quoteTableName($name, $simple = false)
-	{
-		if ($this->autoQuote) {
-			return $this->connection->quoteTableName($name, $simple);
-		} else {
-			return $name;
-		}
-	}
-
-	/**
-	 * Quotes a column name for use in a query.
-	 * This method will perform name quoting only when [[autoQuote]] is true.
-	 * @param string $name column name
-	 * @param boolean $simple whether the name should be treated as a simple column name without any prefix.
-	 * @return string the properly quoted column name
-	 */
-	protected function quoteColumnName($name, $simple = false)
-	{
-		if ($this->autoQuote) {
-			return $this->connection->quoteColumnName($name, $simple);
-		} else {
-			return $name;
-		}
 	}
 }

@@ -62,21 +62,6 @@ class Command extends \yii\base\Component
 	private $_params = array();
 
 	/**
-	 * Constructor.
-	 * @param Connection $connection the database connection
-	 * @param string $sql the SQL statement to be executed
-	 * @param array $params the parameters to be bound to the SQL statement
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($connection, $sql = null, $params = array(), $config = array())
-	{
-		$this->connection = $connection;
-		$this->_sql = $sql;
-		$this->bindValues($params);
-		parent::__construct($config);
-	}
-
-	/**
 	 * Returns the SQL statement for this command.
 	 * @return string the SQL statement to be executed
 	 */
@@ -88,14 +73,26 @@ class Command extends \yii\base\Component
 	/**
 	 * Specifies the SQL statement to be executed.
 	 * Any previous execution will be terminated or cancelled.
-	 * @param string $value the SQL statement to be set.
+	 * @param string $sql the SQL statement to be set.
 	 * @return Command this command instance
 	 */
-	public function setSql($value)
+	public function setSql($sql)
 	{
-		$this->_sql = $value;
-		$this->_params = array();
-		$this->cancel();
+		if ($sql !== $this->_sql) {
+			if ($this->connection->enableAutoQuoting && $sql != '') {
+				$sql = preg_replace_callback('/(\\{\\{(.*?)\\}\\}|\\[\\[(.*?)\\]\\])/', function($matches) {
+					if (isset($matches[3])) {
+						return $this->connection->quoteColumnName($matches[3]);
+					} else {
+						$name = str_replace('%', $this->connection->tablePrefix, $matches[2]);
+						return $this->connection->quoteTableName($name);
+					}
+				}, $sql);
+			}
+			$this->_sql = $sql;
+			$this->_params = array();
+			$this->cancel();
+		}
 		return $this;
 	}
 
@@ -110,7 +107,7 @@ class Command extends \yii\base\Component
 	public function prepare()
 	{
 		if ($this->pdoStatement == null) {
-			$sql = $this->connection->expandTablePrefix($this->getSql());
+			$sql = $this->getSql();
 			try {
 				$this->pdoStatement = $this->connection->pdo->prepare($sql);
 			} catch (\Exception $e) {
@@ -223,7 +220,7 @@ class Command extends \yii\base\Component
 	 */
 	public function execute($params = array())
 	{
-		$sql = $this->connection->expandTablePrefix($this->getSql());
+		$sql = $this->getSql();
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
@@ -356,7 +353,7 @@ class Command extends \yii\base\Component
 	private function queryInternal($method, $params, $fetchMode = null)
 	{
 		$db = $this->connection;
-		$sql = $db->expandTablePrefix($this->getSql());
+		$sql = $this->getSql();
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';

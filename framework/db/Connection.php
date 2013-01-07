@@ -124,7 +124,7 @@ class Connection extends \yii\base\ApplicationComponent
 	public $attributes;
 	/**
 	 * @var \PDO the PHP PDO instance associated with this DB connection.
-	 * This property is mainly managed by [[open]] and [[close]] methods.
+	 * This property is mainly managed by [[open()]] and [[close()]] methods.
 	 * When a DB connection is active, this property will represent a PDO instance;
 	 * otherwise, it will be null.
 	 */
@@ -132,7 +132,7 @@ class Connection extends \yii\base\ApplicationComponent
 	/**
 	 * @var boolean whether to enable schema caching.
 	 * Note that in order to enable truly schema caching, a valid cache component as specified
-	 * by [[schemaCacheID]] must be enabled and [[schemaCacheEnabled]] must be set true.
+	 * by [[schemaCacheID]] must be enabled and [[enableSchemaCache]] must be set true.
 	 * @see schemaCacheDuration
 	 * @see schemaCacheExclude
 	 * @see schemaCacheID
@@ -159,7 +159,7 @@ class Connection extends \yii\base\ApplicationComponent
 	/**
 	 * @var boolean whether to enable query caching.
 	 * Note that in order to enable query caching, a valid cache component as specified
-	 * by [[queryCacheID]] must be enabled and [[queryCacheEnabled]] must be set true.
+	 * by [[queryCacheID]] must be enabled and [[enableQueryCache]] must be set true.
 	 *
 	 * Methods [[beginCache()]] and [[endCache()]] can be used as shortcuts to turn on
 	 * and off query caching on the fly.
@@ -215,15 +215,23 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public $enableProfiling = false;
 	/**
-	 * @var string the default prefix for table names. Defaults to null, meaning not using table prefix.
-	 * By setting this property, any token like '{{TableName}}' in [[Command::sql]] will
-	 * be replaced with 'prefixTableName', where 'prefix' refers to this property value.
-	 * For example, '{{post}}' becomes 'tbl_post', if 'tbl_' is set as the table prefix.
-	 *
-	 * Note that if you set this property to be an empty string, then '{{post}}' will be replaced
-	 * with 'post'.
+	 * @var string the common prefix or suffix for table names. If a table name is given
+	 * as `{{%TableName}}`, then the percentage character `%` will be replaced with this
+	 * property value. For example, `{{%post}}` becomes `{{tbl_post}}` if this property is
+	 * set as `"tbl_"`. Note that this property is only effective when [[enableAutoQuoting]]
+	 * is true.
+	 * @see enableAutoQuoting
 	 */
 	public $tablePrefix;
+	/**
+	 * @var boolean whether to enable automatic quoting of table names and column names.
+	 * Defaults to true. When this property is true, any token enclosed within double curly brackets
+	 * (e.g. `{{post}}`) in a SQL statement will be treated as a table name and will be quoted
+	 * accordingly when the SQL statement is executed; and any token enclosed within double square
+	 * brackets (e.g. `[[name]]`) will be treated as a column name and quoted accordingly.
+	 * @see tablePrefix
+	 */
+	public $enableAutoQuoting = true;
 	/**
 	 * @var array a list of SQL statements that should be executed right after the DB connection is established.
 	 */
@@ -411,7 +419,12 @@ class Connection extends \yii\base\ApplicationComponent
 	public function createCommand($sql = null, $params = array())
 	{
 		$this->open();
-		return new Command($this, $sql, $params);
+		$command = new Command(array(
+			'connection' => $this,
+			'sql' => $sql,
+		));
+		$command->bindValues($params);
+		return $command;
 	}
 
 	/**
@@ -513,43 +526,27 @@ class Connection extends \yii\base\ApplicationComponent
 	/**
 	 * Quotes a table name for use in a query.
 	 * If the table name contains schema prefix, the prefix will also be properly quoted.
+	 * If the table name is already quoted or contains special characters including '(', '[[' and '{{',
+	 * then this method will do nothing.
 	 * @param string $name table name
-	 * @param boolean $simple if this is true, then the method will assume $name is a table name without schema prefix.
 	 * @return string the properly quoted table name
 	 */
-	public function quoteTableName($name, $simple = false)
+	public function quoteTableName($name)
 	{
-		return $simple ? $this->getDriver()->quoteSimpleTableName($name) : $this->getDriver()->quoteTableName($name);
+		return $this->getDriver()->quoteTableName($name);
 	}
 
 	/**
 	 * Quotes a column name for use in a query.
-	 * If the column name contains table prefix, the prefix will also be properly quoted.
+	 * If the column name contains prefix, the prefix will also be properly quoted.
+	 * If the column name is already quoted or contains special characters including '(', '[[' and '{{',
+	 * then this method will do nothing.
 	 * @param string $name column name
-	 * @param boolean $simple if this is true, then the method will assume $name is a column name without table prefix.
 	 * @return string the properly quoted column name
 	 */
-	public function quoteColumnName($name, $simple = false)
+	public function quoteColumnName($name)
 	{
-		return $simple ? $this->getDriver()->quoteSimpleColumnName($name) : $this->getDriver()->quoteColumnName($name);
-	}
-
-	/**
-	 * Prefixes table names in a SQL statement with [[tablePrefix]].
-	 * By calling this method, tokens like '{{TableName}}' in the given SQL statement will
-	 * be replaced with 'prefixTableName', where 'prefix' refers to [[tablePrefix]].
-	 * Note that if [[tablePrefix]] is null, this method will do nothing.
-	 * @param string $sql the SQL statement whose table names need to be prefixed with [[tablePrefix]].
-	 * @return string the expanded SQL statement
-	 * @see tablePrefix
-	 */
-	public function expandTablePrefix($sql)
-	{
-		if ($this->tablePrefix !== null && strpos($sql, '{{') !== false) {
-			return preg_replace('/{{(.*?)}}/', $this->tablePrefix . '\1', $sql);
-		} else {
-			return $sql;
-		}
+		return $this->getDriver()->quoteColumnName($name);
 	}
 
 	/**
