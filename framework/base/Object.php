@@ -160,8 +160,12 @@ class Object
 
 	/**
 	 * Returns a value indicating whether a property is defined.
-	 * A property is defined if there is a getter or setter method
-	 * defined in the class. Note that property names are case-insensitive.
+	 * A property is defined if:
+	 *
+	 * - the class has a getter or setter method associated with the specified name
+	 *   (in this case, property name is case-insensitive);
+	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 *
 	 * @param string $name the property name
 	 * @param boolean $checkVar whether to treat member variables as properties
 	 * @return boolean whether the property is defined
@@ -175,8 +179,12 @@ class Object
 
 	/**
 	 * Returns a value indicating whether a property can be read.
-	 * A property can be read if the class has a getter method
-	 * for the property name. Note that property name is case-insensitive.
+	 * A property is readable if:
+	 *
+	 * - the class has a getter method associated with the specified name
+	 *   (in this case, property name is case-insensitive);
+	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 *
 	 * @param string $name the property name
 	 * @param boolean $checkVar whether to treat member variables as properties
 	 * @return boolean whether the property can be read
@@ -189,8 +197,12 @@ class Object
 
 	/**
 	 * Returns a value indicating whether a property can be set.
-	 * A property can be written if the class has a setter method
-	 * for the property name. Note that property name is case-insensitive.
+	 * A property is writable if:
+	 *
+	 * - the class has a setter method associated with the specified name
+	 *   (in this case, property name is case-insensitive);
+	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 *
 	 * @param string $name the property name
 	 * @param boolean $checkVar whether to treat member variables as properties
 	 * @return boolean whether the property can be written

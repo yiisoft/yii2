@@ -11,6 +11,9 @@ class ListItem
 
 class VectorTest extends \yiiunit\TestCase
 {
+	/**
+	 * @var Vector
+	 */
 	protected $vector;
 	protected $item1, $item2, $item3;
 
@@ -62,7 +65,7 @@ class VectorTest extends \yiiunit\TestCase
 		$this->assertEquals(2,$this->vector->indexOf($this->item2));
 		$this->assertEquals(0,$this->vector->indexOf($this->item3));
 		$this->assertEquals(1,$this->vector->indexOf($this->item1));
-		$this->setExpectedException('yii\base\Exception');
+		$this->setExpectedException('yii\base\BadParamException');
 		$this->vector->insertAt(4,$this->item3);
 	}
 
@@ -84,7 +87,7 @@ class VectorTest extends \yiiunit\TestCase
 		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
 		$this->assertEquals(1,$this->vector->indexOf($this->item3));
 		$this->assertEquals(0,$this->vector->indexOf($this->item1));
-		$this->setExpectedException('yii\base\Exception');
+		$this->setExpectedException('yii\base\BadParamException');
 		$this->vector->removeAt(2);
 	}
 
@@ -115,7 +118,7 @@ class VectorTest extends \yiiunit\TestCase
 		$array=array($this->item3,$this->item1);
 		$this->vector->copyFrom($array);
 		$this->assertTrue(count($array)==2 && $this->vector[0]===$this->item3 && $this->vector[1]===$this->item1);
-		$this->setExpectedException('yii\base\Exception');
+		$this->setExpectedException('yii\base\BadParamException');
 		$this->vector->copyFrom($this);
 	}
 
@@ -124,7 +127,7 @@ class VectorTest extends \yiiunit\TestCase
 		$array=array($this->item3,$this->item1);
 		$this->vector->mergeWith($array);
 		$this->assertTrue($this->vector->getCount()==4 && $this->vector[0]===$this->item1 && $this->vector[3]===$this->item1);
-		$this->setExpectedException('yii\base\Exception');
+		$this->setExpectedException('yii\base\BadParamException');
 		$this->vector->mergeWith($this);
 	}
 
@@ -138,7 +141,7 @@ class VectorTest extends \yiiunit\TestCase
 	{
 		$this->assertTrue($this->vector[0]===$this->item1);
 		$this->assertTrue($this->vector[1]===$this->item2);
-		$this->setExpectedException('yii\base\Exception');
+		$this->setExpectedException('yii\base\BadParamException');
 		$a=$this->vector[2];
 	}
 

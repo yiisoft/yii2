@@ -29,12 +29,15 @@ class ComponentTest extends \yiiunit\TestCase
 	{
 		$this->component = null;
 	}
-
+	
 	public function testHasProperty()
 	{
-		$this->assertTrue($this->component->hasProperty('Text'), "Component hasn't property Text");
-		$this->assertTrue($this->component->hasProperty('text'), "Component hasn't property text");
-		$this->assertFalse($this->component->hasProperty('Caption'), "Component as property Caption");
+		$this->assertTrue($this->component->hasProperty('Text'));
+		$this->assertTrue($this->component->hasProperty('text'));
+		$this->assertFalse($this->component->hasProperty('Caption'));
+		$this->assertTrue($this->component->hasProperty('content'));
+		$this->assertFalse($this->component->hasProperty('content', false));
+		$this->assertFalse($this->component->hasProperty('Content'));
 	}
 
 	public function testCanGetProperty()
@@ -42,19 +45,26 @@ class ComponentTest extends \yiiunit\TestCase
 		$this->assertTrue($this->component->canGetProperty('Text'));
 		$this->assertTrue($this->component->canGetProperty('text'));
 		$this->assertFalse($this->component->canGetProperty('Caption'));
+		$this->assertTrue($this->component->canGetProperty('content'));
+		$this->assertFalse($this->component->canGetProperty('content', false));
+		$this->assertFalse($this->component->canGetProperty('Content'));
 	}
 
 	public function testCanSetProperty()
 	{
 		$this->assertTrue($this->component->canSetProperty('Text'));
 		$this->assertTrue($this->component->canSetProperty('text'));
+		$this->assertFalse($this->component->canSetProperty('Object'));
 		$this->assertFalse($this->component->canSetProperty('Caption'));
+		$this->assertTrue($this->component->canSetProperty('content'));
+		$this->assertFalse($this->component->canSetProperty('content', false));
+		$this->assertFalse($this->component->canSetProperty('Content'));
 	}
 
 	public function testGetProperty()
 	{
 		$this->assertTrue('default' === $this->component->Text);
-		$this->setExpectedException('yii\base\Exception');
+		$this->setExpectedException('yii\base\BadPropertyException');
 		$value2 = $this->component->Caption;
 	}
 
@@ -62,23 +72,29 @@ class ComponentTest extends \yiiunit\TestCase
 	{
 		$value = 'new value';
 		$this->component->Text = $value;
-		$text = $this->component->Text;
-		$this->assertTrue($value === $this->component->Text);
-		$this->setExpectedException('yii\base\Exception');
+		$this->assertEquals($value, $this->component->Text);
+		$this->setExpectedException('yii\base\BadPropertyException');
 		$this->component->NewMember = $value;
 	}
 
 	public function testIsset()
 	{
 		$this->assertTrue(isset($this->component->Text));
-		$this->assertTrue(!empty($this->component->Text));
-
-		unset($this->component->Text);
-		$this->assertFalse(isset($this->component->Text));
-		$this->assertFalse(!empty($this->component->Text));
+		$this->assertFalse(empty($this->component->Text));
 
 		$this->component->Text = '';
 		$this->assertTrue(isset($this->component->Text));
+		$this->assertTrue(empty($this->component->Text));
+
+		$this->component->Text = null;
+		$this->assertFalse(isset($this->component->Text));
+		$this->assertTrue(empty($this->component->Text));
+	}
+
+	public function testUnset()
+	{
+		unset($this->component->Text);
+		$this->assertFalse(isset($this->component->Text));
 		$this->assertTrue(empty($this->component->Text));
 	}
 
@@ -147,38 +163,24 @@ class ComponentTest extends \yiiunit\TestCase
 		$this->assertFalse($this->component->eventHandled);
 	}
 
-	public function testDetachBehavior()
+	public function testAttachBehavior()
 	{
 		$component = new NewComponent;
-		$behavior = new NewBehavior;
-		$component->attachBehavior('a', $behavior);
-		$this->assertSame($behavior, $component->detachBehavior('a'));
-	}
+		$this->assertFalse($component->hasProperty('p'));
+		$this->assertFalse($component->behaviorCalled);
+		$this->assertNull($component->getBehavior('a'));
 
-	public function testDetachingBehaviors()
-	{
-		$component = new NewComponent;
-		$behavior = new NewBehavior;
-		$component->attachBehavior('a', $behavior);
-		$component->detachBehaviors();
-		$this->setExpectedException('yii\base\Exception');
-		$component->test();
-	}
-
-	public function testGetBehavior()
-	{
-		$component = new NewComponent;
 		$behavior = new NewBehavior;
 		$component->attachBehavior('a', $behavior);
 		$this->assertSame($behavior, $component->getBehavior('a'));
-	}
+		$this->assertTrue($component->hasProperty('p'));
+		$component->test();
+		$this->assertTrue($component->behaviorCalled);
 
-	public function testCreate()
-	{
-		$component = NewComponent2::newInstance(array('a' => 3), 1, 2);
-		$this->assertEquals(1, $component->b);
-		$this->assertEquals(2, $component->c);
-		$this->assertEquals(3, $component->a);
+		$this->assertSame($behavior, $component->detachBehavior('a'));
+		$this->assertFalse($component->hasProperty('p'));
+		$this->setExpectedException('yii\base\BadMethodException');
+		$component->test();
 	}
 }
 
@@ -186,9 +188,8 @@ class NewComponent extends \yii\base\Component
 {
 	private $_object = null;
 	private $_text = 'default';
-	public $eventHandled = false;
-	public $event;
-	public $behaviorCalled = false;
+	private $_items = array();
+	public $content;
 
 	public function getText()
 	{
@@ -203,11 +204,27 @@ class NewComponent extends \yii\base\Component
 	public function getObject()
 	{
 		if (!$this->_object) {
-			$this->_object = new NewComponent;
+			$this->_object = new self;
 			$this->_object->_text = 'object text';
 		}
 		return $this->_object;
 	}
+
+	public function getExecute()
+	{
+		return function($param) {
+			return $param * 2;
+		};
+	}
+
+	public function getItems()
+	{
+		return $this->_items;
+	}
+
+	public $eventHandled = false;
+	public $event;
+	public $behaviorCalled = false;
 
 	public function myEventHandler($event)
 	{
@@ -223,6 +240,8 @@ class NewComponent extends \yii\base\Component
 
 class NewBehavior extends \yii\base\Behavior
 {
+	public $p;
+
 	public function test()
 	{
 		$this->owner->behaviorCalled = true;
