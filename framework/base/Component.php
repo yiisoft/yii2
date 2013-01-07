@@ -12,7 +12,7 @@ namespace yii\base;
 /**
  * Component is the base class that provides the *property*, *event* and *behavior* features.
  *
- * @include @yii/base/Component.md
+ * @include @yii/docs/base-Component.md
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
