@@ -107,7 +107,6 @@ class Object
 	{
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
-			// property is not null
 			return $this->$getter() !== null;
 		} else {
 			return false;
@@ -129,7 +128,6 @@ class Object
 	{
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {
-			// write property
 			$this->$setter(null);
 		} elseif (method_exists($this, 'get' . $name)) {
 			throw new BadPropertyException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
@@ -150,9 +148,9 @@ class Object
 	 */
 	public function __call($name, $params)
 	{
-		if ($this->canGetProperty($name, false)) {
-			$getter = 'get' . $name;
-			$func = $this->$getter;
+		$getter = 'get' . $name;
+		if (method_exists($this, $getter)) {
+			$func = $this->$getter();
 			if ($func instanceof \Closure) {
 				return call_user_func_array($func, $params);
 			}
