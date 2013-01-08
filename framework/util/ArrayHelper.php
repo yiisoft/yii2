@@ -149,15 +149,24 @@ class ArrayHelper
 	 * ~~~
 	 *
 	 * @param array $array
-	 * @param string|\Closure $key
+	 * @param string|\Closure $name
+	 * @param boolean $keepKeys whether to maintain the array keys. If false, the resulting array
+	 * will be re-indexed with integers.
 	 * @return array the list of column values
 	 */
-	public static function getColumn($array, $key)
+	public static function getColumn($array, $name, $keepKeys = true)
 	{
 		$result = array();
-		foreach ($array as $element) {
-			$result[] = static::getValue($element, $key);
+		if ($keepKeys) {
+			foreach ($array as $k => $element) {
+				$result[$k] = static::getValue($element, $name);
+			}
+		} else {
+			foreach ($array as $element) {
+				$result[] = static::getValue($element, $name);
+			}
 		}
+
 		return $result;
 	}
 
@@ -218,37 +227,56 @@ class ArrayHelper
 	}
 
 	/**
-	 * Sorts a multi-dimensional array by a specific key.
-	 * The multi-dimensional array can be either an array of arrays or an array of objects,
-	 * and the key can be a key name of the sub-arrays or a property name of the objects.
-	 * @param array $items the multi-dimensional array to be sorted
-	 * @param string|\Closure $key key name of the array element, or property name of the object,
-	 * or an anonymous function returning the value. The anonymous function signature should be:
-	 * `function($item)`.
-	 * @param boolean $ascending whether to sort in ascending or descending order
-	 * @param integer $sortFlag the PHP sort flag (e.g. `SORT_REGULAR`, `SORT_NUMERIC`.)
+	 * Sorts an array of objects or arrays (with the same structure) by one or several keys.
+	 * @param array $array the array to be sorted. The array will be modified after calling this method.
+	 * @param string|\Closure|array $key the key(s) to be sorted by. This refers to a key name of the sub-array
+	 * elements, a property name of the objects, or an anonymous function returning the values for comparison
+	 * purpose. The anonymous function signature should be: `function($item)`.
+	 * To sort by multiple keys, provide an array of keys here.
+	 * @param boolean|array $ascending whether to sort in ascending or descending order. When
+	 * sorting by multiple keys with different ascending orders, use an array of ascending flags.
+	 * @param integer|array $sortFlag the PHP sort flag. Valid values include:
+	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, and `SORT_STRING | SORT_FLAG_CASE`. The last
+	 * value is for sorting strings in case-insensitive manner. Please refer to
 	 * See [PHP manual](http://php.net/manual/en/function.sort.php) for more details.
-	 * @return array the sorted result. Note that the array will be re-indexed with integers.
+	 * When sorting by multiple keys with different sort flags, use an array of sort flags.
+	 * @throws \yii\base\BadParamException if the $ascending or $sortFlag parameters do not have
+	 * correct number of elements as that of $key.
 	 */
-	public static function sort($items, $key, $ascending = true, $sortFlag = SORT_REGULAR)
+	public static function sort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR)
 	{
-		if (empty($items)) {
-			return $items;
+		$keys = is_array($key) ? $key : array($key);
+		if (empty($keys) || empty($array)) {
+			return;
 		}
-
-		foreach ($items as $k => $item) {
-			$index[$k] = static::getValue($item, $key);
+		$n = count($keys);
+		if (is_scalar($ascending)) {
+			$ascending = array_fill(0, $n, $ascending);
+		} elseif (count($ascending) !== $n) {
+			throw new \yii\base\BadParamException('The length of $ascending parameter must be the same as that of $keys.');
 		}
-		if ($ascending) {
-			asort($index, $sortFlag);
-		} else {
-			arsort($index, $sortFlag);
+		if (is_scalar($sortFlag)) {
+			$sortFlag = array_fill(0, $n, $sortFlag);
+		} elseif (count($sortFlag) !== $n) {
+			throw new \yii\base\BadParamException('The length of $ascending parameter must be the same as that of $keys.');
 		}
-
-		$result = array();
-		foreach ($index as $k => $v) {
-			$result[] = $items[$k];
+		$args = array();
+		foreach ($keys as $i => $key) {
+			$flag = $sortFlag[$i];
+			if ($flag == (SORT_STRING | SORT_FLAG_CASE)) {
+				$flag = SORT_STRING;
+				$column = array();
+				foreach (static::getColumn($array, $key) as $k => $value) {
+					$column[$k] = strtolower($value);
+				}
+				$args[] = $column;
+			} else {
+				$args[] = static::getColumn($array, $key);
+			}
+			$args[] = $ascending[$i];
+			$args[] = $flag;
 		}
-		return $result;
+		$args[] &= $array;
+		call_user_func_array('array_multisort', $args);
 	}
 }
