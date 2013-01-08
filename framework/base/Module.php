@@ -38,7 +38,7 @@ abstract class Module extends Component
 	 */
 	public $preload = array();
 	/**
-	 * @var string an ID that uniquely identifies this module among other modules which have the same [[parent]].
+	 * @var string an ID that uniquely identifies this module among other modules which have the same [[module|parent]].
 	 */
 	public $id;
 	/**
@@ -46,7 +46,7 @@ abstract class Module extends Component
 	 */
 	public $module;
 	/**
-	 * @var mixed the layout that should be applied for views within this module. This refers to a view name
+	 * @var string|boolean the layout that should be applied for views within this module. This refers to a view name
 	 * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
 	 * will be taken. If this is false, layout will be disabled within this module.
 	 */
@@ -84,11 +84,11 @@ abstract class Module extends Component
 	 */
 	protected $_basePath;
 	/**
-	 * @var string the root directory that contains view files.
+	 * @var string the root directory that contains view files for this module
 	 */
 	protected $_viewPath;
 	/**
-	 * @var string the root directory that contains layout view files.
+	 * @var string the root directory that contains layout view files for this module.
 	 */
 	protected $_layoutPath;
 	/**
