@@ -218,29 +218,37 @@ class ArrayHelper
 	}
 
 	/**
-	 * Searches the array for a given value and returns the corresponding key if found.
-	 * This method is similar to array_search() with the enhancement that it can also
-	 * search for strings in a case-insensitive manner.
-	 * @param mixed $needle the value being searched for
-	 * @param array $haystack the array to be searched through
-	 * @param boolean $caseSensitive whether to perform a case-sensitive search
-	 * @param boolean $strict whether to perform a type-strict search
-	 * @return boolean|mixed the key of the value if it matches $needle. False if the value is not found.
+	 * Sorts a multi-dimensional array by a specific key.
+	 * The multi-dimensional array can be either an array of arrays or an array of objects,
+	 * and the key can be a key name of the sub-arrays or a property name of the objects.
+	 * @param array $items the multi-dimensional array to be sorted
+	 * @param string|\Closure $key key name of the array element, or property name of the object,
+	 * or an anonymous function returning the value. The anonymous function signature should be:
+	 * `function($item)`.
+	 * @param boolean $ascending whether to sort in ascending or descending order
+	 * @param integer $sortFlag the PHP sort flag (e.g. `SORT_REGULAR`, `SORT_NUMERIC`.)
+	 * See [PHP manual](http://php.net/manual/en/function.sort.php) for more details.
+	 * @return array the sorted result. Note that the array will be re-indexed with integers.
 	 */
-	public static function search($needle, array $haystack, $caseSensitive = true, $strict = true)
+	public static function sort($items, $key, $ascending = true, $sortFlag = SORT_REGULAR)
 	{
-		if ($caseSensitive || !is_string($needle)) {
-			return array_search($needle, $haystack, $strict);
+		if (empty($items)) {
+			return $items;
 		}
-		foreach ($haystack as $key => $value) {
-			if (is_string($value)) {
-				if (strcasecmp($value, $needle) === 0) {
-					return true;
-				}
-			} elseif ($strict && $key === $value || !$strict && $key == $value) {
-				return true;
-			}
+
+		foreach ($items as $k => $item) {
+			$index[$k] = static::getValue($item, $key);
 		}
-		return false;
+		if ($ascending) {
+			asort($index, $sortFlag);
+		} else {
+			arsort($index, $sortFlag);
+		}
+
+		$result = array();
+		foreach ($index as $k => $v) {
+			$result[] = $items[$k];
+		}
+		return $result;
 	}
 }
