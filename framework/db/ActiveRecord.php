@@ -16,7 +16,6 @@ use yii\base\ModelEvent;
 use yii\db\Exception;
 use yii\db\Connection;
 use yii\db\TableSchema;
-use yii\db\Query;
 use yii\db\Expression;
 use yii\util\StringHelper;
 
@@ -79,39 +78,37 @@ abstract class ActiveRecord extends Model
 	 * ~~~
 	 * // find all customers
 	 * $customers = Customer::find()->all();
-	 * // find a single customer whose primary key value is 10
-	 * $customer = Customer::find(10);
-	 * // the above is equivalent to:
-	 * Customer::find()->where(array('id' => 10))->one();
 	 * // find all active customers and order them by their age:
 	 * $customers = Customer::find()
 	 *     ->where(array('status' => 1))
 	 *     ->orderBy('age')
 	 *     ->all();
-	 * // or alternatively:
-	 * $customers = Customer::find(array(
-	 *     'where' => array('status' => 1),
-	 *     'orderBy' => 'age',
-	 * ))->all();
+	 * // find a single customer whose primary key value is 10
+	 * $customer = Customer::find(10);
+	 * // the above is equivalent to:
+	 * $customer = Customer::find()->where(array('id' => 10))->one();
+	 * // find a single customer whose age is 30 and whose status is 1
+	 * $customer = Customer::find(array('age' => 30, 'status' => 1));
+	 * // the above is equivalent to:
+	 * $customer = Customer::find()->where(array('age' => 30, 'status' => 1))->one();
 	 * ~~~
 	 *
 	 * @param mixed $q the query parameter. This can be one of the followings:
 	 *
 	 *  - a scalar value (integer or string): query by a single primary key value and return the
 	 *    corresponding record.
-	 *  - an array of name-value pairs: it will be used to configure the [[ActiveQuery]] object.
+	 *  - an array of name-value pairs: query by a set of column values and return a single record matching them.
+	 *  - null: return a new [[ActiveQuery]] object for further query purpose.
 	 *
-	 * @return ActiveQuery|ActiveRecord|boolean the [[ActiveQuery]] instance for query purpose, or
-	 * the ActiveRecord object when a scalar is passed to this method which is considered to be a
-	 * primary key value (false will be returned if no record is found in this case.)
+	 * @return ActiveQuery|ActiveRecord|null When `$q` is null, a new [[ActiveQuery]] instance
+	 * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
+	 * returned, or null will be returned if no match is found.
 	 */
 	public static function find($q = null)
 	{
 		$query = static::createQuery();
 		if (is_array($q)) {
-			foreach ($q as $name => $value) {
-				$query->$name = $value;
-			}
+			return $query->where($q)->one();
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::primaryKey();
@@ -145,35 +142,23 @@ abstract class ActiveRecord extends Model
 	 * // count the total number of customers
 	 * echo Customer::count()->value();
 	 * // count the number of active customers:
-	 * echo Customer::count(array(
-	 *     'where' => array('status' => 1),
-	 * ))->value();
-	 * // equivalent usage:
 	 * echo Customer::count()
 	 *     ->where(array('status' => 1))
 	 *     ->value();
-	 * // customize the count option
+	 * // customize the count expression
 	 * echo Customer::count('COUNT(DISTINCT age)')->value();
 	 * ~~~
 	 *
-	 * @param array|string $q the query option. This can be one of the followings:
-	 *
-	 *  - an array of name-value pairs: it will be used to configure the [[ActiveQuery]] object.
-	 *  - a string: the count expression, e.g. 'COUNT(DISTINCT age)'.
+	 * @param string $q the count expression. If null, it means `COUNT(*)`.
 	 *
 	 * @return ActiveQuery the [[ActiveQuery]] instance
 	 */
 	public static function count($q = null)
 	{
 		$query = static::createQuery();
-		if (is_array($q)) {
-			foreach ($q as $name => $value) {
-				$query->$name = $value;
-			}
-		} elseif ($q !== null) {
+		if ($q !== null) {
 			$query->select = array($q);
-		}
-		if ($query->select === null) {
+		} elseif ($query->select === null) {
 			$query->select = array('COUNT(*)');
 		}
 		return $query;
@@ -438,40 +423,6 @@ abstract class ActiveRecord extends Model
 		} else {
 			$this->_related[$relation->name] = $record;
 		}
-	}
-
-	/**
-	 * Returns the related record(s).
-	 * This method will return the related record(s) of the current record.
-	 * If the relation is HAS_ONE or BELONGS_TO, it will return a single object
-	 * or null if the object does not exist.
-	 * If the relation is HAS_MANY or MANY_MANY, it will return an array of objects
-	 * or an empty array.
-	 * @param ActiveRelation|string $relation the relation object or the name of the relation
-	 * @param array|\Closure $params additional parameters that customize the query conditions as specified in the relation declaration.
-	 * @return mixed the related object(s).
-	 * @throws Exception if the relation is not specified in [[relations()]].
-	 */
-	public function findByRelation($relation, $params = array())
-	{
-		if (is_string($relation)) {
-			$md = $this->getMetaData();
-			if (!isset($md->relations[$relation])) {
-				throw new Exception(get_class($this) . ' has no relation named "' . $relation . '".');
-			}
-			$relation = $md->relations[$relation];
-		}
-		$relation = clone $relation;
-		if ($params instanceof \Closure) {
-			$params($relation);
-		} else {
-			foreach ($params as $name => $value) {
-				$relation->$name = $value;
-			}
-		}
-
-		$finder = new ActiveFinder($this->getDbConnection());
-		return $finder->findWithRecord($this, $relation);
 	}
 
 	/**

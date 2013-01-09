@@ -181,7 +181,11 @@ class ActiveQuery extends Query
 
 	public function scopes($names)
 	{
-		$this->scopes = $names;
+		$this->scopes = func_get_args();
+		if (isset($this->scopes[0]) && is_array($this->scopes[0])) {
+			// the parameter is given as an array
+			$this->scopes = $this->scopes[0];
+		}
 		return $this;
 	}
 
@@ -234,10 +238,10 @@ class ActiveQuery extends Query
 	protected function normalizeRelations($model, $with)
 	{
 		$relations = array();
-		foreach ($with as $name => $options) {
+		foreach ($with as $name => $callback) {
 			if (is_integer($name)) {
-				$name = $options;
-				$options = array();
+				$name = $callback;
+				$callback = null;
 			}
 			if (($pos = strpos($name, '.')) !== false) {
 				// with sub-relations
@@ -260,15 +264,9 @@ class ActiveQuery extends Query
 			}
 
 			if (isset($childName)) {
-				if (isset($relation->with[$childName])) {
-					$relation->with[$childName] = array_merge($relation->with, $options);
-				} else {
-					$relation->with[$childName] = $options;
-				}
-			} else {
-				foreach ($options as $p => $v) {
-					$relation->$p = $v;
-				}
+				$relation->with[$childName] = $callback;
+			} elseif ($callback !== null) {
+				call_user_func($callback, $relation);
 			}
 		}
 		return $relations;

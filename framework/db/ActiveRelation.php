@@ -27,7 +27,7 @@ class ActiveRelation extends ActiveQuery
 {
 	/**
 	 * @var boolean whether this relation should populate all query results into AR instances.
-	 * If false, only the first row of the results will be taken.
+	 * If false, only the first row of the results will be retrieved.
 	 */
 	public $multiple;
 	/**
@@ -41,11 +41,11 @@ class ActiveRelation extends ActiveQuery
 	 * must be the corresponding columns from the primary table.
 	 * Do not prefix or quote the column names as they will be done automatically by Yii.
 	 */
-	public $link;
+	protected $link;
 	/**
 	 * @var array|ActiveRelation
 	 */
-	public $via;
+	protected $via;
 
 	/**
 	 * @param string $relationName
@@ -261,5 +261,12 @@ class ActiveRelation extends ActiveQuery
 		$db = $primaryModel->getDbConnection();
 		$sql = $db->getQueryBuilder()->build($this);
 		return $db->createCommand($sql, $this->params)->queryAll();
+	}
+
+	public function link($model)
+	{
+		/**
+		 * 1. Set models
+		 */
 	}
 }

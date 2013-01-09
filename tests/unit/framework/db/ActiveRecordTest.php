@@ -36,26 +36,23 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 
+		// find by column values
+		$customer = Customer::find(array('id' => 2, 'name' => 'user2'));
+		$this->assertTrue($customer instanceof Customer);
+		$this->assertEquals('user2', $customer->name);
+		$customer = Customer::find(array('id' => 2, 'name' => 'user1'));
+		$this->assertNull($customer);
+
 		// find by attributes
 		$customer = Customer::find()->where(array('name' => 'user2'))->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(2, $customer->id);
 
-		// find by Query array
-		$query = array(
-			'where' => 'id=:id',
-			'params' => array(':id' => 2),
-		);
-		$customer = Customer::find($query)->one();
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
 
 		// find count
 		$this->assertEquals(3, Customer::count()->value());
-		$this->assertEquals(2, Customer::count(array(
-			'where' => 'id=1 OR id=2',
-		))->value());
 		$this->assertEquals(2, Customer::find()->select('COUNT(*)')->where('id=1 OR id=2')->value());
+		$this->assertEquals(6, Customer::count('SUM(id)')->value());
 
 		// asArray
 		$customer = Customer::find()->where('id=2')->asArray()->one();
@@ -94,9 +91,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 
 	public function testScope()
 	{
-		$customers = Customer::find(array(
-			'scopes' => array('active'),
-		))->all();
+		$customers = Customer::find()->scopes('active')->all();
 		$this->assertEquals(2, count($customers));
 
 		$customers = Customer::find()->active()->all();
