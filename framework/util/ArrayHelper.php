@@ -243,7 +243,7 @@ class ArrayHelper
 	 * @throws \yii\base\BadParamException if the $ascending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
 	 */
-	public static function sort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR)
+	public static function multisort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR)
 	{
 		$keys = is_array($key) ? $key : array($key);
 		if (empty($keys) || empty($array)) {
@@ -273,10 +273,10 @@ class ArrayHelper
 			} else {
 				$args[] = static::getColumn($array, $key);
 			}
-			$args[] = $ascending[$i];
+			$args[] = $ascending[$i] ? SORT_ASC : SORT_DESC;
 			$args[] = $flag;
 		}
-		$args[] &= $array;
+		$args[] = &$array;
 		call_user_func_array('array_multisort', $args);
 	}
 }
