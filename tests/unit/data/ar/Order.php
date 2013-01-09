@@ -9,17 +9,17 @@ class Order extends ActiveRecord
 		return 'tbl_order';
 	}
 
-	public function customer()
+	public function getCustomer()
 	{
 		return $this->hasOne('Customer', array('id' => 'customer_id'));
 	}
 
-	public function orderItems()
+	public function getOrderItems()
 	{
 		return $this->hasMany('OrderItem', array('order_id' => 'id'));
 	}
 
-	public function items()
+	public function getItems()
 	{
 		return $this->hasMany('Item', array('id' => 'item_id'))
 			->via('orderItems', function($q) {
@@ -27,7 +27,7 @@ class Order extends ActiveRecord
 			})->orderBy('id');
 	}
 
-	public function books()
+	public function getBooks()
 	{
 		return $this->hasMany('Item', array('id' => 'item_id'))
 			->viaTable('tbl_order_item', array('order_id' => 'id'))

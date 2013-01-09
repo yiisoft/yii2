@@ -105,7 +105,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$orders = $customer->orders;
 		$this->assertEquals(2, count($orders));
 
-		$orders = $customer->orders()->where('id=3')->all();
+		$orders = $customer->getOrders()->where('id=3')->all();
 		$this->assertEquals(1, count($orders));
 		$this->assertEquals(3, $orders[0]->id);
 	}

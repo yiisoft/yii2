@@ -13,7 +13,7 @@ class Customer extends ActiveRecord
 		return 'tbl_customer';
 	}
 
-	public function orders()
+	public function getOrders()
 	{
 		return $this->hasMany('Order', array('customer_id' => 'id'));
 	}

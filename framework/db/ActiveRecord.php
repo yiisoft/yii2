@@ -284,18 +284,17 @@ abstract class ActiveRecord extends Model
 			return $this->_attributes[$name];
 		} elseif (isset($this->getTableSchema()->columns[$name])) {
 			return null;
-		} elseif (method_exists($this, $name)) {
-			// related records
-			if (isset($this->_related[$name]) || isset($this->_related) && array_key_exists($name, $this->_related)) {
-				return $this->_related[$name];
-			} else {
-				// lazy loading related records
-				/** @var $relation ActiveRelation */
-				$relation = $this->$name();
-				return $this->_related[$name] = $relation->multiple ? $relation->all() : $relation->one();
-			}
 		} else {
-			return parent::__get($name);
+			$t = strtolower($name);
+			if (isset($this->_related[$t]) || $this->_related !== null && array_key_exists($t, $this->_related)) {
+				return $this->_related[$t];
+			}
+			$value = parent::__get($name);
+			if ($value instanceof ActiveRelation) {
+				return $this->_related[$t] = $value->multiple ? $value->all() : $value->one();
+			} else {
+				return $value;
+			}
 		}
 	}
 
@@ -309,8 +308,6 @@ abstract class ActiveRecord extends Model
 	{
 		if (isset($this->getTableSchema()->columns[$name])) {
 			$this->_attributes[$name] = $value;
-		} elseif (method_exists($this, $name)) {
-			$this->_related[$name] = $value;
 		} else {
 			parent::__set($name, $value);
 		}
@@ -325,11 +322,13 @@ abstract class ActiveRecord extends Model
 	 */
 	public function __isset($name)
 	{
-		if (isset($this->_attributes[$name]) || isset($this->_related[$name])) {
-			return true;
-		} elseif (isset($this->getTableSchema()->columns[$name]) || method_exists($this, $name)) {
-			return false;
+		if (isset($this->getTableSchema()->columns[$name])) {
+			return isset($this->_related[$name]);
 		} else {
+			$t = strtolower($name);
+			if (isset($this->_related[$t])) {
+				return true;
+			}
 			return parent::__isset($name);
 		}
 	}
@@ -344,10 +343,13 @@ abstract class ActiveRecord extends Model
 	{
 		if (isset($this->getTableSchema()->columns[$name])) {
 			unset($this->_attributes[$name]);
-		} elseif (method_exists($this, $name)) {
-			unset($this->_related[$name]);
 		} else {
-			parent::__unset($name);
+			$t = strtolower($name);
+			if (isset($this->_related[$t])) {
+				unset($this->_related[$t]);
+			} else {
+				parent::__unset($name);
+			}
 		}
 	}
 
@@ -399,30 +401,12 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Initializes the internal storage for the relation.
-	 * This method is internally used by [[ActiveQuery]] when populating relation data.
-	 * @param ActiveRelation $relation the relation object
+	 * @param string $name
+	 * @param mixed $value
 	 */
-	public function initRelation($relation)
+	public function populateRelation($name, $value)
 	{
-		$this->_related[$relation->name] = $relation->hasMany ? array() : null;
-	}
-
-	/**
-	 * @param ActiveRelation $relation
-	 * @param ActiveRecord $record
-	 */
-	public function addRelatedRecord($relation, $record)
-	{
-		if ($relation->hasMany) {
-			if ($relation->indexBy !== null) {
-				$this->_related[$relation->name][$record->{$relation->indexBy}] = $record;
-			} else {
-				$this->_related[$relation->name][] = $record;
-			}
-		} else {
-			$this->_related[$relation->name] = $record;
-		}
+		$this->_related[$name] = $value;
 	}
 
 	/**

@@ -51,17 +51,23 @@ class ActiveRelation extends ActiveQuery
 	 * @param string $relationName
 	 * @param callback $callback
 	 * @return ActiveRelation
+	 * @throws Exception
 	 */
 	public function via($relationName, $callback = null)
 	{
-		/** @var $relation ActiveRelation */
-		$relation = $this->primaryModel->$relationName();
-		$relation->primaryModel = null;
-		$this->via = array($relationName, $relation);
-		if ($callback !== null) {
-			call_user_func($callback, $relation);
+		$getter = 'get' . $relationName;
+		if (method_exists($this->primaryModel, $getter)) {
+			$relation = $this->primaryModel->$getter();
+			if ($relation instanceof ActiveRelation) {
+				$relation->primaryModel = null;
+				$this->via = array($relationName, $relation);
+				if ($callback !== null) {
+					call_user_func($callback, $relation);
+				}
+				return $this;
+			}
 		}
-		return $this;
+		throw new Exception('Unknown relation: ' . $relationName);
 	}
 
 	/**
@@ -106,9 +112,11 @@ class ActiveRelation extends ActiveQuery
 				list($viaName, $viaQuery) = $this->via;
 				$viaQuery->primaryModel = $this->primaryModel;
 				if ($viaQuery->multiple) {
-					$this->primaryModel->$viaName = $viaModels = $viaQuery->all();
+					$viaModels = $viaQuery->all();
+					$this->primaryModel->populateRelation($viaName, $viaModels);
 				} else {
-					$this->primaryModel->$viaName = $model = $viaQuery->one();
+					$model = $viaQuery->one();
+					$this->primaryModel->populateRelation($viaName, $model);
 					$viaModels = $model === null ? array() : array($model);
 				}
 				$this->filterByModels($viaModels);
@@ -144,7 +152,11 @@ class ActiveRelation extends ActiveQuery
 		if (count($primaryModels) === 1 && !$this->multiple) {
 			$model = $this->one();
 			foreach ($primaryModels as $i => $primaryModel) {
-				$primaryModels[$i][$name] = $model;
+				if ($primaryModel instanceof ActiveRecord) {
+					$primaryModel->populateRelation($name, $model);
+				} else {
+					$primaryModels[$i][$name] = $model;
+				}
 			}
 			return array($model);
 		} else {
@@ -158,10 +170,11 @@ class ActiveRelation extends ActiveQuery
 			$link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
 			foreach ($primaryModels as $i => $primaryModel) {
 				$key = $this->getModelKey($primaryModel, $link);
-				if (isset($buckets[$key])) {
-					$primaryModels[$i][$name] = $buckets[$key];
+				$value = isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? array() : null);
+				if ($primaryModel instanceof ActiveRecord) {
+					$primaryModel->populateRelation($name, $value);
 				} else {
-					$primaryModels[$i][$name] = $this->multiple ? array() : null;
+					$primaryModels[$i][$name] = $value;
 				}
 			}
 			return $models;
@@ -261,12 +274,5 @@ class ActiveRelation extends ActiveQuery
 		$db = $primaryModel->getDbConnection();
 		$sql = $db->getQueryBuilder()->build($this);
 		return $db->createCommand($sql, $this->params)->queryAll();
-	}
-
-	public function link($model)
-	{
-		/**
-		 * 1. Set models
-		 */
 	}
 }

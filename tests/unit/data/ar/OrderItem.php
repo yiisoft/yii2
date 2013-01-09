@@ -9,12 +9,12 @@ class OrderItem extends ActiveRecord
 		return 'tbl_order_item';
 	}
 
-	public function order()
+	public function getOrder()
 	{
 		return $this->hasOne('Order', array('id' => 'order_id'));
 	}
 
-	public function item()
+	public function getItem()
 	{
 		return $this->hasOne('Item', array('id' => 'item_id'));
 	}
