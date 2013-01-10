@@ -41,7 +41,7 @@ class ActiveRelation extends ActiveQuery
 	 * must be the corresponding columns from the primary table.
 	 * Do not prefix or quote the column names as they will be done automatically by Yii.
 	 */
-	protected $link;
+	public $link;
 	/**
 	 * @var array|ActiveRelation
 	 */

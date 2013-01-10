@@ -856,5 +856,30 @@ abstract class ActiveRecord extends Model
 		return $this->__isset($offset);
 	}
 
-
+	/**
+	 * @param string $name
+	 * @param ActiveRecord $model
+	 * @throws Exception
+	 */
+	public function linkWith($name, $model)
+	{
+		$getter = 'get' . $name;
+		if (!method_exists($this, $getter)) {
+			throw new Exception('Unknown relation: ' . $name);
+		}
+		$relation = $this->$getter();
+		if (!$relation instanceof ActiveRelation) {
+			throw new Exception('Unknown relation: ' . $name);
+		}
+		if ($relation->multiple) {
+			foreach ($relation->link as $a => $b) {
+				$key = $this->$b;
+				if ($key === null) {
+					throw new Exception('key null');
+				}
+				$model->$a = $this->$b;
+			}
+			return $model->save(false);
+		}
+	}
 }
