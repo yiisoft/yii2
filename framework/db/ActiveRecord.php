@@ -13,6 +13,7 @@ namespace yii\db;
 use yii\base\Model;
 use yii\base\Event;
 use yii\base\ModelEvent;
+use yii\base\BadMethodException;
 use yii\db\Exception;
 use yii\db\Connection;
 use yii\db\TableSchema;
@@ -768,6 +769,7 @@ abstract class ActiveRecord extends Model
 	 * Returns the primary key value.
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column name as key and column value as value.
+	 * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
 	 * @return mixed the primary key value. An array (column name=>column value) is returned if the primary key is composite.
 	 * If primary key is not defined, null will be returned.
 	 */
@@ -859,27 +861,185 @@ abstract class ActiveRecord extends Model
 	/**
 	 * @param string $name
 	 * @param ActiveRecord $model
-	 * @throws Exception
 	 */
-	public function linkWith($name, $model)
+	public function link($name, $model, $extraAttributes = array())
 	{
-		$getter = 'get' . $name;
-		if (!method_exists($this, $getter)) {
-			throw new Exception('Unknown relation: ' . $name);
-		}
-		$relation = $this->$getter();
-		if (!$relation instanceof ActiveRelation) {
-			throw new Exception('Unknown relation: ' . $name);
-		}
-		if ($relation->multiple) {
+		$relation = $this->getRelation($name);
+
+		if ($relation->via !== null) {
+			if (is_array($relation->via)) {
+				/** @var $viaQuery ActiveRelation */
+				list($viaName, $viaQuery) = $relation->via[1];
+				/** @var $viaClass ActiveRecord */
+				$viaClass = $viaQuery->modelClass;
+				$viaTable = $viaClass::tableName();
+			} else {
+				$viaQuery = $relation->via;
+				$viaTable = reset($relation->via->from);
+			}
+			$columns = array();
+			foreach ($viaQuery->link as $a => $b) {
+				$columns[$a] = $this->$b;
+			}
 			foreach ($relation->link as $a => $b) {
-				$key = $this->$b;
-				if ($key === null) {
+				$columns[$b] = $model->$a;
+			}
+			foreach ($extraAttributes as $k => $v) {
+				$columns[$k] = $v;
+			}
+			$command = $this->getDbConnection()->createCommand();
+			$command->insert($viaTable, $columns)->execute();
+			return;
+			// todo: update $viaName
+		}
+		$keys = $model->primaryKey();
+		$p1 = true;
+		foreach (array_keys($relation->link) as $key) {
+			if (!in_array($key, $keys, true)) {
+				$p1 = false;
+				break;
+			}
+		}
+		$keys = $this->primaryKey();
+		$p2 = true;
+		foreach (array_values($relation->link) as $key) {
+			if (!in_array($key, $keys, true)) {
+				$p2 = false;
+				break;
+			}
+		}
+		if ($p1 && $p2) {
+			if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
+				throw new Exception('both new');
+			} elseif ($this->getIsNewRecord()) {
+				foreach ($relation->link as $a => $b) {
+					$value = $model->$a;
+					if ($value === null) {
+						throw new Exception('key null');
+					}
+					$this->$b = $value;
+				}
+				$this->save(false);
+			} elseif ($model->getIsNewRecord()) {
+				foreach ($relation->link as $a => $b) {
+					$value = $this->$b;
+					if ($value === null) {
+						throw new Exception('key null');
+					}
+					$model->$a = $value;
+				}
+				$model->save(false);
+			} else {
+				throw new Exception('both old');
+			}
+		} elseif ($p1) {
+			foreach ($relation->link as $a => $b) {
+				$value = $model->$a;
+				if ($value === null) {
 					throw new Exception('key null');
 				}
-				$model->$a = $this->$b;
+				$this->$b = $value;
 			}
-			return $model->save(false);
+			$this->save(false);
+		} elseif ($p2) {
+			foreach ($relation->link as $a => $b) {
+				$value = $this->$b;
+				if ($value === null) {
+					throw new Exception('key null');
+				}
+				$model->$a = $value;
+			}
+			$model->save(false);
+		} else {
+			throw new Exception('');
 		}
+		// todo: update relation models
+	}
+
+	/**
+	 * @param string $name
+	 * @param ActiveRecord $model
+	 * @throws Exception
+	 */
+	public function unlink($name, $model)
+	{
+		$relation = $this->getRelation($name);
+
+		if ($relation->via !== null) {
+			if (is_array($relation->via)) {
+				/** @var $viaQuery ActiveRelation */
+				$viaQuery = $relation->via[1];
+				/** @var $viaClass ActiveRecord */
+				$viaClass = $viaQuery->modelClass;
+				$viaTable = $viaClass::tableName();
+			} else {
+				$viaQuery = $relation->via;
+				$viaTable = reset($relation->via->from);
+			}
+			$columns = array();
+			foreach ($viaQuery->link as $a => $b) {
+				$columns[$a] = $this->$b;
+			}
+			foreach ($relation->link as $a => $b) {
+				$columns[$b] = $model->$a;
+			}
+			$command = $this->getDbConnection()->createCommand();
+			$command->delete($viaTable, $columns)->execute();
+			return;
+		}
+
+		$keys = $model->primaryKey();
+		$p1 = true;
+		foreach (array_keys($relation->link) as $key) {
+			if (!in_array($key, $keys, true)) {
+				$p1 = false;
+				break;
+			}
+		}
+		$keys = $this->primaryKey();
+		$p2 = true;
+		foreach (array_values($relation->link) as $key) {
+			if (!in_array($key, $keys, true)) {
+				$p2 = false;
+				break;
+			}
+		}
+		if ($p1 && $p2) {
+			foreach ($relation->link as $a => $b) {
+				$model->$a = null;
+			}
+			$model->save(false);
+		} elseif ($p1) {
+			foreach ($relation->link as $b) {
+				$this->$b = null;
+			}
+			$this->save(false);
+		} elseif ($p2) {
+			foreach ($relation->link as $a => $b) {
+				$model->$a = null;
+			}
+			$model->save(false);
+		} else {
+			throw new Exception('');
+		}
+		// todo: update relation models
+	}
+
+	/**
+	 * @param string $name
+	 * @return ActiveRelation
+	 * @throws Exception
+	 */
+	public function getRelation($name)
+	{
+		$getter = 'get' . $name;
+		try {
+			$relation = $this->$getter();
+			if ($relation instanceof ActiveRelation) {
+				return $relation;
+			}
+		} catch (BadMethodException $e) {
+		}
+		throw new Exception('Unknown relation: ' . $name);
 	}
 }

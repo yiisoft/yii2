@@ -12,7 +12,6 @@ namespace yii\db;
 
 use yii\db\Connection;
 use yii\db\Command;
-use yii\db\QueryBuilder;
 
 /**
  * It is used in three scenarios:
@@ -45,7 +44,7 @@ class ActiveRelation extends ActiveQuery
 	/**
 	 * @var array|ActiveRelation
 	 */
-	protected $via;
+	public $via;
 
 	/**
 	 * @param string $relationName
@@ -55,19 +54,12 @@ class ActiveRelation extends ActiveQuery
 	 */
 	public function via($relationName, $callback = null)
 	{
-		$getter = 'get' . $relationName;
-		if (method_exists($this->primaryModel, $getter)) {
-			$relation = $this->primaryModel->$getter();
-			if ($relation instanceof ActiveRelation) {
-				$relation->primaryModel = null;
-				$this->via = array($relationName, $relation);
-				if ($callback !== null) {
-					call_user_func($callback, $relation);
-				}
-				return $this;
-			}
+		$relation = $this->primaryModel->getRelation($relationName);
+		$this->via = array($relationName, $relation);
+		if ($callback !== null) {
+			call_user_func($callback, $relation);
 		}
-		throw new Exception('Unknown relation: ' . $relationName);
+		return $this;
 	}
 
 	/**
@@ -110,7 +102,6 @@ class ActiveRelation extends ActiveQuery
 				// via relation
 				/** @var $viaQuery ActiveRelation */
 				list($viaName, $viaQuery) = $this->via;
-				$viaQuery->primaryModel = $this->primaryModel;
 				if ($viaQuery->multiple) {
 					$viaModels = $viaQuery->all();
 					$this->primaryModel->populateRelation($viaName, $viaModels);
@@ -143,6 +134,7 @@ class ActiveRelation extends ActiveQuery
 			// via relation
 			/** @var $viaQuery ActiveRelation */
 			list($viaName, $viaQuery) = $this->via;
+			$viaQuery->primaryModel = null;
 			$viaModels = $viaQuery->findWith($viaName, $primaryModels);
 			$this->filterByModels($viaModels);
 		} else {

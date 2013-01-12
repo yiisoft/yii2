@@ -253,17 +253,9 @@ class ActiveQuery extends Query
 
 			$t = strtolower($name);
 			if (!isset($relations[$t])) {
-				$getter = 'get' . $name;
-				if (!method_exists($model, $getter)) {
-					throw new Exception("Unknown relation: $name");
-				}
-				$relation = $model->$getter();
-				if ($relation instanceof ActiveRelation) {
-					$relation->primaryModel = null;
-					$relations[$t] = $relation;
-				} else {
-					throw new Exception("Unknown relation: $name");
-				}
+				$relation = $model->getRelation($name);
+				$relation->primaryModel = null;
+				$relations[$t] = $relation;
 			} else {
 				$relation = $relations[$t];
 			}
