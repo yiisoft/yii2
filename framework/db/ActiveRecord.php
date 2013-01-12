@@ -873,6 +873,8 @@ abstract class ActiveRecord extends Model
 				/** @var $viaClass ActiveRecord */
 				$viaClass = $viaQuery->modelClass;
 				$viaTable = $viaClass::tableName();
+				// unset $viaName so that it can be reloaded to reflect the change
+				unset($this->_related[$viaName]);
 			} else {
 				$viaQuery = $relation->via;
 				$viaTable = reset($relation->via->from);
@@ -889,8 +891,18 @@ abstract class ActiveRecord extends Model
 			}
 			$command = $this->getDbConnection()->createCommand();
 			$command->insert($viaTable, $columns)->execute();
+			$name = strtolower($name);
+			if (!$relation->multiple) {
+				$this->_related[$name] = $model;
+			} elseif (isset($this->_related[$name])) {
+				if ($relation->indexBy !== null) {
+					$indexBy = $relation->indexBy;
+					$this->_related[$name][$model->$indexBy] = $model;
+				} else {
+					$this->_related[$name][] = $model;
+				}
+			}
 			return;
-			// todo: update $viaName
 		}
 		$keys = $model->primaryKey();
 		$p1 = true;
@@ -953,7 +965,18 @@ abstract class ActiveRecord extends Model
 		} else {
 			throw new Exception('');
 		}
-		// todo: update relation models
+
+		if (!$relation->multiple) {
+			$this->_related[$name] = $model;
+		} elseif (isset($this->_related[$name])) {
+			if ($relation->indexBy !== null) {
+				$indexBy = $relation->indexBy;
+				$this->_related[$name][$model->$indexBy] = $model;
+			} else {
+				$this->_related[$name][] = $model;
+			}
+		}
+		return;
 	}
 
 	/**
@@ -1022,7 +1045,17 @@ abstract class ActiveRecord extends Model
 		} else {
 			throw new Exception('');
 		}
-		// todo: update relation models
+
+		if (!$relation->multiple) {
+			unset($this->_related[$name]);
+		} elseif (isset($this->_related[$name])) {
+			/** @var $b ActiveRecord */
+			foreach ($this->_related[$name] as $a => $b) {
+				if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
+					unset($this->_related[$name][$a]);
+				}
+			}
+		}
 	}
 
 	/**
