@@ -11,9 +11,9 @@
 namespace yii\db;
 
 use yii\base\Model;
-use yii\base\Event;
 use yii\base\ModelEvent;
 use yii\base\BadMethodException;
+use yii\base\BadParamException;
 use yii\db\Exception;
 use yii\db\Connection;
 use yii\db\TableSchema;
@@ -23,23 +23,12 @@ use yii\util\StringHelper;
 /**
  * ActiveRecord is the base class for classes representing relational data.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @include @yii/db/ActiveRecord.md
  *
  * @property array $attributes attribute values indexed by attribute names
  *
- * ActiveRecord provides a set of events for further customization:
- *
- * - `beforeInsert`. Raised before the record is saved.
- *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[save()]] will be stopped.
- * - `afterInsert`. Raised after the record is saved.
- * - `beforeUpdate`. Raised before the record is saved.
- *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[save()]] will be stopped.
- * - `afterUpdate`. Raised after the record is saved.
- * - `beforeDelete`. Raised before the record is deleted.
- *   By setting [[\yii\base\ModelEvent::isValid]] to be false, the normal [[delete()]] process will be stopped.
- * - `afterDelete`. Raised after the record is deleted.
- *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
  */
 abstract class ActiveRecord extends Model
 {
@@ -620,9 +609,6 @@ abstract class ActiveRecord extends Model
 	 */
 	public function updateCounters($counters)
 	{
-		if ($this->getIsNewRecord()) {
-			throw new Exception('The active record cannot be updated because it is new.');
-		}
 		$this->updateAllCounters($counters, $this->getOldPrimaryKey(true));
 		foreach ($counters as $name => $value) {
 			$this->_attributes[$name] += $value;
@@ -787,7 +773,8 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Creates an active record with the given attributes.
-	 * Note that this method does not save the record into database.
+	 * This method is called by [[ActiveQuery]] to populate the query results
+	 * into Active Records.
 	 * @param array $row attribute values (name => value)
 	 * @return ActiveRecord the newly created active record.
 	 */
@@ -833,9 +820,12 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param string $name
-	 * @return ActiveRelation
-	 * @throws Exception
+	 * Returns the relation object with the specified name.
+	 * A relation is defined by a getter method which returns an [[ActiveRelation]] object.
+	 * It can be declared in either the Active Record class itself or one of its behaviors.
+	 * @param string $name the relation name
+	 * @return ActiveRelation the relation object
+	 * @throws BadParamException if the named relation does not exist.
 	 */
 	public function getRelation($name)
 	{
@@ -847,7 +837,7 @@ abstract class ActiveRecord extends Model
 			}
 		} catch (BadMethodException $e) {
 		}
-		throw new Exception('Unknown relation: ' . $name);
+		throw new BadParamException(get_class($this) . ' has no relation named "' . $name . '".');
 	}
 
 	/**

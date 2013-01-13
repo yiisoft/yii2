@@ -68,7 +68,7 @@ class ActiveQuery extends Query
 		if ($rows !== array()) {
 			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
-				$this->fetchRelatedModels($models, $this->with);
+				$this->populateRelations($models, $this->with);
 			}
 			return $models;
 		} else {
@@ -92,7 +92,7 @@ class ActiveQuery extends Query
 			$model = $class::create($row);
 			if (!empty($this->with)) {
 				$models = array($model);
-				$this->fetchRelatedModels($models, $this->with);
+				$this->populateRelations($models, $this->with);
 				$model = $models[0];
 			}
 			return $model;
@@ -216,7 +216,7 @@ class ActiveQuery extends Query
 		return $models;
 	}
 
-	protected function fetchRelatedModels(&$models, $with)
+	protected function populateRelations(&$models, $with)
 	{
 		$primaryModel = new $this->modelClass;
 		$relations = $this->normalizeRelations($primaryModel, $with);
