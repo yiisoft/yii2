@@ -33,4 +33,14 @@ class Order extends ActiveRecord
 			->viaTable('tbl_order_item', array('order_id' => 'id'))
 			->where(array('category_id' => 1));
 	}
+
+	public function beforeSave($insert)
+	{
+		if (parent::beforeSave($insert)) {
+			$this->create_time = time();
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

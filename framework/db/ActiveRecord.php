@@ -191,10 +191,12 @@ abstract class ActiveRecord extends Model
 	public static function updateAllCounters($counters, $condition = '', $params = array())
 	{
 		$db = static::getDbConnection();
+		$n = 0;
 		foreach ($counters as $name => $value) {
-			$value = (int)$value;
-			$quotedName = $db->quoteColumnName($name, true);
-			$counters[$name] = new Expression($value >= 0 ? "$quotedName+$value" : "$quotedName$value");
+			$quotedName = $db->quoteColumnName($name);
+			$counters[$name] = new Expression("$quotedName+:cv{$n}");
+			$params[":cv{$n}"] = $value;
+			$n++;
 		}
 		$command = $db->createCommand();
 		$command->update(static::tableName(), $counters, $condition, $params);
@@ -222,19 +224,21 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function createQuery()
 	{
-		return new ActiveQuery(array('modelClass' => get_called_class()));
+		return new ActiveQuery(array(
+			'modelClass' => get_called_class(),
+		));
 	}
 
 	/**
 	 * Declares the name of the database table associated with this AR class.
-	 * By default this method returns the class name as the table name by calling [[StringHelper::camel2id()]].
-	 * For example, 'Customer' becomes 'customer', and 'OrderDetail' becomes 'order_detail'.
-	 * You may override this method if the table is not named after this convention.
+	 * By default this method returns the class name as the table name by calling [[StringHelper::camel2id()]]
+	 * with prefix 'tbl_'. For example, 'Customer' becomes 'tbl_customer', and 'OrderDetail' becomes
+	 * 'tbl_order_detail'. You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
 	public static function tableName()
 	{
-		return StringHelper::camel2id(basename(get_called_class()), '_');
+		return 'tbl_' . StringHelper::camel2id(basename(get_called_class()), '_');
 	}
 
 	/**
@@ -258,18 +262,6 @@ abstract class ActiveRecord extends Model
 	public static function primaryKey()
 	{
 		return static::getTableSchema()->primaryKey;
-	}
-
-	/**
-	 * Returns the default named scope that should be implicitly applied to all queries for this model.
-	 * Note, the default scope only applies to SELECT queries. It is ignored for INSERT, UPDATE and DELETE queries.
-	 * The default implementation simply returns an empty array. You may override this method
-	 * if the model needs to be queried with some default criteria (e.g. only non-deleted users should be returned).
-	 * @param ActiveQuery
-	 */
-	public static function defaultScope($query)
-	{
-		// todo: should we drop this?
 	}
 
 	/**
@@ -422,11 +414,8 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Returns the named attribute value.
-	 * If this is a new record and the attribute is not set before,
-	 * the default column value will be returned.
 	 * If this record is the result of a query and the attribute is not loaded,
 	 * null will be returned.
-	 * You may also use $this->AttributeName to obtain the attribute value.
 	 * @param string $name the attribute name
 	 * @return mixed the attribute value. Null if the attribute is not set or does not exist.
 	 * @see hasAttribute
@@ -438,7 +427,6 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Sets the named attribute value.
-	 * You may also use $this->AttributeName to set the attribute value.
 	 * @param string $name the attribute name
 	 * @param mixed $value the attribute value.
 	 * @see hasAttribute
@@ -446,6 +434,45 @@ abstract class ActiveRecord extends Model
 	public function setAttribute($name, $value)
 	{
 		$this->_attributes[$name] = $value;
+	}
+
+	/**
+	 * Returns the old value of the named attribute.
+	 * If this record is the result of a query and the attribute is not loaded,
+	 * null will be returned.
+	 * @param string $name the attribute name
+	 * @return mixed the old attribute value. Null if the attribute is not loaded before
+	 * or does not exist.
+	 * @see hasAttribute
+	 */
+	public function getOldAttribute($name)
+	{
+		return isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
+	}
+
+	/**
+	 * Sets the old value of the named attribute.
+	 * @param string $name the attribute name
+	 * @param mixed $value the old attribute value.
+	 * @see hasAttribute
+	 */
+	public function setOldAttribute($name, $value)
+	{
+		$this->_oldAttributes[$name] = $value;
+	}
+
+	/**
+	 * Returns a value indicating whether the named attribute has been changed.
+	 * @param string $name the name of the attribute
+	 * @return boolean whether the attribute has been changed
+	 */
+	public function isAttributeChanged($name)
+	{
+		if (isset($this->_attribute[$name], $this->_oldAttributes[$name])) {
+			return $this->_attribute[$name] !== $this->_oldAttributes[$name];
+		} else {
+			return isset($this->_attributes[$name]) || isset($this->_oldAttributes);
+		}
 	}
 
 	/**
@@ -480,19 +507,18 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Saves the current record.
 	 *
-	 * The record is inserted as a row into the database table if its {@link isNewRecord}
+	 * The record is inserted as a row into the database table if its [[isNewRecord]]
 	 * property is true (usually the case when the record is created using the 'new'
 	 * operator). Otherwise, it will be used to update the corresponding row in the table
 	 * (usually the case if the record is obtained using one of those 'find' methods.)
 	 *
 	 * Validation will be performed before saving the record. If the validation fails,
-	 * the record will not be saved. You can call {@link getErrors()} to retrieve the
+	 * the record will not be saved. You can call [[getErrors()]] to retrieve the
 	 * validation errors.
 	 *
-	 * If the record is saved via insertion, its {@link isNewRecord} property will be
-	 * set false, and its {@link scenario} property will be set to be 'update'.
-	 * And if its primary key is auto-incremental and is not set before insertion,
-	 * the primary key will be populated with the automatically generated key value.
+	 * If the record is saved via insertion, and if its primary key is auto-incremental
+	 * and is not set before insertion, the primary key will be populated with the
+	 * automatically generated key value.
 	 *
 	 * @param boolean $runValidation whether to perform validation before saving the record.
 	 * If the validation fails, the record will not be saved to database.
@@ -512,9 +538,7 @@ abstract class ActiveRecord extends Model
 	 * Inserts a row into the table based on this active record attributes.
 	 * If the table's primary key is auto-incremental and is null before insertion,
 	 * it will be populated with the actual value after insertion.
-	 * Note, validation is not performed in this method. You may call {@link validate} to perform the validation.
-	 * After the record is inserted to DB successfully, its {@link isNewRecord} property will be set false,
-	 * and its {@link scenario} property will be set to be 'update'.
+	 * Note, validation is not performed in this method. You may call [[validate()]] to perform the validation.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
@@ -522,8 +546,13 @@ abstract class ActiveRecord extends Model
 	 */
 	public function insert($attributes = null)
 	{
-		if ($this->beforeInsert()) {
+		if ($this->beforeSave(true)) {
 			$values = $this->getChangedAttributes($attributes);
+			if ($values === array()) {
+				foreach ($this->primaryKey() as $key) {
+					$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
+				}
+			}
 			$db = $this->getDbConnection();
 			$command = $db->createCommand()->insert($this->tableName(), $values);
 			if ($command->execute()) {
@@ -539,7 +568,7 @@ abstract class ActiveRecord extends Model
 				foreach ($values as $name => $value) {
 					$this->_oldAttributes[$name] = $value;
 				}
-				$this->afterInsert();
+				$this->afterSave(true);
 				return true;
 			}
 		}
@@ -549,25 +578,21 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Updates the row represented by this active record.
 	 * All loaded attributes will be saved to the database.
-	 * Note, validation is not performed in this method. You may call {@link validate} to perform the validation.
+	 * Note, validation is not performed in this method. You may call [[validate()]] to perform the validation.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
 	 * @return boolean whether the update is successful
-	 * @throws Exception if the record is new
 	 */
 	public function update($attributes = null)
 	{
-		if ($this->getIsNewRecord()) {
-			throw new Exception('The active record cannot be updated because it is new.');
-		}
-		if ($this->beforeUpdate()) {
+		if ($this->beforeSave(false)) {
 			$values = $this->getChangedAttributes($attributes);
 			if ($values !== array()) {
 				$this->updateAll($values, $this->getOldPrimaryKey(true));
 				foreach ($values as $name => $value) {
 					$this->_oldAttributes[$name] = $this->_attributes[$name];
 				}
-				$this->afterUpdate();
+				$this->afterSave(false);
 			}
 			return true;
 		} else {
@@ -609,13 +634,9 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Deletes the row corresponding to this active record.
 	 * @return boolean whether the deletion is successful.
-	 * @throws Exception if the record is new or any database error
 	 */
 	public function delete()
 	{
-		if ($this->getIsNewRecord()) {
-			throw new Exception('The active record cannot be deleted because it is new.');
-		}
 		if ($this->beforeDelete()) {
 			$result = $this->deleteAll($this->getPrimaryKey(true)) > 0;
 			$this->_oldAttributes = null;
@@ -628,10 +649,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Returns if the current record is new.
-	 * @return boolean whether the record is new and should be inserted when calling {@link save}.
-	 * This property is automatically set in constructor and {@link populateRecord}.
-	 * Defaults to false, but it will be set to true if the instance is created using
-	 * the new operator.
+	 * @return boolean whether the record is new and should be inserted when calling [[save()]].
 	 */
 	public function getIsNewRecord()
 	{
@@ -640,7 +658,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Sets if the record is new.
-	 * @param boolean $value whether the record is new and should be inserted when calling {@link save}.
+	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
 	 * @see getIsNewRecord
 	 */
 	public function setIsNewRecord($value)
@@ -648,58 +666,16 @@ abstract class ActiveRecord extends Model
 		$this->_oldAttributes = $value ? null : $this->_attributes;
 	}
 
-	/**
-	 * This method is invoked before saving a record (after validation, if any).
-	 * The default implementation raises the `beforeSave` event.
-	 * You may override this method to do any preparation work for record saving.
-	 * Use {@link isNewRecord} to determine whether the saving is
-	 * for inserting or updating record.
-	 * Make sure you call the parent implementation so that the event is raised properly.
-	 * @return boolean whether the saving should be executed. Defaults to true.
-	 */
-	public function beforeInsert()
+	public function beforeSave($insert)
 	{
 		$event = new ModelEvent($this);
-		$this->trigger('beforeInsert', $event);
+		$this->trigger($insert ? 'beforeInsert' : 'beforeUpdate', $event);
 		return $event->isValid;
 	}
 
-	/**
-	 * This method is invoked after saving a record successfully.
-	 * The default implementation raises the `afterSave` event.
-	 * You may override this method to do postprocessing after record saving.
-	 * Make sure you call the parent implementation so that the event is raised properly.
-	 */
-	public function afterInsert()
+	public function afterSave($insert)
 	{
-		$this->trigger('afterInsert', new Event($this));
-	}
-
-	/**
-	 * This method is invoked before saving a record (after validation, if any).
-	 * The default implementation raises the `beforeSave` event.
-	 * You may override this method to do any preparation work for record saving.
-	 * Use {@link isNewRecord} to determine whether the saving is
-	 * for inserting or updating record.
-	 * Make sure you call the parent implementation so that the event is raised properly.
-	 * @return boolean whether the saving should be executed. Defaults to true.
-	 */
-	public function beforeUpdate()
-	{
-		$event = new ModelEvent($this);
-		$this->trigger('beforeUpdate', $event);
-		return $event->isValid;
-	}
-
-	/**
-	 * This method is invoked after saving a record successfully.
-	 * The default implementation raises the `afterSave` event.
-	 * You may override this method to do postprocessing after record saving.
-	 * Make sure you call the parent implementation so that the event is raised properly.
-	 */
-	public function afterUpdate()
-	{
-		$this->trigger('afterUpdate', new Event($this));
+		$this->trigger($insert ? 'afterInsert' : 'afterUpdate');
 	}
 
 	/**
@@ -724,7 +700,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public function afterDelete()
 	{
-		$this->trigger('afterDelete', new Event($this));
+		$this->trigger('afterDelete');
 	}
 
 	/**
@@ -734,10 +710,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public function refresh($attributes = null)
 	{
-		if ($this->getIsNewRecord()) {
-			return false;
-		}
-		$record = $this->find()->where($this->getPrimaryKey(true))->one();
+		$record = $this->find($this->getPrimaryKey(true));
 		if ($record === null) {
 			return false;
 		}
@@ -814,6 +787,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Creates an active record with the given attributes.
+	 * Note that this method does not save the record into database.
 	 * @param array $row attribute values (name => value)
 	 * @return ActiveRecord the newly created active record.
 	 */
@@ -834,7 +808,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Creates an active record instance.
-	 * This method is called by [[createRecord()]].
+	 * This method is called by [[create()]].
 	 * You may override this method if the instance being created
 	 * depends the attributes that are to be populated to the record.
 	 * For example, by creating a record based on the value of a column,
@@ -860,112 +834,79 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * @param string $name
-	 * @param ActiveRecord $model
+	 * @return ActiveRelation
+	 * @throws Exception
 	 */
-	public function link($name, $model, $extraAttributes = array())
+	public function getRelation($name)
+	{
+		$getter = 'get' . $name;
+		try {
+			$relation = $this->$getter();
+			if ($relation instanceof ActiveRelation) {
+				return $relation;
+			}
+		} catch (BadMethodException $e) {
+		}
+		throw new Exception('Unknown relation: ' . $name);
+	}
+
+	/**
+	 * @param string $name
+	 * @param ActiveRecord $model
+	 * @param array $extraColumns
+	 */
+	public function link($name, $model, $extraColumns = array())
 	{
 		$relation = $this->getRelation($name);
 
 		if ($relation->via !== null) {
 			if (is_array($relation->via)) {
-				/** @var $viaQuery ActiveRelation */
-				list($viaName, $viaQuery) = $relation->via[1];
+				/** @var $viaRelation ActiveRelation */
+				list($viaName, $viaRelation) = $relation->via;
 				/** @var $viaClass ActiveRecord */
-				$viaClass = $viaQuery->modelClass;
+				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
-				unset($this->_related[$viaName]);
+				unset($this->_related[strtolower($viaName)]);
 			} else {
-				$viaQuery = $relation->via;
+				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
 			}
 			$columns = array();
-			foreach ($viaQuery->link as $a => $b) {
+			foreach ($viaRelation->link as $a => $b) {
 				$columns[$a] = $this->$b;
 			}
 			foreach ($relation->link as $a => $b) {
 				$columns[$b] = $model->$a;
 			}
-			foreach ($extraAttributes as $k => $v) {
+			foreach ($extraColumns as $k => $v) {
 				$columns[$k] = $v;
 			}
-			$command = $this->getDbConnection()->createCommand();
-			$command->insert($viaTable, $columns)->execute();
-			$name = strtolower($name);
-			if (!$relation->multiple) {
-				$this->_related[$name] = $model;
-			} elseif (isset($this->_related[$name])) {
-				if ($relation->indexBy !== null) {
-					$indexBy = $relation->indexBy;
-					$this->_related[$name][$model->$indexBy] = $model;
-				} else {
-					$this->_related[$name][] = $model;
-				}
-			}
-			return;
-		}
-		$keys = $model->primaryKey();
-		$p1 = true;
-		foreach (array_keys($relation->link) as $key) {
-			if (!in_array($key, $keys, true)) {
-				$p1 = false;
-				break;
-			}
-		}
-		$keys = $this->primaryKey();
-		$p2 = true;
-		foreach (array_values($relation->link) as $key) {
-			if (!in_array($key, $keys, true)) {
-				$p2 = false;
-				break;
-			}
-		}
-		if ($p1 && $p2) {
-			if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
-				throw new Exception('both new');
-			} elseif ($this->getIsNewRecord()) {
-				foreach ($relation->link as $a => $b) {
-					$value = $model->$a;
-					if ($value === null) {
-						throw new Exception('key null');
-					}
-					$this->$b = $value;
-				}
-				$this->save(false);
-			} elseif ($model->getIsNewRecord()) {
-				foreach ($relation->link as $a => $b) {
-					$value = $this->$b;
-					if ($value === null) {
-						throw new Exception('key null');
-					}
-					$model->$a = $value;
-				}
-				$model->save(false);
-			} else {
-				throw new Exception('both old');
-			}
-		} elseif ($p1) {
-			foreach ($relation->link as $a => $b) {
-				$value = $model->$a;
-				if ($value === null) {
-					throw new Exception('key null');
-				}
-				$this->$b = $value;
-			}
-			$this->save(false);
-		} elseif ($p2) {
-			foreach ($relation->link as $a => $b) {
-				$value = $this->$b;
-				if ($value === null) {
-					throw new Exception('key null');
-				}
-				$model->$a = $value;
-			}
-			$model->save(false);
+			$this->getDbConnection()->createCommand()
+				->insert($viaTable, $columns)->execute();
 		} else {
-			throw new Exception('');
+			$p1 = $model->isPrimaryKey(array_keys($relation->link));
+			$p2 = $this->isPrimaryKey(array_values($relation->link));
+			if ($p1 && $p2) {
+				if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
+					throw new Exception('both new');
+				} elseif ($this->getIsNewRecord()) {
+					$this->bindModels(array_flip($relation->link), $this, $model);
+				} elseif ($model->getIsNewRecord()) {
+					$this->bindModels($relation->link, $model, $this);
+				} else {
+					throw new Exception('both old');
+				}
+			} elseif ($p1) {
+				$this->bindModels(array_flip($relation->link), $this, $model);
+			} elseif ($p2) {
+				$this->bindModels($relation->link, $model, $this);
+			} else {
+				throw new Exception('');
+			}
 		}
 
+		// update lazily loaded related objects
 		if (!$relation->multiple) {
 			$this->_related[$name] = $model;
 		} elseif (isset($this->_related[$name])) {
@@ -976,74 +917,64 @@ abstract class ActiveRecord extends Model
 				$this->_related[$name][] = $model;
 			}
 		}
-		return;
 	}
 
 	/**
 	 * @param string $name
 	 * @param ActiveRecord $model
+	 * @param boolean $delete whether to delete the model that contains the foreign key.
+	 * If false, the model's foreign key will be set null and saved.
 	 * @throws Exception
 	 */
-	public function unlink($name, $model)
+	public function unlink($name, $model, $delete = true)
 	{
 		$relation = $this->getRelation($name);
 
 		if ($relation->via !== null) {
 			if (is_array($relation->via)) {
-				/** @var $viaQuery ActiveRelation */
-				$viaQuery = $relation->via[1];
+				/** @var $viaRelation ActiveRelation */
+				list($viaName, $viaRelation) = $relation->via;
 				/** @var $viaClass ActiveRecord */
-				$viaClass = $viaQuery->modelClass;
+				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
+				unset($this->_related[strtolower($viaName)]);
 			} else {
-				$viaQuery = $relation->via;
+				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
 			}
 			$columns = array();
-			foreach ($viaQuery->link as $a => $b) {
+			foreach ($viaRelation->link as $a => $b) {
 				$columns[$a] = $this->$b;
 			}
 			foreach ($relation->link as $a => $b) {
 				$columns[$b] = $model->$a;
 			}
 			$command = $this->getDbConnection()->createCommand();
-			$command->delete($viaTable, $columns)->execute();
-			return;
-		}
-
-		$keys = $model->primaryKey();
-		$p1 = true;
-		foreach (array_keys($relation->link) as $key) {
-			if (!in_array($key, $keys, true)) {
-				$p1 = false;
-				break;
+			if ($delete) {
+				$command->delete($viaTable, $columns)->execute();
+			} else {
+				$nulls = array();
+				foreach (array_keys($columns) as $a) {
+					$nulls[$a] = null;
+				}
+				$command->update($viaTable, $nulls, $columns)->execute();
 			}
-		}
-		$keys = $this->primaryKey();
-		$p2 = true;
-		foreach (array_values($relation->link) as $key) {
-			if (!in_array($key, $keys, true)) {
-				$p2 = false;
-				break;
-			}
-		}
-		if ($p1 && $p2) {
-			foreach ($relation->link as $a => $b) {
-				$model->$a = null;
-			}
-			$model->save(false);
-		} elseif ($p1) {
-			foreach ($relation->link as $b) {
-				$this->$b = null;
-			}
-			$this->save(false);
-		} elseif ($p2) {
-			foreach ($relation->link as $a => $b) {
-				$model->$a = null;
-			}
-			$model->save(false);
 		} else {
-			throw new Exception('');
+			$p1 = $model->isPrimaryKey(array_keys($relation->link));
+			$p2 = $this->isPrimaryKey(array_values($relation->link));
+			if ($p1 && $p2 || $p2) {
+				foreach ($relation->link as $a => $b) {
+					$model->$a = null;
+				}
+				$delete ? $model->delete() : $model->save(false);
+			} elseif ($p1) {
+				foreach ($relation->link as $b) {
+					$this->$b = null;
+				}
+				$delete ? $this->delete() : $this->save(false);
+			} else {
+				throw new Exception('');
+			}
 		}
 
 		if (!$relation->multiple) {
@@ -1059,20 +990,35 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param string $name
-	 * @return ActiveRelation
+	 * @param array $link
+	 * @param ActiveRecord $foreignModel
+	 * @param ActiveRecord $primaryModel
 	 * @throws Exception
 	 */
-	public function getRelation($name)
+	private function bindModels($link, $foreignModel, $primaryModel)
 	{
-		$getter = 'get' . $name;
-		try {
-			$relation = $this->$getter();
-			if ($relation instanceof ActiveRelation) {
-				return $relation;
+		foreach ($link as $fk => $pk) {
+			$value = $primaryModel->$pk;
+			if ($value === null) {
+				throw new Exception('Primary Key is null');
 			}
-		} catch (BadMethodException $e) {
+			$foreignModel->$fk = $value;
 		}
-		throw new Exception('Unknown relation: ' . $name);
+		$foreignModel->save(false);
+	}
+
+	/**
+	 * @param array $keys
+	 * @return boolean
+	 */
+	private function isPrimaryKey($keys)
+	{
+		$pks = $this->primaryKey();
+		foreach ($keys as $key) {
+			if (!in_array($key, $pks, true)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

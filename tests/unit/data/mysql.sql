@@ -43,7 +43,8 @@ CREATE TABLE `tbl_order` (
   `customer_id` int(11) NOT NULL,
   `create_time` int(11) NOT NULL,
   `total` decimal(10,0) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `tbl_customer` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tbl_order_item` (

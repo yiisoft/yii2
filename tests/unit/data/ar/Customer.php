@@ -15,7 +15,7 @@ class Customer extends ActiveRecord
 
 	public function getOrders()
 	{
-		return $this->hasMany('Order', array('customer_id' => 'id'));
+		return $this->hasMany('Order', array('customer_id' => 'id'))->orderBy('id');
 	}
 
 	/**

@@ -8,6 +8,7 @@ use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
+use yiiunit\data\ar\Item;
 
 class ActiveRecordTest extends \yiiunit\MysqlTestCase
 {
@@ -188,6 +189,86 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(2, count($customers[0]->orders[0]->items));
 		$this->assertEquals(3, count($customers[1]->orders[0]->items));
 		$this->assertEquals(1, count($customers[1]->orders[1]->items));
+	}
+
+	public function testLink()
+	{
+		$customer = Customer::find(2);
+		$this->assertEquals(2, count($customer->orders));
+
+		// has many
+		$order = new Order;
+		$order->total = 100;
+		$this->assertTrue($order->isNewRecord);
+		$customer->link('orders', $order);
+		$this->assertEquals(3, count($customer->orders));
+		$this->assertFalse($order->isNewRecord);
+		$this->assertEquals(3, count($customer->getOrders()->all()));
+		$this->assertEquals(2, $order->customer_id);
+
+		// belongs to
+		$order = new Order;
+		$order->total = 100;
+		$this->assertTrue($order->isNewRecord);
+		$customer = Customer::find(1);
+		$this->assertNull($order->customer);
+		$order->link('customer', $customer);
+		$this->assertFalse($order->isNewRecord);
+		$this->assertEquals(1, $order->customer_id);
+		$this->assertEquals(1, $order->customer->id);
+
+		// via table
+		$order = Order::find(2);
+		$this->assertEquals(0, count($order->books));
+		$orderItem = OrderItem::find(array('order_id' => 2, 'item_id' => 1));
+		$this->assertNull($orderItem);
+		$item = Item::find(1);
+		$order->link('books', $item, array('quantity' => 10, 'subtotal' => 100));
+		$this->assertEquals(1, count($order->books));
+		$orderItem = OrderItem::find(array('order_id' => 2, 'item_id' => 1));
+		$this->assertTrue($orderItem instanceof OrderItem);
+		$this->assertEquals(10, $orderItem->quantity);
+		$this->assertEquals(100, $orderItem->subtotal);
+
+		// via model
+		$order = Order::find(1);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(2, count($order->orderItems));
+		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
+		$this->assertNull($orderItem);
+		$item = Item::find(3);
+		$order->link('items', $item, array('quantity' => 10, 'subtotal' => 100));
+		$this->assertEquals(3, count($order->items));
+		$this->assertEquals(3, count($order->orderItems));
+		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
+		$this->assertTrue($orderItem instanceof OrderItem);
+		$this->assertEquals(10, $orderItem->quantity);
+		$this->assertEquals(100, $orderItem->subtotal);
+	}
+
+	public function testUnlink()
+	{
+		// has many
+		$customer = Customer::find(2);
+		$this->assertEquals(2, count($customer->orders));
+		$customer->unlink('orders', $customer->orders[1]);
+		$this->assertEquals(1, count($customer->orders));
+		$this->assertNull(Order::find(3));
+
+		// via model
+		$order = Order::find(2);
+		$this->assertEquals(3, count($order->items));
+		$this->assertEquals(3, count($order->orderItems));
+		$order->unlink('items', $order->items[2]);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(2, count($order->orderItems));
+
+		// via table
+		$order = Order::find(1);
+		$this->assertEquals(2, count($order->books));
+		$order->unlink('books', $order->books[1]);
+		$this->assertEquals(1, count($order->books));
+		$this->assertEquals(1, count($order->orderItems));
 	}
 
 //	public function testInsert()
