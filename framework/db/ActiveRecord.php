@@ -14,7 +14,6 @@ use yii\base\Model;
 use yii\base\ModelEvent;
 use yii\base\BadMethodException;
 use yii\base\BadParamException;
-use yii\db\Exception;
 use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\Expression;
@@ -25,7 +24,23 @@ use yii\util\StringHelper;
  *
  * @include @yii/db/ActiveRecord.md
  *
- * @property array $attributes attribute values indexed by attribute names
+ * @property Connection $dbConnection the database connection used by this AR class.
+ * @property TableSchema $tableSchema the schema information of the DB table associated with this AR class.
+ * @property array $oldAttributes the old attribute values (name-value pairs).
+ * @property array $dirtyAttributes the changed attribute values (name-value pairs).
+ * @property boolean $isPrimaryKey whether the record is new and should be inserted when calling [[save()]].
+ * @property mixed $primaryKey the primary key value.
+ * @property mixed $oldPrimaryKey the old primary key value.
+ *
+ * @event ModelEvent beforeInsert an event that is triggered before inserting a record.
+ * You may set [[ModelEvent::isValid]] to be false to stop the insertion.
+ * @event Event afterInsert an event that is triggered before inserting a record.
+ * @event ModelEvent beforeUpdate an event that is triggered before updating a record.
+ * You may set [[ModelEvent::isValid]] to be false to stop the update.
+ * @event Event afterUpdate an event that is triggered before updating a record.
+ * @event ModelEvent beforeDelete an event that is triggered before deleting a record.
+ * You may set [[ModelEvent::isValid]] to be false to stop the deletion.
+ * @event Event afterDelete an event that is triggered after deleting a record.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -60,39 +75,19 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Creates an [[ActiveQuery]] instance for query purpose.
 	 *
-	 * Because [[ActiveQuery]] implements a set of query building methods,
-	 * additional query conditions can be specified by calling the methods of [[ActiveQuery]].
-	 *
-	 * Below are some examples:
-	 *
-	 * ~~~
-	 * // find all customers
-	 * $customers = Customer::find()->all();
-	 * // find all active customers and order them by their age:
-	 * $customers = Customer::find()
-	 *     ->where(array('status' => 1))
-	 *     ->orderBy('age')
-	 *     ->all();
-	 * // find a single customer whose primary key value is 10
-	 * $customer = Customer::find(10);
-	 * // the above is equivalent to:
-	 * $customer = Customer::find()->where(array('id' => 10))->one();
-	 * // find a single customer whose age is 30 and whose status is 1
-	 * $customer = Customer::find(array('age' => 30, 'status' => 1));
-	 * // the above is equivalent to:
-	 * $customer = Customer::find()->where(array('age' => 30, 'status' => 1))->one();
-	 * ~~~
+	 * @include @yii/db/ActiveRecord-find.md
 	 *
 	 * @param mixed $q the query parameter. This can be one of the followings:
 	 *
 	 *  - a scalar value (integer or string): query by a single primary key value and return the
 	 *    corresponding record.
-	 *  - an array of name-value pairs: query by a set of column values and return a single record matching them.
+	 *  - an array of name-value pairs: query by a set of column values and return a single record matching all of them.
 	 *  - null: return a new [[ActiveQuery]] object for further query purpose.
 	 *
 	 * @return ActiveQuery|ActiveRecord|null When `$q` is null, a new [[ActiveQuery]] instance
 	 * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
-	 * returned, or null will be returned if no match is found.
+	 * returned (null will be returned if there is no matching).
+	 * @see createQuery()
 	 */
 	public static function find($q = null)
 	{
@@ -108,13 +103,22 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Creates an [[ActiveQuery]] instance and queries by a given SQL statement.
-	 * Note that because the SQL statement is already specified, calling further
-	 * query methods (such as `where()`, `order()`) on [[ActiveQuery]] will have no effect.
-	 * Methods such as `with()`, `asArray()` can still be called though.
+	 * Creates an [[ActiveQuery]] instance with a given SQL statement.
+	 *
+	 * Note that because the SQL statement is already specified, calling additional
+	 * query modification methods (such as `where()`, `order()`) on the created [[ActiveQuery]]
+	 * instance will have no effect. However, calling `with()`, `asArray()` or `indexBy()` is
+	 * still fine.
+	 *
+	 * Below is an example:
+	 *
+	 * ~~~
+	 * $customers = Customer::findBySql('SELECT * FROM tbl_customer')->all();
+	 * ~~~
+	 *
 	 * @param string $sql the SQL statement to be executed
 	 * @param array $params parameters to be bound to the SQL statement during execution.
-	 * @return ActiveQuery the [[ActiveQuery]] instance
+	 * @return ActiveQuery the newly created [[ActiveQuery]] instance
 	 */
 	public static function findBySql($sql, $params = array())
 	{
@@ -124,7 +128,7 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Performs a COUNT query for this AR class.
+	 * Creates a `COUNT` query for this AR class.
 	 *
 	 * Below are some usage examples:
 	 *
@@ -140,8 +144,7 @@ abstract class ActiveRecord extends Model
 	 * ~~~
 	 *
 	 * @param string $q the count expression. If null, it means `COUNT(*)`.
-	 *
-	 * @return ActiveQuery the [[ActiveQuery]] instance
+	 * @return ActiveQuery the newly created [[ActiveQuery]] instance
 	 */
 	public static function count($q = null)
 	{
@@ -156,8 +159,14 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Updates the whole table using the provided attribute values and conditions.
-	 * @param array $attributes attribute values to be saved into the table
-	 * @param string|array $condition the conditions that will be put in the WHERE part.
+	 * For example, to change the status to be 1 for all customers whose status is 2:
+	 *
+	 * ~~~
+	 * Customer::updateAll(array('status' => 1), 'status = 2');
+	 * ~~~
+	 *
+	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
+	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
 	 * @return integer the number of rows updated
@@ -170,11 +179,19 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Updates the whole table using the provided counter values and conditions.
+	 * Updates the whole table using the provided counter changes and conditions.
+	 * For example, to increment all customers' age by 1,
+	 *
+	 * ~~~
+	 * Customer::updateAllCounters(array('age' => 1));
+	 * ~~~
+	 *
 	 * @param array $counters the counters to be updated (attribute name => increment value).
-	 * @param string|array $condition the conditions that will be put in the WHERE part.
+	 * Use negative values if you want to decrement the counters.
+	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
 	 * @return integer the number of rows updated
 	 */
 	public static function updateAllCounters($counters, $condition = '', $params = array())
@@ -183,8 +200,8 @@ abstract class ActiveRecord extends Model
 		$n = 0;
 		foreach ($counters as $name => $value) {
 			$quotedName = $db->quoteColumnName($name);
-			$counters[$name] = new Expression("$quotedName+:cv{$n}");
-			$params[":cv{$n}"] = $value;
+			$counters[$name] = new Expression("$quotedName+:bp{$n}");
+			$params[":bp{$n}"] = $value;
 			$n++;
 		}
 		$command = $db->createCommand();
@@ -194,10 +211,18 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Deletes rows in the table using the provided conditions.
-	 * @param string|array $condition the conditions that will be put in the WHERE part.
+	 * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
+	 *
+	 * For example, to delete all customers whose status is 3:
+	 *
+	 * ~~~
+	 * Customer::deleteAll('status = 3');
+	 * ~~~
+	 *
+	 * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * @return integer the number of rows updated
+	 * @return integer the number of rows deleted
 	 */
 	public static function deleteAll($condition = '', $params = array())
 	{
@@ -207,8 +232,10 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Creates a [[ActiveQuery]] instance.
-	 * This method is called by [[find()]] and [[findBySql()]] to start a SELECT query.
+	 * Creates an [[ActiveQuery]] instance.
+	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
+	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
+	 * written for querying `Customer` purpose.)
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
 	public static function createQuery()
@@ -221,8 +248,8 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Declares the name of the database table associated with this AR class.
 	 * By default this method returns the class name as the table name by calling [[StringHelper::camel2id()]]
-	 * with prefix 'tbl_'. For example, 'Customer' becomes 'tbl_customer', and 'OrderDetail' becomes
-	 * 'tbl_order_detail'. You may override this method if the table is not named after this convention.
+	 * with prefix 'tbl_'. For example, 'Customer' becomes 'tbl_customer', and 'OrderItem' becomes
+	 * 'tbl_order_item'. You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
 	public static function tableName()
@@ -240,12 +267,16 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns the primary keys for this AR class.
-	 * The default implementation will return the primary keys as declared
+	 * Returns the primary key name(s) for this AR class.
+	 * The default implementation will return the primary key(s) as declared
 	 * in the DB table that is associated with this AR class.
+	 *
 	 * If the DB table does not declare any primary key, you should override
 	 * this method to return the attributes that you want to use as primary keys
 	 * for this AR class.
+	 *
+	 * Note that an array should be returned even for a table with single primary key.
+	 *
 	 * @return string[] the primary keys of the associated database table.
 	 */
 	public static function primaryKey()
@@ -288,7 +319,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public function __set($name, $value)
 	{
-		if (isset($this->getTableSchema()->columns[$name])) {
+		if (isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
 			$this->_attributes[$name] = $value;
 		} else {
 			parent::__set($name, $value);
@@ -297,21 +328,16 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Checks if a property value is null.
-	 * This method overrides the parent implementation by checking
-	 * if the named attribute is null or not.
+	 * This method overrides the parent implementation by checking if the named attribute is null or not.
 	 * @param string $name the property name or the event name
 	 * @return boolean whether the property value is null
 	 */
 	public function __isset($name)
 	{
-		if (isset($this->getTableSchema()->columns[$name])) {
-			return isset($this->_related[$name]);
-		} else {
-			$t = strtolower($name);
-			if (isset($this->_related[$t])) {
-				return true;
-			}
-			return parent::__isset($name);
+		try {
+			return $this->__get($name) !== null;
+		} catch (\Exception $e) {
+			return false;
 		}
 	}
 
@@ -339,56 +365,89 @@ abstract class ActiveRecord extends Model
 	 * Declares a `has-one` relation.
 	 * The declaration is returned in terms of an [[ActiveRelation]] instance
 	 * through which the related record can be queried and retrieved back.
+	 *
+	 * A `has-one` relation means that there is at most one related record matching
+	 * the criteria set by this relation, e.g., a customer has one country.
+	 *
+	 * For example, to declare the `country` relation for `Customer` class, we can write
+	 * the following code in the `Customer` class:
+	 *
+	 * ~~~
+	 * public function getCountry()
+	 * {
+	 *     return $this->hasOne('Country', array('id' => 'country_id'));
+	 * }
+	 * ~~~
+	 *
+	 * Note that in the above, the 'id' key in the `$link` parameter refers to an attribute name
+	 * in the related class `Country`, while the 'country_id' value refers to an attribute name
+	 * in the current AR class.
+	 *
+	 * Call methods declared in [[ActiveRelation]] to further customize the relation.
+	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
 	 * the columns in the table associated with the `$class` model, while the values of the
 	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @param array $properties additional property values that should be used to
-	 * initialize the newly created relation object.
 	 * @return ActiveRelation the relation object.
 	 */
-	public function hasOne($class, $link, $properties = array())
+	public function hasOne($class, $link)
 	{
-		if (strpos($class, '\\') === false) {
-			$primaryClass = get_class($this);
-			if (($pos = strrpos($primaryClass, '\\')) !== false) {
-				$class = substr($primaryClass, 0, $pos + 1) . $class;
-			}
-		}
-
-		$properties['modelClass'] = $class;
-		$properties['primaryModel'] = $this;
-		$properties['link'] = $link;
-		$properties['multiple'] = false;
-		return new ActiveRelation($properties);
+		return new ActiveRelation(array(
+			'modelClass' => $this->getNamespacedClass($class),
+			'primaryModel' => $this,
+			'link' => $link,
+			'multiple' => false,
+		));
 	}
 
 	/**
 	 * Declares a `has-many` relation.
 	 * The declaration is returned in terms of an [[ActiveRelation]] instance
 	 * through which the related record can be queried and retrieved back.
+	 *
+	 * A `has-many` relation means that there are multiple related records matching
+	 * the criteria set by this relation, e.g., a customer has many orders.
+	 *
+	 * For example, to declare the `orders` relation for `Customer` class, we can write
+	 * the following code in the `Customer` class:
+	 *
+	 * ~~~
+	 * public function getOrders()
+	 * {
+	 *     return $this->hasMany('Order', array('customer_id' => 'id'));
+	 * }
+	 * ~~~
+	 *
+	 * Note that in the above, the 'customer_id' key in the `$link` parameter refers to
+	 * an attribute name in the related class `Order`, while the 'id' value refers to
+	 * an attribute name in the current AR class.
+	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
 	 * the columns in the table associated with the `$class` model, while the values of the
 	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @param array $properties additional property values that should be used to
-	 * initialize the newly created relation object.
 	 * @return ActiveRelation the relation object.
 	 */
-	public function hasMany($class, $link, $properties = array())
+	public function hasMany($class, $link)
 	{
-		$relation = $this->hasOne($class, $link, $properties);
-		$relation->multiple = true;
-		return $relation;
+		return new ActiveRelation(array(
+			'modelClass' => $this->getNamespacedClass($class),
+			'primaryModel' => $this,
+			'link' => $link,
+			'multiple' => true,
+		));
 	}
 
 	/**
-	 * @param string $name
-	 * @param mixed $value
+	 * Populates the named relation with the related records.
+	 * Note that this method does not check if the relation exists or not.
+	 * @param string $name the relation name (case-insensitive)
+	 * @param ActiveRecord|array|null the related records to be populated into the relation.
 	 */
-	public function populateRelation($name, $value)
+	public function populateRelation($name, $records)
 	{
-		$this->_related[$name] = $value;
+		$this->_related[strtolower($name)] = $records;
 	}
 
 	/**
@@ -423,6 +482,25 @@ abstract class ActiveRecord extends Model
 	public function setAttribute($name, $value)
 	{
 		$this->_attributes[$name] = $value;
+	}
+
+	/**
+	 * Returns the old attribute values.
+	 * @return array the old attribute values (name-value pairs)
+	 */
+	public function getOldAttributes()
+	{
+		return $this->_oldAttributes === null ? array() : $this->_oldAttributes;
+	}
+
+	/**
+	 * Sets the old attribute values.
+	 * All existing old attribute values will be discarded.
+	 * @param array $values old attribute values to be set.
+	 */
+	public function setOldAttributes($values)
+	{
+		$this->_oldAttributes = $values;
 	}
 
 	/**
@@ -470,7 +548,7 @@ abstract class ActiveRecord extends Model
 	 * changed recently. If null, [[attributes()]] will be used.
 	 * @return array the changed attribute values (name-value pairs)
 	 */
-	public function getChangedAttributes($names = null)
+	public function getDirtyAttributes($names = null)
 	{
 		if ($names === null) {
 			$names = $this->attributes();
@@ -496,18 +574,18 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Saves the current record.
 	 *
-	 * The record is inserted as a row into the database table if its [[isNewRecord]]
-	 * property is true (usually the case when the record is created using the 'new'
-	 * operator). Otherwise, it will be used to update the corresponding row in the table
-	 * (usually the case if the record is obtained using one of those 'find' methods.)
+	 * This method will call [[insert()]] when [[isNewRecord]] is true, or [[update()]]
+	 * when [[isNewRecord]] is false.
 	 *
-	 * Validation will be performed before saving the record. If the validation fails,
-	 * the record will not be saved. You can call [[getErrors()]] to retrieve the
-	 * validation errors.
+	 * For example, to save a customer record:
 	 *
-	 * If the record is saved via insertion, and if its primary key is auto-incremental
-	 * and is not set before insertion, the primary key will be populated with the
-	 * automatically generated key value.
+	 * ~~~
+	 * $customer = new Customer;  // or $customer = Customer::find($id);
+	 * $customer->name = $name;
+	 * $customer->email = $email;
+	 * $customer->save();
+	 * ~~~
+	 *
 	 *
 	 * @param boolean $runValidation whether to perform validation before saving the record.
 	 * If the validation fails, the record will not be saved to database.
@@ -517,26 +595,52 @@ abstract class ActiveRecord extends Model
 	 */
 	public function save($runValidation = true, $attributes = null)
 	{
-		if (!$runValidation || $this->validate($attributes)) {
-			return $this->getIsNewRecord() ? $this->insert($attributes) : $this->update($attributes);
-		}
-		return false;
+		return $this->getIsNewRecord() ? $this->insert($runValidation, $attributes) : $this->update($runValidation, $attributes);
 	}
 
 	/**
-	 * Inserts a row into the table based on this active record attributes.
-	 * If the table's primary key is auto-incremental and is null before insertion,
+	 * Inserts a row into the associated database table using the attribute values of this record.
+	 *
+	 * This method performs the following steps in order:
+	 *
+	 * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
+	 *    fails, it will skip the rest of the steps;
+	 * 2. call [[beforeSave()]]. If the method returns false, it will skip the
+	 *    rest of the steps;
+	 * 3. insert the record into database. If this fails, it will skip the rest of the steps;
+	 * 4. call [[afterSave()]];
+	 * 5. call [[afterValidate()]] when `$runValidation` is true.
+	 *
+	 * In the above step 1, 2, 4 and 5, events named `beforeValidate`, `beforeInsert`,
+	 * `afterInsert` and `afterValidate` will be raised by the corresponding methods.
+	 *
+	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
+	 *
+	 * If the table's primary key is auto-incremental and is null during insertion,
 	 * it will be populated with the actual value after insertion.
-	 * Note, validation is not performed in this method. You may call [[validate()]] to perform the validation.
+	 *
+	 * For example, to insert a customer record:
+	 *
+	 * ~~~
+	 * $customer = new Customer;
+	 * $customer->name = $name;
+	 * $customer->email = $email;
+	 * $customer->insert();
+	 * ~~~
+	 *
+	 * @param boolean $runValidation whether to perform validation before saving the record.
+	 * If the validation fails, the record will not be inserted into the database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
-	 * @throws Exception if the record is not new
 	 */
-	public function insert($attributes = null)
+	public function insert($runValidation = true, $attributes = null)
 	{
+		if ($runValidation && !$this->validate($attributes)) {
+			return false;
+		}
 		if ($this->beforeSave(true)) {
-			$values = $this->getChangedAttributes($attributes);
+			$values = $this->getDirtyAttributes($attributes);
 			if ($values === array()) {
 				foreach ($this->primaryKey() as $key) {
 					$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
@@ -565,18 +669,48 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Updates the row represented by this active record.
-	 * All loaded attributes will be saved to the database.
-	 * Note, validation is not performed in this method. You may call [[validate()]] to perform the validation.
+	 * Saves the changes to this active record into the associated database table.
+	 *
+	 * This method performs the following steps in order:
+	 *
+	 * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
+	 *    fails, it will skip the rest of the steps;
+	 * 2. call [[beforeSave()]]. If the method returns false, it will skip the
+	 *    rest of the steps;
+	 * 3. save the record into database. If this fails, it will skip the rest of the steps;
+	 * 4. call [[afterSave()]];
+	 * 5. call [[afterValidate()]] when `$runValidation` is true.
+	 *
+	 * In the above step 1, 2, 4 and 5, events named `beforeValidate`, `beforeUpdate`,
+	 * `afterUpdate` and `afterValidate` will be raised by the corresponding methods.
+	 *
+	 * Only the [[changedAttributes|changed attribute values]] will be saved into database.
+	 *
+	 * For example, to update a customer record:
+	 *
+	 * ~~~
+	 * $customer = Customer::find($id);
+	 * $customer->name = $name;
+	 * $customer->email = $email;
+	 * $customer->update();
+	 * ~~~
+	 *
+	 * @param boolean $runValidation whether to perform validation before saving the record.
+	 * If the validation fails, the record will not be inserted into the database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
-	 * @return boolean whether the update is successful
+	 * @return boolean whether the attributes are valid and the record is updated successfully.
 	 */
-	public function update($attributes = null)
+	public function update($runValidation = true, $attributes = null)
 	{
+		if ($runValidation && !$this->validate($attributes)) {
+			return false;
+		}
 		if ($this->beforeSave(false)) {
-			$values = $this->getChangedAttributes($attributes);
+			$values = $this->getDirtyAttributes($attributes);
 			if ($values !== array()) {
+				// We do not check the return value of updateAll() because it's possible
+				// that the UPDATE statement doesn't change anything and thus returns 0.
 				$this->updateAll($values, $this->getOldPrimaryKey(true));
 				foreach ($values as $name => $value) {
 					$this->_oldAttributes[$name] = $this->_attributes[$name];
@@ -590,51 +724,66 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Saves one or several counter columns for the current AR object.
+	 * Updates one or several counter columns for the current AR object.
 	 * Note that this method differs from [[updateAllCounters()]] in that it only
 	 * saves counters for the current AR object.
 	 *
 	 * An example usage is as follows:
 	 *
 	 * ~~~
-	 * $post = Post::find($id)->one();
+	 * $post = Post::find($id);
 	 * $post->updateCounters(array('view_count' => 1));
 	 * ~~~
 	 *
-	 * Use negative values if you want to decrease the counters.
 	 * @param array $counters the counters to be updated (attribute name => increment value)
+	 * Use negative values if you want to decrement the counters.
 	 * @return boolean whether the saving is successful
-	 * @throws Exception if the record is new or any database error
 	 * @see updateAllCounters()
 	 */
 	public function updateCounters($counters)
 	{
-		$this->updateAllCounters($counters, $this->getOldPrimaryKey(true));
-		foreach ($counters as $name => $value) {
-			$this->_attributes[$name] += $value;
-			$this->_oldAttributes[$name] = $this->_attributes[$name];
-		}
-		return true;
-	}
-
-	/**
-	 * Deletes the row corresponding to this active record.
-	 * @return boolean whether the deletion is successful.
-	 */
-	public function delete()
-	{
-		if ($this->beforeDelete()) {
-			$result = $this->deleteAll($this->getPrimaryKey(true)) > 0;
-			$this->_oldAttributes = null;
-			$this->afterDelete();
-			return $result;
+		if ($this->updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
+			foreach ($counters as $name => $value) {
+				$this->_attributes[$name] += $value;
+				$this->_oldAttributes[$name] = $this->_attributes[$name];
+			}
+			return true;
 		} else {
 			return false;
 		}
 	}
 
 	/**
-	 * Returns if the current record is new.
+	 * Deletes the table row corresponding to this active record.
+	 *
+	 * This method performs the following steps in order:
+	 *
+	 * 1. call [[beforeDelete()]]. If the method returns false, it will skip the
+	 *    rest of the steps;
+	 * 2. delete the record from the database;
+	 * 3. call [[afterDelete()]].
+	 *
+	 * In the above step 1 and 3, events named `beforeDelete` and `afterDelete`
+	 * will be raised by the corresponding methods.
+	 *
+	 * @return boolean whether the deletion is successful.
+	 */
+	public function delete()
+	{
+		if ($this->beforeDelete()) {
+			// we do not check the return value of deleteAll() because it's possible
+			// the record is already deleted in the database and thus the method will return 0
+			$this->deleteAll($this->getPrimaryKey(true));
+			$this->_oldAttributes = null;
+			$this->afterDelete();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Returns a value indicating whether the current record is new.
 	 * @return boolean whether the record is new and should be inserted when calling [[save()]].
 	 */
 	public function getIsNewRecord()
@@ -643,7 +792,7 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Sets if the record is new.
+	 * Sets the value indicating whether the record is new.
 	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
 	 * @see getIsNewRecord
 	 */
@@ -652,6 +801,29 @@ abstract class ActiveRecord extends Model
 		$this->_oldAttributes = $value ? null : $this->_attributes;
 	}
 
+	/**
+	 * This method is called at the beginning of inserting or updating a record.
+	 * The default implementation will trigger a [[beforeInsert]] event when `$insert` is true,
+	 * or a [[beforeUpdate]] event if `$insert` is false.
+	 * When overriding this method, make sure you call the parent implementation like the following:
+	 *
+	 * ~~~
+	 * public function beforeSave($insert)
+	 * {
+	 *     if (parent::beforeSave($insert)) {
+	 *         // ...custom code here...
+	 *         return true;
+	 *     } else {
+	 *         return false;
+	 *     }
+	 * }
+	 * ~~~
+	 *
+	 * @param boolean $insert whether this method called while inserting a record.
+	 * If false, it means the method is called while updating a record.
+	 * @return boolean whether the insertion or updating should continue.
+	 * If false, the insertion or updating will be cancelled.
+	 */
 	public function beforeSave($insert)
 	{
 		$event = new ModelEvent($this);
@@ -659,6 +831,15 @@ abstract class ActiveRecord extends Model
 		return $event->isValid;
 	}
 
+	/**
+	 * This method is called at the end of inserting or updating a record.
+	 * The default implementation will trigger an [[afterInsert]] event when `$insert` is true,
+	 * or an [[afterUpdate]] event if `$insert` is false.
+	 * When overriding this method, make sure you call the parent implementation so that
+	 * the event is triggered.
+	 * @param boolean $insert whether this method called while inserting a record.
+	 * If false, it means the method is called while updating a record.
+	 */
 	public function afterSave($insert)
 	{
 		$this->trigger($insert ? 'afterInsert' : 'afterUpdate');
@@ -666,9 +847,21 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked before deleting a record.
-	 * The default implementation raises the `beforeDelete` event.
-	 * You may override this method to do any preparation work for record deletion.
-	 * Make sure you call the parent implementation so that the event is raised properly.
+	 * The default implementation raises the [[beforeDelete]] event.
+	 * When overriding this method, make sure you call the parent implementation like the following:
+	 *
+	 * ~~~
+	 * public function beforeDelete()
+	 * {
+	 *     if (parent::beforeDelete()) {
+	 *         // ...custom code here...
+	 *         return true;
+	 *     } else {
+	 *         return false;
+	 *     }
+	 * }
+	 * ~~~
+	 *
 	 * @return boolean whether the record should be deleted. Defaults to true.
 	 */
 	public function beforeDelete()
@@ -680,7 +873,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked after deleting a record.
-	 * The default implementation raises the `afterDelete` event.
+	 * The default implementation raises the [[afterDelete]] event.
 	 * You may override this method to do postprocessing after the record is deleted.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */
@@ -692,7 +885,8 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Repopulates this active record with the latest data.
 	 * @param array $attributes
-	 * @return boolean whether the row still exists in the database. If true, the latest data will be populated to this active record.
+	 * @return boolean whether the row still exists in the database. If true, the latest data
+	 * will be populated to this active record.
 	 */
 	public function refresh($attributes = null)
 	{
@@ -714,10 +908,10 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Compares current active record with another one.
-	 * The comparison is made by comparing table name and the primary key values of the two active records.
+	 * Returns a value indicating whether the given active record is the same as the current one.
+	 * The comparison is made by comparing the table names and the primary key values of the two active records.
 	 * @param ActiveRecord $record record to compare to
-	 * @return boolean whether the two active records refer to the same row in the database table.
+	 * @return boolean whether the two active records refer to the same row in the same database table.
 	 */
 	public function equals($record)
 	{
@@ -725,12 +919,13 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns the primary key value.
+	 * Returns the primary key value(s).
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
-	 * the return value will be an array with column name as key and column value as value.
+	 * the return value will be an array with column names as keys and column values as values.
 	 * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
-	 * @return mixed the primary key value. An array (column name=>column value) is returned if the primary key is composite.
-	 * If primary key is not defined, null will be returned.
+	 * @return mixed the primary key value. An array (column name=>column value) is returned if the primary key
+	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
+	 * the key value is null).
 	 */
 	public function getPrimaryKey($asArray = false)
 	{
@@ -747,15 +942,16 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns the old primary key value.
+	 * Returns the old primary key value(s).
 	 * This refers to the primary key value that is populated into the record
 	 * after executing a find method (e.g. find(), findAll()).
 	 * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column name as key and column value as value.
 	 * If this is false (default), a scalar value will be returned for non-composite primary key.
-	 * @return string|array the old primary key value. An array (column name=>column value) is returned if the primary key is composite.
-	 * If primary key is not defined, null will be returned.
+	 * @return mixed the old primary key value. An array (column name=>column value) is returned if the primary key
+	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
+	 * the key value is null).
 	 */
 	public function getOldPrimaryKey($asArray = false)
 	{
@@ -772,7 +968,7 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Creates an active record with the given attributes.
+	 * Creates an active record object using a row of data.
 	 * This method is called by [[ActiveQuery]] to populate the query results
 	 * into Active Records.
 	 * @param array $row attribute values (name => value)
@@ -797,11 +993,11 @@ abstract class ActiveRecord extends Model
 	 * Creates an active record instance.
 	 * This method is called by [[create()]].
 	 * You may override this method if the instance being created
-	 * depends the attributes that are to be populated to the record.
+	 * depends on the row data to be populated into the record.
 	 * For example, by creating a record based on the value of a column,
 	 * you may implement the so-called single-table inheritance mapping.
-	 * @param array $row list of attribute values for the active records.
-	 * @return ActiveRecord the active record
+	 * @param array $row row data to be populated into the record.
+	 * @return ActiveRecord the newly created active record
 	 */
 	public static function instantiate($row)
 	{
@@ -812,7 +1008,7 @@ abstract class ActiveRecord extends Model
 	 * Returns whether there is an element at the specified offset.
 	 * This method is required by the interface ArrayAccess.
 	 * @param mixed $offset the offset to check on
-	 * @return boolean
+	 * @return boolean whether there is an element at the specified offset.
 	 */
 	public function offsetExists($offset)
 	{
@@ -841,9 +1037,23 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param string $name
-	 * @param ActiveRecord $model
-	 * @param array $extraColumns
+	 * Establishes the relationship between two models.
+	 *
+	 * The relationship is established by setting the foreign key value(s) in one model
+	 * to be the corresponding primary key value(s) in the other model.
+	 * The model with the foreign key will be saved into database without performing validation.
+	 *
+	 * If the relationship involves a pivot table, a new row will be inserted into the
+	 * pivot table which contains the primary key values from both models.
+	 *
+	 * Note that this method requires that the primary key value is not null.
+	 *
+	 * @param string $name the name of the relationship
+	 * @param ActiveRecord $model the model to be linked with the current one.
+	 * @param array $extraColumns additional column values to be saved into the pivot table.
+	 * This parameter is only meaningful for a relationship involving a pivot table
+	 * (i.e., a relation set with `[[ActiveRelation::via()]]` or `[[ActiveRelation::viaTable()]]`.)
+	 * @throws BadParamException if the method is unable to link two models.
 	 */
 	public function link($name, $model, $extraColumns = array())
 	{
@@ -879,20 +1089,18 @@ abstract class ActiveRecord extends Model
 			$p2 = $this->isPrimaryKey(array_values($relation->link));
 			if ($p1 && $p2) {
 				if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
-					throw new Exception('both new');
+					throw new BadParamException('Unable to link models: both models are newly created.');
 				} elseif ($this->getIsNewRecord()) {
 					$this->bindModels(array_flip($relation->link), $this, $model);
-				} elseif ($model->getIsNewRecord()) {
-					$this->bindModels($relation->link, $model, $this);
 				} else {
-					throw new Exception('both old');
+					$this->bindModels($relation->link, $model, $this);
 				}
 			} elseif ($p1) {
 				$this->bindModels(array_flip($relation->link), $this, $model);
 			} elseif ($p2) {
 				$this->bindModels($relation->link, $model, $this);
 			} else {
-				throw new Exception('');
+				throw new BadParamException('Unable to link models: the link does not involve any primary key.');
 			}
 		}
 
@@ -910,11 +1118,16 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param string $name
-	 * @param ActiveRecord $model
+	 * Destroys the relationship between two models.
+	 *
+	 * The model with the foreign key of the relationship will be deleted if `$delete` is true.
+	 * Otherwise, the foreign key will be set null and the model will be saved without validation.
+	 *
+	 * @param string $name the name of the relationship.
+	 * @param ActiveRecord $model the model to be unlinked from the current one.
 	 * @param boolean $delete whether to delete the model that contains the foreign key.
 	 * If false, the model's foreign key will be set null and saved.
-	 * @throws Exception
+	 * @throws BadParamException if the models cannot be unlinked
 	 */
 	public function unlink($name, $model, $delete = true)
 	{
@@ -963,7 +1176,7 @@ abstract class ActiveRecord extends Model
 				}
 				$delete ? $this->delete() : $this->save(false);
 			} else {
-				throw new Exception('');
+				throw new BadParamException('Unable to unlink models: the link does not involve any primary key.');
 			}
 		}
 
@@ -980,17 +1193,36 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
+	 * Changes the given class name into a namespaced one.
+	 * If the given class name is already namespaced, no change will be made.
+	 * Otherwise, the class name will be changed to use the same namespace as
+	 * the current AR class.
+	 * @param string $class the class name to be namespaced
+	 * @return string the namespaced class name
+	 */
+	protected function getNamespacedClass($class)
+	{
+		if (strpos($class, '\\') === false) {
+			$primaryClass = get_class($this);
+			if (($pos = strrpos($primaryClass, '\\')) !== false) {
+				return substr($primaryClass, 0, $pos + 1) . $class;
+			}
+		}
+		return $class;
+	}
+
+	/**
 	 * @param array $link
 	 * @param ActiveRecord $foreignModel
 	 * @param ActiveRecord $primaryModel
-	 * @throws Exception
+	 * @throws BadParamException
 	 */
 	private function bindModels($link, $foreignModel, $primaryModel)
 	{
 		foreach ($link as $fk => $pk) {
 			$value = $primaryModel->$pk;
 			if ($value === null) {
-				throw new Exception('Primary Key is null');
+				throw new BadParamException('Unable to link models: the primary key of ' . get_class($primaryModel) . ' is null.');
 			}
 			$foreignModel->$fk = $value;
 		}

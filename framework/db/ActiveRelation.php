@@ -12,12 +12,19 @@ namespace yii\db;
 
 use yii\db\Connection;
 use yii\db\Command;
+use yii\base\BadParamException;
 
 /**
- * It is used in three scenarios:
- * - eager loading: User::find()->with('posts')->all();
- * - lazy loading: $user->posts;
- * - lazy loading with query options: $user->posts()->where('status=1')->get();
+ * ActiveRelation represents a relation between two Active Record classes.
+ *
+ * ActiveRelation instances are usually created by calling [[ActiveRecord::hasOne()]] and
+ * [[ActiveRecord::hasMany()]]. An Active Record class declares a relation by defining
+ * a getter method which calls one of the above methods and returns the created ActiveRelation object.
+ *
+ * A relation is specified by [[link]] which represents the association between columns
+ * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
+ *
+ * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -42,15 +49,17 @@ class ActiveRelation extends ActiveQuery
 	 */
 	public $link;
 	/**
-	 * @var array|ActiveRelation
+	 * @var array|ActiveRelation the query associated with the pivot table. Please call [[via()]]
+	 * or [[viaTable()]] to set this property instead of directly setting it.
 	 */
 	public $via;
 
 	/**
-	 * @param string $relationName
-	 * @param callback $callback
-	 * @return ActiveRelation
-	 * @throws Exception
+	 * Specifies the relation associated with the pivot table.
+	 * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
+	 * @param callback $callback a PHP callback for customizing the relation associated with the pivot table.
+	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
+	 * @return ActiveRelation the relation object itself.
 	 */
 	public function via($relationName, $callback = null)
 	{
@@ -63,9 +72,13 @@ class ActiveRelation extends ActiveQuery
 	}
 
 	/**
-	 * @param string $tableName
-	 * @param array $link
-	 * @param callback $callback
+	 * Specifies the pivot table.
+	 * @param string $tableName the name of the pivot table.
+	 * @param array $link the link between the pivot table and the table associated with [[primaryModel]].
+	 * The keys of the array represent the columns in the pivot table, and the values represent the columns
+	 * in the [[primaryModel]] table.
+	 * @param callback $callback a PHP callback for customizing the relation associated with the pivot table.
+	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
 	 * @return ActiveRelation
 	 */
 	public function viaTable($tableName, $link, $callback = null)
@@ -118,10 +131,18 @@ class ActiveRelation extends ActiveQuery
 		return parent::createCommand($db);
 	}
 
+	/**
+	 * Finds the related records and populates them into the primary models.
+	 * This method is internally by [[ActiveQuery]]. Do not call it directly.
+	 * @param string $name the relation name
+	 * @param array $primaryModels primary models
+	 * @return array the related models
+	 * @throws BadParamException
+	 */
 	public function findWith($name, &$primaryModels)
 	{
 		if (!is_array($this->link)) {
-			throw new \yii\base\Exception('invalid link');
+			throw new BadParamException('Invalid link: it must be an array of key-value pairs.');
 		}
 
 		if ($this->via instanceof self) {
@@ -173,7 +194,14 @@ class ActiveRelation extends ActiveQuery
 		}
 	}
 
-	protected function buildBuckets($models, $link, $viaModels = null, $viaLink = null)
+	/**
+	 * @param array $models
+	 * @param array $link
+	 * @param array $viaModels
+	 * @param array $viaLink
+	 * @return array
+	 */
+	private function buildBuckets($models, $link, $viaModels = null, $viaLink = null)
 	{
 		$buckets = array();
 		$linkKeys = array_keys($link);
@@ -214,7 +242,12 @@ class ActiveRelation extends ActiveQuery
 		return $buckets;
 	}
 
-	protected function getModelKey($model, $attributes)
+	/**
+	 * @param ActiveRecord|array $model
+	 * @param array $attributes
+	 * @return string
+	 */
+	private function getModelKey($model, $attributes)
 	{
 		if (count($attributes) > 1) {
 			$key = array();
@@ -228,7 +261,10 @@ class ActiveRelation extends ActiveQuery
 		}
 	}
 
-	protected function filterByModels($models)
+	/**
+	 * @param array $models
+	 */
+	private function filterByModels($models)
 	{
 		$attributes = array_keys($this->link);
 		$values = array();
@@ -255,7 +291,7 @@ class ActiveRelation extends ActiveQuery
 	 * @param ActiveRecord[] $primaryModels
 	 * @return array
 	 */
-	protected function findPivotRows($primaryModels)
+	private function findPivotRows($primaryModels)
 	{
 		if (empty($primaryModels)) {
 			return array();
