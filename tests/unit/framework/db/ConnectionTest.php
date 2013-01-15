@@ -76,15 +76,6 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
 	}
 
-	function testGetPdoType()
-	{
-		$connection = $this->getConnection(false);
-		$this->assertEquals(\PDO::PARAM_BOOL, $connection->getPdoType('boolean'));
-		$this->assertEquals(\PDO::PARAM_INT, $connection->getPdoType('integer'));
-		$this->assertEquals(\PDO::PARAM_STR, $connection->getPdoType('string'));
-		$this->assertEquals(\PDO::PARAM_NULL, $connection->getPdoType('NULL'));
-	}
-
 	function testAttribute()
 	{
 

@@ -144,7 +144,7 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindParam($name, $value, $this->connection->getPdoType(gettype($value)));
+			$this->pdoStatement->bindParam($name, $value, $this->getPdoType(gettype($value)));
 		} elseif ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
 		} elseif ($driverOptions === null) {
@@ -171,7 +171,7 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindValue($name, $value, $this->connection->getPdoType(gettype($value)));
+			$this->pdoStatement->bindValue($name, $value, $this->getPdoType(gettype($value)));
 		} else {
 			$this->pdoStatement->bindValue($name, $value, $dataType);
 		}
@@ -199,13 +199,30 @@ class Command extends \yii\base\Component
 					$type = $value[1];
 					$value = $value[0];
 				} else {
-					$type = $this->connection->getPdoType(gettype($value));
+					$type = $this->getPdoType(gettype($value));
 				}
 				$this->pdoStatement->bindValue($name, $value, $type);
 				$this->_params[$name] = $value;
 			}
 		}
 		return $this;
+	}
+
+	/**
+	 * Determines the PDO type for the give PHP data type.
+	 * @param string $type The PHP type (obtained by `gettype()` call).
+	 * @return integer the corresponding PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
+	 */
+	private function getPdoType($type)
+	{
+		static $typeMap = array(
+			'boolean' => \PDO::PARAM_BOOL,
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'NULL' => \PDO::PARAM_NULL,
+		);
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 
 	/**

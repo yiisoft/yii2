@@ -550,23 +550,6 @@ class Connection extends \yii\base\ApplicationComponent
 	}
 
 	/**
-	 * Determines the PDO type for the give PHP data type.
-	 * @param string $type The PHP type (obtained by `gettype()` call).
-	 * @return integer the corresponding PDO type
-	 * @see http://www.php.net/manual/en/pdo.constants.php
-	 */
-	public function getPdoType($type)
-	{
-		static $typeMap = array(
-			'boolean' => \PDO::PARAM_BOOL,
-			'integer' => \PDO::PARAM_INT,
-			'string' => \PDO::PARAM_STR,
-			'NULL' => \PDO::PARAM_NULL,
-		);
-		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
-	}
-
-	/**
 	 * Returns the name of the DB driver for the current [[dsn]].
 	 * @return string name of the DB driver
 	 */
