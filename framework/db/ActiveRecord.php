@@ -20,7 +20,7 @@ use yii\db\Expression;
 use yii\util\StringHelper;
 
 /**
- * ActiveRecord is the base class for classes representing relational data.
+ * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
  * @include @yii/db/ActiveRecord.md
  *
@@ -1127,9 +1127,10 @@ abstract class ActiveRecord extends Model
 	 * @param ActiveRecord $model the model to be unlinked from the current one.
 	 * @param boolean $delete whether to delete the model that contains the foreign key.
 	 * If false, the model's foreign key will be set null and saved.
+	 * If true, the model containing the foreign key will be deleted.
 	 * @throws BadParamException if the models cannot be unlinked
 	 */
-	public function unlink($name, $model, $delete = true)
+	public function unlink($name, $model, $delete = false)
 	{
 		$relation = $this->getRelation($name);
 

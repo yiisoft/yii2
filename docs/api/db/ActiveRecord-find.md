@@ -1,5 +1,5 @@
-Because [[ActiveQuery]] implements a set of query building methods,
-additional query conditions can be specified by calling the methods of [[ActiveQuery]].
+The returned [[ActiveQuery]] instance can be further customized by calling
+methods defined in [[ActiveQuery]] before returning the populated active records.
 
 Below are some examples:
 

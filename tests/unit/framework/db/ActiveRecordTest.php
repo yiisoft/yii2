@@ -95,15 +95,6 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals('user2', $customer->name);
 	}
 
-	public function testScope()
-	{
-		$customers = Customer::find()->scopes('active')->all();
-		$this->assertEquals(2, count($customers));
-
-		$customers = Customer::find()->active()->all();
-		$this->assertEquals(2, count($customers));
-	}
-
 	public function testFindLazy()
 	{
 		/** @var $customer Customer */
@@ -256,7 +247,7 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		// has many
 		$customer = Customer::find(2);
 		$this->assertEquals(2, count($customer->orders));
-		$customer->unlink('orders', $customer->orders[1]);
+		$customer->unlink('orders', $customer->orders[1], true);
 		$this->assertEquals(1, count($customer->orders));
 		$this->assertNull(Order::find(3));
 
@@ -264,14 +255,14 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$order = Order::find(2);
 		$this->assertEquals(3, count($order->items));
 		$this->assertEquals(3, count($order->orderItems));
-		$order->unlink('items', $order->items[2]);
+		$order->unlink('items', $order->items[2], true);
 		$this->assertEquals(2, count($order->items));
 		$this->assertEquals(2, count($order->orderItems));
 
 		// via table
 		$order = Order::find(1);
 		$this->assertEquals(2, count($order->books));
-		$order->unlink('books', $order->books[1]);
+		$order->unlink('books', $order->books[1], true);
 		$this->assertEquals(1, count($order->books));
 		$this->assertEquals(1, count($order->orderItems));
 	}

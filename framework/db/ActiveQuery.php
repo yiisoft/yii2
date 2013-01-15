@@ -37,7 +37,6 @@ use yii\db\Exception;
  * - [[with]]: list of relations that this query should be performed with.
  * - [[indexBy]]: the name of the column by which the query result should be indexed.
  * - [[asArray]]: whether to return each record as an array.
- * - [[scopes]]: list of scopes that should be applied to this query.
  *
  * These options can be configured using methods of the same name. For example:
  *
@@ -69,32 +68,11 @@ class ActiveQuery extends Query
 	 */
 	public $asArray;
 	/**
-	 * @var array list of scopes that should be applied to this query
-	 */
-	public $scopes;
-	/**
 	 * @var string the SQL statement to be executed for retrieving AR records.
 	 * This is set by [[ActiveRecord::findBySql()]].
 	 */
 	public $sql;
 
-	/**
-	 * PHP magic method.
-	 * This method is overridden so that scope methods declared in [[modelClass]]
-	 * can be invoked as methods of ActiveQuery.
-	 * @param string $name
-	 * @param array $params
-	 * @return mixed|ActiveQuery
-	 */
-	public function __call($name, $params)
-	{
-		if (method_exists($this->modelClass, $name)) {
-			$this->scopes[$name] = $params;
-			return $this;
-		} else {
-			return parent::__call($name, $params);
-		}
-	}
 
 	/**
 	 * Executes query and returns all results as an array.
@@ -179,9 +157,6 @@ class ActiveQuery extends Query
 				$tableName = $modelClass::tableName();
 				$this->from = array($tableName);
 			}
-			if (!empty($this->scopes)) {
-				$this->applyScopes($this->scopes);
-			}
 			/** @var $qb QueryBuilder */
 			$qb = $db->getQueryBuilder();
 			$this->sql = $qb->build($this);
@@ -240,37 +215,6 @@ class ActiveQuery extends Query
 	public function indexBy($column)
 	{
 		$this->indexBy = $column;
-		return $this;
-	}
-
-	/**
-	 * Specifies the scopes to be applied to this query.
-	 *
-	 * The parameters to this method can be either one or multiple strings, or a single array
-	 * of scopes names and their corresponding customization parameters.
-	 *
-	 * The followings are some usage examples:
-	 *
-	 * ~~~
-	 * // find all active customers
-	 * Customer::find()->scopes('active')->all();
-	 * // find active customers whose age is greater than 30
-	 * Customer::find()->scopes(array(
-	 *     'active',
-	 *     'olderThan' => array(30),
-	 * ))->all();
-	 * // alternatively the above statement can be written as:
-	 * Customer::find()->active()->olderThan(30)->all();
-	 * ~~~
-	 * @return ActiveQuery the query object itself
-	 */
-	public function scopes()
-	{
-		$this->scopes = func_get_args();
-		if (isset($this->scopes[0]) && is_array($this->scopes[0])) {
-			// the parameter is given as an array
-			$this->scopes = $this->scopes[0];
-		}
 		return $this;
 	}
 
@@ -351,18 +295,5 @@ class ActiveQuery extends Query
 			}
 		}
 		return $relations;
-	}
-
-	private function applyScopes($scopes)
-	{
-		$modelClass = $this->modelClass;
-		foreach ($scopes as $name => $config) {
-			if (is_integer($name)) {
-				$modelClass::$config($this);
-			} else {
-				array_unshift($config, $this);
-				call_user_func_array(array($modelClass, $name), $config);
-			}
-		}
 	}
 }
