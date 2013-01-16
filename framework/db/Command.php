@@ -9,8 +9,6 @@
 
 namespace yii\db;
 
-use yii\db\Exception;
-
 /**
  * Command represents a SQL statement to be executed against a database.
  *

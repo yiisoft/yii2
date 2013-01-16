@@ -9,7 +9,6 @@
 
 namespace yii\db;
 
-use yii\db\Exception;
 use yii\base\BadConfigException;
 
 /**
@@ -334,7 +333,7 @@ class Connection extends \yii\base\ApplicationComponent
 			try {
 				\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
 				$this->pdo = $this->createPdoInstance();
-				$this->initConnection($this->pdo);
+				$this->initConnection();
 			}
 			catch (\PDOException $e) {
 				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __CLASS__);
@@ -380,8 +379,9 @@ class Connection extends \yii\base\ApplicationComponent
 	/**
 	 * Initializes the DB connection.
 	 * This method is invoked right after the DB connection is established.
-	 * The default implementation sets the database [[charset]] and executes SQLs specified
-	 * in [[initSQLs]].
+	 * The default implementation turns on `PDO::ATTR_EMULATE_PREPARES`
+	 * if [[emulatePrepare]] is true, and sets the database [[charset]] if it is not empty.
+	 * It then triggers an [[afterOpen]] event.
 	 */
 	protected function initConnection()
 	{
@@ -408,8 +408,7 @@ class Connection extends \yii\base\ApplicationComponent
 			'connection' => $this,
 			'sql' => $sql,
 		));
-		$command->bindValues($params);
-		return $command;
+		return $command->bindValues($params);
 	}
 
 	/**

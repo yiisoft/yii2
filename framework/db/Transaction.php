@@ -9,7 +9,6 @@
 
 namespace yii\db;
 
-use yii\db\Exception;
 use yii\base\BadConfigException;
 
 /**
