@@ -105,9 +105,12 @@ class ComponentTest extends \yiiunit\TestCase
 		$this->assertEquals(1, $this->component->getEventHandlers('click')->getCount());
 		$this->component->on('click', 'bar');
 		$this->assertEquals(2, $this->component->getEventHandlers('click')->getCount());
+		$p = 'on click';
+		$this->component->$p = 'foo2';
+		$this->assertEquals(3, $this->component->getEventHandlers('click')->getCount());
 
 		$this->component->getEventHandlers('click')->add('test');
-		$this->assertEquals(3, $this->component->getEventHandlers('click')->getCount());
+		$this->assertEquals(4, $this->component->getEventHandlers('click')->getCount());
 	}
 
 	public function testOff()
@@ -181,6 +184,14 @@ class ComponentTest extends \yiiunit\TestCase
 		$this->assertFalse($component->hasProperty('p'));
 		$this->setExpectedException('yii\base\BadMethodException');
 		$component->test();
+
+		$p = 'as b';
+		$component = new NewComponent;
+		$component->$p = array('class' => 'NewBehavior');
+		$this->assertSame($behavior, $component->getBehavior('a'));
+		$this->assertTrue($component->hasProperty('p'));
+		$component->test();
+		$this->assertTrue($component->behaviorCalled);
 	}
 }
 
