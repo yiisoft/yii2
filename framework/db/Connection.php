@@ -10,6 +10,7 @@
 namespace yii\db;
 
 use yii\db\Exception;
+use yii\base\BadConfigException;
 
 /**
  * Connection represents a connection to a database via [PDO](http://www.php.net/manual/en/ref.pdo.php).
@@ -87,8 +88,8 @@ use yii\db\Exception;
  * ~~~
  *
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
- * @property Transaction $currentTransaction The currently active transaction. Null if no active transaction.
- * @property Driver $driver The database driver for the current connection.
+ * @property Transaction $transaction The currently active transaction. Null if no active transaction.
+ * @property Schema $schema The database schema information for the current connection.
  * @property QueryBuilder $queryBuilder The query builder.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the sequence object.
  * @property string $driverName Name of the DB driver currently being used.
@@ -237,34 +238,34 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public $initSQLs;
 	/**
-	 * @var array mapping between PDO driver names and [[Driver]] classes.
+	 * @var array mapping between PDO driver names and [[Schema]] classes.
 	 * The keys of the array are PDO driver names while the values the corresponding
-	 * driver class name or configuration. Please refer to [[\Yii::createObject]] for
+	 * schema class name or configuration. Please refer to [[\Yii::createObject()]] for
 	 * details on how to specify a configuration.
 	 *
-	 * This property is mainly used by [[getDriver()]] when fetching the database schema information.
+	 * This property is mainly used by [[getSchema()]] when fetching the database schema information.
 	 * You normally do not need to set this property unless you want to use your own
-	 * [[Driver]] class to support DBMS that is not supported by Yii.
+	 * [[Schema]] class to support DBMS that is not supported by Yii.
 	 */
-	public $driverMap = array(
-		'pgsql' => 'yii\db\pgsql\Driver', // PostgreSQL
-		'mysqli' => 'yii\db\mysql\Driver', // MySQL
-		'mysql' => 'yii\db\mysql\Driver', // MySQL
-		'sqlite' => 'yii\db\sqlite\Driver', // sqlite 3
-		'sqlite2' => 'yii\db\sqlite\Driver', // sqlite 2
-		'mssql' => 'yi\db\dao\mssql\Driver', // Mssql driver on windows hosts
-		'dblib' => 'yii\db\mssql\Driver', // dblib drivers on linux (and maybe others os) hosts
-		'sqlsrv' => 'yii\db\mssql\Driver', // Mssql
-		'oci' => 'yii\db\oci\Driver', // Oracle driver
+	public $schemaMap = array(
+		'pgsql' => 'yii\db\pgsql\Schema', // PostgreSQL
+		'mysqli' => 'yii\db\mysql\Schema', // MySQL
+		'mysql' => 'yii\db\mysql\Schema', // MySQL
+		'sqlite' => 'yii\db\sqlite\Schema', // sqlite 3
+		'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
+		'mssql' => 'yi\db\dao\mssql\Schema', // Mssql driver on windows hosts
+		'dblib' => 'yii\db\mssql\Schema', // dblib drivers on linux (and maybe others os) hosts
+		'sqlsrv' => 'yii\db\mssql\Schema', // Mssql
+		'oci' => 'yii\db\oci\Schema', // Oracle driver
 	);
 	/**
 	 * @var Transaction the currently active transaction
 	 */
 	private $_transaction;
 	/**
-	 * @var Driver the database driver
+	 * @var Schema the database schema
 	 */
-	private $_driver;
+	private $_schema;
 
 	/**
 	 * Closes the connection when this component is being serialized.
@@ -330,7 +331,7 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->pdo === null) {
 			if (empty($this->dsn)) {
-				throw new Exception('Connection.dsn cannot be empty.');
+				throw new BadConfigException('Connection.dsn cannot be empty.');
 			}
 			try {
 				\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
@@ -354,7 +355,7 @@ class Connection extends \yii\base\ApplicationComponent
 		if ($this->pdo !== null) {
 			\Yii::trace('Closing DB connection: ' . $this->dsn, __CLASS__);
 			$this->pdo = null;
-			$this->_driver = null;
+			$this->_schema = null;
 			$this->_transaction = null;
 		}
 	}
@@ -372,7 +373,7 @@ class Connection extends \yii\base\ApplicationComponent
 		if (($pos = strpos($this->dsn, ':')) !== false) {
 			$driver = strtolower(substr($this->dsn, 0, $pos));
 			if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
-				$pdoClass = 'mssql\PDO';
+				$pdoClass = 'yii\db\mssql\PDO';
 			}
 		}
 		return new $pdoClass($this->dsn, $this->username, $this->password, $this->attributes);
@@ -421,13 +422,9 @@ class Connection extends \yii\base\ApplicationComponent
 	 * Returns the currently active transaction.
 	 * @return Transaction the currently active transaction. Null if no active transaction.
 	 */
-	public function getCurrentTransaction()
+	public function getTransaction()
 	{
-		if ($this->_transaction !== null && $this->_transaction->isActive) {
-			return $this->_transaction;
-		} else {
-			return null;
-		}
+		return $this->_transaction && $this->_transaction->isActive ? $this->_transaction : null;
 	}
 
 	/**
@@ -445,19 +442,22 @@ class Connection extends \yii\base\ApplicationComponent
 	}
 
 	/**
-	 * Returns the metadata information for the underlying database.
-	 * @return Driver the metadata information for the underlying database.
+	 * Returns the schema information for the database opened by this connection.
+	 * @return Schema the schema information for the database opened by this connection.
+	 * @throws BadConfigException if there is no support for the current driver type
 	 */
-	public function getDriver()
+	public function getSchema()
 	{
-		if ($this->_driver !== null) {
-			return $this->_driver;
+		if ($this->_schema !== null) {
+			return $this->_schema;
 		} else {
 			$driver = $this->getDriverName();
-			if (isset($this->driverMap[$driver])) {
-				return $this->_driver = \Yii::createObject($this->driverMap[$driver], $this);
+			if (isset($this->schemaMap[$driver])) {
+				$this->_schema = \Yii::createObject($this->schemaMap[$driver]);
+				$this->_schema->connection = $this;
+				return $this->_schema;
 			} else {
-				throw new Exception("Connection does not support reading metadata for '$driver' database.");
+				throw new BadConfigException("Connection does not support reading schema information for '$driver' DBMS.");
 			}
 		}
 	}
@@ -468,18 +468,18 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function getQueryBuilder()
 	{
-		return $this->getDriver()->getQueryBuilder();
+		return $this->getSchema()->getQueryBuilder();
 	}
 
 	/**
-	 * Obtains the metadata for the named table.
-	 * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
+	 * Obtains the schema information for the named table.
+	 * @param string $name table name.
 	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
-	 * @return TableSchema table metadata. Null if the named table does not exist.
+	 * @return TableSchema table schema information. Null if the named table does not exist.
 	 */
 	public function getTableSchema($name, $refresh = false)
 	{
-		return $this->getDriver()->getTableSchema($name, $refresh);
+		return $this->getSchema()->getTableSchema($name, $refresh);
 	}
 
 	/**
@@ -490,8 +490,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function getLastInsertID($sequenceName = '')
 	{
-		$this->open();
-		return $this->pdo->lastInsertId($sequenceName);
+		return $this->getSchema()->getLastInsertID($sequenceName);
 	}
 
 	/**
@@ -503,16 +502,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function quoteValue($str)
 	{
-		if (!is_string($str)) {
-			return $str;
-		}
-
-		$this->open();
-		if (($value = $this->pdo->quote($str)) !== false) {
-			return $value;
-		} else { // the driver doesn't support quote (e.g. oci)
-			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
-		}
+		return $this->getSchema()->quoteValue($str);
 	}
 
 	/**
@@ -525,7 +515,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function quoteTableName($name)
 	{
-		return $this->getDriver()->quoteTableName($name);
+		return $this->getSchema()->quoteTableName($name);
 	}
 
 	/**
@@ -538,7 +528,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function quoteColumnName($name)
 	{
-		return $this->getDriver()->quoteColumnName($name);
+		return $this->getSchema()->quoteColumnName($name);
 	}
 
 	/**
@@ -587,7 +577,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 * and the second element the total time spent in SQL execution.
 	 * @see \yii\logging\Logger::getProfiling()
 	 */
-	public function getStats()
+	public function getExecutionSummary()
 	{
 		$logger = \Yii::getLogger();
 		$timings = $logger->getProfiling(array('yii\db\Command::query', 'yii\db\Command::execute'));

@@ -18,7 +18,7 @@ use yii\db\ColumnSchema;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Driver extends \yii\db\Driver
+class Schema extends \yii\db\Schema
 {
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)

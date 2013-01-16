@@ -67,7 +67,7 @@ class Transaction extends \yii\base\Object
 	{
 		if (!$this->_active) {
 			if ($this->connection === null) {
-				throw new BadConfigException('Transaction::connection must be set.');
+				throw new BadConfigException('Transaction.connection must be set.');
 			}
 			\Yii::trace('Starting transaction', __CLASS__);
 			$this->connection->open();

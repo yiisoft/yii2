@@ -23,21 +23,21 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
 	public $typeMap = array(
-		Driver::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-		Driver::TYPE_STRING => 'varchar(255)',
-		Driver::TYPE_TEXT => 'text',
-		Driver::TYPE_SMALLINT => 'smallint(6)',
-		Driver::TYPE_INTEGER => 'int(11)',
-		Driver::TYPE_BIGINT => 'bigint(20)',
-		Driver::TYPE_FLOAT => 'float',
-		Driver::TYPE_DECIMAL => 'decimal',
-		Driver::TYPE_DATETIME => 'datetime',
-		Driver::TYPE_TIMESTAMP => 'timestamp',
-		Driver::TYPE_TIME => 'time',
-		Driver::TYPE_DATE => 'date',
-		Driver::TYPE_BINARY => 'blob',
-		Driver::TYPE_BOOLEAN => 'tinyint(1)',
-		Driver::TYPE_MONEY => 'decimal(19,4)',
+		Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		Schema::TYPE_STRING => 'varchar(255)',
+		Schema::TYPE_TEXT => 'text',
+		Schema::TYPE_SMALLINT => 'smallint(6)',
+		Schema::TYPE_INTEGER => 'int(11)',
+		Schema::TYPE_BIGINT => 'bigint(20)',
+		Schema::TYPE_FLOAT => 'float',
+		Schema::TYPE_DECIMAL => 'decimal',
+		Schema::TYPE_DATETIME => 'datetime',
+		Schema::TYPE_TIMESTAMP => 'timestamp',
+		Schema::TYPE_TIME => 'time',
+		Schema::TYPE_DATE => 'date',
+		Schema::TYPE_BINARY => 'blob',
+		Schema::TYPE_BOOLEAN => 'tinyint(1)',
+		Schema::TYPE_MONEY => 'decimal(19,4)',
 	);
 
 	/**

@@ -12,18 +12,18 @@ namespace yii\db;
 use yii\db\Exception;
 
 /**
- * Driver is the base class for all database driver classes.
+ * Schema is the base class for concrete DBMS-specific schema classes.
  *
- * Driver implements the DBMS-specific methods to support retrieving metadata of a database.
+ * Schema represents the database schema information that is DBMS specific.
  *
- * @property QueryBuilder $queryBuilder the query builder for this connection.
+ * @property QueryBuilder $queryBuilder the query builder for the DBMS represented by this schema
  * @property array $tableNames the names of all tables in this database.
- * @property array $tableSchemas the metadata for all tables in this database.
+ * @property array $tableSchemas the schema information for all tables in this database.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Driver extends \yii\base\Object
+abstract class Schema extends \yii\base\Object
 {
 	/**
 	 * The followings are the supported abstract column data types.
@@ -68,16 +68,6 @@ abstract class Driver extends \yii\base\Object
 	 */
 	abstract protected function loadTableSchema($name);
 
-	/**
-	 * Constructor.
-	 * @param Connection $connection database connection.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($connection, $config = array())
-	{
-		$this->connection = $connection;
-		parent::__construct($config);
-	}
 
 	/**
 	 * Obtains the metadata for the named table.
@@ -202,6 +192,43 @@ abstract class Driver extends \yii\base\Object
 	protected function findTableNames($schema = '')
 	{
 		throw new Exception(get_class($this) . ' does not support fetching all table names.');
+	}
+
+	/**
+	 * Returns the ID of the last inserted row or sequence value.
+	 * @param string $sequenceName name of the sequence object (required by some DBMS)
+	 * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
+	 * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php
+	 */
+	public function getLastInsertID($sequenceName = '')
+	{
+		if ($this->connection->isActive) {
+			return $this->connection->pdo->lastInsertId($sequenceName);
+		} else {
+			throw new Exception('DB Connection is not active.');
+		}
+	}
+
+
+	/**
+	 * Quotes a string value for use in a query.
+	 * Note that if the parameter is not a string, it will be returned without change.
+	 * @param string $str string to be quoted
+	 * @return string the properly quoted string
+	 * @see http://www.php.net/manual/en/function.PDO-quote.php
+	 */
+	public function quoteValue($str)
+	{
+		if (!is_string($str)) {
+			return $str;
+		}
+
+		$this->connection->open();
+		if (($value = $this->connection->pdo->quote($str)) !== false) {
+			return $value;
+		} else { // the driver doesn't support quote (e.g. oci)
+			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
+		}
 	}
 
 	/**
