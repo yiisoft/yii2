@@ -20,15 +20,15 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 	{
 		$connection = $this->getConnection(false);
 
-		$this->assertFalse($connection->active);
+		$this->assertFalse($connection->isActive);
 		$this->assertEquals(null, $connection->pdo);
 
 		$connection->open();
-		$this->assertTrue($connection->active);
+		$this->assertTrue($connection->isActive);
 		$this->assertTrue($connection->pdo instanceof \PDO);
 
 		$connection->close();
-		$this->assertFalse($connection->active);
+		$this->assertFalse($connection->isActive);
 		$this->assertEquals(null, $connection->pdo);
 
 		$connection = new Connection;
@@ -41,7 +41,7 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals('mysql', $connection->driverName);
-		$this->assertFalse($connection->active);
+		$this->assertFalse($connection->isActive);
 	}
 
 	function testQuoteValue()

@@ -10,6 +10,7 @@
 namespace yii\db;
 
 use yii\db\Exception;
+use yii\base\BadConfigException;
 
 /**
  * Transaction represents a DB transaction.
@@ -22,14 +23,16 @@ use yii\db\Exception;
  * ~~~
  * $transaction = $connection->beginTransaction();
  * try {
- *	 $connection->createCommand($sql1)->execute();
- *	 $connection->createCommand($sql2)->execute();
- *	 //.... other SQL executions
- *	 $transaction->commit();
+ *     $connection->createCommand($sql1)->execute();
+ *     $connection->createCommand($sql2)->execute();
+ *     //.... other SQL executions
+ *     $transaction->commit();
  * } catch(Exception $e) {
- *	 $transaction->rollBack();
+ *     $transaction->rollBack();
  * }
  * ~~~
+ *
+ * @property boolean $isActive Whether the transaction is active. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -37,26 +40,40 @@ use yii\db\Exception;
 class Transaction extends \yii\base\Object
 {
 	/**
-	 * @var boolean whether this transaction is active. Only an active transaction
-	 * can [[commit()]] or [[rollBack()]]. This property is set true when the transaction is started.
-	 */
-	public $active;
-	/**
 	 * @var Connection the database connection that this transaction is associated with.
 	 */
 	public $connection;
+	/**
+	 * @var boolean whether this transaction is active. Only an active transaction
+	 * can [[commit()]] or [[rollBack()]]. This property is set true when the transaction is started.
+	 */
+	private $_active = false;
 
 	/**
-	 * Constructor.
-	 * @param Connection $connection the connection associated with this transaction
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 * @see Connection::beginTransaction
+	 * Returns a value indicating whether this transaction is active.
+	 * @return boolean whether this transaction is active. Only an active transaction
+	 * can [[commit()]] or [[rollBack()]].
 	 */
-	public function __construct($connection, $config = array())
+	public function getIsActive()
 	{
-		$this->active = true;
-		$this->connection = $connection;
-		parent::__construct($config);
+		return $this->_active;
+	}
+
+	/**
+	 * Begins a transaction.
+	 * @throws BadConfigException if [[connection]] is null
+	 */
+	public function begin()
+	{
+		if (!$this->_active) {
+			if ($this->connection === null) {
+				throw new BadConfigException('Transaction::connection must be set.');
+			}
+			\Yii::trace('Starting transaction', __CLASS__);
+			$this->connection->open();
+			$this->connection->pdo->beginTransaction();
+			$this->_active = true;
+		}
 	}
 
 	/**
@@ -65,10 +82,10 @@ class Transaction extends \yii\base\Object
 	 */
 	public function commit()
 	{
-		if ($this->active && $this->connection->getActive()) {
+		if ($this->_active && $this->connection && $this->connection->isActive) {
 			\Yii::trace('Committing transaction', __CLASS__);
 			$this->connection->pdo->commit();
-			$this->active = false;
+			$this->_active = false;
 		} else {
 			throw new Exception('Failed to commit transaction: transaction was inactive.');
 		}
@@ -80,10 +97,10 @@ class Transaction extends \yii\base\Object
 	 */
 	public function rollback()
 	{
-		if ($this->active && $this->connection->getActive()) {
+		if ($this->_active && $this->connection && $this->connection->isActive) {
 			\Yii::trace('Rolling back transaction', __CLASS__);
-			$this->connection->pdo->rollBack();
-			$this->active = false;
+			$this->connection->pdo->commit();
+			$this->_active = false;
 		} else {
 			throw new Exception('Failed to roll back transaction: transaction was inactive.');
 		}

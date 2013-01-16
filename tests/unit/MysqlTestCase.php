@@ -23,7 +23,7 @@ class MysqlTestCase extends TestCase
 		$db->username = $params['username'];
 		$db->password = $params['password'];
 		if ($reset) {
-			$db->active = true;
+			$db->open();
 			$lines = explode(';', file_get_contents($params['fixture']));
 			foreach ($lines as $line) {
 				if (trim($line) !== '') {

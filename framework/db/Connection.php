@@ -19,7 +19,7 @@ use yii\db\Exception;
  * of the [[PDO PHP extension]](http://www.php.net/manual/en/ref.pdo.php).
  *
  * To establish a DB connection, set [[dsn]], [[username]] and [[password]], and then
- * call [[open]] or set [[active]] to be true.
+ * call [[open()]] to be true.
  *
  * The following example shows how to create a Connection instance and establish
  * the DB connection:
@@ -30,7 +30,7 @@ use yii\db\Exception;
  *     'username' => $username,
  *     'password' => $password,
  * ));
- * $connection->active = true;  // same as: $connection->open();
+ * $connection->open();
  * ~~~
  *
  * After the DB connection is established, one can execute SQL statements like the following:
@@ -60,12 +60,12 @@ use yii\db\Exception;
  * ~~~
  * $transaction = $connection->beginTransaction();
  * try {
- *	 $connection->createCommand($sql1)->execute();
- *	 $connection->createCommand($sql2)->execute();
- *	 // ... executing other SQL statements ...
- *	 $transaction->commit();
+ *     $connection->createCommand($sql1)->execute();
+ *     $connection->createCommand($sql2)->execute();
+ *     // ... executing other SQL statements ...
+ *     $transaction->commit();
  * } catch(Exception $e) {
- *	 $transaction->rollBack();
+ *     $transaction->rollBack();
  * }
  * ~~~
  *
@@ -86,7 +86,7 @@ use yii\db\Exception;
  * )
  * ~~~
  *
- * @property boolean $active Whether the DB connection is established.
+ * @property boolean $isActive Whether the DB connection is established. This property is read-only.
  * @property Transaction $currentTransaction The currently active transaction. Null if no active transaction.
  * @property Driver $driver The database driver for the current connection.
  * @property QueryBuilder $queryBuilder The query builder.
@@ -290,19 +290,9 @@ class Connection extends \yii\base\ApplicationComponent
 	 * Returns a value indicating whether the DB connection is established.
 	 * @return boolean whether the DB connection is established
 	 */
-	public function getActive()
+	public function getIsActive()
 	{
 		return $this->pdo !== null;
-	}
-
-	/**
-	 * Opens or closes the DB connection.
-	 * @param boolean $value whether to open or close the DB connection
-	 * @throws Exception if there is any error when establishing the connection
-	 */
-	public function setActive($value)
-	{
-		$value ? $this->open() : $this->close();
 	}
 
 	/**
@@ -433,7 +423,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function getCurrentTransaction()
 	{
-		if ($this->_transaction !== null && $this->_transaction->active) {
+		if ($this->_transaction !== null && $this->_transaction->isActive) {
 			return $this->_transaction;
 		} else {
 			return null;
@@ -446,10 +436,12 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public function beginTransaction()
 	{
-		\Yii::trace('Starting transaction', __CLASS__);
 		$this->open();
-		$this->pdo->beginTransaction();
-		return $this->_transaction = new Transaction($this);
+		$this->_transaction = new Transaction(array(
+			'connection' => $this,
+		));
+		$this->_transaction->begin();
+		return $this->_transaction;
 	}
 
 	/**
