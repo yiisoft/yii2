@@ -96,6 +96,8 @@ use yii\base\BadConfigException;
  * @property string $clientVersion The version information of the DB driver.
  * @property array $stats The statistical results of SQL executions.
  *
+ * @event Event afterOpen this event is triggered after a DB connection is established
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -233,10 +235,6 @@ class Connection extends \yii\base\ApplicationComponent
 	 * @see tablePrefix
 	 */
 	public $enableAutoQuoting = true;
-	/**
-	 * @var array a list of SQL statements that should be executed right after the DB connection is established.
-	 */
-	public $initSQLs;
 	/**
 	 * @var array mapping between PDO driver names and [[Schema]] classes.
 	 * The keys of the array are PDO driver names while the values the corresponding
@@ -394,11 +392,7 @@ class Connection extends \yii\base\ApplicationComponent
 		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli'))) {
 			$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
 		}
-		if (!empty($this->initSQLs)) {
-			foreach ($this->initSQLs as $sql) {
-				$this->pdo->exec($sql);
-			}
-		}
+		$this->trigger('afterOpen');
 	}
 
 	/**
