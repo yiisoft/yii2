@@ -1,15 +1,23 @@
 ActiveRecord implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
-An ActiveRecord object is associated with a row in a database table. For example, a `Customer` object
-is associated with a row in the `tbl_customer` table. Instead of writing raw SQL statements to access
-the data in the table, one can call intuitive methods available in the corresponding ActiveRecord class
+The idea is that ActiveRecord object is associated with a row in a database table
+so object properties are mapped to colums of the corresponding database row.
+For example, a `Customer` object is associated with a row in the `tbl_customer`
+table. Instead of writing raw SQL statements to access the data in the table,
+you can call intuitive methods available in the corresponding ActiveRecord class
 to achieve the same goals. For example, calling [[save()]] would insert or update a row
-in the underlying table.
+in the underlying table:
+
+~~~
+$customer = new Customer();
+$customer->name = 'Qiang';
+$customer->save();
+~~~
 
 
 ### Declaring ActiveRecord Classes
 
-An ActiveRecord class is declared by extending [[\yii\db\ActiveRecord]]. It typically requires the following
-minimal code:
+To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
+implement `tableName` method like the following:
 
 ~~~
 class Customer extends \yii\db\ActiveRecord
@@ -24,12 +32,12 @@ class Customer extends \yii\db\ActiveRecord
 }
 ~~~
 
-
 ### Connecting to Database
 
-ActiveRecord relies on a [[Connection|DB connection]] to perform DB-related operations. By default,
-it assumes that an application component named `db` gives the needed [[Connection]] instance
-which serves as the DB connection. The following application configuration shows an example:
+ActiveRecord relies on a [[Connection|DB connection]]. By default, it assumes that
+there is an application component named `db` that gives the needed [[Connection]]
+instance which serves as the DB connection. Usually this component is configured
+via application configuration like the following:
 
 ~~~
 return array(
@@ -47,9 +55,9 @@ return array(
 ~~~
 
 
-### Retrieving Data from Database
+### Getting Data from Database
 
-ActiveRecord provides three methods for data retrieval purpose:
+There are three ActiveRecord methods for getting data:
 
 - [[find()]]
 - [[findBySql()]]
@@ -96,7 +104,7 @@ $customers = Customer::find()->indexBy('id')->all();
 
 ### Accessing Column Data
 
-ActiveRecord maps each column in the associated row of database table to an *attribute* in the ActiveRecord
+ActiveRecord maps each column of the corresponding database table row to an *attribute* in the ActiveRecord
 object. An attribute is like a regular object property whose name is the same as the corresponding column
 name and is case sensitive.
 
@@ -109,7 +117,7 @@ $id = $customer->id;
 $id = $customer->getAttribute('id');
 ~~~
 
-And through the [[attributes]] property, we can get all column values:
+We can get all column values through the [[attributes]] property:
 
 ~~~
 $values = $customer->attributes;
@@ -118,7 +126,7 @@ $values = $customer->attributes;
 
 ### Persisting Data to Database
 
-ActiveRecord provides the following methods to support data insertion, updating and deletion:
+ActiveRecord provides the following methods to insert, update and delete data:
 
 - [[save()]]
 - [[insert()]]
@@ -151,14 +159,14 @@ $customer = Customer::find($id);
 $customer->delete();
 
 // to increment the age of all customers by 1
-Customer::updateAllCounters(array('age' => 1));
+Customer::updateAllCounters(array('age' => +1));
 ~~~
 
 
-### Retrieving Relational Data
+### Getting Relational Data
 
-ActiveRecord supports foreign key relationships by exposing them via component properties. For example,
-with appropriate declaration, the expression `$customer->orders` can return an array of `Order` objects
+Using ActiveRecord you can expose relationships as properties. For example,
+with an appropriate declaration, `$customer->orders` can return an array of `Order` objects
 which represent the orders placed by the specified customer.
 
 To declare a relationship, define a getter method which returns an [[ActiveRelation]] object. For example,
@@ -181,30 +189,35 @@ class Order extends \yii\db\ActiveRecord
 }
 ~~~
 
-Within the getter methods, we call [[hasMany()]] or [[hasOne()]] to create a new [[ActiveRelation]] object.
-The [[hasMany()]] method declares a one-many relationship. For example, a customer has many orders.
-And the [[hasOne()]] method declares a many-one or one-one relationship. For example, an order has one customer.
+Within the getter methods above, we call [[hasMany()]] or [[hasOne()]] methods to
+create a new [[ActiveRelation]] object. The [[hasMany()]] method declares
+a one-many relationship. For example, a customer has many orders. And the [[hasOne()]]
+method declares a many-one or one-one relationship. For example, an order has one customer.
 Both methods take two parameters:
 
-- `$class`: the class name of the related models. If the class name is not namespaced, it will take
-  the same namespace as the declaring class.
+- `$class`: the name of the class related models should use. If specified without
+  a namespace, the namespace will be taken from the declaring class.
 - `$link`: the association between columns from two tables. This should be given as an array.
   The keys of the array are the names of the columns from the table associated with `$class`,
-  while the values of the array the names of the columns from the declaring class.
+  while the values of the array are the names of the columns from the declaring class.
+  It is a good practice to define relationships based on table foreign keys.
 
-Retrieving relational data is now as easy as accessing a component property. Remember that a component
-property is defined by the existence of a getter method. The The following example
-shows how to get the orders of a customer, and how to get the customer of the first order.
+After declaring relationships getting relational data is as easy as accessing
+a component property that is defined by the getter method:
 
 ~~~
+// the orders of a customer
 $customer = Customer::find($id);
 $orders = $customer->orders;  // $orders is an array of Order objects
+
+// the customer of the first order
 $customer2 = $orders[0]->customer;  // $customer == $customer2
 ~~~
 
-Because [[ActiveRelation]] extends from [[ActiveQuery]], it has the same query customization methods,
-which allows us to customize the query for retrieving the related objects. For example, we may declare a `bigOrder`
-relationship which returns orders whose subtotal exceeds certain amount:
+Because [[ActiveRelation]] extends from [[ActiveQuery]], it has the same query building methods,
+which allows us to customize the query for retrieving the related objects.
+For example, we may declare a `bigOrders` relationship which returns orders whose
+subtotal exceeds certain amount:
 
 ~~~
 class Customer extends \yii\db\ActiveRecord
@@ -238,7 +251,7 @@ class Order extends \yii\db\ActiveRecord
 }
 ~~~
 
-Method [[ActiveRelation::via()]] is similar to [[ActiveRelation::viaTable()]] except that
+[[ActiveRelation::via()]] method is similar to [[ActiveRelation::viaTable()]] except that
 the first parameter of [[ActiveRelation::via()]] takes a relation name declared in the ActiveRecord class.
 For example, the above `items` relation can be equivalently declared as follows:
 
@@ -259,9 +272,9 @@ class Order extends \yii\db\ActiveRecord
 ~~~
 
 
-When we access the related objects the first time, behind the scene ActiveRecord will perform a DB query
-to retrieve the corresponding data and populate them into the related objects. No query will be perform
-if we access again the same related objects. We call this *lazy loading*. For example,
+When you access the related objects the first time, behind the scene ActiveRecord performs a DB query
+to retrieve the corresponding data and populate it into the related objects. No query will be performed
+if you access the same related objects again. We call this *lazy loading*. For example,
 
 ~~~
 // SQL executed: SELECT * FROM tbl_customer WHERE id=1
@@ -273,7 +286,8 @@ $orders2 = $customer->orders;
 ~~~
 
 
-Lazy loading is convenient to use. However, it may suffer from performance issue in the following scenario:
+Lazy loading is very convenient to use. However, it may suffer from performance
+issue in the following scenario:
 
 ~~~
 // SQL executed: SELECT * FROM tbl_customer LIMIT 100
@@ -287,10 +301,10 @@ foreach ($customers as $customer) {
 ~~~
 
 How many SQL queries will be performed in the above code, assuming there are more than 100 customers in
-the database? 101! The first SQL query brings back 100 customers. Then for each customer, a SQL query
+the database? 101! The first SQL query brings back 100 customers. Then for each customer, another SQL query
 is performed to bring back the customer's orders.
 
-To solve the above performance problem, we can use the so-called *eager loading* by calling [[ActiveQuery::with()]]:
+To solve the above performance problem, you can use the so-called *eager loading* by calling [[ActiveQuery::with()]]:
 
 ~~~
 // SQL executed: SELECT * FROM tbl_customer LIMIT 100
@@ -305,11 +319,11 @@ foreach ($customers as $customer) {
 }
 ~~~
 
-As we can see, only two SQL queries are needed for the same task.
+As you can see, only two SQL queries were needed for the same task.
 
 
-Sometimes, we may want to customize the relational queries on the fly. This can be done for both
-lazy loading and eager loading. For example,
+Sometimes, you may want to customize the relational queries on the fly. It can be
+done for both lazy loading and eager loading. For example,
 
 ~~~
 $customer = Customer::find(1);
@@ -326,10 +340,10 @@ $customers = Customer::find()->limit(100)->with(array(
 ~~~
 
 
-### Maintaining Relationships
+### Working with Relationships
 
-ActiveRecord provides the following two methods for establishing and breaking relationship
-between two ActiveRecord objects:
+ActiveRecord provides the following two methods for establishing and breaking a
+relationship between two ActiveRecord objects:
 
 - [[link()]]
 - [[unlink()]]
