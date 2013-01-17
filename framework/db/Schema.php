@@ -9,7 +9,8 @@
 
 namespace yii\db;
 
-use yii\db\Exception;
+use yii\base\NotSupportedException;
+use yii\base\BadCallException;
 
 /**
  * Schema is the base class for concrete DBMS-specific schema classes.
@@ -113,15 +114,20 @@ abstract class Schema extends \yii\base\Object
 
 	/**
 	 * Returns the metadata for all tables in the database.
-	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
+	 * @param boolean $refresh whether to fetch the latest available table schemas. If this is false,
+	 * cached data may be returned if available.
 	 * @return array the metadata for all tables in the database.
-	 * Each array element is an instance of [[TableSchema]] (or its child class).
+	 * Each array element is an instance of [[TableSchema]] or its child class.
 	 */
-	public function getTableSchemas($schema = '')
+	public function getTableSchemas($schema = '', $refresh = false)
 	{
 		$tables = array();
-		foreach ($this->getTableNames($schema) as $name) {
-			if (($table = $this->getTableSchema($name)) !== null) {
+		foreach ($this->getTableNames($schema, $refresh) as $name) {
+			if ($schema !== '') {
+				$name = $schema . '.' . $name;
+			}
+			if (($table = $this->getTableSchema($name, $refresh)) !== null) {
 				$tables[] = $table;
 			}
 		}
@@ -130,7 +136,7 @@ abstract class Schema extends \yii\base\Object
 
 	/**
 	 * Returns all table names in the database.
-	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
 	 * If not empty, the returned table names will be prefixed with the schema name.
 	 * @param boolean $refresh whether to fetch the latest available table names. If this is false,
 	 * table names fetched previously (if available) will be returned.
@@ -168,6 +174,7 @@ abstract class Schema extends \yii\base\Object
 				$cache->delete($this->getCacheKey($name));
 			}
 		}
+		$this->_tableNames = array();
 		$this->_tables = array();
 	}
 
@@ -186,18 +193,19 @@ abstract class Schema extends \yii\base\Object
 	 * This method should be overridden by child classes in order to support this feature
 	 * because the default implementation simply throws an exception.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * If not empty, the returned table names will be prefixed with the schema name.
-	 * @return array all table names in the database.
+	 * @return array all table names in the database. The names have NO the schema name prefix.
+	 * @throws NotSupportedException if this method is called
 	 */
 	protected function findTableNames($schema = '')
 	{
-		throw new Exception(get_class($this) . ' does not support fetching all table names.');
+		throw new NotSupportedException(get_class($this) . ' does not support fetching all table names.');
 	}
 
 	/**
 	 * Returns the ID of the last inserted row or sequence value.
 	 * @param string $sequenceName name of the sequence object (required by some DBMS)
 	 * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
+	 * @throws BadCallException if the DB connection is not active
 	 * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php
 	 */
 	public function getLastInsertID($sequenceName = '')
@@ -205,10 +213,9 @@ abstract class Schema extends \yii\base\Object
 		if ($this->connection->isActive) {
 			return $this->connection->pdo->lastInsertId($sequenceName);
 		} else {
-			throw new Exception('DB Connection is not active.');
+			throw new BadCallException('DB Connection is not active.');
 		}
 	}
-
 
 	/**
 	 * Quotes a string value for use in a query.
@@ -317,6 +324,33 @@ abstract class Schema extends \yii\base\Object
 			return str_replace('%', $this->connection->tablePrefix, $name);
 		} else {
 			return $name;
+		}
+	}
+
+	/**
+	 * Extracts the PHP type from abstract DB type.
+	 * @param string $type abstract DB type
+	 * @return string PHP type name
+	 */
+	protected function getColumnPhpType($type)
+	{
+		static $typeMap = array( // abstract type => php type
+			'smallint' => 'integer',
+			'integer' => 'integer',
+			'bigint' => 'integer',
+			'boolean' => 'boolean',
+			'float' => 'double',
+		);
+		if (isset($typeMap[$type])) {
+			if ($type === 'bigint') {
+				return PHP_INT_SIZE == 8 && !$this->unsigned ? 'integer' : 'string';
+			} elseif ($type === 'integer') {
+				return PHP_INT_SIZE == 4 && $this->unsigned ? 'string' : 'integer';
+			} else {
+				return $typeMap[$this->type];
+			}
+		} else {
+			return 'string';
 		}
 	}
 }

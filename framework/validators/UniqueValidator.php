@@ -18,11 +18,6 @@ namespace yii\validators;
 class UniqueValidator extends Validator
 {
 	/**
-	 * @var boolean whether the comparison is case sensitive. Defaults to true.
-	 * Note, by setting it to false, you are assuming the attribute type is string.
-	 */
-	public $caseSensitive = true;
-	/**
 	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
 	 * meaning that if the attribute is empty, it is considered valid.
 	 */
@@ -76,8 +71,7 @@ class UniqueValidator extends Validator
 		}
 
 		$query = $className::find();
-		$query->where($this->caseSensitive ? "{$column->quotedName}=:value" : "LOWER({$column->quotedName})=LOWER(:value)");
-		$query->params(array(':value' => $value));
+		$query->where(array($column->name => $value));
 
 		if ($object->getIsNewRecord()) {
 			// if current $object isn't in the database yet then it's OK just

@@ -22,15 +22,11 @@ class ColumnSchema extends \yii\base\Component
 	 */
 	public $name;
 	/**
-	 * @var string the quoted name of this column.
-	 */
-	public $quotedName;
-	/**
 	 * @var boolean whether this column can be null.
 	 */
 	public $allowNull;
 	/**
-	 * @var string logical type of this column. Possible logic types include:
+	 * @var string abstract type of this column. Possible abstract types include:
 	 * string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
 	 * timestamp, time, date, binary, and money.
 	 */
@@ -77,31 +73,11 @@ class ColumnSchema extends \yii\base\Component
 	 * when [[type]] is `smallint`, `integer` or `bigint`.
 	 */
 	public $unsigned;
-
 	/**
-	 * Extracts the PHP type from DB type.
+	 * @var string comment of this column. Not all DBMS support this.
 	 */
-	public function resolvePhpType()
-	{
-		static $typeMap = array( // logical type => php type
-			'smallint' => 'integer',
-			'integer' => 'integer',
-			'bigint' => 'integer',
-			'boolean' => 'boolean',
-			'float' => 'double',
-		);
-		if (isset($typeMap[$this->type])) {
-			if ($this->type === 'bigint') {
-				$this->phpType = PHP_INT_SIZE == 8 && !$this->unsigned ? 'integer' : 'string';
-			} elseif ($this->type === 'integer') {
-				$this->phpType = PHP_INT_SIZE == 4 && $this->unsigned ? 'string' : 'integer';
-			} else {
-				$this->phpType = $typeMap[$this->type];
-			}
-		} else {
-			$this->phpType = 'string';
-		}
-	}
+	public $comment;
+
 
 	/**
 	 * Converts the input value according to [[phpType]].

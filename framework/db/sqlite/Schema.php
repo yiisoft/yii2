@@ -82,7 +82,6 @@ class Schema extends \yii\db\Schema
 	{
 		$table = new TableSchema;
 		$table->name = $name;
-		$table->quotedName = $this->quoteTableName($name);
 
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
@@ -97,7 +96,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findColumns($table)
 	{
-		$sql = "PRAGMA table_info({$table->quotedName})";
+		$sql = "PRAGMA table_info(" . $this->quoteSimpleTableName($table->name) . ')';
 		$columns = $this->connection->createCommand($sql)->queryAll();
 		if (empty($columns)) {
 			return false;
@@ -124,7 +123,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findConstraints($table)
 	{
-		$sql = "PRAGMA foreign_key_list({$table->quotedName})";
+		$sql = "PRAGMA foreign_key_list(" . $this->quoteSimpleTableName($table->name) . ')';
 		$keys = $this->connection->createCommand($sql)->queryAll();
 		foreach ($keys as $key) {
 			$table->foreignKeys[] = array($key['table'], $key['from'] => $key['to']);
@@ -140,13 +139,12 @@ class Schema extends \yii\db\Schema
 	{
 		$c = new ColumnSchema;
 		$c->name = $column['name'];
-		$c->quotedName = $this->quoteSimpleColumnName($c->name);
 		$c->allowNull = !$column['notnull'];
 		$c->isPrimaryKey = $column['pk'] != 0;
 
 		$c->dbType = $column['type'];
 		$this->resolveColumnType($c);
-		$c->resolvePhpType();
+		$c->phpType = $this->getColumnPhpType($this->type);
 
 		$this->resolveColumnDefault($c, $column['dflt_value']);
 

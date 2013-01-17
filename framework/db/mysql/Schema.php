@@ -85,7 +85,7 @@ class Schema extends \yii\db\Schema
 	/**
 	 * Loads the metadata for the specified table.
 	 * @param string $name table name
-	 * @return \yii\db\TableSchema driver dependent table metadata. Null if the table does not exist.
+	 * @return TableSchema driver dependent table metadata. Null if the table does not exist.
 	 */
 	protected function loadTableSchema($name)
 	{
@@ -95,6 +95,8 @@ class Schema extends \yii\db\Schema
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
 			return $table;
+		} else {
+			return null;
 		}
 	}
 
@@ -109,64 +111,34 @@ class Schema extends \yii\db\Schema
 		if (isset($parts[1])) {
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
-			$table->quotedName = $this->quoteSimpleTableName($table->schemaName) . '.' . $this->quoteSimpleTableName($table->name);
 		} else {
 			$table->name = $parts[0];
-			$table->quotedName = $this->quoteSimpleTableName($table->name);
 		}
 	}
 
 	/**
-	 * Creates a table column.
-	 * @param array $column column metadata
-	 * @return ColumnSchema normalized column metadata
+	 * Loads the column information into a [[ColumnSchema]] object.
+	 * @param array $info column information
+	 * @return ColumnSchema the column schema object
 	 */
-	protected function createColumn($column)
+	protected function loadColumn($info)
 	{
-		$c = new ColumnSchema;
+		$column = new ColumnSchema;
 
-		$c->name = $column['Field'];
-		$c->quotedName = $this->quoteSimpleColumnName($c->name);
-		$c->allowNull = $column['Null'] === 'YES';
-		$c->isPrimaryKey = strpos($column['Key'], 'PRI') !== false;
-		$c->autoIncrement = stripos($column['Extra'], 'auto_increment') !== false;
+		$column->name = $info['Field'];
+		$column->allowNull = $info['Null'] === 'YES';
+		$column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
+		$column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;
 
-		$c->dbType = $column['Type'];
-		$this->resolveColumnType($c);
-		$c->resolvePhpType();
-
-		$this->resolveColumnDefault($c, $column['Default']);
-
-		return $c;
-	}
-
-	/**
-	 * Resolves the default value for the column.
-	 * @param \yii\db\ColumnSchema $column the column metadata object
-	 * @param string $value the default value fetched from database
-	 */
-	protected function resolveColumnDefault($column, $value)
-	{
-		if ($column->type !== 'timestamp' || $value !== 'CURRENT_TIMESTAMP') {
-			$column->defaultValue = $column->typecast($value);
-		}
-	}
-
-	/**
-	 * Resolves the abstract data type for the column.
-	 * @param \yii\db\ColumnSchema $column the column metadata object
-	 */
-	public function resolveColumnType($column)
-	{
-		$column->type = self::TYPE_STRING;
+		$column->dbType = $info['Type'];
 		$column->unsigned = strpos($column->dbType, 'unsigned') !== false;
 
+		$column->type = self::TYPE_STRING;
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
 			$type = $matches[1];
 			if (isset($this->typeMap[$type])) {
 				$column->type = $this->typeMap[$type];
 			}
-
 			if (!empty($matches[2])) {
 				if ($type === 'enum') {
 					$values = explode(',', $matches[2]);
@@ -192,23 +164,31 @@ class Schema extends \yii\db\Schema
 				}
 			}
 		}
+
+		$column->phpType = $this->getColumnPhpType($column->type);
+
+		if ($column->type !== 'timestamp' || $info['Default'] !== 'CURRENT_TIMESTAMP') {
+			$column->defaultValue = $column->typecast($info['Default']);
+		}
+
+		return $column;
 	}
 
 	/**
 	 * Collects the metadata of table columns.
-	 * @param \yii\db\TableSchema $table the table metadata
+	 * @param TableSchema $table the table metadata
 	 * @return boolean whether the table exists in the database
 	 */
 	protected function findColumns($table)
 	{
-		$sql = 'SHOW COLUMNS FROM ' . $table->quotedName;
+		$sql = 'SHOW COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
 		try {
 			$columns = $this->connection->createCommand($sql)->queryAll();
 		} catch (\Exception $e) {
 			return false;
 		}
-		foreach ($columns as $column) {
-			$column = $this->createColumn($column);
+		foreach ($columns as $info) {
+			$column = $this->loadColumn($info);
 			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey) {
 				$table->primaryKey[] = $column->name;
@@ -222,11 +202,11 @@ class Schema extends \yii\db\Schema
 
 	/**
 	 * Collects the foreign key column details for the given table.
-	 * @param \yii\db\TableSchema $table the table metadata
+	 * @param TableSchema $table the table metadata
 	 */
 	protected function findConstraints($table)
 	{
-		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $table->quotedName)->queryRow();
+		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryRow();
 		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
 		} else {
@@ -250,20 +230,17 @@ class Schema extends \yii\db\Schema
 
 	/**
 	 * Returns all table names in the database.
+	 * This method should be overridden by child classes in order to support this feature
+	 * because the default implementation simply throws an exception.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * If not empty, the returned table names will be prefixed with the schema name.
-	 * @return array all table names in the database.
+	 * @return array all table names in the database. The names have NO the schema name prefix.
 	 */
 	protected function findTableNames($schema = '')
 	{
-		if ($schema === '') {
-			return $this->connection->createCommand('SHOW TABLES')->queryColumn();
+		$sql = 'SHOW TABLES';
+		if ($schema !== '') {
+			$sql .= ' FROM ' . $this->quoteSimpleTableName($schema);
 		}
-		$sql = 'SHOW TABLES FROM ' . $this->quoteSimpleTableName($schema);
-		$names = $this->connection->createCommand($sql)->queryColumn();
-		foreach ($names as $i => $name) {
-			$names[$i] = $schema . '.' . $name;
-		}
-		return $names;
+		return $this->connection->createCommand($sql)->queryColumn();
 	}
 }

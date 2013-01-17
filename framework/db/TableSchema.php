@@ -9,7 +9,7 @@
 
 namespace yii\db;
 
-use yii\db\Exception;
+use yii\base\BadParamException;
 
 /**
  * TableSchema represents the metadata of a database table.
@@ -36,10 +36,6 @@ class TableSchema extends \yii\base\Object
 	 */
 	public $name;
 	/**
-	 * @var string quoted name of this table. This will include [[schemaName]] if it is not empty.
-	 */
-	public $quotedName;
-	/**
 	 * @var string[] primary keys of this table.
 	 */
 	public $primaryKey = array();
@@ -63,6 +59,10 @@ class TableSchema extends \yii\base\Object
 	 * @var ColumnSchema[] column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
 	 */
 	public $columns = array();
+	/**
+	 * @var string comment of this table
+	 */
+	public $comment;
 
 	/**
 	 * Gets the named column metadata.
@@ -87,7 +87,7 @@ class TableSchema extends \yii\base\Object
 	/**
 	 * Manually specifies the primary key for this table.
 	 * @param string|array $keys the primary key (can be composite)
-	 * @throws \yii\db\Exception if the specified key cannot be found in the table.
+	 * @throws BadParamException if the specified key cannot be found in the table.
 	 */
 	public function fixPrimaryKey($keys)
 	{
@@ -102,7 +102,7 @@ class TableSchema extends \yii\base\Object
 			if (isset($this->columns[$key])) {
 				$this->columns[$key]->isPrimaryKey = true;
 			} else {
-				throw new Exception("Primary key '$key' cannot be found in table '{$this->name}'.");
+				throw new BadParamException("Primary key '$key' cannot be found in table '{$this->name}'.");
 			}
 		}
 	}
