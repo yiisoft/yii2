@@ -223,7 +223,6 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$this->assertTrue(is_array($result) && isset($result[0]));
 	}
 
-
 	function testInsert()
 	{
 
@@ -295,36 +294,6 @@ class CommandTest extends \yiiunit\MysqlTestCase
 	}
 
 	function testDropIndex()
-	{
-
-	}
-
-	function testParams()
-	{
-
-	}
-
-	function testGetSql()
-	{
-
-	}
-
-	function testCreateCommand()
-	{
-
-	}
-
-	function testReset()
-	{
-
-	}
-
-	function testToArray()
-	{
-
-	}
-
-	function testMergeWith()
 	{
 
 	}

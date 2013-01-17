@@ -75,9 +75,4 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals('{{column}}', $connection->quoteColumnName('{{column}}'));
 		$this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
 	}
-
-	function testAttribute()
-	{
-
-	}
 }

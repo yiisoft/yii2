@@ -34,9 +34,9 @@ use yii\db\Exception;
  *
  * ActiveQuery also provides the following additional query options:
  *
- * - [[with]]: list of relations that this query should be performed with.
- * - [[indexBy]]: the name of the column by which the query result should be indexed.
- * - [[asArray]]: whether to return each record as an array.
+ * - [[with()]]: list of relations that this query should be performed with.
+ * - [[indexBy()]]: the name of the column by which the query result should be indexed.
+ * - [[asArray()]]: whether to return each record as an array.
  *
  * These options can be configured using methods of the same name. For example:
  *

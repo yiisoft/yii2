@@ -10,13 +10,15 @@
 namespace yii\db;
 
 /**
- * Query represents a SQL statement in a way that is independent of DBMS.
+ * Query represents a SELECT SQL statement in a way that is independent of DBMS.
  *
- * Query not only can represent a SELECT statement, it can also represent INSERT, UPDATE, DELETE,
- * and other commonly used DDL statements, such as CREATE TABLE, CREATE INDEX, etc.
+ * Query provides a set of methods to facilitate the specification of different clauses
+ * in a SELECT statement. These methods can be chained together.
  *
- * Query provides a set of methods to facilitate the specification of different clauses.
- * These methods can be chained together. For example,
+ * By calling [[createCommand()]], we can get a [[Command]] instance which can be further
+ * used to perform/execute the DB query against a database.
+ *
+ * For example,
  *
  * ~~~
  * $query = new Query;
@@ -24,11 +26,10 @@ namespace yii\db;
  *     ->from('tbl_user')
  *     ->limit(10);
  * // build and execute the query
- * $users = $query->createCommand()->queryAll();
+ * $command = $query->createCommand();
+ * // $command->sql returns the actual SQL
+ * $rows = $command->queryAll();
  * ~~~
- *
- * By calling [[createCommand()]], we can get a [[Command]] instance which can be further
- * used to perform/execute the DB query against a database.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
