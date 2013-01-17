@@ -92,8 +92,7 @@ use yii\base\BadConfigException;
  * @property QueryBuilder $queryBuilder The query builder.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the sequence object.
  * @property string $driverName Name of the DB driver currently being used.
- * @property string $clientVersion The version information of the DB driver.
- * @property array $stats The statistical results of SQL executions.
+ * @property array $querySummary The statistical results of SQL queries.
  *
  * @event Event afterOpen this event is triggered after a DB connection is established
  *
@@ -118,7 +117,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 */
 	public $password = '';
 	/**
-	 * @var array PDO attributes (name=>value) that should be set when calling [[open]]
+	 * @var array PDO attributes (name=>value) that should be set when calling [[open()]]
 	 * to establish a DB connection. Please refer to the
 	 * [PHP manual](http://www.php.net/manual/en/function.PDO-setAttribute.php) for
 	 * details about available attributes.
@@ -272,16 +271,6 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		$this->close();
 		return array_keys(get_object_vars($this));
-	}
-
-	/**
-	 * Returns a list of available PDO drivers.
-	 * @return array list of available PDO drivers
-	 * @see http://www.php.net/manual/en/function.PDO-getAvailableDrivers.php
-	 */
-	public static function getAvailableDrivers()
-	{
-		return \PDO::getAvailableDrivers();
 	}
 
 	/**
@@ -533,36 +522,12 @@ class Connection extends \yii\base\ApplicationComponent
 		if (($pos = strpos($this->dsn, ':')) !== false) {
 			return strtolower(substr($this->dsn, 0, $pos));
 		} else {
-			return strtolower($this->getAttribute(\PDO::ATTR_DRIVER_NAME));
+			return strtolower($this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME));
 		}
 	}
 
 	/**
-	 * Obtains a specific DB connection attribute information.
-	 * @param integer $name the attribute to be queried
-	 * @return mixed the corresponding attribute information
-	 * @see http://www.php.net/manual/en/function.PDO-getAttribute.php
-	 */
-	public function getAttribute($name)
-	{
-		$this->open();
-		return $this->pdo->getAttribute($name);
-	}
-
-	/**
-	 * Sets an attribute on the database connection.
-	 * @param integer $name the attribute to be set
-	 * @param mixed $value the attribute value
-	 * @see http://www.php.net/manual/en/function.PDO-setAttribute.php
-	 */
-	public function setAttribute($name, $value)
-	{
-		$this->open();
-		$this->pdo->setAttribute($name, $value);
-	}
-
-	/**
-	 * Returns the statistical results of SQL executions.
+	 * Returns the statistical results of SQL queries.
 	 * The results returned include the number of SQL statements executed and
 	 * the total time spent.
 	 * In order to use this method, [[enableProfiling]] has to be set true.
@@ -570,7 +535,7 @@ class Connection extends \yii\base\ApplicationComponent
 	 * and the second element the total time spent in SQL execution.
 	 * @see \yii\logging\Logger::getProfiling()
 	 */
-	public function getExecutionSummary()
+	public function getQuerySummary()
 	{
 		$logger = \Yii::getLogger();
 		$timings = $logger->getProfiling(array('yii\db\Command::query', 'yii\db\Command::execute'));

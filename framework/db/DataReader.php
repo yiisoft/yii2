@@ -9,23 +9,33 @@
 
 namespace yii\db;
 
-use yii\db\Exception;
+use yii\base\BadCallException;
 
 /**
  * DataReader represents a forward-only stream of rows from a query result set.
  *
- * To read the current row of data, call [[read]]. The method [[readAll]]
- * returns all the rows in a single array.
- *
- * One can also retrieve the rows of data in DataReader by using `foreach`:
+ * To read the current row of data, call [[read()]]. The method [[readAll()]]
+ * returns all the rows in a single array. Rows of data can also be read by
+ * iterating through the reader. For example,
  *
  * ~~~
- * foreach($reader as $row) {
- *	 // $row represents a row of data
+ * $reader = $command->query('SELECT * FROM tbl_post');
+ *
+ * while ($row = $reader->read()) {
+ *     $rows[] = $row;
  * }
+ *
+ * // equivalent to:
+ * foreach($reader as $row) {
+ *     $rows[] = $row;
+ * }
+ *
+ * // equivalent to:
+ * $rows = $reader->readAll();
  * ~~~
  *
- * Since DataReader is a forward-only stream, you can only traverse it once.
+ * Note that since DataReader is a forward-only stream, you can only traverse it once.
+ * Doing it the second time will throw an exception.
  *
  * It is possible to use a specific mode of data fetching by setting
  * [[fetchMode]]. See the [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
@@ -202,7 +212,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	/**
 	 * Resets the iterator to the initial state.
 	 * This method is required by the interface Iterator.
-	 * @throws Exception if this method is invoked twice
+	 * @throws BadCallException if this method is invoked twice
 	 */
 	public function rewind()
 	{
@@ -210,7 +220,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 			$this->_row = $this->_statement->fetch();
 			$this->_index = 0;
 		} else {
-			throw new Exception('DataReader cannot rewind. It is a forward-only reader.');
+			throw new BadCallException('DataReader cannot rewind. It is a forward-only reader.');
 		}
 	}
 

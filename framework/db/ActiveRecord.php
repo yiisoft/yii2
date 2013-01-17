@@ -45,7 +45,7 @@ use yii\util\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ActiveRecord extends Model
+class ActiveRecord extends Model
 {
 	/**
 	 * @var array attribute values indexed by attribute names

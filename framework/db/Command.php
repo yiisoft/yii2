@@ -21,7 +21,7 @@ namespace yii\db;
  * For example,
  *
  * ~~~
- * $users = \Yii::$application->db->createCommand('SELECT * FROM tbl_user')->queryAll();
+ * $users = $connection->createCommand('SELECT * FROM tbl_user')->queryAll();
  * ~~~
  *
  * Command supports SQL statement preparation and parameter binding.
@@ -29,6 +29,18 @@ namespace yii\db;
  * Call [[bindParam()]] to bind a PHP variable to a SQL parameter.
  * When binding a parameter, the SQL statement is automatically prepared.
  * You may also call [[prepare()]] explicitly to prepare a SQL statement.
+ *
+ * Command also supports building SQL statements by providing methods such as [[insert()]],
+ * [[update()]], etc. For example,
+ *
+ * ~~~
+ * $connection->createCommand()->insert('tbl_user', array(
+ *     'name' => 'Sam',
+ *     'age' => 30,
+ * ))->execute();
+ * ~~~
+ *
+ * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
  *
  * @property string $sql the SQL statement to be executed
  *
@@ -42,7 +54,7 @@ class Command extends \yii\base\Component
 	 */
 	public $connection;
 	/**
-	 * @var \PDOStatement the PDOStatement object that this command contains
+	 * @var \PDOStatement the PDOStatement object that this command is associated with
 	 */
 	public $pdoStatement;
 	/**
@@ -78,20 +90,30 @@ class Command extends \yii\base\Component
 	{
 		if ($sql !== $this->_sql) {
 			if ($this->connection->enableAutoQuoting && $sql != '') {
-				$sql = preg_replace_callback('/(\\{\\{(.*?)\\}\\}|\\[\\[(.*?)\\]\\])/', function($matches) {
-					if (isset($matches[3])) {
-						return $this->connection->quoteColumnName($matches[3]);
-					} else {
-						$name = str_replace('%', $this->connection->tablePrefix, $matches[2]);
-						return $this->connection->quoteTableName($name);
-					}
-				}, $sql);
+				$sql = $this->expandSql($sql);
 			}
+			$this->cancel();
 			$this->_sql = $sql;
 			$this->_params = array();
-			$this->cancel();
 		}
 		return $this;
+	}
+
+	/**
+	 * Expands a SQL statement by quoting table and column names and replacing table prefixes.
+	 * @param string $sql the SQL to be expanded
+	 * @return string the expanded SQL
+	 */
+	protected function expandSql($sql)
+	{
+		return preg_replace_callback('/(\\{\\{(.*?)\\}\\}|\\[\\[(.*?)\\]\\])/', function($matches) {
+			if (isset($matches[3])) {
+				return $this->connection->quoteColumnName($matches[3]);
+			} else {
+				$name = str_replace('%', $this->connection->tablePrefix, $matches[2]);
+				return $this->connection->quoteTableName($name);
+			}
+		}, $sql);
 	}
 
 	/**
@@ -142,7 +164,7 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindParam($name, $value, $this->getPdoType(gettype($value)));
+			$this->pdoStatement->bindParam($name, $value, $this->getPdoType($value));
 		} elseif ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
 		} elseif ($driverOptions === null) {
@@ -169,7 +191,7 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindValue($name, $value, $this->getPdoType(gettype($value)));
+			$this->pdoStatement->bindValue($name, $value, $this->getPdoType($value));
 		} else {
 			$this->pdoStatement->bindValue($name, $value, $dataType);
 		}
@@ -197,7 +219,7 @@ class Command extends \yii\base\Component
 					$type = $value[1];
 					$value = $value[0];
 				} else {
-					$type = $this->getPdoType(gettype($value));
+					$type = $this->getPdoType($value);
 				}
 				$this->pdoStatement->bindValue($name, $value, $type);
 				$this->_params[$name] = $value;
@@ -207,12 +229,12 @@ class Command extends \yii\base\Component
 	}
 
 	/**
-	 * Determines the PDO type for the give PHP data type.
-	 * @param string $type The PHP type (obtained by `gettype()` call).
-	 * @return integer the corresponding PDO type
+	 * Determines the PDO type for the give PHP data value.
+	 * @param mixed $data the data whose PDO type is to be determined
+	 * @return integer the PDO type
 	 * @see http://www.php.net/manual/en/pdo.constants.php
 	 */
-	private function getPdoType($type)
+	private function getPdoType($data)
 	{
 		static $typeMap = array(
 			'boolean' => \PDO::PARAM_BOOL,
@@ -220,6 +242,7 @@ class Command extends \yii\base\Component
 			'string' => \PDO::PARAM_STR,
 			'NULL' => \PDO::PARAM_NULL,
 		);
+		$type = gettype($data);
 		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 
@@ -267,7 +290,9 @@ class Command extends \yii\base\Component
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			$message = $e->getMessage();
+
 			\Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
+
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			throw new Exception($message, (int)$e->getCode(), $errorInfo);
 		}
@@ -364,6 +389,7 @@ class Command extends \yii\base\Component
 	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return mixed the method execution result
+	 * @throws Exception if the query causes any problem
 	 */
 	private function queryInternal($method, $params, $fetchMode = null)
 	{
@@ -439,9 +465,9 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $db->createCommand()->insert('tbl_user', array(
-	 *	 'name' => 'Sam',
-	 *	 'age' => 30,
+	 * $connection->createCommand()->insert('tbl_user', array(
+	 *     'name' => 'Sam',
+	 *     'age' => 30,
 	 * ))->execute();
 	 * ~~~
 	 *
@@ -465,8 +491,8 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $db->createCommand()->update('tbl_user', array(
-	 *	 'status' => 1,
+	 * $connection->createCommand()->update('tbl_user', array(
+	 *     'status' => 1,
 	 * ), 'age > 30')->execute();
 	 * ~~~
 	 *
@@ -492,7 +518,7 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $db->createCommand()->delete('tbl_user', 'status = 0')->execute();
+	 * $connection->createCommand()->delete('tbl_user', 'status = 0')->execute();
 	 * ~~~
 	 *
 	 * The method will properly escape the table and column names.
