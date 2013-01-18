@@ -31,7 +31,7 @@ class ZendDataCache extends Cache
 	protected function getValue($key)
 	{
 		$result = zend_shm_cache_fetch($key);
-		return $result !== NULL ? $result : false;
+		return $result === null ? false : $result;
 	}
 
 	/**

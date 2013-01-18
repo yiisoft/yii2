@@ -81,9 +81,9 @@ class ChainedDependency extends Dependency
 	 */
 	public function getHasChanged()
 	{
-		foreach ($this->dependencies as $dependency) {
+		foreach ($this->dependencies as $i => $dependency) {
 			if (!$dependency instanceof Dependency) {
-				$dependency = \Yii::createObject($dependency);
+				$this->dependencies[$i] = $dependency = \Yii::createObject($dependency);
 			}
 			if ($this->dependOnAll && $dependency->getHasChanged()) {
 				return true;

@@ -10,6 +10,7 @@
 namespace yii\caching;
 
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * MemCache implements a cache application component based on [memcache](http://pecl.php.net/package/memcache)
@@ -109,12 +110,12 @@ class MemCache extends Cache
 	 * @return \Memcache|\Memcached the memcache (or memcached) object used by this cache component.
 	 * @throws Exception if memcache or memcached extension is not loaded
 	 */
-	public function getMemCache()
+	public function getMemcache()
 	{
 		if ($this->_cache === null) {
 			$extension = $this->useMemcached ? 'memcached' : 'memcache';
 			if (!extension_loaded($extension)) {
-				throw new Exception("MemCache requires PHP $extension extension to be loaded.");
+				throw new InvalidConfigException("MemCache requires PHP $extension extension to be loaded.");
 			}
 			$this->_cache = $this->useMemcached ? new \Memcached : new \Memcache;
 		}

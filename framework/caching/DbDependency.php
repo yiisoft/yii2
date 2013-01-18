@@ -9,7 +9,7 @@
 
 namespace yii\caching;
 
-use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Query;
 
@@ -68,6 +68,9 @@ class DbDependency extends Dependency
 	protected function generateDependencyData()
 	{
 		$db = $this->getDb();
+		/**
+		 * @var \yii\db\Command $command
+		 */
 		$command = $this->query->createCommand($db);
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
@@ -83,7 +86,7 @@ class DbDependency extends Dependency
 	/**
 	 * Returns the DB connection instance used for caching purpose.
 	 * @return Connection the DB connection instance
-	 * @throws Exception if [[connectionID]] does not point to a valid application component.
+	 * @throws InvalidConfigException if [[connectionID]] does not point to a valid application component.
 	 */
 	public function getDb()
 	{
@@ -92,7 +95,7 @@ class DbDependency extends Dependency
 			if ($db instanceof Connection) {
 				$this->_db = $db;
 			} else {
-				throw new Exception("DbDependency.connectionID must refer to the ID of a DB connection application component.");
+				throw new InvalidConfigException("DbCache::connectionID must refer to the ID of a DB application component.");
 			}
 		}
 		return $this->_db;

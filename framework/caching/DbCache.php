@@ -9,7 +9,7 @@
 
 namespace yii\caching;
 
-use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Query;
 
@@ -21,11 +21,11 @@ use yii\db\Query;
  *
  * ~~~
  * CREATE TABLE tbl_cache (
- *   id char(128) NOT NULL,
- *   expire int(11) DEFAULT NULL,
- *   data LONGBLOB,
- *   PRIMARY KEY (id),
- *   KEY expire (expire)
+ *     id char(128) NOT NULL,
+ *     expire int(11) DEFAULT NULL,
+ *     data LONGBLOB,
+ *     PRIMARY KEY (id),
+ *     KEY expire (expire)
  * );
  * ~~~
  *
@@ -57,7 +57,7 @@ class DbCache extends Cache
 	public $cacheTableName = 'tbl_cache';
 	/**
 	 * @var integer the probability (parts per million) that garbage collection (GC) should be performed
-	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
+	 * when storing a piece of data in the cache. Defaults to 10, meaning 0.001% chance.
 	 * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
 	 **/
 	public $gcProbability = 100;
@@ -69,7 +69,7 @@ class DbCache extends Cache
 	/**
 	 * Returns the DB connection instance used for caching purpose.
 	 * @return Connection the DB connection instance
-	 * @throws Exception if [[connectionID]] does not point to a valid application component.
+	 * @throws InvalidConfigException if [[connectionID]] does not point to a valid application component.
 	 */
 	public function getDb()
 	{
@@ -78,7 +78,7 @@ class DbCache extends Cache
 			if ($db instanceof Connection) {
 				$this->_db = $db;
 			} else {
-				throw new Exception("DbCache.connectionID must refer to the ID of a DB connection application component.");
+				throw new InvalidConfigException("DbCache::connectionID must refer to the ID of a DB application component.");
 			}
 		}
 		return $this->_db;
@@ -163,13 +163,13 @@ class DbCache extends Cache
 	 */
 	protected function setValue($key, $value, $expire)
 	{
-		$query = new Query;
-		$command = $query->update($this->cacheTableName, array(
+		$command = $this->getDb()->createCommand();
+		$command->update($this->cacheTableName, array(
 			'expire' => $expire > 0 ? $expire + time() : 0,
 			'data' => array($value, \PDO::PARAM_LOB),
 		), array(
 			'id' => $key,
-		))->createCommand($this->getDb());
+		));;
 
 		if ($command->execute()) {
 			$this->gc();
@@ -198,16 +198,16 @@ class DbCache extends Cache
 			$expire = 0;
 		}
 
-		$query = new Query;
-		$command = $query->insert($this->cacheTableName, array(
+		$command = $this->getDb()->createCommand();
+		$command->insert($this->cacheTableName, array(
 			'id' => $key,
 			'expire' => $expire,
 			'data' => array($value, \PDO::PARAM_LOB),
-		))->createCommand($this->getDb());
+		));
 		try {
 			$command->execute();
 			return true;
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return false;
 		}
 	}
@@ -220,10 +220,8 @@ class DbCache extends Cache
 	 */
 	protected function deleteValue($key)
 	{
-		$query = new Query;
-		$query->delete($this->cacheTableName, array('id' => $key))
-			->createCommand($this->getDb())
-			->execute();
+		$command = $this->getDb()->createCommand();
+		$command->delete($this->cacheTableName, array('id' => $key))->execute();
 		return true;
 	}
 
@@ -235,10 +233,8 @@ class DbCache extends Cache
 	public function gc($force = false)
 	{
 		if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
-			$query = new Query;
-			$query->delete($this->cacheTableName, 'expire > 0 AND expire < ' . time())
-				->createCommand($this->getDb())
-				->execute();
+			$command = $this->getDb()->createCommand();
+			$command->delete($this->cacheTableName, 'expire > 0 AND expire < ' . time())->execute();
 		}
 	}
 
@@ -249,10 +245,8 @@ class DbCache extends Cache
 	 */
 	protected function flushValues()
 	{
-		$query = new Query;
-		$query->delete($this->cacheTableName)
-			->createCommand($this->getDb())
-			->execute();
+		$command = $this->getDb()->createCommand();
+		$command->delete($this->cacheTableName)->execute();
 		return true;
 	}
 }

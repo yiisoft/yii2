@@ -9,7 +9,7 @@
 
 namespace yii\caching;
 
-use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * FileCache implements a cache component using files.
@@ -42,10 +42,10 @@ class FileCache extends Cache
 	public $directoryLevel = 1;
 	/**
 	 * @var integer the probability (parts per million) that garbage collection (GC) should be performed
-	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
-	 * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
+	 * when storing a piece of data in the cache. Defaults to 10, meaning 0.001% chance.
+	 * This number should be between 0 and 1000000. A value 0 means no GC will be performed at all.
 	 **/
-	public $gcProbability = 100;
+	public $gcProbability = 10;
 
 	/**
 	 * Initializes this component by ensuring the existence of the cache path.
@@ -55,7 +55,7 @@ class FileCache extends Cache
 		parent::init();
 		$this->cachePath = \Yii::getAlias($this->cachePath);
 		if ($this->cachePath === false) {
-			throw new Exception('FileCache.cachePath must be a valid path alias.');
+			throw new InvalidConfigException('FileCache.cachePath must be a valid path alias.');
 		}
 		if (!is_dir($this->cachePath)) {
 			mkdir($this->cachePath, 0777, true);
