@@ -418,7 +418,7 @@ class Command extends \yii\base\Component
 		}
 
 		if (isset($cache)) {
-			$cacheKey = __CLASS__ . "/{$db->dsn}/{$db->username}/$sql/$paramLog";
+			$cacheKey = $cache->buildKey(__CLASS__, $db->dsn, $db->username, $sql, $paramLog);
 			if (($result = $cache->get($cacheKey)) !== false) {
 				\Yii::trace('Query result found in cache', __CLASS__);
 				return $result;

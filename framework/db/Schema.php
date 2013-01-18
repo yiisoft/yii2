@@ -11,6 +11,7 @@ namespace yii\db;
 
 use yii\base\NotSupportedException;
 use yii\base\InvalidCallException;
+use yii\caching\Cache;
 
 /**
  * Schema is the base class for concrete DBMS-specific schema classes.
@@ -85,9 +86,9 @@ abstract class Schema extends \yii\base\Object
 		$db = $this->db;
 		$realName = $this->getRealTableName($name);
 
-		/** @var $cache \yii\caching\Cache */
+		/** @var $cache Cache */
 		if ($db->enableSchemaCache && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null && !in_array($name, $db->schemaCacheExclude, true)) {
-			$key = $this->getCacheKey($name);
+			$key = $this->getCacheKey($cache, $name);
 			if ($refresh || ($table = $cache->get($key)) === false) {
 				$table = $this->loadTableSchema($realName);
 				if ($table !== null) {
@@ -104,12 +105,13 @@ abstract class Schema extends \yii\base\Object
 
 	/**
 	 * Returns the cache key for the specified table name.
+	 * @param Cache $cache the cache component
 	 * @param string $name the table name
 	 * @return string the cache key
 	 */
-	public function getCacheKey($name)
+	public function getCacheKey($cache, $name)
 	{
-		return  __CLASS__ . "/{$this->db->dsn}/{$this->db->username}/{$name}";
+		return $cache->buildKey(__CLASS__, $this->db->dsn, $this->db->username, $name);
 	}
 
 	/**
@@ -171,7 +173,7 @@ abstract class Schema extends \yii\base\Object
 		/** @var $cache \yii\caching\Cache */
 		if ($this->db->enableSchemaCache && ($cache = \Yii::$application->getComponent($this->db->schemaCacheID)) !== null) {
 			foreach ($this->_tables as $name => $table) {
-				$cache->delete($this->getCacheKey($name));
+				$cache->delete($this->getCacheKey($cache, $name));
 			}
 		}
 		$this->_tableNames = array();
