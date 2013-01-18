@@ -1,6 +1,6 @@
 <?php
 /**
- * BadParamException class file.
+ * UnknownMethodException class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -10,12 +10,12 @@
 namespace yii\base;
 
 /**
- * BadParamException represents an exception caused by incorrect method parameters.
+ * UnknownMethodException represents an exception caused by accessing unknown object methods.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class BadParamException extends \Exception
+class UnknownMethodException extends \Exception
 {
 }
 

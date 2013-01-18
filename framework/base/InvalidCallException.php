@@ -1,6 +1,6 @@
 <?php
 /**
- * BadCallException class file.
+ * InvalidCallException class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -10,12 +10,12 @@
 namespace yii\base;
 
 /**
- * BadCallException represents an exception caused by calling a method in a wrong way.
+ * InvalidCallException represents an exception caused by calling a method in a wrong way.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class BadCallException extends \Exception
+class InvalidCallException extends \Exception
 {
 }
 

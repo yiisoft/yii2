@@ -12,8 +12,8 @@ namespace yii\db;
 
 use yii\base\Model;
 use yii\base\ModelEvent;
-use yii\base\BadMethodException;
-use yii\base\BadParamException;
+use yii\base\UnknownMethodException;
+use yii\base\InvalidCallException;
 use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\Expression;
@@ -991,7 +991,7 @@ class ActiveRecord extends Model
 	 * It can be declared in either the Active Record class itself or one of its behaviors.
 	 * @param string $name the relation name
 	 * @return ActiveRelation the relation object
-	 * @throws BadParamException if the named relation does not exist.
+	 * @throws InvalidCallException if the named relation does not exist.
 	 */
 	public function getRelation($name)
 	{
@@ -1001,9 +1001,9 @@ class ActiveRecord extends Model
 			if ($relation instanceof ActiveRelation) {
 				return $relation;
 			}
-		} catch (BadMethodException $e) {
+		} catch (UnknownMethodException $e) {
 		}
-		throw new BadParamException(get_class($this) . ' has no relation named "' . $name . '".');
+		throw new InvalidCallException(get_class($this) . ' has no relation named "' . $name . '".');
 	}
 
 	/**
@@ -1023,7 +1023,7 @@ class ActiveRecord extends Model
 	 * @param array $extraColumns additional column values to be saved into the pivot table.
 	 * This parameter is only meaningful for a relationship involving a pivot table
 	 * (i.e., a relation set with `[[ActiveRelation::via()]]` or `[[ActiveRelation::viaTable()]]`.)
-	 * @throws BadParamException if the method is unable to link two models.
+	 * @throws InvalidCallException if the method is unable to link two models.
 	 */
 	public function link($name, $model, $extraColumns = array())
 	{
@@ -1059,7 +1059,7 @@ class ActiveRecord extends Model
 			$p2 = $this->isPrimaryKey(array_values($relation->link));
 			if ($p1 && $p2) {
 				if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
-					throw new BadParamException('Unable to link models: both models are newly created.');
+					throw new InvalidCallException('Unable to link models: both models are newly created.');
 				} elseif ($this->getIsNewRecord()) {
 					$this->bindModels(array_flip($relation->link), $this, $model);
 				} else {
@@ -1070,7 +1070,7 @@ class ActiveRecord extends Model
 			} elseif ($p2) {
 				$this->bindModels($relation->link, $model, $this);
 			} else {
-				throw new BadParamException('Unable to link models: the link does not involve any primary key.');
+				throw new InvalidCallException('Unable to link models: the link does not involve any primary key.');
 			}
 		}
 
@@ -1098,7 +1098,7 @@ class ActiveRecord extends Model
 	 * @param boolean $delete whether to delete the model that contains the foreign key.
 	 * If false, the model's foreign key will be set null and saved.
 	 * If true, the model containing the foreign key will be deleted.
-	 * @throws BadParamException if the models cannot be unlinked
+	 * @throws InvalidCallException if the models cannot be unlinked
 	 */
 	public function unlink($name, $model, $delete = false)
 	{
@@ -1147,7 +1147,7 @@ class ActiveRecord extends Model
 				}
 				$delete ? $this->delete() : $this->save(false);
 			} else {
-				throw new BadParamException('Unable to unlink models: the link does not involve any primary key.');
+				throw new InvalidCallException('Unable to unlink models: the link does not involve any primary key.');
 			}
 		}
 
@@ -1186,14 +1186,14 @@ class ActiveRecord extends Model
 	 * @param array $link
 	 * @param ActiveRecord $foreignModel
 	 * @param ActiveRecord $primaryModel
-	 * @throws BadParamException
+	 * @throws InvalidCallException
 	 */
 	private function bindModels($link, $foreignModel, $primaryModel)
 	{
 		foreach ($link as $fk => $pk) {
 			$value = $primaryModel->$pk;
 			if ($value === null) {
-				throw new BadParamException('Unable to link models: the primary key of ' . get_class($primaryModel) . ' is null.');
+				throw new InvalidCallException('Unable to link models: the primary key of ' . get_class($primaryModel) . ' is null.');
 			}
 			$foreignModel->$fk = $value;
 		}

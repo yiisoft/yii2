@@ -9,7 +9,7 @@
 
 namespace yii\base;
 
-use yii\base\Exception;
+use yii\base\InvalidCallException;
 
 /**
  * Application is the base class for all application classes.
@@ -236,13 +236,13 @@ class Application extends Module
 	/**
 	 * Sets the directory that stores runtime files.
 	 * @param string $path the directory that stores runtime files.
-	 * @throws BadParamException if the directory does not exist or is not writable
+	 * @throws InvalidCallException if the directory does not exist or is not writable
 	 */
 	public function setRuntimePath($path)
 	{
 		$p = \Yii::getAlias($path);
 		if ($p === false || !is_dir($p) || !is_writable($path)) {
-			throw new BadParamException("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
+			throw new InvalidCallException("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
 		} else {
 			$this->_runtimePath = $p;
 		}

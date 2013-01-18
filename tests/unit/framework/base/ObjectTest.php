@@ -56,7 +56,7 @@ class ObjectTest extends \yiiunit\TestCase
 	public function testGetProperty()
 	{
 		$this->assertTrue('default' === $this->object->Text);
-		$this->setExpectedException('yii\base\BadPropertyException');
+		$this->setExpectedException('yii\base\UnknownPropertyException');
 		$value2 = $this->object->Caption;
 	}
 
@@ -65,7 +65,7 @@ class ObjectTest extends \yiiunit\TestCase
 		$value = 'new value';
 		$this->object->Text = $value;
 		$this->assertEquals($value, $this->object->Text);
-		$this->setExpectedException('yii\base\BadPropertyException');
+		$this->setExpectedException('yii\base\UnknownPropertyException');
 		$this->object->NewMember = $value;
 	}
 

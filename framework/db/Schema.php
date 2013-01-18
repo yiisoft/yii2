@@ -10,7 +10,7 @@
 namespace yii\db;
 
 use yii\base\NotSupportedException;
-use yii\base\BadCallException;
+use yii\base\InvalidCallException;
 
 /**
  * Schema is the base class for concrete DBMS-specific schema classes.
@@ -205,7 +205,7 @@ abstract class Schema extends \yii\base\Object
 	 * Returns the ID of the last inserted row or sequence value.
 	 * @param string $sequenceName name of the sequence object (required by some DBMS)
 	 * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
-	 * @throws BadCallException if the DB connection is not active
+	 * @throws InvalidCallException if the DB connection is not active
 	 * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php
 	 */
 	public function getLastInsertID($sequenceName = '')
@@ -213,7 +213,7 @@ abstract class Schema extends \yii\base\Object
 		if ($this->connection->isActive) {
 			return $this->connection->pdo->lastInsertId($sequenceName);
 		} else {
-			throw new BadCallException('DB Connection is not active.');
+			throw new InvalidCallException('DB Connection is not active.');
 		}
 	}
 

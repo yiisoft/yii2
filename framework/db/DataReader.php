@@ -9,7 +9,7 @@
 
 namespace yii\db;
 
-use yii\base\BadCallException;
+use yii\base\InvalidCallException;
 
 /**
  * DataReader represents a forward-only stream of rows from a query result set.
@@ -212,7 +212,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	/**
 	 * Resets the iterator to the initial state.
 	 * This method is required by the interface Iterator.
-	 * @throws BadCallException if this method is invoked twice
+	 * @throws InvalidCallException if this method is invoked twice
 	 */
 	public function rewind()
 	{
@@ -220,7 +220,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 			$this->_row = $this->_statement->fetch();
 			$this->_index = 0;
 		} else {
-			throw new BadCallException('DataReader cannot rewind. It is a forward-only reader.');
+			throw new InvalidCallException('DataReader cannot rewind. It is a forward-only reader.');
 		}
 	}
 

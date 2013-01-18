@@ -12,7 +12,7 @@ namespace yii\db;
 
 use yii\db\Connection;
 use yii\db\Command;
-use yii\base\BadParamException;
+use yii\base\InvalidConfigException;
 
 /**
  * ActiveRelation represents a relation between two Active Record classes.
@@ -137,12 +137,12 @@ class ActiveRelation extends ActiveQuery
 	 * @param string $name the relation name
 	 * @param array $primaryModels primary models
 	 * @return array the related models
-	 * @throws BadParamException
+	 * @throws InvalidConfigException
 	 */
 	public function findWith($name, &$primaryModels)
 	{
 		if (!is_array($this->link)) {
-			throw new BadParamException('Invalid link: it must be an array of key-value pairs.');
+			throw new InvalidConfigException('Invalid link: it must be an array of key-value pairs.');
 		}
 
 		if ($this->via instanceof self) {

@@ -95,7 +95,7 @@ class DictionaryTest extends \yiiunit\TestCase
 		$this->assertEquals($this->item3, $this->dictionary['key3']);
 		$this->assertEquals($this->item1, $this->dictionary['key4']);
 
-		$this->setExpectedException('yii\base\BadParamException');
+		$this->setExpectedException('yii\base\InvalidCallException');
 		$this->dictionary->copyFrom($this);
 	}
 
@@ -114,7 +114,7 @@ class DictionaryTest extends \yiiunit\TestCase
 		$this->assertEquals(3,$this->dictionary->getCount());
 		$this->assertEquals($this->item1,$this->dictionary['key2']);
 		$this->assertEquals($this->item3,$this->dictionary['key3']);
-		$this->setExpectedException('yii\base\BadParamException');
+		$this->setExpectedException('yii\base\InvalidCallException');
 		$this->dictionary->mergeWith($this,false);
 	}
 

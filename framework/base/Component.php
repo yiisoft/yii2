@@ -42,7 +42,7 @@ class Component extends \yii\base\Object
 	 * @param string $name the property name
 	 * @return mixed the property value, event handlers attached to the event,
 	 * the behavior, or the value of a behavior's property
-	 * @throws BadPropertyException if the property is not defined
+	 * @throws UnknownPropertyException if the property is not defined
 	 * @see __set
 	 */
 	public function __get($name)
@@ -60,7 +60,7 @@ class Component extends \yii\base\Object
 				}
 			}
 		}
-		throw new BadPropertyException('Getting unknown property: ' . get_class($this) . '.' . $name);
+		throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '.' . $name);
 	}
 
 	/**
@@ -76,7 +76,7 @@ class Component extends \yii\base\Object
 	 * will be implicitly called when executing `$component->property = $value;`.
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
-	 * @throws BadPropertyException if the property is not defined or read-only.
+	 * @throws UnknownPropertyException if the property is not defined or read-only.
 	 * @see __get
 	 */
 	public function __set($name, $value)
@@ -106,9 +106,9 @@ class Component extends \yii\base\Object
 			}
 		}
 		if (method_exists($this, 'get' . $name)) {
-			throw new BadPropertyException('Setting read-only property: ' . get_class($this) . '.' . $name);
+			throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '.' . $name);
 		} else {
-			throw new BadPropertyException('Setting unknown property: ' . get_class($this) . '.' . $name);
+			throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '.' . $name);
 		}
 	}
 
@@ -151,7 +151,7 @@ class Component extends \yii\base\Object
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `unset($component->property)`.
 	 * @param string $name the property name
-	 * @throws BadPropertyException if the property is read only.
+	 * @throws UnknownPropertyException if the property is read only.
 	 */
 	public function __unset($name)
 	{
@@ -170,7 +170,7 @@ class Component extends \yii\base\Object
 			}
 		}
 		if (method_exists($this, 'get' . $name)) {
-			throw new BadPropertyException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
+			throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 		}
 	}
 
@@ -186,7 +186,7 @@ class Component extends \yii\base\Object
 	 * @param string $name the method name
 	 * @param array $params method parameters
 	 * @return mixed the method return value
-	 * @throws BadMethodException when calling unknown method
+	 * @throws UnknownMethodException when calling unknown method
 	 */
 	public function __call($name, $params)
 	{
@@ -205,7 +205,7 @@ class Component extends \yii\base\Object
 			}
 		}
 
-		throw new BadMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
+		throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
 	}
 
 	/**

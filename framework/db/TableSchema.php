@@ -9,7 +9,7 @@
 
 namespace yii\db;
 
-use yii\base\BadParamException;
+use yii\base\InvalidCallException;
 
 /**
  * TableSchema represents the metadata of a database table.
@@ -87,7 +87,7 @@ class TableSchema extends \yii\base\Object
 	/**
 	 * Manually specifies the primary key for this table.
 	 * @param string|array $keys the primary key (can be composite)
-	 * @throws BadParamException if the specified key cannot be found in the table.
+	 * @throws InvalidCallException if the specified key cannot be found in the table.
 	 */
 	public function fixPrimaryKey($keys)
 	{
@@ -102,7 +102,7 @@ class TableSchema extends \yii\base\Object
 			if (isset($this->columns[$key])) {
 				$this->columns[$key]->isPrimaryKey = true;
 			} else {
-				throw new BadParamException("Primary key '$key' cannot be found in table '{$this->name}'.");
+				throw new InvalidCallException("Primary key '$key' cannot be found in table '{$this->name}'.");
 			}
 		}
 	}

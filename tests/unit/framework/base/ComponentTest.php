@@ -64,7 +64,7 @@ class ComponentTest extends \yiiunit\TestCase
 	public function testGetProperty()
 	{
 		$this->assertTrue('default' === $this->component->Text);
-		$this->setExpectedException('yii\base\BadPropertyException');
+		$this->setExpectedException('yii\base\UnknownPropertyException');
 		$value2 = $this->component->Caption;
 	}
 
@@ -73,7 +73,7 @@ class ComponentTest extends \yiiunit\TestCase
 		$value = 'new value';
 		$this->component->Text = $value;
 		$this->assertEquals($value, $this->component->Text);
-		$this->setExpectedException('yii\base\BadPropertyException');
+		$this->setExpectedException('yii\base\UnknownPropertyException');
 		$this->component->NewMember = $value;
 	}
 
@@ -182,7 +182,7 @@ class ComponentTest extends \yiiunit\TestCase
 
 		$this->assertSame($behavior, $component->detachBehavior('a'));
 		$this->assertFalse($component->hasProperty('p'));
-		$this->setExpectedException('yii\base\BadMethodException');
+		$this->setExpectedException('yii\base\UnknownMethodException');
 		$component->test();
 
 		$p = 'as b';
