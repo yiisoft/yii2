@@ -10,9 +10,11 @@
 namespace yii\db\sqlite;
 
 use yii\db\Exception;
+use yii\base\NotSupportedException;
+use yii\base\InvalidCallException;
 
 /**
- * QueryBuilder is the query builder for MySQL databases.
+ * QueryBuilder is the query builder for SQLite databases.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,29 +24,55 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-	public $typeMap = array(Driver::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL', Driver::TYPE_STRING => 'varchar(255)', Driver::TYPE_TEXT => 'text', Driver::TYPE_SMALLINT => 'smallint', Driver::TYPE_INTEGER => 'integer', Driver::TYPE_BIGINT => 'bigint', Driver::TYPE_FLOAT => 'float', Driver::TYPE_DECIMAL => 'decimal', Driver::TYPE_DATETIME => 'datetime', Driver::TYPE_TIMESTAMP => 'timestamp', Driver::TYPE_TIME => 'time', Driver::TYPE_DATE => 'date', Driver::TYPE_BINARY => 'blob', Driver::TYPE_BOOLEAN => 'tinyint(1)', Driver::TYPE_MONEY => 'decimal(19,4)',);
+	public $typeMap = array(
+		Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+		Schema::TYPE_STRING => 'varchar(255)',
+		Schema::TYPE_TEXT => 'text',
+		Schema::TYPE_SMALLINT => 'smallint',
+		Schema::TYPE_INTEGER => 'integer',
+		Schema::TYPE_BIGINT => 'bigint',
+		Schema::TYPE_FLOAT => 'float',
+		Schema::TYPE_DECIMAL => 'decimal',
+		Schema::TYPE_DATETIME => 'datetime',
+		Schema::TYPE_TIMESTAMP => 'timestamp',
+		Schema::TYPE_TIME => 'time',
+		Schema::TYPE_DATE => 'date',
+		Schema::TYPE_BINARY => 'blob',
+		Schema::TYPE_BOOLEAN => 'tinyint(1)',
+		Schema::TYPE_MONEY => 'decimal(19,4)',
+	);
 
 	/**
-	 * Resets the sequence value of a table's primary key.
+	 * Creates a SQL statement for resetting the sequence value of a table's primary key.
 	 * The sequence will be reset such that the primary key of the next new row inserted
 	 * will have the specified value or 1.
-	 * @param string $table the table schema whose primary key sequence will be reset
+	 * @param string $tableName the name of the table whose primary key sequence will be reset
 	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
 	 * the next new row's primary key will have a value 1.
+	 * @return string the SQL statement for resetting sequence
+	 * @throws InvalidCallException if the table does not exist or there is no sequence associated with the table.
 	 */
-	public function resetSequence($table, $value = null)
+	public function resetSequence($tableName, $value = null)
 	{
-		if ($table->sequenceName !== null) {
+		$db = $this->connection;
+		$table = $db->getTableSchema($tableName);
+		if ($table !== null && $table->sequenceName !== null) {
 			if ($value === null) {
-				$value = $this->connection->createCommand("SELECT MAX(`{$table->primaryKey[0]}`) FROM {$table->quotedName}")->queryScalar();
+				$key = reset($table->primaryKey);
+				$tableName = $db->quoteTableName($tableName);
+				$value = $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
 			} else {
 				$value = (int)$value - 1;
 			}
 			try {
 				// it's possible sqlite_sequence does not exist
-				$this->connection->createCommand("UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'")->execute();
+				$db->createCommand("UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'")->execute();
 			} catch (Exception $e) {
 			}
+		} elseif ($table === null) {
+			throw new InvalidCallException("Table not found: $tableName");
+		} else {
+			throw new InvalidCallException("There is not sequence associated with table '$tableName'.'");
 		}
 	}
 
@@ -52,10 +80,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * Enables or disables integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @throws NotSupportedException this is not supported by SQLite
 	 */
 	public function checkIntegrity($check = true, $schema = '')
 	{
-		// SQLite doesn't enforce integrity
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -65,7 +94,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function truncateTable($table)
 	{
-		return "DELETE FROM " . $this->quoteTableName($table);
+		return "DELETE FROM " . $this->connection->quoteTableName($table);
 	}
 
 	/**
@@ -76,7 +105,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function dropIndex($name, $table)
 	{
-		return 'DROP INDEX ' . $this->quoteTableName($name);
+		return 'DROP INDEX ' . $this->connection->quoteTableName($name);
 	}
 
 	/**
@@ -84,10 +113,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
 	 * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
 	 * @return string the SQL statement for dropping a DB column.
+	 * @throws NotSupportedException this is not supported by SQLite
 	 */
 	public function dropColumn($table, $column)
 	{
-		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -96,10 +126,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @param string $oldName the old name of the column. The name will be properly quoted by the method.
 	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
 	 * @return string the SQL statement for renaming a DB column.
+	 * @throws NotSupportedException this is not supported by SQLite
 	 */
 	public function renameColumn($table, $oldName, $newName)
 	{
-		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -115,10 +146,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
 	 * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
 	 * @return string the SQL statement for adding a foreign key constraint to an existing table.
+	 * @throws NotSupportedException this is not supported by SQLite
 	 */
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
-		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -126,10 +158,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
 	 * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
 	 * @return string the SQL statement for dropping a foreign key constraint.
+	 * @throws NotSupportedException this is not supported by SQLite
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
 
 	/**
@@ -141,9 +174,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
 	 * will become 'varchar(255) not null'.
 	 * @return string the SQL statement for changing the definition of a column.
+	 * @throws NotSupportedException this is not supported by SQLite
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		throw new Exception(__METHOD__ . ' is not supported by SQLite.');
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
 }

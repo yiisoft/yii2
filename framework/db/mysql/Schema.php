@@ -121,7 +121,7 @@ class Schema extends \yii\db\Schema
 	 * @param array $info column information
 	 * @return ColumnSchema the column schema object
 	 */
-	protected function loadColumn($info)
+	protected function loadColumnSchema($info)
 	{
 		$column = new ColumnSchema;
 
@@ -190,7 +190,7 @@ class Schema extends \yii\db\Schema
 			return false;
 		}
 		foreach ($columns as $info) {
-			$column = $this->loadColumn($info);
+			$column = $this->loadColumnSchema($info);
 			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey) {
 				$table->primaryKey[] = $column->name;

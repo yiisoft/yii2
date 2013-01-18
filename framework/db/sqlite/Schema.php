@@ -76,7 +76,7 @@ class Schema extends \yii\db\Schema
 	/**
 	 * Loads the metadata for the specified table.
 	 * @param string $name table name
-	 * @return \yii\db\TableSchema driver dependent table metadata. Null if the table does not exist.
+	 * @return TableSchema driver dependent table metadata. Null if the table does not exist.
 	 */
 	protected function loadTableSchema($name)
 	{
@@ -86,12 +86,14 @@ class Schema extends \yii\db\Schema
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
 			return $table;
+		} else {
+			return null;
 		}
 	}
 
 	/**
 	 * Collects the table column metadata.
-	 * @param \yii\db\TableSchema $table the table metadata
+	 * @param TableSchema $table the table metadata
 	 * @return boolean whether the table exists in the database
 	 */
 	protected function findColumns($table)
@@ -102,8 +104,8 @@ class Schema extends \yii\db\Schema
 			return false;
 		}
 
-		foreach ($columns as $column) {
-			$column = $this->createColumn($column);
+		foreach ($columns as $info) {
+			$column = $this->loadColumnSchema($info);
 			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey) {
 				$table->primaryKey[] = $column->name;
@@ -119,7 +121,7 @@ class Schema extends \yii\db\Schema
 
 	/**
 	 * Collects the foreign key column details for the given table.
-	 * @param \yii\db\TableSchema $table the table metadata
+	 * @param TableSchema $table the table metadata
 	 */
 	protected function findConstraints($table)
 	{
@@ -131,35 +133,21 @@ class Schema extends \yii\db\Schema
 	}
 
 	/**
-	 * Creates a table column.
-	 * @param array $column column metadata
-	 * @return ColumnSchema normalized column metadata
+	 * Loads the column information into a [[ColumnSchema]] object.
+	 * @param array $info column information
+	 * @return ColumnSchema the column schema object
 	 */
-	protected function createColumn($column)
+	protected function loadColumnSchema($info)
 	{
-		$c = new ColumnSchema;
-		$c->name = $column['name'];
-		$c->allowNull = !$column['notnull'];
-		$c->isPrimaryKey = $column['pk'] != 0;
+		$column = new ColumnSchema;
+		$column->name = $info['name'];
+		$column->allowNull = !$info['notnull'];
+		$column->isPrimaryKey = $info['pk'] != 0;
 
-		$c->dbType = $column['type'];
-		$this->resolveColumnType($c);
-		$c->phpType = $this->getColumnPhpType($this->type);
-
-		$this->resolveColumnDefault($c, $column['dflt_value']);
-
-		return $c;
-	}
-
-	/**
-	 * Resolves the abstract data type for the column.
-	 * @param \yii\db\ColumnSchema $column the column metadata object
-	 */
-	public function resolveColumnType($column)
-	{
-		$column->type = self::TYPE_STRING;
+		$column->dbType = $info['type'];
 		$column->unsigned = strpos($column->dbType, 'unsigned') !== false;
 
+		$column->type = self::TYPE_STRING;
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
 			$type = $matches[1];
 			if (isset($this->typeMap[$type])) {
@@ -183,19 +171,15 @@ class Schema extends \yii\db\Schema
 				}
 			}
 		}
-	}
+		$column->phpType = $this->getColumnPhpType($this->type);
 
-	/**
-	 * Resolves the default value for the column.
-	 * @param \yii\db\ColumnSchema $column the column metadata object
-	 * @param string $value the default value fetched from database
-	 */
-	protected function resolveColumnDefault($column, $value)
-	{
+		$value = $info['dflt_value'];
 		if ($column->type === 'string') {
 			$column->defaultValue = trim($value, "'\"");
 		} else {
 			$column->defaultValue = $column->typecast(strcasecmp($value, 'null') ? $value : null);
 		}
+
+		return $column;
 	}
 }
