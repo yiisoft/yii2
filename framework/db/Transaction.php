@@ -9,7 +9,7 @@
 
 namespace yii\db;
 
-use yii\base\BadConfigException;
+use yii\base\InvalidConfigException;
 
 /**
  * Transaction represents a DB transaction.
@@ -60,13 +60,13 @@ class Transaction extends \yii\base\Object
 
 	/**
 	 * Begins a transaction.
-	 * @throws BadConfigException if [[connection]] is null
+	 * @throws InvalidConfigException if [[connection]] is null
 	 */
 	public function begin()
 	{
 		if (!$this->_active) {
 			if ($this->connection === null) {
-				throw new BadConfigException('Transaction.connection must be set.');
+				throw new InvalidConfigException('Transaction.connection must be set.');
 			}
 			\Yii::trace('Starting transaction', __CLASS__);
 			$this->connection->open();

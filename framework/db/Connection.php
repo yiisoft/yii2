@@ -9,7 +9,8 @@
 
 namespace yii\db;
 
-use yii\base\BadConfigException;
+use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 
 /**
  * Connection represents a connection to a database via [PDO](http://www.php.net/manual/en/ref.pdo.php).
@@ -317,7 +318,7 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		if ($this->pdo === null) {
 			if (empty($this->dsn)) {
-				throw new BadConfigException('Connection.dsn cannot be empty.');
+				throw new InvalidConfigException('Connection.dsn cannot be empty.');
 			}
 			try {
 				\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
@@ -426,7 +427,7 @@ class Connection extends \yii\base\ApplicationComponent
 	/**
 	 * Returns the schema information for the database opened by this connection.
 	 * @return Schema the schema information for the database opened by this connection.
-	 * @throws BadConfigException if there is no support for the current driver type
+	 * @throws NotSupportedException if there is no support for the current driver type
 	 */
 	public function getSchema()
 	{
@@ -439,7 +440,7 @@ class Connection extends \yii\base\ApplicationComponent
 				$this->_schema->connection = $this;
 				return $this->_schema;
 			} else {
-				throw new BadConfigException("Connection does not support reading schema information for '$driver' DBMS.");
+				throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
 			}
 		}
 	}

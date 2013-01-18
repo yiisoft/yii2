@@ -102,7 +102,7 @@ class Schema extends \yii\db\Schema
 
 	/**
 	 * Resolves the table name and schema name (if any).
-	 * @param \yii\db\TableSchema $table the table metadata object
+	 * @param TableSchema $table the table metadata object
 	 * @param string $name the table name
 	 */
 	protected function resolveTableNames($table, $name)
@@ -129,6 +129,8 @@ class Schema extends \yii\db\Schema
 		$column->allowNull = $info['Null'] === 'YES';
 		$column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
 		$column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;
+		$column->comment = $info['Comment'];
+
 
 		$column->dbType = $info['Type'];
 		$column->unsigned = strpos($column->dbType, 'unsigned') !== false;

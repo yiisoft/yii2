@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use yii\base\InvalidConfigException;
+
 /**
  * Theme represents an application theme.
  *
@@ -25,12 +27,12 @@ class Theme extends ApplicationComponent
 		if ($this->basePath !== null) {
 			$this->basePath = \Yii::getAlias($this->basePath, true);
 		} else {
-			throw new BadConfigException("Theme.basePath must be set.");
+			throw new InvalidConfigException("Theme.basePath must be set.");
 		}
 		if ($this->baseUrl !== null) {
 			$this->baseUrl = \Yii::getAlias($this->baseUrl, true);
 		} else {
-			throw new BadConfigException("Theme.baseUrl must be set.");
+			throw new InvalidConfigException("Theme.baseUrl must be set.");
 		}
 	}
 

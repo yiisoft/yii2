@@ -59,10 +59,6 @@ class TableSchema extends \yii\base\Object
 	 * @var ColumnSchema[] column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
 	 */
 	public $columns = array();
-	/**
-	 * @var string comment of this table
-	 */
-	public $comment;
 
 	/**
 	 * Gets the named column metadata.

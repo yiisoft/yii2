@@ -9,7 +9,7 @@
 
 namespace yii\web;
 
-use \yii\base\BadConfigException;
+use \yii\base\InvalidConfigException;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -357,7 +357,7 @@ class Request extends \yii\base\Request
 	 * Returns the relative URL of the entry script.
 	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
 	 * @return string the relative URL of the entry script.
-	 * @throws BadConfigException if unable to determine the entry script URL
+	 * @throws InvalidConfigException if unable to determine the entry script URL
 	 */
 	public function getScriptUrl()
 	{
@@ -374,7 +374,7 @@ class Request extends \yii\base\Request
 			} elseif (isset($_SERVER['DOCUMENT_ROOT']) && strpos($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT']) === 0) {
 				$this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']));
 			} else {
-				throw new BadConfigException('Unable to determine the entry script URL.');
+				throw new InvalidConfigException('Unable to determine the entry script URL.');
 			}
 		}
 		return $this->_scriptUrl;
@@ -399,7 +399,7 @@ class Request extends \yii\base\Request
 	 * The starting and ending slashes are both removed.
 	 * @return string part of the request URL that is after the entry script and before the question mark.
 	 * Note, the returned path info is decoded.
-	 * @throws BadConfigException if the path info cannot be determined due to unexpected server configuration
+	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
 	 */
 	public function getPathInfo()
 	{
@@ -415,7 +415,7 @@ class Request extends \yii\base\Request
 	 * The starting and ending slashes are both removed.
 	 * @return string part of the request URL that is after the entry script and before the question mark.
 	 * Note, the returned path info is decoded.
-	 * @throws BadConfigException if the path info cannot be determined due to unexpected server configuration
+	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
 	 */
 	protected function resolvePathInfo()
 	{
@@ -479,7 +479,7 @@ class Request extends \yii\base\Request
 	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
 	 * @return string the request URI portion for the currently requested URL.
 	 * Note that the URI returned is URL-encoded.
-	 * @throws BadConfigException if the request URI cannot be determined due to unusual server configuration
+	 * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
 	 */
 	public function getRequestUri()
 	{
@@ -496,7 +496,7 @@ class Request extends \yii\base\Request
 	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
 	 * @return string|boolean the request URI portion for the currently requested URL.
 	 * Note that the URI returned is URL-encoded.
-	 * @throws BadConfigException if the request URI cannot be determined due to unusual server configuration
+	 * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
 	 */
 	protected function resolveRequestUri()
 	{
@@ -517,7 +517,7 @@ class Request extends \yii\base\Request
 				$requestUri .= '?' . $_SERVER['QUERY_STRING'];
 			}
 		} else {
-			throw new BadConfigException('Unable to determine the request URI.');
+			throw new InvalidConfigException('Unable to determine the request URI.');
 		}
 		return $requestUri;
 	}
@@ -599,7 +599,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns entry script file path.
 	 * @return string entry script file path (processed w/ realpath())
-	 * @throws BadConfigException if the entry script file path cannot be determined automatically.
+	 * @throws InvalidConfigException if the entry script file path cannot be determined automatically.
 	 */
 	public function getScriptFile()
 	{
@@ -615,13 +615,13 @@ class Request extends \yii\base\Request
 	 * However, in some server configuration, this may not be correct or feasible.
 	 * This setter is provided so that the entry script file path can be manually specified.
 	 * @param string $value the entry script file path
-	 * @throws BadConfigException if the provided entry script file path is invalid.
+	 * @throws InvalidConfigException if the provided entry script file path is invalid.
 	 */
 	public function setScriptFile($value)
 	{
 		$this->_scriptFile = realpath($value);
 		if ($this->_scriptFile === false || !is_file($this->_scriptFile)) {
-			throw new BadConfigException('Unable to determine the entry script file path.');
+			throw new InvalidConfigException('Unable to determine the entry script file path.');
 		}
 	}
 

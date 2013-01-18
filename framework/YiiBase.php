@@ -8,6 +8,7 @@
  */
 
 use yii\base\Exception;
+use yii\base\InvalidCallException;
 
 /**
  * Gets the application start timestamp.
@@ -345,7 +346,7 @@ class YiiBase
 	 * @param string|array $config the configuration. It can be either a string representing the class name
 	 * or an array representing the object configuration.
 	 * @return mixed the created object
-	 * @throws \yii\base\BadConfigException if the configuration is invalid.
+	 * @throws InvalidConfigException if the configuration is invalid.
 	 */
 	public static function createObject($config)
 	{
@@ -358,7 +359,7 @@ class YiiBase
 			$class = $config['class'];
 			unset($config['class']);
 		} else {
-			throw new \yii\base\BadConfigException('Object configuration must be an array containing a "class" element.');
+			throw new InvalidCallException('Object configuration must be an array containing a "class" element.');
 		}
 
 		if (!class_exists($class, false)) {

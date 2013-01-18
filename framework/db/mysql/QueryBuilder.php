@@ -10,6 +10,7 @@
 namespace yii\db\mysql;
 
 use yii\db\Exception;
+use yii\base\InvalidCallException;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -87,5 +88,45 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	{
 		return 'ALTER TABLE ' . $this->connection->quoteTableName($table)
 			. ' DROP FOREIGN KEY ' . $this->connection->quoteColumnName($name);
+	}
+
+	/**
+	 * Creates a SQL statement for resetting the sequence value of a table's primary key.
+	 * The sequence will be reset such that the primary key of the next new row inserted
+	 * will have the specified value or 1.
+	 * @param string $tableName the name of the table whose primary key sequence will be reset
+	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+	 * the next new row's primary key will have a value 1.
+	 * @return string the SQL statement for resetting sequence
+	 * @throws InvalidCallException if the table does not exist or there is no sequence associated with the table.
+	 */
+	public function resetSequence($tableName, $value = null)
+	{
+		$table = $this->connection->getTableSchema($tableName);
+		if ($table !== null && $table->sequenceName !== null) {
+			$tableName = $this->connection->quoteTableName($tableName);
+			if ($value === null) {
+				$key = reset($table->primaryKey);
+				$value = $this->connection->createCommand("SELECT MAX(`$key`) FROM $tableName")->queryScalar() + 1;
+			} else {
+				$value = (int)$value;
+			}
+			return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
+		} elseif ($table === null) {
+			throw new InvalidCallException("Table not found: $tableName");
+		} else {
+			throw new InvalidCallException("There is not sequence associated with table '$tableName'.'");
+		}
+	}
+
+	/**
+	 * Builds a SQL statement for enabling or disabling integrity check.
+	 * @param boolean $check whether to turn on or off the integrity check.
+	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @return string the SQL statement for checking integrity
+	 */
+	public function checkIntegrity($check = true, $schema = '')
+	{
+		return 'SET FOREIGN_KEY_CHECKS=' . ($check ? 1 : 0);
 	}
 }

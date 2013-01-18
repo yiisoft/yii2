@@ -9,6 +9,8 @@
 
 namespace yii\db;
 
+use yii\base\NotSupportedException;
+
 /**
  * Command represents a SQL statement to be executed against a database.
  *
@@ -259,6 +261,7 @@ class Command extends \yii\base\Component
 	public function execute($params = array())
 	{
 		$sql = $this->getSql();
+
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
@@ -267,6 +270,10 @@ class Command extends \yii\base\Component
 		}
 
 		\Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
+
+		if ($sql == '') {
+			return 0;
+		}
 
 		try {
 			if ($this->connection->enableProfiling) {
@@ -705,6 +712,36 @@ class Command extends \yii\base\Component
 	public function dropIndex($name, $table)
 	{
 		$sql = $this->connection->getQueryBuilder()->dropIndex($name, $table);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for resetting the sequence value of a table's primary key.
+	 * The sequence will be reset such that the primary key of the next new row inserted
+	 * will have the specified value or 1.
+	 * @param string $table the name of the table whose primary key sequence will be reset
+	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+	 * the next new row's primary key will have a value 1.
+	 * @return Command the command object itself
+	 * @throws NotSupportedException if this is not supported by the underlying DBMS
+	 */
+	public function resetSequence($table, $value = null)
+	{
+		$sql = $this->connection->getQueryBuilder()->resetSequence($table, $value);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Builds a SQL command for enabling or disabling integrity check.
+	 * @param boolean $check whether to turn on or off the integrity check.
+	 * @param string $schema the schema name of the tables. Defaults to empty string, meaning the current
+	 * or default schema.
+	 * @return Command the command object itself
+	 * @throws NotSupportedException if this is not supported by the underlying DBMS
+	 */
+	public function checkIntegrity($check = true, $schema = '')
+	{
+		$sql = $this->connection->getQueryBuilder()->checkIntegrity($check, $schema);
 		return $this->setSql($sql);
 	}
 }

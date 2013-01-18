@@ -10,6 +10,7 @@
 namespace yii\db;
 
 use yii\db\Exception;
+use yii\base\NotSupportedException;
 
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
@@ -385,24 +386,30 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * Resets the sequence value of a table's primary key.
+	 * Creates a SQL statement for resetting the sequence value of a table's primary key.
 	 * The sequence will be reset such that the primary key of the next new row inserted
 	 * will have the specified value or 1.
-	 * @param string $table the table schema whose primary key sequence will be reset
+	 * @param string $table the name of the table whose primary key sequence will be reset
 	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
 	 * the next new row's primary key will have a value 1.
+	 * @return string the SQL statement for resetting sequence
+	 * @throws NotSupportedException if this is not supported by the underlying DBMS
 	 */
 	public function resetSequence($table, $value = null)
 	{
+		throw new NotSupportedException($this->connection->getDriverName() . ' does not support resetting sequence.');
 	}
 
 	/**
-	 * Enables or disables integrity check.
+	 * Builds a SQL statement for enabling or disabling integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @return string the SQL statement for checking integrity
+	 * @throws NotSupportedException if this is not supported by the underlying DBMS
 	 */
 	public function checkIntegrity($check = true, $schema = '')
 	{
+		throw new NotSupportedException($this->connection->getDriverName() . ' does not support enabling/disabling integrity check.');
 	}
 
 	/**
