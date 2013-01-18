@@ -12,8 +12,8 @@ namespace yii\logging;
 /**
  * Logger records logged messages in memory.
  *
- * When [[flushInterval]] is reached or when application terminates, it will
- * call [[flush]] to send logged messages to different log targets, such as
+ * When [[flushInterval()]] is reached or when application terminates, it will
+ * call [[flush()]] to send logged messages to different log targets, such as
  * file, email, Web.
  *
  * Logger provides a set of events for further customization:

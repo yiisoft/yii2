@@ -42,7 +42,7 @@ abstract class Dependency extends \yii\base\Object
 	 */
 	public function getHasChanged()
 	{
-		return $this->generateDependencyData() != $this->data;
+		return $this->generateDependencyData() !== $this->data;
 	}
 
 	/**

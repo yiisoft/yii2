@@ -77,10 +77,12 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * For example:
 	 *
 	 * ~~~
-	 * $key = Cache::buildKey($className, $method, $id);
+	 * $key = $cache->buildKey($className, $method, $id);
 	 * ~~~
 	 *
+	 * @param string $id the
 	 * @return string the cache key
+	 * @throws InvalidCallException if the method receives no parameter
 	 */
 	public function generateKey($id)
 	{
