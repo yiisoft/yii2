@@ -57,11 +57,10 @@ return array(
 
 ### Getting Data from Database
 
-There are three ActiveRecord methods for getting data:
+There are two ActiveRecord methods for getting data:
 
 - [[find()]]
 - [[findBySql()]]
-- [[count()]]
 
 They all return an [[ActiveQuery]] instance. Coupled with the various customization and query methods
 provided by [[ActiveQuery]], ActiveRecord supports very flexible and powerful data retrieval approaches.
@@ -88,9 +87,9 @@ $sql = 'SELECT * FROM tbl_customer';
 $customers = Customer::findBySql($sql)->all();
 
 // to return the number of *active* customers:
-$count = Customer::count()
+$count = Customer::find()
 	->where(array('status' => $active))
-	->value();
+	->count();
 
 // to return customers in terms of arrays rather than `Customer` objects:
 $customers = Customer::find()->asArray()->all();
@@ -222,10 +221,10 @@ subtotal exceeds certain amount:
 ~~~
 class Customer extends \yii\db\ActiveRecord
 {
-	public function getBigOrders()
+	public function getBigOrders($threshold = 100)
 	{
 		return $this->hasMany('Order', array('customer_id' => 'id'))
-			->where('subtotal > 100')
+			->where('subtotal > :threshold', array(':threshold' => $threshold))
 			->orderBy('id');
 	}
 }

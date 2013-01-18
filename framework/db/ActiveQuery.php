@@ -26,7 +26,12 @@ use yii\db\Exception;
  *
  * - [[one()]]: returns a single record populated with the first row of data.
  * - [[all()]]: returns all records based on the query results.
- * - [[value()]]: returns the value of the first column in the first row of the query result.
+ * - [[count()]]: returns the number of records.
+ * - [[sum()]]: returns the sum over the specified column.
+ * - [[average()]]: returns the average over the specified column.
+ * - [[min()]]: returns the min over the specified column.
+ * - [[max()]]: returns the max over the specified column.
+ * - [[scalar()]]: returns the value of the first column in the first row of the query result.
  * - [[exists()]]: returns a value indicating whether the query result has data or not.
  *
  * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],
@@ -75,6 +80,24 @@ class ActiveQuery extends Query
 
 
 	/**
+	 * PHP magic method.
+	 * This method allows calling static method defined in [[modelClass]] via this query object.
+	 * It is mainly implemented for supporting the feature of scope.
+	 * @param string $name the method name to be called
+	 * @param array $params the parameters passed to the method
+	 * @return mixed the method return result
+	 */
+	public function __call($name, $params)
+	{
+		if (method_exists($this->modelClass, $name)) {
+			array_unshift($params, $this);
+			return call_user_func_array(array($this->modelClass, $name), $params);
+		} else {
+			return parent::__call($name, $params);
+		}
+	}
+
+	/**
 	 * Executes query and returns all results as an array.
 	 * @return array the query results. If the query results in nothing, an empty array will be returned.
 	 */
@@ -119,12 +142,72 @@ class ActiveQuery extends Query
 	}
 
 	/**
+	 * Returns the number of records.
+	 * @param string $q the COUNT expression. Defaults to '*'.
+	 * Make sure you properly quote column names.
+	 * @return integer number of records
+	 */
+	public function count($q = '*')
+	{
+		$this->select = array("COUNT($q)");
+		return $this->createCommand()->queryScalar();
+	}
+
+	/**
+	 * Returns the sum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names.
+	 * @return integer the sum of the specified column values
+	 */
+	public function sum($q)
+	{
+		$this->select = array("SUM($q)");
+		return $this->createCommand()->queryScalar();
+	}
+
+	/**
+	 * Returns the average of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names.
+	 * @return integer the average of the specified column values.
+	 */
+	public function average($q)
+	{
+		$this->select = array("AVG($q)");
+		return $this->createCommand()->queryScalar();
+	}
+
+	/**
+	 * Returns the minimum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names.
+	 * @return integer the minimum of the specified column values.
+	 */
+	public function min($q)
+	{
+		$this->select = array("MIN($q)");
+		return $this->createCommand()->queryScalar();
+	}
+
+	/**
+	 * Returns the maximum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names.
+	 * @return integer the maximum of the specified column values.
+	 */
+	public function max($q)
+	{
+		$this->select = array("MAX($q)");
+		return $this->createCommand()->queryScalar();
+	}
+
+	/**
 	 * Returns the query result as a scalar value.
 	 * The value returned will be the first column in the first row of the query results.
 	 * @return string|boolean the value of the first column in the first row of the query result.
 	 * False is returned if the query result is empty.
 	 */
-	public function value()
+	public function scalar()
 	{
 		return $this->createCommand()->queryScalar();
 	}
@@ -136,7 +219,7 @@ class ActiveQuery extends Query
 	public function exists()
 	{
 		$this->select = array(new Expression('1'));
-		return $this->value() !== false;
+		return $this->scalar() !== false;
 	}
 
 	/**

@@ -128,36 +128,6 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Creates a `COUNT` query for this AR class.
-	 *
-	 * Below are some usage examples:
-	 *
-	 * ~~~
-	 * // count the total number of customers
-	 * echo Customer::count()->value();
-	 * // count the number of active customers:
-	 * echo Customer::count()
-	 *     ->where(array('status' => 1))
-	 *     ->value();
-	 * // customize the count expression
-	 * echo Customer::count('COUNT(DISTINCT age)')->value();
-	 * ~~~
-	 *
-	 * @param string $q the count expression. If null, it means `COUNT(*)`.
-	 * @return ActiveQuery the newly created [[ActiveQuery]] instance
-	 */
-	public static function count($q = null)
-	{
-		$query = static::createQuery();
-		if ($q !== null) {
-			$query->select = array($q);
-		} elseif ($query->select === null) {
-			$query->select = array('COUNT(*)');
-		}
-		return $query;
-	}
-
-	/**
 	 * Updates the whole table using the provided attribute values and conditions.
 	 * For example, to change the status to be 1 for all customers whose status is 2:
 	 *
@@ -646,7 +616,7 @@ class ActiveRecord extends Model
 					$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
 				}
 			}
-			$db = $this->getDbConnection();
+			$db = static::getDbConnection();
 			$command = $db->createCommand()->insert($this->tableName(), $values);
 			if ($command->execute()) {
 				$table = $this->getTableSchema();
@@ -1082,7 +1052,7 @@ class ActiveRecord extends Model
 			foreach ($extraColumns as $k => $v) {
 				$columns[$k] = $v;
 			}
-			$this->getDbConnection()->createCommand()
+			static::getDbConnection()->createCommand()
 				->insert($viaTable, $columns)->execute();
 		} else {
 			$p1 = $model->isPrimaryKey(array_keys($relation->link));
@@ -1153,7 +1123,7 @@ class ActiveRecord extends Model
 			foreach ($relation->link as $a => $b) {
 				$columns[$b] = $model->$a;
 			}
-			$command = $this->getDbConnection()->createCommand();
+			$command = static::getDbConnection()->createCommand();
 			if ($delete) {
 				$command->delete($viaTable, $columns)->execute();
 			} else {

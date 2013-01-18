@@ -19,4 +19,9 @@ class Customer extends ActiveRecord
 	{
 		return $this->hasMany('Order', array('customer_id' => 'id'))->orderBy('id');
 	}
+
+	public static function active($query)
+	{
+		return $query->andWhere('status=1');
+	}
 }

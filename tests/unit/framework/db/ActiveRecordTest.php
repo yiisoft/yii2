@@ -55,10 +55,17 @@ class ActiveRecordTest extends \yiiunit\MysqlTestCase
 		$this->assertEquals(3, $customer->id);
 		$this->assertEquals(4, $customer->status2);
 
-		// find count
-		$this->assertEquals(3, Customer::count()->value());
-		$this->assertEquals(2, Customer::find()->select('COUNT(*)')->where('id=1 OR id=2')->value());
-		$this->assertEquals(6, Customer::count('SUM(id)')->value());
+		// find count, sum, average, min, max, scalar
+		$this->assertEquals(3, Customer::find()->count());
+		$this->assertEquals(2, Customer::find()->where('id=1 OR id=2')->count());
+		$this->assertEquals(6, Customer::find()->sum('id'));
+		$this->assertEquals(2, Customer::find()->average('id'));
+		$this->assertEquals(1, Customer::find()->min('id'));
+		$this->assertEquals(3, Customer::find()->max('id'));
+		$this->assertEquals(3, Customer::find()->select('COUNT(*)')->scalar());
+
+		// scope
+		$this->assertEquals(2, Customer::find()->active()->count());
 
 		// asArray
 		$customer = Customer::find()->where('id=2')->asArray()->one();
