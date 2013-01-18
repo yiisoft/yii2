@@ -10,6 +10,7 @@
 namespace yii\caching;
 
 use yii\base\ApplicationComponent;
+use yii\base\InvalidCallException;
 
 /**
  * Cache is the base class for cache classes supporting different cache storage implementation.
@@ -48,12 +49,6 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 */
 	public $keyPrefix;
 	/**
-	 * @var boolean whether to hash the cache keys so that they can fit in the underlying cache storage.
-	 * Defaults to true. If you set this to be false, you have to make sure the cache keys are allowed by
-	 * the cache storage.
-	 **/
-	public $hashKey = true;
-	/**
 	 * @var array|boolean the functions used to serialize and unserialize cached data. Defaults to null, meaning
 	 * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
 	 * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
@@ -77,13 +72,38 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	}
 
 	/**
-	 * Generates a cache key from a given key.
+	 * Generates a cache key from one or multiple parameters.
+	 * The cache key generated is safe to be used to access cache via methods such as [[get()]], [[set()]].
+	 * For example:
+	 *
+	 * ~~~
+	 * $key = Cache::buildKey($className, $method, $id);
+	 * ~~~
+	 *
+	 * @return string the cache key
+	 */
+	public function generateKey($id)
+	{
+		$n = func_num_args();
+		if ($n === 1 && is_string($id) && ctype_alnum($id) && strlen($id) <= 32) {
+			return $this->keyPrefix . $id;
+		} elseif ($n < 1) {
+			throw new InvalidCallException(__METHOD__ . ' requires at least one parameter.');
+		} else {
+			$params = func_get_args();
+			return $this->keyPrefix . md5(serialize($params));
+		}
+	}
+
+	/**
+	 * Generates a normalized key from a given key.
+	 * The normalized key is obtained by hashing the given key via MD5 and then prefixing it with [[keyPrefix]].
 	 * @param string $key a key identifying a value to be cached
 	 * @return string a key generated from the provided key which ensures the uniqueness across applications
 	 */
-	protected function generateCacheKey($key)
+	protected function generateKey($key)
 	{
-		return $this->hashKey ? md5($this->keyPrefix . $key) : $this->keyPrefix . $key;
+		return $this->keyPrefix . md5($key);
 	}
 
 	/**
@@ -94,7 +114,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 */
 	public function get($id)
 	{
-		$value = $this->getValue($this->generateCacheKey($id));
+		$value = $this->getValue($this->generateKey($id));
 		if ($value === false || $this->serializer === false) {
 			return $value;
 		} elseif ($this->serializer === null) {
@@ -119,11 +139,11 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 * is returned in terms of (key,value) pairs.
 	 * If a value is not cached or expired, the corresponding array value will be false.
 	 */
-	public function mget(array $ids)
+	public function mget($ids)
 	{
 		$uids = array();
 		foreach ($ids as $id) {
-			$uids[$id] = $this->generateCacheKey($id);
+			$uids[$id] = $this->generateKey($id);
 		}
 		$values = $this->getValues($uids);
 		$results = array();
@@ -167,7 +187,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 		} elseif ($this->serializer !== false) {
 			$value = call_user_func($this->serializer[0], array($value, $dependency));
 		}
-		return $this->setValue($this->generateCacheKey($id), $value, $expire);
+		return $this->setValue($this->generateKey($id), $value, $expire);
 	}
 
 	/**
@@ -190,7 +210,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 		} elseif ($this->serializer !== false) {
 			$value = call_user_func($this->serializer[0], array($value, $dependency));
 		}
-		return $this->addValue($this->generateCacheKey($id), $value, $expire);
+		return $this->addValue($this->generateKey($id), $value, $expire);
 	}
 
 	/**
@@ -200,7 +220,7 @@ abstract class Cache extends ApplicationComponent implements \ArrayAccess
 	 */
 	public function delete($id)
 	{
-		return $this->deleteValue($this->generateCacheKey($id));
+		return $this->deleteValue($this->generateKey($id));
 	}
 
 	/**
