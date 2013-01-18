@@ -232,7 +232,7 @@ class ActiveQuery extends Query
 		/** @var $modelClass ActiveRecord */
 		$modelClass = $this->modelClass;
 		if ($db === null) {
-			$db = $modelClass::getDbConnection();
+			$db = $modelClass::getDb();
 		}
 		if ($this->sql === null) {
 			if ($this->from === null) {

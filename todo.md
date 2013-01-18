@@ -20,11 +20,8 @@
 	* a way to invalidate/clear cached data
 	* a command to clear cached data
 - db
-	* sqlite, pgsql, sql server, oracle, db2 drivers
+	* pgsql, sql server, oracle, db2 drivers
 	  * write a guide on creating own schema definitions
-	* AR
-	  * saving related records
-	  * collection support for results
 	* document-based (should allow storage-specific methods additionally to generic ones)
 	  * mongodb
 	* key-value-based (should allow storage-specific methods additionally to generic ones)
@@ -61,4 +58,3 @@
     * if we're going to supply default ones, these should generate really unique IDs. This will solve a lot of AJAX-nesting problems.
 - Make sure type hinting is used when components are passed to methods
 - Decouple controller from application (by passing web application instance to controller and if not passed, using Yii::app())?
-- Decouple view renderer from controller so it can be used separately (useful for sending emails from console etc.)

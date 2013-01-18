@@ -395,7 +395,7 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		$this->open();
 		$command = new Command(array(
-			'connection' => $this,
+			'db' => $this,
 			'sql' => $sql,
 		));
 		return $command->bindValues($params);
@@ -418,7 +418,7 @@ class Connection extends \yii\base\ApplicationComponent
 	{
 		$this->open();
 		$this->_transaction = new Transaction(array(
-			'connection' => $this,
+			'db' => $this,
 		));
 		$this->_transaction->begin();
 		return $this->_transaction;
@@ -437,7 +437,7 @@ class Connection extends \yii\base\ApplicationComponent
 			$driver = $this->getDriverName();
 			if (isset($this->schemaMap[$driver])) {
 				$this->_schema = \Yii::createObject($this->schemaMap[$driver]);
-				$this->_schema->connection = $this;
+				$this->_schema->db = $this;
 				return $this->_schema;
 			} else {
 				throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");

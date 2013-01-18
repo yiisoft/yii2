@@ -24,7 +24,7 @@ use yii\util\StringHelper;
  *
  * @include @yii/db/ActiveRecord.md
  *
- * @property Connection $dbConnection the database connection used by this AR class.
+ * @property Connection $db the database connection used by this AR class.
  * @property TableSchema $tableSchema the schema information of the DB table associated with this AR class.
  * @property array $oldAttributes the old attribute values (name-value pairs).
  * @property array $dirtyAttributes the changed attribute values (name-value pairs).
@@ -69,7 +69,7 @@ class ActiveRecord extends Model
 	 * You may override this method if you want to use a different database connection.
 	 * @return Connection the database connection used by this AR class.
 	 */
-	public static function getDbConnection()
+	public static function getDb()
 	{
 		return \Yii::$application->getDb();
 	}
@@ -145,7 +145,7 @@ class ActiveRecord extends Model
 	 */
 	public static function updateAll($attributes, $condition = '', $params = array())
 	{
-		$command = static::getDbConnection()->createCommand();
+		$command = static::getDb()->createCommand();
 		$command->update(static::tableName(), $attributes, $condition, $params);
 		return $command->execute();
 	}
@@ -168,7 +168,7 @@ class ActiveRecord extends Model
 	 */
 	public static function updateAllCounters($counters, $condition = '', $params = array())
 	{
-		$db = static::getDbConnection();
+		$db = static::getDb();
 		$n = 0;
 		foreach ($counters as $name => $value) {
 			$quotedName = $db->quoteColumnName($name);
@@ -198,7 +198,7 @@ class ActiveRecord extends Model
 	 */
 	public static function deleteAll($condition = '', $params = array())
 	{
-		$command = static::getDbConnection()->createCommand();
+		$command = static::getDb()->createCommand();
 		$command->delete(static::tableName(), $condition, $params);
 		return $command->execute();
 	}
@@ -235,7 +235,7 @@ class ActiveRecord extends Model
 	 */
 	public static function getTableSchema()
 	{
-		return static::getDbConnection()->getTableSchema(static::tableName());
+		return static::getDb()->getTableSchema(static::tableName());
 	}
 
 	/**
@@ -618,7 +618,7 @@ class ActiveRecord extends Model
 					$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
 				}
 			}
-			$db = static::getDbConnection();
+			$db = static::getDb();
 			$command = $db->createCommand()->insert($this->tableName(), $values);
 			if ($command->execute()) {
 				$table = $this->getTableSchema();
@@ -1079,7 +1079,7 @@ class ActiveRecord extends Model
 			foreach ($extraColumns as $k => $v) {
 				$columns[$k] = $v;
 			}
-			static::getDbConnection()->createCommand()
+			static::getDb()->createCommand()
 				->insert($viaTable, $columns)->execute();
 		} else {
 			$p1 = $model->isPrimaryKey(array_keys($relation->link));
@@ -1150,7 +1150,7 @@ class ActiveRecord extends Model
 			foreach ($relation->link as $a => $b) {
 				$columns[$b] = $model->$a;
 			}
-			$command = static::getDbConnection()->createCommand();
+			$command = static::getDb()->createCommand();
 			if ($delete) {
 				$command->delete($viaTable, $columns)->execute();
 			} else {

@@ -54,7 +54,7 @@ class Command extends \yii\base\Component
 	/**
 	 * @var Connection the DB connection that this command is associated with
 	 */
-	public $connection;
+	public $db;
 	/**
 	 * @var \PDOStatement the PDOStatement object that this command is associated with
 	 */
@@ -91,7 +91,7 @@ class Command extends \yii\base\Component
 	public function setSql($sql)
 	{
 		if ($sql !== $this->_sql) {
-			if ($this->connection->enableAutoQuoting && $sql != '') {
+			if ($this->db->enableAutoQuoting && $sql != '') {
 				$sql = $this->expandSql($sql);
 			}
 			$this->cancel();
@@ -108,12 +108,13 @@ class Command extends \yii\base\Component
 	 */
 	protected function expandSql($sql)
 	{
-		return preg_replace_callback('/(\\{\\{(.*?)\\}\\}|\\[\\[(.*?)\\]\\])/', function($matches) {
+		$db = $this->db;
+		return preg_replace_callback('/(\\{\\{(.*?)\\}\\}|\\[\\[(.*?)\\]\\])/', function($matches) use($db) {
 			if (isset($matches[3])) {
-				return $this->connection->quoteColumnName($matches[3]);
+				return $db->quoteColumnName($matches[3]);
 			} else {
-				$name = str_replace('%', $this->connection->tablePrefix, $matches[2]);
-				return $this->connection->quoteTableName($name);
+				$name = str_replace('%', $db->tablePrefix, $matches[2]);
+				return $db->quoteTableName($name);
 			}
 		}, $sql);
 	}
@@ -131,7 +132,7 @@ class Command extends \yii\base\Component
 		if ($this->pdoStatement == null) {
 			$sql = $this->getSql();
 			try {
-				$this->pdoStatement = $this->connection->pdo->prepare($sql);
+				$this->pdoStatement = $this->db->pdo->prepare($sql);
 			} catch (\Exception $e) {
 				\Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
@@ -276,7 +277,7 @@ class Command extends \yii\base\Component
 		}
 
 		try {
-			if ($this->connection->enableProfiling) {
+			if ($this->db->enableProfiling) {
 				\Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
@@ -288,12 +289,12 @@ class Command extends \yii\base\Component
 			}
 			$n = $this->pdoStatement->rowCount();
 
-			if ($this->connection->enableProfiling) {
+			if ($this->db->enableProfiling) {
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			return $n;
 		} catch (\Exception $e) {
-			if ($this->connection->enableProfiling) {
+			if ($this->db->enableProfiling) {
 				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			$message = $e->getMessage();
@@ -400,7 +401,7 @@ class Command extends \yii\base\Component
 	 */
 	private function queryInternal($method, $params, $fetchMode = null)
 	{
-		$db = $this->connection;
+		$db = $this->db;
 		$sql = $this->getSql();
 		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
@@ -489,7 +490,7 @@ class Command extends \yii\base\Component
 	 */
 	public function insert($table, $columns, $params = array())
 	{
-		$sql = $this->connection->getQueryBuilder()->insert($table, $columns, $params);
+		$sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
 
@@ -516,7 +517,7 @@ class Command extends \yii\base\Component
 	 */
 	public function update($table, $columns, $condition = '', $params = array())
 	{
-		$sql = $this->connection->getQueryBuilder()->update($table, $columns, $condition, $params);
+		$sql = $this->db->getQueryBuilder()->update($table, $columns, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
 
@@ -540,7 +541,7 @@ class Command extends \yii\base\Component
 	 */
 	public function delete($table, $condition = '', $params = array())
 	{
-		$sql = $this->connection->getQueryBuilder()->delete($table, $condition);
+		$sql = $this->db->getQueryBuilder()->delete($table, $condition);
 		return $this->setSql($sql)->bindValues($params);
 	}
 
@@ -551,7 +552,7 @@ class Command extends \yii\base\Component
 	 * The columns in the new table should be specified as name-definition pairs (e.g. 'name'=>'string'),
 	 * where name stands for a column name which will be properly quoted by the method, and definition
 	 * stands for the column type which can contain an abstract DB type.
-	 * The method [[\yii\db\QueryBuilder::getColumnType()]] will be called
+	 * The method [[QueryBuilder::getColumnType()]] will be called
 	 * to convert the abstract column types to physical ones. For example, `string` will be converted
 	 * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
 	 *
@@ -565,7 +566,7 @@ class Command extends \yii\base\Component
 	 */
 	public function createTable($table, $columns, $options = null)
 	{
-		$sql = $this->connection->getQueryBuilder()->createTable($table, $columns, $options);
+		$sql = $this->db->getQueryBuilder()->createTable($table, $columns, $options);
 		return $this->setSql($sql);
 	}
 
@@ -577,7 +578,7 @@ class Command extends \yii\base\Component
 	 */
 	public function renameTable($table, $newName)
 	{
-		$sql = $this->connection->getQueryBuilder()->renameTable($table, $newName);
+		$sql = $this->db->getQueryBuilder()->renameTable($table, $newName);
 		return $this->setSql($sql);
 	}
 
@@ -588,7 +589,7 @@ class Command extends \yii\base\Component
 	 */
 	public function dropTable($table)
 	{
-		$sql = $this->connection->getQueryBuilder()->dropTable($table);
+		$sql = $this->db->getQueryBuilder()->dropTable($table);
 		return $this->setSql($sql);
 	}
 
@@ -599,7 +600,7 @@ class Command extends \yii\base\Component
 	 */
 	public function truncateTable($table)
 	{
-		$sql = $this->connection->getQueryBuilder()->truncateTable($table);
+		$sql = $this->db->getQueryBuilder()->truncateTable($table);
 		return $this->setSql($sql);
 	}
 
@@ -614,7 +615,7 @@ class Command extends \yii\base\Component
 	 */
 	public function addColumn($table, $column, $type)
 	{
-		$sql = $this->connection->getQueryBuilder()->addColumn($table, $column, $type);
+		$sql = $this->db->getQueryBuilder()->addColumn($table, $column, $type);
 		return $this->setSql($sql);
 	}
 
@@ -626,7 +627,7 @@ class Command extends \yii\base\Component
 	 */
 	public function dropColumn($table, $column)
 	{
-		$sql = $this->connection->getQueryBuilder()->dropColumn($table, $column);
+		$sql = $this->db->getQueryBuilder()->dropColumn($table, $column);
 		return $this->setSql($sql);
 	}
 
@@ -639,7 +640,7 @@ class Command extends \yii\base\Component
 	 */
 	public function renameColumn($table, $oldName, $newName)
 	{
-		$sql = $this->connection->getQueryBuilder()->renameColumn($table, $oldName, $newName);
+		$sql = $this->db->getQueryBuilder()->renameColumn($table, $oldName, $newName);
 		return $this->setSql($sql);
 	}
 
@@ -654,7 +655,7 @@ class Command extends \yii\base\Component
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		$sql = $this->connection->getQueryBuilder()->alterColumn($table, $column, $type);
+		$sql = $this->db->getQueryBuilder()->alterColumn($table, $column, $type);
 		return $this->setSql($sql);
 	}
 
@@ -672,7 +673,7 @@ class Command extends \yii\base\Component
 	 */
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
-		$sql = $this->connection->getQueryBuilder()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update);
+		$sql = $this->db->getQueryBuilder()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update);
 		return $this->setSql($sql);
 	}
 
@@ -684,7 +685,7 @@ class Command extends \yii\base\Component
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		$sql = $this->connection->getQueryBuilder()->dropForeignKey($name, $table);
+		$sql = $this->db->getQueryBuilder()->dropForeignKey($name, $table);
 		return $this->setSql($sql);
 	}
 
@@ -699,7 +700,7 @@ class Command extends \yii\base\Component
 	 */
 	public function createIndex($name, $table, $columns, $unique = false)
 	{
-		$sql = $this->connection->getQueryBuilder()->createIndex($name, $table, $columns, $unique);
+		$sql = $this->db->getQueryBuilder()->createIndex($name, $table, $columns, $unique);
 		return $this->setSql($sql);
 	}
 
@@ -711,7 +712,7 @@ class Command extends \yii\base\Component
 	 */
 	public function dropIndex($name, $table)
 	{
-		$sql = $this->connection->getQueryBuilder()->dropIndex($name, $table);
+		$sql = $this->db->getQueryBuilder()->dropIndex($name, $table);
 		return $this->setSql($sql);
 	}
 
@@ -727,7 +728,7 @@ class Command extends \yii\base\Component
 	 */
 	public function resetSequence($table, $value = null)
 	{
-		$sql = $this->connection->getQueryBuilder()->resetSequence($table, $value);
+		$sql = $this->db->getQueryBuilder()->resetSequence($table, $value);
 		return $this->setSql($sql);
 	}
 
@@ -741,7 +742,7 @@ class Command extends \yii\base\Component
 	 */
 	public function checkIntegrity($check = true, $schema = '')
 	{
-		$sql = $this->connection->getQueryBuilder()->checkIntegrity($check, $schema);
+		$sql = $this->db->getQueryBuilder()->checkIntegrity($check, $schema);
 		return $this->setSql($sql);
 	}
 }

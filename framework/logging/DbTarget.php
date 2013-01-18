@@ -65,7 +65,7 @@ class DbTarget extends Target
 	 * @return \yii\db\Connection the DB connection instance
 	 * @throws \yii\base\Exception if [[connectionID]] does not refer to a valid application component ID.
 	 */
-	public function getDbConnection()
+	public function getDb()
 	{
 		if ($this->_db === null) {
 			$this->_db = \Yii::$application->getComponent($this->connectionID);
@@ -85,7 +85,7 @@ class DbTarget extends Target
 		$sql = "INSERT INTO {$this->tableName}
 			(level, category, log_time, message) VALUES
 			(:level, :category, :log_time, :message)";
-		$command = $this->getDbConnection()->createCommand($sql);
+		$command = $this->getDb()->createCommand($sql);
 		foreach ($this->messages as $message) {
 			$command->bindValues(array(
 				':level' => $message[1],

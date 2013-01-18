@@ -1,6 +1,6 @@
 <?php
 /**
- * Driver class file.
+ * Schema class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -13,7 +13,7 @@ use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
 /**
- * Driver is the class for retrieving metadata from a MySQL database (version 4.1.x and 5.x).
+ * Schema is the class for retrieving metadata from a MySQL database (version 4.1.x and 5.x).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -79,7 +79,7 @@ class Schema extends \yii\db\Schema
 	 */
 	public function createQueryBuilder()
 	{
-		return new QueryBuilder($this->connection);
+		return new QueryBuilder($this->db);
 	}
 
 	/**
@@ -183,9 +183,9 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findColumns($table)
 	{
-		$sql = 'SHOW COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
+		$sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
 		try {
-			$columns = $this->connection->createCommand($sql)->queryAll();
+			$columns = $this->db->createCommand($sql)->queryAll();
 		} catch (\Exception $e) {
 			return false;
 		}
@@ -208,7 +208,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findConstraints($table)
 	{
-		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryRow();
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryRow();
 		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
 		} else {
@@ -243,6 +243,6 @@ class Schema extends \yii\db\Schema
 		if ($schema !== '') {
 			$sql .= ' FROM ' . $this->quoteSimpleTableName($schema);
 		}
-		return $this->connection->createCommand($sql)->queryColumn();
+		return $this->db->createCommand($sql)->queryColumn();
 	}
 }

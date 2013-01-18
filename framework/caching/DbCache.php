@@ -39,7 +39,7 @@ use yii\db\Query;
  *
  * Please refer to [[Cache]] for common cache operations that are supported by DbCache.
  *
- * @property Connection $dbConnection The DB connection instance.
+ * @property Connection $db The DB connection instance.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -71,7 +71,7 @@ class DbCache extends Cache
 	 * @return Connection the DB connection instance
 	 * @throws Exception if [[connectionID]] does not point to a valid application component.
 	 */
-	public function getDbConnection()
+	public function getDb()
 	{
 		if ($this->_db === null) {
 			$db = \Yii::$application->getComponent($this->connectionID);
@@ -88,7 +88,7 @@ class DbCache extends Cache
 	 * Sets the DB connection used by the cache component.
 	 * @param Connection $value the DB connection instance
 	 */
-	public function setDbConnection($value)
+	public function setDb($value)
 	{
 		$this->_db = $value;
 	}
@@ -105,7 +105,7 @@ class DbCache extends Cache
 		$query->select(array('data'))
 			->from($this->cacheTableName)
 			->where('id = :id AND (expire = 0 OR expire > :time)', array(':id' => $key, ':time' => time()));
-		$db = $this->getDbConnection();
+		$db = $this->getDb();
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$db->enableQueryCache = false;
@@ -133,7 +133,7 @@ class DbCache extends Cache
 			->where(array('id' => $keys))
 			->andWhere("expire = 0 OR expire > " . time() . ")");
 
-		$db = $this->getDbConnection();
+		$db = $this->getDb();
 		if ($db->enableQueryCache) {
 			$db->enableQueryCache = false;
 			$rows = $query->createCommand($db)->queryAll();
@@ -169,7 +169,7 @@ class DbCache extends Cache
 			'data' => array($value, \PDO::PARAM_LOB),
 		), array(
 			'id' => $key,
-		))->createCommand($this->getDbConnection());
+		))->createCommand($this->getDb());
 
 		if ($command->execute()) {
 			$this->gc();
@@ -203,7 +203,7 @@ class DbCache extends Cache
 			'id' => $key,
 			'expire' => $expire,
 			'data' => array($value, \PDO::PARAM_LOB),
-		))->createCommand($this->getDbConnection());
+		))->createCommand($this->getDb());
 		try {
 			$command->execute();
 			return true;
@@ -222,7 +222,7 @@ class DbCache extends Cache
 	{
 		$query = new Query;
 		$query->delete($this->cacheTableName, array('id' => $key))
-			->createCommand($this->getDbConnection())
+			->createCommand($this->getDb())
 			->execute();
 		return true;
 	}
@@ -237,7 +237,7 @@ class DbCache extends Cache
 		if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
 			$query = new Query;
 			$query->delete($this->cacheTableName, 'expire > 0 AND expire < ' . time())
-				->createCommand($this->getDbConnection())
+				->createCommand($this->getDb())
 				->execute();
 		}
 	}
@@ -251,7 +251,7 @@ class DbCache extends Cache
 	{
 		$query = new Query;
 		$query->delete($this->cacheTableName)
-			->createCommand($this->getDbConnection())
+			->createCommand($this->getDb())
 			->execute();
 		return true;
 	}

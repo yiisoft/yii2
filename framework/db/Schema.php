@@ -48,7 +48,7 @@ abstract class Schema extends \yii\base\Object
 	/**
 	 * @var Connection the database connection
 	 */
-	public $connection;
+	public $db;
 	/**
 	 * @var array list of ALL table names in the database
 	 */
@@ -82,7 +82,7 @@ abstract class Schema extends \yii\base\Object
 			return $this->_tables[$name];
 		}
 
-		$db = $this->connection;
+		$db = $this->db;
 		$realName = $this->getRealTableName($name);
 
 		/** @var $cache \yii\caching\Cache */
@@ -109,7 +109,7 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function getCacheKey($name)
 	{
-		return  __CLASS__ . "/{$this->connection->dsn}/{$this->connection->username}/{$name}";
+		return  __CLASS__ . "/{$this->db->dsn}/{$this->db->username}/{$name}";
 	}
 
 	/**
@@ -169,7 +169,7 @@ abstract class Schema extends \yii\base\Object
 	public function refresh()
 	{
 		/** @var $cache \yii\caching\Cache */
-		if ($this->connection->enableSchemaCache && ($cache = \Yii::$application->getComponent($this->connection->schemaCacheID)) !== null) {
+		if ($this->db->enableSchemaCache && ($cache = \Yii::$application->getComponent($this->db->schemaCacheID)) !== null) {
 			foreach ($this->_tables as $name => $table) {
 				$cache->delete($this->getCacheKey($name));
 			}
@@ -185,7 +185,7 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function createQueryBuilder()
 	{
-		return new QueryBuilder($this->connection);
+		return new QueryBuilder($this->db);
 	}
 
 	/**
@@ -210,8 +210,8 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function getLastInsertID($sequenceName = '')
 	{
-		if ($this->connection->isActive) {
-			return $this->connection->pdo->lastInsertId($sequenceName);
+		if ($this->db->isActive) {
+			return $this->db->pdo->lastInsertId($sequenceName);
 		} else {
 			throw new InvalidCallException('DB Connection is not active.');
 		}
@@ -230,8 +230,8 @@ abstract class Schema extends \yii\base\Object
 			return $str;
 		}
 
-		$this->connection->open();
-		if (($value = $this->connection->pdo->quote($str)) !== false) {
+		$this->db->open();
+		if (($value = $this->db->pdo->quote($str)) !== false) {
 			return $value;
 		} else { // the driver doesn't support quote (e.g. oci)
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
@@ -319,9 +319,9 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function getRealTableName($name)
 	{
-		if ($this->connection->enableAutoQuoting && strpos($name, '{{') !== false) {
+		if ($this->db->enableAutoQuoting && strpos($name, '{{') !== false) {
 			$name = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $name);
-			return str_replace('%', $this->connection->tablePrefix, $name);
+			return str_replace('%', $this->db->tablePrefix, $name);
 		} else {
 			return $name;
 		}

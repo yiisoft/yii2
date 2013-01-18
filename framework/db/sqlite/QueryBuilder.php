@@ -54,7 +54,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function resetSequence($tableName, $value = null)
 	{
-		$db = $this->connection;
+		$db = $this->db;
 		$table = $db->getTableSchema($tableName);
 		if ($table !== null && $table->sequenceName !== null) {
 			if ($value === null) {
@@ -94,7 +94,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function truncateTable($table)
 	{
-		return "DELETE FROM " . $this->connection->quoteTableName($table);
+		return "DELETE FROM " . $this->db->quoteTableName($table);
 	}
 
 	/**
@@ -105,7 +105,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function dropIndex($name, $table)
 	{
-		return 'DROP INDEX ' . $this->connection->quoteTableName($name);
+		return 'DROP INDEX ' . $this->db->quoteTableName($name);
 	}
 
 	/**

@@ -21,7 +21,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 {
 	public static $db;
 
-	public static function getDbConnection()
+	public static function getDb()
 	{
 		return self::$db;
 	}

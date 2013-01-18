@@ -51,8 +51,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function renameColumn($table, $oldName, $newName)
 	{
-		$quotedTable = $this->connection->quoteTableName($table);
-		$row = $this->connection->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
+		$quotedTable = $this->db->quoteTableName($table);
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
 		if ($row === false) {
 			throw new Exception("Unable to find '$oldName' in table '$table'.");
 		}
@@ -66,16 +66,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
 			foreach ($matches[1] as $i => $c) {
 				if ($c === $oldName) {
 					return "ALTER TABLE $quotedTable CHANGE "
-						. $this->connection->quoteColumnName($oldName) . ' '
-						. $this->connection->quoteColumnName($newName) . ' '
+						. $this->db->quoteColumnName($oldName) . ' '
+						. $this->db->quoteColumnName($newName) . ' '
 						. $matches[2][$i];
 				}
 			}
 		}
 		// try to give back a SQL anyway
 		return "ALTER TABLE $quotedTable CHANGE "
-			. $this->connection->quoteColumnName($oldName) . ' '
-			. $this->connection->quoteColumnName($newName);
+			. $this->db->quoteColumnName($oldName) . ' '
+			. $this->db->quoteColumnName($newName);
 	}
 
 	/**
@@ -86,8 +86,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function dropForeignKey($name, $table)
 	{
-		return 'ALTER TABLE ' . $this->connection->quoteTableName($table)
-			. ' DROP FOREIGN KEY ' . $this->connection->quoteColumnName($name);
+		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+			. ' DROP FOREIGN KEY ' . $this->db->quoteColumnName($name);
 	}
 
 	/**
@@ -102,12 +102,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function resetSequence($tableName, $value = null)
 	{
-		$table = $this->connection->getTableSchema($tableName);
+		$table = $this->db->getTableSchema($tableName);
 		if ($table !== null && $table->sequenceName !== null) {
-			$tableName = $this->connection->quoteTableName($tableName);
+			$tableName = $this->db->quoteTableName($tableName);
 			if ($value === null) {
 				$key = reset($table->primaryKey);
-				$value = $this->connection->createCommand("SELECT MAX(`$key`) FROM $tableName")->queryScalar() + 1;
+				$value = $this->db->createCommand("SELECT MAX(`$key`) FROM $tableName")->queryScalar() + 1;
 			} else {
 				$value = (int)$value;
 			}

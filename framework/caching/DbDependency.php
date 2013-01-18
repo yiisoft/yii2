@@ -67,7 +67,7 @@ class DbDependency extends Dependency
 	 */
 	protected function generateDependencyData()
 	{
-		$db = $this->getDbConnection();
+		$db = $this->getDb();
 		$command = $this->query->createCommand($db);
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
@@ -85,7 +85,7 @@ class DbDependency extends Dependency
 	 * @return Connection the DB connection instance
 	 * @throws Exception if [[connectionID]] does not point to a valid application component.
 	 */
-	public function getDbConnection()
+	public function getDb()
 	{
 		if ($this->_db === null) {
 			$db = \Yii::$application->getComponent($this->connectionID);
@@ -102,7 +102,7 @@ class DbDependency extends Dependency
 	 * Sets the DB connection used by the cache component.
 	 * @param Connection $value the DB connection instance
 	 */
-	public function setDbConnection($value)
+	public function setDb($value)
 	{
 		$this->_db = $value;
 	}

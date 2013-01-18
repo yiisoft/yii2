@@ -278,7 +278,7 @@ class MigrateController extends Controller
 		else
 			die("Error: The version option must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).\n");
 
-		$db=$this->getDbConnection();
+		$db=$this->getDb();
 
 		// try mark up
 		$migrations=$this->getNewMigrations();
@@ -405,7 +405,7 @@ class MigrateController extends Controller
 		$migration=$this->instantiateMigration($class);
 		if($migration->up()!==false)
 		{
-			$this->getDbConnection()->createCommand()->insert($this->migrationTable, array(
+			$this->getDb()->createCommand()->insert($this->migrationTable, array(
 				'version'=>$class,
 				'apply_time'=>time(),
 			));
@@ -430,7 +430,7 @@ class MigrateController extends Controller
 		$migration=$this->instantiateMigration($class);
 		if($migration->down()!==false)
 		{
-			$db=$this->getDbConnection();
+			$db=$this->getDb();
 			$db->createCommand()->delete($this->migrationTable, $db->quoteColumnName('version').'=:version', array(':version'=>$class));
 			$time=microtime(true)-$start;
 			echo "*** reverted $class (time: ".sprintf("%.3f",$time)."s)\n\n";
@@ -448,7 +448,7 @@ class MigrateController extends Controller
 		$file=$this->migrationPath.DIRECTORY_SEPARATOR.$class.'.php';
 		require_once($file);
 		$migration=new $class;
-		$migration->setDbConnection($this->getDbConnection());
+		$migration->setDb($this->getDb());
 		return $migration;
 	}
 
@@ -456,7 +456,7 @@ class MigrateController extends Controller
 	 * @var CDbConnection
 	 */
 	private $_db;
-	protected function getDbConnection()
+	protected function getDb()
 	{
 		if($this->_db!==null)
 			return $this->_db;
@@ -468,7 +468,7 @@ class MigrateController extends Controller
 
 	protected function getMigrationHistory($limit)
 	{
-		$db=$this->getDbConnection();
+		$db=$this->getDb();
 		if($db->schema->getTable($this->migrationTable)===null)
 		{
 			$this->createMigrationHistoryTable();
@@ -483,7 +483,7 @@ class MigrateController extends Controller
 
 	protected function createMigrationHistoryTable()
 	{
-		$db=$this->getDbConnection();
+		$db=$this->getDb();
 		echo 'Creating migration history table "'.$this->migrationTable.'"...';
 		$db->createCommand()->createTable($this->migrationTable,array(
 			'version'=>'string NOT NULL PRIMARY KEY',

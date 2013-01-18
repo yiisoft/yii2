@@ -1,97 +1,117 @@
 <?php
 /**
- * CMysqlSchema class file.
+ * Migration class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\db;
+
 /**
- * CDbMigration is the base class for representing a database migration.
+ * Migration is the base class for representing a database migration.
  *
- * CDbMigration is designed to be used together with the "yiic migrate" command.
+ * Migration is designed to be used together with the "yiic migrate" command.
  *
- * Each child class of CDbMigration represents an individual database migration which
+ * Each child class of Migration represents an individual database migration which
  * is identified by the child class name.
  *
- * Within each migration, the {@link up} method contains the logic for "upgrading"
- * the database used in an application; while the {@link down} method contains "downgrading"
+ * Within each migration, the [[up()]] method should be overwritten to contain the logic
+ * for "upgrading" the database; while the [[down()]] method for the "downgrading"
  * logic. The "yiic migrate" command manages all available migrations in an application.
  *
- * CDbMigration provides a set of convenient methods for manipulating database data and schema.
- * For example, the {@link insert} method can be used to easily insert a row of data into
- * a database table; the {@link createTable} method can be used to create a database table.
- * Compared with the same methods in {@link CDbCommand}, these methods will display extra
+ * If the database supports transactions, you may also overwrite [[safeUp()]] and
+ * [[safeDown()]] so that if anything wrong happens during the upgrading or downgrading,
+ * the whole migration can be reverted in a whole.
+ *
+ * Migration provides a set of convenient methods for manipulating database data and schema.
+ * For example, the [[insert()]] method can be used to easily insert a row of data into
+ * a database table; the [[createTable()]] method can be used to create a database table.
+ * Compared with the same methods in [[Command]], these methods will display extra
  * information showing the method parameters and execution time, which may be useful when
  * applying migrations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class CDbMigration extends yii\base\Component
+class Migration extends \yii\base\Component
 {
-	private $_db;
+	/**
+	 * @var Connection the database connection that this migration should work with.
+	 * If not set, it will be initialized as the 'db' application component.
+	 */
+	public $db;
+
+	/**
+	 * Initializes the migration.
+	 * This method will set [[db]] to be the 'db' application component, if it is null.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->db === null) {
+			$this->db = \Yii::$application->getComponent('db');
+		}
+	}
 
 	/**
 	 * This method contains the logic to be executed when applying this migration.
-	 * Child classes may implement this method to provide actual migration logic.
-	 * @return boolean
+	 * Child classes may overwrite this method to provide actual migration logic.
+	 * @return boolean return a false value to indicate the migration fails
+	 * and should not proceed further. All other return values mean the migration succeeds.
 	 */
 	public function up()
 	{
-		$transaction = $this->getDbConnection()->beginTransaction();
-		try
-		{
+		$transaction = $this->db->beginTransaction();
+		try {
 			if ($this->safeUp() === false) {
 				$transaction->rollBack();
 				return false;
 			}
 			$transaction->commit();
-		}
-		catch (Exception $e)
-		{
+		} catch (\Exception $e) {
 			echo "Exception: " . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
 			echo $e->getTraceAsString() . "\n";
 			$transaction->rollBack();
 			return false;
 		}
+		return null;
 	}
 
 	/**
 	 * This method contains the logic to be executed when removing this migration.
 	 * The default implementation throws an exception indicating the migration cannot be removed.
 	 * Child classes may override this method if the corresponding migrations can be removed.
-	 * @return boolean
+	 * @return boolean return a false value to indicate the migration fails
+	 * and should not proceed further. All other return values mean the migration succeeds.
 	 */
 	public function down()
 	{
-		$transaction = $this->getDbConnection()->beginTransaction();
-		try
-		{
+		$transaction = $this->db->beginTransaction();
+		try {
 			if ($this->safeDown() === false) {
 				$transaction->rollBack();
 				return false;
 			}
 			$transaction->commit();
-		}
-		catch (Exception $e)
-		{
+		} catch (\Exception $e) {
 			echo "Exception: " . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
 			echo $e->getTraceAsString() . "\n";
 			$transaction->rollBack();
 			return false;
 		}
+		return null;
 	}
 
 	/**
 	 * This method contains the logic to be executed when applying this migration.
-	 * This method differs from {@link up} in that the DB logic implemented here will
+	 * This method differs from [[up()]] in that the DB logic implemented here will
 	 * be enclosed within a DB transaction.
-	 * Child classes may implement this method instead of {@link up} if the DB logic
+	 * Child classes may implement this method instead of [[up()]] if the DB logic
 	 * needs to be within a transaction.
-	 * @return boolean
+	 * @return boolean return a false value to indicate the migration fails
+	 * and should not proceed further. All other return values mean the migration succeeds.
 	 */
 	public function safeUp()
 	{
@@ -99,55 +119,28 @@ abstract class CDbMigration extends yii\base\Component
 
 	/**
 	 * This method contains the logic to be executed when removing this migration.
-	 * This method differs from {@link down} in that the DB logic implemented here will
+	 * This method differs from [[down()]] in that the DB logic implemented here will
 	 * be enclosed within a DB transaction.
-	 * Child classes may implement this method instead of {@link up} if the DB logic
+	 * Child classes may implement this method instead of [[up()]] if the DB logic
 	 * needs to be within a transaction.
-	 * @return boolean
+	 * @return boolean return a false value to indicate the migration fails
+	 * and should not proceed further. All other return values mean the migration succeeds.
 	 */
 	public function safeDown()
 	{
 	}
 
 	/**
-	 * Returns the currently active database connection.
-	 * By default, the 'db' application component will be returned and activated.
-	 * You can call {@link setDbConnection} to switch to a different database connection.
-	 * Methods such as {@link insert}, {@link createTable} will use this database connection
-	 * to perform DB queries.
-	 * @return CDbConnection the currently active database connection
-	 */
-	public function getDbConnection()
-	{
-		if ($this->_db === null) {
-			$this->_db = \Yii::$application->getComponent('db');
-			if (!$this->_db instanceof CDbConnection)
-				throw new CException(Yii::t('yii', 'The "db" application component must be configured to be a CDbConnection object.'));
-		}
-		return $this->_db;
-	}
-
-	/**
-	 * Sets the currently active database connection.
-	 * The database connection will be used by the methods such as {@link insert}, {@link createTable}.
-	 * @param CDbConnection $db the database connection component
-	 */
-	public function setDbConnection($db)
-	{
-		$this->_db = $db;
-	}
-
-	/**
 	 * Executes a SQL statement.
-	 * This method executes the specified SQL statement using {@link dbConnection}.
+	 * This method executes the specified SQL statement using [[db]].
 	 * @param string $sql the SQL statement to be executed
-	 * @param array $params input parameters (name=>value) for the SQL execution. See {@link CDbCommand::execute} for more details.
+	 * @param array $params input parameters (name=>value) for the SQL execution. See [[Command::execute()]] for more details.
 	 */
 	public function execute($sql, $params = array())
 	{
 		echo "    > execute SQL: $sql ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand($sql)->execute($params);
+		$this->db->createCommand($sql)->execute($params);
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -161,7 +154,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > insert into $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->insert($table, $columns);
+		$this->db->createCommand()->insert($table, $columns)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -170,30 +163,30 @@ abstract class CDbMigration extends yii\base\Component
 	 * The method will properly escape the column names and bind the values to be updated.
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name=>value) to be updated.
-	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
-	 * refer to {@link CDbCommand::where} on how to specify conditions.
+	 * @param mixed $condition the conditions that will be put in the WHERE part. Please
+	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 */
-	public function update($table, $columns, $conditions = '', $params = array())
+	public function update($table, $columns, $condition = '', $params = array())
 	{
 		echo "    > update $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->update($table, $columns, $conditions, $params);
+		$this->db->createCommand()->update($table, $columns, $condition, $params)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
 	/**
 	 * Creates and executes a DELETE SQL statement.
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $conditions the conditions that will be put in the WHERE part. Please
-	 * refer to {@link CDbCommand::where} on how to specify conditions.
+	 * @param mixed $condition the conditions that will be put in the WHERE part. Please
+	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 */
-	public function delete($table, $conditions = '', $params = array())
+	public function delete($table, $condition = '', $params = array())
 	{
 		echo "    > delete from $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->delete($table, $conditions, $params);
+		$this->db->createCommand()->delete($table, $condition, $params)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -203,10 +196,11 @@ abstract class CDbMigration extends yii\base\Component
 	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name'=>'string'),
 	 * where name stands for a column name which will be properly quoted by the method, and definition
 	 * stands for the column type which can contain an abstract DB type.
-	 * The {@link getColumnType} method will be invoked to convert any abstract type into a physical one.
+	 *
+	 * The [[QueryBuilder::getColumnType()]] method will be invoked to convert any abstract type into a physical one.
 	 *
 	 * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
-	 * inserted into the generated SQL.
+	 * put into the generated SQL.
 	 *
 	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
 	 * @param array $columns the columns (name=>definition) in the new table.
@@ -216,7 +210,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > create table $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->createTable($table, $columns, $options);
+		$this->db->createCommand()->createTable($table, $columns, $options)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -229,7 +223,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > rename table $table to $newName ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->renameTable($table, $newName);
+		$this->db->createCommand()->renameTable($table, $newName)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -241,7 +235,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > drop table $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->dropTable($table);
+		$this->db->createCommand()->dropTable($table)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -253,7 +247,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > truncate table $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->truncateTable($table);
+		$this->db->createCommand()->truncateTable($table)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -261,7 +255,7 @@ abstract class CDbMigration extends yii\base\Component
 	 * Builds and executes a SQL statement for adding a new DB column.
 	 * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
 	 * @param string $column the name of the new column. The name will be properly quoted by the method.
-	 * @param string $type the column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+	 * @param string $type the column type. The [[QueryBuilder::getColumnType()]] method will be invoked to convert abstract column type (if any)
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 */
@@ -269,7 +263,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > add column $column $type to table $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->addColumn($table, $column, $type);
+		$this->db->createCommand()->addColumn($table, $column, $type)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -282,7 +276,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > drop column $column from table $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->dropColumn($table, $column);
+		$this->db->createCommand()->dropColumn($table, $column)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -296,7 +290,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > rename column $name in table $table to $newName ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->renameColumn($table, $name, $newName);
+		$this->db->createCommand()->renameColumn($table, $name, $newName)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -312,7 +306,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > alter column $column in table $table to $type ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->alterColumn($table, $column, $type);
+		$this->db->createCommand()->alterColumn($table, $column, $type)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -331,7 +325,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > add foreign key $name: $table ($columns) references $refTable ($refColumns) ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update);
+		$this->db->createCommand()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -344,7 +338,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > drop foreign key $name from table $table ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->dropForeignKey($name, $table);
+		$this->db->createCommand()->dropForeignKey($name, $table)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -360,7 +354,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > create" . ($unique ? ' unique' : '') . " index $name on $table ($column) ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->createIndex($name, $table, $column, $unique);
+		$this->db->createCommand()->createIndex($name, $table, $column, $unique)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
@@ -373,7 +367,7 @@ abstract class CDbMigration extends yii\base\Component
 	{
 		echo "    > drop index $name ...";
 		$time = microtime(true);
-		$this->getDbConnection()->createCommand()->dropIndex($name, $table);
+		$this->db->createCommand()->dropIndex($name, $table)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Driver class file.
+ * Schema class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -13,7 +13,7 @@ use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
 /**
- * Driver is the class for retrieving metadata from a SQLite (2/3) database.
+ * Schema is the class for retrieving metadata from a SQLite (2/3) database.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -58,7 +58,7 @@ class Schema extends \yii\db\Schema
 	 */
 	public function createQueryBuilder()
 	{
-		return new QueryBuilder($this->connection);
+		return new QueryBuilder($this->db);
 	}
 
 	/**
@@ -70,7 +70,7 @@ class Schema extends \yii\db\Schema
 	protected function findTableNames($schema = '')
 	{
 		$sql = "SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name<>'sqlite_sequence'";
-		return $this->connection->createCommand($sql)->queryColumn();
+		return $this->db->createCommand($sql)->queryColumn();
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Schema extends \yii\db\Schema
 	protected function findColumns($table)
 	{
 		$sql = "PRAGMA table_info(" . $this->quoteSimpleTableName($table->name) . ')';
-		$columns = $this->connection->createCommand($sql)->queryAll();
+		$columns = $this->db->createCommand($sql)->queryAll();
 		if (empty($columns)) {
 			return false;
 		}
@@ -126,7 +126,7 @@ class Schema extends \yii\db\Schema
 	protected function findConstraints($table)
 	{
 		$sql = "PRAGMA foreign_key_list(" . $this->quoteSimpleTableName($table->name) . ')';
-		$keys = $this->connection->createCommand($sql)->queryAll();
+		$keys = $this->db->createCommand($sql)->queryAll();
 		foreach ($keys as $key) {
 			$table->foreignKeys[] = array($key['table'], $key['from'] => $key['to']);
 		}
