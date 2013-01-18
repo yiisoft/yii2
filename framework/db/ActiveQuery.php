@@ -14,7 +14,6 @@ use yii\db\Connection;
 use yii\db\Command;
 use yii\db\QueryBuilder;
 use yii\db\Expression;
-use yii\db\Exception;
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.

@@ -78,7 +78,8 @@ class Object
 	 * will be implicitly called when executing `$object->property = $value;`.
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
-	 * @throws UnknownPropertyException if the property is not defined or read-only.
+	 * @throws UnknownPropertyException if the property is not defined
+	 * @throws InvalidCallException if the property is read-only.
 	 * @see __get
 	 */
 	public function __set($name, $value)
@@ -122,7 +123,7 @@ class Object
 	 * Note that if the property is not defined, this method will do nothing.
 	 * If the property is read-only, it will throw an exception.
 	 * @param string $name the property name
-	 * @throws UnknownPropertyException if the property is read only.
+	 * @throws InvalidCallException if the property is read only.
 	 */
 	public function __unset($name)
 	{

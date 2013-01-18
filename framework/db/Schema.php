@@ -329,10 +329,10 @@ abstract class Schema extends \yii\base\Object
 
 	/**
 	 * Extracts the PHP type from abstract DB type.
-	 * @param string $type abstract DB type
+	 * @param ColumnSchema $column the column schema information
 	 * @return string PHP type name
 	 */
-	protected function getColumnPhpType($type)
+	protected function getColumnPhpType($column)
 	{
 		static $typeMap = array( // abstract type => php type
 			'smallint' => 'integer',
@@ -341,13 +341,13 @@ abstract class Schema extends \yii\base\Object
 			'boolean' => 'boolean',
 			'float' => 'double',
 		);
-		if (isset($typeMap[$type])) {
-			if ($type === 'bigint') {
-				return PHP_INT_SIZE == 8 && !$this->unsigned ? 'integer' : 'string';
-			} elseif ($type === 'integer') {
-				return PHP_INT_SIZE == 4 && $this->unsigned ? 'string' : 'integer';
+		if (isset($typeMap[$column->type])) {
+			if ($column->type === 'bigint') {
+				return PHP_INT_SIZE == 8 && !$column->unsigned ? 'integer' : 'string';
+			} elseif ($column->type === 'integer') {
+				return PHP_INT_SIZE == 4 && $column->unsigned ? 'string' : 'integer';
 			} else {
-				return $typeMap[$this->type];
+				return $typeMap[$column->type];
 			}
 		} else {
 			return 'string';

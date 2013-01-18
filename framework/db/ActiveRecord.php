@@ -32,6 +32,8 @@ use yii\util\StringHelper;
  * @property mixed $primaryKey the primary key value.
  * @property mixed $oldPrimaryKey the old primary key value.
  *
+ * @event ModelEvent init an event that is triggered when the record is initialized (in [[init()]]).
+ * @event ModelEvent afterFind an event that is triggered after the record is created and populated with query result.
  * @event ModelEvent beforeInsert an event that is triggered before inserting a record.
  * You may set [[ModelEvent::isValid]] to be false to stop the insertion.
  * @event Event afterInsert an event that is triggered before inserting a record.
@@ -762,6 +764,30 @@ class ActiveRecord extends Model
 	}
 
 	/**
+	 * Initializes the object.
+	 * This method is called at the end of the constructor.
+	 * The default implementation will trigger an [[afterInsert]] event.
+	 * If you override this method, make sure you call the parent implementation at the end
+	 * to ensure triggering of the event.
+	 */
+	public function init()
+	{
+		parent::init();
+		$this->trigger('init');
+	}
+
+	/**
+	 * This method is called when the AR object is created and populated with the query result.
+	 * The default implementation will trigger an [[afterFind]] event.
+	 * When overriding this method, make sure you call the parent implementation to ensure the
+	 * event is triggered.
+	 */
+	public function afterFind()
+	{
+		$this->trigger('afterFind');
+	}
+
+	/**
 	 * Sets the value indicating whether the record is new.
 	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
 	 * @see getIsNewRecord
@@ -956,6 +982,7 @@ class ActiveRecord extends Model
 			}
 		}
 		$record->_oldAttributes = $record->_attributes;
+		$record->afterFind();
 		return $record;
 	}
 

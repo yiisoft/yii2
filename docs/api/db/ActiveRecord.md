@@ -363,4 +363,86 @@ value of `$customer` and then call [[save()]] to save the order into database.
 
 ### Data Input and Validation
 
-// todo
+TBD
+
+
+### Life Cycles of an ActiveRecord Object
+
+An ActiveRecord object undergoes different life cycles when it is used in different cases.
+Subclasses or ActiveRecord behaviors may "inject" custom code in these life cycles through
+method overriding and event handling mechanisms.
+
+When instantiating a new ActiveRecord instance, we will have the following life cycles:
+
+1. constructor
+2. [[init()]]: will trigger an [[init]] event
+
+When getting an ActiveRecord instance through the [[find()]] method, we will have the following life cycles:
+
+1. constructor
+2. [[init()]]: will trigger an [[init]] event
+3. [[afterFind()]]: will trigger an [[afterFind]] event
+
+When calling [[save()]] to insert or update an ActiveRecord, we will have the following life cycles:
+
+1. [[beforeValidate()]]: will trigger an [[beforeValidate]] event
+2. [[beforeSave()]]: will trigger an [[beforeSave]] event
+3. perform the actual data insertion or updating
+4. [[afterSave()]]: will trigger an [[afterSave]] event
+5. [[afterValidate()]]: will trigger an [[afterValidate]] event
+
+Finally when calling [[delete()]] to delete an ActiveRecord, we will have the following life cycles:
+
+1. [[beforeDelete()]]: will trigger an [[beforeDelete]] event
+2. perform the actual data deletion
+3. [[afterDelete()]]: will trigger an [[afterDelete]] event
+
+
+### Scopes
+
+A scope is a method that customizes a given [[ActiveQuery]] object. Scope methods are defined
+in the ActiveRecord classes. They can be invoked through the [[ActiveQuery]] object that is created
+via [[find()]] or [[findBySql()]]. The following is an example:
+
+~~~
+class Customer extends \yii\db\ActiveRecord
+{
+	// ...
+
+	/**
+	 * @param ActiveQuery $query
+	 */
+	public function active($query)
+	{
+		$query->andWhere('status = 1');
+	}
+}
+
+$customers = Customer::find()->active()->all();
+~~~
+
+In the above, the `active()` method is defined in `Customer` while we are calling it
+through `ActiveQuery` returned by `Customer::find()`.
+
+Scopes can be parameterized. For example, we can define and use the following `olderThan` scope:
+
+~~~
+class Customer extends \yii\db\ActiveRecord
+{
+	// ...
+
+	/**
+	 * @param ActiveQuery $query
+	 * @param integer $age
+	 */
+	public function olderThan($query, $age = 30)
+	{
+		$query->andWhere('age > :age', array(':age' => $age));
+	}
+}
+
+$customers = Customer::find()->olderThan(50)->all();
+~~~
+
+The parameters should follow after the `$query` parameter when defining the scope method, and they
+can take default values like shown above.
