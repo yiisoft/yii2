@@ -95,13 +95,16 @@ use yii\base\NotSupportedException;
  * @property string $driverName Name of the DB driver currently being used.
  * @property array $querySummary The statistical results of SQL queries.
  *
- * @event Event afterOpen this event is triggered after a DB connection is established
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Connection extends \yii\base\ApplicationComponent
 {
+	/**
+	 * @event Event an event that is triggered after a DB connection is established
+	 */
+	const EVENT_AFTER_OPEN = 'afterOpen';
+
 	/**
 	 * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
 	 * Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) on
@@ -382,7 +385,7 @@ class Connection extends \yii\base\ApplicationComponent
 		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli'))) {
 			$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
 		}
-		$this->trigger('afterOpen');
+		$this->trigger(self::EVENT_AFTER_OPEN);
 	}
 
 	/**

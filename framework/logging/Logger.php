@@ -9,6 +9,8 @@
 
 namespace yii\logging;
 
+use yii\base\Event;
+
 /**
  * Logger records logged messages in memory.
  *
@@ -18,13 +20,16 @@ namespace yii\logging;
  *
  * Logger provides a set of events for further customization:
  *
- * - `flush`. Raised on logs flush.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Logger extends \yii\base\Component
 {
+	/**
+	 * @event Event an event that is triggered when messages are being flushed from memory to targets
+	 */
+	const EVENT_FLUSH = 'flush';
+
 	const LEVEL_ERROR = 'error';
 	const LEVEL_WARNING = 'warning';
 	const LEVEL_INFO = 'info';
@@ -105,8 +110,8 @@ class Logger extends \yii\base\Component
 
 	/**
 	 * Marks the beginning of a code block for profiling.
-	 * This has to be matched with a call to [[endProfile]] with the same category name.
-	 * The begin- and end- calls must also be properly nested. For example,
+	 * This has to be matched with a call to [[endProfile()]] with the same category name.
+	 * The begin- and end- calls must also be properly nested.
 	 * @param string $token token for the code block
 	 * @param string $category the category of this log message
 	 * @see endProfile
@@ -118,7 +123,7 @@ class Logger extends \yii\base\Component
 
 	/**
 	 * Marks the end of a code block for profiling.
-	 * This has to be matched with a previous call to [[beginProfile]] with the same category name.
+	 * This has to be matched with a previous call to [[beginProfile()]] with the same category name.
 	 * @param string $token token for the code block
 	 * @param string $category the category of this log message
 	 * @see beginProfile
@@ -153,14 +158,14 @@ class Logger extends \yii\base\Component
 			}
 		}
 		$this->messages[] = array($message, $level, $category, $time);
-		if (count($this->messages) >= $this->flushInterval && $this->flushInterval > 0) {
+		if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
 			$this->flush();
 		}
 	}
 
 	/**
-	 * Removes all recorded messages from the memory.
-	 * This method will raise a `flush` event.
+	 * Flushes log messages from memory to targets.
+	 * This method will trigger a [[flush]] event.
 	 */
 	public function flush()
 	{
@@ -191,7 +196,7 @@ class Logger extends \yii\base\Component
 	 * You can use an asterisk at the end of a category to do a prefix match.
 	 * For example, 'yii\db\*' will match categories starting with 'yii\db\',
 	 * such as 'yii\db\Connection'.
-	 * @param array $excludeCategories list of categories that you are interested in.
+	 * @param array $excludeCategories list of categories that you want to exclude
 	 * @return array the profiling results. Each array element has the following structure:
 	 *  `array($token, $category, $time)`.
 	 */

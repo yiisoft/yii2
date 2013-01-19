@@ -11,6 +11,7 @@
 namespace yii\db;
 
 use yii\base\Model;
+use yii\base\Event;
 use yii\base\ModelEvent;
 use yii\base\UnknownMethodException;
 use yii\base\InvalidCallException;
@@ -32,23 +33,47 @@ use yii\util\StringHelper;
  * @property mixed $primaryKey the primary key value.
  * @property mixed $oldPrimaryKey the old primary key value.
  *
- * @event ModelEvent init an event that is triggered when the record is initialized (in [[init()]]).
- * @event ModelEvent afterFind an event that is triggered after the record is created and populated with query result.
- * @event ModelEvent beforeInsert an event that is triggered before inserting a record.
- * You may set [[ModelEvent::isValid]] to be false to stop the insertion.
- * @event Event afterInsert an event that is triggered before inserting a record.
- * @event ModelEvent beforeUpdate an event that is triggered before updating a record.
- * You may set [[ModelEvent::isValid]] to be false to stop the update.
- * @event Event afterUpdate an event that is triggered before updating a record.
- * @event ModelEvent beforeDelete an event that is triggered before deleting a record.
- * You may set [[ModelEvent::isValid]] to be false to stop the deletion.
- * @event Event afterDelete an event that is triggered after deleting a record.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class ActiveRecord extends Model
 {
+	/**
+	 * @event Event an event that is triggered when the record is initialized via [[init()]].
+	 */
+	const EVENT_INIT = 'init';
+	/**
+	 * @event Event an event that is triggered after the record is created and populated with query result.
+	 */
+	const EVENT_AFTER_FIND = 'afterFind';
+	/**
+	 * @event ModelEvent an event that is triggered before inserting a record.
+	 * You may set [[ModelEvent::isValid]] to be false to stop the insertion.
+	 */
+	const EVENT_BEFORE_INSERT = 'beforeInsert';
+	/**
+	 * @event Event an event that is triggered after a record is inserted.
+	 */
+	const EVENT_AFTER_INSERT = 'afterInsert';
+	/**
+	 * @event ModelEvent an event that is triggered before updating a record.
+	 * You may set [[ModelEvent::isValid]] to be false to stop the update.
+	 */
+	const EVENT_BEFORE_UPDATE = 'beforeUpdate';
+	/**
+	 * @event Event an event that is triggered after a record is updated.
+	 */
+	const EVENT_AFTER_UPDATE = 'afterUpdate';
+	/**
+	 * @event ModelEvent an event that is triggered before deleting a record.
+	 * You may set [[ModelEvent::isValid]] to be false to stop the deletion.
+	 */
+	const EVENT_BEFORE_DELETE = 'beforeDelete';
+	/**
+	 * @event Event an event that is triggered after a record is deleted.
+	 */
+	const EVENT_AFTER_DELETE = 'afterDelete';
+
 	/**
 	 * @var array attribute values indexed by attribute names
 	 */
@@ -773,7 +798,7 @@ class ActiveRecord extends Model
 	public function init()
 	{
 		parent::init();
-		$this->trigger('init');
+		$this->trigger(self::EVENT_INIT);
 	}
 
 	/**
@@ -784,7 +809,7 @@ class ActiveRecord extends Model
 	 */
 	public function afterFind()
 	{
-		$this->trigger('afterFind');
+		$this->trigger(self::EVENT_AFTER_FIND);
 	}
 
 	/**
@@ -823,7 +848,7 @@ class ActiveRecord extends Model
 	public function beforeSave($insert)
 	{
 		$event = new ModelEvent($this);
-		$this->trigger($insert ? 'beforeInsert' : 'beforeUpdate', $event);
+		$this->trigger($insert ? self::EVENT_BEFORE_INSERT : self::EVENT_BEFORE_UPDATE, $event);
 		return $event->isValid;
 	}
 
@@ -838,7 +863,7 @@ class ActiveRecord extends Model
 	 */
 	public function afterSave($insert)
 	{
-		$this->trigger($insert ? 'afterInsert' : 'afterUpdate');
+		$this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE);
 	}
 
 	/**
@@ -863,7 +888,7 @@ class ActiveRecord extends Model
 	public function beforeDelete()
 	{
 		$event = new ModelEvent($this);
-		$this->trigger('beforeDelete', $event);
+		$this->trigger(self::EVENT_BEFORE_DELETE, $event);
 		return $event->isValid;
 	}
 
@@ -875,7 +900,7 @@ class ActiveRecord extends Model
 	 */
 	public function afterDelete()
 	{
-		$this->trigger('afterDelete');
+		$this->trigger(self::EVENT_AFTER_DELETE);
 	}
 
 	/**

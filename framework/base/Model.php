@@ -38,15 +38,21 @@ use yii\validators\RequiredValidator;
  * @property array $attributes Attribute values (name=>value).
  * @property string $scenario The scenario that this model is in.
  *
- * @event ModelEvent beforeValidate an event raised at the beginning of [[validate()]]. You may set
- * [[ModelEvent::isValid]] to be false to stop the validation.
- * @event Event afterValidate an event raised at the end of [[validate()]]
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Model extends Component implements \IteratorAggregate, \ArrayAccess
 {
+	/**
+	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
+	 * [[ModelEvent::isValid]] to be false to stop the validation.
+	 */
+	const EVENT_BEFORE_VALIDATE = 'beforeValidate';
+	/**
+	 * @event Event an event raised at the end of [[validate()]]
+	 */
+	const EVENT_AFTER_VALIDATE = 'afterValidate';
+
 	private static $_attributes = array(); // class name => array of attribute names
 	private $_errors; // attribute name => array of errors
 	private $_validators; // Vector of validators
@@ -250,7 +256,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function beforeValidate()
 	{
 		$event = new ModelEvent($this);
-		$this->trigger('beforeValidate', $event);
+		$this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
 		return $event->isValid;
 	}
 
@@ -262,7 +268,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function afterValidate()
 	{
-		$this->trigger('afterValidate');
+		$this->trigger(self::EVENT_AFTER_VALIDATE);
 	}
 
 	/**
