@@ -8,7 +8,9 @@
  */
 
 use yii\base\Exception;
+use yii\logging\Logger;
 use yii\base\InvalidCallException;
+use yii\base\InvalidConfigException;
 
 /**
  * Gets the application start timestamp.
@@ -394,7 +396,7 @@ class YiiBase
 	public static function trace($message, $category = 'application')
 	{
 		if (YII_DEBUG) {
-			self::getLogger()->trace($message, $category);
+			self::getLogger()->log($message, Logger::LEVEL_TRACE, $category);
 		}
 	}
 
@@ -407,7 +409,7 @@ class YiiBase
 	 */
 	public static function error($message, $category = 'application')
 	{
-		self::getLogger()->error($message, $category);
+		self::getLogger()->log($message, Logger::LEVEL_ERROR, $category);
 	}
 
 	/**
@@ -419,7 +421,7 @@ class YiiBase
 	 */
 	public static function warning($message, $category = 'application')
 	{
-		self::getLogger()->warning($message, $category);
+		self::getLogger()->log($message, Logger::LEVEL_WARNING, $category);
 	}
 
 	/**
@@ -431,7 +433,7 @@ class YiiBase
 	 */
 	public static function info($message, $category = 'application')
 	{
-		self::getLogger()->info($message, $category);
+		self::getLogger()->log($message, Logger::LEVEL_INFO, $category);
 	}
 
 	/**
@@ -453,7 +455,7 @@ class YiiBase
 	 */
 	public static function beginProfile($token, $category = 'application')
 	{
-		self::getLogger()->beginProfile($token, $category);
+		self::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
 	}
 
 	/**
@@ -465,7 +467,7 @@ class YiiBase
 	 */
 	public static function endProfile($token, $category = 'application')
 	{
-		self::getLogger()->endProfile($token, $category);
+		self::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
 	}
 
 	/**
@@ -477,13 +479,13 @@ class YiiBase
 		if (self::$_logger !== null) {
 			return self::$_logger;
 		} else {
-			return self::$_logger = new \yii\logging\Logger;
+			return self::$_logger = new Logger;
 		}
 	}
 
 	/**
 	 * Sets the logger object.
-	 * @param \yii\logging\Logger $logger the logger object.
+	 * @param Logger $logger the logger object.
 	 */
 	public static function setLogger($logger)
 	{

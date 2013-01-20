@@ -9,6 +9,9 @@
 
 namespace yii\logging;
 
+use yii\db\Connection;
+use yii\base\InvalidConfigException;
+
 /**
  * DbTarget stores log messages in a database table.
  *
@@ -23,23 +26,21 @@ namespace yii\logging;
 class DbTarget extends Target
 {
 	/**
-	 * @var string the ID of [[\yii\db\Connection]] application component.
+	 * @var string the ID of [[Connection]] application component.
 	 * Defaults to 'db'. Please make sure that your database contains a table
 	 * whose name is as specified in [[tableName]] and has the required table structure.
 	 * @see tableName
 	 */
 	public $connectionID = 'db';
 	/**
-	 * @var string the name of the DB table that stores log messages. Defaults to '{{log}}'.
-	 * If you are using table prefix 'tbl_' (configured via [[\yii\db\Connection::tablePrefix]]),
-	 * it means the DB table would be named as 'tbl_log'.
+	 * @var string the name of the DB table that stores log messages. Defaults to 'tbl_log'.
 	 *
-	 * The DB table must have the following structure:
+	 * The DB table should have the following structure:
 	 *
 	 * ~~~
 	 * CREATE TABLE tbl_log (
 	 *	   id       INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	 *	   level    VARCHAR(32),
+	 *	   level    INTEGER,
 	 *	   category VARCHAR(255),
 	 *	   log_time INTEGER,
 	 *	   message  TEXT,
@@ -50,30 +51,41 @@ class DbTarget extends Target
 	 *
 	 * Note that the 'id' column must be created as an auto-incremental column.
 	 * The above SQL shows the syntax of MySQL. If you are using other DBMS, you need
-	 * to adjust it accordingly. For example, in PosgreSQL, it should be `id SERIAL PRIMARY KEY`.
+	 * to adjust it accordingly. For example, in PostgreSQL, it should be `id SERIAL PRIMARY KEY`.
 	 *
 	 * The indexes declared above are not required. They are mainly used to improve the performance
 	 * of some queries about message levels and categories. Depending on your actual needs, you may
-	 * want to create other indexes.
+	 * want to create additional indexes (e.g. index on log_time).
 	 */
-	public $tableName = '{{log}}';
+	public $tableName = 'tbl_log';
 
 	private $_db;
 
 	/**
 	 * Returns the DB connection used for saving log messages.
-	 * @return \yii\db\Connection the DB connection instance
-	 * @throws \yii\base\Exception if [[connectionID]] does not refer to a valid application component ID.
+	 * @return Connection the DB connection instance
+	 * @throws InvalidConfigException if [[connectionID]] does not point to a valid application component.
 	 */
 	public function getDb()
 	{
 		if ($this->_db === null) {
-			$this->_db = \Yii::$application->getComponent($this->connectionID);
-			if (!$this->_db instanceof \yii\db\Connection) {
-				throw new \yii\base\Exception('DbTarget.connectionID must refer to a valid application component ID');
+			$db = \Yii::$application->getComponent($this->connectionID);
+			if ($db instanceof Connection) {
+				$this->_db = $db;
+			} else {
+				throw new InvalidConfigException("DbTarget::connectionID must refer to the ID of a DB application component.");
 			}
 		}
 		return $this->_db;
+	}
+
+	/**
+	 * Sets the DB connection used by the cache component.
+	 * @param Connection $value the DB connection instance
+	 */
+	public function setDb($value)
+	{
+		$this->_db = $value;
 	}
 
 	/**
@@ -82,10 +94,10 @@ class DbTarget extends Target
 	 */
 	public function exportMessages($final)
 	{
-		$sql = "INSERT INTO {$this->tableName}
-			(level, category, log_time, message) VALUES
-			(:level, :category, :log_time, :message)";
-		$command = $this->getDb()->createCommand($sql);
+		$db = $this->getDb();
+		$tableName = $db->quoteTableName($this->tableName);
+		$sql = "INSERT INTO $tableName (level, category, log_time, message) VALUES (:level, :category, :log_time, :message)";
+		$command = $db->createCommand($sql);
 		foreach ($this->messages as $message) {
 			$command->bindValues(array(
 				':level' => $message[1],

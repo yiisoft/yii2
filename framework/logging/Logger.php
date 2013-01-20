@@ -10,6 +10,7 @@
 namespace yii\logging;
 
 use yii\base\Event;
+use yii\base\Exception;
 
 /**
  * Logger records logged messages in memory.
@@ -17,8 +18,6 @@ use yii\base\Event;
  * When [[flushInterval()]] is reached or when application terminates, it will
  * call [[flush()]] to send logged messages to different log targets, such as
  * file, email, Web.
- *
- * Logger provides a set of events for further customization:
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -30,12 +29,40 @@ class Logger extends \yii\base\Component
 	 */
 	const EVENT_FLUSH = 'flush';
 
-	const LEVEL_ERROR = 'error';
-	const LEVEL_WARNING = 'warning';
-	const LEVEL_INFO = 'info';
-	const LEVEL_TRACE = 'trace';
-	const LEVEL_PROFILE_BEGIN = 'profile-begin';
-	const LEVEL_PROFILE_END = 'profile-end';
+	/**
+	 * Error message level. An error message is one that indicates the abnormal termination of the
+	 * application and may require developer's handling.
+	 */
+	const LEVEL_ERROR = 0x01;
+	/**
+	 * Warning message level. A warning message is one that indicates some abnormal happens but
+	 * the application is able to continue to run. Developers should pay attention to this message.
+	 */
+	const LEVEL_WARNING = 0x02;
+	/**
+	 * Informational message level. An informational message is one that includes certain information
+	 * for developers to review.
+	 */
+	const LEVEL_INFO = 0x04;
+	/**
+	 * Tracing message level. An tracing message is one that reveals the code execution flow.
+	 */
+	const LEVEL_TRACE = 0x08;
+	/**
+	 * Profiling message level. This indicates the message is for profiling purpose.
+	 */
+	const LEVEL_PROFILE = 0x40;
+	/**
+	 * Profiling message level. This indicates the message is for profiling purpose. It marks the
+	 * beginning of a profiling block.
+	 */
+	const LEVEL_PROFILE_BEGIN = 0x50;
+	/**
+	 * Profiling message level. This indicates the message is for profiling purpose. It marks the
+	 * end of a profiling block.
+	 */
+	const LEVEL_PROFILE_END = 0x60;
+
 
 	/**
 	 * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
@@ -52,7 +79,7 @@ class Logger extends \yii\base\Component
 	 * ~~~
 	 * array(
 	 *   [0] => message (mixed)
-	 *   [1] => level (string)
+	 *   [1] => level (integer)
 	 *   [2] => category (string)
 	 *   [3] => timestamp (float, obtained by microtime(true))
 	 * )
@@ -61,85 +88,13 @@ class Logger extends \yii\base\Component
 	public $messages = array();
 
 	/**
-	 * Logs an error message.
-	 * An error message is typically logged when an unrecoverable error occurs
-	 * during the execution of an application.
-	 * @param mixed $message the message to be logged.
-	 * @param string $category the category of the message.
-	 */
-	public function error($message, $category = 'application')
-	{
-		$this->log($message, self::LEVEL_ERROR, $category);
-	}
-
-	/**
-	 * Logs a trace message.
-	 * Trace messages are logged mainly for development purpose to see
-	 * the execution work flow of some code.
-	 * @param mixed $message the message to be logged.
-	 * @param string $category the category of the message.
-	 */
-	public function trace($message, $category = 'application')
-	{
-		$this->log($message, self::LEVEL_TRACE, $category);
-	}
-
-	/**
-	 * Logs a warning message.
-	 * A warning message is typically logged when an error occurs while the execution
-	 * can still continue.
-	 * @param mixed $message the message to be logged.
-	 * @param string $category the category of the message.
-	 */
-	public function warning($message, $category = 'application')
-	{
-		$this->log($message, self::LEVEL_WARNING, $category);
-	}
-
-	/**
-	 * Logs an informative message.
-	 * An informative message is typically logged by an application to keep record of
-	 * something important (e.g. an administrator logs in).
-	 * @param mixed $message the message to be logged.
-	 * @param string $category the category of the message.
-	 */
-	public function info($message, $category = 'application')
-	{
-		$this->log($message, self::LEVEL_INFO, $category);
-	}
-
-	/**
-	 * Marks the beginning of a code block for profiling.
-	 * This has to be matched with a call to [[endProfile()]] with the same category name.
-	 * The begin- and end- calls must also be properly nested.
-	 * @param string $token token for the code block
-	 * @param string $category the category of this log message
-	 * @see endProfile
-	 */
-	public function beginProfile($token, $category = 'application')
-	{
-		$this->log($token, self::LEVEL_PROFILE_BEGIN, $category);
-	}
-
-	/**
-	 * Marks the end of a code block for profiling.
-	 * This has to be matched with a previous call to [[beginProfile()]] with the same category name.
-	 * @param string $token token for the code block
-	 * @param string $category the category of this log message
-	 * @see beginProfile
-	 */
-	public function endProfile($token, $category = 'application')
-	{
-		$this->log($token, self::LEVEL_PROFILE_END, $category);
-	}
-
-	/**
 	 * Logs a message with the given type and category.
 	 * If `YII_DEBUG` is true and `YII_TRACE_LEVEL` is greater than 0, then additional
 	 * call stack information about application code will be appended to the message.
 	 * @param string $message the message to be logged.
-	 * @param string $level the level of the message. This must be one of the following:
-	 * 'trace', 'info', 'warning', 'error', 'profile'.
+	 * @param integer $level the level of the message. This must be one of the following:
+	 * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`,
+	 * `Logger::LEVEL_PROFILE_BEGIN`, `Logger::LEVEL_PROFILE_END`.
 	 * @param string $category the category of the message.
 	 */
 	public function log($message, $level, $category = 'application')
@@ -242,14 +197,14 @@ class Logger extends \yii\base\Component
 
 		$stack = array();
 		foreach ($this->messages as $log) {
-			if ($log[1] === self::LEVEL_PROFILE_BEGIN) {
+			list($token, $level, $category, $timestamp) = $log;
+			if ($level == self::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
-			} elseif ($log[1] === self::LEVEL_PROFILE_END) {
-				list($token, $level, $category, $timestamp) = $log;
+			} elseif ($level == self::LEVEL_PROFILE_END) {
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
 					$timings[] = array($token, $category, $timestamp - $last[3]);
 				} else {
-					throw new \yii\base\Exception("Unmatched profiling block: $token");
+					throw new Exception("Unmatched profiling block: $token");
 				}
 			}
 		}

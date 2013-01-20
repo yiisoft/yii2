@@ -1,6 +1,18 @@
+- db
+	* pgsql, sql server, oracle, db2 drivers
+	  * write a guide on creating own schema definitions
+	* document-based (should allow storage-specific methods additionally to generic ones)
+	  * mongodb (put it under framework/db/mongodb)
+	* key-value-based (should allow storage-specific methods additionally to generic ones)
+	  * redis (put it under framework/db/redis or perhaps framework/caching?)
 - logging
 	* WebTarget
 	* ProfileTarget
+- caching
+	* a console command to clear cached data
+
+---
+
 - base
 	* module
 	  - Module should be able to define its own configuration including routes. Application should be able to overwrite it.
@@ -16,17 +28,6 @@
 		* support for markdown syntax
 		* support for [[name]]
 		* consider to be released as a separate tool for user app docs
-- caching
-	* a way to invalidate/clear cached data
-	* a command to clear cached data
-- db
-	* pgsql, sql server, oracle, db2 drivers
-	  * write a guide on creating own schema definitions
-	* document-based (should allow storage-specific methods additionally to generic ones)
-	  * mongodb
-	* key-value-based (should allow storage-specific methods additionally to generic ones)
-	  * redis
-	  * memcachedb
 - i18n
 	* consider using PHP built-in support and data
 	* message translations, choice format

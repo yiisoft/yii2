@@ -9,6 +9,10 @@
 
 namespace yii\logging;
 
+use Yii;
+use yii\base\Component;
+use yii\base\Application;
+
 /**
  * Router manages [[Target|log targets]] that record log messages in different media.
  *
@@ -48,17 +52,17 @@ namespace yii\logging;
  * as follows:
  *
  * ~~~
- * \Yii::$application->log->targets['file']->enabled = false;
+ * Yii::$application->log->targets['file']->enabled = false;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Router extends \yii\base\ApplicationComponent
+class Router extends Component
 {
 	/**
 	 * @var Target[] list of log target objects or configurations. If the latter, target objects will
-	 * be created in [[init()]] by calling [[\Yii::createObject()]] with the corresponding object configuration.
+	 * be created in [[init()]] by calling [[Yii::createObject()]] with the corresponding object configuration.
 	 */
 	public $targets = array();
 
@@ -74,28 +78,28 @@ class Router extends \yii\base\ApplicationComponent
 
 		foreach ($this->targets as $name => $target) {
 			if (!$target instanceof Target) {
-				$this->targets[$name] = \Yii::createObject($target);
+				$this->targets[$name] = Yii::createObject($target);
 			}
 		}
 
-		\Yii::getLogger()->on('flush', array($this, 'processMessages'));
-		if (\Yii::$application !== null) {
-			\Yii::$application->on('afterRequest', array($this, 'processMessages'));
+		Yii::getLogger()->on(Logger::EVENT_FLUSH, array($this, 'processMessages'));
+		if (Yii::$application !== null) {
+			Yii::$application->on(Application::EVENT_AFTER_REQUEST, array($this, 'processMessages'));
 		}
 	}
 
 	/**
 	 * Retrieves and processes log messages from the system logger.
 	 * This method mainly serves the event handler to [[Logger::onFlush]]
-	 * and [[\yii\base\Application::onEndRequest]] events.
-	 * It will retrieve the available log messages from the [[\Yii::getLogger|system logger]]
+	 * and [[Application::onEndRequest]] events.
+	 * It will retrieve the available log messages from the [[Yii::getLogger|system logger]]
 	 * and invoke the registered [[targets|log targets]] to do the actual processing.
 	 * @param \yii\base\Event $event event parameter
 	 */
 	public function processMessages($event)
 	{
-		$messages = \Yii::getLogger()->messages;
-		$final = $event->name !== 'flush';
+		$messages = Yii::getLogger()->messages;
+		$final = $event->name === Application::EVENT_AFTER_REQUEST;
 		foreach ($this->targets as $target) {
 			if ($target->enabled) {
 				$target->processMessages($messages, $final);

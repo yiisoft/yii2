@@ -75,6 +75,8 @@ use yii\base\InvalidCallException;
  */
 class Application extends Module
 {
+	const EVENT_BEFORE_REQUEST = 'beforeRequest';
+	const EVENT_AFTER_REQUEST = 'afterRequest';
 	/**
 	 * @var string the application name. Defaults to 'My Application'.
 	 */
@@ -178,7 +180,7 @@ class Application extends Module
 	 */
 	public function beforeRequest()
 	{
-		$this->trigger('beforeRequest');
+		$this->trigger(self::EVENT_BEFORE_REQUEST);
 	}
 
 	/**
@@ -186,7 +188,7 @@ class Application extends Module
 	 */
 	public function afterRequest()
 	{
-		$this->trigger('afterRequest');
+		$this->trigger(self::EVENT_AFTER_REQUEST);
 	}
 
 	/**

@@ -9,6 +9,8 @@
 
 namespace yii\logging;
 
+use yii\base\InvalidConfigException;
+
 /**
  * Target is the base class for all log target classes.
  *
@@ -20,6 +22,8 @@ namespace yii\logging;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
+ * @property integer $levels the message levels that this target is interested in.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -29,10 +33,6 @@ abstract class Target extends \yii\base\Component
 	 * @var boolean whether to enable this log target. Defaults to true.
 	 */
 	public $enabled = true;
-	/**
-	 * @var array list of message levels that this target is interested in. Defaults to empty, meaning all levels.
-	 */
-	public $levels = array();
 	/**
 	 * @var array list of message categories that this target is interested in. Defaults to empty, meaning all categories.
 	 * You can use an asterisk at the end of a category so that the category may be used to
@@ -70,16 +70,18 @@ abstract class Target extends \yii\base\Component
 	 */
 	public $logVars = array('_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER');
 	/**
-	 * @var boolean whether this target should export the collected messages to persistent storage
-	 * (e.g. DB, email) whenever [[processMessages()]] is called. Defaults to true. If false,
-	 * the collected messages will be stored in [[messages]] without any further processing.
+	 * @var integer how many messages should be accumulated before they are exported.
+	 * Defaults to 1000. Note that messages will always be exported when the application terminates.
+	 * Set this property to be 0 if you don't want to export messages until the application terminates.
 	 */
-	public $autoExport = true;
+	public $exportInterval = 1000;
 	/**
 	 * @var array the messages that are retrieved from the logger so far by this log target.
 	 * @see autoExport
 	 */
 	public $messages = array();
+
+	private $_levels = 0;
 
 	/**
 	 * Exports log messages to a specific destination.
@@ -102,7 +104,8 @@ abstract class Target extends \yii\base\Component
 		$messages = $this->filterMessages($messages);
 		$this->messages = array_merge($this->messages, $messages);
 
-		if (!empty($this->messages) && ($this->autoExport || $final)) {
+		$count = count($this->messages);
+		if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
 			$this->prepareExport($final);
 			$this->exportMessages($final);
 			$this->messages = array();
@@ -160,6 +163,58 @@ abstract class Target extends \yii\base\Component
 	}
 
 	/**
+	 * @return integer the message levels that this target is interested in. This is a bitmap of
+	 * level values. Defaults to 0, meaning all available levels.
+	 */
+	public function getLevels()
+	{
+		return $this->_levels;
+	}
+
+	/**
+	 * Sets the message levels that this target is interested in.
+	 *
+	 * The parameter can be either an array of interested level names or an integer representing
+	 * the bitmap of the interested level values. Valid level names include: 'error',
+	 * 'warning', 'info', 'trace' and 'profile'; valid level values include:
+	 * [[Logger::LEVEL_ERROR]], [[Logger::LEVEL_WARNING]], [[Logger::LEVEL_INFO]],
+	 * [[Logger::LEVEL_TRACE]] and [[Logger::LEVEL_PROFILE]].
+	 *
+	 * For example,
+	 *
+	 * ~~~
+	 * array('error', 'warning')
+	 * // which is equivalent to:
+	 * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
+	 * ~~~
+	 *
+	 * @param array|integer $levels message levels that this target is interested in.
+	 * @throws InvalidConfigException if an unknown level name is given
+	 */
+	public function setLevels($levels)
+	{
+		static $levelMap = array(
+			'error' => Logger::LEVEL_ERROR,
+			'warning' => Logger::LEVEL_WARNING,
+			'info' => Logger::LEVEL_INFO,
+			'trace' => Logger::LEVEL_TRACE,
+			'profile' => Logger::LEVEL_PROFILE,
+		);
+		if (is_array($levels)) {
+			$this->_levels = 0;
+			foreach ($levels as $level) {
+				if (isset($levelMap[$level])) {
+					$this->_levels |= $levelMap[$level];
+				} else {
+					throw new InvalidConfigException("Unrecognized level: $level");
+				}
+			}
+		} else {
+			$this->_levels = $levels;
+		}
+	}
+
+	/**
 	 * Filters the given messages according to their categories and levels.
 	 * @param array $messages messages to be filtered
 	 * @return array the filtered messages.
@@ -168,8 +223,10 @@ abstract class Target extends \yii\base\Component
 	 */
 	protected function filterMessages($messages)
 	{
+		$levels = $this->getLevels();
+
 		foreach ($messages as $i => $message) {
-			if (!empty($this->levels) && !in_array($message[1], $this->levels)) {
+			if ($levels && !($levels & $message[1])) {
 				unset($messages[$i]);
 				continue;
 			}
@@ -210,7 +267,19 @@ abstract class Target extends \yii\base\Component
 	 */
 	public function formatMessage($message)
 	{
-		$s = is_string($message[0]) ? $message[0] : var_export($message[0], true);
-		return date('Y/m/d H:i:s', $message[3]) . " [{$message[1]}] [{$message[2]}] $s\n";
+		static $levels = array(
+			Logger::LEVEL_ERROR => 'error',
+			Logger::LEVEL_WARNING => 'warning',
+			Logger::LEVEL_INFO => 'info',
+			Logger::LEVEL_TRACE => 'trace',
+			Logger::LEVEL_PROFILE_BEGIN => 'profile begin',
+			Logger::LEVEL_PROFILE_END => 'profile end',
+		);
+		list($text, $level, $category, $timestamp) = $message;
+		$level = isset($levels[$level]) ? $levels[$level] : 'unknown';
+		if (!is_string($text)) {
+			$text = var_export($text, true);
+		}
+		return date('Y/m/d H:i:s', $timestamp) . " [$level] [$category] $text\n";
 	}
 }
