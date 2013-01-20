@@ -25,9 +25,13 @@ use yii\base\Exception;
 class Logger extends \yii\base\Component
 {
 	/**
-	 * @event Event an event that is triggered when messages are being flushed from memory to targets
+	 * @event Event an event that is triggered when [[flush()]] is called.
 	 */
 	const EVENT_FLUSH = 'flush';
+	/**
+	 * @event Event an event that is triggered when [[flush()]] is called at the end of application.
+	 */
+	const EVENT_FINAL_FLUSH = 'finalFlush';
 
 	/**
 	 * Error message level. An error message is one that indicates the abnormal termination of the
@@ -88,6 +92,15 @@ class Logger extends \yii\base\Component
 	public $messages = array();
 
 	/**
+	 * Initializes the logger by registering [[flush()]] as a shutdown function.
+	 */
+	public function init()
+	{
+		parent::init();
+		register_shutdown_function(array($this, 'flush'), true);
+	}
+
+	/**
 	 * Logs a message with the given type and category.
 	 * If `YII_DEBUG` is true and `YII_TRACE_LEVEL` is greater than 0, then additional
 	 * call stack information about application code will be appended to the message.
@@ -120,11 +133,12 @@ class Logger extends \yii\base\Component
 
 	/**
 	 * Flushes log messages from memory to targets.
-	 * This method will trigger a [[flush]] event.
+	 * This method will trigger a [[flush]] or [[finalFlush]] event depending on the $final value.
+	 * @param boolean $final whether this is a final call during a request.
 	 */
-	public function flush()
+	public function flush($final = false)
 	{
-		$this->trigger('flush');
+		$this->trigger($final ? 'finalFlush' : 'flush');
 		$this->messages = array();
 	}
 
