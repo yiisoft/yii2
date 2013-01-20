@@ -15,7 +15,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class SecurityManager extends ApplicationComponent
+class SecurityManager extends Component
 {
 	const STATE_VALIDATION_KEY = 'Yii.SecurityManager.validationkey';
 	const STATE_ENCRYPTION_KEY = 'Yii.SecurityManager.encryptionkey';

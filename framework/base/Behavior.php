@@ -80,13 +80,14 @@ class Behavior extends \yii\base\Object
 	 * The default implementation will unset the [[owner]] property
 	 * and detach event handlers declared in [[events]].
 	 * Make sure you call the parent implementation if you override this method.
-	 * @param Component $owner the component that this behavior is to be detached from.
 	 */
-	public function detach($owner)
+	public function detach()
 	{
-		foreach ($this->events() as $event => $handler) {
-			$owner->off($event, is_string($handler) ? array($this, $handler) : $handler);
+		if ($this->owner) {
+			foreach ($this->events() as $event => $handler) {
+				$this->owner->off($event, is_string($handler) ? array($this, $handler) : $handler);
+			}
+			$this->owner = null;
 		}
-		$this->owner = null;
 	}
 }

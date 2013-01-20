@@ -9,7 +9,7 @@
 
 namespace yii\base;
 
-use \yii\base\ApplicationComponent;
+use \yii\base\Component;
 
 /**
  * UrlManager manages the URLs of Yii applications.
@@ -123,7 +123,7 @@ use \yii\base\ApplicationComponent;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UrlManager extends ApplicationComponent
+class UrlManager extends Component
 {
 	const CACHE_KEY='Yii.UrlManager.rules';
 	const GET_FORMAT='get';

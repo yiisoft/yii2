@@ -9,6 +9,7 @@
 
 namespace yii\db;
 
+use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 
@@ -70,7 +71,7 @@ use yii\base\NotSupportedException;
  * }
  * ~~~
  *
- * Connection is often used as an [[\yii\base\ApplicationComponent|application component]] and configured in the application
+ * Connection is often used as an application component and configured in the application
  * configuration like the following:
  *
  * ~~~
@@ -98,7 +99,7 @@ use yii\base\NotSupportedException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Connection extends \yii\base\ApplicationComponent
+class Connection extends Component
 {
 	/**
 	 * @event Event an event that is triggered after a DB connection is established

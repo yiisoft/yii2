@@ -20,7 +20,7 @@ namespace yii\base;
  */
 use yii\util\VarDumper;
 
-class ErrorHandler extends ApplicationComponent
+class ErrorHandler extends Component
 {
 	/**
 	 * @var integer maximum number of source code lines to be displayed. Defaults to 25.

@@ -13,7 +13,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Response extends ApplicationComponent
+class Response extends Component
 {
 	public function beginOutput()
 	{

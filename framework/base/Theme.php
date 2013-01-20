@@ -17,7 +17,7 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Theme extends ApplicationComponent
+class Theme extends Component
 {
 	public $basePath;
 	public $baseUrl;

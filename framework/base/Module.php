@@ -427,14 +427,14 @@ abstract class Module extends Component
 	 * Retrieves the named application component.
 	 * @param string $id application component ID (case-sensitive)
 	 * @param boolean $load whether to load the component if it is not yet loaded.
-	 * @return ApplicationComponent|null the application component instance, null if the application component
+	 * @return Component|null the application component instance, null if the application component
 	 * does not exist.
 	 * @see hasComponent()
 	 */
 	public function getComponent($id, $load = true)
 	{
 		if (isset($this->_components[$id])) {
-			if ($this->_components[$id] instanceof ApplicationComponent) {
+			if ($this->_components[$id] instanceof Component) {
 				return $this->_components[$id];
 			} elseif ($load) {
 				\Yii::trace("Loading \"$id\" application component", __CLASS__);
@@ -447,10 +447,10 @@ abstract class Module extends Component
 	/**
 	 * Registers an application component in this module.
 	 * @param string $id component ID
-	 * @param ApplicationComponent|array|null $component the component to be added to the module. This can
+	 * @param Component|array|null $component the component to be added to the module. This can
 	 * be one of the followings:
 	 *
-	 * - an [[ApplicationComponent]] object
+	 * - a [[Component]] object
 	 * - a configuration array: when [[getComponent()]] is called initially for this component, the array
 	 *   will be used to instantiate the component
 	 * - null: the named component will be removed from the module
@@ -476,7 +476,7 @@ abstract class Module extends Component
 		if ($loadedOnly) {
 			$components = array();
 			foreach ($this->_components as $component) {
-				if ($component instanceof ApplicationComponent) {
+				if ($component instanceof Component) {
 					$components[] = $component;
 				}
 			}

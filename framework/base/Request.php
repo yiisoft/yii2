@@ -13,7 +13,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Request extends ApplicationComponent
+class Request extends Component
 {
 	private $_scriptFile;
 	private $_isConsoleRequest;

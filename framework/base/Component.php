@@ -76,7 +76,8 @@ class Component extends \yii\base\Object
 	 * will be implicitly called when executing `$component->property = $value;`.
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
-	 * @throws UnknownPropertyException if the property is not defined or read-only.
+	 * @throws UnknownPropertyException if the property is not defined
+	 * @throws InvalidCallException if the property is read-only.
 	 * @see __get
 	 */
 	public function __set($name, $value)
@@ -151,7 +152,7 @@ class Component extends \yii\base\Object
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `unset($component->property)`.
 	 * @param string $name the property name
-	 * @throws UnknownPropertyException if the property is read only.
+	 * @throws InvalidCallException if the property is read only.
 	 */
 	public function __unset($name)
 	{
@@ -421,7 +422,7 @@ class Component extends \yii\base\Object
 	public function trigger($name, $event = null)
 	{
 		$this->ensureBehaviors();
-		if (isset($this->_e[$name])) {
+		if (isset($this->_e[$name]) && $this->_e[$name]->getCount()) {
 			if ($event === null) {
 				$event = new Event($this);
 			}
@@ -505,7 +506,7 @@ class Component extends \yii\base\Object
 		if (isset($this->_b[$name])) {
 			$behavior = $this->_b[$name];
 			unset($this->_b[$name]);
-			$behavior->detach($this);
+			$behavior->detach();
 			return $behavior;
 		} else {
 			return null;
@@ -550,7 +551,7 @@ class Component extends \yii\base\Object
 			$behavior = \Yii::createObject($behavior);
 		}
 		if (isset($this->_b[$name])) {
-			$this->_b[$name]->detach($this);
+			$this->_b[$name]->detach();
 		}
 		$behavior->attach($this);
 		return $this->_b[$name] = $behavior;
