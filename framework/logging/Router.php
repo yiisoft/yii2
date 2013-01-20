@@ -69,8 +69,8 @@ class Router extends Component
 	/**
 	 * Initializes this application component.
 	 * This method is invoked when the Router component is created by the application.
-	 * The method attaches the [[processLogs]] method to both the [[Logger::flush]] event
-	 * and the [[\yii\base\Application::afterRequest]] event.
+	 * The method attaches the [[processLogs]] method to both the [[Logger::EVENT_FLUSH]] event
+	 * and the [[Logger::EVENT_FINAL_FLUSH]] event.
 	 */
 	public function init()
 	{
@@ -88,8 +88,8 @@ class Router extends Component
 
 	/**
 	 * Retrieves and processes log messages from the system logger.
-	 * This method mainly serves the event handler to [[Logger::flush]]
-	 * and [[Application::endRequest]] events.
+	 * This method mainly serves the event handler to the [[Logger::EVENT_FLUSH]] event
+	 * and the [[Logger::EVENT_FINAL_FLUSH]] event.
 	 * It will retrieve the available log messages from the [[Yii::getLogger()|system logger]]
 	 * and invoke the registered [[targets|log targets]] to do the actual processing.
 	 * @param \yii\base\Event $event event parameter

@@ -375,27 +375,27 @@ method overriding and event handling mechanisms.
 When instantiating a new ActiveRecord instance, we will have the following life cycles:
 
 1. constructor
-2. [[init()]]: will trigger an [[init]] event
+2. [[init()]]: will trigger an [[EVENT_INIT]] event
 
 When getting an ActiveRecord instance through the [[find()]] method, we will have the following life cycles:
 
 1. constructor
-2. [[init()]]: will trigger an [[init]] event
-3. [[afterFind()]]: will trigger an [[afterFind]] event
+2. [[init()]]: will trigger an [[EVENT_INIT]] event
+3. [[afterFind()]]: will trigger an [[EVENT_AFTER_FIND]] event
 
 When calling [[save()]] to insert or update an ActiveRecord, we will have the following life cycles:
 
-1. [[beforeValidate()]]: will trigger an [[beforeValidate]] event
-2. [[beforeSave()]]: will trigger an [[beforeSave]] event
+1. [[beforeValidate()]]: will trigger an [[EVENT_BEFORE_VALIDATE]] event
+2. [[beforeSave()]]: will trigger an [[EVENT_BEFORE_INSERT]] or [[EVENT_BEFORE_UPDATE]] event
 3. perform the actual data insertion or updating
-4. [[afterSave()]]: will trigger an [[afterSave]] event
-5. [[afterValidate()]]: will trigger an [[afterValidate]] event
+4. [[afterSave()]]: will trigger an [[EVENT_AFTER_INSERT]] or [[EVENT_AFTER_UPDATE]] event
+5. [[afterValidate()]]: will trigger an [[EVENT_AFTER_VALIDATE]] event
 
 Finally when calling [[delete()]] to delete an ActiveRecord, we will have the following life cycles:
 
-1. [[beforeDelete()]]: will trigger an [[beforeDelete]] event
+1. [[beforeDelete()]]: will trigger an [[EVENT_BEFORE_DELETE]] event
 2. perform the actual data deletion
-3. [[afterDelete()]]: will trigger an [[afterDelete]] event
+3. [[afterDelete()]]: will trigger an [[EVENT_AFTER_DELETE]] event
 
 
 ### Scopes

@@ -608,8 +608,9 @@ class ActiveRecord extends Model
 	 * 4. call [[afterSave()]];
 	 * 5. call [[afterValidate()]] when `$runValidation` is true.
 	 *
-	 * In the above step 1, 2, 4 and 5, events named `beforeValidate`, `beforeInsert`,
-	 * `afterInsert` and `afterValidate` will be raised by the corresponding methods.
+	 * In the above step 1, 2, 4 and 5, events [[EVENT_BEFORE_VALIDATE]],
+	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
+	 * will be raised by the corresponding methods.
 	 *
 	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
 	 *
@@ -678,8 +679,9 @@ class ActiveRecord extends Model
 	 * 4. call [[afterSave()]];
 	 * 5. call [[afterValidate()]] when `$runValidation` is true.
 	 *
-	 * In the above step 1, 2, 4 and 5, events named `beforeValidate`, `beforeUpdate`,
-	 * `afterUpdate` and `afterValidate` will be raised by the corresponding methods.
+	 * In the above step 1, 2, 4 and 5, events [[EVENT_BEFORE_VALIDATE]],
+	 * [[EVENT_BEFORE_UPDATE]], [[EVENT_AFTER_UPDATE]] and [[EVENT_AFTER_VALIDATE]]
+	 * will be raised by the corresponding methods.
 	 *
 	 * Only the [[changedAttributes|changed attribute values]] will be saved into database.
 	 *
@@ -760,7 +762,7 @@ class ActiveRecord extends Model
 	 * 2. delete the record from the database;
 	 * 3. call [[afterDelete()]].
 	 *
-	 * In the above step 1 and 3, events named `beforeDelete` and `afterDelete`
+	 * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
 	 * will be raised by the corresponding methods.
 	 *
 	 * @return boolean whether the deletion is successful.
@@ -791,7 +793,7 @@ class ActiveRecord extends Model
 	/**
 	 * Initializes the object.
 	 * This method is called at the end of the constructor.
-	 * The default implementation will trigger an [[afterInsert]] event.
+	 * The default implementation will trigger an [[EVENT_INIT]] event.
 	 * If you override this method, make sure you call the parent implementation at the end
 	 * to ensure triggering of the event.
 	 */
@@ -803,7 +805,7 @@ class ActiveRecord extends Model
 
 	/**
 	 * This method is called when the AR object is created and populated with the query result.
-	 * The default implementation will trigger an [[afterFind]] event.
+	 * The default implementation will trigger an [[EVENT_AFTER_FIND]] event.
 	 * When overriding this method, make sure you call the parent implementation to ensure the
 	 * event is triggered.
 	 */
@@ -824,8 +826,8 @@ class ActiveRecord extends Model
 
 	/**
 	 * This method is called at the beginning of inserting or updating a record.
-	 * The default implementation will trigger a [[beforeInsert]] event when `$insert` is true,
-	 * or a [[beforeUpdate]] event if `$insert` is false.
+	 * The default implementation will trigger an [[EVENT_BEFORE_INSERT]] event when `$insert` is true,
+	 * or an [[EVENT_BEFORE_UPDATE]] event if `$insert` is false.
 	 * When overriding this method, make sure you call the parent implementation like the following:
 	 *
 	 * ~~~
@@ -854,8 +856,8 @@ class ActiveRecord extends Model
 
 	/**
 	 * This method is called at the end of inserting or updating a record.
-	 * The default implementation will trigger an [[afterInsert]] event when `$insert` is true,
-	 * or an [[afterUpdate]] event if `$insert` is false.
+	 * The default implementation will trigger an [[EVENT_AFTER_INSERT]] event when `$insert` is true,
+	 * or an [[EVENT_AFTER_UPDATE]] event if `$insert` is false.
 	 * When overriding this method, make sure you call the parent implementation so that
 	 * the event is triggered.
 	 * @param boolean $insert whether this method called while inserting a record.
@@ -868,7 +870,7 @@ class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked before deleting a record.
-	 * The default implementation raises the [[beforeDelete]] event.
+	 * The default implementation raises the [[EVENT_BEFORE_DELETE]] event.
 	 * When overriding this method, make sure you call the parent implementation like the following:
 	 *
 	 * ~~~
@@ -894,7 +896,7 @@ class ActiveRecord extends Model
 
 	/**
 	 * This method is invoked after deleting a record.
-	 * The default implementation raises the [[afterDelete]] event.
+	 * The default implementation raises the [[EVENT_AFTER_DELETE]] event.
 	 * You may override this method to do postprocessing after the record is deleted.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 */

@@ -26,8 +26,8 @@ use yii\validators\RequiredValidator;
  *
  * Model also raises the following events when performing data validation:
  *
- * - [[beforeValidate]]: an event raised at the beginning of [[validate()]]
- * - [[afterValidate]]: an event raised at the end of [[validate()]]
+ * - [[EVENT_BEFORE_VALIDATE]]: an event raised at the beginning of [[validate()]]
+ * - [[EVENT_AFTER_VALIDATE]]: an event raised at the end of [[validate()]]
  *
  * You may directly use Model to store model data, or extend it with customization.
  * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
@@ -53,9 +53,17 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	const EVENT_AFTER_VALIDATE = 'afterValidate';
 
-	private static $_attributes = array(); // class name => array of attribute names
-	private $_errors; // attribute name => array of errors
-	private $_validators; // Vector of validators
+	/**
+	 * @var array validation errors (attribute name => array of errors)
+	 */
+	private $_errors;
+	/**
+	 * @var Vector vector of validators
+	 */
+	private $_validators;
+	/**
+	 * @var string current scenario
+	 */
 	private $_scenario = 'default';
 
 	/**
@@ -68,10 +76,10 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *
 	 * ~~~
 	 * array(
-	 *	 'attribute list',
-	 *	 'validator type',
-	 *	 'on'=>'scenario name',
-	 *	 ...other parameters...
+	 *     'attribute list',
+	 *     'validator type',
+	 *     'on'=>'scenario name',
+	 *     ...other parameters...
 	 * )
 	 * ~~~
 	 *
@@ -79,37 +87,37 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *
 	 *  - attribute list: required, specifies the attributes (separated by commas) to be validated;
 	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
-	 *	class method, the name of a built-in validator, or a validator class name (or its path alias).
+	 *    class method, the name of a built-in validator, or a validator class name (or its path alias).
 	 *  - on: optional, specifies the [[scenario|scenarios]] (separated by commas) when the validation
-	 *	rule can be applied. If this option is not set, the rule will apply to all scenarios.
+	 *    rule can be applied. If this option is not set, the rule will apply to all scenarios.
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
-	 *	Please refer to individual validator class API for possible properties.
+	 *    Please refer to individual validator class API for possible properties.
 	 *
-	 * A validator can be either an object of a class extending [[\yii\validators\Validator]],
-	 * or a model class method (called *inline validator*) that has the following signature:
+	 * A validator can be either an object of a class extending [[Validator]], or a model class method
+	 * (called *inline validator*) that has the following signature:
 	 *
 	 * ~~~
 	 * // $params refers to validation parameters given in the rule
 	 * function validatorName($attribute, $params)
 	 * ~~~
 	 *
-	 * Yii also provides a set of [[\yii\validators\Validator::builtInValidators|built-in validators]].
+	 * Yii also provides a set of [[Validator::builtInValidators|built-in validators]].
 	 * They each has an alias name which can be used when specifying a validation rule.
 	 *
 	 * Below are some examples:
 	 *
 	 * ~~~
 	 * array(
-	 *   // built-in "required" validator
-	 *	 array('username', 'required'),
-	 *   // built-in "length" validator customized with "min" and "max" properties
-	 *	 array('username', 'length', 'min'=>3, 'max'=>12),
-	 *   // built-in "compare" validator that is used in "register" scenario only
-	 *	 array('password', 'compare', 'compareAttribute'=>'password2', 'on'=>'register'),
-	 *   // an inline validator defined via the "authenticate()" method in the model class
-	 *	 array('password', 'authenticate', 'on'=>'login'),
-	 *   // a validator of class "CaptchaValidator"
-	 *   array('captcha', 'CaptchaValidator'),
+	 *     // built-in "required" validator
+	 *     array('username', 'required'),
+	 *     // built-in "length" validator customized with "min" and "max" properties
+	 *     array('username', 'length', 'min'=>3, 'max'=>12),
+	 *     // built-in "compare" validator that is used in "register" scenario only
+	 *     array('password', 'compare', 'compareAttribute'=>'password2', 'on'=>'register'),
+	 *     // an inline validator defined via the "authenticate()" method in the model class
+	 *     array('password', 'authenticate', 'on'=>'login'),
+	 *     // a validator of class "CaptchaValidator"
+	 *     array('captcha', 'CaptchaValidator'),
 	 * );
 	 * ~~~
 	 *
@@ -151,8 +159,10 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$attributes = array();
 		foreach ($this->getActiveValidators() as $validator) {
-			foreach ($validator->attributes as $name) {
-				$attributes[$name] = true;
+			if ($validator->isActive('default')) {
+				foreach ($validator->attributes as $name) {
+					$attributes[$name] = true;
+				}
 			}
 		}
 		return array(
@@ -168,11 +178,6 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function attributes()
 	{
-		$className = get_class($this);
-		if (isset(self::$_attributes[$className])) {
-			return self::$_attributes[$className];
-		}
-
 		$class = new \ReflectionClass($this);
 		$names = array();
 		foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
@@ -181,7 +186,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 				$names[] = $name;
 			}
 		}
-		return self::$_attributes[$className] = $names;
+		return $names;
 	}
 
 	/**
@@ -395,13 +400,13 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *
 	 * ~~~
 	 * array(
-	 *	 'username' => array(
-	 *		 'Username is required.',
-	 *		 'Username must contain only word characters.',
-	 *	 ),
-	 *	 'email' => array(
-	 *		 'Email address is invalid.',
-	 *	 )
+	 *     'username' => array(
+	 *         'Username is required.',
+	 *         'Username must contain only word characters.',
+	 *     ),
+	 *     'email' => array(
+	 *         'Email address is invalid.',
+	 *     )
 	 * )
 	 * ~~~
 	 *

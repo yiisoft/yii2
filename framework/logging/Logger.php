@@ -133,7 +133,7 @@ class Logger extends \yii\base\Component
 
 	/**
 	 * Flushes log messages from memory to targets.
-	 * This method will trigger a [[flush]] or [[finalFlush]] event depending on the $final value.
+	 * This method will trigger an [[EVENT_FLUSH]] or [[EVENT_FINAL_FLUSH]] event depending on the $final value.
 	 * @param boolean $final whether this is a final call during a request.
 	 */
 	public function flush($final = false)

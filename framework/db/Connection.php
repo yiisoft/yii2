@@ -375,7 +375,7 @@ class Connection extends Component
 	 * This method is invoked right after the DB connection is established.
 	 * The default implementation turns on `PDO::ATTR_EMULATE_PREPARES`
 	 * if [[emulatePrepare]] is true, and sets the database [[charset]] if it is not empty.
-	 * It then triggers an [[afterOpen]] event.
+	 * It then triggers an [[EVENT_AFTER_OPEN]] event.
 	 */
 	protected function initConnection()
 	{

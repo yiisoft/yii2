@@ -176,7 +176,7 @@ class Application extends Module
 	}
 
 	/**
-	 * Raises the [[beforeRequest]] event right BEFORE the application processes the request.
+	 * Raises the [[EVENT_BEFORE_REQUEST]] event right BEFORE the application processes the request.
 	 */
 	public function beforeRequest()
 	{
@@ -184,7 +184,7 @@ class Application extends Module
 	}
 
 	/**
-	 * Raises the [[afterRequest]] event right AFTER the application processes the request.
+	 * Raises the [[EVENT_AFTER_REQUEST]] event right AFTER the application processes the request.
 	 */
 	public function afterRequest()
 	{
