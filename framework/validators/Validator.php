@@ -9,67 +9,62 @@
 
 namespace yii\validators;
 
+use yii\base\Component;
+
 /**
  * Validator is the base class for all validators.
  *
- * Child classes must override the [[validateAttribute]] method to provide the actual
- * logic of performing data validation. Child classes may also override [[clientValidateAttribute]]
+ * Child classes should override the [[validateAttribute()]] method to provide the actual
+ * logic of performing data validation. Child classes may also override [[clientValidateAttribute()]]
  * to provide client-side validation support.
  *
- * Validator defines the following properties that are common among concrete validators:
- *
- * - [[attributes]]: array, list of attributes to be validated;
- * - [[message]]: string, the error message used when validation fails;
- * - [[on]]: string, scenarios on which the validator applies.
- *
- * Validator also declares a set of [[builtInValidators|built-in validators] which can
+ * Validator declares a set of [[builtInValidators|built-in validators] which can
  * be referenced using short names. They are listed as follows:
  *
- * - `required`: [[RequiredValidator]]
- * - `filter`: [[FilterValidator]]
- * - `match`: [[RegularExpressionValidator]]
- * - `email`: [[EmailValidator]]
- * - `url`: [[UrlValidator]]
- * - `unique`: [[UniqueValidator]]
- * - `compare`: [[CompareValidator]]
- * - `in`: [[RangeValidator]]
  * - `boolean`: [[BooleanValidator]]
- * - `string`: [[StringValidator]]
- * - `integer`: [[NumberValidator]]
- * - `double`: [[NumberValidator]]
- * - `date`: [[DateValidator]]
- * - `file`: [[FileValidator]]
  * - `captcha`: [[CaptchaValidator]]
+ * - `compare`: [[CompareValidator]]
+ * - `date`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
+ * - `double`: [[NumberValidator]]
+ * - `email`: [[EmailValidator]]
  * - `exist`: [[ExistValidator]]
+ * - `file`: [[FileValidator]]
+ * - `filter`: [[FilterValidator]]
+ * - `in`: [[RangeValidator]]
+ * - `integer`: [[NumberValidator]]
+ * - `match`: [[RegularExpressionValidator]]
+ * - `required`: [[RequiredValidator]]
+ * - `string`: [[StringValidator]]
+ * - `unique`: [[UniqueValidator]]
+ * - `url`: [[UrlValidator]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Validator extends \yii\base\Component
+abstract class Validator extends Component
 {
 	/**
 	 * @var array list of built-in validators (name => class or configuration)
 	 */
 	public static $builtInValidators = array(
-		'required' => '\yii\validators\RequiredValidator',
-		'match' => '\yii\validators\RegularExpressionValidator',
-		'email' => '\yii\validators\EmailValidator',
-		'url' => '\yii\validators\UrlValidator',
-		'filter' => '\yii\validators\FilterValidator',
-		'captcha' => '\yii\validators\CaptchaValidator',
-		'default' => '\yii\validators\DefaultValueValidator',
-		'in' => '\yii\validators\RangeValidator',
-		'boolean' => '\yii\validators\BooleanValidator',
-		'string' => '\yii\validators\StringValidator',
-		'integer' => '\yii\validators\IntegerValidator',
-		'double' => '\yii\validators\NumberValidator',
-		'compare' => '\yii\validators\CompareValidator',
-		'file' => '\yii\validators\FileValidator',
-		'date' => '\yii\validators\DateValidator',
-		'unique' => '\yii\validators\UniqueValidator',
-		'exist' => '\yii\validators\ExistValidator',
-
+		'boolean' => 'yii\validators\BooleanValidator',
+		'captcha' => 'yii\validators\CaptchaValidator',
+		'compare' => 'yii\validators\CompareValidator',
+		'date' => 'yii\validators\DateValidator',
+		'default' => 'yii\validators\DefaultValueValidator',
+		'double' => 'yii\validators\NumberValidator',
+		'email' => 'yii\validators\EmailValidator',
+		'exist' => 'yii\validators\ExistValidator',
+		'file' => 'yii\validators\FileValidator',
+		'filter' => 'yii\validators\FilterValidator',
+		'in' => 'yii\validators\RangeValidator',
+		'integer' => 'yii\validators\IntegerValidator',
+		'match' => 'yii\validators\RegularExpressionValidator',
+		'required' => 'yii\validators\RequiredValidator',
+		'string' => 'yii\validators\StringValidator',
+		'unique' => 'yii\validators\UniqueValidator',
+		'url' => 'yii\validators\UrlValidator',
 	);
 
 	/**
@@ -85,30 +80,27 @@ abstract class Validator extends \yii\base\Component
 	public $message;
 	/**
 	 * @var array list of scenarios that the validator should be applied.
-	 * Each array value refers to a scenario name with the same name as its array key.
 	 */
-	public $on;
+	public $on = array();
 	/**
 	 * @var array list of scenarios that the validator should not be applied to.
-	 * Each array value refers to a scenario name with the same name as its array key.
 	 */
-	public $except;
+	public $except = array();
 	/**
 	 * @var boolean whether this validation rule should be skipped if the attribute being validated
-	 * already has some validation error according to the previous rules. Defaults to true.
+	 * already has some validation error according to some previous rules. Defaults to true.
 	 */
 	public $skipOnError = true;
 	/**
-	 * @var boolean whether to enable client-side validation. Defaults to true.
-	 * Please refer to [[\yii\web\ActiveForm::enableClientValidation]] for more details about
-	 * client-side validation.
+	 * @var boolean whether to enable client-side validation. Defaults to null, meaning
+	 * its actual value inherits from that of [[\yii\web\ActiveForm::enableClientValidation]].
 	 */
-	public $enableClientValidation = true;
+	public $enableClientValidation;
 
 	/**
 	 * Validates a single attribute.
 	 * Child classes must implement this method to provide the actual validation logic.
-	 * @param \yii\base\Model $object the data object being validated
+	 * @param \yii\base\Model $object the data object to be validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 */
 	abstract public function validateAttribute($object, $attribute);
@@ -116,9 +108,9 @@ abstract class Validator extends \yii\base\Component
 	/**
 	 * Creates a validator object.
 	 * @param string $type the validator type. This can be a method name,
-	 * a built-in validator name, a class name, or a path alias of validator class.
-	 * @param \yii\base\Model $object the data object being validated.
-	 * @param mixed $attributes list of attributes to be validated. This can be either an array of
+	 * a built-in validator name, a class name, or a path alias of the validator class.
+	 * @param \yii\base\Model $object the data object to be validated.
+	 * @param array|string $attributes list of attributes to be validated. This can be either an array of
 	 * the attribute names or a string of comma-separated attribute names.
 	 * @param array $params initial values to be applied to the validator properties
 	 * @return Validator the validator
@@ -129,32 +121,18 @@ abstract class Validator extends \yii\base\Component
 			$attributes = preg_split('/[\s,]+/', $attributes, -1, PREG_SPLIT_NO_EMPTY);
 		}
 
-		if (isset($params['on'])) {
-			if (is_array($params['on'])) {
-				$on = $params['on'];
-			} else {
-				$on = preg_split('/[\s,]+/', $params['on'], -1, PREG_SPLIT_NO_EMPTY);
-			}
-			$params['on'] = empty($on) ? array() : array_combine($on, $on);
-		} else {
-			$params['on'] = array();
+		if (isset($params['on']) && !is_array($params['on'])) {
+			$params['on'] = preg_split('/[\s,]+/', $params['on'], -1, PREG_SPLIT_NO_EMPTY);
 		}
 
-		if (isset($params['except'])) {
-			if (is_array($params['except'])) {
-				$except = $params['except'];
-			} else {
-				$except = preg_split('/[\s,]+/', $params['except'], -1, PREG_SPLIT_NO_EMPTY);
-			}
-			$params['except'] = empty($on) ? array() : array_combine($except, $except);
-		} else {
-			$params['except'] = array();
+		if (isset($params['except']) && !is_array($params['except'])) {
+			$params['except'] = preg_split('/[\s,]+/', $params['except'], -1, PREG_SPLIT_NO_EMPTY);
 		}
 
 		if (method_exists($object, $type)) {
 			// method-based validator
 			$config = array(
-				'class'	=> '\yii\validators\InlineValidator',
+				'class'	=> __NAMESPACE__ . '\InlineValidator',
 				'method' => $type,
 				'attributes' => $attributes,
 			);
@@ -170,9 +148,8 @@ abstract class Validator extends \yii\base\Component
 		foreach ($params as $name => $value) {
 			$config[$name] = $value;
 		}
-		$validator = \Yii::createObject($config);
 
-		return $validator;
+		return \Yii::createObject($config);
 	}
 
 	/**
@@ -191,7 +168,7 @@ abstract class Validator extends \yii\base\Component
 			$attributes = $this->attributes;
 		}
 		foreach ($attributes as $attribute) {
-			if (!$this->skipOnError || !$object->hasErrors($attribute)) {
+			if (!($this->skipOnError && $object->hasErrors($attribute))) {
 				$this->validateAttribute($object, $attribute);
 			}
 		}
@@ -233,7 +210,7 @@ abstract class Validator extends \yii\base\Component
 	 */
 	public function isActive($scenario)
 	{
-		return !isset($this->except[$scenario]) && (empty($this->on) || isset($this->on[$scenario]));
+		return !in_array($scenario, $this->except, true) && (empty($this->on) || in_array($scenario, $this->on, true));
 	}
 
 	/**

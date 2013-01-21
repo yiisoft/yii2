@@ -88,15 +88,6 @@ class Controller extends Component
 	}
 
 	/**
-	 * Initializes the controller.
-	 * This method is called by the application before the controller starts to execute an action.
-	 * You may override this method to perform the needed initialization for the controller.
-	 */
-	public function init()
-	{
-	}
-
-	/**
 	 * Runs the controller with the specified action and parameters.
 	 * @param Action|string $action the action to be executed. This can be either an action object
 	 * or the ID of the action.

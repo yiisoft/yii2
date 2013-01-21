@@ -138,7 +138,7 @@ class Logger extends \yii\base\Component
 	 */
 	public function flush($final = false)
 	{
-		$this->trigger($final ? 'finalFlush' : 'flush');
+		$this->trigger($final ? self::EVENT_FINAL_FLUSH : self::EVENT_FLUSH);
 		$this->messages = array();
 	}
 

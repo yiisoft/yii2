@@ -93,7 +93,7 @@ class UrlValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script.
-	 * @see CActiveForm::enableClientValidation
+	 * @see \yii\Web\ActiveForm::enableClientValidation
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
