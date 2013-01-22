@@ -59,8 +59,12 @@ abstract class Validator extends Component
 		'file' => 'yii\validators\FileValidator',
 		'filter' => 'yii\validators\FilterValidator',
 		'in' => 'yii\validators\RangeValidator',
-		'integer' => 'yii\validators\IntegerValidator',
+		'integer' => array(
+			'class' => 'yii\validators\NumberValidator',
+			'integerOnly' => true,
+		),
 		'match' => 'yii\validators\RegularExpressionValidator',
+		'number' => 'yii\validators\NumberValidator',
 		'required' => 'yii\validators\RequiredValidator',
 		'string' => 'yii\validators\StringValidator',
 		'unique' => 'yii\validators\UniqueValidator',
@@ -120,6 +124,7 @@ abstract class Validator extends Component
 		if (!is_array($attributes)) {
 			$attributes = preg_split('/[\s,]+/', $attributes, -1, PREG_SPLIT_NO_EMPTY);
 		}
+		$params['attributes'] = $attributes;
 
 		if (isset($params['on']) && !is_array($params['on'])) {
 			$params['on'] = preg_split('/[\s,]+/', $params['on'], -1, PREG_SPLIT_NO_EMPTY);
@@ -131,25 +136,22 @@ abstract class Validator extends Component
 
 		if (method_exists($object, $type)) {
 			// method-based validator
-			$config = array(
-				'class'	=> __NAMESPACE__ . '\InlineValidator',
-				'method' => $type,
-				'attributes' => $attributes,
-			);
+			$params['class'] = __NAMESPACE__ . '\InlineValidator';
+			$params['method'] = $type;
 		} else {
-			if (is_string($type) && isset(self::$builtInValidators[$type])) {
+			if (isset(self::$builtInValidators[$type])) {
 				$type = self::$builtInValidators[$type];
 			}
-			$config = array(
-				'class'	=> $type,
-				'attributes' => $attributes,
-			);
-		}
-		foreach ($params as $name => $value) {
-			$config[$name] = $value;
+			if (is_array($type)) {
+				foreach ($type as $name => $value) {
+					$params[$name] = $value;
+				}
+			} else {
+				$params['class'] = $type;
+			}
 		}
 
-		return \Yii::createObject($config);
+		return \Yii::createObject($params);
 	}
 
 	/**
@@ -240,6 +242,6 @@ abstract class Validator extends Component
 	public function isEmpty($value, $trim = false)
 	{
 		return $value === null || $value === array() || $value === ''
-				|| $trim && is_scalar($value) && trim($value) === '';
+			|| $trim && is_scalar($value) && trim($value) === '';
 	}
 }

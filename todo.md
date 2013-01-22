@@ -13,9 +13,8 @@
 - validators
 	* FileValidator: depends on CUploadedFile
 	* CaptchaValidator: depends on CaptchaAction
-	* type conversion rules
-	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
-	* DateValidator: TBD
+	* DateValidator: should we use CDateTimeParser, or simply use strtotime()?
+	* CompareValidator::clientValidateAttribute(): depends on CHtml::activeId()
 
 ---
 
