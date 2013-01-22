@@ -52,9 +52,10 @@ class RequiredValidator extends Validator
 			}
 		} else {
 			if (!$this->strict && $value != $this->requiredValue || $this->strict && $value !== $this->requiredValue) {
-				$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be "{requiredValue}".',
-					array('{requiredValue}' => $this->requiredValue));
-				$this->addError($object, $attribute, $message);
+				$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be "{requiredValue}".');
+				$this->addError($object, $attribute, $message, array(
+					'{requiredValue}' => $this->requiredValue,
+				));
 			}
 		}
 	}

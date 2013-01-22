@@ -64,8 +64,7 @@ class UniqueValidator extends Validator
 		$query->where(array($column->name => $value));
 
 		if ($object->getIsNewRecord()) {
-			// if current $object isn't in the database yet then it's OK just
-			// to call exists()
+			// if current $object isn't in the database yet then it's OK just to call exists()
 			$exists = $query->exists();
 		} else {
 			// if current $object is in the database already we can't use exists()

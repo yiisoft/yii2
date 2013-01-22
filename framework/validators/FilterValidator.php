@@ -8,6 +8,7 @@
  */
 
 namespace yii\validators;
+use yii\base\InvalidConfigException;
 
 /**
  * FilterValidator converts the attribute value according to a filter.
@@ -45,12 +46,12 @@ class FilterValidator extends Validator
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
-	 * @throws \yii\base\Exception if filter property is not a valid callback
+	 * @throws InvalidConfigException if filter property is not a valid callback
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		if ($this->filter === null) {
-			throw new \yii\base\Exception('The "filter" property must be specified with a valid callback.');
+			throw new InvalidConfigException('The "filter" property must be specified with a valid callback.');
 		}
 		$object->$attribute = call_user_func($this->filter, $object->$attribute);
 	}

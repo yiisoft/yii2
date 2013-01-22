@@ -29,7 +29,7 @@ class EmailValidator extends Validator
 	 */
 	public $fullPattern = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/';
 	/**
-	 * @var boolean whether to allow name in the email address (e.g. "Qiang Xue <qiang.xue@gmail.com>"). Defaults to false.
+	 * @var boolean whether to allow name in the email address (e.g. "John Smith <john.smith@example.com>"). Defaults to false.
 	 * @see fullPattern
 	 */
 	public $allowName = false;
@@ -78,15 +78,16 @@ class EmailValidator extends Validator
 	public function validateValue($value)
 	{
 		// make sure string length is limited to avoid DOS attacks
-		$valid = is_string($value) && strlen($value) <= 254 && (preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value));
+		$valid = is_string($value) && strlen($value) <= 254
+			&& (preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value));
 		if ($valid) {
 			$domain = rtrim(substr($value, strpos($value, '@') + 1), '>');
-		}
-		if ($valid && $this->checkMX && function_exists('checkdnsrr')) {
-			$valid = checkdnsrr($domain, 'MX');
-		}
-		if ($valid && $this->checkPort && function_exists('fsockopen')) {
-			$valid = fsockopen($domain, 25) !== false;
+			if ($this->checkMX && function_exists('checkdnsrr')) {
+				$valid = checkdnsrr($domain, 'MX');
+			}
+			if ($valid && $this->checkPort && function_exists('fsockopen')) {
+				$valid = fsockopen($domain, 25) !== false;
+			}
 		}
 		return $valid;
 	}

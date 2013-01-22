@@ -6,10 +6,16 @@
 	* key-value-based (should allow storage-specific methods additionally to generic ones)
 	  * redis (put it under framework/db/redis or perhaps framework/caching?)
 - logging
-	* WebTarget
-	* ProfileTarget
+	* WebTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
+	* ProfileTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
 - caching
 	* a console command to clear cached data
+- validators
+	* FileValidator: depends on CUploadedFile
+	* CaptchaValidator: depends on CaptchaAction
+	* type conversion rules
+	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
+	* DateValidator: TBD
 
 ---
 
@@ -18,11 +24,6 @@
 	  - Module should be able to define its own configuration including routes. Application should be able to overwrite it.
 	* application
 	* security
-- validators
-	* type conversion rules
-	* CompareValidator::clientValidateAttribute(): search for "CHtml::activeId"
-	* FileValidator, UniqueValidator, ExistValidator, DateValidator: TBD
-	* when getting errors from getErrors it will be good to have which validator (at least type) failed exactly.
 - built-in console commands
 	+ api doc builder
 		* support for markdown syntax

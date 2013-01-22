@@ -8,6 +8,7 @@
  */
 
 namespace yii\validators;
+use yii\base\InvalidConfigException;
 
 /**
  * RangeValidator validates that the attribute value is among a list of values.
@@ -45,7 +46,7 @@ class RangeValidator extends Validator
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
-	 * @throws \yii\base\Exception if the "range" property is not an array
+	 * @throws InvalidConfigException if the "range" property is not an array
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -54,7 +55,7 @@ class RangeValidator extends Validator
 			return;
 		}
 		if (!is_array($this->range)) {
-			throw new \yii\base\Exception('The "range" property must be specified as an array.');
+			throw new InvalidConfigException('The "range" property must be specified as an array.');
 		}
 		if (!$this->not && !in_array($value, $this->range, $this->strict)) {
 			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} should be in the list.');
@@ -70,12 +71,12 @@ class RangeValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script.
-	 * @throws \yii\base\Exception if the "range" property is not an array
+	 * @throws InvalidConfigException if the "range" property is not an array
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
 		if (!is_array($this->range)) {
-			throw new \yii\base\Exception('The "range" property must be specified as an array.');
+			throw new InvalidConfigException('The "range" property must be specified as an array.');
 		}
 
 		if (($message = $this->message) === null) {

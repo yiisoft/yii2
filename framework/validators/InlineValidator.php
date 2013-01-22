@@ -85,6 +85,8 @@ class InlineValidator extends Validator
 		if ($this->clientValidate !== null) {
 			$method = $this->clientValidate;
 			return $object->$method($attribute);
+		} else {
+			return null;
 		}
 	}
 }

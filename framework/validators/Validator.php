@@ -195,6 +195,7 @@ abstract class Validator extends Component
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
+		return null;
 	}
 
 	/**

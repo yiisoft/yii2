@@ -77,13 +77,13 @@ class RegularExpressionValidator extends Validator
 
 		$pattern = $this->pattern;
 		$pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $pattern);
-		$delim = substr($pattern, 0, 1);
-		$endpos = strrpos($pattern, $delim, 1);
-		$flag = substr($pattern, $endpos + 1);
-		if ($delim !== '/') {
-			$pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $endpos - 1)) . '/';
+		$deliminator = substr($pattern, 0, 1);
+		$pos = strrpos($pattern, $deliminator, 1);
+		$flag = substr($pattern, $pos + 1);
+		if ($deliminator !== '/') {
+			$pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $pos - 1)) . '/';
 		} else {
-			$pattern = substr($pattern, 0, $endpos + 1);
+			$pattern = substr($pattern, 0, $pos + 1);
 		}
 		if (!empty($flag)) {
 			$pattern .= preg_replace('/[^igm]/', '', $flag);

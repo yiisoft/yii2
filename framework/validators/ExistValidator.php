@@ -8,6 +8,7 @@
  */
 
 namespace yii\validators;
+use yii\base\InvalidConfigException;
 
 /**
  * ExistValidator validates that the attribute value exists in a table.
@@ -21,9 +22,9 @@ namespace yii\validators;
 class ExistValidator extends Validator
 {
 	/**
-	 * @var string the yii\db\ActiveRecord class name or alias of the class
+	 * @var string the ActiveRecord class name or alias of the class
 	 * that should be used to look for the attribute value being validated.
-	 * Defaults to null, meaning using the yii\db\ActiveRecord class of
+	 * Defaults to null, meaning using the ActiveRecord class of
 	 * the attribute being validated.
 	 * @see attributeName
 	 */
@@ -47,8 +48,7 @@ class ExistValidator extends Validator
 	 *
 	 * @param \yii\db\ActiveRecord $object the object being validated
 	 * @param string $attribute the attribute being validated
-	 *
-	 * @throws \yii\base\Exception if table doesn't have column specified
+	 * @throws InvalidConfigException if table doesn't have column specified
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -62,14 +62,14 @@ class ExistValidator extends Validator
 		$attributeName = ($this->attributeName === null) ? $attribute : $this->attributeName;
 		$table = $className::getTableSchema();
 		if (($column = $table->getColumn($attributeName)) === null) {
-			throw new \yii\base\Exception('Table "' . $table->name . '" does not have a column named "' . $attributeName . '"');
+			throw new InvalidConfigException('Table "' . $table->name . '" does not have a column named "' . $attributeName . '"');
 		}
 
 		$query = $className::find();
 		$query->where(array($column->name => $value));
 		if (!$query->exists()) {
 			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} "{value}" is invalid.');
-			$this->addError($object, $attribute, $message, array('{value}' => $value));
+			$this->addError($object, $attribute, $message);
 		}
 	}
 }
