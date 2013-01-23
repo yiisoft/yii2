@@ -1,6 +1,6 @@
 - db
 	* pgsql, sql server, oracle, db2 drivers
-	  * write a guide on creating own schema definitions
+	* unit tests on different DB drivers
 	* document-based (should allow storage-specific methods additionally to generic ones)
 	  * mongodb (put it under framework/db/mongodb)
 	* key-value-based (should allow storage-specific methods additionally to generic ones)
@@ -8,8 +8,10 @@
 - logging
 	* WebTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
 	* ProfileTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
+	* unit tests
 - caching
 	* a console command to clear cached data
+	* unit tests
 - validators
 	* FileValidator: depends on CUploadedFile
 	* CaptchaValidator: depends on CaptchaAction
