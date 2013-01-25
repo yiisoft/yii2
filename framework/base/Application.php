@@ -9,6 +9,7 @@
 
 namespace yii\base;
 
+use Yii;
 use yii\base\InvalidCallException;
 use yii\util\StringHelper;
 
@@ -128,7 +129,7 @@ class Application extends Module
 	 */
 	public function __construct($id, $basePath, $config = array())
 	{
-		\Yii::$application = $this;
+		Yii::$application = $this;
 		$this->id = $id;
 		$this->setBasePath($basePath);
 		$this->registerDefaultAliases();
@@ -213,7 +214,7 @@ class Application extends Module
 	{
 		$result = $this->createController($route);
 		if ($result === false) {
-			throw new InvalidRequestException(\Yii::t('yii', 'Unable to resolve the request.'));
+			throw new InvalidRequestException(Yii::t('yii', 'Unable to resolve the request.'));
 		}
 		/** @var $controller Controller */
 		list($controller, $action) = $result;
@@ -243,7 +244,7 @@ class Application extends Module
 	 */
 	public function setRuntimePath($path)
 	{
-		$p = \Yii::getAlias($path);
+		$p = Yii::getAlias($path);
 		if ($p === false || !is_dir($p) || !is_writable($path)) {
 			throw new InvalidCallException("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
 		} else {
@@ -402,9 +403,9 @@ class Application extends Module
 	 */
 	public function registerDefaultAliases()
 	{
-		\Yii::$aliases['@application'] = $this->getBasePath();
-		\Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
-		\Yii::$aliases['@www'] = '';
+		Yii::$aliases['@application'] = $this->getBasePath();
+		Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
+		Yii::$aliases['@www'] = '';
 	}
 
 	/**
@@ -480,17 +481,15 @@ class Application extends Module
 			return $this->runAction($route, $params, $childModule);
 		}
 
-		/** @var $controller Controller */
-		if (isset($module->controllerMap[$id])) {
-			$controller = \Yii::createObject($module->controllerMap[$id], $id, $module);
-		} else {
-			$controller = $this->createController($id, $module);
-			if ($controller === null) {
-				throw new InvalidRequestException("Unable to resolve the request: $route");
+		$controller = $this->createController($id, $module);
+		if ($controller !== null) {
+			if ($route === '') {
+				$route = $controller->defaultAction;
+				if ($route == '') {
+					throw new InvalidConfigException(get_class($controller) . '::defaultAction cannot be empty.');
+				}
 			}
-		}
 
-		if (isset($controller)) {
 			$action = $this->createAction($route, $controller);
 			if ($action !== null) {
 				return $action->runWithParams($params);
@@ -516,7 +515,7 @@ class Application extends Module
 	public function createController($id, $module)
 	{
 		if (isset($module->controllerMap[$id])) {
-			return \Yii::createObject($module->controllerMap[$id], $id, $module);
+			return Yii::createObject($module->controllerMap[$id], $id, $module);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
 			$className = StringHelper::id2camel($id) . 'Controller';
 			$classFile = $module->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
@@ -541,18 +540,11 @@ class Application extends Module
 	 * @param string $id the action ID
 	 * @param Controller $controller the controller that owns the action
 	 * @return Action the newly created action instance
-	 * @throws InvalidConfigException if [[Controller::defaultAction]] is empty.
 	 */
 	public function createAction($id, $controller)
 	{
-		if ($id === '') {
-			$id = $controller->defaultAction;
-			if ($id == '') {
-				throw new InvalidConfigException(get_class($controller) . '::defaultAction cannot be empty.');
-			}
-		}
 		if (isset($controller->actionMap[$id])) {
-			return \Yii::createObject($controller->actionMap[$id], $id, $controller);
+			return Yii::createObject($controller->actionMap[$id], $id, $controller);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
 			$methodName = 'action' . StringHelper::id2camel($id);
 			if (method_exists($controller, $methodName)) {

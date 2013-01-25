@@ -9,6 +9,8 @@
 
 namespace yii\base;
 
+use Yii;
+use yii\util\StringHelper;
 use yii\util\FileHelper;
 
 /**
@@ -167,12 +169,15 @@ abstract class Module extends Component
 
 	/**
 	 * Returns an ID that uniquely identifies this module among all modules within the current application.
+	 * Note that if the module is an application, an empty string will be returned.
 	 * @return string the unique ID of the module.
 	 */
 	public function getUniqueId()
 	{
-		if ($this->module && !$this->module instanceof Application) {
-			return $this->module->getUniqueId() . "/{$this->id}";
+		if ($this instanceof Application) {
+			return '';
+		} elseif ($this->module) {
+			return $this->module->getUniqueId() . '/' . $this->id;
 		} else {
 			return $this->id;
 		}
@@ -532,5 +537,87 @@ abstract class Module extends Component
 		foreach ($this->preload as $id) {
 			$this->getComponent($id);
 		}
+	}
+
+	/**
+	 * Performs a controller action specified by a route.
+	 * This method parses the specified route and creates the corresponding controller and action
+	 * instances under the context of the specified module. It then runs the created action
+	 * with the given parameters.
+	 * @param string $route the route that specifies the action.
+	 * @param array $params the parameters to be passed to the action
+	 * @return integer the action
+	 * @throws InvalidConfigException if the module's defaultRoute is empty or the controller's defaultAction is empty
+	 * @throws InvalidRequestException if the requested route cannot be resolved into an action successfully
+	 */
+	public function runAction($route, $params = array())
+	{
+		$route = trim($route, '/');
+		if ($route === '') {
+			$route = trim($this->defaultRoute, '/');
+			if ($route == '') {
+				throw new InvalidConfigException(get_class($this) . '::defaultRoute cannot be empty.');
+			}
+		}
+		if (($pos = strpos($route, '/')) !== false) {
+			$id = substr($route, 0, $pos);
+			$route = substr($route, $pos + 1);
+		} else {
+			$id = $route;
+			$route = '';
+		}
+
+		$module = $this->getModule($id);
+		if ($module !== null) {
+			return $module->runAction($route, $params);
+		}
+
+		$controller = $this->createController($id);
+		if ($controller !== null) {
+			if ($route === '') {
+				$route = $controller->defaultAction;
+				if ($route == '') {
+					throw new InvalidConfigException(get_class($controller) . '::defaultAction cannot be empty.');
+				}
+			}
+
+			$action = $controller->createAction($route);
+			if ($action !== null) {
+				return $action->runWithParams($params);
+			}
+		}
+
+		throw new InvalidRequestException('Unable to resolve the request: ' . ltrim($this->getUniqueId() . '/' . $route, '/'));
+	}
+
+	/**
+	 * Creates a controller instance based on the controller ID.
+	 *
+	 * The controller is created within the given module. The method first attempts to
+	 * create the controller based on the [[controllerMap]] of the module. If not available,
+	 * it will look for the controller class under the [[controllerPath]] and create an
+	 * instance of it.
+	 *
+	 * @param string $id the controller ID
+	 * @return Controller the newly created controller instance
+	 */
+	public function createController($id)
+	{
+		if (isset($this->controllerMap[$id])) {
+			return Yii::createObject($this->controllerMap[$id], $id, $this);
+		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
+			$className = StringHelper::id2camel($id) . 'Controller';
+			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
+			if (is_file($classFile)) {
+				$className = $this->controllerNamespace . '\\' . $className;
+				if (!class_exists($className, false)) {
+					require($classFile);
+				}
+				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
+					return new $className($id, $this);
+				}
+			}
+		}
+		return null;
 	}
 }
