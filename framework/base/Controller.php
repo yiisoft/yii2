@@ -142,8 +142,9 @@ class Controller extends Component
 		if ($actionID === '') {
 			$actionID = $this->defaultAction;
 		}
-		if (isset($this->actionMap[$actionID])) {
-			return \Yii::createObject($this->actionMap[$actionID], $actionID, $this);
+		$actions = $this->actions();
+		if (isset($actions[$actionID])) {
+			return \Yii::createObject($actions[$actionID], $actionID, $this);
 		} elseif (method_exists($this, 'action' . $actionID)) {
 			return new InlineAction($actionID, $this);
 		} else {

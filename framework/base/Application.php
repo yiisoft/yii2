@@ -211,15 +211,16 @@ class Application extends Module
 	 */
 	public function runController($route, $params = array())
 	{
-		$result = $this->createController($route);
-		if ($result === false) {
+		list($controller, $action) = explode('/', $route);
+
+		$controllerObject = $this->createController($controller, $this);
+		if ($controllerObject === false) {
 			throw new InvalidRequestException(\Yii::t('yii', 'Unable to resolve the request.'));
 		}
-		/** @var $controller Controller */
-		list($controller, $action) = $result;
+
 		$priorController = $this->controller;
-		$this->controller = $controller;
-		$status = $controller->run($action, $params);
+		$this->controller = $controllerObject;
+		$status = $controllerObject->run($action, $params);
 		$this->controller = $priorController;
 		return $status;
 	}
