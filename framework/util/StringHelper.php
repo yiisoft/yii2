@@ -83,4 +83,17 @@ class StringHelper
 			return trim(strtolower(str_replace('_', $separator, preg_replace('/(?<![A-Z])[A-Z]/', $separator . '\0', $name))), $separator);
 		}
 	}
+
+	/**
+	 * Converts an ID into a CamelCase name.
+	 * Words in the ID separated by `$separator` (defaults to '-') will be concatenated into a CamelCase name.
+	 * For example, 'post-tag' is converted to 'PostTag'.
+	 * @param string $id the ID to be converted
+	 * @param string $separator the character used to separate the words in the ID
+	 * @return string the resulting CamelCase name
+	 */
+	public static function id2camel($id, $separator = '-')
+	{
+		return str_replace(' ', '', ucwords(implode(' ', explode($separator, $id))));
+	}
 }

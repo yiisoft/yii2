@@ -28,7 +28,7 @@ namespace yii\base;
 class Controller extends Component
 {
 	/**
-	 * @var string ID of this controller
+	 * @var string the ID of this controller
 	 */
 	public $id;
 	/**
@@ -36,12 +36,39 @@ class Controller extends Component
 	 */
 	public $module;
 	/**
-	 * @var string the name of the default action. Defaults to 'index'.
+	 * @var string the ID of the action that is used when the action ID is not specified
+	 * in the request. Defaults to 'index'.
 	 */
 	public $defaultAction = 'index';
 	/**
-	 * @var array mapping from action ID to action configuration.
-	 * Array keys are action IDs, and array values are the corresponding
+	 * @var string|boolean the name of the layout to be applied to this controller's views.
+	 * This property mainly affects the behavior of [[render()]].
+	 * Defaults to null, meaning the actual layout value should inherit that from [[module]]'s layout value.
+	 * If false, no layout will be applied.
+	 */
+	public $layout;
+	/**
+	 * @var Action the action that is currently being executed. This property will be set
+	 * by [[run()]] when it is called by [[Application]] to run an action.
+	 */
+	public $action;
+
+	/**
+	 * @param string $id the ID of this controller
+	 * @param Module $module the module that this controller belongs to.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 */
+	public function __construct($id, $module, $config = array())
+	{
+		$this->id = $id;
+		$this->module = $module;
+		parent::__construct($config);
+	}
+
+	/**
+	 * Declares external actions for the controller.
+	 * This method is meant to be overwritten to declare external actions for the controller.
+	 * It should return an array, with array keys being action IDs, and array values the corresponding
 	 * action class names or action configuration arrays. For example,
 	 *
 	 * ~~~
@@ -55,36 +82,12 @@ class Controller extends Component
 	 * );
 	 * ~~~
 	 *
-	 * [[\Yii::createObject()]] will be invoked to create the requested action
+	 * [[\Yii::createObject()]] will be used later to create the requested action
 	 * using the configuration provided here.
-	 *
-	 * Note, in order to inherit actions defined in the parent class, a child class needs to
-	 * merge the parent actions with child actions using functions like `array_merge()`.
-	 * @see createAction
 	 */
-	public $actions = array();
-	/**
-	 * @var Action the action that is currently being executed
-	 */
-	public $action;
-	/**
-	 * @var string|boolean the name of the layout to be applied to this controller's views.
-	 * This property mainly affects the behavior of [[render()]].
-	 * Defaults to null, meaning the layout specified by the [[module]] should be used.
-	 * If false, no layout will be applied.
-	 */
-	public $layout;
-
-	/**
-	 * @param string $id ID of this controller
-	 * @param Module $module the module that this controller belongs to.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($id, $module, $config = array())
+	public function actions()
 	{
-		$this->id = $id;
-		$this->module = $module;
-		parent::__construct($config);
+		return array();
 	}
 
 	/**
@@ -139,8 +142,8 @@ class Controller extends Component
 		if ($actionID === '') {
 			$actionID = $this->defaultAction;
 		}
-		if (isset($this->actions[$actionID])) {
-			return \Yii::createObject($this->actions[$actionID], $actionID, $this);
+		if (isset($this->actionMap[$actionID])) {
+			return \Yii::createObject($this->actionMap[$actionID], $actionID, $this);
 		} elseif (method_exists($this, 'action' . $actionID)) {
 			return new InlineAction($actionID, $this);
 		} else {
@@ -188,11 +191,11 @@ class Controller extends Component
 	 * This method is invoked when the controller cannot find the requested action.
 	 * The default implementation simply throws an exception.
 	 * @param string $actionID the missing action name
-	 * @throws BadRequestException whenever this method is invoked
+	 * @throws InvalidRequestException whenever this method is invoked
 	 */
 	public function missingAction($actionID)
 	{
-		throw new BadRequestException(\Yii::t('yii', 'The system is unable to find the requested action "{action}".',
+		throw new InvalidRequestException(\Yii::t('yii', 'The system is unable to find the requested action "{action}".',
 			array('{action}' => $actionID == '' ? $this->defaultAction : $actionID)));
 	}
 

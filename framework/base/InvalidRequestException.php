@@ -1,6 +1,6 @@
 <?php
 /**
- * BadRequestException class file.
+ * InvalidRequestException class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -10,12 +10,12 @@
 namespace yii\base;
 
 /**
- * BadRequestException represents an exception caused by incorrect end user request.
+ * InvalidRequestException represents an exception caused by incorrect end user request.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class BadRequestException extends \Exception
+class InvalidRequestException extends \Exception
 {
 }
 

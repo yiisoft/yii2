@@ -70,7 +70,11 @@ abstract class Module extends Component
 	 * )
 	 * ~~~
 	 */
-	public $controllers = array();
+	public $controllerMap = array();
+	/**
+	 * @var string the namespace that controller classes are in. Default is to use global namespace.
+	 */
+	public $controllerNamespace;
 	/**
 	 * @return string the default route of this module. Defaults to 'default'.
 	 * The route may consist of child module ID, controller ID, and/or action ID.
@@ -528,70 +532,5 @@ abstract class Module extends Component
 		foreach ($this->preload as $id) {
 			$this->getComponent($id);
 		}
-	}
-
-	/**
-	 * Creates a controller instance based on the given route.
-	 * This method tries to parse the given route (e.g. `post/create`) using the following algorithm:
-	 *
-	 * 1. Get the first segment in route
-	 * 2. If the segment matches
-	 *    - an ID in [[controllers]], create a controller instance using the corresponding configuration,
-	 *      and return the controller with the rest part of the route;
-	 *    - an ID in [[modules]], call the [[createController()]] method of the corresponding module.
-	 *    - a controller class under [[controllerPath]], create the controller instance, and return it
-	 *      with the rest part of the route;
-	 *
-	 * @param string $route the route which may consist module ID, controller ID and/or action ID (e.g. `post/create`)
-	 * @return array|boolean the array of controller instance and action ID. False if the route cannot be resolved.
-	 */
-	public function createController($route)
-	{
-		if (($route = trim($route, '/')) === '') {
-			$route = $this->defaultRoute;
-		}
-
-		if (($pos = strpos($route, '/')) !== false) {
-			$id = substr($route, 0, $pos);
-			$route = (string)substr($route, $pos + 1);
-		} else {
-			$id = $route;
-			$route = '';
-		}
-
-		// Controller IDs must start with a lower-case letter and consist of word characters only
-		if (!preg_match('/^[a-z][a-zA-Z0-9_]*$/', $id)) {
-			return false;
-		}
-
-		if (isset($this->controllers[$id])) {
-			return array(
-				\Yii::createObject($this->controllers[$id], $id, $this),
-				$route,
-			);
-		}
-
-		if (($module = $this->getModule($id)) !== null) {
-			$result = $module->createController($route);
-			if ($result !== false) {
-				return $result;
-			}
-		}
-
-		$className = ucfirst($id) . 'Controller';
-		$classFile = $this->getControllerPath() . DIRECTORY_SEPARATOR . $className . '.php';
-		if (is_file($classFile)) {
-			if (!class_exists($className, false)) {
-				require($classFile);
-			}
-			if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
-				return array(
-					new $className($id, $this),
-					$route,
-				);
-			}
-		}
-
-		return false;
 	}
 }
