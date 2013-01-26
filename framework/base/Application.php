@@ -216,11 +216,10 @@ class Application extends Module
 		if ($result === false) {
 			throw new InvalidRequestException(Yii::t('yii', 'Unable to resolve the request.'));
 		}
-		/** @var $controller Controller */
-		list($controller, $action) = $result;
+
 		$priorController = $this->controller;
-		$this->controller = $controller;
-		$status = $controller->run($action, $params);
+		$this->controller = $controllerObject;
+		$status = $controllerObject->run($action, $params);
 		$this->controller = $priorController;
 		return $status;
 	}
