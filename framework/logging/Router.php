@@ -81,26 +81,21 @@ class Router extends Component
 				$this->targets[$name] = Yii::createObject($target);
 			}
 		}
-
-		Yii::getLogger()->on(Logger::EVENT_FLUSH, array($this, 'processMessages'));
-		Yii::getLogger()->on(Logger::EVENT_FINAL_FLUSH, array($this, 'processMessages'));
+		Yii::getLogger()->router = $this;
 	}
 
 	/**
-	 * Retrieves and processes log messages from the system logger.
-	 * This method mainly serves the event handler to the [[Logger::EVENT_FLUSH]] event
-	 * and the [[Logger::EVENT_FINAL_FLUSH]] event.
-	 * It will retrieve the available log messages from the [[Yii::getLogger()|system logger]]
-	 * and invoke the registered [[targets|log targets]] to do the actual processing.
-	 * @param \yii\base\Event $event event parameter
+	 * Dispatches log messages to [[targets]].
+	 * This method is called by [[Logger]] when its [[Logger::flush()]] method is called.
+	 * It will forward the messages to each log target registered in [[targets]].
+	 * @param array $messages the messages to be processed
+	 * @param boolean $final whether this is the final call during a request cycle
 	 */
-	public function processMessages($event)
+	public function dispatch($messages, $final = false)
 	{
-		$messages = Yii::getLogger()->messages;
-		$final = $event->name === Logger::EVENT_FINAL_FLUSH;
 		foreach ($this->targets as $target) {
 			if ($target->enabled) {
-				$target->processMessages($messages, $final);
+				$target->collect($messages, $final);
 			}
 		}
 	}

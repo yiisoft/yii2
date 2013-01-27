@@ -65,19 +65,28 @@ class FileTarget extends Target
 	}
 
 	/**
-	 * Sends log [[messages]] to specified email addresses.
-	 * @param boolean $final whether this method is called at the end of the current application
+	 * Sends log messages to specified email addresses.
+	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
+	 * of each message.
 	 */
-	public function exportMessages($final)
+	public function export($messages)
 	{
+		$text = '';
+		foreach ($messages as $message) {
+			$text .= $this->formatMessage($message);
+		}
+		$fp = @fopen($this->logFile, 'a');
+		@flock($fp, LOCK_EX);
 		if (@filesize($this->logFile) > $this->maxFileSize * 1024) {
 			$this->rotateFiles();
+			@flock($fp,LOCK_UN);
+			@fclose($fp);
+			@file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
+		} else {
+			@fwrite($fp, $text);
+			@flock($fp,LOCK_UN);
+			@fclose($fp);
 		}
-		$messages = array();
-		foreach ($this->messages as $message) {
-			$messages[] = $this->formatMessage($message);
-		}
-		@file_put_contents($this->logFile, implode('', $messages), FILE_APPEND | LOCK_EX);
 	}
 
 	/**

@@ -10,8 +10,8 @@
 namespace yii\base;
 
 use Yii;
+use yii\util\FileHelper;
 use yii\base\InvalidCallException;
-use yii\util\StringHelper;
 
 /**
  * Application is the base class for all application classes.
@@ -37,7 +37,7 @@ use yii\util\StringHelper;
  *   Yii framework messages. This application component is dynamically loaded when needed.</li>
  * </ul>
  *
- * Application will undergo the following lifecycles when processing a user request:
+ * Application will undergo the following life cycles when processing a user request:
  * <ol>
  * <li>load application configuration;</li>
  * <li>set up class autoloader and error handling;</li>
@@ -49,28 +49,6 @@ use yii\util\StringHelper;
  *
  * Starting from lifecycle 3, if a PHP error or an uncaught exception occurs,
  * the application will switch to its error handling logic and jump to step 6 afterwards.
- *
- * @property string $basePath Returns the root path of the application.
- * @property CCache $cache Returns the cache component.
- * @property CPhpMessageSource $coreMessages Returns the core message translations.
- * @property CDateFormatter $dateFormatter Returns the locale-dependent date formatter.
- * @property \yii\db\Connection $db Returns the database connection component.
- * @property CErrorHandler $errorHandler Returns the error handler component.
- * @property string $extensionPath Returns the root directory that holds all third-party extensions.
- * @property string $id Returns the unique identifier for the application.
- * @property string $language Returns the language that the user is using and the application should be targeted to.
- * @property CLocale $locale Returns the locale instance.
- * @property string $localeDataPath Returns the directory that contains the locale data.
- * @property CMessageSource $messages Returns the application message translations component.
- * @property CNumberFormatter $numberFormatter The locale-dependent number formatter.
- * @property CHttpRequest $request Returns the request component.
- * @property string $runtimePath Returns the directory that stores runtime files.
- * @property CSecurityManager $securityManager Returns the security manager component.
- * @property CStatePersister $statePersister Returns the state persister component.
- * @property string $timeZone Returns the time zone used by this application.
- * @property UrlManager $urlManager Returns the URL manager component.
- * @property string $baseUrl Returns the relative URL for the application
- * @property string $homeUrl the homepage URL
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -134,7 +112,7 @@ class Application extends Module
 		$this->setBasePath($basePath);
 		$this->registerDefaultAliases();
 		$this->registerCoreComponents();
-		parent::__construct($id, $this, $config);
+		Component::__construct($config);
 	}
 
 	/**
@@ -204,27 +182,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Runs a controller with the given route and parameters.
-	 * @param string $route the route (e.g. `post/create`)
-	 * @param array $params the parameters to be passed to the controller action
-	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
-	 * @throws InvalidRequestException if the route cannot be resolved into a controller
-	 */
-	public function runController($route, $params = array())
-	{
-		$result = $this->createController($route);
-		if ($result === false) {
-			throw new InvalidRequestException(Yii::t('yii', 'Unable to resolve the request.'));
-		}
-
-		$priorController = $this->controller;
-		$this->controller = $controllerObject;
-		$status = $controllerObject->run($action, $params);
-		$this->controller = $priorController;
-		return $status;
-	}
-
-	/**
 	 * Returns the directory that stores runtime files.
 	 * @return string the directory that stores runtime files. Defaults to 'protected/runtime'.
 	 */
@@ -239,15 +196,15 @@ class Application extends Module
 	/**
 	 * Sets the directory that stores runtime files.
 	 * @param string $path the directory that stores runtime files.
-	 * @throws InvalidCallException if the directory does not exist or is not writable
+	 * @throws InvalidConfigException if the directory does not exist or is not writable
 	 */
 	public function setRuntimePath($path)
 	{
-		$p = Yii::getAlias($path);
-		if ($p === false || !is_dir($p) || !is_writable($path)) {
-			throw new InvalidCallException("Application runtime path \"$path\" is invalid. Please make sure it is a directory writable by the Web server process.");
-		} else {
+		$p = FileHelper::ensureDirectory($path);
+		if (is_writable($p)) {
 			$this->_runtimePath = $p;
+		} else {
+			throw new InvalidConfigException("Runtime path must be writable by the Web server process: $path");
 		}
 	}
 
@@ -296,34 +253,61 @@ class Application extends Module
 		date_default_timezone_set($value);
 	}
 
-	/**
-	 * Returns the locale instance.
-	 * @param string $localeID the locale ID (e.g. en_US). If null, the {@link getLanguage application language ID} will be used.
-	 * @return CLocale the locale instance
-	 */
-	public function getLocale($localeID = null)
-	{
-		return CLocale::getInstance($localeID === null ? $this->getLanguage() : $localeID);
-	}
-
-	/**
-	 * @return CNumberFormatter the locale-dependent number formatter.
-	 * The current {@link getLocale application locale} will be used.
-	 */
-	public function getNumberFormatter()
-	{
-		return $this->getLocale()->getNumberFormatter();
-	}
-
-	/**
-	 * Returns the locale-dependent date formatter.
-	 * @return CDateFormatter the locale-dependent date formatter.
-	 * The current {@link getLocale application locale} will be used.
-	 */
-	public function getDateFormatter()
-	{
-		return $this->getLocale()->getDateFormatter();
-	}
+//	/**
+//	 * Returns the security manager component.
+//	 * @return SecurityManager the security manager application component.
+//	 */
+//	public function getSecurityManager()
+//	{
+//		return $this->getComponent('securityManager');
+//	}
+//
+//	/**
+//	 * Returns the locale instance.
+//	 * @param string $localeID the locale ID (e.g. en_US). If null, the {@link getLanguage application language ID} will be used.
+//	 * @return CLocale the locale instance
+//	 */
+//	public function getLocale($localeID = null)
+//	{
+//		return CLocale::getInstance($localeID === null ? $this->getLanguage() : $localeID);
+//	}
+//
+//	/**
+//	 * @return CNumberFormatter the locale-dependent number formatter.
+//	 * The current {@link getLocale application locale} will be used.
+//	 */
+//	public function getNumberFormatter()
+//	{
+//		return $this->getLocale()->getNumberFormatter();
+//	}
+//
+//	/**
+//	 * Returns the locale-dependent date formatter.
+//	 * @return CDateFormatter the locale-dependent date formatter.
+//	 * The current {@link getLocale application locale} will be used.
+//	 */
+//	public function getDateFormatter()
+//	{
+//		return $this->getLocale()->getDateFormatter();
+//	}
+//
+//	/**
+//	 * Returns the core message translations component.
+//	 * @return \yii\i18n\MessageSource the core message translations
+//	 */
+//	public function getCoreMessages()
+//	{
+//		return $this->getComponent('coreMessages');
+//	}
+//
+//	/**
+//	 * Returns the application message translations component.
+//	 * @return \yii\i18n\MessageSource the application message translations
+//	 */
+//	public function getMessages()
+//	{
+//		return $this->getComponent('messages');
+//	}
 
 	/**
 	 * Returns the database connection component.
@@ -353,39 +337,12 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the security manager component.
-	 * @return SecurityManager the security manager application component.
-	 */
-	public function getSecurityManager()
-	{
-		return $this->getComponent('securityManager');
-	}
-
-	/**
 	 * Returns the cache component.
 	 * @return \yii\caching\Cache the cache application component. Null if the component is not enabled.
 	 */
 	public function getCache()
 	{
 		return $this->getComponent('cache');
-	}
-
-	/**
-	 * Returns the core message translations component.
-	 * @return \yii\i18n\MessageSource the core message translations
-	 */
-	public function getCoreMessages()
-	{
-		return $this->getComponent('coreMessages');
-	}
-
-	/**
-	 * Returns the application message translations component.
-	 * @return \yii\i18n\MessageSource the application message translations
-	 */
-	public function getMessages()
-	{
-		return $this->getComponent('messages');
 	}
 
 	/**
@@ -417,15 +374,6 @@ class Application extends Module
 			'errorHandler' => array(
 				'class' => 'yii\base\ErrorHandler',
 			),
-			'request' => array(
-				'class' => 'yii\base\Request',
-			),
-			'response' => array(
-				'class' => 'yii\base\Response',
-			),
-			'format' => array(
-				'class' => 'yii\base\Formatter',
-			),
 			'coreMessages' => array(
 				'class' => 'yii\i18n\PhpMessageSource',
 				'language' => 'en_us',
@@ -441,118 +389,5 @@ class Application extends Module
 				'class' => 'yii\web\UrlManager',
 			),
 		));
-	}
-
-	/**
-	 * Performs a controller action specified by a route.
-	 * This method parses the specified route and creates the corresponding controller and action
-	 * instances under the context of the specified module. It then runs the created action
-	 * with the given parameters.
-	 * @param string $route the route that specifies the action.
-	 * @param array $params the parameters to be passed to the action
-	 * @param Module $module the module which serves as the context of the route
-	 * @return integer the action
-	 * @throws InvalidConfigException if the module's defaultRoute is empty or the controller's defaultAction is empty
-	 * @throws InvalidRequestException if the requested route cannot be resolved into an action successfully
-	 */
-	public function runAction($route, $params = array(), $module = null)
-	{
-		if ($module === null) {
-			$module = $this;
-		}
-		$route = trim($route, '/');
-		if ($route === '') {
-			$route = trim($module->defaultRoute, '/');
-			if ($route == '') {
-				throw new InvalidConfigException(get_class($module) . '::defaultRoute cannot be empty.');
-			}
-		}
-		if (($pos = strpos($route, '/')) !== false) {
-			$id = substr($route, 0, $pos);
-			$route = substr($route, $pos + 1);
-		} else {
-			$id = $route;
-			$route = '';
-		}
-
-		$childModule = $module->getModule($id);
-		if ($childModule !== null) {
-			return $this->runAction($route, $params, $childModule);
-		}
-
-		$controller = $this->createController($id, $module);
-		if ($controller !== null) {
-			if ($route === '') {
-				$route = $controller->defaultAction;
-				if ($route == '') {
-					throw new InvalidConfigException(get_class($controller) . '::defaultAction cannot be empty.');
-				}
-			}
-
-			$action = $this->createAction($route, $controller);
-			if ($action !== null) {
-				return $action->runWithParams($params);
-			}
-		}
-
-		throw new InvalidRequestException("Unable to resolve the request: $route");
-	}
-
-
-	/**
-	 * Creates a controller instance based on the controller ID.
-	 *
-	 * The controller is created within the given module. The method first attempts to
-	 * create the controller based on the [[controllerMap]] of the module. If not available,
-	 * it will look for the controller class under the [[controllerPath]] and create an
-	 * instance of it.
-	 *
-	 * @param string $id the controller ID
-	 * @param Module $module the module that owns the controller
-	 * @return Controller the newly created controller instance
-	 */
-	public function createController($id, $module)
-	{
-		if (isset($module->controllerMap[$id])) {
-			return Yii::createObject($module->controllerMap[$id], $id, $module);
-		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
-			$className = StringHelper::id2camel($id) . 'Controller';
-			$classFile = $module->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
-			if (is_file($classFile)) {
-				$className = $module->controllerNamespace . '\\' . $className;
-				if (!class_exists($className, false)) {
-					require($classFile);
-				}
-				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
-					return new $className($id, $module);
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Creates an action based on the given action ID.
-	 * The action is created within the given controller. The method first attempts to
-	 * create the action based on [[Controller::actions()]]. If not available,
-	 * it will look for the inline action method within the controller.
-	 * @param string $id the action ID
-	 * @param Controller $controller the controller that owns the action
-	 * @return Action the newly created action instance
-	 */
-	public function createAction($id, $controller)
-	{
-		if (isset($controller->actionMap[$id])) {
-			return Yii::createObject($controller->actionMap[$id], $id, $controller);
-		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
-			$methodName = 'action' . StringHelper::id2camel($id);
-			if (method_exists($controller, $methodName)) {
-				$method = new \ReflectionMethod($controller, $methodName);
-				if ($method->getName() === $methodName) {
-					return new InlineAction($id, $controller);
-				}
-			}
-		}
-		return null;
 	}
 }

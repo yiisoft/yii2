@@ -8,31 +8,19 @@
  */
 
 namespace yii\logging;
-
-use yii\base\Event;
-use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * Logger records logged messages in memory.
  *
- * When [[flushInterval()]] is reached or when application terminates, it will
- * call [[flush()]] to send logged messages to different log targets, such as
- * file, email, Web.
+ * When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]]
+ * to send logged messages to different log targets, such as file, email, Web.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Logger extends \yii\base\Component
 {
-	/**
-	 * @event Event an event that is triggered when [[flush()]] is called.
-	 */
-	const EVENT_FLUSH = 'flush';
-	/**
-	 * @event Event an event that is triggered when [[flush()]] is called at the end of application.
-	 */
-	const EVENT_FINAL_FLUSH = 'finalFlush';
-
 	/**
 	 * Error message level. An error message is one that indicates the abnormal termination of the
 	 * application and may require developer's handling.
@@ -82,7 +70,7 @@ class Logger extends \yii\base\Component
 	 *
 	 * ~~~
 	 * array(
-	 *   [0] => message (mixed)
+	 *   [0] => message (mixed, can be a string or some complex data, such as an exception object)
 	 *   [1] => level (integer)
 	 *   [2] => category (string)
 	 *   [3] => timestamp (float, obtained by microtime(true))
@@ -90,6 +78,10 @@ class Logger extends \yii\base\Component
 	 * ~~~
 	 */
 	public $messages = array();
+	/**
+	 * @var Router the log target router registered with this logger.
+	 */
+	public $router;
 
 	/**
 	 * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -138,7 +130,9 @@ class Logger extends \yii\base\Component
 	 */
 	public function flush($final = false)
 	{
-		$this->trigger($final ? self::EVENT_FINAL_FLUSH : self::EVENT_FLUSH);
+		if ($this->router) {
+			$this->router->dispatch($this->messages, $final);
+		}
 		$this->messages = array();
 	}
 
@@ -149,7 +143,7 @@ class Logger extends \yii\base\Component
 	 * of [[YiiBase]] class file.
 	 * @return float the total elapsed time in seconds for current request.
 	 */
-	public function getExecutionTime()
+	public function getElapsedTime()
 	{
 		return microtime(true) - YII_BEGIN_TIME;
 	}
@@ -218,7 +212,7 @@ class Logger extends \yii\base\Component
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
 					$timings[] = array($token, $category, $timestamp - $last[3]);
 				} else {
-					throw new Exception("Unmatched profiling block: $token");
+					throw new InvalidConfigException("Unmatched profiling block: $token");
 				}
 			}
 		}
@@ -231,5 +225,4 @@ class Logger extends \yii\base\Component
 
 		return $timings;
 	}
-
 }
