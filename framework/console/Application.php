@@ -92,33 +92,10 @@ class Application extends \yii\base\Application
 		/** @var $request Request */
 		$request = $this->getRequest();
 		if ($request->getIsConsoleRequest()) {
-			return $this->runController($request->route, $request->params);
+			return $this->runAction($request->route, $request->params);
 		} else {
 			die('This script must be run from the command line.');
 		}
-	}
-
-	/**
-	 * Runs a controller with the given route and parameters.
-	 * @param string $route the route (e.g. `post/create`)
-	 * @param array $params the parameters to be passed to the controller action
-	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
-	 * @throws Exception if the route cannot be resolved into a controller
-	 */
-	public function runController($route, $params = array())
-	{
-		$result = $this->createController($route);
-		if ($result === false) {
-			throw new Exception(\Yii::t('yii', 'Unable to resolve the request.'));
-		}
-		/** @var $controller \yii\console\Controller */
-		list($controller, $action) = $result;
-		$priorController = $this->controller;
-		$this->controller = $controller;
-		$params = ReflectionHelper::initObjectWithParams($controller, $params);
-		$status = $controller->run($action, $params);
-		$this->controller = $priorController;
-		return $status;
 	}
 
 	/**

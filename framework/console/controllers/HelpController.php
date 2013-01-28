@@ -312,7 +312,7 @@ class HelpController extends Controller
 	{
 		$options = array();
 		foreach ($class->getProperties() as $property) {
-			if (!$property->isPublic() || $property->isStatic() || $property->getDeclaringClass()->getName() === 'yii\base\Controller') {
+			if (!$property->isPublic() || $property->isStatic() || $property->getDeclaringClass()->getName() !== get_class($controller)) {
 				continue;
 			}
 			$name = $property->getName();

@@ -23,6 +23,23 @@ use yii\util\ReflectionHelper;
 class InlineAction extends Action
 {
 	/**
+	 * @var string the controller method that  this inline action is associated with
+	 */
+	public $actionMethod;
+
+	/**
+	 * @param string $id the ID of this action
+	 * @param Controller $controller the controller that owns this action
+	 * @param string $actionMethod the controller method that  this inline action is associated with
+	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 */
+	public function __construct($id, $controller, $actionMethod, $config = array())
+	{
+		$this->actionMethod = $actionMethod;
+		parent::__construct($id, $controller, $config);
+	}
+
+	/**
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
 	 * @param array $params action parameters
@@ -30,16 +47,8 @@ class InlineAction extends Action
 	 */
 	public function runWithParams($params)
 	{
-		try {
-			$method = 'action' . $this->id;
-			$ps = ReflectionHelper::extractMethodParams($this->controller, $method, $params);
-		} catch (Exception $e) {
-			$this->controller->invalidActionParams($this, $e);
-			return 1;
-		}
-		if ($params !== $ps) {
-			$this->controller->extraActionParams($this, $ps, $params);
-		}
-		return (int)call_user_func_array(array($this->controller, $method), $ps);
+		$method = new \ReflectionMethod($this->controller, $this->actionMethod);
+		$args = $this->bindActionParams($method, $params);
+		return (int)$method->invokeArgs($this, $args);
 	}
 }

@@ -53,18 +53,43 @@ class Action extends Component
 	 * This method is mainly invoked by the controller.
 	 * @param array $params action parameters
 	 * @return integer the exit status (0 means normal, non-zero means abnormal).
+	 * @throws InvalidConfigException if the action class does not have a run() method
 	 */
 	public function runWithParams($params)
 	{
-		try {
-			$ps = ReflectionHelper::extractMethodParams($this, 'run', $params);
-		} catch (Exception $e) {
-			$this->controller->invalidActionParams($this, $e);
-			return 1;
+		if (!method_exists($this, 'run')) {
+			throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
 		}
-		if ($params !== $ps) {
-			$this->controller->extraActionParams($this, $ps, $params);
+		$method = new \ReflectionMethod($this, 'run');
+		$args = $this->bindActionParams($method, $params);
+		return (int)$method->invokeArgs($this, $args);
+	}
+
+	/**
+	 * Binds the given parameters to the action method.
+	 * The returned array contains the parameters that need to be passed to the action method.
+	 * This method calls [[Controller::validateActionParams()]] to check if any exception
+	 * should be raised if there are missing or unknown parameters.
+	 * @param \ReflectionMethod $method the action method reflection object
+	 * @param array $params the supplied parameters
+	 * @return array the parameters that can be passed to the action method
+	 */
+	protected function bindActionParams($method, $params)
+	{
+		$args = array();
+		$missing = array();
+		foreach ($method->getParameters() as $param) {
+			$name = $param->getName();
+			if (array_key_exists($name, $params)) {
+				$args[] = $params[$name];
+				unset($params[$name]);
+			} elseif ($param->isDefaultValueAvailable()) {
+				$args[] = $param->getDefaultValue();
+			} else {
+				$missing[] = $name;
+			}
 		}
-		return (int)call_user_func_array(array($this, 'run'), $ps);
+		$this->controller->validateActionParams($this, $missing, $params);
+		return $args;
 	}
 }

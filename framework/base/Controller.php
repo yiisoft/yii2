@@ -190,7 +190,7 @@ class Controller extends Component
 			if (method_exists($this, $methodName)) {
 				$method = new \ReflectionMethod($this, $methodName);
 				if ($method->getName() === $methodName) {
-					return new InlineAction($id, $this);
+					return new InlineAction($id, $this, $methodName);
 				}
 			}
 		}
@@ -245,39 +245,15 @@ class Controller extends Component
 	}
 
 	/**
-	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
-	 * The default implementation will throw an exception.
-	 * @param Action $action the action being executed
-	 * @param Exception $exception the exception about the invalid parameters
-	 * @throws Exception whenever this method is invoked
+	 * Validates the parameter being bound to actions.
+	 * This method is invoked when parameters are being bound to the currently requested action.
+	 * Child classes may override this method to throw exceptions when there are missing and/or unknown parameters.
+	 * @param Action $action the currently requested action
+	 * @param array $missingParams the names of the missing parameters
+	 * @param array $unknownParams the unknown parameters (name=>value)
 	 */
-	public function invalidActionParams($action, $exception)
+	public function validateActionParams($action, $missingParams, $unknownParams)
 	{
-		throw $exception;
-	}
-
-	/**
-	 * This method is invoked when extra parameters are provided to an action when it is executed.
-	 * The default implementation does nothing.
-	 * @param Action $action the action being executed
-	 * @param array $expected the expected action parameters (name => value)
-	 * @param array $actual the actual action parameters (name => value)
-	 */
-	public function extraActionParams($action, $expected, $actual)
-	{
-	}
-
-	/**
-	 * Handles the request whose action is not recognized.
-	 * This method is invoked when the controller cannot find the requested action.
-	 * The default implementation simply throws an exception.
-	 * @param string $actionID the missing action name
-	 * @throws InvalidRequestException whenever this method is invoked
-	 */
-	public function missingAction($actionID)
-	{
-		throw new InvalidRequestException(\Yii::t('yii', 'The system is unable to find the requested action "{action}".',
-			array('{action}' => $actionID == '' ? $this->defaultAction : $actionID)));
 	}
 
 	/**

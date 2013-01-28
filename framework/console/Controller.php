@@ -10,6 +10,7 @@
 namespace yii\console;
 
 use yii\base\Action;
+use yii\base\InvalidRouteException;
 use yii\base\Exception;
 
 /**
@@ -29,6 +30,32 @@ use yii\base\Exception;
  */
 class Controller extends \yii\base\Controller
 {
+	/**
+	 * Runs an action with the specified action ID and parameters.
+	 * If the action ID is empty, the method will use [[defaultAction]].
+	 * @param string $id the ID of the action to be executed.
+	 * @param array $params the parameters (name-value pairs) to be passed to the action.
+	 * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
+	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
+	 * @see createAction
+	 */
+	public function runAction($id, $params = array())
+	{
+		if ($params !== array()) {
+			$class = new \ReflectionClass($this);
+			foreach ($params as $name => $value) {
+				if ($class->hasProperty($name)) {
+					$property = $class->getProperty($name);
+					if ($property->isPublic() && !$property->isStatic() && $property->getDeclaringClass()->getName() === get_class($this)) {
+						$this->$name = $value;
+						unset($params[$name]);
+					}
+				}
+			}
+		}
+		return parent::runAction($id, $params);
+	}
+
 	/**
 	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
 	 * The default implementation will throw an exception.
