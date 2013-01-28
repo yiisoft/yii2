@@ -97,7 +97,7 @@ class View extends Component
 	 * To determine which view file should be rendered, the method calls [[findViewFile()]] which
 	 * will search in the directories as specified by [[basePath]].
 	 *
-	 * View name can be a path alias representing an absolute file path (e.g. `@app/views/layout/index`),
+	 * View name can be a path alias representing an absolute file path (e.g. `@application/views/layout/index`),
 	 * or a path relative to [[basePath]]. The file suffix is optional and defaults to `.php` if not given
 	 * in the view name.
 	 *

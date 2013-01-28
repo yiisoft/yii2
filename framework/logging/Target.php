@@ -50,15 +50,6 @@ abstract class Target extends \yii\base\Component
 	 */
 	public $except = array();
 	/**
-	 * @var boolean whether to prefix each log message with the current session ID. Defaults to false.
-	 */
-	public $prefixSession = false;
-	/**
-	 * @var boolean whether to prefix each log message with the current user name and ID. Defaults to false.
-	 * @see \yii\web\User
-	 */
-	public $prefixUser = false;
-	/**
 	 * @var boolean whether to log a message containing the current user name and ID. Defaults to false.
 	 * @see \yii\web\User
 	 */
@@ -77,19 +68,18 @@ abstract class Target extends \yii\base\Component
 	public $exportInterval = 1000;
 	/**
 	 * @var array the messages that are retrieved from the logger so far by this log target.
-	 * @see autoExport
 	 */
-	public $messages = array();
+	private $_messages = array();
 
 	private $_levels = 0;
 
 	/**
 	 * Exports log messages to a specific destination.
-	 * Child classes must implement this method. Note that you may need
-	 * to clean up [[messages]] in this method to avoid re-exporting messages.
-	 * @param boolean $final whether this method is called at the end of the current application
+	 * Child classes must implement this method.
+	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
+	 * of each message.
 	 */
-	abstract public function exportMessages($final);
+	abstract public function export($messages);
 
 	/**
 	 * Processes the given log messages.
@@ -99,45 +89,16 @@ abstract class Target extends \yii\base\Component
 	 * of each message.
 	 * @param boolean $final whether this method is called at the end of the current application
 	 */
-	public function processMessages($messages, $final)
+	public function collect($messages, $final)
 	{
-		$messages = $this->filterMessages($messages);
-		$this->messages = array_merge($this->messages, $messages);
-
-		$count = count($this->messages);
+		$this->_messages = array($this->_messages, $this->filterMessages($messages));
+		$count = count($this->_messages);
 		if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
-			$this->prepareExport($final);
-			$this->exportMessages($final);
-			$this->messages = array();
-		}
-	}
-
-	/**
-	 * Prepares the [[messages]] for exporting.
-	 * This method will modify each message by prepending extra information
-	 * if [[prefixSession]] and/or [[prefixUser]] are set true.
-	 * It will also add an additional message showing context information if
-	 * [[logUser]] and/or [[logVars]] are set.
-	 * @param boolean $final whether this method is called at the end of the current application
-	 */
-	protected function prepareExport($final)
-	{
-		$prefix = array();
-		if ($this->prefixSession && ($id = session_id()) !== '') {
-			$prefix[] = "[$id]";
-		}
-		if ($this->prefixUser && ($user = \Yii::$application->getComponent('user', false)) !== null) {
-			$prefix[] = '[' . $user->getName() . ']';
-			$prefix[] = '[' . $user->getId() . ']';
-		}
-		if ($prefix !== array()) {
-			$prefix = implode(' ', $prefix);
-			foreach ($this->messages as $i => $message) {
-				$this->messages[$i][0] = $prefix . ' ' . $this->messages[$i][0];
+			if (($context = $this->getContextMessage()) !== '') {
+				$this->_messages[] = array($context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME);
 			}
-		}
-		if ($final && ($context = $this->getContextMessage()) !== '') {
-			$this->messages[] = array($context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME);
+			$this->export($this->_messages);
+			$this->_messages = array();
 		}
 	}
 
@@ -164,7 +125,7 @@ abstract class Target extends \yii\base\Component
 
 	/**
 	 * @return integer the message levels that this target is interested in. This is a bitmap of
-	 * level values. Defaults to 0, meaning all available levels.
+	 * level values. Defaults to 0, meaning  all available levels.
 	 */
 	public function getLevels()
 	{

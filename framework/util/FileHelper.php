@@ -10,6 +10,7 @@
 namespace yii\util;
 
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * Filesystem helper
@@ -37,7 +38,7 @@ class FileHelper
 	 * If the given path does not refer to an existing directory, an exception will be thrown.
 	 * @param string $path the given path. This can also be a path alias.
 	 * @return string the normalized path
-	 * @throws Exception if the path does not refer to an existing directory.
+	 * @throws InvalidConfigException if the path does not refer to an existing directory.
 	 */
 	public static function ensureDirectory($path)
 	{
@@ -45,7 +46,7 @@ class FileHelper
 		if ($p !== false && ($p = realpath($p)) !== false && is_dir($p)) {
 			return $p;
 		} else {
-			throw new Exception('Directory does not exist: ' . $path);
+			throw new InvalidConfigException('Directory does not exist: ' . $path);
 		}
 	}
 

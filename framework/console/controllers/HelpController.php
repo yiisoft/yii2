@@ -87,7 +87,7 @@ class HelpController extends Controller
 	 */
 	public function getActions($controller)
 	{
-		$actions = array_keys($controller->actions);
+		$actions = array_keys($controller->actionMap);
 		$class = new \ReflectionClass($controller);
 		foreach ($class->getMethods() as $method) {
 			/** @var $method \ReflectionMethod */
@@ -114,7 +114,7 @@ class HelpController extends Controller
 		}
 
 		$commands = array();
-		foreach (array_keys($module->controllers) as $id) {
+		foreach (array_keys($module->controllerMap) as $id) {
 			$commands[] = $prefix . $id;
 		}
 

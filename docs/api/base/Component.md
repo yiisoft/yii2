@@ -3,15 +3,15 @@ its parent class [[Object]].
 
 Event is a way to "inject" custom code into existing code at certain places. For example, a comment object can trigger
 an "add" event when the user adds a comment. We can write custom code and attach it to this event so that when the event
-is triggered, our custom code will be executed.
+is triggered (i.e. comment will be added), our custom code will be executed.
 
-An event is identified by a name (unique within the class it is defined). Event names are *case-sensitive*.
+An event is identified by a name that should be unique within the class it is defined at. Event names are *case-sensitive*.
 
-An event can be attached with one or multiple PHP callbacks, called *event handlers*. One can call [[trigger()]] to
-raise an event. When an event is raised, the attached event handlers will be invoked automatically in the order they are
-attached to the event.
+One or multiple PHP callbacks, called *event handlers*, could be attached to event. You can call [[trigger()]] to
+raise an event. When an event is raised, the event handlers will be invoked automatically in the order they were
+attached.
 
-To attach an event handler to an event, call [[on()]]. For example,
+To attach an event handler to an event, call [[on()]]:
 
 ~~~
 $comment->on('add', function($event) {
@@ -19,7 +19,8 @@ $comment->on('add', function($event) {
 });
 ~~~
 
-In the above, we attach an anonymous function to the "add" event of the comment. Valid event handlers include:
+In the above, we attach an anonymous function to the "add" event of the comment.
+Valid event handlers include:
 
 - anonymous function: `function($event) { ... }`
 - object method: `array($object, 'handleAdd')`
@@ -34,7 +35,7 @@ function foo($event)
 
 where `$event` is an [[Event]] object which includes parameters associated with the event.
 
-One can also attach an event handler to an event when configuring a component with a configuration array. The syntax is
+You can also attach an event handler to an event when configuring a component with a configuration array. The syntax is
 like the following:
 
 ~~~
@@ -45,7 +46,7 @@ array(
 
 where `on add` stands for attaching an event to the `add` event.
 
-One can call [[getEventHandlers()]] to retrieve all event handlers that are attached to a specified event. Because this
+You can call [[getEventHandlers()]] to retrieve all event handlers that are attached to a specified event. Because this
 method returns a [[Vector]] object, we can manipulate this object to attach/detach event handlers, or adjust their
 relative orders.
 

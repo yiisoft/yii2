@@ -70,14 +70,14 @@ class Application extends \yii\base\Application
 		parent::init();
 		if ($this->enableCoreCommands) {
 			foreach ($this->coreCommands() as $id => $command) {
-				if (!isset($this->controllers[$id])) {
-					$this->controllers[$id] = $command;
+				if (!isset($this->controllerMap[$id])) {
+					$this->controllerMap[$id] = $command;
 				}
 			}
 		}
 		// ensure we have the 'help' command so that we can list the available commands
-		if (!isset($this->controllers['help'])) {
-			$this->controllers['help'] = 'yii\console\controllers\HelpController';
+		if (!isset($this->controllerMap['help'])) {
+			$this->controllerMap['help'] = 'yii\console\controllers\HelpController';
 		}
 	}
 
