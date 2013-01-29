@@ -9,8 +9,6 @@
 
 namespace yii\base;
 
-use yii\util\ReflectionHelper;
-
 /**
  * Action is the base class for all controller action classes.
  *
@@ -21,6 +19,14 @@ use yii\util\ReflectionHelper;
  * will be invoked by the controller when the action is requested.
  * The `run()` method can have parameters which will be filled up
  * with user input values automatically according to their names.
+ * For example, if the `run()` method is declared as follows:
+ *
+ * ~~~
+ * public function run($id, $type = 'book') { ... }
+ * ~~~
+ *
+ * And the parameters provided for the action are: `array('id' => 1)`.
+ * Then the `run()` method will be invoked as `run(1)` automatically.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -37,6 +43,7 @@ class Action extends Component
 	public $controller;
 
 	/**
+	 * Constructor.
 	 * @param string $id the ID of this action
 	 * @param Controller $controller the controller that owns this action
 	 * @param array $config name-value pairs that will be used to initialize the object properties
@@ -51,7 +58,7 @@ class Action extends Component
 	/**
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
-	 * @param array $params action parameters
+	 * @param array $params the parameters to be bound to the action's run() method.
 	 * @return integer the exit status (0 means normal, non-zero means abnormal).
 	 * @throws InvalidConfigException if the action class does not have a run() method
 	 */

@@ -17,5 +17,9 @@ namespace yii\base;
  */
 class InvalidCallException extends \Exception
 {
+	/**
+	 * @var string the user-friend name of this exception
+	 */
+	public $name = 'Invalid Call Exception';
 }
 

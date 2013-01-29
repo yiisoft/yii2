@@ -15,13 +15,6 @@ use yii\util\StringHelper;
 /**
  * Controller is the base class for classes containing controller logic.
  *
- * Controller implements the action life cycles, which consist of the following steps:
- *
- * 1. [[authorize]]
- * 2. [[beforeAction]]
- * 3. [[afterAction]]
- *
- * @property array $actionParams the request parameters (name-value pairs) to be used for action parameter binding
  * @property string $route the route (module ID, controller ID and action ID) of the current request.
  * @property string $uniqueId the controller ID that is prefixed with the module ID (if any).
  *
@@ -30,7 +23,6 @@ use yii\util\StringHelper;
  */
 class Controller extends Component
 {
-	const EVENT_AUTHORIZE = 'authorize';
 	const EVENT_BEFORE_ACTION = 'beforeAction';
 	const EVENT_AFTER_ACTION = 'afterAction';
 
@@ -117,7 +109,7 @@ class Controller extends Component
 			$oldAction = $this->action;
 			$this->action = $action;
 
-			if ($this->authorize($action) && $this->beforeAction($action)) {
+			if ($this->beforeAction($action)) {
 				$status = $action->runWithParams($params);
 				$this->afterAction($action);
 			} else {
@@ -198,18 +190,6 @@ class Controller extends Component
 	}
 
 	/**
-	 * This method is invoked when checking the access for the action to be executed.
-	 * @param Action $action the action to be executed.
-	 * @return boolean whether the action is allowed to be executed.
-	 */
-	public function authorize($action)
-	{
-		$event = new ActionEvent($action);
-		$this->trigger(self::EVENT_AUTHORIZE, $event);
-		return $event->isValid;
-	}
-
-	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
 	 * @param Action $action the action to be executed.
@@ -273,6 +253,13 @@ class Controller extends Component
 		return $this->action !== null ? $this->getUniqueId() . '/' . $this->action->id : $this->getUniqueId();
 	}
 
+	/**
+	 * Renders a view and applies layout if available.
+	 *
+	 * @param $view
+	 * @param array $params
+	 * @return string
+	 */
 	public function render($view, $params = array())
 	{
 		return $this->createView()->render($view, $params);

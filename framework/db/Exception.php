@@ -18,6 +18,11 @@ namespace yii\db;
 class Exception extends \yii\base\Exception
 {
 	/**
+	 * @var string the user-friend name of this exception
+	 */
+	public $name = 'Database Exception';
+
+	/**
 	 * @var mixed the error info provided by a PDO exception. This is the same as returned
 	 * by [PDO::errorInfo](http://www.php.net/manual/en/pdo.errorinfo.php).
 	 */

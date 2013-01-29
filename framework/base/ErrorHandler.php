@@ -52,11 +52,7 @@ class ErrorHandler extends Component
 	 * @var \Exception the exception that is being handled currently
 	 */
 	public $exception;
-	/**
-	 * @var boolean whether to log errors also using error_log(). Defaults to true.
-	 * Note that errors captured by the error handler are always logged by [[\Yii::error()]].
-	 */
-	public $logErrors = true;
+
 
 	public function init()
 	{
@@ -123,7 +119,7 @@ class ErrorHandler extends Component
 	protected function render($exception)
 	{
 		if ($this->errorAction !== null) {
-			\Yii::$application->runController($this->errorAction);
+			\Yii::$application->runAction($this->errorAction);
 		} elseif (\Yii::$application instanceof \yii\web\Application) {
 			if (!headers_sent()) {
 				$errorCode = $exception instanceof HttpException ? $exception->statusCode : 500;
@@ -297,9 +293,6 @@ class ErrorHandler extends Component
 			$category .= '\\' . $exception->getSeverity();
 		}
 		\Yii::error((string)$exception, $category);
-		if ($this->logErrors) {
-			error_log($exception);
-		}
 	}
 
 	public function clearOutput()

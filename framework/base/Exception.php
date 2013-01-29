@@ -17,5 +17,9 @@ namespace yii\base;
  */
 class Exception extends \Exception
 {
+	/**
+	 * @var string the user-friend name of this exception
+	 */
+	public $name = 'Exception';
 }
 

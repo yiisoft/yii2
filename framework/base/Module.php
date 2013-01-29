@@ -27,6 +27,9 @@ use yii\util\FileHelper;
  * @property string $uniqueId An ID that uniquely identifies this module among all modules within
  * the current application.
  * @property string $basePath The root directory of the module. Defaults to the directory containing the module class.
+ * @property string $controllerPath The directory containing the controller classes. Defaults to "[[basePath]]/controllers".
+ * @property string $viewPath The directory containing the view files within this module. Defaults to "[[basePath]]/views".
+ * @property string $layoutPath The directory containing the layout view files within this module. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The configuration of the currently installed modules (module ID => configuration).
  * @property array $components The components (indexed by their IDs) registered within this module.
  * @property array $import List of aliases to be imported. This property is write-only.
@@ -240,8 +243,8 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * @return string the root directory of view files. Defaults to 'moduleDir/views' where
-	 * moduleDir is the directory containing the module class.
+	 * Returns the directory that contains the view files for this module.
+	 * @return string the root directory of view files. Defaults to "[[basePath]]/view".
 	 */
 	public function getViewPath()
 	{
@@ -263,8 +266,8 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * @return string the root directory of layout files. Defaults to 'moduleDir/views/layouts' where
-	 * moduleDir is the directory containing the module class.
+	 * Returns the directory that contains layout view files for this module.
+	 * @return string the root directory of layout files. Defaults to "[[viewPath]]/layouts".
 	 */
 	public function getLayoutPath()
 	{

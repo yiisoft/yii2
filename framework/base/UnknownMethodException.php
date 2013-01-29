@@ -17,5 +17,9 @@ namespace yii\base;
  */
 class UnknownMethodException extends \Exception
 {
+	/**
+	 * @var string the user-friend name of this exception
+	 */
+	public $name = 'Unknown Method Exception';
 }
 

@@ -17,5 +17,9 @@ namespace yii\base;
  */
 class UnknownPropertyException extends \Exception
 {
+	/**
+	 * @var string the user-friend name of this exception
+	 */
+	public $name = 'Unknown Property Exception';
 }
 

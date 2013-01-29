@@ -9,13 +9,11 @@
 
 namespace yii\base;
 
-use yii\util\ReflectionHelper;
-
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
- * The name of the controller method should be in the format of `actionXyz`
- * where `Xyz` stands for the action ID (e.g. `actionIndex`).
+ * The name of the controller method is available via [[actionMethod]] which
+ * is set by the [[controller]] who creates this action.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
