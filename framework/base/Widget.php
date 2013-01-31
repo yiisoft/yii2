@@ -102,4 +102,16 @@ class Widget extends Component
 	{
 		return new View($this);
 	}
+
+	/**
+	 * Returns the directory containing the view files for this widget.
+	 * The default implementation returns the 'views' subdirectory under the directory containing the widget class file.
+	 * @return string the directory containing the view files for this widget.
+	 */
+	public function getViewPath()
+	{
+		$className = get_class($this);
+		$class = new \ReflectionClass($className);
+		return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
+	}
 }

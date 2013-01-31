@@ -51,6 +51,20 @@ class FileHelper
 	}
 
 	/**
+	 * Normalizes a file/directory path.
+	 * After normalization, the directory separators in the path will be `DIRECTORY_SEPARATOR`,
+	 * and any trailing directory separators will be removed. For example, '/home\demo/' on Linux
+	 * will be normalized as '/home/demo'.
+	 * @param string $path the file/directory path to be normalized
+	 * @param string $ds the directory separator to be used in the normalized result. Defaults to `DIRECTORY_SEPARATOR`.
+	 * @return string the normalized file/directory path
+	 */
+	public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
+	{
+		return rtrim(strtr($path, array('/' => $ds, '\\' => $ds)), $ds);
+	}
+
+	/**
 	 * Returns the localized version of a specified file.
 	 *
 	 * The searching is based on the specified language code. In particular,

@@ -8,9 +8,8 @@
  */
 
 use yii\base\Exception;
-use yii\logging\Logger;
-use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
+use yii\logging\Logger;
 
 /**
  * Gets the application start timestamp.
@@ -189,14 +188,14 @@ class YiiBase
 	 *
 	 * Note, this method does not ensure the existence of the resulting path.
 	 * @param string $alias alias
-	 * @param boolean $throwException whether to throw exception if the alias is invalid.
 	 * @return string|boolean path corresponding to the alias, false if the root alias is not previously registered.
-	 * @throws Exception if the alias is invalid and $throwException is true.
 	 * @see setAlias
 	 */
-	public static function getAlias($alias, $throwException = false)
+	public static function getAlias($alias)
 	{
-		if (isset(self::$aliases[$alias])) {
+		if (!is_string($alias)) {
+			return false;
+		} elseif (isset(self::$aliases[$alias])) {
 			return self::$aliases[$alias];
 		} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
 			return $alias;
@@ -206,11 +205,7 @@ class YiiBase
 				return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
 			}
 		}
-		if ($throwException) {
-			throw new Exception("Invalid path alias: $alias");
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	/**
@@ -361,7 +356,7 @@ class YiiBase
 			$class = $config['class'];
 			unset($config['class']);
 		} else {
-			throw new InvalidCallException('Object configuration must be an array containing a "class" element.');
+			throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
 		}
 
 		if (!class_exists($class, false)) {

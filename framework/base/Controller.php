@@ -279,4 +279,15 @@ class Controller extends Component
 	{
 		return new View($this);
 	}
+
+	/**
+	 * Returns the directory containing view files for this controller.
+	 * The default implementation returns the directory named as controller [[id]] under the [[module]]'s
+	 * [[viewPath]] directory.
+	 * @return string the directory containing the view files for this controller.
+	 */
+	public function getViewPath()
+	{
+		return $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
+	}
 }
