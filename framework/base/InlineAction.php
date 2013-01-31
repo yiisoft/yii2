@@ -47,6 +47,6 @@ class InlineAction extends Action
 	{
 		$method = new \ReflectionMethod($this->controller, $this->actionMethod);
 		$args = $this->bindActionParams($method, $params);
-		return (int)$method->invokeArgs($this, $args);
+		return (int)$method->invokeArgs($this->controller, $args);
 	}
 }

@@ -100,10 +100,6 @@ class Controller extends Component
 	 */
 	public function runAction($id, $params = array())
 	{
-		if ($id === '') {
-			$id = $this->defaultAction;
-		}
-
 		$action = $this->createAction($id);
 		if ($action !== null) {
 			$oldAction = $this->action;
@@ -143,7 +139,7 @@ class Controller extends Component
 		} elseif ($pos > 0) {
 			return $this->module->runAction($route, $params);
 		} else {
-			return \Yii::$application->runAction($route, $params);
+			return \Yii::$application->runAction(ltrim($route, '/'), $params);
 		}
 	}
 
@@ -174,6 +170,10 @@ class Controller extends Component
 	 */
 	public function createAction($id)
 	{
+		if ($id === '') {
+			$id = $this->defaultAction;
+		}
+
 		$actionMap = $this->actions();
 		if (isset($actionMap[$id])) {
 			return Yii::createObject($actionMap[$id], $id, $this);

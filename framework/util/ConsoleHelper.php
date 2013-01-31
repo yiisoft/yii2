@@ -10,7 +10,7 @@
 namespace yii\util;
 
 /**
- * ConsoleHelper provides additional unility functions for console applications.
+ * ConsoleHelper provides additional utility functions for console applications.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Alexander Makarov <sam@rmcreative.ru>

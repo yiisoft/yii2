@@ -559,53 +559,52 @@ abstract class Module extends Component
 	 */
 	public function runAction($route, $params = array())
 	{
-		$route = trim($route, '/');
-		if ($route === '') {
-			$route = trim($this->defaultRoute, '/');
-		}
-		if (($pos = strpos($route, '/')) !== false) {
-			$id = substr($route, 0, $pos);
-			$route2 = substr($route, $pos + 1);
-		} else {
-			$id = $route;
-			$route2 = '';
-		}
-
-		$module = $this->getModule($id);
-		if ($module !== null) {
-			return $module->runAction($route2, $params);
-		}
-
-		$controller = $this->createController($id);
-		if ($controller !== null) {
+		$result = $this->createController($route);
+		if (is_array($result)) {
+			/** @var $controller Controller */
+			list($controller, $actionID) = $result;
 			$oldController = Yii::$application->controller;
 			Yii::$application->controller = $controller;
-
-			$status = $controller->runAction($route2, $params);
-
+			$status = $controller->runAction($actionID, $params);
 			Yii::$application->controller = $oldController;
-
 			return $status;
 		} else {
-			throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $route);
+			throw new InvalidRouteException('Unable to resolve the request: ' . trim($this->getUniqueId() . '/' . $route, '/'));
 		}
 	}
 
 	/**
 	 * Creates a controller instance based on the controller ID.
 	 *
-	 * The controller is created within the given module. The method first attempts to
+	 * The controller is created within this module. The method first attempts to
 	 * create the controller based on the [[controllerMap]] of the module. If not available,
 	 * it will look for the controller class under the [[controllerPath]] and create an
 	 * instance of it.
 	 *
-	 * @param string $id the controller ID
-	 * @return Controller the newly created controller instance
+	 * @param string $route the route consisting of module, controller and action IDs.
+	 * @return array|boolean if the controller is created successfully, it will be returned together
+	 * with the remainder of the route which represents the action ID. Otherwise false will be returned.
 	 */
-	public function createController($id)
+	public function createController($route)
 	{
+		if ($route === '') {
+			$route = $this->defaultRoute;
+		}
+		if (($pos = strpos($route, '/')) !== false) {
+			$id = substr($route, 0, $pos);
+			$route = substr($route, $pos + 1);
+		} else {
+			$id = $route;
+			$route = '';
+		}
+
+		$module = $this->getModule($id);
+		if ($module !== null) {
+			return $module->createController($route);
+		}
+
 		if (isset($this->controllerMap[$id])) {
-			return Yii::createObject($this->controllerMap[$id], $id, $this);
+			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
 			$className = StringHelper::id2camel($id) . 'Controller';
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
@@ -615,10 +614,11 @@ abstract class Module extends Component
 					require($classFile);
 				}
 				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
-					return new $className($id, $this);
+					$controller = new $className($id, $this);
 				}
 			}
 		}
-		return null;
+
+		return isset($controller) ? array($controller, $route) : false;
 	}
 }

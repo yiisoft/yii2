@@ -1,5 +1,4 @@
 <?php
-define('YII_DEBUG', true);
 /**
  * Yii console bootstrap file.
  *
@@ -8,16 +7,17 @@ define('YII_DEBUG', true);
  * @license http://www.yiiframework.com/license/
  */
 
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+
 // fcgi doesn't have STDIN defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
 require(__DIR__ . '/yii.php');
 
-$config = array(
-	'controllerPath' => '@yii/console/controllers',
-);
 $id = 'yiic';
 $basePath = __DIR__ . '/console';
 
-$application = new yii\console\Application($id, $basePath, $config);
+$application = new yii\console\Application($id, $basePath, array(
+	'controllerPath' => '@yii/console/controllers',
+));
 $application->run();

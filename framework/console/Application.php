@@ -10,7 +10,7 @@
 namespace yii\console;
 
 use yii\base\Exception;
-use yii\util\ReflectionHelper;
+use yii\base\InvalidRouteException;
 
 /**
  * Application represents a console application.
@@ -94,7 +94,29 @@ class Application extends \yii\base\Application
 		if ($request->getIsConsoleRequest()) {
 			return $this->runAction($request->route, $request->params);
 		} else {
-			die('This script must be run from the command line.');
+			echo "Error: this script must be run from the command line.";
+			return 1;
+		}
+	}
+
+
+	/**
+	 * Runs a controller action specified by a route.
+	 * This method parses the specified route and creates the corresponding child module(s), controller and action
+	 * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
+	 * If the route is empty, the method will use [[defaultRoute]].
+	 * @param string $route the route that specifies the action.
+	 * @param array $params the parameters to be passed to the action
+	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
+	 */
+	public function runAction($route, $params = array())
+	{
+		try {
+			return parent::runAction($route, $params);
+		} catch (InvalidRouteException $e) {
+			echo "\nError: unknown command \"$route\".\n";
+			return 1;
 		}
 	}
 
