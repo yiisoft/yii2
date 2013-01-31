@@ -28,8 +28,8 @@ class View extends Component
 	 */
 	public $owner;
 	/**
-	 * @var string|boolean the layout to be applied when [[render()]] or [[renderContent()]] is called.
-	 * If not set, it will use the value of [[Application::layout]]. If false, no layout will be applied.
+	 * @var string the layout to be applied when [[render()]] or [[renderContent()]] is called.
+	 * If not set, it will use the [[Module::layout]] of the currently active module.
 	 */
 	public $layout;
 	/**
@@ -393,7 +393,8 @@ class View extends Component
 	 *      * If the controller's [[Controller::layout|layout]] is a string, use it as the layout name
 	 *        and search for the layout file under the layout path of the parent module of the controller;
 	 *      * If the controller's [[Controller::layout|layout]] is null, look through its ancestor modules
-	 *        and find one whose [[Module::layout|layout]] is not null. Use the layout specified by that module;
+	 *        and find the first one whose [[Module::layout|layout]] is not null. Use the layout specified
+	 *        by that module;
 	 * - Returns false for all other cases.
 	 *
 	 * Like view names, a layout name can take several formats:
@@ -425,7 +426,7 @@ class View extends Component
 				$module = Yii::$application;
 			}
 			$view = $this->layout;
-		} elseif ($this->layout === null && $this->owner instanceof Controller) {
+		} elseif ($this->owner instanceof Controller) {
 			if (is_string($this->owner->layout)) {
 				$module = $this->owner->module;
 				$view = $this->owner->layout;
@@ -434,14 +435,13 @@ class View extends Component
 				while ($module !== null && $module->layout === null) {
 					$module = $module->module;
 				}
-				if ($module === null || !is_string($module->layout)) {
-					return false;
+				if ($module !== null && is_string($module->layout)) {
+					$view = $module->layout;
 				}
-				$view = $module->layout;
-			} else {
-				return false;
 			}
-		} else {
+		}
+
+		if (!isset($view)) {
 			return false;
 		}
 

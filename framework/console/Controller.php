@@ -9,9 +9,10 @@
 
 namespace yii\console;
 
+use Yii;
 use yii\base\Action;
+use yii\base\InvalidRequestException;
 use yii\base\InvalidRouteException;
-use yii\base\Exception;
 
 /**
  * Controller is the base class of console command classes.
@@ -57,35 +58,24 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
-	 * The default implementation will throw an exception.
-	 * @param Action $action the action being executed
-	 * @param Exception $exception the exception about the invalid parameters
+	 * Validates the parameter being bound to actions.
+	 * This method is invoked when parameters are being bound to the currently requested action.
+	 * Child classes may override this method to throw exceptions when there are missing and/or unknown parameters.
+	 * @param Action $action the currently requested action
+	 * @param array $missingParams the names of the missing parameters
+	 * @param array $unknownParams the unknown parameters (name=>value)
+	 * @throws InvalidRequestException if there are missing or unknown parameters
 	 */
-	public function invalidActionParams($action, $exception)
+	public function validateActionParams($action, $missingParams, $unknownParams)
 	{
-		echo \Yii::t('yii', 'Error: {message}', array(
-			'{message}' => $exception->getMessage(),
-		));
-		\Yii::$application->end(1);
-	}
-
-	/**
-	 * This method is invoked when extra parameters are provided to an action while it is executed.
-	 * @param Action $action the action being executed
-	 * @param array $expected the expected action parameters (name => value)
-	 * @param array $actual the actual action parameters (name => value)
-	 */
-	public function extraActionParams($action, $expected, $actual)
-	{
-		unset($expected['args'], $actual['args']);
-
-		$keys = array_diff(array_keys($actual), array_keys($expected));
-		if (!empty($keys)) {
-			echo \Yii::t('yii', 'Error: Unknown parameter(s): {params}', array(
-				'{params}' => implode(', ', $keys),
-			)) . "\n";
-			\Yii::$application->end(1);
+		if (!empty($missingParams)) {
+			throw new InvalidRequestException(Yii::t('yii', 'Missing required options: {params}', array(
+				'{params}' => implode(', ', $missingParams),
+			)));
+		} elseif (!empty($unknownParams)) {
+			throw new InvalidRequestException(Yii::t('yii', 'Unknown options: {params}', array(
+				'{params}' => implode(', ', $unknownParams),
+			)));
 		}
 	}
 
