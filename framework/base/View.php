@@ -18,15 +18,18 @@ use yii\base\Application;
  * 
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  * 
- *  
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class View extends Component
 {
 	/**
-	 * @var string the layout to be applied when [[render()]] or [[renderContent()]] is called.
-	 * If not set, it will use the value of [[Application::layout]].
+	 * @var object the object that owns this view. This can be a controller, a widget, or any other object.
+	 */
+	public $owner;
+	/**
+	 * @var string|boolean the layout to be applied when [[render()]] or [[renderContent()]] is called.
+	 * If not set, it will use the value of [[Application::layout]]. If false, no layout will be applied.
 	 */
 	public $layout;
 	/**
@@ -56,10 +59,6 @@ class View extends Component
 	public $params;
 
 	/**
-	 * @var object the object that owns this view.
-	 */
-	private $_owner;
-	/**
 	 * @var Widget[] the widgets that are currently not ended
 	 */
 	private  $_widgetStack = array();
@@ -71,29 +70,21 @@ class View extends Component
 	 */
 	public function __construct($owner, $config = array())
 	{
-		$this->_owner = $owner;
+		$this->owner = $owner;
 		parent::__construct($config);
 	}
 
 	/**
-	 * Returns the owner of this view.
-	 * @return object the owner of this view.
-	 */
-	public function getOwner()
-	{
-		return $this->_owner;
-	}
-
-	/**
-	 * Renders a view within the layout specified by [[owner]].
-	 * This method is similar to [[renderPartial()]] except that if [[owner]] specifies a layout,
+	 * Renders a view within a layout.
+	 * This method is similar to [[renderPartial()]] except that if a layout is available,
 	 * this method will embed the view result into the layout and then return it.
-	 * @param string $view the view to be rendered. This can be either a path alias or a path relative to [[searchPaths]].
+	 * @param string $view the view to be rendered. Please refer to [[findViewFile()]] on possible formats of the view name.
 	 * @param array $params the parameters that should be made available in the view. The PHP function `extract()`
 	 * will be called on this variable to extract the variables from this parameter.
 	 * @return string the rendering result
-	 * @throws InvalidCallException if the view file cannot be found
-	 * @see renderPartial()
+	 * @throws InvalidConfigException if the view file or layout file cannot be found
+	 * @see findViewFile()
+	 * @see findLayoutFile()
 	 */
 	public function render($view, $params = array())
 	{
@@ -102,10 +93,13 @@ class View extends Component
 	}
 
 	/**
-	 * Renders a text content within the layout specified by [[owner]].
-	 * If the [[owner]] does not specify any layout, the content will be returned back.
+	 * Renders a text content within a layout.
+	 * The layout being used is resolved by [[findLayout()]].
+	 * If no layout is available, the content will be returned back.
 	 * @param string $content the content to be rendered
 	 * @return string the rendering result
+	 * @throws InvalidConfigException if the layout file cannot be found
+	 * @see findLayoutFile()
 	 */
 	public function renderContent($content)
 	{
@@ -124,11 +118,7 @@ class View extends Component
 	 * It then calls [[renderFile()]] to render the view file. The rendering result is returned
 	 * as a string. If the view file does not exist, an exception will be thrown.
 	 *
-	 * View name can be a path alias representing an absolute file path (e.g. `@application/views/layout/index`),
-	 * or a path relative to [[searchPaths]]. The file suffix is optional and defaults to `.php` if not given
-	 * in the view name.
-	 *
-	 * @param string $view the view to be rendered. This can be either a path alias or a path relative to [[searchPaths]].
+	 * @param string $view the view to be rendered. Please refer to [[findViewFile()]] on possible formats of the view name.
 	 * @param array $params the parameters that should be made available in the view. The PHP function `extract()`
 	 * will be called on this variable to extract the variables from this parameter.
 	 * @return string the rendering result
@@ -162,12 +152,29 @@ class View extends Component
 		return ob_get_clean();
 	}
 
+	/**
+	 * Creates a widget.
+	 * This method will use [[Yii::createObject()]] to create the widget.
+	 * @param string $class the widget class name or path alias
+	 * @param array $properties the initial property values of the widget.
+	 * @return Widget the newly created widget instance
+	 */
 	public function createWidget($class, $properties = array())
 	{
 		$properties['class'] = $class;
-		return Yii::createObject($properties, $this->_owner);
+		return Yii::createObject($properties, $this->owner);
 	}
 
+	/**
+	 * Creates and runs a widget.
+	 * Compared with [[createWidget()]], this method does one more thing: it will
+	 * run the widget after it is created.
+	 * @param string $class the widget class name or path alias
+	 * @param array $properties the initial property values of the widget.
+	 * @param boolean $captureOutput whether to capture the output of the widget and return it as a string
+	 * @return string|Widget if $captureOutput is true, the output of the widget will be returned;
+	 * otherwise the widget object will be returned.
+	 */
 	public function widget($class, $properties = array(), $captureOutput = false)
 	{
 		if ($captureOutput) {
@@ -185,8 +192,10 @@ class View extends Component
 
 	/**
 	 * Begins a widget.
-	 * @param string $class the widget class
-	 * @param array $properties the initial property values of the widget
+	 * This method is similar to [[createWidget()]] except that it will expect a matching
+	 * [[endWidget()]] call after this.
+	 * @param string $class the widget class name or path alias
+	 * @param array $properties the initial property values of the widget.
 	 * @return Widget the widget instance
 	 */
 	public function beginWidget($class, $properties = array())
@@ -206,129 +215,134 @@ class View extends Component
 	 */
 	public function endWidget()
 	{
-		/** @var $widget Widget */
-		if (($widget = array_pop($this->_widgetStack)) !== null) {
+		$widget = array_pop($this->_widgetStack);
+		if ($widget instanceof Widget) {
 			$widget->run();
 			return $widget;
 		} else {
 			throw new Exception("Unmatched beginWidget() and endWidget() calls.");
 		}
 	}
-
-	/**
-	 * Begins recording a clip.
-	 * This method is a shortcut to beginning [[yii\widgets\Clip]]
-	 * @param string $id the clip ID.
-	 * @param array $properties initial property values for [[yii\widgets\Clip]]
-	 */
-	public function beginClip($id, $properties = array())
-	{
-		$properties['id'] = $id;
-		$this->beginWidget('yii\widgets\Clip', $properties);
-	}
-
-	/**
-	 * Ends recording a clip.
-	 */
-	public function endClip()
-	{
-		$this->endWidget();
-	}
-
-	/**
-	 * Begins fragment caching.
-	 * This method will display cached content if it is available.
-	 * If not, it will start caching and would expect an [[endCache()]]
-	 * call to end the cache and save the content into cache.
-	 * A typical usage of fragment caching is as follows,
-	 *
-	 * ~~~
-	 * if($this->beginCache($id)) {
-	 *     // ...generate content here
-	 *     $this->endCache();
-	 * }
-	 * ~~~
-	 *
-	 * @param string $id a unique ID identifying the fragment to be cached.
-	 * @param array $properties initial property values for [[yii\widgets\OutputCache]]
-	 * @return boolean whether we need to generate content for caching. False if cached version is available.
-	 * @see endCache
-	 */
-	public function beginCache($id, $properties = array())
-	{
-		$properties['id'] = $id;
-		$cache = $this->beginWidget('yii\widgets\OutputCache', $properties);
-		if ($cache->getIsContentCached()) {
-			$this->endCache();
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	/**
-	 * Ends fragment caching.
-	 * This is an alias to [[endWidget()]]
-	 * @see beginCache
-	 */
-	public function endCache()
-	{
-		$this->endWidget();
-	}
-
-	/**
-	 * Begins the rendering of content that is to be decorated by the specified view.
-	 * @param mixed $view the name of the view that will be used to decorate the content. The actual view script
-	 * is resolved via {@link getViewFile}. If this parameter is null (default),
-	 * the default layout will be used as the decorative view.
-	 * Note that if the current controller does not belong to
-	 * any module, the default layout refers to the application's {@link CWebApplication::layout default layout};
-	 * If the controller belongs to a module, the default layout refers to the module's
-	 * {@link CWebModule::layout default layout}.
-	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
-	 * @see endContent
-	 * @see yii\widgets\ContentDecorator
-	 */
-	public function beginContent($view, $params = array())
-	{
-		$this->beginWidget('yii\widgets\ContentDecorator', array(
-			'view' => $view,
-			'params' => $params,
-		));
-	}
-
-	/**
-	 * Ends the rendering of content.
-	 * @see beginContent
-	 */
-	public function endContent()
-	{
-		$this->endWidget();
-	}
+//
+//	/**
+//	 * Begins recording a clip.
+//	 * This method is a shortcut to beginning [[yii\widgets\Clip]]
+//	 * @param string $id the clip ID.
+//	 * @param array $properties initial property values for [[yii\widgets\Clip]]
+//	 */
+//	public function beginClip($id, $properties = array())
+//	{
+//		$properties['id'] = $id;
+//		$this->beginWidget('yii\widgets\Clip', $properties);
+//	}
+//
+//	/**
+//	 * Ends recording a clip.
+//	 */
+//	public function endClip()
+//	{
+//		$this->endWidget();
+//	}
+//
+//	/**
+//	 * Begins fragment caching.
+//	 * This method will display cached content if it is available.
+//	 * If not, it will start caching and would expect an [[endCache()]]
+//	 * call to end the cache and save the content into cache.
+//	 * A typical usage of fragment caching is as follows,
+//	 *
+//	 * ~~~
+//	 * if($this->beginCache($id)) {
+//	 *     // ...generate content here
+//	 *     $this->endCache();
+//	 * }
+//	 * ~~~
+//	 *
+//	 * @param string $id a unique ID identifying the fragment to be cached.
+//	 * @param array $properties initial property values for [[yii\widgets\OutputCache]]
+//	 * @return boolean whether we need to generate content for caching. False if cached version is available.
+//	 * @see endCache
+//	 */
+//	public function beginCache($id, $properties = array())
+//	{
+//		$properties['id'] = $id;
+//		$cache = $this->beginWidget('yii\widgets\OutputCache', $properties);
+//		if ($cache->getIsContentCached()) {
+//			$this->endCache();
+//			return false;
+//		} else {
+//			return true;
+//		}
+//	}
+//
+//	/**
+//	 * Ends fragment caching.
+//	 * This is an alias to [[endWidget()]]
+//	 * @see beginCache
+//	 */
+//	public function endCache()
+//	{
+//		$this->endWidget();
+//	}
+//
+//	/**
+//	 * Begins the rendering of content that is to be decorated by the specified view.
+//	 * @param mixed $view the name of the view that will be used to decorate the content. The actual view script
+//	 * is resolved via {@link getViewFile}. If this parameter is null (default),
+//	 * the default layout will be used as the decorative view.
+//	 * Note that if the current controller does not belong to
+//	 * any module, the default layout refers to the application's {@link CWebApplication::layout default layout};
+//	 * If the controller belongs to a module, the default layout refers to the module's
+//	 * {@link CWebModule::layout default layout}.
+//	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
+//	 * @see endContent
+//	 * @see yii\widgets\ContentDecorator
+//	 */
+//	public function beginContent($view, $params = array())
+//	{
+//		$this->beginWidget('yii\widgets\ContentDecorator', array(
+//			'view' => $view,
+//			'params' => $params,
+//		));
+//	}
+//
+//	/**
+//	 * Ends the rendering of content.
+//	 * @see beginContent
+//	 */
+//	public function endContent()
+//	{
+//		$this->endWidget();
+//	}
 
 	/**
 	 * Finds the view file based on the given view name.
 	 *
-	 * The rule for searching for the view file is as follows:
+	 * A view name can be specified in one of the following formats:
 	 *
-	 * - If the view name is given as a path alias, return the actual path corresponding to the alias;
-	 * - If the view name does NOT start with a slash:
-	 *       * If the view owner is a controller or widget, look for the view file under
-	 *         the controller or widget's view path (see [[Controller::viewPath]] and [[Widget::viewPath]]);
-	 *       * If the view owner is an object, look for the view file under the "views" sub-directory
-	 *         of the directory containing the object class file;
-	 *       * Otherwise, look for the view file under the application's [[Application::viewPath|view path]].
-	 * - If the view name starts with a single slash, look for the view file under the currently active
-	 *   module's [[Module::viewPath|view path]];
-	 * - If the view name starts with double slashes, look for the view file under the application's
-	 *   [[Application::viewPath|view path]].
+	 * - path alias (e.g. "@application/views/site/index");
+	 * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
+	 *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
+	 * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
+	 *   The actual view file will be looked for under the [[Module::viewPath|view path]] of the currently
+	 *   active module.
+	 * - relative path (e.g. "index"): the actual view file will be looked for under the [[owner]]'s view path.
+	 *   If [[owner]] is a widget or a controller, its view path is given by their `viewPath` property.
+	 *   If [[owner]] is an object of any other type, its view path is the `view` sub-directory of the directory
+	 *   containing the owner class file.
+	 *
+	 * If the view name does not contain a file extension, it will default to `.php`.
 	 *
 	 * If [[enableTheme]] is true and there is an active application them, the method will also
 	 * attempt to use a themed version of the view file, when available.
 	 *
+	 * And if [[enableI18N]] is true, the method will attempt to use a translated version of the view file,
+	 * when available.
+	 *
 	 * @param string $view the view name or path alias. If the view name does not specify
 	 * the view file extension name, it will use `.php` as the extension name.
-	 * @return string|boolean the view file path if it exists. False if the view file cannot be found.
+	 * @return string the view file path if it exists. False if the view file cannot be found.
+	 * @throws InvalidConfigException if the view file does not exist
 	 */
 	public function findViewFile($view)
 	{
@@ -337,18 +351,19 @@ class View extends Component
 		}
 		if (strncmp($view, '@', 1) === 0) {
 			// e.g. "@application/views/common"
-			$file = Yii::getAlias($view);
+			if (($file = Yii::getAlias($view)) === false) {
+				throw new InvalidConfigException("Invalid path alias: $view");
+			}
 		} elseif (strncmp($view, '/', 1) !== 0) {
 			// e.g. "index"
-			if ($this->_owner instanceof Controller || $this->_owner instanceof Widget) {
-				$path = $this->_owner->getViewPath() . DIRECTORY_SEPARATOR . $view;
-			} elseif ($this->_owner !== null) {
-				$class = new \ReflectionClass($this->_owner);
-				$path = dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
+			if ($this->owner instanceof Controller || $this->owner instanceof Widget) {
+				$file = $this->owner->getViewPath() . DIRECTORY_SEPARATOR . $view;
+			} elseif ($this->owner !== null) {
+				$class = new \ReflectionClass($this->owner);
+				$file = dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $view;
 			} else {
-				$path = Yii::$application->getViewPath();
+				$file = Yii::$application->getViewPath() . DIRECTORY_SEPARATOR . $view;
 			}
-			$file = $path . DIRECTORY_SEPARATOR . $view;
 		} elseif (strncmp($view, '//', 2) !== 0 && Yii::$application->controller !== null) {
 			// e.g. "/site/index"
 			$file = Yii::$application->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
@@ -363,90 +378,93 @@ class View extends Component
 			}
 			return $this->enableI18N ? FileHelper::localize($file, $this->language, $this->sourceLanguage) : $file;
 		} else {
-			return false;
+			throw new InvalidConfigException("View file for view '$view' does not exist: $file");
 		}
 	}
 
 	/**
-	 * Finds the layout file for the current [[owner]].
-	 * The method will return false if [[owner]] is not a controller.
-	 * When [[owner]] is a controller, the following algorithm is used to determine the layout file:
+	 * Finds the layout file that can be applied to the view.
 	 *
-	 * - If `content` is not a controller or if `owner.layout` is false, it will return false;
-	 * - If `owner.layout` is a string, it will look for the layout file under the [[Module::layoutPath|layout path]]
-	 *   of the controller's parent module;
-	 * - If `owner.layout` is null, the following steps are taken to resolve the actual layout to be returned:
-	 *      * Check the `layout` property of the parent module. If it is null, check the grand parent module and so on
-	 *        until a non-null layout is encountered. Let's call this module the *effective module*.
-	 *      * If the layout is null or false, it will return false;
-	 *      * Otherwise, it will look for the layout file under the layout path of the effective module.
+	 * The applicable layout is resolved according to the following rules:
 	 *
-	 * The themed layout file will be returned if theme is enabled and the theme contains such a layout file.
+	 * - If [[layout]] is specified as a string, use it as the layout name and search for the layout file
+	 *   under the layout path of the currently active module;
+	 * - If [[layout]] is null and [[owner]] is a controller:
+	 *      * If the controller's [[Controller::layout|layout]] is a string, use it as the layout name
+	 *        and search for the layout file under the layout path of the parent module of the controller;
+	 *      * If the controller's [[Controller::layout|layout]] is null, look through its ancestor modules
+	 *        and find one whose [[Module::layout|layout]] is not null. Use the layout specified by that module;
+	 * - Returns false for all other cases.
 	 *
-	 * @return string|boolean the layout file path, or false if the owner does not need layout.
-	 * @throws InvalidCallException if the layout file cannot be found
+	 * Like view names, a layout name can take several formats:
+	 *
+	 * - path alias (e.g. "@application/views/layouts/main");
+	 * - absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
+	 *   looked for under the [[Application::layoutPath|layout path]] of the application;
+	 * - relative path (e.g. "main"): the actual layout layout file will be looked for under the
+	 *   [[Module::viewPath|view path]] of the context module determined by the above layout resolution process.
+	 *
+	 * If the layout name does not contain a file extension, it will default to `.php`.
+	 *
+	 * If [[enableTheme]] is true and there is an active application them, the method will also
+	 * attempt to use a themed version of the layout file, when available.
+	 *
+	 * And if [[enableI18N]] is true, the method will attempt to use a translated version of the layout file,
+	 * when available.
+	 *
+	 * @return string|boolean the layout file path, or false if layout is not needed.
+	 * @throws InvalidConfigException if the layout file cannot be found
 	 */
 	public function findLayoutFile()
 	{
-		if ($this->layout === null || !$this->_owner instanceof Controller) {
-			$layout = Yii::$application->layout;
-		} elseif ($this->_owner->layout !== false) {
-
-		}
-		if (!$this->_owner instanceof Controller || $this->_owner->layout === false) {
-			return false;
-		}
 		/** @var $module Module */
-		$module = $this->_owner->module;
-		while ($module !== null && $module->layout === null) {
-			$module = $module->module;
-		}
-		if ($module === null || $module->layout === null || $module->layout === false) {
+		if (is_string($this->layout)) {
+			if (Yii::$application->controller) {
+				$module = Yii::$application->controller->module;
+			} else {
+				$module = Yii::$application;
+			}
+			$view = $this->layout;
+		} elseif ($this->layout === null && $this->owner instanceof Controller) {
+			if (is_string($this->owner->layout)) {
+				$module = $this->owner->module;
+				$view = $this->owner->layout;
+			} elseif ($this->owner->layout === null) {
+				$module = $this->owner->module;
+				while ($module !== null && $module->layout === null) {
+					$module = $module->module;
+				}
+				if ($module === null || !is_string($module->layout)) {
+					return false;
+				}
+				$view = $module->layout;
+			} else {
+				return false;
+			}
+		} else {
 			return false;
 		}
 
-		$view = $module->layout;
 		if (FileHelper::getExtension($view) === '') {
 			$view .= '.php';
 		}
 		if (strncmp($view, '@', 1) === 0) {
-			$file = Yii::getAlias($view);
-		} elseif (strncmp($view, '/', 1) !== 0) {
-			// e.g. "main"
-			if ($this->_owner instanceof Controller || $this->_owner instanceof Widget) {
-				$path = $this->_owner->getViewPath() . DIRECTORY_SEPARATOR . $view;
-			} elseif ($this->_owner !== null) {
-				$class = new \ReflectionClass($this->_owner);
-				$path = dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
-			} else {
-				$path = Yii::$application->getViewPath();
+			if (($file = Yii::getAlias($view)) === false) {
+				throw new InvalidConfigException("Invalid path alias: $view");
 			}
-			$file = $path . DIRECTORY_SEPARATOR . $view;
-		} elseif (strncmp($view, '//', 2) !== 0 && Yii::$application->controller !== null) {
-			// e.g. "/main"
-			$file = Yii::$application->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} else {
-			// e.g. "//main"
-			$file = Yii::$application->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
 		} elseif (strncmp($view, '/', 1) === 0) {
-			$file = $this->findAbsoluteViewFile($view);
+			$file = Yii::$application->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
 		} else {
-			$paths[] = $module->getLayoutPath();
-			$file = false;
-			foreach ($paths as $path) {
-				$f = Yii::getAlias($path . '/' . $view);
-				if ($f !== false && is_file($f)) {
-					$file = $f;
-					break;
-				}
-			}
+			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
 		}
-		if ($file === false || !is_file($file)) {
-			throw new InvalidCallException("Unable to find the layout file for layout '{$module->layout}' (specified by " . get_class($module) . ")");
-		} elseif ($this->enableI18N) {
-			return FileHelper::localize($file, $this->language, $this->sourceLanguage);
+
+		if (is_file($file)) {
+			if ($this->enableTheme && ($theme = Yii::$application->getTheme()) !== null) {
+				$file = $theme->apply($file);
+			}
+			return $this->enableI18N ? FileHelper::localize($file, $this->language, $this->sourceLanguage) : $file;
 		} else {
-			return $file;
+			throw new InvalidConfigException("Layout file for layout '$view' does not exist: $file");
 		}
 	}
 }

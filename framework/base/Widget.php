@@ -49,7 +49,7 @@ class Widget extends Component
 	public function getId($autoGenerate = true)
 	{
 		if ($autoGenerate && $this->_id === null) {
-			$this->_id = 'yw' . self::$_counter++;
+			$this->_id = 'w' . self::$_counter++;
 		}
 		return $this->_id;
 	}

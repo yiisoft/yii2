@@ -265,9 +265,9 @@ class Controller extends Component
 		return $this->createView()->render($view, $params);
 	}
 
-	public function renderText($text)
+	public function renderContent($content)
 	{
-		return $this->createView()->renderText($text);
+		return $this->createView()->renderContent($content);
 	}
 
 	public function renderPartial($view, $params = array())
