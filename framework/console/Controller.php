@@ -32,6 +32,12 @@ use yii\base\InvalidRouteException;
 class Controller extends \yii\base\Controller
 {
 	/**
+	 * @var boolean whether the call of [[confirm()]] requires a user input.
+	 * If false, [[confirm()]] will always return true no matter what user enters or not.
+	 */
+	public $interactive = true;
+
+	/**
 	 * Runs an action with the specified action ID and parameters.
 	 * If the action ID is empty, the method will use [[defaultAction]].
 	 * @param string $id the ID of the action to be executed.
@@ -80,43 +86,6 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * Reads input via the readline PHP extension if that's available, or fgets() if readline is not installed.
-	 *
-	 * @param string $message to echo out before waiting for user input
-	 * @param string $default the default string to be returned when user does not write anything.
-	 * Defaults to null, means that default string is disabled.
-	 * @return mixed line read as a string, or false if input has been closed
-	 */
-	public function prompt($message, $default = null)
-	{
-		if($default !== null) {
-			$message .= " [$default] ";
-		}
-		else {
-			$message .= ' ';
-		}
-
-		if(extension_loaded('readline')) {
-			$input = readline($message);
-			if($input !== false) {
-				readline_add_history($input);
-			}
-		}
-		else {
-			echo $message;
-			$input = fgets(STDIN);
-		}
-
-		if($input === false) {
-			return false;
-		}
-		else {
-			$input = trim($input);
-			return ($input === '' && $default !== null) ? $default : $input;
-		}
-	}
-
-	/**
 	 * Asks user to confirm by typing y or n.
 	 *
 	 * @param string $message to echo out before waiting for user input
@@ -125,9 +94,23 @@ class Controller extends \yii\base\Controller
 	 */
 	public function confirm($message, $default = false)
 	{
-		echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
+		if ($this->interactive) {
+			echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
+			$input = trim(fgets(STDIN));
+			return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+		} else {
+			return true;
+		}
+	}
 
-		$input = trim(fgets(STDIN));
-		return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+	public function error($message)
+	{
+		echo "\nError: $message\n";
+		Yii::$application->end(1);
+	}
+
+	public function globalOptions()
+	{
+		return array();
 	}
 }
