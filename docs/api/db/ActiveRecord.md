@@ -1,5 +1,5 @@
 ActiveRecord implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
-The idea is that ActiveRecord object is associated with a row in a database table
+The idea is that an ActiveRecord object is associated with a row in a database table
 so object properties are mapped to colums of the corresponding database row.
 For example, a `Customer` object is associated with a row in the `tbl_customer`
 table. Instead of writing raw SQL statements to access the data in the table,
@@ -62,7 +62,7 @@ There are two ActiveRecord methods for getting data:
 - [[find()]]
 - [[findBySql()]]
 
-They all return an [[ActiveQuery]] instance. Coupled with the various customization and query methods
+They both return an [[ActiveQuery]] instance. Coupled with the various customization and query methods
 provided by [[ActiveQuery]], ActiveRecord supports very flexible and powerful data retrieval approaches.
 
 The followings are some examples,
@@ -158,7 +158,7 @@ $customer = Customer::find($id);
 $customer->delete();
 
 // to increment the age of all customers by 1
-Customer::updateAllCounters(array('age' => +1));
+Customer::updateAllCounters(array('age' => 1));
 ~~~
 
 
@@ -386,10 +386,10 @@ When getting an ActiveRecord instance through the [[find()]] method, we will hav
 When calling [[save()]] to insert or update an ActiveRecord, we will have the following life cycles:
 
 1. [[beforeValidate()]]: will trigger an [[EVENT_BEFORE_VALIDATE]] event
-2. [[beforeSave()]]: will trigger an [[EVENT_BEFORE_INSERT]] or [[EVENT_BEFORE_UPDATE]] event
-3. perform the actual data insertion or updating
-4. [[afterSave()]]: will trigger an [[EVENT_AFTER_INSERT]] or [[EVENT_AFTER_UPDATE]] event
-5. [[afterValidate()]]: will trigger an [[EVENT_AFTER_VALIDATE]] event
+2. [[afterValidate()]]: will trigger an [[EVENT_AFTER_VALIDATE]] event
+3. [[beforeSave()]]: will trigger an [[EVENT_BEFORE_INSERT]] or [[EVENT_BEFORE_UPDATE]] event
+4. perform the actual data insertion or updating
+5. [[afterSave()]]: will trigger an [[EVENT_AFTER_INSERT]] or [[EVENT_AFTER_UPDATE]] event
 
 Finally when calling [[delete()]] to delete an ActiveRecord, we will have the following life cycles:
 

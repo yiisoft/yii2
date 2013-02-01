@@ -7,7 +7,7 @@ Attributes
 Attributes store the actual data represented by a model and can
 be accessed like object member variables. For example, a `Post` model
 may contain a `title` attribute and a `content` attribute which may be
-accessed as follows,
+accessed as follows:
 
 ~~~php
 $post->title = 'Hello, world';
@@ -51,7 +51,7 @@ Scenarios
 A model may be used in different scenarios. For example, a `User` model may be
 used to collect user login inputs, and it may also be used for user registration
 purpose. For this reason, each model has a property named `scenario` which stores
-the name of the scenario that the model is currently being used. As we will explain
+the name of the scenario that the model is currently being used in. As we will explain
 in the next few sections, the concept of scenario is mainly used in validation and
 massive attribute assignment.
 

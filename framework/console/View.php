@@ -1,55 +1,66 @@
 <?php
 /**
- * ConsoleHelper class file.
+ * View class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\util;
+namespace yii\console;
+
+// todo define how subclassing will work
+// todo add a run() or render() method
+// todo test this on all kinds of terminals, especially windows (check out lib ncurses)
+// todo not sure if all methods should be static
+
+// todo subclass DetailView
+// todo subclass GridView
+// todo more subclasses
+
 
 /**
- * ConsoleHelper provides additional utility functions for console applications.
+ * Console View is the base class for console view components
+ *
+ * A console view provides functionality to create rich console application by allowing to format output
+ * by adding color and font style to it.
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @author Alexander Makarov <sam@rmcreative.ru>
- *
  * @since 2.0
  */
-class ConsoleColor
+class View extends \yii\base\Component
 {
-	const FG_COLOR_BLACK = 30;
-	const FG_COLOR_RED = 31;
-	const FG_COLOR_GREEN = 32;
-	const FG_COLOR_YELLOW = 33;
-	const FG_COLOR_BLUE = 34;
-	const FG_COLOR_PURPLE = 35;
-	const FG_COLOR_CYAN = 36;
-	const FG_COLOR_GREY = 37;
+	const FG_BLACK = 30;
+	const FG_RED = 31;
+	const FG_GREEN = 32;
+	const FG_YELLOW = 33;
+	const FG_BLUE = 34;
+	const FG_PURPLE = 35;
+	const FG_CYAN = 36;
+	const FG_GREY = 37;
 
-	const BG_COLOR_BLACK = 40;
-	const BG_COLOR_RED = 41;
-	const BG_COLOR_GREEN = 42;
-	const BG_COLOR_YELLOW = 43;
-	const BG_COLOR_BLUE = 44;
-	const BG_COLOR_PURPLE = 45;
-	const BG_COLOR_CYAN = 46;
-	const BG_COLOR_GREY = 47;
+	const BG_BLACK = 40;
+	const BG_RED = 41;
+	const BG_GREEN = 42;
+	const BG_YELLOW = 43;
+	const BG_BLUE = 44;
+	const BG_PURPLE = 45;
+	const BG_CYAN = 46;
+	const BG_GREY = 47;
 
-	const TEXT_BOLD = 1;
-	const TEXT_ITALIC = 3;
-	const TEXT_UNDERLINE = 4;
-	const TEXT_BLINK = 5;
-	const TEXT_NEGATIVE = 7;
-	const TEXT_CONCEALED = 8;
-	const TEXT_CROSSED_OUT = 9;
-	const TEXT_FRAMED = 51;
-	const TEXT_ENCIRCLED = 52;
-	const TEXT_OVERLINED = 53;
+	const BOLD = 1;
+	const ITALIC = 3;
+	const UNDERLINE = 4;
+	const BLINK = 5;
+	const NEGATIVE = 7;
+	const CONCEALED = 8;
+	const CROSSED_OUT = 9;
+	const FRAMED = 51;
+	const ENCIRCLED = 52;
+	const OVERLINED = 53;
 
 	/**
-	 * Moves the terminal cursor up by sending ANSI code CUU to the terminal.
+	 * Moves the terminal cursor up by sending ANSI control code CUU to the terminal.
 	 * If the cursor is already at the edge of the screen, this has no effect.
 	 * @param integer $rows number of rows the cursor should be moved up
 	 */
@@ -59,7 +70,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Moves the terminal cursor down by sending ANSI code CUD to the terminal.
+	 * Moves the terminal cursor down by sending ANSI control code CUD to the terminal.
 	 * If the cursor is already at the edge of the screen, this has no effect.
 	 * @param integer $rows number of rows the cursor should be moved down
 	 */
@@ -69,7 +80,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Moves the terminal cursor forward by sending ANSI code CUF to the terminal.
+	 * Moves the terminal cursor forward by sending ANSI control code CUF to the terminal.
 	 * If the cursor is already at the edge of the screen, this has no effect.
 	 * @param integer $steps number of steps the cursor should be moved forward
 	 */
@@ -79,7 +90,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Moves the terminal cursor backward by sending ANSI code CUB to the terminal.
+	 * Moves the terminal cursor backward by sending ANSI control code CUB to the terminal.
 	 * If the cursor is already at the edge of the screen, this has no effect.
 	 * @param integer $steps number of steps the cursor should be moved backward
 	 */
@@ -89,7 +100,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Moves the terminal cursor to the beginning of the next line by sending ANSI code CNL to the terminal.
+	 * Moves the terminal cursor to the beginning of the next line by sending ANSI control code CNL to the terminal.
 	 * @param integer $lines number of lines the cursor should be moved down
 	 */
 	public static function moveCursorNextLine($lines=1)
@@ -98,7 +109,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Moves the terminal cursor to the beginning of the previous line by sending ANSI code CPL to the terminal.
+	 * Moves the terminal cursor to the beginning of the previous line by sending ANSI control code CPL to the terminal.
 	 * @param integer $lines number of lines the cursor should be moved up
 	 */
 	public static function moveCursorPrevLine($lines=1)
@@ -107,7 +118,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Moves the cursor to an absolute position given as column and row by sending ANSI code CUP or CHA to the terminal.
+	 * Moves the cursor to an absolute position given as column and row by sending ANSI control code CUP or CHA to the terminal.
 	 * @param integer $column 1-based column number, 1 is the left edge of the screen.
 	 * @param integer|null $row 1-based row number, 1 is the top edge of the screen. if not set, will move cursor only in current line.
 	 */
@@ -121,7 +132,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Scrolls whole page up by sending ANSI code SU to the terminal.
+	 * Scrolls whole page up by sending ANSI control code SU to the terminal.
 	 * New lines are added at the bottom. This is not supported by ANSI.SYS used in windows.
 	 * @param int $lines number of lines to scroll up
 	 */
@@ -131,7 +142,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Scrolls whole page down by sending ANSI code SD to the terminal.
+	 * Scrolls whole page down by sending ANSI control code SD to the terminal.
 	 * New lines are added at the top. This is not supported by ANSI.SYS used in windows.
 	 * @param int $lines number of lines to scroll down
 	 */
@@ -141,7 +152,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Saves the current cursor position by sending ANSI code SCP to the terminal.
+	 * Saves the current cursor position by sending ANSI control code SCP to the terminal.
 	 * Position can then be restored with {@link restoreCursorPosition}.
 	 */
 	public static function saveCursorPosition()
@@ -150,7 +161,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Restores the cursor position saved with {@link saveCursorPosition} by sending ANSI code RCP to the terminal.
+	 * Restores the cursor position saved with {@link saveCursorPosition} by sending ANSI control code RCP to the terminal.
 	 */
 	public static function restoreCursorPosition()
 	{
@@ -176,7 +187,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Clears entire screen content by sending ANSI code ED with argument 2 to the terminal.
+	 * Clears entire screen content by sending ANSI control code ED with argument 2 to the terminal.
 	 * Cursor position will not be changed.
 	 * **Note:** ANSI.SYS implementation used in windows will reset cursor position to upper left corner of the screen.
 	 */
@@ -186,7 +197,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Clears text from cursor to the beginning of the screen by sending ANSI code ED with argument 1 to the terminal.
+	 * Clears text from cursor to the beginning of the screen by sending ANSI control code ED with argument 1 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public static function clearScreenBeforeCursor()
@@ -195,7 +206,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Clears text from cursor to the end of the screen by sending ANSI code ED with argument 0 to the terminal.
+	 * Clears text from cursor to the end of the screen by sending ANSI control code ED with argument 0 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public static function clearScreenAfterCursor()
@@ -203,9 +214,8 @@ class ConsoleColor
 		echo "\033[0J";
 	}
 
-
 	/**
-	 * Clears the line, the cursor is currently on by sending ANSI code EL with argument 2 to the terminal.
+	 * Clears the line, the cursor is currently on by sending ANSI control code EL with argument 2 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public static function clearLine()
@@ -214,7 +224,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Clears text from cursor position to the beginning of the line by sending ANSI code EL with argument 1 to the terminal.
+	 * Clears text from cursor position to the beginning of the line by sending ANSI control code EL with argument 1 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public static function clearLineBeforeCursor()
@@ -223,7 +233,7 @@ class ConsoleColor
 	}
 
 	/**
-	 * Clears text from cursor position to the end of the line by sending ANSI code EL with argument 0 to the terminal.
+	 * Clears text from cursor position to the end of the line by sending ANSI control code EL with argument 0 to the terminal.
 	 * Cursor position will not be changed.
 	 */
 	public static function clearLineAfterCursor()
@@ -309,32 +319,32 @@ class ConsoleColor
 			{
 				switch($controlCode)
 				{
-					case static::FG_COLOR_BLACK:  $style = array('color' => '#000000'); break;
-					case static::FG_COLOR_BLUE:   $style = array('color' => '#000078'); break;
-					case static::FG_COLOR_CYAN:   $style = array('color' => '#007878'); break;
-					case static::FG_COLOR_GREEN:  $style = array('color' => '#007800'); break;
-					case static::FG_COLOR_GREY:   $style = array('color' => '#787878'); break;
-					case static::FG_COLOR_PURPLE: $style = array('color' => '#780078'); break;
-					case static::FG_COLOR_RED:    $style = array('color' => '#780000'); break;
-					case static::FG_COLOR_YELLOW: $style = array('color' => '#787800'); break;
-					case static::BG_COLOR_BLACK:  $style = array('background-color' => '#000000'); break;
-					case static::BG_COLOR_BLUE:   $style = array('background-color' => '#000078'); break;
-					case static::BG_COLOR_CYAN:   $style = array('background-color' => '#007878'); break;
-					case static::BG_COLOR_GREEN:  $style = array('background-color' => '#007800'); break;
-					case static::BG_COLOR_GREY:   $style = array('background-color' => '#787878'); break;
-					case static::BG_COLOR_PURPLE: $style = array('background-color' => '#780078'); break;
-					case static::BG_COLOR_RED:    $style = array('background-color' => '#780000'); break;
-					case static::BG_COLOR_YELLOW: $style = array('background-color' => '#787800'); break;
-					case static::TEXT_BOLD:       $style = array('font-weight' => 'bold'); break;
-					case static::TEXT_ITALIC:     $style = array('font-style' => 'italic'); break;
-					case static::TEXT_UNDERLINE:  $style = array('text-decoration' => array('underline')); break;
-					case static::TEXT_OVERLINED:  $style = array('text-decoration' => array('overline')); break;
-					case static::TEXT_CROSSED_OUT:$style = array('text-decoration' => array('line-through')); break;
-					case static::TEXT_BLINK:      $style = array('text-decoration' => array('blink')); break;
-					case static::TEXT_NEGATIVE:   // ???
-					case static::TEXT_CONCEALED:
-					case static::TEXT_ENCIRCLED:
-					case static::TEXT_FRAMED:
+					case static::FG_BLACK:  $style = array('color' => '#000000'); break;
+					case static::FG_BLUE:   $style = array('color' => '#000078'); break;
+					case static::FG_CYAN:   $style = array('color' => '#007878'); break;
+					case static::FG_GREEN:  $style = array('color' => '#007800'); break;
+					case static::FG_GREY:   $style = array('color' => '#787878'); break;
+					case static::FG_PURPLE: $style = array('color' => '#780078'); break;
+					case static::FG_RED:    $style = array('color' => '#780000'); break;
+					case static::FG_YELLOW: $style = array('color' => '#787800'); break;
+					case static::BG_BLACK:  $style = array('background-color' => '#000000'); break;
+					case static::BG_BLUE:   $style = array('background-color' => '#000078'); break;
+					case static::BG_CYAN:   $style = array('background-color' => '#007878'); break;
+					case static::BG_GREEN:  $style = array('background-color' => '#007800'); break;
+					case static::BG_GREY:   $style = array('background-color' => '#787878'); break;
+					case static::BG_PURPLE: $style = array('background-color' => '#780078'); break;
+					case static::BG_RED:    $style = array('background-color' => '#780000'); break;
+					case static::BG_YELLOW: $style = array('background-color' => '#787800'); break;
+					case static::BOLD:       $style = array('font-weight' => 'bold'); break;
+					case static::ITALIC:     $style = array('font-style' => 'italic'); break;
+					case static::UNDERLINE:  $style = array('text-decoration' => array('underline')); break;
+					case static::OVERLINED:  $style = array('text-decoration' => array('overline')); break;
+					case static::CROSSED_OUT:$style = array('text-decoration' => array('line-through')); break;
+					case static::BLINK:      $style = array('text-decoration' => array('blink')); break;
+					case static::NEGATIVE:   // ???
+					case static::CONCEALED:
+					case static::ENCIRCLED:
+					case static::FRAMED:
 					// TODO allow resetting codes
 					break;
 					case 0: // ansi reset
@@ -456,13 +466,13 @@ class ConsoleColor
 	}
 
 	/**
-	* Escapes % so they don't get interpreted as color codes
-	*
-	* @param string $string String to escape
-	*
-	* @access public
-	* @return string
-	*/
+	 * Escapes % so they don't get interpreted as color codes
+	 *
+	 * @param string $string String to escape
+	 *
+	 * @access public
+	 * @return string
+	 */
 	public static function escape($string)
 	{
 		return str_replace('%', '%%', $string);

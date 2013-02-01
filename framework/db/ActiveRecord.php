@@ -602,13 +602,13 @@ class ActiveRecord extends Model
 	 *
 	 * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
 	 *    fails, it will skip the rest of the steps;
-	 * 2. call [[beforeSave()]]. If the method returns false, it will skip the
+	 * 2. call [[afterValidate()]] when `$runValidation` is true.
+	 * 3. call [[beforeSave()]]. If the method returns false, it will skip the
 	 *    rest of the steps;
-	 * 3. insert the record into database. If this fails, it will skip the rest of the steps;
-	 * 4. call [[afterSave()]];
-	 * 5. call [[afterValidate()]] when `$runValidation` is true.
+	 * 4. insert the record into database. If this fails, it will skip the rest of the steps;
+	 * 5. call [[afterSave()]];
 	 *
-	 * In the above step 1, 2, 4 and 5, events [[EVENT_BEFORE_VALIDATE]],
+	 * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
 	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
@@ -673,13 +673,13 @@ class ActiveRecord extends Model
 	 *
 	 * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
 	 *    fails, it will skip the rest of the steps;
-	 * 2. call [[beforeSave()]]. If the method returns false, it will skip the
+	 * 2. call [[afterValidate()]] when `$runValidation` is true.
+	 * 3. call [[beforeSave()]]. If the method returns false, it will skip the
 	 *    rest of the steps;
-	 * 3. save the record into database. If this fails, it will skip the rest of the steps;
-	 * 4. call [[afterSave()]];
-	 * 5. call [[afterValidate()]] when `$runValidation` is true.
+	 * 4. save the record into database. If this fails, it will skip the rest of the steps;
+	 * 5. call [[afterSave()]];
 	 *
-	 * In the above step 1, 2, 4 and 5, events [[EVENT_BEFORE_VALIDATE]],
+	 * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
 	 * [[EVENT_BEFORE_UPDATE]], [[EVENT_AFTER_UPDATE]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *

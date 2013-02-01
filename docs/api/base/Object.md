@@ -31,6 +31,3 @@ If a property has only a getter method and has no setter method, it is considere
 to modify the property value will cause an exception.
 
 One can call [[hasProperty]], [[canGetProperty]] and/or [[canSetProperty]] to check the existence of a property.
-
-Besides the property feature, the Object class defines a static method [[create]] which provides a convenient
-alternative way of creating a new object instance.
