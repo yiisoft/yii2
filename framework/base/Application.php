@@ -359,6 +359,15 @@ class Application extends Module
 	}
 
 	/**
+	 * Returns the view renderer.
+	 * @return ViewRenderer the view renderer used by this application.
+	 */
+	public function getViewRenderer()
+	{
+		return $this->getComponent('viewRenderer');
+	}
+
+	/**
 	 * Sets default path aliases.
 	 */
 	public function registerDefaultAliases()

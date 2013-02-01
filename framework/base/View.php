@@ -137,13 +137,37 @@ class View extends Component
 
 	/**
 	 * Renders a view file.
-	 * This method will extract the given parameters and include the view file.
-	 * It captures the output of the included view file and returns it as a string.
+	 *
+	 * If a [[ViewRenderer|view renderer]] is installed, this method will try to use the view renderer
+	 * to render the view file. Otherwise, it will simply include the view file, capture its output
+	 * and return it as a string.
+	 *
+	 * @param string $file the view file.
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return string the rendering result
+	 */
+	public function renderFile($file, $params = array())
+	{
+		$renderer = Yii::$application->getViewRenderer();
+		if ($renderer !== null) {
+			return $renderer->render($this, $file, $params);
+		} else {
+			return $this->renderPhpFile($file, $params);
+		}
+	}
+
+	/**
+	 * Renders a view file as a PHP script.
+	 *
+	 * This method treats the view file as a PHP script and includes the file.
+	 * It extracts the given parameters and makes them available in the view file.
+	 * The method captures the output of the included view file and returns it as a string.
+	 *
 	 * @param string $_file_ the view file.
 	 * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
 	 * @return string the rendering result
 	 */
-	public function renderFile($_file_, $_params_ = array())
+	public function renderPhpFile($_file_, $_params_ = array())
 	{
 		ob_start();
 		ob_implicit_flush(false);
