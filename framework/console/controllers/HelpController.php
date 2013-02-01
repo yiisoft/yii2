@@ -55,7 +55,7 @@ class HelpController extends Controller
 		} else {
 			$result = \Yii::$application->createController($args[0]);
 			if ($result === false) {
-				echo "\nError: no help for unknown command \"{$args[0]}\".\n";
+				echo "Error: no help for unknown command \"{$args[0]}\".\n";
 				return 1;
 			}
 
@@ -213,7 +213,7 @@ class HelpController extends Controller
 	{
 		$action = $controller->createAction($actionID);
 		if ($action === null) {
-			echo "Unknown sub-command: " . $controller->getUniqueId() . "/$actionID\n";
+			echo 'Error: no help for unknown sub-command "' . $controller->getUniqueId() . "/$actionID\".\n";
 			return 1;
 		}
 		if ($action instanceof InlineAction) {

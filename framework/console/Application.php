@@ -85,7 +85,6 @@ class Application extends \yii\base\Application
 	 * Processes the request.
 	 * The request is represented in terms of a controller route and action parameters.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
-	 * @throws Exception if the route cannot be resolved into a controller
 	 */
 	public function processRequest()
 	{
@@ -99,7 +98,6 @@ class Application extends \yii\base\Application
 		}
 	}
 
-
 	/**
 	 * Runs a controller action specified by a route.
 	 * This method parses the specified route and creates the corresponding child module(s), controller and action
@@ -108,7 +106,6 @@ class Application extends \yii\base\Application
 	 * @param string $route the route that specifies the action.
 	 * @param array $params the parameters to be passed to the action
 	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
-	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
 	 */
 	public function runAction($route, $params = array())
 	{
@@ -150,5 +147,10 @@ class Application extends \yii\base\Application
 				'class' => 'yii\console\Response',
 			),
 		));
+	}
+
+	public function usageError($message)
+	{
+
 	}
 }

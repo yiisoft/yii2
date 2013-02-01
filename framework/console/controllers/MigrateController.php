@@ -99,17 +99,19 @@ class MigrateController extends Controller
 
 	public function beforeAction($action)
 	{
-		$path = Yii::getAlias($this->migrationPath);
-		if ($path === false || !is_dir($path)) {
-			echo 'Error: the migration directory does not exist "' . $this->migrationPath . "\"\n";
+		if (parent::beforeAction($action)) {
+			$path = Yii::getAlias($this->migrationPath);
+			if ($path === false || !is_dir($path)) {
+				echo 'Error: the migration directory does not exist "' . $this->migrationPath . "\"\n";
+				return false;
+			}
+			$this->migrationPath = $path;
+			$version = Yii::getVersion();
+			echo "\nYii Migration Tool v2.0 (based on Yii v{$version})\n\n";
+			return true;
+		} else {
 			return false;
 		}
-		$this->migrationPath = $path;
-
-		$yiiVersion = Yii::getVersion();
-		echo "\nYii Migration Tool v2.0 (based on Yii v{$yiiVersion})\n\n";
-
-		return parent::beforeAction($action);
 	}
 
 	/**
@@ -129,15 +131,15 @@ class MigrateController extends Controller
 		}
 
 		$n = count($migrations);
-		if ($n === $total)
+		if ($n === $total) {
 			echo "Total $n new " . ($n === 1 ? 'migration' : 'migrations') . " to be applied:\n";
-		else
-				{
-					echo "Total $n out of $total new " . ($total === 1 ? 'migration' : 'migrations') . " to be applied:\n";
-				}
+		} else {
+			echo "Total $n out of $total new " . ($total === 1 ? 'migration' : 'migrations') . " to be applied:\n";
+		}
 
-		foreach ($migrations as $migration)
+		foreach ($migrations as $migration) {
 			echo "    $migration\n";
+		}
 		echo "\n";
 
 		if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
@@ -154,8 +156,9 @@ class MigrateController extends Controller
 	public function actionDown($args)
 	{
 		$step = isset($args[0]) ? (int)$args[0] : 1;
-		if ($step < 1)
+		if ($step < 1) {
 			die("Error: The step parameter must be greater than 0.\n");
+		}
 
 		if (($migrations = $this->getMigrationHistory($step)) === array()) {
 			echo "No migration has been done before.\n";
@@ -165,8 +168,9 @@ class MigrateController extends Controller
 
 		$n = count($migrations);
 		echo "Total $n " . ($n === 1 ? 'migration' : 'migrations') . " to be reverted:\n";
-		foreach ($migrations as $migration)
+		foreach ($migrations as $migration) {
 			echo "    $migration\n";
+		}
 		echo "\n";
 
 		if ($this->confirm('Revert the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
@@ -183,8 +187,9 @@ class MigrateController extends Controller
 	public function actionRedo($args)
 	{
 		$step = isset($args[0]) ? (int)$args[0] : 1;
-		if ($step < 1)
+		if ($step < 1) {
 			die("Error: The step parameter must be greater than 0.\n");
+		}
 
 		if (($migrations = $this->getMigrationHistory($step)) === array()) {
 			echo "No migration has been done before.\n";
@@ -194,8 +199,9 @@ class MigrateController extends Controller
 
 		$n = count($migrations);
 		echo "Total $n " . ($n === 1 ? 'migration' : 'migrations') . " to be redone:\n";
-		foreach ($migrations as $migration)
+		foreach ($migrations as $migration) {
 			echo "    $migration\n";
+		}
 		echo "\n";
 
 		if ($this->confirm('Redo the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
@@ -217,16 +223,18 @@ class MigrateController extends Controller
 
 	public function actionTo($args)
 	{
-		if (isset($args[0]))
+		if (isset($args[0])) {
 			$version = $args[0];
-		else
+		} else {
 			$this->usageError('Please specify which version to migrate to.');
+		}
 
 		$originalVersion = $version;
-		if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches))
+		if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
 			$version = 'm' . $matches[1];
-		else
+		} else {
 			die("Error: The version option must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).\n");
+		}
 
 		// try migrate up
 		$migrations = $this->getNewMigrations();
@@ -241,10 +249,11 @@ class MigrateController extends Controller
 		$migrations = array_keys($this->getMigrationHistory(-1));
 		foreach ($migrations as $i => $migration) {
 			if (strpos($migration, $version . '_') === 0) {
-				if ($i === 0)
+				if ($i === 0) {
 					echo "Already at '$originalVersion'. Nothing needs to be done.\n";
-				else
+				} else {
 					$this->actionDown(array($i));
+				}
 				return;
 			}
 		}
@@ -254,15 +263,17 @@ class MigrateController extends Controller
 
 	public function actionMark($args)
 	{
-		if (isset($args[0]))
+		if (isset($args[0])) {
 			$version = $args[0];
-		else
+		} else {
 			$this->usageError('Please specify which version to mark to.');
+		}
 		$originalVersion = $version;
-		if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches))
+		if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
 			$version = 'm' . $matches[1];
-		else
+		} else {
 			die("Error: The version option must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).\n");
+		}
 
 		$db = $this->getDb();
 
@@ -288,13 +299,14 @@ class MigrateController extends Controller
 		$migrations = array_keys($this->getMigrationHistory(-1));
 		foreach ($migrations as $i => $migration) {
 			if (strpos($migration, $version . '_') === 0) {
-				if ($i === 0)
+				if ($i === 0) {
 					echo "Already at '$originalVersion'. Nothing needs to be done.\n";
-				else {
+				} else {
 					if ($this->confirm("Set migration history at $originalVersion?")) {
 						$command = $db->createCommand();
-						for ($j = 0; $j < $i; ++$j)
+						for ($j = 0; $j < $i; ++$j) {
 							$command->delete($this->migrationTable, $db->quoteColumnName('version') . '=:version', array(':version' => $migrations[$j]));
+						}
 						echo "The migration history is set at $originalVersion.\nNo actual migration was performed.\n";
 					}
 				}
@@ -309,16 +321,18 @@ class MigrateController extends Controller
 	{
 		$limit = isset($args[0]) ? (int)$args[0] : -1;
 		$migrations = $this->getMigrationHistory($limit);
-		if ($migrations === array())
+		if ($migrations === array()) {
 			echo "No migration has been done before.\n";
-		else {
+		} else {
 			$n = count($migrations);
-			if ($limit > 0)
+			if ($limit > 0) {
 				echo "Showing the last $n applied " . ($n === 1 ? 'migration' : 'migrations') . ":\n";
-			else
+			} else {
 				echo "Total $n " . ($n === 1 ? 'migration has' : 'migrations have') . " been applied before:\n";
-			foreach ($migrations as $version => $time)
+			}
+			foreach ($migrations as $version => $time) {
 				echo "    (" . date('Y-m-d H:i:s', $time) . ') ' . $version . "\n";
+			}
 		}
 	}
 
@@ -326,30 +340,34 @@ class MigrateController extends Controller
 	{
 		$limit = isset($args[0]) ? (int)$args[0] : -1;
 		$migrations = $this->getNewMigrations();
-		if ($migrations === array())
+		if ($migrations === array()) {
 			echo "No new migrations found. Your system is up-to-date.\n";
-		else {
+		} else {
 			$n = count($migrations);
 			if ($limit > 0 && $n > $limit) {
 				$migrations = array_slice($migrations, 0, $limit);
 				echo "Showing $limit out of $n new " . ($n === 1 ? 'migration' : 'migrations') . ":\n";
-			} else
+			} else {
 				echo "Found $n new " . ($n === 1 ? 'migration' : 'migrations') . ":\n";
+			}
 
-			foreach ($migrations as $migration)
+			foreach ($migrations as $migration) {
 				echo "    " . $migration . "\n";
+			}
 		}
 	}
 
 	public function actionCreate($args)
 	{
-		if (isset($args[0]))
+		if (isset($args[0])) {
 			$name = $args[0];
-		else
+		} else {
 			$this->usageError('Please provide the name of the new migration.');
+		}
 
-		if (!preg_match('/^\w+$/', $name))
+		if (!preg_match('/^\w+$/', $name)) {
 			die("Error: The name of the migration must contain letters, digits and/or underscore characters only.\n");
+		}
 
 		$name = 'm' . gmdate('ymd_His') . '_' . $name;
 		$content = strtr($this->getTemplate(), array('{ClassName}' => $name));
@@ -363,8 +381,9 @@ class MigrateController extends Controller
 
 	protected function migrateUp($class)
 	{
-		if ($class === self::BASE_MIGRATION)
+		if ($class === self::BASE_MIGRATION) {
 			return;
+		}
 
 		echo "*** applying $class\n";
 		$start = microtime(true);
@@ -385,8 +404,9 @@ class MigrateController extends Controller
 
 	protected function migrateDown($class)
 	{
-		if ($class === self::BASE_MIGRATION)
+		if ($class === self::BASE_MIGRATION) {
 			return;
+		}
 
 		echo "*** reverting $class\n";
 		$start = microtime(true);
@@ -419,12 +439,15 @@ class MigrateController extends Controller
 
 	protected function getDb()
 	{
-		if ($this->_db !== null)
+		if ($this->_db !== null) {
 			return $this->_db;
-		else if (($this->_db = Yii::$application->getComponent($this->connectionID)) instanceof CDbConnection)
-			return $this->_db;
-		else
-			die("Error: CMigrationCommand.connectionID '{$this->connectionID}' is invalid. Please make sure it refers to the ID of a CDbConnection application component.\n");
+		} else {
+			if (($this->_db = Yii::$application->getComponent($this->connectionID)) instanceof CDbConnection) {
+				return $this->_db;
+			} else {
+				die("Error: CMigrationCommand.connectionID '{$this->connectionID}' is invalid. Please make sure it refers to the ID of a CDbConnection application component.\n");
+			}
+		}
 	}
 
 	protected function getMigrationHistory($limit)
@@ -459,17 +482,20 @@ class MigrateController extends Controller
 	protected function getNewMigrations()
 	{
 		$applied = array();
-		foreach ($this->getMigrationHistory(-1) as $version => $time)
+		foreach ($this->getMigrationHistory(-1) as $version => $time) {
 			$applied[substr($version, 1, 13)] = true;
+		}
 
 		$migrations = array();
 		$handle = opendir($this->migrationPath);
 		while (($file = readdir($handle)) !== false) {
-			if ($file === '.' || $file === '..')
+			if ($file === '.' || $file === '..') {
 				continue;
+			}
 			$path = $this->migrationPath . DIRECTORY_SEPARATOR . $file;
-			if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && is_file($path) && !isset($applied[$matches[2]]))
+			if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && is_file($path) && !isset($applied[$matches[2]])) {
 				$migrations[] = $matches[1];
+			}
 		}
 		closedir($handle);
 		sort($migrations);
@@ -478,9 +504,9 @@ class MigrateController extends Controller
 
 	protected function getTemplate()
 	{
-		if ($this->templateFile !== null)
+		if ($this->templateFile !== null) {
 			return file_get_contents(Yii::getPathOfAlias($this->templateFile) . '.php');
-		else
+		} else {
 			return <<<EOD
 <?php
 
@@ -508,5 +534,6 @@ class {ClassName} extends CDbMigration
 	*/
 }
 EOD;
+		}
 	}
 }

@@ -54,66 +54,18 @@ class ErrorHandler extends Component
 	public $exception;
 
 
-	public function init()
-	{
-		set_exception_handler(array($this, 'handleException'));
-		set_error_handler(array($this, 'handleError'), error_reporting());
-	}
-
-	/**
-	 * Handles PHP execution errors such as warnings, notices.
-	 *
-	 * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
-	 *
-	 * @param integer $code the level of the error raised
-	 * @param string $message the error message
-	 * @param string $file the filename that the error was raised in
-	 * @param integer $line the line number the error was raised at
-	 * @throws \ErrorException the error exception
-	 */
-	public function handleError($code, $message, $file, $line)
-	{
-		if(error_reporting()!==0) {
-			throw new \ErrorException($message, 0, $code, $file, $line);
-		}
-	}
-
 	/**
 	 * @param \Exception $exception
 	 */
-	public function handleException($exception)
+	public function handle($exception)
 	{
-		// disable error capturing to avoid recursive errors while handling exceptions
-		restore_error_handler();
-		restore_exception_handler();
-
 		$this->exception = $exception;
-		$this->logException($exception);
 
 		if ($this->discardExistingOutput) {
 			$this->clearOutput();
 		}
 
-		try {
-			$this->render($exception);
-		} catch (\Exception $e) {
-			// use the most primitive way to display exception thrown in the error view
-			$this->renderAsText($e);
-		}
-
-
-		try {
-			\Yii::$application->end(1);
-		} catch (Exception $e2) {
-			// use the most primitive way to log error occurred in end()
-			$msg = get_class($e2) . ': ' . $e2->getMessage() . ' (' . $e2->getFile() . ':' . $e2->getLine() . ")\n";
-			$msg .= $e2->getTraceAsString() . "\n";
-			$msg .= "Previous error:\n";
-			$msg .= $e2->getTraceAsString() . "\n";
-			$msg .= '$_SERVER=' . var_export($_SERVER, true);
-			error_log($msg);
-			exit(1);
-		}
+		$this->render($exception);
 	}
 
 	protected function render($exception)
@@ -280,19 +232,6 @@ class ErrorHandler extends Component
 	public function htmlEncode($text)
 	{
 		return htmlspecialchars($text, ENT_QUOTES, \Yii::$application->charset);
-	}
-
-	public function logException($exception)
-	{
-		$category = get_class($exception);
-		if ($exception instanceof HttpException) {
-			/** @var $exception HttpException */
-			$category .= '\\' . $exception->statusCode;
-		} elseif ($exception instanceof \ErrorException) {
-			/** @var $exception \ErrorException */
-			$category .= '\\' . $exception->getSeverity();
-		}
-		\Yii::error((string)$exception, $category);
 	}
 
 	public function clearOutput()

@@ -11,7 +11,6 @@ namespace yii\base;
 
 use Yii;
 use yii\util\FileHelper;
-use yii\base\InvalidCallException;
 
 /**
  * Application is the base class for all application classes.
@@ -76,11 +75,9 @@ class Application extends Module
 	 */
 	public $sourceLanguage = 'en_us';
 	/**
-	 * @var array IDs of application components that need to be loaded when the application starts.
-	 * The default value is `array('errorHandler')`, which loads the [[errorHandler]] component
-	 * to ensure errors and exceptions can be handled nicely.
+	 * @var array IDs of the components that need to be loaded when the application starts.
 	 */
-	public $preload = array('errorHandler');
+	public $preload = array();
 	/**
 	 * @var Controller the currently active controller instance
 	 */
@@ -110,8 +107,15 @@ class Application extends Module
 		Yii::$application = $this;
 		$this->id = $id;
 		$this->setBasePath($basePath);
+
+		if (YII_ENABLE_ERROR_HANDLER) {
+			set_exception_handler(array($this, 'handleException'));
+			set_error_handler(array($this, 'handleError'), error_reporting());
+		}
+
 		$this->registerDefaultAliases();
 		$this->registerCoreComponents();
+
 		Component::__construct($config);
 	}
 
@@ -253,61 +257,61 @@ class Application extends Module
 		date_default_timezone_set($value);
 	}
 
-//	/**
-//	 * Returns the security manager component.
-//	 * @return SecurityManager the security manager application component.
-//	 */
-//	public function getSecurityManager()
-//	{
-//		return $this->getComponent('securityManager');
-//	}
-//
-//	/**
-//	 * Returns the locale instance.
-//	 * @param string $localeID the locale ID (e.g. en_US). If null, the {@link getLanguage application language ID} will be used.
-//	 * @return CLocale the locale instance
-//	 */
-//	public function getLocale($localeID = null)
-//	{
-//		return CLocale::getInstance($localeID === null ? $this->getLanguage() : $localeID);
-//	}
-//
-//	/**
-//	 * @return CNumberFormatter the locale-dependent number formatter.
-//	 * The current {@link getLocale application locale} will be used.
-//	 */
-//	public function getNumberFormatter()
-//	{
-//		return $this->getLocale()->getNumberFormatter();
-//	}
-//
-//	/**
-//	 * Returns the locale-dependent date formatter.
-//	 * @return CDateFormatter the locale-dependent date formatter.
-//	 * The current {@link getLocale application locale} will be used.
-//	 */
-//	public function getDateFormatter()
-//	{
-//		return $this->getLocale()->getDateFormatter();
-//	}
-//
-//	/**
-//	 * Returns the core message translations component.
-//	 * @return \yii\i18n\MessageSource the core message translations
-//	 */
-//	public function getCoreMessages()
-//	{
-//		return $this->getComponent('coreMessages');
-//	}
-//
-//	/**
-//	 * Returns the application message translations component.
-//	 * @return \yii\i18n\MessageSource the application message translations
-//	 */
-//	public function getMessages()
-//	{
-//		return $this->getComponent('messages');
-//	}
+	//	/**
+	//	 * Returns the security manager component.
+	//	 * @return SecurityManager the security manager application component.
+	//	 */
+	//	public function getSecurityManager()
+	//	{
+	//		return $this->getComponent('securityManager');
+	//	}
+	//
+	//	/**
+	//	 * Returns the locale instance.
+	//	 * @param string $localeID the locale ID (e.g. en_US). If null, the {@link getLanguage application language ID} will be used.
+	//	 * @return CLocale the locale instance
+	//	 */
+	//	public function getLocale($localeID = null)
+	//	{
+	//		return CLocale::getInstance($localeID === null ? $this->getLanguage() : $localeID);
+	//	}
+	//
+	//	/**
+	//	 * @return CNumberFormatter the locale-dependent number formatter.
+	//	 * The current {@link getLocale application locale} will be used.
+	//	 */
+	//	public function getNumberFormatter()
+	//	{
+	//		return $this->getLocale()->getNumberFormatter();
+	//	}
+	//
+	//	/**
+	//	 * Returns the locale-dependent date formatter.
+	//	 * @return CDateFormatter the locale-dependent date formatter.
+	//	 * The current {@link getLocale application locale} will be used.
+	//	 */
+	//	public function getDateFormatter()
+	//	{
+	//		return $this->getLocale()->getDateFormatter();
+	//	}
+	//
+	//	/**
+	//	 * Returns the core message translations component.
+	//	 * @return \yii\i18n\MessageSource the core message translations
+	//	 */
+	//	public function getCoreMessages()
+	//	{
+	//		return $this->getComponent('coreMessages');
+	//	}
+	//
+	//	/**
+	//	 * Returns the application message translations component.
+	//	 * @return \yii\i18n\MessageSource the application message translations
+	//	 */
+	//	public function getMessages()
+	//	{
+	//		return $this->getComponent('messages');
+	//	}
 
 	/**
 	 * Returns the database connection component.
@@ -389,5 +393,74 @@ class Application extends Module
 				'class' => 'yii\web\UrlManager',
 			),
 		));
+	}
+
+	/**
+	 * Handles PHP execution errors such as warnings, notices.
+	 *
+	 * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
+	 *
+	 * @param integer $code the level of the error raised
+	 * @param string $message the error message
+	 * @param string $file the filename that the error was raised in
+	 * @param integer $line the line number the error was raised at
+	 * @throws \ErrorException the error exception
+	 */
+	public function handleError($code, $message, $file, $line)
+	{
+		if (error_reporting() !== 0) {
+			throw new \ErrorException($message, 0, $code, $file, $line);
+		}
+	}
+
+	/**
+	 * Handles uncaught PHP exceptions.
+	 *
+	 * This method is implemented as a PHP exception handler. It requires
+	 * that constant YII_ENABLE_ERROR_HANDLER be defined true.
+	 *
+	 * @param \Exception $exception exception that is not caught
+	 */
+	public function handleException($exception)
+	{
+		// disable error capturing to avoid recursive errors while handling exceptions
+		restore_error_handler();
+		restore_exception_handler();
+
+		try {
+			$this->logException($exception);
+
+			if (($handler = $this->getErrorHandler()) !== null) {
+				$handler->handle($exception);
+			} else {
+				$message = YII_DEBUG ? (string)$exception : 'Error: ' . $exception->getMessage() . "\n";
+				echo PHP_SAPI === 'cli' ? $message : '<pre>' . $message . '</pre>';
+			}
+
+			$this->end(1);
+
+		} catch(\Exception $e) {
+			// exception could be thrown in end() or ErrorHandler::handle()
+			$msg = (string)$e;
+			$msg .= "\nPrevious exception:\n";
+			$msg .= (string)$exception;
+			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
+			error_log($msg);
+			exit(1);
+		}
+	}
+
+	// todo: to be polished
+	protected function logException($exception)
+	{
+		$category = get_class($exception);
+		if ($exception instanceof HttpException) {
+			/** @var $exception HttpException */
+			$category .= '\\' . $exception->statusCode;
+		} elseif ($exception instanceof \ErrorException) {
+			/** @var $exception \ErrorException */
+			$category .= '\\' . $exception->getSeverity();
+		}
+		Yii::error((string)$exception, $category);
 	}
 }

@@ -29,6 +29,11 @@ defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 0);
  * This constant defines the framework installation directory.
  */
 defined('YII_PATH') or define('YII_PATH', __DIR__);
+/**
+ * This constant defines whether error handling should be enabled. Defaults to true.
+ */
+defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
+
 
 /**
  * YiiBase is the core helper class for the Yii framework.

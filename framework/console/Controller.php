@@ -103,7 +103,7 @@ class Controller extends \yii\base\Controller
 		}
 	}
 
-	public function error($message)
+	public function usageError($message)
 	{
 		echo "\nError: $message\n";
 		Yii::$application->end(1);
