@@ -9,8 +9,10 @@
 
 namespace yii\console;
 
+use Yii;
 use yii\base\Action;
-use yii\base\Exception;
+use yii\base\InvalidRequestException;
+use yii\base\InvalidRouteException;
 
 /**
  * Controller is the base class of console command classes.
@@ -30,72 +32,56 @@ use yii\base\Exception;
 class Controller extends \yii\base\Controller
 {
 	/**
-	 * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
-	 * The default implementation will throw an exception.
-	 * @param Action $action the action being executed
-	 * @param Exception $exception the exception about the invalid parameters
+	 * @var boolean whether the call of [[confirm()]] requires a user input.
+	 * If false, [[confirm()]] will always return true no matter what user enters or not.
 	 */
-	public function invalidActionParams($action, $exception)
-	{
-		echo \Yii::t('yii', 'Error: {message}', array(
-			'{message}' => $exception->getMessage(),
-		));
-		\Yii::$application->end(1);
-	}
+	public $interactive = true;
 
 	/**
-	 * This method is invoked when extra parameters are provided to an action while it is executed.
-	 * @param Action $action the action being executed
-	 * @param array $expected the expected action parameters (name => value)
-	 * @param array $actual the actual action parameters (name => value)
+	 * Runs an action with the specified action ID and parameters.
+	 * If the action ID is empty, the method will use [[defaultAction]].
+	 * @param string $id the ID of the action to be executed.
+	 * @param array $params the parameters (name-value pairs) to be passed to the action.
+	 * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
+	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
+	 * @see createAction
 	 */
-	public function extraActionParams($action, $expected, $actual)
+	public function runAction($id, $params = array())
 	{
-		unset($expected['args'], $actual['args']);
-
-		$keys = array_diff(array_keys($actual), array_keys($expected));
-		if (!empty($keys)) {
-			echo \Yii::t('yii', 'Error: Unknown parameter(s): {params}', array(
-				'{params}' => implode(', ', $keys),
-			)) . "\n";
-			\Yii::$application->end(1);
-		}
-	}
-
-	/**
-	 * Reads input via the readline PHP extension if that's available, or fgets() if readline is not installed.
-	 *
-	 * @param string $message to echo out before waiting for user input
-	 * @param string $default the default string to be returned when user does not write anything.
-	 * Defaults to null, means that default string is disabled.
-	 * @return mixed line read as a string, or false if input has been closed
-	 */
-	public function prompt($message, $default = null)
-	{
-		if($default !== null) {
-			$message .= " [$default] ";
-		}
-		else {
-			$message .= ' ';
-		}
-
-		if(extension_loaded('readline')) {
-			$input = readline($message);
-			if($input !== false) {
-				readline_add_history($input);
+		if ($params !== array()) {
+			$class = new \ReflectionClass($this);
+			foreach ($params as $name => $value) {
+				if ($class->hasProperty($name)) {
+					$property = $class->getProperty($name);
+					if ($property->isPublic() && !$property->isStatic() && $property->getDeclaringClass()->getName() === get_class($this)) {
+						$this->$name = $value;
+						unset($params[$name]);
+					}
+				}
 			}
 		}
-		else {
-			echo $message;
-			$input = fgets(STDIN);
-		}
+		return parent::runAction($id, $params);
+	}
 
-		if($input === false) {
-			return false;
-		}
-		else {
-			$input = trim($input);
-			return ($input === '' && $default !== null) ? $default : $input;
+	/**
+	 * Validates the parameter being bound to actions.
+	 * This method is invoked when parameters are being bound to the currently requested action.
+	 * Child classes may override this method to throw exceptions when there are missing and/or unknown parameters.
+	 * @param Action $action the currently requested action
+	 * @param array $missingParams the names of the missing parameters
+	 * @param array $unknownParams the unknown parameters (name=>value)
+	 * @throws InvalidRequestException if there are missing or unknown parameters
+	 */
+	public function validateActionParams($action, $missingParams, $unknownParams)
+	{
+		if (!empty($missingParams)) {
+			throw new InvalidRequestException(Yii::t('yii', 'Missing required options: {params}', array(
+				'{params}' => implode(', ', $missingParams),
+			)));
+		} elseif (!empty($unknownParams)) {
+			throw new InvalidRequestException(Yii::t('yii', 'Unknown options: {params}', array(
+				'{params}' => implode(', ', $unknownParams),
+			)));
 		}
 	}
 
@@ -108,9 +94,23 @@ class Controller extends \yii\base\Controller
 	 */
 	public function confirm($message, $default = false)
 	{
-		echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
+		if ($this->interactive) {
+			echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
+			$input = trim(fgets(STDIN));
+			return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+		} else {
+			return true;
+		}
+	}
 
-		$input = trim(fgets(STDIN));
-		return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+	public function usageError($message)
+	{
+		echo "\nError: $message\n";
+		Yii::$application->end(1);
+	}
+
+	public function globalOptions()
+	{
+		return array();
 	}
 }

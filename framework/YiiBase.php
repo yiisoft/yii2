@@ -8,9 +8,8 @@
  */
 
 use yii\base\Exception;
-use yii\logging\Logger;
-use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
+use yii\logging\Logger;
 
 /**
  * Gets the application start timestamp.
@@ -30,6 +29,11 @@ defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 0);
  * This constant defines the framework installation directory.
  */
 defined('YII_PATH') or define('YII_PATH', __DIR__);
+/**
+ * This constant defines whether error handling should be enabled. Defaults to true.
+ */
+defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
+
 
 /**
  * YiiBase is the core helper class for the Yii framework.
@@ -121,8 +125,8 @@ class YiiBase
 	 *
 	 * To import a class or a directory, one can use either path alias or class name (can be namespaced):
 	 *
-	 *  - `@app/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
-	 *  - `@app/components/*`: importing the whole `components` directory with a path alias;
+	 *  - `@application/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
+	 *  - `@application/components/*`: importing the whole `components` directory with a path alias;
 	 *  - `GoogleMap`: importing the `GoogleMap` class with a class name. [[autoload()]] will be used
 	 *  when this class is used for the first time.
 	 *
@@ -189,14 +193,14 @@ class YiiBase
 	 *
 	 * Note, this method does not ensure the existence of the resulting path.
 	 * @param string $alias alias
-	 * @param boolean $throwException whether to throw exception if the alias is invalid.
 	 * @return string|boolean path corresponding to the alias, false if the root alias is not previously registered.
-	 * @throws Exception if the alias is invalid and $throwException is true.
 	 * @see setAlias
 	 */
-	public static function getAlias($alias, $throwException = false)
+	public static function getAlias($alias)
 	{
-		if (isset(self::$aliases[$alias])) {
+		if (!is_string($alias)) {
+			return false;
+		} elseif (isset(self::$aliases[$alias])) {
 			return self::$aliases[$alias];
 		} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
 			return $alias;
@@ -206,11 +210,7 @@ class YiiBase
 				return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
 			}
 		}
-		if ($throwException) {
-			throw new Exception("Invalid path alias: $alias");
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	/**
@@ -322,12 +322,12 @@ class YiiBase
 	 * the class. For example,
 	 *
 	 * - `\app\components\GoogleMap`: fully-qualified namespaced class.
-	 * - `@app/components/GoogleMap`: an alias
+	 * - `@application/components/GoogleMap`: an alias
 	 *
 	 * Below are some usage examples:
 	 *
 	 * ~~~
-	 * $object = \Yii::createObject('@app/components/GoogleMap');
+	 * $object = \Yii::createObject('@application/components/GoogleMap');
 	 * $object = \Yii::createObject(array(
 	 *     'class' => '\app\components\GoogleMap',
 	 *     'apiKey' => 'xyz',
@@ -361,7 +361,7 @@ class YiiBase
 			$class = $config['class'];
 			unset($config['class']);
 		} else {
-			throw new InvalidCallException('Object configuration must be an array containing a "class" element.');
+			throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
 		}
 
 		if (!class_exists($class, false)) {

@@ -39,13 +39,14 @@ class EmailTarget extends Target
 	public $headers = array();
 
 	/**
-	 * Sends log [[messages]] to specified email addresses.
-	 * @param boolean $final whether this method is called at the end of the current application
+	 * Sends log messages to specified email addresses.
+	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
+	 * of each message.
 	 */
-	public function exportMessages($final)
+	public function export($messages)
 	{
 		$body = '';
-		foreach ($this->messages as $message) {
+		foreach ($messages as $message) {
 			$body .= $this->formatMessage($message);
 		}
 		$body = wordwrap($body, 70);

@@ -10,6 +10,7 @@
 namespace yii\util;
 
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * Filesystem helper
@@ -37,7 +38,7 @@ class FileHelper
 	 * If the given path does not refer to an existing directory, an exception will be thrown.
 	 * @param string $path the given path. This can also be a path alias.
 	 * @return string the normalized path
-	 * @throws Exception if the path does not refer to an existing directory.
+	 * @throws InvalidConfigException if the path does not refer to an existing directory.
 	 */
 	public static function ensureDirectory($path)
 	{
@@ -45,8 +46,22 @@ class FileHelper
 		if ($p !== false && ($p = realpath($p)) !== false && is_dir($p)) {
 			return $p;
 		} else {
-			throw new Exception('Directory does not exist: ' . $path);
+			throw new InvalidConfigException('Directory does not exist: ' . $path);
 		}
+	}
+
+	/**
+	 * Normalizes a file/directory path.
+	 * After normalization, the directory separators in the path will be `DIRECTORY_SEPARATOR`,
+	 * and any trailing directory separators will be removed. For example, '/home\demo/' on Linux
+	 * will be normalized as '/home/demo'.
+	 * @param string $path the file/directory path to be normalized
+	 * @param string $ds the directory separator to be used in the normalized result. Defaults to `DIRECTORY_SEPARATOR`.
+	 * @return string the normalized file/directory path
+	 */
+	public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
+	{
+		return rtrim(strtr($path, array('/' => $ds, '\\' => $ds)), $ds);
 	}
 
 	/**

@@ -9,18 +9,29 @@
 
 namespace yii\base;
 
+use Yii;
+use yii\util\StringHelper;
 use yii\util\FileHelper;
 
 /**
  * Module is the base class for module and application classes.
  *
- * Module mainly manages application components and sub-modules that belongs to a module.
+ * A module represents a sub-application which contains MVC elements by itself, such as
+ * models, views, controllers, etc.
+ *
+ * A module may consist of [[modules|sub-modules]].
+ *
+ * [[components|Components]] may be registered with the module so that they are globally
+ * accessible within the module.
  *
  * @property string $uniqueId An ID that uniquely identifies this module among all modules within
  * the current application.
  * @property string $basePath The root directory of the module. Defaults to the directory containing the module class.
+ * @property string $controllerPath The directory containing the controller classes. Defaults to "[[basePath]]/controllers".
+ * @property string $viewPath The directory containing the view files within this module. Defaults to "[[basePath]]/views".
+ * @property string $layoutPath The directory containing the layout view files within this module. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The configuration of the currently installed modules (module ID => configuration).
- * @property array $components The application components (indexed by their IDs).
+ * @property array $components The components (indexed by their IDs) registered within this module.
  * @property array $import List of aliases to be imported. This property is write-only.
  * @property array $aliases List of aliases to be defined. This property is write-only.
  *
@@ -34,7 +45,7 @@ abstract class Module extends Component
 	 */
 	public $params = array();
 	/**
-	 * @var array the IDs of the application components that should be preloaded when this module is created.
+	 * @var array the IDs of the components that should be preloaded when this module is created.
 	 */
 	public $preload = array();
 	/**
@@ -86,27 +97,27 @@ abstract class Module extends Component
 	/**
 	 * @var string the root directory of the module.
 	 */
-	protected $_basePath;
+	private $_basePath;
 	/**
 	 * @var string the root directory that contains view files for this module
 	 */
-	protected $_viewPath;
+	private $_viewPath;
 	/**
 	 * @var string the root directory that contains layout view files for this module.
 	 */
-	protected $_layoutPath;
+	private $_layoutPath;
 	/**
 	 * @var string the directory containing controller classes in the module.
 	 */
-	protected $_controllerPath;
+	private $_controllerPath;
 	/**
 	 * @var array child modules of this module
 	 */
-	protected $_modules = array();
+	private $_modules = array();
 	/**
-	 * @var array application components of this module
+	 * @var array components registered under this module
 	 */
-	protected $_components = array();
+	private $_components = array();
 
 	/**
 	 * Constructor.
@@ -123,9 +134,9 @@ abstract class Module extends Component
 
 	/**
 	 * Getter magic method.
-	 * This method is overridden to support accessing application components
+	 * This method is overridden to support accessing components
 	 * like reading module properties.
-	 * @param string $name application component or property name
+	 * @param string $name component or property name
 	 * @return mixed the named property value
 	 */
 	public function __get($name)
@@ -140,7 +151,7 @@ abstract class Module extends Component
 	/**
 	 * Checks if a property value is null.
 	 * This method overrides the parent implementation by checking
-	 * if the named application component is loaded.
+	 * if the named component is loaded.
 	 * @param string $name the property name or the event name
 	 * @return boolean whether the property value is null
 	 */
@@ -161,18 +172,21 @@ abstract class Module extends Component
 	 */
 	public function init()
 	{
-		\Yii::setAlias('@' . $this->id, $this->getBasePath());
+		Yii::setAlias('@' . $this->id, $this->getBasePath());
 		$this->preloadComponents();
 	}
 
 	/**
 	 * Returns an ID that uniquely identifies this module among all modules within the current application.
+	 * Note that if the module is an application, an empty string will be returned.
 	 * @return string the unique ID of the module.
 	 */
 	public function getUniqueId()
 	{
-		if ($this->module && !$this->module instanceof Application) {
-			return $this->module->getUniqueId() . "/{$this->id}";
+		if ($this instanceof Application) {
+			return '';
+		} elseif ($this->module) {
+			return $this->module->getUniqueId() . '/' . $this->id;
 		} else {
 			return $this->id;
 		}
@@ -229,8 +243,8 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * @return string the root directory of view files. Defaults to 'moduleDir/views' where
-	 * moduleDir is the directory containing the module class.
+	 * Returns the directory that contains the view files for this module.
+	 * @return string the root directory of view files. Defaults to "[[basePath]]/view".
 	 */
 	public function getViewPath()
 	{
@@ -252,8 +266,8 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * @return string the root directory of layout files. Defaults to 'moduleDir/views/layouts' where
-	 * moduleDir is the directory containing the module class.
+	 * Returns the directory that contains layout view files for this module.
+	 * @return string the root directory of layout files. Defaults to "[[viewPath]]/layouts".
 	 */
 	public function getLayoutPath()
 	{
@@ -277,19 +291,19 @@ abstract class Module extends Component
 	/**
 	 * Imports the specified path aliases.
 	 * This method is provided so that you can import a set of path aliases when configuring a module.
-	 * The path aliases will be imported by calling [[\Yii::import()]].
+	 * The path aliases will be imported by calling [[Yii::import()]].
 	 * @param array $aliases list of path aliases to be imported
 	 */
 	public function setImport($aliases)
 	{
 		foreach ($aliases as $alias) {
-			\Yii::import($alias);
+			Yii::import($alias);
 		}
 	}
 
 	/**
 	 * Defines path aliases.
-	 * This method calls [[\Yii::setAlias()]] to register the path aliases.
+	 * This method calls [[Yii::setAlias()]] to register the path aliases.
 	 * This method is provided so that you can define path aliases when configuring a module.
 	 * @param array $aliases list of path aliases to be defined. The array keys are alias names
 	 * (must start with '@') and the array values are the corresponding paths or aliases.
@@ -297,7 +311,7 @@ abstract class Module extends Component
 	 *
 	 * ~~~
 	 * array(
-	 *	'@models' => '@app/models', // an existing alias
+	 *	'@models' => '@application/models', // an existing alias
 	 *	'@backend' => __DIR__ . '/../backend',  // a directory
 	 * )
 	 * ~~~
@@ -305,7 +319,7 @@ abstract class Module extends Component
 	public function setAliases($aliases)
 	{
 		foreach ($aliases as $name => $alias) {
-			\Yii::setAlias($name, $alias);
+			Yii::setAlias($name, $alias);
 		}
 	}
 
@@ -334,8 +348,8 @@ abstract class Module extends Component
 			if ($this->_modules[$id] instanceof Module) {
 				return $this->_modules[$id];
 			} elseif ($load) {
-				\Yii::trace("Loading \"$id\" module", __CLASS__);
-				return $this->_modules[$id] = \Yii::createObject($this->_modules[$id], $id, $this);
+				Yii::trace("Loading module: $id", __CLASS__);
+				return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
 			}
 		}
 		return null;
@@ -388,7 +402,7 @@ abstract class Module extends Component
 	 *
 	 * Each sub-module should be specified as a name-value pair, where
 	 * name refers to the ID of the module and value the module or a configuration
-	 * array that can be used to create the module. In the latter case, [[\Yii::createObject()]]
+	 * array that can be used to create the module. In the latter case, [[Yii::createObject()]]
 	 * will be used to create the module.
 	 *
 	 * If a new sub-module has the same ID as an existing one, the existing one will be overwritten silently.
@@ -418,8 +432,8 @@ abstract class Module extends Component
 
 	/**
 	 * Checks whether the named component exists.
-	 * @param string $id application component ID
-	 * @return boolean whether the named application component exists. Both loaded and unloaded components
+	 * @param string $id component ID
+	 * @return boolean whether the named component exists. Both loaded and unloaded components
 	 * are considered.
 	 */
 	public function hasComponent($id)
@@ -428,11 +442,10 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Retrieves the named application component.
-	 * @param string $id application component ID (case-sensitive)
+	 * Retrieves the named component.
+	 * @param string $id component ID (case-sensitive)
 	 * @param boolean $load whether to load the component if it is not yet loaded.
-	 * @return Component|null the application component instance, null if the application component
-	 * does not exist.
+	 * @return Component|null the component instance, null if the component does not exist.
 	 * @see hasComponent()
 	 */
 	public function getComponent($id, $load = true)
@@ -441,22 +454,22 @@ abstract class Module extends Component
 			if ($this->_components[$id] instanceof Component) {
 				return $this->_components[$id];
 			} elseif ($load) {
-				\Yii::trace("Loading \"$id\" application component", __CLASS__);
-				return $this->_components[$id] = \Yii::createObject($this->_components[$id]);
+				Yii::trace("Loading component: $id", __CLASS__);
+				return $this->_components[$id] = Yii::createObject($this->_components[$id]);
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * Registers an application component in this module.
+	 * Registers a component with this module.
 	 * @param string $id component ID
-	 * @param Component|array|null $component the component to be added to the module. This can
+	 * @param Component|array|null $component the component to be registered with the module. This can
 	 * be one of the followings:
 	 *
 	 * - a [[Component]] object
 	 * - a configuration array: when [[getComponent()]] is called initially for this component, the array
-	 *   will be used to instantiate the component
+	 *   will be used to instantiate the component via [[Yii::createObject()]].
 	 * - null: the named component will be removed from the module
 	 */
 	public function setComponent($id, $component)
@@ -469,11 +482,11 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Returns the application components.
+	 * Returns the registered components.
 	 * @param boolean $loadedOnly whether to return the loaded components only. If this is set false,
 	 * then all components specified in the configuration will be returned, whether they are loaded or not.
 	 * Loaded components will be returned as objects, while unloaded components as configuration arrays.
-	 * @return array the application components (indexed by their IDs)
+	 * @return array the components (indexed by their IDs)
 	 */
 	public function getComponents($loadedOnly = false)
 	{
@@ -491,11 +504,11 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Registers a set of application components in this module.
+	 * Registers a set of components in this module.
 	 *
-	 * Each application component should be specified as a name-value pair, where
+	 * Each component should be specified as a name-value pair, where
 	 * name refers to the ID of the component and value the component or a configuration
-	 * array that can be used to create the component. In the latter case, [[\Yii::createObject()]]
+	 * array that can be used to create the component. In the latter case, [[Yii::createObject()]]
 	 * will be used to create the component.
 	 *
 	 * If a new component has the same ID as an existing one, the existing one will be overwritten silently.
@@ -515,7 +528,7 @@ abstract class Module extends Component
 	 * )
 	 * ~~~
 	 *
-	 * @param array $components application components (id => component configuration or instance)
+	 * @param array $components components (id => component configuration or instance)
 	 */
 	public function setComponents($components)
 	{
@@ -525,12 +538,87 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Loads application components that are declared in [[preload]].
+	 * Loads components that are declared in [[preload]].
 	 */
 	public function preloadComponents()
 	{
 		foreach ($this->preload as $id) {
 			$this->getComponent($id);
 		}
+	}
+
+	/**
+	 * Runs a controller action specified by a route.
+	 * This method parses the specified route and creates the corresponding child module(s), controller and action
+	 * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
+	 * If the route is empty, the method will use [[defaultRoute]].
+	 * @param string $route the route that specifies the action.
+	 * @param array $params the parameters to be passed to the action
+	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
+	 */
+	public function runAction($route, $params = array())
+	{
+		$result = $this->createController($route);
+		if (is_array($result)) {
+			/** @var $controller Controller */
+			list($controller, $actionID) = $result;
+			$oldController = Yii::$application->controller;
+			Yii::$application->controller = $controller;
+			$status = $controller->runAction($actionID, $params);
+			Yii::$application->controller = $oldController;
+			return $status;
+		} else {
+			throw new InvalidRouteException('Unable to resolve the request: ' . trim($this->getUniqueId() . '/' . $route, '/'));
+		}
+	}
+
+	/**
+	 * Creates a controller instance based on the controller ID.
+	 *
+	 * The controller is created within this module. The method first attempts to
+	 * create the controller based on the [[controllerMap]] of the module. If not available,
+	 * it will look for the controller class under the [[controllerPath]] and create an
+	 * instance of it.
+	 *
+	 * @param string $route the route consisting of module, controller and action IDs.
+	 * @return array|boolean if the controller is created successfully, it will be returned together
+	 * with the remainder of the route which represents the action ID. Otherwise false will be returned.
+	 */
+	public function createController($route)
+	{
+		if ($route === '') {
+			$route = $this->defaultRoute;
+		}
+		if (($pos = strpos($route, '/')) !== false) {
+			$id = substr($route, 0, $pos);
+			$route = substr($route, $pos + 1);
+		} else {
+			$id = $route;
+			$route = '';
+		}
+
+		$module = $this->getModule($id);
+		if ($module !== null) {
+			return $module->createController($route);
+		}
+
+		if (isset($this->controllerMap[$id])) {
+			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
+		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
+			$className = StringHelper::id2camel($id) . 'Controller';
+			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
+			if (is_file($classFile)) {
+				$className = $this->controllerNamespace . '\\' . $className;
+				if (!class_exists($className, false)) {
+					require($classFile);
+				}
+				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
+					$controller = new $className($id, $this);
+				}
+			}
+		}
+
+		return isset($controller) ? array($controller, $route) : false;
 	}
 }

@@ -52,90 +52,46 @@ class ErrorHandler extends Component
 	 * @var \Exception the exception that is being handled currently
 	 */
 	public $exception;
-	/**
-	 * @var boolean whether to log errors also using error_log(). Defaults to true.
-	 * Note that errors captured by the error handler are always logged by [[\Yii::error()]].
-	 */
-	public $logErrors = true;
 
-	public function init()
-	{
-		set_exception_handler(array($this, 'handleException'));
-		set_error_handler(array($this, 'handleError'), error_reporting());
-	}
-
-	/**
-	 * Handles PHP execution errors such as warnings, notices.
-	 *
-	 * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
-	 *
-	 * @param integer $code the level of the error raised
-	 * @param string $message the error message
-	 * @param string $file the filename that the error was raised in
-	 * @param integer $line the line number the error was raised at
-	 * @throws \ErrorException the error exception
-	 */
-	public function handleError($code, $message, $file, $line)
-	{
-		if(error_reporting()!==0) {
-			throw new \ErrorException($message, 0, $code, $file, $line);
-		}
-	}
 
 	/**
 	 * @param \Exception $exception
 	 */
-	public function handleException($exception)
+	public function handle($exception)
 	{
-		// disable error capturing to avoid recursive errors while handling exceptions
-		restore_error_handler();
-		restore_exception_handler();
-
 		$this->exception = $exception;
-		$this->logException($exception);
 
 		if ($this->discardExistingOutput) {
 			$this->clearOutput();
 		}
 
-		try {
-			$this->render($exception);
-		} catch (\Exception $e) {
-			// use the most primitive way to display exception thrown in the error view
-			$this->renderAsText($e);
-		}
-
-
-		try {
-			\Yii::$application->end(1);
-		} catch (Exception $e2) {
-			// use the most primitive way to log error occurred in end()
-			$msg = get_class($e2) . ': ' . $e2->getMessage() . ' (' . $e2->getFile() . ':' . $e2->getLine() . ")\n";
-			$msg .= $e2->getTraceAsString() . "\n";
-			$msg .= "Previous error:\n";
-			$msg .= $e2->getTraceAsString() . "\n";
-			$msg .= '$_SERVER=' . var_export($_SERVER, true);
-			error_log($msg);
-			exit(1);
-		}
+		$this->render($exception);
 	}
 
 	protected function render($exception)
 	{
 		if ($this->errorAction !== null) {
-			\Yii::$application->runController($this->errorAction);
+			\Yii::$application->runAction($this->errorAction);
 		} elseif (\Yii::$application instanceof \yii\web\Application) {
 			if (!headers_sent()) {
 				$errorCode = $exception instanceof HttpException ? $exception->statusCode : 500;
 				header("HTTP/1.0 $errorCode " . get_class($exception));
 			}
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-				$this->renderAsText($exception);
+				\Yii::$application->renderException($exception);
 			} else {
-				$this->renderAsHtml($exception);
+				$view = new View($this);
+				if (!YII_DEBUG || $exception instanceof Exception && $exception->causedByUser) {
+					$viewName = $this->errorView;
+				} else {
+					$viewName = $this->exceptionView;
+				}
+				echo $view->render($viewName, array(
+					'exception' => $exception,
+				));
 			}
 		} else {
-			$this->renderAsText($exception);
+			\Yii::$application->renderException($exception);
 		}
 	}
 
@@ -286,22 +242,6 @@ class ErrorHandler extends Component
 		return htmlspecialchars($text, ENT_QUOTES, \Yii::$application->charset);
 	}
 
-	public function logException($exception)
-	{
-		$category = get_class($exception);
-		if ($exception instanceof HttpException) {
-			/** @var $exception HttpException */
-			$category .= '\\' . $exception->statusCode;
-		} elseif ($exception instanceof \ErrorException) {
-			/** @var $exception \ErrorException */
-			$category .= '\\' . $exception->getSeverity();
-		}
-		\Yii::error((string)$exception, $category);
-		if ($this->logErrors) {
-			error_log($exception);
-		}
-	}
-
 	public function clearOutput()
 	{
 		// the following manual level counting is to deal with zlib.output_compression set to On
@@ -313,22 +253,14 @@ class ErrorHandler extends Component
 	/**
 	 * @param \Exception $exception
 	 */
-	public function renderAsText($exception)
-	{
-		if (YII_DEBUG) {
-			echo $exception;
-		} else {
-			echo get_class($exception) . ': ' . $exception->getMessage();
-		}
-	}
-
-	/**
-	 * @param \Exception $exception
-	 */
 	public function renderAsHtml($exception)
 	{
-		$view = new View;
-		$view->context = $this;
+		$view = new View($this);
+		if (!YII_DEBUG || $exception instanceof Exception && $exception->causedByUser) {
+			$viewName = $this->errorView;
+		} else {
+			$viewName = $this->exceptionView;
+		}
 		$name = !YII_DEBUG || $exception instanceof HttpException ? $this->errorView : $this->exceptionView;
 		echo $view->render($name, array(
 			'exception' => $exception,

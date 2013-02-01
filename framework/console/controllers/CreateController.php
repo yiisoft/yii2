@@ -165,8 +165,8 @@ class CreateController extends Controller
 	}
 
 	/**
-	 * @param string $path1 abosolute path
-	 * @param string $path2 abosolute path
+	 * @param string $path1 absolute path
+	 * @param string $path2 absolute path
 	 *
 	 * @return string relative path
 	 */

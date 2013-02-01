@@ -34,4 +34,12 @@ class Exception extends \yii\base\Exception
 		$this->errorInfo = $errorInfo;
 		parent::__construct($message, $code);
 	}
+
+	/**
+	 * @return string the user-friendly name of this exception
+	 */
+	public function getName()
+	{
+		return \Yii::t('yii', 'Database Exception');
+	}
 }

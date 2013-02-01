@@ -129,4 +129,39 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	{
 		return 'SET FOREIGN_KEY_CHECKS=' . ($check ? 1 : 0);
 	}
+
+	/**
+	 * Generates a batch INSERT SQL statement.
+	 * For example,
+	 *
+	 * ~~~
+	 * $connection->createCommand()->batchInsert('tbl_user', array('name', 'age'), array(
+	 *     array('Tom', 30),
+	 *     array('Jane', 20),
+	 *     array('Linda', 25),
+	 * ))->execute();
+	 * ~~~
+	 *
+	 * Not that the values in each row must match the corresponding column names.
+	 *
+	 * @param string $table the table that new rows will be inserted into.
+	 * @param array $columns the column names
+	 * @param array $rows the rows to be batch inserted into the table
+	 * @return string the batch INSERT SQL statement
+	 */
+	public function batchInsert($table, $columns, $rows)
+	{
+		$values = array();
+		foreach ($rows as $row) {
+			$vs = array();
+			foreach ($row as $value) {
+				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
+			}
+			$values[] = $vs;
+		}
+
+		return 'INSERT INTO ' . $this->db->quoteTableName($table)
+			. ' (' . implode(', ', $columns) . ') VALUES ('
+			. implode(', ', $values) . ')';
+	}
 }

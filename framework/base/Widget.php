@@ -49,7 +49,7 @@ class Widget extends Component
 	public function getId($autoGenerate = true)
 	{
 		if ($autoGenerate && $this->_id === null) {
-			$this->_id = 'yw' . self::$_counter++;
+			$this->_id = 'w' . self::$_counter++;
 		}
 		return $this->_id;
 	}
@@ -80,7 +80,7 @@ class Widget extends Component
 	 * To determine which view file should be rendered, the method calls [[findViewFile()]] which
 	 * will search in the directories as specified by [[basePath]].
 	 *
-	 * View name can be a path alias representing an absolute file path (e.g. `@app/views/layout/index`),
+	 * View name can be a path alias representing an absolute file path (e.g. `@application/views/layout/index`),
 	 * or a path relative to [[basePath]]. The file suffix is optional and defaults to `.php` if not given
 	 * in the view name.
 	 *
@@ -101,5 +101,17 @@ class Widget extends Component
 	public function createView()
 	{
 		return new View($this);
+	}
+
+	/**
+	 * Returns the directory containing the view files for this widget.
+	 * The default implementation returns the 'views' subdirectory under the directory containing the widget class file.
+	 * @return string the directory containing the view files for this widget.
+	 */
+	public function getViewPath()
+	{
+		$className = get_class($this);
+		$class = new \ReflectionClass($className);
+		return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
 	}
 }

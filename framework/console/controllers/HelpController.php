@@ -12,6 +12,7 @@ namespace yii\console\controllers;
 use yii\base\Application;
 use yii\base\InlineAction;
 use yii\console\Controller;
+use yii\util\StringHelper;
 
 /**
  * This command provides help information about console commands.
@@ -54,16 +55,16 @@ class HelpController extends Controller
 		} else {
 			$result = \Yii::$application->createController($args[0]);
 			if ($result === false) {
-				echo "Unknown command: " . $args[0] . "\n";
+				echo "Error: no help for unknown command \"{$args[0]}\".\n";
 				return 1;
 			}
 
-			list($controller, $action) = $result;
+			list($controller, $actionID) = $result;
 
-			if ($action === '') {
+			if ($actionID === '') {
 				$status = $this->getControllerHelp($controller);
 			} else {
-				$status = $this->getActionHelp($controller, $action);
+				$status = $this->getActionHelp($controller, $actionID);
 			}
 		}
 		return $status;
@@ -87,13 +88,13 @@ class HelpController extends Controller
 	 */
 	public function getActions($controller)
 	{
-		$actions = array_keys($controller->actionMap);
+		$actions = array_keys($controller->actions());
 		$class = new \ReflectionClass($controller);
 		foreach ($class->getMethods() as $method) {
 			/** @var $method \ReflectionMethod */
 			$name = $method->getName();
-			if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0) {
-				$actions[] = lcfirst(substr($name, 6));
+			if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
+				$actions[] = StringHelper::camel2id(substr($name, 6));
 			}
 		}
 		sort($actions);
@@ -107,11 +108,7 @@ class HelpController extends Controller
 	 */
 	protected function getModuleCommands($module)
 	{
-		if ($module instanceof Application) {
-			$prefix = '';
-		} else {
-			$prefix = $module->getUniqueId() . '/';
-		}
+		$prefix = $module instanceof Application ? '' : $module->getUniqueID() . '/';
 
 		$commands = array();
 		foreach (array_keys($module->controllerMap) as $id) {
@@ -145,12 +142,12 @@ class HelpController extends Controller
 	{
 		$commands = $this->getCommands();
 		if ($commands !== array()) {
-			echo "\n    Usage: yiic <command-name> [...options...]\n\n";
-			echo "The following commands are available:\n";
+			echo "\nUsage: yiic <command-name> [...options...]\n\n";
+			echo "The following commands are available:\n\n";
 			foreach ($commands as $command) {
-				echo " - $command\n";
+				echo " * $command\n";
 			}
-			echo "\nTo see individual command help, enter:\n";
+			echo "\nTo see the help of each command, enter:\n";
 			echo "\n    yiic help <command-name>\n";
 		} else {
 			echo "\nNo commands are found.\n";
@@ -195,7 +192,7 @@ class HelpController extends Controller
 			$prefix = $controller->getUniqueId();
 			foreach ($actions as $action) {
 				if ($controller->defaultAction === $action) {
-					echo " * $prefix/$action (default)\n";
+					echo " * $prefix (default)\n";
 				} else {
 					echo " * $prefix/$action\n";
 				}
@@ -216,7 +213,7 @@ class HelpController extends Controller
 	{
 		$action = $controller->createAction($actionID);
 		if ($action === null) {
-			echo "Unknown sub-command: " . $controller->getUniqueId() . "/$actionID\n";
+			echo 'Error: no help for unknown sub-command "' . $controller->getUniqueId() . "/$actionID\".\n";
 			return 1;
 		}
 		if ($action instanceof InlineAction) {
@@ -312,7 +309,7 @@ class HelpController extends Controller
 	{
 		$options = array();
 		foreach ($class->getProperties() as $property) {
-			if (!$property->isPublic() || $property->isStatic() || $property->getDeclaringClass()->getName() === 'yii\base\Controller') {
+			if (!$property->isPublic() || $property->isStatic() || $property->getDeclaringClass()->getName() !== get_class($controller)) {
 				continue;
 			}
 			$name = $property->getName();

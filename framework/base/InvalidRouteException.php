@@ -1,6 +1,6 @@
 <?php
 /**
- * InvalidConfigException class file.
+ * InvalidRouteException class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -10,19 +10,24 @@
 namespace yii\base;
 
 /**
- * InvalidConfigException represents an exception caused by incorrect object configuration.
+ * InvalidRouteException represents an exception caused by an invalid route.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class InvalidConfigException extends \Exception
+class InvalidRouteException extends \Exception
 {
+	/**
+	 * @var boolean whether this exception is caused by end user's mistake (e.g. wrong URL)
+	 */
+	public $causedByUser = true;
+
 	/**
 	 * @return string the user-friendly name of this exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Invalid Configuration');
+		return \Yii::t('yii', 'Invalid Route');
 	}
 }
 

@@ -485,13 +485,38 @@ class Command extends \yii\base\Component
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column data (name=>value) to be inserted into the table.
-	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
 	 */
-	public function insert($table, $columns, $params = array())
+	public function insert($table, $columns)
 	{
+		$params = array();
 		$sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
 		return $this->setSql($sql)->bindValues($params);
+	}
+
+	/**
+	 * Creates a batch INSERT command.
+	 * For example,
+	 *
+	 * ~~~
+	 * $connection->createCommand()->batchInsert('tbl_user', array('name', 'age'), array(
+	 *     array('Tom', 30),
+	 *     array('Jane', 20),
+	 *     array('Linda', 25),
+	 * ))->execute();
+	 * ~~~
+	 *
+	 * Not that the values in each row must match the corresponding column names.
+	 *
+	 * @param string $table the table that new rows will be inserted into.
+	 * @param array $columns the column names
+	 * @param array $rows the rows to be batch inserted into the table
+	 * @return Command the command object itself
+	 */
+	public function batchInsert($table, $columns, $rows)
+	{
+		$sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
+		return $this->setSql($sql);
 	}
 
 	/**

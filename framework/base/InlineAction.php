@@ -9,19 +9,34 @@
 
 namespace yii\base;
 
-use yii\util\ReflectionHelper;
-
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
- * The name of the controller method should be in the format of `actionXyz`
- * where `Xyz` stands for the action ID (e.g. `actionIndex`).
+ * The name of the controller method is available via [[actionMethod]] which
+ * is set by the [[controller]] who creates this action.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class InlineAction extends Action
 {
+	/**
+	 * @var string the controller method that  this inline action is associated with
+	 */
+	public $actionMethod;
+
+	/**
+	 * @param string $id the ID of this action
+	 * @param Controller $controller the controller that owns this action
+	 * @param string $actionMethod the controller method that  this inline action is associated with
+	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 */
+	public function __construct($id, $controller, $actionMethod, $config = array())
+	{
+		$this->actionMethod = $actionMethod;
+		parent::__construct($id, $controller, $config);
+	}
+
 	/**
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
@@ -30,16 +45,8 @@ class InlineAction extends Action
 	 */
 	public function runWithParams($params)
 	{
-		try {
-			$method = 'action' . $this->id;
-			$ps = ReflectionHelper::extractMethodParams($this->controller, $method, $params);
-		} catch (Exception $e) {
-			$this->controller->invalidActionParams($this, $e);
-			return 1;
-		}
-		if ($params !== $ps) {
-			$this->controller->extraActionParams($this, $ps, $params);
-		}
-		return (int)call_user_func_array(array($this->controller, $method), $ps);
+		$method = new \ReflectionMethod($this->controller, $this->actionMethod);
+		$args = $this->bindActionParams($method, $params);
+		return (int)$method->invokeArgs($this->controller, $args);
 	}
 }

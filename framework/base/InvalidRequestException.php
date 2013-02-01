@@ -17,5 +17,17 @@ namespace yii\base;
  */
 class InvalidRequestException extends \Exception
 {
+	/**
+	 * @var boolean whether this exception is caused by end user's mistake (e.g. wrong URL)
+	 */
+	public $causedByUser = true;
+
+	/**
+	 * @return string the user-friendly name of this exception
+	 */
+	public function getName()
+	{
+		return \Yii::t('yii', 'Invalid Request');
+	}
 }
 
