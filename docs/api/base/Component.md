@@ -7,7 +7,7 @@ is triggered (i.e. comment will be added), our custom code will be executed.
 
 An event is identified by a name that should be unique within the class it is defined at. Event names are *case-sensitive*.
 
-One or multiple PHP callbacks, called *event handlers*, could be attached to event. You can call [[trigger()]] to
+One or multiple PHP callbacks, called *event handlers*, could be attached to an event. You can call [[trigger()]] to
 raise an event. When an event is raised, the event handlers will be invoked automatically in the order they were
 attached.
 
@@ -24,7 +24,7 @@ Valid event handlers include:
 
 - anonymous function: `function($event) { ... }`
 - object method: `array($object, 'handleAdd')`
-- static method: `array('Page', 'handleAdd')`
+- static class method: `array('Page', 'handleAdd')`
 - global function: `'handleAdd'`
 
 The signature of an event handler should be like the following:
