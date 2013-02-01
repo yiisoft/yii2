@@ -98,7 +98,7 @@ class Transaction extends \yii\base\Object
 	{
 		if ($this->_active && $this->db && $this->db->isActive) {
 			\Yii::trace('Rolling back transaction', __CLASS__);
-			$this->db->pdo->commit();
+			$this->db->pdo->rollBack();
 			$this->_active = false;
 		} else {
 			throw new Exception('Failed to roll back transaction: transaction was inactive.');
