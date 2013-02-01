@@ -137,72 +137,43 @@ class View extends Component
 
 	/**
 	 * Renders a view file.
-	 * This method will extract the given parameters and include the view file.
-	 * It captures the output of the included view file and returns it as a string.
+	 *
+	 * If a [[ViewRenderer|view renderer]] is installed, this method will try to use the view renderer
+	 * to render the view file. Otherwise, it will simply include the view file, capture its output
+	 * and return it as a string.
+	 *
+	 * @param string $file the view file.
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return string the rendering result
+	 */
+	public function renderFile($file, $params = array())
+	{
+		$renderer = Yii::$application->getViewRenderer();
+		if ($renderer !== null) {
+			return $renderer->render($this, $file, $params);
+		} else {
+			return $this->renderPhpFile($file, $params);
+		}
+	}
+
+	/**
+	 * Renders a view file as a PHP script.
+	 *
+	 * This method treats the view file as a PHP script and includes the file.
+	 * It extracts the given parameters and makes them available in the view file.
+	 * The method captures the output of the included view file and returns it as a string.
+	 *
 	 * @param string $_file_ the view file.
 	 * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
 	 * @return string the rendering result
 	 */
-	public function renderFile($_file_, $_params_ = array())
+	public function renderPhpFile($_file_, $_params_ = array())
 	{
 		ob_start();
 		ob_implicit_flush(false);
 		extract($_params_, EXTR_OVERWRITE);
 		require($_file_);
 		return ob_get_clean();
-	}
-
-	/**
-	 * Renders a view file.
-	 *
-	 * @param string $viewFile view file path
-	 * @param array $data data to be extracted and made available to the view
-	 * @param boolean $return whether the rendering result should be returned instead of being echoed
-	 * @return string the rendering result. Null if the rendering result is not required.
-	 * @throws CException if the view file does not exist
-	 */
-	public function renderFile($viewFile, $data = null, $return = false)
-	{
-		$widgetCount = count($this->_widgetStack);
-		if (($renderer = Yii::$application->getViewYii::app()->getViewRenderer()) !== null && $renderer->fileExtension === '.' . CFileHelper::getExtension($viewFile)) {
-			$content = $renderer->renderFile($this, $viewFile, $data, $return);
-		} else {
-			$content = $this->renderInternal($viewFile, $data, $return);
-		}
-		if (count($this->_widgetStack) === $widgetCount) {
-			return $content;
-		} else {
-			$widget = end($this->_widgetStack);
-			throw new CException(Yii::t('yii', '{controller} contains improperly nested widget tags in its view "{view}". A {widget} widget does not have an endWidget() call.',
-				array('{controller}' => get_class($this), '{view}' => $viewFile, '{widget}' => get_class($widget))));
-		}
-	}
-
-	/**
-	 * Renders a view file.
-	 * This method includes the view file as a PHP script
-	 * and captures the display result if required.
-	 * @param string $_viewFile_ view file
-	 * @param array $_data_ data to be extracted and made available to the view file
-	 * @param boolean $_return_ whether the rendering result should be returned as a string
-	 * @return string the rendering result. Null if the rendering result is not required.
-	 */
-	public function renderInternal($_viewFile_, $_data_ = null, $_return_ = false)
-	{
-		// we use special variable names here to avoid conflict when extracting data
-		if (is_array($_data_)) {
-			extract($_data_, EXTR_PREFIX_SAME, 'data');
-		} else {
-			$data = $_data_;
-		}
-		if ($_return_) {
-			ob_start();
-			ob_implicit_flush(false);
-			require($_viewFile_);
-			return ob_get_clean();
-		} else {
-			require($_viewFile_);
-		}
 	}
 
 	/**

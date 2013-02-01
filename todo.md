@@ -5,6 +5,9 @@
 	  * mongodb (put it under framework/db/mongodb)
 	* key-value-based (should allow storage-specific methods additionally to generic ones)
 	  * redis (put it under framework/db/redis or perhaps framework/caching?)
+- base
+	* TwigViewRenderer
+	* SmartyViewRenderer
 - logging
 	* WebTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
 	* ProfileTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
