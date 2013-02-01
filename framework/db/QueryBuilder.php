@@ -131,11 +131,10 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column names
 	 * @param array $rows the rows to be batch inserted into the table
-	 * @param array $params the parameters to be bound to the command
 	 * @return string the batch INSERT SQL statement
 	 * @throws NotSupportedException if this is not supported by the underlying DBMS
 	 */
-	public function batchInsert($table, $columns, $rows, $params = array())
+	public function batchInsert($table, $columns, $rows)
 	{
 		throw new NotSupportedException($this->db->getDriverName() . ' does not support batch insert.');
 
