@@ -112,7 +112,7 @@ class Application extends \yii\base\Application
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			echo "\nError: unknown command \"$route\".\n";
+			echo "Error: unknown command \"$route\".\n";
 			return 1;
 		}
 	}

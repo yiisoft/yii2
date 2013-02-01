@@ -78,12 +78,20 @@ class ErrorHandler extends Component
 				header("HTTP/1.0 $errorCode " . get_class($exception));
 			}
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-				$this->renderAsText($exception);
+				\Yii::$application->renderException($exception);
 			} else {
-				$this->renderAsHtml($exception);
+				$view = new View($this);
+				if (!YII_DEBUG || $exception instanceof Exception && $exception->causedByUser) {
+					$viewName = $this->errorView;
+				} else {
+					$viewName = $this->exceptionView;
+				}
+				echo $view->render($viewName, array(
+					'exception' => $exception,
+				));
 			}
 		} else {
-			$this->renderAsText($exception);
+			\Yii::$application->renderException($exception);
 		}
 	}
 
@@ -245,21 +253,14 @@ class ErrorHandler extends Component
 	/**
 	 * @param \Exception $exception
 	 */
-	public function renderAsText($exception)
-	{
-		if (YII_DEBUG) {
-			echo $exception;
-		} else {
-			echo get_class($exception) . ': ' . $exception->getMessage();
-		}
-	}
-
-	/**
-	 * @param \Exception $exception
-	 */
 	public function renderAsHtml($exception)
 	{
 		$view = new View($this);
+		if (!YII_DEBUG || $exception instanceof Exception && $exception->causedByUser) {
+			$viewName = $this->errorView;
+		} else {
+			$viewName = $this->exceptionView;
+		}
 		$name = !YII_DEBUG || $exception instanceof HttpException ? $this->errorView : $this->exceptionView;
 		echo $view->render($name, array(
 			'exception' => $exception,

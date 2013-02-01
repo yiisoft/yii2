@@ -18,8 +18,11 @@ namespace yii\base;
 class NotSupportedException extends \Exception
 {
 	/**
-	 * @var string the user-friend name of this exception
+	 * @return string the user-friendly name of this exception
 	 */
-	public $name = 'Not Supported Exception';
+	public function getName()
+	{
+		return \Yii::t('yii', 'Not Supported');
+	}
 }
 

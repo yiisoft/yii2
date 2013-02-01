@@ -433,8 +433,7 @@ class Application extends Module
 			if (($handler = $this->getErrorHandler()) !== null) {
 				$handler->handle($exception);
 			} else {
-				$message = YII_DEBUG ? (string)$exception : 'Error: ' . $exception->getMessage() . "\n";
-				echo PHP_SAPI === 'cli' ? $message : '<pre>' . $message . '</pre>';
+				$this->renderException($exception);
 			}
 
 			$this->end(1);
@@ -447,6 +446,24 @@ class Application extends Module
 			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
 			error_log($msg);
 			exit(1);
+		}
+	}
+
+	/**
+	 * Renders an exception without using rich format.
+	 * @param \Exception $exception the exception to be rendered.
+	 */
+	public function renderException($exception)
+	{
+		if ($exception instanceof Exception && ($exception->causedByUser || !YII_DEBUG)) {
+			$message = $exception->getName() . ': ' . $exception->getMessage();
+		} else {
+			$message = YII_DEBUG ? (string)$exception : 'Error: ' . $exception->getMessage();
+		}
+		if (PHP_SAPI) {
+			echo $message . "\n";
+		} else {
+			echo '<pre>' . htmlspecialchars($message, ENT_QUOTES, $this->charset) . '</pre>';
 		}
 	}
 

@@ -25,6 +25,10 @@ class HttpException extends Exception
 	 * @var integer HTTP status code, such as 403, 404, 500, etc.
 	 */
 	public $statusCode;
+	/**
+	 * @var boolean whether this exception is caused by end user's mistake (e.g. wrong URL)
+	 */
+	public $causedByUser = true;
 
 	/**
 	 * Constructor.

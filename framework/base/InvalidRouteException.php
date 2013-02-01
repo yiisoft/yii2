@@ -18,8 +18,16 @@ namespace yii\base;
 class InvalidRouteException extends \Exception
 {
 	/**
-	 * @var string the user-friend name of this exception
+	 * @var boolean whether this exception is caused by end user's mistake (e.g. wrong URL)
 	 */
-	public $name = 'Invalid Route Exception';
+	public $causedByUser = true;
+
+	/**
+	 * @return string the user-friendly name of this exception
+	 */
+	public function getName()
+	{
+		return \Yii::t('yii', 'Invalid Route');
+	}
 }
 
