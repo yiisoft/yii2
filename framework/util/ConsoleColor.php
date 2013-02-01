@@ -1,6 +1,6 @@
 <?php
 /**
- * View class file.
+ * ConsoleColor class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -28,7 +28,7 @@ namespace yii\console;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class View extends \yii\base\Component
+class ConsoleColor
 {
 	const FG_BLACK = 30;
 	const FG_RED = 31;
