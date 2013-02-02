@@ -11,7 +11,6 @@ namespace yii\console;
 
 use Yii;
 use yii\base\Action;
-use yii\base\InvalidRequestException;
 use yii\base\InvalidRouteException;
 
 /**
@@ -70,16 +69,16 @@ class Controller extends \yii\base\Controller
 	 * @param Action $action the currently requested action
 	 * @param array $missingParams the names of the missing parameters
 	 * @param array $unknownParams the unknown parameters (name=>value)
-	 * @throws InvalidRequestException if there are missing or unknown parameters
+	 * @throws BadUsageException if there are missing or unknown parameters
 	 */
 	public function validateActionParams($action, $missingParams, $unknownParams)
 	{
 		if (!empty($missingParams)) {
-			throw new InvalidRequestException(Yii::t('yii', 'Missing required options: {params}', array(
+			throw new BadUsageException(Yii::t('yii', 'Missing required options: {params}', array(
 				'{params}' => implode(', ', $missingParams),
 			)));
 		} elseif (!empty($unknownParams)) {
-			throw new InvalidRequestException(Yii::t('yii', 'Unknown options: {params}', array(
+			throw new BadUsageException(Yii::t('yii', 'Unknown options: {params}', array(
 				'{params}' => implode(', ', $unknownParams),
 			)));
 		}
@@ -101,12 +100,6 @@ class Controller extends \yii\base\Controller
 		} else {
 			return true;
 		}
-	}
-
-	public function usageError($message)
-	{
-		echo "\nError: $message\n";
-		Yii::$application->end(1);
 	}
 
 	public function globalOptions()

@@ -9,7 +9,9 @@
 
 namespace yii\console\controllers;
 
+use Yii;
 use yii\base\Application;
+use yii\console\BadUsageException;
 use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\util\StringHelper;
@@ -47,27 +49,28 @@ class HelpController extends Controller
 	 * @param array $args additional anonymous command line arguments.
 	 * You may provide a command name to display its detailed information.
 	 * @return integer the exit status
+	 * @throws BadUsageException if the command for help is unknown
 	 */
 	public function actionIndex($args = array())
 	{
 		if (empty($args)) {
-			$status = $this->getHelp();
+			$this->getHelp();
 		} else {
-			$result = \Yii::$application->createController($args[0]);
+			$result = Yii::$application->createController($args[0]);
 			if ($result === false) {
-				echo "Error: no help for unknown command \"{$args[0]}\".\n";
-				return 1;
+				throw new BadUsageException(Yii::t('yii', 'No help for unknown command "{command}".', array(
+					'{command}' => $args[0],
+				)));
 			}
 
 			list($controller, $actionID) = $result;
 
 			if ($actionID === '') {
-				$status = $this->getControllerHelp($controller);
+				$this->getControllerHelp($controller);
 			} else {
-				$status = $this->getActionHelp($controller, $actionID);
+				$this->getActionHelp($controller, $actionID);
 			}
 		}
-		return $status;
 	}
 
 	/**
@@ -76,7 +79,7 @@ class HelpController extends Controller
 	 */
 	public function getCommands()
 	{
-		$commands = $this->getModuleCommands(\Yii::$application);
+		$commands = $this->getModuleCommands(Yii::$application);
 		sort($commands);
 		return array_unique($commands);
 	}
@@ -91,7 +94,6 @@ class HelpController extends Controller
 		$actions = array_keys($controller->actions());
 		$class = new \ReflectionClass($controller);
 		foreach ($class->getMethods() as $method) {
-			/** @var $method \ReflectionMethod */
 			$name = $method->getName();
 			if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
 				$actions[] = StringHelper::camel2id(substr($name, 6));
@@ -136,7 +138,6 @@ class HelpController extends Controller
 
 	/**
 	 * Displays all available commands.
-	 * @return integer the exit status
 	 */
 	protected function getHelp()
 	{
@@ -152,13 +153,11 @@ class HelpController extends Controller
 		} else {
 			echo "\nNo commands are found.\n";
 		}
-		return 0;
 	}
 
 	/**
 	 * Displays the overall information of the command.
 	 * @param Controller $controller the controller instance
-	 * @return integer the exit status
 	 */
 	protected function getControllerHelp($controller)
 	{
@@ -199,22 +198,21 @@ class HelpController extends Controller
 			}
 			echo "\n";
 		}
-
-		return 0;
 	}
 
 	/**
 	 * Displays the detailed information of a command action.
 	 * @param Controller $controller the controller instance
 	 * @param string $actionID action ID
-	 * @return integer the exit status
+	 * @throws BadUsageException if the action does not exist
 	 */
 	protected function getActionHelp($controller, $actionID)
 	{
 		$action = $controller->createAction($actionID);
 		if ($action === null) {
-			echo 'Error: no help for unknown sub-command "' . $controller->getUniqueId() . "/$actionID\".\n";
-			return 1;
+			throw new BadUsageException(Yii::t('yii', 'No help for unknown sub-command "{command}".', array(
+				'{command}' => $controller->getUniqueId() . "/$actionID",
+			)));
 		}
 		if ($action instanceof InlineAction) {
 			$method = new \ReflectionMethod($controller, 'action' . $action->id);
@@ -245,8 +243,6 @@ class HelpController extends Controller
 			}
 			echo "\n";
 		}
-
-		return 0;
 	}
 
 	/**

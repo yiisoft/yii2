@@ -93,8 +93,7 @@ class Application extends \yii\base\Application
 		if ($request->getIsConsoleRequest()) {
 			return $this->runAction($request->route, $request->params);
 		} else {
-			echo "Error: this script must be run from the command line.";
-			return 1;
+			throw new BadUsageException(\Yii::t('yii', 'this script must be run from the command line.'));
 		}
 	}
 
@@ -106,14 +105,14 @@ class Application extends \yii\base\Application
 	 * @param string $route the route that specifies the action.
 	 * @param array $params the parameters to be passed to the action
 	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+	 * @throws BadUsageException if the route is invalid
 	 */
 	public function runAction($route, $params = array())
 	{
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			echo "Error: unknown command \"$route\".\n";
-			return 1;
+			throw new BadUsageException(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)));
 		}
 	}
 
@@ -147,10 +146,5 @@ class Application extends \yii\base\Application
 				'class' => 'yii\console\Response',
 			),
 		));
-	}
-
-	public function usageError($message)
-	{
-
 	}
 }
