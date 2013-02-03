@@ -250,7 +250,7 @@ class Controller extends Component
 	 */
 	public function getRoute()
 	{
-		return $this->action !== null ? $this->getUniqueId() . '/' . $this->action->id : $this->getUniqueId();
+		return $this->action !== null ? $this->action->getUniqueId() : $this->getUniqueId();
 	}
 
 	/**

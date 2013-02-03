@@ -9,7 +9,6 @@
 
 namespace yii\console;
 
-use yii\base\Exception;
 use yii\base\InvalidRouteException;
 
 /**
@@ -85,6 +84,7 @@ class Application extends \yii\base\Application
 	 * Processes the request.
 	 * The request is represented in terms of a controller route and action parameters.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
+	 * @throws Exception if the script is not running from the command line
 	 */
 	public function processRequest()
 	{
@@ -93,7 +93,7 @@ class Application extends \yii\base\Application
 		if ($request->getIsConsoleRequest()) {
 			return $this->runAction($request->route, $request->params);
 		} else {
-			throw new BadUsageException(\Yii::t('yii', 'this script must be run from the command line.'));
+			throw new Exception(\Yii::t('yii', 'this script must be run from the command line.'));
 		}
 	}
 
@@ -105,14 +105,14 @@ class Application extends \yii\base\Application
 	 * @param string $route the route that specifies the action.
 	 * @param array $params the parameters to be passed to the action
 	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
-	 * @throws BadUsageException if the route is invalid
+	 * @throws Exception if the route is invalid
 	 */
 	public function runAction($route, $params = array())
 	{
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			throw new BadUsageException(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)));
+			throw new Exception(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)));
 		}
 	}
 

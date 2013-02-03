@@ -11,14 +11,12 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\console\Exception;
 use yii\console\Controller;
+use yii\db\Connection;
 
 /**
  * This command provides support for database migrations.
- *
- * The implementation of this command and other supporting classes referenced
- * the yii-dbmigrations extension ((https://github.com/pieterclaerhout/yii-dbmigrations),
- * authored by Pieter Claerhout.
  *
  * EXAMPLES
  *
@@ -26,7 +24,7 @@ use yii\console\Controller;
  *   Applies ALL new migrations. This is equivalent to 'yiic migrate up'.
  *
  * - yiic migrate create create_user_table
- *    Creates a new migration named 'create_user_table'.
+ *   Creates a new migration named 'create_user_table'.
  *
  * - yiic migrate up 3
  *   Applies the next 3 new migrations.
@@ -45,69 +43,86 @@ use yii\console\Controller;
  *   No actual migration will be performed.
  *
  * - yiic migrate history
- * Shows all previously applied migration information.
+ *   Shows all previously applied migration information.
  *
  * - yiic migrate history 10
- * Shows the last 10 applied migrations.
+ *   Shows the last 10 applied migrations.
  *
  * - yiic migrate new
- * Shows all new migrations.
+ *   Shows all new migrations.
  *
  * - yiic migrate new 10
- * Shows the next 10 migrations that have not been applied.
+ *   Shows the next 10 migrations that have not been applied.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class MigrateController extends Controller
 {
+	/**
+	 * The name of the dummy migration that marks the beginning of the whole migration history.
+	 */
 	const BASE_MIGRATION = 'm000000_000000_base';
 
 	/**
-	 * @var string the directory that stores the migrations. This must be specified
-	 * in terms of a path alias, and the corresponding directory must exist.
-	 * Defaults to 'application.migrations' (meaning 'protected/migrations').
+	 * @var string the directory that stores the migrations. This can be either a path alias
+	 * or a directory. Defaults to '@application/migrations'.
 	 */
 	public $migrationPath = '@application/migrations';
 	/**
 	 * @var string the name of the table for keeping applied migration information.
-	 * This table will be automatically created if not exists. Defaults to 'tbl_migration'.
-	 * The table structure is: (version varchar(255) primary key, apply_time integer)
+	 * This table will be automatically created if not exists.
+	 * The table structure is as follows:
+	 *
+	 * ~~~
+	 * CREATE TABLE tbl_migration (
+	 *     version varchar(255) PRIMARY KEY,
+	 *     apply_time integer
+	 * )
+	 * ~~~
 	 */
 	public $migrationTable = 'tbl_migration';
 	/**
-	 * @var string the application component ID that specifies the database connection for
-	 * storing migration information. Defaults to 'db'.
+	 * @var string the component ID that specifies the database connection for
+	 * storing migration information.
 	 */
 	public $connectionID = 'db';
 	/**
-	 * @var string the path of the template file for generating new migrations. This
-	 * must be specified in terms of a path alias (e.g. application.migrations.template).
-	 * If not set, an internal template will be used.
+	 * @var string the path of the template file for generating new migrations.
+	 * This can be either a path alias (e.g. "@application/migrations/template.php")
+	 * or a file path. If not set, an internal template will be used.
 	 */
 	public $templateFile;
 	/**
-	 * @var string the default command action. It defaults to 'up'.
+	 * @var string the default command action.
 	 */
 	public $defaultAction = 'up';
 	/**
-	 * @var boolean whether to execute the migration in an interactive mode. Defaults to true.
-	 * Set this to false when performing migration in a cron job or background process.
+	 * @var boolean whether to execute the migration in an interactive mode.
 	 */
 	public $interactive = true;
 
-
+	public function globalOptions()
+	{
+		return array('migrationPath', 'migrationTable', 'connectionID', 'templateFile', 'interactive');
+	}
+	/**
+	 * This method is invoked right before an action is to be executed (after all possible filters.)
+	 * It checks the existence of the [[migrationPath]].
+	 * @param \yii\base\Action $action the action to be executed.
+	 * @return boolean whether the action should continue to be executed.
+	 * @throws Exception if the migration directory does not exist.
+	 */
 	public function beforeAction($action)
 	{
 		if (parent::beforeAction($action)) {
 			$path = Yii::getAlias($this->migrationPath);
 			if ($path === false || !is_dir($path)) {
-				echo 'Error: the migration directory does not exist "' . $this->migrationPath . "\"\n";
-				return false;
+				throw new Exception("The migration directory \"{$this->migrationPath}\" does not exist.");
 			}
 			$this->migrationPath = $path;
 			$version = Yii::getVersion();
-			echo "\nYii Migration Tool v2.0 (based on Yii v{$version})\n\n";
+			echo "\nYii Migration Tool (based on Yii v{$version})\n\n";
 			return true;
 		} else {
 			return false;
@@ -115,7 +130,15 @@ class MigrateController extends Controller
 	}
 
 	/**
-	 * @param array $args
+	 * Upgrades the application by applying new migrations. For example,
+	 *
+	 * ~~~
+	 * yiic migrate     # apply all new migrations
+	 * yiic migrate 3   # apply the first 3 new migrations
+	 * ~~~
+	 *
+	 * @param array $args the number of new migrations to be applied. If not provided,
+	 * all new migrations will be applied.
 	 */
 	public function actionUp($args)
 	{
@@ -145,7 +168,7 @@ class MigrateController extends Controller
 		if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
 			foreach ($migrations as $migration) {
 				if ($this->migrateUp($migration) === false) {
-					echo "\nMigration failed. All later migrations are canceled.\n";
+					echo "\nMigration failed. The rest of the new migrations are canceled.\n";
 					return;
 				}
 			}
@@ -153,11 +176,23 @@ class MigrateController extends Controller
 		}
 	}
 
+	/**
+	 * Downgrades the application by reverting old migrations. For example,
+	 *
+	 * ~~~
+	 * yiic migrate/down     # revert the last migration
+	 * yiic migrate/down 3   # revert the last 3 migrations
+	 * ~~~
+	 *
+	 * @param array $args the number of migrations to be reverted. If not provided,
+	 * the last applied migration will be reverted.
+	 * @throws Exception if the number of the steps is less than 1.
+	 */
 	public function actionDown($args)
 	{
 		$step = isset($args[0]) ? (int)$args[0] : 1;
 		if ($step < 1) {
-			die("Error: The step parameter must be greater than 0.\n");
+			throw new Exception("The step parameter must be greater than 0.");
 		}
 
 		if (($migrations = $this->getMigrationHistory($step)) === array()) {
@@ -226,14 +261,14 @@ class MigrateController extends Controller
 		if (isset($args[0])) {
 			$version = $args[0];
 		} else {
-			$this->usageError('Please specify which version to migrate to.');
+			throw new Exception("Please specify which version to migrate to.");
 		}
 
 		$originalVersion = $version;
 		if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
 			$version = 'm' . $matches[1];
 		} else {
-			die("Error: The version option must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).\n");
+			throw new Exception("The version option must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).");
 		}
 
 		// try migrate up
@@ -258,7 +293,7 @@ class MigrateController extends Controller
 			}
 		}
 
-		die("Error: Unable to find the version '$originalVersion'.\n");
+		throw new Exception("Unable to find the version '$originalVersion'.");
 	}
 
 	public function actionMark($args)
@@ -266,13 +301,13 @@ class MigrateController extends Controller
 		if (isset($args[0])) {
 			$version = $args[0];
 		} else {
-			$this->usageError('Please specify which version to mark to.');
+			throw new Exception('Please specify which version to mark to.');
 		}
 		$originalVersion = $version;
 		if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
 			$version = 'm' . $matches[1];
 		} else {
-			die("Error: The version option must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).\n");
+			throw new Exception("Error: The version option must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).");
 		}
 
 		$db = $this->getDb();
@@ -357,12 +392,17 @@ class MigrateController extends Controller
 		}
 	}
 
+	/**
+	 * Creates a new migration.
+	 * @param array $args the name of the new migration.
+	 * @throws Exception if the name of the new migration is not provided
+	 */
 	public function actionCreate($args)
 	{
 		if (isset($args[0])) {
 			$name = $args[0];
 		} else {
-			$this->usageError('Please provide the name of the new migration.');
+			throw new Exception('Please provide the name of the new migration.');
 		}
 
 		if (!preg_match('/^\w+$/', $name)) {
@@ -428,7 +468,7 @@ class MigrateController extends Controller
 		$file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
 		require_once($file);
 		$migration = new $class;
-		$migration->setDb($this->getDb());
+		$migration->db = $this->getDb();
 		return $migration;
 	}
 
@@ -445,7 +485,7 @@ class MigrateController extends Controller
 			if (($this->_db = Yii::$application->getComponent($this->connectionID)) instanceof CDbConnection) {
 				return $this->_db;
 			} else {
-				die("Error: CMigrationCommand.connectionID '{$this->connectionID}' is invalid. Please make sure it refers to the ID of a CDbConnection application component.\n");
+				throw new Exception("Invalid DB connection: {$this->connectionID}.");
 			}
 		}
 	}
@@ -505,7 +545,7 @@ class MigrateController extends Controller
 	protected function getTemplate()
 	{
 		if ($this->templateFile !== null) {
-			return file_get_contents(Yii::getPathOfAlias($this->templateFile) . '.php');
+			return file_get_contents(Yii::getAlias($this->templateFile));
 		} else {
 			return <<<EOD
 <?php

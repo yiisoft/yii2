@@ -11,9 +11,10 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Application;
-use yii\console\BadUsageException;
+use yii\console\Exception;
 use yii\base\InlineAction;
 use yii\console\Controller;
+use yii\console\Request;
 use yii\util\StringHelper;
 
 /**
@@ -46,19 +47,17 @@ class HelpController extends Controller
 	 * yiic help message  # display help info about "message"
 	 * ~~~
 	 *
-	 * @param array $args additional anonymous command line arguments.
-	 * You may provide a command name to display its detailed information.
+	 * @param array $args The name of the command to show help about.
+	 * If not provided, all available commands will be displayed.
 	 * @return integer the exit status
-	 * @throws BadUsageException if the command for help is unknown
+	 * @throws Exception if the command for help is unknown
 	 */
 	public function actionIndex($args = array())
 	{
-		if (empty($args)) {
-			$this->getHelp();
-		} else {
+		if (isset($args[0])) {
 			$result = Yii::$application->createController($args[0]);
 			if ($result === false) {
-				throw new BadUsageException(Yii::t('yii', 'No help for unknown command "{command}".', array(
+				throw new Exception(Yii::t('yii', 'No help for unknown command "{command}".', array(
 					'{command}' => $args[0],
 				)));
 			}
@@ -70,6 +69,8 @@ class HelpController extends Controller
 			} else {
 				$this->getActionHelp($controller, $actionID);
 			}
+		} else {
+			$this->getHelp();
 		}
 	}
 
@@ -143,7 +144,7 @@ class HelpController extends Controller
 	{
 		$commands = $this->getCommands();
 		if ($commands !== array()) {
-			echo "\nUsage: yiic <command-name> [...options...]\n\n";
+			echo "Usage: yiic <command-name> [...options...] [...arguments...]\n\n";
 			echo "The following commands are available:\n\n";
 			foreach ($commands as $command) {
 				echo " * $command\n";
@@ -168,35 +169,23 @@ class HelpController extends Controller
 		}
 
 		if ($comment !== '') {
-			echo "\n" . $comment . "\n";
-		}
-
-		$options = $this->getGlobalOptions($class, $controller);
-		if ($options !== array()) {
-			echo "\nGLOBAL OPTIONS";
-			echo "\n--------------\n\n";
-			foreach ($options as $name => $description) {
-				echo " --$name";
-				if ($description != '') {
-					echo ": $description\n";
-				}
-				echo "\n";
-			}
+			echo "\nDESCRIPTION\n";
+			echo "\n" . $comment . "\n\n";
 		}
 
 		$actions = $this->getActions($controller);
 		if ($actions !== array()) {
-			echo "\nSUB-COMMANDS";
-			echo "\n------------\n\n";
+			echo "\nSUB-COMMANDS\n\n";
 			$prefix = $controller->getUniqueId();
 			foreach ($actions as $action) {
 				if ($controller->defaultAction === $action) {
-					echo " * $prefix (default)\n";
+					echo " * $prefix/$action (or $prefix)\n";
 				} else {
 					echo " * $prefix/$action\n";
 				}
 			}
-			echo "\n";
+			echo "\nTo see the help of each sub-command, enter:\n";
+			echo "\n    yiic help <sub-command>\n\n";
 		}
 	}
 
@@ -204,45 +193,78 @@ class HelpController extends Controller
 	 * Displays the detailed information of a command action.
 	 * @param Controller $controller the controller instance
 	 * @param string $actionID action ID
-	 * @throws BadUsageException if the action does not exist
+	 * @throws Exception if the action does not exist
 	 */
 	protected function getActionHelp($controller, $actionID)
 	{
 		$action = $controller->createAction($actionID);
 		if ($action === null) {
-			throw new BadUsageException(Yii::t('yii', 'No help for unknown sub-command "{command}".', array(
-				'{command}' => $controller->getUniqueId() . "/$actionID",
+			throw new Exception(Yii::t('yii', 'No help for unknown sub-command "{command}".', array(
+				'{command}' => $action->getUniqueId(),
 			)));
 		}
 		if ($action instanceof InlineAction) {
-			$method = new \ReflectionMethod($controller, 'action' . $action->id);
+			$method = new \ReflectionMethod($controller, $action->actionMethod);
 		} else {
 			$method = new \ReflectionMethod($action, 'run');
 		}
-		$comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($method->getDocComment(), '/'))), "\r", '');
-		if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
-			$meta = substr($comment, $matches[0][1]);
-			$comment = trim(substr($comment, 0, $matches[0][1]));
+
+		$tags = $this->parseComment($method->getDocComment());
+		$options = $this->getOptions($method, isset($tags['param']) ? $tags['param'] : array());
+		$globalOptions = $this->getGlobalOptions($controller);
+		$options = array_merge($options, $globalOptions);
+
+		echo "\nUSAGE\n\n";
+		if ($action->id === $controller->defaultAction) {
+			echo 'yiic ' . $controller->getUniqueId();
 		} else {
-			$meta = '';
+			echo "yiic " . $action->getUniqueId();
+		}
+		if (isset($options[Request::ANONYMOUS_PARAMS])) {
+			if (count($options) > 1) {
+				echo ' [...options...]';
+			}
+			echo " [...arguments...]";
+		} elseif (count($options)) {
+			echo " [...options...]";
+		}
+		echo "\n\n";
+
+		if ($tags['description'] !== '') {
+			echo "\nDESCRIPTION";
+			echo "\n\n" . $tags['description'] . "\n\n";
 		}
 
-		if ($comment !== '') {
-			echo "\n" . $comment . "\n";
+		if (isset($options[Request::ANONYMOUS_PARAMS])) {
+			echo "\nARGUMENTS\n\n";
+			echo $options[Request::ANONYMOUS_PARAMS] . "\n\n";
+			unset($options[Request::ANONYMOUS_PARAMS]);
 		}
 
-		$options = $this->getOptions($method, $meta);
 		if ($options !== array()) {
-			echo "\nOPTIONS";
-			echo "\n-------\n\n";
-			foreach ($options as $name => $description) {
-				echo " --$name";
-				if ($description != '') {
-					echo ": $description\n";
+			echo "\nOPTIONS\n\n";
+			echo implode("\n\n", $options) . "\n\n";
+		}
+	}
+
+	function parseComment($comment)
+	{
+		$tags = array();
+		$comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($comment, '/'))), "\r", '');
+		$parts = preg_split('/^\s*@/m', $comment, -1, PREG_SPLIT_NO_EMPTY);
+		foreach ($parts as $part) {
+			if (preg_match('/^(\w+)(.*)/ms', trim($part), $matches)) {
+				$name = $matches[1];
+				if (!isset($tags[$name])) {
+					$tags[$name] = trim($matches[2]);
+				} elseif (is_array($tags[$name])) {
+					$tags[$name][] = trim($matches[2]);
+				} else {
+					$tags[$name] = array($tags[$name], trim($matches[2]));
 				}
 			}
-			echo "\n";
 		}
+		return $tags;
 	}
 
 	/**
@@ -250,93 +272,99 @@ class HelpController extends Controller
 	 * @param string $meta
 	 * @return array
 	 */
-	protected function getOptions($method, $meta)
+	protected function getOptions($method, $tags)
 	{
-		$params = $method->getParameters();
-		$tags = preg_split('/^\s*@/m', $meta, -1, PREG_SPLIT_NO_EMPTY);
-		$options = array();
-		$count = 0;
-		foreach ($tags as $tag) {
-			$parts = preg_split('/\s+/', trim($tag), 2);
-			if ($parts[0] === 'param' && isset($params[$count])) {
-				$param = $params[$count];
-				$comment = isset($parts[1]) ? $parts[1] : '';
-				if (preg_match('/^([^\s]+)\s+(\$\w+\s+)?(.*)/s', $comment, $matches)) {
-					$type = $matches[1];
-					$doc = $matches[3];
-				} else {
-					$type = $comment;
-					$doc = '';
-				}
-				$comment = $type === '' ? '' : ($type . ', ');
-				if ($param->isDefaultValueAvailable()) {
-					$value = $param->getDefaultValue();
-					if (!is_array($value)) {
-						$comment .= 'optional (defaults to ' . var_export($value, true) . ').';
-					} else {
-						$comment .= 'optional.';
-					}
-				} else {
-					$comment .= 'required.';
-				}
-				if (trim($doc) !== '') {
-					$comment .= "\n" . preg_replace("/^/m", "     ", $doc);
-				}
-				$options[$param->getName()] = $comment;
-				$count++;
-			}
+		if (is_string($tags)) {
+			$tags = array($tags);
 		}
-		if ($count < count($params)) {
-			for ($i = $count; $i < count($params); ++$i) {
-				$options[$params[$i]->getName()] = '';
+		$params = $method->getParameters();
+		$optional = $required = array();
+		foreach ($params as $i => $param) {
+			$name = $param->getName();
+			$tag = isset($tags[$i]) ? $tags[$i] : '';
+			if (preg_match('/^([^\s]+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
+				$type = $matches[1];
+				$comment = $matches[3];
+			} else {
+				$type = null;
+				$comment = $tag;
+			}
+			if ($param->isDefaultValueAvailable()) {
+				$optional[$name] = $this->formatOptionHelp($name, false, $type, $param->getDefaultValue(), $comment);
+			} else {
+				$required[$name] = $this->formatOptionHelp($name, true, $type, null, $comment);
 			}
 		}
 
-		ksort($options);
-		return $options;
+		ksort($required);
+		ksort($optional);
+
+		return array_merge($required, $optional);
+	}
+
+	protected function formatOptionHelp($name, $required, $type, $defaultValue, $comment)
+	{
+		$doc = '';
+		$comment = trim($comment);
+
+		if ($name === Request::ANONYMOUS_PARAMS) {
+			return $comment;
+		}
+
+		if ($defaultValue !== null && !is_array($defaultValue)) {
+			if ($type === null) {
+				$type = gettype($defaultValue);
+			}
+			$doc = "$type (defaults to " . var_export($defaultValue, true) . ")";
+		} elseif (trim($type) !== '') {
+			$doc = $type;
+		}
+
+		if ($doc === '') {
+			$doc = $comment;
+		} elseif ($comment !== '') {
+			$doc .= "\n" . preg_replace("/^/m", "  ", $comment);
+		}
+
+		$name = $required ? "--$name (required)" : "--$name";
+		return $doc === '' ? $name : "$name: $doc";
 	}
 
 	/**
-	 * @param \ReflectionClass $class
 	 * @param Controller $controller
 	 * @return array
 	 */
-	protected function getGlobalOptions($class, $controller)
+	protected function getGlobalOptions($controller)
 	{
+		$optionNames = $controller->globalOptions();
+		if (empty($optionNames)) {
+			return array();
+		}
+
+		$class = new \ReflectionClass($controller);
 		$options = array();
 		foreach ($class->getProperties() as $property) {
-			if (!$property->isPublic() || $property->isStatic() || $property->getDeclaringClass()->getName() !== get_class($controller)) {
+			$name = $property->getName();
+			if (!in_array($name, $optionNames, true)) {
 				continue;
 			}
-			$name = $property->getName();
-			$comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($property->getDocComment(), '/'))), "\r", '');
-			if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
-				$meta = substr($comment, $matches[0][1]);
-			} else {
-				$meta = '';
-			}
-			$tags = preg_split('/^\s*@/m', $meta, -1, PREG_SPLIT_NO_EMPTY);
-			foreach ($tags as $tag) {
-				$parts = preg_split('/\s+/', trim($tag), 2);
-				$comment = isset($parts[1]) ? $parts[1] : '';
-				if ($parts[0] === 'var' || $parts[0] === 'property') {
-					if (preg_match('/^([^\s]+)(\s+.*)?/s', $comment, $matches)) {
-						$type = $matches[1];
-						$doc = trim($matches[2]);
-					} else {
-						$type = $comment;
-						$doc = '';
-					}
-					$comment = $type === '' ? '' : ($type);
-					if (trim($doc) !== '') {
-						$comment .= ', ' . preg_replace("/^/m", "", $doc);
-					}
-					$options[$name] = $comment;
-					break;
+			$defaultValue = $property->getValue($controller);
+			$tags = $this->parseComment($property->getDocComment());
+			if (isset($tags['var']) || isset($tags['property'])) {
+				$doc = isset($tags['var']) ? $tags['var'] : $tags['property'];
+				if (is_array($doc)) {
+					$doc = reset($doc);
 				}
-			}
-			if (!isset($options[$name])) {
-				$options[$name] = '';
+				if (preg_match('/^([^\s]+)(.*)/s', $doc, $matches)) {
+					$type = $matches[1];
+					$comment = $matches[2];
+				} else {
+					$type = null;
+					$comment = $doc;
+				}
+				$options[$name] = $this->formatOptionHelp($name, false, $type, $defaultValue, $comment);
+			} else {
+				$options[$name] = $this->formatOptionHelp($name, false, null, $defaultValue, '');
 			}
 		}
 		ksort($options);

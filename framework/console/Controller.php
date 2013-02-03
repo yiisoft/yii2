@@ -48,14 +48,11 @@ class Controller extends \yii\base\Controller
 	public function runAction($id, $params = array())
 	{
 		if ($params !== array()) {
-			$class = new \ReflectionClass($this);
+			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
-				if ($class->hasProperty($name)) {
-					$property = $class->getProperty($name);
-					if ($property->isPublic() && !$property->isStatic() && $property->getDeclaringClass()->getName() === get_class($this)) {
-						$this->$name = $value;
-						unset($params[$name]);
-					}
+				if (in_array($name, $options, true)) {
+					$this->$name = $value;
+					unset($params[$name]);
 				}
 			}
 		}
@@ -69,16 +66,19 @@ class Controller extends \yii\base\Controller
 	 * @param Action $action the currently requested action
 	 * @param array $missingParams the names of the missing parameters
 	 * @param array $unknownParams the unknown parameters (name=>value)
-	 * @throws BadUsageException if there are missing or unknown parameters
+	 * @throws Exception if there are missing or unknown parameters
 	 */
 	public function validateActionParams($action, $missingParams, $unknownParams)
 	{
+		unset($missingParams[Request::ANONYMOUS_PARAMS], $unknownParams[Request::ANONYMOUS_PARAMS]);
+
 		if (!empty($missingParams)) {
-			throw new BadUsageException(Yii::t('yii', 'Missing required options: {params}', array(
+			throw new Exception(Yii::t('yii', 'Missing required options: {params}', array(
 				'{params}' => implode(', ', $missingParams),
 			)));
-		} elseif (!empty($unknownParams)) {
-			throw new BadUsageException(Yii::t('yii', 'Unknown options: {params}', array(
+		}
+		if (!empty($unknownParams)) {
+			throw new Exception(Yii::t('yii', 'Unknown options: {params}', array(
 				'{params}' => implode(', ', $unknownParams),
 			)));
 		}
@@ -102,6 +102,13 @@ class Controller extends \yii\base\Controller
 		}
 	}
 
+	/**
+	 * Returns the names of the global options for this command.
+	 * A global option requires the existence of a global member variable whose
+	 * name is the option name.
+	 * Child classes may override this method to specify possible global options.
+	 * @return array the names of the global options for this command.
+	 */
 	public function globalOptions()
 	{
 		return array();

@@ -1,6 +1,6 @@
 <?php
 /**
- * BadUsageException class file.
+ * Exception class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -10,12 +10,12 @@
 namespace yii\console;
 
 /**
- * BadUsageException represents an exception caused by incorrect usage of the end user.
+ * Exception represents an exception caused by incorrect usage of a console command.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class BadUsageException extends \yii\base\Exception
+class Exception extends \yii\base\Exception
 {
 	/**
 	 * @var boolean whether this exception is caused by end user's mistake (e.g. wrong URL)
@@ -27,7 +27,7 @@ class BadUsageException extends \yii\base\Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Bad Usage');
+		return \Yii::t('yii', 'Error');
 	}
 }
 

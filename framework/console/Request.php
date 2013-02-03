@@ -15,6 +15,8 @@ namespace yii\console;
  */
 class Request extends \yii\base\Request
 {
+	const ANONYMOUS_PARAMS = 'args';
+
 	/**
 	 * @var string the controller route specified by this request. If this is an empty string,
 	 * it means the [[Application::defaultRoute|default route]] will be used.
@@ -50,13 +52,13 @@ class Request extends \yii\base\Request
 			$this->route = '';
 		}
 
-		$this->params = array();
+		$this->params = array(self::ANONYMOUS_PARAMS => array());
 		foreach ($rawParams as $param) {
 			if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
 				$name = $matches[1];
 				$this->params[$name] = isset($matches[3]) ? $matches[3] : true;
 			} else {
-				$this->params['args'][] = $param;
+				$this->params[self::ANONYMOUS_PARAMS][] = $param;
 			}
 		}
 	}

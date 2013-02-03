@@ -56,6 +56,15 @@ class Action extends Component
 	}
 
 	/**
+	 * Returns the unique ID of this action among the whole application.
+	 * @return string the unique ID of this action among the whole application.
+	 */
+	public function getUniqueId()
+	{
+		return $this->controller->getUniqueId() . '/' . $this->id;
+	}
+
+	/**
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
 	 * @param array $params the parameters to be bound to the action's run() method.
