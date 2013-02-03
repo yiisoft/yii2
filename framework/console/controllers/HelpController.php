@@ -178,14 +178,10 @@ class HelpController extends Controller
 			echo "\nSUB-COMMANDS\n\n";
 			$prefix = $controller->getUniqueId();
 			foreach ($actions as $action) {
-				if ($controller->defaultAction === $action) {
-					echo " * $prefix/$action (or $prefix)\n";
-				} else {
-					echo " * $prefix/$action\n";
-				}
+				echo "* $prefix/$action\n";
 			}
-			echo "\nTo see the help of each sub-command, enter:\n";
-			echo "\n    yiic help <sub-command>\n\n";
+			echo "\n\nTo see the help of each sub-command, enter:\n";
+			echo "\n  yiic help <sub-command>\n\n";
 		}
 	}
 
