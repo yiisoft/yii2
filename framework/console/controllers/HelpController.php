@@ -47,27 +47,28 @@ class HelpController extends Controller
 	 * yiic help message  # display help info about "message"
 	 * ~~~
 	 *
-	 * @param array $args The name of the command to show help about.
+	 * @param string $command The name of the command to show help about.
 	 * If not provided, all available commands will be displayed.
 	 * @return integer the exit status
 	 * @throws Exception if the command for help is unknown
 	 */
-	public function actionIndex($args = array())
+	public function actionIndex($command)
 	{
-		if (isset($args[0])) {
-			$result = Yii::$application->createController($args[0]);
+		if ($command !== null) {
+			$result = Yii::$application->createController($command);
 			if ($result === false) {
 				throw new Exception(Yii::t('yii', 'No help for unknown command "{command}".', array(
-					'{command}' => $args[0],
+					'{command}' => $command,
 				)));
 			}
 
 			list($controller, $actionID) = $result;
 
-			if ($actionID === '') {
-				$this->getControllerHelp($controller);
-			} else {
+			$actions = $this->getActions($controller);
+			if ($actionID !== '' || count($actions) === 1 && $actions[0] === $controller->defaultAction) {
 				$this->getActionHelp($controller, $actionID);
+			} else {
+				$this->getControllerHelp($controller);
 			}
 		} else {
 			$this->getHelp();
@@ -144,13 +145,12 @@ class HelpController extends Controller
 	{
 		$commands = $this->getCommands();
 		if ($commands !== array()) {
-			echo "Usage: yiic <command-name> [...options...] [...arguments...]\n\n";
 			echo "The following commands are available:\n\n";
 			foreach ($commands as $command) {
 				echo " * $command\n";
 			}
 			echo "\nTo see the help of each command, enter:\n";
-			echo "\n    yiic help <command-name>\n";
+			echo "\n    yiic help <command-name>\n\n";
 		} else {
 			echo "\nNo commands are found.\n";
 		}
@@ -178,7 +178,11 @@ class HelpController extends Controller
 			echo "\nSUB-COMMANDS\n\n";
 			$prefix = $controller->getUniqueId();
 			foreach ($actions as $action) {
-				echo "* $prefix/$action\n";
+				if ($action === $controller->defaultAction) {
+					echo "* $prefix/$action (default)\n";
+				} else {
+					echo "* $prefix/$action\n";
+				}
 			}
 			echo "\n\nTo see the help of each sub-command, enter:\n";
 			echo "\n  yiic help <sub-command>\n\n";
@@ -206,9 +210,11 @@ class HelpController extends Controller
 		}
 
 		$tags = $this->parseComment($method->getDocComment());
-		$options = $this->getOptions($method, isset($tags['param']) ? $tags['param'] : array());
-		$globalOptions = $this->getGlobalOptions($controller);
-		$options = array_merge($options, $globalOptions);
+
+		if ($tags['description'] !== '') {
+			echo "\nDESCRIPTION";
+			echo "\n\n" . $tags['description'] . "\n\n";
+		}
 
 		echo "\nUSAGE\n\n";
 		if ($action->id === $controller->defaultAction) {
@@ -216,59 +222,34 @@ class HelpController extends Controller
 		} else {
 			echo "yiic " . $action->getUniqueId();
 		}
-		if (isset($options[Request::ANONYMOUS_PARAMS])) {
-			if (count($options) > 1) {
-				echo ' [...options...]';
-			}
-			echo " [...arguments...]";
-		} elseif (count($options)) {
-			echo " [...options...]";
+		list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : array());
+		if (!empty($required)) {
+			echo ' <' . implode('> <', array_keys($required)) . '>';
+		}
+		if (!empty($optional)) {
+			echo ' [' . implode('] [', array_keys($optional)) . ']';
 		}
 		echo "\n\n";
 
-		if ($tags['description'] !== '') {
-			echo "\nDESCRIPTION";
-			echo "\n\n" . $tags['description'] . "\n\n";
-		}
-
-		if (isset($options[Request::ANONYMOUS_PARAMS])) {
+		if (!empty($required) || !empty($optional)) {
 			echo "\nARGUMENTS\n\n";
-			echo $options[Request::ANONYMOUS_PARAMS] . "\n\n";
-			unset($options[Request::ANONYMOUS_PARAMS]);
+			echo implode("\n\n", array_merge($required, $optional)) . "\n\n";
 		}
 
+		$options = $this->getOptionHelps($controller);
 		if ($options !== array()) {
 			echo "\nOPTIONS\n\n";
 			echo implode("\n\n", $options) . "\n\n";
 		}
 	}
 
-	function parseComment($comment)
-	{
-		$tags = array();
-		$comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($comment, '/'))), "\r", '');
-		$parts = preg_split('/^\s*@/m', $comment, -1, PREG_SPLIT_NO_EMPTY);
-		foreach ($parts as $part) {
-			if (preg_match('/^(\w+)(.*)/ms', trim($part), $matches)) {
-				$name = $matches[1];
-				if (!isset($tags[$name])) {
-					$tags[$name] = trim($matches[2]);
-				} elseif (is_array($tags[$name])) {
-					$tags[$name][] = trim($matches[2]);
-				} else {
-					$tags[$name] = array($tags[$name], trim($matches[2]));
-				}
-			}
-		}
-		return $tags;
-	}
-
 	/**
+	 * Returns the help information about arguments.
 	 * @param \ReflectionMethod $method
-	 * @param string $meta
-	 * @return array
+	 * @param string $tags the parsed comment block related with arguments
+	 * @return array the required and optional argument help information
 	 */
-	protected function getOptions($method, $tags)
+	protected function getArgHelps($method, $tags)
 	{
 		if (is_string($tags)) {
 			$tags = array($tags);
@@ -286,51 +267,21 @@ class HelpController extends Controller
 				$comment = $tag;
 			}
 			if ($param->isDefaultValueAvailable()) {
-				$optional[$name] = $this->formatOptionHelp($name, false, $type, $param->getDefaultValue(), $comment);
+				$optional[$name] = $this->formatOptionHelp('* ' . $name, false, $type, $param->getDefaultValue(), $comment);
 			} else {
-				$required[$name] = $this->formatOptionHelp($name, true, $type, null, $comment);
+				$required[$name] = $this->formatOptionHelp('* ' . $name, true, $type, null, $comment);
 			}
 		}
 
-		ksort($required);
-		ksort($optional);
-
-		return array_merge($required, $optional);
-	}
-
-	protected function formatOptionHelp($name, $required, $type, $defaultValue, $comment)
-	{
-		$doc = '';
-		$comment = trim($comment);
-
-		if ($name === Request::ANONYMOUS_PARAMS) {
-			return $comment;
-		}
-
-		if ($defaultValue !== null && !is_array($defaultValue)) {
-			if ($type === null) {
-				$type = gettype($defaultValue);
-			}
-			$doc = "$type (defaults to " . var_export($defaultValue, true) . ")";
-		} elseif (trim($type) !== '') {
-			$doc = $type;
-		}
-
-		if ($doc === '') {
-			$doc = $comment;
-		} elseif ($comment !== '') {
-			$doc .= "\n" . preg_replace("/^/m", "  ", $comment);
-		}
-
-		$name = $required ? "--$name (required)" : "--$name";
-		return $doc === '' ? $name : "$name: $doc";
+		return array($required, $optional);
 	}
 
 	/**
-	 * @param Controller $controller
-	 * @return array
+	 * Returns the help information about the options available for a console controller.
+	 * @param Controller $controller the console controller
+	 * @return array the help information about the options
 	 */
-	protected function getGlobalOptions($controller)
+	protected function getOptionHelps($controller)
 	{
 		$optionNames = $controller->globalOptions();
 		if (empty($optionNames)) {
@@ -358,12 +309,70 @@ class HelpController extends Controller
 					$type = null;
 					$comment = $doc;
 				}
-				$options[$name] = $this->formatOptionHelp($name, false, $type, $defaultValue, $comment);
+				$options[$name] = $this->formatOptionHelp('--' . $name, false, $type, $defaultValue, $comment);
 			} else {
-				$options[$name] = $this->formatOptionHelp($name, false, null, $defaultValue, '');
+				$options[$name] = $this->formatOptionHelp('--' . $name, false, null, $defaultValue, '');
 			}
 		}
 		ksort($options);
 		return $options;
+	}
+
+	/**
+	 * Parses the comment block into tags.
+	 * @param string $comment the comment block
+	 * @return array the parsed tags
+	 */
+	protected function parseComment($comment)
+	{
+		$tags = array();
+		$comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($comment, '/'))), "\r", '');
+		$parts = preg_split('/^\s*@/m', $comment, -1, PREG_SPLIT_NO_EMPTY);
+		foreach ($parts as $part) {
+			if (preg_match('/^(\w+)(.*)/ms', trim($part), $matches)) {
+				$name = $matches[1];
+				if (!isset($tags[$name])) {
+					$tags[$name] = trim($matches[2]);
+				} elseif (is_array($tags[$name])) {
+					$tags[$name][] = trim($matches[2]);
+				} else {
+					$tags[$name] = array($tags[$name], trim($matches[2]));
+				}
+			}
+		}
+		return $tags;
+	}
+
+	/**
+	 * Generates a well-formed string for an argument or option.
+	 * @param string $name the name of the argument or option
+	 * @param boolean $required whether the argument is required
+	 * @param string $type the type of the option or argument
+	 * @param mixed $defaultValue the default value of the option or argument
+	 * @param string $comment comment about the option or argument
+	 * @return string the formatted string for the argument or option
+	 */
+	protected function formatOptionHelp($name, $required, $type, $defaultValue, $comment)
+	{
+		$doc = '';
+		$comment = trim($comment);
+
+		if ($defaultValue !== null && !is_array($defaultValue)) {
+			if ($type === null) {
+				$type = gettype($defaultValue);
+			}
+			$doc = "$type (defaults to " . var_export($defaultValue, true) . ")";
+		} elseif (trim($type) !== '') {
+			$doc = $type;
+		}
+
+		if ($doc === '') {
+			$doc = $comment;
+		} elseif ($comment !== '') {
+			$doc .= "\n" . preg_replace("/^/m", "  ", $comment);
+		}
+
+		$name = $required ? "$name (required)" : $name;
+		return $doc === '' ? $name : "$name: $doc";
 	}
 }

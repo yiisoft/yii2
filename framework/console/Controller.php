@@ -11,6 +11,7 @@ namespace yii\console;
 
 use Yii;
 use yii\base\Action;
+use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
 
 /**
@@ -60,28 +61,60 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * Validates the parameter being bound to actions.
-	 * This method is invoked when parameters are being bound to the currently requested action.
-	 * Child classes may override this method to throw exceptions when there are missing and/or unknown parameters.
-	 * @param Action $action the currently requested action
-	 * @param array $missingParams the names of the missing parameters
-	 * @param array $unknownParams the unknown parameters (name=>value)
-	 * @throws Exception if there are missing or unknown parameters
+	 * Binds the parameters to the action.
+	 * This method is invoked by [[Action]] when it begins to run with the given parameters.
+	 * This method will first bind the parameters with the [[globalOptions()|global options]]
+	 * available to the action. It then validates the given arguments.
+	 * @param Action $action the action to be bound with parameters
+	 * @param array $params the parameters to be bound to the action
+	 * @return array the valid parameters that the action can run with.
+	 * @throws Exception if there are unknown options or missing arguments
 	 */
-	public function validateActionParams($action, $missingParams, $unknownParams)
+	public function bindActionParams($action, $params)
 	{
-		unset($missingParams[Request::ANONYMOUS_PARAMS], $unknownParams[Request::ANONYMOUS_PARAMS]);
+		if ($params !== array()) {
+			$options = $this->globalOptions();
+			foreach ($params as $name => $value) {
+				if (in_array($name, $options, true)) {
+					$this->$name = $value;
+					unset($params[$name]);
+				}
+			}
+		}
 
-		if (!empty($missingParams)) {
-			throw new Exception(Yii::t('yii', 'Missing required options: {params}', array(
-				'{params}' => implode(', ', $missingParams),
-			)));
-		}
-		if (!empty($unknownParams)) {
+		$args = isset($params[Request::ANONYMOUS_PARAMS]) ? $params[Request::ANONYMOUS_PARAMS] : array();
+		unset($params[Request::ANONYMOUS_PARAMS]);
+		if ($params !== array()) {
 			throw new Exception(Yii::t('yii', 'Unknown options: {params}', array(
-				'{params}' => implode(', ', $unknownParams),
+				'{params}' => implode(', ', array_keys($params)),
 			)));
 		}
+
+		if ($action instanceof InlineAction) {
+			$method = new \ReflectionMethod($this, $action->actionMethod);
+		} else {
+			$method = new \ReflectionMethod($action, 'run');
+		}
+
+		$missing = array();
+		foreach ($method->getParameters() as $i => $param) {
+			$name = $param->getName();
+			if (!isset($args[$i])) {
+				if ($param->isDefaultValueAvailable()) {
+					$args[$i] = $param->getDefaultValue();
+				} else {
+					$missing[] = $name;
+				}
+			}
+		}
+
+		if ($missing !== array()) {
+			throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', array(
+				'{params}' => implode(', ', $missing),
+			)));
+		}
+
+		return $args;
 	}
 
 	/**
