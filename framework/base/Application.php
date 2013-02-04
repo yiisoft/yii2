@@ -464,7 +464,7 @@ class Application extends Module
 	 */
 	public function renderException($exception)
 	{
-		if ($exception instanceof Exception && ($exception->causedByUser || !YII_DEBUG)) {
+		if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
 			$message = $exception->getName() . ': ' . $exception->getMessage();
 		} else {
 			$message = YII_DEBUG ? (string)$exception : 'Error: ' . $exception->getMessage();

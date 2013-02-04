@@ -126,8 +126,7 @@ class Application extends \yii\base\Application
 			'message' => 'yii\console\controllers\MessageController',
 			'help' => 'yii\console\controllers\HelpController',
 			'migrate' => 'yii\console\controllers\MigrateController',
-			'shell' => 'yii\console\controllers\ShellController',
-			'create' => 'yii\console\controllers\CreateController',
+			'app' => 'yii\console\controllers\CreateController',
 		);
 	}
 

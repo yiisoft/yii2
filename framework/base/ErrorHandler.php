@@ -81,7 +81,7 @@ class ErrorHandler extends Component
 				\Yii::$application->renderException($exception);
 			} else {
 				$view = new View($this);
-				if (!YII_DEBUG || $exception instanceof Exception && $exception->causedByUser) {
+				if (!YII_DEBUG || $exception instanceof UserException) {
 					$viewName = $this->errorView;
 				} else {
 					$viewName = $this->exceptionView;
@@ -256,7 +256,7 @@ class ErrorHandler extends Component
 	public function renderAsHtml($exception)
 	{
 		$view = new View($this);
-		if (!YII_DEBUG || $exception instanceof Exception && $exception->causedByUser) {
+		if (!YII_DEBUG || $exception instanceof UserException) {
 			$viewName = $this->errorView;
 		} else {
 			$viewName = $this->exceptionView;

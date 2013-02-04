@@ -15,13 +15,8 @@ namespace yii\console;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Exception extends \yii\base\Exception
+class Exception extends \yii\base\UserException
 {
-	/**
-	 * @var boolean whether this exception is caused by end user's mistake (e.g. wrong URL)
-	 */
-	public $causedByUser = true;
-
 	/**
 	 * @return string the user-friendly name of this exception
 	 */

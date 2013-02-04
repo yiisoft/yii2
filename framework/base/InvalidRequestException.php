@@ -15,13 +15,8 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class InvalidRequestException extends \Exception
+class InvalidRequestException extends UserException
 {
-	/**
-	 * @var boolean whether this exception is caused by end user's mistake (e.g. wrong URL)
-	 */
-	public $causedByUser = true;
-
 	/**
 	 * @return string the user-friendly name of this exception
 	 */

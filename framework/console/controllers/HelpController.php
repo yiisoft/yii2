@@ -52,7 +52,7 @@ class HelpController extends Controller
 	 * @return integer the exit status
 	 * @throws Exception if the command for help is unknown
 	 */
-	public function actionIndex($command)
+	public function actionIndex($command = null)
 	{
 		if ($command !== null) {
 			$result = Yii::$application->createController($command);
@@ -147,10 +147,10 @@ class HelpController extends Controller
 		if ($commands !== array()) {
 			echo "The following commands are available:\n\n";
 			foreach ($commands as $command) {
-				echo " * $command\n";
+				echo "* $command\n";
 			}
 			echo "\nTo see the help of each command, enter:\n";
-			echo "\n    yiic help <command-name>\n\n";
+			echo "\n  yiic help <command-name>\n\n";
 		} else {
 			echo "\nNo commands are found.\n";
 		}
