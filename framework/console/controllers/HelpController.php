@@ -179,13 +179,55 @@ class HelpController extends Controller
 			$prefix = $controller->getUniqueId();
 			foreach ($actions as $action) {
 				if ($action === $controller->defaultAction) {
-					echo "* $prefix/$action (default)\n";
+					echo "* $prefix/$action (default)";
 				} else {
-					echo "* $prefix/$action\n";
+					echo "* $prefix/$action";
 				}
+				$summary = $this->getActionSummary($controller, $action);
+				if ($summary !== '') {
+					echo ': ' . $summary;
+				}
+				echo "\n";
 			}
-			echo "\n\nTo see the help of each sub-command, enter:\n";
+			echo "\n\nTo see the detailed information about individual sub-commands, enter:\n";
 			echo "\n  yiic help <sub-command>\n\n";
+		}
+	}
+
+	/**
+	 * Returns the short summary of the action.
+	 * @param Controller $controller the controller instance
+	 * @param string $actionID action ID
+	 * @return string the summary about the action
+	 */
+	protected function getActionSummary($controller, $actionID)
+	{
+		$action = $controller->createAction($actionID);
+		if ($action === null) {
+			return '';
+		}
+		if ($action instanceof InlineAction) {
+			$reflection = new \ReflectionMethod($controller, $action->actionMethod);
+		} else {
+			$reflection = new \ReflectionClass($action);
+		}
+		$tags = $this->parseComment($reflection->getDocComment());
+		if ($tags['description'] !== '') {
+			$limit = 73 - strlen($action->getUniqueId());
+			if ($actionID === $controller->defaultAction) {
+				$limit -= 10;
+			}
+			if ($limit < 0) {
+				$limit = 50;
+			}
+			$description = $tags['description'];
+			if (($pos = strpos($tags['description'], "\n")) !== false) {
+				$description = substr($description, 0, $pos);
+			}
+			$text = substr($description, 0, $limit);
+			return strlen($description) > $limit ? $text . '...' : $text;
+		} else {
+			return '';
 		}
 	}
 
@@ -200,7 +242,7 @@ class HelpController extends Controller
 		$action = $controller->createAction($actionID);
 		if ($action === null) {
 			throw new Exception(Yii::t('yii', 'No help for unknown sub-command "{command}".', array(
-				'{command}' => $action->getUniqueId(),
+				'{command}' => rtrim($controller->getUniqueId() . '/' . $actionID, '/'),
 			)));
 		}
 		if ($action instanceof InlineAction) {
@@ -232,7 +274,6 @@ class HelpController extends Controller
 		echo "\n\n";
 
 		if (!empty($required) || !empty($optional)) {
-			echo "\nARGUMENTS\n\n";
 			echo implode("\n\n", array_merge($required, $optional)) . "\n\n";
 		}
 

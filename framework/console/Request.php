@@ -15,7 +15,7 @@ namespace yii\console;
  */
 class Request extends \yii\base\Request
 {
-	const ANONYMOUS_PARAMS = 'args';
+	const ANONYMOUS_PARAMS = '-args';
 
 	/**
 	 * @var string the controller route specified by this request. If this is an empty string,

@@ -317,6 +317,11 @@ class Controller extends Component
 		return $this->createView()->renderPartial($view, $params);
 	}
 
+	public function renderFile($file, $params = array())
+	{
+		return $this->createView()->renderFile($file, $params);
+	}
+
 	public function createView()
 	{
 		return new View($this);
