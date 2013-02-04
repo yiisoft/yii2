@@ -79,7 +79,7 @@ class SecurityManager extends Component
 		if (!empty($value)) {
 			$this->_validationKey = $value;
 		} else {
-			throw new CException(Yii::t('yii', 'SecurityManager.validationKey cannot be empty.'));
+			throw new CException(Yii::t('yii:SecurityManager.validationKey cannot be empty.'));
 		}
 	}
 
@@ -112,7 +112,7 @@ class SecurityManager extends Component
 		if (!empty($value)) {
 			$this->_encryptionKey = $value;
 		} else {
-			throw new CException(Yii::t('yii', 'SecurityManager.encryptionKey cannot be empty.'));
+			throw new CException(Yii::t('yii:SecurityManager.encryptionKey cannot be empty.'));
 		}
 	}
 
@@ -191,12 +191,12 @@ class SecurityManager extends Component
 			}
 
 			if ($module === false) {
-				throw new CException(Yii::t('yii', 'Failed to initialize the mcrypt module.'));
+				throw new CException(Yii::t('yii:Failed to initialize the mcrypt module.'));
 			}
 
 			return $module;
 		} else {
-			throw new CException(Yii::t('yii', 'SecurityManager requires PHP mcrypt extension to be loaded in order to use data encryption feature.'));
+			throw new CException(Yii::t('yii:SecurityManager requires PHP mcrypt extension to be loaded in order to use data encryption feature.'));
 		}
 	}
 

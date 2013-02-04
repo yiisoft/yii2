@@ -104,6 +104,6 @@ class HttpException extends UserException
 		if(isset($httpCodes[$this->statusCode]))
 			return $httpCodes[$this->statusCode];
 		else
-			return \Yii::t('yii', 'Error');
+			return \Yii::t('yii:Error');
 	}
 }

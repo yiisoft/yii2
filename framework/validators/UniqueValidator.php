@@ -86,7 +86,7 @@ class UniqueValidator extends Validator
 		}
 
 		if ($exists) {
-			$message = $this->message !== null ? $this->message : \Yii::t('yii', '{attribute} "{value}" has already been taken.');
+			$message = $this->message !== null ? $this->message : \Yii::t('yii:{attribute} "{value}" has already been taken.');
 			$this->addError($object, $attribute, $message);
 		}
 	}

@@ -76,7 +76,7 @@ class StringValidator extends Validator
 		}
 
 		if (!is_string($value)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} must be a string.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii:{attribute} must be a string.');
 			$this->addError($object, $attribute, $message);
 			return;
 		}
@@ -88,15 +88,15 @@ class StringValidator extends Validator
 		}
 
 		if ($this->min !== null && $length < $this->min) {
-			$message = ($this->tooShort !== null) ? $this->tooShort : \Yii::t('yii', '{attribute} is too short (minimum is {min} characters).');
+			$message = ($this->tooShort !== null) ? $this->tooShort : \Yii::t('yii:{attribute} is too short (minimum is {min} characters).');
 			$this->addError($object, $attribute, $message, array('{min}' => $this->min));
 		}
 		if ($this->max !== null && $length > $this->max) {
-			$message = ($this->tooLong !== null) ? $this->tooLong : \Yii::t('yii', '{attribute} is too long (maximum is {max} characters).');
+			$message = ($this->tooLong !== null) ? $this->tooLong : \Yii::t('yii:{attribute} is too long (maximum is {max} characters).');
 			$this->addError($object, $attribute, $message, array('{max}' => $this->max));
 		}
 		if ($this->is !== null && $length !== $this->is) {
-			$message = ($this->notEqual !== null) ? $this->notEqual : \Yii::t('yii', '{attribute} is of the wrong length (should be {length} characters).');
+			$message = ($this->notEqual !== null) ? $this->notEqual : \Yii::t('yii:{attribute} is of the wrong length (should be {length} characters).');
 			$this->addError($object, $attribute, $message, array('{length}' => $this->is));
 		}
 	}
@@ -113,7 +113,7 @@ class StringValidator extends Validator
 		$value = $object->$attribute;
 
 		if (($notEqual = $this->notEqual) === null) {
-			$notEqual = \Yii::t('yii', '{attribute} is of the wrong length (should be {length} characters).');
+			$notEqual = \Yii::t('yii:{attribute} is of the wrong length (should be {length} characters).');
 		}
 		$notEqual = strtr($notEqual, array(
 			'{attribute}' => $label,
@@ -122,7 +122,7 @@ class StringValidator extends Validator
 		));
 
 		if (($tooShort = $this->tooShort) === null) {
-			$tooShort = \Yii::t('yii', '{attribute} is too short (minimum is {min} characters).');
+			$tooShort = \Yii::t('yii:{attribute} is too short (minimum is {min} characters).');
 		}
 		$tooShort = strtr($tooShort, array(
 			'{attribute}' => $label,
@@ -131,7 +131,7 @@ class StringValidator extends Validator
 		));
 
 		if (($tooLong = $this->tooLong) === null) {
-			$tooLong = \Yii::t('yii', '{attribute} is too long (maximum is {max} characters).');
+			$tooLong = \Yii::t('yii:{attribute} is too long (maximum is {max} characters).');
 		}
 		$tooLong = strtr($tooLong, array(
 			'{attribute}' => $label,

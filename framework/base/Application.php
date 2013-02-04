@@ -30,10 +30,6 @@ use yii\util\FileHelper;
  *   persistence method. This application component is dynamically loaded when needed.</li>
  * <li>{@link getCache cache}: provides caching feature. This application component is
  *   disabled by default.</li>
- * <li>{@link getMessages messages}: provides the message source for translating
- *   application messages. This application component is dynamically loaded when needed.</li>
- * <li>{@link getCoreMessages coreMessages}: provides the message source for translating
- *   Yii framework messages. This application component is dynamically loaded when needed.</li>
  * </ul>
  *
  * Application will undergo the following life cycles when processing a user request:
@@ -57,23 +53,28 @@ class Application extends Module
 	const EVENT_BEFORE_REQUEST = 'beforeRequest';
 	const EVENT_AFTER_REQUEST = 'afterRequest';
 	/**
-	 * @var string the application name. Defaults to 'My Application'.
+	 * @var string the application name.
 	 */
 	public $name = 'My Application';
 	/**
-	 * @var string the version of this application. Defaults to '1.0'.
+	 * @var string the version of this application.
 	 */
 	public $version = '1.0';
 	/**
-	 * @var string the charset currently used for the application. Defaults to 'UTF-8'.
+	 * @var string the charset currently used for the application.
 	 */
 	public $charset = 'UTF-8';
 	/**
+	 * @var string the language that is meant to be used for end users.
+	 * @see sourceLanguage
+	 */
+	public $language = 'en_US';
+	/**
 	 * @var string the language that the application is written in. This mainly refers to
-	 * the language that the messages and view files are in. Defaults to 'en_us' (US English).
+	 * the language that the messages and view files are written in.
 	 * @see language
 	 */
-	public $sourceLanguage = 'en_us';
+	public $sourceLanguage = 'en_US';
 	/**
 	 * @var array IDs of the components that need to be loaded when the application starts.
 	 */
@@ -213,29 +214,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the language that the end user is using.
-	 * @return string the language that the user is using (e.g. 'en_US', 'zh_CN').
-	 * Defaults to the value of [[sourceLanguage]].
-	 */
-	public function getLanguage()
-	{
-		return $this->_language === null ? $this->sourceLanguage : $this->_language;
-	}
-
-	/**
-	 * Specifies which language the end user is using.
-	 * This is the language that the application should use to display to end users.
-	 * By default, [[language]] and [[sourceLanguage]] are the same.
-	 * Do not set this property unless your application needs to support multiple languages.
-	 * @param string $language the user language (e.g. 'en_US', 'zh_CN').
-	 * If it is null, the [[sourceLanguage]] will be used.
-	 */
-	public function setLanguage($language)
-	{
-		$this->_language = $language;
-	}
-
-	/**
 	 * Returns the time zone used by this application.
 	 * This is a simple wrapper of PHP function date_default_timezone_get().
 	 * @return string the time zone used by this application.
@@ -295,23 +273,6 @@ class Application extends Module
 	//		return $this->getLocale()->getDateFormatter();
 	//	}
 	//
-	//	/**
-	//	 * Returns the core message translations component.
-	//	 * @return \yii\i18n\MessageSource the core message translations
-	//	 */
-	//	public function getCoreMessages()
-	//	{
-	//		return $this->getComponent('coreMessages');
-	//	}
-	//
-	//	/**
-	//	 * Returns the application message translations component.
-	//	 * @return \yii\i18n\MessageSource the application message translations
-	//	 */
-	//	public function getMessages()
-	//	{
-	//		return $this->getComponent('messages');
-	//	}
 
 	/**
 	 * Returns the database connection component.
@@ -368,6 +329,15 @@ class Application extends Module
 	}
 
 	/**
+	 * Returns the internationalization (i18n) component
+	 * @return \yii\i18n\I18N the internationalization component
+	 */
+	public function getI18N()
+	{
+		return $this->getComponent('i18n');
+	}
+
+	/**
 	 * Sets default path aliases.
 	 */
 	public function registerDefaultAliases()
@@ -387,19 +357,14 @@ class Application extends Module
 			'errorHandler' => array(
 				'class' => 'yii\base\ErrorHandler',
 			),
-			'coreMessages' => array(
-				'class' => 'yii\i18n\PhpMessageSource',
-				'language' => 'en_us',
-				'basePath' => '@yii/messages',
-			),
-			'messages' => array(
-				'class' => 'yii\i18n\PhpMessageSource',
+			'i18n' => array(
+				'class' => 'yii\i18n\I18N',
 			),
 			'securityManager' => array(
 				'class' => 'yii\base\SecurityManager',
 			),
-			'urlManager' => array(
-				'class' => 'yii\web\UrlManager',
+			'translator' => array(
+				'class' => 'yii\i18n\Translator',
 			),
 		));
 	}

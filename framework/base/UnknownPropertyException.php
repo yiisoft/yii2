@@ -15,14 +15,14 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UnknownPropertyException extends \Exception
+class UnknownPropertyException extends Exception
 {
 	/**
 	 * @return string the user-friendly name of this exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Unknown Property');
+		return \Yii::t('yii:Unknown Property');
 	}
 }
 

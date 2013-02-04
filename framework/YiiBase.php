@@ -507,9 +507,6 @@ class YiiBase
 	 * i.e., the message returned will be chosen from a few candidates according to the given
 	 * number value. This feature is mainly used to solve plural format issue in case
 	 * a message has different plural forms in some languages.
-	 * @param string $category message category. Please use only word letters. Note, category 'yii' is
-	 * reserved for Yii framework core code use. See {@link CPhpMessageSource} for
-	 * more interpretation about message category.
 	 * @param string $message the original message
 	 * @param array $params parameters to be applied to the message using <code>strtr</code>.
 	 * The first parameter can be a number without key.
@@ -517,62 +514,12 @@ class YiiBase
 	 * an appropriate message translation.
 	 * You can pass parameter for {@link CChoiceFormat::format}
 	 * or plural forms format without wrapping it with array.
-	 * @param string $source which message source application component to use.
-	 * Defaults to null, meaning using 'coreMessages' for messages belonging to
-	 * the 'yii' category and using 'messages' for the rest messages.
 	 * @param string $language the target language. If null (default), the {@link CApplication::getLanguage application language} will be used.
 	 * @return string the translated message
 	 * @see CMessageSource
 	 */
-	public static function t($category, $message, $params = array(), $source = null, $language = null)
+	public static function t($message, $params = array(), $language = null)
 	{
-		// todo;
-		return $params !== array() ? strtr($message, $params) : $message;
-		if (self::$application !== null)
-		{
-			if ($source === null)
-					{
-						$source = $category === 'yii' ? 'coreMessages' : 'messages';
-					}
-			if (($source = self::$application->getComponent($source)) !== null)
-					{
-						$message = $source->translate($category, $message, $language);
-					}
-		}
-		if ($params === array())
-				{
-					return $message;
-				}
-		if (!is_array($params))
-				{
-					$params = array($params);
-				}
-		if (isset($params[0])) // number choice
-		{
-			if (strpos($message, '|') !== false)
-			{
-				if (strpos($message, '#') === false)
-				{
-					$chunks = explode('|', $message);
-					$expressions = self::$application->getLocale($language)->getPluralRules();
-					if ($n = min(count($chunks), count($expressions)))
-					{
-						for ($i = 0; $i < $n; $i++)
-								{
-									$chunks[$i] = $expressions[$i] . '#' . $chunks[$i];
-								}
-
-						$message = implode('|', $chunks);
-					}
-				}
-				$message = CChoiceFormat::format($message, $params[0]);
-			}
-			if (!isset($params['{n}']))
-					{
-						$params['{n}'] = $params[0];
-					}
-			unset($params[0]);
-		}
-		return $params !== array() ? strtr($message, $params) : $message;
+		Yii::$application->getI18N()->translate($message, $params, $language);
 	}
 }

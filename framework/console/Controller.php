@@ -85,7 +85,7 @@ class Controller extends \yii\base\Controller
 		$args = isset($params[Request::ANONYMOUS_PARAMS]) ? $params[Request::ANONYMOUS_PARAMS] : array();
 		unset($params[Request::ANONYMOUS_PARAMS]);
 		if ($params !== array()) {
-			throw new Exception(Yii::t('yii', 'Unknown options: {params}', array(
+			throw new Exception(Yii::t('yii:Unknown options: {params}', array(
 				'{params}' => implode(', ', array_keys($params)),
 			)));
 		}
@@ -109,7 +109,7 @@ class Controller extends \yii\base\Controller
 		}
 
 		if ($missing !== array()) {
-			throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', array(
+			throw new Exception(Yii::t('yii:Missing required arguments: {params}', array(
 				'{params}' => implode(', ', $missing),
 			)));
 		}

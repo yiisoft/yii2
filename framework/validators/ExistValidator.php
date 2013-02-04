@@ -68,7 +68,7 @@ class ExistValidator extends Validator
 		$query = $className::find();
 		$query->where(array($column->name => $value));
 		if (!$query->exists()) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} "{value}" is invalid.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii:{attribute} "{value}" is invalid.');
 			$this->addError($object, $attribute, $message);
 		}
 	}

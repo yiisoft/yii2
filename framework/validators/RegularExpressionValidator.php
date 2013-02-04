@@ -51,7 +51,7 @@ class RegularExpressionValidator extends Validator
 			throw new \yii\base\Exception('The "pattern" property must be specified with a valid regular expression.');
 		}
 		if ((!$this->not && !preg_match($this->pattern, $value)) || ($this->not && preg_match($this->pattern, $value))) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} is invalid.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii:{attribute} is invalid.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -69,7 +69,7 @@ class RegularExpressionValidator extends Validator
 			throw new \yii\base\Exception('The "pattern" property must be specified with a valid regular expression.');
 		}
 
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} is invalid.');
+		$message = ($this->message !== null) ? $this->message : \Yii::t('yii:{attribute} is invalid.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,

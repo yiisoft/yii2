@@ -22,7 +22,7 @@ class Exception extends \Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Exception');
+		return \Yii::t('yii:Exception');
 	}
 }
 

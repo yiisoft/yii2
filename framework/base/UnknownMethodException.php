@@ -15,14 +15,14 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UnknownMethodException extends \Exception
+class UnknownMethodException extends Exception
 {
 	/**
 	 * @return string the user-friendly name of this exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Unknown Method');
+		return \Yii::t('yii:Unknown Method');
 	}
 }
 

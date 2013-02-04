@@ -45,7 +45,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function invalidActionParams($action, $exception)
 	{
-		throw new HttpException(400, \Yii::t('yii', 'Your request is invalid.'));
+		throw new HttpException(400, \Yii::t('yii:Your request is invalid.'));
 	}
 
 	/**

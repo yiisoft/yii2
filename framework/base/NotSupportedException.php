@@ -15,14 +15,14 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class NotSupportedException extends \Exception
+class NotSupportedException extends Exception
 {
 	/**
 	 * @return string the user-friendly name of this exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Not Supported');
+		return \Yii::t('yii:Not Supported');
 	}
 }
 

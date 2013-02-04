@@ -823,7 +823,7 @@ class Request extends \yii\base\Request
 				$valid = false;
 			}
 			if (!$valid) {
-				throw new CHttpException(400, Yii::t('yii', 'The CSRF token could not be verified.'));
+				throw new CHttpException(400, Yii::t('yii:The CSRF token could not be verified.'));
 			}
 		}
 	}
