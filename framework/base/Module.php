@@ -73,9 +73,9 @@ abstract class Module extends Component
 	 *
 	 * ~~~
 	 * array(
-	 *   'account' => '@application/controllers/UserController',
+	 *   'account' => '@app/controllers/UserController',
 	 *   'article' => array(
-	 *      'class' => '@application/controllers/PostController',
+	 *      'class' => '@app/controllers/PostController',
 	 *      'pageTitle' => 'something new',
 	 *   ),
 	 * )
@@ -311,7 +311,7 @@ abstract class Module extends Component
 	 *
 	 * ~~~
 	 * array(
-	 *	'@models' => '@application/models', // an existing alias
+	 *	'@models' => '@app/models', // an existing alias
 	 *	'@backend' => __DIR__ . '/../backend',  // a directory
 	 * )
 	 * ~~~
@@ -563,10 +563,10 @@ abstract class Module extends Component
 		if (is_array($result)) {
 			/** @var $controller Controller */
 			list($controller, $actionID) = $result;
-			$oldController = Yii::$application->controller;
-			Yii::$application->controller = $controller;
+			$oldController = Yii::$app->controller;
+			Yii::$app->controller = $controller;
 			$status = $controller->runAction($actionID, $params);
-			Yii::$application->controller = $oldController;
+			Yii::$app->controller = $oldController;
 			return $status;
 		} else {
 			throw new InvalidRouteException('Unable to resolve the request: ' . trim($this->getUniqueId() . '/' . $route, '/'));

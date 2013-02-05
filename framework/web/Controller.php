@@ -59,9 +59,9 @@ class Controller extends \yii\base\Controller
 		else {
 			$name = ucfirst(basename($this->id));
 			if($this->action!==null && strcasecmp($this->action->id,$this->defaultAction))
-				return $this->_pageTitle=\Yii::$application->name.' - '.ucfirst($this->action->id).' '.$name;
+				return $this->_pageTitle=\Yii::$app->name.' - '.ucfirst($this->action->id).' '.$name;
 			else
-				return $this->_pageTitle=\Yii::$application->name.' - '.$name;
+				return $this->_pageTitle=\Yii::$app->name.' - '.$name;
 		}
 	}
 

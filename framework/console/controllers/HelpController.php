@@ -55,7 +55,7 @@ class HelpController extends Controller
 	public function actionIndex($command = null)
 	{
 		if ($command !== null) {
-			$result = Yii::$application->createController($command);
+			$result = Yii::$app->createController($command);
 			if ($result === false) {
 				throw new Exception(Yii::t('yii|No help for unknown command "{command}".', array(
 					'{command}' => $command,
@@ -81,7 +81,7 @@ class HelpController extends Controller
 	 */
 	public function getCommands()
 	{
-		$commands = $this->getModuleCommands(Yii::$application);
+		$commands = $this->getModuleCommands(Yii::$app);
 		sort($commands);
 		return array_unique($commands);
 	}

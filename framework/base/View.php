@@ -148,7 +148,7 @@ class View extends Component
 	 */
 	public function renderFile($file, $params = array())
 	{
-		$renderer = Yii::$application->getViewRenderer();
+		$renderer = Yii::$app->getViewRenderer();
 		if ($renderer !== null) {
 			return $renderer->render($this, $file, $params);
 		} else {
@@ -344,7 +344,7 @@ class View extends Component
 	 *
 	 * A view name can be specified in one of the following formats:
 	 *
-	 * - path alias (e.g. "@application/views/site/index");
+	 * - path alias (e.g. "@app/views/site/index");
 	 * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
 	 *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
 	 * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
@@ -374,7 +374,7 @@ class View extends Component
 			$view .= '.php';
 		}
 		if (strncmp($view, '@', 1) === 0) {
-			// e.g. "@application/views/common"
+			// e.g. "@app/views/common"
 			if (($file = Yii::getAlias($view)) === false) {
 				throw new InvalidConfigException("Invalid path alias: $view");
 			}
@@ -386,18 +386,18 @@ class View extends Component
 				$class = new \ReflectionClass($this->owner);
 				$file = dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $view;
 			} else {
-				$file = Yii::$application->getViewPath() . DIRECTORY_SEPARATOR . $view;
+				$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . $view;
 			}
-		} elseif (strncmp($view, '//', 2) !== 0 && Yii::$application->controller !== null) {
+		} elseif (strncmp($view, '//', 2) !== 0 && Yii::$app->controller !== null) {
 			// e.g. "/site/index"
-			$file = Yii::$application->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+			$file = Yii::$app->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
 		} else {
 			// e.g. "//layouts/main"
-			$file = Yii::$application->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
 		}
 
 		if (is_file($file)) {
-			if ($this->enableTheme && ($theme = Yii::$application->getTheme()) !== null) {
+			if ($this->enableTheme && ($theme = Yii::$app->getTheme()) !== null) {
 				$file = $theme->apply($file);
 			}
 			return $this->enableI18N ? FileHelper::localize($file, $this->language, $this->sourceLanguage) : $file;
@@ -423,7 +423,7 @@ class View extends Component
 	 *
 	 * Like view names, a layout name can take several formats:
 	 *
-	 * - path alias (e.g. "@application/views/layouts/main");
+	 * - path alias (e.g. "@app/views/layouts/main");
 	 * - absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
 	 *   looked for under the [[Application::layoutPath|layout path]] of the application;
 	 * - relative path (e.g. "main"): the actual layout layout file will be looked for under the
@@ -444,10 +444,10 @@ class View extends Component
 	{
 		/** @var $module Module */
 		if (is_string($this->layout)) {
-			if (Yii::$application->controller) {
-				$module = Yii::$application->controller->module;
+			if (Yii::$app->controller) {
+				$module = Yii::$app->controller->module;
 			} else {
-				$module = Yii::$application;
+				$module = Yii::$app;
 			}
 			$view = $this->layout;
 		} elseif ($this->owner instanceof Controller) {
@@ -477,13 +477,13 @@ class View extends Component
 				throw new InvalidConfigException("Invalid path alias: $view");
 			}
 		} elseif (strncmp($view, '/', 1) === 0) {
-			$file = Yii::$application->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
 		} else {
 			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
 		}
 
 		if (is_file($file)) {
-			if ($this->enableTheme && ($theme = Yii::$application->getTheme()) !== null) {
+			if ($this->enableTheme && ($theme = Yii::$app->getTheme()) !== null) {
 				$file = $theme->apply($file);
 			}
 			return $this->enableI18N ? FileHelper::localize($file, $this->language, $this->sourceLanguage) : $file;

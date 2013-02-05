@@ -10,10 +10,10 @@ class I18N extends Component
 	public function translate($message, $params = array(), $language = null)
 	{
 		if ($language === null) {
-			$language = Yii::$application->language;
+			$language = Yii::$app->language;
 		}
 
-		if (preg_match('/^([\w\-\.]+)\|(.*)/', $message, $matches)) {
+		if (strpos($message, '|') !== false && preg_match('/^([\w\-\.]+)\|(.*)/', $message, $matches)) {
 			$category = $matches[1];
 			$message = $matches[2];
 		} else {

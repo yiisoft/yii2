@@ -87,7 +87,7 @@ abstract class Schema extends \yii\base\Object
 		$realName = $this->getRealTableName($name);
 
 		/** @var $cache Cache */
-		if ($db->enableSchemaCache && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null && !in_array($name, $db->schemaCacheExclude, true)) {
+		if ($db->enableSchemaCache && ($cache = \Yii::$app->getComponent($db->schemaCacheID)) !== null && !in_array($name, $db->schemaCacheExclude, true)) {
 			$key = $this->getCacheKey($cache, $name);
 			if ($refresh || ($table = $cache->get($key)) === false) {
 				$table = $this->loadTableSchema($realName);
@@ -171,7 +171,7 @@ abstract class Schema extends \yii\base\Object
 	public function refresh()
 	{
 		/** @var $cache \yii\caching\Cache */
-		if ($this->db->enableSchemaCache && ($cache = \Yii::$application->getComponent($this->db->schemaCacheID)) !== null) {
+		if ($this->db->enableSchemaCache && ($cache = \Yii::$app->getComponent($this->db->schemaCacheID)) !== null) {
 			foreach ($this->_tables as $name => $table) {
 				$cache->delete($this->getCacheKey($cache, $name));
 			}

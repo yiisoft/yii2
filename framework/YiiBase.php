@@ -65,7 +65,7 @@ class YiiBase
 	/**
 	 * @var yii\base\Application the application instance
 	 */
-	public static $application;
+	public static $app;
 	/**
 	 * @var array registered path aliases
 	 * @see getAlias
@@ -125,8 +125,8 @@ class YiiBase
 	 *
 	 * To import a class or a directory, one can use either path alias or class name (can be namespaced):
 	 *
-	 *  - `@application/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
-	 *  - `@application/components/*`: importing the whole `components` directory with a path alias;
+	 *  - `@app/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
+	 *  - `@app/components/*`: importing the whole `components` directory with a path alias;
 	 *  - `GoogleMap`: importing the `GoogleMap` class with a class name. [[autoload()]] will be used
 	 *  when this class is used for the first time.
 	 *
@@ -262,6 +262,7 @@ class YiiBase
 	 *
 	 * @param string $className class name
 	 * @return boolean whether the class has been loaded successfully
+	 * @throws Exception if the class file does not exist
 	 */
 	public static function autoload($className)
 	{
@@ -322,12 +323,12 @@ class YiiBase
 	 * the class. For example,
 	 *
 	 * - `\app\components\GoogleMap`: fully-qualified namespaced class.
-	 * - `@application/components/GoogleMap`: an alias
+	 * - `@app/components/GoogleMap`: an alias
 	 *
 	 * Below are some usage examples:
 	 *
 	 * ~~~
-	 * $object = \Yii::createObject('@application/components/GoogleMap');
+	 * $object = \Yii::createObject('@app/components/GoogleMap');
 	 * $object = \Yii::createObject(array(
 	 *     'class' => '\app\components\GoogleMap',
 	 *     'apiKey' => 'xyz',
@@ -520,6 +521,6 @@ class YiiBase
 	 */
 	public static function t($message, $params = array(), $language = null)
 	{
-		Yii::$application->getI18N()->translate($message, $params, $language);
+		Yii::$app->getI18N()->translate($message, $params, $language);
 	}
 }

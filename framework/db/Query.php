@@ -117,7 +117,7 @@ class Query extends \yii\base\Component
 	public function createCommand($db = null)
 	{
 		if ($db === null) {
-			$db = \Yii::$application->db;
+			$db = \Yii::$app->db;
 		}
 		$sql = $db->getQueryBuilder()->build($this);
 		return $db->createCommand($sql, $this->params);

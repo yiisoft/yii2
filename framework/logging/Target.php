@@ -110,7 +110,7 @@ abstract class Target extends \yii\base\Component
 	protected function getContextMessage()
 	{
 		$context = array();
-		if ($this->logUser && ($user = \Yii::$application->getComponent('user', false)) !== null) {
+		if ($this->logUser && ($user = \Yii::$app->getComponent('user', false)) !== null) {
 			$context[] = 'User: ' . $user->getName() . ' (ID: ' . $user->getId() . ')';
 		}
 

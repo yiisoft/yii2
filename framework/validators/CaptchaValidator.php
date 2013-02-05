@@ -61,13 +61,13 @@ class CaptchaValidator extends Validator
 	public function getCaptchaAction()
 	{
 		if (strpos($this->captchaAction, '/') !== false) {  // contains controller or module
-			$ca = \Yii::$application->createController($this->captchaAction);
+			$ca = \Yii::$app->createController($this->captchaAction);
 			if ($ca !== null) {
 				list($controller, $actionID) = $ca;
 				$action = $controller->createAction($actionID);
 			}
 		} else {
-			$action = \Yii::$application->getController()->createAction($this->captchaAction);
+			$action = \Yii::$app->getController()->createAction($this->captchaAction);
 		}
 
 		if ($action === null) {

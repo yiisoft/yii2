@@ -74,7 +74,7 @@ class DbCache extends Cache
 	public function getDb()
 	{
 		if ($this->_db === null) {
-			$db = \Yii::$application->getComponent($this->connectionID);
+			$db = \Yii::$app->getComponent($this->connectionID);
 			if ($db instanceof Connection) {
 				$this->_db = $db;
 			} else {

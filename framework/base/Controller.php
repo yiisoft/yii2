@@ -72,9 +72,9 @@ class Controller extends Component
 	 *
 	 * ~~~
 	 * return array(
-	 *     'action1' => '@application/components/Action1',
+	 *     'action1' => '@app/components/Action1',
 	 *     'action2' => array(
-	 *         'class' => '@application/components/Action2',
+	 *         'class' => '@app/components/Action2',
 	 *         'property1' => 'value1',
 	 *         'property2' => 'value2',
 	 *     ),
@@ -139,7 +139,7 @@ class Controller extends Component
 		} elseif ($pos > 0) {
 			return $this->module->runAction($route, $params);
 		} else {
-			return \Yii::$application->runAction(ltrim($route, '/'), $params);
+			return \Yii::$app->runAction(ltrim($route, '/'), $params);
 		}
 	}
 

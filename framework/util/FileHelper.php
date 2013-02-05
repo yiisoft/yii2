@@ -91,10 +91,10 @@ class FileHelper
 	public static function localize($file, $language = null, $sourceLanguage = null)
 	{
 		if ($language === null) {
-			$language = \Yii::$application->getLanguage();
+			$language = \Yii::$app->getLanguage();
 		}
 		if ($sourceLanguage === null) {
-			$sourceLanguage = \Yii::$application->sourceLanguage;
+			$sourceLanguage = \Yii::$app->sourceLanguage;
 		}
 		if ($language === $sourceLanguage) {
 			return $file;

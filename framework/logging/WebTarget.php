@@ -46,7 +46,7 @@ class CWebLogRoute extends CLogRoute
 	 */
 	protected function render($view, $data)
 	{
-		$app = \Yii::$application;
+		$app = \Yii::$app;
 		$isAjax = $app->getRequest()->getIsAjaxRequest();
 
 		if ($this->showInFireBug)

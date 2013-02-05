@@ -105,7 +105,7 @@ class Application extends Module
 	 */
 	public function __construct($id, $basePath, $config = array())
 	{
-		Yii::$application = $this;
+		Yii::$app = $this;
 		$this->id = $id;
 		$this->setBasePath($basePath);
 
@@ -342,7 +342,7 @@ class Application extends Module
 	 */
 	public function registerDefaultAliases()
 	{
-		Yii::$aliases['@application'] = $this->getBasePath();
+		Yii::$aliases['@app'] = $this->getBasePath();
 		Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
 		Yii::$aliases['@www'] = '';
 	}

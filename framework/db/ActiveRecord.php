@@ -96,7 +96,7 @@ class ActiveRecord extends Model
 	 */
 	public static function getDb()
 	{
-		return \Yii::$application->getDb();
+		return \Yii::$app->getDb();
 	}
 
 	/**

@@ -87,7 +87,7 @@ class Request extends \yii\base\Request
 		}
 
 		if ($this->enableCsrfValidation) {
-			\Yii::$application->on('beginRequest', array($this, 'validateCsrfToken'));
+			\Yii::$app->on('beginRequest', array($this, 'validateCsrfToken'));
 		}
 	}
 

@@ -51,7 +51,7 @@ class Migration extends \yii\base\Component
 	{
 		parent::init();
 		if ($this->db === null) {
-			$this->db = \Yii::$application->getComponent('db');
+			$this->db = \Yii::$app->getComponent('db');
 		}
 	}
 

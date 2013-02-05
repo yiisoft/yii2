@@ -48,7 +48,7 @@ class FileTarget extends Target
 	{
 		parent::init();
 		if ($this->logFile === null) {
-			$this->logFile = \Yii::$application->getRuntimePath() . DIRECTORY_SEPARATOR . 'application.log';
+			$this->logFile = \Yii::$app->getRuntimePath() . DIRECTORY_SEPARATOR . 'application.log';
 		} else {
 			$this->logFile = \Yii::getAlias($this->logFile);
 		}

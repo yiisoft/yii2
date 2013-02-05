@@ -59,12 +59,12 @@ class SecurityManager extends Component
 		if ($this->_validationKey !== null) {
 			return $this->_validationKey;
 		} else {
-			if (($key = \Yii::$application->getGlobalState(self::STATE_VALIDATION_KEY)) !== null) {
+			if (($key = \Yii::$app->getGlobalState(self::STATE_VALIDATION_KEY)) !== null) {
 				$this->setValidationKey($key);
 			} else {
 				$key = $this->generateRandomKey();
 				$this->setValidationKey($key);
-				\Yii::$application->setGlobalState(self::STATE_VALIDATION_KEY, $key);
+				\Yii::$app->setGlobalState(self::STATE_VALIDATION_KEY, $key);
 			}
 			return $this->_validationKey;
 		}
@@ -92,12 +92,12 @@ class SecurityManager extends Component
 		if ($this->_encryptionKey !== null) {
 			return $this->_encryptionKey;
 		} else {
-			if (($key = \Yii::$application->getGlobalState(self::STATE_ENCRYPTION_KEY)) !== null) {
+			if (($key = \Yii::$app->getGlobalState(self::STATE_ENCRYPTION_KEY)) !== null) {
 				$this->setEncryptionKey($key);
 			} else {
 				$key = $this->generateRandomKey();
 				$this->setEncryptionKey($key);
-				\Yii::$application->setGlobalState(self::STATE_ENCRYPTION_KEY, $key);
+				\Yii::$app->setGlobalState(self::STATE_ENCRYPTION_KEY, $key);
 			}
 			return $this->_encryptionKey;
 		}

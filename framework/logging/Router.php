@@ -52,7 +52,7 @@ use yii\base\Application;
  * as follows:
  *
  * ~~~
- * Yii::$application->log->targets['file']->enabled = false;
+ * Yii::$app->log->targets['file']->enabled = false;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

@@ -70,7 +70,7 @@ class MigrateController extends Controller
 	 * @var string the directory storing the migration classes. This can be either
 	 * a path alias or a directory.
 	 */
-	public $migrationPath = '@application/migrations';
+	public $migrationPath = '@app/migrations';
 	/**
 	 * @var string the name of the table for keeping applied migration information.
 	 */
@@ -82,7 +82,7 @@ class MigrateController extends Controller
 	public $connectionID = 'db';
 	/**
 	 * @var string the template file for generating new migrations.
-	 * This can be either a path alias (e.g. "@application/migrations/template.php")
+	 * This can be either a path alias (e.g. "@app/migrations/template.php")
 	 * or a file path.
 	 */
 	public $templateFile = '@yii/views/migration.php';
@@ -121,7 +121,7 @@ class MigrateController extends Controller
 			}
 			$this->migrationPath = $path;
 
-			$this->db = Yii::$application->getComponent($this->connectionID);
+			$this->db = Yii::$app->getComponent($this->connectionID);
 			if (!$this->db instanceof Connection) {
 				throw new Exception("Invalid DB connection \"{$this->connectionID}\".");
 			}
@@ -150,7 +150,7 @@ class MigrateController extends Controller
 	{
 		if (($migrations = $this->getNewMigrations()) === array()) {
 			echo "No new migration found. Your system is up-to-date.\n";
-			Yii::$application->end();
+			Yii::$app->end();
 		}
 
 		$total = count($migrations);
@@ -576,7 +576,7 @@ class MigrateController extends Controller
 		if ($this->db !== null) {
 			return $this->db;
 		} else {
-			$this->db = Yii::$application->getComponent($this->connectionID);
+			$this->db = Yii::$app->getComponent($this->connectionID);
 			if ($this->db instanceof Connection) {
 				return $this->db;
 			} else {

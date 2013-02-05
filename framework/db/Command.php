@@ -387,7 +387,7 @@ class Command extends \yii\base\Component
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {
-			$cache = \Yii::$application->getComponent($db->queryCacheID);
+			$cache = \Yii::$app->getComponent($db->queryCacheID);
 		}
 
 		if (isset($cache)) {

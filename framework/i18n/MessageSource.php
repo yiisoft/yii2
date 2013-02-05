@@ -49,7 +49,7 @@ class MessageSource extends Component
 	{
 		parent::init();
 		if ($this->sourceLanguage === null) {
-			$this->sourceLanguage = Yii::$application->sourceLanguage;
+			$this->sourceLanguage = Yii::$app->sourceLanguage;
 		}
 	}
 

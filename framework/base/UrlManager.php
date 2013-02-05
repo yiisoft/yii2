@@ -112,7 +112,7 @@ use \yii\base\Component;
  * </ul>
  *
  * UrlManager is a default application component that may be accessed via
- * {@link \Yii::$application->urlManager}.
+ * {@link \Yii::$app->urlManager}.
  *
  * @property string $baseUrl The base URL of the application (the part after host name and before query string).
  * If {@link showScriptName} is true, it will include the script name part.
@@ -214,7 +214,7 @@ class UrlManager extends Component
 	{
 		if(empty($this->rules) || $this->getUrlFormat()===self::GET_FORMAT)
 			return;
-		if($this->cacheID!==false && ($cache=\Yii::$application->getComponent($this->cacheID))!==null)
+		if($this->cacheID!==false && ($cache=\Yii::$app->getComponent($this->cacheID))!==null)
 		{
 			$hash=md5(serialize($this->rules));
 			if(($data=$cache->get(self::CACHE_KEY))!==false && isset($data[1]) && $data[1]===$hash)
@@ -464,9 +464,9 @@ class UrlManager extends Component
 		else
 		{
 			if($this->showScriptName)
-				$this->_baseUrl=\Yii::$application->getRequest()->getScriptUrl();
+				$this->_baseUrl=\Yii::$app->getRequest()->getScriptUrl();
 			else
-				$this->_baseUrl=\Yii::$application->getRequest()->getBaseUrl();
+				$this->_baseUrl=\Yii::$app->getRequest()->getBaseUrl();
 			return $this->_baseUrl;
 		}
 	}
@@ -755,7 +755,7 @@ class CUrlRule extends CBaseUrlRule
 
 		if($this->hasHostInfo)
 		{
-			$hostInfo=\Yii::$application->getRequest()->getHostInfo();
+			$hostInfo=\Yii::$app->getRequest()->getHostInfo();
 			if(stripos($url,$hostInfo)===0)
 				$url=substr($url,strlen($hostInfo));
 		}

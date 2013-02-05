@@ -58,7 +58,7 @@ class Theme extends Component
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
 				$this->basePath = FileHelper::ensureDirectory($this->basePath);
-				$this->pathMap = array(Yii::$application->getBasePath() => $this->basePath);
+				$this->pathMap = array(Yii::$app->getBasePath() => $this->basePath);
 			} else {
 				throw new InvalidConfigException("Theme::basePath must be set.");
 			}

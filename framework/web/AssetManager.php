@@ -97,7 +97,7 @@ class CAssetManager extends CApplicationComponent
 	{
 		if($this->_basePath===null)
 		{
-			$request=\Yii::$application->getRequest();
+			$request=\Yii::$app->getRequest();
 			$this->setBasePath(dirname($request->getScriptFile()).DIRECTORY_SEPARATOR.self::DEFAULT_BASEPATH);
 		}
 		return $this->_basePath;
@@ -125,7 +125,7 @@ class CAssetManager extends CApplicationComponent
 	{
 		if($this->_baseUrl===null)
 		{
-			$request=\Yii::$application->getRequest();
+			$request=\Yii::$app->getRequest();
 			$this->setBaseUrl($request->getBaseUrl().'/'.self::DEFAULT_BASEPATH);
 		}
 		return $this->_baseUrl;
