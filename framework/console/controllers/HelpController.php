@@ -252,6 +252,7 @@ class HelpController extends Controller
 		}
 
 		$tags = $this->parseComment($method->getDocComment());
+		$options = $this->getOptionHelps($controller);
 
 		if ($tags['description'] !== '') {
 			echo "\nDESCRIPTION";
@@ -270,6 +271,9 @@ class HelpController extends Controller
 		}
 		if (!empty($optional)) {
 			echo ' [' . implode('] [', array_keys($optional)) . ']';
+		}
+		if (!empty($options)) {
+			echo ' [...options...]';
 		}
 		echo "\n\n";
 

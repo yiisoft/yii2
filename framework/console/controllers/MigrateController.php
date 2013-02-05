@@ -22,8 +22,8 @@ use yii\util\ArrayHelper;
  *
  * A migration means a set of persistent changes to the application environment
  * that is shared among different developers. For example, in an application
- * backed by a database, a migration may refer to a set of changes to the database,
- * such as creating a new table, adding a new table column.
+ * backed by a database, a migration may refer to a set of changes to
+ * the database, such as creating a new table, adding a new table column.
  *
  * This command provides support for tracking the migration history, upgrading
  * or downloading with migrations, and creating new migration skeletons.
