@@ -113,7 +113,7 @@ class CAssetManager extends CApplicationComponent
 		if(($basePath=realpath($value))!==false && is_dir($basePath) && is_writable($basePath))
 			$this->_basePath=$basePath;
 		else
-			throw new CException(Yii::t('yii:CAssetManager.basePath "{path}" is invalid. Please make sure the directory exists and is writable by the Web server process.',
+			throw new CException(Yii::t('yii|CAssetManager.basePath "{path}" is invalid. Please make sure the directory exists and is writable by the Web server process.',
 				array('{path}'=>$value)));
 	}
 
@@ -236,7 +236,7 @@ class CAssetManager extends CApplicationComponent
 				return $this->_published[$path]=$this->getBaseUrl().'/'.$dir;
 			}
 		}
-		throw new CException(Yii::t('yii:The asset "{asset}" to be published does not exist.',
+		throw new CException(Yii::t('yii|The asset "{asset}" to be published does not exist.',
 			array('{asset}'=>$path)));
 	}
 

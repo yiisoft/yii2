@@ -22,7 +22,7 @@ class InvalidRequestException extends UserException
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii:Invalid Request');
+		return \Yii::t('yii|Invalid Request');
 	}
 }
 

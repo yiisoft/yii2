@@ -22,7 +22,7 @@ class InvalidCallException extends Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii:Invalid Call');
+		return \Yii::t('yii|Invalid Call');
 	}
 }
 

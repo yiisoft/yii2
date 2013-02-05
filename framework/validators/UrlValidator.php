@@ -55,7 +55,7 @@ class UrlValidator extends Validator
 		if (($value = $this->validateValue($value)) !== false) {
 			$object->$attribute = $value;
 		} else {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii:{attribute} is not a valid URL.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid URL.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -97,7 +97,7 @@ class UrlValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii:{attribute} is not a valid URL.');
+		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid URL.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,

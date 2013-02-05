@@ -22,7 +22,7 @@ class InvalidConfigException extends Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii:Invalid Configuration');
+		return \Yii::t('yii|Invalid Configuration');
 	}
 }
 

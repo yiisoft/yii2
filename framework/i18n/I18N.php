@@ -13,7 +13,7 @@ class I18N extends Component
 			$language = Yii::$application->language;
 		}
 
-		if (preg_match('/^([\w\-]+):(.*)/', $message, $matches)) {
+		if (preg_match('/^([\w\-\.]+)\|(.*)/', $message, $matches)) {
 			$category = $matches[1];
 			$message = $matches[2];
 		} else {

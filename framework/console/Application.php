@@ -93,7 +93,7 @@ class Application extends \yii\base\Application
 		if ($request->getIsConsoleRequest()) {
 			return $this->runAction($request->route, $request->params);
 		} else {
-			throw new Exception(\Yii::t('yii:this script must be run from the command line.'));
+			throw new Exception(\Yii::t('yii|this script must be run from the command line.'));
 		}
 	}
 
@@ -112,7 +112,7 @@ class Application extends \yii\base\Application
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			throw new Exception(\Yii::t('yii:Unknown command "{command}".', array('{command}' => $route)));
+			throw new Exception(\Yii::t('yii|Unknown command "{command}".', array('{command}' => $route)));
 		}
 	}
 

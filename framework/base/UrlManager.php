@@ -366,7 +366,7 @@ class UrlManager extends Component
 					return isset($_GET[$this->routeVar]) ? $_GET[$this->routeVar] : $r;
 			}
 			if($this->useStrictParsing)
-				throw new HttpException(404,Yii::t('yii:Unable to resolve the request "{route}".',
+				throw new HttpException(404,Yii::t('yii|Unable to resolve the request "{route}".',
 					array('{route}'=>$pathInfo)));
 			else
 				return $pathInfo;
@@ -502,7 +502,7 @@ class UrlManager extends Component
 		if($value===self::PATH_FORMAT || $value===self::GET_FORMAT)
 			$this->_urlFormat=$value;
 		else
-			throw new CException(Yii::t('yii:CUrlManager.UrlFormat must be either "path" or "get".'));
+			throw new CException(Yii::t('yii|CUrlManager.UrlFormat must be either "path" or "get".'));
 	}
 }
 
@@ -685,7 +685,7 @@ class CUrlRule extends CBaseUrlRule
 			$this->routePattern='/^'.strtr($this->route,$tr2).'$/u';
 
 		if(YII_DEBUG && @preg_match($this->pattern,'test')===false)
-			throw new CException(Yii::t('yii:The URL pattern "{pattern}" for route "{route}" is not a valid regular expression.',
+			throw new CException(Yii::t('yii|The URL pattern "{pattern}" for route "{route}" is not a valid regular expression.',
 				array('{route}'=>$route,'{pattern}'=>$pattern)));
 	}
 

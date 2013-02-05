@@ -24,7 +24,7 @@ class Exception extends UserException
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii:Error');
+		return \Yii::t('yii|Error');
 	}
 }
 
