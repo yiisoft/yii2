@@ -15,29 +15,36 @@ use yii\base\Component;
 /**
  * MessageSource is the base class for message translation repository classes.
  *
- * A message source is an application component that provides message internationalization (i18n).
- * It stores messages translated in different languages and provides
- * these translated versions when requested.
+ * A message source stores message translations in some persistent storage.
  *
- * A concrete class must implement {@link loadMessages} or override {@link translateMessage}.
- *
- * @property string $language The language that the source messages are written in.
- * Defaults to {@link CApplication::language application language}.
+ * Child classes should override [[loadMessages()]] to provide translated messages.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class MessageSource extends Component
+class MessageSource extends Component
 {
+	/**
+	 * @event MissingTranslationEvent an event that is triggered when a message translation is not found.
+	 */
+	const EVENT_MISSING_TRANSLATION = 'missingTranslation';
+
 	/**
 	 * @var boolean whether to force message translation when the source and target languages are the same.
 	 * Defaults to false, meaning translation is only performed when source and target languages are different.
 	 */
 	public $forceTranslation = false;
+	/**
+	 * @var string the language that the original messages are in. If not set, it will use the value of
+	 * [[\yii\base\Application::sourceLanguage]].
+	 */
 	public $sourceLanguage;
 
 	private $_messages = array();
 
+	/**
+	 * Initializes this component.
+	 */
 	public function init()
 	{
 		parent::init();
@@ -48,26 +55,30 @@ abstract class MessageSource extends Component
 
 	/**
 	 * Loads the message translation for the specified language and category.
+	 * Child classes should override this method to return the message translations of
+	 * the specified language and category.
 	 * @param string $category the message category
 	 * @param string $language the target language
-	 * @return array the loaded messages
+	 * @return array the loaded messages. The keys are original messages, and the values
+	 * are translated messages.
 	 */
-	abstract protected function loadMessages($category, $language);
+	protected function loadMessages($category, $language)
+	{
+		return array();
+	}
 
 	/**
 	 * Translates a message to the specified language.
 	 *
-	 * Note, if the specified language is the same as
-	 * the {@link getLanguage source message language}, messages will NOT be translated.
+	 * Note that unless [[forceTranslation]] is true, if the target language
+	 * is the same as the [[sourceLanguage|source language]], the message
+	 * will NOT be translated.
 	 *
-	 * If the message is not found in the translations, an {@link onMissingTranslation}
-	 * event will be raised. Handlers can mark this message or do some
-	 * default handling. The {@link CMissingTranslationEvent::message}
-	 * property of the event parameter will be returned.
+	 * If a translation is not found, a [[missingTranslation]] event will be triggered.
 	 *
 	 * @param string $category the message category
 	 * @param string $message the message to be translated
-	 * @param string $language the target language. If null (default), the {@link CApplication::getLanguage application language} will be used.
+	 * @param string $language the target language
 	 * @return string the translated message (or the original message if translation is not needed)
 	 */
 	public function translate($category, $message, $language)
@@ -81,8 +92,8 @@ abstract class MessageSource extends Component
 
 	/**
 	 * Translates the specified message.
-	 * If the message is not found, an {@link onMissingTranslation}
-	 * event will be raised.
+	 * If the message is not found, a [[missingTranslation]] event will be triggered
+	 * and the original message will be returned.
 	 * @param string $category the category that the message belongs to
 	 * @param string $message the message to be translated
 	 * @param string $language the target language
@@ -96,63 +107,17 @@ abstract class MessageSource extends Component
 		}
 		if (isset($this->_messages[$key][$message]) && $this->_messages[$key][$message] !== '') {
 			return $this->_messages[$key][$message];
-		} elseif ($this->hasEventHandler('onMissingTranslation')) {
-			$event = new CMissingTranslationEvent($this, $category, $message, $language);
-			$this->onMissingTranslation($event);
-			return $event->message;
+		} elseif ($this->hasEventHandlers('missingTranslation')) {
+			$event = new MissingTranslationEvent(array(
+				'category' => $category,
+				'message' => $message,
+				'language' => $language,
+			));
+			$this->trigger(self::EVENT_MISSING_TRANSLATION, $event);
+			return $this->_messages[$key] = $event->message;
 		} else {
 			return $message;
 		}
 	}
-
-	/**
-	 * Raised when a message cannot be translated.
-	 * Handlers may log this message or do some default handling.
-	 * The {@link CMissingTranslationEvent::message} property
-	 * will be returned by {@link translateMessage}.
-	 * @param CMissingTranslationEvent $event the event parameter
-	 */
-	public function onMissingTranslation($event)
-	{
-		$this->raiseEvent('onMissingTranslation', $event);
-	}
 }
 
-
-/**
- * CMissingTranslationEvent represents the parameter for the {@link MessageSource::onMissingTranslation onMissingTranslation} event.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.i18n
- * @since 1.0
- */
-class CMissingTranslationEvent extends CEvent
-{
-	/**
-	 * @var string the message to be translated
-	 */
-	public $message;
-	/**
-	 * @var string the category that the message belongs to
-	 */
-	public $category;
-	/**
-	 * @var string the ID of the language that the message is to be translated to
-	 */
-	public $language;
-
-	/**
-	 * Constructor.
-	 * @param mixed $sender sender of this event
-	 * @param string $category the category that the message belongs to
-	 * @param string $message the message to be translated
-	 * @param string $language the ID of the language that the message is to be translated to
-	 */
-	public function __construct($sender, $category, $message, $language)
-	{
-		parent::__construct($sender);
-		$this->message = $message;
-		$this->category = $category;
-		$this->language = $language;
-	}
-}

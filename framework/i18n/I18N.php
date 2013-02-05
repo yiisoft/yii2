@@ -20,7 +20,7 @@ class I18N extends Component
 			$category = 'app';
 		}
 
-		$message = $this->getSource($category)->translate($category, $message, $language);
+		$message = $this->getMessageSource($category)->translate($category, $message, $language);
 
 		if (!is_array($params)) {
 			$params = array($params);
@@ -42,7 +42,7 @@ class I18N extends Component
 
 	}
 
-	public function getSource($category)
+	public function getMessageSource($category)
 	{
 		return $category === 'yii' ? $this->getMessages() : $this->getCoreMessages();
 	}
