@@ -20,19 +20,19 @@ class I18N extends Component
 			$category = 'app';
 		}
 
-		$message = $this->getMessageSource($category)->translate($category, $message, $language);
-
-		if (!is_array($params)) {
-			$params = array($params);
-		}
-
-		if (isset($params[0])) {
-			$message = $this->getPluralFormat($message, $params[0], $language);
-			if (!isset($params['{n}'])) {
-				$params['{n}'] = $params[0];
-			}
-			unset($params[0]);
-		}
+//		$message = $this->getMessageSource($category)->translate($category, $message, $language);
+//
+//		if (!is_array($params)) {
+//			$params = array($params);
+//		}
+//
+//		if (isset($params[0])) {
+//			$message = $this->getPluralFormat($message, $params[0], $language);
+//			if (!isset($params['{n}'])) {
+//				$params['{n}'] = $params[0];
+//			}
+//			unset($params[0]);
+//		}
 
 		return $params === array() ? $message : strtr($message, $params);
 	}

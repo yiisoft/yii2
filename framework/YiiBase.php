@@ -521,6 +521,6 @@ class YiiBase
 	 */
 	public static function t($message, $params = array(), $language = null)
 	{
-		Yii::$app->getI18N()->translate($message, $params, $language);
+		return Yii::$app->getI18N()->translate($message, $params, $language);
 	}
 }

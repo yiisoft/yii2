@@ -32,13 +32,8 @@ class Application extends \yii\base\Application
 	 */
 	public function processRequest()
 	{
-		$route = $this->resolveRequest();
-		return $this->runController($route, null);
-	}
-
-	protected function resolveRequest()
-	{
-		return array();
+		$route = isset($_GET['r']) ? $_GET['r'] : '';
+		return $this->runAction($route, $_GET);
 	}
 
 	/**
