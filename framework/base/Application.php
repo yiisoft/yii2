@@ -363,9 +363,6 @@ class Application extends Module
 			'securityManager' => array(
 				'class' => 'yii\base\SecurityManager',
 			),
-			'translator' => array(
-				'class' => 'yii\i18n\Translator',
-			),
 		));
 	}
 

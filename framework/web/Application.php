@@ -32,8 +32,25 @@ class Application extends \yii\base\Application
 	 */
 	public function processRequest()
 	{
-		$route = isset($_GET['r']) ? $_GET['r'] : '';
+		$route = $this->getUrlManager()->parseUrl($this->getRequest());
 		return $this->runAction($route, $_GET);
+	}
+
+	/**
+	 * Returns the request component.
+	 * @return Request the request component
+	 */
+	public function getRequest()
+	{
+		return $this->getComponent('request');
+	}
+
+	/**
+	 * @return UrlManager
+	 */
+	public function getUrlManager()
+	{
+		return $this->getComponent('urlManager');
 	}
 
 	/**
@@ -49,6 +66,9 @@ class Application extends \yii\base\Application
 			),
 			'response' => array(
 				'class' => 'yii\web\Response',
+			),
+			'urlManager' => array(
+				'class' => 'yii\web\UrlManager',
 			),
 		));
 	}
