@@ -6,14 +6,15 @@
 	* key-value-based (should allow storage-specific methods additionally to generic ones)
 	  * redis (put it under framework/db/redis or perhaps framework/caching?)
 - base
-	* TwigViewRenderer
-	* SmartyViewRenderer
+	* TwigViewRenderer (Alex)
+	* SmartyViewRenderer (Alex)
 - logging
 	* WebTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
 	* ProfileTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
 	* unit tests
 - caching
 	* backend-specific unit tests
+	* dependency unit tests
 - validators
 	* FileValidator: depends on CUploadedFile
 	* CaptchaValidator: depends on CaptchaAction
@@ -27,6 +28,7 @@
 	  - Module should be able to define its own configuration including routes. Application should be able to overwrite it.
 	* application
 	* security
+	  - backport 1.1 changes
 - built-in console commands
 	+ api doc builder
 		* support for markdown syntax
