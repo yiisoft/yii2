@@ -13,8 +13,7 @@
 	* ProfileTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
 	* unit tests
 - caching
-	* a console command to clear cached data
-	* unit tests
+	* backend-specific unit tests
 - validators
 	* FileValidator: depends on CUploadedFile
 	* CaptchaValidator: depends on CaptchaAction
