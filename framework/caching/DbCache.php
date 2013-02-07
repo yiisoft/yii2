@@ -104,7 +104,7 @@ class DbCache extends Cache
 		$query = new Query;
 		$query->select(array('data'))
 			->from($this->cacheTableName)
-			->where('id = :id AND (expire = 0 OR expire > :time)', array(':id' => $key, ':time' => time()));
+			->where('id = :id AND (expire = 0 OR expire >' . time() . ')', array(':id' => $key));
 		$db = $this->getDb();
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
@@ -131,7 +131,7 @@ class DbCache extends Cache
 		$query->select(array('id', 'data'))
 			->from($this->cacheTableName)
 			->where(array('id' => $keys))
-			->andWhere("expire = 0 OR expire > " . time() . ")");
+			->andWhere('(expire = 0 OR expire > ' . time() . ')');
 
 		$db = $this->getDb();
 		if ($db->enableQueryCache) {
