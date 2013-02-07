@@ -1,9 +1,9 @@
 <?php
 /**
  * @var \Exception $exception
- * @var \yii\base\ErrorHandler $context
+ * @var \yii\base\ErrorHandler $owner
  */
-$context = $this->context;
+$owner = $this->owner;
 ?>
 <!DOCTYPE html>
 <html>
@@ -163,26 +163,26 @@ $context = $this->context;
 	<h1><?php echo get_class($exception)?></h1>
 
 	<p class="message">
-		<?php echo nl2br($context->htmlEncode($exception->getMessage()))?>
+		<?php echo nl2br($owner->htmlEncode($exception->getMessage()))?>
 	</p>
 
 	<div class="source">
 		<p class="file">
-			<?php echo $context->htmlEncode($exception->getFile()) . '(' . $exception->getLine() . ')'?>
+			<?php echo $owner->htmlEncode($exception->getFile()) . '(' . $exception->getLine() . ')'?>
 		</p>
-		<?php if (YII_DEBUG) $context->renderSourceCode($exception->getFile(), $exception->getLine(), $context->maxSourceLines)?>
+		<?php if (YII_DEBUG) $owner->renderSourceCode($exception->getFile(), $exception->getLine(), $owner->maxSourceLines)?>
 	</div>
 
 	<?php if (YII_DEBUG):?>
 	<div class="traces">
 		<h2>Stack Trace</h2>
-		<?php $context->renderTrace($exception->getTrace())?>
+		<?php $owner->renderTrace($exception->getTrace())?>
 	</div>
 	<?php endif?>
 
 	<div class="version">
 		<?php echo date('Y-m-d H:i:s', time())?>
-		<?php echo YII_DEBUG ? $context->versionInfo : ''?>
+		<?php echo YII_DEBUG ? $owner->versionInfo : ''?>
 	</div>
 </div>
 
