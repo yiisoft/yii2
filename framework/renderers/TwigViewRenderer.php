@@ -25,6 +25,12 @@ class TwigViewRenderer extends ViewRenderer
 	public $fileExtension = 'twig';
 
 	/**
+	 * @var array options
+	 * @see http://twig.sensiolabs.org/doc/api.html#environment-options
+	 */
+	public $options = array();
+
+	/**
 	 * @var \Twig_Environment
 	 */
 	protected $_twig;
@@ -34,9 +40,10 @@ class TwigViewRenderer extends ViewRenderer
 		\Yii::setAlias('@Twig', $this->twigDir);
 
 		$loader = new \Twig_Loader_String();
-		$this->_twig = new \Twig_Environment($loader, array(
+
+		$this->_twig = new \Twig_Environment($loader, array_merge(array(
 			'cache' => \Yii::getAlias($this->cacheDir),
-		));
+		), $this->options));
 	}
 
 	/**
