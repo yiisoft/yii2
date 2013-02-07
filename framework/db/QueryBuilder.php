@@ -592,21 +592,19 @@ class QueryBuilder extends \yii\base\Object
 			return $operator === 'IN' ? '0=1' : '';
 		}
 
-		if (is_array($column)) {
-			if (count($column) > 1) {
-				return $this->buildCompositeInCondition($operator, $column, $values);
+		if (count($column) > 1) {
+			return $this->buildCompositeInCondition($operator, $column, $values);
+		} elseif (is_array($column)) {
+			$column = reset($column);
+		}
+		foreach ($values as $i => $value) {
+			if (is_array($value)) {
+				$value = isset($value[$column]) ? $value[$column] : null;
+			}
+			if ($value === null) {
+				$values[$i] = 'NULL';
 			} else {
-				$column = reset($column);
-				foreach ($values as $i => $value) {
-					if (is_array($value)) {
-						$value = isset($value[$column]) ? $value[$column] : null;
-					}
-					if ($value === null) {
-						$values[$i] = 'NULL';
-					} else {
-						$values[$i] = is_string($value) ? $this->db->quoteValue($value) : (string)$value;
-					}
-				}
+				$values[$i] = is_string($value) ? $this->db->quoteValue($value) : (string)$value;
 			}
 		}
 		if (strpos($column, '(') === false) {
