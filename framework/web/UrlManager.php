@@ -49,4 +49,9 @@ class UrlManager extends Component
 		else
 			return '';
 	}
+
+	public function createUrl($route, $params = array(), $ampersand = '&')
+	{
+
+	}
 }
