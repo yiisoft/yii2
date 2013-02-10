@@ -98,24 +98,50 @@ class UrlManager extends Component
 	 */
 	protected function processRules()
 	{
+		foreach ($this->rules as $i => $rule) {
+			if (!isset($rule['class'])) {
+				$rule['class'] = 'yii\web\UrlRule';
+			}
+			$this->rules[$i] = \Yii::createObject($rule);
+		}
 	}
 
 	/**
 	 * Parses the user request.
-	 * @param HttpRequest $request the request application component
+	 * @param Request $request the request application component
 	 * @return string the route (controllerID/actionID) and perhaps GET parameters in path format.
 	 */
 	public function parseUrl($request)
 	{
-		if (isset($_GET[$this->routeVar])) {
-			return $_GET[$this->routeVar];
-		} else {
-			return '';
-		}
 	}
 
-	public function createUrl($route, $params = array(), $ampersand = '&')
+	public function createUrl($route, $params = array())
 	{
+		$anchor = isset($params['#']) ? '#' . $params['#'] : '';
+		unset($anchor['#']);
 
+		/** @var $rule UrlRule */
+		foreach ($this->rules as $rule) {
+			if (($url = $rule->createUrl($route, $params)) !== false) {
+				return $this->getBaseUrl() . $url . $anchor;
+			}
+		}
+
+		if ($params !== array()) {
+			$route .= '?' . http_build_query($params);
+		}
+		return $this->getBaseUrl() . '/' . $route . $anchor;
+	}
+
+	private $_baseUrl;
+
+	public function getBaseUrl()
+	{
+		return $this->_baseUrl;
+	}
+
+	public function setBaseUrl($value)
+	{
+		$this->_baseUrl = trim($value, '/');
 	}
 }

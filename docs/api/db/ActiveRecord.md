@@ -300,7 +300,7 @@ foreach ($customers as $customer) {
 ~~~
 
 How many SQL queries will be performed in the above code, assuming there are more than 100 customers in
-the database? 101! The first SQL query brings back 100 customers. Then for each customer, another SQL query
+the database? 101! The first SQL query brings back 100 customers. Then for each customer, a SQL query
 is performed to bring back the customer's orders.
 
 To solve the above performance problem, you can use the so-called *eager loading* by calling [[ActiveQuery::with()]]:
@@ -318,7 +318,7 @@ foreach ($customers as $customer) {
 }
 ~~~
 
-As you can see, only two SQL queries were needed for the same task.
+As you can see, only two SQL queries are needed for the same task.
 
 
 Sometimes, you may want to customize the relational queries on the fly. It can be
