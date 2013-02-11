@@ -1,6 +1,6 @@
 <?php
 /**
- * UrlManager class file
+ * UrlRule class file
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -12,18 +12,7 @@ namespace yii\web;
 use yii\base\Object;
 
 /**
- * UrlManager manages the URLs of Yii applications.
- * array(
- *     'pattern' => 'post/<page:\d+>',
- *     'route' => 'post/view',
- *     'defaults' => array('page' => 1),
- * )
- *
- * array(
- *     'pattern' => 'about',
- *     'route' => 'site/page',
- *     'defaults' => array('view' => 'about'),
- * )
+ * UrlRule represents a rule used for parsing and generating URLs.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -45,12 +34,35 @@ class UrlRule extends Object
 	 */
 	public $defaults = array();
 
-	protected $paramRules = array();
-	protected $routeRule;
+	/**
+	 * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
+	 */
 	protected $template;
+	/**
+	 * @var string the regex for matching the route part. This is used in generating URL.
+	 */
+	protected $routeRule;
+	/**
+	 * @var array list of regex for matching parameters. This is used in generating URL.
+	 */
+	protected $paramRules = array();
+	/**
+	 * @var array list of parameters used in the route.
+	 */
 	protected $routeParams = array();
 
+	/**
+	 * Initializes this rule.
+	 */
 	public function init()
+	{
+		$this->compileRule();
+	}
+
+	/**
+	 * Compiles the rule using the current configuration.
+	 */
+	protected function compileRule()
 	{
 		$this->pattern = trim($this->pattern, '/');
 		if ($this->pattern === '') {
@@ -105,15 +117,19 @@ class UrlRule extends Object
 		if (!preg_match($this->pattern, $pathInfo, $matches)) {
 			return false;
 		}
+		foreach ($this->defaults as $name => $value) {
+			if (!isset($matches[$name]) || $matches[$name] === '') {
+				$matches[$name] = $value;
+			}
+		}
 		$params = $this->defaults;
 		$tr = array();
 		foreach ($matches as $name => $value) {
-			if ($value !== '') {
-				if (isset($this->routeParams[$name])) {
-					$tr[$this->routeParams[$name]] = $value;
-				} elseif (isset($this->paramRules[$name])) {
-					$params[$name] = $value;
-				}
+			if (isset($this->routeParams[$name])) {
+				$tr[$this->routeParams[$name]] = $value;
+				unset($params[$name]);
+			} elseif (isset($this->paramRules[$name])) {
+				$params[$name] = $value;
 			}
 		}
 		if ($this->routeRule !== null) {

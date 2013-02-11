@@ -435,6 +435,50 @@ class UrlRuleTest extends \yiiunit\TestCase
 					array('post', false),
 				),
 			),
+			array(
+				'route has parameters',
+				array(
+					'pattern' => '<controller>/<action>',
+					'route' => '<controller>/<action>',
+					'defaults' => array(),
+				),
+				array(
+					array('post/index', 'post/index'),
+					array('module/post/index', false),
+				),
+			),
+			array(
+				'route has parameters with regex',
+				array(
+					'pattern' => '<controller:post|comment>/<action>',
+					'route' => '<controller>/<action>',
+					'defaults' => array(),
+				),
+				array(
+					array('post/index', 'post/index'),
+					array('comment/index', 'comment/index'),
+					array('test/index', false),
+					array('post', false),
+					array('module/post/index', false),
+				),
+			),
+			array(
+				'route has default parameter',
+				array(
+					'pattern' => '<controller:post|comment>/<action>',
+					'route' => '<controller>/<action>',
+					'defaults' => array('action' => 'index'),
+				),
+				array(
+					array('post/view', 'post/view'),
+					array('comment/view', 'comment/view'),
+					array('test/view', false),
+					array('post', 'post/index'),
+					array('posts', false),
+					array('test', false),
+					array('index', false),
+				),
+			),
 		);
 	}
 }
