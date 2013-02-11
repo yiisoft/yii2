@@ -112,8 +112,13 @@ class UrlRule extends Object
 		// match the route part first
 		if ($route !== $this->route) {
 			if ($this->routeRule !== null && preg_match($this->routeRule, $route, $matches)) {
-				foreach ($this->routeParams as $key => $name) {
-					$tr[$name] = $matches[$key];
+				foreach ($this->routeParams as $name => $token) {
+					if (isset($this->defaults[$name]) && strcmp($this->defaults[$name], $matches[$name]) === 0) {
+						$tr[$token] = '';
+						$tr["/$token/"] = '/';
+					} else {
+						$tr[$token] = $matches[$name];
+					}
 				}
 			} else {
 				return false;
@@ -123,6 +128,9 @@ class UrlRule extends Object
 		// match default params
 		// if a default param is not in the route pattern, its value must also be matched
 		foreach ($this->defaults as $name => $value) {
+			if (isset($this->routeParams[$name])) {
+				continue;
+			}
 			if (!isset($params[$name])) {
 				return false;
 			} elseif (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically

@@ -244,7 +244,6 @@ class UrlRuleTest extends \yiiunit\TestCase
 					array('post/index', array('controller' => 'comment'), 'post/index?controller=comment'),
 				),
 			),
-			/* this is not supported
 			array(
 				'route has default parameter',
 				array(
@@ -256,10 +255,10 @@ class UrlRuleTest extends \yiiunit\TestCase
 					array('post/view', array('page' => 1), 'post/view?page=1'),
 					array('comment/view', array('page' => 1), 'comment/view?page=1'),
 					array('test/view', array('page' => 1), false),
+					array('test/index', array('page' => 1), false),
 					array('post/index', array('page' => 1), 'post?page=1'),
 				),
 			),
-			*/
 		);
 	}
 
