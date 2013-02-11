@@ -126,6 +126,7 @@ class Application extends Module
 	 */
 	public function init()
 	{
+		ob_start();
 		$this->preloadComponents();
 	}
 
@@ -138,10 +139,27 @@ class Application extends Module
 	 */
 	public function end($status = 0, $exit = true)
 	{
+		$lastError = error_get_last();
+
+		if(isset($lastError['type']) && in_array($lastError['type'], array(E_ERROR, E_PARSE))) {
+			ob_end_clean();
+			$exception = new \ErrorException($lastError['message'], 0, $lastError['type'], $lastError['file'], $lastError['line']);
+			$this->logException($exception);
+
+			if (($handler = $this->getErrorHandler()) !== null) {
+				$handler->handle($exception);
+			} else {
+				$this->renderException($exception);
+			}
+
+			die(1);
+		}
+
 		if (!$this->_ended) {
 			$this->_ended = true;
 			$this->afterRequest();
 		}
+		ob_end_flush();
 		if ($exit) {
 			exit($status);
 		}
@@ -155,6 +173,7 @@ class Application extends Module
 	public function run()
 	{
 		$this->beforeRequest();
+		register_shutdown_function(array($this,'end'),0,false);
 		$status = $this->processRequest();
 		$this->afterRequest();
 		return $status;
