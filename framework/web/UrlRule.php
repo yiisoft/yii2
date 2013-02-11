@@ -77,9 +77,9 @@ class UrlRule extends Object
 					$length = strlen($match[0][0]);
 					$offset = $match[0][1];
 					if ($this->pattern[$offset - 1] === '/' && $this->pattern[$offset + $length] === '/') {
-						$tr["<$name>"] = "(?P<$name>(?:/$pattern)?)";
+						$tr["/<$name>"] = "(/(?P<$name>$pattern))?";
 					} else {
-						$tr["<$name>"] = "(?P<$name>(?:$pattern)?)";
+						$tr["<$name>"] = "(?P<$name>$pattern)?";
 					}
 				} else {
 					$tr["<$name>"] = "(?P<$name>$pattern)";
@@ -93,7 +93,7 @@ class UrlRule extends Object
 		}
 
 		$this->template = preg_replace('/<(\w+):?([^>]+)?>/', '<$1>', $this->pattern);
-		$this->pattern = '#^' . strtr($this->template, $tr) . '$#u';
+		$this->pattern = '#^' . trim(strtr($this->template, $tr), '/') . '$#u';
 
 		if ($this->routeParams !== array()) {
 			$this->routeRule = '#^' . strtr($this->route, $tr2) . '$#u';
@@ -102,7 +102,26 @@ class UrlRule extends Object
 
 	public function parseUrl($pathInfo)
 	{
-
+		if (!preg_match($this->pattern, $pathInfo, $matches)) {
+			return false;
+		}
+		$params = $this->defaults;
+		$tr = array();
+		foreach ($matches as $name => $value) {
+			if ($value !== '') {
+				if (isset($this->routeParams[$name])) {
+					$tr[$this->routeParams[$name]] = $value;
+				} elseif (isset($this->paramRules[$name])) {
+					$params[$name] = $value;
+				}
+			}
+		}
+		if ($this->routeRule !== null) {
+			$route = strtr($this->route, $tr);
+		} else {
+			$route = $this->route;
+		}
+		return array($route, $params);
 	}
 
 	public function createUrl($route, $params)
@@ -115,7 +134,6 @@ class UrlRule extends Object
 				foreach ($this->routeParams as $name => $token) {
 					if (isset($this->defaults[$name]) && strcmp($this->defaults[$name], $matches[$name]) === 0) {
 						$tr[$token] = '';
-						$tr["/$token/"] = '/';
 					} else {
 						$tr[$token] = $matches[$name];
 					}
@@ -137,7 +155,6 @@ class UrlRule extends Object
 				unset($params[$name]);
 				if (isset($this->paramRules[$name])) {
 					$tr["<$name>"] = '';
-					$tr["/<$name>/"] = '/';
 				}
 			} elseif (!isset($this->paramRules[$name])) {
 				return false;
@@ -162,12 +179,5 @@ class UrlRule extends Object
 			$url .= '?' . http_build_query($params);
 		}
 		return $url;
-	}
-
-	public function parse($pathInfo)
-	{
-		$route = '';
-		$params = array();
-		return array($route, $params);
 	}
 }
