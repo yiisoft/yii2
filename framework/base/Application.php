@@ -97,6 +97,12 @@ class Application extends Module
 	private $_language;
 
 	/**
+	 * @var string Used to reserve memory for fatal error handler. This memory
+	 * reserve can be removed if it's OK to write to PHP log only in this particular case.
+	 */
+	private $_memoryReserve;
+
+	/**
 	 * Constructor.
 	 * @param string $id the ID of this application. The ID should uniquely identify the application from others.
 	 * @param string $basePath the base path of this application. This should point to
@@ -110,6 +116,7 @@ class Application extends Module
 		$this->setBasePath($basePath);
 
 		if (YII_ENABLE_ERROR_HANDLER) {
+			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
 		}
@@ -126,7 +133,6 @@ class Application extends Module
 	 */
 	public function init()
 	{
-		ob_start();
 		$this->preloadComponents();
 	}
 
@@ -139,27 +145,54 @@ class Application extends Module
 	 */
 	public function end($status = 0, $exit = true)
 	{
-		$lastError = error_get_last();
-
-		if(isset($lastError['type']) && in_array($lastError['type'], array(E_ERROR, E_PARSE))) {
-			ob_end_clean();
-			$exception = new \ErrorException($lastError['message'], 0, $lastError['type'], $lastError['file'], $lastError['line']);
-			$this->logException($exception);
-
-			if (($handler = $this->getErrorHandler()) !== null) {
-				$handler->handle($exception);
-			} else {
-				$this->renderException($exception);
-			}
-
-			die(1);
-		}
-
 		if (!$this->_ended) {
 			$this->_ended = true;
 			$this->afterRequest();
 		}
-		ob_end_flush();
+
+		if(YII_ENABLE_ERROR_HANDLER) {
+			$error = error_get_last();
+
+			if(isset($error['type']) && in_array($error['type'], ErrorException::getFatalCodes())) {
+				unset($this->_memoryReserve);
+				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+
+				if(function_exists('xdebug_get_function_stack')) {
+					$trace = array_slice(array_reverse(xdebug_get_function_stack()), 4, -1);
+					foreach($trace as &$frame) {
+						if(!isset($frame['function'])) {
+							$frame['function'] = 'unknown';
+						}
+
+						// XDebug < 2.1.1: http://bugs.xdebug.org/view.php?id=695
+						if(!isset($frame['type'])) {
+							$frame['type'] = '::';
+						}
+
+						// XDebug has a different key name
+						$frame['args'] = array();
+						if(isset($frame['params']) && !isset($frame['args'])) {
+							$frame['args'] = $frame['params'];
+						}
+					}
+
+					$ref = new \ReflectionProperty('Exception', 'trace');
+					$ref->setAccessible(true);
+					$ref->setValue($exception, $trace);
+				}
+
+				$this->logException($exception);
+
+				if (($handler = $this->getErrorHandler()) !== null) {
+					$handler->handle($exception);
+				} else {
+					$this->renderException($exception);
+				}
+
+				$status = 1;
+			}
+		}
+
 		if ($exit) {
 			exit($status);
 		}
@@ -173,6 +206,9 @@ class Application extends Module
 	public function run()
 	{
 		$this->beforeRequest();
+		// Allocating twice more than required to display memory exhausted error
+		// in case of trying to allocate last 1 byte while all memory is taken.
+		$this->_memoryReserve = str_repeat('x', 1024*256);
 		register_shutdown_function(array($this,'end'),0,false);
 		$status = $this->processRequest();
 		$this->afterRequest();
@@ -394,12 +430,24 @@ class Application extends Module
 	 * @param string $message the error message
 	 * @param string $file the filename that the error was raised in
 	 * @param integer $line the line number the error was raised at
-	 * @throws \ErrorException the error exception
+	 *
+	 * @throws ErrorException
 	 */
 	public function handleError($code, $message, $file, $line)
 	{
 		if (error_reporting() !== 0) {
-			throw new \ErrorException($message, 0, $code, $file, $line);
+			$exception = new ErrorException($message, $code, $code, $file, $line);
+
+			// in case error appeared in __toString method we can't throw any exception
+			$trace = debug_backtrace(false);
+			array_shift($trace);
+			foreach($trace as $frame) {
+				if($frame['function'] == '__toString') {
+					$this->handleException($exception);
+				}
+			}
+
+			throw $exception;
 		}
 	}
 
