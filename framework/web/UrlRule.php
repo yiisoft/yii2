@@ -20,6 +20,15 @@ use yii\base\Object;
 class UrlRule extends Object
 {
 	/**
+	 * Set [[mode]] with this value to mark that this rule is for URL parsing only
+	 */
+	const PARSING_ONLY = 1;
+	/**
+	 * Set [[mode]] with this value to mark that this rule is for URL creation only
+	 */
+	const CREATION_ONLY = 2;
+
+	/**
 	 * @var string regular expression used to parse a URL
 	 */
 	public $pattern;
@@ -34,11 +43,6 @@ class UrlRule extends Object
 	 */
 	public $defaults = array();
 	/**
-	 * @var boolean whether this rule is only used for request parsing.
-	 * Defaults to false, meaning the rule is used for both URL parsing and creation.
-	 */
-	public $parsingOnly = false;
-	/**
 	 * @var string the URL suffix used for this rule.
 	 * For example, ".html" can be used so that the URL looks like pointing to a static HTML page.
 	 * If not, the value of [[UrlManager::suffix]] will be used.
@@ -49,7 +53,6 @@ class UrlRule extends Object
 	 * Use array to represent multiple verbs that this rule may match.
 	 * If this property is not set, the rule can match any verb.
 	 * Note that this property is only used when parsing a request. It is ignored for URL creation.
-	 * @see parsingOnly
 	 */
 	public $verb;
 	/**
@@ -57,6 +60,14 @@ class UrlRule extends Object
 	 * If not set, it means the host info is ignored.
 	 */
 	public $hostInfo;
+	/**
+	 * @var integer a value indicating if this rule should be used for both URL parsing and creation,
+	 * parsing only, or creation only.
+	 * If not set, it means the rule is both URL parsing and creation.
+	 * If it is [[PARSING_ONLY]], the rule is for URL parsing only.
+	 * If it is [[CREATION_ONLY]], the rule is for URL creation only.
+	 */
+	public $mode;
 
 	/**
 	 * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
@@ -138,10 +149,36 @@ class UrlRule extends Object
 		}
 	}
 
-	public function parseUrl($pathInfo)
+	/**
+	 * Parses the given path info and returns the corresponding route and parameters.
+	 * @param UrlManager $manager the URL manager
+	 * @param string $pathInfo the path info to be parsed. It should not have slashes at the beginning or the end.
+	 * @return array|boolean the parsing result. The route and the parameters are returned as an array.
+	 * If false, it means this rule cannot be used to parse this path info.
+	 */
+	public function parseUrl($manager, $pathInfo)
 	{
+		if ($this->mode === self::CREATION_ONLY) {
+			return false;
+		}
+
 		if ($this->verb !== null && !in_array(\Yii::$app->getRequest()->verb, $this->verb, true)) {
 			return false;
+		}
+
+		$suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+		if ($suffix !== '' && $pathInfo !== '') {
+			$n = strlen($suffix);
+			if (substr($pathInfo, -$n) === $suffix) {
+				$pathInfo = substr($pathInfo, 0, -$n);
+				if ($pathInfo === '') {
+					// suffix alone is not allowed
+					return false;
+				}
+			} elseif ($suffix !== '/') {
+				// we allow the ending '/' to be optional if it is a suffix
+				return false;
+			}
 		}
 
 		if (!preg_match($this->pattern, $pathInfo, $matches)) {
@@ -170,9 +207,16 @@ class UrlRule extends Object
 		return array($route, $params);
 	}
 
-	public function createUrl($route, $params)
+	/**
+	 * Creates a URL according to the given route and parameters.
+	 * @param UrlManager $manager the URL manager
+	 * @param string $route the route. It should not have slashes at the beginning or the end.
+	 * @param array $params the parameters
+	 * @return string|boolean the created URL, or false if this rule cannot be used for creating this URL.
+	 */
+	public function createUrl($manager, $route, $params)
 	{
-		if ($this->parsingOnly) {
+		if ($this->mode === self::PARSING_ONLY) {
 			return false;
 		}
 
@@ -225,6 +269,11 @@ class UrlRule extends Object
 		if (strpos($url, '//') !== false) {
 			$url = preg_replace('#/+#', '/', $url);
 		}
+
+		if ($url !== '') {
+			$url .= ($this->suffix === null ? $manager->suffix : $this->suffix);
+		}
+
 		if ($params !== array()) {
 			$url .= '?' . http_build_query($params);
 		}

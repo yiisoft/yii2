@@ -27,7 +27,7 @@ class UrlManager extends Component
 	 * @var string the URL suffix used when in 'path' format.
 	 * For example, ".html" can be used so that the URL looks like pointing to a static HTML page. Defaults to empty.
 	 */
-	public $urlSuffix = '';
+	public $suffix;
 	/**
 	 * @var boolean whether to show entry script name in the constructed URL. Defaults to true.
 	 */
@@ -122,7 +122,7 @@ class UrlManager extends Component
 
 		/** @var $rule UrlRule */
 		foreach ($this->rules as $rule) {
-			if (($url = $rule->createUrl($route, $params)) !== false) {
+			if (($url = $rule->createUrl($this, $route, $params)) !== false) {
 				return $this->getBaseUrl() . $url . $anchor;
 			}
 		}
@@ -143,5 +143,21 @@ class UrlManager extends Component
 	public function setBaseUrl($value)
 	{
 		$this->_baseUrl = trim($value, '/');
+	}
+
+	/**
+	 * Removes the URL suffix from path info.
+	 * @param string $pathInfo path info part in the URL
+	 * @param string $suffix the URL suffix to be removed
+	 * @return string path info with URL suffix removed.
+	 */
+	public function removeSuffix($pathInfo, $suffix)
+	{
+		$n = strlen($suffix);
+		if ($n > 0 && substr($pathInfo, -$n) === $suffix) {
+			return substr($pathInfo, 0, -$n);
+		} else {
+			return $pathInfo;
+		}
 	}
 }

@@ -2,19 +2,21 @@
 
 namespace yiiunit\framework\web;
 
+use yii\web\UrlManager;
 use yii\web\UrlRule;
 
 class UrlRuleTest extends \yiiunit\TestCase
 {
 	public function testCreateUrl()
 	{
+		$manager = new UrlManager;
 		$suites = $this->getTestsForCreateUrl();
 		foreach ($suites as $i => $suite) {
 			list ($name, $config, $tests) = $suite;
 			$rule = new UrlRule($config);
 			foreach ($tests as $j => $test) {
 				list ($route, $params, $expected) = $test;
-				$url = $rule->createUrl($route, $params);
+				$url = $rule->createUrl($manager, $route, $params);
 				$this->assertEquals($expected, $url, "Test#$i-$j: $name");
 			}
 		}
@@ -22,6 +24,7 @@ class UrlRuleTest extends \yiiunit\TestCase
 
 	public function testParseUrl()
 	{
+		$manager = new UrlManager;
 		$suites = $this->getTestsForParseUrl();
 		foreach ($suites as $i => $suite) {
 			list ($name, $config, $tests) = $suite;
@@ -30,7 +33,7 @@ class UrlRuleTest extends \yiiunit\TestCase
 				$pathInfo = $test[0];
 				$route = $test[1];
 				$params = isset($test[2]) ? $test[2] : array();
-				$result = $rule->parseUrl($pathInfo);
+				$result = $rule->parseUrl($manager, $pathInfo);
 				if ($route === false) {
 					$this->assertFalse($result, "Test#$i-$j: $name");
 				} else {
@@ -72,6 +75,17 @@ class UrlRuleTest extends \yiiunit\TestCase
 					array('post/index', array(), 'posts'),
 					array('comment/index', array(), false),
 					array('post/index', array('page' => 1), 'posts?page=1'),
+				),
+			),
+			array(
+				'parsing only',
+				array(
+					'pattern' => 'posts',
+					'route' => 'post/index',
+					'mode' => UrlRule::PARSING_ONLY,
+				),
+				array(
+					array('post/index', array(), false),
 				),
 			),
 			array(
@@ -259,6 +273,58 @@ class UrlRuleTest extends \yiiunit\TestCase
 					array('post/index', array('page' => 1), 'post?page=1'),
 				),
 			),
+			array(
+				'empty pattern with suffix',
+				array(
+					'pattern' => '',
+					'route' => 'post/index',
+					'suffix' => '.html',
+				),
+				array(
+					array('post/index', array(), ''),
+					array('comment/index', array(), false),
+					array('post/index', array('page' => 1), '?page=1'),
+				),
+			),
+			array(
+				'regular pattern with suffix',
+				array(
+					'pattern' => 'posts',
+					'route' => 'post/index',
+					'suffix' => '.html',
+				),
+				array(
+					array('post/index', array(), 'posts.html'),
+					array('comment/index', array(), false),
+					array('post/index', array('page' => 1), 'posts.html?page=1'),
+				),
+			),
+			array(
+				'empty pattern with slash suffix',
+				array(
+					'pattern' => '',
+					'route' => 'post/index',
+					'suffix' => '/',
+				),
+				array(
+					array('post/index', array(), ''),
+					array('comment/index', array(), false),
+					array('post/index', array('page' => 1), '?page=1'),
+				),
+			),
+			array(
+				'regular pattern with slash suffix',
+				array(
+					'pattern' => 'posts',
+					'route' => 'post/index',
+					'suffix' => '/',
+				),
+				array(
+					array('post/index', array(), 'posts/'),
+					array('comment/index', array(), false),
+					array('post/index', array('page' => 1), 'posts/?page=1'),
+				),
+			),
 		);
 	}
 
@@ -292,6 +358,17 @@ class UrlRuleTest extends \yiiunit\TestCase
 				array(
 					array('posts', 'post/index'),
 					array('a', false),
+				),
+			),
+			array(
+				'creation only',
+				array(
+					'pattern' => 'posts',
+					'route' => 'post/index',
+					'mode' => UrlRule::CREATION_ONLY,
+				),
+				array(
+					array('posts', false),
 				),
 			),
 			array(
@@ -477,6 +554,58 @@ class UrlRuleTest extends \yiiunit\TestCase
 					array('posts', false),
 					array('test', false),
 					array('index', false),
+				),
+			),
+			array(
+				'empty pattern with suffix',
+				array(
+					'pattern' => '',
+					'route' => 'post/index',
+					'suffix' => '.html',
+				),
+				array(
+					array('', 'post/index'),
+					array('.html', false),
+					array('a.html', false),
+				),
+			),
+			array(
+				'regular pattern with suffix',
+				array(
+					'pattern' => 'posts',
+					'route' => 'post/index',
+					'suffix' => '.html',
+				),
+				array(
+					array('posts.html', 'post/index'),
+					array('posts', false),
+					array('posts.HTML', false),
+					array('a.html', false),
+					array('a', false),
+				),
+			),
+			array(
+				'empty pattern with slash suffix',
+				array(
+					'pattern' => '',
+					'route' => 'post/index',
+					'suffix' => '/',
+				),
+				array(
+					array('', 'post/index'),
+					array('a', false),
+				),
+			),
+			array(
+				'regular pattern with slash suffix',
+				array(
+					'pattern' => 'posts',
+					'route' => 'post/index',
+					'suffix' => '/',
+				),
+				array(
+					array('posts', 'post/index'),
+					array('a', false),
 				),
 			),
 		);
