@@ -95,7 +95,7 @@ abstract class Cache extends Component implements \ArrayAccess
 			return (string)$key;
 		} else {
 			$params = func_get_args();
-			return md5(serialize($params));
+			return md5(json_encode($params));
 		}
 	}
 

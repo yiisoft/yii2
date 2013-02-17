@@ -56,11 +56,6 @@ class UrlRule extends Object
 	 */
 	public $verb;
 	/**
-	 * @var string the host info (e.g. `http://www.example.com`) that this rule should match.
-	 * If not set, it means the host info is ignored.
-	 */
-	public $hostInfo;
-	/**
 	 * @var integer a value indicating if this rule should be used for both URL parsing and creation,
 	 * parsing only, or creation only.
 	 * If not set, it means the rule is both URL parsing and creation.
