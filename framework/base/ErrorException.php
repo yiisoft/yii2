@@ -15,8 +15,38 @@ namespace yii\base;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class ErrorException extends \ErrorException
+class ErrorException extends Exception
 {
+	protected $severity;
+
+	/**
+	 * Constructs the exception
+	 * @link http://php.net/manual/en/errorexception.construct.php
+	 * @param $message [optional]
+	 * @param $code [optional]
+	 * @param $severity [optional]
+	 * @param $filename [optional]
+	 * @param $lineno [optional]
+	 * @param $previous [optional]
+	 */
+	public function __construct($message = '', $code = 0, $severity = 1, $filename = __FILE__, $lineno = __LINE__, \Exception $previous = null)
+	{
+		parent::__construct($message, $code, $previous);
+		$this->severity = $severity;
+		$this->file = $filename;
+		$this->line = $lineno;
+	}
+
+	/**
+	 * Gets the exception severity
+	 * @link http://php.net/manual/en/errorexception.getseverity.php
+	 * @return int the severity level of the exception.
+	 */
+	final public function getSeverity()
+	{
+		return $this->severity;
+	}
+
 	public static function getFatalCodes()
 	{
 		return array(E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING);
