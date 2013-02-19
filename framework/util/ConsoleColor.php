@@ -359,7 +359,7 @@ class ConsoleColor
 			}
 			$styleString[] = array();
 			foreach($styleA as $name => $content) {
-				if ($name = 'text-decoration') {
+				if ($name === 'text-decoration') {
 					$content = implode(' ', $content);
 				}
 				$styleString[] = $name.':'.$content;
