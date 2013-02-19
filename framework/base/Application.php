@@ -150,10 +150,22 @@ class Application extends Module
 			$this->afterRequest();
 		}
 
+		$this->handleFatalError();
+
+		if ($exit) {
+			exit($status);
+		}
+	}
+
+	/**
+	 * Handles fatal PHP errors
+	 */
+	public function handleFatalError()
+	{
 		if(YII_ENABLE_ERROR_HANDLER) {
 			$error = error_get_last();
 
-			if(isset($error['type']) && in_array($error['type'], ErrorException::getFatalCodes())) {
+			if(ErrorException::isFatalErorr($error)) {
 				unset($this->_memoryReserve);
 				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
 
@@ -184,17 +196,13 @@ class Application extends Module
 				$this->logException($exception);
 
 				if (($handler = $this->getErrorHandler()) !== null) {
-					$handler->handle($exception);
+					@$handler->handle($exception);
 				} else {
 					$this->renderException($exception);
 				}
 
-				$status = 1;
+				exit(1);
 			}
-		}
-
-		if ($exit) {
-			exit($status);
 		}
 	}
 
