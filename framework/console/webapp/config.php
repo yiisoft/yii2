@@ -1,5 +1,5 @@
 <?php
-/** @var $controller \yii\console\controllers\CreateController */
+/** @var $controller \yii\console\controllers\WebappController */
 $controller = $this;
 
 return array(
