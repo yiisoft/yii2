@@ -67,28 +67,33 @@ class UrlManager extends Component
 		parent::init();
 
 		if ($this->enablePrettyUrl && $this->rules !== array()) {
-			/**
-			 * @var $cache \yii\caching\Cache
-			 */
-			if ($this->cacheID !== false && ($cache = Yii::$app->getComponent($this->cacheID)) !== null) {
-				$key = $cache->buildKey(__CLASS__);
-				$hash = md5(json_encode($this->rules));
-				if (($data = $cache->get($key)) !== false && isset($data[1]) && $data[1] === $hash) {
-					$this->rules = $data[0];
-					return;
-				}
-			}
+			$this->compileRules();
+		}
+	}
 
-			foreach ($this->rules as $i => $rule) {
-				if (!isset($rule['class'])) {
-					$rule['class'] = $this->defaultRuleClass;
-				}
-				$this->rules[$i] = Yii::createObject($rule);
+	protected function compileRules()
+	{
+		/**
+		 * @var $cache \yii\caching\Cache
+		 */
+		if ($this->cacheID !== false && ($cache = Yii::$app->getComponent($this->cacheID)) !== null) {
+			$key = $cache->buildKey(__CLASS__);
+			$hash = md5(json_encode($this->rules));
+			if (($data = $cache->get($key)) !== false && isset($data[1]) && $data[1] === $hash) {
+				$this->rules = $data[0];
+				return;
 			}
+		}
 
-			if (isset($cache)) {
-				$cache->set($key, array($this->rules, $hash));
+		foreach ($this->rules as $i => $rule) {
+			if (!isset($rule['class'])) {
+				$rule['class'] = $this->defaultRuleClass;
 			}
+			$this->rules[$i] = Yii::createObject($rule);
+		}
+
+		if (isset($cache)) {
+			$cache->set($key, array($this->rules, $hash));
 		}
 	}
 
@@ -98,7 +103,7 @@ class UrlManager extends Component
 	 * @return array|boolean the route and the associated parameters. The latter is always empty
 	 * if [[enablePrettyUrl]] is false. False is returned if the current request cannot be successfully parsed.
 	 */
-	public function parseUrl($request)
+	public function parseRequest($request)
 	{
 		if ($this->enablePrettyUrl) {
 			$pathInfo = $request->pathInfo;
@@ -135,11 +140,13 @@ class UrlManager extends Component
 
 		$route = trim($route, '/');
 
+		$baseUrl = $this->getBaseUrl();
+
 		if ($this->enablePrettyUrl) {
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
 				if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-					return $this->getBaseUrl() . $url . $anchor;
+					return $baseUrl . $url . $anchor;
 				}
 			}
 
@@ -149,23 +156,62 @@ class UrlManager extends Component
 			if ($params !== array()) {
 				$route .= '?' . http_build_query($params);
 			}
-			return $this->getBaseUrl() . '/' . $route . $anchor;
+			return $baseUrl . '/' . $route . $anchor;
 		} else {
 			$params[$this->routeVar] = $route;
-			return $this->getBaseUrl() . '?' . http_build_query($params) . $anchor;
+			if (!$this->showScriptName) {
+				$baseUrl .= '/';
+			}
+			return $baseUrl . '?' . http_build_query($params) . $anchor;
 		}
+	}
+
+	public function createAbsoluteUrl($route, $params = array(), $hostInfo = null)
+	{
+		if ($hostInfo === null) {
+			$hostInfo = $this->getHostInfo();
+		}
+		return $hostInfo . $this->createUrl($route, $params);
 	}
 
 	private $_baseUrl;
 
+	/**
+	 * Returns the base URL of the application.
+	 * @return string the base URL of the application (the part after host name and before query string).
+	 * If {@link showScriptName} is true, it will include the script name part.
+	 * Otherwise, it will not, and the ending slashes are stripped off.
+	 */
 	public function getBaseUrl()
 	{
+		if ($this->_baseUrl === null) {
+			/** @var $request \yii\web\Request */
+			$request = Yii::$app->getRequest();
+			$this->_baseUrl = $this->showScriptName ? $request->getScriptUrl() : $request->getBaseUrl();
+		}
 		return $this->_baseUrl;
 	}
 
 	public function setBaseUrl($value)
 	{
 		$this->_baseUrl = trim($value, '/');
+	}
+
+	private $_hostInfo;
+
+	public function getHostInfo()
+	{
+		if ($this->_hostInfo === null) {
+			/** @var $request \yii\web\Request */
+			$request = Yii::$app->getRequest();
+			$this->_hostInfo = $request->getHostInfo();
+		}
+		return $this->_baseUrl;
+	}
+
+	public function setHostInfo($value)
+	{
+		$this->_hostInfo = $value;
 	}
 
 	/**
