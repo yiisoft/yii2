@@ -10,6 +10,7 @@
 namespace yii\web;
 
 use yii\base\Object;
+use yii\base\InvalidConfigException;
 
 /**
  * UrlRule represents a rule used for parsing and generating URLs.
@@ -86,6 +87,12 @@ class UrlRule extends Object
 	 */
 	public function init()
 	{
+		if ($this->pattern === null) {
+			throw new InvalidConfigException('UrlRule::pattern must be set.');
+		}
+		if ($this->route === null) {
+			throw new InvalidConfigException('UrlRule::route must be set.');
+		}
 		if ($this->verb !== null) {
 			if (is_array($this->verb)) {
 				foreach ($this->verb as $i => $verb) {
