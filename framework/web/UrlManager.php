@@ -13,7 +13,7 @@ use Yii;
 use \yii\base\Component;
 
 /**
- * UrlManager manages the URLs of Yii applications.
+ * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -21,7 +21,10 @@ use \yii\base\Component;
 class UrlManager extends Component
 {
 	/**
-	 * @var boolean whether to enable pretty URLs.
+	 * @var boolean whether to enable pretty URLs. Instead of putting all parameters in the query
+	 * string part of a URL, pretty URLs allow using path info to represent some of the parameters
+	 * and can thus produce more user-friendly URLs, such as "/news/Yii-is-released", instead of
+	 * "/index.php?r=news/view&id=100".
 	 */
 	public $enablePrettyUrl = false;
 	/**
@@ -29,7 +32,7 @@ class UrlManager extends Component
 	 * This property is used only if [[enablePrettyUrl]] is true. Each element in the array
 	 * is the configuration of creating a single URL rule whose class by default is [[defaultRuleClass]].
 	 * If you modify this property after the UrlManager object is created, make sure
-	 * populate the array with the rule objects instead of configurations.
+	 * you populate the array with rule objects instead of rule configurations.
 	 */
 	public $rules = array();
 	/**
@@ -44,28 +47,24 @@ class UrlManager extends Component
 	 */
 	public $showScriptName = true;
 	/**
-	 * @var string the GET variable name for route. Defaults to 'r'.
+	 * @var string the GET variable name for route. This property is used only if [[enablePrettyUrl]] is false.
 	 */
 	public $routeVar = 'r';
 	/**
 	 * @var string the ID of the cache component that is used to cache the parsed URL rules.
 	 * Defaults to 'cache' which refers to the primary cache component registered with the application.
-	 * Set this property to false if you want to disable caching URL rules.
+	 * Set this property to false if you do not want to cache the URL rules.
 	 */
 	public $cacheID = 'cache';
 	/**
-	 * @var string the class name or configuration for URL rule instances.
-	 * This will be passed to [[\Yii::createObject()]] to create the URL rule instances.
+	 * @var string the default class name for creating URL rule instances
+	 * when it is not specified in [[rules]].
 	 */
 	public $defaultRuleClass = 'yii\web\UrlRule';
-	/**
-	 * @var string the base URL of the application (the part after host name and before query string).
-	 * Make sure any ending slashes be removed. If this property is not set, it will be determined
-	 * according to the current request. should be removed. The URLs created via [[createUrl()]] will
-	 * be prefixed with the value of this property.
-	 */
-	public $baseUrl;
-	public $hostInfo;
+
+	private $_baseUrl;
+	private $_hostInfo;
+
 
 	/**
 	 * Initializes the application component.
@@ -73,14 +72,17 @@ class UrlManager extends Component
 	public function init()
 	{
 		parent::init();
-
-		if ($this->enablePrettyUrl && $this->rules !== array()) {
-			$this->compileRules();
-		}
+		$this->compileRules();
 	}
 
+	/**
+	 * Parses the URL rules.
+	 */
 	protected function compileRules()
 	{
+		if (!$this->enablePrettyUrl || $this->rules === array()) {
+			return;
+		}
 		/**
 		 * @var $cache \yii\caching\Cache
 		 */
@@ -131,6 +133,9 @@ class UrlManager extends Component
 						// suffix alone is not allowed
 						return false;
 					}
+				} else {
+					// suffix doesn't match
+					return false;
 				}
 			}
 
@@ -141,24 +146,26 @@ class UrlManager extends Component
 		}
 	}
 
+	/**
+	 * Creates a URL using the given route and parameters.
+	 * The URL created is a relative one. Use [[createAbsoluteUrl()]] to create an absolute URL.
+	 * @param string $route the route
+	 * @param array $params the parameters (name-value pairs)
+	 * @return string the created URL
+	 */
 	public function createUrl($route, $params = array())
 	{
 		$anchor = isset($params['#']) ? '#' . $params['#'] : '';
 		unset($anchor['#']);
 
 		$route = trim($route, '/');
-
-		if ($this->baseUrl === null) {
-			/** @var $request \yii\web\Request */
-			$request = Yii::$app->getRequest();
-			$this->baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
-		}
+		$baseUrl = $this->getBaseUrl();
 
 		if ($this->enablePrettyUrl) {
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
 				if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-					return $this->baseUrl . $url . $anchor;
+					return rtrim($baseUrl, '/') . $url . $anchor;
 				}
 			}
 
@@ -168,46 +175,58 @@ class UrlManager extends Component
 			if ($params !== array()) {
 				$route .= '?' . http_build_query($params);
 			}
-			return $this->baseUrl . '/' . $route . $anchor;
+			return rtrim($baseUrl, '/') . '/' . $route . $anchor;
 		} else {
-			$params[$this->routeVar] = $route;
-			return $this->baseUrl . '?' . http_build_query($params) . $anchor;
+			$url = $baseUrl . '?' . $this->routeVar . '=' . $route;
+			if ($params !== array()) {
+				$url .= '&' . http_build_query($params);
+			}
+			return $url;
 		}
 	}
-
-	public function createAbsoluteUrl($route, $params = array(), $hostInfo = null)
-	{
-		if ($hostInfo === null) {
-			$hostInfo = $this->getHostInfo();
-		}
-		return $hostInfo . $this->createUrl($route, $params);
-	}
-
-	private $_baseUrl;
 
 	/**
-	 * Returns the base URL of the application.
-	 * @return string the base URL of the application (the part after host name and before query string).
-	 * If {@link showScriptName} is true, it will include the script name part.
-	 * Otherwise, it will not, and the ending slashes are stripped off.
+	 * Creates an absolute URL using the given route and parameters.
+	 * This method prepends the URL created by [[createUrl()]] with the [[hostInfo]].
+	 * @param string $route the route
+	 * @param array $params the parameters (name-value pairs)
+	 * @return string the created URL
+	 * @see createUrl()
+	 */
+	public function createAbsoluteUrl($route, $params = array())
+	{
+		return $this->getHostInfo() . $this->createUrl($route, $params);
+	}
+
+	/**
+	 * Returns the base URL that is used by [[createUrl()]] to prepend URLs it creates.
+	 * It defaults to [[Request::scriptUrl]] if [[showScriptName]] is true or [[enablePrettyUrl]] is false;
+	 * otherwise, it defaults to [[Request::baseUrl]].
+	 * @return string the base URL that is used by [[createUrl()]] to prepend URLs it creates.
 	 */
 	public function getBaseUrl()
 	{
 		if ($this->_baseUrl === null) {
 			/** @var $request \yii\web\Request */
 			$request = Yii::$app->getRequest();
-			$this->_baseUrl = $this->showScriptName ? $request->getScriptUrl() : $request->getBaseUrl();
+			$this->_baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
 		}
 		return $this->_baseUrl;
 	}
 
+	/**
+	 * Sets the base URL that is used by [[createUrl()]] to prepend URLs it creates.
+	 * @param string $value the base URL that is used by [[createUrl()]] to prepend URLs it creates.
+	 */
 	public function setBaseUrl($value)
 	{
-		$this->_baseUrl = trim($value, '/');
+		$this->_baseUrl = $value;
 	}
 
-	private $_hostInfo;
-
+	/**
+	 * Returns the host info that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+	 * @return string the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+	 */
 	public function getHostInfo()
 	{
 		if ($this->_hostInfo === null) {
@@ -215,27 +234,15 @@ class UrlManager extends Component
 			$request = Yii::$app->getRequest();
 			$this->_hostInfo = $request->getHostInfo();
 		}
-		return $this->_baseUrl;
-	}
-
-	public function setHostInfo($value)
-	{
-		$this->_hostInfo = $value;
+		return $this->_hostInfo;
 	}
 
 	/**
-	 * Removes the URL suffix from path info.
-	 * @param string $pathInfo path info part in the URL
-	 * @param string $suffix the URL suffix to be removed
-	 * @return string path info with URL suffix removed.
+	 * Sets the host info that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+	 * @param string $value the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
 	 */
-	public function removeSuffix($pathInfo, $suffix)
+	public function setHostInfo($value)
 	{
-		$n = strlen($suffix);
-		if ($n > 0 && substr($pathInfo, -$n) === $suffix) {
-			return substr($pathInfo, 0, -$n);
-		} else {
-			return $pathInfo;
-		}
+		$this->_hostInfo = rtrim($value, '/');
 	}
 }
