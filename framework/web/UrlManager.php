@@ -58,6 +58,14 @@ class UrlManager extends Component
 	 * This will be passed to [[\Yii::createObject()]] to create the URL rule instances.
 	 */
 	public $defaultRuleClass = 'yii\web\UrlRule';
+	/**
+	 * @var string the base URL of the application (the part after host name and before query string).
+	 * Make sure any ending slashes be removed. If this property is not set, it will be determined
+	 * according to the current request. should be removed. The URLs created via [[createUrl()]] will
+	 * be prefixed with the value of this property.
+	 */
+	public $baseUrl;
+	public $hostInfo;
 
 	/**
 	 * Initializes the application component.
@@ -140,13 +148,17 @@ class UrlManager extends Component
 
 		$route = trim($route, '/');
 
-		$baseUrl = $this->getBaseUrl();
+		if ($this->baseUrl === null) {
+			/** @var $request \yii\web\Request */
+			$request = Yii::$app->getRequest();
+			$this->baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
+		}
 
 		if ($this->enablePrettyUrl) {
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
 				if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-					return $baseUrl . $url . $anchor;
+					return $this->baseUrl . $url . $anchor;
 				}
 			}
 
@@ -156,13 +168,10 @@ class UrlManager extends Component
 			if ($params !== array()) {
 				$route .= '?' . http_build_query($params);
 			}
-			return $baseUrl . '/' . $route . $anchor;
+			return $this->baseUrl . '/' . $route . $anchor;
 		} else {
 			$params[$this->routeVar] = $route;
-			if (!$this->showScriptName) {
-				$baseUrl .= '/';
-			}
-			return $baseUrl . '?' . http_build_query($params) . $anchor;
+			return $this->baseUrl . '?' . http_build_query($params) . $anchor;
 		}
 	}
 
