@@ -1,6 +1,6 @@
 <?php
 /**
- * WebappController class file.
+ * AppController class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -20,7 +20,7 @@ use yii\base\Exception;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class WebappController extends Controller
+class AppController extends Controller
 {
 	private $_rootPath;
 	private $_config;
@@ -53,7 +53,7 @@ class WebappController extends Controller
 
 	public function actionIndex()
 	{
-		$this->forward('help/index', array('-args' => array('webapp/create')));
+		$this->forward('help/index', array('-args' => array('app/create')));
 	}
 
 	/**
