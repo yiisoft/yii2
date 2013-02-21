@@ -1,3 +1,5 @@
+- console
+    * detect if console supports colors, use colors in standard commands
 - db
 	* pgsql, sql server, oracle, db2 drivers
 	* unit tests on different DB drivers
