@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\console;
+namespace yii\util;
 
 // todo define how subclassing will work
 // todo add a run() or render() method
