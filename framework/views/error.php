@@ -4,12 +4,13 @@
  * @var \yii\base\ErrorHandler $owner
  */
 $owner = $this->owner;
+$title = $owner->htmlEncode($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\ErrorException ? $exception->getName() : get_class($exception));
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title><?php echo get_class($exception)?></title>
+	<title><?php echo $title?></title>
 
 	<style>
 	body {
@@ -50,8 +51,8 @@ $owner = $this->owner;
 </head>
 
 <body>
-	<h1><?php echo $owner->htmlEncode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception)); ?></h1>
-	<h2><?php echo nl2br($owner->htmlEncode($exception->getMessage()))?>	</h2>
+	<h1><?php echo $title?></h1>
+	<h2><?php echo nl2br($owner->htmlEncode($exception->getMessage()))?></h2>
 	<p>
 		The above error occurred while the Web server was processing your request.
 	</p>

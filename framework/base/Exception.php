@@ -25,4 +25,3 @@ class Exception extends \Exception
 		return \Yii::t('yii|Exception');
 	}
 }
-
