@@ -123,6 +123,12 @@ class ComponentTest extends TestCase
 		$this->assertTrue(isset($this->component->p2));
 	}
 
+	public function testCallUnknownMethod()
+	{
+		$this->setExpectedException('yii\base\UnknownMethodException');
+		$this->component->unknownMethod();
+	}
+
 	public function testUnset()
 	{
 		unset($this->component->Text);
