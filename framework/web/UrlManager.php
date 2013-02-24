@@ -10,7 +10,7 @@
 namespace yii\web;
 
 use Yii;
-use \yii\base\Component;
+use yii\base\Component;
 
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
@@ -141,8 +141,11 @@ class UrlManager extends Component
 
 			return array($pathInfo, array());
 		} else {
-			$route = (string)$request->getParam($this->routeVar);
-			return array($route, array());
+			$route = $request->getParam($this->routeVar);
+			if (is_array($route)) {
+				$route = '';
+			}
+			return array((string)$route, array());
 		}
 	}
 
@@ -230,9 +233,7 @@ class UrlManager extends Component
 	public function getHostInfo()
 	{
 		if ($this->_hostInfo === null) {
-			/** @var $request \yii\web\Request */
-			$request = Yii::$app->getRequest();
-			$this->_hostInfo = $request->getHostInfo();
+			$this->_hostInfo = Yii::$app->getRequest()->getHostInfo();
 		}
 		return $this->_hostInfo;
 	}

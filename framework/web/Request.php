@@ -409,6 +409,11 @@ class Request extends \yii\base\Request
 		return $this->_pathInfo;
 	}
 
+	public function setPathInfo($value)
+	{
+		$this->_pathInfo = trim($value, '/');
+	}
+
 	/**
 	 * Resolves the path info part of the currently requested URL.
 	 * A path info refers to the part that is after the entry script and before the question mark (query string).
