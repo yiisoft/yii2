@@ -4,12 +4,13 @@
  * @var \yii\base\ErrorHandler $owner
  */
 $owner = $this->owner;
+$title = $owner->htmlEncode($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\ErrorException ? $exception->getName().' ('.get_class($exception).')' : get_class($exception));
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title><?php echo get_class($exception)?></title>
+	<title><?php echo $title?></title>
 	<style>
 	html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;margin:0;padding:0;}
 	body{line-height:1;}
@@ -160,7 +161,7 @@ $owner = $this->owner;
 
 <body>
 <div class="container">
-	<h1><?php echo get_class($exception)?></h1>
+	<h1><?php echo $title?></h1>
 
 	<p class="message">
 		<?php echo nl2br($owner->htmlEncode($exception->getMessage()))?>
