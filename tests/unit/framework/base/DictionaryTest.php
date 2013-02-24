@@ -62,6 +62,8 @@ class DictionaryTest extends \yiiunit\TestCase
 		$this->dictionary->add('key3',$this->item3);
 		$this->assertEquals(3,$this->dictionary->getCount());
 		$this->assertTrue($this->dictionary->contains('key3'));
+
+		$this->dictionary[] = 'test';
 	}
 
 	public function testRemove()
@@ -74,7 +76,13 @@ class DictionaryTest extends \yiiunit\TestCase
 
 	public function testClear()
 	{
+		$this->dictionary->add('key3',$this->item3);
 		$this->dictionary->clear();
+		$this->assertEquals(0,$this->dictionary->getCount());
+		$this->assertTrue(!$this->dictionary->contains('key1') && !$this->dictionary->contains('key2'));
+
+		$this->dictionary->add('key3',$this->item3);
+		$this->dictionary->clear(true);
 		$this->assertEquals(0,$this->dictionary->getCount());
 		$this->assertTrue(!$this->dictionary->contains('key1') && !$this->dictionary->contains('key2'));
 	}
