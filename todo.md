@@ -1,5 +1,5 @@
 - console
-    * detect if console supports colors, use colors in standard commands
+    * If console is executed using Windows, do not use colors. If not, use colors. Allow to override via console application settings.
 - db
 	* pgsql, sql server, oracle, db2 drivers
 	* unit tests on different DB drivers
