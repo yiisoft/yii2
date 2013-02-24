@@ -44,6 +44,16 @@ class VectorTest extends \yiiunit\TestCase
 		$this->assertEquals(2,$vector2->getCount());
 	}
 
+	public function testItemAt()
+	{
+		$a=array(1, 2, null, 4);
+		$vector=new Vector($a);
+		$this->assertEquals(1, $vector->itemAt(0));
+		$this->assertEquals(2, $vector->itemAt(1));
+		$this->assertNull($vector->itemAt(2));
+		$this->assertEquals(4, $vector->itemAt(3));
+	}
+
 	public function testGetCount()
 	{
 		$this->assertEquals(2,$this->vector->getCount());
@@ -93,7 +103,14 @@ class VectorTest extends \yiiunit\TestCase
 
 	public function testClear()
 	{
+		$this->vector->add($this->item3);
 		$this->vector->clear();
+		$this->assertEquals(0,$this->vector->getCount());
+		$this->assertEquals(-1,$this->vector->indexOf($this->item1));
+		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
+
+		$this->vector->add($this->item3);
+		$this->vector->clear(true);
 		$this->assertEquals(0,$this->vector->getCount());
 		$this->assertEquals(-1,$this->vector->indexOf($this->item1));
 		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
@@ -127,6 +144,12 @@ class VectorTest extends \yiiunit\TestCase
 		$array=array($this->item3,$this->item1);
 		$this->vector->mergeWith($array);
 		$this->assertTrue($this->vector->getCount()==4 && $this->vector[0]===$this->item1 && $this->vector[3]===$this->item1);
+
+		$a=array(1);
+		$vector=new Vector($a);
+		$this->vector->mergeWith($vector);
+		$this->assertTrue($this->vector->getCount()==5 && $this->vector[0]===$this->item1 && $this->vector[3]===$this->item1 && $this->vector[4]===1);
+
 		$this->setExpectedException('yii\base\InvalidCallException');
 		$this->vector->mergeWith($this);
 	}
