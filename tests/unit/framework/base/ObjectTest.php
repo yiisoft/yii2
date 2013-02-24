@@ -71,6 +71,12 @@ class ObjectTest extends TestCase
 		$this->object->NewMember = $value;
 	}
 
+	public function testSetReadOnlyProperty()
+	{
+		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->object->object = 'test';
+	}
+
 	public function testIsset()
 	{
 		$this->assertTrue(isset($this->object->Text));
@@ -83,6 +89,9 @@ class ObjectTest extends TestCase
 		$this->object->Text = null;
 		$this->assertFalse(isset($this->object->Text));
 		$this->assertTrue(empty($this->object->Text));
+
+		$this->assertFalse(isset($this->object->unknownProperty));
+		$this->assertTrue(empty($this->object->unknownProperty));
 	}
 
 	public function testUnset()
@@ -90,6 +99,18 @@ class ObjectTest extends TestCase
 		unset($this->object->Text);
 		$this->assertFalse(isset($this->object->Text));
 		$this->assertTrue(empty($this->object->Text));
+	}
+
+	public function testUnsetReadOnlyProperty()
+	{
+		$this->setExpectedException('yii\base\InvalidCallException');
+		unset($this->object->object);
+	}
+
+	public function testCallUnknownMethod()
+	{
+		$this->setExpectedException('yii\base\UnknownMethodException');
+		$this->object->unknownMethod();
 	}
 
 	public function testArrayProperty()
