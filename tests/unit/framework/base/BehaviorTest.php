@@ -42,6 +42,10 @@ class BehaviorTest extends TestCase
 		$this->assertEquals('behavior method', $bar->behaviorMethod());
 		$this->assertEquals('behavior property', $bar->getBehavior('bar')->behaviorProperty);
 		$this->assertEquals('behavior method', $bar->getBehavior('bar')->behaviorMethod());
+
+		$behavior = new BarBehavior(array('behaviorProperty' => 'reattached'));
+		$bar->attachBehavior('bar', $behavior);
+		$this->assertEquals('reattached', $bar->behaviorProperty);
 	}
 
 	public function testAutomaticAttach()
