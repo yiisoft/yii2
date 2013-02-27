@@ -119,7 +119,7 @@ class UrlManager extends Component
 			$pathInfo = $request->pathInfo;
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
-				if (($result = $rule->parseUrl($this, $pathInfo)) !== false) {
+				if (($result = $rule->parseRequest($this, $request)) !== false) {
 					return $result;
 				}
 			}

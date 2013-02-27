@@ -32,7 +32,7 @@ class Application extends \yii\base\Application
 	 */
 	public function processRequest()
 	{
-		$route = $this->getUrlManager()->parseUrl($this->getRequest());
+		$route = $this->getUrlManager()->parseRequest($this->getRequest());
 		return $this->runAction($route, $_GET);
 	}
 

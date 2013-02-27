@@ -4,6 +4,7 @@ namespace yiiunit\framework\web;
 
 use yii\web\UrlManager;
 use yii\web\UrlRule;
+use yii\web\Request;
 
 class UrlRuleTest extends \yiiunit\TestCase
 {
@@ -22,18 +23,19 @@ class UrlRuleTest extends \yiiunit\TestCase
 		}
 	}
 
-	public function testParseUrl()
+	public function testParseRequest()
 	{
 		$manager = new UrlManager;
-		$suites = $this->getTestsForParseUrl();
+		$request = new Request;
+		$suites = $this->getTestsForParseRequest();
 		foreach ($suites as $i => $suite) {
 			list ($name, $config, $tests) = $suite;
 			$rule = new UrlRule($config);
 			foreach ($tests as $j => $test) {
-				$pathInfo = $test[0];
+				$request->pathInfo = $test[0];
 				$route = $test[1];
 				$params = isset($test[2]) ? $test[2] : array();
-				$result = $rule->parseUrl($manager, $pathInfo);
+				$result = $rule->parseRequest($manager, $request);
 				if ($route === false) {
 					$this->assertFalse($result, "Test#$i-$j: $name");
 				} else {
@@ -328,7 +330,7 @@ class UrlRuleTest extends \yiiunit\TestCase
 		);
 	}
 
-	protected function getTestsForParseUrl()
+	protected function getTestsForParseRequest()
 	{
 		// structure of each test
 		//   message for the test

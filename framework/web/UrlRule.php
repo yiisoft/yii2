@@ -57,10 +57,10 @@ class UrlRule extends Object
 	 */
 	public $verb;
 	/**
-	 * @var integer a value indicating if this rule should be used for both URL parsing and creation,
+	 * @var integer a value indicating if this rule should be used for both request parsing and URL creation,
 	 * parsing only, or creation only.
-	 * If not set, it means the rule is both URL parsing and creation.
-	 * If it is [[PARSING_ONLY]], the rule is for URL parsing only.
+	 * If not set or 0, it means the rule is both request parsing and URL creation.
+	 * If it is [[PARSING_ONLY]], the rule is for request parsing only.
 	 * If it is [[CREATION_ONLY]], the rule is for URL creation only.
 	 */
 	public $mode;
@@ -152,22 +152,23 @@ class UrlRule extends Object
 	}
 
 	/**
-	 * Parses the given path info and returns the corresponding route and parameters.
+	 * Parses the given request and returns the corresponding route and parameters.
 	 * @param UrlManager $manager the URL manager
-	 * @param string $pathInfo the path info to be parsed. It should not have slashes at the beginning or the end.
+	 * @param Request $request the request component
 	 * @return array|boolean the parsing result. The route and the parameters are returned as an array.
 	 * If false, it means this rule cannot be used to parse this path info.
 	 */
-	public function parseUrl($manager, $pathInfo)
+	public function parseRequest($manager, $request)
 	{
 		if ($this->mode === self::CREATION_ONLY) {
 			return false;
 		}
 
-		if ($this->verb !== null && !in_array(\Yii::$app->getRequest()->verb, $this->verb, true)) {
+		if ($this->verb !== null && !in_array($request->verb, $this->verb, true)) {
 			return false;
 		}
 
+		$pathInfo = $request->pathInfo;
 		$suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
 		if ($suffix !== '' && $pathInfo !== '') {
 			$n = strlen($suffix);
