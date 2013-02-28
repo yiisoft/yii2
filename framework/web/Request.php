@@ -695,21 +695,53 @@ class Request extends \yii\base\Request
 		return isset($languages[0]) ? $languages[0] : false;
 	}
 
-
 	/**
 	 * Returns the cookie collection.
-	 * The result can be used like an associative array. Adding {@link CHttpCookie} objects
-	 * to the collection will send the cookies to the client; and removing the objects
-	 * from the collection will delete those cookies on the client.
-	 * @return CCookieCollection the cookie collection.
+	 * Through the returned cookie collection, you may access a cookie using the following syntax:
+	 *
+	 * ~~~
+	 * $cookie = $request->cookies['name']
+	 * if ($cookie !== null) {
+	 *     $value = $cookie->value;
+	 * }
+	 *
+	 * // alternatively
+	 * $value = $request->cookies->getValue('name');
+	 * ~~~
+	 *
+	 * @return CookieCollection the cookie collection.
 	 */
 	public function getCookies()
 	{
-		if ($this->_cookies !== null) {
-			return $this->_cookies;
-		} else {
-			return $this->_cookies = new CCookieCollection($this);
+		if ($this->_cookies === null) {
+			$this->_cookies = new CookieCollection($this->loadCookies());
 		}
+		return $this->_cookies;
+	}
+
+	/**
+	 * Returns the current cookies in terms of [[Cookie]] objects.
+	 * @return Cookie[] list of current cookies
+	 */
+	protected function loadCookies()
+	{
+		$cookies = array();
+		if ($this->enableCookieValidation) {
+			$sm = Yii::app()->getSecurityManager();
+			foreach ($_COOKIE as $name => $value) {
+				if (is_string($value) && ($value = $sm->validateData($value)) !== false) {
+					$cookies[$name] = new CHttpCookie($name, @unserialize($value));
+				}
+			}
+		} else {
+			foreach ($_COOKIE as $name => $value) {
+				$cookies[$name] = new Cookie(array(
+					'name' => $name,
+					'value' => $value,
+				));
+			}
+		}
+		return $cookies;
 	}
 
 	private $_csrfToken;

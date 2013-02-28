@@ -48,4 +48,20 @@ class Cookie extends \yii\base\Object
 	 * such as JavaScript, which can effectively help to reduce identity theft through XSS attacks.
 	 */
 	public $httpOnly = false;
+
+	/**
+	 * Magic method to turn a cookie object into a string without having to explicitly access [[value]].
+	 *
+	 * ~~~
+	 * if (isset($request->cookies['name'])) {
+	 *     $value = (string)$request->cookies['name'];
+	 * }
+	 * ~~~
+	 *
+	 * @return string The value of the cookie. If the value property is null, an empty string will be returned.
+	 */
+	public function __toString()
+	{
+		return (string)$this->value;
+	}
 }

@@ -161,4 +161,28 @@ class Response extends \yii\base\Response
 			Yii::app()->end();
 		}
 	}
+
+	/**
+	 * Returns the cookie collection.
+	 * Through the returned cookie collection, you add or remove cookies as follows,
+	 *
+	 * ~~~
+	 * // add a cookie
+	 * $response->cookies->add(new Cookie(array(
+	 *     'name' => $name,
+	 *     'value' => $value,
+	 * ));
+	 *
+	 * // remove a cookie
+	 * $response->cookies->remove('name');
+	 * // alternatively
+	 * unset($response->cookies['name']);
+	 * ~~~
+	 *
+	 * @return CookieCollection the cookie collection.
+	 */
+	public function getCookies()
+	{
+		return \Yii::$app->getRequest()->getCookies();
+	}
 }
