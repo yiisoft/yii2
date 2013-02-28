@@ -9,7 +9,8 @@
 
 namespace yii\web;
 
-use \yii\base\InvalidConfigException;
+use Yii;
+use yii\base\InvalidConfigException;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -32,16 +33,8 @@ class Request extends \yii\base\Request
 	 */
 	public $enableCsrfValidation = false;
 	/**
-	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
-	 * request tunneled through POST. If false, it means disabling REST request tunneled through POST.
-	 * Default to '_method'.
-	 * @see getRequestMethod
-	 * @see getRestParams
-	 */
-	public $restPostVar = '_method';
-	/**
 	 * @var string the name of the token used to prevent CSRF. Defaults to 'YII_CSRF_TOKEN'.
-	 * This property is effective only when {@link enableCsrfValidation} is true.
+	 * This property is used only when [[enableCsrfValidation]] is true.
 	 */
 	public $csrfTokenName = 'YII_CSRF_TOKEN';
 	/**
@@ -50,6 +43,14 @@ class Request extends \yii\base\Request
 	 * This property is effective only when {@link enableCsrfValidation} is true.
 	 */
 	public $csrfCookie;
+	/**
+	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
+	 * request tunneled through POST. If false, it means disabling REST request tunneled through POST.
+	 * Default to '_method'.
+	 * @see getRequestMethod
+	 * @see getRestParams
+	 */
+	public $restVar = '_method';
 
 	private $_cookies;
 
@@ -109,13 +110,12 @@ class Request extends \yii\base\Request
 	 */
 	public function getRequestMethod()
 	{
-		if ($this->restPostVar !== false && isset($_POST[$this->restPostVar])) {
-			return strtoupper($_POST[$this->restPostVar]);
+		if ($this->restVar !== false && isset($_POST[$this->restVar])) {
+			return strtoupper($_POST[$this->restVar]);
 		} else {
 			return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 		}
 	}
-
 
 	/**
 	 * Returns whether this is a POST request.
@@ -154,7 +154,7 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns whether this is an Adobe Flash or Adobe Flex request.
+	 * Returns whether this is an Adobe Flash or Flex request.
 	 * @return boolean whether this is an Adobe Flash or Adobe Flex request.
 	 */
 	public function getIsFlashRequest()
@@ -173,7 +173,7 @@ class Request extends \yii\base\Request
 	public function getRestParams()
 	{
 		if ($this->_restParams === null) {
-			if ($this->restPostVar !== false && isset($_POST[$this->restPostVar])) {
+			if ($this->restVar !== false && isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
 			} else {
 				$this->_restParams = array();
@@ -197,21 +197,6 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns the named GET or POST parameter value.
-	 * If the GET or POST parameter does not exist, the second parameter to this method will be returned.
-	 * If both GET and POST contains such a named parameter, the GET parameter takes precedence.
-	 * @param string $name the GET parameter name
-	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
-	 * @return mixed the GET parameter value
-	 * @see getQuery
-	 * @see getPost
-	 */
-	public function getParam($name, $defaultValue = null)
-	{
-		return isset($_GET[$name]) ? $_GET[$name] : (isset($_POST[$name]) ? $_POST[$name] : $defaultValue);
-	}
-
-	/**
 	 * Returns the named RESTful parameter value.
 	 * @param string $name the parameter name
 	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
@@ -230,9 +215,8 @@ class Request extends \yii\base\Request
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
 	 * @return mixed the GET parameter value
 	 * @see getPost
-	 * @see getParam
 	 */
-	public function getQuery($name, $defaultValue = null)
+	public function getParam($name, $defaultValue = null)
 	{
 		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
 	}
@@ -244,7 +228,6 @@ class Request extends \yii\base\Request
 	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
 	 * @return mixed the POST parameter value
 	 * @see getParam
-	 * @see getQuery
 	 */
 	public function getPost($name, $defaultValue = null)
 	{
@@ -271,16 +254,6 @@ class Request extends \yii\base\Request
 	public function getPut($name, $defaultValue = null)
 	{
 		return $this->getIsPutRequest() ? $this->getRestParam($name, $defaultValue) : null;
-	}
-
-	/**
-	 * Returns the currently requested URL.
-	 * This is the same as [[requestUri]].
-	 * @return string part of the request URL after the host info.
-	 */
-	public function getUrl()
-	{
-		return $this->getRequestUri();
 	}
 
 	private $_hostInfo;
@@ -398,7 +371,7 @@ class Request extends \yii\base\Request
 	 * A path info refers to the part that is after the entry script and before the question mark (query string).
 	 * The starting and ending slashes are both removed.
 	 * @return string part of the request URL that is after the entry script and before the question mark.
-	 * Note, the returned path info is decoded.
+	 * Note, the returned path info is already URL-decoded.
 	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
 	 */
 	public function getPathInfo()
@@ -476,10 +449,20 @@ class Request extends \yii\base\Request
 		}
 	}
 
+	/**
+	 * Returns the currently requested URL.
+	 * This is a shortcut to the concatenation of [[hostInfo]] and [[requestUri]].
+	 * @return string the currently requested URL.
+	 */
+	public function getUrl()
+	{
+		return $this->getHostInfo() . $this->getRequestUri();
+	}
+
 	private $_requestUri;
 
 	/**
-	 * Returns the request URI portion for the currently requested URL.
+	 * Returns the portion after [[hostInfo]] for the currently requested URL.
 	 * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
 	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
 	 * @return string the request URI portion for the currently requested URL.
@@ -491,8 +474,18 @@ class Request extends \yii\base\Request
 		if ($this->_requestUri === null) {
 			$this->_requestUri = $this->resolveRequestUri();
 		}
-
 		return $this->_requestUri;
+	}
+
+	/**
+	 * Sets the currently requested URI.
+	 * The URI must refer to the portion that is after [[hostInfo]].
+	 * Note that the URI should be URL-encoded.
+	 * @param string $value the request URI to be set
+	 */
+	public function setRequestUri($value)
+	{
+		$this->_requestUri = $value;
 	}
 
 	/**
@@ -509,11 +502,7 @@ class Request extends \yii\base\Request
 			$requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
 		} elseif (isset($_SERVER['REQUEST_URI'])) {
 			$requestUri = $_SERVER['REQUEST_URI'];
-			if (!empty($_SERVER['HTTP_HOST'])) {
-				if (strpos($requestUri, $_SERVER['HTTP_HOST']) !== false) {
-					$requestUri = preg_replace('/^\w+:\/\/[^\/]+/', '', $requestUri);
-				}
-			} else {
+			if ($requestUri !== '' && $requestUri[0] !== '/') {
 				$requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $requestUri);
 			}
 		} elseif (isset($_SERVER['ORIG_PATH_INFO'])) { // IIS 5.0 CGI
@@ -597,49 +586,6 @@ class Request extends \yii\base\Request
 	public function getUserHost()
 	{
 		return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
-	}
-
-	private $_scriptFile;
-
-	/**
-	 * Returns entry script file path.
-	 * @return string entry script file path (processed w/ realpath())
-	 * @throws InvalidConfigException if the entry script file path cannot be determined automatically.
-	 */
-	public function getScriptFile()
-	{
-		if ($this->_scriptFile === null) {
-			$this->setScriptFile($_SERVER['SCRIPT_FILENAME']);
-		}
-		return $this->_scriptFile;
-	}
-
-	/**
-	 * Sets the entry script file path.
-	 * The entry script file path can normally be determined based on the `SCRIPT_FILENAME` SERVER variable.
-	 * However, in some server configuration, this may not be correct or feasible.
-	 * This setter is provided so that the entry script file path can be manually specified.
-	 * @param string $value the entry script file path
-	 * @throws InvalidConfigException if the provided entry script file path is invalid.
-	 */
-	public function setScriptFile($value)
-	{
-		$this->_scriptFile = realpath($value);
-		if ($this->_scriptFile === false || !is_file($this->_scriptFile)) {
-			throw new InvalidConfigException('Unable to determine the entry script file path.');
-		}
-	}
-
-	/**
-	 * Returns information about the capabilities of user browser.
-	 * @param string $userAgent the user agent to be analyzed. Defaults to null, meaning using the
-	 * current User-Agent HTTP header information.
-	 * @return array user browser capabilities.
-	 * @see http://www.php.net/manual/en/function.get-browser.php
-	 */
-	public function getBrowser($userAgent = null)
-	{
-		return get_browser($userAgent, true);
 	}
 
 	/**
