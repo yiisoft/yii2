@@ -178,13 +178,27 @@ class Request extends \yii\base\Request
 			} else {
 				$this->_restParams = array();
 				if (function_exists('mb_parse_str')) {
-					mb_parse_str(file_get_contents('php://input'), $this->_restParams);
+					mb_parse_str($this->getRawBody(), $this->_restParams);
 				} else {
-					parse_str(file_get_contents('php://input'), $this->_restParams);
+					parse_str($this->getRawBody(), $this->_restParams);
 				}
 			}
 		}
 		return $this->_restParams;
+	}
+
+	private $_rawBody;
+
+	/**
+	 * Returns the raw HTTP request body.
+	 * @return string the request body
+	 */
+	public function getRawBody()
+	{
+		if ($this->_rawBody === null) {
+			$this->_rawBody = file_get_contents('php://input');
+		}
+		return $this->_rawBody;
 	}
 
 	/**
@@ -382,6 +396,11 @@ class Request extends \yii\base\Request
 		return $this->_pathInfo;
 	}
 
+	/**
+	 * Sets the path info of the current request.
+	 * This method is mainly provided for testing purpose.
+	 * @param string $value the path info of the current request
+	 */
 	public function setPathInfo($value)
 	{
 		$this->_pathInfo = trim($value, '/');
@@ -403,7 +422,22 @@ class Request extends \yii\base\Request
 			$pathInfo = substr($pathInfo, 0, $pos);
 		}
 
-		$pathInfo = $this->decodeUrl($pathInfo);
+		$pathInfo = urldecode($pathInfo);
+
+		// try to encode in UTF8 if not so
+		// http://w3.org/International/questions/qa-forms-utf-8.html
+		if (!preg_match('%^(?:
+				[\x09\x0A\x0D\x20-\x7E]              # ASCII
+				| [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+				| \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
+				| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+				| \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
+				| \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+				| [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+				| \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
+				)*$%xs', $pathInfo)) {
+			$pathInfo = utf8_encode($pathInfo);
+		}
 
 		$scriptUrl = $this->getScriptUrl();
 		$baseUrl = $this->getBaseUrl();
@@ -414,39 +448,10 @@ class Request extends \yii\base\Request
 		} elseif (strpos($_SERVER['PHP_SELF'], $scriptUrl) === 0) {
 			$pathInfo = substr($_SERVER['PHP_SELF'], strlen($scriptUrl));
 		} else {
-			return false;
+			throw new InvalidConfigException('Unable to determine the path info of the current request.');
 		}
 
 		return trim($pathInfo, '/');
-	}
-
-	/**
-	 * Decodes the given URL.
-	 * This method is an improved variant of the native urldecode() function. It will properly encode
-	 * UTF-8 characters which may be returned by urldecode().
-	 * @param string $url encoded URL
-	 * @return string decoded URL
-	 */
-	public function decodeUrl($url)
-	{
-		$url = urldecode($url);
-
-		// is it UTF-8?
-		// http://w3.org/International/questions/qa-forms-utf-8.html
-		if (preg_match('%^(?:
-				[\x09\x0A\x0D\x20-\x7E]              # ASCII
-				| [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-				| \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
-				| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-				| \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
-				| \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
-				| [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-				| \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-				)*$%xs', $url)) {
-			return $url;
-		} else {
-			return utf8_encode($url);
-		}
 	}
 
 	/**
@@ -714,101 +719,11 @@ class Request extends \yii\base\Request
 	public function getCookies()
 	{
 		if ($this->_cookies === null) {
-			$this->_cookies = new CookieCollection($this->loadCookies());
+			$this->_cookies = new CookieCollection(array(
+				'enableValidation' => $this->enableCookieValidation,
+			));
 		}
 		return $this->_cookies;
-	}
-
-	/**
-	 * Returns the current cookies in terms of [[Cookie]] objects.
-	 * @return Cookie[] list of current cookies
-	 */
-	protected function loadCookies()
-	{
-		$cookies = array();
-		if ($this->enableCookieValidation) {
-			$sm = Yii::app()->getSecurityManager();
-			foreach ($_COOKIE as $name => $value) {
-				if (is_string($value) && ($value = $sm->validateData($value)) !== false) {
-					$cookies[$name] = new CHttpCookie($name, @unserialize($value));
-				}
-			}
-		} else {
-			foreach ($_COOKIE as $name => $value) {
-				$cookies[$name] = new Cookie(array(
-					'name' => $name,
-					'value' => $value,
-				));
-			}
-		}
-		return $cookies;
-	}
-
-	private $_csrfToken;
-
-	/**
-	 * Returns the random token used to perform CSRF validation.
-	 * The token will be read from cookie first. If not found, a new token
-	 * will be generated.
-	 * @return string the random token for CSRF validation.
-	 * @see enableCsrfValidation
-	 */
-	public function getCsrfToken()
-	{
-		if ($this->_csrfToken === null) {
-			$cookie = $this->getCookies()->itemAt($this->csrfTokenName);
-			if (!$cookie || ($this->_csrfToken = $cookie->value) == null) {
-				$cookie = $this->createCsrfCookie();
-				$this->_csrfToken = $cookie->value;
-				$this->getCookies()->add($cookie->name, $cookie);
-			}
-		}
-
-		return $this->_csrfToken;
-	}
-
-	/**
-	 * Creates a cookie with a randomly generated CSRF token.
-	 * Initial values specified in {@link csrfCookie} will be applied
-	 * to the generated cookie.
-	 * @return CHttpCookie the generated cookie
-	 * @see enableCsrfValidation
-	 */
-	protected function createCsrfCookie()
-	{
-		$cookie = new CHttpCookie($this->csrfTokenName, sha1(uniqid(mt_rand(), true)));
-		if (is_array($this->csrfCookie)) {
-			foreach ($this->csrfCookie as $name => $value) {
-				$cookie->$name = $value;
-			}
-		}
-		return $cookie;
-	}
-
-	/**
-	 * Performs the CSRF validation.
-	 * This is the event handler responding to {@link CApplication::onBeginRequest}.
-	 * The default implementation will compare the CSRF token obtained
-	 * from a cookie and from a POST field. If they are different, a CSRF attack is detected.
-	 * @param CEvent $event event parameter
-	 * @throws CHttpException if the validation fails
-	 */
-	public function validateCsrfToken($event)
-	{
-		if ($this->getIsPostRequest()) {
-			// only validate POST requests
-			$cookies = $this->getCookies();
-			if ($cookies->contains($this->csrfTokenName) && isset($_POST[$this->csrfTokenName])) {
-				$tokenFromCookie = $cookies->itemAt($this->csrfTokenName)->value;
-				$tokenFromPost = $_POST[$this->csrfTokenName];
-				$valid = $tokenFromCookie === $tokenFromPost;
-			} else {
-				$valid = false;
-			}
-			if (!$valid) {
-				throw new CHttpException(400, Yii::t('yii|The CSRF token could not be verified.'));
-			}
-		}
 	}
 }
 

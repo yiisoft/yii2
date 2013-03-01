@@ -9,6 +9,7 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\DictionaryIterator;
 
 /**
@@ -22,19 +23,24 @@ use yii\base\DictionaryIterator;
 class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
+	 * @var boolean whether to enable cookie validation. By setting this property to true,
+	 * if a cookie is tampered on the client side, it will be ignored when received on the server side.
+	 */
+	public $enableValidation = true;
+
+	/**
 	 * @var Cookie[] the cookies in this collection (indexed by the cookie names)
 	 */
 	private $_cookies = array();
 
 	/**
 	 * Constructor.
-	 * @param Cookie[] $cookies the initial cookies in the collection.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($cookies = array(), $config = array())
+	public function __construct($config = array())
 	{
-		$this->_cookies = $cookies;
 		parent::__construct($config);
+		$this->_cookies = $this->loadCookies();
 	}
 
 	/**
@@ -86,7 +92,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	 * @return mixed the value of the named cookie.
 	 * @see get()
 	 */
-	public function getValue($name, $defaultValue)
+	public function getValue($name, $defaultValue = null)
 	{
 		return isset($this->_cookies[$name]) ? $this->_cookies[$name]->value : $defaultValue;
 	}
@@ -102,7 +108,13 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 			$c = $this->_cookies[$cookie->name];
 			setcookie($c->name, '', 0, $c->path, $c->domain, $c->secure, $c->httpOnly);
 		}
-		setcookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+
+		$value = $cookie->value;
+		if ($this->enableValidation) {
+			$value = Yii::$app->getSecurityManager()->hashData(serialize($value));
+		}
+
+		setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
 		$this->_cookies[$cookie->name] = $cookie;
 	}
 
@@ -191,5 +203,34 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	public function offsetUnset($name)
 	{
 		$this->remove($name);
+	}
+
+
+	/**
+	 * Returns the current cookies in terms of [[Cookie]] objects.
+	 * @return Cookie[] list of current cookies
+	 */
+	protected function loadCookies()
+	{
+		$cookies = array();
+		if ($this->enableValidation) {
+			$sm = \Yii::$app->getSecurityManager();
+			foreach ($_COOKIE as $name => $value) {
+				if (is_string($value) && ($value = $sm->validateData($value)) !== false) {
+					$cookies[$name] = new Cookie(array(
+						'name' => $name,
+						'value' => @unserialize($value),
+					));
+				}
+			}
+		} else {
+			foreach ($_COOKIE as $name => $value) {
+				$cookies[$name] = new Cookie(array(
+					'name' => $name,
+					'value' => $value,
+				));
+			}
+		}
+		return $cookies;
 	}
 }
