@@ -23,6 +23,8 @@
 	* DateValidator: should we use CDateTimeParser, or simply use strtotime()?
 	* CompareValidator::clientValidateAttribute(): depends on CHtml::activeId()
 
+memo
+	* Minimal PHP version required: 5.3.7 (http://www.php.net/manual/en/function.crypt.php)
 ---
 
 - base
