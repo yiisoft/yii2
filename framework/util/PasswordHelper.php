@@ -1,6 +1,6 @@
 <?php
 /**
- * StringHelper class file.
+ * PasswordHelper class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
