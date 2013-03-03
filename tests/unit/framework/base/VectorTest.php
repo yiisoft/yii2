@@ -75,7 +75,7 @@ class VectorTest extends \yiiunit\TestCase
 		$this->assertEquals(2,$this->vector->indexOf($this->item2));
 		$this->assertEquals(0,$this->vector->indexOf($this->item3));
 		$this->assertEquals(1,$this->vector->indexOf($this->item1));
-		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->vector->insertAt(4,$this->item3);
 	}
 
@@ -97,7 +97,7 @@ class VectorTest extends \yiiunit\TestCase
 		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
 		$this->assertEquals(1,$this->vector->indexOf($this->item3));
 		$this->assertEquals(0,$this->vector->indexOf($this->item1));
-		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->vector->removeAt(2);
 	}
 
@@ -135,7 +135,7 @@ class VectorTest extends \yiiunit\TestCase
 		$array=array($this->item3,$this->item1);
 		$this->vector->copyFrom($array);
 		$this->assertTrue(count($array)==2 && $this->vector[0]===$this->item3 && $this->vector[1]===$this->item1);
-		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->vector->copyFrom($this);
 	}
 
@@ -150,7 +150,7 @@ class VectorTest extends \yiiunit\TestCase
 		$this->vector->mergeWith($vector);
 		$this->assertTrue($this->vector->getCount()==5 && $this->vector[0]===$this->item1 && $this->vector[3]===$this->item1 && $this->vector[4]===1);
 
-		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->vector->mergeWith($this);
 	}
 
@@ -164,7 +164,7 @@ class VectorTest extends \yiiunit\TestCase
 	{
 		$this->assertTrue($this->vector[0]===$this->item1);
 		$this->assertTrue($this->vector[1]===$this->item2);
-		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->setExpectedException('yii\base\InvalidParamException');
 		$a=$this->vector[2];
 	}
 

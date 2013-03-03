@@ -11,6 +11,7 @@
 namespace yii\db;
 
 use yii\base\Model;
+use yii\base\InvalidParamException;
 use yii\base\Event;
 use yii\base\ModelEvent;
 use yii\base\UnknownMethodException;
@@ -1045,7 +1046,7 @@ class ActiveRecord extends Model
 	 * It can be declared in either the Active Record class itself or one of its behaviors.
 	 * @param string $name the relation name
 	 * @return ActiveRelation the relation object
-	 * @throws InvalidCallException if the named relation does not exist.
+	 * @throws InvalidParamException if the named relation does not exist.
 	 */
 	public function getRelation($name)
 	{
@@ -1057,7 +1058,7 @@ class ActiveRecord extends Model
 			}
 		} catch (UnknownMethodException $e) {
 		}
-		throw new InvalidCallException(get_class($this) . ' has no relation named "' . $name . '".');
+		throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 	}
 
 	/**

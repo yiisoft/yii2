@@ -9,7 +9,7 @@
 
 namespace yii\util;
 
-use yii\base\InvalidCallException;
+use yii\base\InvalidParamException;
 
 /**
  * ArrayHelper provides additional array functionality you can use in your
@@ -242,7 +242,7 @@ class ArrayHelper
 	 * value is for sorting strings in case-insensitive manner. Please refer to
 	 * See [PHP manual](http://php.net/manual/en/function.sort.php) for more details.
 	 * When sorting by multiple keys with different sort flags, use an array of sort flags.
-	 * @throws InvalidCallException if the $ascending or $sortFlag parameters do not have
+	 * @throws InvalidParamException if the $ascending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
 	 */
 	public static function multisort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR)
@@ -255,12 +255,12 @@ class ArrayHelper
 		if (is_scalar($ascending)) {
 			$ascending = array_fill(0, $n, $ascending);
 		} elseif (count($ascending) !== $n) {
-			throw new InvalidCallException('The length of $ascending parameter must be the same as that of $keys.');
+			throw new InvalidParamException('The length of $ascending parameter must be the same as that of $keys.');
 		}
 		if (is_scalar($sortFlag)) {
 			$sortFlag = array_fill(0, $n, $sortFlag);
 		} elseif (count($sortFlag) !== $n) {
-			throw new InvalidCallException('The length of $ascending parameter must be the same as that of $keys.');
+			throw new InvalidParamException('The length of $ascending parameter must be the same as that of $keys.');
 		}
 		$args = array();
 		foreach ($keys as $i => $key) {

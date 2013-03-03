@@ -101,7 +101,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * Returns the item at the specified index.
 	 * @param integer $index the index of the item
 	 * @return mixed the item at the index
-	 * @throws InvalidCallException if the index is out of range
+	 * @throws InvalidParamException if the index is out of range
 	 */
 	public function itemAt($index)
 	{
@@ -110,7 +110,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 		} elseif ($index >= 0 && $index < $this->_c) { // in case the value is null
 			return $this->_d[$index];
 		} else {
-			throw new InvalidCallException('Index out of range: ' . $index);
+			throw new InvalidParamException('Index out of range: ' . $index);
 		}
 	}
 
@@ -132,7 +132,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * one step towards the end.
 	 * @param integer $index the specified position.
 	 * @param mixed $item new item to be inserted into the vector
-	 * @throws InvalidCallException if the index specified is out of range, or the vector is read-only.
+	 * @throws InvalidParamException if the index specified is out of range, or the vector is read-only.
 	 */
 	public function insertAt($index, $item)
 	{
@@ -142,7 +142,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 			array_splice($this->_d, $index, 0, array($item));
 			$this->_c++;
 		} else {
-			throw new InvalidCallException('Index out of range: ' . $index);
+			throw new InvalidParamException('Index out of range: ' . $index);
 		}
 	}
 
@@ -169,7 +169,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * Removes an item at the specified position.
 	 * @param integer $index the index of the item to be removed.
 	 * @return mixed the removed item.
-	 * @throws InvalidCallException if the index is out of range, or the vector is read only.
+	 * @throws InvalidParamException if the index is out of range, or the vector is read only.
 	 */
 	public function removeAt($index)
 	{
@@ -183,7 +183,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 				return $item;
 			}
 		} else {
-			throw new InvalidCallException('Index out of range: ' . $index);
+			throw new InvalidParamException('Index out of range: ' . $index);
 		}
 	}
 
@@ -242,7 +242,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * Copies iterable data into the vector.
 	 * Note, existing data in the vector will be cleared first.
 	 * @param mixed $data the data to be copied from, must be an array or an object implementing `Traversable`
-	 * @throws InvalidCallException if data is neither an array nor an object implementing `Traversable`.
+	 * @throws InvalidParamException if data is neither an array nor an object implementing `Traversable`.
 	 */
 	public function copyFrom($data)
 	{
@@ -257,7 +257,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 				$this->add($item);
 			}
 		} else {
-			throw new InvalidCallException('Data must be either an array or an object implementing Traversable.');
+			throw new InvalidParamException('Data must be either an array or an object implementing Traversable.');
 		}
 	}
 
@@ -265,7 +265,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * Merges iterable data into the vector.
 	 * New items will be appended to the end of the existing items.
 	 * @param array|\Traversable $data the data to be merged with. It must be an array or object implementing Traversable
-	 * @throws InvalidCallException if data is neither an array nor an object implementing `Traversable`.
+	 * @throws InvalidParamException if data is neither an array nor an object implementing `Traversable`.
 	 */
 	public function mergeWith($data)
 	{
@@ -277,7 +277,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 				$this->add($item);
 			}
 		} else {
-			throw new InvalidCallException('The data to be merged with must be an array or an object implementing Traversable.');
+			throw new InvalidParamException('The data to be merged with must be an array or an object implementing Traversable.');
 		}
 	}
 

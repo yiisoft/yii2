@@ -122,7 +122,7 @@ class View extends Component
 	 * @param array $params the parameters that should be made available in the view. The PHP function `extract()`
 	 * will be called on this variable to extract the variables from this parameter.
 	 * @return string the rendering result
-	 * @throws InvalidCallException if the view file cannot be found
+	 * @throws InvalidParamException if the view file cannot be found
 	 * @see findViewFile()
 	 */
 	public function renderPartial($view, $params = array())
@@ -131,7 +131,7 @@ class View extends Component
 		if ($file !== false) {
 			return $this->renderFile($file, $params);
 		} else {
-			throw new InvalidCallException("Unable to find the view file for view '$view'.");
+			throw new InvalidParamException("Unable to find the view file for view '$view'.");
 		}
 	}
 
