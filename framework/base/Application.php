@@ -298,14 +298,6 @@ class Application extends Module
 		date_default_timezone_set($value);
 	}
 
-	//	/**
-	//	 * Returns the security manager component.
-	//	 * @return SecurityManager the security manager application component.
-	//	 */
-	//	public function getSecurityManager()
-	//	{
-	//		return $this->getComponent('securityManager');
-	//	}
 	//
 	//	/**
 	//	 * Returns the locale instance.

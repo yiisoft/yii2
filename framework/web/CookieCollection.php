@@ -11,6 +11,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\DictionaryIterator;
+use yii\util\SecurityHelper;
 
 /**
  * CookieCollection maintains the cookies available in the current request.
@@ -27,6 +28,10 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	 * if a cookie is tampered on the client side, it will be ignored when received on the server side.
 	 */
 	public $enableValidation = true;
+	/**
+	 * @var string the secret key used for cookie validation. If not set, a random key will be generated and used.
+	 */
+	public $validationKey;
 
 	/**
 	 * @var Cookie[] the cookies in this collection (indexed by the cookie names)
@@ -111,7 +116,12 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 
 		$value = $cookie->value;
 		if ($this->enableValidation) {
-			$value = Yii::$app->getSecurityManager()->hashData(serialize($value));
+			if ($this->validationKey === null) {
+				$key = SecurityHelper::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+			} else {
+				$key = $this->validationKey;
+			}
+			$value = SecurityHelper::hashData(serialize($value), $key);
 		}
 
 		setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
@@ -205,7 +215,6 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 		$this->remove($name);
 	}
 
-
 	/**
 	 * Returns the current cookies in terms of [[Cookie]] objects.
 	 * @return Cookie[] list of current cookies
@@ -214,9 +223,13 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	{
 		$cookies = array();
 		if ($this->enableValidation) {
-			$sm = \Yii::$app->getSecurityManager();
+			if ($this->validationKey === null) {
+				$key = SecurityHelper::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+			} else {
+				$key = $this->validationKey;
+			}
 			foreach ($_COOKIE as $name => $value) {
-				if (is_string($value) && ($value = $sm->validateData($value)) !== false) {
+				if (is_string($value) && ($value = SecurityHelper::validateData($value, $key)) !== false) {
 					$cookies[$name] = new Cookie(array(
 						'name' => $name,
 						'value' => @unserialize($value),

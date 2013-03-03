@@ -1,6 +1,6 @@
 <?php
 /**
- * PasswordHelper class file.
+ * SecurityHelper class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -9,65 +9,37 @@
 
 namespace yii\util;
 
+use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
- * PasswordHelper provides a simple API for secure password hashing and verification.
+ * SecurityHelper provides a set of methods to handle common security-related tasks.
  *
- * PasswordHelper uses the Blowfish hash algorithm available in many PHP runtime
- * environments through the PHP [crypt()](http://php.net/manual/en/function.crypt.php)
- * built-in function. As of Dec 2012 it is the strongest algorithm available in PHP
- * and the only algorithm without some security concerns surrounding it. For this reason,
- * PasswordHelper fails to initialize when run in and environment that does not have
- * crypt() and its Blowfish option. Systems with the option include:
+ * In particular, SecurityHelper supports the following features:
  *
- * 1. Most *nix systems since PHP 4 (the algorithm is part of the library function crypt(3));
- * 2. All PHP systems since 5.3.0;
- * 3. All PHP systems with the [Suhosin patch](http://www.hardened-php.net/suhosin/).
+ * - Encryption/decryption: [[encrypt()]] and [[decrypt()]]
+ * - Data tampering prevention: [[hashData()]] and [[validateData()]]
+ * - Password validation: [[generatePasswordHash()]] and [[validatePassword()]]
  *
- * For more information about password hashing, crypt() and Blowfish, please read
- * the Yii Wiki article [Use crypt() for password storage](http://www.yiiframework.com/wiki/425/use-crypt-for-password-storage/)
- * and the PHP RFC [Adding simple password hashing API](http://wiki.php.net/rfc/password_hash).
+ * Additionally, SecurityHelper provides [[getSecretKey()]] to support generating
+ * named secret keys. These secret keys, once generated, will be stored in a file
+ * and made available in future requests.
  *
- * PasswordHelper throws an exception if the Blowfish hash algorithm is not
- * available in the runtime PHP's crypt() function. It can be used as follows
- *
- * Generate a hash from a password:
- *
- * ~~~
- * $hash = PasswordHelper::hashPassword($password);
- * ~~~
- *
- * This hash can be stored in a database (e.g. `CHAR(64) CHARACTER SET latin1` on MySQL). The
- * hash is usually generated and saved to the database when the user enters a new password.
- * But it can also be useful to generate and save a hash after validating a user's
- * password in order to change the cost or refresh the salt.
- *
- * To verify a password, fetch the user's saved hash from the database (into `$hash`) and:
- *
- * ~~~
- * if (PasswordHelper::verifyPassword($password, $hash) {
- *     // password is good
- * } else {
- *     // password is bad
- * }
- * ~~~
- *
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
  * @since 2.0
  */
-
-class PasswordHelper
+class SecurityHelper
 {
-
 	/**
 	 * Encrypts data.
 	 * @param string $data data to be encrypted.
 	 * @param string $key the encryption secret key
 	 * @return string the encrypted data
 	 * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
+	 * @see decrypt()
 	 */
 	public static function encrypt($data, $key)
 	{
@@ -88,6 +60,7 @@ class PasswordHelper
 	 * @param string $key the decryption secret key
 	 * @return string the decrypted data
 	 * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
+	 * @see encrypt()
 	 */
 	public static function decrypt($data, $key)
 	{
@@ -103,34 +76,67 @@ class PasswordHelper
 	}
 
 	/**
-	 * Prefixes data with an HMAC.
-	 * @param string $data data to be hashed.
-	 * @param string $key the private key to be used for generating HMAC. Defaults to null, meaning using {@link validationKey}.
-	 * @return string data prefixed with HMAC
+	 * Prefixes data with a keyed hash value so that it can later be detected if it is tampered.
+	 * @param string $data the data to be protected
+	 * @param string $key the secret key to be used for generating hash
+	 * @param string $algorithm the hashing algorithm (e.g. "md5", "sha1", "sha256", etc.). Call PHP "hash_algos()"
+	 * function to see the supported hashing algorithms on your system.
+	 * @return string the data prefixed with the keyed hash
+	 * @see validateData()
+	 * @see getSecretKey()
 	 */
-	public static function hashData($data, $key)
+	public static function hashData($data, $key, $algorithm = 'sha256')
 	{
-		return hash_hmac('sha1', $data, $key) . $data;
+		return hash_hmac($algorithm, $data, $key) . $data;
 	}
 
 	/**
-	 * Validates if data is tampered.
-	 * @param string $data data to be validated. The data must be previously
-	 * generated using {@link hashData()}.
-	 * @param string $key the private key to be used for generating HMAC. Defaults to null, meaning using {@link validationKey}.
-	 * @return string the real data with HMAC stripped off. False if the data
-	 * is tampered.
+	 * Validates if the given data is tampered.
+	 * @param string $data the data to be validated. The data must be previously
+	 * generated by [[hashData()]].
+	 * @param string $key the secret key that was previously used to generate the hash for the data in [[hashData()]].
+	 * @param string $algorithm the hashing algorithm (e.g. "md5", "sha1", "sha256", etc.). Call PHP "hash_algos()"
+	 * function to see the supported hashing algorithms on your system. This must be the same
+	 * as the value passed to [[hashData()]] when generating the hash for the data.
+	 * @return string the real data with the hash stripped off. False if the data is tampered.
+	 * @see hashData()
 	 */
-	public function validateData($data, $key = null)
+	public static function validateData($data, $key, $algorithm = 'sha256')
 	{
-		$len = $this->strlen($this->computeHMAC('test'));
-		if ($this->strlen($data) >= $len) {
-			$hmac = $this->substr($data, 0, $len);
-			$data2 = $this->substr($data, $len, $this->strlen($data));
-			return $hmac === $this->computeHMAC($data2, $key) ? $data2 : false;
+		$hashSize = StringHelper::strlen(hash_hmac($algorithm, 'test', $key));
+		$n = StringHelper::strlen($data);
+		if ($n >= $hashSize) {
+			$hash = StringHelper::substr($data, 0, $hashSize);
+			$data2 = StringHelper::substr($data, $hashSize, $n - $hashSize);
+			return $hash === hash_hmac($algorithm, $data2, $key) ? $data2 : false;
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Returns a secret key associated with the specified name.
+	 * If the secret key does not exist, a random key will be generated
+	 * and saved in the file "keys.php" under the application's runtime directory
+	 * so that the same secret key can be returned in future requests.
+	 * @param string $name the name that is associated with the secret key
+	 * @param integer $length the length of the key that should be generated if not exists
+	 * @return string the secret key associated with the specified name
+	 */
+	public static function getSecretKey($name, $length = 32)
+	{
+		static $keys;
+		$keyFile = Yii::$app->getRuntimePath() . '/keys.php';
+		if ($keys === null) {
+			$keys = is_file($keyFile) ? require($keyFile) : array();
+		}
+		if (!isset($keys[$name])) {
+			// generate a 32-char random key
+			$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+			$keys[$name] = substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
+			file_put_contents($keyFile, "<?php\nreturn " . var_export($keys, true) . ";\n");
+		}
+		return $keys[$name];
 	}
 
 	/**
@@ -144,7 +150,7 @@ class PasswordHelper
 		if (!extension_loaded('mcrypt')) {
 			throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
 		}
-		$module = @mcrypt_module_open('des', '', MCRYPT_MODE_CBC, '');
+		$module = @mcrypt_module_open('rijndael-256', '', MCRYPT_MODE_CBC, '');
 		if ($module === false) {
 			throw new Exception('Failed to initialize the mcrypt module.');
 		}
@@ -152,10 +158,24 @@ class PasswordHelper
 	}
 
 	/**
-	 * Generate a secure hash from a password and a random salt.
+	 * Generates a secure hash from a password and a random salt.
 	 *
-	 * Uses the PHP [crypt()](http://php.net/manual/en/function.crypt.php) built-in function
-	 * with the Blowfish hash option.
+	 * The generated hash can be stored in database (e.g. `CHAR(64) CHARACTER SET latin1` on MySQL).
+	 * Later when a password needs to be validated, the hash can be fetched and passed
+	 * to [[validatePassword()]]. For example,
+	 *
+	 * ~~~
+	 * // generates the hash (usually done during user registration or when the password is changed)
+	 * $hash = SecurityHelper::hashPassword($password);
+	 * // ...save $hash in database...
+	 *
+	 * // during login, validate if the password entered is correct using $hash fetched from database
+	 * if (PasswordHelper::verifyPassword($password, $hash) {
+	 *     // password is good
+	 * } else {
+	 *     // password is bad
+	 * }
+	 * ~~~
 	 *
 	 * @param string $password The password to be hashed.
 	 * @param integer $cost Cost parameter used by the Blowfish hash algorithm.
@@ -168,8 +188,9 @@ class PasswordHelper
 	 * 2^($cost - 14) seconds.
 	 * @throws Exception on bad password parameter or cost parameter
 	 * @return string The password hash string, ASCII and not longer than 64 characters.
+	 * @see validatePassword()
 	 */
-	public static function hashPassword($password, $cost = 13)
+	public static function generatePasswordHash($password, $cost = 13)
 	{
 		$salt = static::generateSalt($cost);
 		$hash = crypt($password, $salt);
@@ -187,8 +208,9 @@ class PasswordHelper
 	 * @param string $hash The hash to verify the password against.
 	 * @return boolean whether the password is correct.
 	 * @throws InvalidParamException on bad password or hash parameters or if crypt() with Blowfish hash is not available.
+	 * @see generatePasswordHash()
 	 */
-	public static function verifyPassword($password, $hash)
+	public static function validatePassword($password, $hash)
 	{
 		if (!is_string($password) || $password === '') {
 			throw new InvalidParamException('Password must be a string and cannot be empty.');

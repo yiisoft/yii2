@@ -19,9 +19,13 @@ use yii\base\InvalidConfigException;
 class Request extends \yii\base\Request
 {
 	/**
-	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to false.
+	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
 	 */
-	public $enableCookieValidation = false;
+	public $enableCookieValidation = true;
+	/**
+	 * @var string the secret key used for cookie validation. If not set, a random key will be generated and used.
+	 */
+	public $cookieValidationKey;
 	/**
 	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to false.
 	 * By setting this property to true, forms submitted to an Yii Web application must be originated
@@ -721,6 +725,7 @@ class Request extends \yii\base\Request
 		if ($this->_cookies === null) {
 			$this->_cookies = new CookieCollection(array(
 				'enableValidation' => $this->enableCookieValidation,
+				'validationKey' => $this->cookieValidationKey,
 			));
 		}
 		return $this->_cookies;
