@@ -1,15 +1,19 @@
 <?php
 /**
- * CHttpSession class file.
+ * Session class file.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright &copy; 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\web;
+
+use yii\base\Component;
+use yii\base\InvalidParamException;
+
 /**
- * CHttpSession provides session-level data management and the related configurations.
+ * Session provides session-level data management and the related configurations.
  *
  * To start the session, call {@link open()}; To complete and send out session data, call {@link close()};
  * To destroy the session, call {@link destroy()}.
@@ -17,9 +21,9 @@
  * If {@link autoStart} is set true, the session will be started automatically
  * when the application component is initialized by the application.
  *
- * CHttpSession can be used like an array to set and get session data. For example,
+ * Session can be used like an array to set and get session data. For example,
  * <pre>
- *   $session=new CHttpSession;
+ *   $session=new Session;
  *   $session->open();
  *   $value1=$session['name1'];  // get session variable 'name1'
  *   $value2=$session['name2'];  // get session variable 'name2'
@@ -42,13 +46,13 @@
  * See the corresponding setter and getter documentation for more information.
  * Note, these properties must be set before the session is started.
  *
- * CHttpSession can be extended to support customized session storage.
+ * Session can be extended to support customized session storage.
  * Override {@link openSession}, {@link closeSession}, {@link readSession},
  * {@link writeSession}, {@link destroySession} and {@link gcSession}
- * and set {@link useCustomStorage} to true.
+ * and set [[useCustomStorage]] to true.
  * Then, the session data will be stored and retrieved using the above methods.
  *
- * CHttpSession is a Web application component that can be accessed via
+ * Session is a Web application component that can be accessed via
  * {@link CWebApplication::getSession()}.
  *
  * @property boolean $useCustomStorage Whether to use custom storage.
@@ -58,25 +62,22 @@
  * @property string $savePath The current session save path, defaults to '/tmp'.
  * @property array $cookieParams The session cookie parameters.
  * @property string $cookieMode How to use cookie to store session ID. Defaults to 'Allow'.
- * @property integer $gCProbability The probability (percentage) that the gc (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
+ * @property float $gCProbability The probability (percentage) that the gc (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
  * @property boolean $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to false.
  * @property integer $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up, defaults to 1440 seconds.
- * @property CHttpSessionIterator $iterator An iterator for traversing the session variables.
+ * @property SessionIterator $iterator An iterator for traversing the session variables.
  * @property integer $count The number of session variables.
  * @property array $keys The list of session variable names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web
- * @since 1.0
+ * @since 2.0
  */
-class CHttpSession extends CApplicationComponent implements IteratorAggregate, ArrayAccess, Countable
+class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
-	 * @var boolean whether the session should be automatically started when the session application component is initialized, defaults to true.
+	 * @var boolean whether the session should be automatically started when the session component is initialized.
 	 */
 	public $autoStart = true;
-
 
 	/**
 	 * Initializes the application component.
@@ -93,7 +94,7 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 
 	/**
 	 * Returns a value indicating whether to use custom session storage.
-	 * This method should be overriden to return true if custom session storage handler should be used.
+	 * To use custom session storage, override this method and return This method should be overridden to return true if custom session storage handler should be used.
 	 * If returning true, make sure the methods {@link openSession}, {@link closeSession}, {@link readSession},
 	 * {@link writeSession}, {@link destroySession}, and {@link gcSession} are overridden in child
 	 * class, because they will be used as the callback handlers.
@@ -116,14 +117,14 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 
 		@session_start();
 		if (YII_DEBUG && session_id() == '') {
-			$message = Yii::t('yii|Failed to start session.');
+			$message = Yii::t('yii', 'Failed to start session.');
 			if (function_exists('error_get_last')) {
 				$error = error_get_last();
 				if (isset($error['message'])) {
 					$message = $error['message'];
 				}
 			}
-			Yii::log($message, CLogger::LEVEL_WARNING, 'system.web.CHttpSession');
+			Yii::log($message, CLogger::LEVEL_WARNING, 'system.web.Session');
 		}
 	}
 
@@ -216,7 +217,7 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 		if (is_dir($value)) {
 			session_save_path($value);
 		} else {
-			throw new CException(Yii::t('yii|CHttpSession.savePath "{path}" is not a valid directory.',
+			throw new CException(Yii::t('yii', 'Session.savePath "{path}" is not a valid directory.',
 				array('{path}' => $value)));
 		}
 	}
@@ -250,65 +251,65 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 	}
 
 	/**
-	 * @return string how to use cookie to store session ID. Defaults to 'Allow'.
+	 * Returns the value indicating whether cookies should be used to store session IDs.
+	 * @return boolean|null the value indicating whether cookies should be used to store session IDs.
+	 * @see setUseCookies()
 	 */
-	public function getCookieMode()
+	public function getUseCookies()
 	{
 		if (ini_get('session.use_cookies') === '0') {
-			return 'none';
+			return false;
+		} elseif (ini_get('session.use_only_cookies') === '1') {
+			return true;
 		} else {
-			if (ini_get('session.use_only_cookies') === '0') {
-				return 'allow';
-			} else {
-				return 'only';
-			}
+			return null;
 		}
 	}
 
 	/**
-	 * @param string $value how to use cookie to store session ID. Valid values include 'none', 'allow' and 'only'.
+	 * Sets the value indicating whether cookies should be used to store session IDs.
+	 * Three states are possible:
+	 *
+	 * - true: cookies and only cookies will be used to store session IDs.
+	 * - false: cookies will not be used to store session IDs.
+	 * - null: if possible, cookies will be used to store session IDs; if not, other mechanisms will be used (e.g. GET parameter)
+	 *
+	 * @param boolean|null $value the value indicating whether cookies should be used to store session IDs.
 	 */
-	public function setCookieMode($value)
+	public function setUseCookies($value)
 	{
-		if ($value === 'none') {
+		if ($value === false) {
 			ini_set('session.use_cookies', '0');
 			ini_set('session.use_only_cookies', '0');
+		} elseif ($value === true) {
+			ini_set('session.use_cookies', '1');
+			ini_set('session.use_only_cookies', '1');
 		} else {
-			if ($value === 'allow') {
-				ini_set('session.use_cookies', '1');
-				ini_set('session.use_only_cookies', '0');
-			} else {
-				if ($value === 'only') {
-					ini_set('session.use_cookies', '1');
-					ini_set('session.use_only_cookies', '1');
-				} else {
-					throw new CException(Yii::t('yii|CHttpSession.cookieMode can only be "none", "allow" or "only".'));
-				}
-			}
+			ini_set('session.use_cookies', '1');
+			ini_set('session.use_only_cookies', '0');
 		}
 	}
 
 	/**
-	 * @return integer the probability (percentage) that the gc (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
+	 * @return float the probability (percentage) that the GC (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
 	 */
 	public function getGCProbability()
 	{
-		return (int)ini_get('session.gc_probability');
+		return (float)(ini_get('session.gc_probability') / ini_get('session.gc_divisor') * 100);
 	}
 
 	/**
-	 * @param integer $value the probability (percentage) that the gc (garbage collection) process is started on every session initialization.
-	 * @throws CException if the value is beyond [0,100]
+	 * @param float $value the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
+	 * @throws InvalidParamException if the value is not between 0 and 100.
 	 */
 	public function setGCProbability($value)
 	{
-		$value = (int)$value;
 		if ($value >= 0 && $value <= 100) {
-			ini_set('session.gc_probability', $value);
-			ini_set('session.gc_divisor', '100');
+			// percent * 21474837 / 2147483647 ≈ percent * 0.01
+			ini_set('session.gc_probability', floor($value * 21474836.47));
+			ini_set('session.gc_divisor', 2147483647);
 		} else {
-			throw new CException(Yii::t('yii|CHttpSession.gcProbability "{value}" is invalid. It must be an integer between 0 and 100.',
-				array('{value}' => $value)));
+			throw new InvalidParamException('GCProbability must be a value between 0 and 100.');
 		}
 	}
 
@@ -329,7 +330,8 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 	}
 
 	/**
-	 * @return integer the number of seconds after which data will be seen as 'garbage' and cleaned up, defaults to 1440 seconds.
+	 * @return integer the number of seconds after which data will be seen as 'garbage' and cleaned up.
+	 * The default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
 	 */
 	public function getTimeout()
 	{
@@ -346,7 +348,7 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 
 	/**
 	 * Session open handler.
-	 * This method should be overridden if {@link useCustomStorage} is set true.
+	 * This method should be overridden if [[useCustomStorage]] is set true.
 	 * Do not call this method directly.
 	 * @param string $savePath session save path
 	 * @param string $sessionName session name
@@ -359,7 +361,7 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 
 	/**
 	 * Session close handler.
-	 * This method should be overridden if {@link useCustomStorage} is set true.
+	 * This method should be overridden if [[useCustomStorage]] is set true.
 	 * Do not call this method directly.
 	 * @return boolean whether session is closed successfully
 	 */
@@ -370,7 +372,7 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 
 	/**
 	 * Session read handler.
-	 * This method should be overridden if {@link useCustomStorage} is set true.
+	 * This method should be overridden if [[useCustomStorage]] is set true.
 	 * Do not call this method directly.
 	 * @param string $id session ID
 	 * @return string the session data
@@ -382,7 +384,7 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 
 	/**
 	 * Session write handler.
-	 * This method should be overridden if {@link useCustomStorage} is set true.
+	 * This method should be overridden if [[useCustomStorage]] is set true.
 	 * Do not call this method directly.
 	 * @param string $id session ID
 	 * @param string $data session data
@@ -395,7 +397,7 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 
 	/**
 	 * Session destroy handler.
-	 * This method should be overridden if {@link useCustomStorage} is set true.
+	 * This method should be overridden if [[useCustomStorage]] is set true.
 	 * Do not call this method directly.
 	 * @param string $id session ID
 	 * @return boolean whether session is destroyed successfully
@@ -407,7 +409,7 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 
 	/**
 	 * Session GC (garbage collection) handler.
-	 * This method should be overridden if {@link useCustomStorage} is set true.
+	 * This method should be overridden if [[useCustomStorage]] is set true.
 	 * Do not call this method directly.
 	 * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
 	 * @return boolean whether session is GCed successfully
@@ -417,16 +419,14 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 		return true;
 	}
 
-	//------ The following methods enable CHttpSession to be CMap-like -----
-
 	/**
 	 * Returns an iterator for traversing the session variables.
 	 * This method is required by the interface IteratorAggregate.
-	 * @return CHttpSessionIterator an iterator for traversing the session variables.
+	 * @return SessionIterator an iterator for traversing the session variables.
 	 */
 	public function getIterator()
 	{
-		return new CHttpSessionIterator;
+		return new SessionIterator;
 	}
 
 	/**
@@ -449,36 +449,15 @@ class CHttpSession extends CApplicationComponent implements IteratorAggregate, A
 	}
 
 	/**
-	 * @return array the list of session variable names
-	 */
-	public function getKeys()
-	{
-		return array_keys($_SESSION);
-	}
-
-	/**
 	 * Returns the session variable value with the session variable name.
-	 * This method is very similar to {@link itemAt} and {@link offsetGet},
-	 * except that it will return $defaultValue if the session variable does not exist.
-	 * @param mixed $key the session variable name
+	 * If the session variable does not exist, the `$defaultValue` will be returned.
+	 * @param string $key the session variable name
 	 * @param mixed $defaultValue the default value to be returned when the session variable does not exist.
 	 * @return mixed the session variable value, or $defaultValue if the session variable does not exist.
-	 * @since 1.1.2
 	 */
 	public function get($key, $defaultValue = null)
 	{
 		return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
-	}
-
-	/**
-	 * Returns the session variable value with the session variable name.
-	 * This method is exactly the same as {@link offsetGet}.
-	 * @param mixed $key the session variable name
-	 * @return mixed the session variable value, null if no such variable exists
-	 */
-	public function itemAt($key)
-	{
-		return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
 	}
 
 	/**
