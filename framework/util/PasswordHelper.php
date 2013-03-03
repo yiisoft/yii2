@@ -10,6 +10,7 @@
 namespace yii\util;
 
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
@@ -60,6 +61,96 @@ use yii\base\InvalidParamException;
 
 class PasswordHelper
 {
+
+	/**
+	 * Encrypts data.
+	 * @param string $data data to be encrypted.
+	 * @param string $key the encryption secret key
+	 * @return string the encrypted data
+	 * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
+	 */
+	public static function encrypt($data, $key)
+	{
+		$module = static::openCryptModule();
+		$key = StringHelper::substr($key, 0, mcrypt_enc_get_key_size($module));
+		srand();
+		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_RAND);
+		mcrypt_generic_init($module, $key, $iv);
+		$encrypted = $iv . mcrypt_generic($module, $data);
+		mcrypt_generic_deinit($module);
+		mcrypt_module_close($module);
+		return $encrypted;
+	}
+
+	/**
+	 * Decrypts data
+	 * @param string $data data to be decrypted.
+	 * @param string $key the decryption secret key
+	 * @return string the decrypted data
+	 * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
+	 */
+	public static function decrypt($data, $key)
+	{
+		$module = static::openCryptModule();
+		$key = StringHelper::substr($key, 0, mcrypt_enc_get_key_size($module));
+		$ivSize = mcrypt_enc_get_iv_size($module);
+		$iv = StringHelper::substr($data, 0, $ivSize);
+		mcrypt_generic_init($module, $key, $iv);
+		$decrypted = mdecrypt_generic($module, StringHelper::substr($data, $ivSize, StringHelper::strlen($data)));
+		mcrypt_generic_deinit($module);
+		mcrypt_module_close($module);
+		return rtrim($decrypted, "\0");
+	}
+
+	/**
+	 * Prefixes data with an HMAC.
+	 * @param string $data data to be hashed.
+	 * @param string $key the private key to be used for generating HMAC. Defaults to null, meaning using {@link validationKey}.
+	 * @return string data prefixed with HMAC
+	 */
+	public static function hashData($data, $key)
+	{
+		return hash_hmac('sha1', $data, $key) . $data;
+	}
+
+	/**
+	 * Validates if data is tampered.
+	 * @param string $data data to be validated. The data must be previously
+	 * generated using {@link hashData()}.
+	 * @param string $key the private key to be used for generating HMAC. Defaults to null, meaning using {@link validationKey}.
+	 * @return string the real data with HMAC stripped off. False if the data
+	 * is tampered.
+	 */
+	public function validateData($data, $key = null)
+	{
+		$len = $this->strlen($this->computeHMAC('test'));
+		if ($this->strlen($data) >= $len) {
+			$hmac = $this->substr($data, 0, $len);
+			$data2 = $this->substr($data, $len, $this->strlen($data));
+			return $hmac === $this->computeHMAC($data2, $key) ? $data2 : false;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Opens the mcrypt module.
+	 * @return resource the mcrypt module handle.
+	 * @throws InvalidConfigException if mcrypt extension is not installed
+	 * @throws Exception if mcrypt initialization fails
+	 */
+	protected static function openCryptModule()
+	{
+		if (!extension_loaded('mcrypt')) {
+			throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
+		}
+		$module = @mcrypt_module_open('des', '', MCRYPT_MODE_CBC, '');
+		if ($module === false) {
+			throw new Exception('Failed to initialize the mcrypt module.');
+		}
+		return $module;
+	}
+
 	/**
 	 * Generate a secure hash from a password and a random salt.
 	 *

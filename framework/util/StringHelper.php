@@ -19,6 +19,33 @@ namespace yii\util;
 class StringHelper
 {
 	/**
+	 * Returns the number of bytes in the given string.
+	 * This method ensures the string is treated as a byte array.
+	 * It will use `mb_strlen()` if it is available.
+	 * @param string $string the string being measured for length
+	 * @return integer the number of bytes in the given string.
+	 */
+	public static function strlen($string)
+	{
+		return function_exists('mb_strlen') ? mb_strlen($string, '8bit') : strlen($string);
+	}
+
+	/**
+	 * Returns the portion of string specified by the start and length parameters.
+	 * This method ensures the string is treated as a byte array.
+	 * It will use `mb_substr()` if it is available.
+	 * @param string $string the input string. Must be one character or longer.
+	 * @param integer $start the starting position
+	 * @param integer $length the desired portion length
+	 * @return string the extracted part of string, or FALSE on failure or an empty string.
+	 * @see http://www.php.net/manual/en/function.substr.php
+	 */
+	public static function substr($string, $start, $length)
+	{
+		return function_exists('mb_substr') ? mb_substr($string, $start, $length, '8bit') : substr($string, $start, $length);
+	}
+
+	/**
 	 * Converts a word to its plural form.
 	 * Note that this is for English only!
 	 * For example, 'apple' will become 'apples', and 'child' will become 'children'.
@@ -27,7 +54,7 @@ class StringHelper
 	 */
 	public static function pluralize($name)
 	{
-		$rules = array(
+		static $rules = array(
 			'/(m)ove$/i' => '\1oves',
 			'/(f)oot$/i' => '\1eet',
 			'/(c)hild$/i' => '\1hildren',
