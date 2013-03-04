@@ -111,7 +111,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	{
 		if (isset($this->_cookies[$cookie->name])) {
 			$c = $this->_cookies[$cookie->name];
-			setcookie($c->name, '', 0, $c->path, $c->domain, $c->secure, $c->httpOnly);
+			setcookie($c->name, '', 0, $c->path, $c->domain, $c->secure, $c->httponly);
 		}
 
 		$value = $cookie->value;
@@ -124,7 +124,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 			$value = SecurityHelper::hashData(serialize($value), $key);
 		}
 
-		setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+		setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
 		$this->_cookies[$cookie->name] = $cookie;
 	}
 
@@ -138,7 +138,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 			$cookie = $this->_cookies[$cookie];
 		}
 		if ($cookie instanceof Cookie) {
-			setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+			setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
 			unset($this->_cookies[$cookie->name]);
 		}
 	}
@@ -149,7 +149,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	public function removeAll()
 	{
 		foreach ($this->_cookies as $cookie) {
-			setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+			setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
 		}
 		$this->_cookies = array();
 	}

@@ -1,6 +1,6 @@
 <?php
 /**
- * DbSession class file.
+ * CacheSession class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -9,52 +9,34 @@
 
 namespace yii\web;
 
+use Yii;
+use yii\caching\Cache;
+use yii\base\InvalidConfigException;
+
 /**
  * CacheSession implements a session component using cache as storage medium.
  *
- * The cache being used can be any cache application component implementing {@link ICache} interface.
- * The ID of the cache application component is specified via {@link cacheID}, which defaults to 'cache'.
+ * The cache being used can be any cache application component.
+ * The ID of the cache application component is specified via [[cacheID]], which defaults to 'cache'.
  *
  * Beware, by definition cache storage are volatile, which means the data stored on them
  * may be swapped out and get lost. Therefore, you must make sure the cache used by this component
- * is NOT volatile. If you want to use {@link CDbCache} as storage medium, use {@link CDbHttpSession}
- * is a better choice.
- *
- * @property boolean $useCustomStorage Whether to use custom storage.
+ * is NOT volatile. If you want to use database as storage medium, use [[DbSession]] is a better choice.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.web
- * @since 1.0
+ * @since 2.0
  */
 class CacheSession extends Session
 {
-	/**
-	 * Prefix to the keys for storing cached data
-	 */
-	const CACHE_KEY_PREFIX = 'Yii.CacheSession.';
 	/**
 	 * @var string the ID of the cache application component. Defaults to 'cache' (the primary cache application component.)
 	 */
 	public $cacheID = 'cache';
 
 	/**
-	 * @var ICache the cache component
+	 * @var Cache the cache component
 	 */
 	private $_cache;
-
-	/**
-	 * Initializes the application component.
-	 * This method overrides the parent implementation by checking if cache is available.
-	 */
-	public function init()
-	{
-		$this->_cache = Yii::app()->getComponent($this->cacheID);
-		if (!($this->_cache instanceof ICache)) {
-			throw new CException(Yii::t('yii', 'CacheSession.cacheID is invalid. Please make sure "{id}" refers to a valid cache application component.',
-				array('{id}' => $this->cacheID)));
-		}
-		parent::init();
-	}
 
 	/**
 	 * Returns a value indicating whether to use custom session storage.
@@ -65,6 +47,32 @@ class CacheSession extends Session
 	{
 		return true;
 	}
+	/**
+	 * Returns the cache instance used for storing session data.
+	 * @return Cache the cache instance
+	 * @throws InvalidConfigException if [[cacheID]] does not point to a valid application component.
+	 */
+	public function getCache()
+	{
+		if ($this->_cache === null) {
+			$cache = Yii::$app->getComponent($this->cacheID);
+			if ($cache instanceof Cache) {
+				$this->_cache = $cache;
+			} else {
+				throw new InvalidConfigException('CacheSession::cacheID must refer to the ID of a cache application component.');
+			}
+		}
+		return $this->_cache;
+	}
+
+	/**
+	 * Sets the cache instance used by the session component.
+	 * @param Cache $value the cache instance
+	 */
+	public function setCache($value)
+	{
+		$this->_cache = $value;
+	}
 
 	/**
 	 * Session read handler.
@@ -74,7 +82,7 @@ class CacheSession extends Session
 	 */
 	public function readSession($id)
 	{
-		$data = $this->_cache->get($this->calculateKey($id));
+		$data = $this->getCache()->get($this->calculateKey($id));
 		return $data === false ? '' : $data;
 	}
 
@@ -87,7 +95,7 @@ class CacheSession extends Session
 	 */
 	public function writeSession($id, $data)
 	{
-		return $this->_cache->set($this->calculateKey($id), $data, $this->getTimeout());
+		return $this->getCache()->set($this->calculateKey($id), $data, $this->getTimeout());
 	}
 
 	/**
@@ -98,7 +106,7 @@ class CacheSession extends Session
 	 */
 	public function destroySession($id)
 	{
-		return $this->_cache->delete($this->calculateKey($id));
+		return $this->getCache()->delete($this->calculateKey($id));
 	}
 
 	/**
@@ -108,6 +116,6 @@ class CacheSession extends Session
 	 */
 	protected function calculateKey($id)
 	{
-		return self::CACHE_KEY_PREFIX . $id;
+		return $this->getCache()->buildKey(__CLASS__, $id);
 	}
 }

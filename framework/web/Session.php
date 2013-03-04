@@ -9,60 +9,47 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\Component;
 use yii\base\InvalidParamException;
 
 /**
  * Session provides session-level data management and the related configurations.
  *
- * To start the session, call {@link open()}; To complete and send out session data, call {@link close()};
- * To destroy the session, call {@link destroy()}.
+ * To start the session, call [[open()]]; To complete and send out session data, call [[close()]];
+ * To destroy the session, call [[destroy()]].
  *
- * If {@link autoStart} is set true, the session will be started automatically
+ * If [[autoStart]] is set true, the session will be started automatically
  * when the application component is initialized by the application.
  *
  * Session can be used like an array to set and get session data. For example,
- * <pre>
- *   $session=new Session;
- *   $session->open();
- *   $value1=$session['name1'];  // get session variable 'name1'
- *   $value2=$session['name2'];  // get session variable 'name2'
- *   foreach($session as $name=>$value) // traverse all session variables
- *   $session['name3']=$value3;  // set session variable 'name3'
- * </pre>
  *
- * The following configurations are available for session:
- * <ul>
- * <li>{@link setSessionID sessionID};</li>
- * <li>{@link setSessionName sessionName};</li>
- * <li>{@link autoStart};</li>
- * <li>{@link setSavePath savePath};</li>
- * <li>{@link setCookieParams cookieParams};</li>
- * <li>{@link setGCProbability gcProbability};</li>
- * <li>{@link setCookieMode cookieMode};</li>
- * <li>{@link setUseTransparentSessionID useTransparentSessionID};</li>
- * <li>{@link setTimeout timeout}.</li>
- * </ul>
- * See the corresponding setter and getter documentation for more information.
- * Note, these properties must be set before the session is started.
+ * ~~~
+ * $session = new Session;
+ * $session->open();
+ * $value1 = $session['name1'];  // get session variable 'name1'
+ * $value2 = $session['name2'];  // get session variable 'name2'
+ * foreach ($session as $name => $value) // traverse all session variables
+ * $session['name3'] = $value3;  // set session variable 'name3'
+ * ~~~
  *
  * Session can be extended to support customized session storage.
- * Override {@link openSession}, {@link closeSession}, {@link readSession},
- * {@link writeSession}, {@link destroySession} and {@link gcSession}
- * and set [[useCustomStorage]] to true.
- * Then, the session data will be stored and retrieved using the above methods.
+ * To do so, override [[useCustomStorage()]] so that it returns true, and
+ * override these methods with the actual logic about using custom storage:
+ * [[openSession()]], [[closeSession()]], [[readSession()]], [[writeSession()]],
+ * [[destroySession()]] and [[gcSession()]].
  *
  * Session is a Web application component that can be accessed via
- * {@link CWebApplication::getSession()}.
+ * `Yii::$app->session`.
  *
- * @property boolean $useCustomStorage Whether to use custom storage.
- * @property boolean $isStarted Whether the session has started.
- * @property string $sessionID The current session ID.
- * @property string $sessionName The current session name.
+ * @property boolean $useCustomStorage read-only. Whether to use custom storage.
+ * @property boolean $isActive Whether the session has started.
+ * @property string $id The current session ID.
+ * @property string $name The current session name.
  * @property string $savePath The current session save path, defaults to '/tmp'.
  * @property array $cookieParams The session cookie parameters.
  * @property string $cookieMode How to use cookie to store session ID. Defaults to 'Allow'.
- * @property float $gCProbability The probability (percentage) that the gc (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
+ * @property float $gcProbability The probability (percentage) that the gc (garbage collection) process is started on every session initialization.
  * @property boolean $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to false.
  * @property integer $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up, defaults to 1440 seconds.
  * @property SessionIterator $iterator An iterator for traversing the session variables.
@@ -94,11 +81,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Returns a value indicating whether to use custom session storage.
-	 * To use custom session storage, override this method and return This method should be overridden to return true if custom session storage handler should be used.
-	 * If returning true, make sure the methods {@link openSession}, {@link closeSession}, {@link readSession},
-	 * {@link writeSession}, {@link destroySession}, and {@link gcSession} are overridden in child
-	 * class, because they will be used as the callback handlers.
-	 * The default implementation always return false.
+	 * This method should be overridden to return true by child classes that implement custom session storage.
+	 * To implement custom session storage, override these methods: [[openSession()]], [[closeSession()]],
+	 * [[readSession()]], [[writeSession()]], [[destroySession()]] and [[gcSession()]].
 	 * @return boolean whether to use custom storage.
 	 */
 	public function getUseCustomStorage()
@@ -107,24 +92,34 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	}
 
 	/**
-	 * Starts the session if it has not started yet.
+	 * Starts the session.
 	 */
 	public function open()
 	{
+		// this is available in PHP 5.4.0+
+		if (function_exists('session_status')) {
+			if (session_status() == PHP_SESSION_ACTIVE) {
+				return;
+			}
+		}
+
 		if ($this->getUseCustomStorage()) {
-			@session_set_save_handler(array($this, 'openSession'), array($this, 'closeSession'), array($this, 'readSession'), array($this, 'writeSession'), array($this, 'destroySession'), array($this, 'gcSession'));
+			@session_set_save_handler(
+				array($this, 'openSession'),
+				array($this, 'closeSession'),
+				array($this, 'readSession'),
+				array($this, 'writeSession'),
+				array($this, 'destroySession'),
+				array($this, 'gcSession')
+			);
 		}
 
 		@session_start();
-		if (YII_DEBUG && session_id() == '') {
-			$message = Yii::t('yii', 'Failed to start session.');
-			if (function_exists('error_get_last')) {
-				$error = error_get_last();
-				if (isset($error['message'])) {
-					$message = $error['message'];
-				}
-			}
-			Yii::log($message, CLogger::LEVEL_WARNING, 'system.web.Session');
+
+		if (session_id() == '') {
+			$error = error_get_last();
+			$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
+			Yii::warning($message, __CLASS__);
 		}
 	}
 
@@ -152,15 +147,21 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	/**
 	 * @return boolean whether the session has started
 	 */
-	public function getIsStarted()
+	public function getIsActive()
 	{
-		return session_id() !== '';
+		if (function_exists('session_status')) {
+			// available in PHP 5.4.0+
+			return session_status() == PHP_SESSION_ACTIVE;
+		} else {
+			// this is not very reliable
+			return session_id() !== '';
+		}
 	}
 
 	/**
 	 * @return string the current session ID
 	 */
-	public function getSessionID()
+	public function getId()
 	{
 		return session_id();
 	}
@@ -168,16 +169,15 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	/**
 	 * @param string $value the session ID for the current session
 	 */
-	public function setSessionID($value)
+	public function setId($value)
 	{
 		session_id($value);
 	}
 
 	/**
-	 * Updates the current session id with a newly generated one .
-	 * Please refer to {@link http://php.net/session_regenerate_id} for more details.
+	 * Updates the current session ID with a newly generated one .
+	 * Please refer to [[http://php.net/session_regenerate_id]] for more details.
 	 * @param boolean $deleteOldSession Whether to delete the old associated session file or not.
-	 * @since 1.1.8
 	 */
 	public function regenerateID($deleteOldSession = false)
 	{
@@ -187,15 +187,16 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	/**
 	 * @return string the current session name
 	 */
-	public function getSessionName()
+	public function getName()
 	{
 		return session_name();
 	}
 
 	/**
-	 * @param string $value the session name for the current session, must be an alphanumeric string, defaults to PHPSESSID
+	 * @param string $value the session name for the current session, must be an alphanumeric string.
+	 * It defaults to "PHPSESSID".
 	 */
-	public function setSessionName($value)
+	public function setName($value)
 	{
 		session_name($value);
 	}
@@ -209,16 +210,16 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	}
 
 	/**
-	 * @param string $value the current session save path
-	 * @throws CException if the path is not a valid directory
+	 * @param string $value the current session save path. This can be either a directory name or a path alias.
+	 * @throws InvalidParamException if the path is not a valid directory
 	 */
 	public function setSavePath($value)
 	{
-		if (is_dir($value)) {
-			session_save_path($value);
+		$path = Yii::getAlias($value);
+		if ($path !== false && is_dir($path)) {
+			session_save_path($path);
 		} else {
-			throw new CException(Yii::t('yii', 'Session.savePath "{path}" is not a valid directory.',
-				array('{path}' => $value)));
+			throw new InvalidParamException("Session save path is not a valid directory: $value");
 		}
 	}
 
@@ -235,7 +236,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * Sets the session cookie parameters.
 	 * The effect of this method only lasts for the duration of the script.
 	 * Call this method before the session starts.
-	 * @param array $value cookie parameters, valid keys include: lifetime, path, domain, secure.
+	 * @param array $value cookie parameters, valid keys include: lifetime, path, domain, secure and httponly.
+	 * @throws InvalidParamException if the parameters are incomplete.
 	 * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
 	 */
 	public function setCookieParams($value)
@@ -243,10 +245,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		$data = session_get_cookie_params();
 		extract($data);
 		extract($value);
-		if (isset($httponly)) {
+		if (isset($lifetime, $path, $domain, $secure, $httponly)) {
 			session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
 		} else {
-			session_set_cookie_params($lifetime, $path, $domain, $secure);
+			throw new InvalidParamException('Please make sure these parameters are provided: lifetime, path, domain, secure and httponly.');
 		}
 	}
 
@@ -348,7 +350,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Session open handler.
-	 * This method should be overridden if [[useCustomStorage]] is set true.
+	 * This method should be overridden if [[useCustomStorage()]] returns true.
 	 * Do not call this method directly.
 	 * @param string $savePath session save path
 	 * @param string $sessionName session name
@@ -361,7 +363,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Session close handler.
-	 * This method should be overridden if [[useCustomStorage]] is set true.
+	 * This method should be overridden if [[useCustomStorage()]] returns true.
 	 * Do not call this method directly.
 	 * @return boolean whether session is closed successfully
 	 */
@@ -372,7 +374,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Session read handler.
-	 * This method should be overridden if [[useCustomStorage]] is set true.
+	 * This method should be overridden if [[useCustomStorage()]] returns true.
 	 * Do not call this method directly.
 	 * @param string $id session ID
 	 * @return string the session data
@@ -384,7 +386,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Session write handler.
-	 * This method should be overridden if [[useCustomStorage]] is set true.
+	 * This method should be overridden if [[useCustomStorage()]] returns true.
 	 * Do not call this method directly.
 	 * @param string $id session ID
 	 * @param string $data session data
@@ -397,7 +399,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Session destroy handler.
-	 * This method should be overridden if [[useCustomStorage]] is set true.
+	 * This method should be overridden if [[useCustomStorage()]] returns true.
 	 * Do not call this method directly.
 	 * @param string $id session ID
 	 * @return boolean whether session is destroyed successfully
@@ -409,7 +411,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Session GC (garbage collection) handler.
-	 * This method should be overridden if [[useCustomStorage]] is set true.
+	 * This method should be overridden if [[useCustomStorage()]] returns true.
 	 * Do not call this method directly.
 	 * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
 	 * @return boolean whether session is GCed successfully
