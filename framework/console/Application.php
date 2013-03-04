@@ -91,9 +91,10 @@ class Application extends \yii\base\Application
 		/** @var $request Request */
 		$request = $this->getRequest();
 		if ($request->getIsConsoleRequest()) {
-			return $this->runAction($request->route, $request->params);
+			list ($route, $params) = $request->resolve();
+			return $this->runAction($route, $params);
 		} else {
-			throw new Exception(\Yii::t('yii|this script must be run from the command line.'));
+			throw new Exception(\Yii::t('yii|This script must be run from the command line.'));
 		}
 	}
 

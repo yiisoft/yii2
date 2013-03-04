@@ -67,6 +67,9 @@ class Application extends \yii\base\Application
 			'response' => array(
 				'class' => 'yii\web\Response',
 			),
+			'session' => array(
+				'class' => 'yii\web\Session',
+			),
 			'urlManager' => array(
 				'class' => 'yii\web\UrlManager',
 			),

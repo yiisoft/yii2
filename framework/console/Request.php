@@ -17,49 +17,33 @@ class Request extends \yii\base\Request
 {
 	const ANONYMOUS_PARAMS = '-args';
 
-	/**
-	 * @var string the controller route specified by this request. If this is an empty string,
-	 * it means the [[Application::defaultRoute|default route]] will be used.
-	 * Note that the value of this property may not be a correct route. The console application
-	 * will determine it is valid or not when it attempts to execute with this route.
-	 */
-	public $route;
-	/**
-	 * @var array
-	 */
-	public $params;
-
-	public function init()
-	{
-		parent::init();
-		$this->resolveRequest();
-	}
-
 	public function getRawParams()
 	{
 		return isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
 	}
 
-	protected function resolveRequest()
+	public function resolve()
 	{
 		$rawParams = $this->getRawParams();
 		array_shift($rawParams);  // the 1st argument is the yiic script name
 
 		if (isset($rawParams[0])) {
-			$this->route = $rawParams[0];
+			$route = $rawParams[0];
 			array_shift($rawParams);
 		} else {
-			$this->route = '';
+			$route = '';
 		}
 
-		$this->params = array(self::ANONYMOUS_PARAMS => array());
+		$params = array(self::ANONYMOUS_PARAMS => array());
 		foreach ($rawParams as $param) {
 			if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
 				$name = $matches[1];
-				$this->params[$name] = isset($matches[3]) ? $matches[3] : true;
+				$params[$name] = isset($matches[3]) ? $matches[3] : true;
 			} else {
-				$this->params[self::ANONYMOUS_PARAMS][] = $param;
+				$params[self::ANONYMOUS_PARAMS][] = $param;
 			}
 		}
+
+		return array($route, $params);
 	}
 }

@@ -27,27 +27,6 @@ class Request extends \yii\base\Request
 	 */
 	public $cookieValidationKey;
 	/**
-	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to false.
-	 * By setting this property to true, forms submitted to an Yii Web application must be originated
-	 * from the same application. If not, a 400 HTTP exception will be raised.
-	 * Note, this feature requires that the user client accepts cookie.
-	 * You also need to use {@link CHtml::form} or {@link CHtml::statefulForm} to generate
-	 * the needed HTML forms in your pages.
-	 * @see http://seclab.stanford.edu/websec/csrf/csrf.pdf
-	 */
-	public $enableCsrfValidation = false;
-	/**
-	 * @var string the name of the token used to prevent CSRF. Defaults to 'YII_CSRF_TOKEN'.
-	 * This property is used only when [[enableCsrfValidation]] is true.
-	 */
-	public $csrfTokenName = 'YII_CSRF_TOKEN';
-	/**
-	 * @var array the property values (in name-value pairs) used to initialize the CSRF cookie.
-	 * Any property of {@link CHttpCookie} may be initialized.
-	 * This property is effective only when {@link enableCsrfValidation} is true.
-	 */
-	public $csrfCookie;
-	/**
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
 	 * request tunneled through POST. If false, it means disabling REST request tunneled through POST.
 	 * Default to '_method'.
@@ -57,55 +36,6 @@ class Request extends \yii\base\Request
 	public $restVar = '_method';
 
 	private $_cookies;
-
-	/**
-	 * Initializes the application component.
-	 * This method overrides the parent implementation by preprocessing
-	 * the user request data.
-	 */
-	public function init()
-	{
-		parent::init();
-		$this->normalizeRequest();
-	}
-
-	/**
-	 * Normalizes the request data.
-	 * This method strips off slashes in request data if get_magic_quotes_gpc() returns true.
-	 * It also performs CSRF validation if {@link enableCsrfValidation} is true.
-	 */
-	protected function normalizeRequest()
-	{
-		if (get_magic_quotes_gpc()) {
-			if (isset($_GET)) {
-				$_GET = $this->stripSlashes($_GET);
-			}
-			if (isset($_POST)) {
-				$_POST = $this->stripSlashes($_POST);
-			}
-			if (isset($_REQUEST)) {
-				$_REQUEST = $this->stripSlashes($_REQUEST);
-			}
-			if (isset($_COOKIE)) {
-				$_COOKIE = $this->stripSlashes($_COOKIE);
-			}
-		}
-
-		if ($this->enableCsrfValidation) {
-			\Yii::$app->on('beginRequest', array($this, 'validateCsrfToken'));
-		}
-	}
-
-	/**
-	 * Strips slashes from input data.
-	 * This method is applied when magic quotes is enabled.
-	 * @param mixed $data input data to be processed
-	 * @return mixed processed data
-	 */
-	public function stripSlashes($data)
-	{
-		return is_array($data) ? array_map(array($this, 'stripSlashes'), $data) : stripslashes($data);
-	}
 
 	/**
 	 * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, DELETE).
