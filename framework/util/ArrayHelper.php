@@ -1,9 +1,7 @@
 <?php
 /**
- * ArrayHelper class file.
- *
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
