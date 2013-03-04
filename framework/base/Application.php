@@ -398,8 +398,6 @@ class Application extends Module
 	public function registerDefaultAliases()
 	{
 		Yii::$aliases['@app'] = $this->getBasePath();
-		Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
-		Yii::$aliases['@www'] = '';
 	}
 
 	/**

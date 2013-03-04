@@ -63,7 +63,7 @@ class YiiBase
 	 */
 	public static $classPath = array();
 	/**
-	 * @var yii\base\Application the application instance
+	 * @var yii\console\Application|yii\web\Application the application instance
 	 */
 	public static $app;
 	/**

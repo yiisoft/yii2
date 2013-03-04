@@ -10,6 +10,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\HttpException;
 use yii\base\InvalidConfigException;
 
 /**
@@ -36,6 +37,25 @@ class Request extends \yii\base\Request
 	public $restVar = '_method';
 
 	private $_cookies;
+
+	/**
+	 * Resolves the current request into a route and the associated parameters.
+	 * @return array the first element is the route, and the second is the associated parameters.
+	 * @throws HttpException if the request cannot be resolved.
+	 */
+	public function resolve()
+	{
+		Yii::setAlias('@www', $this->getBaseUrl());
+
+		$result = Yii::$app->getUrlManager()->parseRequest($this);
+		if ($result !== false) {
+			list ($route, $params) = $result;
+			$params = array_merge($_GET, $params);
+			return array($route, $params);
+		} else {
+			throw new HttpException(404, Yii::t('yii|Page not found.'));
+		}
+	}
 
 	/**
 	 * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, DELETE).

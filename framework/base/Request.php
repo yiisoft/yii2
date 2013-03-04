@@ -13,10 +13,16 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Request extends Component
+abstract class Request extends Component
 {
 	private $_scriptFile;
 	private $_isConsoleRequest;
+
+	/**
+	 * Resolves the current request into a route and the associated parameters.
+	 * @return array the first element is the route, and the second is the associated parameters.
+	 */
+	abstract public function resolve();
 
 	/**
 	 * Returns a value indicating whether the current request is made via command line

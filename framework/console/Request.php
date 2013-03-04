@@ -22,6 +22,10 @@ class Request extends \yii\base\Request
 		return isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
 	}
 
+	/**
+	 * Resolves the current request into a route and the associated parameters.
+	 * @return array the first element is the route, and the second is the associated parameters.
+	 */
 	public function resolve()
 	{
 		$rawParams = $this->getRawParams();

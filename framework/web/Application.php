@@ -23,7 +23,7 @@ class Application extends \yii\base\Application
 	public function registerDefaultAliases()
 	{
 		parent::registerDefaultAliases();
-		\Yii::$aliases['@www'] = dirname($_SERVER['SCRIPT_FILENAME']);
+		\Yii::$aliases['@webroot'] = dirname($_SERVER['SCRIPT_FILENAME']);
 	}
 
 	/**
@@ -32,8 +32,8 @@ class Application extends \yii\base\Application
 	 */
 	public function processRequest()
 	{
-		$route = $this->getUrlManager()->parseRequest($this->getRequest());
-		return $this->runAction($route, $_GET);
+		list ($route, $params) = $this->getRequest()->resolve();
+		return $this->runAction($route, $params);
 	}
 
 	/**
@@ -43,6 +43,24 @@ class Application extends \yii\base\Application
 	public function getRequest()
 	{
 		return $this->getComponent('request');
+	}
+
+	/**
+	 * Returns the response component.
+	 * @return Response the response component
+	 */
+	public function getResponse()
+	{
+		return $this->getComponent('response');
+	}
+
+	/**
+	 * Returns the session component.
+	 * @return Session the session component
+	 */
+	public function getSession()
+	{
+		return $this->getComponent('session');
 	}
 
 	/**
