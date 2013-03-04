@@ -1,15 +1,16 @@
 <?php
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\web;
+
 /**
- * CPagination represents information relevant to pagination.
+ * Pagination represents information relevant to pagination.
  *
- * When data needs to be rendered in multiple pages, we can use CPagination to
+ * When data needs to be rendered in multiple pages, we can use Pagination to
  * represent information such as {@link getItemCount total item count},
  * {@link getPageSize page size}, {@link getCurrentPage current page}, etc.
  * These information can be passed to {@link CBasePager pagers} to render
@@ -18,11 +19,13 @@
  * Example:
  *
  * Controller action:
- * <pre>
- * function actionIndex(){
+ *
+ * ~~~
+ * function actionIndex()
+ * {
  *     $criteria=new CDbCriteria();
  *     $count=Article::model()->count($criteria);
- *     $pages=new CPagination($count);
+ *     $pages=new Pagination($count);
  *
  *     // results per page
  *     $pages->pageSize=10;
@@ -34,7 +37,7 @@
  *          'pages' => $pages
  *     ));
  * }
- * </pre>
+ * ~~~
  *
  * View:
  * <pre>
@@ -59,11 +62,9 @@
  * This returns the same value as {@link pageSize}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web
- * @since 1.0
+ * @since 2.0
  */
-class CPagination extends CComponent
+class Pagination extends \yii\base\Object
 {
 	/**
 	 * The default page size.
