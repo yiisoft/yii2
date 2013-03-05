@@ -42,14 +42,14 @@ use Yii;
  * View:
  *
  * ~~~
- * <?php foreach($models as $model): ?>
- *     ...display a model...
- * <?php endforeach; ?>
+ * foreach($models as $model) {
+ *     // display $model here
+ * }
  *
  * // display pagination
- * <?php $this->widget('yii\web\widgets\LinkPager', array(
+ * $this->widget('yii\web\widgets\LinkPager', array(
  *     'pages' => $pages,
- * )) ?>
+ * ));
  * ~~~
  *
  * @property integer $pageCount Number of pages.
