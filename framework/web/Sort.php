@@ -7,21 +7,23 @@
 
 namespace yii\web;
 
+use Yii;
+
 /**
- * CSort represents information relevant to sorting.
+ * Sort represents information relevant to sorting.
  *
  * When data needs to be sorted according to one or several attributes,
- * we can use CSort to represent the sorting information and generate
+ * we can use Sort to represent the sorting information and generate
  * appropriate hyperlinks that can lead to sort actions.
  *
- * CSort is designed to be used together with {@link CActiveRecord}.
- * When creating a CSort instance, you need to specify {@link modelClass}.
- * You can use CSort to generate hyperlinks by calling {@link link}.
- * You can also use CSort to modify a {@link CDbCriteria} instance by calling {@link applyOrder} so that
+ * Sort is designed to be used together with {@link CActiveRecord}.
+ * When creating a Sort instance, you need to specify {@link modelClass}.
+ * You can use Sort to generate hyperlinks by calling {@link link}.
+ * You can also use Sort to modify a {@link CDbCriteria} instance by calling {@link applyOrder} so that
  * it can cause the query results to be sorted according to the specified
  * attributes.
  *
- * In order to prevent SQL injection attacks, CSort ensures that only valid model attributes
+ * In order to prevent SQL injection attacks, Sort ensures that only valid model attributes
  * can be sorted. This is determined based on {@link modelClass} and {@link attributes}.
  * When {@link attributes} is not set, all attributes belonging to {@link modelClass}
  * can be sorted. When {@link attributes} is set, only those attributes declared in the property
@@ -38,8 +40,8 @@ namespace yii\web;
  * @property string $orderBy The order-by columns represented by this sort object.
  * This can be put in the ORDER BY clause of a SQL statement.
  * @property array $directions Sort directions indexed by attribute names.
- * The sort direction. Can be either CSort::SORT_ASC for ascending order or
- * CSort::SORT_DESC for descending order.
+ * The sort direction. Can be either Sort::SORT_ASC for ascending order or
+ * Sort::SORT_DESC for descending order.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -62,7 +64,7 @@ class Sort extends \yii\base\Object
 	 * @var boolean whether the sorting can be applied to multiple attributes simultaneously.
 	 * Defaults to false, which means each time the data can only be sorted by one attribute.
 	 */
-	public $multiSort = false;
+	public $enableMultiSort = false;
 	/**
 	 * @var string the name of the model class whose attributes can be sorted.
 	 * The model class must be a child class of {@link CActiveRecord}.
@@ -163,7 +165,7 @@ class Sort extends \yii\base\Object
 	 * be in descending order. For example,
 	 * <pre>
 	 * 'defaultOrder'=>array(
-	 *     'price'=>CSort::SORT_DESC,
+	 *     'price'=>Sort::SORT_DESC,
 	 * )
 	 * </pre>
 	 * `SORT_DESC` and `SORT_ASC` are available since 1.1.10. In earlier Yii versions you should use
@@ -175,20 +177,23 @@ class Sort extends \yii\base\Object
 	 */
 	public $defaultOrder;
 	/**
-	 * @var string the route (controller ID and action ID) for generating the sorted contents.
-	 * Defaults to empty string, meaning using the currently requested route.
+	 * @var string the route of the controller action for displaying the sorted contents.
+	 * If not set, it means using the currently requested route.
 	 */
-	public $route = '';
+	public $route;
 	/**
 	 * @var array separators used in the generated URL. This must be an array consisting of
 	 * two elements. The first element specifies the character separating different
 	 * attributes, while the second element specifies the character separating attribute name
-	 * and the corresponding sort direction. Defaults to array('-','.').
+	 * and the corresponding sort direction. Defaults to `array('-', '.')`.
 	 */
 	public $separators = array('-', '.');
 	/**
-	 * @var array the additional GET parameters (name=>value) that should be used when generating sort URLs.
-	 * Defaults to null, meaning using the currently available GET parameters.
+	 * @var array parameters (name=>value) that should be used to obtain the current sort directions
+	 * and to create new sort URLs. If not set, $_GET will be used instead.
+	 *
+	 * The array element indexed by [[sortVar]] is considered to be the current sort directions.
+	 * If the element does not exist, the [[defaultOrder]] will be used.
 	 */
 	public $params;
 
@@ -299,13 +304,13 @@ class Sort extends \yii\base\Object
 			}
 		}
 
-		if ($this->multiSort) {
+		if ($this->enableMultiSort) {
 			$directions = array_merge(array($attribute => $descending), $directions);
 		} else {
 			$directions = array($attribute => $descending);
 		}
 
-		$url = $this->createUrl(\Yii::$app->getController(), $directions);
+		$url = $this->createUrl($directions);
 
 		return $this->createLink($attribute, $label, $url, $htmlOptions);
 	}
@@ -339,29 +344,29 @@ class Sort extends \yii\base\Object
 
 	/**
 	 * Returns the currently requested sort information.
+	 * @param boolean $recalculate whether to recalculate the sort directions
 	 * @return array sort directions indexed by attribute names.
-	 * Sort direction can be either CSort::SORT_ASC for ascending order or
-	 * CSort::SORT_DESC for descending order.
+	 * Sort direction can be either Sort::SORT_ASC for ascending order or
+	 * Sort::SORT_DESC for descending order.
 	 */
-	public function getDirections()
+	public function getDirections($recalculate = false)
 	{
-		if ($this->_directions === null) {
+		if ($this->_directions === null || $recalculate) {
 			$this->_directions = array();
-			if (isset($_GET[$this->sortVar]) && is_string($_GET[$this->sortVar])) {
-				$attributes = explode($this->separators[0], $_GET[$this->sortVar]);
+			$params = $this->params === null ? $_GET : $this->params;
+			if (isset($params[$this->sortVar]) && is_scalar($params[$this->sortVar])) {
+				$attributes = explode($this->separators[0], $params[$this->sortVar]);
 				foreach ($attributes as $attribute) {
+					$descending = false;
 					if (($pos = strrpos($attribute, $this->separators[1])) !== false) {
-						$descending = substr($attribute, $pos + 1) === $this->descTag;
-						if ($descending) {
+						if ($descending = (substr($attribute, $pos + 1) === $this->descTag)) {
 							$attribute = substr($attribute, 0, $pos);
 						}
-					} else {
-						$descending = false;
 					}
 
 					if (($this->resolveAttribute($attribute)) !== false) {
 						$this->_directions[$attribute] = $descending;
-						if (!$this->multiSort) {
+						if (!$this->enableMultiSort) {
 							return $this->_directions;
 						}
 					}
@@ -377,9 +382,9 @@ class Sort extends \yii\base\Object
 	/**
 	 * Returns the sort direction of the specified attribute in the current request.
 	 * @param string $attribute the attribute name
-	 * @return mixed Sort direction of the attribute. Can be either CSort::SORT_ASC
-	 * for ascending order or CSort::SORT_DESC for descending order. Value is null
-	 * if the attribute doesn't need to be sorted.
+	 * @return boolean|null Sort direction of the attribute. Can be either Sort::SORT_ASC
+	 * for ascending order or Sort::SORT_DESC for descending order. Value is null
+	 * if the attribute does not need to be sorted.
 	 */
 	public function getDirection($attribute)
 	{
@@ -389,13 +394,13 @@ class Sort extends \yii\base\Object
 
 	/**
 	 * Creates a URL that can lead to generating sorted data.
-	 * @param CController $controller the controller that will be used to create the URL.
 	 * @param array $directions the sort directions indexed by attribute names.
-	 * The sort direction can be either CSort::SORT_ASC for ascending order or
-	 * CSort::SORT_DESC for descending order.
+	 * The sort direction can be either Sort::SORT_ASC for ascending order or
+	 * Sort::SORT_DESC for descending order.
 	 * @return string the URL for sorting
+	 * @see params
 	 */
-	public function createUrl($controller, $directions)
+	public function createUrl($directions)
 	{
 		$sorts = array();
 		foreach ($directions as $attribute => $descending) {
@@ -403,7 +408,8 @@ class Sort extends \yii\base\Object
 		}
 		$params = $this->params === null ? $_GET : $this->params;
 		$params[$this->sortVar] = implode($this->separators[0], $sorts);
-		return $controller->createUrl($this->route, $params);
+		$route = $this->route === null ? Yii::$app->controller->route : $this->route;
+		return Yii::$app->getUrlManager()->createUrl($route, $params);
 	}
 
 	/**

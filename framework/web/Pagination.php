@@ -74,13 +74,14 @@ class Pagination extends \yii\base\Object
 	 */
 	public $forcePageVar = false;
 	/**
-	 * @var string the route (controller ID and action ID) for displaying the paged contents.
+	 * @var string the route of the controller action for displaying the paged contents.
 	 * If not set, it means using the currently requested route.
 	 */
 	public $route;
 	/**
 	 * @var array parameters (name=>value) that should be used to obtain the current page number
 	 * and to create new pagination URLs. If not set, $_GET will be used instead.
+	 *
 	 * The array element indexed by [[pageVar]] is considered to be the current page number.
 	 * If the element does not exist, the current page number is considered 0.
 	 */
@@ -138,7 +139,7 @@ class Pagination extends \yii\base\Object
 	{
 		if ($this->_page === null || $recalculate) {
 			$params = $this->params === null ? $_GET : $this->params;
-			if (isset($params[$this->pageVar])) {
+			if (isset($params[$this->pageVar]) && is_scalar($params[$this->pageVar])) {
 				$this->_page = (int)$params[$this->pageVar] - 1;
 				if ($this->validatePage) {
 					$pageCount = $this->getPageCount();

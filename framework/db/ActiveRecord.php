@@ -10,7 +10,6 @@ namespace yii\db;
 
 use yii\base\Model;
 use yii\base\InvalidParamException;
-use yii\base\Event;
 use yii\base\ModelEvent;
 use yii\base\UnknownMethodException;
 use yii\base\InvalidCallException;
