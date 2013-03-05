@@ -320,7 +320,7 @@ class Connection extends Component
 	{
 		if ($this->pdo === null) {
 			if (empty($this->dsn)) {
-				throw new InvalidConfigException('Connection.dsn cannot be empty.');
+				throw new InvalidConfigException('Connection::dsn cannot be empty.');
 			}
 			try {
 				\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
@@ -330,7 +330,7 @@ class Connection extends Component
 			catch (\PDOException $e) {
 				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __CLASS__);
 				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
-				throw new Exception($message, (int)$e->getCode(), $e->errorInfo);
+				throw new Exception($message, $e->errorInfo, (int)$e->getCode());
 			}
 		}
 	}

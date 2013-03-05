@@ -134,7 +134,7 @@ class Command extends \yii\base\Component
 			} catch (\Exception $e) {
 				\Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				throw new Exception($e->getMessage(), (int)$e->getCode(), $errorInfo);
+				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode());
 			}
 		}
 	}
@@ -292,7 +292,7 @@ class Command extends \yii\base\Component
 			\Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
 
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, (int)$e->getCode(), $errorInfo);
+			throw new Exception($message, $errorInfo, (int)$e->getCode());
 		}
 	}
 
@@ -431,7 +431,7 @@ class Command extends \yii\base\Component
 			$message = $e->getMessage();
 			\Yii::error("$message\nCommand::$method() failed: {$sql}{$paramLog}", __CLASS__);
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, (int)$e->getCode(), $errorInfo);
+			throw new Exception($message, $errorInfo, (int)$e->getCode());
 		}
 	}
 
