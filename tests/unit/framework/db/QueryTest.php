@@ -14,13 +14,13 @@ class QueryTest extends \yiiunit\MysqlTestCase
 		// default
 		$query = new Query;
 		$query->select('*');
-		$this->assertEquals('*', $query->select);
+		$this->assertEquals(array('*'), $query->select);
 		$this->assertNull($query->distinct);
 		$this->assertEquals(null, $query->selectOption);
 
 		$query = new Query;
 		$query->select('id, name', 'something')->distinct(true);
-		$this->assertEquals('id, name', $query->select);
+		$this->assertEquals(array('id','name'), $query->select);
 		$this->assertTrue($query->distinct);
 		$this->assertEquals('something', $query->selectOption);
 	}
@@ -29,7 +29,7 @@ class QueryTest extends \yiiunit\MysqlTestCase
 	{
 		$query = new Query;
 		$query->from('tbl_user');
-		$this->assertEquals('tbl_user', $query->from);
+		$this->assertEquals(array('tbl_user'), $query->from);
 	}
 
 	function testWhere()
@@ -57,12 +57,12 @@ class QueryTest extends \yiiunit\MysqlTestCase
 	{
 		$query = new Query;
 		$query->groupBy('team');
-		$this->assertEquals('team', $query->groupBy);
+		$this->assertEquals(array('team'), $query->groupBy);
 
-		$query->addGroup('company');
+		$query->addGroupBy('company');
 		$this->assertEquals(array('team', 'company'), $query->groupBy);
 
-		$query->addGroup('age');
+		$query->addGroupBy('age');
 		$this->assertEquals(array('team', 'company', 'age'), $query->groupBy);
 	}
 
@@ -86,13 +86,19 @@ class QueryTest extends \yiiunit\MysqlTestCase
 	{
 		$query = new Query;
 		$query->orderBy('team');
-		$this->assertEquals('team', $query->orderBy);
+		$this->assertEquals(array('team' => false), $query->orderBy);
 
 		$query->addOrderBy('company');
-		$this->assertEquals(array('team', 'company'), $query->orderBy);
+		$this->assertEquals(array('team' => false, 'company' => false), $query->orderBy);
 
 		$query->addOrderBy('age');
-		$this->assertEquals(array('team', 'company', 'age'), $query->orderBy);
+		$this->assertEquals(array('team' => false, 'company' => false, 'age' => false), $query->orderBy);
+
+		$query->addOrderBy(array('age' => true));
+		$this->assertEquals(array('team' => false, 'company' => false, 'age' => true), $query->orderBy);
+
+		$query->addOrderBy('age ASC, company DESC');
+		$this->assertEquals(array('team' => false, 'company' => true, 'age' => false), $query->orderBy);
 	}
 
 	function testLimitOffset()

@@ -60,10 +60,10 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildFrom($query->from),
 			$this->buildJoin($query->join),
 			$this->buildWhere($query->where),
-			$this->buildGroup($query->groupBy),
+			$this->buildGroupBy($query->groupBy),
 			$this->buildHaving($query->having),
 			$this->buildUnion($query->union),
-			$this->buildOrder($query->orderBy),
+			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
 		);
 		return implode($this->separator, array_filter($clauses));
@@ -673,7 +673,7 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * @param string|array $columns
+	 * @param array $columns
 	 * @param boolean $distinct
 	 * @param string $selectOption
 	 * @return string the SELECT clause built from [[query]].
@@ -689,13 +689,6 @@ class QueryBuilder extends \yii\base\Object
 			return $select . ' *';
 		}
 
-		if (!is_array($columns)) {
-			if (strpos($columns, '(') !== false) {
-				return $select . ' ' . $columns;
-			} else {
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			}
-		}
 		foreach ($columns as $i => $column) {
 			if (is_object($column)) {
 				$columns[$i] = (string)$column;
@@ -716,7 +709,7 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * @param string|array $tables
+	 * @param array $tables
 	 * @return string the FROM clause built from [[query]].
 	 */
 	public function buildFrom($tables)
@@ -725,13 +718,6 @@ class QueryBuilder extends \yii\base\Object
 			return '';
 		}
 
-		if (!is_array($tables)) {
-			if (strpos($tables, '(') !== false) {
-				return 'FROM ' . $tables;
-			} else {
-				$tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
-			}
-		}
 		foreach ($tables as $i => $table) {
 			if (strpos($table, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
@@ -752,37 +738,36 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param string|array $joins
 	 * @return string the JOIN clause built from [[query]].
+	 * @throws Exception if the $joins parameter is not in proper format
 	 */
 	public function buildJoin($joins)
 	{
 		if (empty($joins)) {
 			return '';
 		}
-		if (is_string($joins)) {
-			return $joins;
-		}
 
 		foreach ($joins as $i => $join) {
-			if (is_array($join)) { // 0:join type, 1:table name, 2:on-condition
-				if (isset($join[0], $join[1])) {
-					$table = $join[1];
-					if (strpos($table, '(') === false) {
-						if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
-							$table = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
-						} else {
-							$table = $this->db->quoteTableName($table);
-						}
+			if (is_object($join)) {
+				$joins[$i] = (string)$join;
+			} elseif (is_array($join) && isset($join[0], $join[1])) {
+				// 0:join type, 1:table name, 2:on-condition
+				$table = $join[1];
+				if (strpos($table, '(') === false) {
+					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
+						$table = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
+					} else {
+						$table = $this->db->quoteTableName($table);
 					}
-					$joins[$i] = $join[0] . ' ' . $table;
-					if (isset($join[2])) {
-						$condition = $this->buildCondition($join[2]);
-						if ($condition !== '') {
-							$joins[$i] .= ' ON ' . $this->buildCondition($join[2]);
-						}
-					}
-				} else {
-					throw new Exception('A join clause must be specified as an array of at least two elements.');
 				}
+				$joins[$i] = $join[0] . ' ' . $table;
+				if (isset($join[2])) {
+					$condition = $this->buildCondition($join[2]);
+					if ($condition !== '') {
+						$joins[$i] .= ' ON ' . $this->buildCondition($join[2]);
+					}
+				}
+			} else {
+				throw new Exception('A join clause must be specified as an array of join type, join table, and optionally join condition.');
 			}
 		}
 
@@ -800,16 +785,12 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * @param string|array $columns
+	 * @param array $columns
 	 * @return string the GROUP BY clause
 	 */
-	public function buildGroup($columns)
+	public function buildGroupBy($columns)
 	{
-		if (empty($columns)) {
-			return '';
-		} else {
-			return 'GROUP BY ' . $this->buildColumns($columns);
-		}
+		return empty($columns) ? '' : 'GROUP BY ' . $this->buildColumns($columns);
 	}
 
 	/**
@@ -823,36 +804,24 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * @param string|array $columns
+	 * @param array $columns
 	 * @return string the ORDER BY clause built from [[query]].
 	 */
-	public function buildOrder($columns)
+	public function buildOrderBy($columns)
 	{
 		if (empty($columns)) {
 			return '';
 		}
-		if (!is_array($columns)) {
-			if (strpos($columns, '(') !== false) {
-				return 'ORDER BY ' . $columns;
+		$orders = array();
+		foreach ($columns as $name => $direction) {
+			if (is_object($direction)) {
+				$orders[] = (string)$direction;
 			} else {
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+				$orders[] = $this->db->quoteColumnName($name) . ($direction === Query::SORT_DESC ? ' DESC' : '');
 			}
 		}
-		foreach ($columns as $i => $column) {
-			if (is_object($column)) {
-				$columns[$i] = (string)$column;
-			} elseif (strpos($column, '(') === false) {
-				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-					$columns[$i] = $this->db->quoteColumnName($matches[1]) . ' ' . $matches[2];
-				} else {
-					$columns[$i] = $this->db->quoteColumnName($column);
-				}
-			}
-		}
-		if (is_array($columns)) {
-			$columns = implode(', ', $columns);
-		}
-		return 'ORDER BY ' . $columns;
+
+		return 'ORDER BY ' . implode(', ', $orders);
 	}
 
 	/**
@@ -873,16 +842,13 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * @param string|array $unions
+	 * @param array $unions
 	 * @return string the UNION clause built from [[query]].
 	 */
 	public function buildUnion($unions)
 	{
 		if (empty($unions)) {
 			return '';
-		}
-		if (!is_array($unions)) {
-			$unions = array($unions);
 		}
 		foreach ($unions as $i => $union) {
 			if ($union instanceof Query) {

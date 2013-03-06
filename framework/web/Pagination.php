@@ -65,7 +65,8 @@ use Yii;
 class Pagination extends \yii\base\Object
 {
 	/**
-	 * @var string name of the GET variable storing the current page index. Defaults to 'page'.
+	 * @var string name of the parameter storing the current page index. Defaults to 'page'.
+	 * @see params
 	 */
 	public $pageVar = 'page';
 	/**
