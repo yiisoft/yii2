@@ -34,7 +34,7 @@ use Yii;
  *
  *     $this->render('index', array(
  *          'models' => $models,
- *          'pages' => $pages
+ *          'pages' => $pages,
  *     ));
  * }
  * ~~~

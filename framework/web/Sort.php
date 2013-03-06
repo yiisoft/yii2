@@ -8,6 +8,8 @@
 namespace yii\web;
 
 use Yii;
+use yii\util\StringHelper;
+use yii\util\Html;
 
 /**
  * Sort represents information relevant to sorting.
@@ -37,6 +39,39 @@ use Yii;
  * represent the attribute names, while the values represent the virtual attribute definitions.
  * For more details, please check the documentation about {@link attributes}.
  *
+ *  * Controller action:
+ *
+ * ~~~
+ * function actionIndex()
+ * {
+ *     $sort = new Sort(array(
+ *         'attributes' => Article::attributes(),
+ *     ));
+ *     $models = Article::find()
+ *         ->where(array('status' => 1))
+ *         ->orderBy($sort->orderBy)
+ *         ->all();
+ *
+ *     $this->render('index', array(
+ *          'models' => $models,
+ *          'sort' => $sort,
+ *     ));
+ * }
+ * ~~~
+ *
+ * View:
+ *
+ * ~~~
+ * foreach($models as $model) {
+ *     // display $model here
+ * }
+ *
+ * // display pagination
+ * $this->widget('yii\web\widgets\LinkPager', array(
+ *     'pages' => $pages,
+ * ));
+ * ~~~
+ *
  * @property string $orderBy The order-by columns represented by this sort object.
  * This can be put in the ORDER BY clause of a SQL statement.
  * @property array $directions Sort directions indexed by attribute names.
@@ -50,13 +85,11 @@ class Sort extends \yii\base\Object
 {
 	/**
 	 * Sort ascending
-	 * @since 1.1.10
 	 */
 	const SORT_ASC = false;
 
 	/**
 	 * Sort descending
-	 * @since 1.1.10
 	 */
 	const SORT_DESC = true;
 
@@ -65,11 +98,7 @@ class Sort extends \yii\base\Object
 	 * Defaults to false, which means each time the data can only be sorted by one attribute.
 	 */
 	public $enableMultiSort = false;
-	/**
-	 * @var string the name of the model class whose attributes can be sorted.
-	 * The model class must be a child class of {@link CActiveRecord}.
-	 */
-	public $modelClass;
+
 	/**
 	 * @var array list of attributes that are allowed to be sorted.
 	 * For example, array('user_id','create_time') would specify that only 'user_id'
@@ -199,38 +228,10 @@ class Sort extends \yii\base\Object
 
 	private $_directions;
 
-	/**
-	 * Constructor.
-	 * @param string $modelClass the class name of data models that need to be sorted.
-	 * This should be a child class of {@link CActiveRecord}.
-	 */
-	public function __construct($modelClass = null)
-	{
-		$this->modelClass = $modelClass;
-	}
-
-	/**
-	 * Modifies the query criteria by changing its {@link CDbCriteria::order} property.
-	 * This method will use {@link directions} to determine which columns need to be sorted.
-	 * They will be put in the ORDER BY clause. If the criteria already has non-empty {@link CDbCriteria::order} value,
-	 * the new value will be appended to it.
-	 * @param CDbCriteria $criteria the query criteria
-	 */
-	public function applyOrder($criteria)
-	{
-		$order = $this->getOrderBy();
-		if (!empty($order)) {
-			if (!empty($criteria->order)) {
-				$criteria->order .= ', ';
-			}
-			$criteria->order .= $order;
-		}
-	}
 
 	/**
 	 * @return string the order-by columns represented by this sort object.
 	 * This can be put in the ORDER BY clause of a SQL statement.
-	 * @since 1.1.0
 	 */
 	public function getOrderBy()
 	{
@@ -238,30 +239,13 @@ class Sort extends \yii\base\Object
 		if (empty($directions)) {
 			return is_string($this->defaultOrder) ? $this->defaultOrder : '';
 		} else {
-			if ($this->modelClass !== null) {
-				$schema = CActiveRecord::model($this->modelClass)->getDbConnection()->getSchema();
-			}
 			$orders = array();
 			foreach ($directions as $attribute => $descending) {
-				$definition = $this->resolveAttribute($attribute);
-				if (is_array($definition)) {
-					if ($descending) {
-						$orders[] = isset($definition['desc']) ? $definition['desc'] : $attribute . ' DESC';
-					} else {
-						$orders[] = isset($definition['asc']) ? $definition['asc'] : $attribute;
-					}
+				$definition = $this->getDefinition($attribute);
+				if ($descending) {
+					$orders[] = isset($definition['desc']) ? $definition['desc'] : $attribute . ' DESC';
 				} else {
-					if ($definition !== false) {
-						$attribute = $definition;
-						if (isset($schema)) {
-							if (($pos = strpos($attribute, '.')) !== false) {
-								$attribute = $schema->quoteTableName(substr($attribute, 0, $pos)) . '.' . $schema->quoteColumnName(substr($attribute, $pos + 1));
-							} else {
-								$attribute = CActiveRecord::model($this->modelClass)->getTableAlias(true) . '.' . $schema->quoteColumnName($attribute);
-							}
-						}
-						$orders[] = $descending ? $attribute . ' DESC' : $attribute;
-					}
+					$orders[] = isset($definition['asc']) ? $definition['asc'] : $attribute;
 				}
 			}
 			return implode(', ', $orders);
@@ -280,66 +264,26 @@ class Sort extends \yii\base\Object
 	 */
 	public function link($attribute, $label = null, $htmlOptions = array())
 	{
+		if (($definition = $this->getDefinition($attribute)) === false) {
+			return false;
+		}
+
 		if ($label === null) {
-			$label = $this->resolveLabel($attribute);
+			$label = isset($definition['label']) ? $definition['label'] : StringHelper::camel2words($attribute);
 		}
-		if (($definition = $this->resolveAttribute($attribute)) === false) {
-			return $label;
-		}
-		$directions = $this->getDirections();
-		if (isset($directions[$attribute])) {
-			$class = $directions[$attribute] ? 'desc' : 'asc';
+
+		if (($direction = $this->getDirection($attribute)) !== null) {
+			$class = $direction ? 'desc' : 'asc';
 			if (isset($htmlOptions['class'])) {
 				$htmlOptions['class'] .= ' ' . $class;
 			} else {
 				$htmlOptions['class'] = $class;
 			}
-			$descending = !$directions[$attribute];
-			unset($directions[$attribute]);
-		} else {
-			if (is_array($definition) && isset($definition['default'])) {
-				$descending = $definition['default'] === 'desc';
-			} else {
-				$descending = false;
-			}
 		}
 
-		if ($this->enableMultiSort) {
-			$directions = array_merge(array($attribute => $descending), $directions);
-		} else {
-			$directions = array($attribute => $descending);
-		}
+		$url = $this->createUrl($attribute);
 
-		$url = $this->createUrl($directions);
-
-		return $this->createLink($attribute, $label, $url, $htmlOptions);
-	}
-
-	/**
-	 * Resolves the attribute label for the specified attribute.
-	 * This will invoke {@link CActiveRecord::getAttributeLabel} to determine what label to use.
-	 * If the attribute refers to a virtual attribute declared in {@link attributes},
-	 * then the label given in the {@link attributes} will be returned instead.
-	 * @param string $attribute the attribute name.
-	 * @return string the attribute label
-	 */
-	public function resolveLabel($attribute)
-	{
-		$definition = $this->resolveAttribute($attribute);
-		if (is_array($definition)) {
-			if (isset($definition['label'])) {
-				return $definition['label'];
-			}
-		} else {
-			if (is_string($definition)) {
-				$attribute = $definition;
-			}
-		}
-		if ($this->modelClass !== null) {
-			return CActiveRecord::model($this->modelClass)->getAttributeLabel($attribute);
-		} else {
-			return $attribute;
-		}
+		return Html::link($label, $url, $htmlOptions);
 	}
 
 	/**
@@ -364,7 +308,7 @@ class Sort extends \yii\base\Object
 						}
 					}
 
-					if (($this->resolveAttribute($attribute)) !== false) {
+					if (($this->getDefinition($attribute)) !== false) {
 						$this->_directions[$attribute] = $descending;
 						if (!$this->enableMultiSort) {
 							return $this->_directions;
@@ -393,15 +337,35 @@ class Sort extends \yii\base\Object
 	}
 
 	/**
-	 * Creates a URL that can lead to generating sorted data.
-	 * @param array $directions the sort directions indexed by attribute names.
-	 * The sort direction can be either Sort::SORT_ASC for ascending order or
-	 * Sort::SORT_DESC for descending order.
-	 * @return string the URL for sorting
+	 * Creates a URL for sorting the data by the specified attribute.
+	 * This method will consider the current sorting status given by [[directions]].
+	 * For example, if the current page already sorts the data by the specified attribute in ascending order,
+	 * then the URL created will lead to a page that sorts the data by the specified attribute in descending order.
+	 * @param string $attribute the attribute name
+	 * @return string|boolean the URL for sorting. False if the attribute is invalid.
 	 * @see params
 	 */
-	public function createUrl($directions)
+	public function createUrl($attribute)
 	{
+		if (($definition = $this->getDefinition($attribute)) === false) {
+			return false;
+		}
+		$directions = $this->getDirections();
+		if (isset($directions[$attribute])) {
+			$descending = !$directions[$attribute];
+			unset($directions[$attribute]);
+		} elseif (isset($definition['default'])) {
+			$descending = $definition['default'] === 'desc';
+		} else {
+			$descending = false;
+		}
+
+		if ($this->enableMultiSort) {
+			$directions = array_merge(array($attribute => $descending), $directions);
+		} else {
+			$directions = array($attribute => $descending);
+		}
+
 		$sorts = array();
 		foreach ($directions as $attribute => $descending) {
 			$sorts[] = $descending ? $attribute . $this->separators[1] . $this->descTag : $attribute;
@@ -409,6 +373,7 @@ class Sort extends \yii\base\Object
 		$params = $this->params === null ? $_GET : $this->params;
 		$params[$this->sortVar] = implode($this->separators[0], $sorts);
 		$route = $this->route === null ? Yii::$app->controller->route : $this->route;
+
 		return Yii::$app->getUrlManager()->createUrl($route, $params);
 	}
 
@@ -427,48 +392,17 @@ class Sort extends \yii\base\Object
 	 * @param string $attribute the attribute name that the user requests to sort on
 	 * @return mixed the attribute name or the virtual attribute definition. False if the attribute cannot be sorted.
 	 */
-	public function resolveAttribute($attribute)
+	public function getDefinition($attribute)
 	{
-		if ($this->attributes !== array()) {
-			$attributes = $this->attributes;
+		if (isset($this->attributes[$attribute])) {
+			return $this->attributes[$attribute];
+		} elseif (in_array($attribute, $this->attributes, true)) {
+			return array(
+				'asc' => $attribute,
+				'desc' => "$attribute DESC",
+			);
 		} else {
-			if ($this->modelClass !== null) {
-				$attributes = CActiveRecord::model($this->modelClass)->attributes();
-			} else {
-				return false;
-			}
+			return false;
 		}
-		foreach ($attributes as $name => $definition) {
-			if (is_string($name)) {
-				if ($name === $attribute) {
-					return $definition;
-				}
-			} else {
-				if ($definition === '*') {
-					if ($this->modelClass !== null && CActiveRecord::model($this->modelClass)->hasAttribute($attribute)) {
-						return $attribute;
-					}
-				} else {
-					if ($definition === $attribute) {
-						return $attribute;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Creates a hyperlink based on the given label and URL.
-	 * You may override this method to customize the link generation.
-	 * @param string $attribute the name of the attribute that this link is for
-	 * @param string $label the label of the hyperlink
-	 * @param string $url the URL
-	 * @param array $htmlOptions additional HTML options
-	 * @return string the generated hyperlink
-	 */
-	protected function createLink($attribute, $label, $url, $htmlOptions)
-	{
-		return CHtml::link($label, $url, $htmlOptions);
 	}
 }
