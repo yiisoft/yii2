@@ -16,183 +16,154 @@ use Yii;
 class Html
 {
 	/**
-	 * @var integer the counter for generating automatic input field names.
+	 * @var boolean whether to close void (empty) elements. Defaults to true.
+	 * @see voidElements
 	 */
-	public static $count = 0;
+	public static $closeVoidElements = true;
 	/**
-	 * @var boolean whether to close single tags. Defaults to true. Can be set to false for HTML5.
+	 * @var array list of void elements (element name => 1)
+	 * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
 	 */
-	public static $closeSingleTags = true;
+	public static $voidElements = array(
+		'area' => 1,
+		'base' => 1,
+		'br' => 1,
+		'col' => 1,
+		'command' => 1,
+		'embed' => 1,
+		'hr' => 1,
+		'img' => 1,
+		'input' => 1,
+		'keygen' => 1,
+		'link' => 1,
+		'meta' => 1,
+		'param' => 1,
+		'source' => 1,
+		'track' => 1,
+		'wbr' => 1,
+	);
 	/**
 	 * @var boolean whether to render special attributes value. Defaults to true. Can be set to false for HTML5.
 	 */
 	public static $renderSpecialAttributesValue = true;
 
+
 	/**
 	 * Encodes special characters into HTML entities.
-	 * The {@link CApplication::charset application charset} will be used for encoding.
-	 * @param string $text data to be encoded
-	 * @return string the encoded data
+	 * The [[yii\base\Application::charset|application charset]] will be used for encoding.
+	 * @param string $content the content to be encoded
+	 * @return string the encoded content
+	 * @see decode
 	 * @see http://www.php.net/manual/en/function.htmlspecialchars.php
 	 */
-	public static function encode($text)
+	public static function encode($content)
 	{
-		return htmlspecialchars($text, ENT_QUOTES, Yii::$app->charset);
+		return htmlspecialchars($content, ENT_QUOTES, Yii::$app->charset);
 	}
 
 	/**
 	 * Decodes special HTML entities back to the corresponding characters.
-	 * This is the opposite of {@link encode()}.
-	 * @param string $text data to be decoded
-	 * @return string the decoded data
+	 * This is the opposite of [[encode()]].
+	 * @param string $content the content to be decoded
+	 * @return string the decoded content
+	 * @see encode
 	 * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
 	 */
-	public static function decode($text)
+	public static function decode($content)
 	{
-		return htmlspecialchars_decode($text, ENT_QUOTES);
+		return htmlspecialchars_decode($content, ENT_QUOTES);
 	}
 
 	/**
-	 * Encodes special characters in an array of strings into HTML entities.
-	 * Both the array keys and values will be encoded if needed.
-	 * If a value is an array, this method will also encode it recursively.
-	 * The {@link CApplication::charset application charset} will be used for encoding.
-	 * @param array $data data to be encoded
-	 * @return array the encoded data
-	 * @see http://www.php.net/manual/en/function.htmlspecialchars.php
+	 * Generates a complete HTML tag.
+	 * @param string $name the tag name
+	 * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
+	 * @param array $attributes the element attributes. The values will be HTML-encoded using [[encode()]].
+	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @return string the generated HTML tag
+	 * @see beginTag
+	 * @see endTag
 	 */
-	public static function encodeArray($data)
+	public static function tag($name, $content = '', $attributes = array())
 	{
-		$d = array();
-		foreach ($data as $key => $value) {
-			if (is_string($key)) {
-				$key = htmlspecialchars($key, ENT_QUOTES, Yii::$app->charset);
-			}
-			if (is_string($value)) {
-				$value = htmlspecialchars($value, ENT_QUOTES, Yii::$app->charset);
-			} elseif (is_array($value)) {
-				$value = static::encodeArray($value);
-			}
-			$d[$key] = $value;
-		}
-		return $d;
-	}
-
-	/**
-	 * Generates an HTML element.
-	 * @param string $tag the tag name
-	 * @param array $htmlOptions the element attributes. The values will be HTML-encoded using {@link encode()}.
-	 * If an 'encode' attribute is given and its value is false,
-	 * the rest of the attribute values will NOT be HTML-encoded.
-	 * Since version 1.1.5, attributes whose value is null will not be rendered.
-	 * @param mixed $content the content to be enclosed between open and close element tags. It will not be HTML-encoded.
-	 * If false, it means there is no body content.
-	 * @param boolean $closeTag whether to generate the close tag.
-	 * @return string the generated HTML element tag
-	 */
-	public static function tag($tag, $htmlOptions = array(), $content = false, $closeTag = true)
-	{
-		$html = '<' . $tag . static::renderAttributes($htmlOptions);
-		if ($content === false) {
-			return $closeTag && static::$closeSingleTags ? $html . ' />' : $html . '>';
+		$html = '<' . $name . static::renderAttributes($attributes);
+		if (isset(static::$voidElements[strtolower($name)])) {
+			return $html . (static::$closeVoidElements ? ' />' : '>');
 		} else {
-			return $closeTag ? $html . '>' . $content . '</' . $tag . '>' : $html . '>' . $content;
+			return $html . ">$content</$name>";
 		}
 	}
 
 	/**
-	 * Generates an open HTML element.
-	 * @param string $tag the tag name
-	 * @param array $htmlOptions the element attributes. The values will be HTML-encoded using {@link encode()}.
-	 * If an 'encode' attribute is given and its value is false,
-	 * the rest of the attribute values will NOT be HTML-encoded.
-	 * Since version 1.1.5, attributes whose value is null will not be rendered.
-	 * @return string the generated HTML element tag
+	 * Generates a start tag.
+	 * @param string $name the tag name
+	 * @param array $attributes the element attributes. The values will be HTML-encoded using [[encode()]].
+	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @return string the generated start tag
+	 * @see endTag
+	 * @see tag
 	 */
-	public static function openTag($tag, $htmlOptions = array())
+	public static function beginTag($name, $attributes = array())
 	{
-		return '<' . $tag . static::renderAttributes($htmlOptions) . '>';
+		return '<' . $name . static::renderAttributes($attributes) . '>';
 	}
 
 	/**
-	 * Generates a close HTML element.
-	 * @param string $tag the tag name
-	 * @return string the generated HTML element tag
+	 * Generates an end tag.
+	 * @param string $name the tag name
+	 * @return string the generated end tag
+	 * @see beginTag
+	 * @see tag
 	 */
-	public static function closeTag($tag)
+	public static function endTag($name)
 	{
-		return '</' . $tag . '>';
+		return !static::$closeVoidElements && isset(static::$voidElements[strtolower($name)]) ? '' : "</$name>";
 	}
 
 	/**
-	 * Encloses the given string within a CDATA tag.
-	 * @param string $text the string to be enclosed
+	 * Encloses the given content within a CDATA tag.
+	 * @param string $content the content to be enclosed within the CDATA tag
 	 * @return string the CDATA tag with the enclosed content.
 	 */
-	public static function cdata($text)
+	public static function cdata($content)
 	{
-		return '<![CDATA[' . $text . ']]>';
+		return '<![CDATA[' . $content . ']]>';
 	}
 
 	/**
-	 * Generates a meta tag that can be inserted in the head section of HTML page.
-	 * @param string $content content attribute of the meta tag
-	 * @param string $name name attribute of the meta tag. If null, the attribute will not be generated
-	 * @param string $httpEquiv http-equiv attribute of the meta tag. If null, the attribute will not be generated
-	 * @param array $options other options in name-value pairs (e.g. 'scheme', 'lang')
-	 * @return string the generated meta tag
+	 * Generates a style tag.
+	 * @param string $content the style content
+	 * @param array $attributes the attributes of the style tag. The values will be HTML-encoded using [[encode()]].
+	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * If the attributes does not contain "type", a default one with value "text/css" will be used.
+	 * @return string the generated style tag
 	 */
-	public static function metaTag($content, $name = null, $httpEquiv = null, $options = array())
+	public static function style($content, $attributes = array())
 	{
-		if ($name !== null) {
-			$options['name'] = $name;
+		if (!isset($attributes['type'])) {
+			$attributes['type'] = 'text/css';
 		}
-		if ($httpEquiv !== null) {
-			$options['http-equiv'] = $httpEquiv;
-		}
-		$options['content'] = $content;
-		return static::tag('meta', $options);
+		return static::beginTag('style', $attributes)
+			. "\n/*<![CDATA[*/\n{$content}\n/*]]>*/\n"
+			. static::endTag('style');
 	}
 
 	/**
-	 * Generates a link tag that can be inserted in the head section of HTML page.
-	 * Do not confuse this method with {@link link()}. The latter generates a hyperlink.
-	 * @param string $relation rel attribute of the link tag. If null, the attribute will not be generated.
-	 * @param string $type type attribute of the link tag. If null, the attribute will not be generated.
-	 * @param string $href href attribute of the link tag. If null, the attribute will not be generated.
-	 * @param string $media media attribute of the link tag. If null, the attribute will not be generated.
-	 * @param array $options other options in name-value pairs
-	 * @return string the generated link tag
+	 * Generates a script tag.
+	 * @param string $content the script content
+	 * @param array $attributes the attributes of the script tag. The values will be HTML-encoded using [[encode()]].
+	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * If the attributes does not contain "type", a default one with value "text/javascript" will be used.
+	 * @return string the generated script tag
 	 */
-	public static function linkTag($relation = null, $type = null, $href = null, $media = null, $options = array())
+	public static function script($content, $attributes = array())
 	{
-		if ($relation !== null) {
-			$options['rel'] = $relation;
+		if (!isset($attributes['type'])) {
+			$attributes['type'] = 'text/javascript';
 		}
-		if ($type !== null) {
-			$options['type'] = $type;
-		}
-		if ($href !== null) {
-			$options['href'] = $href;
-		}
-		if ($media !== null) {
-			$options['media'] = $media;
-		}
-		return static::tag('link', $options);
-	}
-
-	/**
-	 * Encloses the given CSS content with a CSS tag.
-	 * @param string $text the CSS content
-	 * @param string $media the media that this CSS should apply to.
-	 * @return string the CSS properly enclosed
-	 */
-	public static function css($text, $media = '')
-	{
-		if ($media !== '') {
-			$media = ' media="' . $media . '"';
-		}
-		return "<style type=\"text/css\"{$media}>\n/*<![CDATA[*/\n{$text}\n/*]]>*/\n</style>";
+		return static::beginTag('script', $attributes)
+			. "\n/*<![CDATA[*/\n{$content}\n/*]]>*/\n"
+			. static::endTag('script');
 	}
 
 	/**

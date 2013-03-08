@@ -7,6 +7,7 @@
 
 namespace yii\util;
 
+use Yii;
 use yii\base\InvalidParamException;
 
 /**
@@ -278,5 +279,36 @@ class ArrayHelper
 		}
 		$args[] = &$array;
 		call_user_func_array('array_multisort', $args);
+	}
+
+
+	/**
+	 * Encodes special characters in an array of strings into HTML entities.
+	 * Both the array keys and values will be encoded if needed.
+	 * If a value is an array, this method will also encode it recursively.
+	 * @param array $data data to be encoded
+	 * @param string $charset the charset that the data is using. If not set,
+	 * [[\yii\base\Application::charset]] will be used.
+	 * @return array the encoded data
+	 * @see http://www.php.net/manual/en/function.htmlspecialchars.php
+	 */
+	public static function htmlEncode($data, $charset = null)
+	{
+		if ($charset === null) {
+			$charset = Yii::$app->charset;
+		}
+		$d = array();
+		foreach ($data as $key => $value) {
+			if (is_string($key)) {
+				$key = htmlspecialchars($key, ENT_QUOTES, $charset);
+			}
+			if (is_string($value)) {
+				$value = htmlspecialchars($value, ENT_QUOTES, $charset);
+			} elseif (is_array($value)) {
+				$value = static::htmlEncode($value);
+			}
+			$d[$key] = $value;
+		}
+		return $d;
 	}
 }
