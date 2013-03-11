@@ -66,9 +66,9 @@ class Application extends \yii\base\Application
 	 * Creates a URL using the given route and parameters.
 	 *
 	 * This method first normalizes the given route by converting a relative route into an absolute one.
-	 * A relative route is a route without slash. If the route is an empty string, it stands for
-	 * the route of the currently active [[controller]]. If the route is not empty, it stands for
-	 * an action ID of the [[controller]].
+	 * A relative route is a route without a leading slash. It is considered to be relative to the currently
+	 * requested route. If the route is an empty string, it stands for the route of the currently active
+	 * [[controller]]. Otherwise, the [[Controller::uniqueId]] will be prepended to the route.
 	 *
 	 * After normalizing the route, this method calls [[\yii\web\UrlManager::createUrl()]]
 	 * to create a relative URL.
@@ -81,12 +81,12 @@ class Application extends \yii\base\Application
 	 */
 	public function createUrl($route, $params = array())
 	{
-		if (strpos($route, '/') === false) {
+		if (strncmp($route, '/', 1) !== 0) {
 			// a relative route
 			if ($this->controller !== null) {
 				$route = $route === '' ? $this->controller->route : $this->controller->uniqueId . '/' . $route;
 			} else {
-				throw new InvalidParamException('No active controller exists for resolving a relative route.');
+				throw new InvalidParamException('Relative route cannot be handled because there is no active controller.');
 			}
 		}
 		return $this->getUrlManager()->createUrl($route, $params);

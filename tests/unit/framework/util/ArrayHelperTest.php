@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\framework\db;
+namespace yiiunit\framework\util;
 
 use yii\util\ArrayHelper;
 

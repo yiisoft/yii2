@@ -217,7 +217,7 @@ class Html
 		if (!isset($attributes['type'])) {
 			$attributes['type'] = 'text/css';
 		}
-		return static::tag('style', "\n/*<![CDATA[*/\n{$content}\n/*]]>*/\n", $attributes);
+		return static::tag('style', "/*<![CDATA[*/\n{$content}\n/*]]>*/", $attributes);
 	}
 
 	/**
@@ -233,7 +233,7 @@ class Html
 		if (!isset($attributes['type'])) {
 			$attributes['type'] = 'text/javascript';
 		}
-		return static::tag('script', "\n/*<![CDATA[*/\n{$content}\n/*]]>*/\n", $attributes);
+		return static::tag('script', "/*<![CDATA[*/\n{$content}\n/*]]>*/", $attributes);
 	}
 
 	/**
@@ -278,23 +278,25 @@ class Html
 	 */
 	public static function beginForm($action = '', $method = 'post', $attributes = array())
 	{
-		$attributes['action'] = $url = static::url($action);
-		$attributes['method'] = $method;
-
-		$form = static::beginTag('form', $attributes);
+		$action = static::url($action);
 
 		// query parameters in the action are ignored for GET method
 		// we use hidden fields to add them back
 		$hiddens = array();
-		if (!strcasecmp($method, 'get') && ($pos = strpos($url, '?')) !== false) {
-			foreach (explode('&', substr($url, $pos + 1)) as $pair) {
-				if (($pos = strpos($pair, '=')) !== false) {
-					$hiddens[] = static::hiddenInput(urldecode(substr($pair, 0, $pos)), urldecode(substr($pair, $pos + 1)));
+		if (!strcasecmp($method, 'get') && ($pos = strpos($action, '?')) !== false) {
+			foreach (explode('&', substr($action, $pos + 1)) as $pair) {
+				if (($pos1 = strpos($pair, '=')) !== false) {
+					$hiddens[] = static::hiddenInput(urldecode(substr($pair, 0, $pos1)), urldecode(substr($pair, $pos1 + 1)));
 				} else {
 					$hiddens[] = static::hiddenInput(urldecode($pair), '');
 				}
 			}
+			$action = substr($action, 0, $pos);
 		}
+
+		$attributes['action'] = $action;
+		$attributes['method'] = $method;
+		$form = static::beginTag('form', $attributes);
 		if ($hiddens !== array()) {
 			$form .= "\n" . implode("\n", $hiddens);
 		}
@@ -696,17 +698,20 @@ class Html
 		if (!isset($attributes['size'])) {
 			$attributes['size'] = 4;
 		}
+		if (isset($attributes['multiple']) && $attributes['multiple'] && substr($name, -2) !== '[]') {
+			$name .= '[]';
+		}
+		$attributes['name'] = $name;
 		if (isset($attributes['unselect'])) {
 			// add a hidden field so that if the list box has no option being selected, it still submits a value
+			if (substr($name, -2) === '[]') {
+				$name = substr($name, 0, -2);
+			}
 			$hidden = static::hiddenInput($name, $attributes['unselect']);
 			unset($attributes['unselect']);
 		} else {
 			$hidden = '';
 		}
-		if (isset($attributes['multiple']) && $attributes['multiple'] && substr($name, -2) !== '[]') {
-			$name .= '[]';
-		}
-		$attributes['name'] = $name;
 		$options = static::renderOptions($items, $selection, $attributes);
 		return $hidden . static::tag('select', "\n" . $options . "\n", $attributes);
 	}
@@ -720,8 +725,13 @@ class Html
 	 * The array keys are the labels, while the array values are the corresponding checkbox values.
 	 * Note that the labels will NOT be HTML-encoded, while the values will.
 	 * @param string|array $selection the selected value(s).
-	 * @param callable $formatter a callback that can be used to customize the generation of the HTML code
-	 * corresponding to a single checkbox. The signature of this callback must be:
+	 * @param array $options options (name => config) for the checkbox list. The following options are supported:
+	 *
+	 * - unselect: string, the value that should be submitted when none of the checkboxes is selected.
+	 *   By setting this option, a hidden input will be generated.
+	 * - separator: string, the HTML code that separates items.
+	 * - item: callable, a callback that can be used to customize the generation of the HTML code
+	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
 	 * ~~~
 	 * function ($index, $label, $name, $value, $checked)
@@ -732,12 +742,13 @@ class Html
 	 * value and the checked status of the checkbox input.
 	 * @return string the generated checkbox list
 	 */
-	public static function checkboxList($name, $items, $selection = null, $formatter = null)
+	public static function checkboxList($name, $items, $selection = null, $options = array())
 	{
 		if (substr($name, -2) !== '[]') {
 			$name .= '[]';
 		}
 
+		$formatter = isset($options['item']) ? $options['item'] : null;
 		$lines = array();
 		$index = 0;
 		foreach ($items as $value => $label) {
@@ -752,7 +763,16 @@ class Html
 			$index++;
 		}
 
-		return implode("\n", $lines);
+		if (isset($options['unselect'])) {
+			// add a hidden field so that if the list box has no option being selected, it still submits a value
+			$name2 = substr($name, -2) === '[]' ? substr($name, 0, -2) : $name;
+			$hidden = static::hiddenInput($name2, $options['unselect']);
+		} else {
+			$hidden = '';
+		}
+		$separator = isset($options['separator']) ? $options['separator'] : "\n";
+
+		return $hidden . implode($separator, $lines);
 	}
 
 	/**
@@ -763,8 +783,13 @@ class Html
 	 * The array keys are the labels, while the array values are the corresponding radio button values.
 	 * Note that the labels will NOT be HTML-encoded, while the values will.
 	 * @param string|array $selection the selected value(s).
-	 * @param callable $formatter a callback that can be used to customize the generation of the HTML code
-	 * corresponding to a single radio button. The signature of this callback must be:
+	 * @param array $options options (name => config) for the radio button list. The following options are supported:
+	 *
+	 * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
+	 *   By setting this option, a hidden input will be generated.
+	 * - separator: string, the HTML code that separates items.
+	 * - item: callable, a callback that can be used to customize the generation of the HTML code
+	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
 	 * ~~~
 	 * function ($index, $label, $name, $value, $checked)
@@ -775,8 +800,9 @@ class Html
 	 * value and the checked status of the radio button input.
 	 * @return string the generated radio button list
 	 */
-	public static function radioList($name, $items, $selection = null, $formatter = null)
+	public static function radioList($name, $items, $selection = null, $options = array())
 	{
+		$formatter = isset($options['item']) ? $options['item'] : null;
 		$lines = array();
 		$index = 0;
 		foreach ($items as $value => $label) {
@@ -791,7 +817,15 @@ class Html
 			$index++;
 		}
 
-		return implode("\n", $lines);
+		$separator = isset($options['separator']) ? $options['separator'] : "\n";
+		if (isset($options['unselect'])) {
+			// add a hidden field so that if the list box has no option being selected, it still submits a value
+			$hidden = static::hiddenInput($name, $options['unselect']);
+		} else {
+			$hidden = '';
+		}
+
+		return $hidden . implode($separator, $lines);
 	}
 
 	/**
