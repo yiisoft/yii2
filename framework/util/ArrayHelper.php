@@ -281,33 +281,59 @@ class ArrayHelper
 		call_user_func_array('array_multisort', $args);
 	}
 
-
 	/**
 	 * Encodes special characters in an array of strings into HTML entities.
-	 * Both the array keys and values will be encoded if needed.
+	 * Both the array keys and values will be encoded.
 	 * If a value is an array, this method will also encode it recursively.
 	 * @param array $data data to be encoded
+	 * @param boolean $valuesOnly whether to encode array values only. If false,
+	 * both the array keys and array values will be encoded.
 	 * @param string $charset the charset that the data is using. If not set,
 	 * [[\yii\base\Application::charset]] will be used.
 	 * @return array the encoded data
 	 * @see http://www.php.net/manual/en/function.htmlspecialchars.php
 	 */
-	public static function htmlEncode($data, $charset = null)
+	public static function htmlEncode($data, $valuesOnly = false, $charset = null)
 	{
 		if ($charset === null) {
 			$charset = Yii::$app->charset;
 		}
 		$d = array();
 		foreach ($data as $key => $value) {
-			if (is_string($key)) {
+			if (!$valuesOnly && is_string($key)) {
 				$key = htmlspecialchars($key, ENT_QUOTES, $charset);
 			}
 			if (is_string($value)) {
-				$value = htmlspecialchars($value, ENT_QUOTES, $charset);
+				$d[$key] = htmlspecialchars($value, ENT_QUOTES, $charset);
 			} elseif (is_array($value)) {
-				$value = static::htmlEncode($value);
+				$d[$key] = static::htmlEncode($value, $charset);
 			}
-			$d[$key] = $value;
+		}
+		return $d;
+	}
+
+	/**
+	 * Decodes HTML entities into the corresponding characters in an array of strings.
+	 * Both the array keys and values will be decoded.
+	 * If a value is an array, this method will also decode it recursively.
+	 * @param array $data data to be decoded
+	 * @param boolean $valuesOnly whether to decode array values only. If false,
+	 * both the array keys and array values will be decoded.
+	 * @return array the decoded data
+	 * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
+	 */
+	public static function htmlDecode($data, $valuesOnly = false)
+	{
+		$d = array();
+		foreach ($data as $key => $value) {
+			if (!$valuesOnly && is_string($key)) {
+				$key = htmlspecialchars_decode($key, ENT_QUOTES);
+			}
+			if (is_string($value)) {
+				$d[$key] = htmlspecialchars_decode($value, ENT_QUOTES);
+			} elseif (is_array($value)) {
+				$d[$key] = static::htmlDecode($value);
+			}
 		}
 		return $d;
 	}

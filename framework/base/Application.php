@@ -382,6 +382,15 @@ class Application extends Module
 	}
 
 	/**
+	 * Returns the URL manager for this application.
+	 * @return \yii\web\UrlManager the URL manager for this application.
+	 */
+	public function getUrlManager()
+	{
+		return $this->getComponent('urlManager');
+	}
+
+	/**
 	 * Returns the internationalization (i18n) component
 	 * @return \yii\i18n\I18N the internationalization component
 	 */
@@ -411,8 +420,8 @@ class Application extends Module
 			'i18n' => array(
 				'class' => 'yii\i18n\I18N',
 			),
-			'securityManager' => array(
-				'class' => 'yii\base\SecurityManager',
+			'urlManager' => array(
+				'class' => 'yii\web\UrlManager',
 			),
 		));
 	}

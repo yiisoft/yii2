@@ -368,7 +368,7 @@ class Request extends \yii\base\Request
 	 */
 	protected function resolvePathInfo()
 	{
-		$pathInfo = $this->getRequestUri();
+		$pathInfo = $this->getUrl();
 
 		if (($pos = strpos($pathInfo, '?')) !== false) {
 			$pathInfo = substr($pathInfo, 0, $pos);
@@ -407,42 +407,41 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns the currently requested URL.
-	 * This is a shortcut to the concatenation of [[hostInfo]] and [[requestUri]].
-	 * @return string the currently requested URL.
+	 * Returns the currently requested absolute URL.
+	 * This is a shortcut to the concatenation of [[hostInfo]] and [[url]].
+	 * @return string the currently requested absolute URL.
+	 */
+	public function getAbsoluteUrl()
+	{
+		return $this->getHostInfo() . $this->getUrl();
+	}
+
+	private $_url;
+
+	/**
+	 * Returns the currently requested relative URL.
+	 * This refers to the portion of the URL that is after the [[hostInfo]] part.
+	 * It includes the [[queryString]] part if any.
+	 * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
+	 * @throws InvalidConfigException if the URL cannot be determined due to unusual server configuration
 	 */
 	public function getUrl()
 	{
-		return $this->getHostInfo() . $this->getRequestUri();
-	}
-
-	private $_requestUri;
-
-	/**
-	 * Returns the portion after [[hostInfo]] for the currently requested URL.
-	 * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
-	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
-	 * @return string the request URI portion for the currently requested URL.
-	 * Note that the URI returned is URL-encoded.
-	 * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
-	 */
-	public function getRequestUri()
-	{
-		if ($this->_requestUri === null) {
-			$this->_requestUri = $this->resolveRequestUri();
+		if ($this->_url === null) {
+			$this->_url = $this->resolveRequestUri();
 		}
-		return $this->_requestUri;
+		return $this->_url;
 	}
 
 	/**
-	 * Sets the currently requested URI.
+	 * Sets the currently requested relative URL.
 	 * The URI must refer to the portion that is after [[hostInfo]].
 	 * Note that the URI should be URL-encoded.
 	 * @param string $value the request URI to be set
 	 */
-	public function setRequestUri($value)
+	public function setUrl($value)
 	{
-		$this->_requestUri = $value;
+		$this->_url = $value;
 	}
 
 	/**

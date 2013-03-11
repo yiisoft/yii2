@@ -16,4 +16,8 @@ namespace yii\web;
  */
 class Controller extends \yii\base\Controller
 {
+	public function createUrl($route, $params = array())
+	{
+
+	}
 }

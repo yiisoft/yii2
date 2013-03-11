@@ -55,16 +55,16 @@ class ActiveRelation extends ActiveQuery
 	/**
 	 * Specifies the relation associated with the pivot table.
 	 * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
-	 * @param callback $callback a PHP callback for customizing the relation associated with the pivot table.
+	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
 	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
 	 * @return ActiveRelation the relation object itself.
 	 */
-	public function via($relationName, $callback = null)
+	public function via($relationName, $callable = null)
 	{
 		$relation = $this->primaryModel->getRelation($relationName);
 		$this->via = array($relationName, $relation);
-		if ($callback !== null) {
-			call_user_func($callback, $relation);
+		if ($callable !== null) {
+			call_user_func($callable, $relation);
 		}
 		return $this;
 	}
@@ -75,11 +75,11 @@ class ActiveRelation extends ActiveQuery
 	 * @param array $link the link between the pivot table and the table associated with [[primaryModel]].
 	 * The keys of the array represent the columns in the pivot table, and the values represent the columns
 	 * in the [[primaryModel]] table.
-	 * @param callback $callback a PHP callback for customizing the relation associated with the pivot table.
+	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
 	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
 	 * @return ActiveRelation
 	 */
-	public function viaTable($tableName, $link, $callback = null)
+	public function viaTable($tableName, $link, $callable = null)
 	{
 		$relation = new ActiveRelation(array(
 			'modelClass' => get_class($this->primaryModel),
@@ -89,8 +89,8 @@ class ActiveRelation extends ActiveQuery
 			'asArray' => true,
 		));
 		$this->via = $relation;
-		if ($callback !== null) {
-			call_user_func($callback, $relation);
+		if ($callable !== null) {
+			call_user_func($callable, $relation);
 		}
 		return $this;
 	}

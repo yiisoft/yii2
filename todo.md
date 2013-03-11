@@ -18,6 +18,7 @@
 	* backend-specific unit tests
 	* dependency unit tests
 - validators
+	* Refactor validators to add validateValue() for every validator, if possible. Check if value is an array.
 	* FileValidator: depends on CUploadedFile
 	* CaptchaValidator: depends on CaptchaAction
 	* DateValidator: should we use CDateTimeParser, or simply use strtotime()?
