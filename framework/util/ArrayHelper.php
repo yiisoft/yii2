@@ -293,7 +293,7 @@ class ArrayHelper
 	 * @return array the encoded data
 	 * @see http://www.php.net/manual/en/function.htmlspecialchars.php
 	 */
-	public static function htmlEncode($data, $valuesOnly = false, $charset = null)
+	public static function htmlEncode($data, $valuesOnly = true, $charset = null)
 	{
 		if ($charset === null) {
 			$charset = Yii::$app->charset;
@@ -322,7 +322,7 @@ class ArrayHelper
 	 * @return array the decoded data
 	 * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
 	 */
-	public static function htmlDecode($data, $valuesOnly = false)
+	public static function htmlDecode($data, $valuesOnly = true)
 	{
 		$d = array();
 		foreach ($data as $key => $value) {

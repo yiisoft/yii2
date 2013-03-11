@@ -106,6 +106,7 @@ class Html
 		'checked',
 		'readonly',
 		'disabled',
+		'multiple',
 
 		'size',
 		'maxlength',
@@ -652,7 +653,7 @@ class Html
 	 *   except that the array keys represent the optgroup labels specified in $items.
 	 * @return string the generated drop-down list tag
 	 */
-	public static function dropDownList($name, $items, $selection = null, $attributes = array())
+	public static function dropDownList($name, $items = array(), $selection = null, $attributes = array())
 	{
 		$attributes['name'] = $name;
 		$options = static::renderOptions($items, $selection, $attributes);
@@ -693,7 +694,7 @@ class Html
 	 *   mode, we can still obtain the posted unselect value.
 	 * @return string the generated list box tag
 	 */
-	public static function listBox($name, $items, $selection = null, $attributes = array())
+	public static function listBox($name, $items = array(), $selection = null, $attributes = array())
 	{
 		if (!isset($attributes['size'])) {
 			$attributes['size'] = 4;
@@ -742,7 +743,7 @@ class Html
 	 * value and the checked status of the checkbox input.
 	 * @return string the generated checkbox list
 	 */
-	public static function checkboxList($name, $items, $selection = null, $options = array())
+	public static function checkboxList($name, $items = array(), $selection = null, $options = array())
 	{
 		if (substr($name, -2) !== '[]') {
 			$name .= '[]';
@@ -800,7 +801,7 @@ class Html
 	 * value and the checked status of the radio button input.
 	 * @return string the generated radio button list
 	 */
-	public static function radioList($name, $items, $selection = null, $options = array())
+	public static function radioList($name, $items = array(), $selection = null, $options = array())
 	{
 		$formatter = isset($options['item']) ? $options['item'] : null;
 		$lines = array();
@@ -850,7 +851,7 @@ class Html
 	{
 		$lines = array();
 		if (isset($attributes['prompt'])) {
-			$prompt = strtr(static::encode($attributes['prompt']), ' ', '&nbsp;');
+			$prompt = str_replace(' ', '&nbsp;', static::encode($attributes['prompt']));
 			$lines[] = static::tag('option', $prompt, array('value' => ''));
 		}
 
@@ -863,7 +864,7 @@ class Html
 				$groupAttrs = isset($groups[$key]) ? $groups[$key] : array();
 				$groupAttrs['label'] = $key;
 				$attrs = array('options' => $options, 'groups' => $groups);
-				$content = static::renderOptions($selection, $value, $attrs);
+				$content = static::renderOptions($value, $selection, $attrs);
 				$lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
 			} else {
 				$attrs = isset($options[$key]) ? $options[$key] : array();
@@ -871,7 +872,7 @@ class Html
 				$attrs['selected'] = $selection !== null &&
 					(!is_array($selection) && !strcmp($key, $selection)
 					|| is_array($selection) && in_array($key, $selection));
-				$lines[] = static::tag('option', strtr(static::encode($value), ' ', '&nbsp;'), $attrs);
+				$lines[] = static::tag('option', str_replace(' ', '&nbsp;', static::encode($value)), $attrs);
 			}
 		}
 

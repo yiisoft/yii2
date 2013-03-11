@@ -32,8 +32,6 @@ memo
 	* module
 	  - Module should be able to define its own configuration including routes. Application should be able to overwrite it.
 	* application
-	* security
-	  - backport 1.1 changes
 - built-in console commands
 	+ api doc builder
 		* support for markdown syntax
@@ -46,7 +44,6 @@ memo
 	* parsing??
 	* make dates/date patterns uniform application-wide including JUI, formats etc.
 - helpers
-	* array
 	* image
 	* string
 	* file
@@ -59,8 +56,6 @@ memo
     * move generation API out of gii, provide yiic commands to use it. Use same templates for gii/yiic.
 	* i18n variant of templates
 	* allow to generate module-specific CRUD
-- markup and HTML helpers
-    * use HTML5 instead of XHTML
 - assets
     * ability to manage scripts order (store these in a vector?)
 	* http://ryanbigg.com/guides/asset_pipeline.html, http://guides.rubyonrails.org/asset_pipeline.html, use content hash instead of mtime + directory hash.

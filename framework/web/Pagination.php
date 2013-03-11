@@ -14,7 +14,7 @@ use Yii;
  *
  * When data needs to be rendered in multiple pages, Pagination can be used to
  * represent information such as [[itemCount|total item count]], [[pageSize|page size]],
- * [[page|current page]], etc. These information can be passed to [[yii\web\widgets\Pager|pagers]]
+ * [[page|current page]], etc. These information can be passed to [[yii\widgets\Pager|pagers]]
  * to render pagination buttons or links.
  *
  * The following example shows how to create a pagination object and feed it
@@ -47,7 +47,7 @@ use Yii;
  * }
  *
  * // display pagination
- * $this->widget('yii\web\widgets\LinkPager', array(
+ * $this->widget('yii\widgets\LinkPager', array(
  *     'pages' => $pages,
  * ));
  * ~~~
