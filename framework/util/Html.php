@@ -12,7 +12,7 @@ use yii\base\InvalidParamException;
 
 /**
  * Html provides a set of static methods for generating commonly used HTML tags.
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -121,7 +121,6 @@ class Html
 		'media',
 	);
 
-
 	/**
 	 * Encodes special characters into HTML entities.
 	 * The [[yii\base\Application::charset|application charset]] will be used for encoding.
@@ -153,15 +152,16 @@ class Html
 	 * @param string $name the tag name
 	 * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
 	 * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param array $tagAttributes the element attributes. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated HTML tag
 	 * @see beginTag
 	 * @see endTag
 	 */
-	public static function tag($name, $content = '', $tagAttributes = array())
+	public static function tag($name, $content = '', $options = array())
 	{
-		$html = '<' . $name . static::renderTagAttributes($tagAttributes);
+		$html = '<' . $name . static::renderTagAttributes($options);
 		if (isset(static::$voidElements[strtolower($name)])) {
 			return $html . (static::$closeVoidElements ? ' />' : '>');
 		} else {
@@ -172,15 +172,16 @@ class Html
 	/**
 	 * Generates a start tag.
 	 * @param string $name the tag name
-	 * @param array $tagAttributes the element attributes. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated start tag
 	 * @see endTag
 	 * @see tag
 	 */
-	public static function beginTag($name, $tagAttributes = array())
+	public static function beginTag($name, $options = array())
 	{
-		return '<' . $name . static::renderTagAttributes($tagAttributes) . '>';
+		return '<' . $name . static::renderTagAttributes($options) . '>';
 	}
 
 	/**
@@ -208,76 +209,81 @@ class Html
 	/**
 	 * Generates a style tag.
 	 * @param string $content the style content
-	 * @param array $tagAttributes the attributes of the style tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
-	 * If the attributes does not contain "type", a default one with value "text/css" will be used.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
+	 * If the options does not contain "type", a "type" attribute with value "text/css" will be used.
 	 * @return string the generated style tag
 	 */
-	public static function style($content, $tagAttributes = array())
+	public static function style($content, $options = array())
 	{
-		if (!isset($tagAttributes['type'])) {
-			$tagAttributes['type'] = 'text/css';
+		if (!isset($options['type'])) {
+			$options['type'] = 'text/css';
 		}
-		return static::tag('style', "/*<![CDATA[*/\n{$content}\n/*]]>*/", $tagAttributes);
+		return static::tag('style', "/*<![CDATA[*/\n{$content}\n/*]]>*/", $options);
 	}
 
 	/**
 	 * Generates a script tag.
 	 * @param string $content the script content
-	 * @param array $tagAttributes the attributes of the script tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
-	 * If the attributes does not contain "type", a default one with value "text/javascript" will be used.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
+	 * If the options does not contain "type", a "type" attribute with value "text/javascript" will be rendered.
 	 * @return string the generated script tag
 	 */
-	public static function script($content, $tagAttributes = array())
+	public static function script($content, $options = array())
 	{
-		if (!isset($tagAttributes['type'])) {
-			$tagAttributes['type'] = 'text/javascript';
+		if (!isset($options['type'])) {
+			$options['type'] = 'text/javascript';
 		}
-		return static::tag('script', "/*<![CDATA[*/\n{$content}\n/*]]>*/", $tagAttributes);
+		return static::tag('script', "/*<![CDATA[*/\n{$content}\n/*]]>*/", $options);
 	}
 
 	/**
 	 * Generates a link tag that refers to an external CSS file.
 	 * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[url()]].
-	 * @param array $tagAttributes the attributes of the link tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated link tag
 	 * @see url
 	 */
-	public static function cssFile($url, $tagAttributes = array())
+	public static function cssFile($url, $options = array())
 	{
-		$tagAttributes['rel'] = 'stylesheet';
-		$tagAttributes['type'] = 'text/css';
-		$tagAttributes['href'] = static::url($url);
-		return static::tag('link', '', $tagAttributes);
+		$options['rel'] = 'stylesheet';
+		$options['type'] = 'text/css';
+		$options['href'] = static::url($url);
+		return static::tag('link', '', $options);
 	}
 
 	/**
 	 * Generates a script tag that refers to an external JavaScript file.
 	 * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[url()]].
-	 * @param array $tagAttributes the attributes of the script tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated script tag
 	 * @see url
 	 */
-	public static function jsFile($url, $tagAttributes = array())
+	public static function jsFile($url, $options = array())
 	{
-		$tagAttributes['type'] = 'text/javascript';
-		$tagAttributes['src'] = static::url($url);
-		return static::tag('script', '', $tagAttributes);
+		$options['type'] = 'text/javascript';
+		$options['src'] = static::url($url);
+		return static::tag('script', '', $options);
 	}
 
 	/**
 	 * Generates a form start tag.
 	 * @param array|string $action the form action URL. This parameter will be processed by [[url()]].
 	 * @param string $method form method, either "post" or "get" (case-insensitive)
-	 * @param array $tagAttributes the attributes of the form tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated form start tag.
 	 * @see endForm
 	 */
-	public static function beginForm($action = '', $method = 'post', $tagAttributes = array())
+	public static function beginForm($action = '', $method = 'post', $options = array())
 	{
 		$action = static::url($action);
 
@@ -295,9 +301,9 @@ class Html
 			$action = substr($action, 0, $pos);
 		}
 
-		$tagAttributes['action'] = $action;
-		$tagAttributes['method'] = $method;
-		$form = static::beginTag('form', $tagAttributes);
+		$options['action'] = $action;
+		$options['method'] = $method;
+		$form = static::beginTag('form', $options);
 		if ($hiddens !== array()) {
 			$form .= "\n" . implode("\n", $hiddens);
 		}
@@ -323,17 +329,18 @@ class Html
 	 * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[url()]]
 	 * and will be used for the "href" attribute of the tag. If this parameter is null, the "href" attribute
 	 * will not be generated.
-	 * @param array $tagAttributes the attributes of the hyperlink tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated hyperlink
 	 * @see url
 	 */
-	public static function a($text, $url = null, $tagAttributes = array())
+	public static function a($text, $url = null, $options = array())
 	{
 		if ($url !== null) {
-			$tagAttributes['href'] = static::url($url);
+			$options['href'] = static::url($url);
 		}
-		return static::tag('a', $text, $tagAttributes);
+		return static::tag('a', $text, $options);
 	}
 
 	/**
@@ -343,29 +350,31 @@ class Html
 	 * it to prevent XSS attacks.
 	 * @param string $email email address. If this is null, the first parameter (link body) will be treated
 	 * as the email address and used.
-	 * @param array $tagAttributes the attributes of the hyperlink tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated mailto link
 	 */
-	public static function mailto($text, $email = null, $tagAttributes = array())
+	public static function mailto($text, $email = null, $options = array())
 	{
-		return static::a($text, 'mailto:' . ($email === null ? $text : $email), $tagAttributes);
+		return static::a($text, 'mailto:' . ($email === null ? $text : $email), $options);
 	}
 
 	/**
 	 * Generates an image tag.
 	 * @param string $src the image URL. This parameter will be processed by [[url()]].
-	 * @param array $tagAttributes the attributes of the image tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated image tag
 	 */
-	public static function img($src, $tagAttributes = array())
+	public static function img($src, $options = array())
 	{
-		$tagAttributes['src'] = static::url($src);
-		if (!isset($tagAttributes['alt'])) {
-			$tagAttributes['alt'] = '';
+		$options['src'] = static::url($src);
+		if (!isset($options['alt'])) {
+			$options['alt'] = '';
 		}
-		return static::tag('img', null, $tagAttributes);
+		return static::tag('img', null, $options);
 	}
 
 	/**
@@ -375,14 +384,15 @@ class Html
 	 * it to prevent XSS attacks.
 	 * @param string $for the ID of the HTML element that this label is associated with.
 	 * If this is null, the "for" attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the label tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated label tag
 	 */
-	public static function label($content, $for = null, $tagAttributes = array())
+	public static function label($content, $for = null, $options = array())
 	{
-		$tagAttributes['for'] = $for;
-		return static::tag('label', $content, $tagAttributes);
+		$options['for'] = $for;
+		return static::tag('label', $content, $options);
 	}
 
 	/**
@@ -392,19 +402,20 @@ class Html
 	 * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
 	 * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
 	 * you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param array $tagAttributes the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
-	 * If the attributes does not contain "type", a default one with value "button" will be used.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
+	 * If the options does not contain "type", a "type" attribute with value "button" will be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function button($name = null, $value = null, $content = 'Button', $tagAttributes = array())
+	public static function button($name = null, $value = null, $content = 'Button', $options = array())
 	{
-		$tagAttributes['name'] = $name;
-		$tagAttributes['value'] = $value;
-		if (!isset($tagAttributes['type'])) {
-			$tagAttributes['type'] = 'button';
+		$options['name'] = $name;
+		$options['value'] = $value;
+		if (!isset($options['type'])) {
+			$options['type'] = 'button';
 		}
-		return static::tag('button', $content, $tagAttributes);
+		return static::tag('button', $content, $options);
 	}
 
 	/**
@@ -414,14 +425,15 @@ class Html
 	 * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
 	 * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
 	 * you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param array $tagAttributes the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated submit button tag
 	 */
-	public static function submitButton($name = null, $value = null, $content = 'Submit', $tagAttributes = array())
+	public static function submitButton($name = null, $value = null, $content = 'Submit', $options = array())
 	{
-		$tagAttributes['type'] = 'submit';
-		return static::button($name, $value, $content, $tagAttributes);
+		$options['type'] = 'submit';
+		return static::button($name, $value, $content, $options);
 	}
 
 	/**
@@ -431,14 +443,15 @@ class Html
 	 * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
 	 * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
 	 * you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param array $tagAttributes the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated reset button tag
 	 */
-	public static function resetButton($name = null, $value = null, $content = 'Reset', $tagAttributes = array())
+	public static function resetButton($name = null, $value = null, $content = 'Reset', $options = array())
 	{
-		$tagAttributes['type'] = 'reset';
-		return static::button($name, $value, $content, $tagAttributes);
+		$options['type'] = 'reset';
+		return static::button($name, $value, $content, $options);
 	}
 
 	/**
@@ -446,94 +459,100 @@ class Html
 	 * @param string $type the type attribute.
 	 * @param string $name the name attribute. If it is null, the name attribute will not be generated.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated input tag
 	 */
-	public static function input($type, $name = null, $value = null, $tagAttributes = array())
+	public static function input($type, $name = null, $value = null, $options = array())
 	{
-		$tagAttributes['type'] = $type;
-		$tagAttributes['name'] = $name;
-		$tagAttributes['value'] = $value;
-		return static::tag('input', null, $tagAttributes);
+		$options['type'] = $type;
+		$options['name'] = $name;
+		$options['value'] = $value;
+		return static::tag('input', null, $options);
 	}
 
 	/**
 	 * Generates an input button.
 	 * @param string $name the name attribute.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function buttonInput($name, $value = 'Button', $tagAttributes = array())
+	public static function buttonInput($name, $value = 'Button', $options = array())
 	{
-		return static::input('button', $name, $value, $tagAttributes);
+		return static::input('button', $name, $value, $options);
 	}
 
 	/**
 	 * Generates a submit input button.
 	 * @param string $name the name attribute. If it is null, the name attribute will not be generated.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function submitInput($name = null, $value = 'Submit', $tagAttributes = array())
+	public static function submitInput($name = null, $value = 'Submit', $options = array())
 	{
-		return static::input('submit', $name, $value, $tagAttributes);
+		return static::input('submit', $name, $value, $options);
 	}
 
 	/**
 	 * Generates a reset input button.
 	 * @param string $name the name attribute. If it is null, the name attribute will not be generated.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
+	 * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
 	 * Attributes whose value is null will be ignored and not put in the tag returned.
 	 * @return string the generated button tag
 	 */
-	public static function resetInput($name = null, $value = 'Reset', $tagAttributes = array())
+	public static function resetInput($name = null, $value = 'Reset', $options = array())
 	{
-		return static::input('reset', $name, $value, $tagAttributes);
+		return static::input('reset', $name, $value, $options);
 	}
 
 	/**
 	 * Generates a text input field.
 	 * @param string $name the name attribute.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function textInput($name, $value = null, $tagAttributes = array())
+	public static function textInput($name, $value = null, $options = array())
 	{
-		return static::input('text', $name, $value, $tagAttributes);
+		return static::input('text', $name, $value, $options);
 	}
 
 	/**
 	 * Generates a hidden input field.
 	 * @param string $name the name attribute.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function hiddenInput($name, $value = null, $tagAttributes = array())
+	public static function hiddenInput($name, $value = null, $options = array())
 	{
-		return static::input('hidden', $name, $value, $tagAttributes);
+		return static::input('hidden', $name, $value, $options);
 	}
 
 	/**
 	 * Generates a password input field.
 	 * @param string $name the name attribute.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function passwordInput($name, $value = null, $tagAttributes = array())
+	public static function passwordInput($name, $value = null, $options = array())
 	{
-		return static::input('password', $name, $value, $tagAttributes);
+		return static::input('password', $name, $value, $options);
 	}
 
 	/**
@@ -543,27 +562,29 @@ class Html
 	 * can be obtained via $_FILES[$name] (see PHP documentation).
 	 * @param string $name the name attribute.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function fileInput($name, $value = null, $tagAttributes = array())
+	public static function fileInput($name, $value = null, $options = array())
 	{
-		return static::input('file', $name, $value, $tagAttributes);
+		return static::input('file', $name, $value, $options);
 	}
 
 	/**
 	 * Generates a text area input.
 	 * @param string $name the input name
 	 * @param string $value the input value. Note that it will be encoded using [[encode()]].
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned.
+	 * @param array $options the tag options in terms of name-value pairs. These be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated text area tag
 	 */
-	public static function textarea($name, $value = '', $tagAttributes = array())
+	public static function textarea($name, $value = '', $options = array())
 	{
-		$tagAttributes['name'] = $name;
-		return static::tag('textarea', static::encode($value), $tagAttributes);
+		$options['name'] = $name;
+		return static::tag('textarea', static::encode($value), $options);
 	}
 
 	/**
@@ -571,28 +592,29 @@ class Html
 	 * @param string $name the name attribute.
 	 * @param boolean $checked whether the radio button should be checked.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be rendered.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned. The following attributes
-	 * will be specially handled and not put in the resulting tag:
+	 * @param array $options the tag options in terms of name-value pairs. The following options are supported:
 	 *
 	 * - uncheck: string, the value associated with the uncheck state of the radio button. When this attribute
 	 *   is present, a hidden input will be generated so that if the radio button is not checked and is submitted,
 	 *   the value of this attribute will still be submitted to the server via the hidden input.
 	 *
+	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will 
+	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 *
 	 * @return string the generated radio button tag
 	 */
-	public static function radio($name, $checked = false, $value = '1', $tagAttributes = array())
+	public static function radio($name, $checked = false, $value = '1', $options = array())
 	{
-		$tagAttributes['checked'] = $checked;
-		$tagAttributes['value'] = $value;
-		if (isset($tagAttributes['uncheck'])) {
+		$options['checked'] = $checked;
+		$options['value'] = $value;
+		if (isset($options['uncheck'])) {
 			// add a hidden field so that if the radio button is not selected, it still submits a value
-			$hidden = static::hiddenInput($name, $tagAttributes['uncheck']);
-			unset($tagAttributes['uncheck']);
+			$hidden = static::hiddenInput($name, $options['uncheck']);
+			unset($options['uncheck']);
 		} else {
 			$hidden = '';
 		}
-		return $hidden . static::input('radio', $name, $value, $tagAttributes);
+		return $hidden . static::input('radio', $name, $value, $options);
 	}
 
 	/**
@@ -600,28 +622,29 @@ class Html
 	 * @param string $name the name attribute.
 	 * @param boolean $checked whether the checkbox should be checked.
 	 * @param string $value the value attribute. If it is null, the value attribute will not be rendered.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned. The following attributes
-	 * will be specially handled and not put in the resulting tag:
+	 * @param array $options the tag options in terms of name-value pairs. The following options are supported:
 	 *
 	 * - uncheck: string, the value associated with the uncheck state of the checkbox. When this attribute
 	 *   is present, a hidden input will be generated so that if the checkbox is not checked and is submitted,
 	 *   the value of this attribute will still be submitted to the server via the hidden input.
 	 *
+	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will 
+	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 *
 	 * @return string the generated checkbox tag
 	 */
-	public static function checkbox($name, $checked = false, $value = '1', $tagAttributes = array())
+	public static function checkbox($name, $checked = false, $value = '1', $options = array())
 	{
-		$tagAttributes['checked'] = $checked;
-		$tagAttributes['value'] = $value;
-		if (isset($tagAttributes['uncheck'])) {
+		$options['checked'] = $checked;
+		$options['value'] = $value;
+		if (isset($options['uncheck'])) {
 			// add a hidden field so that if the checkbox is not selected, it still submits a value
-			$hidden = static::hiddenInput($name, $tagAttributes['uncheck']);
-			unset($tagAttributes['uncheck']);
+			$hidden = static::hiddenInput($name, $options['uncheck']);
+			unset($options['uncheck']);
 		} else {
 			$hidden = '';
 		}
-		return $hidden . static::input('checkbox', $name, $value, $tagAttributes);
+		return $hidden . static::input('checkbox', $name, $value, $options);
 	}
 
 	/**
@@ -636,12 +659,10 @@ class Html
 	 *
 	 * Note, the values and labels will be automatically HTML-encoded by this method, and the blank spaces in
 	 * the labels will also be HTML-encoded.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned. The following attributes
-	 * will be specially handled and not put in the resulting tag:
+	 * @param array $options the tag options in terms of name-value pairs. The following options are supported:
 	 *
 	 * - prompt: string, a prompt text to be displayed as the first option;
-	 * - options: array, the attributes for the option tags. The array keys must be valid option values,
+	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
 	 * ~~~
@@ -653,13 +674,17 @@ class Html
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
+	 *
+	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will 
+	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 * 
 	 * @return string the generated drop-down list tag
 	 */
-	public static function dropDownList($name, $selection = null, $items = array(), $tagAttributes = array())
+	public static function dropDownList($name, $selection = null, $items = array(), $options = array())
 	{
-		$tagAttributes['name'] = $name;
-		$options = static::renderSelectOptions($selection, $items, $tagAttributes);
-		return static::tag('select', "\n" . $options . "\n", $tagAttributes);
+		$options['name'] = $name;
+		$selectOptions = static::renderSelectOptions($selection, $items, $options);
+		return static::tag('select', "\n" . $selectOptions . "\n", $options);
 	}
 
 	/**
@@ -674,12 +699,10 @@ class Html
 	 *
 	 * Note, the values and labels will be automatically HTML-encoded by this method, and the blank spaces in
 	 * the labels will also be HTML-encoded.
-	 * @param array $tagAttributes the attributes of the input tag. The values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the tag returned. The following attributes
-	 * will be specially handled and not put in the resulting tag:
+	 * @param array $options the tag options in terms of name-value pairs. The following options are supported:
 	 *
 	 * - prompt: string, a prompt text to be displayed as the first option;
-	 * - options: array, the attributes for the option tags. The array keys must be valid option values,
+	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
 	 * ~~~
@@ -694,29 +717,33 @@ class Html
 	 * - unselect: string, the value that will be submitted when no option is selected.
 	 *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
 	 *   mode, we can still obtain the posted unselect value.
+	 *
+	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will 
+	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 * 
 	 * @return string the generated list box tag
 	 */
-	public static function listBox($name, $selection = null, $items = array(), $tagAttributes = array())
+	public static function listBox($name, $selection = null, $items = array(), $options = array())
 	{
-		if (!isset($tagAttributes['size'])) {
-			$tagAttributes['size'] = 4;
+		if (!isset($options['size'])) {
+			$options['size'] = 4;
 		}
-		if (isset($tagAttributes['multiple']) && $tagAttributes['multiple'] && substr($name, -2) !== '[]') {
+		if (isset($options['multiple']) && $options['multiple'] && substr($name, -2) !== '[]') {
 			$name .= '[]';
 		}
-		$tagAttributes['name'] = $name;
-		if (isset($tagAttributes['unselect'])) {
+		$options['name'] = $name;
+		if (isset($options['unselect'])) {
 			// add a hidden field so that if the list box has no option being selected, it still submits a value
 			if (substr($name, -2) === '[]') {
 				$name = substr($name, 0, -2);
 			}
-			$hidden = static::hiddenInput($name, $tagAttributes['unselect']);
-			unset($tagAttributes['unselect']);
+			$hidden = static::hiddenInput($name, $options['unselect']);
+			unset($options['unselect']);
 		} else {
 			$hidden = '';
 		}
-		$options = static::renderSelectOptions($selection, $items, $tagAttributes);
-		return $hidden . static::tag('select', "\n" . $options . "\n", $tagAttributes);
+		$selectOptions = static::renderSelectOptions($selection, $items, $options);
+		return $hidden . static::tag('select', "\n" . $selectOptions . "\n", $options);
 	}
 
 	/**
@@ -757,7 +784,7 @@ class Html
 		foreach ($items as $value => $label) {
 			$checked = $selection !== null &&
 				(!is_array($selection) && !strcmp($value, $selection)
-				|| is_array($selection) && in_array($value, $selection));
+					|| is_array($selection) && in_array($value, $selection));
 			if ($formatter !== null) {
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
@@ -811,7 +838,7 @@ class Html
 		foreach ($items as $value => $label) {
 			$checked = $selection !== null &&
 				(!is_array($selection) && !strcmp($value, $selection)
-				|| is_array($selection) && in_array($value, $selection));
+					|| is_array($selection) && in_array($value, $selection));
 			if ($formatter !== null) {
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
@@ -843,23 +870,23 @@ class Html
 	 *
 	 * Note, the values and labels will be automatically HTML-encoded by this method, and the blank spaces in
 	 * the labels will also be HTML-encoded.
-	 * @param array $tagAttributes the attributes parameter that is passed to the [[dropDownList()]] or [[listBox()]] call.
+	 * @param array $tagOptions the $options parameter that is passed to the [[dropDownList()]] or [[listBox()]] call.
 	 * This method will take out these elements, if any: "prompt", "options" and "groups". See more details
 	 * in [[dropDownList()]] for the explanation of these elements.
 	 *
 	 * @return string the generated list options
 	 */
-	public static function renderSelectOptions($selection, $items, &$tagAttributes = array())
+	public static function renderSelectOptions($selection, $items, &$tagOptions = array())
 	{
 		$lines = array();
-		if (isset($tagAttributes['prompt'])) {
-			$prompt = str_replace(' ', '&nbsp;', static::encode($tagAttributes['prompt']));
+		if (isset($tagOptions['prompt'])) {
+			$prompt = str_replace(' ', '&nbsp;', static::encode($tagOptions['prompt']));
 			$lines[] = static::tag('option', $prompt, array('value' => ''));
 		}
 
-		$options = isset($tagAttributes['options']) ? $tagAttributes['options'] : array();
-		$groups = isset($tagAttributes['groups']) ? $tagAttributes['groups'] : array();
-		unset($tagAttributes['prompt'], $tagAttributes['options'], $tagAttributes['groups']);
+		$options = isset($tagOptions['options']) ? $tagOptions['options'] : array();
+		$groups = isset($tagOptions['groups']) ? $tagOptions['groups'] : array();
+		unset($tagOptions['prompt'], $tagOptions['options'], $tagOptions['groups']);
 
 		foreach ($items as $key => $value) {
 			if (is_array($value)) {
@@ -873,7 +900,7 @@ class Html
 				$attrs['value'] = $key;
 				$attrs['selected'] = $selection !== null &&
 					(!is_array($selection) && !strcmp($key, $selection)
-					|| is_array($selection) && in_array($key, $selection));
+						|| is_array($selection) && in_array($key, $selection));
 				$lines[] = static::tag('option', str_replace(' ', '&nbsp;', static::encode($value)), $attrs);
 			}
 		}
@@ -885,26 +912,26 @@ class Html
 	 * Renders the HTML tag attributes.
 	 * Boolean attributes such as s 'checked', 'disabled', 'readonly', will be handled specially
 	 * according to [[booleanAttributes]] and [[showBooleanAttributeValues]].
-	 * @param array $tagAttributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
+	 * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
 	 * Attributes whose value is null will be ignored and not put in the rendering result.
 	 * @return string the rendering result. If the attributes are not empty, they will be rendered
 	 * into a string with a leading white space (such that it can be directly appended to the tag name
 	 * in a tag. If there is no attribute, an empty string will be returned.
 	 */
-	public static function renderTagAttributes($tagAttributes)
+	public static function renderTagAttributes($attributes)
 	{
-		if (count($tagAttributes) > 1) {
+		if (count($attributes) > 1) {
 			$sorted = array();
 			foreach (static::$attributeOrder as $name) {
-				if (isset($tagAttributes[$name])) {
-					$sorted[$name] = $tagAttributes[$name];
+				if (isset($attributes[$name])) {
+					$sorted[$name] = $attributes[$name];
 				}
 			}
-			$tagAttributes = array_merge($sorted, $tagAttributes);
+			$attributes = array_merge($sorted, $attributes);
 		}
 
 		$html = '';
-		foreach ($tagAttributes as $name => $value) {
+		foreach ($attributes as $name => $value) {
 			if (isset(static::$booleanAttributes[strtolower($name)])) {
 				if ($value || strcasecmp($name, $value) === 0) {
 					$html .= static::$showBooleanAttributeValues ? " $name=\"$name\"" : " $name";

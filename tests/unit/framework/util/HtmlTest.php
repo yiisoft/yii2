@@ -233,9 +233,26 @@ class HtmlTest extends \yii\test\TestCase
 
 	public function testDropDownList()
 	{
-		$this->assertEquals("<select name=\"test\">\n\n</select>", Html::dropDownList('test'));
-		$this->assertEquals("<select name=\"test\">\n<option value=\"value1\">text1</option>\n<option value=\"value2\">text2</option>\n</select>", Html::dropDownList('test', null, $this->getDataItems()));
-		$this->assertEquals("<select name=\"test\">\n<option value=\"value1\">text1</option>\n<option value=\"value2\" selected=\"selected\">text2</option>\n</select>", Html::dropDownList('test', 'value2', $this->getDataItems()));
+		$expected = <<<EOD
+<select name="test">
+
+</select>
+EOD;
+		$this->assertEquals($expected, Html::dropDownList('test'));
+		$expected = <<<EOD
+<select name="test">
+<option value="value1">text1</option>
+<option value="value2">text2</option>
+</select>
+EOD;
+		$this->assertEquals($expected, Html::dropDownList('test', null, $this->getDataItems()));
+		$expected = <<<EOD
+<select name="test">
+<option value="value1">text1</option>
+<option value="value2" selected="selected">text2</option>
+</select>
+EOD;
+		$this->assertEquals($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
 	}
 
 	public function testListBox()
