@@ -220,22 +220,22 @@ class HtmlTest extends \yii\test\TestCase
 	public function testRadio()
 	{
 		$this->assertEquals('<input type="radio" name="test" value="1" />', Html::radio('test'));
-		$this->assertEquals('<input type="radio" class="a" name="test" checked="checked" />', Html::radio('test', null, true, array('class' => 'a')));
-		$this->assertEquals('<input type="hidden" name="test" value="0" /><input type="radio" class="a" name="test" checked="checked" />', Html::radio('test', null, true, array('class' => 'a' ,'uncheck' => '0')));
+		$this->assertEquals('<input type="radio" class="a" name="test" checked="checked" />', Html::radio('test', true, null, array('class' => 'a')));
+		$this->assertEquals('<input type="hidden" name="test" value="0" /><input type="radio" class="a" name="test" value="2" checked="checked" />', Html::radio('test', true, 2, array('class' => 'a' , 'uncheck' => '0')));
 	}
 
 	public function testCheckbox()
 	{
 		$this->assertEquals('<input type="checkbox" name="test" value="1" />', Html::checkbox('test'));
-		$this->assertEquals('<input type="checkbox" class="a" name="test" checked="checked" />', Html::checkbox('test', null, true, array('class' => 'a')));
-		$this->assertEquals('<input type="hidden" name="test" value="0" /><input type="checkbox" class="a" name="test" checked="checked" />', Html::checkbox('test', null, true, array('class' => 'a' ,'uncheck' => '0')));
+		$this->assertEquals('<input type="checkbox" class="a" name="test" checked="checked" />', Html::checkbox('test', true, null, array('class' => 'a')));
+		$this->assertEquals('<input type="hidden" name="test" value="0" /><input type="checkbox" class="a" name="test" value="2" checked="checked" />', Html::checkbox('test', true, 2, array('class' => 'a', 'uncheck' => '0')));
 	}
 
 	public function testDropDownList()
 	{
 		$this->assertEquals("<select name=\"test\">\n\n</select>", Html::dropDownList('test'));
-		$this->assertEquals("<select name=\"test\">\n<option value=\"value1\">text1</option>\n<option value=\"value2\">text2</option>\n</select>", Html::dropDownList('test', $this->getDataItems()));
-		$this->assertEquals("<select name=\"test\">\n<option value=\"value1\">text1</option>\n<option value=\"value2\" selected=\"selected\">text2</option>\n</select>", Html::dropDownList('test', $this->getDataItems(), 'value2'));
+		$this->assertEquals("<select name=\"test\">\n<option value=\"value1\">text1</option>\n<option value=\"value2\">text2</option>\n</select>", Html::dropDownList('test', null, $this->getDataItems()));
+		$this->assertEquals("<select name=\"test\">\n<option value=\"value1\">text1</option>\n<option value=\"value2\" selected=\"selected\">text2</option>\n</select>", Html::dropDownList('test', 'value2', $this->getDataItems()));
 	}
 
 	public function testListBox()
@@ -252,41 +252,41 @@ EOD;
 <option value="value2">text2</option>
 </select>
 EOD;
-		$this->assertEquals($expected, Html::listBox('test', $this->getDataItems(), null, array('size' => 5)));
+		$this->assertEquals($expected, Html::listBox('test', null, $this->getDataItems(), array('size' => 5)));
 		$expected = <<<EOD
 <select name="test" size="4">
 <option value="value1&lt;&gt;">text1&lt;&gt;</option>
 <option value="value  2">text&nbsp;&nbsp;2</option>
 </select>
 EOD;
-		$this->assertEquals($expected, Html::listBox('test', $this->getDataItems2(), null));
+		$this->assertEquals($expected, Html::listBox('test', null, $this->getDataItems2()));
 		$expected = <<<EOD
 <select name="test" size="4">
 <option value="value1">text1</option>
 <option value="value2" selected="selected">text2</option>
 </select>
 EOD;
-		$this->assertEquals($expected, Html::listBox('test', $this->getDataItems(), 'value2'));
+		$this->assertEquals($expected, Html::listBox('test', 'value2', $this->getDataItems()));
 		$expected = <<<EOD
 <select name="test" size="4">
 <option value="value1" selected="selected">text1</option>
 <option value="value2" selected="selected">text2</option>
 </select>
 EOD;
-		$this->assertEquals($expected, Html::listBox('test', $this->getDataItems(), array('value1', 'value2')));
+		$this->assertEquals($expected, Html::listBox('test', array('value1', 'value2'), $this->getDataItems()));
 
 		$expected = <<<EOD
 <select name="test[]" multiple="multiple" size="4">
 
 </select>
 EOD;
-		$this->assertEquals($expected, Html::listBox('test',  array(), null, array('multiple' => true)));
+		$this->assertEquals($expected, Html::listBox('test', null, array(), array('multiple' => true)));
 		$expected = <<<EOD
 <input type="hidden" name="test" value="0" /><select name="test" size="4">
 
 </select>
 EOD;
-		$this->assertEquals($expected, Html::listBox('test', array(), '', array('unselect' => '0')));
+		$this->assertEquals($expected, Html::listBox('test', '', array(), array('unselect' => '0')));
 	}
 
 	public function testCheckboxList()
@@ -297,30 +297,30 @@ EOD;
 <label><input type="checkbox" name="test[]" value="value1" /> text1</label>
 <label><input type="checkbox" name="test[]" value="value2" checked="checked" /> text2</label>
 EOD;
-		$this->assertEquals($expected, Html::checkboxList('test', $this->getDataItems(), array('value2')));
+		$this->assertEquals($expected, Html::checkboxList('test', array('value2'), $this->getDataItems()));
 
 		$expected = <<<EOD
 <label><input type="checkbox" name="test[]" value="value1&lt;&gt;" /> text1<></label>
 <label><input type="checkbox" name="test[]" value="value  2" /> text  2</label>
 EOD;
-		$this->assertEquals($expected, Html::checkboxList('test', $this->getDataItems2(), array('value2')));
+		$this->assertEquals($expected, Html::checkboxList('test', array('value2'), $this->getDataItems2()));
 
 		$expected = <<<EOD
 <input type="hidden" name="test" value="0" /><label><input type="checkbox" name="test[]" value="value1" /> text1</label><br />
 <label><input type="checkbox" name="test[]" value="value2" checked="checked" /> text2</label>
 EOD;
-		$this->assertEquals($expected, Html::checkboxList('test', $this->getDataItems(), array('value2'), array(
+		$this->assertEquals($expected, Html::checkboxList('test', array('value2'), $this->getDataItems(), array(
 			'separator' => "<br />\n",
 			'unselect' => '0',
 		)));
 
 		$expected = <<<EOD
-<label>text1 <input type="checkbox" name="test[]" value="value1" /></label>
-<label>text2 <input type="checkbox" name="test[]" value="value2" checked="checked" /></label>
+0<label>text1 <input type="checkbox" name="test[]" value="value1" /></label>
+1<label>text2 <input type="checkbox" name="test[]" value="value2" checked="checked" /></label>
 EOD;
-		$this->assertEquals($expected, Html::checkboxList('test', $this->getDataItems(), array('value2'), array(
-			'item' => function ($index, $label, $name, $value, $checked) {
-				return Html::label($label . ' ' . Html::checkbox($name, $value, $checked));
+		$this->assertEquals($expected, Html::checkboxList('test', array('value2'), $this->getDataItems(), array(
+			'item' => function ($index, $label, $name, $checked, $value) {
+				return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, $value));
 			}
 		)));
 	}
@@ -333,38 +333,36 @@ EOD;
 <label><input type="radio" name="test" value="value1" /> text1</label>
 <label><input type="radio" name="test" value="value2" checked="checked" /> text2</label>
 EOD;
-		$this->assertEquals($expected, Html::radioList('test', $this->getDataItems(), array('value2')));
+		$this->assertEquals($expected, Html::radioList('test', array('value2'), $this->getDataItems()));
 
 		$expected = <<<EOD
 <label><input type="radio" name="test" value="value1&lt;&gt;" /> text1<></label>
 <label><input type="radio" name="test" value="value  2" /> text  2</label>
 EOD;
-		$this->assertEquals($expected, Html::radioList('test', $this->getDataItems2(), array('value2')));
+		$this->assertEquals($expected, Html::radioList('test',  array('value2'), $this->getDataItems2()));
 
 		$expected = <<<EOD
 <input type="hidden" name="test" value="0" /><label><input type="radio" name="test" value="value1" /> text1</label><br />
 <label><input type="radio" name="test" value="value2" checked="checked" /> text2</label>
 EOD;
-		$this->assertEquals($expected, Html::radioList('test', $this->getDataItems(), array('value2'), array(
+		$this->assertEquals($expected, Html::radioList('test', array('value2'), $this->getDataItems(), array(
 			'separator' => "<br />\n",
 			'unselect' => '0',
 		)));
 
 		$expected = <<<EOD
-<label>text1 <input type="radio" name="test" value="value1" /></label>
-<label>text2 <input type="radio" name="test" value="value2" checked="checked" /></label>
+0<label>text1 <input type="radio" name="test" value="value1" /></label>
+1<label>text2 <input type="radio" name="test" value="value2" checked="checked" /></label>
 EOD;
-		$this->assertEquals($expected, Html::radioList('test', $this->getDataItems(), array('value2'), array(
-			'item' => function ($index, $label, $name, $value, $checked) {
-				return Html::label($label . ' ' . Html::radio($name, $value, $checked));
+		$this->assertEquals($expected, Html::radioList('test', array('value2'), $this->getDataItems(), array(
+			'item' => function ($index, $label, $name, $checked, $value) {
+				return $index . Html::label($label . ' ' . Html::radio($name, $checked, $value));
 			}
 		)));
 	}
 
 	public function testRenderOptions()
 	{
-		$this->assertEquals('', Html::renderOptions(array()));
-
 		$data = array(
 			'value1' => 'label1',
 			'group1' => array(
@@ -403,15 +401,15 @@ EOD;
 				'group12' => array('class' => 'group'),
 			),
 		);
-		$this->assertEquals($expected, Html::renderOptions($data, array('value111', 'value1'), $attributes));
+		$this->assertEquals($expected, Html::renderSelectOptions(array('value111', 'value1'), $data, $attributes));
 	}
 
 	public function testRenderAttributes()
 	{
-		$this->assertEquals('', Html::renderAttributes(array()));
-		$this->assertEquals(' name="test" value="1&lt;&gt;"', Html::renderAttributes(array('name' => 'test', 'empty' => null, 'value' => '1<>')));
+		$this->assertEquals('', Html::renderTagAttributes(array()));
+		$this->assertEquals(' name="test" value="1&lt;&gt;"', Html::renderTagAttributes(array('name' => 'test', 'empty' => null, 'value' => '1<>')));
 		Html::$showBooleanAttributeValues = false;
-		$this->assertEquals(' checked disabled', Html::renderAttributes(array('checked' => 'checked', 'disabled' => true, 'hidden' => false)));
+		$this->assertEquals(' checked disabled', Html::renderTagAttributes(array('checked' => 'checked', 'disabled' => true, 'hidden' => false)));
 		Html::$showBooleanAttributeValues = true;
 	}
 
