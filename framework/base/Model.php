@@ -420,12 +420,31 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
+	 * Returns the first error of every attribute in the model.
+	 * @return array the first errors. An empty array will be returned if there is no error.
+	 */
+	public function getFirstErrors()
+	{
+		if (empty($this->_errors)) {
+			return array();
+		} else {
+			$errors = array();
+			foreach ($this->_errors as $errors) {
+				if (isset($errors[0])) {
+					$errors[] = $errors[0];
+				}
+			}
+		}
+		return $errors;
+	}
+
+	/**
 	 * Returns the first error of the specified attribute.
 	 * @param string $attribute attribute name.
 	 * @return string the error message. Null is returned if no error.
 	 * @see getErrors
 	 */
-	public function getError($attribute)
+	public function getFirstError($attribute)
 	{
 		return isset($this->_errors[$attribute]) ? reset($this->_errors[$attribute]) : null;
 	}
@@ -438,25 +457,6 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function addError($attribute, $error)
 	{
 		$this->_errors[$attribute][] = $error;
-	}
-
-	/**
-	 * Adds a list of errors.
-	 * @param array $errors a list of errors. The array keys must be attribute names.
-	 * The array values should be error messages. If an attribute has multiple errors,
-	 * these errors must be given in terms of an array.
-	 */
-	public function addErrors($errors)
-	{
-		foreach ($errors as $attribute => $error) {
-			if (is_array($error)) {
-				foreach ($error as $e) {
-					$this->_errors[$attribute][] = $e;
-				}
-			} else {
-				$this->_errors[$attribute][] = $error;
-			}
-		}
 	}
 
 	/**
