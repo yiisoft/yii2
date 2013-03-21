@@ -114,7 +114,7 @@ class MigrateController extends Controller
 	{
 		if (parent::beforeAction($action)) {
 			$path = Yii::getAlias($this->migrationPath);
-			if ($path === false || !is_dir($path)) {
+			if (!is_dir($path)) {
 				throw new Exception("The migration directory \"{$this->migrationPath}\" does not exist.");
 			}
 			$this->migrationPath = $path;

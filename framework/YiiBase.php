@@ -4,9 +4,9 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\logging\Logger;
 
 /**
@@ -94,7 +94,7 @@ class YiiBase
 	 */
 	public static $objectConfig = array();
 
-	private static $_imported = array();	// alias => class name or directory
+	private static $_imported = array(); // alias => class name or directory
 	private static $_logger;
 
 	/**
@@ -159,9 +159,7 @@ class YiiBase
 			return self::$_imported[$alias] = $className;
 		}
 
-		if (($path = static::getAlias(dirname($alias))) === false) {
-			throw new Exception('Invalid path alias: ' . $alias);
-		}
+		$path = static::getAlias(dirname($alias));
 
 		if ($isClass) {
 			if ($forceInclude) {
@@ -191,24 +189,30 @@ class YiiBase
 	 *
 	 * Note, this method does not ensure the existence of the resulting path.
 	 * @param string $alias alias
+	 * @param boolean $throwException whether to throw an exception if the given alias is invalid.
+	 * If this is false and an invalid alias is given, false will be returned by this method.
 	 * @return string|boolean path corresponding to the alias, false if the root alias is not previously registered.
 	 * @see setAlias
 	 */
-	public static function getAlias($alias)
+	public static function getAlias($alias, $throwException = true)
 	{
-		if (!is_string($alias)) {
-			return false;
-		} elseif (isset(self::$aliases[$alias])) {
-			return self::$aliases[$alias];
-		} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
-			return $alias;
-		} elseif (($pos = strpos($alias, '/')) !== false) {
-			$rootAlias = substr($alias, 0, $pos);
-			if (isset(self::$aliases[$rootAlias])) {
-				return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
+		if (is_string($alias)) {
+			if (isset(self::$aliases[$alias])) {
+				return self::$aliases[$alias];
+			} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
+				return $alias;
+			} elseif (($pos = strpos($alias, '/')) !== false || ($pos = strpos($alias, '\\')) !== false) {
+				$rootAlias = substr($alias, 0, $pos);
+				if (isset(self::$aliases[$rootAlias])) {
+					return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
+				}
 			}
 		}
-		return false;
+		if ($throwException) {
+			throw new InvalidParamException("Invalid path alias: $alias");
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -236,10 +240,8 @@ class YiiBase
 			unset(self::$aliases[$alias]);
 		} elseif ($path[0] !== '@') {
 			self::$aliases[$alias] = rtrim($path, '\\/');
-		} elseif (($p = static::getAlias($path)) !== false) {
-			self::$aliases[$alias] = $p;
 		} else {
-			throw new Exception('Invalid path: ' . $path);
+			self::$aliases[$alias] = static::getAlias($path);
 		}
 	}
 
@@ -273,14 +275,14 @@ class YiiBase
 			// namespaced class, e.g. yii\base\Component
 			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
 			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
-			if (($path = static::getAlias($alias)) !== false) {
+			if (($path = static::getAlias($alias, false)) !== false) {
 				$classFile = $path . '.php';
 			}
 		} elseif (($pos = strpos($className, '_')) !== false) {
 			// PEAR-styled class, e.g. PHPUnit_Framework_TestCase
 			// convert class name to path alias, e.g. PHPUnit_Framework_TestCase to @PHPUnit/Framework/TestCase
 			$alias = '@' . str_replace('_', '/', $className);
-			if (($path = static::getAlias($alias)) !== false) {
+			if (($path = static::getAlias($alias, false)) !== false) {
 				$classFile = $path . '.php';
 			}
 		}

@@ -52,9 +52,6 @@ class FileCache extends Cache
 	{
 		parent::init();
 		$this->cachePath = \Yii::getAlias($this->cachePath);
-		if ($this->cachePath === false) {
-			throw new InvalidConfigException('FileCache.cachePath must be a valid path alias.');
-		}
 		if (!is_dir($this->cachePath)) {
 			mkdir($this->cachePath, 0777, true);
 		}

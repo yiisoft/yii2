@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\util\FileHelper;
 use yii\util\StringHelper;
 
 /**
@@ -295,34 +296,42 @@ class Controller extends Component
 
 	/**
 	 * Renders a view and applies layout if available.
-	 *
-	 * @param $view
-	 * @param array $params
-	 * @return string
+	 * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * These parameters will not be available in the layout.
+	 * @return string the rendering result.
+	 * @throws InvalidParamException if the view file or the layout file does not exist.
 	 */
 	public function render($view, $params = array())
 	{
-		return $this->createView()->render($view, $params);
+		$viewFile = $this->findViewFile($view);
+		$layoutFile = $this->findLayoutFile();
+		return Yii::$app->getView()->render($this, $viewFile, $params, $layoutFile);
 	}
 
-	public function renderContent($content)
-	{
-		return $this->createView()->renderContent($content);
-	}
-
+	/**
+	 * Renders a view.
+	 * This method differs from [[render()]] in that it does not apply any layout.
+	 * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * @return string the rendering result.
+	 * @throws InvalidParamException if the view file does not exist.
+	 */
 	public function renderPartial($view, $params = array())
 	{
-		return $this->createView()->renderPartial($view, $params);
+		return $this->renderFile($this->findViewFile($view), $params);
 	}
 
+	/**
+	 * Renders a view file.
+	 * @param string $file the view file to be rendered. This can be either a file path or a path alias.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * @return string the rendering result.
+	 * @throws InvalidParamException if the view file does not exist.
+	 */
 	public function renderFile($file, $params = array())
 	{
-		return $this->createView()->renderFile($file, $params);
-	}
-
-	public function createView()
-	{
-		return new View($this);
+		return Yii::$app->getView()->render($this, $file, $params);
 	}
 
 	/**
@@ -334,5 +343,106 @@ class Controller extends Component
 	public function getViewPath()
 	{
 		return $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
+	}
+
+	/**
+	 * Finds the view file based on the given view name.
+	 *
+	 * A view name can be specified in one of the following formats:
+	 *
+	 * - path alias (e.g. "@app/views/site/index");
+	 * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
+	 *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
+	 * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
+	 *   The actual view file will be looked for under the [[Module::viewPath|view path]] of the currently
+	 *   active module.
+	 * - relative path (e.g. "index"): the actual view file will be looked for under [[viewPath]].
+	 *
+	 * If the view name does not contain a file extension, it will use the default one `.php`.
+	 *
+	 * @param string $view the view name or the path alias of the view file.
+	 * @return string the view file path. Note that the file may not exist.
+	 * @throws InvalidParamException if the view file is an invalid path alias
+	 */
+	protected function findViewFile($view)
+	{
+		if (strncmp($view, '@', 1) === 0) {
+			// e.g. "@app/views/common"
+			$file = Yii::getAlias($view);
+		} elseif (strncmp($view, '/', 1) !== 0) {
+			// e.g. "index"
+			$file = $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
+		} elseif (strncmp($view, '//', 2) !== 0) {
+			// e.g. "/site/index"
+			$file = $this->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+		} else {
+			// e.g. "//layouts/main"
+			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+		}
+		if (FileHelper::getExtension($file) === '') {
+			$file .= '.php';
+		}
+		return $file;
+	}
+
+	/**
+	 * Finds the applicable layout file.
+	 *
+	 * This method locates an applicable layout file via two steps.
+	 *
+	 * In the first step, it determines the layout name and the context module:
+	 *
+	 * - If [[layout]] is specified as a string, use it as the layout name and [[module]] as the context module;
+	 * - If [[layout]] is null, search through all ancestor modules of this controller and find the first
+	 *   module whose [[Module::layout|layout]] is not null. The layout and the corresponding module
+	 *   are used as the layout name and the context module, respectively. If such a module is not found
+	 *   or the corresponding layout is not a string, it will return false, meaning no applicable layout.
+	 *
+	 * In the second step, it determines the actual layout file according to the previously found layout name
+	 * and context module. The layout name can be
+	 *
+	 * - a path alias (e.g. "@app/views/layouts/main");
+	 * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
+	 *   looked for under the [[Application::layoutPath|layout path]] of the application;
+	 * - a relative path (e.g. "main"): the actual layout layout file will be looked for under the
+	 *   [[Module::viewPath|view path]] of the context module.
+	 *
+	 * If the layout name does not contain a file extension, it will use the default one `.php`.
+	 *
+	 * @return string|boolean the layout file path, or false if layout is not needed.
+	 * @throws InvalidParamException if an invalid path alias is used to specify the layout
+	 */
+	protected function findLayoutFile()
+	{
+		/** @var $module Module */
+		if (is_string($this->layout)) {
+			$module = $this->module;
+			$view = $this->layout;
+		} elseif ($this->layout === null) {
+			$module = $this->module;
+			while ($module !== null && $module->layout === null) {
+				$module = $module->module;
+			}
+			if ($module !== null && is_string($module->layout)) {
+				$view = $module->layout;
+			}
+		}
+
+		if (!isset($view)) {
+			return false;
+		}
+
+		if (strncmp($view, '@', 1) === 0) {
+			$file = Yii::getAlias($view);
+		} elseif (strncmp($view, '/', 1) === 0) {
+			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+		} else {
+			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+		}
+
+		if (FileHelper::getExtension($file) === '') {
+			$file .= '.php';
+		}
+		return $file;
 	}
 }

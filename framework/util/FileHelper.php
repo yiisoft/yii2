@@ -43,7 +43,7 @@ class FileHelper
 	public static function ensureDirectory($path)
 	{
 		$p = \Yii::getAlias($path);
-		if ($p !== false && ($p = realpath($p)) !== false && is_dir($p)) {
+		if (($p = realpath($p)) !== false && is_dir($p)) {
 			return $p;
 		} else {
 			throw new InvalidConfigException('Directory does not exist: ' . $path);

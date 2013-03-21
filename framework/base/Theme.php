@@ -40,7 +40,8 @@ class Theme extends Component
 	/**
 	 * @var array the mapping between view directories and their corresponding themed versions.
 	 * If not set, it will be initialized as a mapping from [[Application::basePath]] to [[basePath]].
-	 * This property is used by [[apply()]] when a view is trying to apply the theme.
+	 * This property is used by [[applyTo()]] when a view is trying to apply the theme.
+	 * Path aliases can be used when specifying directories.
 	 */
 	public $pathMap;
 
@@ -63,7 +64,9 @@ class Theme extends Component
 		}
 		$paths = array();
 		foreach ($this->pathMap as $from => $to) {
-			$paths[FileHelper::normalizePath($from) . DIRECTORY_SEPARATOR] = FileHelper::normalizePath($to) . DIRECTORY_SEPARATOR;
+			$from = FileHelper::normalizePath(Yii::getAlias($from));
+			$to = FileHelper::normalizePath(Yii::getAlias($to));
+			$paths[$from . DIRECTORY_SEPARATOR] = $to . DIRECTORY_SEPARATOR;
 		}
 		$this->pathMap = $paths;
 	}
@@ -93,7 +96,7 @@ class Theme extends Component
 	 * @param string $path the file to be themed
 	 * @return string the themed file, or the original file if the themed version is not available.
 	 */
-	public function apply($path)
+	public function applyTo($path)
 	{
 		$path = FileHelper::normalizePath($path);
 		foreach ($this->pathMap as $from => $to) {

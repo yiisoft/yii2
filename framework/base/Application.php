@@ -160,28 +160,28 @@ class Application extends Module
 	 */
 	public function handleFatalError()
 	{
-		if(YII_ENABLE_ERROR_HANDLER) {
+		if (YII_ENABLE_ERROR_HANDLER) {
 			$error = error_get_last();
 
-			if(ErrorException::isFatalErorr($error)) {
+			if (ErrorException::isFatalErorr($error)) {
 				unset($this->_memoryReserve);
 				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
 
-				if(function_exists('xdebug_get_function_stack')) {
+				if (function_exists('xdebug_get_function_stack')) {
 					$trace = array_slice(array_reverse(xdebug_get_function_stack()), 4, -1);
-					foreach($trace as &$frame) {
-						if(!isset($frame['function'])) {
+					foreach ($trace as &$frame) {
+						if (!isset($frame['function'])) {
 							$frame['function'] = 'unknown';
 						}
 
 						// XDebug < 2.1.1: http://bugs.xdebug.org/view.php?id=695
-						if(!isset($frame['type'])) {
+						if (!isset($frame['type'])) {
 							$frame['type'] = '::';
 						}
 
 						// XDebug has a different key name
 						$frame['args'] = array();
-						if(isset($frame['params']) && !isset($frame['args'])) {
+						if (isset($frame['params']) && !isset($frame['args'])) {
 							$frame['args'] = $frame['params'];
 						}
 					}
@@ -214,8 +214,8 @@ class Application extends Module
 		$this->beforeRequest();
 		// Allocating twice more than required to display memory exhausted error
 		// in case of trying to allocate last 1 byte while all memory is taken.
-		$this->_memoryReserve = str_repeat('x', 1024*256);
-		register_shutdown_function(array($this,'end'),0,false);
+		$this->_memoryReserve = str_repeat('x', 1024 * 256);
+		register_shutdown_function(array($this, 'end'), 0, false);
 		$status = $this->processRequest();
 		$this->afterRequest();
 		return $status;
@@ -346,15 +346,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the application theme.
-	 * @return Theme the theme that this application is currently using.
-	 */
-	public function getTheme()
-	{
-		return $this->getComponent('theme');
-	}
-
-	/**
 	 * Returns the cache component.
 	 * @return \yii\caching\Cache the cache application component. Null if the component is not enabled.
 	 */
@@ -373,12 +364,12 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the view renderer.
-	 * @return ViewRenderer the view renderer used by this application.
+	 * Returns the view object.
+	 * @return View the view object that is used to render various view files.
 	 */
-	public function getViewRenderer()
+	public function getView()
 	{
-		return $this->getComponent('viewRenderer');
+		return $this->getComponent('view');
 	}
 
 	/**
@@ -423,6 +414,9 @@ class Application extends Module
 			'urlManager' => array(
 				'class' => 'yii\web\UrlManager',
 			),
+			'view' => array(
+				'class' => 'yii\base\View',
+			),
 		));
 	}
 
@@ -446,8 +440,8 @@ class Application extends Module
 			// in case error appeared in __toString method we can't throw any exception
 			$trace = debug_backtrace(false);
 			array_shift($trace);
-			foreach($trace as $frame) {
-				if($frame['function'] == '__toString') {
+			foreach ($trace as $frame) {
+				if ($frame['function'] == '__toString') {
 					$this->handleException($exception);
 				}
 			}
@@ -481,7 +475,7 @@ class Application extends Module
 
 			$this->end(1);
 
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			// exception could be thrown in end() or ErrorHandler::handle()
 			$msg = (string)$e;
 			$msg .= "\nPrevious exception:\n";

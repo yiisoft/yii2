@@ -253,14 +253,9 @@ class ErrorHandler extends Component
 	 */
 	public function renderAsHtml($exception)
 	{
-		$view = new View($this);
-		if (!YII_DEBUG || $exception instanceof UserException) {
-			$viewName = $this->errorView;
-		} else {
-			$viewName = $this->exceptionView;
-		}
+		$view = new View;
 		$name = !YII_DEBUG || $exception instanceof HttpException ? $this->errorView : $this->exceptionView;
-		echo $view->render($name, array(
+		echo $view->render($this, $name, array(
 			'exception' => $exception,
 		));
 	}
