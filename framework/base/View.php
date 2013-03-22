@@ -39,6 +39,12 @@ class View extends Component
 	 * If not set, it means theming is not enabled.
 	 */
 	public $theme;
+	/**
+	 * @var array a list of named output clips. You can call [[beginClip()]] and [[endClip()]]
+	 * to capture small fragments of a view. They can be later accessed at somewhere else
+	 * through this property.
+	 */
+	public $clips;
 
 	/**
 	 * @var Widget[] the widgets that are currently not ended
@@ -61,34 +67,28 @@ class View extends Component
 	}
 
 	/**
-	 * Renders a view file under a context with an optional layout.
+	 * Renders a view.
 	 *
-	 * This method is similar to [[renderFile()]] except that it will update [[context]]
-	 * with the provided $context parameter. It will also apply layout to the rendering result
-	 * of the view file if $layoutFile is given.
+	 * This method will call [[findViewFile()]] to convert the view name into the corresponding view
+	 * file path, and it will then call [[renderFile()]] to render the view.
 	 *
-	 * Theming and localization will be performed for the view file and the layout file, if possible.
-	 *
-	 * @param object $context the context object for rendering the file. This could be a controller, a widget,
-	 * or any other object that serves as the rendering context of the view file. In the view file,
-	 * it can be accessed through the [[context]] property.
-	 * @param string $viewFile the view file. This can be a file path or a path alias.
+	 * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify this parameter.
 	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-	 * @param string|boolean $layoutFile the layout file. This can be a file path or a path alias.
-	 * If it is false, it means no layout should be applied.
+	 * @param object $context the context that the view should use for rendering the view. If null,
+	 * existing [[context]] will be used.
 	 * @return string the rendering result
-	 * @throws InvalidParamException if the view file or the layout file does not exist.
+	 * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
+	 * @see renderFile
+	 * @see findViewFile
 	 */
-	public function render($view, $params = array())
+	public function render($view, $params = array(), $context = null)
 	{
-		$viewFile = $this->findViewFile($this->context, $view);
-		return $this->renderFile($viewFile, $params);
+		$viewFile = $this->findViewFile($context, $view);
+		return $this->renderFile($viewFile, $params, $context);
 	}
 
 	/**
 	 * Renders a view file.
-	 *
-	 * This method renders the specified view file under the existing [[context]].
 	 *
 	 * If [[theme]] is enabled (not null), it will try to render the themed version of the view file as long
 	 * as it is available.
@@ -99,12 +99,14 @@ class View extends Component
 	 * Otherwise, it will simply include the view file as a normal PHP file, capture its output and
 	 * return it as a string.
 	 *
-	 * @param string $viewFile the view file. This can be a file path or a path alias.
+	 * @param string $viewFile the view file. This can be either a file path or a path alias.
 	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @param object $context the context that the view should use for rendering the view. If null,
+	 * existing [[context]] will be used.
 	 * @return string the rendering result
 	 * @throws InvalidParamException if the view file does not exist
 	 */
-	public function renderFile($viewFile, $params = array())
+	public function renderFile($viewFile, $params = array(), $context = null)
 	{
 		$viewFile = Yii::getAlias($viewFile);
 		if (is_file($viewFile)) {
@@ -116,11 +118,18 @@ class View extends Component
 			throw new InvalidParamException("The view file does not exist: $viewFile");
 		}
 
+		$oldContext = $this->context;
+		$this->context = $context;
+
 		if ($this->renderer !== null) {
-			return $this->renderer->render($this, $viewFile, $params);
+			$output = $this->renderer->render($this, $viewFile, $params);
 		} else {
-			return $this->renderPhpFile($viewFile, $params);
+			$output = $this->renderPhpFile($viewFile, $params);
 		}
+
+		$this->context = $oldContext;
+
+		return $output;
 	}
 
 	/**
@@ -156,36 +165,36 @@ class View extends Component
 	 * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
 	 *   The actual view file will be looked for under the [[Module::viewPath|view path]] of the currently
 	 *   active module.
-	 * - relative path (e.g. "index"): the actual view file will be looked for under [[viewPath]].
+	 * - relative path (e.g. "index"): the actual view file will be looked for under [[Controller::viewPath|viewPath]]
+	 *   of the context object, assuming the context is either a [[Controller]] or a [[Widget]].
 	 *
 	 * If the view name does not contain a file extension, it will use the default one `.php`.
 	 *
+	 * @param object $context the view context object
 	 * @param string $view the view name or the path alias of the view file.
 	 * @return string the view file path. Note that the file may not exist.
-	 * @throws InvalidParamException if the view file is an invalid path alias
+	 * @throws InvalidParamException if the view file is an invalid path alias or the context cannot be
+	 * used to determine the actual view file corresponding to the specified view.
 	 */
 	protected function findViewFile($context, $view)
 	{
-		if (FileHelper::getExtension($view) === '') {
-			$view .= '.php';
-		}
-
-		if (strncmp($view, '//', 2) === 0) {
+		if (strncmp($view, '@', 1) === 0) {
+			// e.g. "@app/views/main"
+			$file = Yii::getAlias($view);
+		} elseif (strncmp($view, '//', 2) === 0) {
 			// e.g. "//layouts/main"
 			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
 		} elseif (strncmp($view, '/', 1) === 0) {
 			// e.g. "/site/index"
-			$file = Yii::$app->controller->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} elseif (strncmp($view, '@', 1) !== 0) {
-			// e.g. "index" or "view/item"
-			if (method_exists($context, 'getViewPath')) {
-				$file = $context->getViewPath() . DIRECTORY_SEPARATOR . $view;
-			} else {
-				$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . $view;
-			}
+			$file = Yii::$app->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+		} elseif ($context instanceof Controller || $context instanceof Widget) {
+			/** @var $context Controller|Widget */
+			$file = $context->getViewPath() . DIRECTORY_SEPARATOR . $view;
+		} else {
+			throw new InvalidParamException("Unable to resolve the view file for '$view'.");
 		}
 
-		return $file;
+		return FileHelper::getExtension($file) === '' ? $file . '.php' : $file;
 	}
 
 	/**
@@ -260,26 +269,31 @@ class View extends Component
 		}
 	}
 
-	//
-	//	/**
-	//	 * Begins recording a clip.
-	//	 * This method is a shortcut to beginning [[yii\widgets\Clip]]
-	//	 * @param string $id the clip ID.
-	//	 * @param array $properties initial property values for [[yii\widgets\Clip]]
-	//	 */
-	//	public function beginClip($id, $properties = array())
-	//	{
-	//		$properties['id'] = $id;
-	//		$this->beginWidget('yii\widgets\Clip', $properties);
-	//	}
-	//
-	//	/**
-	//	 * Ends recording a clip.
-	//	 */
-	//	public function endClip()
-	//	{
-	//		$this->endWidget();
-	//	}
+	/**
+	 * Begins recording a clip.
+	 * This method is a shortcut to beginning [[yii\widgets\Clip]]
+	 * @param string $id the clip ID.
+	 * @param boolean $renderInPlace whether to render the clip content in place.
+	 * Defaults to false, meaning the captured clip will not be displayed.
+	 * @return \yii\widgets\Clip the Clip widget instance
+	 */
+	public function beginClip($id, $renderInPlace = false)
+	{
+		return $this->beginWidget('yii\widgets\Clip', array(
+			'id' => $id,
+			'renderInPlace' => $renderInPlace,
+			'view' => $this,
+		));
+	}
+
+	/**
+	 * Ends recording a clip.
+	 */
+	public function endClip()
+	{
+		$this->endWidget();
+	}
+
 	//
 	//	/**
 	//	 * Begins fragment caching.
@@ -322,33 +336,33 @@ class View extends Component
 	//		$this->endWidget();
 	//	}
 	//
-	//	/**
-	//	 * Begins the rendering of content that is to be decorated by the specified view.
-	//	 * @param mixed $view the name of the view that will be used to decorate the content. The actual view script
-	//	 * is resolved via {@link getViewFile}. If this parameter is null (default),
-	//	 * the default layout will be used as the decorative view.
-	//	 * Note that if the current controller does not belong to
-	//	 * any module, the default layout refers to the application's {@link CWebApplication::layout default layout};
-	//	 * If the controller belongs to a module, the default layout refers to the module's
-	//	 * {@link CWebModule::layout default layout}.
-	//	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
-	//	 * @see endContent
-	//	 * @see yii\widgets\ContentDecorator
-	//	 */
-	//	public function beginContent($view, $params = array())
-	//	{
-	//		$this->beginWidget('yii\widgets\ContentDecorator', array(
-	//			'view' => $view,
-	//			'params' => $params,
-	//		));
-	//	}
-	//
-	//	/**
-	//	 * Ends the rendering of content.
-	//	 * @see beginContent
-	//	 */
-	//	public function endContent()
-	//	{
-	//		$this->endWidget();
-	//	}
+	/**
+	 * Begins the rendering of content that is to be decorated by the specified view.
+	 * @param mixed $view the name of the view that will be used to decorate the content. The actual view script
+	 * is resolved via {@link getViewFile}. If this parameter is null (default),
+	 * the default layout will be used as the decorative view.
+	 * Note that if the current controller does not belong to
+	 * any module, the default layout refers to the application's {@link CWebApplication::layout default layout};
+	 * If the controller belongs to a module, the default layout refers to the module's
+	 * {@link CWebModule::layout default layout}.
+	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
+	 * @see endContent
+	 * @see yii\widgets\ContentDecorator
+	 */
+	public function beginContent($view, $params = array())
+	{
+		$this->beginWidget('yii\widgets\ContentDecorator', array(
+			'view' => $view,
+			'params' => $params,
+		));
+	}
+
+	/**
+	 * Ends the rendering of content.
+	 * @see beginContent
+	 */
+	public function endContent()
+	{
+		$this->endWidget();
+	}
 }

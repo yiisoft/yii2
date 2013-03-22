@@ -304,9 +304,13 @@ class Controller extends Component
 	 */
 	public function render($view, $params = array())
 	{
-		$viewFile = $this->findViewFile($view);
+		$output = Yii::$app->getView()->render($view, $params, $this);
 		$layoutFile = $this->findLayoutFile();
-		return Yii::$app->getView()->render($this, $viewFile, $params, $layoutFile);
+		if ($layoutFile !== false) {
+			return Yii::$app->getView()->renderFile($layoutFile, array('content' => $output), $this);
+		} else {
+			return $output;
+		}
 	}
 
 	/**
@@ -319,7 +323,7 @@ class Controller extends Component
 	 */
 	public function renderPartial($view, $params = array())
 	{
-		return $this->renderFile($this->findViewFile($view), $params);
+		return Yii::$app->getView()->render($view, $params, $this);
 	}
 
 	/**
@@ -331,7 +335,7 @@ class Controller extends Component
 	 */
 	public function renderFile($file, $params = array())
 	{
-		return Yii::$app->getView()->render($this, $file, $params);
+		return Yii::$app->getView()->renderFile($file, $params, $this);
 	}
 
 	/**
@@ -343,46 +347,6 @@ class Controller extends Component
 	public function getViewPath()
 	{
 		return $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
-	}
-
-	/**
-	 * Finds the view file based on the given view name.
-	 *
-	 * A view name can be specified in one of the following formats:
-	 *
-	 * - path alias (e.g. "@app/views/site/index");
-	 * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
-	 *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
-	 * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
-	 *   The actual view file will be looked for under the [[Module::viewPath|view path]] of the currently
-	 *   active module.
-	 * - relative path (e.g. "index"): the actual view file will be looked for under [[viewPath]].
-	 *
-	 * If the view name does not contain a file extension, it will use the default one `.php`.
-	 *
-	 * @param string $view the view name or the path alias of the view file.
-	 * @return string the view file path. Note that the file may not exist.
-	 * @throws InvalidParamException if the view file is an invalid path alias
-	 */
-	protected function findViewFile($view)
-	{
-		if (strncmp($view, '@', 1) === 0) {
-			// e.g. "@app/views/common"
-			$file = Yii::getAlias($view);
-		} elseif (strncmp($view, '/', 1) !== 0) {
-			// e.g. "index"
-			$file = $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
-		} elseif (strncmp($view, '//', 2) !== 0) {
-			// e.g. "/site/index"
-			$file = $this->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} else {
-			// e.g. "//layouts/main"
-			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		}
-		if (FileHelper::getExtension($file) === '') {
-			$file .= '.php';
-		}
-		return $file;
 	}
 
 	/**
