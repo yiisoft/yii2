@@ -414,12 +414,10 @@ class Controller extends Component
 	 */
 	protected function findLayoutFile()
 	{
-		/** @var $module Module */
+		$module = $this->module;
 		if (is_string($this->layout)) {
-			$module = $this->module;
 			$view = $this->layout;
 		} elseif ($this->layout === null) {
-			$module = $this->module;
 			while ($module !== null && $module->layout === null) {
 				$module = $module->module;
 			}

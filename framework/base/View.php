@@ -79,20 +79,10 @@ class View extends Component
 	 * @return string the rendering result
 	 * @throws InvalidParamException if the view file or the layout file does not exist.
 	 */
-	public function render($context, $viewFile, $params = array(), $layoutFile = false)
+	public function render($view, $params = array())
 	{
-		$oldContext = $this->context;
-		$this->context = $context;
-
-		$content = $this->renderFile($viewFile, $params);
-
-		if ($layoutFile !== false) {
-			$content = $this->renderFile($layoutFile, array('content' => $content));
-		}
-
-		$this->context = $oldContext;
-
-		return $content;
+		$viewFile = $this->findViewFile($this->context, $view);
+		return $this->renderFile($viewFile, $params);
 	}
 
 	/**
@@ -153,6 +143,49 @@ class View extends Component
 		extract($_params_, EXTR_OVERWRITE);
 		require($_file_);
 		return ob_get_clean();
+	}
+
+	/**
+	 * Finds the view file based on the given view name.
+	 *
+	 * A view name can be specified in one of the following formats:
+	 *
+	 * - path alias (e.g. "@app/views/site/index");
+	 * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
+	 *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
+	 * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
+	 *   The actual view file will be looked for under the [[Module::viewPath|view path]] of the currently
+	 *   active module.
+	 * - relative path (e.g. "index"): the actual view file will be looked for under [[viewPath]].
+	 *
+	 * If the view name does not contain a file extension, it will use the default one `.php`.
+	 *
+	 * @param string $view the view name or the path alias of the view file.
+	 * @return string the view file path. Note that the file may not exist.
+	 * @throws InvalidParamException if the view file is an invalid path alias
+	 */
+	protected function findViewFile($context, $view)
+	{
+		if (FileHelper::getExtension($view) === '') {
+			$view .= '.php';
+		}
+
+		if (strncmp($view, '//', 2) === 0) {
+			// e.g. "//layouts/main"
+			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+		} elseif (strncmp($view, '/', 1) === 0) {
+			// e.g. "/site/index"
+			$file = Yii::$app->controller->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+		} elseif (strncmp($view, '@', 1) !== 0) {
+			// e.g. "index" or "view/item"
+			if (method_exists($context, 'getViewPath')) {
+				$file = $context->getViewPath() . DIRECTORY_SEPARATOR . $view;
+			} else {
+				$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . $view;
+			}
+		}
+
+		return $file;
 	}
 
 	/**
