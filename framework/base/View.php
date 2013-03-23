@@ -119,7 +119,9 @@ class View extends Component
 		}
 
 		$oldContext = $this->context;
-		$this->context = $context;
+		if ($context !== null) {
+			$this->context = $context;
+		}
 
 		if ($this->renderer !== null) {
 			$output = $this->renderer->render($this, $viewFile, $params);
@@ -276,6 +278,7 @@ class View extends Component
 	 * @param boolean $renderInPlace whether to render the clip content in place.
 	 * Defaults to false, meaning the captured clip will not be displayed.
 	 * @return \yii\widgets\Clip the Clip widget instance
+	 * @see \yii\widgets\Clip
 	 */
 	public function beginClip($id, $renderInPlace = false)
 	{
@@ -290,6 +293,31 @@ class View extends Component
 	 * Ends recording a clip.
 	 */
 	public function endClip()
+	{
+		$this->endWidget();
+	}
+
+	/**
+	 * Begins the rendering of content that is to be decorated by the specified view.
+	 * @param string $view the name of the view that will be used to decorate the content enclosed by this widget.
+	 * Please refer to [[View::findViewFile()]] on how to set this property.
+	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
+	 * @return \yii\widgets\ContentDecorator the ContentDecorator widget instance
+	 * @see \yii\widgets\ContentDecorator
+	 */
+	public function beginContent($view, $params = array())
+	{
+		return $this->beginWidget('yii\widgets\ContentDecorator', array(
+			'view' => $this,
+			'viewName' => $view,
+			'params' => $params,
+		));
+	}
+
+	/**
+	 * Ends the rendering of content.
+	 */
+	public function endContent()
 	{
 		$this->endWidget();
 	}
@@ -336,33 +364,4 @@ class View extends Component
 	//		$this->endWidget();
 	//	}
 	//
-	/**
-	 * Begins the rendering of content that is to be decorated by the specified view.
-	 * @param mixed $view the name of the view that will be used to decorate the content. The actual view script
-	 * is resolved via {@link getViewFile}. If this parameter is null (default),
-	 * the default layout will be used as the decorative view.
-	 * Note that if the current controller does not belong to
-	 * any module, the default layout refers to the application's {@link CWebApplication::layout default layout};
-	 * If the controller belongs to a module, the default layout refers to the module's
-	 * {@link CWebModule::layout default layout}.
-	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
-	 * @see endContent
-	 * @see yii\widgets\ContentDecorator
-	 */
-	public function beginContent($view, $params = array())
-	{
-		$this->beginWidget('yii\widgets\ContentDecorator', array(
-			'view' => $view,
-			'params' => $params,
-		));
-	}
-
-	/**
-	 * Ends the rendering of content.
-	 * @see beginContent
-	 */
-	public function endContent()
-	{
-		$this->endWidget();
-	}
 }
