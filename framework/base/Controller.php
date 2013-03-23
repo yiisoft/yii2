@@ -8,8 +8,8 @@
 namespace yii\base;
 
 use Yii;
-use yii\util\FileHelper;
-use yii\util\StringHelper;
+use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 
 /**
  * Controller is the base class for classes containing controller logic.

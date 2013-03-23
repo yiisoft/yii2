@@ -16,7 +16,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-use yii\util\VarDumper;
+use yii\helpers\VarDumper;
 
 class ErrorHandler extends Component
 {

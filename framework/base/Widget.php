@@ -8,7 +8,7 @@
 namespace yii\base;
 
 use Yii;
-use yii\util\FileHelper;
+use yii\helpers\FileHelper;
 
 /**
  * Widget is the base class for widgets.

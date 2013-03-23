@@ -9,7 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\DictionaryIterator;
-use yii\util\SecurityHelper;
+use yii\helpers\SecurityHelper;
 
 /**
  * CookieCollection maintains the cookies available in the current request.

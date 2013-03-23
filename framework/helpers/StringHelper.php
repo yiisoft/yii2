@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\util;
+namespace yii\helpers;
 
 /**
  * StringHelper

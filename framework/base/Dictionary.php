@@ -7,7 +7,7 @@
 
 namespace yii\base;
 
-use yii\util\ArrayHelper;
+use yii\helpers\ArrayHelper;
 
 /**
  * Dictionary implements a collection that stores key-value pairs.

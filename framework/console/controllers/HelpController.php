@@ -13,7 +13,7 @@ use yii\console\Exception;
 use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\console\Request;
-use yii\util\StringHelper;
+use yii\helpers\StringHelper;
 
 /**
  * This command provides help information about console commands.

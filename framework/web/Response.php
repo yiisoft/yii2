@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\util\FileHelper;
+use yii\helpers\FileHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>

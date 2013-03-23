@@ -8,8 +8,8 @@
 namespace yii\base;
 
 use Yii;
-use yii\util\StringHelper;
-use yii\util\FileHelper;
+use yii\helpers\StringHelper;
+use yii\helpers\FileHelper;
 
 /**
  * Module is the base class for module and application classes.

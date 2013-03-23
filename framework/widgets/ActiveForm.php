@@ -11,8 +11,8 @@ use Yii;
 use yii\base\InvalidParamException;
 use yii\base\Widget;
 use yii\base\Model;
-use yii\util\Html;
-use yii\util\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 
 /**
  * ActiveForm ...
@@ -23,7 +23,7 @@ use yii\util\ArrayHelper;
 class ActiveForm extends Widget
 {
 	/**
-	 * @param array|string $action the form action URL. This parameter will be processed by [[\yii\util\Html::url()]].
+	 * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Html::url()]].
 	 */
 	public $action = '';
 	/**

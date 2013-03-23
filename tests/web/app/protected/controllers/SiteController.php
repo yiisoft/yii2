@@ -1,6 +1,6 @@
 <?php
 
-use yii\util\Html;
+use yii\helpers\Html;
 
 class DefaultController extends \yii\web\Controller
 {

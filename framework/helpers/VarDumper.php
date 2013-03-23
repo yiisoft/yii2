@@ -6,7 +6,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\util;
+namespace yii\helpers;
 
 /**
  * VarDumper is intended to replace the buggy PHP function var_dump and print_r.

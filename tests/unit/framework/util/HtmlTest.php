@@ -3,7 +3,7 @@
 namespace yiiunit\framework\util;
 
 use Yii;
-use yii\util\Html;
+use yii\helpers\Html;
 use yii\web\Application;
 
 class HtmlTest extends \yii\test\TestCase

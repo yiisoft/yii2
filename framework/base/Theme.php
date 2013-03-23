@@ -9,7 +9,7 @@ namespace yii\base;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\util\FileHelper;
+use yii\helpers\FileHelper;
 
 /**
  * Theme represents an application theme.

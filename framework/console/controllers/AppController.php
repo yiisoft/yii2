@@ -8,7 +8,7 @@
 namespace yii\console\controllers;
 
 use yii\console\Controller;
-use yii\util\FileHelper;
+use yii\helpers\FileHelper;
 use yii\base\Exception;
 
 /**

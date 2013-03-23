@@ -16,7 +16,7 @@ use yii\base\InvalidCallException;
 use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\Expression;
-use yii\util\StringHelper;
+use yii\helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.

@@ -13,7 +13,7 @@ use yii\console\Exception;
 use yii\console\Controller;
 use yii\db\Connection;
 use yii\db\Query;
-use yii\util\ArrayHelper;
+use yii\helpers\ArrayHelper;
 
 /**
  * This command manages application migrations.

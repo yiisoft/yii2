@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\util;
+namespace yii\helpers;
 
 use Yii;
 use yii\base\InvalidParamException;
@@ -59,11 +59,11 @@ class ArrayHelper
 	 *
 	 * ~~~
 	 * // working with array
-	 * $username = \yii\util\ArrayHelper::getValue($_POST, 'username');
+	 * $username = \yii\helpers\ArrayHelper::getValue($_POST, 'username');
 	 * // working with object
-	 * $username = \yii\util\ArrayHelper::getValue($user, 'username');
+	 * $username = \yii\helpers\ArrayHelper::getValue($user, 'username');
 	 * // working with anonymous function
-	 * $fullName = \yii\util\ArrayHelper::getValue($user, function($user, $defaultValue) {
+	 * $fullName = \yii\helpers\ArrayHelper::getValue($user, function($user, $defaultValue) {
 	 *     return $user->firstName . ' ' . $user->lastName;
 	 * });
 	 * ~~~

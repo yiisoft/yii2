@@ -8,7 +8,7 @@
 namespace yii\web;
 
 use Yii;
-use yii\util\Html;
+use yii\helpers\Html;
 
 /**
  * Sort represents information relevant to sorting.

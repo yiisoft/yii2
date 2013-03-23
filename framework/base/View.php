@@ -9,7 +9,7 @@ namespace yii\base;
 
 use Yii;
 use yii\base\Application;
-use yii\util\FileHelper;
+use yii\helpers\FileHelper;
 
 /**
  * View represents a view object in the MVC pattern.
