@@ -156,6 +156,25 @@ class View extends Component
 		return ob_get_clean();
 	}
 
+	public function renderDynamic($statements)
+	{
+		if (!empty($this->cachingStack)) {
+			$n = count($this->_dynamicOutput);
+			$placeholder = "<![CDATA[YDP-$n]]>";
+			foreach ($this->cachingStack as $cache) {
+				$cache->dynamicPlaceholders[$placeholder] = $statements;
+			}
+			return $placeholder;
+		} else {
+			return $this->evaluateDynamicContent($statements);
+		}
+	}
+
+	public function evaluateDynamicContent($statements)
+	{
+		return eval($statements);
+	}
+
 	/**
 	 * Finds the view file based on the given view name.
 	 *

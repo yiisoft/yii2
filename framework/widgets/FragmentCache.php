@@ -61,6 +61,16 @@ class FragmentCache extends Widget
 	 * the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
 	 */
 	public $enabled = true;
+	/**
+	 * @var \yii\base\View the view object within which this widget is sued. If not set,
+	 * the view registered with the application will be used. This is mainly used by dynamic content feature.
+	 */
+	public $view;
+	/**
+	 * @var array
+	 */
+	public $dynamicPlaceholders;
+
 
 	/**
 	 * Marks the start of content to be cached.
@@ -70,7 +80,11 @@ class FragmentCache extends Widget
 	 */
 	public function init()
 	{
+		if ($this->view === null) {
+			$this->view = Yii::$app->getView();
+		}
 		if ($this->getCachedContent() === false && $this->getCache() !== null) {
+			array_push($this->view->cachingStack, $this);
 			ob_start();
 			ob_implicit_flush(false);
 		}
@@ -88,10 +102,12 @@ class FragmentCache extends Widget
 			echo $content;
 		} elseif (($cache = $this->getCache()) !== false) {
 			$content = ob_get_clean();
+			array_pop($this->view->cachingStack);
 			if (is_array($this->dependency)) {
 				$this->dependency = Yii::createObject($this->dependency);
 			}
-			$cache->set($this->calculateKey(), $content, $this->duration, $this->dependency);
+			$data = array($content, $this->dynamicPlaceholders);
+			$cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
 			echo $content;
 		}
 	}
@@ -108,11 +124,20 @@ class FragmentCache extends Widget
 	public function getCachedContent()
 	{
 		if ($this->_content === null) {
+			$this->_content = false;
 			if (($cache = $this->getCache()) !== null) {
 				$key = $this->calculateKey();
-				$this->_content = $cache->get($key);
-			} else {
-				$this->_content = false;
+				$data = $cache->get($key);
+				if (is_array($data) && count($data) === 2) {
+					list ($content, $placeholders) = $data;
+					if (is_array($placeholders) && count($placeholders) > 0) {
+						foreach ($placeholders as $name => $statements) {
+							$placeholders[$name] = $this->view->evaluateDynamicContent($statements);
+						}
+						$content = strtr($content, $placeholders);
+					}
+					$this->_content = $content;
+				}
 			}
 		}
 		return $this->_content;
