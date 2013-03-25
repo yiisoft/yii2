@@ -109,7 +109,12 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function getCacheKey($cache, $name)
 	{
-		return $cache->buildKey(__CLASS__, $this->db->dsn, $this->db->username, $name);
+		return $cache->buildKey(array(
+			__CLASS__,
+			$this->db->dsn,
+			$this->db->username,
+			$name,
+		));
 	}
 
 	/**

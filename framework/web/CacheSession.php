@@ -45,6 +45,7 @@ class CacheSession extends Session
 	{
 		return true;
 	}
+
 	/**
 	 * Returns the cache instance used for storing session data.
 	 * @return Cache the cache instance
@@ -114,6 +115,6 @@ class CacheSession extends Session
 	 */
 	protected function calculateKey($id)
 	{
-		return $this->getCache()->buildKey(__CLASS__, $id);
+		return $this->getCache()->buildKey(array(__CLASS__, $id));
 	}
 }

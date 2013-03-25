@@ -337,15 +337,16 @@ class View extends Component
 	 * ~~~
 	 *
 	 * @param string $id a unique ID identifying the fragment to be cached.
-	 * @param array $properties initial property values for [[\yii\widgets\OutputCache]]
+	 * @param array $properties initial property values for [[\yii\widgets\FragmentCache]]
 	 * @return boolean whether you should generate the content for caching.
 	 * False if the cached version is available.
 	 */
 	public function beginCache($id, $properties = array())
 	{
 		$properties['id'] = $id;
+		/** @var $cache \yii\widgets\FragmentCache */
 		$cache = $this->beginWidget('yii\widgets\OutputCache', $properties);
-		if ($cache->getIsContentCached()) {
+		if ($cache->getCachedContent() !== false) {
 			$this->endCache();
 			return false;
 		} else {
