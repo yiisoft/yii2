@@ -39,7 +39,6 @@ memo
 		* consider to be released as a separate tool for user app docs
 - i18n
 	* consider using PHP built-in support and data
-	* message translations, choice format
 	* formatting: number and date
 	* parsing??
 	* make dates/date patterns uniform application-wide including JUI, formats etc.

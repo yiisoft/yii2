@@ -36,6 +36,18 @@ class PhpMessageSource extends MessageSource
 	 * the "messages" subdirectory of the application directory (e.g. "protected/messages").
 	 */
 	public $basePath = '@app/messages';
+	/**
+	 * @var array mapping between message categories and the corresponding message file paths.
+	 * The file paths are relative to [[basePath]]. For example,
+	 *
+	 * ~~~
+	 * array(
+	 *     'core' => 'core.php',
+	 *     'ext' => 'extensions.php',
+	 * )
+	 * ~~~
+	 */
+	public $fileMap;
 
 	/**
 	 * Loads the message translation for the specified language and category.
@@ -45,7 +57,14 @@ class PhpMessageSource extends MessageSource
 	 */
 	protected function loadMessages($category, $language)
 	{
-		$messageFile = Yii::getAlias($this->basePath) . "/$language/$category.php";
+		$messageFile = Yii::getAlias($this->basePath) . "/$language/";
+		if (isset($this->fileMap[$category])) {
+			$messageFile .= $this->fileMap[$category];
+		} elseif (($pos = strrpos($category, '\\')) !== false) {
+			$messageFile .= (substr($category, $pos) . '.php');
+		} else {
+			$messageFile .= "$category.php";
+		}
 		if (is_file($messageFile)) {
 			$messages = include($messageFile);
 			if (!is_array($messages)) {
@@ -53,7 +72,7 @@ class PhpMessageSource extends MessageSource
 			}
 			return $messages;
 		} else {
-			Yii::error("Message file not found: $messageFile", __CLASS__);
+			Yii::error("The message file for category '$category' does not exist: $messageFile", __CLASS__);
 			return array();
 		}
 	}

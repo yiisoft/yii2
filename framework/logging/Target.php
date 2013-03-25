@@ -192,8 +192,7 @@ abstract class Target extends \yii\base\Component
 
 			$matched = empty($this->categories);
 			foreach ($this->categories as $category) {
-				$prefix = rtrim($category, '*');
-				if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
+				if ($message[2] === $category || substr($category, -1) === '*' && strpos($message[2], rtrim($category, '*')) === 0) {
 					$matched = true;
 					break;
 				}

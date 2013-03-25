@@ -92,7 +92,6 @@ class Application extends Module
 
 	private $_runtimePath;
 	private $_ended = false;
-	private $_language;
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler. This memory

@@ -322,46 +322,42 @@ class View extends Component
 		$this->endWidget();
 	}
 
-	//
-	//	/**
-	//	 * Begins fragment caching.
-	//	 * This method will display cached content if it is available.
-	//	 * If not, it will start caching and would expect an [[endCache()]]
-	//	 * call to end the cache and save the content into cache.
-	//	 * A typical usage of fragment caching is as follows,
-	//	 *
-	//	 * ~~~
-	//	 * if($this->beginCache($id)) {
-	//	 *     // ...generate content here
-	//	 *     $this->endCache();
-	//	 * }
-	//	 * ~~~
-	//	 *
-	//	 * @param string $id a unique ID identifying the fragment to be cached.
-	//	 * @param array $properties initial property values for [[yii\widgets\OutputCache]]
-	//	 * @return boolean whether we need to generate content for caching. False if cached version is available.
-	//	 * @see endCache
-	//	 */
-	//	public function beginCache($id, $properties = array())
-	//	{
-	//		$properties['id'] = $id;
-	//		$cache = $this->beginWidget('yii\widgets\OutputCache', $properties);
-	//		if ($cache->getIsContentCached()) {
-	//			$this->endCache();
-	//			return false;
-	//		} else {
-	//			return true;
-	//		}
-	//	}
-	//
-	//	/**
-	//	 * Ends fragment caching.
-	//	 * This is an alias to [[endWidget()]]
-	//	 * @see beginCache
-	//	 */
-	//	public function endCache()
-	//	{
-	//		$this->endWidget();
-	//	}
-	//
+	/**
+	 * Begins fragment caching.
+	 * This method will display cached content if it is available.
+	 * If not, it will start caching and would expect an [[endCache()]]
+	 * call to end the cache and save the content into cache.
+	 * A typical usage of fragment caching is as follows,
+	 *
+	 * ~~~
+	 * if($this->beginCache($id)) {
+	 *     // ...generate content here
+	 *     $this->endCache();
+	 * }
+	 * ~~~
+	 *
+	 * @param string $id a unique ID identifying the fragment to be cached.
+	 * @param array $properties initial property values for [[\yii\widgets\OutputCache]]
+	 * @return boolean whether you should generate the content for caching.
+	 * False if the cached version is available.
+	 */
+	public function beginCache($id, $properties = array())
+	{
+		$properties['id'] = $id;
+		$cache = $this->beginWidget('yii\widgets\OutputCache', $properties);
+		if ($cache->getIsContentCached()) {
+			$this->endCache();
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Ends fragment caching.
+	 */
+	public function endCache()
+	{
+		$this->endWidget();
+	}
 }
