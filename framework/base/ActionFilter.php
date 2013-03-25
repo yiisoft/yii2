@@ -30,8 +30,8 @@ class ActionFilter extends Behavior
 	public function events()
 	{
 		return array(
-			'beforeAction' => 'beforeAction',
-			'afterAction' => 'afterAction',
+			'beforeAction' => 'beforeFilter',
+			'afterAction' => 'afterFilter',
 		);
 	}
 
@@ -39,8 +39,11 @@ class ActionFilter extends Behavior
 	 * @param ActionEvent $event
 	 * @return boolean
 	 */
-	public function beforeAction($event)
+	public function beforeFilter($event)
 	{
+		if ($this->isActive($event->action)) {
+			$event->isValid = $this->beforeAction($event->action);
+		}
 		return $event->isValid;
 	}
 
@@ -48,8 +51,40 @@ class ActionFilter extends Behavior
 	 * @param ActionEvent $event
 	 * @return boolean
 	 */
-	public function afterAction($event)
+	public function afterFilter($event)
 	{
+		if ($this->isActive($event->action)) {
+			$this->afterAction($event->action);
+		}
+	}
 
+	/**
+	 * This method is invoked right before an action is to be executed (after all possible filters.)
+	 * You may override this method to do last-minute preparation for the action.
+	 * @param Action $action the action to be executed.
+	 * @return boolean whether the action should continue to be executed.
+	 */
+	public function beforeAction($action)
+	{
+		return true;
+	}
+
+	/**
+	 * This method is invoked right after an action is executed.
+	 * You may override this method to do some postprocessing for the action.
+	 * @param Action $action the action just executed.
+	 */
+	public function afterAction($action)
+	{
+	}
+
+	/**
+	 * Returns a value indicating whether the filer is active for the given action.
+	 * @param Action $action the action being filtered
+	 * @return boolean whether the filer is active for the given action.
+	 */
+	protected function isActive($action)
+	{
+		return !in_array($action->id, $this->except, true) && (empty($this->only) || in_array($action->id, $this->only, true));
 	}
 }

@@ -1,21 +1,4 @@
-- console
-    * If console is executed using Windows, do not use colors. If not, use colors. Allow to override via console application settings.
-- db
-	* pgsql, sql server, oracle, db2 drivers
-	* unit tests on different DB drivers
-	* document-based (should allow storage-specific methods additionally to generic ones)
-	  * mongodb (put it under framework/db/mongodb)
-	* key-value-based (should allow storage-specific methods additionally to generic ones)
-	  * redis (put it under framework/db/redis or perhaps framework/caching?)
-- base
-	* TwigViewRenderer (Alex)
-	* SmartyViewRenderer (Alex)
-- logging
-	* WebTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
-	* ProfileTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
-	* unit tests
 - caching
-	* backend-specific unit tests
 	* dependency unit tests
 - validators
 	* Refactor validators to add validateValue() for every validator, if possible. Check if value is an array.
