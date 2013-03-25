@@ -183,7 +183,7 @@ $title = $context->htmlEncode($exception instanceof \yii\base\Exception || $exce
 
 	<div class="version">
 		<?php echo date('Y-m-d H:i:s', time())?>
-		<?php echo YII_DEBUG ? $context->versionInfo : ''?>
+		<?php echo YII_DEBUG ? $context->getVersionInfo() : ''?>
 	</div>
 </div>
 

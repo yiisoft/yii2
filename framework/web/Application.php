@@ -6,6 +6,7 @@
  */
 
 namespace yii\web;
+
 use yii\base\InvalidParamException;
 
 /**
@@ -16,6 +17,11 @@ use yii\base\InvalidParamException;
  */
 class Application extends \yii\base\Application
 {
+	/**
+	 * @var string the default route of this application. Defaults to 'site'.
+	 */
+	public $defaultRoute = 'site';
+
 	/**
 	 * Sets default path aliases.
 	 */
