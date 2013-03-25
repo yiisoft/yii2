@@ -479,6 +479,9 @@ class Application extends Module
 			$msg = (string)$e;
 			$msg .= "\nPrevious exception:\n";
 			$msg .= (string)$exception;
+			if (YII_DEBUG) {
+				echo $msg;
+			}
 			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
 			error_log($msg);
 			exit(1);
