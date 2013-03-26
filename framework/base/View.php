@@ -45,11 +45,21 @@ class View extends Component
 	 * through this property.
 	 */
 	public $clips;
-
 	/**
-	 * @var Widget[] the widgets that are currently not ended
+	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
+	 * is maintained by [[beginWidget()]] and [[endWidget()]] methods. Do not modify it directly.
 	 */
-	private $_widgetStack = array();
+	public $widgetStack = array();
+	/**
+	 * @var array a list of currently active fragment cache widgets. This property
+	 * is used internally to implement the content caching feature. Do not modify it.
+	 */
+	public $cacheStack = array();
+	/**
+	 * @var array a list of placeholders for embedding dynamic contents. This property
+	 * is used internally to implement the content caching feature. Do not modify it.
+	 */
+	public $dynamicPlaceholders = array();
 
 
 	/**
@@ -156,20 +166,47 @@ class View extends Component
 		return ob_get_clean();
 	}
 
+	/**
+	 * Renders dynamic content returned by the given PHP statements.
+	 * This method is mainly used together with content caching (fragment caching and page caching)
+	 * when some portions of the content (called *dynamic content*) should not be cached.
+	 * The dynamic content must be returned by some PHP statements.
+	 * @param string $statements the PHP statements for generating the dynamic content.
+	 * @return string the placeholder of the dynamic content, or the dynamic content if there is no
+	 * active content cache currently.
+	 */
 	public function renderDynamic($statements)
 	{
-		if (!empty($this->cachingStack)) {
-			$n = count($this->_dynamicOutput);
+		if (!empty($this->cacheStack)) {
+			$n = count($this->dynamicPlaceholders);
 			$placeholder = "<![CDATA[YDP-$n]]>";
-			foreach ($this->cachingStack as $cache) {
-				$cache->dynamicPlaceholders[$placeholder] = $statements;
-			}
+			$this->addDynamicPlaceholder($placeholder, $statements);
 			return $placeholder;
 		} else {
 			return $this->evaluateDynamicContent($statements);
 		}
 	}
 
+	/**
+	 * Adds a placeholder for dynamic content.
+	 * This method is internally used.
+	 * @param string $placeholder the placeholder name
+	 * @param string $statements the PHP statements for generating the dynamic content
+	 */
+	public function addDynamicPlaceholder($placeholder, $statements)
+	{
+		foreach ($this->cacheStack as $cache) {
+			$cache->dynamicPlaceholders[$placeholder] = $statements;
+		}
+		$this->dynamicPlaceholders[$placeholder] = $statements;
+	}
+
+	/**
+	 * Evaluates the given PHP statements.
+	 * This method is mainly used internally to implement dynamic content feature.
+	 * @param string $statements the PHP statements to be evaluated.
+	 * @return mixed the return value of the PHP statements.
+	 */
 	public function evaluateDynamicContent($statements)
 	{
 		return eval($statements);
@@ -267,7 +304,7 @@ class View extends Component
 	public function beginWidget($class, $properties = array())
 	{
 		$widget = $this->createWidget($class, $properties);
-		$this->_widgetStack[] = $widget;
+		$this->widgetStack[] = $widget;
 		return $widget;
 	}
 
@@ -281,7 +318,7 @@ class View extends Component
 	 */
 	public function endWidget()
 	{
-		$widget = array_pop($this->_widgetStack);
+		$widget = array_pop($this->widgetStack);
 		if ($widget instanceof Widget) {
 			$widget->run();
 			return $widget;
@@ -363,8 +400,9 @@ class View extends Component
 	public function beginCache($id, $properties = array())
 	{
 		$properties['id'] = $id;
+		$properties['view'] = $this;
 		/** @var $cache \yii\widgets\FragmentCache */
-		$cache = $this->beginWidget('yii\widgets\OutputCache', $properties);
+		$cache = $this->beginWidget('yii\widgets\FragmentCache', $properties);
 		if ($cache->getCachedContent() !== false) {
 			$this->endCache();
 			return false;

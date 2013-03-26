@@ -67,7 +67,8 @@ class FragmentCache extends Widget
 	 */
 	public $view;
 	/**
-	 * @var array
+	 * @var array a list of placeholders for embedding dynamic contents. This property
+	 * is used internally to implement the content caching feature. Do not modify it.
 	 */
 	public $dynamicPlaceholders;
 
@@ -83,8 +84,8 @@ class FragmentCache extends Widget
 		if ($this->view === null) {
 			$this->view = Yii::$app->getView();
 		}
-		if ($this->getCachedContent() === false && $this->getCache() !== null) {
-			array_push($this->view->cachingStack, $this);
+		if ($this->getCache() !== null && $this->getCachedContent() === false) {
+			$this->view->cacheStack[] = $this;
 			ob_start();
 			ob_implicit_flush(false);
 		}
@@ -100,14 +101,18 @@ class FragmentCache extends Widget
 	{
 		if (($content = $this->getCachedContent()) !== false) {
 			echo $content;
-		} elseif (($cache = $this->getCache()) !== false) {
+		} elseif (($cache = $this->getCache()) !== null) {
 			$content = ob_get_clean();
-			array_pop($this->view->cachingStack);
+			array_pop($this->view->cacheStack);
 			if (is_array($this->dependency)) {
 				$this->dependency = Yii::createObject($this->dependency);
 			}
 			$data = array($content, $this->dynamicPlaceholders);
 			$cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
+
+			if ($this->view->cacheStack === array() && !empty($this->dynamicPlaceholders)) {
+				$content = $this->updateDynamicContent($content, $this->dynamicPlaceholders);
+			}
 			echo $content;
 		}
 	}
@@ -131,16 +136,27 @@ class FragmentCache extends Widget
 				if (is_array($data) && count($data) === 2) {
 					list ($content, $placeholders) = $data;
 					if (is_array($placeholders) && count($placeholders) > 0) {
-						foreach ($placeholders as $name => $statements) {
-							$placeholders[$name] = $this->view->evaluateDynamicContent($statements);
+						if ($this->view->cacheStack === array()) {
+							// outermost cache: replace placeholder with dynamic content
+							$content = $this->updateDynamicContent($content, $placeholders);
 						}
-						$content = strtr($content, $placeholders);
+						foreach ($placeholders as $name => $statements) {
+							$this->view->addDynamicPlaceholder($name, $statements);
+						}
 					}
 					$this->_content = $content;
 				}
 			}
 		}
 		return $this->_content;
+	}
+
+	protected function updateDynamicContent($content, $placeholders)
+	{
+		foreach ($placeholders as $name => $statements) {
+			$placeholders[$name] = $this->view->evaluateDynamicContent($statements);
+		}
+		return strtr($content, $placeholders);
 	}
 
 	/**

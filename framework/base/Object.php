@@ -65,7 +65,7 @@ class Object
 		if (method_exists($this, $getter)) {
 			return $this->$getter();
 		} else {
-			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '.' . $name);
+			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
 		}
 	}
 
@@ -86,9 +86,9 @@ class Object
 		if (method_exists($this, $setter)) {
 			$this->$setter($value);
 		} elseif (method_exists($this, 'get' . $name)) {
-			throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '.' . $name);
+			throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
 		} else {
-			throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '.' . $name);
+			throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
 		}
 	}
 
@@ -129,7 +129,7 @@ class Object
 		if (method_exists($this, $setter)) {
 			$this->$setter(null);
 		} elseif (method_exists($this, 'get' . $name)) {
-			throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
+			throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '::' . $name);
 		}
 	}
 

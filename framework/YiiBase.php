@@ -298,7 +298,7 @@ class YiiBase
 			}
 		}
 
-		if (isset($classFile, $alias)) {
+		if (isset($classFile, $alias) && is_file($classFile)) {
 			if (!YII_DEBUG || basename(realpath($classFile)) === basename($alias) . '.php') {
 				include($classFile);
 				return true;
