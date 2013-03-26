@@ -62,7 +62,7 @@ class FragmentCache extends Widget
 	 */
 	public $enabled = true;
 	/**
-	 * @var \yii\base\View the view object within which this widget is sued. If not set,
+	 * @var \yii\base\View the view object within which this widget is used. If not set,
 	 * the view registered with the application will be used. This is mainly used by dynamic content feature.
 	 */
 	public $view;
