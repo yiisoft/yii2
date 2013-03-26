@@ -1,16 +1,15 @@
 <?php
 /**
- * Controller class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
 
 use Yii;
-use yii\util\StringHelper;
+use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 
 /**
  * Controller is the base class for classes containing controller logic.
@@ -297,34 +296,46 @@ class Controller extends Component
 
 	/**
 	 * Renders a view and applies layout if available.
-	 *
-	 * @param $view
-	 * @param array $params
-	 * @return string
+	 * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * These parameters will not be available in the layout.
+	 * @return string the rendering result.
+	 * @throws InvalidParamException if the view file or the layout file does not exist.
 	 */
 	public function render($view, $params = array())
 	{
-		return $this->createView()->render($view, $params);
+		$output = Yii::$app->getView()->render($view, $params, $this);
+		$layoutFile = $this->findLayoutFile();
+		if ($layoutFile !== false) {
+			return Yii::$app->getView()->renderFile($layoutFile, array('content' => $output), $this);
+		} else {
+			return $output;
+		}
 	}
 
-	public function renderContent($content)
-	{
-		return $this->createView()->renderContent($content);
-	}
-
+	/**
+	 * Renders a view.
+	 * This method differs from [[render()]] in that it does not apply any layout.
+	 * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * @return string the rendering result.
+	 * @throws InvalidParamException if the view file does not exist.
+	 */
 	public function renderPartial($view, $params = array())
 	{
-		return $this->createView()->renderPartial($view, $params);
+		return Yii::$app->getView()->render($view, $params, $this);
 	}
 
+	/**
+	 * Renders a view file.
+	 * @param string $file the view file to be rendered. This can be either a file path or a path alias.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * @return string the rendering result.
+	 * @throws InvalidParamException if the view file does not exist.
+	 */
 	public function renderFile($file, $params = array())
 	{
-		return $this->createView()->renderFile($file, $params);
-	}
-
-	public function createView()
-	{
-		return new View($this);
+		return Yii::$app->getView()->renderFile($file, $params, $this);
 	}
 
 	/**
@@ -336,5 +347,64 @@ class Controller extends Component
 	public function getViewPath()
 	{
 		return $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
+	}
+
+	/**
+	 * Finds the applicable layout file.
+	 *
+	 * This method locates an applicable layout file via two steps.
+	 *
+	 * In the first step, it determines the layout name and the context module:
+	 *
+	 * - If [[layout]] is specified as a string, use it as the layout name and [[module]] as the context module;
+	 * - If [[layout]] is null, search through all ancestor modules of this controller and find the first
+	 *   module whose [[Module::layout|layout]] is not null. The layout and the corresponding module
+	 *   are used as the layout name and the context module, respectively. If such a module is not found
+	 *   or the corresponding layout is not a string, it will return false, meaning no applicable layout.
+	 *
+	 * In the second step, it determines the actual layout file according to the previously found layout name
+	 * and context module. The layout name can be
+	 *
+	 * - a path alias (e.g. "@app/views/layouts/main");
+	 * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
+	 *   looked for under the [[Application::layoutPath|layout path]] of the application;
+	 * - a relative path (e.g. "main"): the actual layout layout file will be looked for under the
+	 *   [[Module::viewPath|view path]] of the context module.
+	 *
+	 * If the layout name does not contain a file extension, it will use the default one `.php`.
+	 *
+	 * @return string|boolean the layout file path, or false if layout is not needed.
+	 * @throws InvalidParamException if an invalid path alias is used to specify the layout
+	 */
+	protected function findLayoutFile()
+	{
+		$module = $this->module;
+		if (is_string($this->layout)) {
+			$view = $this->layout;
+		} elseif ($this->layout === null) {
+			while ($module !== null && $module->layout === null) {
+				$module = $module->module;
+			}
+			if ($module !== null && is_string($module->layout)) {
+				$view = $module->layout;
+			}
+		}
+
+		if (!isset($view)) {
+			return false;
+		}
+
+		if (strncmp($view, '@', 1) === 0) {
+			$file = Yii::getAlias($view);
+		} elseif (strncmp($view, '/', 1) === 0) {
+			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+		} else {
+			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+		}
+
+		if (FileHelper::getExtension($file) === '') {
+			$file .= '.php';
+		}
+		return $file;
 	}
 }

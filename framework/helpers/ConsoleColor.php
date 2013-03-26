@@ -1,23 +1,13 @@
 <?php
 /**
- * ConsoleColor class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\console;
+namespace yii\helpers;
 
-// todo define how subclassing will work
-// todo add a run() or render() method
 // todo test this on all kinds of terminals, especially windows (check out lib ncurses)
-// todo not sure if all methods should be static
-
-// todo subclass DetailView
-// todo subclass GridView
-// todo more subclasses
-
 
 /**
  * Console View is the base class for console view components
@@ -359,7 +349,7 @@ class ConsoleColor
 			}
 			$styleString[] = array();
 			foreach($styleA as $name => $content) {
-				if ($name = 'text-decoration') {
+				if ($name === 'text-decoration') {
 					$content = implode(' ', $content);
 				}
 				$styleString[] = $name.':'.$content;

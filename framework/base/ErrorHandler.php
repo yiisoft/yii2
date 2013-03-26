@@ -1,9 +1,7 @@
 <?php
 /**
- * ErrorHandler class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -18,7 +16,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-use yii\util\VarDumper;
+use yii\helpers\VarDumper;
 
 class ErrorHandler extends Component
 {
@@ -80,7 +78,7 @@ class ErrorHandler extends Component
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 				\Yii::$app->renderException($exception);
 			} else {
-				$view = new View($this);
+				$view = new View;
 				if (!YII_DEBUG || $exception instanceof UserException) {
 					$viewName = $this->errorView;
 				} else {
@@ -88,7 +86,7 @@ class ErrorHandler extends Component
 				}
 				echo $view->render($viewName, array(
 					'exception' => $exception,
-				));
+				), $this);
 			}
 		} else {
 			\Yii::$app->renderException($exception);
@@ -255,15 +253,10 @@ class ErrorHandler extends Component
 	 */
 	public function renderAsHtml($exception)
 	{
-		$view = new View($this);
-		if (!YII_DEBUG || $exception instanceof UserException) {
-			$viewName = $this->errorView;
-		} else {
-			$viewName = $this->exceptionView;
-		}
+		$view = new View;
 		$name = !YII_DEBUG || $exception instanceof HttpException ? $this->errorView : $this->exceptionView;
 		echo $view->render($name, array(
 			'exception' => $exception,
-		));
+		), $this);
 	}
 }

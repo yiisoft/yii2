@@ -1,9 +1,7 @@
 <?php
 /**
- * Command class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -136,7 +134,7 @@ class Command extends \yii\base\Component
 			} catch (\Exception $e) {
 				\Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				throw new Exception($e->getMessage(), (int)$e->getCode(), $errorInfo);
+				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode());
 			}
 		}
 	}
@@ -294,7 +292,7 @@ class Command extends \yii\base\Component
 			\Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
 
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, (int)$e->getCode(), $errorInfo);
+			throw new Exception($message, $errorInfo, (int)$e->getCode());
 		}
 	}
 
@@ -391,7 +389,13 @@ class Command extends \yii\base\Component
 		}
 
 		if (isset($cache)) {
-			$cacheKey = $cache->buildKey(__CLASS__, $db->dsn, $db->username, $sql, $paramLog);
+			$cacheKey = $cache->buildKey(array(
+				__CLASS__,
+				$db->dsn,
+				$db->username,
+				$sql,
+				$paramLog,
+			));
 			if (($result = $cache->get($cacheKey)) !== false) {
 				\Yii::trace('Query result found in cache', __CLASS__);
 				return $result;
@@ -433,7 +437,7 @@ class Command extends \yii\base\Component
 			$message = $e->getMessage();
 			\Yii::error("$message\nCommand::$method() failed: {$sql}{$paramLog}", __CLASS__);
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, (int)$e->getCode(), $errorInfo);
+			throw new Exception($message, $errorInfo, (int)$e->getCode());
 		}
 	}
 

@@ -1,16 +1,14 @@
 <?php
 /**
- * Application class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
 
 use Yii;
-use yii\util\FileHelper;
+use yii\helpers\FileHelper;
 
 /**
  * Application is the base class for all application classes.
@@ -94,7 +92,12 @@ class Application extends Module
 
 	private $_runtimePath;
 	private $_ended = false;
-	private $_language;
+
+	/**
+	 * @var string Used to reserve memory for fatal error handler. This memory
+	 * reserve can be removed if it's OK to write to PHP log only in this particular case.
+	 */
+	private $_memoryReserve;
 
 	/**
 	 * Constructor.
@@ -110,6 +113,7 @@ class Application extends Module
 		$this->setBasePath($basePath);
 
 		if (YII_ENABLE_ERROR_HANDLER) {
+			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
 		}
@@ -142,8 +146,60 @@ class Application extends Module
 			$this->_ended = true;
 			$this->afterRequest();
 		}
+
+		$this->handleFatalError();
+
 		if ($exit) {
 			exit($status);
+		}
+	}
+
+	/**
+	 * Handles fatal PHP errors
+	 */
+	public function handleFatalError()
+	{
+		if (YII_ENABLE_ERROR_HANDLER) {
+			$error = error_get_last();
+
+			if (ErrorException::isFatalErorr($error)) {
+				unset($this->_memoryReserve);
+				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+
+				if (function_exists('xdebug_get_function_stack')) {
+					$trace = array_slice(array_reverse(xdebug_get_function_stack()), 4, -1);
+					foreach ($trace as &$frame) {
+						if (!isset($frame['function'])) {
+							$frame['function'] = 'unknown';
+						}
+
+						// XDebug < 2.1.1: http://bugs.xdebug.org/view.php?id=695
+						if (!isset($frame['type'])) {
+							$frame['type'] = '::';
+						}
+
+						// XDebug has a different key name
+						$frame['args'] = array();
+						if (isset($frame['params']) && !isset($frame['args'])) {
+							$frame['args'] = $frame['params'];
+						}
+					}
+
+					$ref = new \ReflectionProperty('Exception', 'trace');
+					$ref->setAccessible(true);
+					$ref->setValue($exception, $trace);
+				}
+
+				$this->logException($exception);
+
+				if (($handler = $this->getErrorHandler()) !== null) {
+					@$handler->handle($exception);
+				} else {
+					$this->renderException($exception);
+				}
+
+				exit(1);
+			}
 		}
 	}
 
@@ -155,6 +211,10 @@ class Application extends Module
 	public function run()
 	{
 		$this->beforeRequest();
+		// Allocating twice more than required to display memory exhausted error
+		// in case of trying to allocate last 1 byte while all memory is taken.
+		$this->_memoryReserve = str_repeat('x', 1024 * 256);
+		register_shutdown_function(array($this, 'end'), 0, false);
 		$status = $this->processRequest();
 		$this->afterRequest();
 		return $status;
@@ -235,14 +295,6 @@ class Application extends Module
 		date_default_timezone_set($value);
 	}
 
-	//	/**
-	//	 * Returns the security manager component.
-	//	 * @return SecurityManager the security manager application component.
-	//	 */
-	//	public function getSecurityManager()
-	//	{
-	//		return $this->getComponent('securityManager');
-	//	}
 	//
 	//	/**
 	//	 * Returns the locale instance.
@@ -293,15 +345,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the application theme.
-	 * @return Theme the theme that this application is currently using.
-	 */
-	public function getTheme()
-	{
-		return $this->getComponent('theme');
-	}
-
-	/**
 	 * Returns the cache component.
 	 * @return \yii\caching\Cache the cache application component. Null if the component is not enabled.
 	 */
@@ -320,12 +363,21 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the view renderer.
-	 * @return ViewRenderer the view renderer used by this application.
+	 * Returns the view object.
+	 * @return View the view object that is used to render various view files.
 	 */
-	public function getViewRenderer()
+	public function getView()
 	{
-		return $this->getComponent('viewRenderer');
+		return $this->getComponent('view');
+	}
+
+	/**
+	 * Returns the URL manager for this application.
+	 * @return \yii\web\UrlManager the URL manager for this application.
+	 */
+	public function getUrlManager()
+	{
+		return $this->getComponent('urlManager');
 	}
 
 	/**
@@ -343,8 +395,6 @@ class Application extends Module
 	public function registerDefaultAliases()
 	{
 		Yii::$aliases['@app'] = $this->getBasePath();
-		Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
-		Yii::$aliases['@www'] = '';
 	}
 
 	/**
@@ -360,8 +410,11 @@ class Application extends Module
 			'i18n' => array(
 				'class' => 'yii\i18n\I18N',
 			),
-			'securityManager' => array(
-				'class' => 'yii\base\SecurityManager',
+			'urlManager' => array(
+				'class' => 'yii\web\UrlManager',
+			),
+			'view' => array(
+				'class' => 'yii\base\View',
 			),
 		));
 	}
@@ -375,12 +428,24 @@ class Application extends Module
 	 * @param string $message the error message
 	 * @param string $file the filename that the error was raised in
 	 * @param integer $line the line number the error was raised at
-	 * @throws \ErrorException the error exception
+	 *
+	 * @throws ErrorException
 	 */
 	public function handleError($code, $message, $file, $line)
 	{
 		if (error_reporting() !== 0) {
-			throw new \ErrorException($message, 0, $code, $file, $line);
+			$exception = new ErrorException($message, $code, $code, $file, $line);
+
+			// in case error appeared in __toString method we can't throw any exception
+			$trace = debug_backtrace(false);
+			array_shift($trace);
+			foreach ($trace as $frame) {
+				if ($frame['function'] == '__toString') {
+					$this->handleException($exception);
+				}
+			}
+
+			throw $exception;
 		}
 	}
 
@@ -409,11 +474,14 @@ class Application extends Module
 
 			$this->end(1);
 
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			// exception could be thrown in end() or ErrorHandler::handle()
 			$msg = (string)$e;
 			$msg .= "\nPrevious exception:\n";
 			$msg .= (string)$exception;
+			if (YII_DEBUG) {
+				echo $msg;
+			}
 			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
 			error_log($msg);
 			exit(1);

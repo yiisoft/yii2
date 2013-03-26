@@ -1,11 +1,13 @@
 <?php
-
 namespace yiiunit\framework\base;
+
+use yii\base\Object;
+use yiiunit\TestCase;
 
 /**
  * ObjectTest
  */
-class ObjectTest extends \yiiunit\TestCase
+class ObjectTest extends TestCase
 {
 	/**
 	 * @var NewObject
@@ -69,6 +71,12 @@ class ObjectTest extends \yiiunit\TestCase
 		$this->object->NewMember = $value;
 	}
 
+	public function testSetReadOnlyProperty()
+	{
+		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->object->object = 'test';
+	}
+
 	public function testIsset()
 	{
 		$this->assertTrue(isset($this->object->Text));
@@ -81,6 +89,9 @@ class ObjectTest extends \yiiunit\TestCase
 		$this->object->Text = null;
 		$this->assertFalse(isset($this->object->Text));
 		$this->assertTrue(empty($this->object->Text));
+
+		$this->assertFalse(isset($this->object->unknownProperty));
+		$this->assertTrue(empty($this->object->unknownProperty));
 	}
 
 	public function testUnset()
@@ -88,6 +99,18 @@ class ObjectTest extends \yiiunit\TestCase
 		unset($this->object->Text);
 		$this->assertFalse(isset($this->object->Text));
 		$this->assertTrue(empty($this->object->Text));
+	}
+
+	public function testUnsetReadOnlyProperty()
+	{
+		$this->setExpectedException('yii\base\InvalidCallException');
+		unset($this->object->object);
+	}
+
+	public function testCallUnknownMethod()
+	{
+		$this->setExpectedException('yii\base\UnknownMethodException');
+		$this->object->unknownMethod();
 	}
 
 	public function testArrayProperty()
@@ -112,10 +135,16 @@ class ObjectTest extends \yiiunit\TestCase
 	{
 		$this->assertEquals(2, $this->object->execute(1));
 	}
+
+	public function testConstruct()
+	{
+		$object = new NewObject(array('text' => 'test text'));
+		$this->assertEquals('test text', $object->getText());
+	}
 }
 
 
-class NewObject extends \yii\base\Component
+class NewObject extends Object
 {
 	private $_object = null;
 	private $_text = 'default';

@@ -1,23 +1,21 @@
 <?php
 /**
- * DbDependency class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
-use yii\db\Query;
 
 /**
  * DbDependency represents a dependency based on the query result of a SQL statement.
  *
  * If the query result changes, the dependency is considered as changed.
- * The query is specified via the [[query]] property.
+ * The query is specified via the [[sql]] property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -29,23 +27,25 @@ class DbDependency extends Dependency
 	 */
 	public $connectionID = 'db';
 	/**
-	 * @var Query the SQL query whose result is used to determine if the dependency has been changed.
+	 * @var string the SQL query whose result is used to determine if the dependency has been changed.
 	 * Only the first row of the query result will be used.
 	 */
-	public $query;
+	public $sql;
 	/**
-	 * @var Connection the DB connection instance
+	 * @var array the parameters (name=>value) to be bound to the SQL statement specified by [[sql]].
 	 */
-	private $_db;
+	public $params;
 
 	/**
 	 * Constructor.
-	 * @param Query $query the SQL query whose result is used to determine if the dependency has been changed.
+	 * @param string $sql the SQL query whose result is used to determine if the dependency has been changed.
+	 * @param array $params the parameters (name=>value) to be bound to the SQL statement specified by [[sql]].
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($query = null, $config = array())
+	public function __construct($sql, $params = array(), $config = array())
 	{
-		$this->query = $query;
+		$this->sql = $sql;
+		$this->params = $params;
 		parent::__construct($config);
 	}
 
@@ -68,20 +68,21 @@ class DbDependency extends Dependency
 	protected function generateDependencyData()
 	{
 		$db = $this->getDb();
-		/**
-		 * @var \yii\db\Command $command
-		 */
-		$command = $this->query->createCommand($db);
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$db->enableQueryCache = false;
-			$result = $command->queryRow();
+			$result = $db->createCommand($this->sql, $this->params)->queryRow();
 			$db->enableQueryCache = true;
 		} else {
-			$result = $command->queryRow();
+			$result = $db->createCommand($this->sql, $this->params)->queryRow();
 		}
 		return $result;
 	}
+
+	/**
+	 * @var Connection the DB connection instance
+	 */
+	private $_db;
 
 	/**
 	 * Returns the DB connection instance used for caching purpose.
@@ -91,11 +92,11 @@ class DbDependency extends Dependency
 	public function getDb()
 	{
 		if ($this->_db === null) {
-			$db = \Yii::$app->getComponent($this->connectionID);
+			$db = Yii::$app->getComponent($this->connectionID);
 			if ($db instanceof Connection) {
 				$this->_db = $db;
 			} else {
-				throw new InvalidConfigException("DbCache::connectionID must refer to the ID of a DB application component.");
+				throw new InvalidConfigException("DbCacheDependency::connectionID must refer to the ID of a DB application component.");
 			}
 		}
 		return $this->_db;

@@ -1,9 +1,7 @@
 <?php
 /**
- * HelpController class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -15,7 +13,7 @@ use yii\console\Exception;
 use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\console\Request;
-use yii\util\StringHelper;
+use yii\helpers\StringHelper;
 
 /**
  * This command provides help information about console commands.

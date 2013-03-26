@@ -3,16 +3,16 @@
  * TestCase class.
  *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\test;
 
 require_once('PHPUnit/Runner/Version.php');
-spl_autoload_unregister(array('YiiBase','autoload'));
+spl_autoload_unregister(array('Yii','autoload'));
 require_once('PHPUnit/Autoload.php');
-spl_autoload_register(array('YiiBase','autoload')); // put yii's autoloader at the end
+spl_autoload_register(array('Yii','autoload')); // put yii's autoloader at the end
 
 /**
  * TestCase is the base class for all test case classes.

@@ -1,13 +1,14 @@
 <?php
 /**
- * Widget class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
+
+use Yii;
+use yii\helpers\FileHelper;
 
 /**
  * Widget is the base class for widgets.
@@ -72,35 +73,26 @@ class Widget extends Component
 
 	/**
 	 * Renders a view.
-	 *
-	 * The method first finds the actual view file corresponding to the specified view.
-	 * It then calls [[renderFile()]] to render the view file. The rendering result is returned
-	 * as a string. If the view file does not exist, an exception will be thrown.
-	 *
-	 * To determine which view file should be rendered, the method calls [[findViewFile()]] which
-	 * will search in the directories as specified by [[basePath]].
-	 *
-	 * View name can be a path alias representing an absolute file path (e.g. `@app/views/layout/index`),
-	 * or a path relative to [[basePath]]. The file suffix is optional and defaults to `.php` if not given
-	 * in the view name.
-	 *
-	 * @param string $view the view to be rendered. This can be either a path alias or a path relative to [[basePath]].
-	 * @param array $params the parameters that should be made available in the view. The PHP function `extract()`
-	 * will be called on this variable to extract the variables from this parameter.
-	 * @return string the rendering result
-	 * @throws Exception if the view file cannot be found
+	 * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * @return string the rendering result.
+	 * @throws InvalidParamException if the view file does not exist.
 	 */
 	public function render($view, $params = array())
 	{
-		return $this->createView()->renderPartial($view, $params);
+		return Yii::$app->getView()->render($view, $params, $this);
 	}
 
 	/**
-	 * @return View
+	 * Renders a view file.
+	 * @param string $file the view file to be rendered. This can be either a file path or a path alias.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * @return string the rendering result.
+	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function createView()
+	public function renderFile($file, $params = array())
 	{
-		return new View($this);
+		return Yii::$app->getView()->renderFile($file, $params, $this);
 	}
 
 	/**

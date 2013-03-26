@@ -2,12 +2,16 @@
 
 namespace yiiunit\framework\base;
 
-class BarClass extends \yii\base\Component
+use yii\base\Behavior;
+use yii\base\Component;
+use yiiunit\TestCase;
+
+class BarClass extends Component
 {
 
 }
 
-class FooClass extends \yii\base\Component
+class FooClass extends Component
 {
 	public function behaviors()
 	{
@@ -17,7 +21,7 @@ class FooClass extends \yii\base\Component
 	}
 }
 
-class BarBehavior extends \yii\base\Behavior
+class BarBehavior extends Behavior
 {
 	public $behaviorProperty = 'behavior property';
 
@@ -27,7 +31,7 @@ class BarBehavior extends \yii\base\Behavior
 	}
 }
 
-class BehaviorTest extends \yiiunit\TestCase
+class BehaviorTest extends TestCase
 {
 	public function testAttachAndAccessing()
 	{
@@ -38,6 +42,10 @@ class BehaviorTest extends \yiiunit\TestCase
 		$this->assertEquals('behavior method', $bar->behaviorMethod());
 		$this->assertEquals('behavior property', $bar->getBehavior('bar')->behaviorProperty);
 		$this->assertEquals('behavior method', $bar->getBehavior('bar')->behaviorMethod());
+
+		$behavior = new BarBehavior(array('behaviorProperty' => 'reattached'));
+		$bar->attachBehavior('bar', $behavior);
+		$this->assertEquals('reattached', $bar->behaviorProperty);
 	}
 
 	public function testAutomaticAttach()

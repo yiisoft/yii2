@@ -1,10 +1,8 @@
 <?php
 /**
- * MigrateController class file.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -15,7 +13,7 @@ use yii\console\Exception;
 use yii\console\Controller;
 use yii\db\Connection;
 use yii\db\Query;
-use yii\util\ArrayHelper;
+use yii\helpers\ArrayHelper;
 
 /**
  * This command manages application migrations.
@@ -116,7 +114,7 @@ class MigrateController extends Controller
 	{
 		if (parent::beforeAction($action)) {
 			$path = Yii::getAlias($this->migrationPath);
-			if ($path === false || !is_dir($path)) {
+			if (!is_dir($path)) {
 				throw new Exception("The migration directory \"{$this->migrationPath}\" does not exist.");
 			}
 			$this->migrationPath = $path;

@@ -1,9 +1,7 @@
 <?php
 /**
- * Component class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -60,7 +58,7 @@ class Component extends \yii\base\Object
 				}
 			}
 		}
-		throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '.' . $name);
+		throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
 	}
 
 	/**
@@ -107,9 +105,9 @@ class Component extends \yii\base\Object
 			}
 		}
 		if (method_exists($this, 'get' . $name)) {
-			throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '.' . $name);
+			throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
 		} else {
-			throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '.' . $name);
+			throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
 		}
 	}
 

@@ -1,24 +1,22 @@
 <?php
 /**
- * ActiveRecord class file.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\db;
 
 use yii\base\Model;
-use yii\base\Event;
+use yii\base\InvalidParamException;
 use yii\base\ModelEvent;
 use yii\base\UnknownMethodException;
 use yii\base\InvalidCallException;
 use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\Expression;
-use yii\util\StringHelper;
+use yii\helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -1045,7 +1043,7 @@ class ActiveRecord extends Model
 	 * It can be declared in either the Active Record class itself or one of its behaviors.
 	 * @param string $name the relation name
 	 * @return ActiveRelation the relation object
-	 * @throws InvalidCallException if the named relation does not exist.
+	 * @throws InvalidParamException if the named relation does not exist.
 	 */
 	public function getRelation($name)
 	{
@@ -1057,7 +1055,7 @@ class ActiveRecord extends Model
 			}
 		} catch (UnknownMethodException $e) {
 		}
-		throw new InvalidCallException(get_class($this) . ' has no relation named "' . $name . '".');
+		throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 	}
 
 	/**

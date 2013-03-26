@@ -1,15 +1,14 @@
 <?php
 /**
- * ArrayHelper class file.
- *
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\util;
+namespace yii\helpers;
 
-use yii\base\InvalidCallException;
+use Yii;
+use yii\base\InvalidParamException;
 
 /**
  * ArrayHelper provides additional array functionality you can use in your
@@ -60,11 +59,11 @@ class ArrayHelper
 	 *
 	 * ~~~
 	 * // working with array
-	 * $username = \yii\util\ArrayHelper::getValue($_POST, 'username');
+	 * $username = \yii\helpers\ArrayHelper::getValue($_POST, 'username');
 	 * // working with object
-	 * $username = \yii\util\ArrayHelper::getValue($user, 'username');
+	 * $username = \yii\helpers\ArrayHelper::getValue($user, 'username');
 	 * // working with anonymous function
-	 * $fullName = \yii\util\ArrayHelper::getValue($user, function($user, $defaultValue) {
+	 * $fullName = \yii\helpers\ArrayHelper::getValue($user, function($user, $defaultValue) {
 	 *     return $user->firstName . ' ' . $user->lastName;
 	 * });
 	 * ~~~
@@ -242,7 +241,7 @@ class ArrayHelper
 	 * value is for sorting strings in case-insensitive manner. Please refer to
 	 * See [PHP manual](http://php.net/manual/en/function.sort.php) for more details.
 	 * When sorting by multiple keys with different sort flags, use an array of sort flags.
-	 * @throws InvalidCallException if the $ascending or $sortFlag parameters do not have
+	 * @throws InvalidParamException if the $ascending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
 	 */
 	public static function multisort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR)
@@ -255,12 +254,12 @@ class ArrayHelper
 		if (is_scalar($ascending)) {
 			$ascending = array_fill(0, $n, $ascending);
 		} elseif (count($ascending) !== $n) {
-			throw new InvalidCallException('The length of $ascending parameter must be the same as that of $keys.');
+			throw new InvalidParamException('The length of $ascending parameter must be the same as that of $keys.');
 		}
 		if (is_scalar($sortFlag)) {
 			$sortFlag = array_fill(0, $n, $sortFlag);
 		} elseif (count($sortFlag) !== $n) {
-			throw new InvalidCallException('The length of $ascending parameter must be the same as that of $keys.');
+			throw new InvalidParamException('The length of $ascending parameter must be the same as that of $keys.');
 		}
 		$args = array();
 		foreach ($keys as $i => $key) {
@@ -280,5 +279,62 @@ class ArrayHelper
 		}
 		$args[] = &$array;
 		call_user_func_array('array_multisort', $args);
+	}
+
+	/**
+	 * Encodes special characters in an array of strings into HTML entities.
+	 * Both the array keys and values will be encoded.
+	 * If a value is an array, this method will also encode it recursively.
+	 * @param array $data data to be encoded
+	 * @param boolean $valuesOnly whether to encode array values only. If false,
+	 * both the array keys and array values will be encoded.
+	 * @param string $charset the charset that the data is using. If not set,
+	 * [[\yii\base\Application::charset]] will be used.
+	 * @return array the encoded data
+	 * @see http://www.php.net/manual/en/function.htmlspecialchars.php
+	 */
+	public static function htmlEncode($data, $valuesOnly = true, $charset = null)
+	{
+		if ($charset === null) {
+			$charset = Yii::$app->charset;
+		}
+		$d = array();
+		foreach ($data as $key => $value) {
+			if (!$valuesOnly && is_string($key)) {
+				$key = htmlspecialchars($key, ENT_QUOTES, $charset);
+			}
+			if (is_string($value)) {
+				$d[$key] = htmlspecialchars($value, ENT_QUOTES, $charset);
+			} elseif (is_array($value)) {
+				$d[$key] = static::htmlEncode($value, $charset);
+			}
+		}
+		return $d;
+	}
+
+	/**
+	 * Decodes HTML entities into the corresponding characters in an array of strings.
+	 * Both the array keys and values will be decoded.
+	 * If a value is an array, this method will also decode it recursively.
+	 * @param array $data data to be decoded
+	 * @param boolean $valuesOnly whether to decode array values only. If false,
+	 * both the array keys and array values will be decoded.
+	 * @return array the decoded data
+	 * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
+	 */
+	public static function htmlDecode($data, $valuesOnly = true)
+	{
+		$d = array();
+		foreach ($data as $key => $value) {
+			if (!$valuesOnly && is_string($key)) {
+				$key = htmlspecialchars_decode($key, ENT_QUOTES);
+			}
+			if (is_string($value)) {
+				$d[$key] = htmlspecialchars_decode($value, ENT_QUOTES);
+			} elseif (is_array($value)) {
+				$d[$key] = static::htmlDecode($value);
+			}
+		}
+		return $d;
 	}
 }

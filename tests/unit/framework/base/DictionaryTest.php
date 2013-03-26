@@ -62,6 +62,8 @@ class DictionaryTest extends \yiiunit\TestCase
 		$this->dictionary->add('key3',$this->item3);
 		$this->assertEquals(3,$this->dictionary->getCount());
 		$this->assertTrue($this->dictionary->contains('key3'));
+
+		$this->dictionary[] = 'test';
 	}
 
 	public function testRemove()
@@ -74,7 +76,13 @@ class DictionaryTest extends \yiiunit\TestCase
 
 	public function testClear()
 	{
+		$this->dictionary->add('key3',$this->item3);
 		$this->dictionary->clear();
+		$this->assertEquals(0,$this->dictionary->getCount());
+		$this->assertTrue(!$this->dictionary->contains('key1') && !$this->dictionary->contains('key2'));
+
+		$this->dictionary->add('key3',$this->item3);
+		$this->dictionary->clear(true);
 		$this->assertEquals(0,$this->dictionary->getCount());
 		$this->assertTrue(!$this->dictionary->contains('key1') && !$this->dictionary->contains('key2'));
 	}
@@ -95,7 +103,7 @@ class DictionaryTest extends \yiiunit\TestCase
 		$this->assertEquals($this->item3, $this->dictionary['key3']);
 		$this->assertEquals($this->item1, $this->dictionary['key4']);
 
-		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->dictionary->copyFrom($this);
 	}
 
@@ -114,7 +122,7 @@ class DictionaryTest extends \yiiunit\TestCase
 		$this->assertEquals(3,$this->dictionary->getCount());
 		$this->assertEquals($this->item1,$this->dictionary['key2']);
 		$this->assertEquals($this->item3,$this->dictionary['key3']);
-		$this->setExpectedException('yii\base\InvalidCallException');
+		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->dictionary->mergeWith($this,false);
 	}
 

@@ -1,9 +1,7 @@
 <?php
 /**
- * Query class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -37,9 +35,19 @@ namespace yii\db;
 class Query extends \yii\base\Component
 {
 	/**
-	 * @var string|array the columns being selected. This refers to the SELECT clause in a SQL
-	 * statement. It can be either a string (e.g. `'id, name'`) or an array (e.g. `array('id', 'name')`).
-	 * If not set, if means all columns.
+	 * Sort ascending
+	 * @see orderBy
+	 */
+	const SORT_ASC = false;
+	/**
+	 * Sort ascending
+	 * @see orderBy
+	 */
+	const SORT_DESC = true;
+
+	/**
+	 * @var array the columns being selected. For example, `array('id', 'name')`.
+	 * This is used to construct the SELECT clause in a SQL statement. If not set, if means selecting all columns.
 	 * @see select()
 	 */
 	public $select;
@@ -54,8 +62,8 @@ class Query extends \yii\base\Component
 	 */
 	public $distinct;
 	/**
-	 * @var string|array the table(s) to be selected from. This refers to the FROM clause in a SQL statement.
-	 * It can be either a string (e.g. `'tbl_user, tbl_post'`) or an array (e.g. `array('tbl_user', 'tbl_post')`).
+	 * @var array the table(s) to be selected from. For example, `array('tbl_user', 'tbl_post')`.
+	 * This is used to construct the FROM clause in a SQL statement.
 	 * @see from()
 	 */
 	public $from;
@@ -75,20 +83,33 @@ class Query extends \yii\base\Component
 	 */
 	public $offset;
 	/**
-	 * @var string|array how to sort the query results. This refers to the ORDER BY clause in a SQL statement.
-	 * It can be either a string (e.g. `'id ASC, name DESC'`) or an array (e.g. `array('id ASC', 'name DESC')`).
+	 * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
+	 * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
+	 * can be either [[Query::SORT_ASC]] or [[Query::SORT_DESC]]. The array may also contain [[Expression]] objects.
+	 * If that is the case, the expressions will be converted into strings without any change.
 	 */
 	public $orderBy;
 	/**
-	 * @var string|array how to group the query results. This refers to the GROUP BY clause in a SQL statement.
-	 * It can be either a string (e.g. `'company, department'`) or an array (e.g. `array('company', 'department')`).
+	 * @var array how to group the query results. For example, `array('company', 'department')`.
+	 * This is used to construct the GROUP BY clause in a SQL statement.
 	 */
 	public $groupBy;
 	/**
-	 * @var string|array how to join with other tables. This refers to the JOIN clause in a SQL statement.
-	 * It can be either a string (e.g. `'LEFT JOIN tbl_user ON tbl_user.id=author_id'`) or an array (e.g.
-	 * `array('LEFT JOIN tbl_user ON tbl_user.id=author_id', 'LEFT JOIN tbl_team ON tbl_team.id=team_id')`).
-	 * @see join()
+	 * @var array how to join with other tables. Each array element represents the specification
+	 * of one join which has the following structure:
+	 *
+	 * ~~~
+	 * array($joinType, $tableName, $joinCondition)
+	 * ~~~
+	 *
+	 * For example,
+	 *
+	 * ~~~
+	 * array(
+	 *     array('INNER JOIN', 'tbl_user', 'tbl_user.id = author_id'),
+	 *     array('LEFT JOIN', 'tbl_team', 'tbl_team.id = team_id'),
+	 * )
+	 * ~~~
 	 */
 	public $join;
 	/**
@@ -97,9 +118,8 @@ class Query extends \yii\base\Component
 	 */
 	public $having;
 	/**
-	 * @var string|Query[] the UNION clause(s) in a SQL statement. This can be either a string
-	 * representing a single UNION clause or an array representing multiple UNION clauses.
-	 * Each union clause can be a string or a `Query` object which refers to the SQL statement.
+	 * @var array this is used to construct the UNION clause(s) in a SQL statement.
+	 * Each array element can be either a string or a [[Query]] object representing a sub-query.
 	 */
 	public $union;
 	/**
@@ -136,6 +156,9 @@ class Query extends \yii\base\Component
 	 */
 	public function select($columns, $option = null)
 	{
+		if (!is_array($columns)) {
+			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+		}
 		$this->select = $columns;
 		$this->selectOption = $option;
 		return $this;
@@ -163,6 +186,9 @@ class Query extends \yii\base\Component
 	 */
 	public function from($tables)
 	{
+		if (!is_array($tables)) {
+			$tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
+		}
 		$this->from = $tables;
 		return $this;
 	}
@@ -362,10 +388,13 @@ class Query extends \yii\base\Component
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Query the query object itself
-	 * @see addGroup()
+	 * @see addGroupBy()
 	 */
 	public function groupBy($columns)
 	{
+		if (!is_array($columns)) {
+			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+		}
 		$this->groupBy = $columns;
 		return $this;
 	}
@@ -377,19 +406,16 @@ class Query extends \yii\base\Component
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Query the query object itself
-	 * @see group()
+	 * @see groupBy()
 	 */
-	public function addGroup($columns)
+	public function addGroupBy($columns)
 	{
-		if (empty($this->groupBy)) {
+		if (!is_array($columns)) {
+			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+		}
+		if ($this->groupBy === null) {
 			$this->groupBy = $columns;
 		} else {
-			if (!is_array($this->groupBy)) {
-				$this->groupBy = preg_split('/\s*,\s*/', trim($this->groupBy), -1, PREG_SPLIT_NO_EMPTY);
-			}
-			if (!is_array($columns)) {
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			}
 			$this->groupBy = array_merge($this->groupBy, $columns);
 		}
 		return $this;
@@ -456,41 +482,56 @@ class Query extends \yii\base\Component
 	/**
 	 * Sets the ORDER BY part of the query.
 	 * @param string|array $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+	 * (e.g. `array('id' => Query::SORT_ASC ASC, 'name' => Query::SORT_DESC)`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Query the query object itself
-	 * @see addOrder()
+	 * @see addOrderBy()
 	 */
 	public function orderBy($columns)
 	{
-		$this->orderBy = $columns;
+		$this->orderBy = $this->normalizeOrderBy($columns);
 		return $this;
 	}
 
 	/**
 	 * Adds additional ORDER BY columns to the query.
 	 * @param string|array $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+	 * (e.g. `array('id' => Query::SORT_ASC ASC, 'name' => Query::SORT_DESC)`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Query the query object itself
-	 * @see order()
+	 * @see orderBy()
 	 */
 	public function addOrderBy($columns)
 	{
-		if (empty($this->orderBy)) {
+		$columns = $this->normalizeOrderBy($columns);
+		if ($this->orderBy === null) {
 			$this->orderBy = $columns;
 		} else {
-			if (!is_array($this->orderBy)) {
-				$this->orderBy = preg_split('/\s*,\s*/', trim($this->orderBy), -1, PREG_SPLIT_NO_EMPTY);
-			}
-			if (!is_array($columns)) {
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			}
 			$this->orderBy = array_merge($this->orderBy, $columns);
 		}
 		return $this;
+	}
+
+	protected function normalizeOrderBy($columns)
+	{
+		if (is_array($columns)) {
+			return $columns;
+		} else {
+			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+			$result = array();
+			foreach ($columns as $column) {
+				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
+					$result[$matches[1]] = strcasecmp($matches[2], 'desc') ? self::SORT_ASC : self::SORT_DESC;
+				} else {
+					$result[$column] = self::SORT_ASC;
+				}
+			}
+			return $result;
+		}
 	}
 
 	/**

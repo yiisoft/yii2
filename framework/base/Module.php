@@ -1,17 +1,15 @@
 <?php
 /**
- * Module class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
 
 use Yii;
-use yii\util\StringHelper;
-use yii\util\FileHelper;
+use yii\helpers\StringHelper;
+use yii\helpers\FileHelper;
 
 /**
  * Module is the base class for module and application classes.

@@ -1,15 +1,15 @@
 <?php
 /**
- * Request class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\web;
 
-use \yii\base\InvalidConfigException;
+use Yii;
+use yii\base\HttpException;
+use yii\base\InvalidConfigException;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -18,19 +18,13 @@ use \yii\base\InvalidConfigException;
 class Request extends \yii\base\Request
 {
 	/**
-	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to false.
+	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
 	 */
-	public $enableCookieValidation = false;
+	public $enableCookieValidation = true;
 	/**
-	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to false.
-	 * By setting this property to true, forms submitted to an Yii Web application must be originated
-	 * from the same application. If not, a 400 HTTP exception will be raised.
-	 * Note, this feature requires that the user client accepts cookie.
-	 * You also need to use {@link CHtml::form} or {@link CHtml::statefulForm} to generate
-	 * the needed HTML forms in your pages.
-	 * @see http://seclab.stanford.edu/websec/csrf/csrf.pdf
+	 * @var string the secret key used for cookie validation. If not set, a random key will be generated and used.
 	 */
-	public $enableCsrfValidation = false;
+	public $cookieValidationKey;
 	/**
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
 	 * request tunneled through POST. If false, it means disabling REST request tunneled through POST.
@@ -38,68 +32,27 @@ class Request extends \yii\base\Request
 	 * @see getRequestMethod
 	 * @see getRestParams
 	 */
-	public $restPostVar = '_method';
-	/**
-	 * @var string the name of the token used to prevent CSRF. Defaults to 'YII_CSRF_TOKEN'.
-	 * This property is effective only when {@link enableCsrfValidation} is true.
-	 */
-	public $csrfTokenName = 'YII_CSRF_TOKEN';
-	/**
-	 * @var array the property values (in name-value pairs) used to initialize the CSRF cookie.
-	 * Any property of {@link CHttpCookie} may be initialized.
-	 * This property is effective only when {@link enableCsrfValidation} is true.
-	 */
-	public $csrfCookie;
+	public $restVar = '_method';
 
 	private $_cookies;
 
 	/**
-	 * Initializes the application component.
-	 * This method overrides the parent implementation by preprocessing
-	 * the user request data.
+	 * Resolves the current request into a route and the associated parameters.
+	 * @return array the first element is the route, and the second is the associated parameters.
+	 * @throws HttpException if the request cannot be resolved.
 	 */
-	public function init()
+	public function resolve()
 	{
-		parent::init();
-		$this->normalizeRequest();
-	}
+		Yii::setAlias('@www', $this->getBaseUrl());
 
-	/**
-	 * Normalizes the request data.
-	 * This method strips off slashes in request data if get_magic_quotes_gpc() returns true.
-	 * It also performs CSRF validation if {@link enableCsrfValidation} is true.
-	 */
-	protected function normalizeRequest()
-	{
-		if (get_magic_quotes_gpc()) {
-			if (isset($_GET)) {
-				$_GET = $this->stripSlashes($_GET);
-			}
-			if (isset($_POST)) {
-				$_POST = $this->stripSlashes($_POST);
-			}
-			if (isset($_REQUEST)) {
-				$_REQUEST = $this->stripSlashes($_REQUEST);
-			}
-			if (isset($_COOKIE)) {
-				$_COOKIE = $this->stripSlashes($_COOKIE);
-			}
+		$result = Yii::$app->getUrlManager()->parseRequest($this);
+		if ($result !== false) {
+			list ($route, $params) = $result;
+			$params = array_merge($_GET, $params);
+			return array($route, $params);
+		} else {
+			throw new HttpException(404, Yii::t('yii|Page not found.'));
 		}
-
-		if ($this->enableCsrfValidation) {
-			\Yii::$app->on('beginRequest', array($this, 'validateCsrfToken'));
-		}
-	}
-
-	/**
-	 * Strips slashes from input data.
-	 * This method is applied when magic quotes is enabled.
-	 * @param mixed $data input data to be processed
-	 * @return mixed processed data
-	 */
-	public function stripSlashes($data)
-	{
-		return is_array($data) ? array_map(array($this, 'stripSlashes'), $data) : stripslashes($data);
 	}
 
 	/**
@@ -109,13 +62,12 @@ class Request extends \yii\base\Request
 	 */
 	public function getRequestMethod()
 	{
-		if ($this->restPostVar !== false && isset($_POST[$this->restPostVar])) {
-			return strtoupper($_POST[$this->restPostVar]);
+		if ($this->restVar !== false && isset($_POST[$this->restVar])) {
+			return strtoupper($_POST[$this->restVar]);
 		} else {
 			return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 		}
 	}
-
 
 	/**
 	 * Returns whether this is a POST request.
@@ -154,7 +106,7 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns whether this is an Adobe Flash or Adobe Flex request.
+	 * Returns whether this is an Adobe Flash or Flex request.
 	 * @return boolean whether this is an Adobe Flash or Adobe Flex request.
 	 */
 	public function getIsFlashRequest()
@@ -173,18 +125,32 @@ class Request extends \yii\base\Request
 	public function getRestParams()
 	{
 		if ($this->_restParams === null) {
-			if ($this->restPostVar !== false && isset($_POST[$this->restPostVar])) {
+			if ($this->restVar !== false && isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
 			} else {
 				$this->_restParams = array();
 				if (function_exists('mb_parse_str')) {
-					mb_parse_str(file_get_contents('php://input'), $this->_restParams);
+					mb_parse_str($this->getRawBody(), $this->_restParams);
 				} else {
-					parse_str(file_get_contents('php://input'), $this->_restParams);
+					parse_str($this->getRawBody(), $this->_restParams);
 				}
 			}
 		}
 		return $this->_restParams;
+	}
+
+	private $_rawBody;
+
+	/**
+	 * Returns the raw HTTP request body.
+	 * @return string the request body
+	 */
+	public function getRawBody()
+	{
+		if ($this->_rawBody === null) {
+			$this->_rawBody = file_get_contents('php://input');
+		}
+		return $this->_rawBody;
 	}
 
 	/**
@@ -194,21 +160,6 @@ class Request extends \yii\base\Request
 	public function setRestParams($values)
 	{
 		$this->_restParams = $values;
-	}
-
-	/**
-	 * Returns the named GET or POST parameter value.
-	 * If the GET or POST parameter does not exist, the second parameter to this method will be returned.
-	 * If both GET and POST contains such a named parameter, the GET parameter takes precedence.
-	 * @param string $name the GET parameter name
-	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
-	 * @return mixed the GET parameter value
-	 * @see getQuery
-	 * @see getPost
-	 */
-	public function getParam($name, $defaultValue = null)
-	{
-		return isset($_GET[$name]) ? $_GET[$name] : (isset($_POST[$name]) ? $_POST[$name] : $defaultValue);
 	}
 
 	/**
@@ -230,9 +181,8 @@ class Request extends \yii\base\Request
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
 	 * @return mixed the GET parameter value
 	 * @see getPost
-	 * @see getParam
 	 */
-	public function getQuery($name, $defaultValue = null)
+	public function getParam($name, $defaultValue = null)
 	{
 		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
 	}
@@ -244,7 +194,6 @@ class Request extends \yii\base\Request
 	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
 	 * @return mixed the POST parameter value
 	 * @see getParam
-	 * @see getQuery
 	 */
 	public function getPost($name, $defaultValue = null)
 	{
@@ -271,16 +220,6 @@ class Request extends \yii\base\Request
 	public function getPut($name, $defaultValue = null)
 	{
 		return $this->getIsPutRequest() ? $this->getRestParam($name, $defaultValue) : null;
-	}
-
-	/**
-	 * Returns the currently requested URL.
-	 * This is the same as [[requestUri]].
-	 * @return string part of the request URL after the host info.
-	 */
-	public function getUrl()
-	{
-		return $this->getRequestUri();
 	}
 
 	private $_hostInfo;
@@ -398,7 +337,7 @@ class Request extends \yii\base\Request
 	 * A path info refers to the part that is after the entry script and before the question mark (query string).
 	 * The starting and ending slashes are both removed.
 	 * @return string part of the request URL that is after the entry script and before the question mark.
-	 * Note, the returned path info is decoded.
+	 * Note, the returned path info is already URL-decoded.
 	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
 	 */
 	public function getPathInfo()
@@ -407,6 +346,16 @@ class Request extends \yii\base\Request
 			$this->_pathInfo = $this->resolvePathInfo();
 		}
 		return $this->_pathInfo;
+	}
+
+	/**
+	 * Sets the path info of the current request.
+	 * This method is mainly provided for testing purpose.
+	 * @param string $value the path info of the current request
+	 */
+	public function setPathInfo($value)
+	{
+		$this->_pathInfo = trim($value, '/');
 	}
 
 	/**
@@ -419,13 +368,28 @@ class Request extends \yii\base\Request
 	 */
 	protected function resolvePathInfo()
 	{
-		$pathInfo = $this->getRequestUri();
+		$pathInfo = $this->getUrl();
 
 		if (($pos = strpos($pathInfo, '?')) !== false) {
 			$pathInfo = substr($pathInfo, 0, $pos);
 		}
 
-		$pathInfo = $this->decodeUrl($pathInfo);
+		$pathInfo = urldecode($pathInfo);
+
+		// try to encode in UTF8 if not so
+		// http://w3.org/International/questions/qa-forms-utf-8.html
+		if (!preg_match('%^(?:
+				[\x09\x0A\x0D\x20-\x7E]              # ASCII
+				| [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+				| \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
+				| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+				| \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
+				| \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+				| [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+				| \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
+				)*$%xs', $pathInfo)) {
+			$pathInfo = utf8_encode($pathInfo);
+		}
 
 		$scriptUrl = $this->getScriptUrl();
 		$baseUrl = $this->getBaseUrl();
@@ -436,58 +400,48 @@ class Request extends \yii\base\Request
 		} elseif (strpos($_SERVER['PHP_SELF'], $scriptUrl) === 0) {
 			$pathInfo = substr($_SERVER['PHP_SELF'], strlen($scriptUrl));
 		} else {
-			return false;
+			throw new InvalidConfigException('Unable to determine the path info of the current request.');
 		}
 
 		return trim($pathInfo, '/');
 	}
 
 	/**
-	 * Decodes the given URL.
-	 * This method is an improved variant of the native urldecode() function. It will properly encode
-	 * UTF-8 characters which may be returned by urldecode().
-	 * @param string $url encoded URL
-	 * @return string decoded URL
+	 * Returns the currently requested absolute URL.
+	 * This is a shortcut to the concatenation of [[hostInfo]] and [[url]].
+	 * @return string the currently requested absolute URL.
 	 */
-	public function decodeUrl($url)
+	public function getAbsoluteUrl()
 	{
-		$url = urldecode($url);
-
-		// is it UTF-8?
-		// http://w3.org/International/questions/qa-forms-utf-8.html
-		if (preg_match('%^(?:
-				[\x09\x0A\x0D\x20-\x7E]              # ASCII
-				| [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-				| \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
-				| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-				| \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
-				| \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
-				| [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-				| \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-				)*$%xs', $url)) {
-			return $url;
-		} else {
-			return utf8_encode($url);
-		}
+		return $this->getHostInfo() . $this->getUrl();
 	}
 
-	private $_requestUri;
+	private $_url;
 
 	/**
-	 * Returns the request URI portion for the currently requested URL.
-	 * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
-	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
-	 * @return string the request URI portion for the currently requested URL.
-	 * Note that the URI returned is URL-encoded.
-	 * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
+	 * Returns the currently requested relative URL.
+	 * This refers to the portion of the URL that is after the [[hostInfo]] part.
+	 * It includes the [[queryString]] part if any.
+	 * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
+	 * @throws InvalidConfigException if the URL cannot be determined due to unusual server configuration
 	 */
-	public function getRequestUri()
+	public function getUrl()
 	{
-		if ($this->_requestUri === null) {
-			$this->_requestUri = $this->resolveRequestUri();
+		if ($this->_url === null) {
+			$this->_url = $this->resolveRequestUri();
 		}
+		return $this->_url;
+	}
 
-		return $this->_requestUri;
+	/**
+	 * Sets the currently requested relative URL.
+	 * The URI must refer to the portion that is after [[hostInfo]].
+	 * Note that the URI should be URL-encoded.
+	 * @param string $value the request URI to be set
+	 */
+	public function setUrl($value)
+	{
+		$this->_url = $value;
 	}
 
 	/**
@@ -504,11 +458,7 @@ class Request extends \yii\base\Request
 			$requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
 		} elseif (isset($_SERVER['REQUEST_URI'])) {
 			$requestUri = $_SERVER['REQUEST_URI'];
-			if (!empty($_SERVER['HTTP_HOST'])) {
-				if (strpos($requestUri, $_SERVER['HTTP_HOST']) !== false) {
-					$requestUri = preg_replace('/^\w+:\/\/[^\/]+/', '', $requestUri);
-				}
-			} else {
+			if ($requestUri !== '' && $requestUri[0] !== '/') {
 				$requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $requestUri);
 			}
 		} elseif (isset($_SERVER['ORIG_PATH_INFO'])) { // IIS 5.0 CGI
@@ -592,49 +542,6 @@ class Request extends \yii\base\Request
 	public function getUserHost()
 	{
 		return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
-	}
-
-	private $_scriptFile;
-
-	/**
-	 * Returns entry script file path.
-	 * @return string entry script file path (processed w/ realpath())
-	 * @throws InvalidConfigException if the entry script file path cannot be determined automatically.
-	 */
-	public function getScriptFile()
-	{
-		if ($this->_scriptFile === null) {
-			$this->setScriptFile($_SERVER['SCRIPT_FILENAME']);
-		}
-		return $this->_scriptFile;
-	}
-
-	/**
-	 * Sets the entry script file path.
-	 * The entry script file path can normally be determined based on the `SCRIPT_FILENAME` SERVER variable.
-	 * However, in some server configuration, this may not be correct or feasible.
-	 * This setter is provided so that the entry script file path can be manually specified.
-	 * @param string $value the entry script file path
-	 * @throws InvalidConfigException if the provided entry script file path is invalid.
-	 */
-	public function setScriptFile($value)
-	{
-		$this->_scriptFile = realpath($value);
-		if ($this->_scriptFile === false || !is_file($this->_scriptFile)) {
-			throw new InvalidConfigException('Unable to determine the entry script file path.');
-		}
-	}
-
-	/**
-	 * Returns information about the capabilities of user browser.
-	 * @param string $userAgent the user agent to be analyzed. Defaults to null, meaning using the
-	 * current User-Agent HTTP header information.
-	 * @return array user browser capabilities.
-	 * @see http://www.php.net/manual/en/function.get-browser.php
-	 */
-	public function getBrowser($userAgent = null)
-	{
-		return get_browser($userAgent, true);
 	}
 
 	/**
@@ -744,88 +651,31 @@ class Request extends \yii\base\Request
 		return isset($languages[0]) ? $languages[0] : false;
 	}
 
-
 	/**
 	 * Returns the cookie collection.
-	 * The result can be used like an associative array. Adding {@link CHttpCookie} objects
-	 * to the collection will send the cookies to the client; and removing the objects
-	 * from the collection will delete those cookies on the client.
-	 * @return CCookieCollection the cookie collection.
+	 * Through the returned cookie collection, you may access a cookie using the following syntax:
+	 *
+	 * ~~~
+	 * $cookie = $request->cookies['name']
+	 * if ($cookie !== null) {
+	 *     $value = $cookie->value;
+	 * }
+	 *
+	 * // alternatively
+	 * $value = $request->cookies->getValue('name');
+	 * ~~~
+	 *
+	 * @return CookieCollection the cookie collection.
 	 */
 	public function getCookies()
 	{
-		if ($this->_cookies !== null) {
-			return $this->_cookies;
-		} else {
-			return $this->_cookies = new CCookieCollection($this);
+		if ($this->_cookies === null) {
+			$this->_cookies = new CookieCollection(array(
+				'enableValidation' => $this->enableCookieValidation,
+				'validationKey' => $this->cookieValidationKey,
+			));
 		}
-	}
-
-	private $_csrfToken;
-
-	/**
-	 * Returns the random token used to perform CSRF validation.
-	 * The token will be read from cookie first. If not found, a new token
-	 * will be generated.
-	 * @return string the random token for CSRF validation.
-	 * @see enableCsrfValidation
-	 */
-	public function getCsrfToken()
-	{
-		if ($this->_csrfToken === null) {
-			$cookie = $this->getCookies()->itemAt($this->csrfTokenName);
-			if (!$cookie || ($this->_csrfToken = $cookie->value) == null) {
-				$cookie = $this->createCsrfCookie();
-				$this->_csrfToken = $cookie->value;
-				$this->getCookies()->add($cookie->name, $cookie);
-			}
-		}
-
-		return $this->_csrfToken;
-	}
-
-	/**
-	 * Creates a cookie with a randomly generated CSRF token.
-	 * Initial values specified in {@link csrfCookie} will be applied
-	 * to the generated cookie.
-	 * @return CHttpCookie the generated cookie
-	 * @see enableCsrfValidation
-	 */
-	protected function createCsrfCookie()
-	{
-		$cookie = new CHttpCookie($this->csrfTokenName, sha1(uniqid(mt_rand(), true)));
-		if (is_array($this->csrfCookie)) {
-			foreach ($this->csrfCookie as $name => $value) {
-				$cookie->$name = $value;
-			}
-		}
-		return $cookie;
-	}
-
-	/**
-	 * Performs the CSRF validation.
-	 * This is the event handler responding to {@link CApplication::onBeginRequest}.
-	 * The default implementation will compare the CSRF token obtained
-	 * from a cookie and from a POST field. If they are different, a CSRF attack is detected.
-	 * @param CEvent $event event parameter
-	 * @throws CHttpException if the validation fails
-	 */
-	public function validateCsrfToken($event)
-	{
-		if ($this->getIsPostRequest()) {
-			// only validate POST requests
-			$cookies = $this->getCookies();
-			if ($cookies->contains($this->csrfTokenName) && isset($_POST[$this->csrfTokenName])) {
-				$tokenFromCookie = $cookies->itemAt($this->csrfTokenName)->value;
-				$tokenFromPost = $_POST[$this->csrfTokenName];
-				$valid = $tokenFromCookie === $tokenFromPost;
-			} else {
-				$valid = false;
-			}
-			if (!$valid) {
-				throw new CHttpException(400, Yii::t('yii|The CSRF token could not be verified.'));
-			}
-		}
+		return $this->_cookies;
 	}
 }
 

@@ -1,9 +1,7 @@
 <?php
 /**
- * Driver class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -111,7 +109,12 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function getCacheKey($cache, $name)
 	{
-		return $cache->buildKey(__CLASS__, $this->db->dsn, $this->db->username, $name);
+		return $cache->buildKey(array(
+			__CLASS__,
+			$this->db->dsn,
+			$this->db->username,
+			$name,
+		));
 	}
 
 	/**

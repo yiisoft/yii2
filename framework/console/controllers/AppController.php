@@ -1,16 +1,14 @@
 <?php
 /**
- * CreateController class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
 
 use yii\console\Controller;
-use yii\util\FileHelper;
+use yii\helpers\FileHelper;
 use yii\base\Exception;
 
 /**
@@ -20,14 +18,14 @@ use yii\base\Exception;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class CreateController extends Controller
+class AppController extends Controller
 {
 	private $_rootPath;
 	private $_config;
 
 	/**
 	 * @var string custom template path. If specified, templates will be
-	 * searched there additionally to `framework/console/create`.
+	 * searched there additionally to `framework/console/webapp`.
 	 */
 	public $templatesPath;
 
@@ -46,6 +44,16 @@ class CreateController extends Controller
 		}
 	}
 
+	public function globalOptions()
+	{
+		return array('templatesPath', 'type');
+	}
+
+	public function actionIndex()
+	{
+		$this->forward('help/index', array('-args' => array('app/create')));
+	}
+
 	/**
 	 * Generates Yii application at the path specified via appPath parameter.
 	 *
@@ -56,7 +64,7 @@ class CreateController extends Controller
 	 * @throws \yii\base\Exception if path specified is not valid
 	 * @return integer the exit status
 	 */
-	public function actionIndex($path)
+	public function actionCreate($path)
 	{
 		$path = strtr($path, '/\\', DIRECTORY_SEPARATOR);
 		if(strpos($path, DIRECTORY_SEPARATOR) === false) {
@@ -127,7 +135,7 @@ class CreateController extends Controller
 	 */
 	protected function getDefaultTemplatesPath()
 	{
-		return realpath(__DIR__.'/../create');
+		return realpath(__DIR__.'/../webapp');
 	}
 
 	/**

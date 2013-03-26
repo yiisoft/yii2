@@ -3,7 +3,7 @@
  * Console Application class file.
  *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -91,9 +91,10 @@ class Application extends \yii\base\Application
 		/** @var $request Request */
 		$request = $this->getRequest();
 		if ($request->getIsConsoleRequest()) {
-			return $this->runAction($request->route, $request->params);
+			list ($route, $params) = $request->resolve();
+			return $this->runAction($route, $params);
 		} else {
-			throw new Exception(\Yii::t('yii|this script must be run from the command line.'));
+			throw new Exception(\Yii::t('yii|This script must be run from the command line.'));
 		}
 	}
 
@@ -126,7 +127,7 @@ class Application extends \yii\base\Application
 			'message' => 'yii\console\controllers\MessageController',
 			'help' => 'yii\console\controllers\HelpController',
 			'migrate' => 'yii\console\controllers\MigrateController',
-			'app' => 'yii\console\controllers\CreateController',
+			'app' => 'yii\console\controllers\AppController',
 			'cache' => 'yii\console\controllers\CacheController',
 		);
 	}
