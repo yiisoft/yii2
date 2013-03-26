@@ -69,6 +69,15 @@ class Application extends \yii\base\Application
 	}
 
 	/**
+	 * Returns the user component.
+	 * @return User the user component
+	 */
+	public function getUser()
+	{
+		return $this->getComponent('user');
+	}
+
+	/**
 	 * Creates a URL using the given route and parameters.
 	 *
 	 * This method first normalizes the given route by converting a relative route into an absolute one.
@@ -129,6 +138,9 @@ class Application extends \yii\base\Application
 			),
 			'session' => array(
 				'class' => 'yii\web\Session',
+			),
+			'user' => array(
+				'class' => 'yii\web\User',
 			),
 		));
 	}
