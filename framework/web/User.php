@@ -40,7 +40,7 @@ use yii\base\Component;
  * Both {@link id} and {@link name} are persistent during the user session.
  * Besides, an identity may have additional persistent data which can
  * be accessed by calling {@link getState}.
- * Note, when {@link allowAutoLogin cookie-based authentication} is enabled,
+ * Note, when {@link enableAutoLogin cookie-based authentication} is enabled,
  * all these persistent data will be stored in cookie. Therefore, do not
  * store password or other sensitive data in the persistent storage. Instead,
  * you should store them directly in session on the server side if needed.
@@ -50,66 +50,53 @@ use yii\base\Component;
  * @property string $name The user name. If the user is not logged in, this will be {@link guestName}.
  * @property string $returnUrl The URL that the user should be redirected to after login.
  * @property string $stateKeyPrefix A prefix for the name of the session variables storing user session data.
- * @property array $flashes Flash messages (key => message).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class User extends Component
 {
-	const FLASH_KEY_PREFIX = 'Yii.CWebUser.flash.';
-	const FLASH_COUNTERS = 'Yii.CWebUser.flashcounters';
 	const STATES_VAR = '__states';
 	const AUTH_TIMEOUT_VAR = '__timeout';
 
 	/**
 	 * @var boolean whether to enable cookie-based login. Defaults to false.
 	 */
-	public $allowAutoLogin = false;
+	public $enableAutoLogin = false;
 	/**
-	 * @var string the name for a guest user. Defaults to 'Guest'.
-	 * This is used by {@link getName} when the current user is a guest (not authenticated).
+	 * @var string|array the URL for login when [[loginRequired()]] is called. 
+	 * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
+	 * The first element of the array should be the route to the login action, and the rest of 
+	 * the name-value pairs are GET parameters used to construct the login URL. For example,
+	 * 
+	 * ~~~
+	 * array('site/login', 'ref' => 1)
+	 * ~~~
+	 *
+	 * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
 	 */
-	public $guestName = 'Guest';
+	public $loginUrl = array('site/login');
 	/**
-	 * @var string|array the URL for login. If using array, the first element should be
-	 * the route to the login action, and the rest name-value pairs are GET parameters
-	 * to construct the login URL (e.g. array('/site/login')). If this property is null,
-	 * a 403 HTTP exception will be raised instead.
-	 * @see CController::createUrl
-	 */
-	public $loginUrl = array('/site/login');
-	/**
-	 * @var array the property values (in name-value pairs) used to initialize the identity cookie.
-	 * Any property of {@link CHttpCookie} may be initialized.
-	 * This property is effective only when {@link allowAutoLogin} is true.
+	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
+	 * @see Cookie
 	 */
 	public $identityCookie;
 	/**
-	 * @var integer timeout in seconds after which user is logged out if inactive.
-	 * If this property is not set, the user will be logged out after the current session expires
-	 * (c.f. {@link CHttpSession::timeout}).
-	 * @since 1.1.7
+	 * @var integer the number of seconds in which the user will be logged out automatically if he
+	 * remains inactive. If this property is not set, the user will be logged out after
+	 * the current session expires (c.f. [[Session::timeout]]).
 	 */
 	public $authTimeout;
 	/**
 	 * @var boolean whether to automatically renew the identity cookie each time a page is requested.
-	 * Defaults to false. This property is effective only when {@link allowAutoLogin} is true.
+	 * Defaults to false. This property is effective only when {@link enableAutoLogin} is true.
 	 * When this is false, the identity cookie will expire after the specified duration since the user
 	 * is initially logged in. When this is true, the identity cookie will expire after the specified duration
 	 * since the user visits the site the last time.
-	 * @see allowAutoLogin
+	 * @see enableAutoLogin
 	 * @since 1.1.0
 	 */
 	public $autoRenewCookie = false;
-	/**
-	 * @var boolean whether to automatically update the validity of flash messages.
-	 * Defaults to true, meaning flash messages will be valid only in the current and the next requests.
-	 * If this is set false, you will be responsible for ensuring a flash message is deleted after usage.
-	 * (This can be achieved by calling {@link getFlash} with the 3rd parameter being true).
-	 * @since 1.1.7
-	 */
-	public $autoUpdateFlash = true;
 	/**
 	 * @var string value that will be echoed in case that user session has expired during an ajax call.
 	 * When a request is made and user session has expired, {@link loginRequired} redirects to {@link loginUrl} for login.
@@ -129,22 +116,16 @@ class User extends Component
 
 	/**
 	 * Initializes the application component.
-	 * This method overrides the parent implementation by starting session,
-	 * performing cookie-based authentication if enabled, and updating the flash variables.
 	 */
 	public function init()
 	{
 		parent::init();
 		Yii::app()->getSession()->open();
-		if ($this->getIsGuest() && $this->allowAutoLogin) {
+		if ($this->getIsGuest() && $this->enableAutoLogin) {
 			$this->restoreFromCookie();
-		} elseif ($this->autoRenewCookie && $this->allowAutoLogin) {
+		} elseif ($this->autoRenewCookie && $this->enableAutoLogin) {
 			$this->renewCookie();
 		}
-		if ($this->autoUpdateFlash) {
-			$this->updateFlash();
-		}
-
 		$this->updateAuthStatus();
 	}
 
@@ -156,12 +137,12 @@ class User extends Component
 	 * the session storage. If the duration parameter is greater than 0,
 	 * a cookie will be sent to prepare for cookie-based login in future.
 	 *
-	 * Note, you have to set {@link allowAutoLogin} to true
+	 * Note, you have to set {@link enableAutoLogin} to true
 	 * if you want to allow user to be authenticated based on the cookie information.
 	 *
 	 * @param IUserIdentity $identity the user identity (which should already be authenticated)
 	 * @param integer $duration number of seconds that the user can remain in logged-in status. Defaults to 0, meaning login till the user closes the browser.
-	 * If greater than 0, cookie-based login will be used. In this case, {@link allowAutoLogin}
+	 * If greater than 0, cookie-based login will be used. In this case, {@link enableAutoLogin}
 	 * must be set true, otherwise an exception will be thrown.
 	 * @return boolean whether the user is logged in
 	 */
@@ -173,10 +154,10 @@ class User extends Component
 			$this->changeIdentity($id, $identity->getName(), $states);
 
 			if ($duration > 0) {
-				if ($this->allowAutoLogin) {
+				if ($this->enableAutoLogin) {
 					$this->saveToCookie($duration);
 				} else {
-					throw new CException(Yii::t('yii', '{class}.allowAutoLogin must be set true in order to use cookie-based authentication.',
+					throw new CException(Yii::t('yii', '{class}.enableAutoLogin must be set true in order to use cookie-based authentication.',
 						array('{class}' => get_class($this))));
 				}
 			}
@@ -196,7 +177,7 @@ class User extends Component
 	public function logout($destroySession = true)
 	{
 		if ($this->beforeLogout()) {
-			if ($this->allowAutoLogin) {
+			if ($this->enableAutoLogin) {
 				Yii::app()->getRequest()->getCookies()->remove($this->getStateKeyPrefix());
 				if ($this->identityCookie !== null) {
 					$cookie = $this->createIdentityCookie($this->getStateKeyPrefix());
@@ -377,7 +358,7 @@ class User extends Component
 
 	/**
 	 * Populates the current user object with the information obtained from cookie.
-	 * This method is used when automatic login ({@link allowAutoLogin}) is enabled.
+	 * This method is used when automatic login ({@link enableAutoLogin}) is enabled.
 	 * The user identity information is recovered from cookie.
 	 * Sufficient security measures are used to prevent cookie data from being tampered.
 	 * @see saveToCookie
@@ -425,7 +406,7 @@ class User extends Component
 
 	/**
 	 * Saves necessary user data into a cookie.
-	 * This method is used when automatic login ({@link allowAutoLogin}) is enabled.
+	 * This method is used when automatic login ({@link enableAutoLogin}) is enabled.
 	 * This method saves user ID, username, other identity states and a validation key to cookie.
 	 * These information are used to do authentication next time when user visits the application.
 	 * @param integer $duration number of seconds that the user can remain in logged-in status. Defaults to 0, meaning login till the user closes the browser.
@@ -555,81 +536,6 @@ class User extends Component
 	}
 
 	/**
-	 * Returns all flash messages.
-	 * This method is similar to {@link getFlash} except that it returns all
-	 * currently available flash messages.
-	 * @param boolean $delete whether to delete the flash messages after calling this method.
-	 * @return array flash messages (key => message).
-	 * @since 1.1.3
-	 */
-	public function getFlashes($delete = true)
-	{
-		$flashes = array();
-		$prefix = $this->getStateKeyPrefix() . self::FLASH_KEY_PREFIX;
-		$keys = array_keys($_SESSION);
-		$n = strlen($prefix);
-		foreach ($keys as $key) {
-			if (!strncmp($key, $prefix, $n)) {
-				$flashes[substr($key, $n)] = $_SESSION[$key];
-				if ($delete) {
-					unset($_SESSION[$key]);
-				}
-			}
-		}
-		if ($delete) {
-			$this->setState(self::FLASH_COUNTERS, array());
-		}
-		return $flashes;
-	}
-
-	/**
-	 * Returns a flash message.
-	 * A flash message is available only in the current and the next requests.
-	 * @param string $key key identifying the flash message
-	 * @param mixed $defaultValue value to be returned if the flash message is not available.
-	 * @param boolean $delete whether to delete this flash message after accessing it.
-	 * Defaults to true.
-	 * @return mixed the message message
-	 */
-	public function getFlash($key, $defaultValue = null, $delete = true)
-	{
-		$value = $this->getState(self::FLASH_KEY_PREFIX . $key, $defaultValue);
-		if ($delete) {
-			$this->setFlash($key, null);
-		}
-		return $value;
-	}
-
-	/**
-	 * Stores a flash message.
-	 * A flash message is available only in the current and the next requests.
-	 * @param string $key key identifying the flash message
-	 * @param mixed $value flash message
-	 * @param mixed $defaultValue if this value is the same as the flash message, the flash message
-	 * will be removed. (Therefore, you can use setFlash('key',null) to remove a flash message.)
-	 */
-	public function setFlash($key, $value, $defaultValue = null)
-	{
-		$this->setState(self::FLASH_KEY_PREFIX . $key, $value, $defaultValue);
-		$counters = $this->getState(self::FLASH_COUNTERS, array());
-		if ($value === $defaultValue) {
-			unset($counters[$key]);
-		} else {
-			$counters[$key] = 0;
-		}
-		$this->setState(self::FLASH_COUNTERS, $counters, array());
-	}
-
-	/**
-	 * @param string $key key identifying the flash message
-	 * @return boolean whether the specified flash message exists
-	 */
-	public function hasFlash($key)
-	{
-		return $this->getFlash($key, null, false) !== null;
-	}
-
-	/**
 	 * Changes the current user with the specified identity information.
 	 * This method is called by {@link login} and {@link restoreFromCookie}
 	 * when the current user needs to be populated with the corresponding
@@ -675,28 +581,6 @@ class User extends Component
 			}
 		}
 		$this->setState(self::STATES_VAR, $names);
-	}
-
-	/**
-	 * Updates the internal counters for flash messages.
-	 * This method is internally used by {@link CWebApplication}
-	 * to maintain the availability of flash messages.
-	 */
-	protected function updateFlash()
-	{
-		$counters = $this->getState(self::FLASH_COUNTERS);
-		if (!is_array($counters)) {
-			return;
-		}
-		foreach ($counters as $key => $count) {
-			if ($count) {
-				unset($counters[$key]);
-				$this->setState(self::FLASH_KEY_PREFIX . $key, null);
-			} else {
-				$counters[$key]++;
-			}
-		}
-		$this->setState(self::FLASH_COUNTERS, $counters, array());
 	}
 
 	/**

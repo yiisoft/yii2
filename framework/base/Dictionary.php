@@ -148,7 +148,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * Defaults to false, meaning all items in the dictionary will be cleared directly
 	 * without calling [[remove]].
 	 */
-	public function clear($safeClear = false)
+	public function removeAll($safeClear = false)
 	{
 		if ($safeClear) {
 			foreach (array_keys($this->_d) as $key) {
@@ -164,7 +164,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @param mixed $key the key
 	 * @return boolean whether the dictionary contains an item with the specified key
 	 */
-	public function contains($key)
+	public function has($key)
 	{
 		return isset($this->_d[$key]) || array_key_exists($key, $this->_d);
 	}
@@ -188,7 +188,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	{
 		if (is_array($data) || $data instanceof \Traversable) {
 			if ($this->_d !== array()) {
-				$this->clear();
+				$this->removeAll();
 			}
 			if ($data instanceof self) {
 				$data = $data->_d;
@@ -252,7 +252,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function offsetExists($offset)
 	{
-		return $this->contains($offset);
+		return $this->has($offset);
 	}
 
 	/**

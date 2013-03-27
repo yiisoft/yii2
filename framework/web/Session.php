@@ -12,13 +12,15 @@ use yii\base\Component;
 use yii\base\InvalidParamException;
 
 /**
- * Session provides session-level data management and the related configurations.
+ * Session provides session data management and the related configurations.
  *
+ * Session is a Web application component that can be accessed via `Yii::$app->session`.
+
  * To start the session, call [[open()]]; To complete and send out session data, call [[close()]];
  * To destroy the session, call [[destroy()]].
  *
- * If [[autoStart]] is set true, the session will be started automatically
- * when the application component is initialized by the application.
+ * By default, [[autoStart]] is true which means the session will be started automatically
+ * when the session component is accessed the first time.
  *
  * Session can be used like an array to set and get session data. For example,
  *
@@ -37,22 +39,11 @@ use yii\base\InvalidParamException;
  * [[openSession()]], [[closeSession()]], [[readSession()]], [[writeSession()]],
  * [[destroySession()]] and [[gcSession()]].
  *
- * Session is a Web application component that can be accessed via
- * `Yii::$app->session`.
- *
- * @property boolean $useCustomStorage read-only. Whether to use custom storage.
- * @property boolean $isActive Whether the session has started.
- * @property string $id The current session ID.
- * @property string $name The current session name.
- * @property string $savePath The current session save path, defaults to '/tmp'.
- * @property array $cookieParams The session cookie parameters.
- * @property string $cookieMode How to use cookie to store session ID. Defaults to 'Allow'.
- * @property float $gcProbability The probability (percentage) that the gc (garbage collection) process is started on every session initialization.
- * @property boolean $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to false.
- * @property integer $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up, defaults to 1440 seconds.
- * @property SessionIterator $iterator An iterator for traversing the session variables.
- * @property integer $count The number of session variables.
- * @property array $keys The list of session variable names.
+ * Session also supports a special type of session data, called *flash messages*.
+ * A flash message is available only in the current request and the next request.
+ * After that, it will be deleted automatically. Flash messages are particularly
+ * useful for displaying confirmation messages. To use flash messages, simply
+ * call methods such as [[setFlash()]], [[getFlash()]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -63,6 +54,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @var boolean whether the session should be automatically started when the session component is initialized.
 	 */
 	public $autoStart = true;
+	/**
+	 * @var string the name of the session variable that stores the flash message data.
+	 */
+	public $flashVar = '__flash';
 
 	/**
 	 * Initializes the application component.
@@ -117,7 +112,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		if (session_id() == '') {
 			$error = error_get_last();
 			$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
-			Yii::warning($message, __CLASS__);
+			Yii::error($message, __CLASS__);
+		} else {
+			$this->updateFlashCounters();
 		}
 	}
 
@@ -462,18 +459,18 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Adds a session variable.
-	 * Note, if the specified name already exists, the old value will be removed first.
-	 * @param mixed $key session variable name
+	 * If the specified name already exists, the old value will be overwritten.
+	 * @param string $key session variable name
 	 * @param mixed $value session variable value
 	 */
-	public function add($key, $value)
+	public function set($key, $value)
 	{
 		$_SESSION[$key] = $value;
 	}
 
 	/**
 	 * Removes a session variable.
-	 * @param mixed $key the name of the session variable to be removed
+	 * @param string $key the name of the session variable to be removed
 	 * @return mixed the removed value, null if no such session variable.
 	 */
 	public function remove($key)
@@ -490,7 +487,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	/**
 	 * Removes all session variables
 	 */
-	public function clear()
+	public function removeAll()
 	{
 		foreach (array_keys($_SESSION) as $key) {
 			unset($_SESSION[$key]);
@@ -501,7 +498,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @param mixed $key session variable name
 	 * @return boolean whether there is the named session variable
 	 */
-	public function contains($key)
+	public function has($key)
 	{
 		return isset($_SESSION[$key]);
 	}
@@ -512,6 +509,114 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function toArray()
 	{
 		return $_SESSION;
+	}
+
+	/**
+	 * Updates the counters for flash messages and removes outdated flash messages.
+	 * This method should only be called once in [[init()]].
+	 */
+	protected function updateFlashCounters()
+	{
+		$counters = $this->get($this->flashVar, array());
+		if (is_array($counters)) {
+			foreach ($counters as $key => $count) {
+				if ($count) {
+					unset($counters[$key], $_SESSION[$key]);
+				} else {
+					$counters[$key]++;
+				}
+			}
+			$_SESSION[$this->flashVar] = $counters;
+		} else {
+			// fix the unexpected problem that flashVar doesn't return an array
+			unset($_SESSION[$this->flashVar]);
+		}
+	}
+
+	/**
+	 * Returns a flash message.
+	 * A flash message is available only in the current request and the next request.
+	 * @param string $key the key identifying the flash message
+	 * @param mixed $defaultValue value to be returned if the flash message does not exist.
+	 * @return mixed the flash message
+	 */
+	public function getFlash($key, $defaultValue = null)
+	{
+		$counters = $this->get($this->flashVar, array());
+		return isset($counters[$key]) ? $this->get($key, $defaultValue) : $defaultValue;
+	}
+
+	/**
+	 * Returns all flash messages.
+	 * @return array flash messages (key => message).
+	 */
+	public function getAllFlashes()
+	{
+		$counters = $this->get($this->flashVar, array());
+		$flashes = array();
+		foreach (array_keys($counters) as $key) {
+			if (isset($_SESSION[$key])) {
+				$flashes[$key] = $_SESSION[$key];
+			}
+		}
+		return $flashes;
+	}
+
+	/**
+	 * Stores a flash message.
+	 * A flash message is available only in the current request and the next request.
+	 * @param string $key the key identifying the flash message. Note that flash messages
+	 * and normal session variables share the same name space. If you have a normal
+	 * session variable using the same name, its value will be overwritten by this method.
+	 * @param mixed $value flash message
+	 */
+	public function setFlash($key, $value)
+	{
+		$counters = $this->get($this->flashVar, array());
+		$counters[$key] = 0;
+		$_SESSION[$key] = $value;
+		$_SESSION[$this->flashVar] = $counters;
+	}
+
+	/**
+	 * Removes a flash message.
+	 * Note that flash messages will be automatically removed after the next request.
+	 * @param string $key the key identifying the flash message. Note that flash messages
+	 * and normal session variables share the same name space.  If you have a normal
+	 * session variable using the same name, it will be removed by this method.
+	 * @return mixed the removed flash message. Null if the flash message does not exist.
+	 */
+	public function removeFlash($key)
+	{
+		$counters = $this->get($this->flashVar, array());
+		$value = isset($_SESSION[$key], $counters[$key]) ? $_SESSION[$key] : null;
+		unset($counters[$key], $_SESSION[$key]);
+		$_SESSION[$this->flashVar] = $counters;
+		return $value;
+	}
+
+	/**
+	 * Removes all flash messages.
+	 * Note that flash messages and normal session variables share the same name space.
+	 * If you have a normal session variable using the same name, it will be removed
+	 * by this method.
+	 */
+	public function removeAllFlashes()
+	{
+		$counters = $this->get($this->flashVar, array());
+		foreach (array_keys($counters) as $key) {
+			unset($_SESSION[$key]);
+		}
+		unset($_SESSION[$this->flashVar]);
+	}
+
+	/**
+	 * @param string $key key identifying the flash message
+	 * @return boolean whether the specified flash message exists
+	 */
+	public function hasFlash($key)
+	{
+		return $this->getFlash($key) !== null;
 	}
 
 	/**

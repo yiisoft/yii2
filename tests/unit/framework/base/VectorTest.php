@@ -101,26 +101,26 @@ class VectorTest extends \yiiunit\TestCase
 		$this->vector->removeAt(2);
 	}
 
-	public function testClear()
+	public function testRemoveAll()
 	{
 		$this->vector->add($this->item3);
-		$this->vector->clear();
+		$this->vector->removeAll();
 		$this->assertEquals(0,$this->vector->getCount());
 		$this->assertEquals(-1,$this->vector->indexOf($this->item1));
 		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
 
 		$this->vector->add($this->item3);
-		$this->vector->clear(true);
+		$this->vector->removeAll(true);
 		$this->assertEquals(0,$this->vector->getCount());
 		$this->assertEquals(-1,$this->vector->indexOf($this->item1));
 		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
 	}
 
-	public function testContains()
+	public function testHas()
 	{
-		$this->assertTrue($this->vector->contains($this->item1));
-		$this->assertTrue($this->vector->contains($this->item2));
-		$this->assertFalse($this->vector->contains($this->item3));
+		$this->assertTrue($this->vector->has($this->item1));
+		$this->assertTrue($this->vector->has($this->item2));
+		$this->assertFalse($this->vector->has($this->item3));
 	}
 
 	public function testIndexOf()
