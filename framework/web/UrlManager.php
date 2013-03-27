@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\caching\Cache;
 
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
@@ -49,11 +50,14 @@ class UrlManager extends Component
 	 */
 	public $routeVar = 'r';
 	/**
-	 * @var string the ID of the cache component that is used to cache the parsed URL rules.
-	 * Defaults to 'cache' which refers to the primary cache component registered with the application.
-	 * Set this property to false if you do not want to cache the URL rules.
+	 * @var Cache|string the cache object or the application component ID of the cache object.
+	 * Compiled URL rules will be cached through this cache object, if it is available.
+	 *
+	 * After the UrlManager object is created, if you want to change this property,
+	 * you should only assign it with a cache object.
+	 * Set this property to null if you do not want to cache the URL rules.
 	 */
-	public $cacheID = 'cache';
+	public $cache = 'cache';
 	/**
 	 * @var string the default class name for creating URL rule instances
 	 * when it is not specified in [[rules]].
@@ -65,11 +69,14 @@ class UrlManager extends Component
 
 
 	/**
-	 * Initializes the application component.
+	 * Initializes UrlManager.
 	 */
 	public function init()
 	{
 		parent::init();
+		if (is_string($this->cache)) {
+			$this->cache = Yii::$app->getComponent($this->cache);
+		}
 		$this->compileRules();
 	}
 
@@ -81,13 +88,10 @@ class UrlManager extends Component
 		if (!$this->enablePrettyUrl || $this->rules === array()) {
 			return;
 		}
-		/**
-		 * @var $cache \yii\caching\Cache
-		 */
-		if ($this->cacheID !== false && ($cache = Yii::$app->getComponent($this->cacheID)) !== null) {
-			$key = $cache->buildKey(__CLASS__);
+		if ($this->cache instanceof Cache) {
+			$key = $this->cache->buildKey(__CLASS__);
 			$hash = md5(json_encode($this->rules));
-			if (($data = $cache->get($key)) !== false && isset($data[1]) && $data[1] === $hash) {
+			if (($data = $this->cache->get($key)) !== false && isset($data[1]) && $data[1] === $hash) {
 				$this->rules = $data[0];
 				return;
 			}
@@ -100,8 +104,8 @@ class UrlManager extends Component
 			$this->rules[$i] = Yii::createObject($rule);
 		}
 
-		if (isset($cache)) {
-			$cache->set($key, array($this->rules, $hash));
+		if ($this->cache instanceof Cache) {
+			$this->cache->set($key, array($this->rules, $hash));
 		}
 	}
 

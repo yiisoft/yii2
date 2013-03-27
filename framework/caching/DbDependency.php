@@ -23,9 +23,9 @@ use yii\db\Connection;
 class DbDependency extends Dependency
 {
 	/**
-	 * @var string the ID of the [[Connection|DB connection]] application component. Defaults to 'db'.
+	 * @var string the application component ID of the DB connection.
 	 */
-	public $connectionID = 'db';
+	public $db = 'db';
 	/**
 	 * @var string the SQL query whose result is used to determine if the dependency has been changed.
 	 * Only the first row of the query result will be used.
@@ -50,24 +50,17 @@ class DbDependency extends Dependency
 	}
 
 	/**
-	 * PHP sleep magic method.
-	 * This method ensures that the database instance is set null because it contains resource handles.
-	 * @return array
-	 */
-	public function __sleep()
-	{
-		$this->_db = null;
-		return array_keys((array)$this);
-	}
-
-	/**
 	 * Generates the data needed to determine if dependency has been changed.
 	 * This method returns the value of the global state.
 	 * @return mixed the data needed to determine if dependency has been changed.
 	 */
 	protected function generateDependencyData()
 	{
-		$db = $this->getDb();
+		$db = Yii::$app->getComponent($this->db);
+		if (!$db instanceof Connection) {
+			throw new InvalidConfigException("DbDependency::db must be the application component ID of a DB connection.");
+		}
+
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$db->enableQueryCache = false;
@@ -77,37 +70,5 @@ class DbDependency extends Dependency
 			$result = $db->createCommand($this->sql, $this->params)->queryRow();
 		}
 		return $result;
-	}
-
-	/**
-	 * @var Connection the DB connection instance
-	 */
-	private $_db;
-
-	/**
-	 * Returns the DB connection instance used for caching purpose.
-	 * @return Connection the DB connection instance
-	 * @throws InvalidConfigException if [[connectionID]] does not point to a valid application component.
-	 */
-	public function getDb()
-	{
-		if ($this->_db === null) {
-			$db = Yii::$app->getComponent($this->connectionID);
-			if ($db instanceof Connection) {
-				$this->_db = $db;
-			} else {
-				throw new InvalidConfigException("DbCacheDependency::connectionID must refer to the ID of a DB application component.");
-			}
-		}
-		return $this->_db;
-	}
-
-	/**
-	 * Sets the DB connection used by the cache component.
-	 * @param Connection $value the DB connection instance
-	 */
-	public function setDb($value)
-	{
-		$this->_db = $value;
 	}
 }

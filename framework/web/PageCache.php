@@ -29,11 +29,10 @@ class PageCache extends ActionFilter
 	 * If not set, the view registered with the application will be used.
 	 */
 	public $view;
-
 	/**
-	 * @var string the ID of the cache application component. Defaults to 'cache' (the primary cache application component.)
+	 * @var string the application component ID of the [[\yii\caching\Cache|cache]] object.
 	 */
-	public $cacheID = 'cache';
+	public $cache = 'cache';
 	/**
 	 * @var integer number of seconds that the data can remain valid in cache.
 	 * Use 0 to indicate that the cached data will never expire.
@@ -91,7 +90,7 @@ class PageCache extends ActionFilter
 	public function beforeAction($action)
 	{
 		$properties = array();
-		foreach (array('cacheID', 'duration', 'dependency', 'variations', 'enabled') as $name) {
+		foreach (array('cache', 'duration', 'dependency', 'variations', 'enabled') as $name) {
 			$properties[$name] = $this->$name;
 		}
 		$id = $this->varyByRoute ? $action->getUniqueId() : __CLASS__;

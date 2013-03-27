@@ -15,7 +15,7 @@ use yii\base\InvalidConfigException;
  * CacheSession implements a session component using cache as storage medium.
  *
  * The cache being used can be any cache application component.
- * The ID of the cache application component is specified via [[cacheID]], which defaults to 'cache'.
+ * The ID of the cache application component is specified via [[cache]], which defaults to 'cache'.
  *
  * Beware, by definition cache storage are volatile, which means the data stored on them
  * may be swapped out and get lost. Therefore, you must make sure the cache used by this component
@@ -27,14 +27,27 @@ use yii\base\InvalidConfigException;
 class CacheSession extends Session
 {
 	/**
-	 * @var string the ID of the cache application component. Defaults to 'cache' (the primary cache application component.)
+	 * @var Cache|string the cache object or the application component ID of the cache object.
+	 * The session data will be stored using this cache object.
+	 *
+	 * After the CacheSession object is created, if you want to change this property,
+	 * you should only assign it with a cache object.
 	 */
-	public $cacheID = 'cache';
+	public $cache = 'cache';
 
 	/**
-	 * @var Cache the cache component
+	 * Initializes the application component.
 	 */
-	private $_cache;
+	public function init()
+	{
+		parent::init();
+		if (is_string($this->cache)) {
+			$this->cache = Yii::$app->getComponent($this->cache);
+		}
+		if (!$this->cache instanceof Cache) {
+			throw new InvalidConfigException('CacheSession::cache must refer to the application component ID of a cache object.');
+		}
+	}
 
 	/**
 	 * Returns a value indicating whether to use custom session storage.
@@ -47,33 +60,6 @@ class CacheSession extends Session
 	}
 
 	/**
-	 * Returns the cache instance used for storing session data.
-	 * @return Cache the cache instance
-	 * @throws InvalidConfigException if [[cacheID]] does not point to a valid application component.
-	 */
-	public function getCache()
-	{
-		if ($this->_cache === null) {
-			$cache = Yii::$app->getComponent($this->cacheID);
-			if ($cache instanceof Cache) {
-				$this->_cache = $cache;
-			} else {
-				throw new InvalidConfigException('CacheSession::cacheID must refer to the ID of a cache application component.');
-			}
-		}
-		return $this->_cache;
-	}
-
-	/**
-	 * Sets the cache instance used by the session component.
-	 * @param Cache $value the cache instance
-	 */
-	public function setCache($value)
-	{
-		$this->_cache = $value;
-	}
-
-	/**
 	 * Session read handler.
 	 * Do not call this method directly.
 	 * @param string $id session ID
@@ -81,7 +67,7 @@ class CacheSession extends Session
 	 */
 	public function readSession($id)
 	{
-		$data = $this->getCache()->get($this->calculateKey($id));
+		$data = $this->cache->get($this->calculateKey($id));
 		return $data === false ? '' : $data;
 	}
 
@@ -94,7 +80,7 @@ class CacheSession extends Session
 	 */
 	public function writeSession($id, $data)
 	{
-		return $this->getCache()->set($this->calculateKey($id), $data, $this->getTimeout());
+		return $this->cache->set($this->calculateKey($id), $data, $this->getTimeout());
 	}
 
 	/**
@@ -105,7 +91,7 @@ class CacheSession extends Session
 	 */
 	public function destroySession($id)
 	{
-		return $this->getCache()->delete($this->calculateKey($id));
+		return $this->cache->delete($this->calculateKey($id));
 	}
 
 	/**
@@ -115,6 +101,6 @@ class CacheSession extends Session
 	 */
 	protected function calculateKey($id)
 	{
-		return $this->getCache()->buildKey(array(__CLASS__, $id));
+		return $this->cache->buildKey(array(__CLASS__, $id));
 	}
 }

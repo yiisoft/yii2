@@ -11,6 +11,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 		// default setting with '/' as base url
 		$manager = new UrlManager(array(
 			'baseUrl' => '/',
+			'cache' => null,
 		));
 		$url = $manager->createUrl('post/view');
 		$this->assertEquals('/?r=post/view', $url);
@@ -20,6 +21,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 		// default setting with '/test/' as base url
 		$manager = new UrlManager(array(
 			'baseUrl' => '/test/',
+			'cache' => null,
 		));
 		$url = $manager->createUrl('post/view', array('id' => 1, 'title' => 'sample post'));
 		$this->assertEquals('/test/?r=post/view&id=1&title=sample+post', $url);
@@ -28,18 +30,21 @@ class UrlManagerTest extends \yiiunit\TestCase
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
 			'baseUrl' => '/',
+			'cache' => null,
 		));
 		$url = $manager->createUrl('post/view', array('id' => 1, 'title' => 'sample post'));
 		$this->assertEquals('/post/view?id=1&title=sample+post', $url);
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
 			'baseUrl' => '/test/',
+			'cache' => null,
 		));
 		$url = $manager->createUrl('post/view', array('id' => 1, 'title' => 'sample post'));
 		$this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
 			'baseUrl' => '/test/index.php',
+			'cache' => null,
 		));
 		$url = $manager->createUrl('post/view', array('id' => 1, 'title' => 'sample post'));
 		$this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
@@ -49,7 +54,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 		// pretty URL with rules
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
-			'cacheID' => false,
+			'cache' => null,
 			'rules' => array(
 				array(
 					'pattern' => 'post/<id>/<title>',
@@ -66,7 +71,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 		// pretty URL with rules and suffix
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
-			'cacheID' => false,
+			'cache' => null,
 			'rules' => array(
 				array(
 					'pattern' => 'post/<id>/<title>',
@@ -87,6 +92,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 		$manager = new UrlManager(array(
 			'baseUrl' => '/',
 			'hostInfo' => 'http://www.example.com',
+			'cache' => null,
 		));
 		$url = $manager->createAbsoluteUrl('post/view', array('id' => 1, 'title' => 'sample post'));
 		$this->assertEquals('http://www.example.com/?r=post/view&id=1&title=sample+post', $url);
@@ -94,7 +100,9 @@ class UrlManagerTest extends \yiiunit\TestCase
 
 	public function testParseRequest()
 	{
-		$manager = new UrlManager;
+		$manager = new UrlManager(array(
+			'cache' => null,
+		));
 		$request = new Request;
 
 		// default setting without 'r' param
@@ -115,6 +123,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 		// pretty URL without rules
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
+			'cache' => null,
 		));
 		// empty pathinfo
 		$request->pathInfo = '';
@@ -136,7 +145,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 		// pretty URL rules
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
-			'cacheID' => false,
+			'cache' => null,
 			'rules' => array(
 				array(
 					'pattern' => 'post/<id>/<title>',
@@ -169,7 +178,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
 			'suffix' => '.html',
-			'cacheID' => false,
+			'cache' => null,
 			'rules' => array(
 				array(
 					'pattern' => 'post/<id>/<title>',

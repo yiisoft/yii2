@@ -20,9 +20,11 @@ use yii\caching\Dependency;
 class FragmentCache extends Widget
 {
 	/**
-	 * @var string the ID of the cache application component. Defaults to 'cache' (the primary cache application component.)
+	 * @var Cache|string the cache object or the application component ID of the cache object.
+	 * After the FragmentCache object is created, if you want to change this property,
+	 * you should only assign it with a cache object.
 	 */
-	public $cacheID = 'cache';
+	public $cache = 'cache';
 	/**
 	 * @var integer number of seconds that the data can remain valid in cache.
 	 * Use 0 to indicate that the cached data will never expire.
@@ -72,19 +74,24 @@ class FragmentCache extends Widget
 	 */
 	public $dynamicPlaceholders;
 
-
 	/**
-	 * Marks the start of content to be cached.
-	 * Content displayed after this method call and before {@link endCache()}
-	 * will be captured and saved in cache.
-	 * This method does nothing if valid content is already found in cache.
+	 * Initializes the FragmentCache object.
 	 */
 	public function init()
 	{
+		parent::init();
+
 		if ($this->view === null) {
 			$this->view = Yii::$app->getView();
 		}
-		if ($this->getCache() !== null && $this->getCachedContent() === false) {
+
+		if (!$this->enabled) {
+			$this->cache = null;
+		} elseif (is_string($this->cache)) {
+			$this->cache = Yii::$app->getComponent($this->cache);
+		}
+
+		if ($this->getCachedContent() === false) {
 			$this->view->cacheStack[] = $this;
 			ob_start();
 			ob_implicit_flush(false);
@@ -101,14 +108,14 @@ class FragmentCache extends Widget
 	{
 		if (($content = $this->getCachedContent()) !== false) {
 			echo $content;
-		} elseif (($cache = $this->getCache()) !== null) {
+		} elseif ($this->cache instanceof Cache) {
 			$content = ob_get_clean();
 			array_pop($this->view->cacheStack);
 			if (is_array($this->dependency)) {
 				$this->dependency = Yii::createObject($this->dependency);
 			}
 			$data = array($content, $this->dynamicPlaceholders);
-			$cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
+			$this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
 
 			if ($this->view->cacheStack === array() && !empty($this->dynamicPlaceholders)) {
 				$content = $this->updateDynamicContent($content, $this->dynamicPlaceholders);
@@ -130,9 +137,9 @@ class FragmentCache extends Widget
 	{
 		if ($this->_content === null) {
 			$this->_content = false;
-			if (($cache = $this->getCache()) !== null) {
+			if ($this->cache instanceof Cache) {
 				$key = $this->calculateKey();
-				$data = $cache->get($key);
+				$data = $this->cache->get($key);
 				if (is_array($data) && count($data) === 2) {
 					list ($content, $placeholders) = $data;
 					if (is_array($placeholders) && count($placeholders) > 0) {
@@ -172,42 +179,6 @@ class FragmentCache extends Widget
 				$factors[] = $factor;
 			}
 		}
-		return $this->getCache()->buildKey($factors);
-	}
-
-	/**
-	 * @var Cache
-	 */
-	private $_cache;
-
-	/**
-	 * Returns the cache instance used for storing content.
-	 * @return Cache the cache instance. Null is returned if the cache component is not available
-	 * or [[enabled]] is false.
-	 * @throws InvalidConfigException if [[cacheID]] does not point to a valid application component.
-	 */
-	public function getCache()
-	{
-		if (!$this->enabled) {
-			return null;
-		}
-		if ($this->_cache === null) {
-			$cache = Yii::$app->getComponent($this->cacheID);
-			if ($cache instanceof Cache) {
-				$this->_cache = $cache;
-			} else {
-				throw new InvalidConfigException('FragmentCache::cacheID must refer to the ID of a cache application component.');
-			}
-		}
-		return $this->_cache;
-	}
-
-	/**
-	 * Sets the cache instance used by the session component.
-	 * @param Cache $value the cache instance
-	 */
-	public function setCache($value)
-	{
-		$this->_cache = $value;
+		return $this->cache->buildKey($factors);
 	}
 }

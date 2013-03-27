@@ -7,7 +7,9 @@
 
 namespace yii\db;
 
+use Yii;
 use yii\base\NotSupportedException;
+use yii\caching\Cache;
 
 /**
  * Command represents a SQL statement to be executed against a database.
@@ -132,7 +134,7 @@ class Command extends \yii\base\Component
 			try {
 				$this->pdoStatement = $this->db->pdo->prepare($sql);
 			} catch (\Exception $e) {
-				\Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
+				Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode());
 			}
@@ -264,7 +266,7 @@ class Command extends \yii\base\Component
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
-		\Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
+		Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
 
 		if ($sql == '') {
 			return 0;
@@ -272,7 +274,7 @@ class Command extends \yii\base\Component
 
 		try {
 			if ($this->db->enableProfiling) {
-				\Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
 			$this->prepare();
@@ -280,16 +282,16 @@ class Command extends \yii\base\Component
 			$n = $this->pdoStatement->rowCount();
 
 			if ($this->db->enableProfiling) {
-				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			return $n;
 		} catch (\Exception $e) {
 			if ($this->db->enableProfiling) {
-				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			$message = $e->getMessage();
 
-			\Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
+			Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
 
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			throw new Exception($message, $errorInfo, (int)$e->getCode());
@@ -381,14 +383,14 @@ class Command extends \yii\base\Component
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
-		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
+		Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {
-			$cache = \Yii::$app->getComponent($db->queryCacheID);
+			$cache = is_string($db->queryCache) ? Yii::$app->getComponent($db->queryCache) : $db->queryCache;
 		}
 
-		if (isset($cache)) {
+		if (isset($cache) && $cache instanceof Cache) {
 			$cacheKey = $cache->buildKey(array(
 				__CLASS__,
 				$db->dsn,
@@ -397,14 +399,14 @@ class Command extends \yii\base\Component
 				$paramLog,
 			));
 			if (($result = $cache->get($cacheKey)) !== false) {
-				\Yii::trace('Query result found in cache', __CLASS__);
+				Yii::trace('Query result served from cache', __CLASS__);
 				return $result;
 			}
 		}
 
 		try {
 			if ($db->enableProfiling) {
-				\Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
 			$this->prepare();
@@ -421,21 +423,21 @@ class Command extends \yii\base\Component
 			}
 
 			if ($db->enableProfiling) {
-				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
-			if (isset($cache, $cacheKey)) {
+			if (isset($cache, $cacheKey) && $cache instanceof Cache) {
 				$cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
-				\Yii::trace('Saved query result in cache', __CLASS__);
+				Yii::trace('Saved query result in cache', __CLASS__);
 			}
 
 			return $result;
 		} catch (\Exception $e) {
 			if ($db->enableProfiling) {
-				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			$message = $e->getMessage();
-			\Yii::error("$message\nCommand::$method() failed: {$sql}{$paramLog}", __CLASS__);
+			Yii::error("$message\nCommand::$method() failed: {$sql}{$paramLog}", __CLASS__);
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			throw new Exception($message, $errorInfo, (int)$e->getCode());
 		}

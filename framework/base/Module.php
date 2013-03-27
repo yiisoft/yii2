@@ -411,7 +411,7 @@ abstract class Module extends Component
 	 * array(
 	 *     'comment' => array(
 	 *         'class' => 'app\modules\CommentModule',
-	 *         'connectionID' => 'db',
+	 *         'db' => 'db',
 	 *     ),
 	 *     'booking' => array(
 	 *         'class' => 'app\modules\BookingModule',
@@ -521,7 +521,7 @@ abstract class Module extends Component
 	 *     ),
 	 *     'cache' => array(
 	 *         'class' => 'yii\caching\DbCache',
-	 *         'connectionID' => 'db',
+	 *         'db' => 'db',
 	 *     ),
 	 * )
 	 * ~~~

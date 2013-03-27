@@ -10,7 +10,7 @@ class UrlRuleTest extends \yiiunit\TestCase
 {
 	public function testCreateUrl()
 	{
-		$manager = new UrlManager;
+		$manager = new UrlManager(array('cache' => null));
 		$suites = $this->getTestsForCreateUrl();
 		foreach ($suites as $i => $suite) {
 			list ($name, $config, $tests) = $suite;
@@ -25,7 +25,7 @@ class UrlRuleTest extends \yiiunit\TestCase
 
 	public function testParseRequest()
 	{
-		$manager = new UrlManager;
+		$manager = new UrlManager(array('cache' => null));
 		$request = new Request;
 		$suites = $this->getTestsForParseRequest();
 		foreach ($suites as $i => $suite) {
