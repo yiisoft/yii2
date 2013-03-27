@@ -84,12 +84,10 @@ class HttpCache extends ActionFilter
 		if ($this->validateCache($lastModified, $etag)) {
 			header('HTTP/1.1 304 Not Modified');
 			return false;
-		} else {
-			if ($lastModified !== null) {
-				header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
-			}
-			return true;
+		} elseif ($lastModified !== null) {
+			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
 		}
+		return true;
 	}
 
 	/**

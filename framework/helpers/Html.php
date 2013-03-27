@@ -949,11 +949,10 @@ class Html
 	 * If the input parameter
 	 *
 	 * - is an empty string: the currently requested URL will be returned;
-	 * - is a non-empty string: it will be processed by [[Yii::getAlias()]] which, if the string is an alias,
-	 *   will be resolved into a URL;
+	 * - is a non-empty string: it will be processed by [[Yii::getAlias()]] and returned;
 	 * - is an array: the first array element is considered a route, while the rest of the name-value
-	 *   pairs are considered as the parameters to be used for URL creation using [[\yii\base\Application::createUrl()]].
-	 *   Here are some examples: `array('post/index', 'page' => 2)`, `array('index')`.
+	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
+	 *   For example: `array('post/index', 'page' => 2)`, `array('index')`.
 	 *
 	 * @param array|string $url the parameter to be used to generate a valid URL
 	 * @return string the normalized URL
@@ -963,7 +962,13 @@ class Html
 	{
 		if (is_array($url)) {
 			if (isset($url[0])) {
-				return Yii::$app->createUrl($url[0], array_splice($url, 1));
+				$route = $url[0];
+				$params = array_splice($url, 1);
+				if (Yii::$app->controller !== null) {
+					return Yii::$app->controller->createUrl($route, $params);
+				} else {
+					return Yii::$app->getUrlManager()->createUrl($route, $params);
+				}
 			} else {
 				throw new InvalidParamException('The array specifying a URL must contain at least one element.');
 			}

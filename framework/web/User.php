@@ -126,65 +126,6 @@ class User extends Component
 	private $_keyPrefix;
 	private $_access = array();
 
-	/**
-	 * PHP magic method.
-	 * This method is overriden so that persistent states can be accessed like properties.
-	 * @param string $name property name
-	 * @return mixed property value
-	 */
-	public function __get($name)
-	{
-		if ($this->hasState($name)) {
-			return $this->getState($name);
-		} else {
-			return parent::__get($name);
-		}
-	}
-
-	/**
-	 * PHP magic method.
-	 * This method is overriden so that persistent states can be set like properties.
-	 * @param string $name property name
-	 * @param mixed $value property value
-	 */
-	public function __set($name, $value)
-	{
-		if ($this->hasState($name)) {
-			$this->setState($name, $value);
-		} else {
-			parent::__set($name, $value);
-		}
-	}
-
-	/**
-	 * PHP magic method.
-	 * This method is overriden so that persistent states can also be checked for null value.
-	 * @param string $name property name
-	 * @return boolean
-	 */
-	public function __isset($name)
-	{
-		if ($this->hasState($name)) {
-			return $this->getState($name) !== null;
-		} else {
-			return parent::__isset($name);
-		}
-	}
-
-	/**
-	 * PHP magic method.
-	 * This method is overriden so that persistent states can also be unset.
-	 * @param string $name property name
-	 * @throws CException if the property is read only.
-	 */
-	public function __unset($name)
-	{
-		if ($this->hasState($name)) {
-			$this->setState($name, null);
-		} else {
-			parent::__unset($name);
-		}
-	}
 
 	/**
 	 * Initializes the application component.

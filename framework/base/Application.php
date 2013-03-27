@@ -78,7 +78,7 @@ class Application extends Module
 	 */
 	public $preload = array();
 	/**
-	 * @var Controller the currently active controller instance
+	 * @var \yii\web\Controller|\yii\console\Controller the currently active controller instance
 	 */
 	public $controller;
 	/**
@@ -355,7 +355,7 @@ class Application extends Module
 
 	/**
 	 * Returns the request component.
-	 * @return Request the request component
+	 * @return \yii\web\Request|\yii\console\Request the request component
 	 */
 	public function getRequest()
 	{
