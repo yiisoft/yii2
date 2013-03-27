@@ -84,6 +84,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		return false;
 	}
 
+	private $_opened = false;
+
 	/**
 	 * Starts the session.
 	 */
@@ -92,29 +94,34 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		// this is available in PHP 5.4.0+
 		if (function_exists('session_status')) {
 			if (session_status() == PHP_SESSION_ACTIVE) {
+				$this->_opened = true;
 				return;
 			}
 		}
 
-		if ($this->getUseCustomStorage()) {
-			@session_set_save_handler(
-				array($this, 'openSession'),
-				array($this, 'closeSession'),
-				array($this, 'readSession'),
-				array($this, 'writeSession'),
-				array($this, 'destroySession'),
-				array($this, 'gcSession')
-			);
-		}
+		if (!$this->_opened) {
+			if ($this->getUseCustomStorage()) {
+				@session_set_save_handler(
+					array($this, 'openSession'),
+					array($this, 'closeSession'),
+					array($this, 'readSession'),
+					array($this, 'writeSession'),
+					array($this, 'destroySession'),
+					array($this, 'gcSession')
+				);
+			}
 
-		@session_start();
+			@session_start();
 
-		if (session_id() == '') {
-			$error = error_get_last();
-			$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
-			Yii::error($message, __CLASS__);
-		} else {
-			$this->updateFlashCounters();
+			if (session_id() == '') {
+				$this->_opened = false;
+				$error = error_get_last();
+				$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
+				Yii::error($message, __CLASS__);
+			} else {
+				$this->_opened = true;
+				$this->updateFlashCounters();
+			}
 		}
 	}
 
@@ -123,6 +130,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function close()
 	{
+		$this->_opened = false;
 		if (session_id() !== '') {
 			@session_write_close();
 		}
@@ -149,7 +157,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 			return session_status() == PHP_SESSION_ACTIVE;
 		} else {
 			// this is not very reliable
-			return session_id() !== '';
+			return $this->_opened && session_id() !== '';
 		}
 	}
 
