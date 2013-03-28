@@ -656,13 +656,13 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Unsets the element at the specified offset.
+	 * Sets the element value at the specified offset to null.
 	 * This method is required by the SPL interface `ArrayAccess`.
 	 * It is implicitly called when you use something like `unset($model[$offset])`.
 	 * @param mixed $offset the offset to unset element
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->$offset);
+		$this->$offset = null;
 	}
 }
