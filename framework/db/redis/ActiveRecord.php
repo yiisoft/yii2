@@ -10,6 +10,8 @@
 
 namespace yii\db\redis;
 
+use yii\base\NotSupportedException;
+
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
@@ -25,7 +27,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
-	public function attributes()
+	public function attributes() // TODO: refactor should be abstract in an ActiveRecord base class
 	{
 		return array();
 	}
@@ -93,9 +95,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function findBySql($sql, $params = array())
 	{
-		$query = static::createQuery();
-		$query->sql = $sql;
-		return $query->params($params);
+		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord');
 	}
 
 
@@ -121,7 +121,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function getTableSchema()
 	{
-		return static::getDb()->getTableSchema(static::tableName());
+		throw new NotSupportedException('getTableSchema() is not supported by redis ActiveRecord as there is no schema in redis DB. Schema is defined by AR class itself');
 	}
 
 	/**
@@ -137,9 +137,9 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 *
 	 * @return string[] the primary keys of the associated database table.
 	 */
-	public static function primaryKey()
+	public static function primaryKey() // TODO: refactor should be abstract in an ActiveRecord base class
 	{
-		return static::getTableSchema()->primaryKey;
+		return array();
 	}
 
 }

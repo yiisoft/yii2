@@ -45,7 +45,7 @@ class ActiveRelation extends ActiveQuery
 	 * @var array the columns of the primary and foreign tables that establish the relation.
 	 * The array keys must be columns of the table for this relation, and the array values
 	 * must be the corresponding columns from the primary table.
-	 * Do not prefix or quote the column names as they will be done automatically by Yii.
+	 * Do not prefix or quote the column names as this will be done automatically by Yii.
 	 */
 	public $link;
 	/**
