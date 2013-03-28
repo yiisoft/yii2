@@ -35,22 +35,16 @@ class AccessRule extends Component
 	 */
 	public $controllers;
 	/**
-	 * @var array list of user names that this rule applies to. The comparison is case-insensitive.
-	 * If not set or empty, it means this rule applies to all users. Two special tokens are recognized:
+	 * @var array list of roles that this rule applies to. Two special roles are recognized, and
+	 * they are checked via [[User::isGuest]]:
 	 *
 	 * - `?`: matches a guest user (not authenticated yet)
 	 * - `@`: matches an authenticated user
 	 *
-	 * @see \yii\web\Application::user
-	 */
-	public $users;
-	/**
-	 * @var array list of roles that this rule applies to. For each role, the current user's
-	 * {@link CWebUser::checkAccess} method will be invoked. If one of the invocations
-	 * returns true, the rule will be applied.
-	 * Note, you should mainly use roles in an "allow" rule because by definition,
-	 * a role represents a permission collection.
-	 * If not set or empty, it means this rule applies to all roles.
+	 * Using additional role names requires RBAC (Role-Based Access Control), and
+	 * [[User::hasAccess()]] will be called.
+	 *
+	 * If this property is not set or empty, it means this rule applies to all roles.
 	 */
 	public $roles;
 	/**
@@ -106,7 +100,6 @@ class AccessRule extends Component
 	public function allows($action, $user, $request)
 	{
 		if ($this->matchAction($action)
-			&& $this->matchUser($user)
 			&& $this->matchRole($user)
 			&& $this->matchIP($request->getUserIP())
 			&& $this->matchVerb($request->getRequestMethod())
@@ -138,27 +131,6 @@ class AccessRule extends Component
 	}
 
 	/**
-	 * @param User $user the user
-	 * @return boolean whether the rule applies to the user
-	 */
-	protected function matchUser($user)
-	{
-		if (empty($this->users)) {
-			return true;
-		}
-		foreach ($this->users as $u) {
-			if ($u === '?' && $user->getIsGuest()) {
-				return true;
-			} elseif ($u === '@' && !$user->getIsGuest()) {
-				return true;
-			} elseif (!strcasecmp($u, $user->getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * @param User $user the user object
 	 * @return boolean whether the rule applies to the role
 	 */
@@ -168,7 +140,11 @@ class AccessRule extends Component
 			return true;
 		}
 		foreach ($this->roles as $role) {
-			if ($user->checkAccess($role)) {
+			if ($role === '?' && $user->getIsGuest()) {
+				return true;
+			} elseif ($role === '@' && !$user->getIsGuest()) {
+				return true;
+			} elseif ($user->hasAccess($role)) {
 				return true;
 			}
 		}
