@@ -329,7 +329,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		foreach ($this->rules() as $rule) {
 			if ($rule instanceof Validator) {
 				$validators->add($rule);
-			} elseif (isset($rule[0], $rule[1])) { // attributes, validator type
+			} elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
 				$validator = Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
 				$validators->add($validator);
 			} else {
