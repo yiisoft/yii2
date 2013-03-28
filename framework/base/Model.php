@@ -429,9 +429,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 			return array();
 		} else {
 			$errors = array();
-			foreach ($this->_errors as $errors) {
-				if (isset($errors[0])) {
-					$errors[] = $errors[0];
+			foreach ($this->_errors as $attributeErrors) {
+				if (isset($attributeErrors[0])) {
+					$errors[] = $attributeErrors[0];
 				}
 			}
 		}
