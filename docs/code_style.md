@@ -204,7 +204,7 @@ doIt('a', array(
 
 ~~~
 if ($event === null) {
-	return new Event($this);
+	return new Event();
 } elseif ($event instanceof CoolEvent) {
 	return $event->instance();
 } else {

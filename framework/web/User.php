@@ -9,17 +9,26 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 
 /**
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class User extends Component
 {
-	const STATES_VAR = '__states';
-	const AUTH_TIMEOUT_VAR = '__timeout';
+	const ID_VAR = '__id';
+	const AUTH_EXPIRE_VAR = '__expire';
 
+	const EVENT_BEFORE_LOGIN = 'beforeLogin';
+	const EVENT_AFTER_LOGIN = 'afterLogin';
+	const EVENT_BEFORE_LOGOUT = 'beforeLogout';
+	const EVENT_AFTER_LOGOUT = 'afterLogout';
+
+	/**
+	 * @var string the class name of the [[identity]] object.
+	 */
+	public $identityClass;
 	/**
 	 * @var boolean whether to enable cookie-based login. Defaults to false.
 	 */
@@ -41,7 +50,7 @@ class User extends Component
 	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
 	 * @see Cookie
 	 */
-	public $identityCookie;
+	public $identityCookie = array('name' => '__identity');
 	/**
 	 * @var integer the number of seconds in which the user will be logged out automatically if he
 	 * remains inactive. If this property is not set, the user will be logged out after
@@ -70,10 +79,9 @@ class User extends Component
 	 * @see loginRequired
 	 */
 	public $loginRequiredAjaxResponse;
+	
 
-	private $_keyPrefix;
-	private $_access = array();
-
+	public $stateVar = '__states';
 
 	/**
 	 * Initializes the application component.
@@ -81,13 +89,47 @@ class User extends Component
 	public function init()
 	{
 		parent::init();
-		Yii::$app->getSession()->open();
-		if ($this->getIsGuest() && $this->enableAutoLogin) {
-			$this->restoreFromCookie();
-		} elseif ($this->autoRenewCookie && $this->enableAutoLogin) {
-			$this->renewCookie();
+
+		if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
+			throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
 		}
-		$this->updateAuthStatus();
+
+		Yii::$app->getSession()->open();
+
+		$this->renewAuthStatus();
+
+		if ($this->enableAutoLogin) {
+			if ($this->getIsGuest()) {
+				$this->loginByCookie();
+			} elseif ($this->autoRenewCookie) {
+				$this->renewIdentityCookie();
+			}
+		}
+	}
+
+	/**
+	 * @var Identity the identity object associated with the currently logged user.
+	 */
+	private $_identity = false;
+
+	public function getIdentity()
+	{
+		if ($this->_identity === false) {
+			$id = $this->getId();
+			if ($id === null) {
+				$this->_identity = null;
+			} else {
+				/** @var $class Identity */
+				$class = $this->identityClass;
+				$this->_identity = $class::findIdentity($this->getId());
+			}
+		}
+		return $this->_identity;
+	}
+
+	public function setIdentity($identity)
+	{
+		$this->switchIdentity($identity);
 	}
 
 	/**
@@ -101,7 +143,7 @@ class User extends Component
 	 * Note, you have to set {@link enableAutoLogin} to true
 	 * if you want to allow user to be authenticated based on the cookie information.
 	 *
-	 * @param IUserIdentity $identity the user identity (which should already be authenticated)
+	 * @param Identity $identity the user identity (which should already be authenticated)
 	 * @param integer $duration number of seconds that the user can remain in logged-in status. Defaults to 0, meaning login till the user closes the browser.
 	 * If greater than 0, cookie-based login will be used. In this case, {@link enableAutoLogin}
 	 * must be set true, otherwise an exception will be thrown.
@@ -109,23 +151,43 @@ class User extends Component
 	 */
 	public function login($identity, $duration = 0)
 	{
-		$id = $identity->getId();
-		$states = $identity->getPersistentStates();
-		if ($this->beforeLogin($id, $states, false)) {
-			$this->changeIdentity($id, $identity->getName(), $states);
-
-			if ($duration > 0) {
-				if ($this->enableAutoLogin) {
-					$this->saveToCookie($duration);
-				} else {
-					throw new CException(Yii::t('yii', '{class}.enableAutoLogin must be set true in order to use cookie-based authentication.',
-						array('{class}' => get_class($this))));
-				}
+		if ($this->beforeLogin($identity, false)) {
+			$this->switchIdentity($identity);
+			if ($duration > 0 && $this->enableAutoLogin) {
+				$this->saveIdentityCookie($identity, $duration);
 			}
-
-			$this->afterLogin(false);
+			$this->afterLogin($identity, false);
 		}
 		return !$this->getIsGuest();
+	}
+
+	/**
+	 * Populates the current user object with the information obtained from cookie.
+	 * This method is used when automatic login ({@link enableAutoLogin}) is enabled.
+	 * The user identity information is recovered from cookie.
+	 * Sufficient security measures are used to prevent cookie data from being tampered.
+	 * @see saveIdentityCookie
+	 */
+	protected function loginByCookie()
+	{
+		$name = $this->identityCookie['name'];
+		$value = Yii::$app->getRequest()->getCookies()->getValue($name);
+		if ($value !== null) {
+			$data = json_decode($value, true);
+			if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
+				list ($id, $authKey, $duration) = $data;
+				/** @var $class Identity */
+				$class = $this->identityClass;
+				$identity = $class::findIdentity($id);
+				if ($identity !== null && $identity->validateAuthKey($authKey) && $this->beforeLogin($identity, true)) {
+					$this->switchIdentity($identity);
+					if ($this->autoRenewCookie) {
+						$this->saveIdentityCookie($identity, $duration);
+					}
+					$this->afterLogin($identity, true);
+				}
+			}
+		}
 	}
 
 	/**
@@ -137,33 +199,26 @@ class User extends Component
 	 */
 	public function logout($destroySession = true)
 	{
-		if ($this->beforeLogout()) {
+		$identity = $this->getIdentity();
+		if ($identity !== null && $this->beforeLogout($identity)) {
+			$this->switchIdentity(null);
 			if ($this->enableAutoLogin) {
-				Yii::app()->getRequest()->getCookies()->remove($this->getStateKeyPrefix());
-				if ($this->identityCookie !== null) {
-					$cookie = $this->createIdentityCookie($this->getStateKeyPrefix());
-					$cookie->value = null;
-					$cookie->expire = 0;
-					Yii::app()->getRequest()->getCookies()->add($cookie->name, $cookie);
-				}
+				Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
 			}
 			if ($destroySession) {
-				Yii::app()->getSession()->destroy();
-			} else {
-				$this->clearStates();
+				Yii::$app->getSession()->destroy();
 			}
-			$this->_access = array();
-			$this->afterLogout();
+ 			$this->afterLogout($identity);
 		}
 	}
 
 	/**
 	 * Returns a value indicating whether the user is a guest (not authenticated).
-	 * @return boolean whether the current application user is a guest.
+	 * @return boolean whether the current user is a guest.
 	 */
 	public function getIsGuest()
 	{
-		return $this->getState('__id') === null;
+		return $this->getIdentity() === null;
 	}
 
 	/**
@@ -172,7 +227,7 @@ class User extends Component
 	 */
 	public function getId()
 	{
-		return $this->getState('__id');
+		return $this->getState(static::ID_VAR);
 	}
 
 	/**
@@ -180,7 +235,7 @@ class User extends Component
 	 */
 	public function setId($value)
 	{
-		$this->setState('__id', $value);
+		$this->setState(static::ID_VAR, $value);
 	}
 
 	/**
@@ -253,11 +308,15 @@ class User extends Component
 	 * @param array $states a set of name-value pairs that are provided by the user identity.
 	 * @param boolean $fromCookie whether the login is based on cookie
 	 * @return boolean whether the user should be logged in
-	 * @since 1.1.3
 	 */
-	protected function beforeLogin($id, $states, $fromCookie)
+	protected function beforeLogin($identity, $fromCookie)
 	{
-		return true;
+		$event = new UserEvent(array(
+			'identity' => $identity,
+			'fromCookie' => $fromCookie,
+		));
+		$this->trigger(self::EVENT_BEFORE_LOGIN, $event);
+		return $event->isValid;
 	}
 
 	/**
@@ -265,10 +324,13 @@ class User extends Component
 	 * You may override this method to do some postprocessing (e.g. log the user
 	 * login IP and time; load the user permission information).
 	 * @param boolean $fromCookie whether the login is based on cookie.
-	 * @since 1.1.3
 	 */
-	protected function afterLogin($fromCookie)
+	protected function afterLogin($identity, $fromCookie)
 	{
+		$this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent(array(
+			'identity' => $identity,
+			'fromCookie' => $fromCookie,
+		)));
 	}
 
 	/**
@@ -277,66 +339,44 @@ class User extends Component
 	 * You may override this method to provide additional check before
 	 * logging out a user.
 	 * @return boolean whether to log out the user
-	 * @since 1.1.3
 	 */
-	protected function beforeLogout()
+	protected function beforeLogout($identity)
 	{
-		return true;
+		$event = new UserEvent(array(
+			'identity' => $identity,
+		));
+		$this->trigger(self::EVENT_BEFORE_LOGOUT, $event);
+		return $event->isValid;
 	}
 
 	/**
 	 * This method is invoked right after a user is logged out.
 	 * You may override this method to do some extra cleanup work for the user.
-	 * @since 1.1.3
 	 */
-	protected function afterLogout()
+	protected function afterLogout($identity)
 	{
+		$this->trigger(self::EVENT_AFTER_LOGOUT, new UserEvent(array(
+			'identity' => $identity,
+		)));
 	}
 
-	/**
-	 * Populates the current user object with the information obtained from cookie.
-	 * This method is used when automatic login ({@link enableAutoLogin}) is enabled.
-	 * The user identity information is recovered from cookie.
-	 * Sufficient security measures are used to prevent cookie data from being tampered.
-	 * @see saveToCookie
-	 */
-	protected function restoreFromCookie()
-	{
-		$app = Yii::app();
-		$request = $app->getRequest();
-		$cookie = $request->getCookies()->itemAt($this->getStateKeyPrefix());
-		if ($cookie && !empty($cookie->value) && is_string($cookie->value) && ($data = $app->getSecurityManager()->validateData($cookie->value)) !== false) {
-			$data = @unserialize($data);
-			if (is_array($data) && isset($data[0], $data[1], $data[2], $data[3])) {
-				list($id, $name, $duration, $states) = $data;
-				if ($this->beforeLogin($id, $states, true)) {
-					$this->changeIdentity($id, $name, $states);
-					if ($this->autoRenewCookie) {
-						$cookie->expire = time() + $duration;
-						$request->getCookies()->add($cookie->name, $cookie);
-					}
-					$this->afterLogin(true);
-				}
-			}
-		}
-	}
 
 	/**
 	 * Renews the identity cookie.
 	 * This method will set the expiration time of the identity cookie to be the current time
 	 * plus the originally specified cookie duration.
-	 * @since 1.1.3
 	 */
-	protected function renewCookie()
+	protected function renewIdentityCookie()
 	{
-		$request = Yii::app()->getRequest();
-		$cookies = $request->getCookies();
-		$cookie = $cookies->itemAt($this->getStateKeyPrefix());
-		if ($cookie && !empty($cookie->value) && ($data = Yii::app()->getSecurityManager()->validateData($cookie->value)) !== false) {
-			$data = @unserialize($data);
-			if (is_array($data) && isset($data[0], $data[1], $data[2], $data[3])) {
-				$cookie->expire = time() + $data[2];
-				$cookies->add($cookie->name, $cookie);
+		$name = $this->identityCookie['name'];
+		$value = Yii::$app->getRequest()->getCookies()->getValue($name);
+		if ($value !== null) {
+			$data = json_decode($value, true);
+			if (is_array($data) && isset($data[2])) {
+				$cookie = new Cookie($this->identityCookie);
+				$cookie->value = $value;
+				$cookie->expire = time() + (int)$data[2];
+				Yii::$app->getResponse()->getCookies()->add($cookie);
 			}
 		}
 	}
@@ -346,130 +386,20 @@ class User extends Component
 	 * This method is used when automatic login ({@link enableAutoLogin}) is enabled.
 	 * This method saves user ID, username, other identity states and a validation key to cookie.
 	 * These information are used to do authentication next time when user visits the application.
+	 * @param Identity $identity
 	 * @param integer $duration number of seconds that the user can remain in logged-in status. Defaults to 0, meaning login till the user closes the browser.
-	 * @see restoreFromCookie
+	 * @see loginByCookie
 	 */
-	protected function saveToCookie($duration)
+	protected function saveIdentityCookie($identity, $duration)
 	{
-		$app = Yii::app();
-		$cookie = $this->createIdentityCookie($this->getStateKeyPrefix());
-		$cookie->expire = time() + $duration;
-		$data = array(
-			$this->getId(),
-			$this->getName(),
+		$cookie = new Cookie($this->identityCookie);
+		$cookie->value = json_encode(array(
+			$identity->getId(),
+			$identity->getAuthKey(),
 			$duration,
-			$this->saveIdentityStates(),
-		);
-		$cookie->value = $app->getSecurityManager()->hashData(serialize($data));
-		$app->getRequest()->getCookies()->add($cookie->name, $cookie);
-	}
-
-	/**
-	 * Creates a cookie to store identity information.
-	 * @param string $name the cookie name
-	 * @return CHttpCookie the cookie used to store identity information
-	 */
-	protected function createIdentityCookie($name)
-	{
-		$cookie = new CHttpCookie($name, '');
-		if (is_array($this->identityCookie)) {
-			foreach ($this->identityCookie as $name => $value) {
-				$cookie->$name = $value;
-			}
-		}
-		return $cookie;
-	}
-
-	/**
-	 * @return string a prefix for the name of the session variables storing user session data.
-	 */
-	public function getStateKeyPrefix()
-	{
-		if ($this->_keyPrefix !== null) {
-			return $this->_keyPrefix;
-		} else {
-			return $this->_keyPrefix = md5('Yii.' . get_class($this) . '.' . Yii::app()->getId());
-		}
-	}
-
-	/**
-	 * @param string $value a prefix for the name of the session variables storing user session data.
-	 */
-	public function setStateKeyPrefix($value)
-	{
-		$this->_keyPrefix = $value;
-	}
-
-	/**
-	 * Returns the value of a variable that is stored in user session.
-	 *
-	 * This function is designed to be used by CWebUser descendant classes
-	 * who want to store additional user information in user session.
-	 * A variable, if stored in user session using {@link setState} can be
-	 * retrieved back using this function.
-	 *
-	 * @param string $key variable name
-	 * @param mixed $defaultValue default value
-	 * @return mixed the value of the variable. If it doesn't exist in the session,
-	 * the provided default value will be returned
-	 * @see setState
-	 */
-	public function getState($key, $defaultValue = null)
-	{
-		$key = $this->getStateKeyPrefix() . $key;
-		return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
-	}
-
-	/**
-	 * Stores a variable in user session.
-	 *
-	 * This function is designed to be used by CWebUser descendant classes
-	 * who want to store additional user information in user session.
-	 * By storing a variable using this function, the variable may be retrieved
-	 * back later using {@link getState}. The variable will be persistent
-	 * across page requests during a user session.
-	 *
-	 * @param string $key variable name
-	 * @param mixed $value variable value
-	 * @param mixed $defaultValue default value. If $value===$defaultValue, the variable will be
-	 * removed from the session
-	 * @see getState
-	 */
-	public function setState($key, $value, $defaultValue = null)
-	{
-		$key = $this->getStateKeyPrefix() . $key;
-		if ($value === $defaultValue) {
-			unset($_SESSION[$key]);
-		} else {
-			$_SESSION[$key] = $value;
-		}
-	}
-
-	/**
-	 * Returns a value indicating whether there is a state of the specified name.
-	 * @param string $key state name
-	 * @return boolean whether there is a state of the specified name.
-	 */
-	public function hasState($key)
-	{
-		$key = $this->getStateKeyPrefix() . $key;
-		return isset($_SESSION[$key]);
-	}
-
-	/**
-	 * Clears all user identity information from persistent storage.
-	 * This will remove the data stored via {@link setState}.
-	 */
-	public function clearStates()
-	{
-		$keys = array_keys($_SESSION);
-		$prefix = $this->getStateKeyPrefix();
-		$n = strlen($prefix);
-		foreach ($keys as $key) {
-			if (!strncmp($key, $prefix, $n)) {
-				unset($_SESSION[$key]);
-			}
-		}
+		));
+		$cookie->expire = time() + $duration;
+		Yii::$app->getResponse()->getCookies()->add($cookie);
 	}
 
 	/**
@@ -479,45 +409,20 @@ class User extends Component
 	 * identity information. Derived classes may override this method
 	 * by retrieving additional user-related information. Make sure the
 	 * parent implementation is called first.
-	 * @param mixed $id a unique identifier for the user
-	 * @param string $name the display name for the user
-	 * @param array $states identity states
+	 * @param Identity $identity a unique identifier for the user
 	 */
-	protected function changeIdentity($id, $name, $states)
+	protected function switchIdentity($identity)
 	{
-		Yii::app()->getSession()->regenerateID(true);
-		$this->setId($id);
-		$this->setName($name);
-		$this->loadIdentityStates($states);
-	}
-
-	/**
-	 * Retrieves identity states from persistent storage and saves them as an array.
-	 * @return array the identity states
-	 */
-	protected function saveIdentityStates()
-	{
-		$states = array();
-		foreach ($this->getState(self::STATES_VAR, array()) as $name => $dummy) {
-			$states[$name] = $this->getState($name);
-		}
-		return $states;
-	}
-
-	/**
-	 * Loads identity states from an array and saves them to persistent storage.
-	 * @param array $states the identity states
-	 */
-	protected function loadIdentityStates($states)
-	{
-		$names = array();
-		if (is_array($states)) {
-			foreach ($states as $name => $value) {
-				$this->setState($name, $value);
-				$names[$name] = true;
+		Yii::$app->getSession()->regenerateID(true);
+		$this->setIdentity($identity);
+		if ($identity instanceof Identity) {
+			$this->setId($identity->getId());
+			if ($this->authTimeout !== null) {
+				$this->setState(self::AUTH_EXPIRE_VAR, time() + $this->authTimeout);
 			}
+		} else {
+			$this->removeAllStates();
 		}
-		$this->setState(self::STATES_VAR, $names);
 	}
 
 	/**
@@ -525,15 +430,118 @@ class User extends Component
 	 * If the user has been inactive for {@link authTimeout} seconds,
 	 * he will be automatically logged out.
 	 */
-	protected function updateAuthStatus()
+	protected function renewAuthStatus()
 	{
 		if ($this->authTimeout !== null && !$this->getIsGuest()) {
-			$expires = $this->getState(self::AUTH_TIMEOUT_VAR);
-			if ($expires !== null && $expires < time()) {
+			$expire = $this->getState(self::AUTH_EXPIRE_VAR);
+			if ($expire !== null && $expire < time()) {
 				$this->logout(false);
 			} else {
-				$this->setState(self::AUTH_TIMEOUT_VAR, time() + $this->authTimeout);
+				$this->setState(self::AUTH_EXPIRE_VAR, time() + $this->authTimeout);
 			}
 		}
+	}
+
+	/**
+	 * Returns a user state.
+	 * A user state is a session data item associated with the current user.
+	 * If the user logs out, all his/her user states will be removed.
+	 * @param string $key the key identifying the state
+	 * @param mixed $defaultValue value to be returned if the state does not exist.
+	 * @return mixed the state
+	 */
+	public function getState($key, $defaultValue = null)
+	{
+		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : null;
+		if (is_array($manifest) && isset($manifest[$key], $_SESSION[$key])) {
+			return $_SESSION[$key];
+		} else {
+			return $defaultValue;
+		}
+	}
+
+	/**
+	 * Returns all user states.
+	 * @return array states (key => state).
+	 */
+	public function getAllStates()
+	{
+		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : null;
+		$states = array();
+		if (is_array($manifest)) {
+			foreach (array_keys($manifest) as $key) {
+				if (isset($_SESSION[$key])) {
+					$states[$key] = $_SESSION[$key];
+				}
+			}
+		}
+		return $states;
+	}
+
+	/**
+	 * Stores a user state.
+	 * A user state is a session data item associated with the current user.
+	 * If the user logs out, all his/her user states will be removed.
+	 * @param string $key the key identifying the state. Note that states
+	 * and normal session variables share the same name space. If you have a normal
+	 * session variable using the same name, its value will be overwritten by this method.
+	 * @param mixed $value state
+	 */
+	public function setState($key, $value)
+	{
+		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : array();
+		$manifest[$value] = true;
+		$_SESSION[$key] = $value;
+		$_SESSION[$this->stateVar] = $manifest;
+	}
+
+	/**
+	 * Removes a user state.
+	 * If the user logs out, all his/her user states will be removed automatically.
+	 * @param string $key the key identifying the state. Note that states
+	 * and normal session variables share the same name space.  If you have a normal
+	 * session variable using the same name, it will be removed by this method.
+	 * @return mixed the removed state. Null if the state does not exist.
+	 */
+	public function removeState($key)
+	{
+		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : null;
+		if (is_array($manifest) && isset($manifest[$key], $_SESSION[$key])) {
+			$value = $_SESSION[$key];
+		} else {
+			$value = null;
+		}
+		unset($_SESSION[$this->stateVar][$key], $_SESSION[$key]);
+		return $value;
+	}
+
+	/**
+	 * Removes all states.
+	 * If the user logs out, all his/her user states will be removed automatically
+	 * without the need to call this method manually.
+	 *
+	 * Note that states and normal session variables share the same name space.
+	 * If you have a normal session variable using the same name, it will be removed
+	 * by this method.
+	 */
+	public function removeAllStates()
+	{
+		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : null;
+		if (is_array($manifest)) {
+			foreach (array_keys($manifest) as $key) {
+				unset($_SESSION[$key]);
+			}			
+		}		
+		unset($_SESSION[$this->stateVar]);
+	}
+
+	/**
+	 * Returns a value indicating whether there is a state associated with the specified key.
+	 * @param string $key key identifying the state
+	 * @return boolean whether the specified state exists
+	 */
+	public function hasState($key)
+	{
+		return $this->getState($key) !== null;
 	}
 }

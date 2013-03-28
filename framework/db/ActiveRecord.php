@@ -847,7 +847,7 @@ class ActiveRecord extends Model
 	 */
 	public function beforeSave($insert)
 	{
-		$event = new ModelEvent($this);
+		$event = new ModelEvent;
 		$this->trigger($insert ? self::EVENT_BEFORE_INSERT : self::EVENT_BEFORE_UPDATE, $event);
 		return $event->isValid;
 	}
@@ -887,7 +887,7 @@ class ActiveRecord extends Model
 	 */
 	public function beforeDelete()
 	{
-		$event = new ModelEvent($this);
+		$event = new ModelEvent;
 		$this->trigger(self::EVENT_BEFORE_DELETE, $event);
 		return $event->isValid;
 	}

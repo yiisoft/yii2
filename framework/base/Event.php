@@ -28,7 +28,8 @@ class Event extends \yii\base\Object
 	 */
 	public $name;
 	/**
-	 * @var object the sender of this event
+	 * @var object the sender of this event. If not set, this property will be
+	 * set as the object whose "trigger()" method is called.
 	 */
 	public $sender;
 	/**
@@ -38,21 +39,7 @@ class Event extends \yii\base\Object
 	 */
 	public $handled = false;
 	/**
-	 * @var mixed extra data associated with the event.
+	 * @var mixed extra custom data associated with the event.
 	 */
 	public $data;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param mixed $sender sender of the event
-	 * @param mixed $data extra data associated with the event
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($sender = null, $data = null, $config = array())
-	{
-		$this->sender = $sender;
-		$this->data = $data;
-		parent::__construct($config);
-	}
 }
