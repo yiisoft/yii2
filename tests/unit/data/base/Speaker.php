@@ -1,11 +1,10 @@
 <?php
 namespace yiiunit\data\base;
+use yii\base\Model;
 
 /**
  * Speaker
  */
-use yii\base\Model;
-
 class Speaker extends Model
 {
 	public $firstName;

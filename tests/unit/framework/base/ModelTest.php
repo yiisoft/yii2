@@ -1,8 +1,11 @@
 <?php
 
 namespace yiiunit\framework\base;
+use yii\base\Model;
 use yiiunit\TestCase;
 use yiiunit\data\base\Speaker;
+use yiiunit\data\base\Singer;
+use yiiunit\data\base\InvalidRulesModel;
 
 /**
  * ModelTest
@@ -168,5 +171,33 @@ class ModelTest extends TestCase
 		// exception isn't expected here
 		$this->assertNull($speaker['firstName']);
 		$this->assertFalse(isset($speaker['firstName']));
+	}
+
+	public function testDefaults()
+	{
+		$singer = new Model();
+		$this->assertEquals(array(), $singer->rules());
+		$this->assertEquals(array(), $singer->attributeLabels());
+	}
+
+	public function testDefaultScenarios()
+	{
+		$singer = new Singer();
+		$this->assertEquals(array('default' => array('lastName', 'underscore_style')), $singer->scenarios());
+	}
+
+	public function testIsAttributeRequired()
+	{
+		$singer = new Singer();
+		$this->assertFalse($singer->isAttributeRequired('firstName'));
+		$this->assertTrue($singer->isAttributeRequired('lastName'));
+	}
+
+	public function testCreateValidators()
+	{
+		$this->setExpectedException('yii\base\InvalidConfigException', 'Invalid validation rule: a rule must be an array specifying both attribute names and validator type.');
+
+		$invalid = new InvalidRulesModel();
+		$invalid->createValidators();
 	}
 }
