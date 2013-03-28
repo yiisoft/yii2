@@ -14,9 +14,6 @@ use yii\helpers\StringHelper;
 /**
  * Controller is the base class for classes containing controller logic.
  *
- * @property string $route the route (module ID, controller ID and action ID) of the current request.
- * @property string $uniqueId the controller ID that is prefixed with the module ID (if any).
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

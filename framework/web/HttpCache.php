@@ -112,10 +112,8 @@ class HttpCache extends ActionFilter
 	 */
 	protected function sendCacheControlHeader()
 	{
-		if (Yii::$app->session->isActive) {
-			session_cache_limiter('public');
-			header('Pragma:', true);
-		}
+		session_cache_limiter('public');
+		header('Pragma:', true);
 		header('Cache-Control: ' . $this->cacheControl, true);
 	}
 

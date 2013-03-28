@@ -223,30 +223,6 @@ class User extends Component
 	}
 
 	/**
-	 * Returns the unique identifier for the user (e.g. username).
-	 * This is the unique identifier that is mainly used for display purpose.
-	 * @return string the user name. If the user is not logged in, this will be {@link guestName}.
-	 */
-	public function getName()
-	{
-		if (($name = $this->getState('__name')) !== null) {
-			return $name;
-		} else {
-			return $this->guestName;
-		}
-	}
-
-	/**
-	 * Sets the unique identifier for the user (e.g. username).
-	 * @param string $value the user name.
-	 * @see getName
-	 */
-	public function setName($value)
-	{
-		$this->setState('__name', $value);
-	}
-
-	/**
 	 * Returns the URL that the user should be redirected to after successful login.
 	 * This property is usually used by the login action. If the login is successful,
 	 * the action should read this property and use it to redirect the user browser.
@@ -587,7 +563,6 @@ class User extends Component
 	 * Updates the authentication status according to {@link authTimeout}.
 	 * If the user has been inactive for {@link authTimeout} seconds,
 	 * he will be automatically logged out.
-	 * @since 1.1.7
 	 */
 	protected function updateAuthStatus()
 	{
@@ -599,35 +574,5 @@ class User extends Component
 				$this->setState(self::AUTH_TIMEOUT_VAR, time() + $this->authTimeout);
 			}
 		}
-	}
-
-	/**
-	 * Performs access check for this user.
-	 * @param string $operation the name of the operation that need access check.
-	 * @param array $params name-value pairs that would be passed to business rules associated
-	 * with the tasks and roles assigned to the user.
-	 * Since version 1.1.11 a param with name 'userId' is added to this array, which holds the value of
-	 * {@link getId()} when {@link CDbAuthManager} or {@link CPhpAuthManager} is used.
-	 * @param boolean $allowCaching whether to allow caching the result of access check.
-	 * When this parameter
-	 * is true (default), if the access check of an operation was performed before,
-	 * its result will be directly returned when calling this method to check the same operation.
-	 * If this parameter is false, this method will always call {@link CAuthManager::checkAccess}
-	 * to obtain the up-to-date access result. Note that this caching is effective
-	 * only within the same request and only works when <code>$params=array()</code>.
-	 * @return boolean whether the operations can be performed by this user.
-	 */
-	public function checkAccess($operation, $params = array(), $allowCaching = true)
-	{
-		if ($allowCaching && $params === array() && isset($this->_access[$operation])) {
-			return $this->_access[$operation];
-		}
-
-		$access = Yii::app()->getAuthManager()->checkAccess($operation, $this->getId(), $params);
-		if ($allowCaching && $params === array()) {
-			$this->_access[$operation] = $access;
-		}
-
-		return $access;
 	}
 }
