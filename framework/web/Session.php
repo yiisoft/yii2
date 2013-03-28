@@ -619,6 +619,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	}
 
 	/**
+	 * Returns a value indicating whether there is a flash message associated with the specified key.
 	 * @param string $key key identifying the flash message
 	 * @return boolean whether the specified flash message exists
 	 */

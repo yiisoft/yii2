@@ -422,7 +422,10 @@ class Component extends \yii\base\Object
 		$this->ensureBehaviors();
 		if (isset($this->_e[$name]) && $this->_e[$name]->getCount()) {
 			if ($event === null) {
-				$event = new Event($this);
+				$event = new Event;
+			}
+			if ($event->sender === null) {
+				$event->sender = $this;
 			}
 			$event->handled = false;
 			$event->name = $name;

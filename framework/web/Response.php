@@ -7,6 +7,7 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\helpers\FileHelper;
 
 /**
@@ -178,6 +179,6 @@ class Response extends \yii\base\Response
 	 */
 	public function getCookies()
 	{
-		return \Yii::$app->getRequest()->getCookies();
+		return Yii::$app->getRequest()->getCookies();
 	}
 }
