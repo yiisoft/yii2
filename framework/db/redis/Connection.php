@@ -60,7 +60,7 @@ class Connection extends Component
 	public $keyPrefix;
 
 	/**
-	 * @var array http://redis.io/commands
+	 * @var array List of available redis commands http://redis.io/commands
 	 */
 	public $redisCommands = array(
 		'BRPOP', // key [key ...] timeout Remove and get the last element in a list, or block until one is available
@@ -268,7 +268,7 @@ class Connection extends Component
 	{
 		if ($this->_socket !== null) {
 			\Yii::trace('Closing DB connection: ' . $this->dsn, __CLASS__);
-			// TODO send CLOSE to the server
+			$this->__call('CLOSE', array()); // TODO improve API
 			stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
 			$this->_socket = null;
 			$this->_transaction = null;
@@ -323,20 +323,67 @@ class Connection extends Component
 		}
 	}
 
+	/**
+	 * http://redis.io/topics/protocol
+	 * https://github.com/ptrofimov/tinyredisclient/blob/master/src/TinyRedisClient.php
+	 *
+	 * @param string $name
+	 * @param array $params
+	 * @return mixed
+	 */
 	public function __call($name, $params)
 	{
+		// TODO set active to true?
 		if (in_array($name, $this->redisCommands))
 		{
 			array_unshift($params, $name);
-			$cmd = '*' . count($params) . "\r\n";
+			$command = '*' . count($params) . "\r\n";
 			foreach($params as $arg) {
-				$cmd .= '$' . strlen( $item ) . "\r\n" . $item . "\r\n";
+				$command .= '$' . strlen($arg) . "\r\n" . $arg . "\r\n";
 			}
-			fwrite( $this->_socket, $cmd );
-			return $this->_parseResponse();
+			\Yii::trace("Executing Redis Command: {$command}", __CLASS__);
+			fwrite($this->_socket, $command);
+			return $this->parseResponse($command);
 		}
 		else {
 			return parent::__call($name, $params);
+		}
+	}
+
+	private function parseResponse($command)
+	{
+		if(($line = fgets($this->_socket))===false) {
+			throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
+		}
+		$type = $line[0];
+		$line = substr($line, 1, -2);
+		switch($type)
+		{
+			case '+': // Status reply
+				return true;
+			case '-': // Error reply
+				throw new Exception("Redis error: " . $line . "\nRedis command was: " . $command);
+			case ':': // Integer reply
+				// no cast to integer as it is in the range of a signed 64 bit integer
+				return $line;
+			case '$': // Bulk replies
+				if ($line == '-1') {
+					return null;
+				}
+				$data = fread($this->_socket, $line + 2);
+				if($data===false) {
+					throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
+				}
+				return substr($data, 0, -2);
+			case '*': // Multi-bulk replies
+				$count = (int) $line;
+				$data = array();
+				for($i = 0; $i < $count; $i++) {
+					$data[] = $this->parseResponse($command);
+				}
+				return $data;
+			default:
+				throw new Exception('Received illegal data from redis: ' . substr($line, 0, -2) . "\nRedis command was: " . $command);
 		}
 	}
 
@@ -350,9 +397,9 @@ class Connection extends Component
 	 * @see \yii\logging\Logger::getProfiling()
 	 */
 	public function getQuerySummary()
-	{// TODO implement
+	{
 		$logger = \Yii::getLogger();
-		$timings = $logger->getProfiling(array('yii\db\Command::query', 'yii\db\Command::execute'));
+		$timings = $logger->getProfiling(array('yii\db\redis\Connection::command'));
 		$count = count($timings);
 		$time = 0;
 		foreach ($timings as $timing) {
