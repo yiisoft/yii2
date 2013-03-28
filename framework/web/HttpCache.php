@@ -48,11 +48,9 @@ class HttpCache extends ActionFilter
 	 */
 	public $params;
 	/**
-	 * Http cache control headers. Set this to an empty string in order to keep this
-	 * header from being sent entirely.
-	 * @var string
+	 * @var string HTTP cache control header. If null, the header will not be sent.
 	 */
-	public $cacheControl = 'max-age=3600, public';
+	public $cacheControlHeader = 'Cache-Control: max-age=3600, public';
 
 	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
@@ -62,8 +60,8 @@ class HttpCache extends ActionFilter
 	 */
 	public function beforeAction($action)
 	{
-		$requestMethod = Yii::$app->request->getRequestMethod();
-		if ($requestMethod !== 'GET' && $requestMethod !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
+		$verb = Yii::$app->request->getRequestMethod();
+		if ($verb !== 'GET' && $verb !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
 			return true;
 		}
 
@@ -84,7 +82,9 @@ class HttpCache extends ActionFilter
 		if ($this->validateCache($lastModified, $etag)) {
 			header('HTTP/1.1 304 Not Modified');
 			return false;
-		} elseif ($lastModified !== null) {
+		}
+
+		if ($lastModified !== null) {
 			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
 		}
 		return true;
@@ -114,7 +114,9 @@ class HttpCache extends ActionFilter
 	{
 		session_cache_limiter('public');
 		header('Pragma:', true);
-		header('Cache-Control: ' . $this->cacheControl, true);
+		if ($this->cacheControlHeader !== null) {
+			header($this->cacheControlHeader, true);
+		}
 	}
 
 	/**
