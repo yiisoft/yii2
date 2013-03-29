@@ -1,7 +1,5 @@
 <?php
 /**
- * CProfileLogRoute class file.
- *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -61,7 +59,7 @@ class CProfileLogRoute extends CWebLogRoute
 		if ($value === 'summary' || $value === 'callstack')
 			$this->_report = $value;
 		else
-			throw new CException(Yii::t('yii', 'CProfileLogRoute.report "{report}" is invalid. Valid values include "summary" and "callstack".',
+			throw new CException(Yii::t('yii|CProfileLogRoute.report "{report}" is invalid. Valid values include "summary" and "callstack".',
 				array('{report}' => $value)));
 	}
 
@@ -71,7 +69,7 @@ class CProfileLogRoute extends CWebLogRoute
 	 */
 	public function processLogs($logs)
 	{
-		$app = \Yii::$application;
+		$app = \Yii::$app;
 		if (!($app instanceof CWebApplication) || $app->getRequest()->getIsAjaxRequest())
 			return;
 
@@ -108,7 +106,7 @@ class CProfileLogRoute extends CWebLogRoute
 					$results[$last[4]] = array($token, $delta, count($stack));
 				} else
 				{
-					throw new CException(Yii::t('yii', 'CProfileLogRoute found a mismatching code block "{token}". Make sure the calls to Yii::beginProfile() and Yii::endProfile() be properly nested.',
+					throw new CException(Yii::t('yii|CProfileLogRoute found a mismatching code block "{token}". Make sure the calls to Yii::beginProfile() and Yii::endProfile() be properly nested.',
 						array('{token}' => $token)));
 				}
 			}
@@ -151,7 +149,7 @@ class CProfileLogRoute extends CWebLogRoute
 					else
 						$results[$token] = array($token, 1, $delta, $delta, $delta);
 				} else
-					throw new CException(Yii::t('yii', 'CProfileLogRoute found a mismatching code block "{token}". Make sure the calls to Yii::beginProfile() and Yii::endProfile() be properly nested.',
+					throw new CException(Yii::t('yii|CProfileLogRoute found a mismatching code block "{token}". Make sure the calls to Yii::beginProfile() and Yii::endProfile() be properly nested.',
 						array('{token}' => $token)));
 			}
 		}

@@ -1,33 +1,20 @@
-- db
-	* pgsql, sql server, oracle, db2 drivers
-	* unit tests on different DB drivers
-	* document-based (should allow storage-specific methods additionally to generic ones)
-	  * mongodb (put it under framework/db/mongodb)
-	* key-value-based (should allow storage-specific methods additionally to generic ones)
-	  * redis (put it under framework/db/redis or perhaps framework/caching?)
-- base
-	* TwigViewRenderer
-	* SmartyViewRenderer
-- logging
-	* WebTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
-	* ProfileTarget (TBD after web is in place): should consider using javascript and make it into a toolbar
-	* unit tests
 - caching
-	* a console command to clear cached data
-	* unit tests
+	* dependency unit tests
 - validators
+	* Refactor validators to add validateValue() for every validator, if possible. Check if value is an array.
 	* FileValidator: depends on CUploadedFile
 	* CaptchaValidator: depends on CaptchaAction
 	* DateValidator: should we use CDateTimeParser, or simply use strtotime()?
 	* CompareValidator::clientValidateAttribute(): depends on CHtml::activeId()
 
+memo
+	* Minimal PHP version required: 5.3.7 (http://www.php.net/manual/en/function.crypt.php)
 ---
 
 - base
 	* module
 	  - Module should be able to define its own configuration including routes. Application should be able to overwrite it.
 	* application
-	* security
 - built-in console commands
 	+ api doc builder
 		* support for markdown syntax
@@ -35,12 +22,10 @@
 		* consider to be released as a separate tool for user app docs
 - i18n
 	* consider using PHP built-in support and data
-	* message translations, choice format
 	* formatting: number and date
 	* parsing??
 	* make dates/date patterns uniform application-wide including JUI, formats etc.
 - helpers
-	* array
 	* image
 	* string
 	* file
@@ -53,8 +38,6 @@
     * move generation API out of gii, provide yiic commands to use it. Use same templates for gii/yiic.
 	* i18n variant of templates
 	* allow to generate module-specific CRUD
-- markup and HTML helpers
-    * use HTML5 instead of XHTML
 - assets
     * ability to manage scripts order (store these in a vector?)
 	* http://ryanbigg.com/guides/asset_pipeline.html, http://guides.rubyonrails.org/asset_pipeline.html, use content hash instead of mtime + directory hash.

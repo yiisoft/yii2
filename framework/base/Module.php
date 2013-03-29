@@ -1,17 +1,15 @@
 <?php
 /**
- * Module class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
 
 use Yii;
-use yii\util\StringHelper;
-use yii\util\FileHelper;
+use yii\helpers\StringHelper;
+use yii\helpers\FileHelper;
 
 /**
  * Module is the base class for module and application classes.
@@ -73,9 +71,9 @@ abstract class Module extends Component
 	 *
 	 * ~~~
 	 * array(
-	 *   'account' => '@application/controllers/UserController',
+	 *   'account' => '@app/controllers/UserController',
 	 *   'article' => array(
-	 *      'class' => '@application/controllers/PostController',
+	 *      'class' => '@app/controllers/PostController',
 	 *      'pageTitle' => 'something new',
 	 *   ),
 	 * )
@@ -311,7 +309,7 @@ abstract class Module extends Component
 	 *
 	 * ~~~
 	 * array(
-	 *	'@models' => '@application/models', // an existing alias
+	 *	'@models' => '@app/models', // an existing alias
 	 *	'@backend' => __DIR__ . '/../backend',  // a directory
 	 * )
 	 * ~~~
@@ -413,7 +411,7 @@ abstract class Module extends Component
 	 * array(
 	 *     'comment' => array(
 	 *         'class' => 'app\modules\CommentModule',
-	 *         'connectionID' => 'db',
+	 *         'db' => 'db',
 	 *     ),
 	 *     'booking' => array(
 	 *         'class' => 'app\modules\BookingModule',
@@ -523,7 +521,7 @@ abstract class Module extends Component
 	 *     ),
 	 *     'cache' => array(
 	 *         'class' => 'yii\caching\DbCache',
-	 *         'connectionID' => 'db',
+	 *         'db' => 'db',
 	 *     ),
 	 * )
 	 * ~~~
@@ -563,13 +561,13 @@ abstract class Module extends Component
 		if (is_array($result)) {
 			/** @var $controller Controller */
 			list($controller, $actionID) = $result;
-			$oldController = Yii::$application->controller;
-			Yii::$application->controller = $controller;
+			$oldController = Yii::$app->controller;
+			Yii::$app->controller = $controller;
 			$status = $controller->runAction($actionID, $params);
-			Yii::$application->controller = $oldController;
+			Yii::$app->controller = $oldController;
 			return $status;
 		} else {
-			throw new InvalidRouteException('Unable to resolve the request: ' . trim($this->getUniqueId() . '/' . $route, '/'));
+			throw new InvalidRouteException('Unable to resolve the request "' . trim($this->getUniqueId() . '/' . $route, '/') . '".');
 		}
 	}
 
@@ -607,6 +605,7 @@ abstract class Module extends Component
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
 			$className = StringHelper::id2camel($id) . 'Controller';
+
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
 			if (is_file($classFile)) {
 				$className = $this->controllerNamespace . '\\' . $className;

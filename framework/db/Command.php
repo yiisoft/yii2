@@ -1,15 +1,15 @@
 <?php
 /**
- * Command class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\db;
 
+use Yii;
 use yii\base\NotSupportedException;
+use yii\caching\Cache;
 
 /**
  * Command represents a SQL statement to be executed against a database.
@@ -134,9 +134,9 @@ class Command extends \yii\base\Component
 			try {
 				$this->pdoStatement = $this->db->pdo->prepare($sql);
 			} catch (\Exception $e) {
-				\Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
+				Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				throw new Exception($e->getMessage(), (int)$e->getCode(), $errorInfo);
+				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode());
 			}
 		}
 	}
@@ -253,24 +253,20 @@ class Command extends \yii\base\Component
 	 * Executes the SQL statement.
 	 * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
 	 * No result set will be returned.
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to [[bindValues()]]. Note that if you pass parameters in this way, any previous call to [[bindParam()]]
-	 * or [[bindValue()]] will be ignored.
 	 * @return integer number of rows affected by the execution.
 	 * @throws Exception execution failed
 	 */
-	public function execute($params = array())
+	public function execute()
 	{
 		$sql = $this->getSql();
 
-		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
 		} else {
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
-		\Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
+		Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
 
 		if ($sql == '') {
 			return 0;
@@ -278,94 +274,78 @@ class Command extends \yii\base\Component
 
 		try {
 			if ($this->db->enableProfiling) {
-				\Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
 			$this->prepare();
-			if ($params === array()) {
-				$this->pdoStatement->execute();
-			} else {
-				$this->pdoStatement->execute($params);
-			}
+			$this->pdoStatement->execute();
 			$n = $this->pdoStatement->rowCount();
 
 			if ($this->db->enableProfiling) {
-				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			return $n;
 		} catch (\Exception $e) {
 			if ($this->db->enableProfiling) {
-				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			$message = $e->getMessage();
 
-			\Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
+			Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
 
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, (int)$e->getCode(), $errorInfo);
+			throw new Exception($message, $errorInfo, (int)$e->getCode());
 		}
 	}
 
 	/**
 	 * Executes the SQL statement and returns query result.
 	 * This method is for executing a SQL query that returns result set, such as `SELECT`.
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to [[bindValues()]]. Note that if you pass parameters in this way, any previous call to [[bindParam()]]
-	 * or [[bindValue()]] will be ignored.
 	 * @return DataReader the reader object for fetching the query result
 	 * @throws Exception execution failed
 	 */
-	public function query($params = array())
+	public function query()
 	{
-		return $this->queryInternal('', $params);
+		return $this->queryInternal('');
 	}
 
 	/**
 	 * Executes the SQL statement and returns ALL rows at once.
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to [[bindValues()]]. Note that if you pass parameters in this way, any previous call to [[bindParam()]]
-	 * or [[bindValue()]] will be ignored.
 	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return array all rows of the query result. Each array element is an array representing a row of data.
 	 * An empty array is returned if the query results in nothing.
 	 * @throws Exception execution failed
 	 */
-	public function queryAll($params = array(), $fetchMode = null)
+	public function queryAll($fetchMode = null)
 	{
-		return $this->queryInternal('fetchAll', $params, $fetchMode);
+		return $this->queryInternal('fetchAll', $fetchMode);
 	}
 
 	/**
 	 * Executes the SQL statement and returns the first row of the result.
 	 * This method is best used when only the first row of result is needed for a query.
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to [[bindValues()]]. Note that if you pass parameters in this way, any previous call to [[bindParam()]]
-	 * or [[bindValue()]] will be ignored.
 	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
 	 * results in nothing.
 	 * @throws Exception execution failed
 	 */
-	public function queryRow($params = array(), $fetchMode = null)
+	public function queryRow($fetchMode = null)
 	{
-		return $this->queryInternal('fetch', $params, $fetchMode);
+		return $this->queryInternal('fetch', $fetchMode);
 	}
 
 	/**
 	 * Executes the SQL statement and returns the value of the first column in the first row of data.
 	 * This method is best used when only a single value is needed for a query.
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to [[bindValues()]]. Note that if you pass parameters in this way, any previous call to [[bindParam()]]
-	 * or [[bindValue()]] will be ignored.
 	 * @return string|boolean the value of the first column in the first row of the query result.
 	 * False is returned if there is no value.
 	 * @throws Exception execution failed
 	 */
-	public function queryScalar($params = array())
+	public function queryScalar()
 	{
-		$result = $this->queryInternal('fetchColumn', $params, 0);
+		$result = $this->queryInternal('fetchColumn', 0);
 		if (is_resource($result) && get_resource_type($result) === 'stream') {
 			return stream_get_contents($result);
 		} else {
@@ -377,65 +357,60 @@ class Command extends \yii\base\Component
 	 * Executes the SQL statement and returns the first column of the result.
 	 * This method is best used when only the first column of result (i.e. the first element in each row)
 	 * is needed for a query.
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to [[bindValues()]]. Note that if you pass parameters in this way, any previous call to [[bindParam()]]
-	 * or [[bindValue()]] will be ignored.
 	 * @return array the first column of the query result. Empty array is returned if the query results in nothing.
 	 * @throws Exception execution failed
 	 */
-	public function queryColumn($params = array())
+	public function queryColumn()
 	{
-		return $this->queryInternal('fetchAll', $params, \PDO::FETCH_COLUMN);
+		return $this->queryInternal('fetchAll', \PDO::FETCH_COLUMN);
 	}
 
 	/**
 	 * Performs the actual DB query of a SQL statement.
 	 * @param string $method method of PDOStatement to be called
-	 * @param array $params input parameters (name=>value) for the SQL execution. This is an alternative
-	 * to [[bindValues()]]. Note that if you pass parameters in this way, any previous call to [[bindParam()]]
-	 * or [[bindValue()]] will be ignored.
 	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return mixed the method execution result
 	 * @throws Exception if the query causes any problem
 	 */
-	private function queryInternal($method, $params, $fetchMode = null)
+	private function queryInternal($method, $fetchMode = null)
 	{
 		$db = $this->db;
 		$sql = $this->getSql();
-		$this->_params = array_merge($this->_params, $params);
 		if ($this->_params === array()) {
 			$paramLog = '';
 		} else {
 			$paramLog = "\nParameters: " . var_export($this->_params, true);
 		}
 
-		\Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
+		Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {
-			$cache = \Yii::$application->getComponent($db->queryCacheID);
+			$cache = is_string($db->queryCache) ? Yii::$app->getComponent($db->queryCache) : $db->queryCache;
 		}
 
-		if (isset($cache)) {
-			$cacheKey = $cache->buildKey(__CLASS__, $db->dsn, $db->username, $sql, $paramLog);
+		if (isset($cache) && $cache instanceof Cache) {
+			$cacheKey = $cache->buildKey(array(
+				__CLASS__,
+				$db->dsn,
+				$db->username,
+				$sql,
+				$paramLog,
+			));
 			if (($result = $cache->get($cacheKey)) !== false) {
-				\Yii::trace('Query result found in cache', __CLASS__);
+				Yii::trace('Query result served from cache', __CLASS__);
 				return $result;
 			}
 		}
 
 		try {
 			if ($db->enableProfiling) {
-				\Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
 			$this->prepare();
-			if ($params === array()) {
-				$this->pdoStatement->execute();
-			} else {
-				$this->pdoStatement->execute($params);
-			}
+			$this->pdoStatement->execute();
 
 			if ($method === '') {
 				$result = new DataReader($this);
@@ -448,23 +423,23 @@ class Command extends \yii\base\Component
 			}
 
 			if ($db->enableProfiling) {
-				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 
-			if (isset($cache, $cacheKey)) {
+			if (isset($cache, $cacheKey) && $cache instanceof Cache) {
 				$cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
-				\Yii::trace('Saved query result in cache', __CLASS__);
+				Yii::trace('Saved query result in cache', __CLASS__);
 			}
 
 			return $result;
 		} catch (\Exception $e) {
 			if ($db->enableProfiling) {
-				\Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
 			}
 			$message = $e->getMessage();
-			\Yii::error("$message\nCommand::$method() failed: {$sql}{$paramLog}", __CLASS__);
+			Yii::error("$message\nCommand::$method() failed: {$sql}{$paramLog}", __CLASS__);
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, (int)$e->getCode(), $errorInfo);
+			throw new Exception($message, $errorInfo, (int)$e->getCode());
 		}
 	}
 

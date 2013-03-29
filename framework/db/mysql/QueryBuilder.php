@@ -1,16 +1,14 @@
 <?php
 /**
- * QueryBuilder class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\db\mysql;
 
 use yii\db\Exception;
-use yii\base\InvalidCallException;
+use yii\base\InvalidParamException;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -54,7 +52,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		$quotedTable = $this->db->quoteTableName($table);
 		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
 		if ($row === false) {
-			throw new Exception("Unable to find '$oldName' in table '$table'.");
+			throw new Exception("Unable to find column '$oldName' in table '$table'.");
 		}
 		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
@@ -98,7 +96,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
 	 * the next new row's primary key will have a value 1.
 	 * @return string the SQL statement for resetting sequence
-	 * @throws InvalidCallException if the table does not exist or there is no sequence associated with the table.
+	 * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
 	 */
 	public function resetSequence($tableName, $value = null)
 	{
@@ -113,9 +111,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 			}
 			return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
 		} elseif ($table === null) {
-			throw new InvalidCallException("Table not found: $tableName");
+			throw new InvalidParamException("Table not found: $tableName");
 		} else {
-			throw new InvalidCallException("There is not sequence associated with table '$tableName'.'");
+			throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
 		}
 	}
 

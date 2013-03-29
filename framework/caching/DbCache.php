@@ -1,14 +1,13 @@
 <?php
 /**
- * DbCache class file
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Query;
@@ -16,30 +15,20 @@ use yii\db\Query;
 /**
  * DbCache implements a cache application component by storing cached data in a database.
  *
- * DbCache stores cache data in a DB table whose name is specified via [[cacheTableName]].
- * For MySQL database, the table should be created beforehand as follows :
- *
- * ~~~
- * CREATE TABLE tbl_cache (
- *     id char(128) NOT NULL,
- *     expire int(11) DEFAULT NULL,
- *     data LONGBLOB,
- *     PRIMARY KEY (id),
- *     KEY expire (expire)
- * );
- * ~~~
- *
- * You should replace `LONGBLOB` as follows if you are using a different DBMS:
- *
- * - PostgreSQL: `BYTEA`
- * - SQLite, SQL server, Oracle: `BLOB`
- *
- * DbCache connects to the database via the DB connection specified in [[connectionID]]
- * which must refer to a valid DB application component.
+ * By default, DbCache stores session data in a DB table named 'tbl_cache'. This table
+ * must be pre-created. The table name can be changed by setting [[cacheTable]].
  *
  * Please refer to [[Cache]] for common cache operations that are supported by DbCache.
  *
- * @property Connection $db The DB connection instance.
+ * The following example shows how you can configure the application to use DbCache:
+ *
+ * ~~~
+ * 'cache' => array(
+ *     'class' => 'yii\caching\DbCache',
+ *     // 'db' => 'mydb',
+ *     // 'cacheTable' => 'my_cache',
+ * )
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -47,50 +36,56 @@ use yii\db\Query;
 class DbCache extends Cache
 {
 	/**
-	 * @var string the ID of the [[Connection|DB connection]] application component. Defaults to 'db'.
+	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
+	 * After the DbCache object is created, if you want to change this property, you should only assign it
+	 * with a DB connection object.
 	 */
-	public $connectionID = 'db';
+	public $db = 'db';
 	/**
-	 * @var string name of the DB table to store cache content. Defaults to 'tbl_cache'.
-	 * The table must be created before using this cache component.
+	 * @var string name of the DB table to store cache content.
+	 * The table should be pre-created as follows:
+	 *
+	 * ~~~
+	 * CREATE TABLE tbl_cache (
+	 *     id char(128) NOT NULL PRIMARY KEY,
+	 *     expire int(11),
+	 *     data BLOB
+	 * );
+	 * ~~~
+	 *
+	 * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
+	 * that can be used for some popular DBMS:
+	 *
+	 * - MySQL: LONGBLOB
+	 * - PostgreSQL: BYTEA
+	 * - MSSQL: BLOB
+	 *
+	 * When using DbCache in a production server, we recommend you create a DB index for the 'expire'
+	 * column in the cache table to improve the performance.
 	 */
-	public $cacheTableName = 'tbl_cache';
+	public $cacheTable = 'tbl_cache';
 	/**
 	 * @var integer the probability (parts per million) that garbage collection (GC) should be performed
-	 * when storing a piece of data in the cache. Defaults to 10, meaning 0.001% chance.
+	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
 	 * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
 	 **/
 	public $gcProbability = 100;
-	/**
-	 * @var Connection the DB connection instance
-	 */
-	private $_db;
+
 
 	/**
-	 * Returns the DB connection instance used for caching purpose.
-	 * @return Connection the DB connection instance
-	 * @throws InvalidConfigException if [[connectionID]] does not point to a valid application component.
+	 * Initializes the DbCache component.
+	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
+	 * @throws InvalidConfigException if [[db]] is invalid.
 	 */
-	public function getDb()
+	public function init()
 	{
-		if ($this->_db === null) {
-			$db = \Yii::$application->getComponent($this->connectionID);
-			if ($db instanceof Connection) {
-				$this->_db = $db;
-			} else {
-				throw new InvalidConfigException("DbCache::connectionID must refer to the ID of a DB application component.");
-			}
+		parent::init();
+		if (is_string($this->db)) {
+			$this->db = Yii::$app->getComponent($this->db);
 		}
-		return $this->_db;
-	}
-
-	/**
-	 * Sets the DB connection used by the cache component.
-	 * @param Connection $value the DB connection instance
-	 */
-	public function setDb($value)
-	{
-		$this->_db = $value;
+		if (!$this->db instanceof Connection) {
+			throw new InvalidConfigException("DbCache::db must be either a DB connection instance or the application component ID of a DB connection.");
+		}
 	}
 
 	/**
@@ -103,17 +98,16 @@ class DbCache extends Cache
 	{
 		$query = new Query;
 		$query->select(array('data'))
-			->from($this->cacheTableName)
-			->where('id = :id AND (expire = 0 OR expire > :time)', array(':id' => $key, ':time' => time()));
-		$db = $this->getDb();
-		if ($db->enableQueryCache) {
+			->from($this->cacheTable)
+			->where('id = :id AND (expire = 0 OR expire >' . time() . ')', array(':id' => $key));
+		if ($this->db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
-			$db->enableQueryCache = false;
-			$result = $query->createCommand($db)->queryScalar();
-			$db->enableQueryCache = true;
+			$this->db->enableQueryCache = false;
+			$result = $query->createCommand($this->db)->queryScalar();
+			$this->db->enableQueryCache = true;
 			return $result;
 		} else {
-			return $query->createCommand($db)->queryScalar();
+			return $query->createCommand($this->db)->queryScalar();
 		}
 	}
 
@@ -129,17 +123,16 @@ class DbCache extends Cache
 		}
 		$query = new Query;
 		$query->select(array('id', 'data'))
-			->from($this->cacheTableName)
+			->from($this->cacheTable)
 			->where(array('id' => $keys))
-			->andWhere("expire = 0 OR expire > " . time() . ")");
+			->andWhere('(expire = 0 OR expire > ' . time() . ')');
 
-		$db = $this->getDb();
-		if ($db->enableQueryCache) {
-			$db->enableQueryCache = false;
-			$rows = $query->createCommand($db)->queryAll();
-			$db->enableQueryCache = true;
+		if ($this->db->enableQueryCache) {
+			$this->db->enableQueryCache = false;
+			$rows = $query->createCommand($this->db)->queryAll();
+			$this->db->enableQueryCache = true;
 		} else {
-			$rows = $query->createCommand($db)->queryAll();
+			$rows = $query->createCommand($this->db)->queryAll();
 		}
 
 		$results = array();
@@ -163,13 +156,13 @@ class DbCache extends Cache
 	 */
 	protected function setValue($key, $value, $expire)
 	{
-		$command = $this->getDb()->createCommand();
-		$command->update($this->cacheTableName, array(
-			'expire' => $expire > 0 ? $expire + time() : 0,
-			'data' => array($value, \PDO::PARAM_LOB),
-		), array(
-			'id' => $key,
-		));;
+		$command = $this->db->createCommand()
+			->update($this->cacheTable, array(
+				'expire' => $expire > 0 ? $expire + time() : 0,
+				'data' => array($value, \PDO::PARAM_LOB),
+			), array(
+				'id' => $key,
+			));
 
 		if ($command->execute()) {
 			$this->gc();
@@ -198,14 +191,13 @@ class DbCache extends Cache
 			$expire = 0;
 		}
 
-		$command = $this->getDb()->createCommand();
-		$command->insert($this->cacheTableName, array(
-			'id' => $key,
-			'expire' => $expire,
-			'data' => array($value, \PDO::PARAM_LOB),
-		));
 		try {
-			$command->execute();
+			$this->db->createCommand()
+				->insert($this->cacheTable, array(
+					'id' => $key,
+					'expire' => $expire,
+					'data' => array($value, \PDO::PARAM_LOB),
+				))->execute();
 			return true;
 		} catch (\Exception $e) {
 			return false;
@@ -220,8 +212,9 @@ class DbCache extends Cache
 	 */
 	protected function deleteValue($key)
 	{
-		$command = $this->getDb()->createCommand();
-		$command->delete($this->cacheTableName, array('id' => $key))->execute();
+		$this->db->createCommand()
+			->delete($this->cacheTable, array('id' => $key))
+			->execute();
 		return true;
 	}
 
@@ -233,8 +226,9 @@ class DbCache extends Cache
 	public function gc($force = false)
 	{
 		if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
-			$command = $this->getDb()->createCommand();
-			$command->delete($this->cacheTableName, 'expire > 0 AND expire < ' . time())->execute();
+			$this->db->createCommand()
+				->delete($this->cacheTable, 'expire > 0 AND expire < ' . time())
+				->execute();
 		}
 	}
 
@@ -245,8 +239,9 @@ class DbCache extends Cache
 	 */
 	protected function flushValues()
 	{
-		$command = $this->getDb()->createCommand();
-		$command->delete($this->cacheTableName)->execute();
+		$this->db->createCommand()
+			->delete($this->cacheTable)
+			->execute();
 		return true;
 	}
 }

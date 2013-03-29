@@ -1,9 +1,7 @@
 <?php
 /**
- * CaptchaValidator class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -49,7 +47,7 @@ class CaptchaValidator extends Validator
 		}
 		$captcha = $this->getCaptchaAction();
 		if (!$captcha->validate($value, $this->caseSensitive)) {
-			$message = $this->message !== null ? $this->message : \Yii::t('yii', 'The verification code is incorrect.');
+			$message = $this->message !== null ? $this->message : \Yii::t('yii|The verification code is incorrect.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -61,13 +59,13 @@ class CaptchaValidator extends Validator
 	public function getCaptchaAction()
 	{
 		if (strpos($this->captchaAction, '/') !== false) {  // contains controller or module
-			$ca = \Yii::$application->createController($this->captchaAction);
+			$ca = \Yii::$app->createController($this->captchaAction);
 			if ($ca !== null) {
 				list($controller, $actionID) = $ca;
 				$action = $controller->createAction($actionID);
 			}
 		} else {
-			$action = \Yii::$application->getController()->createAction($this->captchaAction);
+			$action = \Yii::$app->getController()->createAction($this->captchaAction);
 		}
 
 		if ($action === null) {
@@ -85,7 +83,7 @@ class CaptchaValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$captcha = $this->getCaptchaAction();
-		$message = $this->message !== null ? $this->message : \Yii::t('yii', 'The verification code is incorrect.');
+		$message = $this->message !== null ? $this->message : \Yii::t('yii|The verification code is incorrect.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,

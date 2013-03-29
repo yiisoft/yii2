@@ -1,9 +1,7 @@
 <?php
 /**
- * Router class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -52,7 +50,7 @@ use yii\base\Application;
  * as follows:
  *
  * ~~~
- * Yii::$application->log->targets['file']->enabled = false;
+ * Yii::$app->log->targets['file']->enabled = false;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

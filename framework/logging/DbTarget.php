@@ -1,24 +1,21 @@
 <?php
 /**
- * DbTarget class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\logging;
 
+use Yii;
 use yii\db\Connection;
 use yii\base\InvalidConfigException;
 
 /**
  * DbTarget stores log messages in a database table.
  *
- * By default, DbTarget will use the database specified by [[connectionID]] and save
- * messages into a table named by [[tableName]]. Please refer to [[tableName]] for the required
- * table structure. Note that this table must be created beforehand. Otherwise an exception
- * will be thrown when DbTarget is saving messages into DB.
+ * By default, DbTarget stores the log messages in a DB table named 'tbl_log'. This table
+ * must be pre-created. The table name can be changed by setting [[logTable]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -26,20 +23,18 @@ use yii\base\InvalidConfigException;
 class DbTarget extends Target
 {
 	/**
-	 * @var string the ID of [[Connection]] application component.
-	 * Defaults to 'db'. Please make sure that your database contains a table
-	 * whose name is as specified in [[tableName]] and has the required table structure.
-	 * @see tableName
+	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
+	 * After the DbTarget object is created, if you want to change this property, you should only assign it
+	 * with a DB connection object.
 	 */
-	public $connectionID = 'db';
+	public $db = 'db';
 	/**
-	 * @var string the name of the DB table that stores log messages. Defaults to 'tbl_log'.
-	 *
-	 * The DB table should have the following structure:
+	 * @var string name of the DB table to store cache content.
+	 * The table should be pre-created as follows:
 	 *
 	 * ~~~
 	 * CREATE TABLE tbl_log (
-	 *	   id       INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	 *	   id       BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	 *	   level    INTEGER,
 	 *	   category VARCHAR(255),
 	 *	   log_time INTEGER,
@@ -50,42 +45,29 @@ class DbTarget extends Target
 	 * ~~~
 	 *
 	 * Note that the 'id' column must be created as an auto-incremental column.
-	 * The above SQL shows the syntax of MySQL. If you are using other DBMS, you need
+	 * The above SQL uses the MySQL syntax. If you are using other DBMS, you need
 	 * to adjust it accordingly. For example, in PostgreSQL, it should be `id SERIAL PRIMARY KEY`.
 	 *
 	 * The indexes declared above are not required. They are mainly used to improve the performance
 	 * of some queries about message levels and categories. Depending on your actual needs, you may
-	 * want to create additional indexes (e.g. index on log_time).
+	 * want to create additional indexes (e.g. index on `log_time`).
 	 */
-	public $tableName = 'tbl_log';
-
-	private $_db;
+	public $logTable = 'tbl_log';
 
 	/**
-	 * Returns the DB connection used for saving log messages.
-	 * @return Connection the DB connection instance
-	 * @throws InvalidConfigException if [[connectionID]] does not point to a valid application component.
+	 * Initializes the DbTarget component.
+	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
+	 * @throws InvalidConfigException if [[db]] is invalid.
 	 */
-	public function getDb()
+	public function init()
 	{
-		if ($this->_db === null) {
-			$db = \Yii::$application->getComponent($this->connectionID);
-			if ($db instanceof Connection) {
-				$this->_db = $db;
-			} else {
-				throw new InvalidConfigException("DbTarget::connectionID must refer to the ID of a DB application component.");
-			}
+		parent::init();
+		if (is_string($this->db)) {
+			$this->db = Yii::$app->getComponent($this->db);
 		}
-		return $this->_db;
-	}
-
-	/**
-	 * Sets the DB connection used by the cache component.
-	 * @param Connection $value the DB connection instance
-	 */
-	public function setDb($value)
-	{
-		$this->_db = $value;
+		if (!$this->db instanceof Connection) {
+			throw new InvalidConfigException("DbTarget::db must be either a DB connection instance or the application component ID of a DB connection.");
+		}
 	}
 
 	/**
@@ -95,10 +77,9 @@ class DbTarget extends Target
 	 */
 	public function export($messages)
 	{
-		$db = $this->getDb();
-		$tableName = $db->quoteTableName($this->tableName);
+		$tableName = $this->db->quoteTableName($this->logTable);
 		$sql = "INSERT INTO $tableName (level, category, log_time, message) VALUES (:level, :category, :log_time, :message)";
-		$command = $db->createCommand($sql);
+		$command = $this->db->createCommand($sql);
 		foreach ($messages as $message) {
 			$command->bindValues(array(
 				':level' => $message[1],

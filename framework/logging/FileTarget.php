@@ -1,9 +1,7 @@
 <?php
 /**
- * FileTarget class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -48,7 +46,7 @@ class FileTarget extends Target
 	{
 		parent::init();
 		if ($this->logFile === null) {
-			$this->logFile = \Yii::$application->getRuntimePath() . DIRECTORY_SEPARATOR . 'application.log';
+			$this->logFile = \Yii::$app->getRuntimePath() . DIRECTORY_SEPARATOR . 'application.log';
 		} else {
 			$this->logFile = \Yii::getAlias($this->logFile);
 		}

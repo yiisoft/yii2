@@ -1,9 +1,7 @@
 <?php
 /**
- * FileCache class file
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -28,7 +26,7 @@ class FileCache extends Cache
 	/**
 	 * @var string the directory to store cache files. You may use path alias here.
 	 */
-	public $cachePath = '@application/runtime/cache';
+	public $cachePath = '@app/runtime/cache';
 	/**
 	 * @var string cache file suffix. Defaults to '.bin'.
 	 */
@@ -54,9 +52,6 @@ class FileCache extends Cache
 	{
 		parent::init();
 		$this->cachePath = \Yii::getAlias($this->cachePath);
-		if ($this->cachePath === false) {
-			throw new InvalidConfigException('FileCache.cachePath must be a valid path alias.');
-		}
 		if (!is_dir($this->cachePath)) {
 			mkdir($this->cachePath, 0777, true);
 		}

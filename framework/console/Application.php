@@ -3,13 +3,12 @@
  * Console Application class file.
  *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\console;
 
-use yii\base\Exception;
 use yii\base\InvalidRouteException;
 
 /**
@@ -85,16 +84,17 @@ class Application extends \yii\base\Application
 	 * Processes the request.
 	 * The request is represented in terms of a controller route and action parameters.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
+	 * @throws Exception if the script is not running from the command line
 	 */
 	public function processRequest()
 	{
 		/** @var $request Request */
 		$request = $this->getRequest();
 		if ($request->getIsConsoleRequest()) {
-			return $this->runAction($request->route, $request->params);
+			list ($route, $params) = $request->resolve();
+			return $this->runAction($route, $params);
 		} else {
-			echo "Error: this script must be run from the command line.";
-			return 1;
+			throw new Exception(\Yii::t('yii|This script must be run from the command line.'));
 		}
 	}
 
@@ -106,14 +106,14 @@ class Application extends \yii\base\Application
 	 * @param string $route the route that specifies the action.
 	 * @param array $params the parameters to be passed to the action
 	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+	 * @throws Exception if the route is invalid
 	 */
 	public function runAction($route, $params = array())
 	{
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			echo "Error: unknown command \"$route\".\n";
-			return 1;
+			throw new Exception(\Yii::t('yii|Unknown command "{command}".', array('{command}' => $route)));
 		}
 	}
 
@@ -127,8 +127,8 @@ class Application extends \yii\base\Application
 			'message' => 'yii\console\controllers\MessageController',
 			'help' => 'yii\console\controllers\HelpController',
 			'migrate' => 'yii\console\controllers\MigrateController',
-			'shell' => 'yii\console\controllers\ShellController',
-			'create' => 'yii\console\controllers\CreateController',
+			'app' => 'yii\console\controllers\AppController',
+			'cache' => 'yii\console\controllers\CacheController',
 		);
 	}
 
@@ -147,10 +147,5 @@ class Application extends \yii\base\Application
 				'class' => 'yii\console\Response',
 			),
 		));
-	}
-
-	public function usageError($message)
-	{
-
 	}
 }

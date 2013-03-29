@@ -1,15 +1,13 @@
 <?php
 /**
- * Dictionary class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
 
-use yii\util\ArrayHelper;
+use yii\helpers\ArrayHelper;
 
 /**
  * Dictionary implements a collection that stores key-value pairs.
@@ -150,7 +148,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * Defaults to false, meaning all items in the dictionary will be cleared directly
 	 * without calling [[remove]].
 	 */
-	public function clear($safeClear = false)
+	public function removeAll($safeClear = false)
 	{
 		if ($safeClear) {
 			foreach (array_keys($this->_d) as $key) {
@@ -166,7 +164,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @param mixed $key the key
 	 * @return boolean whether the dictionary contains an item with the specified key
 	 */
-	public function contains($key)
+	public function has($key)
 	{
 		return isset($this->_d[$key]) || array_key_exists($key, $this->_d);
 	}
@@ -184,13 +182,13 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 * Copies iterable data into the dictionary.
 	 * Note, existing data in the dictionary will be cleared first.
 	 * @param mixed $data the data to be copied from, must be an array or an object implementing `Traversable`
-	 * @throws InvalidCallException if data is neither an array nor an iterator.
+	 * @throws InvalidParamException if data is neither an array nor an iterator.
 	 */
 	public function copyFrom($data)
 	{
 		if (is_array($data) || $data instanceof \Traversable) {
 			if ($this->_d !== array()) {
-				$this->clear();
+				$this->removeAll();
 			}
 			if ($data instanceof self) {
 				$data = $data->_d;
@@ -199,7 +197,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 				$this->add($key, $value);
 			}
 		} else {
-			throw new InvalidCallException('Data must be either an array or an object implementing Traversable.');
+			throw new InvalidParamException('Data must be either an array or an object implementing Traversable.');
 		}
 	}
 
@@ -216,7 +214,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 *
 	 * @param array|\Traversable $data the data to be merged with. It must be an array or object implementing Traversable
 	 * @param boolean $recursive whether the merging should be recursive.
-	 * @throws InvalidCallException if data is neither an array nor an object implementing `Traversable`.
+	 * @throws InvalidParamException if data is neither an array nor an object implementing `Traversable`.
 	 */
 	public function mergeWith($data, $recursive = true)
 	{
@@ -240,7 +238,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 				}
 			}
 		} else {
-			throw new InvalidCallException('The data to be merged with must be an array or an object implementing Traversable.');
+			throw new InvalidParamException('The data to be merged with must be an array or an object implementing Traversable.');
 		}
 	}
 
@@ -254,7 +252,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function offsetExists($offset)
 	{
-		return $this->contains($offset);
+		return $this->has($offset);
 	}
 
 	/**

@@ -1,9 +1,7 @@
 <?php
 /**
- * Cookie class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -47,5 +45,21 @@ class Cookie extends \yii\base\Object
 	 * By setting this property to true, the cookie will not be accessible by scripting languages,
 	 * such as JavaScript, which can effectively help to reduce identity theft through XSS attacks.
 	 */
-	public $httpOnly = false;
+	public $httponly = false;
+
+	/**
+	 * Magic method to turn a cookie object into a string without having to explicitly access [[value]].
+	 *
+	 * ~~~
+	 * if (isset($request->cookies['name'])) {
+	 *     $value = (string)$request->cookies['name'];
+	 * }
+	 * ~~~
+	 *
+	 * @return string The value of the cookie. If the value property is null, an empty string will be returned.
+	 */
+	public function __toString()
+	{
+		return (string)$this->value;
+	}
 }

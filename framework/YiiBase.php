@@ -1,14 +1,12 @@
 <?php
 /**
- * YiiBase class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\logging\Logger;
 
 /**
@@ -63,9 +61,9 @@ class YiiBase
 	 */
 	public static $classPath = array();
 	/**
-	 * @var yii\base\Application the application instance
+	 * @var yii\console\Application|yii\web\Application the application instance
 	 */
-	public static $application;
+	public static $app;
 	/**
 	 * @var array registered path aliases
 	 * @see getAlias
@@ -96,7 +94,7 @@ class YiiBase
 	 */
 	public static $objectConfig = array();
 
-	private static $_imported = array();	// alias => class name or directory
+	private static $_imported = array(); // alias => class name or directory
 	private static $_logger;
 
 	/**
@@ -125,8 +123,8 @@ class YiiBase
 	 *
 	 * To import a class or a directory, one can use either path alias or class name (can be namespaced):
 	 *
-	 *  - `@application/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
-	 *  - `@application/components/*`: importing the whole `components` directory with a path alias;
+	 *  - `@app/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
+	 *  - `@app/components/*`: importing the whole `components` directory with a path alias;
 	 *  - `GoogleMap`: importing the `GoogleMap` class with a class name. [[autoload()]] will be used
 	 *  when this class is used for the first time.
 	 *
@@ -161,9 +159,7 @@ class YiiBase
 			return self::$_imported[$alias] = $className;
 		}
 
-		if (($path = static::getAlias(dirname($alias))) === false) {
-			throw new Exception('Invalid path alias: ' . $alias);
-		}
+		$path = static::getAlias(dirname($alias));
 
 		if ($isClass) {
 			if ($forceInclude) {
@@ -193,24 +189,30 @@ class YiiBase
 	 *
 	 * Note, this method does not ensure the existence of the resulting path.
 	 * @param string $alias alias
+	 * @param boolean $throwException whether to throw an exception if the given alias is invalid.
+	 * If this is false and an invalid alias is given, false will be returned by this method.
 	 * @return string|boolean path corresponding to the alias, false if the root alias is not previously registered.
 	 * @see setAlias
 	 */
-	public static function getAlias($alias)
+	public static function getAlias($alias, $throwException = true)
 	{
-		if (!is_string($alias)) {
-			return false;
-		} elseif (isset(self::$aliases[$alias])) {
-			return self::$aliases[$alias];
-		} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
-			return $alias;
-		} elseif (($pos = strpos($alias, '/')) !== false) {
-			$rootAlias = substr($alias, 0, $pos);
-			if (isset(self::$aliases[$rootAlias])) {
-				return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
+		if (is_string($alias)) {
+			if (isset(self::$aliases[$alias])) {
+				return self::$aliases[$alias];
+			} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
+				return $alias;
+			} elseif (($pos = strpos($alias, '/')) !== false || ($pos = strpos($alias, '\\')) !== false) {
+				$rootAlias = substr($alias, 0, $pos);
+				if (isset(self::$aliases[$rootAlias])) {
+					return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
+				}
 			}
 		}
-		return false;
+		if ($throwException) {
+			throw new InvalidParamException("Invalid path alias: $alias");
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -238,10 +240,8 @@ class YiiBase
 			unset(self::$aliases[$alias]);
 		} elseif ($path[0] !== '@') {
 			self::$aliases[$alias] = rtrim($path, '\\/');
-		} elseif (($p = static::getAlias($path)) !== false) {
-			self::$aliases[$alias] = $p;
 		} else {
-			throw new Exception('Invalid path: ' . $path);
+			self::$aliases[$alias] = static::getAlias($path);
 		}
 	}
 
@@ -262,6 +262,7 @@ class YiiBase
 	 *
 	 * @param string $className class name
 	 * @return boolean whether the class has been loaded successfully
+	 * @throws Exception if the class file does not exist
 	 */
 	public static function autoload($className)
 	{
@@ -274,14 +275,14 @@ class YiiBase
 			// namespaced class, e.g. yii\base\Component
 			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
 			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
-			if (($path = static::getAlias($alias)) !== false) {
+			if (($path = static::getAlias($alias, false)) !== false) {
 				$classFile = $path . '.php';
 			}
 		} elseif (($pos = strpos($className, '_')) !== false) {
 			// PEAR-styled class, e.g. PHPUnit_Framework_TestCase
 			// convert class name to path alias, e.g. PHPUnit_Framework_TestCase to @PHPUnit/Framework/TestCase
 			$alias = '@' . str_replace('_', '/', $className);
-			if (($path = static::getAlias($alias)) !== false) {
+			if (($path = static::getAlias($alias, false)) !== false) {
 				$classFile = $path . '.php';
 			}
 		}
@@ -297,7 +298,7 @@ class YiiBase
 			}
 		}
 
-		if (isset($classFile, $alias)) {
+		if (isset($classFile, $alias) && is_file($classFile)) {
 			if (!YII_DEBUG || basename(realpath($classFile)) === basename($alias) . '.php') {
 				include($classFile);
 				return true;
@@ -322,12 +323,12 @@ class YiiBase
 	 * the class. For example,
 	 *
 	 * - `\app\components\GoogleMap`: fully-qualified namespaced class.
-	 * - `@application/components/GoogleMap`: an alias
+	 * - `@app/components/GoogleMap`: an alias
 	 *
 	 * Below are some usage examples:
 	 *
 	 * ~~~
-	 * $object = \Yii::createObject('@application/components/GoogleMap');
+	 * $object = \Yii::createObject('@app/components/GoogleMap');
 	 * $object = \Yii::createObject(array(
 	 *     'class' => '\app\components\GoogleMap',
 	 *     'apiKey' => 'xyz',
@@ -507,9 +508,6 @@ class YiiBase
 	 * i.e., the message returned will be chosen from a few candidates according to the given
 	 * number value. This feature is mainly used to solve plural format issue in case
 	 * a message has different plural forms in some languages.
-	 * @param string $category message category. Please use only word letters. Note, category 'yii' is
-	 * reserved for Yii framework core code use. See {@link CPhpMessageSource} for
-	 * more interpretation about message category.
 	 * @param string $message the original message
 	 * @param array $params parameters to be applied to the message using <code>strtr</code>.
 	 * The first parameter can be a number without key.
@@ -517,62 +515,12 @@ class YiiBase
 	 * an appropriate message translation.
 	 * You can pass parameter for {@link CChoiceFormat::format}
 	 * or plural forms format without wrapping it with array.
-	 * @param string $source which message source application component to use.
-	 * Defaults to null, meaning using 'coreMessages' for messages belonging to
-	 * the 'yii' category and using 'messages' for the rest messages.
 	 * @param string $language the target language. If null (default), the {@link CApplication::getLanguage application language} will be used.
 	 * @return string the translated message
 	 * @see CMessageSource
 	 */
-	public static function t($category, $message, $params = array(), $source = null, $language = null)
+	public static function t($message, $params = array(), $language = null)
 	{
-		// todo;
-		return $params !== array() ? strtr($message, $params) : $message;
-		if (self::$application !== null)
-		{
-			if ($source === null)
-					{
-						$source = $category === 'yii' ? 'coreMessages' : 'messages';
-					}
-			if (($source = self::$application->getComponent($source)) !== null)
-					{
-						$message = $source->translate($category, $message, $language);
-					}
-		}
-		if ($params === array())
-				{
-					return $message;
-				}
-		if (!is_array($params))
-				{
-					$params = array($params);
-				}
-		if (isset($params[0])) // number choice
-		{
-			if (strpos($message, '|') !== false)
-			{
-				if (strpos($message, '#') === false)
-				{
-					$chunks = explode('|', $message);
-					$expressions = self::$application->getLocale($language)->getPluralRules();
-					if ($n = min(count($chunks), count($expressions)))
-					{
-						for ($i = 0; $i < $n; $i++)
-								{
-									$chunks[$i] = $expressions[$i] . '#' . $chunks[$i];
-								}
-
-						$message = implode('|', $chunks);
-					}
-				}
-				$message = CChoiceFormat::format($message, $params[0]);
-			}
-			if (!isset($params['{n}']))
-					{
-						$params['{n}'] = $params[0];
-					}
-			unset($params[0]);
-		}
-		return $params !== array() ? strtr($message, $params) : $message;
+		return Yii::$app->getI18N()->translate($message, $params, $language);
 	}
 }

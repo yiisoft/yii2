@@ -1,9 +1,7 @@
 <?php
 /**
- * RangeValidator class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -58,10 +56,10 @@ class RangeValidator extends Validator
 			throw new InvalidConfigException('The "range" property must be specified as an array.');
 		}
 		if (!$this->not && !in_array($value, $this->range, $this->strict)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} should be in the list.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} should be in the list.');
 			$this->addError($object, $attribute, $message);
 		} elseif ($this->not && in_array($value, $this->range, $this->strict)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} should NOT be in the list.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} should NOT be in the list.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -80,7 +78,7 @@ class RangeValidator extends Validator
 		}
 
 		if (($message = $this->message) === null) {
-			$message = $this->not ? \Yii::t('yii', '{attribute} should NOT be in the list.') : \Yii::t('yii', '{attribute} should be in the list.');
+			$message = $this->not ? \Yii::t('yii|{attribute} should NOT be in the list.') : \Yii::t('yii|{attribute} should be in the list.');
 		}
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),

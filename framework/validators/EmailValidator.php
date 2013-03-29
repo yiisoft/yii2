@@ -1,9 +1,7 @@
 <?php
 /**
- * EmailValidator class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -63,7 +61,7 @@ class EmailValidator extends Validator
 			return;
 		}
 		if (!$this->validateValue($value)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} is not a valid email address.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid email address.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -100,7 +98,7 @@ class EmailValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii', '{attribute} is not a valid email address.');
+		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid email address.');
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,

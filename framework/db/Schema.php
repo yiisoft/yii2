@@ -1,14 +1,13 @@
 <?php
 /**
- * Driver class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\db;
 
+use Yii;
 use yii\base\NotSupportedException;
 use yii\base\InvalidCallException;
 use yii\caching\Cache;
@@ -86,21 +85,21 @@ abstract class Schema extends \yii\base\Object
 		$db = $this->db;
 		$realName = $this->getRealTableName($name);
 
-		/** @var $cache Cache */
-		if ($db->enableSchemaCache && ($cache = \Yii::$application->getComponent($db->schemaCacheID)) !== null && !in_array($name, $db->schemaCacheExclude, true)) {
-			$key = $this->getCacheKey($cache, $name);
-			if ($refresh || ($table = $cache->get($key)) === false) {
-				$table = $this->loadTableSchema($realName);
-				if ($table !== null) {
-					$cache->set($key, $table, $db->schemaCacheDuration);
+		if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
+			/** @var $cache Cache */
+			$cache = is_string($db->schemaCache) ? Yii::$app->getComponent($db->schemaCache) : $db->schemaCache;
+			if ($cache instanceof Cache) {
+				$key = $this->getCacheKey($cache, $name);
+				if ($refresh || ($table = $cache->get($key)) === false) {
+					$table = $this->loadTableSchema($realName);
+					if ($table !== null) {
+						$cache->set($key, $table, $db->schemaCacheDuration);
+					}
 				}
+				return $this->_tables[$name] = $table;
 			}
-			$this->_tables[$name] = $table;
-		} else {
-			$this->_tables[$name] = $table = $this->loadTableSchema($realName);
 		}
-
-		return $table;
+		return $this->_tables[$name] = $table = $this->loadTableSchema($realName);
 	}
 
 	/**
@@ -111,7 +110,12 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function getCacheKey($cache, $name)
 	{
-		return $cache->buildKey(__CLASS__, $this->db->dsn, $this->db->username, $name);
+		return $cache->buildKey(array(
+			__CLASS__,
+			$this->db->dsn,
+			$this->db->username,
+			$name,
+		));
 	}
 
 	/**
@@ -170,8 +174,9 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function refresh()
 	{
-		/** @var $cache \yii\caching\Cache */
-		if ($this->db->enableSchemaCache && ($cache = \Yii::$application->getComponent($this->db->schemaCacheID)) !== null) {
+		/** @var $cache Cache */
+		$cache = is_string($this->db->schemaCache) ? Yii::$app->getComponent($this->db->schemaCache) : $this->db->schemaCache;
+		if ($this->db->enableSchemaCache && $cache instanceof Cache) {
 			foreach ($this->_tables as $name => $table) {
 				$cache->delete($this->getCacheKey($cache, $name));
 			}

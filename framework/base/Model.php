@@ -1,15 +1,13 @@
 <?php
 /**
- * Model class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
 
-use yii\util\StringHelper;
+use yii\helpers\StringHelper;
 use yii\validators\Validator;
 use yii\validators\RequiredValidator;
 
@@ -260,7 +258,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function beforeValidate()
 	{
-		$event = new ModelEvent($this);
+		$event = new ModelEvent;
 		$this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
 		return $event->isValid;
 	}
@@ -331,7 +329,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		foreach ($this->rules() as $rule) {
 			if ($rule instanceof Validator) {
 				$validators->add($rule);
-			} elseif (isset($rule[0], $rule[1])) { // attributes, validator type
+			} elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
 				$validator = Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
 				$validators->add($validator);
 			} else {
@@ -422,12 +420,31 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
+	 * Returns the first error of every attribute in the model.
+	 * @return array the first errors. An empty array will be returned if there is no error.
+	 */
+	public function getFirstErrors()
+	{
+		if (empty($this->_errors)) {
+			return array();
+		} else {
+			$errors = array();
+			foreach ($this->_errors as $attributeErrors) {
+				if (isset($attributeErrors[0])) {
+					$errors[] = $attributeErrors[0];
+				}
+			}
+		}
+		return $errors;
+	}
+
+	/**
 	 * Returns the first error of the specified attribute.
 	 * @param string $attribute attribute name.
 	 * @return string the error message. Null is returned if no error.
 	 * @see getErrors
 	 */
-	public function getError($attribute)
+	public function getFirstError($attribute)
 	{
 		return isset($this->_errors[$attribute]) ? reset($this->_errors[$attribute]) : null;
 	}
@@ -440,25 +457,6 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function addError($attribute, $error)
 	{
 		$this->_errors[$attribute][] = $error;
-	}
-
-	/**
-	 * Adds a list of errors.
-	 * @param array $errors a list of errors. The array keys must be attribute names.
-	 * The array values should be error messages. If an attribute has multiple errors,
-	 * these errors must be given in terms of an array.
-	 */
-	public function addErrors($errors)
-	{
-		foreach ($errors as $attribute => $error) {
-			if (is_array($error)) {
-				foreach ($error as $e) {
-					$this->_errors[$attribute][] = $e;
-				}
-			} else {
-				$this->_errors[$attribute][] = $error;
-			}
-		}
 	}
 
 	/**
@@ -543,7 +541,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function onUnsafeAttribute($name, $value)
 	{
 		if (YII_DEBUG) {
-			\Yii::warning("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.");
+			\Yii::info("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __CLASS__);
 		}
 	}
 
@@ -658,13 +656,13 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Unsets the element at the specified offset.
+	 * Sets the element value at the specified offset to null.
 	 * This method is required by the SPL interface `ArrayAccess`.
 	 * It is implicitly called when you use something like `unset($model[$offset])`.
 	 * @param mixed $offset the offset to unset element
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->$offset);
+		$this->$offset = null;
 	}
 }

@@ -1,9 +1,7 @@
 <?php
 /**
- * Action class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -56,6 +54,15 @@ class Action extends Component
 	}
 
 	/**
+	 * Returns the unique ID of this action among the whole application.
+	 * @return string the unique ID of this action among the whole application.
+	 */
+	public function getUniqueId()
+	{
+		return $this->controller->getUniqueId() . '/' . $this->id;
+	}
+
+	/**
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
 	 * @param array $params the parameters to be bound to the action's run() method.
@@ -67,36 +74,7 @@ class Action extends Component
 		if (!method_exists($this, 'run')) {
 			throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
 		}
-		$method = new \ReflectionMethod($this, 'run');
-		$args = $this->bindActionParams($method, $params);
-		return (int)$method->invokeArgs($this, $args);
-	}
-
-	/**
-	 * Binds the given parameters to the action method.
-	 * The returned array contains the parameters that need to be passed to the action method.
-	 * This method calls [[Controller::validateActionParams()]] to check if any exception
-	 * should be raised if there are missing or unknown parameters.
-	 * @param \ReflectionMethod $method the action method reflection object
-	 * @param array $params the supplied parameters
-	 * @return array the parameters that can be passed to the action method
-	 */
-	protected function bindActionParams($method, $params)
-	{
-		$args = array();
-		$missing = array();
-		foreach ($method->getParameters() as $param) {
-			$name = $param->getName();
-			if (array_key_exists($name, $params)) {
-				$args[] = $params[$name];
-				unset($params[$name]);
-			} elseif ($param->isDefaultValueAvailable()) {
-				$args[] = $param->getDefaultValue();
-			} else {
-				$missing[] = $name;
-			}
-		}
-		$this->controller->validateActionParams($this, $missing, $params);
-		return $args;
+		$args = $this->controller->bindActionParams($this, $params);
+		return (int)call_user_func_array(array($this, 'run'), $args);
 	}
 }

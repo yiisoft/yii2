@@ -1,9 +1,7 @@
 <?php
 /**
- * DateValidator class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -66,7 +64,7 @@ class DateValidator extends Validator
 		}
 
 		if (!$valid) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii', 'The format of {attribute} is invalid.');
+			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|The format of {attribute} is invalid.');
 			$this->addError($object, $attribute, $message);
 		}
 	}

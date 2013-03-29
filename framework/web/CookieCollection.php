@@ -1,37 +1,20 @@
 <?php
 /**
- * Dictionary class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\web;
 
+use Yii;
 use yii\base\DictionaryIterator;
+use yii\helpers\SecurityHelper;
 
 /**
- * Dictionary implements a collection that stores key-value pairs.
+ * CookieCollection maintains the cookies available in the current request.
  *
- * You can access, add or remove an item with a key by using
- * [[itemAt()]], [[add()]], and [[remove()]].
- *
- * To get the number of the items in the dictionary, use [[getCount()]].
- *
- * Because Dictionary implements a set of SPL interfaces, it can be used
- * like a regular PHP array as follows,
- *
- * ~~~
- * $dictionary[$key] = $value;		   // add a key-value pair
- * unset($dictionary[$key]);			 // remove the value with the specified key
- * if (isset($dictionary[$key]))		 // if the dictionary contains the key
- * foreach ($dictionary as $key=>$value) // traverse the items in the dictionary
- * $n = count($dictionary);			  // returns the number of items in the dictionary
- * ~~~
- *
- * @property integer $count the number of items in the dictionary
- * @property array $keys The keys in the dictionary
+ * @property integer $count the number of cookies in the collection
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -39,28 +22,35 @@ use yii\base\DictionaryIterator;
 class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
-	 * @var Cookie[] internal data storage
+	 * @var boolean whether to enable cookie validation. By setting this property to true,
+	 * if a cookie is tampered on the client side, it will be ignored when received on the server side.
+	 */
+	public $enableValidation = true;
+	/**
+	 * @var string the secret key used for cookie validation. If not set, a random key will be generated and used.
+	 */
+	public $validationKey;
+
+	/**
+	 * @var Cookie[] the cookies in this collection (indexed by the cookie names)
 	 */
 	private $_cookies = array();
 
 	/**
 	 * Constructor.
-	 * Initializes the dictionary with an array or an iterable object.
-	 * @param array $cookies the initial data to be populated into the dictionary.
-	 * This can be an array or an iterable object.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($cookies = array(), $config = array())
+	public function __construct($config = array())
 	{
-		$this->_cookies = $cookies;
 		parent::__construct($config);
+		$this->_cookies = $this->loadCookies();
 	}
 
 	/**
-	 * Returns an iterator for traversing the items in the dictionary.
+	 * Returns an iterator for traversing the cookies in the collection.
 	 * This method is required by the SPL interface `IteratorAggregate`.
-	 * It will be implicitly called when you use `foreach` to traverse the dictionary.
-	 * @return DictionaryIterator an iterator for traversing the items in the dictionary.
+	 * It will be implicitly called when you use `foreach` to traverse the collection.
+	 * @return DictionaryIterator an iterator for traversing the cookies in the collection.
 	 */
 	public function getIterator()
 	{
@@ -68,10 +58,10 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	}
 
 	/**
-	 * Returns the number of items in the dictionary.
+	 * Returns the number of cookies in the collection.
 	 * This method is required by the SPL `Countable` interface.
-	 * It will be implicitly called when you use `count($dictionary)`.
-	 * @return integer number of items in the dictionary.
+	 * It will be implicitly called when you use `count($collection)`.
+	 * @return integer the number of cookies in the collection.
 	 */
 	public function count()
 	{
@@ -79,8 +69,8 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	}
 
 	/**
-	 * Returns the number of items in the dictionary.
-	 * @return integer the number of items in the dictionary
+	 * Returns the number of cookies in the collection.
+	 * @return integer the number of cookies in the collection.
 	 */
 	public function getCount()
 	{
@@ -88,72 +78,85 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	}
 
 	/**
-	 * Returns the keys stored in the dictionary.
-	 * @return array the key list
+	 * Returns the cookie with the specified name.
+	 * @param string $name the cookie name
+	 * @return Cookie the cookie with the specified name. Null if the named cookie does not exist.
+	 * @see getValue()
 	 */
-	public function getNames()
-	{
-		return array_keys($this->_cookies);
-	}
-
-	/**
-	 * Returns the item with the specified key.
-	 * @param mixed $name the key
-	 * @return Cookie the element with the specified key.
-	 * Null if the key cannot be found in the dictionary.
-	 */
-	public function getCookie($name)
+	public function get($name)
 	{
 		return isset($this->_cookies[$name]) ? $this->_cookies[$name] : null;
 	}
 
 	/**
-	 * Adds an item into the dictionary.
-	 * Note, if the specified key already exists, the old value will be overwritten.
-	 * @param Cookie $cookie value
-	 * @throws Exception if the dictionary is read-only
+	 * Returns the value of the named cookie.
+	 * @param string $name the cookie name
+	 * @param mixed $defaultValue the value that should be returned when the named cookie does not exist.
+	 * @return mixed the value of the named cookie.
+	 * @see get()
 	 */
-	public function add(Cookie $cookie)
+	public function getValue($name, $defaultValue = null)
+	{
+		return isset($this->_cookies[$name]) ? $this->_cookies[$name]->value : $defaultValue;
+	}
+
+	/**
+	 * Adds a cookie to the collection.
+	 * If there is already a cookie with the same name in the collection, it will be removed first.
+	 * @param Cookie $cookie the cookie to be added
+	 */
+	public function add($cookie)
 	{
 		if (isset($this->_cookies[$cookie->name])) {
-			$this->remove($this->_cookies[$cookie->name]);
+			$c = $this->_cookies[$cookie->name];
+			setcookie($c->name, '', 0, $c->path, $c->domain, $c->secure, $c->httponly);
 		}
-		setcookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+
+		$value = $cookie->value;
+		if ($this->enableValidation) {
+			if ($this->validationKey === null) {
+				$key = SecurityHelper::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+			} else {
+				$key = $this->validationKey;
+			}
+			$value = SecurityHelper::hashData(serialize($value), $key);
+		}
+
+		setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
 		$this->_cookies[$cookie->name] = $cookie;
 	}
 
 	/**
-	 * Removes an item from the dictionary by its key.
-	 * @param mixed $key the key of the item to be removed
-	 * @return mixed the removed value, null if no such key exists.
-	 * @throws Exception if the dictionary is read-only
+	 * Removes a cookie from the collection.
+	 * @param Cookie|string $cookie the cookie object or the name of the cookie to be removed.
 	 */
-	public function remove(Cookie $cookie)
+	public function remove($cookie)
 	{
-		setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
-		unset($this->_cookies[$cookie->name]);
-	}
-
-	/**
-	 * Removes all items from the dictionary.
-	 * @param boolean $safeClear whether to clear every item by calling [[remove]].
-	 * Defaults to false, meaning all items in the dictionary will be cleared directly
-	 * without calling [[remove]].
-	 */
-	public function clear($safeClear = false)
-	{
-		if ($safeClear) {
-			foreach (array_keys($this->_cookies) as $key) {
-				$this->remove($key);
-			}
-		} else {
-			$this->_cookies = array();
+		if (is_string($cookie) && isset($this->_cookies[$cookie])) {
+			$cookie = $this->_cookies[$cookie];
+		}
+		if ($cookie instanceof Cookie) {
+			setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
+			unset($this->_cookies[$cookie->name]);
 		}
 	}
 
 	/**
-	 * Returns the dictionary as a PHP array.
-	 * @return array the list of items in array
+	 * Removes all cookies.
+	 */
+	public function removeAll()
+	{
+		foreach ($this->_cookies as $cookie) {
+			setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
+		}
+		$this->_cookies = array();
+	}
+
+	/**
+	 * Returns the collection as a PHP array.
+	 * @return array the array representation of the collection.
+	 * The array keys are cookie names, and the array values are the corresponding
+	 * cookie objects.
 	 */
 	public function toArray()
 	{
@@ -161,76 +164,82 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	}
 
 	/**
-	 * Returns whether there is an element at the specified offset.
+	 * Returns whether there is a cookie with the specified name.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `isset($dictionary[$offset])`.
-	 * This is equivalent to [[contains]].
-	 * @param mixed $offset the offset to check on
-	 * @return boolean
+	 * It is implicitly called when you use something like `isset($collection[$name])`.
+	 * @param string $name the cookie name
+	 * @return boolean whether the named cookie exists
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($name)
 	{
-		return isset($this->_cookies[$offset]);
+		return isset($this->_cookies[$name]);
 	}
 
 	/**
-	 * Returns the element at the specified offset.
+	 * Returns the cookie with the specified name.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$value = $dictionary[$offset];`.
-	 * This is equivalent to [[itemAt]].
-	 * @param mixed $offset the offset to retrieve element.
-	 * @return mixed the element at the offset, null if no element is found at the offset
+	 * It is implicitly called when you use something like `$cookie = $collection[$name];`.
+	 * This is equivalent to [[get()]].
+	 * @param string $name the cookie name
+	 * @return Cookie the cookie with the specified name, null if the named cookie does not exist.
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($name)
 	{
-		return $this->getCookie($offset);
+		return $this->get($name);
 	}
 
 	/**
-	 * Sets the element at the specified offset.
+	 * Adds the cookie to the collection.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$dictionary[$offset] = $item;`.
-	 * If the offset is null, the new item will be appended to the dictionary.
-	 * Otherwise, the existing item at the offset will be replaced with the new item.
-	 * This is equivalent to [[add]].
-	 * @param mixed $offset the offset to set element
-	 * @param mixed $item the element value
+	 * It is implicitly called when you use something like `$collection[$name] = $cookie;`.
+	 * This is equivalent to [[add()]].
+	 * @param string $name the cookie name
+	 * @param Cookie $cookie the cookie to be added
 	 */
-	public function offsetSet($offset, $item)
+	public function offsetSet($name, $cookie)
 	{
-		$this->add($item);
+		$this->add($cookie);
 	}
 
 	/**
-	 * Unsets the element at the specified offset.
+	 * Removes the named cookie.
 	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `unset($dictionary[$offset])`.
-	 * This is equivalent to [[remove]].
-	 * @param mixed $offset the offset to unset element
+	 * It is implicitly called when you use something like `unset($collection[$name])`.
+	 * This is equivalent to [[remove()]].
+	 * @param string $name the cookie name
 	 */
-	public function offsetUnset($offset)
+	public function offsetUnset($name)
 	{
-		if (isset($this->_cookies[$offset])) {
-			$this->remove($this->_cookies[$offset]);
-		}
+		$this->remove($name);
 	}
 
 	/**
-	 * @return array list of validated cookies
+	 * Returns the current cookies in terms of [[Cookie]] objects.
+	 * @return Cookie[] list of current cookies
 	 */
-	protected function loadCookies($data)
+	protected function loadCookies()
 	{
 		$cookies = array();
-		if ($this->_request->enableCookieValidation) {
-			$sm = Yii::app()->getSecurityManager();
+		if ($this->enableValidation) {
+			if ($this->validationKey === null) {
+				$key = SecurityHelper::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+			} else {
+				$key = $this->validationKey;
+			}
 			foreach ($_COOKIE as $name => $value) {
-				if (is_string($value) && ($value = $sm->validateData($value)) !== false) {
-					$cookies[$name] = new CHttpCookie($name, @unserialize($value));
+				if (is_string($value) && ($value = SecurityHelper::validateData($value, $key)) !== false) {
+					$cookies[$name] = new Cookie(array(
+						'name' => $name,
+						'value' => @unserialize($value),
+					));
 				}
 			}
 		} else {
 			foreach ($_COOKIE as $name => $value) {
-				$cookies[$name] = new CHttpCookie($name, $value);
+				$cookies[$name] = new Cookie(array(
+					'name' => $name,
+					'value' => $value,
+				));
 			}
 		}
 		return $cookies;

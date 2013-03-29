@@ -1,16 +1,14 @@
 <?php
 /**
- * Application class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
 
 use Yii;
-use yii\util\FileHelper;
+use yii\helpers\FileHelper;
 
 /**
  * Application is the base class for all application classes.
@@ -30,10 +28,6 @@ use yii\util\FileHelper;
  *   persistence method. This application component is dynamically loaded when needed.</li>
  * <li>{@link getCache cache}: provides caching feature. This application component is
  *   disabled by default.</li>
- * <li>{@link getMessages messages}: provides the message source for translating
- *   application messages. This application component is dynamically loaded when needed.</li>
- * <li>{@link getCoreMessages coreMessages}: provides the message source for translating
- *   Yii framework messages. This application component is dynamically loaded when needed.</li>
  * </ul>
  *
  * Application will undergo the following life cycles when processing a user request:
@@ -57,29 +51,34 @@ class Application extends Module
 	const EVENT_BEFORE_REQUEST = 'beforeRequest';
 	const EVENT_AFTER_REQUEST = 'afterRequest';
 	/**
-	 * @var string the application name. Defaults to 'My Application'.
+	 * @var string the application name.
 	 */
 	public $name = 'My Application';
 	/**
-	 * @var string the version of this application. Defaults to '1.0'.
+	 * @var string the version of this application.
 	 */
 	public $version = '1.0';
 	/**
-	 * @var string the charset currently used for the application. Defaults to 'UTF-8'.
+	 * @var string the charset currently used for the application.
 	 */
 	public $charset = 'UTF-8';
 	/**
+	 * @var string the language that is meant to be used for end users.
+	 * @see sourceLanguage
+	 */
+	public $language = 'en_US';
+	/**
 	 * @var string the language that the application is written in. This mainly refers to
-	 * the language that the messages and view files are in. Defaults to 'en_us' (US English).
+	 * the language that the messages and view files are written in.
 	 * @see language
 	 */
-	public $sourceLanguage = 'en_us';
+	public $sourceLanguage = 'en_US';
 	/**
 	 * @var array IDs of the components that need to be loaded when the application starts.
 	 */
 	public $preload = array();
 	/**
-	 * @var Controller the currently active controller instance
+	 * @var \yii\web\Controller|\yii\console\Controller the currently active controller instance
 	 */
 	public $controller;
 	/**
@@ -93,7 +92,12 @@ class Application extends Module
 
 	private $_runtimePath;
 	private $_ended = false;
-	private $_language;
+
+	/**
+	 * @var string Used to reserve memory for fatal error handler. This memory
+	 * reserve can be removed if it's OK to write to PHP log only in this particular case.
+	 */
+	private $_memoryReserve;
 
 	/**
 	 * Constructor.
@@ -104,11 +108,12 @@ class Application extends Module
 	 */
 	public function __construct($id, $basePath, $config = array())
 	{
-		Yii::$application = $this;
+		Yii::$app = $this;
 		$this->id = $id;
 		$this->setBasePath($basePath);
 
 		if (YII_ENABLE_ERROR_HANDLER) {
+			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
 		}
@@ -141,8 +146,60 @@ class Application extends Module
 			$this->_ended = true;
 			$this->afterRequest();
 		}
+
+		$this->handleFatalError();
+
 		if ($exit) {
 			exit($status);
+		}
+	}
+
+	/**
+	 * Handles fatal PHP errors
+	 */
+	public function handleFatalError()
+	{
+		if (YII_ENABLE_ERROR_HANDLER) {
+			$error = error_get_last();
+
+			if (ErrorException::isFatalErorr($error)) {
+				unset($this->_memoryReserve);
+				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+
+				if (function_exists('xdebug_get_function_stack')) {
+					$trace = array_slice(array_reverse(xdebug_get_function_stack()), 4, -1);
+					foreach ($trace as &$frame) {
+						if (!isset($frame['function'])) {
+							$frame['function'] = 'unknown';
+						}
+
+						// XDebug < 2.1.1: http://bugs.xdebug.org/view.php?id=695
+						if (!isset($frame['type'])) {
+							$frame['type'] = '::';
+						}
+
+						// XDebug has a different key name
+						$frame['args'] = array();
+						if (isset($frame['params']) && !isset($frame['args'])) {
+							$frame['args'] = $frame['params'];
+						}
+					}
+
+					$ref = new \ReflectionProperty('Exception', 'trace');
+					$ref->setAccessible(true);
+					$ref->setValue($exception, $trace);
+				}
+
+				$this->logException($exception);
+
+				if (($handler = $this->getErrorHandler()) !== null) {
+					@$handler->handle($exception);
+				} else {
+					$this->renderException($exception);
+				}
+
+				exit(1);
+			}
 		}
 	}
 
@@ -154,6 +211,10 @@ class Application extends Module
 	public function run()
 	{
 		$this->beforeRequest();
+		// Allocating twice more than required to display memory exhausted error
+		// in case of trying to allocate last 1 byte while all memory is taken.
+		$this->_memoryReserve = str_repeat('x', 1024 * 256);
+		register_shutdown_function(array($this, 'end'), 0, false);
 		$status = $this->processRequest();
 		$this->afterRequest();
 		return $status;
@@ -213,29 +274,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the language that the end user is using.
-	 * @return string the language that the user is using (e.g. 'en_US', 'zh_CN').
-	 * Defaults to the value of [[sourceLanguage]].
-	 */
-	public function getLanguage()
-	{
-		return $this->_language === null ? $this->sourceLanguage : $this->_language;
-	}
-
-	/**
-	 * Specifies which language the end user is using.
-	 * This is the language that the application should use to display to end users.
-	 * By default, [[language]] and [[sourceLanguage]] are the same.
-	 * Do not set this property unless your application needs to support multiple languages.
-	 * @param string $language the user language (e.g. 'en_US', 'zh_CN').
-	 * If it is null, the [[sourceLanguage]] will be used.
-	 */
-	public function setLanguage($language)
-	{
-		$this->_language = $language;
-	}
-
-	/**
 	 * Returns the time zone used by this application.
 	 * This is a simple wrapper of PHP function date_default_timezone_get().
 	 * @return string the time zone used by this application.
@@ -257,14 +295,6 @@ class Application extends Module
 		date_default_timezone_set($value);
 	}
 
-	//	/**
-	//	 * Returns the security manager component.
-	//	 * @return SecurityManager the security manager application component.
-	//	 */
-	//	public function getSecurityManager()
-	//	{
-	//		return $this->getComponent('securityManager');
-	//	}
 	//
 	//	/**
 	//	 * Returns the locale instance.
@@ -295,23 +325,6 @@ class Application extends Module
 	//		return $this->getLocale()->getDateFormatter();
 	//	}
 	//
-	//	/**
-	//	 * Returns the core message translations component.
-	//	 * @return \yii\i18n\MessageSource the core message translations
-	//	 */
-	//	public function getCoreMessages()
-	//	{
-	//		return $this->getComponent('coreMessages');
-	//	}
-	//
-	//	/**
-	//	 * Returns the application message translations component.
-	//	 * @return \yii\i18n\MessageSource the application message translations
-	//	 */
-	//	public function getMessages()
-	//	{
-	//		return $this->getComponent('messages');
-	//	}
 
 	/**
 	 * Returns the database connection component.
@@ -332,15 +345,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the application theme.
-	 * @return Theme the theme that this application is currently using.
-	 */
-	public function getTheme()
-	{
-		return $this->getComponent('theme');
-	}
-
-	/**
 	 * Returns the cache component.
 	 * @return \yii\caching\Cache the cache application component. Null if the component is not enabled.
 	 */
@@ -351,7 +355,7 @@ class Application extends Module
 
 	/**
 	 * Returns the request component.
-	 * @return Request the request component
+	 * @return \yii\web\Request|\yii\console\Request the request component
 	 */
 	public function getRequest()
 	{
@@ -359,12 +363,30 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the view renderer.
-	 * @return ViewRenderer the view renderer used by this application.
+	 * Returns the view object.
+	 * @return View the view object that is used to render various view files.
 	 */
-	public function getViewRenderer()
+	public function getView()
 	{
-		return $this->getComponent('viewRenderer');
+		return $this->getComponent('view');
+	}
+
+	/**
+	 * Returns the URL manager for this application.
+	 * @return \yii\web\UrlManager the URL manager for this application.
+	 */
+	public function getUrlManager()
+	{
+		return $this->getComponent('urlManager');
+	}
+
+	/**
+	 * Returns the internationalization (i18n) component
+	 * @return \yii\i18n\I18N the internationalization component
+	 */
+	public function getI18N()
+	{
+		return $this->getComponent('i18n');
 	}
 
 	/**
@@ -372,9 +394,7 @@ class Application extends Module
 	 */
 	public function registerDefaultAliases()
 	{
-		Yii::$aliases['@application'] = $this->getBasePath();
-		Yii::$aliases['@entry'] = dirname($_SERVER['SCRIPT_FILENAME']);
-		Yii::$aliases['@www'] = '';
+		Yii::$aliases['@app'] = $this->getBasePath();
 	}
 
 	/**
@@ -387,19 +407,14 @@ class Application extends Module
 			'errorHandler' => array(
 				'class' => 'yii\base\ErrorHandler',
 			),
-			'coreMessages' => array(
-				'class' => 'yii\i18n\PhpMessageSource',
-				'language' => 'en_us',
-				'basePath' => '@yii/messages',
-			),
-			'messages' => array(
-				'class' => 'yii\i18n\PhpMessageSource',
-			),
-			'securityManager' => array(
-				'class' => 'yii\base\SecurityManager',
+			'i18n' => array(
+				'class' => 'yii\i18n\I18N',
 			),
 			'urlManager' => array(
 				'class' => 'yii\web\UrlManager',
+			),
+			'view' => array(
+				'class' => 'yii\base\View',
 			),
 		));
 	}
@@ -413,12 +428,24 @@ class Application extends Module
 	 * @param string $message the error message
 	 * @param string $file the filename that the error was raised in
 	 * @param integer $line the line number the error was raised at
-	 * @throws \ErrorException the error exception
+	 *
+	 * @throws ErrorException
 	 */
 	public function handleError($code, $message, $file, $line)
 	{
 		if (error_reporting() !== 0) {
-			throw new \ErrorException($message, 0, $code, $file, $line);
+			$exception = new ErrorException($message, $code, $code, $file, $line);
+
+			// in case error appeared in __toString method we can't throw any exception
+			$trace = debug_backtrace(false);
+			array_shift($trace);
+			foreach ($trace as $frame) {
+				if ($frame['function'] == '__toString') {
+					$this->handleException($exception);
+				}
+			}
+
+			throw $exception;
 		}
 	}
 
@@ -447,11 +474,14 @@ class Application extends Module
 
 			$this->end(1);
 
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			// exception could be thrown in end() or ErrorHandler::handle()
 			$msg = (string)$e;
 			$msg .= "\nPrevious exception:\n";
 			$msg .= (string)$exception;
+			if (YII_DEBUG) {
+				echo $msg;
+			}
 			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
 			error_log($msg);
 			exit(1);
@@ -464,7 +494,7 @@ class Application extends Module
 	 */
 	public function renderException($exception)
 	{
-		if ($exception instanceof Exception && ($exception->causedByUser || !YII_DEBUG)) {
+		if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
 			$message = $exception->getName() . ': ' . $exception->getMessage();
 		} else {
 			$message = YII_DEBUG ? (string)$exception : 'Error: ' . $exception->getMessage();

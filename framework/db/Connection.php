@@ -1,9 +1,7 @@
 <?php
 /**
- * Connection class file
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -12,6 +10,7 @@ namespace yii\db;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\caching\Cache;
 
 /**
  * Connection represents a connection to a database via [PDO](http://www.php.net/manual/en/ref.pdo.php).
@@ -138,10 +137,10 @@ class Connection extends Component
 	/**
 	 * @var boolean whether to enable schema caching.
 	 * Note that in order to enable truly schema caching, a valid cache component as specified
-	 * by [[schemaCacheID]] must be enabled and [[enableSchemaCache]] must be set true.
+	 * by [[schemaCache]] must be enabled and [[enableSchemaCache]] must be set true.
 	 * @see schemaCacheDuration
 	 * @see schemaCacheExclude
-	 * @see schemaCacheID
+	 * @see schemaCache
 	 */
 	public $enableSchemaCache = false;
 	/**
@@ -157,20 +156,20 @@ class Connection extends Component
 	 */
 	public $schemaCacheExclude = array();
 	/**
-	 * @var string the ID of the cache application component that is used to cache the table metadata.
-	 * Defaults to 'cache'.
+	 * @var Cache|string the cache object or the ID of the cache application component that
+	 * is used to cache the table metadata.
 	 * @see enableSchemaCache
 	 */
-	public $schemaCacheID = 'cache';
+	public $schemaCache = 'cache';
 	/**
 	 * @var boolean whether to enable query caching.
 	 * Note that in order to enable query caching, a valid cache component as specified
-	 * by [[queryCacheID]] must be enabled and [[enableQueryCache]] must be set true.
+	 * by [[queryCache]] must be enabled and [[enableQueryCache]] must be set true.
 	 *
 	 * Methods [[beginCache()]] and [[endCache()]] can be used as shortcuts to turn on
 	 * and off query caching on the fly.
 	 * @see queryCacheDuration
-	 * @see queryCacheID
+	 * @see queryCache
 	 * @see queryCacheDependency
 	 * @see beginCache()
 	 * @see endCache()
@@ -178,7 +177,7 @@ class Connection extends Component
 	public $enableQueryCache = false;
 	/**
 	 * @var integer number of seconds that query results can remain valid in cache.
-	 * Defaults to 3600, meaning one hour.
+	 * Defaults to 3600, meaning 3600 seconds, or one hour.
 	 * Use 0 to indicate that the cached data will never expire.
 	 * @see enableQueryCache
 	 */
@@ -190,11 +189,11 @@ class Connection extends Component
 	 */
 	public $queryCacheDependency;
 	/**
-	 * @var string the ID of the cache application component that is used for query caching.
-	 * Defaults to 'cache'.
+	 * @var Cache|string the cache object or the ID of the cache application component
+	 * that is used for query caching.
 	 * @see enableQueryCache
 	 */
-	public $queryCacheID = 'cache';
+	public $queryCache = 'cache';
 	/**
 	 * @var string the charset used for database connection. The property is only used
 	 * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
@@ -292,7 +291,7 @@ class Connection extends Component
 	 * This method is provided as a shortcut to setting two properties that are related
 	 * with query caching: [[queryCacheDuration]] and [[queryCacheDependency]].
 	 * @param integer $duration the number of seconds that query results may remain valid in cache.
-	 * See [[queryCacheDuration]] for more details.
+	 * If not set, it will use the value of [[queryCacheDuration]]. See [[queryCacheDuration]] for more details.
 	 * @param \yii\caching\Dependency $dependency the dependency for the cached query result.
 	 * See [[queryCacheDependency]] for more details.
 	 */
@@ -322,7 +321,7 @@ class Connection extends Component
 	{
 		if ($this->pdo === null) {
 			if (empty($this->dsn)) {
-				throw new InvalidConfigException('Connection.dsn cannot be empty.');
+				throw new InvalidConfigException('Connection::dsn cannot be empty.');
 			}
 			try {
 				\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
@@ -332,7 +331,7 @@ class Connection extends Component
 			catch (\PDOException $e) {
 				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __CLASS__);
 				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
-				throw new Exception($message, (int)$e->getCode(), $e->errorInfo);
+				throw new Exception($message, $e->errorInfo, (int)$e->getCode());
 			}
 		}
 	}

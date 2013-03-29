@@ -204,7 +204,7 @@ doIt('a', array(
 
 ~~~
 if ($event === null) {
-	return new Event($this);
+	return new Event();
 } elseif ($event instanceof CoolEvent) {
 	return $event->instance();
 } else {
@@ -251,10 +251,8 @@ switch ($this->phpType) {
 ~~~
 <?php
 /**
- * Component class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 ~~~

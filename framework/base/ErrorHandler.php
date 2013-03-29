@@ -1,9 +1,7 @@
 <?php
 /**
- * ErrorHandler class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -18,7 +16,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-use yii\util\VarDumper;
+use yii\helpers\VarDumper;
 
 class ErrorHandler extends Component
 {
@@ -36,7 +34,7 @@ class ErrorHandler extends Component
 	public $discardExistingOutput = true;
 	/**
 	 * @var string the route (eg 'site/error') to the controller action that will be used to display external errors.
-	 * Inside the action, it can retrieve the error information by \Yii::$application->errorHandler->error.
+	 * Inside the action, it can retrieve the error information by \Yii::$app->errorHandler->error.
 	 * This property defaults to null, meaning ErrorHandler will handle the error display.
 	 */
 	public $errorAction;
@@ -71,27 +69,27 @@ class ErrorHandler extends Component
 	protected function render($exception)
 	{
 		if ($this->errorAction !== null) {
-			\Yii::$application->runAction($this->errorAction);
-		} elseif (\Yii::$application instanceof \yii\web\Application) {
+			\Yii::$app->runAction($this->errorAction);
+		} elseif (\Yii::$app instanceof \yii\web\Application) {
 			if (!headers_sent()) {
 				$errorCode = $exception instanceof HttpException ? $exception->statusCode : 500;
 				header("HTTP/1.0 $errorCode " . get_class($exception));
 			}
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-				\Yii::$application->renderException($exception);
+				\Yii::$app->renderException($exception);
 			} else {
-				$view = new View($this);
-				if (!YII_DEBUG || $exception instanceof Exception && $exception->causedByUser) {
+				$view = new View;
+				if (!YII_DEBUG || $exception instanceof UserException) {
 					$viewName = $this->errorView;
 				} else {
 					$viewName = $this->exceptionView;
 				}
 				echo $view->render($viewName, array(
 					'exception' => $exception,
-				));
+				), $this);
 			}
 		} else {
-			\Yii::$application->renderException($exception);
+			\Yii::$app->renderException($exception);
 		}
 	}
 
@@ -239,7 +237,7 @@ class ErrorHandler extends Component
 
 	public function htmlEncode($text)
 	{
-		return htmlspecialchars($text, ENT_QUOTES, \Yii::$application->charset);
+		return htmlspecialchars($text, ENT_QUOTES, \Yii::$app->charset);
 	}
 
 	public function clearOutput()
@@ -255,15 +253,10 @@ class ErrorHandler extends Component
 	 */
 	public function renderAsHtml($exception)
 	{
-		$view = new View($this);
-		if (!YII_DEBUG || $exception instanceof Exception && $exception->causedByUser) {
-			$viewName = $this->errorView;
-		} else {
-			$viewName = $this->exceptionView;
-		}
+		$view = new View;
 		$name = !YII_DEBUG || $exception instanceof HttpException ? $this->errorView : $this->exceptionView;
 		echo $view->render($name, array(
 			'exception' => $exception,
-		));
+		), $this);
 	}
 }

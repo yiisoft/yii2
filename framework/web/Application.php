@@ -1,13 +1,13 @@
 <?php
 /**
- * Application class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\web;
+
+use yii\base\InvalidParamException;
 
 /**
  * Application is the base class for all application classes.
@@ -18,12 +18,17 @@ namespace yii\web;
 class Application extends \yii\base\Application
 {
 	/**
+	 * @var string the default route of this application. Defaults to 'site'.
+	 */
+	public $defaultRoute = 'site';
+
+	/**
 	 * Sets default path aliases.
 	 */
 	public function registerDefaultAliases()
 	{
 		parent::registerDefaultAliases();
-		\Yii::$aliases['@www'] = dirname($_SERVER['SCRIPT_FILENAME']);
+		\Yii::$aliases['@webroot'] = dirname($_SERVER['SCRIPT_FILENAME']);
 	}
 
 	/**
@@ -32,13 +37,44 @@ class Application extends \yii\base\Application
 	 */
 	public function processRequest()
 	{
-		$route = $this->resolveRequest();
-		return $this->runController($route, null);
+		list ($route, $params) = $this->getRequest()->resolve();
+		return $this->runAction($route, $params);
 	}
 
-	protected function resolveRequest()
+	/**
+	 * Returns the request component.
+	 * @return Request the request component
+	 */
+	public function getRequest()
 	{
-		return array();
+		return $this->getComponent('request');
+	}
+
+	/**
+	 * Returns the response component.
+	 * @return Response the response component
+	 */
+	public function getResponse()
+	{
+		return $this->getComponent('response');
+	}
+
+	/**
+	 * Returns the session component.
+	 * @return Session the session component
+	 */
+	public function getSession()
+	{
+		return $this->getComponent('session');
+	}
+
+	/**
+	 * Returns the user component.
+	 * @return User the user component
+	 */
+	public function getUser()
+	{
+		return $this->getComponent('user');
 	}
 
 	/**
@@ -54,6 +90,12 @@ class Application extends \yii\base\Application
 			),
 			'response' => array(
 				'class' => 'yii\web\Response',
+			),
+			'session' => array(
+				'class' => 'yii\web\Session',
+			),
+			'user' => array(
+				'class' => 'yii\web\User',
 			),
 		));
 	}

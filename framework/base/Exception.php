@@ -1,9 +1,7 @@
 <?php
 /**
- * Exception class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -18,16 +16,10 @@ namespace yii\base;
 class Exception extends \Exception
 {
 	/**
-	 * @var boolean whether this exception is caused by end user's mistake (e.g. wrong URL)
-	 */
-	public $causedByUser = false;
-
-	/**
 	 * @return string the user-friendly name of this exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Exception');
+		return \Yii::t('yii|Exception');
 	}
 }
-

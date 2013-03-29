@@ -1,15 +1,14 @@
 <?php
 /**
- * Response class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\web;
 
-use yii\util\FileHelper;
+use Yii;
+use yii\helpers\FileHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -82,6 +81,11 @@ class Response extends \yii\base\Response
 	 * If this option is disabled by the web server, when this method is called a download configuration dialog
 	 * will open but the downloaded file will have 0 bytes.
 	 *
+	 * <b>Known issues</b>:
+	 * There is a Bug with Internet Explorer 6, 7 and 8 when X-SENDFILE is used over an SSL connection, it will show
+	 * an error message like this: "Internet Explorer was not able to open this Internet site. The requested site is either unavailable or cannot be found.".
+	 * You can work around this problem by removing the <code>Pragma</code>-header.
+	 *
 	 * <b>Example</b>:
 	 * <pre>
 	 * <?php
@@ -102,63 +106,79 @@ class Response extends \yii\base\Response
 	 * <li>forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true. (Since version 1.1.9.)</li>
 	 * <li>addHeaders: an array of additional http headers in header-value pairs (available since version 1.1.10)</li>
 	 * </ul>
-	 * @todo
 	 */
-	public function xSendFile($filePath, $options = array())
+	public function xSendFile($filePath, $options=array())
 	{
-		if (!isset($options['forceDownload']) || $options['forceDownload']) {
-			$disposition = 'attachment';
-		} else {
-			$disposition = 'inline';
+		if(!isset($options['forceDownload']) || $options['forceDownload'])
+			$disposition='attachment';
+		else
+			$disposition='inline';
+
+		if(!isset($options['saveName']))
+			$options['saveName']=basename($filePath);
+
+		if(!isset($options['mimeType']))
+		{
+			if(($options['mimeType']=CFileHelper::getMimeTypeByExtension($filePath))===null)
+				$options['mimeType']='text/plain';
 		}
 
-		if (!isset($options['saveName'])) {
-			$options['saveName'] = basename($filePath);
-		}
+		if(!isset($options['xHeader']))
+			$options['xHeader']='X-Sendfile';
 
-		if (!isset($options['mimeType'])) {
-			if (($options['mimeType'] = CFileHelper::getMimeTypeByExtension($filePath)) === null) {
-				$options['mimeType'] = 'text/plain';
-			}
+		if($options['mimeType'] !== null)
+			header('Content-type: '.$options['mimeType']);
+		header('Content-Disposition: '.$disposition.'; filename="'.$options['saveName'].'"');
+		if(isset($options['addHeaders']))
+		{
+			foreach($options['addHeaders'] as $header=>$value)
+				header($header.': '.$value);
 		}
+		header(trim($options['xHeader']).': '.$filePath);
 
-		if (!isset($options['xHeader'])) {
-			$options['xHeader'] = 'X-Sendfile';
-		}
-
-		if ($options['mimeType'] !== null) {
-			header('Content-type: ' . $options['mimeType']);
-		}
-		header('Content-Disposition: ' . $disposition . '; filename="' . $options['saveName'] . '"');
-		if (isset($options['addHeaders'])) {
-			foreach ($options['addHeaders'] as $header => $value) {
-				header($header . ': ' . $value);
-			}
-		}
-		header(trim($options['xHeader']) . ': ' . $filePath);
-
-		if (!isset($options['terminate']) || $options['terminate']) {
+		if(!isset($options['terminate']) || $options['terminate'])
 			Yii::app()->end();
-		}
 	}
-
 
 	/**
 	 * Redirects the browser to the specified URL.
-	 * @param string $url URL to be redirected to. If the URL is a relative one, the base URL of
-	 * the application will be inserted at the beginning.
+	 * @param string $url URL to be redirected to. Note that when URL is not
+	 * absolute (not starting with "/") it will be relative to current request URL.
 	 * @param boolean $terminate whether to terminate the current application
 	 * @param integer $statusCode the HTTP status code. Defaults to 302. See {@link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}
 	 * for details about HTTP status code.
 	 */
-	public function redirect($url, $terminate = true, $statusCode = 302)
+	public function redirect($url,$terminate=true,$statusCode=302)
 	{
-		if (strpos($url, '/') === 0) {
-			$url = $this->getHostInfo() . $url;
-		}
-		header('Location: ' . $url, true, $statusCode);
-		if ($terminate) {
+		if(strpos($url,'/')===0 && strpos($url,'//')!==0)
+			$url=$this->getHostInfo().$url;
+		header('Location: '.$url, true, $statusCode);
+		if($terminate)
 			Yii::app()->end();
-		}
+	}
+
+
+	/**
+	 * Returns the cookie collection.
+	 * Through the returned cookie collection, you add or remove cookies as follows,
+	 *
+	 * ~~~
+	 * // add a cookie
+	 * $response->cookies->add(new Cookie(array(
+	 *     'name' => $name,
+	 *     'value' => $value,
+	 * ));
+	 *
+	 * // remove a cookie
+	 * $response->cookies->remove('name');
+	 * // alternatively
+	 * unset($response->cookies['name']);
+	 * ~~~
+	 *
+	 * @return CookieCollection the cookie collection.
+	 */
+	public function getCookies()
+	{
+		return Yii::$app->getRequest()->getCookies();
 	}
 }

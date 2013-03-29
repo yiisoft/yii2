@@ -189,14 +189,6 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$command = $db->createCommand($sql);
 		$command->bindValue(':name', 'user5');
 		$this->assertEquals('user5@example.com', $command->queryScalar());
-
-		// bind value via query or execute method
-		$sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, \'user6\', \'address6\')';
-		$command = $db->createCommand($sql);
-		$command->execute(array(':email' => 'user6@example.com'));
-		$sql = 'SELECT email FROM tbl_customer WHERE name=:name';
-		$command = $db->createCommand($sql);
-		$this->assertEquals('user5@example.com', $command->queryScalar(array(':name' => 'user5')));
 	}
 
 	function testFetchMode()
