@@ -38,7 +38,8 @@ interface Identity
 	 * Finds an identity by the given ID.
 	 * @param string|integer $id the ID to be looked for
 	 * @return Identity the identity object that matches the given ID.
-	 * Null should be returned if such an identity cannot be found.
+	 * Null should be returned if such an identity cannot be found
+	 * or the identity is not in an active state (disabled, deleted, etc.)
 	 */
 	public static function findIdentity($id);
 }

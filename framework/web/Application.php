@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\InvalidParamException;
+use Yii;
 
 /**
  * Application is the base class for all application classes.
@@ -28,7 +28,7 @@ class Application extends \yii\base\Application
 	public function registerDefaultAliases()
 	{
 		parent::registerDefaultAliases();
-		\Yii::$aliases['@webroot'] = dirname($_SERVER['SCRIPT_FILENAME']);
+		Yii::$aliases['@webroot'] = dirname($_SERVER['SCRIPT_FILENAME']);
 	}
 
 	/**
@@ -39,6 +39,32 @@ class Application extends \yii\base\Application
 	{
 		list ($route, $params) = $this->getRequest()->resolve();
 		return $this->runAction($route, $params);
+	}
+
+	private $_homeUrl;
+
+	/**
+	 * @return string the homepage URL
+	 */
+	public function getHomeUrl()
+	{
+		if ($this->_homeUrl === null) {
+			if ($this->getUrlManager()->showScriptName) {
+				return $this->getRequest()->getScriptUrl();
+			} else {
+				return $this->getRequest()->getBaseUrl() . '/';
+			}
+		} else {
+			return $this->_homeUrl;
+		}
+	}
+
+	/**
+	 * @param string $value the homepage URL
+	 */
+	public function setHomeUrl($value)
+	{
+		$this->_homeUrl = $value;
 	}
 
 	/**

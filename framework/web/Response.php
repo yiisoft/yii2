@@ -107,37 +107,42 @@ class Response extends \yii\base\Response
 	 * <li>addHeaders: an array of additional http headers in header-value pairs (available since version 1.1.10)</li>
 	 * </ul>
 	 */
-	public function xSendFile($filePath, $options=array())
+	public function xSendFile($filePath, $options = array())
 	{
-		if(!isset($options['forceDownload']) || $options['forceDownload'])
-			$disposition='attachment';
-		else
-			$disposition='inline';
-
-		if(!isset($options['saveName']))
-			$options['saveName']=basename($filePath);
-
-		if(!isset($options['mimeType']))
-		{
-			if(($options['mimeType']=CFileHelper::getMimeTypeByExtension($filePath))===null)
-				$options['mimeType']='text/plain';
+		if (!isset($options['forceDownload']) || $options['forceDownload']) {
+			$disposition = 'attachment';
+		} else {
+			$disposition = 'inline';
 		}
 
-		if(!isset($options['xHeader']))
-			$options['xHeader']='X-Sendfile';
-
-		if($options['mimeType'] !== null)
-			header('Content-type: '.$options['mimeType']);
-		header('Content-Disposition: '.$disposition.'; filename="'.$options['saveName'].'"');
-		if(isset($options['addHeaders']))
-		{
-			foreach($options['addHeaders'] as $header=>$value)
-				header($header.': '.$value);
+		if (!isset($options['saveName'])) {
+			$options['saveName'] = basename($filePath);
 		}
-		header(trim($options['xHeader']).': '.$filePath);
 
-		if(!isset($options['terminate']) || $options['terminate'])
-			Yii::app()->end();
+		if (!isset($options['mimeType'])) {
+			if (($options['mimeType'] = CFileHelper::getMimeTypeByExtension($filePath)) === null) {
+				$options['mimeType'] = 'text/plain';
+			}
+		}
+
+		if (!isset($options['xHeader'])) {
+			$options['xHeader'] = 'X-Sendfile';
+		}
+
+		if ($options['mimeType'] !== null) {
+			header('Content-type: ' . $options['mimeType']);
+		}
+		header('Content-Disposition: ' . $disposition . '; filename="' . $options['saveName'] . '"');
+		if (isset($options['addHeaders'])) {
+			foreach ($options['addHeaders'] as $header => $value) {
+				header($header . ': ' . $value);
+			}
+		}
+		header(trim($options['xHeader']) . ': ' . $filePath);
+
+		if (!isset($options['terminate']) || $options['terminate']) {
+			Yii::$app->end();
+		}
 	}
 
 	/**
@@ -148,13 +153,15 @@ class Response extends \yii\base\Response
 	 * @param integer $statusCode the HTTP status code. Defaults to 302. See {@link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}
 	 * for details about HTTP status code.
 	 */
-	public function redirect($url,$terminate=true,$statusCode=302)
+	public function redirect($url, $terminate = true, $statusCode = 302)
 	{
-		if(strpos($url,'/')===0 && strpos($url,'//')!==0)
-			$url=$this->getHostInfo().$url;
-		header('Location: '.$url, true, $statusCode);
-		if($terminate)
-			Yii::app()->end();
+		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
+			$url = Yii::$app->getRequest()->getHostInfo() . $url;
+		}
+		header('Location: ' . $url, true, $statusCode);
+		if ($terminate) {
+			Yii::$app->end();
+		}
 	}
 
 

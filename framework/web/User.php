@@ -9,7 +9,9 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\HttpException;
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -17,14 +19,20 @@ use yii\base\InvalidConfigException;
  */
 class User extends Component
 {
-	const ID_VAR = '__id';
-	const AUTH_EXPIRE_VAR = '__expire';
-
 	const EVENT_BEFORE_LOGIN = 'beforeLogin';
 	const EVENT_AFTER_LOGIN = 'afterLogin';
 	const EVENT_BEFORE_LOGOUT = 'beforeLogout';
 	const EVENT_AFTER_LOGOUT = 'afterLogout';
 
+	/**
+	 * @var Identity the identity object associated with the currently logged user.
+	 * This property is set automatically be the User component. Do not modify it directly
+	 * unless you understand the consequence. You should normally use [[login()]], [[logout()]],
+	 * or [[switchIdentity()]] to update the identity associated with the current user.
+	 *
+	 * If this property is null, it means the current user is a guest (not authenticated).
+	 */
+	public $identity;
 	/**
 	 * @var string the class name of the [[identity]] object.
 	 */
@@ -64,24 +72,12 @@ class User extends Component
 	 * is initially logged in. When this is true, the identity cookie will expire after the specified duration
 	 * since the user visits the site the last time.
 	 * @see enableAutoLogin
-	 * @since 1.1.0
 	 */
-	public $autoRenewCookie = false;
-	/**
-	 * @var string value that will be echoed in case that user session has expired during an ajax call.
-	 * When a request is made and user session has expired, {@link loginRequired} redirects to {@link loginUrl} for login.
-	 * If that happens during an ajax call, the complete HTML login page is returned as the result of that ajax call. That could be
-	 * a problem if the ajax call expects the result to be a json array or a predefined string, as the login page is ignored in that case.
-	 * To solve this, set this property to the desired return value.
-	 *
-	 * If this property is set, this value will be returned as the result of the ajax call in case that the user session has expired.
-	 * @since 1.1.9
-	 * @see loginRequired
-	 */
-	public $loginRequiredAjaxResponse;
-	
+	public $autoRenewCookie = true;
 
-	public $stateVar = '__states';
+	public $idSessionVar = '__id';
+	public $authTimeoutSessionVar = '__expire';
+	public $returnUrlSessionVar = '__returnUrl';
 
 	/**
 	 * Initializes the application component.
@@ -99,6 +95,8 @@ class User extends Component
 
 		Yii::$app->getSession()->open();
 
+		$this->loadIdentity();
+
 		$this->renewAuthStatus();
 
 		if ($this->enableAutoLogin) {
@@ -110,29 +108,16 @@ class User extends Component
 		}
 	}
 
-	/**
-	 * @var Identity the identity object associated with the currently logged user.
-	 */
-	private $_identity = false;
-
-	public function getIdentity()
+	public function loadIdentity()
 	{
-		if ($this->_identity === false) {
-			$id = $this->getId();
-			if ($id === null) {
-				$this->_identity = null;
-			} else {
-				/** @var $class Identity */
-				$class = $this->identityClass;
-				$this->_identity = $class::findIdentity($this->getId());
-			}
+		$id = $this->getId();
+		if ($id === null) {
+			$this->identity = null;
+		} else {
+			/** @var $class Identity */
+			$class = $this->identityClass;
+			$this->identity = $class::findIdentity($this->getId());
 		}
-		return $this->_identity;
-	}
-
-	public function setIdentity($identity)
-	{
-		$this->switchIdentity($identity);
 	}
 
 	/**
@@ -157,7 +142,7 @@ class User extends Component
 		if ($this->beforeLogin($identity, false)) {
 			$this->switchIdentity($identity);
 			if ($duration > 0 && $this->enableAutoLogin) {
-				$this->saveIdentityCookie($identity, $duration);
+				$this->sendIdentityCookie($identity, $duration);
 			}
 			$this->afterLogin($identity, false);
 		}
@@ -169,7 +154,7 @@ class User extends Component
 	 * This method is used when automatic login ({@link enableAutoLogin}) is enabled.
 	 * The user identity information is recovered from cookie.
 	 * Sufficient security measures are used to prevent cookie data from being tampered.
-	 * @see saveIdentityCookie
+	 * @see sendIdentityCookie
 	 */
 	protected function loginByCookie()
 	{
@@ -182,18 +167,16 @@ class User extends Component
 				/** @var $class Identity */
 				$class = $this->identityClass;
 				$identity = $class::findIdentity($id);
-				if ($identity === null || !$identity->validateAuthKey($authKey)) {
-					if ($identity !== null) {
-						Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
+				if ($identity !== null && $identity->validateAuthKey($authKey)) {
+					if ($this->beforeLogin($identity, true)) {
+						$this->switchIdentity($identity);
+						if ($this->autoRenewCookie) {
+							$this->sendIdentityCookie($identity, $duration);
+						}
+						$this->afterLogin($identity, true);
 					}
-					return;
-				}
-				if ($this->beforeLogin($identity, true)) {
-					$this->switchIdentity($identity);
-					if ($this->autoRenewCookie) {
-						$this->saveIdentityCookie($identity, $duration);
-					}
-					$this->afterLogin($identity, true);
+				} elseif ($identity !== null) {
+					Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
 				}
 			}
 		}
@@ -208,7 +191,7 @@ class User extends Component
 	 */
 	public function logout($destroySession = true)
 	{
-		$identity = $this->getIdentity();
+		$identity = $this->identity;
 		if ($identity !== null && $this->beforeLogout($identity)) {
 			$this->switchIdentity(null);
 			if ($this->enableAutoLogin) {
@@ -227,7 +210,7 @@ class User extends Component
 	 */
 	public function getIsGuest()
 	{
-		return $this->getIdentity() === null;
+		return $this->identity === null;
 	}
 
 	/**
@@ -236,7 +219,7 @@ class User extends Component
 	 */
 	public function getId()
 	{
-		return $this->getState(static::ID_VAR);
+		return Yii::$app->getSession()->get($this->idSessionVar);
 	}
 
 	/**
@@ -244,7 +227,7 @@ class User extends Component
 	 */
 	public function setId($value)
 	{
-		$this->setState(static::ID_VAR, $value);
+		Yii::$app->getSession()->set($this->idSessionVar, $value);
 	}
 
 	/**
@@ -258,12 +241,12 @@ class User extends Component
 	 */
 	public function getReturnUrl($defaultUrl = null)
 	{
-		if ($defaultUrl === null) {
-			$defaultReturnUrl = Yii::app()->getUrlManager()->showScriptName ? Yii::app()->getRequest()->getScriptUrl() : Yii::app()->getRequest()->getBaseUrl() . '/';
+		$url = Yii::$app->getSession()->get($this->returnUrlSessionVar, $defaultUrl);
+		if ($url === null) {
+			return Yii::$app->getHomeUrl();
 		} else {
-			$defaultReturnUrl = CHtml::normalizeUrl($defaultUrl);
+			return Html::url($url);
 		}
-		return $this->getState('__returnUrl', $defaultReturnUrl);
 	}
 
 	/**
@@ -271,7 +254,7 @@ class User extends Component
 	 */
 	public function setReturnUrl($value)
 	{
-		$this->setState('__returnUrl', $value);
+		Yii::$app->getSession()->set($this->returnUrlSessionVar, $value);
 	}
 
 	/**
@@ -285,24 +268,22 @@ class User extends Component
 	 */
 	public function loginRequired()
 	{
-		$app = Yii::app();
-		$request = $app->getRequest();
-
-		if (!$request->getIsAjaxRequest()) {
-			$this->setReturnUrl($request->getUrl());
-		} elseif (isset($this->loginRequiredAjaxResponse)) {
-			echo $this->loginRequiredAjaxResponse;
-			Yii::app()->end();
-		}
-
 		if (($url = $this->loginUrl) !== null) {
-			if (is_array($url)) {
-				$route = isset($url[0]) ? $url[0] : $app->defaultController;
-				$url = $app->createUrl($route, array_splice($url, 1));
+			$url = Html::url($url);
+			$request = Yii::$app->getRequest();
+			if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
+				$url = $request->getHostInfo() . $url;
 			}
-			$request->redirect($url);
+			if ($request->getIsAjaxRequest()) {
+				echo json_encode(array(
+					'redirect' => $url,
+				));
+				Yii::$app->end();
+			} else {
+				Yii::$app->getResponse()->redirect($url);
+			}
 		} else {
-			throw new CHttpException(403, Yii::t('yii', 'Login Required'));
+			throw new HttpException(403, Yii::t('yii|Login Required'));
 		}
 	}
 
@@ -399,7 +380,7 @@ class User extends Component
 	 * @param integer $duration number of seconds that the user can remain in logged-in status. Defaults to 0, meaning login till the user closes the browser.
 	 * @see loginByCookie
 	 */
-	protected function saveIdentityCookie($identity, $duration)
+	protected function sendIdentityCookie($identity, $duration)
 	{
 		$cookie = new Cookie($this->identityCookie);
 		$cookie->value = json_encode(array(
@@ -423,14 +404,16 @@ class User extends Component
 	protected function switchIdentity($identity)
 	{
 		Yii::$app->getSession()->regenerateID(true);
-		$this->setIdentity($identity);
+		$this->identity = $identity;
 		if ($identity instanceof Identity) {
 			$this->setId($identity->getId());
 			if ($this->authTimeout !== null) {
-				$this->setState(self::AUTH_EXPIRE_VAR, time() + $this->authTimeout);
+				Yii::$app->getSession()->set($this->authTimeoutSessionVar, time() + $this->authTimeout);
 			}
 		} else {
-			$this->removeAllStates();
+			$session = Yii::$app->getSession();
+			$session->remove($this->idSessionVar);
+			$session->remove($this->authTimeoutSessionVar);
 		}
 	}
 
@@ -442,115 +425,12 @@ class User extends Component
 	protected function renewAuthStatus()
 	{
 		if ($this->authTimeout !== null && !$this->getIsGuest()) {
-			$expire = $this->getState(self::AUTH_EXPIRE_VAR);
+			$expire = Yii::$app->getSession()->get($this->authTimeoutSessionVar);
 			if ($expire !== null && $expire < time()) {
 				$this->logout(false);
 			} else {
-				$this->setState(self::AUTH_EXPIRE_VAR, time() + $this->authTimeout);
+				Yii::$app->getSession()->set($this->authTimeoutSessionVar, time() + $this->authTimeout);
 			}
 		}
-	}
-
-	/**
-	 * Returns a user state.
-	 * A user state is a session data item associated with the current user.
-	 * If the user logs out, all his/her user states will be removed.
-	 * @param string $key the key identifying the state
-	 * @param mixed $defaultValue value to be returned if the state does not exist.
-	 * @return mixed the state
-	 */
-	public function getState($key, $defaultValue = null)
-	{
-		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : null;
-		if (is_array($manifest) && isset($manifest[$key], $_SESSION[$key])) {
-			return $_SESSION[$key];
-		} else {
-			return $defaultValue;
-		}
-	}
-
-	/**
-	 * Returns all user states.
-	 * @return array states (key => state).
-	 */
-	public function getAllStates()
-	{
-		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : null;
-		$states = array();
-		if (is_array($manifest)) {
-			foreach (array_keys($manifest) as $key) {
-				if (isset($_SESSION[$key])) {
-					$states[$key] = $_SESSION[$key];
-				}
-			}
-		}
-		return $states;
-	}
-
-	/**
-	 * Stores a user state.
-	 * A user state is a session data item associated with the current user.
-	 * If the user logs out, all his/her user states will be removed.
-	 * @param string $key the key identifying the state. Note that states
-	 * and normal session variables share the same name space. If you have a normal
-	 * session variable using the same name, its value will be overwritten by this method.
-	 * @param mixed $value state
-	 */
-	public function setState($key, $value)
-	{
-		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : array();
-		$manifest[$value] = true;
-		$_SESSION[$key] = $value;
-		$_SESSION[$this->stateVar] = $manifest;
-	}
-
-	/**
-	 * Removes a user state.
-	 * If the user logs out, all his/her user states will be removed automatically.
-	 * @param string $key the key identifying the state. Note that states
-	 * and normal session variables share the same name space.  If you have a normal
-	 * session variable using the same name, it will be removed by this method.
-	 * @return mixed the removed state. Null if the state does not exist.
-	 */
-	public function removeState($key)
-	{
-		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : null;
-		if (is_array($manifest) && isset($manifest[$key], $_SESSION[$key])) {
-			$value = $_SESSION[$key];
-		} else {
-			$value = null;
-		}
-		unset($_SESSION[$this->stateVar][$key], $_SESSION[$key]);
-		return $value;
-	}
-
-	/**
-	 * Removes all states.
-	 * If the user logs out, all his/her user states will be removed automatically
-	 * without the need to call this method manually.
-	 *
-	 * Note that states and normal session variables share the same name space.
-	 * If you have a normal session variable using the same name, it will be removed
-	 * by this method.
-	 */
-	public function removeAllStates()
-	{
-		$manifest = isset($_SESSION[$this->stateVar]) ? $_SESSION[$this->stateVar] : null;
-		if (is_array($manifest)) {
-			foreach (array_keys($manifest) as $key) {
-				unset($_SESSION[$key]);
-			}			
-		}		
-		unset($_SESSION[$this->stateVar]);
-	}
-
-	/**
-	 * Returns a value indicating whether there is a state associated with the specified key.
-	 * @param string $key key identifying the state
-	 * @return boolean whether the specified state exists
-	 */
-	public function hasState($key)
-	{
-		return $this->getState($key) !== null;
 	}
 }
