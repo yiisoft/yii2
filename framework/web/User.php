@@ -13,6 +13,14 @@ use yii\base\HttpException;
 use yii\base\InvalidConfigException;
 
 /**
+ * User is an application component that manages the user authentication status.
+ *
+ * In particular, [[User::isGuest]] returns a value indicating whether the current user is a guest or not.
+ * Through methods [[login()]] and [[logout()]], you can change the user authentication status.
+ *
+ * User works with a class implementing the [[Identity]] interface. This class implements
+ * the actual user authentication logic and is often backed by a user database table.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -30,5 +30,5 @@ class UserEvent extends Event
 	 * Event handlers may modify this property to determine whether the login or logout should proceed.
 	 * This property is only meaningful for [[User::EVENT_BEFORE_LOGIN]] and [[User::EVENT_BEFORE_LOGOUT]] events.
 	 */
-	public $isValid;
+	public $isValid = true;
 }
