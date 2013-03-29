@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\framework\util;
+namespace yiiunit\framework\helpers;
 
 use Yii;
 use yii\helpers\Html;
