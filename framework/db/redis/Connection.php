@@ -10,14 +10,17 @@
 namespace yii\db\redis;
 
 use \yii\base\Component;
-use yii\base\NotSupportedException;
 use yii\base\InvalidConfigException;
 use \yii\db\Exception;
+use yii\util\StringHelper;
 
 /**
  *
  *
  *
+ * @method mixed set($key, $value) Set the string value of a key
+ * @method mixed get($key) Set the string value of a key
+ * TODO document methods
  *
  * @since 2.0
  */
@@ -30,34 +33,18 @@ class Connection extends Component
 
 	/**
 	 * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
-	 * DSN format: redis://[auth@][server][:port][/db]
-	 * @see charset
+	 * DSN format: redis://server:port[/db]
+	 * Where db is a zero based integer which refers to the DB to use.
+	 * If no DB is given, ID 0 is used.
+	 *
+	 * Example: redis://localhost:6379/2
 	 */
 	public $dsn;
 	/**
-	 * @var string the username for establishing DB connection. Defaults to empty string.
+	 * @var string the password for establishing DB connection. Defaults to null meaning no AUTH command is send.
+	 * See http://redis.io/commands/auth
 	 */
-	public $username = '';
-	/**
-	 * @var string the password for establishing DB connection. Defaults to empty string.
-	 */
-	public $password = '';
-	/**
-	 * @var boolean whether to enable profiling for the SQL statements being executed.
-	 * Defaults to false. This should be mainly enabled and used during development
-	 * to find out the bottleneck of SQL executions.
-	 * @see getStats
-	 */
-	public $enableProfiling = false;
-	/**
-	 * @var string the common prefix or suffix for table names. If a table name is given
-	 * as `{{%TableName}}`, then the percentage character `%` will be replaced with this
-	 * property value. For example, `{{%post}}` becomes `{{tbl_post}}` if this property is
-	 * set as `"tbl_"`. Note that this property is only effective when [[enableAutoQuoting]]
-	 * is true.
-	 * @see enableAutoQuoting
-	 */
-	public $keyPrefix;
+	public $password;
 
 	/**
 	 * @var array List of available redis commands http://redis.io/commands
@@ -242,20 +229,25 @@ class Connection extends Component
 			if (empty($this->dsn)) {
 				throw new InvalidConfigException('Connection.dsn cannot be empty.');
 			}
-			// TODO parse DSN
-			$host = 'localhost';
-			$port = 6379;
-			try {
-				\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
-				$this->_socket = stream_socket_client($host . ':' . $port);
-				// TODO auth
-				// TODO select database
-				$this->initConnection();
+			$dsn = explode('/', $this->dsn);
+			$host = $dsn[2];
+			if (strpos($host, ':')===false) {
+				$host .= ':6379';
 			}
-			catch (\PDOException $e) {
-				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __CLASS__);
-				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
-				throw new Exception($message, (int)$e->getCode(), $e->errorInfo);
+			$db = isset($dsn[3]) ? $dsn[3] : 0;
+
+			\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
+			$this->_socket = @stream_socket_client($host, $errorNumber, $errorDescription);
+			if ($this->_socket) {
+				if ($this->password !== null) {
+					$this->executeCommand('AUTH', array($this->password));
+				}
+				$this->executeCommand('SELECT', array($db));
+				$this->initConnection();
+			} else {
+				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $errorNumber . ' - ' . $errorDescription, __CLASS__);
+				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $errorNumber . ' - ' . $errorDescription : 'Failed to open DB connection.';
+				throw new Exception($message, (int)$errorNumber, $errorDescription);
 			}
 		}
 	}
@@ -268,7 +260,7 @@ class Connection extends Component
 	{
 		if ($this->_socket !== null) {
 			\Yii::trace('Closing DB connection: ' . $this->dsn, __CLASS__);
-			$this->__call('CLOSE', array()); // TODO improve API
+			$this->executeCommand('QUIT');
 			stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
 			$this->_socket = null;
 			$this->_transaction = null;
@@ -278,9 +270,7 @@ class Connection extends Component
 	/**
 	 * Initializes the DB connection.
 	 * This method is invoked right after the DB connection is established.
-	 * The default implementation turns on `PDO::ATTR_EMULATE_PREPARES`
-	 * if [[emulatePrepare]] is true, and sets the database [[charset]] if it is not empty.
-	 * It then triggers an [[EVENT_AFTER_OPEN]] event.
+	 * The default implementation triggers an [[EVENT_AFTER_OPEN]] event.
 	 */
 	protected function initConnection()
 	{
@@ -324,8 +314,6 @@ class Connection extends Component
 	}
 
 	/**
-	 * http://redis.io/topics/protocol
-	 * https://github.com/ptrofimov/tinyredisclient/blob/master/src/TinyRedisClient.php
 	 *
 	 * @param string $name
 	 * @param array $params
@@ -333,21 +321,37 @@ class Connection extends Component
 	 */
 	public function __call($name, $params)
 	{
-		// TODO set active to true?
-		if (in_array($name, $this->redisCommands))
-		{
-			array_unshift($params, $name);
-			$command = '*' . count($params) . "\r\n";
-			foreach($params as $arg) {
-				$command .= '$' . strlen($arg) . "\r\n" . $arg . "\r\n";
-			}
-			\Yii::trace("Executing Redis Command: {$command}", __CLASS__);
-			fwrite($this->_socket, $command);
-			return $this->parseResponse($command);
-		}
-		else {
+		$redisCommand = strtoupper(StringHelper::camel2words($name, false));
+		if (in_array($redisCommand, $this->redisCommands)) {
+			return $this->executeCommand($name, $params);
+		} else {
 			return parent::__call($name, $params);
 		}
+	}
+
+	/**
+	 * Execute a redis command
+	 * http://redis.io/commands
+	 * http://redis.io/topics/protocol
+	 *
+	 * @param $name
+	 * @param $params
+	 * @return array|bool|null|string
+	 */
+	public function executeCommand($name, $params=array())
+	{
+		$this->open();
+
+		array_unshift($params, $name);
+		$command = '*' . count($params) . "\r\n";
+		foreach($params as $arg) {
+			$command .= '$' . strlen($arg) . "\r\n" . $arg . "\r\n";
+		}
+
+		\Yii::trace("Executing Redis Command: {$name}", __CLASS__);
+		fwrite($this->_socket, $command);
+
+		return $this->parseResponse(implode(' ', $params));
 	}
 
 	private function parseResponse($command)
@@ -383,28 +387,7 @@ class Connection extends Component
 				}
 				return $data;
 			default:
-				throw new Exception('Received illegal data from redis: ' . substr($line, 0, -2) . "\nRedis command was: " . $command);
+				throw new Exception('Received illegal data from redis: ' . $line . "\nRedis command was: " . $command);
 		}
-	}
-
-	/**
-	 * Returns the statistical results of SQL queries.
-	 * The results returned include the number of SQL statements executed and
-	 * the total time spent.
-	 * In order to use this method, [[enableProfiling]] has to be set true.
-	 * @return array the first element indicates the number of SQL statements executed,
-	 * and the second element the total time spent in SQL execution.
-	 * @see \yii\logging\Logger::getProfiling()
-	 */
-	public function getQuerySummary()
-	{
-		$logger = \Yii::getLogger();
-		$timings = $logger->getProfiling(array('yii\db\redis\Connection::command'));
-		$count = count($timings);
-		$time = 0;
-		foreach ($timings as $timing) {
-			$time += $timing[1];
-		}
-		return array($count, $time);
 	}
 }
