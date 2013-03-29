@@ -4,7 +4,7 @@ namespace yiiunit;
 
 class MysqlTestCase extends TestCase
 {
-	function __construct()
+	protected function setUp()
 	{
 		if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
 			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');
@@ -15,7 +15,7 @@ class MysqlTestCase extends TestCase
 	 * @param bool $reset whether to clean up the test database
 	 * @return \yii\db\Connection
 	 */
-	function getConnection($reset = true)
+	public function getConnection($reset = true)
 	{
 		$params = $this->getParam('mysql');
 		$db = new \yii\db\Connection;
