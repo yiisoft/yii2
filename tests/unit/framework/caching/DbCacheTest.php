@@ -11,7 +11,7 @@ class DbCacheTest extends CacheTest
 	private $_cacheInstance;
 	private $_connection;
 
-	function __construct()
+	protected function setUp()
 	{
 		if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
 			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');
