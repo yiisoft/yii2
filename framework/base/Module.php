@@ -346,7 +346,7 @@ abstract class Module extends Component
 			if ($this->_modules[$id] instanceof Module) {
 				return $this->_modules[$id];
 			} elseif ($load) {
-				Yii::trace("Loading module: $id", __CLASS__);
+				Yii::trace("Loading module: $id", __METHOD__);
 				return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
 			}
 		}
@@ -452,7 +452,7 @@ abstract class Module extends Component
 			if ($this->_components[$id] instanceof Component) {
 				return $this->_components[$id];
 			} elseif ($load) {
-				Yii::trace("Loading component: $id", __CLASS__);
+				Yii::trace("Loading component: $id", __METHOD__);
 				return $this->_components[$id] = Yii::createObject($this->_components[$id]);
 			}
 		}

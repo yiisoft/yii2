@@ -117,7 +117,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 				$this->_opened = false;
 				$error = error_get_last();
 				$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
-				Yii::error($message, __CLASS__);
+				Yii::error($message, __METHOD__);
 			} else {
 				$this->_opened = true;
 				$this->updateFlashCounters();

@@ -16,15 +16,14 @@ interface Identity
 {
 	/**
 	 * Returns an ID that can uniquely identify a user identity.
-	 * The returned ID can be a string, an integer, or any serializable data.
-	 * @return mixed an ID that uniquely identifies a user identity.
+	 * @return string|integer an ID that uniquely identifies a user identity.
 	 */
 	public function getId();
 	/**
 	 * Returns a key that can be used to check the validity of a given identity ID.
 	 * The space of such keys should be big and random enough to defeat potential identity attacks.
 	 * The returned key can be a string, an integer, or any serializable data.
-	 * @return mixed a key that is used to check the validity of a given identity ID.
+	 * @return string a key that is used to check the validity of a given identity ID.
 	 * @see validateAuthKey()
 	 */
 	public function getAuthKey();
@@ -37,7 +36,7 @@ interface Identity
 	public function validateAuthKey($authKey);
 	/**
 	 * Finds an identity by the given ID.
-	 * @param mixed $id the ID to be looked for
+	 * @param string|integer $id the ID to be looked for
 	 * @return Identity the identity object that matches the given ID.
 	 * Null should be returned if such an identity cannot be found.
 	 */

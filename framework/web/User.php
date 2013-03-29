@@ -90,6 +90,9 @@ class User extends Component
 	{
 		parent::init();
 
+		if ($this->identityClass === null) {
+			throw new InvalidConfigException('User::identityClass must be set.');
+		}
 		if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
 			throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
 		}
@@ -179,7 +182,13 @@ class User extends Component
 				/** @var $class Identity */
 				$class = $this->identityClass;
 				$identity = $class::findIdentity($id);
-				if ($identity !== null && $identity->validateAuthKey($authKey) && $this->beforeLogin($identity, true)) {
+				if ($identity === null || !$identity->validateAuthKey($authKey)) {
+					if ($identity !== null) {
+						Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
+					}
+					return;
+				}
+				if ($this->beforeLogin($identity, true)) {
 					$this->switchIdentity($identity);
 					if ($this->autoRenewCookie) {
 						$this->saveIdentityCookie($identity, $duration);

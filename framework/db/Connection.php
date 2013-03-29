@@ -324,12 +324,12 @@ class Connection extends Component
 				throw new InvalidConfigException('Connection::dsn cannot be empty.');
 			}
 			try {
-				\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
+				\Yii::trace('Opening DB connection: ' . $this->dsn, __METHOD__);
 				$this->pdo = $this->createPdoInstance();
 				$this->initConnection();
 			}
 			catch (\PDOException $e) {
-				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __CLASS__);
+				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __METHOD__);
 				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
 				throw new Exception($message, $e->errorInfo, (int)$e->getCode());
 			}
@@ -343,7 +343,7 @@ class Connection extends Component
 	public function close()
 	{
 		if ($this->pdo !== null) {
-			\Yii::trace('Closing DB connection: ' . $this->dsn, __CLASS__);
+			\Yii::trace('Closing DB connection: ' . $this->dsn, __METHOD__);
 			$this->pdo = null;
 			$this->_schema = null;
 			$this->_transaction = null;
