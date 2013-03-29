@@ -34,14 +34,13 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 
 	/**
 	 * Returns the database connection used by this AR class.
-	 * By default, the "db" application component is used as the database connection.
+	 * By default, the "redis" application component is used as the database connection.
 	 * You may override this method if you want to use a different database connection.
 	 * @return Connection the database connection used by this AR class.
 	 */
 	public static function getDb()
 	{
-		// TODO
-		return \Yii::$application->getDb();
+		return \Yii::$app->redis;
 	}
 
 	/**
@@ -125,6 +124,189 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * Inserts a row into the associated database table using the attribute values of this record.
+	 *
+	 * This method performs the following steps in order:
+	 *
+	 * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
+	 *    fails, it will skip the rest of the steps;
+	 * 2. call [[afterValidate()]] when `$runValidation` is true.
+	 * 3. call [[beforeSave()]]. If the method returns false, it will skip the
+	 *    rest of the steps;
+	 * 4. insert the record into database. If this fails, it will skip the rest of the steps;
+	 * 5. call [[afterSave()]];
+	 *
+	 * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
+	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
+	 * will be raised by the corresponding methods.
+	 *
+	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
+	 *
+	 * If the table's primary key is auto-incremental and is null during insertion,
+	 * it will be populated with the actual value after insertion.
+	 *
+	 * For example, to insert a customer record:
+	 *
+	 * ~~~
+	 * $customer = new Customer;
+	 * $customer->name = $name;
+	 * $customer->email = $email;
+	 * $customer->insert();
+	 * ~~~
+	 *
+	 * @param boolean $runValidation whether to perform validation before saving the record.
+	 * If the validation fails, the record will not be inserted into the database.
+	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
+	 * meaning all attributes that are loaded from DB will be saved.
+	 * @return boolean whether the attributes are valid and the record is inserted successfully.
+	 */
+	public function insert($runValidation = true, $attributes = null)
+	{
+		if ($runValidation && !$this->validate($attributes)) {
+			return false;
+		}
+		if ($this->beforeSave(true)) {
+			$db = static::getDb();
+			$values = $this->getDirtyAttributes($attributes);
+			$pk = array();
+			if ($values === array()) {
+				foreach ($this->primaryKey() as $key) {
+					$pk[$key] = $values[$key] = $this->getAttribute($key);
+					if ($pk[$key] === null) {
+						$pk[$key] = $db->executeCommand('INCR', array(static::tableName() . ':s:', $key));
+					}
+				}
+			}
+			// save pk in a findall pool
+			$db->executeCommand('SADD', array(static::tableName(), $pk));
+
+			$key = static::tableName() . ':a:' . implode('-', $pk); // TODO escape PK glue
+			// save attributes
+			$args = array($key);
+			foreach($values as $attribute => $value) {
+				$args[] = $attribute;
+				$args[] = $value;
+			}
+			$db->executeCommand('HMSET', $args);
+
+			$this->setOldAttributes($values);
+			$this->afterSave(true);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Updates the whole table using the provided attribute values and conditions.
+	 * For example, to change the status to be 1 for all customers whose status is 2:
+	 *
+	 * ~~~
+	 * Customer::updateAll(array('status' => 1), 'status = 2');
+	 * ~~~
+	 *
+	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
+	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+	 * Please refer to [[Query::where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @return integer the number of rows updated
+	 */
+	public static function updateAll($attributes, $condition = '', $params = array())
+	{
+		$db = static::getDb();
+		if ($condition==='') {
+			$condition = $db->executeCommand('SMEMBERS', array(static::tableName()));
+		}
+		if (empty($attributes)) {
+			return 0;
+		}
+		$n=0;
+		foreach($condition as $pk) {
+			$key = static::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+			// save attributes
+			$args = array($key);
+			foreach($attributes as $attribute => $value) {
+				$args[] = $attribute;
+				$args[] = $value;
+			}
+			$db->executeCommand('HMSET', $args);
+			$n++;
+		}
+
+		return $n;
+	}
+
+	/**
+	 * Updates the whole table using the provided counter changes and conditions.
+	 * For example, to increment all customers' age by 1,
+	 *
+	 * ~~~
+	 * Customer::updateAllCounters(array('age' => 1));
+	 * ~~~
+	 *
+	 * @param array $counters the counters to be updated (attribute name => increment value).
+	 * Use negative values if you want to decrement the counters.
+	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+	 * Please refer to [[Query::where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
+	 * @return integer the number of rows updated
+	 */
+	public static function updateAllCounters($counters, $condition = '', $params = array())
+	{
+		$db = static::getDb();
+		if ($condition==='') {
+			$condition = $db->executeCommand('SMEMBERS', array(static::tableName()));
+		}
+		$n=0;
+		foreach($condition as $pk) {
+			$key = static::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+			foreach($counters as $attribute => $value) {
+				$db->executeCommand('HINCRBY', array($key, $attribute, $value));
+			}
+			$n++;
+		}
+		return $n;
+	}
+
+	/**
+	 * Deletes rows in the table using the provided conditions.
+	 * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
+	 *
+	 * For example, to delete all customers whose status is 3:
+	 *
+	 * ~~~
+	 * Customer::deleteAll('status = 3');
+	 * ~~~
+	 *
+	 * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+	 * Please refer to [[Query::where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @return integer the number of rows deleted
+	 */
+	public static function deleteAll($condition = '', $params = array())
+	{
+		$db = static::getDb();
+		if ($condition==='') {
+			$condition = $db->executeCommand('SMEMBERS', array(static::tableName()));
+		}
+		if (empty($condition)) {
+			return 0;
+		}
+		$smembers = array();
+		$attributeKeys = array();
+		foreach($condition as $pk) {
+			if (is_array($pk)) {
+				$pk = implode('-', $pk);
+			}
+			$smembers[] = $pk; // TODO escape PK glue
+			$attributeKeys[] = static::tableName() . ':' . $pk . ':a'; // TODO escape PK glue
+		}
+		array_unshift($smembers, static::tableName());
+		$db->executeCommand('DEL', $attributeKeys);
+		return $db->executeCommand('SREM', $smembers);
+	}
+
+	/**
 	 * Returns the primary key name(s) for this AR class.
 	 * The default implementation will return the primary key(s) as declared
 	 * in the DB table that is associated with this AR class.
@@ -142,4 +324,5 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		return array();
 	}
 
+	// TODO implement link and unlink
 }
