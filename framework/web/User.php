@@ -11,7 +11,6 @@ use Yii;
 use yii\base\Component;
 use yii\base\HttpException;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -67,17 +66,27 @@ class User extends Component
 	public $authTimeout;
 	/**
 	 * @var boolean whether to automatically renew the identity cookie each time a page is requested.
-	 * Defaults to false. This property is effective only when {@link enableAutoLogin} is true.
+	 * This property is effective only when [[enableAutoLogin]] is true.
 	 * When this is false, the identity cookie will expire after the specified duration since the user
 	 * is initially logged in. When this is true, the identity cookie will expire after the specified duration
 	 * since the user visits the site the last time.
 	 * @see enableAutoLogin
 	 */
 	public $autoRenewCookie = true;
+	/**
+	 * @var string the session variable name used to store the value of [[id]].
+	 */
+	public $idVar = '__id';
+	/**
+	 * @var string the session variable name used to store the value of expiration timestamp of the authenticated state.
+	 * This is used when [[authTimeout]] is set.
+	 */
+	public $authTimeoutVar = '__expire';
+	/**
+	 * @var string the session variable name used to store the value of [[returnUrl]].
+	 */
+	public $returnUrlVar = '__returnUrl';
 
-	public $idSessionVar = '__id';
-	public $authTimeoutSessionVar = '__expire';
-	public $returnUrlSessionVar = '__returnUrl';
 
 	/**
 	 * Initializes the application component.
@@ -108,7 +117,10 @@ class User extends Component
 		}
 	}
 
-	public function loadIdentity()
+	/**
+	 * Loads the [[identity]] object according to [[id]].
+	 */
+	protected function loadIdentity()
 	{
 		$id = $this->getId();
 		if ($id === null) {
@@ -116,25 +128,22 @@ class User extends Component
 		} else {
 			/** @var $class Identity */
 			$class = $this->identityClass;
-			$this->identity = $class::findIdentity($this->getId());
+			$this->identity = $class::findIdentity($id);
 		}
 	}
 
 	/**
 	 * Logs in a user.
 	 *
-	 * The user identity information will be saved in storage that is
-	 * persistent during the user session. By default, the storage is simply
-	 * the session storage. If the duration parameter is greater than 0,
-	 * a cookie will be sent to prepare for cookie-based login in future.
-	 *
-	 * Note, you have to set {@link enableAutoLogin} to true
-	 * if you want to allow user to be authenticated based on the cookie information.
+	 * This method stores the necessary session information to keep track
+	 * of the user identity information. If `$duration` is greater than 0
+	 * and [[enableAutoLogin]] is true, it will also send out an identity
+	 * cookie to support cookie-based login.
 	 *
 	 * @param Identity $identity the user identity (which should already be authenticated)
-	 * @param integer $duration number of seconds that the user can remain in logged-in status. Defaults to 0, meaning login till the user closes the browser.
-	 * If greater than 0, cookie-based login will be used. In this case, {@link enableAutoLogin}
-	 * must be set true, otherwise an exception will be thrown.
+	 * @param integer $duration number of seconds that the user can remain in logged-in status.
+	 * Defaults to 0, meaning login till the user closes the browser or the session is manually destroyed.
+	 * If greater than 0 and [[enableAutoLogin]] is true, cookie-based login will be supported.
 	 * @return boolean whether the user is logged in
 	 */
 	public function login($identity, $duration = 0)
@@ -150,11 +159,10 @@ class User extends Component
 	}
 
 	/**
-	 * Populates the current user object with the information obtained from cookie.
-	 * This method is used when automatic login ({@link enableAutoLogin}) is enabled.
-	 * The user identity information is recovered from cookie.
-	 * Sufficient security measures are used to prevent cookie data from being tampered.
-	 * @see sendIdentityCookie
+	 * Logs in a user by cookie.
+	 *
+	 * This method attempts to log in a user using the ID and authKey information
+	 * provided by the given cookie.
 	 */
 	protected function loginByCookie()
 	{
@@ -185,9 +193,8 @@ class User extends Component
 	/**
 	 * Logs out the current user.
 	 * This will remove authentication-related session data.
-	 * If the parameter is true, the whole session will be destroyed as well.
-	 * @param boolean $destroySession whether to destroy the whole session. Defaults to true. If false,
-	 * then {@link clearStates} will be called, which removes only the data stored via {@link setState}.
+	 * If `$destroySession` is true, all session data will be removed.
+	 * @param boolean $destroySession whether to destroy the whole session. Defaults to true.
 	 */
 	public function logout($destroySession = true)
 	{
@@ -215,73 +222,63 @@ class User extends Component
 
 	/**
 	 * Returns a value that uniquely represents the user.
-	 * @return mixed the unique identifier for the user. If null, it means the user is a guest.
+	 * @return string|integer the unique identifier for the user. If null, it means the user is a guest.
 	 */
 	public function getId()
 	{
-		return Yii::$app->getSession()->get($this->idSessionVar);
+		return Yii::$app->getSession()->get($this->idVar);
 	}
 
 	/**
-	 * @param mixed $value the unique identifier for the user. If null, it means the user is a guest.
+	 * @param string|integer $value the unique identifier for the user. If null, it means the user is a guest.
 	 */
 	public function setId($value)
 	{
-		Yii::$app->getSession()->set($this->idSessionVar, $value);
+		Yii::$app->getSession()->set($this->idVar, $value);
 	}
 
 	/**
 	 * Returns the URL that the user should be redirected to after successful login.
 	 * This property is usually used by the login action. If the login is successful,
 	 * the action should read this property and use it to redirect the user browser.
-	 * @param string $defaultUrl the default return URL in case it was not set previously. If this is null,
-	 * the application entry URL will be considered as the default return URL.
+	 * @param string|array $defaultUrl the default return URL in case it was not set previously.
+	 * If this is null, it means [[Application::homeUrl]] will be redirected to.
+	 * Please refer to [[\yii\helpers\Html::url()]] on acceptable URL formats.
 	 * @return string the URL that the user should be redirected to after login.
 	 * @see loginRequired
 	 */
 	public function getReturnUrl($defaultUrl = null)
 	{
-		$url = Yii::$app->getSession()->get($this->returnUrlSessionVar, $defaultUrl);
-		if ($url === null) {
-			return Yii::$app->getHomeUrl();
-		} else {
-			return Html::url($url);
-		}
+		$url = Yii::$app->getSession()->get($this->returnUrlVar, $defaultUrl);
+		return $url === null ? Yii::$app->getHomeUrl() : $url;
 	}
 
 	/**
-	 * @param string $value the URL that the user should be redirected to after login.
+	 * @param string|array $url the URL that the user should be redirected to after login.
+	 * Please refer to [[\yii\helpers\Html::url()]] on acceptable URL formats.
 	 */
-	public function setReturnUrl($value)
+	public function setReturnUrl($url)
 	{
-		Yii::$app->getSession()->set($this->returnUrlSessionVar, $value);
+		Yii::$app->getSession()->set($this->returnUrlVar, $url);
 	}
 
 	/**
 	 * Redirects the user browser to the login page.
 	 * Before the redirection, the current URL (if it's not an AJAX url) will be
-	 * kept in {@link returnUrl} so that the user browser may be redirected back
-	 * to the current page after successful login. Make sure you set {@link loginUrl}
+	 * kept as [[returnUrl]] so that the user browser may be redirected back
+	 * to the current page after successful login. Make sure you set [[loginUrl]]
 	 * so that the user browser can be redirected to the specified login URL after
 	 * calling this method.
 	 * After calling this method, the current request processing will be terminated.
 	 */
 	public function loginRequired()
 	{
-		if (($url = $this->loginUrl) !== null) {
-			$url = Html::url($url);
-			$request = Yii::$app->getRequest();
-			if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
-				$url = $request->getHostInfo() . $url;
-			}
-			if ($request->getIsAjaxRequest()) {
-				echo json_encode(array(
-					'redirect' => $url,
-				));
-				Yii::$app->end();
-			} else {
-				Yii::$app->getResponse()->redirect($url);
-			}
+		$request = Yii::$app->getRequest();
+		if (!$request->getIsAjaxRequest()) {
+			$this->setReturnUrl($request->getUrl());
+		}
+		if ($this->loginUrl !== null) {
+			Yii::$app->getResponse()->redirect($this->loginUrl);
 		} else {
 			throw new HttpException(403, Yii::t('yii|Login Required'));
 		}
@@ -289,21 +286,18 @@ class User extends Component
 
 	/**
 	 * This method is called before logging in a user.
-	 * You may override this method to provide additional security check.
-	 * For example, when the login is cookie-based, you may want to verify
-	 * that the user ID together with a random token in the states can be found
-	 * in the database. This will prevent hackers from faking arbitrary
-	 * identity cookies even if they crack down the server private key.
-	 * @param mixed $id the user ID. This is the same as returned by {@link getId()}.
-	 * @param array $states a set of name-value pairs that are provided by the user identity.
-	 * @param boolean $fromCookie whether the login is based on cookie
-	 * @return boolean whether the user should be logged in
+	 * The default implementation will trigger the [[EVENT_BEFORE_LOGIN]] event.
+	 * If you override this method, make sure you call the parent implementation
+	 * so that the event is triggered.
+	 * @param Identity $identity the user identity information
+	 * @param boolean $cookieBased whether the login is cookie-based
+	 * @return boolean whether the user should continue to be logged in
 	 */
-	protected function beforeLogin($identity, $fromCookie)
+	protected function beforeLogin($identity, $cookieBased)
 	{
 		$event = new UserEvent(array(
 			'identity' => $identity,
-			'fromCookie' => $fromCookie,
+			'cookieBased' => $cookieBased,
 		));
 		$this->trigger(self::EVENT_BEFORE_LOGIN, $event);
 		return $event->isValid;
@@ -311,24 +305,27 @@ class User extends Component
 
 	/**
 	 * This method is called after the user is successfully logged in.
-	 * You may override this method to do some postprocessing (e.g. log the user
-	 * login IP and time; load the user permission information).
-	 * @param boolean $fromCookie whether the login is based on cookie.
+	 * The default implementation will trigger the [[EVENT_AFTER_LOGIN]] event.
+	 * If you override this method, make sure you call the parent implementation
+	 * so that the event is triggered.
+	 * @param Identity $identity the user identity information
+	 * @param boolean $cookieBased whether the login is cookie-based
 	 */
-	protected function afterLogin($identity, $fromCookie)
+	protected function afterLogin($identity, $cookieBased)
 	{
 		$this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent(array(
 			'identity' => $identity,
-			'fromCookie' => $fromCookie,
+			'cookieBased' => $cookieBased,
 		)));
 	}
 
 	/**
-	 * This method is invoked when calling {@link logout} to log out a user.
-	 * If this method return false, the logout action will be cancelled.
-	 * You may override this method to provide additional check before
-	 * logging out a user.
-	 * @return boolean whether to log out the user
+	 * This method is invoked when calling [[logout()]] to log out a user.
+	 * The default implementation will trigger the [[EVENT_BEFORE_LOGOUT]] event.
+	 * If you override this method, make sure you call the parent implementation
+	 * so that the event is triggered.
+	 * @param Identity $identity the user identity information
+	 * @return boolean whether the user should continue to be logged out
 	 */
 	protected function beforeLogout($identity)
 	{
@@ -340,8 +337,11 @@ class User extends Component
 	}
 
 	/**
-	 * This method is invoked right after a user is logged out.
-	 * You may override this method to do some extra cleanup work for the user.
+	 * This method is invoked right after a user is logged out via [[logout()]].
+	 * The default implementation will trigger the [[EVENT_AFTER_LOGOUT]] event.
+	 * If you override this method, make sure you call the parent implementation
+	 * so that the event is triggered.
+	 * @param Identity $identity the user identity information
 	 */
 	protected function afterLogout($identity)
 	{
@@ -349,7 +349,6 @@ class User extends Component
 			'identity' => $identity,
 		)));
 	}
-
 
 	/**
 	 * Renews the identity cookie.
@@ -372,12 +371,12 @@ class User extends Component
 	}
 
 	/**
-	 * Saves necessary user data into a cookie.
-	 * This method is used when automatic login ({@link enableAutoLogin}) is enabled.
-	 * This method saves user ID, username, other identity states and a validation key to cookie.
-	 * These information are used to do authentication next time when user visits the application.
+	 * Sends an identity cookie.
+	 * This method is used when [[enableAutoLogin]] is true.
+	 * It saves [[id]], [[Identity::getAuthKey()|auth key]], and the duration of cookie-based login
+	 * information in the cookie.
 	 * @param Identity $identity
-	 * @param integer $duration number of seconds that the user can remain in logged-in status. Defaults to 0, meaning login till the user closes the browser.
+	 * @param integer $duration number of seconds that the user can remain in logged-in status.
 	 * @see loginByCookie
 	 */
 	protected function sendIdentityCookie($identity, $duration)
@@ -394,42 +393,40 @@ class User extends Component
 
 	/**
 	 * Changes the current user with the specified identity information.
-	 * This method is called by {@link login} and {@link restoreFromCookie}
-	 * when the current user needs to be populated with the corresponding
-	 * identity information. Derived classes may override this method
-	 * by retrieving additional user-related information. Make sure the
-	 * parent implementation is called first.
-	 * @param Identity $identity a unique identifier for the user
+	 * This method is called by [[login()]] and [[loginByCookie()]]
+	 * when the current user needs to be associated with the corresponding
+	 * identity information.
+	 * @param Identity $identity the identity information to be associated with the current user.
 	 */
 	protected function switchIdentity($identity)
 	{
 		Yii::$app->getSession()->regenerateID(true);
 		$this->identity = $identity;
+		$session = Yii::$app->getSession();
+		$session->remove($this->idVar);
+		$session->remove($this->authTimeoutVar);
 		if ($identity instanceof Identity) {
 			$this->setId($identity->getId());
 			if ($this->authTimeout !== null) {
-				Yii::$app->getSession()->set($this->authTimeoutSessionVar, time() + $this->authTimeout);
+				Yii::$app->getSession()->set($this->authTimeoutVar, time() + $this->authTimeout);
 			}
-		} else {
-			$session = Yii::$app->getSession();
-			$session->remove($this->idSessionVar);
-			$session->remove($this->authTimeoutSessionVar);
 		}
 	}
 
 	/**
-	 * Updates the authentication status according to {@link authTimeout}.
-	 * If the user has been inactive for {@link authTimeout} seconds,
-	 * he will be automatically logged out.
+	 * Updates the authentication status according to [[authTimeout]].
+	 * This method is called during [[init()]].
+	 * It will update the user's authentication status if it has not outdated yet.
+	 * Otherwise, it will logout the user.
 	 */
 	protected function renewAuthStatus()
 	{
-		if ($this->authTimeout !== null && !$this->getIsGuest()) {
-			$expire = Yii::$app->getSession()->get($this->authTimeoutSessionVar);
+		if ($this->authTimeout !== null && $this->identity !== null) {
+			$expire = Yii::$app->getSession()->get($this->authTimeoutVar);
 			if ($expire !== null && $expire < time()) {
 				$this->logout(false);
 			} else {
-				Yii::$app->getSession()->set($this->authTimeoutSessionVar, time() + $this->authTimeout);
+				Yii::$app->getSession()->set($this->authTimeoutVar, time() + $this->authTimeout);
 			}
 		}
 	}

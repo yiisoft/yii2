@@ -24,7 +24,7 @@ class UserEvent extends Event
 	 * @var boolean whether the login is cookie-based. This property is only meaningful
 	 * for [[User::EVENT_BEFORE_LOGIN]] and [[User::EVENT_AFTER_LOGIN]] events.
 	 */
-	public $fromCookie;
+	public $cookieBased;
 	/**
 	 * @var boolean whether the login or logout should proceed.
 	 * Event handlers may modify this property to determine whether the login or logout should proceed.
