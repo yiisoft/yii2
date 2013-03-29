@@ -8,6 +8,35 @@
 namespace yii\web;
 
 /**
+ * Identity is the interface that should be implemented by a class providing identity information.
+ *
+ * This interface can typically be implemented by a user model class. For example, the following
+ * code shows how to implement this interface by a User ActiveRecord class:
+ *
+ * ~~~
+ * class User extends ActiveRecord implements Identity
+ * {
+ *     public static function findIdentity($id)
+ *     {
+ *         return static::find($id);
+ *     }
+ *
+ *     public function getId()
+ *     {
+ *         return $this->id;
+ *     }
+ *
+ *     public function getAuthKey()
+ *     {
+ *         return $this->authKey;
+ *     }
+ *
+ *     public function validateAuthKey($authKey)
+ *     {
+ *         return $this->authKey === $authKey;
+ *     }
+ * }
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -29,8 +58,11 @@ interface Identity
 	public function getId();
 	/**
 	 * Returns a key that can be used to check the validity of a given identity ID.
-	 * The space of such keys should be big and random enough to defeat potential identity attacks.
-	 * The returned key can be a string, an integer, or any serializable data.
+	 *
+	 * The key should be unique for each individual user, and should be persistent
+	 * so that it can be used to check the validity of the user identity.
+	 *
+	 * The space of such keys should be big enough to defeat potential identity attacks.
 	 *
 	 * This is required if [[User::enableAutoLogin]] is enabled.
 	 * @return string a key that is used to check the validity of a given identity ID.

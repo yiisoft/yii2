@@ -13,7 +13,7 @@ use yii\base\HttpException;
 use yii\base\InvalidConfigException;
 
 /**
- * User is an application component that manages the user authentication status.
+ * User is the class for the "user" application component that manages the user authentication status.
  *
  * In particular, [[User::isGuest]] returns a value indicating whether the current user is a guest or not.
  * Through methods [[login()]] and [[logout()]], you can change the user authentication status.
@@ -31,15 +31,6 @@ class User extends Component
 	const EVENT_BEFORE_LOGOUT = 'beforeLogout';
 	const EVENT_AFTER_LOGOUT = 'afterLogout';
 
-	/**
-	 * @var Identity the identity object associated with the currently logged user.
-	 * This property is set automatically be the User component. Do not modify it directly
-	 * unless you understand the consequence. You should normally use [[login()]], [[logout()]],
-	 * or [[switchIdentity()]] to update the identity associated with the current user.
-	 *
-	 * If this property is null, it means the current user is a guest (not authenticated).
-	 */
-	public $identity;
 	/**
 	 * @var string the class name of the [[identity]] object.
 	 */
@@ -65,7 +56,7 @@ class User extends Component
 	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
 	 * @see Cookie
 	 */
-	public $identityCookie = array('name' => '__identity');
+	public $identityCookie = array('name' => '__identity', 'httponly' => true);
 	/**
 	 * @var integer the number of seconds in which the user will be logged out automatically if he
 	 * remains inactive. If this property is not set, the user will be logged out after
@@ -112,8 +103,6 @@ class User extends Component
 
 		Yii::$app->getSession()->open();
 
-		$this->loadIdentity();
-
 		$this->renewAuthStatus();
 
 		if ($this->enableAutoLogin) {
@@ -125,19 +114,43 @@ class User extends Component
 		}
 	}
 
+	private $_identity = false;
+
 	/**
-	 * Loads the [[identity]] object according to [[id]].
+	 * Returns the identity object associated with the currently logged user.
+	 * @return Identity the identity object associated with the currently logged user.
+	 * Null is returned if the user is not logged in (not authenticated).
+	 * @see login
+	 * @see logout
 	 */
-	protected function loadIdentity()
+	public function getIdentity()
 	{
-		$id = $this->getId();
-		if ($id === null) {
-			$this->identity = null;
-		} else {
-			/** @var $class Identity */
-			$class = $this->identityClass;
-			$this->identity = $class::findIdentity($id);
+		if ($this->_identity === false) {
+			$id = $this->getId();
+			if ($id === null) {
+				$this->_identity = null;
+			} else {
+				/** @var $class Identity */
+				$class = $this->identityClass;
+				$this->_identity = $class::findIdentity($id);
+			}
 		}
+		return $this->_identity;
+	}
+
+	/**
+	 * Sets the identity object.
+	 * This method should be mainly be used by the User component or its child class
+	 * to maintain the identity object.
+	 *
+	 * You should normally update the user identity via methods [[login()]], [[logout()]]
+	 * or [[switchIdentity()]].
+	 *
+	 * @param Identity $identity the identity object associated with the currently logged user.
+	 */
+	public function setIdentity($identity)
+	{
+		$this->_identity = $identity;
 	}
 
 	/**
@@ -157,10 +170,7 @@ class User extends Component
 	public function login($identity, $duration = 0)
 	{
 		if ($this->beforeLogin($identity, false)) {
-			$this->switchIdentity($identity);
-			if ($duration > 0 && $this->enableAutoLogin) {
-				$this->sendIdentityCookie($identity, $duration);
-			}
+			$this->switchIdentity($identity, $duration);
 			$this->afterLogin($identity, false);
 		}
 		return !$this->getIsGuest();
@@ -185,10 +195,7 @@ class User extends Component
 				$identity = $class::findIdentity($id);
 				if ($identity !== null && $identity->validateAuthKey($authKey)) {
 					if ($this->beforeLogin($identity, true)) {
-						$this->switchIdentity($identity);
-						if ($this->autoRenewCookie) {
-							$this->sendIdentityCookie($identity, $duration);
-						}
+						$this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
 						$this->afterLogin($identity, true);
 					}
 				} elseif ($identity !== null) {
@@ -206,12 +213,9 @@ class User extends Component
 	 */
 	public function logout($destroySession = true)
 	{
-		$identity = $this->identity;
+		$identity = $this->getIdentity();
 		if ($identity !== null && $this->beforeLogout($identity)) {
 			$this->switchIdentity(null);
-			if ($this->enableAutoLogin) {
-				Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
-			}
 			if ($destroySession) {
 				Yii::$app->getSession()->destroy();
 			}
@@ -225,7 +229,7 @@ class User extends Component
 	 */
 	public function getIsGuest()
 	{
-		return $this->identity === null;
+		return $this->getIdentity() === null;
 	}
 
 	/**
@@ -235,14 +239,6 @@ class User extends Component
 	public function getId()
 	{
 		return Yii::$app->getSession()->get($this->idVar);
-	}
-
-	/**
-	 * @param string|integer $value the unique identifier for the user. If null, it means the user is a guest.
-	 */
-	public function setId($value)
-	{
-		Yii::$app->getSession()->set($this->idVar, $value);
 	}
 
 	/**
@@ -400,24 +396,37 @@ class User extends Component
 	}
 
 	/**
-	 * Changes the current user with the specified identity information.
-	 * This method is called by [[login()]] and [[loginByCookie()]]
-	 * when the current user needs to be associated with the corresponding
-	 * identity information.
+	 * Switches to a new identity for the current user.
+	 *
+	 * This method will save necessary session information to keep track of the user authentication status.
+	 * If `$duration` is provided, it will also send out appropriate identity cookie
+	 * to support cookie-based login.
+	 *
+	 * This method is mainly called by [[login()]], [[logout()]] and [[loginByCookie()]]
+	 * when the current user needs to be associated with the corresponding identity information.
+	 *
 	 * @param Identity $identity the identity information to be associated with the current user.
+	 * If null, it means switching to be a guest.
+	 * @param integer $duration number of seconds that the user can remain in logged-in status.
+	 * This parameter is used only when `$identity` is not null.
 	 */
-	protected function switchIdentity($identity)
+	public function switchIdentity($identity, $duration = 0)
 	{
-		Yii::$app->getSession()->regenerateID(true);
-		$this->identity = $identity;
 		$session = Yii::$app->getSession();
+		$session->regenerateID(true);
+		$this->setIdentity($identity);
 		$session->remove($this->idVar);
 		$session->remove($this->authTimeoutVar);
 		if ($identity instanceof Identity) {
-			$this->setId($identity->getId());
+			$session->set($this->idVar, $identity->getId());
 			if ($this->authTimeout !== null) {
-				Yii::$app->getSession()->set($this->authTimeoutVar, time() + $this->authTimeout);
+				$session->set($this->authTimeoutVar, time() + $this->authTimeout);
 			}
+			if ($duration > 0 && $this->enableAutoLogin) {
+				$this->sendIdentityCookie($identity, $duration);
+			}
+		} elseif ($this->enableAutoLogin) {
+			Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
 		}
 	}
 
@@ -429,7 +438,7 @@ class User extends Component
 	 */
 	protected function renewAuthStatus()
 	{
-		if ($this->authTimeout !== null && $this->identity !== null) {
+		if ($this->authTimeout !== null && !$this->getIsGuest()) {
 			$expire = Yii::$app->getSession()->get($this->authTimeoutVar);
 			if ($expire !== null && $expire < time()) {
 				$this->logout(false);
