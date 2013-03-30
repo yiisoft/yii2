@@ -238,7 +238,7 @@ class YiiBase
 	{
 		if ($path === null) {
 			unset(self::$aliases[$alias]);
-		} elseif ($path[0] !== '@') {
+		} elseif (strncmp($path, '@', 1)) {
 			self::$aliases[$alias] = rtrim($path, '\\/');
 		} else {
 			self::$aliases[$alias] = static::getAlias($path);

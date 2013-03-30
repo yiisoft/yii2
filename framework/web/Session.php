@@ -60,6 +60,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public $flashVar = '__flash';
 
 	/**
+	 * @var array parameter-value pairs to override default session cookie parameters
+	 */
+	public $cookieParams = array(
+		'httponly' => true
+	);
+
+	/**
 	 * Initializes the application component.
 	 * This method is required by IApplicationComponent and is invoked by application.
 	 */
@@ -110,6 +117,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 					array($this, 'gcSession')
 				);
 			}
+
+			$this->setCookieParams($this->cookieParams);
 
 			@session_start();
 
