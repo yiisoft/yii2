@@ -248,7 +248,7 @@ abstract class Schema extends \yii\base\Object
 	/**
 	 * Quotes a table name for use in a query.
 	 * If the table name contains schema prefix, the prefix will also be properly quoted.
-	 * If the table name is already quoted or contains special characters including '(', '[[' and '{{',
+	 * If the table name is already quoted or contains '(' or '{{',
 	 * then this method will do nothing.
 	 * @param string $name table name
 	 * @return string the properly quoted table name
@@ -256,7 +256,7 @@ abstract class Schema extends \yii\base\Object
 	 */
 	public function quoteTableName($name)
 	{
-		if (strpos($name, '(') !== false || strpos($name, '[[') !== false || strpos($name, '{{') !== false) {
+		if (strpos($name, '(') !== false || strpos($name, '{{') !== false) {
 			return $name;
 		}
 		if (strpos($name, '.') === false) {
@@ -273,7 +273,7 @@ abstract class Schema extends \yii\base\Object
 	/**
 	 * Quotes a column name for use in a query.
 	 * If the column name contains prefix, the prefix will also be properly quoted.
-	 * If the column name is already quoted or contains special characters including '(', '[[' and '{{',
+	 * If the column name is already quoted or contains '(', '[[' or '{{',
 	 * then this method will do nothing.
 	 * @param string $name column name
 	 * @return string the properly quoted column name
@@ -320,13 +320,13 @@ abstract class Schema extends \yii\base\Object
 	/**
 	 * Returns the real name of a table name.
 	 * This method will strip off curly brackets from the given table name
-	 * and replace the percentage character in the name with [[Connection::tablePrefix]].
+	 * and replace the percentage character '%' with [[Connection::tablePrefix]].
 	 * @param string $name the table name to be converted
 	 * @return string the real name of the given table name
 	 */
 	public function getRealTableName($name)
 	{
-		if ($this->db->enableAutoQuoting && strpos($name, '{{') !== false) {
+		if (strpos($name, '{{') !== false) {
 			$name = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $name);
 			return str_replace('%', $this->db->tablePrefix, $name);
 		} else {

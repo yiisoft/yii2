@@ -84,39 +84,18 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Specifies the SQL statement to be executed.
-	 * Any previous execution will be terminated or cancelled.
+	 * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
 	 * @param string $sql the SQL statement to be set.
 	 * @return Command this command instance
 	 */
 	public function setSql($sql)
 	{
 		if ($sql !== $this->_sql) {
-			if ($this->db->enableAutoQuoting && $sql != '') {
-				$sql = $this->expandSql($sql);
-			}
 			$this->cancel();
-			$this->_sql = $sql;
+			$this->_sql = $this->db->quoteSql($sql);
 			$this->_params = array();
 		}
 		return $this;
-	}
-
-	/**
-	 * Expands a SQL statement by quoting table and column names and replacing table prefixes.
-	 * @param string $sql the SQL to be expanded
-	 * @return string the expanded SQL
-	 */
-	protected function expandSql($sql)
-	{
-		$db = $this->db;
-		return preg_replace_callback('/(\\{\\{(.*?)\\}\\}|\\[\\[(.*?)\\]\\])/', function($matches) use($db) {
-			if (isset($matches[3])) {
-				return $db->quoteColumnName($matches[3]);
-			} else {
-				$name = str_replace('%', $db->tablePrefix, $matches[2]);
-				return $db->quoteTableName($name);
-			}
-		}, $sql);
 	}
 
 	/**

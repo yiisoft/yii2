@@ -144,7 +144,7 @@ class DbSession extends Session
 		$query = new Query;
 		$data = $query->select(array('data'))
 			->from($this->sessionTable)
-			->where('expire>:expire AND id=:id', array(':expire' => time(), ':id' => $id))
+			->where('[[expire]]>:expire AND [[id]]=:id', array(':expire' => time(), ':id' => $id))
 			->createCommand($this->db)
 			->queryScalar();
 		return $data === false ? '' : $data;
@@ -214,7 +214,7 @@ class DbSession extends Session
 	public function gcSession($maxLifetime)
 	{
 		$this->db->createCommand()
-			->delete($this->sessionTable, 'expire<:expire', array(':expire' => time()))
+			->delete($this->sessionTable, '[[expire]]<:expire', array(':expire' => time()))
 			->execute();
 		return true;
 	}
