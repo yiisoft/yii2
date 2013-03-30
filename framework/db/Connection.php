@@ -248,15 +248,15 @@ class Connection extends Component
 	 * [[Schema]] class to support DBMS that is not supported by Yii.
 	 */
 	public $schemaMap = array(
-		'pgsql' => 'yii\db\pgsql\Schema', // PostgreSQL
-		'mysqli' => 'yii\db\mysql\Schema', // MySQL
-		'mysql' => 'yii\db\mysql\Schema', // MySQL
-		'sqlite' => 'yii\db\sqlite\Schema', // sqlite 3
+		'pgsql' => 'yii\db\pgsql\Schema',    // PostgreSQL
+		'mysqli' => 'yii\db\mysql\Schema',   // MySQL
+		'mysql' => 'yii\db\mysql\Schema',    // MySQL
+		'sqlite' => 'yii\db\sqlite\Schema',  // sqlite 3
 		'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
 		'mssql' => 'yi\db\dao\mssql\Schema', // Mssql driver on windows hosts
-		'dblib' => 'yii\db\mssql\Schema', // dblib drivers on linux (and maybe others os) hosts
-		'sqlsrv' => 'yii\db\mssql\Schema', // Mssql
-		'oci' => 'yii\db\oci\Schema', // Oracle driver
+		'sqlsrv' => 'yii\db\mssql\Schema',   // Mssql
+		'oci' => 'yii\db\oci\Schema',        // Oracle driver
+		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on linux (and maybe others os) hosts
 	);
 	/**
 	 * @var Transaction the currently active transaction

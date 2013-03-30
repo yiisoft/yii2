@@ -543,7 +543,7 @@ class Command extends \yii\base\Component
 	 */
 	public function delete($table, $condition = '', $params = array())
 	{
-		$sql = $this->db->getQueryBuilder()->delete($table, $condition);
+		$sql = $this->db->getQueryBuilder()->delete($table, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
 
