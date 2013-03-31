@@ -83,7 +83,7 @@ abstract class Schema extends \yii\base\Object
 		}
 
 		$db = $this->db;
-		$realName = $this->getRealTableName($name);
+		$realName = $this->getRawTableName($name);
 
 		if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
 			/** @var $cache Cache */
@@ -318,13 +318,13 @@ abstract class Schema extends \yii\base\Object
 	}
 
 	/**
-	 * Returns the real name of a table name.
+	 * Returns the actual name of a given table name.
 	 * This method will strip off curly brackets from the given table name
 	 * and replace the percentage character '%' with [[Connection::tablePrefix]].
 	 * @param string $name the table name to be converted
 	 * @return string the real name of the given table name
 	 */
-	public function getRealTableName($name)
+	public function getRawTableName($name)
 	{
 		if (strpos($name, '{{') !== false) {
 			$name = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $name);
