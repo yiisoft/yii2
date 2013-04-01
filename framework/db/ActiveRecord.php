@@ -530,8 +530,8 @@ class ActiveRecord extends Model
 	 */
 	public function isAttributeChanged($name)
 	{
-		if (isset($this->_attribute[$name], $this->_oldAttributes[$name])) {
-			return $this->_attribute[$name] !== $this->_oldAttributes[$name];
+		if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
+			return $this->_attributes[$name] !== $this->_oldAttributes[$name];
 		} else {
 			return isset($this->_attributes[$name]) || isset($this->_oldAttributes);
 		}
@@ -590,7 +590,11 @@ class ActiveRecord extends Model
 	 */
 	public function save($runValidation = true, $attributes = null)
 	{
-		return $this->getIsNewRecord() ? $this->insert($runValidation, $attributes) : $this->update($runValidation, $attributes);
+		if ($this->getIsNewRecord()) {
+			return $this->insert($runValidation, $attributes);
+		} else {
+			return $this->update($runValidation, $attributes) !== false;
+		}
 	}
 
 	/**
@@ -692,11 +696,24 @@ class ActiveRecord extends Model
 	 * $customer->update();
 	 * ~~~
 	 *
+	 * Note that it is possible the update does not affect any row in the table.
+	 * In this case, this method will return 0. For this reason, you should use the following
+	 * code to check if update() is successful or not:
+	 *
+	 * ~~~
+	 * if ($this->update() !== false) {
+	 *     // update successful
+	 * } else {
+	 *     // update failed
+	 * }
+	 * ~~~
+	 *
 	 * @param boolean $runValidation whether to perform validation before saving the record.
 	 * If the validation fails, the record will not be inserted into the database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
-	 * @return boolean whether the attributes are valid and the record is updated successfully.
+	 * @return integer|boolean the number of rows affected, or false if validation fails
+	 * or [[beforeSave()]] stops the updating process.
 	 */
 	public function update($runValidation = true, $attributes = null)
 	{
@@ -708,13 +725,15 @@ class ActiveRecord extends Model
 			if ($values !== array()) {
 				// We do not check the return value of updateAll() because it's possible
 				// that the UPDATE statement doesn't change anything and thus returns 0.
-				$this->updateAll($values, $this->getOldPrimaryKey(true));
+				$rows = $this->updateAll($values, $this->getOldPrimaryKey(true));
 				foreach ($values as $name => $value) {
 					$this->_oldAttributes[$name] = $this->_attributes[$name];
 				}
 				$this->afterSave(false);
+				return $rows;
+			} else {
+				return 0;
 			}
-			return true;
 		} else {
 			return false;
 		}
@@ -763,17 +782,18 @@ class ActiveRecord extends Model
 	 * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * @return boolean whether the deletion is successful.
+	 * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
 	 */
 	public function delete()
 	{
 		if ($this->beforeDelete()) {
 			// we do not check the return value of deleteAll() because it's possible
 			// the record is already deleted in the database and thus the method will return 0
-			$this->deleteAll($this->getPrimaryKey(true));
+			$rows = $this->deleteAll($this->getPrimaryKey(true));
 			$this->_oldAttributes = null;
 			$this->afterDelete();
-			return true;
+			return $rows;
 		} else {
 			return false;
 		}

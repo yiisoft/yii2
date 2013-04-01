@@ -751,6 +751,11 @@ class QueryBuilder extends \yii\base\Object
 				}
 				if ($value === null) {
 					$parts[] = "$column IS NULL";
+				} elseif ($value instanceof Expression) {
+					$parts[] = "$column=" . $value->expression;
+					foreach ($value->params as $n => $v) {
+						$params[$n] = $v;
+					}
 				} else {
 					$phName = self::PARAM_PREFIX . count($params);
 					$parts[] = "$column=$phName";
@@ -823,6 +828,11 @@ class QueryBuilder extends \yii\base\Object
 			}
 			if ($value === null) {
 				$values[$i] = 'NULL';
+			} elseif ($value instanceof Expression) {
+				$values[$i] = $value->expression;
+				foreach ($value->params as $n => $v) {
+					$params[$n] = $v;
+				}
 			} else {
 				$phName = self::PARAM_PREFIX . count($params);
 				$params[$phName] = $value;
