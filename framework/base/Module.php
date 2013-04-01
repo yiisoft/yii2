@@ -614,6 +614,12 @@ abstract class Module extends Component
 				}
 				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
 					$controller = new $className($id, $this);
+				} elseif (YII_DEBUG) {
+					if (!class_exists($className, false)) {
+						throw new InvalidConfigException("Class file name does not match class name: $className.");
+					} elseif (!is_subclass_of($className, '\yii\base\Controller')) {
+						throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
+					}
 				}
 			}
 		}

@@ -9,9 +9,9 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Application;
-use yii\console\Exception;
 use yii\base\InlineAction;
 use yii\console\Controller;
+use yii\console\Exception;
 use yii\console\Request;
 use yii\helpers\StringHelper;
 
@@ -128,7 +128,7 @@ class HelpController extends Controller
 
 		$files = scandir($module->getControllerPath());
 		foreach ($files as $file) {
-			if(strcmp(substr($file,-14),'Controller.php') === 0 && is_file($file)) {
+			if (strcmp(substr($file, -14), 'Controller.php') === 0) {
 				$commands[] = $prefix . lcfirst(substr(basename($file), 0, -14));
 			}
 		}

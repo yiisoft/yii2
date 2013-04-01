@@ -518,6 +518,7 @@ class YiiBase
 	 * @param string $language the target language. If null (default), the {@link CApplication::getLanguage application language} will be used.
 	 * @return string the translated message
 	 * @see CMessageSource
+	 * @see http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html
 	 */
 	public static function t($message, $params = array(), $language = null)
 	{
