@@ -277,19 +277,19 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns the column name that stores the lock version of a table row.
+	 * Returns the name of the column that stores the lock version for implementing optimistic locking.
 	 *
-	 * This is used to implement optimistic locking. Optimistic locking allows multiple users
-	 * to access the same record for edits. In case when a user attempts to save the record upon
-	 * some staled data (because another user has modified the data), a [[StaleObjectException]]
-	 * will be thrown, and the update is ignored.
+	 * Optimistic locking allows multiple users to access the same record for edits. In case
+	 * when a user attempts to save the record upon some staled data (because another user
+	 * has modified the data), a [[StaleObjectException]] exception will be thrown, and
+	 * the update or deletion is ignored.
 	 *
 	 * Optimized locking is only supported by [[update()]] and [[delete()]].
 	 *
 	 * To use optimized locking:
 	 *
-	 * 1. create a column to store the lock version. The column type should be integer (or bigint)
-	 *    and default to 0. Override this method to return the name of this column.
+	 * 1. create a column to store the lock version. The column type should be `BIGINT DEFAULT 0`.
+	 *    Override this method to return the name of this column.
 	 * 2. In the Web form that collects the user input, add a hidden field that stores
 	 *    the lock version of the recording being updated.
 	 * 3. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
@@ -299,7 +299,7 @@ class ActiveRecord extends Model
 	 * @return string the column name that stores the lock version of a table row.
 	 * If null is returned (default implemented), optimistic locking will not be supported.
 	 */
-	public static function lockVersion()
+	public function optimisticLock()
 	{
 		return null;
 	}
@@ -739,7 +739,7 @@ class ActiveRecord extends Model
 	 * meaning all attributes that are loaded from DB will be saved.
 	 * @return integer|boolean the number of rows affected, or false if validation fails
 	 * or [[beforeSave()]] stops the updating process.
-	 * @throws StaleObjectException if [[lockVersion|optimistic locking]] is enabled and the data
+	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being updated is outdated.
 	 */
 	public function update($runValidation = true, $attributes = null)
@@ -751,7 +751,7 @@ class ActiveRecord extends Model
 			$values = $this->getDirtyAttributes($attributes);
 			if ($values !== array()) {
 				$condition = $this->getOldPrimaryKey(true);
-				$lock = $this->lockVersion();
+				$lock = $this->optimisticLock();
 				if ($lock !== null) {
 					$values[$lock] = $this->$lock + 1;
 					$condition[$lock] = new Expression("[[$lock]]+1");
@@ -823,7 +823,7 @@ class ActiveRecord extends Model
 	 *
 	 * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
 	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
-	 * @throws StaleObjectException if [[lockVersion|optimistic locking]] is enabled and the data
+	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being deleted is outdated.
 	 */
 	public function delete()
@@ -832,7 +832,7 @@ class ActiveRecord extends Model
 			// we do not check the return value of deleteAll() because it's possible
 			// the record is already deleted in the database and thus the method will return 0
 			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->lockVersion();
+			$lock = $this->optimisticLock();
 			if ($lock !== null) {
 				$condition[$lock] = $this->$lock;
 			}
