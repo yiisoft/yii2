@@ -22,11 +22,6 @@ class Clip extends Widget
 	 */
 	public $id;
 	/**
-	 * @var View the view object for keeping the clip. If not set, the view registered with the application
-	 * will be used.
-	 */
-	public $view;
-	/**
 	 * @var boolean whether to render the clip content in place. Defaults to false,
 	 * meaning the captured clip will not be displayed.
 	 */
@@ -51,7 +46,6 @@ class Clip extends Widget
 		if ($this->renderClip) {
 			echo $clip;
 		}
-		$view = $this->view !== null ? $this->view : Yii::$app->getView();
-		$view->clips[$this->id] = $clip;
+		$this->view->clips[$this->id] = $clip;
 	}
 }

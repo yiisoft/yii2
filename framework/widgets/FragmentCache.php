@@ -64,11 +64,6 @@ class FragmentCache extends Widget
 	 */
 	public $enabled = true;
 	/**
-	 * @var \yii\base\View the view object within which this widget is used. If not set,
-	 * the view registered with the application will be used. This is mainly used by dynamic content feature.
-	 */
-	public $view;
-	/**
 	 * @var array a list of placeholders for embedding dynamic contents. This property
 	 * is used internally to implement the content caching feature. Do not modify it.
 	 */
@@ -80,10 +75,6 @@ class FragmentCache extends Widget
 	public function init()
 	{
 		parent::init();
-
-		if ($this->view === null) {
-			$this->view = Yii::$app->getView();
-		}
 
 		if (!$this->enabled) {
 			$this->cache = null;

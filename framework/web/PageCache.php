@@ -25,11 +25,6 @@ class PageCache extends ActionFilter
 	 */
 	public $varyByRoute = true;
 	/**
-	 * @var View the view object that is used to create the fragment cache widget to implement page caching.
-	 * If not set, the view registered with the application will be used.
-	 */
-	public $view;
-	/**
 	 * @var string the application component ID of the [[\yii\caching\Cache|cache]] object.
 	 */
 	public $cache = 'cache';
