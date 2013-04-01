@@ -279,16 +279,16 @@ class ActiveRecord extends Model
 	/**
 	 * Returns the name of the column that stores the lock version for implementing optimistic locking.
 	 *
-	 * Optimistic locking allows multiple users to access the same record for edits. In case
-	 * when a user attempts to save the record upon some staled data (because another user
-	 * has modified the data), a [[StaleObjectException]] exception will be thrown, and
-	 * the update or deletion is ignored.
+	 * Optimistic locking allows multiple users to access the same record for edits and avoids
+	 * potential conflicts. In case when a user attempts to save the record upon some staled data
+	 * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
+	 * and the update or deletion is skipped.
 	 *
 	 * Optimized locking is only supported by [[update()]] and [[delete()]].
 	 *
 	 * To use optimized locking:
 	 *
-	 * 1. create a column to store the lock version. The column type should be `BIGINT DEFAULT 0`.
+	 * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
 	 *    Override this method to return the name of this column.
 	 * 2. In the Web form that collects the user input, add a hidden field that stores
 	 *    the lock version of the recording being updated.
@@ -753,8 +753,10 @@ class ActiveRecord extends Model
 				$condition = $this->getOldPrimaryKey(true);
 				$lock = $this->optimisticLock();
 				if ($lock !== null) {
-					$values[$lock] = $this->$lock + 1;
-					$condition[$lock] = new Expression("[[$lock]]+1");
+					if (!isset($values[$lock])) {
+						$values[$lock] = $this->$lock + 1;
+					}
+					$condition[$lock] = $this->$lock;
 				}
 				// We do not check the return value of updateAll() because it's possible
 				// that the UPDATE statement doesn't change anything and thus returns 0.
