@@ -42,9 +42,10 @@ class LocaleController extends Controller
 			'/\s+is\s+not\s+/i' => '!=', //is not
 			'/\s+is\s+/i' => '==', //is
 			'/n\s+mod\s+(\d+)/i' => 'fmod(n,$1)', //mod (CLDR's "mod" is "fmod()", not "%")
-			'/^(.*?)\s+not\s+(?:in|within)\s+(\d+)\.\.(\d+)/i' => '($1<$2||$1>$3)', //not in, not within
+			'/^(.*?)\s+not\s+in\s+(\d+)\.\.(\d+)/i' => '!in_array($1,range($2,$3))', //not in
+			'/^(.*?)\s+in\s+(\d+)\.\.(\d+)/i' => 'in_array($1,range($2,$3))', //in
+			'/^(.*?)\s+not\s+within\s+(\d+)\.\.(\d+)/i' => '($1<$2||$1>$3)', //not within
 			'/^(.*?)\s+within\s+(\d+)\.\.(\d+)/i' => '($1>=$2&&$1<=$3)', //within
-			'/^(.*?)\s+in\s+(\d+)\.\.(\d+)/i' => '($1>=$2&&$1<=$3&&fmod($1,1)==0)', //in
 		);
 		foreach ($xml->plurals->pluralRules as $node) {
 			$attributes = $node->attributes();
@@ -59,7 +60,15 @@ class LocaleController extends Controller
 						$expr_and = preg_replace(array_keys($patterns), array_values($patterns), $expr_and);
 						$expr_or[$key_or] = implode('&&', $expr_and);
 					}
-					$rules[] = preg_replace('/\\bn\\b/', '$n', implode('||', $expr_or));
+					$expr = preg_replace('/\\bn\\b/', '$n', implode('||', $expr_or));
+					$rules[] = preg_replace_callback('/range\((\d+),(\d+)\)/', function ($matches) {
+						if ($matches[2] - $matches[1] <= 2) {
+							return 'array(' . implode(',', range($matches[1], $matches[2])) . ')';
+						} else {
+							return $matches[0];
+						}
+					}, $expr);
+
 				}
 				foreach ($locales as $locale) {
 					$allRules[$locale] = $rules;
@@ -70,7 +79,7 @@ class LocaleController extends Controller
 		$allRules['br'] = array(
 			0 => 'fmod($n,10)==1&&!in_array(fmod($n,100),array(11,71,91))',
 			1 => 'fmod($n,10)==2&&!in_array(fmod($n,100),array(12,72,92))',
-			2 => 'in_array(fmod($n,10),array(3,4,9))&&!in_array(fmod($n,100),array_merge(range(10,19),range(70,79),range(90,99))))',
+			2 => 'in_array(fmod($n,10),array(3,4,9))&&!in_array(fmod($n,100),array_merge(range(10,19),range(70,79),range(90,99)))',
 			3 => 'fmod($n,1000000)==0&&$n!=0',
 		);
 		if (preg_match('/\d+/', $xml->version['number'], $matches)) {

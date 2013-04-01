@@ -16,8 +16,6 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-use yii\helpers\VarDumper;
-
 class ErrorHandler extends Component
 {
 	/**
@@ -63,10 +61,10 @@ class ErrorHandler extends Component
 			$this->clearOutput();
 		}
 
-		$this->render($exception);
+		$this->renderException($exception);
 	}
 
-	protected function render($exception)
+	protected function renderException($exception)
 	{
 		if ($this->errorAction !== null) {
 			\Yii::$app->runAction($this->errorAction);
@@ -84,7 +82,7 @@ class ErrorHandler extends Component
 				} else {
 					$viewName = $this->exceptionView;
 				}
-				echo $view->render($viewName, array(
+				echo $view->renderFile($viewName, array(
 					'exception' => $exception,
 				), $this);
 			}
@@ -255,7 +253,7 @@ class ErrorHandler extends Component
 	{
 		$view = new View;
 		$name = !YII_DEBUG || $exception instanceof HttpException ? $this->errorView : $this->exceptionView;
-		echo $view->render($name, array(
+		echo $view->renderFile($name, array(
 			'exception' => $exception,
 		), $this);
 	}

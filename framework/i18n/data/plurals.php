@@ -21,8 +21,8 @@ return array (
     0 => '$n==0',
     1 => '$n==1',
     2 => '$n==2',
-    3 => '(fmod($n,100)>=3&&fmod($n,100)<=10&&fmod(fmod($n,100),1)==0)',
-    4 => '(fmod($n,100)>=11&&fmod($n,100)<=99&&fmod(fmod($n,100),1)==0)',
+    3 => 'in_array(fmod($n,100),range(3,10))',
+    4 => 'in_array(fmod($n,100),range(11,99))',
   ),
   'asa' => 
   array (
@@ -494,93 +494,93 @@ return array (
   array (
     0 => '$n==1',
     1 => '$n==2',
-    2 => '($n>=3&&$n<=6&&fmod($n,1)==0)',
-    3 => '($n>=7&&$n<=10&&fmod($n,1)==0)',
+    2 => 'in_array($n,range(3,6))',
+    3 => 'in_array($n,range(7,10))',
   ),
   'ro' => 
   array (
     0 => '$n==1',
-    1 => '$n==0||$n!=1&&(fmod($n,100)>=1&&fmod($n,100)<=19&&fmod(fmod($n,100),1)==0)',
+    1 => '$n==0||$n!=1&&in_array(fmod($n,100),range(1,19))',
   ),
   'mo' => 
   array (
     0 => '$n==1',
-    1 => '$n==0||$n!=1&&(fmod($n,100)>=1&&fmod($n,100)<=19&&fmod(fmod($n,100),1)==0)',
+    1 => '$n==0||$n!=1&&in_array(fmod($n,100),range(1,19))',
   ),
   'lt' => 
   array (
-    0 => 'fmod($n,10)==1&&(fmod($n,100)<11||fmod($n,100)>19)',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<11||fmod($n,100)>19)',
+    0 => 'fmod($n,10)==1&&!in_array(fmod($n,100),range(11,19))',
+    1 => 'in_array(fmod($n,10),range(2,9))&&!in_array(fmod($n,100),range(11,19))',
   ),
   'be' => 
   array (
     0 => 'fmod($n,10)==1&&fmod($n,100)!=11',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=4&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<12||fmod($n,100)>14)',
-    2 => 'fmod($n,10)==0||(fmod($n,10)>=5&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)||(fmod($n,100)>=11&&fmod($n,100)<=14&&fmod(fmod($n,100),1)==0)',
+    1 => 'in_array(fmod($n,10),array(2,3,4))&&!in_array(fmod($n,100),array(12,13,14))',
+    2 => 'fmod($n,10)==0||in_array(fmod($n,10),range(5,9))||in_array(fmod($n,100),range(11,14))',
   ),
   'bs' => 
   array (
     0 => 'fmod($n,10)==1&&fmod($n,100)!=11',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=4&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<12||fmod($n,100)>14)',
-    2 => 'fmod($n,10)==0||(fmod($n,10)>=5&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)||(fmod($n,100)>=11&&fmod($n,100)<=14&&fmod(fmod($n,100),1)==0)',
+    1 => 'in_array(fmod($n,10),array(2,3,4))&&!in_array(fmod($n,100),array(12,13,14))',
+    2 => 'fmod($n,10)==0||in_array(fmod($n,10),range(5,9))||in_array(fmod($n,100),range(11,14))',
   ),
   'hr' => 
   array (
     0 => 'fmod($n,10)==1&&fmod($n,100)!=11',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=4&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<12||fmod($n,100)>14)',
-    2 => 'fmod($n,10)==0||(fmod($n,10)>=5&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)||(fmod($n,100)>=11&&fmod($n,100)<=14&&fmod(fmod($n,100),1)==0)',
+    1 => 'in_array(fmod($n,10),array(2,3,4))&&!in_array(fmod($n,100),array(12,13,14))',
+    2 => 'fmod($n,10)==0||in_array(fmod($n,10),range(5,9))||in_array(fmod($n,100),range(11,14))',
   ),
   'ru' => 
   array (
     0 => 'fmod($n,10)==1&&fmod($n,100)!=11',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=4&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<12||fmod($n,100)>14)',
-    2 => 'fmod($n,10)==0||(fmod($n,10)>=5&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)||(fmod($n,100)>=11&&fmod($n,100)<=14&&fmod(fmod($n,100),1)==0)',
+    1 => 'in_array(fmod($n,10),array(2,3,4))&&!in_array(fmod($n,100),array(12,13,14))',
+    2 => 'fmod($n,10)==0||in_array(fmod($n,10),range(5,9))||in_array(fmod($n,100),range(11,14))',
   ),
   'sh' => 
   array (
     0 => 'fmod($n,10)==1&&fmod($n,100)!=11',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=4&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<12||fmod($n,100)>14)',
-    2 => 'fmod($n,10)==0||(fmod($n,10)>=5&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)||(fmod($n,100)>=11&&fmod($n,100)<=14&&fmod(fmod($n,100),1)==0)',
+    1 => 'in_array(fmod($n,10),array(2,3,4))&&!in_array(fmod($n,100),array(12,13,14))',
+    2 => 'fmod($n,10)==0||in_array(fmod($n,10),range(5,9))||in_array(fmod($n,100),range(11,14))',
   ),
   'sr' => 
   array (
     0 => 'fmod($n,10)==1&&fmod($n,100)!=11',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=4&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<12||fmod($n,100)>14)',
-    2 => 'fmod($n,10)==0||(fmod($n,10)>=5&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)||(fmod($n,100)>=11&&fmod($n,100)<=14&&fmod(fmod($n,100),1)==0)',
+    1 => 'in_array(fmod($n,10),array(2,3,4))&&!in_array(fmod($n,100),array(12,13,14))',
+    2 => 'fmod($n,10)==0||in_array(fmod($n,10),range(5,9))||in_array(fmod($n,100),range(11,14))',
   ),
   'uk' => 
   array (
     0 => 'fmod($n,10)==1&&fmod($n,100)!=11',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=4&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<12||fmod($n,100)>14)',
-    2 => 'fmod($n,10)==0||(fmod($n,10)>=5&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)||(fmod($n,100)>=11&&fmod($n,100)<=14&&fmod(fmod($n,100),1)==0)',
+    1 => 'in_array(fmod($n,10),array(2,3,4))&&!in_array(fmod($n,100),array(12,13,14))',
+    2 => 'fmod($n,10)==0||in_array(fmod($n,10),range(5,9))||in_array(fmod($n,100),range(11,14))',
   ),
   'cs' => 
   array (
     0 => '$n==1',
-    1 => '($n>=2&&$n<=4&&fmod($n,1)==0)',
+    1 => 'in_array($n,array(2,3,4))',
   ),
   'sk' => 
   array (
     0 => '$n==1',
-    1 => '($n>=2&&$n<=4&&fmod($n,1)==0)',
+    1 => 'in_array($n,array(2,3,4))',
   ),
   'pl' => 
   array (
     0 => '$n==1',
-    1 => '(fmod($n,10)>=2&&fmod($n,10)<=4&&fmod(fmod($n,10),1)==0)&&(fmod($n,100)<12||fmod($n,100)>14)',
-    2 => '$n!=1&&(fmod($n,10)>=0&&fmod($n,10)<=1&&fmod(fmod($n,10),1)==0)||(fmod($n,10)>=5&&fmod($n,10)<=9&&fmod(fmod($n,10),1)==0)||(fmod($n,100)>=12&&fmod($n,100)<=14&&fmod(fmod($n,100),1)==0)',
+    1 => 'in_array(fmod($n,10),array(2,3,4))&&!in_array(fmod($n,100),array(12,13,14))',
+    2 => '$n!=1&&in_array(fmod($n,10),array(0,1))||in_array(fmod($n,10),range(5,9))||in_array(fmod($n,100),array(12,13,14))',
   ),
   'sl' => 
   array (
     0 => 'fmod($n,100)==1',
     1 => 'fmod($n,100)==2',
-    2 => '(fmod($n,100)>=3&&fmod($n,100)<=4&&fmod(fmod($n,100),1)==0)',
+    2 => 'in_array(fmod($n,100),array(3,4))',
   ),
   'mt' => 
   array (
     0 => '$n==1',
-    1 => '$n==0||(fmod($n,100)>=2&&fmod($n,100)<=10&&fmod(fmod($n,100),1)==0)',
-    2 => '(fmod($n,100)>=11&&fmod($n,100)<=19&&fmod(fmod($n,100),1)==0)',
+    1 => '$n==0||in_array(fmod($n,100),range(2,10))',
+    2 => 'in_array(fmod($n,100),range(11,19))',
   ),
   'mk' => 
   array (
@@ -602,13 +602,13 @@ return array (
   'shi' => 
   array (
     0 => '($n>=0&&$n<=1)',
-    1 => '($n>=2&&$n<=10&&fmod($n,1)==0)',
+    1 => 'in_array($n,range(2,10))',
   ),
   'br' => 
   array (
     0 => 'fmod($n,10)==1&&!in_array(fmod($n,100),array(11,71,91))',
     1 => 'fmod($n,10)==2&&!in_array(fmod($n,100),array(12,72,92))',
-    2 => 'in_array(fmod($n,10),array(3,4,9))&&!in_array(fmod($n,100),array_merge(range(10,19),range(70,79),range(90,99))))',
+    2 => 'in_array(fmod($n,10),array(3,4,9))&&!in_array(fmod($n,100),array_merge(range(10,19),range(70,79),range(90,99)))',
     3 => 'fmod($n,1000000)==0&&$n!=0',
   ),
   'ksh' => 
@@ -618,10 +618,10 @@ return array (
   ),
   'tzm' => 
   array (
-    0 => '($n==0||$n==1)||($n>=11&&$n<=99&&fmod($n,1)==0)',
+    0 => '($n==0||$n==1)||in_array($n,range(11,99))',
   ),
   'gv' => 
   array (
-    0 => '(fmod($n,10)>=1&&fmod($n,10)<=2&&fmod(fmod($n,10),1)==0)||fmod($n,20)==0',
+    0 => 'in_array(fmod($n,10),array(1,2))||fmod($n,20)==0',
   ),
 );
