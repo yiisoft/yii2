@@ -110,8 +110,7 @@ class ActiveForm extends Widget
 	 */
 	public function error($model, $attribute, $options = array())
 	{
-		$attribute = $this->normalizeAttributeName($attribute);
-		$this->getInputName($model, $attribute);
+		$attribute = $this->getAttributeName($attribute);
 		$tag = isset($options['tag']) ? $options['tag'] : 'div';
 		unset($options['tag']);
 		$error = $model->getFirstError($attribute);
@@ -126,15 +125,19 @@ class ActiveForm extends Widget
 	 */
 	public function label($model, $attribute, $options = array())
 	{
-		$attribute = $this->normalizeAttributeName($attribute);
-		$label = $model->getAttributeLabel($attribute);
-		return Html::label(Html::encode($label), isset($options['for']) ? $options['for'] : null, $options);
+		$attribute = $this->getAttributeName($attribute);
+		$label = isset($options['label']) ? $options['label'] : Html::encode($model->getAttributeLabel($attribute));
+		$for = array_key_exists('for', $options) ? $options['for'] : $this->getInputId($model, $attribute);
+		return Html::label($label, $for, $options);
 	}
 
 	public function input($type, $model, $attribute, $options = array())
 	{
 		$value = $this->getAttributeValue($model, $attribute);
 		$name = $this->getInputName($model, $attribute);
+		if (!array_key_exists('id', $options)) {
+			$options['id'] = $this->getInputId($model, $attribute);
+		}
 		return Html::input($type, $name, $value, $options);
 	}
 
@@ -162,6 +165,9 @@ class ActiveForm extends Widget
 	{
 		$value = $this->getAttributeValue($model, $attribute);
 		$name = $this->getInputName($model, $attribute);
+		if (!array_key_exists('id', $options)) {
+			$options['id'] = $this->getInputId($model, $attribute);
+		}
 		return Html::textarea($name, $value, $options);
 	}
 
@@ -171,6 +177,9 @@ class ActiveForm extends Widget
 		$name = $this->getInputName($model, $attribute);
 		if (!array_key_exists('uncheck', $options)) {
 			$options['unchecked'] = '0';
+		}
+		if (!array_key_exists('id', $options)) {
+			$options['id'] = $this->getInputId($model, $attribute);
 		}
 		return Html::radio($name, $checked, $value, $options);
 	}
@@ -182,6 +191,9 @@ class ActiveForm extends Widget
 		if (!array_key_exists('uncheck', $options)) {
 			$options['unchecked'] = '0';
 		}
+		if (!array_key_exists('id', $options)) {
+			$options['id'] = $this->getInputId($model, $attribute);
+		}
 		return Html::checkbox($name, $checked, $value, $options);
 	}
 
@@ -189,6 +201,9 @@ class ActiveForm extends Widget
 	{
 		$checked = $this->getAttributeValue($model, $attribute);
 		$name = $this->getInputName($model, $attribute);
+		if (!array_key_exists('id', $options)) {
+			$options['id'] = $this->getInputId($model, $attribute);
+		}
 		return Html::dropDownList($name, $checked, $items, $options);
 	}
 
@@ -198,6 +213,9 @@ class ActiveForm extends Widget
 		$name = $this->getInputName($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
 			$options['unselect'] = '0';
+		}
+		if (!array_key_exists('id', $options)) {
+			$options['id'] = $this->getInputId($model, $attribute);
 		}
 		return Html::listBox($name, $checked, $items, $options);
 	}
@@ -228,7 +246,7 @@ class ActiveForm extends Widget
 		if (isset($this->modelMap[$class])) {
 			$class = $this->modelMap[$class];
 		} elseif (($pos = strrpos($class, '\\')) !== false) {
-			$class = substr($class, $pos);
+			$class = substr($class, $pos + 1);
 		}
 		if (!preg_match('/(^|.*\])(\w+)(\[.*|$)/', $attribute, $matches)) {
 			throw new InvalidParamException('Attribute name must contain word characters only.');
@@ -243,6 +261,12 @@ class ActiveForm extends Widget
 		} else {
 			throw new InvalidParamException('Model name cannot be mapped to empty for tabular inputs.');
 		}
+	}
+
+	public function getInputId($model, $attribute)
+	{
+		$name = $this->getInputName($model, $attribute);
+		return str_replace(array('[]', '][', '[', ']', ' '), array('', '-', '-', '', '-'), $name);
 	}
 
 	public function getAttributeValue($model, $attribute)
@@ -267,7 +291,7 @@ class ActiveForm extends Widget
 		}
 	}
 
-	public function normalizeAttributeName($attribute)
+	public function getAttributeName($attribute)
 	{
 		if (preg_match('/(^|.*\])(\w+)(\[.*|$)/', $attribute, $matches)) {
 			return $matches[2];

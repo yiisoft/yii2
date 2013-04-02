@@ -62,7 +62,7 @@ class LocaleController extends Controller
 					}
 					$expr = preg_replace('/\\bn\\b/', '$n', implode('||', $expr_or));
 					$rules[] = preg_replace_callback('/range\((\d+),(\d+)\)/', function ($matches) {
-						if ($matches[2] - $matches[1] <= 2) {
+						if ($matches[2] - $matches[1] <= 5) {
 							return 'array(' . implode(',', range($matches[1], $matches[2])) . ')';
 						} else {
 							return $matches[0];
