@@ -8,7 +8,6 @@
 namespace yii\widgets;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\caching\Cache;
 use yii\caching\Dependency;

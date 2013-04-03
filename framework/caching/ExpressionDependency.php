@@ -22,18 +22,7 @@ class ExpressionDependency extends Dependency
 	/**
 	 * @var string the PHP expression whose result is used to determine the dependency.
 	 */
-	public $expression;
-
-	/**
-	 * Constructor.
-	 * @param string $expression the PHP expression whose result is used to determine the dependency.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($expression = 'true', $config = array())
-	{
-		$this->expression = $expression;
-		parent::__construct($config);
-	}
+	public $expression = 'true';
 
 	/**
 	 * Generates the data needed to determine if dependency has been changed.
