@@ -61,7 +61,7 @@ class DictionaryTest extends \yiiunit\TestCase
 	{
 		$this->dictionary->add('key3',$this->item3);
 		$this->assertEquals(3,$this->dictionary->getCount());
-		$this->assertTrue($this->dictionary->contains('key3'));
+		$this->assertTrue($this->dictionary->has('key3'));
 
 		$this->dictionary[] = 'test';
 	}
@@ -70,28 +70,28 @@ class DictionaryTest extends \yiiunit\TestCase
 	{
 		$this->dictionary->remove('key1');
 		$this->assertEquals(1,$this->dictionary->getCount());
-		$this->assertTrue(!$this->dictionary->contains('key1'));
+		$this->assertTrue(!$this->dictionary->has('key1'));
 		$this->assertTrue($this->dictionary->remove('unknown key')===null);
 	}
 
-	public function testClear()
+	public function testRemoveAll()
 	{
 		$this->dictionary->add('key3',$this->item3);
-		$this->dictionary->clear();
+		$this->dictionary->removeAll();
 		$this->assertEquals(0,$this->dictionary->getCount());
-		$this->assertTrue(!$this->dictionary->contains('key1') && !$this->dictionary->contains('key2'));
+		$this->assertTrue(!$this->dictionary->has('key1') && !$this->dictionary->has('key2'));
 
 		$this->dictionary->add('key3',$this->item3);
-		$this->dictionary->clear(true);
+		$this->dictionary->removeAll(true);
 		$this->assertEquals(0,$this->dictionary->getCount());
-		$this->assertTrue(!$this->dictionary->contains('key1') && !$this->dictionary->contains('key2'));
+		$this->assertTrue(!$this->dictionary->has('key1') && !$this->dictionary->has('key2'));
 	}
 
-	public function testContains()
+	public function testHas()
 	{
-		$this->assertTrue($this->dictionary->contains('key1'));
-		$this->assertTrue($this->dictionary->contains('key2'));
-		$this->assertFalse($this->dictionary->contains('key3'));
+		$this->assertTrue($this->dictionary->has('key1'));
+		$this->assertTrue($this->dictionary->has('key2'));
+		$this->assertFalse($this->dictionary->has('key3'));
 	}
 
 	public function testFromArray()
@@ -162,7 +162,7 @@ class DictionaryTest extends \yiiunit\TestCase
 
 		unset($this->dictionary['key2']);
 		$this->assertEquals(2,$this->dictionary->getCount());
-		$this->assertTrue(!$this->dictionary->contains('key2'));
+		$this->assertTrue(!$this->dictionary->has('key2'));
 
 		unset($this->dictionary['unknown key']);
 	}

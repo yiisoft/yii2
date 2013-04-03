@@ -352,7 +352,7 @@ class NewComponent extends Component
 
 	public function raiseEvent()
 	{
-		$this->trigger('click', new Event($this));
+		$this->trigger('click', new Event);
 	}
 }
 

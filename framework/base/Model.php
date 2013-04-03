@@ -258,7 +258,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function beforeValidate()
 	{
-		$event = new ModelEvent($this);
+		$event = new ModelEvent;
 		$this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
 		return $event->isValid;
 	}
@@ -329,7 +329,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		foreach ($this->rules() as $rule) {
 			if ($rule instanceof Validator) {
 				$validators->add($rule);
-			} elseif (isset($rule[0], $rule[1])) { // attributes, validator type
+			} elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
 				$validator = Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
 				$validators->add($validator);
 			} else {
@@ -429,9 +429,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 			return array();
 		} else {
 			$errors = array();
-			foreach ($this->_errors as $errors) {
-				if (isset($errors[0])) {
-					$errors[] = $errors[0];
+			foreach ($this->_errors as $attributeErrors) {
+				if (isset($attributeErrors[0])) {
+					$errors[] = $attributeErrors[0];
 				}
 			}
 		}
@@ -541,7 +541,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function onUnsafeAttribute($name, $value)
 	{
 		if (YII_DEBUG) {
-			\Yii::info("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __CLASS__);
+			\Yii::info("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
 		}
 	}
 
@@ -656,13 +656,13 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
-	 * Unsets the element at the specified offset.
+	 * Sets the element value at the specified offset to null.
 	 * This method is required by the SPL interface `ArrayAccess`.
 	 * It is implicitly called when you use something like `unset($model[$offset])`.
 	 * @param mixed $offset the offset to unset element
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->$offset);
+		$this->$offset = null;
 	}
 }

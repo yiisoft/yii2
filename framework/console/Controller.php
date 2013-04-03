@@ -24,7 +24,6 @@ use yii\base\InvalidRouteException;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- *
  * @since 2.0
  */
 class Controller extends \yii\base\Controller
@@ -135,9 +134,13 @@ class Controller extends \yii\base\Controller
 
 	/**
 	 * Returns the names of the global options for this command.
-	 * A global option requires the existence of a global member variable whose
+	 * A global option requires the existence of a public member variable whose
 	 * name is the option name.
 	 * Child classes may override this method to specify possible global options.
+	 *
+	 * Note that the values setting via global options are not available
+	 * until [[beforeAction()]] is being called.
+	 *
 	 * @return array the names of the global options for this command.
 	 */
 	public function globalOptions()

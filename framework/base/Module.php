@@ -346,7 +346,7 @@ abstract class Module extends Component
 			if ($this->_modules[$id] instanceof Module) {
 				return $this->_modules[$id];
 			} elseif ($load) {
-				Yii::trace("Loading module: $id", __CLASS__);
+				Yii::trace("Loading module: $id", __METHOD__);
 				return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
 			}
 		}
@@ -411,7 +411,7 @@ abstract class Module extends Component
 	 * array(
 	 *     'comment' => array(
 	 *         'class' => 'app\modules\CommentModule',
-	 *         'connectionID' => 'db',
+	 *         'db' => 'db',
 	 *     ),
 	 *     'booking' => array(
 	 *         'class' => 'app\modules\BookingModule',
@@ -452,7 +452,7 @@ abstract class Module extends Component
 			if ($this->_components[$id] instanceof Component) {
 				return $this->_components[$id];
 			} elseif ($load) {
-				Yii::trace("Loading component: $id", __CLASS__);
+				Yii::trace("Loading component: $id", __METHOD__);
 				return $this->_components[$id] = Yii::createObject($this->_components[$id]);
 			}
 		}
@@ -521,7 +521,7 @@ abstract class Module extends Component
 	 *     ),
 	 *     'cache' => array(
 	 *         'class' => 'yii\caching\DbCache',
-	 *         'connectionID' => 'db',
+	 *         'db' => 'db',
 	 *     ),
 	 * )
 	 * ~~~
@@ -614,6 +614,12 @@ abstract class Module extends Component
 				}
 				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
 					$controller = new $className($id, $this);
+				} elseif (YII_DEBUG) {
+					if (!class_exists($className, false)) {
+						throw new InvalidConfigException("Class file name does not match class name: $className.");
+					} elseif (!is_subclass_of($className, '\yii\base\Controller')) {
+						throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
+					}
 				}
 			}
 		}

@@ -23,41 +23,28 @@ use yii\db\Connection;
 class DbDependency extends Dependency
 {
 	/**
-	 * @var string the ID of the [[Connection|DB connection]] application component. Defaults to 'db'.
+	 * @var string the application component ID of the DB connection.
 	 */
-	public $connectionID = 'db';
+	public $db = 'db';
 	/**
 	 * @var string the SQL query whose result is used to determine if the dependency has been changed.
-	 * Only the first row of the query result will be used.
+	 * Only the first row of the query result will be used. This property must be always set, otherwise
+	 * an exception would be raised.
 	 */
 	public $sql;
 	/**
 	 * @var array the parameters (name=>value) to be bound to the SQL statement specified by [[sql]].
 	 */
-	public $params;
+	public $params = array();
 
 	/**
-	 * Constructor.
-	 * @param string $sql the SQL query whose result is used to determine if the dependency has been changed.
-	 * @param array $params the parameters (name=>value) to be bound to the SQL statement specified by [[sql]].
-	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 * Initializes the database dependency object.
 	 */
-	public function __construct($sql, $params = array(), $config = array())
+	public function init()
 	{
-		$this->sql = $sql;
-		$this->params = $params;
-		parent::__construct($config);
-	}
-
-	/**
-	 * PHP sleep magic method.
-	 * This method ensures that the database instance is set null because it contains resource handles.
-	 * @return array
-	 */
-	public function __sleep()
-	{
-		$this->_db = null;
-		return array_keys((array)$this);
+		if ($this->sql === null) {
+			throw new InvalidConfigException('DbDependency::sql must be set.');
+		}
 	}
 
 	/**
@@ -67,7 +54,11 @@ class DbDependency extends Dependency
 	 */
 	protected function generateDependencyData()
 	{
-		$db = $this->getDb();
+		$db = Yii::$app->getComponent($this->db);
+		if (!$db instanceof Connection) {
+			throw new InvalidConfigException("DbDependency::db must be the application component ID of a DB connection.");
+		}
+
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$db->enableQueryCache = false;
@@ -77,37 +68,5 @@ class DbDependency extends Dependency
 			$result = $db->createCommand($this->sql, $this->params)->queryRow();
 		}
 		return $result;
-	}
-
-	/**
-	 * @var Connection the DB connection instance
-	 */
-	private $_db;
-
-	/**
-	 * Returns the DB connection instance used for caching purpose.
-	 * @return Connection the DB connection instance
-	 * @throws InvalidConfigException if [[connectionID]] does not point to a valid application component.
-	 */
-	public function getDb()
-	{
-		if ($this->_db === null) {
-			$db = Yii::$app->getComponent($this->connectionID);
-			if ($db instanceof Connection) {
-				$this->_db = $db;
-			} else {
-				throw new InvalidConfigException("DbCacheDependency::connectionID must refer to the ID of a DB application component.");
-			}
-		}
-		return $this->_db;
-	}
-
-	/**
-	 * Sets the DB connection used by the cache component.
-	 * @param Connection $value the DB connection instance
-	 */
-	public function setDb($value)
-	{
-		$this->_db = $value;
 	}
 }

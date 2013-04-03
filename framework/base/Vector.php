@@ -191,7 +191,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * Defaults to false, meaning all items in the vector will be cleared directly
 	 * without calling [[removeAt]].
 	 */
-	public function clear($safeClear = false)
+	public function removeAll($safeClear = false)
 	{
 		if ($safeClear) {
 			for ($i = $this->_c - 1; $i >= 0; --$i) {
@@ -209,7 +209,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 * @param mixed $item the item
 	 * @return boolean whether the vector contains the item
 	 */
-	public function contains($item)
+	public function has($item)
 	{
 		return $this->indexOf($item) >= 0;
 	}
@@ -246,7 +246,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	{
 		if (is_array($data) || $data instanceof \Traversable) {
 			if ($this->_c > 0) {
-				$this->clear();
+				$this->removeAll();
 			}
 			if ($data instanceof self) {
 				$data = $data->_d;

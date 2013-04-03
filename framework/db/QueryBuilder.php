@@ -22,6 +22,11 @@ use yii\base\NotSupportedException;
 class QueryBuilder extends \yii\base\Object
 {
 	/**
+	 * The prefix for automatically generated query binding parameters.
+	 */
+	const PARAM_PREFIX = ':qp';
+
+	/**
 	 * @var Connection the database connection.
 	 */
 	public $db;
@@ -58,11 +63,11 @@ class QueryBuilder extends \yii\base\Object
 		$clauses = array(
 			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
 			$this->buildFrom($query->from),
-			$this->buildJoin($query->join),
-			$this->buildWhere($query->where),
+			$this->buildJoin($query->join, $query->params),
+			$this->buildWhere($query->where, $query->params),
 			$this->buildGroupBy($query->groupBy),
-			$this->buildHaving($query->having),
-			$this->buildUnion($query->union),
+			$this->buildHaving($query->having, $query->params),
+			$this->buildUnion($query->union, $query->params),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
 		);
@@ -92,7 +97,6 @@ class QueryBuilder extends \yii\base\Object
 	{
 		$names = array();
 		$placeholders = array();
-		$count = 0;
 		foreach ($columns as $name => $value) {
 			$names[] = $this->db->quoteColumnName($name);
 			if ($value instanceof Expression) {
@@ -101,9 +105,9 @@ class QueryBuilder extends \yii\base\Object
 					$params[$n] = $v;
 				}
 			} else {
-				$placeholders[] = ':p' . $count;
-				$params[':p' . $count] = $value;
-				$count++;
+				$phName = self::PARAM_PREFIX . count($params);
+				$placeholders[] = $phName;
+				$params[$phName] = $value;
 			}
 		}
 
@@ -159,10 +163,9 @@ class QueryBuilder extends \yii\base\Object
 	 * so that they can be bound to the DB command later.
 	 * @return string the UPDATE SQL
 	 */
-	public function update($table, $columns, $condition = '', &$params)
+	public function update($table, $columns, $condition, &$params)
 	{
 		$lines = array();
-		$count = 0;
 		foreach ($columns as $name => $value) {
 			if ($value instanceof Expression) {
 				$lines[] = $this->db->quoteColumnName($name) . '=' . $value->expression;
@@ -170,17 +173,15 @@ class QueryBuilder extends \yii\base\Object
 					$params[$n] = $v;
 				}
 			} else {
-				$lines[] = $this->db->quoteColumnName($name) . '=:p' . $count;
-				$params[':p' . $count] = $value;
-				$count++;
+				$phName = self::PARAM_PREFIX . count($params);
+				$lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
+				$params[$phName] = $value;
 			}
 		}
-		$sql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $lines);
-		if (($where = $this->buildCondition($condition)) !== '') {
-			$sql .= ' WHERE ' . $where;
-		}
 
-		return $sql;
+		$sql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $lines);
+		$where = $this->buildWhere($condition, $params);
+		return $where === '' ? $sql : $sql . ' ' . $where;
 	}
 
 	/**
@@ -196,15 +197,15 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $table the table where the data will be deleted from.
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
+	 * @param array $params the binding parameters that will be modified by this method
+	 * so that they can be bound to the DB command later.
 	 * @return string the DELETE SQL
 	 */
-	public function delete($table, $condition = '')
+	public function delete($table, $condition, &$params)
 	{
 		$sql = 'DELETE FROM ' . $this->db->quoteTableName($table);
-		if (($where = $this->buildCondition($condition)) !== '') {
-			$sql .= ' WHERE ' . $where;
-		}
-		return $sql;
+		$where = $this->buildWhere($condition, $params);
+		return $where === '' ? $sql : $sql . ' ' . $where;
 	}
 
 	/**
@@ -479,200 +480,6 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * Parses the condition specification and generates the corresponding SQL expression.
-	 * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
-	 * on how to specify a condition.
-	 * @return string the generated SQL expression
-	 * @throws \yii\db\Exception if the condition is in bad format
-	 */
-	public function buildCondition($condition)
-	{
-		static $builders = array(
-			'AND' => 'buildAndCondition',
-			'OR' => 'buildAndCondition',
-			'BETWEEN' => 'buildBetweenCondition',
-			'NOT BETWEEN' => 'buildBetweenCondition',
-			'IN' => 'buildInCondition',
-			'NOT IN' => 'buildInCondition',
-			'LIKE' => 'buildLikeCondition',
-			'NOT LIKE' => 'buildLikeCondition',
-			'OR LIKE' => 'buildLikeCondition',
-			'OR NOT LIKE' => 'buildLikeCondition',
-		);
-
-		if (!is_array($condition)) {
-			return (string)$condition;
-		} elseif ($condition === array()) {
-			return '';
-		}
-		if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
-			$operator = strtoupper($condition[0]);
-			if (isset($builders[$operator])) {
-				$method = $builders[$operator];
-				array_shift($condition);
-				return $this->$method($operator, $condition);
-			} else {
-				throw new Exception('Found unknown operator in query: ' . $operator);
-			}
-		} else { // hash format: 'column1'=>'value1', 'column2'=>'value2', ...
-			return $this->buildHashCondition($condition);
-		}
-	}
-
-	private function buildHashCondition($condition)
-	{
-		$parts = array();
-		foreach ($condition as $column => $value) {
-			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('in', array($column, $value));
-			} else {
-				if (strpos($column, '(') === false) {
-					$column = $this->db->quoteColumnName($column);
-				}
-				if ($value === null) {
-					$parts[] = "$column IS NULL";
-				} elseif (is_string($value)) {
-					$parts[] = "$column=" . $this->db->quoteValue($value);
-				} else {
-					$parts[] = "$column=$value";
-				}
-			}
-		}
-		return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
-	}
-
-	private function buildAndCondition($operator, $operands)
-	{
-		$parts = array();
-		foreach ($operands as $operand) {
-			if (is_array($operand)) {
-				$operand = $this->buildCondition($operand);
-			}
-			if ($operand !== '') {
-				$parts[] = $operand;
-			}
-		}
-		if ($parts !== array()) {
-			return '(' . implode(") $operator (", $parts) . ')';
-		} else {
-			return '';
-		}
-	}
-
-	private function buildBetweenCondition($operator, $operands)
-	{
-		if (!isset($operands[0], $operands[1], $operands[2])) {
-			throw new Exception("Operator '$operator' requires three operands.");
-		}
-
-		list($column, $value1, $value2) = $operands;
-
-		if (strpos($column, '(') === false) {
-			$column = $this->db->quoteColumnName($column);
-		}
-		$value1 = is_string($value1) ? $this->db->quoteValue($value1) : (string)$value1;
-		$value2 = is_string($value2) ? $this->db->quoteValue($value2) : (string)$value2;
-
-		return "$column $operator $value1 AND $value2";
-	}
-
-	private function buildInCondition($operator, $operands)
-	{
-		if (!isset($operands[0], $operands[1])) {
-			throw new Exception("Operator '$operator' requires two operands.");
-		}
-
-		list($column, $values) = $operands;
-
-		$values = (array)$values;
-
-		if ($values === array() || $column === array()) {
-			return $operator === 'IN' ? '0=1' : '';
-		}
-
-		if (count($column) > 1) {
-			return $this->buildCompositeInCondition($operator, $column, $values);
-		} elseif (is_array($column)) {
-			$column = reset($column);
-		}
-		foreach ($values as $i => $value) {
-			if (is_array($value)) {
-				$value = isset($value[$column]) ? $value[$column] : null;
-			}
-			if ($value === null) {
-				$values[$i] = 'NULL';
-			} else {
-				$values[$i] = is_string($value) ? $this->db->quoteValue($value) : (string)$value;
-			}
-		}
-		if (strpos($column, '(') === false) {
-			$column = $this->db->quoteColumnName($column);
-		}
-
-		if (count($values) > 1) {
-			return "$column $operator (" . implode(', ', $values) . ')';
-		} else {
-			$operator = $operator === 'IN' ? '=' : '<>';
-			return "$column$operator{$values[0]}";
-		}
-	}
-
-	protected function buildCompositeInCondition($operator, $columns, $values)
-	{
-		foreach ($columns as $i => $column) {
-			if (strpos($column, '(') === false) {
-				$columns[$i] = $this->db->quoteColumnName($column);
-			}
-		}
-		$vss = array();
-		foreach ($values as $value) {
-			$vs = array();
-			foreach ($columns as $column) {
-				if (isset($value[$column])) {
-					$vs[] = is_string($value[$column]) ? $this->db->quoteValue($value[$column]) : (string)$value[$column];
-				} else {
-					$vs[] = 'NULL';
-				}
-			}
-			$vss[] = '(' . implode(', ', $vs) . ')';
-		}
-		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
-	}
-
-	private function buildLikeCondition($operator, $operands)
-	{
-		if (!isset($operands[0], $operands[1])) {
-			throw new Exception("Operator '$operator' requires two operands.");
-		}
-
-		list($column, $values) = $operands;
-
-		$values = (array)$values;
-
-		if ($values === array()) {
-			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
-		}
-
-		if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
-			$andor = ' AND ';
-		} else {
-			$andor = ' OR ';
-			$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
-		}
-
-		if (strpos($column, '(') === false) {
-			$column = $this->db->quoteColumnName($column);
-		}
-
-		$parts = array();
-		foreach ($values as $value) {
-			$parts[] = "$column $operator " . $this->db->quoteValue($value);
-		}
-
-		return implode($andor, $parts);
-	}
-
-	/**
 	 * @param array $columns
 	 * @param boolean $distinct
 	 * @param string $selectOption
@@ -737,10 +544,11 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param string|array $joins
+	 * @param array $params the binding parameters to be populated
 	 * @return string the JOIN clause built from [[query]].
 	 * @throws Exception if the $joins parameter is not in proper format
 	 */
-	public function buildJoin($joins)
+	public function buildJoin($joins, &$params)
 	{
 		if (empty($joins)) {
 			return '';
@@ -761,9 +569,9 @@ class QueryBuilder extends \yii\base\Object
 				}
 				$joins[$i] = $join[0] . ' ' . $table;
 				if (isset($join[2])) {
-					$condition = $this->buildCondition($join[2]);
+					$condition = $this->buildCondition($join[2], $params);
 					if ($condition !== '') {
-						$joins[$i] .= ' ON ' . $this->buildCondition($join[2]);
+						$joins[$i] .= ' ON ' . $condition;
 					}
 				}
 			} else {
@@ -776,11 +584,12 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param string|array $condition
+	 * @param array $params the binding parameters to be populated
 	 * @return string the WHERE clause built from [[query]].
 	 */
-	public function buildWhere($condition)
+	public function buildWhere($condition, &$params)
 	{
-		$where = $this->buildCondition($condition);
+		$where = $this->buildCondition($condition, $params);
 		return $where === '' ? '' : 'WHERE ' . $where;
 	}
 
@@ -795,11 +604,12 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param string|array $condition
+	 * @param array $params the binding parameters to be populated
 	 * @return string the HAVING clause built from [[query]].
 	 */
-	public function buildHaving($condition)
+	public function buildHaving($condition, &$params)
 	{
-		$having = $this->buildCondition($condition);
+		$having = $this->buildCondition($condition, $params);
 		return $having === '' ? '' : 'HAVING ' . $having;
 	}
 
@@ -843,16 +653,19 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param array $unions
+	 * @param array $params the binding parameters to be populated
 	 * @return string the UNION clause built from [[query]].
 	 */
-	public function buildUnion($unions)
+	public function buildUnion($unions, &$params)
 	{
 		if (empty($unions)) {
 			return '';
 		}
 		foreach ($unions as $i => $union) {
 			if ($union instanceof Query) {
+				$union->addParams($params);
 				$unions[$i] = $this->build($union);
+				$params = $union->params;
 			}
 		}
 		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
@@ -864,7 +677,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string|array $columns the columns to be processed
 	 * @return string the processing result
 	 */
-	protected function buildColumns($columns)
+	public function buildColumns($columns)
 	{
 		if (!is_array($columns)) {
 			if (strpos($columns, '(') !== false) {
@@ -881,5 +694,219 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 		return is_array($columns) ? implode(', ', $columns) : $columns;
+	}
+
+
+	/**
+	 * Parses the condition specification and generates the corresponding SQL expression.
+	 * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
+	 * on how to specify a condition.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 * @throws \yii\db\Exception if the condition is in bad format
+	 */
+	public function buildCondition($condition, &$params)
+	{
+		static $builders = array(
+			'AND' => 'buildAndCondition',
+			'OR' => 'buildAndCondition',
+			'BETWEEN' => 'buildBetweenCondition',
+			'NOT BETWEEN' => 'buildBetweenCondition',
+			'IN' => 'buildInCondition',
+			'NOT IN' => 'buildInCondition',
+			'LIKE' => 'buildLikeCondition',
+			'NOT LIKE' => 'buildLikeCondition',
+			'OR LIKE' => 'buildLikeCondition',
+			'OR NOT LIKE' => 'buildLikeCondition',
+		);
+
+		if (!is_array($condition)) {
+			return (string)$condition;
+		} elseif ($condition === array()) {
+			return '';
+		}
+		if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
+			$operator = strtoupper($condition[0]);
+			if (isset($builders[$operator])) {
+				$method = $builders[$operator];
+				array_shift($condition);
+				return $this->$method($operator, $condition, $params);
+			} else {
+				throw new Exception('Found unknown operator in query: ' . $operator);
+			}
+		} else { // hash format: 'column1'=>'value1', 'column2'=>'value2', ...
+			return $this->buildHashCondition($condition, $params);
+		}
+	}
+
+	private function buildHashCondition($condition, &$params)
+	{
+		$parts = array();
+		foreach ($condition as $column => $value) {
+			if (is_array($value)) { // IN condition
+				$parts[] = $this->buildInCondition('in', array($column, $value), $query);
+			} else {
+				if (strpos($column, '(') === false) {
+					$column = $this->db->quoteColumnName($column);
+				}
+				if ($value === null) {
+					$parts[] = "$column IS NULL";
+				} elseif ($value instanceof Expression) {
+					$parts[] = "$column=" . $value->expression;
+					foreach ($value->params as $n => $v) {
+						$params[$n] = $v;
+					}
+				} else {
+					$phName = self::PARAM_PREFIX . count($params);
+					$parts[] = "$column=$phName";
+					$params[$phName] = $value;
+				}
+			}
+		}
+		return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
+	}
+
+	private function buildAndCondition($operator, $operands, &$params)
+	{
+		$parts = array();
+		foreach ($operands as $operand) {
+			if (is_array($operand)) {
+				$operand = $this->buildCondition($operand, $params);
+			}
+			if ($operand !== '') {
+				$parts[] = $operand;
+			}
+		}
+		if ($parts !== array()) {
+			return '(' . implode(") $operator (", $parts) . ')';
+		} else {
+			return '';
+		}
+	}
+
+	private function buildBetweenCondition($operator, $operands, &$params)
+	{
+		if (!isset($operands[0], $operands[1], $operands[2])) {
+			throw new Exception("Operator '$operator' requires three operands.");
+		}
+
+		list($column, $value1, $value2) = $operands;
+
+		if (strpos($column, '(') === false) {
+			$column = $this->db->quoteColumnName($column);
+		}
+		$phName1 = self::PARAM_PREFIX . count($params);
+		$phName2 = self::PARAM_PREFIX . count($params);
+		$params[$phName1] = $value1;
+		$params[$phName2] = $value2;
+
+		return "$column $operator $phName1 AND $phName2";
+	}
+
+	private function buildInCondition($operator, $operands, &$params)
+	{
+		if (!isset($operands[0], $operands[1])) {
+			throw new Exception("Operator '$operator' requires two operands.");
+		}
+
+		list($column, $values) = $operands;
+
+		$values = (array)$values;
+
+		if ($values === array() || $column === array()) {
+			return $operator === 'IN' ? '0=1' : '';
+		}
+
+		if (count($column) > 1) {
+			return $this->buildCompositeInCondition($operator, $column, $values, $params);
+		} elseif (is_array($column)) {
+			$column = reset($column);
+		}
+		foreach ($values as $i => $value) {
+			if (is_array($value)) {
+				$value = isset($value[$column]) ? $value[$column] : null;
+			}
+			if ($value === null) {
+				$values[$i] = 'NULL';
+			} elseif ($value instanceof Expression) {
+				$values[$i] = $value->expression;
+				foreach ($value->params as $n => $v) {
+					$params[$n] = $v;
+				}
+			} else {
+				$phName = self::PARAM_PREFIX . count($params);
+				$params[$phName] = $value;
+				$values[$i] = $phName;
+			}
+		}
+		if (strpos($column, '(') === false) {
+			$column = $this->db->quoteColumnName($column);
+		}
+
+		if (count($values) > 1) {
+			return "$column $operator (" . implode(', ', $values) . ')';
+		} else {
+			$operator = $operator === 'IN' ? '=' : '<>';
+			return "$column$operator{$values[0]}";
+		}
+	}
+
+	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
+	{
+		foreach ($columns as $i => $column) {
+			if (strpos($column, '(') === false) {
+				$columns[$i] = $this->db->quoteColumnName($column);
+			}
+		}
+		$vss = array();
+		foreach ($values as $value) {
+			$vs = array();
+			foreach ($columns as $column) {
+				if (isset($value[$column])) {
+					$phName = self::PARAM_PREFIX . count($params);
+					$params[$phName] = $value[$column];
+					$vs[] = $phName;
+				} else {
+					$vs[] = 'NULL';
+				}
+			}
+			$vss[] = '(' . implode(', ', $vs) . ')';
+		}
+		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
+	}
+
+	private function buildLikeCondition($operator, $operands, &$params)
+	{
+		if (!isset($operands[0], $operands[1])) {
+			throw new Exception("Operator '$operator' requires two operands.");
+		}
+
+		list($column, $values) = $operands;
+
+		$values = (array)$values;
+
+		if ($values === array()) {
+			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
+		}
+
+		if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
+			$andor = ' AND ';
+		} else {
+			$andor = ' OR ';
+			$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
+		}
+
+		if (strpos($column, '(') === false) {
+			$column = $this->db->quoteColumnName($column);
+		}
+
+		$parts = array();
+		foreach ($values as $value) {
+			$phName = self::PARAM_PREFIX . count($params);
+			$params[$phName] = $value;
+			$parts[] = "$column $operator $phName";
+		}
+
+		return implode($andor, $parts);
 	}
 }

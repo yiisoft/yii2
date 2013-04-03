@@ -57,7 +57,7 @@ class ChainedDependency extends Dependency
 			if (!$dependency instanceof Dependency) {
 				$dependency = \Yii::createObject($dependency);
 			}
-			$dependency->evalulateDependency();
+			$dependency->evaluateDependency();
 		}
 	}
 

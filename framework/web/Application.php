@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\InvalidParamException;
+use Yii;
 
 /**
  * Application is the base class for all application classes.
@@ -28,7 +28,7 @@ class Application extends \yii\base\Application
 	public function registerDefaultAliases()
 	{
 		parent::registerDefaultAliases();
-		\Yii::$aliases['@webroot'] = dirname($_SERVER['SCRIPT_FILENAME']);
+		Yii::$aliases['@webroot'] = dirname($_SERVER['SCRIPT_FILENAME']);
 	}
 
 	/**
@@ -39,6 +39,32 @@ class Application extends \yii\base\Application
 	{
 		list ($route, $params) = $this->getRequest()->resolve();
 		return $this->runAction($route, $params);
+	}
+
+	private $_homeUrl;
+
+	/**
+	 * @return string the homepage URL
+	 */
+	public function getHomeUrl()
+	{
+		if ($this->_homeUrl === null) {
+			if ($this->getUrlManager()->showScriptName) {
+				return $this->getRequest()->getScriptUrl();
+			} else {
+				return $this->getRequest()->getBaseUrl() . '/';
+			}
+		} else {
+			return $this->_homeUrl;
+		}
+	}
+
+	/**
+	 * @param string $value the homepage URL
+	 */
+	public function setHomeUrl($value)
+	{
+		$this->_homeUrl = $value;
 	}
 
 	/**
@@ -69,48 +95,12 @@ class Application extends \yii\base\Application
 	}
 
 	/**
-	 * Creates a URL using the given route and parameters.
-	 *
-	 * This method first normalizes the given route by converting a relative route into an absolute one.
-	 * A relative route is a route without a leading slash. It is considered to be relative to the currently
-	 * requested route. If the route is an empty string, it stands for the route of the currently active
-	 * [[controller]]. Otherwise, the [[Controller::uniqueId]] will be prepended to the route.
-	 *
-	 * After normalizing the route, this method calls [[\yii\web\UrlManager::createUrl()]]
-	 * to create a relative URL.
-	 *
-	 * @param string $route the route. This can be either an absolute or a relative route.
-	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
-	 * @return string the created URL
-	 * @throws InvalidParamException if a relative route is given and there is no active controller.
-	 * @see createAbsoluteUrl
+	 * Returns the user component.
+	 * @return User the user component
 	 */
-	public function createUrl($route, $params = array())
+	public function getUser()
 	{
-		if (strncmp($route, '/', 1) !== 0) {
-			// a relative route
-			if ($this->controller !== null) {
-				$route = $route === '' ? $this->controller->route : $this->controller->uniqueId . '/' . $route;
-			} else {
-				throw new InvalidParamException('Relative route cannot be handled because there is no active controller.');
-			}
-		}
-		return $this->getUrlManager()->createUrl($route, $params);
-	}
-
-	/**
-	 * Creates an absolute URL using the given route and parameters.
-	 * This method first calls [[createUrl()]] to create a relative URL.
-	 * It then prepends [[\yii\web\UrlManager::hostInfo]] to the URL to form an absolute one.
-	 * @param string $route the route. This can be either an absolute or a relative route.
-	 * See [[createUrl()]] for more details.
-	 * @param array $params the parameters (name-value pairs)
-	 * @return string the created URL
-	 * @see createUrl
-	 */
-	public function createAbsoluteUrl($route, $params = array())
-	{
-		return $this->getUrlManager()->getHostInfo() . $this->createUrl($route, $params);
+		return $this->getComponent('user');
 	}
 
 	/**
@@ -129,6 +119,9 @@ class Application extends \yii\base\Application
 			),
 			'session' => array(
 				'class' => 'yii\web\Session',
+			),
+			'user' => array(
+				'class' => 'yii\web\User',
 			),
 		));
 	}

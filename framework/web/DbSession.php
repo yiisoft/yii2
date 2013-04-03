@@ -15,31 +15,18 @@ use yii\base\InvalidConfigException;
 /**
  * DbSession extends [[Session]] by using database as session data storage.
  *
- * DbSession uses a DB application component to perform DB operations. The ID of the DB application
- * component is specified via [[connectionID]] which defaults to 'db'.
- *
  * By default, DbSession stores session data in a DB table named 'tbl_session'. This table
- * must be pre-created. The table name can be changed by setting [[sessionTableName]].
- * The table should have the following structure:
- *
+ * must be pre-created. The table name can be changed by setting [[sessionTable]].
+ * 
+ * The following example shows how you can configure the application to use DbSession:
+ * 
  * ~~~
- * CREATE TABLE tbl_session
- * (
- *     id CHAR(32) PRIMARY KEY,
- *     expire INTEGER,
- *     data BLOB
+ * 'session' => array(
+ *     'class' => 'yii\web\DbSession',
+ *     // 'db' => 'mydb',
+ *     // 'sessionTable' => 'my_session',
  * )
  * ~~~
- *
- * where 'BLOB' refers to the BLOB-type of your preferred database. Below are the BLOB type
- * that can be used for some popular databases:
- *
- * - MySQL: LONGBLOB
- * - PostgreSQL: BYTEA
- * - MSSQL: BLOB
- *
- * When using DbSession in a production server, we recommend you create a DB index for the 'expire'
- * column in the session table to improve the performance.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -47,26 +34,51 @@ use yii\base\InvalidConfigException;
 class DbSession extends Session
 {
 	/**
-	 * @var string the ID of a {@link CDbConnection} application component. If not set, a SQLite database
-	 * will be automatically created and used. The SQLite database file is
-	 * is <code>protected/runtime/session-YiiVersion.db</code>.
+	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
+	 * After the DbSession object is created, if you want to change this property, you should only assign it
+	 * with a DB connection object.
 	 */
-	public $connectionID;
+	public $db = 'db';
 	/**
-	 * @var string the name of the DB table to store session content.
-	 * Note, if {@link autoCreateSessionTable} is false and you want to create the DB table manually by yourself,
-	 * you need to make sure the DB table is of the following structure:
-	 * <pre>
-	 * (id CHAR(32) PRIMARY KEY, expire INTEGER, data BLOB)
-	 * </pre>
-	 * @see autoCreateSessionTable
+	 * @var string the name of the DB table that stores the session data.
+	 * The table should be pre-created as follows:
+	 *
+	 * ~~~
+	 * CREATE TABLE tbl_session
+	 * (
+	 *     id CHAR(40) NOT NULL PRIMARY KEY,
+	 *     expire INTEGER,
+	 *     data BLOB
+	 * )
+	 * ~~~
+	 *
+	 * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
+	 * that can be used for some popular DBMS:
+	 *
+	 * - MySQL: LONGBLOB
+	 * - PostgreSQL: BYTEA
+	 * - MSSQL: BLOB
+	 *
+	 * When using DbSession in a production server, we recommend you create a DB index for the 'expire'
+	 * column in the session table to improve the performance.
 	 */
-	public $sessionTableName = 'tbl_session';
-	/**
-	 * @var Connection the DB connection instance
-	 */
-	private $_db;
+	public $sessionTable = 'tbl_session';
 
+	/**
+	 * Initializes the DbSession component.
+	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
+	 * @throws InvalidConfigException if [[db]] is invalid.
+	 */
+	public function init()
+	{
+		parent::init();
+		if (is_string($this->db)) {
+			$this->db = Yii::$app->getComponent($this->db);
+		}
+		if (!$this->db instanceof Connection) {
+			throw new InvalidConfigException("DbSession::db must be either a DB connection instance or the application component ID of a DB connection.");
+		}		
+	}
 
 	/**
 	 * Returns a value indicating whether to use custom session storage.
@@ -94,56 +106,31 @@ class DbSession extends Session
 
 		parent::regenerateID(false);
 		$newID = session_id();
-		$db = $this->getDb();
 
 		$query = new Query;
-		$row = $query->from($this->sessionTableName)
+		$row = $query->from($this->sessionTable)
 			->where(array('id' => $oldID))
-			->createCommand($db)
+			->createCommand($this->db)
 			->queryRow();
 		if ($row !== false) {
 			if ($deleteOldSession) {
-				$db->createCommand()->update($this->sessionTableName, array(
-					'id' => $newID
-				), array('id' => $oldID))->execute();
+				$this->db->createCommand()
+					->update($this->sessionTable, array('id' => $newID), array('id' => $oldID))
+					->execute();
 			} else {
 				$row['id'] = $newID;
-				$db->createCommand()->insert($this->sessionTableName, $row)->execute();
+				$this->db->createCommand()
+					->insert($this->sessionTable, $row)
+					->execute();
 			}
 		} else {
 			// shouldn't reach here normally
-			$db->createCommand()->insert($this->sessionTableName, array(
-				'id' => $newID,
-				'expire' => time() + $this->getTimeout(),
-			))->execute();
+			$this->db->createCommand()
+				->insert($this->sessionTable, array(
+					'id' => $newID,
+					'expire' => time() + $this->getTimeout(),
+				))->execute();
 		}
-	}
-	
-	/**
-	 * Returns the DB connection instance used for storing session data.
-	 * @return Connection the DB connection instance
-	 * @throws InvalidConfigException if [[connectionID]] does not point to a valid application component.
-	 */
-	public function getDb()
-	{
-		if ($this->_db === null) {
-			$db = Yii::$app->getComponent($this->connectionID);
-			if ($db instanceof Connection) {
-				$this->_db = $db;
-			} else {
-				throw new InvalidConfigException("DbSession::connectionID must refer to the ID of a DB application component.");
-			}
-		}
-		return $this->_db;
-	}
-
-	/**
-	 * Sets the DB connection used by the session component.
-	 * @param Connection $value the DB connection instance
-	 */
-	public function setDb($value)
-	{
-		$this->_db = $value;
 	}
 
 	/**
@@ -156,9 +143,9 @@ class DbSession extends Session
 	{
 		$query = new Query;
 		$data = $query->select(array('data'))
-			->from($this->sessionTableName)
-			->where('expire>:expire AND id=:id', array(':expire' => time(), ':id' => $id))
-			->createCommand($this->getDb())
+			->from($this->sessionTable)
+			->where('[[expire]]>:expire AND [[id]]=:id', array(':expire' => time(), ':id' => $id))
+			->createCommand($this->db)
 			->queryScalar();
 		return $data === false ? '' : $data;
 	}
@@ -176,24 +163,23 @@ class DbSession extends Session
 		// http://us.php.net/manual/en/function.session-set-save-handler.php
 		try {
 			$expire = time() + $this->getTimeout();
-			$db = $this->getDb();
 			$query = new Query;
 			$exists = $query->select(array('id'))
-				->from($this->sessionTableName)
+				->from($this->sessionTable)
 				->where(array('id' => $id))
-				->createCommand($db)
+				->createCommand($this->db)
 				->queryScalar();
 			if ($exists === false) {
-				$db->createCommand()->insert($this->sessionTableName, array(
-					'id' => $id,
-					'data' => $data,
-					'expire' => $expire,
-				))->execute();
+				$this->db->createCommand()
+					->insert($this->sessionTable, array(
+						'id' => $id,
+						'data' => $data,
+						'expire' => $expire,
+					))->execute();
 			} else {
-				$db->createCommand()->update($this->sessionTableName, array(
-					'data' => $data,
-					'expire' => $expire
-				), array('id' => $id))->execute();
+				$this->db->createCommand()
+					->update($this->sessionTable, array('data' => $data, 'expire' => $expire), array('id' => $id))
+					->execute();
 			}
 		} catch (\Exception $e) {
 			if (YII_DEBUG) {
@@ -213,8 +199,8 @@ class DbSession extends Session
 	 */
 	public function destroySession($id)
 	{
-		$this->getDb()->createCommand()
-			->delete($this->sessionTableName, array('id' => $id))
+		$this->db->createCommand()
+			->delete($this->sessionTable, array('id' => $id))
 			->execute();
 		return true;
 	}
@@ -227,8 +213,8 @@ class DbSession extends Session
 	 */
 	public function gcSession($maxLifetime)
 	{
-		$this->getDb()->createCommand()
-			->delete($this->sessionTableName, 'expire<:expire', array(':expire' => time()))
+		$this->db->createCommand()
+			->delete($this->sessionTable, '[[expire]]<:expire', array(':expire' => time()))
 			->execute();
 		return true;
 	}

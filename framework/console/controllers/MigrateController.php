@@ -26,9 +26,10 @@ use yii\helpers\ArrayHelper;
  * This command provides support for tracking the migration history, upgrading
  * or downloading with migrations, and creating new migration skeletons.
  *
- * The migration history is stored in a database table named as [[migrationTable]].
- * The table will be automatically created the first this command is executed.
- * You may also manually create it with the following structure:
+ * The migration history is stored in a database table named
+ * as [[migrationTable]]. The table will be automatically created the first time
+ * this command is executed, if it does not exist. You may also manually
+ * create it as follows:
  *
  * ~~~
  * CREATE TABLE tbl_migration (
@@ -74,11 +75,6 @@ class MigrateController extends Controller
 	 */
 	public $migrationTable = 'tbl_migration';
 	/**
-	 * @var string the component ID that specifies the database connection for
-	 * storing migration information.
-	 */
-	public $connectionID = 'db';
-	/**
 	 * @var string the template file for generating new migrations.
 	 * This can be either a path alias (e.g. "@app/migrations/template.php")
 	 * or a file path.
@@ -89,10 +85,10 @@ class MigrateController extends Controller
 	 */
 	public $interactive = true;
 	/**
-	 * @var Connection the DB connection used for storing migration history.
-	 * @see connectionID
+	 * @var Connection|string the DB connection object or the application
+	 * component ID of the DB connection.
 	 */
-	public $db;
+	public $db = 'db';
 
 	/**
 	 * Returns the names of the global options for this command.
@@ -100,7 +96,7 @@ class MigrateController extends Controller
 	 */
 	public function globalOptions()
 	{
-		return array('migrationPath', 'migrationTable', 'connectionID', 'templateFile', 'interactive');
+		return array('migrationPath', 'migrationTable', 'db', 'templateFile', 'interactive');
 	}
 
 	/**
@@ -119,9 +115,11 @@ class MigrateController extends Controller
 			}
 			$this->migrationPath = $path;
 
-			$this->db = Yii::$app->getComponent($this->connectionID);
+			if (is_string($this->db)) {
+				$this->db = Yii::$app->getComponent($this->db);
+			}
 			if (!$this->db instanceof Connection) {
-				throw new Exception("Invalid DB connection \"{$this->connectionID}\".");
+				throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");
 			}
 
 			$version = Yii::getVersion();
@@ -277,7 +275,7 @@ class MigrateController extends Controller
 	}
 
 	/**
-	 * Upgrades or downgrades till the specified version of migration.
+	 * Upgrades or downgrades till the specified version.
 	 *
 	 * This command will first revert the specified migrations, and then apply
 	 * them again. For example,
@@ -562,25 +560,6 @@ class MigrateController extends Controller
 		return new $class(array(
 			'db' => $this->db,
 		));
-	}
-
-
-	/**
-	 * @return Connection the database connection that is used to store the migration history.
-	 * @throws Exception if the database connection ID is invalid.
-	 */
-	protected function getDb()
-	{
-		if ($this->db !== null) {
-			return $this->db;
-		} else {
-			$this->db = Yii::$app->getComponent($this->connectionID);
-			if ($this->db instanceof Connection) {
-				return $this->db;
-			} else {
-				throw new Exception("Invalid DB connection: {$this->connectionID}.");
-			}
-		}
 	}
 
 	/**

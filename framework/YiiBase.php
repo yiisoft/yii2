@@ -192,6 +192,7 @@ class YiiBase
 	 * @param boolean $throwException whether to throw an exception if the given alias is invalid.
 	 * If this is false and an invalid alias is given, false will be returned by this method.
 	 * @return string|boolean path corresponding to the alias, false if the root alias is not previously registered.
+	 * @throws InvalidParamException if the alias is invalid while $throwException is true.
 	 * @see setAlias
 	 */
 	public static function getAlias($alias, $throwException = true)
@@ -231,6 +232,7 @@ class YiiBase
 	 * - a URL (e.g. `http://www.yiiframework.com`)
 	 * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
 	 *   actual path first by calling [[getAlias]].
+	 *
 	 * @throws Exception if $path is an invalid alias
 	 * @see getAlias
 	 */
@@ -238,7 +240,7 @@ class YiiBase
 	{
 		if ($path === null) {
 			unset(self::$aliases[$alias]);
-		} elseif ($path[0] !== '@') {
+		} elseif (strncmp($path, '@', 1)) {
 			self::$aliases[$alias] = rtrim($path, '\\/');
 		} else {
 			self::$aliases[$alias] = static::getAlias($path);
@@ -504,20 +506,28 @@ class YiiBase
 
 	/**
 	 * Translates a message to the specified language.
-	 * This method supports choice format (see {@link CChoiceFormat}),
-	 * i.e., the message returned will be chosen from a few candidates according to the given
-	 * number value. This feature is mainly used to solve plural format issue in case
-	 * a message has different plural forms in some languages.
-	 * @param string $message the original message
-	 * @param array $params parameters to be applied to the message using <code>strtr</code>.
-	 * The first parameter can be a number without key.
-	 * And in this case, the method will call {@link CChoiceFormat::format} to choose
-	 * an appropriate message translation.
-	 * You can pass parameter for {@link CChoiceFormat::format}
-	 * or plural forms format without wrapping it with array.
-	 * @param string $language the target language. If null (default), the {@link CApplication::getLanguage application language} will be used.
-	 * @return string the translated message
-	 * @see CMessageSource
+	 *
+	 * The translation will be conducted according to the message category and the target language.
+	 * To specify the category of the message, prefix the message with the category name and separate it
+	 * with "|". For example, "app|hello world". If the category is not specified, the default category "app"
+	 * will be used. The actual message translation is done by a [[\yii\i18n\MessageSource|message source]].
+	 *
+	 * In case when a translated message has different plural forms (separated by "|"), this method
+	 * will also attempt to choose an appropriate one according to a given numeric value which is
+	 * specified as the first parameter (indexed by 0) in `$params`.
+	 *
+	 * For example, if a translated message is "I have an apple.|I have {n} apples.", and the first
+	 * parameter is 2, the message returned will be "I have 2 apples.". Note that the placeholder "{n}"
+	 * will be replaced with the given number.
+	 *
+	 * For more details on how plural rules are applied, please refer to:
+	 * [[http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html]]
+	 *
+	 * @param string $message the message to be translated.
+	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
+	 * @param string $language the language code (e.g. `en_US`, `en`). If this is null, the current
+	 * [[\yii\base\Application::language|application language]] will be used.
+	 * @return string the translated message.
 	 */
 	public static function t($message, $params = array(), $language = null)
 	{
