@@ -28,23 +28,25 @@ class DbDependency extends Dependency
 	public $db = 'db';
 	/**
 	 * @var string the SQL query whose result is used to determine if the dependency has been changed.
-	 * Only the first row of the query result will be used. This property must be always set, otherwise
-	 * an exception would be raised.
+	 * Only the first row of the query result will be used.
 	 */
 	public $sql;
 	/**
 	 * @var array the parameters (name=>value) to be bound to the SQL statement specified by [[sql]].
 	 */
-	public $params = array();
+	public $params;
 
 	/**
-	 * Initializes the database dependency object.
+	 * Constructor.
+	 * @param string $sql the SQL query whose result is used to determine if the dependency has been changed.
+	 * @param array $params the parameters (name=>value) to be bound to the SQL statement specified by [[sql]].
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function init()
+	public function __construct($sql, $params = array(), $config = array())
 	{
-		if ($this->sql === null) {
-			throw new InvalidConfigException('DbDependency::sql must be set.');
-		}
+		$this->sql = $sql;
+		$this->params = $params;
+		parent::__construct($config);
 	}
 
 	/**
