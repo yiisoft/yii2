@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use yii\base\Component;
+use yii\base\NotSupportedException;
 
 /**
  * Validator is the base class for all validators.
@@ -81,7 +82,7 @@ abstract class Validator extends Component
 	 */
 	public $message;
 	/**
-	 * @var array list of scenarios that the validator should be applied.
+	 * @var array list of scenarios that the validator can be applied to.
 	 */
 	public $on = array();
 	/**
@@ -172,6 +173,11 @@ abstract class Validator extends Component
 				$this->validateAttribute($object, $attribute);
 			}
 		}
+	}
+
+	public function validateValue($value)
+	{
+		throw new NotSupportedException(__CLASS__ . ' does not support validateValue().');
 	}
 
 	/**

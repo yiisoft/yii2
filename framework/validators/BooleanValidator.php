@@ -60,6 +60,15 @@ class BooleanValidator extends Validator
 		}
 	}
 
+	public function validateValue($value)
+	{
+		if ($this->allowEmpty && $this->isEmpty($value)) {
+			return;
+		}
+		return ($this->strict || $value == $this->trueValue || $value == $this->falseValue)
+				&& (!$this->strict || $value === $this->trueValue || $value === $this->falseValue);
+	}
+
 	/**
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
