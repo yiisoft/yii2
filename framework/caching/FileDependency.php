@@ -7,8 +7,6 @@
 
 namespace yii\caching;
 
-use yii\base\InvalidConfigException;
-
 /**
  * FileDependency represents a dependency based on a file's last modification time.
  *
@@ -22,19 +20,19 @@ class FileDependency extends Dependency
 {
 	/**
 	 * @var string the name of the file whose last modification time is used to
-	 * check if the dependency has been changed. This property must be always set,
-	 * otherwise an exception would be raised.
+	 * check if the dependency has been changed.
 	 */
 	public $fileName;
 
 	/**
-	 * Initializes the database dependency object.
+	 * Constructor.
+	 * @param string $fileName name of the file whose change is to be checked.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function init()
+	public function __construct($fileName = null, $config = array())
 	{
-		if ($this->file === null) {
-			throw new InvalidConfigException('FileDependency::fileName must be set.');
-		}
+		$this->fileName = $fileName;
+		parent::__construct($config);
 	}
 
 	/**
