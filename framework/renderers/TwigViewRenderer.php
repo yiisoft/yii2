@@ -20,12 +20,23 @@ use \yii\base\ViewRenderer;
  */
 class TwigViewRenderer extends ViewRenderer
 {
+	/**
+	 * @var string alias pointing to where Twig code is located.
+	 */
 	public $twigDir = '@app/vendors/Twig';
+
+	/**
+	 * @var string alias pointing to where Twig cache will be stored.
+	 */
 	public $cacheDir = '@app/runtime/Twig/cache';
+
+	/**
+	 * @var string file extension to use for template files.
+	 */
 	public $fileExtension = 'twig';
 
 	/**
-	 * @var array options
+	 * @var array Twig options
 	 * @see http://twig.sensiolabs.org/doc/api.html#environment-options
 	 */
 	public $options = array();

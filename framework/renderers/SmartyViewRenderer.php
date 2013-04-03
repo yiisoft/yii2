@@ -20,9 +20,24 @@ use \yii\base\ViewRenderer;
  */
 class SmartyViewRenderer extends ViewRenderer
 {
+	/**
+	 * @var string alias pointing to where Smarty code is located.
+	 */
 	public $smartyDir = '@app/vendors/Smarty';
+
+	/**
+	 * @var string alias pointing to where Smarty cache will be stored.
+	 */
 	public $cacheDir = '@app/runtime/Smarty/cache';
+
+	/**
+	 * @var string alias pointing to where Smarty compiled teamplates will be stored.
+	 */
 	public $compileDir = '@app/runtime/Smarty/compile';
+
+	/**
+	 * @var string file extension to use for template files
+	 */
 	public $fileExtension = 'tpl';
 
 	/** @var \Smarty */
