@@ -192,7 +192,7 @@ abstract class Validator extends Component
 	 */
 	public function validateValue($value)
 	{
-		throw new NotSupportedException(__CLASS__ . ' does not support validateValue().');
+		throw new NotSupportedException(get_class($this) . ' does not support validateValue().');
 	}
 
 	/**

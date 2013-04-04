@@ -48,6 +48,11 @@ class ExistValidator extends Validator
 	{
 		$value = $object->$attribute;
 
+		if (is_array($value)) {
+			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
+			return;
+		}
+
 		/** @var $className \yii\db\ActiveRecord */
 		$className = $this->className === null ? get_class($object) : Yii::import($this->className);
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
@@ -67,6 +72,9 @@ class ExistValidator extends Validator
 	 */
 	public function validateValue($value)
 	{
+		if (is_array($value)) {
+			return false;
+		}
 		if ($this->className === null) {
 			throw new InvalidConfigException('The "className" property must be set.');
 		}

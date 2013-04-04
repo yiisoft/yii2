@@ -51,8 +51,8 @@ class RegularExpressionValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ((!$this->not && !preg_match($this->pattern, $value)) || ($this->not && preg_match($this->pattern, $value))) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is invalid.');
+		if (!$this->validateValue($value)) {
+			$message = $this->message !== null ? $this->message : \Yii::t('yii|{attribute} is invalid.');
 			$this->addError($object, $attribute, $message);
 		}
 	}
@@ -64,8 +64,9 @@ class RegularExpressionValidator extends Validator
 	 */
 	public function validateValue($value)
 	{
-		return !$this->not && preg_match($this->pattern, $value)
-			|| $this->not && !preg_match($this->pattern, $value);
+		return !is_array($value) &&
+			(!$this->not && preg_match($this->pattern, $value)
+			|| $this->not && !preg_match($this->pattern, $value));
 	}
 
 	/**

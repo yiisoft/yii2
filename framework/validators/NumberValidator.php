@@ -61,6 +61,10 @@ class NumberValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
+		if (is_array($value)) {
+			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
+			return;
+		}
 		if ($this->integerOnly) {
 			if (!preg_match($this->integerPattern, "$value")) {
 				$message = $this->message !== null ? $this->message : Yii::t('yii|{attribute} must be an integer.');

@@ -40,6 +40,12 @@ class UniqueValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
+
+		if (is_array($value)) {
+			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
+			return;
+		}
+
 		/** @var $className \yii\db\ActiveRecord */
 		$className = $this->className === null ? get_class($object) : \Yii::import($this->className);
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;

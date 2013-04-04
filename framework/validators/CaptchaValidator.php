@@ -53,7 +53,7 @@ class CaptchaValidator extends Validator
 	public function validateValue($value)
 	{
 		$captcha = $this->getCaptchaAction();
-		return $captcha->validate($value, $this->caseSensitive);
+		return !is_array($value) && $captcha->validate($value, $this->caseSensitive);
 	}
 
 	/**
