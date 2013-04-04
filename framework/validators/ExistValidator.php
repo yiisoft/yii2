@@ -6,6 +6,8 @@
  */
 
 namespace yii\validators;
+
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -34,11 +36,6 @@ class ExistValidator extends Validator
 	 * @see className
 	 */
 	public $attributeName;
-	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
 
 	/**
 	 * Validates the attribute of the object.
@@ -46,29 +43,41 @@ class ExistValidator extends Validator
 	 *
 	 * @param \yii\db\ActiveRecord $object the object being validated
 	 * @param string $attribute the attribute being validated
-	 * @throws InvalidConfigException if table doesn't have column specified
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
 
 		/** @var $className \yii\db\ActiveRecord */
-		$className = ($this->className === null) ? get_class($object) : \Yii::import($this->className);
-		$attributeName = ($this->attributeName === null) ? $attribute : $this->attributeName;
-		$table = $className::getTableSchema();
-		if (($column = $table->getColumn($attributeName)) === null) {
-			throw new InvalidConfigException('Table "' . $table->name . '" does not have a column named "' . $attributeName . '"');
-		}
-
+		$className = $this->className === null ? get_class($object) : Yii::import($this->className);
+		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 		$query = $className::find();
-		$query->where(array($column->name => $value));
+		$query->where(array($attributeName => $value));
 		if (!$query->exists()) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} "{value}" is invalid.');
+			$message = $this->message !== null ? $this->message : Yii::t('yii|{attribute} "{value}" is invalid.');
 			$this->addError($object, $attribute, $message);
 		}
+	}
+
+	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 * @throws InvalidConfigException if either [[className]] or [[attributeName]] is not set.
+	 */
+	public function validateValue($value)
+	{
+		if ($this->className === null) {
+			throw new InvalidConfigException('The "className" property must be set.');
+		}
+		if ($this->attributeName === null) {
+			throw new InvalidConfigException('The "attributeName" property must be set.');
+		}
+		/** @var $className \yii\db\ActiveRecord */
+		$className = $this->className;
+		$query = $className::find();
+		$query->where(array($this->attributeName => $value));
+		return $query->exists();
 	}
 }
 

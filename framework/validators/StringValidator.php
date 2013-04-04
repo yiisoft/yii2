@@ -7,6 +7,8 @@
 
 namespace yii\validators;
 
+use Yii;
+
 /**
  * StringValidator validates that the attribute value is of certain length.
  *
@@ -46,19 +48,22 @@ class StringValidator extends Validator
 	 */
 	public $notEqual;
 	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
-	/**
-	 * @var mixed the encoding of the string value to be validated (e.g. 'UTF-8').
-	 * This property is used only when mbstring PHP extension is enabled.
-	 * The value of this property will be used as the 2nd parameter of the
-	 * mb_strlen() function. If this property is not set, the application charset
-	 * will be used. If this property is set false, then strlen() will be used even
-	 * if mbstring is enabled.
+	 * @var string the encoding of the string value to be validated (e.g. 'UTF-8').
+	 * If this property is not set, [[\yii\base\Application::charset]] will be used.
 	 */
 	public $encoding;
+
+
+	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->encoding === null) {
+			$this->encoding = Yii::$app->charset;
+		}
+	}
 
 	/**
 	 * Validates the attribute of the object.
@@ -69,34 +74,43 @@ class StringValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
 
 		if (!is_string($value)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} must be a string.');
+			$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be a string.');
 			$this->addError($object, $attribute, $message);
 			return;
 		}
 
-		if (function_exists('mb_strlen') && $this->encoding !== false) {
-			$length = mb_strlen($value, $this->encoding ? $this->encoding : \Yii::$app->charset);
-		} else {
-			$length = strlen($value);
-		}
+		$length = mb_strlen($value, $this->encoding);
 
 		if ($this->min !== null && $length < $this->min) {
-			$message = ($this->tooShort !== null) ? $this->tooShort : \Yii::t('yii|{attribute} is too short (minimum is {min} characters).');
+			$message = ($this->tooShort !== null) ? $this->tooShort : Yii::t('yii|{attribute} should contain at least {min} characters.');
 			$this->addError($object, $attribute, $message, array('{min}' => $this->min));
 		}
 		if ($this->max !== null && $length > $this->max) {
-			$message = ($this->tooLong !== null) ? $this->tooLong : \Yii::t('yii|{attribute} is too long (maximum is {max} characters).');
+			$message = ($this->tooLong !== null) ? $this->tooLong : Yii::t('yii|{attribute} should contain at most {max} characters.');
 			$this->addError($object, $attribute, $message, array('{max}' => $this->max));
 		}
 		if ($this->is !== null && $length !== $this->is) {
-			$message = ($this->notEqual !== null) ? $this->notEqual : \Yii::t('yii|{attribute} is of the wrong length (should be {length} characters).');
+			$message = ($this->notEqual !== null) ? $this->notEqual : Yii::t('yii|{attribute} should contain {length} characters.');
 			$this->addError($object, $attribute, $message, array('{length}' => $this->is));
 		}
+	}
+
+	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 */
+	public function validateValue($value)
+	{
+		if (!is_string($value)) {
+			return false;
+		}
+		$length = mb_strlen($value, $this->encoding);
+		return ($this->min === null || $length >= $this->min)
+			&& ($this->max === null || $length <= $this->max)
+			&& ($this->is === null || $length === $this->is);
 	}
 
 	/**
@@ -111,7 +125,7 @@ class StringValidator extends Validator
 		$value = $object->$attribute;
 
 		if (($notEqual = $this->notEqual) === null) {
-			$notEqual = \Yii::t('yii|{attribute} is of the wrong length (should be {length} characters).');
+			$notEqual = Yii::t('yii|{attribute} should contain {length} characters.');
 		}
 		$notEqual = strtr($notEqual, array(
 			'{attribute}' => $label,
@@ -120,7 +134,7 @@ class StringValidator extends Validator
 		));
 
 		if (($tooShort = $this->tooShort) === null) {
-			$tooShort = \Yii::t('yii|{attribute} is too short (minimum is {min} characters).');
+			$tooShort = Yii::t('yii|{attribute} should contain at least {min} characters.');
 		}
 		$tooShort = strtr($tooShort, array(
 			'{attribute}' => $label,
@@ -129,7 +143,7 @@ class StringValidator extends Validator
 		));
 
 		if (($tooLong = $this->tooLong) === null) {
-			$tooLong = \Yii::t('yii|{attribute} is too long (maximum is {max} characters).');
+			$tooLong = Yii::t('yii|{attribute} should contain at most {max} characters.');
 		}
 		$tooLong = strtr($tooLong, array(
 			'{attribute}' => $label,

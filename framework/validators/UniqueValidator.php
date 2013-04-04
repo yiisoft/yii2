@@ -17,11 +17,6 @@ use yii\base\InvalidConfigException;
 class UniqueValidator extends Validator
 {
 	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
-	/**
 	 * @var string the ActiveRecord class name or alias of the class
 	 * that should be used to look for the attribute value being validated.
 	 * Defaults to null, meaning using the ActiveRecord class of the attribute being validated.
@@ -45,10 +40,6 @@ class UniqueValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
-
 		/** @var $className \yii\db\ActiveRecord */
 		$className = $this->className === null ? get_class($object) : \Yii::import($this->className);
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;

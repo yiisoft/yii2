@@ -42,11 +42,6 @@ class EmailValidator extends Validator
 	 * Defaults to false.
 	 */
 	public $checkPort = false;
-	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
 
 	/**
 	 * Validates the attribute of the object.
@@ -57,9 +52,6 @@ class EmailValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
 		if (!$this->validateValue($value)) {
 			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid email address.');
 			$this->addError($object, $attribute, $message);
@@ -67,11 +59,9 @@ class EmailValidator extends Validator
 	}
 
 	/**
-	 * Validates a static value to see if it is a valid email.
-	 * Note that this method does not respect [[allowEmpty]] property.
-	 * This method is provided so that you can call it directly without going through the model validation rule mechanism.
-	 * @param mixed $value the value to be validated
-	 * @return boolean whether the value is a valid email
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
 	 */
 	public function validateValue($value)
 	{

@@ -29,39 +29,49 @@ class RangeValidator extends Validator
 	 */
 	public $strict = false;
 	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
-	/**
 	 * @var boolean whether to invert the validation logic. Defaults to false. If set to true,
 	 * the attribute value should NOT be among the list of values defined via [[range]].
 	 **/
  	public $not = false;
 
 	/**
+	 * Initializes the validator.
+	 * @throws InvalidConfigException if [[range]] is not set.
+	 */
+	public function init()
+	{
+		parent::init();
+		if (!is_array($this->range)) {
+			throw new InvalidConfigException('The "range" property must be set.');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
-	 * @throws InvalidConfigException if the "range" property is not an array
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
-		if (!is_array($this->range)) {
-			throw new InvalidConfigException('The "range" property must be specified as an array.');
-		}
+		$message = $this->message !== null ? $this->message : \Yii::t('yii|{attribute} is invalid.');
 		if (!$this->not && !in_array($value, $this->range, $this->strict)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} should be in the list.');
 			$this->addError($object, $attribute, $message);
 		} elseif ($this->not && in_array($value, $this->range, $this->strict)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} should NOT be in the list.');
 			$this->addError($object, $attribute, $message);
 		}
+	}
+
+	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 */
+	public function validateValue($value)
+	{
+		return !$this->not && in_array($value, $this->range, $this->strict)
+			|| $this->not && !in_array($value, $this->range, $this->strict);
 	}
 
 	/**
@@ -69,16 +79,11 @@ class RangeValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script.
-	 * @throws InvalidConfigException if the "range" property is not an array
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		if (!is_array($this->range)) {
-			throw new InvalidConfigException('The "range" property must be specified as an array.');
-		}
-
 		if (($message = $this->message) === null) {
-			$message = $this->not ? \Yii::t('yii|{attribute} should NOT be in the list.') : \Yii::t('yii|{attribute} should be in the list.');
+			$message = \Yii::t('yii|{attribute} is invalid.');
 		}
 		$message = strtr($message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),

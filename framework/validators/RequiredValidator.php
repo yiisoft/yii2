@@ -16,6 +16,10 @@ namespace yii\validators;
 class RequiredValidator extends Validator
 {
 	/**
+	 * @var boolean whether to skip this validator if the value being validated is empty.
+	 */
+	public $skipOnEmpty = false;
+	/**
 	 * @var mixed the desired value that the attribute must have.
 	 * If this is null, the validator will validate that the specified attribute is not empty.
 	 * If this is set as a value that is not null, the validator will validate that
@@ -56,6 +60,23 @@ class RequiredValidator extends Validator
 				));
 			}
 		}
+	}
+
+	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 */
+	public function validateValue($value)
+	{
+		if ($this->requiredValue === null) {
+			if ($this->strict && $value !== null || !$this->strict && !$this->isEmpty($value, true)) {
+				return true;
+			}
+		} elseif (!$this->strict && $value == $this->requiredValue || $this->strict && $value === $this->requiredValue) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

@@ -580,8 +580,9 @@ abstract class Module extends Component
 	 * instance of it.
 	 *
 	 * @param string $route the route consisting of module, controller and action IDs.
-	 * @return array|boolean if the controller is created successfully, it will be returned together
-	 * with the remainder of the route which represents the action ID. Otherwise false will be returned.
+	 * @return array|boolean If the controller is created successfully, it will be returned together
+	 * with the requested action ID. Otherwise false will be returned.
+	 * @throws InvalidConfigException if the controller class and its file do not match.
 	 */
 	public function createController($route)
 	{
