@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use Yii;
+
 /**
  * Component is the base class that provides the *property*, *event* and *behavior* features.
  *
@@ -17,16 +19,16 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends Object
 {
 	/**
-	 * @var Vector[] the attached event handlers (event name => handlers)
+	 * @var array the attached event handlers (event name => handlers)
 	 */
-	private $_e;
+	private $_events;
 	/**
 	 * @var Behavior[] the attached behaviors (behavior name => behavior)
 	 */
-	private $_b;
+	private $_behaviors;
 
 	/**
 	 * Returns the value of a component property.
@@ -52,7 +54,7 @@ class Component extends \yii\base\Object
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
+			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canGetProperty($name)) {
 					return $behavior->$name;
 				}
@@ -87,17 +89,16 @@ class Component extends \yii\base\Object
 			return;
 		} elseif (strncmp($name, 'on ', 3) === 0) {
 			// on event: attach event handler
-			$name = trim(substr($name, 3));
-			$this->getEventHandlers($name)->add($value);
+			$this->on(trim(substr($name, 3)), $value);
 			return;
 		} elseif (strncmp($name, 'as ', 3) === 0) {
 			// as behavior: attach behavior
 			$name = trim(substr($name, 3));
-			$this->attachBehavior($name, $value instanceof Behavior ? $value : \Yii::createObject($value));
+			$this->attachBehavior($name, $value instanceof Behavior ? $value : Yii::createObject($value));
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
+			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canSetProperty($name)) {
 					$behavior->$name = $value;
 					return;
@@ -131,7 +132,7 @@ class Component extends \yii\base\Object
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
+			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canGetProperty($name)) {
 					return $behavior->$name !== null;
 				}
@@ -161,7 +162,7 @@ class Component extends \yii\base\Object
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
+			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canSetProperty($name)) {
 					$behavior->$name = null;
 					return;
@@ -198,7 +199,7 @@ class Component extends \yii\base\Object
 		}
 
 		$this->ensureBehaviors();
-		foreach ($this->_b as $object) {
+		foreach ($this->_behaviors as $object) {
 			if (method_exists($object, $name)) {
 				return call_user_func_array(array($object, $name), $params);
 			}
@@ -213,8 +214,8 @@ class Component extends \yii\base\Object
 	 */
 	public function __clone()
 	{
-		$this->_e = null;
-		$this->_b = null;
+		$this->_events = null;
+		$this->_behaviors = null;
 	}
 
 	/**
@@ -259,7 +260,7 @@ class Component extends \yii\base\Object
 			return true;
 		} else {
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
+			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canGetProperty($name, $checkVar)) {
 					return true;
 				}
@@ -289,7 +290,7 @@ class Component extends \yii\base\Object
 			return true;
 		} else {
 			$this->ensureBehaviors();
-			foreach ($this->_b as $behavior) {
+			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canSetProperty($name, $checkVar)) {
 					return true;
 				}
@@ -337,44 +338,17 @@ class Component extends \yii\base\Object
 	public function hasEventHandlers($name)
 	{
 		$this->ensureBehaviors();
-		return isset($this->_e[$name]) && $this->_e[$name]->getCount();
-	}
-
-	/**
-	 * Returns the list of attached event handlers for an event.
-	 * You may manipulate the returned [[Vector]] object by adding or removing handlers.
-	 * For example,
-	 *
-	 * ~~~
-	 * $component->getEventHandlers($eventName)->insertAt(0, $eventHandler);
-	 * ~~~
-	 *
-	 * @param string $name the event name
-	 * @return Vector list of attached event handlers for the event
-	 */
-	public function getEventHandlers($name)
-	{
-		if (!isset($this->_e[$name])) {
-			$this->_e[$name] = new Vector;
-		}
-		$this->ensureBehaviors();
-		return $this->_e[$name];
+		return !empty($this->_events[$name]);
 	}
 
 	/**
 	 * Attaches an event handler to an event.
 	 *
-	 * This is equivalent to the following code:
-	 *
-	 * ~~~
-	 * $component->getEventHandlers($eventName)->add($eventHandler);
-	 * ~~~
-	 *
 	 * An event handler must be a valid PHP callback. The followings are
 	 * some examples:
 	 *
 	 * ~~~
-	 * function($event) { ... }         // anonymous function
+	 * function ($event) { ... }         // anonymous function
 	 * array($object, 'handleClick')    // $object->handleClick()
 	 * array('Page', 'handleClick')     // Page::handleClick()
 	 * 'handleClick'                    // global function handleClick()
@@ -383,31 +357,53 @@ class Component extends \yii\base\Object
 	 * An event handler must be defined with the following signature,
 	 *
 	 * ~~~
-	 * function handlerName($event) {}
+	 * function ($event)
 	 * ~~~
 	 *
 	 * where `$event` is an [[Event]] object which includes parameters associated with the event.
 	 *
 	 * @param string $name the event name
-	 * @param string|array|\Closure $handler the event handler
+	 * @param callback $handler the event handler
+	 * @param mixed $data the data to be passed to the event handler when the event is triggered.
+	 * When the event handler is invoked, this data can be accessed via [[Event::data]].
 	 * @see off()
 	 */
-	public function on($name, $handler)
+	public function on($name, $handler, $data = null)
 	{
-		$this->getEventHandlers($name)->add($handler);
+		$this->ensureBehaviors();
+		$this->_events[$name][] = array($handler, $data);
 	}
 
 	/**
 	 * Detaches an existing event handler from this component.
 	 * This method is the opposite of [[on()]].
 	 * @param string $name event name
-	 * @param string|array|\Closure $handler the event handler to be removed
+	 * @param callback $handler the event handler to be removed.
+	 * If it is null, all handlers attached to the named event will be removed.
 	 * @return boolean if a handler is found and detached
 	 * @see on()
 	 */
-	public function off($name, $handler)
+	public function off($name, $handler = null)
 	{
-		return $this->getEventHandlers($name)->remove($handler) !== false;
+		$this->ensureBehaviors();
+		if (isset($this->_events[$name])) {
+			if ($handler === null) {
+				$this->_events[$name] = array();
+			} else {
+				$removed = false;
+				foreach ($this->_events[$name] as $i => $event) {
+					if ($event[0] === $handler) {
+						unset($this->_events[$name][$i]);
+						$removed = true;
+					}
+				}
+				if ($removed) {
+					$this->_events[$name] = array_values($this->_events[$name]);
+				}
+				return $removed;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -420,7 +416,7 @@ class Component extends \yii\base\Object
 	public function trigger($name, $event = null)
 	{
 		$this->ensureBehaviors();
-		if (isset($this->_e[$name]) && $this->_e[$name]->getCount()) {
+		if (!empty($this->_events[$name])) {
 			if ($event === null) {
 				$event = new Event;
 			}
@@ -429,8 +425,9 @@ class Component extends \yii\base\Object
 			}
 			$event->handled = false;
 			$event->name = $name;
-			foreach ($this->_e[$name] as $handler) {
-				call_user_func($handler, $event);
+			foreach ($this->_events[$name] as $handler) {
+				$event->data = $handler[1];
+				call_user_func($handler[0], $event);
 				// stop further handling if the event is handled
 				if ($event instanceof Event && $event->handled) {
 					return;
@@ -447,7 +444,7 @@ class Component extends \yii\base\Object
 	public function getBehavior($name)
 	{
 		$this->ensureBehaviors();
-		return isset($this->_b[$name]) ? $this->_b[$name] : null;
+		return isset($this->_behaviors[$name]) ? $this->_behaviors[$name] : null;
 	}
 
 	/**
@@ -457,20 +454,20 @@ class Component extends \yii\base\Object
 	public function getBehaviors()
 	{
 		$this->ensureBehaviors();
-		return $this->_b;
+		return $this->_behaviors;
 	}
 
 	/**
 	 * Attaches a behavior to this component.
 	 * This method will create the behavior object based on the given
 	 * configuration. After that, the behavior object will be attached to
-	 * this component by calling the [[Behavior::attach]] method.
+	 * this component by calling the [[Behavior::attach()]] method.
 	 * @param string $name the name of the behavior.
 	 * @param string|array|Behavior $behavior the behavior configuration. This can be one of the following:
 	 *
 	 *  - a [[Behavior]] object
 	 *  - a string specifying the behavior class
-	 *  - an object configuration array that will be passed to [[\Yii::createObject()]] to create the behavior object.
+	 *  - an object configuration array that will be passed to [[Yii::createObject()]] to create the behavior object.
 	 *
 	 * @return Behavior the behavior object
 	 * @see detachBehavior
@@ -498,15 +495,15 @@ class Component extends \yii\base\Object
 
 	/**
 	 * Detaches a behavior from the component.
-	 * The behavior's [[Behavior::detach]] method will be invoked.
+	 * The behavior's [[Behavior::detach()]] method will be invoked.
 	 * @param string $name the behavior's name.
 	 * @return Behavior the detached behavior. Null if the behavior does not exist.
 	 */
 	public function detachBehavior($name)
 	{
-		if (isset($this->_b[$name])) {
-			$behavior = $this->_b[$name];
-			unset($this->_b[$name]);
+		if (isset($this->_behaviors[$name])) {
+			$behavior = $this->_behaviors[$name];
+			unset($this->_behaviors[$name]);
 			$behavior->detach();
 			return $behavior;
 		} else {
@@ -519,12 +516,12 @@ class Component extends \yii\base\Object
 	 */
 	public function detachBehaviors()
 	{
-		if ($this->_b !== null) {
-			foreach ($this->_b as $name => $behavior) {
+		if ($this->_behaviors !== null) {
+			foreach ($this->_behaviors as $name => $behavior) {
 				$this->detachBehavior($name);
 			}
 		}
-		$this->_b = array();
+		$this->_behaviors = array();
 	}
 
 	/**
@@ -532,8 +529,8 @@ class Component extends \yii\base\Object
 	 */
 	public function ensureBehaviors()
 	{
-		if ($this->_b === null) {
-			$this->_b = array();
+		if ($this->_behaviors === null) {
+			$this->_behaviors = array();
 			foreach ($this->behaviors() as $name => $behavior) {
 				$this->attachBehaviorInternal($name, $behavior);
 			}
@@ -549,12 +546,12 @@ class Component extends \yii\base\Object
 	private function attachBehaviorInternal($name, $behavior)
 	{
 		if (!($behavior instanceof Behavior)) {
-			$behavior = \Yii::createObject($behavior);
+			$behavior = Yii::createObject($behavior);
 		}
-		if (isset($this->_b[$name])) {
-			$this->_b[$name]->detach();
+		if (isset($this->_behaviors[$name])) {
+			$this->_behaviors[$name]->detach();
 		}
 		$behavior->attach($this);
-		return $this->_b[$name] = $behavior;
+		return $this->_behaviors[$name] = $behavior;
 	}
 }
