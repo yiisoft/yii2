@@ -245,8 +245,9 @@ abstract class Validator extends Component
 	 */
 	public function addError($object, $attribute, $message, $params = array())
 	{
+		$value = $object->$attribute;
 		$params['{attribute}'] = $object->getAttributeLabel($attribute);
-		$params['{value}'] = $object->$attribute;
+		$params['{value}'] = is_array($value) ? 'array()' : $value;
 		$object->addError($attribute, strtr($message, $params));
 	}
 

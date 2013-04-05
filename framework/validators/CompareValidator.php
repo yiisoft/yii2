@@ -59,6 +59,45 @@ class CompareValidator extends Validator
 	 */
 	public $operator = '=';
 
+
+	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			switch ($this->operator) {
+				case '==':
+					$this->message = Yii::t('yii|{attribute} must be repeated exactly.');
+					break;
+				case '===':
+					$this->message = Yii::t('yii|{attribute} must be repeated exactly.');
+					break;
+				case '!=':
+					$this->message = Yii::t('yii|{attribute} must not be equal to "{compareValue}".');
+					break;
+				case '!==':
+					$this->message = Yii::t('yii|{attribute} must not be equal to "{compareValue}".');
+					break;
+				case '>':
+					$this->message = Yii::t('yii|{attribute} must be greater than "{compareValue}".');
+					break;
+				case '>=':
+					$this->message = Yii::t('yii|{attribute} must be greater than or equal to "{compareValue}".');
+					break;
+				case '<':
+					$this->message = Yii::t('yii|{attribute} must be less than "{compareValue}".');
+					break;
+				case '<=':
+					$this->message = Yii::t('yii|{attribute} must be less than or equal to "{compareValue}".');
+					break;
+				default:
+					throw new InvalidConfigException("Unknown operator: {$this->operator}");
+			}
+		}
+	}
+
 	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
@@ -69,6 +108,10 @@ class CompareValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
+		if (is_array($value)) {
+			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
+			return;
+		}
 		if ($this->compareValue !== null) {
 			$compareLabel = $compareValue = $this->compareValue;
 		} else {
@@ -78,56 +121,21 @@ class CompareValidator extends Validator
 		}
 
 		switch ($this->operator) {
-			case '==':
-				if ($value != $compareValue) {
-					$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be repeated exactly.');
-					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareLabel));
-				}
-				break;
-			case '===':
-				if ($value !== $compareValue) {
-					$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be repeated exactly.');
-					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareLabel));
-				}
-				break;
-			case '!=':
-				if ($value == $compareValue) {
-					$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must not be equal to "{compareValue}".');
-					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareLabel, '{compareValue}' => $compareValue));
-				}
-				break;
-			case '!==':
-				if ($value === $compareValue) {
-					$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must not be equal to "{compareValue}".');
-					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareLabel, '{compareValue}' => $compareValue));
-				}
-				break;
-			case '>':
-				if ($value <= $compareValue) {
-					$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be greater than "{compareValue}".');
-					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareLabel, '{compareValue}' => $compareValue));
-				}
-				break;
-			case '>=':
-				if ($value < $compareValue) {
-					$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be greater than or equal to "{compareValue}".');
-					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareLabel, '{compareValue}' => $compareValue));
-				}
-				break;
-			case '<':
-				if ($value >= $compareValue) {
-					$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be less than "{compareValue}".');
-					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareLabel, '{compareValue}' => $compareValue));
-				}
-				break;
-			case '<=':
-				if ($value > $compareValue) {
-					$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be less than or equal to "{compareValue}".');
-					$this->addError($object, $attribute, $message, array('{compareAttribute}' => $compareLabel, '{compareValue}' => $compareValue));
-				}
-				break;
-			default:
-				throw new InvalidConfigException("Unknown operator: {$this->operator}");
+			case '==': $valid = $value == $compareValue; break;
+			case '===': $valid = $value === $compareValue; break;
+			case '!=': $valid = $value != $compareValue; break;
+			case '!==': $valid = $value !== $compareValue; break;
+			case '>': $valid = $value > $compareValue; break;
+			case '>=': $valid = $value >= $compareValue; break;
+			case '<': $valid = $value < $compareValue; break;
+			case '<=': $valid = $value <= $compareValue; break;
+			default: $valid = false; break;
+		}
+		if (!$valid) {
+			$this->addError($object, $attribute, $this->message, array(
+				'{compareAttribute}' => $compareLabel,
+				'{compareValue}' => $compareValue,
+			));
 		}
 	}
 
@@ -135,6 +143,7 @@ class CompareValidator extends Validator
 	 * Validates the given value.
 	 * @param mixed $value the value to be validated.
 	 * @return boolean whether the value is valid.
+	 * @throws InvalidConfigException if [[compareValue]] is not set.
 	 */
 	public function validateValue($value)
 	{
@@ -151,8 +160,6 @@ class CompareValidator extends Validator
 			case '>=': return $value >= $this->compareValue;
 			case '<': return $value < $this->compareValue;
 			case '<=': return $value <= $this->compareValue;
-			default:
-				throw new InvalidConfigException("Unknown operator \"{$this->operator}\"");
 		}
 	}
 
@@ -173,51 +180,8 @@ class CompareValidator extends Validator
 			$compareValue = "\$('#" . (CHtml::activeId($object, $compareAttribute)) . "').val()";
 			$compareLabel = $object->getAttributeLabel($compareAttribute);
 		}
-
-		$message = $this->message;
-		switch ($this->operator) {
-			case '=':
-			case '==':
-				if ($message === null) {
-					$message = Yii::t('yii|{attribute} must be repeated exactly.');
-				}
-				$condition = 'value!=' . $compareValue;
-				break;
-			case '!=':
-				if ($message === null) {
-					$message = Yii::t('yii|{attribute} must not be equal to "{compareValue}".');
-				}
-				$condition = 'value==' . $compareValue;
-				break;
-			case '>':
-				if ($message === null) {
-					$message = Yii::t('yii|{attribute} must be greater than "{compareValue}".');
-				}
-				$condition = 'value<=' . $compareValue;
-				break;
-			case '>=':
-				if ($message === null) {
-					$message = Yii::t('yii|{attribute} must be greater than or equal to "{compareValue}".');
-				}
-				$condition = 'value<' . $compareValue;
-				break;
-			case '<':
-				if ($message === null) {
-					$message = Yii::t('yii|{attribute} must be less than "{compareValue}".');
-				}
-				$condition = 'value>=' . $compareValue;
-				break;
-			case '<=':
-				if ($message === null) {
-					$message = Yii::t('yii|{attribute} must be less than or equal to "{compareValue}".');
-				}
-				$condition = 'value>' . $compareValue;
-				break;
-			default:
-				throw new InvalidConfigException("Unknown operator: {$this->operator}");
-		}
-
-		$message = strtr($message, array(
+		$condition = "value {$this->operator} $compareValue";
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{compareValue}' => $compareLabel,
 		));

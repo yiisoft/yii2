@@ -53,6 +53,24 @@ class NumberValidator extends Validator
 
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = $this->integerOnly ? Yii::t('yii|{attribute} must be an integer.')
+				: Yii::t('yii|{attribute} must be a number.');
+		}
+		if ($this->min !== null && $this->tooSmall === null) {
+			$this->tooSmall = Yii::t('yii|{attribute} must be no less than {min}.');
+		}
+		if ($this->max !== null && $this->tooBig === null) {
+			$this->tooBig = Yii::t('yii|{attribute} must be no greater than {max}.');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
@@ -65,24 +83,15 @@ class NumberValidator extends Validator
 			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
 			return;
 		}
-		if ($this->integerOnly) {
-			if (!preg_match($this->integerPattern, "$value")) {
-				$message = $this->message !== null ? $this->message : Yii::t('yii|{attribute} must be an integer.');
-				$this->addError($object, $attribute, $message);
-			}
-		} else {
-			if (!preg_match($this->numberPattern, "$value")) {
-				$message = $this->message !== null ? $this->message : Yii::t('yii|{attribute} must be a number.');
-				$this->addError($object, $attribute, $message);
-			}
+		$pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
+		if (!preg_match($pattern, "$value")) {
+			$this->addError($object, $attribute, $this->message);
 		}
 		if ($this->min !== null && $value < $this->min) {
-			$message = $this->tooSmall !== null ? $this->tooSmall : Yii::t('yii|{attribute} must be no less than {min}.');
-			$this->addError($object, $attribute, $message, array('{min}' => $this->min));
+			$this->addError($object, $attribute, $this->tooSmall, array('{min}' => $this->min));
 		}
 		if ($this->max !== null && $value > $this->max) {
-			$message = $this->tooBig !== null ? $this->tooBig : Yii::t('yii|{attribute} must be no greater than {max}.');
-			$this->addError($object, $attribute, $message, array('{max}' => $this->max));
+			$this->addError($object, $attribute, $this->tooBig, array('{max}' => $this->max));
 		}
 	}
 
@@ -107,12 +116,7 @@ class NumberValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$label = $object->getAttributeLabel($attribute);
-
-		if (($message = $this->message) === null) {
-			$message = $this->integerOnly ? Yii::t('yii|{attribute} must be an integer.')
-					: Yii::t('yii|{attribute} must be a number.');
-		}
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $label,
 		));
 
@@ -123,10 +127,7 @@ if(!value.match($pattern)) {
 }
 ";
 		if ($this->min !== null) {
-			if (($tooSmall = $this->tooSmall) === null) {
-				$tooSmall = Yii::t('yii|{attribute} must be no less than {min}.');
-			}
-			$tooSmall = strtr($tooSmall, array(
+			$tooSmall = strtr($this->tooSmall, array(
 				'{attribute}' => $label,
 				'{min}' => $this->min,
 			));
@@ -138,10 +139,7 @@ if(value<{$this->min}) {
 ";
 		}
 		if ($this->max !== null) {
-			if (($tooBig = $this->tooBig) === null) {
-				$tooBig = Yii::t('yii|{attribute} must be no greater than {max}.');
-			}
-			$tooBig = strtr($tooBig, array(
+			$tooBig = strtr($this->tooBig, array(
 				'{attribute}' => $label,
 				'{max}' => $this->max,
 			));
