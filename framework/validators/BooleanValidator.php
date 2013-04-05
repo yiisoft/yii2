@@ -36,6 +36,17 @@ class BooleanValidator extends Validator
 	public $strict = false;
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} must be either "{true}" or "{false}".');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
@@ -45,8 +56,7 @@ class BooleanValidator extends Validator
 	{
 		$value = $object->$attribute;
 		if (!$this->validateValue($value)) {
-			$message = $this->message !== null ? $this->message : Yii::t('yii|{attribute} must be either "{true}" or "{false}".');
-			$this->addError($object, $attribute, $message, array(
+			$this->addError($object, $attribute, $this->message, array(
 				'{true}' => $this->trueValue,
 				'{false}' => $this->falseValue,
 			));
@@ -72,15 +82,14 @@ class BooleanValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be either "{true}" or "{false}".');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 			'{true}' => $this->trueValue,
 			'{false}' => $this->falseValue,
 		));
 		return "
-if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . "value!=" . json_encode($this->trueValue) . " && value!=" . json_encode($this->falseValue) . ") {
+if(" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . "value!=" . json_encode($this->trueValue) . " && value!=" . json_encode($this->falseValue) . ") {
 	messages.push(" . json_encode($message) . ");
 }
 ";

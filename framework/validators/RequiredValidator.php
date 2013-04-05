@@ -7,6 +7,8 @@
 
 namespace yii\validators;
 
+use Yii;
+
 /**
  * RequiredValidator validates that the specified attribute does not have null or empty value.
  *
@@ -39,6 +41,17 @@ class RequiredValidator extends Validator
 	public $strict = false;
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = $this->requiredValue === null ? Yii::t('yii|{attribute} is invalid.') : Yii::t('yii|{attribute} must be "{requiredValue}".');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
@@ -49,13 +62,11 @@ class RequiredValidator extends Validator
 		$value = $object->$attribute;
 		if ($this->requiredValue === null) {
 			if ($this->strict && $value === null || !$this->strict && $this->isEmpty($value, true)) {
-				$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} cannot be blank.');
-				$this->addError($object, $attribute, $message);
+				$this->addError($object, $attribute, $this->message);
 			}
 		} else {
 			if (!$this->strict && $value != $this->requiredValue || $this->strict && $value !== $this->requiredValue) {
-				$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} must be "{requiredValue}".');
-				$this->addError($object, $attribute, $message, array(
+				$this->addError($object, $attribute, $this->message, array(
 					'{requiredValue}' => $this->requiredValue,
 				));
 			}
@@ -87,12 +98,8 @@ class RequiredValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = $this->message;
 		if ($this->requiredValue !== null) {
-			if ($message === null) {
-				$message = \Yii::t('yii|{attribute} must be "{requiredValue}".');
-			}
-			$message = strtr($message, array(
+			$message = strtr($this->message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
 				'{requiredValue}' => $this->requiredValue,
@@ -103,10 +110,7 @@ if (value != " . json_encode($this->requiredValue) . ") {
 }
 ";
 		} else {
-			if ($message === null) {
-				$message = \Yii::t('yii|{attribute} cannot be blank.');
-			}
-			$message = strtr($message, array(
+			$message = strtr($this->message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
 			));

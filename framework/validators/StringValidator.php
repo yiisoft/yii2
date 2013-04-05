@@ -63,6 +63,18 @@ class StringValidator extends Validator
 		if ($this->encoding === null) {
 			$this->encoding = Yii::$app->charset;
 		}
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} must be a string.');
+		}
+		if ($this->min !== null && $this->tooShort === null) {
+			$this->tooShort = Yii::t('yii|{attribute} should contain at least {min} characters.');
+		}
+		if ($this->max !== null && $this->tooLong === null) {
+			$this->tooLong = Yii::t('yii|{attribute} should contain at most {max} characters.');
+		}
+		if ($this->is !== null && $this->notEqual === null) {
+			$this->notEqual = Yii::t('yii|{attribute} should contain {length} characters.');
+		}
 	}
 
 	/**
@@ -76,24 +88,20 @@ class StringValidator extends Validator
 		$value = $object->$attribute;
 
 		if (!is_string($value)) {
-			$message = ($this->message !== null) ? $this->message : Yii::t('yii|{attribute} must be a string.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 			return;
 		}
 
 		$length = mb_strlen($value, $this->encoding);
 
 		if ($this->min !== null && $length < $this->min) {
-			$message = ($this->tooShort !== null) ? $this->tooShort : Yii::t('yii|{attribute} should contain at least {min} characters.');
-			$this->addError($object, $attribute, $message, array('{min}' => $this->min));
+			$this->addError($object, $attribute, $this->tooShort, array('{min}' => $this->min));
 		}
 		if ($this->max !== null && $length > $this->max) {
-			$message = ($this->tooLong !== null) ? $this->tooLong : Yii::t('yii|{attribute} should contain at most {max} characters.');
-			$this->addError($object, $attribute, $message, array('{max}' => $this->max));
+			$this->addError($object, $attribute, $this->tooLong, array('{max}' => $this->max));
 		}
 		if ($this->is !== null && $length !== $this->is) {
-			$message = ($this->notEqual !== null) ? $this->notEqual : Yii::t('yii|{attribute} should contain {length} characters.');
-			$this->addError($object, $attribute, $message, array('{length}' => $this->is));
+			$this->addError($object, $attribute, $this->notEqual, array('{length}' => $this->is));
 		}
 	}
 
@@ -124,28 +132,19 @@ class StringValidator extends Validator
 		$label = $object->getAttributeLabel($attribute);
 		$value = $object->$attribute;
 
-		if (($notEqual = $this->notEqual) === null) {
-			$notEqual = Yii::t('yii|{attribute} should contain {length} characters.');
-		}
-		$notEqual = strtr($notEqual, array(
+		$notEqual = strtr($this->notEqual, array(
 			'{attribute}' => $label,
 			'{value}' => $value,
 			'{length}' => $this->is,
 		));
 
-		if (($tooShort = $this->tooShort) === null) {
-			$tooShort = Yii::t('yii|{attribute} should contain at least {min} characters.');
-		}
-		$tooShort = strtr($tooShort, array(
+		$tooShort = strtr($this->tooShort, array(
 			'{attribute}' => $label,
 			'{value}' => $value,
 			'{min}' => $this->min,
 		));
 
-		if (($tooLong = $this->tooLong) === null) {
-			$tooLong = Yii::t('yii|{attribute} should contain at most {max} characters.');
-		}
-		$tooLong = strtr($tooLong, array(
+		$tooLong = strtr($this->tooLong, array(
 			'{attribute}' => $label,
 			'{value}' => $value,
 			'{max}' => $this->max,
@@ -174,7 +173,7 @@ if(value.length!= {$this->is}) {
 ";
 		}
 
-		if ($this->allowEmpty) {
+		if ($this->skipOnEmpty) {
 			$js = "
 if($.trim(value)!='') {
 	$js

@@ -32,6 +32,17 @@ class DateValidator extends Validator
 	public $timestampAttribute;
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|The format of {attribute} is invalid.');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
@@ -40,10 +51,13 @@ class DateValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
+		if (is_array($value)) {
+			$this->addError($object, $attribute, $this->message);
+			return;
+		}
 		$date = DateTime::createFromFormat($this->format, $value);
 		if ($date === false) {
-			$message = $this->message !== null ? $this->message : Yii::t('yii|The format of {attribute} is invalid.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		} elseif ($this->timestampAttribute !== false) {
 			$object->{$this->timestampAttribute} = $date->getTimestamp();
 		}

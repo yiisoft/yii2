@@ -7,6 +7,8 @@
 
 namespace yii\validators;
 
+use Yii;
+
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.
  *
@@ -33,6 +35,18 @@ class UrlValidator extends Validator
 	 **/
 	public $defaultScheme;
 
+
+	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} is not a valid URL.');
+		}
+	}
+
 	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
@@ -47,8 +61,7 @@ class UrlValidator extends Validator
 				$object->$attribute = $this->defaultScheme . '://' . $value;
 			}
 		} else {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid URL.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
@@ -87,8 +100,7 @@ class UrlValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid URL.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -113,7 +125,7 @@ $js
 ";
 		}
 
-		if ($this->allowEmpty) {
+		if ($this->skipOnEmpty) {
 			$js = "
 if($.trim(value)!='') {
 	$js

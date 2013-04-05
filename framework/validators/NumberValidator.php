@@ -152,7 +152,7 @@ if(value>{$this->max}) {
 ";
 		}
 
-		if ($this->allowEmpty) {
+		if ($this->skipOnEmpty) {
 			$js = "
 if(jQuery.trim(value)!='') {
 	$js

@@ -6,6 +6,8 @@
  */
 
 namespace yii\validators;
+
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -44,6 +46,9 @@ class RangeValidator extends Validator
 		if (!is_array($this->range)) {
 			throw new InvalidConfigException('The "range" property must be set.');
 		}
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} is invalid.');
+		}
 	}
 
 	/**
@@ -55,11 +60,10 @@ class RangeValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		$message = $this->message !== null ? $this->message : \Yii::t('yii|{attribute} is invalid.');
 		if (!$this->not && !in_array($value, $this->range, $this->strict)) {
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		} elseif ($this->not && in_array($value, $this->range, $this->strict)) {
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
@@ -82,10 +86,7 @@ class RangeValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		if (($message = $this->message) === null) {
-			$message = \Yii::t('yii|{attribute} is invalid.');
-		}
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -97,7 +98,7 @@ class RangeValidator extends Validator
 		$range = json_encode($range);
 
 		return "
-if (" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? "$.inArray(value, $range)>=0" : "$.inArray(value, $range)<0") . ") {
+if (" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? "$.inArray(value, $range)>=0" : "$.inArray(value, $range)<0") . ") {
 	messages.push(" . json_encode($message) . ");
 }
 ";

@@ -37,6 +37,18 @@ class ExistValidator extends Validator
 	 */
 	public $attributeName;
 
+
+	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} is invalid.');
+		}
+	}
+
 	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
@@ -49,7 +61,7 @@ class ExistValidator extends Validator
 		$value = $object->$attribute;
 
 		if (is_array($value)) {
-			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
+			$this->addError($object, $attribute, $this->message);
 			return;
 		}
 
@@ -59,8 +71,7 @@ class ExistValidator extends Validator
 		$query = $className::find();
 		$query->where(array($attributeName => $value));
 		if (!$query->exists()) {
-			$message = $this->message !== null ? $this->message : Yii::t('yii|{attribute} "{value}" is invalid.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 

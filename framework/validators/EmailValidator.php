@@ -7,6 +7,8 @@
 
 namespace yii\validators;
 
+use Yii;
+
 /**
  * EmailValidator validates that the attribute value is a valid email address.
  *
@@ -44,6 +46,17 @@ class EmailValidator extends Validator
 	public $checkPort = false;
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} is not a valid email address.');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
@@ -53,8 +66,7 @@ class EmailValidator extends Validator
 	{
 		$value = $object->$attribute;
 		if (!$this->validateValue($value)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid email address.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
@@ -88,8 +100,7 @@ class EmailValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid email address.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -100,7 +111,7 @@ class EmailValidator extends Validator
 		}
 
 		return "
-if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
+if(" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
 	messages.push(" . json_encode($message) . ");
 }
 ";

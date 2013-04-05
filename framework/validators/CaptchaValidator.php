@@ -31,6 +31,17 @@ class CaptchaValidator extends Validator
 
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|The verification code is incorrect.');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
@@ -40,8 +51,7 @@ class CaptchaValidator extends Validator
 	{
 		$value = $object->$attribute;
 		if (!$this->validateValue($value)) {
-			$message = $this->message !== null ? $this->message : Yii::t('yii|The verification code is incorrect.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
@@ -83,8 +93,7 @@ class CaptchaValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$captcha = $this->getCaptchaAction();
-		$message = $this->message !== null ? $this->message : \Yii::t('yii|The verification code is incorrect.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -102,7 +111,7 @@ if(h != hash) {
 }
 ";
 
-		if ($this->allowEmpty) {
+		if ($this->skipOnEmpty) {
 			$js = "
 if($.trim(value)!='') {
 	$js

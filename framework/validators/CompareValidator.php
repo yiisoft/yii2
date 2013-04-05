@@ -223,7 +223,7 @@ class CompareValidator extends Validator
 		));
 
 		return "
-if (" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
+if (" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
 	messages.push(" . json_encode($message) . ");
 }
 ";

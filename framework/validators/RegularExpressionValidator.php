@@ -7,6 +7,7 @@
 
 namespace yii\validators;
 
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -40,6 +41,9 @@ class RegularExpressionValidator extends Validator
 		if ($this->pattern === null) {
 			throw new InvalidConfigException('The "pattern" property must be set.');
 		}
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} is invalid.');
+		}
 	}
 
 	/**
@@ -52,8 +56,7 @@ class RegularExpressionValidator extends Validator
 	{
 		$value = $object->$attribute;
 		if (!$this->validateValue($value)) {
-			$message = $this->message !== null ? $this->message : \Yii::t('yii|{attribute} is invalid.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
@@ -78,8 +81,7 @@ class RegularExpressionValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is invalid.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -99,7 +101,7 @@ class RegularExpressionValidator extends Validator
 		}
 
 		return "
-if (" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? '' : '!') . "value.match($pattern)) {
+if (" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? '' : '!') . "value.match($pattern)) {
 	messages.push(" . json_encode($message) . ");
 }
 ";

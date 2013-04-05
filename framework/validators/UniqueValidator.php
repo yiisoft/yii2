@@ -6,6 +6,8 @@
  */
 
 namespace yii\validators;
+
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -31,6 +33,17 @@ class UniqueValidator extends Validator
 	public $attributeName;
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} "{value}" has already been taken.');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\db\ActiveRecord $object the object being validated
@@ -52,7 +65,7 @@ class UniqueValidator extends Validator
 
 		$table = $className::getTableSchema();
 		if (($column = $table->getColumn($attributeName)) === null) {
-			throw new InvalidConfigException('Table "' . $table->name . '" does not have a column named "' . $attributeName . '"');
+			throw new InvalidConfigException("Table '{$table->name}' does not have a column named '$attributeName'.");
 		}
 
 		$query = $className::find();
@@ -81,8 +94,7 @@ class UniqueValidator extends Validator
 		}
 
 		if ($exists) {
-			$message = $this->message !== null ? $this->message : \Yii::t('yii|{attribute} "{value}" has already been taken.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 }
