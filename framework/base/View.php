@@ -22,6 +22,15 @@ use yii\helpers\FileHelper;
 class View extends Component
 {
 	/**
+	 * @event Event an event that is triggered by [[renderFile()]] right before it renders a view file.
+	 */
+	const EVENT_BEFORE_RENDER = 'beforeRender';
+	/**
+	 * @event Event an event that is triggered by [[renderFile()]] right after it renders a view file.
+	 */
+	const EVENT_AFTER_RENDER = 'afterRender';
+
+	/**
 	 * @var object the object that owns this view. This can be a controller, a widget, or any other object.
 	 */
 	public $context;
@@ -47,7 +56,7 @@ class View extends Component
 	public $clips;
 	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
-	 * is maintained by [[beginWidget()]] and [[endWidget()]] methods. Do not modify it directly.
+	 * is maintained by [[beginWidget()]] and [[endWidget()]] methods. Do not modify it.
 	 */
 	public $widgetStack = array();
 	/**
@@ -140,15 +149,51 @@ class View extends Component
 			$this->context = $context;
 		}
 
-		if ($this->renderer !== null) {
-			$output = $this->renderer->render($this, $viewFile, $params);
-		} else {
-			$output = $this->renderPhpFile($viewFile, $params);
+		$output = '';
+		if ($this->beforeRender($viewFile)) {
+			if ($this->renderer !== null) {
+				$output = $this->renderer->render($this, $viewFile, $params);
+			} else {
+				$output = $this->renderPhpFile($viewFile, $params);
+			}
+			$this->afterRender($viewFile, $output);
 		}
 
 		$this->context = $oldContext;
 
 		return $output;
+	}
+
+	/**
+	 * This method is invoked right before [[renderFile()]] renders a view file.
+	 * The default implementation will trigger the [[EVENT_BEFORE_RENDER]] event.
+	 * If you override this method, make sure you call the parent implementation first.
+	 * @param string $viewFile the view file to be rendered
+	 * @return boolean whether to continue rendering the view file.
+	 */
+	public function beforeRender($viewFile)
+	{
+		$event = new ViewEvent($viewFile);
+		$this->trigger(self::EVENT_BEFORE_RENDER, $event);
+		return $event->isValid;
+	}
+
+	/**
+	 * This method is invoked right after [[renderFile()]] renders a view file.
+	 * The default implementation will trigger the [[EVENT_AFTER_RENDER]] event.
+	 * If you override this method, make sure you call the parent implementation first.
+	 * @param string $viewFile the view file to be rendered
+	 * @param string $output the rendering result of the view file. Updates to this parameter
+	 * will be passed back and returned by [[renderFile()]].
+	 */
+	public function afterRender($viewFile, &$output)
+	{
+		if ($this->hasEventHandlers(self::EVENT_AFTER_RENDER)) {
+			$event = new ViewEvent($viewFile);
+			$event->output = $output;
+			$this->trigger(self::EVENT_AFTER_RENDER, $event);
+			$output = $event->output;
+		}
 	}
 
 	/**
