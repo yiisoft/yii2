@@ -371,6 +371,10 @@ class YiiBase
 			$class = static::import($class, true);
 		}
 
+		if (isset(self::$objectConfig[ltrim($class, '\\')])) {
+			$config = array_merge(self::$objectConfig[ltrim($class, '\\')], $config);
+		}
+
 		if (($n = func_num_args()) > 1) {
 			/** @var $reflection \ReflectionClass */
 			if (isset($reflections[$class])) {
@@ -531,6 +535,6 @@ class YiiBase
 	 */
 	public static function t($message, $params = array(), $language = null)
 	{
-		return Yii::$app->getI18N()->translate($message, $params, $language);
+		return self::$app->getI18N()->translate($message, $params, $language);
 	}
 }
