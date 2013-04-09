@@ -371,8 +371,10 @@ class YiiBase
 			$class = static::import($class, true);
 		}
 
-		if (isset(self::$objectConfig[ltrim($class, '\\')])) {
-			$config = array_merge(self::$objectConfig[ltrim($class, '\\')], $config);
+		$class = ltrim($class, '\\');
+
+		if (isset(self::$objectConfig[$class])) {
+			$config = array_merge(self::$objectConfig[$class], $config);
 		}
 
 		if (($n = func_num_args()) > 1) {
