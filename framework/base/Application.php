@@ -87,9 +87,6 @@ class Application extends Module
 	 */
 	public $layout = 'main';
 
-	// todo
-	public $localeDataPath = '@yii/i18n/data';
-
 	private $_runtimePath;
 	private $_ended = false;
 
@@ -165,31 +162,6 @@ class Application extends Module
 			if (ErrorException::isFatalErorr($error)) {
 				unset($this->_memoryReserve);
 				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
-
-				if (function_exists('xdebug_get_function_stack')) {
-					$trace = array_slice(array_reverse(xdebug_get_function_stack()), 4, -1);
-					foreach ($trace as &$frame) {
-						if (!isset($frame['function'])) {
-							$frame['function'] = 'unknown';
-						}
-
-						// XDebug < 2.1.1: http://bugs.xdebug.org/view.php?id=695
-						if (!isset($frame['type'])) {
-							$frame['type'] = '::';
-						}
-
-						// XDebug has a different key name
-						$frame['args'] = array();
-						if (isset($frame['params']) && !isset($frame['args'])) {
-							$frame['args'] = $frame['params'];
-						}
-					}
-
-					$ref = new \ReflectionProperty('Exception', 'trace');
-					$ref->setAccessible(true);
-					$ref->setValue($exception, $trace);
-				}
-
 				$this->logException($exception);
 
 				if (($handler = $this->getErrorHandler()) !== null) {
@@ -294,37 +266,6 @@ class Application extends Module
 	{
 		date_default_timezone_set($value);
 	}
-
-	//
-	//	/**
-	//	 * Returns the locale instance.
-	//	 * @param string $localeID the locale ID (e.g. en_US). If null, the {@link getLanguage application language ID} will be used.
-	//	 * @return CLocale the locale instance
-	//	 */
-	//	public function getLocale($localeID = null)
-	//	{
-	//		return CLocale::getInstance($localeID === null ? $this->getLanguage() : $localeID);
-	//	}
-	//
-	//	/**
-	//	 * @return CNumberFormatter the locale-dependent number formatter.
-	//	 * The current {@link getLocale application locale} will be used.
-	//	 */
-	//	public function getNumberFormatter()
-	//	{
-	//		return $this->getLocale()->getNumberFormatter();
-	//	}
-	//
-	//	/**
-	//	 * Returns the locale-dependent date formatter.
-	//	 * @return CDateFormatter the locale-dependent date formatter.
-	//	 * The current {@link getLocale application locale} will be used.
-	//	 */
-	//	public function getDateFormatter()
-	//	{
-	//		return $this->getLocale()->getDateFormatter();
-	//	}
-	//
 
 	/**
 	 * Returns the database connection component.
