@@ -113,29 +113,27 @@ class Application extends Module
 		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
 			unset($config['basePath']);
+			Yii::$aliases['@app'] = $this->getBasePath();
 		} else {
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
 
+		$this->registerErrorHandlers();
+		$this->registerCoreComponents();
+
+		parent::__construct($config);
+	}
+
+	/**
+	 * Registers error handlers.
+	 */
+	public function registerErrorHandlers()
+	{
 		if (YII_ENABLE_ERROR_HANDLER) {
 			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
 		}
-
-		$this->registerDefaultAliases();
-		$this->registerCoreComponents();
-
-		Component::__construct($config);
-	}
-
-	/**
-	 * Initializes the application by loading components declared in [[preload]].
-	 * If you override this method, make sure the parent implementation is invoked.
-	 */
-	public function init()
-	{
-		$this->preloadComponents();
 	}
 
 	/**
@@ -336,14 +334,6 @@ class Application extends Module
 	public function getI18N()
 	{
 		return $this->getComponent('i18n');
-	}
-
-	/**
-	 * Sets default path aliases.
-	 */
-	public function registerDefaultAliases()
-	{
-		Yii::$aliases['@app'] = $this->getBasePath();
 	}
 
 	/**

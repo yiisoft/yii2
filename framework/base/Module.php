@@ -170,7 +170,6 @@ abstract class Module extends Component
 	 */
 	public function init()
 	{
-		Yii::setAlias('@' . $this->id, $this->getBasePath());
 		$this->preloadComponents();
 	}
 

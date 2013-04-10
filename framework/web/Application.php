@@ -23,21 +23,15 @@ class Application extends \yii\base\Application
 	public $defaultRoute = 'site';
 
 	/**
-	 * Sets default path aliases.
-	 */
-	public function registerDefaultAliases()
-	{
-		parent::registerDefaultAliases();
-		Yii::$aliases['@webroot'] = dirname($_SERVER['SCRIPT_FILENAME']);
-	}
-
-	/**
 	 * Processes the request.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
 	 */
 	public function processRequest()
 	{
-		list ($route, $params) = $this->getRequest()->resolve();
+		$request = $this->getRequest();
+		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
+		Yii::setAlias('@www', $request->getBaseUrl());
+		list ($route, $params) = $request->resolve();
 		return $this->runAction($route, $params);
 	}
 
