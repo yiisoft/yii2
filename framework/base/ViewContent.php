@@ -17,7 +17,32 @@ class ViewContent extends Component
 	const POS_BEGIN = 2;
 	const POS_END = 3;
 
-	public $packages;
+	/**
+	 * @var array
+	 *
+	 * Each asset bundle should be declared with the following structure:
+	 *
+	 * ~~~
+	 * array(
+	 *     'basePath' => '...',
+	 *     'baseUrl' => '...',  // if missing, the bundle will be published to the "www/assets" folder
+	 *     'js' => array(
+	 *         'js/main.js',
+	 *         'js/menu.js',
+	 *         'js/base.js' => self::POS_HEAD,
+	 *     'css' => array(
+	 *         'css/main.css',
+	 *         'css/menu.css',
+	 *     ),
+	 *     'depends' => array(
+	 *         'jquery',
+	 *         'yii',
+	 *         'yii/treeview',
+	 *     ),
+	 * )
+	 * ~~~
+	 */
+	public $bundles;
 
 	public $title;
 	public $metaTags;
@@ -41,6 +66,11 @@ class ViewContent extends Component
 		$this->js = null;
 		$this->cssFiles = null;
 		$this->jsFiles = null;
+	}
+
+	public function registerBundle($name)
+	{
+
 	}
 
 	public function getMetaTag($key)
