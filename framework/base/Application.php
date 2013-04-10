@@ -98,16 +98,24 @@ class Application extends Module
 
 	/**
 	 * Constructor.
-	 * @param string $id the ID of this application. The ID should uniquely identify the application from others.
-	 * @param string $basePath the base path of this application. This should point to
-	 * the directory containing all application logic, template and data.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 * @param array $config name-value pairs that will be used to initialize the object properties.
+	 * Note that the configuration must contain both [[id]] and [[basePath]].
+	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
 	 */
-	public function __construct($id, $basePath, $config = array())
+	public function __construct($config = array())
 	{
 		Yii::$app = $this;
-		$this->id = $id;
-		$this->setBasePath($basePath);
+
+		if (!isset($config['id'])) {
+			throw new InvalidConfigException('The "id" configuration is required.');
+		}
+
+		if (isset($config['basePath'])) {
+			$this->setBasePath($config['basePath']);
+			unset($config['basePath']);
+		} else {
+			throw new InvalidConfigException('The "basePath" configuration is required.');
+		}
 
 		if (YII_ENABLE_ERROR_HANDLER) {
 			ini_set('display_errors', 0);
