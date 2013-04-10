@@ -1,3 +1,5 @@
+Component is the base class that implements the *property*, *event* and *behavior* features.
+
 Component provides the *event* and *behavior* features, in addition to the *property* feature which is implemented in
 its parent class [[Object]].
 

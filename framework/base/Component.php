@@ -10,12 +10,7 @@ namespace yii\base;
 use Yii;
 
 /**
- * Component is the base class that provides the *property*, *event* and *behavior* features.
- *
  * @include @yii/base/Component.md
- *
- * @property Behavior[] behaviors list of behaviors currently attached to this component
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
