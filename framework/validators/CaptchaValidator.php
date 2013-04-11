@@ -7,6 +7,9 @@
 
 namespace yii\validators;
 
+use Yii;
+use yii\base\InvalidConfigException;
+
 /**
  * CaptchaValidator validates that the attribute value is the same as the verification code displayed in the CAPTCHA.
  *
@@ -22,16 +25,21 @@ class CaptchaValidator extends Validator
 	 */
 	public $caseSensitive = false;
 	/**
-	 * @var string the ID of the action that renders the CAPTCHA image. Defaults to 'captcha',
-	 * meaning the `captcha` action declared in the current controller.
-	 * This can also be a route consisting of controller ID and action ID (e.g. 'site/captcha').
+	 * @var string the route of the controller action that renders the CAPTCHA image.
 	 */
-	public $captchaAction = 'captcha';
+	public $captchaAction = 'site/captcha';
+
+
 	/**
-	 * @var boolean whether the attribute value can be null or empty.
-	 * Defaults to false, meaning the attribute is invalid if it is empty.
+	 * Initializes the validator.
 	 */
-	public $allowEmpty = false;
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|The verification code is incorrect.');
+		}
+	}
 
 	/**
 	 * Validates the attribute of the object.
@@ -42,36 +50,38 @@ class CaptchaValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
-		$captcha = $this->getCaptchaAction();
-		if (!$captcha->validate($value, $this->caseSensitive)) {
-			$message = $this->message !== null ? $this->message : \Yii::t('yii|The verification code is incorrect.');
-			$this->addError($object, $attribute, $message);
+		if (!$this->validateValue($value)) {
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
 	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 */
+	public function validateValue($value)
+	{
+		$captcha = $this->getCaptchaAction();
+		return !is_array($value) && $captcha->validate($value, $this->caseSensitive);
+	}
+
+	/**
 	 * Returns the CAPTCHA action object.
-	 * @return CCaptchaAction the action object
+	 * @return CaptchaAction the action object
 	 */
 	public function getCaptchaAction()
 	{
-		if (strpos($this->captchaAction, '/') !== false) {  // contains controller or module
-			$ca = \Yii::$app->createController($this->captchaAction);
-			if ($ca !== null) {
-				list($controller, $actionID) = $ca;
-				$action = $controller->createAction($actionID);
+		$ca = Yii::$app->createController($this->captchaAction);
+		if ($ca !== false) {
+			/** @var \yii\base\Controller $controller */
+			list($controller, $actionID) = $ca;
+			$action = $controller->createAction($actionID);
+			if ($action !== null) {
+				return $action;
 			}
-		} else {
-			$action = \Yii::$app->getController()->createAction($this->captchaAction);
 		}
-
-		if ($action === null) {
-			throw new \yii\base\Exception('Invalid captcha action ID: ' . $this->captchaAction);
-		}
-		return $action;
+		throw new InvalidConfigException('Invalid CAPTCHA action ID: ' . $this->captchaAction);
 	}
 
 	/**
@@ -83,8 +93,7 @@ class CaptchaValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$captcha = $this->getCaptchaAction();
-		$message = $this->message !== null ? $this->message : \Yii::t('yii|The verification code is incorrect.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -102,7 +111,7 @@ if(h != hash) {
 }
 ";
 
-		if ($this->allowEmpty) {
+		if ($this->skipOnEmpty) {
 			$js = "
 if($.trim(value)!='') {
 	$js

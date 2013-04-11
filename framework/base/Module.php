@@ -170,7 +170,6 @@ abstract class Module extends Component
 	 */
 	public function init()
 	{
-		Yii::setAlias('@' . $this->id, $this->getBasePath());
 		$this->preloadComponents();
 	}
 
@@ -580,8 +579,9 @@ abstract class Module extends Component
 	 * instance of it.
 	 *
 	 * @param string $route the route consisting of module, controller and action IDs.
-	 * @return array|boolean if the controller is created successfully, it will be returned together
-	 * with the remainder of the route which represents the action ID. Otherwise false will be returned.
+	 * @return array|boolean If the controller is created successfully, it will be returned together
+	 * with the requested action ID. Otherwise false will be returned.
+	 * @throws InvalidConfigException if the controller class and its file do not match.
 	 */
 	public function createController($route)
 	{
@@ -605,21 +605,14 @@ abstract class Module extends Component
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
 			$className = StringHelper::id2camel($id) . 'Controller';
-
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
-			if (is_file($classFile)) {
-				$className = $this->controllerNamespace . '\\' . $className;
-				if (!class_exists($className, false)) {
-					require($classFile);
-				}
-				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
+			$className = ltrim($this->controllerNamespace . '\\' . $className, '\\');
+			Yii::$classMap[$className] = $classFile;
+			if (class_exists($className)) {
+				if (is_subclass_of($className, 'yii\base\Controller')) {
 					$controller = new $className($id, $this);
-				} elseif (YII_DEBUG) {
-					if (!class_exists($className, false)) {
-						throw new InvalidConfigException("Class file name does not match class name: $className.");
-					} elseif (!is_subclass_of($className, '\yii\base\Controller')) {
-						throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
-					}
+				} elseif (YII_DEBUG && !is_subclass_of($className, 'yii\base\Controller')) {
+					throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
 				}
 			}
 		}

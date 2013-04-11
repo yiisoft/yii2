@@ -52,10 +52,6 @@ class ActiveForm extends Widget
 	public $enableClientValidation = false;
 
 	public $options = array();
-	/**
-	 * @var array model-class mapped to name prefix
-	 */
-	public $modelMap;
 
 	/**
 	 * @param Model|Model[] $models
@@ -240,35 +236,6 @@ class ActiveForm extends Widget
 		return Html::radioList($name, $checked, $items, $options);
 	}
 
-	public function getInputName($model, $attribute)
-	{
-		$class = get_class($model);
-		if (isset($this->modelMap[$class])) {
-			$class = $this->modelMap[$class];
-		} elseif (($pos = strrpos($class, '\\')) !== false) {
-			$class = substr($class, $pos + 1);
-		}
-		if (!preg_match('/(^|.*\])(\w+)(\[.*|$)/', $attribute, $matches)) {
-			throw new InvalidParamException('Attribute name must contain word characters only.');
-		}
-		$prefix = $matches[1];
-		$attribute = $matches[2];
-		$suffix = $matches[3];
-		if ($class === '' && $prefix === '') {
-			return $attribute . $suffix;
-		} elseif ($class !== '') {
-			return $class . $prefix . "[$attribute]" . $suffix;
-		} else {
-			throw new InvalidParamException('Model name cannot be mapped to empty for tabular inputs.');
-		}
-	}
-
-	public function getInputId($model, $attribute)
-	{
-		$name = $this->getInputName($model, $attribute);
-		return str_replace(array('[]', '][', '[', ']', ' '), array('', '-', '-', '', '-'), $name);
-	}
-
 	public function getAttributeValue($model, $attribute)
 	{
 		if (!preg_match('/(^|.*\])(\w+)(\[.*|$)/', $attribute, $matches)) {
@@ -298,5 +265,35 @@ class ActiveForm extends Widget
 		} else {
 			throw new InvalidParamException('Attribute name must contain word characters only.');
 		}
+	}
+
+	/**
+	 * @param Model $model
+	 * @param string $attribute
+	 * @return string
+	 * @throws \yii\base\InvalidParamException
+	 */
+	public static function getInputName($model, $attribute)
+	{
+		$formName = $model->formName();
+		if (!preg_match('/(^|.*\])(\w+)(\[.*|$)/', $attribute, $matches)) {
+			throw new InvalidParamException('Attribute name must contain word characters only.');
+		}
+		$prefix = $matches[1];
+		$attribute = $matches[2];
+		$suffix = $matches[3];
+		if ($formName === '' && $prefix === '') {
+			return $attribute . $suffix;
+		} elseif ($formName !== '') {
+			return $formName . $prefix . "[$attribute]" . $suffix;
+		} else {
+			throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
+		}
+	}
+
+	public static function getInputId($model, $attribute)
+	{
+		$name = static::getInputName($model, $attribute);
+		return str_replace(array('[]', '][', '[', ']', ' '), array('', '-', '-', '', '-'), $name);
 	}
 }

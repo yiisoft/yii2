@@ -87,9 +87,6 @@ class Application extends Module
 	 */
 	public $layout = 'main';
 
-	// todo
-	public $localeDataPath = '@yii/i18n/data';
-
 	private $_runtimePath;
 	private $_ended = false;
 
@@ -101,36 +98,42 @@ class Application extends Module
 
 	/**
 	 * Constructor.
-	 * @param string $id the ID of this application. The ID should uniquely identify the application from others.
-	 * @param string $basePath the base path of this application. This should point to
-	 * the directory containing all application logic, template and data.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 * @param array $config name-value pairs that will be used to initialize the object properties.
+	 * Note that the configuration must contain both [[id]] and [[basePath]].
+	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
 	 */
-	public function __construct($id, $basePath, $config = array())
+	public function __construct($config = array())
 	{
 		Yii::$app = $this;
-		$this->id = $id;
-		$this->setBasePath($basePath);
 
-		if (YII_ENABLE_ERROR_HANDLER) {
-			ini_set('display_errors', 0);
-			set_exception_handler(array($this, 'handleException'));
-			set_error_handler(array($this, 'handleError'), error_reporting());
+		if (!isset($config['id'])) {
+			throw new InvalidConfigException('The "id" configuration is required.');
 		}
 
-		$this->registerDefaultAliases();
+		if (isset($config['basePath'])) {
+			$this->setBasePath($config['basePath']);
+			unset($config['basePath']);
+			Yii::$aliases['@app'] = $this->getBasePath();
+		} else {
+			throw new InvalidConfigException('The "basePath" configuration is required.');
+		}
+
+		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
 
 		Component::__construct($config);
 	}
 
 	/**
-	 * Initializes the application by loading components declared in [[preload]].
-	 * If you override this method, make sure the parent implementation is invoked.
+	 * Registers error handlers.
 	 */
-	public function init()
+	public function registerErrorHandlers()
 	{
-		$this->preloadComponents();
+		if (YII_ENABLE_ERROR_HANDLER) {
+			ini_set('display_errors', 0);
+			set_exception_handler(array($this, 'handleException'));
+			set_error_handler(array($this, 'handleError'), error_reporting());
+		}
 	}
 
 	/**
@@ -165,31 +168,6 @@ class Application extends Module
 			if (ErrorException::isFatalErorr($error)) {
 				unset($this->_memoryReserve);
 				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
-
-				if (function_exists('xdebug_get_function_stack')) {
-					$trace = array_slice(array_reverse(xdebug_get_function_stack()), 4, -1);
-					foreach ($trace as &$frame) {
-						if (!isset($frame['function'])) {
-							$frame['function'] = 'unknown';
-						}
-
-						// XDebug < 2.1.1: http://bugs.xdebug.org/view.php?id=695
-						if (!isset($frame['type'])) {
-							$frame['type'] = '::';
-						}
-
-						// XDebug has a different key name
-						$frame['args'] = array();
-						if (isset($frame['params']) && !isset($frame['args'])) {
-							$frame['args'] = $frame['params'];
-						}
-					}
-
-					$ref = new \ReflectionProperty('Exception', 'trace');
-					$ref->setAccessible(true);
-					$ref->setValue($exception, $trace);
-				}
-
 				$this->logException($exception);
 
 				if (($handler = $this->getErrorHandler()) !== null) {
@@ -295,37 +273,6 @@ class Application extends Module
 		date_default_timezone_set($value);
 	}
 
-	//
-	//	/**
-	//	 * Returns the locale instance.
-	//	 * @param string $localeID the locale ID (e.g. en_US). If null, the {@link getLanguage application language ID} will be used.
-	//	 * @return CLocale the locale instance
-	//	 */
-	//	public function getLocale($localeID = null)
-	//	{
-	//		return CLocale::getInstance($localeID === null ? $this->getLanguage() : $localeID);
-	//	}
-	//
-	//	/**
-	//	 * @return CNumberFormatter the locale-dependent number formatter.
-	//	 * The current {@link getLocale application locale} will be used.
-	//	 */
-	//	public function getNumberFormatter()
-	//	{
-	//		return $this->getLocale()->getNumberFormatter();
-	//	}
-	//
-	//	/**
-	//	 * Returns the locale-dependent date formatter.
-	//	 * @return CDateFormatter the locale-dependent date formatter.
-	//	 * The current {@link getLocale application locale} will be used.
-	//	 */
-	//	public function getDateFormatter()
-	//	{
-	//		return $this->getLocale()->getDateFormatter();
-	//	}
-	//
-
 	/**
 	 * Returns the database connection component.
 	 * @return \yii\db\Connection the database connection
@@ -387,14 +334,6 @@ class Application extends Module
 	public function getI18N()
 	{
 		return $this->getComponent('i18n');
-	}
-
-	/**
-	 * Sets default path aliases.
-	 */
-	public function registerDefaultAliases()
-	{
-		Yii::$aliases['@app'] = $this->getBasePath();
 	}
 
 	/**

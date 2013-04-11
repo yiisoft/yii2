@@ -26,11 +26,6 @@ class NumberValidator extends Validator
 	 */
 	public $integerOnly = false;
 	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
-	/**
 	 * @var integer|float upper limit of the number. Defaults to null, meaning no upper limit.
 	 */
 	public $max;
@@ -58,6 +53,24 @@ class NumberValidator extends Validator
 
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = $this->integerOnly ? Yii::t('yii|{attribute} must be an integer.')
+				: Yii::t('yii|{attribute} must be a number.');
+		}
+		if ($this->min !== null && $this->tooSmall === null) {
+			$this->tooSmall = Yii::t('yii|{attribute} must be no less than {min}.');
+		}
+		if ($this->max !== null && $this->tooBig === null) {
+			$this->tooBig = Yii::t('yii|{attribute} must be no greater than {max}.');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
@@ -66,28 +79,32 @@ class NumberValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
+		if (is_array($value)) {
+			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
 			return;
 		}
-		if ($this->integerOnly) {
-			if (!preg_match($this->integerPattern, "$value")) {
-				$message = $this->message !== null ? $this->message : Yii::t('yii|{attribute} must be an integer.');
-				$this->addError($object, $attribute, $message);
-			}
-		} else {
-			if (!preg_match($this->numberPattern, "$value")) {
-				$message = $this->message !== null ? $this->message : Yii::t('yii|{attribute} must be a number.');
-				$this->addError($object, $attribute, $message);
-			}
+		$pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
+		if (!preg_match($pattern, "$value")) {
+			$this->addError($object, $attribute, $this->message);
 		}
 		if ($this->min !== null && $value < $this->min) {
-			$message = $this->tooSmall !== null ? $this->tooSmall : Yii::t('yii|{attribute} is too small (minimum is {min}).');
-			$this->addError($object, $attribute, $message, array('{min}' => $this->min));
+			$this->addError($object, $attribute, $this->tooSmall, array('{min}' => $this->min));
 		}
 		if ($this->max !== null && $value > $this->max) {
-			$message = $this->tooBig !== null ? $this->tooBig : Yii::t('yii|{attribute} is too big (maximum is {max}).');
-			$this->addError($object, $attribute, $message, array('{max}' => $this->max));
+			$this->addError($object, $attribute, $this->tooBig, array('{max}' => $this->max));
 		}
+	}
+
+	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 */
+	public function validateValue($value)
+	{
+		return preg_match($this->integerOnly ? $this->integerPattern : $this->numberPattern, "$value")
+			&& ($this->min === null || $value >= $this->min)
+			&& ($this->max === null || $value <= $this->max);
 	}
 
 	/**
@@ -99,12 +116,7 @@ class NumberValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$label = $object->getAttributeLabel($attribute);
-
-		if (($message = $this->message) === null) {
-			$message = $this->integerOnly ? Yii::t('yii|{attribute} must be an integer.')
-					: Yii::t('yii|{attribute} must be a number.');
-		}
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $label,
 		));
 
@@ -115,10 +127,7 @@ if(!value.match($pattern)) {
 }
 ";
 		if ($this->min !== null) {
-			if (($tooSmall = $this->tooSmall) === null) {
-				$tooSmall = Yii::t('yii|{attribute} is too small (minimum is {min}).');
-			}
-			$tooSmall = strtr($tooSmall, array(
+			$tooSmall = strtr($this->tooSmall, array(
 				'{attribute}' => $label,
 				'{min}' => $this->min,
 			));
@@ -130,10 +139,7 @@ if(value<{$this->min}) {
 ";
 		}
 		if ($this->max !== null) {
-			if (($tooBig = $this->tooBig) === null) {
-				$tooBig = Yii::t('yii|{attribute} is too big (maximum is {max}).');
-			}
-			$tooBig = strtr($tooBig, array(
+			$tooBig = strtr($this->tooBig, array(
 				'{attribute}' => $label,
 				'{max}' => $this->max,
 			));
@@ -144,7 +150,7 @@ if(value>{$this->max}) {
 ";
 		}
 
-		if ($this->allowEmpty) {
+		if ($this->skipOnEmpty) {
 			$js = "
 if(jQuery.trim(value)!='') {
 	$js

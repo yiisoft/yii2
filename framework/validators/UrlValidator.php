@@ -7,6 +7,8 @@
 
 namespace yii\validators;
 
+use Yii;
+
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.
  *
@@ -32,11 +34,18 @@ class UrlValidator extends Validator
 	 * contain the scheme part.
 	 **/
 	public $defaultScheme;
+
+
 	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
+	 * Initializes the validator.
 	 */
-	public $allowEmpty = true;
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} is not a valid URL.');
+		}
+	}
 
 	/**
 	 * Validates the attribute of the object.
@@ -47,23 +56,19 @@ class UrlValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
-		if (($value = $this->validateValue($value)) !== false) {
-			$object->$attribute = $value;
+		if ($this->validateValue($value)) {
+			if ($this->defaultScheme !== null && strpos($value, '://') === false) {
+				$object->$attribute = $this->defaultScheme . '://' . $value;
+			}
 		} else {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid URL.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
 	/**
-	 * Validates a static value to see if it is a valid URL.
-	 * Note that this method does not respect [[allowEmpty]] property.
-	 * This method is provided so that you can call it directly without going through the model validation rule mechanism.
-	 * @param mixed $value the value to be validated
-	 * @return mixed false if the the value is not a valid URL, otherwise the possibly modified value ({@see defaultScheme})
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
 	 */
 	public function validateValue($value)
 	{
@@ -80,7 +85,7 @@ class UrlValidator extends Validator
 			}
 
 			if (preg_match($pattern, $value)) {
-				return $value;
+				return true;
 			}
 		}
 		return false;
@@ -95,8 +100,7 @@ class UrlValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid URL.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -121,7 +125,7 @@ $js
 ";
 		}
 
-		if ($this->allowEmpty) {
+		if ($this->skipOnEmpty) {
 			$js = "
 if($.trim(value)!='') {
 	$js

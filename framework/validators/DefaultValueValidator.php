@@ -10,12 +10,8 @@ namespace yii\validators;
 /**
  * DefaultValueValidator sets the attribute to be the specified default value.
  *
- * By default, when the attribute being validated is [[isEmpty|empty]], the validator
- * will assign a default [[value]] to it. However, if [[setOnEmpty]] is false, the validator
- * will always assign the default [[value]] to the attribute, no matter it is empty or not.
- *
  * DefaultValueValidator is not really a validator. It is provided mainly to allow
- * specifying attribute default values in a dynamic way.
+ * specifying attribute default values when they are empty.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -27,11 +23,10 @@ class DefaultValueValidator extends Validator
 	 */
 	public $value;
 	/**
-	 * @var boolean whether to set the default [[value]] only when the attribute is [[isEmpty|empty]].
-	 * Defaults to true. If false, the attribute will always be assigned with the default [[value]],
-	 * no matter it is empty or not.
+	 * @var boolean this property is overwritten to be false so that this validator will
+	 * be applied when the value being validated is empty.
 	 */
-	public $setOnEmpty = true;
+	public $skipOnEmpty = false;
 
 	/**
 	 * Validates the attribute of the object.
@@ -40,7 +35,7 @@ class DefaultValueValidator extends Validator
 	 */
 	public function validateAttribute($object, $attribute)
 	{
-		if (!$this->setOnEmpty || $this->isEmpty($object->$attribute)) {
+		if ($this->isEmpty($object->$attribute)) {
 			$object->$attribute = $this->value;
 		}
 	}

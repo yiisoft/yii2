@@ -7,6 +7,9 @@
 
 namespace yii\validators;
 
+use Yii;
+use yii\base\InvalidConfigException;
+
 /**
  * RegularExpressionValidator validates that the attribute value matches the specified [[pattern]].
  *
@@ -22,36 +25,51 @@ class RegularExpressionValidator extends Validator
 	 */
 	public $pattern;
 	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
-	/**
 	 * @var boolean whether to invert the validation logic. Defaults to false. If set to true,
 	 * the regular expression defined via [[pattern]] should NOT match the attribute value.
+	 * @throws InvalidConfigException if the "pattern" is not a valid regular expression
 	 **/
  	public $not = false;
+
+	/**
+	 * Initializes the validator.
+	 * @throws InvalidConfigException if [[pattern]] is not set.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->pattern === null) {
+			throw new InvalidConfigException('The "pattern" property must be set.');
+		}
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} is invalid.');
+		}
+	}
 
 	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
-	 * @throws \yii\base\Exception if the "pattern" is not a valid regular expression
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
+		if (!$this->validateValue($value)) {
+			$this->addError($object, $attribute, $this->message);
 		}
-		if ($this->pattern === null) {
-			throw new \yii\base\Exception('The "pattern" property must be specified with a valid regular expression.');
-		}
-		if ((!$this->not && !preg_match($this->pattern, $value)) || ($this->not && preg_match($this->pattern, $value))) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is invalid.');
-			$this->addError($object, $attribute, $message);
-		}
+	}
+
+	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 */
+	public function validateValue($value)
+	{
+		return !is_array($value) &&
+			(!$this->not && preg_match($this->pattern, $value)
+			|| $this->not && !preg_match($this->pattern, $value));
 	}
 
 	/**
@@ -59,16 +77,11 @@ class RegularExpressionValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script.
-	 * @throws \yii\base\Exception if the "pattern" is not a valid regular expression
+	 * @throws InvalidConfigException if the "pattern" is not a valid regular expression
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		if ($this->pattern === null) {
-			throw new \yii\base\Exception('The "pattern" property must be specified with a valid regular expression.');
-		}
-
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is invalid.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -88,7 +101,7 @@ class RegularExpressionValidator extends Validator
 		}
 
 		return "
-if (" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? '' : '!') . "value.match($pattern)) {
+if (" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? '' : '!') . "value.match($pattern)) {
 	messages.push(" . json_encode($message) . ");
 }
 ";

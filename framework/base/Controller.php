@@ -357,7 +357,8 @@ class Controller extends Component
 	 */
 	public function renderPartial($view, $params = array())
 	{
-		return $this->getView()->render($view, $params, $this);
+		$viewFile = $this->findViewFile($view);
+		return $this->getView()->renderFile($viewFile, $params, $this);
 	}
 
 	/**

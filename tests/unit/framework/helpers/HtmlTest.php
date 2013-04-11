@@ -10,7 +10,9 @@ class HtmlTest extends \yii\test\TestCase
 {
 	public function setUp()
 	{
-		new Application('test', '@yiiunit/runtime', array(
+		new Application(array(
+			'id' => 'test',
+			'basePath' => '@yiiunit/runtime',
 			'components' => array(
 				'request' => array(
 					'class' => 'yii\web\Request',

@@ -8,8 +8,8 @@
 namespace yii\base;
 
 use yii\helpers\StringHelper;
-use yii\validators\Validator;
 use yii\validators\RequiredValidator;
+use yii\validators\Validator;
 
 /**
  * Model is the base class for data models.
@@ -166,6 +166,26 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		return array(
 			'default' => array_keys($attributes),
 		);
+	}
+
+	/**
+	 * Returns the form name that this model class should use.
+	 *
+	 * The form name is mainly used by [[\yii\web\ActiveForm]] to determine how to name
+	 * the input fields for the attributes in a model. If the form name is "A" and an attribute
+	 * name is "b", then the corresponding input name would be "A[b]". If the form name is
+	 * an empty string, then the input name would be "b".
+	 *
+	 * By default, this method returns the model class name (without the namespace part)
+	 * as the form name. You may override it when the model is used in different forms.
+	 *
+	 * @return string the form name of this model class.
+	 */
+	public function formName()
+	{
+		$class = get_class($this);
+		$pos = strrpos($class, '\\');
+		return $pos === false ? $class : substr($class, $pos + 1);
 	}
 
 	/**

@@ -7,11 +7,11 @@
 
 namespace yii\validators;
 
+use Yii;
+use DateTime;
+
 /**
- * DateValidator verifies if the attribute represents a date, time or datetime.
- *
- * By setting the {@link format} property, one can specify what format the date value
- * must be in. If the given date value doesn't follow the format, the attribute is considered as invalid.
+ * DateValidator verifies if the attribute represents a date, time or datetime in a proper format.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -19,23 +19,28 @@ namespace yii\validators;
 class DateValidator extends Validator
 {
 	/**
-	 * @var mixed the format pattern that the date value should follow.
-	 * This can be either a string or an array representing multiple formats.
-	 * Defaults to 'MM/dd/yyyy'. Please see {@link CDateTimeParser} for details
-	 * about how to specify a date format.
+	 * @var string the date format that the value being validated should follow.
+	 * Please refer to [[http://www.php.net/manual/en/datetime.createfromformat.php]] on
+	 * supported formats.
 	 */
-	public $format = 'MM/dd/yyyy';
-	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
+	public $format = 'Y-m-d';
 	/**
 	 * @var string the name of the attribute to receive the parsing result.
 	 * When this property is not null and the validation is successful, the named attribute will
 	 * receive the parsing result.
 	 */
 	public $timestampAttribute;
+
+	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|The format of {attribute} is invalid.');
+		}
+	}
 
 	/**
 	 * Validates the attribute of the object.
@@ -46,27 +51,26 @@ class DateValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
+		if (is_array($value)) {
+			$this->addError($object, $attribute, $this->message);
 			return;
 		}
-
-		$formats = is_string($this->format) ? array($this->format) : $this->format;
-		$valid = false;
-		foreach ($formats as $format) {
-			$timestamp = CDateTimeParser::parse($value, $format, array('month' => 1, 'day' => 1, 'hour' => 0, 'minute' => 0, 'second' => 0));
-			if ($timestamp !== false) {
-				$valid = true;
-				if ($this->timestampAttribute !== null) {
-					$object-> {$this->timestampAttribute} = $timestamp;
-				}
-				break;
-			}
+		$date = DateTime::createFromFormat($this->format, $value);
+		if ($date === false) {
+			$this->addError($object, $attribute, $this->message);
+		} elseif ($this->timestampAttribute !== false) {
+			$object->{$this->timestampAttribute} = $date->getTimestamp();
 		}
+	}
 
-		if (!$valid) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|The format of {attribute} is invalid.');
-			$this->addError($object, $attribute, $message);
-		}
+	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 */
+	public function validateValue($value)
+	{
+		return DateTime::createFromFormat($this->format, $value) !== false;
 	}
 }
 

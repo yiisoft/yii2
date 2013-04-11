@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use Yii;
+
 /**
  * ErrorException represents a PHP error.
  *
@@ -33,6 +35,32 @@ class ErrorException extends Exception
 		$this->severity = $severity;
 		$this->file = $filename;
 		$this->line = $lineno;
+
+		if (function_exists('xdebug_get_function_stack')) {
+			$trace = array_slice(array_reverse(xdebug_get_function_stack()), 3, -1);
+			foreach ($trace as &$frame) {
+				if (!isset($frame['function'])) {
+					$frame['function'] = 'unknown';
+				}
+
+				// XDebug < 2.1.1: http://bugs.xdebug.org/view.php?id=695
+				if (!isset($frame['type']) || $frame['type'] === 'static') {
+					$frame['type'] = '::';
+				} elseif ($frame['type'] === 'dynamic') {
+					$frame['type'] = '->';
+				}
+
+				// XDebug has a different key name
+				$frame['args'] = array();
+				if (isset($frame['params']) && !isset($frame['args'])) {
+					$frame['args'] = $frame['params'];
+				}
+			}
+
+			$ref = new \ReflectionProperty('Exception', 'trace');
+			$ref->setAccessible(true);
+			$ref->setValue($this, $trace);
+		}
 	}
 
 	/**
@@ -62,20 +90,20 @@ class ErrorException extends Exception
 	public function getName()
 	{
 		$names = array(
-			E_ERROR => \Yii::t('yii|Fatal Error'),
-			E_PARSE => \Yii::t('yii|Parse Error'),
-			E_CORE_ERROR => \Yii::t('yii|Core Error'),
-			E_COMPILE_ERROR => \Yii::t('yii|Compile Error'),
-			E_USER_ERROR => \Yii::t('yii|User Error'),
-			E_WARNING => \Yii::t('yii|Warning'),
-			E_CORE_WARNING => \Yii::t('yii|Core Warning'),
-			E_COMPILE_WARNING => \Yii::t('yii|Compile Warning'),
-			E_USER_WARNING => \Yii::t('yii|User Warning'),
-			E_STRICT => \Yii::t('yii|Strict'),
-			E_NOTICE => \Yii::t('yii|Notice'),
-			E_RECOVERABLE_ERROR => \Yii::t('yii|Recoverable Error'),
-			E_DEPRECATED => \Yii::t('yii|Deprecated'),
+			E_ERROR => Yii::t('yii|Fatal Error'),
+			E_PARSE => Yii::t('yii|Parse Error'),
+			E_CORE_ERROR => Yii::t('yii|Core Error'),
+			E_COMPILE_ERROR => Yii::t('yii|Compile Error'),
+			E_USER_ERROR => Yii::t('yii|User Error'),
+			E_WARNING => Yii::t('yii|Warning'),
+			E_CORE_WARNING => Yii::t('yii|Core Warning'),
+			E_COMPILE_WARNING => Yii::t('yii|Compile Warning'),
+			E_USER_WARNING => Yii::t('yii|User Warning'),
+			E_STRICT => Yii::t('yii|Strict'),
+			E_NOTICE => Yii::t('yii|Notice'),
+			E_RECOVERABLE_ERROR => Yii::t('yii|Recoverable Error'),
+			E_DEPRECATED => Yii::t('yii|Deprecated'),
 		);
-		return isset($names[$this->getCode()]) ? $names[$this->getCode()] : \Yii::t('yii|Error');
+		return isset($names[$this->getCode()]) ? $names[$this->getCode()] : Yii::t('yii|Error');
 	}
 }

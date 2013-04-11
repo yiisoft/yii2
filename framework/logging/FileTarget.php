@@ -6,6 +6,8 @@
  */
 
 namespace yii\logging;
+
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -23,15 +25,14 @@ use yii\base\InvalidConfigException;
 class FileTarget extends Target
 {
 	/**
-	 * @var string log file path or path alias. If not set, it means the 'application.log' file under
-	 * the application runtime directory. Please make sure the directory containing
-	 * the log file is writable by the Web server process.
+	 * @var string log file path or path alias. If not set, it will use the "runtime/logs/app.log" file.
+	 * The directory containing the log files will be automatically created if not existing.
 	 */
 	public $logFile;
 	/**
-	 * @var integer maximum log file size, in kilo-bytes. Defaults to 1024, meaning 1MB.
+	 * @var integer maximum log file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
 	 */
-	public $maxFileSize = 1024; // in KB
+	public $maxFileSize = 10240; // in KB
 	/**
 	 * @var integer number of log files used for rotation. Defaults to 5.
 	 */
@@ -46,13 +47,13 @@ class FileTarget extends Target
 	{
 		parent::init();
 		if ($this->logFile === null) {
-			$this->logFile = \Yii::$app->getRuntimePath() . DIRECTORY_SEPARATOR . 'application.log';
+			$this->logFile = Yii::$app->getRuntimePath() . '/logs/app.log';
 		} else {
-			$this->logFile = \Yii::getAlias($this->logFile);
+			$this->logFile = Yii::getAlias($this->logFile);
 		}
 		$logPath = dirname($this->logFile);
-		if (!is_dir($logPath) || !is_writable($logPath)) {
-			throw new InvalidConfigException("Directory '$logPath' does not exist or is not writable.");
+		if (!is_dir($logPath)) {
+			@mkdir($logPath, 0777, true);
 		}
 		if ($this->maxLogFiles < 1) {
 			$this->maxLogFiles = 1;
@@ -66,6 +67,7 @@ class FileTarget extends Target
 	 * Sends log messages to specified email addresses.
 	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
 	 * of each message.
+	 * @throws InvalidConfigException if unable to open the log file for writing
 	 */
 	public function export($messages)
 	{
@@ -73,7 +75,9 @@ class FileTarget extends Target
 		foreach ($messages as $message) {
 			$text .= $this->formatMessage($message);
 		}
-		$fp = @fopen($this->logFile, 'a');
+		if (($fp = @fopen($this->logFile, 'a')) === false) {
+			throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");
+		}
 		@flock($fp, LOCK_EX);
 		if (@filesize($this->logFile) > $this->maxFileSize * 1024) {
 			$this->rotateFiles();
