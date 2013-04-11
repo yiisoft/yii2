@@ -46,8 +46,8 @@ class YiiBase
 {
 	/**
 	 * @var array class map used by the Yii autoloading mechanism.
-	 * The array keys are the class names, and the array values are the corresponding class file paths.
-	 * This property mainly affects how [[autoload]] works.
+	 * The array keys are the class names (without leading backslashes), and the array values
+	 * are the corresponding class file paths. This property mainly affects how [[autoload()]] works.
 	 * @see import
 	 * @see autoload
 	 */
@@ -113,7 +113,7 @@ class YiiBase
 	 * includes the class file when the class is referenced in the code the first time.
 	 *
 	 * Importing a directory will add the directory to the front of the [[classPath]] array.
-	 * When [[autoload]] is loading an unknown class, it will search in the directories
+	 * When [[autoload()]] is loading an unknown class, it will search in the directories
 	 * specified in [[classPath]] to find the corresponding class file to include.
 	 * For this reason, if multiple directories are imported, the directories imported later
 	 * will take precedence in class file searching.
@@ -273,7 +273,7 @@ class YiiBase
 			return true;
 		}
 
-		if (strpos($className, '\\') !== false) {
+		if (strrpos($className, '\\') > 0) {
 			// namespaced class, e.g. yii\base\Component
 			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
 			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
@@ -296,17 +296,19 @@ class YiiBase
 				if (is_file($path)) {
 					$classFile = $path;
 					$alias = $className;
+					break;
 				}
 			}
 		}
 
 		if (isset($classFile, $alias) && is_file($classFile)) {
-			if (!YII_DEBUG || basename(realpath($classFile)) === basename($alias) . '.php') {
+			if (basename(realpath($classFile)) === basename($alias) . '.php') {
 				include($classFile);
-				return true;
-			} else {
-				throw new Exception("Class name '$className' does not match the class file '" . realpath($classFile) . "'. Have you checked their case sensitivity?");
+				if (class_exists($className, false)) {
+					return true;
+				}
 			}
+			throw new Exception("The class file name '" . realpath($classFile) . "' does not match the class name '$className'. Please check the case of the names and make sure the class file does not have syntax errors.");
 		}
 
 		return false;
