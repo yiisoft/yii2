@@ -44,8 +44,10 @@ class ErrorException extends Exception
 				}
 
 				// XDebug < 2.1.1: http://bugs.xdebug.org/view.php?id=695
-				if (!isset($frame['type'])) {
+				if (!isset($frame['type']) || $frame['type'] === 'static') {
 					$frame['type'] = '::';
+				} elseif ($frame['type'] === 'dynamic') {
+					$frame['type'] = '->';
 				}
 
 				// XDebug has a different key name
