@@ -107,73 +107,36 @@ class YiiBase
 	}
 
 	/**
-	 * Imports a class or a directory.
+	 * Imports a class by its alias.
 	 *
-	 * Importing a class is like including the corresponding class file.
-	 * The main difference is that importing a class is much lighter because it only
-	 * includes the class file when the class is referenced in the code the first time.
+	 * This method is provided to support autoloading of non-namespaced classes.
+	 * Such a class can be specified in terms of an alias. For example, the alias `@old/code/Sample`
+	 * may represent the `Sample` class under the directory `@old/code` (a path alias).
 	 *
-	 * Importing a directory will add the directory to the front of the [[classPath]] array.
-	 * When [[autoload()]] is loading an unknown class, it will search in the directories
-	 * specified in [[classPath]] to find the corresponding class file to include.
-	 * For this reason, if multiple directories are imported, the directories imported later
-	 * will take precedence in class file searching.
+	 * By importing a class, the class is put in an internal storage such that when
+	 * the class is used for the first time, the class autoloader will be able to
+	 * find the corresponding class file and include it. For this reason, this method
+	 * is much lighter than `include()`.
 	 *
-	 * The same class or directory can be imported multiple times. Only the first importing
-	 * will count. Importing a directory does not import any of its subdirectories.
+	 * You may import the same class multiple times. Only the first importing will count.
 	 *
-	 * To import a class or a directory, one can use either path alias or class name (can be namespaced):
-	 *
-	 *  - `@app/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
-	 *  - `@app/components/*`: importing the whole `components` directory with a path alias;
-	 *  - `GoogleMap`: importing the `GoogleMap` class with a class name. [[autoload()]] will be used
-	 *  when this class is used for the first time.
-	 *
-	 * @param string $alias path alias or a simple class name to be imported
-	 * @param boolean $forceInclude whether to include the class file immediately. If false, the class file
-	 * will be included only when the class is being used. This parameter is used only when
-	 * the path alias refers to a class.
-	 * @return string the class name or the directory that this alias refers to
-	 * @throws Exception if the path alias is invalid
+	 * @param string $alias the class to be imported. This may be either a class alias or a fully-qualified class name.
+	 * If the latter, it will be returned back without change.
+	 * @return string the actual class name that `$alias` refers to
+	 * @throws Exception if the alias is invalid
 	 */
-	public static function import($alias, $forceInclude = false)
+	public static function import($alias)
 	{
-		if (isset(self::$_imported[$alias])) {
-			return self::$_imported[$alias];
-		}
-
-		if ($alias[0] !== '@') {
-			// a simple class name
-			if (class_exists($alias, false) || interface_exists($alias, false)) {
-				return self::$_imported[$alias] = $alias;
-			}
-			if ($forceInclude && static::autoload($alias)) {
-				self::$_imported[$alias] = $alias;
-			}
+		if (strncmp($alias, '@', 1)) {
 			return $alias;
-		}
-
-		$className = basename($alias);
-		$isClass = $className !== '*';
-
-		if ($isClass && (class_exists($className, false) || interface_exists($className, false))) {
-			return self::$_imported[$alias] = $className;
-		}
-
-		$path = static::getAlias(dirname($alias));
-
-		if ($isClass) {
-			if ($forceInclude) {
-				require($path . "/$className.php");
-				self::$_imported[$alias] = $className;
-			} else {
-				self::$classMap[$className] = $path . DIRECTORY_SEPARATOR . "$className.php";
-			}
-			return $className;
 		} else {
-			// a directory
-			array_unshift(self::$classPath, $path);
-			return self::$_imported[$alias] = $path;
+			$alias = static::getAlias($alias);
+			if (!isset(self::$_imported[$alias])) {
+				$className = basename($alias);
+				self::$_imported[$alias] = $className;
+				self::$classMap[$className] = $alias . '.php';
+			}
+			return self::$_imported[$alias];
 		}
 	}
 
@@ -357,7 +320,7 @@ class YiiBase
 		}
 
 		if (!class_exists($class, false)) {
-			$class = static::import($class, true);
+			$class = static::import($class);
 		}
 
 		$class = ltrim($class, '\\');

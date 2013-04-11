@@ -286,19 +286,6 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Imports the specified path aliases.
-	 * This method is provided so that you can import a set of path aliases when configuring a module.
-	 * The path aliases will be imported by calling [[Yii::import()]].
-	 * @param array $aliases list of path aliases to be imported
-	 */
-	public function setImport($aliases)
-	{
-		foreach ($aliases as $alias) {
-			Yii::import($alias);
-		}
-	}
-
-	/**
 	 * Defines path aliases.
 	 * This method calls [[Yii::setAlias()]] to register the path aliases.
 	 * This method is provided so that you can define path aliases when configuring a module.
