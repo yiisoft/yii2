@@ -605,21 +605,14 @@ abstract class Module extends Component
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
 			$className = StringHelper::id2camel($id) . 'Controller';
-
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
-			if (is_file($classFile)) {
-				$className = $this->controllerNamespace . '\\' . $className;
-				if (!class_exists($className, false)) {
-					require($classFile);
-				}
-				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
+			$className = ltrim($this->controllerNamespace . '\\' . $className, '\\');
+			Yii::$classMap[$className] = $classFile;
+			if (class_exists($className)) {
+				if (is_subclass_of($className, 'yii\base\Controller')) {
 					$controller = new $className($id, $this);
-				} elseif (YII_DEBUG) {
-					if (!class_exists($className, false)) {
-						throw new InvalidConfigException("Class file name does not match class name: $className.");
-					} elseif (!is_subclass_of($className, '\yii\base\Controller')) {
-						throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
-					}
+				} elseif (YII_DEBUG && !is_subclass_of($className, 'yii\base\Controller')) {
+					throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
 				}
 			}
 		}

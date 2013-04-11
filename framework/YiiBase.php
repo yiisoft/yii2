@@ -47,7 +47,8 @@ class YiiBase
 	/**
 	 * @var array class map used by the Yii autoloading mechanism.
 	 * The array keys are the class names (without leading backslashes), and the array values
-	 * are the corresponding class file paths. This property mainly affects how [[autoload()]] works.
+	 * are the corresponding class file paths (or path aliases). This property mainly affects
+	 * how [[autoload()]] works.
 	 * @see import
 	 * @see autoload
 	 */
@@ -188,10 +189,10 @@ class YiiBase
 	 * it will be returned back without change.
 	 *
 	 * Note, this method does not ensure the existence of the resulting path.
-	 * @param string $alias alias
+	 * @param string $alias the alias to be translated.
 	 * @param boolean $throwException whether to throw an exception if the given alias is invalid.
 	 * If this is false and an invalid alias is given, false will be returned by this method.
-	 * @return string|boolean path corresponding to the alias, false if the root alias is not previously registered.
+	 * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
 	 * @throws InvalidParamException if the alias is invalid while $throwException is true.
 	 * @see setAlias
 	 */
@@ -225,13 +226,14 @@ class YiiBase
 	 * Note that this method neither checks the existence of the path nor normalizes the path.
 	 * Any trailing '/' and '\' characters in the path will be trimmed.
 	 *
-	 * @param string $alias alias to the path. The alias must start with '@'.
+	 * @param string $alias the alias name (e.g. "@yii"). It should start with a '@' character
+	 * and should NOT contain the forward slash "/" or the backward slash "\".
 	 * @param string $path the path corresponding to the alias. This can be
 	 *
 	 * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
 	 * - a URL (e.g. `http://www.yiiframework.com`)
 	 * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
-	 *   actual path first by calling [[getAlias]].
+	 *   actual path first by calling [[getAlias()]].
 	 *
 	 * @throws Exception if $path is an invalid alias
 	 * @see getAlias
@@ -268,50 +270,35 @@ class YiiBase
 	 */
 	public static function autoload($className)
 	{
+		$className = ltrim($className, '\\');
+
 		if (isset(self::$classMap[$className])) {
-			include(self::$classMap[$className]);
-			return true;
-		}
-
-		if (strrpos($className, '\\') > 0) {
-			// namespaced class, e.g. yii\base\Component
-			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
-			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
-			if (($path = static::getAlias($alias, false)) !== false) {
-				$classFile = $path . '.php';
+			$classFile = self::$classMap[$className];
+		} else {
+			if (($pos = strrpos($className, '\\')) !== false) {
+				// namespaced class, e.g. yii\base\Component
+				$classFile = str_replace('\\', '/', substr($className, 0, $pos + 1))
+					. str_replace('_', '/', substr($className, $pos + 1)) . '.php';
+			} else {
+				$classFile = str_replace('_', '/', $className) . '.php';
 			}
-		} elseif (($pos = strpos($className, '_')) !== false) {
-			// PEAR-styled class, e.g. PHPUnit_Framework_TestCase
-			// convert class name to path alias, e.g. PHPUnit_Framework_TestCase to @PHPUnit/Framework/TestCase
-			$alias = '@' . str_replace('_', '/', $className);
-			if (($path = static::getAlias($alias, false)) !== false) {
-				$classFile = $path . '.php';
+			if (strpos($classFile, '/') !== false) {
+				// make it into a path alias
+				$classFile = '@' . $classFile;
 			}
 		}
 
-		if (!isset($classFile)) {
-			// search in include paths
-			foreach (self::$classPath as $path) {
-				$path .= DIRECTORY_SEPARATOR . $className . '.php';
-				if (is_file($path)) {
-					$classFile = $path;
-					$alias = $className;
-					break;
-				}
+		$classFile = static::getAlias($classFile);
+		if ($classFile !== false && is_file($classFile)) {
+			include($classFile);
+			if (class_exists($className, false) || interface_exists($className, false)) {
+				return true;
+			} else {
+				throw new Exception("Unable to find '$className' in file: $classFile");
 			}
+		} else {
+			return false;
 		}
-
-		if (isset($classFile, $alias) && is_file($classFile)) {
-			if (basename(realpath($classFile)) === basename($alias) . '.php') {
-				include($classFile);
-				if (class_exists($className, false)) {
-					return true;
-				}
-			}
-			throw new Exception("The class file name '" . realpath($classFile) . "' does not match the class name '$className'. Please check the case of the names and make sure the class file does not have syntax errors.");
-		}
-
-		return false;
 	}
 
 	/**

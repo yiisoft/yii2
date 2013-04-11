@@ -121,7 +121,7 @@ class Application extends Module
 		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
 
-		parent::__construct($config);
+		Component::__construct($config);
 	}
 
 	/**
