@@ -165,7 +165,7 @@ class Application extends Module
 		if (YII_ENABLE_ERROR_HANDLER) {
 			$error = error_get_last();
 
-			if (ErrorException::isFatalErorr($error)) {
+			if (ErrorException::isFatalError($error)) {
 				unset($this->_memoryReserve);
 				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
 				$this->logException($exception);
