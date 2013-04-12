@@ -7,7 +7,7 @@
 
 namespace yii\caching;
 
-use yii\base\InvalidConfigException;
+use Yii;
 
 /**
  * FileCache implements a cache component using files.
@@ -51,7 +51,7 @@ class FileCache extends Cache
 	public function init()
 	{
 		parent::init();
-		$this->cachePath = \Yii::getAlias($this->cachePath);
+		$this->cachePath = Yii::getAlias($this->cachePath);
 		if (!is_dir($this->cachePath)) {
 			mkdir($this->cachePath, 0777, true);
 		}

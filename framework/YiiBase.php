@@ -141,15 +141,26 @@ class YiiBase
 	/**
 	 * Translates a path alias into an actual path.
 	 *
-	 * The path alias can be either a root alias registered via [[setAlias]] or an
-	 * alias starting with a root alias (e.g. `@yii/base/Component.php`).
-	 * In the latter case, the root alias will be replaced by the corresponding registered path
-	 * and the remaining part will be appended to it.
+	 * The translation is done according to the following procedure:
 	 *
-	 * In case the given parameter is not an alias (i.e., not starting with '@'),
-	 * it will be returned back without change.
+	 * 1. If the given alias does not start with '@', it is returned back without change;
+	 * 2. Otherwise, look for the longest registered alias that matches the beginning part
+	 *    of the given alias. If it exists, replace the matching part of the given alias with
+	 *    the corresponding registered path.
+	 * 3. Throw an exception or return false, depending on the `$throwException` parameter.
 	 *
-	 * Note, this method does not ensure the existence of the resulting path.
+	 * For example, by default '@yii' is registered as the alias to the Yii framework directory,
+	 * say '/path/to/yii'. The alias '@yii/web' would then be translated into '/path/to/yii/web'.
+	 *
+	 * If you have registered two aliases '@foo' and '@foo/bar'. Then translating '@foo/bar/config'
+	 * would replace the part '@foo/bar' (instead of '@foo') with the corresponding registered path.
+	 * This is because the longest alias takes precedence.
+	 *
+	 * However, if the alias to be translated is '@foo/barbar/config', then '@foo' will be replaced
+	 * instead of '@foo/bar', because '/' serves as the boundary character.
+	 *
+	 * Note, this method does not check if the returned path exists or not.
+	 *
 	 * @param string $alias the alias to be translated.
 	 * @param boolean $throwException whether to throw an exception if the given alias is invalid.
 	 * If this is false and an invalid alias is given, false will be returned by this method.
@@ -159,18 +170,26 @@ class YiiBase
 	 */
 	public static function getAlias($alias, $throwException = true)
 	{
-		if (is_string($alias)) {
-			if (isset(self::$aliases[$alias])) {
-				return self::$aliases[$alias];
-			} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
-				return $alias;
-			} elseif (($pos = strpos($alias, '/')) !== false || ($pos = strpos($alias, '\\')) !== false) {
-				$rootAlias = substr($alias, 0, $pos);
-				if (isset(self::$aliases[$rootAlias])) {
-					return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
+		if (strncmp($alias, '@', 1)) {
+			// not an alias
+			return $alias;
+		}
+
+		$pos = strpos($alias, '/');
+		$root = $pos === false ? $alias : substr($alias, 0, $pos);
+
+		if (isset(self::$aliases[$root])) {
+			if (is_string(self::$aliases[$root])) {
+				return $pos === false ? self::$aliases[$root] : self::$aliases[$root] . substr($alias, $pos);
+			} else {
+				foreach (self::$aliases[$root] as $name => $path) {
+					if (strpos($alias . '/', $name . '/') === 0) {
+						return $path . substr($alias, strlen($name));
+					}
 				}
 			}
 		}
+
 		if ($throwException) {
 			throw new InvalidParamException("Invalid path alias: $alias");
 		} else {
@@ -181,32 +200,61 @@ class YiiBase
 	/**
 	 * Registers a path alias.
 	 *
-	 * A path alias is a short name representing a path (a file path, a URL, etc.)
-	 * A path alias must start with '@' (e.g. '@yii').
+	 * A path alias is a short name representing a long path (a file path, a URL, etc.)
+	 * For example, we use '@yii' as the alias of the path to the Yii framework directory.
 	 *
-	 * Note that this method neither checks the existence of the path nor normalizes the path.
-	 * Any trailing '/' and '\' characters in the path will be trimmed.
+	 * A path alias must start with the character '@' so that it can be easily differentiated
+	 * from non-alias paths.
 	 *
-	 * @param string $alias the alias name (e.g. "@yii"). It should start with a '@' character
-	 * and should NOT contain the forward slash "/" or the backward slash "\".
-	 * @param string $path the path corresponding to the alias. This can be
+	 * Note that this method does not check if the given path exists or not. All it does is
+	 * to associate the alias with the path.
+	 *
+	 * Any trailing '/' and '\' characters in the given path will be trimmed.
+	 *
+	 * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
+	 * It may contain the forward slash '/' which serves as boundary character when performing
+	 * alias translation by [[getAlias()]].
+	 * @param string $path the path corresponding to the alias. Trailing '/' and '\' characters
+	 * will be trimmed. This can be
 	 *
 	 * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
 	 * - a URL (e.g. `http://www.yiiframework.com`)
 	 * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
 	 *   actual path first by calling [[getAlias()]].
 	 *
-	 * @throws Exception if $path is an invalid alias
+	 * @throws InvalidParamException the alias does not start with '@', or if $path is an invalid alias.
 	 * @see getAlias
 	 */
 	public static function setAlias($alias, $path)
 	{
-		if ($path === null) {
-			unset(self::$aliases[$alias]);
-		} elseif (strncmp($path, '@', 1)) {
-			self::$aliases[$alias] = rtrim($path, '\\/');
-		} else {
-			self::$aliases[$alias] = static::getAlias($path);
+		if (strncmp($alias, '@', 1)) {
+			throw new InvalidParamException('The alias must start with the "@" character.');
+		}
+		$pos = strpos($alias, '/');
+		$root = $pos === false ? $alias : substr($alias, 0, $pos);
+		if ($path !== null) {
+			$path = strncmp($path, '@', 1) ? rtrim($path, '\\/') : static::getAlias($path);
+			if (!isset(self::$aliases[$root])) {
+				self::$aliases[$root] = $path;
+			} elseif (is_string(self::$aliases[$root])) {
+				if ($pos === false) {
+					self::$aliases[$root] = $path;
+				} else {
+					self::$aliases[$root] = array(
+						$alias => $path,
+						$root => self::$aliases[$root],
+					);
+				}
+			} else {
+				self::$aliases[$root][$alias] = $path;
+				krsort(self::$aliases[$root]);
+			}
+		} elseif (isset(self::$aliases[$root])) {
+			if (is_array(self::$aliases[$root])) {
+				unset(self::$aliases[$root][$alias]);
+			} elseif ($pos === false) {
+				unset(self::$aliases[$root]);
+			}
 		}
 	}
 
@@ -258,14 +306,8 @@ class YiiBase
 			}
 
 			// search include_path
-			if (!isset($classFile) && self::$enableIncludePath) {
-				foreach (array_unique(explode(PATH_SEPARATOR, get_include_path())) as $basePath) {
-					$fullPath = $basePath . '/' . $path;
-					if (is_file($fullPath)) {
-						$classFile = $fullPath;
-						break;
-					}
-				}
+			if (!isset($classFile) && self::$enableIncludePath && ($fullPath = stream_resolve_include_path($path)) !== false) {
+				$classFile = $fullPath;
 			}
 
 			if (!isset($classFile)) {
