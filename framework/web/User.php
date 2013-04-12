@@ -32,7 +32,7 @@ class User extends Component
 	const EVENT_AFTER_LOGOUT = 'afterLogout';
 
 	/**
-	 * @var string the class name of the [[identity]] object.
+	 * @var string the class name or alias of the [[identity]] object.
 	 */
 	public $identityClass;
 	/**
@@ -131,7 +131,7 @@ class User extends Component
 				$this->_identity = null;
 			} else {
 				/** @var $class Identity */
-				$class = $this->identityClass;
+				$class = Yii::import($this->identityClass);
 				$this->_identity = $class::findIdentity($id);
 			}
 		}

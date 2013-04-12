@@ -7,6 +7,7 @@
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\UnknownClassException;
 use yii\logging\Logger;
 
 /**
@@ -54,13 +55,10 @@ class YiiBase
 	 */
 	public static $classMap = array();
 	/**
-	 * @var array list of directories where Yii will search for new classes to be included.
-	 * The first directory in the array will be searched first, and so on.
-	 * This property mainly affects how [[autoload]] works.
-	 * @see import
-	 * @see autoload
+	 * @var boolean whether to search PHP include_path when autoloading unknown classes.
+	 * You may want to turn this off if you are also using autoloaders from other libraries.
 	 */
-	public static $classPath = array();
+	public static $enableIncludePath = true;
 	/**
 	 * @var yii\console\Application|yii\web\Application the application instance
 	 */
@@ -214,8 +212,8 @@ class YiiBase
 
 	/**
 	 * Class autoload loader.
-	 * This method is invoked automatically when the execution encounters an unknown class.
-	 * The method will attempt to include the class file as follows:
+	 * This method is invoked automatically when PHP sees an unknown class.
+	 * The method will attempt to include the class file according to the following procedure:
 	 *
 	 * 1. Search in [[classMap]];
 	 * 2. If the class is namespaced (e.g. `yii\base\Component`), it will attempt
@@ -224,43 +222,64 @@ class YiiBase
 	 * 3. If the class is named in PEAR style (e.g. `PHPUnit_Framework_TestCase`),
 	 *    it will attempt to include the file associated with the corresponding path alias
 	 *    (e.g. `@PHPUnit/Framework/TestCase.php`);
-	 * 4. Search in [[classPath]];
+	 * 4. Search PHP include_path for the actual class file if [[enableIncludePath]] is true;
 	 * 5. Return false so that other autoloaders have chance to include the class file.
 	 *
 	 * @param string $className class name
 	 * @return boolean whether the class has been loaded successfully
-	 * @throws Exception if the class file does not exist
+	 * @throws InvalidConfigException if the class file does not exist
+	 * @throws UnknownClassException if the class does not exist in the class file
 	 */
 	public static function autoload($className)
 	{
 		$className = ltrim($className, '\\');
 
 		if (isset(self::$classMap[$className])) {
-			$classFile = self::$classMap[$className];
+			$classFile = static::getAlias(self::$classMap[$className]);
+			if (!is_file($classFile)) {
+				throw new InvalidConfigException("Class file does not exist: $classFile");
+			}
 		} else {
+			// follow PSR-0 to determine the class file
 			if (($pos = strrpos($className, '\\')) !== false) {
 				// namespaced class, e.g. yii\base\Component
-				$classFile = str_replace('\\', '/', substr($className, 0, $pos + 1))
+				$path = str_replace('\\', '/', substr($className, 0, $pos + 1))
 					. str_replace('_', '/', substr($className, $pos + 1)) . '.php';
 			} else {
-				$classFile = str_replace('_', '/', $className) . '.php';
+				$path = str_replace('_', '/', $className) . '.php';
 			}
-			if (strpos($classFile, '/') !== false) {
-				// make it into a path alias
-				$classFile = '@' . $classFile;
+
+			// try via path alias first
+			if (strpos($path, '/') !== false) {
+				$fullPath = static::getAlias('@' . $path, false);
+				if ($fullPath !== false && is_file($fullPath)) {
+					$classFile = $fullPath;
+				}
+			}
+
+			// search include_path
+			if (!isset($classFile) && self::$enableIncludePath) {
+				foreach (array_unique(explode(PATH_SEPARATOR, get_include_path())) as $basePath) {
+					$fullPath = $basePath . '/' . $path;
+					if (is_file($fullPath)) {
+						$classFile = $fullPath;
+						break;
+					}
+				}
+			}
+
+			if (!isset($classFile)) {
+				// return false to let other autoloaders to try loading the class
+				return false;
 			}
 		}
 
-		$classFile = static::getAlias($classFile);
-		if ($classFile !== false && is_file($classFile)) {
-			include($classFile);
-			if (class_exists($className, false) || interface_exists($className, false)) {
-				return true;
-			} else {
-				throw new Exception("Unable to find '$className' in file: $classFile");
-			}
+		include($classFile);
+
+		if (class_exists($className, false) || interface_exists($className, false)) {
+			return true;
 		} else {
-			return false;
+			throw new UnknownClassException("Unable to find '$className' in file: $classFile");
 		}
 	}
 
@@ -268,16 +287,16 @@ class YiiBase
 	 * Creates a new object using the given configuration.
 	 *
 	 * The configuration can be either a string or an array.
-	 * If a string, it is treated as the *object type*; if an array,
-	 * it must contain a `class` element specifying the *object type*, and
+	 * If a string, it is treated as the *object class*; if an array,
+	 * it must contain a `class` element specifying the *object class*, and
 	 * the rest of the name-value pairs in the array will be used to initialize
 	 * the corresponding object properties.
 	 *
-	 * The object type can be either a class name or the [[getAlias|alias]] of
+	 * The object type can be either a class name or the [[getAlias()|alias]] of
 	 * the class. For example,
 	 *
-	 * - `\app\components\GoogleMap`: fully-qualified namespaced class.
-	 * - `@app/components/GoogleMap`: an alias
+	 * - `app\components\GoogleMap`: fully-qualified namespaced class.
+	 * - `@app/components/GoogleMap`: an alias, used for non-namespaced class.
 	 *
 	 * Below are some usage examples:
 	 *
