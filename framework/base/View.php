@@ -53,11 +53,12 @@ class View extends Component
 	 */
 	public $theme;
 	/**
-	 * @var array a list of named output clips. You can call [[beginClip()]] and [[endClip()]]
+	 * @var array a list of named output blocks. The keys are the block names and the values
+	 * are the corresponding block content. You can call [[beginBlock()]] and [[endBlock()]]
 	 * to capture small fragments of a view. They can be later accessed at somewhere else
 	 * through this property.
 	 */
-	public $clips;
+	public $blocks;
 	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
 	 * is maintained by [[beginWidget()]] and [[endWidget()]] methods. Do not modify it.
@@ -350,26 +351,25 @@ class View extends Component
 	}
 
 	/**
-	 * Begins recording a clip.
-	 * This method is a shortcut to beginning [[yii\widgets\Clip]]
-	 * @param string $id the clip ID.
-	 * @param boolean $renderInPlace whether to render the clip content in place.
-	 * Defaults to false, meaning the captured clip will not be displayed.
-	 * @return \yii\widgets\Clip the Clip widget instance
-	 * @see \yii\widgets\Clip
+	 * Begins recording a block.
+	 * This method is a shortcut to beginning [[yii\widgets\Block]]
+	 * @param string $id the block ID.
+	 * @param boolean $renderInPlace whether to render the block content in place.
+	 * Defaults to false, meaning the captured block will not be displayed.
+	 * @return \yii\widgets\Block the Block widget instance
 	 */
-	public function beginClip($id, $renderInPlace = false)
+	public function beginBlock($id, $renderInPlace = false)
 	{
-		return $this->beginWidget('yii\widgets\Clip', array(
+		return $this->beginWidget('yii\widgets\Block', array(
 			'id' => $id,
 			'renderInPlace' => $renderInPlace,
 		));
 	}
 
 	/**
-	 * Ends recording a clip.
+	 * Ends recording a block.
 	 */
-	public function endClip()
+	public function endBlock()
 	{
 		$this->endWidget();
 	}
