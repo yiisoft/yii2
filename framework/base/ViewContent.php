@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use Yii;
+
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -43,7 +45,6 @@ class ViewContent extends Component
 	 * ~~~
 	 */
 	public $bundles;
-
 	public $title;
 	public $metaTags;
 	public $linkTags;
@@ -68,9 +69,21 @@ class ViewContent extends Component
 		$this->jsFiles = null;
 	}
 
+	public function renderScripts($pos)
+	{
+	}
+
 	public function registerBundle($name)
 	{
-
+		if (!isset($this->bundles[$name])) {
+			$am = Yii::$app->assets;
+			$bundle = $am->getBundle($name);
+			if ($bundle !== null) {
+				$this->bundles[$name] = $bundle;
+			} else {
+				throw new InvalidConfigException("Asset bundle does not exist: $name");
+			}
+		}
 	}
 
 	public function getMetaTag($key)

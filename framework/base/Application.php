@@ -87,7 +87,6 @@ class Application extends Module
 	 */
 	public $layout = 'main';
 
-	private $_runtimePath;
 	private $_ended = false;
 
 	/**
@@ -224,6 +223,8 @@ class Application extends Module
 		return 0;
 	}
 
+	private $_runtimePath;
+
 	/**
 	 * Returns the directory that stores runtime files.
 	 * @return string the directory that stores runtime files. Defaults to 'protected/runtime'.
@@ -249,6 +250,30 @@ class Application extends Module
 		} else {
 			throw new InvalidConfigException("Runtime path must be writable by the Web server process: $path");
 		}
+	}
+
+	private $_vendorPath;
+
+	/**
+	 * Returns the directory that stores vendor files.
+	 * @return string the directory that stores vendor files. Defaults to 'protected/vendor'.
+	 */
+	public function getVendorPath()
+	{
+		if ($this->_vendorPath !== null) {
+			$this->setVendorPath($this->getBasePath() . DIRECTORY_SEPARATOR . 'vendor');
+		}
+		return $this->_vendorPath;
+	}
+
+	/**
+	 * Sets the directory that stores vendor files.
+	 * @param string $path the directory that stores vendor files.
+	 * @throws InvalidConfigException if the directory does not exist
+	 */
+	public function setVendorPath($path)
+	{
+		$this->_vendorPath = FileHelper::ensureDirectory($path);
 	}
 
 	/**
