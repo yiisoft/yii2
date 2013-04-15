@@ -42,17 +42,9 @@ class Response extends Component
 
 	/**
 	 * Discards the output buffer
-	 */
-	public function cleanOutput()
-	{
-		ob_clean();
-	}
-
-	/**
-	 * Discards the output buffer
 	 * @param boolean $all if true recursively discards all output buffers used
 	 */
-	public function removeOutput($all = true)
+	public function cleanOutput($all = true)
 	{
 		if ($all) {
 			for ($level = ob_get_level(); $level > 0; --$level) {
