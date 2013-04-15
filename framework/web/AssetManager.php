@@ -96,10 +96,11 @@ class AssetManager extends Component
 
 	/**
 	 * @param string $name
+	 * @param boolean $publish
 	 * @return AssetBundle
 	 * @throws InvalidParamException
 	 */
-	public function getBundle($name)
+	public function getBundle($name, $publish = true)
 	{
 		if (!isset($this->bundles[$name])) {
 			$manifest = Yii::getAlias("@{$name}/assets.php", false);
