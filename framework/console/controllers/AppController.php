@@ -159,7 +159,7 @@ class AppController extends Controller
 	 * @param string $pathTo path to file we want to get relative path for
 	 * @param string $varName variable name w/o $ to replace value with relative path for
 	 *
-	 * @return string target file contetns
+	 * @return string target file contents
 	 */
 	public function replaceRelativePath($source, $pathTo, $varName)
 	{
