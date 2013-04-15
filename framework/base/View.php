@@ -37,7 +37,7 @@ class View extends Component
 	/**
 	 * @var ViewContent
 	 */
-	public $content;
+	public $page;
 	/**
 	 * @var mixed custom parameters that are shared among view templates.
 	 */
@@ -88,10 +88,10 @@ class View extends Component
 		if (is_array($this->theme)) {
 			$this->theme = Yii::createObject($this->theme);
 		}
-		if (is_array($this->content)) {
-			$this->content = Yii::createObject($this->content);
+		if (is_array($this->page)) {
+			$this->page = Yii::createObject($this->page);
 		} else {
-			$this->content = new ViewContent;
+			$this->page = new ViewContent;
 		}
 	}
 
@@ -166,7 +166,6 @@ class View extends Component
 			} else {
 				$output = $this->renderPhpFile($viewFile, $params);
 			}
-			$output = $this->content->populate($output);
 			$this->afterRender($viewFile, $output);
 		}
 
