@@ -1,140 +1,121 @@
 <?php
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\web;
+
+use Yii;
+use yii\base\Component;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 
 /**
- * CAssetManager is a Web application component that manages private files (called assets) and makes them accessible by Web clients.
- *
- * It achieves this goal by copying assets to a Web-accessible directory
- * and returns the corresponding URL for accessing them.
- *
- * To publish an asset, simply call {@link publish()}.
- *
- * The Web-accessible directory holding the published files is specified
- * by {@link setBasePath basePath}, which defaults to the "assets" directory
- * under the directory containing the application entry script file.
- * The property {@link setBaseUrl baseUrl} refers to the URL for accessing
- * the {@link setBasePath basePath}.
- *
- * @property string $basePath The root directory storing the published asset files. Defaults to 'WebRoot/assets'.
- * @property string $baseUrl The base url that the published asset files can be accessed.
- * Note, the ending slashes are stripped off. Defaults to '/AppBaseUrl/assets'.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id$
- * @package system.web
- * @since 1.0
+ * @since 2.0
  */
-class CAssetManager extends CApplicationComponent
+class AssetManager extends Component
 {
 	/**
-	 * Default web accessible base path for storing private files
+	 * @var array list of asset bundles. The keys are the bundle names, and the values are the configuration
+	 * arrays for creating [[AssetBundle]] objects. Besides the bundles listed here, the asset manager
+	 * may look for bundles declared in extensions. For more details, please refer to [[getBundle()]].
 	 */
-	const DEFAULT_BASEPATH='assets';
+	public $bundles;
+	/**
+	 * @var
+	 */
+	public $bundleMap;
+	/**
+	 * @return string the root directory storing the published asset files.
+	 */
+	public $basePath = '@wwwroot/assets';
+	/**
+	 * @return string the base URL through which the published asset files can be accessed.
+	 */
+	public $baseUrl = '@www/assets';
 	/**
 	 * @var boolean whether to use symbolic link to publish asset files. Defaults to false, meaning
-	 * asset files are copied to public folders. Using symbolic links has the benefit that the published
-	 * assets will always be consistent with the source assets. This is especially useful during development.
+	 * asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
+	 * assets will always be consistent with the source assets and there is no copy operation required.
+	 * This is especially useful during development.
 	 *
 	 * However, there are special requirements for hosting environments in order to use symbolic links.
 	 * In particular, symbolic links are supported only on Linux/Unix, and Windows Vista/2008 or greater.
-	 * The latter requires PHP 5.3 or greater.
 	 *
 	 * Moreover, some Web servers need to be properly configured so that the linked assets are accessible
 	 * to Web users. For example, for Apache Web server, the following configuration directive should be added
 	 * for the Web folder:
-	 * <pre>
-	 * Options FollowSymLinks
-	 * </pre>
 	 *
-	 * @since 1.1.5
+	 * ~~~
+	 * Options FollowSymLinks
+	 * ~~~
 	 */
-	public $linkAssets=false;
+	public $linkAssets = false;
 	/**
 	 * @var array list of directories and files which should be excluded from the publishing process.
 	 * Defaults to exclude '.svn' and '.gitignore' files only. This option has no effect if {@link linkAssets} is enabled.
 	 * @since 1.1.6
 	 **/
-	public $excludeFiles=array('.svn','.gitignore');
+	public $excludeFiles = array('.svn', '.gitignore');
 	/**
 	 * @var integer the permission to be set for newly generated asset files.
 	 * This value will be used by PHP chmod function.
 	 * Defaults to 0666, meaning the file is read-writable by all users.
 	 * @since 1.1.8
 	 */
-	public $newFileMode=0666;
+	public $newFileMode = 0666;
 	/**
 	 * @var integer the permission to be set for newly generated asset directories.
 	 * This value will be used by PHP chmod function.
 	 * Defaults to 0777, meaning the directory can be read, written and executed by all users.
 	 * @since 1.1.8
 	 */
-	public $newDirMode=0777;
-	/**
-	 * @var string base web accessible path for storing private files
-	 */
-	private $_basePath;
-	/**
-	 * @var string base URL for accessing the publishing directory.
-	 */
-	private $_baseUrl;
+	public $newDirMode = 0777;
 	/**
 	 * @var array published assets
 	 */
-	private $_published=array();
+	private $_published = array();
 
-	/**
-	 * @return string the root directory storing the published asset files. Defaults to 'WebRoot/assets'.
-	 */
-	public function getBasePath()
+	public function init()
 	{
-		if($this->_basePath===null)
-		{
-			$request=\Yii::$app->getRequest();
-			$this->setBasePath(dirname($request->getScriptFile()).DIRECTORY_SEPARATOR.self::DEFAULT_BASEPATH);
+		parent::init();
+		$this->basePath = Yii::getAlias($this->basePath);
+		if (!is_dir($this->basePath)) {
+			throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
+		} elseif (!is_writable($this->basePath)) {
+			throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
+		} else {
+			$this->base = realpath($this->basePath);
 		}
-		return $this->_basePath;
+		$this->baseUrl = rtrim(Yii::getAlias($this->getBaseUrl), '/');
 	}
 
 	/**
-	 * Sets the root directory storing published asset files.
-	 * @param string $value the root directory storing published asset files
-	 * @throws CException if the base path is invalid
+	 * @param string $name
+	 * @return AssetBundle
+	 * @throws InvalidParamException
 	 */
-	public function setBasePath($value)
+	public function getBundle($name)
 	{
-		if(($basePath=realpath($value))!==false && is_dir($basePath) && is_writable($basePath))
-			$this->_basePath=$basePath;
-		else
-			throw new CException(Yii::t('yii|CAssetManager.basePath "{path}" is invalid. Please make sure the directory exists and is writable by the Web server process.',
-				array('{path}'=>$value)));
-	}
-
-	/**
-	 * @return string the base url that the published asset files can be accessed.
-	 * Note, the ending slashes are stripped off. Defaults to '/AppBaseUrl/assets'.
-	 */
-	public function getBaseUrl()
-	{
-		if($this->_baseUrl===null)
-		{
-			$request=\Yii::$app->getRequest();
-			$this->setBaseUrl($request->getBaseUrl().'/'.self::DEFAULT_BASEPATH);
+		if (!isset($this->bundles[$name])) {
+			$manifest = Yii::getAlias("@{$name}/assets.php", false);
+			if ($manifest === false) {
+				throw new InvalidParamException("Unable to find the asset bundle: $name");
+			}
+			$this->bundles[$name] = require($manifest);
 		}
-		return $this->_baseUrl;
-	}
-
-	/**
-	 * @param string $value the base url that the published asset files can be accessed
-	 */
-	public function setBaseUrl($value)
-	{
-		$this->_baseUrl=rtrim($value,'/');
+		if (is_array($this->bundles[$name])) {
+			$config = $this->bundles[$name];
+			if (!isset($config['class'])) {
+				$config['class'] = 'yii\\web\\AssetBundle';
+				$this->bundles[$name] = Yii::createObject($config);
+			}
+		}
+		return $this->bundles[$name];
 	}
 
 	/**
@@ -173,69 +154,65 @@ class CAssetManager extends CApplicationComponent
 	 * @return string an absolute URL to the published asset
 	 * @throws CException if the asset to be published does not exist.
 	 */
-	public function publish($path,$hashByName=false,$level=-1,$forceCopy=false)
+	public function publish($path, $hashByName = false, $level = -1, $forceCopy = false)
 	{
-		if(isset($this->_published[$path]))
+		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
-		else if(($src=realpath($path))!==false)
-		{
-			if(is_file($src))
-			{
-				$dir=$this->hash($hashByName ? basename($src) : dirname($src).filemtime($src));
-				$fileName=basename($src);
-				$dstDir=$this->getBasePath().DIRECTORY_SEPARATOR.$dir;
-				$dstFile=$dstDir.DIRECTORY_SEPARATOR.$fileName;
+		} else {
+			if (($src = realpath($path)) !== false) {
+				if (is_file($src)) {
+					$dir = $this->hash($hashByName ? basename($src) : dirname($src) . filemtime($src));
+					$fileName = basename($src);
+					$dstDir = $this->getBasePath() . DIRECTORY_SEPARATOR . $dir;
+					$dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
 
-				if($this->linkAssets)
-				{
-					if(!is_file($dstFile))
-					{
-						if(!is_dir($dstDir))
-						{
-							mkdir($dstDir);
-							@chmod($dstDir, $this->newDirMode);
+					if ($this->linkAssets) {
+						if (!is_file($dstFile)) {
+							if (!is_dir($dstDir)) {
+								mkdir($dstDir);
+								@chmod($dstDir, $this->newDirMode);
+							}
+							symlink($src, $dstFile);
 						}
-						symlink($src,$dstFile);
+					} else {
+						if (@filemtime($dstFile) < @filemtime($src)) {
+							if (!is_dir($dstDir)) {
+								mkdir($dstDir);
+								@chmod($dstDir, $this->newDirMode);
+							}
+							copy($src, $dstFile);
+							@chmod($dstFile, $this->newFileMode);
+						}
+					}
+
+					return $this->_published[$path] = $this->getBaseUrl() . "/$dir/$fileName";
+				} else {
+					if (is_dir($src)) {
+						$dir = $this->hash($hashByName ? basename($src) : $src . filemtime($src));
+						$dstDir = $this->getBasePath() . DIRECTORY_SEPARATOR . $dir;
+
+						if ($this->linkAssets) {
+							if (!is_dir($dstDir)) {
+								symlink($src, $dstDir);
+							}
+						} else {
+							if (!is_dir($dstDir) || $forceCopy) {
+								CFileHelper::copyDirectory($src, $dstDir, array(
+									'exclude' => $this->excludeFiles,
+									'level' => $level,
+									'newDirMode' => $this->newDirMode,
+									'newFileMode' => $this->newFileMode,
+								));
+							}
+						}
+
+						return $this->_published[$path] = $this->getBaseUrl() . '/' . $dir;
 					}
 				}
-				else if(@filemtime($dstFile)<@filemtime($src))
-				{
-					if(!is_dir($dstDir))
-					{
-						mkdir($dstDir);
-						@chmod($dstDir, $this->newDirMode);
-					}
-					copy($src,$dstFile);
-					@chmod($dstFile, $this->newFileMode);
-				}
-
-				return $this->_published[$path]=$this->getBaseUrl()."/$dir/$fileName";
-			}
-			else if(is_dir($src))
-			{
-				$dir=$this->hash($hashByName ? basename($src) : $src.filemtime($src));
-				$dstDir=$this->getBasePath().DIRECTORY_SEPARATOR.$dir;
-
-				if($this->linkAssets)
-				{
-					if(!is_dir($dstDir))
-						symlink($src,$dstDir);
-				}
-				else if(!is_dir($dstDir) || $forceCopy)
-				{
-					CFileHelper::copyDirectory($src,$dstDir,array(
-						'exclude'=>$this->excludeFiles,
-						'level'=>$level,
-						'newDirMode'=>$this->newDirMode,
-						'newFileMode'=>$this->newFileMode,
-					));
-				}
-
-				return $this->_published[$path]=$this->getBaseUrl().'/'.$dir;
 			}
 		}
 		throw new CException(Yii::t('yii|The asset "{asset}" to be published does not exist.',
-			array('{asset}'=>$path)));
+			array('{asset}' => $path)));
 	}
 
 	/**
@@ -249,18 +226,18 @@ class CAssetManager extends CApplicationComponent
 	 * different extensions.
 	 * @return string the published file path. False if the file or directory does not exist
 	 */
-	public function getPublishedPath($path,$hashByName=false)
+	public function getPublishedPath($path, $hashByName = false)
 	{
-		if(($path=realpath($path))!==false)
-		{
-			$base=$this->getBasePath().DIRECTORY_SEPARATOR;
-			if(is_file($path))
-				return $base . $this->hash($hashByName ? basename($path) : dirname($path).filemtime($path)) . DIRECTORY_SEPARATOR . basename($path);
-			else
-				return $base . $this->hash($hashByName ? basename($path) : $path.filemtime($path));
-		}
-		else
+		if (($path = realpath($path)) !== false) {
+			$base = $this->getBasePath() . DIRECTORY_SEPARATOR;
+			if (is_file($path)) {
+				return $base . $this->hash($hashByName ? basename($path) : dirname($path) . filemtime($path)) . DIRECTORY_SEPARATOR . basename($path);
+			} else {
+				return $base . $this->hash($hashByName ? basename($path) : $path . filemtime($path));
+			}
+		} else {
 			return false;
+		}
 	}
 
 	/**
@@ -274,19 +251,20 @@ class CAssetManager extends CApplicationComponent
 	 * different extensions.
 	 * @return string the published URL for the file or directory. False if the file or directory does not exist.
 	 */
-	public function getPublishedUrl($path,$hashByName=false)
+	public function getPublishedUrl($path, $hashByName = false)
 	{
-		if(isset($this->_published[$path]))
+		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
-		if(($path=realpath($path))!==false)
-		{
-			if(is_file($path))
-				return $this->getBaseUrl().'/'.$this->hash($hashByName ? basename($path) : dirname($path).filemtime($path)).'/'.basename($path);
-			else
-				return $this->getBaseUrl().'/'.$this->hash($hashByName ? basename($path) : $path.filemtime($path));
 		}
-		else
+		if (($path = realpath($path)) !== false) {
+			if (is_file($path)) {
+				return $this->getBaseUrl() . '/' . $this->hash($hashByName ? basename($path) : dirname($path) . filemtime($path)) . '/' . basename($path);
+			} else {
+				return $this->getBaseUrl() . '/' . $this->hash($hashByName ? basename($path) : $path . filemtime($path));
+			}
+		} else {
 			return false;
+		}
 	}
 
 	/**
@@ -297,6 +275,6 @@ class CAssetManager extends CApplicationComponent
 	 */
 	protected function hash($path)
 	{
-		return sprintf('%x',crc32($path.Yii::getVersion()));
+		return sprintf('%x', crc32($path . Yii::getVersion()));
 	}
 }

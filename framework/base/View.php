@@ -241,7 +241,7 @@ class View extends Component
 	{
 		if (!empty($this->cacheStack)) {
 			$n = count($this->dynamicPlaceholders);
-			$placeholder = "<![CDATA[YDP-$n]]>";
+			$placeholder = "<![CDATA[YII-DYNAMIC-$n]]>";
 			$this->addDynamicPlaceholder($placeholder, $statements);
 			return $placeholder;
 		} else {

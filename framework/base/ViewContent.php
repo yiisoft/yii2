@@ -25,30 +25,9 @@ class ViewContent extends Component
 	const TOKEN_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
 
 	/**
-	 * @var array
-	 *
-	 * Each asset bundle should be declared with the following structure:
-	 *
-	 * ~~~
-	 * array(
-	 *     'basePath' => '...',
-	 *     'baseUrl' => '...',  // if missing, the bundle will be published to the "www/assets" folder
-	 *     'js' => array(
-	 *         'js/main.js',
-	 *         'js/menu.js',
-	 *         'js/base.js' => self::POS_HEAD,
-	 *     'css' => array(
-	 *         'css/main.css',
-	 *         'css/menu.css',
-	 *     ),
-	 *     'depends' => array(
-	 *         'jquery',
-	 *         'yii',
-	 *         'yii/treeview',
-	 *     ),
-	 * )
-	 * ~~~
+	 * @var \yii\web\AssetManager
 	 */
+	public $assetManager;
 	public $assetBundles;
 	public $title;
 	public $metaTags;
@@ -61,6 +40,14 @@ class ViewContent extends Component
 	public $jsFilesInHead;
 	public $jsInBody;
 	public $jsFilesInBody;
+
+	public function init()
+	{
+		parent::init();
+		if ($this->assetManager === null) {
+			$this->assetManager = Yii::$app->getAssetManager();
+		}
+	}
 
 	public function reset()
 	{
@@ -104,21 +91,22 @@ class ViewContent extends Component
 		echo self::TOKEN_HEAD;
 	}
 
-	public function requireAssetBundle($name)
+	public function registerAssetBundle($name)
 	{
 		if (!isset($this->assetBundles[$name])) {
-			$bundle = Yii::$app->assets->getBundle($name);
+			$bundle = $this->assetManager->getBundle($name);
 			if ($bundle !== null) {
-				$this->assetBundles[$name] = $bundle;
+				$this->assetBundles[$name] = false;
+				$bundle->registerWith($this);
+				$this->assetBundles[$name] = true;
 			} else {
 				throw new InvalidConfigException("Unknown asset bundle: $name");
 			}
-			foreach ($bundle->depends as $d) {
-				$this->requireAssetBundle($d);
-			}
+		} elseif ($this->assetBundles[$name] === false) {
+			throw new InvalidConfigException("A cyclic dependency is detected for bundle '$name'.");
 		}
 	}
-	
+
 	public function registerMetaTag($options, $key = null)
 	{
 		if ($key === null) {
@@ -149,8 +137,10 @@ class ViewContent extends Component
 		$this->cssFiles[$key] = Html::cssFile($url, $options);
 	}
 
-	public function registerJs($js, $position = self::POS_END, $options = array(), $key = null)
+	public function registerJs($js, $options = array(), $key = null)
 	{
+		$position = isset($options['position']) ? $options['position'] : self::POS_END;
+		unset($options['position']);
 		$key = $key ?: $js;
 		$html = Html::script($js, $options);
 		if ($position == self::POS_END) {
@@ -164,8 +154,10 @@ class ViewContent extends Component
 		}
 	}
 
-	public function registerJsFile($url, $position = self::POS_END, $options = array(), $key = null)
+	public function registerJsFile($url, $options = array(), $key = null)
 	{
+		$position = isset($options['position']) ? $options['position'] : self::POS_END;
+		unset($options['position']);
 		$key = $key ?: $url;
 		$html = Html::jsFile($url, $options);
 		if ($position == self::POS_END) {
@@ -178,21 +170,14 @@ class ViewContent extends Component
 			throw new InvalidParamException("Unknown position: $position");
 		}
 	}
-	
 
 	protected function populate($content)
 	{
-		$this->expandAssetBundles();
 		return strtr($content, array(
 			self::TOKEN_HEAD => $this->getHeadHtml(),
 			self::TOKEN_BODY_BEGIN => $this->getBodyBeginHtml(),
 			self::TOKEN_BODY_END => $this->getBodyEndHtml(),
 		));
-	}
-
-	protected function expandAssetBundles()
-	{
-
 	}
 
 	protected function getHeadHtml()
