@@ -106,7 +106,7 @@ class MemCache extends Cache
 	/**
 	 * Returns the underlying memcache (or memcached) object.
 	 * @return \Memcache|\Memcached the memcache (or memcached) object used by this cache component.
-	 * @throws Exception if memcache or memcached extension is not loaded
+	 * @throws InvalidConfigException if memcache or memcached extension is not loaded
 	 */
 	public function getMemcache()
 	{

@@ -728,7 +728,7 @@ class Html
 		if (!isset($options['size'])) {
 			$options['size'] = 4;
 		}
-		if (isset($options['multiple']) && $options['multiple'] && substr($name, -2) !== '[]') {
+		if (!empty($options['multiple']) && substr($name, -2) !== '[]') {
 			$name .= '[]';
 		}
 		$options['name'] = $name;

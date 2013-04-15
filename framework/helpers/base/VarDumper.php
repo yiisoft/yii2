@@ -64,7 +64,7 @@ class VarDumper
 		return self::$_output;
 	}
 
-	/*
+	/**
 	 * @param mixed $var variable to be dumped
 	 * @param integer $level depth level
 	 */

@@ -10,7 +10,7 @@ namespace yii\caching;
 /**
  * ZendDataCache provides Zend data caching in terms of an application component.
  *
- * To use this application component, the [Zend Data Cache PHP extensionn](http://www.zend.com/en/products/server/)
+ * To use this application component, the [Zend Data Cache PHP extension](http://www.zend.com/en/products/server/)
  * must be loaded.
  *
  * See [[Cache]] for common cache operations that ZendDataCache supports.
