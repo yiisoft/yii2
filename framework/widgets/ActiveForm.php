@@ -64,7 +64,7 @@ class ActiveForm extends Widget
 			$models = array($models);
 		}
 
-		$showAll = isset($options['showAll']) && $options['showAll'];
+		$showAll = !empty($options['showAll']);
 		$lines = array();
 		/** @var $model Model */
 		foreach ($models as $model) {
