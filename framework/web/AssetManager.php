@@ -116,6 +116,7 @@ class AssetManager extends Component
 				$this->bundles[$name] = Yii::createObject($config);
 			}
 		}
+		// todo: publish bundle
 		return $this->bundles[$name];
 	}
 
