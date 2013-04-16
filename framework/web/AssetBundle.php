@@ -42,10 +42,18 @@ class AssetBundle extends Object
 	public $css = array();
 	public $depends = array();
 
+	public function mapTo($target)
+	{
+		$this->depends = array($target);
+		$this->js = $this->css = array();
+		$this->basePath = null;
+		$this->baseUrl = null;
+	}
+
 	/**
 	 * @param \yii\base\ViewContent $content
 	 */
-	public function registerWith($content)
+	public function registerAssets($content)
 	{
 		foreach ($this->depends as $name) {
 			$content->registerAssetBundle($name);
@@ -63,6 +71,16 @@ class AssetBundle extends Object
 			} else {
 				$content->registerCssFile($options);
 			}
+		}
+	}
+
+	/**
+	 * @param \yii\web\AssetManager $assetManager
+	 */
+	public function publish($assetManager)
+	{
+		if ($this->basePath !== null && $this->baseUrl === null) {
+			return;
 		}
 	}
 }

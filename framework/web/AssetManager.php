@@ -129,9 +129,23 @@ class AssetManager extends Component
 				$this->bundles[$name] = Yii::createObject($config);
 			}
 		}
+		/** @var $bundle AssetBundle */
+		$bundle = $this->bundles[$name];
+		if (isset($this->bundleMap[$name]) && is_string($this->bundleMap[$name])) {
+			$target = $this->bundleMap[$name];
+			if (!isset($this->bundles[$target])) {
+				if (isset($this->bundleMap[$target])) {
+					$this->bundles[$target] = $this->bundleMap[$target];
+				} else {
+					throw new InvalidConfigException("Asset bundle '$name' is mapped to an unknown bundle: $target");
+				}
+			}
+			$bundle->mapTo($target);
+			unset($this->bundleMap[$name]);
+		}
 
 		if ($publish) {
-
+			$bundle->publish($this);
 		}
 
 		return $this->bundles[$name];
