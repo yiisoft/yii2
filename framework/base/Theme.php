@@ -61,10 +61,10 @@ class Theme extends Component
 	 	parent::init();
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
-				$this->basePath = FileHelper::ensureDirectory($this->basePath);
+				$this->basePath = Yii::getAlias($this->basePath);
 				$this->pathMap = array(Yii::$app->getBasePath() => $this->basePath);
 			} else {
-				throw new InvalidConfigException("Theme::basePath must be set.");
+				throw new InvalidConfigException('The "basePath" property must be set.');
 			}
 		}
 		$paths = array();
@@ -75,7 +75,7 @@ class Theme extends Component
 		}
 		$this->pathMap = $paths;
 		if ($this->baseUrl === null) {
-			throw new InvalidConfigException("Theme::baseUrl must be set.");
+			throw new InvalidConfigException('The "baseUrl" property must be set.');
 		} else {
 			$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
 		}

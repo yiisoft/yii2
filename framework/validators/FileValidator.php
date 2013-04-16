@@ -175,7 +175,7 @@ class FileValidator extends Validator
 				if ($this->minSize !== null && $file->getSize() < $this->minSize) {
 					$this->addError($object, $attribute, $this->tooSmall, array('{file}' => $file->getName(), '{limit}' => $this->minSize));
 				}
-				if (!empty($this->types) && !in_array(strtolower(FileHelper::getExtension($file->getName())), $this->types, true)) {
+				if (!empty($this->types) && !in_array(strtolower(pathinfo($file->getName(), PATHINFO_EXTENSION)), $this->types, true)) {
 					$this->addError($object, $attribute, $this->wrongType, array('{file}' => $file->getName(), '{extensions}' => implode(', ', $this->types)));
 				}
 				break;

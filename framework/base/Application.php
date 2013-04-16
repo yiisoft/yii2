@@ -202,11 +202,11 @@ class Application extends Module
 	 */
 	public function setRuntimePath($path)
 	{
-		$p = FileHelper::ensureDirectory($path);
-		if (is_writable($p)) {
-			$this->_runtimePath = $p;
+		$path = Yii::getAlias($path);
+		if (is_dir($path) && is_writable($path)) {
+			$this->_runtimePath = $path;
 		} else {
-			throw new InvalidConfigException("Runtime path must be writable by the Web server process: $path");
+			throw new InvalidConfigException("Runtime path must be a directory writable by the Web server process: $path");
 		}
 	}
 
@@ -227,11 +227,10 @@ class Application extends Module
 	/**
 	 * Sets the directory that stores vendor files.
 	 * @param string $path the directory that stores vendor files.
-	 * @throws InvalidConfigException if the directory does not exist
 	 */
 	public function setVendorPath($path)
 	{
-		$this->_vendorPath = FileHelper::ensureDirectory($path);
+		$this->_vendorPath = Yii::getAlias($path);
 	}
 
 	/**

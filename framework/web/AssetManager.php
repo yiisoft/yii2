@@ -26,10 +26,6 @@ class AssetManager extends Component
 	 */
 	public $bundles;
 	/**
-	 * @var
-	 */
-	public $bundleMap;
-	/**
 	 * @return string the root directory storing the published asset files.
 	 */
 	public $basePath = '@wwwroot/assets';
@@ -89,7 +85,7 @@ class AssetManager extends Component
 		} elseif (!is_writable($this->basePath)) {
 			throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
 		} else {
-			$this->base = realpath($this->basePath);
+			$this->basePath = realpath($this->basePath);
 		}
 		$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
 
@@ -131,18 +127,6 @@ class AssetManager extends Component
 		}
 		/** @var $bundle AssetBundle */
 		$bundle = $this->bundles[$name];
-		if (isset($this->bundleMap[$name]) && is_string($this->bundleMap[$name])) {
-			$target = $this->bundleMap[$name];
-			if (!isset($this->bundles[$target])) {
-				if (isset($this->bundleMap[$target])) {
-					$this->bundles[$target] = $this->bundleMap[$target];
-				} else {
-					throw new InvalidConfigException("Asset bundle '$name' is mapped to an unknown bundle: $target");
-				}
-			}
-			$bundle->mapTo($target);
-			unset($this->bundleMap[$name]);
-		}
 
 		if ($publish) {
 			$bundle->publish($this);
@@ -191,61 +175,56 @@ class AssetManager extends Component
 	{
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
+		}
+
+		$src = realpath($path);
+		if ($src === false) {
+			throw new InvalidParamException("The file or directory to be published does not exist: $path");
+		}
+
+		if (is_file($src)) {
+			$dir = $this->hash($hashByName ? basename($src) : dirname($src) . filemtime($src));
+			$fileName = basename($src);
+			$dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
+			$dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
+
+			if (!is_dir($dstDir)) {
+				@mkdir($dstDir, $this->newDirMode, true);
+			}
+
+
+			if ($this->linkAssets) {
+				if (!is_file($dstFile)) {
+					symlink($src, $dstFile);
+				}
+			} elseif (@filemtime($dstFile) < @filemtime($src)) {
+				copy($src, $dstFile);
+				@chmod($dstFile, $this->newFileMode);
+			}
+
+			$url = $this->baseUrl . "/$dir/$fileName";
 		} else {
-			if (($src = realpath($path)) !== false) {
-				if (is_file($src)) {
-					$dir = $this->hash($hashByName ? basename($src) : dirname($src) . filemtime($src));
-					$fileName = basename($src);
-					$dstDir = $this->getBasePath() . DIRECTORY_SEPARATOR . $dir;
-					$dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
+			$dir = $this->hash($hashByName ? basename($src) : $src . filemtime($src));
+			$dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
 
-					if ($this->linkAssets) {
-						if (!is_file($dstFile)) {
-							if (!is_dir($dstDir)) {
-								mkdir($dstDir);
-								@chmod($dstDir, $this->newDirMode);
-							}
-							symlink($src, $dstFile);
-						}
-					} else {
-						if (@filemtime($dstFile) < @filemtime($src)) {
-							if (!is_dir($dstDir)) {
-								mkdir($dstDir);
-								@chmod($dstDir, $this->newDirMode);
-							}
-							copy($src, $dstFile);
-							@chmod($dstFile, $this->newFileMode);
-						}
-					}
-
-					return $this->_published[$path] = $this->getBaseUrl() . "/$dir/$fileName";
-				} else {
-					if (is_dir($src)) {
-						$dir = $this->hash($hashByName ? basename($src) : $src . filemtime($src));
-						$dstDir = $this->getBasePath() . DIRECTORY_SEPARATOR . $dir;
-
-						if ($this->linkAssets) {
-							if (!is_dir($dstDir)) {
-								symlink($src, $dstDir);
-							}
-						} else {
-							if (!is_dir($dstDir) || $forceCopy) {
-								CFileHelper::copyDirectory($src, $dstDir, array(
-									'exclude' => $this->excludeFiles,
-									'level' => $level,
-									'newDirMode' => $this->newDirMode,
-									'newFileMode' => $this->newFileMode,
-								));
-							}
-						}
-
-						return $this->_published[$path] = $this->getBaseUrl() . '/' . $dir;
-					}
+			if ($this->linkAssets) {
+				if (!is_dir($dstDir)) {
+					symlink($src, $dstDir);
+				}
+			} else {
+				if (!is_dir($dstDir) || $forceCopy) {
+					FileHelper::copyDirectory($src, $dstDir, array(
+						'exclude' => $this->excludeFiles,
+						'level' => $level,
+						'newDirMode' => $this->newDirMode,
+						'newFileMode' => $this->newFileMode,
+					));
 				}
 			}
+
+			$url = $this->baseUrl . '/' . $dir;
 		}
-		throw new CException(Yii::t('yii|The asset "{asset}" to be published does not exist.',
-			array('{asset}' => $path)));
+		return $this->_published[$path] = $url;
 	}
 
 	/**
@@ -262,7 +241,7 @@ class AssetManager extends Component
 	public function getPublishedPath($path, $hashByName = false)
 	{
 		if (($path = realpath($path)) !== false) {
-			$base = $this->getBasePath() . DIRECTORY_SEPARATOR;
+			$base = $this->basePath . DIRECTORY_SEPARATOR;
 			if (is_file($path)) {
 				return $base . $this->hash($hashByName ? basename($path) : dirname($path) . filemtime($path)) . DIRECTORY_SEPARATOR . basename($path);
 			} else {
@@ -291,9 +270,9 @@ class AssetManager extends Component
 		}
 		if (($path = realpath($path)) !== false) {
 			if (is_file($path)) {
-				return $this->getBaseUrl() . '/' . $this->hash($hashByName ? basename($path) : dirname($path) . filemtime($path)) . '/' . basename($path);
+				return $this->baseUrl . '/' . $this->hash($hashByName ? basename($path) : dirname($path) . filemtime($path)) . '/' . basename($path);
 			} else {
-				return $this->getBaseUrl() . '/' . $this->hash($hashByName ? basename($path) : $path . filemtime($path));
+				return $this->baseUrl . '/' . $this->hash($hashByName ? basename($path) : $path . filemtime($path));
 			}
 		} else {
 			return false;

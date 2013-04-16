@@ -211,7 +211,13 @@ abstract class Module extends Component
 	 */
 	public function setBasePath($path)
 	{
-		$this->_basePath = FileHelper::ensureDirectory($path);
+		$path = Yii::getAlias($path);
+		$p = realpath($path);
+		if ($p !== false && is_dir($p)) {
+			$this->_basePath = $p;
+		} else {
+			throw new InvalidParamException("The directory does not exist: $path");
+		}
 	}
 
 	/**
@@ -236,7 +242,7 @@ abstract class Module extends Component
 	 */
 	public function setControllerPath($path)
 	{
-		$this->_controllerPath = FileHelper::ensureDirectory($path);
+		$this->_controllerPath = Yii::getAlias($path);
 	}
 
 	/**
@@ -259,7 +265,7 @@ abstract class Module extends Component
 	 */
 	public function setViewPath($path)
 	{
-		$this->_viewPath = FileHelper::ensureDirectory($path);
+		$this->_viewPath = Yii::getAlias($path);
 	}
 
 	/**
@@ -282,7 +288,7 @@ abstract class Module extends Component
 	 */
 	public function setLayoutPath($path)
 	{
-		$this->_layoutPath = FileHelper::ensureDirectory($path);
+		$this->_layoutPath = Yii::getAlias($path);
 	}
 
 	/**
