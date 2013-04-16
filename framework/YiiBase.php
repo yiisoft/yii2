@@ -198,6 +198,32 @@ class YiiBase
 	}
 
 	/**
+	 * Returns the root alias part of a given alias.
+	 * A root alias is an alias that has been registered via [[setAlias()]] previously.
+	 * If a given alias matches multiple root aliases, the longest one will be returned.
+	 * @param string $alias the alias
+	 * @return string|boolean the root alias, or false if no root alias is found
+	 */
+	public static function getRootAlias($alias)
+	{
+		$pos = strpos($alias, '/');
+		$root = $pos === false ? $alias : substr($alias, 0, $pos);
+
+		if (isset(self::$aliases[$root])) {
+			if (is_string(self::$aliases[$root])) {
+				return $root;
+			} else {
+				foreach (self::$aliases[$root] as $name => $path) {
+					if (strpos($alias . '/', $name . '/') === 0) {
+						return $name;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Registers a path alias.
 	 *
 	 * A path alias is a short name representing a long path (a file path, a URL, etc.)
@@ -222,13 +248,13 @@ class YiiBase
 	 * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
 	 *   actual path first by calling [[getAlias()]].
 	 *
-	 * @throws InvalidParamException the alias does not start with '@', or if $path is an invalid alias.
+	 * @throws InvalidParamException if $path is an invalid alias.
 	 * @see getAlias
 	 */
 	public static function setAlias($alias, $path)
 	{
 		if (strncmp($alias, '@', 1)) {
-			throw new InvalidParamException('The alias must start with the "@" character.');
+			$alias = '@' . $alias;
 		}
 		$pos = strpos($alias, '/');
 		$root = $pos === false ? $alias : substr($alias, 0, $pos);

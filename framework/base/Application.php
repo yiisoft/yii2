@@ -56,6 +56,11 @@ class Application extends Module
 	 * If this is false, layout will be disabled.
 	 */
 	public $layout = 'main';
+	/**
+	 * @var array list of installed extensions. The array keys are the extension names, and the array
+	 * values are the corresponding extension root source directories or path aliases.
+	 */
+	public $extensions = array();
 
 	private $_ended = false;
 
@@ -81,10 +86,17 @@ class Application extends Module
 
 		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
+			Yii::setAlias('@app', $this->getBasePath());
 			unset($config['basePath']);
-			Yii::$aliases['@app'] = $this->getBasePath();
 		} else {
 			throw new InvalidConfigException('The "basePath" configuration is required.');
+		}
+
+		if (isset($config['extensions'])) {
+			foreach ($config['extensions'] as $name => $path) {
+				Yii::setAlias("@$name", $path);
+			}
+			unset($config['extensions']);
 		}
 
 		$this->registerErrorHandlers();
@@ -206,7 +218,7 @@ class Application extends Module
 	 */
 	public function getVendorPath()
 	{
-		if ($this->_vendorPath !== null) {
+		if ($this->_vendorPath === null) {
 			$this->setVendorPath($this->getBasePath() . DIRECTORY_SEPARATOR . 'vendor');
 		}
 		return $this->_vendorPath;

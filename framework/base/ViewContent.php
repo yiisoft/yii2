@@ -28,6 +28,7 @@ class ViewContent extends Component
 	 * @var \yii\web\AssetManager
 	 */
 	public $assetManager;
+
 	public $assetBundles;
 	public $title;
 	public $metaTags;
@@ -45,7 +46,7 @@ class ViewContent extends Component
 	{
 		parent::init();
 		if ($this->assetManager === null) {
-			$this->assetManager = Yii::$app->getAssetManager();
+			$this->assetManager = Yii::$app->getAssets();
 		}
 	}
 

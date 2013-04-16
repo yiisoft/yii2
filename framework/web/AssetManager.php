@@ -91,7 +91,13 @@ class AssetManager extends Component
 		} else {
 			$this->base = realpath($this->basePath);
 		}
-		$this->baseUrl = rtrim(Yii::getAlias($this->getBaseUrl), '/');
+		$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+
+		foreach (require(YII_PATH . '/assets.php') as $name => $bundle) {
+			if (!isset($this->bundles[$name])) {
+				$this->bundles[$name] = $bundle;
+			}
+		}
 	}
 
 	/**
@@ -103,11 +109,18 @@ class AssetManager extends Component
 	public function getBundle($name, $publish = true)
 	{
 		if (!isset($this->bundles[$name])) {
-			$manifest = Yii::getAlias("@{$name}/assets.php", false);
-			if ($manifest === false) {
+			$rootAlias = Yii::getRootAlias("@$name");
+			if ($rootAlias !== false) {
+				$manifest = Yii::getAlias("$rootAlias/assets.php", false);
+				if ($manifest !== false && is_file($manifest)) {
+					foreach (require($manifest) as $bn => $config) {
+						$this->bundles[$bn] = $config;
+					}
+				}
+			}
+			if (!isset($this->bundles[$name])) {
 				throw new InvalidParamException("Unable to find the asset bundle: $name");
 			}
-			$this->bundles[$name] = require($manifest);
 		}
 		if (is_array($this->bundles[$name])) {
 			$config = $this->bundles[$name];
@@ -116,7 +129,11 @@ class AssetManager extends Component
 				$this->bundles[$name] = Yii::createObject($config);
 			}
 		}
-		// todo: publish bundle
+
+		if ($publish) {
+
+		}
+
 		return $this->bundles[$name];
 	}
 
