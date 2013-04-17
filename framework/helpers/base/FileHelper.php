@@ -86,9 +86,12 @@ class FileHelper
 	{
 		if (function_exists('finfo_open')) {
 			$info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
-			if ($info && ($result = finfo_file($info, $file)) !== false) {
+			if ($info) {
+				$result = finfo_file($info, $file);
 				finfo_close($info);
-				return $result;
+				if ($result !== false) {
+					return $result;
+				}
 			}
 		}
 
@@ -122,4 +125,49 @@ class FileHelper
 	}
 
 
+	/**
+	 * Copies a whole directory as another one.
+	 * The files and sub-directories will also be copied over.
+	 * @param string $src the source directory
+	 * @param string $dst the destination directory
+	 * @param array $options options for directory copy. Valid options are:
+	 *
+	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0777.
+	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
+	 * - filter: callback, a PHP callback that is called for every sub-directory and file to
+	 *   determine if it should be copied. The signature of the callback should be:
+	 *
+	 * ~~~
+	 * // $path is the file/directory path to be copied
+	 * function ($path) {
+	 *     // return a boolean indicating if $path should be copied
+	 * }
+	 * ~~~
+	 */
+	public static function copyDirectory($src, $dst, $options = array())
+	{
+		if (!is_dir($dst)) {
+			mkdir($dst, isset($options['dirMode']) ? $options['dirMode'] : 0777, true);
+		}
+
+		$handle = opendir($src);
+		while (($file = readdir($handle)) !== false) {
+			if ($file === '.' || $file === '..') {
+				continue;
+			}
+			$srcPath = $src . DIRECTORY_SEPARATOR . $file;
+			if (!isset($options['filter']) || call_user_func($options['filter'], $srcPath)) {
+				$dstPath = $dst . DIRECTORY_SEPARATOR . $file;
+				if (is_file($srcPath)) {
+					copy($srcPath, $dstPath);
+					if (isset($options['fileMode'])) {
+						chmod($dstPath, $options['fileMode']);
+					}
+				} else {
+					static::copyDirectory($srcPath, $dstPath, $options);
+				}
+			}
+		}
+		closedir($handle);
+	}
 }

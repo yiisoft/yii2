@@ -11,27 +11,6 @@ use Yii;
 use yii\base\Object;
 
 /**
- * Each asset bundle should be declared with the following structure:
- *
- * ~~~
- * array(
- *     'basePath' => '...',
- *     'baseUrl' => '...',  // if missing, the bundle will be published to the "www/assets" folder
- *     'js' => array(
- *         'js/main.js',
- *         'js/menu.js',
- *         'js/base.js' => self::POS_HEAD,
- *     'css' => array(
- *         'css/main.css',
- *         'css/menu.css',
- *     ),
- *     'depends' => array(
- *         'jquery',
- *         'yii',
- *         'yii/treeview',
- *     ),
- * )
- * ~~~
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -61,9 +40,26 @@ class AssetBundle extends Object
 	 *
 	 * Note that you should not use backward slashes "\" to specify JavaScript files.
 	 *
-	 * A JavaScript file can be associated with the options: // todo
+	 * Each JavaScript file may be associated with options. In this case, the array key
+	 * should be the JavaScript file path, while the corresponding array value should
+	 * be the option array. The options will be passed to [[ViewContent::registerJsFile()]].
 	 */
 	public $js = array();
+	/**
+	 * @var array list of CSS files that this bundle contains. Each CSS file can
+	 * be specified in one of the three formats:
+	 *
+	 * - a relative path: a path relative to [[basePath]] if [[basePath]] is set,
+	 *   or a URL relative to [[baseUrl]] if [[basePath]] is not set;
+	 * - an absolute URL;
+	 * - a path alias that can be resolved into a relative path or an absolute URL.
+	 *
+	 * Note that you should not use backward slashes "\" to specify CSS files.
+	 *
+	 * Each CSS file may be associated with options. In this case, the array key
+	 * should be the CSS file path, while the corresponding array value should
+	 * be the option array. The options will be passed to [[ViewContent::registerCssFile()]].
+	 */
 	public $css = array();
 	/**
 	 * @var array list of the bundle names that this bundle depends on

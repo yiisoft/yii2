@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\FileHelper;
 
 /**
  *
@@ -58,24 +59,22 @@ class AssetManager extends Component
 	 **/
 	public $excludeFiles = array('.svn', '.gitignore');
 	/**
-	 * @var integer the permission to be set for newly generated asset files.
-	 * This value will be used by PHP chmod function.
-	 * Defaults to 0666, meaning the file is read-writable by all users.
-	 * @since 1.1.8
+	 * @var integer the permission to be set for newly published asset files.
+	 * This value will be used by PHP chmod() function.
+	 * If not set, the permission will be determined by the current environment.
 	 */
-	public $newFileMode = 0666;
+	public $fileMode;
 	/**
 	 * @var integer the permission to be set for newly generated asset directories.
-	 * This value will be used by PHP chmod function.
+	 * This value will be used by PHP chmod() function.
 	 * Defaults to 0777, meaning the directory can be read, written and executed by all users.
-	 * @since 1.1.8
 	 */
-	public $newDirMode = 0777;
-	/**
-	 * @var array published assets
-	 */
-	private $_published = array();
+	public $dirMode = 0777;
 
+	/**
+	 * Initializes the component.
+	 * @throws InvalidConfigException if [[basePath]] is invalid
+	 */
 	public function init()
 	{
 		parent::init();
@@ -136,16 +135,22 @@ class AssetManager extends Component
 	}
 
 	/**
+	 * @var array published assets
+	 */
+	private $_published = array();
+
+	/**
 	 * Publishes a file or a directory.
-	 * This method will copy the specified asset to a web accessible directory
-	 * and return the URL for accessing the published asset.
-	 * <ul>
-	 * <li>If the asset is a file, its file modification time will be checked
-	 * to avoid unnecessary file copying;</li>
-	 * <li>If the asset is a directory, all files and subdirectories under it will
-	 * be published recursively. Note, in case $forceCopy is false the method only checks the
-	 * existence of the target directory to avoid repetitive copying.</li>
-	 * </ul>
+	 *
+	 * This method will copy the specified file or directory to [[basePath]] so that
+	 * it can be accessed via the Web server.
+	 *
+	 * If the asset is a file, its file modification time will be checked to avoid
+	 * unnecessary file copying.
+	 *
+	 * If the asset is a directory, all files and subdirectories under it will be published recursively.
+	 * Note, in case $forceCopy is false the method only checks the existence of the target
+	 * directory to avoid repetitive copying (which is very expensive).
 	 *
 	 * Note: On rare scenario, a race condition can develop that will lead to a
 	 * one-time-manifestation of a non-critical problem in the creation of the directory
@@ -155,23 +160,14 @@ class AssetManager extends Component
 	 * discussion: http://code.google.com/p/yii/issues/detail?id=2579
 	 *
 	 * @param string $path the asset (file or directory) to be published
-	 * @param boolean $hashByName whether the published directory should be named as the hashed basename.
-	 * If false, the name will be the hash taken from dirname of the path being published and path mtime.
-	 * Defaults to false. Set true if the path being published is shared among
-	 * different extensions.
-	 * @param integer $level level of recursive copying when the asset is a directory.
-	 * Level -1 means publishing all subdirectories and files;
-	 * Level 0 means publishing only the files DIRECTLY under the directory;
-	 * level N means copying those directories that are within N levels.
-	 * @param boolean $forceCopy whether we should copy the asset file or directory even if it is already published before.
-	 * This parameter is set true mainly during development stage when the original
-	 * assets are being constantly changed. The consequence is that the performance
+	 * @param boolean $forceCopy whether the asset should ALWAYS be copied even if it is found
+	 * in the target directory. This parameter is mainly useful during the development stage
+	 * when the original assets are being constantly changed. The consequence is that the performance
 	 * is degraded, which is not a concern during development, however.
-	 * This parameter has been available since version 1.1.2.
 	 * @return string an absolute URL to the published asset
-	 * @throws CException if the asset to be published does not exist.
+	 * @throws InvalidParamException if the asset to be published does not exist.
 	 */
-	public function publish($path, $hashByName = false, $level = -1, $forceCopy = false)
+	public function publish($path, $forceCopy = false)
 	{
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
@@ -183,13 +179,13 @@ class AssetManager extends Component
 		}
 
 		if (is_file($src)) {
-			$dir = $this->hash($hashByName ? basename($src) : dirname($src) . filemtime($src));
+			$dir = $this->hash(dirname($src) . filemtime($src));
 			$fileName = basename($src);
 			$dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
 			$dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
 
 			if (!is_dir($dstDir)) {
-				@mkdir($dstDir, $this->newDirMode, true);
+				@mkdir($dstDir, $this->dirMode, true);
 			}
 
 
@@ -197,29 +193,26 @@ class AssetManager extends Component
 				if (!is_file($dstFile)) {
 					symlink($src, $dstFile);
 				}
-			} elseif (@filemtime($dstFile) < @filemtime($src)) {
+			} elseif (@filemtime($dstFile) < @filemtime($src) || $forceCopy) {
 				copy($src, $dstFile);
-				@chmod($dstFile, $this->newFileMode);
+				if ($this->fileMode !== null) {
+					@chmod($dstFile, $this->fileMode);
+				}
 			}
 
 			$url = $this->baseUrl . "/$dir/$fileName";
 		} else {
-			$dir = $this->hash($hashByName ? basename($src) : $src . filemtime($src));
+			$dir = $this->hash($src . filemtime($src));
 			$dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
-
 			if ($this->linkAssets) {
 				if (!is_dir($dstDir)) {
 					symlink($src, $dstDir);
 				}
-			} else {
-				if (!is_dir($dstDir) || $forceCopy) {
-					FileHelper::copyDirectory($src, $dstDir, array(
-						'exclude' => $this->excludeFiles,
-						'level' => $level,
-						'newDirMode' => $this->newDirMode,
-						'newFileMode' => $this->newFileMode,
-					));
-				}
+			} elseif (!is_dir($dstDir) || $forceCopy) {
+				FileHelper::copyDirectory($src, $dstDir, array(
+					'dirMode' => $this->dirMode,
+					'fileMode' => $this->fileMode,
+				));
 			}
 
 			$url = $this->baseUrl . '/' . $dir;
@@ -232,20 +225,16 @@ class AssetManager extends Component
 	 * This method does not perform any publishing. It merely tells you
 	 * if the file or directory is published, where it will go.
 	 * @param string $path directory or file path being published
-	 * @param boolean $hashByName whether the published directory should be named as the hashed basename.
-	 * If false, the name will be the hash taken from dirname of the path being published and path mtime.
-	 * Defaults to false. Set true if the path being published is shared among
-	 * different extensions.
 	 * @return string the published file path. False if the file or directory does not exist
 	 */
-	public function getPublishedPath($path, $hashByName = false)
+	public function getPublishedPath($path)
 	{
 		if (($path = realpath($path)) !== false) {
 			$base = $this->basePath . DIRECTORY_SEPARATOR;
 			if (is_file($path)) {
-				return $base . $this->hash($hashByName ? basename($path) : dirname($path) . filemtime($path)) . DIRECTORY_SEPARATOR . basename($path);
+				return $base . $this->hash(dirname($path) . filemtime($path)) . DIRECTORY_SEPARATOR . basename($path);
 			} else {
-				return $base . $this->hash($hashByName ? basename($path) : $path . filemtime($path));
+				return $base . $this->hash($path . filemtime($path));
 			}
 		} else {
 			return false;
@@ -257,22 +246,18 @@ class AssetManager extends Component
 	 * This method does not perform any publishing. It merely tells you
 	 * if the file path is published, what the URL will be to access it.
 	 * @param string $path directory or file path being published
-	 * @param boolean $hashByName whether the published directory should be named as the hashed basename.
-	 * If false, the name will be the hash taken from dirname of the path being published and path mtime.
-	 * Defaults to false. Set true if the path being published is shared among
-	 * different extensions.
 	 * @return string the published URL for the file or directory. False if the file or directory does not exist.
 	 */
-	public function getPublishedUrl($path, $hashByName = false)
+	public function getPublishedUrl($path)
 	{
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
 		}
 		if (($path = realpath($path)) !== false) {
 			if (is_file($path)) {
-				return $this->baseUrl . '/' . $this->hash($hashByName ? basename($path) : dirname($path) . filemtime($path)) . '/' . basename($path);
+				return $this->baseUrl . '/' . $this->hash(dirname($path) . filemtime($path)) . '/' . basename($path);
 			} else {
-				return $this->baseUrl . '/' . $this->hash($hashByName ? basename($path) : $path . filemtime($path));
+				return $this->baseUrl . '/' . $this->hash($path . filemtime($path));
 			}
 		} else {
 			return false;
