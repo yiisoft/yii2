@@ -21,12 +21,10 @@ use yii\helpers\FileHelper;
 class AssetManager extends Component
 {
 	/**
-	 * @var array list of asset bundles. The keys are the bundle names, and the values are the configuration
-	 * arrays for creating [[AssetBundle]] objects. Besides the bundles listed here, the asset manager
-	 * may look for bundles declared in extensions. For more details, please refer to [[getBundle()]].
+	 * @var array list of available asset bundles. The keys are the bundle names, and the values are the configuration
+	 * arrays for creating the [[AssetBundle]] objects.
 	 */
 	public $bundles;
-	public $bundleClass;
 	/**
 	 * @return string the root directory storing the published asset files.
 	 */
@@ -53,12 +51,6 @@ class AssetManager extends Component
 	 * ~~~
 	 */
 	public $linkAssets = false;
-	/**
-	 * @var array list of directories and files which should be excluded from the publishing process.
-	 * Defaults to exclude '.svn' and '.gitignore' files only. This option has no effect if {@link linkAssets} is enabled.
-	 * @since 1.1.6
-	 **/
-	public $excludeFiles = array('.svn', '.gitignore');
 	/**
 	 * @var integer the permission to be set for newly published asset files.
 	 * This value will be used by PHP chmod() function.
@@ -97,9 +89,21 @@ class AssetManager extends Component
 	}
 
 	/**
-	 * @param string $name
-	 * @return AssetBundle
-	 * @throws InvalidParamException
+	 * Returns the named bundle.
+	 * This method will first look for the bundle in [[bundles]]. If not found,
+	 * it will attempt to find the bundle from an installed extension using the following procedure:
+	 *
+	 * 1. Convert the bundle into a path alias;
+	 * 2. Determine the root alias and use it to locate the bundle manifest file "assets.php";
+	 * 3. Look for the bundle in the manifest file.
+	 *
+	 * For example, given the bundle name "foo/button", the method will first convert it
+	 * into the path alias "@foo/button"; since "@foo" is the root alias, it will look
+	 * for the bundle manifest file "@foo/assets.php". The manifest file should declare
+	 * the bundles used by the "foo/button" extension.
+	 *
+	 * @param string $name the bundle name
+	 * @return AssetBundle the loaded bundle object. Null is returned if the bundle does not exist.
 	 */
 	public function getBundle($name)
 	{
@@ -114,7 +118,7 @@ class AssetManager extends Component
 				}
 			}
 			if (!isset($this->bundles[$name])) {
-				throw new InvalidParamException("Unable to find the asset bundle: $name");
+				return null;
 			}
 		}
 		if (is_array($this->bundles[$name])) {
@@ -126,6 +130,20 @@ class AssetManager extends Component
 		}
 
 		return $this->bundles[$name];
+	}
+
+	/**
+	 * Processes the given asset file and returns a URL to the processed one.
+	 * This method can be overwritten to support various types of asset files, such as LESS, Sass, TypeScript.
+	 * @param string $asset the asset file path to be processed. The file path is relative
+	 * to $basePath, and it may contain forward slashes to indicate sub-directories (e.g. "js/main.js").
+	 * @param string $basePath the directory that contains the asset file.
+	 * @param string $baseUrl the corresponding URL of $basePath.
+	 * @return string the processed asset file path.
+	 */
+	public function processAsset($asset, $basePath, $baseUrl)
+	{
+		return $baseUrl . '/' . $asset;
 	}
 
 	/**
@@ -154,14 +172,26 @@ class AssetManager extends Component
 	 * discussion: http://code.google.com/p/yii/issues/detail?id=2579
 	 *
 	 * @param string $path the asset (file or directory) to be published
-	 * @param boolean $forceCopy whether the asset should ALWAYS be copied even if it is found
-	 * in the target directory. This parameter is mainly useful during the development stage
-	 * when the original assets are being constantly changed. The consequence is that the performance
-	 * is degraded, which is not a concern during development, however.
+	 * @param array $options the options to	be applied when publishing a directory.
+	 * The following options are supported:
+	 *
+	 * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
+	 *   This option is used only when publishing a directory. If the callback returns false, the copy
+	 *   operation for the sub-directory or file will be cancelled.
+	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
+ 	 *   file to be copied from, while `$to` is the copy target.
+	 * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
+	 *   This option is used only when publishing a directory. The signature of the callback is similar to that
+	 *   of `beforeCopy`.
+	 * - forceCopy: boolean, whether the directory being published should be copied even if
+	 *   it is found in the target directory. This option is used only when publishing a directory.
+	 *   You may want to set this to be true during the development stage to make sure the published
+	 *   directory is always up-to-date. Do not set this to true on production servers as it will
+	 *   significantly degrade the performance.
 	 * @return array the path (directory or file path) and the URL that the asset is published as.
 	 * @throws InvalidParamException if the asset to be published does not exist.
 	 */
-	public function publish($path, $forceCopy = false)
+	public function publish($path, $options = array())
 	{
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
@@ -179,15 +209,14 @@ class AssetManager extends Component
 			$dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
 
 			if (!is_dir($dstDir)) {
-				@mkdir($dstDir, $this->dirMode, true);
+				mkdir($dstDir, $this->dirMode, true);
 			}
-
 
 			if ($this->linkAssets) {
 				if (!is_file($dstFile)) {
 					symlink($src, $dstFile);
 				}
-			} elseif (@filemtime($dstFile) < @filemtime($src) || $forceCopy) {
+			} elseif (@filemtime($dstFile) < @filemtime($src)) {
 				copy($src, $dstFile);
 				if ($this->fileMode !== null) {
 					@chmod($dstFile, $this->fileMode);
@@ -202,11 +231,18 @@ class AssetManager extends Component
 				if (!is_dir($dstDir)) {
 					symlink($src, $dstDir);
 				}
-			} elseif (!is_dir($dstDir) || $forceCopy) {
-				FileHelper::copyDirectory($src, $dstDir, array(
+			} elseif (!is_dir($dstDir) || !empty($options['forceCopy'])) {
+				$opts = array(
 					'dirMode' => $this->dirMode,
 					'fileMode' => $this->fileMode,
-				));
+				);
+				if (isset($options['beforeCopy'])) {
+					$opts['beforeCopy'] = $options['beforeCopy'];
+				}
+				if (isset($options['afterCopy'])) {
+					$opts['afterCopy'] = $options['afterCopy'];
+				}
+				FileHelper::copyDirectory($src, $dstDir, $opts);
 			}
 
 			return $this->_published[$path] = array($dstDir, $this->baseUrl . '/' . $dir);

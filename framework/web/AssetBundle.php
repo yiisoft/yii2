@@ -121,7 +121,7 @@ class AssetBundle extends Object
 			$js = is_string($options) ? $options : $js;
 			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
 				if (isset($this->basePath, $this->baseUrl)) {
-					$js = $this->processAsset(ltrim($js, '/'), $this->basePath, $this->baseUrl);
+					$js = $am->processAsset(ltrim($js, '/'), $this->basePath, $this->baseUrl);
 				} else {
 					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
 				}
@@ -132,27 +132,12 @@ class AssetBundle extends Object
 			$css = is_string($options) ? $options : $css;
 			if (strpos($css, '//') !== 0 && strpos($css, '://') === false) {
 				if (isset($this->basePath, $this->baseUrl)) {
-					$css = $this->processAsset(ltrim($css, '/'), $this->basePath, $this->baseUrl);
+					$css = $am->processAsset(ltrim($css, '/'), $this->basePath, $this->baseUrl);
 				} else {
 					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
 				}
 			}
 			$page->registerCssFile($css, is_array($options) ? $options : array());
 		}
-	}
-
-	/**
-	 * Processes the given asset file and returns a URL to the processed one.
-	 * This method can be overwritten to support various types of asset files, such as LESS, Sass, TypeScript.
-	 *
-	 * Note that if the asset file is converted into another file, the new file must reside under the same
-	 * directory as the given asset file.
-	 *
-	 * @param string $asset the asset file path to be processed.
-	 * @return string the processed asset file path.
-	 */
-	protected function processAsset($asset, $basePath, $baseUrl)
-	{
-		return $this->baseUrl . '/' . $asset;
 	}
 }

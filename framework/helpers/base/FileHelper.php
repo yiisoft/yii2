@@ -157,7 +157,7 @@ class FileHelper
 				if (is_file($from)) {
 					copy($from, $to);
 					if (isset($options['fileMode'])) {
-						chmod($to, $options['fileMode']);
+						@chmod($to, $options['fileMode']);
 					}
 				} else {
 					static::copyDirectory($from, $to, $options);
