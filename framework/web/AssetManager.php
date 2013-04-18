@@ -26,6 +26,7 @@ class AssetManager extends Component
 	 * may look for bundles declared in extensions. For more details, please refer to [[getBundle()]].
 	 */
 	public $bundles;
+	public $bundleClass;
 	/**
 	 * @return string the root directory storing the published asset files.
 	 */
@@ -97,11 +98,10 @@ class AssetManager extends Component
 
 	/**
 	 * @param string $name
-	 * @param boolean $publish
 	 * @return AssetBundle
 	 * @throws InvalidParamException
 	 */
-	public function getBundle($name, $publish = true)
+	public function getBundle($name)
 	{
 		if (!isset($this->bundles[$name])) {
 			$rootAlias = Yii::getRootAlias("@$name");
@@ -123,12 +123,6 @@ class AssetManager extends Component
 				$config['class'] = 'yii\\web\\AssetBundle';
 				$this->bundles[$name] = Yii::createObject($config);
 			}
-		}
-		/** @var $bundle AssetBundle */
-		$bundle = $this->bundles[$name];
-
-		if ($publish) {
-			$bundle->publish($this);
 		}
 
 		return $this->bundles[$name];
@@ -164,7 +158,7 @@ class AssetManager extends Component
 	 * in the target directory. This parameter is mainly useful during the development stage
 	 * when the original assets are being constantly changed. The consequence is that the performance
 	 * is degraded, which is not a concern during development, however.
-	 * @return string an absolute URL to the published asset
+	 * @return array the path (directory or file path) and the URL that the asset is published as.
 	 * @throws InvalidParamException if the asset to be published does not exist.
 	 */
 	public function publish($path, $forceCopy = false)
@@ -200,7 +194,7 @@ class AssetManager extends Component
 				}
 			}
 
-			$url = $this->baseUrl . "/$dir/$fileName";
+			return $this->_published[$path] = array($dstFile, $this->baseUrl . "/$dir/$fileName");
 		} else {
 			$dir = $this->hash($src . filemtime($src));
 			$dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
@@ -215,9 +209,8 @@ class AssetManager extends Component
 				));
 			}
 
-			$url = $this->baseUrl . '/' . $dir;
+			return $this->_published[$path] = array($dstDir, $this->baseUrl . '/' . $dir);
 		}
-		return $this->_published[$path] = $url;
 	}
 
 	/**

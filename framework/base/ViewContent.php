@@ -98,7 +98,7 @@ class ViewContent extends Component
 			$bundle = $this->assetManager->getBundle($name);
 			if ($bundle !== null) {
 				$this->assetBundles[$name] = false;
-				$bundle->registerAssets($this);
+				$bundle->registerAssets($this, $this->assetManager);
 				$this->assetBundles[$name] = true;
 			} else {
 				throw new InvalidConfigException("Unknown asset bundle: $name");

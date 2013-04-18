@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Object;
 
 /**
@@ -17,34 +18,51 @@ use yii\base\Object;
 class AssetBundle extends Object
 {
 	/**
-	 * @var string the root directory of the source asset files. If this is set,
-	 * the source asset files will be published to [[basePath]] when the bundle
-	 * is being used the first time.
+	 * @var string the root directory of the source asset files. A source asset file
+	 * is a file that is part of your source code repository of your Web application.
+	 *
+	 * You must set this property if the directory containing the source asset files
+	 * is not Web accessible (this is usually the case for extensions).
+	 *
+	 * By setting this property, the asset manager will publish the source asset files
+	 * to a Web-accessible directory [[basePath]].
+	 *
+	 * You can use either a directory or an alias of the directory.
 	 */
 	public $sourcePath;
 	/**
-	 * @var string the root directory of the public asset files. If this is not set
-	 * while [[sourcePath]] is set, a default value will be set by [[AssetManager]]
-	 * when it publishes the source asset files. If you set this property, please
-	 * make sure the directory is Web accessible.
+	 * @var string the Web-accessible directory that contains the asset files in this bundle.
+	 *
+	 * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
+	 * when it publishes the asset files from [[sourcePath]].
+	 *
+	 * If the bundle contains any assets that are specified in terms of relative file path,
+	 * then this property must be set either manually or automatically (by asset manager via
+	 * asset publishing).
+	 *
+	 * You can use either a directory or an alias of the directory.
 	 */
 	public $basePath;
 	/**
-	 * @var string the base URL that will be prefixed to the asset files.
-	 * This property must be set if you set [[basePath]] explicitly.
-	 * When this property is not set, it will be initialized as the base URL
-	 * that the assets are published to.
+	 * @var string the base URL that will be prefixed to the asset files for them to
+	 * be accessed via Web server.
+	 *
+	 * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
+	 * when it publishes the asset files from [[sourcePath]].
+	 *
+	 * If the bundle contains any assets that are specified in terms of relative file path,
+	 * then this property must be set either manually or automatically (by asset manager via
+	 * asset publishing).
+	 *
+	 * You can use either a URL or an alias of the URL.
 	 */
 	public $baseUrl;
 	/**
 	 * @var array list of JavaScript files that this bundle contains. Each JavaScript file can
-	 * be specified in one of the three formats:
+	 * be either a file path (without leading slash) relative to [[basePath]] or a URL representing
+	 * an external JavaScript file.
 	 *
-	 * - a relative file path: a path relative to [[basePath]];,
-	 * - an absolute URL;
-	 * - a path alias that can be resolved into a relative path or an absolute URL.
-	 *
-	 * Note that only forward slashes "/" should be used as directory separators.
+	 * Note that only forward slash "/" can be used as directory separator.
 	 *
 	 * Each JavaScript file may be associated with options. In this case, the array key
 	 * should be the JavaScript file path, while the corresponding array value should
@@ -53,13 +71,10 @@ class AssetBundle extends Object
 	public $js = array();
 	/**
 	 * @var array list of CSS files that this bundle contains. Each CSS file can
-	 * be specified in one of the three formats:
+	 * be either a file path (without leading slash) relative to [[basePath]] or a URL representing
+	 * an external CSS file.
 	 *
-	 * - a relative file path: a path relative to [[basePath]];,
-	 * - an absolute URL;
-	 * - a path alias that can be resolved into a relative path or an absolute URL.
-	 *
-	 * Note that only forward slashes "/" should be used as directory separators.
+	 * Note that only forward slash "/" can be used as directory separator.
 	 *
 	 * Each CSS file may be associated with options. In this case, the array key
 	 * should be the CSS file path, while the corresponding array value should
@@ -71,50 +86,73 @@ class AssetBundle extends Object
 	 */
 	public $depends = array();
 
+	/**
+	 * Initializes the bundle.
+	 */
 	public function init()
 	{
-		if ($this->baseUrl !== null) {
-			$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
-		}
 		if ($this->sourcePath !== null) {
 			$this->sourcePath = rtrim(Yii::getAlias($this->sourcePath), '/\\');
+		}
+		if ($this->basePath !== null) {
+			$this->basePath = rtrim(Yii::getAlias($this->basePath), '/\\');
+		}
+		if ($this->baseUrl !== null) {
+			$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
 		}
 	}
 
 	/**
-	 * @param \yii\base\ViewContent $content
+	 * @param \yii\base\ViewContent $page
+	 * @param AssetManager $am
+	 * @throws InvalidConfigException
 	 */
-	public function registerAssets($content)
+	public function registerAssets($page, $am)
 	{
 		foreach ($this->depends as $name) {
-			$content->registerAssetBundle($name);
+			$page->registerAssetBundle($name);
 		}
+
+		if ($this->sourcePath !== null) {
+			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath);
+		}
+
 		foreach ($this->js as $js => $options) {
 			$js = is_string($options) ? $options : $js;
-			if (strpos($js, '//') !== 0 && strpos($js, '://') === false) {
-				$js = $this->baseUrl . '/' . ltrim($js, '/');
+			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
+				if (isset($this->basePath, $this->baseUrl)) {
+					$js = $this->processAsset(ltrim($js, '/'), $this->basePath, $this->baseUrl);
+				} else {
+					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
+				}
 			}
-			$content->registerJsFile($js, is_array($options) ? $options : array());
+			$page->registerJsFile($js, is_array($options) ? $options : array());
 		}
 		foreach ($this->css as $css => $options) {
 			$css = is_string($options) ? $options : $css;
 			if (strpos($css, '//') !== 0 && strpos($css, '://') === false) {
-				$css = $this->baseUrl . '/' . ltrim($css, '/');
+				if (isset($this->basePath, $this->baseUrl)) {
+					$css = $this->processAsset(ltrim($css, '/'), $this->basePath, $this->baseUrl);
+				} else {
+					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
+				}
 			}
-			$content->registerCssFile($css, is_array($options) ? $options : array());
+			$page->registerCssFile($css, is_array($options) ? $options : array());
 		}
 	}
 
 	/**
-	 * @param \yii\web\AssetManager $assetManager
+	 * Processes the given asset file and returns a URL to the processed one.
+	 * This method can be overwritten to support various types of asset files, such as LESS, Sass, TypeScript.
+	 *
+	 * Note that if the asset file is converted into another file, the new file must reside under the same
+	 * directory as the given asset file.
+	 *
+	 * @param string $asset the asset file path to be processed.
+	 * @return string the processed asset file path.
 	 */
-	public function publish($assetManager)
+	protected function processAsset($asset, $basePath, $baseUrl)
 	{
-		if ($this->sourcePath !== null) {
-			$baseUrl = $assetManager->publish($this->sourcePath);
-			if ($this->baseUrl === null) {
-				$this->baseUrl = $baseUrl;
-			}
-		}
+		return $this->baseUrl . '/' . $asset;
 	}
 }
