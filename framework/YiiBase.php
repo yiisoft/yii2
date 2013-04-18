@@ -139,6 +139,30 @@ class YiiBase
 	}
 
 	/**
+	 * Imports a set of namespaces.
+	 *
+	 * By importing a namespace, the method will create an alias for the directory corresponding
+	 * to the namespace. For example, if "foo\bar" is a namespace associated with the directory
+	 * "path/to/foo/bar", then an alias "@foo/bar" will be created for this directory.
+	 *
+	 * This method is typically invoked in the bootstrap file to import the namespaces of
+	 * the installed extensions. By default, Composer, when installing new extensions, will
+	 * generate such a mapping file which can be loaded and passed to this method.
+	 *
+	 * @param array $namespaces the namespaces to be imported. The keys are the namespaces,
+	 * and the values are the corresponding directories.
+	 */
+	public static function importNamespaces($namespaces)
+	{
+		foreach ($namespaces as $name => $path) {
+			if ($name !== '') {
+				$name = '@' . str_replace('\\', '/', $name);
+				static::setAlias($name, $path);
+			}
+		}
+	}
+
+	/**
 	 * Translates a path alias into an actual path.
 	 *
 	 * The translation is done according to the following procedure:

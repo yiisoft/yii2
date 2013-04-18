@@ -89,7 +89,7 @@ class AssetBundle extends Object
 	 * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
 	 * is being published.
 	 */
-	public $publishOption = array();
+	public $publishOptions = array();
 
 	/**
 	 * Initializes the bundle.
@@ -119,7 +119,7 @@ class AssetBundle extends Object
 		}
 
 		if ($this->sourcePath !== null) {
-			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOption);
+			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
 		}
 
 		foreach ($this->js as $js => $options) {
