@@ -17,14 +17,21 @@ use yii\base\Object;
 class AssetBundle extends Object
 {
 	/**
-	 * @var string the root directory of the asset files. If this is not set,
-	 * the assets are considered to be located under a Web-accessible folder already
-	 * and no asset publishing will be performed.
+	 * @var string the root directory of the source asset files. If this is set,
+	 * the source asset files will be published to [[basePath]] when the bundle
+	 * is being used the first time.
+	 */
+	public $sourcePath;
+	/**
+	 * @var string the root directory of the public asset files. If this is not set
+	 * while [[sourcePath]] is set, a default value will be set by [[AssetManager]]
+	 * when it publishes the source asset files. If you set this property, please
+	 * make sure the directory is Web accessible.
 	 */
 	public $basePath;
 	/**
 	 * @var string the base URL that will be prefixed to the asset files.
-	 * This property must be set if [[basePath]] is not set.
+	 * This property must be set if you set [[basePath]] explicitly.
 	 * When this property is not set, it will be initialized as the base URL
 	 * that the assets are published to.
 	 */
@@ -33,12 +40,11 @@ class AssetBundle extends Object
 	 * @var array list of JavaScript files that this bundle contains. Each JavaScript file can
 	 * be specified in one of the three formats:
 	 *
-	 * - a relative path: a path relative to [[basePath]] if [[basePath]] is set,
-	 *   or a URL relative to [[baseUrl]] if [[basePath]] is not set;
+	 * - a relative file path: a path relative to [[basePath]];,
 	 * - an absolute URL;
 	 * - a path alias that can be resolved into a relative path or an absolute URL.
 	 *
-	 * Note that you should not use backward slashes "\" to specify JavaScript files.
+	 * Note that only forward slashes "/" should be used as directory separators.
 	 *
 	 * Each JavaScript file may be associated with options. In this case, the array key
 	 * should be the JavaScript file path, while the corresponding array value should
@@ -49,12 +55,11 @@ class AssetBundle extends Object
 	 * @var array list of CSS files that this bundle contains. Each CSS file can
 	 * be specified in one of the three formats:
 	 *
-	 * - a relative path: a path relative to [[basePath]] if [[basePath]] is set,
-	 *   or a URL relative to [[baseUrl]] if [[basePath]] is not set;
+	 * - a relative file path: a path relative to [[basePath]];,
 	 * - an absolute URL;
 	 * - a path alias that can be resolved into a relative path or an absolute URL.
 	 *
-	 * Note that you should not use backward slashes "\" to specify CSS files.
+	 * Note that only forward slashes "/" should be used as directory separators.
 	 *
 	 * Each CSS file may be associated with options. In this case, the array key
 	 * should be the CSS file path, while the corresponding array value should
@@ -71,8 +76,8 @@ class AssetBundle extends Object
 		if ($this->baseUrl !== null) {
 			$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
 		}
-		if ($this->basePath !== null) {
-			$this->basePath = rtrim(Yii::getAlias($this->basePath), '/\\');
+		if ($this->sourcePath !== null) {
+			$this->sourcePath = rtrim(Yii::getAlias($this->sourcePath), '/\\');
 		}
 	}
 
@@ -105,8 +110,8 @@ class AssetBundle extends Object
 	 */
 	public function publish($assetManager)
 	{
-		if ($this->basePath !== null) {
-			$baseUrl = $assetManager->publish($this->basePath);
+		if ($this->sourcePath !== null) {
+			$baseUrl = $assetManager->publish($this->sourcePath);
 			if ($this->baseUrl === null) {
 				$this->baseUrl = $baseUrl;
 			}
