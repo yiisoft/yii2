@@ -24,11 +24,6 @@ class ViewContent extends Component
 	const TOKEN_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
 	const TOKEN_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
 
-	/**
-	 * @var \yii\web\AssetManager
-	 */
-	public $assetManager;
-
 	public $assetBundles;
 	public $title;
 	public $metaTags;
@@ -41,14 +36,6 @@ class ViewContent extends Component
 	public $jsFilesInHead;
 	public $jsInBody;
 	public $jsFilesInBody;
-
-	public function init()
-	{
-		parent::init();
-		if ($this->assetManager === null) {
-			$this->assetManager = Yii::$app->getAssets();
-		}
-	}
 
 	public function reset()
 	{
@@ -63,6 +50,21 @@ class ViewContent extends Component
 		$this->jsFilesInHead = null;
 		$this->jsInBody = null;
 		$this->jsFilesInBody = null;
+	}
+	
+	private $_assetManager;
+
+	/**
+	 * @return \yii\web\AssetManager
+	 */
+	public function getAssetManager()
+	{
+		return $this->_assetManager ?: Yii::$app->getAssets();
+	}
+	
+	public function setAssetManager($value)
+	{
+		$this->_assetManager = $value;
 	}
 
 	public function begin()
@@ -95,10 +97,11 @@ class ViewContent extends Component
 	public function registerAssetBundle($name)
 	{
 		if (!isset($this->assetBundles[$name])) {
-			$bundle = $this->assetManager->getBundle($name);
+			$am = $this->getAssetManager();
+			$bundle = $am->getBundle($name);
 			if ($bundle !== null) {
 				$this->assetBundles[$name] = false;
-				$bundle->registerAssets($this, $this->assetManager);
+				$bundle->registerAssets($this, $am);
 				$this->assetBundles[$name] = true;
 			} else {
 				throw new InvalidConfigException("Unknown asset bundle: $name");
