@@ -112,8 +112,8 @@ class Response extends \yii\base\Response
 	 * <li>mimeType: mime type of the file, if not set it will be guessed automatically based on the file name, if set to null no content-type header will be sent.</li>
 	 * <li>xHeader: appropriate x-sendfile header, defaults to "X-Sendfile"</li>
 	 * <li>terminate: whether to terminate the current application after calling this method, defaults to true</li>
-	 * <li>forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true. (Since version 1.1.9.)</li>
-	 * <li>addHeaders: an array of additional http headers in header-value pairs (available since version 1.1.10)</li>
+	 * <li>forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true</li>
+	 * <li>addHeaders: an array of additional http headers in header-value pairs</li>
 	 * </ul>
 	 */
 	public function xSendFile($filePath, $options = array())

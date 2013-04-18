@@ -294,7 +294,7 @@ class AppController extends Controller
 	 * @param string $targetDir the target directory
 	 * @param string $baseDir base directory
 	 * @param array $ignoreFiles list of the names of files that should
-	 * be ignored in list building process. Argument available since 1.1.11.
+	 * be ignored in list building process.
 	 * @param array $renameMap hash array of file names that should be
 	 * renamed. Example value: array('1.old.txt'=>'2.new.txt').
 	 * @return array the file list (see {@link copyFiles})
@@ -304,7 +304,7 @@ class AppController extends Controller
 		$list = array();
 		$handle = opendir($sourceDir);
 		while(($file = readdir($handle)) !== false) {
-			if(in_array($file, array('.', '..', '.svn', '.gitignore')) || in_array($file, $ignoreFiles)) {
+			if(in_array($file, array('.', '..', '.svn', '.gitignore', '.hgignore')) || in_array($file, $ignoreFiles)) {
 				continue;
 			}
 			$sourcePath = $sourceDir.DIRECTORY_SEPARATOR.$file;

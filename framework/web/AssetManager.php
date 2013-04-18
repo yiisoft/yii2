@@ -99,8 +99,8 @@ class AssetManager extends Component
 	 *
 	 * For example, given the bundle name "foo/button", the method will first convert it
 	 * into the path alias "@foo/button"; since "@foo" is the root alias, it will look
-	 * for the bundle manifest file "@foo/assets.php". The manifest file should declare
-	 * the bundles used by the "foo/button" extension.
+	 * for the bundle manifest file "@foo/assets.php". The manifest file should return an array
+	 * that lists the bundles used by the "foo/button" extension. The array format is the same as [[bundles]].
 	 *
 	 * @param string $name the bundle name
 	 * @return AssetBundle the loaded bundle object. Null is returned if the bundle does not exist.
@@ -238,6 +238,10 @@ class AssetManager extends Component
 				);
 				if (isset($options['beforeCopy'])) {
 					$opts['beforeCopy'] = $options['beforeCopy'];
+				} else {
+					$opts['beforeCopy'] = function ($from, $to) {
+						return strncmp(basename($from), '.', 1) !== 0;
+					};
 				}
 				if (isset($options['afterCopy'])) {
 					$opts['afterCopy'] = $options['afterCopy'];
