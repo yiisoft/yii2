@@ -85,6 +85,11 @@ class AssetBundle extends Object
 	 * @var array list of the bundle names that this bundle depends on
 	 */
 	public $depends = array();
+	/**
+	 * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
+	 * is being published.
+	 */
+	public $publishOption = array();
 
 	/**
 	 * Initializes the bundle.
@@ -114,7 +119,7 @@ class AssetBundle extends Object
 		}
 
 		if ($this->sourcePath !== null) {
-			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath);
+			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOption);
 		}
 
 		foreach ($this->js as $js => $options) {

@@ -164,6 +164,10 @@ class AssetManager extends Component
 	 * Note, in case $forceCopy is false the method only checks the existence of the target
 	 * directory to avoid repetitive copying (which is very expensive).
 	 *
+	 * By default, when publishing a directory, subdirectories and files whose name starts with a dot "."
+	 * will NOT be published. If you want to change this behavior, you may specify the "beforeCopy" option
+	 * as explained in the `$options` parameter.
+	 *
 	 * Note: On rare scenario, a race condition can develop that will lead to a
 	 * one-time-manifestation of a non-critical problem in the creation of the directory
 	 * that holds the published assets. This problem can be avoided altogether by 'requesting'
