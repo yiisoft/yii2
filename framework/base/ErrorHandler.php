@@ -81,15 +81,20 @@ class ErrorHandler extends Component
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 				\Yii::$app->renderException($exception);
 			} else {
-				$view = new View;
-				if (!YII_DEBUG || $exception instanceof UserException) {
-					$viewName = $this->errorView;
-				} else {
-					$viewName = $this->exceptionView;
+				try {
+					$view = new View;
+					if (!YII_DEBUG || $exception instanceof UserException) {
+						$viewName = $this->errorView;
+					} else {
+						$viewName = $this->exceptionView;
+					}
+					echo $view->renderFile($viewName, array(
+						'exception' => $exception,
+					), $this);
 				}
-				echo $view->renderFile($viewName, array(
-					'exception' => $exception,
-				), $this);
+				catch (\Exception $e) {
+					\Yii::$app->renderException($e);
+				}
 			}
 		} else {
 			\Yii::$app->renderException($exception);
