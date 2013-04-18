@@ -124,7 +124,6 @@ class FileHelper
 		return null;
 	}
 
-
 	/**
 	 * Copies a whole directory as another one.
 	 * The files and sub-directories will also be copied over.
@@ -134,15 +133,12 @@ class FileHelper
 	 *
 	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0777.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
-	 * - filter: callback, a PHP callback that is called for every sub-directory and file to
-	 *   determine if it should be copied. The signature of the callback should be:
-	 *
-	 * ~~~
-	 * // $path is the file/directory path to be copied
-	 * function ($path) {
-	 *     // return a boolean indicating if $path should be copied
-	 * }
-	 * ~~~
+	 * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
+	 *   If the callback returns false, the copy operation for the sub-directory or file will be cancelled.
+	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
+ 	 *   file to be copied from, while `$to` is the copy target.
+	 * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
+	 *   The signature of the callback is similar to that of `beforeCopy`.
 	 */
 	public static function copyDirectory($src, $dst, $options = array())
 	{
@@ -155,16 +151,19 @@ class FileHelper
 			if ($file === '.' || $file === '..') {
 				continue;
 			}
-			$srcPath = $src . DIRECTORY_SEPARATOR . $file;
-			if (!isset($options['filter']) || call_user_func($options['filter'], $srcPath)) {
-				$dstPath = $dst . DIRECTORY_SEPARATOR . $file;
-				if (is_file($srcPath)) {
-					copy($srcPath, $dstPath);
+			$from = $src . DIRECTORY_SEPARATOR . $file;
+			$to = $dst . DIRECTORY_SEPARATOR . $file;
+			if (!isset($options['beforeCopy']) || call_user_func($options['beforeCopy'], $from, $to)) {
+				if (is_file($from)) {
+					copy($from, $to);
 					if (isset($options['fileMode'])) {
-						chmod($dstPath, $options['fileMode']);
+						chmod($to, $options['fileMode']);
 					}
 				} else {
-					static::copyDirectory($srcPath, $dstPath, $options);
+					static::copyDirectory($from, $to, $options);
+				}
+				if (isset($options['afterCopy'])) {
+					call_user_func($options['afterCopy'], $from, $to);
 				}
 			}
 		}
