@@ -207,7 +207,7 @@ abstract class Module extends Component
 	 * Sets the root directory of the module.
 	 * This method can only be invoked at the beginning of the constructor.
 	 * @param string $path the root directory of the module. This can be either a directory name or a path alias.
-	 * @throws Exception if the directory does not exist.
+	 * @throws InvalidParamException if the directory does not exist.
 	 */
 	public function setBasePath($path)
 	{
