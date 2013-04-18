@@ -26,6 +26,13 @@ class AssetManager extends Component
 	 */
 	public $bundles;
 	/**
+	 * @var array list of asset processors. An asset processor will convert a special type of asset files
+	 * (e.g. LESS, Sass, TypeScript) into JS or CSS files. The array keys are the file extension names
+	 * (e.g. "less", "sass", "ts"), and the array values are the corresponding configuration arrays
+	 * for creating the processor objects.
+	 */
+	public $processors;
+	/**
 	 * @return string the root directory storing the published asset files.
 	 */
 	public $basePath = '@wwwroot/assets';
@@ -143,7 +150,15 @@ class AssetManager extends Component
 	 */
 	public function processAsset($asset, $basePath, $baseUrl)
 	{
-		return $baseUrl . '/' . $asset;
+		$ext = pathinfo($asset, PATHINFO_EXTENSION);
+		if (isset($this->processors[$ext])) {
+			if (is_array($this->processors[$ext])) {
+				$this->processors[$ext] = Yii::createObject($this->processors[$ext]);
+			}
+			return $this->processors[$ext]->process($asset, $basePath, $baseUrl);
+		} else {
+			return $baseUrl . '/' . $asset;
+		}
 	}
 
 	/**
