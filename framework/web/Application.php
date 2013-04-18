@@ -103,7 +103,7 @@ class Application extends \yii\base\Application
 	 */
 	public function getAssets()
 	{
-		return $this->getComponent('user');
+		return $this->getComponent('assets');
 	}
 
 	/**
