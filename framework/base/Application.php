@@ -60,8 +60,7 @@ class Application extends Module
 	private $_ended = false;
 
 	/**
-	 * @var string Used to reserve memory for fatal error handler. This memory
-	 * reserve can be removed if it's OK to write to PHP log only in this particular case.
+	 * @var string Used to reserve memory for fatal error handler.
 	 */
 	private $_memoryReserve;
 
