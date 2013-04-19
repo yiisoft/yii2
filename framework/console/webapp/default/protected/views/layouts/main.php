@@ -3,10 +3,10 @@
 <html lang="<?php \Yii::$app->language?>">
 	<head>
 		<meta charset="utf-8" />
-		<title><?php echo Html::encode($this->page->title)?></title>
+		<title><?php echo Html::encode($this->title)?></title>
 	</head>
 	<body>
-		<h1><?php echo Html::encode($this->page->title)?></h1>
+		<h1><?php echo Html::encode($this->title)?></h1>
 		<div class="content">
 			<?php echo $content?>
 		</div>
