@@ -12,6 +12,14 @@ use yii\base\InvalidConfigException;
 use yii\base\Object;
 
 /**
+ * AssetBundle represents a collection of asset files, such as CSS, JS, images.
+ *
+ * Each asset bundle has a unique name that globally identifies it among all asset bundles
+ * used in an application.
+ *
+ * An asset bundle can depend on other asset bundles. When registering an asset bundle
+ * with a view, all its dependent asset bundles will be automatically registered.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -66,7 +74,7 @@ class AssetBundle extends Object
 	 *
 	 * Each JavaScript file may be associated with options. In this case, the array key
 	 * should be the JavaScript file path, while the corresponding array value should
-	 * be the option array. The options will be passed to [[ViewContent::registerJsFile()]].
+	 * be the option array. The options will be passed to [[View::registerJsFile()]].
 	 */
 	public $js = array();
 	/**
@@ -78,7 +86,7 @@ class AssetBundle extends Object
 	 *
 	 * Each CSS file may be associated with options. In this case, the array key
 	 * should be the CSS file path, while the corresponding array value should
-	 * be the option array. The options will be passed to [[ViewContent::registerCssFile()]].
+	 * be the option array. The options will be passed to [[View::registerCssFile()]].
 	 */
 	public $css = array();
 	/**
@@ -108,14 +116,20 @@ class AssetBundle extends Object
 	}
 
 	/**
-	 * @param \yii\base\ViewContent $page
-	 * @param AssetManager $am
-	 * @throws InvalidConfigException
+	 * Registers the CSS and JS files with the given view.
+	 * This method will first register all dependent asset bundles.
+	 * It will then try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
+	 * CSS or JS files using [[AssetManager::converter|asset converter]].
+	 * @param \yii\base\View $view the view that the asset files to be registered with.
+	 * @throws InvalidConfigException if [[baseUrl]] or [[basePath]] is not set when the bundle
+	 * contains internal CSS or JS files.
 	 */
-	public function registerAssets($page, $am)
+	public function registerAssets($view)
 	{
+		$am = $view->getAssetManager();
+
 		foreach ($this->depends as $name) {
-			$page->registerAssetBundle($name);
+			$view->registerAssetBundle($name);
 		}
 
 		if ($this->sourcePath !== null) {
@@ -128,23 +142,23 @@ class AssetBundle extends Object
 			$js = is_string($options) ? $options : $js;
 			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
 				if (isset($this->basePath, $this->baseUrl)) {
-					$js = $converter->convert(ltrim($js, '/'), $this->basePath, $this->baseUrl);
+					$js = $converter->convert($js, $this->basePath, $this->baseUrl);
 				} else {
 					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
 				}
 			}
-			$page->registerJsFile($js, is_array($options) ? $options : array());
+			$view->registerJsFile($js, is_array($options) ? $options : array());
 		}
 		foreach ($this->css as $css => $options) {
 			$css = is_string($options) ? $options : $css;
-			if (strpos($css, '//') !== 0 && strpos($css, '://') === false) {
+			if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
 				if (isset($this->basePath, $this->baseUrl)) {
-					$css = $converter->convert(ltrim($css, '/'), $this->basePath, $this->baseUrl);
+					$css = $converter->convert($css, $this->basePath, $this->baseUrl);
 				} else {
 					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
 				}
 			}
-			$page->registerCssFile($css, is_array($options) ? $options : array());
+			$view->registerCssFile($css, is_array($options) ? $options : array());
 		}
 	}
 }

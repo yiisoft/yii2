@@ -10,6 +10,7 @@ namespace yii\base;
 use Yii;
 use yii\base\Application;
 use yii\helpers\FileHelper;
+use yii\helpers\Html;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -22,22 +23,48 @@ use yii\helpers\FileHelper;
 class View extends Component
 {
 	/**
-	 * @event Event an event that is triggered by [[renderFile()]] right before it renders a view file.
+	 * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
 	 */
 	const EVENT_BEFORE_RENDER = 'beforeRender';
 	/**
-	 * @event Event an event that is triggered by [[renderFile()]] right after it renders a view file.
+	 * @event ViewEvent an event that is triggered by [[renderFile()]] right after it renders a view file.
 	 */
 	const EVENT_AFTER_RENDER = 'afterRender';
 
 	/**
-	 * @var object the object that owns this view. This can be a controller, a widget, or any other object.
+	 * The location of registered JavaScript code block or files.
+	 * This means the location is in the head section.
+	 */
+	const POS_HEAD = 1;
+	/**
+	 * The location of registered JavaScript code block or files.
+	 * This means the location is at the beginning of the body section.
+	 */
+	const POS_BEGIN = 2;
+	/**
+	 * The location of registered JavaScript code block or files.
+	 * This means the location is at the end of the body section.
+	 */
+	const POS_END = 3;
+	/**
+	 * This is internally used as the placeholder for receiving the content registered for the head section.
+	 */
+	const PL_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
+	/**
+	 * This is internally used as the placeholder for receiving the content registered for the beginning of the body section.
+	 */
+	const PL_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
+	/**
+	 * This is internally used as the placeholder for receiving the content registered for the end of the body section.
+	 */
+	const PL_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
+
+
+	/**
+	 * @var object the context under which the [[renderFile()]] method is being invoked.
+	 * This can be a controller, a widget, or any other object.
 	 */
 	public $context;
-	/**
-	 * @var ViewContent
-	 */
-	public $page;
 	/**
 	 * @var mixed custom parameters that are shared among view templates.
 	 */
@@ -48,32 +75,75 @@ class View extends Component
 	 */
 	public $renderer;
 	/**
-	 * @var Theme|array the theme object or the configuration array for creating the theme.
+	 * @var Theme|array the theme object or the configuration array for creating the theme object.
 	 * If not set, it means theming is not enabled.
 	 */
 	public $theme;
 	/**
 	 * @var array a list of named output blocks. The keys are the block names and the values
 	 * are the corresponding block content. You can call [[beginBlock()]] and [[endBlock()]]
-	 * to capture small fragments of a view. They can be later accessed at somewhere else
+	 * to capture small fragments of a view. They can be later accessed somewhere else
 	 * through this property.
 	 */
 	public $blocks;
 	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
-	 * is maintained by [[beginWidget()]] and [[endWidget()]] methods. Do not modify it.
+	 * is maintained by [[beginWidget()]] and [[endWidget()]] methods. Do not modify it directly.
+	 * @internal
 	 */
 	public $widgetStack = array();
 	/**
 	 * @var array a list of currently active fragment cache widgets. This property
-	 * is used internally to implement the content caching feature. Do not modify it.
+	 * is used internally to implement the content caching feature. Do not modify it directly.
+	 * @internal
 	 */
 	public $cacheStack = array();
 	/**
 	 * @var array a list of placeholders for embedding dynamic contents. This property
-	 * is used internally to implement the content caching feature. Do not modify it.
+	 * is used internally to implement the content caching feature. Do not modify it directly.
+	 * @internal
 	 */
 	public $dynamicPlaceholders = array();
+	/**
+	 * @var array the registered asset bundles. The keys are the bundle names, and the values
+	 * are the corresponding [[AssetBundle]] objects.
+	 * @see registerAssetBundle
+	 */
+	public $assetBundles;
+	/**
+	 * @var string the page title
+	 */
+	public $title;
+	/**
+	 * @var array the registered meta tags.
+	 * @see registerMetaTag
+	 */
+	public $metaTags;
+	/**
+	 * @var array the registered link tags.
+	 * @see registerLinkTag
+	 */
+	public $linkTags;
+	/**
+	 * @var array the registered CSS code blocks.
+	 * @see registerCss
+	 */
+	public $css;
+	/**
+	 * @var array the registered CSS files.
+	 * @see registerCssFile
+	 */
+	public $cssFiles;
+	/**
+	 * @var array the registered JS code blocks
+	 * @see registerJs
+	 */
+	public $js;
+	/**
+	 * @var array the registered JS files.
+	 * @see registerJsFile
+	 */
+	public $jsFiles;
 
 
 	/**
@@ -87,11 +157,6 @@ class View extends Component
 		}
 		if (is_array($this->theme)) {
 			$this->theme = Yii::createObject($this->theme);
-		}
-		if (is_array($this->page)) {
-			$this->page = Yii::createObject($this->page);
-		} else {
-			$this->page = new ViewContent;
 		}
 	}
 
@@ -444,5 +509,274 @@ class View extends Component
 	public function endCache()
 	{
 		$this->endWidget();
+	}
+
+
+	private $_assetManager;
+
+	/**
+	 * Registers the asset manager being used by this view object.
+	 * @return \yii\web\AssetManager the asset manager. Defaults to the "assetManager" application component.
+	 */
+	public function getAssetManager()
+	{
+		return $this->_assetManager ?: Yii::$app->getAssetManager();
+	}
+
+	/**
+	 * Sets the asset manager.
+	 * @param \yii\web\AssetManager $value the asset manager
+	 */
+	public function setAssetManager($value)
+	{
+		$this->_assetManager = $value;
+	}
+
+	/**
+	 * Marks the beginning of an HTML page.
+	 */
+	public function beginPage()
+	{
+		ob_start();
+		ob_implicit_flush(false);
+	}
+
+	/**
+	 * Marks the ending of an HTML page.
+	 */
+	public function endPage()
+	{
+		$content = ob_get_clean();
+		echo strtr($content, array(
+			self::PL_HEAD => $this->renderHeadHtml(),
+			self::PL_BODY_BEGIN => $this->renderBodyBeginHtml(),
+			self::PL_BODY_END => $this->renderBodyEndHtml(),
+		));
+
+		unset(
+			$this->assetBundles,
+			$this->metaTags,
+			$this->linkTags,
+			$this->css,
+			$this->cssFiles,
+			$this->js,
+			$this->jsFiles
+		);
+	}
+
+	/**
+	 * Marks the beginning of an HTML body section.
+	 */
+	public function beginBody()
+	{
+		echo self::PL_BODY_BEGIN;
+	}
+
+	/**
+	 * Marks the ending of an HTML body section.
+	 */
+	public function endBody()
+	{
+		echo self::PL_BODY_END;
+	}
+
+	/**
+	 * Marks the position of an HTML head section.
+	 */
+	public function head()
+	{
+		echo self::PL_HEAD;
+	}
+
+	/**
+	 * Registers the named asset bundle.
+	 * All dependent asset bundles will be registered.
+	 * @param string $name the name of the asset bundle.
+	 * @throws InvalidConfigException if the asset bundle does not exist or a cyclic dependency is detected
+	 */
+	public function registerAssetBundle($name)
+	{
+		if (!isset($this->assetBundles[$name])) {
+			$am = $this->getAssetManager();
+			$bundle = $am->getBundle($name);
+			if ($bundle !== null) {
+				$this->assetBundles[$name] = false;
+				$bundle->registerAssets($this);
+				$this->assetBundles[$name] = true;
+			} else {
+				throw new InvalidConfigException("Unknown asset bundle: $name");
+			}
+		} elseif ($this->assetBundles[$name] === false) {
+			throw new InvalidConfigException("A cyclic dependency is detected for bundle '$name'.");
+		}
+	}
+
+	/**
+	 * Registers a meta tag.
+	 * @param array $options the HTML attributes for the meta tag.
+	 * @param string $key the key that identifies the meta tag. If two meta tags are registered
+	 * with the same key, the latter will overwrite the former. If this is null, the new meta tag
+	 * will be appended to the existing ones.
+	 */
+	public function registerMetaTag($options, $key = null)
+	{
+		if ($key === null) {
+			$this->metaTags[] = Html::tag('meta', '', $options);
+		} else {
+			$this->metaTags[$key] = Html::tag('meta', '', $options);
+		}
+	}
+
+	/**
+	 * Registers a link tag.
+	 * @param array $options the HTML attributes for the link tag.
+	 * @param string $key the key that identifies the link tag. If two link tags are registered
+	 * with the same key, the latter will overwrite the former. If this is null, the new link tag
+	 * will be appended to the existing ones.
+	 */
+	public function registerLinkTag($options, $key = null)
+	{
+		if ($key === null) {
+			$this->linkTags[] = Html::tag('link', '', $options);
+		} else {
+			$this->linkTags[$key] = Html::tag('link', '', $options);
+		}
+	}
+
+	/**
+	 * Registers a CSS code block.
+	 * @param string $css the CSS code block to be registered
+	 * @param array $options the HTML attributes for the style tag.
+	 * @param string $key the key that identifies the CSS code block. If null, it will use
+	 * $css as the key. If two CSS code blocks are registered with the same key, the latter
+	 * will overwrite the former.
+	 */
+	public function registerCss($css, $options = array(), $key = null)
+	{
+		$key = $key ?: $css;
+		$this->css[$key] = Html::style($css, $options);
+	}
+
+	/**
+	 * Registers a CSS file.
+	 * @param string $url the CSS file to be registered.
+	 * @param array $options the HTML attributes for the link tag.
+	 * @param string $key the key that identifies the CSS script file. If null, it will use
+	 * $url as the key. If two CSS files are registered with the same key, the latter
+	 * will overwrite the former.
+	 */
+	public function registerCssFile($url, $options = array(), $key = null)
+	{
+		$key = $key ?: $url;
+		$this->cssFiles[$key] = Html::cssFile($url, $options);
+	}
+
+	/**
+	 * Registers a JS code block.
+	 * @param string $js the JS code block to be registered
+	 * @param array $options the HTML attributes for the script tag. A special option
+	 * named "position" is supported which specifies where the JS script tag should be inserted
+	 * in a page. The possible values of "position" are:
+	 *
+	 * - [[POS_HEAD]]: in the head section
+	 * - [[POS_BEGIN]]: at the beginning of the body section
+	 * - [[POS_END]]: at the end of the body section
+	 *
+	 * @param string $key the key that identifies the JS code block. If null, it will use
+	 * $js as the key. If two JS code blocks are registered with the same key, the latter
+	 * will overwrite the former.
+	 */
+	public function registerJs($js, $options = array(), $key = null)
+	{
+		$position = isset($options['position']) ? $options['position'] : self::POS_END;
+		unset($options['position']);
+		$key = $key ?: $js;
+		$this->js[$position][$key] = Html::script($js, $options);
+	}
+
+	/**
+	 * Registers a JS file.
+	 * @param string $url the JS file to be registered.
+	 * @param array $options the HTML attributes for the script tag. A special option
+	 * named "position" is supported which specifies where the JS script tag should be inserted
+	 * in a page. The possible values of "position" are:
+	 *
+	 * - [[POS_HEAD]]: in the head section
+	 * - [[POS_BEGIN]]: at the beginning of the body section
+	 * - [[POS_END]]: at the end of the body section
+	 *
+	 * @param string $key the key that identifies the JS script file. If null, it will use
+	 * $url as the key. If two JS files are registered with the same key, the latter
+	 * will overwrite the former.
+	 */
+	public function registerJsFile($url, $options = array(), $key = null)
+	{
+		$position = isset($options['position']) ? $options['position'] : self::POS_END;
+		unset($options['position']);
+		$key = $key ?: $url;
+		$this->jsFiles[$position][$key] = Html::jsFile($url, $options);
+	}
+
+	/**
+	 * Renders the content to be inserted in the head section.
+	 * The content is rendered using the registered meta tags, link tags, CSS/JS code blocks and files.
+	 * @return string the rendered content
+	 */
+	protected function renderHeadHtml()
+	{
+		$lines = array();
+		if (!empty($this->metaTags)) {
+			$lines[] = implode("\n", $this->cssFiles);
+		}
+		if (!empty($this->linkTags)) {
+			$lines[] = implode("\n", $this->cssFiles);
+		}
+		if (!empty($this->cssFiles)) {
+			$lines[] = implode("\n", $this->cssFiles);
+		}
+		if (!empty($this->css)) {
+			$lines[] = implode("\n", $this->css);
+		}
+		if (!empty($this->jsFiles[self::POS_HEAD])) {
+			$lines[] = implode("\n", $this->jsFiles[self::POS_HEAD]);
+		}
+		if (!empty($this->js[self::POS_HEAD])) {
+			$lines[] = implode("\n", $this->js[self::POS_HEAD]);
+		}
+		return implode("\n", $lines);
+	}
+
+	/**
+	 * Renders the content to be inserted at the beginning of the body section.
+	 * The content is rendered using the registered JS code blocks and files.
+	 * @return string the rendered content
+	 */
+	protected function renderBodyBeginHtml()
+	{
+		$lines = array();
+		if (!empty($this->jsFiles[self::POS_BEGIN])) {
+			$lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
+		}
+		if (!empty($this->js[self::POS_BEGIN])) {
+			$lines[] = implode("\n", $this->js[self::POS_BEGIN]);
+		}
+		return implode("\n", $lines);
+	}
+
+	/**
+	 * Renders the content to be inserted at the end of the body section.
+	 * The content is rendered using the registered JS code blocks and files.
+	 * @return string the rendered content
+	 */
+	protected function renderBodyEndHtml()
+	{
+		$lines = array();
+		if (!empty($this->jsFiles[self::POS_END])) {
+			$lines[] = implode("\n", $this->jsFiles[self::POS_END]);
+		}
+		if (!empty($this->js[self::POS_END])) {
+			$lines[] = implode("\n", $this->js[self::POS_END]);
+		}
+		return implode("\n", $lines);
 	}
 }

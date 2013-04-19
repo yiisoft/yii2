@@ -14,6 +14,7 @@ use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
 
 /**
+ * AssetManager manages asset bundles and asset publishing.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -135,7 +136,8 @@ class AssetManager extends Component
 	private $_converter;
 
 	/**
-	 * @return IAssetConverter
+	 * Returns the asset converter.
+	 * @return IAssetConverter the asset converter.
 	 */
 	public function getConverter()
 	{
@@ -149,6 +151,12 @@ class AssetManager extends Component
 		return $this->_converter;
 	}
 
+	/**
+	 * Sets the asset converter.
+	 * @param array|IAssetConverter $value the asset converter. This can be either
+	 * an object implementing the [[IAssetConverter]] interface, or a configuration
+	 * array that can be used to create the asset converter object.
+	 */
 	public function setConverter($value)
 	{
 		$this->_converter = $value;
