@@ -81,6 +81,8 @@ class ErrorHandler extends Component
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 				\Yii::$app->renderException($exception);
 			} else {
+				// if there is an error during error rendering it's useful to
+				// display PHP error in debug mode instead of a blank screen
 				if(YII_DEBUG) {
 					ini_set('display_errors', 1);
 				}
@@ -94,10 +96,6 @@ class ErrorHandler extends Component
 				echo $view->renderFile($viewName, array(
 					'exception' => $exception,
 				), $this);
-
-				if(YII_DEBUG) {
-					ini_set('display_errors', 0);
-				}
 			}
 		} else {
 			\Yii::$app->renderException($exception);
