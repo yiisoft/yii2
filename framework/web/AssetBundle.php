@@ -122,11 +122,13 @@ class AssetBundle extends Object
 			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
 		}
 
+		$converter = $am->getConverter();
+
 		foreach ($this->js as $js => $options) {
 			$js = is_string($options) ? $options : $js;
 			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
 				if (isset($this->basePath, $this->baseUrl)) {
-					$js = $am->processAsset(ltrim($js, '/'), $this->basePath, $this->baseUrl);
+					$js = $converter->convert(ltrim($js, '/'), $this->basePath, $this->baseUrl);
 				} else {
 					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
 				}
@@ -137,7 +139,7 @@ class AssetBundle extends Object
 			$css = is_string($options) ? $options : $css;
 			if (strpos($css, '//') !== 0 && strpos($css, '://') === false) {
 				if (isset($this->basePath, $this->baseUrl)) {
-					$css = $am->processAsset(ltrim($css, '/'), $this->basePath, $this->baseUrl);
+					$css = $converter->convert(ltrim($css, '/'), $this->basePath, $this->baseUrl);
 				} else {
 					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
 				}

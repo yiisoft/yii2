@@ -26,13 +26,6 @@ class AssetManager extends Component
 	 */
 	public $bundles;
 	/**
-	 * @var array list of asset processors. An asset processor will convert a special type of asset files
-	 * (e.g. LESS, Sass, TypeScript) into JS or CSS files. The array keys are the file extension names
-	 * (e.g. "less", "sass", "ts"), and the array values are the corresponding configuration arrays
-	 * for creating the processor objects.
-	 */
-	public $processors;
-	/**
 	 * @return string the root directory storing the published asset files.
 	 */
 	public $basePath = '@wwwroot/assets';
@@ -139,26 +132,26 @@ class AssetManager extends Component
 		return $this->bundles[$name];
 	}
 
+	private $_converter;
+
 	/**
-	 * Processes the given asset file and returns a URL to the processed one.
-	 * This method can be overwritten to support various types of asset files, such as LESS, Sass, TypeScript.
-	 * @param string $asset the asset file path to be processed. The file path is relative
-	 * to $basePath, and it may contain forward slashes to indicate sub-directories (e.g. "js/main.js").
-	 * @param string $basePath the directory that contains the asset file.
-	 * @param string $baseUrl the corresponding URL of $basePath.
-	 * @return string the processed asset file path.
+	 * @return IAssetConverter
 	 */
-	public function processAsset($asset, $basePath, $baseUrl)
+	public function getConverter()
 	{
-		$ext = pathinfo($asset, PATHINFO_EXTENSION);
-		if (isset($this->processors[$ext])) {
-			if (is_array($this->processors[$ext])) {
-				$this->processors[$ext] = Yii::createObject($this->processors[$ext]);
-			}
-			return $this->processors[$ext]->process($asset, $basePath, $baseUrl);
-		} else {
-			return $baseUrl . '/' . $asset;
+		if ($this->_converter === null) {
+			$this->_converter = Yii::createObject(array(
+				'class' => 'yii\\web\\AssetConverter',
+			));
+		} elseif (is_array($this->_converter) || is_string($this->_converter)) {
+			$this->_converter = Yii::createObject($this->_converter);
 		}
+		return $this->_converter;
+	}
+
+	public function setConverter($value)
+	{
+		$this->_converter = $value;
 	}
 
 	/**

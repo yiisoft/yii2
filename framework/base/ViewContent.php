@@ -39,6 +39,7 @@ class ViewContent extends Component
 
 	public function reset()
 	{
+		$this->assetBundles = null;
 		$this->title = null;
 		$this->metaTags = null;
 		$this->linkTags = null;
