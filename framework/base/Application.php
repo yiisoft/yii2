@@ -411,7 +411,7 @@ class Application extends Module
 				error_log($exception);
 
 				if (($handler = $this->getErrorHandler()) !== null) {
-					@$handler->handle($exception);
+					$handler->handle($exception);
 				} else {
 					$this->renderException($exception);
 				}
