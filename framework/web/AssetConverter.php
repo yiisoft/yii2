@@ -11,18 +11,32 @@ use Yii;
 use yii\base\Component;
 
 /**
+ * AssetConverter supports conversion of several popular script formats into JS or CSS scripts.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class AssetConverter extends Component implements IAssetConverter
 {
+	/**
+	 * @var array the commands that are used to perform the asset conversion.
+	 * The keys are the asset file extension names, and the values are the corresponding
+	 * target script types (either "css" or "js") and the commands used for the conversion.
+	 */
 	public $commands = array(
-		'less' => array('css', 'lessc %s %s'),
-		'scss' => array('css', 'sass %s %s'),
-		'sass' => array('css', 'sass %s %s'),
-		'styl' => array('js', 'stylus < %s > %s'),
+		'less' => array('css', 'lessc {from} {to}'),
+		'scss' => array('css', 'sass {from} {to}'),
+		'sass' => array('css', 'sass {from} {to}'),
+		'styl' => array('js', 'stylus < {from} > {to}'),
 	);
 
+	/**
+	 * Converts a given asset file into a CSS or JS file.
+	 * @param string $asset the asset file path, relative to $basePath
+	 * @param string $basePath the directory the $asset is relative to.
+	 * @param string $baseUrl the URL corresponding to $basePath
+	 * @return string the URL to the converted asset file.
+	 */
 	public function convert($asset, $basePath, $baseUrl)
 	{
 		$pos = strrpos($asset, '.');
@@ -33,7 +47,10 @@ class AssetConverter extends Component implements IAssetConverter
 				$result = substr($asset, 0, $pos + 1) . $ext;
 				if (@filemtime("$basePath/$result") < filemtime("$basePath/$asset")) {
 					$output = array();
-					$command = sprintf($command, "$basePath/$asset", "$basePath/$result");
+					$command = strtr($command, array(
+						'{from}' => "$basePath/$asset",
+						'{to}' => "$basePath/$result",
+					));
 					exec($command, $output);
 					Yii::info("Converted $asset into $result: " . implode("\n", $output), __METHOD__);
 					return "$baseUrl/$result";
