@@ -592,7 +592,7 @@ class View extends Component
 	 * Registers the named asset bundle.
 	 * All dependent asset bundles will be registered.
 	 * @param string $name the name of the asset bundle.
-	 * @throws InvalidConfigException if the asset bundle does not exist or a cyclic dependency is detected
+	 * @throws InvalidConfigException if the asset bundle does not exist or a circular dependency is detected
 	 */
 	public function registerAssetBundle($name)
 	{
@@ -607,7 +607,7 @@ class View extends Component
 				throw new InvalidConfigException("Unknown asset bundle: $name");
 			}
 		} elseif ($this->assetBundles[$name] === false) {
-			throw new InvalidConfigException("A cyclic dependency is detected for bundle '$name'.");
+			throw new InvalidConfigException("A circular dependency is detected for bundle '$name'.");
 		}
 	}
 

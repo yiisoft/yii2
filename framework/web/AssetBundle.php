@@ -66,15 +66,15 @@ class AssetBundle extends Object
 	 */
 	public $baseUrl;
 	/**
+	 * @var array list of the bundle names that this bundle depends on
+	 */
+	public $depends = array();
+	/**
 	 * @var array list of JavaScript files that this bundle contains. Each JavaScript file can
 	 * be either a file path (without leading slash) relative to [[basePath]] or a URL representing
 	 * an external JavaScript file.
 	 *
 	 * Note that only forward slash "/" can be used as directory separator.
-	 *
-	 * Each JavaScript file may be associated with options. In this case, the array key
-	 * should be the JavaScript file path, while the corresponding array value should
-	 * be the option array. The options will be passed to [[View::registerJsFile()]].
 	 */
 	public $js = array();
 	/**
@@ -83,16 +83,18 @@ class AssetBundle extends Object
 	 * an external CSS file.
 	 *
 	 * Note that only forward slash "/" can be used as directory separator.
-	 *
-	 * Each CSS file may be associated with options. In this case, the array key
-	 * should be the CSS file path, while the corresponding array value should
-	 * be the option array. The options will be passed to [[View::registerCssFile()]].
 	 */
 	public $css = array();
 	/**
-	 * @var array list of the bundle names that this bundle depends on
+	 * @var array the options that will be passed to [[\yii\base\View::registerJsFile()]]
+	 * when registering the JS files in this bundle.
 	 */
-	public $depends = array();
+	public $jsOptions = array();
+	/**
+	 * @var array the options that will be passed to [[\yii\base\View::registerCssFile()]]
+	 * when registering the CSS files in this bundle.
+	 */
+	public $cssOptions = array();
 	/**
 	 * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
 	 * is being published.
@@ -126,48 +128,49 @@ class AssetBundle extends Object
 	 */
 	public function registerAssets($view)
 	{
-		$am = $view->getAssetManager();
-
 		foreach ($this->depends as $name) {
 			$view->registerAssetBundle($name);
 		}
 
-		$this->publish($am);
+		$this->publish($view->getAssetManager());
 
-		$converter = $am->getConverter();
-
-		foreach ($this->js as $js => $options) {
-			$js = is_string($options) ? $options : $js;
-			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
-				if (isset($this->basePath, $this->baseUrl)) {
-					$js = $converter->convert($js, $this->basePath, $this->baseUrl);
-				} else {
-					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
-				}
-			}
-			$view->registerJsFile($js, is_array($options) ? $options : array());
+		foreach ($this->js as $js) {
+			$view->registerJsFile($js, $this->jsOptions);
 		}
-		foreach ($this->css as $css => $options) {
-			$css = is_string($options) ? $options : $css;
-			if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
-				if (isset($this->basePath, $this->baseUrl)) {
-					$css = $converter->convert($css, $this->basePath, $this->baseUrl);
-				} else {
-					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
-				}
-			}
-			$view->registerCssFile($css, is_array($options) ? $options : array());
+		foreach ($this->css as $css) {
+			$view->registerCssFile($css, $this->cssOptions);
 		}
 	}
 
 	/**
 	 * Publishes the asset bundle if its source code is not under Web-accessible directory.
 	 * @param AssetManager $am the asset manager to perform the asset publishing
+	 * @throws InvalidConfigException if [[baseUrl]] or [[basePath]] is not set when the bundle
+	 * contains internal CSS or JS files.
 	 */
 	public function publish($am)
 	{
 		if ($this->sourcePath !== null) {
 			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
+		}
+		$converter = $am->getConverter();
+		foreach ($this->js as $i => $js) {
+			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
+				if (isset($this->basePath, $this->baseUrl)) {
+					$this->js[$i] = $converter->convert($js, $this->basePath, $this->baseUrl);
+				} else {
+					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
+				}
+			}
+		}
+		foreach ($this->css as $i => $css) {
+			if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
+				if (isset($this->basePath, $this->baseUrl)) {
+					$this->css[$i] = $converter->convert($css, $this->basePath, $this->baseUrl);
+				} else {
+					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
+				}
+			}
 		}
 	}
 }
