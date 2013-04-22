@@ -129,7 +129,7 @@ class Application extends \yii\base\Application
 			'migrate' => 'yii\console\controllers\MigrateController',
 			'app' => 'yii\console\controllers\AppController',
 			'cache' => 'yii\console\controllers\CacheController',
-			'script' => 'yii\console\controllers\ScriptController',
+			'asset' => 'yii\console\controllers\AssetController',
 		);
 	}
 
