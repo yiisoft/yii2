@@ -132,9 +132,7 @@ class AssetBundle extends Object
 			$view->registerAssetBundle($name);
 		}
 
-		if ($this->sourcePath !== null) {
-			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
-		}
+		$this->publish($am);
 
 		$converter = $am->getConverter();
 
@@ -159,6 +157,17 @@ class AssetBundle extends Object
 				}
 			}
 			$view->registerCssFile($css, is_array($options) ? $options : array());
+		}
+	}
+
+	/**
+	 * Publishes the asset bundle if its source code is not under Web-accessible directory.
+	 * @param AssetManager $am the asset manager to perform the asset publishing
+	 */
+	public function publish($am)
+	{
+		if ($this->sourcePath !== null) {
+			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
 		}
 	}
 }
