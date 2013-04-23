@@ -70,15 +70,20 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public $limit;
 	/**
-	 * @var integer zero-based offset from where the records are to be returned. If not set or
-	 * less than 0, it means starting from the beginning.
+	 * @var integer zero-based offset from where the records are to be returned.
+	 * If not set, it means starting from the beginning.
+	 * If less than zero it means starting n elements from the end.
 	 */
 	public $offset;
 	/**
-	 * @var string|array how to sort the query results. This refers to the ORDER BY clause in a SQL statement.
-	 * It can be either a string (e.g. `'id ASC, name DESC'`) or an array (e.g. `array('id ASC', 'name DESC')`).
+	 * @var array array of primary keys of the records to find.
 	 */
-	public $orderBy;
+	public $primaryKeys;
+
+	public function primaryKeys($primaryKeys) {
+		$this->primaryKeys = $primaryKeys;
+		return $this;
+	}
 
 	/**
 	 * Executes query and returns all results as an array.
@@ -86,9 +91,20 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function all()
 	{
-		// TODO implement
-		$command = $this->createCommand();
-		$rows = $command->queryAll();
+		$modelClass = $this->modelClass;
+		/** @var Connection $db */
+		$db = $modelClass::getDb();
+		if (($primaryKeys = $this->primaryKeys) === null) {
+			$start = $this->offset === null ? 0 : $this->offset;
+			$end = $this->limit === null ? -1 : $start + $this->limit;
+			$primaryKeys = $db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $end));
+		}
+		$rows = array();
+		foreach($primaryKeys as $pk) {
+			$key = $modelClass::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+			// get attributes
+			$rows[] = $db->executeCommand('HGETALL', array($key));
+		}
 		if ($rows !== array()) {
 			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
@@ -108,9 +124,18 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function one()
 	{
-		// TODO implement
-		$command = $this->createCommand();
-		$row = $command->queryRow();
+		$modelClass = $this->modelClass;
+		/** @var Connection $db */
+		$db = $modelClass::getDb();
+		if (($primaryKeys = $this->primaryKeys) === null) {
+			$start = $this->offset === null ? 0 : $this->offset;
+			$primaryKeys = $db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $start + 1));
+		}
+		$pk = reset($primaryKeys);
+		$key = $modelClass::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+		// get attributes
+		$row = $db->executeCommand('HGETALL', array($key));
+// TODO check for empty list if key does not exist
 		if ($row !== false && !$this->asArray) {
 			/** @var $class ActiveRecord */
 			$class = $this->modelClass;
@@ -132,63 +157,12 @@ class ActiveQuery extends \yii\base\Component
 	 * Make sure you properly quote column names.
 	 * @return integer number of records
 	 */
-	public function count($q = '*')
+	public function count()
 	{
-		// TODO implement
-		$this->select = array("COUNT($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the sum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the sum of the specified column values
-	 */
-	public function sum($q)
-	{
-		// TODO implement
-		$this->select = array("SUM($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the average of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the average of the specified column values.
-	 */
-	public function average($q)
-	{
-		// TODO implement
-		$this->select = array("AVG($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the minimum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the minimum of the specified column values.
-	 */
-	public function min($q)
-	{
-		// TODO implement
-		$this->select = array("MIN($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the maximum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the maximum of the specified column values.
-	 */
-	public function max($q)
-	{
-		// TODO implement
-		$this->select = array("MAX($q)");
-		return $this->createCommand()->queryScalar();
+		$modelClass = $this->modelClass;
+		/** @var Connection $db */
+		$db = $modelClass::getDb();
+		return $db->executeCommand('LLEN', array($modelClass::tableName()));
 	}
 
 	/**
@@ -197,10 +171,10 @@ class ActiveQuery extends \yii\base\Component
 	 * @return string|boolean the value of the first column in the first row of the query result.
 	 * False is returned if the query result is empty.
 	 */
-	public function scalar()
+	public function scalar($column)
 	{
-		// TODO implement
-		return $this->createCommand()->queryScalar();
+		$record = $this->one();
+		return $record->$column;
 	}
 
 	/**
@@ -209,9 +183,7 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function exists()
 	{
-		// TODO implement
-		$this->select = array(new Expression('1'));
-		return $this->scalar() !== false;
+		return $this->one() !== null;
 	}
 
 
@@ -224,48 +196,6 @@ class ActiveQuery extends \yii\base\Component
 	public function asArray($value = true)
 	{
 		$this->asArray = $value;
-		return $this;
-	}
-
-	/**
-	 * Sets the ORDER BY part of the query.
-	 * TODO: refactor, it is duplicated from yii/db/Query
-	 * @param string|array $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
-	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @return Query the query object itself
-	 * @see addOrder()
-	 */
-	public function orderBy($columns)
-	{
-		$this->orderBy = $columns;
-		return $this;
-	}
-
-	/**
-	 * Adds additional ORDER BY columns to the query.
-	 * TODO: refactor, it is duplicated from yii/db/Query
-	 * @param string|array $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array (e.g. array('id ASC', 'name DESC')).
-	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @return Query the query object itself
-	 * @see order()
-	 */
-	public function addOrderBy($columns)
-	{
-		if (empty($this->orderBy)) {
-			$this->orderBy = $columns;
-		} else {
-			if (!is_array($this->orderBy)) {
-				$this->orderBy = preg_split('/\s*,\s*/', trim($this->orderBy), -1, PREG_SPLIT_NO_EMPTY);
-			}
-			if (!is_array($columns)) {
-				$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			}
-			$this->orderBy = array_merge($this->orderBy, $columns);
-		}
 		return $this;
 	}
 

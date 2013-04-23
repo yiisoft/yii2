@@ -60,16 +60,15 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 * returned (null will be returned if there is no matching).
 	 * @see createQuery()
 	 */
-	public static function find($q = null)
+	public static function find($q = null) // TODO optimize API
 	{
-		// TODO
 		$query = static::createQuery();
 		if (is_array($q)) {
-			return $query->where($q)->one();
+			return $query->primaryKeys($q)->one();
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::primaryKey();
-			return $query->where(array($primaryKey[0] => $q))->one();
+			return $query->primaryKeys(array($primaryKey[0] => $q))->one();
 		}
 		return $query;
 	}
@@ -178,7 +177,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 				}
 			}
 			// save pk in a findall pool
-			$db->executeCommand('SADD', array(static::tableName(), $pk));
+			$db->executeCommand('RPUSH', array(static::tableName(), $pk));
 
 			$key = static::tableName() . ':a:' . implode('-', $pk); // TODO escape PK glue
 			// save attributes
@@ -214,7 +213,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	{
 		$db = static::getDb();
 		if ($condition==='') {
-			$condition = $db->executeCommand('SMEMBERS', array(static::tableName()));
+			$condition = $db->executeCommand('LRANGE', array(static::tableName(), 0, -1));
 		}
 		if (empty($attributes)) {
 			return 0;
@@ -255,7 +254,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	{
 		$db = static::getDb();
 		if ($condition==='') {
-			$condition = $db->executeCommand('SMEMBERS', array(static::tableName()));
+			$condition = $db->executeCommand('LRANGE', array(static::tableName(), 0, -1));
 		}
 		$n=0;
 		foreach($condition as $pk) {
@@ -287,23 +286,20 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	{
 		$db = static::getDb();
 		if ($condition==='') {
-			$condition = $db->executeCommand('SMEMBERS', array(static::tableName()));
+			$condition = $db->executeCommand('LRANGE', array(static::tableName(), 0, -1));
 		}
 		if (empty($condition)) {
 			return 0;
 		}
-		$smembers = array();
 		$attributeKeys = array();
 		foreach($condition as $pk) {
 			if (is_array($pk)) {
 				$pk = implode('-', $pk);
 			}
-			$smembers[] = $pk; // TODO escape PK glue
+			$db->executeCommand('LREM', array(static::tableName(), 0, $pk)); // TODO escape PK glue
 			$attributeKeys[] = static::tableName() . ':' . $pk . ':a'; // TODO escape PK glue
 		}
-		array_unshift($smembers, static::tableName());
-		$db->executeCommand('DEL', $attributeKeys);
-		return $db->executeCommand('SREM', $smembers);
+		return $db->executeCommand('DEL', $attributeKeys);
 	}
 
 	/**
