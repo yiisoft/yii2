@@ -11,6 +11,7 @@ namespace yii\caching;
  * ApcCache provides APC caching in terms of an application component.
  *
  * To use this application component, the [APC PHP extension](http://www.php.net/apc) must be loaded.
+ * In order to enable APC for CLI you should add "apc.enable_cli = 1" to your php.ini.
  *
  * See [[Cache]] for common cache operations that ApcCache supports.
  *
