@@ -39,10 +39,16 @@ class ActiveForm extends Widget
 	public $errorMessageClass = 'yii-error-message';
 	/**
 	 * @var string the default CSS class that indicates an input has error.
-	 * This is
 	 */
 	public $errorClass = 'yii-error';
+	/**
+	 * @var string the default CSS class that indicates an input validated successfully.
+	 */
 	public $successClass = 'yii-success';
+
+	/**
+	 * @var string the default CSS class that indicates an input is currently being validated.
+	 */
 	public $validatingClass = 'yii-validating';
 	/**
 	 * @var boolean whether to enable client-side data validation. Defaults to false.
@@ -64,7 +70,7 @@ class ActiveForm extends Widget
 			$models = array($models);
 		}
 
-		$showAll = isset($options['showAll']) && $options['showAll'];
+		$showAll = !empty($options['showAll']);
 		$lines = array();
 		/** @var $model Model */
 		foreach ($models as $model) {
@@ -127,6 +133,14 @@ class ActiveForm extends Widget
 		return Html::label($label, $for, $options);
 	}
 
+	/**
+	 * @param string $type
+	 * @param Model $model
+	 * @param string $attribute
+	 * @param array $options
+	 *
+	 * @return string
+	 */
 	public function input($type, $model, $attribute, $options = array())
 	{
 		$value = $this->getAttributeValue($model, $attribute);

@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * UnknownMethodException represents an exception caused by accessing unknown object methods.
+ * UnknownMethodException represents an exception caused by accessing an unknown object method.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

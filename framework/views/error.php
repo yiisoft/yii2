@@ -4,7 +4,7 @@
  * @var \yii\base\ErrorHandler $context
  */
 $context = $this->context;
-$title = $context->htmlEncode($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\ErrorException ? $exception->getName() : get_class($exception));
+$title = $context->htmlEncode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception));
 ?>
 <!DOCTYPE html>
 <html>

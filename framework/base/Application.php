@@ -13,36 +13,6 @@ use yii\helpers\FileHelper;
 /**
  * Application is the base class for all application classes.
  *
- * An application serves as the global context that the user request
- * is being processed. It manages a set of application components that
- * provide specific functionalities to the whole application.
- *
- * The core application components provided by Application are the following:
- * <ul>
- * <li>{@link getErrorHandler errorHandler}: handles PHP errors and
- *   uncaught exceptions. This application component is dynamically loaded when needed.</li>
- * <li>{@link getSecurityManager securityManager}: provides security-related
- *   services, such as hashing, encryption. This application component is dynamically
- *   loaded when needed.</li>
- * <li>{@link getStatePersister statePersister}: provides global state
- *   persistence method. This application component is dynamically loaded when needed.</li>
- * <li>{@link getCache cache}: provides caching feature. This application component is
- *   disabled by default.</li>
- * </ul>
- *
- * Application will undergo the following life cycles when processing a user request:
- * <ol>
- * <li>load application configuration;</li>
- * <li>set up class autoloader and error handling;</li>
- * <li>load static application components;</li>
- * <li>{@link beforeRequest}: preprocess the user request; `beforeRequest` event raised.</li>
- * <li>{@link processRequest}: process the user request;</li>
- * <li>{@link afterRequest}: postprocess the user request; `afterRequest` event raised.</li>
- * </ol>
- *
- * Starting from lifecycle 3, if a PHP error or an uncaught exception occurs,
- * the application will switch to its error handling logic and jump to step 6 afterwards.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -87,12 +57,10 @@ class Application extends Module
 	 */
 	public $layout = 'main';
 
-	private $_runtimePath;
 	private $_ended = false;
 
 	/**
-	 * @var string Used to reserve memory for fatal error handler. This memory
-	 * reserve can be removed if it's OK to write to PHP log only in this particular case.
+	 * @var string Used to reserve memory for fatal error handler.
 	 */
 	private $_memoryReserve;
 
@@ -112,8 +80,8 @@ class Application extends Module
 
 		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
+			Yii::setAlias('@app', $this->getBasePath());
 			unset($config['basePath']);
-			Yii::$aliases['@app'] = $this->getBasePath();
 		} else {
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
@@ -154,30 +122,6 @@ class Application extends Module
 
 		if ($exit) {
 			exit($status);
-		}
-	}
-
-	/**
-	 * Handles fatal PHP errors
-	 */
-	public function handleFatalError()
-	{
-		if (YII_ENABLE_ERROR_HANDLER) {
-			$error = error_get_last();
-
-			if (ErrorException::isFatalErorr($error)) {
-				unset($this->_memoryReserve);
-				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
-				$this->logException($exception);
-
-				if (($handler = $this->getErrorHandler()) !== null) {
-					@$handler->handle($exception);
-				} else {
-					$this->renderException($exception);
-				}
-
-				exit(1);
-			}
 		}
 	}
 
@@ -224,6 +168,8 @@ class Application extends Module
 		return 0;
 	}
 
+	private $_runtimePath;
+
 	/**
 	 * Returns the directory that stores runtime files.
 	 * @return string the directory that stores runtime files. Defaults to 'protected/runtime'.
@@ -243,12 +189,35 @@ class Application extends Module
 	 */
 	public function setRuntimePath($path)
 	{
-		$p = FileHelper::ensureDirectory($path);
-		if (is_writable($p)) {
-			$this->_runtimePath = $p;
+		$path = Yii::getAlias($path);
+		if (is_dir($path) && is_writable($path)) {
+			$this->_runtimePath = $path;
 		} else {
-			throw new InvalidConfigException("Runtime path must be writable by the Web server process: $path");
+			throw new InvalidConfigException("Runtime path must be a directory writable by the Web server process: $path");
 		}
+	}
+
+	private $_vendorPath;
+
+	/**
+	 * Returns the directory that stores vendor files.
+	 * @return string the directory that stores vendor files. Defaults to 'protected/vendor'.
+	 */
+	public function getVendorPath()
+	{
+		if ($this->_vendorPath === null) {
+			$this->setVendorPath($this->getBasePath() . DIRECTORY_SEPARATOR . 'vendor');
+		}
+		return $this->_vendorPath;
+	}
+
+	/**
+	 * Sets the directory that stores vendor files.
+	 * @param string $path the directory that stores vendor files.
+	 */
+	public function setVendorPath($path)
+	{
+		$this->_vendorPath = Yii::getAlias($path);
 	}
 
 	/**
@@ -359,36 +328,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Handles PHP execution errors such as warnings, notices.
-	 *
-	 * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
-	 *
-	 * @param integer $code the level of the error raised
-	 * @param string $message the error message
-	 * @param string $file the filename that the error was raised in
-	 * @param integer $line the line number the error was raised at
-	 *
-	 * @throws ErrorException
-	 */
-	public function handleError($code, $message, $file, $line)
-	{
-		if (error_reporting() !== 0) {
-			$exception = new ErrorException($message, $code, $code, $file, $line);
-
-			// in case error appeared in __toString method we can't throw any exception
-			$trace = debug_backtrace(false);
-			array_shift($trace);
-			foreach ($trace as $frame) {
-				if ($frame['function'] == '__toString') {
-					$this->handleException($exception);
-				}
-			}
-
-			throw $exception;
-		}
-	}
-
-	/**
 	 * Handles uncaught PHP exceptions.
 	 *
 	 * This method is implemented as a PHP exception handler. It requires
@@ -424,6 +363,61 @@ class Application extends Module
 			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
 			error_log($msg);
 			exit(1);
+		}
+	}
+
+	/**
+	 * Handles PHP execution errors such as warnings, notices.
+	 *
+	 * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
+	 *
+	 * @param integer $code the level of the error raised
+	 * @param string $message the error message
+	 * @param string $file the filename that the error was raised in
+	 * @param integer $line the line number the error was raised at
+	 *
+	 * @throws ErrorException
+	 */
+	public function handleError($code, $message, $file, $line)
+	{
+		if (error_reporting() !== 0) {
+			$exception = new ErrorException($message, $code, $code, $file, $line);
+
+			// in case error appeared in __toString method we can't throw any exception
+			$trace = debug_backtrace(false);
+			array_shift($trace);
+			foreach ($trace as $frame) {
+				if ($frame['function'] == '__toString') {
+					$this->handleException($exception);
+				}
+			}
+
+			throw $exception;
+		}
+	}
+
+	/**
+	 * Handles fatal PHP errors
+	 */
+	public function handleFatalError()
+	{
+		if (YII_ENABLE_ERROR_HANDLER) {
+			$error = error_get_last();
+
+			if (ErrorException::isFatalError($error)) {
+				unset($this->_memoryReserve);
+				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+				// use error_log because it's too late to use Yii log
+				error_log($exception);
+
+				if (($handler = $this->getErrorHandler()) !== null) {
+					$handler->handle($exception);
+				} else {
+					$this->renderException($exception);
+				}
+
+				exit(1);
+			}
 		}
 	}
 

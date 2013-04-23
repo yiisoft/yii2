@@ -522,7 +522,7 @@ class Connection extends Component
 				if (isset($matches[3])) {
 					return $db->quoteColumnName($matches[3]);
 				} else {
-					return str_replace('%', $this->tablePrefix, $db->quoteTableName($matches[2]));
+					return str_replace('%', $db->tablePrefix, $db->quoteTableName($matches[2]));
 				}
 			}, $sql);
 	}

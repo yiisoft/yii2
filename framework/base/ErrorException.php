@@ -79,7 +79,7 @@ class ErrorException extends Exception
 	 * @param array $error error got from error_get_last()
 	 * @return bool if error is one of fatal type
 	 */
-	public static function isFatalErorr($error)
+	public static function isFatalError($error)
 	{
 		return isset($error['type']) && in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING));
 	}

@@ -216,7 +216,7 @@ class Sort extends \yii\base\Object
 
 		$url = $this->createUrl($attribute);
 
-		return Html::link($label, $url, $htmlOptions);
+		return Html::a($label, $url, $htmlOptions);
 	}
 
 	private $_attributeOrders;

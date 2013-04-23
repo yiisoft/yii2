@@ -13,28 +13,38 @@ namespace yii\base;
  */
 class Response extends Component
 {
+	/**
+	 * Starts output buffering
+	 */
 	public function beginOutput()
 	{
 		ob_start();
 		ob_implicit_flush(false);
 	}
 
+	/**
+	 * Returns contents of the output buffer and discards it
+	 * @return string output buffer contents
+	 */
 	public function endOutput()
 	{
 		return ob_get_clean();
 	}
 
+	/**
+	 * Returns contents of the output buffer
+	 * @return string output buffer contents
+	 */
 	public function getOutput()
 	{
 		return ob_get_contents();
 	}
 
-	public function cleanOutput()
-	{
-		ob_clean();
-	}
-
-	public function removeOutput($all = true)
+	/**
+	 * Discards the output buffer
+	 * @param boolean $all if true recursively discards all output buffers used
+	 */
+	public function cleanOutput($all = true)
 	{
 		if ($all) {
 			for ($level = ob_get_level(); $level > 0; --$level) {

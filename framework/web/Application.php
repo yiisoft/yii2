@@ -98,6 +98,15 @@ class Application extends \yii\base\Application
 	}
 
 	/**
+	 * Returns the asset manager.
+	 * @return AssetManager the asset manager component
+	 */
+	public function getAssetManager()
+	{
+		return $this->getComponent('assetManager');
+	}
+
+	/**
 	 * Registers the core application components.
 	 * @see setComponents
 	 */
@@ -116,6 +125,9 @@ class Application extends \yii\base\Application
 			),
 			'user' => array(
 				'class' => 'yii\web\User',
+			),
+			'assetManager' => array(
+				'class' => 'yii\web\AssetManager',
 			),
 		));
 	}

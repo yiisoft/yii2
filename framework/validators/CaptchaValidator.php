@@ -68,6 +68,7 @@ class CaptchaValidator extends Validator
 
 	/**
 	 * Returns the CAPTCHA action object.
+	 * @throws InvalidConfigException
 	 * @return CaptchaAction the action object
 	 */
 	public function getCaptchaAction()

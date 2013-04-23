@@ -60,7 +60,7 @@ class UniqueValidator extends Validator
 		}
 
 		/** @var $className \yii\db\ActiveRecord */
-		$className = $this->className === null ? get_class($object) : \Yii::import($this->className);
+		$className = $this->className === null ? get_class($object) : Yii::import($this->className);
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
 		$table = $className::getTableSchema();

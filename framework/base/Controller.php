@@ -428,7 +428,7 @@ class Controller extends Component
 			$file = $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
 		}
 
-		return FileHelper::getExtension($file) === '' ? $file . '.php' : $file;
+		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file;
 	}
 
 	/**
@@ -463,7 +463,7 @@ class Controller extends Component
 			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
 		}
 
-		if (FileHelper::getExtension($file) === '') {
+		if (pathinfo($file, PATHINFO_EXTENSION) === '') {
 			$file .= '.php';
 		}
 		return $file;
