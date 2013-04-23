@@ -124,7 +124,7 @@ class DbCache extends Cache
 		$query = new Query;
 		$query->select(array('id', 'data'))
 			->from($this->cacheTable)
-			->where(array('in', 'id', (array)$keys))
+			->where(array('id' => $keys))
 			->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
 
 		if ($this->db->enableQueryCache) {
