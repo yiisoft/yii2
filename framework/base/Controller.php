@@ -19,7 +19,14 @@ use yii\helpers\StringHelper;
  */
 class Controller extends Component
 {
+	/**
+	 * @event ActionEvent an event raised right before executing a controller action.
+	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+	 */
 	const EVENT_BEFORE_ACTION = 'beforeAction';
+	/**
+	 * @event ActionEvent an event raised right after executing a controller action.
+	 */
 	const EVENT_AFTER_ACTION = 'afterAction';
 
 	/**
@@ -105,16 +112,15 @@ class Controller extends Component
 		if ($action !== null) {
 			$oldAction = $this->action;
 			$this->action = $action;
-
-			if ($this->beforeAction($action)) {
-				$status = $action->runWithParams($params);
-				$this->afterAction($action);
-			} else {
-				$status = 1;
+			$status = 1;
+			if ($this->module->beforeAction($action)) {
+				if ($this->beforeAction($action)) {
+					$status = $action->runWithParams($params);
+					$this->afterAction($action);
+				}
+				$this->module->afterAction($action);
 			}
-
 			$this->action = $oldAction;
-
 			return $status;
 		} else {
 			throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
