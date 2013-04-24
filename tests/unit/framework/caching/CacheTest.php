@@ -16,9 +16,9 @@ abstract class CacheTest extends TestCase
 	public function testSet()
 	{
 		$cache = $this->getCacheInstance();
-		$cache->set('string_test', 'string_test');
-		$cache->set('number_test', 42);
-		$cache->set('array_test', array('array_test' => 'array_test'));
+		$this->assertTrue($cache->set('string_test', 'string_test'));
+		$this->assertTrue($cache->set('number_test', 42));
+		$this->assertTrue($cache->set('array_test', array('array_test' => 'array_test')));
 		$cache['arrayaccess_test'] = new \stdClass();
 	}
 
@@ -45,7 +45,7 @@ abstract class CacheTest extends TestCase
 	public function testExpire()
 	{
 		$cache = $this->getCacheInstance();
-		$cache->set('expire_test', 'expire_test', 2);
+		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
 		sleep(1);
 		$this->assertEquals('expire_test', $cache->get('expire_test'));
 		sleep(2);
@@ -57,11 +57,11 @@ abstract class CacheTest extends TestCase
 		$cache = $this->getCacheInstance();
 
 		// should not change existing keys
-		$cache->add('number_test', 13);
+		$this->assertFalse($cache->add('number_test', 13));
 		$this->assertEquals(42, $cache->get('number_test'));
 
 		// should store data is it's not there yet
-		$cache->add('add_test', 13);
+		$this->assertTrue($cache->add('add_test', 13));
 		$this->assertEquals(13, $cache->get('add_test'));
 	}
 
@@ -69,14 +69,14 @@ abstract class CacheTest extends TestCase
 	{
 		$cache = $this->getCacheInstance();
 
-		$cache->delete('number_test');
+		$this->assertTrue($cache->delete('number_test'));
 		$this->assertEquals(null, $cache->get('number_test'));
 	}
 
 	public function testFlush()
 	{
 		$cache = $this->getCacheInstance();
-		$cache->flush();
+		$this->assertTrue($cache->flush());
 		$this->assertEquals(null, $cache->get('add_test'));
 	}
 }

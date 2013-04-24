@@ -66,7 +66,7 @@ class Transaction extends \yii\base\Object
 			if ($this->db === null) {
 				throw new InvalidConfigException('Transaction::db must be set.');
 			}
-			\Yii::trace('Starting transaction', __CLASS__);
+			\Yii::trace('Starting transaction', __METHOD__);
 			$this->db->open();
 			$this->db->pdo->beginTransaction();
 			$this->_active = true;
@@ -80,7 +80,7 @@ class Transaction extends \yii\base\Object
 	public function commit()
 	{
 		if ($this->_active && $this->db && $this->db->isActive) {
-			\Yii::trace('Committing transaction', __CLASS__);
+			\Yii::trace('Committing transaction', __METHOD__);
 			$this->db->pdo->commit();
 			$this->_active = false;
 		} else {
@@ -95,7 +95,7 @@ class Transaction extends \yii\base\Object
 	public function rollback()
 	{
 		if ($this->_active && $this->db && $this->db->isActive) {
-			\Yii::trace('Rolling back transaction', __CLASS__);
+			\Yii::trace('Rolling back transaction', __METHOD__);
 			$this->db->pdo->rollBack();
 			$this->_active = false;
 		} else {

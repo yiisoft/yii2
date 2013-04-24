@@ -8,10 +8,7 @@
 namespace yii\base;
 
 /**
- * Object is the base class that provides the *property* feature.
- *
  * @include @yii/base/Object.md
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

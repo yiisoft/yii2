@@ -72,7 +72,7 @@ class PhpMessageSource extends MessageSource
 			}
 			return $messages;
 		} else {
-			Yii::error("The message file for category '$category' does not exist: $messageFile", __CLASS__);
+			Yii::error("The message file for category '$category' does not exist: $messageFile", __METHOD__);
 			return array();
 		}
 	}

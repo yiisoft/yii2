@@ -7,10 +7,8 @@
 
 namespace yii\widgets;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
-use yii\base\View;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -19,15 +17,10 @@ use yii\base\View;
 class ContentDecorator extends Widget
 {
 	/**
-	 * @var View the view object for rendering [[viewName]]. If not set, the view registered with the application
-	 * will be used.
+	 * @var string the view file that will be used to decorate the content enclosed by this widget.
+	 * This can be specified as either the view file path or path alias.
 	 */
-	public $view;
-	/**
-	 * @var string the name of the view that will be used to decorate the content enclosed by this widget.
-	 * Please refer to [[View::findViewFile()]] on how to set this property.
-	 */
-	public $viewName;
+	public $viewFile;
 	/**
 	 * @var array the parameters (name=>value) to be extracted and made available in the decorative view.
 	 */
@@ -38,8 +31,8 @@ class ContentDecorator extends Widget
 	 */
 	public function init()
 	{
-		if ($this->viewName === null) {
-			throw new InvalidConfigException('ContentDecorator::viewName must be set.');
+		if ($this->viewFile === null) {
+			throw new InvalidConfigException('ContentDecorator::viewFile must be set.');
 		}
 		ob_start();
 		ob_implicit_flush(false);
@@ -53,7 +46,7 @@ class ContentDecorator extends Widget
 	{
 		$params = $this->params;
 		$params['content'] = ob_get_clean();
-		$view = $this->view !== null ? $this->view : Yii::$app->getView();
-		echo $view->render($this->viewName, $params);
+		// render under the existing context
+		echo $this->view->renderFile($this->viewFile, $params);
 	}
 }

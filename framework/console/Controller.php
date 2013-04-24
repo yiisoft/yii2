@@ -24,7 +24,6 @@ use yii\base\InvalidRouteException;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- *
  * @since 2.0
  */
 class Controller extends \yii\base\Controller

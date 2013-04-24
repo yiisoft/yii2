@@ -7,6 +7,8 @@
 
 namespace yii\validators;
 
+use Yii;
+
 /**
  * EmailValidator validates that the attribute value is a valid email address.
  *
@@ -42,11 +44,17 @@ class EmailValidator extends Validator
 	 * Defaults to false.
 	 */
 	public $checkPort = false;
+
 	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
+	 * Initializes the validator.
 	 */
-	public $allowEmpty = true;
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} is not a valid email address.');
+		}
+	}
 
 	/**
 	 * Validates the attribute of the object.
@@ -57,21 +65,15 @@ class EmailValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
 		if (!$this->validateValue($value)) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid email address.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
 	/**
-	 * Validates a static value to see if it is a valid email.
-	 * Note that this method does not respect [[allowEmpty]] property.
-	 * This method is provided so that you can call it directly without going through the model validation rule mechanism.
-	 * @param mixed $value the value to be validated
-	 * @return boolean whether the value is a valid email
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
 	 */
 	public function validateValue($value)
 	{
@@ -98,8 +100,7 @@ class EmailValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} is not a valid email address.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 		));
@@ -110,7 +111,7 @@ class EmailValidator extends Validator
 		}
 
 		return "
-if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
+if(" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
 	messages.push(" . json_encode($message) . ");
 }
 ";

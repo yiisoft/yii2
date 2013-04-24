@@ -223,20 +223,9 @@ class Connection extends Component
 	 * @var string the common prefix or suffix for table names. If a table name is given
 	 * as `{{%TableName}}`, then the percentage character `%` will be replaced with this
 	 * property value. For example, `{{%post}}` becomes `{{tbl_post}}` if this property is
-	 * set as `"tbl_"`. Note that this property is only effective when [[enableAutoQuoting]]
-	 * is true.
-	 * @see enableAutoQuoting
+	 * set as `"tbl_"`.
 	 */
 	public $tablePrefix;
-	/**
-	 * @var boolean whether to enable automatic quoting of table names and column names.
-	 * Defaults to true. When this property is true, any token enclosed within double curly brackets
-	 * (e.g. `{{post}}`) in a SQL statement will be treated as a table name and will be quoted
-	 * accordingly when the SQL statement is executed; and any token enclosed within double square
-	 * brackets (e.g. `[[name]]`) will be treated as a column name and quoted accordingly.
-	 * @see tablePrefix
-	 */
-	public $enableAutoQuoting = true;
 	/**
 	 * @var array mapping between PDO driver names and [[Schema]] classes.
 	 * The keys of the array are PDO driver names while the values the corresponding
@@ -248,15 +237,15 @@ class Connection extends Component
 	 * [[Schema]] class to support DBMS that is not supported by Yii.
 	 */
 	public $schemaMap = array(
-		'pgsql' => 'yii\db\pgsql\Schema', // PostgreSQL
-		'mysqli' => 'yii\db\mysql\Schema', // MySQL
-		'mysql' => 'yii\db\mysql\Schema', // MySQL
-		'sqlite' => 'yii\db\sqlite\Schema', // sqlite 3
+		'pgsql' => 'yii\db\pgsql\Schema',    // PostgreSQL
+		'mysqli' => 'yii\db\mysql\Schema',   // MySQL
+		'mysql' => 'yii\db\mysql\Schema',    // MySQL
+		'sqlite' => 'yii\db\sqlite\Schema',  // sqlite 3
 		'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
 		'mssql' => 'yi\db\dao\mssql\Schema', // Mssql driver on windows hosts
-		'dblib' => 'yii\db\mssql\Schema', // dblib drivers on linux (and maybe others os) hosts
-		'sqlsrv' => 'yii\db\mssql\Schema', // Mssql
-		'oci' => 'yii\db\oci\Schema', // Oracle driver
+		'sqlsrv' => 'yii\db\mssql\Schema',   // Mssql
+		'oci' => 'yii\db\oci\Schema',        // Oracle driver
+		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on linux (and maybe others os) hosts
 	);
 	/**
 	 * @var Transaction the currently active transaction
@@ -324,12 +313,12 @@ class Connection extends Component
 				throw new InvalidConfigException('Connection::dsn cannot be empty.');
 			}
 			try {
-				\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
+				\Yii::trace('Opening DB connection: ' . $this->dsn, __METHOD__);
 				$this->pdo = $this->createPdoInstance();
 				$this->initConnection();
 			}
 			catch (\PDOException $e) {
-				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __CLASS__);
+				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __METHOD__);
 				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
 				throw new Exception($message, $e->errorInfo, (int)$e->getCode());
 			}
@@ -343,7 +332,7 @@ class Connection extends Component
 	public function close()
 	{
 		if ($this->pdo !== null) {
-			\Yii::trace('Closing DB connection: ' . $this->dsn, __CLASS__);
+			\Yii::trace('Closing DB connection: ' . $this->dsn, __METHOD__);
 			$this->pdo = null;
 			$this->_schema = null;
 			$this->_transaction = null;
@@ -515,6 +504,27 @@ class Connection extends Component
 	public function quoteColumnName($name)
 	{
 		return $this->getSchema()->quoteColumnName($name);
+	}
+
+	/**
+	 * Processes a SQL statement by quoting table and column names that are enclosed within double brackets.
+	 * Tokens enclosed within double curly brackets are treated as table names, while
+	 * tokens enclosed within double square brackets are column names. They will be quoted accordingly.
+	 * Also, the percentage character "%" in a table name will be replaced with [[tablePrefix]].
+	 * @param string $sql the SQL to be quoted
+	 * @return string the quoted SQL
+	 */
+	public function quoteSql($sql)
+	{
+		$db = $this;
+		return preg_replace_callback('/(\\{\\{([\w\-\. ]+)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
+			function($matches) use($db) {
+				if (isset($matches[3])) {
+					return $db->quoteColumnName($matches[3]);
+				} else {
+					return str_replace('%', $db->tablePrefix, $db->quoteTableName($matches[2]));
+				}
+			}, $sql);
 	}
 
 	/**

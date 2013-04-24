@@ -8,6 +8,35 @@
 namespace yii\web;
 
 /**
+ * Identity is the interface that should be implemented by a class providing identity information.
+ *
+ * This interface can typically be implemented by a user model class. For example, the following
+ * code shows how to implement this interface by a User ActiveRecord class:
+ *
+ * ~~~
+ * class User extends ActiveRecord implements Identity
+ * {
+ *     public static function findIdentity($id)
+ *     {
+ *         return static::find($id);
+ *     }
+ *
+ *     public function getId()
+ *     {
+ *         return $this->id;
+ *     }
+ *
+ *     public function getAuthKey()
+ *     {
+ *         return $this->authKey;
+ *     }
+ *
+ *     public function validateAuthKey($authKey)
+ *     {
+ *         return $this->authKey === $authKey;
+ *     }
+ * }
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -15,31 +44,38 @@ namespace yii\web;
 interface Identity
 {
 	/**
+	 * Finds an identity by the given ID.
+	 * @param string|integer $id the ID to be looked for
+	 * @return Identity the identity object that matches the given ID.
+	 * Null should be returned if such an identity cannot be found
+	 * or the identity is not in an active state (disabled, deleted, etc.)
+	 */
+	public static function findIdentity($id);
+	/**
 	 * Returns an ID that can uniquely identify a user identity.
-	 * The returned ID can be a string, an integer, or any serializable data.
-	 * @return mixed an ID that uniquely identifies a user identity.
+	 * @return string|integer an ID that uniquely identifies a user identity.
 	 */
 	public function getId();
 	/**
 	 * Returns a key that can be used to check the validity of a given identity ID.
-	 * The space of such keys should be big and random enough to defeat potential identity attacks.
-	 * The returned key can be a string, an integer, or any serializable data.
-	 * @return mixed a key that is used to check the validity of a given identity ID.
+	 *
+	 * The key should be unique for each individual user, and should be persistent
+	 * so that it can be used to check the validity of the user identity.
+	 *
+	 * The space of such keys should be big enough to defeat potential identity attacks.
+	 *
+	 * This is required if [[User::enableAutoLogin]] is enabled.
+	 * @return string a key that is used to check the validity of a given identity ID.
 	 * @see validateAuthKey()
 	 */
 	public function getAuthKey();
 	/**
 	 * Validates the given auth key.
+	 *
+	 * This is required if [[User::enableAutoLogin]] is enabled.
 	 * @param string $authKey the given auth key
 	 * @return boolean whether the given auth key is valid.
 	 * @see getAuthKey()
 	 */
 	public function validateAuthKey($authKey);
-	/**
-	 * Finds an identity by the given ID.
-	 * @param mixed $id the ID to be looked for
-	 * @return Identity the identity object that matches the given ID.
-	 * Null should be returned if such an identity cannot be found.
-	 */
-	public static function findIdentity($id);
 }

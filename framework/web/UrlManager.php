@@ -74,9 +74,6 @@ class UrlManager extends Component
 	public function init()
 	{
 		parent::init();
-		if (is_string($this->cache)) {
-			$this->cache = Yii::$app->getComponent($this->cache);
-		}
 		$this->compileRules();
 	}
 
@@ -87,6 +84,9 @@ class UrlManager extends Component
 	{
 		if (!$this->enablePrettyUrl || $this->rules === array()) {
 			return;
+		}
+		if (is_string($this->cache)) {
+			$this->cache = Yii::$app->getComponent($this->cache);
 		}
 		if ($this->cache instanceof Cache) {
 			$key = $this->cache->buildKey(__CLASS__);
@@ -104,7 +104,7 @@ class UrlManager extends Component
 			$this->rules[$i] = Yii::createObject($rule);
 		}
 
-		if ($this->cache instanceof Cache) {
+		if (isset($key, $hash)) {
 			$this->cache->set($key, array($this->rules, $hash));
 		}
 	}

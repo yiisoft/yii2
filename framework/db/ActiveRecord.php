@@ -191,15 +191,12 @@ class ActiveRecord extends Model
 	 */
 	public static function updateAllCounters($counters, $condition = '', $params = array())
 	{
-		$db = static::getDb();
 		$n = 0;
 		foreach ($counters as $name => $value) {
-			$quotedName = $db->quoteColumnName($name);
-			$counters[$name] = new Expression("$quotedName+:bp{$n}");
-			$params[":bp{$n}"] = $value;
+			$counters[$name] = new Expression("[[$name]]+:bp{$n}", array(":bp{$n}" => $value));
 			$n++;
 		}
-		$command = $db->createCommand();
+		$command = static::getDb()->createCommand();
 		$command->update(static::tableName(), $counters, $condition, $params);
 		return $command->execute();
 	}
@@ -277,6 +274,34 @@ class ActiveRecord extends Model
 	public static function primaryKey()
 	{
 		return static::getTableSchema()->primaryKey;
+	}
+
+	/**
+	 * Returns the name of the column that stores the lock version for implementing optimistic locking.
+	 *
+	 * Optimistic locking allows multiple users to access the same record for edits and avoids
+	 * potential conflicts. In case when a user attempts to save the record upon some staled data
+	 * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
+	 * and the update or deletion is skipped.
+	 *
+	 * Optimized locking is only supported by [[update()]] and [[delete()]].
+	 *
+	 * To use optimized locking:
+	 *
+	 * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
+	 *    Override this method to return the name of this column.
+	 * 2. In the Web form that collects the user input, add a hidden field that stores
+	 *    the lock version of the recording being updated.
+	 * 3. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
+	 *    and implement necessary business logic (e.g. merging the changes, prompting stated data)
+	 *    to resolve the conflict.
+	 *
+	 * @return string the column name that stores the lock version of a table row.
+	 * If null is returned (default implemented), optimistic locking will not be supported.
+	 */
+	public function optimisticLock()
+	{
+		return null;
 	}
 
 	/**
@@ -530,8 +555,8 @@ class ActiveRecord extends Model
 	 */
 	public function isAttributeChanged($name)
 	{
-		if (isset($this->_attribute[$name], $this->_oldAttributes[$name])) {
-			return $this->_attribute[$name] !== $this->_oldAttributes[$name];
+		if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
+			return $this->_attributes[$name] !== $this->_oldAttributes[$name];
 		} else {
 			return isset($this->_attributes[$name]) || isset($this->_oldAttributes);
 		}
@@ -590,7 +615,11 @@ class ActiveRecord extends Model
 	 */
 	public function save($runValidation = true, $attributes = null)
 	{
-		return $this->getIsNewRecord() ? $this->insert($runValidation, $attributes) : $this->update($runValidation, $attributes);
+		if ($this->getIsNewRecord()) {
+			return $this->insert($runValidation, $attributes);
+		} else {
+			return $this->update($runValidation, $attributes) !== false;
+		}
 	}
 
 	/**
@@ -692,11 +721,26 @@ class ActiveRecord extends Model
 	 * $customer->update();
 	 * ~~~
 	 *
+	 * Note that it is possible the update does not affect any row in the table.
+	 * In this case, this method will return 0. For this reason, you should use the following
+	 * code to check if update() is successful or not:
+	 *
+	 * ~~~
+	 * if ($this->update() !== false) {
+	 *     // update successful
+	 * } else {
+	 *     // update failed
+	 * }
+	 * ~~~
+	 *
 	 * @param boolean $runValidation whether to perform validation before saving the record.
 	 * If the validation fails, the record will not be inserted into the database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
-	 * @return boolean whether the attributes are valid and the record is updated successfully.
+	 * @return integer|boolean the number of rows affected, or false if validation fails
+	 * or [[beforeSave()]] stops the updating process.
+	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
+	 * being updated is outdated.
 	 */
 	public function update($runValidation = true, $attributes = null)
 	{
@@ -706,15 +750,31 @@ class ActiveRecord extends Model
 		if ($this->beforeSave(false)) {
 			$values = $this->getDirtyAttributes($attributes);
 			if ($values !== array()) {
+				$condition = $this->getOldPrimaryKey(true);
+				$lock = $this->optimisticLock();
+				if ($lock !== null) {
+					if (!isset($values[$lock])) {
+						$values[$lock] = $this->$lock + 1;
+					}
+					$condition[$lock] = $this->$lock;
+				}
 				// We do not check the return value of updateAll() because it's possible
 				// that the UPDATE statement doesn't change anything and thus returns 0.
-				$this->updateAll($values, $this->getOldPrimaryKey(true));
+				$rows = $this->updateAll($values, $condition);
+
+				if ($lock !== null && !$rows) {
+					throw new StaleObjectException('The object being updated is outdated.');
+				}
+
 				foreach ($values as $name => $value) {
 					$this->_oldAttributes[$name] = $this->_attributes[$name];
 				}
+
 				$this->afterSave(false);
+				return $rows;
+			} else {
+				return 0;
 			}
-			return true;
 		} else {
 			return false;
 		}
@@ -763,17 +823,28 @@ class ActiveRecord extends Model
 	 * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * @return boolean whether the deletion is successful.
+	 * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
+	 * being deleted is outdated.
 	 */
 	public function delete()
 	{
 		if ($this->beforeDelete()) {
 			// we do not check the return value of deleteAll() because it's possible
 			// the record is already deleted in the database and thus the method will return 0
-			$this->deleteAll($this->getPrimaryKey(true));
+			$condition = $this->getOldPrimaryKey(true);
+			$lock = $this->optimisticLock();
+			if ($lock !== null) {
+				$condition[$lock] = $this->$lock;
+			}
+			$rows = $this->deleteAll($condition);
+			if ($lock !== null && !$rows) {
+				throw new StaleObjectException('The object being deleted is outdated.');
+			}
 			$this->_oldAttributes = null;
 			$this->afterDelete();
-			return true;
+			return $rows;
 		} else {
 			return false;
 		}

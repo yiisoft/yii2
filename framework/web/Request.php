@@ -43,8 +43,6 @@ class Request extends \yii\base\Request
 	 */
 	public function resolve()
 	{
-		Yii::setAlias('@www', $this->getBaseUrl());
-
 		$result = Yii::$app->getUrlManager()->parseRequest($this);
 		if ($result !== false) {
 			list ($route, $params) = $result;
@@ -301,7 +299,8 @@ class Request extends \yii\base\Request
 	public function getScriptUrl()
 	{
 		if ($this->_scriptUrl === null) {
-			$scriptName = basename($_SERVER['SCRIPT_FILENAME']);
+			$scriptFile = $this->getScriptFile();
+			$scriptName = basename($scriptFile);
 			if (basename($_SERVER['SCRIPT_NAME']) === $scriptName) {
 				$this->_scriptUrl = $_SERVER['SCRIPT_NAME'];
 			} elseif (basename($_SERVER['PHP_SELF']) === $scriptName) {
@@ -310,8 +309,8 @@ class Request extends \yii\base\Request
 				$this->_scriptUrl = $_SERVER['ORIG_SCRIPT_NAME'];
 			} elseif (($pos = strpos($_SERVER['PHP_SELF'], '/' . $scriptName)) !== false) {
 				$this->_scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
-			} elseif (isset($_SERVER['DOCUMENT_ROOT']) && strpos($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT']) === 0) {
-				$this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']));
+			} elseif (isset($_SERVER['DOCUMENT_ROOT']) && strpos($scriptFile, $_SERVER['DOCUMENT_ROOT']) === 0) {
+				$this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $scriptFile));
 			} else {
 				throw new InvalidConfigException('Unable to determine the entry script URL.');
 			}
@@ -328,6 +327,30 @@ class Request extends \yii\base\Request
 	public function setScriptUrl($value)
 	{
 		$this->_scriptUrl = '/' . trim($value, '/');
+	}
+
+	private $_scriptFile;
+
+	/**
+	 * Returns the entry script file path.
+	 * The default implementation will simply return `$_SERVER['SCRIPT_FILENAME']`.
+	 * @return string the entry script file path
+	 */
+	public function getScriptFile()
+	{
+		return isset($this->_scriptFile) ? $this->_scriptFile : $_SERVER['SCRIPT_FILENAME'];
+	}
+
+	/**
+	 * Sets the entry script file path.
+	 * The entry script file path normally can be obtained from `$_SERVER['SCRIPT_FILENAME']`.
+	 * If your server configuration does not return the correct value, you may configure
+	 * this property to make it right.
+	 * @param string $value the entry script file path.
+	 */
+	public function setScriptFile($value)
+	{
+		$this->_scriptFile = $value;
 	}
 
 	private $_pathInfo;

@@ -60,6 +60,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public $flashVar = '__flash';
 
 	/**
+	 * @var array parameter-value pairs to override default session cookie parameters
+	 */
+	public $cookieParams = array(
+		'httponly' => true
+	);
+
+	/**
 	 * Initializes the application component.
 	 * This method is required by IApplicationComponent and is invoked by application.
 	 */
@@ -111,13 +118,15 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 				);
 			}
 
+			$this->setCookieParams($this->cookieParams);
+
 			@session_start();
 
 			if (session_id() == '') {
 				$this->_opened = false;
 				$error = error_get_last();
 				$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
-				Yii::error($message, __CLASS__);
+				Yii::error($message, __METHOD__);
 			} else {
 				$this->_opened = true;
 				$this->updateFlashCounters();

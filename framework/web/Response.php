@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\helpers\FileHelper;
+use yii\helpers\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -16,6 +17,14 @@ use yii\helpers\FileHelper;
  */
 class Response extends \yii\base\Response
 {
+	/**
+	 * @var integer the HTTP status code that should be used when redirecting in AJAX mode.
+	 * This is used by [[redirect()]]. A 2xx code should normally be used for this purpose
+	 * so that the AJAX handler will treat the response as a success.
+	 * @see redirect
+	 */
+	public $ajaxRedirectCode = 278;
+
 	/**
 	 * Sends a file to user.
 	 * @param string $fileName file name
@@ -103,60 +112,88 @@ class Response extends \yii\base\Response
 	 * <li>mimeType: mime type of the file, if not set it will be guessed automatically based on the file name, if set to null no content-type header will be sent.</li>
 	 * <li>xHeader: appropriate x-sendfile header, defaults to "X-Sendfile"</li>
 	 * <li>terminate: whether to terminate the current application after calling this method, defaults to true</li>
-	 * <li>forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true. (Since version 1.1.9.)</li>
-	 * <li>addHeaders: an array of additional http headers in header-value pairs (available since version 1.1.10)</li>
+	 * <li>forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true</li>
+	 * <li>addHeaders: an array of additional http headers in header-value pairs</li>
 	 * </ul>
 	 */
-	public function xSendFile($filePath, $options=array())
+	public function xSendFile($filePath, $options = array())
 	{
-		if(!isset($options['forceDownload']) || $options['forceDownload'])
-			$disposition='attachment';
-		else
-			$disposition='inline';
-
-		if(!isset($options['saveName']))
-			$options['saveName']=basename($filePath);
-
-		if(!isset($options['mimeType']))
-		{
-			if(($options['mimeType']=CFileHelper::getMimeTypeByExtension($filePath))===null)
-				$options['mimeType']='text/plain';
+		if (!isset($options['forceDownload']) || $options['forceDownload']) {
+			$disposition = 'attachment';
+		} else {
+			$disposition = 'inline';
 		}
 
-		if(!isset($options['xHeader']))
-			$options['xHeader']='X-Sendfile';
-
-		if($options['mimeType'] !== null)
-			header('Content-type: '.$options['mimeType']);
-		header('Content-Disposition: '.$disposition.'; filename="'.$options['saveName'].'"');
-		if(isset($options['addHeaders']))
-		{
-			foreach($options['addHeaders'] as $header=>$value)
-				header($header.': '.$value);
+		if (!isset($options['saveName'])) {
+			$options['saveName'] = basename($filePath);
 		}
-		header(trim($options['xHeader']).': '.$filePath);
 
-		if(!isset($options['terminate']) || $options['terminate'])
-			Yii::app()->end();
+		if (!isset($options['mimeType'])) {
+			if (($options['mimeType'] = CFileHelper::getMimeTypeByExtension($filePath)) === null) {
+				$options['mimeType'] = 'text/plain';
+			}
+		}
+
+		if (!isset($options['xHeader'])) {
+			$options['xHeader'] = 'X-Sendfile';
+		}
+
+		if ($options['mimeType'] !== null) {
+			header('Content-type: ' . $options['mimeType']);
+		}
+		header('Content-Disposition: ' . $disposition . '; filename="' . $options['saveName'] . '"');
+		if (isset($options['addHeaders'])) {
+			foreach ($options['addHeaders'] as $header => $value) {
+				header($header . ': ' . $value);
+			}
+		}
+		header(trim($options['xHeader']) . ': ' . $filePath);
+
+		if (!isset($options['terminate']) || $options['terminate']) {
+			Yii::$app->end();
+		}
 	}
 
 	/**
 	 * Redirects the browser to the specified URL.
-	 * @param string $url URL to be redirected to. Note that when URL is not
-	 * absolute (not starting with "/") it will be relative to current request URL.
+	 * This method will send out a "Location" header to achieve the redirection.
+	 * In AJAX mode, this normally will not work as expected unless there are some
+	 * client-side JavaScript code handling the redirection. To help achieve this goal,
+	 * this method will use [[ajaxRedirectCode]] as the HTTP status code when performing
+	 * redirection in AJAX mode. The following JavaScript code may be used on the client
+	 * side to handle the redirection response:
+	 *
+	 * ~~~
+	 * $(document).ajaxSuccess(function(event, xhr, settings) {
+	 *     if (xhr.status == 278) {
+	 *         window.location = xhr.getResponseHeader('Location');
+	 *     }
+	 * });
+	 * ~~~
+	 *
+	 * @param array|string $url the URL to be redirected to. [[\yii\helpers\Html::url()]]
+	 * will be used to normalize the URL. If the resulting URL is still a relative URL
+	 * (one without host info), the current request host info will be used.
 	 * @param boolean $terminate whether to terminate the current application
-	 * @param integer $statusCode the HTTP status code. Defaults to 302. See {@link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}
+	 * @param integer $statusCode the HTTP status code. Defaults to 302.
+	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code.
+	 * Note that if the request is an AJAX request, [[ajaxRedirectCode]] will be used instead.
 	 */
-	public function redirect($url,$terminate=true,$statusCode=302)
+	public function redirect($url, $terminate = true, $statusCode = 302)
 	{
-		if(strpos($url,'/')===0 && strpos($url,'//')!==0)
-			$url=$this->getHostInfo().$url;
-		header('Location: '.$url, true, $statusCode);
-		if($terminate)
-			Yii::app()->end();
+		$url = Html::url($url);
+		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
+			$url = Yii::$app->getRequest()->getHostInfo() . $url;
+		}
+		if (Yii::$app->getRequest()->getIsAjaxRequest()) {
+			$statusCode = $this->ajaxRedirectCode;
+		}
+		header('Location: ' . $url, true, $statusCode);
+		if ($terminate) {
+			Yii::$app->end();
+		}
 	}
-
 
 	/**
 	 * Returns the cookie collection.

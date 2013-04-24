@@ -15,12 +15,14 @@ namespace yii\base;
  * And the [[handled]] property indicates if the event is handled.
  * If an event handler sets [[handled]] to be true, the rest of the
  * uninvoked handlers will no longer be called to handle the event.
- * Additionally, an event may specify extra parameters via the [[data]] property.
+ *
+ * Additionally, when attaching an event handler, extra data may be passed
+ * and be available via the [[data]] property when the event handler is invoked.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Event extends \yii\base\Object
+class Event extends Object
 {
 	/**
 	 * @var string the event name. This property is set by [[Component::trigger()]].
@@ -39,7 +41,8 @@ class Event extends \yii\base\Object
 	 */
 	public $handled = false;
 	/**
-	 * @var mixed extra custom data associated with the event.
+	 * @var mixed the data that is passed to [[Component::on()]] when attaching an event handler.
+	 * Note that this varies according to which event handler is currently executing.
 	 */
 	public $data;
 }

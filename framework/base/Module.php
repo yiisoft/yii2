@@ -170,7 +170,6 @@ abstract class Module extends Component
 	 */
 	public function init()
 	{
-		Yii::setAlias('@' . $this->id, $this->getBasePath());
 		$this->preloadComponents();
 	}
 
@@ -208,11 +207,17 @@ abstract class Module extends Component
 	 * Sets the root directory of the module.
 	 * This method can only be invoked at the beginning of the constructor.
 	 * @param string $path the root directory of the module. This can be either a directory name or a path alias.
-	 * @throws Exception if the directory does not exist.
+	 * @throws InvalidParamException if the directory does not exist.
 	 */
 	public function setBasePath($path)
 	{
-		$this->_basePath = FileHelper::ensureDirectory($path);
+		$path = Yii::getAlias($path);
+		$p = realpath($path);
+		if ($p !== false && is_dir($p)) {
+			$this->_basePath = $p;
+		} else {
+			throw new InvalidParamException("The directory does not exist: $path");
+		}
 	}
 
 	/**
@@ -237,7 +242,7 @@ abstract class Module extends Component
 	 */
 	public function setControllerPath($path)
 	{
-		$this->_controllerPath = FileHelper::ensureDirectory($path);
+		$this->_controllerPath = Yii::getAlias($path);
 	}
 
 	/**
@@ -260,7 +265,7 @@ abstract class Module extends Component
 	 */
 	public function setViewPath($path)
 	{
-		$this->_viewPath = FileHelper::ensureDirectory($path);
+		$this->_viewPath = Yii::getAlias($path);
 	}
 
 	/**
@@ -283,20 +288,7 @@ abstract class Module extends Component
 	 */
 	public function setLayoutPath($path)
 	{
-		$this->_layoutPath = FileHelper::ensureDirectory($path);
-	}
-
-	/**
-	 * Imports the specified path aliases.
-	 * This method is provided so that you can import a set of path aliases when configuring a module.
-	 * The path aliases will be imported by calling [[Yii::import()]].
-	 * @param array $aliases list of path aliases to be imported
-	 */
-	public function setImport($aliases)
-	{
-		foreach ($aliases as $alias) {
-			Yii::import($alias);
-		}
+		$this->_layoutPath = Yii::getAlias($path);
 	}
 
 	/**
@@ -346,7 +338,7 @@ abstract class Module extends Component
 			if ($this->_modules[$id] instanceof Module) {
 				return $this->_modules[$id];
 			} elseif ($load) {
-				Yii::trace("Loading module: $id", __CLASS__);
+				Yii::trace("Loading module: $id", __METHOD__);
 				return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
 			}
 		}
@@ -452,7 +444,7 @@ abstract class Module extends Component
 			if ($this->_components[$id] instanceof Component) {
 				return $this->_components[$id];
 			} elseif ($load) {
-				Yii::trace("Loading component: $id", __CLASS__);
+				Yii::trace("Loading component: $id", __METHOD__);
 				return $this->_components[$id] = Yii::createObject($this->_components[$id]);
 			}
 		}
@@ -580,8 +572,9 @@ abstract class Module extends Component
 	 * instance of it.
 	 *
 	 * @param string $route the route consisting of module, controller and action IDs.
-	 * @return array|boolean if the controller is created successfully, it will be returned together
-	 * with the remainder of the route which represents the action ID. Otherwise false will be returned.
+	 * @return array|boolean If the controller is created successfully, it will be returned together
+	 * with the requested action ID. Otherwise false will be returned.
+	 * @throws InvalidConfigException if the controller class and its file do not match.
 	 */
 	public function createController($route)
 	{
@@ -605,16 +598,16 @@ abstract class Module extends Component
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
 			$className = StringHelper::id2camel($id) . 'Controller';
-
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
-			if (is_file($classFile)) {
-				$className = $this->controllerNamespace . '\\' . $className;
-				if (!class_exists($className, false)) {
-					require($classFile);
-				}
-				if (class_exists($className, false) && is_subclass_of($className, '\yii\base\Controller')) {
-					$controller = new $className($id, $this);
-				}
+			if (!is_file($classFile)) {
+				return false;
+			}
+			$className = ltrim($this->controllerNamespace . '\\' . $className, '\\');
+			Yii::$classMap[$className] = $classFile;
+			if (is_subclass_of($className, 'yii\base\Controller')) {
+				$controller = new $className($id, $this);
+			} elseif (YII_DEBUG) {
+				throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
 			}
 		}
 

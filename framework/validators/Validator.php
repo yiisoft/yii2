@@ -7,7 +7,9 @@
 
 namespace yii\validators;
 
+use Yii;
 use yii\base\Component;
+use yii\base\NotSupportedException;
 
 /**
  * Validator is the base class for all validators.
@@ -81,7 +83,7 @@ abstract class Validator extends Component
 	 */
 	public $message;
 	/**
-	 * @var array list of scenarios that the validator should be applied.
+	 * @var array list of scenarios that the validator can be applied to.
 	 */
 	public $on = array();
 	/**
@@ -93,6 +95,12 @@ abstract class Validator extends Component
 	 * already has some validation error according to some previous rules. Defaults to true.
 	 */
 	public $skipOnError = true;
+	/**
+	 * @var boolean whether this validation rule should be skipped if the attribute value
+	 * is null or an empty string.
+	 */
+	public $skipOnEmpty = true;
+
 	/**
 	 * @var boolean whether to enable client-side validation. Defaults to null, meaning
 	 * its actual value inherits from that of [[\yii\web\ActiveForm::enableClientValidation]].
@@ -149,7 +157,7 @@ abstract class Validator extends Component
 			}
 		}
 
-		return \Yii::createObject($params);
+		return Yii::createObject($params);
 	}
 
 	/**
@@ -168,10 +176,23 @@ abstract class Validator extends Component
 			$attributes = $this->attributes;
 		}
 		foreach ($attributes as $attribute) {
-			if (!($this->skipOnError && $object->hasErrors($attribute))) {
+			$skip = $this->skipOnError && $object->hasErrors($attribute)
+				 || $this->skipOnEmpty && $this->isEmpty($object->$attribute);
+			if (!$skip) {
 				$this->validateAttribute($object, $attribute);
 			}
 		}
+	}
+
+	/**
+	 * Validates a value.
+	 * A validator class can implement this method to support data validation out of the context of a data model.
+	 * @param mixed $value the data value to be validated.
+	 * @throws NotSupportedException if data validation without a model is not supported
+	 */
+	public function validateValue($value)
+	{
+		throw new NotSupportedException(get_class($this) . ' does not support validateValue().');
 	}
 
 	/**
@@ -224,8 +245,9 @@ abstract class Validator extends Component
 	 */
 	public function addError($object, $attribute, $message, $params = array())
 	{
+		$value = $object->$attribute;
 		$params['{attribute}'] = $object->getAttributeLabel($attribute);
-		$params['{value}'] = $object->$attribute;
+		$params['{value}'] = is_array($value) ? 'array()' : $value;
 		$object->addError($attribute, strtr($message, $params));
 	}
 

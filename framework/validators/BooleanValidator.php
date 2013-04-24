@@ -7,6 +7,8 @@
 
 namespace yii\validators;
 
+use Yii;
+
 /**
  * BooleanValidator checks if the attribute value is a boolean value.
  *
@@ -32,11 +34,17 @@ class BooleanValidator extends Validator
 	 * Defaults to false, meaning only the value needs to be matched.
 	 */
 	public $strict = false;
+
 	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
+	 * Initializes the validator.
 	 */
-	public $allowEmpty = true;
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} must be either "{true}" or "{false}".');
+		}
+	}
 
 	/**
 	 * Validates the attribute of the object.
@@ -47,17 +55,23 @@ class BooleanValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
-			return;
-		}
-		if (!$this->strict && $value != $this->trueValue && $value != $this->falseValue
-				|| $this->strict && $value !== $this->trueValue && $value !== $this->falseValue) {
-			$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} must be either {true} or {false}.');
-			$this->addError($object, $attribute, $message, array(
+		if (!$this->validateValue($value)) {
+			$this->addError($object, $attribute, $this->message, array(
 				'{true}' => $this->trueValue,
 				'{false}' => $this->falseValue,
 			));
 		}
+	}
+
+	/**
+	 * Validates the given value.
+	 * @param mixed $value the value to be validated.
+	 * @return boolean whether the value is valid.
+	 */
+	public function validateValue($value)
+	{
+		return $this->strict && ($value == $this->trueValue || $value == $this->falseValue)
+			|| !$this->strict && ($value === $this->trueValue || $value === $this->falseValue);
 	}
 
 	/**
@@ -68,15 +82,14 @@ class BooleanValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = ($this->message !== null) ? $this->message : \Yii::t('yii|{attribute} must be either {true} or {false}.');
-		$message = strtr($message, array(
+		$message = strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 			'{true}' => $this->trueValue,
 			'{false}' => $this->falseValue,
 		));
 		return "
-if(" . ($this->allowEmpty ? "$.trim(value)!='' && " : '') . "value!=" . json_encode($this->trueValue) . " && value!=" . json_encode($this->falseValue) . ") {
+if(" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . "value!=" . json_encode($this->trueValue) . " && value!=" . json_encode($this->falseValue) . ") {
 	messages.push(" . json_encode($message) . ");
 }
 ";

@@ -38,6 +38,23 @@ class FilterValidator extends Validator
 	 * ~~~
 	 */
 	public $filter;
+	/**
+	 * @var boolean this property is overwritten to be false so that this validator will
+	 * be applied when the value being validated is empty.
+	 */
+	public $skipOnEmpty = false;
+
+	/**
+	 * Initializes the validator.
+	 * @throws InvalidConfigException if [[filter]] is not set.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->filter === null) {
+			throw new InvalidConfigException('The "filter" property must be set.');
+		}
+	}
 
 	/**
 	 * Validates the attribute of the object.
@@ -48,9 +65,6 @@ class FilterValidator extends Validator
 	 */
 	public function validateAttribute($object, $attribute)
 	{
-		if ($this->filter === null) {
-			throw new InvalidConfigException('The "filter" property must be specified with a valid callback.');
-		}
 		$object->$attribute = call_user_func($this->filter, $object->$attribute);
 	}
 }

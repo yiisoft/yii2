@@ -14,10 +14,9 @@ defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
 require(__DIR__ . '/yii.php');
 
-$id = 'yiic';
-$basePath = __DIR__ . '/console';
-
-$application = new yii\console\Application($id, $basePath, array(
+$application = new yii\console\Application(array(
+	'id' => 'yiic',
+	'basePath' => __DIR__ . '/console',
 	'controllerPath' => '@yii/console/controllers',
 ));
 $application->run();

@@ -25,8 +25,9 @@ namespace yii\validators;
 class InlineValidator extends Validator
 {
 	/**
-	 * @var string the name of the validation method defined in the
-	 * \yii\base\Model class
+	 * @var string|\Closure an anonymous function or the name of a model class method that will be
+	 * called to perform the actual validation. Note that if you use anonymous function, you cannot
+	 * use `$this` in it unless you are using PHP 5.4 or above.
 	 */
 	public $method;
 	/**
@@ -34,8 +35,8 @@ class InlineValidator extends Validator
 	 */
 	public $params;
 	/**
-	 * @var string the name of the method that returns the client validation code (see [[clientValidateAttribute()]]
-	 * for details on how to return client validation code). The signature of the method should be like the following:
+	 * @var string|\Closure an anonymous function or the name of a model class method that returns the client validation code.
+	 * The signature of the method should be like the following:
 	 *
 	 * ~~~
 	 * function foo($attribute)
@@ -45,6 +46,8 @@ class InlineValidator extends Validator
 	 * ~~~
 	 *
 	 * where `$attribute` refers to the attribute name to be validated.
+	 *
+	 * Please refer to [[clientValidateAttribute()]] for details on how to return client validation code.
 	 */
 	public $clientValidate;
 
@@ -56,7 +59,10 @@ class InlineValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$method = $this->method;
-		$object->$method($attribute, $this->params);
+		if (is_string($method)) {
+			$method = array($object, $method);
+		}
+		call_user_func($method, $attribute, $this->params);
 	}
 
 	/**
@@ -82,7 +88,10 @@ class InlineValidator extends Validator
 	{
 		if ($this->clientValidate !== null) {
 			$method = $this->clientValidate;
-			return $object->$method($attribute);
+			if (is_string($method)) {
+				$method = array($object, $method);
+			}
+			return call_user_func($method, $attribute);
 		} else {
 			return null;
 		}

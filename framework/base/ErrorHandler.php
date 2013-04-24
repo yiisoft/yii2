@@ -16,8 +16,6 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-use yii\helpers\VarDumper;
-
 class ErrorHandler extends Component
 {
 	/**
@@ -53,6 +51,7 @@ class ErrorHandler extends Component
 
 
 	/**
+	 * Handles exception
 	 * @param \Exception $exception
 	 */
 	public function handle($exception)
@@ -63,10 +62,14 @@ class ErrorHandler extends Component
 			$this->clearOutput();
 		}
 
-		$this->render($exception);
+		$this->renderException($exception);
 	}
 
-	protected function render($exception)
+	/**
+	 * Renders exception
+	 * @param \Exception $exception
+	 */
+	protected function renderException($exception)
 	{
 		if ($this->errorAction !== null) {
 			\Yii::$app->runAction($this->errorAction);
@@ -78,13 +81,19 @@ class ErrorHandler extends Component
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 				\Yii::$app->renderException($exception);
 			} else {
+				// if there is an error during error rendering it's useful to
+				// display PHP error in debug mode instead of a blank screen
+				if(YII_DEBUG) {
+					ini_set('display_errors', 1);
+				}
+
 				$view = new View;
 				if (!YII_DEBUG || $exception instanceof UserException) {
 					$viewName = $this->errorView;
 				} else {
 					$viewName = $this->exceptionView;
 				}
-				echo $view->render($viewName, array(
+				echo $view->renderFile($viewName, array(
 					'exception' => $exception,
 				), $this);
 			}
@@ -198,6 +207,10 @@ class ErrorHandler extends Component
 		echo '<div class="code"><pre>' . $output . '</pre></div>';
 	}
 
+	/**
+	 * Renders calls stack trace
+	 * @param array $trace
+	 */
 	public function renderTrace($trace)
 	{
 		$count = 0;
@@ -235,6 +248,11 @@ class ErrorHandler extends Component
 		echo '</table>';
 	}
 
+	/**
+	 * Converts special characters to HTML entities
+	 * @param string $text text to encode
+	 * @return string
+	 */
 	public function htmlEncode($text)
 	{
 		return htmlspecialchars($text, ENT_QUOTES, \Yii::$app->charset);
@@ -255,7 +273,7 @@ class ErrorHandler extends Component
 	{
 		$view = new View;
 		$name = !YII_DEBUG || $exception instanceof HttpException ? $this->errorView : $this->exceptionView;
-		echo $view->render($name, array(
+		echo $view->renderFile($name, array(
 			'exception' => $exception,
 		), $this);
 	}

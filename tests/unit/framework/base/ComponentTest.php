@@ -41,12 +41,12 @@ class ComponentTest extends TestCase
 		$component->attachBehavior('a', $behavior);
 		$this->assertSame($behavior, $component->getBehavior('a'));
 		$component->on('test', 'fake');
-		$this->assertEquals(1, $component->getEventHandlers('test')->count);
+		$this->assertTrue($component->hasEventHandlers('test'));
 
 		$clone = clone $component;
 		$this->assertNotSame($component, $clone);
 		$this->assertNull($clone->getBehavior('a'));
-		$this->assertEquals(0, $clone->getEventHandlers('test')->count);
+		$this->assertFalse($clone->hasEventHandlers('test'));
 	}
 	
 	public function testHasProperty()
@@ -151,34 +151,32 @@ class ComponentTest extends TestCase
 
 	public function testOn()
 	{
-		$this->assertEquals(0, $this->component->getEventHandlers('click')->getCount());
+		$this->assertFalse($this->component->hasEventHandlers('click'));
 		$this->component->on('click', 'foo');
-		$this->assertEquals(1, $this->component->getEventHandlers('click')->getCount());
-		$this->component->on('click', 'bar');
-		$this->assertEquals(2, $this->component->getEventHandlers('click')->getCount());
-		$p = 'on click';
-		$this->component->$p = 'foo2';
-		$this->assertEquals(3, $this->component->getEventHandlers('click')->getCount());
+		$this->assertTrue($this->component->hasEventHandlers('click'));
 
-		$this->component->getEventHandlers('click')->add('test');
-		$this->assertEquals(4, $this->component->getEventHandlers('click')->getCount());
+		$this->assertFalse($this->component->hasEventHandlers('click2'));
+		$p = 'on click2';
+		$this->component->$p = 'foo2';
+		$this->assertTrue($this->component->hasEventHandlers('click2'));
 	}
 
 	public function testOff()
 	{
+		$this->assertFalse($this->component->hasEventHandlers('click'));
 		$this->component->on('click', 'foo');
-		$this->component->on('click', array($this->component, 'myEventHandler'));
-		$this->assertEquals(2, $this->component->getEventHandlers('click')->getCount());
+		$this->assertTrue($this->component->hasEventHandlers('click'));
+		$this->component->off('click', 'foo');
+		$this->assertFalse($this->component->hasEventHandlers('click'));
 
-		$result = $this->component->off('click', 'foo');
-		$this->assertTrue($result);
-		$this->assertEquals(1, $this->component->getEventHandlers('click')->getCount());
-		$result = $this->component->off('click', 'foo');
-		$this->assertFalse($result);
-		$this->assertEquals(1, $this->component->getEventHandlers('click')->getCount());
-		$result = $this->component->off('click', array($this->component, 'myEventHandler'));
-		$this->assertTrue($result);
-		$this->assertEquals(0, $this->component->getEventHandlers('click')->getCount());
+		$this->component->on('click2', 'foo');
+		$this->component->on('click2', 'foo2');
+		$this->component->on('click2', 'foo3');
+		$this->assertTrue($this->component->hasEventHandlers('click2'));
+		$this->component->off('click2', 'foo3');
+		$this->assertTrue($this->component->hasEventHandlers('click2'));
+		$this->component->off('click2');
+		$this->assertFalse($this->component->hasEventHandlers('click2'));
 	}
 
 	public function testTrigger()

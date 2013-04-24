@@ -84,39 +84,51 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Specifies the SQL statement to be executed.
-	 * Any previous execution will be terminated or cancelled.
+	 * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
 	 * @param string $sql the SQL statement to be set.
 	 * @return Command this command instance
 	 */
 	public function setSql($sql)
 	{
 		if ($sql !== $this->_sql) {
-			if ($this->db->enableAutoQuoting && $sql != '') {
-				$sql = $this->expandSql($sql);
-			}
 			$this->cancel();
-			$this->_sql = $sql;
+			$this->_sql = $this->db->quoteSql($sql);
 			$this->_params = array();
 		}
 		return $this;
 	}
 
 	/**
-	 * Expands a SQL statement by quoting table and column names and replacing table prefixes.
-	 * @param string $sql the SQL to be expanded
-	 * @return string the expanded SQL
+	 * Returns the raw SQL by inserting parameter values into the corresponding placeholders in [[sql]].
+	 * Note that the return value of this method should mainly be used for logging purpose.
+	 * It is likely that this method returns an invalid SQL due to improper replacement of parameter placeholders.
+	 * @return string the raw SQL
 	 */
-	protected function expandSql($sql)
+	public function getRawSql()
 	{
-		$db = $this->db;
-		return preg_replace_callback('/(\\{\\{(.*?)\\}\\}|\\[\\[(.*?)\\]\\])/', function($matches) use($db) {
-			if (isset($matches[3])) {
-				return $db->quoteColumnName($matches[3]);
-			} else {
-				$name = str_replace('%', $db->tablePrefix, $matches[2]);
-				return $db->quoteTableName($name);
+		if ($this->_params === array()) {
+			return $this->_sql;
+		} else {
+			$params = array();
+			foreach ($this->_params as $name => $value) {
+				if (is_string($value)) {
+					$params[$name] = $this->db->quoteValue($value);
+				} elseif ($value === null) {
+					$params[$name] = 'NULL';
+				} else {
+					$params[$name] = $value;
+				}
 			}
-		}, $sql);
+			if (isset($params[1])) {
+				$sql = '';
+				foreach (explode('?', $this->_sql) as $i => $part) {
+					$sql .= (isset($params[$i]) ? $params[$i] : '') . $part;
+				}
+				return $sql;
+			} else {
+				return strtr($this->_sql, $params);
+			}
+		}
 	}
 
 	/**
@@ -134,7 +146,7 @@ class Command extends \yii\base\Component
 			try {
 				$this->pdoStatement = $this->db->pdo->prepare($sql);
 			} catch (\Exception $e) {
-				Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __CLASS__);
+				Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __METHOD__);
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode());
 			}
@@ -243,6 +255,7 @@ class Command extends \yii\base\Component
 			'boolean' => \PDO::PARAM_BOOL,
 			'integer' => \PDO::PARAM_INT,
 			'string' => \PDO::PARAM_STR,
+			'resource' => \PDO::PARAM_LOB,
 			'NULL' => \PDO::PARAM_NULL,
 		);
 		$type = gettype($data);
@@ -260,21 +273,18 @@ class Command extends \yii\base\Component
 	{
 		$sql = $this->getSql();
 
-		if ($this->_params === array()) {
-			$paramLog = '';
-		} else {
-			$paramLog = "\nParameters: " . var_export($this->_params, true);
-		}
+		$rawSql = $this->getRawSql();
 
-		Yii::trace("Executing SQL: {$sql}{$paramLog}", __CLASS__);
+		Yii::trace("Executing SQL: $rawSql", __METHOD__);
 
 		if ($sql == '') {
 			return 0;
 		}
 
 		try {
+			$token = "SQL: $sql";
 			if ($this->db->enableProfiling) {
-				Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::beginProfile($token, __METHOD__);
 			}
 
 			$this->prepare();
@@ -282,16 +292,16 @@ class Command extends \yii\base\Component
 			$n = $this->pdoStatement->rowCount();
 
 			if ($this->db->enableProfiling) {
-				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile($token, __METHOD__);
 			}
 			return $n;
 		} catch (\Exception $e) {
 			if ($this->db->enableProfiling) {
-				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile($token, __METHOD__);
 			}
 			$message = $e->getMessage();
 
-			Yii::error("$message\nFailed to execute SQL: {$sql}{$paramLog}", __CLASS__);
+			Yii::error("$message\nFailed to execute SQL: $rawSql", __METHOD__);
 
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			throw new Exception($message, $errorInfo, (int)$e->getCode());
@@ -377,13 +387,9 @@ class Command extends \yii\base\Component
 	{
 		$db = $this->db;
 		$sql = $this->getSql();
-		if ($this->_params === array()) {
-			$paramLog = '';
-		} else {
-			$paramLog = "\nParameters: " . var_export($this->_params, true);
-		}
+		$rawSql = $this->getRawSql();
 
-		Yii::trace("Querying SQL: {$sql}{$paramLog}", __CLASS__);
+		Yii::trace("Querying SQL: $rawSql", __METHOD__);
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {
@@ -395,18 +401,18 @@ class Command extends \yii\base\Component
 				__CLASS__,
 				$db->dsn,
 				$db->username,
-				$sql,
-				$paramLog,
+				$rawSql,
 			));
 			if (($result = $cache->get($cacheKey)) !== false) {
-				Yii::trace('Query result served from cache', __CLASS__);
+				Yii::trace('Query result served from cache', __METHOD__);
 				return $result;
 			}
 		}
 
 		try {
+			$token = "SQL: $sql";
 			if ($db->enableProfiling) {
-				Yii::beginProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::beginProfile($token, __METHOD__);
 			}
 
 			$this->prepare();
@@ -423,21 +429,21 @@ class Command extends \yii\base\Component
 			}
 
 			if ($db->enableProfiling) {
-				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile($token, __METHOD__);
 			}
 
 			if (isset($cache, $cacheKey) && $cache instanceof Cache) {
 				$cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
-				Yii::trace('Saved query result in cache', __CLASS__);
+				Yii::trace('Saved query result in cache', __METHOD__);
 			}
 
 			return $result;
 		} catch (\Exception $e) {
 			if ($db->enableProfiling) {
-				Yii::endProfile(__METHOD__ . "($sql)", __CLASS__);
+				Yii::endProfile($token, __METHOD__);
 			}
 			$message = $e->getMessage();
-			Yii::error("$message\nCommand::$method() failed: {$sql}{$paramLog}", __CLASS__);
+			Yii::error("$message\nCommand::$method() failed: $rawSql", __METHOD__);
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			throw new Exception($message, $errorInfo, (int)$e->getCode());
 		}
@@ -541,7 +547,7 @@ class Command extends \yii\base\Component
 	 */
 	public function delete($table, $condition = '', $params = array())
 	{
-		$sql = $this->db->getQueryBuilder()->delete($table, $condition);
+		$sql = $this->db->getQueryBuilder()->delete($table, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
 

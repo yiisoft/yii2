@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\helpers\Html;
 
 /**
  * Controller is the base class of Web controllers.
@@ -40,5 +41,4 @@ class Controller extends \yii\base\Controller
 		}
 		return Yii::$app->getUrlManager()->createUrl($route, $params);
 	}
-
 }

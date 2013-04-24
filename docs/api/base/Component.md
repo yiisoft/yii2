@@ -1,3 +1,5 @@
+Component is the base class that implements the *property*, *event* and *behavior* features.
+
 Component provides the *event* and *behavior* features, in addition to the *property* feature which is implemented in
 its parent class [[Object]].
 
@@ -7,20 +9,20 @@ is triggered (i.e. comment will be added), our custom code will be executed.
 
 An event is identified by a name that should be unique within the class it is defined at. Event names are *case-sensitive*.
 
-One or multiple PHP callbacks, called *event handlers*, could be attached to an event. You can call [[trigger()]] to
+One or multiple PHP callbacks, called *event handlers*, can be attached to an event. You can call [[trigger()]] to
 raise an event. When an event is raised, the event handlers will be invoked automatically in the order they were
 attached.
 
 To attach an event handler to an event, call [[on()]]:
 
 ~~~
-$comment->on('add', function($event) {
+$post->on('update', function($event) {
     // send email notification
 });
 ~~~
 
-In the above, we attach an anonymous function to the "add" event of the comment.
-Valid event handlers include:
+In the above, an anonymous function is attached to the "update" event of the post. You may attach
+the following types of event handlers:
 
 - anonymous function: `function($event) { ... }`
 - object method: `array($object, 'handleAdd')`
@@ -35,8 +37,8 @@ function foo($event)
 
 where `$event` is an [[Event]] object which includes parameters associated with the event.
 
-You can also attach an event handler to an event when configuring a component with a configuration array. The syntax is
-like the following:
+You can also attach a handler to an event when configuring a component with a configuration array.
+The syntax is like the following:
 
 ~~~
 array(
@@ -46,15 +48,13 @@ array(
 
 where `on add` stands for attaching an event to the `add` event.
 
-You can call [[getEventHandlers()]] to retrieve all event handlers that are attached to a specified event. Because this
-method returns a [[Vector]] object, we can manipulate this object to attach/detach event handlers, or adjust their
-relative orders.
+Sometimes, you may want to associate extra data with an event handler when you attach it to an event
+and then access it when the handler is invoked. You may do so by
 
 ~~~
-$handlers = $comment->getEventHandlers('add');
-$handlers->insertAt(0, $callback); // attach a handler as the first one
-$handlers[] = $callback;           // attach a handler as the last one
-unset($handlers[0]);               // detach the first handler
+$post->on('update', function($event) {
+    // the data can be accessed via $event->data
+}, $data);
 ~~~
 
 

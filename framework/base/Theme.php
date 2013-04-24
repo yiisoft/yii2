@@ -33,10 +33,16 @@ use yii\helpers\FileHelper;
 class Theme extends Component
 {
 	/**
-	 * @var string the root path of this theme.
+	 * @var string the root path or path alias of this theme. All resources of this theme are located
+	 * under this directory. This property must be set if [[pathMap]] is not set.
 	 * @see pathMap
 	 */
 	public $basePath;
+	/**
+	 * @var string the base URL (or path alias) for this theme. All resources of this theme are considered
+	 * to be under this base URL. This property must be set. It is mainly used by [[getUrl()]].
+	 */
+	public $baseUrl;
 	/**
 	 * @var array the mapping between view directories and their corresponding themed versions.
 	 * If not set, it will be initialized as a mapping from [[Application::basePath]] to [[basePath]].
@@ -45,7 +51,6 @@ class Theme extends Component
 	 */
 	public $pathMap;
 
-	private $_baseUrl;
 
 	/**
 	 * Initializes the theme.
@@ -56,10 +61,10 @@ class Theme extends Component
 	 	parent::init();
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
-				$this->basePath = FileHelper::ensureDirectory($this->basePath);
+				$this->basePath = Yii::getAlias($this->basePath);
 				$this->pathMap = array(Yii::$app->getBasePath() => $this->basePath);
 			} else {
-				throw new InvalidConfigException("Theme::basePath must be set.");
+				throw new InvalidConfigException('The "basePath" property must be set.');
 			}
 		}
 		$paths = array();
@@ -69,25 +74,11 @@ class Theme extends Component
 			$paths[$from . DIRECTORY_SEPARATOR] = $to . DIRECTORY_SEPARATOR;
 		}
 		$this->pathMap = $paths;
-	}
-
-	/**
-	 * Returns the base URL for this theme.
-	 * The method [[getUrl()]] will prefix this to the given URL.
-	 * @return string the base URL for this theme.
-	 */
-	public function getBaseUrl()
-	{
-		return $this->_baseUrl;
-	}
-
-	/**
-	 * Sets the base URL for this theme.
-	 * @param string $value the base URL for this theme.
-	 */
-	public function setBaseUrl($value)
-	{
-		$this->_baseUrl = rtrim(Yii::getAlias($value), '/');
+		if ($this->baseUrl === null) {
+			throw new InvalidConfigException('The "baseUrl" property must be set.');
+		} else {
+			$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+		}
 	}
 
 	/**
@@ -112,7 +103,7 @@ class Theme extends Component
 	}
 
 	/**
-	 * Converts a relative URL into an absolute URL using [[basePath]].
+	 * Converts a relative URL into an absolute URL using [[baseUrl]].
 	 * @param string $url the relative URL to be converted.
 	 * @return string the absolute URL
 	 */

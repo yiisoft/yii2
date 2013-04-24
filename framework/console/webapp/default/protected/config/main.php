@@ -1,5 +1,6 @@
 <?php
 return array(
+	'id' => 'webapp',
 	'name' => 'My Web Application',
 
 	'components' => array(
@@ -12,5 +13,8 @@ return array(
 			'password' => '',
 		),
 		*/
+		'cache' => array(
+			'class' => 'yii\caching\DummyCache',
+		),
 	),
 );

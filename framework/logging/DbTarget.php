@@ -78,7 +78,8 @@ class DbTarget extends Target
 	public function export($messages)
 	{
 		$tableName = $this->db->quoteTableName($this->logTable);
-		$sql = "INSERT INTO $tableName (level, category, log_time, message) VALUES (:level, :category, :log_time, :message)";
+		$sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[message]])
+				VALUES (:level, :category, :log_time, :message)";
 		$command = $this->db->createCommand($sql);
 		foreach ($messages as $message) {
 			$command->bindValues(array(

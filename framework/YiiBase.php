@@ -7,6 +7,7 @@
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\UnknownClassException;
 use yii\logging\Logger;
 
 /**
@@ -46,20 +47,18 @@ class YiiBase
 {
 	/**
 	 * @var array class map used by the Yii autoloading mechanism.
-	 * The array keys are the class names, and the array values are the corresponding class file paths.
-	 * This property mainly affects how [[autoload]] works.
+	 * The array keys are the class names (without leading backslashes), and the array values
+	 * are the corresponding class file paths (or path aliases). This property mainly affects
+	 * how [[autoload()]] works.
 	 * @see import
 	 * @see autoload
 	 */
 	public static $classMap = array();
 	/**
-	 * @var array list of directories where Yii will search for new classes to be included.
-	 * The first directory in the array will be searched first, and so on.
-	 * This property mainly affects how [[autoload]] works.
-	 * @see import
-	 * @see autoload
+	 * @var boolean whether to search PHP include_path when autoloading unknown classes.
+	 * You may want to turn this off if you are also using autoloaders from other libraries.
 	 */
-	public static $classPath = array();
+	public static $enableIncludePath = true;
 	/**
 	 * @var yii\console\Application|yii\web\Application the application instance
 	 */
@@ -106,108 +105,115 @@ class YiiBase
 	}
 
 	/**
-	 * Imports a class or a directory.
+	 * Imports a class by its alias.
 	 *
-	 * Importing a class is like including the corresponding class file.
-	 * The main difference is that importing a class is much lighter because it only
-	 * includes the class file when the class is referenced in the code the first time.
+	 * This method is provided to support autoloading of non-namespaced classes.
+	 * Such a class can be specified in terms of an alias. For example, the alias `@old/code/Sample`
+	 * may represent the `Sample` class under the directory `@old/code` (a path alias).
 	 *
-	 * Importing a directory will add the directory to the front of the [[classPath]] array.
-	 * When [[autoload]] is loading an unknown class, it will search in the directories
-	 * specified in [[classPath]] to find the corresponding class file to include.
-	 * For this reason, if multiple directories are imported, the directories imported later
-	 * will take precedence in class file searching.
+	 * By importing a class, the class is put in an internal storage such that when
+	 * the class is used for the first time, the class autoloader will be able to
+	 * find the corresponding class file and include it. For this reason, this method
+	 * is much lighter than `include()`.
 	 *
-	 * The same class or directory can be imported multiple times. Only the first importing
-	 * will count. Importing a directory does not import any of its subdirectories.
+	 * You may import the same class multiple times. Only the first importing will count.
 	 *
-	 * To import a class or a directory, one can use either path alias or class name (can be namespaced):
-	 *
-	 *  - `@app/components/GoogleMap`: importing the `GoogleMap` class with a path alias;
-	 *  - `@app/components/*`: importing the whole `components` directory with a path alias;
-	 *  - `GoogleMap`: importing the `GoogleMap` class with a class name. [[autoload()]] will be used
-	 *  when this class is used for the first time.
-	 *
-	 * @param string $alias path alias or a simple class name to be imported
-	 * @param boolean $forceInclude whether to include the class file immediately. If false, the class file
-	 * will be included only when the class is being used. This parameter is used only when
-	 * the path alias refers to a class.
-	 * @return string the class name or the directory that this alias refers to
-	 * @throws Exception if the path alias is invalid
+	 * @param string $alias the class to be imported. This may be either a class alias or a fully-qualified class name.
+	 * If the latter, it will be returned back without change.
+	 * @return string the actual class name that `$alias` refers to
+	 * @throws Exception if the alias is invalid
 	 */
-	public static function import($alias, $forceInclude = false)
+	public static function import($alias)
 	{
-		if (isset(self::$_imported[$alias])) {
+		if (strncmp($alias, '@', 1)) {
+			return $alias;
+		} else {
+			$alias = static::getAlias($alias);
+			if (!isset(self::$_imported[$alias])) {
+				$className = basename($alias);
+				self::$_imported[$alias] = $className;
+				self::$classMap[$className] = $alias . '.php';
+			}
 			return self::$_imported[$alias];
 		}
+	}
 
-		if ($alias[0] !== '@') {
-			// a simple class name
-			if (class_exists($alias, false) || interface_exists($alias, false)) {
-				return self::$_imported[$alias] = $alias;
+	/**
+	 * Imports a set of namespaces.
+	 *
+	 * By importing a namespace, the method will create an alias for the directory corresponding
+	 * to the namespace. For example, if "foo\bar" is a namespace associated with the directory
+	 * "path/to/foo/bar", then an alias "@foo/bar" will be created for this directory.
+	 *
+	 * This method is typically invoked in the bootstrap file to import the namespaces of
+	 * the installed extensions. By default, Composer, when installing new extensions, will
+	 * generate such a mapping file which can be loaded and passed to this method.
+	 *
+	 * @param array $namespaces the namespaces to be imported. The keys are the namespaces,
+	 * and the values are the corresponding directories.
+	 */
+	public static function importNamespaces($namespaces)
+	{
+		foreach ($namespaces as $name => $path) {
+			if ($name !== '') {
+				$name = '@' . str_replace('\\', '/', $name);
+				static::setAlias($name, $path);
 			}
-			if ($forceInclude && static::autoload($alias)) {
-				self::$_imported[$alias] = $alias;
-			}
-			return $alias;
-		}
-
-		$className = basename($alias);
-		$isClass = $className !== '*';
-
-		if ($isClass && (class_exists($className, false) || interface_exists($className, false))) {
-			return self::$_imported[$alias] = $className;
-		}
-
-		$path = static::getAlias(dirname($alias));
-
-		if ($isClass) {
-			if ($forceInclude) {
-				require($path . "/$className.php");
-				self::$_imported[$alias] = $className;
-			} else {
-				self::$classMap[$className] = $path . DIRECTORY_SEPARATOR . "$className.php";
-			}
-			return $className;
-		} else {
-			// a directory
-			array_unshift(self::$classPath, $path);
-			return self::$_imported[$alias] = $path;
 		}
 	}
 
 	/**
 	 * Translates a path alias into an actual path.
 	 *
-	 * The path alias can be either a root alias registered via [[setAlias]] or an
-	 * alias starting with a root alias (e.g. `@yii/base/Component.php`).
-	 * In the latter case, the root alias will be replaced by the corresponding registered path
-	 * and the remaining part will be appended to it.
+	 * The translation is done according to the following procedure:
 	 *
-	 * In case the given parameter is not an alias (i.e., not starting with '@'),
-	 * it will be returned back without change.
+	 * 1. If the given alias does not start with '@', it is returned back without change;
+	 * 2. Otherwise, look for the longest registered alias that matches the beginning part
+	 *    of the given alias. If it exists, replace the matching part of the given alias with
+	 *    the corresponding registered path.
+	 * 3. Throw an exception or return false, depending on the `$throwException` parameter.
 	 *
-	 * Note, this method does not ensure the existence of the resulting path.
-	 * @param string $alias alias
+	 * For example, by default '@yii' is registered as the alias to the Yii framework directory,
+	 * say '/path/to/yii'. The alias '@yii/web' would then be translated into '/path/to/yii/web'.
+	 *
+	 * If you have registered two aliases '@foo' and '@foo/bar'. Then translating '@foo/bar/config'
+	 * would replace the part '@foo/bar' (instead of '@foo') with the corresponding registered path.
+	 * This is because the longest alias takes precedence.
+	 *
+	 * However, if the alias to be translated is '@foo/barbar/config', then '@foo' will be replaced
+	 * instead of '@foo/bar', because '/' serves as the boundary character.
+	 *
+	 * Note, this method does not check if the returned path exists or not.
+	 *
+	 * @param string $alias the alias to be translated.
 	 * @param boolean $throwException whether to throw an exception if the given alias is invalid.
 	 * If this is false and an invalid alias is given, false will be returned by this method.
-	 * @return string|boolean path corresponding to the alias, false if the root alias is not previously registered.
+	 * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
+	 * @throws InvalidParamException if the alias is invalid while $throwException is true.
 	 * @see setAlias
 	 */
 	public static function getAlias($alias, $throwException = true)
 	{
-		if (is_string($alias)) {
-			if (isset(self::$aliases[$alias])) {
-				return self::$aliases[$alias];
-			} elseif ($alias === '' || $alias[0] !== '@') { // not an alias
-				return $alias;
-			} elseif (($pos = strpos($alias, '/')) !== false || ($pos = strpos($alias, '\\')) !== false) {
-				$rootAlias = substr($alias, 0, $pos);
-				if (isset(self::$aliases[$rootAlias])) {
-					return self::$aliases[$alias] = self::$aliases[$rootAlias] . substr($alias, $pos);
+		if (strncmp($alias, '@', 1)) {
+			// not an alias
+			return $alias;
+		}
+
+		$pos = strpos($alias, '/');
+		$root = $pos === false ? $alias : substr($alias, 0, $pos);
+
+		if (isset(self::$aliases[$root])) {
+			if (is_string(self::$aliases[$root])) {
+				return $pos === false ? self::$aliases[$root] : self::$aliases[$root] . substr($alias, $pos);
+			} else {
+				foreach (self::$aliases[$root] as $name => $path) {
+					if (strpos($alias . '/', $name . '/') === 0) {
+						return $path . substr($alias, strlen($name));
+					}
 				}
 			}
 		}
+
 		if ($throwException) {
 			throw new InvalidParamException("Invalid path alias: $alias");
 		} else {
@@ -216,39 +222,96 @@ class YiiBase
 	}
 
 	/**
+	 * Returns the root alias part of a given alias.
+	 * A root alias is an alias that has been registered via [[setAlias()]] previously.
+	 * If a given alias matches multiple root aliases, the longest one will be returned.
+	 * @param string $alias the alias
+	 * @return string|boolean the root alias, or false if no root alias is found
+	 */
+	public static function getRootAlias($alias)
+	{
+		$pos = strpos($alias, '/');
+		$root = $pos === false ? $alias : substr($alias, 0, $pos);
+
+		if (isset(self::$aliases[$root])) {
+			if (is_string(self::$aliases[$root])) {
+				return $root;
+			} else {
+				foreach (self::$aliases[$root] as $name => $path) {
+					if (strpos($alias . '/', $name . '/') === 0) {
+						return $name;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Registers a path alias.
 	 *
-	 * A path alias is a short name representing a path (a file path, a URL, etc.)
-	 * A path alias must start with '@' (e.g. '@yii').
+	 * A path alias is a short name representing a long path (a file path, a URL, etc.)
+	 * For example, we use '@yii' as the alias of the path to the Yii framework directory.
 	 *
-	 * Note that this method neither checks the existence of the path nor normalizes the path.
-	 * Any trailing '/' and '\' characters in the path will be trimmed.
+	 * A path alias must start with the character '@' so that it can be easily differentiated
+	 * from non-alias paths.
 	 *
-	 * @param string $alias alias to the path. The alias must start with '@'.
-	 * @param string $path the path corresponding to the alias. This can be
+	 * Note that this method does not check if the given path exists or not. All it does is
+	 * to associate the alias with the path.
+	 *
+	 * Any trailing '/' and '\' characters in the given path will be trimmed.
+	 *
+	 * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
+	 * It may contain the forward slash '/' which serves as boundary character when performing
+	 * alias translation by [[getAlias()]].
+	 * @param string $path the path corresponding to the alias. Trailing '/' and '\' characters
+	 * will be trimmed. This can be
 	 *
 	 * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
 	 * - a URL (e.g. `http://www.yiiframework.com`)
 	 * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
-	 *   actual path first by calling [[getAlias]].
-	 * @throws Exception if $path is an invalid alias
+	 *   actual path first by calling [[getAlias()]].
+	 *
+	 * @throws InvalidParamException if $path is an invalid alias.
 	 * @see getAlias
 	 */
 	public static function setAlias($alias, $path)
 	{
-		if ($path === null) {
-			unset(self::$aliases[$alias]);
-		} elseif ($path[0] !== '@') {
-			self::$aliases[$alias] = rtrim($path, '\\/');
-		} else {
-			self::$aliases[$alias] = static::getAlias($path);
+		if (strncmp($alias, '@', 1)) {
+			$alias = '@' . $alias;
+		}
+		$pos = strpos($alias, '/');
+		$root = $pos === false ? $alias : substr($alias, 0, $pos);
+		if ($path !== null) {
+			$path = strncmp($path, '@', 1) ? rtrim($path, '\\/') : static::getAlias($path);
+			if (!isset(self::$aliases[$root])) {
+				self::$aliases[$root] = $path;
+			} elseif (is_string(self::$aliases[$root])) {
+				if ($pos === false) {
+					self::$aliases[$root] = $path;
+				} else {
+					self::$aliases[$root] = array(
+						$alias => $path,
+						$root => self::$aliases[$root],
+					);
+				}
+			} else {
+				self::$aliases[$root][$alias] = $path;
+				krsort(self::$aliases[$root]);
+			}
+		} elseif (isset(self::$aliases[$root])) {
+			if (is_array(self::$aliases[$root])) {
+				unset(self::$aliases[$root][$alias]);
+			} elseif ($pos === false) {
+				unset(self::$aliases[$root]);
+			}
 		}
 	}
 
 	/**
 	 * Class autoload loader.
-	 * This method is invoked automatically when the execution encounters an unknown class.
-	 * The method will attempt to include the class file as follows:
+	 * This method is invoked automatically when PHP sees an unknown class.
+	 * The method will attempt to include the class file according to the following procedure:
 	 *
 	 * 1. Search in [[classMap]];
 	 * 2. If the class is namespaced (e.g. `yii\base\Component`), it will attempt
@@ -257,73 +320,75 @@ class YiiBase
 	 * 3. If the class is named in PEAR style (e.g. `PHPUnit_Framework_TestCase`),
 	 *    it will attempt to include the file associated with the corresponding path alias
 	 *    (e.g. `@PHPUnit/Framework/TestCase.php`);
-	 * 4. Search in [[classPath]];
+	 * 4. Search PHP include_path for the actual class file if [[enableIncludePath]] is true;
 	 * 5. Return false so that other autoloaders have chance to include the class file.
 	 *
 	 * @param string $className class name
 	 * @return boolean whether the class has been loaded successfully
-	 * @throws Exception if the class file does not exist
+	 * @throws InvalidConfigException if the class file does not exist
+	 * @throws UnknownClassException if the class does not exist in the class file
 	 */
 	public static function autoload($className)
 	{
+		$className = ltrim($className, '\\');
+
 		if (isset(self::$classMap[$className])) {
-			include(self::$classMap[$className]);
-			return true;
-		}
-
-		if (strpos($className, '\\') !== false) {
-			// namespaced class, e.g. yii\base\Component
-			// convert namespace to path alias, e.g. yii\base\Component to @yii/base/Component
-			$alias = '@' . str_replace('\\', '/', ltrim($className, '\\'));
-			if (($path = static::getAlias($alias, false)) !== false) {
-				$classFile = $path . '.php';
+			$classFile = static::getAlias(self::$classMap[$className]);
+			if (!is_file($classFile)) {
+				throw new InvalidConfigException("Class file does not exist: $classFile");
 			}
-		} elseif (($pos = strpos($className, '_')) !== false) {
-			// PEAR-styled class, e.g. PHPUnit_Framework_TestCase
-			// convert class name to path alias, e.g. PHPUnit_Framework_TestCase to @PHPUnit/Framework/TestCase
-			$alias = '@' . str_replace('_', '/', $className);
-			if (($path = static::getAlias($alias, false)) !== false) {
-				$classFile = $path . '.php';
+		} else {
+			// follow PSR-0 to determine the class file
+			if (($pos = strrpos($className, '\\')) !== false) {
+				// namespaced class, e.g. yii\base\Component
+				$path = str_replace('\\', '/', substr($className, 0, $pos + 1))
+					. str_replace('_', '/', substr($className, $pos + 1)) . '.php';
+			} else {
+				$path = str_replace('_', '/', $className) . '.php';
 			}
-		}
 
-		if (!isset($classFile)) {
-			// search in include paths
-			foreach (self::$classPath as $path) {
-				$path .= DIRECTORY_SEPARATOR . $className . '.php';
-				if (is_file($path)) {
-					$classFile = $path;
-					$alias = $className;
+			// try via path alias first
+			if (strpos($path, '/') !== false) {
+				$fullPath = static::getAlias('@' . $path, false);
+				if ($fullPath !== false && is_file($fullPath)) {
+					$classFile = $fullPath;
 				}
 			}
-		}
 
-		if (isset($classFile, $alias) && is_file($classFile)) {
-			if (!YII_DEBUG || basename(realpath($classFile)) === basename($alias) . '.php') {
-				include($classFile);
-				return true;
-			} else {
-				throw new Exception("Class name '$className' does not match the class file '" . realpath($classFile) . "'. Have you checked their case sensitivity?");
+			// search include_path
+			if (!isset($classFile) && self::$enableIncludePath && ($fullPath = stream_resolve_include_path($path)) !== false) {
+				$classFile = $fullPath;
+			}
+
+			if (!isset($classFile)) {
+				// return false to let other autoloaders to try loading the class
+				return false;
 			}
 		}
 
-		return false;
+		include($classFile);
+
+		if (class_exists($className, false) || interface_exists($className, false)) {
+			return true;
+		} else {
+			throw new UnknownClassException("Unable to find '$className' in file: $classFile");
+		}
 	}
 
 	/**
 	 * Creates a new object using the given configuration.
 	 *
 	 * The configuration can be either a string or an array.
-	 * If a string, it is treated as the *object type*; if an array,
-	 * it must contain a `class` element specifying the *object type*, and
+	 * If a string, it is treated as the *object class*; if an array,
+	 * it must contain a `class` element specifying the *object class*, and
 	 * the rest of the name-value pairs in the array will be used to initialize
 	 * the corresponding object properties.
 	 *
-	 * The object type can be either a class name or the [[getAlias|alias]] of
+	 * The object type can be either a class name or the [[getAlias()|alias]] of
 	 * the class. For example,
 	 *
-	 * - `\app\components\GoogleMap`: fully-qualified namespaced class.
-	 * - `@app/components/GoogleMap`: an alias
+	 * - `app\components\GoogleMap`: fully-qualified namespaced class.
+	 * - `@app/components/GoogleMap`: an alias, used for non-namespaced class.
 	 *
 	 * Below are some usage examples:
 	 *
@@ -366,7 +431,13 @@ class YiiBase
 		}
 
 		if (!class_exists($class, false)) {
-			$class = static::import($class, true);
+			$class = static::import($class);
+		}
+
+		$class = ltrim($class, '\\');
+
+		if (isset(self::$objectConfig[$class])) {
+			$config = array_merge(self::$objectConfig[$class], $config);
 		}
 
 		if (($n = func_num_args()) > 1) {
@@ -504,23 +575,31 @@ class YiiBase
 
 	/**
 	 * Translates a message to the specified language.
-	 * This method supports choice format (see {@link CChoiceFormat}),
-	 * i.e., the message returned will be chosen from a few candidates according to the given
-	 * number value. This feature is mainly used to solve plural format issue in case
-	 * a message has different plural forms in some languages.
-	 * @param string $message the original message
-	 * @param array $params parameters to be applied to the message using <code>strtr</code>.
-	 * The first parameter can be a number without key.
-	 * And in this case, the method will call {@link CChoiceFormat::format} to choose
-	 * an appropriate message translation.
-	 * You can pass parameter for {@link CChoiceFormat::format}
-	 * or plural forms format without wrapping it with array.
-	 * @param string $language the target language. If null (default), the {@link CApplication::getLanguage application language} will be used.
-	 * @return string the translated message
-	 * @see CMessageSource
+	 *
+	 * The translation will be conducted according to the message category and the target language.
+	 * To specify the category of the message, prefix the message with the category name and separate it
+	 * with "|". For example, "app|hello world". If the category is not specified, the default category "app"
+	 * will be used. The actual message translation is done by a [[\yii\i18n\MessageSource|message source]].
+	 *
+	 * In case when a translated message has different plural forms (separated by "|"), this method
+	 * will also attempt to choose an appropriate one according to a given numeric value which is
+	 * specified as the first parameter (indexed by 0) in `$params`.
+	 *
+	 * For example, if a translated message is "I have an apple.|I have {n} apples.", and the first
+	 * parameter is 2, the message returned will be "I have 2 apples.". Note that the placeholder "{n}"
+	 * will be replaced with the given number.
+	 *
+	 * For more details on how plural rules are applied, please refer to:
+	 * [[http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html]]
+	 *
+	 * @param string $message the message to be translated.
+	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
+	 * @param string $language the language code (e.g. `en_US`, `en`). If this is null, the current
+	 * [[\yii\base\Application::language|application language]] will be used.
+	 * @return string the translated message.
 	 */
 	public static function t($message, $params = array(), $language = null)
 	{
-		return Yii::$app->getI18N()->translate($message, $params, $language);
+		return self::$app->getI18N()->translate($message, $params, $language);
 	}
 }

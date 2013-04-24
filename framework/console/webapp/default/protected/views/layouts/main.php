@@ -1,11 +1,12 @@
+<?php use yii\helpers\Html as Html; ?>
 <!doctype html>
-<html lang="en">
+<html lang="<?php \Yii::$app->language?>">
 	<head>
 		<meta charset="utf-8" />
-		<title><?php echo $this->context->pageTitle?></title>
+		<title><?php echo Html::encode($this->title)?></title>
 	</head>
 	<body>
-		<h1><?php echo $this->context->pageTitle?></h1>
+		<h1><?php echo Html::encode($this->title)?></h1>
 		<div class="content">
 			<?php echo $content?>
 		</div>

@@ -22,11 +22,10 @@ namespace yii\caching;
 class ChainedDependency extends Dependency
 {
 	/**
-	 * @var array list of dependencies that this dependency is composed of.
-	 * Each array element should be a dependency object or a configuration array
-	 * that can be used to create a dependency object via [[\Yii::createObject()]].
+	 * @var Dependency[] list of dependencies that this dependency is composed of.
+	 * Each array element must be a dependency object.
 	 */
-	public $dependencies = array();
+	public $dependencies;
 	/**
 	 * @var boolean whether this dependency is depending on every dependency in [[dependencies]].
 	 * Defaults to true, meaning if any of the dependencies has changed, this dependency is considered changed.
@@ -37,9 +36,8 @@ class ChainedDependency extends Dependency
 
 	/**
 	 * Constructor.
-	 * @param array $dependencies list of dependencies that this dependency is composed of.
-	 * Each array element should be a dependency object or a configuration array
-	 * that can be used to create a dependency object via [[\Yii::createObject()]].
+	 * @param Dependency[] $dependencies list of dependencies that this dependency is composed of.
+	 * Each array element should be a dependency object.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
 	public function __construct($dependencies = array(), $config = array())
@@ -54,10 +52,7 @@ class ChainedDependency extends Dependency
 	public function evaluateDependency()
 	{
 		foreach ($this->dependencies as $dependency) {
-			if (!$dependency instanceof Dependency) {
-				$dependency = \Yii::createObject($dependency);
-			}
-			$dependency->evalulateDependency();
+			$dependency->evaluateDependency();
 		}
 	}
 
@@ -79,10 +74,7 @@ class ChainedDependency extends Dependency
 	 */
 	public function getHasChanged()
 	{
-		foreach ($this->dependencies as $i => $dependency) {
-			if (!$dependency instanceof Dependency) {
-				$this->dependencies[$i] = $dependency = \Yii::createObject($dependency);
-			}
+		foreach ($this->dependencies as $dependency) {
 			if ($this->dependOnAll && $dependency->getHasChanged()) {
 				return true;
 			} elseif (!$this->dependOnAll && !$dependency->getHasChanged()) {

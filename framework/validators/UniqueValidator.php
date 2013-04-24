@@ -6,6 +6,8 @@
  */
 
 namespace yii\validators;
+
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -16,11 +18,6 @@ use yii\base\InvalidConfigException;
  */
 class UniqueValidator extends Validator
 {
-	/**
-	 * @var boolean whether the attribute value can be null or empty. Defaults to true,
-	 * meaning that if the attribute is empty, it is considered valid.
-	 */
-	public $allowEmpty = true;
 	/**
 	 * @var string the ActiveRecord class name or alias of the class
 	 * that should be used to look for the attribute value being validated.
@@ -36,6 +33,17 @@ class UniqueValidator extends Validator
 	public $attributeName;
 
 	/**
+	 * Initializes the validator.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->message === null) {
+			$this->message = Yii::t('yii|{attribute} "{value}" has already been taken.');
+		}
+	}
+
+	/**
 	 * Validates the attribute of the object.
 	 * If there is any error, the error message is added to the object.
 	 * @param \yii\db\ActiveRecord $object the object being validated
@@ -45,17 +53,19 @@ class UniqueValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->allowEmpty && $this->isEmpty($value)) {
+
+		if (is_array($value)) {
+			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
 			return;
 		}
 
 		/** @var $className \yii\db\ActiveRecord */
-		$className = $this->className === null ? get_class($object) : \Yii::import($this->className);
+		$className = $this->className === null ? get_class($object) : Yii::import($this->className);
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
 		$table = $className::getTableSchema();
 		if (($column = $table->getColumn($attributeName)) === null) {
-			throw new InvalidConfigException('Table "' . $table->name . '" does not have a column named "' . $attributeName . '"');
+			throw new InvalidConfigException("Table '{$table->name}' does not have a column named '$attributeName'.");
 		}
 
 		$query = $className::find();
@@ -84,8 +94,7 @@ class UniqueValidator extends Validator
 		}
 
 		if ($exists) {
-			$message = $this->message !== null ? $this->message : \Yii::t('yii|{attribute} "{value}" has already been taken.');
-			$this->addError($object, $attribute, $message);
+			$this->addError($object, $attribute, $this->message);
 		}
 	}
 }

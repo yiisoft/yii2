@@ -1,10 +1,10 @@
 <?php
 define('YII_DEBUG', true);
 
-$yii = __DIR__.'/../framework/yii.php';
-require $yii;
-$config = require dirname(__DIR__).'/protected/config/main.php';
+require __DIR__.'/../framework/yii.php';
 
-$basePath = dirname(__DIR__).'/protected';
-$app = new \yii\web\Application('webapp', $basePath, $config);
+$config = require dirname(__DIR__).'/protected/config/main.php';
+$config['basePath'] = dirname(__DIR__).'/protected';
+
+$app = new \yii\web\Application($config);
 $app->run();

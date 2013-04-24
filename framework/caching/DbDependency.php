@@ -52,6 +52,7 @@ class DbDependency extends Dependency
 	/**
 	 * Generates the data needed to determine if dependency has been changed.
 	 * This method returns the value of the global state.
+	 * @throws InvalidConfigException
 	 * @return mixed the data needed to determine if dependency has been changed.
 	 */
 	protected function generateDependencyData()

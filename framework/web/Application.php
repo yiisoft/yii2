@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\InvalidParamException;
+use Yii;
 
 /**
  * Application is the base class for all application classes.
@@ -23,22 +23,42 @@ class Application extends \yii\base\Application
 	public $defaultRoute = 'site';
 
 	/**
-	 * Sets default path aliases.
-	 */
-	public function registerDefaultAliases()
-	{
-		parent::registerDefaultAliases();
-		\Yii::$aliases['@webroot'] = dirname($_SERVER['SCRIPT_FILENAME']);
-	}
-
-	/**
 	 * Processes the request.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
 	 */
 	public function processRequest()
 	{
-		list ($route, $params) = $this->getRequest()->resolve();
+		$request = $this->getRequest();
+		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
+		Yii::setAlias('@www', $request->getBaseUrl());
+		list ($route, $params) = $request->resolve();
 		return $this->runAction($route, $params);
+	}
+
+	private $_homeUrl;
+
+	/**
+	 * @return string the homepage URL
+	 */
+	public function getHomeUrl()
+	{
+		if ($this->_homeUrl === null) {
+			if ($this->getUrlManager()->showScriptName) {
+				return $this->getRequest()->getScriptUrl();
+			} else {
+				return $this->getRequest()->getBaseUrl() . '/';
+			}
+		} else {
+			return $this->_homeUrl;
+		}
+	}
+
+	/**
+	 * @param string $value the homepage URL
+	 */
+	public function setHomeUrl($value)
+	{
+		$this->_homeUrl = $value;
 	}
 
 	/**
@@ -78,6 +98,15 @@ class Application extends \yii\base\Application
 	}
 
 	/**
+	 * Returns the asset manager.
+	 * @return AssetManager the asset manager component
+	 */
+	public function getAssetManager()
+	{
+		return $this->getComponent('assetManager');
+	}
+
+	/**
 	 * Registers the core application components.
 	 * @see setComponents
 	 */
@@ -96,6 +125,9 @@ class Application extends \yii\base\Application
 			),
 			'user' => array(
 				'class' => 'yii\web\User',
+			),
+			'assetManager' => array(
+				'class' => 'yii\web\AssetManager',
 			),
 		));
 	}
