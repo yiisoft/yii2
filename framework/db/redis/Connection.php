@@ -12,7 +12,7 @@ namespace yii\db\redis;
 use \yii\base\Component;
 use yii\base\InvalidConfigException;
 use \yii\db\Exception;
-use yii\util\StringHelper;
+use yii\helpers\StringHelper;
 
 /**
  *

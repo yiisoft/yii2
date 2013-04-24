@@ -80,8 +80,19 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public $primaryKeys;
 
+	/**
+	 * List of multiple pks must be zero based
+	 *
+	 * @param $primaryKeys
+	 * @return ActiveQuery
+	 */
 	public function primaryKeys($primaryKeys) {
-		$this->primaryKeys = $primaryKeys;
+		if (is_array($primaryKeys) && isset($primaryKeys[0])) {
+			$this->primaryKeys = $primaryKeys;
+		} else {
+			$this->primaryKeys = array($primaryKeys);
+		}
+
 		return $this;
 	}
 
@@ -103,7 +114,12 @@ class ActiveQuery extends \yii\base\Component
 		foreach($primaryKeys as $pk) {
 			$key = $modelClass::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
 			// get attributes
-			$rows[] = $db->executeCommand('HGETALL', array($key));
+			$data = $db->executeCommand('HGETALL', array($key));
+			$row = array();
+			for($i=0;$i<count($data);) {
+				$row[$data[$i++]] = $data[$i++];
+			}
+			$rows[] = $row;
 		}
 		if ($rows !== array()) {
 			$models = $this->createModels($rows);
@@ -134,9 +150,15 @@ class ActiveQuery extends \yii\base\Component
 		$pk = reset($primaryKeys);
 		$key = $modelClass::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
 		// get attributes
-		$row = $db->executeCommand('HGETALL', array($key));
-// TODO check for empty list if key does not exist
-		if ($row !== false && !$this->asArray) {
+		$data = $db->executeCommand('HGETALL', array($key));
+		if ($data === array()) {
+			return null;
+		}
+		$row = array();
+		for($i=0;$i<count($data);) {
+			$row[$data[$i++]] = $data[$i++];
+		}
+		if (!$this->asArray) {
 			/** @var $class ActiveRecord */
 			$class = $this->modelClass;
 			$model = $class::create($row);
@@ -147,7 +169,7 @@ class ActiveQuery extends \yii\base\Component
 			}
 			return $model;
 		} else {
-			return $row === false ? null : $row;
+			return $row;
 		}
 	}
 
