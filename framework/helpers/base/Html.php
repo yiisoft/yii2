@@ -9,6 +9,7 @@ namespace yii\helpers\base;
 
 use Yii;
 use yii\base\InvalidParamException;
+use yii\web\Request;
 
 /**
  * Html provides a set of static methods for generating commonly used HTML tags.
@@ -276,7 +277,10 @@ class Html
 	/**
 	 * Generates a form start tag.
 	 * @param array|string $action the form action URL. This parameter will be processed by [[url()]].
-	 * @param string $method the form submission method, either "post" or "get" (case-insensitive)
+	 * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
+	 * Since most browsers only support "post" and "get", if other methods are given, they will
+	 * be simulated using "post", and a hidden input will be added which contains the actual method type.
+	 * See [[\yii\web\Request::restVar]] for more details.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
@@ -287,15 +291,24 @@ class Html
 	{
 		$action = static::url($action);
 
-		// query parameters in the action are ignored for GET method
-		// we use hidden fields to add them back
-		$hiddens = array();
+		$hiddenInputs = array();
+
+		if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
+			// simulate PUT, DELETE, etc. via POST
+			if (($request = Yii::$app->getRequest()) instanceof Request) {
+				$hiddenInputs[] = static::hiddenInput($request->restVar, $method);
+				$method = 'post';
+			}
+		}
+
 		if (!strcasecmp($method, 'get') && ($pos = strpos($action, '?')) !== false) {
+			// query parameters in the action are ignored for GET method
+			// we use hidden fields to add them back
 			foreach (explode('&', substr($action, $pos + 1)) as $pair) {
 				if (($pos1 = strpos($pair, '=')) !== false) {
-					$hiddens[] = static::hiddenInput(urldecode(substr($pair, 0, $pos1)), urldecode(substr($pair, $pos1 + 1)));
+					$hiddenInputs[] = static::hiddenInput(urldecode(substr($pair, 0, $pos1)), urldecode(substr($pair, $pos1 + 1)));
 				} else {
-					$hiddens[] = static::hiddenInput(urldecode($pair), '');
+					$hiddenInputs[] = static::hiddenInput(urldecode($pair), '');
 				}
 			}
 			$action = substr($action, 0, $pos);
@@ -304,8 +317,8 @@ class Html
 		$options['action'] = $action;
 		$options['method'] = $method;
 		$form = static::beginTag('form', $options);
-		if ($hiddens !== array()) {
-			$form .= "\n" . implode("\n", $hiddens);
+		if ($hiddenInputs !== array()) {
+			$form .= "\n" . implode("\n", $hiddenInputs);
 		}
 
 		return $form;

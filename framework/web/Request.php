@@ -27,8 +27,7 @@ class Request extends \yii\base\Request
 	public $cookieValidationKey;
 	/**
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
-	 * request tunneled through POST. If false, it means disabling REST request tunneled through POST.
-	 * Default to '_method'.
+	 * request tunneled through POST. Default to '_method'.
 	 * @see getRequestMethod
 	 * @see getRestParams
 	 */
@@ -60,7 +59,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getRequestMethod()
 	{
-		if ($this->restVar !== false && isset($_POST[$this->restVar])) {
+		if (isset($_POST[$this->restVar])) {
 			return strtoupper($_POST[$this->restVar]);
 		} else {
 			return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
@@ -123,7 +122,7 @@ class Request extends \yii\base\Request
 	public function getRestParams()
 	{
 		if ($this->_restParams === null) {
-			if ($this->restVar !== false && isset($_POST[$this->restVar])) {
+			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
 			} else {
 				$this->_restParams = array();
