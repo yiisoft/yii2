@@ -9,4 +9,6 @@ require_once(__DIR__ . '/../../framework/yii.php');
 
 Yii::setAlias('@yiiunit', __DIR__);
 
+new \yii\web\Application(array('id' => 'testapp', 'basePath' => __DIR__));
+
 require_once(__DIR__ . '/TestCase.php');

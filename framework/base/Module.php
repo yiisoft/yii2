@@ -9,7 +9,6 @@ namespace yii\base;
 
 use Yii;
 use yii\helpers\StringHelper;
-use yii\helpers\FileHelper;
 
 /**
  * Module is the base class for module and application classes.
@@ -38,6 +37,15 @@ use yii\helpers\FileHelper;
  */
 abstract class Module extends Component
 {
+	/**
+	 * @event ActionEvent an event raised before executing a controller action.
+	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+	 */
+	const EVENT_BEFORE_ACTION = 'beforeAction';
+	/**
+	 * @event ActionEvent an event raised after executing a controller action.
+	 */
+	const EVENT_AFTER_ACTION = 'afterAction';
 	/**
 	 * @var array custom module parameters (name => value).
 	 */
@@ -612,5 +620,28 @@ abstract class Module extends Component
 		}
 
 		return isset($controller) ? array($controller, $route) : false;
+	}
+
+	/**
+	 * This method is invoked right before an action is to be executed (after all possible filters.)
+	 * You may override this method to do last-minute preparation for the action.
+	 * @param Action $action the action to be executed.
+	 * @return boolean whether the action should continue to be executed.
+	 */
+	public function beforeAction($action)
+	{
+		$event = new ActionEvent($action);
+		$this->trigger(self::EVENT_BEFORE_ACTION, $event);
+		return $event->isValid;
+	}
+
+	/**
+	 * This method is invoked right after an action is executed.
+	 * You may override this method to do some postprocessing for the action.
+	 * @param Action $action the action just executed.
+	 */
+	public function afterAction($action)
+	{
+		$this->trigger(self::EVENT_AFTER_ACTION, new ActionEvent($action));
 	}
 }
