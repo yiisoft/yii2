@@ -18,6 +18,27 @@ use yii\base\InvalidConfigException;
 class Request extends \yii\base\Request
 {
 	/**
+	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to false.
+	 * By setting this property to true, forms submitted to an Yii Web application must be originated
+	 * from the same application. If not, a 400 HTTP exception will be raised.
+	 *
+	 * Note, this feature requires that the user client accepts cookie. Also, to use this feature,
+	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfTokenName]].
+	 * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
+	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
+	 */
+	public $enableCsrfValidation = false;
+	/**
+	 * @var string the name of the token used to prevent CSRF. Defaults to 'YII_CSRF_TOKEN'.
+	 * This property is effectively only when {@link enableCsrfValidation} is true.
+	 */
+	public $csrfTokenName = '_csrf';
+	/**
+	 * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
+	 * @see Cookie
+	 */
+	public $csrfCookie = array('httponly' => true);
+	/**
 	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
 	 */
 	public $enableCookieValidation = true;
@@ -35,6 +56,7 @@ class Request extends \yii\base\Request
 
 	private $_cookies;
 
+
 	/**
 	 * Resolves the current request into a route and the associated parameters.
 	 * @return array the first element is the route, and the second is the associated parameters.
@@ -42,6 +64,8 @@ class Request extends \yii\base\Request
 	 */
 	public function resolve()
 	{
+		$this->validateCsrfToken();
+
 		$result = Yii::$app->getUrlManager()->parseRequest($this);
 		if ($result !== false) {
 			list ($route, $params) = $result;
@@ -698,6 +722,73 @@ class Request extends \yii\base\Request
 			));
 		}
 		return $this->_cookies;
+	}
+
+	private $_csrfToken;
+
+	/**
+	 * Returns the random token used to perform CSRF validation.
+	 * The token will be read from cookie first. If not found, a new token will be generated.
+	 * @return string the random token for CSRF validation.
+	 * @see enableCsrfValidation
+	 */
+	public function getCsrfToken()
+	{
+		if ($this->_csrfToken === null) {
+			$cookies = $this->getCookies();
+			if (($this->_csrfToken = $cookies->getValue($this->csrfTokenName)) === null) {
+				$cookie = $this->createCsrfCookie();
+				$this->_csrfToken = $cookie->value;
+				$cookies->add($cookie);
+			}
+		}
+
+		return $this->_csrfToken;
+	}
+
+	/**
+	 * Creates a cookie with a randomly generated CSRF token.
+	 * Initial values specified in [[csrfCookie]] will be applied to the generated cookie.
+	 * @return Cookie the generated cookie
+	 * @see enableCsrfValidation
+	 */
+	protected function createCsrfCookie()
+	{
+		$options = $this->csrfCookie;
+		$options['name'] = $this->csrfTokenName;
+		$options['value'] = sha1(uniqid(mt_rand(), true));
+		return new Cookie($options);
+	}
+
+	/**
+	 * Performs the CSRF validation.
+	 * The method will compare the CSRF token obtained from a cookie and from a POST field.
+	 * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
+	 * @throws HttpException if the validation fails
+	 */
+	public function validateCsrfToken()
+	{
+		if (!$this->enableCsrfValidation) {
+			return;
+		}
+		$method = $this->getRequestMethod();
+		if ($method === 'POST' || $method === 'PUT' || $method === 'DELETE') {
+			$cookies = $this->getCookies();
+			switch ($method) {
+				case 'POST':
+					$token = $this->getPost($this->csrfTokenName);
+					break;
+				case 'PUT':
+					$token = $this->getPut($this->csrfTokenName);
+					break;
+				case 'DELETE':
+					$token = $this->getDelete($this->csrfTokenName);
+			}
+
+			if (empty($token) || $cookies->getValue($this->csrfTokenName) !== $token) {
+				throw new HttpException(400, Yii::t('yii|Unable to verify your data submission.'));
+			}
+		}
 	}
 }
 

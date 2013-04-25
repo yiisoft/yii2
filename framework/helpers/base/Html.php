@@ -293,11 +293,15 @@ class Html
 
 		$hiddenInputs = array();
 
-		if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
-			// simulate PUT, DELETE, etc. via POST
-			if (($request = Yii::$app->getRequest()) instanceof Request) {
+		$request = Yii::$app->getRequest();
+		if ($request instanceof Request) {
+			if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
+				// simulate PUT, DELETE, etc. via POST
 				$hiddenInputs[] = static::hiddenInput($request->restVar, $method);
 				$method = 'post';
+			}
+			if ($request->enableCsrfValidation) {
+				$hiddenInputs[] = static::hiddenInput($request->csrfTokenName, $request->getCsrfToken());
 			}
 		}
 
