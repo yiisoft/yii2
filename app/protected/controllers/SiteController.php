@@ -9,9 +9,10 @@ class SiteController extends \yii\web\Controller
 
 	public function actionLogin()
 	{
-		$user = app\models\User::findIdentity(100);
-		Yii::$app->getUser()->login($user);
-		Yii::$app->getResponse()->redirect(array('site/index'));
+		echo $this->render('login');
+//		$user = app\models\User::findIdentity(100);
+//		Yii::$app->getUser()->login($user);
+//		Yii::$app->getResponse()->redirect(array('site/index'));
 	}
 
 	public function actionLogout()

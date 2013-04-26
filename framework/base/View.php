@@ -352,7 +352,7 @@ class View extends Component
 		if (!isset($properties['view'])) {
 			$properties['view'] = $this;
 		}
-		return Yii::createObject($properties, $this);
+		return Yii::createObject($properties);
 	}
 
 	/**

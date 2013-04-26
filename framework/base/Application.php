@@ -176,7 +176,7 @@ class Application extends Module
 	 */
 	public function getRuntimePath()
 	{
-		if ($this->_runtimePath !== null) {
+		if ($this->_runtimePath === null) {
 			$this->setRuntimePath($this->getBasePath() . DIRECTORY_SEPARATOR . 'runtime');
 		}
 		return $this->_runtimePath;

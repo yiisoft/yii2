@@ -9,7 +9,7 @@ $user = Yii::$app->getUser();
 if ($user->isGuest) {
 	echo Html::a('login', array('login'));
 } else {
-	echo "You are logged in as " . $user->identity->name . "<br/>";
+	echo "You are logged in as " . $user->identity->username . "<br/>";
 	echo Html::a('logout', array('logout'));
 }
 ?>

@@ -59,6 +59,25 @@ class ActiveForm extends Widget
 
 	public $options = array();
 
+
+	/**
+	 * Initializes the widget.
+	 * This renders the form open tag.
+	 */
+	public function init()
+	{
+		echo Html::beginForm($this->action, $this->method, $this->options);
+	}
+
+	/**
+	 * Runs the widget.
+	 * This registers the necessary javascript code and renders the form close tag.
+	 */
+	public function run()
+	{
+		echo Html::endForm();
+	}
+
 	/**
 	 * @param Model|Model[] $models
 	 * @param array $options
