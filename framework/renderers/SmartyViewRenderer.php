@@ -9,8 +9,10 @@
 
 namespace yii\renderers;
 
-use \yii\base\View;
-use \yii\base\ViewRenderer;
+use Yii;
+use Smarty;
+use yii\base\View;
+use yii\base\ViewRenderer;
 
 /**
  * SmartyViewRenderer allows you to use Smarty templates in views.
@@ -21,34 +23,31 @@ use \yii\base\ViewRenderer;
 class SmartyViewRenderer extends ViewRenderer
 {
 	/**
-	 * @var string alias pointing to where Smarty code is located.
+	 * @var string the directory or path alias pointing to where Smarty code is located.
 	 */
-	public $smartyDir = '@app/vendors/Smarty';
+	public $smartyPath = '@app/vendors/Smarty';
 
 	/**
-	 * @var string alias pointing to where Smarty cache will be stored.
+	 * @var string the directory or path alias pointing to where Smarty cache will be stored.
 	 */
-	public $cacheDir = '@app/runtime/Smarty/cache';
+	public $cachePath = '@app/runtime/Smarty/cache';
 
 	/**
-	 * @var string alias pointing to where Smarty compiled teamplates will be stored.
+	 * @var string the directory or path alias pointing to where Smarty compiled templates will be stored.
 	 */
-	public $compileDir = '@app/runtime/Smarty/compile';
+	public $compilePath = '@app/runtime/Smarty/compile';
 
 	/**
-	 * @var string file extension to use for template files
+	 * @var Smarty
 	 */
-	public $fileExtension = 'tpl';
-
-	/** @var \Smarty */
-	protected $_smarty;
+	public $smarty;
 
 	public function init()
 	{
-		require_once(\Yii::getAlias($this->smartyDir).'/Smarty.class.php');
-		$this->_smarty = new \Smarty();
-		$this->_smarty->setCompileDir(\Yii::getAlias($this->compileDir));
-		$this->_smarty->setCacheDir(\Yii::getAlias($this->cacheDir));
+		require_once(Yii::getAlias($this->smartyPath) . '/Smarty.class.php');
+		$this->smarty = new Smarty();
+		$this->smarty->setCompileDir(Yii::getAlias($this->compilePath));
+		$this->smarty->setCacheDir(Yii::getAlias($this->cachePath));
 	}
 
 	/**
@@ -66,13 +65,8 @@ class SmartyViewRenderer extends ViewRenderer
 	public function render($view, $file, $params)
 	{
 		$ext = pathinfo($file, PATHINFO_EXTENSION);
-		if($ext === $this->fileExtension) {
-			/** @var \Smarty_Internal_Template $template */
-			$template = $this->_smarty->createTemplate($file, null, null, $params, true);
-			return $template->fetch();
-		}
-		else {
-			return $view->renderPhpFile($file, $params);
-		}
+		/** @var \Smarty_Internal_Template $template */
+		$template = $this->smarty->createTemplate($file, null, null, $params, true);
+		return $template->fetch();
 	}
 }
