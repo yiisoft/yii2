@@ -1,18 +1,25 @@
 Yii2 view renderers
 ===================
 
-By default Yii uses PHP as template language but you can change it in your application.
-The component responsible for rendering a view is called `view`. You can configure
-a custom template engine as follows:
+By default Yii uses PHP as template language but you can configure it to be able
+to render templates with special engines such as Twig or Smarty.
+
+The component responsible for rendering a view is called `view`. You can add
+a custom template engines as follows:
 
 ```php
 array(
 	'components' => array(
 		'view' => array(
 			'class' => 'yii\base\View',
-			'renderer' => array(
-				'class' => 'yii\renderers\TwigViewRenderer',
-				// or 'class' => 'yii\renderers\SmartyViewRenderer',
+			'renderers' => array(
+				'tpl' => array(
+					'class' => 'yii\renderers\SmartyViewRenderer',
+				),
+				'twig' => array(
+					'class' => 'yii\renderers\TwigViewRenderer',
+				),
+				// ...
 			),
 		),
 	),
@@ -22,39 +29,23 @@ array(
 Twig
 ----
 
-In order to use Twig you need to put you templates in files with extension `.twig`.
+In order to use Twig you need to put you templates in files with extension `.twig`
+(or another one if configured differently).
 Also you need to specify this extension explicitly when calling `$this->render()`
-or `$this->renderPartial()` from your controller.
+or `$this->renderPartial()` from your controller:
+
+```php
+echo $this->render('renderer.twig', array('username' => 'Alex'));
+```
 
 Smarty
 ------
 
-In order to use Smarty you need to put you templates in files with extension `.tpl`.
+In order to use Smarty you need to put you templates in files with extension `.tpl`
+(or another one if configured differently).
 Also you need to specify this extension explicitly when calling `$this->render()`
-or `$this->renderPartial()` from your controller.
-
-Using multiple view renderers in a single application
------------------------------------------------------
-
-If you need multiple view renderers at the same time in a single application you
-can use `CompositeViewRenderer` as follows:
+or `$this->renderPartial()` from your controller:
 
 ```php
-'components' => array(
-	'view' => array(
-		'class' => 'yii\base\View',
-		'renderer' => array(
-			'class' => 'yii\renderers\CompositeViewRenderer',
-			'renderers' => array(
-				'tpl' => array(
-					'class' => 'yii\renderers\SmartyViewRenderer',
-				),
-				'twig' => array(
-					'class' => 'yii\renderers\TwigViewRenderer',
-				),
-			),
-			//'class' => 'yii\renderers\TwigViewRenderer',
-		),
-	),
-),
+echo $this->render('renderer.tpl', array('username' => 'Alex'));
 ```
