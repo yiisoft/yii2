@@ -35,6 +35,13 @@ class ActiveField extends Component
 	
 	public function begin()
 	{
+		if ($this->model->hasErrors($this->attribute)) {
+			if (isset($this->options['class'])) {
+				$this->options['class'] .= ' ' . $this->form->errorCssClass;
+			} else {
+				$this->options['class'] = $this->form->errorCssClass;
+			}
+		}
 		return Html::beginTag('div', $this->options);
 	}
 	
@@ -52,6 +59,9 @@ class ActiveField extends Component
 		$tag = isset($options['tag']) ? $options['tag'] : 'div';
 		unset($options['tag']);
 		$error = $this->model->getFirstError($attribute);
+		if ($error === null) {
+			$options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
+		}
 		return Html::tag($tag, Html::encode($error), $options);
 	}
 

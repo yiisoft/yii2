@@ -157,20 +157,20 @@ class HtmlTest extends \yii\test\TestCase
 	public function testButton()
 	{
 		$this->assertEquals('<button type="button">Button</button>', Html::button());
-		$this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('test', 'value', 'content<>'));
-		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('test', 'value', 'content<>', array('type' => 'submit', 'class' => "t")));
+		$this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('content<>', 'test', 'value'));
+		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', 'test', 'value', array('type' => 'submit', 'class' => "t")));
 	}
 
 	public function testSubmitButton()
 	{
 		$this->assertEquals('<button type="submit">Submit</button>', Html::submitButton());
-		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::submitButton('test', 'value', 'content<>', array('class' => 't')));
+		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::submitButton('content<>', 'test', 'value', array('class' => 't')));
 	}
 
 	public function testResetButton()
 	{
 		$this->assertEquals('<button type="reset">Reset</button>', Html::resetButton());
-		$this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('test', 'value', 'content<>', array('class' => 't')));
+		$this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', 'test', 'value', array('class' => 't')));
 	}
 
 	public function testInput()

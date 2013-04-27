@@ -30,7 +30,7 @@ class LoginForm extends Model
 	public function validatePassword()
 	{
 		$user = User::findByUsername($this->username);
-		if (!$user && $user->validatePassword($this->password)) {
+		if (!$user || !$user->validatePassword($this->password)) {
 			$this->addError('password', 'Incorrect username or password.');
 		}
 	}
