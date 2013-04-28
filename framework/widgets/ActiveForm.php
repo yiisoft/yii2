@@ -31,32 +31,11 @@ class ActiveForm extends Widget
 	 */
 	public $method = 'post';
 	public $options = array();
-	public $fieldOptions = array('tag' => 'div', 'class' => 'yii-field');
-	public $fieldTemplate = "{label}\n{input}\n{error}";
-	public $autoFieldCssClass = true;
-	public $errorOptions = array('tag' => 'span', 'class' => 'yii-error-message');
-	public $labelOptions = array('class' => 'control-label');
 	/**
 	 * @var string the default CSS class for the error summary container.
 	 * @see errorSummary()
 	 */
 	public $errorSummaryCssClass = 'yii-error-summary';
-	/**
-	 * @var string the default CSS class that indicates an input is required.
-	 */
-	public $requiredCssClass = 'required';
-	/**
-	 * @var string the default CSS class that indicates an input has error.
-	 */
-	public $errorCssClass = 'error';
-	/**
-	 * @var string the default CSS class that indicates an input validated successfully.
-	 */
-	public $successCssClass = 'success';
-	/**
-	 * @var string the default CSS class that indicates an input is currently being validated.
-	 */
-	public $validatingCssClass = 'validating';
 	/**
 	 * @var boolean whether to enable client-side data validation. Defaults to false.
 	 * When this property is set true, client-side validation will be performed by validators
@@ -64,7 +43,10 @@ class ActiveForm extends Widget
 	 */
 	public $enableClientValidation = false;
 
-	public $fieldClass = 'yii\widgets\ActiveField';
+	public $fieldConfig = array(
+		'class' => 'yii\widgets\ActiveField',
+	);
+
 	/**
 	 * Initializes the widget.
 	 * This renders the form open tag.
@@ -130,12 +112,11 @@ class ActiveForm extends Widget
 
 	public function field($model, $attribute, $options = null)
 	{
-		return Yii::createObject(array(
-			'class' => $this->fieldClass,
+		return Yii::createObject(array_merge($this->fieldConfig, array(
 			'model' => $model,
 			'attribute' => $attribute,
 			'form' => $this,
 			'options' => $options,
-		));
+		)));
 	}
 }

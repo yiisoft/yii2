@@ -36,22 +36,46 @@ class ActiveField extends Component
 	/**
 	 * @var array
 	 */
-	public $options;
-	
+	public $options = array(
+		'tag' => 'div',
+		'class' => 'yii-field',
+	);
+	public $autoFieldCssClass = true;
+	/**
+	 * @var string the default CSS class that indicates an input is required.
+	 */
+	public $requiredCssClass = 'required';
+	/**
+	 * @var string the default CSS class that indicates an input has error.
+	 */
+	public $errorCssClass = 'error';
+	/**
+	 * @var string the default CSS class that indicates an input validated successfully.
+	 */
+	public $successCssClass = 'success';
+	/**
+	 * @var string the default CSS class that indicates an input is currently being validated.
+	 */
+	public $validatingCssClass = 'validating';
+	public $layout = "{label}\n{input}\n{error}";
+
+	public $errorOptions = array('tag' => 'span', 'class' => 'yii-error-message');
+	public $labelOptions = array('class' => 'control-label');
+
 	public function begin()
 	{
-		$options = $this->options === null ? $this->form->fieldOptions : $this->options;
+		$options = $this->options;
 		$this->tag = isset($options['tag']) ? $options['tag'] : 'div';
 		unset($options['tag']);
 		$class = isset($options['class']) ? array($options['class']) : array();
-		if ($this->form->autoFieldCssClass) {
+		if ($this->autoFieldCssClass) {
 			$class[] = 'field-' . Html::getInputId($this->model, $this->attribute);
 		}
 		if ($this->model->isAttributeRequired($this->attribute)) {
-			$class[] = $this->form->requiredCssClass;
+			$class[] = $this->requiredCssClass;
 		}
 		if ($this->model->hasErrors($this->attribute)) {
-			$class[] = $this->form->errorCssClass;
+			$class[] = $this->errorCssClass;
 		}
 		if ($class !== array()) {
 			$options['class'] = implode(' ', $class);
@@ -67,7 +91,7 @@ class ActiveField extends Component
 	public function label($options = null)
 	{
 		if ($options === null) {
-			$options = $this->form->labelOptions;
+			$options = $this->labelOptions;
 		}
 		return Html::activeLabel($this->model, $this->attribute, $options);
 	}
@@ -75,7 +99,7 @@ class ActiveField extends Component
 	public function error($options = null)
 	{
 		if ($options === null) {
-			$options = $this->form->errorOptions;
+			$options = $this->errorOptions;
 		}
 		$attribute = Html::getAttributeName($this->attribute);
 		$error = $this->model->getFirstError($attribute);
@@ -89,7 +113,7 @@ class ActiveField extends Component
 
 	protected function render($input)
 	{
-		return $this->begin() . "\n" . strtr($this->form->fieldTemplate, array(
+		return $this->begin() . "\n" . strtr($this->layout, array(
 			'{input}' => $input,
 			'{label}' => $this->label(),
 			'{error}' => $this->error(),

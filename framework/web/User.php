@@ -32,7 +32,7 @@ class User extends Component
 	const EVENT_AFTER_LOGOUT = 'afterLogout';
 
 	/**
-	 * @var string the class name or alias of the [[identity]] object.
+	 * @var string the class name of the [[identity]] object.
 	 */
 	public $identityClass;
 	/**

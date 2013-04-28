@@ -13,7 +13,7 @@ use yii\helpers\Html;
 
 <?php $form = $this->beginWidget('yii\widgets\ActiveForm'); ?>
 	<?php echo $form->field($model, 'username')->textInput(); ?>
-	<?php echo $form->field($model, 'password')->checkboxAlt(); ?>
+	<?php echo $form->field($model, 'password')->passwordInput(); ?>
 	<?php
 		$field = $form->field($model, 'username');
 		echo $field->begin() . "\n"
