@@ -97,12 +97,20 @@ class UrlManager extends Component
 			}
 		}
 
-		foreach ($this->rules as $i => $rule) {
-			if (!isset($rule['class'])) {
+		$rules = array();
+		foreach ($this->rules as $key => $rule) {
+			if (!is_array($rule)) {
+				$rule = array(
+					'class' => $this->defaultRuleClass,
+					'pattern' => $key,
+					'route' => $rule,
+				);
+			} elseif (!isset($rule['class'])) {
 				$rule['class'] = $this->defaultRuleClass;
 			}
-			$this->rules[$i] = Yii::createObject($rule);
+			$rules[] = Yii::createObject($rule);
 		}
+		$this->rules = $rules;
 
 		if (isset($key, $hash)) {
 			$this->cache->set($key, array($this->rules, $hash));
