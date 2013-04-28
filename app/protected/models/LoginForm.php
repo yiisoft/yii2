@@ -7,6 +7,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 /**
@@ -32,6 +33,17 @@ class LoginForm extends Model
 		$user = User::findByUsername($this->username);
 		if (!$user || !$user->validatePassword($this->password)) {
 			$this->addError('password', 'Incorrect username or password.');
+		}
+	}
+
+	public function login()
+	{
+		if ($this->validate()) {
+			$user = User::findByUsername($this->username);
+			Yii::$app->getUser()->login($user);
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

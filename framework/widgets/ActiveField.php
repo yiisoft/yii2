@@ -8,6 +8,7 @@
 namespace yii\widgets;
 
 use yii\base\Component;
+use yii\base\InvalidParamException;
 use yii\helpers\Html;
 
 /**
@@ -16,6 +17,10 @@ use yii\helpers\Html;
  */
 class ActiveField extends Component
 {
+	/**
+	 * @var string the tag name. Defaults to 'div'.
+	 */
+	public $tag;
 	/**
 	 * @var ActiveForm
 	 */
@@ -35,42 +40,60 @@ class ActiveField extends Component
 	
 	public function begin()
 	{
-		if ($this->model->hasErrors($this->attribute)) {
-			if (isset($this->options['class'])) {
-				$this->options['class'] .= ' ' . $this->form->errorCssClass;
-			} else {
-				$this->options['class'] = $this->form->errorCssClass;
-			}
+		$options = $this->options === null ? $this->form->fieldOptions : $this->options;
+		$this->tag = isset($options['tag']) ? $options['tag'] : 'div';
+		unset($options['tag']);
+		$class = isset($options['class']) ? array($options['class']) : array();
+		if ($this->form->autoFieldCssClass) {
+			$class[] = 'field-' . Html::getInputId($this->model, $this->attribute);
 		}
-		return Html::beginTag('div', $this->options);
+		if ($this->model->isAttributeRequired($this->attribute)) {
+			$class[] = $this->form->requiredCssClass;
+		}
+		if ($this->model->hasErrors($this->attribute)) {
+			$class[] = $this->form->errorCssClass;
+		}
+		if ($class !== array()) {
+			$options['class'] = implode(' ', $class);
+		}
+		return Html::beginTag($this->tag, $options);
 	}
 	
 	public function end()
 	{
-		return Html::endTag('div');
+		return Html::endTag($this->tag);
 	}
 
-	public function error($options = array())
+	public function label($options = null)
 	{
-		if (empty($options)) {
+		if ($options === null) {
+			$options = $this->form->labelOptions;
+		}
+		return Html::activeLabel($this->model, $this->attribute, $options);
+	}
+
+	public function error($options = null)
+	{
+		if ($options === null) {
 			$options = $this->form->errorOptions;
 		}
 		$attribute = Html::getAttributeName($this->attribute);
-		$tag = isset($options['tag']) ? $options['tag'] : 'div';
-		unset($options['tag']);
 		$error = $this->model->getFirstError($attribute);
 		if ($error === null) {
 			$options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
 		}
+		$tag = isset($options['tag']) ? $options['tag'] : 'span';
+		unset($options['tag']);
 		return Html::tag($tag, Html::encode($error), $options);
 	}
 
-	public function label($options = array())
+	protected function render($input)
 	{
-		if (empty($options)) {
-			$options = $this->form->labelOptions;
-		}
-		return Html::activeLabel($this->model, $this->attribute, $options);
+		return $this->begin() . "\n" . strtr($this->form->fieldTemplate, array(
+			'{input}' => $input,
+			'{label}' => $this->label(),
+			'{error}' => $this->error(),
+		)) . $this->end();
 	}
 
 	/**
@@ -82,7 +105,7 @@ class ActiveField extends Component
 	 */
 	public function input($type, $options = array())
 	{
-		return Html::activeInput($type, $this->model, $this->attribute, $options);
+		return $this->render(Html::activeInput($type, $this->model, $this->attribute, $options));
 	}
 
 	/**
@@ -95,7 +118,7 @@ class ActiveField extends Component
 	 */
 	public function textInput($options = array())
 	{
-		return Html::activeTextInput($this->model, $this->attribute, $options);
+		return $this->render(Html::activeTextInput($this->model, $this->attribute, $options));
 	}
 
 	/**
@@ -108,7 +131,7 @@ class ActiveField extends Component
 	 */
 	public function hiddenInput($options = array())
 	{
-		return Html::activeHiddenInput($this->model, $this->attribute, $options);
+		return $this->render(Html::activeHiddenInput($this->model, $this->attribute, $options));
 	}
 
 	/**
@@ -121,7 +144,7 @@ class ActiveField extends Component
 	 */
 	public function passwordInput($options = array())
 	{
-		return Html::activeHiddenInput($this->model, $this->attribute, $options);
+		return $this->render(Html::activePasswordInput($this->model, $this->attribute, $options));
 	}
 
 	/**
@@ -134,7 +157,7 @@ class ActiveField extends Component
 	 */
 	public function fileInput($options = array())
 	{
-		return Html::activeFileInput($this->model, $this->attribute, $options);
+		return $this->render(Html::activeFileInput($this->model, $this->attribute, $options));
 	}
 
 	/**
@@ -146,7 +169,7 @@ class ActiveField extends Component
 	 */
 	public function textarea($options = array())
 	{
-		return Html::activeTextarea($this->model, $this->attribute, $options);
+		return $this->render(Html::activeTextarea($this->model, $this->attribute, $options));
 	}
 
 	/**
@@ -168,7 +191,16 @@ class ActiveField extends Component
 	 */
 	public function radio($value = '1', $options = array())
 	{
-		return Html::activeRadio($this->model, $this->attribute, $value, $options);
+		return $this->render(Html::activeRadio($this->model, $this->attribute, $value, $options));
+	}
+
+	public function radioAlt($value = '1', $options = array())
+	{
+		$label = Html::encode($this->model->getAttributeLabel($this->attribute));
+		return $this->begin() . "\n"
+			. Html::label(Html::activeRadio($this->model, $this->attribute, $value, $options) . ' ' . $label) . "\n"
+			. $this->error() . "\n"
+			. $this->end();
 	}
 
 	/**
@@ -190,7 +222,16 @@ class ActiveField extends Component
 	 */
 	public function checkbox($value = '1', $options = array())
 	{
-		return Html::activeCheckbox($this->model, $this->attribute, $value, $options);
+		return $this->render(Html::activeCheckbox($this->model, $this->attribute, $value, $options));
+	}
+
+	public function checkboxAlt($value = '1', $options = array())
+	{
+		$label = Html::encode($this->model->getAttributeLabel($this->attribute));
+		return $this->begin() . "\n"
+			. Html::label(Html::activeCheckbox($this->model, $this->attribute, $value, $options) . ' ' . $label) . "\n"
+			. $this->error() . "\n"
+			. $this->end();
 	}
 
 	/**
@@ -225,9 +266,9 @@ class ActiveField extends Component
 	 *
 	 * @return string the generated drop-down list tag
 	 */
-	public function DropDownList($items, $options = array())
+	public function dropDownList($items, $options = array())
 	{
-		return Html::activeDropDownList($this->model, $this->attribute, $items, $options);
+		return $this->render(Html::activeDropDownList($this->model, $this->attribute, $items, $options));
 	}
 
 	/**
@@ -267,7 +308,7 @@ class ActiveField extends Component
 	 */
 	public function listBox($items, $options = array())
 	{
-		return Html::activeListBox($this->model, $this->attribute, $items, $options);
+		return $this->render(Html::activeListBox($this->model, $this->attribute, $items, $options));
 	}
 
 	/**

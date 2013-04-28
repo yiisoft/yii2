@@ -15,9 +15,7 @@ class SiteController extends \yii\web\Controller
 		$model = new LoginForm();
 		if (isset($_POST[$model->formName()])) {
 			$model->attributes = $_POST[$model->formName()];
-			if ($model->validate()) {
-				$user = User::findByUsername($model->username);
-				Yii::$app->getUser()->login($user);
+			if ($model->login()) {
 				Yii::$app->getResponse()->redirect(array('site/index'));
 			}
 		}
