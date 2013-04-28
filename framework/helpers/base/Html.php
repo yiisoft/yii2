@@ -609,7 +609,6 @@ class Html
 	 * Generates a radio button input.
 	 * @param string $name the name attribute.
 	 * @param boolean $checked whether the radio button should be checked.
-	 * @param string $value the value attribute. If it is null, the value attribute will not be rendered.
 	 * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
 	 *
 	 * - uncheck: string, the value associated with the uncheck state of the radio button. When this attribute
@@ -621,10 +620,10 @@ class Html
 	 *
 	 * @return string the generated radio button tag
 	 */
-	public static function radio($name, $checked = false, $value = '1', $options = array())
+	public static function radio($name, $checked = false, $options = array())
 	{
 		$options['checked'] = $checked;
-		$options['value'] = $value;
+		$value = array_key_exists('value', $options) ? $options['value'] : '1';
 		if (isset($options['uncheck'])) {
 			// add a hidden field so that if the radio button is not selected, it still submits a value
 			$hidden = static::hiddenInput($name, $options['uncheck']);
@@ -639,7 +638,6 @@ class Html
 	 * Generates a checkbox input.
 	 * @param string $name the name attribute.
 	 * @param boolean $checked whether the checkbox should be checked.
-	 * @param string $value the value attribute. If it is null, the value attribute will not be rendered.
 	 * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
 	 *
 	 * - uncheck: string, the value associated with the uncheck state of the checkbox. When this attribute
@@ -651,10 +649,10 @@ class Html
 	 *
 	 * @return string the generated checkbox tag
 	 */
-	public static function checkbox($name, $checked = false, $value = '1', $options = array())
+	public static function checkbox($name, $checked = false, $options = array())
 	{
 		$options['checked'] = $checked;
-		$options['value'] = $value;
+		$value = array_key_exists('value', $options) ? $options['value'] : '1';
 		if (isset($options['uncheck'])) {
 			// add a hidden field so that if the checkbox is not selected, it still submits a value
 			$hidden = static::hiddenInput($name, $options['uncheck']);
@@ -806,7 +804,7 @@ class Html
 			if ($formatter !== null) {
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
-				$lines[] = static::label(static::checkbox($name, $checked, $value) . ' ' . $label);
+				$lines[] = static::label(static::checkbox($name, $checked, array('value' => $value)) . ' ' . $label);
 			}
 			$index++;
 		}
@@ -860,7 +858,7 @@ class Html
 			if ($formatter !== null) {
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
-				$lines[] = static::label(static::radio($name, $checked, $value) . ' ' . $label);
+				$lines[] = static::label(static::radio($name, $checked, array('value' => $value)) . ' ' . $label);
 			}
 			$index++;
 		}
@@ -1013,7 +1011,6 @@ class Html
 	 * @param Model $model the model object
 	 * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
 	 * about attribute expression.
-	 * @param string $value the value tag attribute. If it is null, the value attribute will not be rendered.
 	 * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
 	 *
 	 * - uncheck: string, the value associated with the uncheck state of the radio button. If not set,
@@ -1026,17 +1023,17 @@ class Html
 	 *
 	 * @return string the generated radio button tag
 	 */
-	public static function activeRadio($model, $attribute, $value = '1', $options = array())
+	public static function activeRadio($model, $attribute, $options = array())
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$checked = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('uncheck', $options)) {
-			$options['unchecked'] = '0';
+			$options['uncheck'] = '0';
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
 		}
-		return static::radio($name, $checked, $value, $options);
+		return static::radio($name, $checked, $options);
 	}
 
 	/**
@@ -1046,7 +1043,6 @@ class Html
 	 * @param Model $model the model object
 	 * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
 	 * about attribute expression.
-	 * @param string $value the value tag attribute. If it is null, the value attribute will not be rendered.
 	 * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
 	 *
 	 * - uncheck: string, the value associated with the uncheck state of the radio button. If not set,
@@ -1059,17 +1055,17 @@ class Html
 	 *
 	 * @return string the generated checkbox tag
 	 */
-	public static function activeCheckbox($model, $attribute, $value = '1', $options = array())
+	public static function activeCheckbox($model, $attribute, $options = array())
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$checked = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('uncheck', $options)) {
-			$options['unchecked'] = '0';
+			$options['uncheck'] = '0';
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
 		}
-		return static::checkbox($name, $checked, $value, $options);
+		return static::checkbox($name, $checked, $options);
 	}
 
 	/**
@@ -1468,7 +1464,7 @@ class Html
 	 */
 	public static function getInputId($model, $attribute)
 	{
-		$name = static::getInputName($model, $attribute);
+		$name = strtolower(static::getInputName($model, $attribute));
 		return str_replace(array('[]', '][', '[', ']', ' '), array('', '-', '-', '', '-'), $name);
 	}
 
