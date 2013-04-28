@@ -33,12 +33,17 @@ class AccessControl extends ActionFilter
 	 */
 	public $denyCallback;
 	/**
-	 * @var string the default class of the access rules. This is used when
-	 * a rule is configured without specifying a class in [[rules]].
+	 * @var array the default configuration of access rules. Individual rule configurations
+	 * specified via [[rules]] will take precedence when the same property of the rule is configured.
 	 */
-	public $defaultRuleClass = 'yii\web\AccessRule';
+	public $ruleConfig = array(
+		'class' => 'yii\web\AccessRule',
+	);
 	/**
-	 * @var array a list of access rule objects or configurations for creating the rule objects.
+	 * @var array a list of access rule objects or configuration arrays for creating the rule objects.
+	 * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] before
+	 * it is used for creating the rule object.
+	 * @see ruleConfig
 	 */
 	public $rules = array();
 
@@ -50,9 +55,7 @@ class AccessControl extends ActionFilter
 		parent::init();
 		foreach ($this->rules as $i => $rule) {
 			if (is_array($rule)) {
-				if (!isset($rule['class'])) {
-					$rule['class'] = $this->defaultRuleClass;
-				}
+				$rule = array_merge($this->ruleConfig, $rule);
 				$this->rules[$i] = Yii::createObject($rule);
 			}
 		}
