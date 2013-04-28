@@ -41,8 +41,8 @@ class AccessControl extends ActionFilter
 	);
 	/**
 	 * @var array a list of access rule objects or configuration arrays for creating the rule objects.
-	 * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] before
-	 * it is used for creating the rule object.
+	 * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] first
+	 * before it is used for creating the rule object.
 	 * @see ruleConfig
 	 */
 	public $rules = array();
@@ -55,8 +55,7 @@ class AccessControl extends ActionFilter
 		parent::init();
 		foreach ($this->rules as $i => $rule) {
 			if (is_array($rule)) {
-				$rule = array_merge($this->ruleConfig, $rule);
-				$this->rules[$i] = Yii::createObject($rule);
+				$this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));
 			}
 		}
 	}

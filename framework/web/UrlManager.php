@@ -29,8 +29,15 @@ class UrlManager extends Component
 	/**
 	 * @var array the rules for creating and parsing URLs when [[enablePrettyUrl]] is true.
 	 * This property is used only if [[enablePrettyUrl]] is true. Each element in the array
-	 * is the configuration of creating a single URL rule whose class by default is [[defaultRuleClass]].
-	 * If you modify this property after the UrlManager object is created, make sure
+	 * is the configuration array for creating a single URL rule. The configuration will
+	 * be merged with [[ruleConfig]] first before it is used for creating the rule object.
+	 *
+	 * A special shortcut format can be used if a rule only specifies [[UrlRule::pattern|pattern]]
+	 * and [[UrlRule::route|route]]: `'pattern' => 'route'`. That is, instead of using a configuration
+	 * array, one can use the key to represent the pattern and the value the corresponding route.
+	 * For example, `'post/<id:\d+>' => 'post/view'`.
+	 *
+	 * Note that if you modify this property after the UrlManager object is created, make sure
 	 * you populate the array with rule objects instead of rule configurations.
 	 */
 	public $rules = array();
@@ -59,14 +66,15 @@ class UrlManager extends Component
 	 */
 	public $cache = 'cache';
 	/**
-	 * @var string the default class name for creating URL rule instances
-	 * when it is not specified in [[rules]].
+	 * @var array the default configuration of URL rules. Individual rule configurations
+	 * specified via [[rules]] will take precedence when the same property of the rule is configured.
 	 */
-	public $defaultRuleClass = 'yii\web\UrlRule';
+	public $ruleConfig = array(
+		'class' => 'yii\web\UrlRule',
+	);
 
 	private $_baseUrl;
 	private $_hostInfo;
-
 
 	/**
 	 * Initializes UrlManager.
@@ -101,14 +109,11 @@ class UrlManager extends Component
 		foreach ($this->rules as $key => $rule) {
 			if (!is_array($rule)) {
 				$rule = array(
-					'class' => $this->defaultRuleClass,
 					'pattern' => $key,
 					'route' => $rule,
 				);
-			} elseif (!isset($rule['class'])) {
-				$rule['class'] = $this->defaultRuleClass;
 			}
-			$rules[] = Yii::createObject($rule);
+			$rules[] = Yii::createObject(array_merge($this->ruleConfig, $rule));
 		}
 		$this->rules = $rules;
 
