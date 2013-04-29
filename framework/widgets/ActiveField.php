@@ -8,7 +8,6 @@
 namespace yii\widgets;
 
 use yii\base\Component;
-use yii\base\InvalidParamException;
 use yii\helpers\Html;
 
 /**
@@ -17,10 +16,6 @@ use yii\helpers\Html;
  */
 class ActiveField extends Component
 {
-	/**
-	 * @var string the tag name. Defaults to 'div'.
-	 */
-	public $tag;
 	/**
 	 * @var ActiveForm
 	 */
@@ -34,13 +29,15 @@ class ActiveField extends Component
 	 */
 	public $attribute;
 	/**
+	 * @var string the tag name for the field container.
+	 */
+	public $tag = 'div';
+	/**
 	 * @var array
 	 */
 	public $options = array(
-		'tag' => 'div',
 		'class' => 'yii-field',
 	);
-	public $autoFieldCssClass = true;
 	/**
 	 * @var string the default CSS class that indicates an input is required.
 	 */
@@ -57,7 +54,7 @@ class ActiveField extends Component
 	 * @var string the default CSS class that indicates an input is currently being validated.
 	 */
 	public $validatingCssClass = 'validating';
-	public $layout = "{label}\n{input}\n{error}";
+	public $template = "{label}\n{input}\n{error}";
 
 	public $errorOptions = array('tag' => 'span', 'class' => 'yii-error-message');
 	public $labelOptions = array('class' => 'control-label');
@@ -65,21 +62,15 @@ class ActiveField extends Component
 	public function begin()
 	{
 		$options = $this->options;
-		$this->tag = isset($options['tag']) ? $options['tag'] : 'div';
-		unset($options['tag']);
 		$class = isset($options['class']) ? array($options['class']) : array();
-		if ($this->autoFieldCssClass) {
-			$class[] = 'field-' . Html::getInputId($this->model, $this->attribute);
-		}
+		$class[] = 'field-' . Html::getInputId($this->model, $this->attribute);
 		if ($this->model->isAttributeRequired($this->attribute)) {
 			$class[] = $this->requiredCssClass;
 		}
 		if ($this->model->hasErrors($this->attribute)) {
 			$class[] = $this->errorCssClass;
 		}
-		if ($class !== array()) {
-			$options['class'] = implode(' ', $class);
-		}
+		$options['class'] = implode(' ', $class);
 		return Html::beginTag($this->tag, $options);
 	}
 	
@@ -88,6 +79,21 @@ class ActiveField extends Component
 		return Html::endTag($this->tag);
 	}
 
+	/**
+	 * Generates a label tag for [[attribute]].
+	 * The label text is the label associated with the attribute, obtained via [[Model::getAttributeLabel()]].
+	 * @param array $options the tag options in terms of name-value pairs. If this is null, [[labelOptions]] will be used.
+	 * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
+	 * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 *
+	 * The following options are specially handled:
+	 *
+	 * - label: this specifies the label to be displayed. Note that this will NOT be [[encoded()]].
+	 *   If this is not set, [[Model::getAttributeLabel()]] will be called to get the label for display
+	 *   (after encoding).
+	 *
+	 * @return string the generated label tag
+	 */
 	public function label($options = null)
 	{
 		if ($options === null) {
@@ -96,6 +102,19 @@ class ActiveField extends Component
 		return Html::activeLabel($this->model, $this->attribute, $options);
 	}
 
+	/**
+	 * Generates a tag that contains the first validation error of [[attribute]].
+	 * If there is no validation, the tag will be returned and styled as hidden.
+	 * @param array $options the tag options in terms of name-value pairs. If this is null, [[errorOptions]] will be used.
+	 * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
+	 * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 *
+	 * The following options are specially handled:
+	 *
+	 * - tag: this specifies the tag name. If not set, "span" will be used.
+	 *
+	 * @return string the generated label tag
+	 */
 	public function error($options = null)
 	{
 		if ($options === null) {
@@ -111,13 +130,20 @@ class ActiveField extends Component
 		return Html::tag($tag, Html::encode($error), $options);
 	}
 
-	protected function render($input)
+	/**
+	 * Renders the field with the given input HTML.
+	 * This method will generate the label and error tags, and return them together with the given
+	 * input HTML according to [[template]].
+	 * @param string $input the input HTML
+	 * @return string the rendering result
+	 */
+	public function render($input)
 	{
-		return $this->begin() . "\n" . strtr($this->layout, array(
+		return $this->begin() . "\n" . strtr($this->template, array(
 			'{input}' => $input,
 			'{label}' => $this->label(),
 			'{error}' => $this->error(),
-		)) . $this->end();
+		)) . "\n" . $this->end();
 	}
 
 	/**
@@ -200,7 +226,6 @@ class ActiveField extends Component
 	 * Generates a radio button tag for the given model attribute.
 	 * This method will generate the "name" tag attribute automatically unless it is explicitly specified in `$options`.
 	 * This method will generate the "checked" tag attribute according to the model attribute value.
-	 * @param string $value the value tag attribute. If it is null, the value attribute will not be rendered.
 	 * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
 	 *
 	 * - uncheck: string, the value associated with the uncheck state of the radio button. If not set,
@@ -210,28 +235,33 @@ class ActiveField extends Component
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 *
+	 * @param boolean $enclosedByLabel whether to enclose the radio button within the label tag.
+	 * If this is true, [[template]] will be ignored.
 	 * @return string the generated radio button tag
 	 */
-	public function radio($value = '1', $options = array())
+	public function radio($options = array(), $enclosedByLabel = true)
 	{
-		return $this->render(Html::activeRadio($this->model, $this->attribute, $value, $options));
-	}
-
-	public function radioAlt($value = '1', $options = array())
-	{
-		$label = Html::encode($this->model->getAttributeLabel($this->attribute));
-		return $this->begin() . "\n"
-			. Html::label(Html::activeRadio($this->model, $this->attribute, $value, $options) . ' ' . $label) . "\n"
-			. $this->error() . "\n"
-			. $this->end();
+		if ($enclosedByLabel) {
+			$name = isset($options['name']) ? $options['name'] : Html::getInputName($this->model, $this->attribute);
+			$checked = Html::getAttributeValue($this->model, $this->attribute);
+			$radio = Html::radio($name, $checked, $options);
+			$uncheck = array_key_exists('unchecked', $options) ? $options['uncheck'] : '0';
+			unset($options['uncheck']);
+			$hidden = $uncheck !== null ? Html::hiddenInput($name, $uncheck) : '';
+			$label = Html::encode($this->model->getAttributeLabel($this->attribute));
+			return $this->begin() . "\n"
+				. $hidden . Html::label("$radio $label", null, $this->labelOptions) . "\n"
+				. $this->error() . "\n"
+				. $this->end();
+		} else {
+			return Html::activeRadio($this->model, $this->attribute, $options);
+		}
 	}
 
 	/**
 	 * Generates a checkbox tag for the given model attribute.
 	 * This method will generate the "name" tag attribute automatically unless it is explicitly specified in `$options`.
 	 * This method will generate the "checked" tag attribute according to the model attribute value.
-	 * @param string $value the value tag attribute. If it is null, the value attribute will not be rendered.
 	 * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
 	 *
 	 * - uncheck: string, the value associated with the uncheck state of the radio button. If not set,
@@ -241,21 +271,27 @@ class ActiveField extends Component
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 *
+	 * @param boolean $enclosedByLabel whether to enclose the checkbox within the label tag.
+	 * If this is true, [[template]] will be ignored.
 	 * @return string the generated checkbox tag
 	 */
-	public function checkbox($value = '1', $options = array())
+	public function checkbox($options = array(), $enclosedByLabel = true)
 	{
-		return $this->render(Html::activeCheckbox($this->model, $this->attribute, $value, $options));
-	}
-
-	public function checkboxAlt($value = '1', $options = array())
-	{
-		$label = Html::encode($this->model->getAttributeLabel($this->attribute));
-		return $this->begin() . "\n"
-			. Html::label(Html::activeCheckbox($this->model, $this->attribute, $value, $options) . ' ' . $label) . "\n"
-			. $this->error() . "\n"
-			. $this->end();
+		if ($enclosedByLabel) {
+			$name = isset($options['name']) ? $options['name'] : Html::getInputName($this->model, $this->attribute);
+			$checked = Html::getAttributeValue($this->model, $this->attribute);
+			$checkbox = Html::checkbox($name, $checked, $options);
+			$uncheck = array_key_exists('unchecked', $options) ? $options['uncheck'] : '0';
+			unset($options['uncheck']);
+			$hidden = $uncheck !== null ? Html::hiddenInput($name, $uncheck) : '';
+			$label = Html::encode($this->model->getAttributeLabel($this->attribute));
+			return $this->begin() . "\n"
+				. $hidden . Html::label("$checkbox $label", null, $this->labelOptions) . "\n"
+				. $this->error() . "\n"
+				. $this->end();
+		} else {
+			return Html::activeCheckbox($this->model, $this->attribute, $options);
+		}
 	}
 
 	/**
@@ -362,7 +398,11 @@ class ActiveField extends Component
 	 */
 	public function checkboxList($items, $options = array())
 	{
-		return Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
+		return $this->render(
+			'<div id="' . Html::getInputId($this->model, $this->attribute) . '">'
+			. Html::activeCheckboxList($this->model, $this->attribute, $items, $options)
+			. '</div>'
+		);
 	}
 
 	/**
@@ -391,6 +431,10 @@ class ActiveField extends Component
 	 */
 	public function radioList($items, $options = array())
 	{
-		return Html::activeRadioList($this->model, $this->attribute, $items, $options);
+		return $this->render(
+			'<div id="' . Html::getInputId($this->model, $this->attribute) . '">'
+			. Html::activeRadioList($this->model, $this->attribute, $items, $options)
+			. '</div>'
+		);
 	}
 }

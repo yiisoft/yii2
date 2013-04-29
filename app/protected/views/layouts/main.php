@@ -5,10 +5,11 @@
  */
 use yii\helpers\Html;
 ?>
+<?php $this->beginPage(); ?>
 <!DOCTYPE html>
 <html>
-<?php $this->beginPage(); ?>
 <head>
+	<meta charset="utf-8" />
 	<title><?php echo Html::encode($this->title); ?></title>
 	<?php $this->head(); ?>
 </head>
@@ -18,5 +19,5 @@ use yii\helpers\Html;
 <?php echo $content; ?>
 <?php $this->endBody(); ?>
 </body>
-<?php $this->endPage(); ?>
 </html>
+<?php $this->endPage(); ?>

@@ -18,6 +18,7 @@ class LoginForm extends Model
 {
 	public $username;
 	public $password;
+	public $rememberMe = true;
 
 	public function rules()
 	{
@@ -25,6 +26,7 @@ class LoginForm extends Model
 			array('username', 'required'),
 			array('password', 'required'),
 			array('password', 'validatePassword'),
+			array('rememberMe', 'boolean'),
 		);
 	}
 

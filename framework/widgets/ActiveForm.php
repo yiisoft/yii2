@@ -30,6 +30,11 @@ class ActiveForm extends Widget
 	 * Defaults to 'post'.
 	 */
 	public $method = 'post';
+	/**
+	 * @param array $options the attributes (name-value pairs) for the form tag.
+	 * The values will be HTML-encoded using [[encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
+	 */
 	public $options = array();
 	/**
 	 * @var string the default CSS class for the error summary container.
@@ -37,12 +42,14 @@ class ActiveForm extends Widget
 	 */
 	public $errorSummaryCssClass = 'yii-error-summary';
 	/**
-	 * @var boolean whether to enable client-side data validation. Defaults to false.
-	 * When this property is set true, client-side validation will be performed by validators
-	 * that support it (see {@link CValidator::enableClientValidation} and {@link CValidator::clientValidateAttribute}).
+	 * @var boolean whether to enable client-side data validation.
+	 * Client-side validation will be performed by validators that support it
+	 * (see [[\yii\validators\Validator::enableClientValidation]] and [[\yii\validators\Validator::clientValidateAttribute()]]).
 	 */
-	public $enableClientValidation = false;
-
+	public $enableClientValidation = true;
+	/**
+	 * @var array the default configuration used by [[field()]] when creating a new field object.
+	 */
 	public $fieldConfig = array(
 		'class' => 'yii\widgets\ActiveField',
 	);

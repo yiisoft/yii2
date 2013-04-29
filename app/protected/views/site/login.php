@@ -14,13 +14,6 @@ use yii\helpers\Html;
 <?php $form = $this->beginWidget('yii\widgets\ActiveForm'); ?>
 	<?php echo $form->field($model, 'username')->textInput(); ?>
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
-	<?php
-		$field = $form->field($model, 'username');
-		echo $field->begin() . "\n"
-			. $field->label() . "\n"
-			. Html::activeTextInput($model, 'username') . "\n"
-			. $field->error() . "\n"
-			. $field->end();
-	?>
+	<?php echo $form->field($model, 'rememberMe')->checkbox(); ?>
 	<?php echo Html::submitButton('Login'); ?>
 <?php $this->endWidget(); ?>

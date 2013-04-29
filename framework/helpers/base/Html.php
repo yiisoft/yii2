@@ -771,7 +771,7 @@ class Html
 	 * @param array $items the data item used to generate the checkboxes.
 	 * The array keys are the labels, while the array values are the corresponding checkbox values.
 	 * Note that the labels will NOT be HTML-encoded, while the values will.
-	 * @param array $options options (name => config) for the checkbox list. The following options are specially handled:
+	 * @param array $options options (name => config) for the checkbox list. The following options are supported:
 	 *
 	 * - unselect: string, the value that should be submitted when none of the checkboxes is selected.
 	 *   By setting this option, a hidden input will be generated.
@@ -785,7 +785,7 @@ class Html
 	 *
 	 * where $index is the zero-based index of the checkbox in the whole list; $label
 	 * is the label for the checkbox; and $name, $value and $checked represent the name,
-	 * value and the checked status of the checkbox input.
+	 * value and the checked status of the checkbox input, respectively.
 	 * @return string the generated checkbox list
 	 */
 	public static function checkboxList($name, $selection = null, $items = array(), $options = array())
@@ -829,7 +829,7 @@ class Html
 	 * @param array $items the data item used to generate the radio buttons.
 	 * The array keys are the labels, while the array values are the corresponding radio button values.
 	 * Note that the labels will NOT be HTML-encoded, while the values will.
-	 * @param array $options options (name => config) for the radio button list. The following options are specially handled:
+	 * @param array $options options (name => config) for the radio button list. The following options are supported:
 	 *
 	 * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
 	 *   By setting this option, a hidden input will be generated.
@@ -843,7 +843,7 @@ class Html
 	 *
 	 * where $index is the zero-based index of the radio button in the whole list; $label
 	 * is the label for the radio button; and $name, $value and $checked represent the name,
-	 * value and the checked status of the radio button input.
+	 * value and the checked status of the radio button input, respectively.
 	 * @return string the generated radio button list
 	 */
 	public static function radioList($name, $selection = null, $items = array(), $options = array())
@@ -885,8 +885,9 @@ class Html
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * The following options are specially handled:
 	 *
-	 * - label: this specifies the label to be displayed. If this is not set, [[Model::getAttributeLabel()]]
-	 *   will be called to get the label for display. Note that this will NOT be [[encoded()]].
+	 * - label: this specifies the label to be displayed. Note that this will NOT be [[encoded()]].
+	 *   If this is not set, [[Model::getAttributeLabel()]] will be called to get the label for display
+	 *   (after encoding).
 	 *
 	 * @return string the generated label tag
 	 */

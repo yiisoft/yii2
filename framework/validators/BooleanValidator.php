@@ -70,8 +70,8 @@ class BooleanValidator extends Validator
 	 */
 	public function validateValue($value)
 	{
-		return $this->strict && ($value == $this->trueValue || $value == $this->falseValue)
-			|| !$this->strict && ($value === $this->trueValue || $value === $this->falseValue);
+		return !$this->strict && ($value == $this->trueValue || $value == $this->falseValue)
+			|| $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
 	}
 
 	/**
