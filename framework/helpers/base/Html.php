@@ -1331,7 +1331,9 @@ class Html
 	 * If the input parameter
 	 *
 	 * - is an empty string: the currently requested URL will be returned;
-	 * - is a non-empty string: it will be processed by [[Yii::getAlias()]] and returned;
+	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
+	 *   is an absolute URL, it will be returned with any change further; Otherwise, the result
+	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
 	 * - is an array: the first array element is considered a route, while the rest of the name-value
 	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
 	 *   For example: `array('post/index', 'page' => 2)`, `array('index')`.
@@ -1357,7 +1359,12 @@ class Html
 		} elseif ($url === '') {
 			return Yii::$app->getRequest()->getUrl();
 		} else {
-			return Yii::getAlias($url);
+			$url = Yii::getAlias($url);
+			if ($url[0] === '/' || strpos($url, '://')) {
+				return $url;
+			} else {
+				return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+			}
 		}
 	}
 

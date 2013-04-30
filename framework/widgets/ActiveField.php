@@ -9,6 +9,7 @@ namespace yii\widgets;
 
 use yii\base\Component;
 use yii\helpers\Html;
+use yii\base\Model;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -17,15 +18,15 @@ use yii\helpers\Html;
 class ActiveField extends Component
 {
 	/**
-	 * @var ActiveForm
+	 * @var ActiveForm the form that this field is associated with.
 	 */
 	public $form;
 	/**
-	 * @var \yii\base\Model
+	 * @var Model the data model that this field is associated with
 	 */
 	public $model;
 	/**
-	 * @var string
+	 * @var string the model attribute that this field is associated with
 	 */
 	public $attribute;
 	/**
@@ -33,31 +34,29 @@ class ActiveField extends Component
 	 */
 	public $tag = 'div';
 	/**
-	 * @var array
+	 * @var array the HTML attributes (name-value pairs) for the field container tag.
+	 * The values will be HTML-encoded using [[Html::encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
 	 */
 	public $options = array(
-		'class' => 'yii-field',
+		'class' => 'control-group',
 	);
 	/**
-	 * @var string the default CSS class that indicates an input is required.
+	 * @var string the template that is used to arrange the label, the input and the error message.
+	 * The following tokens will be replaced when [[render()]] is called: `{label}`, `{input}` and `{error}`.
 	 */
-	public $requiredCssClass = 'required';
+	public $template = "{label}\n<div class=\"controls\">\n{input}\n{error}\n</div>";
 	/**
-	 * @var string the default CSS class that indicates an input has error.
+	 * @var array the default options for the error message. This property is used when calling [[error()]]
+	 * without the `$options` parameter.
 	 */
-	public $errorCssClass = 'error';
+	public $errorOptions = array('tag' => 'span', 'class' => 'help-inline');
 	/**
-	 * @var string the default CSS class that indicates an input validated successfully.
+	 * @var array the default options for the label. This property is used when calling [[label()]]
+	 * without the `$options` parameter.
 	 */
-	public $successCssClass = 'success';
-	/**
-	 * @var string the default CSS class that indicates an input is currently being validated.
-	 */
-	public $validatingCssClass = 'validating';
-	public $template = "{label}\n{input}\n{error}";
-
-	public $errorOptions = array('tag' => 'span', 'class' => 'yii-error-message');
 	public $labelOptions = array('class' => 'control-label');
+
 
 	public function begin()
 	{
@@ -65,10 +64,10 @@ class ActiveField extends Component
 		$class = isset($options['class']) ? array($options['class']) : array();
 		$class[] = 'field-' . Html::getInputId($this->model, $this->attribute);
 		if ($this->model->isAttributeRequired($this->attribute)) {
-			$class[] = $this->requiredCssClass;
+			$class[] = $this->form->requiredCssClass;
 		}
 		if ($this->model->hasErrors($this->attribute)) {
-			$class[] = $this->errorCssClass;
+			$class[] = $this->form->errorCssClass;
 		}
 		$options['class'] = implode(' ', $class);
 		return Html::beginTag($this->tag, $options);
@@ -235,27 +234,11 @@ class ActiveField extends Component
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * @param boolean $enclosedByLabel whether to enclose the radio button within the label tag.
-	 * If this is true, [[template]] will be ignored.
 	 * @return string the generated radio button tag
 	 */
-	public function radio($options = array(), $enclosedByLabel = true)
+	public function radio($options = array())
 	{
-		if ($enclosedByLabel) {
-			$name = isset($options['name']) ? $options['name'] : Html::getInputName($this->model, $this->attribute);
-			$checked = Html::getAttributeValue($this->model, $this->attribute);
-			$radio = Html::radio($name, $checked, $options);
-			$uncheck = array_key_exists('unchecked', $options) ? $options['uncheck'] : '0';
-			unset($options['uncheck']);
-			$hidden = $uncheck !== null ? Html::hiddenInput($name, $uncheck) : '';
-			$label = Html::encode($this->model->getAttributeLabel($this->attribute));
-			return $this->begin() . "\n"
-				. $hidden . Html::label("$radio $label", null, $this->labelOptions) . "\n"
-				. $this->error() . "\n"
-				. $this->end();
-		} else {
-			return Html::activeRadio($this->model, $this->attribute, $options);
-		}
+		return $this->render(Html::activeRadio($this->model, $this->attribute, $options));
 	}
 
 	/**
@@ -271,27 +254,11 @@ class ActiveField extends Component
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * @param boolean $enclosedByLabel whether to enclose the checkbox within the label tag.
-	 * If this is true, [[template]] will be ignored.
 	 * @return string the generated checkbox tag
 	 */
-	public function checkbox($options = array(), $enclosedByLabel = true)
+	public function checkbox($options = array())
 	{
-		if ($enclosedByLabel) {
-			$name = isset($options['name']) ? $options['name'] : Html::getInputName($this->model, $this->attribute);
-			$checked = Html::getAttributeValue($this->model, $this->attribute);
-			$checkbox = Html::checkbox($name, $checked, $options);
-			$uncheck = array_key_exists('unchecked', $options) ? $options['uncheck'] : '0';
-			unset($options['uncheck']);
-			$hidden = $uncheck !== null ? Html::hiddenInput($name, $uncheck) : '';
-			$label = Html::encode($this->model->getAttributeLabel($this->attribute));
-			return $this->begin() . "\n"
-				. $hidden . Html::label("$checkbox $label", null, $this->labelOptions) . "\n"
-				. $this->error() . "\n"
-				. $this->end();
-		} else {
-			return Html::activeCheckbox($this->model, $this->attribute, $options);
-		}
+		return $this->render(Html::activeCheckbox($this->model, $this->attribute, $options));
 	}
 
 	/**
