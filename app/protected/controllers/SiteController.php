@@ -1,9 +1,9 @@
 <?php
 
+use yii\web\Controller;
 use app\models\LoginForm;
-use app\models\User;
 
-class SiteController extends \yii\web\Controller
+class SiteController extends Controller
 {
 	public function actionIndex()
 	{
@@ -13,15 +13,13 @@ class SiteController extends \yii\web\Controller
 	public function actionLogin()
 	{
 		$model = new LoginForm();
-		if (isset($_POST[$model->formName()])) {
-			$model->attributes = $_POST[$model->formName()];
-			if ($model->login()) {
-				Yii::$app->getResponse()->redirect(array('site/index'));
-			}
+		if ($this->populate($_POST, $model) && $model->login()) {
+			Yii::$app->getResponse()->redirect(array('site/index'));
+		} else {
+			echo $this->render('login', array(
+				'model' => $model,
+			));
 		}
-		echo $this->render('login', array(
-			'model' => $model,
-		));
 	}
 
 	public function actionLogout()

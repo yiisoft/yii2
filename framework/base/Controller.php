@@ -303,6 +303,34 @@ class Controller extends Component
 	}
 
 	/**
+	 * Populates one or multiple models from the given data array.
+	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array.
+	 * @param Model $model the model to be populated. If there are more than one model to be populated,
+	 * you may supply them as additional parameters.
+	 * @return boolean whether at least one model is successfully populated with the data.
+	 */
+	public function populate($data, $model)
+	{
+		$success = false;
+		if (!empty($data) && is_array($data)) {
+			$models = func_get_args();
+			array_shift($models);
+			foreach ($models as $model) {
+				/** @var Model $model */
+				$scope = $model->formName();
+				if ($scope == '') {
+					$model->attributes = $data;
+					$success = true;
+				} elseif (isset($data[$scope])) {
+					$model->attributes = $data[$scope];
+					$success = true;
+				}
+			}
+		}
+		return $success;
+	}
+
+	/**
 	 * Renders a view and applies layout if available.
 	 *
 	 * The view to be rendered can be specified in one of the following formats:
