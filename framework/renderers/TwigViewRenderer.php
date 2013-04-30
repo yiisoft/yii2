@@ -24,7 +24,7 @@ class TwigViewRenderer extends ViewRenderer
 	/**
 	 * @var string the directory or path alias pointing to where Twig code is located.
 	 */
-	public $twigPath = '@app/vendors/Twig';
+	public $twigPath = '@Twig';
 
 	/**
 	 * @var string the directory or path alias pointing to where Twig cache will be stored.
@@ -44,7 +44,9 @@ class TwigViewRenderer extends ViewRenderer
 
 	public function init()
 	{
-		Yii::setAlias('@Twig', $this->twigPath);
+		if (!isset(Yii::$aliases['@Twig'])) {
+			Yii::setAlias('@Twig', $this->twigPath);
+		}
 
 		$loader = new \Twig_Loader_String();
 
