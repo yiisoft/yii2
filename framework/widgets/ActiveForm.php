@@ -75,6 +75,7 @@ class ActiveForm extends Widget
 	 */
 	public function init()
 	{
+		$this->options['id'] = $this->getId();
 		echo Html::beginForm($this->action, $this->method, $this->options);
 	}
 
@@ -84,6 +85,11 @@ class ActiveForm extends Widget
 	 */
 	public function run()
 	{
+		$id = $this->getId();
+		$options = array();
+		$options = json_encode($options);
+		$this->view->registerAssetBundle('yii/form');
+		$this->view->registerJs("jQuery('#$id').yii.form($options);");
 		echo Html::endForm();
 	}
 

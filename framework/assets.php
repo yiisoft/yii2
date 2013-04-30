@@ -14,11 +14,18 @@ return array(
 		),
 		'depends' => array('jquery'),
 	),
+	'yii/validation' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'yii-validation.js',
+		),
+		'depends' => array('yii'),
+	),
 	'yii/form' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'yii-form.js',
 		),
-		'depends' => array('yii'),
+		'depends' => array('yii', 'yii/validation'),
 	),
 );
