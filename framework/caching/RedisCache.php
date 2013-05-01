@@ -21,6 +21,8 @@ use yii\db\redis\Connection;
  * authenticate with the server after connect.
  *
  * See [[Cache]] for common cache operations that RedisCache supports.
+ * Different from the description in [[Cache]] RedisCache allows the expire parameter of
+ * [[set]] and [[add]] to be a floating point number, so you may specify the time in milliseconds.
  *
  * To use RedisCache as the cache application component, configure the application as follows,
  *
@@ -110,7 +112,7 @@ class RedisCache extends Cache
 	 */
 	protected function getValue($key)
 	{
-		return $this->_connection->executeCommand('GET', $key);
+		return $this->_connection->executeCommand('GET', array($key));
 	}
 
 	/**
@@ -120,7 +122,13 @@ class RedisCache extends Cache
 	 */
 	protected function getValues($keys)
 	{
-		return $this->_connection->executeCommand('MGET', $keys);
+		$response = $this->_connection->executeCommand('MGET', $keys);
+		$result = array();
+		$i = 0;
+		foreach($keys as $key) {
+			$result[$key] = $response[$i++];
+		}
+		return $result;
 	}
 
 	/**

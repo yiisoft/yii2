@@ -31,4 +31,15 @@ class RedisCacheTest extends CacheTest
 		}
 		return $this->_cacheInstance;
 	}
+
+	public function testExpireMilliseconds()
+	{
+		$cache = $this->getCacheInstance();
+
+		$this->assertTrue($cache->set('expire_test_ms', 'expire_test_ms', 0.2));
+		usleep(100000);
+		$this->assertEquals('expire_test_ms', $cache->get('expire_test_ms'));
+		usleep(300000);
+		$this->assertFalse($cache->get('expire_test_ms'));
+	}
 }
