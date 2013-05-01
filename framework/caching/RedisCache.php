@@ -20,8 +20,8 @@ use yii\db\redis\Connection;
  * When the server needs authentication, you can set the [[password]] property to
  * authenticate with the server after connect.
  *
- * See [[Cache]] for common cache operations that RedisCache supports.
- * Different from the description in [[Cache]] RedisCache allows the expire parameter of
+ * See [[Cache]] manual for common cache operations that RedisCache supports.
+ * Different from the description in [[Cache]], RedisCache allows the expire parameter of
  * [[set]] and [[add]] to be a floating point number, so you may specify the time in milliseconds.
  *
  * To use RedisCache as the cache application component, configure the application as follows,
@@ -38,12 +38,6 @@ use yii\db\redis\Connection;
  *     ),
  * )
  * ~~~
- *
- * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
- * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
- *
- * @property \Memcache|\Memcached $memCache The memcache instance (or memcached if [[useMemcached]] is true) used by this component.
- * @property MemCacheServer[] $servers List of memcache server configurations.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

@@ -71,6 +71,18 @@ abstract class Cache extends Component implements \ArrayAccess
 
 
 	/**
+	 * Initializes the application component.
+	 * This method overrides the parent implementation by setting default cache key prefix.
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->keyPrefix === null) {
+			$this->keyPrefix = \Yii::$app->id;
+		}
+	}
+
+	/**
 	 * Builds a normalized cache key from a given key.
 	 *
 	 * The generated key contains letters and digits only, and its length is no more than 32.

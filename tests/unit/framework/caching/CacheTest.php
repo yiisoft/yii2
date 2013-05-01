@@ -29,6 +29,16 @@ abstract class CacheTest extends TestCase
 		return $cache;
 	}
 
+	/**
+	 * default value of cache prefix is application id
+	 */
+	public function testKeyPrefix()
+	{
+		$cache = $this->getCacheInstance();
+		$this->assertNotNull(\Yii::$app->id);
+		$this->assertEquals(\Yii::$app->id, $cache->keyPrefix);
+	}
+
 	public function testSet()
 	{
 		$cache = $this->getCacheInstance();
