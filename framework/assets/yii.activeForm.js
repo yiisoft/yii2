@@ -75,67 +75,9 @@
 					attributes: attributes
 				});
 
-				var validate = function (attribute, forceValidate) {
-					if (forceValidate) {
-						attribute.status = 2;
-					}
-					$.each(settings.attributes, function () {
-						if (this.value !== getInputValue($form.find('#' + this.inputID))) {
-							this.status = 2;
-							forceValidate = true;
-						}
-					});
-					if (!forceValidate) {
-						return;
-					}
+				bindAttributes(attributes);
 
-					if (settings.timer !== undefined) {
-						clearTimeout(settings.timer);
-					}
-					settings.timer = setTimeout(function () {
-						if (settings.submitting || $form.is(':hidden')) {
-							return;
-						}
-						if (attribute.beforeValidateAttribute === undefined || attribute.beforeValidateAttribute($form, attribute)) {
-							$.each(settings.attributes, function () {
-								if (this.status === 2) {
-									this.status = 3;
-									$.fn.yiiactiveform.getInputContainer(this, $form).addClass(this.validatingCssClass);
-								}
-							});
-							$.fn.yiiactiveform.validate($form, function (data) {
-								var hasError = false;
-								$.each(settings.attributes, function () {
-									if (this.status === 2 || this.status === 3) {
-										hasError = $.fn.yiiactiveform.updateInput(this, data, $form) || hasError;
-									}
-								});
-								if (attribute.afterValidateAttribute !== undefined) {
-									attribute.afterValidateAttribute($form, attribute, data, hasError);
-								}
-							});
-						}
-					}, attribute.validationDelay);
-				};
-
-				$.each(settings.attributes, function (i, attribute) {
-					if (this.validateOnChange) {
-						$form.find('#' + this.inputID).change(function () {
-							validate(attribute, false);
-						}).blur(function () {
-								if (attribute.status !== 2 && attribute.status !== 3) {
-									validate(attribute, !attribute.status);
-								}
-							});
-					}
-					if (this.validateOnType) {
-						$form.find('#' + this.inputID).keyup(function () {
-							if (attribute.value !== getAFValue($(this))) {
-								validate(attribute, false);
-							}
-						});
-					}
-				});
+				$form.bind('reset', resetForm);
 
 				if (settings.validateOnSubmit) {
 					$form.on('mouseup keyup', ':submit', function () {
@@ -179,57 +121,6 @@
 						return false;
 					});
 				}
-
-				/*
-				 * In case of reseting the form we need to reset error messages
-				 * NOTE1: $form.reset - does not exist
-				 * NOTE2: $form.on('reset', ...) does not work
-				 */
-				$form.bind('reset', function () {
-					/*
-					 * because we bind directly to a form reset event, not to a reset button (that could or could not exist),
-					 * when this function is executed form elements values have not been reset yet,
-					 * because of that we use the setTimeout
-					 */
-					setTimeout(function () {
-						$.each(settings.attributes, function () {
-							this.status = 0;
-							var $error = $form.find('#' + this.errorID),
-								$container = $.fn.yiiactiveform.getInputContainer(this, $form);
-
-							$container.removeClass(
-								this.validatingCssClass + ' ' +
-									this.errorCssClass + ' ' +
-									this.successCssClass
-							);
-
-							$error.html('').hide();
-
-							/*
-							 * without the setTimeout() we would get here the current entered value before the reset instead of the reseted value
-							 */
-							this.value = getAFValue($form.find('#' + this.inputID));
-						});
-						/*
-						 * If the form is submited (non ajax) with errors, labels and input gets the class 'error'
-						 */
-						$form.find('label, input').each(function () {
-							$(this).removeClass(settings.errorCss);
-						});
-						$('#' + settings.summaryID).hide().find('ul').html('');
-						//.. set to initial focus on reset
-						if (settings.focus !== undefined && !window.location.hash) {
-							$form.find(settings.focus).focus();
-						}
-					}, 1);
-				});
-
-				/*
-				 * set to initial focus
-				 */
-				if (settings.focus !== undefined && !window.location.hash) {
-					$form.find(settings.focus).focus();
-				}
 			});
 		},
 
@@ -246,6 +137,7 @@
 	 * This method will perform additional checks to get proper values
 	 * for checkbox, radio, checkbox list and radio list.
 	 * @param $e jQuery the jQuery object of the input element
+	 * @return string the input value
 	 */
 	var getInputValue = function ($e) {
 		var type,
@@ -253,7 +145,7 @@
 		if (!$e.length) {
 			return undefined;
 		}
-		if ($e[0].tagName.toLowerCase() === 'span') {
+		if ($e[0].tagName.toLowerCase() === 'div') {
 			$e.find(':checked').each(function () {
 				c.push(this.value);
 			});
@@ -267,6 +159,27 @@
 		}
 	};
 
+	var bindAttributes = function (attributes) {
+		$.each(attributes, function (i, attribute) {
+			if (this.validateOnChange) {
+				$form.find('#' + this.inputID).change(function () {
+					validateAttribute(attribute, false);
+				}).blur(function () {
+						if (attribute.status !== 2 && attribute.status !== 3) {
+							validateAttribute(attribute, !attribute.status);
+						}
+					});
+			}
+			if (this.validateOnType) {
+				$form.find('#' + this.inputID).keyup(function () {
+					if (attribute.value !== getAFValue($(this))) {
+						validateAttribute(attribute, false);
+					}
+				});
+			}
+		});
+	};
+
 	/**
 	 * Performs the ajax validation request.
 	 * This method is invoked internally to trigger the ajax validation.
@@ -274,7 +187,7 @@
 	 * @param successCallback function the function to be invoked if the ajax request succeeds
 	 * @param errorCallback function the function to be invoked if the ajax request fails
 	 */
-	var validate = function (form, successCallback, errorCallback) {
+	var validateForm = function (form, successCallback, errorCallback) {
 		var $form = $(form),
 			settings = $form.data('settings'),
 			needAjaxValidation = false,
@@ -335,6 +248,174 @@
 				}
 			}
 		});
+	};
+
+	var validateAttribute = function (attribute, forceValidate) {
+		if (forceValidate) {
+			attribute.status = 2;
+		}
+		$.each(attributes, function () {
+			if (this.value !== getInputValue($form.find('#' + this.inputID))) {
+				this.status = 2;
+				forceValidate = true;
+			}
+		});
+		if (!forceValidate) {
+			return;
+		}
+
+		if (settings.timer !== undefined) {
+			clearTimeout(settings.timer);
+		}
+		settings.timer = setTimeout(function () {
+			if (settings.submitting || $form.is(':hidden')) {
+				return;
+			}
+			if (attribute.beforeValidateAttribute === undefined || attribute.beforeValidateAttribute($form, attribute)) {
+				$.each(settings.attributes, function () {
+					if (this.status === 2) {
+						this.status = 3;
+						$.fn.yiiactiveform.getInputContainer(this, $form).addClass(this.validatingCssClass);
+					}
+				});
+				$.fn.yiiactiveform.validate($form, function (data) {
+					var hasError = false;
+					$.each(settings.attributes, function () {
+						if (this.status === 2 || this.status === 3) {
+							hasError = $.fn.yiiactiveform.updateInput(this, data, $form) || hasError;
+						}
+					});
+					if (attribute.afterValidateAttribute !== undefined) {
+						attribute.afterValidateAttribute($form, attribute, data, hasError);
+					}
+				});
+			}
+		}, attribute.validationDelay);
+	};
+
+	var resetForm = function () {
+		/*
+		 * In case of resetting the form we need to reset error messages
+		 * NOTE1: $form.reset - does not exist
+		 * NOTE2: $form.on('reset', ...) does not work
+		 */
+		/*
+		 * because we bind directly to a form reset event, not to a reset button (that could or could not exist),
+		 * when this function is executed form elements values have not been reset yet,
+		 * because of that we use the setTimeout
+		 */
+		setTimeout(function () {
+			$.each(settings.attributes, function () {
+				this.status = 0;
+				var $error = $form.find('#' + this.errorID),
+					$container = $.fn.yiiactiveform.getInputContainer(this, $form);
+
+				$container.removeClass(
+					this.validatingCssClass + ' ' +
+						this.errorCssClass + ' ' +
+						this.successCssClass
+				);
+
+				$error.html('').hide();
+
+				/*
+				 * without the setTimeout() we would get here the current entered value before the reset instead of the reseted value
+				 */
+				this.value = getAFValue($form.find('#' + this.inputID));
+			});
+			/*
+			 * If the form is submited (non ajax) with errors, labels and input gets the class 'error'
+			 */
+			$form.find('label, input').each(function () {
+				$(this).removeClass(settings.errorCss);
+			});
+			$('#' + settings.summaryID).hide().find('ul').html('');
+			//.. set to initial focus on reset
+			if (settings.focus !== undefined && !window.location.hash) {
+				$form.find(settings.focus).focus();
+			}
+		}, 1);
+	};
+
+
+	/**
+	 * Returns the container element of the specified attribute.
+	 * @param attribute object the configuration for a particular attribute.
+	 * @param form the form jQuery object
+	 * @return jQuery the jQuery representation of the container
+	 */
+	var getInputContainer = function (attribute, form) {
+		if (attribute.inputContainer === undefined) {
+			return form.find('#' + attribute.inputID).closest('div');
+		} else {
+			return form.find(attribute.inputContainer).filter(':has("#' + attribute.inputID + '")');
+		}
+	};
+
+	/**
+	 * updates the error message and the input container for a particular attribute.
+	 * @param attribute object the configuration for a particular attribute.
+	 * @param messages array the json data obtained from the ajax validation request
+	 * @param form the form jQuery object
+	 * @return boolean whether there is a validation error for the specified attribute
+	 */
+	var updateInput = function (attribute, messages, form) {
+		attribute.status = 1;
+		var $error, $container,
+			hasError = false,
+			$el = form.find('#' + attribute.inputID),
+			errorCss = form.data('settings').errorCss;
+
+		if ($el.length) {
+			hasError = messages !== null && $.isArray(messages[attribute.id]) && messages[attribute.id].length > 0;
+			$error = form.find('#' + attribute.errorID);
+			$container = $.fn.yiiactiveform.getInputContainer(attribute, form);
+
+			$container.removeClass(
+				attribute.validatingCssClass + ' ' +
+					attribute.errorCssClass + ' ' +
+					attribute.successCssClass
+			);
+			$container.find('label, input').each(function () {
+				$(this).removeClass(errorCss);
+			});
+
+			if (hasError) {
+				$error.html(messages[attribute.id][0]);
+				$container.addClass(attribute.errorCssClass);
+			} else if (attribute.enableAjaxValidation || attribute.clientValidation) {
+				$container.addClass(attribute.successCssClass);
+			}
+			if (!attribute.hideErrorMessage) {
+				$error.toggle(hasError);
+			}
+
+			attribute.value = getAFValue($el);
+		}
+		return hasError;
+	};
+
+	/**
+	 * updates the error summary, if any.
+	 * @param form jquery the jquery representation of the form
+	 * @param messages array the json data obtained from the ajax validation request
+	 */
+	var updateSummary = function (form, messages) {
+		var settings = $(form).data('settings'),
+			content = '';
+		if (settings.summaryID === undefined) {
+			return;
+		}
+		if (messages) {
+			$.each(settings.attributes, function () {
+				if ($.isArray(messages[this.id])) {
+					$.each(messages[this.id], function (j, message) {
+						content = content + '<li>' + message + '</li>';
+					});
+				}
+			});
+		}
+		$('#' + settings.summaryID).toggle(content !== '').find('ul').html(content);
 	};
 
 })(window.jQuery);
