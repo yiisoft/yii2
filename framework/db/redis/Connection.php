@@ -45,6 +45,10 @@ class Connection extends Component
 	 * See http://redis.io/commands/auth
 	 */
 	public $password;
+	/**
+	 * @var float timeout to use for connection to redis. If not set the timeout set in php.ini will be used: ini_get("default_socket_timeout")
+	 */
+	public $timeout = null;
 
 	/**
 	 * @var array List of available redis commands http://redis.io/commands
@@ -237,7 +241,12 @@ class Connection extends Component
 			$db = isset($dsn[3]) ? $dsn[3] : 0;
 
 			\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
-			$this->_socket = @stream_socket_client($host, $errorNumber, $errorDescription);
+			$this->_socket = @stream_socket_client(
+				$host,
+				$errorNumber,
+				$errorDescription,
+				$this->timeout ? $this->timeout : ini_get("default_socket_timeout")
+			);
 			if ($this->_socket) {
 				if ($this->password !== null) {
 					$this->executeCommand('AUTH', array($this->password));
@@ -337,6 +346,8 @@ class Connection extends Component
 	 * @param $name
 	 * @param $params
 	 * @return array|bool|null|string
+	 * Returns true on Status reply
+	 * TODO explain all reply types
 	 */
 	public function executeCommand($name, $params=array())
 	{

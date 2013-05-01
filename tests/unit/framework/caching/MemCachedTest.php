@@ -4,7 +4,7 @@ use yii\caching\MemCache;
 use yiiunit\TestCase;
 
 /**
- * Class for testing memcache cache backend
+ * Class for testing memcached cache backend
  */
 class MemCachedTest extends CacheTest
 {
