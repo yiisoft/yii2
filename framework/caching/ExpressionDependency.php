@@ -14,13 +14,18 @@ namespace yii\caching;
  * The dependency is reported as unchanged if and only if the result of the expression is
  * the same as the one evaluated when storing the data to cache.
  *
+ * A PHP expression can be any PHP code that has a value. To learn more about what an expression is,
+ * please refer to the [php manual](http://www.php.net/manual/en/language.expressions.php).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class ExpressionDependency extends Dependency
 {
 	/**
-	 * @var string the PHP expression whose result is used to determine the dependency.
+	 * @var string the string representation of a PHP expression whose result is used to determine the dependency.
+	 * A PHP expression can be any PHP code that has a value. To learn more about what an expression is,
+	 * please refer to the [php manual](http://www.php.net/manual/en/language.expressions.php).
 	 */
 	public $expression;
 
