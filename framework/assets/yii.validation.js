@@ -11,7 +11,33 @@
  */
 
 yii.validation = (function ($) {
-	var pub = {
+	var isEmpty = function (value, trim) {
+		return value === null || value === undefined || value == []
+			|| value === '' || trim && $.trim(value) === '';
 	};
-	return pub;
+
+	return {
+		required: function (value, messages, options) {
+			var valid  = false;
+			if (options.requiredValue === undefined) {
+				if (options.strict && value !== undefined || !options.strict && !isEmpty(value, true)) {
+					valid = true;
+				}
+			} else if (!options.strict && value == options.requiredValue || options.strict && value === options.requiredValue) {
+				valid = true;
+			}
+
+			valid || messages.push(options.message);
+		},
+
+		boolean: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+			var valid = !options.strict && (value == options.trueValue || value == options.falseValue)
+				|| options.strict && (value === options.trueValue || value === options.falseValue);
+
+			valid || messages.push(options.message);
+		}
+	};
 })(jQuery);

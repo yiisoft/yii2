@@ -23,6 +23,16 @@
 	};
 
 	var defaults = {
+		enableAjaxValidation: false,
+		enableClientValidation: true,
+		// the URL for performing AJAX validation. If not set, it will use the the form's action
+		validationUrl: undefined,
+		// number of milliseconds of validation delay. This is used when validateOnType is true.
+		validationDelay: 200,
+		// whether to perform validation when a change is detected on the input.
+		validateOnChange: true,
+		// whether to perform validation when the user is typing.
+		validateOnType: false,
 		// the container CSS class representing the corresponding attribute has validation error
 		errorCssClass: 'error',
 		// the container CSS class representing the corresponding attribute passes validation
@@ -43,17 +53,22 @@
 		 * - input: string, the jQuery selector of the input field
 		 * - error: string, the jQuery selector of the error tag
 		 * - value: string|array, the value of the input
+		 * - validationDelay: integer, number of milliseconds of validation delay.
+		 *   This is used when validateOnType is true. If not set, it will take the value
+		 *   of the corresponding global setting.
+		 * - validateOnChange: boolean, whether to perform validation when a change is detected on the input.
+		 *   If not set, it will take the value of the corresponding global setting.
+		 * - validateOnType: boolean, defaults to false, whether to perform validation when the user is typing.
+		 *   If not set, it will take the value of the corresponding global setting.
+		 * - enableAjaxValidation: boolean, whether to enable AJAX-based validation.
+		 *   If not set, it will take the value of the corresponding global setting.
+		 * - enableClientValidation: boolean, whether to enable client-side validation.
+		 *   If not set, it will take the value of the corresponding global setting.
+		 * - validate: function (attribute, value, messages), the client-side validation function.
+		 * - beforeValidate: function ($form, attribute), callback called before validating an attribute. If it
+		 *   returns false, the validation will be cancelled.
+		 * - afterValidate: function ($form, attribute, data, hasError), callback called after validating an attribute.
 		 * - status: integer, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
-		 * - validationDelay: 200,
-		 * - validateOnChange: true,
-		 * - validateOnType: false,
-		 * - hideErrorMessage: false,
-		 * - inputContainer: undefined,
-		 * - enableAjaxValidation: true,
-		 * - enableClientValidation: true,
-		 * - clientValidation: undefined, // function (value, messages, attribute) | client-side validation
-		 * - beforeValidateAttribute: undefined, // function (form, attribute) | boolean
-		 * - afterValidateAttribute: undefined,  // function (form, attribute, data, hasError)
 		 *
 		 * @param options object the configuration for the plugin. The following options can be set:
 		 */
