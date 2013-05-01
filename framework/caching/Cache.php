@@ -247,7 +247,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * This method should be implemented by child classes to retrieve the data
 	 * from specific cache storage.
 	 * @param string $key a unique key identifying the cached value
-	 * @return string the value stored in cache, false if the value is not in the cache or expired.
+	 * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
 	 */
 	abstract protected function getValue($key);
 

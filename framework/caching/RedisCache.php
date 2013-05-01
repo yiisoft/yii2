@@ -49,11 +49,11 @@ class RedisCache extends Cache
 	 */
 	public $hostname = 'localhost';
 	/**
-	 * @var int the to use for connecting to the redis server. Default port is 6379.
+	 * @var int the port to use for connecting to the redis server. Default port is 6379.
 	 */
 	public $port = 6379;
 	/**
-	 * @var string the password to use to identify with the redis server. If not set, no AUTH command will be sent.
+	 * @var string the password to use to authenticate with the redis server. If not set, no AUTH command will be sent.
 	 */
 	public $password;
 	/**
@@ -102,7 +102,7 @@ class RedisCache extends Cache
 	 * Retrieves a value from cache with a specified key.
 	 * This is the implementation of the method declared in the parent class.
 	 * @param string $key a unique key identifying the cached value
-	 * @return string the value stored in cache, false if the value is not in the cache or expired.
+	 * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
 	 */
 	protected function getValue($key)
 	{

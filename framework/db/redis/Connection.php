@@ -379,14 +379,13 @@ class Connection extends Component
 			case '-': // Error reply
 				throw new Exception("Redis error: " . $line . "\nRedis command was: " . $command);
 			case ':': // Integer reply
-				// no cast to integer as it is in the range of a signed 64 bit integer
+				// no cast to int as it is in the range of a signed 64 bit integer
 				return $line;
 			case '$': // Bulk replies
 				if ($line == '-1') {
 					return null;
 				}
-				$data = fread($this->_socket, $line + 2);
-				if($data===false) {
+				if(($data = fread($this->_socket, $line + 2))===false) {
 					throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
 				}
 				return substr($data, 0, -2);

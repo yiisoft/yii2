@@ -117,6 +117,7 @@ abstract class CacheTest extends TestCase
 		$this->assertEquals(42, $cache->get('number_test'));
 
 		// should store data if it's not there yet
+		$this->assertFalse($cache->get('add_test'));
 		$this->assertTrue($cache->add('add_test', 13));
 		$this->assertEquals(13, $cache->get('add_test'));
 	}
