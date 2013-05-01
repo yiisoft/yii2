@@ -70,10 +70,25 @@ class View extends Component
 	 */
 	public $params;
 	/**
-	 * @var ViewRenderer|array the view renderer object or the configuration array for
-	 * creating the view renderer. If not set, view files will be treated as normal PHP files.
+	 * @var array a list of available renderers indexed by their corresponding supported file extensions.
+	 * Each renderer may be a view renderer object or the configuration for creating the renderer object.
+	 * For example,
+	 *
+	 * ~~~
+	 * array(
+	 *     'tpl' => array(
+	 *         'class' => 'yii\renderers\SmartyRenderer',
+	 *     ),
+	 *     'twig' => array(
+	 *         'class' => 'yii\renderers\TwigRenderer',
+	 *     ),
+	 * )
+	 * ~~~
+	 *
+	 * If no renderer is available for the given view file, the view file will be treated as a normal PHP
+	 * and rendered via [[renderPhpFile()]].
 	 */
-	public $renderer;
+	public $renderers = array();
 	/**
 	 * @var Theme|array the theme object or the configuration array for creating the theme object.
 	 * If not set, it means theming is not enabled.
@@ -152,9 +167,6 @@ class View extends Component
 	public function init()
 	{
 		parent::init();
-		if (is_array($this->renderer)) {
-			$this->renderer = Yii::createObject($this->renderer);
-		}
 		if (is_array($this->theme)) {
 			$this->theme = Yii::createObject($this->theme);
 		}
@@ -226,8 +238,14 @@ class View extends Component
 
 		$output = '';
 		if ($this->beforeRender($viewFile)) {
-			if ($this->renderer !== null) {
-				$output = $this->renderer->render($this, $viewFile, $params);
+			$ext = pathinfo($viewFile, PATHINFO_EXTENSION);
+			if (isset($this->renderers[$ext])) {
+				if (is_array($this->renderers[$ext])) {
+					$this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
+				}
+				/** @var ViewRenderer $renderer */
+				$renderer = $this->renderers[$ext];
+				$output = $renderer->render($this, $viewFile, $params);
 			} else {
 				$output = $this->renderPhpFile($viewFile, $params);
 			}
@@ -352,7 +370,7 @@ class View extends Component
 		if (!isset($properties['view'])) {
 			$properties['view'] = $this;
 		}
-		return Yii::createObject($properties, $this);
+		return Yii::createObject($properties);
 	}
 
 	/**

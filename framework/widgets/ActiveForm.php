@@ -8,11 +8,9 @@
 namespace yii\widgets;
 
 use Yii;
-use yii\base\InvalidParamException;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 
 /**
  * ActiveForm ...
@@ -32,37 +30,81 @@ class ActiveForm extends Widget
 	 */
 	public $method = 'post';
 	/**
+	 * @var array the HTML attributes (name-value pairs) for the form tag.
+	 * The values will be HTML-encoded using [[Html::encode()]].
+	 * If a value is null, the corresponding attribute will not be rendered.
+	 */
+	public $options = array();
+	/**
 	 * @var string the default CSS class for the error summary container.
 	 * @see errorSummary()
 	 */
-	public $errorSummaryClass = 'yii-error-summary';
-	public $errorMessageClass = 'yii-error-message';
+	public $errorSummaryCssClass = 'yii-error-summary';
 	/**
-	 * @var string the default CSS class that indicates an input has error.
+	 * @var boolean whether to enable client-side data validation.
+	 * Client-side validation will be performed by validators that support it
+	 * (see [[\yii\validators\Validator::enableClientValidation]] and [[\yii\validators\Validator::clientValidateAttribute()]]).
 	 */
-	public $errorClass = 'yii-error';
+	public $enableClientValidation = true;
 	/**
-	 * @var string the default CSS class that indicates an input validated successfully.
+	 * @var array the default configuration used by [[field()]] when creating a new field object.
 	 */
-	public $successClass = 'yii-success';
+	public $fieldConfig = array(
+		'class' => 'yii\widgets\ActiveField',
+	);
+	/**
+	 * @var string the CSS class that is added to a field container when the associated attribute is required.
+	 */
+	public $requiredCssClass = 'required';
+	/**
+	 * @var string the CSS class that is added to a field container when the associated attribute has validation error.
+	 */
+	public $errorCssClass = 'error';
+	/**
+	 * @var string the CSS class that is added to a field container when the associated attribute is successfully validated.
+	 */
+	public $successCssClass = 'success';
+	/**
+	 * @var string the CSS class that is added to a field container when the associated attribute is being validated.
+	 */
+	public $validatingCssClass = 'validating';
 
 	/**
-	 * @var string the default CSS class that indicates an input is currently being validated.
+	 * Initializes the widget.
+	 * This renders the form open tag.
 	 */
-	public $validatingClass = 'yii-validating';
-	/**
-	 * @var boolean whether to enable client-side data validation. Defaults to false.
-	 * When this property is set true, client-side validation will be performed by validators
-	 * that support it (see {@link CValidator::enableClientValidation} and {@link CValidator::clientValidateAttribute}).
-	 */
-	public $enableClientValidation = false;
-
-	public $options = array();
+	public function init()
+	{
+		$this->options['id'] = $this->getId();
+		echo Html::beginForm($this->action, $this->method, $this->options);
+	}
 
 	/**
-	 * @param Model|Model[] $models
-	 * @param array $options
-	 * @return string
+	 * Runs the widget.
+	 * This registers the necessary javascript code and renders the form close tag.
+	 */
+	public function run()
+	{
+		$id = $this->getId();
+		$options = array();
+		$options = json_encode($options);
+		$this->view->registerAssetBundle('yii/form');
+		$this->view->registerJs("jQuery('#$id').yii.form($options);");
+		echo Html::endForm();
+	}
+
+	/**
+	 * Generates a summary of the validation errors.
+	 * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
+	 * @param Model|Model[] $models the model(s) associated with this form
+	 * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
+	 *
+	 * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
+	 * - footer: string, the footer HTML for the error summary.
+	 *
+	 * The rest of the options will be rendered as the attributes of the container tag. The values will
+	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 * @return string the generated error summary
 	 */
 	public function errorSummary($models, $options = array())
 	{
@@ -70,244 +112,49 @@ class ActiveForm extends Widget
 			$models = array($models);
 		}
 
-		$showAll = !empty($options['showAll']);
 		$lines = array();
-		/** @var $model Model */
 		foreach ($models as $model) {
-			if ($showAll) {
-				foreach ($model->getErrors() as $errors) {
-					$lines = array_merge($lines, $errors);
-				}
-			} else {
-				$lines = array_merge($lines, $model->getFirstErrors());
+			/** @var $model Model */
+			foreach ($model->getFirstErrors() as $error) {
+				$lines[] = Html::encode($error);
 			}
 		}
 
 		$header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii|Please fix the following errors:') . '</p>';
 		$footer = isset($options['footer']) ? $options['footer'] : '';
-		$tag = isset($options['tag']) ? $options['tag'] : 'div';
-		unset($options['showAll'], $options['header'], $options['footer'], $options['container']);
+		unset($options['header'], $options['footer']);
 
 		if (!isset($options['class'])) {
-			$options['class'] = $this->errorSummaryClass;
+			$options['class'] = $this->errorSummaryCssClass;
 		} else {
-			$options['class'] .= ' ' . $this->errorSummaryClass;
+			$options['class'] .= ' ' . $this->errorSummaryCssClass;
 		}
 
 		if ($lines !== array()) {
-			$content = "<ul><li>" . implode("</li>\n<li>", ArrayHelper::htmlEncode($lines)) . "</li><ul>";
-			return Html::tag($tag, $header . $content . $footer, $options);
+			$content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li><ul>";
+			return Html::tag('div', $header . $content . $footer, $options);
 		} else {
 			$content = "<ul></ul>";
 			$options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
-			return Html::tag($tag, $header . $content . $footer, $options);
+			return Html::tag('div', $header . $content . $footer, $options);
 		}
 	}
 
 	/**
-	 * @param Model $model
-	 * @param string $attribute
-	 * @param array $options
-	 * @return string
+	 * Generates a form field.
+	 * A form field is associated with a model and an attribute. It contains a label, an input and an error message
+	 * and use them to interact with end users to collect their inputs for the attribute.
+	 * @param Model $model the data model
+	 * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
+	 * about attribute expression.
+	 * @return ActiveField the created ActiveField object
 	 */
-	public function error($model, $attribute, $options = array())
+	public function field($model, $attribute, $options = array())
 	{
-		$attribute = $this->getAttributeName($attribute);
-		$tag = isset($options['tag']) ? $options['tag'] : 'div';
-		unset($options['tag']);
-		$error = $model->getFirstError($attribute);
-		return Html::tag($tag, Html::encode($error), $options);
-	}
-
-	/**
-	 * @param Model $model
-	 * @param string $attribute
-	 * @param array $options
-	 * @return string
-	 */
-	public function label($model, $attribute, $options = array())
-	{
-		$attribute = $this->getAttributeName($attribute);
-		$label = isset($options['label']) ? $options['label'] : Html::encode($model->getAttributeLabel($attribute));
-		$for = array_key_exists('for', $options) ? $options['for'] : $this->getInputId($model, $attribute);
-		return Html::label($label, $for, $options);
-	}
-
-	/**
-	 * @param string $type
-	 * @param Model $model
-	 * @param string $attribute
-	 * @param array $options
-	 *
-	 * @return string
-	 */
-	public function input($type, $model, $attribute, $options = array())
-	{
-		$value = $this->getAttributeValue($model, $attribute);
-		$name = $this->getInputName($model, $attribute);
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = $this->getInputId($model, $attribute);
-		}
-		return Html::input($type, $name, $value, $options);
-	}
-
-	public function textInput($model, $attribute, $options = array())
-	{
-		return $this->input('text', $model, $attribute, $options);
-	}
-
-	public function hiddenInput($model, $attribute, $options = array())
-	{
-		return $this->input('hidden', $model, $attribute, $options);
-	}
-
-	public function passwordInput($model, $attribute, $options = array())
-	{
-		return $this->input('password', $model, $attribute, $options);
-	}
-
-	public function fileInput($model, $attribute, $options = array())
-	{
-		return $this->input('file', $model, $attribute, $options);
-	}
-
-	public function textarea($model, $attribute, $options = array())
-	{
-		$value = $this->getAttributeValue($model, $attribute);
-		$name = $this->getInputName($model, $attribute);
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = $this->getInputId($model, $attribute);
-		}
-		return Html::textarea($name, $value, $options);
-	}
-
-	public function radio($model, $attribute, $value = '1', $options = array())
-	{
-		$checked = $this->getAttributeValue($model, $attribute);
-		$name = $this->getInputName($model, $attribute);
-		if (!array_key_exists('uncheck', $options)) {
-			$options['unchecked'] = '0';
-		}
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = $this->getInputId($model, $attribute);
-		}
-		return Html::radio($name, $checked, $value, $options);
-	}
-
-	public function checkbox($model, $attribute, $value = '1', $options = array())
-	{
-		$checked = $this->getAttributeValue($model, $attribute);
-		$name = $this->getInputName($model, $attribute);
-		if (!array_key_exists('uncheck', $options)) {
-			$options['unchecked'] = '0';
-		}
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = $this->getInputId($model, $attribute);
-		}
-		return Html::checkbox($name, $checked, $value, $options);
-	}
-
-	public function dropDownList($model, $attribute, $items, $options = array())
-	{
-		$checked = $this->getAttributeValue($model, $attribute);
-		$name = $this->getInputName($model, $attribute);
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = $this->getInputId($model, $attribute);
-		}
-		return Html::dropDownList($name, $checked, $items, $options);
-	}
-
-	public function listBox($model, $attribute, $items, $options = array())
-	{
-		$checked = $this->getAttributeValue($model, $attribute);
-		$name = $this->getInputName($model, $attribute);
-		if (!array_key_exists('unselect', $options)) {
-			$options['unselect'] = '0';
-		}
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = $this->getInputId($model, $attribute);
-		}
-		return Html::listBox($name, $checked, $items, $options);
-	}
-
-	public function checkboxList($model, $attribute, $items, $options = array())
-	{
-		$checked = $this->getAttributeValue($model, $attribute);
-		$name = $this->getInputName($model, $attribute);
-		if (!array_key_exists('unselect', $options)) {
-			$options['unselect'] = '0';
-		}
-		return Html::checkboxList($name, $checked, $items, $options);
-	}
-
-	public function radioList($model, $attribute, $items, $options = array())
-	{
-		$checked = $this->getAttributeValue($model, $attribute);
-		$name = $this->getInputName($model, $attribute);
-		if (!array_key_exists('unselect', $options)) {
-			$options['unselect'] = '0';
-		}
-		return Html::radioList($name, $checked, $items, $options);
-	}
-
-	public function getAttributeValue($model, $attribute)
-	{
-		if (!preg_match('/(^|.*\])(\w+)(\[.*|$)/', $attribute, $matches)) {
-			throw new InvalidParamException('Attribute name must contain word characters only.');
-		}
-		$attribute = $matches[2];
-		$index = $matches[3];
-		if ($index === '') {
-			return $model->$attribute;
-		} else {
-			$value = $model->$attribute;
-			foreach (explode('][', trim($index, '[]')) as $id) {
-				if ((is_array($value) || $value instanceof \ArrayAccess) && isset($value[$id])) {
-					$value = $value[$id];
-				} else {
-					return null;
-				}
-			}
-			return $value;
-		}
-	}
-
-	public function getAttributeName($attribute)
-	{
-		if (preg_match('/(^|.*\])(\w+)(\[.*|$)/', $attribute, $matches)) {
-			return $matches[2];
-		} else {
-			throw new InvalidParamException('Attribute name must contain word characters only.');
-		}
-	}
-
-	/**
-	 * @param Model $model
-	 * @param string $attribute
-	 * @return string
-	 * @throws \yii\base\InvalidParamException
-	 */
-	public static function getInputName($model, $attribute)
-	{
-		$formName = $model->formName();
-		if (!preg_match('/(^|.*\])(\w+)(\[.*|$)/', $attribute, $matches)) {
-			throw new InvalidParamException('Attribute name must contain word characters only.');
-		}
-		$prefix = $matches[1];
-		$attribute = $matches[2];
-		$suffix = $matches[3];
-		if ($formName === '' && $prefix === '') {
-			return $attribute . $suffix;
-		} elseif ($formName !== '') {
-			return $formName . $prefix . "[$attribute]" . $suffix;
-		} else {
-			throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
-		}
-	}
-
-	public static function getInputId($model, $attribute)
-	{
-		$name = static::getInputName($model, $attribute);
-		return str_replace(array('[]', '][', '[', ']', ' '), array('', '-', '-', '', '-'), $name);
+		return Yii::createObject(array_merge($this->fieldConfig, $options, array(
+			'model' => $model,
+			'attribute' => $attribute,
+			'form' => $this,
+		)));
 	}
 }

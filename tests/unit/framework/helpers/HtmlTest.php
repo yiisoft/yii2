@@ -157,20 +157,20 @@ class HtmlTest extends \yii\test\TestCase
 	public function testButton()
 	{
 		$this->assertEquals('<button type="button">Button</button>', Html::button());
-		$this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('test', 'value', 'content<>'));
-		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('test', 'value', 'content<>', array('type' => 'submit', 'class' => "t")));
+		$this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('content<>', 'test', 'value'));
+		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', 'test', 'value', array('type' => 'submit', 'class' => "t")));
 	}
 
 	public function testSubmitButton()
 	{
 		$this->assertEquals('<button type="submit">Submit</button>', Html::submitButton());
-		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::submitButton('test', 'value', 'content<>', array('class' => 't')));
+		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::submitButton('content<>', 'test', 'value', array('class' => 't')));
 	}
 
 	public function testResetButton()
 	{
 		$this->assertEquals('<button type="reset">Reset</button>', Html::resetButton());
-		$this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('test', 'value', 'content<>', array('class' => 't')));
+		$this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', 'test', 'value', array('class' => 't')));
 	}
 
 	public function testInput()
@@ -230,15 +230,15 @@ class HtmlTest extends \yii\test\TestCase
 	public function testRadio()
 	{
 		$this->assertEquals('<input type="radio" name="test" value="1" />', Html::radio('test'));
-		$this->assertEquals('<input type="radio" class="a" name="test" checked="checked" />', Html::radio('test', true, null, array('class' => 'a')));
-		$this->assertEquals('<input type="hidden" name="test" value="0" /><input type="radio" class="a" name="test" value="2" checked="checked" />', Html::radio('test', true, 2, array('class' => 'a' , 'uncheck' => '0')));
+		$this->assertEquals('<input type="radio" class="a" name="test" checked="checked" />', Html::radio('test', true, array('class' => 'a', 'value' => null)));
+		$this->assertEquals('<input type="hidden" name="test" value="0" /><input type="radio" class="a" name="test" value="2" checked="checked" />', Html::radio('test', true, array('class' => 'a' , 'uncheck' => '0', 'value' => 2)));
 	}
 
 	public function testCheckbox()
 	{
 		$this->assertEquals('<input type="checkbox" name="test" value="1" />', Html::checkbox('test'));
-		$this->assertEquals('<input type="checkbox" class="a" name="test" checked="checked" />', Html::checkbox('test', true, null, array('class' => 'a')));
-		$this->assertEquals('<input type="hidden" name="test" value="0" /><input type="checkbox" class="a" name="test" value="2" checked="checked" />', Html::checkbox('test', true, 2, array('class' => 'a', 'uncheck' => '0')));
+		$this->assertEquals('<input type="checkbox" class="a" name="test" checked="checked" />', Html::checkbox('test', true, array('class' => 'a', 'value' => null)));
+		$this->assertEquals('<input type="hidden" name="test" value="0" /><input type="checkbox" class="a" name="test" value="2" checked="checked" />', Html::checkbox('test', true, array('class' => 'a', 'uncheck' => '0', 'value' => 2)));
 	}
 
 	public function testDropDownList()
@@ -347,7 +347,7 @@ EOD;
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::checkboxList('test', array('value2'), $this->getDataItems(), array(
 			'item' => function ($index, $label, $name, $checked, $value) {
-				return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, $value));
+				return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, array('value' => $value)));
 			}
 		)));
 	}
@@ -383,7 +383,7 @@ EOD;
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::radioList('test', array('value2'), $this->getDataItems(), array(
 			'item' => function ($index, $label, $name, $checked, $value) {
-				return $index . Html::label($label . ' ' . Html::radio($name, $checked, $value));
+				return $index . Html::label($label . ' ' . Html::radio($name, $checked, array('value' => $value)));
 			}
 		)));
 	}

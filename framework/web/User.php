@@ -32,7 +32,7 @@ class User extends Component
 	const EVENT_AFTER_LOGOUT = 'afterLogout';
 
 	/**
-	 * @var string the class name or alias of the [[identity]] object.
+	 * @var string the class name of the [[identity]] object.
 	 */
 	public $identityClass;
 	/**
@@ -56,7 +56,7 @@ class User extends Component
 	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
 	 * @see Cookie
 	 */
-	public $identityCookie = array('name' => '__identity', 'httponly' => true);
+	public $identityCookie = array('name' => '_identity', 'httponly' => true);
 	/**
 	 * @var integer the number of seconds in which the user will be logged out automatically if he
 	 * remains inactive. If this property is not set, the user will be logged out after
