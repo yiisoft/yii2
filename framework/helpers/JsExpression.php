@@ -10,13 +10,13 @@ namespace yii\helpers;
 use yii\base\Object;
 
 /**
- * JsonExpression marks a string as a JavaScript expression.
+ * JsExpression marks a string as a JavaScript expression.
  * When using [[Json::encode()]] to encode a value, JsonExpression objects
  * will be specially handled and encoded as a JavaScript expression instead of a string.
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class JsonExpression extends Object
+class JsExpression extends Object
 {
 	/**
 	 * @var string the JavaScript expression represented by this object

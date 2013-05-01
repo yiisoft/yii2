@@ -8,7 +8,7 @@
 namespace yii\helpers\base;
 
 use yii\base\InvalidParamException;
-use yii\helpers\JsonExpression;
+use yii\helpers\JsExpression;
 
 /**
  * Json is a helper class providing JSON data encoding and decoding.
@@ -23,7 +23,7 @@ class Json
 	 * Encodes the given value into a JSON string.
 	 * The method enhances `json_encode()` by supporting JavaScript expressions.
 	 * In particular, the method will not encode a JavaScript expression that is
-	 * represented in terms of a [[JsonExpression]] object.
+	 * represented in terms of a [[JsExpression]] object.
 	 * @param mixed $value the data to be encoded
 	 * @param integer $options the encoding options. For more details please refer to
 	 * [[http://www.php.net/manual/en/function.json-encode.php]]
@@ -86,7 +86,7 @@ class Json
 			}
 			return $data;
 		} elseif (is_object($data)) {
-			if ($data instanceof JsonExpression) {
+			if ($data instanceof JsExpression) {
 				$token = '!{[' . count($expressions) . ']}!';
 				$expressions['"' . $token . '"'] = $data->expression;
 				return $token;

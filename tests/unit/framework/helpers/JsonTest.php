@@ -4,7 +4,7 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\Json;
-use yii\helpers\JsonExpression;
+use yii\helpers\JsExpression;
 
 class JsonTest extends \yii\test\TestCase
 {
@@ -27,7 +27,7 @@ class JsonTest extends \yii\test\TestCase
 
 		// expression encoding
 		$expression = 'function () {}';
-		$data = new JsonExpression($expression);
+		$data = new JsExpression($expression);
 		$this->assertSame($expression, Json::encode($data));
 
 		// complex data
@@ -35,9 +35,9 @@ class JsonTest extends \yii\test\TestCase
 		$expression2 = 'function (b) {}';
 		$data = array(
 			'a' => array(
-				1, new JsonExpression($expression1)
+				1, new JsExpression($expression1)
 			),
-			'b' => new JsonExpression($expression2),
+			'b' => new JsExpression($expression2),
 		);
 		$this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::encode($data));
 	}
