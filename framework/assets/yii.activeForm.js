@@ -92,7 +92,7 @@
 					attributes: attributes
 				});
 
-				bindAttributes(attributes);
+				bindAttributes($form, attributes);
 
 				/**
 				 * Clean up error status when resetting the form.
@@ -101,10 +101,9 @@
 				$form.bind('reset', resetForm);
 
 				if (settings.validateOnSubmit) {
-					$form.on('mouseup keyup', ':submit', function () {
+					$form.on('mouseup.yiiActiveForm keyup.yiiActiveForm', ':submit', function () {
 						$form.data('submitObject', $(this));
 					});
-					var validated = false;
 					$form.submit(submitForm);
 				}
 			});
@@ -159,10 +158,11 @@
 		}
 	};
 
-	var bindAttributes = function (attributes) {
+	var bindAttributes = function ($form, attributes) {
 		$.each(attributes, function (i, attribute) {
-			if (this.validateOnChange) {
-				$form.find(this.inputSelector).change(function () {
+			var $input = findInput($form, attribute);
+			if (attribute.validateOnChange) {
+				$input.change(function () {
 					validateAttribute(attribute, false);
 				}).blur(function () {
 					if (attribute.status !== 2 && attribute.status !== 3) {
@@ -170,9 +170,9 @@
 					}
 				});
 			}
-			if (this.validateOnType) {
-				$form.find(this.inputSelector).keyup(function () {
-					if (attribute.value !== getAFValue($(this))) {
+			if (attribute.validateOnType) {
+				$input.keyup(function () {
+					if (attribute.value !== getInputValue($input)) {
 						validateAttribute(attribute, false);
 					}
 				});
