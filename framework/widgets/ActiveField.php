@@ -103,7 +103,7 @@ class ActiveField extends Component
 
 	/**
 	 * Generates a tag that contains the first validation error of [[attribute]].
-	 * If there is no validation, the tag will be returned and styled as hidden.
+	 * Note that even if there is no validation error, this method will still return an empty error tag.
 	 * @param array $options the tag options in terms of name-value pairs. If this is null, [[errorOptions]] will be used.
 	 * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
 	 * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -121,9 +121,6 @@ class ActiveField extends Component
 		}
 		$attribute = Html::getAttributeName($this->attribute);
 		$error = $this->model->getFirstError($attribute);
-		if ($error === null) {
-			$options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
-		}
 		$tag = isset($options['tag']) ? $options['tag'] : 'span';
 		unset($options['tag']);
 		return Html::tag($tag, Html::encode($error), $options);

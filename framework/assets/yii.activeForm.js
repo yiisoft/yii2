@@ -67,7 +67,7 @@
 					settings.validationUrl = $form.attr('action');
 				}
 				$.each(attributes, function (i) {
-					this.value = getInputValue($form.find('#' + this.inputID));
+					this.value = getInputValue($form.find(this.inputSelector));
 					attributes[i] = $.extend(settings, this);
 				});
 				$form.data('yiiActiveForm', {
@@ -77,6 +77,10 @@
 
 				bindAttributes(attributes);
 
+				/**
+				 * Clean up error status when resetting the form.
+				 * Note that neither $form.reset(...) nor $form.on('reset', ...) works.
+				 */
 				$form.bind('reset', resetForm);
 
 				if (settings.validateOnSubmit) {
@@ -84,42 +88,7 @@
 						$form.data('submitObject', $(this));
 					});
 					var validated = false;
-					$form.submit(function () {
-						if (validated) {
-							validated = false;
-							return true;
-						}
-						if (settings.timer !== undefined) {
-							clearTimeout(settings.timer);
-						}
-						settings.submitting = true;
-						if (settings.beforeValidate === undefined || settings.beforeValidate($form)) {
-							$.fn.yiiactiveform.validate($form, function (data) {
-								var hasError = false;
-								$.each(settings.attributes, function () {
-									hasError = $.fn.yiiactiveform.updateInput(this, data, $form) || hasError;
-								});
-								$.fn.yiiactiveform.updateSummary($form, data);
-								if (settings.afterValidate === undefined || settings.afterValidate($form, data, hasError)) {
-									if (!hasError) {
-										validated = true;
-										var $button = $form.data('submitObject') || $form.find(':submit:first');
-										// TODO: if the submission is caused by "change" event, it will not work
-										if ($button.length) {
-											$button.click();
-										} else {  // no submit button in the form
-											$form.submit();
-										}
-										return;
-									}
-								}
-								settings.submitting = false;
-							});
-						} else {
-							settings.submitting = false;
-						}
-						return false;
-					});
+					$form.submit(submitForm);
 				}
 			});
 		},
@@ -139,7 +108,8 @@
 	 * @param $e jQuery the jQuery object of the input element
 	 * @return string the input value
 	 */
-	var getInputValue = function ($e) {
+	var getInputValue = function ($input) {
+		// TBD
 		var type,
 			c = [];
 		if (!$e.length) {
@@ -159,19 +129,32 @@
 		}
 	};
 
+	var findInput = function ($form, attribute) {
+		var $e = $form.find(attribute.inputSelector);
+		if (!$e.length) {
+			return undefined;
+		}
+		if ($e[0].tagName.toLowerCase() === 'div') {
+			// checkbox list or radio list
+			return $e.find('input');
+		} else {
+			return $e;
+		}
+	};
+
 	var bindAttributes = function (attributes) {
 		$.each(attributes, function (i, attribute) {
 			if (this.validateOnChange) {
-				$form.find('#' + this.inputID).change(function () {
+				$form.find(this.inputSelector).change(function () {
 					validateAttribute(attribute, false);
 				}).blur(function () {
-						if (attribute.status !== 2 && attribute.status !== 3) {
-							validateAttribute(attribute, !attribute.status);
-						}
-					});
+					if (attribute.status !== 2 && attribute.status !== 3) {
+						validateAttribute(attribute, !attribute.status);
+					}
+				});
 			}
 			if (this.validateOnType) {
-				$form.find('#' + this.inputID).keyup(function () {
+				$form.find(this.inputSelector).keyup(function () {
 					if (attribute.value !== getAFValue($(this))) {
 						validateAttribute(attribute, false);
 					}
@@ -293,27 +276,61 @@
 		}, attribute.validationDelay);
 	};
 
+	var submitForm = function () {
+		if (validated) {
+			validated = false;
+			return true;
+		}
+		if (settings.timer !== undefined) {
+			clearTimeout(settings.timer);
+		}
+		settings.submitting = true;
+		if (settings.beforeValidate === undefined || settings.beforeValidate($form)) {
+			$.fn.yiiactiveform.validate($form, function (data) {
+				var hasError = false;
+				$.each(settings.attributes, function () {
+					hasError = $.fn.yiiactiveform.updateInput(this, data, $form) || hasError;
+				});
+				$.fn.yiiactiveform.updateSummary($form, data);
+				if (settings.afterValidate === undefined || settings.afterValidate($form, data, hasError)) {
+					if (!hasError) {
+						validated = true;
+						var $button = $form.data('submitObject') || $form.find(':submit:first');
+						// TODO: if the submission is caused by "change" event, it will not work
+						if ($button.length) {
+							$button.click();
+						} else {  // no submit button in the form
+							$form.submit();
+						}
+						return;
+					}
+				}
+				settings.submitting = false;
+			});
+		} else {
+			settings.submitting = false;
+		}
+		return false;
+	};
+
 	var resetForm = function () {
-		/*
-		 * In case of resetting the form we need to reset error messages
-		 * NOTE1: $form.reset - does not exist
-		 * NOTE2: $form.on('reset', ...) does not work
-		 */
+		var settings = $(this).data('yiiActiveForm').settings;
+		var attributes = $(this).data('yiiActiveForm').attributes;
 		/*
 		 * because we bind directly to a form reset event, not to a reset button (that could or could not exist),
 		 * when this function is executed form elements values have not been reset yet,
 		 * because of that we use the setTimeout
 		 */
 		setTimeout(function () {
-			$.each(settings.attributes, function () {
+			$.each(attributes, function () {
 				this.status = 0;
 				var $error = $form.find('#' + this.errorID),
-					$container = $.fn.yiiactiveform.getInputContainer(this, $form);
+					$container = getInputContainer(this, $form);
 
 				$container.removeClass(
-					this.validatingCssClass + ' ' +
-						this.errorCssClass + ' ' +
-						this.successCssClass
+					settings.validatingCssClass + ' ' +
+					settings.errorCssClass + ' ' +
+					settings.successCssClass
 				);
 
 				$error.html('').hide();
@@ -321,20 +338,10 @@
 				/*
 				 * without the setTimeout() we would get here the current entered value before the reset instead of the reseted value
 				 */
-				this.value = getAFValue($form.find('#' + this.inputID));
-			});
-			/*
-			 * If the form is submited (non ajax) with errors, labels and input gets the class 'error'
-			 */
-			$form.find('label, input').each(function () {
-				$(this).removeClass(settings.errorCss);
+				this.value = getInputValue($form.find('#' + this.inputID));
 			});
 			$('#' + settings.summaryID).hide().find('ul').html('');
-			//.. set to initial focus on reset
-			if (settings.focus !== undefined && !window.location.hash) {
-				$form.find(settings.focus).focus();
-			}
-		}, 1);
+		}, 10);
 	};
 
 
@@ -401,7 +408,7 @@
 	 * @param messages array the json data obtained from the ajax validation request
 	 */
 	var updateSummary = function (form, messages) {
-		var settings = $(form).data('settings'),
+		var settings = $(form).data('yiiActiveForm'),
 			content = '';
 		if (settings.summaryID === undefined) {
 			return;
@@ -416,6 +423,14 @@
 			});
 		}
 		$('#' + settings.summaryID).toggle(content !== '').find('ul').html(content);
+	};
+
+	var getSettings = function (form) {
+		return $(form).data('yiiActiveForm').settings;
+	};
+
+	var getAttributes = function (form) {
+		return $(form).data('yiiActiveForm').attributes;
 	};
 
 })(window.jQuery);
