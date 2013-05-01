@@ -21,7 +21,7 @@ use yii\db\redis\Connection;
  * authenticate with the server after connect.
  *
  * See [[Cache]] manual for common cache operations that RedisCache supports.
- * Different from the description in [[Cache]], RedisCache allows the expire parameter of
+ * Unlike the [[CCache]], RedisCache allows the expire parameter of
  * [[set]] and [[add]] to be a floating point number, so you may specify the time in milliseconds.
  *
  * To use RedisCache as the cache application component, configure the application as follows,
