@@ -65,3 +65,18 @@ or `$this->renderPartial()` from your controller:
 ```php
 echo $this->render('renderer.tpl', array('username' => 'Alex'));
 ```
+
+### Additional functions
+
+Additionally to regular Smarty syntax the following is available in Yii:
+
+```php
+<a href="{path route='blog/view' alias=$post.alias}">{$post.title}</a>
+```
+
+path function calls `Html::url()` internally.
+
+### Additional variables
+
+- `$app` = `\Yii::$app`
+- `$this` = current `View` object
