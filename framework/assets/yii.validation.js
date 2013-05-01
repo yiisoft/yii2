@@ -1,5 +1,5 @@
 /**
- * Yii form widget.
+ * Yii validation module.
  *
  * This is the JavaScript widget used by the yii\widgets\ActiveForm widget.
  *
@@ -10,6 +10,8 @@
  * @since 2.0
  */
 
-!function ($) {
-
-}(window.jQuery);
+yii.validation = (function ($) {
+	var pub = {
+	};
+	return pub;
+})(jQuery);

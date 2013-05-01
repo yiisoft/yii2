@@ -17,14 +17,14 @@ return array(
 	'yii/validation' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
-			'yii-validation.js',
+			'yii.validation.js',
 		),
 		'depends' => array('yii'),
 	),
 	'yii/form' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
-			'yii-form.js',
+			'yii.activeForm.js',
 		),
 		'depends' => array('yii', 'yii/validation'),
 	),
