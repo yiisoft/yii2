@@ -339,15 +339,23 @@ class Connection extends Component
 	}
 
 	/**
-	 * Execute a redis command
-	 * http://redis.io/commands
-	 * http://redis.io/topics/protocol
+	 * Executes a redis command.
+	 * For a list of available commands and their parameters see http://redis.io/commands.
 	 *
-	 * @param $name
-	 * @param $params
-	 * @return array|bool|null|string
-	 * Returns true on Status reply
-	 * TODO explain all reply types
+	 * @param string $name the name of the command
+	 * @param array $params list of parameters for the command
+	 * @return array|bool|null|string Dependend on the executed command this method
+	 * will return different data types:
+	 *
+	 * - `true` for commands that return "status reply".
+	 * - `string` for commands that return "integer reply"
+	 *   as the value is in the range of a signed 64 bit integer.
+	 * - `string` or `null` for commands that return "bulk reply".
+	 * - `array` for commands that return "Multi-bulk replies".
+	 *
+	 * See [redis protocol description](http://redis.io/topics/protocol)
+	 * for details on the mentioned reply types.
+	 * @trows CException for commands that return [error reply](http://redis.io/topics/protocol#error-reply).
 	 */
 	public function executeCommand($name, $params=array())
 	{
