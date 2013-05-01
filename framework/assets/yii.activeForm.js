@@ -23,6 +23,12 @@
 	};
 
 	var defaults = {
+		// the container CSS class representing the corresponding attribute has validation error
+		errorCssClass: 'error',
+		// the container CSS class representing the corresponding attribute passes validation
+ 		successCssClass: 'success',
+		// the container CSS class representing the corresponding attribute is being validated
+		validatingCssClass: 'validating',
 		// whether it is waiting for ajax submission result
 		submitting: false
 	};
@@ -32,21 +38,17 @@
 		 * Initializes the plugin.
 		 * @param attributes array attribute configurations. Each attribute may contain the following options:
 		 *
-		 * - id: 'ModelClass_attribute', // the unique attribute ID
-		 * - model: 'ModelClass', // the model class name
-		 * - name: 'name', // attribute name
-		 * - inputID: 'input-tag-id',
-		 * - errorID: 'error-tag-id',
-		 * - value: undefined,
-		 * - status: 0,  // 0: empty, not entered before,  1: validated, 2: pending validation, 3: validating
+		 * - name: string, attribute name or expression (e.g. "[0]content" for tabular input)
+		 * - container: string, the jQuery selector of the container of the input field
+		 * - input: string, the jQuery selector of the input field
+		 * - error: string, the jQuery selector of the error tag
+		 * - value: string|array, the value of the input
+		 * - status: integer, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
 		 * - validationDelay: 200,
 		 * - validateOnChange: true,
 		 * - validateOnType: false,
 		 * - hideErrorMessage: false,
 		 * - inputContainer: undefined,
-		 * - errorCssClass: 'error',
-		 * - successCssClass: 'success',
-		 * - validatingCssClass: 'validating',
 		 * - enableAjaxValidation: true,
 		 * - enableClientValidation: true,
 		 * - clientValidation: undefined, // function (value, messages, attribute) | client-side validation
