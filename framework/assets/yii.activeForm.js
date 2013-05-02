@@ -360,7 +360,7 @@
 
 		attribute.status = 1;
 		if ($input.length) {
-			hasError = messages && $.isArray(messages[attribute.id]) && messages[attribute.name].length;
+			hasError = messages && $.isArray(messages[attribute.name]) && messages[attribute.name].length;
 			var $container = $form.find(attribute.container);
 			$container.removeClass(
 				data.settings.validatingCssClass + ' ' +
@@ -369,7 +369,7 @@
 			);
 
 			if (hasError) {
-				$form.find(attribute.error).html(messages[attribute.name][0]);
+				$container.find(attribute.error).html(messages[attribute.name][0]);
 				$container.addClass(data.settings.errorCssClass);
 			} else if (attribute.enableAjaxValidation || attribute.enableClientValidation && attribute.validate) {
 				$container.addClass(data.settings.successCssClass);

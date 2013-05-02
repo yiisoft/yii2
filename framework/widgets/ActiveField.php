@@ -65,7 +65,7 @@ class ActiveField extends Component
 		$attribute = Html::getAttributeName($this->attribute);
 
 		$validators = array();
-		foreach ($this->model->getValidators($attribute) as $validator) {
+		foreach ($this->model->getActiveValidators($attribute) as $validator) {
 			/** @var \yii\validators\Validator $validator */
 			if (($js = $validator->clientValidateAttribute($this->model, $attribute)) != '') {
 				$validators[] = $js;
