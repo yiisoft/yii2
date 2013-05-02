@@ -83,7 +83,7 @@ class BooleanValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$options['message'] = array(
+		$options = array(
 			'trueValue' => $this->trueValue,
 			'falseValue' => $this->falseValue,
 			'message' => Html::encode(strtr($this->message, array(

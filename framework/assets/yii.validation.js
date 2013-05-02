@@ -30,6 +30,47 @@ yii.validation = (function ($) {
 			valid || messages.push(options.message);
 		},
 
+		compare: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			var compareValue, valid = true;
+			if (options.compareAttribute === undefined) {
+				compareValue = options.compareValue;
+			} else {
+				compareValue = $('#' + options.compareAttribute).val();
+			}
+			switch (options.operator) {
+				case '==':
+					valid = value == compareValue;
+					break;
+				case '===':
+					valid = value === compareValue;
+					break;
+				case '!=':
+					valid = value != compareValue;
+					break;
+				case '!==':
+					valid = value !== compareValue;
+					break;
+				case '>':
+					valid = value > compareValue;
+					break;
+				case '>=':
+					valid = value >= compareValue;
+					break;
+				case '<':
+					valid = value < compareValue;
+					break;
+				case '<=':
+					valid = value <= compareValue;
+					break;
+			}
+
+			valid || messages.push(options.message);
+		},
+
 		boolean: function (value, messages, options) {
 			if (options.skipOnEmpty && isEmpty(value)) {
 				return;

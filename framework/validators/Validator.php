@@ -76,10 +76,11 @@ abstract class Validator extends Component
 	 */
 	public $attributes;
 	/**
-	 * @var string the user-defined error message. Error message may contain some placeholders
-	 * that will be replaced with the actual values by the validator.
-	 * The `{attribute}` and `{value}` are placeholders supported by all validators.
-	 * They will be replaced with the attribute label and value, respectively.
+	 * @var string the user-defined error message. It may contain the following placeholders which
+	 * will be replaced accordingly by the validator:
+	 *
+	 * - `{attribute}`: the label of the attribute being validated
+	 * - `{value}`: the value of the attribute being validated
 	 */
 	public $message;
 	/**
