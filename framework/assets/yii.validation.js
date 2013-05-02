@@ -27,7 +27,9 @@ yii.validation = (function ($) {
 				valid = true;
 			}
 
-			valid || messages.push(options.message);
+			if(!valid) {
+				messages.push(options.message);
+			}
 		},
 
 		boolean: function (value, messages, options) {
@@ -37,7 +39,9 @@ yii.validation = (function ($) {
 			var valid = !options.strict && (value == options.trueValue || value == options.falseValue)
 				|| options.strict && (value === options.trueValue || value === options.falseValue);
 
-			valid || messages.push(options.message);
+			if(!valid) {
+				messages.push(options.message);
+			}
 		},
 
 		string: function (value, messages, options) {
@@ -86,7 +90,9 @@ yii.validation = (function ($) {
 			var valid = !options.not && $.inArray(value, options.range)
 				|| options.not && !$.inArray(value, options.range);
 
-			valid || messages.push(options.message);
+			if(!valid) {
+				messages.push(options.message);
+			}
 		},
 
 		regularExpression: function (value, messages, options) {
@@ -106,7 +112,9 @@ yii.validation = (function ($) {
 
 			var valid = value.match(options.pattern) && (!options.allowName || value.match(options.fullPattern));
 
-			valid || messages.push(options.message);
+			if(!valid) {
+				messages.push(options.message);
+			}
 		},
 
 		url: function (value, messages, options) {
@@ -182,7 +190,9 @@ yii.validation = (function ($) {
 					break;
 			}
 
-			valid || messages.push(options.message);
+			if(!valid) {
+				messages.push(options.message);
+			}
 		}
 	};
 })(jQuery);
