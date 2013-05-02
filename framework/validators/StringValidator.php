@@ -133,41 +133,36 @@ class StringValidator extends Validator
 		$label = $object->getAttributeLabel($attribute);
 		$value = $object->$attribute;
 
-		$message = strtr($this->message, array(
-			'{attribute}' => $label,
-			'{value}' => $value,
-		));
-		$notEqual = strtr($this->notEqual, array(
-			'{attribute}' => $label,
-			'{value}' => $value,
-			'{length}' => $this->is,
-		));
-		$tooShort = strtr($this->tooShort, array(
-			'{attribute}' => $label,
-			'{value}' => $value,
-			'{min}' => $this->min,
-		));
-		$tooLong = strtr($this->tooLong, array(
-			'{attribute}' => $label,
-			'{value}' => $value,
-			'{max}' => $this->max,
-		));
-
 		$options = array(
-			'message' => Html::encode($message),
-			'notEqual' => Html::encode($notEqual),
-			'tooShort' => Html::encode($tooShort),
-			'tooLong' => Html::encode($tooLong),
+			'message' => Html::encode(strtr($this->message, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+			))),
 		);
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
+			$options['tooShort'] = Html::encode(strtr($this->tooShort, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+				'{min}' => $this->min,
+			)));
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
+			$options['tooLong'] = Html::encode(strtr($this->tooLong, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+				'{max}' => $this->max,
+			)));
 		}
 		if ($this->is !== null) {
 			$options['is'] = $this->is;
+			$options['notEqual'] = Html::encode(strtr($this->notEqual, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+				'{length}' => $this->is,
+			)));
 		}
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

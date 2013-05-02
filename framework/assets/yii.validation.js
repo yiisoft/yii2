@@ -86,7 +86,7 @@ yii.validation = (function ($) {
 				return;
 			}
 
-			if (!value.match(options.pattern)) {
+			if (!options.not && !value.match(options.pattern) || options.not && value.match(options.pattern)) {
 				messages.push(options.message)
 			}
 		},
@@ -133,6 +133,24 @@ yii.validation = (function ($) {
 			}
 			if (options.is !== undefined && value.length != options.is) {
 				messages.push(options.is);
+			}
+		},
+
+		number: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			if (typeof value === 'string' && !value.match(options.pattern)) {
+				messages.push(options.message);
+				return;
+			}
+
+			if (options.min !== undefined && value < options.min) {
+				messages.push(options.tooSmall);
+			}
+			if (options.max !== undefined && value > options.max) {
+				messages.push(options.tooBig);
 			}
 		}
 	};

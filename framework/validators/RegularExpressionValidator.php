@@ -100,6 +100,7 @@ class RegularExpressionValidator extends Validator
 
 		$options = array(
 			'pattern' => new JsExpression($pattern),
+			'not' => $this->not,
 			'message' => Html::encode(strtr($this->message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
