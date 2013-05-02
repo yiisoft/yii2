@@ -10,6 +10,7 @@ namespace yii\widgets;
 use yii\base\Component;
 use yii\helpers\Html;
 use yii\base\Model;
+use yii\helpers\JsExpression;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -60,15 +61,39 @@ class ActiveField extends Component
 
 	public function begin()
 	{
+		$inputID = Html::getInputId($this->model, $this->attribute);
+		$attribute = Html::getAttributeName($this->attribute);
+
+		$validators = array();
+		foreach ($this->model->getValidators($attribute) as $validator) {
+			/** @var \yii\validators\Validator $validator */
+			if (($js = $validator->clientValidateAttribute($this->model, $attribute)) != '') {
+				$validators[] = $js;
+			}
+		}
+		$jsOptions = array(
+			'name' => $this->attribute,
+			'container' => ".field-$inputID",
+			'input' => "#$inputID",
+			'error' => '.help-inline',
+		);
+		if ($validators !== array()) {
+			$jsOptions['validate'] = new JsExpression("function(attribute, value, messages) {" . implode('', $validators) . '}');
+		}
+		$this->form->attributes[$this->attribute] = $jsOptions;
+
+
 		$options = $this->options;
 		$class = isset($options['class']) ? array($options['class']) : array();
-		$class[] = 'field-' . Html::getInputId($this->model, $this->attribute);
-		if ($this->model->isAttributeRequired($this->attribute)) {
+		$class[] = "field-$inputID";
+		if ($this->model->isAttributeRequired($attribute)) {
 			$class[] = $this->form->requiredCssClass;
 		}
-		if ($this->model->hasErrors($this->attribute)) {
+		if ($this->model->hasErrors($attribute)) {
 			$class[] = $this->form->errorCssClass;
 		}
+
+
 		$options['class'] = implode(' ', $class);
 		return Html::beginTag($this->tag, $options);
 	}

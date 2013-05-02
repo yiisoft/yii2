@@ -102,12 +102,6 @@ abstract class Validator extends Component
 	public $skipOnEmpty = true;
 
 	/**
-	 * @var boolean whether to enable client-side validation. Defaults to null, meaning
-	 * its actual value inherits from that of [[\yii\web\ActiveForm::enableClientValidation]].
-	 */
-	public $enableClientValidation;
-
-	/**
 	 * Validates a single attribute.
 	 * Child classes must implement this method to provide the actual validation logic.
 	 * @param \yii\base\Model $object the data object to be validated
@@ -211,7 +205,6 @@ abstract class Validator extends Component
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script. Null if the validator does not support
 	 * client-side validation.
-	 * @see enableClientValidation
 	 * @see \yii\web\ActiveForm::enableClientValidation
 	 */
 	public function clientValidateAttribute($object, $attribute)

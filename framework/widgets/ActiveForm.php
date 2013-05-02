@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * ActiveForm ...
@@ -41,17 +42,20 @@ class ActiveForm extends Widget
 	 */
 	public $errorSummaryCssClass = 'yii-error-summary';
 	/**
-	 * @var boolean whether to enable client-side data validation.
-	 * Client-side validation will be performed by validators that support it
-	 * (see [[\yii\validators\Validator::enableClientValidation]] and [[\yii\validators\Validator::clientValidateAttribute()]]).
-	 */
-	public $enableClientValidation = true;
-	/**
 	 * @var array the default configuration used by [[field()]] when creating a new field object.
 	 */
 	public $fieldConfig = array(
 		'class' => 'yii\widgets\ActiveField',
 	);
+
+	/**
+	 * @var boolean whether to enable client-side data validation.
+	 * Client-side validation will be performed by validators that support it
+	 * (see [[\yii\validators\Validator::enableClientValidation]] and [[\yii\validators\Validator::clientValidateAttribute()]]).
+	 */
+	public $enableClientValidation = true;
+	public $enableAjaxValidation = false;
+
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute is required.
 	 */
@@ -69,13 +73,22 @@ class ActiveForm extends Widget
 	 */
 	public $validatingCssClass = 'validating';
 
+	public $validationUrl;
+	public $validationDelay;
+	public $validateOnChange;
+	public $validateOnType;
+
+	public $attributes = array();
+
 	/**
 	 * Initializes the widget.
 	 * This renders the form open tag.
 	 */
 	public function init()
 	{
-		$this->options['id'] = $this->getId();
+		if (!isset($this->options['id'])) {
+			$this->options['id'] = $this->getId();
+		}
 		echo Html::beginForm($this->action, $this->method, $this->options);
 	}
 
@@ -85,11 +98,18 @@ class ActiveForm extends Widget
 	 */
 	public function run()
 	{
-		$id = $this->getId();
-		$options = array();
-		$options = json_encode($options);
+		$id = $this->options['id'];
+		$options = array(
+			'enableClientValidation' => $this->enableClientValidation,
+			'enableAjaxValidation' => $this->enableAjaxValidation,
+			'errorCssClass' => $this->errorCssClass,
+			'successCssClass' => $this->successCssClass,
+			'validatingCssClass' => $this->validatingCssClass,
+		);
+		$options = Json::encode($options);
+		$attributes = Json::encode($this->attributes);
 		$this->view->registerAssetBundle('yii/form');
-		$this->view->registerJs("jQuery('#$id').yii.form($options);");
+		$this->view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
 		echo Html::endForm();
 	}
 
