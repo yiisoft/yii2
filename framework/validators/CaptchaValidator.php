@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
 
 /**
  * CaptchaValidator validates that the attribute value is the same as the verification code displayed in the CAPTCHA.
@@ -94,33 +95,22 @@ class CaptchaValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$captcha = $this->getCaptchaAction();
-		$message = strtr($this->message, array(
-			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
-		));
 		$code = $captcha->getVerifyCode(false);
 		$hash = $captcha->generateValidationHash($this->caseSensitive ? $code : strtolower($code));
-		$js = "
-var hash = $('body').data(' {$this->captchaAction}.hash');
-if (hash == null)
-	hash = $hash;
-else
-	hash = hash[" . ($this->caseSensitive ? 0 : 1) . "];
-for(var i=value.length-1, h=0; i >= 0; --i) h+=value." . ($this->caseSensitive ? '' : 'toLowerCase().') . "charCodeAt(i);
-if(h != hash) {
-	messages.push(" . json_encode($message) . ");
-}
-";
-
+		$options = array(
+			'hash' => $hash,
+			'hashKey' => 'yiiCaptcha/' . $this->captchaAction,
+			'caseSensitive' => $this->caseSensitive,
+			'message' => Html::encode(strtr($this->message, array(
+				'{attribute}' => $object->getAttributeLabel($attribute),
+				'{value}' => $object->$attribute,
+			))),
+		);
 		if ($this->skipOnEmpty) {
-			$js = "
-if($.trim(value)!='') {
-	$js
-}
-";
+			$options['skipOnEmpty'] = 1;
 		}
 
-		return $js;
+		return 'yii.validation.captcha(value, messages, ' . json_encode($options) . ');';
 	}
 }
 

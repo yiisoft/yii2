@@ -30,47 +30,6 @@ yii.validation = (function ($) {
 			valid || messages.push(options.message);
 		},
 
-		compare: function (value, messages, options) {
-			if (options.skipOnEmpty && isEmpty(value)) {
-				return;
-			}
-
-			var compareValue, valid = true;
-			if (options.compareAttribute === undefined) {
-				compareValue = options.compareValue;
-			} else {
-				compareValue = $('#' + options.compareAttribute).val();
-			}
-			switch (options.operator) {
-				case '==':
-					valid = value == compareValue;
-					break;
-				case '===':
-					valid = value === compareValue;
-					break;
-				case '!=':
-					valid = value != compareValue;
-					break;
-				case '!==':
-					valid = value !== compareValue;
-					break;
-				case '>':
-					valid = value > compareValue;
-					break;
-				case '>=':
-					valid = value >= compareValue;
-					break;
-				case '<':
-					valid = value < compareValue;
-					break;
-				case '<=':
-					valid = value <= compareValue;
-					break;
-			}
-
-			valid || messages.push(options.message);
-		},
-
 		boolean: function (value, messages, options) {
 			if (options.skipOnEmpty && isEmpty(value)) {
 				return;
@@ -79,40 +38,6 @@ yii.validation = (function ($) {
 				|| options.strict && (value === options.trueValue || value === options.falseValue);
 
 			valid || messages.push(options.message);
-		},
-
-		regularExpression: function (value, messages, options) {
-			if (options.skipOnEmpty && isEmpty(value)) {
-				return;
-			}
-
-			if (!options.not && !value.match(options.pattern) || options.not && value.match(options.pattern)) {
-				messages.push(options.message)
-			}
-		},
-
-		email: function (value, messages, options) {
-			if (options.skipOnEmpty && isEmpty(value)) {
-				return;
-			}
-
-			var valid = value.match(options.pattern) && (!options.allowName || value.match(options.fullPattern));
-
-			valid || messages.push(options.message);
-		},
-
-		url: function (value, messages, options) {
-			if (options.skipOnEmpty && isEmpty(value)) {
-				return;
-			}
-
-			if (options.defaultScheme && !value.match(/:\/\//)) {
-				value = options.defaultScheme + '://' + value;
-			}
-
-			if (!value.match(options.pattern)) {
-				messages.push(options.message);
-			}
 		},
 
 		string: function (value, messages, options) {
@@ -152,6 +77,112 @@ yii.validation = (function ($) {
 			if (options.max !== undefined && value > options.max) {
 				messages.push(options.tooBig);
 			}
+		},
+
+		range: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+			var valid = !options.not && $.inArray(value, options.range)
+				|| options.not && !$.inArray(value, options.range);
+
+			valid || messages.push(options.message);
+		},
+
+		regularExpression: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			if (!options.not && !value.match(options.pattern) || options.not && value.match(options.pattern)) {
+				messages.push(options.message)
+			}
+		},
+
+		email: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			var valid = value.match(options.pattern) && (!options.allowName || value.match(options.fullPattern));
+
+			valid || messages.push(options.message);
+		},
+
+		url: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			if (options.defaultScheme && !value.match(/:\/\//)) {
+				value = options.defaultScheme + '://' + value;
+			}
+
+			if (!value.match(options.pattern)) {
+				messages.push(options.message);
+			}
+		},
+
+		captcha: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			// CAPTCHA may be updated via AJAX and the updated hash is stored in body data
+			var hash = $('body').data(options.hashKey);
+			if (hash == null) {
+				hash = options.hash;
+			} else {
+				hash = hash[options.caseSensitive ? 0 : 1];
+			}
+			var v = options.caseSensitive ? value : value.toLowerCase();
+			for (var i = v.length - 1, h = 0; i >= 0; --i) {
+				h += v.charCodeAt(i);
+			}
+			if(h != hash) {
+				messages.push(options.message);
+			}
+		},
+
+		compare: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			var compareValue, valid = true;
+			if (options.compareAttribute === undefined) {
+				compareValue = options.compareValue;
+			} else {
+				compareValue = $('#' + options.compareAttribute).val();
+			}
+			switch (options.operator) {
+				case '==':
+					valid = value == compareValue;
+					break;
+				case '===':
+					valid = value === compareValue;
+					break;
+				case '!=':
+					valid = value != compareValue;
+					break;
+				case '!==':
+					valid = value !== compareValue;
+					break;
+				case '>':
+					valid = value > compareValue;
+					break;
+				case '>=':
+					valid = value >= compareValue;
+					break;
+				case '<':
+					valid = value < compareValue;
+					break;
+				case '<=':
+					valid = value <= compareValue;
+					break;
+			}
+
+			valid || messages.push(options.message);
 		}
 	};
 })(jQuery);
