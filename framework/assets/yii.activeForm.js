@@ -40,7 +40,7 @@
 		// the container CSS class representing the corresponding attribute has validation error
 		errorCssClass: 'error',
 		// the container CSS class representing the corresponding attribute passes validation
- 		successCssClass: 'success',
+		successCssClass: 'success',
 		// the container CSS class representing the corresponding attribute is being validated
 		validatingCssClass: 'validating',
 		// a callback that is called before validating any attribute
@@ -124,7 +124,7 @@
 			return this.each(function () {
 				$(window).unbind('.yiiActiveForm');
 				$(this).removeData('yiiActiveForm');
-			})
+			});
 		}
 	};
 
@@ -218,7 +218,7 @@
 	/**
 	 * Performs the ajax validation request.
 	 * This method is invoked internally to trigger the ajax validation.
-	 * @param form jquery the jquery representation of the form
+	 * @param $form jquery the jquery representation of the form
 	 * @param successCallback function the function to be invoked if the ajax request succeeds
 	 * @param errorCallback function the function to be invoked if the ajax request fails
 	 */
@@ -350,7 +350,7 @@
 	 * updates the error message and the input container for a particular attribute.
 	 * @param attribute object the configuration for a particular attribute.
 	 * @param messages array the json data obtained from the ajax validation request
-	 * @param form the form jQuery object
+	 * @param $form the form jQuery object
 	 * @return boolean whether there is a validation error for the specified attribute
 	 */
 	var updateInput = function ($form, attribute, messages) {
