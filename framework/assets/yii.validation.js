@@ -1,7 +1,7 @@
 /**
  * Yii validation module.
  *
- * This is the JavaScript widget used by the yii\widgets\ActiveForm widget.
+ * This JavaScript module provides the validation methods for the built-in validaotrs.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
