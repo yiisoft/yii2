@@ -40,6 +40,15 @@ class RequiredValidator extends Validator
 	 * to check if the attribute value is empty.
 	 */
 	public $strict = false;
+	/**
+	 * @var string the user-defined error message. It may contain the following placeholders which
+	 * will be replaced accordingly by the validator:
+	 *
+	 * - `{attribute}`: the label of the attribute being validated
+	 * - `{value}`: the value of the attribute being validated
+	 * - `{requiredValue}`: the value of [[requiredValue]]
+	 */
+	public $message;
 
 	/**
 	 * Initializes the validator.

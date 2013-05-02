@@ -8,6 +8,9 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Html;
+use yii\helpers\JsExpression;
+use yii\helpers\Json;
 
 /**
  * EmailValidator validates that the attribute value is a valid email address.
@@ -100,20 +103,19 @@ class EmailValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = strtr($this->message, array(
-			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
-		));
-
-		$condition = "!value.match( {$this->pattern})";
-		if ($this->allowName) {
-			$condition .= " && !value.match( {$this->fullPattern})";
+		$options = array(
+			'pattern' => new JsExpression($this->pattern),
+			'fullPattern' => new JsExpression($this->fullPattern),
+			'allowName' => $this->allowName,
+			'message' => Html::encode(strtr($this->message, array(
+				'{attribute}' => $object->getAttributeLabel($attribute),
+				'{value}' => $object->$attribute,
+			))),
+		);
+		if ($this->skipOnEmpty) {
+			$options['skipOnEmpty'] = 1;
 		}
 
-		return "
-if(" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
-	messages.push(" . json_encode($message) . ");
-}
-";
+		return 'yii.validation.email(value, messages, ' . Json::encode($options) . ');';
 	}
 }

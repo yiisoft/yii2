@@ -79,6 +79,26 @@ yii.validation = (function ($) {
 				|| options.strict && (value === options.trueValue || value === options.falseValue);
 
 			valid || messages.push(options.message);
+		},
+
+		email: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			var valid = value.match(options.pattern) && (!options.allowName || value.match(options.fullPattern));
+
+			valid || messages.push(options.message);
+		},
+
+		regularExpression: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			if (!value.match(options.pattern)) {
+				messages.push(options.message)
+			}
 		}
 	};
 })(jQuery);

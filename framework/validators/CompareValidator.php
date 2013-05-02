@@ -197,7 +197,7 @@ class CompareValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$options['message'] = Html::encode(strtr($options['message'], array(
+		$options['message'] = Html::encode(strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{value}' => $object->$attribute,
 			'{compareValue}' => $compareValue,
