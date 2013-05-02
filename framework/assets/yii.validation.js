@@ -114,5 +114,26 @@ yii.validation = (function ($) {
 				messages.push(options.message);
 			}
 		},
+
+		string: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			if (typeof value !== 'string') {
+				messages.push(options.message);
+				return;
+			}
+
+			if (options.min !== undefined && value.length < options.min) {
+				messages.push(options.tooShort);
+			}
+			if (options.max !== undefined && value.length > options.max) {
+				messages.push(options.tooLong);
+			}
+			if (options.is !== undefined && value.length != options.is) {
+				messages.push(options.is);
+			}
+		}
 	};
 })(jQuery);
