@@ -81,6 +81,16 @@ yii.validation = (function ($) {
 			valid || messages.push(options.message);
 		},
 
+		regularExpression: function (value, messages, options) {
+			if (options.skipOnEmpty && isEmpty(value)) {
+				return;
+			}
+
+			if (!value.match(options.pattern)) {
+				messages.push(options.message)
+			}
+		},
+
 		email: function (value, messages, options) {
 			if (options.skipOnEmpty && isEmpty(value)) {
 				return;
@@ -91,14 +101,18 @@ yii.validation = (function ($) {
 			valid || messages.push(options.message);
 		},
 
-		regularExpression: function (value, messages, options) {
+		url: function (value, messages, options) {
 			if (options.skipOnEmpty && isEmpty(value)) {
 				return;
 			}
 
-			if (!value.match(options.pattern)) {
-				messages.push(options.message)
+			if (options.defaultScheme && !value.match(/:\/\//)) {
+				value = options.defaultScheme + '://' + value;
 			}
-		}
+
+			if (!value.match(options.pattern)) {
+				messages.push(options.message);
+			}
+		},
 	};
 })(jQuery);

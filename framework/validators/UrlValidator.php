@@ -8,6 +8,9 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Html;
+use yii\helpers\JsExpression;
+use yii\helpers\Json;
 
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.
@@ -100,40 +103,27 @@ class UrlValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = strtr($this->message, array(
-			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
-		));
-
 		if (strpos($this->pattern, '{schemes}') !== false) {
 			$pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
 		} else {
 			$pattern = $this->pattern;
 		}
 
-		$js = "
-if(!value.match($pattern)) {
-	messages.push(" . json_encode($message) . ");
-}
-";
-		if ($this->defaultScheme !== null) {
-			$js = "
-if(!value.match(/:\\/\\//)) {
-	value=" . json_encode($this->defaultScheme) . "+'://'+value;
-}
-$js
-";
-		}
-
+		$options = array(
+			'pattern' => new JsExpression($pattern),
+			'message' => Html::encode(strtr($this->message, array(
+				'{attribute}' => $object->getAttributeLabel($attribute),
+				'{value}' => $object->$attribute,
+			))),
+		);
 		if ($this->skipOnEmpty) {
-			$js = "
-if($.trim(value)!='') {
-	$js
-}
-";
+			$options['skipOnEmpty'] = 1;
+		}
+		if ($this->defaultScheme !== null) {
+			$options['defaultScheme'] = $this->defaultScheme;
 		}
 
-		return $js;
+		return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
 	}
 }
 
