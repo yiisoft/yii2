@@ -47,7 +47,7 @@ class ActiveForm extends Widget
 	 * @var string the default CSS class for the error summary container.
 	 * @see errorSummary()
 	 */
-	public $errorSummaryCssClass = 'yii-error-summary';
+	public $errorSummaryCssClass = 'error-summary';
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute is required.
 	 */
@@ -180,15 +180,39 @@ class ActiveForm extends Widget
 		echo Html::endForm();
 	}
 
+	/**
+	 * Returns the options for the form JS widget.
+	 * @return array the options
+	 */
 	protected function getClientOptions()
 	{
 		$options = array(
-			'enableClientValidation' => $this->enableClientValidation,
-			'enableAjaxValidation' => $this->enableAjaxValidation,
+			'errorSummary' => '.' . $this->errorSummaryCssClass,
+			'validateOnSubmit' => $this->validateOnSubmit,
 			'errorCssClass' => $this->errorCssClass,
 			'successCssClass' => $this->successCssClass,
 			'validatingCssClass' => $this->validatingCssClass,
 		);
+		if ($this->validationUrl !== null) {
+			$options['validationUrl'] = Html::url($this->validationUrl);
+		}
+		$callbacks = array(
+			'beforeValidateAttribute',
+			'afterValidateAttribute',
+			'beforeValidate',
+			'afterValidate',
+		);
+		foreach ($callbacks as $callback) {
+			$value = $this->$callback;
+			if (is_string($value)) {
+				$value = new JsExpression($value);
+			}
+			if ($value instanceof JsExpression) {
+				$options[$callback] = $value;
+			}
+		}
+
+		return $options;
 	}
 
 	/**
@@ -245,7 +269,9 @@ class ActiveForm extends Widget
 	 * @param Model $model the data model
 	 * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
 	 * about attribute expression.
+	 * @param array $options the additional configurations for the field object
 	 * @return ActiveField the created ActiveField object
+	 * @see fieldConfig
 	 */
 	public function field($model, $attribute, $options = array())
 	{
