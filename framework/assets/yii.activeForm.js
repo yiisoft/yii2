@@ -23,6 +23,8 @@
 	};
 
 	var defaults = {
+		// the jQuery selector for the error summary
+		errorSummary: undefined,
 		// whether to enable client-side (JavaScript) validation
 		enableClientValidation: true,
 		// whether to enable AJAX-based validation
@@ -381,7 +383,7 @@
 
 	var updateSummary = function ($form, messages) {
 		var data = $form.data('yiiActiveForm'),
-			$summary = $form.find(data.settings.summary),
+			$summary = $form.find(data.settings.errorSummary),
 			content = '';
 
 		if ($summary.length && messages) {

@@ -12,6 +12,7 @@ use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\JsExpression;
 
 /**
  * ActiveForm ...
@@ -37,25 +38,16 @@ class ActiveForm extends Widget
 	 */
 	public $options = array();
 	/**
-	 * @var string the default CSS class for the error summary container.
-	 * @see errorSummary()
-	 */
-	public $errorSummaryCssClass = 'yii-error-summary';
-	/**
 	 * @var array the default configuration used by [[field()]] when creating a new field object.
 	 */
 	public $fieldConfig = array(
 		'class' => 'yii\widgets\ActiveField',
 	);
-
 	/**
-	 * @var boolean whether to enable client-side data validation.
-	 * Client-side validation will be performed by validators that support it
-	 * (see [[\yii\validators\Validator::enableClientValidation]] and [[\yii\validators\Validator::clientValidateAttribute()]]).
+	 * @var string the default CSS class for the error summary container.
+	 * @see errorSummary()
 	 */
-	public $enableClientValidation = true;
-	public $enableAjaxValidation = false;
-
+	public $errorSummaryCssClass = 'yii-error-summary';
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute is required.
 	 */
@@ -72,12 +64,92 @@ class ActiveForm extends Widget
 	 * @var string the CSS class that is added to a field container when the associated attribute is being validated.
 	 */
 	public $validatingCssClass = 'validating';
-
+	/**
+	 * @var boolean whether to enable client-side data validation.
+	 * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.
+	 */
+	public $enableClientValidation = true;
+	/**
+	 * @var boolean whether to enable AJAX-based data validation.
+	 * If [[ActiveField::enableAjaxValidation]] is set, its value will take precedence for that input field.
+	 */
+	public $enableAjaxValidation = false;
+	/**
+	 * @var array|string the URL for performing AJAX-based validation. This property will be processed by
+	 * [[Html::url()]]. Please refer to [[Html::url()]] for more details on how to configure this property.
+	 * If this property is not set, it will take the value of the form's action attribute.
+	 */
 	public $validationUrl;
-	public $validationDelay;
-	public $validateOnChange;
-	public $validateOnType;
-
+	/**
+	 * @var boolean whether to perform validation when the form is submitted.
+	 */
+	public $validateOnSubmit = true;
+	/**
+	 * @var boolean whether to perform validation when an input field loses focus and its value is found changed.
+	 * If [[ActiveField::validateOnChange]] is set, its value will take precedence for that input field.
+	 */
+	public $validateOnChange = false;
+	/**
+	 * @var boolean whether to perform validation while the user is typing in an input field.
+	 * If [[ActiveField::validateOnType]] is set, its value will take precedence for that input field.
+	 * @see validationDelay
+	 */
+	public $validateOnType = false;
+	/**
+	 * @var integer number of milliseconds that the validation should be delayed when a user is typing in an input field.
+	 * This property is used only when [[validateOnType]] is true.
+	 * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
+	 */
+	public $validationDelay = 200;
+	/**
+	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
+	 * the callback that will be invoked BEFORE validating EACH attribute on the client side.
+	 * The signature of the callback should be like the following:
+	 *
+	 * ~~~
+	 * ~~~
+	 */
+	public $beforeValidateAttribute;
+	/**
+	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
+	 * the callback that will be invoked AFTER validating EACH attribute on the client side.
+	 * The signature of the callback should be like the following:
+	 *
+	 * ~~~
+	 * ~~~
+	 */
+	public $afterValidateAttribute;
+	/**
+	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
+	 * the callback that will be invoked BEFORE validating ALL attributes on the client side when the validation
+	 * is triggered by form submission (that is, [[validateOnSubmit]] is set true).
+	 *
+	 * This callback is called before [[beforeValidateAttribute]].
+	 *
+	 * The signature of the callback should be like the following:
+	 *
+	 * ~~~
+	 * ~~~
+	 */
+	public $beforeValidate;
+	/**
+	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
+	 * the callback that will be invoked AFTER validating ALL attributes on the client side when the validation
+	 * is triggered by form submission (that is, [[validateOnSubmit]] is set true).
+	 *
+	 * This callback is called after [[afterValidateAttribute]].
+	 *
+	 * The signature of the callback should be like the following:
+	 *
+	 * ~~~
+	 * ~~~
+	 */
+	public $afterValidate;
+	/**
+	 * @var array list of attributes that need to be validated on the client side. Each element of the array
+	 * represents the validation options for a particular attribute.
+	 * @internal
+	 */
 	public $attributes = array();
 
 	/**
@@ -98,7 +170,18 @@ class ActiveForm extends Widget
 	 */
 	public function run()
 	{
-		$id = $this->options['id'];
+		if ($this->attributes !== array()) {
+			$id = $this->options['id'];
+			$options = Json::encode($this->getClientOptions());
+			$attributes = Json::encode($this->attributes);
+			$this->view->registerAssetBundle('yii/form');
+			$this->view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+		}
+		echo Html::endForm();
+	}
+
+	protected function getClientOptions()
+	{
 		$options = array(
 			'enableClientValidation' => $this->enableClientValidation,
 			'enableAjaxValidation' => $this->enableAjaxValidation,
@@ -106,11 +189,6 @@ class ActiveForm extends Widget
 			'successCssClass' => $this->successCssClass,
 			'validatingCssClass' => $this->validatingCssClass,
 		);
-		$options = Json::encode($options);
-		$attributes = Json::encode($this->attributes);
-		$this->view->registerAssetBundle('yii/form');
-		$this->view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
-		echo Html::endForm();
 	}
 
 	/**

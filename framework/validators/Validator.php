@@ -101,6 +101,13 @@ abstract class Validator extends Component
 	 * is null or an empty string.
 	 */
 	public $skipOnEmpty = true;
+	/**
+	 * @var boolean whether to enable client-side validation for this validator.
+	 * The actual client-side validation is done via the JavaScript code returned
+	 * by [[clientValidateAttribute()]]. If that method returns null, even if this property
+	 * is true, no client-side validation will be done by this validator.
+	 */
+	public $enableClientValidation = true;
 
 	/**
 	 * Validates a single attribute.

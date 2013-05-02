@@ -57,7 +57,67 @@ class ActiveField extends Component
 	 * without the `$options` parameter.
 	 */
 	public $labelOptions = array('class' => 'control-label');
-
+	/**
+	 * @var boolean whether to enable client-side data validation.
+	 * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
+	 */
+	public $enableClientValidation;
+	/**
+	 * @var boolean whether to enable AJAX-based data validation.
+	 * If not set, it will take the value of [[ActiveForm::enableAjaxValidation]].
+	 */
+	public $enableAjaxValidation;
+	/**
+	 * @var boolean whether to perform validation when the input field loses focus and its value is found changed.
+	 * If not set, it will take the value of [[ActiveForm::validateOnChange]].
+	 */
+	public $validateOnChange;
+	/**
+	 * @var boolean whether to perform validation while the user is typing in the input field.
+	 * If not set, it will take the value of [[ActiveForm::validateOnType]].
+	 * @see validationDelay
+	 */
+	public $validateOnType;
+	/**
+	 * @var integer number of milliseconds that the validation should be delayed when a user is typing in an input field.
+	 * This property is used only when [[validateOnType]] is true.
+	 * If not set, it will take the value of [[ActiveForm::validationDelay]].
+	 */
+	public $validationDelay;
+	/**
+	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
+	 * the callback that will be invoked BEFORE validating the attribute associated with this field on the client side.
+	 *
+	 * This callback is called after [[ActiveForm::beforeValidateAttribute]].
+	 *
+	 * The signature of the callback should be like the following:
+	 *
+	 * ~~~
+	 * ~~~
+	 */
+	public $beforeValidate;
+	/**
+	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
+	 * the callback that will be invoked AFTER validating the attribute associated with this field on the client side.
+	 *
+	 * This callback is called before [[ActiveForm::afterValidateAttribute]].
+	 *
+	 * The signature of the callback should be like the following:
+	 *
+	 * ~~~
+	 * ~~~
+	 */
+	public $afterValidate;
+	/**
+	 * @var array the jQuery selectors for selecting the container, input and error tags.
+	 * The array keys should be "container", "input", and/or "error", and the array values
+	 * are the corresponding selectors. For example, `array('input' => '#my-input')`.
+	 *
+	 * The selectors are used under the context of the form.
+	 *
+	 * You normally do not need to set this property as the default selectors should work well for most cases.
+	 */
+	public $selectors;
 
 	public function begin()
 	{
