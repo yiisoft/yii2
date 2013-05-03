@@ -33,7 +33,7 @@ class SiteController extends Controller
 	{
 		$model = new ContactForm;
 		if ($this->populate($_POST, $model) && $model->contact(Yii::$app->params['adminEmail'])) {
-			Yii::$app->session->setFlash('contact', 'Thank you for contacting us. We will respond to you as soon as possible.');
+			Yii::$app->session->setFlash('contactFormSubmitted');
 			Yii::$app->response->refresh();
 		} else {
 			echo $this->render('contact', array(

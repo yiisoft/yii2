@@ -9,7 +9,15 @@ $this->title = 'Contact';
 ?>
 <h1><?php echo Html::encode($this->title); ?></h1>
 
-<p>Please fill out the following fields:</p>
+<?php if(Yii::$app->session->hasFlash('contactFormSubmitted')): ?>
+<div class="alert alert-success">
+	Thank you for contacting us. We will respond to you as soon as possible.
+</div>
+<?php return; endif; ?>
+
+<p>
+	If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.
+</p>
 
 <?php $form = $this->beginWidget('yii\widgets\ActiveForm', array(
 	'options' => array('class' => 'form-horizontal'),
@@ -19,9 +27,7 @@ $this->title = 'Contact';
 	<?php echo $form->field($model, 'email')->textInput(); ?>
 	<?php echo $form->field($model, 'subject')->textInput(); ?>
 	<?php echo $form->field($model, 'body')->textArea(array('rows' => 6)); ?>
-	<div class="control-group">
-		<div class="controls">
-			<?php echo Html::submitButton('Submit', null, null, array('class' => 'btn btn-primary')); ?>
-		</div>
+	<div class="form-actions">
+		<?php echo Html::submitButton('Submit', null, null, array('class' => 'btn btn-primary')); ?>
 	</div>
 <?php $this->endWidget(); ?>

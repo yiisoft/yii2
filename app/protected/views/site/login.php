@@ -15,9 +15,7 @@ $this->title = 'Login';
 	<?php echo $form->field($model, 'username')->textInput(); ?>
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
 	<?php echo $form->field($model, 'rememberMe')->checkbox(); ?>
-	<div class="control-group">
-		<div class="controls">
-			<?php echo Html::submitButton('Login', null, null, array('class' => 'btn btn-primary')); ?>
-		</div>
+	<div class="form-actions">
+		<?php echo Html::submitButton('Login', null, null, array('class' => 'btn btn-primary')); ?>
 	</div>
 <?php $this->endWidget(); ?>

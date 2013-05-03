@@ -587,7 +587,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * session variable using the same name, its value will be overwritten by this method.
 	 * @param mixed $value flash message
 	 */
-	public function setFlash($key, $value)
+	public function setFlash($key, $value = true)
 	{
 		$counters = $this->get($this->flashVar, array());
 		$counters[$key] = 0;
