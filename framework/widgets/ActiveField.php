@@ -4,10 +4,10 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-
 namespace yii\widgets;
 
 use yii\base\Component;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\base\Model;
 use yii\helpers\JsExpression;
@@ -79,8 +79,8 @@ class ActiveField extends Component
 	 */
 	public $validateOnType;
 	/**
-	 * @var integer number of milliseconds that the validation should be delayed when a user is typing in an input field.
-	 * This property is used only when [[validateOnType]] is true.
+	 * @var integer number of milliseconds that the validation should be delayed when the input field
+	 * is changed or the user types in the field.
 	 * If not set, it will take the value of [[ActiveForm::validationDelay]].
 	 */
 	public $validationDelay;
@@ -121,28 +121,13 @@ class ActiveField extends Component
 
 	public function begin()
 	{
+		$options = $this->getClientOptions();
+		if ($options !== array()) {
+			$this->form->attributes[$this->attribute] = $options;
+		}
+
 		$inputID = Html::getInputId($this->model, $this->attribute);
 		$attribute = Html::getAttributeName($this->attribute);
-
-		$validators = array();
-		foreach ($this->model->getActiveValidators($attribute) as $validator) {
-			/** @var \yii\validators\Validator $validator */
-			if (($js = $validator->clientValidateAttribute($this->model, $attribute)) != '') {
-				$validators[] = $js;
-			}
-		}
-		$jsOptions = array(
-			'name' => $this->attribute,
-			'container' => ".field-$inputID",
-			'input' => "#$inputID",
-			'error' => '.help-inline',
-		);
-		if ($validators !== array()) {
-			$jsOptions['validate'] = new JsExpression("function(attribute, value, messages) {" . implode('', $validators) . '}');
-		}
-		$this->form->attributes[$this->attribute] = $jsOptions;
-
-
 		$options = $this->options;
 		$class = isset($options['class']) ? array($options['class']) : array();
 		$class[] = "field-$inputID";
@@ -152,15 +137,73 @@ class ActiveField extends Component
 		if ($this->model->hasErrors($attribute)) {
 			$class[] = $this->form->errorCssClass;
 		}
-
-
 		$options['class'] = implode(' ', $class);
+
 		return Html::beginTag($this->tag, $options);
 	}
 	
 	public function end()
 	{
 		return Html::endTag($this->tag);
+	}
+
+	protected function getClientOptions()
+	{
+		if ($this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation) {
+			$attribute = Html::getAttributeName($this->attribute);
+			$validators = array();
+			foreach ($this->model->getActiveValidators($attribute) as $validator) {
+				/** @var \yii\validators\Validator $validator */
+				$js = $validator->clientValidateAttribute($this->model, $attribute);
+				if ($validator->enableClientValidation && $js != '') {
+					$validators[] = $js;
+				}
+			}
+			if ($validators !== array()) {
+				$options['validate'] = new JsExpression("function(attribute,value,messages){" . implode('', $validators) . '}');
+			}
+		}
+
+		if ($this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation) {
+			$options['enableAjaxValidation'] = 1;
+		}
+
+		if (isset($options['validate']) || isset($options['enableAjaxValidation'])) {
+			$inputID = Html::getInputId($this->model, $this->attribute);
+			$options['name'] = $inputID;
+			if ($this->model instanceof ActiveRecord && !$this->model->getIsNewRecord()) {
+				$option['status'] = 1;
+			}
+
+			$names = array(
+				'enableAjaxValidation',
+				'validateOnChange',
+				'validateOnType',
+				'validationDelay',
+			);
+			foreach ($names as $name) {
+				$options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
+			}
+			$options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";
+			$options['input'] = isset($this->selectors['input']) ? $this->selectors['input'] : "#$inputID";
+			if (isset($this->errorOptions['class'])) {
+				$options['error'] = '.' . implode('.', preg_split('/\s+/', $this->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
+			} else {
+				$options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
+			}
+
+			foreach (array('beforeValidate', 'afterValidate') as $callback) {
+				$value = $this->$callback;
+				if ($value instanceof JsExpression) {
+					$options[$callback] = $value;
+				} elseif (is_string($value)) {
+					$options[$callback] = new JsExpression($value);
+				}
+			}
+			return $options;
+		} else {
+			return array();
+		}
 	}
 
 	/**

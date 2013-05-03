@@ -25,18 +25,6 @@
 	var defaults = {
 		// the jQuery selector for the error summary
 		errorSummary: undefined,
-		// whether to enable client-side (JavaScript) validation
-		enableClientValidation: true,
-		// whether to enable AJAX-based validation
-		enableAjaxValidation: false,
-		// the URL for performing AJAX-based validation. If not set, it will use the the form's action
-		validationUrl: undefined,
-		// number of milliseconds of validation delay. This is used when validateOnType is true.
-		validationDelay: 200,
-		// whether to perform validation when a change is detected on the input.
-		validateOnChange: true,
-		// whether to perform validation when the user is typing.
-		validateOnType: false,
 		// whether to perform validation before submitting the form.
 		validateOnSubmit: true,
 		// the container CSS class representing the corresponding attribute has validation error
@@ -45,40 +33,50 @@
 		successCssClass: 'success',
 		// the container CSS class representing the corresponding attribute is being validated
 		validatingCssClass: 'validating',
-		// a callback that is called before validating any attribute
+		// the URL for performing AJAX-based validation. If not set, it will use the the form's action
+		validationUrl: undefined,
+		// a callback that is called before validating every attribute
+		beforeValidateAttribute: undefined,
+		// a callback that is called after validating every attribute
+		afterValidateAttribute: undefined,
+		// a callback that is called before validating ALL attributes when submitting the form
 		beforeValidate: undefined,
-		// a callback that is called after validating any attribute
+		// a callback that is called after validating ALL attributes when submitting the form
 		afterValidate: undefined,
 		// the GET parameter name indicating an AJAX-based validation
 		ajaxVar: 'ajax'
 	};
 
+	var attributeDefaults = {
+		// attribute name or expression (e.g. "[0]content" for tabular input)
+		name: undefined,
+		// the jQuery selector of the container of the input field
+		container: undefined,
+		// the jQuery selector of the input field
+		input: undefined,
+		// the jQuery selector of the error tag
+		error: undefined,
+		// whether to perform validation when a change is detected on the input
+		validateOnChange: false,
+		// whether to perform validation when the user is typing.
+   		validateOnType: false,
+		// number of milliseconds that the validation should be delayed when a user is typing in the input field.
+		validationDelay: 200,
+		// whether to enable AJAX-based validation.
+		enableAjaxValidation: false,
+		// function (attribute, value, messages), the client-side validation function.
+		validate: undefined,
+		// callback called before validating the attribute
+		beforeValidate: undefined,
+		// callback called after validating an attribute.
+		afterValidate: undefined,
+		// status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
+		status: 0,
+		// the value of the input
+		value: undefined
+	};
+
 	var methods = {
-		/**
-		 * Initializes the plugin.
-		 * @param attributes array attribute configurations. Each attribute may contain the following options:
-		 *
-		 * - name: string, attribute name or expression (e.g. "[0]content" for tabular input)
-		 * - container: string, the jQuery selector of the container of the input field
-		 * - input: string, the jQuery selector of the input field
-		 * - error: string, the jQuery selector of the error tag
-		 * - value: string|array, the value of the input
-		 * - validateOnChange: boolean, whether to perform validation when a change is detected on the input.
-		 *   If not set, it will take the value of the corresponding global setting.
-		 * - validateOnType: boolean, defaults to false, whether to perform validation when the user is typing.
-		 *   If not set, it will take the value of the corresponding global setting.
-		 * - enableAjaxValidation: boolean, whether to enable AJAX-based validation.
-		 *   If not set, it will take the value of the corresponding global setting.
-		 * - enableClientValidation: boolean, whether to enable client-side validation.
-		 *   If not set, it will take the value of the corresponding global setting.
-		 * - validate: function (attribute, value, messages), the client-side validation function.
-		 * - beforeValidate: function ($form, attribute), callback called before validating an attribute. If it
-		 *   returns false, the validation will be cancelled.
-		 * - afterValidate: function ($form, attribute, data, hasError), callback called after validating an attribute.
-		 * - status: integer, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
-		 *
-		 * @param options object the configuration for the plugin. The following options can be set:
-		 */
 		init: function (attributes, options) {
 			return this.each(function () {
 				var $form = $(this);
@@ -86,38 +84,33 @@
 					return;
 				}
 
-				var settings = $.extend(defaults, options || {});
+				var settings = $.extend({}, defaults, options || {});
 				if (settings.validationUrl === undefined) {
 					settings.validationUrl = $form.attr('action');
 				}
 				$.each(attributes, function (i) {
-					attributes[i] = $.extend({
-						validateOnChange: settings.validateOnChange,
-						validateOnType: settings.validateOnType,
-						enableAjaxValidation: settings.enableAjaxValidation,
-						enableClientValidation: settings.enableClientValidation,
-						value: getValue($form, this)
-					}, this);
+					attributes[i] = $.extend({}, attributeDefaults, this);
 				});
 				$form.data('yiiActiveForm', {
 					settings: settings,
 					attributes: attributes,
-					submitting: false
+					submitting: false,
+					validated: false
 				});
 
-				bindAttributes($form, attributes);
+				watchAttributes($form, attributes);
 
 				/**
 				 * Clean up error status when the form is reset.
 				 * Note that $form.on('reset', ...) does work because the "reset" event does not bubble on IE.
 				 */
-				$form.bind('reset.yiiActiveForm', resetForm);
+				$form.bind('reset.yiiActiveForm', methods.resetForm);
 
 				if (settings.validateOnSubmit) {
 					$form.on('mouseup.yiiActiveForm keyup.yiiActiveForm', ':submit', function () {
 						$form.data('yiiActiveForm').submitObject = $(this);
 					});
-					$form.on('submit', submitForm);
+					$form.on('submit', methods.submitForm);
 				}
 			});
 		},
@@ -127,6 +120,73 @@
 				$(window).unbind('.yiiActiveForm');
 				$(this).removeData('yiiActiveForm');
 			});
+		},
+
+		submitForm: function () {
+			var $form = $(this),
+				data = $form.data('yiiActiveForm');
+			if (data.validated) {
+				// continue submitting the form since validation passes
+				data.validated = false;
+				return true;
+			}
+
+			if (data.settings.timer !== undefined) {
+				clearTimeout(data.settings.timer);
+			}
+			data.submitting = true;
+			if (!data.settings.beforeValidate || data.settings.beforeValidate($form)) {
+				validate($form, function (messages) {
+					var hasError = false;
+					$.each(data.attributes, function () {
+						hasError = updateInput($form, this, messages) || hasError;
+					});
+					updateSummary($form, messages);
+					if (!data.settings.afterValidate || data.settings.afterValidate($form, data, hasError)) {
+						if (!hasError) {
+							data.validated = true;
+							var $button = data.submitObject || $form.find(':submit:first');
+							// TODO: if the submission is caused by "change" event, it will not work
+							if ($button.length) {
+								$button.click();
+							} else {
+								// no submit button in the form
+								$form.submit();
+							}
+							return;
+						}
+					}
+					data.submitting = false;
+				}, function () {
+					data.submitting = false;
+				});
+			} else {
+				data.submitting = false;
+			}
+			return false;
+		},
+
+		resetForm: function () {
+			var $form = $(this);
+			var data = $form.data('yiiActiveForm');
+			// Because we bind directly to a form reset event instead of a reset button (that may not exist),
+			// when this function is executed form input values have not been reset yet.
+			// Therefore we do the actual reset work through setTimeout.
+			setTimeout(function () {
+				$.each(data.attributes, function () {
+					// Without setTimeout() we would get the input values that are not reset yet.
+					this.value = getValue($form, this);
+					this.status = 0;
+					var $container = $form.find(this.container);
+					$container.removeClass(
+						data.settings.validatingCssClass + ' ' +
+							data.settings.errorCssClass + ' ' +
+							data.settings.successCssClass
+					);
+					$container.find(this.error).html('');
+				});
+				$form.find(data.settings.summary).hide().find('ul').html('');
+			}, 1);
 		}
 	};
 
@@ -150,7 +210,7 @@
 		}
 	};
 
-	var bindAttributes = function ($form, attributes) {
+	var watchAttributes = function ($form, attributes) {
 		$.each(attributes, function (i, attribute) {
 			var $input = findInput($form, attribute);
 			if (attribute.validateOnChange) {
@@ -202,7 +262,7 @@
 						$form.find(this.container).addClass(data.settings.validatingCssClass);
 					}
 				});
-				validateForm($form, function (messages) {
+				validate($form, function (messages) {
 					var hasError = false;
 					$.each(data.attributes, function () {
 						if (this.status === 2 || this.status === 3) {
@@ -218,141 +278,71 @@
 	};
 	
 	/**
-	 * Performs the ajax validation request.
-	 * This method is invoked internally to trigger the ajax validation.
-	 * @param $form jquery the jquery representation of the form
-	 * @param successCallback function the function to be invoked if the ajax request succeeds
-	 * @param errorCallback function the function to be invoked if the ajax request fails
+	 * Performs validation.
+	 * @param $form jQuery the jquery representation of the form
+	 * @param successCallback function the function to be invoked if the validation completes
+	 * @param errorCallback function the function to be invoked if the ajax validation request fails
 	 */
-	var validateForm = function ($form, successCallback, errorCallback) {
+	var validate = function ($form, successCallback, errorCallback) {
 		var data = $form.data('yiiActiveForm'),
 			needAjaxValidation = false,
 			messages = {};
 
 		$.each(data.attributes, function () {
-			var msg = [];
-			if (this.validate && (data.submitting || this.status === 2 || this.status === 3)) {
-				this.validate(this, getValue($form, this), msg);
-				if (msg.length) {
-					messages[this.name] = msg;
-				}
-			}
-			if (this.enableAjaxValidation && !msg.length && (data.submitting || this.status === 2 || this.status === 3)) {
-				needAjaxValidation = true;
-			}
-		});
-
-		if (!needAjaxValidation || data.submitting && !$.isEmptyObject(messages)) {
-			if (data.submitting) {
-				// delay callback so that the form can be submitted without problem
-				setTimeout(function () {
-					successCallback(messages);
-				}, 200);
-			} else {
-				successCallback(messages);
-			}
-			return;
-		}
-
-		var $button = data.submitObject,
-			extData = '&' + data.settings.ajaxVar + '=' + $form.attr('id');
-		if ($button && $button.length && $button.attr('name')) {
-			extData += '&' + $button.attr('name') + '=' + $button.attr('value');
-		}
-
-		$.ajax({
-			url: data.settings.validationUrl,
-			type: $form.attr('method'),
-			data: $form.serialize() + extData,
-			dataType: 'json',
-			success: function (data) {
-				if (data !== null && typeof data === 'object') {
-					$.each(data.attributes, function () {
-						if (!this.enableAjaxValidation) {
-							delete data[this.name];
-						}
-					});
-					successCallback($.extend({}, messages, data));
-				} else {
-					successCallback(messages);
-				}
-			},
-			error: errorCallback
-		});
-	};
-
-	var validated = false;
-	var submitForm = function () {
-		var $form = $(this),
-			data = $form.data('yiiActiveForm');
-		if (validated) {
-			validated = false;
-			return true;
-		}
-		if (data.settings.timer !== undefined) {
-			clearTimeout(data.settings.timer);
-		}
-		data.submitting = true;
-		if (!data.settings.beforeValidate || data.settings.beforeValidate($form)) {
-			validateForm($form, function (messages) {
-				var hasError = false;
-				$.each(data.attributes, function () {
-					hasError = updateInput($form, this, messages) || hasError;
-				});
-				updateSummary($form, messages);
-				if (!data.settings.afterValidate || data.settings.afterValidate($form, data, hasError)) {
-					if (!hasError) {
-						validated = true;
-						var $button = data.submitObject || $form.find(':submit:first');
-						// TODO: if the submission is caused by "change" event, it will not work
-						if ($button.length) {
-							$button.click();
-						} else {
-							// no submit button in the form
-							$form.submit();
-						}
-						return;
+			if (data.submitting || this.status === 2 || this.status === 3) {
+				var msg = [];
+				if (this.validate) {
+					this.validate(this, getValue($form, this), msg);
+					if (msg.length) {
+						messages[this.name] = msg;
 					}
 				}
-				data.submitting = false;
-			});
-		} else {
-			data.submitting = false;
-		}
-		return false;
-	};
+				if (this.enableAjaxValidation && !msg.length) {
+					needAjaxValidation = true;
+				}
+			}
+		});
 
-	var resetForm = function () {
-		var $form = $(this);
-		var data = $form.data('yiiActiveForm');
-		/**
-		 * because we bind directly to a form reset event, not to a reset button (that could or could not exist),
-		 * when this function is executed form elements values have not been reset yet,
-		 * because of that we use the setTimeout
-		 */
-		setTimeout(function () {
-			$.each(data.attributes, function () {
-				this.status = 0;
-				$form.find(this.container).removeClass(
-					data.settings.validatingCssClass + ' ' +
-					data.settings.errorCssClass + ' ' +
-					data.settings.successCssClass
-				);
-				$form.find(this.error).html('');
-				/*
-				 * without the setTimeout() we would get here the current entered value before the reset instead of the reset value
-				 */
-				this.value = getValue($form, this);
+		if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
+			var $button = data.submitObject,
+				extData = '&' + data.settings.ajaxVar + '=' + $form.attr('id');
+			if ($button && $button.length && $button.attr('name')) {
+				extData += '&' + $button.attr('name') + '=' + $button.attr('value');
+			}
+			$.ajax({
+				url: data.settings.validationUrl,
+				type: $form.attr('method'),
+				data: $form.serialize() + extData,
+				dataType: 'json',
+				success: function (msgs) {
+					if (msgs !== null && typeof msgs === 'object') {
+						$.each(data.attributes, function () {
+							if (!this.enableAjaxValidation) {
+								delete msgs[this.name];
+							}
+						});
+						successCallback($.extend({}, messages, msgs));
+					} else {
+						successCallback(messages);
+					}
+				},
+				error: errorCallback
 			});
-			$form.find(data.settings.summary).hide().find('ul').html('');
-		}, 1);
+		} else if (data.submitting) {
+			// delay callback so that the form can be submitted without problem
+			setTimeout(function () {
+				successCallback(messages);
+			}, 200);
+		} else {
+			successCallback(messages);
+		}
 	};
 
 	/**
-	 * updates the error message and the input container for a particular attribute.
-	 * @param attribute object the configuration for a particular attribute.
-	 * @param messages array the json data obtained from the ajax validation request
+	 * Updates the error message and the input container for a particular attribute.
 	 * @param $form the form jQuery object
+	 * @param attribute object the configuration for a particular attribute.
+	 * @param messages array the validation error messages
 	 * @return boolean whether there is a validation error for the specified attribute
 	 */
 	var updateInput = function ($form, attribute, messages) {
@@ -364,23 +354,26 @@
 		if ($input.length) {
 			hasError = messages && $.isArray(messages[attribute.name]) && messages[attribute.name].length;
 			var $container = $form.find(attribute.container);
-			$container.removeClass(
-				data.settings.validatingCssClass + ' ' +
-				data.settings.errorCssClass + ' ' +
-				data.settings.successCssClass
-			);
-
+			var $error = $container.find(attribute.error);
 			if (hasError) {
-				$container.find(attribute.error).html(messages[attribute.name][0]);
-				$container.addClass(data.settings.errorCssClass);
-			} else if (attribute.enableAjaxValidation || attribute.enableClientValidation && attribute.validate) {
-				$container.addClass(data.settings.successCssClass);
+				$error.html(messages[attribute.name][0]);
+				$container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
+					.addClass(data.settings.errorCssClass);
+			} else {
+				$error.html('');
+				$container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
+					.addClass(data.settings.successCssClass);
 			}
 			attribute.value = getValue($form, attribute);
 		}
 		return hasError;
 	};
 
+	/**
+	 * Updates the error summary.
+	 * @param $form the form jQuery object
+	 * @param messages array the validation error messages
+	 */
 	var updateSummary = function ($form, messages) {
 		var data = $form.data('yiiActiveForm'),
 			$summary = $form.find(data.settings.errorSummary),
@@ -388,8 +381,8 @@
 
 		if ($summary.length && messages) {
 			$.each(data.attributes, function () {
-				if ($.isArray(messages[this.name])) {
-					content += '<li>' + messages[this.name].join('</li><li>') + '</li>';
+				if ($.isArray(messages[this.name]) && messages[this.name].length) {
+					content += '<li>' + messages[this.name][0] + '</li>';
 				}
 			});
 			$summary.toggle(content !== '').find('ul').html(content);

@@ -88,7 +88,7 @@ class ActiveForm extends Widget
 	 * @var boolean whether to perform validation when an input field loses focus and its value is found changed.
 	 * If [[ActiveField::validateOnChange]] is set, its value will take precedence for that input field.
 	 */
-	public $validateOnChange = false;
+	public $validateOnChange = true;
 	/**
 	 * @var boolean whether to perform validation while the user is typing in an input field.
 	 * If [[ActiveField::validateOnType]] is set, its value will take precedence for that input field.
@@ -96,11 +96,15 @@ class ActiveForm extends Widget
 	 */
 	public $validateOnType = false;
 	/**
-	 * @var integer number of milliseconds that the validation should be delayed when a user is typing in an input field.
-	 * This property is used only when [[validateOnType]] is true.
+	 * @var integer number of milliseconds that the validation should be delayed when an input field
+	 * is changed or the user types in the field.
 	 * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
 	 */
 	public $validationDelay = 200;
+	/**
+	 * @var string the name of the GET parameter indicating the validation request is an AJAX request.
+	 */
+	public $ajaxVar = 'ajax';
 	/**
 	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
 	 * the callback that will be invoked BEFORE validating EACH attribute on the client side.
@@ -192,6 +196,7 @@ class ActiveForm extends Widget
 			'errorCssClass' => $this->errorCssClass,
 			'successCssClass' => $this->successCssClass,
 			'validatingCssClass' => $this->validatingCssClass,
+			'ajaxVar' => $this->ajaxVar,
 		);
 		if ($this->validationUrl !== null) {
 			$options['validationUrl'] = Html::url($this->validationUrl);
@@ -204,11 +209,10 @@ class ActiveForm extends Widget
 		);
 		foreach ($callbacks as $callback) {
 			$value = $this->$callback;
-			if (is_string($value)) {
-				$value = new JsExpression($value);
-			}
 			if ($value instanceof JsExpression) {
 				$options[$callback] = $value;
+			} elseif (is_string($value)) {
+				$options[$callback] = new JsExpression($value);
 			}
 		}
 
