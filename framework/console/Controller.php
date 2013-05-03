@@ -36,10 +36,12 @@ class Controller extends \yii\base\Controller
 	public $interactive = true;
 
 	/**
-	 * @var bool whether to enable ANSI style in output. If not set it will be auto detected.
-	 * Default is disabled on Windows systems and enabled on linux.
+	 * @var bool whether to enable ANSI style in output.
+	 * Setting this will affect [[ansiFormat()]], [[stdout()]] and [[stderr()]].
+	 * If not set it will be auto detected using [[yii\helpers\Console::streamSupportsAnsiColors()]] with STDOUT
+	 * for [[ansiFormat()]] and [[stdout()]] and STDERR for [[stderr()]].
 	 */
-	public $ansi;
+	public $colors;
 
 	/**
 	 * Runs an action with the specified action ID and parameters.
@@ -128,13 +130,13 @@ class Controller extends \yii\base\Controller
 	 *
 	 * Example:
 	 * ~~~
-	 * $this->formatString('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
+	 * $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
 	 * ~~~
 	 *
 	 * @param string $string the string to be formatted
 	 * @return string
 	 */
-	public function formatString($string)
+	public function ansiFormat($string)
 	{
 		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDOUT)) {
 			$args = func_get_args();
@@ -193,47 +195,6 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * Asks the user for input. Ends when the user types a carriage return (PHP_EOL). Optionally, It also provides a
-	 * prompt.
-	 *
-	 * @param string $prompt the prompt (optional)
-	 * @return string the user's input
-	 */
-	public function input($prompt = null)
-	{
-		if (isset($prompt)) {
-			static::stdout($prompt);
-		}
-		return static::stdin();
-	}
-
-	/**
-	 * Prints text to STDOUT appended with a carriage return (PHP_EOL).
-	 *
-	 * @param string $text
-	 * @param bool $raw
-	 *
-	 * @return mixed Number of bytes printed or bool false on error
-	 */
-	public function output($text = null)
-	{
-		return static::stdout($text . PHP_EOL);
-	}
-
-	/**
-	 * Prints text to STDERR appended with a carriage return (PHP_EOL).
-	 *
-	 * @param string $text
-	 * @param bool   $raw
-	 *
-	 * @return mixed Number of bytes printed or false on error
-	 */
-	public function error($text = null)
-	{
-		return static::stderr($text . PHP_EOL);
-	}
-
-	/**
 	 * Prompts the user for input and validates it
 	 *
 	 * @param string $text prompt string
@@ -248,7 +209,11 @@ class Controller extends \yii\base\Controller
 	 */
 	public function prompt($text, $options = array())
 	{
-		return Console::prompt($text, $options);
+		if ($this->interactive) {
+			return Console::prompt($text, $options);
+		} else {
+			return isset($options['default']) ? $options['default'] : '';
+		}
 	}
 
 	/**
@@ -276,7 +241,7 @@ class Controller extends \yii\base\Controller
 	 *
 	 * @return string An option character the user chose
 	 */
-	public static function select($prompt, $options = array())
+	public function select($prompt, $options = array())
 	{
 		return Console::select($prompt, $options);
 	}

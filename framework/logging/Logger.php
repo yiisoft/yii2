@@ -6,7 +6,9 @@
  */
 
 namespace yii\logging;
-use yii\base\InvalidConfigException;
+
+use \yii\base\Component;
+use \yii\base\InvalidConfigException;
 
 /**
  * Logger records logged messages in memory.
@@ -17,7 +19,7 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Logger extends \yii\base\Component
+class Logger extends Component
 {
 	/**
 	 * Error message level. An error message is one that indicates the abnormal termination of the

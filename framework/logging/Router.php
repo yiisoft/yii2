@@ -28,16 +28,16 @@ use yii\base\Application;
  *     'preload' => array('log'),
  *     'components' => array(
  *         'log' => array(
- *             'class' => '\yii\logging\Router',
+ *             'class' => 'yii\logging\Router',
  *             'targets' => array(
  *                 'file' => array(
- *                     'class' => '\yii\logging\FileTarget',
- *                     'levels' => 'trace, info',
- *                     'categories' => 'yii\*',
+ *                     'class' => 'yii\logging\FileTarget',
+ *                     'levels' => array('trace', 'info'),
+ *                     'categories' => array('yii\*'),
  *                 ),
  *                 'email' => array(
- *                     'class' => '\yii\logging\EmailTarget',
- *                     'levels' => 'error, warning',
+ *                     'class' => 'yii\logging\EmailTarget',
+ *                     'levels' => array('error', 'warning'),
  *                     'emails' => array('admin@example.com'),
  *                 ),
  *             ),
@@ -73,7 +73,6 @@ class Router extends Component
 	public function init()
 	{
 		parent::init();
-
 		foreach ($this->targets as $name => $target) {
 			if (!$target instanceof Target) {
 				$this->targets[$name] = Yii::createObject($target);

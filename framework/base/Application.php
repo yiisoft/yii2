@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\FileHelper;
 
 /**
  * Application is the base class for all application classes.
