@@ -123,7 +123,7 @@
 		},
 
 		submitForm: function () {
-			var $form = $(this),
+			var $form = this,
 				data = $form.data('yiiActiveForm');
 			if (data.validated) {
 				// continue submitting the form since validation passes
@@ -142,7 +142,7 @@
 						hasError = updateInput($form, this, messages) || hasError;
 					});
 					updateSummary($form, messages);
-					if (!data.settings.afterValidate || data.settings.afterValidate($form, data, hasError)) {
+					if (!data.settings.afterValidate || data.settings.afterValidate($form, messages, hasError)) {
 						if (!hasError) {
 							data.validated = true;
 							var $button = data.submitObject || $form.find(':submit:first');
@@ -167,7 +167,7 @@
 		},
 
 		resetForm: function () {
-			var $form = $(this);
+			var $form = this;
 			var data = $form.data('yiiActiveForm');
 			// Because we bind directly to a form reset event instead of a reset button (that may not exist),
 			// when this function is executed form input values have not been reset yet.
@@ -187,26 +187,6 @@
 				});
 				$form.find(data.settings.summary).hide().find('ul').html('');
 			}, 1);
-		}
-	};
-
-	var getValue = function ($form, attribute) {
-		var $input = findInput($form, attribute);
-		var type = $input.attr('type');
-		if (type === 'checkbox' || type === 'radio') {
-			return $input.filter(':checked').val();
-		} else {
-			return $input.val();
-		}
-	};
-
-	var findInput = function ($form, attribute) {
-		var $input = $form.find(attribute.input);
-		if ($input.length && $input[0].tagName.toLowerCase() === 'div') {
-			// checkbox list or radio list
-			return $input.find('input');
-		} else {
-			return $input;
 		}
 	};
 
@@ -304,6 +284,9 @@
 		});
 
 		if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
+			// Perform ajax validation when at least one input needs it.
+			// If the validation is triggered by form submission, ajax validation
+			// should be done only when all inputs pass client validation
 			var $button = data.submitObject,
 				extData = '&' + data.settings.ajaxVar + '=' + $form.attr('id');
 			if ($button && $button.length && $button.attr('name')) {
@@ -386,6 +369,26 @@
 				}
 			});
 			$summary.toggle(content !== '').find('ul').html(content);
+		}
+	};
+
+	var getValue = function ($form, attribute) {
+		var $input = findInput($form, attribute);
+		var type = $input.attr('type');
+		if (type === 'checkbox' || type === 'radio') {
+			return $input.filter(':checked').val();
+		} else {
+			return $input.val();
+		}
+	};
+
+	var findInput = function ($form, attribute) {
+		var $input = $form.find(attribute.input);
+		if ($input.length && $input[0].tagName.toLowerCase() === 'div') {
+			// checkbox list or radio list
+			return $input.find('input');
+		} else {
+			return $input;
 		}
 	};
 
