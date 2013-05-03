@@ -83,7 +83,7 @@
 					settings.validationUrl = $form.attr('action');
 				}
 				$.each(attributes, function (i) {
-					attributes[i] = $.extend({}, attributeDefaults, this);
+					attributes[i] = $.extend({value: getValue($form, this)}, attributeDefaults, this);
 				});
 				$form.data('yiiActiveForm', {
 					settings: settings,
@@ -121,7 +121,7 @@
 		},
 
 		submitForm: function () {
-			var $form = this,
+			var $form = $(this),
 				data = $form.data('yiiActiveForm');
 			if (data.validated) {
 				// continue submitting the form since validation passes
@@ -163,7 +163,7 @@
 		},
 
 		resetForm: function () {
-			var $form = this;
+			var $form = $(this);
 			var data = $form.data('yiiActiveForm');
 			// Because we bind directly to a form reset event instead of a reset button (that may not exist),
 			// when this function is executed form input values have not been reset yet.

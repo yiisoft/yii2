@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace app\models;
 
@@ -11,8 +6,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * LoginForm is the model behind the login form.
  */
 class LoginForm extends Model
 {
@@ -20,16 +14,25 @@ class LoginForm extends Model
 	public $password;
 	public $rememberMe = true;
 
+	/**
+	 * @return array the validation rules.
+	 */
 	public function rules()
 	{
 		return array(
-			array('username', 'required'),
-			array('password', 'required'),
+			// username and password are both required
+			array('username, password', 'required'),
+			// password is validated by validatePassword()
 			array('password', 'validatePassword'),
+			// rememberMe must be a boolean value
 			array('rememberMe', 'boolean'),
 		);
 	}
 
+	/**
+	 * Validates the password.
+	 * This method serves as the inline validation for password.
+	 */
 	public function validatePassword()
 	{
 		$user = User::findByUsername($this->username);
@@ -38,11 +41,15 @@ class LoginForm extends Model
 		}
 	}
 
+	/**
+	 * Logs in a user using the provided username and password.
+	 * @return boolean whether the user is logged in successfully
+	 */
 	public function login()
 	{
 		if ($this->validate()) {
 			$user = User::findByUsername($this->username);
-			Yii::$app->getUser()->login($user, $this->rememberMe ? 3600*24*30 : 0);
+			Yii::$app->user->login($user, $this->rememberMe ? 3600*24*30 : 0);
 			return true;
 		} else {
 			return false;

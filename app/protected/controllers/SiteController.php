@@ -2,6 +2,7 @@
 
 use yii\web\Controller;
 use app\models\LoginForm;
+use app\models\ContactForm;
 
 class SiteController extends Controller
 {
@@ -14,7 +15,7 @@ class SiteController extends Controller
 	{
 		$model = new LoginForm();
 		if ($this->populate($_POST, $model) && $model->login()) {
-			Yii::$app->getResponse()->redirect(array('site/index'));
+			Yii::$app->response->redirect(array('site/index'));
 		} else {
 			echo $this->render('login', array(
 				'model' => $model,
@@ -30,7 +31,15 @@ class SiteController extends Controller
 
 	public function actionContact()
 	{
-		echo $this->render('contact');
+		$model = new ContactForm;
+		if ($this->populate($_POST, $model) && $model->contact(Yii::$app->params['adminEmail'])) {
+			Yii::$app->session->setFlash('contact', 'Thank you for contacting us. We will respond to you as soon as possible.');
+			Yii::$app->response->refresh();
+		} else {
+			echo $this->render('contact', array(
+				'model' => $model,
+			));
+		}
 	}
 
 	public function actionAbout()

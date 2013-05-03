@@ -48,13 +48,18 @@ class ActiveField extends Component
 	 */
 	public $template = "{label}\n<div class=\"controls\">\n{input}\n{error}\n</div>";
 	/**
-	 * @var array the default options for the error message. This property is used when calling [[error()]]
-	 * without the `$options` parameter.
+	 * @var array the default options for the input tags. The parameter passed to individual input methods
+	 * (e.g. [[textInput()]]) will be merged with this property when rendering the input tag.
+	 */
+	public $inputOptions = array();
+	/**
+	 * @var array the default options for the error tags. The parameter passed to [[error()]] will be
+	 * merged with this property when rendering the error tag.
 	 */
 	public $errorOptions = array('tag' => 'span', 'class' => 'help-inline');
 	/**
-	 * @var array the default options for the label. This property is used when calling [[label()]]
-	 * without the `$options` parameter.
+	 * @var array the default options for the label tags. The parameter passed to [[label()]] will be
+	 * merged with this property when rendering the label tag.
 	 */
 	public $labelOptions = array('class' => 'control-label');
 	/**
@@ -174,7 +179,7 @@ class ActiveField extends Component
 	/**
 	 * Generates a label tag for [[attribute]].
 	 * The label text is the label associated with the attribute, obtained via [[Model::getAttributeLabel()]].
-	 * @param array $options the tag options in terms of name-value pairs. If this is null, [[labelOptions]] will be used.
+	 * @param array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
 	 * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
 	 * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
@@ -186,18 +191,16 @@ class ActiveField extends Component
 	 *
 	 * @return string the generated label tag
 	 */
-	public function label($options = null)
+	public function label($options = array())
 	{
-		if ($options === null) {
-			$options = $this->labelOptions;
-		}
+		$options = array_merge($this->labelOptions, $options);
 		return Html::activeLabel($this->model, $this->attribute, $options);
 	}
 
 	/**
 	 * Generates a tag that contains the first validation error of [[attribute]].
 	 * Note that even if there is no validation error, this method will still return an empty error tag.
-	 * @param array $options the tag options in terms of name-value pairs. If this is null, [[errorOptions]] will be used.
+	 * @param array $options the tag options in terms of name-value pairs. It will be merged with [[errorOptions]].
 	 * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
 	 * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
@@ -207,11 +210,9 @@ class ActiveField extends Component
 	 *
 	 * @return string the generated label tag
 	 */
-	public function error($options = null)
+	public function error($options = array())
 	{
-		if ($options === null) {
-			$options = $this->errorOptions;
-		}
+		$options = array_merge($this->errorOptions, $options);
 		$attribute = Html::getAttributeName($this->attribute);
 		$error = $this->model->getFirstError($attribute);
 		$tag = isset($options['tag']) ? $options['tag'] : 'span';
@@ -244,6 +245,7 @@ class ActiveField extends Component
 	 */
 	public function input($type, $options = array())
 	{
+		$options = array_merge($this->inputOptions, $options);
 		return $this->render(Html::activeInput($type, $this->model, $this->attribute, $options));
 	}
 
@@ -257,6 +259,7 @@ class ActiveField extends Component
 	 */
 	public function textInput($options = array())
 	{
+		$options = array_merge($this->inputOptions, $options);
 		return $this->render(Html::activeTextInput($this->model, $this->attribute, $options));
 	}
 
@@ -270,6 +273,7 @@ class ActiveField extends Component
 	 */
 	public function hiddenInput($options = array())
 	{
+		$options = array_merge($this->inputOptions, $options);
 		return $this->render(Html::activeHiddenInput($this->model, $this->attribute, $options));
 	}
 
@@ -283,6 +287,7 @@ class ActiveField extends Component
 	 */
 	public function passwordInput($options = array())
 	{
+		$options = array_merge($this->inputOptions, $options);
 		return $this->render(Html::activePasswordInput($this->model, $this->attribute, $options));
 	}
 
@@ -296,6 +301,7 @@ class ActiveField extends Component
 	 */
 	public function fileInput($options = array())
 	{
+		$options = array_merge($this->inputOptions, $options);
 		return $this->render(Html::activeFileInput($this->model, $this->attribute, $options));
 	}
 
@@ -308,6 +314,7 @@ class ActiveField extends Component
 	 */
 	public function textarea($options = array())
 	{
+		$options = array_merge($this->inputOptions, $options);
 		return $this->render(Html::activeTextarea($this->model, $this->attribute, $options));
 	}
 
@@ -331,6 +338,7 @@ class ActiveField extends Component
 	 */
 	public function radio($options = array(), $enclosedByLabel = true)
 	{
+		$options = array_merge($this->inputOptions, $options);
 		if ($enclosedByLabel) {
 			$hidden = '';
 			$radio = Html::activeRadio($this->model, $this->attribute, $options);
@@ -369,6 +377,7 @@ class ActiveField extends Component
 	 */
 	public function checkbox($options = array(), $enclosedByLabel = true)
 	{
+		$options = array_merge($this->inputOptions, $options);
 		if ($enclosedByLabel) {
 			$hidden = '';
 			$checkbox = Html::activeCheckbox($this->model, $this->attribute, $options);
@@ -421,6 +430,7 @@ class ActiveField extends Component
 	 */
 	public function dropDownList($items, $options = array())
 	{
+		$options = array_merge($this->inputOptions, $options);
 		return $this->render(Html::activeDropDownList($this->model, $this->attribute, $items, $options));
 	}
 
@@ -461,6 +471,7 @@ class ActiveField extends Component
 	 */
 	public function listBox($items, $options = array())
 	{
+		$options = array_merge($this->inputOptions, $options);
 		return $this->render(Html::activeListBox($this->model, $this->attribute, $items, $options));
 	}
 

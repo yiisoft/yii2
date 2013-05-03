@@ -8,7 +8,6 @@
 namespace yii\web;
 
 use Yii;
-use yii\helpers\Html;
 
 /**
  * Controller is the base class of Web controllers.

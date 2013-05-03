@@ -40,9 +40,7 @@ class ActiveForm extends Widget
 	/**
 	 * @var array the default configuration used by [[field()]] when creating a new field object.
 	 */
-	public $fieldConfig = array(
-		'class' => 'yii\widgets\ActiveField',
-	);
+	public $fieldConfig;
 	/**
 	 * @var string the default CSS class for the error summary container.
 	 * @see errorSummary()
@@ -120,6 +118,9 @@ class ActiveForm extends Widget
 	{
 		if (!isset($this->options['id'])) {
 			$this->options['id'] = $this->getId();
+		}
+		if (!isset($this->fieldConfig['class'])) {
+			$this->fieldConfig['class'] = 'yii\widgets\ActiveField';
 		}
 		echo Html::beginForm($this->action, $this->method, $this->options);
 	}

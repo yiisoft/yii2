@@ -5,11 +5,11 @@
 $this->title = 'Welcome';
 ?>
 <div class="jumbotron">
-	<h1>Marketing stuff!</h1>
+	<h1>Welcome!</h1>
 
 	<p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus
 		commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-	<a class="btn btn-large btn-success" href="http://www.yiiframework.com">Get started today</a>
+	<a class="btn btn-large btn-success" href="http://www.yiiframework.com">Get started with Yii</a>
 </div>
 
 <hr>
@@ -44,6 +44,4 @@ $this->title = 'Welcome';
 		<p><a class="btn" href="#">View details &raquo;</a></p>
 	</div>
 </div>
-
-<hr>
 

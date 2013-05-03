@@ -41,6 +41,8 @@ $this->registerAssetBundle('app');
 
 	<?php echo $content; ?>
 
+	<hr>
+
 	<div class="footer">
 		<p>&copy; My Company <?php echo date('Y'); ?></p>
 		<p>

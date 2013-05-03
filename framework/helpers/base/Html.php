@@ -95,9 +95,9 @@ class Html
 	public static $attributeOrder = array(
 		'type',
 		'id',
-		'class',
 		'name',
 		'value',
+		'class',
 
 		'href',
 		'src',

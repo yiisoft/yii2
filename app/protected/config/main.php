@@ -15,4 +15,7 @@ return array(
 			'bundles' => require(__DIR__ . '/assets.php'),
 		),
 	),
+	'params' => array(
+		'adminEmail' => 'admin@example.com',
+	),
 );

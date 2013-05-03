@@ -115,6 +115,7 @@ class Response extends \yii\base\Response
 	 * <li>forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true</li>
 	 * <li>addHeaders: an array of additional http headers in header-value pairs</li>
 	 * </ul>
+	 * @todo
 	 */
 	public function xSendFile($filePath, $options = array())
 	{
@@ -193,6 +194,19 @@ class Response extends \yii\base\Response
 		if ($terminate) {
 			Yii::$app->end();
 		}
+	}
+
+	/**
+	 * Refreshes the current page.
+	 * The effect of this method call is the same as the user pressing the refresh button of his browser
+	 * (without re-posting data).
+	 * @param boolean $terminate whether to terminate the current application after calling this method
+	 * @param string $anchor the anchor that should be appended to the redirection URL.
+	 * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
+	 */
+	public function refresh($terminate = true, $anchor = '')
+	{
+		$this->redirect(Yii::$app->getRequest()->getUrl() . $anchor, $terminate);
 	}
 
 	/**
