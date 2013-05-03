@@ -106,51 +106,7 @@ class ActiveForm extends Widget
 	 */
 	public $ajaxVar = 'ajax';
 	/**
-	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
-	 * the callback that will be invoked BEFORE validating EACH attribute on the client side.
-	 * The signature of the callback should be like the following:
-	 *
-	 * ~~~
-	 * ~~~
-	 */
-	public $beforeValidateAttribute;
-	/**
-	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
-	 * the callback that will be invoked AFTER validating EACH attribute on the client side.
-	 * The signature of the callback should be like the following:
-	 *
-	 * ~~~
-	 * ~~~
-	 */
-	public $afterValidateAttribute;
-	/**
-	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
-	 * the callback that will be invoked BEFORE validating ALL attributes on the client side when the validation
-	 * is triggered by form submission (that is, [[validateOnSubmit]] is set true).
-	 *
-	 * This callback is called before [[beforeValidateAttribute]].
-	 *
-	 * The signature of the callback should be like the following:
-	 *
-	 * ~~~
-	 * ~~~
-	 */
-	public $beforeValidate;
-	/**
-	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
-	 * the callback that will be invoked AFTER validating ALL attributes on the client side when the validation
-	 * is triggered by form submission (that is, [[validateOnSubmit]] is set true).
-	 *
-	 * This callback is called after [[afterValidateAttribute]].
-	 *
-	 * The signature of the callback should be like the following:
-	 *
-	 * ~~~
-	 * ~~~
-	 */
-	public $afterValidate;
-	/**
-	 * @var array list of attributes that need to be validated on the client side. Each element of the array
+	 * @var array the client validation options for individual attributes. Each element of the array
 	 * represents the validation options for a particular attribute.
 	 * @internal
 	 */
@@ -201,21 +157,6 @@ class ActiveForm extends Widget
 		if ($this->validationUrl !== null) {
 			$options['validationUrl'] = Html::url($this->validationUrl);
 		}
-		$callbacks = array(
-			'beforeValidateAttribute',
-			'afterValidateAttribute',
-			'beforeValidate',
-			'afterValidate',
-		);
-		foreach ($callbacks as $callback) {
-			$value = $this->$callback;
-			if ($value instanceof JsExpression) {
-				$options[$callback] = $value;
-			} elseif (is_string($value)) {
-				$options[$callback] = new JsExpression($value);
-			}
-		}
-
 		return $options;
 	}
 

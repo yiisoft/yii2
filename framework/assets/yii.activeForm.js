@@ -35,14 +35,12 @@
 		validatingCssClass: 'validating',
 		// the URL for performing AJAX-based validation. If not set, it will use the the form's action
 		validationUrl: undefined,
-		// a callback that is called before validating every attribute
-		beforeValidateAttribute: undefined,
-		// a callback that is called after validating every attribute
-		afterValidateAttribute: undefined,
-		// a callback that is called before validating ALL attributes when submitting the form
+		// a callback that is called before submitting the form. The signature of the callback should be:
+		// function ($form) { ...return false to cancel submission...}
+		beforeSubmit: undefined,
+		// a callback that is called before validating each attribute. The signature of the callback should be:
+		// function ($form, attribute, messages) { ...return false to cancel the validation...}
 		beforeValidate: undefined,
-		// a callback that is called after validating ALL attributes when submitting the form
-		afterValidate: undefined,
 		// the GET parameter name indicating an AJAX-based validation
 		ajaxVar: 'ajax'
 	};
@@ -66,10 +64,6 @@
 		enableAjaxValidation: false,
 		// function (attribute, value, messages), the client-side validation function.
 		validate: undefined,
-		// callback called before validating the attribute
-		beforeValidate: undefined,
-		// callback called after validating an attribute.
-		afterValidate: undefined,
 		// status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
 		status: 0,
 		// the value of the input
@@ -122,6 +116,10 @@
 			});
 		},
 
+		options: function() {
+			return this.data('yiiActiveForm').settings;
+		},
+
 		submitForm: function () {
 			var $form = this,
 				data = $form.data('yiiActiveForm');
@@ -135,26 +133,24 @@
 				clearTimeout(data.settings.timer);
 			}
 			data.submitting = true;
-			if (!data.settings.beforeValidate || data.settings.beforeValidate($form)) {
+			if (!data.settings.beforeSubmit || data.settings.beforeSubmit($form)) {
 				validate($form, function (messages) {
 					var hasError = false;
 					$.each(data.attributes, function () {
 						hasError = updateInput($form, this, messages) || hasError;
 					});
 					updateSummary($form, messages);
-					if (!data.settings.afterValidate || data.settings.afterValidate($form, messages, hasError)) {
-						if (!hasError) {
-							data.validated = true;
-							var $button = data.submitObject || $form.find(':submit:first');
-							// TODO: if the submission is caused by "change" event, it will not work
-							if ($button.length) {
-								$button.click();
-							} else {
-								// no submit button in the form
-								$form.submit();
-							}
-							return;
+					if (!hasError) {
+						data.validated = true;
+						var $button = data.submitObject || $form.find(':submit:first');
+						// TODO: if the submission is caused by "change" event, it will not work
+						if ($button.length) {
+							$button.click();
+						} else {
+							// no submit button in the form
+							$form.submit();
 						}
+						return;
 					}
 					data.submitting = false;
 				}, function () {
@@ -235,25 +231,20 @@
 			if (data.submitting || $form.is(':hidden')) {
 				return;
 			}
-			if (!attribute.beforeValidate || attribute.beforeValidate($form, attribute)) {
+			$.each(data.attributes, function () {
+				if (this.status === 2) {
+					this.status = 3;
+					$form.find(this.container).addClass(data.settings.validatingCssClass);
+				}
+			});
+			validate($form, function (messages) {
+				var hasError = false;
 				$.each(data.attributes, function () {
-					if (this.status === 2) {
-						this.status = 3;
-						$form.find(this.container).addClass(data.settings.validatingCssClass);
+					if (this.status === 2 || this.status === 3) {
+						hasError = updateInput($form, this, messages) || hasError;
 					}
 				});
-				validate($form, function (messages) {
-					var hasError = false;
-					$.each(data.attributes, function () {
-						if (this.status === 2 || this.status === 3) {
-							hasError = updateInput($form, this, messages) || hasError;
-						}
-					});
-					if (attribute.afterValidate) {
-						attribute.afterValidate($form, attribute, messages, hasError);
-					}
-				});
-			}
+			});
 		}, data.settings.validationDelay);
 	};
 	
@@ -271,14 +262,15 @@
 		$.each(data.attributes, function () {
 			if (data.submitting || this.status === 2 || this.status === 3) {
 				var msg = [];
-				if (this.validate) {
-					this.validate(this, getValue($form, this), msg);
+				if (!data.settings.beforeValidate || data.settings.beforeValidate($form, this, msg)) {
+					if (this.validate) {
+						this.validate(this, getValue($form, this), msg);
+					}
 					if (msg.length) {
 						messages[this.name] = msg;
+					} else if (this.enableAjaxValidation) {
+						needAjaxValidation = true;
 					}
-				}
-				if (this.enableAjaxValidation && !msg.length) {
-					needAjaxValidation = true;
 				}
 			}
 		});

@@ -85,35 +85,12 @@ class ActiveField extends Component
 	 */
 	public $validationDelay;
 	/**
-	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
-	 * the callback that will be invoked BEFORE validating the attribute associated with this field on the client side.
-	 *
-	 * This callback is called after [[ActiveForm::beforeValidateAttribute]].
-	 *
-	 * The signature of the callback should be like the following:
-	 *
-	 * ~~~
-	 * ~~~
-	 */
-	public $beforeValidate;
-	/**
-	 * @var JsExpression|string a [[JsExpression]] object or a JavaScript expression string representing
-	 * the callback that will be invoked AFTER validating the attribute associated with this field on the client side.
-	 *
-	 * This callback is called before [[ActiveForm::afterValidateAttribute]].
-	 *
-	 * The signature of the callback should be like the following:
-	 *
-	 * ~~~
-	 * ~~~
-	 */
-	public $afterValidate;
-	/**
 	 * @var array the jQuery selectors for selecting the container, input and error tags.
 	 * The array keys should be "container", "input", and/or "error", and the array values
 	 * are the corresponding selectors. For example, `array('input' => '#my-input')`.
 	 *
-	 * The selectors are used under the context of the form.
+	 * The container selector is used under the context of the form, while the input and the error
+	 * selectors are used under the context of the container.
 	 *
 	 * You normally do not need to set this property as the default selectors should work well for most cases.
 	 */
@@ -149,7 +126,9 @@ class ActiveField extends Component
 
 	protected function getClientOptions()
 	{
-		if ($this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation) {
+		$enableClientValidation = $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
+		$enableAjaxValidation = $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
+		if ($enableClientValidation) {
 			$attribute = Html::getAttributeName($this->attribute);
 			$validators = array();
 			foreach ($this->model->getActiveValidators($attribute) as $validator) {
@@ -164,19 +143,14 @@ class ActiveField extends Component
 			}
 		}
 
-		if ($this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation) {
+		if ($enableAjaxValidation) {
 			$options['enableAjaxValidation'] = 1;
 		}
 
-		if (isset($options['validate']) || isset($options['enableAjaxValidation'])) {
+		if ($enableClientValidation || $enableAjaxValidation) {
 			$inputID = Html::getInputId($this->model, $this->attribute);
 			$options['name'] = $inputID;
-			if ($this->model instanceof ActiveRecord && !$this->model->getIsNewRecord()) {
-				$option['status'] = 1;
-			}
-
 			$names = array(
-				'enableAjaxValidation',
 				'validateOnChange',
 				'validateOnType',
 				'validationDelay',
@@ -190,15 +164,6 @@ class ActiveField extends Component
 				$options['error'] = '.' . implode('.', preg_split('/\s+/', $this->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
 			} else {
 				$options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
-			}
-
-			foreach (array('beforeValidate', 'afterValidate') as $callback) {
-				$value = $this->$callback;
-				if ($value instanceof JsExpression) {
-					$options[$callback] = $value;
-				} elseif (is_string($value)) {
-					$options[$callback] = new JsExpression($value);
-				}
 			}
 			return $options;
 		} else {
@@ -359,11 +324,29 @@ class ActiveField extends Component
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 * @param boolean $enclosedByLabel whether to enclose the radio within the label.
+	 * If true, the method will still use [[template]] to layout the checkbox and the error message
+	 * except that the radio is enclosed by the label tag.
 	 * @return string the generated radio button tag
 	 */
-	public function radio($options = array())
+	public function radio($options = array(), $enclosedByLabel = true)
 	{
-		return $this->render(Html::activeRadio($this->model, $this->attribute, $options));
+		if ($enclosedByLabel) {
+			$hidden = '';
+			$radio = Html::activeRadio($this->model, $this->attribute, $options);
+			if (($pos = strpos($radio, '><')) !== false) {
+				$hidden = substr($radio, 0, $pos + 1);
+				$radio = substr($radio, $pos + 1);
+			}
+			$label = isset($this->labelOptions['label']) ? $this->labelOptions['label'] : Html::encode($this->model->getAttributeLabel($this->attribute));
+			return $this->begin() . "\n" . $hidden . strtr($this->template, array(
+				'{input}' => Html::label("$radio $label", null, array('class' => 'radio')),
+				'{label}' => '',
+				'{error}' => $this->error(),
+			)) . "\n" . $this->end();
+		} else {
+			return $this->render(Html::activeRadio($this->model, $this->attribute, $options));
+		}
 	}
 
 	/**
@@ -379,11 +362,29 @@ class ActiveField extends Component
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 * @param boolean $enclosedByLabel whether to enclose the checkbox within the label.
+	 * If true, the method will still use [[template]] to layout the checkbox and the error message
+	 * except that the checkbox is enclosed by the label tag.
 	 * @return string the generated checkbox tag
 	 */
-	public function checkbox($options = array())
+	public function checkbox($options = array(), $enclosedByLabel = true)
 	{
-		return $this->render(Html::activeCheckbox($this->model, $this->attribute, $options));
+		if ($enclosedByLabel) {
+			$hidden = '';
+			$checkbox = Html::activeCheckbox($this->model, $this->attribute, $options);
+			if (($pos = strpos($checkbox, '><')) !== false) {
+				$hidden = substr($checkbox, 0, $pos + 1);
+				$checkbox = substr($checkbox, $pos + 1);
+			}
+			$label = isset($this->labelOptions['label']) ? $this->labelOptions['label'] : Html::encode($this->model->getAttributeLabel($this->attribute));
+			return $this->begin() . "\n" . $hidden . strtr($this->template, array(
+				'{input}' => Html::label("$checkbox $label", null, array('class' => 'checkbox')),
+				'{label}' => '',
+				'{error}' => $this->error(),
+			)) . "\n" . $this->end();
+		} else {
+			return $this->render(Html::activeCheckbox($this->model, $this->attribute, $options));
+		}
 	}
 
 	/**
