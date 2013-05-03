@@ -5,8 +5,9 @@ use yii\helpers\Html;
  * @var yii\widgets\ActiveForm $form
  * @var app\models\LoginForm $model
  */
+$this->title = 'Login';
 ?>
-<h1>Login</h1>
+<h1><?php echo Html::encode($this->title); ?></h1>
 
 <p>Please fill out the following fields to login:</p>
 

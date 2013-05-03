@@ -27,4 +27,14 @@ class SiteController extends Controller
 		Yii::$app->getUser()->logout();
 		Yii::$app->getResponse()->redirect(array('site/index'));
 	}
+
+	public function actionContact()
+	{
+		echo $this->render('contact');
+	}
+
+	public function actionAbout()
+	{
+		echo $this->render('about');
+	}
 }
