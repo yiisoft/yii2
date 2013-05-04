@@ -147,9 +147,28 @@ A good way to save memory and processing time on read-only pages is to use
 ActiveRecord's `asArray` method.
 
 ```php
+class PostController extends Controller
+{
+	public function actionIndex()
+	{
+		$posts = Post::find()->orderBy('id DESC')->limit(100)->asArray()->all();
+		echo $this->render('index', array(
+			'posts' => $posts,
+		));
+	}
+}
 ```
 
-TBD
+In the view you should access fields of each invidual record from `$posts` as array:
+
+```php
+foreach($posts as $post) {
+	echo $post['title']."<br>";
+}
+```
+
+Note that you can use array notation even if `asArray` wasn't specified and you're
+working with AR objects.
 
 ### Processing data in background
 
