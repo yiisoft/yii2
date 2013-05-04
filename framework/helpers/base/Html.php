@@ -95,9 +95,9 @@ class Html
 	public static $attributeOrder = array(
 		'type',
 		'id',
+		'class',
 		'name',
 		'value',
-		'class',
 
 		'href',
 		'src',
@@ -375,7 +375,8 @@ class Html
 	 */
 	public static function mailto($text, $email = null, $options = array())
 	{
-		return static::a($text, 'mailto:' . ($email === null ? $text : $email), $options);
+		$options['href'] = 'mailto:' . ($email === null ? $text : $email);
+		return static::tag('a', $text, $options);
 	}
 
 	/**
