@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+use yii\base\Application;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -597,9 +598,14 @@ class YiiBase
 	 * @param string $language the language code (e.g. `en_US`, `en`). If this is null, the current
 	 * [[\yii\base\Application::language|application language]] will be used.
 	 * @return string the translated message.
+	 * @throws Exception if the application is not set.
 	 */
 	public static function t($message, $params = array(), $language = null)
 	{
+		if (!self::$app instanceof Application) {
+			throw new Exception('Application is not set');
+		}
+
 		return self::$app->getI18N()->translate($message, $params, $language);
 	}
 }
