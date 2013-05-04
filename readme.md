@@ -1,13 +1,13 @@
-Yii PHP Framework Version 2
-===========================
+Yii 2.0 Public Preview
+======================
 
 Thank you for choosing Yii - a high-performance component-based PHP framework.
 
 If you are looking for a production-ready PHP framework, please use
 [Yii v1.1](https://github.com/yiisoft/yii).
 
-Yii 2 is still under heavy development. We may make significant changes
-without prior notices. **Yii 2 is not ready for production yet.**
+Yii 2.0 is still under heavy development. We may make significant changes
+without prior notices. **Yii 2.0 is not ready for production use yet.**
 
 
 DIRECTORY STRUCTURE
@@ -37,7 +37,3 @@ You are welcome to participate in Yii 2 development in the following ways:
     - Before you start, please adopt an existing issue or start a new one to avoid duplicated efforts.
     - Please submit a merge request after you finish development.
 
-
-
-The Yii Developer Team
-http://www.yiiframework.com
