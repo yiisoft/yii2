@@ -96,7 +96,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getIsPostRequest()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && !strcasecmp($_SERVER['REQUEST_METHOD'], 'POST');
+		return $this->getRequestMethod() === 'POST';
 	}
 
 	/**
