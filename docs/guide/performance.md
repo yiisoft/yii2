@@ -14,15 +14,22 @@ Preparing framework for production
 
 First thing you should do before deploying your application to production environment
 is to disable debug mode. A Yii application runs in debug mode if the constant
-`YII_DEBUG` is defined as `true` in `index.php`. Debug mode is useful during
-development stage, but it would impact performance because some components
-cause extra burden in debug mode. For example, the message logger may record
-additional debug information for every message being logged.
+`YII_DEBUG` is defined as `true` in `index.php` so to disable debug the following
+should be in your `index.php`:
+
+```php
+defined('YII_DEBUG') or define('YII_DEBUG', false);
+```
+
+Debug mode is very useful during development stage, but it would impact performance
+because some components cause extra burden in debug mode. For example, the message
+logger may record additional debug information for every message being logged.
 
 ### Enabling PHP opcode cache
 
 Enabling the PHP opcode cache improves any PHP application performance and lowers
-memory usage. Yii is no exception. It was tested with APC extension that caches
+memory usage significantly. Yii is no exception. It was tested with
+[APC PHP extension](http://php.net/manual/en/book.apc.php) that caches
 and optimizes PHP intermediate code and avoids the time spent in parsing PHP
 scripts for every incoming request.
 
@@ -34,28 +41,69 @@ to save the time of parsing database schema. This can be done by setting the
 `protected/config/main.php`:
 
 ```php
+return array(
+	// ...
+	'components' => array(
+		// ...
+		'db' => array(
+			'class' => 'yii\db\Connection',
+			'dsn' => 'mysql:host=localhost;dbname=mydatabase',
+			'username' => 'root',
+			'password' => '',
+			'enableSchemaCache' => true,
 
+			// Duration of schema cache.
+			// 'schemaCacheDuration' => 3600,
+
+			// Name of the cache component used. Default is 'cache'.
+			//'schemaCache' => 'cache',
+		),
+		'cache' => array(
+			'class' => 'yii\caching\FileCache',
+		),
+	),
+);
 ```
+
+Note that `cache` application component should be configured.
 
 ### Combining and Minimizing Assets
 
+TBD
 
 ### Using better storage for sessions
 
-By default PHP uses plain files to handle sessions. It is OK for development and
+By default PHP uses files to handle sessions. It is OK for development and
 small projects but when it comes to handling concurrent requests it's better to
 switch to another storage such as database. You can do so by configuring your
 application via `protected/config/main.php`:
 
-
 ```php
+return array(
+	// ...
+	'components' => array(
+		'session' => array(
+			'class' => 'yii\web\DbSession',
+
+			// Set the following if want to use DB component other than
+			// default 'db'.
+			// 'db' => 'mydb',
+
+			// To override default session table set the following
+			// 'sessionTable' => 'my_session',
+		),
+	),
+);
 ```
 
+You can use `CacheSession` to store sessions using cache. Note that some
+cache storages such as memcached has no guaranteee that session data will not
+be lost leading to unexpected logouts.
 
 Improving application
 ---------------------
 
-### Using Caching Techniques
+### Using Serverside Caching Techniques
 
 As described in the Caching section, Yii provides several caching solutions that
 may improve the performance of a Web application significantly. If the generation
@@ -65,6 +113,10 @@ can use the fragment caching approach to reduce its rendering frequency;
 If a whole page remains relative static, we can use the page caching approach to
 save the rendering cost for the whole page.
 
+
+### Leveraging HTTP to save procesing time and bandwidth
+
+TBD
 
 ### Database Optimization
 
@@ -91,6 +143,14 @@ overwhelming data from database and exhausting the memory allocated to PHP.
 
 ### Using asArray
 
+A good way to save memory and processing time on read-only pages is to use
+ActiveRecord's `asArray` method.
+
+```php
+```
+
+TBD
+
 ### Processing data in background
 
 In order to respond to user requests faster you can process heavy parts of the
@@ -98,3 +158,5 @@ request later if there's no need for immediate response.
 
 - Cron jobs + console.
 - queues + handlers.
+
+TBD
