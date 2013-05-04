@@ -483,7 +483,7 @@ class Query extends \yii\base\Component
 	 * Sets the ORDER BY part of the query.
 	 * @param string|array $columns the columns (and the directions) to be ordered by.
 	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-	 * (e.g. `array('id' => Query::SORT_ASC ASC, 'name' => Query::SORT_DESC)`).
+	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Query the query object itself
@@ -499,7 +499,7 @@ class Query extends \yii\base\Component
 	 * Adds additional ORDER BY columns to the query.
 	 * @param string|array $columns the columns (and the directions) to be ordered by.
 	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-	 * (e.g. `array('id' => Query::SORT_ASC ASC, 'name' => Query::SORT_DESC)`).
+	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return Query the query object itself
