@@ -264,7 +264,8 @@ class ArrayHelper
 		$args = array();
 		foreach ($keys as $i => $key) {
 			$flag = $sortFlag[$i];
-			if ($flag == (SORT_STRING | SORT_FLAG_CASE)) {
+			if ((defined('SORT_FLAG_CASE') && $flag == (SORT_STRING | SORT_FLAG_CASE))
+			    || $flag == SORT_STRING) {
 				$flag = SORT_STRING;
 				$column = array();
 				foreach (static::getColumn($array, $key) as $k => $value) {
