@@ -74,6 +74,7 @@ class ArrayHelper
 	 * `function($array, $defaultValue)`.
 	 * @param mixed $default the default value to be returned if the specified key does not exist
 	 * @return mixed the value of the
+     * @throws \yii\base\InvalidParamException if the parameter $array is not a valid array or object
 	 */
 	public static function getValue($array, $key, $default = null)
 	{
@@ -81,9 +82,10 @@ class ArrayHelper
 			return $key($array, $default);
 		} elseif (is_array($array)) {
 			return isset($array[$key]) || array_key_exists($key, $array) ? $array[$key] : $default;
-		} else {
+		} elseif (is_object($array) && property_exists($array, $key)) {
 			return $array->$key;
 		}
+        throw new InvalidParamException('The $array parameter must be a valid array or object.');
 	}
 
 	/**
