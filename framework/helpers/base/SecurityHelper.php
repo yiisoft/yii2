@@ -151,7 +151,7 @@ class SecurityHelper
 			throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
 		}
 		// AES uses a 128-bit block size
-		$module = @mcrypt_module_open('rijndael-128', '', MCRYPT_MODE_CBC, '');
+		$module = @mcrypt_module_open('rijndael-128', '', 'cbc', '');
 		if ($module === false) {
 			throw new Exception('Failed to initialize the mcrypt module.');
 		}
