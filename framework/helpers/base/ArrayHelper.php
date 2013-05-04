@@ -246,6 +246,9 @@ class ArrayHelper
 	 */
 	public static function multisort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR)
 	{
+		// Prior to PHP 5.4, SORT_FLAG_CASE isnt available
+		defined('SORT_FLAG_CASE') or define('SORT_FLAG_CASE', 8);
+
 		$keys = is_array($key) ? $key : array($key);
 		if (empty($keys) || empty($array)) {
 			return;
@@ -264,8 +267,7 @@ class ArrayHelper
 		$args = array();
 		foreach ($keys as $i => $key) {
 			$flag = $sortFlag[$i];
-			if ((defined('SORT_FLAG_CASE') && $flag == (SORT_STRING | SORT_FLAG_CASE))
-			    || $flag == SORT_STRING) {
+			if ($flag == (SORT_STRING | SORT_FLAG_CASE)) {
 				$flag = SORT_STRING;
 				$column = array();
 				foreach (static::getColumn($array, $key) as $k => $value) {
