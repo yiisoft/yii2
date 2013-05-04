@@ -34,6 +34,6 @@ You are welcome to participate in Yii 2 development in the following ways:
 * [Report issues](https://github.com/yiisoft/yii2/issues)
 * [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-design-discussions-for-yii-20/)
 * Fix issues, develop features, write/polish documentation
-    - Before you start, please adopt an existing issue or start a new one to avoid duplicated efforts.
+    - Before you start, please adopt an existing issue (labelled with "ready for adoption") or start a new one to avoid duplicated efforts.
     - Please submit a merge request after you finish development.
 
