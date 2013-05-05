@@ -272,7 +272,7 @@ class ArrayHelper
 		foreach ($keys as $i => $key) {
 			$flag = $sortFlag[$i];
 			$cs = $caseSensitive[$i];
-			if (!$cs && ($flag === SORT_STRING || $flag === SORT_NATURAL)) {
+			if (!$cs && ($flag === SORT_STRING)) {
 				if (defined('SORT_FLAG_CASE')) {
 					$flag = $flag | SORT_FLAG_CASE;
 					$args[] = static::getColumn($array, $key);
