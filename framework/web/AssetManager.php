@@ -82,7 +82,8 @@ class AssetManager extends Component
 		}
 		$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
 
-		foreach (require(YII_PATH . '/assets.php') as $name => $bundle) {
+		$assets = require(YII_PATH . '/assets.php');
+		foreach ($assets as $name => $bundle) {
 			if (!isset($this->bundles[$name])) {
 				$this->bundles[$name] = $bundle;
 			}
