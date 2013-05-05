@@ -167,11 +167,11 @@ class SecurityHelper
 	 *
 	 * ~~~
 	 * // generates the hash (usually done during user registration or when the password is changed)
-	 * $hash = SecurityHelper::hashPassword($password);
+	 * $hash = SecurityHelper::generatePasswordHash($password);
 	 * // ...save $hash in database...
 	 *
 	 * // during login, validate if the password entered is correct using $hash fetched from database
-	 * if (PasswordHelper::verifyPassword($password, $hash) {
+	 * if (SecurityHelper::verifyPassword($password, $hash) {
 	 *     // password is good
 	 * } else {
 	 *     // password is bad
@@ -217,7 +217,7 @@ class SecurityHelper
 			throw new InvalidParamException('Password must be a string and cannot be empty.');
 		}
 
-		if (!preg_match('/^\$2[axy]\$(\d\d)\$[\./0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
+		if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
 			throw new InvalidParamException('Hash is invalid.');
 		}
 

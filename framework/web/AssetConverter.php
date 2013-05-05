@@ -53,8 +53,8 @@ class AssetConverter extends Component implements IAssetConverter
 					));
 					exec($command, $output);
 					Yii::info("Converted $asset into $result: " . implode("\n", $output), __METHOD__);
-					return "$baseUrl/$result";
 				}
+				return "$baseUrl/$result";
 			}
 		}
 		return "$baseUrl/$asset";

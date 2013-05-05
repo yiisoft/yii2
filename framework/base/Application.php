@@ -306,6 +306,15 @@ class Application extends Module
 	}
 
 	/**
+	 * @return null|Component
+	 * @todo
+	 */
+	public function getAuthManager()
+	{
+		return $this->getComponent('auth');
+	}
+
+	/**
 	 * Registers the core application components.
 	 * @see setComponents
 	 */
