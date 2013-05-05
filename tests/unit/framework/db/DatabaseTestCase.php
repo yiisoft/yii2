@@ -1,11 +1,17 @@
 <?php
 
-namespace yiiunit;
+namespace yiiunit\framework\db;
 
-class MysqlTestCase extends TestCase
+use yiiunit\TestCase;
+
+class DatabaseTestCase extends TestCase
 {
+	protected $driver;
+
 	protected function setUp()
 	{
+		$this->driver = isset($_ENV['db_driver']) ? $_ENV['db_driver'] : 'mysql';
+
 		if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
 			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');
 		}
@@ -17,7 +23,7 @@ class MysqlTestCase extends TestCase
 	 */
 	public function getConnection($reset = true)
 	{
-		$params = $this->getParam('mysql');
+		$params = $this->getParam($this->driver);
 		$db = new \yii\db\Connection;
 		$db->dsn = $params['dsn'];
 		$db->username = $params['username'];
