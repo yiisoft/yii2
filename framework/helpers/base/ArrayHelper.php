@@ -237,11 +237,11 @@ class ArrayHelper
 	 * @param boolean|array $ascending whether to sort in ascending or descending order. When
 	 * sorting by multiple keys with different ascending orders, use an array of ascending flags.
 	 * @param integer|array $sortFlag the PHP sort flag. Valid values include
-	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING` and `SORT_NATURAL`.
-	 * and `SORT_STRING | SORT_FLAG_CASE`. Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
+	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING` and `SORT_LOCALE_STRING`.
+	 * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
 	 * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
 	 * @param boolean|array $caseSensitive whether to sort string in case-sensitive manner. This parameter
-	 * is used only when `$sortFlag` is either `SORT_STRING` or `SORT_NATURAL`.
+	 * is used only when `$sortFlag` is `SORT_STRING`.
 	 * When sorting by multiple keys with different case sensitivities, use an array of boolean values.
 	 * @throws InvalidParamException if the $ascending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
