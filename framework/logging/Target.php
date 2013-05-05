@@ -89,7 +89,7 @@ abstract class Target extends \yii\base\Component
 	 */
 	public function collect($messages, $final)
 	{
-		$this->_messages = array($this->_messages, $this->filterMessages($messages));
+		$this->_messages = array_merge($this->_messages, $this->filterMessages($messages));
 		$count = count($this->_messages);
 		if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
 			if (($context = $this->getContextMessage()) !== '') {
