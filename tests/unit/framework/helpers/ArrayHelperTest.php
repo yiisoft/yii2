@@ -14,6 +14,9 @@ class ArrayHelperTest extends \yii\test\TestCase
 
 	public function testMultisort()
 	{
+		// Prior to PHP 5.4, SORT_FLAG_CASE isnt available
+		defined('SORT_FLAG_CASE') or define('SORT_FLAG_CASE', 8);
+
 		// single key
 		$array = array(
 			array('name' => 'b', 'age' => 3),
@@ -42,6 +45,7 @@ class ArrayHelperTest extends \yii\test\TestCase
 			array('name' => 'b', 'age' => 2),
 			array('name' => 'A', 'age' => 1),
 		);
+
 		ArrayHelper::multisort($array, array('name', 'age'), SORT_ASC, array(SORT_STRING|SORT_FLAG_CASE, SORT_REGULAR));
 		$this->assertEquals(array('name' => 'A', 'age' => 1), $array[0]);
 		$this->assertEquals(array('name' => 'a', 'age' => 3), $array[1]);
