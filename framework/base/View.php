@@ -744,10 +744,10 @@ class View extends Component
 	{
 		$lines = array();
 		if (!empty($this->metaTags)) {
-			$lines[] = implode("\n", $this->cssFiles);
+			$lines[] = implode("\n", $this->metaTags);
 		}
 		if (!empty($this->linkTags)) {
-			$lines[] = implode("\n", $this->cssFiles);
+			$lines[] = implode("\n", $this->linkTags);
 		}
 		if (!empty($this->cssFiles)) {
 			$lines[] = implode("\n", $this->cssFiles);
