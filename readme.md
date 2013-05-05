@@ -13,7 +13,8 @@ without prior notices. **Yii 2.0 is not ready for production use yet.**
 DIRECTORY STRUCTURE
 -------------------
 
-      app/                 a ready-to-use application built on Yii 2
+      apps/                ready-to-use Web apps built on Yii 2
+          bootstrap/       a simple app supporting user login and contact page
       build/               internally used build tools
       docs/                documentation
       framework/           framework source files
