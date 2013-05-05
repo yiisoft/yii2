@@ -4,12 +4,12 @@ namespace yiiunit\framework\db;
 
 use yii\db\Connection;
 
-class ConnectionTest extends \yiiunit\MysqlTestCase
+class ConnectionTest extends DatabaseTestCase
 {
 	function testConstruct()
 	{
 		$connection = $this->getConnection(false);
-		$params = $this->getParam('mysql');
+		$params = $this->getParam($this->driver);
 
 		$this->assertEquals($params['dsn'], $connection->dsn);
 		$this->assertEquals($params['username'], $connection->username);
@@ -40,7 +40,7 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 	function testGetDriverName()
 	{
 		$connection = $this->getConnection(false);
-		$this->assertEquals('mysql', $connection->driverName);
+		$this->assertEquals($this->driver, $connection->driverName);
 		$this->assertFalse($connection->isActive);
 	}
 
