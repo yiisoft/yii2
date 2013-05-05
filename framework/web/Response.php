@@ -51,7 +51,7 @@ class Response extends \yii\base\Response
 		if ($terminate) {
 			// clean up the application first because the file downloading could take long time
 			// which may cause timeout of some resources (such as DB connection)
-			Yii::app()->end(0, false);
+			Yii::$app->end(0, false);
 			echo $content;
 			exit(0);
 		} else {
