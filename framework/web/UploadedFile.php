@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\widgets\ActiveForm;
+use yii\widgets\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -66,7 +66,7 @@ class UploadedFile extends \yii\base\Object
 	 */
 	public static function getInstance($model, $attribute)
 	{
-		$name = ActiveForm::getInputName($model, $attribute);
+		$name = Html::getInputName($model, $attribute);
 		return static::getInstanceByName($name);
 	}
 
@@ -80,7 +80,7 @@ class UploadedFile extends \yii\base\Object
 	 */
 	public static function getInstances($model, $attribute)
 	{
-		$name = ActiveForm::getInputName($model, $attribute);
+		$name = Html::getInputName($model, $attribute);
 		return static::getInstancesByName($name);
 	}
 
