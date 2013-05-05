@@ -174,7 +174,7 @@ class UrlManager extends Component
 	public function createUrl($route, $params = array())
 	{
 		$anchor = isset($params['#']) ? '#' . $params['#'] : '';
-		unset($params['#']);
+		unset($params['#'], $params[$this->routeVar]);
 
 		$route = trim($route, '/');
 		$baseUrl = $this->getBaseUrl();
