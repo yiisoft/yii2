@@ -14,6 +14,7 @@ class ActiveRecordTest extends DatabaseTestCase
 {
 	public function setUp()
 	{
+		parent::setUp();
 		ActiveRecord::$db = $this->getConnection();
 	}
 
