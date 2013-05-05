@@ -39,7 +39,7 @@ class VarDumper
 	 */
 	public static function dump($var, $depth = 10, $highlight = false)
 	{
-		echo self::dumpAsString($var, $depth, $highlight);
+		echo static::dumpAsString($var, $depth, $highlight);
 	}
 
 	/**
