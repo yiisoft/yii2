@@ -103,9 +103,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 */
 	public function itemAt($index)
 	{
-		if (isset($this->_d[$index])) {
-			return $this->_d[$index];
-		} elseif ($index >= 0 && $index < $this->_c) { // in case the value is null
+		if (array_key_exists($index, $this->_d)) {
 			return $this->_d[$index];
 		} else {
 			throw new InvalidParamException('Index out of range: ' . $index);
