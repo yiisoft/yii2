@@ -10,7 +10,7 @@ class DatabaseTestCase extends TestCase
 
 	protected function setUp()
 	{
-		$this->driver = isset($_ENV['driver']) ? $_ENV['driver'] : 'mysql';
+		$this->driver = isset($_ENV['db_driver']) ? $_ENV['db_driver'] : 'mysql';
 
 		if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
 			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');

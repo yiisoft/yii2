@@ -5,7 +5,7 @@
 		convertNoticesToExceptions="true"
 		convertWarningsToExceptions="true"
 		stopOnFailure="false">
-		<var name="driver" value="mysql"/>
+		<var name="db_driver" value="mysql"/>
 		<testsuites>
 			<testsuite name="Yii Test Suite">
 				<directory>./tests/unit</directory>
