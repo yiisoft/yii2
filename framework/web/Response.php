@@ -130,7 +130,7 @@ class Response extends \yii\base\Response
 		}
 
 		if (!isset($options['mimeType'])) {
-			if (($options['mimeType'] = CFileHelper::getMimeTypeByExtension($filePath)) === null) {
+			if (($options['mimeType'] = FileHelper::getMimeTypeByExtension($filePath)) === null) {
 				$options['mimeType'] = 'text/plain';
 			}
 		}
