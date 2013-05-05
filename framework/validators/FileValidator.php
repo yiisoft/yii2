@@ -192,11 +192,11 @@ class FileValidator extends Validator
 				break;
 			case UPLOAD_ERR_CANT_WRITE:
 				$this->addError($object, $attribute, $this->message);
-				Yii::warning('Failed to write the uploaded file to disk: ', $file->getName(), __METHOD__);
+				Yii::warning('Failed to write the uploaded file to disk: ' . $file->getName(), __METHOD__);
 				break;
 			case UPLOAD_ERR_EXTENSION:
 				$this->addError($object, $attribute, $this->message);
-				Yii::warning('File upload was stopped by some PHP extension: ', $file->getName(), __METHOD__);
+				Yii::warning('File upload was stopped by some PHP extension: ' . $file->getName(), __METHOD__);
 				break;
 			default:
 				break;
