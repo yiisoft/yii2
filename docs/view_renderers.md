@@ -27,6 +27,9 @@ array(
 )
 ```
 
+Note that Smarty and Twig are not bundled with Yii and you have to download and
+unpack these yourself and then specify `twigPath` and `smartyPath` respectively.
+
 Twig
 ----
 

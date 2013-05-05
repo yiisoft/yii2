@@ -25,8 +25,8 @@ http://hostname/path/to/yii/requirements/index.php
 ~~~
 
 Yii requires PHP 5.3, so the server must have PHP 5.3 or above installed and
-available to the web server.  Yii has been tested with [Apache HTTP server](http://httpd.apache.org/)
-on Windows and Linux.  It may also run on other Web servers and platforms,
+available to the web server. Yii has been tested with [Apache HTTP server](http://httpd.apache.org/)
+on Windows and Linux. It may also run on other Web servers and platforms,
 provided PHP 5.3 is supported.
 
 
@@ -34,7 +34,7 @@ Recommended Apache Configuration
 --------------------------------
 
 Yii is ready to work with a default Apache web server configuration.
-The `.htaccess` files in Yii framework and application folders restrict
+The `.htaccess` files in Yii framework and application folders deny
 access to the restricted resources. To hide the bootstrap file (usually `index.php`)
 in your URLs you can add `mod_rewrite` instructions to the `.htaccess` file
 in your document root or to the virtual host configuration:
@@ -63,7 +63,7 @@ server {
     access_log  /www/mysite/log/access.log  main;
 
     server_name  mysite;
-    root   $host_path/htdocs;
+    root  $host_path/htdocs;
     set $yii_bootstrap "index.php";
 
     charset utf-8;
@@ -108,4 +108,5 @@ server {
 }
 ~~~
 
-Using this configuration you can set `cgi.fix_pathinfo=0` in php.ini to avoid many unnecessary system stat() calls.
+Using this configuration you can set `cgi.fix_pathinfo=0` in php.ini to avoid
+many unnecessary system `stat()` calls.
