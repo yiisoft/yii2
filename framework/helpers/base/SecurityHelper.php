@@ -167,11 +167,11 @@ class SecurityHelper
 	 *
 	 * ~~~
 	 * // generates the hash (usually done during user registration or when the password is changed)
-	 * $hash = SecurityHelper::hashPassword($password);
+	 * $hash = SecurityHelper::generatePasswordHash($password);
 	 * // ...save $hash in database...
 	 *
 	 * // during login, validate if the password entered is correct using $hash fetched from database
-	 * if (PasswordHelper::verifyPassword($password, $hash) {
+	 * if (SecurityHelper::verifyPassword($password, $hash) {
 	 *     // password is good
 	 * } else {
 	 *     // password is bad
