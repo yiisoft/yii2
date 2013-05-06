@@ -18,6 +18,6 @@ namespace yii\helpers;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ConsoleColor extends base\ConsoleColor
+class ConsoleColor extends base\Console
 {
 }
