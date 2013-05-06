@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\base\VarDumper;
 
 /**
  * @include @yii/base/Component.md
@@ -90,6 +91,7 @@ class Component extends Object
 			// as behavior: attach behavior
 			$name = trim(substr($name, 3));
 			$this->attachBehavior($name, $value instanceof Behavior ? $value : Yii::createObject($value));
+			return;
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
