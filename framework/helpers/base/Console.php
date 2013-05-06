@@ -18,7 +18,7 @@ namespace yii\helpers\base;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ConsoleColor
+class Console
 {
 	const FG_BLACK = 30;
 	const FG_RED = 31;
@@ -38,6 +38,7 @@ class ConsoleColor
 	const BG_CYAN = 46;
 	const BG_GREY = 47;
 
+    const NORMAL = 0;
 	const BOLD = 1;
 	const ITALIC = 3;
 	const UNDERLINE = 4;
@@ -359,7 +360,59 @@ class ConsoleColor
 		}, $string);
 	}
 
-	/**
+    /**
+     *
+     * Returns an ANSI-Controlcode
+     *
+     * Takes 1 to 3 Arguments: either 1 to 3 strings containing the name of the
+     * FG Color, style and BG color, or one array with the indices color, style
+     * or background.
+     *
+     * @param mixed  $color      Optional.
+     *                           Either a string with the name of the foreground
+     *                           color, or an array with the indices 'color',
+     *                           'style', 'background' and corresponding names as
+     *                           values.
+     * @param string $style      Optional name of the style
+     * @param string $background Optional name of the background color
+     *
+     * @return string
+     */
+    public function color($color = null, $style = null, $background = null) // {{{
+    {
+        $colors = static::getColorCodes();
+
+        if (is_array($color)) {
+            $style      = isset($color['style']) ? $color['style'] : null;
+            $background = isset($color['background']) ? $color['background'] : null;
+            $color      = isset($color['color']) ? $color['color'] : null;
+        }
+
+        if ($color == 'reset') {
+            return "\033[0m";
+        }
+
+        $code = array();
+        if (isset($style)) {
+            $code[] = $colors['style'][$style];
+        }
+
+        if (isset($color)) {
+            $code[] = $colors['color'][$color];
+        }
+
+        if (isset($background)) {
+            $code[] = $colors['background'][$background];
+        }
+
+        if (empty($code)) {
+            $code[] = 0;
+        }
+        $code = implode(';', $code);
+        return "\033[{$code}m";
+    }
+
+    /**
 	 * TODO syntax copied from https://github.com/pear/Console_Color2/blob/master/Console/Color2.php
 	 *
 	 * Converts colorcodes in the format %y (for yellow) into ansi-control
@@ -395,11 +448,8 @@ class ConsoleColor
 	 *
 	 * @return string
 	 */
-	public static function renderColoredString($string)
-	{
-		$colored = true;
-
-
+	public static function renderColoredString($string, $colored = true)
+    {
 		static $conversions = array ( // static so the array doesn't get built
 		   // everytime
 		// %y - yellow, and so on... {{{
@@ -443,7 +493,7 @@ class ConsoleColor
 		if ($colored) {
 			$string = str_replace('%%', '% ', $string);
 			foreach ($conversions as $key => $value) {
-				$string = str_replace($key, Console_Color::color($value),
+				$string = str_replace($key, static::color($value),
 				$string);
 			}
 			$string = str_replace('% ', '%', $string);
@@ -454,6 +504,49 @@ class ConsoleColor
 
 		return $string;
 	}
+
+    /**
+     * Returns the different foreground and background color codes and styles available.
+     * @return array the color codes
+     */
+    public static function getColorCodes()
+    {
+        return array(
+            'color' => array(
+                'black'  => static::FG_BLACK,
+                'red'    => static::FG_RED,
+                'green'  => static::FG_GREEN,
+                'yellow' => static::FG_YELLOW,
+                'blue'   => static::FG_BLUE,
+                'purple' => static::FG_PURPLE,
+                'cyan'   => static::FG_CYAN,
+                'grey'   => static::FG_GREY,
+            ),
+            'style' => array(
+                'normal'      => static::NORMAL,
+                'bold'        => static::BOLD,
+                'italic'      => static::ITALIC,
+                'underline'   => static::UNDERLINE,
+                'blink'       => static::BLINK,
+                'negative'    => static::NEGATIVE,
+                'concealed'   => static::CONCEALED,
+                'crossed_out' => static::CROSSED_OUT,
+                'framed'      => static::FRAMED,
+                'encircled'   => static::ENCIRCLED,
+                'overlined'   => static::OVERLINED
+            ),
+            'background' => array(
+                'black'  => static::BG_BLACK,
+                'red'    => static::BG_RED,
+                'green'  => static::BG_RED,
+                'yellow' => static::BG_YELLOW,
+                'blue'   => static::BG_BLUE,
+                'purple' => static::BG_PURPLE,
+                'cyan'   => static::BG_CYAN,
+                'grey'   => static::BG_GREY
+            )
+        );
+    }
 
 	/**
 	 * Escapes % so they don't get interpreted as color codes
@@ -467,4 +560,267 @@ class ConsoleColor
 	{
 		return str_replace('%', '%%', $string);
 	}
+
+    /**
+     * Returns true if the stream supports colorization. ANSI colors is disabled if not supported by the stream.
+     *
+     * - windows without asicon
+     * - not tty consoles
+     *
+     * @param mixed $stream
+     * @return bool true if the stream supports ANSI colors, otherwise false.
+     */
+    public static function streamSupportsAnsiColors( $stream )
+    {
+        return DIRECTORY_SEPARATOR == '\\'
+            ? null !== getenv('ANSICON')
+            : function_exists('posix_isatty') && @posix_isatty($stream);
+    }
+
+    /**
+     * Returns true if the console is running on windows
+     * @return bool
+     */
+    public static function isRunningOnWindows()
+    {
+        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+    }
+
+    /**
+     * Gets input from STDIN and returns a string right-trimmed for EOLs.
+     *
+     * @param bool $raw If set to true, returns the raw string without trimming
+     *
+     * @return string
+     */
+    public static function stdin($raw = false)
+    {
+        return $raw ? fgets(STDIN) : rtrim(fgets(STDIN), PHP_EOL);
+    }
+
+    /**
+     * Prints text to STDOUT.
+     *
+     * @param string $text
+     * @param bool   $raw
+     *
+     * @return int|false Number of bytes printed or false on error
+     */
+    public static function stdout($text, $raw = false)
+    {
+        if ($raw) {
+            return fwrite(STDOUT, $text);
+        } elseif (static::streamSupportsAnsiColors(STDOUT)) {
+            return fwrite(STDOUT, static::renderColoredString($text));
+        } else {
+            return fwrite(STDOUT, static::renderColoredString($text, false));
+        }
+    }
+
+    /**
+     * Prints text to STDERR.
+     *
+     * @param string $text
+     * @param bool   $raw
+     *
+     * @return mixed Number of bytes printed or bool false on error.
+     */
+    public static function stderr($text, $raw = false)
+    {
+        if ($raw) {
+            return fwrite(STDERR, $text);
+        } elseif (static::streamSupportsAnsiColors(STDERR)) {
+            return fwrite(STDERR, static::renderColoredString($text));
+        } else {
+            return fwrite(STDERR, static::renderColoredString($text, false));
+        }
+    }
+
+    /**
+     * Prints text to STDERR appended with a carriage return (PHP_EOL).
+     *
+     * @param string $text
+     * @param bool   $raw
+     *
+     * @return mixed Number of bytes printed or false on error
+     */
+    public static function error($text = null, $raw = false)
+    {
+        return static::stderr($text . PHP_EOL, $raw);
+    }
+
+    /**
+     * Asks the user for input. Ends when the user types a carriage return (PHP_EOL). Optionally, It also provides a
+     * prompt.
+     *
+     * @param string $prompt the prompt (optional)
+     * @return string the user's input
+     */
+    public static function input($prompt = null)
+    {
+        if(isset($prompt)) {
+            static::stdout($prompt);
+        }
+        return static::stdin();
+    }
+
+    /**
+     * Prints text to STDOUT appended with a carriage return (PHP_EOL).
+     *
+     * @param string $text
+     * @param bool $raw
+     *
+     * @return mixed Number of bytes printed or bool false on error
+     */
+    public static function output($text = null, $raw = false)
+    {
+        return static::stdout($text . PHP_EOL, $raw);
+    }
+
+    /**
+     * Prompts the user for input and validates it
+     *
+     * @param string $text prompt string
+     * @param array $options the options to validate the input:
+     *  - required: whether it is required or not
+     *  - default: default value if no input is inserted by the user
+     *  - pattern: regular expression pattern to validate user input
+     *  - validator: a callable function to validate input. The function must accept two parameters:
+     *      - $input: the user input to validate
+     *      - $error: the error value passed by reference if validation failed.
+     * @return string the user input
+     */
+    public static function prompt($text, $options = array())
+    {
+        $options = ArrayHelper::merge($options, array(
+            'required'  => false,
+            'default'   => null,
+            'pattern'   => null,
+            'validator' => null,
+            'error'     => 'Invalid input.',
+        ));
+        $error = null;
+
+        top:
+        $input = $options['default']
+            ? static::input("$text [" . $options['default'] . ']: ')
+            : static::input("$text: ");
+
+        if (!strlen($input)) {
+            if (isset($options['default'])) {
+                $input = $options['default'];
+            } elseif ($options['required']) {
+                static::output($options['error']);
+                goto top;
+            }
+        } elseif ($options['pattern'] && !preg_match($options['pattern'], $input)) {
+            static::output($options['error']);
+            goto top;
+        } elseif ($options['validator'] &&
+            !call_user_func_array($options['validator'], array($input, &$error))) {
+            static::output(isset($error) ? $error : $options['error']);
+            goto top;
+        }
+
+        return $input;
+    }
+
+    /**
+     * Asks the user for a simple yes/no confirmation.
+     *
+     * @param string $prompt the prompt string
+     *
+     * @return bool true or false according to user input.
+     */
+    public static function confirm($prompt)
+    {
+        top:
+        $input = strtolower(static::input("$prompt [y/n]: "));
+        if (!in_array(substr($input,0,1), array('y', 'n'))) {
+            static::output("Please, type 'y' or 'n'");
+            goto top;
+        }
+        return $input === 'y' ? true : false;
+    }
+
+    /**
+     * Gives the user an option to choose from. Giving '?' as an input will show
+     * a list of options to choose from and their explanations.
+     *
+     * @param string $prompt the prompt message
+     * @param array  $options Key-value array of options to choose from
+     *
+     * @return string An option character the user chose
+     */
+    public static function select($prompt, $options = array())
+    {
+        top:
+        static::stdout("$prompt [" . implode(',', array_keys($options)) . ",?]: ");
+        $input = static::stdin();
+        if ($input === '?') {
+            foreach ($options as $key => $value) {
+                echo " $key - $value\n";
+            }
+            echo " ? - Show help\n";
+            goto top;
+        } elseif (!in_array($input, array_keys($options))) goto top;
+        return $input;
+    }
+
+    /**
+     * Displays and updates a simple progress bar on screen.
+     *
+     * @param $done the number of items that are completed
+     * @param $total the total value of items that are to be done
+     * @param int $size the size of the status bar (optional)
+     * @see http://snipplr.com/view/29548/
+     */
+    public static function showProgress($done, $total, $size=30)
+    {
+        static $start;
+
+        // if we go over our bound, just ignore it
+        if($done > $total) {
+            return;
+        }
+
+        if(empty($start)) {
+            $start=time();
+        }
+
+        $now = time();
+
+        $percent=(double)($done/$total);
+        $bar=floor($percent*$size);
+
+        $status="\r[";
+        $status.=str_repeat("=", $bar);
+        if($bar<$size){
+            $status.=">";
+            $status.=str_repeat(" ", $size-$bar);
+        } else {
+            $status.="=";
+        }
+
+        $display=number_format($percent*100, 0);
+
+        $status.="] $display%  $done/$total";
+
+        $rate = ($now-$start)/$done;
+        $left = $total - $done;
+        $eta = round($rate * $left, 2);
+
+        $elapsed = $now - $start;
+
+        $status.= " remaining: ".number_format($eta)." sec.  elapsed: ".number_format($elapsed)." sec.";
+
+        static::stdout("$status  ");
+
+        flush();
+
+        // when done, send a newline
+        if($done == $total) {
+            echo "\n";
+        }
+    }
 }
