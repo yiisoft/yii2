@@ -39,6 +39,9 @@ $this->registerAssetBundle('app');
 		<!-- /.navbar -->
 	</div>
 
+	<?php $this->widget('yii\widgets\Breadcrumbs', array(
+		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
+	)); ?>
 	<?php echo $content; ?>
 
 	<hr>
