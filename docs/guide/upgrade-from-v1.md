@@ -377,6 +377,11 @@ $customers = Customer::find()->asArray()->all();
 ~~~
 
 
+By default, ActiveRecord now only saves dirty attributes. In 1.1, all attributes
+would be saved to database when you call `save()`, regardless they are changed or not,
+unless you explicitly list the attributes to save.
+
+
 Auto-quoting Table and Column Names
 ------------------------------------
 
