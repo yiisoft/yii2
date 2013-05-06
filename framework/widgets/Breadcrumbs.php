@@ -46,10 +46,13 @@ use yii\helpers\Html;
 class Breadcrumbs extends Widget
 {
 	/**
-	 * @var array the HTML attributes for the breadcrumb container tag. The "tag" element is
-	 * specially handled which specifies the tag name of the container element. If not set, it will default to "ul".
+	 * @var string the name of the breadcrumb container tag.
 	 */
-	public $options = array('tag' => 'ul', 'class' => 'breadcrumb');
+	public $tag = 'ul';
+	/**
+	 * @var array the HTML attributes for the breadcrumb container tag.
+	 */
+	public $options = array('class' => 'breadcrumb');
 	/**
 	 * @var boolean whether to HTML-encode the link labels.
 	 */
@@ -97,27 +100,40 @@ class Breadcrumbs extends Widget
 		}
 		$links = array();
 		if ($this->homeLink === null) {
-			$links[] = strtr($this->itemTemplate, array('{link}' => Html::a(Yii::t('yii|Home'), Yii::$app->homeUrl)));
+			$links[] = $this->renderItem(array(
+				'label' => Yii::t('yii|Home'),
+				'url' => Yii::$app->homeUrl,
+			), $this->itemTemplate);
 		} elseif ($this->homeLink !== false) {
-			$links[] = strtr($this->itemTemplate, array('{link}' => $this->homeLink));
+			$links[] = $this->renderItem($this->homeLink, $this->itemTemplate);
 		}
 		foreach ($this->links as $link) {
 			if (!is_array($link)) {
 				$link = array('label' => $link);
 			}
-			if (isset($link['label'])) {
-				$label = $this->encodeLabels ? Html::encode($link['label']) : $link['label'];
-			} else {
-				throw new InvalidConfigException('The "label" element is required for each link.');
-			}
-			if (isset($link['url'])) {
-				$links[] = strtr($this->itemTemplate, array('{link}' => Html::a($label, $link['url'])));
-			} else {
-				$links[] = strtr($this->activeItemTemplate, array('{link}' => $label));
-			}
+			$links[] = $this->renderItem($link, isset($link['url']) ? $this->itemTemplate : $this->activeItemTemplate);
 		}
-		$tagName = isset($this->options['tag']) ? $this->options['tag'] : 'ul';
-		unset($this->options['tag']);
-		echo Html::tag($tagName, implode('', $links), $this->options);
+		echo Html::tag($this->tag, implode('', $links), $this->options);
+	}
+
+	/**
+	 * Renders a single breadcrumb item.
+	 * @param array $link the link to be rendered. It must contain the "label" element. The "url" element is optional.
+	 * @param string $template the template to be used to rendered the link. The token "{link}" will be replaced by the link.
+	 * @return string the rendering result
+	 * @throws InvalidConfigException if `$link` does not have "label" element.
+	 */
+	protected function renderItem($link, $template)
+	{
+		if (isset($link['label'])) {
+			$label = $this->encodeLabels ? Html::encode($link['label']) : $link['label'];
+		} else {
+			throw new InvalidConfigException('The "label" element is required for each link.');
+		}
+		if (isset($link['url'])) {
+			return strtr($template, array('{link}' => Html::a($label, $link['url'])));
+		} else {
+			return strtr($template, array('{link}' => $label));
+		}
 	}
 }
