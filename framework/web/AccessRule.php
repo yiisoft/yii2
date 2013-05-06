@@ -9,9 +9,6 @@ namespace yii\web;
 
 use yii\base\Component;
 use yii\base\Action;
-use yii\base\Controller;
-use yii\web\User;
-use yii\web\Request;
 
 /**
  *
