@@ -496,6 +496,7 @@ class Component extends Object
 	 */
 	public function detachBehavior($name)
 	{
+		$this->ensureBehaviors();
 		if (isset($this->_behaviors[$name])) {
 			$behavior = $this->_behaviors[$name];
 			unset($this->_behaviors[$name]);
@@ -511,6 +512,7 @@ class Component extends Object
 	 */
 	public function detachBehaviors()
 	{
+		$this->ensureBehaviors();
 		if ($this->_behaviors !== null) {
 			foreach ($this->_behaviors as $name => $behavior) {
 				$this->detachBehavior($name);

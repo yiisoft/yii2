@@ -66,7 +66,7 @@ use yii\caching\Cache;
  *     // ... executing other SQL statements ...
  *     $transaction->commit();
  * } catch(Exception $e) {
- *     $transaction->rollBack();
+ *     $transaction->rollback();
  * }
  * ~~~
  *
