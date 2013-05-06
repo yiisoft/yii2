@@ -460,8 +460,7 @@ class User extends Component
 		$auth = Yii::$app->getAuthManager();
 		if ($auth !== null) {
 			return $auth->checkAccess($this->getId(), $operation, $params);
-		} else {
-			return false;
 		}
+		return false;
 	}
 }
