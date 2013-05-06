@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\base\VarDumper;
 
 /**
  * @include @yii/base/Component.md
