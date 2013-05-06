@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Html;
 
 /**
  * RequiredValidator validates that the specified attribute does not have null or empty value.
@@ -39,6 +40,15 @@ class RequiredValidator extends Validator
 	 * to check if the attribute value is empty.
 	 */
 	public $strict = false;
+	/**
+	 * @var string the user-defined error message. It may contain the following placeholders which
+	 * will be replaced accordingly by the validator:
+	 *
+	 * - `{attribute}`: the label of the attribute being validated
+	 * - `{value}`: the value of the attribute being validated
+	 * - `{requiredValue}`: the value of [[requiredValue]]
+	 */
+	public $message;
 
 	/**
 	 * Initializes the validator.
@@ -60,13 +70,10 @@ class RequiredValidator extends Validator
 	 */
 	public function validateAttribute($object, $attribute)
 	{
-		$value = $object->$attribute;
-		if ($this->requiredValue === null) {
-			if ($this->strict && $value === null || !$this->strict && $this->isEmpty($value, true)) {
+		if (!$this->validateValue($object->$attribute)) {
+			if ($this->requiredValue === null) {
 				$this->addError($object, $attribute, $this->message);
-			}
-		} else {
-			if (!$this->strict && $value != $this->requiredValue || $this->strict && $value !== $this->requiredValue) {
+			} else {
 				$this->addError($object, $attribute, $this->message, array(
 					'{requiredValue}' => $this->requiredValue,
 				));
@@ -99,27 +106,24 @@ class RequiredValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
+		$options = array();
 		if ($this->requiredValue !== null) {
-			$message = strtr($this->message, array(
-				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
+			$options['message'] = strtr($this->message, array(
 				'{requiredValue}' => $this->requiredValue,
 			));
-			return "
-if (value != " . json_encode($this->requiredValue) . ") {
-	messages.push(" . json_encode($message) . ");
-}
-";
+			$options['requiredValue'] = $this->requiredValue;
 		} else {
-			$message = strtr($this->message, array(
-				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
-			));
-			return "
-if($.trim(value) == '') {
-	messages.push(" . json_encode($message) . ");
-}
-";
+			$options['message'] = $this->message;
 		}
+		if ($this->strict) {
+			$options['strict'] = 1;
+		}
+
+		$options['message'] = Html::encode(strtr($options['message'], array(
+			'{attribute}' => $object->getAttributeLabel($attribute),
+			'{value}' => $object->$attribute,
+		)));
+
+		return 'yii.validation.required(value, messages, ' . json_encode($options) . ');';
 	}
 }

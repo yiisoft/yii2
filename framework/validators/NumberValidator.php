@@ -8,6 +8,9 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Html;
+use yii\helpers\JsExpression;
+use yii\helpers\Json;
 
 /**
  * NumberValidator validates that the attribute value is a number.
@@ -116,48 +119,36 @@ class NumberValidator extends Validator
 	public function clientValidateAttribute($object, $attribute)
 	{
 		$label = $object->getAttributeLabel($attribute);
-		$message = strtr($this->message, array(
-			'{attribute}' => $label,
-		));
+		$value = $object->$attribute;
 
-		$pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-		$js = "
-if(!value.match($pattern)) {
-	messages.push(" . json_encode($message) . ");
-}
-";
-		if ($this->min !== null) {
-			$tooSmall = strtr($this->tooSmall, array(
+		$options = array(
+			'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
+			'message' => Html::encode(strtr($this->message, array(
 				'{attribute}' => $label,
-				'{min}' => $this->min,
-			));
+				'{value}' => $value,
+			))),
+		);
 
-			$js .= "
-if(value<{$this->min}) {
-	messages.push(" . json_encode($tooSmall) . ");
-}
-";
+		if ($this->min !== null) {
+			$options['min'] = $this->min;
+			$options['tooSmall'] = Html::encode(strtr($this->tooSmall, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+				'{min}' => $this->min,
+			)));
 		}
 		if ($this->max !== null) {
-			$tooBig = strtr($this->tooBig, array(
+			$options['max'] = $this->max;
+			$options['tooBig'] = Html::encode(strtr($this->tooBig, array(
 				'{attribute}' => $label,
+				'{value}' => $value,
 				'{max}' => $this->max,
-			));
-			$js .= "
-if(value>{$this->max}) {
-	messages.push(" . json_encode($tooBig) . ");
-}
-";
+			)));
 		}
-
 		if ($this->skipOnEmpty) {
-			$js = "
-if(jQuery.trim(value)!='') {
-	$js
-}
-";
+			$options['skipOnEmpty'] = 1;
 		}
 
-		return $js;
+		return 'yii.validation.number(value, messages, ' . Json::encode($options) . ');';
 	}
 }

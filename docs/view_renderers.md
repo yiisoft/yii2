@@ -18,6 +18,7 @@ array(
 				),
 				'twig' => array(
 					'class' => 'yii\renderers\TwigViewRenderer',
+					'twigPath' => '@app/vendors/Twig',
 				),
 				// ...
 			),
@@ -25,6 +26,9 @@ array(
 	),
 )
 ```
+
+Note that Smarty and Twig are not bundled with Yii and you have to download and
+unpack these yourself and then specify `twigPath` and `smartyPath` respectively.
 
 Twig
 ----
@@ -38,6 +42,21 @@ or `$this->renderPartial()` from your controller:
 echo $this->render('renderer.twig', array('username' => 'Alex'));
 ```
 
+### Additional functions
+
+Additionally to regular Twig syntax the following is available in Yii:
+
+```php
+<a href="{{ path('blog/view', {'alias' : post.alias}) }}">{{ post.title }}</a>
+```
+
+path function calls `Html::url()` internally.
+
+### Additional variables
+
+- `app` = `\Yii::$app`
+- `this` = current `View` object
+
 Smarty
 ------
 
@@ -49,3 +68,18 @@ or `$this->renderPartial()` from your controller:
 ```php
 echo $this->render('renderer.tpl', array('username' => 'Alex'));
 ```
+
+### Additional functions
+
+Additionally to regular Smarty syntax the following is available in Yii:
+
+```php
+<a href="{path route='blog/view' alias=$post.alias}">{$post.title}</a>
+```
+
+path function calls `Html::url()` internally.
+
+### Additional variables
+
+- `$app` = `\Yii::$app`
+- `$this` = current `View` object

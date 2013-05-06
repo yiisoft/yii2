@@ -72,23 +72,21 @@ class View extends Component
 	/**
 	 * @var array a list of available renderers indexed by their corresponding supported file extensions.
 	 * Each renderer may be a view renderer object or the configuration for creating the renderer object.
-	 * For example,
-	 *
-	 * ~~~
-	 * array(
-	 *     'tpl' => array(
-	 *         'class' => 'yii\renderers\SmartyRenderer',
-	 *     ),
-	 *     'twig' => array(
-	 *         'class' => 'yii\renderers\TwigRenderer',
-	 *     ),
-	 * )
-	 * ~~~
+	 * The default setting supports both Smarty and Twig (their corresponding file extension is "tpl"
+	 * and "twig" respectively. Please refer to [[SmartyRenderer]] and [[TwigRenderer]] on how to install
+	 * the needed libraries for these template engines.
 	 *
 	 * If no renderer is available for the given view file, the view file will be treated as a normal PHP
 	 * and rendered via [[renderPhpFile()]].
 	 */
-	public $renderers = array();
+	public $renderers = array(
+		'tpl' => array(
+			'class' => 'yii\renderers\SmartyRenderer',
+		),
+		'twig' => array(
+			'class' => 'yii\renderers\TwigRenderer',
+		),
+	);
 	/**
 	 * @var Theme|array the theme object or the configuration array for creating the theme object.
 	 * If not set, it means theming is not enabled.
@@ -744,10 +742,10 @@ class View extends Component
 	{
 		$lines = array();
 		if (!empty($this->metaTags)) {
-			$lines[] = implode("\n", $this->cssFiles);
+			$lines[] = implode("\n", $this->metaTags);
 		}
 		if (!empty($this->linkTags)) {
-			$lines[] = implode("\n", $this->cssFiles);
+			$lines[] = implode("\n", $this->linkTags);
 		}
 		if (!empty($this->cssFiles)) {
 			$lines[] = implode("\n", $this->cssFiles);

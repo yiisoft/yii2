@@ -42,7 +42,8 @@ class SecurityHelper
 	public static function encrypt($data, $key)
 	{
 		$module = static::openCryptModule();
-		$key = StringHelper::substr($key, 0, mcrypt_enc_get_key_size($module));
+		// 192-bit (24 bytes) key size
+		$key = StringHelper::substr($key, 0, 24);
 		srand();
 		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_RAND);
 		mcrypt_generic_init($module, $key, $iv);
@@ -63,7 +64,8 @@ class SecurityHelper
 	public static function decrypt($data, $key)
 	{
 		$module = static::openCryptModule();
-		$key = StringHelper::substr($key, 0, mcrypt_enc_get_key_size($module));
+		// 192-bit (24 bytes) key size
+		$key = StringHelper::substr($key, 0, 24);
 		$ivSize = mcrypt_enc_get_iv_size($module);
 		$iv = StringHelper::substr($data, 0, $ivSize);
 		mcrypt_generic_init($module, $key, $iv);
@@ -148,7 +150,8 @@ class SecurityHelper
 		if (!extension_loaded('mcrypt')) {
 			throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
 		}
-		$module = @mcrypt_module_open('rijndael-256', '', MCRYPT_MODE_CBC, '');
+		// AES uses a 128-bit block size
+		$module = @mcrypt_module_open('rijndael-128', '', 'cbc', '');
 		if ($module === false) {
 			throw new Exception('Failed to initialize the mcrypt module.');
 		}
@@ -164,11 +167,11 @@ class SecurityHelper
 	 *
 	 * ~~~
 	 * // generates the hash (usually done during user registration or when the password is changed)
-	 * $hash = SecurityHelper::hashPassword($password);
+	 * $hash = SecurityHelper::generatePasswordHash($password);
 	 * // ...save $hash in database...
 	 *
 	 * // during login, validate if the password entered is correct using $hash fetched from database
-	 * if (PasswordHelper::verifyPassword($password, $hash) {
+	 * if (SecurityHelper::verifyPassword($password, $hash) {
 	 *     // password is good
 	 * } else {
 	 *     // password is bad
@@ -214,7 +217,7 @@ class SecurityHelper
 			throw new InvalidParamException('Password must be a string and cannot be empty.');
 		}
 
-		if (!preg_match('/^\$2[axy]\$(\d\d)\$[\./0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
+		if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
 			throw new InvalidParamException('Hash is invalid.');
 		}
 

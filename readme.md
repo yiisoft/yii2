@@ -1,66 +1,51 @@
-Yii 2 Web Programming Framework
-===============================
+Yii 2.0 Public Preview
+======================
 
-Thank you for choosing Yii 2 — a high-performance component-based PHP framework.
+Thank you for choosing Yii - a high-performance component-based PHP framework.
+
+If you are looking for a production-ready PHP framework, please use
+[Yii v1.1](https://github.com/yiisoft/yii).
+
+Yii 2.0 is still under heavy development. We may make significant changes
+without prior notices. **Yii 2.0 is not ready for production use yet.**
 
 
-INSTALLATION
-------------
+DIRECTORY STRUCTURE
+-------------------
 
-Please make sure the release file is unpacked under a Web-accessible
-directory. You shall see the following files and directories:
-
-      demos/               demos
+      apps/                ready-to-use Web apps built on Yii 2
+          bootstrap/       a simple app supporting user login and contact page
+      build/               internally used build tools
+      docs/                documentation
       framework/           framework source files
-      requirements/        requirement checker
-      changelog.md         describing changes in every Yii release
-      license.md           license of Yii
-      readme.md            this file
-      upgrade.md           upgrading instructions
+      tests/               tests of the core framework code
 
 
 REQUIREMENTS
 ------------
 
-The minimum requirement by Yii is that your Web server supports
-PHP 5.3.8 or above. Yii has been tested with Apache HTTP server
-on Windows and Linux operating systems.
-
-Please access the following URL to check if your Web server reaches
-the requirements by Yii, assuming "YiiPath" is where Yii is installed:
-
-      http://hostname/YiiPath/requirements/index.php
+The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
 
 
-QUICK START
------------
+DOCUMENTATION
+-------------
 
-Yii comes with a command line tool called "yiic" that can create
-a skeleton Yii application for you to start with.
+For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/upgrade-from-v1.md)
+to have a general idea of what has changed in 2.0.
 
-On a command line, type in the following commands:
-
-   for Linux
-        $ cd YiiPath/framework
-        $ ./yiic webapp ../testdrive
-
-   for Windows
-        cd YiiPath\framework
-        yiic webapp ..\testdrive
-
-The new Yii application will be created at "YiiPath/testdrive".
-You can access it with the following URL:
-
-        http://hostname/YiiPath/testdrive/index.php
+We are writing more documentation to get you started and learn more in depth.
 
 
-WHAT's NEXT
------------
+HOW TO PARTICIPATE
+------------------
 
-Please visit the project website for tutorials, class reference
-and join discussions with other Yii users.
+**Your participation to Yii 2 development is very welcome!**
 
+You may participate in the following ways:
 
+* [Report issues](https://github.com/yiisoft/yii2/issues)
+* [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-design-discussions-for-yii-20/)
+* Fix issues, develop features, write/polish documentation
+    - Before you start, please adopt an existing issue (labelled with "ready for adoption") or start a new one to avoid duplicated efforts.
+    - Please submit a merge request after you finish development.
 
-The Yii Developer Team
-http://www.yiiframework.com

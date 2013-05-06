@@ -266,7 +266,7 @@ class ActiveRelation extends ActiveQuery
 	{
 		$attributes = array_keys($this->link);
 		$values = array();
-		if (count($attributes) ===1) {
+		if (count($attributes) === 1) {
 			// single key
 			$attribute = reset($this->link);
 			foreach ($models as $model) {

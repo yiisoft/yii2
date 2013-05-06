@@ -76,10 +76,11 @@ abstract class Validator extends Component
 	 */
 	public $attributes;
 	/**
-	 * @var string the user-defined error message. Error message may contain some placeholders
-	 * that will be replaced with the actual values by the validator.
-	 * The `{attribute}` and `{value}` are placeholders supported by all validators.
-	 * They will be replaced with the attribute label and value, respectively.
+	 * @var string the user-defined error message. It may contain the following placeholders which
+	 * will be replaced accordingly by the validator:
+	 *
+	 * - `{attribute}`: the label of the attribute being validated
+	 * - `{value}`: the value of the attribute being validated
 	 */
 	public $message;
 	/**
@@ -100,12 +101,13 @@ abstract class Validator extends Component
 	 * is null or an empty string.
 	 */
 	public $skipOnEmpty = true;
-
 	/**
-	 * @var boolean whether to enable client-side validation. Defaults to null, meaning
-	 * its actual value inherits from that of [[\yii\web\ActiveForm::enableClientValidation]].
+	 * @var boolean whether to enable client-side validation for this validator.
+	 * The actual client-side validation is done via the JavaScript code returned
+	 * by [[clientValidateAttribute()]]. If that method returns null, even if this property
+	 * is true, no client-side validation will be done by this validator.
 	 */
-	public $enableClientValidation;
+	public $enableClientValidation = true;
 
 	/**
 	 * Validates a single attribute.
@@ -211,7 +213,6 @@ abstract class Validator extends Component
 	 * @param string $attribute the name of the attribute to be validated.
 	 * @return string the client-side validation script. Null if the validator does not support
 	 * client-side validation.
-	 * @see enableClientValidation
 	 * @see \yii\web\ActiveForm::enableClientValidation
 	 */
 	public function clientValidateAttribute($object, $attribute)

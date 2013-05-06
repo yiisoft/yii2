@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
 
 /**
  * CompareValidator compares the specified attribute value with another value and validates if they are equal.
@@ -58,6 +59,15 @@ class CompareValidator extends Validator
 	 * - `<=`: validates to see if the value being validated is less than or equal to the value being compared with.
 	 */
 	public $operator = '=';
+	/**
+	 * @var string the user-defined error message. It may contain the following placeholders which
+	 * will be replaced accordingly by the validator:
+	 *
+	 * - `{attribute}`: the label of the attribute being validated
+	 * - `{value}`: the value of the attribute being validated
+	 * - `{compareValue}`: the value or the attribute label to be compared with
+	 */
+	public $message;
 
 
 	/**
@@ -172,24 +182,27 @@ class CompareValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
+		$options = array('operator' => $this->operator);
+
 		if ($this->compareValue !== null) {
-			$compareLabel = $this->compareValue;
-			$compareValue = json_encode($this->compareValue);
+			$options['compareValue'] = $this->compareValue;
+			$compareValue = $this->compareValue;
 		} else {
 			$compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
-			$compareValue = "\$('#" . (CHtml::activeId($object, $compareAttribute)) . "').val()";
-			$compareLabel = $object->getAttributeLabel($compareAttribute);
+			$compareValue = $object->getAttributeLabel($compareAttribute);
+			$options['compareAttribute'] = Html::getInputId($object, $compareAttribute);
 		}
-		$condition = "value {$this->operator} $compareValue";
-		$message = strtr($this->message, array(
-			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{compareValue}' => $compareLabel,
-		));
 
-		return "
-if (" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . $condition . ") {
-	messages.push(" . json_encode($message) . ");
-}
-";
+		if ($this->skipOnEmpty) {
+			$options['skipOnEmpty'] = 1;
+		}
+
+		$options['message'] = Html::encode(strtr($this->message, array(
+			'{attribute}' => $object->getAttributeLabel($attribute),
+			'{value}' => $object->$attribute,
+			'{compareValue}' => $compareValue,
+		)));
+
+		return 'yii.validation.compare(value, messages, ' . json_encode($options) . ');';
 	}
 }

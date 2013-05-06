@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * ActiveForm ...
@@ -36,22 +37,14 @@ class ActiveForm extends Widget
 	 */
 	public $options = array();
 	/**
+	 * @var array the default configuration used by [[field()]] when creating a new field object.
+	 */
+	public $fieldConfig;
+	/**
 	 * @var string the default CSS class for the error summary container.
 	 * @see errorSummary()
 	 */
-	public $errorSummaryCssClass = 'yii-error-summary';
-	/**
-	 * @var boolean whether to enable client-side data validation.
-	 * Client-side validation will be performed by validators that support it
-	 * (see [[\yii\validators\Validator::enableClientValidation]] and [[\yii\validators\Validator::clientValidateAttribute()]]).
-	 */
-	public $enableClientValidation = true;
-	/**
-	 * @var array the default configuration used by [[field()]] when creating a new field object.
-	 */
-	public $fieldConfig = array(
-		'class' => 'yii\widgets\ActiveField',
-	);
+	public $errorSummaryCssClass = 'error-summary';
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute is required.
 	 */
@@ -68,6 +61,53 @@ class ActiveForm extends Widget
 	 * @var string the CSS class that is added to a field container when the associated attribute is being validated.
 	 */
 	public $validatingCssClass = 'validating';
+	/**
+	 * @var boolean whether to enable client-side data validation.
+	 * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.
+	 */
+	public $enableClientValidation = true;
+	/**
+	 * @var boolean whether to enable AJAX-based data validation.
+	 * If [[ActiveField::enableAjaxValidation]] is set, its value will take precedence for that input field.
+	 */
+	public $enableAjaxValidation = false;
+	/**
+	 * @var array|string the URL for performing AJAX-based validation. This property will be processed by
+	 * [[Html::url()]]. Please refer to [[Html::url()]] for more details on how to configure this property.
+	 * If this property is not set, it will take the value of the form's action attribute.
+	 */
+	public $validationUrl;
+	/**
+	 * @var boolean whether to perform validation when the form is submitted.
+	 */
+	public $validateOnSubmit = true;
+	/**
+	 * @var boolean whether to perform validation when an input field loses focus and its value is found changed.
+	 * If [[ActiveField::validateOnChange]] is set, its value will take precedence for that input field.
+	 */
+	public $validateOnChange = true;
+	/**
+	 * @var boolean whether to perform validation while the user is typing in an input field.
+	 * If [[ActiveField::validateOnType]] is set, its value will take precedence for that input field.
+	 * @see validationDelay
+	 */
+	public $validateOnType = false;
+	/**
+	 * @var integer number of milliseconds that the validation should be delayed when an input field
+	 * is changed or the user types in the field.
+	 * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
+	 */
+	public $validationDelay = 200;
+	/**
+	 * @var string the name of the GET parameter indicating the validation request is an AJAX request.
+	 */
+	public $ajaxVar = 'ajax';
+	/**
+	 * @var array the client validation options for individual attributes. Each element of the array
+	 * represents the validation options for a particular attribute.
+	 * @internal
+	 */
+	public $attributes = array();
 
 	/**
 	 * Initializes the widget.
@@ -75,7 +115,12 @@ class ActiveForm extends Widget
 	 */
 	public function init()
 	{
-		$this->options['id'] = $this->getId();
+		if (!isset($this->options['id'])) {
+			$this->options['id'] = $this->getId();
+		}
+		if (!isset($this->fieldConfig['class'])) {
+			$this->fieldConfig['class'] = 'yii\widgets\ActiveField';
+		}
 		echo Html::beginForm($this->action, $this->method, $this->options);
 	}
 
@@ -85,12 +130,34 @@ class ActiveForm extends Widget
 	 */
 	public function run()
 	{
-		$id = $this->getId();
-		$options = array();
-		$options = json_encode($options);
-		$this->view->registerAssetBundle('yii/form');
-		$this->view->registerJs("jQuery('#$id').yii.form($options);");
+		if ($this->attributes !== array()) {
+			$id = $this->options['id'];
+			$options = Json::encode($this->getClientOptions());
+			$attributes = Json::encode($this->attributes);
+			$this->view->registerAssetBundle('yii/form');
+			$this->view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+		}
 		echo Html::endForm();
+	}
+
+	/**
+	 * Returns the options for the form JS widget.
+	 * @return array the options
+	 */
+	protected function getClientOptions()
+	{
+		$options = array(
+			'errorSummary' => '.' . $this->errorSummaryCssClass,
+			'validateOnSubmit' => $this->validateOnSubmit,
+			'errorCssClass' => $this->errorCssClass,
+			'successCssClass' => $this->successCssClass,
+			'validatingCssClass' => $this->validatingCssClass,
+			'ajaxVar' => $this->ajaxVar,
+		);
+		if ($this->validationUrl !== null) {
+			$options['validationUrl'] = Html::url($this->validationUrl);
+		}
+		return $options;
 	}
 
 	/**
@@ -147,7 +214,9 @@ class ActiveForm extends Widget
 	 * @param Model $model the data model
 	 * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
 	 * about attribute expression.
+	 * @param array $options the additional configurations for the field object
 	 * @return ActiveField the created ActiveField object
+	 * @see fieldConfig
 	 */
 	public function field($model, $attribute, $options = array())
 	{

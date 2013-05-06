@@ -127,13 +127,15 @@ class Html
 	 * Encodes special characters into HTML entities.
 	 * The [[yii\base\Application::charset|application charset]] will be used for encoding.
 	 * @param string $content the content to be encoded
+	 * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
+	 * HTML entities in `$content` will not be further encoded.
 	 * @return string the encoded content
 	 * @see decode
 	 * @see http://www.php.net/manual/en/function.htmlspecialchars.php
 	 */
-	public static function encode($content)
+	public static function encode($content, $doubleEncode = true)
 	{
-		return htmlspecialchars($content, ENT_QUOTES, Yii::$app->charset);
+		return htmlspecialchars($content, ENT_QUOTES, Yii::$app->charset, $doubleEncode);
 	}
 
 	/**
@@ -375,7 +377,8 @@ class Html
 	 */
 	public static function mailto($text, $email = null, $options = array())
 	{
-		return static::a($text, 'mailto:' . ($email === null ? $text : $email), $options);
+		$options['href'] = 'mailto:' . ($email === null ? $text : $email);
+		return static::tag('a', $text, $options);
 	}
 
 	/**
@@ -896,6 +899,7 @@ class Html
 		$attribute = static::getAttributeName($attribute);
 		$label = isset($options['label']) ? $options['label'] : static::encode($model->getAttributeLabel($attribute));
 		$for = array_key_exists('for', $options) ? $options['for'] : static::getInputId($model, $attribute);
+		unset($options['label'], $options['for']);
 		return static::label($label, $for, $options);
 	}
 

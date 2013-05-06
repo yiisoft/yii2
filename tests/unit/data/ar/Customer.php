@@ -22,6 +22,6 @@ class Customer extends ActiveRecord
 
 	public static function active($query)
 	{
-		return $query->andWhere('status=1');
+		$query->andWhere('status=1');
 	}
 }

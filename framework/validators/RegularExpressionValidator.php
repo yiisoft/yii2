@@ -9,6 +9,9 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
+use yii\helpers\JsExpression;
+use yii\helpers\Json;
 
 /**
  * RegularExpressionValidator validates that the attribute value matches the specified [[pattern]].
@@ -81,11 +84,6 @@ class RegularExpressionValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = strtr($this->message, array(
-			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
-		));
-
 		$pattern = $this->pattern;
 		$pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $pattern);
 		$deliminator = substr($pattern, 0, 1);
@@ -100,10 +98,18 @@ class RegularExpressionValidator extends Validator
 			$pattern .= preg_replace('/[^igm]/', '', $flag);
 		}
 
-		return "
-if (" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? '' : '!') . "value.match($pattern)) {
-	messages.push(" . json_encode($message) . ");
-}
-";
+		$options = array(
+			'pattern' => new JsExpression($pattern),
+			'not' => $this->not,
+			'message' => Html::encode(strtr($this->message, array(
+				'{attribute}' => $object->getAttributeLabel($attribute),
+				'{value}' => $object->$attribute,
+			))),
+		);
+		if ($this->skipOnEmpty) {
+			$options['skipOnEmpty'] = 1;
+		}
+
+		return 'yii.validation.regularExpression(value, messages, ' . Json::encode($options) . ');';
 	}
 }

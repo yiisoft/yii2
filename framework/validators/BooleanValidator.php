@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Html;
 
 /**
  * BooleanValidator checks if the attribute value is a boolean value.
@@ -82,16 +83,23 @@ class BooleanValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = strtr($this->message, array(
-			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
-			'{true}' => $this->trueValue,
-			'{false}' => $this->falseValue,
-		));
-		return "
-if(" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . "value!=" . json_encode($this->trueValue) . " && value!=" . json_encode($this->falseValue) . ") {
-	messages.push(" . json_encode($message) . ");
-}
-";
+		$options = array(
+			'trueValue' => $this->trueValue,
+			'falseValue' => $this->falseValue,
+			'message' => Html::encode(strtr($this->message, array(
+				'{attribute}' => $object->getAttributeLabel($attribute),
+				'{value}' => $object->$attribute,
+				'{true}' => $this->trueValue,
+				'{false}' => $this->falseValue,
+			))),
+		);
+		if ($this->skipOnEmpty) {
+			$options['skipOnEmpty'] = 1;
+		}
+		if ($this->strict) {
+			$options['strict'] = 1;
+		}
+
+		return 'yii.validation.boolean(value, messages, ' . json_encode($options) . ');';
 	}
 }

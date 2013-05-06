@@ -88,7 +88,8 @@ class ActiveQuery extends Query
 	{
 		if (method_exists($this->modelClass, $name)) {
 			array_unshift($params, $this);
-			return call_user_func_array(array($this->modelClass, $name), $params);
+			call_user_func_array(array($this->modelClass, $name), $params);
+			return $this;
 		} else {
 			return parent::__call($name, $params);
 		}

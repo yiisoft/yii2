@@ -39,7 +39,7 @@ class VarDumper
 	 */
 	public static function dump($var, $depth = 10, $highlight = false)
 	{
-		echo self::dumpAsString($var, $depth, $highlight);
+		echo static::dumpAsString($var, $depth, $highlight);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class VarDumper
 				} elseif (self::$_depth <= $level) {
 					self::$_output .= get_class($var) . '(...)';
 				} else {
-					$id = self::$_objects[] = $var;
+					$id = array_push(self::$_objects, $var);
 					$className = get_class($var);
 					$members = (array)$var;
 					$spaces = str_repeat(' ', $level * 4);

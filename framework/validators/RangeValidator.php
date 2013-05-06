@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
 
 /**
  * RangeValidator validates that the attribute value is among a list of values.
@@ -60,9 +61,7 @@ class RangeValidator extends Validator
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if (!$this->not && !in_array($value, $this->range, $this->strict)) {
-			$this->addError($object, $attribute, $this->message);
-		} elseif ($this->not && in_array($value, $this->range, $this->strict)) {
+		if (!$this->validateValue($value)) {
 			$this->addError($object, $attribute, $this->message);
 		}
 	}
@@ -86,21 +85,22 @@ class RangeValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute)
 	{
-		$message = strtr($this->message, array(
-			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
-		));
-
 		$range = array();
 		foreach ($this->range as $value) {
 			$range[] = (string)$value;
 		}
-		$range = json_encode($range);
+		$options = array(
+			'range' => $range,
+			'not' => $this->not,
+			'message' => Html::encode(strtr($this->message, array(
+				'{attribute}' => $object->getAttributeLabel($attribute),
+				'{value}' => $object->$attribute,
+			))),
+		);
+		if ($this->skipOnEmpty) {
+			$options['skipOnEmpty'] = 1;
+		}
 
-		return "
-if (" . ($this->skipOnEmpty ? "$.trim(value)!='' && " : '') . ($this->not ? "$.inArray(value, $range)>=0" : "$.inArray(value, $range)<0") . ") {
-	messages.push(" . json_encode($message) . ");
-}
-";
+		return 'yii.validation.range(value, messages, ' . json_encode($options) . ');';
 	}
 }

@@ -83,7 +83,8 @@ class Widget extends Component
 	 */
 	public function render($view, $params = array())
 	{
-		return $this->view->render($view, $params, $this);
+		$viewFile = $this->findViewFile($view);
+		return $this->view->renderFile($viewFile, $params, $this);
 	}
 
 	/**

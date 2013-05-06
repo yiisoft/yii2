@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Html;
 
 /**
  * StringValidator validates that the attribute value is of certain length.
@@ -132,56 +133,42 @@ class StringValidator extends Validator
 		$label = $object->getAttributeLabel($attribute);
 		$value = $object->$attribute;
 
-		$notEqual = strtr($this->notEqual, array(
-			'{attribute}' => $label,
-			'{value}' => $value,
-			'{length}' => $this->is,
-		));
+		$options = array(
+			'message' => Html::encode(strtr($this->message, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+			))),
+		);
 
-		$tooShort = strtr($this->tooShort, array(
-			'{attribute}' => $label,
-			'{value}' => $value,
-			'{min}' => $this->min,
-		));
-
-		$tooLong = strtr($this->tooLong, array(
-			'{attribute}' => $label,
-			'{value}' => $value,
-			'{max}' => $this->max,
-		));
-
-		$js = '';
 		if ($this->min !== null) {
-			$js .= "
-if(value.length< {$this->min}) {
-	messages.push(" . json_encode($tooShort) . ");
-}
-";
+			$options['min'] = $this->min;
+			$options['tooShort'] = Html::encode(strtr($this->tooShort, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+				'{min}' => $this->min,
+			)));
 		}
 		if ($this->max !== null) {
-			$js .= "
-if(value.length> {$this->max}) {
-	messages.push(" . json_encode($tooLong) . ");
-}
-";
+			$options['max'] = $this->max;
+			$options['tooLong'] = Html::encode(strtr($this->tooLong, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+				'{max}' => $this->max,
+			)));
 		}
 		if ($this->is !== null) {
-			$js .= "
-if(value.length!= {$this->is}) {
-	messages.push(" . json_encode($notEqual) . ");
-}
-";
+			$options['is'] = $this->is;
+			$options['notEqual'] = Html::encode(strtr($this->notEqual, array(
+				'{attribute}' => $label,
+				'{value}' => $value,
+				'{length}' => $this->is,
+			)));
 		}
-
 		if ($this->skipOnEmpty) {
-			$js = "
-if($.trim(value)!='') {
-	$js
-}
-";
+			$options['skipOnEmpty'] = 1;
 		}
 
-		return $js;
+		return 'yii.validation.string(value, messages, ' . json_encode($options) . ');';
 	}
 }
 
