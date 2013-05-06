@@ -92,7 +92,7 @@ class Transaction extends \yii\base\Object
 	 * Rolls back a transaction.
 	 * @throws Exception if the transaction or the DB connection is not active.
 	 */
-	public function rollback()
+	public function rollBack()
 	{
 		if ($this->_active && $this->db && $this->db->isActive) {
 			\Yii::trace('Rolling back transaction', __METHOD__);
