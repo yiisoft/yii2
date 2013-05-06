@@ -22,30 +22,36 @@ data structures.
 Object Configuration
 --------------------
 
-The `Object` class introduces a convention for configuring objects. In general, any
-descendant class of `Object` should follow this convention when declaring a constructor:
+The `Object` class introduces a uniform way of configuring objects. Any descendant class
+of `Object` should declare its constructor (if needed) in the following way so that
+it can be properly configured:
 
 ~~~
 class MyClass extends \yii\Object
 {
     public function __construct($param1, $param2, $config = array())
     {
-        // ...
+        // ... initialization before configuration is applied
+
         parent::__construct($config);
     }
 
     public function init()
     {
         parent::init();
-        // ... at this point, all configurations have been applied ...
+
+        // ... initialization after configuration is applied
     }
 }
 ~~~
 
-In descendant classes, you can override the `init()` method to do initialization work
-that should be done after all configurations are applied.
+In the above, the last parameter of the constructor must take a configuration array
+which contains name-value pairs for initializing the properties at the end of the constructor.
+You can override the `init()` method to do initialization work that should be done after
+the configuration is applied.
 
-By following this convention, you will be able to use the powerful object creation method via:
+By following this convention, you will be able to create and configure a new object
+using a configuration array like the following:
 
 ~~~
 $object = Yii::createObject(array(
@@ -87,6 +93,23 @@ Yii::$app->trigger($eventName);
 ~~~
 
 
+Path Alias
+----------
+
+Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. An alias
+must start with a `@` character so that it can be differentiated from file/directory paths and URLs.
+For example, the alias `@yii` refers to the Yii installation directory. Path aliases are
+supported in most places in the Yii core code. For example, `FileCache::cachePath` can take
+both a path alias and a normal directory path.
+
+Path alias is also closely related with class namespaces. It is recommended that a path
+alias defined for each root namespace so that you can use Yii class autoloader without
+any further configuration. For example, because `@yii` refers to the Yii installation directory,
+a class like `yii\web\Request` can be autoloaded by Yii. If you use a third party library
+such as Zend Framework, you may define a path alias `@Zend` which refers to its installation directory.
+And Yii will be able to autoload any class in this library.
+
+
 View
 ----
 
@@ -111,53 +134,313 @@ $content = Yii::$app->view->renderFile($viewFile, $params);
 Also, there is no more `CClientScript` in Yii 2.0. The `View` class has taken over its role
 with significant improvements. For more details, please see the "assets" subsection.
 
-TBD: built-in renderers
+While Yii 2.0 continues to use PHP as its main template language, it comes with built-in
+support for two popular template engines: Smarty and Twig. The Prado template engine is
+no longer supported. To use these template engines, simply configure the "view" application 
+component as follows,
+
+~~~
+'view' => array(
+    'renders' => array(
+        array(
+            'tpl' => array(
+                'class' => 'yii\renderers\SmartyRenderer',
+            ),
+            'twig' => array(
+                'class' => 'yii\renderers\TwigRenderer',
+            ),
+        )
+    ),
+)
+~~~
+
 
 Models
 ------
 
+A model is now associated with a form name returned its `formName()` method. This is
+mainly used when using HTML forms to collect user inputs for a model. Previously in 1.1,
+this is usually hardcoded as the class name of the model.
+
+
+Yii 2.0 introduces a new method called `scenarios()` to declare which attributes require
+validation under which scenario. Child classes should overwrite `scenarios()` to return
+a list of scenarios and the corresponding attributes that need to be validated when
+`validate()` is called. For example,
+
+~~~
+public function scenarios()
+{
+    return array(
+        'backend' => array('email', 'role'),
+        'frontend' => array('email', '!name'),
+    );
+}
+~~~
+
+This method also determines which attributes are safe and which are not. In particular,
+given a scenario, if an attribute appears in the corresponding attribute list in `scenarios()`
+and the name is not prefixed with `!`, it is considered *safe*.
+
+Because of the above change, Yii 2.0 no longer has "safe" and "unsafe" validators.
+
+If your model only has one scenario (very common), you do not have to overwrite `scenarios()`,
+and everything will still work like the 1.1 way.
+
+
 Controllers
 -----------
+
+The `render()` and `renderPartial()` methods now return the rendering results instead of directly
+sending them out. You have to `echo` them explicitly, e.g., `echo $this->render(...);`.
+
+A new method called `populate()` is introduced to simplify the data population from user inputs
+to a model. For example,
+
+~~~
+$post = new Post;
+if ($this->populate($_POST, $model)) {...}
+// which is equivalent to:
+if (isset($_POST['Post'])) {
+    $post->attributes = $_POST['Post'];
+}
+~~~
+
 
 Themes
 ------
 
+Theme works completely different in 2.0. It is now based on a path map to "translate" a source
+view into a themed view. For example, if the path map for a theme is
+`array('/www/views' => '/www/themes/basic')`, then the themed version for a view file
+`/www/views/site/index.php` will be `/www/themes/basic/site/index.php`.
+
+For this reason, theme can now be applied to any view file, even if a view rendered outside
+of the context of a controller or a widget.
+
+There is no more `CThemeManager`. Instead, `theme` is a configurable property of the "view"
+application component.
+
+
 Console Applications
 --------------------
+
+Console applications are now composed by controllers, too, like Web applications. In fact,
+console controllers and Web controllers share the same base controller class.
+
+Each console controller is like `CConsoleCommand` in 1.1. It consists of one or several
+actions. You use the `yiic <route>` command to execute a console command, where `<route>`
+stands for a controller route (e.g. `sitemap/index`). Additional anonymous arguments
+are passed as the parameters to the corresponding controller action method, and named arguments
+are treated as global options declared in `globalOptions()`.
+
+Yii 2.0 supports automatic generation of command help information from comment blocks.
+
 
 I18N
 ----
 
-Behaviors
----------
+Yii 2.0 removes date formatter and number formatter in favor of the PECL intl PHP module.
 
-TBD
+Message translation is still supported, but managed via the "i18n" application component.
+The component manages a set of message sources, which allows you to use different message
+sources based on message categories. For more information, see the class documentation for `I18N`.
 
-Action filters are replaced by behaviors (`ActiionFilter`).
+The message translation method is changed by merging the message category into the message being
+translated. For example, `Yii::t('yii|message to be translated')`.
+
+
+
+Action Filters
+--------------
+
+Action filters are implemented via behaviors now. You should extend from `ActionFilter` to
+define a new filter. To use a filter, you should attach the filter class to the controller
+as a behavior. For example, to use the `AccessControl` filter, you should have the following
+code in a controller:
+
+~~~
+public function behaviors()
+{
+    return array(
+        'access' => array(
+            'class' => 'yii\web\AccessControl',
+            'rules' => array(
+                array('allow' => true, 'actions' => array('admin'), 'roles' => array('@')),
+                array('allow' => false),
+            ),
+        ),
+    );
+}
+~~~
 
 
 Assets
 ------
 
+Yii 2.0 introduces a new concept called *asset bundle*. It is a bit similar to script
+packages (managed by `CClientScript`) in 1.1, but with better support.
+
+An asset bundle is a collection of asset files (e.g. JavaScript files, CSS files, image files, etc.)
+under a directory. By registering an asset bundle via `View::registerAssetBundle()`, you
+will be able to make the assets in that bundle accessible via Web, and the current page
+will automatically contain references to the JavaScript and CSS files in that bundle.
+
+
+
 Static Helpers
 --------------
 
+Yii 2.0 introduces many commonly used static helper classes, such as `Html`, `ArrayHelper`,
+`StringHelper`. These classes are designed to be easily extended. Note that static classes
+are usually hard to be extended because of the fixed class name references. But Yii 2.0
+introduces the class map (via `Yii::$classMap`) to overcome this difficulty.
+
+
 `ActiveForm`
 ------------
+
+Yii 2.0 introduces the *field* concept for building a form using `ActiveForm`. A field
+is a container consisting of a label, an input, and an error message. It is represented
+as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
+
+~~~
+<?php $form = $this->beginWidget('yii\widgets\ActiveForm'); ?>
+	<?php echo $form->field($model, 'username')->textInput(); ?>
+	<?php echo $form->field($model, 'password')->passwordInput(); ?>
+	<div class="form-actions">
+		<?php echo Html::submitButton('Login'); ?>
+	</div>
+<?php $this->endWidget(); ?>
+~~~
 
 
 Query Builder
 -------------
 
+In 1.1, query building is scattered among several classes, including `CDbCommand`,
+`CDbCriteria`, and `CDbCommandBuilder`. Yii 2.0 uses `Query` to represent a DB query
+and `QueryBuilder` to generate SQL statements from query objects. For example,
+
+~~~
+$query = new \yii\db\Query;
+$query->select('id, name')
+      ->from('tbl_user')
+      ->limit(10);
+
+$command = $query->createCommand();
+$sql = $command->sql;
+$rows = $command->queryAll();
+~~~
+
+Best of all, such query building methods can be used together with `ActiveRecord`,
+as explained in the next sub-section.
+
 
 ActiveRecord
 ------------
 
+ActiveRecord has undergone significant changes in Yii 2.0. The most important one
+is about relational ActiveRecord query. In 1.1, you have to declare the relations
+in the `relations()` method. In 2.0, this is done via getter methods that return
+an `ActiveQuery` object. For example, the following method declares an "orders" relation:
+
+~~~
+class Customer extends \yii\db\ActiveRecord
+{
+	public function getOrders()
+	{
+		return $this->hasMany('Order', array('customer_id' => 'id'));
+	}
+}
+~~~
+
+You can use `$customer->orders` to access the customer's orders. You can also
+use `$customer->getOrders()->andWhere('status=1')->all()` to perform on-the-fly
+relational query with customized query conditions.
+
+When loading relational records in an eager way, Yii 2.0 does it differently from 1.1.
+In particular, in 1.1 a JOIN query would be used to bring both the primary and the relational
+records; while in 2.0, two SQL statements are executed without using JOIN: the first
+statement brings back the primary records and the second brings back the relational records
+by filtering with the primary keys of the primary records.
+
+
+Yii 2.0 no longer uses the `model()` method when performing queries. Instead, you
+use the `find()` method like the following:
+
+~~~
+// to retrieve all *active* customers and order them by their ID:
+$customers = Customer::find()
+	->where(array('status' => $active))
+	->orderBy('id')
+	->all();
+// return the customer whose PK is 1
+$customer = Customer::find(1);
+~~~
+
+The `find()` method returns an instance of `ActiveQuery` which is a subclass of `Query`.
+Therefore, you can use all query methods of `Query`.
+
+Instead of returning ActiveRecord objects, you may call `ActiveQuery::asArray()` to
+return results in terms of arrays. This is more efficient and is especially useful
+when you need to return large number of records. For example,
+
+~~~
+$customers = Customer::find()->asArray()->all();
+~~~
+
+
+Auto-quoting Table and Column Names
+------------------------------------
+
+Yii 2.0 supports automatic quoting of database table and column names. A name enclosed
+within double curly brackets is treated as a table name, and a name enclosed within
+double square brackets is treated as a column name. They will be quoted according to
+the database driver being used. For example,
+
+~~~
+$command = $connection->createCommand('SELECT [[id]] FROM {{posts}}');
+echo $command->sql;  // MySQL: SELECT `id` FROM `posts`
+~~~
+
+This feature is especially useful if you are developing an application that supports
+different DBMS.
+
+
 User and Identity
 -----------------
+
+The `CWebUser` class in 1.1 is now replaced by `\yii\Web\User`, and there is no more
+`CUserIdentity` class. Instead, you should implement the `Identity` interface which
+is much more straightforward to implement. The bootstrap application provides such an example.
+
 
 URL Management
 --------------
 
+URL management is similar to 1.1. A major enhancement is that it now supports optional
+parameters. For example, if you have rule declared as follows, then it will match
+both `post/popular` and `post/1/popular`. In 1.1, you would have to use two rules to achieve
+the same goal.
+
+~~~
+array(
+	'pattern' => 'post/<page:\d+>/<tag>',
+	'route' => 'post/index',
+	'defaults' => array('page' => 1),
+)
+~~~
+
+
 Response
 --------
+
+Extensions
+----------
+
+Integration with Composer
+-------------------------
+
+TBD
+
