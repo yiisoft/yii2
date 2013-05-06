@@ -136,23 +136,9 @@ with significant improvements. For more details, please see the "assets" subsect
 
 While Yii 2.0 continues to use PHP as its main template language, it comes with built-in
 support for two popular template engines: Smarty and Twig. The Prado template engine is
-no longer supported. To use these template engines, simply configure the "view" application 
-component as follows,
-
-~~~
-'view' => array(
-    'renders' => array(
-        array(
-            'tpl' => array(
-                'class' => 'yii\renderers\SmartyRenderer',
-            ),
-            'twig' => array(
-                'class' => 'yii\renderers\TwigRenderer',
-            ),
-        )
-    ),
-)
-~~~
+no longer supported. To use these template engines, you just need to use `tpl` as the file
+extension for your Smarty views, or `twig` for Twig views. You may also configure the 
+`View::renderers` property to use other template engines.
 
 
 Models
