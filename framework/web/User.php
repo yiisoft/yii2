@@ -461,7 +461,7 @@ class User extends Component
 		if ($auth !== null) {
 			return $auth->checkAccess($this->getId(), $operation, $params);
 		} else {
-			return true;
+			return false;
 		}
 	}
 }
