@@ -242,10 +242,10 @@ class Connection extends Component
 		'mysql' => 'yii\db\mysql\Schema',    // MySQL
 		'sqlite' => 'yii\db\sqlite\Schema',  // sqlite 3
 		'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
-		'mssql' => 'yi\db\dao\mssql\Schema', // Mssql driver on windows hosts
-		'sqlsrv' => 'yii\db\mssql\Schema',   // Mssql
+		'sqlsrv' => 'yii\db\mssql\Schema',   // newer MSSQL driver on MS Windows hosts
 		'oci' => 'yii\db\oci\Schema',        // Oracle driver
-		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on linux (and maybe others os) hosts
+		'mssql' => 'yii\db\mssql\Schema',    // older MSSQL driver on MS Windows hosts
+		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on GNU/Linux (and maybe other OSes) hosts
 	);
 	/**
 	 * @var Transaction the currently active transaction
@@ -351,7 +351,9 @@ class Connection extends Component
 		$pdoClass = '\PDO';
 		if (($pos = strpos($this->dsn, ':')) !== false) {
 			$driver = strtolower(substr($this->dsn, 0, $pos));
-			if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
+			if ($driver === 'sqlsrv') {
+				$pdoClass = 'yii\db\mssql\SqlsrvPDO';
+			} elseif ($driver === 'mssql' || $driver === 'dblib') {
 				$pdoClass = 'yii\db\mssql\PDO';
 			}
 		}
