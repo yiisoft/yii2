@@ -51,7 +51,7 @@ class UrlManager extends Component
 	 * @var boolean whether to show entry script name in the constructed URL. Defaults to true.
 	 * This property is used only if [[enablePrettyUrl]] is true.
 	 */
-	public $showScriptName = true;
+	public $showScriptName = false;
 	/**
 	 * @var string the GET variable name for route. This property is used only if [[enablePrettyUrl]] is false.
 	 */
@@ -174,7 +174,7 @@ class UrlManager extends Component
 	public function createUrl($route, $params = array())
 	{
 		$anchor = isset($params['#']) ? '#' . $params['#'] : '';
-		unset($params['#']);
+		unset($params['#'], $params[$this->routeVar]);
 
 		$route = trim($route, '/');
 		$baseUrl = $this->getBaseUrl();

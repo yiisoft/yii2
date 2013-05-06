@@ -25,7 +25,7 @@ use yii\base\InvalidConfigException;
  *     //.... other SQL executions
  *     $transaction->commit();
  * } catch(Exception $e) {
- *     $transaction->rollBack();
+ *     $transaction->rollback();
  * }
  * ~~~
  *
@@ -42,14 +42,14 @@ class Transaction extends \yii\base\Object
 	public $db;
 	/**
 	 * @var boolean whether this transaction is active. Only an active transaction
-	 * can [[commit()]] or [[rollBack()]]. This property is set true when the transaction is started.
+	 * can [[commit()]] or [[rollback()]]. This property is set true when the transaction is started.
 	 */
 	private $_active = false;
 
 	/**
 	 * Returns a value indicating whether this transaction is active.
 	 * @return boolean whether this transaction is active. Only an active transaction
-	 * can [[commit()]] or [[rollBack()]].
+	 * can [[commit()]] or [[rollback()]].
 	 */
 	public function getIsActive()
 	{

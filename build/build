@@ -16,5 +16,5 @@ require(__DIR__ . '/../framework/yii.php');
 $id = 'yiic-build';
 $basePath = __DIR__;
 
-$application = new yii\console\Application($id, $basePath);
+$application = new yii\console\Application(array('id' => $id, 'basePath' => $basePath));
 $application->run();

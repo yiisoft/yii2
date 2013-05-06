@@ -600,6 +600,13 @@ class YiiBase
 	 */
 	public static function t($message, $params = array(), $language = null)
 	{
-		return self::$app->getI18N()->translate($message, $params, $language);
+		if (self::$app !== null) {
+			return self::$app->getI18N()->translate($message, $params, $language);
+		} else {
+			if (strpos($message, '|') !== false && preg_match('/^([\w\-\\/\.\\\\]+)\|(.*)/', $message, $matches)) {
+				$message = $matches[2];
+			}
+			return is_array($params) ? strtr($message, $params) : $message;
+		}
 	}
 }

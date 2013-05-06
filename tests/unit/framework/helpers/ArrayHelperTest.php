@@ -40,11 +40,20 @@ class ArrayHelperTest extends \yii\test\TestCase
 		$array = array(
 			array('name' => 'a', 'age' => 3),
 			array('name' => 'b', 'age' => 2),
+			array('name' => 'B', 'age' => 4),
 			array('name' => 'A', 'age' => 1),
 		);
-		ArrayHelper::multisort($array, array('name', 'age'), SORT_ASC, array(SORT_STRING|SORT_FLAG_CASE, SORT_REGULAR));
+
+		ArrayHelper::multisort($array, array('name', 'age'), SORT_ASC, array(SORT_STRING, SORT_REGULAR));
+		$this->assertEquals(array('name' => 'A', 'age' => 1), $array[0]);
+		$this->assertEquals(array('name' => 'B', 'age' => 4), $array[1]);
+		$this->assertEquals(array('name' => 'a', 'age' => 3), $array[2]);
+		$this->assertEquals(array('name' => 'b', 'age' => 2), $array[3]);
+
+		ArrayHelper::multisort($array, array('name', 'age'), SORT_ASC, array(SORT_STRING, SORT_REGULAR), false);
 		$this->assertEquals(array('name' => 'A', 'age' => 1), $array[0]);
 		$this->assertEquals(array('name' => 'a', 'age' => 3), $array[1]);
 		$this->assertEquals(array('name' => 'b', 'age' => 2), $array[2]);
+		$this->assertEquals(array('name' => 'B', 'age' => 4), $array[3]);
 	}
 }

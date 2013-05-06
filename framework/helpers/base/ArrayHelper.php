@@ -236,15 +236,17 @@ class ArrayHelper
 	 * To sort by multiple keys, provide an array of keys here.
 	 * @param boolean|array $ascending whether to sort in ascending or descending order. When
 	 * sorting by multiple keys with different ascending orders, use an array of ascending flags.
-	 * @param integer|array $sortFlag the PHP sort flag. Valid values include:
-	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, and `SORT_STRING | SORT_FLAG_CASE`. The last
-	 * value is for sorting strings in case-insensitive manner. Please refer to
-	 * See [PHP manual](http://php.net/manual/en/function.sort.php) for more details.
-	 * When sorting by multiple keys with different sort flags, use an array of sort flags.
+	 * @param integer|array $sortFlag the PHP sort flag. Valid values include
+	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING` and `SORT_LOCALE_STRING`.
+	 * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
+	 * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
+	 * @param boolean|array $caseSensitive whether to sort string in case-sensitive manner. This parameter
+	 * is used only when `$sortFlag` is `SORT_STRING`.
+	 * When sorting by multiple keys with different case sensitivities, use an array of boolean values.
 	 * @throws InvalidParamException if the $ascending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
 	 */
-	public static function multisort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR)
+	public static function multisort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR, $caseSensitive = true)
 	{
 		$keys = is_array($key) ? $key : array($key);
 		if (empty($keys) || empty($array)) {
@@ -259,20 +261,30 @@ class ArrayHelper
 		if (is_scalar($sortFlag)) {
 			$sortFlag = array_fill(0, $n, $sortFlag);
 		} elseif (count($sortFlag) !== $n) {
-			throw new InvalidParamException('The length of $ascending parameter must be the same as that of $keys.');
+			throw new InvalidParamException('The length of $sortFlag parameter must be the same as that of $keys.');
+		}
+		if (is_scalar($caseSensitive)) {
+			$caseSensitive = array_fill(0, $n, $caseSensitive);
+		} elseif (count($caseSensitive) !== $n) {
+			throw new InvalidParamException('The length of $caseSensitive parameter must be the same as that of $keys.');
 		}
 		$args = array();
 		foreach ($keys as $i => $key) {
 			$flag = $sortFlag[$i];
-			if ($flag == (SORT_STRING | SORT_FLAG_CASE)) {
-				$flag = SORT_STRING;
-				$column = array();
-				foreach (static::getColumn($array, $key) as $k => $value) {
-					$column[$k] = strtolower($value);
+			$cs = $caseSensitive[$i];
+			if (!$cs && ($flag === SORT_STRING)) {
+				if (defined('SORT_FLAG_CASE')) {
+					$flag = $flag | SORT_FLAG_CASE;
+					$args[] = static::getColumn($array, $key);
+				} else {
+					$column = array();
+					foreach (static::getColumn($array, $key) as $k => $value) {
+						$column[$k] = mb_strtolower($value);
+					}
+					$args[] = $column;
 				}
-				$args[] = $column;
 			} else {
-				$args[] = static::getColumn($array, $key);
+				$args[] =  static::getColumn($array, $key);
 			}
 			$args[] = $ascending[$i] ? SORT_ASC : SORT_DESC;
 			$args[] = $flag;

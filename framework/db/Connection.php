@@ -66,7 +66,7 @@ use yii\caching\Cache;
  *     // ... executing other SQL statements ...
  *     $transaction->commit();
  * } catch(Exception $e) {
- *     $transaction->rollBack();
+ *     $transaction->rollback();
  * }
  * ~~~
  *
@@ -517,7 +517,7 @@ class Connection extends Component
 	public function quoteSql($sql)
 	{
 		$db = $this;
-		return preg_replace_callback('/(\\{\\{([\w\-\. ]+)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
+		return preg_replace_callback('/(\\{\\{([%\w\-\. ]+)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
 			function($matches) use($db) {
 				if (isset($matches[3])) {
 					return $db->quoteColumnName($matches[3]);
