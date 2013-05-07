@@ -6,6 +6,17 @@ We hope this list will make it easier for you to upgrade from Yii 1.1 and quickl
 master Yii 2.0 based on your existing Yii knowledge.
 
 
+Namespace
+---------
+
+The most obvious change in Yii 2.0 is the use of namespaces. Almost every core class
+is namespaced, e.g., `yii\web\Request`. The "C" prefix is no longer used in class names.
+The naming of the namespaces follows the directory structure. For example, `yii\web\Request`
+indicates the corresponding class file is `web/Request.php` under the Yii framework folder.
+You can use any core class without explicitly include that class file, thanks to the Yii
+class loader.
+
+
 Component and Object
 --------------------
 
