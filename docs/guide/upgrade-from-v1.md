@@ -195,7 +195,7 @@ A new method called `populate()` is introduced to simplify the data population f
 to a model. For example,
 
 ~~~
-$post = new Post;
+$model = new Post;
 if ($this->populate($_POST, $model)) {...}
 // which is equivalent to:
 if (isset($_POST['Post'])) {
