@@ -813,7 +813,7 @@ class QueryBuilder extends \yii\base\Object
 
 		$values = (array)$values;
 
-		if (empty($values) || empty($column)) {
+		if (empty($values) || $column === array()) {
 			return $operator === 'IN' ? '0=1' : '';
 		}
 
