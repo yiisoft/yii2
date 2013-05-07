@@ -63,6 +63,9 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
+	"config": {
+		"vendor-dir": "framework/vendor"
+	},
 	"bin": [
 		"framework/yiic"
 	],

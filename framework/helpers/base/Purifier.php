@@ -7,7 +7,7 @@
 namespace yii\helpers\base;
 
 if (!class_exists('HTMLPurifier_Bootstrap', false)) {
-	require_once(\Yii::getAlias('@yii').'/../vendor/ezyang/htmlpurifier/library'.DIRECTORY_SEPARATOR.'HTMLPurifier.auto.php');
+	require_once(\Yii::getAlias('@yii/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php'));
 }
 
 /**

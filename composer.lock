@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8036953eff9eafbdbd4c431929a1d223",
+    "hash": "7d46ce9c4d8d5f4ecae1611ea8f0b49c",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
