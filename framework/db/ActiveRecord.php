@@ -667,36 +667,33 @@ class ActiveRecord extends Model
 	 */
 	public function insert($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes)) {
+		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
 			return false;
 		}
-		if ($this->beforeSave(true)) {
-			$values = $this->getDirtyAttributes($attributes);
-			if ($values === array()) {
-				foreach ($this->primaryKey() as $key) {
-					$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
-				}
-			}
-			$db = static::getDb();
-			$command = $db->createCommand()->insert($this->tableName(), $values);
-			if ($command->execute()) {
-				$table = $this->getTableSchema();
-				if ($table->sequenceName !== null) {
-					foreach ($table->primaryKey as $name) {
-						if (!isset($this->_attributes[$name])) {
-							$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
-							break;
-						}
-					}
-				}
-				foreach ($values as $name => $value) {
-					$this->_oldAttributes[$name] = $value;
-				}
-				$this->afterSave(true);
-				return true;
+		$values = $this->getDirtyAttributes($attributes);
+		if (empty($values)) {
+			foreach ($this->primaryKey() as $key) {
+				$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
 			}
 		}
-		return false;
+		$db = static::getDb();
+		$command = $db->createCommand()->insert($this->tableName(), $values);
+		if ($command->execute()) {
+			$table = $this->getTableSchema();
+			if ($table->sequenceName !== null) {
+				foreach ($table->primaryKey as $name) {
+					if (!isset($this->_attributes[$name])) {
+						$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
+						break;
+					}
+				}
+			}
+			foreach ($values as $name => $value) {
+				$this->_oldAttributes[$name] = $value;
+			}
+			$this->afterSave(true);
+			return true;
+		}
 	}
 
 	/**
@@ -750,39 +747,35 @@ class ActiveRecord extends Model
 	 */
 	public function update($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes)) {
+		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
 			return false;
 		}
-		if ($this->beforeSave(false)) {
-			$values = $this->getDirtyAttributes($attributes);
-			if ($values !== array()) {
-				$condition = $this->getOldPrimaryKey(true);
-				$lock = $this->optimisticLock();
-				if ($lock !== null) {
-					if (!isset($values[$lock])) {
-						$values[$lock] = $this->$lock + 1;
-					}
-					$condition[$lock] = $this->$lock;
+		$values = $this->getDirtyAttributes($attributes);
+		if (!empty($values)) {
+			$condition = $this->getOldPrimaryKey(true);
+			$lock = $this->optimisticLock();
+			if ($lock !== null) {
+				if (!isset($values[$lock])) {
+					$values[$lock] = $this->$lock + 1;
 				}
-				// We do not check the return value of updateAll() because it's possible
-				// that the UPDATE statement doesn't change anything and thus returns 0.
-				$rows = $this->updateAll($values, $condition);
-
-				if ($lock !== null && !$rows) {
-					throw new StaleObjectException('The object being updated is outdated.');
-				}
-
-				foreach ($values as $name => $value) {
-					$this->_oldAttributes[$name] = $this->_attributes[$name];
-				}
-
-				$this->afterSave(false);
-				return $rows;
-			} else {
-				return 0;
+				$condition[$lock] = $this->$lock;
 			}
+			// We do not check the return value of updateAll() because it's possible
+			// that the UPDATE statement doesn't change anything and thus returns 0.
+			$rows = $this->updateAll($values, $condition);
+
+			if ($lock !== null && !$rows) {
+				throw new StaleObjectException('The object being updated is outdated.');
+			}
+
+			foreach ($values as $name => $value) {
+				$this->_oldAttributes[$name] = $this->_attributes[$name];
+			}
+
+			$this->afterSave(false);
+			return $rows;
 		} else {
-			return false;
+			return 0;
 		}
 	}
 
