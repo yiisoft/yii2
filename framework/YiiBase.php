@@ -4,6 +4,8 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+namespace yii;
+
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -60,7 +62,7 @@ class YiiBase
 	 */
 	public static $enableIncludePath = true;
 	/**
-	 * @var yii\console\Application|yii\web\Application the application instance
+	 * @var \yii\console\Application|\yii\web\Application the application instance
 	 */
 	public static $app;
 	/**
