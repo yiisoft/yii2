@@ -144,7 +144,8 @@ class MigrateController extends Controller
 	 */
 	public function actionUp($limit = 0)
 	{
-		if (($migrations = $this->getNewMigrations()) === array()) {
+		$migrations = $this->getNewMigrations();
+		if (empty($migrations)) {
 			echo "No new migration found. Your system is up-to-date.\n";
 			Yii::$app->end();
 		}
@@ -198,7 +199,8 @@ class MigrateController extends Controller
 			throw new Exception("The step argument must be greater than 0.");
 		}
 
-		if (($migrations = $this->getMigrationHistory($limit)) === array()) {
+		$migrations = $this->getMigrationHistory($limit);
+		if (empty($migrations)) {
 			echo "No migration has been done before.\n";
 			return;
 		}
@@ -244,7 +246,8 @@ class MigrateController extends Controller
 			throw new Exception("The step argument must be greater than 0.");
 		}
 
-		if (($migrations = $this->getMigrationHistory($limit)) === array()) {
+		$migrations = $this->getMigrationHistory($limit);
+		if (empty($migrations)) {
 			echo "No migration has been done before.\n";
 			return;
 		}
@@ -407,7 +410,7 @@ class MigrateController extends Controller
 	{
 		$limit = (int)$limit;
 		$migrations = $this->getMigrationHistory($limit);
-		if ($migrations === array()) {
+		if (empty($migrations)) {
 			echo "No migration has been done before.\n";
 		} else {
 			$n = count($migrations);
@@ -441,7 +444,7 @@ class MigrateController extends Controller
 	{
 		$limit = (int)$limit;
 		$migrations = $this->getNewMigrations();
-		if ($migrations === array()) {
+		if (empty($migrations)) {
 			echo "No new migrations found. Your system is up-to-date.\n";
 		} else {
 			$n = count($migrations);

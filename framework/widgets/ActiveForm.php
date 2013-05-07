@@ -130,7 +130,7 @@ class ActiveForm extends Widget
 	 */
 	public function run()
 	{
-		if ($this->attributes !== array()) {
+		if (!empty($this->attributes)) {
 			$id = $this->options['id'];
 			$options = Json::encode($this->getClientOptions());
 			$attributes = Json::encode($this->attributes);
@@ -197,7 +197,7 @@ class ActiveForm extends Widget
 			$options['class'] .= ' ' . $this->errorSummaryCssClass;
 		}
 
-		if ($lines !== array()) {
+		if (!empty($lines)) {
 			$content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li><ul>";
 			return Html::tag('div', $header . $content . $footer, $options);
 		} else {

@@ -104,7 +104,7 @@ class ActiveField extends Component
 	public function begin()
 	{
 		$options = $this->getClientOptions();
-		if ($options !== array()) {
+		if (!empty($options)) {
 			$this->form->attributes[$this->attribute] = $options;
 		}
 
@@ -123,7 +123,7 @@ class ActiveField extends Component
 
 		return Html::beginTag($this->tag, $options);
 	}
-	
+
 	public function end()
 	{
 		return Html::endTag($this->tag);
@@ -143,7 +143,7 @@ class ActiveField extends Component
 					$validators[] = $js;
 				}
 			}
-			if ($validators !== array()) {
+			if (!empty($validators)) {
 				$options['validate'] = new JsExpression("function(attribute,value,messages){" . implode('', $validators) . '}');
 			}
 		}

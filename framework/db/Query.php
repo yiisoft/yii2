@@ -589,7 +589,7 @@ class Query extends \yii\base\Component
 	 */
 	public function addParams($params)
 	{
-		if ($params !== array()) {
+		if (!empty($params)) {
 			if ($this->params === null) {
 				$this->params = $params;
 			} else {

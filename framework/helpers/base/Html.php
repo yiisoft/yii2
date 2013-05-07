@@ -324,7 +324,7 @@ class Html
 		$options['action'] = $action;
 		$options['method'] = $method;
 		$form = static::beginTag('form', $options);
-		if ($hiddenInputs !== array()) {
+		if (!empty($hiddenInputs)) {
 			$form .= "\n" . implode("\n", $hiddenInputs);
 		}
 
@@ -618,7 +618,7 @@ class Html
 	 *   is present, a hidden input will be generated so that if the radio button is not checked and is submitted,
 	 *   the value of this attribute will still be submitted to the server via the hidden input.
 	 *
-	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will 
+	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
 	 * @return string the generated radio button tag
@@ -647,7 +647,7 @@ class Html
 	 *   is present, a hidden input will be generated so that if the checkbox is not checked and is submitted,
 	 *   the value of this attribute will still be submitted to the server via the hidden input.
 	 *
-	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will 
+	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
 	 * @return string the generated checkbox tag
@@ -694,9 +694,9 @@ class Html
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
 	 *
-	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will 
+	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * 
+	 *
 	 * @return string the generated drop-down list tag
 	 */
 	public static function dropDownList($name, $selection = null, $items = array(), $options = array())
@@ -737,9 +737,9 @@ class Html
 	 *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
 	 *   mode, we can still obtain the posted unselect value.
 	 *
-	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will 
+	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * 
+	 *
 	 * @return string the generated list box tag
 	 */
 	public static function listBox($name, $selection = null, $items = array(), $options = array())

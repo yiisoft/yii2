@@ -45,7 +45,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function runAction($id, $params = array())
 	{
-		if ($params !== array()) {
+		if (!empty($params)) {
 			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
 				if (in_array($name, $options, true)) {
@@ -69,7 +69,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function bindActionParams($action, $params)
 	{
-		if ($params !== array()) {
+		if (!empty($params)) {
 			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
 				if (in_array($name, $options, true)) {
@@ -81,7 +81,7 @@ class Controller extends \yii\base\Controller
 
 		$args = isset($params[Request::ANONYMOUS_PARAMS]) ? $params[Request::ANONYMOUS_PARAMS] : array();
 		unset($params[Request::ANONYMOUS_PARAMS]);
-		if ($params !== array()) {
+		if (!empty($params)) {
 			throw new Exception(Yii::t('yii|Unknown options: {params}', array(
 				'{params}' => implode(', ', array_keys($params)),
 			)));
@@ -105,7 +105,7 @@ class Controller extends \yii\base\Controller
 			}
 		}
 
-		if ($missing !== array()) {
+		if (!empty($missing)) {
 			throw new Exception(Yii::t('yii|Missing required arguments: {params}', array(
 				'{params}' => implode(', ', $missing),
 			)));

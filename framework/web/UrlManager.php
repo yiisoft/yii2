@@ -90,7 +90,7 @@ class UrlManager extends Component
 	 */
 	protected function compileRules()
 	{
-		if (!$this->enablePrettyUrl || $this->rules === array()) {
+		if (!$this->enablePrettyUrl || empty($this->rules)) {
 			return;
 		}
 		if (is_string($this->cache)) {
@@ -190,13 +190,13 @@ class UrlManager extends Component
 			if ($this->suffix !== null) {
 				$route .= $this->suffix;
 			}
-			if ($params !== array()) {
+			if (!empty($params)) {
 				$route .= '?' . http_build_query($params);
 			}
 			return rtrim($baseUrl, '/') . '/' . $route . $anchor;
 		} else {
 			$url = $baseUrl . '?' . $this->routeVar . '=' . $route;
-			if ($params !== array()) {
+			if (!empty($params)) {
 				$url .= '&' . http_build_query($params);
 			}
 			return $url;
