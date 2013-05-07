@@ -26,7 +26,7 @@ via getters and setters. The `Component` class extends from `Object` and support
 the event feature and the behavior feature.
 
 If your class does not need the event or behavior feature, you should consider using
-`Object` as the based class. This is usually the case for classes that represent basic
+`Object` as the base class. This is usually the case for classes that represent basic
 data structures.
 
 
