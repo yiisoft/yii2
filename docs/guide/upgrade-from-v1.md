@@ -6,6 +6,17 @@ We hope this list will make it easier for you to upgrade from Yii 1.1 and quickl
 master Yii 2.0 based on your existing Yii knowledge.
 
 
+Namespace
+---------
+
+The most obvious change in Yii 2.0 is the use of namespaces. Almost every core class
+is namespaced, e.g., `yii\web\Request`. The "C" prefix is no longer used in class names.
+The naming of the namespaces follows the directory structure. For example, `yii\web\Request`
+indicates the corresponding class file is `web/Request.php` under the Yii framework folder.
+You can use any core class without explicitly include that class file, thanks to the Yii
+class loader.
+
+
 Component and Object
 --------------------
 
@@ -136,23 +147,9 @@ with significant improvements. For more details, please see the "assets" subsect
 
 While Yii 2.0 continues to use PHP as its main template language, it comes with built-in
 support for two popular template engines: Smarty and Twig. The Prado template engine is
-no longer supported. To use these template engines, simply configure the "view" application 
-component as follows,
-
-~~~
-'view' => array(
-    'renders' => array(
-        array(
-            'tpl' => array(
-                'class' => 'yii\renderers\SmartyRenderer',
-            ),
-            'twig' => array(
-                'class' => 'yii\renderers\TwigRenderer',
-            ),
-        )
-    ),
-)
-~~~
+no longer supported. To use these template engines, you just need to use `tpl` as the file
+extension for your Smarty views, or `twig` for Twig views. You may also configure the 
+`View::renderers` property to use other template engines.
 
 
 Models
@@ -389,6 +386,11 @@ when you need to return large number of records. For example,
 ~~~
 $customers = Customer::find()->asArray()->all();
 ~~~
+
+
+By default, ActiveRecord now only saves dirty attributes. In 1.1, all attributes
+would be saved to database when you call `save()`, regardless they are changed or not,
+unless you explicitly list the attributes to save.
 
 
 Auto-quoting Table and Column Names
