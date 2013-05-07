@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 
 /**

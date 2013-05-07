@@ -7,164 +7,172 @@
 
 namespace yii\widgets;
 
+use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
 
 /**
+ * Menu displays a multi-level menu using nested HTML lists.
  *
+ * The main property of Menu is [[items]], which specifies the possible items in the menu.
+ * A menu item can contain sub-items which specify the sub-menu under that menu item.
+ * 
+ * Menu checks the current route and request parameters to toggle certain menu items
+ * with active state.
+ * 
+ * Note that Menu only renders the HTML tags about the menu. It does do any styling.
+ * You are responsible to provide CSS styles to make it look like a real menu.
+ *
+ * The following example shows how to use Menu:
+ * 
+ * ~~~
+ * $this->widget('yii\widgets\Menu', array(
+ *     'items' => array(
+ *         // Important: you need to specify url as 'controller/action',
+ *         // not just as 'controller' even if default acion is used.
+ *         array('label' => 'Home', 'url' => array('site/index')),
+ *         // 'Products' menu item will be selected as long as the route is 'product/index'
+ *         array('label' => 'Products', 'url' => array('product/index'), 'items' => array(
+ *             array('label' => 'New Arrivals', 'url' => array('product/index', 'tag' => 'new')),
+ *             array('label' => 'Most Popular', 'url' => array('product/index', 'tag' => 'popular')),
+ *         )),
+ *         array('label' => 'Login', 'url' => array('site/login'), 'visible' => Yii::app()->user->isGuest),
+ *     ),
+ * ));
+ * ~~~
+ * 
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Menu extends Widget
 {
 	/**
-	 * @var array list of menu items. Each menu item is specified as an array of name-value pairs.
-	 * Possible option names include the following:
-	 * <ul>
-	 * <li>label: string, optional, specifies the menu item label. When {@link encodeLabel} is true, the label
-	 * will be HTML-encoded. If the label is not specified, it defaults to an empty string.</li>
-	 * <li>url: string or array, optional, specifies the URL of the menu item. It is passed to {@link Html::normalizeUrl}
-	 * to generate a valid URL. If this is not set, the menu item will be rendered as a span text.</li>
-	 * <li>visible: boolean, optional, whether this menu item is visible. Defaults to true.
-	 * This can be used to control the visibility of menu items based on user permissions.</li>
-	 * <li>items: array, optional, specifies the sub-menu items. Its format is the same as the parent items.</li>
-	 * <li>active: boolean, optional, whether this menu item is in active state (currently selected).
-	 * If a menu item is active and {@link activeClass} is not empty, its CSS class will be appended with {@link activeClass}.
-	 * If this option is not set, the menu item will be set active automatically when the current request
-	 * is triggered by {@link url}. Note that the GET parameters not specified in the 'url' option will be ignored.</li>
-	 * <li>template: string, optional, the template used to render this menu item.
-	 * When this option is set, it will override the global setting {@link itemTemplate}.
-	 * Please see {@link itemTemplate} for more details. This option has been available since version 1.1.1.</li>
-	 * <li>linkOptions: array, optional, additional HTML attributes to be rendered for the link or span tag of the menu item.</li>
-	 * <li>itemOptions: array, optional, additional HTML attributes to be rendered for the container tag of the menu item.</li>
-	 * <li>submenuOptions: array, optional, additional HTML attributes to be rendered for the container of the submenu if this menu item has one.
-	 * When this option is set, the {@link submenuHtmlOptions} property will be ignored for this particular submenu.
-	 * This option has been available since version 1.1.6.</li>
-	 * </ul>
+	 * @var array list of menu items. Each menu item should be an array of the following structure:
+	 *
+	 * - label: string, optional, specifies the menu item label. When [[encodeLabels]] is true, the label
+	 *   will be HTML-encoded. If the label is not specified, an empty string will be used.
+	 * - url: string or array, optional, specifies the URL of the menu item. It will be processed by [[Html::url]].
+	 *   When this is set, the actual menu item content will be generated using [[linkTemplate]];
+	 *   otherwise, [[labelTemplate]] will be used.
+	 * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
+	 * - items: array, optional, specifies the sub-menu items. Its format is the same as the parent items.
+	 * - active: boolean, optional, whether this menu item is in active state (currently selected).
+	 *   If a menu item is active, its CSS class will be appended with [[activeCssClass]].
+	 *   If this option is not set, the menu item will be set active automatically when the current request
+	 *   is triggered by [[url]]. For more details, please refer to [[isItemActive()]].
+	 * - template: string, optional, the template used to render the content of this menu item.
+	 *   The token `{url}` will be replaced by the URL associated with this menu item,
+	 *   and the token `{label}` will be replaced by the label of the menu item.
+	 *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead. 
 	 */
 	public $items = array();
 	/**
-	 * @var string the template used to render an individual menu item. In this template,
-	 * the token "{menu}" will be replaced with the corresponding menu link or text.
-	 * If this property is not set, each menu will be rendered without any decoration.
-	 * This property will be overridden by the 'template' option set in individual menu items via {@items}.
-	 * @since 1.1.1
+	 * @var string the template used to render the body of a menu which is a link.
+	 * In this template, the token `{url}` will be replaced with the corresponding link URL;
+	 * while `{label}` will be replaced with the link text.
+	 * This property will be overridden by the `template` option set in individual menu items via [[items]].
 	 */
-	public $itemTemplate;
+	public $linkTemplate = '<a href="{url}">{label}</a>';
 	/**
-	 * @var boolean whether the labels for menu items should be HTML-encoded. Defaults to true.
+	 * @var string the template used to render the body of a menu which is NOT a link.
+	 * In this template, the token `{label}` will be replaced with the label of the menu item.
+	 * This property will be overridden by the `template` option set in individual menu items via [[items]].
 	 */
-	public $encodeLabel = true;
+	public $labelTemplate = '{label}';
 	/**
-	 * @var string the CSS class to be appended to the active menu item. Defaults to 'active'.
-	 * If empty, the CSS class of menu items will not be changed.
+	 * @var string the template used to render a list of sub-menus.
+	 * In this template, the token `{items}` will be replaced with the renderer sub-menu items.
+	 */
+	public $submenuTemplate = "\n<ul>\n{items}\n</ul>\n";
+	/**
+	 * @var boolean whether the labels for menu items should be HTML-encoded.
+	 */
+	public $encodeLabels = true;
+	/**
+	 * @var string the CSS class to be appended to the active menu item.
 	 */
 	public $activeCssClass = 'active';
 	/**
 	 * @var boolean whether to automatically activate items according to whether their route setting
-	 * matches the currently requested route. Defaults to true.
-	 * @since 1.1.3
+	 * matches the currently requested route.
+	 * @see isItemActive
 	 */
 	public $activateItems = true;
 	/**
 	 * @var boolean whether to activate parent menu items when one of the corresponding child menu items is active.
-	 * The activated parent menu items will also have its CSS classes appended with {@link activeCssClass}.
-	 * Defaults to false.
+	 * The activated parent menu items will also have its CSS classes appended with [[activeCssClass]].
 	 */
 	public $activateParents = false;
 	/**
-	 * @var boolean whether to hide empty menu items. An empty menu item is one whose 'url' option is not
-	 * set and which doesn't contain visible child menu items. Defaults to true.
+	 * @var boolean whether to hide empty menu items. An empty menu item is one whose `url` option is not
+	 * set and which has no visible child menu items.
 	 */
 	public $hideEmptyItems = true;
 	/**
-	 * @var array HTML attributes for the menu's root container tag
+	 * @var array the HTML attributes for the menu's container tag.
 	 */
 	public $options = array();
 	/**
-	 * @var array HTML attributes for the submenu's container tag.
-	 */
-	public $submenuHtmlOptions = array();
-	/**
-	 * @var string the HTML element name that will be used to wrap the label of all menu links.
-	 * For example, if this property is set as 'span', a menu item may be rendered as
-	 * &lt;li&gt;&lt;a href="url"&gt;&lt;span&gt;label&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-	 * This is useful when implementing menu items using the sliding window technique.
-	 * Defaults to null, meaning no wrapper tag will be generated.
-	 * @since 1.1.4
-	 */
-	public $linkLabelWrapper;
-	/**
-	 * @var array HTML attributes for the links' wrap element specified in
-	 * {@link linkLabelWrapper}.
-	 * @since 1.1.13
-	 */
-	public $linkLabelWrapperHtmlOptions = array();
-	/**
 	 * @var string the CSS class that will be assigned to the first item in the main menu or each submenu.
 	 * Defaults to null, meaning no such CSS class will be assigned.
-	 * @since 1.1.4
 	 */
 	public $firstItemCssClass;
 	/**
 	 * @var string the CSS class that will be assigned to the last item in the main menu or each submenu.
 	 * Defaults to null, meaning no such CSS class will be assigned.
-	 * @since 1.1.4
 	 */
 	public $lastItemCssClass;
 	/**
-	 * @var string the CSS class that will be assigned to every item.
-	 * Defaults to null, meaning no such CSS class will be assigned.
-	 * @since 1.1.9
+	 * @var string the route used to determine if a menu item is active or not.
+	 * If not set, it will use the route of the current request. 
+	 * @see params
+	 * @see isItemActive
 	 */
-	public $itemCssClass;
+	public $route;
+	/**
+	 * @var array the parameters used to determine if a menu item is active or not.
+	 * If not set, it will use `$_GET`.
+	 * @see route
+	 * @see isItemActive
+	 */
+	public $params;
+
 
 	/**
-	 * Initializes the menu widget.
-	 * This method mainly normalizes the {@link items} property.
-	 * If this method is overridden, make sure the parent implementation is invoked.
-	 */
-	public function init()
-	{
-		$route = $this->getController()->getRoute();
-		$this->items = $this->normalizeItems($this->items, $route, $hasActiveChild);
-	}
-
-	/**
-	 * Calls {@link renderMenu} to render the menu.
+	 * Renders the menu.
 	 */
 	public function run()
 	{
-		if (count($this->items)) {
-			echo Html::beginTag('ul', $this->options) . "\n";
-			$this->renderItems($this->items);
-			echo Html::endTag('ul');
+		if ($this->route === null && Yii::$app->controller !== null) {
+			$this->route = Yii::$app->controller->getRoute();
 		}
+		if ($this->params === null) {
+			$this->params = $_GET;
+		}
+		$items = $this->normalizeItems($this->items, $hasActiveChild);
+		echo Html::tag('ul', $this->renderItems($items), $this->options);
 	}
 
 	/**
-	 * Recursively renders the menu items.
+	 * Recursively renders the menu items (without the container tag).
 	 * @param array $items the menu items to be rendered recursively
+	 * @return string the rendering result
 	 */
 	protected function renderItems($items)
 	{
-		$count = 0;
 		$n = count($items);
-		foreach ($items as $item) {
-			$count++;
+		$lines = array();
+		foreach ($items as $i => $item) {
 			$options = isset($item['itemOptions']) ? $item['itemOptions'] : array();
 			$class = array();
-			if ($item['active'] && $this->activeCssClass != '') {
+			if ($item['active']) {
 				$class[] = $this->activeCssClass;
 			}
-			if ($count === 1 && $this->firstItemCssClass !== null) {
+			if ($i === 0 && $this->firstItemCssClass !== null) {
 				$class[] = $this->firstItemCssClass;
 			}
-			if ($count === $n && $this->lastItemCssClass !== null) {
+			if ($i === $n - 1 && $this->lastItemCssClass !== null) {
 				$class[] = $this->lastItemCssClass;
-			}
-			if ($this->itemCssClass !== null) {
-				$class[] = $this->itemCssClass;
 			}
 			if (!empty($class)) {
 				if (empty($options['class'])) {
@@ -174,51 +182,46 @@ class Menu extends Widget
 				}
 			}
 
-			echo Html::beginTag('li', $options);
-
 			$menu = $this->renderItem($item);
-			if (isset($this->itemTemplate) || isset($item['template'])) {
-				$template = isset($item['template']) ? $item['template'] : $this->itemTemplate;
-				echo strtr($template, array('{menu}' => $menu));
-			} else {
-				echo $menu;
+			if (!empty($item['items'])) {
+				$menu .= strtr($this->submenuTemplate, array(
+					'{items}' => $this->renderItems($item['items']),
+				));
 			}
-
-			if (isset($item['items']) && count($item['items'])) {
-				echo "\n" . Html::beginTag('ul', isset($item['submenuOptions']) ? $item['submenuOptions'] : $this->submenuHtmlOptions) . "\n";
-				$this->renderItems($item['items']);
-				echo Html::endTag('ul') . "\n";
-			}
-
-			echo Html::endTag('li') . "\n";
+			$lines[] = Html::tag('li', $menu, $options);
 		}
+		return implode("\n", $lines);
 	}
 
 	/**
 	 * Renders the content of a menu item.
 	 * Note that the container and the sub-menus are not rendered here.
-	 * @param array $item the menu item to be rendered. Please see {@link items} on what data might be in the item.
-	 * @return string
-	 * @since 1.1.6
+	 * @param array $item the menu item to be rendered. Please refer to [[items]] to see what data might be in the item.
+	 * @return string the rendering result
 	 */
 	protected function renderItem($item)
 	{
 		if (isset($item['url'])) {
-			$label = $this->linkLabelWrapper === null ? $item['label'] : Html::tag($this->linkLabelWrapper, $this->linkLabelWrapperHtmlOptions, $item['label']);
-			return Html::a($label, $item['url'], isset($item['linkOptions']) ? $item['linkOptions'] : array());
+			$template = isset($item['template']) ? $item['template'] : $this->linkTemplate;
+			return strtr($template, array(
+				'{url}' => Html::url($item['url']),
+				'{label}' => $item['label'],
+			));
 		} else {
-			return Html::tag('span', isset($item['linkOptions']) ? $item['linkOptions'] : array(), $item['label']);
+			$template = isset($item['template']) ? $item['template'] : $this->labelTemplate;
+			return strtr($template, array(
+				'{label}' => $item['label'],
+			));
 		}
 	}
 
 	/**
-	 * Normalizes the {@link items} property so that the 'active' state is properly identified for every menu item.
+	 * Normalizes the [[items]] property to remove invisible items and activate certain items.
 	 * @param array $items the items to be normalized.
-	 * @param string $route the route of the current request.
 	 * @param boolean $active whether there is an active child menu item.
 	 * @return array the normalized menu items
 	 */
-	protected function normalizeItems($items, $route, &$active)
+	protected function normalizeItems($items, &$active)
 	{
 		foreach ($items as $i => $item) {
 			if (isset($item['visible']) && !$item['visible']) {
@@ -228,7 +231,7 @@ class Menu extends Widget
 			if (!isset($item['label'])) {
 				$item['label'] = '';
 			}
-			if ($this->encodeLabel) {
+			if ($this->encodeLabels) {
 				$items[$i]['label'] = Html::encode($item['label']);
 			}
 			$hasActiveChild = false;
@@ -243,7 +246,7 @@ class Menu extends Widget
 				}
 			}
 			if (!isset($item['active'])) {
-				if ($this->activateParents && $hasActiveChild || $this->activateItems && $this->isItemActive($item, $route)) {
+				if ($this->activateParents && $hasActiveChild || $this->activateItems && $this->isItemActive($item)) {
 					$active = $items[$i]['active'] = true;
 				} else {
 					$items[$i]['active'] = false;
@@ -257,19 +260,21 @@ class Menu extends Widget
 
 	/**
 	 * Checks whether a menu item is active.
-	 * This is done by checking if the currently requested URL is generated by the 'url' option
-	 * of the menu item. Note that the GET parameters not specified in the 'url' option will be ignored.
+	 * This is done by checking if [[route]] and [[params]] match that specified in the `url` option of the menu item.
+	 * When the `url` option of a menu item is specified in terms of an array, its first element is treated
+	 * as the route for the item and the rest of the elements are the associated parameters.
+	 * Only when its route and parameters match [[route]] and [[params]], respectively, will a menu item
+	 * be considered active.
 	 * @param array $item the menu item to be checked
-	 * @param string $route the route of the current request
 	 * @return boolean whether the menu item is active
 	 */
-	protected function isItemActive($item, $route)
+	protected function isItemActive($item)
 	{
-		if (isset($item['url']) && is_array($item['url']) && !strcasecmp(trim($item['url'][0], '/'), $route)) {
+		if (isset($item['url']) && is_array($item['url']) && trim($item['url'][0], '/') === $this->route) {
 			unset($item['url']['#']);
 			if (count($item['url']) > 1) {
 				foreach (array_splice($item['url'], 1) as $name => $value) {
-					if (!isset($_GET[$name]) || $_GET[$name] != $value) {
+					if (!isset($this->params[$name]) || $this->params[$name] != $value) {
 						return false;
 					}
 				}
