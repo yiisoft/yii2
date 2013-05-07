@@ -11,3 +11,6 @@ nbproject
 
 # windows thumbnail cache
 Thumbs.db
+
+# composer vendor dir
+vendor

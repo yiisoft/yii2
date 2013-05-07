@@ -6,6 +6,7 @@ use yii\helpers\Html;
  * @var app\models\LoginForm $model
  */
 $this->title = 'Login';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <h1><?php echo Html::encode($this->title); ?></h1>
 

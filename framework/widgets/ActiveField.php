@@ -10,7 +10,7 @@ use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\base\Model;
-use yii\helpers\JsExpression;
+use yii\web\JsExpression;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>

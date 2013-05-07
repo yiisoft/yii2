@@ -8,7 +8,7 @@
 namespace yii\helpers\base;
 
 use yii\base\InvalidParamException;
-use yii\helpers\JsExpression;
+use yii\web\JsExpression;
 
 /**
  * Json is a helper class providing JSON data encoding and decoding.

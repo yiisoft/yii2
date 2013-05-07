@@ -12,7 +12,6 @@ use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use yii\helpers\JsExpression;
 
 /**
  * ActiveForm ...
