@@ -55,7 +55,7 @@ class MyClass extends \yii\Object
     }
 }
 ```
-~~~
+
 In the above, the last parameter of the constructor must take a configuration array
 which contains name-value pairs for initializing the properties at the end of the constructor.
 You can override the `init()` method to do initialization work that should be done after
