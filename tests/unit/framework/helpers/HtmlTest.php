@@ -440,6 +440,52 @@ EOD;
 		Html::$showBooleanAttributeValues = true;
 	}
 
+    public function testRequiredAttribute()
+    {
+        $rules = array(array('name' => 'required'));
+        $stub = $this->getMockBuilder('yii\base\Model')
+            ->disableOriginalConstructor()
+            ->disableArgumentCloning()
+            ->getMock();
+        $stub->expects($this->any())
+            ->method('rules')
+            ->will($this->returnValue($rules));
+        $stub->expects($this->any())
+            ->method('isAttributeRequired')
+            ->will($this->returnValue(true));
+
+        $this->assertSame('<input type="text" id="-name" name="[name]" required="required" />', Html::activeInput('text', $stub, 'name'));
+        $this->assertSame('<input type="text" id="-name" name="[name]" required="required" />', Html::activeTextInput($stub, 'name'));
+        $this->assertSame(
+            '<input type="hidden" name="[name]" value="0" /><input type="checkbox" id="-name" name="[name]" value="1" required="required" />',
+            Html::activeCheckbox($stub, 'name')
+        );
+        $this->assertSame(
+            '<input type="hidden" name="[name]" value="0" /><input type="radio" id="-name" name="[name]" value="1" required="required" />',
+            Html::activeRadio($stub, 'name')
+        );
+        $this->assertSame(
+            '<select id="-name" name="[name]" required="required">' . "\n" .
+                '<option value="a">b</option>' . "\n" .
+                '</select>',
+            Html::activeDropDownList($stub, 'name', array("a" => "b"))
+        );
+        $this->assertSame(
+            '<input type="hidden" name="[name]" value="0" /><select id="-name" name="[name]" size="4" required="required">' . "\n" .
+                '<option value="a">b</option>' . "\n" .
+                '</select>',
+            Html::activeListBox($stub, 'name', array("a" => "b"))
+        );
+        $this->assertSame(
+            '<input type="hidden" name="[name]" value="0" /><label><input type="checkbox" name="[name][]" value="a" /> b</label>',
+            Html::activeCheckboxList($stub, 'name', array("a" => "b"))
+        );
+        $this->assertSame(
+            '<input type="hidden" name="[name]" value="0" /><label><input type="radio" name="[name]" value="a" /> b</label>',
+            Html::activeRadioList($stub, 'name', array("a" => "b"))
+        );
+      }
+
 	protected function getDataItems()
 	{
 		return array(

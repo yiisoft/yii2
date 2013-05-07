@@ -919,11 +919,14 @@ class Html
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$value = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute);
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = static::getInputId($model, $attribute);
-		}
-		return static::input($type, $name, $value, $options);
-	}
+        if (!array_key_exists('id', $options)) {
+            $options['id'] = static::getInputId($model, $attribute);
+        }
+        if ($model->isAttributeRequired($attribute) && !array_key_exists('required', $options)) {
+            $options['required'] = 1;
+        }
+        return static::input($type, $name, $value, $options);
+    }
 
 	/**
 	 * Generates a text input tag for the given model attribute.
@@ -1035,11 +1038,14 @@ class Html
 		if (!array_key_exists('uncheck', $options)) {
 			$options['uncheck'] = '0';
 		}
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = static::getInputId($model, $attribute);
-		}
-		return static::radio($name, $checked, $options);
-	}
+        if (!array_key_exists('id', $options)) {
+            $options['id'] = static::getInputId($model, $attribute);
+        }
+        if ($model->isAttributeRequired($attribute) && !array_key_exists('required', $options)) {
+            $options['required'] = 1;
+        }
+        return static::radio($name, $checked, $options);
+    }
 
 	/**
 	 * Generates a checkbox tag for the given model attribute.
@@ -1062,16 +1068,19 @@ class Html
 	 */
 	public static function activeCheckbox($model, $attribute, $options = array())
 	{
-		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-		$checked = static::getAttributeValue($model, $attribute);
-		if (!array_key_exists('uncheck', $options)) {
-			$options['uncheck'] = '0';
-		}
-		if (!array_key_exists('id', $options)) {
-			$options['id'] = static::getInputId($model, $attribute);
-		}
-		return static::checkbox($name, $checked, $options);
-	}
+        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
+        $checked = static::getAttributeValue($model, $attribute);
+        if (!array_key_exists('uncheck', $options)) {
+            $options['uncheck'] = '0';
+        }
+        if (!array_key_exists('id', $options)) {
+            $options['id'] = static::getInputId($model, $attribute);
+        }
+        if ($model->isAttributeRequired($attribute) && !array_key_exists('required', $options)) {
+            $options['required'] = 1;
+        }
+        return static::checkbox($name, $checked, $options);
+    }
 
 	/**
 	 * Generates a drop-down list for the given model attribute.
@@ -1113,10 +1122,13 @@ class Html
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$checked = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('id', $options)) {
-			$options['id'] = static::getInputId($model, $attribute);
-		}
-		return static::dropDownList($name, $checked, $items, $options);
-	}
+            $options['id'] = static::getInputId($model, $attribute);
+        }
+        if ($model->isAttributeRequired($attribute) && !array_key_exists('required', $options)) {
+            $options['required'] = 1;
+        }
+        return static::dropDownList($name, $checked, $items, $options);
+    }
 
 	/**
 	 * Generates a list box.
@@ -1166,8 +1178,11 @@ class Html
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
 		}
-		return static::listBox($name, $checked, $items, $options);
-	}
+        if ($model->isAttributeRequired($attribute) && !array_key_exists('required', $options)) {
+            $options['required'] = 1;
+        }
+        return static::listBox($name, $checked, $items, $options);
+    }
 
 	/**
 	 * Generates a list of checkboxes.
@@ -1204,8 +1219,11 @@ class Html
 		if (!array_key_exists('unselect', $options)) {
 			$options['unselect'] = '0';
 		}
-		return static::checkboxList($name, $checked, $items, $options);
-	}
+        if ($model->isAttributeRequired($attribute) && !array_key_exists('required', $options)) {
+            $options['required'] = 1;
+        }
+        return static::checkboxList($name, $checked, $items, $options);
+    }
 
 	/**
 	 * Generates a list of radio buttons.
@@ -1240,9 +1258,12 @@ class Html
 		$checked = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
 			$options['unselect'] = '0';
-		}
-		return static::radioList($name, $checked, $items, $options);
-	}
+        }
+        if ($model->isAttributeRequired($attribute) && !array_key_exists('required', $options)) {
+            $options['required'] = 1;
+        }
+        return static::radioList($name, $checked, $items, $options);
+    }
 
 	/**
 	 * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
