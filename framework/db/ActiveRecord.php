@@ -1131,8 +1131,8 @@ class ActiveRecord extends Model
 				return $relation;
 			}
 		} catch (UnknownMethodException $e) {
+			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 		}
-		throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 	}
 
 	/**
