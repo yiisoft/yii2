@@ -472,8 +472,8 @@ class QueryBuilder extends \yii\base\Object
 		if (isset($this->typeMap[$type])) {
 			return $this->typeMap[$type];
 		} elseif (preg_match('/^(\w+)\s+/', $type, $matches)) {
-			if (isset($this->typeMap[$matches[0]])) {
-				return preg_replace('/^\w+/', $this->typeMap[$matches[0]], $type);
+			if (isset($this->typeMap[$matches[1]])) {
+				return preg_replace('/^\w+/', $this->typeMap[$matches[1]], $type);
 			}
 		}
 		return $type;
