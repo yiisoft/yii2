@@ -667,7 +667,7 @@ class ActiveRecord extends Model
 	 */
 	public function insert($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes) && !$this->beforeSave(true)) {
+		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
 			return false;
 		}
 		$values = $this->getDirtyAttributes($attributes);
@@ -747,7 +747,7 @@ class ActiveRecord extends Model
 	 */
 	public function update($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes) && !$this->beforeSave(false)) {
+		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
 			return false;
 		}
 		$values = $this->getDirtyAttributes($attributes);
