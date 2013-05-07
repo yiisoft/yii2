@@ -262,6 +262,7 @@ abstract class Validator extends Component
 	 */
 	public function isEmpty($value, $trim = false)
 	{
-		return $value === null || empty($value) || $value === '' || $trim && is_scalar($value) && trim($value) === '';
+		return $value === null || $value === array() || $value === ''
+			|| $trim && is_scalar($value) && trim($value) === '';
 	}
 }
