@@ -37,7 +37,7 @@ The `Object` class introduces a uniform way of configuring objects. Any descenda
 of `Object` should declare its constructor (if needed) in the following way so that
 it can be properly configured:
 
-~~~
+```php
 class MyClass extends \yii\Object
 {
     public function __construct($param1, $param2, $config = array())
@@ -54,8 +54,8 @@ class MyClass extends \yii\Object
         // ... initialization after configuration is applied
     }
 }
+```
 ~~~
-
 In the above, the last parameter of the constructor must take a configuration array
 which contains name-value pairs for initializing the properties at the end of the constructor.
 You can override the `init()` method to do initialization work that should be done after
@@ -64,12 +64,13 @@ the configuration is applied.
 By following this convention, you will be able to create and configure a new object
 using a configuration array like the following:
 
-~~~
+```php
 $object = Yii::createObject(array(
     'class' => 'MyClass',
     'property1' => 'abc',
     'property2' => 'cde',
 ), $param1, $param2);
+```
 ~~~
 
 
@@ -80,28 +81,30 @@ There is no longer the need to define an `on`-method in order to define an event
 Instead, you can use whatever event names. To attach a handler to an event, you should
 use the `on` method now:
 
-~~~
+```php
 $component->on($eventName, $handler);
 // To detach the handler, use:
 // $component->off($eventName, $handler);
+```
 ~~~
 
 When you attach a handler, you can now associate it with some parameters which can be later
 accessed via the event parameter by the handler:
 
-~~~
+```php
 $component->on($eventName, $handler, $params);
+```
 ~~~
 
 Because of this change, you can now use "global" events. Simply trigger and attach handlers to
 an event of the application instance:
 
-~~~
+```php
 Yii::$app->on($eventName, $handler);
 ....
 // this will trigger the event and cause $handler to be invoked.
 Yii::$app->trigger($eventName);
-~~~
+```
 
 
 Path Alias
@@ -135,11 +138,12 @@ Because you can access the view object through the "view" application component,
 you can now render a view file like the following anywhere in your code, not necessarily
 in controllers or widgets:
 
-~~~
+```php
 $content = Yii::$app->view->renderFile($viewFile, $params);
 // You can also explicitly create a new View instance to do the rendering
 // $view = new View;
 // $view->renderFile($viewFile, $params);
+```
 ~~~
 
 Also, there is no more `CClientScript` in Yii 2.0. The `View` class has taken over its role
@@ -165,7 +169,7 @@ validation under which scenario. Child classes should overwrite `scenarios()` to
 a list of scenarios and the corresponding attributes that need to be validated when
 `validate()` is called. For example,
 
-~~~
+```php
 public function scenarios()
 {
     return array(
@@ -173,6 +177,7 @@ public function scenarios()
         'frontend' => array('email', '!name'),
     );
 }
+```
 ~~~
 
 This method also determines which attributes are safe and which are not. In particular,
@@ -194,13 +199,14 @@ sending them out. You have to `echo` them explicitly, e.g., `echo $this->render(
 A new method called `populate()` is introduced to simplify the data population from user inputs
 to a model. For example,
 
-~~~
+```php
 $model = new Post;
 if ($this->populate($_POST, $model)) {...}
 // which is equivalent to:
 if (isset($_POST['Post'])) {
     $post->attributes = $_POST['Post'];
 }
+```
 ~~~
 
 
@@ -256,7 +262,7 @@ define a new filter. To use a filter, you should attach the filter class to the 
 as a behavior. For example, to use the `AccessControl` filter, you should have the following
 code in a controller:
 
-~~~
+```php
 public function behaviors()
 {
     return array(
@@ -269,6 +275,7 @@ public function behaviors()
         ),
     );
 }
+```
 ~~~
 
 
@@ -301,7 +308,7 @@ Yii 2.0 introduces the *field* concept for building a form using `ActiveForm`. A
 is a container consisting of a label, an input, and an error message. It is represented
 as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
 
-~~~
+```php
 <?php $form = $this->beginWidget('yii\widgets\ActiveForm'); ?>
 	<?php echo $form->field($model, 'username')->textInput(); ?>
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
@@ -309,6 +316,7 @@ as an `ActiveField` object. Using fields, you can build a form more cleanly than
 		<?php echo Html::submitButton('Login'); ?>
 	</div>
 <?php $this->endWidget(); ?>
+```
 ~~~
 
 
@@ -319,7 +327,7 @@ In 1.1, query building is scattered among several classes, including `CDbCommand
 `CDbCriteria`, and `CDbCommandBuilder`. Yii 2.0 uses `Query` to represent a DB query
 and `QueryBuilder` to generate SQL statements from query objects. For example,
 
-~~~
+```php
 $query = new \yii\db\Query;
 $query->select('id, name')
       ->from('tbl_user')
@@ -328,6 +336,7 @@ $query->select('id, name')
 $command = $query->createCommand();
 $sql = $command->sql;
 $rows = $command->queryAll();
+```
 ~~~
 
 Best of all, such query building methods can be used together with `ActiveRecord`,
@@ -342,7 +351,7 @@ is about relational ActiveRecord query. In 1.1, you have to declare the relation
 in the `relations()` method. In 2.0, this is done via getter methods that return
 an `ActiveQuery` object. For example, the following method declares an "orders" relation:
 
-~~~
+```php
 class Customer extends \yii\db\ActiveRecord
 {
 	public function getOrders()
@@ -350,6 +359,7 @@ class Customer extends \yii\db\ActiveRecord
 		return $this->hasMany('Order', array('customer_id' => 'id'));
 	}
 }
+```
 ~~~
 
 You can use `$customer->orders` to access the customer's orders. You can also
@@ -366,7 +376,7 @@ by filtering with the primary keys of the primary records.
 Yii 2.0 no longer uses the `model()` method when performing queries. Instead, you
 use the `find()` method like the following:
 
-~~~
+```php
 // to retrieve all *active* customers and order them by their ID:
 $customers = Customer::find()
 	->where(array('status' => $active))
@@ -374,6 +384,7 @@ $customers = Customer::find()
 	->all();
 // return the customer whose PK is 1
 $customer = Customer::find(1);
+```
 ~~~
 
 The `find()` method returns an instance of `ActiveQuery` which is a subclass of `Query`.
@@ -383,10 +394,9 @@ Instead of returning ActiveRecord objects, you may call `ActiveQuery::asArray()`
 return results in terms of arrays. This is more efficient and is especially useful
 when you need to return large number of records. For example,
 
-~~~
+```php
 $customers = Customer::find()->asArray()->all();
-~~~
-
+```
 
 By default, ActiveRecord now only saves dirty attributes. In 1.1, all attributes
 would be saved to database when you call `save()`, regardless they are changed or not,
@@ -401,11 +411,11 @@ within double curly brackets is treated as a table name, and a name enclosed wit
 double square brackets is treated as a column name. They will be quoted according to
 the database driver being used. For example,
 
-~~~
+```php
 $command = $connection->createCommand('SELECT [[id]] FROM {{posts}}');
 echo $command->sql;  // MySQL: SELECT `id` FROM `posts`
+```
 ~~~
-
 This feature is especially useful if you are developing an application that supports
 different DBMS.
 
@@ -426,12 +436,13 @@ parameters. For example, if you have rule declared as follows, then it will matc
 both `post/popular` and `post/1/popular`. In 1.1, you would have to use two rules to achieve
 the same goal.
 
-~~~
+```php
 array(
 	'pattern' => 'post/<page:\d+>/<tag>',
 	'route' => 'post/index',
 	'defaults' => array('page' => 1),
 )
+```
 ~~~
 
 
