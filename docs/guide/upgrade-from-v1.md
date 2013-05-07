@@ -71,7 +71,7 @@ $object = Yii::createObject(array(
     'property2' => 'cde',
 ), $param1, $param2);
 ```
-~~~
+
 
 
 Events
@@ -86,7 +86,7 @@ $component->on($eventName, $handler);
 // To detach the handler, use:
 // $component->off($eventName, $handler);
 ```
-~~~
+
 
 When you attach a handler, you can now associate it with some parameters which can be later
 accessed via the event parameter by the handler:
@@ -94,7 +94,7 @@ accessed via the event parameter by the handler:
 ```php
 $component->on($eventName, $handler, $params);
 ```
-~~~
+
 
 Because of this change, you can now use "global" events. Simply trigger and attach handlers to
 an event of the application instance:
@@ -144,7 +144,7 @@ $content = Yii::$app->view->renderFile($viewFile, $params);
 // $view = new View;
 // $view->renderFile($viewFile, $params);
 ```
-~~~
+
 
 Also, there is no more `CClientScript` in Yii 2.0. The `View` class has taken over its role
 with significant improvements. For more details, please see the "assets" subsection.
@@ -178,7 +178,7 @@ public function scenarios()
     );
 }
 ```
-~~~
+
 
 This method also determines which attributes are safe and which are not. In particular,
 given a scenario, if an attribute appears in the corresponding attribute list in `scenarios()`
@@ -207,7 +207,7 @@ if (isset($_POST['Post'])) {
     $post->attributes = $_POST['Post'];
 }
 ```
-~~~
+
 
 
 Themes
@@ -276,7 +276,7 @@ public function behaviors()
     );
 }
 ```
-~~~
+
 
 
 Assets
@@ -317,7 +317,7 @@ as an `ActiveField` object. Using fields, you can build a form more cleanly than
 	</div>
 <?php $this->endWidget(); ?>
 ```
-~~~
+
 
 
 Query Builder
@@ -337,7 +337,7 @@ $command = $query->createCommand();
 $sql = $command->sql;
 $rows = $command->queryAll();
 ```
-~~~
+
 
 Best of all, such query building methods can be used together with `ActiveRecord`,
 as explained in the next sub-section.
@@ -360,7 +360,7 @@ class Customer extends \yii\db\ActiveRecord
 	}
 }
 ```
-~~~
+
 
 You can use `$customer->orders` to access the customer's orders. You can also
 use `$customer->getOrders()->andWhere('status=1')->all()` to perform on-the-fly
@@ -385,7 +385,7 @@ $customers = Customer::find()
 // return the customer whose PK is 1
 $customer = Customer::find(1);
 ```
-~~~
+
 
 The `find()` method returns an instance of `ActiveQuery` which is a subclass of `Query`.
 Therefore, you can use all query methods of `Query`.
@@ -415,7 +415,7 @@ the database driver being used. For example,
 $command = $connection->createCommand('SELECT [[id]] FROM {{posts}}');
 echo $command->sql;  // MySQL: SELECT `id` FROM `posts`
 ```
-~~~
+
 This feature is especially useful if you are developing an application that supports
 different DBMS.
 
@@ -443,7 +443,7 @@ array(
 	'defaults' => array('page' => 1),
 )
 ```
-~~~
+
 
 
 Response
