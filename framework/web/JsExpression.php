@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\helpers;
+namespace yii\web;
 
 use yii\base\Object;
 
