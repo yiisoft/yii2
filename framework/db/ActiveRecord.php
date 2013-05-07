@@ -123,9 +123,8 @@ class ActiveRecord extends Model
 			// query by primary key
 			$primaryKey = static::primaryKey();
 			if (!empty($primaryKey)) {
-				$query = $query->where(array($primaryKey[0] => $q));
+				return $query->where(array($primaryKey[0] => $q))->one();
 			}
-			return $query->one();
 		}
 		return $query;
 	}
