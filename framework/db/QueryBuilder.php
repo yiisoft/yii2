@@ -777,7 +777,7 @@ class QueryBuilder extends \yii\base\Object
 				$parts[] = $operand;
 			}
 		}
-		if ($parts !== array()) {
+		if (!empty($parts)) {
 			return '(' . implode(") $operator (", $parts) . ')';
 		} else {
 			return '';

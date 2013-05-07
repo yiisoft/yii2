@@ -166,7 +166,7 @@ class Menu extends Widget
 			if ($this->itemCssClass !== null) {
 				$class[] = $this->itemCssClass;
 			}
-			if ($class !== array()) {
+			if (!empty($class)) {
 				if (empty($options['class'])) {
 					$options['class'] = implode(' ', $class);
 				} else {
