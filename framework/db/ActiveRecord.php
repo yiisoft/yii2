@@ -836,24 +836,23 @@ class ActiveRecord extends Model
 	 */
 	public function delete()
 	{
-		if ($this->beforeDelete()) {
-			// we do not check the return value of deleteAll() because it's possible
-			// the record is already deleted in the database and thus the method will return 0
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				$condition[$lock] = $this->$lock;
-			}
-			$rows = $this->deleteAll($condition);
-			if ($lock !== null && !$rows) {
-				throw new StaleObjectException('The object being deleted is outdated.');
-			}
-			$this->_oldAttributes = null;
-			$this->afterDelete();
-			return $rows;
-		} else {
+		if (!$this->beforeDelete()) {
 			return false;
 		}
+		// we do not check the return value of deleteAll() because it's possible
+		// the record is already deleted in the database and thus the method will return 0
+		$condition = $this->getOldPrimaryKey(true);
+		$lock = $this->optimisticLock();
+		if ($lock !== null) {
+			$condition[$lock] = $this->$lock;
+		}
+		$rows = $this->deleteAll($condition);
+		if ($lock !== null && !$rows) {
+			throw new StaleObjectException('The object being deleted is outdated.');
+		}
+		$this->_oldAttributes = null;
+		$this->afterDelete();
+		return $rows;
 	}
 
 	/**
