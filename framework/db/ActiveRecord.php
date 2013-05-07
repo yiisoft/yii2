@@ -17,7 +17,6 @@ use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\Expression;
 use yii\helpers\StringHelper;
-use yii\helpers\base\VarDumper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
