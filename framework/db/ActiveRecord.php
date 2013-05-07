@@ -17,6 +17,7 @@ use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\Expression;
 use yii\helpers\StringHelper;
+use yii\helpers\base\VarDumper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -122,7 +123,10 @@ class ActiveRecord extends Model
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::primaryKey();
-			return $query->where(array($primaryKey[0] => $q))->one();
+			if (empty($primaryKey)) {
+				$query = $query->where(array($primaryKey[0] => $q));
+			}
+			return $query->one();
 		}
 		return $query;
 	}
