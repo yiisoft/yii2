@@ -8,6 +8,7 @@
 
 namespace yii\db;
 
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\InvalidParamException;
 use yii\base\ModelEvent;
@@ -112,6 +113,7 @@ class ActiveRecord extends Model
 	 * @return ActiveQuery|ActiveRecord|null When `$q` is null, a new [[ActiveQuery]] instance
 	 * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
 	 * returned (null will be returned if there is no matching).
+	 * @throws InvalidConfigException if the AR class does not have a primary key
 	 * @see createQuery()
 	 */
 	public static function find($q = null)
@@ -122,7 +124,11 @@ class ActiveRecord extends Model
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::primaryKey();
-			return $query->where(array($primaryKey[0] => $q))->one();
+			if (isset($primaryKey[0])) {
+				return $query->where(array($primaryKey[0] => $q))->one();
+			} else {
+				throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+			}
 		}
 		return $query;
 	}
