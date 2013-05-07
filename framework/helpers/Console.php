@@ -7,9 +7,8 @@
 
 namespace yii\helpers;
 
-// todo test this on all kinds of terminals, especially windows (check out lib ncurses)
-
 /**
+ * TODO adjust phpdoc
  * Console View is the base class for console view components
  *
  * A console view provides functionality to create rich console application by allowing to format output
