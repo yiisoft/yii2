@@ -204,7 +204,7 @@ $model = new Post;
 if ($this->populate($_POST, $model)) {...}
 // which is equivalent to:
 if (isset($_POST['Post'])) {
-    $post->attributes = $_POST['Post'];
+    $model->attributes = $_POST['Post'];
 }
 ```
 
