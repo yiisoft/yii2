@@ -26,7 +26,7 @@ class SmartyViewRenderer extends ViewRenderer
 	/**
 	 * @var string the directory or path alias pointing to where Smarty code is located.
 	 */
-	public $smartyPath = '@app/vendors/Smarty';
+	public $smartyPath = '@yii/vendor/smarty/smarty/distribution/libs';
 
 	/**
 	 * @var string the directory or path alias pointing to where Smarty cache will be stored.
