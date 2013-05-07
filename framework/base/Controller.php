@@ -183,7 +183,7 @@ class Controller extends Component
 			}
 		}
 
-		if ($missing !== array()) {
+		if (!empty($missing)) {
 			throw new InvalidRequestException(Yii::t('yii|Missing required parameters: {params}', array(
 				'{params}' => implode(', ', $missing),
 			)));

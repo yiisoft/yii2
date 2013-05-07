@@ -251,7 +251,7 @@ class Sort extends \yii\base\Object
 					}
 				}
 			}
-			if ($this->_attributeOrders === array() && is_array($this->defaults)) {
+			if (empty($this->_attributeOrders) && is_array($this->defaults)) {
 				$this->_attributeOrders = $this->defaults;
 			}
 		}

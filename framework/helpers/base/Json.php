@@ -34,7 +34,7 @@ class Json
 		$expressions = array();
 		$value = static::processData($value, $expressions);
 		$json = json_encode($value, $options);
-		return $expressions === array() ? $json : strtr($json, $expressions);
+		return empty($expressions) ? $json : strtr($json, $expressions);
 	}
 
 	/**

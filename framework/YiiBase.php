@@ -451,12 +451,12 @@ class YiiBase
 			}
 			$args = func_get_args();
 			array_shift($args); // remove $config
-			if ($config !== array()) {
+			if (!empty($config)) {
 				$args[] = $config;
 			}
 			return $reflection->newInstanceArgs($args);
 		} else {
-			return $config === array() ? new $class : new $class($config);
+			return empty($config) ? new $class : new $class($config);
 		}
 	}
 

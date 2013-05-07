@@ -51,7 +51,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function __construct($data = array(), $config = array())
 	{
-		if ($data !== array()) {
+		if (!empty($data)) {
 			$this->copyFrom($data);
 		}
 		parent::__construct($config);
@@ -187,7 +187,7 @@ class Dictionary extends Object implements \IteratorAggregate, \ArrayAccess, \Co
 	public function copyFrom($data)
 	{
 		if (is_array($data) || $data instanceof \Traversable) {
-			if ($this->_d !== array()) {
+			if (!empty($this->_d)) {
 				$this->removeAll();
 			}
 			if ($data instanceof self) {

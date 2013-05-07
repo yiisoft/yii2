@@ -103,7 +103,7 @@ class ActiveQuery extends Query
 	{
 		$command = $this->createCommand();
 		$rows = $command->queryAll();
-		if ($rows !== array()) {
+		if (!empty($rows)) {
 			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
 				$this->populateRelations($models, $this->with);

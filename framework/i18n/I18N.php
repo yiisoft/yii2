@@ -109,7 +109,7 @@ class I18N extends Component
 			unset($params[0]);
 		}
 
-		return $params === array() ? $message : strtr($message, $params);
+		return empty($params) ? $message : strtr($message, $params);
 	}
 
 	/**
