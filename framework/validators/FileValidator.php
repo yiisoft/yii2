@@ -116,7 +116,7 @@ class FileValidator extends Validator
 		}
 		if (!is_array($this->types)) {
 			$this->types = preg_split('/[\s,]+/', strtolower($this->types), -1, PREG_SPLIT_NO_EMPTY);
-		}		
+		}
 	}
 
 	/**
@@ -138,8 +138,8 @@ class FileValidator extends Validator
 				}
 			}
 			$object->$attribute = array_values($files);
-			if ($files === array()) {
-				$this->addError($object, $attribute, $this->uploadRequired);				
+			if (empty($files)) {
+				$this->addError($object, $attribute, $this->uploadRequired);
 			}
 			if (count($files) > $this->maxFiles) {
 				$this->addError($object, $attribute, $this->tooMany, array('{attribute}' => $attribute, '{limit}' => $this->maxFiles));
@@ -153,7 +153,7 @@ class FileValidator extends Validator
 			if ($file instanceof UploadedFile && $file->getError() != UPLOAD_ERR_NO_FILE) {
 				$this->validateFile($object, $attribute, $file);
 			} else {
-				$this->addError($object, $attribute, $this->uploadRequired);				
+				$this->addError($object, $attribute, $this->uploadRequired);
 			}
 		}
 	}

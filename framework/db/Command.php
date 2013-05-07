@@ -106,7 +106,7 @@ class Command extends \yii\base\Component
 	 */
 	public function getRawSql()
 	{
-		if ($this->_params === array()) {
+		if (empty($this->_params)) {
 			return $this->_sql;
 		} else {
 			$params = array();

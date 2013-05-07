@@ -90,7 +90,7 @@ class UrlManager extends Component
 	 */
 	protected function compileRules()
 	{
-		if (!$this->enablePrettyUrl || $this->rules === array()) {
+		if (!$this->enablePrettyUrl || empty($this->rules)) {
 			return;
 		}
 		if (is_string($this->cache)) {

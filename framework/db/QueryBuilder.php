@@ -722,7 +722,7 @@ class QueryBuilder extends \yii\base\Object
 
 		if (!is_array($condition)) {
 			return (string)$condition;
-		} elseif ($condition === array()) {
+		} elseif (empty($condition)) {
 			return '';
 		}
 		if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
@@ -813,7 +813,7 @@ class QueryBuilder extends \yii\base\Object
 
 		$values = (array)$values;
 
-		if ($values === array() || $column === array()) {
+		if (empty($values) || empty($column)) {
 			return $operator === 'IN' ? '0=1' : '';
 		}
 
@@ -885,7 +885,7 @@ class QueryBuilder extends \yii\base\Object
 
 		$values = (array)$values;
 
-		if ($values === array()) {
+		if (empty($values)) {
 			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
 		}
 

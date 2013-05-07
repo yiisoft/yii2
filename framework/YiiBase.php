@@ -456,7 +456,7 @@ class YiiBase
 			}
 			return $reflection->newInstanceArgs($args);
 		} else {
-			return $config === array() ? new $class : new $class($config);
+			return empty($config) ? new $class : new $class($config);
 		}
 	}
 
