@@ -13,13 +13,13 @@ namespace yii\helpers;
  * Basic usage is the following:
  *
  * ```php
- * $my_html = Markdown::process($my_text);
+ * $myHtml = Markdown::process($myText);
  * ```
  *
  * If you want to configure the parser:
  *
  * ```php
- * $my_html = Markdown::process($my_text, array(
+ * $myHtml = Markdown::process($myText, array(
  *     'fn_id_prefix' => 'footnote_',
  * ));
  * ```
