@@ -152,7 +152,7 @@ class ActiveField extends Component
 			$options['enableAjaxValidation'] = 1;
 		}
 
-		if ($enableClientValidation || $enableAjaxValidation) {
+		if ($enableClientValidation && !empty($options['validate']) || $enableAjaxValidation) {
 			$inputID = Html::getInputId($this->model, $this->attribute);
 			$options['name'] = $inputID;
 			$names = array(

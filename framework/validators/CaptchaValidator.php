@@ -21,6 +21,7 @@ use yii\helpers\Html;
  */
 class CaptchaValidator extends Validator
 {
+	public $skipOnEmpty = false;
 	/**
 	 * @var boolean whether the comparison is case sensitive. Defaults to false.
 	 */
@@ -70,7 +71,7 @@ class CaptchaValidator extends Validator
 	/**
 	 * Returns the CAPTCHA action object.
 	 * @throws InvalidConfigException
-	 * @return CaptchaAction the action object
+	 * @return \yii\web\CaptchaAction the action object
 	 */
 	public function getCaptchaAction()
 	{
