@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
+use yii\helpers\Console;
 
 /**
  * Controller is the base class of console command classes.
@@ -33,6 +34,12 @@ class Controller extends \yii\base\Controller
 	 * If false, [[confirm()]] will always return true no matter what user enters or not.
 	 */
 	public $interactive = true;
+
+	/**
+	 * @var bool whether to enable ANSI style in output. If not set it will be auto detected.
+	 * Default is disabled on Windows systems and enabled on linux.
+	 */
+	public $ansi;
 
 	/**
 	 * Runs an action with the specified action ID and parameters.
@@ -115,6 +122,136 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
+	 * Formats a string with ANSI codes
+	 *
+	 * You may pass additional parameters using the constants defined in [[yii\helpers\base\Console]].
+	 *
+	 * Example:
+	 * ~~~
+	 * $this->formatString('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
+	 * ~~~
+	 *
+	 * @param string $string the string to be formatted
+	 * @return string
+	 */
+	public function formatString($string)
+	{
+		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDOUT)) {
+			$args = func_get_args();
+			array_shift($args);
+			$string = Console::ansiFormat($string, $args);
+		}
+		return $string;
+	}
+
+	/**
+	 * Prints a string to STDOUT
+	 *
+	 * You may optionally format the string with ANSI codes by
+	 * passing additional parameters using the constants defined in [[yii\helpers\base\Console]].
+	 *
+	 * Example:
+	 * ~~~
+	 * $this->stdout('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
+	 * ~~~
+	 *
+	 * @param string $string the string to print
+	 * @return int|boolean Number of bytes printed or false on error
+	 */
+	public function stdout($string)
+	{
+		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDOUT)) {
+			$args = func_get_args();
+			array_shift($args);
+			$string = Console::ansiFormat($string, $args);
+		}
+		return Console::stdout($string);
+	}
+
+	/**
+	 * Prints a string to STDERR
+	 *
+	 * You may optionally format the string with ANSI codes by
+	 * passing additional parameters using the constants defined in [[yii\helpers\base\Console]].
+	 *
+	 * Example:
+	 * ~~~
+	 * $this->stderr('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
+	 * ~~~
+	 *
+	 * @param string $string the string to print
+	 * @return int|boolean Number of bytes printed or false on error
+	 */
+	public function stderr($string)
+	{
+		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDERR)) {
+			$args = func_get_args();
+			array_shift($args);
+			$string = Console::ansiFormat($string, $args);
+		}
+		return fwrite(STDERR, $string);
+	}
+
+	/**
+	 * Asks the user for input. Ends when the user types a carriage return (PHP_EOL). Optionally, It also provides a
+	 * prompt.
+	 *
+	 * @param string $prompt the prompt (optional)
+	 * @return string the user's input
+	 */
+	public function input($prompt = null)
+	{
+		if (isset($prompt)) {
+			static::stdout($prompt);
+		}
+		return static::stdin();
+	}
+
+	/**
+	 * Prints text to STDOUT appended with a carriage return (PHP_EOL).
+	 *
+	 * @param string $text
+	 * @param bool $raw
+	 *
+	 * @return mixed Number of bytes printed or bool false on error
+	 */
+	public function output($text = null)
+	{
+		return static::stdout($text . PHP_EOL);
+	}
+
+	/**
+	 * Prints text to STDERR appended with a carriage return (PHP_EOL).
+	 *
+	 * @param string $text
+	 * @param bool   $raw
+	 *
+	 * @return mixed Number of bytes printed or false on error
+	 */
+	public function error($text = null)
+	{
+		return static::stderr($text . PHP_EOL);
+	}
+
+	/**
+	 * Prompts the user for input and validates it
+	 *
+	 * @param string $text prompt string
+	 * @param array $options the options to validate the input:
+	 *  - required: whether it is required or not
+	 *  - default: default value if no input is inserted by the user
+	 *  - pattern: regular expression pattern to validate user input
+	 *  - validator: a callable function to validate input. The function must accept two parameters:
+	 *      - $input: the user input to validate
+	 *      - $error: the error value passed by reference if validation failed.
+	 * @return string the user input
+	 */
+	public function prompt($text, $options = array())
+	{
+		return Console::prompt($text, $options);
+	}
+
+	/**
 	 * Asks user to confirm by typing y or n.
 	 *
 	 * @param string $message to echo out before waiting for user input
@@ -124,12 +261,24 @@ class Controller extends \yii\base\Controller
 	public function confirm($message, $default = false)
 	{
 		if ($this->interactive) {
-			echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
-			$input = trim(fgets(STDIN));
-			return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+			return Console::confirm($message, $default);
 		} else {
 			return true;
 		}
+	}
+
+	/**
+	 * Gives the user an option to choose from. Giving '?' as an input will show
+	 * a list of options to choose from and their explanations.
+	 *
+	 * @param string $prompt the prompt message
+	 * @param array  $options Key-value array of options to choose from
+	 *
+	 * @return string An option character the user chose
+	 */
+	public static function select($prompt, $options = array())
+	{
+		return Console::select($prompt, $options);
 	}
 
 	/**

@@ -16,6 +16,12 @@ namespace yii\helpers\base;
  * A console view provides functionality to create rich console application by allowing to format output
  * by adding color and font style to it.
  *
+ * The following constants are available for formatting:
+ *
+ * TODO document constants
+ *
+ *
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
@@ -234,28 +240,47 @@ class Console
 	}
 
 	/**
-	 * Will send ANSI format for following output
+	 * Sets the ANSI format for any text that is printed afterwards.
 	 *
-	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also xterm256ColorBg
+	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xterm256ColorFg]] and [[xterm256ColorBg]].
 	 * TODO: documentation
 	 */
-	public static function ansiStyle()
+	public static function ansiFormatBegin()
 	{
 		echo "\033[" . implode(';', func_get_args()) . 'm';
 	}
 
 	/**
+	 * Resets any ANSI format set by previous method [[ansiFormatBegin()]]
+	 * Any output after this is will have default text style.
+	 */
+	public static function ansiFormatReset()
+	{
+		echo "\033[0m";
+	}
+
+	/**
+	 * Returns the ANSI format code.
+	 *
+	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xterm256ColorFg]] and [[xterm256ColorBg]].
+	 * TODO: documentation
+	 */
+	public static function ansiFormatCode($format)
+	{
+		return "\033[" . implode(';', $format) . 'm';
+	}
+
+	/**
 	 * Will return a string formatted with the given ANSI style
 	 *
-	 * See {@link ansiStyle} for possible arguments.
 	 * @param string $string the string to be formatted
+	 * @param array $format array containing formatting values.
+	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xterm256ColorFg]] and [[xterm256ColorBg]].
 	 * @return string
 	 */
-	public static function ansiStyleString($string)
+	public static function ansiFormat($string, $format=array())
 	{
-		$args = func_get_args();
-		array_shift($args);
-		$code = implode(';', $args);
+		$code = implode(';', $format);
 		return "\033[0m" . ($code !== '' ? "\033[" . $code . "m" : '') . $string . "\033[0m";
 	}
 
@@ -271,32 +296,12 @@ class Console
 	}
 
 	/**
-	 * Usage: list($w, $h) = ConsoleHelper::getScreenSize();
-	 *
-	 * @return array
-	 */
-	public static function getScreenSize()
-	{
-		// TODO implement
-		return array(150, 50);
-	}
-
-	/**
-	 * resets any ansi style set by previous method {@link ansiStyle}
-	 * Any output after this is will have default text style.
-	 */
-	public static function reset()
-	{
-		echo "\033[0m";
-	}
-
-	/**
 	 * Strips ANSI control codes from a string
 	 *
 	 * @param string $string String to strip
 	 * @return string
 	 */
-	public static function strip($string)
+	public static function stripAnsiFormat($string)
 	{
 		return preg_replace('/\033\[[\d;]+m/', '', $string); // TODO currently only strips color
 	}
@@ -407,56 +412,9 @@ class Console
 		);
 	}
 
-	/**
-	 *
-	 * Returns an ANSI-Controlcode
-	 *
-	 * Takes 1 to 3 Arguments: either 1 to 3 strings containing the name of the
-	 * FG Color, style and BG color, or one array with the indices color, style
-	 * or background.
-	 *
-	 * @param mixed  $color      Optional.
-	 *                           Either a string with the name of the foreground
-	 *                           color, or an array with the indices 'color',
-	 *                           'style', 'background' and corresponding names as
-	 *                           values.
-	 * @param string $style      Optional name of the style
-	 * @param string $background Optional name of the background color
-	 *
-	 * @return string
-	 */
-	public function color($color = null, $style = null, $background = null) // {{{
+	public function markdownToAnsi()
 	{
-		$colors = static::getColorCodes();
-
-		if (is_array($color)) {
-			$style      = isset($color['style']) ? $color['style'] : null;
-			$background = isset($color['background']) ? $color['background'] : null;
-			$color      = isset($color['color']) ? $color['color'] : null;
-		}
-
-		if ($color == 'reset') {
-			return "\033[0m";
-		}
-
-		$code = array();
-		if (isset($style)) {
-			$code[] = $colors['style'][$style];
-		}
-
-		if (isset($color)) {
-			$code[] = $colors['color'][$color];
-		}
-
-		if (isset($background)) {
-			$code[] = $colors['background'][$background];
-		}
-
-		if (empty($code)) {
-			$code[] = 0;
-		}
-		$code = implode(';', $code);
-		return "\033[{$code}m";
+		// TODO implement
 	}
 
 	/**
@@ -497,44 +455,40 @@ class Console
 	 */
 	public static function renderColoredString($string, $colored = true)
 	{
-		static $conversions = array( // static so the array doesn't get built
-			// everytime
-			// %y - yellow, and so on... {{{
-			'%y' => array('color' => 'yellow'),
-			'%g' => array('color' => 'green'),
-			'%b' => array('color' => 'blue'),
-			'%r' => array('color' => 'red'),
-			'%p' => array('color' => 'purple'),
-			'%m' => array('color' => 'purple'),
-			'%c' => array('color' => 'cyan'),
-			'%w' => array('color' => 'grey'),
-			'%k' => array('color' => 'black'),
-			'%n' => array('color' => 'reset'),
-			'%Y' => array('color' => 'yellow', 'style' => 'light'),
-			'%G' => array('color' => 'green', 'style' => 'light'),
-			'%B' => array('color' => 'blue', 'style' => 'light'),
-			'%R' => array('color' => 'red', 'style' => 'light'),
-			'%P' => array('color' => 'purple', 'style' => 'light'),
-			'%M' => array('color' => 'purple', 'style' => 'light'),
-			'%C' => array('color' => 'cyan', 'style' => 'light'),
-			'%W' => array('color' => 'grey', 'style' => 'light'),
-			'%K' => array('color' => 'black', 'style' => 'light'),
-			'%N' => array('color' => 'reset', 'style' => 'light'),
-			'%3' => array('background' => 'yellow'),
-			'%2' => array('background' => 'green'),
-			'%4' => array('background' => 'blue'),
-			'%1' => array('background' => 'red'),
-			'%5' => array('background' => 'purple'),
-			'%6' => array('background' => 'cyan'),
-			'%7' => array('background' => 'grey'),
-			'%0' => array('background' => 'black'),
-			// Don't use this, I can't stand flashing text
-			'%F' => array('style' => 'blink'),
-			'%U' => array('style' => 'underline'),
-			'%8' => array('style' => 'inverse'),
-			'%9' => array('style' => 'bold'),
-			'%_' => array('style' => 'bold')
-			// }}}
+		static $conversions = array(
+			'%y' => array(static::FG_YELLOW),
+			'%g' => array(static::FG_GREEN),
+			'%b' => array(static::FG_BLUE),
+			'%r' => array(static::FG_RED),
+			'%p' => array(static::FG_PURPLE),
+			'%m' => array(static::FG_PURPLE),
+			'%c' => array(static::FG_CYAN),
+			'%w' => array(static::FG_GREY),
+			'%k' => array(static::FG_BLACK),
+			'%n' => array(0), // reset
+			'%Y' => array(static::FG_YELLOW, static::BOLD),
+			'%G' => array(static::FG_GREEN, static::BOLD),
+			'%B' => array(static::FG_BLUE, static::BOLD),
+			'%R' => array(static::FG_RED, static::BOLD),
+			'%P' => array(static::FG_PURPLE, static::BOLD),
+			'%M' => array(static::FG_PURPLE, static::BOLD),
+			'%C' => array(static::FG_CYAN, static::BOLD),
+			'%W' => array(static::FG_GREY, static::BOLD),
+			'%K' => array(static::FG_BLACK, static::BOLD),
+			'%N' => array(0, static::BOLD),
+			'%3' => array(static::BG_YELLOW),
+			'%2' => array(static::BG_GREEN),
+			'%4' => array(static::BG_BLUE),
+			'%1' => array(static::BG_RED),
+			'%5' => array(static::BG_PURPLE),
+			'%6' => array(static::BG_PURPLE),
+			'%7' => array(static::BG_CYAN),
+			'%0' => array(static::BG_GREY),
+			'%F' => array(static::BLINK),
+			'%U' => array(static::UNDERLINE),
+			'%8' => array(static::NEGATIVE),
+			'%9' => array(static::BOLD),
+			'%_' => array(static::BOLD)
 		);
 
 		if ($colored) {
@@ -542,70 +496,25 @@ class Console
 			foreach ($conversions as $key => $value) {
 				$string = str_replace(
 					$key,
-					static::color($value),
+					static::ansiFormatCode($value),
 					$string
 				);
 			}
 			$string = str_replace('% ', '%', $string);
-
 		} else {
 			$string = preg_replace('/%((%)|.)/', '$2', $string);
 		}
-
 		return $string;
 	}
 
 	/**
-	 * Returns the different foreground and background color codes and styles available.
-	 * @return array the color codes
-	 */
-	public static function getColorCodes()
-	{
-		return array(
-			'color'      => array(
-				'black'  => static::FG_BLACK,
-				'red'    => static::FG_RED,
-				'green'  => static::FG_GREEN,
-				'yellow' => static::FG_YELLOW,
-				'blue'   => static::FG_BLUE,
-				'purple' => static::FG_PURPLE,
-				'cyan'   => static::FG_CYAN,
-				'grey'   => static::FG_GREY,
-			),
-			'style'      => array(
-				'normal'      => static::NORMAL,
-				'bold'        => static::BOLD,
-				'italic'      => static::ITALIC,
-				'underline'   => static::UNDERLINE,
-				'blink'       => static::BLINK,
-				'negative'    => static::NEGATIVE,
-				'concealed'   => static::CONCEALED,
-				'crossed_out' => static::CROSSED_OUT,
-				'framed'      => static::FRAMED,
-				'encircled'   => static::ENCIRCLED,
-				'overlined'   => static::OVERLINED
-			),
-			'background' => array(
-				'black'  => static::BG_BLACK,
-				'red'    => static::BG_RED,
-				'green'  => static::BG_RED,
-				'yellow' => static::BG_YELLOW,
-				'blue'   => static::BG_BLUE,
-				'purple' => static::BG_PURPLE,
-				'cyan'   => static::BG_CYAN,
-				'grey'   => static::BG_GREY
-			)
-		);
-	}
-
-	/**
-	 * Escapes % so they don't get interpreted as color codes
-	 *
-	 * @param string $string String to escape
-	 *
-	 * @access public
-	 * @return string
-	 */
+	* Escapes % so they don't get interpreted as color codes
+	*
+	* @param string $string String to escape
+	*
+	* @access public
+	* @return string
+	*/
 	public static function escape($string)
 	{
 		return str_replace('%', '%%', $string);
@@ -637,10 +546,20 @@ class Console
 	}
 
 	/**
+	 * Usage: list($w, $h) = ConsoleHelper::getScreenSize();
+	 *
+	 * @return array
+	 */
+	public static function getScreenSize()
+	{
+		// TODO implement
+		return array(150, 50);
+	}
+
+	/**
 	 * Gets input from STDIN and returns a string right-trimmed for EOLs.
 	 *
 	 * @param bool $raw If set to true, returns the raw string without trimming
-	 *
 	 * @return string
 	 */
 	public static function stdin($raw = false)
@@ -649,54 +568,25 @@ class Console
 	}
 
 	/**
-	 * Prints text to STDOUT.
+	 * Prints a string to STDOUT.
 	 *
-	 * @param string $text
-	 * @param bool   $raw
-	 *
-	 * @return int|false Number of bytes printed or false on error
+	 * @param string $string the string to print
+	 * @return int|boolean Number of bytes printed or false on error
 	 */
-	public static function stdout($text, $raw = false)
+	public static function stdout($string)
 	{
-		if ($raw) {
-			return fwrite(STDOUT, $text);
-		} elseif (static::streamSupportsAnsiColors(STDOUT)) {
-			return fwrite(STDOUT, static::renderColoredString($text));
-		} else {
-			return fwrite(STDOUT, static::renderColoredString($text, false));
-		}
+		return fwrite(STDOUT, $string);
 	}
 
 	/**
-	 * Prints text to STDERR.
+	 * Prints a string to STDERR.
 	 *
-	 * @param string $text
-	 * @param bool   $raw
-	 *
-	 * @return mixed Number of bytes printed or bool false on error.
+	 * @param string $string the string to print
+	 * @return int|boolean Number of bytes printed or false on error
 	 */
-	public static function stderr($text, $raw = false)
+	public static function stderr($string)
 	{
-		if ($raw) {
-			return fwrite(STDERR, $text);
-		} elseif (static::streamSupportsAnsiColors(STDERR)) {
-			return fwrite(STDERR, static::renderColoredString($text));
-		} else {
-			return fwrite(STDERR, static::renderColoredString($text, false));
-		}
-	}
-
-	/**
-	 * Prints text to STDERR appended with a carriage return (PHP_EOL).
-	 *
-	 * @param string $text
-	 * @param bool   $raw
-	 *
-	 * @return mixed Number of bytes printed or false on error
-	 */
-	public static function error($text = null, $raw = false)
-	{
-		return static::stderr($text . PHP_EOL, $raw);
+		return fwrite(STDERR, $string);
 	}
 
 	/**
@@ -722,9 +612,22 @@ class Console
 	 *
 	 * @return mixed Number of bytes printed or bool false on error
 	 */
-	public static function output($text = null, $raw = false)
+	public static function output($text = null)
 	{
-		return static::stdout($text . PHP_EOL, $raw);
+		return static::stdout($text . PHP_EOL);
+	}
+
+	/**
+	 * Prints text to STDERR appended with a carriage return (PHP_EOL).
+	 *
+	 * @param string $text
+	 * @param bool   $raw
+	 *
+	 * @return mixed Number of bytes printed or false on error
+	 */
+	public static function error($text = null)
+	{
+		return static::stderr($text . PHP_EOL);
 	}
 
 	/**
@@ -780,21 +683,17 @@ class Console
 	}
 
 	/**
-	 * Asks the user for a simple yes/no confirmation.
+	 * Asks user to confirm by typing y or n.
 	 *
-	 * @param string $prompt the prompt string
-	 *
-	 * @return bool true or false according to user input.
+	 * @param string $message to echo out before waiting for user input
+	 * @param boolean $default this value is returned if no selection is made.
+	 * @return boolean whether user confirmed
 	 */
-	public static function confirm($prompt)
+	public static function confirm($message, $default = true)
 	{
-		top:
-		$input = strtolower(static::input("$prompt [y/n]: "));
-		if (!in_array(substr($input, 0, 1), array('y', 'n'))) {
-			static::output("Please, type 'y' or 'n'");
-			goto top;
-		}
-		return $input === 'y' ? true : false;
+		echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
+		$input = trim(static::stdin());
+		return empty($input) ? $default : !strncasecmp($input, 'y', 1);
 	}
 
 	/**
@@ -826,9 +725,9 @@ class Console
 	/**
 	 * Displays and updates a simple progress bar on screen.
 	 *
-	 * @param $done the number of items that are completed
-	 * @param $total the total value of items that are to be done
-	 * @param int $size the size of the status bar (optional)
+	 * @param integer $done the number of items that are completed
+	 * @param integer $total the total value of items that are to be done
+	 * @param integer $size the size of the status bar (optional)
 	 * @see http://snipplr.com/view/29548/
 	 */
 	public static function showProgress($done, $total, $size = 30)
