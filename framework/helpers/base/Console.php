@@ -316,76 +316,76 @@ class Console
 				$styleA = array();
 				foreach (explode(';', $ansi) as $controlCode) {
 					switch ($controlCode) {
-						case self::FG_BLACK:
+						case static::FG_BLACK:
 							$style = array('color' => '#000000');
 							break;
-						case self::FG_BLUE:
+						case static::FG_BLUE:
 							$style = array('color' => '#000078');
 							break;
-						case self::FG_CYAN:
+						case static::FG_CYAN:
 							$style = array('color' => '#007878');
 							break;
-						case self::FG_GREEN:
+						case static::FG_GREEN:
 							$style = array('color' => '#007800');
 							break;
-						case self::FG_GREY:
+						case static::FG_GREY:
 							$style = array('color' => '#787878');
 							break;
-						case self::FG_PURPLE:
+						case static::FG_PURPLE:
 							$style = array('color' => '#780078');
 							break;
-						case self::FG_RED:
+						case static::FG_RED:
 							$style = array('color' => '#780000');
 							break;
-						case self::FG_YELLOW:
+						case static::FG_YELLOW:
 							$style = array('color' => '#787800');
 							break;
-						case self::BG_BLACK:
+						case static::BG_BLACK:
 							$style = array('background-color' => '#000000');
 							break;
-						case self::BG_BLUE:
+						case static::BG_BLUE:
 							$style = array('background-color' => '#000078');
 							break;
-						case self::BG_CYAN:
+						case static::BG_CYAN:
 							$style = array('background-color' => '#007878');
 							break;
-						case self::BG_GREEN:
+						case static::BG_GREEN:
 							$style = array('background-color' => '#007800');
 							break;
-						case self::BG_GREY:
+						case static::BG_GREY:
 							$style = array('background-color' => '#787878');
 							break;
-						case self::BG_PURPLE:
+						case static::BG_PURPLE:
 							$style = array('background-color' => '#780078');
 							break;
-						case self::BG_RED:
+						case static::BG_RED:
 							$style = array('background-color' => '#780000');
 							break;
-						case self::BG_YELLOW:
+						case static::BG_YELLOW:
 							$style = array('background-color' => '#787800');
 							break;
-						case self::BOLD:
+						case static::BOLD:
 							$style = array('font-weight' => 'bold');
 							break;
-						case self::ITALIC:
+						case static::ITALIC:
 							$style = array('font-style' => 'italic');
 							break;
-						case self::UNDERLINE:
+						case static::UNDERLINE:
 							$style = array('text-decoration' => array('underline'));
 							break;
-						case self::OVERLINED:
+						case static::OVERLINED:
 							$style = array('text-decoration' => array('overline'));
 							break;
-						case self::CROSSED_OUT:
+						case static::CROSSED_OUT:
 							$style = array('text-decoration' => array('line-through'));
 							break;
-						case self::BLINK:
+						case static::BLINK:
 							$style = array('text-decoration' => array('blink'));
 							break;
-						case self::NEGATIVE: // ???
-						case self::CONCEALED:
-						case self::ENCIRCLED:
-						case self::FRAMED:
+						case static::NEGATIVE: // ???
+						case static::CONCEALED:
+						case static::ENCIRCLED:
+						case static::FRAMED:
 							// TODO allow resetting codes
 							break;
 						case 0: // ansi reset
