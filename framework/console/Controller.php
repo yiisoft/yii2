@@ -128,13 +128,13 @@ class Controller extends \yii\base\Controller
 	 *
 	 * Example:
 	 * ~~~
-	 * $this->formatString('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
+	 * $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
 	 * ~~~
 	 *
 	 * @param string $string the string to be formatted
 	 * @return string
 	 */
-	public function formatString($string)
+	public function ansiFormat($string)
 	{
 		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDOUT)) {
 			$args = func_get_args();
@@ -202,9 +202,9 @@ class Controller extends \yii\base\Controller
 	public function input($prompt = null)
 	{
 		if (isset($prompt)) {
-			static::stdout($prompt);
+			$this->stdout($prompt);
 		}
-		return static::stdin();
+		return Console::stdin();
 	}
 
 	/**
@@ -217,7 +217,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function output($text = null)
 	{
-		return static::stdout($text . PHP_EOL);
+		return $this->stdout($text . PHP_EOL);
 	}
 
 	/**
@@ -230,7 +230,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function error($text = null)
 	{
-		return static::stderr($text . PHP_EOL);
+		return $this->stderr($text . PHP_EOL);
 	}
 
 	/**
@@ -276,7 +276,7 @@ class Controller extends \yii\base\Controller
 	 *
 	 * @return string An option character the user chose
 	 */
-	public static function select($prompt, $options = array())
+	public function select($prompt, $options = array())
 	{
 		return Console::select($prompt, $options);
 	}
