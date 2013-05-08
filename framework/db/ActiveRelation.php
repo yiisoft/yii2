@@ -131,7 +131,7 @@ class ActiveRelation extends ActiveQuery
 
 	/**
 	 * Finds the related records and populates them into the primary models.
-	 * This method is internally by [[ActiveQuery]]. Do not call it directly.
+	 * This method is internally used by [[ActiveQuery]]. Do not call it directly.
 	 * @param string $name the relation name
 	 * @param array $primaryModels primary models
 	 * @return array the related models
