@@ -28,7 +28,7 @@ use yii\helpers\StringHelper;
  * @property TableSchema $tableSchema the schema information of the DB table associated with this AR class.
  * @property array $oldAttributes the old attribute values (name-value pairs).
  * @property array $dirtyAttributes the changed attribute values (name-value pairs).
- * @property boolean $isPrimaryKey whether the record is new and should be inserted when calling [[save()]].
+ * @property boolean $isNewRecord whether the record is new and should be inserted when calling [[save()]].
  * @property mixed $primaryKey the primary key value.
  * @property mixed $oldPrimaryKey the old primary key value.
  *
