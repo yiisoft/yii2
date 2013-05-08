@@ -316,76 +316,76 @@ class Console
 				$styleA = array();
 				foreach (explode(';', $ansi) as $controlCode) {
 					switch ($controlCode) {
-						case static::FG_BLACK:
+						case self::FG_BLACK:
 							$style = array('color' => '#000000');
 							break;
-						case static::FG_BLUE:
+						case self::FG_BLUE:
 							$style = array('color' => '#000078');
 							break;
-						case static::FG_CYAN:
+						case self::FG_CYAN:
 							$style = array('color' => '#007878');
 							break;
-						case static::FG_GREEN:
+						case self::FG_GREEN:
 							$style = array('color' => '#007800');
 							break;
-						case static::FG_GREY:
+						case self::FG_GREY:
 							$style = array('color' => '#787878');
 							break;
-						case static::FG_PURPLE:
+						case self::FG_PURPLE:
 							$style = array('color' => '#780078');
 							break;
-						case static::FG_RED:
+						case self::FG_RED:
 							$style = array('color' => '#780000');
 							break;
-						case static::FG_YELLOW:
+						case self::FG_YELLOW:
 							$style = array('color' => '#787800');
 							break;
-						case static::BG_BLACK:
+						case self::BG_BLACK:
 							$style = array('background-color' => '#000000');
 							break;
-						case static::BG_BLUE:
+						case self::BG_BLUE:
 							$style = array('background-color' => '#000078');
 							break;
-						case static::BG_CYAN:
+						case self::BG_CYAN:
 							$style = array('background-color' => '#007878');
 							break;
-						case static::BG_GREEN:
+						case self::BG_GREEN:
 							$style = array('background-color' => '#007800');
 							break;
-						case static::BG_GREY:
+						case self::BG_GREY:
 							$style = array('background-color' => '#787878');
 							break;
-						case static::BG_PURPLE:
+						case self::BG_PURPLE:
 							$style = array('background-color' => '#780078');
 							break;
-						case static::BG_RED:
+						case self::BG_RED:
 							$style = array('background-color' => '#780000');
 							break;
-						case static::BG_YELLOW:
+						case self::BG_YELLOW:
 							$style = array('background-color' => '#787800');
 							break;
-						case static::BOLD:
+						case self::BOLD:
 							$style = array('font-weight' => 'bold');
 							break;
-						case static::ITALIC:
+						case self::ITALIC:
 							$style = array('font-style' => 'italic');
 							break;
-						case static::UNDERLINE:
+						case self::UNDERLINE:
 							$style = array('text-decoration' => array('underline'));
 							break;
-						case static::OVERLINED:
+						case self::OVERLINED:
 							$style = array('text-decoration' => array('overline'));
 							break;
-						case static::CROSSED_OUT:
+						case self::CROSSED_OUT:
 							$style = array('text-decoration' => array('line-through'));
 							break;
-						case static::BLINK:
+						case self::BLINK:
 							$style = array('text-decoration' => array('blink'));
 							break;
-						case static::NEGATIVE: // ???
-						case static::CONCEALED:
-						case static::ENCIRCLED:
-						case static::FRAMED:
+						case self::NEGATIVE: // ???
+						case self::CONCEALED:
+						case self::ENCIRCLED:
+						case self::FRAMED:
 							// TODO allow resetting codes
 							break;
 						case 0: // ansi reset
@@ -456,39 +456,39 @@ class Console
 	public static function renderColoredString($string, $colored = true)
 	{
 		static $conversions = array(
-			'%y' => array(static::FG_YELLOW),
-			'%g' => array(static::FG_GREEN),
-			'%b' => array(static::FG_BLUE),
-			'%r' => array(static::FG_RED),
-			'%p' => array(static::FG_PURPLE),
-			'%m' => array(static::FG_PURPLE),
-			'%c' => array(static::FG_CYAN),
-			'%w' => array(static::FG_GREY),
-			'%k' => array(static::FG_BLACK),
+			'%y' => array(self::FG_YELLOW),
+			'%g' => array(self::FG_GREEN),
+			'%b' => array(self::FG_BLUE),
+			'%r' => array(self::FG_RED),
+			'%p' => array(self::FG_PURPLE),
+			'%m' => array(self::FG_PURPLE),
+			'%c' => array(self::FG_CYAN),
+			'%w' => array(self::FG_GREY),
+			'%k' => array(self::FG_BLACK),
 			'%n' => array(0), // reset
-			'%Y' => array(static::FG_YELLOW, static::BOLD),
-			'%G' => array(static::FG_GREEN, static::BOLD),
-			'%B' => array(static::FG_BLUE, static::BOLD),
-			'%R' => array(static::FG_RED, static::BOLD),
-			'%P' => array(static::FG_PURPLE, static::BOLD),
-			'%M' => array(static::FG_PURPLE, static::BOLD),
-			'%C' => array(static::FG_CYAN, static::BOLD),
-			'%W' => array(static::FG_GREY, static::BOLD),
-			'%K' => array(static::FG_BLACK, static::BOLD),
-			'%N' => array(0, static::BOLD),
-			'%3' => array(static::BG_YELLOW),
-			'%2' => array(static::BG_GREEN),
-			'%4' => array(static::BG_BLUE),
-			'%1' => array(static::BG_RED),
-			'%5' => array(static::BG_PURPLE),
-			'%6' => array(static::BG_PURPLE),
-			'%7' => array(static::BG_CYAN),
-			'%0' => array(static::BG_GREY),
-			'%F' => array(static::BLINK),
-			'%U' => array(static::UNDERLINE),
-			'%8' => array(static::NEGATIVE),
-			'%9' => array(static::BOLD),
-			'%_' => array(static::BOLD)
+			'%Y' => array(self::FG_YELLOW, self::BOLD),
+			'%G' => array(self::FG_GREEN, self::BOLD),
+			'%B' => array(self::FG_BLUE, self::BOLD),
+			'%R' => array(self::FG_RED, self::BOLD),
+			'%P' => array(self::FG_PURPLE, self::BOLD),
+			'%M' => array(self::FG_PURPLE, self::BOLD),
+			'%C' => array(self::FG_CYAN, self::BOLD),
+			'%W' => array(self::FG_GREY, self::BOLD),
+			'%K' => array(self::FG_BLACK, self::BOLD),
+			'%N' => array(0, self::BOLD),
+			'%3' => array(self::BG_YELLOW),
+			'%2' => array(self::BG_GREEN),
+			'%4' => array(self::BG_BLUE),
+			'%1' => array(self::BG_RED),
+			'%5' => array(self::BG_PURPLE),
+			'%6' => array(self::BG_PURPLE),
+			'%7' => array(self::BG_CYAN),
+			'%0' => array(self::BG_GREY),
+			'%F' => array(self::BLINK),
+			'%U' => array(self::UNDERLINE),
+			'%8' => array(self::NEGATIVE),
+			'%9' => array(self::BOLD),
+			'%_' => array(self::BOLD)
 		);
 
 		if ($colored) {
