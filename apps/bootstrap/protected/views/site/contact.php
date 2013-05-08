@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
 /**
  * @var yii\base\View $this
  * @var yii\widgets\ActiveForm $form
@@ -20,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.
 </p>
 
-<?php $form = $this->beginWidget('yii\widgets\ActiveForm', array(
+<?php $form = $this->beginWidget(ActiveForm::className(), array(
 	'options' => array('class' => 'form-horizontal'),
 	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
 )); ?>

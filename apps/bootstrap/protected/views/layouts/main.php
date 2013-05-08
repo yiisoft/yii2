@@ -1,9 +1,11 @@
 <?php
+use yii\helpers\Html;
+use yii\widgets\Menu;
+
 /**
  * @var $this \yii\base\View
  * @var $content string
  */
-use yii\helpers\Html;
 $this->registerAssetBundle('app');
 ?>
 <?php $this->beginPage(); ?>
@@ -23,7 +25,7 @@ $this->registerAssetBundle('app');
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container">
-					<?php $this->widget('yii\widgets\Menu', array(
+					<?php $this->widget(Menu::className(), array(
 						'options' => array('class' => 'nav'),
 						'items' => array(
 							array('label' => 'Home', 'url' => array('/site/index')),
