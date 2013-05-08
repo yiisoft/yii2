@@ -23,6 +23,14 @@ use yii\helpers\Html;
 class View extends Component
 {
 	/**
+	 * @event ViewEvent an event that is triggered by [[beginPage()]].
+	 */
+	const EVENT_BEGIN_PAGE = 'beginPage';
+	/**
+	 * @event ViewEvent an event that is triggered by [[endPage()]].
+	 */
+	const EVENT_END_PAGE = 'endPage';
+	/**
 	 * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
 	 */
 	const EVENT_BEFORE_RENDER = 'beforeRender';
@@ -555,6 +563,8 @@ class View extends Component
 	{
 		ob_start();
 		ob_implicit_flush(false);
+
+		$this->trigger(self::EVENT_BEGIN_PAGE);
 	}
 
 	/**
@@ -562,6 +572,8 @@ class View extends Component
 	 */
 	public function endPage()
 	{
+		$this->trigger(self::EVENT_END_PAGE);
+
 		$content = ob_get_clean();
 		echo strtr($content, array(
 			self::PL_HEAD => $this->renderHeadHtml(),
