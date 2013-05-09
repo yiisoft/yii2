@@ -12,6 +12,16 @@ class ArrayHelperTest extends \yii\test\TestCase
 
 	}
 
+	public function testPopvalue()
+	{
+		$array = array('name' => 'b', 'age' => 3);
+		$name = ArrayHelper::popValue($array, 'name');
+
+		$this->assertEquals($name, 'b');
+		$this->assertEquals($array, array('age' => 3));
+	}
+
+
 	public function testMultisort()
 	{
 		// single key
