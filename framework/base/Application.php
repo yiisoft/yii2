@@ -306,7 +306,7 @@ class Application extends Module
 
 	/**
 	 * Returns the auth manager for this application.
-	 * @return \yii\web\AuthManager the auth manager for this application.
+	 * @return \yii\rbac\Manager the auth manager for this application.
 	 */
 	public function getAuthManager()
 	{
