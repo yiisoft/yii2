@@ -332,11 +332,6 @@ class YiiBase
 	 */
 	public static function autoload($className)
 	{
-		static $hasTraitFunctionality;
-		if($hasTraitFunctionality === null) {
-			$hasTraitFunctionality = function_exists('trait_exists');
-		}
-		
 		$className = ltrim($className, '\\');
 
 		if (isset(self::$classMap[$className])) {
@@ -376,7 +371,7 @@ class YiiBase
 		include($classFile);
 
 		if (class_exists($className, false) || interface_exists($className, false) ||
-			($hasTraitFunctionality === true && trait_exists($className, false))) {
+			function_exists('trait_exists') && trait_exists($className, false)) {
 			return true;
 		} else {
 			throw new UnknownClassException("Unable to find '$className' in file: $classFile");
