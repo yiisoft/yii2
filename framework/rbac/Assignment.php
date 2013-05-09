@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\rbac;
 
 use Yii;
 use yii\base\Object;
@@ -16,7 +16,7 @@ use yii\base\Object;
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
-class AuthAssignment extends Object
+class Assignment extends Object
 {
 	private $_auth;
 	private $_itemName;
@@ -26,7 +26,7 @@ class AuthAssignment extends Object
 
 	/**
 	 * Constructor.
-	 * @param IAuthManager $auth the authorization manager
+	 * @param IManager $auth the authorization manager
 	 * @param string $itemName authorization item name
 	 * @param mixed $userId user ID (see [[User::id]])
 	 * @param string $bizRule the business rule associated with this assignment
@@ -72,7 +72,7 @@ class AuthAssignment extends Object
 	{
 		if ($this->_bizRule !== $value) {
 			$this->_bizRule = $value;
-			$this->_auth->saveAuthAssignment($this);
+			$this->_auth->saveAssignment($this);
 		}
 	}
 
@@ -91,7 +91,7 @@ class AuthAssignment extends Object
 	{
 		if ($this->_data !== $value) {
 			$this->_data = $value;
-			$this->_auth->saveAuthAssignment($this);
+			$this->_auth->saveAssignment($this);
 		}
 	}
 }

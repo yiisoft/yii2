@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\rbac;
 
 use Yii;
 use yii\base\Object;
@@ -16,7 +16,7 @@ use yii\base\Object;
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
-class AuthItem extends Object
+class Item extends Object
 {
 	const TYPE_OPERATION = 0;
 	const TYPE_TASK = 1;
@@ -31,7 +31,7 @@ class AuthItem extends Object
 
 	/**
 	 * Constructor.
-	 * @param IAuthManager $auth authorization manager
+	 * @param IManager $auth authorization manager
 	 * @param string $name authorization item name
 	 * @param integer $type authorization item type. This can be 0 (operation), 1 (task) or 2 (role).
 	 * @param string $description the description
@@ -51,7 +51,7 @@ class AuthItem extends Object
 	/**
 	 * Checks to see if the specified item is within the hierarchy starting from this item.
 	 * This method is expected to be internally used by the actual implementations
-	 * of the [[IAuthManager::checkAccess()]].
+	 * of the [[IManager::checkAccess()]].
 	 * @param string $itemName the name of the item to be checked
 	 * @param array $params the parameters to be passed to business rule evaluation
 	 * @return boolean whether the specified item is within the hierarchy starting from this item.
@@ -73,9 +73,9 @@ class AuthItem extends Object
 	}
 
 	/**
-	 * @return IAuthManager the authorization manager
+	 * @return IManager the authorization manager
 	 */
-	public function getAuthManager()
+	public function getManager()
 	{
 		return $this->_auth;
 	}
@@ -104,7 +104,7 @@ class AuthItem extends Object
 		if ($this->_name !== $value) {
 			$oldName = $this->_name;
 			$this->_name = $value;
-			$this->_auth->saveAuthItem($this, $oldName);
+			$this->_auth->saveItem($this, $oldName);
 		}
 	}
 
@@ -123,7 +123,7 @@ class AuthItem extends Object
 	{
 		if ($this->_description !== $value) {
 			$this->_description = $value;
-			$this->_auth->saveAuthItem($this);
+			$this->_auth->saveItem($this);
 		}
 	}
 
@@ -142,7 +142,7 @@ class AuthItem extends Object
 	{
 		if ($this->_bizRule !== $value) {
 			$this->_bizRule = $value;
-			$this->_auth->saveAuthItem($this);
+			$this->_auth->saveItem($this);
 		}
 	}
 
@@ -161,7 +161,7 @@ class AuthItem extends Object
 	{
 		if ($this->_data !== $value) {
 			$this->_data = $value;
-			$this->_auth->saveAuthItem($this);
+			$this->_auth->saveItem($this);
 		}
 	}
 
@@ -170,7 +170,7 @@ class AuthItem extends Object
 	 * @param string $name the name of the child item
 	 * @return boolean whether the item is added successfully
 	 * @throws \yii\base\Exception if either parent or child doesn't exist or if a loop has been detected.
-	 * @see IAuthManager::addItemChild
+	 * @see IManager::addItemChild
 	 */
 	public function addChild($name)
 	{
@@ -182,7 +182,7 @@ class AuthItem extends Object
 	 * Note, the child item is not deleted. Only the parent-child relationship is removed.
 	 * @param string $name the child item name
 	 * @return boolean whether the removal is successful
-	 * @see IAuthManager::removeItemChild
+	 * @see IManager::removeItemChild
 	 */
 	public function removeChild($name)
 	{
@@ -193,7 +193,7 @@ class AuthItem extends Object
 	 * Returns a value indicating whether a child exists
 	 * @param string $name the child item name
 	 * @return boolean whether the child exists
-	 * @see IAuthManager::hasItemChild
+	 * @see IManager::hasItemChild
 	 */
 	public function hasChild($name)
 	{
@@ -203,7 +203,7 @@ class AuthItem extends Object
 	/**
 	 * Returns the children of this item.
 	 * @return array all child items of this item.
-	 * @see IAuthManager::getItemChildren
+	 * @see IManager::getItemChildren
 	 */
 	public function getChildren()
 	{
@@ -216,46 +216,46 @@ class AuthItem extends Object
 	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
 	 * for this particular authorization item.
 	 * @param mixed $data additional data associated with this assignment
-	 * @return AuthAssignment the authorization assignment information.
+	 * @return Assignment the authorization assignment information.
 	 * @throws \yii\base\Exception if the item has already been assigned to the user
-	 * @see IAuthManager::assign
+	 * @see IManager::assign
 	 */
 	public function assign($userId, $bizRule = null, $data = null)
 	{
-		return $this->_auth->assign($this->_name, $userId, $bizRule, $data);
+		return $this->_auth->assign($userId, $this->_name, $bizRule, $data);
 	}
 
 	/**
 	 * Revokes an authorization assignment from a user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @return boolean whether removal is successful
-	 * @see IAuthManager::revoke
+	 * @see IManager::revoke
 	 */
 	public function revoke($userId)
 	{
-		return $this->_auth->revoke($this->_name, $userId);
+		return $this->_auth->revoke($userId, $this->_name);
 	}
 
 	/**
 	 * Returns a value indicating whether this item has been assigned to the user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @return boolean whether the item has been assigned to the user.
-	 * @see IAuthManager::isAssigned
+	 * @see IManager::isAssigned
 	 */
 	public function isAssigned($userId)
 	{
-		return $this->_auth->isAssigned($this->_name, $userId);
+		return $this->_auth->isAssigned($userId, $this->_name);
 	}
 
 	/**
 	 * Returns the item assignment information.
 	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @return AuthAssignment the item assignment information. Null is returned if
+	 * @return Assignment the item assignment information. Null is returned if
 	 * this item is not assigned to the user.
-	 * @see IAuthManager::getAuthAssignment
+	 * @see IManager::getAssignment
 	 */
 	public function getAssignment($userId)
 	{
-		return $this->_auth->getAuthAssignment($this->_name, $userId);
+		return $this->_auth->getAssignment($userId, $this->_name);
 	}
 }
