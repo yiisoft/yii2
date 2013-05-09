@@ -252,7 +252,7 @@ class ActiveRecord extends Model
 	 */
 	public static function tableName()
 	{
-		return 'tbl_' . StringHelper::camel2id(basename(get_called_class()), '_');
+		return 'tbl_' . StringHelper::camel2id(StringHelper::basename(get_called_class()), '_');
 	}
 
 	/**
