@@ -13,4 +13,23 @@ class TestCase extends \yii\test\TestCase
 		}
 		return isset(self::$params[$name]) ? self::$params[$name] : null;
 	}
+	
+	protected function requireApp($requiredConfig=array())
+	{
+		static $usedConfig = array();
+		static $defaultConfig = array(
+			'id' => 'testapp',
+			'basePath' => __DIR__,
+		);
+		
+		$newConfig = array_merge( $defaultConfig, $requiredConfig );
+		
+		if (!(\yii::$app instanceof \yii\web\Application)) {
+			new \yii\web\Application( $newConfig );
+			$usedConfig = $newConfig;
+		} elseif ($newConfig !== $usedConfig) {
+			new \yii\web\Application( $newConfig );
+			$usedConfig = $newConfig;
+		}
+	}
 }
