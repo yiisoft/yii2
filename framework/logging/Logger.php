@@ -82,6 +82,11 @@ class Logger extends Component
 	 * @var Router the log target router registered with this logger.
 	 */
 	public $router;
+	/**
+	 * @var string a tag that uniquely identifies the current request. This can be used
+	 * to differentiate the log messages for different requests.
+	 */
+	public $tag;
 
 	/**
 	 * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -89,6 +94,7 @@ class Logger extends Component
 	public function init()
 	{
 		parent::init();
+		$this->tag = date('Ymd-His', microtime(true));
 		register_shutdown_function(array($this, 'flush'), true);
 	}
 

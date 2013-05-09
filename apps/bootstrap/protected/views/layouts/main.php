@@ -58,6 +58,7 @@ $this->registerAssetBundle('app');
 	</div>
 	<?php $this->endBody(); ?>
 </div>
+<?php $this->widget('yii\debug\Toolbar'); ?>
 </body>
 </html>
 <?php $this->endPage(); ?>

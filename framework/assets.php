@@ -35,4 +35,11 @@ return array(
 		),
 		'depends' => array('yii'),
 	),
+	'yii/debug' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'yii.debug.js',
+		),
+		'depends' => array('yii'),
+	),
 );
