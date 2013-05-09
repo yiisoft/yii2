@@ -40,11 +40,11 @@ class User extends Component
 	 */
 	public $enableAutoLogin = false;
 	/**
-	 * @var string|array the URL for login when [[loginRequired()]] is called. 
+	 * @var string|array the URL for login when [[loginRequired()]] is called.
 	 * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
-	 * The first element of the array should be the route to the login action, and the rest of 
+	 * The first element of the array should be the route to the login action, and the rest of
 	 * the name-value pairs are GET parameters used to construct the login URL. For example,
-	 * 
+	 *
 	 * ~~~
 	 * array('site/login', 'ref' => 1)
 	 * ~~~
@@ -85,6 +85,8 @@ class User extends Component
 	 * @var string the session variable name used to store the value of [[returnUrl]].
 	 */
 	public $returnUrlVar = '__returnUrl';
+
+	private $_access = array();
 
 
 	/**
@@ -449,19 +451,33 @@ class User extends Component
 	}
 
 	/**
-	 * Checks whether the user has access to the specified operation.
-	 * @param $operator
-	 * @param array $params
-	 * @return bool
-	 * @todo
+	 * Performs access check for this user.
+	 * @param string $operation the name of the operation that need access check.
+	 * @param array $params name-value pairs that would be passed to business rules associated
+	 * with the tasks and roles assigned to the user. A param with name 'userId' is added to
+	 * this array, which holds the value of [[id]] when [[DbAuthManager]] or
+	 * [[PhpAuthManager]] is used.
+	 * @param boolean $allowCaching whether to allow caching the result of access check.
+	 * When this parameter is true (default), if the access check of an operation was performed
+	 * before, its result will be directly returned when calling this method to check the same
+	 * operation. If this parameter is false, this method will always call
+	 * [[AuthManager::checkAccess()]] to obtain the up-to-date access result. Note that this
+	 * caching is effective only within the same request and only works when `$params = array()`.
+	 * @return boolean whether the operations can be performed by this user.
 	 */
-	public function checkAccess($operation, $params = array())
+	public function checkAccess($operation, $params = array(), $allowCaching = true)
 	{
 		$auth = Yii::$app->getAuthManager();
-		if ($auth !== null) {
-			return $auth->checkAccess($this->getId(), $operation, $params);
-		} else {
+		if ($auth === null) {
 			return false;
 		}
+		if ($allowCaching && empty($params) && isset($this->_access[$operation])) {
+			return $this->_access[$operation];
+		}
+		$access = $auth->checkAccess($this->getId(), $operation, $params);
+		if ($allowCaching && empty($params)) {
+			$this->_access[$operation] = $access;
+		}
+		return $access;
 	}
 }
