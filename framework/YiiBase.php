@@ -158,8 +158,8 @@ class YiiBase
 	{
 		foreach ($namespaces as $name => $path) {
 			if ($name !== '') {
-				$name = '@' . str_replace('\\', '/', $name);
-				static::setAlias($name, $path);
+				$name = trim(strtr($name, array('\\' => '/', '_' => '/')), '/');
+				static::setAlias('@' . $name, rtrim($path, '/\\') . '/' . $name);
 			}
 		}
 	}
