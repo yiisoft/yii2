@@ -318,7 +318,7 @@ class ArrayHelper
 			$args[] = $ascending[$i] ? SORT_ASC : SORT_DESC;
 			$args[] = $flag;
 		}
-		$args[] = & $array;
+		$args[] = &$array;
 		call_user_func_array('array_multisort', $args);
 	}
 
