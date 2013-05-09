@@ -169,7 +169,7 @@ class Schema extends \yii\db\Schema
 				}
 			}
 		}
-		$column->phpType = $this->getColumnPhpType($this->type);
+		$column->phpType = $this->getColumnPhpType($column);
 
 		$value = $info['dflt_value'];
 		if ($column->type === 'string') {
