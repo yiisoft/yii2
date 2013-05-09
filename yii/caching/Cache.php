@@ -77,7 +77,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	public function init()
 	{
 		parent::init();
-		if ($this->keyPrefix === null) {
+		if ($this->keyPrefix === null && \Yii::$app instanceof \yii\base\Application) {
 			$this->keyPrefix = \Yii::$app->id;
 		}
 	}
