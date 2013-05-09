@@ -64,10 +64,10 @@
 		"source": "https://github.com/yiisoft/yii2"
 	},
 	"config": {
-		"vendor-dir": "framework/vendor"
+		"vendor-dir": "yii/vendor"
 	},
 	"bin": [
-		"framework/yiic"
+		"yii/yiic"
 	],
 	"require": {
 		"php": ">=5.3.0",
