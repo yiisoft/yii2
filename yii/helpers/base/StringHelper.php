@@ -44,6 +44,29 @@ class StringHelper
 	}
 
 	/**
+	 * Returns the trailing name component of a path.
+	 * This method does the same as the php function basename() except that it will
+	 * always use \ and / as directory separators, independent of the operating system.
+	 * Note: basename() operates naively on the input string, and is not aware of the
+	 * actual filesystem, or path components such as "..".
+	 * @param string $path A path string.
+	 * @param string $suffix If the name component ends in suffix this will also be cut off.
+	 * @return string the trailing name component of the given path.
+	 * @see http://www.php.net/manual/en/function.basename.php
+	 */
+	public static function basename($path, $suffix = '')
+	{
+		if (($len = mb_strlen($suffix)) > 0 && mb_substr($path, -$len) == $suffix) {
+			$path = mb_substr($path, 0, -$len);
+		}
+		$path = rtrim(str_replace('\\', '/', $path), '/\\');
+		if (($pos = mb_strrpos($path, '/')) !== false) {
+			return mb_substr($path, $pos + 1);
+		}
+		return $path;
+	}
+
+	/**
 	 * Converts a word to its plural form.
 	 * Note that this is for English only!
 	 * For example, 'apple' will become 'apples', and 'child' will become 'children'.

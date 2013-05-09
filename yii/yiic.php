@@ -12,7 +12,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 // fcgi doesn't have STDIN defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
-require(__DIR__ . '/yii.php');
+require(__DIR__ . '/Yii.php');
 
 $application = new yii\console\Application(array(
 	'id' => 'yiic',
