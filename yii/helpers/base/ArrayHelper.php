@@ -87,6 +87,35 @@ class ArrayHelper
 	}
 
 	/**
+	 * Removes an item from an array and returns the value. If the key does not exist in the array, the default value
+	 * will be returned instead.
+	 *
+	 * Usage examples,
+	 *
+	 * ~~~
+	 * // $array = array('type'=>'A', 'options'=>array(1,2));
+	 * // working with array
+	 * $type = \yii\helpers\ArrayHelper::remove($array, 'type');
+	 * // $array content
+	 * // $array = array('options'=>array(1,2));
+	 * ~~~
+	 *
+	 * @param array $array the array to extract value from
+	 * @param string $key key name of the array element
+	 * @param mixed $default the default value to be returned if the specified key does not exist
+	 * @return mixed|null the value of the element if found, default value otherwise
+	 */
+	public static function remove(&$array, $key, $default = null)
+	{
+		if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
+			$value = $array[$key];
+			unset($array[$key]);
+			return $value;
+		}
+		return $default;
+	}
+
+	/**
 	 * Indexes an array according to a specified key.
 	 * The input array should be multidimensional or an array of objects.
 	 *
@@ -284,7 +313,7 @@ class ArrayHelper
 					$args[] = $column;
 				}
 			} else {
-				$args[] =  static::getColumn($array, $key);
+				$args[] = static::getColumn($array, $key);
 			}
 			$args[] = $ascending[$i] ? SORT_ASC : SORT_DESC;
 			$args[] = $flag;
