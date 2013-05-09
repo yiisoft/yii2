@@ -19,24 +19,24 @@ use yii\base\Object;
 class Assignment extends Object
 {
 	private $_auth;
-	private $_itemName;
 	private $_userId;
+	private $_itemName;
 	private $_bizRule;
 	private $_data;
 
 	/**
 	 * Constructor.
 	 * @param IManager $auth the authorization manager
-	 * @param string $itemName authorization item name
 	 * @param mixed $userId user ID (see [[User::id]])
+	 * @param string $itemName authorization item name
 	 * @param string $bizRule the business rule associated with this assignment
 	 * @param mixed $data additional data for this assignment
 	 */
-	public function __construct($auth, $itemName, $userId, $bizRule = null, $data = null)
+	public function __construct($auth, $userId, $itemName, $bizRule = null, $data = null)
 	{
 		$this->_auth = $auth;
-		$this->_itemName = $itemName;
 		$this->_userId = $userId;
+		$this->_itemName = $itemName;
 		$this->_bizRule = $bizRule;
 		$this->_data = $data;
 	}

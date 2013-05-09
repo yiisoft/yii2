@@ -52,8 +52,8 @@ class PhpManager extends Manager
 	 * @param string $itemName the name of the operation that need access check
 	 * the unique identifier of a user. See [[User::id]].
 	 * @param array $params name-value pairs that would be passed to biz rules associated
-	 * with the tasks and roles assigned to the user.
-	 * Since version 1.1.11 a param with name 'userId' is added to this array, which holds the value of <code>$userId</code>.
+	 * with the tasks and roles assigned to the user. A param with name 'userId' is added to
+	 * this array, which holds the value of `$userId`.
 	 * @return boolean whether the operations can be performed by the user.
 	 */
 	public function checkAccess($userId, $itemName, $params = array())
@@ -61,6 +61,7 @@ class PhpManager extends Manager
 		if (!isset($this->_items[$itemName])) {
 			return false;
 		}
+		/** @var $item Item */
 		$item = $this->_items[$itemName];
 		Yii::trace('Checking permission: ' . $item->getName(), __METHOD__);
 		if (!isset($params['userId'])) {
@@ -71,6 +72,7 @@ class PhpManager extends Manager
 				return true;
 			}
 			if (isset($this->_assignments[$userId][$itemName])) {
+				/** @var $assignment Assignment */
 				$assignment = $this->_assignments[$userId][$itemName];
 				if ($this->executeBizRule($assignment->getBizRule(), $params, $assignment->getData())) {
 					return true;
@@ -97,7 +99,9 @@ class PhpManager extends Manager
 		if (!isset($this->_items[$childName], $this->_items[$itemName])) {
 			throw new Exception("Either '$itemName' or '$childName' does not exist.");
 		}
+		/** @var $child Item */
 		$child = $this->_items[$childName];
+		/** @var $item Item */
 		$item = $this->_items[$itemName];
 		$this->checkItemChildType($item->getType(), $child->getType());
 		if ($this->detectLoop($itemName, $childName)) {
@@ -142,7 +146,7 @@ class PhpManager extends Manager
 	 * Returns the children of the specified item.
 	 * @param mixed $names the parent item name. This can be either a string or an array.
 	 * The latter represents a list of item names.
-	 * @return array all child items of the parent
+	 * @return Item[] all child items of the parent
 	 */
 	public function getItemChildren($names)
 	{
@@ -176,7 +180,7 @@ class PhpManager extends Manager
 		} elseif (isset($this->_assignments[$userId][$itemName])) {
 			throw new Exception("Authorization item '$itemName' has already been assigned to user '$userId'.");
 		} else {
-			return $this->_assignments[$userId][$itemName] = new Assignment($this, $itemName, $userId, $bizRule, $data);
+			return $this->_assignments[$userId][$itemName] = new Assignment($this, $userId, $itemName, $bizRule, $data);
 		}
 	}
 
@@ -222,7 +226,7 @@ class PhpManager extends Manager
 	/**
 	 * Returns the item assignments for the specified user.
 	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @return array the item assignment information for the user. An empty array will be
+	 * @return Assignment[] the item assignment information for the user. An empty array will be
 	 * returned if there is no item assigned to the user.
 	 */
 	public function getAssignments($userId)
@@ -236,22 +240,24 @@ class PhpManager extends Manager
 	 * they are not assigned to a user.
 	 * @param integer $type the item type (0: operation, 1: task, 2: role). Defaults to null,
 	 * meaning returning all items regardless of their type.
-	 * @return array the authorization items of the specific type.
+	 * @return Item[] the authorization items of the specific type.
 	 */
 	public function getItems($userId = null, $type = null)
 	{
-		if ($type === null && $userId === null) {
+		if ($userId === null && $type === null) {
 			return $this->_items;
 		}
 		$items = array();
 		if ($userId === null) {
 			foreach ($this->_items as $name => $item) {
+				/** @var $item Item */
 				if ($item->getType() == $type) {
 					$items[$name] = $item;
 				}
 			}
 		} elseif (isset($this->_assignments[$userId])) {
 			foreach ($this->_assignments[$userId] as $assignment) {
+				/** @var $assignment Assignment */
 				$name = $assignment->getItemName();
 				if (isset($this->_items[$name]) && ($type === null || $this->_items[$name]->getType() == $type)) {
 					$items[$name] = $this->_items[$name];
@@ -368,6 +374,7 @@ class PhpManager extends Manager
 	{
 		$items = array();
 		foreach ($this->_items as $name => $item) {
+			/** @var $item Item */
 			$items[$name] = array(
 				'type' => $item->getType(),
 				'description' => $item->getDescription(),
@@ -376,6 +383,7 @@ class PhpManager extends Manager
 			);
 			if (isset($this->_children[$name])) {
 				foreach ($this->_children[$name] as $child) {
+					/** @var $child Item */
 					$items[$name]['children'][] = $child->getName();
 				}
 			}
@@ -383,6 +391,7 @@ class PhpManager extends Manager
 
 		foreach ($this->_assignments as $userId => $assignments) {
 			foreach ($assignments as $name => $assignment) {
+				/** @var $assignment Assignment */
 				if (isset($items[$name])) {
 					$items[$name]['assignments'][$userId] = array(
 						'bizRule' => $assignment->getBizRule(),
@@ -457,6 +466,7 @@ class PhpManager extends Manager
 			return false;
 		}
 		foreach ($this->_children[$childName] as $child) {
+			/** @var $child Item */
 			if ($this->detectLoop($itemName, $child->getName())) {
 				return true;
 			}

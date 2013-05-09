@@ -202,7 +202,7 @@ class Item extends Object
 
 	/**
 	 * Returns the children of this item.
-	 * @return array all child items of this item.
+	 * @return Item[] all child items of this item.
 	 * @see IManager::getItemChildren
 	 */
 	public function getChildren()

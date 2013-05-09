@@ -83,7 +83,7 @@ abstract class Manager extends Component implements IManager
 	 * This is a shortcut method to [[IManager::getItems()]].
 	 * @param mixed $userId the user ID. If not null, only the roles directly assigned to the user
 	 * will be returned. Otherwise, all roles will be returned.
-	 * @return array roles (name=>AuthItem)
+	 * @return Item[] roles (name=>AuthItem)
 	 */
 	public function getRoles($userId = null)
 	{
@@ -95,7 +95,7 @@ abstract class Manager extends Component implements IManager
 	 * This is a shortcut method to [[IManager::getItems()]].
 	 * @param mixed $userId the user ID. If not null, only the tasks directly assigned to the user
 	 * will be returned. Otherwise, all tasks will be returned.
-	 * @return array tasks (name=>AuthItem)
+	 * @return Item[] tasks (name=>AuthItem)
 	 */
 	public function getTasks($userId = null)
 	{
@@ -107,7 +107,7 @@ abstract class Manager extends Component implements IManager
 	 * This is a shortcut method to [[IManager::getItems()]].
 	 * @param mixed $userId the user ID. If not null, only the operations directly assigned to the user
 	 * will be returned. Otherwise, all operations will be returned.
-	 * @return array operations (name=>AuthItem)
+	 * @return Item[] operations (name=>AuthItem)
 	 */
 	public function getOperations($userId = null)
 	{
