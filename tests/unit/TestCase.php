@@ -21,12 +21,12 @@ class TestCase extends \yii\test\TestCase
 		}
 	}
 	
-	public function getParam($name)
+	public function getParam($name,$default=null)
 	{
 		if (self::$params === null) {
 			self::$params = require(__DIR__ . '/data/config.php');
 		}
-		return isset(self::$params[$name]) ? self::$params[$name] : null;
+		return isset(self::$params[$name]) ? self::$params[$name] : $default;
 	}
 	
 	protected function requireApp($requiredConfig=array())
@@ -38,12 +38,13 @@ class TestCase extends \yii\test\TestCase
 		);
 		
 		$newConfig = array_merge( $defaultConfig, $requiredConfig );
+		$appClass = $this->getParam( 'appClass', '\yii\web\Application' );
 		
-		if (!(\yii::$app instanceof \yii\web\Application)) {
-			new \yii\web\Application( $newConfig );
+		if (!(\yii::$app instanceof $appClass)) {
+			new $appClass( $newConfig );
 			$usedConfig = $newConfig;
 		} elseif ($newConfig !== $usedConfig) {
-			new \yii\web\Application( $newConfig );
+			new $appClass( $newConfig );
 			$usedConfig = $newConfig;
 		}
 	}
