@@ -7,7 +7,6 @@ php:
 
 env:
   - DB=mysql
-  - DB=sqlite
 
 before_script:
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database IF NOT EXISTS yiitest;'; fi"
