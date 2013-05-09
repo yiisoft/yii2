@@ -95,7 +95,7 @@ class ArrayHelper
 	 * ~~~
 	 * // $array = array('type'=>'A', 'options'=>array(1,2));
 	 * // working with array
-	 * $type = \yii\helpers\ArrayHelper::popValue($array, 'type');
+	 * $type = \yii\helpers\ArrayHelper::remove($array, 'type');
 	 * // $array content
 	 * // $array = array('options'=>array(1,2));
 	 * ~~~
@@ -105,10 +105,10 @@ class ArrayHelper
 	 * @param mixed $default the default value to be returned if the specified key does not exist
 	 * @return mixed|null the value of the element if found, default value otherwise
 	 */
-	public static function popValue(&$array, $key, $default = null)
+	public static function remove(&$array, $key, $default = null)
 	{
-		if (is_array($array)) {
-			$value = static::getValue($array, $key, $default);
+		if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
+			$value = $array[$key];
 			unset($array[$key]);
 			return $value;
 		}
