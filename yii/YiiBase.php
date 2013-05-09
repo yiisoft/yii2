@@ -158,8 +158,8 @@ class YiiBase
 	{
 		foreach ($namespaces as $name => $path) {
 			if ($name !== '') {
-				$name = '@' . str_replace('\\', '/', $name);
-				static::setAlias($name, $path);
+				$name = trim(strtr($name, array('\\' => '/', '_' => '/')), '/');
+				static::setAlias('@' . $name, rtrim($path, '/\\') . '/' . $name);
 			}
 		}
 	}
@@ -370,7 +370,8 @@ class YiiBase
 
 		include($classFile);
 
-		if (class_exists($className, false) || interface_exists($className, false)) {
+		if (class_exists($className, false) || interface_exists($className, false) ||
+			function_exists('trait_exists') && trait_exists($className, false)) {
 			return true;
 		} else {
 			throw new UnknownClassException("Unable to find '$className' in file: $classFile");

@@ -69,8 +69,8 @@ class Request extends \yii\base\Request
 		$result = Yii::$app->getUrlManager()->parseRequest($this);
 		if ($result !== false) {
 			list ($route, $params) = $result;
-			$params = array_merge($_GET, $params);
-			return array($route, $params);
+			$_GET = array_merge($_GET, $params);
+			return array($route, $_GET);
 		} else {
 			throw new HttpException(404, Yii::t('yii|Page not found.'));
 		}
