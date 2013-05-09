@@ -1,10 +1,6 @@
 /**
  * This is the database schema for testing MySQL support of Yii DAO and Active Record.
- * The following database setup is required to perform then relevant tests:
- * Database name: yiitest
- * username: test
- * password: test
- * charset: utf8
+ * The database setup in config.php is required to perform then relevant tests:
  */
 
 DROP TABLE IF EXISTS tbl_order_item CASCADE;
