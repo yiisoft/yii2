@@ -95,7 +95,7 @@ class ArrayHelper
 	 * ~~~
 	 * // $array = array('type'=>'A', 'options'=>array(1,2));
 	 * // working with array
-	 * $type = \yii\helpers\ArrayHelper::getValue($array, 'type');
+	 * $type = \yii\helpers\ArrayHelper::popValue($array, 'type');
 	 * // $array content
 	 * // $array = array('options'=>array(1,2));
 	 * ~~~
