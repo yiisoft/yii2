@@ -203,7 +203,7 @@ class Controller extends Component
 	public function forward($route, $params = array())
 	{
 		$status = $this->run($route, $params);
-		exit($status);
+		Yii::$app->end($status);
 	}
 
 	/**
