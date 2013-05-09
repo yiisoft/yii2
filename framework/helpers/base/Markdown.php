@@ -7,7 +7,6 @@
 
 namespace yii\helpers\base;
 
-\Yii::setAlias('@Michelf', \Yii::getAlias('@yii/vendor/michelf/php-markdown/Michelf'));
 use Michelf\MarkdownExtra;
 
 /**

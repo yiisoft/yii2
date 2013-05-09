@@ -6,10 +6,6 @@
  */
 namespace yii\helpers\base;
 
-if (!class_exists('HTMLPurifier_Bootstrap', false)) {
-	require_once(\Yii::getAlias('@yii/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php'));
-}
-
 /**
  * Purifier provides an ability to clean up HTML from any harmful code.
  *

@@ -23,11 +23,6 @@ use yii\helpers\Html;
 class TwigViewRenderer extends ViewRenderer
 {
 	/**
-	 * @var string the directory or path alias pointing to where Twig code is located.
-	 */
-	public $twigPath = '@yii/vendor/twig/twig/lib/Twig';
-
-	/**
 	 * @var string the directory or path alias pointing to where Twig cache will be stored.
 	 */
 	public $cachePath = '@app/runtime/Twig/cache';
@@ -45,10 +40,6 @@ class TwigViewRenderer extends ViewRenderer
 
 	public function init()
 	{
-		if (!isset(Yii::$aliases['@Twig'])) {
-			Yii::setAlias('@Twig', $this->twigPath);
-		}
-
 		$loader = new \Twig_Loader_String();
 
 		$this->twig = new \Twig_Environment($loader, array_merge(array(

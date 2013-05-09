@@ -24,11 +24,6 @@ use yii\helpers\Html;
 class SmartyViewRenderer extends ViewRenderer
 {
 	/**
-	 * @var string the directory or path alias pointing to where Smarty code is located.
-	 */
-	public $smartyPath = '@yii/vendor/smarty/smarty/distribution/libs';
-
-	/**
 	 * @var string the directory or path alias pointing to where Smarty cache will be stored.
 	 */
 	public $cachePath = '@app/runtime/Smarty/cache';
@@ -45,7 +40,6 @@ class SmartyViewRenderer extends ViewRenderer
 
 	public function init()
 	{
-		require_once(Yii::getAlias($this->smartyPath) . '/Smarty.class.php');
 		$this->smarty = new Smarty();
 		$this->smarty->setCompileDir(Yii::getAlias($this->compilePath));
 		$this->smarty->setCacheDir(Yii::getAlias($this->cachePath));
