@@ -4,6 +4,8 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+namespace yii;
+
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -60,7 +62,7 @@ class YiiBase
 	 */
 	public static $enableIncludePath = true;
 	/**
-	 * @var yii\console\Application|yii\web\Application the application instance
+	 * @var \yii\console\Application|\yii\web\Application the application instance
 	 */
 	public static $app;
 	/**
@@ -449,12 +451,12 @@ class YiiBase
 			}
 			$args = func_get_args();
 			array_shift($args); // remove $config
-			if ($config !== array()) {
+			if (!empty($config)) {
 				$args[] = $config;
 			}
 			return $reflection->newInstanceArgs($args);
 		} else {
-			return $config === array() ? new $class : new $class($config);
+			return empty($config) ? new $class : new $class($config);
 		}
 	}
 

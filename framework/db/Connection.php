@@ -66,7 +66,7 @@ use yii\caching\Cache;
  *     // ... executing other SQL statements ...
  *     $transaction->commit();
  * } catch(Exception $e) {
- *     $transaction->rollBack();
+ *     $transaction->rollback();
  * }
  * ~~~
  *
@@ -242,7 +242,7 @@ class Connection extends Component
 		'mysql' => 'yii\db\mysql\Schema',    // MySQL
 		'sqlite' => 'yii\db\sqlite\Schema',  // sqlite 3
 		'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
-		'mssql' => 'yi\db\dao\mssql\Schema', // Mssql driver on windows hosts
+		'mssql' => 'yii\db\dao\mssql\Schema', // Mssql driver on windows hosts
 		'sqlsrv' => 'yii\db\mssql\Schema',   // Mssql
 		'oci' => 'yii\db\oci\Schema',        // Oracle driver
 		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on linux (and maybe others os) hosts

@@ -447,4 +447,21 @@ class User extends Component
 			}
 		}
 	}
+
+	/**
+	 * Checks whether the user has access to the specified operation.
+	 * @param $operator
+	 * @param array $params
+	 * @return bool
+	 * @todo
+	 */
+	public function checkAccess($operation, $params = array())
+	{
+		$auth = Yii::$app->getAuthManager();
+		if ($auth !== null) {
+			return $auth->checkAccess($this->getId(), $operation, $params);
+		} else {
+			return false;
+		}
+	}
 }

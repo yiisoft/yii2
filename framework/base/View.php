@@ -23,6 +23,14 @@ use yii\helpers\Html;
 class View extends Component
 {
 	/**
+	 * @event ViewEvent an event that is triggered by [[beginPage()]].
+	 */
+	const EVENT_BEGIN_PAGE = 'beginPage';
+	/**
+	 * @event ViewEvent an event that is triggered by [[endPage()]].
+	 */
+	const EVENT_END_PAGE = 'endPage';
+	/**
 	 * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
 	 */
 	const EVENT_BEFORE_RENDER = 'beforeRender';
@@ -72,23 +80,21 @@ class View extends Component
 	/**
 	 * @var array a list of available renderers indexed by their corresponding supported file extensions.
 	 * Each renderer may be a view renderer object or the configuration for creating the renderer object.
-	 * For example,
-	 *
-	 * ~~~
-	 * array(
-	 *     'tpl' => array(
-	 *         'class' => 'yii\renderers\SmartyRenderer',
-	 *     ),
-	 *     'twig' => array(
-	 *         'class' => 'yii\renderers\TwigRenderer',
-	 *     ),
-	 * )
-	 * ~~~
+	 * The default setting supports both Smarty and Twig (their corresponding file extension is "tpl"
+	 * and "twig" respectively. Please refer to [[SmartyRenderer]] and [[TwigRenderer]] on how to install
+	 * the needed libraries for these template engines.
 	 *
 	 * If no renderer is available for the given view file, the view file will be treated as a normal PHP
 	 * and rendered via [[renderPhpFile()]].
 	 */
-	public $renderers = array();
+	public $renderers = array(
+		'tpl' => array(
+			'class' => 'yii\renderers\SmartyRenderer',
+		),
+		'twig' => array(
+			'class' => 'yii\renderers\TwigRenderer',
+		),
+	);
 	/**
 	 * @var Theme|array the theme object or the configuration array for creating the theme object.
 	 * If not set, it means theming is not enabled.
@@ -557,6 +563,8 @@ class View extends Component
 	{
 		ob_start();
 		ob_implicit_flush(false);
+
+		$this->trigger(self::EVENT_BEGIN_PAGE);
 	}
 
 	/**
@@ -564,6 +572,8 @@ class View extends Component
 	 */
 	public function endPage()
 	{
+		$this->trigger(self::EVENT_END_PAGE);
+
 		$content = ob_get_clean();
 		echo strtr($content, array(
 			self::PL_HEAD => $this->renderHeadHtml(),

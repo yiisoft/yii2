@@ -9,9 +9,6 @@ namespace yii\web;
 
 use yii\base\Component;
 use yii\base\Action;
-use yii\base\Controller;
-use yii\web\User;
-use yii\web\Request;
 
 /**
  *
@@ -144,7 +141,7 @@ class AccessRule extends Component
 				return true;
 			} elseif ($role === '@' && !$user->getIsGuest()) {
 				return true;
-			} elseif ($user->hasAccess($role)) {
+			} elseif ($user->checkAccess($role)) {
 				return true;
 			}
 		}

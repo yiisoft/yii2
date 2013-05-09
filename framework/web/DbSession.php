@@ -71,13 +71,13 @@ class DbSession extends Session
 	 */
 	public function init()
 	{
-		parent::init();
 		if (is_string($this->db)) {
 			$this->db = Yii::$app->getComponent($this->db);
 		}
 		if (!$this->db instanceof Connection) {
 			throw new InvalidConfigException("DbSession::db must be either a DB connection instance or the application component ID of a DB connection.");
-		}		
+		}
+		parent::init();
 	}
 
 	/**

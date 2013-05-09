@@ -217,7 +217,7 @@ class SecurityHelper
 			throw new InvalidParamException('Password must be a string and cannot be empty.');
 		}
 
-		if (!preg_match('/^\$2[axy]\$(\d\d)\$[\./0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
+		if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
 			throw new InvalidParamException('Hash is invalid.');
 		}
 

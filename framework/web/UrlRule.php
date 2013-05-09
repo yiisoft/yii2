@@ -125,7 +125,7 @@ class UrlRule extends Object
 				if (isset($this->defaults[$name])) {
 					$length = strlen($match[0][0]);
 					$offset = $match[0][1];
-					if ($this->pattern[$offset - 1] === '/' && $this->pattern[$offset + $length] === '/') {
+					if ($offset > 1 && $this->pattern[$offset - 1] === '/' && $this->pattern[$offset + $length] === '/') {
 						$tr["/<$name>"] = "(/(?P<$name>$pattern))?";
 					} else {
 						$tr["<$name>"] = "(?P<$name>$pattern)?";
@@ -144,7 +144,7 @@ class UrlRule extends Object
 		$this->_template = preg_replace('/<(\w+):?([^>]+)?>/', '<$1>', $this->pattern);
 		$this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
-		if ($this->_routeParams !== array()) {
+		if (!empty($this->_routeParams)) {
 			$this->_routeRule = '#^' . strtr($this->route, $tr2) . '$#u';
 		}
 	}
@@ -275,7 +275,7 @@ class UrlRule extends Object
 			$url .= ($this->suffix === null ? $manager->suffix : $this->suffix);
 		}
 
-		if ($params !== array()) {
+		if (!empty($params)) {
 			$url .= '?' . http_build_query($params);
 		}
 		return $url;

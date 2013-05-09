@@ -25,7 +25,7 @@ class TwigViewRenderer extends ViewRenderer
 	/**
 	 * @var string the directory or path alias pointing to where Twig code is located.
 	 */
-	public $twigPath = '@Twig';
+	public $twigPath = '@yii/vendor/twig/twig/lib/Twig';
 
 	/**
 	 * @var string the directory or path alias pointing to where Twig cache will be stored.

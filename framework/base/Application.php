@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\FileHelper;
 
 /**
  * Application is the base class for all application classes.
@@ -303,6 +302,15 @@ class Application extends Module
 	public function getI18N()
 	{
 		return $this->getComponent('i18n');
+	}
+
+	/**
+	 * @return null|Component
+	 * @todo
+	 */
+	public function getAuthManager()
+	{
+		return $this->getComponent('auth');
 	}
 
 	/**

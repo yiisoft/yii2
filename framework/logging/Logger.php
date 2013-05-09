@@ -6,7 +6,9 @@
  */
 
 namespace yii\logging;
-use yii\base\InvalidConfigException;
+
+use \yii\base\Component;
+use \yii\base\InvalidConfigException;
 
 /**
  * Logger records logged messages in memory.
@@ -17,7 +19,7 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Logger extends \yii\base\Component
+class Logger extends Component
 {
 	/**
 	 * Error message level. An error message is one that indicates the abnormal termination of the
@@ -80,6 +82,11 @@ class Logger extends \yii\base\Component
 	 * @var Router the log target router registered with this logger.
 	 */
 	public $router;
+	/**
+	 * @var string a tag that uniquely identifies the current request. This can be used
+	 * to differentiate the log messages for different requests.
+	 */
+	public $tag;
 
 	/**
 	 * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -87,6 +94,7 @@ class Logger extends \yii\base\Component
 	public function init()
 	{
 		parent::init();
+		$this->tag = date('Ymd-His', microtime(true));
 		register_shutdown_function(array($this, 'flush'), true);
 	}
 

@@ -142,7 +142,7 @@ class HelpController extends Controller
 	protected function getHelp()
 	{
 		$commands = $this->getCommands();
-		if ($commands !== array()) {
+		if (!empty($commands)) {
 			echo "The following commands are available:\n\n";
 			foreach ($commands as $command) {
 				echo "* $command\n";
@@ -172,7 +172,7 @@ class HelpController extends Controller
 		}
 
 		$actions = $this->getActions($controller);
-		if ($actions !== array()) {
+		if (!empty($actions)) {
 			echo "\nSUB-COMMANDS\n\n";
 			$prefix = $controller->getUniqueId();
 			foreach ($actions as $action) {
@@ -280,7 +280,7 @@ class HelpController extends Controller
 		}
 
 		$options = $this->getOptionHelps($controller);
-		if ($options !== array()) {
+		if (!empty($options)) {
 			echo "\nOPTIONS\n\n";
 			echo implode("\n\n", $options) . "\n\n";
 		}

@@ -107,7 +107,7 @@ class FragmentCache extends Widget
 			$data = array($content, $this->dynamicPlaceholders);
 			$this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
 
-			if ($this->view->cacheStack === array() && !empty($this->dynamicPlaceholders)) {
+			if (empty($this->view->cacheStack) && !empty($this->dynamicPlaceholders)) {
 				$content = $this->updateDynamicContent($content, $this->dynamicPlaceholders);
 			}
 			echo $content;
@@ -133,7 +133,7 @@ class FragmentCache extends Widget
 				if (is_array($data) && count($data) === 2) {
 					list ($content, $placeholders) = $data;
 					if (is_array($placeholders) && count($placeholders) > 0) {
-						if ($this->view->cacheStack === array()) {
+						if (empty($this->view->cacheStack)) {
 							// outermost cache: replace placeholder with dynamic content
 							$content = $this->updateDynamicContent($content, $placeholders);
 						}

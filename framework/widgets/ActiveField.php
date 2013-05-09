@@ -10,7 +10,7 @@ use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\base\Model;
-use yii\helpers\JsExpression;
+use yii\web\JsExpression;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -104,7 +104,7 @@ class ActiveField extends Component
 	public function begin()
 	{
 		$options = $this->getClientOptions();
-		if ($options !== array()) {
+		if (!empty($options)) {
 			$this->form->attributes[$this->attribute] = $options;
 		}
 
@@ -123,7 +123,7 @@ class ActiveField extends Component
 
 		return Html::beginTag($this->tag, $options);
 	}
-	
+
 	public function end()
 	{
 		return Html::endTag($this->tag);
@@ -143,7 +143,7 @@ class ActiveField extends Component
 					$validators[] = $js;
 				}
 			}
-			if ($validators !== array()) {
+			if (!empty($validators)) {
 				$options['validate'] = new JsExpression("function(attribute,value,messages){" . implode('', $validators) . '}');
 			}
 		}
@@ -152,7 +152,7 @@ class ActiveField extends Component
 			$options['enableAjaxValidation'] = 1;
 		}
 
-		if ($enableClientValidation || $enableAjaxValidation) {
+		if ($enableClientValidation && !empty($options['validate']) || $enableAjaxValidation) {
 			$inputID = Html::getInputId($this->model, $this->attribute);
 			$options['name'] = $inputID;
 			$names = array(

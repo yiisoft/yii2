@@ -90,6 +90,7 @@ class Component extends Object
 			// as behavior: attach behavior
 			$name = trim(substr($name, 3));
 			$this->attachBehavior($name, $value instanceof Behavior ? $value : Yii::createObject($value));
+			return;
 		} else {
 			// behavior property
 			$this->ensureBehaviors();
@@ -496,6 +497,7 @@ class Component extends Object
 	 */
 	public function detachBehavior($name)
 	{
+		$this->ensureBehaviors();
 		if (isset($this->_behaviors[$name])) {
 			$behavior = $this->_behaviors[$name];
 			unset($this->_behaviors[$name]);
@@ -511,6 +513,7 @@ class Component extends Object
 	 */
 	public function detachBehaviors()
 	{
+		$this->ensureBehaviors();
 		if ($this->_behaviors !== null) {
 			foreach ($this->_behaviors as $name => $behavior) {
 				$this->detachBehavior($name);

@@ -36,7 +36,7 @@ class ArrayHelper
 	{
 		$args = func_get_args();
 		$res = array_shift($args);
-		while ($args !== array()) {
+		while (!empty($args)) {
 			$next = array_shift($args);
 			foreach ($next as $k => $v) {
 				if (is_integer($k)) {

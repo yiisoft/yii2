@@ -7,7 +7,7 @@ If you have installed Yii under a Web-accessible folder, you should be able to
 access this application through the following URL:
 
 ~~~
-http://localhost/yii/app/index.php
+http://localhost/yii/apps/bootstrap/index.php
 ~~~
 
 

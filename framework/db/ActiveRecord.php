@@ -8,6 +8,7 @@
 
 namespace yii\db;
 
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\InvalidParamException;
 use yii\base\ModelEvent;
@@ -27,7 +28,7 @@ use yii\helpers\StringHelper;
  * @property TableSchema $tableSchema the schema information of the DB table associated with this AR class.
  * @property array $oldAttributes the old attribute values (name-value pairs).
  * @property array $dirtyAttributes the changed attribute values (name-value pairs).
- * @property boolean $isPrimaryKey whether the record is new and should be inserted when calling [[save()]].
+ * @property boolean $isNewRecord whether the record is new and should be inserted when calling [[save()]].
  * @property mixed $primaryKey the primary key value.
  * @property mixed $oldPrimaryKey the old primary key value.
  *
@@ -112,6 +113,7 @@ class ActiveRecord extends Model
 	 * @return ActiveQuery|ActiveRecord|null When `$q` is null, a new [[ActiveQuery]] instance
 	 * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
 	 * returned (null will be returned if there is no matching).
+	 * @throws InvalidConfigException if the AR class does not have a primary key
 	 * @see createQuery()
 	 */
 	public static function find($q = null)
@@ -122,7 +124,11 @@ class ActiveRecord extends Model
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::primaryKey();
-			return $query->where(array($primaryKey[0] => $q))->one();
+			if (isset($primaryKey[0])) {
+				return $query->where(array($primaryKey[0] => $q))->one();
+			} else {
+				throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+			}
 		}
 		return $query;
 	}
@@ -661,36 +667,33 @@ class ActiveRecord extends Model
 	 */
 	public function insert($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes)) {
+		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
 			return false;
 		}
-		if ($this->beforeSave(true)) {
-			$values = $this->getDirtyAttributes($attributes);
-			if ($values === array()) {
-				foreach ($this->primaryKey() as $key) {
-					$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
-				}
-			}
-			$db = static::getDb();
-			$command = $db->createCommand()->insert($this->tableName(), $values);
-			if ($command->execute()) {
-				$table = $this->getTableSchema();
-				if ($table->sequenceName !== null) {
-					foreach ($table->primaryKey as $name) {
-						if (!isset($this->_attributes[$name])) {
-							$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
-							break;
-						}
-					}
-				}
-				foreach ($values as $name => $value) {
-					$this->_oldAttributes[$name] = $value;
-				}
-				$this->afterSave(true);
-				return true;
+		$values = $this->getDirtyAttributes($attributes);
+		if (empty($values)) {
+			foreach ($this->primaryKey() as $key) {
+				$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
 			}
 		}
-		return false;
+		$db = static::getDb();
+		$command = $db->createCommand()->insert($this->tableName(), $values);
+		if ($command->execute()) {
+			$table = $this->getTableSchema();
+			if ($table->sequenceName !== null) {
+				foreach ($table->primaryKey as $name) {
+					if (!isset($this->_attributes[$name])) {
+						$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
+						break;
+					}
+				}
+			}
+			foreach ($values as $name => $value) {
+				$this->_oldAttributes[$name] = $value;
+			}
+			$this->afterSave(true);
+			return true;
+		}
 	}
 
 	/**
@@ -744,39 +747,35 @@ class ActiveRecord extends Model
 	 */
 	public function update($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes)) {
+		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
 			return false;
 		}
-		if ($this->beforeSave(false)) {
-			$values = $this->getDirtyAttributes($attributes);
-			if ($values !== array()) {
-				$condition = $this->getOldPrimaryKey(true);
-				$lock = $this->optimisticLock();
-				if ($lock !== null) {
-					if (!isset($values[$lock])) {
-						$values[$lock] = $this->$lock + 1;
-					}
-					$condition[$lock] = $this->$lock;
+		$values = $this->getDirtyAttributes($attributes);
+		if (!empty($values)) {
+			$condition = $this->getOldPrimaryKey(true);
+			$lock = $this->optimisticLock();
+			if ($lock !== null) {
+				if (!isset($values[$lock])) {
+					$values[$lock] = $this->$lock + 1;
 				}
-				// We do not check the return value of updateAll() because it's possible
-				// that the UPDATE statement doesn't change anything and thus returns 0.
-				$rows = $this->updateAll($values, $condition);
-
-				if ($lock !== null && !$rows) {
-					throw new StaleObjectException('The object being updated is outdated.');
-				}
-
-				foreach ($values as $name => $value) {
-					$this->_oldAttributes[$name] = $this->_attributes[$name];
-				}
-
-				$this->afterSave(false);
-				return $rows;
-			} else {
-				return 0;
+				$condition[$lock] = $this->$lock;
 			}
+			// We do not check the return value of updateAll() because it's possible
+			// that the UPDATE statement doesn't change anything and thus returns 0.
+			$rows = $this->updateAll($values, $condition);
+
+			if ($lock !== null && !$rows) {
+				throw new StaleObjectException('The object being updated is outdated.');
+			}
+
+			foreach ($values as $name => $value) {
+				$this->_oldAttributes[$name] = $this->_attributes[$name];
+			}
+
+			$this->afterSave(false);
+			return $rows;
 		} else {
-			return false;
+			return 0;
 		}
 	}
 
@@ -1125,8 +1124,8 @@ class ActiveRecord extends Model
 				return $relation;
 			}
 		} catch (UnknownMethodException $e) {
+			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 		}
-		throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 	}
 
 	/**

@@ -4,7 +4,7 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\Json;
-use yii\helpers\JsExpression;
+use yii\web\JsExpression;
 
 class JsonTest extends \yii\test\TestCase
 {

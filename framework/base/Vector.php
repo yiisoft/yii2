@@ -58,7 +58,7 @@ class Vector extends Object implements \IteratorAggregate, \ArrayAccess, \Counta
 	 */
 	public function __construct($data = array(), $config = array())
 	{
-		if ($data !== array()) {
+		if (!empty($data)) {
 			$this->copyFrom($data);
 		}
 		parent::__construct($config);

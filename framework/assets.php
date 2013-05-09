@@ -28,4 +28,18 @@ return array(
 		),
 		'depends' => array('yii', 'yii/validation'),
 	),
+	'yii/captcha' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'yii.captcha.js',
+		),
+		'depends' => array('yii'),
+	),
+	'yii/debug' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'yii.debug.js',
+		),
+		'depends' => array('yii'),
+	),
 );

@@ -8,7 +8,7 @@
 namespace yii\helpers\base;
 
 use yii\base\InvalidParamException;
-use yii\helpers\JsExpression;
+use yii\web\JsExpression;
 
 /**
  * Json is a helper class providing JSON data encoding and decoding.
@@ -34,7 +34,7 @@ class Json
 		$expressions = array();
 		$value = static::processData($value, $expressions);
 		$json = json_encode($value, $options);
-		return $expressions === array() ? $json : strtr($json, $expressions);
+		return empty($expressions) ? $json : strtr($json, $expressions);
 	}
 
 	/**

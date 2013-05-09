@@ -116,8 +116,8 @@
 			});
 		},
 
-		options: function() {
-			return this.data('yiiActiveForm').settings;
+		data: function() {
+			return this.data('yiiActiveForm');
 		},
 
 		submitForm: function () {
