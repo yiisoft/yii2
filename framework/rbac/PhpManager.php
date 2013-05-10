@@ -9,6 +9,8 @@ namespace yii\rbac;
 
 use Yii;
 use yii\base\Exception;
+use yii\base\InvalidCallException;
+use yii\base\InvalidParamException;
 
 /**
  * PhpManager represents an authorization manager that stores authorization
@@ -103,7 +105,8 @@ class PhpManager extends Manager
 	 * @param string $itemName the parent item name
 	 * @param string $childName the child item name
 	 * @return boolean whether the item is added successfully
-	 * @throws Exception if either parent or child doesn't exist or if a loop has been detected.
+	 * @throws Exception if either parent or child doesn't exist.
+	 * @throws InvalidCallException if item already has a child with $itemName or if a loop has been detected.
 	 */
 	public function addItemChild($itemName, $childName)
 	{
@@ -116,10 +119,10 @@ class PhpManager extends Manager
 		$item = $this->_items[$itemName];
 		$this->checkItemChildType($item->getType(), $child->getType());
 		if ($this->detectLoop($itemName, $childName)) {
-			throw new Exception("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
+			throw new InvalidCallException("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
 		}
 		if (isset($this->_children[$itemName][$childName])) {
-			throw new Exception("The item '$itemName' already has a child '$childName'.");
+			throw new InvalidCallException("The item '$itemName' already has a child '$childName'.");
 		}
 		$this->_children[$itemName][$childName] = $this->_items[$childName];
 		return true;
@@ -182,14 +185,14 @@ class PhpManager extends Manager
 	 * for this particular authorization item.
 	 * @param mixed $data additional data associated with this assignment
 	 * @return Assignment the authorization assignment information.
-	 * @throws Exception if the item does not exist or if the item has already been assigned to the user
+	 * @throws InvalidParamException if the item does not exist or if the item has already been assigned to the user
 	 */
 	public function assign($userId, $itemName, $bizRule = null, $data = null)
 	{
 		if (!isset($this->_items[$itemName])) {
-			throw new Exception("Unknown authorization item '$itemName'.");
+			throw new InvalidParamException("Unknown authorization item '$itemName'.");
 		} elseif (isset($this->_assignments[$userId][$itemName])) {
-			throw new Exception("Authorization item '$itemName' has already been assigned to user '$userId'.");
+			throw new InvalidParamException("Authorization item '$itemName' has already been assigned to user '$userId'.");
 		} else {
 			return $this->_assignments[$userId][$itemName] = new Assignment($this, $userId, $itemName, $bizRule, $data);
 		}
@@ -336,14 +339,14 @@ class PhpManager extends Manager
 	 * Saves an authorization item to persistent storage.
 	 * @param Item $item the item to be saved.
 	 * @param string $oldName the old item name. If null, it means the item name is not changed.
-	 * @throws Exception if an item with the same name already taken
+	 * @throws InvalidParamException if an item with the same name already taken
 	 */
 	public function saveItem($item, $oldName = null)
 	{
 		if ($oldName !== null && ($newName = $item->getName()) !== $oldName) // name changed
 		{
 			if (isset($this->_items[$newName])) {
-				throw new Exception("Unable to change the item name. The name '$newName' is already used by another item.");
+				throw new InvalidParamException("Unable to change the item name. The name '$newName' is already used by another item.");
 			}
 			if (isset($this->_items[$oldName]) && $this->_items[$oldName] === $item) {
 				unset($this->_items[$oldName]);

@@ -9,7 +9,7 @@ namespace yii\rbac;
 
 use Yii;
 use yii\base\Component;
-use yii\base\Exception;
+use yii\base\InvalidParamException;
 
 /**
  * Manager is the base class for authorization manager classes.
@@ -155,13 +155,13 @@ abstract class Manager extends Component implements IManager
 	 * Checks the item types to make sure a child can be added to a parent.
 	 * @param integer $parentType parent item type
 	 * @param integer $childType child item type
-	 * @throws Exception if the item cannot be added as a child due to its incompatible type.
+	 * @throws InvalidParamException if the item cannot be added as a child due to its incompatible type.
 	 */
 	protected function checkItemChildType($parentType, $childType)
 	{
 		static $types = array('operation', 'task', 'role');
 		if ($parentType < $childType) {
-			throw new Exception("Cannot add an item of type '$types[$childType]' to an item of type '$types[$parentType]'.");
+			throw new InvalidParamException("Cannot add an item of type '$types[$childType]' to an item of type '$types[$parentType]'.");
 		}
 	}
 }

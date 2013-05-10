@@ -12,6 +12,7 @@ use yii\db\Connection;
 use yii\db\Query;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidCallException;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -133,7 +134,8 @@ class DbManager extends Manager
 	 * @param string $itemName the parent item name
 	 * @param string $childName the child item name
 	 * @return boolean whether the item is added successfully
-	 * @throws Exception if either parent or child doesn't exist or if a loop has been detected.
+	 * @throws Exception if either parent or child doesn't exist.
+	 * @throws InvalidCallException if a loop has been detected.
 	 */
 	public function addItemChild($itemName, $childName)
 	{
@@ -158,7 +160,7 @@ class DbManager extends Manager
 			}
 			$this->checkItemChildType($parentType, $childType);
 			if ($this->detectLoop($itemName, $childName)) {
-				throw new Exception("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
+				throw new InvalidCallException("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
 			}
 			$this->db->createCommand()
 				->insert($this->itemChildTable, array(
