@@ -79,6 +79,7 @@
 	"autoload": {
 		"psr-0": {
 			"yii\\": ""
-		}
+		},
+		"classmap": ["yii/Yii.php"]
 	}
 }
