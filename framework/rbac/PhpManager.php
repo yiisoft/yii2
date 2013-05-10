@@ -508,6 +508,6 @@ class PhpManager extends Manager
 	 */
 	protected function saveToFile($data, $file)
 	{
-		file_put_contents($file, "<?php\nreturn " . var_export($data, true) . ";\n");
+		file_put_contents($file, "<?php\nreturn " . var_export($data, true) . ";\n", LOCK_EX);
 	}
 }
