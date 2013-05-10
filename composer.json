@@ -75,5 +75,11 @@
 		"twig/twig": "1.12.*",
 		"smarty/smarty": "3.1.*",
 		"ezyang/htmlpurifier": "v4.5.0"
+	},
+	"autoload": {
+		"psr-0": {
+			"yii\\": ""
+		},
+		"classmap": ["yii/Yii.php"]
 	}
 }
