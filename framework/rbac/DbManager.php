@@ -117,7 +117,7 @@ class DbManager extends Manager
 			$query = new Query;
 			$parents = $query->select(array('parent'))
 				->from($this->itemChildTable)
-				->where('child=:name', array(':name' => $itemName))
+				->where(array('child' => $itemName))
 				->createCommand($this->db)
 				->queryColumn();
 			foreach ($parents as $parent) {
@@ -144,7 +144,7 @@ class DbManager extends Manager
 		}
 		$query = new Query;
 		$rows = $query->from($this->itemTable)
-			->where('name=:name1 OR name=:name2', array(
+			->where(array('or', 'name=:name1', 'name=:name2'), array(
 				':name1' => $itemName,
 				':name2' => $childName
 			))
@@ -183,9 +183,9 @@ class DbManager extends Manager
 	public function removeItemChild($itemName, $childName)
 	{
 		return $this->db->createCommand()
-			->delete($this->itemChildTable, 'parent=:parent AND child=:child', array(
-				':parent' => $itemName,
-				':child' => $childName
+			->delete($this->itemChildTable, array(
+				'parent' => $itemName,
+				'child' => $childName
 			)) > 0;
 	}
 
@@ -200,9 +200,10 @@ class DbManager extends Manager
 		$query = new Query;
 		return $query->select(array('parent'))
 			->from($this->itemChildTable)
-			->where('parent=:parent AND child=:child', array(
-				':parent' => $itemName,
-				':child' => $childName))
+			->where(array(
+				'parent' => $itemName,
+				'child' => $childName
+			))
 			->createCommand($this->db)
 			->queryScalar() !== false;
 	}
@@ -215,21 +216,14 @@ class DbManager extends Manager
 	 */
 	public function getItemChildren($names)
 	{
-		if (is_string($names)) {
-			$condition = 'parent=' . $this->db->quoteValue($names);
-		} elseif (is_array($names) && !empty($names)) {
-			foreach ($names as &$name) {
-				$name = $this->db->quoteValue($name);
-			}
-			$condition = 'parent IN (' . implode(', ', $names) . ')';
-		}
 		$query = new Query;
 		$rows = $query->select(array('name', 'type', 'description', 'bizrule', 'data'))
 			->from(array(
 				$this->itemTable,
 				$this->itemChildTable
 			))
-			->where($condition . ' AND name=child')
+			->where(array('parent'=>$names))
+			->andWhere('name=child')
 			->createCommand($this->db)
 			->queryAll();
 		$children = array();
@@ -276,9 +270,9 @@ class DbManager extends Manager
 	public function revoke($userId, $itemName)
 	{
 		return $this->db->createCommand()
-			->delete($this->assignmentTable, 'itemname=:itemname AND userid=:userid', array(
-				':userid' => $userId,
-				':itemname' => $itemName
+			->delete($this->assignmentTable, array(
+				'userid' => $userId,
+				'itemname' => $itemName
 			)) > 0;
 	}
 
@@ -293,9 +287,9 @@ class DbManager extends Manager
 		$query = new Query;
 		return $query->select(array('itemname'))
 			->from($this->assignmentTable)
-			->where('itemname=:itemname AND userid=:userid', array(
-				':userid' => $userId,
-				':itemname' => $itemName
+			->where(array(
+				'userid' => $userId,
+				'itemname' => $itemName
 			))
 			->createCommand($this->db)
 			->queryScalar() !== false;
@@ -312,9 +306,9 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$row = $query->from($this->assignmentTable)
-			->where('itemname=:itemname AND userid=:userid', array(
-				':userid' => $userId,
-				':itemname' => $itemName
+			->where(array(
+				'userid' => $userId,
+				'itemname' => $itemName
 			))
 			->createCommand($this->db)
 			->queryRow();
@@ -338,7 +332,7 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$rows = $query->from($this->assignmentTable)
-			->where('userid=:userid', array(':userid' => $userId))
+			->where(array('userid' => $userId))
 			->createCommand($this->db)
 			->queryAll();
 		$assignments = array();
@@ -361,7 +355,7 @@ class DbManager extends Manager
 			->update($this->assignmentTable, array(
 				'bizrule' => $assignment->getBizRule(),
 				'data' => serialize($assignment->getData()),
-			), 'itemname=:itemname AND userid=:userid', array(
+			), array(
 				'userid' => $assignment->getUserId(),
 				'itemname' => $assignment->getItemName()
 			));
@@ -383,7 +377,7 @@ class DbManager extends Manager
 				->createCommand($this->db);
 		} elseif ($userId === null) {
 			$command = $query->from($this->itemTable)
-				->where('type=:type', array(':type' => $type))
+				->where(array('type' => $type))
 				->createCommand($this->db);
 		} elseif ($type === null) {
 			$command = $query->select(array('name', 'type', 'description', 't1.bizrule', 't1.data'))
@@ -391,7 +385,8 @@ class DbManager extends Manager
 					$this->itemTable . ' t1',
 					$this->assignmentTable . ' t2'
 				))
-				->where('name=itemname AND userid=:userid', array(':userid' => $userId))
+				->where(array('userid' => $userId))
+				->andWhere('name=itemname')
 				->createCommand($this->db);
 		} else {
 			$command = $query->select('name', 'type', 'description', 't1.bizrule', 't1.data')
@@ -399,10 +394,11 @@ class DbManager extends Manager
 					$this->itemTable . ' t1',
 					$this->assignmentTable . ' t2'
 				))
-				->where('name=itemname AND type=:type AND userid=:userid', array(
-					':userid' => $userId,
-					':type' => $type
+				->where(array(
+					'userid' => $userId,
+					'type' => $type
 				))
+				->andWhere('name=itemname')
 				->createCommand($this->db);
 		}
 		$items = array();
@@ -452,20 +448,13 @@ class DbManager extends Manager
 	{
 		if ($this->usingSqlite()) {
 			$this->db->createCommand()
-				->delete($this->itemChildTable, 'parent=:name1 OR child=:name2', array(
+				->delete($this->itemChildTable, array('or', 'parent=:name1', 'child=:name2'), array(
 					':name1' => $name,
 					':name2' => $name
 				));
-			$this->db->createCommand()
-				->delete($this->assignmentTable, 'itemname=:name', array(
-					':name' => $name,
-				));
+			$this->db->createCommand()->delete($this->assignmentTable, array('itemname' => $name));
 		}
-
-		return $this->db->createCommand()
-			->delete($this->itemTable, 'name=:name', array(
-				':name' => $name
-			)) > 0;
+		return $this->db->createCommand()->delete($this->itemTable, array('name' => $name)) > 0;
 	}
 
 	/**
@@ -477,7 +466,7 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$row = $query->from($this->itemTable)
-			->where('name=:name', array(':name' => $name))
+			->where(array('name' => $name))
 			->createCommand($this->db)
 			->queryRow();
 
@@ -501,20 +490,20 @@ class DbManager extends Manager
 			$this->db->createCommand()
 				->update($this->itemChildTable, array(
 					'parent' => $item->getName(),
-				), 'parent=:whereName', array(
-					':whereName' => $oldName,
+				), array(
+					'parent' => $oldName,
 				));
 			$this->db->createCommand()
 				->update($this->itemChildTable, array(
 					'child' => $item->getName(),
-				), 'child=:whereName', array(
-					':whereName' => $oldName,
+				), array(
+					'child' => $oldName,
 				));
 			$this->db->createCommand()
 				->update($this->assignmentTable, array(
 					'itemname' => $item->getName(),
-				), 'itemname=:whereName', array(
-					':whereName' => $oldName,
+				), array(
+					'itemname' => $oldName,
 				));
 		}
 
@@ -525,8 +514,8 @@ class DbManager extends Manager
 				'description' => $item->getDescription(),
 				'bizrule' => $item->getBizRule(),
 				'data' => serialize($item->getData()),
-			), 'name=:whereName', array(
-				':whereName' => $oldName === null ? $item->getName() : $oldName,
+			), array(
+				'name' => $oldName === null ? $item->getName() : $oldName,
 			));
 	}
 
