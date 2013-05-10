@@ -34,8 +34,8 @@ create table 'tbl_auth_item_child'
 
 create table 'tbl_auth_assignment'
 (
-   "item_name"             varchar(64) not null,
-   "user_id"               varchar(64) not null,
+   "item_name"            varchar(64) not null,
+   "user_id"              varchar(64) not null,
    "bizrule"              text,
    "data"                 text,
    primary key ("item_name","user_id"),
