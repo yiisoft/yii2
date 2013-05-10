@@ -16,7 +16,7 @@ abstract class CacheTest extends TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		$this->requireApp();
+		$this->mockApplication();
 	}
 	
 	public function testSet()

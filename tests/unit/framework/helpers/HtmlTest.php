@@ -10,7 +10,7 @@ class HtmlTest extends TestCase
 {
 	public function setUp()
 	{
-		$this->requireApp(array(
+		$this->mockApplication(array(
 			'components' => array(
 				'request' => array(
 					'class' => 'yii\web\Request',
