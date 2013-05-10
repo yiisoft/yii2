@@ -74,6 +74,11 @@ class ActiveRecord extends Model
 	const EVENT_AFTER_DELETE = 'afterDelete';
 
 	/**
+	 * @var array list of relations that this record should be saved with
+	 */
+	public $with;
+
+	/**
 	 * @var array attribute values indexed by attribute names
 	 */
 	private $_attributes = array();
@@ -1283,6 +1288,51 @@ class ActiveRecord extends Model
 				}
 			}
 		}
+	}
+
+	/**
+	 * Specifies the relations with which this record should be saved.
+	 *
+	 * The parameters to this method can be either one or multiple strings, or a single array
+	 * of relation names and the optional array to customize the attributes.
+	 *
+	 * The followings are some usage examples:
+	 *
+	 * ~~~
+	 * // validate customers together with their orders and country
+	 * $customer = new Customer;
+	 * $customer->name = 'Qiang Xue';
+	 * $customer->populateRelation('orders', array(
+	 *     Order::create(array('type' => 'strong coffee')),
+	 *     Order::create(array('type' => 'tasty pizza')),
+	 * ));
+	 * $customer->populateRelation('country', array(
+	 *     Country::create(array('name' => 'United States')),
+	 * ));
+	 * $customer->with('orders', 'country')->validate();
+	 * // save customers together with their orders and country
+	 * $customer = new Customer;
+	 * $customer->name = 'Qiang Xue';
+	 * $customer->populateRelation('orders', array(
+	 *     Order::create(array('type' => 'strong coffee')),
+	 *     Order::create(array('type' => 'tasty pizza')),
+	 * ));
+	 * $customer->populateRelation('country', array(
+	 *     Country::create(array('name' => 'United States')),
+	 * ));
+	 * $customer->with('orders', 'country')->save();
+	 * ~~~
+	 *
+	 * @return ActiveRecord the object itself
+	 */
+	public function with()
+	{
+		$this->with = func_get_args();
+		if (isset($this->with[0]) && is_array($this->with[0])) {
+			// the parameter is given as an array
+			$this->with = $this->with[0];
+		}
+		return $this;
 	}
 
 	/**
