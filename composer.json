@@ -76,7 +76,7 @@
 		"smarty/smarty": "3.1.*",
 		"ezyang/htmlpurifier": "v4.5.0"
 	},
-    "autoload": {
-        "files": ["yii/Yii.php"]
-    }
+	"autoload": {
+		"files": ["yii/Yii.php"]
+	}
 }
