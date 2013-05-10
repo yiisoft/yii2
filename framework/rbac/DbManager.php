@@ -85,7 +85,7 @@ class DbManager extends Manager
 	/**
 	 * Performs access check for the specified user.
 	 * This method is internally called by [[checkAccess()]].
-	 * @param mixed $userId the user ID. This should can be either an integer and a string representing
+	 * @param mixed $userId the user ID. This should can be either an integer or a string representing
 	 * the unique identifier of a user. See [[User::id]].
 	 * @param string $itemName the name of the operation that need access check
 	 * @param array $params name-value pairs that would be passed to biz rules associated
