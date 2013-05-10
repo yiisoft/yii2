@@ -10,9 +10,11 @@ namespace yii\rbac;
 use Yii;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\db\Expression;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidCallException;
+use yii\base\InvalidParamException;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -222,8 +224,7 @@ class DbManager extends Manager
 				$this->itemTable,
 				$this->itemChildTable
 			))
-			->where(array('parent'=>$names))
-			->andWhere('name=child')
+			->where(array('parent' => $names, 'name' => new Expression('child')))
 			->createCommand($this->db)
 			->queryAll();
 		$children = array();
@@ -244,12 +245,12 @@ class DbManager extends Manager
 	 * for this particular authorization item.
 	 * @param mixed $data additional data associated with this assignment
 	 * @return Assignment the authorization assignment information.
-	 * @throws Exception if the item does not exist or if the item has already been assigned to the user
+	 * @throws InvalidParamException if the item does not exist or if the item has already been assigned to the user
 	 */
 	public function assign($userId, $itemName, $bizRule = null, $data = null)
 	{
 		if ($this->usingSqlite() && $this->getItem($itemName) === null) {
-			throw new Exception("The item '$itemName' does not exist.");
+			throw new InvalidParamException("The item '$itemName' does not exist.");
 		}
 		$this->db->createCommand()
 			->insert($this->assignmentTable, array(
@@ -385,8 +386,7 @@ class DbManager extends Manager
 					$this->itemTable . ' t1',
 					$this->assignmentTable . ' t2'
 				))
-				->where(array('userid' => $userId))
-				->andWhere('name=itemname')
+				->where(array('userid' => $userId, 'name' => new Expression('itemname')))
 				->createCommand($this->db);
 		} else {
 			$command = $query->select('name', 'type', 'description', 't1.bizrule', 't1.data')
@@ -396,9 +396,9 @@ class DbManager extends Manager
 				))
 				->where(array(
 					'userid' => $userId,
-					'type' => $type
+					'type' => $type,
+					'name' => new Expression('itemname'),
 				))
-				->andWhere('name=itemname')
 				->createCommand($this->db);
 		}
 		$items = array();
