@@ -18,7 +18,7 @@ use yii\base\Object;
  * A user may be assigned one or several authorization items (called [[Assignment]] assignments).
  * He can perform an operation only when it is among his assigned items.
  *
- * @property IManager $authManager The authorization manager.
+ * @property Manager $authManager The authorization manager.
  * @property integer $type The authorization item type. This could be 0 (operation), 1 (task) or 2 (role).
  * @property string $name The item name.
  * @property string $description The item description.
@@ -45,7 +45,7 @@ class Item extends Object
 
 	/**
 	 * Constructor.
-	 * @param IManager $auth authorization manager
+	 * @param Manager $auth authorization manager
 	 * @param string $name authorization item name
 	 * @param integer $type authorization item type. This can be 0 (operation), 1 (task) or 2 (role).
 	 * @param string $description the description
@@ -65,7 +65,7 @@ class Item extends Object
 	/**
 	 * Checks to see if the specified item is within the hierarchy starting from this item.
 	 * This method is expected to be internally used by the actual implementations
-	 * of the [[IManager::checkAccess()]].
+	 * of the [[Manager::checkAccess()]].
 	 * @param string $itemName the name of the item to be checked
 	 * @param array $params the parameters to be passed to business rule evaluation
 	 * @return boolean whether the specified item is within the hierarchy starting from this item.
@@ -87,7 +87,7 @@ class Item extends Object
 	}
 
 	/**
-	 * @return IManager the authorization manager
+	 * @return Manager the authorization manager
 	 */
 	public function getManager()
 	{
@@ -184,7 +184,7 @@ class Item extends Object
 	 * @param string $name the name of the child item
 	 * @return boolean whether the item is added successfully
 	 * @throws \yii\base\Exception if either parent or child doesn't exist or if a loop has been detected.
-	 * @see IManager::addItemChild
+	 * @see Manager::addItemChild
 	 */
 	public function addChild($name)
 	{
@@ -196,7 +196,7 @@ class Item extends Object
 	 * Note, the child item is not deleted. Only the parent-child relationship is removed.
 	 * @param string $name the child item name
 	 * @return boolean whether the removal is successful
-	 * @see IManager::removeItemChild
+	 * @see Manager::removeItemChild
 	 */
 	public function removeChild($name)
 	{
@@ -207,7 +207,7 @@ class Item extends Object
 	 * Returns a value indicating whether a child exists
 	 * @param string $name the child item name
 	 * @return boolean whether the child exists
-	 * @see IManager::hasItemChild
+	 * @see Manager::hasItemChild
 	 */
 	public function hasChild($name)
 	{
@@ -217,7 +217,7 @@ class Item extends Object
 	/**
 	 * Returns the children of this item.
 	 * @return Item[] all child items of this item.
-	 * @see IManager::getItemChildren
+	 * @see Manager::getItemChildren
 	 */
 	public function getChildren()
 	{
@@ -232,7 +232,7 @@ class Item extends Object
 	 * @param mixed $data additional data associated with this assignment
 	 * @return Assignment the authorization assignment information.
 	 * @throws \yii\base\Exception if the item has already been assigned to the user
-	 * @see IManager::assign
+	 * @see Manager::assign
 	 */
 	public function assign($userId, $bizRule = null, $data = null)
 	{
@@ -243,7 +243,7 @@ class Item extends Object
 	 * Revokes an authorization assignment from a user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @return boolean whether removal is successful
-	 * @see IManager::revoke
+	 * @see Manager::revoke
 	 */
 	public function revoke($userId)
 	{
@@ -254,7 +254,7 @@ class Item extends Object
 	 * Returns a value indicating whether this item has been assigned to the user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @return boolean whether the item has been assigned to the user.
-	 * @see IManager::isAssigned
+	 * @see Manager::isAssigned
 	 */
 	public function isAssigned($userId)
 	{
@@ -266,7 +266,7 @@ class Item extends Object
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @return Assignment the item assignment information. Null is returned if
 	 * this item is not assigned to the user.
-	 * @see IManager::getAssignment
+	 * @see Manager::getAssignment
 	 */
 	public function getAssignment($userId)
 	{
