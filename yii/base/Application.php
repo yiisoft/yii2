@@ -305,12 +305,12 @@ class Application extends Module
 	}
 
 	/**
-	 * @return null|Component
-	 * @todo
+	 * Returns the auth manager for this application.
+	 * @return \yii\rbac\Manager the auth manager for this application.
 	 */
 	public function getAuthManager()
 	{
-		return $this->getComponent('auth');
+		return $this->getComponent('authManager');
 	}
 
 	/**
