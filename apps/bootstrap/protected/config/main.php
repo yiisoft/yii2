@@ -4,6 +4,11 @@ return array(
 	'id' => 'hello',
 	'basePath' => dirname(__DIR__),
 	'preload' => array('log'),
+	'modules' => array(
+		'debug' => array(
+			'class' => 'yii\debug\Module',
+		)
+	),
 	'components' => array(
 		'cache' => array(
 			'class' => 'yii\caching\FileCache',
