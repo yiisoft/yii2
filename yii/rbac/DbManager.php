@@ -254,8 +254,8 @@ class DbManager extends Manager
 		}
 		$this->db->createCommand()
 			->insert($this->assignmentTable, array(
-				'userid' => $userId,
-				'itemname' => $itemName,
+				'user_id' => $userId,
+				'item_name' => $itemName,
 				'bizrule' => $bizRule,
 				'data' => serialize($data)
 			));
@@ -272,8 +272,8 @@ class DbManager extends Manager
 	{
 		return $this->db->createCommand()
 			->delete($this->assignmentTable, array(
-				'userid' => $userId,
-				'itemname' => $itemName
+				'user_id' => $userId,
+				'item_name' => $itemName
 			)) > 0;
 	}
 
@@ -286,11 +286,11 @@ class DbManager extends Manager
 	public function isAssigned($itemName, $userId)
 	{
 		$query = new Query;
-		return $query->select(array('itemname'))
+		return $query->select(array('item_name'))
 			->from($this->assignmentTable)
 			->where(array(
-				'userid' => $userId,
-				'itemname' => $itemName
+				'user_id' => $userId,
+				'item_name' => $itemName
 			))
 			->createCommand($this->db)
 			->queryScalar() !== false;
@@ -308,8 +308,8 @@ class DbManager extends Manager
 		$query = new Query;
 		$row = $query->from($this->assignmentTable)
 			->where(array(
-				'userid' => $userId,
-				'itemname' => $itemName
+				'user_id' => $userId,
+				'item_name' => $itemName
 			))
 			->createCommand($this->db)
 			->queryRow();
@@ -317,7 +317,7 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
-			return new Assignment($this, $row['userid'], $row['itemname'], $row['bizrule'], $data);
+			return new Assignment($this, $row['user_id'], $row['item_name'], $row['bizrule'], $data);
 		} else {
 			return null;
 		}
@@ -333,7 +333,7 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$rows = $query->from($this->assignmentTable)
-			->where(array('userid' => $userId))
+			->where(array('user_id' => $userId))
 			->createCommand($this->db)
 			->queryAll();
 		$assignments = array();
@@ -341,7 +341,7 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
-			$assignments[$row['itemname']] = new Assignment($this, $row['userid'], $row['itemname'], $row['bizrule'], $data);
+			$assignments[$row['item_name']] = new Assignment($this, $row['user_id'], $row['item_name'], $row['bizrule'], $data);
 		}
 		return $assignments;
 	}
@@ -357,8 +357,8 @@ class DbManager extends Manager
 				'bizrule' => $assignment->getBizRule(),
 				'data' => serialize($assignment->getData()),
 			), array(
-				'userid' => $assignment->getUserId(),
-				'itemname' => $assignment->getItemName()
+				'user_id' => $assignment->getUserId(),
+				'item_name' => $assignment->getItemName()
 			));
 	}
 
@@ -386,7 +386,7 @@ class DbManager extends Manager
 					$this->itemTable . ' t1',
 					$this->assignmentTable . ' t2'
 				))
-				->where(array('userid' => $userId, 'name' => new Expression('itemname')))
+				->where(array('user_id' => $userId, 'name' => new Expression('item_name')))
 				->createCommand($this->db);
 		} else {
 			$command = $query->select('name', 'type', 'description', 't1.bizrule', 't1.data')
@@ -395,9 +395,9 @@ class DbManager extends Manager
 					$this->assignmentTable . ' t2'
 				))
 				->where(array(
-					'userid' => $userId,
+					'user_id' => $userId,
 					'type' => $type,
-					'name' => new Expression('itemname'),
+					'name' => new Expression('item_name'),
 				))
 				->createCommand($this->db);
 		}
@@ -452,7 +452,7 @@ class DbManager extends Manager
 					':name1' => $name,
 					':name2' => $name
 				));
-			$this->db->createCommand()->delete($this->assignmentTable, array('itemname' => $name));
+			$this->db->createCommand()->delete($this->assignmentTable, array('item_name' => $name));
 		}
 		return $this->db->createCommand()->delete($this->itemTable, array('name' => $name)) > 0;
 	}
@@ -501,9 +501,9 @@ class DbManager extends Manager
 				));
 			$this->db->createCommand()
 				->update($this->assignmentTable, array(
-					'itemname' => $item->getName(),
+					'item_name' => $item->getName(),
 				), array(
-					'itemname' => $oldName,
+					'item_name' => $oldName,
 				));
 		}
 
