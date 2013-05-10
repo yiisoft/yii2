@@ -617,6 +617,8 @@ abstract class Module extends Component
 			Yii::$classMap[$className] = $classFile;
 			if (is_subclass_of($className, 'yii\base\Controller')) {
 				$controller = new $className($id, $this);
+			} elseif(!class_exists($className, false)) {
+				throw new UnknownClassException("Unable to find '$className' in file: $classFile");
 			} elseif (YII_DEBUG) {
 				throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
 			}
