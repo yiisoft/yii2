@@ -84,6 +84,10 @@ class Application extends Module
 		} else {
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
+		
+		if (isset($config['timeZone']) || !ini_get('date.timezone')) {
+			$this->setTimeZone( \yii\helpers\ArrayHelper::remove($config,'timeZone','UTC') );
+		}
 
 		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
