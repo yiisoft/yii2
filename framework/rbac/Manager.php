@@ -12,6 +12,30 @@ use yii\base\Component;
 use yii\base\Exception;
 
 /**
+ * Manager is the base class for authorization manager classes.
+ *
+ * Manager extends [[Component]] and implements some methods
+ * that are common among authorization manager classes.
+ *
+ * Manager together with its concrete child classes implement the Role-Based
+ * Access Control (RBAC).
+ *
+ * The main idea is that permissions are organized as a hierarchy of
+ * [[Item]] authorization items. Items on higer level inherit the permissions
+ * represented by items on lower level. And roles are simply top-level authorization items
+ * that may be assigned to individual users. A user is said to have a permission
+ * to do something if the corresponding authorization item is inherited by one of his roles.
+ *
+ * Using authorization manager consists of two aspects. First, the authorization hierarchy
+ * and assignments have to be established. Manager and its child classes
+ * provides APIs to accomplish this task. Developers may need to develop some GUI
+ * so that it is more intuitive to end-users. Second, developers call [[IManager::checkAccess()]]
+ * at appropriate places in the application code to check if the current user
+ * has the needed permission for an operation.
+ *
+ * @property array $roles Roles (name=>Item).
+ * @property array $tasks Tasks (name=>Item).
+ * @property array $operations Operations (name=>Item).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>

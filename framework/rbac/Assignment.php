@@ -11,6 +11,15 @@ use Yii;
 use yii\base\Object;
 
 /**
+ * Assignment represents an assignment of a role to a user.
+ * It includes additional assignment information such as [[bizRule]] and [[data]].
+ * Do not create a Assignment instance using the 'new' operator.
+ * Instead, call [[IManager::assign]].
+ *
+ * @property mixed $userId User ID (see [[User::id]]).
+ * @property string $itemName The authorization item name.
+ * @property string $bizRule The business rule associated with this assignment.
+ * @property mixed $data Additional data for this assignment.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>

@@ -14,6 +14,14 @@ use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
 /**
+ * DbManager represents an authorization manager that stores authorization information in database.
+ *
+ * The database connection is specified by [[db]]. And the database schema
+ * should be as described in "framework/rbac/*.sql". You may change the names of
+ * the three tables used to store the authorization data by setting [[itemTable]],
+ * [[itemChildTable]] and [[assignmentTable]].
+ *
+ * @property array $authItems The authorization items of the specific type.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -60,9 +68,9 @@ class DbManager extends Manager
 
 	/**
 	 * Performs access check for the specified user.
-	 * @param mixed $userId the user ID. This should can be either an integer and a string representing
-	 * @param string $itemName the name of the operation that need access check
+	 * @param mixed $userId the user ID. This should can be either an integer or a string representing
 	 * the unique identifier of a user. See [[User::id]].
+	 * @param string $itemName the name of the operation that need access check
 	 * @param array $params name-value pairs that would be passed to biz rules associated
 	 * with the tasks and roles assigned to the user. A param with name 'userId' is added to this array,
 	 * which holds the value of `$userId`.

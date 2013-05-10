@@ -11,6 +11,17 @@ use Yii;
 use yii\base\Exception;
 
 /**
+ * PhpManager represents an authorization manager that stores authorization
+ * information in terms of a PHP script file.
+ *
+ * The authorization data will be saved to and loaded from a file
+ * specified by [[authFile]], which defaults to 'protected/data/rbac.php'.
+ *
+ * PhpManager is mainly suitable for authorization data that is not too big
+ * (for example, the authorization data for a personal blog system).
+ * Use [[DbManager]] for more complex authorization data.
+ *
+ * @property array $authItems The authorization items of the specific type.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -20,7 +31,7 @@ class PhpManager extends Manager
 {
 	/**
 	 * @var string the path of the PHP script that contains the authorization data.
-	 * If not set, it will be using 'protected/data/auth.php' as the data file.
+	 * If not set, it will be using 'protected/data/rbac.php' as the data file.
 	 * Make sure this file is writable by the Web server process if the authorization
 	 * needs to be changed.
 	 * @see loadFromFile

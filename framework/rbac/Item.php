@@ -11,6 +11,20 @@ use Yii;
 use yii\base\Object;
 
 /**
+ * Item represents an authorization item.
+ * An authorization item can be an operation, a task or a role.
+ * They form an authorization hierarchy. Items on higher levels of the hierarchy
+ * inherit the permissions represented by items on lower levels.
+ * A user may be assigned one or several authorization items (called [[Assignment]] assignments).
+ * He can perform an operation only when it is among his assigned items.
+ *
+ * @property IManager $authManager The authorization manager.
+ * @property integer $type The authorization item type. This could be 0 (operation), 1 (task) or 2 (role).
+ * @property string $name The item name.
+ * @property string $description The item description.
+ * @property string $bizRule The business rule associated with this item.
+ * @property mixed $data The additional data associated with this item.
+ * @property array $children All child items of this item.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>

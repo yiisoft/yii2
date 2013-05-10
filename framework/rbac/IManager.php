@@ -10,6 +10,8 @@ namespace yii\rbac;
 /**
  * IManager interface is implemented by an auth manager application component.
  *
+ * An auth manager is mainly responsible for providing role-based access control (RBAC) service.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
