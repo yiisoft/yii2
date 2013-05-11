@@ -110,7 +110,8 @@ abstract class CacheTest extends TestCase
 		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
 		sleep(1);
 		$this->assertEquals('expire_test', $cache->get('expire_test'));
-		sleep(2);
+		// wait a bit more than 2 sec to avoid random test failure
+		usleep(2500000);
 		$this->assertFalse($cache->get('expire_test'));
 	}
 
