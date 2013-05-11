@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\db\redis;
 
-use yii\base\Exception;
 use yii\db\redis\ActiveQuery;
 use yiiunit\data\ar\redis\ActiveRecord;
 use yiiunit\data\ar\redis\Customer;
