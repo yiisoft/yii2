@@ -84,6 +84,13 @@ class Application extends Module
 		} else {
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
+		
+		if (isset($config['timeZone'])) {
+			$this->setTimeZone($config['timeZone']);
+			unset($config['timeZone']);
+		} elseif (!ini_get('date.timezone')) {
+			$this->setTimeZone('UTC');
+		} 
 
 		if (!ini_get('date.timezone')) {
 			$this->setTimeZone('UTC');
