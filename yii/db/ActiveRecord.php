@@ -712,7 +712,7 @@ class ActiveRecord extends Model
 					$this->afterSave(true);
 				}
 			}
-			if (isset($transaction)) {
+			if ($transaction !== null) {
 				if (!$result) {
 					$transaction->rollback();
 				} else {
@@ -720,7 +720,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if (isset($transaction)) {
+			if ($transaction !== null) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -821,7 +821,7 @@ class ActiveRecord extends Model
 					$result = 0;
 				}
 			}
-			if (isset($transaction)) {
+			if ($transaction !== null) {
 				if (!$result) {
 					$transaction->rollback();
 				} else {
@@ -829,7 +829,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if (isset($transaction)) {
+			if ($transaction !== null) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -913,7 +913,7 @@ class ActiveRecord extends Model
 				$this->_oldAttributes = null;
 				$this->afterDelete();
 			}
-			if (isset($transaction)) {
+			if ($transaction !== null) {
 				if (!$result) {
 					$transaction->rollback();
 				} else {
@@ -921,7 +921,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if (isset($transaction)) {
+			if ($transaction !== null) {
 				$transaction->rollback();
 			}
 			throw $e;
