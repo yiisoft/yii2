@@ -19,11 +19,16 @@ class YiiRequirementChecker
 	 * Check the given requirements, collecting results into internal field.
 	 * This method can be invoked several times checking different requirement sets.
 	 * Use {@link getResult()} or {@link render()} to get the results.
-	 * @param array $requirements requirements to be checked.
+	 * @param array|string $requirements requirements to be checked.
+	 * If an array, it is treated as the set of requirements;
+	 * If a string, it is treated as the path of the file, which contains the requirements;
 	 * @return YiiRequirementChecker self instance.
 	 */
 	function check($requirements)
 	{
+		if (is_string($requirements)) {
+			$requirements = require($requirements);
+		}
 		if (!is_array($requirements)) {
 			$this->usageError("Requirements must be an array!");
 		}
@@ -57,6 +62,15 @@ class YiiRequirementChecker
 			$this->result['requirements'][] = $requirement;
 		}
 		return $this;
+	}
+
+	/**
+	 * Performs the check for the Yii core requirements.
+	 * @return YiiRequirementChecker self instance.
+	 */
+	public function checkYii()
+	{
+		return $this->check(dirname(__FILE__).DIRECTORY_SEPARATOR.'yiirequirements.php');
 	}
 
 	/**
