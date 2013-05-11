@@ -66,7 +66,7 @@ class FileCache extends Cache
 	protected function getValue($key)
 	{
 		$cacheFile = $this->getCacheFile($key);
-		if (($time = @filemtime($cacheFile)) > time()) {
+		if (($time = @filemtime($cacheFile)) > TimeProvider::time()) {
 			return @file_get_contents($cacheFile);
 		} else {
 			return false;
@@ -87,7 +87,7 @@ class FileCache extends Cache
 		if ($expire <= 0) {
 			$expire = 31536000; // 1 year
 		}
-		$expire += time();
+		$expire += TimeProvider::time();
 
 		$cacheFile = $this->getCacheFile($key);
 		if ($this->directoryLevel > 0) {
@@ -113,7 +113,7 @@ class FileCache extends Cache
 	protected function addValue($key, $value, $expire)
 	{
 		$cacheFile = $this->getCacheFile($key);
-		if (@filemtime($cacheFile) > time()) {
+		if (@filemtime($cacheFile) > TimeProvider::time()) {
 			return false;
 		}
 		return $this->setValue($key, $value, $expire);
@@ -196,7 +196,7 @@ class FileCache extends Cache
 					if (!$expiredOnly) {
 						@rmdir($fullPath);
 					}
-				} elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
+				} elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < TimeProvider::time()) {
 					@unlink($fullPath);
 				}
 			}
