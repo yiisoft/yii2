@@ -44,11 +44,11 @@ class TestCase extends \yii\test\TestCase
 			'id' => 'testapp',
 			'basePath' => __DIR__,
 		);
-		
+
 		$appClass = $this->getParam( 'appClass', '\yii\web\Application' );
 		new $appClass(array_merge($defaultConfig,$config));
 	}
-	
+
 	/**
 	 * Destroys application in Yii::$app by setting it to null.
 	 */
