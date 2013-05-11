@@ -17,7 +17,6 @@ use yii\base\InvalidCallException;
 use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\Expression;
-use yii\db\Transaction;
 use yii\helpers\StringHelper;
 
 /**
@@ -618,7 +617,7 @@ class ActiveRecord extends Model
 	 * If the validation fails, the record will not be saved to database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
-	 * @param boolean $transaction whether save process should be surrounded with database
+	 * @param boolean $withTransaction whether save process should be surrounded with database
 	 * transaction. Defaults to false meaning that transaction normally is not used. This is
 	 * mainly useful if you want to achieve atomicity for operations to be made in AR-object lifecycle
 	 * callback methods (e.g. [[beforeSave()]], [[afterSave()]] and so forth). This for example
@@ -627,12 +626,12 @@ class ActiveRecord extends Model
 	 * Database savepoints or nested transactions are not used.
 	 * @return boolean whether the saving succeeds
 	 */
-	public function save($runValidation = true, $attributes = null, $transaction = false)
+	public function save($runValidation = true, $attributes = null, $withTransaction = false)
 	{
 		if ($this->getIsNewRecord()) {
-			return $this->insert($runValidation, $attributes, $transaction);
+			return $this->insert($runValidation, $attributes, $withTransaction);
 		} else {
-			return $this->update($runValidation, $attributes, $transaction) !== false;
+			return $this->update($runValidation, $attributes, $withTransaction) !== false;
 		}
 	}
 
@@ -671,7 +670,7 @@ class ActiveRecord extends Model
 	 * If the validation fails, the record will not be inserted into the database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
-	 * @param boolean $transaction whether insert process should be surrounded with database
+	 * @param boolean $withTransaction whether insert process should be surrounded with database
 	 * transaction. Defaults to false meaning that transaction normally is not used. This is
 	 * mainly useful if you want to achieve atomicity for operations to be made in AR-object lifecycle
 	 * callback methods (e.g. [[beforeSave()]], [[afterSave()]] and so forth). This for example
@@ -680,12 +679,10 @@ class ActiveRecord extends Model
 	 * Database savepoints or nested transactions are not used.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
 	 */
-	public function insert($runValidation = true, $attributes = null, $transaction = false)
+	public function insert($runValidation = true, $attributes = null, $withTransaction = false)
 	{
 		$db = static::getDb();
-		if ($transaction && $db->getTransaction() === null) {
-			$transaction = $db->beginTransaction();
-		}
+		$transaction = $withTransaction && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = true;
 			if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
@@ -715,7 +712,7 @@ class ActiveRecord extends Model
 					$this->afterSave(true);
 				}
 			}
-			if ($transaction instanceof Transaction) {
+			if (isset($transaction)) {
 				if (!$result) {
 					$transaction->rollback();
 				} else {
@@ -723,7 +720,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if ($transaction instanceof Transaction) {
+			if (isset($transaction)) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -775,7 +772,7 @@ class ActiveRecord extends Model
 	 * If the validation fails, the record will not be inserted into the database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
-	 * @param boolean $transaction whether update process should be surrounded with database
+	 * @param boolean $withTransaction whether update process should be surrounded with database
 	 * transaction. Defaults to false meaning that transaction normally is not used. This is
 	 * mainly useful if you want to achieve atomicity for operations to be made in AR-object lifecycle
 	 * callback methods (e.g. [[beforeSave()]], [[afterSave()]] and so forth). This for example
@@ -787,12 +784,10 @@ class ActiveRecord extends Model
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being updated is outdated.
 	 */
-	public function update($runValidation = true, $attributes = null, $transaction = false)
+	public function update($runValidation = true, $attributes = null, $withTransaction = false)
 	{
 		$db = static::getDb();
-		if ($transaction && $db->getTransaction() === null) {
-			$transaction = $db->beginTransaction();
-		}
+		$transaction = $withTransaction && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = true;
 			if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
@@ -826,7 +821,7 @@ class ActiveRecord extends Model
 					$result = 0;
 				}
 			}
-			if ($transaction instanceof Transaction) {
+			if (isset($transaction)) {
 				if (!$result) {
 					$transaction->rollback();
 				} else {
@@ -834,7 +829,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if ($transaction instanceof Transaction) {
+			if (isset($transaction)) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -885,7 +880,7 @@ class ActiveRecord extends Model
 	 * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * @param boolean $transaction whether delete process should be surrounded with database
+	 * @param boolean $withTransaction whether delete process should be surrounded with database
 	 * transaction. Defaults to false meaning that transaction normally is not used. This is
 	 * mainly useful if you want to achieve atomicity for operations to be made in AR-object lifecycle
 	 * callback methods (e.g. [[beforeSave()]], [[afterSave()]] and so forth). This for example
@@ -897,12 +892,10 @@ class ActiveRecord extends Model
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being deleted is outdated.
 	 */
-	public function delete($transaction = false)
+	public function delete($withTransaction = false)
 	{
 		$db = static::getDb();
-		if ($transaction && $db->getTransaction() === null) {
-			$transaction = static::getDb()->beginTransaction();
-		}
+		$transaction = $withTransaction && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = false;
 			if ($this->beforeDelete()) {
@@ -920,7 +913,7 @@ class ActiveRecord extends Model
 				$this->_oldAttributes = null;
 				$this->afterDelete();
 			}
-			if ($transaction instanceof Transaction) {
+			if (isset($transaction)) {
 				if (!$result) {
 					$transaction->rollback();
 				} else {
@@ -928,7 +921,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if ($transaction instanceof Transaction) {
+			if (isset($transaction)) {
 				$transaction->rollback();
 			}
 			throw $e;
