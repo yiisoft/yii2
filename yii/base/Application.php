@@ -90,7 +90,6 @@ class Application extends Module
 			unset($config['timeZone']);
 		} elseif (!ini_get('date.timezone')) {
 			$this->setTimeZone('UTC');
-			unset($config['timeZone']);
 		} 
 
 		$this->registerErrorHandlers();
