@@ -55,4 +55,33 @@ class YiiRequirementCheckerTest extends TestCase
 		$this->assertEquals(false, $checkedRequirements['requirementWarning']['error'], 'Error requirement has an error!');
 		$this->assertEquals(true, $checkedRequirements['requirementWarning']['warning'], 'Error requirement has no warning!');
 	}
+
+	public function testCheckEval() {
+		$requirementsChecker = new YiiRequirementChecker();
+
+		$requirements = array(
+			'requirementPass' => array(
+				'name' => 'Requirement 1',
+				'mandatory' => true,
+				'condition' => 'eval:2>1',
+				'by' => 'Requirement 1',
+				'memo' => 'Requirement 1',
+			),
+			'requirementError' => array(
+				'name' => 'Requirement 2',
+				'mandatory' => true,
+				'condition' => 'eval:2<1',
+				'by' => 'Requirement 2',
+				'memo' => 'Requirement 2',
+			),
+		);
+
+		$checkResult = $requirementsChecker->check($requirements)->getResult();
+		$checkedRequirements = $checkResult['requirements'];
+
+		$this->assertEquals(false, $checkedRequirements['requirementPass']['error'], 'Passed requirement has an error!');
+		$this->assertEquals(false, $checkedRequirements['requirementPass']['warning'], 'Passed requirement has a warning!');
+
+		$this->assertEquals(true, $checkedRequirements['requirementError']['error'], 'Error requirement has no error!');
+	}
 }
