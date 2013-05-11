@@ -15,7 +15,8 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * This class allows rendering of the check report for the web and console application interface.
  *
  * Example:
- * <code>
+ *
+ * ~~~
  * require_once('path/to/YiiRequirementChecker.php');
  * $requirementsChecker = new YiiRequirementChecker();
  * $requirements = array(
@@ -28,21 +29,22 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *     ),
  * );
  * $requirementsChecker->checkYii()->check($requirements)->render();
- * <code>
+ * ~~~
  *
  * If you wish to render the report with your own representation, use [[getResult()]] instead of [[render()]]
  *
  * Requirement condition could be in format "eval:PHP expression".
  * In this case specified PHP expression will be evaluated in the context of this class instance.
  * For example:
- * <code>
+ *
+ * ~~~
  * $requirements = array(
  *     array(
  *         'name' => 'Upload max file size',
  *         'condition' => 'eval:$this->checkUploadMaxFileSize("5M")',
  *     ),
  * );
- * </code>
+ * ~~~
  *
  * @property array|null $result the check results, this property is for internal usage only.
  *
@@ -66,7 +68,7 @@ class YiiRequirementChecker
 			$requirements = require($requirements);
 		}
 		if (!is_array($requirements)) {
-			$this->usageError('Requirements must be an array, "'.gettype($requirements).'" has been given!');
+			$this->usageError('Requirements must be an array, "' . gettype($requirements) . '" has been given!');
 		}
 		if (!isset($this->result) || !is_array($this->result)) {
 			$this->result = array(
@@ -106,7 +108,7 @@ class YiiRequirementChecker
 	 */
 	public function checkYii()
 	{
-		return $this->check(dirname(__FILE__).DIRECTORY_SEPARATOR.'yiirequirements.php');
+		return $this->check(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'requirements.php');
 	}
 
 	/**
@@ -148,11 +150,11 @@ class YiiRequirementChecker
 		if (!isset($this->result)) {
 			$this->usageError('Nothing to render!');
 		}
-		$baseViewFilePath = dirname(__FILE__).DIRECTORY_SEPARATOR.'views';
+		$baseViewFilePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'views';
 		if (array_key_exists('argv', $_SERVER)) {
-			$viewFileName = $baseViewFilePath.DIRECTORY_SEPARATOR.'console'.DIRECTORY_SEPARATOR.'index.php';
+			$viewFileName = $baseViewFilePath . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR . 'index.php';
 		} else {
-			$viewFileName = $baseViewFilePath.DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'index.php';
+			$viewFileName = $baseViewFilePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'index.php';
 		}
 		$this->renderViewFile($viewFileName, $this->result);
 	}
@@ -164,7 +166,7 @@ class YiiRequirementChecker
 	 * @param string $compare comparison operator, by default '>='
 	 * @return boolean if PHP extension version matches.
 	 */
-	function checkPhpExtensionVersion($extensionName, $version, $compare='>=')
+	function checkPhpExtensionVersion($extensionName, $version, $compare = '>=')
 	{
 		if (!extension_loaded($extensionName)) {
 			return false;
@@ -187,7 +189,7 @@ class YiiRequirementChecker
 		if (empty($value)) {
 			return false;
 		}
-		return ((integer)$value==1 || strtolower($value) == 'on');
+		return ((integer)$value == 1 || strtolower($value) == 'on');
 	}
 
 	/**
@@ -212,9 +214,9 @@ class YiiRequirementChecker
 	 * @param string $compare comparison operator, by default '>='.
 	 * @return boolean comparison result.
 	 */
-	function compareByteSize($a, $b, $compare='>=')
+	function compareByteSize($a, $b, $compare = '>=')
 	{
-		$compareExpression = '('.$this->getByteSize($a).$compare.$this->getByteSize($b).')';
+		$compareExpression = '(' . $this->getByteSize($a) . $compare . $this->getByteSize($b) . ')';
 		return $this->evaluateExpression($compareExpression);
 	}
 
@@ -241,15 +243,15 @@ class YiiRequirementChecker
 		switch (strtolower($sizeUnit)) {
 			case 'kb':
 			case 'k': {
-				return $size*1024;
+				return $size * 1024;
 			}
 			case 'mb':
 			case 'm': {
-				return $size*1024*1024;
+				return $size * 1024 * 1024;
 			}
 			case 'gb':
 			case 'g': {
-				return $size*1024*1024*1024;
+				return $size * 1024 * 1024 * 1024;
 			}
 			default: {
 				return 0;
@@ -263,16 +265,16 @@ class YiiRequirementChecker
 	 * @param string|null $max verbose file size maximum required value, pass null to skip maximum check.
 	 * @return boolean success.
 	 */
-	function checkUploadMaxFileSize($min=null, $max=null)
+	function checkUploadMaxFileSize($min = null, $max = null)
 	{
 		$postMaxSize = ini_get('post_max_size');
 		$uploadMaxFileSize = ini_get('upload_max_filesize');
-		if ($min!==null) {
+		if ($min !== null) {
 			$minCheckResult = $this->compareByteSize($postMaxSize, $min, '>=') && $this->compareByteSize($uploadMaxFileSize, $min, '>=');
 		} else {
 			$minCheckResult = true;
 		}
-		if ($max!==null) {
+		if ($max !== null) {
 			var_dump($postMaxSize, $uploadMaxFileSize, $max);
 			$maxCheckResult = $this->compareByteSize($postMaxSize, $max, '<=') && $this->compareByteSize($uploadMaxFileSize, $max, '<=');
 		} else {
@@ -290,7 +292,7 @@ class YiiRequirementChecker
 	 * @param boolean $_return_ whether the rendering result should be returned as a string
 	 * @return string the rendering result. Null if the rendering result is not required.
 	 */
-	function renderViewFile($_viewFile_, $_data_=null, $_return_=false)
+	function renderViewFile($_viewFile_, $_data_ = null, $_return_ = false)
 	{
 		// we use special variable names here to avoid conflict when extracting data
 		if (is_array($_data_)) {
@@ -314,7 +316,7 @@ class YiiRequirementChecker
 	 * @param int $requirementKey requirement key in the list.
 	 * @return array normalized requirement.
 	 */
-	function normalizeRequirement($requirement, $requirementKey=0)
+	function normalizeRequirement($requirement, $requirementKey = 0)
 	{
 		if (!is_array($requirement)) {
 			$this->usageError('Requirement must be an array!');
@@ -323,13 +325,13 @@ class YiiRequirementChecker
 			$this->usageError("Requirement '{$requirementKey}' has no condition!");
 		} else {
 			$evalPrefix = 'eval:';
-			if (is_string($requirement['condition']) && strpos($requirement['condition'], $evalPrefix)===0) {
+			if (is_string($requirement['condition']) && strpos($requirement['condition'], $evalPrefix) === 0) {
 				$expression = substr($requirement['condition'], strlen($evalPrefix));
 				$requirement['condition'] = $this->evaluateExpression($expression);
 			}
 		}
 		if (!array_key_exists('name', $requirement)) {
-			$requirement['name'] = is_numeric($requirementKey) ? 'Requirement #'.$requirementKey : $requirementKey;
+			$requirement['name'] = is_numeric($requirementKey) ? 'Requirement #' . $requirementKey : $requirementKey;
 		}
 		if (!array_key_exists('mandatory', $requirement)) {
 			if (array_key_exists('required', $requirement)) {
@@ -365,7 +367,7 @@ class YiiRequirementChecker
 	 */
 	function evaluateExpression($expression)
 	{
-		return eval('return '.$expression.';');
+		return eval('return ' . $expression . ';');
 	}
 
 	/**

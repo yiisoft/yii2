@@ -10,12 +10,10 @@
  * ln requirements.php ../requirements.php
  */
 
-$appRootPath = dirname(__FILE__);
-if (basename($appRootPath) == 'protected') {
-	$appRootPath = dirname($appRootPath);
-}
-// you may need to adjust this path:
-require_once(realpath($appRootPath.'/../../yii/requirements/YiiRequirementChecker.php'));
+// you may need to adjust this path to the correct Yii framework path
+$frameworkPath = dirname(__FILE__) . '/../../../yii';
+
+require_once($frameworkPath . '/requirements/YiiRequirementChecker.php');
 $requirementsChecker = new YiiRequirementChecker();
 
 /**
