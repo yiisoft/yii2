@@ -78,10 +78,43 @@ class YiiRequirementChecker
 	 */
 	function render()
 	{
-		if (isset($this->result)) {
+		if (!isset($this->result)) {
 			$this->usageError('Nothing to render!');
 		}
-		// @todo render
+		$baseViewFilePath = dirname(__FILE__).DIRECTORY_SEPARATOR.'views';
+		if (array_key_exists('argv', $_SERVER)) {
+			$viewFileName = $baseViewFilePath.DIRECTORY_SEPARATOR.'console'.DIRECTORY_SEPARATOR.'index.php';
+		} else {
+			$viewFileName = $baseViewFilePath.DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'index.php';
+		}
+		$this->renderViewFile($viewFileName, $this->result);
+	}
+
+	/**
+	 * Renders a view file.
+	 * This method includes the view file as a PHP script
+	 * and captures the display result if required.
+	 * @param string $_viewFile_ view file
+	 * @param array $_data_ data to be extracted and made available to the view file
+	 * @param boolean $_return_ whether the rendering result should be returned as a string
+	 * @return string the rendering result. Null if the rendering result is not required.
+	 */
+	function renderViewFile($_viewFile_, $_data_=null, $_return_=false)
+	{
+		// we use special variable names here to avoid conflict when extracting data
+		if (is_array($_data_)) {
+			extract($_data_, EXTR_PREFIX_SAME, 'data');
+		} else {
+			$data = $_data_;
+		}
+		if ($_return_) {
+			ob_start();
+			ob_implicit_flush(false);
+			require($_viewFile_);
+			return ob_get_clean();
+		} else {
+			require($_viewFile_);
+		}
 	}
 
 	/**
