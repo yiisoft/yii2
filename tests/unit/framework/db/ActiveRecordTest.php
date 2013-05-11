@@ -10,10 +10,11 @@ use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
 
-class ActiveRecordTest extends \yiiunit\MysqlTestCase
+class ActiveRecordTest extends \yiiunit\DatabaseTestCase
 {
-	public function setUp()
+	protected function setUp()
 	{
+        parent::setUp();
 		ActiveRecord::$db = $this->getConnection();
 	}
 

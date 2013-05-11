@@ -155,7 +155,7 @@ class ModelTest extends TestCase
 
 		// iteration
 		$attributes = array();
-		foreach($speaker as $key => $attribute) {
+		foreach ($speaker as $key => $attribute) {
 			$attributes[$key] = $attribute;
 		}
 		$this->assertEquals(array(

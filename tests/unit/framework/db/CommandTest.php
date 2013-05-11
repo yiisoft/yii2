@@ -7,7 +7,7 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
-class CommandTest extends \yiiunit\MysqlTestCase
+class CommandTest extends \yiiunit\DatabaseTestCase
 {
 	function testConstruct()
 	{
@@ -140,7 +140,7 @@ class CommandTest extends \yiiunit\MysqlTestCase
 		$db = $this->getConnection();
 
 		// bindParam
-		$sql = 'INSERT INTO tbl_customer(email,name,address) VALUES (:email, :name, :address)';
+		$sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, :name, :address)';
 		$command = $db->createCommand($sql);
 		$email = 'user4@example.com';
 		$name = 'user4';

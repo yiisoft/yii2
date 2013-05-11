@@ -17,6 +17,8 @@ class DbCacheTest extends CacheTest
 			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');
 		}
 
+		parent::setUp();
+		
 		$this->getConnection()->createCommand("
 			CREATE TABLE IF NOT EXISTS tbl_cache (
 				id char(128) NOT NULL,
@@ -34,8 +36,9 @@ class DbCacheTest extends CacheTest
 	 */
 	function getConnection($reset = true)
 	{
-		if($this->_connection === null) {
-			$params = $this->getParam('mysql');
+		if ($this->_connection === null) {
+			$databases = $this->getParam('databases');
+            $params = $databases['mysql'];
 			$db = new \yii\db\Connection;
 			$db->dsn = $params['dsn'];
 			$db->username = $params['username'];
@@ -60,7 +63,7 @@ class DbCacheTest extends CacheTest
 	 */
 	protected function getCacheInstance()
 	{
-		if($this->_cacheInstance === null) {
+		if ($this->_cacheInstance === null) {
 			$this->_cacheInstance = new DbCache(array(
 				'db' => $this->getConnection(),
 			));

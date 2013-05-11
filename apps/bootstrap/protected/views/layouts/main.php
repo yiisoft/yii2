@@ -1,9 +1,11 @@
 <?php
+use yii\helpers\Html;
+use yii\widgets\Menu;
+
 /**
  * @var $this \yii\base\View
  * @var $content string
  */
-use yii\helpers\Html;
 $this->registerAssetBundle('app');
 ?>
 <?php $this->beginPage(); ?>
@@ -23,16 +25,17 @@ $this->registerAssetBundle('app');
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container">
-					<ul class="nav">
-						<li><?php echo Html::a('Home', Yii::$app->homeUrl); ?></li>
-						<li><?php echo Html::a('About', array('/site/about')); ?></li>
-						<li><?php echo Html::a('Contact', array('/site/contact')); ?></li>
-						<?php if (Yii::$app->user->isGuest): ?>
-						<li><?php echo Html::a('Login', array('/site/login')); ?></li>
-						<?php else: ?>
-						<li><?php echo Html::a('Logout (' . Html::encode(Yii::$app->user->identity->username) . ')', array('/site/logout')); ?></li>
-						<?php endif; ?>
-					</ul>
+					<?php $this->widget(Menu::className(), array(
+						'options' => array('class' => 'nav'),
+						'items' => array(
+							array('label' => 'Home', 'url' => array('/site/index')),
+							array('label' => 'About', 'url' => array('/site/about')),
+							array('label' => 'Contact', 'url' => array('/site/contact')),
+							Yii::$app->user->isGuest ?
+								array('label' => 'Login', 'url' => array('/site/login')) :
+								array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout')),
+						),
+					)); ?>
 				</div>
 			</div>
 		</div>
@@ -55,6 +58,7 @@ $this->registerAssetBundle('app');
 	</div>
 	<?php $this->endBody(); ?>
 </div>
+<?php $this->widget('yii\debug\Toolbar'); ?>
 </body>
 </html>
 <?php $this->endPage(); ?>
