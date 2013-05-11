@@ -87,7 +87,7 @@ class I18N extends Component
 			$language = Yii::$app->language;
 		}
 
-		// allow chars for category: word chars, ".", "-", "/","\"
+		// allow chars for category: word chars, ".", "-", "/", "\"
 		if (strpos($message, '|') !== false && preg_match('/^([\w\-\\/\.\\\\]+)\|(.*)/', $message, $matches)) {
 			$category = $matches[1];
 			$message = $matches[2];

@@ -111,8 +111,8 @@ class DictionaryTest extends \yiiunit\TestCase
 
 	public function testMergeWith()
 	{
-		$a = array('a' => 'v1', 'v2', array('2'), 'c' => array('3','c' => 'a'));
-		$b = array('v22', 'a' => 'v11', array('2'), 'c' => array('c' => '3','a'));
+		$a = array('a' => 'v1', 'v2', array('2'), 'c' => array('3', 'c' => 'a'));
+		$b = array('v22', 'a' => 'v11', array('2'), 'c' => array('c' => '3', 'a'));
 		$c = array('a' => 'v11', 'v2', array('2'), 'c' => array('3', 'c' => '3', 'a'), 'v22', array('2'));
 		$dictionary = new Dictionary($a);
 		$dictionary2 = new Dictionary($b);

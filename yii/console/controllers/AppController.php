@@ -8,7 +8,6 @@
 namespace yii\console\controllers;
 
 use yii\console\Controller;
-use yii\helpers\FileHelper;
 use yii\base\Exception;
 
 /**
@@ -140,10 +139,10 @@ class AppController extends Controller
 	 */
 	protected function getConfig()
 	{
-		if ($this->_config===null) {
-			$this->_config = require $this->getDefaultTemplatesPath().'/config.php';
+		if ($this->_config === null) {
+			$this->_config = require $this->getDefaultTemplatesPath() . '/config.php';
 			if ($this->templatesPath && file_exists($this->templatesPath)) {
-				$this->_config = array_merge($this->_config, require $this->templatesPath.'/config.php');
+				$this->_config = array_merge($this->_config, require $this->templatesPath . '/config.php');
 			}
 		}
 		if (isset($this->_config[$this->type])) {
@@ -188,18 +187,18 @@ class AppController extends Controller
 			}
 		}
 
-		if ($i===0) {
-			return "'".$path1."'";
+		if ($i === 0) {
+			return "'" . $path1 . "'";
 		}
-		$up='';
-		for($j=$i;$j<$n2-1;++$j) {
-			$up.='/..';
+		$up = '';
+		for ($j = $i; $j < $n2 - 1; ++$j) {
+			$up .= '/..';
 		}
-		for(; $i<$n1-1; ++$i) {
-			$up.='/'.$segs1[$i];
+		for(; $i < $n1 - 1; ++$i) {
+			$up .= '/' . $segs1[$i];
 		}
 
-		return '__DIR__.\''.$up.'/'.basename($path1).'\'';
+		return '__DIR__.\'' . $up . '/' . basename($path1) . '\'';
 	}
 
 
@@ -214,7 +213,7 @@ class AppController extends Controller
 	 * <li>callback: optional, the callback to be invoked when copying a file. The callback function
 	 *   should be declared as follows:
 	 *   <pre>
-	 *   function foo($source,$params)
+	 *   function foo($source, $params)
 	 *   </pre>
 	 *   where $source parameter is the source file path, and the content returned
 	 *   by the function will be saved into the target file.</li>

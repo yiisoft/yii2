@@ -73,7 +73,7 @@ class ListPager extends Widget
 		$selection = $this->pagination->createUrl($currentPage);
 
 		if (!isset($this->options['onchange'])) {
-			$this->options['onchange'] = "if(this.value!='') {window.location=this.value;};";
+			$this->options['onchange'] = "if (this.value != '') { window.location = this.value; };";
 		}
 
 		echo Html::dropDownList(null, $selection, $pages, $this->options);

@@ -234,7 +234,7 @@ class Query extends \yii\base\Component
 	 *
 	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
 	 * the range of the values that the column or DB expression should be in. For example,
-	 * `array('in', 'id', array(1,2,3))` will generate `id IN (1,2,3)`.
+	 * `array('in', 'id', array(1, 2, 3))` will generate `id IN (1, 2, 3)`.
 	 * The method will properly quote the column name and escape values in the range.
 	 *
 	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.

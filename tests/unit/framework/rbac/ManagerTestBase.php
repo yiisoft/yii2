@@ -164,8 +164,8 @@ abstract class ManagerTestBase extends TestCase
 	public function testExecuteBizRule()
 	{
 		$this->assertTrue($this->auth->executeBizRule(null, array(), null));
-		$this->assertTrue($this->auth->executeBizRule('return 1==true;', array(), null));
-		$this->assertTrue($this->auth->executeBizRule('return $params[0]==$params[1];', array(1, '1'), null));
+		$this->assertTrue($this->auth->executeBizRule('return 1 == true;', array(), null));
+		$this->assertTrue($this->auth->executeBizRule('return $params[0] == $params[1];', array(1, '1'), null));
 		$this->assertFalse($this->auth->executeBizRule('invalid', array(), null));
 	}
 
@@ -220,7 +220,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->auth->createOperation('updatePost', 'update a post');
 		$this->auth->createOperation('deletePost', 'delete a post');
 
-		$task = $this->auth->createTask('updateOwnPost', 'update a post by author himself', 'return $params["authorID"]==$params["userID"];');
+		$task = $this->auth->createTask('updateOwnPost', 'update a post by author himself', 'return $params["authorID"] == $params["userID"];');
 		$task->addChild('updatePost');
 
 		$role = $this->auth->createRole('reader');

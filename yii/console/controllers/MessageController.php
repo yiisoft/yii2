@@ -36,7 +36,7 @@ class MessageController extends Controller
 	 *  - sourcePath: string, root directory of all source files.
 	 *  - messagePath: string, root directory containing message translations.
 	 *  - languages: array, list of language codes that the extracted messages
-	 *    should be translated to. For example, array('zh_cn','en_au').
+	 *    should be translated to. For example, array('zh_cn', 'en_au').
 	 *  - fileTypes: array, a list of file extensions (e.g. 'php', 'xml').
 	 *    Only the files whose extension name can be found in this list
 	 *    will be processed. If empty, all files will be processed.
@@ -135,7 +135,7 @@ class MessageController extends Controller
 		return $messages;
 	}
 
-	protected function generateMessageFile($messages,$fileName,$overwrite,$removeOld,$sort)
+	protected function generateMessageFile($messages, $fileName, $overwrite, $removeOld, $sort)
 	{
 		echo "Saving messages to $fileName...";
 		if (is_file($fileName)) {
