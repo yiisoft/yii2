@@ -38,7 +38,7 @@ class YiiRequirementCheckerTest extends TestCase
 			),
 		);
 
-		$checkResult = $requirementsChecker->check($requirements);
+		$checkResult = $requirementsChecker->check($requirements)->getResult();
 		$summary = $checkResult['summary'];
 
 		$this->assertEquals(count($requirements), $summary['total'], 'Wrong summary total!');

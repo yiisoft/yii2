@@ -49,7 +49,33 @@ class YiiRequirementChecker
 			'summary' => $summary,
 			'requirements' => $requirements,
 		);
-		return $result;
+		$this->result = $result;
+		return $this;
+	}
+
+	/**
+	 * Return the check results.
+	 * @return array|null check results.
+	 */
+	function getResult()
+	{
+		if (isset($this->result)) {
+			return $this->result;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Renders the requirements check result.
+	 * The output will vary depending is a script running from web or from console.
+	 */
+	function render()
+	{
+		if (isset($this->result)) {
+			$this->usageError('Nothing to render!');
+		}
+		// @todo render
 	}
 
 	/**
