@@ -9,7 +9,6 @@ namespace yii\db\mssql;
 
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
-use yii\helpers\ArrayHelper;
 
 /**
  * Schema is the class for retrieving metadata from a MS SQL database (version 2008 and above).
@@ -30,7 +29,31 @@ class Schema extends \yii\db\Schema
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
 	public $typeMap = array(
-		// TODO: mssql driver
+		'tinyint' => self::TYPE_SMALLINT,
+		'bit' => self::TYPE_SMALLINT,
+		'smallint' => self::TYPE_SMALLINT,
+		'mediumint' => self::TYPE_INTEGER,
+		'int' => self::TYPE_INTEGER,
+		'integer' => self::TYPE_INTEGER,
+		'bigint' => self::TYPE_BIGINT,
+		'float' => self::TYPE_FLOAT,
+		'double' => self::TYPE_FLOAT,
+		'real' => self::TYPE_FLOAT,
+		'decimal' => self::TYPE_DECIMAL,
+		'numeric' => self::TYPE_DECIMAL,
+		'tinytext' => self::TYPE_TEXT,
+		'mediumtext' => self::TYPE_TEXT,
+		'longtext' => self::TYPE_TEXT,
+		'text' => self::TYPE_TEXT,
+		'varchar' => self::TYPE_STRING,
+		'string' => self::TYPE_STRING,
+		'char' => self::TYPE_STRING,
+		'datetime' => self::TYPE_DATETIME,
+		'year' => self::TYPE_DATE,
+		'date' => self::TYPE_DATE,
+		'time' => self::TYPE_TIME,
+		'timestamp' => self::TYPE_TIMESTAMP,
+		'enum' => self::TYPE_STRING,
 	);
 
 	/**
@@ -76,11 +99,89 @@ class Schema extends \yii\db\Schema
 		$this->findPrimaryKeys($table);
 
 		if ($this->findColumns($table)) {
-			$this->findConstraints($table);
+			$this->findForeignKeys($table);
 			return $table;
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Resolves the table name and schema name (if any).
+	 * @param TableSchema $table the table metadata object
+	 * @param string $name the table name
+	 */
+	protected function resolveTableNames($table, $name)
+	{
+		$parts = explode('.', str_replace(array('[', ']'), '', $name));
+		$partCount = count($parts);
+		if ($partCount == 3) {
+			// catalog name, schema name and table name provided
+			$table->catalogName = $parts[0];
+			$table->schemaName = $parts[1];
+			$table->name = $parts[2];
+		} elseif ($partCount == 2) {
+			// only schema name and table name provided
+			$table->schemaName = $parts[0];
+			$table->name = $parts[1];
+		} else {
+			// only schema name provided
+			$table->schemaName = static::DEFAULT_SCHEMA;
+			$table->name = $parts[0];
+		}
+	}
+
+	/**
+	 * Loads the column information into a [[ColumnSchema]] object.
+	 * @param array $info column information
+	 * @return ColumnSchema the column schema object
+	 */
+	protected function loadColumnSchema($info)
+	{
+		$column = new ColumnSchema();
+
+		$column->name = $info['COLUMN_NAME'];
+		$column->comment = $info['Comment'] === null ? '' : $column['Comment'];
+
+		$column->dbType = $info['DATA_TYPE'];
+		$column->unsigned = stripos($column->dbType, 'unsigned') !== false;
+		$column->allowNull = $info['IS_NULLABLE'] == 'YES';
+
+		$column->isPrimaryKey = null; // primary key is determined in findColumns() method
+		$column->autoIncrement = $info['IsIdentity'] == 1;
+
+		$column->type = self::TYPE_STRING;
+		$matches = array();
+		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
+			$type = $matches[1];
+			if (isset($this->typeMap[$type])) {
+				$column->type = $this->typeMap[$type];
+			}
+			if (!empty($matches[2])) {
+				$values = explode(',', $matches[2]);
+				$column->size = $column->precision = (int)$values[0];
+				if (isset($values[1])) {
+					$column->scale = (int)$values[1];
+				}
+				if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
+					$column->type = 'boolean';
+				} elseif ($type === 'bit') {
+					if ($column->size > 32) {
+						$column->type = 'bigint';
+					} elseif ($column->size === 32) {
+						$column->type = 'integer';
+					}
+				}
+			}
+		}
+
+		$column->phpType = $this->getColumnPhpType($column);
+
+		if ($info['COLUMN_DEFAULT'] == '(NULL)') {
+			$column->defaultValue = null;
+		}
+
+		return $column;
 	}
 
 	/**
@@ -177,35 +278,10 @@ SQL;
 	}
 
 	/**
-	 * Loads the column information into a [[ColumnSchema]] object.
-	 * @param array $info column information
-	 * @return ColumnSchema the column schema object
-	 */
-	protected function loadColumnSchema($info)
-	{
-		$column = new ColumnSchema();
-		$column->name = $info['COLUMN_NAME'];
-		$column->comment = $info['Comment'] === null ? '' : $column['Comment'];
-
-		$column->dbType = $info['DATA_TYPE'];
-		$column->unsigned = stripos($column->dbType, 'unsigned') !== false;
-		$column->allowNull = $info['IS_NULLABLE'] == 'YES';
-
-		$column->isPrimaryKey = null; // primary key is determined in findColumns() method
-		$column->autoIncrement = $info['IsIdentity'] == 1;
-
-		$column->type = self::TYPE_STRING;
-		// TODO: better type infer
-
-		$column->phpType = $this->getColumnPhpType($column);
-		return $column;
-	}
-
-	/**
 	 * Collects the foreign key column details for the given table.
 	 * @param TableSchema $table the table metadata
 	 */
-	protected function findConstraints($table)
+	protected function findForeignKeys($table)
 	{
 		$referentialConstraintsTableName = 'INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS';
 		$keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
@@ -244,31 +320,6 @@ SQL;
 	}
 
 	/**
-	 * Resolves the table name and schema name (if any).
-	 * @param TableSchema $table the table metadata object
-	 * @param string $name the table name
-	 */
-	protected function resolveTableNames($table, $name)
-	{
-		$parts = explode('.', str_replace(array('[', ']'), '', $name));
-		$partCount = count($parts);
-		if ($partCount == 3) {
-			// catalog name, schema name and table name provided
-			$table->catalogName = $parts[0];
-			$table->schemaName = $parts[1];
-			$table->name = $parts[2];
-		} elseif ($partCount == 2) {
-			// only schema name and table name provided
-			$table->schemaName = $parts[0];
-			$table->name = $parts[1];
-		} else {
-			// only schema name provided
-			$table->schemaName = static::DEFAULT_SCHEMA;
-			$table->name = $parts[0];
-		}
-	}
-
-	/**
 	 * Returns all table names in the database.
 	 * This method should be overridden by child classes in order to support this feature
 	 * because the default implementation simply throws an exception.
@@ -280,11 +331,20 @@ SQL;
 		if ('' === $schema) {
 			$schema = self::DEFAULT_SCHEMA;
 		}
-		$sql = "SELECT TABLE_NAME FROM [INFORMATION_SCHEMA].[TABLES] WHERE TABLE_SCHEMA = :schema AND TABLE_TYPE = 'BASE TABLE'";
+
+		$sql = <<<SQL
+SELECT
+	TABLE_NAME
+FROM [INFORMATION_SCHEMA].[TABLES]
+WHERE
+	TABLE_SCHEMA = :schema AND
+	TABLE_TYPE = 'BASE TABLE'
+SQL;
+
 		$names = $this->db->createCommand($sql, array(':schema' => $schema))->queryColumn();
-		if (self::DEFAULT_SCHEMA !== $schema) {
-			foreach ($names as $index => $name) {
-				$names[$index] = $schema . '.' . $name;
+		if (static::DEFAULT_SCHEMA !== $schema) {
+			foreach ($names as $i => $name) {
+				$names[$i] = $schema . '.' . $name;
 			}
 		}
 		return $names;
