@@ -2,7 +2,6 @@
 namespace yiiunit\framework\caching;
 use yiiunit\TestCase;
 use yii\caching\Cache;
-use yii\caching\TimeProvider;
 
 /**
  * Base class for testing cache backends
@@ -41,19 +40,6 @@ abstract class CacheTest extends TestCase
 	{
 		$cache = $this->getCacheInstance();
 		$this->assertEquals(array('string_test' => 'string_test', 'number_test' => 42), $cache->mget(array('string_test', 'number_test')));
-	}
-
-	public function testExpire()
-	{
-		$cache = $this->getCacheInstance();
-        $now = time();
-        TimeProvider::setTime($now);
-		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
-        TimeProvider::setTime($now+1);
-		$this->assertEquals('expire_test', $cache->get('expire_test'));
-        TimeProvider::setTime($now+3);
-		$this->assertEquals(false, $cache->get('expire_test'));
-        TimeProvider::setTime(null);
 	}
 
 	public function testAdd()
