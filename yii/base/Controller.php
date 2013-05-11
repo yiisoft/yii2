@@ -318,10 +318,10 @@ class Controller extends Component
 				/** @var Model $model */
 				$scope = $model->formName();
 				if ($scope == '') {
-					$model->attributes = $data;
+					$model->setAttributes($data);
 					$success = true;
 				} elseif (isset($data[$scope])) {
-					$model->attributes = $data[$scope];
+					$model->setAttributes($data[$scope]);
 					$success = true;
 				}
 			}
