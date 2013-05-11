@@ -46,7 +46,7 @@ $requirements = array(
 	// Cache :
 	array(
 		'name' => 'Memcache extension',
-		'mandatory' => fasle,
+		'mandatory' => false,
 		'condition' => extension_loaded('memcache') || extension_loaded('memcached'),
 		'by' => '<a href="http://www.yiiframework.com/doc/api/CMemCache">CMemCache</a>',
 		'memo' => extension_loaded('memcached') ? 'To use memcached set <a href="http://www.yiiframework.com/doc/api/CMemCache#useMemcached-detail">CMemCache::useMemcached</a> to <code>true</code>.' : ''
