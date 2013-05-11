@@ -57,6 +57,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->assertTrue($item instanceof Item);
 		$this->assertTrue($this->auth->hasItemChild('reader', 'readPost'));
 		$item->name = 'readPost2';
+		$item->save();
 		$this->assertNull($this->auth->getItem('readPost'));
 		$this->assertEquals($this->auth->getItem('readPost2'), $item);
 		$this->assertFalse($this->auth->hasItemChild('reader', 'readPost'));
