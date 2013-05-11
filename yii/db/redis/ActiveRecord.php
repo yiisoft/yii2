@@ -14,7 +14,6 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
-use yii\db\Exception;
 use yii\db\TableSchema;
 
 /**

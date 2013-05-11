@@ -256,7 +256,7 @@ class Connection extends Component
 			} else {
 				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $errorNumber . ' - ' . $errorDescription, __CLASS__);
 				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $errorNumber . ' - ' . $errorDescription : 'Failed to open DB connection.';
-				throw new Exception($message, (int)$errorNumber, $errorDescription);
+				throw new Exception($message, $errorDescription, (int)$errorNumber);
 			}
 		}
 	}
@@ -355,7 +355,7 @@ class Connection extends Component
 	 *
 	 * See [redis protocol description](http://redis.io/topics/protocol)
 	 * for details on the mentioned reply types.
-	 * @trows CException for commands that return [error reply](http://redis.io/topics/protocol#error-reply).
+	 * @trows Exception for commands that return [error reply](http://redis.io/topics/protocol#error-reply).
 	 */
 	public function executeCommand($name, $params=array())
 	{
