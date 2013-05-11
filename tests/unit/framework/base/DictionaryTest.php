@@ -19,8 +19,9 @@ class DictionaryTest extends \yiiunit\TestCase
 	protected $item2;
 	protected $item3;
 
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
 		$this->dictionary = new Dictionary;
 		$this->item1 = new MapItem;
 		$this->item2 = new MapItem;
@@ -29,8 +30,9 @@ class DictionaryTest extends \yiiunit\TestCase
 		$this->dictionary->add('key2', $this->item2);
 	}
 
-	public function tearDown()
+	protected function tearDown()
 	{
+		parent::tearDown();
 		$this->dictionary = null;
 		$this->item1 = null;
 		$this->item2 = null;

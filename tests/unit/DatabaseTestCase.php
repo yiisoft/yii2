@@ -10,6 +10,7 @@ class DatabaseTestCase extends TestCase
 
     protected function setUp()
     {
+	    parent::setUp();
         $databases = $this->getParam('databases');
         $this->database = $databases[$this->driverName];
         $pdo_database = 'pdo_'.$this->driverName;

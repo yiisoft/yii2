@@ -12,7 +12,7 @@ namespace yiiunit\framework\db\sqlite;
 
 class SqliteQueryTest extends \yiiunit\framework\db\QueryTest
 {
-    public function setUp()
+    protected function setUp()
     {
         $this->driverName = 'sqlite';
         parent::setUp();

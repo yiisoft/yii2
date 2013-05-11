@@ -19,8 +19,9 @@ class VectorTest extends \yiiunit\TestCase
 	protected $item2;
 	protected $item3;
 
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
 		$this->vector = new Vector;
 		$this->item1 = new ListItem;
 		$this->item2 = new ListItem;
@@ -29,8 +30,9 @@ class VectorTest extends \yiiunit\TestCase
 		$this->vector->add($this->item2);
 	}
 
-	public function tearDown()
+	protected function tearDown()
 	{
+		parent::tearDown();
 		$this->vector = null;
 		$this->item1 = null;
 		$this->item2 = null;

@@ -5,12 +5,14 @@ namespace yiiunit\framework\rbac;
 use Yii;
 use yii\rbac\PhpManager;
 
-require_once(__DIR__ . '/ManagerTestBase.php');
+//require_once(__DIR__ . '/ManagerTestBase.php');
 
 class PhpManagerTest extends ManagerTestBase
 {
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
+		$this->mockApplication();
 		$authFile = Yii::$app->getRuntimePath() . '/rbac.php';
 		@unlink($authFile);
 		$this->auth = new PhpManager;
@@ -19,8 +21,9 @@ class PhpManagerTest extends ManagerTestBase
 		$this->prepareData();
 	}
 
-	public function tearDown()
+	protected function tearDown()
 	{
+		parent::tearDown();
 		@unlink($this->auth->authFile);
 	}
 

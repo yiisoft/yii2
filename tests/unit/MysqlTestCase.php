@@ -6,6 +6,7 @@ class MysqlTestCase extends TestCase
 {
 	protected function setUp()
 	{
+		parent::setUp();
 		if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
 			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');
 		}

@@ -11,13 +11,15 @@ class YiiBaseTest extends TestCase
 {
 	public $aliases;
 
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
 		$this->aliases = Yii::$aliases;
 	}
 
-	public function tearDown()
+	protected function tearDown()
 	{
+		parent::tearDown();
 		Yii::$aliases = $this->aliases;
 	}
 

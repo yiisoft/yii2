@@ -8,8 +8,9 @@ use yiiunit\TestCase;
 
 class HtmlTest extends TestCase
 {
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
 		$this->mockApplication(array(
 			'components' => array(
 				'request' => array(
