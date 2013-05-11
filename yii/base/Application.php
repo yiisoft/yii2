@@ -85,6 +85,10 @@ class Application extends Module
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
 
+		if (!ini_get('date.timezone')) {
+			$this->setTimeZone('UTC');
+		}
+
 		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
 
@@ -222,6 +226,8 @@ class Application extends Module
 	/**
 	 * Returns the time zone used by this application.
 	 * This is a simple wrapper of PHP function date_default_timezone_get().
+	 * If time zone is not configured in php.ini or application config,
+	 * it will be set to UTC by default.
 	 * @return string the time zone used by this application.
 	 * @see http://php.net/manual/en/function.date-default-timezone-get.php
 	 */
