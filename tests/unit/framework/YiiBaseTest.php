@@ -47,7 +47,6 @@ class YiiBaseTest extends TestCase
 
 	public function testGetVersion()
 	{
-		echo Yii::getVersion();
 		$this->assertTrue((boolean)preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', \Yii::getVersion()));
 	}
 
