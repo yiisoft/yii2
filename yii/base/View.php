@@ -771,7 +771,7 @@ class View extends Component
 		if (!empty($this->js[self::POS_HEAD])) {
 			$lines[] = implode("\n", $this->js[self::POS_HEAD]);
 		}
-		return implode("\n", $lines);
+		return empty($lines) ? '' : implode("\n", $lines) . "\n";
 	}
 
 	/**
@@ -788,7 +788,7 @@ class View extends Component
 		if (!empty($this->js[self::POS_BEGIN])) {
 			$lines[] = implode("\n", $this->js[self::POS_BEGIN]);
 		}
-		return implode("\n", $lines);
+		return empty($lines) ? '' : implode("\n", $lines) . "\n";
 	}
 
 	/**
@@ -805,6 +805,6 @@ class View extends Component
 		if (!empty($this->js[self::POS_END])) {
 			$lines[] = implode("\n", $this->js[self::POS_END]);
 		}
-		return implode("\n", $lines);
+		return empty($lines) ? '' : implode("\n", $lines) . "\n";
 	}
 }

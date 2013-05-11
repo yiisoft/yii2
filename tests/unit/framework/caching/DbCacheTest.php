@@ -1,5 +1,7 @@
 <?php
+
 namespace yiiunit\framework\caching;
+
 use yii\caching\DbCache;
 use yiiunit\TestCase;
 
@@ -69,5 +71,17 @@ class DbCacheTest extends CacheTest
 			));
 		}
 		return $this->_cacheInstance;
+	}
+
+	public function testExpire()
+	{
+		$cache = $this->getCacheInstance();
+
+		static::$time = \time();
+		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
+		static::$time++;
+		$this->assertEquals('expire_test', $cache->get('expire_test'));
+		static::$time++;
+		$this->assertFalse($cache->get('expire_test'));
 	}
 }
