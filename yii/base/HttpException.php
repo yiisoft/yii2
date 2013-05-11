@@ -100,9 +100,10 @@ class HttpException extends UserException
 			509 => 'Bandwidth Limit Exceeded',
 		);
 
-		if(isset($httpCodes[$this->statusCode]))
+		if (isset($httpCodes[$this->statusCode])) {
 			return $httpCodes[$this->statusCode];
-		else
+		} else {
 			return \Yii::t('yii|Error');
+		}
 	}
 }

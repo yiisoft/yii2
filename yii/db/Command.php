@@ -69,7 +69,7 @@ class Command extends \yii\base\Component
 	 */
 	private $_sql;
 	/**
-	 * @var array the parameter log information (name=>value)
+	 * @var array the parameter log information (name => value)
 	 */
 	private $_params = array();
 
@@ -220,9 +220,9 @@ class Command extends \yii\base\Component
 	 * Note that the SQL data type of each value is determined by its PHP type.
 	 * @param array $values the values to be bound. This must be given in terms of an associative
 	 * array with array keys being the parameter names, and array values the corresponding parameter values,
-	 * e.g. `array(':name'=>'John', ':age'=>25)`. By default, the PDO type of each value is determined
+	 * e.g. `array(':name' => 'John', ':age' => 25)`. By default, the PDO type of each value is determined
 	 * by its PHP type. You may explicitly specify the PDO type by using an array: `array(value, type)`,
-	 * e.g. `array(':name'=>'John', ':profile'=>array($profile, \PDO::PARAM_LOB))`.
+	 * e.g. `array(':name' => 'John', ':profile' => array($profile, \PDO::PARAM_LOB))`.
 	 * @return Command the current command being executed
 	 */
 	public function bindValues($values)
@@ -465,7 +465,7 @@ class Command extends \yii\base\Component
 	 * Note that the created command is not executed until [[execute()]] is called.
 	 *
 	 * @param string $table the table that new rows will be inserted into.
-	 * @param array $columns the column data (name=>value) to be inserted into the table.
+	 * @param array $columns the column data (name => value) to be inserted into the table.
 	 * @return Command the command object itself
 	 */
 	public function insert($table, $columns)
@@ -515,7 +515,7 @@ class Command extends \yii\base\Component
 	 * Note that the created command is not executed until [[execute()]] is called.
 	 *
 	 * @param string $table the table to be updated.
-	 * @param array $columns the column data (name=>value) to be updated.
+	 * @param array $columns the column data (name => value) to be updated.
 	 * @param mixed $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the command
@@ -555,7 +555,7 @@ class Command extends \yii\base\Component
 	/**
 	 * Creates a SQL command for creating a new DB table.
 	 *
-	 * The columns in the new table should be specified as name-definition pairs (e.g. 'name'=>'string'),
+	 * The columns in the new table should be specified as name-definition pairs (e.g. 'name' => 'string'),
 	 * where name stands for a column name which will be properly quoted by the method, and definition
 	 * stands for the column type which can contain an abstract DB type.
 	 * The method [[QueryBuilder::getColumnType()]] will be called
@@ -566,7 +566,7 @@ class Command extends \yii\base\Component
 	 * inserted into the generated SQL.
 	 *
 	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
-	 * @param array $columns the columns (name=>definition) in the new table.
+	 * @param array $columns the columns (name => definition) in the new table.
 	 * @param string $options additional SQL fragment that will be appended to the generated SQL.
 	 * @return Command the command object itself
 	 */

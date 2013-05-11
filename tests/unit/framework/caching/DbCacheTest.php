@@ -34,7 +34,7 @@ class DbCacheTest extends CacheTest
 	 */
 	function getConnection($reset = true)
 	{
-		if($this->_connection === null) {
+		if ($this->_connection === null) {
 			$databases = $this->getParam('databases');
             $params = $databases['mysql'];
 			$db = new \yii\db\Connection;
@@ -61,7 +61,7 @@ class DbCacheTest extends CacheTest
 	 */
 	protected function getCacheInstance()
 	{
-		if($this->_cacheInstance === null) {
+		if ($this->_cacheInstance === null) {
 			$this->_cacheInstance = new DbCache(array(
 				'db' => $this->getConnection(),
 			));

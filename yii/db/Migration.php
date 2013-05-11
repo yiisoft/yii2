@@ -132,7 +132,8 @@ class Migration extends \yii\base\Component
 	 * Executes a SQL statement.
 	 * This method executes the specified SQL statement using [[db]].
 	 * @param string $sql the SQL statement to be executed
-	 * @param array $params input parameters (name=>value) for the SQL execution. See [[Command::execute()]] for more details.
+	 * @param array $params input parameters (name => value) for the SQL execution.
+	 * See [[Command::execute()]] for more details.
 	 */
 	public function execute($sql, $params = array())
 	{
@@ -146,7 +147,7 @@ class Migration extends \yii\base\Component
 	 * Creates and executes an INSERT SQL statement.
 	 * The method will properly escape the column names, and bind the values to be inserted.
 	 * @param string $table the table that new rows will be inserted into.
-	 * @param array $columns the column data (name=>value) to be inserted into the table.
+	 * @param array $columns the column data (name => value) to be inserted into the table.
 	 */
 	public function insert($table, $columns)
 	{
@@ -160,7 +161,7 @@ class Migration extends \yii\base\Component
 	 * Creates and executes an UPDATE SQL statement.
 	 * The method will properly escape the column names and bind the values to be updated.
 	 * @param string $table the table to be updated.
-	 * @param array $columns the column data (name=>value) to be updated.
+	 * @param array $columns the column data (name => value) to be updated.
 	 * @param mixed $condition the conditions that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
@@ -191,7 +192,7 @@ class Migration extends \yii\base\Component
 	/**
 	 * Builds and executes a SQL statement for creating a new DB table.
 	 *
-	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name'=>'string'),
+	 * The columns in the new  table should be specified as name-definition pairs (e.g. 'name' => 'string'),
 	 * where name stands for a column name which will be properly quoted by the method, and definition
 	 * stands for the column type which can contain an abstract DB type.
 	 *
@@ -201,7 +202,7 @@ class Migration extends \yii\base\Component
 	 * put into the generated SQL.
 	 *
 	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
-	 * @param array $columns the columns (name=>definition) in the new table.
+	 * @param array $columns the columns (name => definition) in the new table.
 	 * @param string $options additional SQL fragment that will be appended to the generated SQL.
 	 */
 	public function createTable($table, $columns, $options = null)

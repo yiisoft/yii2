@@ -83,7 +83,7 @@ class ErrorHandler extends Component
 			} else {
 				// if there is an error during error rendering it's useful to
 				// display PHP error in debug mode instead of a blank screen
-				if(YII_DEBUG) {
+				if (YII_DEBUG) {
 					ini_set('display_errors', 1);
 				}
 
@@ -231,7 +231,7 @@ class ErrorHandler extends Component
 				echo '<div class="plus">+</div><div class="minus">-</div>';
 			}
 			echo '&nbsp;';
-			if(isset($t['file'])) {
+			if (isset($t['file'])) {
 				echo $this->htmlEncode($t['file']) . '(' . $t['line'] . '): ';
 			}
 			if (!empty($t['class'])) {

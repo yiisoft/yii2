@@ -10,9 +10,9 @@
 namespace yii\test;
 
 require_once('PHPUnit/Runner/Version.php');
-spl_autoload_unregister(array('Yii','autoload'));
+spl_autoload_unregister(array('Yii', 'autoload'));
 require_once('PHPUnit/Autoload.php');
-spl_autoload_register(array('Yii','autoload')); // put yii's autoloader at the end
+spl_autoload_register(array('Yii', 'autoload')); // put yii's autoloader at the end
 
 /**
  * TestCase is the base class for all test case classes.

@@ -140,7 +140,7 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$db = $this->getConnection();
 
 		// bindParam
-		$sql = 'INSERT INTO tbl_customer(email,name,address) VALUES (:email, :name, :address)';
+		$sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, :name, :address)';
 		$command = $db->createCommand($sql);
 		$email = 'user4@example.com';
 		$name = 'user4';

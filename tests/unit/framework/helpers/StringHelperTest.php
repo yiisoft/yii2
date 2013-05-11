@@ -40,7 +40,7 @@ class StringHelperTest extends \yii\test\TestCase
 			'car' => 'cars',
 		);
 
-		foreach($testData as $testIn => $testOut) {
+		foreach ($testData as $testIn => $testOut) {
 			$this->assertEquals($testOut, StringHelper::pluralize($testIn));
 			$this->assertEquals(ucfirst($testOut), ucfirst(StringHelper::pluralize($testIn)));
 		}

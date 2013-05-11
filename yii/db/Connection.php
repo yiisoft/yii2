@@ -121,7 +121,7 @@ class Connection extends Component
 	 */
 	public $password = '';
 	/**
-	 * @var array PDO attributes (name=>value) that should be set when calling [[open()]]
+	 * @var array PDO attributes (name => value) that should be set when calling [[open()]]
 	 * to establish a DB connection. Please refer to the
 	 * [PHP manual](http://www.php.net/manual/en/function.PDO-setAttribute.php) for
 	 * details about available attributes.

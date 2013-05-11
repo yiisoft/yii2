@@ -24,7 +24,7 @@ use yii\base\InvalidCallException;
  * }
  *
  * // equivalent to:
- * foreach($reader as $row) {
+ * foreach ($reader as $row) {
  *     $rows[] = $row;
  * }
  *

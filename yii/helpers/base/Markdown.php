@@ -39,7 +39,7 @@ class Markdown
 
 	public static function process($content, $config = array())
 	{
-		if (static::$markdown===null) {
+		if (static::$markdown === null) {
 			static::$markdown = new MarkdownExtra();
 		}
 		foreach ($config as $name => $value) {

@@ -24,7 +24,7 @@ use yii\helpers\ArrayHelper;
  * $dictionary[$key] = $value;		   // add a key-value pair
  * unset($dictionary[$key]);			 // remove the value with the specified key
  * if (isset($dictionary[$key]))		 // if the dictionary contains the key
- * foreach ($dictionary as $key=>$value) // traverse the items in the dictionary
+ * foreach ($dictionary as $key => $value) // traverse the items in the dictionary
  * $n = count($dictionary);			  // returns the number of items in the dictionary
  * ~~~
  *

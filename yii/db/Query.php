@@ -124,7 +124,7 @@ class Query extends \yii\base\Component
 	public $union;
 	/**
 	 * @var array list of query parameter values indexed by parameter placeholders.
-	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * For example, `array(':name' => 'Dan', ':age' => 31)`.
 	 */
 	public $params;
 
@@ -210,9 +210,9 @@ class Query extends \yii\base\Component
 	 * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
 	 * in the generated expression. Below are some examples:
 	 *
-	 * - `array('type'=>1, 'status'=>2)` generates `(type=1) AND (status=2)`.
-	 * - `array('id'=>array(1,2,3), 'status'=>2)` generates `(id IN (1,2,3)) AND (status=2)`.
-	 * - `array('status'=>null) generates `status IS NULL`.
+	 * - `array('type' => 1, 'status' => 2)` generates `(type = 1) AND (status = 2)`.
+	 * - `array('id' => array(1, 2, 3), 'status' => 2)` generates `(id IN (1, 2, 3)) AND (status = 2)`.
+	 * - `array('status' => null) generates `status IS NULL`.
 	 *
 	 * A condition in operator format generates the SQL expression according to the specified operator, which
 	 * can be one of the followings:
@@ -234,7 +234,7 @@ class Query extends \yii\base\Component
 	 *
 	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
 	 * the range of the values that the column or DB expression should be in. For example,
-	 * `array('in', 'id', array(1,2,3))` will generate `id IN (1,2,3)`.
+	 * `array('in', 'id', array(1, 2, 3))` will generate `id IN (1, 2, 3)`.
 	 * The method will properly quote the column name and escape values in the range.
 	 *
 	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
@@ -257,7 +257,7 @@ class Query extends \yii\base\Component
 	 * the `NOT LIKE` predicates.
 	 *
 	 * @param string|array $condition the conditions that should be put in the WHERE part.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 * @see andWhere()
 	 * @see orWhere()
@@ -274,7 +274,7 @@ class Query extends \yii\base\Component
 	 * The new condition and the existing one will be joined using the 'AND' operator.
 	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 * @see where()
 	 * @see orWhere()
@@ -295,7 +295,7 @@ class Query extends \yii\base\Component
 	 * The new condition and the existing one will be joined using the 'OR' operator.
 	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 * @see where()
 	 * @see andWhere()
@@ -321,7 +321,7 @@ class Query extends \yii\base\Component
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 */
 	public function join($type, $table, $on = '', $params = array())
@@ -338,7 +338,7 @@ class Query extends \yii\base\Component
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 */
 	public function innerJoin($table, $on = '', $params = array())
@@ -355,7 +355,7 @@ class Query extends \yii\base\Component
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name => value) to be bound to the query
 	 * @return Query the query object itself
 	 */
 	public function leftJoin($table, $on = '', $params = array())
@@ -372,7 +372,7 @@ class Query extends \yii\base\Component
 	 * (which means the table is given as a sub-query or DB expression).
 	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query
+	 * @param array $params the parameters (name => value) to be bound to the query
 	 * @return Query the query object itself
 	 */
 	public function rightJoin($table, $on = '', $params = array())
@@ -425,7 +425,7 @@ class Query extends \yii\base\Component
 	 * Sets the HAVING part of the query.
 	 * @param string|array $condition the conditions to be put after HAVING.
 	 * Please refer to [[where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 * @see andHaving()
 	 * @see orHaving()
@@ -442,7 +442,7 @@ class Query extends \yii\base\Component
 	 * The new condition and the existing one will be joined using the 'AND' operator.
 	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 * @see having()
 	 * @see orHaving()
@@ -463,7 +463,7 @@ class Query extends \yii\base\Component
 	 * The new condition and the existing one will be joined using the 'OR' operator.
 	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 * @see having()
 	 * @see andHaving()
@@ -570,7 +570,7 @@ class Query extends \yii\base\Component
 	/**
 	 * Sets the parameters to be bound to the query.
 	 * @param array $params list of query parameter values indexed by parameter placeholders.
-	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * For example, `array(':name' => 'Dan', ':age' => 31)`.
 	 * @return Query the query object itself
 	 * @see addParams()
 	 */
@@ -583,7 +583,7 @@ class Query extends \yii\base\Component
 	/**
 	 * Adds additional parameters to be bound to the query.
 	 * @param array $params list of query parameter values indexed by parameter placeholders.
-	 * For example, `array(':name'=>'Dan', ':age'=>31)`.
+	 * For example, `array(':name' => 'Dan', ':age' => 31)`.
 	 * @return Query the query object itself
 	 * @see params()
 	 */

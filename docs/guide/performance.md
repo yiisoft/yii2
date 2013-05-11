@@ -162,7 +162,7 @@ class PostController extends Controller
 In the view you should access fields of each invidual record from `$posts` as array:
 
 ```php
-foreach($posts as $post) {
+foreach ($posts as $post) {
 	echo $post['title']."<br>";
 }
 ```

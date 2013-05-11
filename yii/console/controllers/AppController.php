@@ -8,7 +8,6 @@
 namespace yii\console\controllers;
 
 use yii\console\Controller;
-use yii\helpers\FileHelper;
 use yii\base\Exception;
 
 /**
@@ -39,7 +38,7 @@ class AppController extends Controller
 	{
 		parent::init();
 
-		if($this->templatesPath && !is_dir($this->templatesPath)) {
+		if ($this->templatesPath && !is_dir($this->templatesPath)) {
 			throw new Exception('--templatesPath "'.$this->templatesPath.'" does not exist or can not be read.');
 		}
 	}
@@ -67,30 +66,29 @@ class AppController extends Controller
 	public function actionCreate($path)
 	{
 		$path = strtr($path, '/\\', DIRECTORY_SEPARATOR);
-		if(strpos($path, DIRECTORY_SEPARATOR) === false) {
+		if (strpos($path, DIRECTORY_SEPARATOR) === false) {
 			$path = '.'.DIRECTORY_SEPARATOR.$path;
 		}
 		$dir = rtrim(realpath(dirname($path)), '\\/');
-		if($dir === false || !is_dir($dir)) {
+		if ($dir === false || !is_dir($dir)) {
 			throw new Exception("The directory '$path' is not valid. Please make sure the parent directory exists.");
 		}
 
-		if(basename($path) === '.') {
+		if (basename($path) === '.') {
 			$this->_rootPath = $path = $dir;
-		}
-		else {
+		} else {
 			$this->_rootPath = $path = $dir.DIRECTORY_SEPARATOR.basename($path);
 		}
 
-		if($this->confirm("Create \"$this->type\" application under '$path'?")) {
+		if ($this->confirm("Create \"$this->type\" application under '$path'?")) {
 			$sourceDir = $this->getSourceDir();
 			$config = $this->getConfig();
 
 			$list = $this->buildFileList($sourceDir, $path);
 
-			if(is_array($config)) {
-				foreach($config as $file => $settings) {
-					if(isset($settings['handler'])) {
+			if (is_array($config)) {
+				foreach ($config as $file => $settings) {
+					if (isset($settings['handler'])) {
 						$list[$file]['callback'] = $settings['handler'];
 					}
 				}
@@ -98,9 +96,9 @@ class AppController extends Controller
 
 			$this->copyFiles($list);
 
-			if(is_array($config)) {
-				foreach($config as $file => $settings) {
-					if(isset($settings['permissions'])) {
+			if (is_array($config)) {
+				foreach ($config as $file => $settings) {
+					if (isset($settings['permissions'])) {
 						@chmod($path.'/'.$file, $settings['permissions']);
 					}
 				}
@@ -119,13 +117,11 @@ class AppController extends Controller
 		$customSource = realpath($this->templatesPath.'/'.$this->type);
 		$defaultSource = realpath($this->getDefaultTemplatesPath().'/'.$this->type);
 
-		if($customSource) {
+		if ($customSource) {
 			return $customSource;
-		}
-		elseif($defaultSource) {
+		} elseif ($defaultSource) {
 			return $defaultSource;
-		}
-		else {
+		} else {
 			throw new Exception('Unable to locate the source directory for "'.$this->type.'".');
 		}
 	}
@@ -143,13 +139,13 @@ class AppController extends Controller
 	 */
 	protected function getConfig()
 	{
-		if($this->_config===null) {
-			$this->_config = require $this->getDefaultTemplatesPath().'/config.php';
-			if($this->templatesPath && file_exists($this->templatesPath)) {
-				$this->_config = array_merge($this->_config, require $this->templatesPath.'/config.php');
+		if ($this->_config === null) {
+			$this->_config = require $this->getDefaultTemplatesPath() . '/config.php';
+			if ($this->templatesPath && file_exists($this->templatesPath)) {
+				$this->_config = array_merge($this->_config, require $this->templatesPath . '/config.php');
 			}
 		}
-		if(isset($this->_config[$this->type])) {
+		if (isset($this->_config[$this->type])) {
 			return $this->_config[$this->type];
 		}
 	}
@@ -185,30 +181,30 @@ class AppController extends Controller
 		$n1 = count($segs1);
 		$n2 = count($segs2);
 
-		for($i=0; $i<$n1 && $i<$n2; ++$i) {
-			if($segs1[$i] !== $segs2[$i]) {
+		for ($i = 0; $i < $n1 && $i < $n2; ++$i) {
+			if ($segs1[$i] !== $segs2[$i]) {
 				break;
 			}
 		}
 
-		if($i===0) {
-			return "'".$path1."'";
+		if ($i === 0) {
+			return "'" . $path1 . "'";
 		}
-		$up='';
-		for($j=$i;$j<$n2-1;++$j) {
-			$up.='/..';
+		$up = '';
+		for ($j = $i; $j < $n2 - 1; ++$j) {
+			$up .= '/..';
 		}
-		for(; $i<$n1-1; ++$i) {
-			$up.='/'.$segs1[$i];
+		for(; $i < $n1 - 1; ++$i) {
+			$up .= '/' . $segs1[$i];
 		}
 
-		return '__DIR__.\''.$up.'/'.basename($path1).'\'';
+		return '__DIR__.\'' . $up . '/' . basename($path1) . '\'';
 	}
 
 
 	/**
 	 * Copies a list of files from one place to another.
-	 * @param array $fileList the list of files to be copied (name=>spec).
+	 * @param array $fileList the list of files to be copied (name => spec).
 	 * The array keys are names displayed during the copy process, and array values are specifications
 	 * for files to be copied. Each array value must be an array of the following structure:
 	 * <ul>
@@ -217,7 +213,7 @@ class AppController extends Controller
 	 * <li>callback: optional, the callback to be invoked when copying a file. The callback function
 	 *   should be declared as follows:
 	 *   <pre>
-	 *   function foo($source,$params)
+	 *   function foo($source, $params)
 	 *   </pre>
 	 *   where $source parameter is the source file path, and the content returned
 	 *   by the function will be saved into the target file.</li>
@@ -228,48 +224,44 @@ class AppController extends Controller
 	protected function copyFiles($fileList)
 	{
 		$overwriteAll = false;
-		foreach($fileList as $name=>$file) {
+		foreach ($fileList as $name => $file) {
 			$source = strtr($file['source'], '/\\', DIRECTORY_SEPARATOR);
 			$target = strtr($file['target'], '/\\', DIRECTORY_SEPARATOR);
 			$callback = isset($file['callback']) ? $file['callback'] : null;
 			$params = isset($file['params']) ? $file['params'] : null;
 
-			if(is_dir($source)) {
+			if (is_dir($source)) {
 				if (!is_dir($target)) {
 					mkdir($target, 0777, true);
 				}
 				continue;
 			}
 
-			if($callback !== null) {
+			if ($callback !== null) {
 				$content = call_user_func($callback, $source, $params);
-			}
-			else {
+			} else {
 				$content = file_get_contents($source);
 			}
-			if(is_file($target)) {
-				if($content === file_get_contents($target)) {
+			if (is_file($target)) {
+				if ($content === file_get_contents($target)) {
 					echo "  unchanged $name\n";
 					continue;
 				}
-				if($overwriteAll) {
+				if ($overwriteAll) {
 					echo "  overwrite $name\n";
 				}
 				else {
 					echo "      exist $name\n";
 					echo "            ...overwrite? [Yes|No|All|Quit] ";
 					$answer = trim(fgets(STDIN));
-					if(!strncasecmp($answer, 'q', 1)) {
+					if (!strncasecmp($answer, 'q', 1)) {
 						return;
-					}
-					elseif(!strncasecmp($answer, 'y', 1)) {
+					} elseif (!strncasecmp($answer, 'y', 1)) {
 						echo "  overwrite $name\n";
-					}
-					elseif(!strncasecmp($answer, 'a', 1)) {
+					} elseif (!strncasecmp($answer, 'a', 1)) {
 						echo "  overwrite $name\n";
 						$overwriteAll = true;
-					}
-					else {
+					} else {
 						echo "       skip $name\n";
 						continue;
 					}
@@ -296,15 +288,15 @@ class AppController extends Controller
 	 * @param array $ignoreFiles list of the names of files that should
 	 * be ignored in list building process.
 	 * @param array $renameMap hash array of file names that should be
-	 * renamed. Example value: array('1.old.txt'=>'2.new.txt').
+	 * renamed. Example value: array('1.old.txt' => '2.new.txt').
 	 * @return array the file list (see {@link copyFiles})
 	 */
 	protected function buildFileList($sourceDir, $targetDir, $baseDir='', $ignoreFiles=array(), $renameMap=array())
 	{
 		$list = array();
 		$handle = opendir($sourceDir);
-		while(($file = readdir($handle)) !== false) {
-			if(in_array($file, array('.', '..', '.svn', '.gitignore', '.hgignore')) || in_array($file, $ignoreFiles)) {
+		while (($file = readdir($handle)) !== false) {
+			if (in_array($file, array('.', '..', '.svn', '.gitignore', '.hgignore')) || in_array($file, $ignoreFiles)) {
 				continue;
 			}
 			$sourcePath = $sourceDir.DIRECTORY_SEPARATOR.$file;
@@ -314,7 +306,7 @@ class AppController extends Controller
 				'source' => $sourcePath,
 				'target' => $targetPath,
 			);
-			if(is_dir($sourcePath)) {
+			if (is_dir($sourcePath)) {
 				$list = array_merge($list, self::buildFileList($sourcePath, $targetPath, $name, $ignoreFiles, $renameMap));
 			}
 		}

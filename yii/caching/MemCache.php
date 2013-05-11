@@ -30,19 +30,19 @@ use yii\base\InvalidConfigException;
  *
  * ~~~
  * array(
- *     'components'=>array(
- *         'cache'=>array(
- *             'class'=>'MemCache',
- *             'servers'=>array(
+ *     'components' => array(
+ *         'cache' => array(
+ *             'class' => 'MemCache',
+ *             'servers' => array(
  *                 array(
- *                     'host'=>'server1',
- *                     'port'=>11211,
- *                     'weight'=>60,
+ *                     'host' => 'server1',
+ *                     'port' => 11211,
+ *                     'weight' => 60,
  *                 ),
  *                 array(
- *                     'host'=>'server2',
- *                     'port'=>11211,
- *                     'weight'=>40,
+ *                     'host' => 'server2',
+ *                     'port' => 11211,
+ *                     'weight' => 40,
  *                 ),
  *             ),
  *         ),

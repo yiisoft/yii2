@@ -32,14 +32,14 @@ class DbDependency extends Dependency
 	 */
 	public $sql;
 	/**
-	 * @var array the parameters (name=>value) to be bound to the SQL statement specified by [[sql]].
+	 * @var array the parameters (name => value) to be bound to the SQL statement specified by [[sql]].
 	 */
 	public $params;
 
 	/**
 	 * Constructor.
 	 * @param string $sql the SQL query whose result is used to determine if the dependency has been changed.
-	 * @param array $params the parameters (name=>value) to be bound to the SQL statement specified by [[sql]].
+	 * @param array $params the parameters (name => value) to be bound to the SQL statement specified by [[sql]].
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
 	public function __construct($sql, $params = array(), $config = array())
