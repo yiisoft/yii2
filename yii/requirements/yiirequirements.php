@@ -1,6 +1,7 @@
 <?php
 /**
  * This is the Yii core requirements for the [[YiiRequirementChecker]] instance.
+ * These requirements are mandatory for any Yii application.
  */
 return array(
 	array(

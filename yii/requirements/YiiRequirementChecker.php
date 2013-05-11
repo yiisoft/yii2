@@ -66,7 +66,7 @@ class YiiRequirementChecker
 			$requirements = require($requirements);
 		}
 		if (!is_array($requirements)) {
-			$this->usageError("Requirements must be an array!");
+			$this->usageError('Requirements must be an array, "'.gettype($requirements).'" has been given!');
 		}
 		if (!isset($this->result) || !is_array($this->result)) {
 			$this->result = array(
