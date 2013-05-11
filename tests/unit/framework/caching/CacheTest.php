@@ -46,9 +46,9 @@ abstract class CacheTest extends TestCase
 	{
 		$cache = $this->getCacheInstance();
 		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
-        sleep(1);
+    	sleep(1);
 		$this->assertEquals('expire_test', $cache->get('expire_test'));
-        sleep(2);
+    	sleep(2);
 		$this->assertEquals(false, $cache->get('expire_test'));
 	}
 
