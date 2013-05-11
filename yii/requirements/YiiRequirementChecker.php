@@ -11,9 +11,40 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
 }
 
 /**
- * YiiRequirementChecker allows checking, if current system meets the requirements for running the application.
+ * YiiRequirementChecker allows checking, if current system meets the requirements for running the Yii application.
+ * This class allows rendering of the check report for the web and console application interface.
  *
- * @property array|null $result the check results.
+ * Example:
+ * <code>
+ * require_once('path/to/YiiRequirementChecker.php');
+ * $requirementsChecker = YiiRequirementChecker();
+ * $requirements = array(
+ *     array(
+ *         'name' => 'PHP Some Extension',
+ *         'mandatory' => true,
+ *         'condition' => extension_loaded('some_extension'),
+ *         'by' => 'Some application feature',
+ *         'memo' => 'PHP extension "some_extension" required',
+ *     ),
+ * );
+ * $requirementsChecker->checkYii()->check($requirements)->render();
+ * <code>
+ *
+ * If you wish to render the report with your own representation, use [[getResult()]] instead of [[render()]]
+ *
+ * Requirement condition could be in format "eval:PHP expression".
+ * In this case specified PHP expression will be evaluated in the context of this class instance.
+ * For example:
+ * <code>
+ * $requirements = array(
+ *     array(
+ *         'name' => 'Upload max file size',
+ *         'condition' => 'eval:$this->checkUploadMaxFileSize("5M")',
+ *     ),
+ * );
+ * </code>
+ *
+ * @property array|null $result the check results, this property is for internal usage only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -23,7 +54,7 @@ class YiiRequirementChecker
 	/**
 	 * Check the given requirements, collecting results into internal field.
 	 * This method can be invoked several times checking different requirement sets.
-	 * Use {@link getResult()} or {@link render()} to get the results.
+	 * Use [[getResult()]] or [[render()]] to get the results.
 	 * @param array|string $requirements requirements to be checked.
 	 * If an array, it is treated as the set of requirements;
 	 * If a string, it is treated as the path of the file, which contains the requirements;
@@ -80,7 +111,24 @@ class YiiRequirementChecker
 
 	/**
 	 * Return the check results.
-	 * @return array|null check results.
+	 * @return array|null check results in format:
+	 * <code>
+	 * array(
+	 *     'summary' => array(
+	 *         'total' => total number of checks,
+	 *         'errors' => number of errors,
+	 *         'warnings' => number of warnings,
+	 *     ),
+	 *     'requirements' => array(
+	 *         array(
+	 *             ...
+	 *             'error' => is there an error,
+	 *             'warning' => is there a warning,
+	 *         ),
+	 *         ...
+	 *     ),
+	 * )
+	 * </code>
 	 */
 	function getResult()
 	{

@@ -1,6 +1,6 @@
 <?php
 /**
- * This is the Yii core requirements for the {@link YiiRequirementChecker} instance.
+ * This is the Yii core requirements for the [[YiiRequirementChecker]] instance.
  */
 return array(
 	array(

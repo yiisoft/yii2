@@ -5,7 +5,7 @@ require_once(realpath(__DIR__.'/../../../../yii/requirements/YiiRequirementCheck
 use yiiunit\TestCase;
 
 /**
- * Test case for {@link YiiRequirementChecker}.
+ * Test case for [[YiiRequirementChecker]].
  * @see YiiRequirementChecker
  */
 class YiiRequirementCheckerTest extends TestCase
@@ -134,7 +134,7 @@ class YiiRequirementCheckerTest extends TestCase
 	}
 
 	/**
-	 * Data provider for {@link testGetByteSize()}.
+	 * Data provider for [[testGetByteSize()]].
 	 * @return array
 	 */
 	public function dataProviderGetByteSize()
@@ -164,7 +164,7 @@ class YiiRequirementCheckerTest extends TestCase
 	}
 
 	/**
-	 * Data provider for {@link testCompareByteSize()}
+	 * Data provider for [[testCompareByteSize()]]
 	 * @return array
 	 */
 	public function dataProviderCompareByteSize()
