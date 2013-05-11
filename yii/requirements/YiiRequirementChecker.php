@@ -17,7 +17,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * Example:
  * <code>
  * require_once('path/to/YiiRequirementChecker.php');
- * $requirementsChecker = YiiRequirementChecker();
+ * $requirementsChecker = new YiiRequirementChecker();
  * $requirements = array(
  *     array(
  *         'name' => 'PHP Some Extension',
