@@ -81,7 +81,6 @@ class Assignment extends Object
 	{
 		if ($this->_bizRule !== $value) {
 			$this->_bizRule = $value;
-			$this->_auth->saveAssignment($this);
 		}
 	}
 
@@ -100,7 +99,14 @@ class Assignment extends Object
 	{
 		if ($this->_data !== $value) {
 			$this->_data = $value;
-			$this->_auth->saveAssignment($this);
 		}
+	}
+
+	/**
+	 * Saves the changes to an authorization assignment.
+	 */
+	public function save()
+	{
+		$this->_auth->saveAssignment($this);
 	}
 }
