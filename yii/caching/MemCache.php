@@ -173,7 +173,7 @@ class MemCache extends Cache
 	protected function setValue($key, $value, $expire)
 	{
 		if ($expire > 0) {
-			$expire += time();
+			$expire += TimeProvider::time();
 		} else {
 			$expire = 0;
 		}
@@ -193,7 +193,7 @@ class MemCache extends Cache
 	protected function addValue($key, $value, $expire)
 	{
 		if ($expire > 0) {
-			$expire += time();
+			$expire += TimeProvider::time();
 		} else {
 			$expire = 0;
 		}

@@ -2,6 +2,7 @@
 namespace yiiunit\framework\caching;
 use yii\caching\DbCache;
 use yiiunit\TestCase;
+use yii\caching\TimeProvider;
 
 /**
  * Class for testing file cache backend
@@ -70,4 +71,17 @@ class DbCacheTest extends CacheTest
 		}
 		return $this->_cacheInstance;
 	}
+
+    public function testExpire()
+    {
+        $cache = $this->getCacheInstance();
+        $now = time();
+        TimeProvider::setTime($now);
+        $this->assertTrue($cache->set('expire_test', 'expire_test', 2));
+        TimeProvider::setTime($now+1);
+        $this->assertEquals('expire_test', $cache->get('expire_test'));
+        TimeProvider::setTime($now+3);
+        $this->assertEquals(false, $cache->get('expire_test'));
+        TimeProvider::setTime(null);
+    }
 }
