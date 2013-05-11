@@ -176,4 +176,24 @@ class YiiRequirementChecker
 	{
 		return eval('return '.$expression.';');
 	}
+
+	/**
+	 * Returns the server information.
+	 * @return string server information.
+	 */
+	function getServerInfo()
+	{
+		$info = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
+		return $info;
+	}
+
+	/**
+	 * Returns the now date if possible in string representation.
+	 * @return string now date.
+	 */
+	function getNowDate()
+	{
+		$nowDate = @strftime('%Y-%m-%d %H:%M', time());
+		return $nowDate;
+	}
 }
