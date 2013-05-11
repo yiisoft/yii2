@@ -17,6 +17,8 @@ class DbCacheTest extends CacheTest
 			$this->markTestSkipped('pdo and pdo_mysql extensions are required.');
 		}
 
+		parent::setUp();
+		
 		$this->getConnection()->createCommand("
 			CREATE TABLE IF NOT EXISTS tbl_cache (
 				id char(128) NOT NULL,

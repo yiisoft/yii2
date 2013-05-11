@@ -13,6 +13,12 @@ abstract class CacheTest extends TestCase
 	 */
 	abstract protected function getCacheInstance();
 
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+	
 	public function testSet()
 	{
 		$cache = $this->getCacheInstance();
