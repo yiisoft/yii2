@@ -27,7 +27,7 @@ class YiiRequirementChecker
 		if (!is_array($requirements)) {
 			$this->usageError("Requirements must be an array!");
 		}
-		if (!isset($this->result)) {
+		if (!isset($this->result) || !is_array($this->result)) {
 			$this->result = array(
 				'summary' => array(
 					'total' => 0,
@@ -88,6 +88,130 @@ class YiiRequirementChecker
 			$viewFileName = $baseViewFilePath.DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'index.php';
 		}
 		$this->renderViewFile($viewFileName, $this->result);
+	}
+
+	/**
+	 * Checks if the given PHP extension is available and its version matches the given one.
+	 * @param string $extensionName PHP extension name.
+	 * @param string $version required PHP extension version.
+	 * @param string $compare comparison operator, by default '>='
+	 * @return boolean if PHP extension version matches.
+	 */
+	function checkPhpExtensionVersion($extensionName, $version, $compare='>=')
+	{
+		if (!extension_loaded($extensionName)) {
+			return false;
+		}
+		$extensionVersion = phpversion($extensionName);
+		if (empty($extensionVersion)) {
+			return false;
+		}
+		return version_compare($extensionVersion, $version, $compare);
+	}
+
+	/**
+	 * Checks if PHP configuration option (from php.ini) is on.
+	 * @param string $name configuration option name.
+	 * @return boolean option is on.
+	 */
+	function checkPhpIniOn($name)
+	{
+		$value = ini_get($name);
+		if (empty($value)) {
+			return false;
+		}
+		return ((integer)$value==1 || strtolower($value) == 'on');
+	}
+
+	/**
+	 * Checks if PHP configuration option (from php.ini) is off.
+	 * @param string $name configuration option name.
+	 * @return boolean option is off.
+	 */
+	function checkPhpIniOff($name)
+	{
+		$value = ini_get($name);
+		if (empty($value)) {
+			return true;
+		}
+		return (strtolower($value) == 'off');
+	}
+
+	/**
+	 * Compare byte sizes of values given in the verbose representation,
+	 * like '5M', '15K' etc.
+	 * @param string $a first value.
+	 * @param string $b second value.
+	 * @param string $compare comparison operator, by default '>='.
+	 * @return boolean comparison result.
+	 */
+	function compareByteSize($a, $b, $compare='>=')
+	{
+		$compareExpression = '('.$this->getByteSize($a).$compare.$this->getByteSize($b).')';
+		return $this->evaluateExpression($compareExpression);
+	}
+
+	/**
+	 * Gets the size in bytes from verbose size representation.
+	 * For example: '5K' => 5*1024
+	 * @param string $verboseSize verbose size representation.
+	 * @return integer actual size in bytes.
+	 */
+	function getByteSize($verboseSize)
+	{
+		if (empty($verboseSize)) {
+			return 0;
+		}
+		if (is_numeric($verboseSize)) {
+			return (integer)$verboseSize;
+		}
+		$sizeUnit = trim($verboseSize, '0123456789');
+		$size = str_replace($sizeUnit, '', $verboseSize);
+		$size = trim($size);
+		if (!is_numeric($size)) {
+			return 0;
+		}
+		switch (strtolower($sizeUnit)) {
+			case 'kb':
+			case 'k': {
+				return $size*1024;
+			}
+			case 'mb':
+			case 'm': {
+				return $size*1024*1024;
+			}
+			case 'gb':
+			case 'g': {
+				return $size*1024*1024*1024;
+			}
+			default: {
+				return 0;
+			}
+		}
+	}
+
+	/**
+	 * Checks if upload max file size matches the given range.
+	 * @param string|null $min verbose file size minimum required value, pass null to skip minimum check.
+	 * @param string|null $max verbose file size maximum required value, pass null to skip maximum check.
+	 * @return boolean success.
+	 */
+	function checkUploadMaxFileSize($min=null, $max=null)
+	{
+		$postMaxSize = ini_get('post_max_size');
+		$uploadMaxFileSize = ini_get('upload_max_filesize');
+		if ($min!==null) {
+			$minCheckResult = $this->compareByteSize($postMaxSize, $min, '>=') && $this->compareByteSize($uploadMaxFileSize, $min, '>=');
+		} else {
+			$minCheckResult = true;
+		}
+		if ($max!==null) {
+			var_dump($postMaxSize, $uploadMaxFileSize, $max);
+			$maxCheckResult = $this->compareByteSize($postMaxSize, $max, '<=') && $this->compareByteSize($uploadMaxFileSize, $max, '<=');
+		} else {
+			$maxCheckResult = true;
+		}
+		return ($minCheckResult && $maxCheckResult);
 	}
 
 	/**

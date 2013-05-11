@@ -124,4 +124,72 @@ class YiiRequirementCheckerTest extends TestCase
 			$this->assertEquals($mergedRequirement['name'], $checkResult['requirements'][$key]['name'], 'Wrong requirements list!');
 		}
 	}
+
+	public function testCheckPhpExtensionVersion()
+	{
+		$requirementsChecker = new YiiRequirementChecker();
+
+		$this->assertFalse($requirementsChecker->checkPhpExtensionVersion('some_unexisting_php_extension', '0.1'), 'No fail while checking unexisting extension!');
+		$this->assertTrue($requirementsChecker->checkPhpExtensionVersion('pdo', '1.0'), 'Unable to check PDO version!');
+	}
+
+	/**
+	 * Data provider for {@link testGetByteSize()}.
+	 * @return array
+	 */
+	public function dataProviderGetByteSize()
+	{
+		return array(
+			array('456', 456),
+			array('5K', 5*1024),
+			array('16KB', 16*1024),
+			array('4M', 4*1024*1024),
+			array('14MB', 14*1024*1024),
+			array('7G', 7*1024*1024*1024),
+			array('12GB', 12*1024*1024*1024),
+		);
+	}
+
+	/**
+	 * @dataProvider dataProviderGetByteSize
+	 *
+	 * @param string $verboseValue verbose value.
+	 * @param integer $expectedByteSize expected byte size.
+	 */
+	public function testGetByteSize($verboseValue, $expectedByteSize)
+	{
+		$requirementsChecker = new YiiRequirementChecker();
+
+		$this->assertEquals($expectedByteSize, $requirementsChecker->getByteSize($verboseValue), "Wrong byte size for '{$verboseValue}'!");
+	}
+
+	/**
+	 * Data provider for {@link testCompareByteSize()}
+	 * @return array
+	 */
+	public function dataProviderCompareByteSize()
+	{
+		return array(
+			array('2M', '2K', '>', true),
+			array('2M', '2K', '>=', true),
+			array('1K', '1024', '==', true),
+			array('10M', '11M', '<', true),
+			array('10M', '11M', '<=', true),
+		);
+	}
+
+	/**
+	 * @depends testGetByteSize
+	 * @dataProvider dataProviderCompareByteSize
+	 *
+	 * @param string $a first value.
+	 * @param string $b second value.
+	 * @param string $compare comparison.
+	 * @param boolean $expectedComparisonResult expected comparison result.
+	 */
+	public function testCompareByteSize($a, $b, $compare, $expectedComparisonResult)
+	{
+		$requirementsChecker = new YiiRequirementChecker();
+		$this->assertEquals($expectedComparisonResult, $requirementsChecker->compareByteSize($a, $b, $compare), "Wrong compare '{$a}{$compare}{$b}'");
+	}
 }
