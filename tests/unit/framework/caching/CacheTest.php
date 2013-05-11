@@ -42,6 +42,16 @@ abstract class CacheTest extends TestCase
 		$this->assertEquals(array('string_test' => 'string_test', 'number_test' => 42), $cache->mget(array('string_test', 'number_test')));
 	}
 
+	public function testExpire()
+	{
+		$cache = $this->getCacheInstance();
+		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
+        sleep(1);
+		$this->assertEquals('expire_test', $cache->get('expire_test'));
+        sleep(2);
+		$this->assertEquals(false, $cache->get('expire_test'));
+	}
+
 	public function testAdd()
 	{
 		$cache = $this->getCacheInstance();
