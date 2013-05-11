@@ -92,10 +92,6 @@ class Application extends Module
 			$this->setTimeZone('UTC');
 		} 
 
-		if (!ini_get('date.timezone')) {
-			$this->setTimeZone('UTC');
-		}
-
 		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
 
