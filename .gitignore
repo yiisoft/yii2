@@ -13,4 +13,4 @@ nbproject
 Thumbs.db
 
 # composer vendor dir
-vendor
+/yii/vendor

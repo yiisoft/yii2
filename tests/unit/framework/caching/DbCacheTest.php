@@ -35,7 +35,8 @@ class DbCacheTest extends CacheTest
 	function getConnection($reset = true)
 	{
 		if($this->_connection === null) {
-			$params = $this->getParam('mysql');
+			$databases = $this->getParam('databases');
+            $params = $databases['mysql'];
 			$db = new \yii\db\Connection;
 			$db->dsn = $params['dsn'];
 			$db->username = $params['username'];

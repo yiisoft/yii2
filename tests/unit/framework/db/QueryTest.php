@@ -7,7 +7,7 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
-class QueryTest extends \yiiunit\MysqlTestCase
+class QueryTest extends \yiiunit\DatabaseTestCase
 {
 	function testSelect()
 	{

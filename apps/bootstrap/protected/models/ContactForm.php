@@ -26,7 +26,7 @@ class ContactForm extends Model
 			// email has to be a valid email address
 			array('email', 'email'),
 			// verifyCode needs to be entered correctly
-			//array('verifyCode', 'captcha', 'allowEmpty' => !Captcha::checkRequirements()),
+			array('verifyCode', 'captcha'),
 		);
 	}
 
