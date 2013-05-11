@@ -15,41 +15,47 @@
  */
 class YiiRequirementChecker
 {
+	/**
+	 * Check the given requirements, collecting results into internal field.
+	 * This method can be invoked several times checking different requirement sets.
+	 * Use {@link getResult()} or {@link render()} to get the results.
+	 * @param array $requirements requirements to be checked.
+	 * @return YiiRequirementChecker self instance.
+	 */
 	function check($requirements)
 	{
 		if (!is_array($requirements)) {
 			$this->usageError("Requirements must be an array!");
 		}
-		$summary = array(
-			'total' => 0,
-			'errors' => 0,
-			'warnings' => 0,
-		);
+		if (!isset($this->result)) {
+			$this->result = array(
+				'summary' => array(
+					'total' => 0,
+					'errors' => 0,
+					'warnings' => 0,
+				),
+				'requirements' => array(),
+			);
+		}
 		foreach ($requirements as $key => $rawRequirement) {
 			$requirement = $this->normalizeRequirement($rawRequirement, $key);
-
-			$summary['total']++;
+			$this->result['summary']['total']++;
 			if (!$requirement['condition']) {
 				if ($requirement['mandatory']) {
 					$requirement['error'] = true;
 					$requirement['warning'] = true;
-					$summary['errors']++;
+					$this->result['summary']['errors']++;
 				} else {
 					$requirement['error'] = false;
 					$requirement['warning'] = true;
-					$summary['warnings']++;
+					$this->result['summary']['warnings']++;
 				}
 			} else {
 				$requirement['error'] = false;
 				$requirement['warning'] = false;
 			}
-			$requirements[$key] = $requirement;
+			$this->result['requirements'][] = $requirement;
 		}
-		$result = array(
-			'summary' => $summary,
-			'requirements' => $requirements,
-		);
-		$this->result = $result;
 		return $this;
 	}
 
