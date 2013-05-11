@@ -98,10 +98,10 @@ class Response extends \yii\base\Response
 	 * <b>Example</b>:
 	 * <pre>
 	 * <?php
-	 *    Yii::app()->request->xSendFile('/home/user/Pictures/picture1.jpg',array(
-	 *        'saveName'=>'image1.jpg',
-	 *        'mimeType'=>'image/jpeg',
-	 *        'terminate'=>false,
+	 *    Yii::app()->request->xSendFile('/home/user/Pictures/picture1.jpg', array(
+	 *        'saveName' => 'image1.jpg',
+	 *        'mimeType' => 'image/jpeg',
+	 *        'terminate' => false,
 	 *    ));
 	 * ?>
 	 * </pre>

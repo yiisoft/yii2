@@ -15,52 +15,54 @@ class DictionaryTest extends \yiiunit\TestCase
 	 * @var \yii\base\Dictionary
 	 */
 	protected $dictionary;
-	protected $item1,$item2,$item3;
+	protected $item1;
+	protected $item2;
+	protected $item3;
 
 	public function setUp()
 	{
-		$this->dictionary=new Dictionary;
-		$this->item1=new MapItem;
-		$this->item2=new MapItem;
-		$this->item3=new MapItem;
-		$this->dictionary->add('key1',$this->item1);
-		$this->dictionary->add('key2',$this->item2);
+		$this->dictionary = new Dictionary;
+		$this->item1 = new MapItem;
+		$this->item2 = new MapItem;
+		$this->item3 = new MapItem;
+		$this->dictionary->add('key1', $this->item1);
+		$this->dictionary->add('key2', $this->item2);
 	}
 
 	public function tearDown()
 	{
-		$this->dictionary=null;
-		$this->item1=null;
-		$this->item2=null;
-		$this->item3=null;
+		$this->dictionary = null;
+		$this->item1 = null;
+		$this->item2 = null;
+		$this->item3 = null;
 	}
 
 	public function testConstruct()
 	{
-		$a=array(1,2,'key3'=>3);
-		$dictionary=new Dictionary($a);
-		$this->assertEquals(3,$dictionary->getCount());
+		$a = array(1, 2, 'key3' => 3);
+		$dictionary = new Dictionary($a);
+		$this->assertEquals(3, $dictionary->getCount());
 		$dictionary2=new Dictionary($this->dictionary);
-		$this->assertEquals(2,$dictionary2->getCount());
+		$this->assertEquals(2, $dictionary2->getCount());
 	}
 
 	public function testGetCount()
 	{
-		$this->assertEquals(2,$this->dictionary->getCount());
+		$this->assertEquals(2, $this->dictionary->getCount());
 	}
 
 	public function testGetKeys()
 	{
-		$keys=$this->dictionary->getKeys();
-		$this->assertEquals(2,count($keys));
-		$this->assertEquals('key1',$keys[0]);
-		$this->assertEquals('key2',$keys[1]);
+		$keys = $this->dictionary->getKeys();
+		$this->assertEquals(2, count($keys));
+		$this->assertEquals('key1', $keys[0]);
+		$this->assertEquals('key2', $keys[1]);
 	}
 
 	public function testAdd()
 	{
-		$this->dictionary->add('key3',$this->item3);
-		$this->assertEquals(3,$this->dictionary->getCount());
+		$this->dictionary->add('key3', $this->item3);
+		$this->assertEquals(3, $this->dictionary->getCount());
 		$this->assertTrue($this->dictionary->has('key3'));
 
 		$this->dictionary[] = 'test';
@@ -69,21 +71,21 @@ class DictionaryTest extends \yiiunit\TestCase
 	public function testRemove()
 	{
 		$this->dictionary->remove('key1');
-		$this->assertEquals(1,$this->dictionary->getCount());
+		$this->assertEquals(1, $this->dictionary->getCount());
 		$this->assertTrue(!$this->dictionary->has('key1'));
-		$this->assertTrue($this->dictionary->remove('unknown key')===null);
+		$this->assertTrue($this->dictionary->remove('unknown key') === null);
 	}
 
 	public function testRemoveAll()
 	{
-		$this->dictionary->add('key3',$this->item3);
+		$this->dictionary->add('key3', $this->item3);
 		$this->dictionary->removeAll();
-		$this->assertEquals(0,$this->dictionary->getCount());
+		$this->assertEquals(0, $this->dictionary->getCount());
 		$this->assertTrue(!$this->dictionary->has('key1') && !$this->dictionary->has('key2'));
 
-		$this->dictionary->add('key3',$this->item3);
+		$this->dictionary->add('key3', $this->item3);
 		$this->dictionary->removeAll(true);
-		$this->assertEquals(0,$this->dictionary->getCount());
+		$this->assertEquals(0, $this->dictionary->getCount());
 		$this->assertTrue(!$this->dictionary->has('key1') && !$this->dictionary->has('key2'));
 	}
 
@@ -96,7 +98,7 @@ class DictionaryTest extends \yiiunit\TestCase
 
 	public function testFromArray()
 	{
-		$array=array('key3'=>$this->item3,'key4'=>$this->item1);
+		$array = array('key3' => $this->item3, 'key4' => $this->item1);
 		$this->dictionary->copyFrom($array);
 
 		$this->assertEquals(2, $this->dictionary->getCount());
@@ -109,21 +111,21 @@ class DictionaryTest extends \yiiunit\TestCase
 
 	public function testMergeWith()
 	{
-		$a=array('a'=>'v1','v2',array('2'),'c'=>array('3','c'=>'a'));
-		$b=array('v22','a'=>'v11',array('2'),'c'=>array('c'=>'3','a'));
-		$c=array('a'=>'v11','v2',array('2'),'c'=>array('3','c'=>'3','a'),'v22',array('2'));
-		$dictionary=new Dictionary($a);
-		$dictionary2=new Dictionary($b);
+		$a = array('a' => 'v1', 'v2', array('2'), 'c' => array('3','c' => 'a'));
+		$b = array('v22', 'a' => 'v11', array('2'), 'c' => array('c' => '3','a'));
+		$c = array('a' => 'v11', 'v2', array('2'), 'c' => array('3', 'c' => '3', 'a'), 'v22', array('2'));
+		$dictionary = new Dictionary($a);
+		$dictionary2 = new Dictionary($b);
 		$dictionary->mergeWith($dictionary2);
-		$this->assertTrue($dictionary->toArray()===$c);
+		$this->assertTrue($dictionary->toArray() === $c);
 
-		$array=array('key2'=>$this->item1,'key3'=>$this->item3);
-		$this->dictionary->mergeWith($array,false);
-		$this->assertEquals(3,$this->dictionary->getCount());
-		$this->assertEquals($this->item1,$this->dictionary['key2']);
-		$this->assertEquals($this->item3,$this->dictionary['key3']);
+		$array = array('key2' => $this->item1, 'key3' => $this->item3);
+		$this->dictionary->mergeWith($array, false);
+		$this->assertEquals(3, $this->dictionary->getCount());
+		$this->assertEquals($this->item1, $this->dictionary['key2']);
+		$this->assertEquals($this->item3, $this->dictionary['key3']);
 		$this->setExpectedException('yii\base\InvalidParamException');
-		$this->dictionary->mergeWith($this,false);
+		$this->dictionary->mergeWith($this, false);
 	}
 
 	public function testRecursiveMergeWithTraversable(){
@@ -135,7 +137,7 @@ class DictionaryTest extends \yiiunit\TestCase
 				'k4' => $this->item3,
 			))
 		));
-		$dictionary->mergeWith($obj,true);
+		$dictionary->mergeWith($obj, true);
 
 		$this->assertEquals(3, $dictionary->getCount());
 		$this->assertEquals($this->item1, $dictionary['k1']);
@@ -145,23 +147,23 @@ class DictionaryTest extends \yiiunit\TestCase
 
 	public function testArrayRead()
 	{
-		$this->assertEquals($this->item1,$this->dictionary['key1']);
-		$this->assertEquals($this->item2,$this->dictionary['key2']);
-		$this->assertEquals(null,$this->dictionary['key3']);
+		$this->assertEquals($this->item1, $this->dictionary['key1']);
+		$this->assertEquals($this->item2, $this->dictionary['key2']);
+		$this->assertEquals(null, $this->dictionary['key3']);
 	}
 
 	public function testArrayWrite()
 	{
-		$this->dictionary['key3']=$this->item3;
-		$this->assertEquals(3,$this->dictionary->getCount());
-		$this->assertEquals($this->item3,$this->dictionary['key3']);
+		$this->dictionary['key3'] = $this->item3;
+		$this->assertEquals(3, $this->dictionary->getCount());
+		$this->assertEquals($this->item3, $this->dictionary['key3']);
 
-		$this->dictionary['key1']=$this->item3;
-		$this->assertEquals(3,$this->dictionary->getCount());
-		$this->assertEquals($this->item3,$this->dictionary['key1']);
+		$this->dictionary['key1'] = $this->item3;
+		$this->assertEquals(3, $this->dictionary->getCount());
+		$this->assertEquals($this->item3, $this->dictionary['key1']);
 
 		unset($this->dictionary['key2']);
-		$this->assertEquals(2,$this->dictionary->getCount());
+		$this->assertEquals(2, $this->dictionary->getCount());
 		$this->assertTrue(!$this->dictionary->has('key2'));
 
 		unset($this->dictionary['unknown key']);
@@ -169,22 +171,23 @@ class DictionaryTest extends \yiiunit\TestCase
 
 	public function testArrayForeach()
 	{
-		$n=0;
-		$found=0;
-		foreach($this->dictionary as $index=>$item)
-		{
+		$n = 0;
+		$found = 0;
+		foreach ($this->dictionary as $index => $item) {
 			$n++;
-			if($index==='key1' && $item===$this->item1)
+			if ($index === 'key1' && $item === $this->item1) {
 				$found++;
-			if($index==='key2' && $item===$this->item2)
+			}
+			if ($index === 'key2' && $item === $this->item2) {
 				$found++;
+			}
 		}
-		$this->assertTrue($n==2 && $found==2);
+		$this->assertTrue($n == 2 && $found == 2);
 	}
 
 	public function testArrayMisc()
 	{
-		$this->assertEquals($this->dictionary->Count,count($this->dictionary));
+		$this->assertEquals($this->dictionary->Count, count($this->dictionary));
 		$this->assertTrue(isset($this->dictionary['key1']));
 		$this->assertFalse(isset($this->dictionary['unknown key']));
 	}

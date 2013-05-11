@@ -42,7 +42,7 @@ use Yii;
  * View:
  *
  * ~~~
- * foreach($models as $model) {
+ * foreach ($models as $model) {
  *     // display $model here
  * }
  *

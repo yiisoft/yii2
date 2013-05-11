@@ -50,7 +50,7 @@ use yii\helpers\Html;
  * // display links leading to sort actions
  * echo $sort->link('name', 'Name') . ' | ' . $sort->link('age', 'Age');
  *
- * foreach($models as $model) {
+ * foreach ($models as $model) {
  *     // display $model here
  * }
  * ~~~

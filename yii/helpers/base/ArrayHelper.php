@@ -93,11 +93,11 @@ class ArrayHelper
 	 * Usage examples,
 	 *
 	 * ~~~
-	 * // $array = array('type'=>'A', 'options'=>array(1,2));
+	 * // $array = array('type' => 'A', 'options' => array(1, 2));
 	 * // working with array
 	 * $type = \yii\helpers\ArrayHelper::remove($array, 'type');
 	 * // $array content
-	 * // $array = array('options'=>array(1,2));
+	 * // $array = array('options' => array(1, 2));
 	 * ~~~
 	 *
 	 * @param array $array the array to extract value from

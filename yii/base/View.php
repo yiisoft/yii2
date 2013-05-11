@@ -503,7 +503,7 @@ class View extends Component
 	 * A typical usage of fragment caching is as follows,
 	 *
 	 * ~~~
-	 * if($this->beginCache($id)) {
+	 * if ($this->beginCache($id)) {
 	 *     // ...generate content here
 	 *     $this->endCache();
 	 * }

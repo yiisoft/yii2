@@ -63,7 +63,7 @@ class SmartyViewRenderer extends ViewRenderer
 	 */
 	public function smarty_function_path($params, \Smarty_Internal_Template $template)
 	{
-		if(!isset($params['route'])) {
+		if (!isset($params['route'])) {
 			trigger_error("path: missing 'route' parameter");
 		}
 

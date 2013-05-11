@@ -210,9 +210,9 @@ class Query extends \yii\base\Component
 	 * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
 	 * in the generated expression. Below are some examples:
 	 *
-	 * - `array('type'=>1, 'status'=>2)` generates `(type=1) AND (status=2)`.
-	 * - `array('id'=>array(1,2,3), 'status'=>2)` generates `(id IN (1,2,3)) AND (status=2)`.
-	 * - `array('status'=>null) generates `status IS NULL`.
+	 * - `array('type' => 1, 'status' => 2)` generates `(type = 1) AND (status = 2)`.
+	 * - `array('id' => array(1, 2, 3), 'status' => 2)` generates `(id IN (1, 2, 3)) AND (status = 2)`.
+	 * - `array('status' => null) generates `status IS NULL`.
 	 *
 	 * A condition in operator format generates the SQL expression according to the specified operator, which
 	 * can be one of the followings:

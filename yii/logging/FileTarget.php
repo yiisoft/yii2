@@ -81,12 +81,12 @@ class FileTarget extends Target
 		@flock($fp, LOCK_EX);
 		if (@filesize($this->logFile) > $this->maxFileSize * 1024) {
 			$this->rotateFiles();
-			@flock($fp,LOCK_UN);
+			@flock($fp, LOCK_UN);
 			@fclose($fp);
 			@file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
 		} else {
 			@fwrite($fp, $text);
-			@flock($fp,LOCK_UN);
+			@flock($fp, LOCK_UN);
 			@fclose($fp);
 		}
 	}

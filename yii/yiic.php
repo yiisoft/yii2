@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-if(!ini_get('date.timezone')) {
+if (!ini_get('date.timezone')) {
 	date_default_timezone_set('UTC');
 }
 

@@ -15,39 +15,41 @@ class VectorTest extends \yiiunit\TestCase
 	 * @var Vector
 	 */
 	protected $vector;
-	protected $item1, $item2, $item3;
+	protected $item1;
+	protected $item2;
+	protected $item3;
 
 	public function setUp()
 	{
-		$this->vector=new Vector;
-		$this->item1=new ListItem;
-		$this->item2=new ListItem;
-		$this->item3=new ListItem;
+		$this->vector = new Vector;
+		$this->item1 = new ListItem;
+		$this->item2 = new ListItem;
+		$this->item3 = new ListItem;
 		$this->vector->add($this->item1);
 		$this->vector->add($this->item2);
 	}
 
 	public function tearDown()
 	{
-		$this->vector=null;
-		$this->item1=null;
-		$this->item2=null;
-		$this->item3=null;
+		$this->vector = null;
+		$this->item1 = null;
+		$this->item2 = null;
+		$this->item3 = null;
 	}
 
 	public function testConstruct()
 	{
-		$a=array(1,2,3);
-		$vector=new Vector($a);
-		$this->assertEquals(3,$vector->getCount());
-		$vector2=new Vector($this->vector);
-		$this->assertEquals(2,$vector2->getCount());
+		$a = array(1, 2, 3);
+		$vector = new Vector($a);
+		$this->assertEquals(3, $vector->getCount());
+		$vector2 = new Vector($this->vector);
+		$this->assertEquals(2, $vector2->getCount());
 	}
 
 	public function testItemAt()
 	{
-		$a=array(1, 2, null, 4);
-		$vector=new Vector($a);
+		$a = array(1, 2, null, 4);
+		$vector = new Vector($a);
 		$this->assertEquals(1, $vector->itemAt(0));
 		$this->assertEquals(2, $vector->itemAt(1));
 		$this->assertNull($vector->itemAt(2));
@@ -56,37 +58,37 @@ class VectorTest extends \yiiunit\TestCase
 
 	public function testGetCount()
 	{
-		$this->assertEquals(2,$this->vector->getCount());
-		$this->assertEquals(2,$this->vector->Count);
+		$this->assertEquals(2, $this->vector->getCount());
+		$this->assertEquals(2, $this->vector->Count);
 	}
 
 	public function testAdd()
 	{
 		$this->vector->add(null);
 		$this->vector->add($this->item3);
-		$this->assertEquals(4,$this->vector->getCount());
-		$this->assertEquals(3,$this->vector->indexOf($this->item3));
+		$this->assertEquals(4, $this->vector->getCount());
+		$this->assertEquals(3, $this->vector->indexOf($this->item3));
 	}
 
 	public function testInsertAt()
 	{
-		$this->vector->insertAt(0,$this->item3);
-		$this->assertEquals(3,$this->vector->getCount());
-		$this->assertEquals(2,$this->vector->indexOf($this->item2));
-		$this->assertEquals(0,$this->vector->indexOf($this->item3));
-		$this->assertEquals(1,$this->vector->indexOf($this->item1));
+		$this->vector->insertAt(0, $this->item3);
+		$this->assertEquals(3, $this->vector->getCount());
+		$this->assertEquals(2, $this->vector->indexOf($this->item2));
+		$this->assertEquals(0, $this->vector->indexOf($this->item3));
+		$this->assertEquals(1, $this->vector->indexOf($this->item1));
 		$this->setExpectedException('yii\base\InvalidParamException');
-		$this->vector->insertAt(4,$this->item3);
+		$this->vector->insertAt(4, $this->item3);
 	}
 
 	public function testRemove()
 	{
 		$this->vector->remove($this->item1);
-		$this->assertEquals(1,$this->vector->getCount());
-		$this->assertEquals(-1,$this->vector->indexOf($this->item1));
-		$this->assertEquals(0,$this->vector->indexOf($this->item2));
+		$this->assertEquals(1, $this->vector->getCount());
+		$this->assertEquals(-1, $this->vector->indexOf($this->item1));
+		$this->assertEquals(0, $this->vector->indexOf($this->item2));
 
-		$this->assertEquals(false,$this->vector->remove($this->item1));
+		$this->assertEquals(false, $this->vector->remove($this->item1));
 
 	}
 
@@ -94,9 +96,9 @@ class VectorTest extends \yiiunit\TestCase
 	{
 		$this->vector->add($this->item3);
 		$this->vector->removeAt(1);
-		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
-		$this->assertEquals(1,$this->vector->indexOf($this->item3));
-		$this->assertEquals(0,$this->vector->indexOf($this->item1));
+		$this->assertEquals(-1, $this->vector->indexOf($this->item2));
+		$this->assertEquals(1, $this->vector->indexOf($this->item3));
+		$this->assertEquals(0, $this->vector->indexOf($this->item1));
 		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->vector->removeAt(2);
 	}
@@ -105,15 +107,15 @@ class VectorTest extends \yiiunit\TestCase
 	{
 		$this->vector->add($this->item3);
 		$this->vector->removeAll();
-		$this->assertEquals(0,$this->vector->getCount());
-		$this->assertEquals(-1,$this->vector->indexOf($this->item1));
-		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
+		$this->assertEquals(0, $this->vector->getCount());
+		$this->assertEquals(-1, $this->vector->indexOf($this->item1));
+		$this->assertEquals(-1, $this->vector->indexOf($this->item2));
 
 		$this->vector->add($this->item3);
 		$this->vector->removeAll(true);
-		$this->assertEquals(0,$this->vector->getCount());
-		$this->assertEquals(-1,$this->vector->indexOf($this->item1));
-		$this->assertEquals(-1,$this->vector->indexOf($this->item2));
+		$this->assertEquals(0, $this->vector->getCount());
+		$this->assertEquals(-1, $this->vector->indexOf($this->item1));
+		$this->assertEquals(-1, $this->vector->indexOf($this->item2));
 	}
 
 	public function testHas()
@@ -125,30 +127,32 @@ class VectorTest extends \yiiunit\TestCase
 
 	public function testIndexOf()
 	{
-		$this->assertEquals(0,$this->vector->indexOf($this->item1));
-		$this->assertEquals(1,$this->vector->indexOf($this->item2));
-		$this->assertEquals(-1,$this->vector->indexOf($this->item3));
+		$this->assertEquals(0, $this->vector->indexOf($this->item1));
+		$this->assertEquals(1, $this->vector->indexOf($this->item2));
+		$this->assertEquals(-1, $this->vector->indexOf($this->item3));
 	}
 
 	public function testFromArray()
 	{
-		$array=array($this->item3,$this->item1);
+		$array = array($this->item3, $this->item1);
 		$this->vector->copyFrom($array);
-		$this->assertTrue(count($array)==2 && $this->vector[0]===$this->item3 && $this->vector[1]===$this->item1);
+		$this->assertTrue(count($array) == 2 && $this->vector[0] === $this->item3 && $this->vector[1] === $this->item1);
 		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->vector->copyFrom($this);
 	}
 
 	public function testMergeWith()
 	{
-		$array=array($this->item3,$this->item1);
+		$array = array($this->item3, $this->item1);
 		$this->vector->mergeWith($array);
-		$this->assertTrue($this->vector->getCount()==4 && $this->vector[0]===$this->item1 && $this->vector[3]===$this->item1);
+		$this->assertTrue($this->vector->getCount() == 4 && $this->vector[0] === $this->item1 &&
+			$this->vector[3] === $this->item1);
 
-		$a=array(1);
-		$vector=new Vector($a);
+		$a = array(1);
+		$vector = new Vector($a);
 		$this->vector->mergeWith($vector);
-		$this->assertTrue($this->vector->getCount()==5 && $this->vector[0]===$this->item1 && $this->vector[3]===$this->item1 && $this->vector[4]===1);
+		$this->assertTrue($this->vector->getCount() == 5 && $this->vector[0] === $this->item1 &&
+			$this->vector[3] === $this->item1 && $this->vector[4] === 1);
 
 		$this->setExpectedException('yii\base\InvalidParamException');
 		$this->vector->mergeWith($this);
@@ -156,37 +160,40 @@ class VectorTest extends \yiiunit\TestCase
 
 	public function testToArray()
 	{
-		$array=$this->vector->toArray();
-		$this->assertTrue(count($array)==2 && $array[0]===$this->item1 && $array[1]===$this->item2);
+		$array = $this->vector->toArray();
+		$this->assertTrue(count($array) == 2 && $array[0] === $this->item1 && $array[1] === $this->item2);
 	}
 
 	public function testArrayRead()
 	{
-		$this->assertTrue($this->vector[0]===$this->item1);
-		$this->assertTrue($this->vector[1]===$this->item2);
+		$this->assertTrue($this->vector[0] === $this->item1);
+		$this->assertTrue($this->vector[1] === $this->item2);
 		$this->setExpectedException('yii\base\InvalidParamException');
-		$a=$this->vector[2];
+		$a = $this->vector[2];
 	}
 
 	public function testGetIterator()
 	{
-		$n=0;
-		$found=0;
-		foreach($this->vector as $index=>$item)
-		{
-			foreach($this->vector as $a=>$b);	// test of iterator
+		$n = 0;
+		$found = 0;
+		foreach ($this->vector as $index => $item) {
+			foreach ($this->vector as $a => $b) {
+				// test of iterator
+			}
 			$n++;
-			if($index===0 && $item===$this->item1)
+			if ($index === 0 && $item === $this->item1) {
 				$found++;
-			if($index===1 && $item===$this->item2)
+			}
+			if ($index === 1 && $item === $this->item2) {
 				$found++;
+			}
 		}
-		$this->assertTrue($n==2 && $found==2);
+		$this->assertTrue($n == 2 && $found == 2);
 	}
 
 	public function testArrayMisc()
 	{
-		$this->assertEquals($this->vector->Count,count($this->vector));
+		$this->assertEquals($this->vector->Count, count($this->vector));
 		$this->assertTrue(isset($this->vector[1]));
 		$this->assertFalse(isset($this->vector[2]));
 	}
