@@ -22,7 +22,7 @@ class ContentDecorator extends Widget
 	 */
 	public $viewFile;
 	/**
-	 * @var array the parameters (name=>value) to be extracted and made available in the decorative view.
+	 * @var array the parameters (name => value) to be extracted and made available in the decorative view.
 	 */
 	public $params = array();
 

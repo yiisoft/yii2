@@ -278,7 +278,7 @@ class Controller extends Component
 	 * Child classes may override this method to throw exceptions when there are missing and/or unknown parameters.
 	 * @param Action $action the currently requested action
 	 * @param array $missingParams the names of the missing parameters
-	 * @param array $unknownParams the unknown parameters (name=>value)
+	 * @param array $unknownParams the unknown parameters (name => value)
 	 */
 	public function validateActionParams($action, $missingParams, $unknownParams)
 	{

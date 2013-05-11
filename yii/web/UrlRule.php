@@ -36,7 +36,7 @@ class UrlRule extends Object
 	 */
 	public $route;
 	/**
-	 * @var array the default GET parameters (name=>value) that this rule provides.
+	 * @var array the default GET parameters (name => value) that this rule provides.
 	 * When this rule is used to parse the incoming request, the values declared in this property
 	 * will be injected into $_GET.
 	 */

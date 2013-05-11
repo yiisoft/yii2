@@ -33,7 +33,7 @@ use yii\validators\Validator;
  * @property Vector $validators All the validators declared in the model.
  * @property array $activeValidators The validators applicable to the current [[scenario]].
  * @property array $errors Errors for all attributes or the specified attribute. Empty array is returned if no error.
- * @property array $attributes Attribute values (name=>value).
+ * @property array $attributes Attribute values (name => value).
  * @property string $scenario The scenario that this model is in.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -76,7 +76,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * array(
 	 *     'attribute list',
 	 *     'validator type',
-	 *     'on'=>'scenario name',
+	 *     'on' => 'scenario name',
 	 *     ...other parameters...
 	 * )
 	 * ~~~
@@ -109,11 +109,11 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *     // built-in "required" validator
 	 *     array('username', 'required'),
 	 *     // built-in "length" validator customized with "min" and "max" properties
-	 *     array('username', 'length', 'min'=>3, 'max'=>12),
+	 *     array('username', 'length', 'min' => 3, 'max' => 12),
 	 *     // built-in "compare" validator that is used in "register" scenario only
-	 *     array('password', 'compare', 'compareAttribute'=>'password2', 'on'=>'register'),
+	 *     array('password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'),
 	 *     // an inline validator defined via the "authenticate()" method in the model class
-	 *     array('password', 'authenticate', 'on'=>'login'),
+	 *     array('password', 'authenticate', 'on' => 'login'),
 	 *     // a validator of class "CaptchaValidator"
 	 *     array('captcha', 'CaptchaValidator'),
 	 * );
@@ -220,7 +220,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * Note, in order to inherit labels defined in the parent class, a child class needs to
 	 * merge the parent labels with child labels using functions such as `array_merge()`.
 	 *
-	 * @return array attribute labels (name=>label)
+	 * @return array attribute labels (name => label)
 	 * @see generateAttributeLabel
 	 */
 	public function attributeLabels()
@@ -511,7 +511,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * Defaults to null, meaning all attributes listed in [[attributes()]] will be returned.
 	 * If it is an array, only the attributes in the array will be returned.
 	 * @param array $except list of attributes whose value should NOT be returned.
-	 * @return array attribute values (name=>value).
+	 * @return array attribute values (name => value).
 	 */
 	public function getAttributes($names = null, $except = array())
 	{
@@ -531,7 +531,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Sets the attribute values in a massive way.
-	 * @param array $values attribute values (name=>value) to be assigned to the model.
+	 * @param array $values attribute values (name => value) to be assigned to the model.
 	 * @param boolean $safeOnly whether the assignments should only be done to the safe attributes.
 	 * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
 	 * @see safeAttributes()

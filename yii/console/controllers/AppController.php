@@ -204,7 +204,7 @@ class AppController extends Controller
 
 	/**
 	 * Copies a list of files from one place to another.
-	 * @param array $fileList the list of files to be copied (name=>spec).
+	 * @param array $fileList the list of files to be copied (name => spec).
 	 * The array keys are names displayed during the copy process, and array values are specifications
 	 * for files to be copied. Each array value must be an array of the following structure:
 	 * <ul>
@@ -288,7 +288,7 @@ class AppController extends Controller
 	 * @param array $ignoreFiles list of the names of files that should
 	 * be ignored in list building process.
 	 * @param array $renameMap hash array of file names that should be
-	 * renamed. Example value: array('1.old.txt'=>'2.new.txt').
+	 * renamed. Example value: array('1.old.txt' => '2.new.txt').
 	 * @return array the file list (see {@link copyFiles})
 	 */
 	protected function buildFileList($sourceDir, $targetDir, $baseDir='', $ignoreFiles=array(), $renameMap=array())

@@ -475,7 +475,7 @@ class View extends Component
 	 *
 	 * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget.
 	 * This can be specified as either the view file path or path alias.
-	 * @param array $params the variables (name=>value) to be extracted and made available in the decorative view.
+	 * @param array $params the variables (name => value) to be extracted and made available in the decorative view.
 	 * @return \yii\widgets\ContentDecorator the ContentDecorator widget instance
 	 * @see \yii\widgets\ContentDecorator
 	 */

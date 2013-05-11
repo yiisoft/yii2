@@ -80,7 +80,7 @@ class Pagination extends \yii\base\Object
 	 */
 	public $route;
 	/**
-	 * @var array parameters (name=>value) that should be used to obtain the current page number
+	 * @var array parameters (name => value) that should be used to obtain the current page number
 	 * and to create new pagination URLs. If not set, $_GET will be used instead.
 	 *
 	 * The array element indexed by [[pageVar]] is considered to be the current page number.

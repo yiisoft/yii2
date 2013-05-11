@@ -24,7 +24,7 @@ namespace yii\base;
  * $vector[$index] = $item;			// set new item at $index
  * unset($vector[$index]);			// remove the item at $index
  * if (isset($vector[$index]))		// if the vector has an item at $index
- * foreach ($vector as $index=>$item) // traverse each item in the vector
+ * foreach ($vector as $index => $item) // traverse each item in the vector
  * $n = count($vector);				// count the number of items
  * ~~~
  *

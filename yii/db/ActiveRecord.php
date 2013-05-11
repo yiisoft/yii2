@@ -169,7 +169,7 @@ class ActiveRecord extends Model
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
 	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return integer the number of rows updated
 	 */
 	public static function updateAll($attributes, $condition = '', $params = array())
@@ -191,7 +191,7 @@ class ActiveRecord extends Model
 	 * Use negative values if you want to decrement the counters.
 	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
 	 * @return integer the number of rows updated
 	 */
@@ -219,7 +219,7 @@ class ActiveRecord extends Model
 	 *
 	 * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return integer the number of rows deleted
 	 */
 	public static function deleteAll($condition = '', $params = array())
@@ -1014,7 +1014,7 @@ class ActiveRecord extends Model
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column names as keys and column values as values.
 	 * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
-	 * @return mixed the primary key value. An array (column name=>column value) is returned if the primary key
+	 * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
 	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
 	 */
@@ -1040,7 +1040,7 @@ class ActiveRecord extends Model
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column name as key and column value as value.
 	 * If this is false (default), a scalar value will be returned for non-composite primary key.
-	 * @return mixed the old primary key value. An array (column name=>column value) is returned if the primary key
+	 * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
 	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
 	 */
