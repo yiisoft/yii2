@@ -414,13 +414,12 @@ class DbManager extends Manager
 	{
 		if ($this->usingSqlite()) {
 			$this->db->createCommand()
-				->delete($this->itemChildTable, array('or', 'parent=:name1', 'child=:name2'), array(
-					':name1' => $name,
-					':name2' => $name,
-				));
-			$this->db->createCommand()->delete($this->assignmentTable, array('item_name' => $name));
+				->delete($this->itemChildTable, array('or', 'parent=:name', 'child=:name'), array(':name' => $name));
+			$this->db->createCommand()
+				->delete($this->assignmentTable, array('item_name' => $name));
 		}
-		return $this->db->createCommand()->delete($this->itemTable, array('name' => $name)) > 0;
+		return $this->db->createCommand()
+			->delete($this->itemTable, array('name' => $name)) > 0;
 	}
 
 	/**
