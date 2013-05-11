@@ -73,7 +73,7 @@ class Pagination extends \yii\base\Object
 	 * @var boolean whether to always have the page parameter in the URL created by [[createUrl()]].
 	 * If false and [[page]] is 0, the page parameter will not be put in the URL.
 	 */
-	public $forcePageVar = false;
+	public $forcePageVar = true;
 	/**
 	 * @var string the route of the controller action for displaying the paged contents.
 	 * If not set, it means using the currently requested route.

@@ -1,7 +1,4 @@
 <?php
-if (!ini_get('date.timezone')) {
-	date_default_timezone_set('UTC');
-}
 
 // comment out the following line to disable debug mode
 defined('YII_DEBUG') or define('YII_DEBUG', true);
