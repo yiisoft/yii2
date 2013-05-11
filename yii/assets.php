@@ -42,4 +42,20 @@ return array(
 		),
 		'depends' => array('yii'),
 	),
+	'yii/bootstrap' => array(
+		'sourcePath' => __DIR__ . '/assets/bootstrap',
+		'js' => array(
+			'js/bootstrap.min.js'
+		),
+		'css' => array(
+			'css/bootstrap.css'
+		)
+	),
+	'yii/bootstrap-responsive' => array(
+		'sourcePath' => __DIR__ . '/assets/bootstrap',
+		'css' => array(
+			'css' => 'css/bootstrap-responsive.css'
+		),
+		'depends' => array('yii/bootstrap')
+	)
 );
