@@ -19,7 +19,7 @@ DIRECTORY STRUCTURE
           bootstrap/       a simple app supporting user login and contact page
       build/               internally used build tools
       docs/                documentation
-      framework/           framework source files
+      yii/                 framework source files
       tests/               tests of the core framework code
 
 
