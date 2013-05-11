@@ -7,6 +7,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
+if(!ini_get('date.timezone')) {
+	date_default_timezone_set('UTC');
+}
+
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
 // fcgi doesn't have STDIN defined by default
