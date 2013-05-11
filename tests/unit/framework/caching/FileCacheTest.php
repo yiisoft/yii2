@@ -22,4 +22,15 @@ class FileCacheTest extends CacheTest
 		}
 		return $this->_cacheInstance;
 	}
+
+	public function testExpire()
+	{
+		$cache = $this->getCacheInstance();
+
+		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
+		static::$time = time() + 1;
+		$this->assertEquals('expire_test', $cache->get('expire_test'));
+		static::$time = time() + 2;
+		$this->assertFalse($cache->get('expire_test'));
+	}
 }
