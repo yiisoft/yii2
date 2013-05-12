@@ -39,6 +39,7 @@ class Item extends Object
 	private $_auth;
 	private $_type;
 	private $_name;
+	private $_oldName;
 	private $_description;
 	private $_bizRule;
 	private $_data;
@@ -116,9 +117,8 @@ class Item extends Object
 	public function setName($value)
 	{
 		if ($this->_name !== $value) {
-			$oldName = $this->_name;
+			$this->_oldName = $this->_name;
 			$this->_name = $value;
-			$this->_auth->saveItem($this, $oldName);
 		}
 	}
 
@@ -137,7 +137,6 @@ class Item extends Object
 	{
 		if ($this->_description !== $value) {
 			$this->_description = $value;
-			$this->_auth->saveItem($this);
 		}
 	}
 
@@ -156,7 +155,6 @@ class Item extends Object
 	{
 		if ($this->_bizRule !== $value) {
 			$this->_bizRule = $value;
-			$this->_auth->saveItem($this);
 		}
 	}
 
@@ -175,7 +173,6 @@ class Item extends Object
 	{
 		if ($this->_data !== $value) {
 			$this->_data = $value;
-			$this->_auth->saveItem($this);
 		}
 	}
 
@@ -271,5 +268,14 @@ class Item extends Object
 	public function getAssignment($userId)
 	{
 		return $this->_auth->getAssignment($userId, $this->_name);
+	}
+
+	/**
+	 * Saves an authorization item to persistent storage.
+	 */
+	public function save()
+	{
+		$this->_auth->saveItem($this, $this->_oldName);
+		unset($this->_oldName);
 	}
 }
