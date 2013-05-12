@@ -1447,7 +1447,7 @@ class ActiveRecord extends Model
 		$scenarios = $this->scenarios();
 		$attributes = array();
 		if (isset($scenarios[$scenario])) {
-			if (isset($scenarios[$scenario]['attributes'])) {
+			if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
 				$scenarios[$scenario] = $scenarios[$scenario]['attributes'];
 			}
 			foreach ($scenarios[$scenario] as $attribute) {
@@ -1468,7 +1468,7 @@ class ActiveRecord extends Model
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (isset($scenarios[$scenario])) {
-			if (isset($scenarios[$scenario]['attributes'])) {
+			if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
 				$attributes = $scenarios[$scenario]['attributes'];
 			} else {
 				$attributes = $scenarios[$scenario];
