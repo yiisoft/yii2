@@ -617,14 +617,21 @@ class ActiveRecord extends Model
 	 * If the validation fails, the record will not be saved to database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
+	 * @param boolean $withTransaction whether save process should be surrounded with database
+	 * transaction. Defaults to false meaning that transaction normally is not used. This is
+	 * mainly useful if you want to achieve atomicity for operations to be made in AR-object lifecycle
+	 * callback methods (e.g. [[beforeSave()]], [[afterSave()]] and so forth). This for example
+	 * is necessary when one needs to save related records in that callback methods.
+	 * Note that already opened external transactions successfully detected and handled properly.
+	 * Database savepoints or nested transactions are not used.
 	 * @return boolean whether the saving succeeds
 	 */
-	public function save($runValidation = true, $attributes = null)
+	public function save($runValidation = true, $attributes = null, $withTransaction = false)
 	{
 		if ($this->getIsNewRecord()) {
-			return $this->insert($runValidation, $attributes);
+			return $this->insert($runValidation, $attributes, $withTransaction);
 		} else {
-			return $this->update($runValidation, $attributes) !== false;
+			return $this->update($runValidation, $attributes, $withTransaction) !== false;
 		}
 	}
 
@@ -663,37 +670,62 @@ class ActiveRecord extends Model
 	 * If the validation fails, the record will not be inserted into the database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
+	 * @param boolean $withTransaction whether insert process should be surrounded with database
+	 * transaction. Defaults to false meaning that transaction normally is not used. This is
+	 * mainly useful if you want to achieve atomicity for operations to be made in AR-object lifecycle
+	 * callback methods (e.g. [[beforeSave()]], [[afterSave()]] and so forth). This for example
+	 * is necessary when one needs to save related records in that callback methods.
+	 * Note that already opened external transactions successfully detected and handled properly.
+	 * Database savepoints or nested transactions are not used.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
 	 */
-	public function insert($runValidation = true, $attributes = null)
+	public function insert($runValidation = true, $attributes = null, $withTransaction = false)
 	{
-		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
-			return false;
-		}
-		$values = $this->getDirtyAttributes($attributes);
-		if (empty($values)) {
-			foreach ($this->primaryKey() as $key) {
-				$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
-			}
-		}
 		$db = static::getDb();
-		$command = $db->createCommand()->insert($this->tableName(), $values);
-		if ($command->execute()) {
-			$table = $this->getTableSchema();
-			if ($table->sequenceName !== null) {
-				foreach ($table->primaryKey as $name) {
-					if (!isset($this->_attributes[$name])) {
-						$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
-						break;
+		$transaction = $withTransaction && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		try {
+			$result = true;
+			if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
+				$result = false;
+			}
+			if ($result) {
+				$values = $this->getDirtyAttributes($attributes);
+				if (empty($values)) {
+					foreach ($this->primaryKey() as $key) {
+						$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
 					}
 				}
+				$command = $db->createCommand()->insert($this->tableName(), $values);
+				if ($command->execute()) {
+					$table = $this->getTableSchema();
+					if ($table->sequenceName !== null) {
+						foreach ($table->primaryKey as $name) {
+							if (!isset($this->_attributes[$name])) {
+								$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
+								break;
+							}
+						}
+					}
+					foreach ($values as $name => $value) {
+						$this->_oldAttributes[$name] = $value;
+					}
+					$this->afterSave(true);
+				}
 			}
-			foreach ($values as $name => $value) {
-				$this->_oldAttributes[$name] = $value;
+			if ($transaction !== null) {
+				if (!$result) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
 			}
-			$this->afterSave(true);
-			return true;
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
+			}
+			throw $e;
 		}
+		return $result;
 	}
 
 	/**
@@ -740,43 +772,69 @@ class ActiveRecord extends Model
 	 * If the validation fails, the record will not be inserted into the database.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
+	 * @param boolean $withTransaction whether update process should be surrounded with database
+	 * transaction. Defaults to false meaning that transaction normally is not used. This is
+	 * mainly useful if you want to achieve atomicity for operations to be made in AR-object lifecycle
+	 * callback methods (e.g. [[beforeSave()]], [[afterSave()]] and so forth). This for example
+	 * is necessary when one needs to save related records in that callback methods.
+	 * Note that already opened external transactions successfully detected and handled properly.
+	 * Database savepoints or nested transactions are not used.
 	 * @return integer|boolean the number of rows affected, or false if validation fails
 	 * or [[beforeSave()]] stops the updating process.
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being updated is outdated.
 	 */
-	public function update($runValidation = true, $attributes = null)
+	public function update($runValidation = true, $attributes = null, $withTransaction = false)
 	{
-		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
-			return false;
-		}
-		$values = $this->getDirtyAttributes($attributes);
-		if (!empty($values)) {
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				if (!isset($values[$lock])) {
-					$values[$lock] = $this->$lock + 1;
+		$db = static::getDb();
+		$transaction = $withTransaction && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		try {
+			$result = true;
+			if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
+				$result = false;
+			}
+			if ($result) {
+				$values = $this->getDirtyAttributes($attributes);
+				if (!empty($values)) {
+					$condition = $this->getOldPrimaryKey(true);
+					$lock = $this->optimisticLock();
+					if ($lock !== null) {
+						if (!isset($values[$lock])) {
+							$values[$lock] = $this->$lock + 1;
+						}
+						$condition[$lock] = $this->$lock;
+					}
+					// We do not check the return value of updateAll() because it's possible
+					// that the UPDATE statement doesn't change anything and thus returns 0.
+					$result = $this->updateAll($values, $condition);
+
+					if ($lock !== null && !$result) {
+						throw new StaleObjectException('The object being updated is outdated.');
+					}
+
+					foreach ($values as $name => $value) {
+						$this->_oldAttributes[$name] = $this->_attributes[$name];
+					}
+
+					$this->afterSave(false);
+				} else {
+					$result = 0;
 				}
-				$condition[$lock] = $this->$lock;
 			}
-			// We do not check the return value of updateAll() because it's possible
-			// that the UPDATE statement doesn't change anything and thus returns 0.
-			$rows = $this->updateAll($values, $condition);
-
-			if ($lock !== null && !$rows) {
-				throw new StaleObjectException('The object being updated is outdated.');
+			if ($transaction !== null) {
+				if (!$result) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
 			}
-
-			foreach ($values as $name => $value) {
-				$this->_oldAttributes[$name] = $this->_attributes[$name];
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
 			}
-
-			$this->afterSave(false);
-			return $rows;
-		} else {
-			return 0;
+			throw $e;
 		}
+		return $result;
 	}
 
 	/**
@@ -822,31 +880,53 @@ class ActiveRecord extends Model
 	 * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
 	 * will be raised by the corresponding methods.
 	 *
+	 * @param boolean $withTransaction whether delete process should be surrounded with database
+	 * transaction. Defaults to false meaning that transaction normally is not used. This is
+	 * mainly useful if you want to achieve atomicity for operations to be made in AR-object lifecycle
+	 * callback methods (e.g. [[beforeSave()]], [[afterSave()]] and so forth). This for example
+	 * is necessary when one needs to delete related records in that callback methods.
+	 * Note that already opened external transactions successfully detected and handled properly.
+	 * Database savepoints or nested transactions are not used.
 	 * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
 	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being deleted is outdated.
 	 */
-	public function delete()
+	public function delete($withTransaction = false)
 	{
-		if ($this->beforeDelete()) {
-			// we do not check the return value of deleteAll() because it's possible
-			// the record is already deleted in the database and thus the method will return 0
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				$condition[$lock] = $this->$lock;
+		$db = static::getDb();
+		$transaction = $withTransaction && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		try {
+			$result = false;
+			if ($this->beforeDelete()) {
+				// we do not check the return value of deleteAll() because it's possible
+				// the record is already deleted in the database and thus the method will return 0
+				$condition = $this->getOldPrimaryKey(true);
+				$lock = $this->optimisticLock();
+				if ($lock !== null) {
+					$condition[$lock] = $this->$lock;
+				}
+				$result = $this->deleteAll($condition);
+				if ($lock !== null && !$result) {
+					throw new StaleObjectException('The object being deleted is outdated.');
+				}
+				$this->_oldAttributes = null;
+				$this->afterDelete();
 			}
-			$rows = $this->deleteAll($condition);
-			if ($lock !== null && !$rows) {
-				throw new StaleObjectException('The object being deleted is outdated.');
+			if ($transaction !== null) {
+				if (!$result) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
 			}
-			$this->_oldAttributes = null;
-			$this->afterDelete();
-			return $rows;
-		} else {
-			return false;
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
+			}
+			throw $e;
 		}
+		return $result;
 	}
 
 	/**
