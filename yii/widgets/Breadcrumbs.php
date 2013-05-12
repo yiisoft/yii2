@@ -19,10 +19,11 @@ use yii\helpers\Html;
  * for the "Sample Post". He can click on "Sample Post" to view that page, or he can click on "Home"
  * to return to the homepage.
  *
- * To use Breadcrumbs, you need to configure its [[links]] property, which specifiesthe links to be displayed. For example,
+ * To use Breadcrumbs, you need to configure its [[links]] property, which specifies the links to be displayed. For example,
  *
  * ~~~
- * $this->widget('yii\widgets\Breadcrumbs', array(
+ * // $this is the view object currently being used
+ * echo Breadcrumbs::widget($this, array(
  *     'links' => array(
  *         array('label' => 'Sample Post', 'url' => array('post/edit', 'id' => 1)),
  *         'Edit',
@@ -30,12 +31,13 @@ use yii\helpers\Html;
  * ));
  * ~~~
  *
- * Because breadcrumbs usually appears in nearly every page of a website, you may consider place it in a layout view.
- * You can then use a view parameter (e.g. `$this->params['breadcrumbs']`) to configure the links in different
+ * Because breadcrumbs usually appears in nearly every page of a website, you may consider placing it in a layout view.
+ * You can use a view parameter (e.g. `$this->params['breadcrumbs']`) to configure the links in different
  * views. In the layout view, you assign this view parameter to the [[links]] property like the following:
  *
  * ~~~
- * $this->widget('yii\widgets\Breadcrumbs', array(
+ * // $this is the view object currently being used
+ * echo Breadcrumbs::widget($this, array(
  *     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
  * ));
  * ~~~

@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\FileHelper;
 
 /**
  * Widget is the base class for widgets.
@@ -19,9 +18,9 @@ use yii\helpers\FileHelper;
 class Widget extends Component
 {
 	/**
-	 * @var View the view object that is used to create this widget.
-	 * This property is automatically set by [[View::createWidget()]].
-	 * This property is required by [[render()]] and [[renderFile()]].
+	 * @var View the view object that this widget is associated with.
+	 * The widget will use this view object to register any needed assets.
+	 * This property is also required by [[render()]] and [[renderFile()]].
 	 */
 	public $view;
 	/**
@@ -29,9 +28,85 @@ class Widget extends Component
 	 */
 	private $_id;
 	/**
-	 * @var integer a counter used to generate IDs for widgets.
+	 * @var integer a counter used to generate [[id]] for widgets.
+	 * @internal
 	 */
-	private static $_counter = 0;
+	public static $_counter = 0;
+	/**
+	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
+	 * is maintained by [[begin()]] and [[end()]] methods.
+	 * @internal
+	 */
+	public static $_stack = array();
+
+	/**
+	 * Constructor.
+	 * @param View $view the view object that this widget is associated with.
+	 * The widget will use this view object to register any needed assets.
+	 * It is also required by [[render()]] and [[renderFile()]].
+	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 */
+	public function __construct($view, $config = array())
+	{
+		$this->view = $view;
+		parent::__construct($config);
+	}
+
+	/**
+	 * Begins a widget.
+	 * This method creates an instance of the calling class. It will apply the configuration
+	 * to the created instance. A matching [[end()]] call should be called later.
+	 * @param View $view the view object that the newly created widget is associated with.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 * @return Widget the newly created widget instance
+	 */
+	public static function begin($view, $config = array())
+	{
+		$config['class'] = get_called_class();
+		/** @var Widget $widget */
+		$widget = Yii::createObject($config, $view);
+		self::$_stack[] = $widget;
+		return $widget;
+	}
+
+	/**
+	 * Ends a widget.
+	 * Note that the rendering result of the widget is directly echoed out.
+	 * @return Widget the widget instance that is ended.
+	 * @throws InvalidCallException if [[begin()]] and [[end()]] calls are not properly nested
+	 */
+	public static function end()
+	{
+		if (!empty(self::$_stack)) {
+			$widget = array_pop(self::$_stack);
+			if (get_class($widget) === get_called_class()) {
+				$widget->run();
+				return $widget;
+			} else {
+				throw new InvalidCallException("Expecting end() of " . get_class($widget) . ", found " . get_called_class());
+			}
+		} else {
+			throw new InvalidCallException("Unexpected " . get_called_class() . '::end() call. A matching begin() is not found.');
+		}
+	}
+
+	/**
+	 * Creates a widget instance and runs it.
+	 * The widget rendering result is returned by this method.
+	 * @param View $view the view object that the newly created widget is associated with.
+	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 * @return string the rendering result of the widget.
+	 */
+	public static function widget($view, $config = array())
+	{
+		ob_start();
+		ob_implicit_flush(false);
+		/** @var Widget $widget */
+		$config['class'] = get_called_class();
+		$widget = Yii::createObject($config, $view);
+		$widget->run();
+		return ob_get_clean();
+	}
 
 	/**
 	 * Returns the ID of the widget.

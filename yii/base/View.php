@@ -11,6 +11,9 @@ use Yii;
 use yii\base\Application;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\widgets\Block;
+use yii\widgets\ContentDecorator;
+use yii\widgets\FragmentCache;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -107,12 +110,6 @@ class View extends Component
 	 * through this property.
 	 */
 	public $blocks;
-	/**
-	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
-	 * is maintained by [[beginWidget()]] and [[endWidget()]] methods. Do not modify it directly.
-	 * @internal
-	 */
-	public $widgetStack = array();
 	/**
 	 * @var array a list of currently active fragment cache widgets. This property
 	 * is used internally to implement the content caching feature. Do not modify it directly.
@@ -364,91 +361,16 @@ class View extends Component
 	}
 
 	/**
-	 * Creates a widget.
-	 * This method will use [[Yii::createObject()]] to create the widget.
-	 * @param string $class the widget class name or path alias
-	 * @param array $properties the initial property values of the widget.
-	 * @return Widget the newly created widget instance
-	 */
-	public function createWidget($class, $properties = array())
-	{
-		$properties['class'] = $class;
-		if (!isset($properties['view'])) {
-			$properties['view'] = $this;
-		}
-		return Yii::createObject($properties);
-	}
-
-	/**
-	 * Creates and runs a widget.
-	 * Compared with [[createWidget()]], this method does one more thing: it will
-	 * run the widget after it is created.
-	 * @param string $class the widget class name or path alias
-	 * @param array $properties the initial property values of the widget.
-	 * @param boolean $captureOutput whether to capture the output of the widget and return it as a string
-	 * @return string|Widget if $captureOutput is true, the output of the widget will be returned;
-	 * otherwise the widget object will be returned.
-	 */
-	public function widget($class, $properties = array(), $captureOutput = false)
-	{
-		if ($captureOutput) {
-			ob_start();
-			ob_implicit_flush(false);
-			$widget = $this->createWidget($class, $properties);
-			$widget->run();
-			return ob_get_clean();
-		} else {
-			$widget = $this->createWidget($class, $properties);
-			$widget->run();
-			return $widget;
-		}
-	}
-
-	/**
-	 * Begins a widget.
-	 * This method is similar to [[createWidget()]] except that it will expect a matching
-	 * [[endWidget()]] call after this.
-	 * @param string $class the widget class name or path alias
-	 * @param array $properties the initial property values of the widget.
-	 * @return Widget the widget instance
-	 */
-	public function beginWidget($class, $properties = array())
-	{
-		$widget = $this->createWidget($class, $properties);
-		$this->widgetStack[] = $widget;
-		return $widget;
-	}
-
-	/**
-	 * Ends a widget.
-	 * Note that the rendering result of the widget is directly echoed out.
-	 * If you want to capture the rendering result of a widget, you may use
-	 * [[createWidget()]] and [[Widget::run()]].
-	 * @return Widget the widget instance
-	 * @throws InvalidCallException if [[beginWidget()]] and [[endWidget()]] calls are not properly nested
-	 */
-	public function endWidget()
-	{
-		$widget = array_pop($this->widgetStack);
-		if ($widget instanceof Widget) {
-			$widget->run();
-			return $widget;
-		} else {
-			throw new InvalidCallException("Unmatched beginWidget() and endWidget() calls.");
-		}
-	}
-
-	/**
 	 * Begins recording a block.
-	 * This method is a shortcut to beginning [[yii\widgets\Block]]
+	 * This method is a shortcut to beginning [[Block]]
 	 * @param string $id the block ID.
 	 * @param boolean $renderInPlace whether to render the block content in place.
 	 * Defaults to false, meaning the captured block will not be displayed.
-	 * @return \yii\widgets\Block the Block widget instance
+	 * @return Block the Block widget instance
 	 */
 	public function beginBlock($id, $renderInPlace = false)
 	{
-		return $this->beginWidget('yii\widgets\Block', array(
+		return Block::begin($this, array(
 			'id' => $id,
 			'renderInPlace' => $renderInPlace,
 		));
@@ -459,7 +381,7 @@ class View extends Component
 	 */
 	public function endBlock()
 	{
-		$this->endWidget();
+		Block::end();
 	}
 
 	/**
@@ -476,12 +398,12 @@ class View extends Component
 	 * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget.
 	 * This can be specified as either the view file path or path alias.
 	 * @param array $params the variables (name => value) to be extracted and made available in the decorative view.
-	 * @return \yii\widgets\ContentDecorator the ContentDecorator widget instance
-	 * @see \yii\widgets\ContentDecorator
+	 * @return ContentDecorator the ContentDecorator widget instance
+	 * @see ContentDecorator
 	 */
 	public function beginContent($viewFile, $params = array())
 	{
-		return $this->beginWidget('yii\widgets\ContentDecorator', array(
+		return ContentDecorator::begin($this, array(
 			'viewFile' => $viewFile,
 			'params' => $params,
 		));
@@ -492,7 +414,7 @@ class View extends Component
 	 */
 	public function endContent()
 	{
-		$this->endWidget();
+		ContentDecorator::end();
 	}
 
 	/**
@@ -510,15 +432,15 @@ class View extends Component
 	 * ~~~
 	 *
 	 * @param string $id a unique ID identifying the fragment to be cached.
-	 * @param array $properties initial property values for [[\yii\widgets\FragmentCache]]
+	 * @param array $properties initial property values for [[FragmentCache]]
 	 * @return boolean whether you should generate the content for caching.
 	 * False if the cached version is available.
 	 */
 	public function beginCache($id, $properties = array())
 	{
 		$properties['id'] = $id;
-		/** @var $cache \yii\widgets\FragmentCache */
-		$cache = $this->beginWidget('yii\widgets\FragmentCache', $properties);
+		/** @var $cache FragmentCache */
+		$cache = FragmentCache::begin($this, $properties);
 		if ($cache->getCachedContent() !== false) {
 			$this->endCache();
 			return false;
@@ -532,7 +454,7 @@ class View extends Component
 	 */
 	public function endCache()
 	{
-		$this->endWidget();
+		FragmentCache::end();
 	}
 
 
