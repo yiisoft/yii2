@@ -330,11 +330,7 @@ class ActiveRecord extends Model
 	 */
 	public static function atomicScenarios()
 	{
-		return array(
-			'scenario1' => array('insert', 'update'),
-			'scenario2' => 'insert, delete',
-			'scenario3',
-		);
+		return array();
 	}
 
 	/**
