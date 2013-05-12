@@ -311,29 +311,6 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Declares scenario names which should be enwrapped with transaction (i.e. atomic).
-	 *
-	 * There are three forms of specifying such scenarios:
-	 *
-	 * ~~~
-	 * return array(
-	 *     'scenario1' => array('insert', 'update'), // let insert and update operations to be atomic for scenario1
-	 *     'scenario2' => 'insert, delete', // let insert and delete to be atomic for scenario2
-	 *     'scenario3', // both insert, update and delete operations would be atomic for scenario3
-	 * );
-	 * ~~~
-	 *
-	 * Note that [[insert()]], [[update()]] and [[delete()]] methods supports external transaction detection.
-	 * No transaction would be initiated in case the other one is already active.
-	 *
-	 * @return array scenario names which should be enwrapped with transaction (i.e. atomic).
-	 */
-	public static function atomicScenarios()
-	{
-		return array();
-	}
-
-	/**
 	 * PHP getter magic method.
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
@@ -698,6 +675,7 @@ class ActiveRecord extends Model
 			$transaction = null;
 		}
 		try {
+			// end of transaction handling code
 			$result = true;
 			if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
 				$result = false;
@@ -726,6 +704,7 @@ class ActiveRecord extends Model
 					$this->afterSave(true);
 				}
 			}
+			// start of transaction handling code
 			if ($transaction !== null) {
 				if (!$result) {
 					$transaction->rollback();
@@ -801,6 +780,7 @@ class ActiveRecord extends Model
 			$transaction = null;
 		}
 		try {
+			// end of transaction handling code
 			$result = true;
 			if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
 				$result = false;
@@ -833,6 +813,7 @@ class ActiveRecord extends Model
 					$result = 0;
 				}
 			}
+			// start of transaction handling code
 			if ($transaction !== null) {
 				if (!$result) {
 					$transaction->rollback();
@@ -907,6 +888,7 @@ class ActiveRecord extends Model
 			$transaction = null;
 		}
 		try {
+			// end of transaction handling code
 			$result = false;
 			if ($this->beforeDelete()) {
 				// we do not check the return value of deleteAll() because it's possible
@@ -923,6 +905,7 @@ class ActiveRecord extends Model
 				$this->_oldAttributes = null;
 				$this->afterDelete();
 			}
+			// start of transaction handling code
 			if ($transaction !== null) {
 				if (!$result) {
 					$transaction->rollback();
@@ -1434,20 +1417,69 @@ class ActiveRecord extends Model
 	private function scenarioAtomicOperations()
 	{
 		$scenario = $this->getScenario();
-		$scenarios = static::atomicScenarios();
-		if (in_array($scenario, $scenarios)) {
-			// everything enabled
-			return array('insert', 'update', 'delete');
-		} elseif (isset($scenarios[$scenario])) {
-			if (is_array($scenarios[$scenario])) {
-				// array format
-				return $scenarios[$scenario];
-			} else {
-				// comma separated string format
-				return preg_split('/[\s,]+/', $scenarios[$scenario], -1, PREG_SPLIT_NO_EMPTY);
+		$scenarios = $this->scenarios();
+		if (isset($scenarios[$scenario])) {
+			$config = $scenarios[$scenario];
+			if (isset($config['attributes']) && is_array($config['attributes']) && in_array('atomic', $config)) {
+				// everything enabled
+				return array('insert', 'update', 'delete');
+			} elseif (isset($config['atomic'])) {
+				if (!is_array($config['atomic'])) {
+					// comma separated string with operations
+					return preg_split('/[\s,]+/', $config['atomic'], -1, PREG_SPLIT_NO_EMPTY);
+				} else {
+					// operations array
+					return $config['atomic'];
+				}
 			}
+		}
+		// nothing enabled
+		return array();
+	}
+
+	/**
+	 * Returns the attribute names that are safe to be massively assigned in the current scenario.
+	 * @return string[] safe attribute names
+	 */
+	public function safeAttributes()
+	{
+		$scenario = $this->getScenario();
+		$scenarios = $this->scenarios();
+		$attributes = array();
+		if (isset($scenarios[$scenario])) {
+			if (isset($scenarios[$scenario]['attributes'])) {
+				$scenarios[$scenario] = $scenarios[$scenario]['attributes'];
+			}
+			foreach ($scenarios[$scenario] as $attribute) {
+				if ($attribute[0] !== '!') {
+					$attributes[] = $attribute;
+				}
+			}
+		}
+		return $attributes;
+	}
+
+	/**
+	 * Returns the attribute names that are subject to validation in the current scenario.
+	 * @return string[] safe attribute names
+	 */
+	public function activeAttributes()
+	{
+		$scenario = $this->getScenario();
+		$scenarios = $this->scenarios();
+		if (isset($scenarios[$scenario])) {
+			if (isset($scenarios[$scenario]['attributes'])) {
+				$attributes = $scenarios[$scenario]['attributes'];
+			} else {
+				$attributes = $scenarios[$scenario];
+			}
+			foreach ($attributes as $i => $attribute) {
+				if ($attribute[0] === '!') {
+					$attributes[$i] = substr($attribute, 1);
+				}
+			}
+			return $attributes;
 		} else {
-			// nothing enabled
 			return array();
 		}
 	}
