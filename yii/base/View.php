@@ -171,6 +171,9 @@ class View extends Component
 	{
 		parent::init();
 		if (is_array($this->theme)) {
+			if (!isset($this->theme['class'])) {
+				$this->theme['class'] = 'yii\base\Theme';
+			}
 			$this->theme = Yii::createObject($this->theme);
 		}
 	}
