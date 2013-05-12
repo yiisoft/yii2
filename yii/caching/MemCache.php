@@ -7,7 +7,6 @@
 
 namespace yii\caching;
 
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
 /**
@@ -21,7 +20,7 @@ use yii\base\InvalidConfigException;
  * MemCache can be configured with a list of memcache servers by settings its [[servers]] property.
  * By default, MemCache assumes there is a memcache server running on localhost at port 11211.
  *
- * See [[Cache]] for common cache operations that ApcCache supports.
+ * See [[Cache]] for common cache operations that MemCache supports.
  *
  * Note, there is no security measure to protected data in memcache.
  * All data in memcache can be accessed by any process running in the system.
@@ -89,7 +88,7 @@ class MemCache extends Cache
 		if (count($servers)) {
 			foreach ($servers as $server) {
 				if ($server->host === null) {
-					throw new Exception("The 'host' property must be specified for every memcache server.");
+					throw new InvalidConfigException("The 'host' property must be specified for every memcache server.");
 				}
 				if ($this->useMemcached) {
 					$cache->addServer($server->host, $server->port, $server->weight);
@@ -145,7 +144,7 @@ class MemCache extends Cache
 	 * Retrieves a value from cache with a specified key.
 	 * This is the implementation of the method declared in the parent class.
 	 * @param string $key a unique key identifying the cached value
-	 * @return string the value stored in cache, false if the value is not in the cache or expired.
+	 * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
 	 */
 	protected function getValue($key)
 	{

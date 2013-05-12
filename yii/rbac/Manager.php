@@ -161,7 +161,7 @@ abstract class Manager extends Component
 	{
 		static $types = array('operation', 'task', 'role');
 		if ($parentType < $childType) {
-			throw new InvalidParamException("Cannot add an item of type '$types[$childType]' to an item of type '$types[$parentType]'.");
+			throw new InvalidParamException("Cannot add an item of type '{$types[$childType]}' to an item of type '{$types[$parentType]}'.");
 		}
 	}
 
