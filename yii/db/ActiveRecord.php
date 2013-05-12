@@ -311,11 +311,30 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * @return string[]
+	 * Declares scenario names which should be enwrapped with transaction (i.e. atomic).
+	 *
+	 * There are three forms of specifying such scenarios:
+	 *
+	 * ~~~
+	 * return array(
+	 *     'scenario1' => array('insert', 'update'), // let insert and update operations to be atomic for scenario1
+	 *     'scenario2' => 'insert, delete', // let insert and delete to be atomic for scenario2
+	 *     'scenario3', // both insert, update and delete operations would be atomic for scenario3
+	 * );
+	 * ~~~
+	 *
+	 * Note that [[insert()]], [[update()]] and [[delete()]] methods supports external transaction detection.
+	 * No transaction would be initiated in case the other one is already active.
+	 *
+	 * @return array scenario names which should be enwrapped with transaction (i.e. atomic).
 	 */
 	public static function atomicScenarios()
 	{
-		return array();
+		return array(
+			'scenario1' => array('insert', 'update'),
+			'scenario2' => 'insert, delete',
+			'scenario3',
+		);
 	}
 
 	/**
@@ -677,7 +696,7 @@ class ActiveRecord extends Model
 	public function insert($runValidation = true, $attributes = null)
 	{
 		$db = static::getDb();
-		if (in_array($this->getScenario(), static::atomicScenarios()) && $db->getTransaction() === null) {
+		if (in_array('insert', $this->scenarioAtomicOperations()) && $db->getTransaction() === null) {
 			$transaction = $db->beginTransaction();
 		} else {
 			$transaction = null;
@@ -780,7 +799,7 @@ class ActiveRecord extends Model
 	public function update($runValidation = true, $attributes = null)
 	{
 		$db = static::getDb();
-		if (in_array($this->getScenario(), static::atomicScenarios()) && $db->getTransaction() === null) {
+		if (in_array('update', $this->scenarioAtomicOperations()) && $db->getTransaction() === null) {
 			$transaction = $db->beginTransaction();
 		} else {
 			$transaction = null;
@@ -886,7 +905,7 @@ class ActiveRecord extends Model
 	public function delete()
 	{
 		$db = static::getDb();
-		if (in_array($this->getScenario(), static::atomicScenarios()) && $db->getTransaction() === null) {
+		if (in_array('delete', $this->scenarioAtomicOperations()) && $db->getTransaction() === null) {
 			$transaction = $db->beginTransaction();
 		} else {
 			$transaction = null;
@@ -1410,5 +1429,30 @@ class ActiveRecord extends Model
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * @return string[] what operations should be atomic for current active scenario. Possible operation
+	 * values are 'insert', 'update' and 'delete'.
+	 */
+	private function scenarioAtomicOperations()
+	{
+		$scenario = $this->getScenario();
+		$scenarios = static::atomicScenarios();
+		if (in_array($scenario, $scenarios)) {
+			// everything enabled
+			return array('insert', 'update', 'delete');
+		} elseif (isset($scenarios[$scenario])) {
+			if (is_array($scenarios[$scenario])) {
+				// array format
+				return $scenarios[$scenario];
+			} else {
+				// comma separated string format
+				return preg_split('/[\s,]+/', $scenarios[$scenario], -1, PREG_SPLIT_NO_EMPTY);
+			}
+		} else {
+			// nothing enabled
+			return array();
+		}
 	}
 }
