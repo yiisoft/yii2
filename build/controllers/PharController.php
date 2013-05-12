@@ -1,11 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
-use \yii\console\Controller;
+use yii\console\Controller;
 
 /**
- *
+ * Support iterator class for PHAR package builder.
+ * @author Timur Ruziev <resurtm@gmail.com>
+ * @since 2.0
  */
-class Yii2Iterator implements Iterator
+class YiiIterator implements Iterator
 {
 	/**
 	 * @var integer
@@ -30,10 +37,11 @@ class Yii2Iterator implements Iterator
 	private function _scan($path)
 	{
 		foreach (glob($path . '/*') as $file) {
+			$relative = substr($file, $this->_basePathLength);
 			if (is_dir($file)) {
 				$this->_scan($file);
 			} else {
-				$this->_files[] = array(substr($file, $this->_basePathLength), $file);
+				$this->_files[] = array($relative, $file);
 			}
 		}
 	}
@@ -65,21 +73,24 @@ class Yii2Iterator implements Iterator
 }
 
 /**
- *
+ * Yii PHAR package generator/builder.
+ * @author Timur Ruziev <resurtm@gmail.com>
+ * @since 2.0
  */
 class PharController extends Controller
 {
-	/**
-	 *
-	 */
 	public function actionIndex()
 	{
+		echo "Building PHAR package...\n";
+
 		$pharPath = realpath(__DIR__ . '/../../yii') . '/yii.phar';
 		if (is_file($pharPath)) {
 			unlink($pharPath);
 		}
 
 		$phar = new Phar($pharPath, 0, 'yii');
-		$phar->buildFromIterator(new Yii2Iterator(__DIR__ . '/../../yii/'));
+		$phar->buildFromIterator(new YiiIterator(__DIR__ . '/../../yii/'));
+
+		echo "Done!\n";
 	}
 }
