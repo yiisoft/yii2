@@ -31,7 +31,8 @@ class ApcCacheTest extends CacheTest
 		return $this->_cacheInstance;
 	}
 
-	// TODO there seems to be a problem with APC returning cached value even if it is expired.
-	// TODO makes test fail on PHP 5.3.10-1ubuntu3.6 with Suhosin-Patch (cli) -- cebe
-	// TODO http://drupal.org/node/1278292
+	public function testExpire()
+	{
+		$this->markTestSkipped("APC keys are expiring only on the next request.");
+	}
 }
