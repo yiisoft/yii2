@@ -590,18 +590,22 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Returns the attribute names that are safe to be massively assigned in the current scenario.
-	 * @return array safe attribute names
+	 * @return string[] safe attribute names
 	 */
 	public function safeAttributes()
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
+		if (!isset($scenarios[$scenario])) {
+			return array();
+		}
 		$attributes = array();
-		if (isset($scenarios[$scenario])) {
-			foreach ($scenarios[$scenario] as $attribute) {
-				if ($attribute[0] !== '!') {
-					$attributes[] = $attribute;
-				}
+		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
+			$scenarios[$scenario] = $scenarios[$scenario]['attributes'];
+		}
+		foreach ($scenarios[$scenario] as $attribute) {
+			if ($attribute[0] !== '!') {
+				$attributes[] = $attribute;
 			}
 		}
 		return $attributes;
@@ -609,23 +613,26 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Returns the attribute names that are subject to validation in the current scenario.
-	 * @return array safe attribute names
+	 * @return string[] safe attribute names
 	 */
 	public function activeAttributes()
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
-		if (isset($scenarios[$scenario])) {
-			$attributes = $scenarios[$this->getScenario()];
-			foreach ($attributes as $i => $attribute) {
-				if ($attribute[0] === '!') {
-					$attributes[$i] = substr($attribute, 1);
-				}
-			}
-			return $attributes;
-		} else {
+		if (!isset($scenarios[$scenario])) {
 			return array();
 		}
+		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
+			$attributes = $scenarios[$scenario]['attributes'];
+		} else {
+			$attributes = $scenarios[$scenario];
+		}
+		foreach ($attributes as $i => $attribute) {
+			if ($attribute[0] === '!') {
+				$attributes[$i] = substr($attribute, 1);
+			}
+		}
+		return $attributes;
 	}
 
 	/**
