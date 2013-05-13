@@ -664,36 +664,61 @@ class ActiveRecord extends Model
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
+	 * @throws \Exception
 	 */
 	public function insert($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
-			return false;
-		}
-		$values = $this->getDirtyAttributes($attributes);
-		if (empty($values)) {
-			foreach ($this->primaryKey() as $key) {
-				$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
-			}
-		}
 		$db = static::getDb();
-		$command = $db->createCommand()->insert($this->tableName(), $values);
-		if ($command->execute()) {
-			$table = $this->getTableSchema();
-			if ($table->sequenceName !== null) {
-				foreach ($table->primaryKey as $name) {
-					if (!isset($this->_attributes[$name])) {
-						$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
-						break;
+		if (in_array('insert', $this->scenarioAtomicOperations()) && $db->getTransaction() === null) {
+			$transaction = $db->beginTransaction();
+		} else {
+			$transaction = null;
+		}
+		try {
+			// end of transaction handling code
+			$result = true;
+			if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
+				$result = false;
+			}
+			if ($result) {
+				$values = $this->getDirtyAttributes($attributes);
+				if (empty($values)) {
+					foreach ($this->primaryKey() as $key) {
+						$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
 					}
 				}
+				$command = $db->createCommand()->insert($this->tableName(), $values);
+				if ($command->execute()) {
+					$table = $this->getTableSchema();
+					if ($table->sequenceName !== null) {
+						foreach ($table->primaryKey as $name) {
+							if (!isset($this->_attributes[$name])) {
+								$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
+								break;
+							}
+						}
+					}
+					foreach ($values as $name => $value) {
+						$this->_oldAttributes[$name] = $value;
+					}
+					$this->afterSave(true);
+				}
 			}
-			foreach ($values as $name => $value) {
-				$this->_oldAttributes[$name] = $value;
+			// start of transaction handling code
+			if ($transaction !== null) {
+				if (!$result) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
 			}
-			$this->afterSave(true);
-			return true;
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
+			}
+			throw $e;
 		}
+		return $result;
 	}
 
 	/**
@@ -744,39 +769,65 @@ class ActiveRecord extends Model
 	 * or [[beforeSave()]] stops the updating process.
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being updated is outdated.
+	 * @throws \Exception
 	 */
 	public function update($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
-			return false;
-		}
-		$values = $this->getDirtyAttributes($attributes);
-		if (!empty($values)) {
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				if (!isset($values[$lock])) {
-					$values[$lock] = $this->$lock + 1;
-				}
-				$condition[$lock] = $this->$lock;
-			}
-			// We do not check the return value of updateAll() because it's possible
-			// that the UPDATE statement doesn't change anything and thus returns 0.
-			$rows = $this->updateAll($values, $condition);
-
-			if ($lock !== null && !$rows) {
-				throw new StaleObjectException('The object being updated is outdated.');
-			}
-
-			foreach ($values as $name => $value) {
-				$this->_oldAttributes[$name] = $this->_attributes[$name];
-			}
-
-			$this->afterSave(false);
-			return $rows;
+		$db = static::getDb();
+		if (in_array('update', $this->scenarioAtomicOperations()) && $db->getTransaction() === null) {
+			$transaction = $db->beginTransaction();
 		} else {
-			return 0;
+			$transaction = null;
 		}
+		try {
+			// end of transaction handling code
+			$result = true;
+			if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
+				$result = false;
+			}
+			if ($result) {
+				$values = $this->getDirtyAttributes($attributes);
+				if (!empty($values)) {
+					$condition = $this->getOldPrimaryKey(true);
+					$lock = $this->optimisticLock();
+					if ($lock !== null) {
+						if (!isset($values[$lock])) {
+							$values[$lock] = $this->$lock + 1;
+						}
+						$condition[$lock] = $this->$lock;
+					}
+					// We do not check the return value of updateAll() because it's possible
+					// that the UPDATE statement doesn't change anything and thus returns 0.
+					$result = $this->updateAll($values, $condition);
+
+					if ($lock !== null && !$result) {
+						throw new StaleObjectException('The object being updated is outdated.');
+					}
+
+					foreach ($values as $name => $value) {
+						$this->_oldAttributes[$name] = $this->_attributes[$name];
+					}
+
+					$this->afterSave(false);
+				} else {
+					$result = 0;
+				}
+			}
+			// start of transaction handling code
+			if ($transaction !== null) {
+				if (!$result) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
+			}
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+		return $result;
 	}
 
 	/**
@@ -826,27 +877,49 @@ class ActiveRecord extends Model
 	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being deleted is outdated.
+	 * @throws \Exception
 	 */
 	public function delete()
 	{
-		if ($this->beforeDelete()) {
-			// we do not check the return value of deleteAll() because it's possible
-			// the record is already deleted in the database and thus the method will return 0
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				$condition[$lock] = $this->$lock;
-			}
-			$rows = $this->deleteAll($condition);
-			if ($lock !== null && !$rows) {
-				throw new StaleObjectException('The object being deleted is outdated.');
-			}
-			$this->_oldAttributes = null;
-			$this->afterDelete();
-			return $rows;
+		$db = static::getDb();
+		if (in_array('delete', $this->scenarioAtomicOperations()) && $db->getTransaction() === null) {
+			$transaction = $db->beginTransaction();
 		} else {
-			return false;
+			$transaction = null;
 		}
+		try {
+			// end of transaction handling code
+			$result = false;
+			if ($this->beforeDelete()) {
+				// we do not check the return value of deleteAll() because it's possible
+				// the record is already deleted in the database and thus the method will return 0
+				$condition = $this->getOldPrimaryKey(true);
+				$lock = $this->optimisticLock();
+				if ($lock !== null) {
+					$condition[$lock] = $this->$lock;
+				}
+				$result = $this->deleteAll($condition);
+				if ($lock !== null && !$result) {
+					throw new StaleObjectException('The object being deleted is outdated.');
+				}
+				$this->_oldAttributes = null;
+				$this->afterDelete();
+			}
+			// start of transaction handling code
+			if ($transaction !== null) {
+				if (!$result) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
+			}
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+		return $result;
 	}
 
 	/**
@@ -1335,5 +1408,79 @@ class ActiveRecord extends Model
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * @return string[] what operations should be atomic for current active scenario. Possible operation
+	 * values are 'insert', 'update' and 'delete'.
+	 */
+	private function scenarioAtomicOperations()
+	{
+		$scenario = $this->getScenario();
+		$scenarios = $this->scenarios();
+		if (isset($scenarios[$scenario])) {
+			$config = $scenarios[$scenario];
+			if (isset($config['attributes']) && is_array($config['attributes']) && in_array('atomic', $config)) {
+				// everything enabled
+				return array('insert', 'update', 'delete');
+			} elseif (isset($config['atomic'])) {
+				if (!is_array($config['atomic'])) {
+					// comma separated string with operations
+					return preg_split('/[\s,]+/', $config['atomic'], -1, PREG_SPLIT_NO_EMPTY);
+				} else {
+					// operations array
+					return $config['atomic'];
+				}
+			}
+		}
+		// nothing enabled
+		return array();
+	}
+
+	/**
+	 * Returns the attribute names that are safe to be massively assigned in the current scenario.
+	 * @return string[] safe attribute names
+	 */
+	public function safeAttributes()
+	{
+		$scenario = $this->getScenario();
+		$scenarios = $this->scenarios();
+		$attributes = array();
+		if (isset($scenarios[$scenario])) {
+			if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
+				$scenarios[$scenario] = $scenarios[$scenario]['attributes'];
+			}
+			foreach ($scenarios[$scenario] as $attribute) {
+				if ($attribute[0] !== '!') {
+					$attributes[] = $attribute;
+				}
+			}
+		}
+		return $attributes;
+	}
+
+	/**
+	 * Returns the attribute names that are subject to validation in the current scenario.
+	 * @return string[] safe attribute names
+	 */
+	public function activeAttributes()
+	{
+		$scenario = $this->getScenario();
+		$scenarios = $this->scenarios();
+		if (isset($scenarios[$scenario])) {
+			if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
+				$attributes = $scenarios[$scenario]['attributes'];
+			} else {
+				$attributes = $scenarios[$scenario];
+			}
+			foreach ($attributes as $i => $attribute) {
+				if ($attribute[0] === '!') {
+					$attributes[$i] = substr($attribute, 1);
+				}
+			}
+			return $attributes;
+		} else {
+			return array();
+		}
 	}
 }

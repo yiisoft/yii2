@@ -590,7 +590,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Returns the attribute names that are safe to be massively assigned in the current scenario.
-	 * @return array safe attribute names
+	 * @return string[] safe attribute names
 	 */
 	public function safeAttributes()
 	{
@@ -609,14 +609,14 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Returns the attribute names that are subject to validation in the current scenario.
-	 * @return array safe attribute names
+	 * @return string[] safe attribute names
 	 */
 	public function activeAttributes()
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (isset($scenarios[$scenario])) {
-			$attributes = $scenarios[$this->getScenario()];
+			$attributes = $scenarios[$scenario];
 			foreach ($attributes as $i => $attribute) {
 				if ($attribute[0] === '!') {
 					$attributes[$i] = substr($attribute, 1);
