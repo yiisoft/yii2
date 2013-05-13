@@ -1428,15 +1428,15 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param string $op possible values are ActiveRecord::INSERT, ActiveRecord::UPDATE and ActiveRecord::DELETE.
+	 * @param string $operation possible values are ActiveRecord::INSERT, ActiveRecord::UPDATE and ActiveRecord::DELETE.
 	 * @return boolean whether given operation is atomic. Currently active scenario is taken into account.
 	 */
-	private function isOperationAtomic($op)
+	private function isOperationAtomic($operation)
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (isset($scenarios[$scenario], $scenario[$scenario]['atomic']) && is_array($scenarios[$scenario]['atomic'])) {
-			return in_array($op, $scenarios[$scenario]['atomic']);
+			return in_array($operation, $scenarios[$scenario]['atomic']);
 		} else {
 			return false;
 		}
