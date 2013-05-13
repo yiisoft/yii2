@@ -7,8 +7,6 @@
 
 namespace yii\bootstrap\helpers\base;
 
-use yii\bootstrap\enum\ProgressEnum;
-
 /**
  * Progress provides methods to make use of bootstrap progress bars in your application
  *

@@ -7,8 +7,7 @@
 
 namespace yii\bootstrap\helpers\base;
 
-use yii\bootstrap\enum\AlertEnum;
-use yii\bootstrap\enum\BootstrapEnum;
+use yii\bootstrap\enum\Enum;
 use yii\helpers\Html;
 
 /**
@@ -21,6 +20,16 @@ class Alert
 {
 
 	/**
+	 * constants
+	 */
+	const CLASS_NAME = 'alert';
+	const TYPE_DEFAULT = '';
+	const TYPE_SUCCESS = 'alert-success';
+	const TYPE_INFORMATION = 'alert-info';
+	const TYPE_ERROR = 'alert-error';
+	const SIZE_BLOCK = 'alert-block';
+
+	/**
 	 * Generates an alert box
 	 * @param $message
 	 * @param array $htmlOptions
@@ -31,14 +40,14 @@ class Alert
 	{
 		// TODO: this method may should be added to ArrayHelper::add or ArrayHelper::append?
 		if (isset($htmlOptions['class']))
-			$htmlOptions['class'] .= ' ' . AlertEnum::CLASS_NAME;
+			$htmlOptions['class'] .= ' ' . static::CLASS_NAME;
 		else
-			$htmlOptions['class'] = AlertEnum::CLASS_NAME;
+			$htmlOptions['class'] = static::CLASS_NAME;
 
 		ob_start();
 		echo Html::beginTag('div', $htmlOptions);
 		if ($dismiss)
-			echo Button::closeLink('&times;', BootstrapEnum::ALERT);
+			echo Button::closeLink('&times;', Enum::ALERT);
 		echo $message;
 		echo Html::endTag('div');
 		return ob_get_clean();

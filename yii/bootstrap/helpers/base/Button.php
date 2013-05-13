@@ -7,9 +7,7 @@
 
 namespace yii\bootstrap\helpers\base;
 
-use yii\bootstrap\enum\AlertEnum;
-use yii\bootstrap\enum\ButtonEnum;
-use yii\bootstrap\enum\BootstrapEnum;
+use yii\bootstrap\enum\Enum;
 use yii\helpers\Html;
 
 /**
@@ -21,6 +19,24 @@ use yii\helpers\Html;
 class Button
 {
 	/**
+	 * constants
+	 */
+	const TYPE_DEFAULT = 'btn';
+	const TYPE_PRIMARY = 'btn-primary';
+	const TYPE_INFO = 'btn-info';
+	const TYPE_SUCCESS = 'btn-success';
+	const TYPE_WARNING = 'btn-warning';
+	const TYPE_DANGER = 'btn-danger';
+	const TYPE_INVERSE = 'btn-inverse';
+	const TYPE_LINK = 'btn-link';
+
+	const SIZE_DEFAULT = '';
+	const SIZE_LARGE = 'btn-large';
+	const SIZE_SMALL = 'btn-small';
+	const SIZE_MINI = 'btn-mini';
+	const SIZE_BLOCK = 'btn-block';
+
+	/**
 	 * Returns a dismissal alert link
 	 * @param string $text
 	 * @param string $dismiss what to dismiss (alert or modal)
@@ -28,7 +44,7 @@ class Button
 	 */
 	public static function closeLink($text = '&times;', $dismiss = null)
 	{
-		$options = array('class' => BootstrapEnum::CLOSE);
+		$options = array('class' => Enum::CLOSE);
 		if(null !== $dismiss)
 			$options['data-dismiss'] = $dismiss;
 		return Html::a($text, '#', $options);
@@ -42,7 +58,7 @@ class Button
 	 */
 	public static function closeButton($text = '&times', $dismiss = null)
 	{
-		$options = array('type' => 'button', 'class' => BootstrapEnum::CLOSE);
+		$options = array('type' => 'button', 'class' => Enum::CLOSE);
 		if(null !== $dismiss)
 			$options['data-dismiss'] = $dismiss;
 
@@ -60,9 +76,9 @@ class Button
 	{
 		// TODO: consider method add or append to ArrayHelper class
 		if (isset($htmlOptions['class']))
-			$htmlOptions['class'] .= ' ' . ButtonEnum::TYPE_LINK;
+			$htmlOptions['class'] .= ' ' . static::TYPE_LINK;
 		else
-			$htmlOptions['class'] = ButtonEnum::TYPE_LINK;
+			$htmlOptions['class'] = static::TYPE_LINK;
 
 		return Html::a($label, '#', $htmlOptions);
 	}

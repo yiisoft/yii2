@@ -7,12 +7,12 @@
 namespace yii\bootstrap\enum;
 
 /**
- * BootstrapEnum provides bootstrap shared predefined set of named values.
+ * Enum provides bootstrap shared predefined set of named values.
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
-class BootstrapEnum
+class Enum
 {
 	const FADE = 'fade';
 	const IN = 'in';

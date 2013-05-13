@@ -11,8 +11,7 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\helpers\Button;
-use yii\bootstrap\enum\BootstrapEnum;
-use yii\web\JsExpression;
+use yii\bootstrap\enum\Enum;
 
 /**
  * Modal renders a bootstrap modal on the page for its use on your application.
@@ -27,7 +26,7 @@ use yii\web\JsExpression;
  * 	'footer' => '//modal/_footer', // we can also use view paths
  * 	'buttonOptions' => array(
  * 		'label' => 'Show Modal',
- * 		'class' => \yii\bootstrap\enum\ButtonEnum::TYPE_DEFAULT
+ * 		'class' => \yii\bootstrap\enum\Button::TYPE_DEFAULT
  * 		)
  * ));
  * ```
@@ -35,7 +34,7 @@ use yii\web\JsExpression;
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
-class Modal extends base\BootstrapWidget
+class Modal extends base\Widget
 {
 	/**
 	 * @var array  The additional HTML attributes of the button that will show the modal. If empty array, only
@@ -140,14 +139,14 @@ class Modal extends base\BootstrapWidget
 		$this->defaultOption('id', $this->getId());
 		$this->selector = '#' . ArrayHelper::getValue($this->options, 'id');
 
-		$this->defaultOption('role', BootstrapEnum::DIALOG);
+		$this->defaultOption('role', Enum::DIALOG);
 		$this->defaultOption('tabindex', '-1');
 
-		$this->addOption('class', BootstrapEnum::MODAL);
-		$this->addOption('class', BootstrapEnum::HIDE);
+		$this->addOption('class', Enum::MODAL);
+		$this->addOption('class', Enum::HIDE);
 
 		if ($this->fade)
-			$this->addOption('class', BootstrapEnum::FADE);
+			$this->addOption('class', Enum::FADE);
 
 		$this->initPluginOptions();
 		$this->initPluginEvents();
@@ -204,7 +203,7 @@ class Modal extends base\BootstrapWidget
 
 			$this->buttonOptions['data-toggle'] = isset($this->buttonOptions['data-toggle'])
 				? $this->buttonOptions['data-toggle']
-				: BootstrapEnum::MODAL;
+				: Enum::MODAL;
 
 			if ($this->remote !== null && !isset($this->buttonOptions['data-remote']))
 				$this->buttonOptions['data-remote'] = Html::url($this->remote);
@@ -230,13 +229,13 @@ class Modal extends base\BootstrapWidget
 	 */
 	public function renderModal()
 	{
-		echo Html::beginTag('div', $this->options) . PHP_EOL;
+		echo Html::beginTag('div', $this->options);
 
 		$this->renderModalHeader();
 		$this->renderModalBody();
 		$this->renderModalFooter();
 
-		echo Html::endTag('div') . PHP_EOL;
+		echo Html::endTag('div');
 	}
 
 	/**
@@ -244,11 +243,11 @@ class Modal extends base\BootstrapWidget
 	 */
 	public function renderModalHeader()
 	{
-		echo '<div class="modal-header">' . PHP_EOL;
+		echo Html::beginTag('div', array('class'=>'modal-header'));
 		if ($this->closeText)
-			echo Button::closeButton($this->closeText, BootstrapEnum::MODAL);
+			echo Button::closeButton($this->closeText, Enum::MODAL);
 		echo $this->renderSection($this->header);
-		echo '</div>' . PHP_EOL;
+		echo Html::endTag('div');
 	}
 
 	/**
@@ -256,9 +255,9 @@ class Modal extends base\BootstrapWidget
 	 */
 	public function renderModalBody()
 	{
-		echo '<div class="modal-body">' . PHP_EOL;
+		echo Html::beginTag('div', array('class'=>'modal-body'));
 		echo $this->renderSection($this->content);
-		echo '</div>' . PHP_EOL;
+		echo Html::endTag('div');
 	}
 
 	/**
@@ -267,9 +266,9 @@ class Modal extends base\BootstrapWidget
 	public function renderModalFooter()
 	{
 
-		echo '<div class="modal-footer">' . PHP_EOL;
+		echo Html::beginTag('div', array('class'=>'modal-footer'));
 		echo $this->renderSection($this->footer);
-		echo '</div>' . PHP_EOL;
+		echo Html::endTag('div');
 	}
 
 	/**

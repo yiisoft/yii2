@@ -17,27 +17,5 @@ use yii\helpers\Html;
  */
 class Icon extends base\Icon
 {
-	/**
-	 * Generates an icon.
-	 * @param string $icon the icon type.
-	 * @param array $htmlOptions additional HTML attributes.
-	 * @return string the generated icon.
-	 */
-	public static function i($icon, $htmlOptions = array())
-	{
-		if (is_string($icon))
-		{
-			if (strpos($icon, 'icon-') === false)
-				$icon = 'icon-' . implode(' icon-', explode(' ', $icon));
 
-			// TODO: this method may should be added to ArrayHelper::add or ArrayHelper::append?
-			if (isset($htmlOptions['class']))
-				$htmlOptions['class'] .= ' ' . $icon;
-			else
-				$htmlOptions['class'] = $icon;
-
-			return Html::tag('i', '', $htmlOptions);
-		}
-		return '';
-	}
 }

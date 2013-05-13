@@ -9,18 +9,18 @@ namespace yii\bootstrap\widgets\base;
 
 use Yii;
 use yii\base\View;
-use yii\base\Widget;
+use yii\bootstrap\helpers\Assets;
 use yii\base\InvalidCallException;
-use yii\helpers\base\Json;
-use yii\web\JsExpression;
+
+
 
 /**
- * BootstrapWidget is the base class for bootstrap widgets.
+ * Bootstrap is the base class for bootstrap widgets.
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
-class BootstrapWidget extends Widget
+class Widget extends \yii\base\Widget
 {
 
 	/**
@@ -48,7 +48,8 @@ class BootstrapWidget extends Widget
 	 */
 	public function init()
 	{
-		$this->view->registerAssetBundle(($this->responsive ? 'yii/bootstrap' : 'yii/bootstrap-responsive'));
+		// ensure bundle
+		Assets::registerBundle($this->responsive);
 	}
 
 	/**
@@ -60,19 +61,7 @@ class BootstrapWidget extends Widget
 	 */
 	protected function registerEvents($selector, $events = array(), $position = View::POS_END)
 	{
-		if (empty($events))
-			return;
-
-		$script = '';
-		foreach ($events as $name => $handler) {
-			$handler = ($handler instanceof JsExpression)
-				? $handler
-				: new JsExpression($handler);
-
-			$script .= ";jQuery(document).ready(function (){jQuery('{$selector}').on('{$name}', {$handler});});";
-		}
-		if (!empty($script))
-			$this->view->registerJs($script, array('position' => $position), $this->getUniqueScriptId());
+		Assets::registerEvents($selector, $events, $position);
 	}
 
 	/**
@@ -87,9 +76,7 @@ class BootstrapWidget extends Widget
 		if(null === $this->name)
 			throw new InvalidCallException();
 
-		$options = !empty($options) ? Json::encode($options) : '';
-		$script = ";jQuery(document).ready(function (){jQuery('{$selector}').{$this->name}({$options});});";
-		$this->view->registerJs($script, array('position'=>$position));
+		Assets::registerPlugin($selector, $this->name, $options, $position);
 	}
 
 	/**
