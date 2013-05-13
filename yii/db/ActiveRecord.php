@@ -77,17 +77,17 @@ class ActiveRecord extends Model
 	 * Represents insert ActiveRecord operation. This constant is used for specifying set of atomic operations
 	 * for particular scenario in the [[scenarios()]] method.
 	 */
-	const OPERATION_INSERT = 'insert';
+	const OP_INSERT = 'insert';
 	/**
 	 * Represents update ActiveRecord operation. This constant is used for specifying set of atomic operations
 	 * for particular scenario in the [[scenarios()]] method.
 	 */
-	const OPERATION_UPDATE = 'update';
+	const OP_UPDATE = 'update';
 	/**
 	 * Represents delete ActiveRecord operation. This constant is used for specifying set of atomic operations
 	 * for particular scenario in the [[scenarios()]] method.
 	 */
-	const OPERATION_DELETE = 'delete';
+	const OP_DELETE = 'delete';
 
 	/**
 	 * @var array attribute values indexed by attribute names
@@ -688,18 +688,18 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isOperationAtomic(self::OPERATION_INSERT) && null === $db->getTransaction() ? $db->beginTransaction() : null;
+		$transaction = $this->isOpAtomic(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
-			$result = $this->internalInsert($attributes);
-			if (null !== $transaction) {
-				if (false === $result) {
+			$result = $this->insertInternal($attributes);
+			if ($transaction !== null) {
+				if ($result === false) {
 					$transaction->rollback();
 				} else {
 					$transaction->commit();
 				}
 			}
 		} catch (\Exception $e) {
-			if (null !== $transaction) {
+			if ($transaction !== null) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -710,7 +710,7 @@ class ActiveRecord extends Model
 	/**
 	 * @see ActiveRecord::insert()
 	 */
-	private function internalInsert($attributes = null)
+	private function insertInternal($attributes = null)
 	{
 		if (!$this->beforeSave(true)) {
 			return false;
@@ -798,18 +798,18 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isOperationAtomic(self::OPERATION_UPDATE) && null === $db->getTransaction() ? $db->beginTransaction() : null;
+		$transaction = $this->isOpAtomic(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
-			$result = $this->internalUpdate($attributes);
-			if (null !== $transaction) {
-				if (false === $result) {
+			$result = $this->updateInternal($attributes);
+			if ($transaction !== null) {
+				if ($result === false) {
 					$transaction->rollback();
 				} else {
 					$transaction->commit();
 				}
 			}
 		} catch (\Exception $e) {
-			if (null !== $transaction) {
+			if ($transaction !== null) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -821,7 +821,7 @@ class ActiveRecord extends Model
 	 * @see CActiveRecord::update()
 	 * @throws StaleObjectException
 	 */
-	private function internalUpdate($attributes = null)
+	private function updateInternal($attributes = null)
 	{
 		if (!$this->beforeSave(false)) {
 			return false;
@@ -905,7 +905,7 @@ class ActiveRecord extends Model
 	public function delete()
 	{
 		$db = static::getDb();
-		$transaction = $this->isOperationAtomic(self::OPERATION_DELETE) && null === $db->getTransaction() ? $db->beginTransaction() : null;
+		$transaction = $this->isOpAtomic(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = false;
 			if ($this->beforeDelete()) {
@@ -913,25 +913,25 @@ class ActiveRecord extends Model
 				// the record is already deleted in the database and thus the method will return 0
 				$condition = $this->getOldPrimaryKey(true);
 				$lock = $this->optimisticLock();
-				if (null !== $lock) {
+				if ($lock !== null) {
 					$condition[$lock] = $this->$lock;
 				}
 				$result = $this->deleteAll($condition);
-				if (null !== $lock && !$result) {
+				if ($lock !== null && !$result) {
 					throw new StaleObjectException('The object being deleted is outdated.');
 				}
 				$this->_oldAttributes = null;
 				$this->afterDelete();
 			}
-			if (null !== $transaction) {
-				if (false === $result) {
+			if ($transaction !== null) {
+				if ($result === false) {
 					$transaction->rollback();
 				} else {
 					$transaction->commit();
 				}
 			}
 		} catch (\Exception $e) {
-			if (null !== $transaction) {
+			if ($transaction !== null) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -1428,17 +1428,17 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param string $operation possible values are ActiveRecord::INSERT, ActiveRecord::UPDATE and ActiveRecord::DELETE.
+	 * @param string $op possible values are ActiveRecord::INSERT, ActiveRecord::UPDATE and ActiveRecord::DELETE.
 	 * @return boolean whether given operation is atomic. Currently active scenario is taken into account.
 	 */
-	private function isOperationAtomic($operation)
+	private function isOpAtomic($op)
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
-		if (!isset($scenarios[$scenario]) || !isset($scenarios[$scenario]['attributes']) || !is_array($scenarios[$scenario]['attributes'])) {
+		if (isset($scenarios[$scenario], $scenario[$scenario]['atomic']) && is_array($scenarios[$scenario]['atomic'])) {
+			return in_array($op, $scenarios[$scenario]['atomic']);
+		} else {
 			return false;
 		}
-		return in_array('atomic', $scenarios[$scenario]) ||
-			isset($scenarios[$scenario]['atomic']) && is_array($scenarios[$scenario]['atomic']) && in_array($operation, $scenarios[$scenario]['atomic']);
 	}
 }
