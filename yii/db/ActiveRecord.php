@@ -688,7 +688,7 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isOpAtomic(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		$transaction = $this->isOperationAtomic(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = $this->insertInternal($attributes);
 			if ($transaction !== null) {
@@ -798,7 +798,7 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isOpAtomic(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		$transaction = $this->isOperationAtomic(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = $this->updateInternal($attributes);
 			if ($transaction !== null) {
@@ -905,7 +905,7 @@ class ActiveRecord extends Model
 	public function delete()
 	{
 		$db = static::getDb();
-		$transaction = $this->isOpAtomic(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		$transaction = $this->isOperationAtomic(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = false;
 			if ($this->beforeDelete()) {
@@ -1431,7 +1431,7 @@ class ActiveRecord extends Model
 	 * @param string $op possible values are ActiveRecord::INSERT, ActiveRecord::UPDATE and ActiveRecord::DELETE.
 	 * @return boolean whether given operation is atomic. Currently active scenario is taken into account.
 	 */
-	private function isOpAtomic($op)
+	private function isOperationAtomic($op)
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
