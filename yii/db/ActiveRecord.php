@@ -74,6 +74,22 @@ class ActiveRecord extends Model
 	const EVENT_AFTER_DELETE = 'afterDelete';
 
 	/**
+	 * Represents insert ActiveRecord operation. This constant is used for specifying set of atomic operations
+	 * for particular scenario in the [[scenarios()]] method.
+	 */
+	const OP_INSERT = 'insert';
+	/**
+	 * Represents update ActiveRecord operation. This constant is used for specifying set of atomic operations
+	 * for particular scenario in the [[scenarios()]] method.
+	 */
+	const OP_UPDATE = 'update';
+	/**
+	 * Represents delete ActiveRecord operation. This constant is used for specifying set of atomic operations
+	 * for particular scenario in the [[scenarios()]] method.
+	 */
+	const OP_DELETE = 'delete';
+
+	/**
 	 * @var array attribute values indexed by attribute names
 	 */
 	private $_attributes = array();
@@ -664,10 +680,39 @@ class ActiveRecord extends Model
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
 	 * meaning all attributes that are loaded from DB will be saved.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
+	 * @throws \Exception in case insert failed.
 	 */
 	public function insert($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(true)) {
+		if ($runValidation && !$this->validate($attributes)) {
+			return false;
+		}
+		$db = static::getDb();
+		$transaction = $this->isOperationAtomic(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		try {
+			$result = $this->insertInternal($attributes);
+			if ($transaction !== null) {
+				if ($result === false) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
+			}
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+		return $result;
+	}
+
+	/**
+	 * @see ActiveRecord::insert()
+	 */
+	private function insertInternal($attributes = null)
+	{
+		if (!$this->beforeSave(true)) {
 			return false;
 		}
 		$values = $this->getDirtyAttributes($attributes);
@@ -678,22 +723,23 @@ class ActiveRecord extends Model
 		}
 		$db = static::getDb();
 		$command = $db->createCommand()->insert($this->tableName(), $values);
-		if ($command->execute()) {
-			$table = $this->getTableSchema();
-			if ($table->sequenceName !== null) {
-				foreach ($table->primaryKey as $name) {
-					if (!isset($this->_attributes[$name])) {
-						$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
-						break;
-					}
+		if (!$command->execute()) {
+			return false;
+		}
+		$table = $this->getTableSchema();
+		if ($table->sequenceName !== null) {
+			foreach ($table->primaryKey as $name) {
+				if (!isset($this->_attributes[$name])) {
+					$this->_oldAttributes[$name] = $this->_attributes[$name] = $db->getLastInsertID($table->sequenceName);
+					break;
 				}
 			}
-			foreach ($values as $name => $value) {
-				$this->_oldAttributes[$name] = $value;
-			}
-			$this->afterSave(true);
-			return true;
 		}
+		foreach ($values as $name => $value) {
+			$this->_oldAttributes[$name] = $value;
+		}
+		$this->afterSave(true);
+		return true;
 	}
 
 	/**
@@ -744,39 +790,67 @@ class ActiveRecord extends Model
 	 * or [[beforeSave()]] stops the updating process.
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being updated is outdated.
+	 * @throws \Exception in case update failed.
 	 */
 	public function update($runValidation = true, $attributes = null)
 	{
-		if ($runValidation && !$this->validate($attributes) || !$this->beforeSave(false)) {
+		if ($runValidation && !$this->validate($attributes)) {
+			return false;
+		}
+		$db = static::getDb();
+		$transaction = $this->isOperationAtomic(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		try {
+			$result = $this->updateInternal($attributes);
+			if ($transaction !== null) {
+				if ($result === false) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
+			}
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+		return $result;
+	}
+
+	/**
+	 * @see CActiveRecord::update()
+	 * @throws StaleObjectException
+	 */
+	private function updateInternal($attributes = null)
+	{
+		if (!$this->beforeSave(false)) {
 			return false;
 		}
 		$values = $this->getDirtyAttributes($attributes);
-		if (!empty($values)) {
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				if (!isset($values[$lock])) {
-					$values[$lock] = $this->$lock + 1;
-				}
-				$condition[$lock] = $this->$lock;
-			}
-			// We do not check the return value of updateAll() because it's possible
-			// that the UPDATE statement doesn't change anything and thus returns 0.
-			$rows = $this->updateAll($values, $condition);
-
-			if ($lock !== null && !$rows) {
-				throw new StaleObjectException('The object being updated is outdated.');
-			}
-
-			foreach ($values as $name => $value) {
-				$this->_oldAttributes[$name] = $this->_attributes[$name];
-			}
-
-			$this->afterSave(false);
-			return $rows;
-		} else {
+		if (empty($values)) {
 			return 0;
 		}
+		$condition = $this->getOldPrimaryKey(true);
+		$lock = $this->optimisticLock();
+		if ($lock !== null) {
+			if (!isset($values[$lock])) {
+				$values[$lock] = $this->$lock + 1;
+			}
+			$condition[$lock] = $this->$lock;
+		}
+		// We do not check the return value of updateAll() because it's possible
+		// that the UPDATE statement doesn't change anything and thus returns 0.
+		$rows = $this->updateAll($values, $condition);
+
+		if ($lock !== null && !$rows) {
+			throw new StaleObjectException('The object being updated is outdated.');
+		}
+
+		foreach ($values as $name => $value) {
+			$this->_oldAttributes[$name] = $this->_attributes[$name];
+		}
+		$this->afterSave(false);
+		return $rows;
 	}
 
 	/**
@@ -826,27 +900,43 @@ class ActiveRecord extends Model
 	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being deleted is outdated.
+	 * @throws \Exception in case delete failed.
 	 */
 	public function delete()
 	{
-		if ($this->beforeDelete()) {
-			// we do not check the return value of deleteAll() because it's possible
-			// the record is already deleted in the database and thus the method will return 0
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				$condition[$lock] = $this->$lock;
+		$db = static::getDb();
+		$transaction = $this->isOperationAtomic(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		try {
+			$result = false;
+			if ($this->beforeDelete()) {
+				// we do not check the return value of deleteAll() because it's possible
+				// the record is already deleted in the database and thus the method will return 0
+				$condition = $this->getOldPrimaryKey(true);
+				$lock = $this->optimisticLock();
+				if ($lock !== null) {
+					$condition[$lock] = $this->$lock;
+				}
+				$result = $this->deleteAll($condition);
+				if ($lock !== null && !$result) {
+					throw new StaleObjectException('The object being deleted is outdated.');
+				}
+				$this->_oldAttributes = null;
+				$this->afterDelete();
 			}
-			$rows = $this->deleteAll($condition);
-			if ($lock !== null && !$rows) {
-				throw new StaleObjectException('The object being deleted is outdated.');
+			if ($transaction !== null) {
+				if ($result === false) {
+					$transaction->rollback();
+				} else {
+					$transaction->commit();
+				}
 			}
-			$this->_oldAttributes = null;
-			$this->afterDelete();
-			return $rows;
-		} else {
-			return false;
+		} catch (\Exception $e) {
+			if ($transaction !== null) {
+				$transaction->rollback();
+			}
+			throw $e;
 		}
+		return $result;
 	}
 
 	/**
@@ -1335,5 +1425,20 @@ class ActiveRecord extends Model
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * @param string $operation possible values are ActiveRecord::INSERT, ActiveRecord::UPDATE and ActiveRecord::DELETE.
+	 * @return boolean whether given operation is atomic. Currently active scenario is taken into account.
+	 */
+	private function isOperationAtomic($operation)
+	{
+		$scenario = $this->getScenario();
+		$scenarios = $this->scenarios();
+		if (isset($scenarios[$scenario], $scenario[$scenario]['atomic']) && is_array($scenarios[$scenario]['atomic'])) {
+			return in_array($operation, $scenarios[$scenario]['atomic']);
+		} else {
+			return false;
+		}
 	}
 }
