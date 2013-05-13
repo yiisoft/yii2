@@ -4,7 +4,7 @@ ActiveRecord
 Scenarios
 ---------
 
-All possible scenario formats supported by ActiveRecord:
+Possible scenario formats supported by ActiveRecord:
 
 ```php
 public function scenarios()
