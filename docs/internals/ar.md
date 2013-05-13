@@ -28,13 +28,13 @@ public function scenarios()
         // 4. insert and update operations will be wrapped with transaction, delete won't
         'scenario4' => array(
             'attributes' => array('attribute1', 'attribute2'),
-            'atomic' => array(self::INSERT, self::UPDATE),
+            'atomic' => array(self::OPERATION_INSERT, self::OPERATION_UPDATE),
         ),
 
         // 5. insert and update operations won't be wrapped with transaction, delete will
         'scenario5' => array(
             'attributes' => array('attribute1', 'attribute2'),
-            'atomic' => array(self::DELETE),
+            'atomic' => array(self::OPERATION_DELETE),
         ),
     );
 }
