@@ -51,8 +51,8 @@
 				dataType: 'json',
 				cache: false,
 				success: function(data) {
-					$e.attr('src', data['url']);
-					$('body').data(settings.hashKey, [data['hash1'], data['hash2']]);
+					$e.attr('src', data.url);
+					$('body').data(settings.hashKey, [data.hash1, data.hash2]);
 				}
 			});
 		},
