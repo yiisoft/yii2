@@ -7,6 +7,7 @@
 
 namespace yii\logging;
 
+use yii\base\Component;
 use yii\base\InvalidConfigException;
 
 /**
@@ -25,7 +26,7 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Target extends \yii\base\Component
+abstract class Target extends Component
 {
 	/**
 	 * @var boolean whether to enable this log target. Defaults to true.
@@ -67,7 +68,7 @@ abstract class Target extends \yii\base\Component
 	/**
 	 * @var array the messages that are retrieved from the logger so far by this log target.
 	 */
-	private $_messages = array();
+	public $messages = array();
 
 	private $_levels = 0;
 
@@ -89,14 +90,14 @@ abstract class Target extends \yii\base\Component
 	 */
 	public function collect($messages, $final)
 	{
-		$this->_messages = array_merge($this->_messages, $this->filterMessages($messages));
-		$count = count($this->_messages);
+		$this->messages = array_merge($this->messages, $this->filterMessages($messages));
+		$count = count($this->messages);
 		if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
 			if (($context = $this->getContextMessage()) !== '') {
-				$this->_messages[] = array($context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME);
+				$this->messages[] = array($context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME);
 			}
-			$this->export($this->_messages);
-			$this->_messages = array();
+			$this->export($this->messages);
+			$this->messages = array();
 		}
 	}
 
