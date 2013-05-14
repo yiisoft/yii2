@@ -23,7 +23,7 @@ use yii\helpers\Html;
  *
  * ~~~
  * // $this is the view object currently being used
- * echo Breadcrumbs::widget($this, array(
+ * echo Breadcrumbs::widget(array(
  *     'links' => array(
  *         array('label' => 'Sample Post', 'url' => array('post/edit', 'id' => 1)),
  *         'Edit',
@@ -37,7 +37,7 @@ use yii\helpers\Html;
  *
  * ~~~
  * // $this is the view object currently being used
- * echo Breadcrumbs::widget($this, array(
+ * echo Breadcrumbs::widget(array(
  *     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
  * ));
  * ~~~
