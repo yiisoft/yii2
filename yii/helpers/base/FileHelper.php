@@ -184,6 +184,6 @@ class FileHelper
 			array_splice($path, $key - ($position * 2 + 1), 2);
 		}
 		$path = str_replace('./', '', implode('/', $path));
-		return is_file($path) ? $path : false;
+		return is_file($path) || is_dir($path) ? $path : false;
 	}
 }
