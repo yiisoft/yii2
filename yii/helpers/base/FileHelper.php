@@ -175,13 +175,13 @@ class FileHelper
 	 * archives since [[realpath()]] does not properly handle `phar://` stream wrapper.
 	 * @param string $path to be resolved.
 	 * @param boolean $checkPhar whether PHAR checking should be performed. If the code of this method is running
-	 * outside PHAR archive and this parameter is true then standard [[realpath()]] would be used.
+	 * outside PHAR archive or this parameter is false then standard [[realpath()]] would be used.
 	 * @return boolean|string canonicalized path. If file or directory doesn't exist `false` value will be
 	 * returned.
 	 */
 	public static function realpath($path, $checkPhar = false)
 	{
-		if ($checkPhar && \Phar::running() === '') {
+		if (!$checkPhar || \Phar::running() === '') {
 			return realpath($path);
 		}
 		if (($separatorPosition = strpos($path, '://')) === false) {
