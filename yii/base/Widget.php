@@ -41,14 +41,17 @@ class Widget extends Component
 
 	/**
 	 * Constructor.
-	 * @param View $view the view object that this widget is associated with.
-	 * The widget will use this view object to register any needed assets.
-	 * It is also required by [[render()]] and [[renderFile()]].
 	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 *
+	 * Note that you can specify the view object that this widget is associated with by setting 'view' key of config
+	 * array. The widget will use this view object to register any needed assets and perform [[render()]]
+	 * and [[renderFile()]]. By default widget uses current active controller's view object.
 	 */
-	public function __construct($view, $config = array())
+	public function __construct($config = array())
 	{
-		$this->view = $view;
+		if(!isset($config['view'])) {
+			$this->view = \Yii::$app->controller->getView();
+		}
 		parent::__construct($config);
 	}
 
@@ -56,15 +59,19 @@ class Widget extends Component
 	 * Begins a widget.
 	 * This method creates an instance of the calling class. It will apply the configuration
 	 * to the created instance. A matching [[end()]] call should be called later.
-	 * @param View $view the view object that the newly created widget is associated with.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 *
+	 * Note that you can specify the view object that this widget is associated with by setting 'view' key of config
+	 * array. The widget will use this view object to register any needed assets and perform [[render()]]
+	 * and [[renderFile()]]. By default widget uses current active controller's view object.
+	 *
 	 * @return Widget the newly created widget instance
 	 */
-	public static function begin($view, $config = array())
+	public static function begin($config = array())
 	{
 		$config['class'] = get_called_class();
 		/** @var Widget $widget */
-		$widget = Yii::createObject($config, $view);
+		$widget = Yii::createObject($config);
 		self::$_stack[] = $widget;
 		return $widget;
 	}
@@ -94,15 +101,15 @@ class Widget extends Component
 	 * Creates a widget instance and runs it.
 	 * The widget rendering result is returned by this method.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 * @param View $view the view object that the newly created widget is associated with.
+	 *
+	 * Note that you can specify the view object that this widget is associated with by setting 'view' key of config
+	 * array. The widget will use this view object to register any needed assets and perform [[render()]]
+	 * and [[renderFile()]]. By default widget uses current active controller's view object.
+	 *
 	 * @return string the rendering result of the widget.
 	 */
-	public static function widget($config = array(), $view = null)
+	public static function widget($config = array())
 	{
-		if($view === null) {
-			$view = \Yii::$app->controller->getView();
-		}
-
 		ob_start();
 		ob_implicit_flush(false);
 		/** @var Widget $widget */
