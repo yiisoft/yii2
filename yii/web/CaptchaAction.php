@@ -85,7 +85,7 @@ class CaptchaAction extends Action
 	/**
 	 * @var string the TrueType font file. This can be either a file path or path alias.
 	 */
-	public $fontFile = '@yii/web/SpicyRice.ttf';
+	public $fontFile;
 	/**
 	 * @var string the fixed verification code. When this is property is set,
 	 * [[getVerifyCode()]] will always return the value of this property.
@@ -102,7 +102,17 @@ class CaptchaAction extends Action
 	 */
 	public function init()
 	{
-		$this->fontFile = Yii::getAlias($this->fontFile);
+		if ($this->fontFile === null) {
+			$this->fontFile = '@yii/web/SpicyRice.ttf';
+			if (\Phar::running() === '') {
+				$this->fontFile = Yii::getAlias($this->fontFile);
+			} else {
+				$this->fontFile = Yii::$app->getRuntimePath() . '/SpicyRice.ttf';
+				if (!is_file($this->fontFile)) {
+					copy(\Phar::running(true) . '/web/SpicyRice.ttf', $this->fontFile);
+				}
+			}
+		}
 		if (!is_file($this->fontFile)) {
 			throw new InvalidConfigException("The font file does not exist: {$this->fontFile}");
 		}
@@ -260,10 +270,6 @@ class CaptchaAction extends Action
 			(int)($this->foreColor % 0x10000 / 0x100),
 			$this->foreColor % 0x100);
 
-		if ($this->fontFile === null) {
-			$this->fontFile = dirname(__FILE__) . '/SpicyRice.ttf';
-		}
-
 		$length = strlen($code);
 		$box = imagettfbbox(30, 0, $this->fontFile, $code);
 		$w = $box[4] - $box[0] + $this->offset * ($length - 1);
@@ -301,10 +307,6 @@ class CaptchaAction extends Action
 
 		$image = new \Imagick();
 		$image->newImage($this->width, $this->height, $backColor);
-
-		if ($this->fontFile === null) {
-			$this->fontFile = dirname(__FILE__) . '/SpicyRice.ttf';
-		}
 
 		$draw = new \ImagickDraw();
 		$draw->setFont($this->fontFile);

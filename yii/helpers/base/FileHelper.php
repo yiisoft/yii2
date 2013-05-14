@@ -169,4 +169,21 @@ class FileHelper
 		}
 		closedir($handle);
 	}
+
+	/**
+	 * @param string $path
+	 * @return string|boolean
+	 */
+	public static function realpath($path)
+	{
+		if (\Phar::running() === '') {
+			return realpath($path);
+		}
+		$path = explode('/', str_replace('\\', '/', $path));
+		foreach(array_keys($path, '..') AS $position => $key) {
+			array_splice($path, $key - ($position * 2 + 1), 2);
+		}
+		$path = str_replace('./', '', implode('/', $path));
+		return is_file($path) ? $path : false;
+	}
 }
