@@ -301,8 +301,8 @@ class ActiveQuery extends Query
 
 	private function createModels($rows)
 	{
-		$models = array();
 		if ($this->asArray) {
+			$models = array();
 			if ($this->indexBy === null) {
 				return $rows;
 			}
@@ -310,6 +310,7 @@ class ActiveQuery extends Query
 				$models[$row[$this->indexBy]] = $row;
 			}
 		} else {
+			$models = new ActiveCollection;
 			/** @var $class ActiveRecord */
 			$class = $this->modelClass;
 			if ($this->indexBy === null) {
