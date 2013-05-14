@@ -6,7 +6,6 @@
  */
 
 use yii\console\Controller;
-use yii\helpers\FileHelper;
 
 /**
  * http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html
