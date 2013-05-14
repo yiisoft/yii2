@@ -260,10 +260,6 @@ class CaptchaAction extends Action
 			(int)($this->foreColor % 0x10000 / 0x100),
 			$this->foreColor % 0x100);
 
-		if ($this->fontFile === null) {
-			$this->fontFile = dirname(__FILE__) . '/SpicyRice.ttf';
-		}
-
 		$length = strlen($code);
 		$box = imagettfbbox(30, 0, $this->fontFile, $code);
 		$w = $box[4] - $box[0] + $this->offset * ($length - 1);
@@ -301,10 +297,6 @@ class CaptchaAction extends Action
 
 		$image = new \Imagick();
 		$image->newImage($this->width, $this->height, $backColor);
-
-		if ($this->fontFile === null) {
-			$this->fontFile = dirname(__FILE__) . '/SpicyRice.ttf';
-		}
 
 		$draw = new \ImagickDraw();
 		$draw->setFont($this->fontFile);
