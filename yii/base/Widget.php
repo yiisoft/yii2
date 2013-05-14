@@ -93,12 +93,16 @@ class Widget extends Component
 	/**
 	 * Creates a widget instance and runs it.
 	 * The widget rendering result is returned by this method.
-	 * @param View $view the view object that the newly created widget is associated with.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 * @param View $view the view object that the newly created widget is associated with.
 	 * @return string the rendering result of the widget.
 	 */
-	public static function widget($view, $config = array())
+	public static function widget($config = array(), $view = null)
 	{
+		if($view === null) {
+			$view = \Yii::$app->controller->getView();
+		}
+
 		ob_start();
 		ob_implicit_flush(false);
 		/** @var Widget $widget */
