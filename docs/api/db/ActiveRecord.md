@@ -446,3 +446,7 @@ $customers = Customer::find()->olderThan(50)->all();
 
 The parameters should follow after the `$query` parameter when defining the scope method, and they
 can take default values like shown above.
+
+### Atomic operations and scenarios
+
+TBD
