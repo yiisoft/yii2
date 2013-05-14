@@ -449,7 +449,7 @@ abstract class Module extends Component
 	public function getComponent($id, $load = true)
 	{
 		if (isset($this->_components[$id])) {
-			if ($this->_components[$id] instanceof Component) {
+			if ($this->_components[$id] instanceof Object) {
 				return $this->_components[$id];
 			} elseif ($load) {
 				Yii::trace("Loading component: $id", __METHOD__);
