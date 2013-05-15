@@ -275,16 +275,16 @@ class ArrayHelper
 	 * @throws InvalidParamException if the $ascending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
 	 */
-	public static function multisort(&$array, $key, $ascending = true, $sortFlag = SORT_REGULAR, $caseSensitive = true)
+	public static function multisort(&$array, $key, $descending = false, $sortFlag = SORT_REGULAR, $caseSensitive = true)
 	{
 		$keys = is_array($key) ? $key : array($key);
 		if (empty($keys) || empty($array)) {
 			return;
 		}
 		$n = count($keys);
-		if (is_scalar($ascending)) {
-			$ascending = array_fill(0, $n, $ascending);
-		} elseif (count($ascending) !== $n) {
+		if (is_scalar($descending)) {
+			$descending = array_fill(0, $n, $descending);
+		} elseif (count($descending) !== $n) {
 			throw new InvalidParamException('The length of $ascending parameter must be the same as that of $keys.');
 		}
 		if (is_scalar($sortFlag)) {
@@ -315,7 +315,7 @@ class ArrayHelper
 			} else {
 				$args[] = static::getColumn($array, $key);
 			}
-			$args[] = $ascending[$i] ? SORT_ASC : SORT_DESC;
+			$args[] = $descending[$i] ? SORT_DESC : SORT_ASC;
 			$args[] = $flag;
 		}
 		$args[] = &$array;
