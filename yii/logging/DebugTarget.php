@@ -15,6 +15,8 @@ use Yii;
  */
 class DebugTarget extends Target
 {
+	public $maxLogFiles = 20;
+
 	/**
 	 * Exports log messages to a specific destination.
 	 * Child classes must implement this method.
@@ -30,7 +32,14 @@ class DebugTarget extends Target
 		$file = $path . '/' . Yii::getLogger()->getTag() . '.log';
 		$data = array(
 			'messages' => $messages,
-			'globals' => $GLOBALS,
+			'_SERVER' => $_SERVER,
+			'_GET' => $_GET,
+			'_POST' => $_POST,
+			'_COOKIE' => $_COOKIE,
+			'_FILES' => empty($_FILES) ? array() : $_FILES,
+			'_SESSION' => empty($_SESSION) ? array() : $_SESSION,
+			'memory' => memory_get_peak_usage(),
+			'time' => microtime(true) - YII_BEGIN_TIME,
 		);
 		file_put_contents($file, json_encode($data));
 	}
@@ -45,9 +54,38 @@ class DebugTarget extends Target
 	 */
 	public function collect($messages, $final)
 	{
+		if (Yii::$app->getModule('debug', false) !== null) {
+			return;
+		}
 		$this->messages = array_merge($this->messages, $this->filterMessages($messages));
 		if ($final) {
 			$this->export($this->messages);
+			$this->gc();
+		}
+	}
+
+	protected function gc()
+	{
+		if (mt_rand(0, 10000) > 100) {
+			return;
+		}
+		$iterator = new \DirectoryIterator(Yii::$app->getRuntimePath() . '/debug');
+		$files = array();
+		foreach ($iterator as $file) {
+			if (preg_match('/^[\d\-]+\.log$/', $file->getFileName()) && $file->isFile()) {
+				$files[] = $file->getPathname();
+			}
+		}
+		sort($files);
+		if (count($files) > $this->maxLogFiles) {
+			$n = count($files) - $this->maxLogFiles;
+			foreach ($files as $i => $file) {
+				if ($i < $n) {
+					unlink($file);
+				} else {
+					break;
+				}
+			}
 		}
 	}
 }

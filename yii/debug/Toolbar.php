@@ -17,12 +17,11 @@ use yii\helpers\Html;
  */
 class Toolbar extends Widget
 {
-	public $debugAction = 'debug';
-	public $enabled = YII_DEBUG;
+	public $debugAction = 'debug/default/toolbar';
 
 	public function run()
 	{
-		if ($this->enabled) {
+		if (Yii::$app->hasModule('debug')) {
 			$id = 'yii-debug-toolbar';
 			$url = Yii::$app->getUrlManager()->createUrl($this->debugAction, array(
 				'tag' => Yii::getLogger()->tag,
