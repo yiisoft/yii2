@@ -169,4 +169,32 @@ class FileHelper
 		}
 		closedir($handle);
 	}
+
+	/**
+	 * PHP variant of the native standard [[realpath()]] function. This is mainly usable when working with PHAR
+	 * archives since [[realpath()]] does not properly handle `phar://` stream wrapper.
+	 * @param string $path to be resolved.
+	 * @param boolean $checkPhar whether PHAR checking should be performed. If the code of this method is running
+	 * outside PHAR archive or this parameter is false then standard [[realpath()]] would be used.
+	 * @return boolean|string canonicalized path. If file or directory doesn't exist `false` value will be
+	 * returned.
+	 */
+	public static function realpath($path, $checkPhar = false)
+	{
+		if (!$checkPhar || \Phar::running() === '') {
+			return realpath($path);
+		}
+		if (($separatorPosition = strpos($path, '://')) === false) {
+			$scheme = '';
+		} else {
+			$scheme = substr($path, 0, $separatorPosition + 3);
+			$path = substr($path, $separatorPosition + 3);
+		}
+		$path = array_values(array_filter(explode('/', str_replace('\\', '/', $path))));
+		foreach (array_keys($path, '..') as $keyPosition => $key) {
+			array_splice($path, $key - ($keyPosition * 2 + 1), 2);
+		}
+		$path = $scheme . str_replace('./', '', implode('/', $path));
+		return is_file($path) || is_dir($path) ? $path : false;
+	}
 }

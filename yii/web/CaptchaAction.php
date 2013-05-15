@@ -102,7 +102,14 @@ class CaptchaAction extends Action
 	 */
 	public function init()
 	{
-		$this->fontFile = Yii::getAlias($this->fontFile);
+		if (\Phar::running() === '') {
+			$this->fontFile = Yii::getAlias($this->fontFile);
+		} else {
+			$this->fontFile = Yii::$app->getRuntimePath() . '/SpicyRice.ttf';
+			if (!is_file($this->fontFile)) {
+				copy(\Phar::running(true) . '/web/SpicyRice.ttf', $this->fontFile);
+			}
+		}
 		if (!is_file($this->fontFile)) {
 			throw new InvalidConfigException("The font file does not exist: {$this->fontFile}");
 		}

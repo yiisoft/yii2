@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use yii\helpers\FileHelper;
+
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
  *
@@ -171,7 +173,7 @@ class ErrorHandler extends Component
 	public function isCoreCode($trace)
 	{
 		if (isset($trace['file'])) {
-			return $trace['file'] === 'unknown' || strpos(realpath($trace['file']), YII_PATH . DIRECTORY_SEPARATOR) === 0;
+			return $trace['file'] === 'unknown' || strpos(FileHelper::realpath($trace['file'], true), YII_PATH) === 0;
 		}
 		return false;
 	}

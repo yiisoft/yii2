@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use yii\console\Controller;
 use yii\base\Exception;
+use yii\helpers\FileHelper;
 
 /**
  * This command creates an Yii Web application at the specified location.
@@ -114,15 +115,15 @@ class AppController extends Controller
 	 */
 	protected function getSourceDir()
 	{
-		$customSource = realpath($this->templatesPath.'/'.$this->type);
-		$defaultSource = realpath($this->getDefaultTemplatesPath().'/'.$this->type);
+		$customSource = FileHelper::realpath($this->templatesPath . '/' . $this->type, true);
+		$defaultSource = FileHelper::realpath($this->getDefaultTemplatesPath() . '/' . $this->type, true);
 
 		if ($customSource) {
 			return $customSource;
 		} elseif ($defaultSource) {
 			return $defaultSource;
 		} else {
-			throw new Exception('Unable to locate the source directory for "'.$this->type.'".');
+			throw new Exception('Unable to locate the source directory for "' . $this->type . '".');
 		}
 	}
 
@@ -131,7 +132,7 @@ class AppController extends Controller
 	 */
 	protected function getDefaultTemplatesPath()
 	{
-		return realpath(__DIR__.'/../webapp');
+		return FileHelper::realpath(__DIR__ . '/../webapp', true);
 	}
 
 	/**
