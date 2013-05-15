@@ -26,7 +26,7 @@ return array(
 		'js' => array(
 			'yii.activeForm.js',
 		),
-		'depends' => array('yii', 'yii/validation'),
+		'depends' => array('yii'),
 	),
 	'yii/captcha' => array(
 		'sourcePath' => __DIR__ . '/assets',
