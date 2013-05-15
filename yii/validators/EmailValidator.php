@@ -47,6 +47,12 @@ class EmailValidator extends Validator
 	 * Defaults to false.
 	 */
 	public $checkPort = false;
+	/**
+	 * @var boolean whether validation process should take into account IDN (internationalized domain
+	 * names). Defaults to false meaning that validation of emails containing IDN will always fail.
+	 */
+	public $enableIDN = false;
+
 
 	/**
 	 * Initializes the validator.
@@ -81,10 +87,18 @@ class EmailValidator extends Validator
 	public function validateValue($value)
 	{
 		// make sure string length is limited to avoid DOS attacks
-		$valid = is_string($value) && strlen($value) <= 254
-			&& (preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value));
+		if (!is_string($value) || strlen($value) >= 255) {
+			return false;
+		}
+		if (($atPosition = strpos($value, '@')) === false) {
+			return false;
+		}
+		$domain = rtrim(substr($value, $atPosition + 1), '>');
+		if ($this->enableIDN) {
+			$value = idn_to_ascii(ltrim(substr($value, 0, $atPosition), '<')) . '@' . idn_to_ascii($domain);
+		}
+		$valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
 		if ($valid) {
-			$domain = rtrim(substr($value, strpos($value, '@') + 1), '>');
 			if ($this->checkMX && function_exists('checkdnsrr')) {
 				$valid = checkdnsrr($domain, 'MX');
 			}
@@ -99,9 +113,11 @@ class EmailValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$options = array(
 			'pattern' => new JsExpression($this->pattern),
@@ -111,11 +127,16 @@ class EmailValidator extends Validator
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
 			))),
+			'enableIDN' => (boolean)$this->enableIDN,
 		);
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}
 
+		$view->registerAssetBundle('yii/validation');
+		if ($this->enableIDN) {
+			$view->registerAssetBundle('punycode');
+		}
 		return 'yii.validation.email(value, messages, ' . Json::encode($options) . ');';
 	}
 }

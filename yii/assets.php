@@ -26,7 +26,7 @@ return array(
 		'js' => array(
 			'yii.activeForm.js',
 		),
-		'depends' => array('yii', 'yii/validation'),
+		'depends' => array('yii'),
 	),
 	'yii/captcha' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -41,5 +41,11 @@ return array(
 			'yii.debug.js',
 		),
 		'depends' => array('yii'),
+	),
+	'punycode' => array(
+		'sourcePath' => __DIR__ . '/vendor/bestiejs/punycode.js',
+		'js' => array(
+			'punycode.min.js',
+		),
 	),
 );

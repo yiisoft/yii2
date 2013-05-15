@@ -3,8 +3,18 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7d46ce9c4d8d5f4ecae1611ea8f0b49c",
+    "hash": "a8f949e337a229a4cfb41496a0071ef6",
     "packages": [
+        {
+            "name": "bestiejs/punycode.js",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/bestiejs/punycode.js.git",
+                "reference": "1.2.1"
+            },
+            "type": "library"
+        },
         {
             "name": "ezyang/htmlpurifier",
             "version": "v4.5.0",

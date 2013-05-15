@@ -102,9 +102,11 @@ class RequiredValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$options = array();
 		if ($this->requiredValue !== null) {
@@ -124,6 +126,7 @@ class RequiredValidator extends Validator
 			'{value}' => $object->$attribute,
 		)));
 
+		$view->registerAssetBundle('yii/validation');
 		return 'yii.validation.required(value, messages, ' . json_encode($options) . ');';
 	}
 }
