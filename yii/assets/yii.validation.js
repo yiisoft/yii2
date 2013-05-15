@@ -139,7 +139,7 @@ yii.validation = (function ($) {
 			var valid = true;
 
 			if (options.enableIDN) {
-				var regexp = /^([^:]+):\/\/([^\/]+)(.*)?/,
+				var regexp = /^([^:]+):\/\/([^\/]+)(.*)$/,
 					matches = regexp.exec(value);
 				if (matches === null) {
 					valid = false;
