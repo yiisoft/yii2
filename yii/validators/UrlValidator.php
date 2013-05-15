@@ -138,7 +138,7 @@ class UrlValidator extends Validator
 			$options['defaultScheme'] = $this->defaultScheme;
 		}
 
-		$view->registerAssetBundle('yii/form');
+		$view->registerAssetBundle('yii/validation');
 		if ($this->enableIDN) {
 			$view->registerAssetBundle('punycode');
 		}

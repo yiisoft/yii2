@@ -112,7 +112,7 @@ class RegularExpressionValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/form');
+		$view->registerAssetBundle('yii/validation');
 		return 'yii.validation.regularExpression(value, messages, ' . Json::encode($options) . ');';
 	}
 }

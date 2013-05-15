@@ -151,7 +151,7 @@ class NumberValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/form');
+		$view->registerAssetBundle('yii/validation');
 		return 'yii.validation.number(value, messages, ' . Json::encode($options) . ');';
 	}
 }

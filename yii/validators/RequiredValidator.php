@@ -126,7 +126,7 @@ class RequiredValidator extends Validator
 			'{value}' => $object->$attribute,
 		)));
 
-		$view->registerAssetBundle('yii/form');
+		$view->registerAssetBundle('yii/validation');
 		return 'yii.validation.required(value, messages, ' . json_encode($options) . ');';
 	}
 }

@@ -133,7 +133,7 @@ class EmailValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/form');
+		$view->registerAssetBundle('yii/validation');
 		if ($this->enableIDN) {
 			$view->registerAssetBundle('punycode');
 		}
