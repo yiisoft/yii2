@@ -218,7 +218,7 @@ methods of the `Widget` class. For example,
 ```php
 // $this refers to the View object
 // Note that you have to "echo" the result to display it
-echo \yii\widgets\Menu::widget($this, array('items' => $items));
+echo \yii\widgets\Menu::widget(array('items' => $items));
 
 // $this refers to the View object
 $form = \yii\widgets\ActiveForm::begin($this);

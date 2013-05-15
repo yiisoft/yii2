@@ -373,9 +373,10 @@ class View extends Component
 	 */
 	public function beginBlock($id, $renderInPlace = false)
 	{
-		return Block::begin($this, array(
+		return Block::begin(array(
 			'id' => $id,
 			'renderInPlace' => $renderInPlace,
+			'view' => $this,
 		));
 	}
 
@@ -406,9 +407,10 @@ class View extends Component
 	 */
 	public function beginContent($viewFile, $params = array())
 	{
-		return ContentDecorator::begin($this, array(
+		return ContentDecorator::begin(array(
 			'viewFile' => $viewFile,
 			'params' => $params,
+			'view' => $this,
 		));
 	}
 
@@ -442,8 +444,9 @@ class View extends Component
 	public function beginCache($id, $properties = array())
 	{
 		$properties['id'] = $id;
+		$properties['view'] = $this;
 		/** @var $cache FragmentCache */
-		$cache = FragmentCache::begin($this, $properties);
+		$cache = FragmentCache::begin($properties);
 		if ($cache->getCachedContent() !== false) {
 			$this->endCache();
 			return false;

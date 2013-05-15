@@ -27,7 +27,7 @@ $this->registerAssetBundle('app');
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container">
-					<?php echo Menu::widget($this, array(
+					<?php echo Menu::widget(array(
 						'options' => array('class' => 'nav'),
 						'items' => array(
 							array('label' => 'Home', 'url' => array('/site/index')),
@@ -44,7 +44,7 @@ $this->registerAssetBundle('app');
 		<!-- /.navbar -->
 	</div>
 
-	<?php echo Breadcrumbs::widget($this, array(
+	<?php echo Breadcrumbs::widget(array(
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
 	)); ?>
 	<?php echo $content; ?>
@@ -60,7 +60,7 @@ $this->registerAssetBundle('app');
 	</div>
 	<?php $this->endBody(); ?>
 </div>
-<?php echo Toolbar::widget($this); ?>
+<?php echo Toolbar::widget(); ?>
 </body>
 </html>
 <?php $this->endPage(); ?>

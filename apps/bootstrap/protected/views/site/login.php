@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <p>Please fill out the following fields to login:</p>
 
-<?php $form = ActiveForm::begin($this, array('options' => array('class' => 'form-horizontal'))); ?>
+<?php $form = ActiveForm::begin(array('options' => array('class' => 'form-horizontal'))); ?>
 	<?php echo $form->field($model, 'username')->textInput(); ?>
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
 	<?php echo $form->field($model, 'rememberMe')->checkbox(); ?>
