@@ -27,21 +27,44 @@ use yii\helpers\ArrayHelper;
  */
 abstract class DataProvider extends Object implements IteratorAggregate, Countable
 {
+	/**
+	 * @var string
+	 */
 	public $id = '';
+	/**
+	 * @var string
+	 */
 	public $indexBy = 'id';
 
+	/**
+	 * @var array
+	 */
 	private $_keys;
+	/**
+	 * @var \yii\web\Pagination
+	 */
 	private $_pagination;
+	/**
+	 * @var \yii\web\Sort
+	 */
 	private $_sort;
 
 	abstract public function getData();
 	abstract public function getTotal();
 
+	/**
+	 * Refresh the data from the persistent data storage.
+	 */
 	public function refresh()
 	{
 		$this->_keys = null;
 	}
 
+	/**
+	 * Returns the key values associated with the data items.
+	 *
+	 * @return array the list of key values corresponding to data.
+	 */
 	public function getKeys()
 	{
 		if ($this->_keys === null) {
@@ -54,6 +77,12 @@ abstract class DataProvider extends Object implements IteratorAggregate, Countab
 		return $this->_keys;
 	}
 
+
+	/**
+	 * Returns the number of data items in the current page.
+	 *
+	 * @return integer the number of data items in the current page.
+	 */
 	public function count()
 	{
 		return count($this->getData());
@@ -65,6 +94,8 @@ abstract class DataProvider extends Object implements IteratorAggregate, Countab
 	}
 
 	/**
+	 * Returns the pagination object.
+	 *
 	 * @return \yii\web\Pagination
 	 */
 	public function getPagination()
@@ -75,6 +106,22 @@ abstract class DataProvider extends Object implements IteratorAggregate, Countab
 		return $this->_pagination;
 	}
 
+	/**
+	 * Sets the pagination for this data provider.
+	 *
+	 * @param  mixed $pagination the pagination to be used by this data provider. This could be a [[Pagination]] object
+	 * or an array used to configure the pagination object. If this is false, it means the pagination should be disabled.
+	 *
+	 * You can configure this property same way as a component:
+	 * ~~~
+	 * array(
+	 *     'class' => 'MyPagination',
+	 *     'pageSize' => 10,
+	 * ),
+	 * ~~~
+	 *
+	 * @throws \yii\base\InvalidConfigException if the configuration is invalid.
+	 */
 	public function setPagination($pagination)
 	{
 		if (is_array($pagination)) {
@@ -91,6 +138,8 @@ abstract class DataProvider extends Object implements IteratorAggregate, Countab
 	}
 
 	/**
+	 * Returns the sort object.
+	 *
 	 * @return \yii\web\Sort
 	 */
 	public function getSort()
@@ -101,6 +150,22 @@ abstract class DataProvider extends Object implements IteratorAggregate, Countab
 		return $this->_sort;
 	}
 
+	/**
+	 * Sets the sorting for this data provider.
+	 *
+	 * @param mixed $sort the sorting to be used by this data provider. This could be a [[Sort]] object
+	 * or an array used to configure the sorting object. If this is false, it means the sorting should be disabled.
+	 *
+	 * You can configure this property same way as a component:
+	 * ~~~
+	 * array(
+	 *     'class' => 'MySort',
+	 *     'attributes' => array('name', 'weight'),
+	 * ),
+	 * ~~~
+	 *
+	 * @throws \yii\base\InvalidConfigException if the configuration is invalid.
+	 */
 	public function setSort($sort)
 	{
 		if (is_array($sort)) {

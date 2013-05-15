@@ -22,15 +22,30 @@ use yii\db\Query;
  */
 class QueryDataProvider extends DataProvider
 {
+	/**
+	 * @var \yii\db\Query
+	 */
 	private $_query;
+	/**
+	 * @var array
+	 */
 	private $_data;
 
-	public function __construct(Query $query, array $config = array())
+	/**
+	 * Constructor
+	 *
+	 * @param \yii\db\Query $query
+	 * @param array $config
+	 */
+	public function __construct($query, $config = array())
 	{
 		$this->_query = $query;
 		parent:: __construct($config);
 	}
 
+	/**
+	 * Refresh the data from the persistent data storage.
+	 */
 	public function refresh()
 	{
 		parent::refresh();
@@ -55,15 +70,25 @@ class QueryDataProvider extends DataProvider
 		unset($query);
 	}
 
+	/**
+	 * Returns the total number of data items.
+	 *
+	 * @return integer the total number of data items.
+	 */
 	public function getTotal()
 	{
 		$query = clone $this->_query;
 		$query->select(array('COUNT(*)'));
-		$count = (int)$query->createCommand()->queryScalar();
+		$count = $query->createCommand()->queryScalar();
 		unset($query);
 		return $count;
 	}
 
+	/**
+	 * Returns the data items currently available.
+	 *
+	 * @return array
+	 */
 	public function getData()
 	{
 		if ($this->_data === null) {

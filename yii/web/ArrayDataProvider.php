@@ -21,15 +21,28 @@ use yii\helpers\ArrayHelper;
  */
 class ArrayDataProvider extends DataProvider
 {
+	/**
+	 * @var array
+	 */
 	private $_rawData = array();
+	/**
+	 * @var array
+	 */
 	private $_data;
 
-	public function __construct(array $rawData, array $config = array())
+	/**
+	 * @param array $rawData
+	 * @param array $config
+	 */
+	public function __construct($rawData, $config = array())
 	{
 		$this->_rawData = $rawData;
 		parent:: __construct($config);
 	}
 
+	/**
+	 * Refresh the data from the persistent data storage.
+	 */
 	public function refresh()
 	{
 		parent::refresh();
@@ -48,11 +61,21 @@ class ArrayDataProvider extends DataProvider
 		}
 	}
 
+	/**
+	 * Returns the total number of data items.
+	 *
+	 * @return integer the total number of data items.
+	 */
 	public function getTotal()
 	{
 		return count($this->_rawData);
 	}
 
+	/**
+	 * Returns the data items currently available.
+	 *
+	 * @return array
+	 */
 	public function getData()
 	{
 		if ($this->_data === null) {
