@@ -85,6 +85,12 @@ class Logger extends Component
 
 
 	/**
+	 * @var string
+	 */
+	private $_tag;
+
+
+	/**
 	 * Initializes the logger by registering [[flush()]] as a shutdown function.
 	 */
 	public function init()
