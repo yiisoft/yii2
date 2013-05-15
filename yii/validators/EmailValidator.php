@@ -51,7 +51,7 @@ class EmailValidator extends Validator
 	 * @var boolean whether validation process should take into account IDN (internationalized domain
 	 * names). Defaults to false meaning that validation of emails containing IDN will always fail.
 	 */
-	public $idn = false;
+	public $enableIDN = false;
 
 
 	/**
@@ -94,7 +94,7 @@ class EmailValidator extends Validator
 			return false;
 		}
 		$domain = rtrim(substr($value, $atPosition + 1), '>');
-		if ($this->idn) {
+		if ($this->enableIDN) {
 			$value = idn_to_ascii(ltrim(substr($value, 0, $atPosition), '<')) . '@' . idn_to_ascii($domain);
 		}
 		$valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
@@ -125,7 +125,7 @@ class EmailValidator extends Validator
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
 			))),
-			'idn' => (boolean)$this->idn,
+			'enableIDN' => (boolean)$this->enableIDN,
 		);
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

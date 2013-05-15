@@ -124,7 +124,7 @@ class ActiveField extends Component
 		$options['class'] = implode(' ', $class);
 
 		foreach ($this->model->getActiveValidators($attribute) as $validator) {
-			if (($validator instanceof EmailValidator || $validator instanceof UrlValidator) && $validator->idn) {
+			if (($validator instanceof EmailValidator || $validator instanceof UrlValidator) && $validator->enableIDN) {
 				$this->form->view->registerAssetBundle('punycode');
 				break;
 			}

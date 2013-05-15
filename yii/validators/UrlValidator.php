@@ -42,7 +42,7 @@ class UrlValidator extends Validator
 	 * domain names). Defaults to false meaning that validation of URLs containing IDN will always
 	 * fail.
 	 */
-	public $idn = false;
+	public $enableIDN = false;
 
 
 	/**
@@ -93,7 +93,7 @@ class UrlValidator extends Validator
 				$pattern = $this->pattern;
 			}
 
-			if ($this->idn) {
+			if ($this->enableIDN) {
 				$value = preg_replace_callback('/:\/\/([^\/]+)/', function($matches) {
 					return '://' . idn_to_ascii($matches[1]);
 				}, $value);
@@ -127,7 +127,7 @@ class UrlValidator extends Validator
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
 			))),
-			'idn' => (boolean)$this->idn,
+			'enableIDN' => (boolean)$this->enableIDN,
 		);
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

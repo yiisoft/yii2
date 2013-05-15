@@ -112,8 +112,9 @@ yii.validation = (function ($) {
 
 			var valid = true;
 
-			if (options.idn) {
-				var regexp = /^(.*)@(.*)$/, matches = regexp.exec(value);
+			if (options.enableIDN) {
+				var regexp = /^(.*)@(.*)$/,
+					matches = regexp.exec(value);
 				if (matches === null) {
 					valid = false;
 				} else {
@@ -137,8 +138,9 @@ yii.validation = (function ($) {
 
 			var valid = true;
 
-			if (options.idn) {
-				var regexp = /^([^:]+):\/\/([^\/]+)(.*)?/, matches = regexp.exec(value);
+			if (options.enableIDN) {
+				var regexp = /^([^:]+):\/\/([^\/]+)(.*)?/,
+					matches = regexp.exec(value);
 				if (matches === null) {
 					valid = false;
 				} else {
