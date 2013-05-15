@@ -37,6 +37,12 @@ class UrlValidator extends Validator
 	 * contain the scheme part.
 	 **/
 	public $defaultScheme;
+	/**
+	 * @var boolean whether validation process should take into account IDN (internationalized
+	 * domain names). Defaults to false meaning that validation of URLs containing IDN will always
+	 * fail.
+	 */
+	public $idn = false;
 
 
 	/**
@@ -87,6 +93,12 @@ class UrlValidator extends Validator
 				$pattern = $this->pattern;
 			}
 
+			if ($this->idn) {
+				$value = preg_replace_callback('/:\/\/([^\/]+)/', function($matches) {
+					return '://' . idn_to_ascii($matches[1]);
+				}, $value);
+			}
+
 			if (preg_match($pattern, $value)) {
 				return true;
 			}
@@ -115,6 +127,7 @@ class UrlValidator extends Validator
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
 			))),
+			'idn' => (boolean)$this->idn,
 		);
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
@@ -126,4 +139,3 @@ class UrlValidator extends Validator
 		return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
 	}
 }
-

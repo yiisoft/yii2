@@ -47,6 +47,12 @@ class EmailValidator extends Validator
 	 * Defaults to false.
 	 */
 	public $checkPort = false;
+	/**
+	 * @var boolean whether validation process should take into account IDN (internationalized domain
+	 * names). Defaults to false meaning that validation of emails containing IDN will always fail.
+	 */
+	public $idn = false;
+
 
 	/**
 	 * Initializes the validator.
@@ -81,10 +87,18 @@ class EmailValidator extends Validator
 	public function validateValue($value)
 	{
 		// make sure string length is limited to avoid DOS attacks
-		$valid = is_string($value) && strlen($value) <= 254
-			&& (preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value));
+		if (!is_string($value) || strlen($value) >= 255) {
+			return false;
+		}
+		if (($atPosition = strpos($value, '@')) === false) {
+			return false;
+		}
+		$domain = rtrim(substr($value, $atPosition + 1), '>');
+		if ($this->idn) {
+			$value = idn_to_ascii(ltrim(substr($value, 0, $atPosition), '<')) . '@' . idn_to_ascii($domain);
+		}
+		$valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
 		if ($valid) {
-			$domain = rtrim(substr($value, strpos($value, '@') + 1), '>');
 			if ($this->checkMX && function_exists('checkdnsrr')) {
 				$valid = checkdnsrr($domain, 'MX');
 			}
@@ -111,6 +125,7 @@ class EmailValidator extends Validator
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
 			))),
+			'idn' => (boolean)$this->idn,
 		);
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

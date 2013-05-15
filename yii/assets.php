@@ -42,4 +42,10 @@ return array(
 		),
 		'depends' => array('yii'),
 	),
+	'punycode' => array(
+		'sourcePath' => __DIR__ . '/vendor/bestiejs/punycode.js',
+		'js' => array(
+			'punycode.min.js',
+		),
+	),
 );
