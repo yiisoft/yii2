@@ -62,14 +62,14 @@ class NumberValidator extends Validator
 	{
 		parent::init();
 		if ($this->message === null) {
-			$this->message = $this->integerOnly ? Yii::t('yii|{attribute} must be an integer.')
-				: Yii::t('yii|{attribute} must be a number.');
+			$this->message = $this->integerOnly ? Yii::t('yii', '{attribute} must be an integer.')
+				: Yii::t('yii', '{attribute} must be a number.');
 		}
 		if ($this->min !== null && $this->tooSmall === null) {
-			$this->tooSmall = Yii::t('yii|{attribute} must be no less than {min}.');
+			$this->tooSmall = Yii::t('yii', '{attribute} must be no less than {min}.');
 		}
 		if ($this->max !== null && $this->tooBig === null) {
-			$this->tooBig = Yii::t('yii|{attribute} must be no greater than {max}.');
+			$this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
 		}
 	}
 
@@ -83,7 +83,7 @@ class NumberValidator extends Validator
 	{
 		$value = $object->$attribute;
 		if (is_array($value)) {
-			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
+			$this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
 			return;
 		}
 		$pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;

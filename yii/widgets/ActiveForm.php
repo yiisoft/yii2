@@ -187,7 +187,7 @@ class ActiveForm extends Widget
 			}
 		}
 
-		$header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii|Please fix the following errors:') . '</p>';
+		$header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
 		$footer = isset($options['footer']) ? $options['footer'] : '';
 		unset($options['header'], $options['footer']);
 

@@ -43,7 +43,7 @@ class BooleanValidator extends Validator
 	{
 		parent::init();
 		if ($this->message === null) {
-			$this->message = Yii::t('yii|{attribute} must be either "{true}" or "{false}".');
+			$this->message = Yii::t('yii', '{attribute} must be either "{true}" or "{false}".');
 		}
 	}
 

@@ -20,7 +20,7 @@ class InvalidRouteException extends UserException
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii|Invalid Route');
+		return \Yii::t('yii', 'Invalid Route');
 	}
 }
 

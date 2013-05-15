@@ -39,7 +39,7 @@ class UniqueValidator extends Validator
 	{
 		parent::init();
 		if ($this->message === null) {
-			$this->message = Yii::t('yii|{attribute} "{value}" has already been taken.');
+			$this->message = Yii::t('yii', '{attribute} "{value}" has already been taken.');
 		}
 	}
 
@@ -55,7 +55,7 @@ class UniqueValidator extends Validator
 		$value = $object->$attribute;
 
 		if (is_array($value)) {
-			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
+			$this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
 			return;
 		}
 

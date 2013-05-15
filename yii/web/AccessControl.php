@@ -100,7 +100,7 @@ class AccessControl extends ActionFilter
 		if ($user->getIsGuest()) {
 			$user->loginRequired();
 		} else {
-			throw new HttpException(403, Yii::t('yii|You are not allowed to perform this action.'));
+			throw new HttpException(403, Yii::t('yii', 'You are not allowed to perform this action.'));
 		}
 	}
 }

@@ -79,28 +79,28 @@ class CompareValidator extends Validator
 		if ($this->message === null) {
 			switch ($this->operator) {
 				case '==':
-					$this->message = Yii::t('yii|{attribute} must be repeated exactly.');
+					$this->message = Yii::t('yii', '{attribute} must be repeated exactly.');
 					break;
 				case '===':
-					$this->message = Yii::t('yii|{attribute} must be repeated exactly.');
+					$this->message = Yii::t('yii', '{attribute} must be repeated exactly.');
 					break;
 				case '!=':
-					$this->message = Yii::t('yii|{attribute} must not be equal to "{compareValue}".');
+					$this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValue}".');
 					break;
 				case '!==':
-					$this->message = Yii::t('yii|{attribute} must not be equal to "{compareValue}".');
+					$this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValue}".');
 					break;
 				case '>':
-					$this->message = Yii::t('yii|{attribute} must be greater than "{compareValue}".');
+					$this->message = Yii::t('yii', '{attribute} must be greater than "{compareValue}".');
 					break;
 				case '>=':
-					$this->message = Yii::t('yii|{attribute} must be greater than or equal to "{compareValue}".');
+					$this->message = Yii::t('yii', '{attribute} must be greater than or equal to "{compareValue}".');
 					break;
 				case '<':
-					$this->message = Yii::t('yii|{attribute} must be less than "{compareValue}".');
+					$this->message = Yii::t('yii', '{attribute} must be less than "{compareValue}".');
 					break;
 				case '<=':
-					$this->message = Yii::t('yii|{attribute} must be less than or equal to "{compareValue}".');
+					$this->message = Yii::t('yii', '{attribute} must be less than or equal to "{compareValue}".');
 					break;
 				default:
 					throw new InvalidConfigException("Unknown operator: {$this->operator}");
@@ -119,7 +119,7 @@ class CompareValidator extends Validator
 	{
 		$value = $object->$attribute;
 		if (is_array($value)) {
-			$this->addError($object, $attribute, Yii::t('yii|{attribute} is invalid.'));
+			$this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
 			return;
 		}
 		if ($this->compareValue !== null) {
