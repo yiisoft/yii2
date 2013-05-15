@@ -23,6 +23,16 @@ class DebugTarget extends Target
 	 */
 	public function export($messages)
 	{
+		$path = Yii::$app->getRuntimePath() . '/debug';
+		if (!is_dir($path)) {
+			mkdir($path);
+		}
+		$file = $path . '/' . Yii::getLogger()->getTag() . '.log';
+		$data = array(
+			'messages' => $messages,
+			'globals' => $GLOBALS,
+		);
+		file_put_contents($file, json_encode($data));
 	}
 
 	/**
@@ -36,13 +46,8 @@ class DebugTarget extends Target
 	public function collect($messages, $final)
 	{
 		$this->messages = array_merge($this->messages, $this->filterMessages($messages));
-		$count = count($this->messages);
-		if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
-			if (($context = $this->getContextMessage()) !== '') {
-				$this->messages[] = array($context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME);
-			}
+		if ($final) {
 			$this->export($this->messages);
-			$this->messages = array();
 		}
 	}
 }

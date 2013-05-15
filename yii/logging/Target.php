@@ -7,6 +7,7 @@
 
 namespace yii\logging;
 
+use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 
@@ -109,8 +110,9 @@ abstract class Target extends Component
 	protected function getContextMessage()
 	{
 		$context = array();
-		if ($this->logUser && ($user = \Yii::$app->getComponent('user', false)) !== null) {
-			$context[] = 'User: ' . $user->getName() . ' (ID: ' . $user->getId() . ')';
+		if ($this->logUser && ($user = Yii::$app->getComponent('user', false)) !== null) {
+			/** @var $user \yii\web\User */
+			$context[] = 'User: ' . $user->getId();
 		}
 
 		foreach ($this->logVars as $name) {
