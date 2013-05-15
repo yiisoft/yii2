@@ -269,10 +269,6 @@ Message translation is still supported, but managed via the "i18n" application c
 The component manages a set of message sources, which allows you to use different message
 sources based on message categories. For more information, see the class documentation for `I18N`.
 
-The message translation method is changed by merging the message category into the message being
-translated. For example, `Yii::t('yii|message to be translated')`.
-
-
 
 Action Filters
 --------------

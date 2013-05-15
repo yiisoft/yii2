@@ -46,7 +46,7 @@ class UrlValidator extends Validator
 	{
 		parent::init();
 		if ($this->message === null) {
-			$this->message = Yii::t('yii|{attribute} is not a valid URL.');
+			$this->message = Yii::t('yii', '{attribute} is not a valid URL.');
 		}
 	}
 
