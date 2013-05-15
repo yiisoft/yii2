@@ -112,9 +112,9 @@ class Response extends \yii\base\Response
 			ob_end_clean();
 			echo $content;
 			exit(0);
-		}
-		else
+		} else {
 			echo $content;
+		}
 	}
 
 	/**
