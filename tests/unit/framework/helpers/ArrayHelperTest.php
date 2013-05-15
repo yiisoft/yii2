@@ -3,6 +3,8 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
+use yii\web\Sort;
 
 class ArrayHelperTest extends \yii\test\TestCase
 {
@@ -54,16 +56,51 @@ class ArrayHelperTest extends \yii\test\TestCase
 			array('name' => 'A', 'age' => 1),
 		);
 
-		ArrayHelper::multisort($array, array('name', 'age'), SORT_ASC, array(SORT_STRING, SORT_REGULAR));
+		ArrayHelper::multisort($array, array('name', 'age'), false, array(SORT_STRING, SORT_REGULAR));
 		$this->assertEquals(array('name' => 'A', 'age' => 1), $array[0]);
 		$this->assertEquals(array('name' => 'B', 'age' => 4), $array[1]);
 		$this->assertEquals(array('name' => 'a', 'age' => 3), $array[2]);
 		$this->assertEquals(array('name' => 'b', 'age' => 2), $array[3]);
 
-		ArrayHelper::multisort($array, array('name', 'age'), SORT_ASC, array(SORT_STRING, SORT_REGULAR), false);
+		ArrayHelper::multisort($array, array('name', 'age'), false, array(SORT_STRING, SORT_REGULAR), false);
 		$this->assertEquals(array('name' => 'A', 'age' => 1), $array[0]);
 		$this->assertEquals(array('name' => 'a', 'age' => 3), $array[1]);
 		$this->assertEquals(array('name' => 'b', 'age' => 2), $array[2]);
 		$this->assertEquals(array('name' => 'B', 'age' => 4), $array[3]);
+	}
+
+	public function testMultisortUseSort()
+	{
+		// single key
+		$sort = new Sort();
+		$sort->attributes = array('name', 'age');
+		$sort->defaults = array('name' => Sort::ASC);
+		$orders = $sort->getOrders();
+
+		$array = array(
+			array('name' => 'b', 'age' => 3),
+			array('name' => 'a', 'age' => 1),
+			array('name' => 'c', 'age' => 2),
+		);
+		ArrayHelper::multisort($array, array_keys($orders), array_values($orders));
+		$this->assertEquals(array('name' => 'a', 'age' => 1), $array[0]);
+		$this->assertEquals(array('name' => 'b', 'age' => 3), $array[1]);
+		$this->assertEquals(array('name' => 'c', 'age' => 2), $array[2]);
+
+		// multiple keys
+		$sort = new Sort();
+		$sort->attributes = array('name', 'age');
+		$sort->defaults = array('name' => Sort::ASC, 'age' => Sort::DESC);
+		$orders = $sort->getOrders();
+
+		$array = array(
+			array('name' => 'b', 'age' => 3),
+			array('name' => 'a', 'age' => 2),
+			array('name' => 'a', 'age' => 1),
+		);
+		ArrayHelper::multisort($array, array_keys($orders), array_values($orders));
+		$this->assertEquals(array('name' => 'a', 'age' => 2), $array[0]);
+		$this->assertEquals(array('name' => 'a', 'age' => 1), $array[1]);
+		$this->assertEquals(array('name' => 'b', 'age' => 3), $array[2]);
 	}
 }
