@@ -117,10 +117,6 @@ class UrlValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		if ($this->enableIDN) {
-			$view->registerAssetBundle('punycode');
-		}
-
 		if (strpos($this->pattern, '{schemes}') !== false) {
 			$pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
 		} else {
@@ -142,6 +138,10 @@ class UrlValidator extends Validator
 			$options['defaultScheme'] = $this->defaultScheme;
 		}
 
+		$view->registerAssetBundle('yii/form');
+		if ($this->enableIDN) {
+			$view->registerAssetBundle('punycode');
+		}
 		return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
 	}
 }

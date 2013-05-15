@@ -102,6 +102,7 @@ class BooleanValidator extends Validator
 			$options['strict'] = 1;
 		}
 
+		$view->registerAssetBundle('yii/form');
 		return 'yii.validation.boolean(value, messages, ' . json_encode($options) . ');';
 	}
 }

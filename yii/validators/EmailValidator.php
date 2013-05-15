@@ -119,10 +119,6 @@ class EmailValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		if ($this->enableIDN) {
-			$view->registerAssetBundle('punycode');
-		}
-
 		$options = array(
 			'pattern' => new JsExpression($this->pattern),
 			'fullPattern' => new JsExpression($this->fullPattern),
@@ -137,6 +133,10 @@ class EmailValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
+		$view->registerAssetBundle('yii/form');
+		if ($this->enableIDN) {
+			$view->registerAssetBundle('punycode');
+		}
 		return 'yii.validation.email(value, messages, ' . Json::encode($options) . ');';
 	}
 }

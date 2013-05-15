@@ -113,6 +113,7 @@ class CaptchaValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
+		$view->registerAssetBundle('yii/form');
 		return 'yii.validation.captcha(value, messages, ' . json_encode($options) . ');';
 	}
 }

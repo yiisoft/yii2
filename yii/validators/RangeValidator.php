@@ -103,6 +103,7 @@ class RangeValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
+		$view->registerAssetBundle('yii/form');
 		return 'yii.validation.range(value, messages, ' . json_encode($options) . ');';
 	}
 }
