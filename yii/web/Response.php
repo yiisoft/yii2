@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -35,23 +36,81 @@ class Response extends \yii\base\Response
 	 */
 	public function sendFile($fileName, $content, $mimeType = null, $terminate = true)
 	{
-		if ($mimeType === null && ($mimeType = FileHelper::getMimeType($fileName)) === null) {
-			$mimeType = 'application/octet-stream';
+		if ($mimeType === null) {
+			if (($mimeType = FileHelper::getMimeTypeByExtension($fileName)) === null) {
+				$mimeType='application/octet-stream';
+			}
 		}
+
+		$fileSize = StringHelper::strlen($content);
+		$contentStart = 0;
+		$contentEnd = $fileSize - 1;
+
+		if (isset($_SERVER['HTTP_RANGE'])) {
+			header('Accept-Ranges: bytes');
+
+			//client sent us a multibyte range, can not hold this one for now
+			if (strpos(',', $_SERVER['HTTP_RANGE']) !== false) {
+				header('HTTP/1.1 416 Requested Range Not Satisfiable');
+				header("Content-Range: bytes $contentStart-$contentEnd/$fileSize");
+				ob_start();
+				Yii::app()->end(0,false);
+				ob_end_clean();
+				exit(0);
+			}
+
+			$range = str_replace('bytes=', '', $_SERVER['HTTP_RANGE']);
+
+			//range requests starts from "-", so it means that data must be dumped the end point.
+			if ($range[0] === '-') {
+				$contentStart = $fileSize - substr($range, 1);
+			} else {
+				$range = explode('-', $range);
+				$contentStart = $range[0];
+				$contentEnd = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $fileSize;
+			}
+
+			/* Check the range and make sure it's treated according to the specs.
+			 * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+			 */
+			// End bytes can not be larger than $end.
+			$contentEnd = ($contentEnd > $fileSize) ? $fileSize : $contentEnd;
+
+			// Validate the requested range and return an error if it's not correct.
+			$wrongContentStart = ($contentStart > $contentEnd || $contentStart > $fileSize - 1 || $contentStart < 0);
+
+			if ($wrongContentStart) {   
+				header('HTTP/1.1 416 Requested Range Not Satisfiable');
+				header("Content-Range: bytes $contentStart-$contentEnd/$fileSize");
+				ob_start();
+				Yii::app()->end(0,false);
+				ob_end_clean();
+				exit(0);
+			}
+
+			header('HTTP/1.1 206 Partial Content');
+			header("Content-Range: bytes $contentStart-$contentEnd/$fileSize");
+		} else {
+			header('HTTP/1.1 200 OK');
+		}
+
+		$length = $contentEnd - $contentStart + 1; // Calculate new content length
+
 		header('Pragma: public');
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header("Content-type: $mimeType");
-		if (ob_get_length() === false) {
-			header('Content-Length: ' . (function_exists('mb_strlen') ? mb_strlen($content, '8bit') : strlen($content)));
-		}
+		header('Content-Length: '.$length);
 		header("Content-Disposition: attachment; filename=\"$fileName\"");
 		header('Content-Transfer-Encoding: binary');
+		$content = StringHelper::strlen($content);
 
 		if ($terminate) {
 			// clean up the application first because the file downloading could take long time
 			// which may cause timeout of some resources (such as DB connection)
-			Yii::app()->end(0, false);
+			ob_start();
+			Yii::app()->end(0,false);
+			ob_end_clean();
 			echo $content;
 			exit(0);
 		} else {
