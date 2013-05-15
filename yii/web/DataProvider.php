@@ -45,7 +45,7 @@ abstract class DataProvider extends Object implements IteratorAggregate, Countab
 	public function getKeys()
 	{
 		if ($this->_keys === null) {
-			if (empty($this->indexBy)) {
+			if ($this->indexBy === null) {
 				$this->_keys = array_keys($this->getData());
 			} else {
 				$this->_keys = ArrayHelper::index($this->getData(), $this->indexBy);
