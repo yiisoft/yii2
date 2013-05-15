@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -36,12 +37,12 @@ class Response extends \yii\base\Response
 	public function sendFile($fileName, $content, $mimeType = null, $terminate = true)
 	{
 		if ($mimeType === null) {
-			if (($mimeType = CFileHelper::getMimeTypeByExtension($fileName)) === null) {
-				$mimeType='text/plain';
+			if (($mimeType = FileHelper::getMimeTypeByExtension($fileName)) === null) {
+				$mimeType='application/octet-stream';
 			}
 		}
 
-		$fileSize = (function_exists('mb_strlen') ? mb_strlen($content,'8bit') : strlen($content));
+		$fileSize = StringHelper::strlen($content);
 		$contentStart = 0;
 		$contentEnd = $fileSize - 1;
 
@@ -49,7 +50,7 @@ class Response extends \yii\base\Response
 			header('Accept-Ranges: bytes');
 
 			//client sent us a multibyte range, can not hold this one for now
-			if (strpos(',',$_SERVER['HTTP_RANGE']) !== false) {
+			if (strpos(',', $_SERVER['HTTP_RANGE']) !== false) {
 				header('HTTP/1.1 416 Requested Range Not Satisfiable');
 				header("Content-Range: bytes $contentStart-$contentEnd/$fileSize");
 				ob_start();
@@ -58,13 +59,13 @@ class Response extends \yii\base\Response
 				exit(0);
 			}
 
-			$range = str_replace('bytes=','',$_SERVER['HTTP_RANGE']);
+			$range = str_replace('bytes=', '', $_SERVER['HTTP_RANGE']);
 
 			//range requests starts from "-", so it means that data must be dumped the end point.
 			if ($range[0] === '-') {
-				$contentStart = $fileSize - substr($range,1);
+				$contentStart = $fileSize - substr($range, 1);
 			} else {
-				$range = explode('-',$range);
+				$range = explode('-', $range);
 				$contentStart = $range[0];
 				$contentEnd = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $fileSize;
 			}
@@ -102,7 +103,7 @@ class Response extends \yii\base\Response
 		header('Content-Length: '.$length);
 		header("Content-Disposition: attachment; filename=\"$fileName\"");
 		header('Content-Transfer-Encoding: binary');
-		$content = function_exists('mb_substr') ? mb_substr($content,$contentStart,$length) : substr($content,$contentStart,$length);
+		$content = StringHelper::strlen($content);
 
 		if ($terminate) {
 			// clean up the application first because the file downloading could take long time
