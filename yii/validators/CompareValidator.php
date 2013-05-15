@@ -178,9 +178,11 @@ class CompareValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated
 	 * @return string the client-side validation script
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @throws InvalidConfigException if CompareValidator::operator is invalid
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$options = array('operator' => $this->operator);
 
@@ -203,6 +205,7 @@ class CompareValidator extends Validator
 			'{compareValue}' => $compareValue,
 		)));
 
+		$view->registerAssetBundle('yii/validation');
 		return 'yii.validation.compare(value, messages, ' . json_encode($options) . ');';
 	}
 }

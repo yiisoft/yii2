@@ -37,6 +37,12 @@ class UrlValidator extends Validator
 	 * contain the scheme part.
 	 **/
 	public $defaultScheme;
+	/**
+	 * @var boolean whether validation process should take into account IDN (internationalized
+	 * domain names). Defaults to false meaning that validation of URLs containing IDN will always
+	 * fail.
+	 */
+	public $enableIDN = false;
 
 
 	/**
@@ -87,6 +93,12 @@ class UrlValidator extends Validator
 				$pattern = $this->pattern;
 			}
 
+			if ($this->enableIDN) {
+				$value = preg_replace_callback('/:\/\/([^\/]+)/', function($matches) {
+					return '://' . idn_to_ascii($matches[1]);
+				}, $value);
+			}
+
 			if (preg_match($pattern, $value)) {
 				return true;
 			}
@@ -98,10 +110,12 @@ class UrlValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 * @see \yii\Web\ActiveForm::enableClientValidation
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		if (strpos($this->pattern, '{schemes}') !== false) {
 			$pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
@@ -115,6 +129,7 @@ class UrlValidator extends Validator
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
 			))),
+			'enableIDN' => (boolean)$this->enableIDN,
 		);
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
@@ -123,7 +138,10 @@ class UrlValidator extends Validator
 			$options['defaultScheme'] = $this->defaultScheme;
 		}
 
+		$view->registerAssetBundle('yii/validation');
+		if ($this->enableIDN) {
+			$view->registerAssetBundle('punycode');
+		}
 		return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
 	}
 }
-
