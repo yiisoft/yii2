@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\HttpException;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
@@ -32,42 +33,37 @@ class Response extends \yii\base\Response
 	 * @param string $content content to be set.
 	 * @param string $mimeType mime type of the content. If null, it will be guessed automatically based on the given file name.
 	 * @param boolean $terminate whether to terminate the current application after calling this method
-	 * @todo
+	 * @throws \yii\base\HttpException when range request is not satisfiable.
 	 */
 	public function sendFile($fileName, $content, $mimeType = null, $terminate = true)
 	{
-		if ($mimeType === null) {
-			if (($mimeType = FileHelper::getMimeTypeByExtension($fileName)) === null) {
-				$mimeType='application/octet-stream';
-			}
+		if ($mimeType === null && (($mimeType = FileHelper::getMimeTypeByExtension($fileName)) === null)) {
+			$mimeType = 'application/octet-stream';
 		}
 
 		$fileSize = StringHelper::strlen($content);
 		$contentStart = 0;
 		$contentEnd = $fileSize - 1;
 
-		if (isset($_SERVER['HTTP_RANGE'])) {
-			header('Accept-Ranges: bytes');
+		// tell the client that we accept range requests
+		header('Accept-Ranges: bytes');
 
-			//client sent us a multibyte range, can not hold this one for now
+		if (isset($_SERVER['HTTP_RANGE'])) {
+			// client sent us a multibyte range, can not hold this one for now
 			if (strpos(',', $_SERVER['HTTP_RANGE']) !== false) {
-				header('HTTP/1.1 416 Requested Range Not Satisfiable');
 				header("Content-Range: bytes $contentStart-$contentEnd/$fileSize");
-				ob_start();
-				Yii::app()->end(0,false);
-				ob_end_clean();
-				exit(0);
+				throw new HttpException(416, 'Requested Range Not Satisfiable');
 			}
 
 			$range = str_replace('bytes=', '', $_SERVER['HTTP_RANGE']);
 
-			//range requests starts from "-", so it means that data must be dumped the end point.
+			// range requests starts from "-", so it means that data must be dumped the end point.
 			if ($range[0] === '-') {
 				$contentStart = $fileSize - substr($range, 1);
 			} else {
 				$range = explode('-', $range);
 				$contentStart = $range[0];
-				$contentEnd = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $fileSize;
+				$contentEnd = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $fileSize - 1;
 			}
 
 			/* Check the range and make sure it's treated according to the specs.
@@ -80,12 +76,8 @@ class Response extends \yii\base\Response
 			$wrongContentStart = ($contentStart > $contentEnd || $contentStart > $fileSize - 1 || $contentStart < 0);
 
 			if ($wrongContentStart) {   
-				header('HTTP/1.1 416 Requested Range Not Satisfiable');
 				header("Content-Range: bytes $contentStart-$contentEnd/$fileSize");
-				ob_start();
-				Yii::app()->end(0,false);
-				ob_end_clean();
-				exit(0);
+				throw new HttpException(416, 'Requested Range Not Satisfiable');
 			}
 
 			header('HTTP/1.1 206 Partial Content');
@@ -99,17 +91,17 @@ class Response extends \yii\base\Response
 		header('Pragma: public');
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header("Content-type: $mimeType");
-		header('Content-Length: '.$length);
-		header("Content-Disposition: attachment; filename=\"$fileName\"");
+		header('Content-Type: ' . $mimeType);
+		header('Content-Length: ' . $length);
+		header('Content-Disposition: attachment; filename="' . $fileName . '"');
 		header('Content-Transfer-Encoding: binary');
-		$content = StringHelper::strlen($content);
+		$content = StringHelper::substr($content, $contentStart, $length);
 
 		if ($terminate) {
 			// clean up the application first because the file downloading could take long time
 			// which may cause timeout of some resources (such as DB connection)
 			ob_start();
-			Yii::app()->end(0,false);
+			Yii::$app->end(0, false);
 			ob_end_clean();
 			echo $content;
 			exit(0);
