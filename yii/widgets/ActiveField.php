@@ -11,8 +11,6 @@ use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\base\Model;
 use yii\web\JsExpression;
-use yii\validators\EmailValidator;
-use yii\validators\UrlValidator;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -123,13 +121,6 @@ class ActiveField extends Component
 		}
 		$options['class'] = implode(' ', $class);
 
-		foreach ($this->model->getActiveValidators($attribute) as $validator) {
-			if (($validator instanceof EmailValidator || $validator instanceof UrlValidator) && $validator->enableIDN) {
-				$this->form->view->registerAssetBundle('punycode');
-				break;
-			}
-		}
-
 		return Html::beginTag($this->tag, $options);
 	}
 
@@ -147,7 +138,7 @@ class ActiveField extends Component
 			$validators = array();
 			foreach ($this->model->getActiveValidators($attribute) as $validator) {
 				/** @var \yii\validators\Validator $validator */
-				$js = $validator->clientValidateAttribute($this->model, $attribute);
+				$js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
 				if ($validator->enableClientValidation && $js != '') {
 					$validators[] = $js;
 				}

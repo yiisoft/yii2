@@ -110,11 +110,17 @@ class UrlValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 * @see \yii\Web\ActiveForm::enableClientValidation
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
+		if ($this->enableIDN) {
+			$view->registerAssetBundle('punycode');
+		}
+
 		if (strpos($this->pattern, '{schemes}') !== false) {
 			$pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
 		} else {
