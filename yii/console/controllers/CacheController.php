@@ -19,6 +19,7 @@ use yii\caching\Cache;
  */
 class CacheController extends Controller
 {
+
 	public function actionIndex()
 	{
 		$this->forward('help/index', array('-args' => array('cache/flush')));

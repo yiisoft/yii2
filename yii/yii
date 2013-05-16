@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * Yii console bootstrap file.
@@ -15,7 +16,7 @@ defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 require(__DIR__ . '/Yii.php');
 
 $application = new yii\console\Application(array(
-	'id' => 'yiic',
+	'id' => 'yii-console',
 	'basePath' => __DIR__ . '/console',
 	'controllerPath' => '@yii/console/controllers',
 ));
