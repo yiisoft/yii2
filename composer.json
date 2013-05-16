@@ -67,7 +67,7 @@
 		"vendor-dir": "yii/vendor"
 	},
 	"bin": [
-		"yii/yiic"
+		"yii/yii"
 	],
 	"repositories": [
 		{

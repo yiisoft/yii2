@@ -152,7 +152,7 @@ with significant improvements. For more details, please see the "assets" subsect
 While Yii 2.0 continues to use PHP as its main template language, it comes with built-in
 support for two popular template engines: Smarty and Twig. The Prado template engine is
 no longer supported. To use these template engines, you just need to use `tpl` as the file
-extension for your Smarty views, or `twig` for Twig views. You may also configure the 
+extension for your Smarty views, or `twig` for Twig views. You may also configure the
 `View::renderers` property to use other template engines.
 
 
@@ -252,7 +252,7 @@ Console applications are now composed by controllers, too, like Web applications
 console controllers and Web controllers share the same base controller class.
 
 Each console controller is like `CConsoleCommand` in 1.1. It consists of one or several
-actions. You use the `yiic <route>` command to execute a console command, where `<route>`
+actions. You use the `yii <route>` command to execute a console command, where `<route>`
 stands for a controller route (e.g. `sitemap/index`). Additional anonymous arguments
 are passed as the parameters to the corresponding controller action method, and named arguments
 are treated as global options declared in `globalOptions()`.
