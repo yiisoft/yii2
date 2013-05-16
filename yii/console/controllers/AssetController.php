@@ -77,8 +77,10 @@ class AssetController extends Controller
 
 	/**
 	 * Combines and compresses the asset files according to the given configuration.
+	 * During the process new asset bundle configuration file will be created.
+	 * You should replace your original asset bundle configuration with this file in order to use compressed files.
 	 * @param string $configFile configuration file name.
-	 * @param string $bundleFile
+	 * @param string $bundleFile output asset bundles configuration file name.
 	 */
 	public function actionCompress($configFile, $bundleFile)
 	{
@@ -124,10 +126,10 @@ class AssetController extends Controller
 	}
 
 	/**
-	 * Creates full list of asset bundles.
+	 * Creates full list of source asset bundles.
 	 * @param array[] $bundles list of asset bundle configurations.
 	 * @param array $extensions list of the extension paths.
-	 * @return \yii\web\AssetBundle[] list of asset bundles.
+	 * @return \yii\web\AssetBundle[] list of source asset bundles.
 	 */
 	protected function loadBundles($bundles, $extensions)
 	{
@@ -152,9 +154,10 @@ class AssetController extends Controller
 	}
 
 	/**
-	 * @param array $targets
-	 * @param \yii\web\AssetBundle[] $bundles list of asset bundles.
-	 * @return \yii\web\AssetBundle[]
+	 * Creates full list of output asset bundles.
+	 * @param array $targets output asset bundles configuration.
+	 * @param \yii\web\AssetBundle[] $bundles list of source asset bundles.
+	 * @return \yii\web\AssetBundle[] list of output asset bundles.
 	 * @throws \yii\console\Exception on failure.
 	 */
 	protected function loadTargets($targets, $bundles)
@@ -260,9 +263,10 @@ class AssetController extends Controller
 	}
 
 	/**
-	 * @param \yii\web\AssetBundle[] $targets
-	 * @param \yii\web\AssetBundle[] $bundles
-	 * @return \yii\web\AssetBundle[]
+	 * Adjust dependencies between asset bundles in the way source bundles begin to depend on output ones.
+	 * @param \yii\web\AssetBundle[] $targets output asset bundles.
+	 * @param \yii\web\AssetBundle[] $bundles source asset bundles.
+	 * @return \yii\web\AssetBundle[] output asset bundles.
 	 */
 	protected function adjustDependency($targets, $bundles)
 	{
@@ -321,6 +325,11 @@ class AssetController extends Controller
 		}
 	}
 
+	/**
+	 * Saves new asset bundles configuration.
+	 * @param \yii\web\AssetBundle[] $targets list of asset bundles to be saved.
+	 * @param string $bundleFile output file name.
+	 */
 	protected function saveTargets($targets, $bundleFile)
 	{
 		$array = array();

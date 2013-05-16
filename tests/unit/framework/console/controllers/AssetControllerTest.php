@@ -130,20 +130,6 @@ class AssetControllerTest extends TestCase
 	}
 
 	/**
-	 * Creates test bundles configuration file.
-	 * @param string $fileName output filename.
-	 * @param array[] $bundles asset bundles config.
-	 * @throws Exception on failure.
-	 */
-	protected function createBundleFile($fileName, array $bundles)
-	{
-		$content = '<?php return '.var_export($this->createBundleConfig($bundles), true).';';
-		if (file_put_contents($fileName, $content) <= 0) {
-			throw new \Exception("Unable to create file '{$fileName}'!");
-		}
-	}
-
-	/**
 	 * Creates test compress config file.
 	 * @param string $fileName output file name.
 	 * @param array[] $bundles asset bundles config.
@@ -224,7 +210,6 @@ class AssetControllerTest extends TestCase
 			),
 		);;
 		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
-		$this->createBundleFile($bundleFile, $bundles);
 
 		$configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
 		$this->createCompressConfigFile($configFile, $bundles);
@@ -233,6 +218,8 @@ class AssetControllerTest extends TestCase
 		$this->runAssetControllerAction('compress', array($configFile, $bundleFile));
 
 		// Then :
+		$this->assertTrue(file_exists($bundleFile), 'Unable to create output bundle file!');
+
 		$compressedCssFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.css';
 		$this->assertTrue(file_exists($compressedCssFileName), 'Unable to compress CSS files!');
 		$compressedJsFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.js';
