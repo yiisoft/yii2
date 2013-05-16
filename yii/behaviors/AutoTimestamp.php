@@ -47,8 +47,8 @@ class AutoTimestamp extends Behavior
 	 */
 	public $updateAttribute = 'update_time';
 	/**
-	 * @var string|Expression The expression that will be used for generating the timestamp.
-	 * This can be either a string representing a PHP expression (e.g. 'time()'),
+	 * @var \Closure|Expression The expression that will be used for generating the timestamp.
+	 * This can be either an anonymous function that returns the timestamp value,
 	 * or an [[Expression]] object representing a DB expression (e.g. `new Expression('NOW()')`).
 	 * If not set, it will use the value of `time()` to fill the attributes.
 	 */
@@ -97,7 +97,7 @@ class AutoTimestamp extends Behavior
 		if ($this->timestamp instanceof Expression) {
 			return $this->timestamp;
 		} elseif ($this->timestamp !== null) {
-			return eval('return ' . $this->timestamp . ';');
+			return call_user_func($this->timestamp);
 		} else {
 			return time();
 		}
