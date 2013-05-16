@@ -322,6 +322,10 @@ EOD
 		file_put_contents($tmpFile, $content);
 	}
 
+	/**
+	 * Creates template of configuration file for [[actionCompress]].
+	 * @param string $configFile output file name.
+	 */
 	public function actionTemplate($configFile)
 	{
 		$template = <<<EOD
@@ -348,6 +352,16 @@ return array(
 	),
 );
 EOD;
-		file_put_contents($configFile, $template);
+		if (file_exists($configFile)) {
+			if (!$this->confirm("File '{$configFile}' already exists. Do you wish to overwrite it?")) {
+				return;
+			}
+		}
+		$bytesWritten = file_put_contents($configFile, $template);
+		if ($bytesWritten<=0) {
+			echo "Error: unable to write file '{$configFile}'!\n\n";
+		} else {
+			echo "Configuration file template created at '{$configFile}'.\n\n";
+		}
 	}
 }

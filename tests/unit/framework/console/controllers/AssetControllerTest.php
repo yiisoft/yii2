@@ -55,6 +55,7 @@ class AssetControllerTest extends TestCase
 	{
 		$module = $this->getMock('yii\\base\\Module', array('fake'), array('console'));
 		$assetController = new AssetController('asset', $module);
+		$assetController->interactive = false;
 		$assetController->jsCompressor = 'cp {from} {to}';
 		$assetController->cssCompressor = 'cp {from} {to}';
 		return $assetController;
