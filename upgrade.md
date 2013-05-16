@@ -35,8 +35,7 @@ Upgrading from v1.1.x
   from `Object` and supports events and behaviors. Behaviors declared in
   `Component::behaviors()` are attached on demand.
 
-- `CList` is renamed to `Vector`, and `CMap` is renamed to `Dictionary`.
-  Other collection classes are dropped in favor of SPL classes.
+- All collection classes are dropped in favor of SPL classes.
 
 - `CFormModel` is removed. Please use `yii\base\Model` instead.
 
