@@ -114,7 +114,8 @@ class AssetControllerTest extends TestCase
 	 */
 	protected function createBundleConfig()
 	{
-		$baseUrl = '/test';
+		$baseUrl = '';
+		//$baseUrl = '/test';
 		$bundles = array(
 			'app' => array(
 				'basePath' => $this->testFilePath,
@@ -155,6 +156,19 @@ class AssetControllerTest extends TestCase
 		return (file_put_contents($fileName, $content) > 0);
 	}
 
+	/**
+	 * Creates test asset file.
+	 * @param string $fileRelativeName file name relative to [[testFilePath]]
+	 * @param string $content file content
+	 * @return boolean success.
+	 */
+	protected function createTestAssetFile($fileRelativeName, $content)
+	{
+		$fileFullName = $this->testFilePath.DIRECTORY_SEPARATOR.$fileRelativeName;
+		$this->createDir(dirname($fileFullName));
+		return (file_put_contents($fileFullName, $content) > 0);
+	}
+
 	// Tests :
 
 	public function testActionTemplate()
@@ -166,6 +180,20 @@ class AssetControllerTest extends TestCase
 
 	public function testActionCompress()
 	{
+		$this->createTestAssetFile(
+			'css/test.css',
+			'body {
+				padding-top: 20px;
+				padding-bottom: 60px;
+			}'
+		);
+		$this->createTestAssetFile(
+			'js/test.js',
+			"function() {
+				alert('Test message');
+			}"
+		);
+
 		$configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
 		$this->createCompressConfigFile($configFile);
 		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';

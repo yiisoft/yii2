@@ -182,7 +182,7 @@ class AssetController extends Controller
 		foreach ($target->depends as $name) {
 			if (isset($bundles[$name])) {
 				foreach ($bundles[$name]->$type as $file) {
-					$inputFiles[] = $bundles[$name]->basePath . '/' . $file;
+					$inputFiles[] = $bundles[$name]->basePath . $file;
 				}
 			} else {
 				throw new Exception("Unknown bundle: $name");
