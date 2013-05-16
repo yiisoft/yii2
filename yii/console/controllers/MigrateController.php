@@ -42,13 +42,13 @@ use yii\helpers\ArrayHelper;
  *
  * ~~~
  * # creates a new migration named 'create_user_table'
- * yiic migrate/create create_user_table
+ * yii migrate/create create_user_table
  *
  * # applies ALL new migrations
- * yiic migrate
+ * yii migrate
  *
  * # reverts the last applied migration
- * yiic migrate/down
+ * yii migrate/down
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -135,8 +135,8 @@ class MigrateController extends Controller
 	 * For example,
 	 *
 	 * ~~~
-	 * yiic migrate     # apply all new migrations
-	 * yiic migrate 3   # apply the first 3 new migrations
+	 * yii migrate     # apply all new migrations
+	 * yii migrate 3   # apply the first 3 new migrations
 	 * ~~~
 	 *
 	 * @param integer $limit the number of new migrations to be applied. If 0, it means
@@ -184,8 +184,8 @@ class MigrateController extends Controller
 	 * For example,
 	 *
 	 * ~~~
-	 * yiic migrate/down     # revert the last migration
-	 * yiic migrate/down 3   # revert the last 3 migrations
+	 * yii migrate/down     # revert the last migration
+	 * yii migrate/down 3   # revert the last 3 migrations
 	 * ~~~
 	 *
 	 * @param integer $limit the number of migrations to be reverted. Defaults to 1,
@@ -231,8 +231,8 @@ class MigrateController extends Controller
 	 * them again. For example,
 	 *
 	 * ~~~
-	 * yiic migrate/redo     # redo the last applied migration
-	 * yiic migrate/redo 3   # redo the last 3 applied migrations
+	 * yii migrate/redo     # redo the last applied migration
+	 * yii migrate/redo 3   # redo the last 3 applied migrations
 	 * ~~~
 	 *
 	 * @param integer $limit the number of migrations to be redone. Defaults to 1,
@@ -284,8 +284,8 @@ class MigrateController extends Controller
 	 * them again. For example,
 	 *
 	 * ~~~
-	 * yiic migrate/to 101129_185401                      # using timestamp
-	 * yiic migrate/to m101129_185401_create_user_table   # using full name
+	 * yii migrate/to 101129_185401                      # using timestamp
+	 * yii migrate/to m101129_185401_create_user_table   # using full name
 	 * ~~~
 	 *
 	 * @param string $version the version name that the application should be migrated to.
@@ -332,8 +332,8 @@ class MigrateController extends Controller
 	 * No actual migration will be performed.
 	 *
 	 * ~~~
-	 * yiic migrate/mark 101129_185401                      # using timestamp
-	 * yiic migrate/mark m101129_185401_create_user_table   # using full name
+	 * yii migrate/mark 101129_185401                      # using timestamp
+	 * yii migrate/mark m101129_185401_create_user_table   # using full name
 	 * ~~~
 	 *
 	 * @param string $version the version at which the migration history should be marked.
@@ -398,9 +398,9 @@ class MigrateController extends Controller
 	 * so far. For example,
 	 *
 	 * ~~~
-	 * yiic migrate/history     # showing the last 10 migrations
-	 * yiic migrate/history 5   # showing the last 5 migrations
-	 * yiic migrate/history 0   # showing the whole history
+	 * yii migrate/history     # showing the last 10 migrations
+	 * yii migrate/history 5   # showing the last 5 migrations
+	 * yii migrate/history 0   # showing the whole history
 	 * ~~~
 	 *
 	 * @param integer $limit the maximum number of migrations to be displayed.
@@ -432,9 +432,9 @@ class MigrateController extends Controller
 	 * For example,
 	 *
 	 * ~~~
-	 * yiic migrate/new     # showing the first 10 new migrations
-	 * yiic migrate/new 5   # showing the first 5 new migrations
-	 * yiic migrate/new 0   # showing all new migrations
+	 * yii migrate/new     # showing the first 10 new migrations
+	 * yii migrate/new 5   # showing the first 5 new migrations
+	 * yii migrate/new 0   # showing all new migrations
 	 * ~~~
 	 *
 	 * @param integer $limit the maximum number of new migrations to be displayed.
@@ -469,7 +469,7 @@ class MigrateController extends Controller
 	 * skeleton by filling up the actual migration logic.
 	 *
 	 * ~~~
-	 * yiic migrate/create create_user_table
+	 * yii migrate/create create_user_table
 	 * ~~~
 	 *
 	 * @param string $name the name of the new migration. This should only contain
