@@ -30,7 +30,7 @@ use yii\base\InvalidRouteException;
  * To run the console application, enter the following on the command line:
  *
  * ~~~
- * yiic <route> [--param1=value1 --param2 ...]
+ * yii <route> [--param1=value1 --param2 ...]
  * ~~~
  *
  * where `<route>` refers to a controller route in the form of `ModuleID/ControllerID/ActionID`
@@ -42,7 +42,7 @@ use yii\base\InvalidRouteException;
  * To use this command, simply type:
  *
  * ~~~
- * yiic help
+ * yii help
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
