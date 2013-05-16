@@ -10,8 +10,14 @@
             "version": "1.2.1",
             "source": {
                 "type": "git",
-                "url": "git://github.com/bestiejs/punycode.js.git",
-                "reference": "1.2.1"
+                "url": "https://github.com/bestiejs/punycode.js.git",
+                "reference": "tags/1.2.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/bestiejs/punycode.js/archive/master.zip",
+                "reference": null,
+                "shasum": null
             },
             "type": "library"
         },
