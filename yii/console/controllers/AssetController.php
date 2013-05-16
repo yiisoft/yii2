@@ -365,8 +365,8 @@ EOD
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineJsFiles($inputFiles, $tmpFile);
 			$log = shell_exec(strtr($this->jsCompressor, array(
-				'{from}' => $tmpFile,
-				'{to}' => $outputFile,
+				'{from}' => escapeshellarg($tmpFile),
+				'{to}' => escapeshellarg($outputFile),
 			)));
 			@unlink($tmpFile);
 		} else {
@@ -385,8 +385,8 @@ EOD
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineCssFiles($inputFiles, $tmpFile);
 			$log = shell_exec(strtr($this->cssCompressor, array(
-				'{from}' => $tmpFile,
-				'{to}' => $outputFile,
+				'{from}' => escapeshellarg($tmpFile),
+				'{to}' => escapeshellarg($outputFile),
 			)));
 			@unlink($tmpFile);
 		} else {
