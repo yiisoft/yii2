@@ -17,12 +17,25 @@ use yii\console\Controller;
  */
 class AssetController extends Controller
 {
+	/**
+	 * @var string controller default action ID.
+	 */
 	public $defaultAction = 'compress';
-
+	/**
+	 * @var array list of asset bundles to be compressed.
+	 * The keys are the bundle names, and the values are the configuration
+	 * arrays for creating the [[yii\web\AssetBundle]] objects.
+	 */
 	public $bundles = array();
+	/**
+	 * @var array list of paths to the extensions, which assets should be also compressed.
+	 * Each path should contain asset manifest file named "assets.php".
+	 */
 	public $extensions = array();
 	/**
-	 * @var array
+	 * @var array list of asset bundles, which represents output compressed files.
+	 * You can specify the name of the output compressed file using 'css' and 'js' keys:
+	 * For example:
 	 * ~~~
 	 * 'all' => array(
 	 *     'css' => 'all.css',
@@ -30,12 +43,41 @@ class AssetController extends Controller
 	 *     'depends' => array( ... ),
 	 * )
 	 * ~~~
+	 * File names can contain placeholder "{ts}", which will be filled by current timestamp, while
+	 * file creation.
 	 */
 	public $targets = array();
+	/**
+	 * @var array configuration for [[yii\web\AssetManager]] instance, which will be used
+	 * for assets publishing.
+	 */
 	public $assetManager = array();
+	/**
+	 * @var string|callback Java Script file compressor.
+	 * If a string, it is treated as shell command template, which should contain
+	 * placeholders {from} - source file name - and {to} - output file name.
+	 * If an array, it is treated as PHP callback, which should perform the compression.
+	 *
+	 * Default value relies on usage of "Closure Compiler"
+	 * @see https://developers.google.com/closure/compiler/
+	 */
 	public $jsCompressor = 'java -jar compiler.jar --js {from} --js_output_file {to}';
+	/**
+	 * @var string|callback CSS file compressor.
+	 * If a string, it is treated as shell command template, which should contain
+	 * placeholders {from} - source file name - and {to} - output file name.
+	 * If an array, it is treated as PHP callback, which should perform the compression.
+	 *
+	 * Default value relies on usage of "YUI Compressor"
+	 * @see https://github.com/yui/yuicompressor/
+	 */
 	public $cssCompressor = 'java -jar yuicompressor.jar {from} -o {to}';
 
+	/**
+	 * Compresses the asset files according to the given configuration.
+	 * @param string $configFile configuration file name.
+	 * @param string $bundleFile
+	 */
 	public function actionCompress($configFile, $bundleFile)
 	{
 		$this->loadConfiguration($configFile);
@@ -56,6 +98,11 @@ class AssetController extends Controller
 		$this->saveTargets($targets, $bundleFile);
 	}
 
+	/**
+	 * Applies configuration from the given file to self instance.
+	 * @param string $configFile configuration file name.
+	 * @throws \yii\console\Exception on failure.
+	 */
 	protected function loadConfiguration($configFile)
 	{
 		foreach (require($configFile) as $name => $value) {
@@ -74,6 +121,12 @@ class AssetController extends Controller
 		}
 	}
 
+	/**
+	 * Creates full list of asset bundles.
+	 * @param array[] $bundles list of asset bundle configurations.
+	 * @param array $extensions list of the extension paths.
+	 * @return \yii\web\AssetBundle[] list of asset bundles.
+	 */
 	protected function loadBundles($bundles, $extensions)
 	{
 		$result = array();
@@ -96,6 +149,12 @@ class AssetController extends Controller
 		return $result;
 	}
 
+	/**
+	 * @param array $targets
+	 * @param \yii\web\AssetBundle[] $bundles list of asset bundles.
+	 * @return \yii\web\AssetBundle[]
+	 * @throws \yii\console\Exception on failure.
+	 */
 	protected function loadTargets($targets, $bundles)
 	{
 		// build the dependency order of bundles
@@ -196,6 +255,11 @@ class AssetController extends Controller
 		$target->$type = array($outputFile);
 	}
 
+	/**
+	 * @param \yii\web\AssetBundle[] $targets
+	 * @param \yii\web\AssetBundle[] $bundles
+	 * @return \yii\web\AssetBundle[]
+	 */
 	protected function adjustDependency($targets, $bundles)
 	{
 		$map = array();
@@ -231,6 +295,13 @@ class AssetController extends Controller
 		return $targets;
 	}
 
+	/**
+	 * Registers asset bundles including their dependencies.
+	 * @param \yii\web\AssetBundle[] $bundles asset bundles list.
+	 * @param string $name bundle name.
+	 * @param array $registered stores already registered names.
+	 * @throws \yii\console\Exception if circular dependency is detected.
+	 */
 	protected function registerBundle($bundles, $name, &$registered)
 	{
 		if (!isset($registered[$name])) {
@@ -270,6 +341,11 @@ EOD
 		);
 	}
 
+	/**
+	 * Compresses given Java Script files and combines them into the single one.
+	 * @param array $inputFiles list of source file names.
+	 * @param string $outputFile output file name.
+	 */
 	protected function compressJsFiles($inputFiles, $outputFile)
 	{
 		if (is_string($this->jsCompressor)) {
@@ -285,6 +361,11 @@ EOD
 		}
 	}
 
+	/**
+	 * Compresses given CSS files and combines them into the single one.
+	 * @param array $inputFiles list of source file names.
+	 * @param string $outputFile output file name.
+	 */
 	protected function compressCssFiles($inputFiles, $outputFile)
 	{
 		if (is_string($this->cssCompressor)) {
@@ -300,27 +381,37 @@ EOD
 		}
 	}
 
-	public function combineJsFiles($files, $tmpFile)
+	/**
+	 * Combines Java Script files into a single one.
+	 * @param array $inputFiles source file names.
+	 * @param string $outputFile output file name.
+	 */
+	public function combineJsFiles($inputFiles, $outputFile)
 	{
 		$content = '';
-		foreach ($files as $file) {
+		foreach ($inputFiles as $file) {
 			$content .= "/*** BEGIN FILE: $file ***/\n"
 				. file_get_contents($file)
 				. "/*** END FILE: $file ***/\n";
 		}
-		file_put_contents($tmpFile, $content);
+		file_put_contents($outputFile, $content);
 	}
 
-	public function combineCssFiles($files, $tmpFile)
+	/**
+	 * Combines CSS files into a single one.
+	 * @param array $inputFiles source file names.
+	 * @param string $outputFile output file name.
+	 */
+	public function combineCssFiles($inputFiles, $outputFile)
 	{
 		// todo: adjust url() references in CSS files
 		$content = '';
-		foreach ($files as $file) {
+		foreach ($inputFiles as $file) {
 			$content .= "/*** BEGIN FILE: $file ***/\n"
 				. file_get_contents($file)
 				. "/*** END FILE: $file ***/\n";
 		}
-		file_put_contents($tmpFile, $content);
+		file_put_contents($outputFile, $content);
 	}
 
 	/**
