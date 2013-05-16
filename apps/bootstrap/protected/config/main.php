@@ -4,6 +4,7 @@ return array(
 	'id' => 'bootstrap',
 	'basePath' => dirname(__DIR__),
 	'preload' => array('log'),
+	'controllerNamespace' => 'app\controllers',
 	'modules' => array(
 //		'debug' => array(
 //			'class' => 'yii\debug\Module',
