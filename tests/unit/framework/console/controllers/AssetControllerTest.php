@@ -79,13 +79,100 @@ class AssetControllerTest extends TestCase
 		return ob_get_clean();
 	}
 
+	/**
+	 * Creates test compress config.
+	 * @return array config array.
+	 */
+	protected function createCompressConfig()
+	{
+		$baseUrl = '/test';
+
+		$assetsBasePath = $this->testFilePath.DIRECTORY_SEPARATOR.'assets';
+		$this->createDir($assetsBasePath);
+
+		$config = array(
+			'bundles' => $this->createBundleConfig(),
+			'targets' => array(
+				'all' => array(
+					'basePath' => $assetsBasePath,
+					'baseUrl' => $baseUrl,
+					'js' => 'all-{ts}.js',
+					'css' => 'all-{ts}.css',
+				),
+			),
+			'assetManager' => array(
+				'basePath' => $assetsBasePath,
+				'baseUrl' => $baseUrl,
+			),
+		);
+		return $config;
+	}
+
+	/**
+	 * Creates test bundle configuration.
+	 * @return array bundle config.
+	 */
+	protected function createBundleConfig()
+	{
+		$baseUrl = '/test';
+		$bundles = array(
+			'app' => array(
+				'basePath' => $this->testFilePath,
+				'baseUrl' => $baseUrl,
+				'css' => array(
+					'css/test.css',
+				),
+				'js' => array(
+					'js/test.js',
+				),
+				'depends' => array(
+					'yii',
+				),
+			),
+		);
+		return $bundles;
+	}
+
+	/**
+	 * Creates test bundles configuration file.
+	 * @param string $fileName output filename.
+	 * @return boolean success.
+	 */
+	protected function createBundleFile($fileName)
+	{
+		$content = '<?php return '.var_export($this->createBundleConfig(), true).';';
+		return (file_put_contents($fileName, $content) > 0);
+	}
+
+	/**
+	 * Creates test compress config file.
+	 * @param string $fileName output file name.
+	 * @return boolean success.
+	 */
+	protected function createCompressConfigFile($fileName)
+	{
+		$content = '<?php return '.var_export($this->createCompressConfig(), true).';';
+		return (file_put_contents($fileName, $content) > 0);
+	}
+
 	// Tests :
 
 	public function testActionTemplate()
 	{
 		$configFileName = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
 		$this->runAssetControllerAction('template', array($configFileName));
-
 		$this->assertTrue(file_exists($configFileName), 'Unable to create config file template!');
+	}
+
+	public function testActionCompress()
+	{
+		$configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
+		$this->createCompressConfigFile($configFile);
+		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
+		$this->createBundleFile($bundleFile);
+
+		$this->runAssetControllerAction('compress', array($configFile, $bundleFile));
+
+		$this->markTestIncomplete();
 	}
 }
