@@ -63,7 +63,7 @@ class AutoTimestamp extends Behavior
 	{
 		return array(
 			ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
-			ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeInsert',
+			ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
 		);
 	}
 
