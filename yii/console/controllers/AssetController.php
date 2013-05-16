@@ -41,7 +41,7 @@ class AssetController extends Controller
 		$this->loadConfiguration($configFile);
 		$bundles = $this->loadBundles($this->bundles, $this->extensions);
 		$targets = $this->loadTargets($this->targets, $bundles);
-		$this->publishBundles($bundles, $this->publishOptions);
+		$this->publishBundles($bundles, $this->assetManager);
 		$timestamp = time();
 		foreach ($targets as $target) {
 			if (!empty($target->js)) {

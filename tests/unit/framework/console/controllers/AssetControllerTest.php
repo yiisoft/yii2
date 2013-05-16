@@ -125,9 +125,9 @@ class AssetControllerTest extends TestCase
 				'js' => array(
 					'js/test.js',
 				),
-				'depends' => array(
+				/*'depends' => array(
 					'yii',
-				),
+				),*/
 			),
 		);
 		return $bundles;
