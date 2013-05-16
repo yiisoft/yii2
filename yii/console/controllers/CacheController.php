@@ -7,6 +7,7 @@
 
 namespace yii\console\controllers;
 
+use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\caching\Cache;
@@ -19,10 +20,28 @@ use yii\caching\Cache;
  */
 class CacheController extends Controller
 {
-
+	/**
+	 * Lists the caches that can be flushed.
+	 */
 	public function actionIndex()
 	{
-		$this->forward('help/index', array('-args' => array('cache/flush')));
+		$caches = array();
+		$components = Yii::$app->getComponents();
+		foreach ($components as $name => $component) {
+			if ($component instanceof Cache) {
+				$caches[$name] = get_class($component);
+			} elseif (is_array($component) && isset($component['class']) && strpos($component['class'], 'Cache') !== false) {
+				$caches[$name] = $component['class'];
+			}
+		}
+		if (!empty($caches)) {
+			echo "The following caches can be flushed:\n\n";
+			foreach ($caches as $name => $class) {
+				echo " * $name: $class\n";
+			}
+		} else {
+			echo "No cache is used.\n";
+		}
 	}
 
 	/**
@@ -34,7 +53,7 @@ class CacheController extends Controller
 	public function actionFlush($component = 'cache')
 	{
 		/** @var $cache Cache */
-		$cache = \Yii::$app->getComponent($component);
+		$cache = Yii::$app->getComponent($component);
 		if (!$cache || !$cache instanceof Cache) {
 			throw new Exception('Application component "'.$component.'" is not defined or not a cache.');
 		}
