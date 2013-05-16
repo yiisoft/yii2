@@ -18,10 +18,10 @@ use yii\helpers\Console;
  *
  * A controller consists of one or several actions known as sub-commands.
  * Users call a console command by specifying the corresponding route which identifies a controller action.
- * The `yiic` program is used when calling a console command, like the following:
+ * The `yii` program is used when calling a console command, like the following:
  *
  * ~~~
- * yiic <route> [--param1=value1 --param2 ...]
+ * yii <route> [--param1=value1 --param2 ...]
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
