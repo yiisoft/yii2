@@ -8,7 +8,7 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\DictionaryIterator;
+use ArrayIterator;
 use yii\helpers\SecurityHelper;
 
 /**
@@ -50,11 +50,11 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	 * Returns an iterator for traversing the cookies in the collection.
 	 * This method is required by the SPL interface `IteratorAggregate`.
 	 * It will be implicitly called when you use `foreach` to traverse the collection.
-	 * @return DictionaryIterator an iterator for traversing the cookies in the collection.
+	 * @return ArrayIterator an iterator for traversing the cookies in the collection.
 	 */
 	public function getIterator()
 	{
-		return new DictionaryIterator($this->_cookies);
+		return new ArrayIterator($this->_cookies);
 	}
 
 	/**

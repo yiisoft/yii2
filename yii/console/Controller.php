@@ -18,10 +18,10 @@ use yii\helpers\Console;
  *
  * A controller consists of one or several actions known as sub-commands.
  * Users call a console command by specifying the corresponding route which identifies a controller action.
- * The `yiic` program is used when calling a console command, like the following:
+ * The `yii` program is used when calling a console command, like the following:
  *
  * ~~~
- * yiic <route> [--param1=value1 --param2 ...]
+ * yii <route> [--param1=value1 --param2 ...]
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -91,7 +91,7 @@ class Controller extends \yii\base\Controller
 		$args = isset($params[Request::ANONYMOUS_PARAMS]) ? $params[Request::ANONYMOUS_PARAMS] : array();
 		unset($params[Request::ANONYMOUS_PARAMS]);
 		if (!empty($params)) {
-			throw new Exception(Yii::t('yii|Unknown options: {params}', array(
+			throw new Exception(Yii::t('yii', 'Unknown options: {params}', array(
 				'{params}' => implode(', ', array_keys($params)),
 			)));
 		}
@@ -115,7 +115,7 @@ class Controller extends \yii\base\Controller
 		}
 
 		if (!empty($missing)) {
-			throw new Exception(Yii::t('yii|Missing required arguments: {params}', array(
+			throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', array(
 				'{params}' => implode(', ', $missing),
 			)));
 		}

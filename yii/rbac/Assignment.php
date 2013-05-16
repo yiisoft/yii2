@@ -16,97 +16,40 @@ use yii\base\Object;
  * Do not create a Assignment instance using the 'new' operator.
  * Instead, call [[Manager::assign()]].
  *
- * @property mixed $userId User ID (see [[User::id]]).
- * @property string $itemName The authorization item name.
- * @property string $bizRule The business rule associated with this assignment.
- * @property mixed $data Additional data for this assignment.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
 class Assignment extends Object
 {
-	private $_auth;
-	private $_userId;
-	private $_itemName;
-	private $_bizRule;
-	private $_data;
-
 	/**
-	 * Constructor.
-	 * @param Manager $auth the authorization manager
-	 * @param mixed $userId user ID (see [[User::id]])
-	 * @param string $itemName authorization item name
-	 * @param string $bizRule the business rule associated with this assignment
-	 * @param mixed $data additional data for this assignment
+	 * @var Manager the auth manager of this item
 	 */
-	public function __construct($auth, $userId, $itemName, $bizRule = null, $data = null)
-	{
-		$this->_auth = $auth;
-		$this->_userId = $userId;
-		$this->_itemName = $itemName;
-		$this->_bizRule = $bizRule;
-		$this->_data = $data;
-	}
-
+	public $manager;
 	/**
-	 * @return mixed user ID (see [[User::id]])
+	 * @var string the business rule associated with this assignment
 	 */
-	public function getUserId()
-	{
-		return $this->_userId;
-	}
-
+	public $bizRule;
 	/**
-	 * @return string the authorization item name
+	 * @var mixed additional data for this assignment
 	 */
-	public function getItemName()
-	{
-		return $this->_itemName;
-	}
-
+	public $data;
 	/**
-	 * @return string the business rule associated with this assignment
+	 * @var mixed user ID (see [[User::id]]). Do not modify this property after it is populated.
+	 * To modify the user ID of an assignment, you must remove the assignment and create a new one.
 	 */
-	public function getBizRule()
-	{
-		return $this->_bizRule;
-	}
-
+	public $userId;
 	/**
-	 * @param string $value the business rule associated with this assignment
+	 * @return string the authorization item name. Do not modify this property after it is populated.
+	 * To modify the item name of an assignment, you must remove the assignment and create a new one.
 	 */
-	public function setBizRule($value)
-	{
-		if ($this->_bizRule !== $value) {
-			$this->_bizRule = $value;
-		}
-	}
-
-	/**
-	 * @return mixed additional data for this assignment
-	 */
-	public function getData()
-	{
-		return $this->_data;
-	}
-
-	/**
-	 * @param mixed $value additional data for this assignment
-	 */
-	public function setData($value)
-	{
-		if ($this->_data !== $value) {
-			$this->_data = $value;
-		}
-	}
+	public $itemName;
 
 	/**
 	 * Saves the changes to an authorization assignment.
 	 */
 	public function save()
 	{
-		$this->_auth->saveAssignment($this);
+		$this->manager->saveAssignment($this);
 	}
 }

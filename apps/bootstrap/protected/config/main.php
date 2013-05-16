@@ -1,13 +1,14 @@
 <?php
 
 return array(
-	'id' => 'hello',
+	'id' => 'bootstrap',
 	'basePath' => dirname(__DIR__),
 	'preload' => array('log'),
+	'controllerNamespace' => 'app\controllers',
 	'modules' => array(
-		'debug' => array(
-			'class' => 'yii\debug\Module',
-		)
+//		'debug' => array(
+//			'class' => 'yii\debug\Module',
+//		)
 	),
 	'components' => array(
 		'cache' => array(
@@ -23,14 +24,15 @@ return array(
 		'log' => array(
 			'class' => 'yii\logging\Router',
 			'targets' => array(
-				'file' => array(
+				array(
 					'class' => 'yii\logging\FileTarget',
 					'levels' => array('error', 'warning'),
 				),
+//				array(
+//					'class' => 'yii\logging\DebugTarget',
+//				)
 			),
 		),
 	),
-	'params' => array(
-		'adminEmail' => 'admin@example.com',
-	),
+	'params' => require(__DIR__ . '/params.php'),
 );

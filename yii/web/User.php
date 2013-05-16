@@ -286,7 +286,7 @@ class User extends Component
 		if ($this->loginUrl !== null) {
 			Yii::$app->getResponse()->redirect($this->loginUrl);
 		} else {
-			throw new HttpException(403, Yii::t('yii|Login Required'));
+			throw new HttpException(403, Yii::t('yii', 'Login Required'));
 		}
 	}
 

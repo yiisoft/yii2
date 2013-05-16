@@ -287,7 +287,11 @@ class YiiBase
 		if ($path !== null) {
 			$path = strncmp($path, '@', 1) ? rtrim($path, '\\/') : static::getAlias($path);
 			if (!isset(self::$aliases[$root])) {
-				self::$aliases[$root] = $path;
+				if ($pos === false) {
+					self::$aliases[$root] = $path;
+				} else {
+					self::$aliases[$root] = array($alias => $path);
+				}
 			} elseif (is_string(self::$aliases[$root])) {
 				if ($pos === false) {
 					self::$aliases[$root] = $path;
@@ -579,10 +583,9 @@ class YiiBase
 	/**
 	 * Translates a message to the specified language.
 	 *
-	 * The translation will be conducted according to the message category and the target language.
-	 * To specify the category of the message, prefix the message with the category name and separate it
-	 * with "|". For example, "app|hello world". If the category is not specified, the default category "app"
-	 * will be used. The actual message translation is done by a [[\yii\i18n\MessageSource|message source]].
+	 * This is a shortcut method of [[\yii\i18n\I18N::translate()]].
+	 *
+	 * The translation will be conducted according to the message category and the target language will be used.
 	 *
 	 * In case when a translated message has different plural forms (separated by "|"), this method
 	 * will also attempt to choose an appropriate one according to a given numeric value which is
@@ -595,20 +598,18 @@ class YiiBase
 	 * For more details on how plural rules are applied, please refer to:
 	 * [[http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html]]
 	 *
+	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
 	 * @param string $language the language code (e.g. `en_US`, `en`). If this is null, the current
 	 * [[\yii\base\Application::language|application language]] will be used.
 	 * @return string the translated message.
 	 */
-	public static function t($message, $params = array(), $language = null)
+	public static function t($category, $message, $params = array(), $language = null)
 	{
 		if (self::$app !== null) {
-			return self::$app->getI18N()->translate($message, $params, $language);
+			return self::$app->getI18N()->translate($category, $message, $params, $language);
 		} else {
-			if (strpos($message, '|') !== false && preg_match('/^([\w\-\\/\.\\\\]+)\|(.*)/', $message, $matches)) {
-				$message = $matches[2];
-			}
 			return is_array($params) ? strtr($message, $params) : $message;
 		}
 	}

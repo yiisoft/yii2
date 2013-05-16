@@ -209,6 +209,26 @@ if (isset($_POST['Post'])) {
 ```
 
 
+Widgets
+-------
+
+Using a widget is more straightforward in 2.0. You mainly use the `begin()`, `end()` and `widget()`
+methods of the `Widget` class. For example,
+
+```php
+// $this refers to the View object
+// Note that you have to "echo" the result to display it
+echo \yii\widgets\Menu::widget(array('items' => $items));
+
+// $this refers to the View object
+$form = \yii\widgets\ActiveForm::begin($this);
+... form inputs here ...
+\yii\widgets\ActiveForm::end();
+```
+
+Previously in 1.1, you would have to enter the widget class names as strings via the `beginWidget()`,
+`endWidget()` and `widget()` methods of `CBaseController`. The approach above gets better IDE support.
+
 
 Themes
 ------
@@ -248,10 +268,6 @@ Yii 2.0 removes date formatter and number formatter in favor of the PECL intl PH
 Message translation is still supported, but managed via the "i18n" application component.
 The component manages a set of message sources, which allows you to use different message
 sources based on message categories. For more information, see the class documentation for `I18N`.
-
-The message translation method is changed by merging the message category into the message being
-translated. For example, `Yii::t('yii|message to be translated')`.
-
 
 
 Action Filters
@@ -309,13 +325,13 @@ is a container consisting of a label, an input, and an error message. It is repr
 as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
 
 ```php
-<?php $form = $this->beginWidget('yii\widgets\ActiveForm'); ?>
+<?php $form = yii\widgets\ActiveForm::begin(); ?>
 	<?php echo $form->field($model, 'username')->textInput(); ?>
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
 	<div class="form-actions">
 		<?php echo Html::submitButton('Login'); ?>
 	</div>
-<?php $this->endWidget(); ?>
+<?php yii\widgets\ActiveForm::end(); ?>
 ```
 
 

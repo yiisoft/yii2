@@ -24,8 +24,6 @@ use yii\base\InvalidParamException;
  * the three tables used to store the authorization data by setting [[itemTable]],
  * [[itemChildTable]] and [[assignmentTable]].
  *
- * @property array $authItems The authorization items of the specific type.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
@@ -106,13 +104,13 @@ class DbManager extends Manager
 		if (!isset($params['userId'])) {
 			$params['userId'] = $userId;
 		}
-		if ($this->executeBizRule($item->getBizRule(), $params, $item->getData())) {
+		if ($this->executeBizRule($item->bizRule, $params, $item->data)) {
 			if (in_array($itemName, $this->defaultRoles)) {
 				return true;
 			}
 			if (isset($assignments[$itemName])) {
 				$assignment = $assignments[$itemName];
-				if ($this->executeBizRule($assignment->getBizRule(), $params, $assignment->getData())) {
+				if ($this->executeBizRule($assignment->bizRule, $params, $assignment->data)) {
 					return true;
 				}
 			}
@@ -207,7 +205,7 @@ class DbManager extends Manager
 	public function getItemChildren($names)
 	{
 		$query = new Query;
-		$rows = $query->select(array('name', 'type', 'description', 'bizrule', 'data'))
+		$rows = $query->select(array('name', 'type', 'description', 'biz_rule', 'data'))
 			->from(array($this->itemTable, $this->itemChildTable))
 			->where(array('parent' => $names, 'name' => new Expression('child')))
 			->createCommand($this->db)
@@ -217,7 +215,14 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
-			$children[$row['name']] = new Item($this, $row['name'], $row['type'], $row['description'], $row['bizrule'], $data);
+			$children[$row['name']] = new Item(array(
+				'manager' => $this,
+				'name' => $row['name'],
+				'type' => $row['type'],
+				'description' => $row['description'],
+				'bizRule' => $row['biz_rule'],
+				'data' => $data,
+			));
 		}
 		return $children;
 	}
@@ -241,10 +246,16 @@ class DbManager extends Manager
 			->insert($this->assignmentTable, array(
 				'user_id' => $userId,
 				'item_name' => $itemName,
-				'bizrule' => $bizRule,
+				'biz_rule' => $bizRule,
 				'data' => serialize($data),
 			));
-		return new Assignment($this, $userId, $itemName, $bizRule, $data);
+		return new Assignment(array(
+			'manager' => $this,
+			'userId' => $userId,
+			'itemName' => $itemName,
+			'bizRule' => $bizRule,
+			'data' => $data,
+		));
 	}
 
 	/**
@@ -293,7 +304,13 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
-			return new Assignment($this, $row['user_id'], $row['item_name'], $row['bizrule'], $data);
+			return new Assignment(array(
+				'manager' => $this,
+				'userId' => $row['user_id'],
+				'itemName' => $row['item_name'],
+				'bizRule' => $row['biz_rule'],
+				'data' => $data,
+			));
 		} else {
 			return null;
 		}
@@ -317,7 +334,13 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
-			$assignments[$row['item_name']] = new Assignment($this, $row['user_id'], $row['item_name'], $row['bizrule'], $data);
+			$assignments[$row['item_name']] = new Assignment(array(
+				'manager' => $this,
+				'userId' => $row['user_id'],
+				'itemName' => $row['item_name'],
+				'bizRule' => $row['biz_rule'],
+				'data' => $data,
+			));
 		}
 		return $assignments;
 	}
@@ -330,11 +353,11 @@ class DbManager extends Manager
 	{
 		$this->db->createCommand()
 			->update($this->assignmentTable, array(
-				'bizrule' => $assignment->getBizRule(),
-				'data' => serialize($assignment->getData()),
+				'biz_rule' => $assignment->bizRule,
+				'data' => serialize($assignment->data),
 			), array(
-				'user_id' => $assignment->getUserId(),
-				'item_name' => $assignment->getItemName(),
+				'user_id' => $assignment->userId,
+				'item_name' => $assignment->itemName,
 			));
 	}
 
@@ -357,12 +380,12 @@ class DbManager extends Manager
 				->where(array('type' => $type))
 				->createCommand($this->db);
 		} elseif ($type === null) {
-			$command = $query->select(array('name', 'type', 'description', 't1.bizrule', 't1.data'))
+			$command = $query->select(array('name', 'type', 'description', 't1.biz_rule', 't1.data'))
 				->from(array($this->itemTable . ' t1', $this->assignmentTable . ' t2'))
 				->where(array('user_id' => $userId, 'name' => new Expression('item_name')))
 				->createCommand($this->db);
 		} else {
-			$command = $query->select('name', 'type', 'description', 't1.bizrule', 't1.data')
+			$command = $query->select('name', 'type', 'description', 't1.biz_rule', 't1.data')
 				->from(array($this->itemTable . ' t1', $this->assignmentTable . ' t2'))
 				->where(array('user_id' => $userId, 'type' => $type, 'name' => new Expression('item_name')))
 				->createCommand($this->db);
@@ -372,7 +395,14 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
-			$items[$row['name']] = new Item($this, $row['name'], $row['type'], $row['description'], $row['bizrule'], $data);
+			$items[$row['name']] = new Item(array(
+				'manager' => $this,
+				'name' => $row['name'],
+				'type' => $row['type'],
+				'description' => $row['description'],
+				'bizRule' => $row['biz_rule'],
+				'data' => $data,
+			));
 		}
 		return $items;
 	}
@@ -399,10 +429,17 @@ class DbManager extends Manager
 				'name' => $name,
 				'type' => $type,
 				'description' => $description,
-				'bizrule' => $bizRule,
+				'biz_rule' => $bizRule,
 				'data' => serialize($data),
 			));
-		return new Item($this, $name, $type, $description, $bizRule, $data);
+		return new Item(array(
+			'manager' => $this,
+			'name' => $name,
+			'type' => $type,
+			'description' => $description,
+			'bizRule' => $bizRule,
+			'data' => $data,
+		));
 	}
 
 	/**
@@ -439,7 +476,14 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
-			return new Item($this, $row['name'], $row['type'], $row['description'], $row['bizrule'], $data);
+			return new Item(array(
+				'manager' => $this,
+				'name' => $row['name'],
+				'type' => $row['type'],
+				'description' => $row['description'],
+				'bizRule' => $row['biz_rule'],
+				'data' => $data,
+			));
 		} else
 			return null;
 	}
@@ -463,10 +507,10 @@ class DbManager extends Manager
 		$this->db->createCommand()
 			->update($this->itemTable, array(
 				'name' => $item->getName(),
-				'type' => $item->getType(),
-				'description' => $item->getDescription(),
-				'bizrule' => $item->getBizRule(),
-				'data' => serialize($item->getData()),
+				'type' => $item->type,
+				'description' => $item->description,
+				'biz_rule' => $item->bizRule,
+				'data' => serialize($item->data),
 			), array(
 				'name' => $oldName === null ? $item->getName() : $oldName,
 			));

@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\Menu;
+use yii\widgets\Breadcrumbs;
+use yii\debug\Toolbar;
 
 /**
  * @var $this \yii\base\View
@@ -25,7 +27,7 @@ $this->registerAssetBundle('app');
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container">
-					<?php $this->widget(Menu::className(), array(
+					<?php echo Menu::widget(array(
 						'options' => array('class' => 'nav'),
 						'items' => array(
 							array('label' => 'Home', 'url' => array('/site/index')),
@@ -42,7 +44,7 @@ $this->registerAssetBundle('app');
 		<!-- /.navbar -->
 	</div>
 
-	<?php $this->widget('yii\widgets\Breadcrumbs', array(
+	<?php echo Breadcrumbs::widget(array(
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
 	)); ?>
 	<?php echo $content; ?>
@@ -58,7 +60,7 @@ $this->registerAssetBundle('app');
 	</div>
 	<?php $this->endBody(); ?>
 </div>
-<?php $this->widget('yii\debug\Toolbar'); ?>
+<?php echo Toolbar::widget(); ?>
 </body>
 </html>
 <?php $this->endPage(); ?>

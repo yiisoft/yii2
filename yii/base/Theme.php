@@ -25,7 +25,22 @@ use yii\helpers\FileHelper;
  * then the themed version for a view file `/www/views/site/index.php` will be
  * `/www/themes/basic/site/index.php`.
  *
- * @property string $baseUrl the base URL for this theme. This is mainly used by [[getUrl()]].
+ * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
+ * component like the following:
+ *
+ * ~~~
+ * 'view' => array(
+ *     'theme' => array(
+ *         'basePath' => '@wwwroot/themes/basic',
+ *         'baseUrl' => '@www/themes/basic',
+ *     ),
+ * ),
+ * ~~~
+ *
+ * The above configuration specifies a theme located under the "themes/basic" directory of the Web folder
+ * that contains the entry script of the application. If your theme is designed to handle modules,
+ * you may configure the [[pathMap]] property like described above.
+ *
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

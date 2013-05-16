@@ -43,7 +43,7 @@ class BooleanValidator extends Validator
 	{
 		parent::init();
 		if ($this->message === null) {
-			$this->message = Yii::t('yii|{attribute} must be either "{true}" or "{false}".');
+			$this->message = Yii::t('yii', '{attribute} must be either "{true}" or "{false}".');
 		}
 	}
 
@@ -79,9 +79,11 @@ class BooleanValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$options = array(
 			'trueValue' => $this->trueValue,
@@ -100,6 +102,7 @@ class BooleanValidator extends Validator
 			$options['strict'] = 1;
 		}
 
+		$view->registerAssetBundle('yii/validation');
 		return 'yii.validation.boolean(value, messages, ' . json_encode($options) . ');';
 	}
 }

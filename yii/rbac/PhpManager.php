@@ -80,14 +80,14 @@ class PhpManager extends Manager
 		if (!isset($params['userId'])) {
 			$params['userId'] = $userId;
 		}
-		if ($this->executeBizRule($item->getBizRule(), $params, $item->getData())) {
+		if ($this->executeBizRule($item->bizRule, $params, $item->data)) {
 			if (in_array($itemName, $this->defaultRoles)) {
 				return true;
 			}
 			if (isset($this->_assignments[$userId][$itemName])) {
 				/** @var $assignment Assignment */
 				$assignment = $this->_assignments[$userId][$itemName];
-				if ($this->executeBizRule($assignment->getBizRule(), $params, $assignment->getData())) {
+				if ($this->executeBizRule($assignment->bizRule, $params, $assignment->data)) {
 					return true;
 				}
 			}
@@ -117,7 +117,7 @@ class PhpManager extends Manager
 		$child = $this->_items[$childName];
 		/** @var $item Item */
 		$item = $this->_items[$itemName];
-		$this->checkItemChildType($item->getType(), $child->getType());
+		$this->checkItemChildType($item->type, $child->type);
 		if ($this->detectLoop($itemName, $childName)) {
 			throw new InvalidCallException("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
 		}
@@ -194,7 +194,13 @@ class PhpManager extends Manager
 		} elseif (isset($this->_assignments[$userId][$itemName])) {
 			throw new InvalidParamException("Authorization item '$itemName' has already been assigned to user '$userId'.");
 		} else {
-			return $this->_assignments[$userId][$itemName] = new Assignment($this, $userId, $itemName, $bizRule, $data);
+			return $this->_assignments[$userId][$itemName] = new Assignment(array(
+				'manager' => $this,
+				'userId' => $userId,
+				'itemName' => $itemName,
+				'bizRule' => $bizRule,
+				'data' => $data,
+			));
 		}
 	}
 
@@ -265,15 +271,15 @@ class PhpManager extends Manager
 		if ($userId === null) {
 			foreach ($this->_items as $name => $item) {
 				/** @var $item Item */
-				if ($item->getType() == $type) {
+				if ($item->type == $type) {
 					$items[$name] = $item;
 				}
 			}
 		} elseif (isset($this->_assignments[$userId])) {
 			foreach ($this->_assignments[$userId] as $assignment) {
 				/** @var $assignment Assignment */
-				$name = $assignment->getItemName();
-				if (isset($this->_items[$name]) && ($type === null || $this->_items[$name]->getType() == $type)) {
+				$name = $assignment->itemName;
+				if (isset($this->_items[$name]) && ($type === null || $this->_items[$name]->type == $type)) {
 					$items[$name] = $this->_items[$name];
 				}
 			}
@@ -301,7 +307,14 @@ class PhpManager extends Manager
 		if (isset($this->_items[$name])) {
 			throw new Exception('Unable to add an item whose name is the same as an existing item.');
 		}
-		return $this->_items[$name] = new Item($this, $name, $type, $description, $bizRule, $data);
+		return $this->_items[$name] = new Item(array(
+			'manager' => $this,
+			'name' => $name,
+			'type' => $type,
+			'description' => $description,
+			'bizRule' => $bizRule,
+			'data' => $data,
+		));
 	}
 
 	/**
@@ -390,10 +403,10 @@ class PhpManager extends Manager
 		foreach ($this->_items as $name => $item) {
 			/** @var $item Item */
 			$items[$name] = array(
-				'type' => $item->getType(),
-				'description' => $item->getDescription(),
-				'bizRule' => $item->getBizRule(),
-				'data' => $item->getData(),
+				'type' => $item->type,
+				'description' => $item->description,
+				'bizRule' => $item->bizRule,
+				'data' => $item->data,
 			);
 			if (isset($this->_children[$name])) {
 				foreach ($this->_children[$name] as $child) {
@@ -408,8 +421,8 @@ class PhpManager extends Manager
 				/** @var $assignment Assignment */
 				if (isset($items[$name])) {
 					$items[$name]['assignments'][$userId] = array(
-						'bizRule' => $assignment->getBizRule(),
-						'data' => $assignment->getData(),
+						'bizRule' => $assignment->bizRule,
+						'data' => $assignment->data,
 					);
 				}
 			}
@@ -428,7 +441,14 @@ class PhpManager extends Manager
 		$items = $this->loadFromFile($this->authFile);
 
 		foreach ($items as $name => $item) {
-			$this->_items[$name] = new Item($this, $name, $item['type'], $item['description'], $item['bizRule'], $item['data']);
+			$this->_items[$name] = new Item(array(
+				'manager' => $this,
+				'name' => $name,
+				'type' => $item['type'],
+				'description' => $item['description'],
+				'bizRule' => $item['bizRule'],
+				'data' => $item['data'],
+			));
 		}
 
 		foreach ($items as $name => $item) {
@@ -441,8 +461,14 @@ class PhpManager extends Manager
 			}
 			if (isset($item['assignments'])) {
 				foreach ($item['assignments'] as $userId => $assignment) {
-					$this->_assignments[$userId][$name] = new Assignment($this, $name, $userId, $assignment['bizRule'], $assignment['data']);
-				}
+					$this->_assignments[$userId][$name] = new Assignment(array(
+						'manager' => $this,
+						'userId' => $userId,
+						'itemName' => $name,
+						'bizRule' => $assignment['bizRule'],
+						'data' => $assignment['data'],
+					));
+ 				}
 			}
 		}
 	}
