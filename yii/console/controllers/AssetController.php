@@ -12,6 +12,8 @@ use yii\console\Exception;
 use yii\console\Controller;
 
 /**
+ * This command allows you to combine and compress your JavaScript and CSS files.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -74,7 +76,7 @@ class AssetController extends Controller
 	public $cssCompressor = 'java -jar yuicompressor.jar {from} -o {to}';
 
 	/**
-	 * Compresses the asset files according to the given configuration.
+	 * Combines and compresses the asset files according to the given configuration.
 	 * @param string $configFile configuration file name.
 	 * @param string $bundleFile
 	 */
@@ -210,8 +212,9 @@ class AssetController extends Controller
 	}
 
 	/**
-	 * @param \yii\web\AssetBundle[] $bundles
-	 * @param array $options
+	 * Publishes given asset bundles.
+	 * @param \yii\web\AssetBundle[] $bundles asset bundles to be published.
+	 * @param array $options assert manager instance configuration.
 	 */
 	protected function publishBundles($bundles, $options)
 	{
@@ -225,11 +228,12 @@ class AssetController extends Controller
 	}
 
 	/**
-	 * @param \yii\web\AssetBundle $target
-	 * @param string $type either "js" or "css"
-	 * @param \yii\web\AssetBundle[] $bundles
-	 * @param integer $timestamp
-	 * @throws Exception
+	 * Builds output asset bundle.
+	 * @param \yii\web\AssetBundle $target output asset bundle
+	 * @param string $type either "js" or "css".
+	 * @param \yii\web\AssetBundle[] $bundles source asset bundles.
+	 * @param integer $timestamp current timestamp.
+	 * @throws Exception on failure.
 	 */
 	protected function buildTarget($target, $type, $bundles, $timestamp)
 	{
