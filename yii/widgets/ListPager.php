@@ -63,7 +63,7 @@ class ListPager extends Widget
 	 */
 	public function run()
 	{
-		$pageCount = $this->pagination->pageCount;
+		$pageCount = $this->pagination->getPageCount();
 		$currentPage = $this->pagination->getPage();
 
 		$pages = array();
