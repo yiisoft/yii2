@@ -287,7 +287,11 @@ class YiiBase
 		if ($path !== null) {
 			$path = strncmp($path, '@', 1) ? rtrim($path, '\\/') : static::getAlias($path);
 			if (!isset(self::$aliases[$root])) {
-				self::$aliases[$root] = $path;
+				if ($pos === false) {
+					self::$aliases[$root] = $path;
+				} else {
+					self::$aliases[$root] = array($alias => $path);
+				}
 			} elseif (is_string(self::$aliases[$root])) {
 				if ($pos === false) {
 					self::$aliases[$root] = $path;
