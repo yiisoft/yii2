@@ -4,7 +4,7 @@ use yiiunit\TestCase;
 use yii\console\controllers\AssetController;
 
 /**
- * Unit test for [[yii\console\controllers\AssetController]].
+ * Unit test for [[\yii\console\controllers\AssetController]].
  * @see AssetController
  */
 class AssetControllerTest extends TestCase
@@ -13,11 +13,17 @@ class AssetControllerTest extends TestCase
 	 * @var string path for the test files.
 	 */
 	protected $testFilePath = '';
+	/**
+	 * @var string test assets path.
+	 */
+	protected $testAssetsBasePath = '';
 
 	public function setUp()
 	{
 		$this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . get_class($this);
 		$this->createDir($this->testFilePath);
+		$this->testAssetsBasePath = $this->testFilePath . DIRECTORY_SEPARATOR . 'assets';
+		$this->createDir($this->testAssetsBasePath);
 	}
 
 	public function tearDown()
@@ -81,29 +87,26 @@ class AssetControllerTest extends TestCase
 
 	/**
 	 * Creates test compress config.
+	 * @param array[] $bundles asset bundles config.
 	 * @return array config array.
 	 */
-	protected function createCompressConfig()
+	protected function createCompressConfig(array $bundles)
 	{
 		$baseUrl = '/test';
 
-		$assetsBasePath = $this->testFilePath.DIRECTORY_SEPARATOR.'assets';
-		$this->createDir($assetsBasePath);
 
 		$config = array(
-			'bundles' => $this->createBundleConfig(),
+			'bundles' => $this->createBundleConfig($bundles),
 			'targets' => array(
 				'all' => array(
-					'basePath' => $assetsBasePath,
+					'basePath' => $this->testAssetsBasePath,
 					'baseUrl' => $baseUrl,
 					'js' => 'all.js',
-					//'js' => 'all-{ts}.js',
 					'css' => 'all.css',
-					//'css' => 'all-{ts}.css',
 				),
 			),
 			'assetManager' => array(
-				'basePath' => $assetsBasePath,
+				'basePath' => $this->testAssetsBasePath,
 				'baseUrl' => $baseUrl,
 			),
 		);
@@ -112,63 +115,74 @@ class AssetControllerTest extends TestCase
 
 	/**
 	 * Creates test bundle configuration.
+	 * @param array[] $bundles asset bundles config.
 	 * @return array bundle config.
 	 */
-	protected function createBundleConfig()
+	protected function createBundleConfig(array $bundles)
 	{
-		$baseUrl = '';
-		//$baseUrl = '/test';
-		$bundles = array(
-			'app' => array(
-				'basePath' => $this->testFilePath,
-				'baseUrl' => $baseUrl,
-				'css' => array(
-					'css/test.css',
-				),
-				'js' => array(
-					'js/test.js',
-				),
-				/*'depends' => array(
-					'yii',
-				),*/
-			),
-		);
+		foreach ($bundles as $name => $config) {
+			if (!array_key_exists('basePath', $config)) {
+				$bundles[$name]['basePath'] = $this->testFilePath;
+			}
+			if (!array_key_exists('baseUrl', $config)) {
+				$bundles[$name]['baseUrl'] = '';
+			}
+		}
 		return $bundles;
 	}
 
 	/**
 	 * Creates test bundles configuration file.
 	 * @param string $fileName output filename.
-	 * @return boolean success.
+	 * @param array[] $bundles asset bundles config.
+	 * @throws Exception on failure.
 	 */
-	protected function createBundleFile($fileName)
+	protected function createBundleFile($fileName, array $bundles)
 	{
-		$content = '<?php return '.var_export($this->createBundleConfig(), true).';';
-		return (file_put_contents($fileName, $content) > 0);
+		$content = '<?php return '.var_export($this->createBundleConfig($bundles), true).';';
+		if (file_put_contents($fileName, $content) <= 0) {
+			throw new \Exception("Unable to create file '{$fileName}'!");
+		}
 	}
 
 	/**
 	 * Creates test compress config file.
 	 * @param string $fileName output file name.
-	 * @return boolean success.
+	 * @param array[] $bundles asset bundles config.
+	 * @throws Exception on failure.
 	 */
-	protected function createCompressConfigFile($fileName)
+	protected function createCompressConfigFile($fileName, array $bundles)
 	{
-		$content = '<?php return '.var_export($this->createCompressConfig(), true).';';
-		return (file_put_contents($fileName, $content) > 0);
+		$content = '<?php return '.var_export($this->createCompressConfig($bundles), true).';';
+		if (file_put_contents($fileName, $content) <= 0) {
+			throw new \Exception("Unable to create file '{$fileName}'!");
+		}
 	}
 
 	/**
 	 * Creates test asset file.
 	 * @param string $fileRelativeName file name relative to [[testFilePath]]
 	 * @param string $content file content
-	 * @return boolean success.
+	 * @throws Exception on failure.
 	 */
-	protected function createTestAssetFile($fileRelativeName, $content)
+	protected function createAssetSourceFile($fileRelativeName, $content)
 	{
 		$fileFullName = $this->testFilePath.DIRECTORY_SEPARATOR.$fileRelativeName;
 		$this->createDir(dirname($fileFullName));
-		return (file_put_contents($fileFullName, $content) > 0);
+		if (file_put_contents($fileFullName, $content)<=0) {
+			throw new \Exception("Unable to create file '{$fileFullName}'!");
+		}
+	}
+
+	/**
+	 * Creates a list of asset source files.
+	 * @param array $files assert source files in format: file/relative/name => fileContent
+	 */
+	protected function createAssertSourceFiles(array $files)
+	{
+		foreach ($files as $name => $content) {
+			$this->createAssetSourceFile($name, $content);
+		}
 	}
 
 	// Tests :
@@ -182,31 +196,57 @@ class AssetControllerTest extends TestCase
 
 	public function testActionCompress()
 	{
-		$this->createTestAssetFile(
-			'css/test.css',
-			'body {
+		// Given :
+		$cssFiles = array(
+			'css/test_body.css' => 'body {
 				padding-top: 20px;
 				padding-bottom: 60px;
-			}'
+			}',
+			'css/test_footer.css' => '.footer {
+				margin: 20px;
+				display: block;
+			}',
 		);
-		$this->createTestAssetFile(
-			'js/test.js',
-			"function() {
+		$this->createAssertSourceFiles($cssFiles);
+
+		$jsFiles = array(
+			'js/test_alert.js' => "function test() {
 				alert('Test message');
-			}"
+			}",
+			'js/test_sum_ab.js' => "function sumAB(a, b) {
+				return a + b;
+			}",
 		);
+		$this->createAssertSourceFiles($jsFiles);
+
+		$bundles = array(
+			'app' => array(
+				'css' => array_keys($cssFiles),
+				'js' => array_keys($jsFiles),
+			),
+		);;
+		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
+		$this->createBundleFile($bundleFile, $bundles);
 
 		$configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
-		$this->createCompressConfigFile($configFile);
-		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
-		$this->createBundleFile($bundleFile);
+		$this->createCompressConfigFile($configFile, $bundles);
 
+		// When :
 		$this->runAssetControllerAction('compress', array($configFile, $bundleFile));
 
-		$assetsBasePath = $this->testFilePath.DIRECTORY_SEPARATOR.'assets';
-		$compressedCssFileName = $assetsBasePath.DIRECTORY_SEPARATOR.'all.css';
+		// Then :
+		$compressedCssFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.css';
 		$this->assertTrue(file_exists($compressedCssFileName), 'Unable to compress CSS files!');
-		$compressedJsFileName = $assetsBasePath.DIRECTORY_SEPARATOR.'all.js';
+		$compressedJsFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.js';
 		$this->assertTrue(file_exists($compressedJsFileName), 'Unable to compress JS files!');
+
+		$compressedCssFileContent = file_get_contents($compressedCssFileName);
+		foreach ($cssFiles as $name => $content) {
+			$this->assertContains($content, $compressedCssFileContent, "Source of '{$name}' is missing in combined file!");
+		}
+		$compressedJsFileContent = file_get_contents($compressedJsFileName);
+		foreach ($jsFiles as $name => $content) {
+			$this->assertContains($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
+		}
 	}
 }
