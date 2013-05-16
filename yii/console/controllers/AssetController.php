@@ -291,9 +291,10 @@ EOD
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineCssFiles($inputFiles, $tmpFile);
 			$log = shell_exec(strtr($this->cssCompressor, array(
-				'{from}' => $inputFiles,
+				'{from}' => $tmpFile,
 				'{to}' => $outputFile,
 			)));
+			@unlink($tmpFile);
 		} else {
 			$log = call_user_func($this->cssCompressor, $this, $inputFiles, $outputFile);
 		}

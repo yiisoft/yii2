@@ -96,8 +96,10 @@ class AssetControllerTest extends TestCase
 				'all' => array(
 					'basePath' => $assetsBasePath,
 					'baseUrl' => $baseUrl,
-					'js' => 'all-{ts}.js',
-					'css' => 'all-{ts}.css',
+					'js' => 'all.js',
+					//'js' => 'all-{ts}.js',
+					'css' => 'all.css',
+					//'css' => 'all-{ts}.css',
 				),
 			),
 			'assetManager' => array(
@@ -201,6 +203,10 @@ class AssetControllerTest extends TestCase
 
 		$this->runAssetControllerAction('compress', array($configFile, $bundleFile));
 
-		$this->markTestIncomplete();
+		$assetsBasePath = $this->testFilePath.DIRECTORY_SEPARATOR.'assets';
+		$compressedCssFileName = $assetsBasePath.DIRECTORY_SEPARATOR.'all.css';
+		$this->assertTrue(file_exists($compressedCssFileName), 'Unable to compress CSS files!');
+		$compressedJsFileName = $assetsBasePath.DIRECTORY_SEPARATOR.'all.js';
+		$this->assertTrue(file_exists($compressedJsFileName), 'Unable to compress JS files!');
 	}
 }
