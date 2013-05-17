@@ -225,6 +225,24 @@ class Logger extends Component
 		return array_values($timings);
 	}
 
+	/**
+	 * Returns the statistical results of DB queries.
+	 * The results returned include the number of SQL statements executed and
+	 * the total time spent.
+	 * @return array the first element indicates the number of SQL statements executed,
+	 * and the second element the total time spent in SQL execution.
+	 */
+	public function getDbProfiling()
+	{
+		$timings = $this->getProfiling(array('yii\db\Command::query', 'yii\db\Command::execute'));
+		$count = count($timings);
+		$time = 0;
+		foreach ($timings as $timing) {
+			$time += $timing[1];
+		}
+		return array($count, $time);
+	}
+
 	private function calculateTimings()
 	{
 		$timings = array();

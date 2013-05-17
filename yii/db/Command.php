@@ -283,22 +283,16 @@ class Command extends \yii\base\Component
 
 		try {
 			$token = "SQL: $sql";
-			if ($this->db->enableProfiling) {
-				Yii::beginProfile($token, __METHOD__);
-			}
+			Yii::beginProfile($token, __METHOD__);
 
 			$this->prepare();
 			$this->pdoStatement->execute();
 			$n = $this->pdoStatement->rowCount();
 
-			if ($this->db->enableProfiling) {
-				Yii::endProfile($token, __METHOD__);
-			}
+			Yii::endProfile($token, __METHOD__);
 			return $n;
 		} catch (\Exception $e) {
-			if ($this->db->enableProfiling) {
-				Yii::endProfile($token, __METHOD__);
-			}
+			Yii::endProfile($token, __METHOD__);
 			$message = $e->getMessage();
 
 			Yii::error("$message\nFailed to execute SQL: $rawSql", __METHOD__);
@@ -411,9 +405,7 @@ class Command extends \yii\base\Component
 
 		try {
 			$token = "SQL: $sql";
-			if ($db->enableProfiling) {
-				Yii::beginProfile($token, __METHOD__);
-			}
+			Yii::beginProfile($token, __METHOD__);
 
 			$this->prepare();
 			$this->pdoStatement->execute();
@@ -428,9 +420,7 @@ class Command extends \yii\base\Component
 				$this->pdoStatement->closeCursor();
 			}
 
-			if ($db->enableProfiling) {
-				Yii::endProfile($token, __METHOD__);
-			}
+			Yii::endProfile($token, __METHOD__);
 
 			if (isset($cache, $cacheKey) && $cache instanceof Cache) {
 				$cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
@@ -439,9 +429,7 @@ class Command extends \yii\base\Component
 
 			return $result;
 		} catch (\Exception $e) {
-			if ($db->enableProfiling) {
-				Yii::endProfile($token, __METHOD__);
-			}
+			Yii::endProfile($token, __METHOD__);
 			$message = $e->getMessage();
 			Yii::error("$message\nCommand::$method() failed: $rawSql", __METHOD__);
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;

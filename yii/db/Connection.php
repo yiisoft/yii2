@@ -215,13 +215,6 @@ class Connection extends Component
 	 */
 	public $emulatePrepare;
 	/**
-	 * @var boolean whether to enable profiling for the SQL statements being executed.
-	 * Defaults to false. This should be mainly enabled and used during development
-	 * to find out the bottleneck of SQL executions.
-	 * @see getStats
-	 */
-	public $enableProfiling = false;
-	/**
 	 * @var string the common prefix or suffix for table names. If a table name is given
 	 * as `{{%TableName}}`, then the percentage character `%` will be replaced with this
 	 * property value. For example, `{{%post}}` becomes `{{tbl_post}}` if this property is
@@ -314,12 +307,16 @@ class Connection extends Component
 			if (empty($this->dsn)) {
 				throw new InvalidConfigException('Connection::dsn cannot be empty.');
 			}
+			$token = 'Opening DB connection: ' . $this->dsn;
 			try {
-				Yii::trace('Opening DB connection: ' . $this->dsn, __METHOD__);
+				Yii::trace($token, __METHOD__);
+				Yii::beginProfile($token, __METHOD__);
 				$this->pdo = $this->createPdoInstance();
 				$this->initConnection();
+				Yii::endProfile($token, __METHOD__);
 			}
 			catch (\PDOException $e) {
+				Yii::endProfile($token, __METHOD__);
 				Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __METHOD__);
 				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
 				throw new Exception($message, $e->errorInfo, (int)$e->getCode());
@@ -540,26 +537,5 @@ class Connection extends Component
 		} else {
 			return strtolower($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
 		}
-	}
-
-	/**
-	 * Returns the statistical results of SQL queries.
-	 * The results returned include the number of SQL statements executed and
-	 * the total time spent.
-	 * In order to use this method, [[enableProfiling]] has to be set true.
-	 * @return array the first element indicates the number of SQL statements executed,
-	 * and the second element the total time spent in SQL execution.
-	 * @see \yii\logging\Logger::getProfiling()
-	 */
-	public function getQuerySummary()
-	{
-		$logger = Yii::getLogger();
-		$timings = $logger->getProfiling(array('yii\db\Command::query', 'yii\db\Command::execute'));
-		$count = count($timings);
-		$time = 0;
-		foreach ($timings as $timing) {
-			$time += $timing[1];
-		}
-		return array($count, $time);
 	}
 }
