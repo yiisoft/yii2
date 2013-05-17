@@ -89,7 +89,7 @@ class AutoTimestamp extends Behavior
 	}
 
 	/**
-	 * Gets the appropriate timestamp depending on the column type $attribute is
+	 * Gets the appropriate timestamp for the specified attribute.
 	 * @param string $attribute attribute name
 	 * @return mixed the timestamp value
 	 */
