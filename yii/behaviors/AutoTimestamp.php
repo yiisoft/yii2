@@ -28,7 +28,7 @@ use yii\db\ActiveRecord;
  * }
  * ~~~
  *
- * By default, AutoTimestamp will fill the `insert_time` attribute with the current timestamp
+ * By default, AutoTimestamp will fill the `create_time` attribute with the current timestamp
  * when the associated AR object is being inserted; it will fill the `update_time` attribute
  * with the timestamp when the AR object is being updated.
  *
@@ -42,11 +42,11 @@ class AutoTimestamp extends Behavior
 	 * The array keys are the ActiveRecord events upon which the attributes are to be filled with timestamps,
 	 * and the array values are the corresponding attribute to be updated. You can use a string to represent
 	 * a single attribute, or an array to represent a list of attributes.
-	 * The default setting is to update the `insert_time` attribute upon AR insertion,
+	 * The default setting is to update the `create_time` attribute upon AR insertion,
 	 * and update the `update_time` attribute upon AR updating.
 	 */
 	public $attributes = array(
-		ActiveRecord::EVENT_BEFORE_INSERT => 'insert_time',
+		ActiveRecord::EVENT_BEFORE_INSERT => 'create_time',
 		ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
 	);
 	/**
