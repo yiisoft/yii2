@@ -12,17 +12,32 @@ use yii\console\Exception;
 use yii\console\Controller;
 
 /**
+ * This command allows you to combine and compress your JavaScript and CSS files.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class AssetController extends Controller
 {
+	/**
+	 * @var string controller default action ID.
+	 */
 	public $defaultAction = 'compress';
-
+	/**
+	 * @var array list of asset bundles to be compressed.
+	 * The keys are the bundle names, and the values are the configuration
+	 * arrays for creating the [[yii\web\AssetBundle]] objects.
+	 */
 	public $bundles = array();
+	/**
+	 * @var array list of paths to the extensions, which assets should be also compressed.
+	 * Each path should contain asset manifest file named "assets.php".
+	 */
 	public $extensions = array();
 	/**
-	 * @var array
+	 * @var array list of asset bundles, which represents output compressed files.
+	 * You can specify the name of the output compressed file using 'css' and 'js' keys:
+	 * For example:
 	 * ~~~
 	 * 'all' => array(
 	 *     'css' => 'all.css',
@@ -30,34 +45,74 @@ class AssetController extends Controller
 	 *     'depends' => array( ... ),
 	 * )
 	 * ~~~
+	 * File names can contain placeholder "{ts}", which will be filled by current timestamp, while
+	 * file creation.
 	 */
 	public $targets = array();
+	/**
+	 * @var array configuration for [[yii\web\AssetManager]] instance, which will be used
+	 * for assets publishing.
+	 */
 	public $assetManager = array();
+	/**
+	 * @var string|callback Java Script file compressor.
+	 * If a string, it is treated as shell command template, which should contain
+	 * placeholders {from} - source file name - and {to} - output file name.
+	 * If an array, it is treated as PHP callback, which should perform the compression.
+	 *
+	 * Default value relies on usage of "Closure Compiler"
+	 * @see https://developers.google.com/closure/compiler/
+	 */
 	public $jsCompressor = 'java -jar compiler.jar --js {from} --js_output_file {to}';
+	/**
+	 * @var string|callback CSS file compressor.
+	 * If a string, it is treated as shell command template, which should contain
+	 * placeholders {from} - source file name - and {to} - output file name.
+	 * If an array, it is treated as PHP callback, which should perform the compression.
+	 *
+	 * Default value relies on usage of "YUI Compressor"
+	 * @see https://github.com/yui/yuicompressor/
+	 */
 	public $cssCompressor = 'java -jar yuicompressor.jar {from} -o {to}';
 
+	/**
+	 * Combines and compresses the asset files according to the given configuration.
+	 * During the process new asset bundle configuration file will be created.
+	 * You should replace your original asset bundle configuration with this file in order to use compressed files.
+	 * @param string $configFile configuration file name.
+	 * @param string $bundleFile output asset bundles configuration file name.
+	 */
 	public function actionCompress($configFile, $bundleFile)
 	{
 		$this->loadConfiguration($configFile);
 		$bundles = $this->loadBundles($this->bundles, $this->extensions);
 		$targets = $this->loadTargets($this->targets, $bundles);
-		$this->publishBundles($bundles, $this->publishOptions);
+		$this->publishBundles($bundles, $this->assetManager);
 		$timestamp = time();
-		foreach ($targets as $target) {
+		foreach ($targets as $name => $target) {
+			echo "Creating output bundle '{$name}':\n";
 			if (!empty($target->js)) {
 				$this->buildTarget($target, 'js', $bundles, $timestamp);
 			}
 			if (!empty($target->css)) {
 				$this->buildTarget($target, 'css', $bundles, $timestamp);
 			}
+			echo "\n";
 		}
 
 		$targets = $this->adjustDependency($targets, $bundles);
 		$this->saveTargets($targets, $bundleFile);
 	}
 
+	/**
+	 * Applies configuration from the given file to self instance.
+	 * @param string $configFile configuration file name.
+	 * @throws \yii\console\Exception on failure.
+	 */
 	protected function loadConfiguration($configFile)
 	{
+		echo "Loading configuration from '{$configFile}'...\n";
+
 		foreach (require($configFile) as $name => $value) {
 			if (property_exists($this, $name)) {
 				$this->$name = $value;
@@ -74,8 +129,15 @@ class AssetController extends Controller
 		}
 	}
 
+	/**
+	 * Creates full list of source asset bundles.
+	 * @param array[] $bundles list of asset bundle configurations.
+	 * @param array $extensions list of the extension paths.
+	 * @return \yii\web\AssetBundle[] list of source asset bundles.
+	 */
 	protected function loadBundles($bundles, $extensions)
 	{
+		echo "Collecting source bundles information...\n";
 		$result = array();
 		foreach ($bundles as $name => $bundle) {
 			$bundle['class'] = 'yii\\web\\AssetBundle';
@@ -96,6 +158,13 @@ class AssetController extends Controller
 		return $result;
 	}
 
+	/**
+	 * Creates full list of output asset bundles.
+	 * @param array $targets output asset bundles configuration.
+	 * @param \yii\web\AssetBundle[] $bundles list of source asset bundles.
+	 * @return \yii\web\AssetBundle[] list of output asset bundles.
+	 * @throws \yii\console\Exception on failure.
+	 */
 	protected function loadTargets($targets, $bundles)
 	{
 		// build the dependency order of bundles
@@ -151,26 +220,31 @@ class AssetController extends Controller
 	}
 
 	/**
-	 * @param \yii\web\AssetBundle[] $bundles
-	 * @param array $options
+	 * Publishes given asset bundles.
+	 * @param \yii\web\AssetBundle[] $bundles asset bundles to be published.
+	 * @param array $options assert manager instance configuration.
 	 */
 	protected function publishBundles($bundles, $options)
 	{
+		echo "\nPublishing bundles:\n";
 		if (!isset($options['class'])) {
 			$options['class'] = 'yii\\web\\AssetManager';
 		}
 		$am = Yii::createObject($options);
-		foreach ($bundles as $bundle) {
+		foreach ($bundles as $name => $bundle) {
 			$bundle->publish($am);
+			echo "  '".$name."' published.\n";
 		}
+		echo "\n";
 	}
 
 	/**
-	 * @param \yii\web\AssetBundle $target
-	 * @param string $type either "js" or "css"
-	 * @param \yii\web\AssetBundle[] $bundles
-	 * @param integer $timestamp
-	 * @throws Exception
+	 * Builds output asset bundle.
+	 * @param \yii\web\AssetBundle $target output asset bundle
+	 * @param string $type either "js" or "css".
+	 * @param \yii\web\AssetBundle[] $bundles source asset bundles.
+	 * @param integer $timestamp current timestamp.
+	 * @throws Exception on failure.
 	 */
 	protected function buildTarget($target, $type, $bundles, $timestamp)
 	{
@@ -182,7 +256,7 @@ class AssetController extends Controller
 		foreach ($target->depends as $name) {
 			if (isset($bundles[$name])) {
 				foreach ($bundles[$name]->$type as $file) {
-					$inputFiles[] = $bundles[$name]->basePath . '/' . $file;
+					$inputFiles[] = $bundles[$name]->basePath . $file;
 				}
 			} else {
 				throw new Exception("Unknown bundle: $name");
@@ -196,8 +270,16 @@ class AssetController extends Controller
 		$target->$type = array($outputFile);
 	}
 
+	/**
+	 * Adjust dependencies between asset bundles in the way source bundles begin to depend on output ones.
+	 * @param \yii\web\AssetBundle[] $targets output asset bundles.
+	 * @param \yii\web\AssetBundle[] $bundles source asset bundles.
+	 * @return \yii\web\AssetBundle[] output asset bundles.
+	 */
 	protected function adjustDependency($targets, $bundles)
 	{
+		echo "Creating new bundle configuration...\n";
+
 		$map = array();
 		foreach ($targets as $name => $target) {
 			foreach ($target->depends as $bundle) {
@@ -231,6 +313,13 @@ class AssetController extends Controller
 		return $targets;
 	}
 
+	/**
+	 * Registers asset bundles including their dependencies.
+	 * @param \yii\web\AssetBundle[] $bundles asset bundles list.
+	 * @param string $name bundle name.
+	 * @param array $registered stores already registered names.
+	 * @throws \yii\console\Exception if circular dependency is detected.
+	 */
 	protected function registerBundle($bundles, $name, &$registered)
 	{
 		if (!isset($registered[$name])) {
@@ -246,6 +335,11 @@ class AssetController extends Controller
 		}
 	}
 
+	/**
+	 * Saves new asset bundles configuration.
+	 * @param \yii\web\AssetBundle[] $targets list of asset bundles to be saved.
+	 * @param string $bundleFile output file name.
+	 */
 	protected function saveTargets($targets, $bundleFile)
 	{
 		$array = array();
@@ -258,7 +352,7 @@ class AssetController extends Controller
 		}
 		$array = var_export($array, true);
 		$version = date('Y-m-d H:i:s', time());
-		file_put_contents($bundleFile, <<<EOD
+		$bytesWritten = file_put_contents($bundleFile, <<<EOD
 <?php
 /**
  * This file is generated by the "yii script" command.
@@ -268,60 +362,107 @@ class AssetController extends Controller
 return $array;
 EOD
 		);
+		if ($bytesWritten <= 0) {
+			throw new Exception("Unable to write output bundle configuration at '{$bundleFile}'.");
+		}
+		echo "Output bundle configuration created at '{$bundleFile}'.\n";
 	}
 
+	/**
+	 * Compresses given Java Script files and combines them into the single one.
+	 * @param array $inputFiles list of source file names.
+	 * @param string $outputFile output file name.
+	 * @throws \yii\console\Exception on failure
+	 */
 	protected function compressJsFiles($inputFiles, $outputFile)
 	{
+		if (empty($inputFiles)) {
+			return;
+		}
+		echo "  Compressing JavaScript files...\n";
 		if (is_string($this->jsCompressor)) {
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineJsFiles($inputFiles, $tmpFile);
 			$log = shell_exec(strtr($this->jsCompressor, array(
-				'{from}' => $tmpFile,
-				'{to}' => $outputFile,
+				'{from}' => escapeshellarg($tmpFile),
+				'{to}' => escapeshellarg($outputFile),
 			)));
 			@unlink($tmpFile);
 		} else {
 			$log = call_user_func($this->jsCompressor, $this, $inputFiles, $outputFile);
 		}
+		if (!file_exists($outputFile)) {
+			throw new Exception("Unable to compress JavaScript files into '{$outputFile}'.");
+		}
+		echo "  JavaScript files compressed into '{$outputFile}'.\n";
 	}
 
+	/**
+	 * Compresses given CSS files and combines them into the single one.
+	 * @param array $inputFiles list of source file names.
+	 * @param string $outputFile output file name.
+	 * @throws \yii\console\Exception on failure
+	 */
 	protected function compressCssFiles($inputFiles, $outputFile)
 	{
+		if (empty($inputFiles)) {
+			return;
+		}
+		echo "  Compressing CSS files...\n";
 		if (is_string($this->cssCompressor)) {
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineCssFiles($inputFiles, $tmpFile);
 			$log = shell_exec(strtr($this->cssCompressor, array(
-				'{from}' => $inputFiles,
-				'{to}' => $outputFile,
+				'{from}' => escapeshellarg($tmpFile),
+				'{to}' => escapeshellarg($outputFile),
 			)));
+			@unlink($tmpFile);
 		} else {
 			$log = call_user_func($this->cssCompressor, $this, $inputFiles, $outputFile);
 		}
+		if (!file_exists($outputFile)) {
+			throw new Exception("Unable to compress CSS files into '{$outputFile}'.");
+		}
+		echo "  CSS files compressed into '{$outputFile}'.\n";
 	}
 
-	public function combineJsFiles($files, $tmpFile)
+	/**
+	 * Combines Java Script files into a single one.
+	 * @param array $inputFiles source file names.
+	 * @param string $outputFile output file name.
+	 */
+	public function combineJsFiles($inputFiles, $outputFile)
 	{
 		$content = '';
-		foreach ($files as $file) {
+		foreach ($inputFiles as $file) {
 			$content .= "/*** BEGIN FILE: $file ***/\n"
 				. file_get_contents($file)
 				. "/*** END FILE: $file ***/\n";
 		}
-		file_put_contents($tmpFile, $content);
+		file_put_contents($outputFile, $content);
 	}
 
-	public function combineCssFiles($files, $tmpFile)
+	/**
+	 * Combines CSS files into a single one.
+	 * @param array $inputFiles source file names.
+	 * @param string $outputFile output file name.
+	 */
+	public function combineCssFiles($inputFiles, $outputFile)
 	{
 		// todo: adjust url() references in CSS files
 		$content = '';
-		foreach ($files as $file) {
+		foreach ($inputFiles as $file) {
 			$content .= "/*** BEGIN FILE: $file ***/\n"
 				. file_get_contents($file)
 				. "/*** END FILE: $file ***/\n";
 		}
-		file_put_contents($tmpFile, $content);
+		file_put_contents($outputFile, $content);
 	}
 
+	/**
+	 * Creates template of configuration file for [[actionCompress]].
+	 * @param string $configFile output file name.
+	 */
 	public function actionTemplate($configFile)
 	{
 		$template = <<<EOD
@@ -348,6 +489,16 @@ return array(
 	),
 );
 EOD;
-		file_put_contents($configFile, $template);
+		if (file_exists($configFile)) {
+			if (!$this->confirm("File '{$configFile}' already exists. Do you wish to overwrite it?")) {
+				return;
+			}
+		}
+		$bytesWritten = file_put_contents($configFile, $template);
+		if ($bytesWritten<=0) {
+			echo "Error: unable to write file '{$configFile}'!\n\n";
+		} else {
+			echo "Configuration file template created at '{$configFile}'.\n\n";
+		}
 	}
 }
