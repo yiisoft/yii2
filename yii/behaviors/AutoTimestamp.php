@@ -28,8 +28,9 @@ use yii\db\ActiveRecord;
  * }
  * ~~~
  *
- * By default, the attribute for keeping the creation time is named as "create_time", and the attribute
- * for updating time is "update_time". You may customize the names via [[createAttribute]] and [[updateAttribute]].
+ * By default, AutoTimestamp will fill the `create_time` attribute with the current timestamp
+ * when the associated AR object is being inserted; it will fill the `update_time` attribute
+ * with the timestamp when the AR object is being updated.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -37,15 +38,17 @@ use yii\db\ActiveRecord;
 class AutoTimestamp extends Behavior
 {
 	/**
-	 * @var string The name of the attribute to store the creation time.  Set to null to not
-	 * use a timestamp for the creation attribute.  Defaults to 'create_time'
+	 * @var array list of attributes that are to be automatically filled with timestamps.
+	 * The array keys are the ActiveRecord events upon which the attributes are to be filled with timestamps,
+	 * and the array values are the corresponding attribute to be updated. You can use a string to represent
+	 * a single attribute, or an array to represent a list of attributes.
+	 * The default setting is to update the `create_time` attribute upon AR insertion,
+	 * and update the `update_time` attribute upon AR updating.
 	 */
-	public $createAttribute = 'create_time';
-	/**
-	 * @var string The name of the attribute to store the modification time.  Set to null to not
-	 * use a timestamp for the update attribute.  Defaults to 'update_time'
-	 */
-	public $updateAttribute = 'update_time';
+	public $attributes = array(
+		ActiveRecord::EVENT_BEFORE_INSERT => 'create_time',
+		ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
+	);
 	/**
 	 * @var \Closure|Expression The expression that will be used for generating the timestamp.
 	 * This can be either an anonymous function that returns the timestamp value,
@@ -61,29 +64,27 @@ class AutoTimestamp extends Behavior
 	 */
 	public function events()
 	{
-		return array(
-			ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
-			ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
-		);
-	}
-
-	/**
-	 * This is the event handler for the "beforeInsert" event of the associated AR object.
-	 */
-	public function beforeInsert()
-	{
-		if ($this->createAttribute !== null) {
-			$this->owner->{$this->createAttribute} = $this->evaluateTimestamp($this->createAttribute);
+		$events = array();
+		$behavior = $this;
+		foreach ($this->attributes as $event => $attributes) {
+			if (!is_array($attributes)) {
+				$attributes = array($attributes);
+			}
+			$events[$event] = function () use ($behavior, $attributes) {
+				$behavior->updateTimestamp($attributes);
+			};
 		}
+		return $events;
 	}
 
 	/**
-	 * This is the event handler for the "beforeUpdate" event of the associated AR object.
+	 * Updates the attributes with the current timestamp.
+	 * @param array $attributes list of attributes to be updated.
 	 */
-	public function beforeUpdate()
+	public function updateTimestamp($attributes)
 	{
-		if ($this->updateAttribute !== null) {
-			$this->owner->{$this->updateAttribute} = $this->evaluateTimestamp($this->updateAttribute);
+		foreach ($attributes as $attribute) {
+			$this->owner->$attribute = $this->evaluateTimestamp($attribute);
 		}
 	}
 
