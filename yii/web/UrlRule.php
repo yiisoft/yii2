@@ -28,7 +28,7 @@ class UrlRule extends Object
 	const CREATION_ONLY = 2;
 
 	/**
-	 * @var string regular expression used to parse a URL
+	 * @var string the pattern used to parse and create URLs.
 	 */
 	public $pattern;
 	/**
@@ -62,6 +62,11 @@ class UrlRule extends Object
 	 * If it is [[CREATION_ONLY]], the rule is for URL creation only.
 	 */
 	public $mode;
+	/**
+	 * @var boolean whether this URL rule contains the host info part.
+	 * This property is set after the URL rule is parsed.
+	 */
+	public $hasHostInfo;
 
 	/**
 	 * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
@@ -102,6 +107,9 @@ class UrlRule extends Object
 		}
 
 		$this->pattern = trim($this->pattern, '/');
+
+		$this->hasHostInfo = !strncasecmp($this->pattern, 'http://', 7) || !strncasecmp($this->pattern, 'https://', 8);
+
 		if ($this->pattern === '') {
 			$this->_template = '';
 			$this->pattern = '#^$#u';
@@ -162,11 +170,11 @@ class UrlRule extends Object
 			return false;
 		}
 
-		if ($this->verb !== null && !in_array($request->verb, $this->verb, true)) {
+		if ($this->verb !== null && !in_array($request->getRequestMethod(), $this->verb, true)) {
 			return false;
 		}
 
-		$pathInfo = $request->pathInfo;
+		$pathInfo = $request->getPathInfo();
 		$suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
 		if ($suffix !== '' && $pathInfo !== '') {
 			$n = strlen($suffix);
@@ -180,6 +188,10 @@ class UrlRule extends Object
 				// we allow the ending '/' to be optional if it is a suffix
 				return false;
 			}
+		}
+
+		if ($this->hasHostInfo) {
+			$pathInfo = strtolower($request->getHostInfo()) . '/' . $pathInfo;
 		}
 
 		if (!preg_match($this->pattern, $pathInfo, $matches)) {
@@ -267,7 +279,12 @@ class UrlRule extends Object
 		}
 
 		$url = trim(strtr($this->_template, $tr), '/');
-		if (strpos($url, '//') !== false) {
+		if ($this->hasHostInfo) {
+			$pos = strpos($url, '/', 8);
+			if ($pos !== false) {
+				$url = substr($url, 0, $pos) . preg_replace('#/+#', '/', substr($url, $pos));
+			}
+		} elseif (strpos($url, '//') !== false) {
 			$url = preg_replace('#/+#', '/', $url);
 		}
 

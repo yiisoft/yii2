@@ -85,6 +85,23 @@ class UrlManagerTest extends \yiiunit\TestCase
 		$this->assertEquals('/post/1/sample+post.html', $url);
 		$url = $manager->createUrl('post/index', array('page' => 1));
 		$this->assertEquals('/post/index.html?page=1', $url);
+
+		// pretty URL with rules that have host info
+		$manager = new UrlManager(array(
+			'enablePrettyUrl' => true,
+			'cache' => null,
+			'rules' => array(
+				array(
+					'pattern' => 'http://<lang:en|fr>.example.com/post/<id>/<title>',
+					'route' => 'post/view',
+				),
+			),
+			'baseUrl' => '/test',
+		));
+		$url = $manager->createUrl('post/view', array('id' => 1, 'title' => 'sample post', 'lang' => 'en'));
+		$this->assertEquals('http://en.example.com/test/post/1/sample+post', $url);
+		$url = $manager->createUrl('post/index', array('page' => 1));
+		$this->assertEquals('/test/post/index?page=1', $url);
 	}
 
 	public function testCreateAbsoluteUrl()
