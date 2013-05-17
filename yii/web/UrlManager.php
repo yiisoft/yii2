@@ -183,7 +183,7 @@ class UrlManager extends Component
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
 				if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-					if ($rule->hasHostInfo) {
+					if ($rule->host !== null) {
 						if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
 							return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
 						} else {

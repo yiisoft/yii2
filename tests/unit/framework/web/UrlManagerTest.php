@@ -92,8 +92,9 @@ class UrlManagerTest extends \yiiunit\TestCase
 			'cache' => null,
 			'rules' => array(
 				array(
-					'pattern' => 'http://<lang:en|fr>.example.com/post/<id>/<title>',
+					'pattern' => 'post/<id>/<title>',
 					'route' => 'post/view',
+					'host' => 'http://<lang:en|fr>.example.com',
 				),
 			),
 			'baseUrl' => '/test',

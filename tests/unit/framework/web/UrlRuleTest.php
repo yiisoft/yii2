@@ -330,9 +330,10 @@ class UrlRuleTest extends \yiiunit\TestCase
 			array(
 				'with host info',
 				array(
-					'pattern' => 'http://<lang:(en|fr)>.example.com/post/<page:\d+>/<tag>',
+					'pattern' => 'post/<page:\d+>/<tag>',
 					'route' => 'post/index',
 					'defaults' => array('page' => 1),
+					'host' => 'http://<lang:en|fr>.example.com',
 				),
 				array(
 					array('post/index', array('page' => 1, 'tag' => 'a'), false),
@@ -625,8 +626,9 @@ class UrlRuleTest extends \yiiunit\TestCase
 			array(
 				'with host info',
 				array(
-					'pattern' => 'http://<lang:en|fr>.example.com/post/<page:\d+>',
+					'pattern' => 'post/<page:\d+>',
 					'route' => 'post/index',
+					'host' => 'http://<lang:en|fr>.example.com',
 				),
 				array(
 					array('post/1', 'post/index', array('page' => '1', 'lang' => 'en')),

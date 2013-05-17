@@ -28,9 +28,15 @@ class UrlRule extends Object
 	const CREATION_ONLY = 2;
 
 	/**
-	 * @var string the pattern used to parse and create URLs.
+	 * @var string the pattern used to parse and create the path info part of a URL.
+	 * @see host
 	 */
 	public $pattern;
+	/**
+	 * @var string the pattern used to parse and create the host info part of a URL.
+	 * @see pattern
+	 */
+	public $host;
 	/**
 	 * @var string the route to the controller action
 	 */
@@ -62,11 +68,6 @@ class UrlRule extends Object
 	 * If it is [[CREATION_ONLY]], the rule is for URL creation only.
 	 */
 	public $mode;
-	/**
-	 * @var boolean whether this URL rule contains the host info part.
-	 * This property is set after the URL rule is parsed.
-	 */
-	public $hasHostInfo;
 
 	/**
 	 * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
@@ -108,9 +109,9 @@ class UrlRule extends Object
 
 		$this->pattern = trim($this->pattern, '/');
 
-		$this->hasHostInfo = !strncasecmp($this->pattern, 'http://', 7) || !strncasecmp($this->pattern, 'https://', 8);
-
-		if ($this->pattern === '') {
+		if ($this->host !== null) {
+			$this->pattern = rtrim($this->host, '/') . rtrim('/' . $this->pattern, '/') . '/';
+		} elseif ($this->pattern === '') {
 			$this->_template = '';
 			$this->pattern = '#^$#u';
 			return;
@@ -190,7 +191,7 @@ class UrlRule extends Object
 			}
 		}
 
-		if ($this->hasHostInfo) {
+		if ($this->host !== null) {
 			$pathInfo = strtolower($request->getHostInfo()) . '/' . $pathInfo;
 		}
 
@@ -279,7 +280,7 @@ class UrlRule extends Object
 		}
 
 		$url = trim(strtr($this->_template, $tr), '/');
-		if ($this->hasHostInfo) {
+		if ($this->host !== null) {
 			$pos = strpos($url, '/', 8);
 			if ($pos !== false) {
 				$url = substr($url, 0, $pos) . preg_replace('#/+#', '/', substr($url, $pos));
