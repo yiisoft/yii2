@@ -15,6 +15,7 @@ use yii\helpers\StringHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class Response extends \yii\base\Response
