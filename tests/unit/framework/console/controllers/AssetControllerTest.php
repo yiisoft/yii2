@@ -92,7 +92,8 @@ class AssetControllerTest extends TestCase
 	 */
 	protected function createCompressConfig(array $bundles)
 	{
-		$baseUrl = '/test';
+		//$baseUrl = '/test';
+		$baseUrl = '';
 		$config = array(
 			'bundles' => $this->createBundleConfig($bundles),
 			'targets' => array(
@@ -207,6 +208,9 @@ class AssetControllerTest extends TestCase
 			'app' => array(
 				'css' => array_keys($cssFiles),
 				'js' => array_keys($jsFiles),
+				'depends' => array(
+					'yii',
+				),
 			),
 		);;
 		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
