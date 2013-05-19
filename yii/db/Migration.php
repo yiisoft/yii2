@@ -10,14 +10,14 @@ namespace yii\db;
 /**
  * Migration is the base class for representing a database migration.
  *
- * Migration is designed to be used together with the "yiic migrate" command.
+ * Migration is designed to be used together with the "yii migrate" command.
  *
  * Each child class of Migration represents an individual database migration which
  * is identified by the child class name.
  *
  * Within each migration, the [[up()]] method should be overwritten to contain the logic
  * for "upgrading" the database; while the [[down()]] method for the "downgrading"
- * logic. The "yiic migrate" command manages all available migrations in an application.
+ * logic. The "yii migrate" command manages all available migrations in an application.
  *
  * If the database supports transactions, you may also overwrite [[safeUp()]] and
  * [[safeDown()]] so that if anything wrong happens during the upgrading or downgrading,

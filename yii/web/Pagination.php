@@ -47,8 +47,8 @@ use Yii;
  * }
  *
  * // display pagination
- * LinkPager::widget($this, array(
- *     'pages' => $pages,
+ * LinkPager::widget(array(
+ *     'pagination' => $pages,
  * ));
  * ~~~
  *

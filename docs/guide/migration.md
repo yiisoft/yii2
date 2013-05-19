@@ -19,7 +19,7 @@ The following steps show how we can use database migration during development:
 4. Doug applies the migration to his local development database
 
 
-Yii supports database migration via the `yiic migrate` command line tool. This
+Yii supports database migration via the `yii migrate` command line tool. This
 tool supports creating new migrations, applying/reverting/redoing migrations, and
 showing migration history and new migrations.
 
@@ -29,7 +29,7 @@ Creating Migrations
 To create a new migration (e.g. create a news table), we run the following command:
 
 ~~~
-yiic migrate/create <name>
+yii migrate/create <name>
 ~~~
 
 The required `name` parameter specifies a very brief description of the migration
@@ -38,7 +38,7 @@ is used as part of a PHP class name. Therefore, it should only contain letters,
 digits and/or underscore characters.
 
 ~~~
-yiic migrate/create create_news_table
+yii migrate/create create_news_table
 ~~~
 
 The above command will create under the `protected/migrations` directory a new
@@ -153,7 +153,7 @@ To apply all available new migrations (i.e., make the local database up-to-date)
 run the following command:
 
 ~~~
-yiic migrate
+yii migrate
 ~~~
 
 The command will show the list of all new migrations. If you confirm to apply
@@ -170,7 +170,7 @@ Sometimes, we may only want to apply one or a few new migrations. We can use the
 following command:
 
 ~~~
-yiic migrate/up 3
+yii migrate/up 3
 ~~~
 
 This command will apply the 3 new migrations. Changing the value 3 will allow
@@ -179,7 +179,7 @@ us to change the number of migrations to be applied.
 We can also migrate the database to a specific version with the following command:
 
 ~~~
-yiic migrate/to 101129_185401
+yii migrate/to 101129_185401
 ~~~
 
 That is, we use the timestamp part of a migration name to specify the version
@@ -196,7 +196,7 @@ To revert the last one or several applied migrations, we can use the following
 command:
 
 ~~~
-yiic migrate/down [step]
+yii migrate/down [step]
 ~~~
 
 where the optional `step` parameter specifies how many migrations to be reverted
@@ -213,7 +213,7 @@ Redoing migrations means first reverting and then applying the specified migrati
 This can be done with the following command:
 
 ~~~
-yiic migrate/redo [step]
+yii migrate/redo [step]
 ~~~
 
 where the optional `step` parameter specifies how many migrations to be redone.
@@ -227,8 +227,8 @@ Besides applying and reverting migrations, the migration tool can also display
 the migration history and the new migrations to be applied.
 
 ~~~
-yiic migrate/history [limit]
-yiic migrate/new [limit]
+yii migrate/history [limit]
+yii migrate/new [limit]
 ~~~
 
 where the optional parameter `limit` specifies the number of migrations to be
@@ -247,10 +247,10 @@ often happens when developing a new migration. We can use the following command
 to achieve this goal.
 
 ~~~
-yiic migrate/mark 101129_185401
+yii migrate/mark 101129_185401
 ~~~
 
-This command is very similar to `yiic migrate/to` command, except that it only
+This command is very similar to `yii migrate/to` command, except that it only
 modifies the migration history table to the specified version without applying
 or reverting the migrations.
 
@@ -291,7 +291,7 @@ line:
 To specify these options, execute the migrate command using the following format
 
 ~~~
-yiic migrate/up --option1=value1 --option2=value2 ...
+yii migrate/up --option1=value1 --option2=value2 ...
 ~~~
 
 For example, if we want to migrate for a `forum` module whose migration files
@@ -299,7 +299,7 @@ are located within the module's `migrations` directory, we can use the following
 command:
 
 ~~~
-yiic migrate/up --migrationPath=ext.forum.migrations
+yii migrate/up --migrationPath=ext.forum.migrations
 ~~~
 
 

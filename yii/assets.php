@@ -1,18 +1,18 @@
 <?php
 
 return array(
-	'jquery' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'jquery.min.js',
-		),
-	),
 	'yii' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'yii.js',
 		),
-		'depends' => array('jquery'),
+		'depends' => array('yii/jquery'),
+	),
+	'yii/jquery' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'jquery.min.js',
+		),
 	),
 	'yii/validation' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -26,7 +26,7 @@ return array(
 		'js' => array(
 			'yii.activeForm.js',
 		),
-		'depends' => array('yii', 'yii/validation'),
+		'depends' => array('yii'),
 	),
 	'yii/captcha' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -43,20 +43,26 @@ return array(
 		'depends' => array('yii'),
 	),
 	'yii/bootstrap' => array(
-		'sourcePath' => __DIR__ . '/assets/bootstrap',
-		'js' => array(
-			'/js/bootstrap.min.js',
-		),
+		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
-			'css/bootstrap.css'
+			'bootstrap/css/bootstrap.css',
 		),
-		'depends' => array('yii'),
+		'js' => array(
+			'bootstrap/js/bootstrap.js',
+		),
+		'depends' => array('yii/jquery'),
 	),
 	'yii/bootstrap-responsive' => array(
-		'sourcePath' => __DIR__ . '/assets/bootstrap',
+		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
-			'css/bootstrap-responsive.css'
+			'bootstrap/css/bootstrap-responsive.css',
 		),
 		'depends' => array('yii/bootstrap'),
-	)
+	),
+	'yii/punycode' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'punycode/punycode.min.js',
+		),
+	),
 );

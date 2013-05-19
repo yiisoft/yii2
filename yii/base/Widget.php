@@ -18,16 +18,6 @@ use Yii;
 class Widget extends Component
 {
 	/**
-	 * @var View the view object that this widget is associated with.
-	 * The widget will use this view object to register any needed assets.
-	 * This property is also required by [[render()]] and [[renderFile()]].
-	 */
-	public $view;
-	/**
-	 * @var string id of the widget.
-	 */
-	private $_id;
-	/**
 	 * @var integer a counter used to generate [[id]] for widgets.
 	 * @internal
 	 */
@@ -39,32 +29,19 @@ class Widget extends Component
 	 */
 	public static $_stack = array();
 
-	/**
-	 * Constructor.
-	 * @param View $view the view object that this widget is associated with.
-	 * The widget will use this view object to register any needed assets.
-	 * It is also required by [[render()]] and [[renderFile()]].
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($view, $config = array())
-	{
-		$this->view = $view;
-		parent::__construct($config);
-	}
-
+	
 	/**
 	 * Begins a widget.
 	 * This method creates an instance of the calling class. It will apply the configuration
 	 * to the created instance. A matching [[end()]] call should be called later.
-	 * @param View $view the view object that the newly created widget is associated with.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 * @return Widget the newly created widget instance
 	 */
-	public static function begin($view, $config = array())
+	public static function begin($config = array())
 	{
 		$config['class'] = get_called_class();
 		/** @var Widget $widget */
-		$widget = Yii::createObject($config, $view);
+		$widget = Yii::createObject($config);
 		self::$_stack[] = $widget;
 		return $widget;
 	}
@@ -93,21 +70,22 @@ class Widget extends Component
 	/**
 	 * Creates a widget instance and runs it.
 	 * The widget rendering result is returned by this method.
-	 * @param View $view the view object that the newly created widget is associated with.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 * @return string the rendering result of the widget.
 	 */
-	public static function widget($view, $config = array())
+	public static function widget($config = array())
 	{
 		ob_start();
 		ob_implicit_flush(false);
 		/** @var Widget $widget */
 		$config['class'] = get_called_class();
-		$widget = Yii::createObject($config, $view);
+		$widget = Yii::createObject($config);
 		$widget->run();
 		return ob_get_clean();
 	}
 
+	private $_id;
+	
 	/**
 	 * Returns the ID of the widget.
 	 * @param boolean $autoGenerate whether to generate an ID if it is not set previously
@@ -128,6 +106,32 @@ class Widget extends Component
 	public function setId($value)
 	{
 		$this->_id = $value;
+	}
+
+	private $_view;
+	
+	/**
+	 * Returns the view object that can be used to render views or view files.
+	 * The [[render()]] and [[renderFile()]] methods will use
+	 * this view object to implement the actual view rendering.
+	 * If not set, it will default to the "view" application component.
+	 * @return View the view object that can be used to render views or view files.
+	 */
+	public function getView()
+	{
+		if ($this->_view === null) {
+			$this->_view = Yii::$app->getView();
+		}
+		return $this->_view;
+	}
+
+	/**
+	 * Sets the view object to be used by this widget.
+	 * @param View $view the view object that can be used to render views or view files.
+	 */
+	public function setView($view)
+	{
+		$this->_view = $view;
 	}
 
 	/**
@@ -159,7 +163,7 @@ class Widget extends Component
 	public function render($view, $params = array())
 	{
 		$viewFile = $this->findViewFile($view);
-		return $this->view->renderFile($viewFile, $params, $this);
+		return $this->getView()->renderFile($viewFile, $params, $this);
 	}
 
 	/**
@@ -171,7 +175,7 @@ class Widget extends Component
 	 */
 	public function renderFile($file, $params = array())
 	{
-		return $this->view->renderFile($file, $params, $this);
+		return $this->getView()->renderFile($file, $params, $this);
 	}
 
 	/**

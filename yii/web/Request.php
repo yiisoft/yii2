@@ -72,7 +72,7 @@ class Request extends \yii\base\Request
 			$_GET = array_merge($_GET, $params);
 			return array($route, $_GET);
 		} else {
-			throw new HttpException(404, Yii::t('yii|Page not found.'));
+			throw new HttpException(404, Yii::t('yii', 'Page not found.'));
 		}
 	}
 
@@ -786,7 +786,7 @@ class Request extends \yii\base\Request
 			}
 
 			if (empty($token) || $cookies->getValue($this->csrfTokenName) !== $token) {
-				throw new HttpException(400, Yii::t('yii|Unable to verify your data submission.'));
+				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
 			}
 		}
 	}

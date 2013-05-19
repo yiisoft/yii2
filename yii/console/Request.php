@@ -27,7 +27,7 @@ class Request extends \yii\base\Request
 	public function resolve()
 	{
 		$rawParams = $this->getRawParams();
-		array_shift($rawParams);  // the 1st argument is the yiic script name
+		array_shift($rawParams);  // the 1st argument is the yii script name
 
 		if (isset($rawParams[0])) {
 			$route = $rawParams[0];

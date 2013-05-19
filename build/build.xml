@@ -94,7 +94,7 @@
   </fileset>
 
   <fileset dir="." id="executables">
-    <include name="${build.src.dir}/**/yiic" />
+    <include name="${build.src.dir}/**/yii" />
   </fileset>
 
   <target name="src" depends="sync">

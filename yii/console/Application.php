@@ -30,7 +30,7 @@ use yii\base\InvalidRouteException;
  * To run the console application, enter the following on the command line:
  *
  * ~~~
- * yiic <route> [--param1=value1 --param2 ...]
+ * yii <route> [--param1=value1 --param2 ...]
  * ~~~
  *
  * where `<route>` refers to a controller route in the form of `ModuleID/ControllerID/ActionID`
@@ -42,7 +42,7 @@ use yii\base\InvalidRouteException;
  * To use this command, simply type:
  *
  * ~~~
- * yiic help
+ * yii help
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -94,7 +94,7 @@ class Application extends \yii\base\Application
 			list ($route, $params) = $request->resolve();
 			return $this->runAction($route, $params);
 		} else {
-			throw new Exception(\Yii::t('yii|This script must be run from the command line.'));
+			throw new Exception(\Yii::t('yii', 'This script must be run from the command line.'));
 		}
 	}
 
@@ -113,7 +113,7 @@ class Application extends \yii\base\Application
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			throw new Exception(\Yii::t('yii|Unknown command "{command}".', array('{command}' => $route)));
+			throw new Exception(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)));
 		}
 	}
 

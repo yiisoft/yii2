@@ -373,9 +373,10 @@ class View extends Component
 	 */
 	public function beginBlock($id, $renderInPlace = false)
 	{
-		return Block::begin($this, array(
+		return Block::begin(array(
 			'id' => $id,
 			'renderInPlace' => $renderInPlace,
+			'view' => $this,
 		));
 	}
 
@@ -390,10 +391,10 @@ class View extends Component
 	/**
 	 * Begins the rendering of content that is to be decorated by the specified view.
 	 * This method can be used to implement nested layout. For example, a layout can be embedded
-	 * in another layout file specified as '@app/view/layouts/base' like the following:
+	 * in another layout file specified as '@app/view/layouts/base.php' like the following:
 	 *
 	 * ~~~
-	 * <?php $this->beginContent('@app/view/layouts/base'); ?>
+	 * <?php $this->beginContent('@app/view/layouts/base.php'); ?>
 	 * ...layout content here...
 	 * <?php $this->endContent(); ?>
 	 * ~~~
@@ -406,9 +407,10 @@ class View extends Component
 	 */
 	public function beginContent($viewFile, $params = array())
 	{
-		return ContentDecorator::begin($this, array(
+		return ContentDecorator::begin(array(
 			'viewFile' => $viewFile,
 			'params' => $params,
+			'view' => $this,
 		));
 	}
 
@@ -442,8 +444,9 @@ class View extends Component
 	public function beginCache($id, $properties = array())
 	{
 		$properties['id'] = $id;
+		$properties['view'] = $this;
 		/** @var $cache FragmentCache */
-		$cache = FragmentCache::begin($this, $properties);
+		$cache = FragmentCache::begin($properties);
 		if ($cache->getCachedContent() !== false) {
 			$this->endCache();
 			return false;

@@ -18,7 +18,7 @@ yii.debug = (function ($) {
 				//dataType: 'json',
 				success: function(data) {
 					var $e = $('#' + id);
-					$e.html(data);
+					$e.html(data).show();
 				}
 			});
 		}

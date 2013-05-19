@@ -97,22 +97,22 @@ class FileValidator extends Validator
 	{
 		parent::init();
 		if ($this->message === null) {
-			$this->message = Yii::t('yii|File upload failed.');
+			$this->message = Yii::t('yii', 'File upload failed.');
 		}
 		if ($this->uploadRequired === null) {
-			$this->uploadRequired = Yii::t('yii|Please upload a file.');
+			$this->uploadRequired = Yii::t('yii', 'Please upload a file.');
 		}
 		if ($this->tooMany === null) {
-			$this->tooMany = Yii::t('yii|You can upload at most {limit} files.');
+			$this->tooMany = Yii::t('yii', 'You can upload at most {limit} files.');
 		}
 		if ($this->wrongType === null) {
-			$this->wrongType = Yii::t('yii|Only files with these extensions are allowed: {extensions}.');
+			$this->wrongType = Yii::t('yii', 'Only files with these extensions are allowed: {extensions}.');
 		}
 		if ($this->tooBig === null) {
-			$this->tooBig = Yii::t('yii|The file "{file}" is too big. Its size cannot exceed {limit} bytes.');
+			$this->tooBig = Yii::t('yii', 'The file "{file}" is too big. Its size cannot exceed {limit} bytes.');
 		}
 		if ($this->tooSmall === null) {
-			$this->tooSmall = Yii::t('yii|The file "{file}" is too small. Its size cannot be smaller than {limit} bytes.');
+			$this->tooSmall = Yii::t('yii', 'The file "{file}" is too small. Its size cannot be smaller than {limit} bytes.');
 		}
 		if (!is_array($this->types)) {
 			$this->types = preg_split('/[\s,]+/', strtolower($this->types), -1, PREG_SPLIT_NO_EMPTY);

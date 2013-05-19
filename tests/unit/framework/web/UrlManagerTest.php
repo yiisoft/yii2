@@ -14,9 +14,9 @@ class UrlManagerTest extends \yiiunit\TestCase
 			'cache' => null,
 		));
 		$url = $manager->createUrl('post/view');
-		$this->assertEquals('/?r=post/view', $url);
+		$this->assertEquals('?r=post/view', $url);
 		$url = $manager->createUrl('post/view', array('id' => 1, 'title' => 'sample post'));
-		$this->assertEquals('/?r=post/view&id=1&title=sample+post', $url);
+		$this->assertEquals('?r=post/view&id=1&title=sample+post', $url);
 
 		// default setting with '/test/' as base url
 		$manager = new UrlManager(array(
@@ -24,7 +24,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 			'cache' => null,
 		));
 		$url = $manager->createUrl('post/view', array('id' => 1, 'title' => 'sample post'));
-		$this->assertEquals('/test/?r=post/view&id=1&title=sample+post', $url);
+		$this->assertEquals('/test?r=post/view&id=1&title=sample+post', $url);
 
 		// pretty URL without rules
 		$manager = new UrlManager(array(
@@ -85,6 +85,24 @@ class UrlManagerTest extends \yiiunit\TestCase
 		$this->assertEquals('/post/1/sample+post.html', $url);
 		$url = $manager->createUrl('post/index', array('page' => 1));
 		$this->assertEquals('/post/index.html?page=1', $url);
+
+		// pretty URL with rules that have host info
+		$manager = new UrlManager(array(
+			'enablePrettyUrl' => true,
+			'cache' => null,
+			'rules' => array(
+				array(
+					'pattern' => 'post/<id>/<title>',
+					'route' => 'post/view',
+					'host' => 'http://<lang:en|fr>.example.com',
+				),
+			),
+			'baseUrl' => '/test',
+		));
+		$url = $manager->createUrl('post/view', array('id' => 1, 'title' => 'sample post', 'lang' => 'en'));
+		$this->assertEquals('http://en.example.com/test/post/1/sample+post', $url);
+		$url = $manager->createUrl('post/index', array('page' => 1));
+		$this->assertEquals('/test/post/index?page=1', $url);
 	}
 
 	public function testCreateAbsoluteUrl()
@@ -95,7 +113,7 @@ class UrlManagerTest extends \yiiunit\TestCase
 			'cache' => null,
 		));
 		$url = $manager->createAbsoluteUrl('post/view', array('id' => 1, 'title' => 'sample post'));
-		$this->assertEquals('http://www.example.com/?r=post/view&id=1&title=sample+post', $url);
+		$this->assertEquals('http://www.example.com?r=post/view&id=1&title=sample+post', $url);
 	}
 
 	public function testParseRequest()

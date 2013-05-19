@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use ArrayObject;
+use ArrayIterator;
 use yii\helpers\StringHelper;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
@@ -30,7 +32,7 @@ use yii\validators\Validator;
  * You may directly use Model to store model data, or extend it with customization.
  * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
  *
- * @property Vector $validators All the validators declared in the model.
+ * @property ArrayObject $validators All the validators declared in the model.
  * @property array $activeValidators The validators applicable to the current [[scenario]].
  * @property array $errors Errors for all attributes or the specified attribute. Empty array is returned if no error.
  * @property array $attributes Attribute values (name => value).
@@ -56,7 +58,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	private $_errors;
 	/**
-	 * @var Vector vector of validators
+	 * @var ArrayObject list of validators
 	 */
 	private $_validators;
 	/**
@@ -300,15 +302,15 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * This method differs from [[getActiveValidators()]] in that the latter
 	 * only returns the validators applicable to the current [[scenario]].
 	 *
-	 * Because this method returns a [[Vector]] object, you may
+	 * Because this method returns an ArrayObject object, you may
 	 * manipulate it by inserting or removing validators (useful in model behaviors).
 	 * For example,
 	 *
 	 * ~~~
-	 * $model->validators->add($newValidator);
+	 * $model->validators[] = $newValidator;
 	 * ~~~
 	 *
-	 * @return Vector all the validators declared in the model.
+	 * @return ArrayObject all the validators declared in the model.
 	 */
 	public function getValidators()
 	{
@@ -340,18 +342,18 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	/**
 	 * Creates validator objects based on the validation rules specified in [[rules()]].
 	 * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
-	 * @return Vector validators
+	 * @return ArrayObject validators
 	 * @throws InvalidConfigException if any validation rule configuration is invalid
 	 */
 	public function createValidators()
 	{
-		$validators = new Vector;
+		$validators = new ArrayObject;
 		foreach ($this->rules() as $rule) {
 			if ($rule instanceof Validator) {
-				$validators->add($rule);
+				$validators->append($rule);
 			} elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
 				$validator = Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
-				$validators->add($validator);
+				$validators->append($validator);
 			} else {
 				throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
 			}
@@ -590,18 +592,22 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Returns the attribute names that are safe to be massively assigned in the current scenario.
-	 * @return array safe attribute names
+	 * @return string[] safe attribute names
 	 */
 	public function safeAttributes()
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
+		if (!isset($scenarios[$scenario])) {
+			return array();
+		}
 		$attributes = array();
-		if (isset($scenarios[$scenario])) {
-			foreach ($scenarios[$scenario] as $attribute) {
-				if ($attribute[0] !== '!') {
-					$attributes[] = $attribute;
-				}
+		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
+			$scenarios[$scenario] = $scenarios[$scenario]['attributes'];
+		}
+		foreach ($scenarios[$scenario] as $attribute) {
+			if ($attribute[0] !== '!') {
+				$attributes[] = $attribute;
 			}
 		}
 		return $attributes;
@@ -609,34 +615,37 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Returns the attribute names that are subject to validation in the current scenario.
-	 * @return array safe attribute names
+	 * @return string[] safe attribute names
 	 */
 	public function activeAttributes()
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
-		if (isset($scenarios[$scenario])) {
-			$attributes = $scenarios[$this->getScenario()];
-			foreach ($attributes as $i => $attribute) {
-				if ($attribute[0] === '!') {
-					$attributes[$i] = substr($attribute, 1);
-				}
-			}
-			return $attributes;
-		} else {
+		if (!isset($scenarios[$scenario])) {
 			return array();
 		}
+		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
+			$attributes = $scenarios[$scenario]['attributes'];
+		} else {
+			$attributes = $scenarios[$scenario];
+		}
+		foreach ($attributes as $i => $attribute) {
+			if ($attribute[0] === '!') {
+				$attributes[$i] = substr($attribute, 1);
+			}
+		}
+		return $attributes;
 	}
 
 	/**
 	 * Returns an iterator for traversing the attributes in the model.
 	 * This method is required by the interface IteratorAggregate.
-	 * @return DictionaryIterator an iterator for traversing the items in the list.
+	 * @return ArrayIterator an iterator for traversing the items in the list.
 	 */
 	public function getIterator()
 	{
 		$attributes = $this->getAttributes();
-		return new DictionaryIterator($attributes);
+		return new ArrayIterator($attributes);
 	}
 
 	/**

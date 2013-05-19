@@ -12,7 +12,7 @@ use yiiunit\data\base\InvalidRulesModel;
  */
 class ModelTest extends TestCase
 {
-	public function testGetAttributeLalel()
+	public function testGetAttributeLabel()
 	{
 		$speaker = new Speaker();
 		$this->assertEquals('First Name', $speaker->getAttributeLabel('firstName'));
