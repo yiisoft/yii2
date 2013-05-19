@@ -5,13 +5,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\bootstrap\widgets;
+namespace yii\bootstrap;
 
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\bootstrap\helpers\Button;
-use yii\bootstrap\enum\Enum;
 
 /**
  * Modal renders a bootstrap modal on the page for its use on your application.
@@ -34,7 +32,7 @@ use yii\bootstrap\enum\Enum;
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
-class Modal extends base\Widget
+class Modal extends Widget
 {
 	/**
 	 * @var array  The additional HTML attributes of the button that will show the modal. If empty array, only
@@ -137,16 +135,15 @@ class Modal extends base\Widget
 		$this->name = 'modal';
 
 		$this->defaultOption('id', $this->getId());
-		$this->selector = '#' . ArrayHelper::getValue($this->options, 'id');
 
-		$this->defaultOption('role', Enum::DIALOG);
+		$this->defaultOption('role', 'dialog');
 		$this->defaultOption('tabindex', '-1');
 
-		$this->addOption('class', Enum::MODAL);
-		$this->addOption('class', Enum::HIDE);
+		$this->addOption('class', 'modal');
+		$this->addOption('class', 'hide');
 
 		if ($this->fade)
-			$this->addOption('class', Enum::FADE);
+			$this->addOption('class', 'fade');
 
 		$this->initPluginOptions();
 		$this->initPluginEvents();
@@ -203,7 +200,7 @@ class Modal extends base\Widget
 
 			$this->buttonOptions['data-toggle'] = isset($this->buttonOptions['data-toggle'])
 				? $this->buttonOptions['data-toggle']
-				: Enum::MODAL;
+				: 'modal';
 
 			if ($this->remote !== null && !isset($this->buttonOptions['data-remote']))
 				$this->buttonOptions['data-remote'] = Html::url($this->remote);
@@ -218,7 +215,7 @@ class Modal extends base\Widget
 
 			$this->buttonOptions[$attr] = isset($this->buttonOptions[$attr])
 				? $this->buttonOptions[$attr]
-				: $this->selector;
+				: '#' . ArrayHelper::getValue($this->options, 'id');
 
 			echo Html::button($label, $name, $value, $this->buttonOptions);
 		}
@@ -245,7 +242,7 @@ class Modal extends base\Widget
 	{
 		echo Html::beginTag('div', array('class'=>'modal-header'));
 		if ($this->closeText)
-			echo Button::closeButton($this->closeText, Enum::MODAL);
+			echo Html::button($this->closeText, null, null, array('data-dismiss' => 'modal', 'class'=>'close'));
 		echo $this->renderSection($this->header);
 		echo Html::endTag('div');
 	}
@@ -290,13 +287,14 @@ class Modal extends base\Widget
 	 */
 	public function registerScript()
 	{
+		$id = '#' . ArrayHelper::getValue($this->options, 'id');
 		// do we render a button? If so, bootstrap will handle its behavior through its
 		// mark-up, otherwise, register the plugin.
 		if(empty($this->buttonOptions))
-			$this->registerPlugin($this->selector, $this->pluginOptions);
+			$this->registerPlugin($id, $this->pluginOptions);
 
 		// register events
-		$this->registerEvents($this->selector, $this->events);
+		$this->registerEvents($id, $this->events);
 	}
 
 }

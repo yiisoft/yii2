@@ -5,13 +5,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\bootstrap\widgets\base;
+namespace yii\bootstrap;
 
 use Yii;
 use yii\base\View;
-use yii\bootstrap\helpers\Assets;
-use yii\base\InvalidCallException;
-
 
 
 /**
@@ -26,7 +23,7 @@ class Widget extends \yii\base\Widget
 	/**
 	 * @var bool whether to register the asset
 	 */
-	public $responsive = true;
+	public static $responsive = true;
 
 	/**
 	 * @var array the HTML attributes for the widget container tag.
@@ -34,14 +31,9 @@ class Widget extends \yii\base\Widget
 	public $options = array();
 
 	/**
-	 * @var string the widget name
+	 * @var string the widget name (ie. modal, typeahead, tab)
 	 */
 	protected $name;
-
-	/**
-	 * @var string the jQuery selector of the widget
-	 */
-	protected $selector;
 
 	/**
 	 * Initializes the widget.
@@ -49,7 +41,7 @@ class Widget extends \yii\base\Widget
 	public function init()
 	{
 		// ensure bundle
-		Assets::registerBundle($this->responsive);
+		$this->registerBundle(static::$responsive);
 	}
 
 	/**
@@ -58,36 +50,50 @@ class Widget extends \yii\base\Widget
 	 * @param string[] $events  the JavaScript event configuration (name=>handler).
 	 * @param int $position the position of the JavaScript code.
 	 * @return boolean whether the events were registered.
+	 * @todo To be discussed
 	 */
 	protected function registerEvents($selector, $events = array(), $position = View::POS_END)
 	{
-		Assets::registerEvents($selector, $events, $position);
+		if (empty($events))
+			return;
+
+		$script = '';
+		foreach ($events as $name => $handler) {
+			$handler = ($handler instanceof JsExpression)
+				? $handler
+				: new JsExpression($handler);
+
+			$script .= ";jQuery(document).ready(function (){jQuery('{$selector}').on('{$name}', {$handler});});";
+		}
+		if (!empty($script))
+			$this->view->registerJs($script, array('position' => $position));
 	}
 
 	/**
 	 * Registers a specific Bootstrap plugin using the given selector and options.
-	 * @param string $selector the CSS selector.
-	 * @param array $options the JavaScript options for the plugin.
-	 * @param int $position the position of the JavaScript code.
-	 * @throws \yii\base\InvalidCallException
+	 *
+	 * @param string $selector the CSS selector
+	 * @param array $options the Javascript options for the plugin
+	 * @param int $position the position of the JavaScript code
 	 */
 	public function registerPlugin($selector, $options = array(), $position = View::POS_END)
 	{
-		if(null === $this->name)
-			throw new InvalidCallException();
-
-		Assets::registerPlugin($selector, $this->name, $options, $position);
+		$options = !empty($options) ? Json::encode($options) : '';
+		$script = ";jQuery(document).ready(function (){jQuery('{$selector}').{$this->name}({$options});});";
+		$this->view->registerJs($script, array('position' => $position));
 	}
 
 	/**
-	 * Generates a "somewhat" random id string.
-	 * @return string the id.
-	 * @todo not sure it should be here or
+	 * Registers bootstrap bundle
+	 * @param bool $responsive
 	 */
-	protected function getUniqueScriptId()
+	public function registerBundle($responsive = false)
 	{
-		return uniqid(time() . '#', true);
+		$bundle = $responsive ? 'yii/bootstrap' : 'yii/bootstrap-responsive';
+
+		$this->view->registerAssetBundle($bundle);
 	}
+
 
 	/**
 	 * Adds a new option. If the key does not exists, it will create one, if it exists it will append the value
