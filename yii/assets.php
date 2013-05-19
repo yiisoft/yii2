@@ -42,6 +42,23 @@ return array(
 		),
 		'depends' => array('yii'),
 	),
+	'twitter/bootstrap' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'bootstrap/css/bootstrap.css',
+		),
+		'js' => array(
+			'bootstrap/js/bootstrap.js',
+		),
+		'depends' => array('jquery'),
+	),
+	'twitter/bootstrap-responsive' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'bootstrap/css/bootstrap-responsive.css',
+		),
+		'depends' => array('bootstrap'),
+	),
 	'punycode' => array(
 		'sourcePath' => __DIR__ . '/vendor/bestiejs/punycode.js',
 		'js' => array(
