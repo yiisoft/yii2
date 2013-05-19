@@ -60,7 +60,7 @@ class AssetController extends Controller
 	 * @var string|callback Java Script file compressor.
 	 * If a string, it is treated as shell command template, which should contain
 	 * placeholders {from} - source file name - and {to} - output file name.
-	 * If an array, it is treated as PHP callback, which should perform the compression.
+	 * Otherwise, it is treated as PHP callback, which should perform the compression.
 	 *
 	 * Default value relies on usage of "Closure Compiler"
 	 * @see https://developers.google.com/closure/compiler/
@@ -70,7 +70,7 @@ class AssetController extends Controller
 	 * @var string|callback CSS file compressor.
 	 * If a string, it is treated as shell command template, which should contain
 	 * placeholders {from} - source file name - and {to} - output file name.
-	 * If an array, it is treated as PHP callback, which should perform the compression.
+	 * Otherwise, it is treated as PHP callback, which should perform the compression.
 	 *
 	 * Default value relies on usage of "YUI Compressor"
 	 * @see https://github.com/yui/yuicompressor/
@@ -78,6 +78,8 @@ class AssetController extends Controller
 	public $cssCompressor = 'java -jar yuicompressor.jar {from} -o {to}';
 
 	/**
+	 * Returns the asset manager instance.
+	 * @throws \yii\console\Exception on invalid configuration.
 	 * @return \yii\web\AssetManager asset manager instance.
 	 */
 	public function getAssetManager()
@@ -87,12 +89,19 @@ class AssetController extends Controller
 			if (!isset($options['class'])) {
 				$options['class'] = 'yii\\web\\AssetManager';
 			}
+			if (!isset($options['basePath'])) {
+				throw new Exception("Please specify 'basePath' for the 'assetManager' option.");
+			}
+			if (!isset($options['baseUrl'])) {
+				throw new Exception("Please specify 'baseUrl' for the 'assetManager' option.");
+			}
 			$this->_assetManager = Yii::createObject($options);
 		}
 		return $this->_assetManager;
 	}
 
 	/**
+	 * Sets asset manager instance or configuration.
 	 * @param \yii\web\AssetManager|array $assetManager asset manager instance or its array configuration.
 	 * @throws \yii\console\Exception on invalid argument type.
 	 */
