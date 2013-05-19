@@ -357,22 +357,15 @@ class Inflector
 	 * Converts an underscored or CamelCase word into a English
 	 * sentence.
 	 *
-	 * The titleize function converts text like "WelcomePage",
-	 * "welcome_page" or  "welcome page" to this "Welcome
-	 * Page".
-	 * If second parameter is set to 'first' it will only
-	 * capitalize the first character of the title.
-	 *
-	 * @param    string $word    Word to format as tile
-	 * @param    string $uppercase    If set to 'first' it will only uppercase the
-	 * first character. Otherwise it will uppercase all
-	 * the words in the title.
-	 * @return string Text formatted as title
+	 * @param string $words
+	 * @param bool $ucAll whether to set all words to uppercase
+	 * @return string
 	 */
-	public static function titleize($word, $uppercase = '')
+	public static function titleize($words, $ucAll = false)
 	{
-		$uppercase = $uppercase == 'first' ? 'ucfirst' : 'ucwords';
-		return $uppercase(static::humanize(static::underscore($word)));
+
+		$words = static::humanize(static::underscore($words), $ucAll);
+		return $ucAll ? ucwords($words) : ucfirst($words);
 	}
 
 	/**
@@ -383,8 +376,8 @@ class Inflector
 	 * "who's online" will be converted to "WhoSOnline"
 	 *
 	 * @see variablize
-	 * @param    string $word    Word to convert to camel case
-	 * @return string UpperCamelCasedWord
+	 * @param string $word the word to CamelCase
+	 * @return string
 	 */
 	public static function camelize($word)
 	{
@@ -392,44 +385,27 @@ class Inflector
 	}
 
 	/**
-	 * Converts a word "into_it_s_underscored_version"
+	 * Converts any "CamelCased" or "ordinary Word" into an "underscored_word".
 	 *
-	 * Convert any "CamelCased" or "ordinary Word" into an
-	 * "underscored_word".
-	 *
-	 * This can be really useful for creating friendly URLs.
-	 *
-	 * @access public
-	 * @static
-	 * @param    string $word    Word to underscore
-	 * @return string Underscored word
+	 * @param string $words the word(s) to underscore
+	 * @return string
 	 */
-	public static function underscore($word)
+	public static function underscore($words)
 	{
-		return strtolower(
-			preg_replace(
-				'/[^A-Z^a-z^0-9]+/',
-				'_',
-				preg_replace(
-					'/([a-zd])([A-Z])/',
-					'1_2',
-					preg_replace('/([A-Z]+)([A-Z][a-z])/', '1_2', $word)
-				)
-			)
-		);
+		return  strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $words));
 	}
 
 	/**
 	 * Returns a human-readable string from $word
 	 *
 	 * @param string $word the string to humanize
-	 * @param bool $uppercase whether to set all words to uppercase or not
+	 * @param bool $ucAll whether to set all words to uppercase or not
 	 * @return string
 	 */
-	public static function humanize($word, $uppercase = false)
+	public static function humanize($word, $ucAll = false)
 	{
 		$word = str_replace('_', ' ', preg_replace('/_id$/', '', $word));
-		return $uppercase ? ucwords($word) : ucfirst($word);
+		return $ucAll ? ucwords($word) : ucfirst($word);
 	}
 
 	/**
