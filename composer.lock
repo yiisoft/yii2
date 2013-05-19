@@ -6,22 +6,6 @@
     "hash": "a8f949e337a229a4cfb41496a0071ef6",
     "packages": [
         {
-            "name": "bestiejs/punycode.js",
-            "version": "1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bestiejs/punycode.js.git",
-                "reference": "tags/1.2.1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/bestiejs/punycode.js/archive/master.zip",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "library"
-        },
-        {
             "name": "ezyang/htmlpurifier",
             "version": "v4.5.0",
             "source": {

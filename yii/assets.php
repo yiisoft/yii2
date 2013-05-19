@@ -60,9 +60,9 @@ return array(
 		'depends' => array('yii/bootstrap'),
 	),
 	'yii/punycode' => array(
-		'sourcePath' => __DIR__ . '/vendor/bestiejs/punycode.js',
+		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
-			'punycode.min.js',
+			'punycode/punycode.min.js',
 		),
 	),
 );
