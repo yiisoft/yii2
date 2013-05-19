@@ -11,7 +11,7 @@
  */
 
 // you may need to adjust this path to the correct Yii framework path
-$frameworkPath = dirname(__FILE__) . '/../../../yii';
+$frameworkPath = dirname(__FILE__) . '/../../yii';
 
 require_once($frameworkPath . '/requirements/YiiRequirementChecker.php');
 $requirementsChecker = new YiiRequirementChecker();

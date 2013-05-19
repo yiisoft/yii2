@@ -13,7 +13,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 // fcgi doesn't have STDIN defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
-$frameworkPath = __DIR__ . '/../../../yii';
+$frameworkPath = __DIR__ . '/../../yii';
 
 require($frameworkPath . '/Yii.php');
 
