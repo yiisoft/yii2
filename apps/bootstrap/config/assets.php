@@ -12,7 +12,7 @@ return array(
 		),
 		'depends' => array(
 			'yii',
-			'twitter/bootstrap-responsive',
+			'yii/bootstrap-responsive',
 		),
 	),
 );

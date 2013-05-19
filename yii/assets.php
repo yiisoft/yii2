@@ -1,18 +1,18 @@
 <?php
 
 return array(
-	'jquery' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'jquery.min.js',
-		),
-	),
 	'yii' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'yii.js',
 		),
-		'depends' => array('jquery'),
+		'depends' => array('yii/jquery'),
+	),
+	'yii/jquery' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'jquery.min.js',
+		),
 	),
 	'yii/validation' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -42,7 +42,7 @@ return array(
 		),
 		'depends' => array('yii'),
 	),
-	'twitter/bootstrap' => array(
+	'yii/bootstrap' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'bootstrap/css/bootstrap.css',
@@ -50,16 +50,16 @@ return array(
 		'js' => array(
 			'bootstrap/js/bootstrap.js',
 		),
-		'depends' => array('jquery'),
+		'depends' => array('yii/jquery'),
 	),
-	'twitter/bootstrap-responsive' => array(
+	'yii/bootstrap-responsive' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'bootstrap/css/bootstrap-responsive.css',
 		),
-		'depends' => array('twitter/bootstrap'),
+		'depends' => array('yii/bootstrap'),
 	),
-	'punycode' => array(
+	'yii/punycode' => array(
 		'sourcePath' => __DIR__ . '/vendor/bestiejs/punycode.js',
 		'js' => array(
 			'punycode.min.js',

@@ -140,7 +140,7 @@ class UrlValidator extends Validator
 
 		$view->registerAssetBundle('yii/validation');
 		if ($this->enableIDN) {
-			$view->registerAssetBundle('punycode');
+			$view->registerAssetBundle('yii/punycode');
 		}
 		return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
 	}
