@@ -449,16 +449,11 @@ class Inflector
 	}
 
 	/**
-	 * Converts a class name to its table name according to rails
-	 * naming conventions.
+	 * Converts a class name to its table name (pluralized)
+	 * naming conventions. For example, converts "Person" to "people"
 	 *
-	 * Converts "Person" to "people"
-	 *
-	 * @access public
-	 * @static
-	 * @see classify
-	 * @param    string $class_name    Class name for getting related table_name.
-	 * @return string plural_table_name
+	 * @param string $class_name the class name for getting related table_name
+	 * @return string
 	 */
 	public static function tableize($class_name)
 	{
@@ -487,16 +482,10 @@ class Inflector
 	}
 
 	/**
-	 * Converts a table name to its class name according to rails
-	 * naming conventions.
+	 * Converts a table name to its class name. For example, converts "people" to "Person"
 	 *
-	 * Converts "people" to "Person"
-	 *
-	 * @access public
-	 * @static
-	 * @see tableize
-	 * @param    string $table_name    Table name for getting related ClassName.
-	 * @return string SingularClassName
+	 * @param string $table_name
+	 * @return string
 	 */
 	public static function classify($table_name)
 	{
