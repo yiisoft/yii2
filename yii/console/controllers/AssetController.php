@@ -203,12 +203,16 @@ class AssetController extends Controller
 			$assetManager = $this->getAssetManager();
 			foreach ($bundle->depends as $dependencyName) {
 				if (!array_key_exists($dependencyName, $result)) {
+					if ($result[$dependencyName] === false) {
+						throw new Exception("A circular dependency is detected for target '{$dependencyName}'.");
+					}
 					$dependencyBundle = $assetManager->getBundle($dependencyName);
 					if ($dependencyBundle === null) {
 						throw new Exception("Unable to load dependency bundle '{$dependencyName}' for bundle '{$name}'.");
 					} else {
-						$result[$dependencyName] = $dependencyBundle;
+						$result[$dependencyName] = false;
 						$this->loadBundleDependency($dependencyName, $dependencyBundle, $result);
+						$result[$dependencyName] = $dependencyBundle;
 					}
 				}
 			}
