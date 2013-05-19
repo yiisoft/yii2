@@ -57,7 +57,7 @@ return array(
 		'css' => array(
 			'bootstrap/css/bootstrap-responsive.css',
 		),
-		'depends' => array('bootstrap'),
+		'depends' => array('twitter/bootstrap'),
 	),
 	'punycode' => array(
 		'sourcePath' => __DIR__ . '/vendor/bestiejs/punycode.js',
