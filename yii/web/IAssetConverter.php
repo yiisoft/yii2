@@ -19,9 +19,7 @@ interface IAssetConverter
 	 * Converts a given asset file into a CSS or JS file.
 	 * @param string $asset the asset file path, relative to $basePath
 	 * @param string $basePath the directory the $asset is relative to.
-	 * @param string $baseUrl the URL corresponding to $basePath
-	 * @return string the URL to the converted asset file. If the given asset does not
-	 * need conversion, "$baseUrl/$asset" should be returned.
+	 * @return string the converted asset file path, relative to $basePath.
 	 */
-	public function convert($asset, $basePath, $baseUrl);
+	public function convert($asset, $basePath);
 }
