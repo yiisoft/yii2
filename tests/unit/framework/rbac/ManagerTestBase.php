@@ -167,7 +167,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->assertTrue($this->auth->executeBizRule(null, array(), null));
 		$this->assertTrue($this->auth->executeBizRule('return 1 == true;', array(), null));
 		$this->assertTrue($this->auth->executeBizRule('return $params[0] == $params[1];', array(1, '1'), null));
-		$this->assertFalse($this->auth->executeBizRule('invalid', array(), null));
+		$this->assertFalse($this->auth->executeBizRule('invalid;', array(), null));
 	}
 
 	public function testCheckAccess()

@@ -1,0 +1,20 @@
+{
+	"name": "yiisoft/yii2-bootstrap",
+	"description": "Yii 2 Bootstrap Application",
+	"keywords": ["yii", "framework", "bootstrap"],
+	"homepage": "http://www.yiiframework.com/",
+	"type": "project",
+	"license": "BSD-3-Clause",
+	"support": {
+		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/yiisoft/yii2"
+	},
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.3.0",
+		"yiisoft/yii2": "dev-master"
+	}
+}

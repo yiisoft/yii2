@@ -41,7 +41,7 @@ class ResponseTest extends \yiiunit\TestCase
 		static::$httpResponseCode = 200;
 	}
 
-	public function ranges()
+	public function rightRanges()
 	{
 		// TODO test more cases for range requests and check for rfc compatibility
 		// http://www.w3.org/Protocols/rfc2616/rfc2616.txt
@@ -53,20 +53,44 @@ class ResponseTest extends \yiiunit\TestCase
 	}
 
 	/**
-	 * @dataProvider ranges
+	 * @dataProvider rightRanges
 	 */
 	public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedFile)
 	{
 		$content = $this->generateTestFileContent();
-
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
 		$sent = $this->runSendFile('testFile.txt', $content, null);
+
 		$this->assertEquals($expectedFile, $sent);
 		$this->assertTrue(in_array('HTTP/1.1 206 Partial Content', static::$headers));
 		$this->assertTrue(in_array('Accept-Ranges: bytes', static::$headers));
 		$this->assertArrayHasKey('Content-Range: bytes ' . $expectedHeader . '/' . StringHelper::strlen($content), array_flip(static::$headers));
 		$this->assertTrue(in_array('Content-Type: text/plain', static::$headers));
 		$this->assertTrue(in_array('Content-Length: ' . $length, static::$headers));
+	}
+
+	public function wrongRanges()
+	{
+		// TODO test more cases for range requests and check for rfc compatibility
+		// http://www.w3.org/Protocols/rfc2616/rfc2616.txt
+		return array(
+			array('1-2,3-5,6-10'),	// multiple range request not supported
+			array('5-1'),			// last-byte-pos value is less than its first-byte-pos value
+			array('-100000'),		// last-byte-pos bigger then content length
+			array('10000-'),			// first-byte-pos bigger then content length
+		);
+	}
+
+	/**
+	 * @dataProvider wrongRanges
+	 */
+	public function testSendFileWrongRanges($rangeHeader)
+	{
+		$this->setExpectedException('yii\base\HttpException', 'Requested Range Not Satisfiable');
+
+		$content = $this->generateTestFileContent();
+		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
+		$this->runSendFile('testFile.txt', $content, null);
 	}
 
 	protected function generateTestFileContent()

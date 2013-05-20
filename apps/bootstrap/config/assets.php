@@ -5,8 +5,6 @@ return array(
 		'basePath' => '@wwwroot',
 		'baseUrl' => '@www',
 		'css' => array(
-			'css/bootstrap.min.css',
-			'css/bootstrap-responsive.min.css',
 			'css/site.css',
 		),
 		'js' => array(
@@ -14,6 +12,7 @@ return array(
 		),
 		'depends' => array(
 			'yii',
+			'yii/bootstrap-responsive',
 		),
 	),
 );

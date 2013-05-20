@@ -1,18 +1,18 @@
 <?php
 
 return array(
-	'jquery' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'jquery.min.js',
-		),
-	),
 	'yii' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'yii.js',
 		),
-		'depends' => array('jquery'),
+		'depends' => array('yii/jquery'),
+	),
+	'yii/jquery' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'jquery.min.js',
+		),
 	),
 	'yii/validation' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -42,10 +42,27 @@ return array(
 		),
 		'depends' => array('yii'),
 	),
-	'punycode' => array(
-		'sourcePath' => __DIR__ . '/vendor/bestiejs/punycode.js',
+	'yii/bootstrap' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'bootstrap/css/bootstrap.css',
+		),
 		'js' => array(
-			'punycode.min.js',
+			'bootstrap/js/bootstrap.js',
+		),
+		'depends' => array('yii/jquery'),
+	),
+	'yii/bootstrap-responsive' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'bootstrap/css/bootstrap-responsive.css',
+		),
+		'depends' => array('yii/bootstrap'),
+	),
+	'yii/punycode' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'punycode/punycode.min.js',
 		),
 	),
 );

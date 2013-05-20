@@ -13,9 +13,8 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 // fcgi doesn't have STDIN defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
-$frameworkPath = __DIR__ . '/../../../yii';
-
-require($frameworkPath . '/Yii.php');
+require(__DIR__ . '/vendor/yiisoft/yii2/yii.php');
+require(__DIR__ . '/vendor/autoload.php');
 
 $config = require(__DIR__ . '/config/console.php');
 
