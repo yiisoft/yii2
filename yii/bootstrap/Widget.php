@@ -31,11 +31,6 @@ class Widget extends \yii\base\Widget
 	public $options = array();
 
 	/**
-	 * @var string the widget name (ie. modal, typeahead, tab)
-	 */
-	protected $name;
-
-	/**
 	 * Initializes the widget.
 	 */
 	public function init()
@@ -48,11 +43,10 @@ class Widget extends \yii\base\Widget
 	 * Registers plugin events with the API.
 	 * @param string $selector the CSS selector.
 	 * @param string[] $events  the JavaScript event configuration (name=>handler).
-	 * @param int $position the position of the JavaScript code.
 	 * @return boolean whether the events were registered.
 	 * @todo To be discussed
 	 */
-	protected function registerEvents($selector, $events = array(), $position = View::POS_END)
+	protected function registerEvents($selector, $events = array())
 	{
 		if (empty($events))
 			return;
@@ -63,24 +57,24 @@ class Widget extends \yii\base\Widget
 				? $handler
 				: new JsExpression($handler);
 
-			$script .= ";jQuery(document).ready(function (){jQuery('{$selector}').on('{$name}', {$handler});});";
+			$script .= ";jQuery('{$selector}').on('{$name}', {$handler});";
 		}
 		if (!empty($script))
-			$this->view->registerJs($script, array('position' => $position));
+			$this->view->registerJs($script);
 	}
 
 	/**
 	 * Registers a specific Bootstrap plugin using the given selector and options.
 	 *
-	 * @param string $selector the CSS selector
+	 * @param string $name the name of the javascript widget to initialize
 	 * @param array $options the Javascript options for the plugin
-	 * @param int $position the position of the JavaScript code
 	 */
-	public function registerPlugin($selector, $options = array(), $position = View::POS_END)
+	public function registerPlugin($name, $options = array())
 	{
+		$selector = '#' . ArrayHelper::getValue($this->options, 'id');
 		$options = !empty($options) ? Json::encode($options) : '';
-		$script = ";jQuery(document).ready(function (){jQuery('{$selector}').{$this->name}({$options});});";
-		$this->view->registerJs($script, array('position' => $position));
+		$script = ";jQuery('{$selector}').{$name}({$options});";
+		$this->view->registerJs($script);
 	}
 
 	/**
@@ -89,31 +83,28 @@ class Widget extends \yii\base\Widget
 	 */
 	public function registerBundle($responsive = false)
 	{
-		$bundle = $responsive ? 'yii/bootstrap' : 'yii/bootstrap-responsive';
-
+		$bundle = $responsive ? 'yii/bootstrap-responsive' : 'yii/bootstrap';
 		$this->view->registerAssetBundle($bundle);
 	}
 
 
 	/**
-	 * Adds a new option. If the key does not exists, it will create one, if it exists it will append the value
-	 * and also makes sure the uniqueness of them.
+	 * Adds a new class to options. If the class key does not exists, it will create one, if it exists it will append
+	 * the value and also makes sure the uniqueness of them.
 	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @param string $glue
+	 * @param string $class
 	 * @return array
 	 */
-	protected function addOption($key, $value, $glue = ' ')
+	protected function addClassName($class)
 	{
-		if (isset($this->options[$key])) {
-			if (!is_array($this->options[$key]))
-				$this->options[$key] = explode($glue, $this->options[$key]);
-			$this->options[$key][] = $value;
-			$this->options[$key] = array_unique($this->options[$key]);
-			$this->options[$key] = implode($glue, $this->options[$key]);
+		if (isset($this->options['class'])) {
+			if (!is_array($this->options['class']))
+				$this->options['class'] = explode(' ', $this->options['class']);
+			$this->options['class'][] = $class;
+			$this->options['class'] = array_unique($this->options['class']);
+			$this->options['class'] = implode(' ', $this->options['class']);
 		} else
-			$this->options[$key] = $value;
+			$this->options['class'] = $class;
 		return $this->options;
 	}
 

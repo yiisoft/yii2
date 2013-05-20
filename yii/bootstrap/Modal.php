@@ -21,10 +21,11 @@ use yii\helpers\ArrayHelper;
  * 	'id' => 'myModal',
  * 	'header' => 'Modal Heading',
  * 	'content' => '<p>One fine body...</p>',
- * 	'footer' => '//modal/_footer', // we can also use view paths
+ * 	'footer' => 'Modal Footer',
+ *  // if we wish to display a modal button
  * 	'buttonOptions' => array(
  * 		'label' => 'Show Modal',
- * 		'class' => \yii\bootstrap\enum\Button::TYPE_DEFAULT
+ * 		'class' => 'btn btn-primary'
  * 		)
  * ));
  * ```
@@ -139,11 +140,11 @@ class Modal extends Widget
 		$this->defaultOption('role', 'dialog');
 		$this->defaultOption('tabindex', '-1');
 
-		$this->addOption('class', 'modal');
-		$this->addOption('class', 'hide');
+		$this->addClassName('modal');
+		$this->addClassName('hide');
 
 		if ($this->fade)
-			$this->addOption('class', 'fade');
+			$this->addClassName('fade');
 
 		$this->initPluginOptions();
 		$this->initPluginEvents();
@@ -243,7 +244,7 @@ class Modal extends Widget
 		echo Html::beginTag('div', array('class'=>'modal-header'));
 		if ($this->closeText)
 			echo Html::button($this->closeText, null, null, array('data-dismiss' => 'modal', 'class'=>'close'));
-		echo $this->renderSection($this->header);
+		echo $this->header;
 		echo Html::endTag('div');
 	}
 
@@ -253,7 +254,7 @@ class Modal extends Widget
 	public function renderModalBody()
 	{
 		echo Html::beginTag('div', array('class'=>'modal-body'));
-		echo $this->renderSection($this->content);
+		echo $this->content;
 		echo Html::endTag('div');
 	}
 
@@ -264,22 +265,8 @@ class Modal extends Widget
 	{
 
 		echo Html::beginTag('div', array('class'=>'modal-footer'));
-		echo $this->renderSection($this->footer);
+		echo $this->footer;
 		echo Html::endTag('div');
-	}
-
-	/**
-	 * Renders a section. If the section is a view file, the returned string will be the contents of the view file,
-	 * otherwise, it will return the string in the $section variable.
-	 * @param string $section
-	 * @return string
-	 */
-	public function renderSection($section)
-	{
-		$viewFile = Yii::getAlias($section);
-		if (is_file($viewFile))
-			return $this->view->renderFile($viewFile, array(), $this);
-		return $section;
 	}
 
 	/**
@@ -287,14 +274,13 @@ class Modal extends Widget
 	 */
 	public function registerScript()
 	{
-		$id = '#' . ArrayHelper::getValue($this->options, 'id');
 		// do we render a button? If so, bootstrap will handle its behavior through its
 		// mark-up, otherwise, register the plugin.
 		if(empty($this->buttonOptions))
-			$this->registerPlugin($id, $this->pluginOptions);
+			$this->registerPlugin('modal', $this->pluginOptions);
 
 		// register events
-		$this->registerEvents($id, $this->events);
+		$this->registerEvents($this->events);
 	}
 
 }
