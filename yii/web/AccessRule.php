@@ -124,7 +124,7 @@ class AccessRule extends Component
 	 */
 	protected function matchController($controller)
 	{
-		return empty($this->controllers) || in_array($controller->id, $this->controllers, true);
+		return empty($this->controllers) || in_array($controller->uniqueId, $this->controllers, true);
 	}
 
 	/**
