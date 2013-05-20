@@ -407,7 +407,6 @@ class AssetController extends Controller
 	 * @param \yii\web\AssetBundle[] $targets list of asset bundles to be saved.
 	 * @param string $bundleFile output file name.
 	 * @throws \yii\console\Exception on failure.
-	 * @return void
 	 */
 	protected function saveTargets($targets, $bundleFile)
 	{
