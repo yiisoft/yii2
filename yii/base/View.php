@@ -58,6 +58,11 @@ class View extends Component
 	 */
 	const POS_END = 3;
 	/**
+	 * The location of registered JavaScript code block.
+	 * This means the JavaScript code block will be enclosed within `jQuery(document).ready()`.
+	 */
+	const POS_READY = 4;
+	/**
 	 * This is internally used as the placeholder for receiving the content registered for the head section.
 	 */
 	const PL_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
@@ -630,24 +635,26 @@ class View extends Component
 	/**
 	 * Registers a JS code block.
 	 * @param string $js the JS code block to be registered
-	 * @param array $options the HTML attributes for the script tag. A special option
-	 * named "position" is supported which specifies where the JS script tag should be inserted
-	 * in a page. The possible values of "position" are:
+	 * @param integer $position the position at which the JS script tag should be inserted
+	 * in a page. The possible values are:
 	 *
 	 * - [[POS_HEAD]]: in the head section
 	 * - [[POS_BEGIN]]: at the beginning of the body section
 	 * - [[POS_END]]: at the end of the body section
+	 * - [[POS_READY]]: enclosed within jQuery(document).ready(). This is the default value.
+	 *   Note that by using this position, the method will automatically register the jquery js file.
 	 *
 	 * @param string $key the key that identifies the JS code block. If null, it will use
 	 * $js as the key. If two JS code blocks are registered with the same key, the latter
 	 * will overwrite the former.
 	 */
-	public function registerJs($js, $options = array(), $key = null)
+	public function registerJs($js, $position = self::POS_READY, $key = null)
 	{
-		$position = isset($options['position']) ? $options['position'] : self::POS_END;
-		unset($options['position']);
 		$key = $key ?: $js;
-		$this->js[$position][$key] = Html::script($js, $options);
+		$this->js[$position][$key] = $js;
+		if ($position === self::POS_READY) {
+			$this->registerAssetBundle('yii/jquery');
+		}
 	}
 
 	/**
@@ -659,7 +666,7 @@ class View extends Component
 	 *
 	 * - [[POS_HEAD]]: in the head section
 	 * - [[POS_BEGIN]]: at the beginning of the body section
-	 * - [[POS_END]]: at the end of the body section
+	 * - [[POS_END]]: at the end of the body section. This is the default value.
 	 *
 	 * @param string $key the key that identifies the JS script file. If null, it will use
 	 * $url as the key. If two JS files are registered with the same key, the latter
@@ -697,7 +704,7 @@ class View extends Component
 			$lines[] = implode("\n", $this->jsFiles[self::POS_HEAD]);
 		}
 		if (!empty($this->js[self::POS_HEAD])) {
-			$lines[] = implode("\n", $this->js[self::POS_HEAD]);
+			$lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), array('type' => 'text/javascript'));
 		}
 		return empty($lines) ? '' : implode("\n", $lines) . "\n";
 	}
@@ -714,7 +721,7 @@ class View extends Component
 			$lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
 		}
 		if (!empty($this->js[self::POS_BEGIN])) {
-			$lines[] = implode("\n", $this->js[self::POS_BEGIN]);
+			$lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]), array('type' => 'text/javascript'));
 		}
 		return empty($lines) ? '' : implode("\n", $lines) . "\n";
 	}
@@ -731,7 +738,11 @@ class View extends Component
 			$lines[] = implode("\n", $this->jsFiles[self::POS_END]);
 		}
 		if (!empty($this->js[self::POS_END])) {
-			$lines[] = implode("\n", $this->js[self::POS_END]);
+			$lines[] = Html::script(implode("\n", $this->js[self::POS_END]), array('type' => 'text/javascript'));
+		}
+		if (!empty($this->js[self::POS_READY])) {
+			$js = "jQuery(document).ready(function(){\n{" . implode("\n", $this->js[self::POS_READY]) . "}\n});";
+			$lines[] = Html::script($js, array('type' => 'text/javascript'));
 		}
 		return empty($lines) ? '' : implode("\n", $lines) . "\n";
 	}
