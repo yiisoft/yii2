@@ -256,7 +256,7 @@ class AssetController extends Controller
 		foreach ($target->depends as $name) {
 			if (isset($bundles[$name])) {
 				foreach ($bundles[$name]->$type as $file) {
-					$inputFiles[] = $bundles[$name]->basePath . $file;
+					$inputFiles[] = $bundles[$name]->basePath . '/' . $file;
 				}
 			} else {
 				throw new Exception("Unknown bundle: $name");
@@ -383,13 +383,13 @@ EOD
 		if (is_string($this->jsCompressor)) {
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineJsFiles($inputFiles, $tmpFile);
-			$log = shell_exec(strtr($this->jsCompressor, array(
+			echo shell_exec(strtr($this->jsCompressor, array(
 				'{from}' => escapeshellarg($tmpFile),
 				'{to}' => escapeshellarg($outputFile),
 			)));
 			@unlink($tmpFile);
 		} else {
-			$log = call_user_func($this->jsCompressor, $this, $inputFiles, $outputFile);
+			call_user_func($this->jsCompressor, $this, $inputFiles, $outputFile);
 		}
 		if (!file_exists($outputFile)) {
 			throw new Exception("Unable to compress JavaScript files into '{$outputFile}'.");
@@ -412,13 +412,13 @@ EOD
 		if (is_string($this->cssCompressor)) {
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineCssFiles($inputFiles, $tmpFile);
-			$log = shell_exec(strtr($this->cssCompressor, array(
+			echo shell_exec(strtr($this->cssCompressor, array(
 				'{from}' => escapeshellarg($tmpFile),
 				'{to}' => escapeshellarg($outputFile),
 			)));
 			@unlink($tmpFile);
 		} else {
-			$log = call_user_func($this->cssCompressor, $this, $inputFiles, $outputFile);
+			call_user_func($this->cssCompressor, $this, $inputFiles, $outputFile);
 		}
 		if (!file_exists($outputFile)) {
 			throw new Exception("Unable to compress CSS files into '{$outputFile}'.");
