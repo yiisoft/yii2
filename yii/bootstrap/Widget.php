@@ -9,19 +9,20 @@ namespace yii\bootstrap;
 
 use Yii;
 use yii\base\View;
+use yii\helpers\Json;
 
 
 /**
- * Bootstrap is the base class for bootstrap widgets.
+ * \yii\bootstrap\Widget is the base class for all bootstrap widgets.
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Widget extends \yii\base\Widget
 {
-
 	/**
-	 * @var bool whether to register the asset
+	 * @var boolean whether to use the responsive version of Bootstrap.
 	 */
 	public static $responsive = true;
 
@@ -29,95 +30,75 @@ class Widget extends \yii\base\Widget
 	 * @var array the HTML attributes for the widget container tag.
 	 */
 	public $options = array();
+	/**
+	 * @var array the options for the underlying Bootstrap JS plugin.
+	 * Please refer to the corresponding Bootstrap plugin Web page for possible options.
+	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
+	 * how to use the "Modal" plugin and the supported options (e.g. "remote").
+	 */
+	public $pluginOptions = array();
+	/**
+	 * @var array the event handlers for the underlying Bootstrap JS plugin.
+	 * Please refer to the corresponding Bootstrap plugin Web page for possible events.
+	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
+	 * how to use the "Modal" plugin and the supported events (e.g. "shown").
+	 */
+	public $pluginEvents = array();
+
 
 	/**
 	 * Initializes the widget.
+	 * This method will register the bootstrap asset bundle. If you override this method,
+	 * make sure you call the parent implementation first.
 	 */
 	public function init()
 	{
-		// ensure bundle
-		$this->registerBundle(static::$responsive);
-	}
-
-	/**
-	 * Registers plugin events with the API.
-	 * @param string $selector the CSS selector.
-	 * @param string[] $events  the JavaScript event configuration (name=>handler).
-	 * @return boolean whether the events were registered.
-	 * @todo To be discussed
-	 */
-	protected function registerEvents($selector, $events = array())
-	{
-		if (empty($events))
-			return;
-
-		$script = '';
-		foreach ($events as $name => $handler) {
-			$handler = ($handler instanceof JsExpression)
-				? $handler
-				: new JsExpression($handler);
-
-			$script .= ";jQuery('{$selector}').on('{$name}', {$handler});";
+		parent::init();
+		if (!isset($this->options['id'])) {
+			$this->options['id'] = $this->getId();
 		}
-		if (!empty($script))
-			$this->view->registerJs($script);
 	}
 
 	/**
-	 * Registers a specific Bootstrap plugin using the given selector and options.
-	 *
-	 * @param string $name the name of the javascript widget to initialize
-	 * @param array $options the Javascript options for the plugin
+	 * Registers a specific Bootstrap plugin and the related events
+	 * @param string $name the name of the Bootstrap plugin
 	 */
-	public function registerPlugin($name, $options = array())
+	protected function registerPlugin($name)
 	{
-		$selector = '#' . ArrayHelper::getValue($this->options, 'id');
-		$options = !empty($options) ? Json::encode($options) : '';
-		$script = ";jQuery('{$selector}').{$name}({$options});";
-		$this->view->registerJs($script);
+		$id = $this->options['id'];
+		$view = $this->getView();
+
+		$bundle = static::$responsive ? 'yii/bootstrap-responsive' : 'yii/bootstrap';
+		$view->registerAssetBundle($bundle);
+
+		if ($this->pluginOptions !== false) {
+			$options = empty($this->pluginOptions) ? '' : Json::encode($this->pluginOptions);
+			$js = "jQuery('#$id').$name($options);";
+			$view->registerJs($js);
+		}
+
+		if (!empty($this->pluginEvents)) {
+			$js = array();
+			foreach ($this->pluginEvents as $event => $handler) {
+				$js[] = "jQuery('#$id').on('$event', $handler);";
+			}
+			$view->registerJs(implode("\n", $js));
+		}
 	}
 
 	/**
-	 * Registers bootstrap bundle
-	 * @param bool $responsive
+	 * Adds a CSS class to the specified options.
+	 * This method will ensure that the CSS class is unique and the "class" option is properly formatted.
+	 * @param array $options the options to be modified.
+	 * @param string $class the CSS class to be added
 	 */
-	public function registerBundle($responsive = false)
+	protected function addCssClass(&$options, $class)
 	{
-		$bundle = $responsive ? 'yii/bootstrap-responsive' : 'yii/bootstrap';
-		$this->view->registerAssetBundle($bundle);
-	}
-
-
-	/**
-	 * Adds a new class to options. If the class key does not exists, it will create one, if it exists it will append
-	 * the value and also makes sure the uniqueness of them.
-	 *
-	 * @param string $class
-	 * @return array
-	 */
-	protected function addClassName($class)
-	{
-		if (isset($this->options['class'])) {
-			if (!is_array($this->options['class']))
-				$this->options['class'] = explode(' ', $this->options['class']);
-			$this->options['class'][] = $class;
-			$this->options['class'] = array_unique($this->options['class']);
-			$this->options['class'] = implode(' ', $this->options['class']);
-		} else
-			$this->options['class'] = $class;
-		return $this->options;
-	}
-
-	/**
-	 * Sets the default value for an item if not set.
-	 * @param string $key the name of the item.
-	 * @param mixed $value the default value.
-	 * @return array
-	 */
-	protected function defaultOption($key, $value)
-	{
-		if (!isset($this->options[$key]))
-			$this->options[$key] = $value;
-		return $this->options;
+		if (isset($options['class'])) {
+			$classes = preg_split('/\s+/', $options['class'] . ' ' . $class, -1, PREG_SPLIT_NO_EMPTY);
+			$options['class'] = implode(' ', array_unique($classes));
+		} else {
+			$options['class'] = $class;
+		}
 	}
 }
