@@ -614,7 +614,7 @@ class View extends Component
 	 */
 	public function registerCss($css, $options = array(), $key = null)
 	{
-		$key = $key ?: $css;
+		$key = $key ?: md5($css);
 		$this->css[$key] = Html::style($css, $options);
 	}
 
@@ -650,7 +650,7 @@ class View extends Component
 	 */
 	public function registerJs($js, $position = self::POS_READY, $key = null)
 	{
-		$key = $key ?: $js;
+		$key = $key ?: md5($js);
 		$this->js[$position][$key] = $js;
 		if ($position === self::POS_READY) {
 			$this->registerAssetBundle('yii/jquery');
