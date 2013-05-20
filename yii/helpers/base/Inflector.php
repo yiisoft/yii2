@@ -10,7 +10,7 @@ namespace yii\helpers\base;
 use Yii;
 
 /**
- * Inflector pluralizes and singularizes English nouns. It also contains other useful methods.
+ * Inflector pluralizes and singularizes English nouns. It also contains some other useful methods.
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
