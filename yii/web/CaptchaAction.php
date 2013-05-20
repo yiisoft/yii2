@@ -94,6 +94,10 @@ class CaptchaAction extends Action
 	 * If not set, it means the verification code will be randomly generated.
 	 */
 	public $fixedVerifyCode;
+	/**
+	 * @var boolean whether to add noise to the image. Defaults to true.
+	 */
+	public $addNoise = true;
 
 
 	/**
@@ -255,6 +259,16 @@ class CaptchaAction extends Action
 			imagecolortransparent($image, $backColor);
 		}
 
+		if ($this->addNoise) {
+			$pix = imagecolorallocate($image, 
+				(int)($this->foreColor % 0x1000000 / 0x10000),
+				(int)($this->foreColor % 0x1000000 / 0x10000),
+				$this->foreColor % 0x100); 
+			for ($i = 0; $i < (int)$this->width*$this->height/8; $i++) {
+				imagesetpixel($image, mt_rand(0, $this->width), mt_rand(0, $this->height), $pix);
+			}
+		}
+
 		$foreColor = imagecolorallocate($image,
 			(int)($this->foreColor % 0x1000000 / 0x10000),
 			(int)($this->foreColor % 0x10000 / 0x100),
@@ -318,6 +332,8 @@ class CaptchaAction extends Action
 			$fontMetrics = $image->queryFontMetrics($draw, $code[$i]);
 			$x += (int)($fontMetrics['textWidth']) + $this->offset;
 		}
+
+		$this->addNoise && $image->addNoiseImage(imagick::NOISE_MULTIPLICATIVEGAUSSIAN,imagick::CHANNEL_ALL);
 
 		header('Pragma: public');
 		header('Expires: 0');
