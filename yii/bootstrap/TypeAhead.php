@@ -8,6 +8,7 @@
 namespace yii\bootstrap;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
 
@@ -52,11 +53,15 @@ class TypeAhead extends Widget
 	 * @var string the model attribute that this field is associated with
 	 */
 	public $attribute;
-
 	/**
 	 * @var string the input name. This must be set if [[form]] is not set.
 	 */
 	public $name;
+	/**
+	 * @var string the input value.
+	 */
+	public $value;
+
 
 	/**
 	 * Renders the widget
@@ -72,20 +77,20 @@ class TypeAhead extends Widget
 	 * If [[model]] is null or not from an [[Model]] instance, then the field will be rendered according to
 	 * the [[name]] attribute.
 	 * @return string the rendering result
-	 * @throws InvalidParamException when none of the required attributes are set to render the textInput. That is,
+	 * @throws InvalidConfigException when none of the required attributes are set to render the textInput. That is,
 	 * if [[model]] and [[attribute]] are not set, then [[name]] is required.
 	 */
 	public function renderField()
 	{
 		if ($this->model instanceof Model && $this->attribute !== null) {
 
-			$this->options['id'] = $this->id = Html::getInputId($this->model, $this->attribute);
+			$this->options['id'] = Html::getInputId($this->model, $this->attribute);
 
 			return Html::activeTextInput($this->model, $this->attribute, $this->options);
 		}
 
 		if ($this->name === null) {
-			throw new InvalidParamException(
+			throw new InvalidConfigException(
 				get_class($this) . ' must specify "form", "model" and "attribute" or "name" property values'
 			);
 		}
