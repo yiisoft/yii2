@@ -32,7 +32,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->assertEquals($item2->type, Item::TYPE_ROLE);
 
 		// test adding an item with the same name
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->auth->createItem($name, $type, $description, $bizRule, $data);
 	}
 
@@ -69,14 +69,14 @@ abstract class ManagerTestBase extends TestCase
 		$this->auth->addItemChild('createPost', 'updatePost');
 
 		// test adding upper level item to lower one
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->auth->addItemChild('readPost', 'reader');
 	}
 
 	public function testAddItemChild2()
 	{
 		// test adding inexistent items
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->assertFalse($this->auth->addItemChild('createPost2', 'updatePost'));
 	}
 
@@ -105,7 +105,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->assertEquals($auth->bizRule, 'rule');
 		$this->assertEquals($auth->data, 'data');
 
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->auth->assign('new user', 'createPost2', 'rule', 'data');
 	}
 
@@ -158,7 +158,7 @@ abstract class ManagerTestBase extends TestCase
 
 	public function testDetectLoop()
 	{
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->auth->addItemChild('readPost', 'readPost');
 	}
 
