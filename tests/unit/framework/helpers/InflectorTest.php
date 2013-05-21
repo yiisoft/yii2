@@ -48,4 +48,28 @@ class InflectorTest extends TestCase
         $this->assertEquals("Me My Self And i", Inflector::humanize('me_my_self_and_i'), true);
     }
 
+    public function testVariablize()
+    {
+        $this->assertEquals("customerTable", Inflector::variablize('customer_table'));
+    }
+
+    public function testTableize()
+    {
+        $this->assertEquals("customer_tables", Inflector::tableize('customerTable'));
+    }
+
+    public function testSlug()
+    {
+        $this->assertEquals("this-is-a-title", Inflector::humanize('this is a title'));
+    }
+
+    public function testClassify()
+    {
+        $this->assertEquals("CustomerTable", Inflector::classify('customer_tables'));
+    }
+
+    public function testOrdinalize()
+    {
+        $this->assertEquals("21st", Inflector::humanize('21'));
+    }
 }
