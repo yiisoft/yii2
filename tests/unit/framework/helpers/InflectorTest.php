@@ -39,7 +39,7 @@ class InflectorTest extends TestCase
 
     public function testUnderscore()
     {
-        $this->assertEquals("me_my_self_and_i", Inflector::underscore('Me my self and I'));
+        $this->assertEquals("me_my_self_and_i", Inflector::underscore('MeMySelfAndI'));
     }
 
     public function testHumanize()
