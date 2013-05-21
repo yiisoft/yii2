@@ -46,15 +46,15 @@ use yii\helpers\Html;
 class TypeAhead extends Widget
 {
 	/**
-	 * @var \yii\base\Model the data model that this field is associated with
+	 * @var \yii\base\Model the data model that this widget is associated with
 	 */
 	public $model;
 	/**
-	 * @var string the model attribute that this field is associated with
+	 * @var string the model attribute that this widget is associated with
 	 */
 	public $attribute;
 	/**
-	 * @var string the input name. This must be set if [[form]] is not set.
+	 * @var string the input name. This must be set if [[model]] and [[attribute]] are not set.
 	 */
 	public $name;
 	/**
@@ -68,7 +68,7 @@ class TypeAhead extends Widget
 	 */
 	public function run()
 	{
-		echo "\n" . $this->renderField() . "\n";
+		echo $this->renderField();
 		$this->registerPlugin('typeahead');
 	}
 
@@ -83,18 +83,11 @@ class TypeAhead extends Widget
 	public function renderField()
 	{
 		if ($this->model instanceof Model && $this->attribute !== null) {
-
-			$this->options['id'] = Html::getInputId($this->model, $this->attribute);
-
 			return Html::activeTextInput($this->model, $this->attribute, $this->options);
+		} elseif ($this->name !== null) {
+			return Html::textInput($this->name, $this->value, $this->options);
+		} else {
+			throw new InvalidConfigException('Either "name" or "model" and "attribute" properties must be specified.');
 		}
-
-		if ($this->name === null) {
-			throw new InvalidConfigException(
-				get_class($this) . ' must specify "form", "model" and "attribute" or "name" property values'
-			);
-		}
-
-		return Html::textInput($this->name, $this->value, $this->options);
 	}
 }
