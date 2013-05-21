@@ -109,14 +109,14 @@ class MemCache extends Cache
 	 */
 	public function getMemcache()
 	{
-		if ($this->_cache === null) {
-			$extension = $this->useMemcached ? 'memcached' : 'memcache';
-			if (!extension_loaded($extension)) {
-				throw new InvalidConfigException("MemCache requires PHP $extension extension to be loaded.");
-			}
-			$this->_cache = $this->useMemcached ? new \Memcached : new \Memcache;
+		if ($this->_cache !== null) {
+			return $this->_cache;
 		}
-		return $this->_cache;
+		$extension = $this->useMemcached ? 'memcached' : 'memcache';
+		if (!extension_loaded($extension)) {
+			throw new InvalidConfigException("MemCache requires PHP $extension extension to be loaded.");
+		}
+		$this->_cache = $this->useMemcached ? new \Memcached : new \Memcache;
 	}
 
 	/**
