@@ -11,7 +11,7 @@ return array(
 	'yii/jquery' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
-			'jquery.js',
+			YII_DEBUG ? 'jquery.js' : 'jquery.min.js',
 		),
 	),
 	'yii/validation' => array(
@@ -45,24 +45,24 @@ return array(
 	'yii/bootstrap' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
-			'bootstrap/css/bootstrap.css',
+			YII_DEBUG ? 'bootstrap/css/bootstrap.css' : 'bootstrap/css/bootstrap.min.css',
 		),
 		'js' => array(
-			'bootstrap/js/bootstrap.js',
+			YII_DEBUG ? 'bootstrap/js/bootstrap.js' : 'bootstrap/js/bootstrap.min.js',
 		),
 		'depends' => array('yii/jquery'),
 	),
 	'yii/bootstrap-responsive' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
-			'bootstrap/css/bootstrap-responsive.css',
+			YII_DEBUG ? 'bootstrap/css/bootstrap-responsive.css' : 'bootstrap/css/bootstrap-responsive.min.css',
 		),
 		'depends' => array('yii/bootstrap'),
 	),
 	'yii/punycode' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
-			'punycode/punycode.js',
+			YII_DEBUG ? 'punycode/punycode.js' : 'punycode/punycode.min.js',
 		),
 	),
 );
