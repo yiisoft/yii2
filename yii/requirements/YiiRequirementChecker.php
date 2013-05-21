@@ -154,7 +154,7 @@ class YiiRequirementChecker
 			$this->usageError('Nothing to render!');
 		}
 		$baseViewFilePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'views';
-		if (array_key_exists('argv', $_SERVER) && !empty($_SERVER['argv'])) {
+		if (!empty($_SERVER['argv'])) {
 			$viewFileName = $baseViewFilePath . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR . 'index.php';
 		} else {
 			$viewFileName = $baseViewFilePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'index.php';
