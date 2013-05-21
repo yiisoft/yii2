@@ -18,12 +18,12 @@ use yii\widgets\ActiveForm;
  *
  * ```php
  * echo TypeAhead::widget(array(
- *     'form' => $form,
- *     'model' => $model,
- *       'attribute' => 'country',
- *     'pluginOptions' => array(
- *         'source' => array('USA', 'ESP'),
- *     ),
+ * 	'form' => $form,
+ *	'model' => $model,
+ *		'attribute' => 'country',
+ * 	'pluginOptions' => array(
+ *		'source' => array('USA', 'ESP'),
+ * 	),
  * ));
  * ```
  *
@@ -31,10 +31,10 @@ use yii\widgets\ActiveForm;
  *
  * ```php
  * echo TypeAhead::widget(array(
- *     'name'  => 'country',
- *       'pluginOptions' => array(
- *         'source' => array('USA', 'ESP'),
- *     ),
+ *	'name'  => 'country',
+ * 		'pluginOptions' => array(
+ *			'source' => array('USA', 'ESP'),
+ * 	),
  * ));
  *```
  *
@@ -59,7 +59,7 @@ class TypeAhead extends Widget
 	public $attribute;
 
 	/**
-	 * @var string the input name. This must be set if [[TypeAhead::$form]] is not set.
+	 * @var string the input name. This must be set if [[form]] is not set.
 	 */
 	public $name;
 
@@ -70,7 +70,7 @@ class TypeAhead extends Widget
 	public function init()
 	{
 		parent::init();
-		echo "\n" . $this->renderField();
+		echo "\n" . $this->renderField() . "\n";
 	}
 
 	/**
@@ -82,12 +82,13 @@ class TypeAhead extends Widget
 	}
 
 	/**
-	 * Renders the TypeAhead field. If [[TypeAhead::form]] has been specified then it will render an active field.
+	 * Renders the TypeAhead field. If [[form]] has been specified then it will render an active field.
 	 * Please, note that function will only check whether the form has been set, model and attributes will not.
-	 * If [[TypeAhead::form]] is null not from an [[ActiveForm]] instance, then the field will be rendered according to
-	 * the `name` key setting of [[TypeAhead::options]] array attribute.
+	 * If [[form]] is null not from an [[ActiveForm]] instance, then the field will be rendered according to
+	 * the `name` key setting of [[options]] array attribute.
 	 * @return string the rendering result
-	 * @throws InvalidParamException
+	 * @throws InvalidParamException when none of the required attributes are set to render the textInput. That is,
+	 * if [[form]], [[model]] and [[attribute]] are not set, then [[name]] is required.
 	 */
 	public function renderField()
 	{
@@ -100,7 +101,7 @@ class TypeAhead extends Widget
 					'class' => 'yii\widgets\ActiveField',
 					'model' => $this->model,
 					'attribute' => $this->attribute,
-					'form' => $this->form
+					'form' => $this->form,
 				)
 			)->textInput();
 		}
