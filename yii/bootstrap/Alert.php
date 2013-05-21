@@ -8,7 +8,6 @@
 namespace yii\bootstrap;
 
 use Yii;
-use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -22,7 +21,7 @@ use yii\helpers\Html;
  *     'body' => 'Say hello...',
  *     'closeButton' => array(
  *         'label' => '&times;',
- *           'tag' => 'a'
+ *         'tag' => 'a',
  *     ),
  * ));
  * ```
@@ -33,8 +32,8 @@ use yii\helpers\Html;
  * ```php
  * Alert::begin(array(
  *     'closeButton' => array(
- *            'label' => '&times;'
- *        )
+ *         'label' => '&times;',
+ *     ),
  * ));
  *
  * echo 'Say hello...';
@@ -42,7 +41,7 @@ use yii\helpers\Html;
  * Alert::end();
  * ```
  *
- * @see http://twitter.github.io/bootstrap/javascript.html#modals
+ * @see http://twitter.github.io/bootstrap/javascript.html#alerts
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
@@ -69,6 +68,7 @@ class Alert extends Widget
 	 * for the supported HTML attributes.
 	 */
 	public $closeButton = array();
+
 
 	/**
 	 * Initializes the widget.
