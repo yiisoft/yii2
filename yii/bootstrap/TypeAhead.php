@@ -8,8 +8,8 @@
 namespace yii\bootstrap;
 
 use Yii;
+use yii\base\Model;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 
 /**
  * TypeAhead renders a typehead bootstrap javascript component.
@@ -18,12 +18,12 @@ use yii\widgets\ActiveForm;
  *
  * ```php
  * echo TypeAhead::widget(array(
- * 	'form' => $form,
- *	'model' => $model,
- *		'attribute' => 'country',
- * 	'pluginOptions' => array(
- *		'source' => array('USA', 'ESP'),
- * 	),
+ *     'form' => $form,
+ *     'model' => $model,
+ *     'attribute' => 'country',
+ *     'pluginOptions' => array(
+ *         'source' => array('USA', 'ESP'),
+ *     ),
  * ));
  * ```
  *
@@ -31,10 +31,10 @@ use yii\widgets\ActiveForm;
  *
  * ```php
  * echo TypeAhead::widget(array(
- *	'name'  => 'country',
- * 		'pluginOptions' => array(
- *			'source' => array('USA', 'ESP'),
- * 	),
+ *     'name'  => 'country',
+ *     'pluginOptions' => array(
+ *         'source' => array('USA', 'ESP'),
+ *     ),
  * ));
  *```
  *
@@ -44,11 +44,6 @@ use yii\widgets\ActiveForm;
  */
 class TypeAhead extends Widget
 {
-	/**
-	 * @var ActiveForm the form that the TypeAhead field is associated with. If no form is associated with the widget
-	 * then the id will be used instead
-	 */
-	public $form;
 	/**
 	 * @var \yii\base\Model the data model that this field is associated with
 	 */
@@ -64,50 +59,32 @@ class TypeAhead extends Widget
 	public $name;
 
 	/**
-	 * Initializes the widget.
-	 * Renders the input field.
-	 */
-	public function init()
-	{
-		parent::init();
-		echo "\n" . $this->renderField() . "\n";
-	}
-
-	/**
-	 * Registers the plugin.
+	 * Renders the widget
 	 */
 	public function run()
 	{
+		echo "\n" . $this->renderField() . "\n";
 		$this->registerPlugin('typeahead');
 	}
 
 	/**
-	 * Renders the TypeAhead field. If [[form]] has been specified then it will render an active field.
-	 * Please, note that function will only check whether the form has been set, model and attributes will not.
-	 * If [[form]] is null not from an [[ActiveForm]] instance, then the field will be rendered according to
-	 * the `name` key setting of [[options]] array attribute.
+	 * Renders the TypeAhead field. If [[model]] has been specified then it will render an active field.
+	 * If [[model]] is null or not from an [[Model]] instance, then the field will be rendered according to
+	 * the [[name]] attribute.
 	 * @return string the rendering result
 	 * @throws InvalidParamException when none of the required attributes are set to render the textInput. That is,
-	 * if [[form]], [[model]] and [[attribute]] are not set, then [[name]] is required.
+	 * if [[model]] and [[attribute]] are not set, then [[name]] is required.
 	 */
 	public function renderField()
 	{
-		if ($this->form instanceof ActiveForm) {
+		if ($this->model instanceof Model && $this->attribute !== null) {
 
 			$this->options['id'] = $this->id = Html::getInputId($this->model, $this->attribute);
 
-			return Yii::createObject(
-				array(
-					'class' => 'yii\widgets\ActiveField',
-					'model' => $this->model,
-					'attribute' => $this->attribute,
-					'form' => $this->form,
-				)
-			)->textInput();
+			return Html::activeTextInput($this->model, $this->attribute, $this->options);
 		}
 
-		if ($this->name === null)
-		{
+		if ($this->name === null) {
 			throw new InvalidParamException(
 				get_class($this) . ' must specify "form", "model" and "attribute" or "name" property values'
 			);
