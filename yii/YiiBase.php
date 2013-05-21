@@ -614,6 +614,8 @@ class YiiBase
 }
 
 YiiBase::$aliases = array(
-	'@yii' => __DIR__,
-	'@yii/bootstrap' => __DIR__ . '/bootstrap',
+	'@yii' => array(
+		'@yii/bootstrap' => __DIR__ . '/bootstrap',
+		'@yii' => __DIR__,
+	),
 );
