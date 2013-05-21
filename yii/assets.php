@@ -11,7 +11,7 @@ return array(
 	'yii/jquery' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
-			'jquery.min.js',
+			'jquery.js',
 		),
 	),
 	'yii/validation' => array(
@@ -62,7 +62,7 @@ return array(
 	'yii/punycode' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
-			'punycode/punycode.min.js',
+			'punycode/punycode.js',
 		),
 	),
 );
