@@ -8,7 +8,7 @@
 <head>
 	<meta charset="utf-8"/>
 	<title>Yii Application Requirement Checker</title>
-	<?php $this->renderViewFile(__DIR__ . '/css.php'); ?>
+	<?php $this->renderViewFile(dirname(__FILE__) . '/css.php'); ?>
 </head>
 <body>
 <div class="container">
