@@ -77,6 +77,7 @@ class Alert extends Widget
 	{
 		parent::init();
 
+		$this->getView()->registerAssetBundle('yii/bootstrap/alert');
 		$this->initOptions();
 
 		echo Html::beginTag('div', $this->options) . "\n";

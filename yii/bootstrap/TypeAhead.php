@@ -68,6 +68,7 @@ class TypeAhead extends Widget
 	 */
 	public function run()
 	{
+		$this->getView()->registerAssetBundle('yii/bootstrap/typeahead');
 		echo $this->renderField();
 		$this->registerPlugin('typeahead');
 	}

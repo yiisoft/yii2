@@ -42,23 +42,6 @@ return array(
 		),
 		'depends' => array('yii'),
 	),
-	'yii/bootstrap' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'css' => array(
-			YII_DEBUG ? 'bootstrap/css/bootstrap.css' : 'bootstrap/css/bootstrap.min.css',
-		),
-		'js' => array(
-			YII_DEBUG ? 'bootstrap/js/bootstrap.js' : 'bootstrap/js/bootstrap.min.js',
-		),
-		'depends' => array('yii/jquery'),
-	),
-	'yii/bootstrap-responsive' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'css' => array(
-			YII_DEBUG ? 'bootstrap/css/bootstrap-responsive.css' : 'bootstrap/css/bootstrap-responsive.min.css',
-		),
-		'depends' => array('yii/bootstrap'),
-	),
 	'yii/punycode' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(

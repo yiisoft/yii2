@@ -25,7 +25,6 @@ class Widget extends \yii\base\Widget
 	 * @var boolean whether to use the responsive version of Bootstrap.
 	 */
 	public static $responsive = true;
-
 	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
@@ -67,9 +66,7 @@ class Widget extends \yii\base\Widget
 	{
 		$id = $this->options['id'];
 		$view = $this->getView();
-
-		$bundle = static::$responsive ? 'yii/bootstrap-responsive' : 'yii/bootstrap';
-		$view->registerAssetBundle($bundle);
+		$view->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
 
 		if ($this->pluginOptions !== false) {
 			$options = empty($this->pluginOptions) ? '' : Json::encode($this->pluginOptions);
