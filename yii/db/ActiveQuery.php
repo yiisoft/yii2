@@ -86,13 +86,12 @@ class ActiveQuery extends Query
 	 */
 	public function __call($name, $params)
 	{
-		if (method_exists($this->modelClass, $name)) {
-			array_unshift($params, $this);
-			call_user_func_array(array($this->modelClass, $name), $params);
-			return $this;
-		} else {
+		if (!method_exists($this->modelClass, $name)) {
 			return parent::__call($name, $params);
 		}
+		array_unshift($params, $this);
+		call_user_func_array(array($this->modelClass, $name), $params);
+		return $this;
 	}
 
 	/**
@@ -103,15 +102,14 @@ class ActiveQuery extends Query
 	{
 		$command = $this->createCommand();
 		$rows = $command->queryAll();
-		if (!empty($rows)) {
-			$models = $this->createModels($rows);
-			if (!empty($this->with)) {
-				$this->populateRelations($models, $this->with);
-			}
-			return $models;
-		} else {
+		if (empty($rows)) {
 			return array();
 		}
+		$models = $this->createModels($rows);
+		if (!empty($this->with)) {
+			$this->populateRelations($models, $this->with);
+		}
+		return $models;
 	}
 
 	/**

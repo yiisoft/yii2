@@ -153,17 +153,18 @@ abstract class Cache extends Component implements \ArrayAccess
 		$results = array();
 		foreach ($keyMap as $key => $newKey) {
 			$results[$key] = false;
-			if (isset($values[$newKey])) {
-				if ($this->serializer === false) {
-					$results[$key] = $values[$newKey];
-				} else {
-					$value = $this->serializer === null ? unserialize($values[$newKey])
-							: call_user_func($this->serializer[1], $values[$newKey]);
+			if (!isset($values[$newKey])) {
+				continue;
+			}
+			if ($this->serializer === false) {
+				$results[$key] = $values[$newKey];
+				continue;
+			}
+			$value = $this->serializer === null ? unserialize($values[$newKey])
+					: call_user_func($this->serializer[1], $values[$newKey]);
 
-					if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged())) {
-						$results[$key] = $value[0];
-					}
-				}
+			if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged())) {
+				$results[$key] = $value[0];
 			}
 		}
 		return $results;

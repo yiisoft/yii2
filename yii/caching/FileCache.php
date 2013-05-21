@@ -138,17 +138,16 @@ class FileCache extends Cache
 	 */
 	protected function getCacheFile($key)
 	{
-		if ($this->directoryLevel > 0) {
-			$base = $this->cachePath;
-			for ($i = 0; $i < $this->directoryLevel; ++$i) {
-				if (($prefix = substr($key, $i + $i, 2)) !== false) {
-					$base .= DIRECTORY_SEPARATOR . $prefix;
-				}
-			}
-			return $base . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
-		} else {
+		if ($this->directoryLevel == 0) {
 			return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
 		}
+		$base = $this->cachePath;
+		for ($i = 0; $i < $this->directoryLevel; ++$i) {
+			if (($prefix = substr($key, $i + $i, 2)) !== false) {
+				$base .= DIRECTORY_SEPARATOR . $prefix;
+			}
+		}
+		return $base . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;	
 	}
 
 	/**
@@ -185,22 +184,23 @@ class FileCache extends Cache
 	 */
 	protected function gcRecursive($path, $expiredOnly)
 	{
-		if (($handle = opendir($path)) !== false) {
-			while (($file = readdir($handle)) !== false) {
-				if ($file[0] === '.') {
-					continue;
-				}
-				$fullPath = $path . DIRECTORY_SEPARATOR . $file;
-				if (is_dir($fullPath)) {
-					$this->gcRecursive($fullPath, $expiredOnly);
-					if (!$expiredOnly) {
-						@rmdir($fullPath);
-					}
-				} elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
-					@unlink($fullPath);
-				}
-			}
-			closedir($handle);
+		if (($handle = opendir($path)) === false) {
+			return;
 		}
+		while (($file = readdir($handle)) !== false) {
+			if ($file[0] === '.') {
+				continue;
+			}
+			$fullPath = $path . DIRECTORY_SEPARATOR . $file;
+			if (is_dir($fullPath)) {
+				$this->gcRecursive($fullPath, $expiredOnly);
+				if (!$expiredOnly) {
+					@rmdir($fullPath);
+				}
+			} elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
+				@unlink($fullPath);
+			}
+		}
+		closedir($handle);
 	}
 }
