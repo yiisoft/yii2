@@ -385,7 +385,7 @@ class Inflector
 	}
 
 	/**
-	 * Converts any "CamelCased" or "ordinary Word" into an "underscored_word".
+	 * Converts any "CamelCased" into an "underscored_word".
 	 *
 	 * @param string $words the word(s) to underscore
 	 * @return string
