@@ -107,9 +107,11 @@ class TypeAhead extends Widget
 		}
 
 		if ($this->name === null)
+		{
 			throw new InvalidParamException(
 				get_class($this) . ' must specify "form", "model" and "attribute" or "name" property values'
 			);
+		}
 
 		return Html::textInput($this->name, '', $this->options);
 	}
