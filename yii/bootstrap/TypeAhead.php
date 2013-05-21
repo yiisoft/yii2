@@ -95,6 +95,6 @@ class TypeAhead extends Widget
 			);
 		}
 
-		return Html::textInput($this->name, '', $this->options);
+		return Html::textInput($this->name, $this->value, $this->options);
 	}
 }
