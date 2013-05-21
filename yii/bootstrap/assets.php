@@ -12,7 +12,7 @@ return array(
 		'css' => array(
 			YII_DEBUG ? 'css/bootstrap-responsive.css' : 'css/bootstrap-responsive.min.css',
 		),
-		'depends' => array('yii/bootstrap'),
+		'depends' => array('yii/bootstrap/css'),
 	),
 	'yii/bootstrap/all' => array(
 		'sourcePath' => __DIR__ . '/assets',
