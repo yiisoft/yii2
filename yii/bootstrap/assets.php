@@ -68,7 +68,7 @@ return array(
 		'js' => array(
 			'js/bootstrap-popover.js',
 		),
-		'depends' => array('yii/jquery', 'yii/bootstrap/tooltip', 'yii/bootstrap'),
+		'depends' => array('yii/bootstrap/tooltip'),
 	),
 	'yii/bootstrap/scrollspy' => array(
 		'sourcePath' => __DIR__ . '/assets',
