@@ -25,7 +25,10 @@ class Widget extends \yii\base\Widget
 	 * @var boolean whether to use the responsive version of Bootstrap.
 	 */
 	public static $responsive = true;
-
+	/**
+	 * @var boolean whether to use the transition effects.
+	 */
+	public static $transition = true;
 	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
@@ -67,9 +70,11 @@ class Widget extends \yii\base\Widget
 	{
 		$id = $this->options['id'];
 		$view = $this->getView();
+		$view->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
 
-		$bundle = static::$responsive ? 'yii/bootstrap-responsive' : 'yii/bootstrap';
-		$view->registerAssetBundle($bundle);
+		if (static::$transition) {
+			$view->registerAssetBundle('yii/bootstrap/transition');
+		}
 
 		if ($this->pluginOptions !== false) {
 			$options = empty($this->pluginOptions) ? '' : Json::encode($this->pluginOptions);

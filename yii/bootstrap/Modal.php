@@ -102,6 +102,7 @@ class Modal extends Widget
 	{
 		parent::init();
 
+		$this->getView()->registerAssetBundle('yii/bootstrap/modal');
 		$this->initOptions();
 
 		echo $this->renderToggleButton() . "\n";
