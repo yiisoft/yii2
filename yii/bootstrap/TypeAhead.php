@@ -12,31 +12,31 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /**
- * Modal renders a modal window that can be toggled by clicking on a button.
+ * TypeAhead renders a typehead bootstrap javascript component.
  *
  * For example,
  *
- * ~~~php
+ * ```php
  * echo TypeAhead::widget(array(
  *     'form' => $form,
  *     'model' => $model,
- * 	   'attribute' => 'country',
+ *       'attribute' => 'country',
  *     'pluginOptions' => array(
  *         'source' => array('USA', 'ESP'),
  *     ),
  * ));
- * ~~~
+ * ```
  *
  * The following example will use the name property instead
  *
- * ~~~php
+ * ```php
  * echo TypeAhead::widget(array(
  *     'name'  => 'country',
- * 	   'pluginOptions' => array(
+ *       'pluginOptions' => array(
  *         'source' => array('USA', 'ESP'),
  *     ),
  * ));
- *
+ *```
  *
  * @see http://twitter.github.io/bootstrap/javascript.html#typeahead
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
@@ -87,6 +87,7 @@ class TypeAhead extends Widget
 	 * If [[TypeAhead::form]] is null not from an [[ActiveForm]] instance, then the field will be rendered according to
 	 * the `name` key setting of [[TypeAhead::options]] array attribute.
 	 * @return string the rendering result
+	 * @throws InvalidParamException
 	 */
 	public function renderField()
 	{
