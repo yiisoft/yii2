@@ -14,5 +14,11 @@ return array(
 			'dsn' => 'sqlite::memory:',
 			'fixture' => __DIR__ . '/sqlite.sql',
 		),
-	),
+		'sqlsrv' => array(
+			'dsn' => 'sqlsrv:Server=localhost;Database=test',
+			'username' => '',
+			'password' => '',
+			'fixture' => __DIR__ . '/mssql.sql',
+		),
+    )
 );
