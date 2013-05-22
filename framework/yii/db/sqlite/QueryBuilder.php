@@ -77,10 +77,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * Enables or disables integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
-	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $schema the schema of the tables. Meaningless for SQLite.
+	 * @param string $table the table name. Meaningless for SQLite.
 	 * @throws NotSupportedException this is not supported by SQLite
 	 */
-	public function checkIntegrity($check = true, $schema = '')
+	public function checkIntegrity($check = true, $schema = '', $table = '')
 	{
 		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
