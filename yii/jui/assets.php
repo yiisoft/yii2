@@ -236,4 +236,95 @@ return array(
 		),
 		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/position'),
 	),
+	// @todo dependencies
+	'yii/jui/theme/base' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.theme.css',
+		),
+	),
+	'yii/jui/theme/base/core' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.core.css',
+		),
+	),
+	'yii/jui/theme/base/accordion' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.accordion.css',
+		),
+	),
+	'yii/jui/theme/base/autocomplete' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.autocomplete.css',
+		),
+	),
+	'yii/jui/theme/base/button' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.button.css',
+		),
+	),
+	'yii/jui/theme/base/datepicker' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.datepicker.css',
+		),
+	),
+	'yii/jui/theme/base/dialog' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.dialog.css',
+		),
+	),
+	'yii/jui/theme/base/menu' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.menu.css',
+		),
+	),
+	'yii/jui/theme/base/progressbar' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.progressbar.css',
+		),
+	),
+	'yii/jui/theme/base/resizable' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.resizable.css',
+		),
+	),
+	'yii/jui/theme/base/selectable' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.selectable.css',
+		),
+	),
+	'yii/jui/theme/base/slider' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.slider.css',
+		),
+	),
+	'yii/jui/theme/base/spinner' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.spinner.css',
+		),
+	),
+	'yii/jui/theme/base/tabs' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.tabs.css',
+		),
+	),
+	'yii/jui/theme/base/tooltip' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'css' => array(
+			'themes/base/jquery.ui.tooltip.css',
+		),
+	),
 );
