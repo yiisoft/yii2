@@ -11,10 +11,8 @@ use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
 /**
- * Schema is the class for retrieving metadata from a MS SQL database (version 2008 and above).
+ * Schema is the class for retrieving metadata from a MS SQL Server databases (version 2008 and above).
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @author Christophe Boulain <Christophe.Boulain@gmail.com>
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
  */
@@ -29,31 +27,52 @@ class Schema extends \yii\db\Schema
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
 	public $typeMap = array(
-		'tinyint' => self::TYPE_SMALLINT,
+		// exact numerics
+		'bigint' => self::TYPE_BIGINT,
+		'numeric' => self::TYPE_DECIMAL,
 		'bit' => self::TYPE_SMALLINT,
 		'smallint' => self::TYPE_SMALLINT,
-		'mediumint' => self::TYPE_INTEGER,
-		'int' => self::TYPE_INTEGER,
-		'integer' => self::TYPE_INTEGER,
-		'bigint' => self::TYPE_BIGINT,
-		'float' => self::TYPE_FLOAT,
-		'double' => self::TYPE_FLOAT,
-		'real' => self::TYPE_FLOAT,
 		'decimal' => self::TYPE_DECIMAL,
-		'numeric' => self::TYPE_DECIMAL,
-		'tinytext' => self::TYPE_TEXT,
-		'mediumtext' => self::TYPE_TEXT,
-		'longtext' => self::TYPE_TEXT,
-		'text' => self::TYPE_TEXT,
-		'varchar' => self::TYPE_STRING,
-		'string' => self::TYPE_STRING,
-		'char' => self::TYPE_STRING,
-		'datetime' => self::TYPE_DATETIME,
-		'year' => self::TYPE_DATE,
+		'smallmoney' => self::TYPE_MONEY,
+		'int' => self::TYPE_INTEGER,
+		'tinyint' => self::TYPE_SMALLINT,
+		'money' => self::TYPE_MONEY,
+
+		// approximate numerics
+		'float' => self::TYPE_FLOAT,
+		'real' => self::TYPE_FLOAT,
+
+		// date and time
 		'date' => self::TYPE_DATE,
+		'datetimeoffset' => self::TYPE_DATETIME,
+		'datetime2' => self::TYPE_DATETIME,
+		'smalldatetime' => self::TYPE_DATETIME,
+		'datetime' => self::TYPE_DATETIME,
 		'time' => self::TYPE_TIME,
+
+		// character strings
+		'char' => self::TYPE_STRING,
+		'varchar' => self::TYPE_STRING,
+		'text' => self::TYPE_TEXT,
+
+		// unicode character strings
+		'nchar' => self::TYPE_STRING,
+		'nvarchar' => self::TYPE_STRING,
+		'ntext' => self::TYPE_TEXT,
+
+		// binary strings
+		'binary' => self::TYPE_BINARY,
+		'varbinary' => self::TYPE_BINARY,
+		'image' => self::TYPE_BINARY,
+
+		// other data types
+		// 'cursor' type cannot be used with tables
 		'timestamp' => self::TYPE_TIMESTAMP,
-		'enum' => self::TYPE_STRING,
+		'hierarchyid' => self::TYPE_STRING,
+		'uniqueidentifier' => self::TYPE_STRING,
+		'sql_variant' => self::TYPE_STRING,
+		'xml' => self::TYPE_STRING,
+		'table' => self::TYPE_STRING,
 	);
 
 	/**
@@ -64,7 +83,7 @@ class Schema extends \yii\db\Schema
 	 */
 	public function quoteSimpleTableName($name)
 	{
-		return strpos($name, '[') !== false ? $name : '[' . $name . ']';
+		return strpos($name, '[') === false ? "[{$name}]" : $name;
 	}
 
 	/**
@@ -75,7 +94,7 @@ class Schema extends \yii\db\Schema
 	 */
 	public function quoteSimpleColumnName($name)
 	{
-		return strpos($name, '[') !== false || $name === '*' ? $name : '[' . $name . ']';
+		return strpos($name, '[') === false && $name !== '*' ? "[{$name}]" : $name;
 	}
 
 	/**
@@ -90,19 +109,16 @@ class Schema extends \yii\db\Schema
 	/**
 	 * Loads the metadata for the specified table.
 	 * @param string $name table name
-	 * @return TableSchema driver dependent table metadata. Null if the table does not exist.
+	 * @return TableSchema|null driver dependent table metadata. Null if the table does not exist.
 	 */
 	public function loadTableSchema($name)
 	{
 		$table = new TableSchema();
 		$this->resolveTableNames($table, $name);
 		$this->findPrimaryKeys($table);
-
 		if ($this->findColumns($table)) {
 			$this->findForeignKeys($table);
 			return $table;
-		} else {
-			return null;
 		}
 	}
 
@@ -116,16 +132,16 @@ class Schema extends \yii\db\Schema
 		$parts = explode('.', str_replace(array('[', ']'), '', $name));
 		$partCount = count($parts);
 		if ($partCount == 3) {
-			// catalog name, schema name and table name provided
+			// catalog name, schema name and table name passed
 			$table->catalogName = $parts[0];
 			$table->schemaName = $parts[1];
 			$table->name = $parts[2];
 		} elseif ($partCount == 2) {
-			// only schema name and table name provided
+			// only schema name and table name passed
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
 		} else {
-			// only schema name provided
+			// only schema name passed
 			$table->schemaName = static::DEFAULT_SCHEMA;
 			$table->name = $parts[0];
 		}
@@ -141,17 +157,15 @@ class Schema extends \yii\db\Schema
 		$column = new ColumnSchema();
 
 		$column->name = $info['COLUMN_NAME'];
+		$column->allowNull = $info['IS_NULLABLE'] == 'YES';
+		$column->dbType = $info['DATA_TYPE'];
+		$column->enumValues = array(); // mssql has only vague equivalents to enum
+		$column->isPrimaryKey = null; // primary key will be determined in findColumns() method
+		$column->autoIncrement = $info['IsIdentity'] == 1;
+		$column->unsigned = stripos($column->dbType, 'unsigned') !== false;
 		$column->comment = $info['Comment'] === null ? '' : $column['Comment'];
 
-		$column->dbType = $info['DATA_TYPE'];
-		$column->unsigned = stripos($column->dbType, 'unsigned') !== false;
-		$column->allowNull = $info['IS_NULLABLE'] == 'YES';
-
-		$column->isPrimaryKey = null; // primary key is determined in findColumns() method
-		$column->autoIncrement = $info['IsIdentity'] == 1;
-
 		$column->type = self::TYPE_STRING;
-		$matches = array();
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
 			$type = $matches[1];
 			if (isset($this->typeMap[$type])) {
@@ -178,7 +192,10 @@ class Schema extends \yii\db\Schema
 		$column->phpType = $this->getColumnPhpType($column);
 
 		if ($info['COLUMN_DEFAULT'] == '(NULL)') {
-			$column->defaultValue = null;
+			$info['COLUMN_DEFAULT'] = null;
+		}
+		if ($column->type !== 'timestamp' || $info['COLUMN_DEFAULT'] !== 'CURRENT_TIMESTAMP') {
+			$column->defaultValue = $column->typecast($info['COLUMN_DEFAULT']);
 		}
 
 		return $column;
@@ -191,29 +208,29 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findColumns($table)
 	{
-		$columnsTableName = 'INFORMATION_SCHEMA.COLUMNS';
-		$whereSql = "t1.TABLE_NAME = '" . $table->name . "'";
+		$columnsTableName = 'information_schema.columns';
+		$whereSql = "[t1].[table_name] = '{$table->name}'";
 		if ($table->catalogName !== null) {
-			$columnsTableName = $table->catalogName . '.' . $columnsTableName;
-			$whereSql .= " AND t1.TABLE_CATALOG = '" . $table->catalogName . "'";
+			$columnsTableName = "{$table->catalogName}.{$columnsTableName}";
+			$whereSql .= " AND [t1].[table_catalog] = '{$table->catalogName}'";
 		}
 		if ($table->schemaName !== null) {
-			$whereSql .= " AND t1.TABLE_SCHEMA = '" . $table->schemaName . "'";
+			$whereSql .= " AND [t1].[table_schema] = '{$table->schemaName}'";
 		}
 		$columnsTableName = $this->quoteTableName($columnsTableName);
 
 		$sql = <<<SQL
 SELECT
-	t1.*,
-	columnproperty(object_id(t1.table_schema + '.' + t1.table_name), t1.column_name, 'IsIdentity') AS IsIdentity,
-	CONVERT(VARCHAR, t2.value) AS Comment
-FROM {$columnsTableName} AS t1
-LEFT OUTER JOIN sys.extended_properties AS t2 ON
-	t1.ORDINAL_POSITION = t2.minor_id AND
-	object_name(t2.major_id) = t1.TABLE_NAME AND
-	t2.class = 1 AND
-	t2.class_desc = 'OBJECT_OR_COLUMN' AND
-	t2.name = 'MS_Description'
+	[t1].*,
+	COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS IsIdentity,
+	CONVERT(VARCHAR, [t2].[value]) AS Comment
+FROM {$columnsTableName} AS [t1]
+LEFT OUTER JOIN [sys].[extended_properties] AS [t2] ON
+	[t1].[ordinal_position] = [t2].[minor_id] AND
+	OBJECT_NAME([t2].[major_id]) = [t1].[table_name] AND
+	[t2].[class] = 1 AND
+	[t2].[class_desc] = 'OBJECT_OR_COLUMN' AND
+	[t2].[name] = 'MS_Description'
 WHERE {$whereSql}
 SQL;
 
@@ -225,14 +242,19 @@ SQL;
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
 			if (is_array($table->primaryKey)) {
-				$column->isPrimaryKey = count(preg_grep('/' . preg_quote($column->name) . '/i', $table->primaryKey)) > 0;
+				foreach ($table->primaryKey as $primaryKeyColumn) {
+					if (strcasecmp($column->name, $primaryKeyColumn) === 0) {
+						$column->isPrimaryKey = true;
+						break;
+					}
+				}
 			} else {
 				$column->isPrimaryKey = strcasecmp($column->name, $table->primaryKey) === 0;
 			}
-			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey && $column->autoIncrement) {
 				$table->sequenceName = '';
 			}
+			$table->columns[$column->name] = $column;
 		}
 		return true;
 	}
@@ -243,8 +265,8 @@ SQL;
 	 */
 	protected function findPrimaryKeys($table)
 	{
-		$keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
-		$tableConstraintsTableName = 'INFORMATION_SCHEMA.TABLE_CONSTRAINTS';
+		$keyColumnUsageTableName = 'information_schema.key_column_usage';
+		$tableConstraintsTableName = 'information_schema.table_constraints';
 		if ($table->catalogName !== null) {
 			$keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
 			$tableConstraintsTableName = $table->catalogName . '.' . $tableConstraintsTableName;
@@ -254,15 +276,15 @@ SQL;
 
 		$sql = <<<SQL
 SELECT
-	kcu.column_name AS field_name
-FROM {$keyColumnUsageTableName} AS kcu
-LEFT JOIN {$tableConstraintsTableName} AS tc ON
-	kcu.table_name = tc.table_name AND
-	kcu.constraint_name = tc.constraint_name
+	[kcu].[column_name] AS [field_name]
+FROM {$keyColumnUsageTableName} AS [kcu]
+LEFT JOIN {$tableConstraintsTableName} AS [tc] ON
+	[kcu].[table_name] = [tc].[table_name] AND
+	[kcu].[constraint_name] = [tc].[constraint_name]
 WHERE
-	tc.constraint_type = 'PRIMARY KEY' AND
-	kcu.table_name = :tableName AND
-	kcu.table_schema = :schemaName
+	[tc].[constraint_type] = 'PRIMARY KEY' AND
+	[kcu].[table_name] = :tableName AND
+	[kcu].[table_schema] = :schemaName
 SQL;
 
 		$table->primaryKey = $this->db
@@ -272,7 +294,7 @@ SQL;
 			// table does not have primary key
 			$table->primaryKey = null;
 		} elseif (count($table->primaryKey) == 1) {
-			// table have one primary key
+			// table has one primary key
 			$table->primaryKey = $table->primaryKey[0];
 		}
 	}
@@ -283,8 +305,8 @@ SQL;
 	 */
 	protected function findForeignKeys($table)
 	{
-		$referentialConstraintsTableName = 'INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS';
-		$keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
+		$referentialConstraintsTableName = 'information_schema.referential_constraints';
+		$keyColumnUsageTableName = 'information_schema.key_column_usage';
 		if ($table->catalogName !== null) {
 			$referentialConstraintsTableName = $table->catalogName . '.' . $referentialConstraintsTableName;
 			$keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
@@ -296,20 +318,20 @@ SQL;
 		// http://msdn2.microsoft.com/en-us/library/aa175805(SQL.80).aspx
 		$sql = <<<SQL
 SELECT
-	kcu1.COLUMN_NAME AS fk_column_name,
-	kcu2.TABLE_NAME AS uq_table_name,
-	kcu2.COLUMN_NAME AS uq_column_name
-FROM {$referentialConstraintsTableName} AS rc
-JOIN {$keyColumnUsageTableName} AS kcu1 ON
-	kcu1.CONSTRAINT_CATALOG = rc.CONSTRAINT_CATALOG AND
-	kcu1.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA AND
-	kcu1.CONSTRAINT_NAME = rc.CONSTRAINT_NAME
-JOIN {$keyColumnUsageTableName} AS kcu2 ON
-	kcu2.CONSTRAINT_CATALOG = rc.UNIQUE_CONSTRAINT_CATALOG AND
-	kcu2.CONSTRAINT_SCHEMA = rc.UNIQUE_CONSTRAINT_SCHEMA AND
-	kcu2.CONSTRAINT_NAME = rc.UNIQUE_CONSTRAINT_NAME AND
-	kcu2.ORDINAL_POSITION = kcu1.ORDINAL_POSITION
-WHERE kcu1.TABLE_NAME = :tableName
+	[kcu1].[column_name] AS [fk_column_name],
+	[kcu2].[table_name] AS [uq_table_name],
+	[kcu2].[column_name] AS [uq_column_name]
+FROM {$referentialConstraintsTableName} AS [rc]
+JOIN {$keyColumnUsageTableName} AS [kcu1] ON
+	[kcu1].[constraint_catalog] = [rc].[constraint_catalog] AND
+	[kcu1].[constraint_schema] = [rc].[constraint_schema] AND
+	[kcu1].[constraint_name] = [rc].[constraint_name]
+JOIN {$keyColumnUsageTableName} AS [kcu2] ON
+	[kcu2].[constraint_catalog] = [rc].[constraint_catalog] AND
+	[kcu2].[constraint_schema] = [rc].[constraint_schema] AND
+	[kcu2].[constraint_name] = [rc].[constraint_name] AND
+	[kcu2].[ordinal_position] = [kcu1].[ordinal_position]
+WHERE [kcu1].[table_name] = :tableName
 SQL;
 
 		$rows = $this->db->createCommand($sql, array(':tableName' => $table->name))->queryAll();
@@ -328,23 +350,20 @@ SQL;
 	 */
 	protected function findTableNames($schema = '')
 	{
-		if ('' === $schema) {
-			$schema = self::DEFAULT_SCHEMA;
+		if ($schema === '') {
+			$schema = static::DEFAULT_SCHEMA;
 		}
 
 		$sql = <<<SQL
-SELECT
-	TABLE_NAME
-FROM [INFORMATION_SCHEMA].[TABLES]
-WHERE
-	TABLE_SCHEMA = :schema AND
-	TABLE_TYPE = 'BASE TABLE'
+SELECT [t].[table]
+FROM [information_schema].[tables] AS [t]
+WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
 SQL;
 
 		$names = $this->db->createCommand($sql, array(':schema' => $schema))->queryColumn();
-		if (static::DEFAULT_SCHEMA !== $schema) {
-			foreach ($names as $i => $name) {
-				$names[$i] = $schema . '.' . $name;
+		if ($schema !== static::DEFAULT_SCHEMA) {
+			foreach ($names as $index => $name) {
+				$names[$index] = $schema . '.' . $name;
 			}
 		}
 		return $names;

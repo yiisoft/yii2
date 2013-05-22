@@ -8,10 +8,8 @@
 namespace yii\db\mssql;
 
 /**
- * QueryBuilder is the query builder for MS SQL database (version 2008 and above).
+ * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @author Christophe Boulain <Christophe.Boulain@gmail.com>
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
  */
