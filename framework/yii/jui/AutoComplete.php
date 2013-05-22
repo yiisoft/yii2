@@ -71,7 +71,6 @@ class AutoComplete extends Widget
 	 */
 	public function run()
 	{
-		$this->getView()->registerAssetBundle('yii/jui/autocomplete');
 		echo $this->renderField();
 		$this->registerWidget('autocomplete');
 	}

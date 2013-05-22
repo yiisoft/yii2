@@ -64,6 +64,7 @@ class Widget extends \yii\base\Widget
 	{
 		$id = $this->options['id'];
 		$view = $this->getView();
+		$view->registerAssetBundle("yii/jui/$name");
 
 		if ($this->themeBundle !== null) {
 			$view->registerAssetBundle($this->themeBundle);
