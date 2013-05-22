@@ -1,0 +1,27 @@
+{
+	"name": "yiisoft/yii2-composer",
+	"description": "The composer integration for the Yii framework",
+	"keywords": ["yii", "composer", "install", "update"],
+	"type": "library",
+	"license": "BSD-3-Clause",
+	"support": {
+		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/yiisoft/yii2"
+	},
+	"authors": [
+		{
+			"name": "Qiang Xue",
+			"email": "qiang.xue@gmail.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"yiisoft/yii2": "dev-master"
+	},
+	"autoload": {
+		"psr-0": { "yii\\composer": "" }
+	}
+}

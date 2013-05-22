@@ -1,0 +1,48 @@
+<?php
+/**
+ * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
+ * These requirements are mandatory for any Yii application.
+ *
+ * @var $this YiiRequirementChecker
+ */
+return array(
+	array(
+		'name' => 'PHP version',
+		'mandatory' => true,
+		'condition' => version_compare(PHP_VERSION, '5.3.11', '>='),
+		'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+		'memo' => 'PHP 5.3.11 or higher is required.',
+	),
+	array(
+		'name' => 'Reflection extension',
+		'mandatory' => true,
+		'condition' => class_exists('Reflection', false),
+		'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+	),
+	array(
+		'name' => 'PCRE extension',
+		'mandatory' => true,
+		'condition' => extension_loaded('pcre'),
+		'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+	),
+	array(
+		'name' => 'SPL extension',
+		'mandatory' => true,
+		'condition' => extension_loaded('SPL'),
+		'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+	),
+	array(
+		'name' => 'MBString extension',
+		'mandatory' => true,
+		'condition' => extension_loaded('mbstring'),
+		'by' => '<a href="http://www.php.net/manual/en/book.mbstring.php">Multibyte string</a> processing',
+		'memo' => 'Required for multibyte encoding string processing.'
+	),
+	array(
+		'name' => 'Intl extension',
+		'mandatory' => false,
+		'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2'),
+		'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
+		'memo' => 'PHP Intl extension 1.0.2 or higher is required when you want to use <abbr title="Internationalized domain names">IDN</abbr>-feature of EmailValidator or UrlValidator.'
+	),
+);
