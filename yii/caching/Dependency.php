@@ -27,11 +27,11 @@ abstract class Dependency extends \yii\base\Object
 	public $data;
 	/**
 	 * @var boolean whether this dependency is reusable or not. True value means that dependent
-	 * data for this cache dependency will only be generated once per request. This allows you
+	 * data for this cache dependency will be generated only once per request. This allows you
 	 * to use the same cache dependency for multiple separate cache calls while generating the same
 	 * page without an overhead of re-evaluating dependency data each time. Defaults to false.
 	 */
-	public $reuseData = false;
+	public $reusable = false;
 
 	/**
 	 * @var array static storage of cached data for reusable dependencies.
@@ -42,13 +42,14 @@ abstract class Dependency extends \yii\base\Object
 	 */
 	private $_hash;
 
+
 	/**
 	 * Evaluates the dependency by generating and saving the data related with dependency.
 	 * This method is invoked by cache before writing data into it.
 	 */
 	public function evaluateDependency()
 	{
-		if (!$this->reuseData) {
+		if (!$this->reusable) {
 			$this->data = $this->generateDependencyData();
 		} else {
 			if ($this->_hash === null) {
@@ -66,7 +67,7 @@ abstract class Dependency extends \yii\base\Object
 	 */
 	public function getHasChanged()
 	{
-		if (!$this->reuseData) {
+		if (!$this->reusable) {
 			return $this->generateDependencyData() !== $this->data;
 		} else {
 			if ($this->_hash === null) {
