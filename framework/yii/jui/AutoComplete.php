@@ -45,10 +45,6 @@ use yii\helpers\Html;
 class AutoComplete extends Widget
 {
 	/**
-	 * @var string the jQuery UI theme bundle.
-	 */
-	public $themeBundle = 'jui/theme/base/autocomplete';
-	/**
 	 * @var \yii\base\Model the data model that this widget is associated with.
 	 */
 	public $model;

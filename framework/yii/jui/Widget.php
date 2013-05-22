@@ -23,7 +23,7 @@ class Widget extends \yii\base\Widget
 	/**
 	 * @var string the jQuery UI theme bundle.
 	 */
-	public $themeBundle;
+	public static $theme = 'yii/jui/theme/base';
 	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
@@ -65,10 +65,7 @@ class Widget extends \yii\base\Widget
 		$id = $this->options['id'];
 		$view = $this->getView();
 		$view->registerAssetBundle("yii/jui/$name");
-
-		if ($this->themeBundle !== null) {
-			$view->registerAssetBundle($this->themeBundle);
-		}
+		$view->registerAssetBundle(static::$theme . "/$name");
 
 		if ($this->clientOptions !== false) {
 			$options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
