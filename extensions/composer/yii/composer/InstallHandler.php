@@ -41,11 +41,11 @@ class InstallHandler
 
 		foreach ((array)$options['executable'] as $path) {
 			echo "Setting executable: $path ...";
-			if (is_dir($path)) {
+			if (is_file($path)) {
 				chmod($path, 0755);
 				echo "done\n";
 			} else {
-				echo "The file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path;
+				echo "\n\tThe file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
 				return;
 			}
 		}
