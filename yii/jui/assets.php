@@ -13,6 +13,7 @@ return array(
 		'js' => array(
 			'jquery.ui.widget.js',
 		),
+		'depends' => array('yii/jquery'),
 	),
 	'yii/jui/accordion' => array(
 		'sourcePath' => __DIR__ . '/assets',
