@@ -9,8 +9,9 @@ namespace yii\bootstrap;
 
 use Yii;
 use yii\base\Model;
-use yii\helpers\base\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\base\ArrayHelper;
+use yii\base\InvalidConfigException;
 
 /**
  * Carousel renders a carousel bootstrap javascript component.
@@ -41,18 +42,19 @@ class Carousel extends Widget
 {
 	/**
 	 * @var array indicates what labels should be displayed on next and previous carousel controls. If [[controls]] is
-	 * set to `false` the controls will not be displayed.
+	 * set to `false` the controls will not be displayed. If configured, it must contain two elements for left and right
+	 * control labels respectively.
 	 */
 	public $controls = array('&lsaquo;', '&rsaquo;');
 	/**
 	 * @var array list of images to appear in the carousel. If this property is empty,
-	 * the widget will not render anything. Each array element represents a single image in the carousel
+	 * the widget will not render anything. Each array element represents an html content to display in the carousel
 	 * with the following structure:
 	 *
 	 * ```php
 	 * array(
-	 *     'content' => 'html, for example image',  // required
-	 *     'caption'=> ['html attributes of the image'], // optional
+	 *     'content' => 'html content of the slider',  // required
+	 *     'caption'=> 'html content of the slider\'s caption', // optional
 	 *     'options' => ['html attributes of the item'], // optional
 	 * )
 	 * ```
@@ -81,7 +83,7 @@ class Carousel extends Widget
 		echo Html::beginTag('div', $this->options) . "\n";
 		echo $this->renderIndicators() . "\n";
 		echo $this->renderItems() . "\n";
-		echo $this->renderPreviousAndNext() . "\n";
+		echo $this->renderControls() . "\n";
 		echo Html::endTag('div') . "\n";
 
 		$this->registerPlugin('carousel');
@@ -123,6 +125,7 @@ class Carousel extends Widget
 	 * Renders a single carousel item
 	 * @param mixed $item a single item from [[items]]
 	 * @param integer $index the item index as the first item should be set to `active`
+	 * @throws \yii\base\InvalidConfigException
 	 */
 	public function renderItem($item, $index)
 	{
@@ -131,7 +134,10 @@ class Carousel extends Widget
 			$itemCaption = null;
 			$itemOptions = array();
 		} else {
-			$itemContent = $item['content']; // if not string, must be array, force required key
+			$itemContent = ArrayHelper::getValue($item, 'content');
+			if ($itemContent === null) {
+				throw new InvalidConfigException('Each item array configuration must contain "content" key');
+			}
 			$itemCaption = ArrayHelper::getValue($item, 'caption');
 			$itemOptions = ArrayHelper::getValue($item, 'options', array());
 		}
@@ -150,13 +156,18 @@ class Carousel extends Widget
 	}
 
 	/**
-	 * Renders previous and next button if [[displayPreviousAndNext]] is set to `true`
+	 * Renders previous and next button if [[controls]] is not set to `false`.
+	 * @throws \yii\base\InvalidConfigException
 	 */
-	public function renderPreviousAndNext()
+	public function renderControls()
 	{
-		if ($this->controls === false || !(isset($this->controls[0], $this->controls[1]))) {
+		if ($this->controls === false) {
 			return;
 		}
+		if (!isset($this->controls[0], $this->controls[1])) {
+			throw new InvalidConfigException('Attribute "controls" must contain labels for both left and right controls');
+		}
+
 		echo Html::a($this->controls[0], '#' . $this->options['id'], array(
 				'class' => 'left carousel-control',
 				'data-slide' => 'prev',
