@@ -25,6 +25,22 @@ abstract class Dependency extends \yii\base\Object
 	 * latest dependency data.
 	 */
 	public $data;
+	/**
+	 * @var boolean whether this dependency is reusable or not. True value means that dependent
+	 * data for this cache dependency will only be generated once per request. This allows you
+	 * to use the same cache dependency for multiple separate cache calls while generating the same
+	 * page without an overhead of re-evaluating dependency data each time. Defaults to false.
+	 */
+	public $reuseData = false;
+
+	/**
+	 * @var array static storage of cached data for reusable dependencies.
+	 */
+	private static $_reusableData = array();
+	/**
+	 * @var string a unique hash value for this cache dependency.
+	 */
+	private $_hash;
 
 	/**
 	 * Evaluates the dependency by generating and saving the data related with dependency.
@@ -32,7 +48,17 @@ abstract class Dependency extends \yii\base\Object
 	 */
 	public function evaluateDependency()
 	{
-		$this->data = $this->generateDependencyData();
+		if (!$this->reuseData) {
+			$this->data = $this->generateDependencyData();
+		} else {
+			if ($this->_hash === null) {
+				$this->_hash = sha1(serialize($this));
+			}
+			if (!array_key_exists($this->_hash, self::$_reusableData)) {
+				self::$_reusableData[$this->_hash] = $this->generateDependencyData();
+			}
+			$this->data = self::$_reusableData[$this->_hash];
+		}
 	}
 
 	/**
@@ -40,7 +66,25 @@ abstract class Dependency extends \yii\base\Object
 	 */
 	public function getHasChanged()
 	{
-		return $this->generateDependencyData() !== $this->data;
+		if (!$this->reuseData) {
+			return $this->generateDependencyData() !== $this->data;
+		} else {
+			if ($this->_hash === null) {
+				$this->_hash = sha1(serialize($this));
+			}
+			if (!array_key_exists($this->_hash, self::$_reusableData)) {
+				self::$_reusableData[$this->_hash] = $this->generateDependencyData();
+			}
+			return self::$_reusableData[$this->_hash] !== $this->_data;
+		}
+	}
+
+	/**
+	 * Resets all cached data for reusable dependencies.
+	 */
+	public static function resetReusableData()
+	{
+		self::$_reusableData = array();
 	}
 
 	/**
