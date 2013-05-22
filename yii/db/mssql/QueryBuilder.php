@@ -7,6 +7,8 @@
 
 namespace yii\db\mssql;
 
+use yii\base\InvalidParamException;
+
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
  *
@@ -35,4 +37,45 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_BOOLEAN => 'tinyint(1)',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
 	);
+
+//	public function update($table, $columns, $condition, &$params)
+//	{
+//		return '';
+//	}
+
+//	public function delete($table, $condition, &$params)
+//	{
+//		return '';
+//	}
+
+//	public function buildLimit($limit, $offset)
+//	{
+//		return '';
+//	}
+
+//	public function resetSequence($table, $value = null)
+//	{
+//		return '';
+//	}
+
+	/**
+	 * Builds a SQL statement for enabling or disabling integrity check.
+	 * @param boolean $check whether to turn on or off the integrity check.
+	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
+	 * @return string the SQL statement for checking integrity
+	 * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+	 */
+	public function checkIntegrity($check = true, $schema = '', $table = '')
+	{
+		if ($schema !== '') {
+			$table = "{$schema}.{$table}";
+		}
+		$table = $this->db->quoteTableName($table);
+		if ($this->db->getTableSchema($table) === null) {
+			throw new InvalidParamException("Table not found: $table");
+		}
+		$enable = $check ? 'CHECK' : 'NOCHECK';
+		return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
+	}
 }
