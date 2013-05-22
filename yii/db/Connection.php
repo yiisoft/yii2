@@ -237,10 +237,10 @@ class Connection extends Component
 		'mysql' => 'yii\db\mysql\Schema',    // MySQL
 		'sqlite' => 'yii\db\sqlite\Schema',  // sqlite 3
 		'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
-		'mssql' => 'yii\db\dao\mssql\Schema', // Mssql driver on windows hosts
-		'sqlsrv' => 'yii\db\mssql\Schema',   // Mssql
+		'sqlsrv' => 'yii\db\mssql\Schema',   // newer MSSQL driver on MS Windows hosts
 		'oci' => 'yii\db\oci\Schema',        // Oracle driver
-		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on linux (and maybe others os) hosts
+		'mssql' => 'yii\db\mssql\Schema',    // older MSSQL driver on MS Windows hosts
+		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on GNU/Linux (and maybe other OSes) hosts
 	);
 	/**
 	 * @var Transaction the currently active transaction
