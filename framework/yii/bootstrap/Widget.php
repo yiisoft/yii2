@@ -28,21 +28,21 @@ class Widget extends \yii\base\Widget
 	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
-	public $htmlOptions = array();
+	public $options = array();
 	/**
 	 * @var array the options for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible options.
 	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
 	 * how to use the "Modal" plugin and the supported options (e.g. "remote").
 	 */
-	public $options = array();
+	public $clientOptions = array();
 	/**
 	 * @var array the event handlers for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible events.
 	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
 	 * how to use the "Modal" plugin and the supported events (e.g. "shown").
 	 */
-	public $events = array();
+	public $clientEvents = array();
 
 
 	/**
@@ -53,8 +53,8 @@ class Widget extends \yii\base\Widget
 	public function init()
 	{
 		parent::init();
-		if (!isset($this->options['id'])) {
-			$this->options['id'] = $this->getId();
+		if (!isset($this->clientOptions['id'])) {
+			$this->clientOptions['id'] = $this->getId();
 		}
 	}
 
@@ -64,20 +64,20 @@ class Widget extends \yii\base\Widget
 	 */
 	protected function registerPlugin($name)
 	{
-		$id = $this->options['id'];
+		$id = $this->clientOptions['id'];
 		$view = $this->getView();
 		$view->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
 		$view->registerAssetBundle("yii/bootstrap/$name");
 
-		if ($this->options !== false) {
-			$options = empty($this->options) ? '' : Json::encode($this->options);
+		if ($this->clientOptions !== false) {
+			$options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
 			$js = "jQuery('#$id').$name($options);";
 			$view->registerJs($js);
 		}
 
-		if (!empty($this->events)) {
+		if (!empty($this->clientEvents)) {
 			$js = array();
-			foreach ($this->events as $event => $handler) {
+			foreach ($this->clientEvents as $event => $handler) {
 				$js[] = "jQuery('#$id').on('$event', $handler);";
 			}
 			$view->registerJs(implode("\n", $js));
