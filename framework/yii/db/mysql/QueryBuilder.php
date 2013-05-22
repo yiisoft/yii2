@@ -120,12 +120,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * Builds a SQL statement for enabling or disabling integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
-	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $table the table name. Meaningless for MySQL.
+	 * @param string $schema the schema of the tables. Meaningless for MySQL.
 	 * @return string the SQL statement for checking integrity
 	 */
-	public function checkIntegrity($check = true, $schema = '')
+	public function checkIntegrity($check = true, $schema = '', $table = '')
 	{
-		return 'SET FOREIGN_KEY_CHECKS=' . ($check ? 1 : 0);
+		return 'SET FOREIGN_KEY_CHECKS = ' . ($check ? 1 : 0);
 	}
 
 	/**
