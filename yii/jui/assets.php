@@ -49,27 +49,25 @@ return array(
 		),
 		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/button', 'yii/jui/draggable', 'yii/jui/mouse', 'yii/jui/position', 'yii/jui/resizeable'),
 	),
-	//@todo next depencies
 	'yii/jui/draggable' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.draggable.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/mouse'),
 	),
 	'yii/jui/droppable' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.droppable.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/draggable'),
 	),
 	'yii/jui/effect' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.effect.js',
 		),
-		'depends' => array('yii/jui/core'),
 	),
 	'yii/jui/effect/blind' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -167,76 +165,75 @@ return array(
 		'js' => array(
 			'jquery.ui.menu.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/position'),
 	),
 	'yii/jui/mouse' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.mouse.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/widget'),
 	),
 	'yii/jui/position' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.position.js',
 		),
-		'depends' => array('yii/jui/core'),
 	),
 	'yii/jui/progressbar' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.progressbar.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget'),
 	),
 	'yii/jui/resizable' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.resizable.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/mouse'),
 	),
 	'yii/jui/selectable' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.selectable.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/mouse'),
 	),
 	'yii/jui/slider' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.slider.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/mouse'),
 	),
 	'yii/jui/sortable' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.sortable.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/mouse'),
 	),
 	'yii/jui/spinner' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.spinner.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/button'),
 	),
 	'yii/jui/tabs' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.tabs.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget'),
 	),
 	'yii/jui/tooltip' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.tooltip.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/position'),
 	),
 );
