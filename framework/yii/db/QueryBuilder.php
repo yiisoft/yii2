@@ -429,10 +429,11 @@ class QueryBuilder extends \yii\base\Object
 	 * Builds a SQL statement for enabling or disabling integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
 	 * @return string the SQL statement for checking integrity
 	 * @throws NotSupportedException if this is not supported by the underlying DBMS
 	 */
-	public function checkIntegrity($check = true, $schema = '')
+	public function checkIntegrity($check = true, $schema = '', $table = '')
 	{
 		throw new NotSupportedException($this->db->getDriverName() . ' does not support enabling/disabling integrity check.');
 	}
