@@ -58,8 +58,8 @@ class InflectorTest extends TestCase
 			'cars' => 'car',
 		);
 		foreach ($testData as $testIn => $testOut) {
-			$this->assertEquals($testOut, Inflector::pluralize($testIn));
-			$this->assertEquals(ucfirst($testOut), ucfirst(Inflector::pluralize($testIn)));
+			$this->assertEquals($testOut, Inflector::singularize($testIn));
+			$this->assertEquals(ucfirst($testOut), ucfirst(Inflector::singularize($testIn)));
 		}
     }
 
@@ -107,7 +107,7 @@ class InflectorTest extends TestCase
     public function testHumanize()
     {
         $this->assertEquals("Me my self and i", Inflector::humanize('me_my_self_and_i'));
-        $this->assertEquals("Me My Self And I", Inflector::humanize('me_my_self_and_i'), true);
+        $this->assertEquals("Me My Self And I", Inflector::humanize('me_my_self_and_i', true));
     }
 
     public function testVariablize()
@@ -122,7 +122,7 @@ class InflectorTest extends TestCase
 
     public function testSlug()
     {
-        $this->assertEquals("this-is-a-title", Inflector::humanize('this is a title'));
+        $this->assertEquals("this-is-a-title", Inflector::slug('this is a title'));
     }
 
     public function testClassify()
@@ -132,6 +132,6 @@ class InflectorTest extends TestCase
 
     public function testOrdinalize()
     {
-        $this->assertEquals("21st", Inflector::humanize('21'));
+        $this->assertEquals('21st', Inflector::ordinalize('21'));
     }
 }
