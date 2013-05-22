@@ -78,7 +78,7 @@ class Widget extends \yii\base\Widget
 		if (!empty($this->widgetEvents)) {
 			$js = array();
 			foreach ($this->widgetEvents as $event => $handler) {
-				$js[] = "jQuery('#$id').on('$event', $handler);";
+				$js[] = "jQuery('#$id').on('$name$event', $handler);";
 			}
 			$view->registerJs(implode("\n", $js));
 		}
