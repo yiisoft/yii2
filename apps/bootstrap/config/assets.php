@@ -12,7 +12,7 @@ return array(
 		),
 		'depends' => array(
 			'yii',
-			'yii/bootstrap-responsive',
+			'yii/bootstrap/responsive',
 		),
 	),
 );

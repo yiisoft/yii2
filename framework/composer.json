@@ -68,6 +68,9 @@
 		"ext-mbstring": "*",
 		"lib-pcre": "*"
 	},
+	"autoload": {
+		"psr-0": { "yii\\": "/" }
+	},
 	"suggest": {
 		"michelf/php-markdown": "Required for Markdown helper.",
 		"twig/twig": "Required for TwigViewRenderer.",
