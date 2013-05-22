@@ -1,5 +1,17 @@
 <?php
+
+namespace yii\caching;
+
+/**
+ * Mock for the time() function for caching classes
+ * @return int
+ */
+function time() {
+	return \yiiunit\framework\caching\CacheTest::$time ?: \time();
+}
+
 namespace yiiunit\framework\caching;
+
 use yiiunit\TestCase;
 use yii\caching\Cache;
 
@@ -9,6 +21,12 @@ use yii\caching\Cache;
 abstract class CacheTest extends TestCase
 {
 	/**
+	 * @var int virtual time to be returned by mocked time() function.
+	 * Null means normal time() behavior.
+	 */
+	public static $time;
+
+	/**
 	 * @return Cache
 	 */
 	abstract protected function getCacheInstance();
@@ -17,6 +35,11 @@ abstract class CacheTest extends TestCase
 	{
 		parent::setUp();
 		$this->mockApplication();
+	}
+
+	protected function tearDown()
+	{
+		static::$time = null;
 	}
 
 	/**
@@ -110,7 +133,8 @@ abstract class CacheTest extends TestCase
 		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
 		sleep(1);
 		$this->assertEquals('expire_test', $cache->get('expire_test'));
-		sleep(2);
+		// wait a bit more than 2 sec to avoid random test failure
+		usleep(2500000);
 		$this->assertFalse($cache->get('expire_test'));
 	}
 

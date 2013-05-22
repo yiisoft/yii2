@@ -32,7 +32,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->assertEquals($item2->type, Item::TYPE_ROLE);
 
 		// test adding an item with the same name
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->auth->createItem($name, $type, $description, $bizRule, $data);
 	}
 
@@ -57,6 +57,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->assertTrue($item instanceof Item);
 		$this->assertTrue($this->auth->hasItemChild('reader', 'readPost'));
 		$item->name = 'readPost2';
+		$item->save();
 		$this->assertNull($this->auth->getItem('readPost'));
 		$this->assertEquals($this->auth->getItem('readPost2'), $item);
 		$this->assertFalse($this->auth->hasItemChild('reader', 'readPost'));
@@ -68,14 +69,14 @@ abstract class ManagerTestBase extends TestCase
 		$this->auth->addItemChild('createPost', 'updatePost');
 
 		// test adding upper level item to lower one
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->auth->addItemChild('readPost', 'reader');
 	}
 
 	public function testAddItemChild2()
 	{
 		// test adding inexistent items
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->assertFalse($this->auth->addItemChild('createPost2', 'updatePost'));
 	}
 
@@ -104,7 +105,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->assertEquals($auth->bizRule, 'rule');
 		$this->assertEquals($auth->data, 'data');
 
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->auth->assign('new user', 'createPost2', 'rule', 'data');
 	}
 
@@ -157,7 +158,7 @@ abstract class ManagerTestBase extends TestCase
 
 	public function testDetectLoop()
 	{
-		$this->setExpectedException('Exception');
+		$this->setExpectedException('\yii\base\Exception');
 		$this->auth->addItemChild('readPost', 'readPost');
 	}
 
@@ -166,7 +167,7 @@ abstract class ManagerTestBase extends TestCase
 		$this->assertTrue($this->auth->executeBizRule(null, array(), null));
 		$this->assertTrue($this->auth->executeBizRule('return 1 == true;', array(), null));
 		$this->assertTrue($this->auth->executeBizRule('return $params[0] == $params[1];', array(1, '1'), null));
-		$this->assertFalse($this->auth->executeBizRule('invalid', array(), null));
+		$this->assertFalse($this->auth->executeBizRule('invalid;', array(), null));
 	}
 
 	public function testCheckAccess()

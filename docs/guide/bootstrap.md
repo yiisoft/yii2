@@ -28,10 +28,9 @@ app/
    img/                      containing image files
    themes/                   containing application themes
    protected/                containing protected application files
-      yiic                   yiic command line script for Unix/Linux
-      yiic.bat               yiic command line script for Windows
-      yiic.php               yiic command line PHP script
-      commands/              containing customized 'yiic' commands
+      yii                    yii command line script for Unix/Linux
+      yii.bat                yii command line script for Windows
+      commands/              containing customized yii console commands
       components/            containing reusable user components
       config/                containing configuration files
          console.php         the console application configuration
