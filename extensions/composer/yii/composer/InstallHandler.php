@@ -9,10 +9,16 @@ namespace yii\composer;
 
 use Composer\Script\CommandEvent;
 
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+
+// fcgi doesn't have STDIN defined by default
+defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
+
 /**
  * InstallHandler is called by Composer after it installs/updates the current package.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Tobias Munk <schmunk@usrbin.de>
  * @since 2.0
  */
 class InstallHandler
@@ -48,6 +54,33 @@ class InstallHandler
 				echo "\n\tThe file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
 				return;
 			}
+		}
+	}
+
+	/**
+	 * Executes a yii command.
+	 * @param CommandEvent $event
+	 */
+	public static function run($event)
+	{
+		$options = array_merge(array(
+									'run' => array(),
+							   ), $event->getComposer()->getPackage()->getExtra());
+
+		$appPath = realpath(__DIR__ . '/../../../../..');
+
+		require($appPath . '/vendor/yiisoft/yii2/yii/Yii.php');
+		require($appPath . '/vendor/autoload.php');
+		$config = require($appPath . '/config/console.php');
+
+		foreach((array)$options['run'] as $params){
+			$command = $params[0];
+			unset($params[0]);
+			$params = array();
+			// TODO: add params to array
+			echo "Running command: {$command}\n";
+			$application = new \yii\console\Application($config);
+			$application->runAction($command, $params);
 		}
 	}
 }
