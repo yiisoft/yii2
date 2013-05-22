@@ -19,10 +19,9 @@ use yii\helpers\Html;
  *
  * ```php
  * echo TypeAhead::widget(array(
- *     'form' => $form,
  *     'model' => $model,
  *     'attribute' => 'country',
- *     'pluginOptions' => array(
+ *     'options' => array(
  *         'source' => array('USA', 'ESP'),
  *     ),
  * ));
@@ -33,7 +32,7 @@ use yii\helpers\Html;
  * ```php
  * echo TypeAhead::widget(array(
  *     'name'  => 'country',
- *     'pluginOptions' => array(
+ *     'options' => array(
  *         'source' => array('USA', 'ESP'),
  *     ),
  * ));
@@ -77,17 +76,17 @@ class TypeAhead extends Widget
 	 * If [[model]] is null or not from an [[Model]] instance, then the field will be rendered according to
 	 * the [[name]] attribute.
 	 * @return string the rendering result
-	 * @throws InvalidConfigException when none of the required attributes are set to render the textInput. That is,
-	 * if [[model]] and [[attribute]] are not set, then [[name]] is required.
+	 * @throws InvalidConfigException when none of the required attributes are set to render the textInput.
+	 * That is, if [[model]] and [[attribute]] are not set, then [[name]] is required.
 	 */
 	public function renderField()
 	{
 		if ($this->model instanceof Model && $this->attribute !== null) {
-			return Html::activeTextInput($this->model, $this->attribute, $this->options);
+			return Html::activeTextInput($this->model, $this->attribute, $this->htmlOptions);
 		} elseif ($this->name !== null) {
-			return Html::textInput($this->name, $this->value, $this->options);
+			return Html::textInput($this->name, $this->value, $this->htmlOptions);
 		} else {
-			throw new InvalidConfigException('Either "name" or "model" and "attribute" properties must be specified.');
+			throw new InvalidConfigException("Either 'name' or 'model' and 'attribute' properties must be specified.");
 		}
 	}
 }

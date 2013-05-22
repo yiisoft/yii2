@@ -28,21 +28,21 @@ class Widget extends \yii\base\Widget
 	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
-	public $options = array();
+	public $htmlOptions = array();
 	/**
 	 * @var array the options for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible options.
 	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
 	 * how to use the "Modal" plugin and the supported options (e.g. "remote").
 	 */
-	public $pluginOptions = array();
+	public $options = array();
 	/**
 	 * @var array the event handlers for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible events.
 	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
 	 * how to use the "Modal" plugin and the supported events (e.g. "shown").
 	 */
-	public $pluginEvents = array();
+	public $events = array();
 
 
 	/**
@@ -69,15 +69,15 @@ class Widget extends \yii\base\Widget
 		$view->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
 		$view->registerAssetBundle("yii/bootstrap/$name");
 
-		if ($this->pluginOptions !== false) {
-			$options = empty($this->pluginOptions) ? '' : Json::encode($this->pluginOptions);
+		if ($this->options !== false) {
+			$options = empty($this->options) ? '' : Json::encode($this->options);
 			$js = "jQuery('#$id').$name($options);";
 			$view->registerJs($js);
 		}
 
-		if (!empty($this->pluginEvents)) {
+		if (!empty($this->events)) {
 			$js = array();
-			foreach ($this->pluginEvents as $event => $handler) {
+			foreach ($this->events as $event => $handler) {
 				$js[] = "jQuery('#$id').on('$event', $handler);";
 			}
 			$view->registerJs(implode("\n", $js));
