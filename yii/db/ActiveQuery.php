@@ -236,6 +236,9 @@ class ActiveQuery extends Query
 		if ($this->sql === null) {
 			if ($this->from === null) {
 				$tableName = $modelClass::tableName();
+				if ($this->select === null && !empty($this->join)) {
+					$this->select = array("$tableName.*");
+				}
 				$this->from = array($tableName);
 			}
 			/** @var $qb QueryBuilder */

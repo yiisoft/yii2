@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\StringHelper;
 
 /**
  * Module is the base class for module and application classes.
@@ -449,7 +448,7 @@ abstract class Module extends Component
 	public function getComponent($id, $load = true)
 	{
 		if (isset($this->_components[$id])) {
-			if ($this->_components[$id] instanceof Component) {
+			if ($this->_components[$id] instanceof Object) {
 				return $this->_components[$id];
 			} elseif ($load) {
 				Yii::trace("Loading component: $id", __METHOD__);
@@ -592,6 +591,7 @@ abstract class Module extends Component
 		if ($route === '') {
 			$route = $this->defaultRoute;
 		}
+		$route = trim($route, '/');
 		if (($pos = strpos($route, '/')) !== false) {
 			$id = substr($route, 0, $pos);
 			$route = substr($route, $pos + 1);
@@ -608,7 +608,7 @@ abstract class Module extends Component
 		if (isset($this->controllerMap[$id])) {
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
-			$className = StringHelper::id2camel($id) . 'Controller';
+			$className = str_replace(' ', '', ucwords(implode(' ', explode('-', $id)))) . 'Controller';
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
 			if (!is_file($classFile)) {
 				return false;

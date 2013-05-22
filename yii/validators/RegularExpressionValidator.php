@@ -45,7 +45,7 @@ class RegularExpressionValidator extends Validator
 			throw new InvalidConfigException('The "pattern" property must be set.');
 		}
 		if ($this->message === null) {
-			$this->message = Yii::t('yii|{attribute} is invalid.');
+			$this->message = Yii::t('yii', '{attribute} is invalid.');
 		}
 	}
 
@@ -79,10 +79,12 @@ class RegularExpressionValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 * @throws InvalidConfigException if the "pattern" is not a valid regular expression
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$pattern = $this->pattern;
 		$pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $pattern);
@@ -110,6 +112,7 @@ class RegularExpressionValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
+		$view->registerAssetBundle('yii/validation');
 		return 'yii.validation.regularExpression(value, messages, ' . Json::encode($options) . ');';
 	}
 }

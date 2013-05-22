@@ -63,17 +63,18 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
-	"config": {
-		"vendor-dir": "yii/vendor"
-	},
-	"bin": [
-		"yii/yiic"
-	],
 	"require": {
-		"php": ">=5.3.0",
-		"michelf/php-markdown": "1.3",
-		"twig/twig": "1.12.*",
-		"smarty/smarty": "3.1.*",
-		"ezyang/htmlpurifier": "v4.5.0"
+		"php": ">=5.3.11",
+		"ext-mbstring": "*",
+		"lib-pcre": "*"
+	},
+	"autoload": {
+		"psr-0": { "yii\\": "/" }
+	},
+	"suggest": {
+		"michelf/php-markdown": "Required for Markdown helper.",
+		"twig/twig": "Required for TwigViewRenderer.",
+		"smarty/smarty": "Required for SmartyViewRenderer.",
+		"ezyang/htmlpurifier": "Required for Purifier helper."
 	}
 }

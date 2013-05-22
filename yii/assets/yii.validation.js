@@ -110,9 +110,19 @@ yii.validation = (function ($) {
 				return;
 			}
 
-			var valid = value.match(options.pattern) && (!options.allowName || value.match(options.fullPattern));
+			var valid = true;
 
-			if (!valid) {
+			if (options.enableIDN) {
+				var regexp = /^(.*)@(.*)$/,
+					matches = regexp.exec(value);
+				if (matches === null) {
+					valid = false;
+				} else {
+					value = punycode.toASCII(matches[1]) + '@' + punycode.toASCII(matches[2]);
+				}
+			}
+
+			if (!valid || !(value.match(options.pattern) && (!options.allowName || value.match(options.fullPattern)))) {
 				messages.push(options.message);
 			}
 		},
@@ -126,7 +136,19 @@ yii.validation = (function ($) {
 				value = options.defaultScheme + '://' + value;
 			}
 
-			if (!value.match(options.pattern)) {
+			var valid = true;
+
+			if (options.enableIDN) {
+				var regexp = /^([^:]+):\/\/([^\/]+)(.*)$/,
+					matches = regexp.exec(value);
+				if (matches === null) {
+					valid = false;
+				} else {
+					value = matches[1] + '://' + punycode.toASCII(matches[2]) + matches[3];
+				}
+			}
+
+			if (!valid || !value.match(options.pattern)) {
 				messages.push(options.message);
 			}
 		},

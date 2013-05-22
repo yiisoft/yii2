@@ -75,8 +75,11 @@ class ErrorHandler extends Component
 			\Yii::$app->runAction($this->errorAction);
 		} elseif (\Yii::$app instanceof \yii\web\Application) {
 			if (!headers_sent()) {
-				$errorCode = $exception instanceof HttpException ? $exception->statusCode : 500;
-				header("HTTP/1.0 $errorCode " . get_class($exception));
+				if ($exception instanceof HttpException) {
+					header('HTTP/1.0 ' . $exception->statusCode . ' ' . $exception->getName());
+				} else {
+					header('HTTP/1.0 500 ' . get_class($exception));
+				}
 			}
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 				\Yii::$app->renderException($exception);

@@ -183,7 +183,15 @@ class UrlManager extends Component
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
 				if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-					return rtrim($baseUrl, '/') . '/' . $url . $anchor;
+					if ($rule->host !== null) {
+						if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
+							return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
+						} else {
+							return $url . $baseUrl . $anchor;
+						}
+					} else {
+						return "$baseUrl/{$url}{$anchor}";
+					}
 				}
 			}
 
@@ -193,9 +201,9 @@ class UrlManager extends Component
 			if (!empty($params)) {
 				$route .= '?' . http_build_query($params);
 			}
-			return rtrim($baseUrl, '/') . '/' . $route . $anchor;
+			return "$baseUrl/{$route}{$anchor}";
 		} else {
-			$url = $baseUrl . '?' . $this->routeVar . '=' . $route;
+			$url = "$baseUrl?{$this->routeVar}=$route";
 			if (!empty($params)) {
 				$url .= '&' . http_build_query($params);
 			}
@@ -213,7 +221,12 @@ class UrlManager extends Component
 	 */
 	public function createAbsoluteUrl($route, $params = array())
 	{
-		return $this->getHostInfo() . $this->createUrl($route, $params);
+		$url = $this->createUrl($route, $params);
+		if (strpos($url, '://') !== false) {
+			return $url;
+		} else {
+			return $this->getHostInfo() . $url;
+		}
 	}
 
 	/**
@@ -238,7 +251,7 @@ class UrlManager extends Component
 	 */
 	public function setBaseUrl($value)
 	{
-		$this->_baseUrl = $value;
+		$this->_baseUrl = rtrim($value, '/');
 	}
 
 	/**

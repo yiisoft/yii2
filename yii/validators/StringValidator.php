@@ -65,16 +65,16 @@ class StringValidator extends Validator
 			$this->encoding = Yii::$app->charset;
 		}
 		if ($this->message === null) {
-			$this->message = Yii::t('yii|{attribute} must be a string.');
+			$this->message = Yii::t('yii', '{attribute} must be a string.');
 		}
 		if ($this->min !== null && $this->tooShort === null) {
-			$this->tooShort = Yii::t('yii|{attribute} should contain at least {min} characters.');
+			$this->tooShort = Yii::t('yii', '{attribute} should contain at least {min} characters.');
 		}
 		if ($this->max !== null && $this->tooLong === null) {
-			$this->tooLong = Yii::t('yii|{attribute} should contain at most {max} characters.');
+			$this->tooLong = Yii::t('yii', '{attribute} should contain at most {max} characters.');
 		}
 		if ($this->is !== null && $this->notEqual === null) {
-			$this->notEqual = Yii::t('yii|{attribute} should contain {length} characters.');
+			$this->notEqual = Yii::t('yii', '{attribute} should contain {length} characters.');
 		}
 	}
 
@@ -126,9 +126,11 @@ class StringValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$label = $object->getAttributeLabel($attribute);
 		$value = $object->$attribute;
@@ -168,6 +170,7 @@ class StringValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
+		$view->registerAssetBundle('yii/validation');
 		return 'yii.validation.string(value, messages, ' . json_encode($options) . ');';
 	}
 }

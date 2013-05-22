@@ -28,9 +28,15 @@ class UrlRule extends Object
 	const CREATION_ONLY = 2;
 
 	/**
-	 * @var string regular expression used to parse a URL
+	 * @var string the pattern used to parse and create the path info part of a URL.
+	 * @see host
 	 */
 	public $pattern;
+	/**
+	 * @var string the pattern used to parse and create the host info part of a URL.
+	 * @see pattern
+	 */
+	public $host;
 	/**
 	 * @var string the route to the controller action
 	 */
@@ -102,7 +108,10 @@ class UrlRule extends Object
 		}
 
 		$this->pattern = trim($this->pattern, '/');
-		if ($this->pattern === '') {
+
+		if ($this->host !== null) {
+			$this->pattern = rtrim($this->host, '/') . rtrim('/' . $this->pattern, '/') . '/';
+		} elseif ($this->pattern === '') {
 			$this->_template = '';
 			$this->pattern = '#^$#u';
 			return;
@@ -162,11 +171,11 @@ class UrlRule extends Object
 			return false;
 		}
 
-		if ($this->verb !== null && !in_array($request->verb, $this->verb, true)) {
+		if ($this->verb !== null && !in_array($request->getRequestMethod(), $this->verb, true)) {
 			return false;
 		}
 
-		$pathInfo = $request->pathInfo;
+		$pathInfo = $request->getPathInfo();
 		$suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
 		if ($suffix !== '' && $pathInfo !== '') {
 			$n = strlen($suffix);
@@ -180,6 +189,10 @@ class UrlRule extends Object
 				// we allow the ending '/' to be optional if it is a suffix
 				return false;
 			}
+		}
+
+		if ($this->host !== null) {
+			$pathInfo = strtolower($request->getHostInfo()) . '/' . $pathInfo;
 		}
 
 		if (!preg_match($this->pattern, $pathInfo, $matches)) {
@@ -267,7 +280,12 @@ class UrlRule extends Object
 		}
 
 		$url = trim(strtr($this->_template, $tr), '/');
-		if (strpos($url, '//') !== false) {
+		if ($this->host !== null) {
+			$pos = strpos($url, '/', 8);
+			if ($pos !== false) {
+				$url = substr($url, 0, $pos) . preg_replace('#/+#', '/', substr($url, $pos));
+			}
+		} elseif (strpos($url, '//') !== false) {
 			$url = preg_replace('#/+#', '/', $url);
 		}
 

@@ -135,10 +135,10 @@ class AssetBundle extends Object
 		$this->publish($view->getAssetManager());
 
 		foreach ($this->js as $js) {
-			$view->registerJsFile($js, $this->jsOptions);
+			$view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
 		}
 		foreach ($this->css as $css) {
-			$view->registerCssFile($css, $this->cssOptions);
+			$view->registerCssFile($this->baseUrl . '/' . $css, $this->cssOptions);
 		}
 	}
 
