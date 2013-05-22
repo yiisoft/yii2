@@ -12,10 +12,29 @@ class InflectorTest extends TestCase
 
     public function testPluralize()
     {
-        $this->assertEquals("people", Inflector::pluralize('person'));
-        $this->assertEquals("fish", Inflector::pluralize('fish'));
-        $this->assertEquals("men", Inflector::pluralize('man'));
-        $this->assertEquals("tables", Inflector::pluralize('table'));
+        $testData = array(
+            'move' => 'moves',
+            'foot' => 'feet',
+            'child' => 'children',
+            'human' => 'humans',
+            'man' => 'men',
+            'staff' => 'staff',
+            'tooth' => 'teeth',
+            'person' => 'people',
+            'mouse' => 'mice',
+            'touch' => 'touches',
+            'hash' => 'hashes',
+            'shelf' => 'shelves',
+            'potato' => 'potatoes',
+            'bus' => 'buses',
+            'test' => 'tests',
+            'car' => 'cars',
+        );
+
+        foreach ($testData as $testIn => $testOut) {
+            $this->assertEquals($testOut, Inflector::pluralize($testIn));
+            $this->assertEquals(ucfirst($testOut), ucfirst(Inflector::pluralize($testIn)));
+        }
     }
 
     public function testSingularize()
@@ -42,10 +61,35 @@ class InflectorTest extends TestCase
         $this->assertEquals("me_my_self_and_i", Inflector::underscore('MeMySelfAndI'));
     }
 
+    public function testCamel2words()
+    {
+        $this->assertEquals('Camel Case', Inflector::camel2words('camelCase'));
+        $this->assertEquals('Lower Case', Inflector::camel2words('lower_case'));
+        $this->assertEquals('Tricky Stuff It Is Testing', Inflector::camel2words(' tricky_stuff.it-is testing... '));
+    }
+
+    public function testCamel2id()
+    {
+        $this->assertEquals('post-tag', Inflector::camel2id('PostTag'));
+        $this->assertEquals('post_tag', Inflector::camel2id('PostTag', '_'));
+
+        $this->assertEquals('post-tag', Inflector::camel2id('postTag'));
+        $this->assertEquals('post_tag', Inflector::camel2id('postTag', '_'));
+    }
+
+    public function testId2camel()
+    {
+        $this->assertEquals('PostTag', Inflector::id2camel('post-tag'));
+        $this->assertEquals('PostTag', Inflector::id2camel('post_tag', '_'));
+
+        $this->assertEquals('PostTag', Inflector::id2camel('post-tag'));
+        $this->assertEquals('PostTag', Inflector::id2camel('post_tag', '_'));
+    }
+
     public function testHumanize()
     {
         $this->assertEquals("Me my self and i", Inflector::humanize('me_my_self_and_i'));
-        $this->assertEquals("Me My Self And i", Inflector::humanize('me_my_self_and_i'), true);
+        $this->assertEquals("Me My Self And I", Inflector::humanize('me_my_self_and_i'), true);
     }
 
     public function testVariablize()
