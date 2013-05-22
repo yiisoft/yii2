@@ -21,7 +21,7 @@ use yii\helpers\Html;
  * echo AutoComplete::widget(array(
  *     'model' => $model,
  *     'attribute' => 'country',
- *     'widgetOptions' => array(
+ *     'clientOptions' => array(
  *         'source' => array('USA', 'RUS'),
  *     ),
  * ));
@@ -32,7 +32,7 @@ use yii\helpers\Html;
  * ```php
  * echo AutoComplete::widget(array(
  *     'name'  => 'country',
- *     'widgetOptions' => array(
+ *     'clientOptions' => array(
  *         'source' => array('USA', 'RUS'),
  *     ),
  * ));

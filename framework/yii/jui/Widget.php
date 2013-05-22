@@ -34,14 +34,14 @@ class Widget extends \yii\base\Widget
 	 * For example, [this page](http://api.jqueryui.com/accordion/) shows
 	 * how to use the "Accordion" widget and the supported options (e.g. "header").
 	 */
-	public $widgetOptions = array();
+	public $clientOptions = array();
 	/**
 	 * @var array the event handlers for the underlying jQuery UI widget.
 	 * Please refer to the corresponding jQuery UI widget Web page for possible events.
 	 * For example, [this page](http://api.jqueryui.com/accordion/) shows
 	 * how to use the "Accordion" widget and the supported events (e.g. "create").
 	 */
-	public $widgetEvents = array();
+	public $clientEvents = array();
 
 
 	/**
@@ -69,15 +69,15 @@ class Widget extends \yii\base\Widget
 			$view->registerAssetBundle($this->themeBundle);
 		}
 
-		if ($this->widgetOptions !== false) {
-			$options = empty($this->widgetOptions) ? '' : Json::encode($this->widgetOptions);
+		if ($this->clientOptions !== false) {
+			$options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
 			$js = "jQuery('#$id').$name($options);";
 			$view->registerJs($js);
 		}
 
-		if (!empty($this->widgetEvents)) {
+		if (!empty($this->clientEvents)) {
 			$js = array();
-			foreach ($this->widgetEvents as $event => $handler) {
+			foreach ($this->clientEvents as $event => $handler) {
 				$js[] = "jQuery('#$id').on('$name$event', $handler);";
 			}
 			$view->registerJs(implode("\n", $js));
