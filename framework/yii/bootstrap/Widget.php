@@ -67,6 +67,7 @@ class Widget extends \yii\base\Widget
 		$id = $this->options['id'];
 		$view = $this->getView();
 		$view->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
+		$view->registerAssetBundle("yii/bootstrap/$name");
 
 		if ($this->pluginOptions !== false) {
 			$options = empty($this->pluginOptions) ? '' : Json::encode($this->pluginOptions);
