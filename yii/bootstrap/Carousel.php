@@ -21,12 +21,12 @@ use yii\helpers\Html;
  * ```php
  * echo Carousel::widget(array(
  *     'items' => array(
- *         'http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg',
+ *         '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg"/>',
  *         array(
- *             'content' => 'http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg',
+ *             'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg"/>',
  *         ),
  *         array(
- *             'content' => 'http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-03.jpg',
+ *             'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-03.jpg"/>',
  *             'options' => array(...)
  *             'caption' => '<h4>This is title</h5><p>This is the caption text</p>'
  *         ),
@@ -114,7 +114,7 @@ class Carousel extends Widget
 		ob_start();
 		echo Html::beginTag('div', array('class' => 'carousel-inner')) . "\n";
 		for ($i = 0, $ln = count($this->items); $i < $ln; $i++) {
-			echo $this->renderItem($this->items[$i], $i);
+			$this->renderItem($this->items[$i], $i);
 		}
 		echo Html::endTag('div') . "\n";
 		return ob_get_clean();
@@ -127,22 +127,27 @@ class Carousel extends Widget
 	 */
 	public function renderItem($item, $index)
 	{
-		$itemOptions = ArrayHelper::getValue($item, 'options', array());
+		if (is_string($item)) {
+			$itemOptions = array();
+			$itemContent = $item;
+			$itemCaption = '';
+		} else {
+			$itemOptions = ArrayHelper::getValue($item, 'options', array());
+			$itemContent = $item['content']; // if not string, must be array, force required key
+			$itemCaption = ArrayHelper::getValue($item, 'caption');
+			if ($itemCaption) {
+				$itemCaption = Html::tag('div', $itemCaption, array('class' => 'carousel-caption'));
+			}
+		}
+
 		$this->addCssClass($itemOptions, 'item');
 		if ($index === 0) {
 			$this->addCssClass($itemOptions, 'active');
 		}
 		echo Html::beginTag('div', $itemOptions) . "\n";
-		echo is_string($item)
-			? $item
-			: $item['content']; // if not string, must be array, force required key
-
-		if (ArrayHelper::getValue($item, 'caption')) {
-			echo ArrayHelper::getValue($item, 'caption');
-		}
-
+		echo $itemContent . "\n";
+		echo $itemCaption . "\n";
 		echo Html::endTag('div') . "\n";
-
 	}
 
 	/**
@@ -150,7 +155,7 @@ class Carousel extends Widget
 	 */
 	public function renderPreviousAndNext()
 	{
-		if ($this->controls === false) {
+		if ($this->controls === false || !(isset($this->controls['left']) && isset($this->controls['left']))) {
 			return;
 		}
 		echo Html::a($this->controls['left'], '#' . $this->options['id'], array(
@@ -161,7 +166,6 @@ class Carousel extends Widget
 			Html::a($this->controls['right'], '#' . $this->options['id'], array(
 				'class' => 'right carousel-control',
 				'data-slide' => 'next'
-			)) .
-			"\n";
+			));
 	}
 }
