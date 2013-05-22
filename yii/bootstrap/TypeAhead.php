@@ -21,7 +21,7 @@ use yii\helpers\Html;
  * echo TypeAhead::widget(array(
  *     'model' => $model,
  *     'attribute' => 'country',
- *     'options' => array(
+ *     'clientOptions' => array(
  *         'source' => array('USA', 'ESP'),
  *     ),
  * ));
@@ -32,7 +32,7 @@ use yii\helpers\Html;
  * ```php
  * echo TypeAhead::widget(array(
  *     'name'  => 'country',
- *     'options' => array(
+ *     'cloentOptions' => array(
  *         'source' => array('USA', 'ESP'),
  *     ),
  * ));
@@ -82,9 +82,9 @@ class TypeAhead extends Widget
 	public function renderField()
 	{
 		if ($this->model instanceof Model && $this->attribute !== null) {
-			return Html::activeTextInput($this->model, $this->attribute, $this->htmlOptions);
+			return Html::activeTextInput($this->model, $this->attribute, $this->options);
 		} elseif ($this->name !== null) {
-			return Html::textInput($this->name, $this->value, $this->htmlOptions);
+			return Html::textInput($this->name, $this->value, $this->options);
 		} else {
 			throw new InvalidConfigException("Either 'name' or 'model' and 'attribute' properties must be specified.");
 		}
