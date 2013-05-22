@@ -21,13 +21,14 @@ use yii\helpers\Html;
  * ```php
  * echo Carousel::widget(array(
  *     'items' => array(
+ *         'http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg',
  *         array(
- *             'src' => 'http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg',
+ *             'content' => 'http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg',
  *         ),
  *         array(
- *             'src' => 'http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg',
- *             'captionLabel' => 'This is the caption label',
- *             'captionText' => 'This is the caption text'
+ *             'content' => 'http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-03.jpg',
+ *             'options' => array(...)
+ *             'caption' => '<h4>This is title</h5><p>This is the caption text</p>'
  *         ),
  *     )
  * ));
@@ -40,21 +41,10 @@ use yii\helpers\Html;
 class Carousel extends Widget
 {
 	/**
-	 * @var string the previous button label. Defaults to '&lsaquo;'.
+	 * @var array indicates what labels should be displayed on next and previous carousel controls. If [[controls]] is
+	 * set to `false` or they do not hold `left` and `right` keys, the controls will not be displayed.
 	 */
-	public $previousLabel = '&lsaquo;';
-	/**
-	 * @var string the next button label. Defaults to '&rsaquo;'.
-	 */
-	public $nextLabel = '&rsaquo;';
-	/**
-	 * @var boolean indicates whether the carousel should slide items.
-	 */
-	public $slide = true;
-	/**
-	 * @var boolean indicates whether to display the previous and next links.
-	 */
-	public $displayPreviousAndNext = true;
+	public $controls = array('left' => '&lsaquo;', 'right' => '&rsaquo;');
 	/**
 	 * @var array list of images to appear in the carousel. If this property is empty,
 	 * the widget will not render anything. Each array element represents a single image in the carousel
@@ -62,13 +52,9 @@ class Carousel extends Widget
 	 *
 	 * ```php
 	 * array(
-	 *     'src' => 'src of the image',  // required
+	 *     'content' => 'src of the image',  // required
 	 *     'options' => ['html attributes of the item'], // optional
-	 *     'imageOptions'=> ['html attributes of the image'] // optional
-	 *     'captionLabel' => 'Title of the caption', // optional
-	 *     'captionOptions' => ['html attributes of the caption'], // optional
-	 *     'captionText' => 'Caption text, long description', // optional
-	 *     'visible' => 'boolean', // optional, whether to display the item or not
+	 *     'caption'=> ['html attributes of the image'] // optional
 	 * )
 	 * ```
 	 */
@@ -81,8 +67,7 @@ class Carousel extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->getView()->registerAssetBundle('yii/bootstrap/carousel');
-		$this->initOptions();
+		$this->addCssClass($this->options, 'carousel');
 	}
 
 	/**
@@ -95,10 +80,12 @@ class Carousel extends Widget
 		}
 
 		echo Html::beginTag('div', $this->options) . "\n";
-		$this->renderIndicators() . "\n";
-		$this->renderItems() . "\n";
-		$this->renderPreviousAndNext() . "\n";
+		echo $this->renderIndicators() . "\n";
+		echo $this->renderItems() . "\n";
+		echo $this->renderPreviousAndNext() . "\n";
 		echo Html::endTag('div') . "\n";
+
+		$this->registerPlugin('carousel');
 	}
 
 	/**
@@ -106,6 +93,7 @@ class Carousel extends Widget
 	 */
 	public function renderIndicators()
 	{
+		ob_start();
 		echo Html::beginTag('ol', array('class' => 'carousel-indicators')) . "\n";
 		for ($i = 0, $ln = count($this->items); $i < $ln; $i++) {
 			$options = array('data-target' => '#' . $this->options['id'], 'data-slide-to' => $i);
@@ -115,6 +103,7 @@ class Carousel extends Widget
 			echo Html::tag('li', '', $options) . "\n";
 		}
 		echo Html::endTag('ol') . "\n";
+		return ob_get_clean();
 	}
 
 	/**
@@ -122,16 +111,18 @@ class Carousel extends Widget
 	 */
 	public function renderItems()
 	{
+		ob_start();
 		echo Html::beginTag('div', array('class' => 'carousel-inner')) . "\n";
 		for ($i = 0, $ln = count($this->items); $i < $ln; $i++) {
 			echo $this->renderItem($this->items[$i], $i);
 		}
 		echo Html::endTag('div') . "\n";
+		return ob_get_clean();
 	}
 
 	/**
 	 * Renders a single carousel item
-	 * @param array $item a single item from [[items]]
+	 * @param mixed $item a single item from [[items]]
 	 * @param integer $index the item index as the first item should be set to `active`
 	 */
 	public function renderItem($item, $index)
@@ -142,10 +133,12 @@ class Carousel extends Widget
 			$this->addCssClass($itemOptions, 'active');
 		}
 		echo Html::beginTag('div', $itemOptions) . "\n";
-		echo Html::img($item['src'], ArrayHelper::getValue($item, 'imageOptions', array())) . "\n";
+		echo is_string($item)
+			? $item
+			: $item['content']; // if not string, must be array, force required key
 
-		if (ArrayHelper::getValue($item, 'captionLabel')) {
-			$this->renderCaptioN($item);
+		if (ArrayHelper::getValue($item, 'caption')) {
+			echo ArrayHelper::getValue($item, 'caption');
 		}
 
 		echo Html::endTag('div') . "\n";
@@ -153,49 +146,22 @@ class Carousel extends Widget
 	}
 
 	/**
-	 * Renders the caption of an item
-	 * @param array $item a single item from [[items]]
-	 */
-	public function renderCaption($item)
-	{
-		$captionOptions = ArrayHelper::getValue($item, 'captionOptions', array());
-		$this->addCssClass($captionOptions, 'carousel-caption');
-
-		echo Html::beginTag('div', $captionOptions) . "\n";
-		echo Html::tag('h4', ArrayHelper::getValue($item, 'captionLabel')) . "\n";
-		echo Html::tag('p', ArrayHelper::getValue($item, 'captionText', '')) . "\n";
-		echo Html::endTag('div');
-	}
-
-	/**
 	 * Renders previous and next button if [[displayPreviousAndNext]] is set to `true`
 	 */
 	public function renderPreviousAndNext()
 	{
-		if (!$this->displayPreviousAndNext) {
+		if ($this->controls === false) {
 			return;
 		}
-		echo Html::a($this->previousLabel, '#' . $this->options['id'], array(
+		echo Html::a($this->controls['left'], '#' . $this->options['id'], array(
 				'class' => 'left carousel-control',
 				'data-slide' => 'prev'
 			)) .
 			"\n" .
-			Html::a($this->nextLabel, '#' . $this->options['id'], array(
+			Html::a($this->controls['right'], '#' . $this->options['id'], array(
 				'class' => 'right carousel-control',
 				'data-slide' => 'next'
 			)) .
 			"\n";
-	}
-
-	/**
-	 * Initializes the widget options.
-	 * This method sets the default values for various options.
-	 */
-	public function initOptions()
-	{
-		$this->addCssClass($this->options, 'carousel');
-		if ($this->slide) {
-			$this->addCssClass($this->options, 'slide');
-		}
 	}
 }
