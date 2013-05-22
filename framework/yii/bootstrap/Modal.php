@@ -217,9 +217,9 @@ class Modal extends Widget
 		), $this->options);
 		$this->addCssClass($this->options, 'modal');
 
-		$this->pluginOptions = array_merge(array(
+		$this->clientOptions = array_merge(array(
 			'show' => false,
-		), $this->pluginOptions);
+		), $this->clientOptions);
 
 		if ($this->closeButton !== null) {
 			$this->closeButton = array_merge(array(
