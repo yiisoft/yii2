@@ -75,24 +75,17 @@ class I18N extends Component
 	 * Translates a message to the specified language.
 	 * If the first parameter in `$params` is a number and it is indexed by 0, appropriate plural rules
 	 * will be applied to the translated message.
+	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
 	 * @param string $language the language code (e.g. `en_US`, `en`). If this is null, the current
 	 * [[\yii\base\Application::language|application language]] will be used.
 	 * @return string the translated message.
 	 */
-	public function translate($message, $params = array(), $language = null)
+	public function translate($category, $message, $params = array(), $language = null)
 	{
 		if ($language === null) {
 			$language = Yii::$app->language;
-		}
-
-		// allow chars for category: word chars, ".", "-", "/", "\"
-		if (strpos($message, '|') !== false && preg_match('/^([\w\-\\/\.\\\\]+)\|(.*)/', $message, $matches)) {
-			$category = $matches[1];
-			$message = $matches[2];
-		} else {
-			$category = 'app';
 		}
 
 		$message = $this->getMessageSource($category)->translate($category, $message, $language);

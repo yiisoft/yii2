@@ -39,6 +39,6 @@ class Exception extends \yii\base\Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii|Database Exception');
+		return \Yii::t('yii', 'Database Exception');
 	}
 }

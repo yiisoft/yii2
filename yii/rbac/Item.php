@@ -18,14 +18,6 @@ use yii\base\Object;
  * A user may be assigned one or several authorization items (called [[Assignment]] assignments).
  * He can perform an operation only when it is among his assigned items.
  *
- * @property Manager $authManager The authorization manager.
- * @property integer $type The authorization item type. This could be 0 (operation), 1 (task) or 2 (role).
- * @property string $name The item name.
- * @property string $description The item description.
- * @property string $bizRule The business rule associated with this item.
- * @property mixed $data The additional data associated with this item.
- * @property array $children All child items of this item.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
@@ -36,31 +28,30 @@ class Item extends Object
 	const TYPE_TASK = 1;
 	const TYPE_ROLE = 2;
 
-	private $_auth;
-	private $_type;
-	private $_name;
-	private $_description;
-	private $_bizRule;
-	private $_data;
-
 	/**
-	 * Constructor.
-	 * @param Manager $auth authorization manager
-	 * @param string $name authorization item name
-	 * @param integer $type authorization item type. This can be 0 (operation), 1 (task) or 2 (role).
-	 * @param string $description the description
-	 * @param string $bizRule the business rule associated with this item
-	 * @param mixed $data additional data for this item
+	 * @var Manager the auth manager of this item
 	 */
-	public function __construct($auth, $name, $type, $description = '', $bizRule = null, $data = null)
-	{
-		$this->_type = (int)$type;
-		$this->_auth = $auth;
-		$this->_name = $name;
-		$this->_description = $description;
-		$this->_bizRule = $bizRule;
-		$this->_data = $data;
-	}
+	public $manager;
+	/**
+	 * @var string the item description
+	 */
+	public $description;
+	/**
+	 * @var string the business rule associated with this item
+	 */
+	public $bizRule;
+	/**
+	 * @var mixed the additional data associated with this item
+	 */
+	public $data;
+	/**
+	 * @var integer the authorization item type. This could be 0 (operation), 1 (task) or 2 (role).
+	 */
+	public $type;
+
+	private $_name;
+	private $_oldName;
+
 
 	/**
 	 * Checks to see if the specified item is within the hierarchy starting from this item.
@@ -73,33 +64,17 @@ class Item extends Object
 	public function checkAccess($itemName, $params = array())
 	{
 		Yii::trace('Checking permission: ' . $this->_name, __METHOD__);
-		if ($this->_auth->executeBizRule($this->_bizRule, $params, $this->_data)) {
+		if ($this->manager->executeBizRule($this->bizRule, $params, $this->data)) {
 			if ($this->_name == $itemName) {
 				return true;
 			}
-			foreach ($this->_auth->getItemChildren($this->_name) as $item) {
+			foreach ($this->manager->getItemChildren($this->_name) as $item) {
 				if ($item->checkAccess($itemName, $params)) {
 					return true;
 				}
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * @return Manager the authorization manager
-	 */
-	public function getManager()
-	{
-		return $this->_auth;
-	}
-
-	/**
-	 * @return integer the authorization item type. This could be 0 (operation), 1 (task) or 2 (role).
-	 */
-	public function getType()
-	{
-		return $this->_type;
 	}
 
 	/**
@@ -116,66 +91,8 @@ class Item extends Object
 	public function setName($value)
 	{
 		if ($this->_name !== $value) {
-			$oldName = $this->_name;
+			$this->_oldName = $this->_name;
 			$this->_name = $value;
-			$this->_auth->saveItem($this, $oldName);
-		}
-	}
-
-	/**
-	 * @return string the item description
-	 */
-	public function getDescription()
-	{
-		return $this->_description;
-	}
-
-	/**
-	 * @param string $value the item description
-	 */
-	public function setDescription($value)
-	{
-		if ($this->_description !== $value) {
-			$this->_description = $value;
-			$this->_auth->saveItem($this);
-		}
-	}
-
-	/**
-	 * @return string the business rule associated with this item
-	 */
-	public function getBizRule()
-	{
-		return $this->_bizRule;
-	}
-
-	/**
-	 * @param string $value the business rule associated with this item
-	 */
-	public function setBizRule($value)
-	{
-		if ($this->_bizRule !== $value) {
-			$this->_bizRule = $value;
-			$this->_auth->saveItem($this);
-		}
-	}
-
-	/**
-	 * @return mixed the additional data associated with this item
-	 */
-	public function getData()
-	{
-		return $this->_data;
-	}
-
-	/**
-	 * @param mixed $value the additional data associated with this item
-	 */
-	public function setData($value)
-	{
-		if ($this->_data !== $value) {
-			$this->_data = $value;
-			$this->_auth->saveItem($this);
 		}
 	}
 
@@ -188,7 +105,7 @@ class Item extends Object
 	 */
 	public function addChild($name)
 	{
-		return $this->_auth->addItemChild($this->_name, $name);
+		return $this->manager->addItemChild($this->_name, $name);
 	}
 
 	/**
@@ -200,7 +117,7 @@ class Item extends Object
 	 */
 	public function removeChild($name)
 	{
-		return $this->_auth->removeItemChild($this->_name, $name);
+		return $this->manager->removeItemChild($this->_name, $name);
 	}
 
 	/**
@@ -211,7 +128,7 @@ class Item extends Object
 	 */
 	public function hasChild($name)
 	{
-		return $this->_auth->hasItemChild($this->_name, $name);
+		return $this->manager->hasItemChild($this->_name, $name);
 	}
 
 	/**
@@ -221,7 +138,7 @@ class Item extends Object
 	 */
 	public function getChildren()
 	{
-		return $this->_auth->getItemChildren($this->_name);
+		return $this->manager->getItemChildren($this->_name);
 	}
 
 	/**
@@ -236,7 +153,7 @@ class Item extends Object
 	 */
 	public function assign($userId, $bizRule = null, $data = null)
 	{
-		return $this->_auth->assign($userId, $this->_name, $bizRule, $data);
+		return $this->manager->assign($userId, $this->_name, $bizRule, $data);
 	}
 
 	/**
@@ -247,7 +164,7 @@ class Item extends Object
 	 */
 	public function revoke($userId)
 	{
-		return $this->_auth->revoke($userId, $this->_name);
+		return $this->manager->revoke($userId, $this->_name);
 	}
 
 	/**
@@ -258,7 +175,7 @@ class Item extends Object
 	 */
 	public function isAssigned($userId)
 	{
-		return $this->_auth->isAssigned($userId, $this->_name);
+		return $this->manager->isAssigned($userId, $this->_name);
 	}
 
 	/**
@@ -270,6 +187,15 @@ class Item extends Object
 	 */
 	public function getAssignment($userId)
 	{
-		return $this->_auth->getAssignment($userId, $this->_name);
+		return $this->manager->getAssignment($userId, $this->_name);
+	}
+
+	/**
+	 * Saves an authorization item to persistent storage.
+	 */
+	public function save()
+	{
+		$this->manager->saveItem($this, $this->_oldName);
+		unset($this->_oldName);
 	}
 }

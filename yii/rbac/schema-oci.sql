@@ -18,9 +18,10 @@ create table "tbl_auth_item"
    "name"                 varchar(64) not null,
    "type"                 integer not null,
    "description"          text,
-   "bizrule"              text,
+   "biz_rule"              text,
    "data"                 text,
-   primary key ("name")
+   primary key ("name"),
+   key "type" ("type")
 );
 
 create table "tbl_auth_item_child"
@@ -36,7 +37,7 @@ create table "tbl_auth_assignment"
 (
    "item_name"            varchar(64) not null,
    "user_id"              varchar(64) not null,
-   "bizrule"              text,
+   "biz_rule"              text,
    "data"                 text,
    primary key ("item_name","user_id"),
    foreign key ("item_name") references "tbl_auth_item" ("name") on delete cascade on update cascade

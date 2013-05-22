@@ -211,11 +211,13 @@ abstract class Validator extends Component
 	 *
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
+	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script. Null if the validator does not support
 	 * client-side validation.
 	 * @see \yii\web\ActiveForm::enableClientValidation
 	 */
-	public function clientValidateAttribute($object, $attribute)
+	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		return null;
 	}

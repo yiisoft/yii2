@@ -90,20 +90,20 @@ class ErrorException extends Exception
 	public function getName()
 	{
 		$names = array(
-			E_ERROR => Yii::t('yii|Fatal Error'),
-			E_PARSE => Yii::t('yii|Parse Error'),
-			E_CORE_ERROR => Yii::t('yii|Core Error'),
-			E_COMPILE_ERROR => Yii::t('yii|Compile Error'),
-			E_USER_ERROR => Yii::t('yii|User Error'),
-			E_WARNING => Yii::t('yii|Warning'),
-			E_CORE_WARNING => Yii::t('yii|Core Warning'),
-			E_COMPILE_WARNING => Yii::t('yii|Compile Warning'),
-			E_USER_WARNING => Yii::t('yii|User Warning'),
-			E_STRICT => Yii::t('yii|Strict'),
-			E_NOTICE => Yii::t('yii|Notice'),
-			E_RECOVERABLE_ERROR => Yii::t('yii|Recoverable Error'),
-			E_DEPRECATED => Yii::t('yii|Deprecated'),
+			E_ERROR => Yii::t('yii', 'Fatal Error'),
+			E_PARSE => Yii::t('yii', 'Parse Error'),
+			E_CORE_ERROR => Yii::t('yii', 'Core Error'),
+			E_COMPILE_ERROR => Yii::t('yii', 'Compile Error'),
+			E_USER_ERROR => Yii::t('yii', 'User Error'),
+			E_WARNING => Yii::t('yii', 'Warning'),
+			E_CORE_WARNING => Yii::t('yii', 'Core Warning'),
+			E_COMPILE_WARNING => Yii::t('yii', 'Compile Warning'),
+			E_USER_WARNING => Yii::t('yii', 'User Warning'),
+			E_STRICT => Yii::t('yii', 'Strict'),
+			E_NOTICE => Yii::t('yii', 'Notice'),
+			E_RECOVERABLE_ERROR => Yii::t('yii', 'Recoverable Error'),
+			E_DEPRECATED => Yii::t('yii', 'Deprecated'),
 		);
-		return isset($names[$this->getCode()]) ? $names[$this->getCode()] : Yii::t('yii|Error');
+		return isset($names[$this->getCode()]) ? $names[$this->getCode()] : Yii::t('yii', 'Error');
 	}
 }

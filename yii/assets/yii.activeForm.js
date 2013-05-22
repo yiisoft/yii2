@@ -57,7 +57,7 @@
 		// whether to perform validation when a change is detected on the input
 		validateOnChange: false,
 		// whether to perform validation when the user is typing.
-   		validateOnType: false,
+		validateOnType: false,
 		// number of milliseconds that the validation should be delayed when a user is typing in the input field.
 		validationDelay: 200,
 		// whether to enable AJAX-based validation.

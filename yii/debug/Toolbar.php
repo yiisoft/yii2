@@ -17,18 +17,18 @@ use yii\helpers\Html;
  */
 class Toolbar extends Widget
 {
-	public $debugAction = 'debug';
-	public $enabled = YII_DEBUG;
+	public $debugAction = 'debug/default/toolbar';
 
 	public function run()
 	{
-		if ($this->enabled) {
+		if (Yii::$app->hasModule('debug')) {
 			$id = 'yii-debug-toolbar';
 			$url = Yii::$app->getUrlManager()->createUrl($this->debugAction, array(
 				'tag' => Yii::getLogger()->tag,
 			));
-			$this->view->registerJs("yii.debug.load('$id', '$url');");
-			$this->view->registerAssetBundle('yii/debug');
+			$view = $this->getView();
+			$view->registerJs("yii.debug.load('$id', '$url');");
+			$view->registerAssetBundle('yii/debug');
 			echo Html::tag('div', '', array(
 				'id' => $id,
 				'style' => 'display: none',

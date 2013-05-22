@@ -122,7 +122,7 @@ class LinkPager extends Widget
 	{
 		$buttons = array();
 
-		$pageCount = $this->pagination->pageCount;
+		$pageCount = $this->pagination->getPageCount();
 		$currentPage = $this->pagination->getPage();
 
 		// first page

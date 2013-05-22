@@ -18,6 +18,6 @@ class StaleObjectException extends Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii|Stale Object Exception');
+		return \Yii::t('yii', 'Stale Object Exception');
 	}
 }

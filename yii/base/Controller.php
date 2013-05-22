@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\StringHelper;
 
 /**
  * Controller is the base class for classes containing controller logic.
@@ -183,7 +182,7 @@ class Controller extends Component
 		}
 
 		if (!empty($missing)) {
-			throw new InvalidRequestException(Yii::t('yii|Missing required parameters: {params}', array(
+			throw new InvalidRequestException(Yii::t('yii', 'Missing required parameters: {params}', array(
 				'{params}' => implode(', ', $missing),
 			)));
 		}
@@ -226,7 +225,7 @@ class Controller extends Component
 		if (isset($actionMap[$id])) {
 			return Yii::createObject($actionMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
-			$methodName = 'action' . StringHelper::id2camel($id);
+			$methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
 			if (method_exists($this, $methodName)) {
 				$method = new \ReflectionMethod($this, $methodName);
 				if ($method->getName() === $methodName) {
@@ -410,6 +409,7 @@ class Controller extends Component
 	 * Returns the view object that can be used to render views or view files.
 	 * The [[render()]], [[renderPartial()]] and [[renderFile()]] methods will use
 	 * this view object to implement the actual view rendering.
+	 * If not set, it will default to the "view" application component.
 	 * @return View the view object that can be used to render views or view files.
 	 */
 	public function getView()

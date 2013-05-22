@@ -26,10 +26,11 @@ use yii\helpers\Html;
  * The following example shows how to use Menu:
  * 
  * ~~~
- * $this->widget('yii\widgets\Menu', array(
+ * // $this is the view object currently being used
+ * echo Menu::widget(array(
  *     'items' => array(
  *         // Important: you need to specify url as 'controller/action',
- *         // not just as 'controller' even if default acion is used.
+ *         // not just as 'controller' even if default action is used.
  *         array('label' => 'Home', 'url' => array('site/index')),
  *         // 'Products' menu item will be selected as long as the route is 'product/index'
  *         array('label' => 'Products', 'url' => array('product/index'), 'items' => array(

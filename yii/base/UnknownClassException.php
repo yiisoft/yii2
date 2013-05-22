@@ -20,7 +20,7 @@ class UnknownClassException extends Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii|Unknown Class');
+		return \Yii::t('yii', 'Unknown Class');
 	}
 }
 

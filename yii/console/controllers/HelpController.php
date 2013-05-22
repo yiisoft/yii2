@@ -25,7 +25,7 @@ use yii\helpers\StringHelper;
  * This command can be used as follows on command line:
  *
  * ~~~
- * yiic help [command name]
+ * yii help [command name]
  * ~~~
  *
  * In the above, if the command name is not provided, all
@@ -41,8 +41,8 @@ class HelpController extends Controller
 	 * about a particular command. For example,
 	 *
 	 * ~~~
-	 * yiic help          # list available commands
-	 * yiic help message  # display help info about "message"
+	 * yii help          # list available commands
+	 * yii help message  # display help info about "message"
 	 * ~~~
 	 *
 	 * @param string $command The name of the command to show help about.
@@ -55,7 +55,7 @@ class HelpController extends Controller
 		if ($command !== null) {
 			$result = Yii::$app->createController($command);
 			if ($result === false) {
-				throw new Exception(Yii::t('yii|No help for unknown command "{command}".', array(
+				throw new Exception(Yii::t('yii', 'No help for unknown command "{command}".', array(
 					'{command}' => $command,
 				)));
 			}
@@ -148,7 +148,7 @@ class HelpController extends Controller
 				echo "* $command\n";
 			}
 			echo "\nTo see the help of each command, enter:\n";
-			echo "\n  yiic help <command-name>\n\n";
+			echo "\n  yii help <command-name>\n\n";
 		} else {
 			echo "\nNo commands are found.\n";
 		}
@@ -188,7 +188,7 @@ class HelpController extends Controller
 				echo "\n";
 			}
 			echo "\n\nTo see the detailed information about individual sub-commands, enter:\n";
-			echo "\n  yiic help <sub-command>\n\n";
+			echo "\n  yii help <sub-command>\n\n";
 		}
 	}
 
@@ -239,7 +239,7 @@ class HelpController extends Controller
 	{
 		$action = $controller->createAction($actionID);
 		if ($action === null) {
-			throw new Exception(Yii::t('yii|No help for unknown sub-command "{command}".', array(
+			throw new Exception(Yii::t('yii', 'No help for unknown sub-command "{command}".', array(
 				'{command}' => rtrim($controller->getUniqueId() . '/' . $actionID, '/'),
 			)));
 		}
@@ -259,9 +259,9 @@ class HelpController extends Controller
 
 		echo "\nUSAGE\n\n";
 		if ($action->id === $controller->defaultAction) {
-			echo 'yiic ' . $controller->getUniqueId();
+			echo 'yii ' . $controller->getUniqueId();
 		} else {
-			echo "yiic " . $action->getUniqueId();
+			echo "yii " . $action->getUniqueId();
 		}
 		list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : array());
 		if (!empty($required)) {
