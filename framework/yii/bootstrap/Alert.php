@@ -79,7 +79,7 @@ class Alert extends Widget
 
 		$this->initOptions();
 
-		echo Html::beginTag('div', $this->options) . "\n";
+		echo Html::beginTag('div', $this->htmlOptions) . "\n";
 		echo $this->renderBodyBegin() . "\n";
 	}
 
@@ -136,11 +136,11 @@ class Alert extends Widget
 	 */
 	protected function initOptions()
 	{
-		$this->options = array_merge(array(
+		$this->htmlOptions = array_merge(array(
 			'class' => 'fade in',
-		), $this->options);
+		), $this->htmlOptions);
 
-		$this->addCssClass($this->options, 'alert');
+		$this->addCssClass($this->htmlOptions, 'alert');
 
 		if ($this->closeButton !== null) {
 			$this->closeButton = array_merge(array(

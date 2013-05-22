@@ -105,7 +105,7 @@ class Modal extends Widget
 		$this->initOptions();
 
 		echo $this->renderToggleButton() . "\n";
-		echo Html::beginTag('div', $this->options) . "\n";
+		echo Html::beginTag('div', $this->htmlOptions) . "\n";
 		echo $this->renderHeader() . "\n";
 		echo $this->renderBodyBegin() . "\n";
 	}
@@ -212,14 +212,14 @@ class Modal extends Widget
 	 */
 	protected function initOptions()
 	{
-		$this->options = array_merge(array(
+		$this->htmlOptions = array_merge(array(
 			'class' => 'modal hide',
-		), $this->options);
-		$this->addCssClass($this->options, 'modal');
+		), $this->htmlOptions);
+		$this->addCssClass($this->htmlOptions, 'modal');
 
-		$this->pluginOptions = array_merge(array(
+		$this->options = array_merge(array(
 			'show' => false,
-		), $this->pluginOptions);
+		), $this->options);
 
 		if ($this->closeButton !== null) {
 			$this->closeButton = array_merge(array(
@@ -234,7 +234,7 @@ class Modal extends Widget
 				'data-toggle' => 'modal',
 			), $this->toggleButton);
 			if (!isset($this->toggleButton['data-target']) && !isset($this->toggleButton['href'])) {
-				$this->toggleButton['data-target'] = '#' . $this->options['id'];
+				$this->toggleButton['data-target'] = '#' . $this->htmlOptions['id'];
 			}
 		}
 	}
