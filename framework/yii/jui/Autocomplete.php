@@ -49,11 +49,11 @@ class AutoComplete extends Widget
 	 */
 	public $themeBundle = 'jui/theme/base/autocomplete';
 	/**
-	 * @var \yii\base\Model the data model that this widget is associated with
+	 * @var \yii\base\Model the data model that this widget is associated with.
 	 */
 	public $model;
 	/**
-	 * @var string the model attribute that this widget is associated with
+	 * @var string the model attribute that this widget is associated with.
 	 */
 	public $attribute;
 	/**
@@ -67,7 +67,7 @@ class AutoComplete extends Widget
 
 
 	/**
-	 * Renders the widget
+	 * Renders the widget.
 	 */
 	public function run()
 	{
@@ -80,9 +80,9 @@ class AutoComplete extends Widget
 	 * Renders the AutoComplete field. If [[model]] has been specified then it will render an active field.
 	 * If [[model]] is null or not from an [[Model]] instance, then the field will be rendered according to
 	 * the [[name]] attribute.
-	 * @return string the rendering result
-	 * @throws InvalidConfigException when none of the required attributes are set to render the textInput. That is,
-	 * if [[model]] and [[attribute]] are not set, then [[name]] is required.
+	 * @return string the rendering result.
+	 * @throws InvalidConfigException when none of the required attributes are set to render the textInput.
+	 * That is, if [[model]] and [[attribute]] are not set, then [[name]] is required.
 	 */
 	public function renderField()
 	{
@@ -91,7 +91,7 @@ class AutoComplete extends Widget
 		} elseif ($this->name !== null) {
 			return Html::textInput($this->name, $this->value, $this->options);
 		} else {
-			throw new InvalidConfigException('Either "name" or "model" and "attribute" properties must be specified.');
+			throw new InvalidConfigException("Either 'name' or 'model' and 'attribute' properties must be specified.");
 		}
 	}
 }
