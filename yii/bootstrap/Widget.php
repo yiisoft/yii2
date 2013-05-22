@@ -53,8 +53,8 @@ class Widget extends \yii\base\Widget
 	public function init()
 	{
 		parent::init();
-		if (!isset($this->clientOptions['id'])) {
-			$this->clientOptions['id'] = $this->getId();
+		if (!isset($this->options['id'])) {
+			$this->options['id'] = $this->getId();
 		}
 	}
 
@@ -64,7 +64,7 @@ class Widget extends \yii\base\Widget
 	 */
 	protected function registerPlugin($name)
 	{
-		$id = $this->clientOptions['id'];
+		$id = $this->options['id'];
 		$view = $this->getView();
 		$view->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
 		$view->registerAssetBundle("yii/bootstrap/$name");
