@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\web\JsExpression;
 use yii\helpers\Json;
@@ -40,7 +41,8 @@ class UrlValidator extends Validator
 	/**
 	 * @var boolean whether validation process should take into account IDN (internationalized
 	 * domain names). Defaults to false meaning that validation of URLs containing IDN will always
-	 * fail.
+	 * fail. Note that in order to use IDN validation you have to install and enable `intl` PHP
+	 * extension, otherwise an exception would be thrown.
 	 */
 	public $enableIDN = false;
 
@@ -51,6 +53,9 @@ class UrlValidator extends Validator
 	public function init()
 	{
 		parent::init();
+		if ($this->enableIDN && !function_exists('idn_to_ascii')) {
+			throw new InvalidConfigException('In order to use IDN validation intl extension must be installed and enabled.');
+		}
 		if ($this->message === null) {
 			$this->message = Yii::t('yii', '{attribute} is not a valid URL.');
 		}

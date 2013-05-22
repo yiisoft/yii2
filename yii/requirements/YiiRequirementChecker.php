@@ -16,7 +16,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *
  * Example:
  *
- * ~~~
+ * ~~~php
  * require_once('path/to/YiiRequirementChecker.php');
  * $requirementsChecker = new YiiRequirementChecker();
  * $requirements = array(
@@ -45,6 +45,9 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *     ),
  * );
  * ~~~
+ *
+ * Note: this class definition does not match ordinary Yii style, because it should match PHP 4.3
+ * and should not use features from newer PHP versions!
  *
  * @property array|null $result the check results, this property is for internal usage only.
  *
@@ -106,7 +109,7 @@ class YiiRequirementChecker
 	 * Performs the check for the Yii core requirements.
 	 * @return YiiRequirementChecker self instance.
 	 */
-	public function checkYii()
+	function checkYii()
 	{
 		return $this->check(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'requirements.php');
 	}
@@ -151,7 +154,7 @@ class YiiRequirementChecker
 			$this->usageError('Nothing to render!');
 		}
 		$baseViewFilePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'views';
-		if (array_key_exists('argv', $_SERVER)) {
+		if (!empty($_SERVER['argv'])) {
 			$viewFileName = $baseViewFilePath . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR . 'index.php';
 		} else {
 			$viewFileName = $baseViewFilePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'index.php';

@@ -8,279 +8,234 @@
 namespace yii\bootstrap;
 
 use Yii;
-use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
- * Modal renders a bootstrap modal on the page for its use on your application.
+ * Modal renders a modal window that can be toggled by clicking on a button.
  *
- * Basic usage:
+ * For example,
  *
- * ```php
- * $this->widget(Modal::className(), array(
- * 	'id' => 'myModal',
- * 	'header' => 'Modal Heading',
- * 	'content' => '<p>One fine body...</p>',
- * 	'footer' => 'Modal Footer',
- *  // if we wish to display a modal button
- * 	'buttonOptions' => array(
- * 		'label' => 'Show Modal',
- * 		'class' => 'btn btn-primary'
- * 		)
+ * ~~~php
+ * echo Modal::widget(array(
+ *     'header' => '<h2>Hello world</h2>',
+ *     'body' => 'Say hello...',
+ *     'toggleButton' => array(
+ *         'label' => 'click me',
+ *     ),
  * ));
- * ```
+ * ~~~
+ *
+ * The following example will show the content enclosed between the [[begin()]]
+ * and [[end()]] calls within the modal window:
+ *
+ * ~~~php
+ * Modal::begin(array(
+ *     'header' => '<h2>Hello world</h2>',
+ *     'toggleButton' => array(
+ *         'label' => 'click me',
+ *     ),
+ * ));
+ *
+ * echo 'Say hello...';
+ *
+ * Modal::end();
+ * ~~~
+ *
  * @see http://twitter.github.io/bootstrap/javascript.html#modals
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Modal extends Widget
 {
 	/**
-	 * @var array  The additional HTML attributes of the button that will show the modal. If empty array, only
-	 * the markup of the modal will be rendered on the page, so users can easily call the modal manually with their own
-	 * scripts. The following special attributes are available:
-	 * <ul>
-	 *    <li>label: string, the label of the button</li>
-	 * </ul>
-	 *
-	 * For available options of the button trigger, see http://twitter.github.com/bootstrap/javascript.html#modals.
-	 */
-	public $buttonOptions = array();
-
-	/**
-	 * @var boolean indicates whether the modal should use transitions. Defaults to 'true'.
-	 */
-	public $fade = true;
-
-	/**
-	 * @var bool $keyboard, closes the modal when escape key is pressed.
-	 */
-	public $keyboard = true;
-
-	/**
-	 * @var bool $show, shows the modal when initialized.
-	 */
-	public $show = false;
-
-	/**
-	 * @var mixed includes a modal-backdrop element. Alternatively, specify `static` for a backdrop which doesn't close
-	 * the modal on click.
-	 */
-	public $backdrop = true;
-
-	/**
-	 * @var mixed the remote url. If a remote url is provided, content will be loaded via jQuery's load method and
-	 * injected into the .modal-body of the modal.
-	 */
-	public $remote;
-
-	/**
-	 * @var string a javascript function that will be invoked immediately when the `show` instance method is called.
-	 */
-	public $onShow;
-
-	/**
-	 * @var string a javascript function that will be invoked when the modal has been made visible to the user
-	 *     (will wait for css transitions to complete).
-	 */
-	public $onShown;
-
-	/**
-	 * @var string a javascript function that will be invoked immediately when the hide instance method has been called.
-	 */
-	public $onHide;
-
-	/**
-	 * @var string a javascript function that will be invoked when the modal has finished being hidden from the user
-	 *     (will wait for css transitions to complete).
-	 */
-	public $onHidden;
-
-	/**
-	 * @var string[] the Javascript event handlers.
-	 */
-	protected $events = array();
-
-	/**
-	 * @var array $pluginOptions the plugin options.
-	 */
-	protected $pluginOptions = array();
-
-	/**
-	 * @var string
-	 */
-	public $closeText = '&times;';
-
-	/**
-	 * @var string header content. Header can also be a path to a view file.
+	 * @var string the header content in the modal window.
 	 */
 	public $header;
-
 	/**
-	 * @var string body of modal. Body can also be a path to a view file.
+	 * @var string the body content in the modal window. Note that anything between
+	 * the [[begin()]] and [[end()]] calls of the Modal widget will also be treated
+	 * as the body content, and will be rendered before this.
 	 */
-	public $content;
-
+	public $body;
 	/**
-	 * @var string footer content. Content can also be a path to a view file.
+	 * @var string the footer content in the modal window.
 	 */
 	public $footer;
+	/**
+	 * @var array the options for rendering the close button tag.
+	 * The close button is displayed in the header of the modal window. Clicking
+	 * on the button will hide the modal window. If this is null, no close button will be rendered.
+	 *
+	 * The following special options are supported:
+	 *
+	 * - tag: string, the tag name of the button. Defaults to 'button'.
+	 * - label: string, the label of the button. Defaults to '&times;'.
+	 *
+	 * The rest of the options will be rendered as the HTML attributes of the button tag.
+	 * Please refer to the [Modal plugin help](http://twitter.github.com/bootstrap/javascript.html#modals)
+	 * for the supported HTML attributes.
+	 */
+	public $closeButton = array();
+	/**
+	 * @var array the options for rendering the toggle button tag.
+	 * The toggle button is used to toggle the visibility of the modal window.
+	 * If this property is null, no toggle button will be rendered.
+	 *
+	 * The following special options are supported:
+	 *
+	 * - tag: string, the tag name of the button. Defaults to 'button'.
+	 * - label: string, the label of the button. Defaults to 'Show'.
+	 *
+	 * The rest of the options will be rendered as the HTML attributes of the button tag.
+	 * Please refer to the [Modal plugin help](http://twitter.github.com/bootstrap/javascript.html#modals)
+	 * for the supported HTML attributes.
+	 */
+	public $toggleButton;
+
 
 	/**
-	 * Widget's init method
+	 * Initializes the widget.
 	 */
 	public function init()
 	{
 		parent::init();
 
-		$this->name = 'modal';
+		$this->initOptions();
 
-		$this->defaultOption('id', $this->getId());
-
-		$this->defaultOption('role', 'dialog');
-		$this->defaultOption('tabindex', '-1');
-
-		$this->addClassName('modal');
-		$this->addClassName('hide');
-
-		if ($this->fade)
-			$this->addClassName('fade');
-
-		$this->initPluginOptions();
-		$this->initPluginEvents();
+		echo $this->renderToggleButton() . "\n";
+		echo Html::beginTag('div', $this->options) . "\n";
+		echo $this->renderHeader() . "\n";
+		echo $this->renderBodyBegin() . "\n";
 	}
 
 	/**
-	 * Initialize plugin events if any
-	 */
-	public function initPluginEvents()
-	{
-		foreach (array('onShow', 'onShown', 'onHide', 'onHidden') as $event) {
-			if ($this->{$event} !== null) {
-				$modalEvent = strtolower(substr($event, 2));
-				if ($this->{$event} instanceof JsExpression)
-					$this->events[$modalEvent] = $this->$event;
-				else
-					$this->events[$modalEvent] = new JsExpression($this->{$event});
-			}
-		}
-	}
-
-	/**
-	 * Initialize plugin options.
-	 * ***Important***: The display of the button overrides the initialization of the modal bootstrap widget.
-	 */
-	public function initPluginOptions()
-	{
-		if (null !== $this->remote)
-			$this->pluginOptions['remote'] = Html::url($this->remote);
-
-		foreach (array('backdrop', 'keyboard', 'show') as $option) {
-			$this->pluginOptions[$option] = isset($this->pluginOptions[$option])
-				? $this->pluginOptions[$option]
-				: $this->{$option};
-		}
-	}
-
-	/**
-	 * Widget's run method
+	 * Renders the widget.
 	 */
 	public function run()
 	{
-		$this->renderModal();
-		$this->renderButton();
-		$this->registerScript();
-	}
+		echo "\n" . $this->renderBodyEnd();
+		echo "\n" . $this->renderFooter();
+		echo "\n" . Html::endTag('div');
 
-	/**
-	 * Renders the button that will open the modal if its options have been configured
-	 */
-	public function renderButton()
-	{
-		if (!empty($this->buttonOptions)) {
-
-			$this->buttonOptions['data-toggle'] = isset($this->buttonOptions['data-toggle'])
-				? $this->buttonOptions['data-toggle']
-				: 'modal';
-
-			if ($this->remote !== null && !isset($this->buttonOptions['data-remote']))
-				$this->buttonOptions['data-remote'] = Html::url($this->remote);
-
-			$label = ArrayHelper::remove($this->buttonOptions, 'label', 'Button');
-			$name = ArrayHelper::remove($this->buttonOptions, 'name');
-			$value = ArrayHelper::remove($this->buttonOptions, 'value');
-
-			$attr = isset($this->buttonOptions['data-remote'])
-				? 'data-target'
-				: 'href';
-
-			$this->buttonOptions[$attr] = isset($this->buttonOptions[$attr])
-				? $this->buttonOptions[$attr]
-				: '#' . ArrayHelper::getValue($this->options, 'id');
-
-			echo Html::button($label, $name, $value, $this->buttonOptions);
-		}
-	}
-
-	/**
-	 * Renders the modal markup
-	 */
-	public function renderModal()
-	{
-		echo Html::beginTag('div', $this->options);
-
-		$this->renderModalHeader();
-		$this->renderModalBody();
-		$this->renderModalFooter();
-
-		echo Html::endTag('div');
+		$this->registerPlugin('modal');
 	}
 
 	/**
 	 * Renders the header HTML markup of the modal
+	 * @return string the rendering result
 	 */
-	public function renderModalHeader()
+	protected function renderHeader()
 	{
-		echo Html::beginTag('div', array('class'=>'modal-header'));
-		if ($this->closeText)
-			echo Html::button($this->closeText, null, null, array('data-dismiss' => 'modal', 'class'=>'close'));
-		echo $this->header;
-		echo Html::endTag('div');
+		$button = $this->renderCloseButton();
+		if ($button !== null) {
+			$this->header = $button . "\n" . $this->header;
+		}
+		if ($this->header !== null) {
+			return Html::tag('div', "\n" . $this->header . "\n", array('class' => 'modal-header'));
+		} else {
+			return null;
+		}
 	}
 
 	/**
-	 * Renders the HTML markup for the body of the modal
+	 * Renders the opening tag of the modal body.
+	 * @return string the rendering result
 	 */
-	public function renderModalBody()
+	protected function renderBodyBegin()
 	{
-		echo Html::beginTag('div', array('class'=>'modal-body'));
-		echo $this->content;
-		echo Html::endTag('div');
+		return Html::beginTag('div', array('class' => 'modal-body'));
+	}
+
+	/**
+	 * Renders the closing tag of the modal body.
+	 * @return string the rendering result
+	 */
+	protected function renderBodyEnd()
+	{
+		return $this->body . "\n" . Html::endTag('div');
 	}
 
 	/**
 	 * Renders the HTML markup for the footer of the modal
+	 * @return string the rendering result
 	 */
-	public function renderModalFooter()
+	protected function renderFooter()
 	{
-
-		echo Html::beginTag('div', array('class'=>'modal-footer'));
-		echo $this->footer;
-		echo Html::endTag('div');
+		if ($this->footer !== null) {
+			return Html::tag('div', "\n" . $this->footer . "\n", array('class' => 'modal-footer'));
+		} else {
+			return null;
+		}
 	}
 
 	/**
-	 * Registers client scripts
+	 * Renders the toggle button.
+	 * @return string the rendering result
 	 */
-	public function registerScript()
+	protected function renderToggleButton()
 	{
-		// do we render a button? If so, bootstrap will handle its behavior through its
-		// mark-up, otherwise, register the plugin.
-		if(empty($this->buttonOptions))
-			$this->registerPlugin('modal', $this->pluginOptions);
-
-		// register events
-		$this->registerEvents($this->events);
+		if ($this->toggleButton !== null) {
+			$tag = ArrayHelper::remove($this->toggleButton, 'tag', 'button');
+			$label = ArrayHelper::remove($this->toggleButton, 'label', 'Show');
+			if ($tag === 'button' && !isset($this->toggleButton['type'])) {
+				$this->toggleButton['type'] = 'button';
+			}
+			return Html::tag($tag, $label, $this->toggleButton);
+		} else {
+			return null;
+		}
 	}
 
+	/**
+	 * Renders the close button.
+	 * @return string the rendering result
+	 */
+	protected function renderCloseButton()
+	{
+		if ($this->closeButton !== null) {
+			$tag = ArrayHelper::remove($this->closeButton, 'tag', 'button');
+			$label = ArrayHelper::remove($this->closeButton, 'label', '&times;');
+			if ($tag === 'button' && !isset($this->closeButton['type'])) {
+				$this->closeButton['type'] = 'button';
+			}
+			return Html::tag($tag, $label, $this->closeButton);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Initializes the widget options.
+	 * This method sets the default values for various options.
+	 */
+	protected function initOptions()
+	{
+		$this->options = array_merge(array(
+			'class' => 'modal hide',
+		), $this->options);
+		$this->addCssClass($this->options, 'modal');
+
+		$this->pluginOptions = array_merge(array(
+			'show' => false,
+		), $this->pluginOptions);
+
+		if ($this->closeButton !== null) {
+			$this->closeButton = array_merge(array(
+				'data-dismiss' => 'modal',
+				'aria-hidden' => 'true',
+				'class' => 'close',
+			), $this->closeButton);
+		}
+
+		if ($this->toggleButton !== null) {
+			$this->toggleButton = array_merge(array(
+				'data-toggle' => 'modal',
+			), $this->toggleButton);
+			if (!isset($this->toggleButton['data-target']) && !isset($this->toggleButton['href'])) {
+				$this->toggleButton['data-target'] = '#' . $this->options['id'];
+			}
+		}
+	}
 }

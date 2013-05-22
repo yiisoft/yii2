@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\StringHelper;
 
 /**
  * Controller is the base class for classes containing controller logic.
@@ -226,7 +225,7 @@ class Controller extends Component
 		if (isset($actionMap[$id])) {
 			return Yii::createObject($actionMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
-			$methodName = 'action' . StringHelper::id2camel($id);
+			$methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
 			if (method_exists($this, $methodName)) {
 				$method = new \ReflectionMethod($this, $methodName);
 				if ($method->getName() === $methodName) {

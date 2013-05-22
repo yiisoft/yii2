@@ -741,7 +741,7 @@ class View extends Component
 			$lines[] = Html::script(implode("\n", $this->js[self::POS_END]), array('type' => 'text/javascript'));
 		}
 		if (!empty($this->js[self::POS_READY])) {
-			$js = "jQuery(document).ready(function(){\n{" . implode("\n", $this->js[self::POS_READY]) . "}\n});";
+			$js = "jQuery(document).ready(function(){\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
 			$lines[] = Html::script($js, array('type' => 'text/javascript'));
 		}
 		return empty($lines) ? '' : implode("\n", $lines) . "\n";

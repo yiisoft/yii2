@@ -533,7 +533,8 @@ class Request extends \yii\base\Request
 	 */
 	public function getIsSecureConnection()
 	{
-		return !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off');
+		return isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off')
+			|| isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO']==='https';
 	}
 
 	/**
