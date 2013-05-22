@@ -11,6 +11,7 @@ namespace yii\db;
 use yii\db\Connection;
 use yii\db\Command;
 use yii\base\InvalidConfigException;
+use yii\helpers\Serializer;
 
 /**
  * ActiveRelation represents a relation between two Active Record classes.
@@ -252,7 +253,7 @@ class ActiveRelation extends ActiveQuery
 			foreach ($attributes as $attribute) {
 				$key[] = $model[$attribute];
 			}
-			return serialize($key);
+			return Serializer::serialize($key);
 		} else {
 			$attribute = reset($attributes);
 			return $model[$attribute];
