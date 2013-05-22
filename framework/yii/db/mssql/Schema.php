@@ -290,13 +290,6 @@ SQL;
 		$table->primaryKey = $this->db
 			->createCommand($sql, array(':tableName' => $table->name, ':schemaName' => $table->schemaName))
 			->queryColumn();
-		if (count($table->primaryKey) == 0) {
-			// table does not have primary key
-			$table->primaryKey = null;
-		} elseif (count($table->primaryKey) == 1) {
-			// table has one primary key
-			$table->primaryKey = $table->primaryKey[0];
-		}
 	}
 
 	/**
