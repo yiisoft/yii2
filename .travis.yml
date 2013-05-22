@@ -5,6 +5,9 @@ php:
   - 5.4
   - 5.5
 
+services:
+  - redis-server
+
 env:
   - DB=mysql
 
