@@ -64,8 +64,8 @@ class InstallHandler
 	public static function run($event)
 	{
 		$options = array_merge(array(
-									'run' => array(),
-							   ), $event->getComposer()->getPackage()->getExtra());
+			'run' => array(),
+		), $event->getComposer()->getPackage()->getExtra());
 
 		$appPath = realpath(__DIR__ . '/../../../../..');
 
