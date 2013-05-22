@@ -35,14 +35,14 @@ class Widget extends \yii\base\Widget
 	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
 	 * how to use the "Modal" plugin and the supported options (e.g. "remote").
 	 */
-	public $pluginOptions = array();
+	public $clientOptions = array();
 	/**
 	 * @var array the event handlers for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible events.
 	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
 	 * how to use the "Modal" plugin and the supported events (e.g. "shown").
 	 */
-	public $pluginEvents = array();
+	public $clientEvents = array();
 
 
 	/**
@@ -69,15 +69,15 @@ class Widget extends \yii\base\Widget
 		$view->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
 		$view->registerAssetBundle("yii/bootstrap/$name");
 
-		if ($this->pluginOptions !== false) {
-			$options = empty($this->pluginOptions) ? '' : Json::encode($this->pluginOptions);
+		if ($this->clientOptions !== false) {
+			$options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
 			$js = "jQuery('#$id').$name($options);";
 			$view->registerJs($js);
 		}
 
-		if (!empty($this->pluginEvents)) {
+		if (!empty($this->clientEvents)) {
 			$js = array();
-			foreach ($this->pluginEvents as $event => $handler) {
+			foreach ($this->clientEvents as $event => $handler) {
 				$js[] = "jQuery('#$id').on('$event', $handler);";
 			}
 			$view->registerJs(implode("\n", $js));
