@@ -13,7 +13,7 @@ use yii\base\Model;
 use yii\helpers\Html;
 
 /**
- * AutoComplete renders a autocomplete jQuery UI widget.
+ * AutoComplete renders an autocomplete jQuery UI widget.
  *
  * For example:
  *
