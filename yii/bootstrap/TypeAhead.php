@@ -32,7 +32,7 @@ use yii\helpers\Html;
  * ```php
  * echo TypeAhead::widget(array(
  *     'name'  => 'country',
- *     'cloentOptions' => array(
+ *     'clientOptions' => array(
  *         'source' => array('USA', 'ESP'),
  *     ),
  * ));
