@@ -580,6 +580,7 @@ return array(
 		'js' => array(
 			'jquery.ui.effect.js',
 		),
+		'depends' => array('yii/jquery'),
 	),
 	'yii/jui/effect/blind' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -691,6 +692,7 @@ return array(
 		'js' => array(
 			'jquery.ui.position.js',
 		),
+		'depends' => array('yii/jquery'),
 	),
 	'yii/jui/progressbar' => array(
 		'sourcePath' => __DIR__ . '/assets',
