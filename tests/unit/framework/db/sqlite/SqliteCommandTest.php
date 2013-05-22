@@ -4,13 +4,13 @@ namespace yiiunit\framework\db\sqlite;
 
 class SqliteCommandTest extends \yiiunit\framework\db\CommandTest
 {
-    public function setUp()
+    protected function setUp()
     {
         $this->driverName = 'sqlite';
         parent::setUp();
     }
 
-    function testAutoQuoting()
+    public function testAutoQuoting()
     {
         $db = $this->getConnection(false);
 

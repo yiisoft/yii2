@@ -4,13 +4,13 @@ namespace yiiunit\framework\db\sqlite;
 
 class SqliteConnectionTest extends \yiiunit\framework\db\ConnectionTest
 {
-    public function setUp()
+    protected function setUp()
     {
         $this->driverName = 'sqlite';
         parent::setUp();
     }
 
-    function testConstruct()
+    public function testConstruct()
     {
         $connection = $this->getConnection(false);
         $params = $this->database;
@@ -18,7 +18,7 @@ class SqliteConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals($params['dsn'], $connection->dsn);
     }
 
-    function testQuoteValue()
+    public function testQuoteValue()
     {
         $connection = $this->getConnection(false);
         $this->assertEquals(123, $connection->quoteValue(123));
@@ -26,7 +26,7 @@ class SqliteConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals("'It''s interesting'", $connection->quoteValue("It's interesting"));
     }
 
-    function testQuoteTableName()
+    public function testQuoteTableName()
     {
         $connection = $this->getConnection(false);
         $this->assertEquals("'table'", $connection->quoteTableName('table'));
@@ -35,7 +35,7 @@ class SqliteConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
     }
 
-    function testQuoteColumnName()
+    public function testQuoteColumnName()
     {
         $connection = $this->getConnection(false);
         $this->assertEquals('"column"', $connection->quoteColumnName('column'));

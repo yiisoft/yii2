@@ -11,13 +11,15 @@ class YiiBaseTest extends TestCase
 {
 	public $aliases;
 
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
 		$this->aliases = Yii::$aliases;
 	}
 
-	public function tearDown()
+	protected function tearDown()
 	{
+		parent::tearDown();
 		Yii::$aliases = $this->aliases;
 	}
 
@@ -43,6 +45,9 @@ class YiiBaseTest extends TestCase
 		Yii::setAlias('@yii', null);
 		$this->assertFalse(Yii::getAlias('@yii', false));
 		$this->assertEquals('/yii/gii/file', Yii::getAlias('@yii/gii/file'));
+
+		Yii::setAlias('@some/alias', '/www');
+		$this->assertEquals('/www', Yii::getAlias('@some/alias'));
 	}
 
 	public function testGetVersion()
