@@ -39,10 +39,28 @@ class InflectorTest extends TestCase
 
     public function testSingularize()
     {
-        $this->assertEquals("person", Inflector::singularize('people'));
-        $this->assertEquals("fish", Inflector::singularize('fish'));
-        $this->assertEquals("man", Inflector::singularize('men'));
-        $this->assertEquals("table", Inflector::singularize('tables'));
+		$testData = array(
+			'moves' => 'move',
+			'feet' => 'foot',
+			'children' => 'child',
+			'humans' => 'human',
+			'men' => 'man',
+			'staff' => 'staff',
+			'teeth' => 'tooth',
+			'people' => 'person',
+			'mice' => 'mouse',
+			'touches' => 'touch',
+			'hashes' => 'hash',
+			'shelves' => 'shelf',
+			'potatoes' => 'potato',
+			'buses' => 'bus',
+			'tests' => 'test',
+			'cars' => 'car',
+		);
+		foreach ($testData as $testIn => $testOut) {
+			$this->assertEquals($testOut, Inflector::pluralize($testIn));
+			$this->assertEquals(ucfirst($testOut), ucfirst(Inflector::pluralize($testIn)));
+		}
     }
 
     public function testTitleize()

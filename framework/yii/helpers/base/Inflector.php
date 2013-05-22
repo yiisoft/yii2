@@ -23,7 +23,12 @@ class Inflector
 	 */
 	protected static $plural = array(
 		'rules' => array(
+			'/(m)ove$/i' => '\1oves',
+			'/(f)oot$/i' => '\1eet',
+			'/(h)uman$/i' => '\1umans',
 			'/(s)tatus$/i' => '\1\2tatuses',
+			'/(s)taff$/i' => '\1taff',
+			'/(t)ooth$/i' => '\1eeth',
 			'/(quiz)$/i' => '\1zes',
 			'/^(ox)$/i' => '\1\2en',
 			'/([m|l])ouse$/i' => '\1ice',
@@ -37,7 +42,7 @@ class Inflector
 			'/(p)erson$/i' => '\1eople',
 			'/(m)an$/i' => '\1en',
 			'/(c)hild$/i' => '\1hildren',
-			'/(buffal|tomat)o$/i' => '\1\2oes',
+			'/(buffal|tomat|potat|ech|her|vet)o$/i' => '\1oes',
 			'/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|vir)us$/i' => '\1i',
 			'/us$/i' => 'uses',
 			'/(alias)$/i' => '\1es',
@@ -97,6 +102,8 @@ class Inflector
 	protected static $singular = array(
 		'rules' => array(
 			'/(s)tatuses$/i' => '\1\2tatus',
+			'/(f)eet$/i' => '\1oot',
+			'/(t)eeth$/i' => '\1ooth',
 			'/^(.*)(menu)s$/i' => '\1\2',
 			'/(quiz)zes$/i' => '\\1',
 			'/(matr)ices$/i' => '\1ix',
