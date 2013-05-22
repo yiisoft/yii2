@@ -16,5 +16,13 @@
 	"require": {
 		"php": ">=5.3.0",
 		"yiisoft/yii2": "dev-master"
+	},
+	"autoload": {
+		"psr-0": {
+			"scripts":"./"
+		}
+	},
+	"scripts": {
+		"post-install-cmd":"scripts\\Handler::postInstall"
 	}
 }
