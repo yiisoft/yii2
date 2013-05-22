@@ -747,7 +747,6 @@ return array(
 		),
 		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/position'),
 	),
-	// @todo dependencies
 	'yii/jui/theme/base' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
@@ -759,83 +758,97 @@ return array(
 		'css' => array(
 			'themes/base/jquery.ui.core.css',
 		),
+		'depends' => array('yii/jui/theme/base'),
 	),
 	'yii/jui/theme/base/accordion' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.accordion.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/autocomplete' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.autocomplete.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/button' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.button.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/datepicker' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.datepicker.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/dialog' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.dialog.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/menu' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.menu.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/progressbar' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.progressbar.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/resizable' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.resizable.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/selectable' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.selectable.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/slider' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.slider.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/spinner' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.spinner.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/tabs' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.tabs.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 	'yii/jui/theme/base/tooltip' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'css' => array(
 			'themes/base/jquery.ui.tooltip.css',
 		),
+		'depends' => array('yii/jui/theme/base/core'),
 	),
 );
