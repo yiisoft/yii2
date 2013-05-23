@@ -80,14 +80,13 @@ class Tabs extends Widget
 	{
 		$headers = array();
 		foreach ($this->items as $n => $item) {
-			$options = ArrayHelper::getValue($item, 'options', array());
-			$id = isset($options['id']) ? $options['id'] : $this->options['id'] . '-tab' . $n;
-			if (isset($item['header'])) {
-				$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
-				$headers[] = Html::tag('li', Html::a($item['header'], "#$id"), $headerOptions);
-			} else {
+			if (!isset($item['header'])) {
 				throw new InvalidConfigException("The 'header' option is required.");
 			}
+			$options = ArrayHelper::getValue($item, 'options', array());
+			$id = isset($options['id']) ? $options['id'] : $this->options['id'] . '-tab' . $n;
+			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
+			$headers[] = Html::tag('li', Html::a($item['header'], "#$id"), $headerOptions);
 		}
 
 		return Html::tag('ul', implode("\n", $headers));
@@ -102,16 +101,15 @@ class Tabs extends Widget
 	{
 		$contents = array();
 		foreach ($this->items as $n => $item) {
-			$id = $this->options['id'] . '-tab' . $n;
-			if (isset($item['content'])) {
-				$options = ArrayHelper::getValue($item, 'options', array());
-				if (!isset($options['id'])) {
-					$options['id'] = $id;
-				}
-				$contents[] = Html::tag('div', $item['content'], $options);
-			} else {
+			if (!isset($item['content'])) {
 				throw new InvalidConfigException("The 'content' option is required.");
 			}
+			$id = $this->options['id'] . '-tab' . $n;
+			$options = ArrayHelper::getValue($item, 'options', array());
+			if (!isset($options['id'])) {
+				$options['id'] = $id;
+			}
+			$contents[] = Html::tag('div', $item['content'], $options);
 		}
 
 		return implode("\n", $contents);
