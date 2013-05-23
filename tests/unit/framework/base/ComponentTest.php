@@ -24,13 +24,15 @@ class ComponentTest extends TestCase
 	 */
 	protected $component;
 
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
 		$this->component = new NewComponent();
 	}
 
-	public function tearDown()
+	protected function tearDown()
 	{
+		parent::tearDown();
 		$this->component = null;
 	}
 

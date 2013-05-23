@@ -412,7 +412,7 @@ class Customer extends \yii\db\ActiveRecord
 	/**
 	 * @param ActiveQuery $query
 	 */
-	public function active($query)
+	public static function active($query)
 	{
 		$query->andWhere('status = 1');
 	}
@@ -435,7 +435,7 @@ class Customer extends \yii\db\ActiveRecord
 	 * @param ActiveQuery $query
 	 * @param integer $age
 	 */
-	public function olderThan($query, $age = 30)
+	public static function olderThan($query, $age = 30)
 	{
 		$query->andWhere('age > :age', array(':age' => $age));
 	}
@@ -446,3 +446,7 @@ $customers = Customer::find()->olderThan(50)->all();
 
 The parameters should follow after the `$query` parameter when defining the scope method, and they
 can take default values like shown above.
+
+### Atomic operations and scenarios
+
+TBD

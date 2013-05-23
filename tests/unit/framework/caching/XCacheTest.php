@@ -15,11 +15,11 @@ class XCacheTest extends CacheTest
 	 */
 	protected function getCacheInstance()
 	{
-		if(!function_exists("xcache_isset")) {
+		if (!function_exists("xcache_isset")) {
 			$this->markTestSkipped("XCache not installed. Skipping.");
 		}
 
-		if($this->_cacheInstance === null) {
+		if ($this->_cacheInstance === null) {
 			$this->_cacheInstance = new XCache();
 		}
 		return $this->_cacheInstance;

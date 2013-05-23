@@ -4,15 +4,14 @@ namespace yiiunit\framework\helpers;
 
 use Yii;
 use yii\helpers\Html;
-use yii\web\Application;
+use yiiunit\TestCase;
 
-class HtmlTest extends \yii\test\TestCase
+class HtmlTest extends TestCase
 {
-	public function setUp()
+	protected function setUp()
 	{
-		new Application(array(
-			'id' => 'test',
-			'basePath' => '@yiiunit/runtime',
+		parent::setUp();
+		$this->mockApplication(array(
 			'components' => array(
 				'request' => array(
 					'class' => 'yii\web\Request',
@@ -28,11 +27,6 @@ class HtmlTest extends \yii\test\TestCase
 		$actual = str_replace("\r\n", "\n", $actual);
 
 		$this->assertEquals($expected, $actual);
-	}
-
-	public function tearDown()
-	{
-		Yii::$app = null;
 	}
 
 	public function testEncode()

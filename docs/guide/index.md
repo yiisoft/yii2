@@ -27,4 +27,4 @@
 * [Performance Tuning](performance.md)
 * [Testing](testing.md)
 * [Automatic Code Generation](gii.md)
-* [Upgrading from 1.1 to 2.0](upgrade.md)
+* [Upgrading from 1.1 to 2.0](upgrade-from-v1.md)

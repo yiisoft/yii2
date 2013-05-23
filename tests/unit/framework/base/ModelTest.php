@@ -12,7 +12,7 @@ use yiiunit\data\base\InvalidRulesModel;
  */
 class ModelTest extends TestCase
 {
-	public function testGetAttributeLalel()
+	public function testGetAttributeLabel()
 	{
 		$speaker = new Speaker();
 		$this->assertEquals('First Name', $speaker->getAttributeLabel('firstName'));
@@ -155,7 +155,7 @@ class ModelTest extends TestCase
 
 		// iteration
 		$attributes = array();
-		foreach($speaker as $key => $attribute) {
+		foreach ($speaker as $key => $attribute) {
 			$attributes[$key] = $attribute;
 		}
 		$this->assertEquals(array(

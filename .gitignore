@@ -11,3 +11,9 @@ nbproject
 
 # windows thumbnail cache
 Thumbs.db
+
+# composer vendor dir
+/yii/vendor
+
+# composer itself is not needed
+composer.phar
