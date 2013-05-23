@@ -8,6 +8,7 @@
 namespace yii\composer;
 
 use Composer\Script\CommandEvent;
+use yii\console;
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
@@ -72,11 +73,13 @@ class InstallHandler
 		require($appPath . '/vendor/yiisoft/yii2/yii/Yii.php');
 		$config = require($appPath . '/config/console.php');
 
-		foreach((array)$options['run'] as $params){
-			$command = $params[0];
-			unset($params[0]);
-			$params = array();
-			// TODO: add params to array
+		foreach ((array)$options['run'] as $rawParams) {
+			// TODO: we're doing about the same here like console\Request::resolve()
+			$command = $rawParams[0];
+			unset($rawParams[0]);
+			$params[\yii\console\Request::ANONYMOUS_PARAMS] = $rawParams;
+			// TODO end
+
 			echo "Running command: {$command}\n";
 			$application = new \yii\console\Application($config);
 			$application->runAction($command, $params);
