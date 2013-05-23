@@ -224,5 +224,27 @@ class UrlManagerTest extends \yiiunit\TestCase
 		$request->pathInfo = 'site/index';
 		$result = $manager->parseRequest($request);
 		$this->assertFalse($result);
+
+		// strict parsing
+		$manager = new UrlManager(array(
+			'enablePrettyUrl' => true,
+			'enableStrictParsing' => true,
+			'suffix' => '.html',
+			'cache' => null,
+			'rules' => array(
+				array(
+					'pattern' => 'post/<id>/<title>',
+					'route' => 'post/view',
+				),
+			),
+		));
+		// matching pathinfo
+		$request->pathInfo = 'post/123/this+is+sample.html';
+		$result = $manager->parseRequest($request);
+		$this->assertEquals(array('post/view', array('id' => '123', 'title' => 'this+is+sample')), $result);
+		// unmatching pathinfo
+		$request->pathInfo = 'site/index.html';
+		$result = $manager->parseRequest($request);
+		$this->assertFalse($result);
 	}
 }

@@ -216,12 +216,14 @@ Using a widget is more straightforward in 2.0. You mainly use the `begin()`, `en
 methods of the `Widget` class. For example,
 
 ```php
-// $this refers to the View object
 // Note that you have to "echo" the result to display it
 echo \yii\widgets\Menu::widget(array('items' => $items));
 
-// $this refers to the View object
-$form = \yii\widgets\ActiveForm::begin($this);
+// Passing an array to initialize the object properties
+$form = \yii\widgets\ActiveForm::begin(array(
+	'options' => array('class' => 'form-horizontal'),
+	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
+));
 ... form inputs here ...
 \yii\widgets\ActiveForm::end();
 ```

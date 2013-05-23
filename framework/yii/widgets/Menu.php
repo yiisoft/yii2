@@ -26,7 +26,6 @@ use yii\helpers\Html;
  * The following example shows how to use Menu:
  * 
  * ~~~
- * // $this is the view object currently being used
  * echo Menu::widget(array(
  *     'items' => array(
  *         // Important: you need to specify url as 'controller/action',

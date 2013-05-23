@@ -8,8 +8,6 @@ use yiiunit\TestCase;
 
 class InflectorTest extends TestCase
 {
-
-
     public function testPluralize()
     {
         $testData = array(
