@@ -19,13 +19,15 @@ use yii\helpers\Html;
  * ```php
  * echo Accordion::widget(array(
  *     'items' => array(
- *         'Section 1' => array(
+ *         array(
+ *             'header' => 'Section 1',
  *             'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
- *             'contentOptions' => array(...),
  *         ),
- *         'Section 2' => array(
- *             'content' => 'Sed non urna. Phasellus eu ligula. Vestibulum sit amet purus...',
+ *         array(
+ *             'header' => 'Section 2',
  *             'headerOptions' => array(...),
+ *             'content' => 'Sed non urna. Phasellus eu ligula. Vestibulum sit amet purus...',
+ *             'options' => array(...),
  *         ),
  *     ),
  * ));
@@ -42,12 +44,13 @@ class Accordion extends Widget
 	 * section with the following structure:
 	 *
 	 * ```php
-	 * // item key is the actual section header
-	 * 'Section' => array(
+	 * array(
+	 *     // required, the header (HTML) of the section
+	 *     'header' => 'Section label',
 	 *     // required, the content (HTML) of the section
 	 *     'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
 	 *     // optional the HTML attributes of the content section
-	 *     'contentOptions'=> array(...),
+	 *     'options'=> array(...),
 	 *     // optional the HTML attributes of the header section
 	 *     'headerOptions'=> array(...),
 	 * )
@@ -62,46 +65,36 @@ class Accordion extends Widget
 	public function run()
 	{
 		echo Html::beginTag('div', $this->options) . "\n";
-		echo $this->renderItems() . "\n";
+		echo $this->renderSections() . "\n";
 		echo Html::endTag('div') . "\n";
 		$this->registerWidget('accordion');
 	}
 
 	/**
-	 * Renders collapsible items as specified on [[items]].
-	 * @return string the rendering result.
-	 */
-	public function renderItems()
-	{
-		$items = array();
-		foreach ($this->items as $header => $item) {
-			$items[] = $this->renderItem($header, $item);
-		}
-
-		return implode("\n", $items);
-	}
-
-	/**
-	 * Renders a single collapsible item section.
-	 * @param string $header a label of the item section [[items]].
-	 * @param array $item a single item from [[items]].
+	 * Renders collapsible sections as specified on [[items]].
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException.
 	 */
-	public function renderItem($header, $item)
+	protected function renderSections()
 	{
-		if (isset($item['content'])) {
-			$contentOptions = ArrayHelper::getValue($item, 'contentOptions', array());
-			$content = Html::tag('div', $item['content']) . "\n";
-		} else {
-			throw new InvalidConfigException("The 'content' option is required.");
+		$sections = array();
+		foreach ($this->items as $item) {
+			if (!isset($item['header'])) {
+				throw new InvalidConfigException("The 'header' option is required.");
+			}
+
+			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
+			$sections[] = Html::tag('h3', $item['header'], $headerOptions);
+
+			if (!isset($item['content'])) {
+				throw new InvalidConfigException("The 'content' option is required.");
+			}
+
+			$options = ArrayHelper::getValue($item, 'options', array());
+			$sections[] = Html::tag('div', $item['content'], $options);;
+
 		}
 
-		$group = array();
-		$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
-		$group[] = Html::tag('h3', $header, $headerOptions);
-		$group[] = Html::tag('div', $content, $contentOptions);
-
-		return implode("\n", $group);
+		return implode("\n", $sections);
 	}
 }
