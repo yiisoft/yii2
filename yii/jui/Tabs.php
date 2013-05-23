@@ -19,13 +19,15 @@ use yii\helpers\Html;
  * ```php
  * echo Tabs::widget(array(
  *     'items' => array(
- *         'One' => array(
+ *         array(
+ *             'header' => 'One',
  *             'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
- *             'contentOptions' => array(...),
  *         ),
- *         'Two' => array(
- *             'content' => 'Sed non urna. Phasellus eu ligula. Vestibulum sit amet purus...',
+ *         array(
+ *             'header' => 'Two',
  *             'headerOptions' => array(...),
+ *             'content' => 'Sed non urna. Phasellus eu ligula. Vestibulum sit amet purus...',
+ *             'options' => array(...),
  *         ),
  *     ),
  * ));
@@ -42,12 +44,13 @@ class Tabs extends Widget
 	 * tab with the following structure:
 	 *
 	 * ```php
-	 * // item key is the actual tab header label
-	 * 'Tab header label' => array(
+	 * array(
+	 *     // required, the header (HTML) of the tab
+	 *     'header' => 'Tab label',
 	 *     // required, the content (HTML) of the tab
 	 *     'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
 	 *     // optional the HTML attributes of the tab content container
-	 *     'contentOptions'=> array(...),
+	 *     'options'=> array(...),
 	 *     // optional the HTML attributes of the tab header container
 	 *     'headerOptions'=> array(...),
 	 * )
@@ -63,7 +66,7 @@ class Tabs extends Widget
 	{
 		echo Html::beginTag('div', $this->options) . "\n";
 		echo $this->renderHeaders() . "\n";
-		echo $this->renderItems() . "\n";
+		echo $this->renderContents() . "\n";
 		echo Html::endTag('div') . "\n";
 		$this->registerWidget('tabs');
 	}
@@ -71,40 +74,46 @@ class Tabs extends Widget
 	/**
 	 * Renders tabs headers as specified on [[items]].
 	 * @return string the rendering result.
+	 * @throws InvalidConfigException.
 	 */
 	protected function renderHeaders()
 	{
 		$headers = array();
-		$index = 0;
-		foreach ($this->items as $header => $item) {
-			$id = $this->options['id'] . '-tab' . ++$index;
-			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
-			$headers[] = Html::tag('li', Html::a($header, "#$id"), $headerOptions);
+		foreach ($this->items as $n => $item) {
+			$options = ArrayHelper::getValue($item, 'options', array());
+			$id = isset($options['id']) ? $options['id'] : $this->options['id'] . '-tab' . $n;
+			if (isset($item['header'])) {
+				$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
+				$headers[] = Html::tag('li', Html::a($item['header'], "#$id"), $headerOptions);
+			} else {
+				throw new InvalidConfigException("The 'header' option is required.");
+			}
 		}
 
 		return Html::tag('ul', implode("\n", $headers));
 	}
 
 	/**
-	 * Renders tabs items as specified on [[items]].
+	 * Renders tabs contents as specified on [[items]].
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException.
 	 */
-	protected function renderItems()
+	protected function renderContents()
 	{
-		$items = array();
-		$index = 0;
-		foreach ($this->items as $item) {
-			$id = $this->options['id'] . '-tab' . ++$index;
+		$contents = array();
+		foreach ($this->items as $n => $item) {
+			$id = $this->options['id'] . '-tab' . $n;
 			if (isset($item['content'])) {
-				$contentOptions = ArrayHelper::getValue($item, 'contentOptions', array());
-				$contentOptions['id'] = $id;
-				$items[] = Html::tag('div', $item['content'], $contentOptions);
+				$options = ArrayHelper::getValue($item, 'options', array());
+				if (!isset($options['id'])) {
+					$options['id'] = $id;
+				}
+				$contents[] = Html::tag('div', $item['content'], $options);
 			} else {
 				throw new InvalidConfigException("The 'content' option is required.");
 			}
 		}
 
-		return implode("\n", $items);
+		return implode("\n", $contents);
 	}
 }
