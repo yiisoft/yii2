@@ -8,6 +8,8 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\HttpException;
+use yii\base\InvalidRouteException;
 
 /**
  * Application is the base class for all application classes.
@@ -25,6 +27,7 @@ class Application extends \yii\base\Application
 	/**
 	 * Processes the request.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
+	 * @throws HttpException if the request cannot be resolved.
 	 */
 	public function processRequest()
 	{
@@ -32,7 +35,11 @@ class Application extends \yii\base\Application
 		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
 		Yii::setAlias('@www', $request->getBaseUrl());
 		list ($route, $params) = $request->resolve();
-		return $this->runAction($route, $params);
+		try {
+			return $this->runAction($route, $params);
+		} catch (InvalidRouteException $e) {
+			throw new HttpException(404, $e->getMessage(), $e->getCode(), $e);
+		}
 	}
 
 	private $_homeUrl;
