@@ -163,7 +163,7 @@ class Schema extends \yii\db\Schema
 		$column->isPrimaryKey = null; // primary key will be determined in findColumns() method
 		$column->autoIncrement = $info['IsIdentity'] == 1;
 		$column->unsigned = stripos($column->dbType, 'unsigned') !== false;
-		$column->comment = $info['Comment'] === null ? '' : $column['Comment'];
+		$column->comment = $info['Comment'] === null ? '' : $info['Comment'];
 
 		$column->type = self::TYPE_STRING;
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
@@ -221,7 +221,7 @@ class Schema extends \yii\db\Schema
 
 		$sql = <<<SQL
 SELECT
-	[t1].*,
+	[t1].[COLUMN_NAME], [t1].[IS_NULLABLE], [t1].[DATA_TYPE], [t1].[COLUMN_DEFAULT],
 	COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS IsIdentity,
 	CONVERT(VARCHAR, [t2].[value]) AS Comment
 FROM {$columnsTableName} AS [t1]
