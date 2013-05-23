@@ -13,7 +13,7 @@ use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\Request;
-use yii\helpers\StringHelper;
+use yii\helpers\Inflector;
 
 /**
  * This command provides help information about console commands.
@@ -96,7 +96,7 @@ class HelpController extends Controller
 		foreach ($class->getMethods() as $method) {
 			$name = $method->getName();
 			if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
-				$actions[] = StringHelper::camel2id(substr($name, 6));
+				$actions[] = Inflector::camel2id(substr($name, 6));
 			}
 		}
 		sort($actions);
