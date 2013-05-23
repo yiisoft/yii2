@@ -38,17 +38,17 @@ use yii\helpers\Html;
 class Accordion extends Widget
 {
 	/**
-	 * @var array list of groups in the collapse widget. Each array element represents a single
-	 * group with the following structure:
+	 * @var array list of sections in the accordion widget. Each array element represents a single
+	 * section with the following structure:
 	 *
 	 * ```php
-	 * // item key is the actual group header
+	 * // item key is the actual section header
 	 * 'Section' => array(
-	 *     // required, the content (HTML) of the group
+	 *     // required, the content (HTML) of the section
 	 *     'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
-	 *     // optional the HTML attributes of the content group
+	 *     // optional the HTML attributes of the content section
 	 *     'contentOptions'=> array(...),
-	 *     // optional the HTML attributes of the header group
+	 *     // optional the HTML attributes of the header section
 	 *     'headerOptions'=> array(...),
 	 * )
 	 * ```
@@ -82,8 +82,8 @@ class Accordion extends Widget
 	}
 
 	/**
-	 * Renders a single collapsible item group.
-	 * @param string $header a label of the item group [[items]].
+	 * Renders a single collapsible item section.
+	 * @param string $header a label of the item section [[items]].
 	 * @param array $item a single item from [[items]].
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException.
