@@ -80,17 +80,17 @@ class InstallHandler
 			}
 		}
 
+		// prepare console application
 		require(__DIR__ . '/../../../yii2/yii/Yii.php');
+		$application = new \yii\console\Application($config);
+		$request = $application->getRequest();
 
-		foreach ((array)$options['run'] as $rawParams) {
-			// TODO: we're doing about the same here like console\Request::resolve()
-			$command = $rawParams[0];
-			unset($rawParams[0]);
-			$params[\yii\console\Request::ANONYMOUS_PARAMS] = $rawParams;
-			// TODO end
-
+		// run commands from extra.run
+		foreach ((array)$options['run'] as $rawCommand) {
+			$opts = str_getcsv($rawCommand, ' '); // see http://stackoverflow.com/a/6609509/291573
+			$request->setParams($opts);
+			list($command, $params) = $request->resolve();
 			echo "Running command: {$command}\n";
-			$application = new \yii\console\Application($config);
 			$application->runAction($command, $params);
 		}
 	}
