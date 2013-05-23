@@ -49,9 +49,9 @@ class Accordion extends Widget
 	 *     'header' => 'Section label',
 	 *     // required, the content (HTML) of the section
 	 *     'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
-	 *     // optional the HTML attributes of the content section
+	 *     // optional the HTML attributes of the section content container
 	 *     'options'=> array(...),
-	 *     // optional the HTML attributes of the header section
+	 *     // optional the HTML attributes of the section header container
 	 *     'headerOptions'=> array(...),
 	 * )
 	 * ```
