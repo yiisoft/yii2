@@ -83,7 +83,6 @@ class Carousel extends Widget
 		echo $this->renderItems() . "\n";
 		echo $this->renderControls() . "\n";
 		echo Html::endTag('div') . "\n";
-		$this->registerPlugin('carousel');
 	}
 
 	/**
