@@ -90,7 +90,7 @@ class InstallHandler
 			$opts = str_getcsv($rawCommand, ' '); // see http://stackoverflow.com/a/6609509/291573
 			$request->setParams($opts);
 			list($command, $params) = $request->resolve();
-			echo "Running command: {$command}\n";
+			echo "Running command: yiic {$rawCommand}\n";
 			$application->runAction($command, $params);
 		}
 	}
