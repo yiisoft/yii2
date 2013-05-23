@@ -8,7 +8,8 @@
 namespace yii\composer;
 
 use Composer\Script\CommandEvent;
-use yii\console;
+use yii\console\Application;
+use yii\console\Exception;
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
@@ -24,6 +25,11 @@ defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
  */
 class InstallHandler
 {
+	const PARAM_WRITABLE = 'yii-install-writable';
+	const PARAM_EXECUTABLE = 'yii-install-executable';
+	const PARAM_CONFIG = 'yii-install-config';
+	const PARAM_COMMANDS = 'yii-install-commands';
+
 	/**
 	 * Sets the correct permissions of files and directories.
 	 * @param CommandEvent $event
@@ -31,11 +37,11 @@ class InstallHandler
 	public static function setPermissions($event)
 	{
 		$options = array_merge(array(
-			'writable' => array(),
-			'executable' => array(),
+			self::PARAM_WRITABLE => array(),
+			self::PARAM_EXECUTABLE => array(),
 		), $event->getComposer()->getPackage()->getExtra());
 
-		foreach ((array)$options['writable'] as $path) {
+		foreach ((array)$options[self::PARAM_WRITABLE] as $path) {
 			echo "Setting writable: $path ...";
 			if (is_dir($path)) {
 				chmod($path, 0777);
@@ -46,7 +52,7 @@ class InstallHandler
 			}
 		}
 
-		foreach ((array)$options['executable'] as $path) {
+		foreach ((array)$options[self::PARAM_EXECUTABLE] as $path) {
 			echo "Setting executable: $path ...";
 			if (is_file($path)) {
 				chmod($path, 0755);
@@ -65,33 +71,28 @@ class InstallHandler
 	public static function run($event)
 	{
 		$options = array_merge(array(
-			'run' => array(),
-			'config' => null,
+			self::PARAM_COMMANDS => array(),
 		), $event->getComposer()->getPackage()->getExtra());
 
-		// resolve and include config file
-		if (($options['config'] === null)) {
-			throw new console\Exception('Config file not specified in composer.json extra.config');
-		} else {
-			if (!is_file(getcwd() . '/' . $options['config'])) {
-				throw new console\Exception("Config file '{$options['config']}' specified in composer.json extra.config not found");
-			} else {
-				$config = require($options['config']);
-			}
+		if (!isset($options[self::PARAM_CONFIG])) {
+			throw new Exception('Please specify the "' . self::PARAM_CONFIG . '" parameter in composer.json.');
+		}
+		$configFile = getcwd() . '/' . $options[self::PARAM_CONFIG];
+		if (!is_file($configFile)) {
+			throw new Exception("Config file does not exist: $configFile");
 		}
 
-		// prepare console application
 		require(__DIR__ . '/../../../yii2/yii/Yii.php');
-		$application = new \yii\console\Application($config);
+		$application = new Application(require($configFile));
 		$request = $application->getRequest();
 
-		// run commands from extra.run
-		foreach ((array)$options['run'] as $rawCommand) {
-			$opts = str_getcsv($rawCommand, ' '); // see http://stackoverflow.com/a/6609509/291573
-			$request->setParams($opts);
-			list($command, $params) = $request->resolve();
-			echo "Running command: yiic {$rawCommand}\n";
-			$application->runAction($command, $params);
+		foreach ((array)$options[self::PARAM_COMMANDS] as $command) {
+			$params = str_getcsv($command, ' '); // see http://stackoverflow.com/a/6609509/291573
+			array_shift($params);
+			$request->setParams($params);
+			list($route, $params) = $request->resolve();
+			echo "Running command: yii {$command}\n";
+			$application->runAction($route, $params);
 		}
 	}
 }
