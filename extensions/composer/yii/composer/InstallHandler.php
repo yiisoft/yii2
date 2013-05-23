@@ -70,7 +70,6 @@ class InstallHandler
 		$appPath = realpath(__DIR__ . '/../../../../..');
 
 		require($appPath . '/vendor/yiisoft/yii2/yii/Yii.php');
-		require($appPath . '/vendor/autoload.php');
 		$config = require($appPath . '/config/console.php');
 
 		foreach((array)$options['run'] as $params){
