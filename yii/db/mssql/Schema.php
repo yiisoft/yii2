@@ -156,14 +156,14 @@ class Schema extends \yii\db\Schema
 	{
 		$column = new ColumnSchema();
 
-		$column->name = $info['COLUMN_NAME'];
-		$column->allowNull = $info['IS_NULLABLE'] == 'YES';
-		$column->dbType = $info['DATA_TYPE'];
+		$column->name = $info['column_name'];
+		$column->allowNull = $info['is_nullable'] == 'YES';
+		$column->dbType = $info['data_type'];
 		$column->enumValues = array(); // mssql has only vague equivalents to enum
 		$column->isPrimaryKey = null; // primary key will be determined in findColumns() method
-		$column->autoIncrement = $info['IsIdentity'] == 1;
+		$column->autoIncrement = $info['is_identity'] == 1;
 		$column->unsigned = stripos($column->dbType, 'unsigned') !== false;
-		$column->comment = $info['Comment'] === null ? '' : $info['Comment'];
+		$column->comment = $info['comment'] === null ? '' : $info['comment'];
 
 		$column->type = self::TYPE_STRING;
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
@@ -191,11 +191,11 @@ class Schema extends \yii\db\Schema
 
 		$column->phpType = $this->getColumnPhpType($column);
 
-		if ($info['COLUMN_DEFAULT'] == '(NULL)') {
-			$info['COLUMN_DEFAULT'] = null;
+		if ($info['column_default'] == '(NULL)') {
+			$info['column_default'] = null;
 		}
-		if ($column->type !== 'timestamp' || $info['COLUMN_DEFAULT'] !== 'CURRENT_TIMESTAMP') {
-			$column->defaultValue = $column->typecast($info['COLUMN_DEFAULT']);
+		if ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP') {
+			$column->defaultValue = $column->typecast($info['column_default']);
 		}
 
 		return $column;
@@ -221,9 +221,9 @@ class Schema extends \yii\db\Schema
 
 		$sql = <<<SQL
 SELECT
-	[t1].[COLUMN_NAME], [t1].[IS_NULLABLE], [t1].[DATA_TYPE], [t1].[COLUMN_DEFAULT],
-	COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS IsIdentity,
-	CONVERT(VARCHAR, [t2].[value]) AS Comment
+	[t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
+	COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
+	CONVERT(VARCHAR, [t2].[value]) AS comment
 FROM {$columnsTableName} AS [t1]
 LEFT OUTER JOIN [sys].[extended_properties] AS [t2] ON
 	[t1].[ordinal_position] = [t2].[minor_id] AND
