@@ -18,6 +18,7 @@ use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\Expression;
 use yii\helpers\StringHelper;
+use yii\helpers\Inflector;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -261,14 +262,14 @@ class ActiveRecord extends Model
 
 	/**
 	 * Declares the name of the database table associated with this AR class.
-	 * By default this method returns the class name as the table name by calling [[StringHelper::camel2id()]]
+	 * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
 	 * with prefix 'tbl_'. For example, 'Customer' becomes 'tbl_customer', and 'OrderItem' becomes
 	 * 'tbl_order_item'. You may override this method if the table is not named after this convention.
 	 * @return string the table name
 	 */
 	public static function tableName()
 	{
-		return 'tbl_' . StringHelper::camel2id(StringHelper::basename(get_called_class()), '_');
+		return 'tbl_' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_');
 	}
 
 	/**

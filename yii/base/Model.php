@@ -9,7 +9,7 @@ namespace yii\base;
 
 use ArrayObject;
 use ArrayIterator;
-use yii\helpers\StringHelper;
+use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
@@ -504,7 +504,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function generateAttributeLabel($name)
 	{
-		return StringHelper::camel2words($name, true);
+		return Inflector::camel2words($name, true);
 	}
 
 	/**
