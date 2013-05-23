@@ -27,11 +27,11 @@
 		]
 	},
 	"extra": {
-		"writable": [
+		"yii-install-writable": [
 			"runtime",
 			"www/assets"
 		],
-		"executable": [
+		"yii-install-executable": [
 			"yii"
 		]
 	}

@@ -62,7 +62,7 @@ CREATE TABLE [dbo].[tbl_type] (
 	[char_col3] [text],
 	[float_col] [decimal](4,3) NOT NULL,
 	[float_col2] [float] DEFAULT '1.23',
-	[blob_col] [binary],
+	[blob_col] [varbinary](MAX),
 	[numeric_col] [decimal](5,2) DEFAULT '33.22',
 	[time] [datetime] NOT NULL DEFAULT '2002-01-01 00:00:00',
 	[bool_col] [tinyint] NOT NULL,
