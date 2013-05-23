@@ -345,6 +345,24 @@ class Application extends Module
 	}
 
 	/**
+	 * Configures static properties of the helpers.
+	 * @param array $helpers configurations to be applied.
+	 */
+	public function setHelpers($helpers)
+	{
+		/** @var $reflectionClasses \ReflectionClass[] */
+		static $reflectionClasses = array();
+		foreach ($helpers as $name => $configuration) {
+			if (!isset($reflectionClasses[$name])) {
+				$reflectionClasses[$name] = new \ReflectionClass('\\yii\\helpers\\' . $name);
+			}
+			foreach ($configuration as $property => $value) {
+				$reflectionClasses[$name]->setStaticPropertyValue($property, $value);
+			}
+		}
+	}
+
+	/**
 	 * Handles uncaught PHP exceptions.
 	 *
 	 * This method is implemented as a PHP exception handler. It requires
