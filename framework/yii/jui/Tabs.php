@@ -104,10 +104,9 @@ class Tabs extends Widget
 			if (!isset($item['content'])) {
 				throw new InvalidConfigException("The 'content' option is required.");
 			}
-			$id = $this->options['id'] . '-tab' . $n;
 			$options = ArrayHelper::getValue($item, 'options', array());
 			if (!isset($options['id'])) {
-				$options['id'] = $id;
+				$options['id'] = $this->options['id'] . '-tab' . $n;
 			}
 			$contents[] = Html::tag('div', $item['content'], $options);
 		}
