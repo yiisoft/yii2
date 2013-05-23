@@ -775,7 +775,7 @@ return array(
 		'css' => array(
 			'themes/base/jquery.ui.autocomplete.css',
 		),
-		'depends' => array('yii/jui/theme/base/core'),
+		'depends' => array('yii/jui/theme/base/core', 'yii/jui/theme/base/menu'),
 	),
 	'yii/jui/theme/base/button' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -796,7 +796,7 @@ return array(
 		'css' => array(
 			'themes/base/jquery.ui.dialog.css',
 		),
-		'depends' => array('yii/jui/theme/base/core'),
+		'depends' => array('yii/jui/theme/base/core', 'yii/jui/theme/base/button', 'yii/jui/theme/base/resizeable'),
 	),
 	'yii/jui/theme/base/menu' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -838,7 +838,7 @@ return array(
 		'css' => array(
 			'themes/base/jquery.ui.spinner.css',
 		),
-		'depends' => array('yii/jui/theme/base/core'),
+		'depends' => array('yii/jui/theme/base/core', 'yii/jui/theme/base/button'),
 	),
 	'yii/jui/theme/base/tabs' => array(
 		'sourcePath' => __DIR__ . '/assets',
