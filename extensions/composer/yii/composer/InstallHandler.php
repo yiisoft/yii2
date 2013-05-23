@@ -88,7 +88,6 @@ class InstallHandler
 
 		foreach ((array)$options[self::PARAM_COMMANDS] as $command) {
 			$params = str_getcsv($command, ' '); // see http://stackoverflow.com/a/6609509/291573
-			array_shift($params);
 			$request->setParams($params);
 			list($route, $params) = $request->resolve();
 			echo "Running command: yii {$command}\n";
