@@ -12,7 +12,7 @@ use yii\helpers\base\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * Tabs renders an tabs jQuery UI widget.
+ * Tabs renders a tabs jQuery UI widget.
  *
  * For example:
  *
@@ -62,24 +62,49 @@ class Tabs extends Widget
 	public function run()
 	{
 		echo Html::beginTag('div', $this->options) . "\n";
+		echo $this->renderHeaders() . "\n";
+		echo $this->renderItems() . "\n";
+		echo Html::endTag('div') . "\n";
+		$this->registerWidget('tabs');
+	}
+
+	/**
+	 * Renders tabs headers as specified on [[items]].
+	 * @return string the rendering result.
+	 */
+	protected function renderHeaders()
+	{
 		$headers = array();
-		$contents = array();
 		$index = 0;
 		foreach ($this->items as $header => $item) {
 			$id = $this->options['id'] . '-tab' . ++$index;
 			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
-			$headers[] = Html::tag('li', Html::tag('a', $header, array('href' => "#$id")), $headerOptions);
+			$headers[] = Html::tag('li', Html::a($header, "#$id"), $headerOptions);
+		}
+
+		return Html::tag('ul', implode("\n", $headers));
+	}
+
+	/**
+	 * Renders tabs items as specified on [[items]].
+	 * @return string the rendering result.
+	 * @throws InvalidConfigException.
+	 */
+	protected function renderItems()
+	{
+		$items = array();
+		$index = 0;
+		foreach ($this->items as $item) {
+			$id = $this->options['id'] . '-tab' . ++$index;
 			if (isset($item['content'])) {
 				$contentOptions = ArrayHelper::getValue($item, 'contentOptions', array());
 				$contentOptions['id'] = $id;
-				$contents[] = Html::tag('div', $item['content'], $contentOptions);
+				$items[] = Html::tag('div', $item['content'], $contentOptions);
 			} else {
 				throw new InvalidConfigException("The 'content' option is required.");
 			}
 		}
-		echo Html::tag('ul', implode("\n", $headers)) . "\n";
-		echo implode("\n", $contents) . "\n";
-		echo Html::endTag('div') . "\n";
-		$this->registerWidget('tabs');
+
+		return implode("\n", $items);
 	}
 }
