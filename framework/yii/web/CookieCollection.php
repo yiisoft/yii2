@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use ArrayIterator;
 use yii\helpers\SecurityHelper;
+use yii\helpers\Serializer;
 
 /**
  * CookieCollection maintains the cookies available in the current request.
@@ -119,7 +120,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 			} else {
 				$key = $this->validationKey;
 			}
-			$value = SecurityHelper::hashData(serialize($value), $key);
+			$value = SecurityHelper::hashData(Serializer::serialize($value), $key);
 		}
 
 		setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
@@ -230,7 +231,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 				if (is_string($value) && ($value = SecurityHelper::validateData($value, $key)) !== false) {
 					$cookies[$name] = new Cookie(array(
 						'name' => $name,
-						'value' => @unserialize($value),
+						'value' => @Serializer::unserialize($value),
 					));
 				}
 			}

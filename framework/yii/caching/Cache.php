@@ -8,6 +8,7 @@
 namespace yii\caching;
 
 use yii\base\Component;
+use yii\helpers\Serializer;
 use yii\helpers\StringHelper;
 
 /**
@@ -58,16 +59,6 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * static value if the cached data needs to be shared among multiple applications.
 	 */
 	public $keyPrefix;
-	/**
-	 * @var array|boolean the functions used to serialize and unserialize cached data. Defaults to null, meaning
-	 * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
-	 * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
-	 * a two-element array. The first element specifies the serialization function, and the second the deserialization
-	 * function. If this property is set false, data will be directly sent to and retrieved from the underlying
-	 * cache component without any serialization or deserialization. You should not turn off serialization if
-	 * you are using [[Dependency|cache dependency]], because it relies on data serialization.
-	 */
-	public $serializer;
 
 
 	/**
@@ -119,13 +110,10 @@ abstract class Cache extends Component implements \ArrayAccess
 	{
 		$key = $this->keyPrefix . $this->buildKey($key);
 		$value = $this->getValue($key);
-		if ($value === false || $this->serializer === false) {
-			return $value;
-		} elseif ($this->serializer === null) {
-			$value = unserialize($value);
-		} else {
-			$value = call_user_func($this->serializer[1], $value);
+		if ($value === false) {
+			return false;
 		}
+		$value = Serializer::unserialize($value);
 		if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged())) {
 			return $value[0];
 		} else {
@@ -154,15 +142,9 @@ abstract class Cache extends Component implements \ArrayAccess
 		foreach ($keyMap as $key => $newKey) {
 			$results[$key] = false;
 			if (isset($values[$newKey])) {
-				if ($this->serializer === false) {
-					$results[$key] = $values[$newKey];
-				} else {
-					$value = $this->serializer === null ? unserialize($values[$newKey])
-							: call_user_func($this->serializer[1], $values[$newKey]);
-
-					if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged())) {
-						$results[$key] = $value[0];
-					}
+				$value = Serializer::unserialize($values[$newKey]);
+				if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged())) {
+					$results[$key] = $value[0];
 				}
 			}
 		}
@@ -179,20 +161,15 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @param Dependency $dependency dependency of the cached item. If the dependency changes,
 	 * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
-	 * This parameter is ignored if [[serializer]] is false.
 	 * @return boolean whether the value is successfully stored into cache
 	 */
 	public function set($key, $value, $expire = 0, $dependency = null)
 	{
-		if ($dependency !== null && $this->serializer !== false) {
+		if ($dependency !== null) {
 			$dependency->evaluateDependency();
 		}
-		if ($this->serializer === null) {
-			$value = serialize(array($value, $dependency));
-		} elseif ($this->serializer !== false) {
-			$value = call_user_func($this->serializer[0], array($value, $dependency));
-		}
 		$key = $this->keyPrefix . $this->buildKey($key);
+		$value = Serializer::serialize(array($value, $dependency));
 		return $this->setValue($key, $value, $expire);
 	}
 
@@ -204,20 +181,15 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @param Dependency $dependency dependency of the cached item. If the dependency changes,
 	 * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
-	 * This parameter is ignored if [[serializer]] is false.
 	 * @return boolean whether the value is successfully stored into cache
 	 */
 	public function add($key, $value, $expire = 0, $dependency = null)
 	{
-		if ($dependency !== null && $this->serializer !== false) {
+		if ($dependency !== null) {
 			$dependency->evaluateDependency();
 		}
-		if ($this->serializer === null) {
-			$value = serialize(array($value, $dependency));
-		} elseif ($this->serializer !== false) {
-			$value = call_user_func($this->serializer[0], array($value, $dependency));
-		}
 		$key = $this->keyPrefix . $this->buildKey($key);
+		$value = Serializer::serialize(array($value, $dependency));
 		return $this->addValue($key, $value, $expire);
 	}
 
