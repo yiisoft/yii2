@@ -82,17 +82,13 @@ class Accordion extends Widget
 			if (!isset($item['header'])) {
 				throw new InvalidConfigException("The 'header' option is required.");
 			}
-
-			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
-			$sections[] = Html::tag('h3', $item['header'], $headerOptions);
-
 			if (!isset($item['content'])) {
 				throw new InvalidConfigException("The 'content' option is required.");
 			}
-
+			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
+			$sections[] = Html::tag('h3', $item['header'], $headerOptions);
 			$options = ArrayHelper::getValue($item, 'options', array());
 			$sections[] = Html::tag('div', $item['content'], $options);;
-
 		}
 
 		return implode("\n", $sections);
