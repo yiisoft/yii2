@@ -68,7 +68,6 @@ class TypeAhead extends Widget
 	public function run()
 	{
 		echo $this->renderField();
-		$this->registerPlugin('typeahead');
 	}
 
 	/**

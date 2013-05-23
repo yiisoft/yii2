@@ -53,6 +53,7 @@ class Widget extends \yii\base\Widget
 	public function init()
 	{
 		parent::init();
+		$this->registerPlugin(strtolower(get_called_class()));
 		if (!isset($this->options['id'])) {
 			$this->options['id'] = $this->getId();
 		}

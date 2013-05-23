@@ -118,8 +118,6 @@ class Modal extends Widget
 		echo "\n" . $this->renderBodyEnd();
 		echo "\n" . $this->renderFooter();
 		echo "\n" . Html::endTag('div');
-
-		$this->registerPlugin('modal');
 	}
 
 	/**
