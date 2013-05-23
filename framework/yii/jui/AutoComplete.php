@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\bootstrap;
+namespace yii\jui;
 
 use Yii;
 use yii\base\InvalidConfigException;
@@ -13,43 +13,43 @@ use yii\base\Model;
 use yii\helpers\Html;
 
 /**
- * TypeAhead renders a typehead bootstrap javascript component.
+ * AutoComplete renders an autocomplete jQuery UI widget.
  *
- * For example,
+ * For example:
  *
  * ```php
- * echo TypeAhead::widget(array(
+ * echo AutoComplete::widget(array(
  *     'model' => $model,
  *     'attribute' => 'country',
  *     'clientOptions' => array(
- *         'source' => array('USA', 'ESP'),
+ *         'source' => array('USA', 'RUS'),
  *     ),
  * ));
  * ```
  *
- * The following example will use the name property instead
+ * The following example will use the name property instead:
  *
  * ```php
- * echo TypeAhead::widget(array(
+ * echo AutoComplete::widget(array(
  *     'name'  => 'country',
  *     'clientOptions' => array(
- *         'source' => array('USA', 'ESP'),
+ *         'source' => array('USA', 'RUS'),
  *     ),
  * ));
  *```
  *
- * @see http://twitter.github.io/bootstrap/javascript.html#typeahead
- * @author Antonio Ramirez <amigo.cobos@gmail.com>
+ * @see http://api.jqueryui.com/autocomplete/
+ * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
-class TypeAhead extends Widget
+class AutoComplete extends Widget
 {
 	/**
-	 * @var \yii\base\Model the data model that this widget is associated with
+	 * @var \yii\base\Model the data model that this widget is associated with.
 	 */
 	public $model;
 	/**
-	 * @var string the model attribute that this widget is associated with
+	 * @var string the model attribute that this widget is associated with.
 	 */
 	public $attribute;
 	/**
@@ -63,19 +63,19 @@ class TypeAhead extends Widget
 
 
 	/**
-	 * Renders the widget
+	 * Renders the widget.
 	 */
 	public function run()
 	{
 		echo $this->renderField();
-		$this->registerPlugin('typeahead');
+		$this->registerWidget('autocomplete');
 	}
 
 	/**
-	 * Renders the TypeAhead field. If [[model]] has been specified then it will render an active field.
+	 * Renders the AutoComplete field. If [[model]] has been specified then it will render an active field.
 	 * If [[model]] is null or not from an [[Model]] instance, then the field will be rendered according to
 	 * the [[name]] attribute.
-	 * @return string the rendering result
+	 * @return string the rendering result.
 	 * @throws InvalidConfigException when none of the required attributes are set to render the textInput.
 	 * That is, if [[model]] and [[attribute]] are not set, then [[name]] is required.
 	 */
