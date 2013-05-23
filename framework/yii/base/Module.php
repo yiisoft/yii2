@@ -538,6 +538,26 @@ abstract class Module extends Component
 	}
 
 	/**
+	 * Configures static properties of the helpers.
+	 *
+	 * @param array $helpers configurations to be applied.
+	 */
+	public function setHelpers($helpers)
+	{
+		/** @var $reflectionClasses \ReflectionClass[] */
+		static $reflectionClasses = array();
+		foreach ($helpers as $name => $configuration) {
+			if (!isset($reflectionClasses[$name]))
+			{
+				$reflectionClasses[$name] = new \ReflectionClass('\\yii\\helpers\\' . $name);
+			}
+			foreach ($configuration as $property => $value) {
+				$reflectionClasses[$name]->setStaticPropertyValue($property, $value);
+			}
+		}
+	}
+
+	/**
 	 * Loads components that are declared in [[preload]].
 	 */
 	public function preloadComponents()
