@@ -19,7 +19,7 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"yiisoft/yii2": "dev-master"
+		"yiisoft/yii2": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\composer": "" }
