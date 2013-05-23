@@ -66,12 +66,21 @@ class InstallHandler
 	{
 		$options = array_merge(array(
 			'run' => array(),
+			'config' => null,
 		), $event->getComposer()->getPackage()->getExtra());
 
-		$appPath = realpath(__DIR__ . '/../../../../..');
+		// resolve and include config file
+		if (($options['config'] === null)) {
+			throw new console\Exception('Config file not specified in composer.json extra.config');
+		} else {
+			if (!is_file(getcwd() . '/' . $options['config'])) {
+				throw new console\Exception("Config file '{$options['config']}' specified in composer.json extra.config not found");
+			} else {
+				$config = require($options['config']);
+			}
+		}
 
-		require($appPath . '/vendor/yiisoft/yii2/yii/Yii.php');
-		$config = require($appPath . '/config/console.php');
+		require(__DIR__ . '/../../../yii2/yii/Yii.php');
 
 		foreach ((array)$options['run'] as $rawParams) {
 			// TODO: we're doing about the same here like console\Request::resolve()
