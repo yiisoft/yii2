@@ -19,7 +19,8 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"smarty/smarty": "v3.1.13"
 	},
 	"autoload": {
 		"psr-0": { "yii\\smarty": "" }

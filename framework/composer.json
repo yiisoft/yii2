@@ -73,8 +73,6 @@
 	},
 	"suggest": {
 		"michelf/php-markdown": "Required for Markdown helper.",
-		"twig/twig": "Required for TwigViewRenderer.",
-		"smarty/smarty": "Required for SmartyViewRenderer.",
 		"ezyang/htmlpurifier": "Required for Purifier helper."
 	}
 }
