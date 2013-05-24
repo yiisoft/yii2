@@ -15,9 +15,32 @@ class Request extends \yii\base\Request
 {
 	const ANONYMOUS_PARAMS = '-args';
 
-	public function getRawParams()
+	private $_params;
+
+	/**
+	 * Returns the command line arguments.
+	 * @return array the command line arguments. It does not include the entry script name.
+	 */
+	public function getParams()
 	{
-		return isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
+		if (!isset($this->_params)) {
+			if (isset($_SERVER['argv'])) {
+				$this->_params = $_SERVER['argv'];
+				array_shift($this->_params);
+			} else {
+				$this->_params = array();
+			}
+		}
+		return $this->_params;
+	}
+
+	/**
+	 * Sets the command line arguments.
+	 * @param array $params the command line arguments
+	 */
+	public function setParams($params)
+	{
+		$this->_params = $params;
 	}
 
 	/**
@@ -26,9 +49,7 @@ class Request extends \yii\base\Request
 	 */
 	public function resolve()
 	{
-		$rawParams = $this->getRawParams();
-		array_shift($rawParams);  // the 1st argument is the yii script name
-
+		$rawParams = $this->getParams();
 		if (isset($rawParams[0])) {
 			$route = $rawParams[0];
 			array_shift($rawParams);

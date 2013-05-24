@@ -9,9 +9,9 @@ return array(
 	array(
 		'name' => 'PHP version',
 		'mandatory' => true,
-		'condition' => version_compare(PHP_VERSION, '5.3.11', '>='),
+		'condition' => version_compare(PHP_VERSION, '5.3.7', '>='),
 		'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
-		'memo' => 'PHP 5.3.11 or higher is required.',
+		'memo' => 'PHP 5.3.7 or higher is required.',
 	),
 	array(
 		'name' => 'Reflection extension',
