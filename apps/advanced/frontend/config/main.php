@@ -12,7 +12,7 @@ return array(
 	'id' => 'change-me',
 	'basePath' => dirname(__DIR__),
 	'preload' => array('log'),
-	'controllerNamespace' => 'app\controllers',
+	'controllerNamespace' => 'frontend\controllers',
 	'modules' => array(
 	),
 	'components' => array(
