@@ -10,6 +10,7 @@
 
 namespace yii\db\redis;
 
+use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
@@ -420,34 +421,12 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public function link($name, $model, $extraColumns = array())
 	{
-		// TODO
 		$relation = $this->getRelation($name);
 
 		if ($relation->via !== null) {
-			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
-				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
-				$viaClass = $viaRelation->modelClass;
-				$viaTable = $viaClass::tableName();
-				// unset $viaName so that it can be reloaded to reflect the change
-				unset($this->_related[strtolower($viaName)]);
-			} else {
-				$viaRelation = $relation->via;
-				$viaTable = reset($relation->via->from);
-			}
-			$columns = array();
-			foreach ($viaRelation->link as $a => $b) {
-				$columns[$a] = $this->$b;
-			}
-			foreach ($relation->link as $a => $b) {
-				$columns[$b] = $model->$a;
-			}
-			foreach ($extraColumns as $k => $v) {
-				$columns[$k] = $v;
-			}
-			static::getDb()->createCommand()
-				->insert($viaTable, $columns)->execute();
+			// TODO
+
+
 		} else {
 			$p1 = $model->isPrimaryKey(array_keys($relation->link));
 			$p2 = $this->isPrimaryKey(array_values($relation->link));
@@ -479,6 +458,24 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 				$this->_related[$name][] = $model;
 			}
 		}
+	}
+
+	/**
+	 * @param array $link
+	 * @param ActiveRecord $foreignModel
+	 * @param ActiveRecord $primaryModel
+	 * @throws InvalidCallException
+	 */
+	private function bindModels($link, $foreignModel, $primaryModel)
+	{
+		foreach ($link as $fk => $pk) {
+			$value = $primaryModel->$pk;
+			if ($value === null) {
+				throw new InvalidCallException('Unable to link models: the primary key of ' . get_class($primaryModel) . ' is null.');
+			}
+			$foreignModel->$fk = $value;
+		}
+		$foreignModel->save(false);
 	}
 
 	/**
@@ -557,6 +554,23 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 			}
 		}
 	}
+
+	/**
+	 * TODO duplicate code, refactor
+	 * @param array $keys
+	 * @return boolean
+	 */
+	private function isPrimaryKey($keys)
+	{
+		$pks = $this->primaryKey();
+		foreach ($keys as $key) {
+			if (!in_array($key, $pks, true)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 
 	// TODO implement link and unlink
