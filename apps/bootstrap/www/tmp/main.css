@@ -1,0 +1,298 @@
+/* reset */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,
+em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,
+table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,
+nav,output,ruby,section,summary,time,mark,audio,video{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{
+	display: block;
+}
+body{
+	line-height: 1;
+}
+ol,ul{
+	list-style: none;
+}
+blockquote,q{
+	quotes: none;
+}
+blockquote:before,blockquote:after,q:before,q:after{
+	content: '';
+	content: none;
+}
+table{
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* base */
+::selection{
+	color: #ffffff !important;
+	background-color: #e51717 !important;
+}
+::-moz-selection{
+	color: #ffffff !important;
+	background-color: #e51717 !important;
+}
+a{
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+h1,h2,p,img,ul li{
+	font-family: Arial,sans-serif;
+	color: #505050;
+}
+body,html{
+	/*overflow-x: hidden;*/
+}
+
+/* header */
+.header{
+	min-width: 860px; /* 960px - 50px * 2 */
+	max-width: 1100px; /* 1200px - 50px * 2 */
+	margin: 40px auto 30px auto;
+	padding: 0 50px;
+}
+.header h1{
+	font-size: 30px;
+	color: #e57373;
+	text-shadow: 0 1px 0 #cacaca;
+	margin-bottom: 30px;
+}
+.header h1 span{
+	color: #e51717;
+}
+.header h1 a{
+	color: #e57373;
+}
+.header h1 a:hover{
+	color: #e51717;
+}
+.header img{
+	float: right;
+	margin-top: -15px;
+}
+.header h2{
+	font-size: 20px;
+	text-shadow: 0 1px 0 #cacaca;
+}
+
+/* traceback */
+.traceback{
+	margin-top: 30px;
+	margin-bottom: 40px;
+}
+.traceback ul li{
+	margin: 1px 0;
+}
+.traceback ul li .li-wrap{
+	cursor: pointer;
+	padding: 15px 0;
+}
+.traceback ul li.application .li-wrap{
+	background-color: #fafafa;
+}
+.traceback ul li .li-wrap:hover{
+	background-color: #edf9ff;
+}
+.traceback ul li .li{
+	min-width: 860px; /* 960px - 50px * 2 */
+	max-width: 1100px; /* 1200px - 50px * 2 */
+	margin: 0 auto;
+	padding: 0 50px;
+	position: relative;
+}
+.traceback ul li a{
+	color: #505050;
+}
+.traceback ul li a:hover{
+	color: #000000;
+	text-shadow: 0 1px 0 #cacaca;
+}
+.traceback ul li .number{
+	width: 45px;
+	display: inline-block;
+}
+.traceback ul li .text{
+	color: #bbbbbb;
+}
+.traceback ul li.application .text{
+	color: #505050;
+}
+.traceback ul li .at{
+	position: absolute;
+	right: 110px; /* 50px + 60px */
+	color: #bbbbbb;
+}
+.traceback ul li.application .at{
+	color: #505050;
+}
+.traceback ul li .line{
+	position: absolute;
+	right: 50px;
+	width: 60px;
+	text-align: right;
+}
+.traceback ul li .code-wrap{
+	display: none;
+	position: relative;
+}
+.traceback ul li.application .code-wrap{
+	display: block;
+}
+.traceback ul li .error-line{
+	background-color: #ffebeb;
+	position: absolute;
+	width: 100%;
+	height: 20px;
+	z-index: 100;
+	margin-top: 15px;
+}
+.traceback ul li .code{
+	min-width: 860px; /* 960px - 50px * 2 */
+	max-width: 1100px; /* 1200px - 50px * 2 */
+	margin: 0 auto;
+	padding: 15px 50px;
+	position: relative;
+}
+.traceback ul li .code .lines{
+	position: absolute;
+	z-index: 200;
+	left: 50px;
+	line-height: 18px;
+	font-size: 14px;
+	font-family: Consolas, Courier New, monospaced;
+	color: #bbbbbb;
+}
+.traceback ul li .code pre{
+	position: relative;
+	z-index: 200;
+	left: 50px;
+	line-height: 18px;
+	font-size: 14px;
+	font-family: Consolas, Courier New, monospaced;
+}
+
+/* request */
+.request{
+	background-color: #fafafa;
+	padding-top: 40px;
+	padding-bottom: 40px;
+	margin-top: 40px;
+	margin-bottom: 1px;
+}
+.request pre{
+	font-family: Consolas, Courier New, monospaced;
+}
+
+/* footer */
+.footer{
+	position: relative;
+	height: 222px;
+	min-width: 860px; /* padding compensation: 960px - 50px * 2 */
+	max-width: 1100px; /* padding compensation: 1200px - 50px * 2 */
+	padding: 0 50px;
+	margin: 1px auto 0 auto;
+}
+.footer p{
+	font-size: 16px;
+	padding-bottom: 10px;
+	text-shadow: 0 1px 0 #cacaca;
+}
+.footer p a{
+	color: #505050;
+}
+.footer p a:hover{
+	color: #000000;
+}
+.footer .timestamp{
+	font-size: 14px;
+	padding-top: 67px;
+	margin-bottom: 28px;
+}
+.footer img{
+	position: absolute;
+	right: -50px;
+}
+
+/* code */
+#code-wrap{
+	overflow: hidden;
+	position: relative;
+}
+#code-highlighter{
+	background-color: #ffffff;
+	position: fixed;
+	width: 100%;
+	z-index: 100;
+}
+#code-inner-wrap{
+	min-width: 860px; /* padding compensation: 960px - 50px * 2 */
+	max-width: 1100px; /* padding compensation: 1200px - 50px * 2 */
+	margin: 0 auto;
+}
+pre{
+	display: inline;
+	color: #505050;
+	font-size: 14px;
+	line-height: 18px;
+	z-index: 200;
+	position: relative;
+}
+pre .subst,pre .title{
+	font-weight: normal;
+	color: #505050;
+}
+pre .comment,pre .template_comment,pre .javadoc,pre .diff .header{
+	color: #808080;
+	font-style: italic;
+}
+pre .annotation,pre .decorator,pre .preprocessor,pre .doctype,pre .pi,pre .chunk,pre .shebang,
+pre .apache .cbracket,pre .prompt,pre .http .title{
+	color: #808000;
+}
+pre .tag,pre .pi{
+	background: #efefef;
+}
+pre .tag .title,pre .id,pre .attr_selector,pre .pseudo,pre .literal,pre .keyword,pre .hexcolor,
+pre .css .function,pre .ini .title,pre .css .class,pre .list .title,pre .clojure .title,pre .nginx .title,
+pre .tex .command,pre .request,pre .status{
+	color: #000080;
+}
+pre .attribute,pre .rules .keyword,pre .number,pre .date,pre .regexp,pre .tex .special{
+	color: #0000aa;
+}
+pre .number,pre .regexp{
+	font-weight: normal;
+}
+pre .string,pre .value,pre .filter .argument,pre .css .function .params,pre .apache .tag {
+	color: #00aa00;
+}
+pre .symbol,pre .ruby .symbol .string,pre .char,pre .tex .formula{
+	color: #505050;
+	background: #d0eded;
+	font-style: italic;
+}
+pre .phpdoc,pre .yardoctag,pre .javadoctag{
+	text-decoration: underline;
+}
+pre .variable,pre .envvar,pre .apache .sqbracket,pre .nginx .built_in{
+	color: #aa0000;
+}
+pre .addition{
+	background: #baeeba;
+}
+pre .deletion{
+	background: #ffc8bd;
+}
+pre .diff .change{
+	background: #bccff9;
+}
