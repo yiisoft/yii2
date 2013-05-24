@@ -88,21 +88,23 @@ class View extends Component
 	/**
 	 * @var array a list of available renderers indexed by their corresponding supported file extensions.
 	 * Each renderer may be a view renderer object or the configuration for creating the renderer object.
-	 * The default setting supports both Smarty and Twig (their corresponding file extension is "tpl"
-	 * and "twig" respectively. Please refer to [[SmartyRenderer]] and [[TwigRenderer]] on how to install
-	 * the needed libraries for these template engines.
+	 * For example, the following configuration enables both Smarty and Twig view renderers:
+	 *
+	 * ~~~
+	 * array(
+	 *     'tpl' => array(
+	 *         'class' => 'yii\smarty\ViewRenderer',
+	 *      ),
+	 *     'twig' => array(
+	 *         'class' => 'yii\twig\ViewRenderer',
+	 *     ),
+	 * )
+	 * ~~~
 	 *
 	 * If no renderer is available for the given view file, the view file will be treated as a normal PHP
 	 * and rendered via [[renderPhpFile()]].
 	 */
-	public $renderers = array(
-		'tpl' => array(
-			'class' => 'yii\renderers\SmartyRenderer',
-		),
-		'twig' => array(
-			'class' => 'yii\renderers\TwigRenderer',
-		),
-	);
+	public $renderers;
 	/**
 	 * @var Theme|array the theme object or the configuration array for creating the theme object.
 	 * If not set, it means theming is not enabled.
