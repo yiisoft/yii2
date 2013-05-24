@@ -84,3 +84,15 @@ assuming `yii-advanced` is directly under the document root of your Web server.
 ### Install from an Archive File
 
 This is not currently available. We will provide it when Yii 2 is formally released.
+
+GETTING STARTED
+---------------
+
+After template application and its dependencies are downloaded you need to initialize it and set some config values to
+match your application requirements.
+
+1. Execute `install` command selecting `dev` as environment.
+2. Set `id` value in `console/config/main.php`, `frontend/config/main.php`, `backstage/config/main.php`.
+3. Create new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
+4. In `common/config/params.php` set your database details in `components.db` values.
+

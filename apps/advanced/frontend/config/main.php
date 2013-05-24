@@ -16,6 +16,7 @@ return array(
 	'modules' => array(
 	),
 	'components' => array(
+		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
 		'user' => array(
 			'class' => 'yii\web\User',

@@ -16,6 +16,7 @@ return array(
 	'modules' => array(
 	),
 	'components' => array(
+		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
 		'log' => array(
 			'class' => 'yii\logging\Router',
