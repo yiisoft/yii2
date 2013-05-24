@@ -1,6 +1,6 @@
 <?php
 $root = str_replace('\\', '/', __DIR__);
-$envs = require("$root/install/index.php");
+$envs = require("$root/environments/index.php");
 $envNames = array_keys($envs);
 
 echo "Yii Application Installation Tool v1.0\n\n";
@@ -24,10 +24,10 @@ if (strncasecmp($answer, 'y', 1)) {
 }
 
 echo "\n  Start installation ...\n\n";
-$files = getFileList("$root/install/{$env['path']}");
+$files = getFileList("$root/environments/{$env['path']}");
 $all = false;
 foreach ($files as $file) {
-	if (!copyFile($root, "install/{$env['path']}/$file", $file, $all)) {
+	if (!copyFile($root, "environments/{$env['path']}/$file", $file, $all)) {
 		break;
 	}
 }
