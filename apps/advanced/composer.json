@@ -20,13 +20,18 @@
 	},
 	"scripts": {
 		"post-install-cmd": [
-			"yii\\composer\\InstallHandler::setPermissions"
+			"yii\\composer\\InstallHandler::setPermissions",
+			"yii\\composer\\InstallHandler::run"
 		],
 		"post-update-cmd": [
 			"yii\\composer\\InstallHandler::setPermissions"
 		]
 	},
 	"extra": {
+		"yii-install-config": "console/config/main.php",
+		"yii-install-commands": [
+			"install"
+		],
 		"yii-install-writable": [
 			"backstage/runtime",
 			"backstage/www/assets",
