@@ -4,8 +4,8 @@ namespace frontend\controllers;
 
 use Yii;
 use yii\web\Controller;
-use app\models\LoginForm;
-use app\models\ContactForm;
+use common\models\LoginForm;
+use frontend\models\ContactForm;
 
 class SiteController extends Controller
 {

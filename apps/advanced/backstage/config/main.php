@@ -19,7 +19,7 @@ return array(
 		'cache' => $params['components.cache'],
 		'user' => array(
 			'class' => 'yii\web\User',
-			'identityClass' => 'app\models\User',
+			'identityClass' => 'common\models\User',
 		),
 		'assetManager' => array(
 			'bundles' => require(__DIR__ . '/assets.php'),
