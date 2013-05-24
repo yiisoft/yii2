@@ -559,7 +559,7 @@ return array(
 		'js' => array(
 			'jquery.ui.dialog.js',
 		),
-		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/button', 'yii/jui/draggable', 'yii/jui/mouse', 'yii/jui/position', 'yii/jui/resizeable', 'yii/jui/effect/all'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/button', 'yii/jui/draggable', 'yii/jui/mouse', 'yii/jui/position', 'yii/jui/resizable', 'yii/jui/effect/all'),
 	),
 	'yii/jui/draggable' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -803,7 +803,7 @@ return array(
 		'css' => array(
 			'themes/base/jquery.ui.dialog.css',
 		),
-		'depends' => array('yii/jui/theme/base/core', 'yii/jui/theme/base/button', 'yii/jui/theme/base/resizeable'),
+		'depends' => array('yii/jui/theme/base/core', 'yii/jui/theme/base/button', 'yii/jui/theme/base/resizable'),
 	),
 	'yii/jui/theme/base/menu' => array(
 		'sourcePath' => __DIR__ . '/assets',
