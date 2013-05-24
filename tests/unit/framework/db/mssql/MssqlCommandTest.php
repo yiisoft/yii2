@@ -2,7 +2,9 @@
 
 namespace yiiunit\framework\db\mssql;
 
-class MssqlCommandTest extends \yiiunit\framework\db\CommandTest
+use yiiunit\framework\db\CommandTest;
+
+class MssqlCommandTest extends CommandTest
 {
     public function setUp()
     {

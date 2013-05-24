@@ -5,7 +5,7 @@ namespace yiiunit;
 /**
  * This is the base class for all yii framework unit tests.
  */
-class TestCase extends \yii\test\TestCase
+abstract class TestCase extends \yii\test\TestCase
 {
 	public static $params;
 

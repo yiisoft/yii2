@@ -2,7 +2,9 @@
 
 namespace yiiunit\framework\db\mssql;
 
-class MssqlActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
+use yiiunit\framework\db\ActiveRecordTest;
+
+class MssqlActiveRecordTest extends ActiveRecordTest
 {
     protected function setUp()
     {

@@ -3,10 +3,10 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\ArrayHelper;
-use yii\helpers\VarDumper;
+use yii\test\TestCase;
 use yii\web\Sort;
 
-class ArrayHelperTest extends \yii\test\TestCase
+class ArrayHelperTest extends TestCase
 {
 	public function testMerge()
 	{

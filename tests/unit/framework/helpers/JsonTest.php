@@ -4,9 +4,10 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\Json;
+use yii\test\TestCase;
 use yii\web\JsExpression;
 
-class JsonTest extends \yii\test\TestCase
+class JsonTest extends TestCase
 {
 	public function testEncode()
 	{

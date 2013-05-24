@@ -1,8 +1,9 @@
 <?php
+namespace yiiunit\framework\db;
 
-namespace yiiunit;
+use yiiunit\TestCase as TestCase;
 
-class DatabaseTestCase extends TestCase
+abstract class DatabaseTestCase extends TestCase
 {
 	protected $database;
 	protected $driverName = 'mysql';
