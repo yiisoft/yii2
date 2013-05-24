@@ -17,7 +17,7 @@ require(__DIR__ . '/vendor/yiisoft/yii2/yii/Yii.php');
 require(__DIR__ . '/vendor/autoload.php');
 
 $config = require(__DIR__ . '/console/config/main.php');
-$localConfig = __DIR__ . '/console/config/main-local.php');
+$localConfig = __DIR__ . '/console/config/main-local.php';
 if (is_file($localeConfig)) {
 	$config = yii\helpers\ArrayHelper::merge($config, require($localConfig));
 }
