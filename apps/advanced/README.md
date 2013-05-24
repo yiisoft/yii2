@@ -20,12 +20,10 @@ DIRECTORY STRUCTURE
 ```
 common
 	config/             contains shared configurations
-	env/                contains environment-based overrides
 	models/             contains model classes used in both backstage and frontend
 console
 	config/             contains console configurations
 	controllers/        contains console controllers (commands)
-	env/                contains environment-based overrides
 	migrations/         contains database migrations
 	models/             contains console-specific model classes
 	runtime/            contains files generated during runtime
@@ -33,7 +31,6 @@ backstage
 	assets/             contains application assets such as JavaScript and CSS
 	config/             contains backstage configurations
 	controllers/        contains Web controller classes
-	env/                contains environment-based overrides
 	models/             contains backstage-specific model classes
 	runtime/            contains files generated during runtime
 	views/              contains view files for the Web application
@@ -42,12 +39,12 @@ frontend
 	assets/             contains application assets such as JavaScript and CSS
 	config/             contains frontend configurations
 	controllers/        contains Web controller classes
-	env/                contains environment-based overrides
 	models/             contains frontend-specific model classes
 	runtime/            contains files generated during runtime
 	views/              contains view files for the Web application
 	www/                contains the entry script and Web resources
 vendor/                 contains dependent 3rd-party packages
+environments/                contains environment-based overrides
 ```
 
 

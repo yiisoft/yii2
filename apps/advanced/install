@@ -1,0 +1,111 @@
+<?php
+$root = str_replace('\\', '/', __DIR__);
+$envs = require("$root/install/index.php");
+$envNames = array_keys($envs);
+
+echo "Yii Application Installation Tool v1.0\n\n";
+echo "Which environment do you want to install the application to?\n\n";
+foreach ($envNames as $i => $name) {
+	echo "  [$i] $name\n";
+}
+echo "\n  Your choice [0-" . (count($envs) - 1) . ', or "q" to quit] ';
+$answer = trim(fgets(STDIN));
+if (!ctype_digit($answer) || !isset($envNames[$answer])) {
+	echo "\n  Quit installation.\n";
+	return;
+}
+
+$env = $envs[$envNames[$answer]];
+echo "\n  Install the application under '{$envNames[$answer]}' environment? [yes|no] ";
+$answer = trim(fgets(STDIN));
+if (strncasecmp($answer, 'y', 1)) {
+	echo "\n  Quit installation.\n";
+	return;
+}
+
+echo "\n  Start installation ...\n\n";
+$files = getFileList("$root/install/{$env['path']}");
+$all = false;
+foreach ($files as $file) {
+	if (!copyFile($root, "install/{$env['path']}/$file", $file, $all)) {
+		break;
+	}
+}
+
+if (isset($env['writable'])) {
+	foreach ($env['writable'] as $writable) {
+		echo "      chmod 0777 $writable\n";
+		@chmod("$root/$writable", 0777);
+	}
+}
+
+if (isset($env['executable'])) {
+	foreach ($env['executable'] as $executable) {
+		echo "      chmod 0755 $executable\n";
+		@chmod("$root/$executable", 0755);
+	}
+}
+
+echo "\n  ... installation completed.\n\n";
+
+function getFileList($root, $basePath = '')
+{
+	$files = array();
+	$handle = opendir($root);
+	while (($path = readdir($handle)) !== false) {
+		if ($path === '.svn' || $path === '.' || $path === '..') {
+			continue;
+		}
+		$fullPath = "$root/$path";
+		$relativePath = $basePath === '' ? $path : "$basePath/$path";
+		if (is_dir($fullPath)) {
+			$files = array_merge($files, getFileList($fullPath, $relativePath));
+		} else {
+			$files[] = $relativePath;
+		}
+	}
+	closedir($handle);
+	return $files;
+}
+
+function copyFile($root, $source, $target, &$all)
+{
+	if (!is_file($root . '/' . $source)) {
+		echo "       skip $target ($source not exist)\n";
+		return true;
+	}
+	if (is_file($root . '/' . $target)) {
+		if (file_get_contents($root . '/' . $source) === file_get_contents($root . '/' . $target)) {
+			echo "  unchanged $target\n";
+			return true;
+		}
+		if ($all) {
+			echo "  overwrite $target\n";
+		} else {
+			echo "      exist $target\n";
+			echo "            ...overwrite? [Yes|No|All|Quit] ";
+			$answer = trim(fgets(STDIN));
+			if (!strncasecmp($answer, 'q', 1)) {
+				return false;
+			} else {
+				if (!strncasecmp($answer, 'y', 1)) {
+					echo "  overwrite $target\n";
+				} else {
+					if (!strncasecmp($answer, 'a', 1)) {
+						echo "  overwrite $target\n";
+						$all = true;
+					} else {
+						echo "       skip $target\n";
+						return true;
+					}
+				}
+			}
+		}
+		file_put_contents($root . '/' . $target, file_get_contents($root . '/' . $source));
+		return true;
+	}
+	echo "   generate $target\n";
+	@mkdir(dirname($root . '/' . $target), 0777, true);
+	file_put_contents($root . '/' . $target, file_get_contents($root . '/' . $source));
+	return true;
+}
