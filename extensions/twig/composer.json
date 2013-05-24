@@ -1,0 +1,27 @@
+{
+	"name": "yiisoft/yii2-twig",
+	"description": "The Twig integration for the Yii framework",
+	"keywords": ["yii", "twig", "renderer"],
+	"type": "library",
+	"license": "BSD-3-Clause",
+	"support": {
+		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/yiisoft/yii2"
+	},
+	"authors": [
+		{
+			"name": "Alenxader Makarov",
+			"email": "sam@rmcreative.ru"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"yiisoft/yii2": "*"
+	},
+	"autoload": {
+		"psr-0": { "yii\\twig": "" }
+	}
+}
