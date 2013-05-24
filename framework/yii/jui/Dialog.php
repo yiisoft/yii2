@@ -7,7 +7,6 @@
 
 namespace yii\jui;
 
-use yii\helpers\base\ArrayHelper;
 use yii\helpers\Html;
 
 /**
