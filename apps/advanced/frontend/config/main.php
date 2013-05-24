@@ -9,19 +9,14 @@ $params = array_merge(
 );
 
 return array(
-	'id' => 'bootstrap',
+	'id' => 'change-me',
 	'basePath' => dirname(__DIR__),
 	'preload' => array('log'),
 	'controllerNamespace' => 'app\controllers',
 	'modules' => array(
-//		'debug' => array(
-//			'class' => 'yii\debug\Module',
-//		)
 	),
 	'components' => array(
-		'cache' => array(
-			'class' => 'yii\caching\FileCache',
-		),
+		'cache' => $params['components.cache'],
 		'user' => array(
 			'class' => 'yii\web\User',
 			'identityClass' => 'app\models\User',
@@ -36,9 +31,6 @@ return array(
 					'class' => 'yii\logging\FileTarget',
 					'levels' => array('error', 'warning'),
 				),
-//				array(
-//					'class' => 'yii\logging\DebugTarget',
-//				)
 			),
 		),
 	),

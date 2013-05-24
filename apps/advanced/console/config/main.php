@@ -9,17 +9,14 @@ $params = array_merge(
 );
 
 return array(
-	'id' => 'bootstrap-console',
+	'id' => 'change-me',
 	'basePath' => dirname(__DIR__),
 	'preload' => array('log'),
-	'controllerPath' => dirname(__DIR__) . '/commands',
 	'controllerNamespace' => 'app\controllers',
 	'modules' => array(
 	),
 	'components' => array(
-		'cache' => array(
-			'class' => 'yii\caching\FileCache',
-		),
+		'cache' => $params['components.cache'],
 		'log' => array(
 			'class' => 'yii\logging\Router',
 			'targets' => array(
