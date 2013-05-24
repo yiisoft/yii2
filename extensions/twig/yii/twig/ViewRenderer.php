@@ -11,7 +11,7 @@ namespace yii\renderers;
 
 use Yii;
 use yii\base\View;
-use yii\base\ViewRenderer;
+use yii\base\ViewRenderer as BaseViewRenderer;
 use yii\helpers\Html;
 
 /**
@@ -20,7 +20,7 @@ use yii\helpers\Html;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class TwigViewRenderer extends ViewRenderer
+class ViewRenderer extends BaseViewRenderer
 {
 	/**
 	 * @var string the directory or path alias pointing to where Twig cache will be stored.

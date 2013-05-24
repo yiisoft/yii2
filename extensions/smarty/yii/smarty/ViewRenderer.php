@@ -7,13 +7,13 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\renderers;
+namespace yii\smarty;
 
 use Yii;
 use Smarty;
 use yii\base\View;
-use yii\base\ViewRenderer;
 use yii\helpers\Html;
+use yii\base\ViewRenderer as BaseViewRenderer;
 
 /**
  * SmartyViewRenderer allows you to use Smarty templates in views.
@@ -21,7 +21,7 @@ use yii\helpers\Html;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class SmartyViewRenderer extends ViewRenderer
+class ViewRenderer extends BaseViewRenderer
 {
 	/**
 	 * @var string the directory or path alias pointing to where Smarty cache will be stored.

@@ -20,7 +20,7 @@ return array(
 		'js' => array(
 			'jquery.ui.accordion.js',
 		),
-		'depends' => array('yii/jui/core', 'yii/jui/widget'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/effect/all'),
 	),
 	'yii/jui/autocomplete' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -41,7 +41,7 @@ return array(
 		'js' => array(
 			'jquery.ui.datepicker.js',
 		),
-		'depends' => array('yii/jui/core'),
+		'depends' => array('yii/jui/core', 'yii/jui/effect/all'),
 	),
 	'yii/jui/datepicker/i18n/af' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -559,7 +559,7 @@ return array(
 		'js' => array(
 			'jquery.ui.dialog.js',
 		),
-		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/button', 'yii/jui/draggable', 'yii/jui/mouse', 'yii/jui/position', 'yii/jui/resizeable'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/button', 'yii/jui/draggable', 'yii/jui/mouse', 'yii/jui/position', 'yii/jui/resizable', 'yii/jui/effect/all'),
 	),
 	'yii/jui/draggable' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -581,6 +581,13 @@ return array(
 			'jquery.ui.effect.js',
 		),
 		'depends' => array('yii/jquery'),
+	),
+	'yii/jui/effect/all' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'jquery.ui.effect.js',
+		),
+		'depends' => array('yii/jui/effect/blind', 'yii/jui/effect/bounce', 'yii/jui/effect/clip', 'yii/jui/effect/drop', 'yii/jui/effect/explode', 'yii/jui/effect/fade', 'yii/jui/effect/fold', 'yii/jui/effect/highlight', 'yii/jui/effect/pulsate', 'yii/jui/effect/scale', 'yii/jui/effect/shake', 'yii/jui/effect/slide', 'yii/jui/effect/transfer'),
 	),
 	'yii/jui/effect/blind' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -741,14 +748,14 @@ return array(
 		'js' => array(
 			'jquery.ui.tabs.js',
 		),
-		'depends' => array('yii/jui/core', 'yii/jui/widget'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/effect/all'),
 	),
 	'yii/jui/tooltip' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
 			'jquery.ui.tooltip.js',
 		),
-		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/position'),
+		'depends' => array('yii/jui/core', 'yii/jui/widget', 'yii/jui/position', 'yii/jui/effect/all'),
 	),
 	'yii/jui/theme/base' => array(
 		'sourcePath' => __DIR__ . '/assets',
@@ -796,7 +803,7 @@ return array(
 		'css' => array(
 			'themes/base/jquery.ui.dialog.css',
 		),
-		'depends' => array('yii/jui/theme/base/core', 'yii/jui/theme/base/button', 'yii/jui/theme/base/resizeable'),
+		'depends' => array('yii/jui/theme/base/core', 'yii/jui/theme/base/button', 'yii/jui/theme/base/resizable'),
 	),
 	'yii/jui/theme/base/menu' => array(
 		'sourcePath' => __DIR__ . '/assets',
