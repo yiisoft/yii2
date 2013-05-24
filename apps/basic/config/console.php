@@ -1,5 +1,5 @@
 <?php
-
+$params = require(__DIR__ . '/params.php');
 return array(
 	'id' => 'bootstrap-console',
 	'basePath' => dirname(__DIR__),
@@ -22,5 +22,5 @@ return array(
 			),
 		),
 	),
-	'params' => require(__DIR__ . '/params.php'),
+	'params' => $params,
 );
