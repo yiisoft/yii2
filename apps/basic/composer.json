@@ -1,7 +1,7 @@
 {
-	"name": "yiisoft/yii2-bootstrap",
-	"description": "Yii 2 Bootstrap Application",
-	"keywords": ["yii", "framework", "bootstrap"],
+	"name": "yiisoft/yii2-app-basic",
+	"description": "Yii 2 Basic Application Template",
+	"keywords": ["yii", "framework", "basic", "application template"],
 	"homepage": "http://www.yiiframework.com/",
 	"type": "project",
 	"license": "BSD-3-Clause",

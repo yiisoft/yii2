@@ -16,7 +16,7 @@ DIRECTORY STRUCTURE
 -------------------
 
       apps/                ready-to-use Web apps built on Yii 2
-          bootstrap/       a simple app supporting user login and contact page
+          basic/           a simple app supporting user login and contact page
       build/               internally used build tools
       docs/                documentation
       yii/                 framework source files

@@ -1,5 +1,5 @@
-Yii 2 Bootstrap Application
-===========================
+Yii 2 Basic Application Template
+================================
 
 **NOTE** Yii 2 and the relevant applications and extensions are still under heavy
 development. We may make significant changes without prior notices. Please do not
@@ -7,10 +7,10 @@ use them for production. Please consider using [Yii v1.1](https://github.com/yii
 if you have a project to be deployed for production soon.
 
 
-Thank you for choosing Yii 2 - the new generation of high-performance PHP framework.
+Thank you for using Yii 2 Basic Application Template - an application template
+that works out-of-box and can be easily customized to fit for your needs.
 
-The Yii 2 Bootstrap Application is a Web application template that you can easily customize
-to fit for your needs. It is particularly suitable for small Websites which mainly contain
+Yii 2 Basic Application Template is best suitable for small Websites which mainly contain
 a few informational pages.
 
 
@@ -49,11 +49,11 @@ curl -s http://getcomposer.org/installer | php
 You can then install the Bootstrap Application using the following command:
 
 ~~~
-php composer.phar create-project --stability=dev yiisoft/yii2-bootstrap bootstrap
+php composer.phar create-project --stability=dev yiisoft/yii2-app-basic yii-basic
 ~~~
 
-Now you should be able to access the Bootstrap Application using the URL `http://localhost/bootstrap/www/`,
-assuming `bootstrap` is directly under the document root of your Web server.
+Now you should be able to access the Bootstrap Application using the URL `http://localhost/yii-basic/www/`,
+assuming `yii-basic` is directly under the document root of your Web server.
 
 
 ### Install from an Archive File
