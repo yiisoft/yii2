@@ -16,13 +16,27 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Progressbar::widget(array(
+ * echo ProgressBar::widget(array(
  *     'clientOptions' => array(
  *         'value' => 75,
  *     ),
  * ));
  * ```
  *
+ * The following example will show the content enclosed between the [[begin()]]
+ * and [[end()]] calls within the widget container:
+ *
+ * ~~~php
+ * ProgressBar::widget(array(
+ *     'clientOptions' => array(
+ *         'value' => 75,
+ *     ),
+ * ));
+ *
+ * echo '<div class="progress-label">Loading...</div>';
+ *
+ * ProgressBar::end();
+ * ~~~
  * @see http://api.jqueryui.com/progressbar/
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
@@ -30,11 +44,19 @@ use yii\helpers\Html;
 class ProgressBar extends Widget
 {
 	/**
+	 * Initializes the widget.
+	 */
+	public function init()
+	{
+		parent::init();
+		echo Html::beginTag('div', $this->options) . "\n";
+	}
+
+	/**
 	 * Renders the widget.
 	 */
 	public function run()
 	{
-		echo Html::beginTag('div', $this->options) . "\n";
 		echo Html::endTag('div') . "\n";
 		$this->registerWidget('progressbar');
 	}
