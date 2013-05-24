@@ -70,10 +70,6 @@ class Tabs extends Widget
 	 * ```
 	 */
 	public $items = array();
-	/**
-	 * @var int keeps track of the tabs count so to provide a correct id in case it has not been specified.
-	 */
-	protected $counter = 0;
 
 
 	/**
@@ -91,7 +87,6 @@ class Tabs extends Widget
 	public function run()
 	{
 		echo $this->renderHeaders($this->items, $this->options) . "\n";
-		$this->counter = 0; // reset tab counter
 		echo Html::beginTag('div', array('class' => 'tab-content')) . "\n";
 		echo $this->renderContents($this->items) . "\n";
 		echo Html::endTag('div') . "\n";
@@ -101,20 +96,20 @@ class Tabs extends Widget
 	/**
 	 * @param array $items the items to render in the header.
 	 * @param array $options the HTML attributes of the menu container.
+	 * @param integer $index the starting index of header item. Used to set ids.
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException
 	 */
-	protected function renderHeaders($items, $options = array())
+	protected function renderHeaders($items, $options = array(), $index = 0)
 	{
 		$headers = array();
 
-		for ($i = 0, $count = count($items); $i < $count; $i++) {
-			$item = $items[$i];
+		foreach ($items as $item) {
 			if (!isset($item['header'])) {
 				throw new InvalidConfigException("The 'header' option is required.");
 			}
 			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
-			if ($this->counter === 0) {
+			if ($index === 0) {
 				$this->addCssClass($headerOptions, 'active');
 			}
 			if (isset($item['items'])) {
@@ -126,12 +121,13 @@ class Tabs extends Widget
 						'class' => 'dropdown-toggle',
 						'data-toggle' => 'dropdown'
 					)) .
-					$this->renderHeaders($item['items'], array('class' => 'dropdown-menu')),
+					$this->renderHeaders($item['items'], array('class' => 'dropdown-menu'), $index++),
 					$headerOptions
 				);
 			} else {
+
 				$contentOptions = ArrayHelper::getValue($item, 'options', array());
-				$id = ArrayHelper::getValue($contentOptions, 'id', $this->options['id'] . '-tab' . $this->counter++);
+				$id = ArrayHelper::getValue($contentOptions, 'id', $this->options['id'] . '-tab' . $index++);
 				$headers[] = Html::tag('li', Html::a($item['header'], "#$id", array('data-toggle' => 'tab')), $headerOptions);
 			}
 		}
@@ -142,10 +138,11 @@ class Tabs extends Widget
 	/**
 	 * Renders tabs contents as specified on [[items]].
 	 * @param array $items the items to get the contents from.
+	 * @param integer $index the starting index (for recursion)
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException
 	 */
-	protected function renderContents($items)
+	protected function renderContents($items, $index = 0)
 	{
 		$contents = array();
 		foreach ($items as $item) {
@@ -155,13 +152,13 @@ class Tabs extends Widget
 			$options = ArrayHelper::getValue($item, 'options', array());
 			$this->addCssClass($options, 'tab-pane');
 
-			if ($this->counter === 0) {
-				$this->addCssClass($options, 'active');
-			}
 			if (isset($item['items'])) {
-				$contents[] = $this->renderContents($item['items']);
+				$contents[] = $this->renderContents($item['items'], $index++);
 			} else {
-				$options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $this->counter++);
+				if ($index === 0) {
+					$this->addCssClass($options, 'active');
+				}
+				$options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $index++);
 				$contents[] = Html::tag('div', $item['content'], $options);
 			}
 		}
