@@ -3,8 +3,9 @@ namespace yiiunit\framework\web;
 
 use yii\web\Request;
 use yii\web\UrlManager;
+use yiiunit\TestCase;
 
-class UrlManagerTest extends \yiiunit\TestCase
+class UrlManagerTest extends TestCase
 {
 	public function testCreateUrl()
 	{

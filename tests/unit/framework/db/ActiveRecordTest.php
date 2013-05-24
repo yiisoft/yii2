@@ -1,5 +1,4 @@
 <?php
-
 namespace yiiunit\framework\db;
 
 use yii\db\Query;
@@ -10,7 +9,7 @@ use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
 
-class ActiveRecordTest extends \yiiunit\DatabaseTestCase
+class ActiveRecordTest extends DatabaseTestCase
 {
 	protected function setUp()
 	{

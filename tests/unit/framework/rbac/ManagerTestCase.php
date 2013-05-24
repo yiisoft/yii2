@@ -6,7 +6,7 @@ use yii\rbac\Assignment;
 use yii\rbac\Item;
 use yiiunit\TestCase;
 
-abstract class ManagerTestBase extends TestCase
+abstract class ManagerTestCase extends TestCase
 {
 	/** @var \yii\rbac\PhpManager|\yii\rbac\DbManager */
 	protected $auth;

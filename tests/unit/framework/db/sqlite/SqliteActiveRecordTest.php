@@ -1,8 +1,9 @@
 <?php
-
 namespace yiiunit\framework\db\sqlite;
 
-class SqliteActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
+use yiiunit\framework\db\ActiveRecordTest;
+
+class SqliteActiveRecordTest extends ActiveRecordTest
 {
     protected function setUp()
     {

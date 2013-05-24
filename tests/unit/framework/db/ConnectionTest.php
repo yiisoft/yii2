@@ -4,7 +4,7 @@ namespace yiiunit\framework\db;
 
 use yii\db\Connection;
 
-class ConnectionTest extends \yiiunit\DatabaseTestCase
+class ConnectionTest extends DatabaseTestCase
 {
 	function testConstruct()
 	{

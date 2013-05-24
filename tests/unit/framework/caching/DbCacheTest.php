@@ -3,12 +3,11 @@
 namespace yiiunit\framework\caching;
 
 use yii\caching\DbCache;
-use yiiunit\TestCase;
 
 /**
  * Class for testing file cache backend
  */
-class DbCacheTest extends CacheTest
+class DbCacheTest extends CacheTestCase
 {
 	private $_cacheInstance;
 	private $_connection;

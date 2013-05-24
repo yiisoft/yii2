@@ -7,7 +7,7 @@ namespace yii\caching;
  * @return int
  */
 function time() {
-	return \yiiunit\framework\caching\CacheTest::$time ?: \time();
+	return \yiiunit\framework\caching\CacheTestCase::$time ?: \time();
 }
 
 namespace yiiunit\framework\caching;
@@ -18,7 +18,7 @@ use yii\caching\Cache;
 /**
  * Base class for testing cache backends
  */
-abstract class CacheTest extends TestCase
+abstract class CacheTestCase extends TestCase
 {
 	/**
 	 * @var int virtual time to be returned by mocked time() function.
