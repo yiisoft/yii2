@@ -17,7 +17,7 @@ use yii\helpers\Html;
  *
  * ```php
  * echo DatePicker::widget(array(
- *     'language' => 'yii/jui/datepicker/i18n/ru',
+ *     'language' => 'ru',
  *     'model' => $model,
  *     'attribute' => 'country',
  *     'clientOptions' => array(
@@ -30,7 +30,7 @@ use yii\helpers\Html;
  *
  * ```php
  * echo DatePicker::widget(array(
- *     'language' => 'yii/jui/datepicker/i18n/ru',
+ *     'language' => 'ru',
  *     'name'  => 'country',
  *     'clientOptions' => array(
  *         'dateFormat' => 'yy-mm-dd',
@@ -45,7 +45,8 @@ use yii\helpers\Html;
 class DatePicker extends InputWidget
 {
 	/**
-	 * @var string the jQuery UI datepicker widget language bundle.
+	 * @var string the locale ID (eg 'fr', 'de') for the language to be used by the date picker.
+	 * If this property set to false, I18N will not be involved. That is, the date picker will show in English.
 	 */
 	public $language = false;
 	/**
@@ -62,7 +63,7 @@ class DatePicker extends InputWidget
 		echo $this->renderWidget() . "\n";
 		$this->registerWidget('datepicker');
 		if ($this->language !== false) {
-			$this->getView()->registerAssetBundle($this->language);
+			$this->getView()->registerAssetBundle("yii/jui/datepicker/i18n/$this->language");
 		}
 	}
 
