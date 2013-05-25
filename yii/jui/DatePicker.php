@@ -51,7 +51,7 @@ class DatePicker extends InputWidget
 	/**
 	 * @var boolean If true, shows the widget as an inline calendar and the input as a hidden field.
 	 */
-	public $flat = false;
+	public $inline = false;
 
 
 	/**
@@ -74,7 +74,7 @@ class DatePicker extends InputWidget
 	{
 		$contents = array();
 
-		if ($this->flat === false) {
+		if ($this->inline === false) {
 			if ($this->hasModel()) {
 				$contents[] = Html::activeTextInput($this->model, $this->attribute, $this->options);
 			} else {
