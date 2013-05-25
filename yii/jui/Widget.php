@@ -58,14 +58,14 @@ class Widget extends \yii\base\Widget
 	/**
 	 * Registers a specific jQuery UI widget and the related events
 	 * @param string $name the name of the jQuery UI widget
-	 * @param boolean $enableTheme whether register theme bundle
+	 * @param boolean $registerTheme whether register theme bundle
 	 */
-	protected function registerWidget($name, $enableTheme = true)
+	protected function registerWidget($name, $registerTheme = true)
 	{
 		$id = $this->options['id'];
 		$view = $this->getView();
 		$view->registerAssetBundle("yii/jui/$name");
-		if ($enableTheme) {
+		if ($registerTheme) {
 			$view->registerAssetBundle(static::$theme . "/$name");
 		}
 
