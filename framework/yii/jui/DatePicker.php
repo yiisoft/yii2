@@ -8,8 +8,6 @@
 namespace yii\jui;
 
 use Yii;
-use yii\base\InvalidConfigException;
-use yii\base\Model;
 use yii\helpers\Html;
 
 /**
@@ -44,28 +42,16 @@ use yii\helpers\Html;
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
-class DatePicker extends Widget
+class DatePicker extends InputWidget
 {
 	/**
 	 * @var string the jQuery UI datepicker widget language bundle.
 	 */
 	public $language = false;
 	/**
-	 * @var \yii\base\Model the data model that this widget is associated with.
+	 * @var boolean If true, shows the widget as an inline calendar and the input as a hidden field.
 	 */
-	public $model;
-	/**
-	 * @var string the model attribute that this widget is associated with.
-	 */
-	public $attribute;
-	/**
-	 * @var string the input name. This must be set if [[model]] and [[attribute]] are not set.
-	 */
-	public $name;
-	/**
-	 * @var string the input value.
-	 */
-	public $value;
+	public $flat = false;
 
 
 	/**
@@ -73,7 +59,7 @@ class DatePicker extends Widget
 	 */
 	public function run()
 	{
-		echo $this->renderField();
+		echo $this->renderWidget() . "\n";
 		$this->registerWidget('datepicker');
 		if ($this->language !== false) {
 			$this->getView()->registerAssetBundle($this->language);
@@ -81,21 +67,32 @@ class DatePicker extends Widget
 	}
 
 	/**
-	 * Renders the DatePicker field. If [[model]] has been specified then it will render an active field.
-	 * If [[model]] is null or not from an [[Model]] instance, then the field will be rendered according to
-	 * the [[name]] attribute.
+	 * Renders the DatePicker widget.
 	 * @return string the rendering result.
-	 * @throws InvalidConfigException when none of the required attributes are set to render the textInput.
-	 * That is, if [[model]] and [[attribute]] are not set, then [[name]] is required.
 	 */
-	public function renderField()
+	protected function renderWidget()
 	{
-		if ($this->model instanceof Model && $this->attribute !== null) {
-			return Html::activeTextInput($this->model, $this->attribute, $this->options);
-		} elseif ($this->name !== null) {
-			return Html::textInput($this->name, $this->value, $this->options);
+		$contents = array();
+
+		if ($this->flat === false) {
+			if ($this->hasModel()) {
+				$contents[] = Html::activeTextInput($this->model, $this->attribute, $this->options);
+			} else {
+				$contents[] = Html::textInput($this->name, $this->value, $this->options);
+			}
 		} else {
-			throw new InvalidConfigException("Either 'name' or 'model' and 'attribute' properties must be specified.");
+			if ($this->hasModel()) {
+				$contents[] = Html::activeHiddenInput($this->model, $this->attribute, $this->options);
+				$this->clientOptions['defaultDate'] = $this->model->{$this->attribute};
+			} else {
+				$contents[] = Html::hiddenInput($this->name, $this->value, $this->options);
+				$this->clientOptions['defaultDate'] = $this->value;
+			}
+			$this->clientOptions['altField'] = '#' . $this->options['id'];
+			$this->options['id'] .= '-container';
+			$contents[] = Html::tag('div', null, $this->options);
 		}
+
+		return implode("\n", $contents);
 	}
 }
