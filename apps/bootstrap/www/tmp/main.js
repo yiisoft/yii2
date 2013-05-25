@@ -8,7 +8,7 @@ window.onload = function() {
 		hljs.highlightBlock(codeBlocks[i], '    ');
 	}
 
-	//
+	// code block hover line
 	document.onmousemove = function(e) {
 		var lines, i, imax, j, jmax, k, kmax,
 			event = e || window.event,
@@ -31,7 +31,10 @@ window.onload = function() {
 			hoverLines[k].className = 'hover-line';
 		}
 		if (lineFound) {
-			Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')')[0].className = 'hover-line hover';
+			var line = Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')');
+			if (line[0]) {
+				line[0].className = 'hover-line hover';
+			}
 		}
 	}
 

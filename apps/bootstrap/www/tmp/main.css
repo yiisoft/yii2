@@ -50,6 +50,9 @@ h1,h2,p,img,ul li{
 	font-family: Arial,sans-serif;
 	color: #505050;
 }
+html,body{
+	overflow-x: hidden;
+}
 
 /* header */
 .header{
@@ -193,8 +196,18 @@ h1,h2,p,img,ul li{
 	margin-top: 40px;
 	margin-bottom: 1px;
 }
-.request pre{
+.request .code{
+	min-width: 860px; /* 960px - 50px * 2 */
+	max-width: 1100px; /* 1200px - 50px * 2 */
+	margin: 0 auto;
+	padding: 15px 50px;
+}
+.request .code pre{
+	line-height: 18px;
+	font-size: 14px;
 	font-family: Consolas, Courier New, monospace;
+	display: inline;
+	word-wrap: break-word;
 }
 
 /* footer */

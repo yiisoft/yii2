@@ -2,6 +2,8 @@
 /**
  * @var \yii\base\View $this
  * @var \Exception $e
+ * @var string $request
+ * @var integer $requestLinesCount
  * @var \yii\base\ErrorHandler $c
  */
 $c = $this->context;
@@ -27,14 +29,23 @@ $c = $this->context;
 
 <body>
 	<div class="header">
-		<img src="/tmp/attention.png" alt="Attention"/>
-		<h1>
-			<span>Exception</span> &ndash; <?php echo $c->addTypeLinks(get_class($e)); ?>
-			<?php if ($e instanceof \yii\base\HttpException): ?>
-				&ndash; <?php echo $c->createHttpStatusLink($e->statusCode); ?>
-			<?php endif; ?>
-		</h1>
-		<h2><?php echo $c->htmlEncode($e->getName()); ?></h2>
+		<?php if ($e instanceof \yii\base\ErrorException): ?>
+			<img src="/tmp/gears.png" alt="Gears"/>
+			<h1>
+				<span><?php echo $c->htmlEncode($e->getName()); ?></span>
+				&ndash; <?php echo $c->addTypeLinks(get_class($e)); ?>
+			</h1>
+			<h2><?php echo $c->htmlEncode($e->getMessage()); ?></h2>
+		<?php else: ?>
+			<img src="/tmp/attention.png" alt="Attention"/>
+			<h1>
+				<span>Exception</span> &ndash; <?php echo $c->addTypeLinks(get_class($e)); ?>
+				<?php if ($e instanceof \yii\base\HttpException): ?>
+					&ndash; <?php echo $c->createHttpStatusLink($e->statusCode); ?>
+				<?php endif; ?>
+			</h1>
+			<h2><?php echo $c->htmlEncode($e->getName()); ?></h2>
+		<?php endif; ?>
 	</div>
 
 	<div class="call-stack">
@@ -46,49 +57,11 @@ $c = $this->context;
 		</ul>
 	</div>
 
-	<?php /*
 	<div class="request">
-		<div id="code-wrap"></div>
-			<div id="code-highlighter"></div>
-			<div id="code-inner-wrap">
-			<pre id="code">$_GET = [
-	'show-post' => 100,
-	'refresh-page' => 'yes',
-	'ascending-sort' => 1,
-];
-
-$_POST = [
-	'blog-post-form' => [
-		'title' => 'hello',
-		'author_id' => '12',
-	],
-];
-
-$_SERVER = [
-	'DOCUMENT_ROOT' => '/home/resurtm/work/data',
-	'REMOTE_ADDR' => '::1',
-	'REMOTE_PORT' => '52694',
-	'SERVER_SOFTWARE' => 'PHP 5.4.3 Development Server',
-	'SERVER_PROTOCOL' => 'HTTP/1.1',
-	'SERVER_NAME' => 'localhost',
-	'SERVER_PORT' => '8000',
-	'REQUEST_URI' => '/index.php?post-form[title]=hello&post-form[author_id]=12',
-	'REQUEST_METHOD' => 'GET',
-	'SCRIPT_NAME' => '/index.php',
-	'SCRIPT_FILENAME' => '/home/resurtm/work/data/index.php',
-	'PHP_SELF' => '/index.php',
-	'QUERY_STRING' => 'post-form[title]=hello&post-form[author_id]=12',
-	'HTTP_HOST' => 'localhost:8000',
-	'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0',
-	'HTTP_ACCEPT_LANGUAGE' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-	'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
-	'HTTP_CONNECTION' => 'keep-alive',
-	'REQUEST_TIME_FLOAT' => 1369146454.0856,
-	'REQUEST_TIME' => 1369146454,
-];</pre>
+		<div class="code">
+			<pre><?php echo $c->htmlEncode($request); ?></pre>
 		</div>
-		</div>
-	</div>*/ ?>
+	</div>
 
 	<div class="footer">
 		<img src="/tmp/logo.png" alt="Yii Framework"/>
