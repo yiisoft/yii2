@@ -7,16 +7,16 @@
  * @var string[] $lines
  * @var integer $begin
  * @var integer $end
- * @var \yii\base\ErrorHandler $c
+ * @var \yii\base\ErrorHandler $context
  */
-$c = $this->context;
+$context = $this->context;
 ?>
 
-<li class="<?php if (!$c->isCoreFile($file)) echo 'application'; ?> call-stack-item">
+<li class="<?php if (!$context->isCoreFile($file)) echo 'application'; ?> call-stack-item">
 	<div class="element-wrap">
 		<div class="element">
 			<span class="number"><?php echo (int)$index; ?>.</span>
-			<span class="text">in <?php echo $c->htmlEncode($file); ?></span>
+			<span class="text">in <?php echo $context->htmlEncode($file); ?></span>
 			<span class="at">at line</span>
 			<span class="line"><?php echo (int)$line; ?></span>
 		</div>
@@ -28,7 +28,7 @@ $c = $this->context;
 		<?php endfor; ?>
 		<div class="code">
 			<span class="lines"><?php for ($i = $begin; $i <= $end; ++$i) echo (int)$i . '<br/>'; ?></span>
-			<pre><?php for ($i = $begin; $i <= $end; ++$i) echo $c->htmlEncode($lines[$i]); ?></pre>
+			<pre><?php for ($i = $begin; $i <= $end; ++$i) echo $context->htmlEncode($lines[$i]); ?></pre>
 		</div>
 	</div>
 </li>
