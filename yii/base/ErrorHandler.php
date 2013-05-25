@@ -16,6 +16,7 @@ use Yii;
  * nature of the errors and the mode the application runs at.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
  */
 class ErrorHandler extends Component
@@ -42,7 +43,11 @@ class ErrorHandler extends Component
 	/**
 	 * @var string the path of the view file for rendering exceptions and errors.
 	 */
-	public $view = '@yii/views/errorHandler.php';
+	public $mainView = '@yii/views/errorHandler/main.php';
+	/**
+	 * @var string the path of the view file for rendering exceptions and errors call stack element.
+	 */
+	public $callStackItemView = '@yii/views/errorHandler/callStackItem.php';
 	/**
 	 * @var \Exception the exception that is being handled currently.
 	 */
@@ -56,11 +61,9 @@ class ErrorHandler extends Component
 	public function handle($exception)
 	{
 		$this->exception = $exception;
-
 		if ($this->discardExistingOutput) {
 			$this->clearOutput();
 		}
-
 		$this->renderException($exception);
 	}
 
@@ -90,9 +93,8 @@ class ErrorHandler extends Component
 				if (YII_DEBUG) {
 					ini_set('display_errors', 1);
 				}
-
 				$view = new View();
-				echo $view->renderFile($this->view, array('e' => $exception), $this);
+				echo $view->renderFile($this->mainView, array('e' => $exception), $this);
 			}
 		}
 	}
@@ -100,7 +102,7 @@ class ErrorHandler extends Component
 	/**
 	 * Converts special characters to HTML entities.
 	 * @param string $text to encode.
-	 * @return string encoded text.
+	 * @return string encoded original text.
 	 */
 	public function htmlEncode($text)
 	{
@@ -116,5 +118,110 @@ class ErrorHandler extends Component
 		for ($level = ob_get_level(); $level > 0; --$level) {
 			@ob_end_clean();
 		}
+	}
+
+	/**
+	 * Adds informational links to the given PHP type/class.
+	 * @param string $code type/class name to be linkified.
+	 * @return string linkified with HTML type/class name.
+	 */
+	public function addTypeLinks($code)
+	{
+		$html = '';
+		if (strpos($code, '\\') !== false) {
+			// namespaced class
+			foreach (explode('\\', $code) as $part) {
+				$html .= '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($part) . '" target="_blank">' . $this->htmlEncode($part) . '</a>\\';
+			}
+			$html = rtrim($html, '\\');
+		}
+		return $html;
+	}
+
+	/**
+	 * Creates HTML containing link to the page with the information on given HTTP status code.
+	 * @param integer $statusCode to be used to generate information link.
+	 * @return string generated HTML with HTTP status code information.
+	 */
+	public function createHttpStatusLink($statusCode)
+	{
+		return '<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int)$statusCode .'" target="_blank">' . (int)$statusCode . '</a>';
+	}
+
+	/**
+	 * Renders a single call stack element.
+	 * @param string $file name where call has happened.
+	 * @param integer $line number on which call has happened.
+	 * @param integer $index number of the call stack element.
+	 * @return string HTML content of the rendered call stack element.
+	 */
+	public function renderCallStackItem($file, $line, $index)
+	{
+		$line--; // adjust line number from one-based to zero-based
+		$lines = @file($file);
+		if ($line < 0 || $lines === false || ($lineCount = count($lines)) < $line + 1) {
+			return '';
+		}
+
+		$half = (int)(($index == 0 ? $this->maxSourceLines : $this->maxTraceSourceLines) / 2);
+		$begin = $line - $half > 0 ? $line - $half : 0;
+		$end = $line + $half < $lineCount ? $line + $half : $lineCount - 1;
+
+		$view = new View();
+		return $view->renderFile($this->callStackItemView, array(
+			'file' => $file,
+			'line' => $line,
+			'index' => $index,
+			'lines' => $lines,
+			'begin' => $begin,
+			'end' => $end,
+		), $this);
+	}
+
+	/**
+	 * Determines whether given name of the file belongs to the framework.
+	 * @param string $file name to be checked.
+	 * @return boolean whether given name of the file belongs to the framework.
+	 */
+	public function isCoreFile($file)
+	{
+		return $file === 'unknown' || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
+	}
+
+	/**
+	 * Creates string containing HTML link which refers to the home page of determined web-server software
+	 * and its full name.
+	 * @return string server software information hyperlink.
+	 */
+	public function createServerInformationLink()
+	{
+		static $serverUrls = array(
+			'http://httpd.apache.org/' => array('apache'),
+			'http://nginx.org/' => array('nginx'),
+			'http://lighttpd.net/' => array('lighttpd'),
+			'http://gwan.com/' => array('g-wan', 'gwan'),
+			'http://iis.net/' => array('iis', 'services'),
+			'http://php.net/manual/en/features.commandline.webserver.php' => array('development'),
+		);
+		if (isset($_SERVER['SERVER_SOFTWARE'])) {
+			foreach ($serverUrls as $url => $keywords) {
+				foreach ($keywords as $keyword) {
+					if (stripos($_SERVER['SERVER_SOFTWARE'], $keyword) !== false ) {
+						return '<a href="' . $url . '" target="_blank">' . $this->htmlEncode($_SERVER['SERVER_SOFTWARE']) . '</a>';
+					}
+				}
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Creates string containing HTML link which refers to the page with the current version
+	 * of the framework and version number text.
+	 * @return string framework version information hyperlink.
+	 */
+	public function createFrameworkVersionLink()
+	{
+		return '<a href="http://github.com/yiisoft/yii2/" target="_blank">' . $this->htmlEncode(Yii::getVersion()) . '</a>';
 	}
 }
