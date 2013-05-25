@@ -115,6 +115,13 @@ class MessageController extends Controller
 		}
 	}
 
+	/**
+	 * Extracts messages from a file
+	 *
+	 * @param string $fileName name of the file to extract messages from
+	 * @param string $translator name of the function used to translate messages
+	 * @return array
+	 */
 	protected function extractMessages($fileName, $translator)
 	{
 		echo "Extracting messages from $fileName...\n";
@@ -135,6 +142,15 @@ class MessageController extends Controller
 		return $messages;
 	}
 
+	/**
+	 * Writes messages into file
+	 *
+	 * @param array $messages
+	 * @param string $fileName name of the file to write to
+	 * @param boolean $overwrite if existing file should be overwritten without backup
+	 * @param boolean $removeOld if obsolete translations should be removed
+	 * @param boolean $sort if translations should be sorted
+	 */
 	protected function generateMessageFile($messages, $fileName, $overwrite, $removeOld, $sort)
 	{
 		echo "Saving messages to $fileName...";
