@@ -27,6 +27,12 @@ class UrlManager extends Component
 	 */
 	public $enablePrettyUrl = false;
 	/**
+	 * @var boolean whether to enable strict parsing. If strict parsing is enabled, the incoming
+	 * requested URL must match at least one of the [[rules]] in order to be treated as a valid request.
+	 * This property is used only when [[enablePrettyUrl]] is true.
+	 */
+	public $enableStrictParsing = false;
+	/**
 	 * @var array the rules for creating and parsing URLs when [[enablePrettyUrl]] is true.
 	 * This property is used only if [[enablePrettyUrl]] is true. Each element in the array
 	 * is the configuration array for creating a single URL rule. The configuration will
@@ -137,6 +143,10 @@ class UrlManager extends Component
 				if (($result = $rule->parseRequest($this, $request)) !== false) {
 					return $result;
 				}
+			}
+
+			if ($this->enableStrictParsing) {
+				return false;
 			}
 
 			$suffix = (string)$this->suffix;

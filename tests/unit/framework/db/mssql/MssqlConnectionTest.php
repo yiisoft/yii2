@@ -2,7 +2,9 @@
 
 namespace yiiunit\framework\db\mssql;
 
-class MssqlConnectionTest extends \yiiunit\framework\db\ConnectionTest
+use yiiunit\framework\db\ConnectionTest;
+
+class MssqlConnectionTest extends ConnectionTest
 {
     public function setUp()
     {

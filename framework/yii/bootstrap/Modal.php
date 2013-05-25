@@ -14,18 +14,6 @@ use yii\helpers\Html;
 /**
  * Modal renders a modal window that can be toggled by clicking on a button.
  *
- * For example,
- *
- * ~~~php
- * echo Modal::widget(array(
- *     'header' => '<h2>Hello world</h2>',
- *     'body' => 'Say hello...',
- *     'toggleButton' => array(
- *         'label' => 'click me',
- *     ),
- * ));
- * ~~~
- *
  * The following example will show the content enclosed between the [[begin()]]
  * and [[end()]] calls within the modal window:
  *
@@ -53,12 +41,6 @@ class Modal extends Widget
 	 * @var string the header content in the modal window.
 	 */
 	public $header;
-	/**
-	 * @var string the body content in the modal window. Note that anything between
-	 * the [[begin()]] and [[end()]] calls of the Modal widget will also be treated
-	 * as the body content, and will be rendered before this.
-	 */
-	public $body;
 	/**
 	 * @var string the footer content in the modal window.
 	 */
@@ -154,7 +136,7 @@ class Modal extends Widget
 	 */
 	protected function renderBodyEnd()
 	{
-		return $this->body . "\n" . Html::endTag('div');
+		return Html::endTag('div');
 	}
 
 	/**
@@ -217,9 +199,9 @@ class Modal extends Widget
 		), $this->options);
 		$this->addCssClass($this->options, 'modal');
 
-		$this->pluginOptions = array_merge(array(
+		$this->clientOptions = array_merge(array(
 			'show' => false,
-		), $this->pluginOptions);
+		), $this->clientOptions);
 
 		if ($this->closeButton !== null) {
 			$this->closeButton = array_merge(array(

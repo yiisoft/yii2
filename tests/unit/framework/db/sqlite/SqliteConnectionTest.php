@@ -1,8 +1,9 @@
 <?php
-
 namespace yiiunit\framework\db\sqlite;
 
-class SqliteConnectionTest extends \yiiunit\framework\db\ConnectionTest
+use yiiunit\framework\db\ConnectionTest;
+
+class SqliteConnectionTest extends ConnectionTest
 {
     protected function setUp()
     {

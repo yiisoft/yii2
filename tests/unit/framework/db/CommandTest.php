@@ -7,7 +7,7 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
-class CommandTest extends \yiiunit\DatabaseTestCase
+class CommandTest extends DatabaseTestCase
 {
 	function testConstruct()
 	{

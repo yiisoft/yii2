@@ -13,7 +13,8 @@ use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\Request;
-use yii\helpers\StringHelper;
+use yii\helpers\Console;
+use yii\helpers\Inflector;
 
 /**
  * This command provides help information about console commands.
@@ -56,7 +57,7 @@ class HelpController extends Controller
 			$result = Yii::$app->createController($command);
 			if ($result === false) {
 				throw new Exception(Yii::t('yii', 'No help for unknown command "{command}".', array(
-					'{command}' => $command,
+					'{command}' => $this->ansiFormat($command, Console::FG_YELLOW),
 				)));
 			}
 
@@ -96,7 +97,7 @@ class HelpController extends Controller
 		foreach ($class->getMethods() as $method) {
 			$name = $method->getName();
 			if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
-				$actions[] = StringHelper::camel2id(substr($name, 6));
+				$actions[] = Inflector::camel2id(substr($name, 6));
 			}
 		}
 		sort($actions);
@@ -143,14 +144,15 @@ class HelpController extends Controller
 	{
 		$commands = $this->getCommands();
 		if (!empty($commands)) {
-			echo "The following commands are available:\n\n";
+			$this->stdout("\nThe following commands are available:\n\n", Console::BOLD);
 			foreach ($commands as $command) {
-				echo "* $command\n";
+				echo "- " . $this->ansiFormat($command, Console::FG_YELLOW) . "\n";
 			}
-			echo "\nTo see the help of each command, enter:\n";
-			echo "\n  yii help <command-name>\n\n";
+			$this->stdout("\nTo see the help of each command, enter:\n", Console::BOLD);
+			echo "\n  yii " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
+							. $this->ansiFormat('<command-name>', Console::FG_CYAN) . "\n\n";
 		} else {
-			echo "\nNo commands are found.\n";
+			$this->stdout("\nNo commands are found.\n\n", Console::BOLD);
 		}
 	}
 
@@ -167,19 +169,18 @@ class HelpController extends Controller
 		}
 
 		if ($comment !== '') {
-			echo "\nDESCRIPTION\n";
-			echo "\n" . $comment . "\n\n";
+			$this->stdout("\nDESCRIPTION\n", Console::BOLD);
+			echo "\n" . Console::renderColoredString($comment) . "\n\n";
 		}
 
 		$actions = $this->getActions($controller);
 		if (!empty($actions)) {
-			echo "\nSUB-COMMANDS\n\n";
+			$this->stdout("\nSUB-COMMANDS\n\n", Console::BOLD);
 			$prefix = $controller->getUniqueId();
 			foreach ($actions as $action) {
+				echo '- ' . $this->ansiFormat($prefix.'/'.$action, Console::FG_YELLOW);
 				if ($action === $controller->defaultAction) {
-					echo "* $prefix/$action (default)";
-				} else {
-					echo "* $prefix/$action";
+					$this->stdout(' (default)', Console::FG_GREEN);
 				}
 				$summary = $this->getActionSummary($controller, $action);
 				if ($summary !== '') {
@@ -187,8 +188,9 @@ class HelpController extends Controller
 				}
 				echo "\n";
 			}
-			echo "\n\nTo see the detailed information about individual sub-commands, enter:\n";
-			echo "\n  yii help <sub-command>\n\n";
+			echo "\nTo see the detailed information about individual sub-commands, enter:\n";
+			echo "\n  yii " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
+							. $this->ansiFormat('<sub-command>', Console::FG_CYAN) . "\n\n";
 		}
 	}
 
@@ -253,25 +255,25 @@ class HelpController extends Controller
 		$options = $this->getOptionHelps($controller);
 
 		if ($tags['description'] !== '') {
-			echo "\nDESCRIPTION";
-			echo "\n\n" . $tags['description'] . "\n\n";
+			$this->stdout("\nDESCRIPTION\n", Console::BOLD);
+			echo "\n" . Console::renderColoredString($tags['description']) . "\n\n";
 		}
 
-		echo "\nUSAGE\n\n";
+		$this->stdout("\nUSAGE\n\n", Console::BOLD);
 		if ($action->id === $controller->defaultAction) {
-			echo 'yii ' . $controller->getUniqueId();
+			echo 'yii ' . $this->ansiFormat($controller->getUniqueId(), Console::FG_YELLOW);
 		} else {
-			echo "yii " . $action->getUniqueId();
+			echo 'yii ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW);
 		}
 		list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : array());
-		if (!empty($required)) {
-			echo ' <' . implode('> <', array_keys($required)) . '>';
+		foreach ($required as $arg => $description) {
+			$this->stdout(' <' . $arg . '>', Console::FG_CYAN);
 		}
-		if (!empty($optional)) {
-			echo ' [' . implode('] [', array_keys($optional)) . ']';
+		foreach ($optional as $arg => $description) {
+			$this->stdout(' [' . $arg . ']', Console::FG_CYAN);
 		}
 		if (!empty($options)) {
-			echo ' [...options...]';
+			$this->stdout(' [...options...]', Console::FG_RED);
 		}
 		echo "\n\n";
 
@@ -281,7 +283,7 @@ class HelpController extends Controller
 
 		$options = $this->getOptionHelps($controller);
 		if (!empty($options)) {
-			echo "\nOPTIONS\n\n";
+			$this->stdout("\nOPTIONS\n\n", Console::BOLD);
 			echo implode("\n\n", $options) . "\n\n";
 		}
 	}
@@ -310,9 +312,9 @@ class HelpController extends Controller
 				$comment = $tag;
 			}
 			if ($param->isDefaultValueAvailable()) {
-				$optional[$name] = $this->formatOptionHelp('* ' . $name, false, $type, $param->getDefaultValue(), $comment);
+				$optional[$name] = $this->formatOptionHelp('- ' . $this->ansiFormat($name, Console::FG_CYAN), false, $type, $param->getDefaultValue(), $comment);
 			} else {
-				$required[$name] = $this->formatOptionHelp('* ' . $name, true, $type, null, $comment);
+				$required[$name] = $this->formatOptionHelp('- ' . $this->ansiFormat($name, Console::FG_CYAN), true, $type, null, $comment);
 			}
 		}
 
@@ -352,9 +354,9 @@ class HelpController extends Controller
 					$type = null;
 					$comment = $doc;
 				}
-				$options[$name] = $this->formatOptionHelp('--' . $name, false, $type, $defaultValue, $comment);
+				$options[$name] = $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, $type, $defaultValue, $comment);
 			} else {
-				$options[$name] = $this->formatOptionHelp('--' . $name, false, null, $defaultValue, '');
+				$options[$name] = $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, null, $defaultValue, '');
 			}
 		}
 		ksort($options);

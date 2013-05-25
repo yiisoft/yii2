@@ -3,8 +3,9 @@ namespace yiiunit\framework\web;
 
 use yii\web\Request;
 use yii\web\UrlManager;
+use yiiunit\TestCase;
 
-class UrlManagerTest extends \yiiunit\TestCase
+class UrlManagerTest extends TestCase
 {
 	public function testCreateUrl()
 	{
@@ -222,6 +223,28 @@ class UrlManagerTest extends \yiiunit\TestCase
 		$this->assertEquals(array('site/index', array()), $result);
 		// pathinfo without suffix
 		$request->pathInfo = 'site/index';
+		$result = $manager->parseRequest($request);
+		$this->assertFalse($result);
+
+		// strict parsing
+		$manager = new UrlManager(array(
+			'enablePrettyUrl' => true,
+			'enableStrictParsing' => true,
+			'suffix' => '.html',
+			'cache' => null,
+			'rules' => array(
+				array(
+					'pattern' => 'post/<id>/<title>',
+					'route' => 'post/view',
+				),
+			),
+		));
+		// matching pathinfo
+		$request->pathInfo = 'post/123/this+is+sample.html';
+		$result = $manager->parseRequest($request);
+		$this->assertEquals(array('post/view', array('id' => '123', 'title' => 'this+is+sample')), $result);
+		// unmatching pathinfo
+		$request->pathInfo = 'site/index.html';
 		$result = $manager->parseRequest($request);
 		$this->assertFalse($result);
 	}

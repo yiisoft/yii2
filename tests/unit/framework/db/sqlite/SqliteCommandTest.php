@@ -1,8 +1,9 @@
 <?php
-
 namespace yiiunit\framework\db\sqlite;
 
-class SqliteCommandTest extends \yiiunit\framework\db\CommandTest
+use yiiunit\framework\db\CommandTest;
+
+class SqliteCommandTest extends CommandTest
 {
     protected function setUp()
     {

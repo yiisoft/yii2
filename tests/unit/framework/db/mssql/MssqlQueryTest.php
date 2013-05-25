@@ -2,7 +2,9 @@
 
 namespace yiiunit\framework\db\mssql;
 
-class MssqlQueryTest extends \yiiunit\framework\db\QueryTest
+use yiiunit\framework\db\QueryTest;
+
+class MssqlQueryTest extends QueryTest
 {
     public function setUp()
     {

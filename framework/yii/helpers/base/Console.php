@@ -45,6 +45,7 @@ class Console
 	const BG_CYAN   = 46;
 	const BG_GREY   = 47;
 
+	const RESET       = 0;
 	const NORMAL      = 0;
 	const BOLD        = 1;
 	const ITALIC      = 3;
@@ -240,30 +241,11 @@ class Console
 	}
 
 	/**
-	 * Sets the ANSI format for any text that is printed afterwards.
-	 *
-	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xterm256ColorFg]] and [[xterm256ColorBg]].
-	 * TODO: documentation
-	 */
-	public static function ansiFormatBegin()
-	{
-		echo "\033[" . implode(';', func_get_args()) . 'm';
-	}
-
-	/**
-	 * Resets any ANSI format set by previous method [[ansiFormatBegin()]]
-	 * Any output after this is will have default text style.
-	 */
-	public static function ansiFormatReset()
-	{
-		echo "\033[0m";
-	}
-
-	/**
 	 * Returns the ANSI format code.
 	 *
-	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xterm256ColorFg]] and [[xterm256ColorBg]].
+	 * @param array $format You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xtermFgColor]] and [[xtermBgColor]].
 	 * TODO: documentation
+	 * @return string
 	 */
 	public static function ansiFormatCode($format)
 	{
@@ -271,11 +253,37 @@ class Console
 	}
 
 	/**
+	 * Sets the ANSI format for any text that is printed afterwards.
+	 *
+	 * @param array $format You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xtermFgColor]] and [[xtermBgColor]].
+	 * TODO: documentation
+	 * @see ansiFormatEnd()
+	 */
+	public static function beginAnsiFormat($format)
+	{
+		echo "\033[" . implode(';', $format) . 'm';
+	}
+
+	/**
+	 * Resets any ANSI format set by previous method [[ansiFormatBegin()]]
+	 * Any output after this is will have default text style.
+	 * This is equal to
+	 *
+	 * ```php
+	 * echo Console::ansiFormatCode(array(Console::RESET))
+	 * ```
+	 */
+	public static function endAnsiFormat()
+	{
+		echo "\033[0m";
+	}
+
+	/**
 	 * Will return a string formatted with the given ANSI style
 	 *
 	 * @param string $string the string to be formatted
 	 * @param array $format array containing formatting values.
-	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xterm256ColorFg]] and [[xterm256ColorBg]].
+	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xtermFgColor]] and [[xtermBgColor]].
 	 * @return string
 	 */
 	public static function ansiFormat($string, $format=array())
@@ -284,15 +292,32 @@ class Console
 		return "\033[0m" . ($code !== '' ? "\033[" . $code . "m" : '') . $string . "\033[0m";
 	}
 
-	//const COLOR_XTERM256 = 38;// http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
-	public static function xterm256ColorFg($i) // TODO naming!
+	/**
+	 * Returns the ansi format code for xterm foreground color.
+	 * You can pass the returnvalue of this to one of the formatting methods:
+	 * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
+	 *
+	 * @param integer $colorCode xterm color code
+	 * @return string
+	 * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
+	 */
+	public static function xtermFgColor($colorCode)
 	{
-		return '38;5;' . $i;
+		return '38;5;' . $colorCode;
 	}
 
-	public static function xterm256ColorBg($i) // TODO naming!
+	/**
+	 * Returns the ansi format code for xterm foreground color.
+	 * You can pass the returnvalue of this to one of the formatting methods:
+	 * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
+	 *
+	 * @param integer $colorCode xterm color code
+	 * @return string
+	 * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
+	 */
+	public static function xtermBgColor($colorCode)
 	{
-		return '48;5;' . $i;
+		return '48;5;' . $colorCode;
 	}
 
 	/**
@@ -303,7 +328,7 @@ class Console
 	 */
 	public static function stripAnsiFormat($string)
 	{
-		return preg_replace('/\033\[[\d;]+m/', '', $string); // TODO currently only strips color
+		return preg_replace('/\033\[[\d;?]*\w/', '', $string);
 	}
 
 	// TODO refactor and review
@@ -418,10 +443,11 @@ class Console
 	}
 
 	/**
-	 * TODO syntax copied from https://github.com/pear/Console_Color2/blob/master/Console/Color2.php
+	 * Converts a string to ansi formatted by replacing patterns like %y (for yellow) with ansi control codes
 	 *
-	 * Converts colorcodes in the format %y (for yellow) into ansi-control
-	 * codes. The conversion table is: ('bold' meaning 'light' on some
+	 * // TODO documentation
+	 * Uses almost the same syntax as https://github.com/pear/Console_Color2/blob/master/Console/Color2.php
+	 * The conversion table is: ('bold' meaning 'light' on some
 	 * terminals). It's almost the same conversion table irssi uses.
 	 * <pre>
 	 *                  text      text            background
@@ -450,7 +476,6 @@ class Console
 	 *
 	 * @param string $string  String to convert
 	 * @param bool   $colored Should the string be colored?
-	 *
 	 * @return string
 	 */
 	public static function renderColoredString($string, $colored = true)
@@ -508,22 +533,23 @@ class Console
 	}
 
 	/**
-	* Escapes % so they don't get interpreted as color codes
-	*
-	* @param string $string String to escape
-	*
-	* @access public
-	* @return string
-	*/
+	 * Escapes % so they don't get interpreted as color codes when
+	 * the string is parsed by [[renderColoredString]]
+	 *
+	 * @param string $string String to escape
+	 *
+	 * @access public
+	 * @return string
+	 */
 	public static function escape($string)
 	{
 		return str_replace('%', '%%', $string);
 	}
 
 	/**
-	 * Returns true if the stream supports colorization. ANSI colors is disabled if not supported by the stream.
+	 * Returns true if the stream supports colorization. ANSI colors are disabled if not supported by the stream.
 	 *
-	 * - windows without asicon
+	 * - windows without ansicon
 	 * - not tty consoles
 	 *
 	 * @param mixed $stream
@@ -532,7 +558,7 @@ class Console
 	public static function streamSupportsAnsiColors($stream)
 	{
 		return DIRECTORY_SEPARATOR == '\\'
-			? null !== getenv('ANSICON')
+			? getenv('ANSICON') !== false || getenv('ConEmuANSI') === 'ON'
 			: function_exists('posix_isatty') && @posix_isatty($stream);
 	}
 
@@ -542,18 +568,47 @@ class Console
 	 */
 	public static function isRunningOnWindows()
 	{
-		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+		return DIRECTORY_SEPARATOR == '\\';
 	}
 
 	/**
 	 * Usage: list($w, $h) = ConsoleHelper::getScreenSize();
 	 *
-	 * @return array
+	 * @return array|boolean An array of ($width, $height) or false when it was not able to determine size.
 	 */
-	public static function getScreenSize()
+	public static function getScreenSize($refresh = false)
 	{
-		// TODO implement
-		return array(150, 50);
+		static $size;
+		if ($size !== null && !$refresh) {
+			return $size;
+		}
+
+		if (static::isRunningOnWindows()) {
+			$output = array();
+			exec('mode con', $output);
+			if(isset($output) && strpos($output[1], 'CON')!==false) {
+				return $size = array((int)preg_replace('~[^0-9]~', '', $output[3]), (int)preg_replace('~[^0-9]~', '', $output[4]));
+			}
+		} else {
+
+			// try stty if available
+			$stty = array();
+			if (exec('stty -a 2>&1', $stty) && preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', implode(' ', $stty), $matches)) {
+				return $size = array($matches[2], $matches[1]);
+			}
+
+			// fallback to tput, which may not be updated on terminal resize
+			if (($width = (int) exec('tput cols 2>&1')) > 0 && ($height = (int) exec('tput lines 2>&1')) > 0) {
+				return $size = array($width, $height);
+			}
+
+			// fallback to ENV variables, which may not be updated on terminal resize
+			if (($width = (int) getenv('COLUMNS')) > 0 && ($height = (int) getenv('LINES')) > 0) {
+				return $size = array($width, $height);
+			}
+		}
+
+		return $size = false;
 	}
 
 	/**
@@ -607,27 +662,23 @@ class Console
 	/**
 	 * Prints text to STDOUT appended with a carriage return (PHP_EOL).
 	 *
-	 * @param string $text
-	 * @param bool $raw
-	 *
+	 * @param string $string
 	 * @return mixed Number of bytes printed or bool false on error
 	 */
-	public static function output($text = null)
+	public static function output($string = null)
 	{
-		return static::stdout($text . PHP_EOL);
+		return static::stdout($string . PHP_EOL);
 	}
 
 	/**
 	 * Prints text to STDERR appended with a carriage return (PHP_EOL).
 	 *
-	 * @param string $text
-	 * @param bool   $raw
-	 *
+	 * @param string $string
 	 * @return mixed Number of bytes printed or false on error
 	 */
-	public static function error($text = null)
+	public static function error($string = null)
 	{
-		return static::stderr($text . PHP_EOL);
+		return static::stderr($string . PHP_EOL);
 	}
 
 	/**
