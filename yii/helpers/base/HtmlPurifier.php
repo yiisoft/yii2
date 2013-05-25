@@ -16,6 +16,13 @@ namespace yii\helpers\base;
  */
 class HtmlPurifier
 {
+	/**
+	 * Passes markup through HTMLPurifier making it safe to output to end user
+	 *
+	 * @param string $content
+	 * @param array|null $config
+	 * @return string
+	 */
 	public static function process($content, $config = null)
 	{
 		$purifier=\HTMLPurifier::instance($config);

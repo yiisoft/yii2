@@ -31,6 +31,15 @@ class GettextMessageSource extends MessageSource
 	 */
 	public $useBigEndian = false;
 
+	/**
+	 * Loads the message translation for the specified language and category.
+	 * Child classes should override this method to return the message translations of
+	 * the specified language and category.
+	 * @param string $category the message category
+	 * @param string $language the target language
+	 * @return array the loaded messages. The keys are original messages, and the values
+	 * are translated messages.
+	 */
 	protected function loadMessages($category, $language)
 	{
 		$messageFile = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;
