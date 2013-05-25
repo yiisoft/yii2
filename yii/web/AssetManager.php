@@ -282,6 +282,9 @@ class AssetManager extends Component
 	 */
 	public function getPublishedPath($path)
 	{
+		if (isset($this->_published[$path])) {
+			return $this->_published[$path][0];
+		}
 		if (($path = realpath($path)) !== false) {
 			$base = $this->basePath . DIRECTORY_SEPARATOR;
 			if (is_file($path)) {
@@ -304,7 +307,7 @@ class AssetManager extends Component
 	public function getPublishedUrl($path)
 	{
 		if (isset($this->_published[$path])) {
-			return $this->_published[$path];
+			return $this->_published[$path][1];
 		}
 		if (($path = realpath($path)) !== false) {
 			if (is_file($path)) {
