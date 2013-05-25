@@ -1,13 +1,13 @@
 <?php
 /**
  * @var \yii\base\View $this
- * @var \yii\base\ErrorHandler $c
  * @var string $file
  * @var integer $line
  * @var integer $index
  * @var string[] $lines
  * @var integer $begin
  * @var integer $end
+ * @var \yii\base\ErrorHandler $c
  */
 $c = $this->context;
 ?>

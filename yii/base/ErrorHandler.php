@@ -93,8 +93,22 @@ class ErrorHandler extends Component
 				if (YII_DEBUG) {
 					ini_set('display_errors', 1);
 				}
+
 				$view = new View();
-				echo $view->renderFile($this->mainView, array('e' => $exception), $this);
+				$request = array();
+				if (count($_GET) > 0) {
+					$request[] = '$_GET = ' . var_export($_GET, true) . ';';
+				}
+				if (count($_POST) > 0) {
+					$request[] = '$_POST = ' . var_export($_POST, true) . ';';
+				}
+				$request[] = '$_SERVER = ' . var_export($_SERVER, true) . ';';
+				$request = implode("\n\n", $request);
+				echo $view->renderFile($this->mainView, array(
+					'e' => $exception,
+					'request' => $request,
+					'requestLinesCount' => substr_count($request, "\n"),
+				), $this);
 			}
 		}
 	}
