@@ -1,58 +1,43 @@
-/*;
-
-var lines = null;
-var line = document.getElementById('code-highlighter')
-
-var updateLines = function() {
-	lines = document.getElementById('code').getClientRects();
-};
-updateLines();
-window.onresize = updateLines;
-window.onscroll = updateLines;
-
-document.onmousemove = function(e) {
-	var event = e || window.event;
-	var x = event.clientX, y = event.clientY;
-	for (var i = 0, max = lines.length; i < max; i++) {
-		if (y > lines[i].top && y < lines[i].bottom) {
-			line.style.height = parseInt(lines[i].bottom - lines[i].top + 1) + 'px';
-			line.style.top = parseInt(lines[i].top) + 'px';
-			break;
-		}
-	}
-}
-*/
-
 window.onload = function() {
-	var i, j, max, max2,
+	var i, imax,
 		codeBlocks = Sizzle('pre'),
-		traceBackItems = Sizzle('.trace-back-item');
+		callStackItems = Sizzle('.call-stack-item');
 
-	// highlight code
-	for (i = 0, max = codeBlocks.length; i < max; i++) {
+	// highlight code blocks
+	for (i = 0, imax = codeBlocks.length; i < imax; ++i) {
 		hljs.highlightBlock(codeBlocks[i], '    ');
 	}
 
-	// error lines
-//	var updateErrorLines = function() {
-//		for (i = 0, max = codeBlocks.length; i < max; i++) {
-//			var lines = codeBlocks[i].getClientRects(),
-//				errorLine = codeBlocks[i].getAttribute('data-error-line'),
-//				top = 0;
-//			if (errorLine > lines.length - 1) {
-//				errorLine = lines.length - 1;
-//			}
-//			for (j = 0; j < errorLine; j++) {
-//				top += lines[j].height;
-//			}
-//			Sizzle('.error-line', codeBlocks[i].parentNode.parentNode)[0].style.marginTop = top + 'px';
-//		}
-//	};
-//	updateErrorLines();
+	//
+	document.onmousemove = function(e) {
+		var lines, i, imax, j, jmax, k, kmax,
+			event = e || window.event,
+			y = event.clientY,
+			lineFound = false;
+		for (i = 0, imax = codeBlocks.length; i < imax; ++i) {
+			lines = codeBlocks[i].getClientRects();
+			for (j = 0, jmax = lines.length; j < jmax; ++j) {
+				if (y > lines[j].top && y < lines[j].bottom) {
+					lineFound = true;
+					break;
+				}
+			}
+			if (lineFound) {
+				break;
+			}
+		}
+		var hoverLines = Sizzle('.hover-line');
+		for (k = 0, kmax = hoverLines.length; k < kmax; ++k) {
+			hoverLines[k].className = 'hover-line';
+		}
+		if (lineFound) {
+			Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')')[0].className = 'hover-line hover';
+		}
+	}
 
-	// toggle code block visibility of each trace back item
-	for (i = 0, max = traceBackItems.length; i < max; i++) {
-		Sizzle('.li-wrap', traceBackItems[i])[0].addEventListener('click', function() {
+	// toggle code block visibility
+	for (i = 0, imax = callStackItems.length; i < imax; i++) {
+		Sizzle('.element-wrap', callStackItems[i])[0].addEventListener('click', function() {
 			var code = Sizzle('.code-wrap', this.parentNode)[0];
 			code.style.display = window.getComputedStyle(code).display == 'block' ? 'none' : 'block';
 		});

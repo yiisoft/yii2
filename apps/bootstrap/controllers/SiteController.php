@@ -21,6 +21,7 @@ class SiteController extends Controller
 	public function actionIndex()
 	{
 		throw new \yii\base\HttpException(500, 'Test exception');
+		$x = 1;
 		echo $this->render('index');
 	}
 

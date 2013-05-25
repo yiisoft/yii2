@@ -50,9 +50,6 @@ h1,h2,p,img,ul li{
 	font-family: Arial,sans-serif;
 	color: #505050;
 }
-body,html{
-	/*overflow-x: hidden;*/
-}
 
 /* header */
 .header{
@@ -85,70 +82,70 @@ body,html{
 	text-shadow: 0 1px 0 #cacaca;
 }
 
-/* traceback */
-.traceback{
+/* call stack */
+.call-stack{
 	margin-top: 30px;
 	margin-bottom: 40px;
 }
-.traceback ul li{
+.call-stack ul li{
 	margin: 1px 0;
 }
-.traceback ul li .li-wrap{
+.call-stack ul li .element-wrap{
 	cursor: pointer;
 	padding: 15px 0;
 }
-.traceback ul li.application .li-wrap{
+.call-stack ul li.application .element-wrap{
 	background-color: #fafafa;
 }
-.traceback ul li .li-wrap:hover{
+.call-stack ul li .element-wrap:hover{
 	background-color: #edf9ff;
 }
-.traceback ul li .li{
+.call-stack ul li .element{
 	min-width: 860px; /* 960px - 50px * 2 */
 	max-width: 1100px; /* 1200px - 50px * 2 */
 	margin: 0 auto;
 	padding: 0 50px;
 	position: relative;
 }
-.traceback ul li a{
+.call-stack ul li a{
 	color: #505050;
 }
-.traceback ul li a:hover{
+.call-stack ul li a:hover{
 	color: #000000;
 	text-shadow: 0 1px 0 #cacaca;
 }
-.traceback ul li .number{
+.call-stack ul li .number{
 	width: 45px;
 	display: inline-block;
 }
-.traceback ul li .text{
+.call-stack ul li .text{
 	color: #bbbbbb;
 }
-.traceback ul li.application .text{
+.call-stack ul li.application .text{
 	color: #505050;
 }
-.traceback ul li .at{
+.call-stack ul li .at{
 	position: absolute;
 	right: 110px; /* 50px + 60px */
 	color: #bbbbbb;
 }
-.traceback ul li.application .at{
+.call-stack ul li.application .at{
 	color: #505050;
 }
-.traceback ul li .line{
+.call-stack ul li .line{
 	position: absolute;
 	right: 50px;
 	width: 60px;
 	text-align: right;
 }
-.traceback ul li .code-wrap{
+.call-stack ul li .code-wrap{
 	display: none;
 	position: relative;
 }
-.traceback ul li.application .code-wrap{
+.call-stack ul li.application .code-wrap{
 	display: block;
 }
-.traceback ul li .error-line{
+.call-stack ul li .error-line,.call-stack ul li .hover-line{
 	background-color: #ffebeb;
 	position: absolute;
 	width: 100%;
@@ -156,29 +153,36 @@ body,html{
 	z-index: 100;
 	margin-top: 15px;
 }
-.traceback ul li .code{
+.call-stack ul li .hover-line{
+	background: none;
+}
+.call-stack ul li .hover-line.hover,.call-stack ul li .hover-line:hover{
+	background: #edf9ff !important;
+}
+.call-stack ul li .code{
 	min-width: 860px; /* 960px - 50px * 2 */
 	max-width: 1100px; /* 1200px - 50px * 2 */
 	margin: 0 auto;
 	padding: 15px 50px;
 	position: relative;
 }
-.traceback ul li .code .lines{
+.call-stack ul li .code .lines{
 	position: absolute;
 	z-index: 200;
 	left: 50px;
 	line-height: 18px;
 	font-size: 14px;
-	font-family: Consolas, Courier New, monospaced;
+	font-family: Consolas, Courier New, monospace;
 	color: #bbbbbb;
 }
-.traceback ul li .code pre{
+.call-stack ul li .code pre{
 	position: relative;
 	z-index: 200;
 	left: 50px;
 	line-height: 18px;
 	font-size: 14px;
-	font-family: Consolas, Courier New, monospaced;
+	font-family: Consolas, Courier New, monospace;
+	display: inline;
 }
 
 /* request */
@@ -190,15 +194,15 @@ body,html{
 	margin-bottom: 1px;
 }
 .request pre{
-	font-family: Consolas, Courier New, monospaced;
+	font-family: Consolas, Courier New, monospace;
 }
 
 /* footer */
 .footer{
 	position: relative;
 	height: 222px;
-	min-width: 860px; /* padding compensation: 960px - 50px * 2 */
-	max-width: 1100px; /* padding compensation: 1200px - 50px * 2 */
+	min-width: 860px; /* 960px - 50px * 2 */
+	max-width: 1100px; /* 1200px - 50px * 2 */
 	padding: 0 50px;
 	margin: 1px auto 0 auto;
 }
@@ -223,30 +227,7 @@ body,html{
 	right: -50px;
 }
 
-/* code */
-#code-wrap{
-	overflow: hidden;
-	position: relative;
-}
-#code-highlighter{
-	background-color: #ffffff;
-	position: fixed;
-	width: 100%;
-	z-index: 100;
-}
-#code-inner-wrap{
-	min-width: 860px; /* padding compensation: 960px - 50px * 2 */
-	max-width: 1100px; /* padding compensation: 1200px - 50px * 2 */
-	margin: 0 auto;
-}
-pre{
-	display: inline;
-	color: #505050;
-	font-size: 14px;
-	line-height: 18px;
-	z-index: 200;
-	position: relative;
-}
+/* highlight.js */
 pre .subst,pre .title{
 	font-weight: normal;
 	color: #505050;
@@ -255,16 +236,16 @@ pre .comment,pre .template_comment,pre .javadoc,pre .diff .header{
 	color: #808080;
 	font-style: italic;
 }
-pre .annotation,pre .decorator,pre .preprocessor,pre .doctype,pre .pi,pre .chunk,pre .shebang,
-pre .apache .cbracket,pre .prompt,pre .http .title{
+pre .annotation,pre .decorator,pre .preprocessor,pre .doctype,pre .pi,pre .chunk,pre .shebang,pre .apache .cbracket,
+pre .prompt,pre .http .title{
 	color: #808000;
 }
 pre .tag,pre .pi{
 	background: #efefef;
 }
-pre .tag .title,pre .id,pre .attr_selector,pre .pseudo,pre .literal,pre .keyword,pre .hexcolor,
-pre .css .function,pre .ini .title,pre .css .class,pre .list .title,pre .clojure .title,pre .nginx .title,
-pre .tex .command,pre .request,pre .status{
+pre .tag .title,pre .id,pre .attr_selector,pre .pseudo,pre .literal,pre .keyword,pre .hexcolor,pre .css .function,
+pre .ini .title,pre .css .class,pre .list .title,pre .clojure .title,pre .nginx .title,pre .tex .command,
+pre .request,pre .status{
 	color: #000080;
 }
 pre .attribute,pre .rules .keyword,pre .number,pre .date,pre .regexp,pre .tex .special{
@@ -273,7 +254,7 @@ pre .attribute,pre .rules .keyword,pre .number,pre .date,pre .regexp,pre .tex .s
 pre .number,pre .regexp{
 	font-weight: normal;
 }
-pre .string,pre .value,pre .filter .argument,pre .css .function .params,pre .apache .tag {
+pre .string,pre .value,pre .filter .argument,pre .css .function .params,pre .apache .tag{
 	color: #00aa00;
 }
 pre .symbol,pre .ruby .symbol .string,pre .char,pre .tex .formula{
