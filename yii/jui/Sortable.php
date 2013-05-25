@@ -54,10 +54,7 @@ class Sortable extends Widget
 	 */
 	public function run()
 	{
-		$options = $this->options;
-		$tag = isset($options['tag']) ? $options['tag'] : 'div';
-		unset($options['tag']);
-		echo Html::endTag($tag) . "\n";
+		echo Html::endTag(isset($this->options['tag']) ? $this->options['tag'] : 'div') . "\n";
 		$this->registerWidget('sortable', false);
 	}
 }
