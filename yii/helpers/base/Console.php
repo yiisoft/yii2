@@ -547,9 +547,9 @@ class Console
 	}
 
 	/**
-	 * Returns true if the stream supports colorization. ANSI colors is disabled if not supported by the stream.
+	 * Returns true if the stream supports colorization. ANSI colors are disabled if not supported by the stream.
 	 *
-	 * - windows without asicon
+	 * - windows without ansicon
 	 * - not tty consoles
 	 *
 	 * @param mixed $stream
@@ -558,7 +558,7 @@ class Console
 	public static function streamSupportsAnsiColors($stream)
 	{
 		return DIRECTORY_SEPARATOR == '\\'
-			? null !== getenv('ANSICON')
+			? getenv('ANSICON') !== false || getenv('ConEmuANSI') === 'ON'
 			: function_exists('posix_isatty') && @posix_isatty($stream);
 	}
 
