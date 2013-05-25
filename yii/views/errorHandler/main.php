@@ -22,10 +22,7 @@ $c = $this->context;
 
 	<style type="text/css">
 /* reset */
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,
-em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,
-table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,
-nav,output,ruby,section,summary,time,mark,audio,video{
+html,body,div,span,h1,h2,h3,h4,h5,h6,p,pre,a,code,em,img,strong,b,i,ul,li{
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -33,34 +30,20 @@ nav,output,ruby,section,summary,time,mark,audio,video{
 	font: inherit;
 	vertical-align: baseline;
 }
-article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{
-	display: block;
-}
 body{
 	line-height: 1;
 }
-ol,ul{
+ul{
 	list-style: none;
-}
-blockquote,q{
-	quotes: none;
-}
-blockquote:before,blockquote:after,q:before,q:after{
-	content: '';
-	content: none;
-}
-table{
-	border-collapse: collapse;
-	border-spacing: 0;
 }
 
 /* base */
 ::selection{
-	color: #ffffff !important;
+	color: #fff !important;
 	background-color: #e51717 !important;
 }
 ::-moz-selection{
-	color: #ffffff !important;
+	color: #fff !important;
 	background-color: #e51717 !important;
 }
 a{
@@ -137,7 +120,7 @@ html,body{
 	color: #505050;
 }
 .call-stack ul li a:hover{
-	color: #000000;
+	color: #000;
 	text-shadow: 0 1px 0 #cacaca;
 }
 .call-stack ul li .number{
@@ -145,7 +128,7 @@ html,body{
 	display: inline-block;
 }
 .call-stack ul li .text{
-	color: #bbbbbb;
+	color: #bbb;
 }
 .call-stack ul li.application .text{
 	color: #505050;
@@ -153,7 +136,7 @@ html,body{
 .call-stack ul li .at{
 	position: absolute;
 	right: 110px; /* 50px + 60px */
-	color: #bbbbbb;
+	color: #bbb;
 }
 .call-stack ul li.application .at{
 	color: #505050;
@@ -199,7 +182,7 @@ html,body{
 	line-height: 18px;
 	font-size: 14px;
 	font-family: Consolas, Courier New, monospace;
-	color: #bbbbbb;
+	color: #bbb;
 }
 .call-stack ul li .code pre{
 	position: relative;
@@ -261,7 +244,7 @@ html,body{
 	color: #505050;
 }
 .footer p a:hover{
-	color: #000000;
+	color: #000;
 }
 .footer .timestamp{
 	font-size: 14px;
@@ -295,13 +278,13 @@ pre .request,pre .status{
 	color: #000080;
 }
 pre .attribute,pre .rules .keyword,pre .number,pre .date,pre .regexp,pre .tex .special{
-	color: #0000aa;
+	color: #00a;
 }
 pre .number,pre .regexp{
 	font-weight: normal;
 }
 pre .string,pre .value,pre .filter .argument,pre .css .function .params,pre .apache .tag{
-	color: #00aa00;
+	color: #0a0;
 }
 pre .symbol,pre .ruby .symbol .string,pre .char,pre .tex .formula{
 	color: #505050;
@@ -312,7 +295,7 @@ pre .phpdoc,pre .yardoctag,pre .javadoctag{
 	text-decoration: underline;
 }
 pre .variable,pre .envvar,pre .apache .sqbracket,pre .nginx .built_in{
-	color: #aa0000;
+	color: #a00;
 }
 pre .addition{
 	background: #baeeba;
