@@ -10,7 +10,7 @@ namespace yii\jui;
 use yii\helpers\Html;
 
 /**
- * AutoComplete renders a sortable jQuery UI widget.
+ * Sortable renders a sortable jQuery UI widget.
  *
  * For example:
  *
