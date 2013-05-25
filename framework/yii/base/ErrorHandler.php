@@ -95,19 +95,16 @@ class ErrorHandler extends Component
 				}
 
 				$view = new View();
-				$request = array();
-				if (count($_GET) > 0) {
-					$request[] = '$_GET = ' . var_export($_GET, true) . ';';
+				$request = '';
+				foreach (array('GET', 'POST', 'SERVER', 'FILES', 'COOKIE', 'SESSION', 'ENV') as $name) {
+					if (!empty($GLOBALS['_' . $name])) {
+						$request .= '$_' . $name . ' = ' . var_export($GLOBALS['_' . $name], true) . ";\n\n";
+					}
 				}
-				if (count($_POST) > 0) {
-					$request[] = '$_POST = ' . var_export($_POST, true) . ';';
-				}
-				$request[] = '$_SERVER = ' . var_export($_SERVER, true) . ';';
-				$request = implode("\n\n", $request);
+				$request = rtrim($request, "\n\n");
 				echo $view->renderFile($this->mainView, array(
-					'e' => $exception,
+					'exception' => $exception,
 					'request' => $request,
-					'requestLinesCount' => substr_count($request, "\n"),
 				), $this);
 			}
 		}
