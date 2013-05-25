@@ -568,7 +568,7 @@ class Console
 	 */
 	public static function isRunningOnWindows()
 	{
-		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+		return DIRECTORY_SEPARATOR == '\\';
 	}
 
 	/**
@@ -584,8 +584,11 @@ class Console
 		}
 
 		if (static::isRunningOnWindows()) {
-			// TODO implement for windows
-			return $size = false;
+			$output = array();
+			exec('mode con', $output);
+			if(isset($output) && strpos($output[1], 'CON')!==false) {
+				return $size = array((int)preg_replace('~[^0-9]~', '', $output[3]), (int)preg_replace('~[^0-9]~', '', $output[4]));
+			}
 		} else {
 
 			// try stty if available
