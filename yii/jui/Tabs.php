@@ -29,17 +29,20 @@ use yii\helpers\Html;
  *             'options' => array(
  *                 'tag' => 'div',
  *             ),
+ *             'headerOptions' => array(
+ *                 'class' => 'my-class',
+ *             ),
  *         ),
  *         array(
- *             'label' => 'Tab three',
- *             'content' => 'Specific content...',
+ *             'label' => 'Tab with custom id',
+ *             'content' => 'Morbi tincidunt, dui sit amet facilisis feugiat...',
  *             'options' => array(
- *                 'id' => 'my-tab',
+ *                'id' => 'my-tab',
  *             ),
  *         ),
  *         array(
  *             'label' => 'Ajax tab',
- *             'url' => 'http://www.yiiframework.com',
+ *             'ajax' => array('ajax/content'),
  *         ),
  *     ),
  *     'options' => array(
@@ -47,6 +50,9 @@ use yii\helpers\Html;
  *     ),
  *     'itemOptions' => array(
  *         'tag' => 'div',
+ *     ),
+ *     'headerOptions' => array(
+ *         'class' => 'my-class',
  *     ),
  *     'clientOptions' => array(
  *         'collapsible' => false,
@@ -60,10 +66,52 @@ use yii\helpers\Html;
  */
 class Tabs extends Widget
 {
+	/**
+	 * @var array the HTML attributes for the widget container tag. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "div", the tag name of the container tag of this widget
+	 */
 	public $options = array();
+	/**
+	 * @var array list of tab items. Each item can be an array of the following structure:
+	 *
+	 * ~~~
+	 * array(
+	 *     'label' => 'Tab header label',
+	 *     'content' => 'Tab item content',
+	 *     'ajax' => 'http://www.yiiframework.com', //or array('ajax/action'),
+	 *     // the HTML attributes of the item container tag. This will overwrite "itemOptions".
+	 *     'options' => array(),
+	 *     // the HTML attributes of the header container tag. This will overwrite "headerOptions".
+	 *     'headerOptions' = array(),
+     *     // @todo comment.
+	 *     'template'
+	 * )
+	 * ~~~
+	 */
 	public $items = array();
+	/**
+	 * @var array list of HTML attributes for the item container tags. This will be overwritten
+	 * by the "options" set in individual [[items]]. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "div", the tag name of the item container tags.
+	 */
 	public $itemOptions = array();
-	public $headerTemplate = '<li><a href="{url}">{label}</a></li>';
+	/**
+	 * @var array list of HTML attributes for the header container tags. This will be overwritten
+	 * by the "headerOptions" set in individual [[items]].
+	 */
+	public $headerOptions = array();
+	/**
+	 * @var string
+	 * @todo comment.
+	 */
+	public $linkTemplate = '<a href="{url}">{label}</a>';
+	/**
+	 * @var boolean
+	 * @todo comment.
+	 */
+	public $encodeLabels = true;
 
 
 	/**
@@ -71,9 +119,11 @@ class Tabs extends Widget
 	 */
 	public function run()
 	{
-		echo Html::beginTag('div', $this->options) . "\n";
+		$options = $this->options;
+		$tag = ArrayHelper::remove($options, 'tag', 'div');
+		echo Html::beginTag($tag, $options) . "\n";
 		echo $this->renderItems() . "\n";
-		echo Html::endTag('div') . "\n";
+		echo Html::endTag($tag) . "\n";
 		$this->registerWidget('tabs');
 	}
 
@@ -81,26 +131,35 @@ class Tabs extends Widget
 	 * Renders tab items as specified on [[items]].
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException.
-	 * @todo rework
 	 */
 	protected function renderItems()
 	{
 		$headers = array();
 		$items = array();
 		foreach ($this->items as $n => $item) {
-			if (!isset($item['header'])) {
-				throw new InvalidConfigException("The 'header' option is required.");
+			if (!isset($item['label'])) {
+				throw new InvalidConfigException("The 'label' option is required.");
 			}
-			if (!isset($item['content'])) {
-				throw new InvalidConfigException("The 'content' option is required.");
-			}
-			$options = ArrayHelper::getValue($item, 'options', array());
-			if (!isset($options['id'])) {
-				$options['id'] = $this->options['id'] . '-tab' . $n;
+			if (isset($item['ajax'])) {
+				$url = $item['ajax'];
+			} else {
+				if (!isset($item['content'])) {
+					throw new InvalidConfigException("The 'content' or 'ajax' option is required.");
+				}
+				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
+				$tag = ArrayHelper::remove($options, 'tag', 'div');
+				if (!isset($options['id'])) {
+					$options['id'] = $this->options['id'] . '-tab' . $n;
+				}
+				$url = '#' . $options['id'];
+				$items[] = Html::tag($tag, $item['content'], $options);
 			}
 			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
-			$headers[] = Html::tag('li', Html::a($item['header'], '#' . $options['id']), $headerOptions);
-			$items[] = Html::tag('div', $item['content'], $options);
+			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
+			$headers[] = Html::tag('li', strtr($template, array(
+				'{label}' => $this->encodeLabels ? Html::encode($item['label']) : $item['label'],
+				'{url}' => Html::url($url),
+			)), $headerOptions);
 		}
 		return Html::tag('ul', implode("\n", $headers)) . "\n" . implode("\n", $items);
 	}
