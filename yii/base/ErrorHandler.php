@@ -49,6 +49,10 @@ class ErrorHandler extends Component
 	 */
 	public $callStackItemView = '@yii/views/errorHandler/callStackItem.php';
 	/**
+	 * @var string the path of the view file for rendering previous exceptions.
+	 */
+	public $previousExceptionView = '@yii/views/errorHandler/previousException.php';
+	/**
 	 * @var \Exception the exception that is being handled currently.
 	 */
 	public $exception;
@@ -158,6 +162,24 @@ class ErrorHandler extends Component
 	public function createHttpStatusLink($statusCode, $statusDescription)
 	{
 		return '<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int)$statusCode .'" target="_blank">HTTP ' . (int)$statusCode . ' &ndash; ' . $statusDescription . '</a>';
+	}
+
+	/**
+	 * Renders the previous exception stack for a given Exception.
+	 * @param \Exception $exception the exception whose precursors should be rendered.
+	 * @return string HTML content of the rendered previous exceptions.
+	 * Empty string if there are none.
+	 */
+	public function renderPreviousExceptions($exception)
+	{
+		if (($previous = $exception->getPrevious()) === null) {
+			return '';
+		}
+		$view = new View();
+		return $view->renderFile($this->previousExceptionView, array(
+			'exception' => $previous,
+			'previousHtml' => $this->renderPreviousExceptions($previous),
+		), $this);
 	}
 
 	/**

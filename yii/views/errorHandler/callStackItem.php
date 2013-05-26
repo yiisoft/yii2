@@ -11,7 +11,6 @@
  */
 $context = $this->context;
 ?>
-
 <li class="<?php if (!$context->isCoreFile($file)) echo 'application'; ?> call-stack-item">
 	<div class="element-wrap">
 		<div class="element">
