@@ -391,12 +391,12 @@ class Command extends \yii\base\Component
 		}
 
 		if (isset($cache) && $cache instanceof Cache) {
-			$cacheKey = $cache->buildKey(array(
+			$cacheKey = array(
 				__CLASS__,
 				$db->dsn,
 				$db->username,
 				$rawSql,
-			));
+			);
 			if (($result = $cache->get($cacheKey)) !== false) {
 				Yii::trace('Query result served from cache', __METHOD__);
 				return $result;
