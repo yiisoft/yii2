@@ -98,15 +98,16 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * ~~~
 	 *
 	 * @param array|string $key the key to be normalized
-	 * @return string the generated cache key
+	 * @return string the generated cache key include $this->keyPrefix
 	 */
 	public function buildKey($key)
 	{
 		if (is_string($key)) {
-			return ctype_alnum($key) && StringHelper::strlen($key) <= 32 ? $key : md5($key);
+			$key = ctype_alnum($key) && StringHelper::strlen($key) <= 32 ? $key : md5($key);
 		} else {
-			return md5(json_encode($key));
+			$key = md5(json_encode($key));
 		}
+		return $this->keyPrefix . $key;
 	}
 
 	/**
@@ -117,7 +118,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 */
 	public function get($key)
 	{
-		$key = $this->keyPrefix . $this->buildKey($key);
+		$key = $this->buildKey($key);
 		$value = $this->getValue($key);
 		if ($value === false || $this->serializer === false) {
 			return $value;
@@ -147,7 +148,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	{
 		$keyMap = array();
 		foreach ($keys as $key) {
-			$keyMap[$key] = $this->keyPrefix . $this->buildKey($key);
+			$keyMap[$key] = $this->buildKey($key);
 		}
 		$values = $this->getValues(array_values($keyMap));
 		$results = array();
@@ -192,7 +193,7 @@ abstract class Cache extends Component implements \ArrayAccess
 		} elseif ($this->serializer !== false) {
 			$value = call_user_func($this->serializer[0], array($value, $dependency));
 		}
-		$key = $this->keyPrefix . $this->buildKey($key);
+		$key = $this->buildKey($key);
 		return $this->setValue($key, $value, $expire);
 	}
 
@@ -217,7 +218,7 @@ abstract class Cache extends Component implements \ArrayAccess
 		} elseif ($this->serializer !== false) {
 			$value = call_user_func($this->serializer[0], array($value, $dependency));
 		}
-		$key = $this->keyPrefix . $this->buildKey($key);
+		$key = $this->buildKey($key);
 		return $this->addValue($key, $value, $expire);
 	}
 
@@ -228,7 +229,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 */
 	public function delete($key)
 	{
-		$key = $this->keyPrefix . $this->buildKey($key);
+		$key = $this->buildKey($key);
 		return $this->deleteValue($key);
 	}
 
