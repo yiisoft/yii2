@@ -116,9 +116,12 @@ html,body{
 }
 .header .previous h2{
 	font-size: 20px;
-	color: #e51717;
+	color: #e57373;
 	text-shadow: 0 1px 0 #cacaca;
 	margin-bottom: 10px;
+}
+.header .previous h2 span{
+	color: #e51717;
 }
 .header .previous h2 a{
 	color: #e57373;
