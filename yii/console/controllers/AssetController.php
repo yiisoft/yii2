@@ -558,6 +558,10 @@ EOD
 			$fullMatch = $matches[0];
 			$inputUrl = $matches[1];
 
+			if (preg_match('/https?:\/\//is', $inputUrl)) {
+				return $fullMatch;
+			}
+
 			$outputUrlParts = array_fill(0, count($outputFileRelativePathParts), '..');
 			$outputUrlParts = array_merge($outputUrlParts, $inputFileRelativePathParts);
 
