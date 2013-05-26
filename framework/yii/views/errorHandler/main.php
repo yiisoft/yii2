@@ -364,9 +364,10 @@ pre .diff .change{
 
 	<div class="call-stack">
 		<ul>
-			<?php echo $context->renderCallStackItem($exception->getFile(), $exception->getLine(), 1); ?>
+			<?php echo $context->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, 1); ?>
 			<?php for ($i = 1, $trace = $exception->getTrace(), $length = count($trace); $i < $length; ++$i): ?>
-				<?php echo $context->renderCallStackItem($trace[$i]['file'], $trace[$i]['line'], $i + 1); ?>
+				<?php echo $context->renderCallStackItem(@$trace[$i]['file'] ?: null, @$trace[$i]['line'] ?: null,
+					@$trace[$i]['class'] ?: null, @$trace[$i]['function'] ?: null, $i + 1); ?>
 			<?php endfor; ?>
 		</ul>
 	</div>
