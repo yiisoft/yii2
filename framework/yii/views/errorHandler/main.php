@@ -13,11 +13,15 @@ $context = $this->context;
 <head>
 	<meta charset="utf-8"/>
 
-	<?php if ($exception instanceof \yii\base\Exception): ?>
-		<title><?php echo $context->htmlEncode($exception->getName() . ' – ' . get_class($exception)); ?></title>
-	<?php else: ?>
-		<title><?php echo $context->htmlEncode(get_class($exception)); ?></title>
-	<?php endif; ?>
+	<title><?php
+		if ($exception instanceof \yii\base\HttpException) {
+			echo (int) $exception->statusCode . ' ' . $context->htmlEncode($exception->getName());
+		} elseif ($exception instanceof \yii\base\Exception) {
+			echo $context->htmlEncode($exception->getName() . ' – ' . get_class($exception));
+		} else {
+			echo $context->htmlEncode(get_class($exception));
+		}
+	?></title>
 
 	<style type="text/css">
 /* reset */
@@ -72,7 +76,7 @@ html,body{
 	text-shadow: 0 1px 0 #cacaca;
 	margin-bottom: 30px;
 }
-.header h1 span{
+.header h1 span, .header h1 span a{
 	color: #e51717;
 }
 .header h1 a{
@@ -316,17 +320,21 @@ pre .diff .change{
 				<span><?php echo $context->htmlEncode($exception->getName()); ?></span>
 				&ndash; <?php echo $context->addTypeLinks(get_class($exception)); ?>
 			</h1>
-			<h2><?php echo $context->htmlEncode($exception->getMessage()); ?></h2>
 		<?php else: ?>
 			<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAA6CAIAAACPssguAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjcwRURBOUQxQzQ3RDExRTJCRjVFODJDQkFGODFDN0VBIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjcwRURBOUQyQzQ3RDExRTJCRjVFODJDQkFGODFDN0VBIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NzBFREE5Q0ZDNDdEMTFFMkJGNUU4MkNCQUY4MUM3RUEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NzBFREE5RDBDNDdEMTFFMkJGNUU4MkNCQUY4MUM3RUEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4L6mYsAAAE9klEQVR42tRa227aTBDGiwkhJtD8EanSQ6RKqKpSBbWqql5U7QP0TfsSvWhvStMEO6cqDUpjRylSQ1QC+IQN/mdrhBIb413vgsheIDDr9XwzOzPfzFrwPC/Fe8Cauiybe3uersNPQZJylYr04oUgCNyfJXJfcTAYXH/5YoH0qjq66LbbTrtdfPcOITTXALDuf/40FSWlabeuq6rpeZkHD6Ryma8dOOvDdV19Zycg/XBoml6r9ft9vk9EnNV/dOT8+RM1oXdxof/4wdfrEF/1G7Va+uIiagL8BfaBafMIAHy38/17/+/fydNgAkyDyXMHwLEsS1EmqH9kBOvgACbPFwDQaPfr11S9TjT7+JijEfgAsFst8/CQYv7BQe/6el4AQGTsfPuGbqSt2CGcnrarVS4hlRUAxETz9+/eyQntjXAL3MgeUhG7+vXtbSr1Dx+sqoYss3sCYlS/cXLinJ8nu713emqoKqMRmAD4xAElBQA3GpA62DwBsagfiIN7ecnyeHZyIbKoP4o46KurY2+Rrq7CeQ08YenZs0wmM1MAI+KQDv3VKpd7r1+L2WwQsGH0q9VCyN3dZrOrKPdevUpGsxMCmEAcMqVSaWNjcXExcN00zRbQ7BAAWMSs1ZY2N7NLSzMCMJk4ZBFaXl4OAxBF0Yza68fH3Z2dzNu3Ceo1lMB3raurScQhgqjBDhGiibS1v98zzVlEIax+CJ0TM9fYqAIXB9HRBsiFXq0myGuIVv2xxGGQNCaCVcG2tCGVDkBi4jBU80ThYFlwLVojICr1kxAHFLHRsWoNgzu5oABASBw8247ygVScZJhcyDIVuUDk6tf39oiIg+exUAOwMNiZfAVSAI7jGPv7sSUvhwLl/Jyqc0EEwA+dsR2H+EFWy4OdwdqERiACQNhxGIaaaCcWyDY3Zni7u2BzPgDoOg64Yo92YvJ43e2CzUlCKmIlDsSZ2FcG4Qq4faQoJO0jRKJ+uszFq+tWr5PkNRRPHM7O2IWBpdxGYxrkAk2DODihbAqKdJpNkRIDJhdxniDGEgdavgpSWp8+XX7+HADg9vsJCnDcPnr+XHr0KKpeE6fScdA0l1P7AIwAu2BxfR3qIYotREEcpj8mkwsxkjjs7iYmDuRdCXJykSuXx3YuxEji0O2mE0lvlEpWpZK6vWsxv2s0BCjeE1kVk4ujo2KlEvYEkZE4jMlBCK1sbUFdf7NCx22YlRVHURKuCeSiVpM2N8NGEFmJwzgAIH2hUAhYAD6vGQ6J/bOpe2/eBDoXiJ04jNm1CAVsDT8Zj7ijyAViJQ6zHPV6Z3s7kNfQrcylqlCVpuZ42IeHgbMpdJM4QD2auFc+mxE+m0JUHQfSqHd2Fsg7mMxxWjxwNiX43yBzNT9+9GSZj6I2NsKZH5e5Y9+hSODQ79+vfvjgP0K8SRzSvCw9jgvxJBe/fpmaln/yBAe3WXYcOHYuRmdTCFctmsah4zBjhtdo+D08BGHVhs1zd9Q/MgKIDcJjCwzyefv+/dRdG86/zItzvri+7knS3ZLefPgQPX7sMxSUy+W8ly+NtbW7Ir2+tjaoVHL5fDqdFgFENpstlMtQ/bdlOc3pJZLpjX6x6G1t/ff0KegdH1v96yV7EEk7nU6r1bJtm+PrVPx9FyFQd7FYBMa+sLAwBODnMgirAAM+p/EqLDcuJAiwbaCsgU+fsf8vwADjle3ME1OGEwAAAABJRU5ErkJggg==" alt="Attention"/>
-			<h1>
-				<span>Exception</span> &ndash; <?php echo $context->addTypeLinks(get_class($exception)); ?>
-				<?php if ($exception instanceof \yii\base\HttpException): ?>
-					&ndash; <?php echo $context->createHttpStatusLink($exception->statusCode); ?>
-				<?php endif; ?>
-			</h1>
-			<h2><?php echo $context->htmlEncode($exception->getName()); ?></h2>
+			<h1><?php
+				if ($exception instanceof \yii\base\HttpException) {
+					echo '<span>' . $context->createHttpStatusLink($exception->statusCode, $context->htmlEncode($exception->getName())) . '</span>';
+					echo ' &ndash; ' . $context->addTypeLinks(get_class($exception));
+				} elseif ($exception instanceof \yii\base\Exception) {
+					echo '<span>' . $context->htmlEncode($exception->getName()) . '</span>';
+					echo ' &ndash; ' . $context->addTypeLinks(get_class($exception));
+				} else {
+					echo '<span>' . $context->htmlEncode(get_class($exception)) . '</span>';
+				}
+			?></h1>
 		<?php endif; ?>
+		<h2><?php echo $context->htmlEncode($exception->getMessage()); ?></h2>
 	</div>
 
 	<div class="call-stack">
