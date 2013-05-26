@@ -94,7 +94,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * The following example builds a cache key using three parameters:
 	 *
 	 * ~~~
-	 * $key = $cache->buildKey($className, $method, $id);
+	 * $key = $cache->buildKey(array($className, $method, $id));
 	 * ~~~
 	 *
 	 * @param array|string $key the key to be normalized
