@@ -169,6 +169,23 @@ class AssetControllerTest extends TestCase
 		}
 	}
 
+	/**
+	 * Invokes the asset controller method even if it is protected.
+	 * @param string $methodName name of the method to be invoked.
+	 * @param array $args method arguments.
+	 * @return mixed method invoke result.
+	 */
+	protected function invokeAssetControllerMethod($methodName, array $args = array())
+	{
+		$controller = $this->createAssetController();
+		$controllerClassReflection = new ReflectionClass(get_class($controller));
+		$methodReflection = $controllerClassReflection->getMethod($methodName);
+		$methodReflection->setAccessible(true);
+		$result = $methodReflection->invokeArgs($controller, $args);
+		$methodReflection->setAccessible(false);
+		return $result;
+	}
+
 	// Tests :
 
 	public function testActionTemplate()
@@ -236,5 +253,66 @@ class AssetControllerTest extends TestCase
 		foreach ($jsFiles as $name => $content) {
 			$this->assertContains($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
 		}
+	}
+
+	/**
+	 * Data provider for [[testAdjustCssUrl()]].
+	 * @return array test data.
+	 */
+	public function adjustCssUrlDataProvider()
+	{
+		return array(
+			array(
+				'.published-same-dir-class {background-image: url(published_same_dir.png);}',
+				'/test/base/path/assets/input',
+				'/test/base/path/assets/output',
+				'.published-same-dir-class {background-image: url(../input/published_same_dir.png);}',
+			),
+			array(
+				'.published-relative-dir-class {background-image: url(../img/published_relative_dir.png);}',
+				'/test/base/path/assets/input',
+				'/test/base/path/assets/output',
+				'.published-relative-dir-class {background-image: url(../img/published_relative_dir.png);}',
+			),
+			array(
+				'.static-same-dir-class {background-image: url(\'static_same_dir.png\');}',
+				'/test/base/path/css',
+				'/test/base/path/assets/output',
+				'.static-same-dir-class {background-image: url(\'../../css/static_same_dir.png\');}',
+			),
+			array(
+				'.static-relative-dir-class {background-image: url("../img/static_relative_dir.png");}',
+				'/test/base/path/css',
+				'/test/base/path/assets/output',
+				'.static-relative-dir-class {background-image: url("../../img/static_relative_dir.png");}',
+			),
+			array(
+				'.absolute-url-class {background-image: url(http://domain.com/img/image.gif);}',
+				'/test/base/path/assets/input',
+				'/test/base/path/assets/output',
+				'.absolute-url-class {background-image: url(http://domain.com/img/image.gif);}',
+			),
+			array(
+				'.absolute-url-secure-class {background-image: url(https://secure.domain.com/img/image.gif);}',
+				'/test/base/path/assets/input',
+				'/test/base/path/assets/output',
+				'.absolute-url-secure-class {background-image: url(https://secure.domain.com/img/image.gif);}',
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider adjustCssUrlDataProvider
+	 *
+	 * @param $cssContent
+	 * @param $inputFilePath
+	 * @param $outputFilePath
+	 * @param $expectedCssContent
+	 */
+	public function testAdjustCssUrl($cssContent, $inputFilePath, $outputFilePath, $expectedCssContent)
+	{
+		$adjustedCssContent = $this->invokeAssetControllerMethod('adjustCssUrl', array($cssContent, $inputFilePath, $outputFilePath));
+
+		$this->assertEquals($expectedCssContent, $adjustedCssContent, 'Unable to adjust CSS correctly!');
 	}
 }
