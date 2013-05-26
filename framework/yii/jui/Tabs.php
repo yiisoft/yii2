@@ -20,18 +20,26 @@ use yii\helpers\Html;
  * echo Tabs::widget(array(
  *     'items' => array(
  *         array(
- *             'header' => 'Tab one',
+ *             'label' => 'Tab one',
  *             'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
  *         ),
  *         array(
- *             'header' => 'Tab two',
- *             'headerOptions' => array(
- *                 'tag' => 'li',
- *             ),
+ *             'label' => 'Tab two',
  *             'content' => 'Sed non urna. Phasellus eu ligula. Vestibulum sit amet purus...',
  *             'options' => array(
  *                 'tag' => 'div',
  *             ),
+ *         ),
+ *         array(
+ *             'label' => 'Tab three',
+ *             'content' => 'Specific content...',
+ *             'options' => array(
+ *                 'id' => 'my-tab',
+ *             ),
+ *         ),
+ *         array(
+ *             'label' => 'Ajax tab',
+ *             'url' => 'http://www.yiiframework.com',
  *         ),
  *     ),
  *     'options' => array(
@@ -39,9 +47,6 @@ use yii\helpers\Html;
  *     ),
  *     'itemOptions' => array(
  *         'tag' => 'div',
- *     ),
- *     'headerOptions' => array(
- *         'tag' => 'li',
  *     ),
  *     'clientOptions' => array(
  *         'collapsible' => false,
@@ -58,7 +63,7 @@ class Tabs extends Widget
 	public $options = array();
 	public $items = array();
 	public $itemOptions = array();
-	public $headerOptions = array();
+	public $headerTemplate = '<li><a href="{url}">{label}</a></li>';
 
 
 	/**
@@ -76,6 +81,7 @@ class Tabs extends Widget
 	 * Renders tab items as specified on [[items]].
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException.
+	 * @todo rework
 	 */
 	protected function renderItems()
 	{
