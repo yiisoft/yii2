@@ -42,7 +42,7 @@ use yii\helpers\Html;
  *         ),
  *         array(
  *             'label' => 'Ajax tab',
- *             'ajax' => array('ajax/content'),
+ *             'url' => array('ajax/content'),
  *         ),
  *     ),
  *     'options' => array(
@@ -75,19 +75,13 @@ class Tabs extends Widget
 	/**
 	 * @var array list of tab items. Each item can be an array of the following structure:
 	 *
-	 * ~~~
-	 * array(
-	 *     'label' => 'Tab header label',
-	 *     'content' => 'Tab item content',
-	 *     'ajax' => 'http://www.yiiframework.com', //or array('ajax/action'),
-	 *     // the HTML attributes of the item container tag. This will overwrite "itemOptions".
-	 *     'options' => array(),
-	 *     // the HTML attributes of the header container tag. This will overwrite "headerOptions".
-	 *     'headerOptions' = array(),
-     *     // @todo comment.
-	 *     'template'
-	 * )
-	 * ~~~
+	 * - label: string, required, specifies the header link label. When [[encodeLabels]] is true, the label
+	 *   will be HTML-encoded.
+	 * - content: string, @todo comment
+	 * - url: mixed, @todo comment
+	 * - template: string, optional, @todo comment
+	 * - options: array, optional, @todo comment
+	 * - headerOptions: array, optional, @todo comment
 	 */
 	public $items = array();
 	/**
@@ -103,13 +97,11 @@ class Tabs extends Widget
 	 */
 	public $headerOptions = array();
 	/**
-	 * @var string
-	 * @todo comment.
+	 * @var string @todo comment
 	 */
 	public $linkTemplate = '<a href="{url}">{label}</a>';
 	/**
-	 * @var boolean
-	 * @todo comment.
+	 * @var boolean whether the labels for header items should be HTML-encoded.
 	 */
 	public $encodeLabels = true;
 
@@ -140,11 +132,11 @@ class Tabs extends Widget
 			if (!isset($item['label'])) {
 				throw new InvalidConfigException("The 'label' option is required.");
 			}
-			if (isset($item['ajax'])) {
-				$url = $item['ajax'];
+			if (isset($item['url'])) {
+				$url = Html::url($item['url']);
 			} else {
 				if (!isset($item['content'])) {
-					throw new InvalidConfigException("The 'content' or 'ajax' option is required.");
+					throw new InvalidConfigException("The 'content' or 'url' option is required.");
 				}
 				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
 				$tag = ArrayHelper::remove($options, 'tag', 'div');
@@ -158,7 +150,7 @@ class Tabs extends Widget
 			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 			$headers[] = Html::tag('li', strtr($template, array(
 				'{label}' => $this->encodeLabels ? Html::encode($item['label']) : $item['label'],
-				'{url}' => Html::url($url),
+				'{url}' => $url,
 			)), $headerOptions);
 		}
 		return Html::tag('ul', implode("\n", $headers)) . "\n" . implode("\n", $items);
