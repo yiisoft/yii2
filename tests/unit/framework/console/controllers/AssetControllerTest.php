@@ -169,6 +169,23 @@ class AssetControllerTest extends TestCase
 		}
 	}
 
+	/**
+	 * Invokes the asset controller method even if it is protected.
+	 * @param string $methodName name of the method to be invoked.
+	 * @param array $args method arguments.
+	 * @return mixed method invoke result.
+	 */
+	protected function invokeAssetControllerMethod($methodName, array $args = array())
+	{
+		$controller = $this->createAssetController();
+		$controllerClassReflection = new ReflectionClass(get_class($controller));
+		$methodReflection = $controllerClassReflection->getMethod($methodName);
+		$methodReflection->setAccessible(true);
+		$result = $methodReflection->invokeArgs($controller, $args);
+		$methodReflection->setAccessible(false);
+		return $result;
+	}
+
 	// Tests :
 
 	public function testActionTemplate()
@@ -236,5 +253,42 @@ class AssetControllerTest extends TestCase
 		foreach ($jsFiles as $name => $content) {
 			$this->assertContains($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
 		}
+	}
+
+	/**
+	 * Data provider for [[testAdjustCssUrl()]].
+	 * @return array test data.
+	 */
+	public function adjustCssUrlDataProvider()
+	{
+		return array(
+			array(
+				'.test-class {background-image: url("test.png");}',
+				'/test/base/path/assets/input',
+				'/test/base/path/assets/output',
+				'.test-class {background-image: url("../input/test.png");}',
+			),
+			array(
+				'.test-class {background-image: url("../img/test.png");}',
+				'/test/base/path/assets/input',
+				'/test/base/path/assets/output',
+				'.test-class {background-image: url("../input/img/test.png");}',
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider adjustCssUrlDataProvider
+	 *
+	 * @param $cssContent
+	 * @param $inputFilePath
+	 * @param $outputFilePath
+	 * @param $expectedCssContent
+	 */
+	public function testAdjustCssUrl($cssContent, $inputFilePath, $outputFilePath, $expectedCssContent)
+	{
+		$adjustedCssContent = $this->invokeAssetControllerMethod('adjustCssUrl', array($cssContent, $inputFilePath, $outputFilePath));
+
+		$this->assertEquals($expectedCssContent, $adjustedCssContent, 'Unable to adjust CSS correctly!');
 	}
 }
