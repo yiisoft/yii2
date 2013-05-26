@@ -49,11 +49,29 @@ use yii\helpers\Html;
 class Sortable extends Widget
 {
 	/**
-	 * @var array list of sortable containers.
+	 * @var array the HTML attributes for the widget container tag. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "ul", the tag name of the container tag of this widget
+	 */
+	public $options = array();
+	/**
+	 * @var array list of sortable items. Each item can be a string representing the item content
+	 * or an array of the following structure:
+	 *
+	 * ~~~
+	 * array(
+	 *     'content' => 'item content',
+	 *     // the HTML attributes of the item container tag. This will overwrite "itemOptions".
+	 *     'options' => array(),
+	 * )
+	 * ~~~
 	 */
 	public $items = array();
 	/**
-	 * @var array list of individual sortable container default options.
+	 * @var array list of HTML attributes for the item container tags. This will be overwritten
+	 * by the "options" set in individual [[items]]. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "li", the tag name of the item container tags.
 	 */
 	public $itemOptions = array();
 
