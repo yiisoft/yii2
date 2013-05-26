@@ -22,6 +22,9 @@ use yii\helpers\Html;
  *         'Item 1',
  *         array(
  *             'content' => 'Item2',
+ *         ),
+ *         array(
+ *             'content' => 'Item3',
  *             'options' => array(
  *                 'tag' => 'li',
  *             ),
