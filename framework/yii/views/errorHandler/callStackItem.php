@@ -16,7 +16,7 @@ $context = $this->context;
 <li class="<?php if (!$context->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item">
 	<div class="element-wrap">
 		<div class="element">
-			<span class="line-number"><?php echo (int)$index; ?>.</span>
+			<span class="item-number"><?php echo (int)$index; ?>.</span>
 			<span class="text"><?php if ($file !== null) echo 'in ' . $context->htmlEncode($file); ?></span>
 			<?php if ($method !== null): ?>
 				<span class="call">
@@ -36,7 +36,12 @@ $context = $this->context;
 			<?php endfor; ?>
 			<div class="code">
 				<span class="lines"><?php for ($i = $begin; $i <= $end; ++$i) echo (int)$i . '<br/>'; ?></span>
-				<pre><?php for ($i = $begin; $i <= $end; ++$i) echo $context->htmlEncode($lines[$i]); ?></pre>
+				<pre><?php
+					// fill empty lines with a whitespace to avoid rendering problems in opera
+					for ($i = $begin; $i <= $end; ++$i) {
+						echo (trim($lines[$i]) == '') ? " \n" : $context->htmlEncode($lines[$i]);
+					}
+				?></pre>
 			</div>
 		</div>
 	<?php endif; ?>

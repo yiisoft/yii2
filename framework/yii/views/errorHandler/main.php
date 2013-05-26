@@ -169,7 +169,7 @@ html,body{
 	color: #000;
 	text-shadow: 0 1px 0 #cacaca;
 }
-.call-stack ul li .line-number{
+.call-stack ul li .item-number{
 	width: 45px;
 	display: inline-block;
 }
@@ -204,9 +204,8 @@ html,body{
 	background-color: #ffebeb;
 	position: absolute;
 	width: 100%;
-	height: 20px;
+	height: 18px;
 	z-index: 100;
-	margin-top: 15px;
 }
 .call-stack ul li .hover-line{
 	background: none;
@@ -216,8 +215,8 @@ html,body{
 }
 .call-stack ul li .code{
 	min-width: 860px; /* 960px - 50px * 2 */
-	margin: 0 auto;
-	padding: 15px 50px;
+	margin: 15px auto;
+	padding: 0 50px;
 	position: relative;
 }
 .call-stack ul li .code .lines{
@@ -226,6 +225,8 @@ html,body{
 	left: 50px;
 	line-height: 18px;
 	font-size: 14px;
+	vertical-align: middle;
+	text-align: right;
 	font-family: Consolas, Courier New, monospace;
 	color: #aaa;
 }
@@ -235,6 +236,7 @@ html,body{
 	left: 50px;
 	line-height: 18px;
 	font-size: 14px;
+	vertical-align: middle;
 	font-family: Consolas, Courier New, monospace;
 	display: inline;
 }
