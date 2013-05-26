@@ -56,15 +56,38 @@ use yii\helpers\Html;
 class Accordion extends Widget
 {
 	/**
-	 * @var array list of collapsible sections.
+	 * @var array the HTML attributes for the widget container tag. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "div", the tag name of the container tag of this widget
+	 */
+	public $options = array();
+	/**
+	 * @var array list of collapsible items. Each item can be an array of the following structure:
+	 *
+	 * ~~~
+	 * array(
+	 *     'header' => 'Item header',
+	 *     'content' => 'Item content',
+	 *     // the HTML attributes of the item header container tag. This will overwrite "headerOptions".
+	 *     'headerOptions' => array(),
+	 *     // the HTML attributes of the item container tag. This will overwrite "itemOptions".
+	 *     'options' => array(),
+	 * )
+	 * ~~~
 	 */
 	public $items = array();
 	/**
-	 * @var array list of individual collabsible section default options.
+	 * @var array list of HTML attributes for the item container tags. This will be overwritten
+	 * by the "options" set in individual [[items]]. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "li", the tag name of the item container tags.
 	 */
 	public $itemOptions = array();
 	/**
-	 * @var array list of individual collabsible section header default options.
+	 * @var array list of HTML attributes for the item header container tags. This will be overwritten
+	 * by the "headerOptions" set in individual [[items]]. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "li", the tag name of the item container tags.
 	 */
 	public $headerOptions = array();
 
@@ -83,7 +106,7 @@ class Accordion extends Widget
 	}
 
 	/**
-	 * Renders collapsible sections as specified on [[items]].
+	 * Renders collapsible items as specified on [[items]].
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException.
 	 */
