@@ -109,8 +109,8 @@ html,body{
 	filter: progid:DXImageTransform.Microsoft.BasicImage(mirror=1);
 	font-size: 26px;
 	position: absolute;
-	margin-top: -9px;
-	margin-left: -22px;
+	margin-top: -5px;
+	margin-left: -25px;
 	color: #e51717;
 	text-shadow: 0 1px 0 #cacaca;
 }
@@ -169,7 +169,7 @@ html,body{
 	color: #000;
 	text-shadow: 0 1px 0 #cacaca;
 }
-.call-stack ul li .number{
+.call-stack ul li .line-number{
 	width: 45px;
 	display: inline-block;
 }

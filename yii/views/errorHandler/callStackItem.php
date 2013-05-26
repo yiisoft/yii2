@@ -16,7 +16,7 @@ $context = $this->context;
 <li class="<?php if (!$context->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item">
 	<div class="element-wrap">
 		<div class="element">
-			<span class="number"><?php echo (int)$index; ?>.</span>
+			<span class="line-number"><?php echo (int)$index; ?>.</span>
 			<span class="text"><?php if ($file !== null) echo 'in ' . $context->htmlEncode($file); ?></span>
 			<?php if ($method !== null): ?>
 				<span class="call">
