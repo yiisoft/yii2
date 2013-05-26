@@ -55,7 +55,7 @@ a{
 a:hover{
 	text-decoration: underline;
 }
-h1,h2,p,img,ul li{
+h1,h2,h3,p,img,ul li{
 	font-family: Arial,sans-serif;
 	color: #505050;
 }
@@ -92,33 +92,46 @@ html,body{
 	font-size: 20px;
 	text-shadow: 0 1px 0 #cacaca;
 }
+
 /* previous exceptions */
-.header div.previous{
-	margin: 20px 20px 0 0;
+.header .previous{
+	margin: 20px 0;
+	padding-left: 30px;
 }
-.header div.previous div{
-	margin: 15px 20px 0 25px;
+.header .previous div{
+	margin: 20px 0;
 }
-.header div.previous h1{
-	font-size: 20px;
-	margin-bottom: 10px;
-}
-h1 span.arrow{
-	display: inline-block;
+.header .previous .arrow{
 	-moz-transform: scale(-1, 1);
 	-webkit-transform: scale(-1, 1);
 	-o-transform: scale(-1, 1);
 	transform: scale(-1, 1);
 	filter: progid:DXImageTransform.Microsoft.BasicImage(mirror=1);
-	width: 30px;
-	text-align: center;
+	font-size: 26px;
+	position: absolute;
+	margin-top: -9px;
+	margin-left: -22px;
+	color: #e51717;
+	text-shadow: 0 1px 0 #cacaca;
 }
-.header div.previous h2{
-	font-size: 15px;
-	margin-left: 30px;
+.header .previous h2{
+	font-size: 20px;
+	color: #e51717;
+	text-shadow: 0 1px 0 #cacaca;
+	margin-bottom: 10px;
 }
-.header div.previous p{
-	margin: 10px 0 0 30px;
+.header .previous h2 a{
+	color: #e57373;
+}
+.header .previous h2 a:hover{
+	color: #e51717;
+}
+.header .previous h3{
+	font-size: 14px;
+	margin: 10px 0;
+}
+.header .previous p{
+	font-size: 14px;
 	color: #aaa;
 }
 
