@@ -263,16 +263,28 @@ class AssetControllerTest extends TestCase
 	{
 		return array(
 			array(
-				'.test-class {background-image: url("test.png");}',
+				'.published-same-dir-class {background-image: url("published_same_dir.png");}',
 				'/test/base/path/assets/input',
 				'/test/base/path/assets/output',
-				'.test-class {background-image: url("../input/test.png");}',
+				'.published-same-dir-class {background-image: url("../input/published_same_dir.png");}',
 			),
 			array(
-				'.test-class {background-image: url("../img/test.png");}',
+				'.published-relative-dir-class {background-image: url("../img/published_relative_dir.png");}',
 				'/test/base/path/assets/input',
 				'/test/base/path/assets/output',
-				'.test-class {background-image: url("../input/img/test.png");}',
+				'.published-relative-dir-class {background-image: url("../img/published_relative_dir.png");}',
+			),
+			array(
+				'.static-same-dir-class {background-image: url("static_same_dir.png");}',
+				'/test/base/path/css',
+				'/test/base/path/assets/output',
+				'.static-same-dir-class {background-image: url("../../css/static_same_dir.png");}',
+			),
+			array(
+				'.static-relative-dir-class {background-image: url("../img/static_relative_dir.png");}',
+				'/test/base/path/css',
+				'/test/base/path/assets/output',
+				'.static-relative-dir-class {background-image: url("../../img/static_relative_dir.png");}',
 			),
 		);
 	}

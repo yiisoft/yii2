@@ -536,15 +536,20 @@ EOD
 	 */
 	protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
 	{
-		$sharedPath = '';
-		for ($i = 0; $i < strlen($inputFilePath); $i++) {
-			if (!isset($outputFilePath[$i])) {
+		$sharedPathParts = array();
+		$inputFilePathParts = explode('/', $inputFilePath);
+		$inputFilePathPartsCount = count($inputFilePathParts);
+		$outputFilePathParts = explode('/', $outputFilePath);
+		$outputFilePathPartsCount = count($outputFilePathParts);
+		for ($i =0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
+			if ($inputFilePathParts[$i] == $outputFilePathParts[$i]) {
+				$sharedPathParts[] = $inputFilePathParts[$i];
+			} else {
 				break;
 			}
-			if ($inputFilePath[$i] == $outputFilePath[$i]) {
-				$sharedPath .= $inputFilePath[$i];
-			}
 		}
+		$sharedPath = implode('/', $sharedPathParts);
+
 		$inputFileRelativePath = trim(str_replace($sharedPath, '', $inputFilePath), '/');
 		$outputFileRelativePath = trim(str_replace($sharedPath, '', $outputFilePath), '/');
 		$inputFileRelativePathParts = explode('/', $inputFileRelativePath);
@@ -554,12 +559,26 @@ EOD
 			$fullMatch = $matches[0];
 			$inputUrl = $matches[1];
 
-			$urlPrefix = str_repeat('../', count($outputFileRelativePathParts));
-			$urlPrefix .= implode('/', $inputFileRelativePathParts);
+			$outputUrlParts = array_fill(0, count($outputFileRelativePathParts), '..');
+			$outputUrlParts = array_merge($outputUrlParts, $inputFileRelativePathParts);
 
-			$outputUrl = $urlPrefix . '/' . $inputUrl;
+			if (strpos($inputUrl, '/') !== false) {
+				$inputUrlParts = explode('/', $inputUrl);
+				foreach ($inputUrlParts as $key => $inputUrlPart) {
+					if ($inputUrlPart == '..') {
+						array_pop($outputUrlParts);
+						unset($inputUrlParts[$key]);
+					}
+				}
+				$outputUrlParts[] = implode('/', $inputUrlParts);
+			} else {
+				$outputUrlParts[] = $inputUrl;
+			}
+			$outputUrl = implode('/', $outputUrlParts);
+
 			return str_replace($inputUrl, $outputUrl, $fullMatch);
 		};
+
 		$cssContent = preg_replace_callback('/[\w\-]:\s*url\("([^"]*)"\)+/is', $callback, $cssContent);
 
 		return $cssContent;
