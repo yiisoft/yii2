@@ -85,10 +85,10 @@ class Accordion extends Widget
 				throw new InvalidConfigException("The 'content' option is required.");
 			}
 			$headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', array()));
-			$headerTag = ArrayHelper::remove($headerOptions, 'tag', ArrayHelper::remove($headerOptions, 'tag', 'h3'));
+			$headerTag = ArrayHelper::remove($headerOptions, 'tag', 'h3');
 			$items[] = Html::tag($headerTag, $item['header'], $headerOptions);
 			$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
-			$tag = ArrayHelper::remove($options, 'tag', ArrayHelper::remove($options, 'tag', 'div'));
+			$tag = ArrayHelper::remove($options, 'tag', 'div');
 			$items[] = Html::tag($tag, $item['content'], $options);;
 		}
 
