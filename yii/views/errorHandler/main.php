@@ -66,7 +66,6 @@ html,body{
 /* header */
 .header{
 	min-width: 860px; /* 960px - 50px * 2 */
-	max-width: 1100px; /* 1200px - 50px * 2 */
 	margin: 40px auto 30px auto;
 	padding: 0 50px;
 }
@@ -143,7 +142,6 @@ h1 span.arrow{
 }
 .call-stack ul li .element{
 	min-width: 860px; /* 960px - 50px * 2 */
-	max-width: 1100px; /* 1200px - 50px * 2 */
 	margin: 0 auto;
 	padding: 0 50px;
 	position: relative;
@@ -202,7 +200,6 @@ h1 span.arrow{
 }
 .call-stack ul li .code{
 	min-width: 860px; /* 960px - 50px * 2 */
-	max-width: 1100px; /* 1200px - 50px * 2 */
 	margin: 0 auto;
 	padding: 15px 50px;
 	position: relative;
@@ -241,7 +238,6 @@ h1 span.arrow{
 }
 .request .code{
 	min-width: 860px; /* 960px - 50px * 2 */
-	max-width: 1100px; /* 1200px - 50px * 2 */
 	margin: 0 auto;
 	padding: 15px 50px;
 }
@@ -263,7 +259,6 @@ h1 span.arrow{
 	position: relative;
 	height: 222px;
 	min-width: 860px; /* 960px - 50px * 2 */
-	max-width: 1100px; /* 1200px - 50px * 2 */
 	padding: 0 50px;
 	margin: 1px auto 0 auto;
 }
