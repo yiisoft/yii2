@@ -20,36 +20,23 @@ use yii\helpers\Html;
  * echo Sortable::widget(array(
  *     'items' => array(
  *         'Item 1',
- *         'Item 2',
- *         'Item 3',
+ *         array(
+ *             'content' => 'Item2',
+ *             'options' => array(
+ *                 'tag' => 'li',
+ *             ),
+ *         ),
  *     ),
- *     'clientOptions' => array(
- *         'cursor' => 'move',
- *     ),
- * ));
- * ```
- *
- * The following example will show the content enclosed between the [[begin()]]
- * and [[end()]] calls within the sortable widget:
- *
- * ```php
- * Sortable::begin(array(
  *     'options' => array(
- *         'tag' => 'div',
+ *         'tag' => 'ul',
  *     ),
  *     'itemOptions' => array(
- *         'tag' => 'div',
+ *         'tag' => 'li',
  *     ),
  *     'clientOptions' => array(
  *         'cursor' => 'move',
  *     ),
  * ));
- *
- * echo 'Item 1';
- * echo 'Item 2';
- * echo 'Item 3';
- *
- * Sortable::end();
  * ```
  *
  * @see http://api.jqueryui.com/sortable/
@@ -59,35 +46,24 @@ use yii\helpers\Html;
 class Sortable extends Widget
 {
 	/**
-	 * @var array.
-	 * @todo comments
+	 * @var array list of sortable containers.
 	 */
 	public $items = array();
 	/**
-	 * @var array.
-	 * @todo comments
+	 * @var array list of individual sortable container default options.
 	 */
 	public $itemOptions = array();
 
-
-	/**
-	 * Initializes the widget.
-	 */
-	public function init()
-	{
-		parent::init();
-		$options = $this->options;
-		$tag = ArrayHelper::remove($options, 'tag', 'ul');
-		echo Html::beginTag($tag, $options) . "\n";
-	}
 
 	/**
 	 * Renders the widget.
 	 */
 	public function run()
 	{
+		$options = $this->options;
+		$tag = ArrayHelper::remove($options, 'tag', 'ul');
+		echo Html::beginTag($tag, $options) . "\n";
 		echo $this->renderItems() . "\n";
-		$tag = ArrayHelper::getValue($this->options, 'tag', 'ul');
 		echo Html::endTag($tag) . "\n";
 		$this->registerWidget('sortable', false);
 	}
