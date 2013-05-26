@@ -286,6 +286,18 @@ class AssetControllerTest extends TestCase
 				'/test/base/path/assets/output',
 				'.static-relative-dir-class {background-image: url("../../img/static_relative_dir.png");}',
 			),
+			array(
+				'.absolute-url-class {background-image: url(http://domain.com/img/image.gif);}',
+				'/test/base/path/assets/input',
+				'/test/base/path/assets/output',
+				'.absolute-url-class {background-image: url(http://domain.com/img/image.gif);}',
+			),
+			array(
+				'.absolute-url-secure-class {background-image: url(https://secure.domain.com/img/image.gif);}',
+				'/test/base/path/assets/input',
+				'/test/base/path/assets/output',
+				'.absolute-url-secure-class {background-image: url(https://secure.domain.com/img/image.gif);}',
+			),
 		);
 	}
 
