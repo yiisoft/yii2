@@ -40,23 +40,20 @@ use yii\helpers\Html;
 class Accordion extends Widget
 {
 	/**
-	 * @var array list of sections in the accordion widget. Each array element represents a single
-	 * section with the following structure:
-	 *
-	 * ```php
-	 * array(
-	 *     // required, the header (HTML) of the section
-	 *     'header' => 'Section label',
-	 *     // required, the content (HTML) of the section
-	 *     'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
-	 *     // optional the HTML attributes of the section content container
-	 *     'options'=> array(...),
-	 *     // optional the HTML attributes of the section header container
-	 *     'headerOptions'=> array(...),
-	 * )
-	 * ```
+	 * @var array.
+	 * @todo comments.
 	 */
 	public $items = array();
+	/**
+	 * @var array.
+	 * @todo comments.
+	 */
+	public $itemOptions = array();
+	/**
+	 * @var array.
+	 * @todo comments.
+	 */
+	public $headerOptions = array();
 
 
 	/**
@@ -64,9 +61,11 @@ class Accordion extends Widget
 	 */
 	public function run()
 	{
-		echo Html::beginTag('div', $this->options) . "\n";
-		echo $this->renderSections() . "\n";
-		echo Html::endTag('div') . "\n";
+		$options = $this->options;
+		$tag = ArrayHelper::remove($options, 'tag', 'div');
+		echo Html::beginTag($tag, $options) . "\n";
+		echo $this->renderItems() . "\n";
+		echo Html::endTag($tag) . "\n";
 		$this->registerWidget('accordion');
 	}
 
@@ -75,9 +74,9 @@ class Accordion extends Widget
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException.
 	 */
-	protected function renderSections()
+	protected function renderItems()
 	{
-		$sections = array();
+		$items = array();
 		foreach ($this->items as $item) {
 			if (!isset($item['header'])) {
 				throw new InvalidConfigException("The 'header' option is required.");
@@ -85,12 +84,14 @@ class Accordion extends Widget
 			if (!isset($item['content'])) {
 				throw new InvalidConfigException("The 'content' option is required.");
 			}
-			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
-			$sections[] = Html::tag('h3', $item['header'], $headerOptions);
-			$options = ArrayHelper::getValue($item, 'options', array());
-			$sections[] = Html::tag('div', $item['content'], $options);;
+			$headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', array()));
+			$headerTag = ArrayHelper::remove($headerOptions, 'tag', ArrayHelper::remove($headerOptions, 'tag', 'h3'));
+			$items[] = Html::tag($headerTag, $item['header'], $headerOptions);
+			$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
+			$tag = ArrayHelper::remove($options, 'tag', ArrayHelper::remove($options, 'tag', 'div'));
+			$items[] = Html::tag($tag, $item['content'], $options);;
 		}
 
-		return implode("\n", $sections);
+		return implode("\n", $items);
 	}
 }
