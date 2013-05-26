@@ -536,10 +536,31 @@ EOD
 	 */
 	protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
 	{
-		$callback = function($matches) use ($inputFilePath, $outputFilePath) {
-			return $matches[0];
+		$sharedPath = '';
+		for ($i = 0; $i < strlen($inputFilePath); $i++) {
+			if (!isset($outputFilePath[$i])) {
+				break;
+			}
+			if ($inputFilePath[$i] == $outputFilePath[$i]) {
+				$sharedPath .= $inputFilePath[$i];
+			}
+		}
+		$inputFileRelativePath = trim(str_replace($sharedPath, '', $inputFilePath), '/');
+		$outputFileRelativePath = trim(str_replace($sharedPath, '', $outputFilePath), '/');
+		$inputFileRelativePathParts = explode('/', $inputFileRelativePath);
+		$outputFileRelativePathParts = explode('/', $outputFileRelativePath);
+
+		$callback = function($matches) use ($inputFileRelativePathParts, $outputFileRelativePathParts) {
+			$fullMatch = $matches[0];
+			$inputUrl = $matches[1];
+
+			$urlPrefix = str_repeat('../', count($outputFileRelativePathParts));
+			$urlPrefix .= implode('/', $inputFileRelativePathParts);
+
+			$outputUrl = $urlPrefix . '/' . $inputUrl;
+			return str_replace($inputUrl, $outputUrl, $fullMatch);
 		};
-		$cssContent = preg_replace_callback('/[\w\-]:\s*url\("(.*)"\)+/is', $callback, $cssContent);
+		$cssContent = preg_replace_callback('/[\w\-]:\s*url\("([^"]*)"\)+/is', $callback, $cssContent);
 
 		return $cssContent;
 	}
