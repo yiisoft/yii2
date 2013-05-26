@@ -93,6 +93,35 @@ html,body{
 	font-size: 20px;
 	text-shadow: 0 1px 0 #cacaca;
 }
+/* previous exceptions */
+.header div.previous{
+	margin: 20px 20px 0 0;
+}
+.header div.previous div{
+	margin: 15px 20px 0 25px;
+}
+.header div.previous h1{
+	font-size: 20px;
+	margin-bottom: 10px;
+}
+h1 span.arrow{
+	display: inline-block;
+	-moz-transform: scale(-1, 1);
+	-webkit-transform: scale(-1, 1);
+	-o-transform: scale(-1, 1);
+	transform: scale(-1, 1);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(mirror=1);
+	width: 30px;
+	text-align: center;
+}
+.header div.previous h2{
+	font-size: 15px;
+	margin-left: 30px;
+}
+.header div.previous p{
+	margin: 10px 0 0 30px;
+	color: #aaa;
+}
 
 /* call stack */
 .call-stack{
@@ -131,7 +160,7 @@ html,body{
 	display: inline-block;
 }
 .call-stack ul li .text{
-	color: #bbb;
+	color: #aaa;
 }
 .call-stack ul li.application .text{
 	color: #505050;
@@ -139,7 +168,7 @@ html,body{
 .call-stack ul li .at{
 	position: absolute;
 	right: 110px; /* 50px + 60px */
-	color: #bbb;
+	color: #aaa;
 }
 .call-stack ul li.application .at{
 	color: #505050;
@@ -185,7 +214,7 @@ html,body{
 	line-height: 18px;
 	font-size: 14px;
 	font-family: Consolas, Courier New, monospace;
-	color: #bbb;
+	color: #aaa;
 }
 .call-stack ul li .code pre{
 	position: relative;
@@ -335,6 +364,7 @@ pre .diff .change{
 			?></h1>
 		<?php endif; ?>
 		<h2><?php echo $context->htmlEncode($exception->getMessage()); ?></h2>
+		<?php echo $context->renderPreviousExceptions($exception); ?>
 	</div>
 
 	<div class="call-stack">
