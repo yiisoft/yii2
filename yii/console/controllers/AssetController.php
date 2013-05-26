@@ -517,14 +517,74 @@ EOD
 	 */
 	public function combineCssFiles($inputFiles, $outputFile)
 	{
-		// todo: adjust url() references in CSS files
 		$content = '';
 		foreach ($inputFiles as $file) {
 			$content .= "/*** BEGIN FILE: $file ***/\n"
-				. file_get_contents($file)
+				. $this->adjustCssUrl(file_get_contents($file), dirname($file), dirname($outputFile))
 				. "/*** END FILE: $file ***/\n";
 		}
 		file_put_contents($outputFile, $content);
+	}
+
+	/**
+	 * Adjusts CSS content allowing URL references pointing to the original resources.
+	 * @param string $cssContent source CSS content.
+	 * @param string $inputFilePath input CSS file name.
+	 * @param string $outputFilePath output CSS file name.
+	 * @return string adjusted CSS content.
+	 */
+	protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
+	{
+		$sharedPathParts = array();
+		$inputFilePathParts = explode('/', $inputFilePath);
+		$inputFilePathPartsCount = count($inputFilePathParts);
+		$outputFilePathParts = explode('/', $outputFilePath);
+		$outputFilePathPartsCount = count($outputFilePathParts);
+		for ($i =0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
+			if ($inputFilePathParts[$i] == $outputFilePathParts[$i]) {
+				$sharedPathParts[] = $inputFilePathParts[$i];
+			} else {
+				break;
+			}
+		}
+		$sharedPath = implode('/', $sharedPathParts);
+
+		$inputFileRelativePath = trim(str_replace($sharedPath, '', $inputFilePath), '/');
+		$outputFileRelativePath = trim(str_replace($sharedPath, '', $outputFilePath), '/');
+		$inputFileRelativePathParts = explode('/', $inputFileRelativePath);
+		$outputFileRelativePathParts = explode('/', $outputFileRelativePath);
+
+		$callback = function($matches) use ($inputFileRelativePathParts, $outputFileRelativePathParts) {
+			$fullMatch = $matches[0];
+			$inputUrl = $matches[1];
+
+			if (preg_match('/https?:\/\//is', $inputUrl)) {
+				return $fullMatch;
+			}
+
+			$outputUrlParts = array_fill(0, count($outputFileRelativePathParts), '..');
+			$outputUrlParts = array_merge($outputUrlParts, $inputFileRelativePathParts);
+
+			if (strpos($inputUrl, '/') !== false) {
+				$inputUrlParts = explode('/', $inputUrl);
+				foreach ($inputUrlParts as $key => $inputUrlPart) {
+					if ($inputUrlPart == '..') {
+						array_pop($outputUrlParts);
+						unset($inputUrlParts[$key]);
+					}
+				}
+				$outputUrlParts[] = implode('/', $inputUrlParts);
+			} else {
+				$outputUrlParts[] = $inputUrl;
+			}
+			$outputUrl = implode('/', $outputUrlParts);
+
+			return str_replace($inputUrl, $outputUrl, $fullMatch);
+		};
+
+		$cssContent = preg_replace_callback('/url\(["\']?([^"]*)["\']?\)/is', $callback, $cssContent);
+
+		return $cssContent;
 	}
 
 	/**
