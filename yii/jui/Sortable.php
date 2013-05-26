@@ -107,10 +107,8 @@ class Sortable extends Widget
 				if (!isset($item['content'])) {
 					throw new InvalidConfigException("The 'content' option is required.");
 				}
-				if (isset($item['options'])) {
-					$options = array_merge($options, $item['options']);
-					$tag = ArrayHelper::remove($options, 'tag', $tag);
-				}
+				$options = array_merge($options, ArrayHelper::getValue($item, 'options', array()));
+				$tag = ArrayHelper::remove($options, 'tag', $tag);
 				$items[] = Html::tag($tag, $item['content'], $options);
 			} else {
 				$items[] = Html::tag($tag, $item, $options);
