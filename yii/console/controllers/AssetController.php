@@ -528,6 +528,23 @@ EOD
 	}
 
 	/**
+	 * Adjusts CSS content allowing URL references pointing to the original resources.
+	 * @param string $cssContent source CSS content.
+	 * @param string $inputFilePath input CSS file name.
+	 * @param string $outputFilePath output CSS file name.
+	 * @return string adjusted CSS content.
+	 */
+	protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
+	{
+		$callback = function($matches) use ($inputFilePath, $outputFilePath) {
+			return $matches[0];
+		};
+		$cssContent = preg_replace_callback('/[\w\-]:\s*url\("(.*)"\)+/is', $callback, $cssContent);
+
+		return $cssContent;
+	}
+
+	/**
 	 * Creates template of configuration file for [[actionCompress]].
 	 * @param string $configFile output file name.
 	 */
