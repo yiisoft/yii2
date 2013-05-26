@@ -574,6 +574,9 @@ class Console
 	/**
 	 * Usage: list($w, $h) = ConsoleHelper::getScreenSize();
 	 *
+	 * @param bool $refresh whether to force checking and not re-use cached size value.
+	 * This is useful to detect changing window size while the application is running but may
+	 * not get up to date values on every terminal.
 	 * @return array|boolean An array of ($width, $height) or false when it was not able to determine size.
 	 */
 	public static function getScreenSize($refresh = false)
