@@ -7,6 +7,8 @@
 
 namespace yii\jui;
 
+use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -17,9 +19,9 @@ use yii\helpers\Html;
  * ```php
  * echo Sortable::widget(array(
  *     'items' => array(
- *         '<li>Item 1</li>',
- *         '<li>Item 2</li>',
- *         '<li>Item 3</li>',
+ *         'Item 1',
+ *         'Item 2',
+ *         'Item 3',
  *     ),
  *     'clientOptions' => array(
  *         'cursor' => 'move',
@@ -32,17 +34,20 @@ use yii\helpers\Html;
  *
  * ```php
  * Sortable::begin(array(
- *     'clientOptions' => array(
- *         'cursor' => 'move',
- *     ),
  *     'options' => array(
  *         'tag' => 'div',
  *     ),
+ *     'itemOptions' => array(
+ *         'tag' => 'div',
+ *     ),
+ *     'clientOptions' => array(
+ *         'cursor' => 'move',
+ *     ),
  * ));
  *
- * echo '<div>Item 1</div>';
- * echo '<div>Item 2</div>';
- * echo '<div>Item 3</div>';
+ * echo 'Item 1';
+ * echo 'Item 2';
+ * echo 'Item 3';
  *
  * Sortable::end();
  * ```
@@ -54,10 +59,15 @@ use yii\helpers\Html;
 class Sortable extends Widget
 {
 	/**
-	 * @var array list of sortable containers. Each array element represents a single
-	 * sortable container.
+	 * @var array.
+	 * @todo comments
 	 */
 	public $items = array();
+	/**
+	 * @var array.
+	 * @todo comments
+	 */
+	public $itemOptions = array();
 
 
 	/**
@@ -67,8 +77,7 @@ class Sortable extends Widget
 	{
 		parent::init();
 		$options = $this->options;
-		$tag = isset($options['tag']) ? $options['tag'] : 'ul';
-		unset($options['tag']);
+		$tag = ArrayHelper::remove($options, 'tag', 'ul');
 		echo Html::beginTag($tag, $options) . "\n";
 	}
 
@@ -78,16 +87,35 @@ class Sortable extends Widget
 	public function run()
 	{
 		echo $this->renderItems() . "\n";
-		echo Html::endTag(isset($this->options['tag']) ? $this->options['tag'] : 'ul') . "\n";
+		$tag = ArrayHelper::getValue($this->options, 'tag', 'ul');
+		echo Html::endTag($tag) . "\n";
 		$this->registerWidget('sortable', false);
 	}
 
 	/**
 	 * Renders sortable items as specified on [[items]].
-	 * @return string the rendering result
+	 * @return string the rendering result.
+	 * @throws InvalidConfigException.
 	 */
 	public function renderItems()
 	{
-		return implode("\n", $this->items);
+		$items = array();
+		foreach ($this->items as $item) {
+			$options = $this->itemOptions;
+			$tag = ArrayHelper::remove($options, 'tag', 'li');
+			if (is_array($item)) {
+				if (!isset($item['content'])) {
+					throw new InvalidConfigException("The 'content' option is required.");
+				}
+				if (isset($item['options'])) {
+					$options = array_merge($options, $item['options']);
+					$tag = ArrayHelper::remove($options, 'tag', $tag);
+				}
+				$items[] = Html::tag($tag, $item['content'], $options);
+			} else {
+				$items[] = Html::tag($tag, $item, $options);
+			}
+		}
+		return implode("\n", $items);
 	}
 }
