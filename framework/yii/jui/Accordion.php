@@ -80,14 +80,14 @@ class Accordion extends Widget
 	 * @var array list of HTML attributes for the item container tags. This will be overwritten
 	 * by the "options" set in individual [[items]]. The following special options are recognized:
 	 *
-	 * - tag: string, defaults to "li", the tag name of the item container tags.
+	 * - tag: string, defaults to "div", the tag name of the item container tags.
 	 */
 	public $itemOptions = array();
 	/**
 	 * @var array list of HTML attributes for the item header container tags. This will be overwritten
 	 * by the "headerOptions" set in individual [[items]]. The following special options are recognized:
 	 *
-	 * - tag: string, defaults to "li", the tag name of the item container tags.
+	 * - tag: string, defaults to "h3", the tag name of the item container tags.
 	 */
 	public $headerOptions = array();
 
