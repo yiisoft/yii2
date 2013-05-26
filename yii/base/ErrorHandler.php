@@ -149,6 +149,13 @@ class ErrorHandler extends Component
 				$html .= '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($part) . '" target="_blank">' . $this->htmlEncode($part) . '</a>\\';
 			}
 			$html = rtrim($html, '\\');
+		} elseif (strpos($code, '()') !== false) {
+			// method/function call
+			$self = $this;
+			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) use ($self) {
+				return '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($matches[1]) . '" target="_blank">' .
+					$self->htmlEncode($matches[1]) . '</a>()';
+			}, $code);
 		}
 		return $html;
 	}
@@ -184,27 +191,35 @@ class ErrorHandler extends Component
 
 	/**
 	 * Renders a single call stack element.
-	 * @param string $file name where call has happened.
-	 * @param integer $line number on which call has happened.
+	 * @param string|null $file name where call has happened.
+	 * @param integer|null $line number on which call has happened.
+	 * @param string|null $class called class name.
+	 * @param string|null $method called function/method name.
 	 * @param integer $index number of the call stack element.
 	 * @return string HTML content of the rendered call stack element.
 	 */
-	public function renderCallStackItem($file, $line, $index)
+	public function renderCallStackItem($file, $line, $class, $method, $index)
 	{
-		$line--; // adjust line number from one-based to zero-based
-		$lines = @file($file);
-		if ($line < 0 || $lines === false || ($lineCount = count($lines)) < $line + 1) {
-			return '';
-		}
+		$lines = array();
+		$begin = $end = 0;
+		if ($file !== null && $line !== null) {
+			$line--; // adjust line number from one-based to zero-based
+			$lines = @file($file);
+			if ($line < 0 || $lines === false || ($lineCount = count($lines)) < $line + 1) {
+				return '';
+			}
 
-		$half = (int)(($index == 0 ? $this->maxSourceLines : $this->maxTraceSourceLines) / 2);
-		$begin = $line - $half > 0 ? $line - $half : 0;
-		$end = $line + $half < $lineCount ? $line + $half : $lineCount - 1;
+			$half = (int)(($index == 0 ? $this->maxSourceLines : $this->maxTraceSourceLines) / 2);
+			$begin = $line - $half > 0 ? $line - $half : 0;
+			$end = $line + $half < $lineCount ? $line + $half : $lineCount - 1;
+		}
 
 		$view = new View();
 		return $view->renderFile($this->callStackItemView, array(
 			'file' => $file,
 			'line' => $line,
+			'class' => $class,
+			'method' => $method,
 			'index' => $index,
 			'lines' => $lines,
 			'begin' => $begin,
@@ -219,7 +234,7 @@ class ErrorHandler extends Component
 	 */
 	public function isCoreFile($file)
 	{
-		return $file === 'unknown' || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
+		return $file === null || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
 	}
 
 	/**
