@@ -517,11 +517,10 @@ EOD
 	 */
 	public function combineCssFiles($inputFiles, $outputFile)
 	{
-		// todo: adjust url() references in CSS files
 		$content = '';
 		foreach ($inputFiles as $file) {
 			$content .= "/*** BEGIN FILE: $file ***/\n"
-				. file_get_contents($file)
+				. $this->adjustCssUrl(file_get_contents($file), dirname($file), dirname($outputFile))
 				. "/*** END FILE: $file ***/\n";
 		}
 		file_put_contents($outputFile, $content);
