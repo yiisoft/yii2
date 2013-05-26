@@ -11,6 +11,7 @@ $params = array_merge(
 return array(
 	'id' => 'change-me',
 	'basePath' => dirname(__DIR__),
+	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
 	'preload' => array('log'),
 	'controllerNamespace' => 'console\controllers',
 	'modules' => array(
