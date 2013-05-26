@@ -25,10 +25,26 @@ use yii\helpers\Html;
  *         ),
  *         array(
  *             'header' => 'Section 2',
- *             'headerOptions' => array(...),
+ *             'headerOptions' => array(
+ *                 'tag' => 'h3',
+ *             ),
  *             'content' => 'Sed non urna. Phasellus eu ligula. Vestibulum sit amet purus...',
- *             'options' => array(...),
+ *             'options' => array(
+ *                 'tag' => 'div',
+ *             ),
  *         ),
+ *     ),
+ *     'options' => array(
+ *         'tag' => 'div',
+ *     ),
+ *     'itemOptions' => array(
+ *         'tag' => 'div',
+ *     ),
+ *     'headerOptions' => array(
+ *         'tag' => 'h3',
+ *     ),
+ *     'clientOptions' => array(
+ *         'collapsible' => false,
  *     ),
  * ));
  * ```
@@ -40,18 +56,15 @@ use yii\helpers\Html;
 class Accordion extends Widget
 {
 	/**
-	 * @var array.
-	 * @todo comments.
+	 * @var array list of collapsible sections.
 	 */
 	public $items = array();
 	/**
-	 * @var array.
-	 * @todo comments.
+	 * @var array list of individual collabsible section default options.
 	 */
 	public $itemOptions = array();
 	/**
-	 * @var array.
-	 * @todo comments.
+	 * @var array list of individual collabsible section header default options.
 	 */
 	public $headerOptions = array();
 
