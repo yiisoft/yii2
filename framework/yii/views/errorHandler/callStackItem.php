@@ -26,7 +26,7 @@ $context = $this->context;
 				</span>
 			<?php endif; ?>
 			<span class="at"><?php if ($line !== null) echo 'at line'; ?></span>
-			<span class="line"><?php if ($line !== null) echo (int)$line; ?></span>
+			<span class="line"><?php if ($line !== null) echo (int)$line + 1; ?></span>
 		</div>
 	</div>
 	<?php if (!empty($lines)): ?>
@@ -34,7 +34,7 @@ $context = $this->context;
 			<div class="error-line"></div>
 			<?php for ($i = $begin; $i <= $end; ++$i): ?><div class="hover-line"></div><?php endfor; ?>
 			<div class="code">
-				<?php for ($i = $begin; $i <= $end; ++$i): ?><span class="lines-item"><?php echo (int)$i; ?></span><?php endfor; ?>
+				<?php for ($i = $begin; $i <= $end; ++$i): ?><span class="lines-item"><?php echo (int)($i + 1); ?></span><?php endfor; ?>
 				<pre><?php
 					// fill empty lines with a whitespace to avoid rendering problems in opera
 					for ($i = $begin; $i <= $end; ++$i) {
