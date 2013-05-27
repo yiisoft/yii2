@@ -1,6 +1,7 @@
 <?php
 
 return array(
+	'companyName' => 'Company Name',
 	'adminEmail' => 'admin@example.com',
 
 	'components.cache' => array(
