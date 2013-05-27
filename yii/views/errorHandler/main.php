@@ -446,12 +446,15 @@ window.onload = function() {
 	};
 
 	var refreshCallStackItemCode = function(callStackItem) {
-		var top = callStackItem.offsetTop - window.scrollY,
+		var top = callStackItem.offsetTop - window.pageYOffset,
 			lines = Sizzle('pre', callStackItem)[0].getClientRects(),
 			lineNumbers = Sizzle('.lines-item', callStackItem),
 			errorLine = Sizzle('.error-line', callStackItem)[0],
 			hoverLines = Sizzle('.hover-line', callStackItem);
 		for (var i = 0, imax = lines.length; i < imax; ++i) {
+			if (!lineNumbers[i]) {
+				continue;
+			}
 			lineNumbers[i].style.top = parseInt(lines[i].top - top) + 'px';
 			hoverLines[i].style.top = parseInt(lines[i].top - top) + 'px';
 			hoverLines[i].style.height = parseInt(lines[i].bottom - lines[i].top) + 'px';
