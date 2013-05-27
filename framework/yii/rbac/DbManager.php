@@ -160,7 +160,8 @@ class DbManager extends Manager
 				throw new InvalidCallException("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
 			}
 			$this->db->createCommand()
-				->insert($this->itemChildTable, array('parent' => $itemName, 'child' => $childName));
+				->insert($this->itemChildTable, array('parent' => $itemName, 'child' => $childName))
+				->execute();
 			return true;
 		} else {
 			throw new Exception("Either '$itemName' or '$childName' does not exist.");
@@ -177,7 +178,8 @@ class DbManager extends Manager
 	public function removeItemChild($itemName, $childName)
 	{
 		return $this->db->createCommand()
-			->delete($this->itemChildTable, array('parent' => $itemName, 'child' => $childName)) > 0;
+			->delete($this->itemChildTable, array('parent' => $itemName, 'child' => $childName))
+			->execute() > 0;
 	}
 
 	/**
@@ -248,7 +250,8 @@ class DbManager extends Manager
 				'item_name' => $itemName,
 				'biz_rule' => $bizRule,
 				'data' => serialize($data),
-			));
+			))
+			->execute();
 		return new Assignment(array(
 			'manager' => $this,
 			'userId' => $userId,
@@ -267,7 +270,8 @@ class DbManager extends Manager
 	public function revoke($userId, $itemName)
 	{
 		return $this->db->createCommand()
-			->delete($this->assignmentTable, array('user_id' => $userId, 'item_name' => $itemName)) > 0;
+			->delete($this->assignmentTable, array('user_id' => $userId, 'item_name' => $itemName))
+			->execute() > 0;
 	}
 
 	/**
@@ -358,7 +362,8 @@ class DbManager extends Manager
 			), array(
 				'user_id' => $assignment->userId,
 				'item_name' => $assignment->itemName,
-			));
+			))
+			->execute();
 	}
 
 	/**
@@ -424,6 +429,7 @@ class DbManager extends Manager
 	 */
 	public function createItem($name, $type, $description = '', $bizRule = null, $data = null)
 	{
+		echo $name;
 		$this->db->createCommand()
 			->insert($this->itemTable, array(
 				'name' => $name,
@@ -431,7 +437,8 @@ class DbManager extends Manager
 				'description' => $description,
 				'biz_rule' => $bizRule,
 				'data' => serialize($data),
-			));
+			))
+			->execute();
 		return new Item(array(
 			'manager' => $this,
 			'name' => $name,
@@ -451,12 +458,15 @@ class DbManager extends Manager
 	{
 		if ($this->usingSqlite()) {
 			$this->db->createCommand()
-				->delete($this->itemChildTable, array('or', 'parent=:name', 'child=:name'), array(':name' => $name));
+				->delete($this->itemChildTable, array('or', 'parent=:name', 'child=:name'), array(':name' => $name))
+				->execute();
 			$this->db->createCommand()
-				->delete($this->assignmentTable, array('item_name' => $name));
+				->delete($this->assignmentTable, array('item_name' => $name))
+				->execute();
 		}
 		return $this->db->createCommand()
-			->delete($this->itemTable, array('name' => $name)) > 0;
+			->delete($this->itemTable, array('name' => $name))
+			->execute() > 0;
 	}
 
 	/**
@@ -497,11 +507,14 @@ class DbManager extends Manager
 	{
 		if ($this->usingSqlite() && $oldName !== null && $item->getName() !== $oldName) {
 			$this->db->createCommand()
-				->update($this->itemChildTable, array('parent' => $item->getName()), array('parent' => $oldName));
+				->update($this->itemChildTable, array('parent' => $item->getName()), array('parent' => $oldName))
+				->execute();
 			$this->db->createCommand()
-				->update($this->itemChildTable, array('child' => $item->getName()), array('child' => $oldName));
+				->update($this->itemChildTable, array('child' => $item->getName()), array('child' => $oldName))
+				->execute();
 			$this->db->createCommand()
-				->update($this->assignmentTable, array('item_name' => $item->getName()), array('item_name' => $oldName));
+				->update($this->assignmentTable, array('item_name' => $item->getName()), array('item_name' => $oldName))
+				->execute();
 		}
 
 		$this->db->createCommand()
@@ -513,7 +526,8 @@ class DbManager extends Manager
 				'data' => serialize($item->data),
 			), array(
 				'name' => $oldName === null ? $item->getName() : $oldName,
-			));
+			))
+			->execute();
 	}
 
 	/**
@@ -529,8 +543,8 @@ class DbManager extends Manager
 	public function clearAll()
 	{
 		$this->clearAssignments();
-		$this->db->createCommand()->delete($this->itemChildTable);
-		$this->db->createCommand()->delete($this->itemTable);
+		$this->db->createCommand()->delete($this->itemChildTable)->execute();
+		$this->db->createCommand()->delete($this->itemTable)->execute();
 	}
 
 	/**
@@ -538,7 +552,7 @@ class DbManager extends Manager
 	 */
 	public function clearAssignments()
 	{
-		$this->db->createCommand()->delete($this->assignmentTable);
+		$this->db->createCommand()->delete($this->assignmentTable)->execute();
 	}
 
 	/**
