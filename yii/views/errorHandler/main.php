@@ -225,6 +225,8 @@ html,body{
 	position: absolute;
 	z-index: 200;
 	display: block;
+	width: 25px;
+	text-align: right;
 	color: #aaa;
 	line-height: 20px;
 	font-size: 12px;
