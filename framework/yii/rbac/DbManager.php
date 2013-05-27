@@ -280,7 +280,7 @@ class DbManager extends Manager
 	 * @param string $itemName the item name
 	 * @return boolean whether the item has been assigned to the user.
 	 */
-	public function isAssigned($itemName, $userId)
+	public function isAssigned($userId, $itemName)
 	{
 		$query = new Query;
 		return $query->select(array('item_name'))
