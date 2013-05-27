@@ -83,17 +83,17 @@ class AutoTimestamp extends Behavior
 	 */
 	public function updateTimestamp($attributes)
 	{
+		$timestamp = $this->evaluateTimestamp();
 		foreach ($attributes as $attribute) {
-			$this->owner->$attribute = $this->evaluateTimestamp($attribute);
+			$this->owner->$attribute = $timestamp;
 		}
 	}
 
 	/**
-	 * Gets the appropriate timestamp for the specified attribute.
-	 * @param string $attribute attribute name
+	 * Gets the current timestamp.
 	 * @return mixed the timestamp value
 	 */
-	protected function evaluateTimestamp($attribute)
+	protected function evaluateTimestamp()
 	{
 		if ($this->timestamp instanceof Expression) {
 			return $this->timestamp;
