@@ -22,7 +22,7 @@ $this->registerAssetBundle('app');
 <div class="container">
 	<?php $this->beginBody(); ?>
 	<div class="masthead">
-		<h3 class="muted"><?php echo Yii::$app->params["companyName"]; ?></h3>
+		<h3 class="muted"><?php echo Yii::$app->params['companyName']; ?></h3>
 
 		<div class="navbar">
 			<div class="navbar-inner">
@@ -50,7 +50,7 @@ $this->registerAssetBundle('app');
 	<hr>
 
 	<div class="footer">
-		<p>&copy; <?php echo Yii::$app->params["companyName"]; ?> <?php echo date('Y'); ?></p>
+		<p>&copy; <?php echo Yii::$app->params['companyName']; ?> <?php echo date('Y'); ?></p>
 		<p>
 			<?php echo Yii::powered(); ?>
 			Template by <a href="http://twitter.github.io/bootstrap/">Twitter Bootstrap</a>
