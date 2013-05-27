@@ -429,7 +429,6 @@ class DbManager extends Manager
 	 */
 	public function createItem($name, $type, $description = '', $bizRule = null, $data = null)
 	{
-		echo $name;
 		$this->db->createCommand()
 			->insert($this->itemTable, array(
 				'name' => $name,
