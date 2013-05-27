@@ -661,6 +661,8 @@ class View extends Component
 
 	/**
 	 * Registers a JS file.
+	 * Please note that when this file depends on other JS files to be registered before,
+	 * for example jQuery, you should use [[registerAssetBundle]] instead.
 	 * @param string $url the JS file to be registered.
 	 * @param array $options the HTML attributes for the script tag. A special option
 	 * named "position" is supported which specifies where the JS script tag should be inserted
