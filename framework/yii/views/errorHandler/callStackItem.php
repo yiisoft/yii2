@@ -14,7 +14,7 @@
 $context = $this->context;
 ?>
 <li class="<?php if (!$context->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
-	data-line="<?php echo (int)($line - $begin - 1); ?>">
+	data-line="<?php echo (int)($line - $begin); ?>">
 	<div class="element-wrap">
 		<div class="element">
 			<span class="item-number"><?php echo (int)$index; ?>.</span>
