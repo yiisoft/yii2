@@ -13,7 +13,8 @@
  */
 $context = $this->context;
 ?>
-<li class="<?php if (!$context->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item">
+<li class="<?php if (!$context->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
+	data-line="<?php echo (int)($line - $begin - 1); ?>">
 	<div class="element-wrap">
 		<div class="element">
 			<span class="item-number"><?php echo (int)$index; ?>.</span>
@@ -30,12 +31,10 @@ $context = $this->context;
 	</div>
 	<?php if (!empty($lines)): ?>
 		<div class="code-wrap">
-			<div class="error-line" style="top: <?php echo 18 * (int)($line - $begin); ?>px;"></div>
-			<?php for ($i = $begin; $i <= $end; ++$i): ?>
-				<div class="hover-line" style="top: <?php echo 18 * (int)($i - $begin); ?>px;"></div>
-			<?php endfor; ?>
+			<div class="error-line"></div>
+			<?php for ($i = $begin; $i <= $end; ++$i): ?><div class="hover-line"></div><?php endfor; ?>
 			<div class="code">
-				<span class="lines"><?php for ($i = $begin; $i <= $end; ++$i) echo (int)$i . '<br/>'; ?></span>
+				<?php for ($i = $begin; $i <= $end; ++$i): ?><span class="lines-item"><?php echo (int)($i + 1); ?></span><?php endfor; ?>
 				<pre><?php
 					// fill empty lines with a whitespace to avoid rendering problems in opera
 					for ($i = $begin; $i <= $end; ++$i) {
