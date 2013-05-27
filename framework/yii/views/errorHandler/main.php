@@ -205,7 +205,6 @@ html,body{
 	background-color: #ffebeb;
 	position: absolute;
 	width: 100%;
-	height: 18px;
 	z-index: 100;
 	margin-top: -61px;
 }
@@ -227,19 +226,24 @@ html,body{
 	z-index: 200;
 	display: block;
 	color: #aaa;
-	line-height: 18px;
-	font-size: 14px;
-	margin-top: -61px;
+	line-height: 20px;
+	font-size: 12px;
+	margin-top: -63px;
 	font-family: Consolas, Courier New, monospace;
 }
 .call-stack ul li .code pre{
 	position: relative;
 	z-index: 200;
 	left: 50px;
-	line-height: 17px;
-	font-size: 14px;
+	line-height: 20px;
+	font-size: 12px;
 	font-family: Consolas, Courier New, monospace;
 	display: inline;
+}
+@-moz-document url-prefix() {
+	.call-stack ul li .code pre{
+		line-height: 20px;
+	}
 }
 
 /* request */
@@ -421,10 +425,10 @@ window.onload = function() {
 			lineFound = false,
 			hoverLines = Sizzle('.hover-line');
 
-		for (var i = 0, imax = codeBlocks.length; i < imax; ++i) {
+		for (var i = 0, imax = codeBlocks.length - 1; i < imax; ++i) {
 			var lines = codeBlocks[i].getClientRects();
 			for (var j = 0, jmax = lines.length; j < jmax; ++j) {
-				if (clientY > lines[j].top && clientY < lines[j].bottom) {
+				if (clientY >= lines[j].top && clientY <= lines[j].bottom) {
 					lineFound = true;
 					break;
 				}
@@ -438,9 +442,9 @@ window.onload = function() {
 			hoverLines[k].className = 'hover-line';
 		}
 		if (lineFound) {
-			var line = Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')');
-			if (line[0]) {
-				line[0].className = 'hover-line hover';
+			var line = Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')')[0];
+			if (line) {
+				line.className = 'hover-line hover';
 			}
 		}
 	};
@@ -459,11 +463,11 @@ window.onload = function() {
 				continue;
 			}
 			lineNumbers[i].style.top = parseInt(lines[i].top - top) + 'px';
-			hoverLines[i].style.top = parseInt(lines[i].top - top) + 'px';
-			hoverLines[i].style.height = parseInt(lines[i].bottom - lines[i].top + 1) + 'px';
+			hoverLines[i].style.top = parseInt(lines[i].top - top - 3) + 'px';
+			hoverLines[i].style.height = parseInt(lines[i].bottom - lines[i].top + 6) + 'px';
 			if (parseInt(callStackItem.getAttribute('data-line')) == i) {
-				errorLine.style.top = parseInt(lines[i].top - top) + 'px';
-				errorLine.style.height = parseInt(lines[i].bottom - lines[i].top + 1) + 'px';
+				errorLine.style.top = parseInt(lines[i].top - top - 3) + 'px';
+				errorLine.style.height = parseInt(lines[i].bottom - lines[i].top + 6) + 'px';
 			}
 		}
 	};
