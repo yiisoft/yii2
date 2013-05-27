@@ -460,10 +460,10 @@ window.onload = function() {
 			}
 			lineNumbers[i].style.top = parseInt(lines[i].top - top) + 'px';
 			hoverLines[i].style.top = parseInt(lines[i].top - top) + 'px';
-			hoverLines[i].style.height = parseInt(lines[i].bottom - lines[i].top) + 'px';
+			hoverLines[i].style.height = parseInt(lines[i].bottom - lines[i].top + 1) + 'px';
 			if (parseInt(callStackItem.getAttribute('data-line')) == i) {
 				errorLine.style.top = parseInt(lines[i].top - top) + 'px';
-				errorLine.style.height = parseInt(lines[i].bottom - lines[i].top) + 'px';
+				errorLine.style.height = parseInt(lines[i].bottom - lines[i].top + 1) + 'px';
 			}
 		}
 	};
