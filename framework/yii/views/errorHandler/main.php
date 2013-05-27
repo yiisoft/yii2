@@ -200,17 +200,20 @@ html,body{
 .call-stack ul li.application .code-wrap{
 	display: block;
 }
-.call-stack ul li .error-line,.call-stack ul li .hover-line{
+.call-stack ul li .error-line,
+.call-stack ul li .hover-line{
 	background-color: #ffebeb;
 	position: absolute;
 	width: 100%;
 	height: 18px;
 	z-index: 100;
+	margin-top: -61px;
 }
 .call-stack ul li .hover-line{
 	background: none;
 }
-.call-stack ul li .hover-line.hover,.call-stack ul li .hover-line:hover{
+.call-stack ul li .hover-line.hover,
+.call-stack ul li .hover-line:hover{
 	background: #edf9ff !important;
 }
 .call-stack ul li .code{
@@ -219,31 +222,24 @@ html,body{
 	padding: 0 50px;
 	position: relative;
 }
-.call-stack ul li .code .lines{
+.call-stack ul li .code .lines-item{
 	position: absolute;
 	z-index: 200;
-	left: 50px;
+	display: block;
+	color: #aaa;
 	line-height: 18px;
 	font-size: 14px;
-	vertical-align: middle;
-	text-align: right;
+	margin-top: -61px;
 	font-family: Consolas, Courier New, monospace;
-	color: #aaa;
 }
 .call-stack ul li .code pre{
 	position: relative;
 	z-index: 200;
 	left: 50px;
-	line-height: 18px;
+	line-height: 17px;
 	font-size: 14px;
-	vertical-align: middle;
 	font-family: Consolas, Courier New, monospace;
 	display: inline;
-}
-@media screen and (-webkit-min-device-pixel-ratio:0){
-	.call-stack ul li .code pre{
-		line-height: 16px;
-	}
 }
 
 /* request */
@@ -265,11 +261,6 @@ html,body{
 	font-family: Consolas, Courier New, monospace;
 	display: inline;
 	word-wrap: break-word;
-}
-@media screen and (-webkit-min-device-pixel-ratio:0){
-	.request .code pre{
-		line-height: 16px;
-	}
 }
 
 /* footer */
@@ -415,25 +406,25 @@ var hljs=new function(){function l(o){return o.replace(/&/gm,"&amp;").replace(/<
 
 	<script type="text/javascript">
 window.onload = function() {
-	var i, imax,
-		codeBlocks = Sizzle('pre'),
+	var codeBlocks = Sizzle('pre'),
 		callStackItems = Sizzle('.call-stack-item');
 
 	// highlight code blocks
-	for (i = 0, imax = codeBlocks.length; i < imax; ++i) {
+	for (var i = 0, imax = codeBlocks.length; i < imax; ++i) {
 		hljs.highlightBlock(codeBlocks[i], '    ');
 	}
 
 	// code block hover line
 	document.onmousemove = function(e) {
-		var lines, i, imax, j, jmax, k, kmax,
-			event = e || window.event,
-			y = event.clientY,
-			lineFound = false;
-		for (i = 0, imax = codeBlocks.length; i < imax; ++i) {
-			lines = codeBlocks[i].getClientRects();
-			for (j = 0, jmax = lines.length; j < jmax; ++j) {
-				if (y > lines[j].top && y < lines[j].bottom) {
+		var event = e || window.event,
+			clientY = event.clientY,
+			lineFound = false,
+			hoverLines = Sizzle('.hover-line');
+
+		for (var i = 0, imax = codeBlocks.length; i < imax; ++i) {
+			var lines = codeBlocks[i].getClientRects();
+			for (var j = 0, jmax = lines.length; j < jmax; ++j) {
+				if (clientY > lines[j].top && clientY < lines[j].bottom) {
 					lineFound = true;
 					break;
 				}
@@ -442,8 +433,8 @@ window.onload = function() {
 				break;
 			}
 		}
-		var hoverLines = Sizzle('.hover-line');
-		for (k = 0, kmax = hoverLines.length; k < kmax; ++k) {
+
+		for (var k = 0, kmax = hoverLines.length; k < kmax; ++k) {
 			hoverLines[k].className = 'hover-line';
 		}
 		if (lineFound) {
@@ -452,13 +443,34 @@ window.onload = function() {
 				line[0].className = 'hover-line hover';
 			}
 		}
-	}
+	};
 
-	// toggle code block visibility
-	for (i = 0, imax = callStackItems.length; i < imax; i++) {
+	var refreshCallStackItemCode = function(callStackItem) {
+		var top = callStackItem.offsetTop - window.scrollY,
+			lines = Sizzle('pre', callStackItem)[0].getClientRects(),
+			lineNumbers = Sizzle('.lines-item', callStackItem),
+			errorLine = Sizzle('.error-line', callStackItem)[0],
+			hoverLines = Sizzle('.hover-line', callStackItem);
+		for (var i = 0, imax = lines.length; i < imax; ++i) {
+			lineNumbers[i].style.top = parseInt(lines[i].top - top) + 'px';
+			hoverLines[i].style.top = parseInt(lines[i].top - top) + 'px';
+			hoverLines[i].style.height = parseInt(lines[i].bottom - lines[i].top) + 'px';
+			if (parseInt(callStackItem.getAttribute('data-line')) == i) {
+				errorLine.style.top = parseInt(lines[i].top - top) + 'px';
+				errorLine.style.height = parseInt(lines[i].bottom - lines[i].top) + 'px';
+			}
+		}
+	};
+
+	for (var i = 0, imax = callStackItems.length; i < imax; ++i) {
+		refreshCallStackItemCode(callStackItems[i]);
+
+		// toggle code block visibility
 		Sizzle('.element-wrap', callStackItems[i])[0].addEventListener('click', function() {
-			var code = Sizzle('.code-wrap', this.parentNode)[0];
+			var callStackItem = this.parentNode,
+				code = Sizzle('.code-wrap', callStackItem)[0];
 			code.style.display = window.getComputedStyle(code).display == 'block' ? 'none' : 'block';
+			refreshCallStackItemCode(callStackItem);
 		});
 	}
 };
