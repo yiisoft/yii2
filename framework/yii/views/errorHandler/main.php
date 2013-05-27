@@ -446,6 +446,9 @@ window.onload = function() {
 	};
 
 	var refreshCallStackItemCode = function(callStackItem) {
+		if (!Sizzle('pre', callStackItem)[0]) {
+			return;
+		}
 		var top = callStackItem.offsetTop - window.pageYOffset,
 			lines = Sizzle('pre', callStackItem)[0].getClientRects(),
 			lineNumbers = Sizzle('.lines-item', callStackItem),
