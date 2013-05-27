@@ -574,7 +574,7 @@ class MigrateController extends Controller
 	 */
 	protected function getMigrationHistory($limit)
 	{
-		if ($this->db->schema->getTableSchema($this->migrationTable) === null) {
+		if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
 			$this->createMigrationHistoryTable();
 		}
 		$query = new Query;
