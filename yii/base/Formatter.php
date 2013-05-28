@@ -162,12 +162,12 @@ class Formatter extends Component
 	 * @param integer|string|DateTime $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
-	 * - an integer representing UNIX timestamp
+	 * - an integer representing a UNIX timestamp
 	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
 	 * - a PHP DateTime object
 	 *
 	 * @param string $format the format used to convert the value into a date string.
-	 * If null, [[dateFormat]] will be used. The format string should be the one
+	 * If null, [[dateFormat]] will be used. The format string should be one
 	 * that can be recognized by the PHP `date()` function.
 	 * @return string the formatted result
 	 * @see dateFormat
@@ -183,12 +183,12 @@ class Formatter extends Component
 	 * @param integer|string|DateTime $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
-	 * - an integer representing UNIX timestamp
+	 * - an integer representing a UNIX timestamp
 	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
 	 * - a PHP DateTime object
 	 *
 	 * @param string $format the format used to convert the value into a date string.
-	 * If null, [[timeFormat]] will be used. The format string should be the one
+	 * If null, [[timeFormat]] will be used. The format string should be one
 	 * that can be recognized by the PHP `date()` function.
 	 * @return string the formatted result
 	 * @see timeFormat
@@ -204,12 +204,12 @@ class Formatter extends Component
 	 * @param integer|string|DateTime $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
-	 * - an integer representing UNIX timestamp
+	 * - an integer representing a UNIX timestamp
 	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
 	 * - a PHP DateTime object
 	 *
 	 * @param string $format the format used to convert the value into a date string.
-	 * If null, [[datetimeFormat]] will be used. The format string should be the one
+	 * If null, [[datetimeFormat]] will be used. The format string should be one
 	 * that can be recognized by the PHP `date()` function.
 	 * @return string the formatted result
 	 * @see datetimeFormat
