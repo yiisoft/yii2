@@ -97,10 +97,10 @@ class CacheSession extends Session
 	/**
 	 * Generates a unique key used for storing session data in cache.
 	 * @param string $id session variable name
-	 * @return string a safe cache key associated with the session variable name
+	 * @return mixed a safe cache key associated with the session variable name
 	 */
 	protected function calculateKey($id)
 	{
-		return $this->cache->buildKey(array(__CLASS__, $id));
+		return array(__CLASS__, $id);
 	}
 }

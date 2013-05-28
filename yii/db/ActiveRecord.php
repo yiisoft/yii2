@@ -1152,7 +1152,7 @@ class ActiveRecord extends Model
 	/**
 	 * Creates an active record object using a row of data.
 	 * This method is called by [[ActiveQuery]] to populate the query results
-	 * into Active Records.
+	 * into Active Records. It is not meant to be used to create new records.
 	 * @param array $row attribute values (name => value)
 	 * @return ActiveRecord the newly created active record.
 	 */
@@ -1215,7 +1215,7 @@ class ActiveRecord extends Model
 				return $relation;
 			}
 		} catch (UnknownMethodException $e) {
-			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
+			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
 		}
 	}
 

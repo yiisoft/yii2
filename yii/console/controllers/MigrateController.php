@@ -115,11 +115,13 @@ class MigrateController extends Controller
 			}
 			$this->migrationPath = $path;
 
-			if (is_string($this->db)) {
-				$this->db = Yii::$app->getComponent($this->db);
-			}
-			if (!$this->db instanceof Connection) {
-				throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");
+			if($action->id!=='create') {
+				if (is_string($this->db)) {
+					$this->db = Yii::$app->getComponent($this->db);
+				}
+				if (!$this->db instanceof Connection) {
+					throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");
+				}
 			}
 
 			$version = Yii::getVersion();
@@ -572,7 +574,7 @@ class MigrateController extends Controller
 	 */
 	protected function getMigrationHistory($limit)
 	{
-		if ($this->db->schema->getTableSchema($this->migrationTable) === null) {
+		if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
 			$this->createMigrationHistoryTable();
 		}
 		$query = new Query;

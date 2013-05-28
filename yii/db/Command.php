@@ -148,7 +148,7 @@ class Command extends \yii\base\Component
 			} catch (\Exception $e) {
 				Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __METHOD__);
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode());
+				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode(), $e);
 			}
 		}
 	}
@@ -298,7 +298,7 @@ class Command extends \yii\base\Component
 			Yii::error("$message\nFailed to execute SQL: $rawSql", __METHOD__);
 
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, $errorInfo, (int)$e->getCode());
+			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 		}
 	}
 
@@ -391,12 +391,12 @@ class Command extends \yii\base\Component
 		}
 
 		if (isset($cache) && $cache instanceof Cache) {
-			$cacheKey = $cache->buildKey(array(
+			$cacheKey = array(
 				__CLASS__,
 				$db->dsn,
 				$db->username,
 				$rawSql,
-			));
+			);
 			if (($result = $cache->get($cacheKey)) !== false) {
 				Yii::trace('Query result served from cache', __METHOD__);
 				return $result;
@@ -433,7 +433,7 @@ class Command extends \yii\base\Component
 			$message = $e->getMessage();
 			Yii::error("$message\nCommand::$method() failed: $rawSql", __METHOD__);
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, $errorInfo, (int)$e->getCode());
+			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 		}
 	}
 
