@@ -36,12 +36,35 @@ class Controller extends \yii\base\Controller
 	public $interactive = true;
 
 	/**
-	 * @var bool whether to enable ANSI style in output.
+	 * @var boolean whether to enable ANSI style in output.
+	 * Defaults to null meaning auto-detect.
+	 */
+	private $_colors;
+
+	/**
+	 * Whether to enable ANSI style in output.
+	 *
 	 * Setting this will affect [[ansiFormat()]], [[stdout()]] and [[stderr()]].
 	 * If not set it will be auto detected using [[yii\helpers\Console::streamSupportsAnsiColors()]] with STDOUT
 	 * for [[ansiFormat()]] and [[stdout()]] and STDERR for [[stderr()]].
+	 * @param resource $stream
+	 * @return boolean Whether to enable ANSI style in output.
 	 */
-	public $colors;
+	public function getColors($stream = STDOUT)
+	{
+		if ($this->_colors === null) {
+			return Console::streamSupportsAnsiColors($stream);
+		}
+		return $this->_colors;
+	}
+
+	/**
+	 * Whether to enable ANSI style in output.
+	 */
+	public function setColors($value)
+	{
+		$this->_colors = (bool) $value;
+	}
 
 	/**
 	 * Runs an action with the specified action ID and parameters.
@@ -138,7 +161,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function ansiFormat($string)
 	{
-		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDOUT)) {
+		if ($this->getColors()) {
 			$args = func_get_args();
 			array_shift($args);
 			$string = Console::ansiFormat($string, $args);
@@ -162,7 +185,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function stdout($string)
 	{
-		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDOUT)) {
+		if ($this->getColors()) {
 			$args = func_get_args();
 			array_shift($args);
 			$string = Console::ansiFormat($string, $args);
@@ -186,7 +209,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function stderr($string)
 	{
-		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDERR)) {
+		if ($this->getColors(STDERR)) {
 			$args = func_get_args();
 			array_shift($args);
 			$string = Console::ansiFormat($string, $args);
@@ -259,6 +282,6 @@ class Controller extends \yii\base\Controller
 	 */
 	public function globalOptions()
 	{
-		return array();
+		return array('colors', 'interactive');
 	}
 }

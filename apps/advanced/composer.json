@@ -1,0 +1,44 @@
+{
+	"name": "yiisoft/yii2-app-advanced",
+	"description": "Yii 2 Advanced Application Template",
+	"keywords": ["yii", "framework", "advanced", "application template"],
+	"homepage": "http://www.yiiframework.com/",
+	"type": "project",
+	"license": "BSD-3-Clause",
+	"support": {
+		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/yiisoft/yii2"
+	},
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.3.0",
+		"yiisoft/yii2": "dev-master",
+		"yiisoft/yii2-composer": "dev-master"
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"yii\\composer\\InstallHandler::setPermissions"
+		],
+		"post-update-cmd": [
+			"yii\\composer\\InstallHandler::setPermissions"
+		]
+	},
+	"extra": {
+		"yii-install-writable": [
+			"backstage/runtime",
+			"backstage/www/assets",
+
+			"console/runtime",
+			"console/migrations",
+
+			"frontend/runtime",
+			"frontend/www/assets"
+		],
+		"yii-install-executable": [
+			"yii"
+		]
+	}
+}

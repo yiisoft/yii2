@@ -63,7 +63,8 @@ class Menu extends Widget
 	 * - template: string, optional, the template used to render the content of this menu item.
 	 *   The token `{url}` will be replaced by the URL associated with this menu item,
 	 *   and the token `{label}` will be replaced by the label of the menu item.
-	 *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead. 
+	 *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead.
+	 * - options: array, optional, the HTML attributes for the menu container tag.
 	 */
 	public $items = array();
 	/**
@@ -163,7 +164,7 @@ class Menu extends Widget
 		$n = count($items);
 		$lines = array();
 		foreach ($items as $i => $item) {
-			$options = isset($item['itemOptions']) ? $item['itemOptions'] : array();
+			$options = isset($item['options']) ? $item['options'] : array();
 			$class = array();
 			if ($item['active']) {
 				$class[] = $this->activeCssClass;

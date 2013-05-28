@@ -241,15 +241,11 @@ SQL;
 		}
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
-			if (is_array($table->primaryKey)) {
-				foreach ($table->primaryKey as $primaryKeyColumn) {
-					if (strcasecmp($column->name, $primaryKeyColumn) === 0) {
-						$column->isPrimaryKey = true;
-						break;
-					}
+			foreach ($table->primaryKey as $primaryKey) {
+				if (strcasecmp($column->name, $primaryKey) === 0) {
+					$column->isPrimaryKey = true;
+					break;
 				}
-			} else {
-				$column->isPrimaryKey = strcasecmp($column->name, $table->primaryKey) === 0;
 			}
 			if ($column->isPrimaryKey && $column->autoIncrement) {
 				$table->sequenceName = '';

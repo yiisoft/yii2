@@ -56,8 +56,8 @@
 				<td>
 				<?php echo $requirement['name']; ?>
 				</td>
-				<td >
-				<?php echo $requirement['condition'] ? 'Passed' : ($requirement['mandatory'] ? 'Failed' : 'Warning'); ?>
+				<td>
+				<span class="result"><?php echo $requirement['condition'] ? 'Passed' : ($requirement['mandatory'] ? 'Failed' : 'Warning'); ?></span>
 				</td>
 				<td>
 				<?php echo $requirement['by']; ?>

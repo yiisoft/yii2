@@ -207,7 +207,8 @@ class Application extends Module
 
 	/**
 	 * Returns the directory that stores vendor files.
-	 * @return string the directory that stores vendor files. Defaults to 'protected/vendor'.
+	 * @return string the directory that stores vendor files.
+	 * Defaults to 'vendor' directory under applications [[basePath]].
 	 */
 	public function getVendorPath()
 	{

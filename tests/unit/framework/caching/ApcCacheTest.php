@@ -1,12 +1,11 @@
 <?php
 namespace yiiunit\framework\caching;
 use yii\caching\ApcCache;
-use yiiunit\TestCase;
 
 /**
  * Class for testing APC cache backend
  */
-class ApcCacheTest extends CacheTest
+class ApcCacheTest extends CacheTestCase
 {
 	private $_cacheInstance = null;
 

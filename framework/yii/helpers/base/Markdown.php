@@ -37,6 +37,13 @@ class Markdown
 	 */
 	protected static $markdown;
 
+	/**
+	 * Converts markdown into HTML
+	 *
+	 * @param string $content
+	 * @param array $config
+	 * @return string
+	 */
 	public static function process($content, $config = array())
 	{
 		if (static::$markdown === null) {
