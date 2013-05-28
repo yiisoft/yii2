@@ -77,7 +77,7 @@ class Tabs extends Widget
 	 *
 	 * - label: string, required, specifies the header link label. When [[encodeLabels]] is true, the label
 	 *   will be HTML-encoded.
-	 * - content: string, @todo comment
+	 * - content: string, the content to show when corresponding tab is clicked. Can be omitted if url is specified.
 	 * - url: mixed, @todo comment
 	 * - template: string, optional, @todo comment
 	 * - options: array, optional, @todo comment
