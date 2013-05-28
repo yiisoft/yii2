@@ -38,13 +38,6 @@ class Formatter extends Component
 	 */
 	public $datetimeFormat = 'Y/m/d h:i:s A';
 	/**
-	 * @var array the format used to format a number with PHP number_format() function.
-	 * Three elements may be specified: "decimals", "decimalSeparator" and "thousandSeparator".
-	 * They correspond to the number of digits after the decimal point, the character displayed as the decimal point
-	 * and the thousands separator character.
-	 */
-	public $numberFormat = array('decimals' => null, 'decimalSeparator' => null, 'thousandSeparator' => null);
-	/**
 	 * @var array the text to be displayed when formatting a boolean value. The first element corresponds
 	 * to the text display for false, the second element for true. Defaults to <code>array('No', 'Yes')</code>.
 	 */
@@ -274,14 +267,15 @@ class Formatter extends Component
 	}
 
 	/**
-	 * Formats the value as a decimal number using the PHP number_format() function.
+	 * Formats the value as a number with decimal and thousand separators.
+	 * This method calls the PHP number_format() function to do the formatting.
 	 * @param mixed $value the value to be formatted
 	 * @param integer $decimals the number of digits after the decimal point
 	 * @param string $decimalSeparator the character displayed as the decimal point
 	 * @param string $thousandSeparator the character displayed as the thousands separator character.
 	 * @return string the formatted result
 	 */
-	public function asDecimal($value, $decimals = 0 , $decimalSeparator = '.' , $thousandSeparator = ',' )
+	public function asNumber($value, $decimals = 0 , $decimalSeparator = '.' , $thousandSeparator = ',' )
 	{
 		return number_format($value, $decimals, $decimalSeparator, $thousandSeparator);
 	}

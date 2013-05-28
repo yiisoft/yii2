@@ -84,7 +84,7 @@ class FormatterTest extends TestCase
 
 	public function testAsHtml()
 	{
-		// todo
+		// todo: dependency on HtmlPurifier
 	}
 
 	public function testAsEmail()
@@ -97,5 +97,62 @@ class FormatterTest extends TestCase
 	{
 		$value = 'http://sample.com/img.jpg';
 		$this->assertSame("<img src=\"$value\" alt=\"\" />", $this->formatter->asImage($value));
+	}
+
+	public function testAsBoolean()
+	{
+		$value = true;
+		$this->assertSame('Yes', $this->formatter->asBoolean($value));
+		$value = false;
+		$this->assertSame('No', $this->formatter->asBoolean($value));
+		$value = "111";
+		$this->assertSame('Yes', $this->formatter->asBoolean($value));
+		$value = "";
+		$this->assertSame('No', $this->formatter->asBoolean($value));
+	}
+
+	public function testAsDate()
+	{
+		$value = time();
+		$this->assertSame(date('Y/m/d', $value), $this->formatter->asDate($value));
+		$this->assertSame(date('Y-m-d', $value), $this->formatter->asDate($value, 'Y-m-d'));
+	}
+
+	public function testAsTime()
+	{
+		$value = time();
+		$this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value));
+		$this->assertSame(date('h:i:s', $value), $this->formatter->asTime($value, 'h:i:s'));
+	}
+
+	public function testAsDatetime()
+	{
+		$value = time();
+		$this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value));
+		$this->assertSame(date('Y-m-d h:i:s', $value), $this->formatter->asDatetime($value, 'Y-m-d h:i:s'));
+	}
+
+	public function testAsInteger()
+	{
+		$value = 123;
+		$this->assertSame("$value", $this->formatter->asInteger($value));
+		$value = 123.23;
+		$this->assertSame("123", $this->formatter->asInteger($value));
+		$value = 'a';
+		$this->assertSame("0", $this->formatter->asInteger($value));
+	}
+
+	public function testAsDouble()
+	{
+		$value = 123.12;
+		$this->assertSame("123.12", $this->formatter->asDouble($value));
+		$this->assertSame("123.1", $this->formatter->asDouble($value, 1));
+	}
+
+	public function testAsNumber()
+	{
+		$value = 123123.123;
+		$this->assertSame("123,123", $this->formatter->asNumber($value));
+		$this->assertSame("123.123,12", $this->formatter->asNumber($value, 2, ',', '.'));
 	}
 }

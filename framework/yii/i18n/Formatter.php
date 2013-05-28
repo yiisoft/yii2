@@ -170,7 +170,7 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asDecimal($value, $format = null)
 	{
-		$this->createNumberFormatter(NumberFormatter::DECIMAL, $format)->format($value);
+		return $this->createNumberFormatter(NumberFormatter::DECIMAL, $format)->format($value);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asCurrency($value, $currency = 'USD', $format = null)
 	{
-		$this->createNumberFormatter(NumberFormatter::CURRENCY, $format)->formatCurrency($value, $currency);
+		return $this->createNumberFormatter(NumberFormatter::CURRENCY, $format)->formatCurrency($value, $currency);
 	}
 
 	/**
@@ -195,7 +195,7 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asPercent($value, $format = null)
 	{
-		$this->createNumberFormatter(NumberFormatter::PERCENT, $format)->format($value);
+		return $this->createNumberFormatter(NumberFormatter::PERCENT, $format)->format($value);
 	}
 
 	/**
@@ -207,7 +207,7 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asScientific($value, $format = null)
 	{
-		$this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $format)->format($value);
+		return $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $format)->format($value);
 	}
 
 	/**
