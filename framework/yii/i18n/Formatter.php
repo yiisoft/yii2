@@ -76,7 +76,7 @@ class Formatter extends \yii\base\Formatter
 	 * @param integer|string|DateTime $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
-	 * - an integer representing UNIX timestamp
+	 * - an integer representing a UNIX timestamp
 	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
 	 * - a PHP DateTime object
 	 *
@@ -106,7 +106,7 @@ class Formatter extends \yii\base\Formatter
 	 * @param integer|string|DateTime $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
-	 * - an integer representing UNIX timestamp
+	 * - an integer representing a UNIX timestamp
 	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
 	 * - a PHP DateTime object
 	 *
@@ -136,7 +136,7 @@ class Formatter extends \yii\base\Formatter
 	 * @param integer|string|DateTime $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
-	 * - an integer representing UNIX timestamp
+	 * - an integer representing a UNIX timestamp
 	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
 	 * - a PHP DateTime object
 	 *
