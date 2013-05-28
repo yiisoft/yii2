@@ -83,9 +83,6 @@ class FormatterTest extends TestCase
 	{
 		$time = time();
 		$this->assertSame(date('n/j/y', $time), $this->formatter->asDate($time));
-		$this->assertSame(date('g:i A', $time), $this->formatter->asTime($time));
-		$this->assertSame(date('n/j/y g:i A', $time), $this->formatter->asDatetime($time));
-
 		$this->assertSame(date('M j, Y', $time), $this->formatter->asDate($time, 'long'));
 	}
 }
