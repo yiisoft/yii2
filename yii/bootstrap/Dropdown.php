@@ -40,11 +40,7 @@ class Dropdown extends Widget
 	 *     'items'=> array(...)
 	 * )
 	 * ```
-	 * If you wish to display a `divider`, use any string. The widget will render a bootstrap dropdown divider:
-	 *
-	 * ```html
-	 * <li class="divider"></li>
-	 * ```
+	 * Additionally, you can also configure a dropdown item as string.
 	 */
 	public $items = array();
 
@@ -80,7 +76,7 @@ class Dropdown extends Widget
 		$contents = array();
 		foreach ($this->items as $item) {
 			if (is_string($item)) {
-				$contents[] = Html::tag('li', '', array('class' => 'divider'));
+				$contents[] = $item;
 				continue;
 			}
 			if (!isset($item['label'])) {
