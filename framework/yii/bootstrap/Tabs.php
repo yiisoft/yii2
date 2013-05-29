@@ -68,7 +68,6 @@ class Tabs extends Widget
 	 *   - content: string, required if `items` is not set. The content (HTML) of the tab pane.
 	 *   - contentOptions: optional, array, the HTML attributes of the tab content container.
 	 * )
-	 * ```
 	 */
 	public $items = array();
 	/**
