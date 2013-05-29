@@ -64,6 +64,7 @@ class AssetControllerTest extends TestCase
 		$assetController->interactive = false;
 		$assetController->jsCompactor = 'cp {from} {to}';
 		$assetController->cssCompactor = 'cp {from} {to}';
+		$assetController->compressMethod = false;
 		return $assetController;
 	}
 
@@ -173,11 +174,14 @@ class AssetControllerTest extends TestCase
 	 * Invokes the asset controller method even if it is protected.
 	 * @param string $methodName name of the method to be invoked.
 	 * @param array $args method arguments.
+	 * @param AssetController|null $controller controller instance, if empty new will be created.
 	 * @return mixed method invoke result.
 	 */
-	protected function invokeAssetControllerMethod($methodName, array $args = array())
+	protected function invokeAssetControllerMethod($methodName, array $args = array(), $controller = null)
 	{
-		$controller = $this->createAssetController();
+		if (!is_object($controller)) {
+			$controller = $this->createAssetController();
+		}
 		$controllerClassReflection = new ReflectionClass(get_class($controller));
 		$methodReflection = $controllerClassReflection->getMethod($methodName);
 		$methodReflection->setAccessible(true);
@@ -314,5 +318,42 @@ class AssetControllerTest extends TestCase
 		$adjustedCssContent = $this->invokeAssetControllerMethod('adjustCssUrl', array($cssContent, $inputFilePath, $outputFilePath));
 
 		$this->assertEquals($expectedCssContent, $adjustedCssContent, 'Unable to adjust CSS correctly!');
+	}
+
+	/**
+	 * Data provider for [[testCompressFile]].
+	 * @return array test data.
+	 */
+	public function compressFileDataProvider()
+	{
+		return array(
+			array(AssetController::COMPRESS_METHOD_GZIP),
+			array(AssetController::COMPRESS_METHOD_DEFLATE),
+		);
+	}
+
+	/**
+	 * @dataProvider compressFileDataProvider
+	 *
+	 * @param string $compressMethod compress method.
+	 */
+	public function testCompressFile($compressMethod)
+	{
+		if (!extension_loaded('zlib')) {
+			$this->markTestSkipped('"ZLib" PHP extension required.');
+		}
+
+		$controller = $this->createAssetController();
+		$controller->compressMethod = $compressMethod;
+
+		$fileContent = str_pad('Test compressible content ', 100, 'abc');
+		$fileName = $this->testFilePath . DIRECTORY_SEPARATOR . 'test.txt';
+		file_put_contents($fileName, $fileContent);
+		$compressedFileName = $fileName.'.gzip';
+
+		$this->invokeAssetControllerMethod('compressFile', array($fileName, $compressedFileName), $controller);
+
+		$this->assertTrue(file_exists($compressedFileName), 'Unable to compress file!');
+		$this->assertGreaterThan(strlen(file_get_contents($compressedFileName)), strlen($fileContent), 'No compression!');
 	}
 }

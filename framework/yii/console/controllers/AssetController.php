@@ -90,6 +90,11 @@ class AssetController extends Controller
 	 * @var integer compression level for [[compressMethod]]
 	 */
 	public $compressLevel = 6;
+	/**
+	 * @var string pattern, which will be used to create name for compressed files.
+	 * This pattern should contain placeholder "{filename}", which will be filed up with original file name.
+	 */
+	public $compressedFileNamePattern = '{filename}.gzip';
 
 	/**
 	 * Returns the asset manager instance.
@@ -477,6 +482,12 @@ EOD
 			throw new Exception("Unable to compact JavaScript files into '{$outputFile}'.");
 		}
 		echo "  JavaScript files compacted into '{$outputFile}'.\n";
+		if (!empty($this->compressMethod)) {
+			$compressedFileName = $this->composeCompressedFileName($outputFile);
+			echo "  Compressing JavaScript file '{$outputFile}' into '{$compressedFileName}'...\n";
+			$this->compressFile($outputFile, $compressedFileName);
+			echo "  JavaScript file '{$outputFile}' compressed into '{$compressedFileName}'.\n";
+		}
 	}
 
 	/**
@@ -506,6 +517,12 @@ EOD
 			throw new Exception("Unable to compact CSS files into '{$outputFile}'.");
 		}
 		echo "  CSS files compacted into '{$outputFile}'.\n";
+		/*if (!empty($this->compressMethod)) {
+			$compressedFileName = $this->composeCompressedFileName($outputFile);
+			echo "  Compressing CSS file '{$outputFile}' into '{$compressedFileName}'...\n";
+			$this->compressFile($outputFile, $compressedFileName);
+			echo "  CSS file '{$outputFile}' compressed into '{$compressedFileName}'.\n";
+		}*/
 	}
 
 	/**
@@ -599,6 +616,48 @@ EOD
 		$cssContent = preg_replace_callback('/url\(["\']?([^"]*)["\']?\)/is', $callback, $cssContent);
 
 		return $cssContent;
+	}
+
+	/**
+	 * Compresses given file using [[compressMethod]] method.
+	 * @param string $fileName source file name.
+	 * @param string $compressedFileName compression output file name.
+	 * @throws \yii\console\Exception on failure.
+	 */
+	protected function compressFile($fileName, $compressedFileName)
+	{
+		if (!extension_loaded('zlib')) {
+			throw new Exception('File compression requires PHP "ZLib" extension to be loaded.');
+		}
+		switch ($this->compressMethod) {
+			case self::COMPRESS_METHOD_GZIP: {
+				$compressedFileContent = gzencode(file_get_contents($fileName), $this->compressLevel);
+				break;
+			}
+			case self::COMPRESS_METHOD_DEFLATE: {
+				$compressedFileContent = gzdeflate(file_get_contents($fileName), $this->compressLevel);
+				break;
+			}
+			default: {
+				throw new Exception("Unknown compress method '{$this->compressMethod}'.");
+			}
+		}
+		$bytesWritten = file_put_contents($compressedFileName, $compressedFileContent);
+		if ($bytesWritten <= 0) {
+			throw new Exception("Unable to write compression output file '{$compressedFileName}'.");
+		}
+	}
+
+	/**
+	 * Composes the compressed file name from the given file name using [[compressedFileNamePattern]].
+	 * @param string $fileName original file name.
+	 * @return string compressed file name.
+	 */
+	protected function composeCompressedFileName($fileName)
+	{
+		$fileBaseName = basename($fileName);
+		$fileDirName = dirname($fileName);
+		return $fileDirName . DIRECTORY_SEPARATOR . strtr($this->compressedFileNamePattern, array('{filename}' => $fileBaseName));
 	}
 
 	/**
