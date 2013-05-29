@@ -82,8 +82,22 @@ class AssetController extends Controller
 	/**
 	 * @var string ZIP compress method for all compacted files.
 	 * Possible values: 'gzip', 'deflate'.
-	 * Note: this feature requires "Zlib" PHP extension.
 	 * Specify empty value to disable compression.
+	 * Note: this feature requires "Zlib" PHP extension.
+	 *
+	 * Allowing browser to recognize compressed files correctly may require the modification
+	 * of your web server configuration.
+	 * This could be done by adding following lines to ".htaccess" file:
+	 * ~~~
+	 * <FilesMatch .*\.css.gzip$>
+	 *     ForceType text/css
+	 *     Header set Content-Encoding: gzip
+	 * </FilesMatch>
+	 * <FilesMatch .*\.js.gzip$>
+	 *     ForceType text/javascript
+	 *     Header set Content-Encoding: gzip
+	 * </FilesMatch>
+	 * ~~~
 	 */
 	public $compressMethod = false;
 	/**
