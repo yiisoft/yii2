@@ -51,6 +51,8 @@ class ButtonGroup extends Widget
 	 *
 	 * - label: string, required, the button label.
 	 * - options: array, optional, the HTML attributes of the button.
+	 *
+	 * Optionally, you can also set each item as a string, or even the [[items]] attribute.
 	 */
 	public $items = array();
 	/**
