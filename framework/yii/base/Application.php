@@ -279,6 +279,15 @@ class Application extends Module
 	}
 
 	/**
+	 * Returns the formatter component.
+	 * @return \yii\base\Formatter the formatter application component.
+	 */
+	public function getFormatter()
+	{
+		return $this->getComponent('formatter');
+	}
+
+	/**
 	 * Returns the request component.
 	 * @return \yii\web\Request|\yii\console\Request the request component
 	 */
@@ -332,6 +341,9 @@ class Application extends Module
 		$this->setComponents(array(
 			'errorHandler' => array(
 				'class' => 'yii\base\ErrorHandler',
+			),
+			'formatter' => array(
+				'class' => 'yii\base\Formatter',
 			),
 			'i18n' => array(
 				'class' => 'yii\i18n\I18N',
