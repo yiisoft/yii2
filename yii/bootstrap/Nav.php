@@ -88,7 +88,7 @@ class Nav extends Widget
 	public function run()
 	{
 		echo $this->renderItems();
-		$this->registerPlugin('dropdown');
+		$this->getView()->registerAssetBundle('yii/bootstrap');
 	}
 
 	/**
