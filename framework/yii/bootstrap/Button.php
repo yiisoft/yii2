@@ -22,18 +22,17 @@ use yii\helpers\Html;
  *     'label' => 'Action',
  *     'items' => Dropdown::widget(array(
  *         'clientOptions' => false,
- *             'items' => array(
- *                 array(
- *                     'label' => 'DropdownA',
- *                     'url' => '/',
- *                 ),
- *                 array(
- *                     'label' => 'DropdownB',
- *                     'url' => '#',
- *                 ),
- *              ),
+ *         'items' => array(
+ *             array(
+ *                 'label' => 'DropdownA',
+ *                 'url' => '/',
+ *             ),
+ *             array(
+ *                 'label' => 'DropdownB',
+ *                 'url' => '#',
+ *             ),
  *         ),
- *      ),
+ *     )),
  * ));
  *
  * // split button group using `items` dropdown configuration
@@ -134,10 +133,12 @@ class Button extends Widget
 			$splitButton = Html::tag('button', '<span class="caret"></span>', $this->buttonOptions);
 		} else {
 			$tag = 'a';
+			$label .= ' <span class="caret"></span>';
 			$options = $this->buttonOptions;
 			if (!isset($options['href'])) {
 				$options['href'] = '#';
 			}
+			$this->addCssClass($options, 'dropdown-toggle');
 			$options['data-toggle'] = 'dropdown';
 		}
 		return Html::tag($tag, $label, $options) . "\n" . $splitButton;
