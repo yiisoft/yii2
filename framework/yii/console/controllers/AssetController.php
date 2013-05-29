@@ -85,16 +85,11 @@ class AssetController extends Controller
 	 * Note: this feature requires "Zlib" PHP extension.
 	 * Specify empty value to disable compression.
 	 */
-	public $compressMethod = self::COMPRESS_METHOD_GZIP;
+	public $compressMethod = false;
 	/**
 	 * @var integer compression level for [[compressMethod]]
 	 */
 	public $compressLevel = 6;
-	/**
-	 * @var string pattern, which will be used to create name for compressed files.
-	 * This pattern should contain placeholder "{filename}", which will be filed up with original file name.
-	 */
-	public $compressedFileNamePattern = '{filename}.gzip';
 
 	/**
 	 * Returns the asset manager instance.
@@ -483,10 +478,9 @@ EOD
 		}
 		echo "  JavaScript files compacted into '{$outputFile}'.\n";
 		if (!empty($this->compressMethod)) {
-			$compressedFileName = $this->composeCompressedFileName($outputFile);
-			echo "  Compressing JavaScript file '{$outputFile}' into '{$compressedFileName}'...\n";
-			$this->compressFile($outputFile, $compressedFileName);
-			echo "  JavaScript file '{$outputFile}' compressed into '{$compressedFileName}'.\n";
+			echo "  Compressing JavaScript file '{$outputFile}'...\n";
+			$this->compressFile($outputFile, $outputFile);
+			echo "  JavaScript file '{$outputFile}' compressed.\n";
 		}
 	}
 
@@ -518,10 +512,9 @@ EOD
 		}
 		echo "  CSS files compacted into '{$outputFile}'.\n";
 		if (!empty($this->compressMethod)) {
-			$compressedFileName = $this->composeCompressedFileName($outputFile);
-			echo "  Compressing CSS file '{$outputFile}' into '{$compressedFileName}'...\n";
-			$this->compressFile($outputFile, $compressedFileName);
-			echo "  CSS file '{$outputFile}' compressed into '{$compressedFileName}'.\n";
+			echo "  Compressing CSS file '{$outputFile}'...\n";
+			$this->compressFile($outputFile, $outputFile);
+			echo "  CSS file '{$outputFile}' compressed.\n";
 		}
 	}
 
@@ -646,18 +639,6 @@ EOD
 		if ($bytesWritten <= 0) {
 			throw new Exception("Unable to write compression output file '{$compressedFileName}'.");
 		}
-	}
-
-	/**
-	 * Composes the compressed file name from the given file name using [[compressedFileNamePattern]].
-	 * @param string $fileName original file name.
-	 * @return string compressed file name.
-	 */
-	protected function composeCompressedFileName($fileName)
-	{
-		$fileBaseName = basename($fileName);
-		$fileDirName = dirname($fileName);
-		return $fileDirName . DIRECTORY_SEPARATOR . strtr($this->compressedFileNamePattern, array('{filename}' => $fileBaseName));
 	}
 
 	/**

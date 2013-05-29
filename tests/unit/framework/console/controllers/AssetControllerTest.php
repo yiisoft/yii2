@@ -72,11 +72,14 @@ class AssetControllerTest extends TestCase
 	 * Emulates running of the asset controller action.
 	 * @param string $actionId id of action to be run.
 	 * @param array $args action arguments.
+	 * @param AssetController|null $controller controller instance, if empty new will be created.
 	 * @return string command output.
 	 */
-	protected function runAssetControllerAction($actionId, array $args=array())
+	protected function runAssetControllerAction($actionId, array $args=array(), $controller = null)
 	{
-		$controller = $this->createAssetController();
+		if (!is_object($controller)) {
+			$controller = $this->createAssetController();
+		}
 		ob_start();
 		ob_implicit_flush(false);
 		$params = array(
@@ -355,5 +358,58 @@ class AssetControllerTest extends TestCase
 
 		$this->assertTrue(file_exists($compressedFileName), 'Unable to compress file!');
 		$this->assertGreaterThan(strlen(file_get_contents($compressedFileName)), strlen($fileContent), 'No compression!');
+	}
+
+	/**
+	 * @depends testActionCompress
+	 * @depends testCompressFile
+	 */
+	public function testActionCompressGZip()
+	{
+		// Given :
+		$controller = $this->createAssetController();
+		$controller->compressMethod = AssetController::COMPRESS_METHOD_GZIP;
+
+		$cssFiles = array(
+			'css/test_body.css' => 'body {
+				padding-top: 20px;
+				padding-bottom: 60px;
+				margin: 20px;
+				display: block;
+			}',
+		);
+		$this->createAssertSourceFiles($cssFiles);
+
+		$jsFiles = array(
+			'js/test_sum_ab.js' => "function sumAB(a, b) {
+				return a + b;
+			}",
+		);
+		$this->createAssertSourceFiles($jsFiles);
+
+		$bundles = array(
+			'app' => array(
+				'css' => array_keys($cssFiles),
+				'js' => array_keys($jsFiles),
+				'depends' => array(
+					'yii',
+				),
+			),
+		);;
+		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
+
+		$configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
+		$this->createCompressConfigFile($configFile, $bundles);
+
+		// When :
+		$this->runAssetControllerAction('compress', array($configFile, $bundleFile), $controller);
+
+		// Then :
+		$this->assertTrue(file_exists($bundleFile), 'Unable to create output bundle file!');
+
+		$compressedCssFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.css';
+		$this->assertTrue(file_exists($compressedCssFileName), 'Unable to compress CSS files!');
+		$compressedJsFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.js';
+		$this->assertTrue(file_exists($compressedJsFileName), 'Unable to compress JS files!');
 	}
 }
