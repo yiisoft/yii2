@@ -67,7 +67,6 @@ class Tabs extends Widget
 	 *   - active: boolean, optional, whether the item tab header and pane should be visibles or not.
 	 *   - content: string, required if `items` is not set. The content (HTML) of the tab pane.
 	 *   - contentOptions: optional, array, the HTML attributes of the tab content container.
-	 * )
 	 */
 	public $items = array();
 	/**
