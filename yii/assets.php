@@ -48,4 +48,11 @@ return array(
 			YII_DEBUG ? 'punycode/punycode.js' : 'punycode/punycode.min.js',
 		),
 	),
+	'yii/maskedinput' => array(
+		'sourcePath' => __DIR__ . '/assets',
+		'js' => array(
+			'jquery.maskedinput.js',
+		),
+		'depends' => array('yii/jquery'),
+	),
 );
