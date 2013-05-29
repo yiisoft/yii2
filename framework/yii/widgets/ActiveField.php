@@ -557,7 +557,14 @@ class ActiveField extends Component
 	}
 
 	/**
-	 * Renders a field containing a widget.
+	 * Renders a field containing an input widget.
+	 *
+	 * Note that the widget must have both `model` and `attribute` properties. They will
+	 * be initialized with [[model]] and [[attribute]] of this field, respectively.
+	 *
+	 * If you want to use a widget that does not have `model` and `attribute` properties,
+	 * please use [[render()]] instead.
+	 *
 	 * @param string $class the widget class name
 	 * @param array $config name-value pairs that will be used to initialize the widget
 	 * @return string the rendering result
@@ -565,6 +572,9 @@ class ActiveField extends Component
 	public function widget($class, $config = array())
 	{
 		/** @var \yii\base\Widget $class */
+		$config['model'] = $this->model;
+		$config['attribute'] = $this->attribute;
+		$config['view'] = $this->form->getView();
 		return $this->render($class::widget($config));
 	}
 }
