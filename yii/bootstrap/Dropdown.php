@@ -24,24 +24,14 @@ class Dropdown extends Widget
 	/**
 	 * @var array list of menu items in the dropdown. Each array element represents a single
 	 * menu with the following structure:
+	 * - label: string, required, the label of the item link
+	 * - url: string, optional, the url of the item link. Defaults to "#".
+	 * - linkOptions: array, optional, the HTML attributes of the item link.
+	 * - options: array, optional, the HTML attributes of the item.
+	 * - items: array, optional, the dropdown items configuration array. if `items` is set, then `url` of the parent
+	 *   item will be ignored and automatically set to "#"
 	 *
-	 * ```php
-	 * array(
-	 *     // required, the label of the item link
-	 *     'label' => 'Menu label',
-	 *     // optional, url of the item link
-	 *     'url' => '',
-	 *     // optional the HTML attributes of the item link
-	 *     'linkOptions'=> array(...),
-	 *     // optional the HTML attributes of the item
-	 *     'options'=> array(...),
-	 *     // optional, an array of items that configure a sub menu of the item
-	 *     // note: if `items` is set, then `url` of the parent item will be ignored and automatically set to "#"
-	 *     // important: there is an issue with sub-dropdown menus, and as of 3.0, bootstrap won't support sub-dropdown
-	 *     // @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
-	 *     'items'=> array(...)
-	 * )
-	 * ```
+	 * @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
 	 */
 	public $items = array();
 	/**
