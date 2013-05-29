@@ -37,6 +37,9 @@ abstract class DatabaseTestCase extends TestCase
 			$db->username = $this->database['username'];
 			$db->password = $this->database['password'];
 		}
+		if (isset($this->database['attributes'])) {
+			$db->attributes = $this->database['attributes'];
+		}
 		if ($open) {
 			$db->open();
 			$lines = explode(';', file_get_contents($this->database['fixture']));
