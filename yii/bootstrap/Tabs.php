@@ -8,7 +8,7 @@
 namespace yii\bootstrap;
 
 use yii\base\InvalidConfigException;
-use yii\helpers\base\ArrayHelper;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -18,26 +18,25 @@ use yii\helpers\Html;
  *
  * ```php
  * echo Tabs::widget(array(
- *     'options' => array('class'=>'nav-tabs'),
  *     'items' => array(
  *         array(
- *             'header' => 'One',
+ *             'label' => 'One',
  *             'content' => 'Anim pariatur cliche...',
+ *             'active' => true
  *         ),
  *         array(
- *             'header' => 'Two',
+ *             'label' => 'Two',
  *             'headerOptions' => array(...),
  *             'content' => 'Anim pariatur cliche...',
  *             'options' => array('id'=>'myveryownID'),
  *         ),
  *         array(
- *             'header' => 'Dropdown',
+ *             'label' => 'Dropdown',
  *             'dropdown' => array(
  *                  array(
  *                      'label' => 'DropdownA',
  *                      'content' => 'DropdownA, Anim pariatur cliche...',
  *                  ),
- *                  '-', // divider
  *                  array(
  *                      'label' => 'DropdownB',
  *                      'content' => 'DropdownB, Anim pariatur cliche...',
@@ -58,28 +57,36 @@ class Tabs extends Widget
 	 * @var array list of tabs in the tabs widget. Each array element represents a single
 	 * tab with the following structure:
 	 *
-	 * ```php
-	 * array(
-	 *     // required, the header (HTML) of the tab
-	 *     'header' => 'Tab label',
-	 *     // optional the HTML attributes of the tab header `LI` tag container
-	 *     'headerOptions'=> array(...),
-	 *     // required, the content (HTML) of the tab
-	 *     'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
-	 *     // optional the HTML attributes of the tab content container
-	 *     'options'=> array(...),
-	 *     // optional, an array of [[Dropdown]] widget items so to display a dropdown menu on the tab header. This
-	 *     // attribute, apart from the original [[Dropdown::items]] settings, also has two extra special keys:
-	 *     // - content: required, teh content (HTML) of teh tab the menu item is linked to
-	 *     // - contentOptions: optional the HTML attributes of the tab content container
-	 *     // note: if `dropdown` is set, then `content` will be ignored
-	 *     // important: there is an issue with sub-dropdown menus, and as of 3.0, bootstrap won't support sub-dropdown
-	 *     // @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
-	 *     'dropdown'=> array(...)
+	 * - label: string, the tab header label.
+	 * - headerOptions: array, optional, the HTML attributes of the tab header.
+	 * - content: array, required if `items` is not set. The content (HTML) of the tab pane.
+	 * - options: array, optional, the HTML attributes of the tab pane container.
+	 * - active: boolean, optional, whether the item tab header and pane should be visibles or not.
+	 * - items: array, optional, if not set then `content` will be required. The `items` specify a dropdown items
+	 *   configuration array. Items can also hold two extra keys:
+	 *   - active: boolean, optional, whether the item tab header and pane should be visibles or not.
+	 *   - content: string, required if `items` is not set. The content (HTML) of the tab pane.
+	 *   - contentOptions: optional, array, the HTML attributes of the tab content container.
 	 * )
 	 * ```
 	 */
 	public $items = array();
+	/**
+	 * @var array list of HTML attributes for the item container tags. This will be overwritten
+	 * by the "options" set in individual [[items]]. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "div", the tag name of the item container tags.
+	 */
+	public $itemOptions = array();
+	/**
+	 * @var array list of HTML attributes for the header container tags. This will be overwritten
+	 * by the "headerOptions" set in individual [[items]].
+	 */
+	public $headerOptions = array();
+	/**
+	 * @var boolean whether the labels for header items should be HTML-encoded.
+	 */
+	public $encodeLabels = true;
 
 
 	/**
@@ -88,8 +95,7 @@ class Tabs extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->addCssClass($this->options, 'nav');
-		$this->items = $this->normalizeItems();
+		$this->addCssClass($this->options, 'nav nav-tabs');
 
 	}
 
@@ -98,136 +104,124 @@ class Tabs extends Widget
 	 */
 	public function run()
 	{
-		echo Html::beginTag('ul', $this->options) . "\n";
-		echo $this->renderHeaders() . "\n";
-		echo Html::endTag('ul');
-		echo Html::beginTag('div', array('class' => 'tab-content')) . "\n";
-		echo $this->renderContents() . "\n";
-		echo Html::endTag('div') . "\n";
+		echo $this->renderItems();
 		$this->registerPlugin('tab');
 	}
 
 	/**
-	 * Renders tabs navigation.
+	 * Renders tab items as specified on [[items]].
 	 * @return string the rendering result.
+	 * @throws InvalidConfigException.
 	 */
-	protected function renderHeaders()
+	protected function renderItems()
 	{
 		$headers = array();
-		foreach ($this->items['headers'] as $item) {
-			$options = ArrayHelper::getValue($item, 'options', array());
-			if (isset($item['dropdown'])) {
-				$headers[] = Html::tag(
-					'li',
-					Html::a($item['header'] . ' <b class="caret"></b>', "#", array(
-						'class' => 'dropdown-toggle',
-						'data-toggle' => 'dropdown'
-					)) .
-					Dropdown::widget(array('items' => $item['dropdown'], 'clientOptions' => false)),
-					$options
-				);
-				continue;
+		$panes = array();
+		foreach ($this->items as $n => $item) {
+			if (!isset($item['label'])) {
+				throw new InvalidConfigException("The 'label' option is required.");
 			}
-			$id = ArrayHelper::getValue($item, 'url');
-			$headers[] = Html::tag('li', Html::a($item['header'], "{$id}", array('data-toggle' => 'tab')), $options);
-
-		}
-		return implode("\n", $headers);
-	}
-
-	/**
-	 * Renders tabs contents.
-	 * @return string the rendering result.
-	 */
-	protected function renderContents()
-	{
-		$contents = array();
-		foreach ($this->items['contents'] as $item) {
-			$options = ArrayHelper::getValue($item, 'options', array());
-			$this->addCssClass($options, 'tab-pane');
-			$contents[] = Html::tag('div', $item['content'], $options);
-
-		}
-		return implode("\n", $contents);
-	}
-
-	/**
-	 * Normalizes the [[items]] property to divide headers from contents and to ease its rendering when there are
-	 * headers with dropdown menus.
-	 * @return array the normalized tabs items
-	 * @throws InvalidConfigException
-	 */
-	protected function normalizeItems()
-	{
-		$items = array();
-		$index = 0;
-		foreach ($this->items as $item) {
-			if (!isset($item['header'])) {
-				throw new InvalidConfigException("The 'header' option is required.");
-			}
-			if (!isset($item['content']) && !isset($item['dropdown'])) {
+			if (!isset($item['content']) && !isset($item['items'])) {
 				throw new InvalidConfigException("The 'content' option is required.");
 			}
-			$header = $content = array();
-			$header['header'] = ArrayHelper::getValue($item, 'header');
-			$header['options'] = ArrayHelper::getValue($item, 'headerOptions', array());
-			if ($index === 0) {
-				$this->addCssClass($header['options'], 'active');
-			}
-			if (isset($item['dropdown'])) {
-				$this->addCssClass($header['options'], 'dropdown');
+			$label = $this->label($item['label']);
+			$headerOptions = $this->mergedOptions($item, 'headerOptions');
 
-				$self = $this;
-				$dropdown = function ($list) use (&$dropdown, &$items, &$index, $self) {
-					$ddItems = $content = array();
-					foreach ($list as $item) {
-						if (is_string($item)) {
-							$ddItems[] = $item;
-							continue;
-						}
-						if (!isset($item['content']) && !isset($item['items'])) {
-							throw new InvalidConfigException("The 'content' option is required.");
-						}
-						if (isset($item['items'])) {
-							$item['items'] = $dropdown($item['items']);
-						} else {
-							$content['content'] = ArrayHelper::remove($item, 'content');
-							$content['options'] = ArrayHelper::remove($item, 'contentOptions', array());
-							if ($index === 0) {
-								$self->addCssClass($content['options'], 'active');
-								$self->addCssClass($item['options'], 'active');
-							}
-							$content['options']['id'] = ArrayHelper::getValue(
-								$content['options'],
-								'id',
-								$self->options['id'] . '-tab' . $index++);
-							$item['url'] = '#' . $content['options']['id'];
-							$item['urlOptions']['data-toggle'] = 'tab';
+			if (isset($item['items'])) {
+				$label .= ' <b class="caret"></b>';
+				$this->addCssClass($headerOptions, 'dropdown');
 
-							$items['contents'][] = $content;
-						}
-						$ddItems[] = $item;
-					}
-					return $ddItems;
-				};
-				$header['dropdown'] = $dropdown($item['dropdown']);
+				if ($this->normalizeItems($item['items'], $panes)) {
+					$this->addCssClass($headerOptions, 'active');
+				}
+
+				$header = Html::a($label, "#", array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown')) . "\n";
+				$header .= Dropdown::widget(array('items' => $item['items'], 'clientOptions' => false));
 
 			} else {
-				$content['content'] = ArrayHelper::getValue($item, 'content');
-				$content['options'] = ArrayHelper::getValue($item, 'options', array());
-				if ($index === 0) {
-					$this->addCssClass($content['options'], 'active');
-				}
-				$content['options']['id'] = ArrayHelper::getValue(
-					$content['options'],
-					'id',
-					$this->options['id'] . '-tab' . $index++);
+				$options = $this->mergedOptions($item, 'itemOptions', 'options');
+				$options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $n);
 
-				$header['url'] = "#" . ArrayHelper::getValue($content['options'], 'id');
-				$items['contents'][] = $content;
+				$this->addCssClass($options, 'tab-pane');
+				if (ArrayHelper::remove($item, 'active')) {
+					$this->addCssClass($options, 'active');
+					$this->addCssClass($headerOptions, 'active');
+				}
+				$header = Html::a($label, '#' . $options['id'], array('data-toggle' => 'tab', 'tabindex' => '-1'));
+				$panes[] = Html::tag('div', $item['content'], $options);
+
 			}
-			$items['headers'][] = $header;
+			$headers[] = Html::tag('li', $header, array_merge($this->headerOptions, $headerOptions));
 		}
-		return $items;
+
+		return Html::tag('ul', implode("\n", $headers), $this->options) . "\n" .
+		Html::tag('div', implode("\n", $panes), array('class' => 'tab-content'));
+	}
+
+	/**
+	 * Returns encoded if specified on [[encodeLabels]], original string otherwise.
+	 * @param string $content the label text to encode or return
+	 * @return string the resulting label.
+	 */
+	protected function label($content)
+	{
+		return $this->encodeLabels ? Html::encode($content) : $content;
+	}
+
+	/**
+	 * Returns array of options merged with specified attribute array. The availabel options are:
+	 *  - [[itemOptions]]
+	 *  - [[headerOptions]]
+	 * @param array $item the item to merge the options with
+	 * @param string $name the property name.
+	 * @param string $key the key to extract. If null, it is assumed to be the same as `$name`.
+	 * @return array the merged array options.
+	 */
+	protected function mergedOptions($item, $name, $key = null)
+	{
+		if ($key === null) {
+			$key = $name;
+		}
+		return array_merge($this->{$name}, ArrayHelper::getValue($item, $key, array()));
+	}
+
+	/**
+	 * Normalizes dropdown item options by removing tab specific keys `content` and `contentOptions`, and also
+	 * configure `panes` accordingly.
+	 * @param array $items the dropdown items configuration.
+	 * @param array $panes the panes reference array.
+	 * @return boolean whether any of the dropdown items is `active` or not.
+	 * @throws InvalidConfigException
+	 */
+	protected function normalizeItems(&$items, &$panes)
+	{
+		$itemActive = false;
+
+		foreach ($items as $n => &$item) {
+			if (is_string($item)) {
+				continue;
+			}
+			if (!isset($item['content']) && !isset($item['items'])) {
+				throw new InvalidConfigException("The 'content' option is required.");
+			}
+
+			$content = ArrayHelper::remove($item, 'content');
+			$options = ArrayHelper::remove($item, 'contentOptions', array());
+			$this->addCssClass($options, 'tab-pane');
+			if (ArrayHelper::remove($item, 'active')) {
+				$this->addCssClass($options, 'active');
+				$this->addCssClass($item['options'], 'active');
+				$itemActive = true;
+			}
+
+			$options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-dd-tab' . $n);
+			$item['url'] = '#' . $options['id'];
+			$item['linkOptions']['data-toggle'] = 'tab';
+
+			$panes[] = Html::tag('div', $content, $options);
+
+			unset($item);
+		}
+		return $itemActive;
 	}
 }
