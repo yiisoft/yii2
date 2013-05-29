@@ -17,7 +17,7 @@ use yii\helpers\Html;
  * ```php
  * Draggable::begin(array(
  *     'clientOptions' => array(
- *         'modal' => true,
+ *         'grid' => array(50, 20),
  *     ),
  * ));
  *
