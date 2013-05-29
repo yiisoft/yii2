@@ -57,14 +57,8 @@ class Nav extends Widget
 	 * - linkOptions: array, optional, the HTML attributes of the item's link.
 	 * - options: array, optional, the HTML attributes of the item container (LI).
 	 * - active: boolean, optional, whether the item should be on active state or not.
-	 * - items: array, optional, the configuration of specify the item's dropdown menu. You can optionally set this as
-	 *   a string (ie. `'items'=> Dropdown::widget(array(...))`
-	 *   - important: there is an issue with sub-dropdown menus, and as of 3.0, bootstrap won't support sub-dropdown.
-	 *
-	 * **Note:** Optionally, you can also use a plain string instead of an array element.
-	 *
-	 * @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
-	 * @see [[Dropdown]]
+	 * - dropdown: array|string, optional, the configuration array for creating a [[Dropdown]] widget,
+	 *   or a string representing the dropdown menu. Note that Bootstrap does not support sub-dropdown menus.
 	 */
 	public $items = array();
 	/**
@@ -120,7 +114,7 @@ class Nav extends Widget
 		}
 		$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
 		$options = ArrayHelper::getValue($item, 'options', array());
-		$dropdown = ArrayHelper::getValue($item, 'items');
+		$dropdown = ArrayHelper::getValue($item, 'dropdown');
 		$url = Html::url(ArrayHelper::getValue($item, 'url', '#'));
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
 
@@ -133,9 +127,10 @@ class Nav extends Widget
 			$this->addCssClass($options, 'dropdown');
 			$this->addCssClass($urlOptions, 'dropdown-toggle');
 			$label .= ' ' . Html::tag('b', '', array('class' => 'caret'));
-			$dropdown = is_string($dropdown)
-				? $dropdown
-				: Dropdown::widget(array('items' => $item['items'], 'clientOptions' => false));
+			if (is_array($dropdown)) {
+				$dropdown['clientOptions'] = false;
+				$dropdown = Dropdown::widget($dropdown);
+			}
 		}
 
 		return Html::tag('li', Html::a($label, $url, $linkOptions) . $dropdown, $options);

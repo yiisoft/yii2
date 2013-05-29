@@ -73,7 +73,7 @@ class NavBar extends Widget
 	 * @param array|string $url the URL for the brand's hyperlink tag. This parameter will be processed by [[Html::url()]]
 	 * and will be used for the "href" attribute of the brand link. Defaults to site root.
 	 */
-	public $brandRoute = '/';
+	public $brandUrl = '/';
 	/**
 	 * @var array the HTML attributes of the brand link.
 	 */
@@ -98,10 +98,6 @@ class NavBar extends Widget
 	 * Optionally, you can also use a plain string instead of an array element.
 	 */
 	public $items = array();
-	/**
-	 * @var string the generated brand url if specified by [[brandLabel]]
-	 */
-	protected $brand;
 
 
 	/**
@@ -113,7 +109,6 @@ class NavBar extends Widget
 		$this->clientOptions = false;
 		$this->addCssClass($this->options, 'navbar');
 		$this->addCssClass($this->brandOptions, 'brand');
-		$this->brand = Html::a($this->brandLabel, $this->brandRoute, $this->brandOptions);
 	}
 
 	/**
@@ -124,7 +119,7 @@ class NavBar extends Widget
 		echo Html::beginTag('div', $this->options);
 		echo $this->renderItems();
 		echo Html::endTag('div');
-		$this->getView()->registerAssetBundle('yii/bootstrap');
+		$this->getView()->registerAssetBundle(self::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
 	}
 
 	/**
@@ -138,17 +133,17 @@ class NavBar extends Widget
 			$items[] = $this->renderItem($item);
 		}
 		$contents = implode("\n", $items);
-		if (self::$responsive === true) {
+		$brand = Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
+
+		if (self::$responsive) {
 			$this->getView()->registerAssetBundle('yii/bootstrap/collapse');
-			$contents =
-				Html::tag('div',
+			$contents = Html::tag('div',
 					$this->renderToggleButton() .
-					$this->brand . "\n" .
+					$brand . "\n" .
 					Html::tag('div', $contents, array('class' => 'nav-collapse collapse navbar-collapse')),
 					array('class' => 'container'));
-
 		} else {
-			$contents = $this->brand . "\n" . $contents;
+			$contents = $brand . "\n" . $contents;
 		}
 
 		return Html::tag('div', $contents, array('class' => 'navbar-inner'));
