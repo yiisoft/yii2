@@ -57,7 +57,7 @@ class Tabs extends Widget
 	 * @var array list of tabs in the tabs widget. Each array element represents a single
 	 * tab with the following structure:
 	 *
-	 * - label: string, the tab header label.
+	 * - label: string, required, the tab header label.
 	 * - headerOptions: array, optional, the HTML attributes of the tab header.
 	 * - content: array, required if `items` is not set. The content (HTML) of the tab pane.
 	 * - options: array, optional, the HTML attributes of the tab pane container.
