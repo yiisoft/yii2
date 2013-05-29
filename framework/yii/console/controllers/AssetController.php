@@ -517,12 +517,12 @@ EOD
 			throw new Exception("Unable to compact CSS files into '{$outputFile}'.");
 		}
 		echo "  CSS files compacted into '{$outputFile}'.\n";
-		/*if (!empty($this->compressMethod)) {
+		if (!empty($this->compressMethod)) {
 			$compressedFileName = $this->composeCompressedFileName($outputFile);
 			echo "  Compressing CSS file '{$outputFile}' into '{$compressedFileName}'...\n";
 			$this->compressFile($outputFile, $compressedFileName);
 			echo "  CSS file '{$outputFile}' compressed into '{$compressedFileName}'.\n";
-		}*/
+		}
 	}
 
 	/**
