@@ -36,9 +36,6 @@
 
 			"frontend/runtime",
 			"frontend/www/assets"
-		],
-		"yii-install-executable": [
-			"yii"
 		]
 	}
 }

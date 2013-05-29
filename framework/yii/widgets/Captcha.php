@@ -9,13 +9,12 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\CaptchaAction;
 
 /**
- * Captcha renders a CAPTCHA image element.
+ * Captcha renders a CAPTCHA image and an input field that takes user-entered verification code.
  *
  * Captcha is used together with [[CaptchaAction]] provide [CAPTCHA](http://en.wikipedia.org/wiki/Captcha)
  * - a way of preventing Website spamming.
@@ -32,7 +31,7 @@ use yii\web\CaptchaAction;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Captcha extends Widget
+class Captcha extends InputWidget
 {
 	/**
 	 * @var string the route of the action that generates the CAPTCHA images.
@@ -40,27 +39,66 @@ class Captcha extends Widget
 	 */
 	public $captchaAction = 'site/captcha';
 	/**
-	 * @var array HTML attributes to be applied to the rendered image element.
+	 * @var array HTML attributes to be applied to the text input field.
 	 */
 	public $options = array();
+	/**
+	 * @var array HTML attributes to be applied to the CAPTCHA image tag.
+	 */
+	public $imageOptions = array();
+	/**
+	 * @var string the template for arranging the CAPTCHA image tag and the text input tag.
+	 * In this template, the token `{image}` will be replaced with the actual image tag,
+	 * while `{input}` will be replaced with the text input tag.
+	 */
+	public $template = '{image} {input}';
 
+	/**
+	 * Initializes the widget.
+	 */
+	public function init()
+	{
+		parent::init();
+
+		$this->checkRequirements();
+
+		if (!isset($this->options['id'])) {
+			$this->options['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
+		}
+		if (!isset($this->imageOptions['id'])) {
+			$this->imageOptions['id'] = $this->options['id'] . '-image';
+		}
+	}
 
 	/**
 	 * Renders the widget.
 	 */
 	public function run()
 	{
-		$this->checkRequirements();
-
-		if (!isset($this->options['id'])) {
-			$this->options['id'] = $this->getId();
+		$this->registerClientScript();
+		if ($this->hasModel()) {
+			$input = Html::activeTextInput($this->model, $this->attribute, $this->options);
+		} else {
+			$input = Html::textInput($this->name, $this->value, $this->options);
 		}
-		$id = $this->options['id'];
-		$options = Json::encode($this->getClientOptions());
-		$this->view->registerAssetBundle('yii/captcha');
-		$this->view->registerJs("jQuery('#$id').yiiCaptcha($options);");
 		$url = Yii::$app->getUrlManager()->createUrl($this->captchaAction, array('v' => uniqid()));
-		echo Html::img($url, $this->options);
+		$image = Html::img($url, $this->imageOptions);
+		echo strtr($this->template, array(
+			'{input}' => $input,
+			'{image}' => $image,
+		));
+	}
+
+	/**
+	 * Registers the needed JavaScript.
+	 */
+	public function registerClientScript()
+	{
+		$options = $this->getClientOptions();
+		$options = empty($options) ? '' : Json::encode($options);
+		$id = $this->imageOptions['id'];
+		$this->getView()->registerAssetBundle('yii/captcha');
+		$this->getView()->registerJs("jQuery('#$id').yiiCaptcha($options);");
 	}
 
 	/**

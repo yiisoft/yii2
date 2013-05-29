@@ -89,7 +89,7 @@ abstract class Schema extends \yii\base\Object
 			/** @var $cache Cache */
 			$cache = is_string($db->schemaCache) ? Yii::$app->getComponent($db->schemaCache) : $db->schemaCache;
 			if ($cache instanceof Cache) {
-				$key = $this->getCacheKey($cache, $name);
+				$key = $this->getCacheKey($name);
 				if ($refresh || ($table = $cache->get($key)) === false) {
 					$table = $this->loadTableSchema($realName);
 					if ($table !== null) {
@@ -104,18 +104,17 @@ abstract class Schema extends \yii\base\Object
 
 	/**
 	 * Returns the cache key for the specified table name.
-	 * @param Cache $cache the cache component
 	 * @param string $name the table name
-	 * @return string the cache key
+	 * @return mixed the cache key
 	 */
-	public function getCacheKey($cache, $name)
+	public function getCacheKey($name)
 	{
-		return $cache->buildKey(array(
+		return array(
 			__CLASS__,
 			$this->db->dsn,
 			$this->db->username,
 			$name,
-		));
+		);
 	}
 
 	/**
@@ -178,7 +177,7 @@ abstract class Schema extends \yii\base\Object
 		$cache = is_string($this->db->schemaCache) ? Yii::$app->getComponent($this->db->schemaCache) : $this->db->schemaCache;
 		if ($this->db->enableSchemaCache && $cache instanceof Cache) {
 			foreach ($this->_tables as $name => $table) {
-				$cache->delete($this->getCacheKey($cache, $name));
+				$cache->delete($this->getCacheKey($name));
 			}
 		}
 		$this->_tableNames = array();

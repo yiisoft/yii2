@@ -159,7 +159,7 @@ class FragmentCache extends Widget
 	/**
 	 * Generates a unique key used for storing the content in cache.
 	 * The key generated depends on both [[id]] and [[variations]].
-	 * @return string a valid cache key
+	 * @return mixed a valid cache key
 	 */
 	protected function calculateKey()
 	{
@@ -169,6 +169,6 @@ class FragmentCache extends Widget
 				$factors[] = $factor;
 			}
 		}
-		return $this->cache->buildKey($factors);
+		return $factors;
 	}
 }

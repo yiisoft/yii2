@@ -65,7 +65,7 @@ abstract class CacheTestCase extends TestCase
 	{
 		$cache = $this->getCacheInstance();
 		$this->assertNotNull(\Yii::$app->id);
-		$this->assertEquals(\Yii::$app->id, $cache->keyPrefix);
+		$this->assertNotNull($cache->keyPrefix);
 	}
 
 	public function testSet()
