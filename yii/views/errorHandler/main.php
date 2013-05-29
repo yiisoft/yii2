@@ -109,8 +109,8 @@ html,body{
 	filter: progid:DXImageTransform.Microsoft.BasicImage(mirror=1);
 	font-size: 26px;
 	position: absolute;
-	margin-top: -9px;
-	margin-left: -22px;
+	margin-top: -5px;
+	margin-left: -25px;
 	color: #e51717;
 	text-shadow: 0 1px 0 #cacaca;
 }
@@ -169,7 +169,7 @@ html,body{
 	color: #000;
 	text-shadow: 0 1px 0 #cacaca;
 }
-.call-stack ul li .number{
+.call-stack ul li .item-number{
 	width: 45px;
 	display: inline-block;
 }
@@ -200,47 +200,51 @@ html,body{
 .call-stack ul li.application .code-wrap{
 	display: block;
 }
-.call-stack ul li .error-line,.call-stack ul li .hover-line{
+.call-stack ul li .error-line,
+.call-stack ul li .hover-line{
 	background-color: #ffebeb;
 	position: absolute;
 	width: 100%;
-	height: 20px;
 	z-index: 100;
-	margin-top: 15px;
+	margin-top: -61px;
 }
 .call-stack ul li .hover-line{
 	background: none;
 }
-.call-stack ul li .hover-line.hover,.call-stack ul li .hover-line:hover{
+.call-stack ul li .hover-line.hover,
+.call-stack ul li .hover-line:hover{
 	background: #edf9ff !important;
 }
 .call-stack ul li .code{
 	min-width: 860px; /* 960px - 50px * 2 */
-	margin: 0 auto;
-	padding: 15px 50px;
+	margin: 15px auto;
+	padding: 0 50px;
 	position: relative;
 }
-.call-stack ul li .code .lines{
+.call-stack ul li .code .lines-item{
 	position: absolute;
 	z-index: 200;
-	left: 50px;
-	line-height: 18px;
-	font-size: 14px;
-	font-family: Consolas, Courier New, monospace;
+	display: block;
+	width: 25px;
+	text-align: right;
 	color: #aaa;
+	line-height: 20px;
+	font-size: 12px;
+	margin-top: -63px;
+	font-family: Consolas, Courier New, monospace;
 }
 .call-stack ul li .code pre{
 	position: relative;
 	z-index: 200;
 	left: 50px;
-	line-height: 18px;
-	font-size: 14px;
+	line-height: 20px;
+	font-size: 12px;
 	font-family: Consolas, Courier New, monospace;
 	display: inline;
 }
-@media screen and (-webkit-min-device-pixel-ratio:0){
+@-moz-document url-prefix() {
 	.call-stack ul li .code pre{
-		line-height: 16px;
+		line-height: 20px;
 	}
 }
 
@@ -263,11 +267,6 @@ html,body{
 	font-family: Consolas, Courier New, monospace;
 	display: inline;
 	word-wrap: break-word;
-}
-@media screen and (-webkit-min-device-pixel-ratio:0){
-	.request .code pre{
-		line-height: 16px;
-	}
 }
 
 /* footer */
@@ -413,25 +412,25 @@ var hljs=new function(){function l(o){return o.replace(/&/gm,"&amp;").replace(/<
 
 	<script type="text/javascript">
 window.onload = function() {
-	var i, imax,
-		codeBlocks = Sizzle('pre'),
+	var codeBlocks = Sizzle('pre'),
 		callStackItems = Sizzle('.call-stack-item');
 
 	// highlight code blocks
-	for (i = 0, imax = codeBlocks.length; i < imax; ++i) {
+	for (var i = 0, imax = codeBlocks.length; i < imax; ++i) {
 		hljs.highlightBlock(codeBlocks[i], '    ');
 	}
 
 	// code block hover line
 	document.onmousemove = function(e) {
-		var lines, i, imax, j, jmax, k, kmax,
-			event = e || window.event,
-			y = event.clientY,
-			lineFound = false;
-		for (i = 0, imax = codeBlocks.length; i < imax; ++i) {
-			lines = codeBlocks[i].getClientRects();
-			for (j = 0, jmax = lines.length; j < jmax; ++j) {
-				if (y > lines[j].top && y < lines[j].bottom) {
+		var event = e || window.event,
+			clientY = event.clientY,
+			lineFound = false,
+			hoverLines = Sizzle('.hover-line');
+
+		for (var i = 0, imax = codeBlocks.length - 1; i < imax; ++i) {
+			var lines = codeBlocks[i].getClientRects();
+			for (var j = 0, jmax = lines.length; j < jmax; ++j) {
+				if (clientY >= lines[j].top && clientY <= lines[j].bottom) {
 					lineFound = true;
 					break;
 				}
@@ -440,23 +439,50 @@ window.onload = function() {
 				break;
 			}
 		}
-		var hoverLines = Sizzle('.hover-line');
-		for (k = 0, kmax = hoverLines.length; k < kmax; ++k) {
+
+		for (var k = 0, kmax = hoverLines.length; k < kmax; ++k) {
 			hoverLines[k].className = 'hover-line';
 		}
 		if (lineFound) {
-			var line = Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')');
-			if (line[0]) {
-				line[0].className = 'hover-line hover';
+			var line = Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')')[0];
+			if (line) {
+				line.className = 'hover-line hover';
 			}
 		}
-	}
+	};
 
-	// toggle code block visibility
-	for (i = 0, imax = callStackItems.length; i < imax; i++) {
+	var refreshCallStackItemCode = function(callStackItem) {
+		if (!Sizzle('pre', callStackItem)[0]) {
+			return;
+		}
+		var top = callStackItem.offsetTop - window.pageYOffset,
+			lines = Sizzle('pre', callStackItem)[0].getClientRects(),
+			lineNumbers = Sizzle('.lines-item', callStackItem),
+			errorLine = Sizzle('.error-line', callStackItem)[0],
+			hoverLines = Sizzle('.hover-line', callStackItem);
+		for (var i = 0, imax = lines.length; i < imax; ++i) {
+			if (!lineNumbers[i]) {
+				continue;
+			}
+			lineNumbers[i].style.top = parseInt(lines[i].top - top) + 'px';
+			hoverLines[i].style.top = parseInt(lines[i].top - top - 3) + 'px';
+			hoverLines[i].style.height = parseInt(lines[i].bottom - lines[i].top + 6) + 'px';
+			if (parseInt(callStackItem.getAttribute('data-line')) == i) {
+				errorLine.style.top = parseInt(lines[i].top - top - 3) + 'px';
+				errorLine.style.height = parseInt(lines[i].bottom - lines[i].top + 6) + 'px';
+			}
+		}
+	};
+
+	for (var i = 0, imax = callStackItems.length; i < imax; ++i) {
+		refreshCallStackItemCode(callStackItems[i]);
+
+		// toggle code block visibility
 		Sizzle('.element-wrap', callStackItems[i])[0].addEventListener('click', function() {
-			var code = Sizzle('.code-wrap', this.parentNode)[0];
+			var callStackItem = this.parentNode,
+				code = Sizzle('.code-wrap', callStackItem)[0];
 			code.style.display = window.getComputedStyle(code).display == 'block' ? 'none' : 'block';
+			refreshCallStackItemCode(callStackItem);
 		});
 	}
 };
