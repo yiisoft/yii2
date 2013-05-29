@@ -669,6 +669,9 @@ return array(
 		'basePath' => __DIR__,
 		'baseUrl' => '/test',
 	),
+
+	//'compressMethod' => 'gzip',
+	//'compressLevel' => {$this->compressLevel},
 );
 EOD;
 		if (file_exists($configFile)) {
