@@ -8,7 +8,7 @@
 namespace yii\bootstrap;
 
 use yii\base\InvalidConfigException;
-use yii\helpers\base\ArrayHelper;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 
@@ -32,17 +32,22 @@ class Dropdown extends Widget
 	 *     // optional, url of the item link
 	 *     'url' => '',
 	 *     // optional the HTML attributes of the item link
-	 *     'urlOptions'=> array(...),
+	 *     'linkOptions'=> array(...),
 	 *     // optional the HTML attributes of the item
 	 *     'options'=> array(...),
 	 *     // optional, an array of items that configure a sub menu of the item
 	 *     // note: if `items` is set, then `url` of the parent item will be ignored and automatically set to "#"
+	 *     // important: there is an issue with sub-dropdown menus, and as of 3.0, bootstrap won't support sub-dropdown
+	 *     // @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
 	 *     'items'=> array(...)
 	 * )
 	 * ```
-	 * Additionally, you can also configure a dropdown item as string.
 	 */
 	public $items = array();
+	/**
+	 * @var boolean whether the labels for header items should be HTML-encoded.
+	 */
+	public $encodeLabels = true;
 
 
 	/**
@@ -60,43 +65,41 @@ class Dropdown extends Widget
 	 */
 	public function run()
 	{
-		echo Html::beginTag('ul', $this->options) . "\n";
-		echo $this->renderContents() . "\n";
-		echo Html::endTag('ul') . "\n";
+		echo $this->renderItems() . "\n";
 		$this->registerPlugin('dropdown');
 	}
 
 	/**
-	 * Renders dropdown contents as specified on [[items]].
+	 * Renders dropdown items as specified on [[items]].
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException
 	 */
-	protected function renderContents()
+	protected function renderItems()
 	{
-		$contents = array();
+		$items = array();
 		foreach ($this->items as $item) {
 			if (is_string($item)) {
-				$contents[] = $item;
+				$items[] = $item;
 				continue;
 			}
 			if (!isset($item['label'])) {
 				throw new InvalidConfigException("The 'label' option is required.");
 			}
-
+			$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
 			$options = ArrayHelper::getValue($item, 'options', array());
-			$urlOptions = ArrayHelper::getValue($item, 'urlOptions', array());
-			$urlOptions['tabindex'] = '-1';
+			$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
+			$linkOptions['tabindex'] = '-1';
 
 			if (isset($item['items'])) {
 				$this->addCssClass($options, 'dropdown-submenu');
-				$content = Html::a($item['label'], '#', $urlOptions) . $this->dropdown($item['items']);
+				$content = Html::a($label, '#', $linkOptions) . $this->dropdown($item['items']);
 			} else {
-				$content = Html::a($item['label'], ArrayHelper::getValue($item, 'url', '#'), $urlOptions);
+				$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
 			}
-			$contents[] = Html::tag('li', $content , $options);
+			$items[] = Html::tag('li', $content , $options);
 		}
 
-		return implode("\n", $contents);
+		return Html::tag('ul', implode("\n", $items), $this->options);
 	}
 
 	/**
