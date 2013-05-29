@@ -78,10 +78,11 @@ class Tabs extends Widget
 	 * - label: string, required, specifies the header link label. When [[encodeLabels]] is true, the label
 	 *   will be HTML-encoded.
 	 * - content: string, the content to show when corresponding tab is clicked. Can be omitted if url is specified.
-	 * - url: mixed, @todo comment
-	 * - template: string, optional, @todo comment
-	 * - options: array, optional, @todo comment
-	 * - headerOptions: array, optional, @todo comment
+	 * - url: mixed, mixed, optional, the url to load tab contents via AJAX. It is required if no content is specified.
+	 * - template: string, optional, the header link template to render the header link. If none specified
+	 * [[linkTemplate]] will be used instead.
+	 * - options: array, optional, the HTML attributes of the header.
+	 * - headerOptions: array, optional, the HTML attributes for the header container tag.
 	 */
 	public $items = array();
 	/**
@@ -97,7 +98,7 @@ class Tabs extends Widget
 	 */
 	public $headerOptions = array();
 	/**
-	 * @var string @todo comment
+	 * @var string the default header template to render the link.
 	 */
 	public $linkTemplate = '<a href="{url}">{label}</a>';
 	/**
