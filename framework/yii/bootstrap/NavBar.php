@@ -8,7 +8,7 @@
 namespace yii\bootstrap;
 
 use yii\base\InvalidConfigException;
-use yii\helpers\base\ArrayHelper;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -18,6 +18,7 @@ use yii\helpers\Html;
  *
  * ```php
  * echo NavBar::widget(array(
+ *     'brandLabel' => 'NavBar Test',
  *     'items' => array(
  *         // a Nav widget
  *         array(
@@ -33,17 +34,18 @@ use yii\helpers\Html;
  *                     ),
  *                     array(
  *                         'label' => 'Dropdown',
- *                         // configure a dropdown menu
- *                         'dropdown' => array(
- *                             array(
- *                                 'label' => 'DropdownA',
- *                                 'url' => '#',
- *                             ),
- *                             array(
- *                                 'label' => 'DropdownB',
- *                                 'url' => '#'
- *                             ),
- *                         )
+ *                         'content' => new Dropdown(array(
+ *                             'items' => array(
+ *                                 array(
+ *                                     'label' => 'DropdownA',
+ *                                     'url' => '#',
+ *                                 ),
+ *                                 array(
+ *                                     'label' => 'DropdownB',
+ *                                     'url' => '#'
+ *                                 ),
+ *                             )
+ *                         ),
  *                     ),
  *                 )
  *             ),
@@ -62,7 +64,20 @@ use yii\helpers\Html;
  */
 class NavBar extends Widget
 {
-	public $brand;
+	/**
+	 * @var string the text of the brand.
+	 * @see http://twitter.github.io/bootstrap/components.html#navbar
+	 */
+	public $brandLabel;
+	/**
+	 * @param array|string $url the URL for the brand's hyperlink tag. This parameter will be processed by [[Html::url()]]
+	 * and will be used for the "href" attribute of the brand link. Defaults to site root.
+	 */
+	public $brandRoute = '/';
+	/**
+	 * @var array the HTML attributes of the brand link.
+	 */
+	public $brandOptions = array();
 	/**
 	 * @var array list of menu items in the navbar widget. Each array element represents a single
 	 * menu item with the following structure:
@@ -83,6 +98,10 @@ class NavBar extends Widget
 	 * Optionally, you can also use a plain string instead of an array element.
 	 */
 	public $items = array();
+	/**
+	 * @var string the generated brand url if specified by [[brandLabel]]
+	 */
+	protected $brand;
 
 
 	/**
@@ -91,7 +110,10 @@ class NavBar extends Widget
 	public function init()
 	{
 		parent::init();
+		$this->clientOptions = false;
 		$this->addCssClass($this->options, 'navbar');
+		$this->addCssClass($this->brandOptions, 'brand');
+		$this->brand = Html::a($this->brandLabel, $this->brandRoute, $this->brandOptions);
 	}
 
 	/**
@@ -102,19 +124,20 @@ class NavBar extends Widget
 		echo Html::beginTag('div', $this->options);
 		echo $this->renderItems();
 		echo Html::endTag('div');
+		$this->getView()->registerAssetBundle('yii/bootstrap');
 	}
 
 	/**
+	 * Renders the items.
 	 * @return string the rendering items.
 	 */
 	protected function renderItems()
 	{
 		$items = array();
-
 		foreach ($this->items as $item) {
 			$items[] = $this->renderItem($item);
 		}
-		$contents =implode("\n", $items);
+		$contents = implode("\n", $items);
 		if (self::$responsive === true) {
 			$this->getView()->registerAssetBundle('yii/bootstrap/collapse');
 			$contents =
@@ -127,6 +150,7 @@ class NavBar extends Widget
 		} else {
 			$contents = $this->brand . "\n" . $contents;
 		}
+
 		return Html::tag('div', $contents, array('class' => 'navbar-inner'));
 	}
 
@@ -143,11 +167,11 @@ class NavBar extends Widget
 			return $item;
 		}
 		$config = ArrayHelper::getValue($item, 'options', array());
-		$config['class'] = ArrayHelper::getValue($item, 'class', 'yii\bootstrap\Nav');
-		$widget = \Yii::createObject($config);
-		ob_start();
-		$widget->run();
-		return ob_get_clean();
+		$config['clientOptions'] = false;
+
+		$class = ArrayHelper::getValue($item, 'class', 'yii\bootstrap\Nav');
+
+		return $class::widget($config);
 	}
 
 	/**
@@ -160,10 +184,10 @@ class NavBar extends Widget
 		for ($i = 0; $i < 3; $i++) {
 			$items[] = Html::tag('span', '', array('class' => 'icon-bar'));
 		}
-		return Html::tag('a', implode("\n", $items), array(
+		return Html::a(implode("\n", $items), null, array(
 			'class' => 'btn btn-navbar',
 			'data-toggle' => 'collapse',
 			'data-target' => 'div.navbar-collapse',
-		)) . "\n";
+		));
 	}
 }

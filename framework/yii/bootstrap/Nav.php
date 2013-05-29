@@ -8,7 +8,7 @@
 namespace yii\bootstrap;
 
 use yii\base\InvalidConfigException;
-use yii\helpers\base\ArrayHelper;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -22,12 +22,12 @@ use yii\helpers\Html;
  *         array(
  *             'label' => 'Home',
  *             'url' => '/',
- *             'options' => array(...),
+ *             'linkOptions' => array(...),
  *             'active' => true,
  *         ),
  *         array(
  *             'label' => 'Dropdown',
- *             'dropdown' => array(
+ *             'items' => array(
  *                  array(
  *                      'label' => 'DropdownA',
  *                      'url' => '#',
@@ -52,26 +52,25 @@ class Nav extends Widget
 	 * @var array list of items in the nav widget. Each array element represents a single
 	 * menu item with the following structure:
 	 *
-	 * ```php
-	 * array(
-	 *     // required, the menu item label.
-	 *     'label' => 'Nav item label',
-	 *     // optional, the URL of the menu item. Defaults to "#"
-	 *     'url'=> '#',
-	 *     // optional, the HTML options of the URL.
-	 *     'urlOptions' => array(...),
-	 *     // optional the HTML attributes of the item container (LI).
-	 *     'options' => array(...),
-	 *     // optional, an array of [[Dropdown]] widget items so to display a dropdown menu on the tab header.
-	 *     // important: there is an issue with sub-dropdown menus, and as of 3.0, bootstrap won't support sub-dropdown
-	 *     // @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
-	 *     'dropdown'=> array(...)
-	 * )
-	 * ```
+	 * - label: string, required, the nav item label.
+	 * - url: optional, the item's URL. Defaults to "#".
+	 * - linkOptions: array, optional, the HTML attributes of the item's link.
+	 * - options: array, optional, the HTML attributes of the item container (LI).
+	 * - active: boolean, optional, whether the item should be on active state or not.
+	 * - items: array, optional, the configuration of specify the item's dropdown menu. You can optionally set this as
+	 *   a string (ie. `'items'=> Dropdown::widget(array(...))`
+	 *   - important: there is an issue with sub-dropdown menus, and as of 3.0, bootstrap won't support sub-dropdown.
 	 *
-	 * Optionally, you can also use a plain string instead of an array element.
+	 * **Note:** Optionally, you can also use a plain string instead of an array element.
+	 *
+	 * @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
+	 * @see [[Dropdown]]
 	 */
 	public $items = array();
+	/**
+	 * @var boolean whether the nav items labels should be HTML-encoded.
+	 */
+	public $encodeLabels = true;
 
 
 	/**
@@ -79,6 +78,7 @@ class Nav extends Widget
 	 */
 	public function init()
 	{
+		parent::init();
 		$this->addCssClass($this->options, 'nav');
 	}
 
@@ -88,6 +88,7 @@ class Nav extends Widget
 	public function run()
 	{
 		echo $this->renderItems();
+		$this->registerPlugin('dropdown');
 	}
 
 	/**
@@ -117,21 +118,26 @@ class Nav extends Widget
 		if (!isset($item['label'])) {
 			throw new InvalidConfigException("The 'label' option is required.");
 		}
-		$label = $item['label'];
-		$url = ArrayHelper::getValue($item, 'url', '#');
+		$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
 		$options = ArrayHelper::getValue($item, 'options', array());
-		$urlOptions = ArrayHelper::getValue($item, 'urlOptions', array());
-		$dropdown = null;
+		$dropdown = ArrayHelper::getValue($item, 'items');
+		$url = Html::url(ArrayHelper::getValue($item, 'url', '#'));
+		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
 
-		// does it has a dropdown widget?
-		if (isset($item['dropdown'])) {
-			$urlOptions['data-toggle'] = 'dropdown';
+		if(ArrayHelper::getValue($item, 'active')) {
+			$this->addCssClass($options, 'active');
+		}
+
+		if ($dropdown !== null) {
+			$linkOptions['data-toggle'] = 'dropdown';
 			$this->addCssClass($options, 'dropdown');
 			$this->addCssClass($urlOptions, 'dropdown-toggle');
 			$label .= ' ' . Html::tag('b', '', array('class' => 'caret'));
-			$dropdown = Dropdown::widget(array('items' => $item['dropdown'], 'clientOptions' => false));
+			$dropdown = is_string($dropdown)
+				? $dropdown
+				: Dropdown::widget(array('items' => $item['items'], 'clientOptions' => false));
 		}
 
-		return Html::tag('li', Html::a($label, $url, $urlOptions) . $dropdown, $options);
+		return Html::tag('li', Html::a($label, $url, $linkOptions) . $dropdown, $options);
 	}
 }
