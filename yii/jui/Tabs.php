@@ -146,7 +146,7 @@ class Tabs extends Widget
 				$url = '#' . $options['id'];
 				$items[] = Html::tag($tag, $item['content'], $options);
 			}
-			$headerOptions = ArrayHelper::getValue($item, 'headerOptions', array());
+			$headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', array()));
 			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 			$headers[] = Html::tag('li', strtr($template, array(
 				'{label}' => $this->encodeLabels ? Html::encode($item['label']) : $item['label'],
