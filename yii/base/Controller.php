@@ -242,18 +242,6 @@ class Controller extends Component
 	}
 
 	/**
-	 * Validates the parameter being bound to actions.
-	 * This method is invoked when parameters are being bound to the currently requested action.
-	 * Child classes may override this method to throw exceptions when there are missing and/or unknown parameters.
-	 * @param Action $action the currently requested action
-	 * @param array $missingParams the names of the missing parameters
-	 * @param array $unknownParams the unknown parameters (name => value)
-	 */
-	public function validateActionParams($action, $missingParams, $unknownParams)
-	{
-	}
-
-	/**
 	 * @return string the controller ID that is prefixed with the module ID (if any).
 	 */
 	public function getUniqueId()
