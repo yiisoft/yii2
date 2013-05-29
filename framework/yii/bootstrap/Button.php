@@ -64,6 +64,10 @@ class Button extends Widget
 	 */
 	public $label;
 	/**
+	 * @var array the HTML attributes of the button.
+	 */
+	public $buttonOptions = array();
+	/**
 	 * @var array list of menu items in the dropdown. Each array element represents a single
 	 * menu with the following structure:
 	 *
@@ -120,16 +124,23 @@ class Button extends Widget
 	protected function renderLabel()
 	{
 		$label = $this->encodeLabels ? Html::encode($this->label) : $this->label;
-		$options =  array('class' => 'btn dropdown-toggle', 'data-toggle' => 'dropdown');
+		$this->addCssClass($this->buttonOptions, 'btn');
+		$splitButton = '';
 		if ($this->split) {
 			$tag = 'button';
-			$label .= Html::tag('button', '<span class="caret"></span>', $options);
-			$options = array('class' => 'btn');
+			$options = $this->buttonOptions;
+			$this->buttonOptions['data-toggle'] = 'dropdown';
+			$this->addCssClass($this->buttonOptions, 'dropdown-toggle');
+			$splitButton = Html::tag('button', '<span class="caret"></span>', $this->buttonOptions);
 		} else {
 			$tag = 'a';
-			$options['href'] = '#';
+			$options = $this->buttonOptions;
+			if (!isset($options['href'])) {
+				$options['href'] = '#';
+			}
+			$options['data-toggle'] = 'dropdown';
 		}
-		return Html::tag($tag, $label, $options);
+		return Html::tag($tag, $label, $options) . "\n" . $splitButton;
 	}
 
 	/**
