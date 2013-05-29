@@ -42,6 +42,14 @@ class Formatter extends Component
 	 * to the text display for false, the second element for true. Defaults to <code>array('No', 'Yes')</code>.
 	 */
 	public $booleanFormat;
+	/**
+	 * @var string the character displayed as the decimal point when formatting a number.
+	 */
+	public $decimalSeparator = '.';
+	/**
+	 * @var string the character displayed as the thousands separator character when formatting a number.
+	 */
+	public $thousandSeparator = ',';
 
 
 	/**
@@ -257,13 +265,15 @@ class Formatter extends Component
 
 	/**
 	 * Formats the value as a double number.
+	 * Property [[decimalSeparator]] will be used to represent the decimal point.
 	 * @param mixed $value the value to be formatted
 	 * @param integer $decimals the number of digits after the decimal point
 	 * @return string the formatting result.
+	 * @see decimalSeparator
 	 */
 	public function asDouble($value, $decimals = 2)
 	{
-		return sprintf("%.{$decimals}f", $value);
+		return str_replace('.', $this->decimalSeparator, sprintf("%.{$decimals}f", $value));
 	}
 
 	/**
@@ -271,12 +281,12 @@ class Formatter extends Component
 	 * This method calls the PHP number_format() function to do the formatting.
 	 * @param mixed $value the value to be formatted
 	 * @param integer $decimals the number of digits after the decimal point
-	 * @param string $decimalSeparator the character displayed as the decimal point
-	 * @param string $thousandSeparator the character displayed as the thousands separator character.
 	 * @return string the formatted result
+	 * @see decimalSeparator
+	 * @see thousandSeparator
 	 */
-	public function asNumber($value, $decimals = 0 , $decimalSeparator = '.' , $thousandSeparator = ',' )
+	public function asNumber($value, $decimals = 0)
 	{
-		return number_format($value, $decimals, $decimalSeparator, $thousandSeparator);
+		return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
 	}
 }

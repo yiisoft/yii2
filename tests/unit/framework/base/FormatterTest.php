@@ -140,6 +140,10 @@ class FormatterTest extends TestCase
 		$this->assertSame("123", $this->formatter->asInteger($value));
 		$value = 'a';
 		$this->assertSame("0", $this->formatter->asInteger($value));
+		$value = -123.23;
+		$this->assertSame("-123", $this->formatter->asInteger($value));
+		$value = "-123abc";
+		$this->assertSame("-123", $this->formatter->asInteger($value));
 	}
 
 	public function testAsDouble()
@@ -147,12 +151,29 @@ class FormatterTest extends TestCase
 		$value = 123.12;
 		$this->assertSame("123.12", $this->formatter->asDouble($value));
 		$this->assertSame("123.1", $this->formatter->asDouble($value, 1));
+		$this->assertSame("123", $this->formatter->asDouble($value, 0));
+		$value = 123;
+		$this->assertSame("123.00", $this->formatter->asDouble($value));
+		$this->formatter->decimalSeparator = ',';
+		$value = 123.12;
+		$this->assertSame("123,12", $this->formatter->asDouble($value));
+		$this->assertSame("123,1", $this->formatter->asDouble($value, 1));
+		$this->assertSame("123", $this->formatter->asDouble($value, 0));
+		$value = 123123.123;
+		$this->assertSame("123123,12", $this->formatter->asDouble($value));
 	}
 
 	public function testAsNumber()
 	{
 		$value = 123123.123;
 		$this->assertSame("123,123", $this->formatter->asNumber($value));
-		$this->assertSame("123.123,12", $this->formatter->asNumber($value, 2, ',', '.'));
+		$this->assertSame("123,123.12", $this->formatter->asNumber($value, 2));
+		$this->formatter->decimalSeparator = ',';
+		$this->formatter->thousandSeparator = ' ';
+		$this->assertSame("123 123", $this->formatter->asNumber($value));
+		$this->assertSame("123 123,12", $this->formatter->asNumber($value, 2));
+		$this->formatter->thousandSeparator = '';
+		$this->assertSame("123123", $this->formatter->asNumber($value));
+		$this->assertSame("123123,12", $this->formatter->asNumber($value, 2));
 	}
 }
