@@ -21,6 +21,9 @@ use yii\console\Controller;
  */
 class AssetController extends Controller
 {
+	const COMPRESS_METHOD_GZIP = 'gzip';
+	const COMPRESS_METHOD_DEFLATE = 'deflate';
+
 	/**
 	 * @var string controller default action ID.
 	 */
@@ -57,25 +60,36 @@ class AssetController extends Controller
 	 */
 	private $_assetManager = array();
 	/**
-	 * @var string|callback Java Script file compressor.
+	 * @var string|callback Java Script file compactor.
 	 * If a string, it is treated as shell command template, which should contain
 	 * placeholders {from} - source file name - and {to} - output file name.
-	 * Otherwise, it is treated as PHP callback, which should perform the compression.
+	 * Otherwise, it is treated as PHP callback, which should perform the compaction.
 	 *
 	 * Default value relies on usage of "Closure Compiler"
 	 * @see https://developers.google.com/closure/compiler/
 	 */
-	public $jsCompressor = 'java -jar compiler.jar --js {from} --js_output_file {to}';
+	public $jsCompactor = 'java -jar compiler.jar --js {from} --js_output_file {to}';
 	/**
-	 * @var string|callback CSS file compressor.
+	 * @var string|callback CSS file compactor.
 	 * If a string, it is treated as shell command template, which should contain
 	 * placeholders {from} - source file name - and {to} - output file name.
-	 * Otherwise, it is treated as PHP callback, which should perform the compression.
+	 * Otherwise, it is treated as PHP callback, which should perform the compaction.
 	 *
 	 * Default value relies on usage of "YUI Compressor"
 	 * @see https://github.com/yui/yuicompressor/
 	 */
-	public $cssCompressor = 'java -jar yuicompressor.jar {from} -o {to}';
+	public $cssCompactor = 'java -jar yuicompressor.jar {from} -o {to}';
+	/**
+	 * @var string ZIP compress method for all compacted files.
+	 * Possible values: 'gzip', 'deflate'.
+	 * Note: this feature requires "Zlib" PHP extension.
+	 * Specify empty value to disable compression.
+	 */
+	public $compressMethod = self::COMPRESS_METHOD_GZIP;
+	/**
+	 * @var integer compression level for [[compressMethod]]
+	 */
+	public $compressLevel = 6;
 
 	/**
 	 * Returns the asset manager instance.
@@ -447,22 +461,22 @@ EOD
 		if (empty($inputFiles)) {
 			return;
 		}
-		echo "  Compressing JavaScript files...\n";
-		if (is_string($this->jsCompressor)) {
+		echo "  Compacting JavaScript files...\n";
+		if (is_string($this->jsCompactor)) {
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineJsFiles($inputFiles, $tmpFile);
-			echo shell_exec(strtr($this->jsCompressor, array(
+			echo shell_exec(strtr($this->jsCompactor, array(
 				'{from}' => escapeshellarg($tmpFile),
 				'{to}' => escapeshellarg($outputFile),
 			)));
 			@unlink($tmpFile);
 		} else {
-			call_user_func($this->jsCompressor, $this, $inputFiles, $outputFile);
+			call_user_func($this->jsCompactor, $this, $inputFiles, $outputFile);
 		}
 		if (!file_exists($outputFile)) {
-			throw new Exception("Unable to compress JavaScript files into '{$outputFile}'.");
+			throw new Exception("Unable to compact JavaScript files into '{$outputFile}'.");
 		}
-		echo "  JavaScript files compressed into '{$outputFile}'.\n";
+		echo "  JavaScript files compacted into '{$outputFile}'.\n";
 	}
 
 	/**
@@ -476,22 +490,22 @@ EOD
 		if (empty($inputFiles)) {
 			return;
 		}
-		echo "  Compressing CSS files...\n";
-		if (is_string($this->cssCompressor)) {
+		echo "  Compacting CSS files...\n";
+		if (is_string($this->cssCompactor)) {
 			$tmpFile = $outputFile . '.tmp';
 			$this->combineCssFiles($inputFiles, $tmpFile);
-			echo shell_exec(strtr($this->cssCompressor, array(
+			echo shell_exec(strtr($this->cssCompactor, array(
 				'{from}' => escapeshellarg($tmpFile),
 				'{to}' => escapeshellarg($outputFile),
 			)));
 			@unlink($tmpFile);
 		} else {
-			call_user_func($this->cssCompressor, $this, $inputFiles, $outputFile);
+			call_user_func($this->cssCompactor, $this, $inputFiles, $outputFile);
 		}
 		if (!file_exists($outputFile)) {
-			throw new Exception("Unable to compress CSS files into '{$outputFile}'.");
+			throw new Exception("Unable to compact CSS files into '{$outputFile}'.");
 		}
-		echo "  CSS files compressed into '{$outputFile}'.\n";
+		echo "  CSS files compacted into '{$outputFile}'.\n";
 	}
 
 	/**
