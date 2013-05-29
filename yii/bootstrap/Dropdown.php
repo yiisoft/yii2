@@ -100,6 +100,6 @@ class Dropdown extends Widget
 	 */
 	protected function dropdown($items)
 	{
-		return Dropdown::widget(array('items' => $items, 'clientOptions' => false));
+		return static::widget(array('items' => $items, 'clientOptions' => false));
 	}
 }
