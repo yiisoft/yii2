@@ -251,16 +251,7 @@ class Connection extends Component
 	 */
 	private $_schema;
 
-	/**
-	 * Closes the connection when this component is being serialized.
-	 * @return array
-	 */
-	public function __sleep()
-	{
-		$this->close();
-		return array_keys(get_object_vars($this));
-	}
-
+	
 	/**
 	 * Returns a value indicating whether the DB connection is established.
 	 * @return boolean whether the DB connection is established
