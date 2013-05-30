@@ -13,7 +13,7 @@ use yii\helpers\Html;
 
 
 /**
- * Dropdown renders a Tab bootstrap javascript component.
+ * Dropdown renders a Bootstrap dropdown menu component.
  *
  * @see http://twitter.github.io/bootstrap/javascript.html#dropdowns
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
@@ -55,21 +55,22 @@ class Dropdown extends Widget
 	 */
 	public function run()
 	{
-		echo $this->renderItems() . "\n";
+		echo $this->renderItems($this->items);
 		$this->registerPlugin('dropdown');
 	}
 
 	/**
-	 * Renders dropdown items as specified on [[items]].
+	 * Renders menu items.
+	 * @param array $items the menu items to be rendered
 	 * @return string the rendering result.
-	 * @throws InvalidConfigException
+	 * @throws InvalidConfigException if the label option is not specified in one of the items.
 	 */
-	protected function renderItems()
+	protected function renderItems($items)
 	{
-		$items = array();
-		foreach ($this->items as $item) {
+		$lines = array();
+		foreach ($items as $item) {
 			if (is_string($item)) {
-				$items[] = $item;
+				$lines[] = $item;
 				continue;
 			}
 			if (!isset($item['label'])) {
@@ -82,24 +83,13 @@ class Dropdown extends Widget
 
 			if (isset($item['items'])) {
 				$this->addCssClass($options, 'dropdown-submenu');
-				$content = Html::a($label, '#', $linkOptions) . $this->dropdown($item['items']);
+				$content = Html::a($label, '#', $linkOptions) . $this->renderItems($item['items']);
 			} else {
 				$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
 			}
-			$items[] = Html::tag('li', $content , $options);
+			$lines[] = Html::tag('li', $content, $options);
 		}
 
-		return Html::tag('ul', implode("\n", $items), $this->options);
-	}
-
-	/**
-	 * Generates a dropdown menu.
-	 * @param array $items the configuration of the dropdown items. See [[items]].
-	 * @return string the generated dropdown menu
-	 * @see items
-	 */
-	protected function dropdown($items)
-	{
-		return static::widget(array('items' => $items, 'clientOptions' => false));
+		return Html::tag('ul', implode("\n", $lines), $this->options);
 	}
 }
