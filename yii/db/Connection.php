@@ -251,7 +251,7 @@ class Connection extends Component
 	 */
 	private $_schema;
 
-	
+
 	/**
 	 * Returns a value indicating whether the DB connection is established.
 	 * @return boolean whether the DB connection is established
