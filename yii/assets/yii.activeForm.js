@@ -143,7 +143,11 @@
 					});
 					updateSummary($form, messages);
 					if (errors.length) {
-						$(window).scrollTop($form.find(errors.join(',')).first().offset().top);
+						var top = $form.find(errors.join(',')).first().offset().top;
+						var wtop = $(window).scrollTop();
+						if (top < wtop || top > wtop + $(window).height) {
+							$(window).scrollTop(top);
+						}
 					} else {
 						data.validated = true;
 						var $button = data.submitObject || $form.find(':submit:first');
