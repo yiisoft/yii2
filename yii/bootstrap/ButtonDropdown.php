@@ -18,8 +18,7 @@ use yii\helpers\Html;
  * // a button group using Dropdown widget
  * echo ButtonDropdown::widget(array(
  *     'label' => 'Action',
- *     'items' => Dropdown::widget(array(
- *         'clientOptions' => false,
+ *     'dropdown' => array(
  *         'items' => array(
  *             array(
  *                 'label' => 'DropdownA',
@@ -30,23 +29,7 @@ use yii\helpers\Html;
  *                 'url' => '#',
  *             ),
  *         ),
- *     )),
- * ));
- *
- * // split button dropdown using `items` configuration
- * echo ButtonDropdown::widget(array(
- *     'label' => 'Action',
- *     'split' => true,
- *     'items' => array(
- *         array(
- *             'label' => 'DropdownA',
- *             'url' => '/',
- *         ),
- *         array(
- *             'label' => 'DropdownB',
- *             'url' => '#',
- *         ),
- *      ),
+ *     ),
  * ));
  * ```
  * @see http://twitter.github.io/bootstrap/javascript.html#buttons
@@ -65,28 +48,13 @@ class ButtonDropdown extends Widget
 	 */
 	public $buttonOptions = array();
 	/**
-	 * @var array list of menu items in the dropdown. This will be used to
-	 * set the [[Dropdown::items]] property. Each array element represents a single
-	 * menu with the following structure:
-	 *
-	 * - label: string, required, the label of the item link
-	 * - url: string, optional, the url of the item link. Defaults to "#".
-	 * - linkOptions: array, optional, the HTML attributes of the item link.
-	 * - options: array, optional, the HTML attributes of the item.
-	 * - items: array, optional, the dropdown items configuration array.
-	 *
-	 * @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
-	 * @see [[Dropdown]]
+	 * @var array the configuration array for [[Dropdown]].
 	 */
-	public $items = array();
+	public $dropdown = array();
 	/**
 	 * @var boolean whether to display a group of split-styled button group.
 	 */
 	public $split = false;
-	/**
-	 * @var boolean whether the labels for dropdown items should be HTML-encoded.
-	 */
-	public $encodeLabels = true;
 
 
 	/**
@@ -148,12 +116,13 @@ class ButtonDropdown extends Widget
 	}
 
 	/**
-	 * Generates the dropdown menu as specified on [[items]].
+	 * Generates the dropdown menu.
 	 * @return string the rendering result.
 	 */
 	protected function renderDropdown()
 	{
-		$config = array('items' => $this->items, 'clientOptions' => false);
+		$config = $this->dropdown;
+		$config['clientOptions'] = false;
 		return Dropdown::widget($config);
 	}
 }
