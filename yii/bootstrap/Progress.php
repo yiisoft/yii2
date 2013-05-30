@@ -8,7 +8,7 @@
 namespace yii\bootstrap;
 
 use yii\base\InvalidConfigException;
-use yii\helpers\base\ArrayHelper;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 
@@ -44,11 +44,11 @@ use yii\helpers\Html;
  *     'options' => array('class' => 'active progress-striped')
  * ));
  *
- * // stacked and one with label
+ * // stacked bars
  * echo Progress::widget(array(
- *     'stacked' => array(
+ *     'bars' => array(
  *         array('percent' => 30, 'options' => array('class' => 'bar-danger')),
- *         array('label'=>'test', 'percent' => 30, 'options' => array('class' => 'bar-success')),
+ *         array('percent' => 30, 'label'=>'test', 'options' => array('class' => 'bar-success')),
  *         array('percent' => 35, 'options' => array('class' => 'bar-warning'))
  *     )
  * ));
@@ -72,16 +72,20 @@ class Progress extends Widget
 	 */
 	public $barOptions = array();
 	/**
-	 * @var array $stacked set to an array of progress bar values to display stacked progress bars
+	 * @var array a set of bars that are stacked together to form a single progress bar.
+	 * Each bar is an array of the following structure:
 	 *
 	 * ```php
-	 *  'stacked'=>array(
-	 *      array('percent'=>'30', 'options'=>array('class'=>'custom')),
-	 *      array('percent'=>'30'),
-	 *  )
-	 * ```
+	 * array(
+	 *     // required, the amount of progress as a percentage.
+	 *     'percent' => 30,
+	 *     // optional, the label to be displayed on the bar
+	 *     'label' => '30%',
+	 *     // optional, array, additional HTML attributes for the bar tag
+	 *     'options' => array(),
+	 * )
 	 */
-	public $stacked = false;
+	public $bars;
 
 
 	/**
@@ -90,12 +94,8 @@ class Progress extends Widget
 	 */
 	public function init()
 	{
-		if ($this->label === null && $this->stacked == false) {
-			throw new InvalidConfigException("The 'percent' option is required.");
-		}
 		parent::init();
 		$this->addCssClass($this->options, 'progress');
-		$this->getView()->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
 	}
 
 	/**
@@ -106,6 +106,29 @@ class Progress extends Widget
 		echo Html::beginTag('div', $this->options) . "\n";
 		echo $this->renderProgress() . "\n";
 		echo Html::endTag('div') . "\n";
+		$this->getView()->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
+	}
+
+	/**
+	 * Renders the progress.
+	 * @return string the rendering result.
+	 * @throws InvalidConfigException if the "percent" option is not set in a stacked progress bar.
+	 */
+	protected function renderProgress()
+	{
+		if (empty($this->bars)) {
+			return $this->renderBar($this->percent, $this->label, $this->barOptions);
+		}
+		$bars = array();
+		foreach ($this->bars as $bar) {
+			$label = ArrayHelper::getValue($bar, 'label', '');
+			if (!isset($bar['percent'])) {
+				throw new InvalidConfigException("The 'percent' option is required.");
+			}
+			$options = ArrayHelper::getValue($bar, 'options', array());
+			$bars[] = $this->renderBar($bar['percent'], $label, $options);
+		}
+		return implode("\n", $bars);
 	}
 
 	/**
@@ -115,33 +138,10 @@ class Progress extends Widget
 	 * @param array $options the HTML attributes of the bar
 	 * @return string the rendering result.
 	 */
-	public function bar($percent, $label = '', $options = array())
+	protected function renderBar($percent, $label = '', $options = array())
 	{
 		$this->addCssClass($options, 'bar');
 		$options['style'] = "width:{$percent}%";
 		return Html::tag('div', $label, $options);
 	}
-
-	/**
-	 * @return string the rendering result.
-	 * @throws InvalidConfigException
-	 */
-	protected function renderProgress()
-	{
-		if ($this->stacked === false) {
-			return $this->bar($this->percent, $this->label, $this->barOptions);
-		}
-		$bars = array();
-		foreach ($this->stacked as $item) {
-			$label = ArrayHelper::getValue($item, 'label', '');
-			if (!isset($item['percent'])) {
-				throw new InvalidConfigException("The 'percent' option is required.");
-			}
-			$options = ArrayHelper::getValue($item, 'options', array());
-
-			$bars[] = $this->bar($item['percent'], $label, $options);
-		}
-		return implode("\n", $bars);
-	}
-
 }
