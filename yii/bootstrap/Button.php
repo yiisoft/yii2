@@ -6,7 +6,6 @@
  */
 
 namespace yii\bootstrap;
-
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
@@ -28,42 +27,37 @@ use yii\helpers\Html;
  */
 class Button extends Widget
 {
-    /**
-     * @var string the tag to use to render the button
-     */
-    public $tagName = 'button';
-    /**
-     * @var string the button label
-     */
-    public $label;
-    /**
-     * @var boolean whether the label should be HTML-encoded.
-     */
-    public $encodeLabel = true;
+	/**
+	 * @var string the tag to use to render the button
+	 */
+	public $tagName = 'button';
+	/**
+	 * @var string the button label
+	 */
+	public $label = 'Button';
+	/**
+	 * @var boolean whether the label should be HTML-encoded.
+	 */
+	public $encodeLabel = true;
 
 
-    /**
-     * Initializes the widget.
-     * If you override this method, make sure you call the parent implementation first.
-     * @throws InvalidConfigException
-     */
-    public function init()
-    {
-        if ($this->label === null) {
-            throw new InvalidConfigException("The 'label' option is required.");
-        }
-        parent::init();
-        $this->clientOptions = false;
-        $this->addCssClass($this->options, 'btn');
-        $this->label = $this->encodeLabel ? Html::encode($this->label) : $this->label;
-    }
+	/**
+	 * Initializes the widget.
+	 * If you override this method, make sure you call the parent implementation first.
+	 */
+	public function init()
+	{
+		parent::init();
+		$this->clientOptions = false;
+		$this->addCssClass($this->options, 'btn');
+	}
 
-    /**
-     * Renders the widget.
-     */
-    public function run()
-    {
-        echo Html::tag($this->tagName, $this->label, $this->options) . "\n";
-        $this->registerPlugin('button');
-    }
+	/**
+	 * Renders the widget.
+	 */
+	public function run()
+	{
+		echo Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
+		$this->registerPlugin('button');
+	}
 }
