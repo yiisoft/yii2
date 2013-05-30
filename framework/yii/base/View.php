@@ -130,8 +130,8 @@ class View extends Component
 	 */
 	public $dynamicPlaceholders = array();
 	/**
-	 * @var array the registered asset bundles. The keys are the bundle names, and the values
-	 * are the corresponding [[AssetBundle]] objects.
+	 * @var array list of the registered asset bundles. The keys are the bundle names, and the values
+	 * are booleans indicating whether the bundles have been registered.
 	 * @see registerAssetBundle
 	 */
 	public $assetBundles;
