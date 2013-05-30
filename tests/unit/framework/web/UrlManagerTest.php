@@ -248,4 +248,6 @@ class UrlManagerTest extends TestCase
 		$result = $manager->parseRequest($request);
 		$this->assertFalse($result);
 	}
+
+	// TODO test RESTful pattern syntax e.g. 'GET index' => 'site/index'
 }

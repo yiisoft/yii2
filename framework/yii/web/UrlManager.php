@@ -43,6 +43,28 @@ class UrlManager extends Component
 	 * array, one can use the key to represent the pattern and the value the corresponding route.
 	 * For example, `'post/<id:\d+>' => 'post/view'`.
 	 *
+	 * For RESTful routing this shortcut also allows you to specify the [[UrlRule::verb|HTTP verb]]
+	 * the rule should apply for by prepending it to the pattern, separated by a blank.
+	 * For example, `'PUT post/<id:\d+>' => 'post/update'`.
+	 * You may specify multiple verbs by separating them with comma
+	 * like this: `'POST,PUT post/index' => 'post/create'`.
+	 * Note that [[UrlRule::mode|mode]] will be set to PARSING_ONLY when specifying verb in this way
+	 * so you normally would not specify a verb for normal GET request.
+	 *
+	 * Here is an example configuration for RESTful CRUD controller:
+	 * ~~~php
+	 * array(
+	 *     'dashboard' => 'site/index',
+	 *
+	 *     'POST <controller:\w+>s' => '<controller>/create',
+	 *     '<controller:\w+>s' => '<controller>/index',
+	 *
+	 *     'PUT <controller:\w+>/<id:\d+>'    => '<controller>/update',
+	 *     'DELETE <controller:\w+>/<id:\d+>' => '<controller>/delete',
+	 *     '<controller:\w+>/<id:\d+>'        => '<controller>/view',
+	 * );
+	 * ~~~
+	 *
 	 * Note that if you modify this property after the UrlManager object is created, make sure
 	 * you populate the array with rule objects instead of rule configurations.
 	 */
@@ -115,9 +137,17 @@ class UrlManager extends Component
 		foreach ($this->rules as $key => $rule) {
 			if (!is_array($rule)) {
 				$rule = array(
-					'pattern' => $key,
 					'route' => $rule,
 				);
+				if (($pos = strpos($key, ' ')) !== false) {
+					$verbs = substr($key, 0, $pos);
+					if (preg_match('/^((GET|POST|PUT|DELETE),?)*$/', $verbs, $matches)) {
+						$rule['verb'] = explode(',', $verbs);
+						$rule['mode'] = UrlRule::PARSING_ONLY;
+						$key = substr($key, $pos + 1);
+					}
+				}
+				$rule['pattern'] = $key;
 			}
 			$rules[] = Yii::createObject(array_merge($this->ruleConfig, $rule));
 		}
