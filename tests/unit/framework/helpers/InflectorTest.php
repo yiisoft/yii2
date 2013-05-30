@@ -132,4 +132,20 @@ class InflectorTest extends TestCase
     {
         $this->assertEquals('21st', Inflector::ordinalize('21'));
     }
+
+	public function testAscii()
+	{
+		$this->assertEquals("AAAAAAAECEEEEIIIIDNOOOOOUUUUYssaaaaaaaeceeeeiiiidnooooouuuuyy",
+			Inflector::ascii('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöùúûüýÿ'));
+		$this->assertEquals("Messd up --text-- just to stress /test/ our little clean url function--",
+			Inflector::ascii("Mess'd up --text-- just (to) stress /test/ ?our! `little` \\clean\\ url fun.ction!?-->"));
+		$this->assertEquals("Perche l erba e verde",
+			Inflector::ascii("Perché l'erba è verde?", "'"));
+		$this->assertEquals("Peux-tu m aider s il te plait",
+			Inflector::ascii("Peux-tu m'aider s'il te plaît?", "'"));
+		$this->assertEquals("Tank-efter-nu-forrn-vi-foser-dig-bort",
+			Inflector::slug(Inflector::ascii("Tänk efter nu – förr'n vi föser dig bort")));
+		$this->assertEquals("Custom delimiter example",
+			Inflector::ascii("Custom`delimiter*example", array('*', '`')));
+	}
 }

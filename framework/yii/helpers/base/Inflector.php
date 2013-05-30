@@ -475,4 +475,19 @@ class Inflector
 			default: return $number . 'th';
 		}
 	}
+
+	/**+
+	 * Converts all special characters to the closest ascii character equivalent.
+	 * @param string $string the string to be converted.
+	 * @param array $replace the characters to be replaced by spaces.
+	 * @return string the translated
+	 */
+	public static function ascii($string, $replace = array())
+	{
+		if (!empty($replace)) {
+			$string = str_replace((array)$replace, ' ', $string);
+		}
+		$string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+		return preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $string);
+	}
 }
