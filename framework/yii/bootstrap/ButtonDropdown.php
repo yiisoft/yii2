@@ -6,8 +6,6 @@
  */
 
 namespace yii\bootstrap;
-
-use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
 
@@ -61,13 +59,14 @@ class ButtonDropdown extends Widget
 	/**
 	 * @var string the button label
 	 */
-	public $label;
+	public $label = 'Button';
 	/**
 	 * @var array the HTML attributes of the button.
 	 */
 	public $buttonOptions = array();
 	/**
-	 * @var array list of menu items in the dropdown. Each array element represents a single
+	 * @var array list of menu items in the dropdown. This will be used to
+	 * set the [[Dropdown::items]] property. Each array element represents a single
 	 * menu with the following structure:
 	 *
 	 * - label: string, required, the label of the item link
@@ -81,7 +80,7 @@ class ButtonDropdown extends Widget
 	 */
 	public $items = array();
 	/**
-	 * @var boolean whether to display a group or split styled button group.
+	 * @var boolean whether to display a group of split-styled button group.
 	 */
 	public $split = false;
 	/**
@@ -93,13 +92,9 @@ class ButtonDropdown extends Widget
 	/**
 	 * Initializes the widget.
 	 * If you override this method, make sure you call the parent implementation first.
-	 * @throws InvalidConfigException
 	 */
 	public function init()
 	{
-		if ($this->label === null) {
-			throw new InvalidConfigException("The 'label' option is required.");
-		}
 		parent::init();
 		$this->addCssClass($this->options, 'btn-group');
 	}
@@ -111,7 +106,7 @@ class ButtonDropdown extends Widget
 	{
 		echo Html::beginTag('div', $this->options) . "\n";
 		echo $this->renderButton() . "\n";
-		echo $this->renderItems() . "\n";
+		echo $this->renderDropdown() . "\n";
 		echo Html::endTag('div') . "\n";
 		$this->registerPlugin('button');
 	}
@@ -123,18 +118,16 @@ class ButtonDropdown extends Widget
 	protected function renderButton()
 	{
 		$this->addCssClass($this->buttonOptions, 'btn');
-		$splitButton = '';
 		if ($this->split) {
 			$tag = 'button';
 			$options = $this->buttonOptions;
 			$this->buttonOptions['data-toggle'] = 'dropdown';
 			$this->addCssClass($this->buttonOptions, 'dropdown-toggle');
 			$splitButton = Button::widget(array(
-					'label' => '<span class="caret"></span>',
-					'encodeLabel' => false,
-					'options' => $this->buttonOptions,
-				)
-			);
+				'label' => '<span class="caret"></span>',
+				'encodeLabel' => false,
+				'options' => $this->buttonOptions,
+			));
 		} else {
 			$tag = 'a';
 			$this->label .= ' <span class="caret"></span>';
@@ -144,6 +137,7 @@ class ButtonDropdown extends Widget
 			}
 			$this->addCssClass($options, 'dropdown-toggle');
 			$options['data-toggle'] = 'dropdown';
+			$splitButton = '';
 		}
 		return Button::widget(array(
 			'tagName' => $tag,
@@ -157,11 +151,8 @@ class ButtonDropdown extends Widget
 	 * Generates the dropdown menu as specified on [[items]].
 	 * @return string the rendering result.
 	 */
-	protected function renderItems()
+	protected function renderDropdown()
 	{
-		if (is_string($this->items)) {
-			return $this->items;
-		}
 		$config = array('items' => $this->items, 'clientOptions' => false);
 		return Dropdown::widget($config);
 	}

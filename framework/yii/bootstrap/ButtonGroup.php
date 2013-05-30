@@ -20,23 +20,18 @@ use yii\helpers\Html;
  * // a button group with items configuration
  * echo ButtonGroup::::widget(array(
  *     'items' => array(
- *         array('label'=>'A'),
- *         array('label'=>'B'),
+ *         array('label' => 'A'),
+ *         array('label' => 'B'),
  *     )
  * ));
  *
  * // button group with an item as a string
  * echo ButtonGroup::::widget(array(
  *     'items' => array(
- *         Button::widget(array('label'=>'A')),
- *         array('label'=>'B'),
+ *         Button::widget(array('label' => 'A')),
+ *         array('label' => 'B'),
  *     )
  * ));
- *
- * // button group with body content as string
- * ButtonGroup::beging();
- * Button::widget(array('label'=>'A')), // you can also use plain string
- * ButtonGroup::end();
  * ```
  * @see http://twitter.github.io/bootstrap/javascript.html#buttons
  * @see http://twitter.github.io/bootstrap/components.html#buttonGroups
@@ -46,17 +41,15 @@ use yii\helpers\Html;
 class ButtonGroup extends Widget
 {
 	/**
-	 * @var array list of buttons. Each array element represents a single
-	 * menu with the following structure:
+	 * @var array list of buttons. Each array element represents a single button
+	 * which can be specified as a string or an array of the following structure:
 	 *
 	 * - label: string, required, the button label.
 	 * - options: array, optional, the HTML attributes of the button.
-	 *
-	 * Optionally, you can also set each item as a string, or even the [[items]] attribute.
 	 */
-	public $items = array();
+	public $buttons = array();
 	/**
-	 * @var boolean whether the labels for dropdown items should be HTML-encoded.
+	 * @var boolean whether to HTML-encode the button labels.
 	 */
 	public $encodeLabels = true;
 
@@ -70,7 +63,6 @@ class ButtonGroup extends Widget
 		parent::init();
 		$this->clientOptions = false;
 		$this->addCssClass($this->options, 'btn-group');
-		echo $this->renderGroupBegin() . "\n";
 	}
 
 	/**
@@ -78,51 +70,29 @@ class ButtonGroup extends Widget
 	 */
 	public function run()
 	{
-		echo "\n" . $this->renderGroupEnd();
+		echo Html::tag('div', $this->renderButtons(), $this->options);
 		$this->registerPlugin('button');
-	}
-
-	/**
-	 * Renders the opening tag of the button group.
-	 * @return string the rendering result.
-	 */
-	protected function renderGroupBegin()
-	{
-		return Html::beginTag('div', $this->options);
-	}
-
-	/**
-	 * Renders the items and closing tag of the button group.
-	 * @return string the rendering result.
-	 */
-	protected function renderGroupEnd()
-	{
-		return $this->renderItems() . "\n" . Html::endTag('div');
 	}
 
 	/**
 	 * Generates the buttons that compound the group as specified on [[items]].
 	 * @return string the rendering result.
 	 */
-	protected function renderItems()
+	protected function renderButtons()
 	{
-		if (is_string($this->items)) {
-			return $this->items;
-		}
 		$buttons = array();
-		foreach ($this->items as $item) {
-			if (is_string($item)) {
-				$buttons[] = $item;
-				continue;
-			}
-			$label = ArrayHelper::getValue($item, 'label');
-			$options = ArrayHelper::getValue($item, 'options');
-			$buttons[] = Button::widget(array(
+		foreach ($this->buttons as $button) {
+			if (is_array($button)) {
+				$label = ArrayHelper::getValue($button, 'label');
+				$options = ArrayHelper::getValue($button, 'options');
+				$buttons[] = Button::widget(array(
 					'label' => $label,
 					'options' => $options,
 					'encodeLabel' => $this->encodeLabels
-				)
-			);
+				));
+			} else {
+				$buttons[] = $button;
+			}
 		}
 		return implode("\n", $buttons);
 	}
