@@ -18,21 +18,48 @@ namespace yii\db\pgsql;
  */
 class PDO extends \PDO {
 
+	const OPT_SEARCH_PATH = 'search_path';
+	const OPT_DEFAULT_SCHEMA = 'default_schema';
+	const DEFAULT_SCHEMA = 'public';
+
+	private $_currentDatabase = null;
+
 	/**
 	 * Here we override the default PDO constructor in order to 
 	 * find and set the default schema search path.
 	 */
 	public function __construct($dsn, $username, $passwd, $options) {
 		$searchPath = null;
-		if (is_array($options) && isset($options['search_path'])) {
-			$matches = null;
-			if (preg_match("/(\s?)+(\w)+((\s+)?,(\s+)?\w+)*/", $options['search_path'], $matches) === 1) {
-				$searchPath = $matches[0];
+		if (is_array($options)) {
+			if (isset($options[self::OPT_SEARCH_PATH])) {
+				$matches = null;
+				if (preg_match("/(\s?)+(\w)+((\s+)?,(\s+)?\w+)*/", $options[self::OPT_SEARCH_PATH], $matches) === 1) {
+					$searchPath = $matches[0];
+				}
+			}
+			if (isset($options[self::OPT_DEFAULT_SCHEMA])) {
+				$schema = trim($options[self::OPT_DEFAULT_SCHEMA]);
+				if ($schema !== '') {
+					Schema::$DEFAULT_SCHEMA = $schema;
+				}
+			}
+			if (Schema::$DEFAULT_SCHEMA === null || Schema::$DEFAULT_SCHEMA === '') {
+				Schema::$DEFAULT_SCHEMA = self::DEFAULT_SCHEMA;
 			}
 		}
 		parent::__construct($dsn, $username, $passwd, $options);
 		if (!is_null($searchPath)) {
 			$this->setSchemaSearchPath($searchPath);
+		}
+	}
+
+	/**
+	 * Returns the name of the current (connected) database 
+	 * @return string
+	 */
+	public function getCurrentDatabase() {
+		if (is_null($this->_currentDatabase)) {
+			return $this->query('select current_database()')->fetchColumn();
 		}
 	}
 
