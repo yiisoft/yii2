@@ -32,7 +32,7 @@ use yii\helpers\Html;
  *         ),
  *         array(
  *             'label' => 'Dropdown',
- *             'dropdown' => array(
+ *             'items' => array(
  *                  array(
  *                      'label' => 'DropdownA',
  *                      'content' => 'DropdownA, Anim pariatur cliche...',
@@ -63,7 +63,7 @@ class Tabs extends Widget
 	 * - options: array, optional, the HTML attributes of the tab pane container.
 	 * - active: boolean, optional, whether the item tab header and pane should be visible or not.
 	 * - items: array, optional, if not set then `content` will be required. The `items` specify a dropdown items
-	 *   configuration array. Items can also hold two extra keys:
+	 *   configuration array. Each item can hold two extra keys, besides the above ones:
 	 *     * active: boolean, optional, whether the item tab header and pane should be visible or not.
 	 *     * content: string, required if `items` is not set. The content (HTML) of the tab pane.
 	 *     * contentOptions: optional, array, the HTML attributes of the tab content container.
