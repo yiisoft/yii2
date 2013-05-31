@@ -235,10 +235,10 @@ class View extends Component
 	public function renderFile($viewFile, $params = array(), $context = null)
 	{
 		$viewFile = Yii::getAlias($viewFile);
+		if ($this->theme !== null) {
+			$viewFile = $this->theme->applyTo($viewFile);
+		}
 		if (is_file($viewFile)) {
-			if ($this->theme !== null) {
-				$viewFile = $this->theme->applyTo($viewFile);
-			}
 			$viewFile = FileHelper::localize($viewFile);
 		} else {
 			throw new InvalidParamException("The view file does not exist: $viewFile");
