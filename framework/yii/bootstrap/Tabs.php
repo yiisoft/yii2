@@ -132,7 +132,7 @@ class Tabs extends Widget
 				$header = Html::a($label, "#", array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown')) . "\n"
 					. Dropdown::widget(array('items' => $item['items'], 'clientOptions' => false));
 			} elseif (isset($item['content'])) {
-				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options'));
+				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
 				$options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $n);
 
 				$this->addCssClass($options, 'tab-pane');
