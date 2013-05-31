@@ -136,9 +136,27 @@ class Schema extends \yii\db\Schema {
 		$table = new TableSchema();
 		$this->resolveTableNames($table, $name);
 		if ($this->findColumns($table)) {
-			$this->findForeignKeys($table);
+			$this->findConstraints($table);
 			return $table;
 		}
+	}
+
+	/**
+	 * Collects the foreign key column details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findConstraints($table) {
+		
+		try {
+			$constraints = $this->db->createCommand($sql)->queryAll();
+		} catch (\Exception $e) {
+			return false;
+		}
+		foreach ($constraints as $constraint) {
+			$column = $this->loadColumnSchema($column);
+			$table->columns[$column->name] = $column;
+		}
+		return true;
 	}
 
 	/**
@@ -163,13 +181,41 @@ SELECT
         a.attnotnull = false AS is_nullable,	
         CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
         coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) AS is_autoinc,
-        array_to_string((select array_agg(enumlabel) from pg_enum where enumtypid=a.atttypid)::varchar[],',') as enum_values
+        array_to_string((select array_agg(enumlabel) from pg_enum where enumtypid=a.atttypid)::varchar[],',') as enum_values,
+	CASE atttypid
+		 WHEN 21 /*int2*/ THEN 16
+		 WHEN 23 /*int4*/ THEN 32
+		 WHEN 20 /*int8*/ THEN 64
+		 WHEN 1700 /*numeric*/ THEN
+		      CASE WHEN atttypmod = -1
+			   THEN null
+			   ELSE ((atttypmod - 4) >> 16) & 65535
+			   END
+		 WHEN 700 /*float4*/ THEN 24 /*FLT_MANT_DIG*/
+		 WHEN 701 /*float8*/ THEN 53 /*DBL_MANT_DIG*/
+		 ELSE null
+	  END   AS numeric_precision,
+	  CASE 
+	    WHEN atttypid IN (21, 23, 20) THEN 0
+	    WHEN atttypid IN (1700) THEN            
+		CASE 
+		    WHEN atttypmod = -1 THEN null       
+		    ELSE (atttypmod - 4) & 65535
+		END
+	       ELSE null
+	  END AS numeric_scale,
+	CAST(
+             information_schema._pg_char_max_length(information_schema._pg_truetypid(a, t), information_schema._pg_truetypmod(a, t))
+             AS numeric
+	) AS size,
+	a.attnum = any (ct.conkey) as is_pkey			
 FROM
 	pg_class c
 	LEFT JOIN pg_attribute a ON a.attrelid = c.oid
 	LEFT JOIN pg_attrdef ad ON a.attrelid = ad.adrelid AND a.attnum = ad.adnum
 	LEFT JOIN pg_type t ON a.atttypid = t.oid
-	LEFT JOIN pg_namespace d ON d.oid = c.relnamespace         
+	LEFT JOIN pg_namespace d ON d.oid = c.relnamespace
+	LEFT join pg_constraint ct on ct.conrelid=c.oid and ct.contype='p'
 WHERE
 	a.attnum > 0
 	and c.relname = {$tableName}
@@ -186,10 +232,9 @@ SQL;
 		}
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
-			if ($column->name == 'numbers')
-				print_r($column);
+			$table->columns[$column->name] = $column;
 		}
-		die();
+		return true;
 	}
 
 	/**
@@ -205,14 +250,19 @@ SQL;
 		$column->dbType = $info['data_type'];
 		$column->defaultValue = $info['column_default'];
 		$column->enumValues = explode(',', str_replace(array("''"), array("'"), $info['enum_values']));
-//$column->isPrimaryKey
+		$column->unsigned = false; // has no meanining in PG
+		$column->isPrimaryKey = $info['is_pkey'];
 		$column->name = $info['column_name'];
-		//$column->phpType
-//$column->precision
-//$column->scale
-//$column->size;
-//$column->type
-//$column->unsigned
+		$column->precision = $info['numeric_precision'];
+		$column->scale = $info['numeric_scale'];
+		$column->size = $info['size'];
+
+		if (isset($this->typeMap[$column->dbType])) {
+			$column->type = $this->typeMap[$column->dbType];
+		} else {
+			$column->type = self::TYPE_STRING;
+		}
+		$column->phpType = $this->getColumnPhpType($column);
 		return $column;
 	}
 
