@@ -135,15 +135,7 @@ class InflectorTest extends TestCase
 
 	public function testAscii()
 	{
-		$this->assertEquals("AAAAAAAECEEEEIIIIDNOOOOOUUUUYssaaaaaaaeceeeeiiiidnooooouuuuyy",
+		$this->assertEquals("AAAAAeAAECEEEEIIIIDNOOOOOeUUUUeYssaaaaaeaaeceeeeiiiidnoooooeuuuueyy",
 			Inflector::ascii('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöùúûüýÿ'));
-		$this->assertEquals("Messd up --text-- just to stress /test/ our little clean url function--",
-			Inflector::ascii("Mess'd up --text-- just (to) stress /test/ ?our! `little` \\clean\\ url fun.ction!?-->"));
-		$this->assertEquals("Perche l erba e verde",
-			Inflector::ascii("Perché l'erba è verde?", "'"));
-		$this->assertEquals("Peux-tu m aider s il te plait",
-			Inflector::ascii("Peux-tu m'aider s'il te plaît?", "'"));
-		$this->assertEquals("Custom delimiter example",
-			Inflector::ascii("Custom`delimiter*example", array('*', '`')));
 	}
 }
