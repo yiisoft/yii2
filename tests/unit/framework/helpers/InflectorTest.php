@@ -143,8 +143,6 @@ class InflectorTest extends TestCase
 			Inflector::ascii("Perché l'erba è verde?", "'"));
 		$this->assertEquals("Peux-tu m aider s il te plait",
 			Inflector::ascii("Peux-tu m'aider s'il te plaît?", "'"));
-		$this->assertEquals("Tank-efter-nu-forrn-vi-foser-dig-bort",
-			Inflector::slug(Inflector::ascii("Tänk efter nu – förr'n vi föser dig bort")));
 		$this->assertEquals("Custom delimiter example",
 			Inflector::ascii("Custom`delimiter*example", array('*', '`')));
 	}

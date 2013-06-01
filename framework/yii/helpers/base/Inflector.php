@@ -470,6 +470,7 @@ class Inflector
 	public static function slug($string, $replacement = '-')
 	{
 		$map = array(
+			'/[^\w\s]/' => ' ',
 			'/\\s+/' => $replacement,
 			'/(?<=[a-z])([A-Z])/' => $replacement . '\\1',
 			str_replace(':rep', preg_quote($replacement, '/'), '/^[:rep]+|[:rep]+$/') => ''
@@ -512,7 +513,7 @@ class Inflector
 	 */
 	public static function ascii($string)
 	{
-		$map = static::$transliteration + array('/[^\w\s]/' => ' ');
+		$map = static::$transliteration;
 		return preg_replace(array_keys($map), array_values($map), $string);
 	}
 }
