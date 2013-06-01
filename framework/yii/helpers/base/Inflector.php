@@ -50,7 +50,7 @@ class Inflector
 		'/(ax|cris|test)is$/i' => '\1es',
 		'/s$/' => 's',
 		'/^$/' => '',
-		'/$/' => 's',		
+		'/$/' => 's',
 	);
 	/**
 	 * @var array the rules for converting a word into its singular form.
@@ -94,7 +94,7 @@ class Inflector
 		'/(n)ews$/i' => '\1\2ews',
 		'/eaus$/' => 'eau',
 		'/^(.*us)$/' => '\\1',
-		'/s$/i' => '',		
+		'/s$/i' => '',
 	);
 	/**
 	 * @var array the special rules for converting a word between its plural form and singular form.
@@ -214,59 +214,90 @@ class Inflector
 		'Yengeese' => 'Yengeese',
 	);
 	/**
-	 * @var array map of special chars and its translation. This is used by [[slug()]].
+	 * @var array map of special chars and its translation. This is used by [[slug()]] and [[ascii()]].
 	 */
-	public static $transliteration = array(
+	protected static $transliteration = array(
+		'/Æ|Ǽ/' => 'AE',
 		'/ä|æ|ǽ/' => 'ae',
 		'/ö|œ/' => 'oe',
 		'/ü/' => 'ue',
 		'/Ä/' => 'Ae',
 		'/Ü/' => 'Ue',
 		'/Ö/' => 'Oe',
-		'/À|Á|Â|Ã|Å|Ǻ|Ā|Ă|Ą|Ǎ/' => 'A',
-		'/à|á|â|ã|å|ǻ|ā|ă|ą|ǎ|ª/' => 'a',
-		'/Ç|Ć|Ĉ|Ċ|Č/' => 'C',
-		'/ç|ć|ĉ|ċ|č/' => 'c',
-		'/Ð|Ď|Đ/' => 'D',
-		'/ð|ď|đ/' => 'd',
-		'/È|É|Ê|Ë|Ē|Ĕ|Ė|Ę|Ě/' => 'E',
-		'/è|é|ê|ë|ē|ĕ|ė|ę|ě/' => 'e',
-		'/Ĝ|Ğ|Ġ|Ģ/' => 'G',
-		'/ĝ|ğ|ġ|ģ/' => 'g',
-		'/Ĥ|Ħ/' => 'H',
-		'/ĥ|ħ/' => 'h',
-		'/Ì|Í|Î|Ï|Ĩ|Ī|Ĭ|Ǐ|Į|İ/' => 'I',
-		'/ì|í|î|ï|ĩ|ī|ĭ|ǐ|į|ı/' => 'i',
-		'/Ĵ/' => 'J',
-		'/ĵ/' => 'j',
+		'/Ψ/' => 'PS',
+		'/ψ/' => 'ps',
+		'/À|Á|Â|Ã|Å|Ǻ|Ā|Ă|Ą|Ǎ|Ά/' => 'A',
+		'/à|á|â|ã|å|ǻ|ā|ă|ą|ǎ|ª|ά/' => 'a',
+		'/Б/' => 'B',
+		'/β|б/' => 'b',
+		'/Ç|Ć|Ĉ|Ċ|Č|Ц/' => 'C',
+		'/ç|ć|ĉ|ċ|č|ц/' => 'c',
+		'/Ч/' => 'Ch',
+		'/ч/' => 'ch',
+		'/©/' => '(c)',
+		'/Ð|Ď|Đ|Δ|Д/' => 'D',
+		'/ð|ď|đ|δ|д/' => 'd',
+		'/È|É|Ê|Ë|Ē|Ĕ|Ė|Ę|Ě|Έ|Э/' => 'E',
+		'/è|é|ê|ë|ē|ĕ|ė|ę|ě|ε|έ|э/' => 'e',
+		'/Φ|Ф/' => 'F',
+		'/φ|ƒ|ф/' => 'f',
+		'/Ĝ|Ğ|Ġ|Ģ|Γ|Ґ/' => 'G',
+		'/ĝ|ğ|ġ|ģ|γ|г|ґ/' => 'g',
+		'/Ĥ|Ħ|Ή/' => 'H',
+		'/ĥ|ħ|η|ή|н|х/' => 'h',
+		'/Ì|Í|Î|Ï|Ĩ|Ī|Ĭ|Ǐ|Į|İ|Ί|И/' => 'I',
+		'/ì|í|î|ï|ĩ|ī|ĭ|ǐ|į|ı|ι|ί|ϊ|ΐ|и/' => 'i',
+		'/Ĵ|Й/' => 'J',
+		'/ĵ|й/' => 'j',
 		'/Ķ/' => 'K',
-		'/ķ/' => 'k',
-		'/Ĺ|Ļ|Ľ|Ŀ|Ł/' => 'L',
-		'/ĺ|ļ|ľ|ŀ|ł/' => 'l',
+		'/ķ|κ/' => 'k',
+		'/Ĺ|Ļ|Ľ|Ŀ|Ł|Λ|Л/' => 'L',
+		'/ĺ|ļ|ľ|ŀ|ł|λ|л/' => 'l',
+		'/μ|м/' => 'm',
 		'/Ñ|Ń|Ņ|Ň/' => 'N',
-		'/ñ|ń|ņ|ň|ŉ/' => 'n',
-		'/Ò|Ó|Ô|Õ|Ō|Ŏ|Ǒ|Ő|Ơ|Ø|Ǿ/' => 'O',
-		'/ò|ó|ô|õ|ō|ŏ|ǒ|ő|ơ|ø|ǿ|º/' => 'o',
+		'/ñ|ń|ņ|ň|ŉ|ν/' => 'n',
+		'/Ò|Ó|Ô|Õ|Ō|Ŏ|Ǒ|Ő|Ơ|Ø|Ǿ|Ό/' => 'O',
+		'/ò|ó|ô|õ|ō|ŏ|ǒ|ő|ơ|ø|ǿ|º|ο/' => 'o',
+		'/Π/' => 'P',
+		'/π|п/' => 'p',
 		'/Ŕ|Ŗ|Ř/' => 'R',
-		'/ŕ|ŗ|ř/' => 'r',
-		'/Ś|Ŝ|Ş|Ș|Š/' => 'S',
-		'/ś|ŝ|ş|ș|š|ſ/' => 's',
-		'/Ţ|Ț|Ť|Ŧ/' => 'T',
-		'/ţ|ț|ť|ŧ/' => 't',
-		'/Ù|Ú|Û|Ũ|Ū|Ŭ|Ů|Ű|Ų|Ư|Ǔ|Ǖ|Ǘ|Ǚ|Ǜ/' => 'U',
-		'/ù|ú|û|ũ|ū|ŭ|ů|ű|ų|ư|ǔ|ǖ|ǘ|ǚ|ǜ/' => 'u',
-		'/Ý|Ÿ|Ŷ/' => 'Y',
-		'/ý|ÿ|ŷ/' => 'y',
-		'/Ŵ/' => 'W',
-		'/ŵ/' => 'w',
-		'/Ź|Ż|Ž/' => 'Z',
-		'/ź|ż|ž/' => 'z',
-		'/Æ|Ǽ/' => 'AE',
+		'/ŕ|ŗ|ř|ρ|р/' => 'r',
+		'/Ś|Ŝ|Ş|Ș|Š|Σ/' => 'S',
+		'/ś|ŝ|ş|ș|š|ſ|σ|ς|с/' => 's',
 		'/ß/' => 'ss',
+		'/ẞ/' => 'SS',
+		'/Ţ|Ț|Ť|Ŧ|τ/' => 'T',
+		'/ţ|ț|ť|ŧ|т/' => 't',
+		'/Ù|Ú|Û|Ũ|Ū|Ŭ|Ů|Ű|Ų|Ư|Ǔ|Ǖ|Ǘ|Ǚ|Ǜ|У/' => 'U',
+		'/ù|ú|û|ũ|ū|ŭ|ů|ű|ų|ư|ǔ|ǖ|ǘ|ǚ|ǜ/' => 'u',
+		'/в/' => 'v',
+		'/χ/' => 'x',
+		'/Ý|Ÿ|Ŷ|Ύ|Ϋ/' => 'Y',
+		'/ý|ÿ|ŷ|υ|ύ|ΰ|ы/' => 'y',
+		'/Ŵ|Ω|Ώ/' => 'W',
+		'/ŵ|ω|ώ/' => 'w',
+		'/Ź|Ż|Ž|З/' => 'Z',
+		'/ź|ż|ž|ζ|з/' => 'z',
 		'/Ĳ/' => 'IJ',
 		'/ĳ/' => 'ij',
 		'/Œ/' => 'OE',
-		'/ƒ/' => 'f'
+		'/Ш|Щ/' => 'Sh',
+		'/ш|щ/' => 'sh',
+		'/Я/' => 'Ya',
+		'/я/' => 'ya',
+		'/Є/' => 'Ye',
+		'/є/' => 'ye',
+		'/Ї/' => 'Yi',
+		'/ї/' => 'yi',
+		'/Ё/' => 'Yo',
+		'/ё/' => 'yo',
+		'/Ю/' => 'Yu',
+		'/ю/' => 'yu',
+		'/Ж/' => 'Zh',
+		'/ж/' => 'zh',
+		'/ξ|Ξ/' => '3',
+		'/θ/' => '8',
+		'/ъ|ь|Ъ|Ы|Ь/' => '',
 	);
 
 	/**
@@ -431,21 +462,19 @@ class Inflector
 
 	/**
 	 * Returns a string with all spaces converted to given replacement and
-	 * non word characters removed.  Maps special characters to ASCII using
-	 * `Inflector::$transliteration`
+	 * non word characters removed.  Maps special characters to ASCII using [[ascii()]]
 	 * @param string $string An arbitrary string to convert
 	 * @param string $replacement The replacement to use for spaces
 	 * @return string The converted string.
 	 */
 	public static function slug($string, $replacement = '-')
 	{
-		$map = static::$transliteration + array(
-				'/[^\w\s]/' => ' ',
-				'/\\s+/' => $replacement,
-				'/(?<=[a-z])([A-Z])/' => $replacement . '\\1',
-				str_replace(':rep', preg_quote($replacement, '/'), '/^[:rep]+|[:rep]+$/') => ''
-			);
-		return preg_replace(array_keys($map), array_values($map), $string);
+		$map = array(
+			'/\\s+/' => $replacement,
+			'/(?<=[a-z])([A-Z])/' => $replacement . '\\1',
+			str_replace(':rep', preg_quote($replacement, '/'), '/^[:rep]+|[:rep]+$/') => ''
+		);
+		return preg_replace(array_keys($map), array_values($map), static::ascii($string));
 	}
 
 	/**
@@ -479,15 +508,11 @@ class Inflector
 	/**+
 	 * Converts all special characters to the closest ascii character equivalent.
 	 * @param string $string the string to be converted.
-	 * @param array $replace the characters to be replaced by spaces.
 	 * @return string the translated
 	 */
-	public static function ascii($string, $replace = array())
+	public static function ascii($string)
 	{
-		if (!empty($replace)) {
-			$string = str_replace((array)$replace, ' ', $string);
-		}
-		$string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
-		return preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $string);
+		$map = static::$transliteration + array('/[^\w\s]/' => ' ');
+		return preg_replace(array_keys($map), array_values($map), $string);
 	}
 }
