@@ -87,8 +87,8 @@ yii.validation = (function ($) {
 			if (options.skipOnEmpty && isEmpty(value)) {
 				return;
 			}
-			var valid = !options.not && $.inArray(value, options.range)
-				|| options.not && !$.inArray(value, options.range);
+			var valid = !options.not && $.inArray(value, options.range) > -1
+				|| options.not && $.inArray(value, options.range) == -1;
 
 			if (!valid) {
 				messages.push(options.message);
