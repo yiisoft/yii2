@@ -25,6 +25,20 @@ class PDO extends \PDO {
 	private $_currentDatabase = null;
 
 	/**
+	 * Returns value of the last inserted ID.
+	 * @param string|null $sequence the sequence name. Defaults to null.
+	 * @return integer last inserted ID value.
+	 */
+	public function lastInsertId($sequence = null) {
+		if ($sequence !== null) {
+			$sequence = $this->quote($sequence);
+			return $this->query("SELECT currval({$sequence})")->fetchColumn();
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * Here we override the default PDO constructor in order to 
 	 * find and set the default schema search path.
 	 */
