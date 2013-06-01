@@ -19,10 +19,7 @@
 		"yiisoft/yii2-composer": "dev-master"
 	},
 	"scripts": {
-		"post-install-cmd": [
-			"yii\\composer\\InstallHandler::setPermissions"
-		],
-		"post-update-cmd": [
+		"post-create-project-cmd": [
 			"yii\\composer\\InstallHandler::setPermissions"
 		]
 	},
