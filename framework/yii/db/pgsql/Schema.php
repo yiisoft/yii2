@@ -100,6 +100,14 @@ class Schema extends \yii\db\Schema {
 	);
 
 	/**
+	 * Creates a query builder for the MySQL database.
+	 * @return QueryBuilder query builder instance
+	 */
+	public function createQueryBuilder() {
+		return new QueryBuilder($this->db);
+	}
+
+	/**
 	 * Resolves the table name and schema name (if any).
 	 * @param TableSchema $table the table metadata object
 	 * @param string $name the table name
@@ -146,7 +154,7 @@ class Schema extends \yii\db\Schema {
 	 * @param TableSchema $table the table metadata
 	 */
 	protected function findConstraints($table) {
-		
+
 		try {
 			$constraints = $this->db->createCommand($sql)->queryAll();
 		} catch (\Exception $e) {
@@ -233,6 +241,12 @@ SQL;
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
 			$table->columns[$column->name] = $column;
+			if ($column->isPrimaryKey === true) {
+				$table->primaryKey[] = $column->name;
+				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1) {
+					$table->sequenceName = preg_replace(array('/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'), '', $column->defaultValue);
+				}
+			}
 		}
 		return true;
 	}
