@@ -27,7 +27,7 @@ use yii\helpers\Html;
  *         ),
  *         array(
  *             'label' => 'Dropdown',
- *             'items' => array(
+ *             'dropdown' => array(
  *                  array(
  *                      'label' => 'DropdownA',
  *                      'url' => '#',
