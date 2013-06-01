@@ -162,12 +162,39 @@ abstract class ManagerTestCase extends TestCase
 		$this->auth->addItemChild('readPost', 'readPost');
 	}
 
+	public static function bizEval($manager,$params,$data)
+	{
+		if (is_array($data) && array_key_exists('bizRule',$data)) {
+			$bizRule = $data['bizRule'];
+			unset($data['bizRule']);
+		} else {
+			$bizRule = null;
+		}
+					
+		return $bizRule === '' || $bizRule === null || ($manager->showErrors ? eval($bizRule) != 0 : @eval($bizRule) != 0);
+	}
+	
 	public function testExecuteBizRule()
 	{
+		
 		$this->assertTrue($this->auth->executeBizRule(null, array(), null));
-		$this->assertTrue($this->auth->executeBizRule('return 1 == true;', array(), null));
-		$this->assertTrue($this->auth->executeBizRule('return $params[0] == $params[1];', array(1, '1'), null));
+		
+		$this->assertTrue($this->auth->executeBizRule(function() {return true;}, array(), null));
+		$this->assertFalse($this->auth->executeBizRule(function() {return false;}, array(), null));
+		$this->assertTrue($this->auth->executeBizRule(function($manager,$params,$data) {return $params[0] == $params[1];}, array(1, '1'), null));
+		$this->assertTrue($this->auth->executeBizRule(function($manager,$params,$data) {return is_string($data);}, array(), 'test'));
+		
+		// eval style biz rules shouldn't work any longer. Ensure they return false
+		$this->assertFalse($this->auth->executeBizRule('return 1 == true;', array(), null));
+		$this->assertFalse($this->auth->executeBizRule('return $params[0] == $params[1];', array(1, '1'), null));
 		$this->assertFalse($this->auth->executeBizRule('invalid;', array(), null));
+		
+		// simulating eval style biz rules using custom evaluating biz rule
+		$callback = array('\yiiunit\framework\rbac\ManagerTestCase','bizEval');
+		$this->assertTrue($this->auth->executeBizRule($callback, array(), array('bizRule'=>'return 1 == true;')));
+		$this->assertTrue($this->auth->executeBizRule($callback, array(1,'1'), array('bizRule'=>'return $params[0] == $params[1];')));
+		$this->assertFalse($this->auth->executeBizRule($callback, array(), array('bizRule'=>'invalid;')));
+		
 	}
 
 	public function testCheckAccess()
@@ -214,6 +241,11 @@ abstract class ManagerTestCase extends TestCase
 		}
 	}
 
+	public static function bizUpdateOwnPost($manager,$params,$data)
+	{
+		return $params["authorID"] == $params["userID"];
+	}
+	
 	protected function prepareData()
 	{
 		$this->auth->createOperation('createPost', 'create a post');
@@ -221,7 +253,10 @@ abstract class ManagerTestCase extends TestCase
 		$this->auth->createOperation('updatePost', 'update a post');
 		$this->auth->createOperation('deletePost', 'delete a post');
 
-		$task = $this->auth->createTask('updateOwnPost', 'update a post by author himself', 'return $params["authorID"] == $params["userID"];');
+		$task = $this->auth->createTask(
+			'updateOwnPost',
+			'update a post by author himself',
+			array('\yiiunit\framework\rbac\ManagerTestCase','bizUpdateOwnPost'));
 		$task->addChild('updatePost');
 
 		$role = $this->auth->createRole('reader');

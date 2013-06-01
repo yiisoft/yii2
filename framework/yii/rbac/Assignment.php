@@ -27,7 +27,7 @@ class Assignment extends Object
 	 */
 	public $manager;
 	/**
-	 * @var string the business rule associated with this assignment
+	 * @var callable the business rule associated with this assignment
 	 */
 	public $bizRule;
 	/**

@@ -217,12 +217,15 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
+			if (($bizRule = @unserialize($row['biz_rule'])) === false) {
+				$bizRule = null;
+			}
 			$children[$row['name']] = new Item(array(
 				'manager' => $this,
 				'name' => $row['name'],
 				'type' => $row['type'],
 				'description' => $row['description'],
-				'bizRule' => $row['biz_rule'],
+				'bizRule' => $bizRule,
 				'data' => $data,
 			));
 		}
@@ -233,7 +236,7 @@ class DbManager extends Manager
 	 * Assigns an authorization item to a user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @param string $itemName the item name
-	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+	 * @param callable $bizRule the business rule to be executed when [[checkAccess()]] is called
 	 * for this particular authorization item.
 	 * @param mixed $data additional data associated with this assignment
 	 * @return Assignment the authorization assignment information.
@@ -248,7 +251,7 @@ class DbManager extends Manager
 			->insert($this->assignmentTable, array(
 				'user_id' => $userId,
 				'item_name' => $itemName,
-				'biz_rule' => $bizRule,
+				'biz_rule' => serialize($bizRule),
 				'data' => serialize($data),
 			))
 			->execute();
@@ -308,11 +311,14 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
+			if (($bizRule = @unserialize($row['biz_rule'])) === false) {
+				$bizRule = null;
+			}
 			return new Assignment(array(
 				'manager' => $this,
 				'userId' => $row['user_id'],
 				'itemName' => $row['item_name'],
-				'bizRule' => $row['biz_rule'],
+				'bizRule' => $bizRule,
 				'data' => $data,
 			));
 		} else {
@@ -338,11 +344,14 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
+			if (($bizRule = @unserialize($row['biz_rule'])) === false) {
+				$bizRule = null;
+			}
 			$assignments[$row['item_name']] = new Assignment(array(
 				'manager' => $this,
 				'userId' => $row['user_id'],
 				'itemName' => $row['item_name'],
-				'bizRule' => $row['biz_rule'],
+				'bizRule' => $bizRule,
 				'data' => $data,
 			));
 		}
@@ -357,7 +366,7 @@ class DbManager extends Manager
 	{
 		$this->db->createCommand()
 			->update($this->assignmentTable, array(
-				'biz_rule' => $assignment->bizRule,
+				'biz_rule' => serialize($assignment->bizRule),
 				'data' => serialize($assignment->data),
 			), array(
 				'user_id' => $assignment->userId,
@@ -400,12 +409,15 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
+			if (($bizRule = @unserialize($row['biz_rule'])) === false) {
+				$bizRule = null;
+			}
 			$items[$row['name']] = new Item(array(
 				'manager' => $this,
 				'name' => $row['name'],
 				'type' => $row['type'],
 				'description' => $row['description'],
-				'bizRule' => $row['biz_rule'],
+				'bizRule' => $bizRule,
 				'data' => $data,
 			));
 		}
@@ -421,8 +433,8 @@ class DbManager extends Manager
 	 * @param string $name the item name. This must be a unique identifier.
 	 * @param integer $type the item type (0: operation, 1: task, 2: role).
 	 * @param string $description description of the item
-	 * @param string $bizRule business rule associated with the item. This is a piece of
-	 * PHP code that will be executed when [[checkAccess()]] is called for the item.
+	 * @param callable $bizRule business rule associated with the item. This is a callable
+	 * that will be executed when [[checkAccess()]] is called for the item.
 	 * @param mixed $data additional data associated with the item.
 	 * @return Item the authorization item
 	 * @throws Exception if an item with the same name already exists
@@ -434,7 +446,7 @@ class DbManager extends Manager
 				'name' => $name,
 				'type' => $type,
 				'description' => $description,
-				'biz_rule' => $bizRule,
+				'biz_rule' => serialize($bizRule),
 				'data' => serialize($data),
 			))
 			->execute();
@@ -485,12 +497,15 @@ class DbManager extends Manager
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
+			if (($bizRule = @unserialize($row['biz_rule'])) === false) {
+				$bizRule = null;
+			}
 			return new Item(array(
 				'manager' => $this,
 				'name' => $row['name'],
 				'type' => $row['type'],
 				'description' => $row['description'],
-				'bizRule' => $row['biz_rule'],
+				'bizRule' => $bizRule,
 				'data' => $data,
 			));
 		} else
@@ -521,7 +536,7 @@ class DbManager extends Manager
 				'name' => $item->getName(),
 				'type' => $item->type,
 				'description' => $item->description,
-				'biz_rule' => $item->bizRule,
+				'biz_rule' => serialize($item->bizRule),
 				'data' => serialize($item->data),
 			), array(
 				'name' => $oldName === null ? $item->getName() : $oldName,
