@@ -11,25 +11,12 @@ DROP TABLE IF EXISTS tbl_category CASCADE;
 DROP TABLE IF EXISTS tbl_customer CASCADE;
 DROP TABLE IF EXISTS tbl_type CASCADE;
 
-drop type if exists fullname cascade;
-create type fullname as (firstname varchar,lastname varchar);
-
-drop type if exists mood cascade;
-create type mood as enum ('sad','ok','happy',E'own\'s',E'\"quoted\"');
-
-
 CREATE TABLE tbl_customer (
   id serial not null primary key,
   email varchar(128) NOT NULL,
   name varchar(128) NOT NULL,
-  age numeric(3),
-  zipcode varchar(6),
   address text,
-  status integer DEFAULT 0,
-  fullname fullname,
-  mood mood,
-  numbers integer[],
-  amount numeric(6,4)
+  status integer DEFAULT 0
 );
 
 comment on column public.tbl_customer.email is 'someone@example.com';
