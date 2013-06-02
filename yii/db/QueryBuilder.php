@@ -464,7 +464,11 @@ class QueryBuilder extends \yii\base\Object
 	 * the first part will be converted, and the rest of the parts will be appended to the converted result.
 	 * For example, 'string NOT NULL' is converted to 'varchar(255) NOT NULL'.
 	 *
- // TODO documentation
+	 * For some of the abstract types you can also specify a length or precision constraint
+	 * by prepending it in round brackets directly to the type.
+	 * For example `string(32)` will be converted into "varchar(32)" on a MySQL database.
+	 * If the underlying DBMS does not support these kind of constraints for a type it will
+	 * be ignored.
 	 *
 	 * If a type cannot be found in [[typeMap]], it will be returned without any change.
 	 * @param string $type abstract column type
