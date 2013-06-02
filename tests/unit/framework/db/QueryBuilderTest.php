@@ -96,7 +96,7 @@ class QueryBuilderTest extends DatabaseTestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testGetColumnType()
 	{
