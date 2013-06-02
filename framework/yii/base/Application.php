@@ -67,35 +67,53 @@ class Application extends Module
 	 * Constructor.
 	 * @param array $config name-value pairs that will be used to initialize the object properties.
 	 * Note that the configuration must contain both [[id]] and [[basePath]].
-	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
 	 */
 	public function __construct($config = array())
 	{
 		Yii::$app = $this;
 
-		if (!isset($config['id'])) {
-			throw new InvalidConfigException('The "id" configuration is required.');
-		}
-
-		if (isset($config['basePath'])) {
-			$this->setBasePath($config['basePath']);
-			Yii::setAlias('@app', $this->getBasePath());
-			unset($config['basePath']);
-		} else {
-			throw new InvalidConfigException('The "basePath" configuration is required.');
-		}
-		
-		if (isset($config['timeZone'])) {
-			$this->setTimeZone($config['timeZone']);
-			unset($config['timeZone']);
-		} elseif (!ini_get('date.timezone')) {
-			$this->setTimeZone('UTC');
-		} 
+		$this->preInit($config);
 
 		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
 
 		Component::__construct($config);
+	}
+
+	/**
+	 * Pre-initializes the application.
+	 * This method is called at the beginning of the application constructor.
+	 * When this method is called, none of the application properties are initialized yet.
+	 * The default implementation will initialize a few important properties
+	 * that may be referenced during the initialization of the rest of the properties.
+	 * @param array $config the application configuration
+	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
+	 */
+	public function preInit($config)
+	{
+		if (!isset($config['id'])) {
+			throw new InvalidConfigException('The "id" configuration is required.');
+		}
+		if (!isset($config['basePath'])) {
+			throw new InvalidConfigException('The "basePath" configuration is required.');
+		}
+
+		$this->setBasePath($config['basePath']);
+		Yii::setAlias('@app', $this->getBasePath());
+		unset($config['basePath']);
+
+		if (isset($config['runtime'])) {
+			$this->setRuntimePath($config['runtime']);
+			unset($config['runtime']);
+		}
+		Yii::setAlias('@app/runtime', $this->getRuntimePath());
+
+		if (isset($config['timeZone'])) {
+			$this->setTimeZone($config['timeZone']);
+			unset($config['timeZone']);
+		} elseif (!ini_get('date.timezone')) {
+			$this->setTimeZone('UTC');
+		}
 	}
 
 	/**

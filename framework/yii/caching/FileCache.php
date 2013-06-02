@@ -27,7 +27,7 @@ class FileCache extends Cache
 	 * @var string the directory to store cache files. You may use path alias here.
 	 * If not set, it will use the "cache" subdirectory under the application runtime path.
 	 */
-	public $cachePath;
+	public $cachePath = '@app/runtime/cache';
 	/**
 	 * @var string cache file suffix. Defaults to '.bin'.
 	 */
@@ -52,11 +52,7 @@ class FileCache extends Cache
 	public function init()
 	{
 		parent::init();
-		if ($this->cachePath === null) {
-			$this->cachePath = Yii::$app->getRuntimePath() . DIRECTORY_SEPARATOR . 'cache';
-		} else {
-			$this->cachePath = Yii::getAlias($this->cachePath);
-		}
+		$this->cachePath = Yii::getAlias($this->cachePath);
 		if (!is_dir($this->cachePath)) {
 			mkdir($this->cachePath, 0777, true);
 		}
