@@ -102,11 +102,17 @@ class Application extends Module
 		Yii::setAlias('@app', $this->getBasePath());
 		unset($config['basePath']);
 
+		if (isset($config['vendor'])) {
+			$this->setVendorPath($config['vendor']);
+			unset($config['vendorPath']);
+		}
+		Yii::setAlias('@vendor', $this->getVendorPath());
+
 		if (isset($config['runtime'])) {
 			$this->setRuntimePath($config['runtime']);
 			unset($config['runtime']);
 		}
-		Yii::setAlias('@app/runtime', $this->getRuntimePath());
+		Yii::setAlias('@runtime', $this->getRuntimePath());
 
 		if (isset($config['timeZone'])) {
 			$this->setTimeZone($config['timeZone']);
