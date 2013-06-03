@@ -23,6 +23,14 @@ class Object
 	}
 
 	/**
+	 * @return string the namespace of this class.
+	 */
+	public static function spaceName()
+	{
+		return dirname(get_called_class());
+	}
+
+	/**
 	 * Constructor.
 	 * The default implementation does two things:
 	 *
