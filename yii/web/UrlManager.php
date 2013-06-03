@@ -45,11 +45,11 @@ class UrlManager extends Component
 	 *
 	 * For RESTful routing the mentioned shortcut format also allows you to specify the
 	 * [[UrlRule::verb|HTTP verb]] that the rule should apply for.
-	 * You can do that  by prepending it to the pattern, separated by a space.
+	 * You can do that  by prepending it to the pattern, separated by space.
 	 * For example, `'PUT post/<id:\d+>' => 'post/update'`.
 	 * You may specify multiple verbs by separating them with comma
 	 * like this: `'POST,PUT post/index' => 'post/create'`.
-	 * The supported verbs in the shortcut format are: GET, POST, PUT and DELETE.
+	 * The supported verbs in the shortcut format are: GET, HEAD, POST, PUT and DELETE.
 	 * Note that [[UrlRule::mode|mode]] will be set to PARSING_ONLY when specifying verb in this way
 	 * so you normally would not specify a verb for normal GET request.
 	 *
@@ -142,13 +142,10 @@ class UrlManager extends Component
 				$rule = array(
 					'route' => $rule,
 				);
-				if (($pos = strpos($key, ' ')) !== false) {
-					$verbs = substr($key, 0, $pos);
-					if (preg_match('/^((GET|POST|PUT|DELETE),?)*$/', $verbs, $matches)) {
-						$rule['verb'] = explode(',', $verbs);
-						$rule['mode'] = UrlRule::PARSING_ONLY;
-						$key = substr($key, $pos + 1);
-					}
+				if (preg_match('/^((?:(GET|HEAD|POST|PUT|DELETE),)*(GET|HEAD|POST|PUT|DELETE))\s+(.*)$/', $key, $matches)) {
+					$rule['verb'] = explode(',', $matches[1]);
+					$rule['mode'] = UrlRule::PARSING_ONLY;
+					$key = $matches[4];
 				}
 				$rule['pattern'] = $key;
 			}
