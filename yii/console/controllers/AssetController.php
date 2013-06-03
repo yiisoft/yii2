@@ -601,13 +601,17 @@ EOD;
 	{
 		$template = <<<EOD
 <?php
-
+/**
+ * Configuration file for the "yii asset" console command.
+ * Note: in the console environment some path aliases like "@wwwroot" and "@www" may not exist,
+ * so corresponding paths should be specified directly.
+ */
 return array(
-	//
+	// The list of asset bundles, which files should be included to compression:
 	'bundles' => require('path/to/bundles.php'),
-	//
+	// The list of extensions, which asset files should be included to compression:
 	'extensions' => require('path/to/namespaces.php'),
-	//
+	// Compression result asset bundle:
 	'targets' => array(
 		'all' => array(
 			'basePath' => __DIR__,
@@ -616,7 +620,7 @@ return array(
 			'css' => 'all-{ts}.css',
 		),
 	),
-
+	// Asset manager configuration:
 	'assetManager' => array(
 		'basePath' => __DIR__,
 		'baseUrl' => '/test',
