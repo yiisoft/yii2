@@ -71,7 +71,7 @@ class AssetController extends Controller
 	 */
 	private $_assetManager = array();
 	/**
-	 * @var string|callback Java Script file compressor.
+	 * @var string|callback JavaScript file compressor.
 	 * If a string, it is treated as shell command template, which should contain
 	 * placeholders {from} - source file name - and {to} - output file name.
 	 * Otherwise, it is treated as PHP callback, which should perform the compression.
@@ -173,7 +173,7 @@ class AssetController extends Controller
 			}
 		}
 
-		$this->getAssetManager(); // check asset manager configuration is correct
+		$this->getAssetManager(); // check if asset manager configuration is correct
 	}
 
 	/**
@@ -450,7 +450,7 @@ EOD;
 	}
 
 	/**
-	 * Compresses given Java Script files and combines them into the single one.
+	 * Compresses given JavaScript files and combines them into the single one.
 	 * @param array $inputFiles list of source file names.
 	 * @param string $outputFile output file name.
 	 * @throws \yii\console\Exception on failure
@@ -508,7 +508,7 @@ EOD;
 	}
 
 	/**
-	 * Combines Java Script files into a single one.
+	 * Combines JavaScript files into a single one.
 	 * @param array $inputFiles source file names.
 	 * @param string $outputFile output file name.
 	 * @throws \yii\console\Exception on failure.
@@ -522,7 +522,7 @@ EOD;
 				. "/*** END FILE: $file ***/\n";
 		}
 		if (!file_put_contents($outputFile, $content)) {
-			throw new Exception("Unable to write output Java Script file '{$outputFile}'.");
+			throw new Exception("Unable to write output JavaScript file '{$outputFile}'.");
 		}
 	}
 
@@ -621,11 +621,11 @@ EOD;
  * so corresponding paths should be specified directly.
  */
 return array(
-	// The list of asset bundles, which files should be included to compression:
+	// The list of asset bundles to compress:
 	'bundles' => require('path/to/bundles.php'),
-	// The list of extensions, which asset files should be included to compression:
+	// The list of extensions to compress:
 	'extensions' => require('path/to/namespaces.php'),
-	// Compression result asset bundle:
+	// Asset bundle for compression output:
 	'targets' => array(
 		'all' => array(
 			'basePath' => __DIR__,
