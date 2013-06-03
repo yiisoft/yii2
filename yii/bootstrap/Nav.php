@@ -128,8 +128,10 @@ class Nav extends Widget
 			$this->addCssClass($urlOptions, 'dropdown-toggle');
 			$label .= ' ' . Html::tag('b', '', array('class' => 'caret'));
 			if (is_array($dropdown)) {
-				$dropdown['clientOptions'] = false;
-				$dropdown = Dropdown::widget($dropdown);
+				$dropdown = Dropdown::widget(array(
+					'items' => $dropdown,
+					'clientOptions' => false,
+				));
 			}
 		}
 
