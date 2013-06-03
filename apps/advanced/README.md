@@ -81,7 +81,7 @@ This is not currently available. We will provide it when Yii 2 is formally relea
 
 ### Install from development repository
 
-If you've cloned the [Yii 2 framework main development reop](https://github.com/yiisoft/yii2) you
+If you've cloned the [Yii 2 framework main development repository](https://github.com/yiisoft/yii2) you
 can bootstrap your application with:
 
 ~~~
