@@ -38,14 +38,13 @@ abstract class TestCase extends \yii\test\TestCase
 	 * The application will be destroyed on tearDown() automatically.
 	 * @param array $config The application configuration, if needed
 	 */
-	protected function mockApplication($config=array())
+	protected function mockApplication($config = array(), $appClass = '\yii\console\Application')
 	{
 		static $defaultConfig = array(
 			'id' => 'testapp',
 			'basePath' => __DIR__,
 		);
 
-		$appClass = $this->getParam( 'appClass', '\yii\web\Application' );
 		new $appClass(array_merge($defaultConfig,$config));
 	}
 

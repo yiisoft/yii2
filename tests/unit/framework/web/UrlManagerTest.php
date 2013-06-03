@@ -249,5 +249,57 @@ class UrlManagerTest extends TestCase
 		$this->assertFalse($result);
 	}
 
-	// TODO test RESTful pattern syntax e.g. 'GET index' => 'site/index'
+	public function testParseRESTRequest()
+	{
+		$manager = new UrlManager(array(
+			'cache' => null,
+		));
+		$request = new Request;
+
+		// pretty URL rules
+		$manager = new UrlManager(array(
+			'enablePrettyUrl' => true,
+			'cache' => null,
+			'rules' => array(
+				'PUT,POST post/<id>/<title>' => 'post/create',
+				'DELETE post/<id>' => 'post/delete',
+				'post/<id>/<title>' => 'post/view',
+				'POST/GET' => 'post/get',
+			),
+		));
+		// matching pathinfo GET request
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$request->pathInfo = 'post/123/this+is+sample';
+		$result = $manager->parseRequest($request);
+		$this->assertEquals(array('post/view', array('id' => '123', 'title' => 'this+is+sample')), $result);
+		// matching pathinfo PUT/POST request
+		$_SERVER['REQUEST_METHOD'] = 'PUT';
+		$request->pathInfo = 'post/123/this+is+sample';
+		$result = $manager->parseRequest($request);
+		$this->assertEquals(array('post/create', array('id' => '123', 'title' => 'this+is+sample')), $result);
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		$request->pathInfo = 'post/123/this+is+sample';
+		$result = $manager->parseRequest($request);
+		$this->assertEquals(array('post/create', array('id' => '123', 'title' => 'this+is+sample')), $result);
+
+		// no wrong matching
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		$request->pathInfo = 'POST/GET';
+		$result = $manager->parseRequest($request);
+		$this->assertEquals(array('post/get', array()), $result);
+
+		// createUrl should ignore REST rules
+		$this->mockApplication(array(
+			'components' => array(
+				'request' => array(
+					'hostInfo' => 'http://localhost/',
+					'baseUrl' => '/app'
+				)
+			)
+		), \yii\web\Application::className());
+		$this->assertEquals('/app/post/delete?id=123', $manager->createUrl('post/delete', array('id' => 123)));
+		$this->destroyApplication();
+
+		unset($_SERVER['REQUEST_METHOD']);
+	}
 }
