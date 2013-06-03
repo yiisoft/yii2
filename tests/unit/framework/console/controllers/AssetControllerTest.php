@@ -239,6 +239,7 @@ class AssetControllerTest extends TestCase
 
 		// Then :
 		$this->assertTrue(file_exists($bundleFile), 'Unable to create output bundle file!');
+		$this->assertTrue(is_array(require($bundleFile)), 'Output bundle file has incorrect format!');
 
 		$compressedCssFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.css';
 		$this->assertTrue(file_exists($compressedCssFileName), 'Unable to compress CSS files!');
