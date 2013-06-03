@@ -409,11 +409,11 @@ abstract class Module extends Component
 	 * ~~~
 	 * array(
 	 *     'comment' => array(
-	 *         'class' => 'app\modules\CommentModule',
+	 *         'class' => 'app\modules\comment\CommentModule',
 	 *         'db' => 'db',
 	 *     ),
 	 *     'booking' => array(
-	 *         'class' => 'app\modules\BookingModule',
+	 *         'class' => 'app\modules\booking\BookingModule',
 	 *     ),
 	 * )
 	 * ~~~
