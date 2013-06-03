@@ -59,3 +59,14 @@ assuming `yii-basic` is directly under the document root of your Web server.
 ### Install from an Archive File
 
 This is not currently available. We will provide it when Yii 2 is formally released.
+
+
+### Install from development repository
+
+If you've cloned the [Yii 2 framework main development reop](https://github.com/yiisoft/yii2) you
+can bootstrap your application with:
+
+~~~
+cd yii2/apps/basic
+php composer.phar create-project
+~~~
