@@ -57,7 +57,7 @@ class AssetController extends Controller
 	 * ~~~
 	 * 'all' => array(
 	 *     'css' => 'all.css',
-	 *     'js' => 'js.css',
+	 *     'js' => 'all.js',
 	 *     'depends' => array( ... ),
 	 * )
 	 * ~~~
@@ -322,7 +322,7 @@ class AssetController extends Controller
 	/**
 	 * Builds output asset bundle.
 	 * @param \yii\web\AssetBundle $target output asset bundle
-	 * @param string $type either "js" or "css".
+	 * @param string $type either 'js' or 'css'.
 	 * @param \yii\web\AssetBundle[] $bundles source asset bundles.
 	 * @param integer $timestamp current timestamp.
 	 * @throws Exception on failure.
@@ -617,7 +617,7 @@ EOD;
 <?php
 /**
  * Configuration file for the "yii asset" console command.
- * Note: in the console environment some path aliases like "@wwwroot" and "@www" may not exist,
+ * Note: in the console environment some path aliases like '@wwwroot' and '@www' may not exist,
  * so corresponding paths should be specified directly.
  */
 return array(
