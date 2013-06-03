@@ -43,15 +43,18 @@ class UrlManager extends Component
 	 * array, one can use the key to represent the pattern and the value the corresponding route.
 	 * For example, `'post/<id:\d+>' => 'post/view'`.
 	 *
-	 * For RESTful routing this shortcut also allows you to specify the [[UrlRule::verb|HTTP verb]]
-	 * the rule should apply for by prepending it to the pattern, separated by a blank.
+	 * For RESTful routing the mentioned shortcut format also allows you to specify the
+	 * [[UrlRule::verb|HTTP verb]] that the rule should apply for.
+	 * You can do that  by prepending it to the pattern, separated by a space.
 	 * For example, `'PUT post/<id:\d+>' => 'post/update'`.
 	 * You may specify multiple verbs by separating them with comma
 	 * like this: `'POST,PUT post/index' => 'post/create'`.
+	 * The supported verbs in the shortcut format are: GET, POST, PUT and DELETE.
 	 * Note that [[UrlRule::mode|mode]] will be set to PARSING_ONLY when specifying verb in this way
 	 * so you normally would not specify a verb for normal GET request.
 	 *
 	 * Here is an example configuration for RESTful CRUD controller:
+	 *
 	 * ~~~php
 	 * array(
 	 *     'dashboard' => 'site/index',
