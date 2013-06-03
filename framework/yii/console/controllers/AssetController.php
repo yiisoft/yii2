@@ -14,6 +14,20 @@ use yii\console\Controller;
 /**
  * This command allows you to combine and compress your JavaScript and CSS files.
  *
+ * Usage:
+ * 1. Create a configuration file using 'template' action:
+ *    yii asset/template /path/to/myapp/config.php
+ * 2. Edit the created config file, adjusting it for your web application needs.
+ * 3. Run the 'compress' action, using created config:
+ *    yii asset /path/to/myapp/config.php /path/to/myapp/config/assets_compressed.php
+ * 4. Adjust your web application config to use compressed assets.
+ *
+ * Note: in the console environment some path aliases like '@wwwroot' and '@www' may not exist,
+ * so corresponding paths inside the configuration should be specified directly.
+ *
+ * Note: by default this command relies on an external tools to perform actual files compression,
+ * check [[jsCompressor]] and [[cssCompressor]] for more details.
+ *
  * @property array|\yii\web\AssetManager $assetManager asset manager, which will be used for assets processing.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
