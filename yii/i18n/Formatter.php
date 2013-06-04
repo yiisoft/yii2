@@ -83,10 +83,10 @@ class Formatter extends \yii\base\Formatter
 		if ($this->decimalSeparator === null || $this->thousandSeparator === null) {
 			$formatter = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
 			if ($this->decimalSeparator === null) {
-				$this->decimalSeparator = $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
+				$this->decimalSeparator = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 			}
 			if ($this->thousandSeparator === null) {
-				$this->thousandSeparator = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+				$this->thousandSeparator = $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
 			}
 		}
 
