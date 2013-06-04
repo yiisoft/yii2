@@ -54,6 +54,16 @@ class Formatter extends \yii\base\Formatter
 	 * creating a new number formatter to format decimals, currencies, etc.
 	 */
 	public $numberFormatOptions = array();
+	/**
+	 * @var string the character displayed as the decimal point when formatting a number.
+	 * If not set, the decimal separator corresponding to [[locale]] will be used.
+	 */
+	public $decimalSeparator;
+	/**
+	 * @var string the character displayed as the thousands separator character when formatting a number.
+	 * If not set, the thousand separator corresponding to [[locale]] will be used.
+	 */
+	public $thousandSeparator;
 
 
 	/**
@@ -70,6 +80,16 @@ class Formatter extends \yii\base\Formatter
 		if ($this->locale === null) {
 			$this->locale = Yii::$app->language;
 		}
+		if ($this->decimalSeparator === null || $this->thousandSeparator === null) {
+			$formatter = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
+			if ($this->decimalSeparator === null) {
+				$this->decimalSeparator = $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
+			}
+			if ($this->thousandSeparator === null) {
+				$this->thousandSeparator = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+			}
+		}
+
 		parent::init();
 	}
 
