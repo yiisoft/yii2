@@ -181,12 +181,12 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findColumns($table)
 	{
-		$sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
-		try {
-			$columns = $this->db->createCommand($sql)->queryAll();
-		} catch (\Exception $e) {
+		$rows = $this->db->createCommand("SHOW TABLES LIKE " . $this->quoteValue($table->name))->queryAll();
+		if (count($rows) === 0) {
 			return false;
 		}
+		$sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
+		$columns = $this->db->createCommand($sql)->queryAll();
 		foreach ($columns as $info) {
 			$column = $this->loadColumnSchema($info);
 			$table->columns[$column->name] = $column;
