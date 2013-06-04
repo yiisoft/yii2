@@ -178,15 +178,21 @@ class Schema extends \yii\db\Schema
 	 * Collects the metadata of table columns.
 	 * @param TableSchema $table the table metadata
 	 * @return boolean whether the table exists in the database
+	 * @throws \Exception if DB query fails
 	 */
 	protected function findColumns($table)
 	{
-		$rows = $this->db->createCommand("SHOW TABLES LIKE " . $this->quoteValue($table->name))->queryAll();
-		if (count($rows) === 0) {
-			return false;
-		}
 		$sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
-		$columns = $this->db->createCommand($sql)->queryAll();
+		try {
+			$columns = $this->db->createCommand($sql)->queryAll();
+		} catch (\Exception $e) {
+			$previous = $e->getPrevious();
+			if ($previous instanceof \PDOException && $previous->getCode() == '42S02') {
+				// table does not exist
+				return false;
+			}
+			throw $e;
+		}
 		foreach ($columns as $info) {
 			$column = $this->loadColumnSchema($info);
 			$table->columns[$column->name] = $column;
