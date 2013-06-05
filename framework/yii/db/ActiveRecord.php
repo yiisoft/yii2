@@ -275,10 +275,16 @@ class ActiveRecord extends Model
 	/**
 	 * Returns the schema information of the DB table associated with this AR class.
 	 * @return TableSchema the schema information of the DB table associated with this AR class.
+	 * @throws InvalidConfigException if the table for the AR class does not exist.
 	 */
 	public static function getTableSchema()
 	{
-		return static::getDb()->getTableSchema(static::tableName());
+		$schema = static::getDb()->getTableSchema(static::tableName());
+		if ($schema !== null) {
+			return $schema;
+		} else {
+			throw new InvalidConfigException("The table does not exist: " . static::tableName());
+		}
 	}
 
 	/**

@@ -67,10 +67,20 @@ class Application extends Module
 	 * Constructor.
 	 * @param array $config name-value pairs that will be used to initialize the object properties.
 	 * Note that the configuration must contain both [[id]] and [[basePath]].
+	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
 	 */
 	public function __construct($config = array())
 	{
 		Yii::$app = $this;
+		if (!isset($config['id'])) {
+			throw new InvalidConfigException('The "id" configuration is required.');
+		}
+		if (isset($config['basePath'])) {
+			$this->setBasePath($config['basePath']);
+			unset($config['basePath']);
+		} else {
+			throw new InvalidConfigException('The "basePath" configuration is required.');
+		}
 
 		$this->preInit($config);
 
@@ -83,37 +93,24 @@ class Application extends Module
 	/**
 	 * Pre-initializes the application.
 	 * This method is called at the beginning of the application constructor.
-	 * When this method is called, none of the application properties are initialized yet.
-	 * The default implementation will initialize a few important properties
-	 * that may be referenced during the initialization of the rest of the properties.
 	 * @param array $config the application configuration
-	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
 	 */
-	public function preInit($config)
+	public function preInit(&$config)
 	{
-		if (!isset($config['id'])) {
-			throw new InvalidConfigException('The "id" configuration is required.');
-		}
-		if (!isset($config['basePath'])) {
-			throw new InvalidConfigException('The "basePath" configuration is required.');
-		}
-
-		$this->setBasePath($config['basePath']);
-		Yii::setAlias('@app', $this->getBasePath());
-		unset($config['basePath']);
-
-		if (isset($config['vendor'])) {
-			$this->setVendorPath($config['vendor']);
+		if (isset($config['vendorPath'])) {
+			$this->setVendorPath($config['vendorPath']);
 			unset($config['vendorPath']);
+		} else {
+			// set "@vendor"
+			$this->getVendorPath();
 		}
-		Yii::setAlias('@vendor', $this->getVendorPath());
-
-		if (isset($config['runtime'])) {
-			$this->setRuntimePath($config['runtime']);
-			unset($config['runtime']);
+		if (isset($config['runtimePath'])) {
+			$this->setRuntimePath($config['runtimePath']);
+			unset($config['runtimePath']);
+		} else {
+			// set "@runtime"
+			$this->getRuntimePath();
 		}
-		Yii::setAlias('@runtime', $this->getRuntimePath());
-
 		if (isset($config['timeZone'])) {
 			$this->setTimeZone($config['timeZone']);
 			unset($config['timeZone']);
@@ -202,7 +199,8 @@ class Application extends Module
 
 	/**
 	 * Returns the directory that stores runtime files.
-	 * @return string the directory that stores runtime files. Defaults to 'protected/runtime'.
+	 * @return string the directory that stores runtime files.
+	 * Defaults to the "runtime" subdirectory under [[basePath]].
 	 */
 	public function getRuntimePath()
 	{
@@ -215,16 +213,11 @@ class Application extends Module
 	/**
 	 * Sets the directory that stores runtime files.
 	 * @param string $path the directory that stores runtime files.
-	 * @throws InvalidConfigException if the directory does not exist or is not writable
 	 */
 	public function setRuntimePath($path)
 	{
-		$path = Yii::getAlias($path);
-		if (is_dir($path) && is_writable($path)) {
-			$this->_runtimePath = $path;
-		} else {
-			throw new InvalidConfigException("Runtime path must be a directory writable by the Web server process: $path");
-		}
+		$this->_runtimePath = Yii::getAlias($path);
+		Yii::setAlias('@runtime', $this->_runtimePath);
 	}
 
 	private $_vendorPath;
@@ -232,7 +225,7 @@ class Application extends Module
 	/**
 	 * Returns the directory that stores vendor files.
 	 * @return string the directory that stores vendor files.
-	 * Defaults to 'vendor' directory under applications [[basePath]].
+	 * Defaults to "vendor" directory under [[basePath]].
 	 */
 	public function getVendorPath()
 	{
@@ -249,6 +242,7 @@ class Application extends Module
 	public function setVendorPath($path)
 	{
 		$this->_vendorPath = Yii::getAlias($path);
+		Yii::setAlias('@vendor', $this->_vendorPath);
 	}
 
 	/**
