@@ -76,7 +76,7 @@ class VerbFilter extends Behavior
 	{
 		$action = $event->action->id;
 		if (isset($this->actions[$action])) {
-			$verb = Yii::$app->getRequest()->getRequestMethod();
+			$verb = Yii::$app->getRequest()->getMethod();
 			$allowed = array_map('strtoupper', $this->actions[$action]);
 			if (!in_array($verb, $allowed)) {
 				$event->isValid = false;

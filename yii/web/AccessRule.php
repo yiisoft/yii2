@@ -99,7 +99,7 @@ class AccessRule extends Component
 		if ($this->matchAction($action)
 			&& $this->matchRole($user)
 			&& $this->matchIP($request->getUserIP())
-			&& $this->matchVerb($request->getRequestMethod())
+			&& $this->matchVerb($request->getMethod())
 			&& $this->matchController($action->controller)
 			&& $this->matchCustom($action)
 		) {
