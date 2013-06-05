@@ -88,7 +88,11 @@ abstract class Module extends Component
 	 */
 	public $controllerMap = array();
 	/**
-	 * @var string the namespace that controller classes are in. Default is to use global namespace.
+	 * @var string the namespace that controller classes are in. If not set,
+	 * it will use the "controllers" sub-namespace under the namespace of this module.
+	 * For example, if the namespace of this module is "foo\bar", then the default
+	 * controller namespace would be "foo\bar\controllers".
+	 * If the module is an application, it will default to "app\controllers".
 	 */
 	public $controllerNamespace;
 	/**
@@ -178,6 +182,16 @@ abstract class Module extends Component
 	public function init()
 	{
 		$this->preloadComponents();
+		if ($this->controllerNamespace === null) {
+			if ($this instanceof Application) {
+				$this->controllerNamespace = 'app\\controllers';
+			} else {
+				$class = get_class($this);
+				if (($pos = strrpos($class, '\\')) !== false) {
+					$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
+				}
+			}
+		}
 	}
 
 	/**
@@ -409,11 +423,11 @@ abstract class Module extends Component
 	 * ~~~
 	 * array(
 	 *     'comment' => array(
-	 *         'class' => 'app\modules\CommentModule',
+	 *         'class' => 'app\modules\comment\CommentModule',
 	 *         'db' => 'db',
 	 *     ),
 	 *     'booking' => array(
-	 *         'class' => 'app\modules\BookingModule',
+	 *         'class' => 'app\modules\booking\BookingModule',
 	 *     ),
 	 * )
 	 * ~~~

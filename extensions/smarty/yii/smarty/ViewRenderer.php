@@ -26,12 +26,12 @@ class ViewRenderer extends BaseViewRenderer
 	/**
 	 * @var string the directory or path alias pointing to where Smarty cache will be stored.
 	 */
-	public $cachePath = '@app/runtime/Smarty/cache';
+	public $cachePath = '@runtime/Smarty/cache';
 
 	/**
 	 * @var string the directory or path alias pointing to where Smarty compiled templates will be stored.
 	 */
-	public $compilePath = '@app/runtime/Smarty/compile';
+	public $compilePath = '@runtime/Smarty/compile';
 
 	/**
 	 * @var Smarty

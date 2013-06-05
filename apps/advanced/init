@@ -4,27 +4,27 @@ $root = str_replace('\\', '/', __DIR__);
 $envs = require("$root/environments/index.php");
 $envNames = array_keys($envs);
 
-echo "Yii Application Installation Tool v1.0\n\n";
-echo "Which environment do you want to install the application to?\n\n";
+echo "Yii Application Init Tool v1.0\n\n";
+echo "Which environment do you want the application to be initialized in?\n\n";
 foreach ($envNames as $i => $name) {
 	echo "  [$i] $name\n";
 }
 echo "\n  Your choice [0-" . (count($envs) - 1) . ', or "q" to quit] ';
 $answer = trim(fgets(STDIN));
 if (!ctype_digit($answer) || !isset($envNames[$answer])) {
-	echo "\n  Quit installation.\n";
+	echo "\n  Quit initialization.\n";
 	return;
 }
 
 $env = $envs[$envNames[$answer]];
-echo "\n  Install the application under '{$envNames[$answer]}' environment? [yes|no] ";
+echo "\n  Initialize the application under '{$envNames[$answer]}' environment? [yes|no] ";
 $answer = trim(fgets(STDIN));
 if (strncasecmp($answer, 'y', 1)) {
-	echo "\n  Quit installation.\n";
+	echo "\n  Quit initialization.\n";
 	return;
 }
 
-echo "\n  Start installation ...\n\n";
+echo "\n  Start initialization ...\n\n";
 $files = getFileList("$root/environments/{$env['path']}");
 $all = false;
 foreach ($files as $file) {
@@ -47,7 +47,7 @@ if (isset($env['executable'])) {
 	}
 }
 
-echo "\n  ... installation completed.\n\n";
+echo "\n  ... initialization completed.\n\n";
 
 function getFileList($root, $basePath = '')
 {

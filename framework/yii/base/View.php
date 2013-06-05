@@ -130,8 +130,8 @@ class View extends Component
 	 */
 	public $dynamicPlaceholders = array();
 	/**
-	 * @var array the registered asset bundles. The keys are the bundle names, and the values
-	 * are the corresponding [[AssetBundle]] objects.
+	 * @var array list of the registered asset bundles. The keys are the bundle names, and the values
+	 * are booleans indicating whether the bundles have been registered.
 	 * @see registerAssetBundle
 	 */
 	public $assetBundles;
@@ -235,10 +235,10 @@ class View extends Component
 	public function renderFile($viewFile, $params = array(), $context = null)
 	{
 		$viewFile = Yii::getAlias($viewFile);
+		if ($this->theme !== null) {
+			$viewFile = $this->theme->applyTo($viewFile);
+		}
 		if (is_file($viewFile)) {
-			if ($this->theme !== null) {
-				$viewFile = $this->theme->applyTo($viewFile);
-			}
 			$viewFile = FileHelper::localize($viewFile);
 		} else {
 			throw new InvalidParamException("The view file does not exist: $viewFile");

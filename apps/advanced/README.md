@@ -67,11 +67,42 @@ If you do not have [Composer](http://getcomposer.org/), you may download it from
 curl -s http://getcomposer.org/installer | php
 ~~~
 
-You can then install the Bootstrap Application using the following command:
+You can then install the application using the following command:
 
 ~~~
 php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-advanced
 ~~~
+
+
+### Install from an Archive File
+
+This is not currently available. We will provide it when Yii 2 is formally released.
+
+
+### Install from development repository
+
+If you've cloned the [Yii 2 framework main development repository](https://github.com/yiisoft/yii2) you
+can bootstrap your application with:
+
+~~~
+cd yii2/apps/advanced
+php composer.phar create-project
+~~~
+
+*Note: If the above command fails with `[RuntimeException] Not enough arguments.` run
+`php composer.phar self-update` to obtain an updated version of composer which supports creating projects
+from local packages.*
+
+
+GETTING STARTED
+---------------
+
+After you install the application, you have to conduct the following steps to initialize
+the installed application. You only need to do these once for all.
+
+1. Execute the `init` command and select `dev` as environment.
+2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
+3. In `common/config/params.php` set your database details in `components.db` values.
 
 Now you should be able to access:
 
@@ -79,20 +110,4 @@ Now you should be able to access:
 - the backstage using the URL `http://localhost/yii-advanced/backstage/www/`
 
 assuming `yii-advanced` is directly under the document root of your Web server.
-
-
-### Install from an Archive File
-
-This is not currently available. We will provide it when Yii 2 is formally released.
-
-GETTING STARTED
----------------
-
-After template application and its dependencies are downloaded you need to initialize it and set some config values to
-match your application requirements.
-
-1. Execute `install` command selecting `dev` as environment.
-2. Set `id` value in `console/config/main.php`, `frontend/config/main.php`, `backstage/config/main.php`.
-3. Create new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
-4. In `common/config/params.php` set your database details in `components.db` values.
 

@@ -23,6 +23,26 @@ class Application extends \yii\base\Application
 	 * @var string the default route of this application. Defaults to 'site'.
 	 */
 	public $defaultRoute = 'site';
+	/**
+	 * @var array the configuration specifying a controller action which should handle
+	 * all user requests. This is mainly used when the application is in maintenance mode
+	 * and needs to handle all incoming requests via a single action.
+	 * The configuration is an array whose first element specifies the route of the action.
+	 * The rest of the array elements (key-value pairs) specify the parameters to be bound
+	 * to the action. For example,
+	 *
+	 * ~~~
+	 * array(
+	 *     'offline/notice',
+	 *     'param1' => 'value1',
+	 *     'param2' => 'value2',
+	 * )
+	 * ~~~
+	 *
+	 * Defaults to null, meaning catch-all is not effective.
+	 */
+	public $catchAll;
+
 
 	/**
 	 * Processes the request.
@@ -34,7 +54,12 @@ class Application extends \yii\base\Application
 		$request = $this->getRequest();
 		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
 		Yii::setAlias('@www', $request->getBaseUrl());
-		list ($route, $params) = $request->resolve();
+		if (empty($this->catchAll)) {
+			list ($route, $params) = $request->resolve();
+		} else {
+			$route = $this->catchAll[0];
+			$params = array_splice($this->catchAll, 1);
+		}
 		try {
 			return $this->runAction($route, $params);
 		} catch (InvalidRouteException $e) {

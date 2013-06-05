@@ -135,12 +135,20 @@
 			data.submitting = true;
 			if (!data.settings.beforeSubmit || data.settings.beforeSubmit($form)) {
 				validate($form, function (messages) {
-					var hasError = false;
+					var errors = [];
 					$.each(data.attributes, function () {
-						hasError = updateInput($form, this, messages) || hasError;
+						if (updateInput($form, this, messages)) {
+							errors.push(this.input);
+						}
 					});
 					updateSummary($form, messages);
-					if (!hasError) {
+					if (errors.length) {
+						var top = $form.find(errors.join(',')).first().offset().top;
+						var wtop = $(window).scrollTop();
+						if (top < wtop || top > wtop + $(window).height) {
+							$(window).scrollTop(top);
+						}
+					} else {
 						data.validated = true;
 						var $button = data.submitObject || $form.find(':submit:first');
 						// TODO: if the submission is caused by "change" event, it will not work
