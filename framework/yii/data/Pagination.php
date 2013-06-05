@@ -5,9 +5,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\data;
 
 use Yii;
+use yii\base\Object;
 
 /**
  * Pagination represents information relevant to pagination of data items.
@@ -62,7 +63,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Pagination extends \yii\base\Object
+class Pagination extends Object
 {
 	/**
 	 * @var string name of the parameter storing the current page index. Defaults to 'page'.
