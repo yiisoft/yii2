@@ -29,7 +29,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_INTEGER => 'int(11)',
 		Schema::TYPE_BIGINT => 'bigint(20)',
 		Schema::TYPE_FLOAT => 'float',
-		Schema::TYPE_DECIMAL => 'decimal',
+		Schema::TYPE_DECIMAL => 'decimal(10,0)',
 		Schema::TYPE_DATETIME => 'datetime',
 		Schema::TYPE_TIMESTAMP => 'timestamp',
 		Schema::TYPE_TIME => 'time',
@@ -150,17 +150,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function batchInsert($table, $columns, $rows)
 	{
+		foreach ($columns as $i => $name) {
+			$columns[$i] = $this->db->quoteColumnName($name);
+		}
+
 		$values = array();
 		foreach ($rows as $row) {
 			$vs = array();
 			foreach ($row as $value) {
 				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
 			}
-			$values[] = $vs;
+			$values[] = '(' . implode(', ', $vs) . ')';
 		}
 
 		return 'INSERT INTO ' . $this->db->quoteTableName($table)
-			. ' (' . implode(', ', $columns) . ') VALUES ('
-			. implode(', ', $values) . ')';
+			. ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
 	}
 }

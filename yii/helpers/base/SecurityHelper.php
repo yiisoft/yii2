@@ -131,12 +131,27 @@ class SecurityHelper
 			$keys = is_file($keyFile) ? require($keyFile) : array();
 		}
 		if (!isset($keys[$name])) {
-			// generate a 32-char random key
-			$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-			$keys[$name] = substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
+			$keys[$name] = static::generateRandomKey($length);
 			file_put_contents($keyFile, "<?php\nreturn " . var_export($keys, true) . ";\n");
 		}
 		return $keys[$name];
+	}
+
+	/**
+	 * Generates a random key.
+	 * @param integer $length the length of the key that should be generated
+	 * @return string the generated random key
+	 */
+	public static function generateRandomKey($length = 32)
+	{
+		if (function_exists('openssl_random_pseudo_bytes')) {
+			$key = base64_encode(openssl_random_pseudo_bytes($length, $strong));
+			if ($strong) {
+				return substr($key, 0, $length);
+			}
+		}
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
 	}
 
 	/**

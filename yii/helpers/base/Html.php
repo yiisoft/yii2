@@ -344,7 +344,7 @@ class Html
 	/**
 	 * Generates a hyperlink tag.
 	 * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
-	 * such as an image tag. If this is is coming from end users, you should consider [[encode()]]
+	 * such as an image tag. If this is coming from end users, you should consider [[encode()]]
 	 * it to prevent XSS attacks.
 	 * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[url()]]
 	 * and will be used for the "href" attribute of the tag. If this parameter is null, the "href" attribute
@@ -366,7 +366,7 @@ class Html
 	/**
 	 * Generates a mailto hyperlink.
 	 * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
-	 * such as an image tag. If this is is coming from end users, you should consider [[encode()]]
+	 * such as an image tag. If this is coming from end users, you should consider [[encode()]]
 	 * it to prevent XSS attacks.
 	 * @param string $email email address. If this is null, the first parameter (link body) will be treated
 	 * as the email address and used.
