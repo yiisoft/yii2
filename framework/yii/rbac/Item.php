@@ -37,7 +37,7 @@ class Item extends Object
 	 */
 	public $description;
 	/**
-	 * @var string the business rule associated with this item
+	 * @var callable the business rule associated with this item
 	 */
 	public $bizRule;
 	/**
@@ -144,7 +144,7 @@ class Item extends Object
 	/**
 	 * Assigns this item to a user.
 	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+	 * @param callable $bizRule the business rule to be executed when [[checkAccess()]] is called
 	 * for this particular authorization item.
 	 * @param mixed $data additional data associated with this assignment
 	 * @return Assignment the authorization assignment information.

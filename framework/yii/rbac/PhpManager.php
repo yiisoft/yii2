@@ -181,7 +181,7 @@ class PhpManager extends Manager
 	 * Assigns an authorization item to a user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @param string $itemName the item name
-	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+	 * @param callable $bizRule the business rule to be executed when [[checkAccess()]] is called
 	 * for this particular authorization item.
 	 * @param mixed $data additional data associated with this assignment
 	 * @return Assignment the authorization assignment information.
@@ -296,8 +296,8 @@ class PhpManager extends Manager
 	 * @param string $name the item name. This must be a unique identifier.
 	 * @param integer $type the item type (0: operation, 1: task, 2: role).
 	 * @param string $description description of the item
-	 * @param string $bizRule business rule associated with the item. This is a piece of
-	 * PHP code that will be executed when [[checkAccess()]] is called for the item.
+	 * @param callable $bizRule business rule associated with the item. This is a callable
+	 * that will be executed when [[checkAccess()]] is called for the item.
 	 * @param mixed $data additional data associated with the item.
 	 * @return Item the authorization item
 	 * @throws Exception if an item with the same name already exists

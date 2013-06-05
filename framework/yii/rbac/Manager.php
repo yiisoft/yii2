@@ -65,7 +65,7 @@ abstract class Manager extends Component
 	 * This is a shortcut method to [[Manager::createItem()]].
 	 * @param string $name the item name
 	 * @param string $description the item description.
-	 * @param string $bizRule the business rule associated with this item
+	 * @param callable $bizRule the business rule associated with this item
 	 * @param mixed $data additional data to be passed when evaluating the business rule
 	 * @return Item the authorization item
 	 */
@@ -79,7 +79,7 @@ abstract class Manager extends Component
 	 * This is a shortcut method to [[Manager::createItem()]].
 	 * @param string $name the item name
 	 * @param string $description the item description.
-	 * @param string $bizRule the business rule associated with this item
+	 * @param callable $bizRule the business rule associated with this item
 	 * @param mixed $data additional data to be passed when evaluating the business rule
 	 * @return Item the authorization item
 	 */
@@ -93,7 +93,7 @@ abstract class Manager extends Component
 	 * This is a shortcut method to [[Manager::createItem()]].
 	 * @param string $name the item name
 	 * @param string $description the item description.
-	 * @param string $bizRule the business rule associated with this item
+	 * @param callable $bizRule the business rule associated with this item
 	 * @param mixed $data additional data to be passed when evaluating the business rule
 	 * @return Item the authorization item
 	 */
@@ -140,7 +140,7 @@ abstract class Manager extends Component
 
 	/**
 	 * Executes the specified business rule.
-	 * @param string $bizRule the business rule to be executed.
+	 * @param callable $bizRule the business rule to be executed.
 	 * @param array $params parameters passed to [[Manager::checkAccess()]].
 	 * @param mixed $data additional data associated with the authorization item or assignment.
 	 * @return boolean whether the business rule returns true.
@@ -148,7 +148,15 @@ abstract class Manager extends Component
 	 */
 	public function executeBizRule($bizRule, $params, $data)
 	{
-		return $bizRule === '' || $bizRule === null || ($this->showErrors ? eval($bizRule) != 0 : @eval($bizRule) != 0);
+		if (empty($bizRule)) {
+			return true;
+		}
+		
+		if (is_callable($bizRule)) {
+			return call_user_func_array($bizRule,array($this,$params,$data));
+		}
+		
+		return false;		
 	}
 
 	/**
@@ -185,7 +193,7 @@ abstract class Manager extends Component
 	 * @param string $name the item name. This must be a unique identifier.
 	 * @param integer $type the item type (0: operation, 1: task, 2: role).
 	 * @param string $description description of the item
-	 * @param string $bizRule business rule associated with the item. This is a piece of
+	 * @param callable $bizRule business rule associated with the item. This is a piece of
 	 * PHP code that will be executed when [[checkAccess()]] is called for the item.
 	 * @param mixed $data additional data associated with the item.
 	 * @throws \yii\base\Exception if an item with the same name already exists
@@ -254,7 +262,7 @@ abstract class Manager extends Component
 	 * Assigns an authorization item to a user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @param string $itemName the item name
-	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+	 * @param callable $bizRule the business rule to be executed when [[checkAccess()]] is called
 	 * for this particular authorization item.
 	 * @param mixed $data additional data associated with this assignment
 	 * @return Assignment the authorization assignment information.
