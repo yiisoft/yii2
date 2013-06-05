@@ -42,7 +42,40 @@ class Application extends \yii\base\Application
 	 * Defaults to null, meaning catch-all is not effective.
 	 */
 	public $catchAll;
-
+	
+	/**
+	 * When parent preInit method is called. This method is following initialize Request component.
+	 * After parent preInit called, This method will initialize Request component and
+	 * @wwwroot, @www alias. 
+	 * This implementation can be used by application properties.
+	 * For example, @app/config/main.php can use
+	 * ```php
+	 * 	'runtimePath' => '@wwwroot/someOtherPath',
+	 *  'vendorPath' => '@wwwroot/someOtherVendorPath',
+	 *  'components' => array(
+	 *      'assetManager' => array(
+	 *          'baseUrl' => '@www/someOtherAssetUrl'
+	 *      )
+	 *  )
+	 * ```
+	 * 
+	 * @param array $config the application configuration
+	 * @see yii\base\Application::preInit()
+	 */
+	public function preInit($config = array()){
+		parent::preInit($config);
+		
+		if($config['components']['request']){
+			$this->setComponents(array(
+				'request' => $config['components']['request']
+			));
+			unset($config['components']['request']);
+		}
+		$request = $this->getRequest();
+		
+		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
+		Yii::setAlias('@www', $request->getBaseUrl());
+	}
 
 	/**
 	 * Processes the request.
@@ -51,11 +84,8 @@ class Application extends \yii\base\Application
 	 */
 	public function processRequest()
 	{
-		$request = $this->getRequest();
-		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
-		Yii::setAlias('@www', $request->getBaseUrl());
 		if (empty($this->catchAll)) {
-			list ($route, $params) = $request->resolve();
+			list ($route, $params) = $this->getRequest()->resolve();
 		} else {
 			$route = $this->catchAll[0];
 			$params = array_splice($this->catchAll, 1);
