@@ -5,9 +5,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\data;
 
 use Yii;
+use yii\base\Object;
 use yii\helpers\Html;
 
 /**
@@ -68,7 +69,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Sort extends \yii\base\Object
+class Sort extends Object
 {
 	/**
 	 * Sort ascending
