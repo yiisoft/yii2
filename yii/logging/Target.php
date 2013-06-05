@@ -204,11 +204,9 @@ abstract class Target extends Component
 			if ($matched) {
 				foreach ($this->except as $category) {
 					$prefix = rtrim($category, '*');
-					foreach ($messages as $i => $message) {
-						if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
-							$matched = false;
-							break;
-						}
+					if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
+						$matched = false;
+						break;
 					}
 				}
 			}
