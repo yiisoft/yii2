@@ -236,6 +236,9 @@ abstract class Module extends Component
 		$p = realpath($path);
 		if ($p !== false && is_dir($p)) {
 			$this->_basePath = $p;
+			if ($this instanceof Application) {
+				Yii::setAlias('@app', $p);
+			}
 		} else {
 			throw new InvalidParamException("The directory does not exist: $path");
 		}
