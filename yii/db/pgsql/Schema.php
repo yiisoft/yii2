@@ -33,31 +33,24 @@ class Schema extends \yii\db\Schema {
 	 */
 	public $typeMap = array(
 	    'abstime' => self::TYPE_TIMESTAMP,
-	    //'aclitem' => self::TYPE_STRING,
 	    'bit' => self::TYPE_STRING,
 	    'boolean' => self::TYPE_BOOLEAN,
 	    'box' => self::TYPE_STRING,
 	    'character' => self::TYPE_STRING,
 	    'bytea' => self::TYPE_BINARY,
 	    'char' => self::TYPE_STRING,
-	    //'cid' => self::TYPE_STRING,
 	    'cidr' => self::TYPE_STRING,
 	    'circle' => self::TYPE_STRING,
 	    'date' => self::TYPE_DATE,
-	    //'daterange' => self::TYPE_STRING,	    
 	    'real' => self::TYPE_FLOAT,
 	    'double precision' => self::TYPE_DECIMAL,
-	    //'gtsvector' => self::TYPE_STRING,	    
 	    'inet' => self::TYPE_STRING,
 	    'smallint' => self::TYPE_SMALLINT,
 	    'integer' => self::TYPE_INTEGER,
-	    //'int4range' => self::TYPE_STRING, //unknown	    
 	    'bigint' => self::TYPE_BIGINT,
-	    //'int8range' => self::TYPE_STRING, // unknown	    
 	    'interval' => self::TYPE_STRING,
 	    'json' => self::TYPE_STRING,
 	    'line' => self::TYPE_STRING,
-	    //'lseg' => self::TYPE_STRING,
 	    'macaddr' => self::TYPE_STRING,
 	    'money' => self::TYPE_MONEY,
 	    'name' => self::TYPE_STRING,
@@ -65,38 +58,49 @@ class Schema extends \yii\db\Schema {
 	    'numrange' => self::TYPE_DECIMAL,
 	    'oid' => self::TYPE_BIGINT, // should not be used. it's pg internal!
 	    'path' => self::TYPE_STRING,
-	    //'pg_node_tree' => self::TYPE_STRING, 	    
 	    'point' => self::TYPE_STRING,
 	    'polygon' => self::TYPE_STRING,
-	    //'refcursor' => self::TYPE_STRING,
-	    //'regclass' => self::TYPE_STRING,
-	    //'regconfig' => self::TYPE_STRING,
-	    //'regdictionary' => self::TYPE_STRING,
-	    //'regoper' => self::TYPE_STRING,
-	    //'regoperator' => self::TYPE_STRING,
-	    //'regproc' => self::TYPE_STRING,
-	    //'regprocedure' => self::TYPE_STRING,
-	    //'regtype' => self::TYPE_STRING,
-	    //'reltime' => self::TYPE_STRING,
-	    //'smgr' => self::TYPE_STRING,
 	    'text' => self::TYPE_TEXT,
-	    //'tid' => self::TYPE_STRING,
 	    'time without time zone' => self::TYPE_TIME,
 	    'timestamp without time zone' => self::TYPE_TIMESTAMP,
 	    'timestamp with time zone' => self::TYPE_TIMESTAMP,
 	    'time with time zone' => self::TYPE_TIMESTAMP,
-	    //'tinterval' => self::TYPE_STRING,
-	    //'tsquery' => self::TYPE_STRING,
-	    //'tsrange' => self::TYPE_STRING,
-	    //'tstzrange' => self::TYPE_STRING,
-	    //'tsvector' => self::TYPE_STRING,
-	    //'txid_snapshot' => self::TYPE_STRING,
 	    'unknown' => self::TYPE_STRING,
 	    'uuid' => self::TYPE_STRING,
 	    'bit varying' => self::TYPE_STRING,
 	    'character varying' => self::TYPE_STRING,
-	    //'xid' => self::TYPE_STRING,
 	    'xml' => self::TYPE_STRING
+
+		/*
+		 * 	internal PG types
+		 *  'aclitem' => self::TYPE_STRING,	    
+		 *  'cid' => self::TYPE_STRING,
+		 *  'daterange' => self::TYPE_STRING,
+		 *  'gtsvector' => self::TYPE_STRING,
+		 *  'int4range' => self::TYPE_STRING, //unknown
+		 *  'lseg' => self::TYPE_STRING,
+		 *  'int8range' => self::TYPE_STRING, // unknown
+		 *  'pg_node_tree' => self::TYPE_STRING,
+		 *  'refcursor' => self::TYPE_STRING,
+		 *  'regclass' => self::TYPE_STRING,
+		 *  'regconfig' => self::TYPE_STRING,
+		 *  'regdictionary' => self::TYPE_STRING,
+		 *  'regoper' => self::TYPE_STRING,
+		 *  'regoperator' => self::TYPE_STRING,
+		 *  'regproc' => self::TYPE_STRING,
+		 *  'regprocedure' => self::TYPE_STRING,
+		 *  'regtype' => self::TYPE_STRING,
+		 *  'reltime' => self::TYPE_STRING,
+		 *  'smgr' => self::TYPE_STRING,
+		 *  'tid' => self::TYPE_STRING,
+		 *  'xid' => self::TYPE_STRING,
+		 *  'tinterval' => self::TYPE_STRING,
+		 *  'tsquery' => self::TYPE_STRING,
+		 *  'tsrange' => self::TYPE_STRING,
+		 *  'tstzrange' => self::TYPE_STRING,
+		 *  'tsvector' => self::TYPE_STRING,
+		 *  'txid_snapshot' => self::TYPE_STRING
+		 */
 	);
 
 	/**
@@ -155,14 +159,51 @@ class Schema extends \yii\db\Schema {
 	 */
 	protected function findConstraints($table) {
 
+		$tableName = $this->quoteValue($table->name);
+		$tableSchema = $this->quoteValue($table->schemaName);
+		$database = $this->quoteValue($this->db->pdo->getCurrentDatabase());
+
+		//We need to extract the constraints de hard way since:
+		//http://www.postgresql.org/message-id/26677.1086673982@sss.pgh.pa.us
+
+		$sql = <<<SQL
+select 
+	ct.conname as containst,
+	c.relname as table_name,
+	ns.nspname as table_schema,
+	current_database() as table_catalog,
+	(select string_agg(attname,',') attname from pg_attribute where attrelid=ct.conrelid and attnum = any(ct.conkey)) as columns,
+	fc.relname as foreign_table_name,
+	fns.nspname as foreign_table_schema,
+	current_database() as foreign_table_catalog,
+	(select string_agg(attname,',') attname from pg_attribute where attrelid=ct.confrelid and attnum = any(ct.confkey)) as foreign_columns
+from
+	pg_constraint ct 
+	inner join pg_class c on c.oid=ct.conrelid
+	inner join pg_namespace ns on c.relnamespace=ns.oid
+	left join pg_class fc on fc.oid=ct.confrelid
+	left join pg_namespace fns on fc.relnamespace=fns.oid
+	
+where
+	ct.contype='f'
+	and c.relname={$tableName}
+	and ns.nspname={$tableSchema}
+	and current_database() = {$database}	
+SQL;
+
 		try {
 			$constraints = $this->db->createCommand($sql)->queryAll();
 		} catch (\Exception $e) {
 			return false;
 		}
 		foreach ($constraints as $constraint) {
-			$column = $this->loadColumnSchema($column);
-			$table->columns[$column->name] = $column;
+			$columns = explode(',', $constraint['columns']);
+			$fcolumns = explode(',', $constraint['foreign_columns']);
+			$citem = array($constraint['foreign_table_name']);
+			foreach ($columns as $idx => $column) {
+				$citem[] = array($fcolumns[$idx] => $column);
+			}
+			$table->foreignKeys[] = $citem;
 		}
 		return true;
 	}
