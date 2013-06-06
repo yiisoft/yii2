@@ -82,7 +82,7 @@ class InstallHandler
 			throw new Exception("Config file does not exist: $configFile");
 		}
 
-		require(__DIR__ . '/../../../yii2/yii/Yii.php');
+		require_once(__DIR__ . '/../../../yii2/yii/Yii.php');
 		$application = new Application(require($configFile));
 		$request = $application->getRequest();
 
