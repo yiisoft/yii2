@@ -4,7 +4,7 @@ namespace yiiunit\framework\helpers;
 
 use yii\helpers\ArrayHelper;
 use yii\test\TestCase;
-use yii\web\Sort;
+use yii\data\Sort;
 
 class ArrayHelperTest extends TestCase
 {
