@@ -258,7 +258,7 @@ class Response extends \yii\base\Response
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
 			$url = Yii::$app->getRequest()->getHostInfo() . $url;
 		}
-		if (Yii::$app->getRequest()->getIsAjaxRequest()) {
+		if (Yii::$app->getRequest()->getIsAjax()) {
 			$statusCode = $this->ajaxRedirectCode;
 		}
 		header('Location: ' . $url, true, $statusCode);
