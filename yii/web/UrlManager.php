@@ -196,7 +196,7 @@ class UrlManager extends Component
 
 			return array($pathInfo, array());
 		} else {
-			$route = $request->getParam($this->routeVar);
+			$route = $request->get($this->routeVar);
 			if (is_array($route)) {
 				$route = '';
 			}
