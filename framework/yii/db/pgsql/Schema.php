@@ -18,7 +18,8 @@ use yii\db\ColumnSchema;
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema {
+class Schema extends \yii\db\Schema
+{
 
 	/**
 	 * The default schema used for the current session. This value is 

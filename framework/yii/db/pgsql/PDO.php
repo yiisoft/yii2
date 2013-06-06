@@ -16,13 +16,14 @@ namespace yii\db\pgsql;
  * @author Gevik babakhani <gevikb@gmail.com>
  * @since 2.0
  */
-class PDO extends \PDO {
+class PDO extends \PDO
+{
 
 	const OPT_SEARCH_PATH = 'search_path';
 	const OPT_DEFAULT_SCHEMA = 'default_schema';
 	const DEFAULT_SCHEMA = 'public';
 
-	private $_currentDatabase = null;
+	private $_currentDatabase;
 
 	/**
 	 * Returns value of the last inserted ID.
@@ -53,11 +54,11 @@ class PDO extends \PDO {
 			}
 			if (isset($options[self::OPT_DEFAULT_SCHEMA])) {
 				$schema = trim($options[self::OPT_DEFAULT_SCHEMA]);
-				if ($schema !== '') {
+				if (!empty($schema)) {
 					Schema::$DEFAULT_SCHEMA = $schema;
 				}
 			}
-			if (Schema::$DEFAULT_SCHEMA === null || Schema::$DEFAULT_SCHEMA === '') {
+			if (is_null(Schema::$DEFAULT_SCHEMA) || empty(Schema::$DEFAULT_SCHEMA)) {
 				Schema::$DEFAULT_SCHEMA = self::DEFAULT_SCHEMA;
 			}
 		}
