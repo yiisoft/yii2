@@ -25,7 +25,7 @@ class ViewRenderer extends BaseViewRenderer
 	/**
 	 * @var string the directory or path alias pointing to where Twig cache will be stored.
 	 */
-	public $cachePath = '@app/runtime/Twig/cache';
+	public $cachePath = '@runtime/Twig/cache';
 
 	/**
 	 * @var array Twig options

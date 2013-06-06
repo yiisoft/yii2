@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "05f7bcd0e99931b52415eaeb62d54daf",
+    "hash": "2d1053fbaaf2044054f273a71d0ccde0",
     "packages": [
         {
             "name": "yiisoft/yii2",
@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "2d93f20ba6044ac3f1957300c4ae85fd98ecf47d"
+                "reference": "3ad6334be076a80df3b2ea0b57f38bd0c6901989"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/2d93f20ba6044ac3f1957300c4ae85fd98ecf47d",
-                "reference": "2d93f20ba6044ac3f1957300c4ae85fd98ecf47d",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/3ad6334be076a80df3b2ea0b57f38bd0c6901989",
+                "reference": "3ad6334be076a80df3b2ea0b57f38bd0c6901989",
                 "shasum": ""
             },
             "require": {
@@ -97,7 +97,7 @@
                 "framework",
                 "yii"
             ],
-            "time": "2013-05-29 02:55:14"
+            "time": "2013-06-02 19:19:29"
         },
         {
             "name": "yiisoft/yii2-composer",

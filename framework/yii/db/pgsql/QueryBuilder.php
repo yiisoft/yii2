@@ -8,23 +8,21 @@
 
 namespace yii\db\pgsql;
 
-use yii\db\Exception;
-use yii\base\InvalidParamException;
-
 /**
  * QueryBuilder is the query builder for PostgreSQL databases.
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\db\QueryBuilder {
+class QueryBuilder extends \yii\db\QueryBuilder
+{
 
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
 	public $typeMap = array(
 	    Schema::TYPE_PK => 'bigserial not null primary key',
-	    Schema::TYPE_STRING => 'varchar(255)',
+	    Schema::TYPE_STRING => 'varchar',
 	    Schema::TYPE_TEXT => 'text',
 	    Schema::TYPE_SMALLINT => 'smallint',
 	    Schema::TYPE_INTEGER => 'integer',
@@ -39,10 +37,5 @@ class QueryBuilder extends \yii\db\QueryBuilder {
 	    Schema::TYPE_BOOLEAN => 'boolean',
 	    Schema::TYPE_MONEY => 'numeric(19,4)',
 	);
-
-	public function insert($table, $columns, &$params) {
-		$sql = parent::insert($table, $columns, $params);
-		return $sql . ' RETURNING *';
-	}
 
 }

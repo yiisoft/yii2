@@ -60,7 +60,7 @@ class HttpCache extends ActionFilter
 	 */
 	public function beforeAction($action)
 	{
-		$verb = Yii::$app->request->getRequestMethod();
+		$verb = Yii::$app->request->getMethod();
 		if ($verb !== 'GET' && $verb !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
 			return true;
 		}

@@ -72,30 +72,51 @@ class Application extends Module
 	public function __construct($config = array())
 	{
 		Yii::$app = $this;
-
 		if (!isset($config['id'])) {
 			throw new InvalidConfigException('The "id" configuration is required.');
 		}
-
 		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
-			Yii::setAlias('@app', $this->getBasePath());
 			unset($config['basePath']);
 		} else {
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
-		
-		if (isset($config['timeZone'])) {
-			$this->setTimeZone($config['timeZone']);
-			unset($config['timeZone']);
-		} elseif (!ini_get('date.timezone')) {
-			$this->setTimeZone('UTC');
-		} 
+
+		$this->preInit($config);
 
 		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
 
 		Component::__construct($config);
+	}
+
+	/**
+	 * Pre-initializes the application.
+	 * This method is called at the beginning of the application constructor.
+	 * @param array $config the application configuration
+	 */
+	public function preInit(&$config)
+	{
+		if (isset($config['vendorPath'])) {
+			$this->setVendorPath($config['vendorPath']);
+			unset($config['vendorPath']);
+		} else {
+			// set "@vendor"
+			$this->getVendorPath();
+		}
+		if (isset($config['runtimePath'])) {
+			$this->setRuntimePath($config['runtimePath']);
+			unset($config['runtimePath']);
+		} else {
+			// set "@runtime"
+			$this->getRuntimePath();
+		}
+		if (isset($config['timeZone'])) {
+			$this->setTimeZone($config['timeZone']);
+			unset($config['timeZone']);
+		} elseif (!ini_get('date.timezone')) {
+			$this->setTimeZone('UTC');
+		}
 	}
 
 	/**
@@ -178,7 +199,8 @@ class Application extends Module
 
 	/**
 	 * Returns the directory that stores runtime files.
-	 * @return string the directory that stores runtime files. Defaults to 'protected/runtime'.
+	 * @return string the directory that stores runtime files.
+	 * Defaults to the "runtime" subdirectory under [[basePath]].
 	 */
 	public function getRuntimePath()
 	{
@@ -191,16 +213,11 @@ class Application extends Module
 	/**
 	 * Sets the directory that stores runtime files.
 	 * @param string $path the directory that stores runtime files.
-	 * @throws InvalidConfigException if the directory does not exist or is not writable
 	 */
 	public function setRuntimePath($path)
 	{
-		$path = Yii::getAlias($path);
-		if (is_dir($path) && is_writable($path)) {
-			$this->_runtimePath = $path;
-		} else {
-			throw new InvalidConfigException("Runtime path must be a directory writable by the Web server process: $path");
-		}
+		$this->_runtimePath = Yii::getAlias($path);
+		Yii::setAlias('@runtime', $this->_runtimePath);
 	}
 
 	private $_vendorPath;
@@ -208,7 +225,7 @@ class Application extends Module
 	/**
 	 * Returns the directory that stores vendor files.
 	 * @return string the directory that stores vendor files.
-	 * Defaults to 'vendor' directory under applications [[basePath]].
+	 * Defaults to "vendor" directory under [[basePath]].
 	 */
 	public function getVendorPath()
 	{
@@ -225,6 +242,7 @@ class Application extends Module
 	public function setVendorPath($path)
 	{
 		$this->_vendorPath = Yii::getAlias($path);
+		Yii::setAlias('@vendor', $this->_vendorPath);
 	}
 
 	/**
