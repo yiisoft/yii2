@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\widgets\Html;
+use yii\helpers\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
