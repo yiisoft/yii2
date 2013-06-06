@@ -14,7 +14,8 @@ namespace yii\db\pgsql;
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\db\QueryBuilder {
+class QueryBuilder extends \yii\db\QueryBuilder
+{
 
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
