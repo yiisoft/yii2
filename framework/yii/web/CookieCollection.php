@@ -101,6 +101,16 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	}
 
 	/**
+	 * Returns whether there is a cookie with the specified name.
+	 * @param string $name the cookie name
+	 * @return boolean whether the named cookie exists
+	 */
+	public function has($name)
+	{
+		return isset($this->_cookies[$name]);
+	}
+
+	/**
 	 * Adds a cookie to the collection.
 	 * If there is already a cookie with the same name in the collection, it will be removed first.
 	 * @param Cookie $cookie the cookie to be added
@@ -172,7 +182,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	 */
 	public function offsetExists($name)
 	{
-		return isset($this->_cookies[$name]);
+		return $this->has($name);
 	}
 
 	/**
