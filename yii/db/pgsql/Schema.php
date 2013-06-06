@@ -71,37 +71,6 @@ class Schema extends \yii\db\Schema
 	    'bit varying' => self::TYPE_STRING,
 	    'character varying' => self::TYPE_STRING,
 	    'xml' => self::TYPE_STRING
-
-		/*
-		 * 	internal PG types
-		 *  'aclitem' => self::TYPE_STRING,	    
-		 *  'cid' => self::TYPE_STRING,
-		 *  'daterange' => self::TYPE_STRING,
-		 *  'gtsvector' => self::TYPE_STRING,
-		 *  'int4range' => self::TYPE_STRING, //unknown
-		 *  'lseg' => self::TYPE_STRING,
-		 *  'int8range' => self::TYPE_STRING, // unknown
-		 *  'pg_node_tree' => self::TYPE_STRING,
-		 *  'refcursor' => self::TYPE_STRING,
-		 *  'regclass' => self::TYPE_STRING,
-		 *  'regconfig' => self::TYPE_STRING,
-		 *  'regdictionary' => self::TYPE_STRING,
-		 *  'regoper' => self::TYPE_STRING,
-		 *  'regoperator' => self::TYPE_STRING,
-		 *  'regproc' => self::TYPE_STRING,
-		 *  'regprocedure' => self::TYPE_STRING,
-		 *  'regtype' => self::TYPE_STRING,
-		 *  'reltime' => self::TYPE_STRING,
-		 *  'smgr' => self::TYPE_STRING,
-		 *  'tid' => self::TYPE_STRING,
-		 *  'xid' => self::TYPE_STRING,
-		 *  'tinterval' => self::TYPE_STRING,
-		 *  'tsquery' => self::TYPE_STRING,
-		 *  'tsrange' => self::TYPE_STRING,
-		 *  'tstzrange' => self::TYPE_STRING,
-		 *  'tsvector' => self::TYPE_STRING,
-		 *  'txid_snapshot' => self::TYPE_STRING
-		 */
 	);
 
 	/**
