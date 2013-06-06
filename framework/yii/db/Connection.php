@@ -343,6 +343,8 @@ class Connection extends Component
 			$driver = strtolower(substr($this->dsn, 0, $pos));
 			if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
 				$pdoClass = 'yii\db\mssql\PDO';
+			} else if ($driver === 'pgsql') {
+				$pdoClass = 'yii\db\pgsql\PDO';
 			}
 		}
 		return new $pdoClass($this->dsn, $this->username, $this->password, $this->attributes);
