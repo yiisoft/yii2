@@ -58,7 +58,7 @@ class CompareValidator extends Validator
 	 * - `<`: validates to see if the value being validated is less than the value being compared with.
 	 * - `<=`: validates to see if the value being validated is less than or equal to the value being compared with.
 	 */
-	public $operator = '=';
+	public $operator = '==';
 	/**
 	 * @var string the user-defined error message. It may contain the following placeholders which
 	 * will be replaced accordingly by the validator:
