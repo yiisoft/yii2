@@ -8,9 +8,11 @@
 namespace yii\web;
 
 use Yii;
+use XMLWriter;
 use yii\base\HttpException;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\StringHelper;
 
 /**
@@ -27,7 +29,13 @@ class Response extends \yii\base\Response
 	 * @see redirect
 	 */
 	public $ajaxRedirectCode = 278;
-
+	/**
+	 * @var string
+	 */
+	public $content;
+	/**
+	 * @var HeaderCollection
+	 */
 	private $_headers;
 
 	/**
@@ -41,6 +49,141 @@ class Response extends \yii\base\Response
 			$this->_headers = new HeaderCollection;
 		}
 		return $this->_headers;
+	}
+
+	/**
+	 * Returns the current cache control setting as a string like sent in a header.
+	 * @return string the cache control setting, or null if there is no such header specified
+	 */
+	public function getCacheControl()
+	{
+		return $this->getHeaders()->get('Cache-Control');
+	}
+
+	/**
+	 * Sets the current cache control setting to be sent
+	 * @param string $value the cache control header value
+	 */
+	public function setCacheControl($value)
+	{
+		$this->getHeaders()->set('Cache-Control', $value);
+	}
+
+	/**
+	 * Gets the ETag header to be sent
+	 * @return string the ETag header, or false if none is set
+	 */
+	public function getEtag()
+	{
+		return $this->getHeaders()->get("ETag");
+	}
+
+	/**
+	 * Sets the ETag header to be sent
+	 * @param string $value the ETag header
+	 */
+	public function setEtag($value)
+	{
+		$this->getHeaders()->set("ETag", $value);
+	}
+
+	/**
+	 * Gets the last modified header to send
+	 * @return string the last modified header, or null if none is set
+	 */
+	public function getLastModified()
+	{
+		return $this->getHeaders()->get("Last-Modified");
+	}
+
+	/**
+	 * Sets the last modified header to send
+	 * @param integer $value the unix time of the last modified date
+	 */
+	public function setLastModified($value)
+	{
+		$this->getHeaders()->set("Last-Modified", $value);
+	}
+
+	/**
+	 * Gets the content type header to send
+	 * @return string the content type header, or null if none is set
+	 */
+	public function getContentType()
+	{
+		return $this->getHeaders()->get("Content-type");
+	}
+
+	/**
+	 * Sets the content type header to send
+	 * @param string $value the content type header
+	 */
+	public function setContentType($value)
+	{
+		$this->getHeaders()->set("Content-type", $value);
+	}
+
+	/**
+	 * Gets the content disposition header to send
+	 * @return string the content disposition, or null if none is set
+	 */
+	public function getContentDisposition()
+	{
+		return $this->getHeaders()->get("Content-Disposition");
+	}
+
+	/**
+	 * Sets the content disposition header to send
+	 * @param string $contentDisposition the content disposition header
+	 */
+	public function setContentDisposition($contentDisposition)
+	{
+		$this->getHeaders()->set("Content-Disposition", $contentDisposition);
+	}
+
+	public function renderJson($data)
+	{
+		$this->setContentType("application/json");
+		$this->content = Json::encode($data);
+	}
+
+	public function renderJsonp($callbackName, $data)
+	{
+		$this->setContentType("application/json");
+		$data = Json::encode($data);
+		$this->content = "$callbackName($data)";
+	}
+
+	/**
+	 * Sends the response to the client.
+	 * @return boolean true if the response was sent
+	 */
+	public function send()
+	{
+		$this->sendHeaders();
+		$this->sendContent();
+	}
+
+	/**
+	 * Sends the response headers to the client
+	 */
+	protected function sendHeaders()
+	{
+		foreach ($this->_headers as $name => $values) {
+			foreach ($values as $value) {
+				header("$name: $value");
+			}
+		}
+		$this->_headers->removeAll();
+	}
+
+	/**
+	 * Sends the response content to the client
+	 */
+	protected function sendContent()
+	{
+		echo $this->content;
+		$this->content = null;
 	}
 
 	/**
@@ -258,7 +401,7 @@ class Response extends \yii\base\Response
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
 			$url = Yii::$app->getRequest()->getHostInfo() . $url;
 		}
-		if (Yii::$app->getRequest()->getIsAjaxRequest()) {
+		if (Yii::$app->getRequest()->getIsAjax()) {
 			$statusCode = $this->ajaxRedirectCode;
 		}
 		header('Location: ' . $url, true, $statusCode);
