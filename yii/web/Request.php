@@ -49,7 +49,7 @@ class Request extends \yii\base\Request
 	/**
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
 	 * request tunneled through POST. Default to '_method'.
-	 * @see getRequestMethod
+	 * @see getMethod
 	 * @see getRestParams
 	 */
 	public $restVar = '_method';
@@ -81,7 +81,7 @@ class Request extends \yii\base\Request
 	 * @return string request method, such as GET, POST, HEAD, PUT, DELETE.
 	 * The value returned is turned into upper case.
 	 */
-	public function getRequestMethod()
+	public function getMethod()
 	{
 		if (isset($_POST[$this->restVar])) {
 			return strtoupper($_POST[$this->restVar]);
@@ -96,7 +96,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getIsPostRequest()
 	{
-		return $this->getRequestMethod() === 'POST';
+		return $this->getMethod() === 'POST';
 	}
 
 	/**
@@ -105,7 +105,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getIsDeleteRequest()
 	{
-		return $this->getRequestMethod() === 'DELETE';
+		return $this->getMethod() === 'DELETE';
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getIsPutRequest()
 	{
-		return $this->getRequestMethod() === 'PUT';
+		return $this->getMethod() === 'PUT';
 	}
 
 	/**
@@ -141,7 +141,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns the request parameters for the RESTful request.
 	 * @return array the RESTful request parameters
-	 * @see getRequestMethod
+	 * @see getMethod
 	 */
 	public function getRestParams()
 	{
@@ -772,7 +772,7 @@ class Request extends \yii\base\Request
 		if (!$this->enableCsrfValidation) {
 			return;
 		}
-		$method = $this->getRequestMethod();
+		$method = $this->getMethod();
 		if ($method === 'POST' || $method === 'PUT' || $method === 'DELETE') {
 			$cookies = $this->getCookies();
 			switch ($method) {
