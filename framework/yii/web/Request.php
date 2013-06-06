@@ -94,7 +94,7 @@ class Request extends \yii\base\Request
 	 * Returns whether this is a POST request.
 	 * @return boolean whether this is a POST request.
 	 */
-	public function getIsPostRequest()
+	public function getIsPost()
 	{
 		return $this->getMethod() === 'POST';
 	}
@@ -103,7 +103,7 @@ class Request extends \yii\base\Request
 	 * Returns whether this is a DELETE request.
 	 * @return boolean whether this is a DELETE request.
 	 */
-	public function getIsDeleteRequest()
+	public function getIsDelete()
 	{
 		return $this->getMethod() === 'DELETE';
 	}
@@ -112,7 +112,7 @@ class Request extends \yii\base\Request
 	 * Returns whether this is a PUT request.
 	 * @return boolean whether this is a PUT request.
 	 */
-	public function getIsPutRequest()
+	public function getIsPut()
 	{
 		return $this->getMethod() === 'PUT';
 	}
@@ -121,7 +121,7 @@ class Request extends \yii\base\Request
 	 * Returns whether this is an AJAX (XMLHttpRequest) request.
 	 * @return boolean whether this is an AJAX (XMLHttpRequest) request.
 	 */
-	public function getIsAjaxRequest()
+	public function getIsAjax()
 	{
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
 	}
@@ -130,7 +130,7 @@ class Request extends \yii\base\Request
 	 * Returns whether this is an Adobe Flash or Flex request.
 	 * @return boolean whether this is an Adobe Flash or Adobe Flex request.
 	 */
-	public function getIsFlashRequest()
+	public function getIsFlash()
 	{
 		return isset($_SERVER['HTTP_USER_AGENT']) &&
 			(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
@@ -203,7 +203,7 @@ class Request extends \yii\base\Request
 	 * @return mixed the GET parameter value
 	 * @see getPost
 	 */
-	public function getParam($name, $defaultValue = null)
+	public function get($name, $defaultValue = null)
 	{
 		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
 	}
@@ -229,7 +229,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getDelete($name, $defaultValue = null)
 	{
-		return $this->getIsDeleteRequest() ? $this->getRestParam($name, $defaultValue) : null;
+		return $this->getIsDelete() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	/**
@@ -240,7 +240,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getPut($name, $defaultValue = null)
 	{
-		return $this->getIsPutRequest() ? $this->getRestParam($name, $defaultValue) : null;
+		return $this->getIsPut() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	private $_hostInfo;
