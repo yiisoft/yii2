@@ -171,7 +171,7 @@ class UrlRule extends Object
 			return false;
 		}
 
-		if ($this->verb !== null && !in_array($request->getRequestMethod(), $this->verb, true)) {
+		if ($this->verb !== null && !in_array($request->getMethod(), $this->verb, true)) {
 			return false;
 		}
 
