@@ -606,10 +606,7 @@ class YiiBase
 	public static function t($category, $message, $params = array(), $language = null)
 	{
 		if (self::$app !== null) {
-			if ($language === null) {
-				$language = self::$app->language;
-			}
-			return self::$app->getI18N()->translate($category, $message, $language);
+			return self::$app->getI18N()->translate($category, $message, $params, $language ?: self::$app->language);
 		} else {
 			return is_array($params) ? strtr($message, $params) : $message;
 		}
