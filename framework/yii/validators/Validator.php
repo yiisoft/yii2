@@ -179,7 +179,7 @@ abstract class Validator extends Component
 		}
 		foreach ($attributes as $attribute) {
 			$skip = $this->skipOnError && $object->hasErrors($attribute)
-				 || $this->skipOnEmpty && $this->isEmpty($object->$attribute);
+				|| $this->skipOnEmpty && $this->isEmpty($object->$attribute);
 			if (!$skip) {
 				$this->validateAttribute($object, $attribute);
 			}

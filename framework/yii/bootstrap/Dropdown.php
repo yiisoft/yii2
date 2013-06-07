@@ -11,7 +11,6 @@ use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-
 /**
  * Dropdown renders a Bootstrap dropdown menu component.
  *

@@ -220,7 +220,8 @@ class AssetController extends Controller
 	 * @param array $result already loaded bundles list.
 	 * @throws \yii\console\Exception on failure.
 	 */
-	protected function loadBundleDependency($name, $bundle, &$result) {
+	protected function loadBundleDependency($name, $bundle, &$result)
+	{
 		if (!empty($bundle->depends)) {
 			$assetManager = $this->getAssetManager();
 			foreach ($bundle->depends as $dependencyName) {
@@ -572,7 +573,7 @@ EOD;
 		$inputFileRelativePathParts = explode('/', $inputFileRelativePath);
 		$outputFileRelativePathParts = explode('/', $outputFileRelativePath);
 
-		$callback = function($matches) use ($inputFileRelativePathParts, $outputFileRelativePathParts) {
+		$callback = function ($matches) use ($inputFileRelativePathParts, $outputFileRelativePathParts) {
 			$fullMatch = $matches[0];
 			$inputUrl = $matches[1];
 

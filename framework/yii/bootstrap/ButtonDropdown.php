@@ -6,8 +6,8 @@
  */
 
 namespace yii\bootstrap;
-use yii\helpers\Html;
 
+use yii\helpers\Html;
 
 /**
  * ButtonDropdown renders a group or split button dropdown bootstrap component.

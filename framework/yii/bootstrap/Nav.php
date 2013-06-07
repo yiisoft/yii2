@@ -118,7 +118,7 @@ class Nav extends Widget
 		$url = Html::url(ArrayHelper::getValue($item, 'url', '#'));
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
 
-		if(ArrayHelper::getValue($item, 'active')) {
+		if (ArrayHelper::getValue($item, 'active')) {
 			$this->addCssClass($options, 'active');
 		}
 

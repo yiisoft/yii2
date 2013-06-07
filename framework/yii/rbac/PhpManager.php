@@ -468,7 +468,7 @@ class PhpManager extends Manager
 						'bizRule' => $assignment['bizRule'],
 						'data' => $assignment['data'],
 					));
- 				}
+				}
 			}
 		}
 	}

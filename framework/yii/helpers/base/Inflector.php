@@ -50,7 +50,7 @@ class Inflector
 		'/(ax|cris|test)is$/i' => '\1es',
 		'/s$/' => 's',
 		'/^$/' => '',
-		'/$/' => 's',		
+		'/$/' => 's',
 	);
 	/**
 	 * @var array the rules for converting a word into its singular form.
@@ -94,7 +94,7 @@ class Inflector
 		'/(n)ews$/i' => '\1\2ews',
 		'/eaus$/' => 'eau',
 		'/^(.*us)$/' => '\\1',
-		'/s$/i' => '',		
+		'/s$/i' => '',
 	);
 	/**
 	 * @var array the special rules for converting a word between its plural form and singular form.
@@ -468,7 +468,7 @@ class Inflector
 		if (in_array(($number % 100), range(11, 13))) {
 			return $number . 'th';
 		}
-		switch (($number % 10)) {
+		switch ($number % 10) {
 			case 1: return $number . 'st';
 			case 2: return $number . 'nd';
 			case 3: return $number . 'rd';

@@ -18,5 +18,5 @@ interface Jsonable
 	/**
 	 * @return string the JSON representation of this object
 	 */
-	function toJson();
+	public function toJson();
 }

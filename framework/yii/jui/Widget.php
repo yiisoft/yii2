@@ -10,7 +10,6 @@ namespace yii\jui;
 use Yii;
 use yii\helpers\Json;
 
-
 /**
  * \yii\jui\Widget is the base class for all jQuery UI widgets.
  *

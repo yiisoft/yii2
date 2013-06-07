@@ -174,4 +174,3 @@ class StringValidator extends Validator
 		return 'yii.validation.string(value, messages, ' . json_encode($options) . ');';
 	}
 }
-

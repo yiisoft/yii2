@@ -91,5 +91,4 @@ class ListPager extends Widget
 			'{page}' => $page + 1,
 		));
 	}
-
 }
