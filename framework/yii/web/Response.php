@@ -142,7 +142,7 @@ class Response extends \yii\base\Response
 		if ($this->isInvalid()) {
 			throw new InvalidParamException("The HTTP status code is invalid: $value");
 		}
-		$this->statusText = isset(self::$statusTexts[$this->_statusCode]) ? self::$statusTexts[$this->_statusCode] : 'Error';
+		$this->statusText = isset(self::$statusTexts[$this->_statusCode]) ? self::$statusTexts[$this->_statusCode] : '';
 	}
 
 	/**
