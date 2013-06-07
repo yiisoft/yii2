@@ -25,7 +25,7 @@ $context = $this->context;
 
 	<style type="text/css">
 /* reset */
-html,body,div,span,h1,h2,h3,h4,h5,h6,p,pre,a,code,em,img,strong,b,i,ul,li{
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, pre, a, code, em, img, strong, b, i, ul, li {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -33,38 +33,38 @@ html,body,div,span,h1,h2,h3,h4,h5,h6,p,pre,a,code,em,img,strong,b,i,ul,li{
 	font: inherit;
 	vertical-align: baseline;
 }
-body{
+body {
 	line-height: 1;
 }
-ul{
+ul {
 	list-style: none;
 }
 
 /* base */
-::selection{
+::selection {
 	color: #fff !important;
 	background-color: #e51717 !important;
 }
-::-moz-selection{
+::-moz-selection {
 	color: #fff !important;
 	background-color: #e51717 !important;
 }
-a{
+a {
 	text-decoration: none;
 }
-a:hover{
+a:hover {
 	text-decoration: underline;
 }
-h1,h2,h3,p,img,ul li{
+h1, h2, h3, p, img, ul li {
 	font-family: Arial,sans-serif;
 	color: #505050;
 }
-html,body{
+html, body {
 	overflow-x: hidden;
 }
 
 /* header */
-.header{
+.header {
 	min-width: 860px; /* 960px - 50px * 2 */
 	margin: 40px auto 30px auto;
 	padding: 0 50px;
@@ -75,16 +75,16 @@ html,body{
 	text-shadow: 0 1px 0 #cacaca;
 	margin-bottom: 30px;
 }
-.header h1 span, .header h1 span a{
+.header h1 span, .header h1 span a {
 	color: #e51717;
 }
-.header h1 a{
+.header h1 a {
 	color: #e57373;
 }
-.header h1 a:hover{
+.header h1 a:hover {
 	color: #e51717;
 }
-.header img{
+.header img {
 	float: right;
 	margin-top: -15px;
 }
@@ -94,14 +94,14 @@ html,body{
 }
 
 /* previous exceptions */
-.header .previous{
+.header .previous {
 	margin: 20px 0;
 	padding-left: 30px;
 }
-.header .previous div{
+.header .previous div {
 	margin: 20px 0;
 }
-.header .previous .arrow{
+.header .previous .arrow {
 	-moz-transform: scale(-1, 1);
 	-webkit-transform: scale(-1, 1);
 	-o-transform: scale(-1, 1);
@@ -120,148 +120,131 @@ html,body{
 	text-shadow: 0 1px 0 #cacaca;
 	margin-bottom: 10px;
 }
-.header .previous h2 span{
+.header .previous h2 span {
 	color: #e51717;
 }
-.header .previous h2 a{
+.header .previous h2 a {
 	color: #e57373;
 }
-.header .previous h2 a:hover{
+.header .previous h2 a:hover {
 	color: #e51717;
 }
 .header .previous h3{
 	font-size: 14px;
 	margin: 10px 0;
 }
-.header .previous p{
+.header .previous p {
 	font-size: 14px;
 	color: #aaa;
 }
 
 /* call stack */
-.call-stack{
-	margin-top: 30px;
-	margin-bottom: 40px;
+.call-stack {
+	margin: 30px 0 40px;
 }
-.call-stack ul li{
-	margin: 1px 0;
-}
-.call-stack ul li .element-wrap{
+
+/* code folding line */
+.call-stack ul li .element-wrap {
 	cursor: pointer;
 	padding: 15px 0;
 }
-.call-stack ul li.application .element-wrap{
+.call-stack ul li.application .element-wrap {
 	background-color: #fafafa;
 }
-.call-stack ul li .element-wrap:hover{
+.call-stack ul li .element-wrap:hover {
 	background-color: #edf9ff;
 }
-.call-stack ul li .element{
+.call-stack ul li .element {
 	min-width: 860px; /* 960px - 50px * 2 */
 	margin: 0 auto;
 	padding: 0 50px;
 	position: relative;
 }
-.call-stack ul li a{
+.call-stack ul li a:link,
+.call-stack ul li a:visited {
 	color: #505050;
 }
-.call-stack ul li a:hover{
+.call-stack ul li a:hover {
 	color: #000;
 	text-shadow: 0 1px 0 #cacaca;
 }
-.call-stack ul li .item-number{
+.call-stack ul li .item-number {
 	width: 45px;
 	display: inline-block;
 }
-.call-stack ul li .text{
+.call-stack ul li .text {
 	color: #aaa;
 }
-.call-stack ul li.application .text{
+.call-stack ul li.application .text {
 	color: #505050;
 }
-.call-stack ul li .at{
+.call-stack ul li .at {
 	position: absolute;
 	right: 110px; /* 50px + 60px */
 	color: #aaa;
 }
-.call-stack ul li.application .at{
+.call-stack ul li.application .at {
 	color: #505050;
 }
-.call-stack ul li .line{
+.call-stack ul li .line {
 	position: absolute;
 	right: 50px;
 	width: 60px;
 	text-align: right;
 }
-.call-stack ul li .code-wrap{
-	display: none;
-	position: relative;
-}
-.call-stack ul li.application .code-wrap{
-	display: block;
-}
-.call-stack ul li .error-line,
-.call-stack ul li .hover-line{
-	background-color: #ffebeb;
-	position: absolute;
-	width: 100%;
-	z-index: 100;
-	margin-top: -61px;
-}
-.call-stack ul li .hover-line{
-	background: none;
-}
-.call-stack ul li .hover-line.hover,
-.call-stack ul li .hover-line:hover{
-	background: #edf9ff !important;
-}
-.call-stack ul li .code{
+
+/* code block */
+.call-stack div.code {
 	min-width: 860px; /* 960px - 50px * 2 */
 	margin: 15px auto;
 	padding: 0 50px;
 	position: relative;
 }
-.call-stack ul li .code .lines-item{
-	position: absolute;
-	z-index: 200;
-	display: block;
-	width: 25px;
-	text-align: right;
-	color: #aaa;
-	line-height: 20px;
-	font-size: 12px;
-	margin-top: -63px;
-	font-family: Consolas, Courier New, monospace;
+.call-stack div.code-wrap {
+	margin: 0 auto;
 }
-.call-stack ul li .code pre{
-	position: relative;
-	z-index: 200;
-	left: 50px;
+div.code-wrap ol {
+    list-style-type: decimal-leading-zero;
+    list-style-position: inside;
+    padding: 0;
+    font-size: 0.8em;
+    text-indent: 20px;
+    margin-left: -20px;
+}
+div.code-wrap ol li {
+	padding: 0;
+	padding: 3px;
+}
+div.code-wrap ol li:hover {
+	background-color: #edf9ff;
+}
+div.code-wrap ol li.error {
+    background-color: #ffebeb;
+}
+div.code-wrap div.code pre {
 	line-height: 20px;
 	font-size: 12px;
 	font-family: Consolas, Courier New, monospace;
 	display: inline;
 }
-@-moz-document url-prefix() {
-	.call-stack ul li .code pre{
-		line-height: 20px;
-	}
+.call-stack li.application div.code-wrap pre {
+	padding-left: 40px;
 }
 
 /* request */
-.request{
+.request {
 	background-color: #fafafa;
 	padding-top: 40px;
 	padding-bottom: 40px;
 	margin-top: 40px;
 	margin-bottom: 1px;
 }
-.request .code{
+.request .code {
 	min-width: 860px; /* 960px - 50px * 2 */
 	margin: 0 auto;
 	padding: 15px 50px;
 }
-.request .code pre{
+.request .code pre {
 	font-size: 14px;
 	line-height: 18px;
 	font-family: Consolas, Courier New, monospace;
@@ -270,82 +253,82 @@ html,body{
 }
 
 /* footer */
-.footer{
+.footer {
 	position: relative;
 	height: 222px;
 	min-width: 860px; /* 960px - 50px * 2 */
 	padding: 0 50px;
 	margin: 1px auto 0 auto;
 }
-.footer p{
+.footer p {
 	font-size: 16px;
 	padding-bottom: 10px;
 	text-shadow: 0 1px 0 #cacaca;
 }
-.footer p a{
+.footer p a {
 	color: #505050;
 }
-.footer p a:hover{
+.footer p a:hover {
 	color: #000;
 }
-.footer .timestamp{
+.footer .timestamp {
 	font-size: 14px;
 	padding-top: 67px;
 	margin-bottom: 28px;
 }
-.footer img{
+.footer img {
 	position: absolute;
 	right: -50px;
 }
 
 /* highlight.js */
-pre .subst,pre .title{
+pre .subst, pre .title {
 	font-weight: normal;
 	color: #505050;
 }
-pre .comment,pre .template_comment,pre .javadoc,pre .diff .header{
+pre .comment, pre .template_comment, pre .javadoc, pre .diff .header {
 	color: #808080;
 	font-style: italic;
 }
-pre .annotation,pre .decorator,pre .preprocessor,pre .doctype,pre .pi,pre .chunk,pre .shebang,pre .apache .cbracket,
-pre .prompt,pre .http .title{
+pre .annotation, pre .decorator, pre .preprocessor, pre .doctype, pre .pi, pre .chunk, pre .shebang, pre .apache .cbracket,
+pre .prompt, pre .http .title {
 	color: #808000;
 }
-pre .tag,pre .pi{
+pre .tag, pre .pi {
 	background: #efefef;
 }
-pre .tag .title,pre .id,pre .attr_selector,pre .pseudo,pre .literal,pre .keyword,pre .hexcolor,pre .css .function,
-pre .ini .title,pre .css .class,pre .list .title,pre .clojure .title,pre .nginx .title,pre .tex .command,
-pre .request,pre .status{
+pre .tag .title, pre .id, pre .attr_selector, pre .pseudo, pre .literal, pre .keyword, pre .hexcolor, pre .css .function,
+pre .ini .title, pre .css .class, pre .list .title, pre .clojure .title, pre .nginx .title, pre .tex .command,
+pre .request, pre .status {
 	color: #000080;
 }
-pre .attribute,pre .rules .keyword,pre .number,pre .date,pre .regexp,pre .tex .special{
+pre .attribute, pre .rules .keyword, pre .number, pre .date, pre .regexp, pre .tex .special {
 	color: #00a;
 }
-pre .number,pre .regexp{
+pre .number, pre .regexp {
 	font-weight: normal;
 }
-pre .string,pre .value,pre .filter .argument,pre .css .function .params,pre .apache .tag{
+pre .string, pre .value, pre .filter .argument, pre .css .function .params, pre .apache .tag {
 	color: #0a0;
 }
-pre .symbol,pre .ruby .symbol .string,pre .char,pre .tex .formula{
+pre .symbol, pre .ruby .symbol .string, pre .char, pre .tex .formula {
 	color: #505050;
 	background: #d0eded;
 	font-style: italic;
 }
-pre .phpdoc,pre .yardoctag,pre .javadoctag{
+pre .phpdoc, pre .yardoctag, pre .javadoctag {
 	text-decoration: underline;
 }
-pre .variable,pre .envvar,pre .apache .sqbracket,pre .nginx .built_in{
+pre .variable, pre .envvar, pre .apache .sqbracket, pre .nginx .built_in {
 	color: #a00;
 }
-pre .addition{
+pre .addition {
 	background: #baeeba;
 }
-pre .deletion{
+pre .deletion {
 	background: #ffc8bd;
 }
-pre .diff .change{
+pre .diff .change {
 	background: #bccff9;
 }
 	</style>
@@ -412,79 +395,22 @@ var hljs=new function(){function l(o){return o.replace(/&/gm,"&amp;").replace(/<
 
 	<script type="text/javascript">
 window.onload = function() {
-	var codeBlocks = Sizzle('pre'),
-		callStackItems = Sizzle('.call-stack-item');
+	var codeBlocks = Sizzle('pre');
+	var	callStackItems = Sizzle('.call-stack-item');
 
 	// highlight code blocks
 	for (var i = 0, imax = codeBlocks.length; i < imax; ++i) {
 		hljs.highlightBlock(codeBlocks[i], '    ');
 	}
-
-	// code block hover line
-	document.onmousemove = function(e) {
-		var event = e || window.event,
-			clientY = event.clientY,
-			lineFound = false,
-			hoverLines = Sizzle('.hover-line');
-
-		for (var i = 0, imax = codeBlocks.length - 1; i < imax; ++i) {
-			var lines = codeBlocks[i].getClientRects();
-			for (var j = 0, jmax = lines.length; j < jmax; ++j) {
-				if (clientY >= lines[j].top && clientY <= lines[j].bottom) {
-					lineFound = true;
-					break;
-				}
-			}
-			if (lineFound) {
-				break;
-			}
-		}
-
-		for (var k = 0, kmax = hoverLines.length; k < kmax; ++k) {
-			hoverLines[k].className = 'hover-line';
-		}
-		if (lineFound) {
-			var line = Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')')[0];
-			if (line) {
-				line.className = 'hover-line hover';
-			}
-		}
-	};
-
-	var refreshCallStackItemCode = function(callStackItem) {
-		if (!Sizzle('pre', callStackItem)[0]) {
-			return;
-		}
-		var top = callStackItem.offsetTop - window.pageYOffset,
-			lines = Sizzle('pre', callStackItem)[0].getClientRects(),
-			lineNumbers = Sizzle('.lines-item', callStackItem),
-			errorLine = Sizzle('.error-line', callStackItem)[0],
-			hoverLines = Sizzle('.hover-line', callStackItem);
-		for (var i = 0, imax = lines.length; i < imax; ++i) {
-			if (!lineNumbers[i]) {
-				continue;
-			}
-			lineNumbers[i].style.top = parseInt(lines[i].top - top) + 'px';
-			hoverLines[i].style.top = parseInt(lines[i].top - top - 3) + 'px';
-			hoverLines[i].style.height = parseInt(lines[i].bottom - lines[i].top + 6) + 'px';
-			if (parseInt(callStackItem.getAttribute('data-line')) == i) {
-				errorLine.style.top = parseInt(lines[i].top - top - 3) + 'px';
-				errorLine.style.height = parseInt(lines[i].bottom - lines[i].top + 6) + 'px';
-			}
-		}
-	};
-
-	for (var i = 0, imax = callStackItems.length; i < imax; ++i) {
-		refreshCallStackItemCode(callStackItems[i]);
-
-		// toggle code block visibility
+	
+	// toggle code block visibility
+	for (var i = 0, imax = callStackItems.length; i < imax; ++i) {		
 		Sizzle('.element-wrap', callStackItems[i])[0].addEventListener('click', function() {
-			var callStackItem = this.parentNode,
-				code = Sizzle('.code-wrap', callStackItem)[0];
+			var callStackItem = this.parentNode;
+			var code = Sizzle('.code-wrap', callStackItem)[0];
 			code.style.display = window.getComputedStyle(code).display == 'block' ? 'none' : 'block';
-			refreshCallStackItemCode(callStackItem);
 		});
-	}
+	}	
 };
 	</script>
 </body>
