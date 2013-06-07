@@ -12,7 +12,6 @@ use DateTime;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 
-
 /**
  * Formatter provides a set of commonly used data formatting methods.
  *

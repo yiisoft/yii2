@@ -99,7 +99,7 @@ class UrlValidator extends Validator
 			}
 
 			if ($this->enableIDN) {
-				$value = preg_replace_callback('/:\/\/([^\/]+)/', function($matches) {
+				$value = preg_replace_callback('/:\/\/([^\/]+)/', function ($matches) {
 					return '://' . idn_to_ascii($matches[1]);
 				}, $value);
 			}

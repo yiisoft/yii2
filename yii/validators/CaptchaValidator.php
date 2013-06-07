@@ -117,4 +117,3 @@ class CaptchaValidator extends Validator
 		return 'yii.validation.captcha(value, messages, ' . json_encode($options) . ');';
 	}
 }
-

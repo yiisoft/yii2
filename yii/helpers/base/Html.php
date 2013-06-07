@@ -1479,5 +1479,4 @@ class Html
 		$name = strtolower(static::getInputName($model, $attribute));
 		return str_replace(array('[]', '][', '[', ']', ' '), array('', '-', '-', '', '-'), $name);
 	}
-
 }

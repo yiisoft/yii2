@@ -14,5 +14,4 @@ namespace yii\helpers;
  */
 class Json extends base\Json
 {
-	
 }

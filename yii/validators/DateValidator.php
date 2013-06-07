@@ -73,4 +73,3 @@ class DateValidator extends Validator
 		return DateTime::createFromFormat($this->format, $value) !== false;
 	}
 }
-

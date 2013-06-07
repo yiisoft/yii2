@@ -221,7 +221,7 @@ class User extends Component
 			if ($destroySession) {
 				Yii::$app->getSession()->destroy();
 			}
- 			$this->afterLogout($identity);
+			$this->afterLogout($identity);
 		}
 	}
 

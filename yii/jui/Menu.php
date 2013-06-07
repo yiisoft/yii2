@@ -10,7 +10,6 @@ namespace yii\jui;
 use Yii;
 use yii\helpers\Json;
 
-
 /**
  * Menu renders a menu jQuery UI widget.
  *

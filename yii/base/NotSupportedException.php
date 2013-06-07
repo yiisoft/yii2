@@ -23,4 +23,3 @@ class NotSupportedException extends Exception
 		return \Yii::t('yii', 'Not Supported');
 	}
 }
-

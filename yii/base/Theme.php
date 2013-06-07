@@ -73,7 +73,7 @@ class Theme extends Component
 	 */
 	public function init()
 	{
-	 	parent::init();
+		parent::init();
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
 				$this->basePath = Yii::getAlias($this->basePath);
