@@ -97,7 +97,7 @@ class Schema extends \yii\db\Schema
 			$table->schemaName = $this->defaultSchema;
 		}
 	}
-	
+
 	/**
 	 * Quotes a table name for use in a query.
 	 * A simple table name has no schema prefix.
@@ -121,7 +121,7 @@ class Schema extends \yii\db\Schema
 			return $table;
 		}
 	}
-	
+
 	/**
 	 * Collects the foreign key column details for the given table.
 	 * @param TableSchema $table the table metadata
@@ -158,11 +158,7 @@ where
 	and ns.nspname={$tableSchema}
 SQL;
 
-		try {
-			$constraints = $this->db->createCommand($sql)->queryAll();
-		} catch (\Exception $e) {
-			return false;
-		}
+		$constraints = $this->db->createCommand($sql)->queryAll();
 		foreach ($constraints as $constraint) {
 			$columns = explode(',', $constraint['columns']);
 			$fcolumns = explode(',', $constraint['foreign_columns']);
@@ -172,7 +168,6 @@ SQL;
 			}
 			$table->foreignKeys[] = $citem;
 		}
-		return true;
 	}
 
 	/**
