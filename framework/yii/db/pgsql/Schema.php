@@ -22,11 +22,10 @@ class Schema extends \yii\db\Schema
 {
 
 	/**
-	 * The default schema used for the current session. This value is 
-	 * automatically set to "public" by the PDO driver. 
+	 * The default schema used for the current session.
 	 * @var string 
 	 */
-	public static $DEFAULT_SCHEMA;
+	public $defaultSchema = 'public';
 
 	/**
 	 * @var array mapping from physical column types (keys) to abstract 
@@ -95,10 +94,10 @@ class Schema extends \yii\db\Schema
 			$table->name = $parts[0];
 		}
 		if ($table->schemaName === null) {
-			$table->schemaName = self::$DEFAULT_SCHEMA;
+			$table->schemaName = $this->defaultSchema;
 		}
 	}
-
+	
 	/**
 	 * Quotes a table name for use in a query.
 	 * A simple table name has no schema prefix.
@@ -122,7 +121,7 @@ class Schema extends \yii\db\Schema
 			return $table;
 		}
 	}
-
+	
 	/**
 	 * Collects the foreign key column details for the given table.
 	 * @param TableSchema $table the table metadata
@@ -131,7 +130,6 @@ class Schema extends \yii\db\Schema
 
 		$tableName = $this->quoteValue($table->name);
 		$tableSchema = $this->quoteValue($table->schemaName);
-		$database = $this->quoteValue($this->db->pdo->getCurrentDatabase());
 
 		//We need to extract the constraints de hard way since:
 		//http://www.postgresql.org/message-id/26677.1086673982@sss.pgh.pa.us
@@ -158,7 +156,6 @@ where
 	ct.contype='f'
 	and c.relname={$tableName}
 	and ns.nspname={$tableSchema}
-	and current_database() = {$database}	
 SQL;
 
 		try {
@@ -184,7 +181,6 @@ SQL;
 	 * @return boolean whether the table exists in the database
 	 */
 	protected function findColumns($table) {
-		$dbname = $this->db->quoteValue($this->db->pdo->getCurrentDatabase());
 		$tableName = $this->db->quoteValue($table->name);
 		$schemaName = $this->db->quoteValue($table->schemaName);
 		$sql = <<<SQL
@@ -239,7 +235,6 @@ WHERE
 	a.attnum > 0
 	and c.relname = {$tableName}
 	and d.nspname = {$schemaName}
-	and current_database() = {$dbname}
 ORDER BY
 	a.attnum;
 SQL;
