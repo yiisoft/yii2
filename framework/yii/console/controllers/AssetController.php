@@ -164,7 +164,6 @@ class AssetController extends Controller
 	protected function loadConfiguration($configFile)
 	{
 		echo "Loading configuration from '{$configFile}'...\n";
-
 		foreach (require($configFile) as $name => $value) {
 			if (property_exists($this, $name) || $this->canSetProperty($name)) {
 				$this->$name = $value;

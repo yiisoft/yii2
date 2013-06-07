@@ -7,12 +7,15 @@
 
 namespace yii\base;
 
+use Yii;
+use yii\helpers\Json;
+
 /**
  * @include @yii/base/Object.md
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Object
+class Object implements Jsonable
 {
 	/**
 	 * @return string the fully qualified name of this class.
@@ -38,8 +41,8 @@ class Object
 	 */
 	public function __construct($config = array())
 	{
-		foreach ($config as $name => $value) {
-			$this->$name = $value;
+		if (!empty($config)) {
+			Yii::configure($this, $config);
 		}
 		$this->init();
 	}
@@ -215,5 +218,15 @@ class Object
 	public function canSetProperty($name, $checkVar = true)
 	{
 		return method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name);
+	}
+
+	/**
+	 * Returns the JSON representation of this object.
+	 * The default implementation will return all public member variables.
+	 * @return string the JSON representation of this object.
+	 */
+	public function toJson()
+	{
+		return Json::encode(Yii::getObjectVars($this));
 	}
 }
