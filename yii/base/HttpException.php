@@ -7,8 +7,6 @@
 
 namespace yii\base;
 
-use yii\web\Response;
-
 
 /**
  * HttpException represents an exception caused by an improper request of the end-user.
@@ -45,8 +43,8 @@ class HttpException extends UserException
 	 */
 	public function getName()
 	{
-		if (isset(Response::$statusTexts[$this->statusCode])) {
-			return Response::$statusTexts[$this->statusCode];
+		if (isset(\yii\web\Response::$statusTexts[$this->statusCode])) {
+			return \yii\web\Response::$statusTexts[$this->statusCode];
 		} else {
 			return 'Error';
 		}
