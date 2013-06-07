@@ -1,0 +1,27 @@
+{
+	"name": "yiisoft/yii2-coding-standard",
+	"type": "library",
+	"description": "PHP_CodeSniffer sniffs for Yii2 code style.",
+	"homepage": "http://yiiframework.com/",
+	"keywords": ["yii", "yii2", "standard", "guidelines", "codesniffer", "codestyle", "style"],
+	"license": "BSD-3-Clause",
+	"authors": [
+		{
+			"name": "resurtm",
+			"email": "resurtm@gmail.com",
+			"homepage": "http://resurtm.com/"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0",
+		"squizlabs/php_codesniffer": "*"
+	},
+	"support": {
+		"email": "resurtm@gmail.com",
+		"issues": "https://github.com/yiisoft/yii2/issues/",
+		"wiki": "https://github.com/yiisoft/yii2/wiki/",
+		"forum": "http://www.yiiframework.com/forum/",
+		"irc": "irc://irc.freenode.org/yii/",
+		"source": "https://github.com/yiisoft/yii2/"
+	}
+}
