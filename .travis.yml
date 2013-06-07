@@ -10,5 +10,6 @@ env:
 
 before_script:
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database IF NOT EXISTS yiitest;'; fi"
-
+  - psql -U postgres -c 'drop database if exists yiitest;'; 
+  - psql -U postgres -c 'create database yiitest;';
 script: phpunit

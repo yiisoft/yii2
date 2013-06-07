@@ -18,5 +18,11 @@ return array(
 			'password' => '',
 			'fixture' => __DIR__ . '/mssql.sql',
 		),
+		'pgsql' => array(
+			'dsn' => 'pgsql:host=localhost;dbname=yiitest;port=5432;',
+			'username' => 'postgres',
+			'password' => 'postgres',
+			'fixture' => __DIR__ . '/postgres.sql',
+		)
     )
 );
