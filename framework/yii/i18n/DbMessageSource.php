@@ -41,8 +41,6 @@ use yii\db\Query;
  * the translated messages. The name of these two tables can be customized by setting [[sourceMessageTable]]
  * and [[messageTable]], respectively.
  *
- * When [[cachingDuration]] is set as a positive number, message translations will be cached.
- *
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */
@@ -68,18 +66,23 @@ class DbMessageSource extends MessageSource
 	 */
 	public $cache = 'cache';
 	/**
-	 * @var string the name of the source message table. Defaults to `{{%source_message}}`.
+	 * @var string the name of the source message table.
 	 */
-	public $sourceMessageTable = '{{%source_message}}';
+	public $sourceMessageTable = 'tbl_source_message';
 	/**
-	 * @var string the name of the translated message table. Defaults to `{{%message}}`.
+	 * @var string the name of the translated message table.
 	 */
-	public $messageTable = '{{%message}}';
+	public $messageTable = 'tbl_message';
 	/**
 	 * @var integer the time in seconds that the messages can remain valid in cache.
-	 * Defaults to 0, meaning the caching is disabled.
+	 * Use 0 to indicate that the cached data will never expire.
+	 * @see enableCaching
 	 */
 	public $cachingDuration = 0;
+	/**
+	 * @var boolean whether to enable caching translated messages
+	 */
+	public $enableCaching = false;
 
 	/**
 	 * Initializes the DbMessageSource component.
@@ -96,7 +99,7 @@ class DbMessageSource extends MessageSource
 		if (!$this->db instanceof Connection) {
 			throw new InvalidConfigException("DbMessageSource::db must be either a DB connection instance or the application component ID of a DB connection.");
 		}
-		if ($this->cachingDuration > 0) {
+		if ($this->enableCaching) {
 			if (is_string($this->cache)) {
 				$this->cache = Yii::$app->getComponent($this->cache);
 			}
@@ -117,16 +120,20 @@ class DbMessageSource extends MessageSource
 	 */
 	protected function loadMessages($category, $language)
 	{
-		if ($this->cachingDuration === 0) {
-			return $this->retrieveMessages($category, $language);
-		} else {
-			$key = static::CACHE_KEY_PREFIX . ".messages.{$category}.{$language}";
+		if ($this->enableCaching) {
+			$key = array(
+				__CLASS__,
+				$category,
+				$language,
+			);
 			$messages = $this->cache->get($key);
 			if ($messages === false) {
-				$messages = $this->retrieveMessages($category, $language);
+				$messages = $this->loadMessagesFromDb($category, $language);
 				$this->cache->set($key, $messages, $this->cachingDuration);
 			}
 			return $messages;
+		} else {
+			return $this->loadMessagesFromDb($category, $language);
 		}
 	}
 
@@ -137,7 +144,7 @@ class DbMessageSource extends MessageSource
 	 * @param string $language the target language.
 	 * @return array the messages loaded from database.
 	 */
-	protected function retrieveMessages($category, $language)
+	protected function loadMessagesFromDb($category, $language)
 	{
 		$query = new Query();
 		$messages = $query->select(array('t1.message message', 't2.translation translation'))
