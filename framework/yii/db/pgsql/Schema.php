@@ -119,6 +119,8 @@ class Schema extends \yii\db\Schema
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
 			return $table;
+		} else {
+			return null;
 		}
 	}
 
