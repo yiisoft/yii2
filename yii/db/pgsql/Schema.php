@@ -73,7 +73,7 @@ class Schema extends \yii\db\Schema
 	);
 
 	/**
-	 * Creates a query builder for the MySQL database.
+	 * Creates a query builder for the PostgreSQL database.
 	 * @return QueryBuilder query builder instance
 	 */
 	public function createQueryBuilder()
@@ -89,13 +89,16 @@ class Schema extends \yii\db\Schema
 	protected function resolveTableNames($table, $name)
 	{
 		$parts = explode('.', str_replace('"', '', $name));
-		if (isset($parts[1])) {
+		if (isset($parts[1]))
+		{
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
-		} else {
+		} else
+		{
 			$table->name = $parts[0];
 		}
-		if ($table->schemaName === null) {
+		if ($table->schemaName === null)
+		{
 			$table->schemaName = $this->defaultSchema;
 		}
 	}
@@ -120,11 +123,10 @@ class Schema extends \yii\db\Schema
 	{
 		$table = new TableSchema();
 		$this->resolveTableNames($table, $name);
-		if ($this->findColumns($table)) {
+		if ($this->findColumns($table))
+		{
 			$this->findConstraints($table);
 			return $table;
-		} else {
-			return null;
 		}
 	}
 
@@ -143,14 +145,9 @@ class Schema extends \yii\db\Schema
 
 		$sql = <<<SQL
 select 
-	ct.conname as containst,
-	c.relname as table_name,
-	ns.nspname as table_schema,
-	current_database() as table_catalog,
 	(select string_agg(attname,',') attname from pg_attribute where attrelid=ct.conrelid and attnum = any(ct.conkey)) as columns,
 	fc.relname as foreign_table_name,
 	fns.nspname as foreign_table_schema,
-	current_database() as foreign_table_catalog,
 	(select string_agg(attname,',') attname from pg_attribute where attrelid=ct.confrelid and attnum = any(ct.confkey)) as foreign_columns
 from
 	pg_constraint ct 
@@ -169,7 +166,14 @@ SQL;
 		foreach ($constraints as $constraint) {
 			$columns = explode(',', $constraint['columns']);
 			$fcolumns = explode(',', $constraint['foreign_columns']);
-			$citem = array($constraint['foreign_table_name']);
+			if ($constraint['foreign_table_schema'] !== $this->defaultSchema)
+			{
+				$foreign_table = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
+			} else
+			{
+				$foreign_table = $constraint['foreign_table_name'];
+			}
+			$citem = array($foreign_table);
 			foreach ($columns as $idx => $column) {
 				$citem[] = array($fcolumns[$idx] => $column);
 			}
@@ -242,17 +246,21 @@ ORDER BY
 	a.attnum;
 SQL;
 
-		$columns = $this->db->createCommand($sql)->queryAll();
-		if (empty($columns)) {
+		try
+		{
+			$columns = $this->db->createCommand($sql)->queryAll();
+		} catch (\Exception $e)
+		{
 			return false;
 		}
-
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
 			$table->columns[$column->name] = $column;
-			if ($column->isPrimaryKey === true) {
+			if ($column->isPrimaryKey === true)
+			{
 				$table->primaryKey[] = $column->name;
-				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1) {
+				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1)
+				{
 					$table->sequenceName = preg_replace(array('/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'), '', $column->defaultValue);
 				}
 			}
@@ -281,12 +289,15 @@ SQL;
 		$column->scale = $info['numeric_scale'];
 		$column->size = $info['size'];
 
-		if (isset($this->typeMap[$column->dbType])) {
+		if (isset($this->typeMap[$column->dbType]))
+		{
 			$column->type = $this->typeMap[$column->dbType];
-		} else {
+		} else
+		{
 			$column->type = self::TYPE_STRING;
 		}
 		$column->phpType = $this->getColumnPhpType($column);
 		return $column;
 	}
+
 }
