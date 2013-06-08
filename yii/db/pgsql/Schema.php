@@ -123,6 +123,8 @@ class Schema extends \yii\db\Schema
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
 			return $table;
+		} else {
+			return null;
 		}
 	}
 
@@ -240,11 +242,7 @@ ORDER BY
 	a.attnum;
 SQL;
 
-		try {
-			$columns = $this->db->createCommand($sql)->queryAll();
-		} catch (\Exception $e) {
-			return false;
-		}
+		$columns = $this->db->createCommand($sql)->queryAll();
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
 			$table->columns[$column->name] = $column;
