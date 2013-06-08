@@ -89,16 +89,13 @@ class Schema extends \yii\db\Schema
 	protected function resolveTableNames($table, $name)
 	{
 		$parts = explode('.', str_replace('"', '', $name));
-		if (isset($parts[1]))
-		{
+		if (isset($parts[1])) {
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
-		} else
-		{
+		} else {
 			$table->name = $parts[0];
 		}
-		if ($table->schemaName === null)
-		{
+		if ($table->schemaName === null) {
 			$table->schemaName = $this->defaultSchema;
 		}
 	}
@@ -123,8 +120,7 @@ class Schema extends \yii\db\Schema
 	{
 		$table = new TableSchema();
 		$this->resolveTableNames($table, $name);
-		if ($this->findColumns($table))
-		{
+		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
 			return $table;
 		}
@@ -166,11 +162,9 @@ SQL;
 		foreach ($constraints as $constraint) {
 			$columns = explode(',', $constraint['columns']);
 			$fcolumns = explode(',', $constraint['foreign_columns']);
-			if ($constraint['foreign_table_schema'] !== $this->defaultSchema)
-			{
+			if ($constraint['foreign_table_schema'] !== $this->defaultSchema) {
 				$foreign_table = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
-			} else
-			{
+			} else {
 				$foreign_table = $constraint['foreign_table_name'];
 			}
 			$citem = array($foreign_table);
@@ -246,21 +240,17 @@ ORDER BY
 	a.attnum;
 SQL;
 
-		try
-		{
+		try {
 			$columns = $this->db->createCommand($sql)->queryAll();
-		} catch (\Exception $e)
-		{
+		} catch (\Exception $e) {
 			return false;
 		}
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
 			$table->columns[$column->name] = $column;
-			if ($column->isPrimaryKey === true)
-			{
+			if ($column->isPrimaryKey === true) {
 				$table->primaryKey[] = $column->name;
-				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1)
-				{
+				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1) {
 					$table->sequenceName = preg_replace(array('/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'), '', $column->defaultValue);
 				}
 			}
@@ -289,11 +279,9 @@ SQL;
 		$column->scale = $info['numeric_scale'];
 		$column->size = $info['size'];
 
-		if (isset($this->typeMap[$column->dbType]))
-		{
+		if (isset($this->typeMap[$column->dbType])) {
 			$column->type = $this->typeMap[$column->dbType];
-		} else
-		{
+		} else {
 			$column->type = self::TYPE_STRING;
 		}
 		$column->phpType = $this->getColumnPhpType($column);
