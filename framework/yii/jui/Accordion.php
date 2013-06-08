@@ -125,7 +125,7 @@ class Accordion extends Widget
 			$items[] = Html::tag($headerTag, $item['header'], $headerOptions);
 			$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
 			$tag = ArrayHelper::remove($options, 'tag', 'div');
-			$items[] = Html::tag($tag, $item['content'], $options);;
+			$items[] = Html::tag($tag, $item['content'], $options);
 		}
 
 		return implode("\n", $items);

@@ -10,6 +10,7 @@ namespace yii\base;
 use ArrayObject;
 use ArrayIterator;
 use yii\helpers\Inflector;
+use yii\helpers\Json;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
@@ -41,7 +42,7 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements \IteratorAggregate, \ArrayAccess
+class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsonable
 {
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
@@ -635,6 +636,16 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 			}
 		}
 		return $attributes;
+	}
+
+	/**
+	 * Returns the JSON representation of this object.
+	 * The default implementation will return [[attributes]].
+	 * @return string the JSON representation of this object.
+	 */
+	public function toJson()
+	{
+		return Json::encode($this->getAttributes());
 	}
 
 	/**

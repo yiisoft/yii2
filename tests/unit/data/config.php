@@ -22,9 +22,6 @@ return array(
 			'dsn' => 'pgsql:host=localhost;dbname=yiitest;port=5432;',
 			'username' => 'postgres',
 			'password' => 'postgres',
-			'attributes'  => array(
-				'search_path' => 'master,hello'
-			),
 			'fixture' => __DIR__ . '/postgres.sql',
 		)
     )

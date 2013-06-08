@@ -86,4 +86,3 @@ class XCache extends Cache
 		return true;
 	}
 }
-

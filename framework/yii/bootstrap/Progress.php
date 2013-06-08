@@ -11,7 +11,6 @@ use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-
 /**
  * Progress renders a bootstrap progress bar component.
  *

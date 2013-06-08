@@ -305,8 +305,7 @@ class Connection extends Component
 				$this->pdo = $this->createPdoInstance();
 				$this->initConnection();
 				Yii::endProfile($token, __METHOD__);
-			}
-			catch (\PDOException $e) {
+			} catch (\PDOException $e) {
 				Yii::endProfile($token, __METHOD__);
 				Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __METHOD__);
 				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
@@ -343,8 +342,6 @@ class Connection extends Component
 			$driver = strtolower(substr($this->dsn, 0, $pos));
 			if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
 				$pdoClass = 'yii\db\mssql\PDO';
-			} else if ($driver === 'pgsql') {
-				$pdoClass = 'yii\db\pgsql\PDO';
 			}
 		}
 		return new $pdoClass($this->dsn, $this->username, $this->password, $this->attributes);
@@ -510,7 +507,7 @@ class Connection extends Component
 	{
 		$db = $this;
 		return preg_replace_callback('/(\\{\\{([%\w\-\. ]+)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
-			function($matches) use($db) {
+			function ($matches) use ($db) {
 				if (isset($matches[3])) {
 					return $db->quoteColumnName($matches[3]);
 				} else {

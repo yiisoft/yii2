@@ -12,7 +12,7 @@ use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
 /**
- * Schema is the class for retrieving metadata from a PostgreSQL database 
+ * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
@@ -22,62 +22,62 @@ class Schema extends \yii\db\Schema
 {
 
 	/**
-	 * The default schema used for the current session. This value is 
-	 * automatically set to "public" by the PDO driver. 
-	 * @var string 
+	 * The default schema used for the current session.
+	 * @var string
 	 */
-	public static $DEFAULT_SCHEMA;
+	public $defaultSchema = 'public';
 
 	/**
-	 * @var array mapping from physical column types (keys) to abstract 
+	 * @var array mapping from physical column types (keys) to abstract
 	 * column types (values)
 	 */
 	public $typeMap = array(
-	    'abstime' => self::TYPE_TIMESTAMP,
-	    'bit' => self::TYPE_STRING,
-	    'boolean' => self::TYPE_BOOLEAN,
-	    'box' => self::TYPE_STRING,
-	    'character' => self::TYPE_STRING,
-	    'bytea' => self::TYPE_BINARY,
-	    'char' => self::TYPE_STRING,
-	    'cidr' => self::TYPE_STRING,
-	    'circle' => self::TYPE_STRING,
-	    'date' => self::TYPE_DATE,
-	    'real' => self::TYPE_FLOAT,
-	    'double precision' => self::TYPE_DECIMAL,
-	    'inet' => self::TYPE_STRING,
-	    'smallint' => self::TYPE_SMALLINT,
-	    'integer' => self::TYPE_INTEGER,
-	    'bigint' => self::TYPE_BIGINT,
-	    'interval' => self::TYPE_STRING,
-	    'json' => self::TYPE_STRING,
-	    'line' => self::TYPE_STRING,
-	    'macaddr' => self::TYPE_STRING,
-	    'money' => self::TYPE_MONEY,
-	    'name' => self::TYPE_STRING,
-	    'numeric' => self::TYPE_STRING,
-	    'numrange' => self::TYPE_DECIMAL,
-	    'oid' => self::TYPE_BIGINT, // should not be used. it's pg internal!
-	    'path' => self::TYPE_STRING,
-	    'point' => self::TYPE_STRING,
-	    'polygon' => self::TYPE_STRING,
-	    'text' => self::TYPE_TEXT,
-	    'time without time zone' => self::TYPE_TIME,
-	    'timestamp without time zone' => self::TYPE_TIMESTAMP,
-	    'timestamp with time zone' => self::TYPE_TIMESTAMP,
-	    'time with time zone' => self::TYPE_TIMESTAMP,
-	    'unknown' => self::TYPE_STRING,
-	    'uuid' => self::TYPE_STRING,
-	    'bit varying' => self::TYPE_STRING,
-	    'character varying' => self::TYPE_STRING,
-	    'xml' => self::TYPE_STRING
+		'abstime' => self::TYPE_TIMESTAMP,
+		'bit' => self::TYPE_STRING,
+		'boolean' => self::TYPE_BOOLEAN,
+		'box' => self::TYPE_STRING,
+		'character' => self::TYPE_STRING,
+		'bytea' => self::TYPE_BINARY,
+		'char' => self::TYPE_STRING,
+		'cidr' => self::TYPE_STRING,
+		'circle' => self::TYPE_STRING,
+		'date' => self::TYPE_DATE,
+		'real' => self::TYPE_FLOAT,
+		'double precision' => self::TYPE_DECIMAL,
+		'inet' => self::TYPE_STRING,
+		'smallint' => self::TYPE_SMALLINT,
+		'integer' => self::TYPE_INTEGER,
+		'bigint' => self::TYPE_BIGINT,
+		'interval' => self::TYPE_STRING,
+		'json' => self::TYPE_STRING,
+		'line' => self::TYPE_STRING,
+		'macaddr' => self::TYPE_STRING,
+		'money' => self::TYPE_MONEY,
+		'name' => self::TYPE_STRING,
+		'numeric' => self::TYPE_STRING,
+		'numrange' => self::TYPE_DECIMAL,
+		'oid' => self::TYPE_BIGINT, // should not be used. it's pg internal!
+		'path' => self::TYPE_STRING,
+		'point' => self::TYPE_STRING,
+		'polygon' => self::TYPE_STRING,
+		'text' => self::TYPE_TEXT,
+		'time without time zone' => self::TYPE_TIME,
+		'timestamp without time zone' => self::TYPE_TIMESTAMP,
+		'timestamp with time zone' => self::TYPE_TIMESTAMP,
+		'time with time zone' => self::TYPE_TIMESTAMP,
+		'unknown' => self::TYPE_STRING,
+		'uuid' => self::TYPE_STRING,
+		'bit varying' => self::TYPE_STRING,
+		'character varying' => self::TYPE_STRING,
+		'xml' => self::TYPE_STRING
 	);
 
 	/**
 	 * Creates a query builder for the MySQL database.
 	 * @return QueryBuilder query builder instance
 	 */
-	public function createQueryBuilder() {
+	public function createQueryBuilder()
+	{
 		return new QueryBuilder($this->db);
 	}
 
@@ -86,7 +86,8 @@ class Schema extends \yii\db\Schema
 	 * @param TableSchema $table the table metadata object
 	 * @param string $name the table name
 	 */
-	protected function resolveTableNames($table, $name) {
+	protected function resolveTableNames($table, $name)
+	{
 		$parts = explode('.', str_replace('"', '', $name));
 		if (isset($parts[1])) {
 			$table->schemaName = $parts[0];
@@ -95,7 +96,7 @@ class Schema extends \yii\db\Schema
 			$table->name = $parts[0];
 		}
 		if ($table->schemaName === null) {
-			$table->schemaName = self::$DEFAULT_SCHEMA;
+			$table->schemaName = $this->defaultSchema;
 		}
 	}
 
@@ -105,7 +106,8 @@ class Schema extends \yii\db\Schema
 	 * @param string $name table name
 	 * @return string the properly quoted table name
 	 */
-	public function quoteSimpleTableName($name) {
+	public function quoteSimpleTableName($name)
+	{
 		return strpos($name, '"') !== false ? $name : '"' . $name . '"';
 	}
 
@@ -114,12 +116,15 @@ class Schema extends \yii\db\Schema
 	 * @param string $name table name
 	 * @return TableSchema|null driver dependent table metadata. Null if the table does not exist.
 	 */
-	public function loadTableSchema($name) {
+	public function loadTableSchema($name)
+	{
 		$table = new TableSchema();
 		$this->resolveTableNames($table, $name);
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
 			return $table;
+		} else {
+			return null;
 		}
 	}
 
@@ -127,11 +132,11 @@ class Schema extends \yii\db\Schema
 	 * Collects the foreign key column details for the given table.
 	 * @param TableSchema $table the table metadata
 	 */
-	protected function findConstraints($table) {
+	protected function findConstraints($table)
+	{
 
 		$tableName = $this->quoteValue($table->name);
 		$tableSchema = $this->quoteValue($table->schemaName);
-		$database = $this->quoteValue($this->db->pdo->getCurrentDatabase());
 
 		//We need to extract the constraints de hard way since:
 		//http://www.postgresql.org/message-id/26677.1086673982@sss.pgh.pa.us
@@ -158,14 +163,9 @@ where
 	ct.contype='f'
 	and c.relname={$tableName}
 	and ns.nspname={$tableSchema}
-	and current_database() = {$database}	
 SQL;
 
-		try {
-			$constraints = $this->db->createCommand($sql)->queryAll();
-		} catch (\Exception $e) {
-			return false;
-		}
+		$constraints = $this->db->createCommand($sql)->queryAll();
 		foreach ($constraints as $constraint) {
 			$columns = explode(',', $constraint['columns']);
 			$fcolumns = explode(',', $constraint['foreign_columns']);
@@ -175,7 +175,6 @@ SQL;
 			}
 			$table->foreignKeys[] = $citem;
 		}
-		return true;
 	}
 
 	/**
@@ -183,8 +182,8 @@ SQL;
 	 * @param TableSchema $table the table metadata
 	 * @return boolean whether the table exists in the database
 	 */
-	protected function findColumns($table) {
-		$dbname = $this->db->quoteValue($this->db->pdo->getCurrentDatabase());
+	protected function findColumns($table)
+	{
 		$tableName = $this->db->quoteValue($table->name);
 		$schemaName = $this->db->quoteValue($table->schemaName);
 		$sql = <<<SQL
@@ -239,16 +238,15 @@ WHERE
 	a.attnum > 0
 	and c.relname = {$tableName}
 	and d.nspname = {$schemaName}
-	and current_database() = {$dbname}
 ORDER BY
 	a.attnum;
 SQL;
 
-		try {
-			$columns = $this->db->createCommand($sql)->queryAll();
-		} catch (\Exception $e) {
+		$columns = $this->db->createCommand($sql)->queryAll();
+		if (empty($columns)) {
 			return false;
 		}
+
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
 			$table->columns[$column->name] = $column;
@@ -267,7 +265,8 @@ SQL;
 	 * @param array $info column information
 	 * @return ColumnSchema the column schema object
 	 */
-	protected function loadColumnSchema($info) {
+	protected function loadColumnSchema($info)
+	{
 		$column = new ColumnSchema();
 		$column->allowNull = $info['is_nullable'];
 		$column->autoIncrement = $info['is_autoinc'];
@@ -290,5 +289,4 @@ SQL;
 		$column->phpType = $this->getColumnPhpType($column);
 		return $column;
 	}
-
 }

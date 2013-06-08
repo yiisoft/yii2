@@ -11,7 +11,6 @@ use Yii;
 use yii\base\View;
 use yii\helpers\Json;
 
-
 /**
  * \yii\bootstrap\Widget is the base class for all bootstrap widgets.
  *

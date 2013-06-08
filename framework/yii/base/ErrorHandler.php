@@ -255,7 +255,7 @@ class ErrorHandler extends Component
 		if (isset($_SERVER['SERVER_SOFTWARE'])) {
 			foreach ($serverUrls as $url => $keywords) {
 				foreach ($keywords as $keyword) {
-					if (stripos($_SERVER['SERVER_SOFTWARE'], $keyword) !== false ) {
+					if (stripos($_SERVER['SERVER_SOFTWARE'], $keyword) !== false) {
 						return '<a href="' . $url . '" target="_blank">' . $this->htmlEncode($_SERVER['SERVER_SOFTWARE']) . '</a>';
 					}
 				}

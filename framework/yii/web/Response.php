@@ -9,8 +9,10 @@ namespace yii\web;
 
 use Yii;
 use yii\base\HttpException;
+use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\StringHelper;
 
 /**
@@ -27,8 +29,121 @@ class Response extends \yii\base\Response
 	 * @see redirect
 	 */
 	public $ajaxRedirectCode = 278;
+	/**
+	 * @var string
+	 */
+	public $content;
+	/**
+	 * @var string
+	 */
+	public $statusText;
+	/**
+	 * @var string the charset to use. If not set, [[\yii\base\Application::charset]] will be used.
+	 */
+	public $charset;
+	/**
+	 * @var string the version of the HTTP protocol to use
+	 */
+	public $version = '1.0';
 
+	/**
+	 * @var array list of HTTP status codes and the corresponding texts
+	 */
+	public static $statusTexts = array(
+		100 => 'Continue',
+		101 => 'Switching Protocols',
+		102 => 'Processing',
+		118 => 'Connection timed out',
+		200 => 'OK',
+		201 => 'Created',
+		202 => 'Accepted',
+		203 => 'Non-Authoritative',
+		204 => 'No Content',
+		205 => 'Reset Content',
+		206 => 'Partial Content',
+		207 => 'Multi-Status',
+		208 => 'Already Reported',
+		210 => 'Content Different',
+		226 => 'IM Used',
+		300 => 'Multiple Choices',
+		301 => 'Moved Permanently',
+		302 => 'Found',
+		303 => 'See Other',
+		304 => 'Not Modified',
+		305 => 'Use Proxy',
+		306 => 'Reserved',
+		307 => 'Temporary Redirect',
+		308 => 'Permanent Redirect',
+		310 => 'Too many Redirect',
+		400 => 'Bad Request',
+		401 => 'Unauthorized',
+		402 => 'Payment Required',
+		403 => 'Forbidden',
+		404 => 'Not Found',
+		405 => 'Method Not Allowed',
+		406 => 'Not Acceptable',
+		407 => 'Proxy Authentication Required',
+		408 => 'Request Time-out',
+		409 => 'Conflict',
+		410 => 'Gone',
+		411 => 'Length Required',
+		412 => 'Precondition Failed',
+		413 => 'Request Entity Too Large',
+		414 => 'Request-URI Too Long',
+		415 => 'Unsupported Media Type',
+		416 => 'Requested range unsatisfiable',
+		417 => 'Expectation failed',
+		418 => 'I’m a teapot',
+		422 => 'Unprocessable entity',
+		423 => 'Locked',
+		424 => 'Method failure',
+		425 => 'Unordered Collection',
+		426 => 'Upgrade Required',
+		428 => 'Precondition Required',
+		429 => 'Too Many Requests',
+		431 => 'Request Header Fields Too Large',
+		449 => 'Retry With',
+		450 => 'Blocked by Windows Parental Controls',
+		500 => 'Internal Server Error',
+		501 => 'Not Implemented',
+		502 => 'Bad Gateway ou Proxy Error',
+		503 => 'Service Unavailable',
+		504 => 'Gateway Time-out',
+		505 => 'HTTP Version not supported',
+		507 => 'Insufficient storage',
+		508 => 'Loop Detected',
+		509 => 'Bandwidth Limit Exceeded',
+		510 => 'Not Extended',
+		511 => 'Network Authentication Required',
+	);
+
+	private $_statusCode = 200;
+	/**
+	 * @var HeaderCollection
+	 */
 	private $_headers;
+
+
+	public function init()
+	{
+		if ($this->charset === null) {
+			$this->charset = Yii::$app->charset;
+		}
+	}
+
+	public function getStatusCode()
+	{
+		return $this->_statusCode;
+	}
+
+	public function setStatusCode($value)
+	{
+		$this->_statusCode = (int)$value;
+		if ($this->isInvalid()) {
+			throw new InvalidParamException("The HTTP status code is invalid: $value");
+		}
+		$this->statusText = isset(self::$statusTexts[$this->_statusCode]) ? self::$statusTexts[$this->_statusCode] : '';
+	}
 
 	/**
 	 * Returns the header collection.
@@ -41,6 +156,52 @@ class Response extends \yii\base\Response
 			$this->_headers = new HeaderCollection;
 		}
 		return $this->_headers;
+	}
+
+	public function renderJson($data)
+	{
+		$this->getHeaders()->set('content-type', 'application/json');
+		$this->content = Json::encode($data);
+	}
+
+	public function renderJsonp($data, $callbackName)
+	{
+		$this->getHeaders()->set('content-type', 'text/javascript');
+		$data = Json::encode($data);
+		$this->content = "$callbackName($data);";
+	}
+
+	/**
+	 * Sends the response to the client.
+	 * @return boolean true if the response was sent
+	 */
+	public function send()
+	{
+		$this->sendHeaders();
+		$this->sendContent();
+	}
+
+	/**
+	 * Sends the response headers to the client
+	 */
+	protected function sendHeaders()
+	{
+		header("HTTP/{$this->version} " . $this->getStatusCode() . " {$this->statusText}");
+		foreach ($this->_headers as $name => $values) {
+			foreach ($values as $value) {
+				header("$name: $value");
+			}
+		}
+		$this->_headers->removeAll();
+	}
+
+	/**
+	 * Sends the response content to the client
+	 */
+	protected function sendContent()
+	{
+		echo $this->content;
+		$this->content = null;
 	}
 
 	/**
@@ -201,7 +362,7 @@ class Response extends \yii\base\Response
 		}
 
 		if (!isset($options['mimeType'])) {
-			if (($options['mimeType'] = CFileHelper::getMimeTypeByExtension($filePath)) === null) {
+			if (($options['mimeType'] = FileHelper::getMimeTypeByExtension($filePath)) === null) {
 				$options['mimeType'] = 'text/plain';
 			}
 		}
@@ -302,5 +463,85 @@ class Response extends \yii\base\Response
 	public function getCookies()
 	{
 		return Yii::$app->getRequest()->getCookies();
+	}
+
+	/**
+	 * @return boolean whether this response has a valid [[statusCode]].
+	 */
+	public function isInvalid()
+	{
+		return $this->getStatusCode() < 100 || $this->getStatusCode() >= 600;
+	}
+
+	/**
+	 * @return boolean whether this response is informational
+	 */
+	public function isInformational()
+	{
+		return $this->getStatusCode() >= 100 && $this->getStatusCode() < 200;
+	}
+
+	/**
+	 * @return boolean whether this response is successfully
+	 */
+	public function isSuccessful()
+	{
+		return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
+	}
+
+	/**
+	 * @return boolean whether this response is a redirection
+	 */
+	public function isRedirection()
+	{
+		return $this->getStatusCode() >= 300 && $this->getStatusCode() < 400;
+	}
+
+	/**
+	 * @return boolean whether this response indicates a client error
+	 */
+	public function isClientError()
+	{
+		return $this->getStatusCode() >= 400 && $this->getStatusCode() < 500;
+	}
+
+	/**
+	 * @return boolean whether this response indicates a server error
+	 */
+	public function isServerError()
+	{
+		return $this->getStatusCode() >= 500 && $this->getStatusCode() < 600;
+	}
+
+	/**
+	 * @return boolean whether this response is OK
+	 */
+	public function isOk()
+	{
+		return 200 === $this->getStatusCode();
+	}
+
+	/**
+	 * @return boolean whether this response indicates the current request is forbidden
+	 */
+	public function isForbidden()
+	{
+		return 403 === $this->getStatusCode();
+	}
+
+	/**
+	 * @return boolean whether this response indicates the currently requested resource is not found
+	 */
+	public function isNotFound()
+	{
+		return 404 === $this->getStatusCode();
+	}
+
+	/**
+	 * @return boolean whether this response is empty
+	 */
+	public function isEmpty()
+	{
+		return in_array($this->getStatusCode(), array(201, 204, 304));
 	}
 }
