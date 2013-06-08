@@ -286,7 +286,7 @@ class Console
 	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xtermFgColor]] and [[xtermBgColor]].
 	 * @return string
 	 */
-	public static function ansiFormat($string, $format=array())
+	public static function ansiFormat($string, $format = array())
 	{
 		$code = implode(';', $format);
 		return "\033[0m" . ($code !== '' ? "\033[" . $code . "m" : '') . $string . "\033[0m";
@@ -589,11 +589,10 @@ class Console
 		if (static::isRunningOnWindows()) {
 			$output = array();
 			exec('mode con', $output);
-			if(isset($output) && strpos($output[1], 'CON')!==false) {
+			if (isset($output) && strpos($output[1], 'CON') !== false) {
 				return $size = array((int)preg_replace('~[^0-9]~', '', $output[3]), (int)preg_replace('~[^0-9]~', '', $output[4]));
 			}
 		} else {
-
 			// try stty if available
 			$stty = array();
 			if (exec('stty -a 2>&1', $stty) && preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', implode(' ', $stty), $matches)) {

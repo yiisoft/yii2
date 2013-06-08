@@ -99,4 +99,3 @@ class ExistValidator extends Validator
 		return $query->exists();
 	}
 }
-

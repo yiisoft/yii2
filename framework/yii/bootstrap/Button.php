@@ -6,9 +6,8 @@
  */
 
 namespace yii\bootstrap;
-use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 
+use yii\helpers\Html;
 
 /**
  * Button renders a bootstrap button.

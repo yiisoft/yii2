@@ -32,6 +32,7 @@ class ResponseTest extends \yiiunit\TestCase
 	protected function setUp()
 	{
 		parent::setUp();
+		$this->mockApplication();
 		$this->reset();
 	}
 
