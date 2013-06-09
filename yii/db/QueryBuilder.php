@@ -276,12 +276,16 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
 	 * @return string the SQL statement for adding a primary key constraint to an existing table.
 	 */
-	public function addPrimaryKey($name,$table,$columns)
+	public function addPrimaryKey($name, $table, $columns)
 	{
-		if(is_string($columns))
+		if (is_string($columns)) {
 			$columns=preg_split('/\s*,\s*/',$columns,-1,PREG_SPLIT_NO_EMPTY);
-		foreach($columns as $i=>$col)
+		}
+		
+		foreach ($columns as $i=>$col) {
 			$columns[$i]=$this->db->quoteColumnName($col);
+		}
+		
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
 			. $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
 			. implode(', ', $columns). ' )';
@@ -293,7 +297,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $table the table that the primary key constraint will be removed from.
 	 * @return string the SQL statement for removing a primary key constraint from an existing table.	 *
 	 */
-	public function dropPrimarykey($name,$table)
+	public function dropPrimarykey($name, $table)
 	{
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
 			. ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
