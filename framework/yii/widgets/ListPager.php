@@ -10,7 +10,7 @@ namespace yii\widgets;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\base\Widget;
-use yii\web\Pagination;
+use yii\data\Pagination;
 
 /**
  * ListPager displays a drop-down list that contains options leading to different pages.
@@ -91,5 +91,4 @@ class ListPager extends Widget
 			'{page}' => $page + 1,
 		));
 	}
-
 }

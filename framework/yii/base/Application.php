@@ -72,30 +72,51 @@ class Application extends Module
 	public function __construct($config = array())
 	{
 		Yii::$app = $this;
-
 		if (!isset($config['id'])) {
 			throw new InvalidConfigException('The "id" configuration is required.');
 		}
-
 		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
-			Yii::setAlias('@app', $this->getBasePath());
 			unset($config['basePath']);
 		} else {
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
-		
-		if (isset($config['timeZone'])) {
-			$this->setTimeZone($config['timeZone']);
-			unset($config['timeZone']);
-		} elseif (!ini_get('date.timezone')) {
-			$this->setTimeZone('UTC');
-		} 
+
+		$this->preInit($config);
 
 		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
 
 		Component::__construct($config);
+	}
+
+	/**
+	 * Pre-initializes the application.
+	 * This method is called at the beginning of the application constructor.
+	 * @param array $config the application configuration
+	 */
+	public function preInit(&$config)
+	{
+		if (isset($config['vendorPath'])) {
+			$this->setVendorPath($config['vendorPath']);
+			unset($config['vendorPath']);
+		} else {
+			// set "@vendor"
+			$this->getVendorPath();
+		}
+		if (isset($config['runtimePath'])) {
+			$this->setRuntimePath($config['runtimePath']);
+			unset($config['runtimePath']);
+		} else {
+			// set "@runtime"
+			$this->getRuntimePath();
+		}
+		if (isset($config['timeZone'])) {
+			$this->setTimeZone($config['timeZone']);
+			unset($config['timeZone']);
+		} elseif (!ini_get('date.timezone')) {
+			$this->setTimeZone('UTC');
+		}
 	}
 
 	/**
@@ -107,6 +128,11 @@ class Application extends Module
 			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
+			// Allocating twice more than required to display memory exhausted error
+			// in case of trying to allocate last 1 byte while all memory is taken.
+			$this->_memoryReserve = str_repeat('x', 1024 * 256);
+			register_shutdown_function(array($this, 'end'), 0, false);
+			register_shutdown_function(array($this, 'handleFatalError'));
 		}
 	}
 
@@ -121,10 +147,9 @@ class Application extends Module
 	{
 		if (!$this->_ended) {
 			$this->_ended = true;
+			$this->getResponse()->end();
 			$this->afterRequest();
 		}
-
-		$this->handleFatalError();
 
 		if ($exit) {
 			exit($status);
@@ -139,11 +164,10 @@ class Application extends Module
 	public function run()
 	{
 		$this->beforeRequest();
-		// Allocating twice more than required to display memory exhausted error
-		// in case of trying to allocate last 1 byte while all memory is taken.
-		$this->_memoryReserve = str_repeat('x', 1024 * 256);
-		register_shutdown_function(array($this, 'end'), 0, false);
+		$response = $this->getResponse();
+		$response->begin();
 		$status = $this->processRequest();
+		$response->end();
 		$this->afterRequest();
 		return $status;
 	}
@@ -178,7 +202,8 @@ class Application extends Module
 
 	/**
 	 * Returns the directory that stores runtime files.
-	 * @return string the directory that stores runtime files. Defaults to 'protected/runtime'.
+	 * @return string the directory that stores runtime files.
+	 * Defaults to the "runtime" subdirectory under [[basePath]].
 	 */
 	public function getRuntimePath()
 	{
@@ -191,16 +216,11 @@ class Application extends Module
 	/**
 	 * Sets the directory that stores runtime files.
 	 * @param string $path the directory that stores runtime files.
-	 * @throws InvalidConfigException if the directory does not exist or is not writable
 	 */
 	public function setRuntimePath($path)
 	{
-		$path = Yii::getAlias($path);
-		if (is_dir($path) && is_writable($path)) {
-			$this->_runtimePath = $path;
-		} else {
-			throw new InvalidConfigException("Runtime path must be a directory writable by the Web server process: $path");
-		}
+		$this->_runtimePath = Yii::getAlias($path);
+		Yii::setAlias('@runtime', $this->_runtimePath);
 	}
 
 	private $_vendorPath;
@@ -208,7 +228,7 @@ class Application extends Module
 	/**
 	 * Returns the directory that stores vendor files.
 	 * @return string the directory that stores vendor files.
-	 * Defaults to 'vendor' directory under applications [[basePath]].
+	 * Defaults to "vendor" directory under [[basePath]].
 	 */
 	public function getVendorPath()
 	{
@@ -225,6 +245,7 @@ class Application extends Module
 	public function setVendorPath($path)
 	{
 		$this->_vendorPath = Yii::getAlias($path);
+		Yii::setAlias('@vendor', $this->_vendorPath);
 	}
 
 	/**
@@ -294,6 +315,15 @@ class Application extends Module
 	public function getRequest()
 	{
 		return $this->getComponent('request');
+	}
+
+	/**
+	 * Returns the response component.
+	 * @return \yii\web\Response|\yii\console\Response the response component
+	 */
+	public function getResponse()
+	{
+		return $this->getComponent('response');
 	}
 
 	/**

@@ -12,7 +12,6 @@ use DateTime;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 
-
 /**
  * Formatter provides a set of commonly used data formatting methods.
  *
@@ -39,17 +38,19 @@ class Formatter extends Component
 	public $datetimeFormat = 'Y/m/d h:i:s A';
 	/**
 	 * @var array the text to be displayed when formatting a boolean value. The first element corresponds
-	 * to the text display for false, the second element for true. Defaults to <code>array('No', 'Yes')</code>.
+	 * to the text display for false, the second element for true. Defaults to `array('No', 'Yes')`.
 	 */
 	public $booleanFormat;
 	/**
 	 * @var string the character displayed as the decimal point when formatting a number.
+	 * If not set, "." will be used.
 	 */
-	public $decimalSeparator = '.';
+	public $decimalSeparator;
 	/**
 	 * @var string the character displayed as the thousands separator character when formatting a number.
+	 * If not set, "," will be used.
 	 */
-	public $thousandSeparator = ',';
+	public $thousandSeparator;
 
 
 	/**
@@ -273,7 +274,11 @@ class Formatter extends Component
 	 */
 	public function asDouble($value, $decimals = 2)
 	{
-		return str_replace('.', $this->decimalSeparator, sprintf("%.{$decimals}f", $value));
+		if ($this->decimalSeparator === null) {
+			return sprintf("%.{$decimals}f", $value);
+		} else {
+			return str_replace('.', $this->decimalSeparator, sprintf("%.{$decimals}f", $value));
+		}
 	}
 
 	/**
@@ -287,6 +292,8 @@ class Formatter extends Component
 	 */
 	public function asNumber($value, $decimals = 0)
 	{
-		return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
+		$ds = isset($this->decimalSeparator) ? $this->decimalSeparator: '.';
+		$ts = isset($this->thousandSeparator) ? $this->thousandSeparator: ',';
+		return number_format($value, $decimals, $ds, $ts);
 	}
 }

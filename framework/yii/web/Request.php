@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\HttpException;
 use yii\base\InvalidConfigException;
+use yii\helpers\SecurityHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -37,19 +38,15 @@ class Request extends \yii\base\Request
 	 * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
 	 * @see Cookie
 	 */
-	public $csrfCookie = array('httponly' => true);
+	public $csrfCookie = array('httpOnly' => true);
 	/**
 	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
 	 */
 	public $enableCookieValidation = true;
 	/**
-	 * @var string the secret key used for cookie validation. If not set, a random key will be generated and used.
-	 */
-	public $cookieValidationKey;
-	/**
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
 	 * request tunneled through POST. Default to '_method'.
-	 * @see getRequestMethod
+	 * @see getMethod
 	 * @see getRestParams
 	 */
 	public $restVar = '_method';
@@ -81,7 +78,7 @@ class Request extends \yii\base\Request
 	 * @return string request method, such as GET, POST, HEAD, PUT, DELETE.
 	 * The value returned is turned into upper case.
 	 */
-	public function getRequestMethod()
+	public function getMethod()
 	{
 		if (isset($_POST[$this->restVar])) {
 			return strtoupper($_POST[$this->restVar]);
@@ -94,34 +91,34 @@ class Request extends \yii\base\Request
 	 * Returns whether this is a POST request.
 	 * @return boolean whether this is a POST request.
 	 */
-	public function getIsPostRequest()
+	public function getIsPost()
 	{
-		return $this->getRequestMethod() === 'POST';
+		return $this->getMethod() === 'POST';
 	}
 
 	/**
 	 * Returns whether this is a DELETE request.
 	 * @return boolean whether this is a DELETE request.
 	 */
-	public function getIsDeleteRequest()
+	public function getIsDelete()
 	{
-		return $this->getRequestMethod() === 'DELETE';
+		return $this->getMethod() === 'DELETE';
 	}
 
 	/**
 	 * Returns whether this is a PUT request.
 	 * @return boolean whether this is a PUT request.
 	 */
-	public function getIsPutRequest()
+	public function getIsPut()
 	{
-		return $this->getRequestMethod() === 'PUT';
+		return $this->getMethod() === 'PUT';
 	}
 
 	/**
 	 * Returns whether this is an AJAX (XMLHttpRequest) request.
 	 * @return boolean whether this is an AJAX (XMLHttpRequest) request.
 	 */
-	public function getIsAjaxRequest()
+	public function getIsAjax()
 	{
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
 	}
@@ -130,7 +127,7 @@ class Request extends \yii\base\Request
 	 * Returns whether this is an Adobe Flash or Flex request.
 	 * @return boolean whether this is an Adobe Flash or Adobe Flex request.
 	 */
-	public function getIsFlashRequest()
+	public function getIsFlash()
 	{
 		return isset($_SERVER['HTTP_USER_AGENT']) &&
 			(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
@@ -141,7 +138,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns the request parameters for the RESTful request.
 	 * @return array the RESTful request parameters
-	 * @see getRequestMethod
+	 * @see getMethod
 	 */
 	public function getRestParams()
 	{
@@ -203,7 +200,7 @@ class Request extends \yii\base\Request
 	 * @return mixed the GET parameter value
 	 * @see getPost
 	 */
-	public function getParam($name, $defaultValue = null)
+	public function get($name, $defaultValue = null)
 	{
 		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
 	}
@@ -229,7 +226,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getDelete($name, $defaultValue = null)
 	{
-		return $this->getIsDeleteRequest() ? $this->getRestParam($name, $defaultValue) : null;
+		return $this->getIsDelete() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	/**
@@ -240,7 +237,7 @@ class Request extends \yii\base\Request
 	 */
 	public function getPut($name, $defaultValue = null)
 	{
-		return $this->getIsPutRequest() ? $this->getRestParam($name, $defaultValue) : null;
+		return $this->getIsPut() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	private $_hostInfo;
@@ -717,12 +714,62 @@ class Request extends \yii\base\Request
 	public function getCookies()
 	{
 		if ($this->_cookies === null) {
-			$this->_cookies = new CookieCollection(array(
-				'enableValidation' => $this->enableCookieValidation,
-				'validationKey' => $this->cookieValidationKey,
+			$this->_cookies = new CookieCollection($this->loadCookies(), array(
+				'readOnly' => true,
 			));
 		}
 		return $this->_cookies;
+	}
+
+	/**
+	 * Converts `$_COOKIE` into an array of [[Cookie]].
+	 * @return array the cookies obtained from request
+	 */
+	protected function loadCookies()
+	{
+		$cookies = array();
+		if ($this->enableCookieValidation) {
+			$key = $this->getCookieValidationKey();
+			foreach ($_COOKIE as $name => $value) {
+				if (is_string($value) && ($value = SecurityHelper::validateData($value, $key)) !== false) {
+					$cookies[$name] = new Cookie(array(
+						'name' => $name,
+						'value' => @unserialize($value),
+					));
+				}
+			}
+		} else {
+			foreach ($_COOKIE as $name => $value) {
+				$cookies[$name] = new Cookie(array(
+					'name' => $name,
+					'value' => $value,
+				));
+			}
+		}
+		return $cookies;
+	}
+
+	private $_cookieValidationKey;
+
+	/**
+	 * @return string the secret key used for cookie validation. If it was set previously,
+	 * a random key will be generated and used.
+	 */
+	public function getCookieValidationKey()
+	{
+		if ($this->_cookieValidationKey === null) {
+			$this->_cookieValidationKey = SecurityHelper::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+		}
+		return $this->_cookieValidationKey;
+	}
+
+	/**
+	 * Sets the secret key used for cookie validation.
+	 * @param string $value the secret key used for cookie validation.
+	 */
+	public function setCookieValidationKey($value)
+	{
+		$this->_cookieValidationKey = $value;
 	}
 
 	private $_csrfToken;
@@ -772,7 +819,7 @@ class Request extends \yii\base\Request
 		if (!$this->enableCsrfValidation) {
 			return;
 		}
-		$method = $this->getRequestMethod();
+		$method = $this->getMethod();
 		if ($method === 'POST' || $method === 'PUT' || $method === 'DELETE') {
 			$cookies = $this->getCookies();
 			switch ($method) {
@@ -792,4 +839,3 @@ class Request extends \yii\base\Request
 		}
 	}
 }
-

@@ -10,7 +10,7 @@ if you have a project to be deployed for production soon.
 Thank you for using Yii 2 Advanced Application Template - an application template
 that works out-of-box and can be easily customized to fit for your needs.
 
-Yii 2 Advanced Application Template is best suitable for large projects requiring frontend and backstage separation,
+Yii 2 Advanced Application Template is best suitable for large projects requiring frontend and backend separation,
 deployment in different environments, configuration nesting etc.
 
 
@@ -20,18 +20,18 @@ DIRECTORY STRUCTURE
 ```
 common
 	config/             contains shared configurations
-	models/             contains model classes used in both backstage and frontend
+	models/             contains model classes used in both backend and frontend
 console
 	config/             contains console configurations
 	controllers/        contains console controllers (commands)
 	migrations/         contains database migrations
 	models/             contains console-specific model classes
 	runtime/            contains files generated during runtime
-backstage
+backend
 	assets/             contains application assets such as JavaScript and CSS
-	config/             contains backstage configurations
+	config/             contains backend configurations
 	controllers/        contains Web controller classes
-	models/             contains backstage-specific model classes
+	models/             contains backend-specific model classes
 	runtime/            contains files generated during runtime
 	views/              contains view files for the Web application
 	www/                contains the entry script and Web resources
@@ -79,6 +79,21 @@ php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-a
 This is not currently available. We will provide it when Yii 2 is formally released.
 
 
+### Install from development repository
+
+If you've cloned the [Yii 2 framework main development repository](https://github.com/yiisoft/yii2) you
+can bootstrap your application with:
+
+~~~
+cd yii2/apps/advanced
+php composer.phar create-project
+~~~
+
+*Note: If the above command fails with `[RuntimeException] Not enough arguments.` run
+`php composer.phar self-update` to obtain an updated version of composer which supports creating projects
+from local packages.*
+
+
 GETTING STARTED
 ---------------
 
@@ -92,7 +107,7 @@ the installed application. You only need to do these once for all.
 Now you should be able to access:
 
 - the frontend using the URL `http://localhost/yii-advanced/frontend/www/`
-- the backstage using the URL `http://localhost/yii-advanced/backstage/www/`
+- the backend using the URL `http://localhost/yii-advanced/backend/www/`
 
 assuming `yii-advanced` is directly under the document root of your Web server.
 

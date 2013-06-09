@@ -56,7 +56,7 @@ class User extends Component
 	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
 	 * @see Cookie
 	 */
-	public $identityCookie = array('name' => '_identity', 'httponly' => true);
+	public $identityCookie = array('name' => '_identity', 'httpOnly' => true);
 	/**
 	 * @var integer the number of seconds in which the user will be logged out automatically if he
 	 * remains inactive. If this property is not set, the user will be logged out after
@@ -221,7 +221,7 @@ class User extends Component
 			if ($destroySession) {
 				Yii::$app->getSession()->destroy();
 			}
- 			$this->afterLogout($identity);
+			$this->afterLogout($identity);
 		}
 	}
 
@@ -280,7 +280,7 @@ class User extends Component
 	public function loginRequired()
 	{
 		$request = Yii::$app->getRequest();
-		if (!$request->getIsAjaxRequest()) {
+		if (!$request->getIsAjax()) {
 			$this->setReturnUrl($request->getUrl());
 		}
 		if ($this->loginUrl !== null) {

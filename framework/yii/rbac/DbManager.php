@@ -493,8 +493,9 @@ class DbManager extends Manager
 				'bizRule' => $row['biz_rule'],
 				'data' => $data,
 			));
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	/**

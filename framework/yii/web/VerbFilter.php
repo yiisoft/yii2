@@ -76,12 +76,12 @@ class VerbFilter extends Behavior
 	{
 		$action = $event->action->id;
 		if (isset($this->actions[$action])) {
-			$verb = Yii::$app->getRequest()->getRequestMethod();
+			$verb = Yii::$app->getRequest()->getMethod();
 			$allowed = array_map('strtoupper', $this->actions[$action]);
 			if (!in_array($verb, $allowed)) {
 				$event->isValid = false;
 				// http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7
-				header('Allow: ' . implode(', ', $allowed));
+				Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $allowed));
 				throw new HttpException(405, 'Method Not Allowed. This url can only handle the following request methods: ' . implode(', ', $allowed));
 			}
 		}

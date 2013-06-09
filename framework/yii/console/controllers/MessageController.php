@@ -179,8 +179,7 @@ class MessageController extends Controller
 			}
 			ksort($translated);
 			foreach ($translated as $message => $translation) {
-				if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeOld)
-				{
+				if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeOld) {
 					if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
 						$todo[$message]=$translation;
 					} else {

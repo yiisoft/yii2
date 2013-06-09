@@ -1,44 +1,20 @@
 <?php
 
-namespace yii\web;
-
-use yiiunit\framework\web\ResponseTest;
-
-/**
- * Mock PHP header function to check for sent headers
- * @param string $string
- * @param bool $replace
- * @param int $httpResponseCode
- */
-function header($string, $replace = true, $httpResponseCode = null) {
-	ResponseTest::$headers[] = $string;
-	// TODO implement replace
-
-	if ($httpResponseCode !== null) {
-		ResponseTest::$httpResponseCode = $httpResponseCode;
-	}
-}
-
 namespace yiiunit\framework\web;
 
+use Yii;
 use yii\helpers\StringHelper;
 use yii\web\Response;
 
 class ResponseTest extends \yiiunit\TestCase
 {
-	public static $headers = array();
-	public static $httpResponseCode = 200;
+	public $response;
 
 	protected function setUp()
 	{
 		parent::setUp();
-		$this->reset();
-	}
-
-	protected function reset()
-	{
-		static::$headers = array();
-		static::$httpResponseCode = 200;
+		$this->mockApplication();
+		$this->response = new Response;
 	}
 
 	public function rightRanges()
@@ -59,14 +35,15 @@ class ResponseTest extends \yiiunit\TestCase
 	{
 		$content = $this->generateTestFileContent();
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
-		$sent = $this->runSendFile('testFile.txt', $content, null);
+		$this->response->sendFile('testFile.txt', $content, null, false);
 
-		$this->assertEquals($expectedFile, $sent);
-		$this->assertTrue(in_array('HTTP/1.1 206 Partial Content', static::$headers));
-		$this->assertTrue(in_array('Accept-Ranges: bytes', static::$headers));
-		$this->assertArrayHasKey('Content-Range: bytes ' . $expectedHeader . '/' . StringHelper::strlen($content), array_flip(static::$headers));
-		$this->assertTrue(in_array('Content-Type: text/plain', static::$headers));
-		$this->assertTrue(in_array('Content-Length: ' . $length, static::$headers));
+		$this->assertEquals($expectedFile, $this->response->content);
+		$this->assertEquals(206, $this->response->statusCode);
+		$headers = $this->response->headers;
+		$this->assertEquals("bytes", $headers->get('Accept-Ranges'));
+		$this->assertEquals("bytes " . $expectedHeader . '/' . StringHelper::strlen($content), $headers->get('Content-Range'));
+		$this->assertEquals('text/plain', $headers->get('Content-Type'));
+		$this->assertEquals("$length", $headers->get('Content-Length'));
 	}
 
 	public function wrongRanges()
@@ -90,21 +67,11 @@ class ResponseTest extends \yiiunit\TestCase
 
 		$content = $this->generateTestFileContent();
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
-		$this->runSendFile('testFile.txt', $content, null);
+		$this->response->sendFile('testFile.txt', $content, null, false);
 	}
 
 	protected function generateTestFileContent()
 	{
 		return '12ёжик3456798áèabcdefghijklmnopqrstuvwxyz!"§$%&/(ёжик)=?';
-	}
-
-	protected function runSendFile($fileName, $content, $mimeType)
-	{
-		ob_start();
-		ob_implicit_flush(false);
-		$response = new Response();
-		$response->sendFile($fileName, $content, $mimeType, false);
-		$file = ob_get_clean();
-		return $file;
 	}
 }

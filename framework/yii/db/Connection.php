@@ -305,8 +305,7 @@ class Connection extends Component
 				$this->pdo = $this->createPdoInstance();
 				$this->initConnection();
 				Yii::endProfile($token, __METHOD__);
-			}
-			catch (\PDOException $e) {
+			} catch (\PDOException $e) {
 				Yii::endProfile($token, __METHOD__);
 				Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __METHOD__);
 				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
@@ -508,7 +507,7 @@ class Connection extends Component
 	{
 		$db = $this;
 		return preg_replace_callback('/(\\{\\{([%\w\-\. ]+)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
-			function($matches) use($db) {
+			function ($matches) use ($db) {
 				if (isset($matches[3])) {
 					return $db->quoteColumnName($matches[3]);
 				} else {

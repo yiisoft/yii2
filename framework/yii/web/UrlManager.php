@@ -43,6 +43,31 @@ class UrlManager extends Component
 	 * array, one can use the key to represent the pattern and the value the corresponding route.
 	 * For example, `'post/<id:\d+>' => 'post/view'`.
 	 *
+	 * For RESTful routing the mentioned shortcut format also allows you to specify the
+	 * [[UrlRule::verb|HTTP verb]] that the rule should apply for.
+	 * You can do that  by prepending it to the pattern, separated by space.
+	 * For example, `'PUT post/<id:\d+>' => 'post/update'`.
+	 * You may specify multiple verbs by separating them with comma
+	 * like this: `'POST,PUT post/index' => 'post/create'`.
+	 * The supported verbs in the shortcut format are: GET, HEAD, POST, PUT and DELETE.
+	 * Note that [[UrlRule::mode|mode]] will be set to PARSING_ONLY when specifying verb in this way
+	 * so you normally would not specify a verb for normal GET request.
+	 *
+	 * Here is an example configuration for RESTful CRUD controller:
+	 *
+	 * ~~~php
+	 * array(
+	 *     'dashboard' => 'site/index',
+	 *
+	 *     'POST <controller:\w+>s' => '<controller>/create',
+	 *     '<controller:\w+>s' => '<controller>/index',
+	 *
+	 *     'PUT <controller:\w+>/<id:\d+>'    => '<controller>/update',
+	 *     'DELETE <controller:\w+>/<id:\d+>' => '<controller>/delete',
+	 *     '<controller:\w+>/<id:\d+>'        => '<controller>/view',
+	 * );
+	 * ~~~
+	 *
 	 * Note that if you modify this property after the UrlManager object is created, make sure
 	 * you populate the array with rule objects instead of rule configurations.
 	 */
@@ -115,9 +140,14 @@ class UrlManager extends Component
 		foreach ($this->rules as $key => $rule) {
 			if (!is_array($rule)) {
 				$rule = array(
-					'pattern' => $key,
 					'route' => $rule,
 				);
+				if (preg_match('/^((?:(GET|HEAD|POST|PUT|DELETE),)*(GET|HEAD|POST|PUT|DELETE))\s+(.*)$/', $key, $matches)) {
+					$rule['verb'] = explode(',', $matches[1]);
+					$rule['mode'] = UrlRule::PARSING_ONLY;
+					$key = $matches[4];
+				}
+				$rule['pattern'] = $key;
 			}
 			$rules[] = Yii::createObject(array_merge($this->ruleConfig, $rule));
 		}
@@ -166,7 +196,7 @@ class UrlManager extends Component
 
 			return array($pathInfo, array());
 		} else {
-			$route = $request->getParam($this->routeVar);
+			$route = $request->get($this->routeVar);
 			if (is_array($route)) {
 				$route = '';
 			}

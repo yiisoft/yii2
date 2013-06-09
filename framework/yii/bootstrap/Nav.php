@@ -29,11 +29,17 @@ use yii\helpers\Html;
  *             'label' => 'Dropdown',
  *             'items' => array(
  *                  array(
- *                      'label' => 'DropdownA',
+ *                      'label' => 'Level 1 -DropdownA',
  *                      'url' => '#',
+ *                      'items' => array(
+ *                          array(
+ *                              'label' => 'Level 2 -DropdownA',
+ *                              'url' => '#',
+ *                          ),
+ *                      ),
  *                  ),
  *                  array(
- *                      'label' => 'DropdownB',
+ *                      'label' => 'Level 1 -DropdownB',
  *                      'url' => '#',
  *                  ),
  *             ),
@@ -114,25 +120,27 @@ class Nav extends Widget
 		}
 		$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
 		$options = ArrayHelper::getValue($item, 'options', array());
-		$dropdown = ArrayHelper::getValue($item, 'dropdown');
+		$items = ArrayHelper::getValue($item, 'items');
 		$url = Html::url(ArrayHelper::getValue($item, 'url', '#'));
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
 
-		if(ArrayHelper::getValue($item, 'active')) {
+		if (ArrayHelper::getValue($item, 'active')) {
 			$this->addCssClass($options, 'active');
 		}
 
-		if ($dropdown !== null) {
+		if ($items !== null) {
 			$linkOptions['data-toggle'] = 'dropdown';
 			$this->addCssClass($options, 'dropdown');
 			$this->addCssClass($urlOptions, 'dropdown-toggle');
 			$label .= ' ' . Html::tag('b', '', array('class' => 'caret'));
-			if (is_array($dropdown)) {
-				$dropdown['clientOptions'] = false;
-				$dropdown = Dropdown::widget($dropdown);
+			if (is_array($items)) {
+				$items = Dropdown::widget(array(
+					'items' => $items,
+					'clientOptions' => false,
+				));
 			}
 		}
 
-		return Html::tag('li', Html::a($label, $url, $linkOptions) . $dropdown, $options);
+		return Html::tag('li', Html::a($label, $url, $linkOptions) . $items, $options);
 	}
 }

@@ -20,6 +20,7 @@ class SiteController extends Controller
 
 	public function actionIndex()
 	{
+		Yii::$app->end(0, false);
 		echo $this->render('index');
 	}
 

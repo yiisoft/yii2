@@ -115,7 +115,7 @@ class MigrateController extends Controller
 			}
 			$this->migrationPath = $path;
 
-			if($action->id!=='create') {
+			if ($action->id !== 'create') {
 				if (is_string($this->db)) {
 					$this->db = Yii::$app->getComponent($this->db);
 				}
