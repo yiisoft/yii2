@@ -165,11 +165,11 @@ SQL;
 			$columns = explode(',', $constraint['columns']);
 			$fcolumns = explode(',', $constraint['foreign_columns']);
 			if ($constraint['foreign_table_schema'] !== $this->defaultSchema) {
-				$foreign_table = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
+				$foreignTable = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
 			} else {
-				$foreign_table = $constraint['foreign_table_name'];
+				$foreignTable = $constraint['foreign_table_name'];
 			}
-			$citem = array($foreign_table);
+			$citem = array($foreignTable);
 			foreach ($columns as $idx => $column) {
 				$citem[] = array($fcolumns[$idx] => $column);
 			}
@@ -285,5 +285,4 @@ SQL;
 		$column->phpType = $this->getColumnPhpType($column);
 		return $column;
 	}
-
 }
