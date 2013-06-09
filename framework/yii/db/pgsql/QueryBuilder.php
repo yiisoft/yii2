@@ -22,13 +22,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public $typeMap = array(
 	    Schema::TYPE_PK => 'serial not null primary key',
-	    Schema::TYPE_STRING => 'varchar',
+	    Schema::TYPE_STRING => 'varchar(255)',
 	    Schema::TYPE_TEXT => 'text',
 	    Schema::TYPE_SMALLINT => 'smallint',
 	    Schema::TYPE_INTEGER => 'integer',
 	    Schema::TYPE_BIGINT => 'bigint',
 	    Schema::TYPE_FLOAT => 'double precision',
-	    Schema::TYPE_DECIMAL => 'numeric',
+	    Schema::TYPE_DECIMAL => 'numeric(10,0)',
 	    Schema::TYPE_DATETIME => 'timestamp',
 	    Schema::TYPE_TIMESTAMP => 'timestamp',
 	    Schema::TYPE_TIME => 'time',

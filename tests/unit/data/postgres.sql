@@ -10,6 +10,13 @@ DROP TABLE IF EXISTS tbl_order CASCADE;
 DROP TABLE IF EXISTS tbl_category CASCADE;
 DROP TABLE IF EXISTS tbl_customer CASCADE;
 DROP TABLE IF EXISTS tbl_type CASCADE;
+DROP TABLE IF EXISTS tbl_constraints CASCADE;
+
+CREATE TABLE tbl_constraints
+(
+  id integer not null,
+  field1 varchar(255)
+);
 
 CREATE TABLE tbl_customer (
   id serial not null primary key,
