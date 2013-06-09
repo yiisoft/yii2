@@ -179,4 +179,30 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	{
 		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
+	
+	/**
+	 * Builds a SQL statement for adding a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 * @return string the SQL statement for adding a primary key constraint to an existing table.
+	 * @throws NotSupportedException this is not supported by SQLite
+	 */
+	public function addPrimaryKey($name,$table,$columns)
+	{
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+	}	
+	
+	/**
+	 * Builds a SQL statement for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return string the SQL statement for removing a primary key constraint from an existing table.
+	 * @throws NotSupportedException this is not supported by SQLite	 *
+	 */
+	public function dropPrimarykey($name,$table)
+	{
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');		
+	}		
 }
+

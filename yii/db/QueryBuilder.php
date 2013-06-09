@@ -281,9 +281,9 @@ class QueryBuilder extends \yii\base\Object
 		if(is_string($columns))
 			$columns=preg_split('/\s*,\s*/',$columns,-1,PREG_SPLIT_NO_EMPTY);
 		foreach($columns as $i=>$col)
-			$columns[$i]=$this->quoteColumnName($col);
-		return 'ALTER TABLE ' . $this->quoteTableName($table) . ' ADD CONSTRAINT '
-			. $this->quoteColumnName($name) . '  PRIMARY KEY ('
+			$columns[$i]=$this->db->quoteColumnName($col);
+		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+			. $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
 			. implode(', ', $columns). ' )';
 	}	
 	
