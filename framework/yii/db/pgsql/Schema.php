@@ -73,7 +73,7 @@ class Schema extends \yii\db\Schema
 	);
 
 	/**
-	 * Creates a query builder for the MySQL database.
+	 * Creates a query builder for the PostgreSQL database.
 	 * @return QueryBuilder query builder instance
 	 */
 	public function createQueryBuilder()
@@ -143,14 +143,9 @@ class Schema extends \yii\db\Schema
 
 		$sql = <<<SQL
 select 
-	ct.conname as containst,
-	c.relname as table_name,
-	ns.nspname as table_schema,
-	current_database() as table_catalog,
 	(select string_agg(attname,',') attname from pg_attribute where attrelid=ct.conrelid and attnum = any(ct.conkey)) as columns,
 	fc.relname as foreign_table_name,
 	fns.nspname as foreign_table_schema,
-	current_database() as foreign_table_catalog,
 	(select string_agg(attname,',') attname from pg_attribute where attrelid=ct.confrelid and attnum = any(ct.confkey)) as foreign_columns
 from
 	pg_constraint ct 
@@ -169,7 +164,12 @@ SQL;
 		foreach ($constraints as $constraint) {
 			$columns = explode(',', $constraint['columns']);
 			$fcolumns = explode(',', $constraint['foreign_columns']);
-			$citem = array($constraint['foreign_table_name']);
+			if ($constraint['foreign_table_schema'] !== $this->defaultSchema) {
+				$foreign_table = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
+			} else {
+				$foreign_table = $constraint['foreign_table_name'];
+			}
+			$citem = array($foreign_table);
 			foreach ($columns as $idx => $column) {
 				$citem[] = array($fcolumns[$idx] => $column);
 			}
@@ -243,10 +243,6 @@ ORDER BY
 SQL;
 
 		$columns = $this->db->createCommand($sql)->queryAll();
-		if (empty($columns)) {
-			return false;
-		}
-
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
 			$table->columns[$column->name] = $column;
@@ -289,4 +285,5 @@ SQL;
 		$column->phpType = $this->getColumnPhpType($column);
 		return $column;
 	}
+
 }
