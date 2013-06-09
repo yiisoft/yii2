@@ -661,7 +661,7 @@ class Command extends \yii\base\Component
 	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
 	 * @return Command the command object itself.
 	 */	
-	public function addPrimaryKey($name,$table,$columns)
+	public function addPrimaryKey($name, $table, $columns)
 	{
 		$sql = $this->db->getQueryBuilder()->addPrimaryKey($name, $table, $columns);
 		return $this->setSql($sql);
@@ -673,7 +673,7 @@ class Command extends \yii\base\Component
 	 * @param string $table the table that the primary key constraint will be removed from.
 	 * @return Command the command object itself
 	 */	
-	public function dropPrimarykey($name,$table)
+	public function dropPrimarykey($name, $table)
 	{
 		$sql = $this->db->getQueryBuilder()->dropPrimarykey($name, $table);
 		return $this->setSql($sql);
