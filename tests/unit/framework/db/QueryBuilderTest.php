@@ -7,23 +7,26 @@ use yii\db\Schema;
 use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
 use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
+use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 
 class QueryBuilderTest extends DatabaseTestCase
 {
+
 	/**
 	 * @throws \Exception
 	 * @return QueryBuilder
 	 */
 	protected function getQueryBuilder()
 	{
-		switch($this->driverName)
-		{
+		switch ($this->driverName) {
 			case 'mysql':
 				return new MysqlQueryBuilder($this->getConnection());
 			case 'sqlite':
 				return new SqliteQueryBuilder($this->getConnection());
 			case 'mssql':
 				return new MssqlQueryBuilder($this->getConnection());
+			case 'pgsql':
+				return new PgsqlQueryBuilder($this->getConnection());
 		}
 		throw new \Exception('Test is not implemented for ' . $this->driverName);
 	}
@@ -95,15 +98,31 @@ class QueryBuilderTest extends DatabaseTestCase
 		);
 	}
 
-	/**
-	 *
-	 */
 	public function testGetColumnType()
 	{
 		$qb = $this->getQueryBuilder();
-		foreach($this->columnTypes() as $item) {
+		foreach ($this->columnTypes() as $item) {
 			list ($column, $expected) = $item;
 			$this->assertEquals($expected, $qb->getColumnType($column));
 		}
 	}
+
+	public function testAddDropPrimayKey()
+	{
+		$tableName = 'tbl_constraints';
+		$pkeyName = $tableName . "_pkey";
+		
+		// ADD
+		$qb = $this->getQueryBuilder();
+		$qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, array('id'))->execute();
+		$tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+		$this->assertEquals(1, count($tableSchema->primaryKey));
+
+		//DROP
+		$qb->db->createCommand()->dropPrimarykey($pkeyName, $tableName)->execute();
+		$qb = $this->getQueryBuilder(); // resets the schema
+		$tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+		$this->assertEquals(0, count($tableSchema->primaryKey));		
+	}
+
 }
