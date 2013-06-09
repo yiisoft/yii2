@@ -224,11 +224,51 @@ class MessageController extends Controller
  * Message string can be used with plural forms format. Check i18n section
  * of the guide for details.
  *
- * NOTE, this file must be saved in UTF-8 encoding.
+ * NOTE: this file must be saved in UTF-8 encoding.
  */
 return $array;
 
 EOD;
 		file_put_contents($fileName, $content);
+	}
+
+	/**
+	 * Creates template of configuration file for [[actionIndex]].
+	 * @param string $configFile output file name.
+	 * @throws \yii\console\Exception on failure.
+	 */
+	public function actionTemplate($configFile)
+	{
+		$template = <<<EOD
+<?php
+/**
+ * Configuration file for the "yii {$this->id}" console command.
+ */
+return array(
+	'sourcePath' => __DIR__,
+	'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
+	'languages' => array(),
+	'fileTypes' => array('php'),
+	'overwrite' => true,
+	'exclude' => array(
+		'.svn',
+		'.gitignore',
+		'.gitkeep',
+		'.hgignore',
+		'.hgkeep',
+		'/messages',
+	),
+);
+EOD;
+		if (file_exists($configFile)) {
+			if (!$this->confirm("File '{$configFile}' already exists. Do you wish to overwrite it?")) {
+				return;
+			}
+		}
+		if (!file_put_contents($configFile, $template)) {
+			throw new Exception("Unable to write template file '{$configFile}'.");
+		} else {
+			echo "Configuration file template created at '{$configFile}'.\n\n";
+		}
 	}
 }

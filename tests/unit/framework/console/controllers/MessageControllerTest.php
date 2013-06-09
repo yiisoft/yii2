@@ -151,20 +151,25 @@ class MessageControllerTest extends TestCase
 
 	// Tests:
 
-	public function testEmptyArgs()
+	public function testActionTemplate()
 	{
-		$this->setExpectedException('CException', 'usageError');
-		$this->runMessageControllerAction('index', array());
+		$configFileName = $this->configFileName;
+		$this->runMessageControllerAction('template', array($configFileName));
+		$this->assertTrue(file_exists($configFileName), 'Unable to create config file template!');
 	}
 
 	public function testConfigFileNotExist()
 	{
-		$this->setExpectedException('CException', 'usageError');
+		$this->markTestIncomplete('MessageController is incomplete');
+
+		$this->setExpectedException('yii\\console\\Exception');
 		$this->runMessageControllerAction('index', array('not_existing_file.php'));
 	}
 
 	public function testCreateTranslation()
 	{
+		$this->markTestIncomplete('MessageController is incomplete');
+
 		$language = 'en';
 
 		$category = 'test_category';
