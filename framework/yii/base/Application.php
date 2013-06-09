@@ -128,6 +128,11 @@ class Application extends Module
 			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
+			// Allocating twice more than required to display memory exhausted error
+			// in case of trying to allocate last 1 byte while all memory is taken.
+			$this->_memoryReserve = str_repeat('x', 1024 * 256);
+			register_shutdown_function(array($this, 'end'), 0, false);
+			register_shutdown_function(array($this, 'handleFatalError'));
 		}
 	}
 
@@ -142,10 +147,9 @@ class Application extends Module
 	{
 		if (!$this->_ended) {
 			$this->_ended = true;
+			$this->getResponse()->end();
 			$this->afterRequest();
 		}
-
-		$this->handleFatalError();
 
 		if ($exit) {
 			exit($status);
@@ -160,11 +164,10 @@ class Application extends Module
 	public function run()
 	{
 		$this->beforeRequest();
-		// Allocating twice more than required to display memory exhausted error
-		// in case of trying to allocate last 1 byte while all memory is taken.
-		$this->_memoryReserve = str_repeat('x', 1024 * 256);
-		register_shutdown_function(array($this, 'end'), 0, false);
+		$response = $this->getResponse();
+		$response->begin();
 		$status = $this->processRequest();
+		$response->end();
 		$this->afterRequest();
 		return $status;
 	}
@@ -312,6 +315,15 @@ class Application extends Module
 	public function getRequest()
 	{
 		return $this->getComponent('request');
+	}
+
+	/**
+	 * Returns the response component.
+	 * @return \yii\web\Response|\yii\console\Response the response component
+	 */
+	public function getResponse()
+	{
+		return $this->getComponent('response');
 	}
 
 	/**

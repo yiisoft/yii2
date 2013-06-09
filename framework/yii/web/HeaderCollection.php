@@ -79,11 +79,13 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 * If there is already a header with the same name, it will be replaced.
 	 * @param string $name the name of the header
 	 * @param string $value the value of the header
+	 * @return HeaderCollection the collection object itself
 	 */
-	public function set($name, $value)
+	public function set($name, $value = '')
 	{
 		$name = strtolower($name);
 		$this->_headers[$name] = (array)$value;
+		return $this;
 	}
 
 	/**
@@ -92,11 +94,13 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 * be appended to it instead of replacing it.
 	 * @param string $name the name of the header
 	 * @param string $value the value of the header
+	 * @return HeaderCollection the collection object itself
 	 */
 	public function add($name, $value)
 	{
 		$name = strtolower($name);
 		$this->_headers[$name][] = $value;
+		return $this;
 	}
 
 	/**

@@ -13,6 +13,9 @@ namespace yii\base;
  */
 class Response extends Component
 {
+	const EVENT_BEGIN_RESPONSE = 'beginResponse';
+	const EVENT_END_RESPONSE = 'endResponse';
+
 	/**
 	 * Starts output buffering
 	 */
@@ -55,5 +58,15 @@ class Response extends Component
 		} else {
 			ob_end_clean();
 		}
+	}
+
+	public function begin()
+	{
+		$this->trigger(self::EVENT_BEGIN_RESPONSE);
+	}
+
+	public function end()
+	{
+		$this->trigger(self::EVENT_END_RESPONSE);
 	}
 }

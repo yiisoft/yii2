@@ -277,11 +277,8 @@ class CaptchaAction extends Action
 
 		imagecolordeallocate($image, $foreColor);
 
-		header('Pragma: public');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Content-Transfer-Encoding: binary');
-		header("Content-type: image/png");
+		$this->sendHttpHeaders();
+
 		imagepng($image);
 		imagedestroy($image);
 	}
@@ -319,12 +316,21 @@ class CaptchaAction extends Action
 			$x += (int)($fontMetrics['textWidth']) + $this->offset;
 		}
 
-		header('Pragma: public');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Content-Transfer-Encoding: binary');
-		header("Content-type: image/png");
 		$image->setImageFormat('png');
-		echo $image;
+		Yii::$app->getResponse()->content = (string)$image;
+		$this->sendHttpHeaders();
+	}
+
+	/**
+	 * Sends the HTTP headers needed by image response.
+	 */
+	protected function sendHttpHeaders()
+	{
+		Yii::$app->getResponse()->getHeaders()
+			->set('Pragma', 'public')
+			->set('Expires', '0')
+			->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+			->set('Content-Transfer-Encoding', 'binary')
+			->set('Content-type', 'image/png');
 	}
 }

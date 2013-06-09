@@ -50,7 +50,7 @@ class HttpCache extends ActionFilter
 	/**
 	 * @var string HTTP cache control header. If null, the header will not be sent.
 	 */
-	public $cacheControlHeader = 'Cache-Control: max-age=3600, public';
+	public $cacheControlHeader = 'max-age=3600, public';
 
 	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
@@ -60,7 +60,7 @@ class HttpCache extends ActionFilter
 	 */
 	public function beforeAction($action)
 	{
-		$verb = Yii::$app->request->getMethod();
+		$verb = Yii::$app->getRequest()->getMethod();
 		if ($verb !== 'GET' && $verb !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
 			return true;
 		}
@@ -75,17 +75,18 @@ class HttpCache extends ActionFilter
 		}
 
 		$this->sendCacheControlHeader();
+		$response = Yii::$app->getResponse();
 		if ($etag !== null) {
-			header("ETag: $etag");
+			$response->getHeaders()->set('Etag', $etag);
 		}
 
 		if ($this->validateCache($lastModified, $etag)) {
-			header('HTTP/1.1 304 Not Modified');
+			$response->setStatusCode(304);
 			return false;
 		}
 
 		if ($lastModified !== null) {
-			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
+			$response->getHeaders()->set('Last-Modified', gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
 		}
 		return true;
 	}
@@ -113,9 +114,10 @@ class HttpCache extends ActionFilter
 	protected function sendCacheControlHeader()
 	{
 		session_cache_limiter('public');
-		header('Pragma:', true);
+		$headers = Yii::$app->getResponse()->getHeaders();
+		$headers->set('Pragma');
 		if ($this->cacheControlHeader !== null) {
-			header($this->cacheControlHeader, true);
+			$headers->set('Cache-Control', $this->cacheControlHeader);
 		}
 	}
 
