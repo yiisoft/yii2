@@ -43,6 +43,7 @@ class Schema extends \yii\db\Schema
 		'circle' => self::TYPE_STRING,
 		'date' => self::TYPE_DATE,
 		'real' => self::TYPE_FLOAT,
+		'decimal' => self::TYPE_DECIMAL,
 		'double precision' => self::TYPE_DECIMAL,
 		'inet' => self::TYPE_STRING,
 		'smallint' => self::TYPE_SMALLINT,
@@ -55,7 +56,6 @@ class Schema extends \yii\db\Schema
 		'money' => self::TYPE_MONEY,
 		'name' => self::TYPE_STRING,
 		'numeric' => self::TYPE_STRING,
-		'numrange' => self::TYPE_DECIMAL,
 		'oid' => self::TYPE_BIGINT, // should not be used. it's pg internal!
 		'path' => self::TYPE_STRING,
 		'point' => self::TYPE_STRING,
