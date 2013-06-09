@@ -23,6 +23,10 @@ use yii\helpers\FileHelper;
 class MessageController extends Controller
 {
 	/**
+	 * @var string controller default action ID.
+	 */
+	public $defaultAction = 'generate';
+	/**
 	 * Searches for messages to be translated in the specified
 	 * source files and compiles them into PHP arrays as message source.
 	 *
@@ -58,7 +62,7 @@ class MessageController extends Controller
 	 *  - sort: sort messages by key when merging, regardless of their translation
 	 *    state (new, obsolete, translated.)
 	 */
-	public function actionIndex($config)
+	public function actionGenerate($config)
 	{
 		if (!is_file($config)) {
 			throw new Exception("the configuration file {$config} does not exist.");
@@ -233,7 +237,7 @@ EOD;
 	}
 
 	/**
-	 * Creates template of configuration file for [[actionIndex]].
+	 * Creates template of configuration file for [[actionGenerate]].
 	 * @param string $configFile output file name.
 	 * @throws \yii\console\Exception on failure.
 	 */
