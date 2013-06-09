@@ -118,7 +118,7 @@ class Response extends \yii\base\Response
 		511 => 'Network Authentication Required',
 	);
 
-	private $_statusCode = 200;
+	private $_statusCode;
 	/**
 	 * @var HeaderCollection
 	 */
@@ -199,6 +199,14 @@ class Response extends \yii\base\Response
 		$this->sendContent();
 	}
 
+	public function reset()
+	{
+		$this->_headers = null;
+		$this->_statusCode = null;
+		$this->statusText = null;
+		$this->content = null;
+	}
+
 	/**
 	 * Sends the response headers to the client
 	 */
@@ -207,7 +215,10 @@ class Response extends \yii\base\Response
 		if (headers_sent()) {
 			return;
 		}
-		header("HTTP/{$this->version} " . $this->getStatusCode() . " {$this->statusText}");
+		$statusCode = $this->getStatusCode();
+		if ($statusCode !== null) {
+			header("HTTP/{$this->version} $statusCode {$this->statusText}");
+		}
 		if ($this->_headers) {
 			$headers = $this->getHeaders();
 			foreach ($headers as $name => $values) {
@@ -334,10 +345,10 @@ class Response extends \yii\base\Response
 			ob_start();
 			Yii::$app->end(0, false);
 			ob_end_clean();
-			echo $content;
+			$this->content = $content;
 			exit(0);
 		} else {
-			echo $content;
+			$this->content = $content;
 		}
 	}
 
