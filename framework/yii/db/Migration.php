@@ -310,6 +310,35 @@ class Migration extends \yii\base\Component
 	}
 
 	/**
+	 * Builds and executes a SQL statement for creating a primary key.
+	 * The method will properly quote the table and column names.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		echo "    > add primary key $name on $table (".is_array($columns) ? implode(',',$columns) : $columns.") ...";
+		$time = microtime(true);
+		$this->db->createCommand()->addPrimaryKey($name, $table, $columns)->execute();
+		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+	}
+
+	/**
+	 * Builds and executes a SQL statement for dropping a primary key.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return Command the command object itself
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		echo "    > drop primary key $name ...";
+		$time = microtime(true);
+		$this->db->createCommand()->dropPrimaryKey($name, $table)->execute();
+		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+	}
+
+	/**
 	 * Builds a SQL statement for adding a foreign key constraint to an existing table.
 	 * The method will properly quote the table and column names.
 	 * @param string $name the name of the foreign key constraint.
