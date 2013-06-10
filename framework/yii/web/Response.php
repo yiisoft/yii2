@@ -158,7 +158,7 @@ class Response extends \yii\base\Response
 	public function setStatusCode($value, $text = null)
 	{
 		$this->_statusCode = (int)$value;
-		if ($this->isInvalid()) {
+		if ($this->getIsInvalid()) {
 			throw new InvalidParamException("The HTTP status code is invalid: $value");
 		}
 		if ($text === null) {
