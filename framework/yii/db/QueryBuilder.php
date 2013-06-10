@@ -297,7 +297,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $table the table that the primary key constraint will be removed from.
 	 * @return string the SQL statement for removing a primary key constraint from an existing table.	 *
 	 */
-	public function dropPrimarykey($name, $table)
+	public function dropPrimaryKey($name, $table)
 	{
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
 			. ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
