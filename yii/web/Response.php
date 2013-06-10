@@ -46,11 +46,10 @@ class Response extends \yii\base\Response
 	 * @var string the version of the HTTP protocol to use
 	 */
 	public $version = '1.0';
-
 	/**
 	 * @var array list of HTTP status codes and the corresponding texts
 	 */
-	public static $statusTexts = array(
+	public static $httpStatuses = array(
 		100 => 'Continue',
 		101 => 'Switching Protocols',
 		102 => 'Processing',
@@ -135,12 +134,12 @@ class Response extends \yii\base\Response
 	public function begin()
 	{
 		parent::begin();
-		$this->beginOutput();
+		$this->beginBuffer();
 	}
 
 	public function end()
 	{
-		$this->content .= $this->endOutput();
+		$this->content .= $this->endBuffer();
 		$this->send();
 		parent::end();
 	}
@@ -157,7 +156,7 @@ class Response extends \yii\base\Response
 			throw new InvalidParamException("The HTTP status code is invalid: $value");
 		}
 		if ($text === null) {
-			$this->statusText = isset(self::$statusTexts[$this->_statusCode]) ? self::$statusTexts[$this->_statusCode] : '';
+			$this->statusText = isset(self::$httpStatuses[$this->_statusCode]) ? self::$httpStatuses[$this->_statusCode] : '';
 		} else {
 			$this->statusText = $text;
 		}
@@ -178,15 +177,17 @@ class Response extends \yii\base\Response
 
 	public function renderJson($data)
 	{
-		$this->getHeaders()->set('content-type', 'application/json');
+		$this->getHeaders()->set('Content-Type', 'application/json');
 		$this->content = Json::encode($data);
+		$this->send();
 	}
 
 	public function renderJsonp($data, $callbackName)
 	{
-		$this->getHeaders()->set('content-type', 'text/javascript');
+		$this->getHeaders()->set('Content-Type', 'text/javascript');
 		$data = Json::encode($data);
 		$this->content = "$callbackName($data);";
+		$this->send();
 	}
 
 	/**
@@ -197,6 +198,17 @@ class Response extends \yii\base\Response
 	{
 		$this->sendHeaders();
 		$this->sendContent();
+
+		if (function_exists('fastcgi_finish_request')) {
+			fastcgi_finish_request();
+		} else {
+			for ($level = ob_get_level(); $level > 0; --$level) {
+				if (!@ob_end_flush()) {
+					ob_clean();
+				}
+			}
+			flush();
+		}
 	}
 
 	public function reset()

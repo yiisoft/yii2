@@ -137,7 +137,6 @@ class Application extends Module
 			// Allocating twice more than required to display memory exhausted error
 			// in case of trying to allocate last 1 byte while all memory is taken.
 			$this->_memoryReserve = str_repeat('x', 1024 * 256);
-			register_shutdown_function(array($this, 'end'), 0, false);
 			register_shutdown_function(array($this, 'handleFatalError'));
 		}
 	}
@@ -172,6 +171,7 @@ class Application extends Module
 		$this->beforeRun();
 		$response = $this->getResponse();
 		$response->begin();
+		register_shutdown_function(array($this, 'end'), 0, false);
 		$status = $this->processRequest();
 		$response->end();
 		$this->afterRun();
