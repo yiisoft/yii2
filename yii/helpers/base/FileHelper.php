@@ -288,4 +288,26 @@ class FileHelper
 			return false;
 		}
 	}
+
+	/**
+	 * Shared environment safe version of mkdir. Supports recursive creation.
+	 * For avoidance of umask side-effects chmod is used.
+	 *
+	 * @param string $path path to be created.
+	 * @param integer $mode  the permission to be set for created directory. If not set  0777 will be used.
+	 * @param boolean $recursive whether to create directory structure recursive if parent dirs do not exist.
+	 * @return boolean result of mkdir.
+	 * @see mkdir
+	 */
+	public static function mkdir($path, $mode = null, $recursive = false)
+	{
+		$prevDir = dirname($path);
+		if ($recursive && !is_dir($path) && !is_dir($prevDir)) {
+			static::mkdir(dirname($path), $mode, true);
+		}
+		$mode = isset($mode) ? $mode : 0777;
+		$result = mkdir($path, $mode);
+		chmod($path, $mode);
+		return $result;
+	}
 }
