@@ -221,6 +221,31 @@ class FileHelperTest extends TestCase
 	/**
 	 * @depends testFindFiles
 	 */
+	public function testFindFileFilter()
+	{
+		$dirName = 'test_dir';
+		$passedFileName = 'passed.txt';
+		$this->createFileStructure(array(
+			$dirName => array(
+				$passedFileName => 'passed file content',
+				'declined.txt' => 'declined file content',
+			),
+		));
+		$basePath = $this->testFilePath;
+		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
+
+		$options = array(
+			'filter' => function($base, $name, $isFile) use ($passedFileName) {
+				return ($passedFileName == $name);
+			}
+		);
+		$foundFiles = FileHelper::findFiles($dirName, $options);
+		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $passedFileName), $foundFiles);
+	}
+
+	/**
+	 * @depends testFindFiles
+	 */
 	public function testFindFilesExclude()
 	{
 		$dirName = 'test_dir';
