@@ -18,6 +18,9 @@ class FileHelperTest extends TestCase
 	{
 		$this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . get_class($this);
 		$this->createDir($this->testFilePath);
+		if (!file_exists($this->testFilePath)) {
+			$this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
+		}
 	}
 
 	public function tearDown()
@@ -43,8 +46,30 @@ class FileHelperTest extends TestCase
 	protected function removeDir($dirName)
 	{
 		if (!empty($dirName) && file_exists($dirName)) {
-			exec("rm -rf {$dirName}");
+			if ($handle = opendir($dirName)) {
+				while (false !== ($entry = readdir($handle))) {
+					if ($entry != '.' && $entry != '..') {
+						if (is_dir($dirName . DIRECTORY_SEPARATOR . $entry) === true) {
+							$this->removeDir($dirName . DIRECTORY_SEPARATOR . $entry);
+						} else {
+							unlink($dirName . DIRECTORY_SEPARATOR . $entry);
+						}
+					}
+				}
+				closedir($handle);
+				rmdir($dirName);
+			}
 		}
+	}
+
+	/**
+	 * Get file permission mode.
+	 * @param string $file file name.
+	 * @return string permission mode.
+	 */
+	protected function getMode($file)
+	{
+		return substr(sprintf('%o', fileperms($file)), -4);
 	}
 
 	/**
@@ -53,7 +78,8 @@ class FileHelperTest extends TestCase
 	 * Arrays specifies directories, other values - files.
 	 * @param string $basePath structure base file path.
 	 */
-	protected function createFileStructure(array $items, $basePath = '') {
+	protected function createFileStructure(array $items, $basePath = '')
+	{
 		if (empty($basePath)) {
 			$basePath = $this->testFilePath;
 		}
@@ -66,6 +92,18 @@ class FileHelperTest extends TestCase
 				file_put_contents($itemName, $content);
 			}
 		}
+	}
+
+	/**
+	 * Asserts that file has specific permission mode.
+	 * @param integer $expectedMode expected file permission mode.
+	 * @param string $fileName file name.
+	 * @param string $message error message
+	 */
+	protected function assertFileMode($expectedMode, $fileName, $message='')
+	{
+		$expectedMode = sprintf('%o', $expectedMode);
+		$this->assertEquals($expectedMode, $this->getMode($fileName), $message);
 	}
 
 	// Tests :
@@ -93,6 +131,42 @@ class FileHelperTest extends TestCase
 			$this->assertTrue(file_exists($fileName), 'Directory file is missing!');
 			$this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
 		}
+	}
+
+	/**
+	 * @depends testCopyDirectory
+	 */
+	public function testCopyDirectoryPermissions()
+	{
+		if (substr(PHP_OS, 0, 3) == 'WIN') {
+			$this->markTestSkipped("Can't reliably test it on Windows because fileperms() always return 0777.");
+		}
+
+		$srcDirName = 'test_src_dir';
+		$subDirName = 'test_sub_dir';
+		$fileName = 'test_file.txt';
+		$this->createFileStructure(array(
+			$srcDirName => array(
+				$subDirName => array(),
+				$fileName => 'test file content',
+			),
+		));
+
+		$basePath = $this->testFilePath;
+		$srcDirName = $basePath . DIRECTORY_SEPARATOR . $srcDirName;
+		$dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_dst_dir';
+
+		$dirMode = 0755;
+		$fileMode = 0755;
+		$options = array(
+			'dirMode' => $dirMode,
+			'fileMode' => $fileMode,
+		);
+		FileHelper::copyDirectory($srcDirName, $dstDirName, $options);
+
+		$this->assertFileMode($dirMode, $dstDirName, 'Destination directory has wrong mode!');
+		$this->assertFileMode($dirMode, $dstDirName . DIRECTORY_SEPARATOR . $subDirName, 'Copied sub directory has wrong mode!');
+		$this->assertFileMode($fileMode, $dstDirName . DIRECTORY_SEPARATOR . $fileName, 'Copied file has wrong mode!');
 	}
 
 	public function testRemoveDirectory()
@@ -142,5 +216,54 @@ class FileHelperTest extends TestCase
 		$foundFiles = FileHelper::findFiles($dirName);
 		sort($expectedFiles);
 		$this->assertEquals($expectedFiles, $foundFiles);
+	}
+
+	/**
+	 * @depends testFindFiles
+	 */
+	public function testFindFilesExclude()
+	{
+		$dirName = 'test_dir';
+		$fileName = 'test_file.txt';
+		$excludeFileName = 'exclude_file.txt';
+		$this->createFileStructure(array(
+			$dirName => array(
+				$fileName => 'file content',
+				$excludeFileName => 'exclude file content',
+			),
+		));
+		$basePath = $this->testFilePath;
+		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
+
+		$options = array(
+			'exclude' => array($excludeFileName),
+		);
+		$foundFiles = FileHelper::findFiles($dirName, $options);
+		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
+	}
+
+	/**
+	 * @depends testFindFiles
+	 */
+	public function testFindFilesFileType()
+	{
+		$dirName = 'test_dir';
+		$fileType = 'dat';
+		$fileName = 'test_file.' . $fileType;
+		$excludeFileName = 'exclude_file.txt';
+		$this->createFileStructure(array(
+			$dirName => array(
+				$fileName => 'file content',
+				$excludeFileName => 'exclude file content',
+			),
+		));
+		$basePath = $this->testFilePath;
+		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
+
+		$options = array(
+			'fileTypes' => array($fileType),
+		);
+		$foundFiles = FileHelper::findFiles($dirName, $options);
+		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
 	}
 }
