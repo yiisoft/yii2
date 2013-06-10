@@ -277,10 +277,10 @@ class Response extends \yii\base\Response
 	/**
 	 * Sends a file to the browser.
 	 * @param string $filePath the path of the file to be sent.
-	 * @param string $mimeType the MIME type of the content. If null, it will be guessed based on `$filePath`
 	 * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
+	 * @param string $mimeType the MIME type of the content. If null, it will be guessed based on `$filePath`
 	 */
-	public function sendFile($filePath, $mimeType = null, $attachmentName = null)
+	public function sendFile($filePath, $attachmentName = null, $mimeType = null)
 	{
 		if ($mimeType === null && ($mimeType = FileHelper::getMimeTypeByExtension($filePath)) === null) {
 			$mimeType = 'application/octet-stream';
@@ -289,16 +289,16 @@ class Response extends \yii\base\Response
 			$attachmentName = basename($filePath);
 		}
 		$handle = fopen($filePath, 'rb');
-		$this->sendStreamAsFile($handle, $mimeType, $attachmentName);
+		$this->sendStreamAsFile($handle, $attachmentName, $mimeType);
 	}
 
 	/**
 	 * Sends the specified content as a file to the browser.
 	 * @param string $content the content to be sent. The existing [[content]] will be discarded.
-	 * @param string $mimeType the MIME type of the content.
 	 * @param string $attachmentName the file name shown to the user.
+	 * @param string $mimeType the MIME type of the content.
 	 */
-	public function sendContentAsFile($content, $mimeType = 'application/octet-stream', $attachmentName = 'file')
+	public function sendContentAsFile($content, $attachmentName = 'file', $mimeType = 'application/octet-stream')
 	{
 		$this->getHeaders()
 			->addDefault('Pragma', 'public')
@@ -317,11 +317,11 @@ class Response extends \yii\base\Response
 	/**
 	 * Sends the specified stream as a file to the browser.
 	 * @param resource $handle the handle of the stream to be sent.
-	 * @param string $mimeType the MIME type of the stream content.
 	 * @param string $attachmentName the file name shown to the user.
+	 * @param string $mimeType the MIME type of the stream content.
 	 * @throws HttpException if the requested range cannot be satisfied.
 	 */
-	public function sendStreamAsFile($handle, $mimeType = 'application/octet-stream', $attachmentName = 'file')
+	public function sendStreamAsFile($handle, $attachmentName = 'file', $mimeType = 'application/octet-stream')
 	{
 		$headers = $this->getHeaders();
 		fseek($handle, 0, SEEK_END);
@@ -455,7 +455,7 @@ class Response extends \yii\base\Response
 	 * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
 	 * @param string $xHeader the name of the x-sendfile header.
 	 */
-	public function xSendFile($filePath, $mimeType = null, $attachmentName = null, $xHeader = 'X-Sendfile')
+	public function xSendFile($filePath, $attachmentName = null, $mimeType = null, $xHeader = 'X-Sendfile')
 	{
 		if ($mimeType === null && ($mimeType = FileHelper::getMimeTypeByExtension($filePath)) === null) {
 			$mimeType = 'application/octet-stream';
