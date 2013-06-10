@@ -95,7 +95,7 @@ class FileHelper
 			}
 		}
 
-		return $checkExtension ? self::getMimeTypeByExtension($file) : null;
+		return $checkExtension ? static::getMimeTypeByExtension($file) : null;
 	}
 
 	/**
@@ -172,23 +172,23 @@ class FileHelper
 
 	/**
 	 * Removes a directory recursively.
-	 * @param string $directory to be deleted recursively.
+	 * @param string $dir to be deleted recursively.
 	 */
-	public static function removeDirectory($directory)
+	public static function removeDirectory($dir)
 	{
-		$items = glob($directory . DIRECTORY_SEPARATOR . '{,.}*', GLOB_MARK | GLOB_BRACE);
+		$items = glob($dir . DIRECTORY_SEPARATOR . '{,.}*', GLOB_MARK | GLOB_BRACE);
 		foreach ($items as $item) {
 			if (basename($item) == '.' || basename($item) == '..') {
 				continue;
 			}
 			if (substr($item, -1) == DIRECTORY_SEPARATOR) {
-				self::removeDirectory($item);
+				static::removeDirectory($item);
 			} else {
 				unlink($item);
 			}
 		}
-		if (is_dir($directory)) {
-			rmdir($directory);
+		if (is_dir($dir)) {
+			rmdir($dir);
 		}
 	}
 
