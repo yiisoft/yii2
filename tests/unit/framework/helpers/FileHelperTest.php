@@ -278,4 +278,21 @@ class FileHelperTest extends TestCase
 		FileHelper::mkdir($dirName, null, true);
 		$this->assertTrue(file_exists($dirName), 'Unable to create directory recursively!');
 	}
+
+	public function testGetMimeTypeByExtension()
+	{
+		$magicFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type.php';
+		$mimeTypeMap = array(
+			'txa' => 'application/json',
+			'txb' => 'another/mime',
+		);
+		$magicFileContent = '<?php return ' . var_export($mimeTypeMap, true) . ';';
+		file_put_contents($magicFile, $magicFileContent);
+
+		foreach ($mimeTypeMap as $extension => $mimeType) {
+			$fileName = 'test.' . $extension;
+			$this->assertNull(FileHelper::getMimeTypeByExtension($fileName));
+			$this->assertEquals($mimeType, FileHelper::getMimeTypeByExtension($fileName, $magicFile));
+		}
+	}
 }
