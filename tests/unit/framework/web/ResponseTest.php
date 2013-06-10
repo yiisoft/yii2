@@ -4,10 +4,20 @@ namespace yiiunit\framework\web;
 
 use Yii;
 use yii\helpers\StringHelper;
-use yii\web\Response;
+
+class Response extends \yii\web\Response
+{
+	public function send()
+	{
+		// does nothing to allow testing
+	}
+}
 
 class ResponseTest extends \yiiunit\TestCase
 {
+	/**
+	 * @var Response
+	 */
 	public $response;
 
 	protected function setUp()
@@ -31,17 +41,20 @@ class ResponseTest extends \yiiunit\TestCase
 	/**
 	 * @dataProvider rightRanges
 	 */
-	public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedFile)
+	public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedContent)
 	{
-		$content = $this->generateTestFileContent();
+		$dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+		$fullContent = file_get_contents($dataFile);
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
-		$this->response->sendFile('testFile.txt', $content, null, false);
+		ob_start();
+		$this->response->sendFile($dataFile);
+		$content = ob_get_clean();
 
-		$this->assertEquals($expectedFile, $this->response->content);
+		$this->assertEquals($expectedContent, $content);
 		$this->assertEquals(206, $this->response->statusCode);
 		$headers = $this->response->headers;
 		$this->assertEquals("bytes", $headers->get('Accept-Ranges'));
-		$this->assertEquals("bytes " . $expectedHeader . '/' . StringHelper::strlen($content), $headers->get('Content-Range'));
+		$this->assertEquals("bytes " . $expectedHeader . '/' . StringHelper::strlen($fullContent), $headers->get('Content-Range'));
 		$this->assertEquals('text/plain', $headers->get('Content-Type'));
 		$this->assertEquals("$length", $headers->get('Content-Length'));
 	}
@@ -63,11 +76,11 @@ class ResponseTest extends \yiiunit\TestCase
 	 */
 	public function testSendFileWrongRanges($rangeHeader)
 	{
-		$this->setExpectedException('yii\base\HttpException', 'Requested Range Not Satisfiable');
+		$this->setExpectedException('yii\base\HttpException');
 
-		$content = $this->generateTestFileContent();
+		$dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
-		$this->response->sendFile('testFile.txt', $content, null, false);
+		$this->response->sendFile($dataFile);
 	}
 
 	protected function generateTestFileContent()

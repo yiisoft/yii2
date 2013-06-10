@@ -275,141 +275,68 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * Sends a file to user.
-	 * @param string $fileName file name
-	 * @param string $content content to be set.
-	 * @param string $mimeType mime type of the content. If null, it will be guessed automatically based on the given file name.
-	 * @param boolean $terminate whether to terminate the current application after calling this method
-	 * @throws HttpException when range request is not satisfiable.
+	 * Sends a file to the browser.
+	 * @param string $filePath the path of the file to be sent.
+	 * @param string $mimeType the MIME type of the content. If null, it will be guessed based on `$filePath`
+	 * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
 	 */
-	public function sendFile($fileName, $content, $mimeType = null, $terminate = true)
+	public function sendFile($filePath, $mimeType = null, $attachmentName = null)
 	{
-		if ($mimeType === null && (($mimeType = FileHelper::getMimeTypeByExtension($fileName)) === null)) {
+		if ($mimeType === null && ($mimeType = FileHelper::getMimeTypeByExtension($filePath)) === null) {
 			$mimeType = 'application/octet-stream';
 		}
-
-		$fileSize = StringHelper::strlen($content);
-		$contentStart = 0;
-		$contentEnd = $fileSize - 1;
-
-		$headers = $this->getHeaders();
-
-		// tell the client that we accept range requests
-		$headers->set('Accept-Ranges', 'bytes');
-
-		if (isset($_SERVER['HTTP_RANGE'])) {
-			// client sent us a multibyte range, can not hold this one for now
-			if (strpos($_SERVER['HTTP_RANGE'], ',') !== false) {
-				$headers->set('Content-Range', "bytes $contentStart-$contentEnd/$fileSize");
-				throw new HttpException(416, 'Requested Range Not Satisfiable');
-			}
-
-			$range = str_replace('bytes=', '', $_SERVER['HTTP_RANGE']);
-
-			// range requests starts from "-", so it means that data must be dumped the end point.
-			if ($range[0] === '-') {
-				$contentStart = $fileSize - substr($range, 1);
-			} else {
-				$range = explode('-', $range);
-				$contentStart = $range[0];
-
-				// check if the last-byte-pos presents in header
-				if ((isset($range[1]) && is_numeric($range[1]))) {
-					$contentEnd = $range[1];
-				}
-			}
-
-			/* Check the range and make sure it's treated according to the specs.
-			 * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-			 */
-			// End bytes can not be larger than $end.
-			$contentEnd = ($contentEnd > $fileSize) ? $fileSize - 1 : $contentEnd;
-
-			// Validate the requested range and return an error if it's not correct.
-			$wrongContentStart = ($contentStart > $contentEnd || $contentStart > $fileSize - 1 || $contentStart < 0);
-
-			if ($wrongContentStart) {
-				$headers->set('Content-Range', "bytes $contentStart-$contentEnd/$fileSize");
-				throw new HttpException(416, 'Requested Range Not Satisfiable');
-			}
-
-			$this->setStatusCode(206);
-			$headers->set('Content-Range', "bytes $contentStart-$contentEnd/$fileSize");
-		} else {
-			$this->setStatusCode(200);
+		if ($attachmentName === null) {
+			$attachmentName = basename($filePath);
 		}
-
-		$length = $contentEnd - $contentStart + 1; // Calculate new content length
-
-		$headers->set('Pragma', 'public')
-			->set('Expires', '0')
-			->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-			->set('Content-Type', $mimeType)
-			->set('Content-Length', $length)
-			->set('Content-Disposition', "attachment; filename=\"$fileName\"")
-			->set('Content-Transfer-Encoding', 'binary');
-
-		$content = StringHelper::substr($content, $contentStart, $length);
-
-		if ($terminate) {
-			// clean up the application first because the file downloading could take long time
-			// which may cause timeout of some resources (such as DB connection)
-			ob_start();
-			Yii::$app->end(0, false);
-			ob_end_clean();
-			$this->content = $content;
-			exit(0);
-		} else {
-			$this->content = $content;
-		}
+		$handle = fopen($filePath, 'rb');
+		$this->sendStreamAsFile($handle, $mimeType, $attachmentName);
 	}
 
-	public function sendStream($handle, $options = array())
+	/**
+	 * Sends the specified content as a file to the browser.
+	 * @param string $content the content to be sent. The existing [[content]] will be discarded.
+	 * @param string $mimeType the MIME type of the content.
+	 * @param string $attachmentName the file name shown to the user.
+	 */
+	public function sendContentAsFile($content, $mimeType = 'application/octet-stream', $attachmentName = 'file')
 	{
+		$this->getHeaders()
+			->addDefault('Pragma', 'public')
+			->addDefault('Accept-Ranges', 'bytes')
+			->addDefault('Expires', '0')
+			->addDefault('Content-Type', $mimeType)
+			->addDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+			->addDefault('Content-Transfer-Encoding', 'binary')
+			->addDefault('Content-Length', StringHelper::strlen($content))
+			->addDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
+
+		$this->content = $content;
+		$this->send();
+	}
+
+	/**
+	 * Sends the specified stream as a file to the browser.
+	 * @param resource $handle the handle of the stream to be sent.
+	 * @param string $mimeType the MIME type of the stream content.
+	 * @param string $attachmentName the file name shown to the user.
+	 * @throws HttpException if the requested range cannot be satisfied.
+	 */
+	public function sendStreamAsFile($handle, $mimeType = 'application/octet-stream', $attachmentName = 'file')
+	{
+		$headers = $this->getHeaders();
 		fseek($handle, 0, SEEK_END);
 		$fileSize = ftell($handle);
 
-		$contentStart = 0;
-		$contentEnd = $fileSize - 1;
+		$range = $this->getHttpRange($fileSize);
+		if ($range === false) {
+			$headers->set('Content-Range', "bytes */$fileSize");
+			throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
+		}
 
-		$headers = $this->getHeaders();
-
-		if (isset($_SERVER['HTTP_RANGE'])) {
-			// client sent us a multibyte range, can not hold this one for now
-			if (strpos($_SERVER['HTTP_RANGE'], ',') !== false) {
-				$headers->set('Content-Range', "bytes $contentStart-$contentEnd/$fileSize");
-				throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
-			}
-
-			$range = str_replace('bytes=', '', $_SERVER['HTTP_RANGE']);
-
-			// range requests starts from "-", so it means that data must be dumped the end point.
-			if ($range[0] === '-') {
-				$contentStart = $fileSize - substr($range, 1);
-			} else {
-				$range = explode('-', $range);
-				$contentStart = $range[0];
-
-				// check if the last-byte-pos presents in header
-				if ((isset($range[1]) && is_numeric($range[1]))) {
-					$contentEnd = $range[1];
-				}
-			}
-
-			/* Check the range and make sure it's treated according to the specs.
-			 * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-			 */
-			// End bytes can not be larger than $end.
-			$contentEnd = $contentEnd > $fileSize ? $fileSize - 1 : $contentEnd;
-
-			// Validate the requested range and return an error if it's not correct.
-			if ($contentStart > $contentEnd || $contentStart > $fileSize - 1 || $contentStart < 0) {
-				$headers->set('Content-Range', "bytes $contentStart-$contentEnd/$fileSize");
-				throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
-			}
-
+		list($begin, $end) = $range;
+		if ($begin !=0 || $end != $fileSize - 1) {
 			$this->setStatusCode(206);
-			$headers->set('Content-Range', "bytes $contentStart-$contentEnd/$fileSize");
+			$headers->set('Content-Range', "bytes $begin-$end/$fileSize");
 		} else {
 			$this->setStatusCode(200);
 		}
@@ -418,39 +345,63 @@ class Response extends \yii\base\Response
 			$headers->set('Content-Type', $options['mimeType']);
 		}
 
-		$length = $contentEnd - $contentStart + 1;
-		$disposition = empty($options['disposition']) ? 'attachment' : $options['disposition'];
-		if (!isset($options['saveName'])) {
-			$options['saveName'] = 'data';
-		}
+		$length = $end - $begin + 1;
 
-		$headers->set('Pragma', 'public')
-			->set('Expires', '0')
-			->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-			->set('Content-Disposition', "$disposition; filename=\"{$options['saveName']}\"")
-			->set('Content-Length', $length)
-			->set('Content-Transfer-Encoding', 'binary');
+		$headers->addDefault('Pragma', 'public')
+			->addDefault('Accept-Ranges', 'bytes')
+			->addDefault('Expires', '0')
+			->addDefault('Content-Type', $mimeType)
+			->addDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+			->addDefault('Content-Transfer-Encoding', 'binary')
+			->addDefault('Content-Length', $length)
+			->addDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
-		if (isset($options['headers'])) {
-			foreach ($options['headers'] as $header => $value) {
-				$headers->add($header, $value);
-			}
-		}
+		$this->send();
 
-		fseek($handle, $contentStart);
-
+		fseek($handle, $begin);
 		set_time_limit(0); // Reset time limit for big files
-
 		$chunkSize = 8 * 1024 * 1024; // 8MB per chunk
-		while (!feof($handle) && ($fPointer = ftell($handle)) <= $contentEnd) {
-			if ($fPointer + $chunkSize > $contentEnd) {
-				$chunkSize = $contentEnd - $fPointer + 1;
+		while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
+			if ($pos + $chunkSize > $end) {
+				$chunkSize = $end - $pos + 1;
 			}
 			echo fread($handle, $chunkSize);
 			flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
 		}
-
 		fclose($handle);
+	}
+
+	/**
+	 * Determines the HTTP range given in the request.
+	 * @param integer $fileSize the size of the file that will be used to validate the requested HTTP range.
+	 * @return array|boolean the range (begin, end), or false if the range request is invalid.
+	 */
+	protected function getHttpRange($fileSize)
+	{
+		if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
+			return array(0, $fileSize - 1);
+		}
+		if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
+			return false;
+		}
+		if ($matches[1] === '') {
+			$start = $fileSize - $matches[2];
+			$end = $fileSize - 1;
+		} elseif ($matches[2] !== '') {
+			$start = $matches[1];
+			$end = $matches[2];
+			if ($end >= $fileSize) {
+				$end = $fileSize - 1;
+			}
+		} else {
+			$start = $matches[1];
+			$end = $fileSize - 1;
+		}
+		if ($start < 0 || $start > $end) {
+			return false;
+		} else {
+			return array($start, $end);
+		}
 	}
 
 	/**
@@ -496,46 +447,27 @@ class Response extends \yii\base\Response
 	 * **Example**
 	 * 
 	 * ~~~
-	 * Yii::app()->request->xSendFile('/home/user/Pictures/picture1.jpg', array(
-	 *      'saveName' => 'image1.jpg',
-	 *      'mimeType' => 'image/jpeg',
-	 *      'terminate' => false,
-	 * ));
+	 * Yii::app()->request->xSendFile('/home/user/Pictures/picture1.jpg');
+	 * ~~~
 	 *
 	 * @param string $filePath file name with full path
-	 * @param array $options additional options:
-	 *
-	 * - saveName: file name shown to the user. If not set, the name will be determined from `$filePath`.
-	 * - mimeType: MIME type of the file. If not set, it will be determined based on the file name.
-	 * - xHeader: appropriate x-sendfile header, defaults to "X-Sendfile".
-	 * - disposition: either "attachment" or "inline". This specifies whether the file will be downloaded
-	 *   or shown inline. Defaults to "attachment".
-	 * - headers: an array of additional http headers in name-value pairs.
+	 * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
+	 * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
+	 * @param string $xHeader the name of the x-sendfile header.
 	 */
-	public function xSendFile($filePath, $options = array())
+	public function xSendFile($filePath, $mimeType = null, $attachmentName = null, $xHeader = 'X-Sendfile')
 	{
-		$headers = $this->getHeaders();
-
-		$headers->set(empty($options['xHeader']) ? 'X-Sendfile' : $options['xHeader'], $filePath);
-
-		if (!isset($options['mimeType'])) {
-			if (($options['mimeType'] = FileHelper::getMimeTypeByExtension($filePath)) === null) {
-				$options['mimeType'] = 'text/plain';
-			}
+		if ($mimeType === null && ($mimeType = FileHelper::getMimeTypeByExtension($filePath)) === null) {
+			$mimeType = 'application/octet-stream';
 		}
-		$headers->set('Content-Type', $options['mimeType']);
-
-		$disposition = empty($options['disposition']) ? 'attachment' : $options['disposition'];
-		if (!isset($options['saveName'])) {
-			$options['saveName'] = basename($filePath);
+		if ($attachmentName === null) {
+			$attachmentName = basename($filePath);
 		}
-		$headers->set('Content-Disposition', "$disposition; filename=\"{$options['saveName']}\"");
 
-		if (isset($options['headers'])) {
-			foreach ($options['headers'] as $header => $value) {
-				$headers->add($header, $value);
-			}
-		}
+		$this->getHeaders()
+			->addDefault($xHeader, $filePath)
+			->addDefault('Content-Type', $mimeType)
+			->addDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
 		$this->send();
 	}

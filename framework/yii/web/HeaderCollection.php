@@ -104,6 +104,22 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	}
 
 	/**
+	 * Adds a new header only if it does not exist yet.
+	 * If there is already a header with the same name, the new one will be ignored.
+	 * @param string $name the name of the header
+	 * @param string $value the value of the header
+	 * @return HeaderCollection the collection object itself
+	 */
+	public function addDefault($name, $value)
+	{
+		$name = strtolower($name);
+		if (empty($this->_headers[$name])) {
+			$this->_headers[$name][] = $value;
+		}
+		return $this;
+	}
+
+	/**
 	 * Returns a value indicating whether the named header exists.
 	 * @param string $name the name of the header
 	 * @return boolean whether the named header exists
