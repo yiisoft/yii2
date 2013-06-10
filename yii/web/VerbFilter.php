@@ -10,7 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\ActionEvent;
 use yii\base\Behavior;
-use yii\base\HttpException;
+use yii\web\HttpException;
 
 /**
  * VerbFilter is an action filter that filters by HTTP request methods.
@@ -70,7 +70,7 @@ class VerbFilter extends Behavior
 	/**
 	 * @param ActionEvent $event
 	 * @return boolean
-	 * @throws \yii\base\HttpException when the request method is not allowed.
+	 * @throws HttpException when the request method is not allowed.
 	 */
 	public function beforeAction($event)
 	{

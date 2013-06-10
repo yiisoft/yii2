@@ -5,7 +5,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\web;
+
+use yii\base\UserException;
+use yii\web\Response;
 
 /**
  * HttpException represents an exception caused by an improper request of the end-user.
@@ -42,9 +45,8 @@ class HttpException extends UserException
 	 */
 	public function getName()
 	{
-		// use absolute namespaced class here because PHP will generate a mysterious error otherwise
-		if (isset(\yii\web\Response::$httpStatuses[$this->statusCode])) {
-			return \yii\web\Response::$httpStatuses[$this->statusCode];
+		if (isset(Response::$httpStatuses[$this->statusCode])) {
+			return Response::$httpStatuses[$this->statusCode];
 		} else {
 			return 'Error';
 		}
