@@ -10,6 +10,7 @@
 namespace yii\helpers\base;
 
 use Yii;
+use yii\helpers\StringHelper;
 
 /**
  * Filesystem helper
@@ -66,7 +67,7 @@ class FileHelper
 		if ($language === $sourceLanguage) {
 			return $file;
 		}
-		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $sourceLanguage . DIRECTORY_SEPARATOR . basename($file);
+		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $sourceLanguage . DIRECTORY_SEPARATOR . StringHelper::basename($file);
 		return is_file($desiredFile) ? $desiredFile : $file;
 	}
 
@@ -178,10 +179,11 @@ class FileHelper
 	{
 		$items = glob($dir . DIRECTORY_SEPARATOR . '{,.}*', GLOB_MARK | GLOB_BRACE);
 		foreach ($items as $item) {
-			if (basename($item) == '.' || basename($item) == '..') {
+			$itemBaseName = StringHelper::basename($item);
+			if ($itemBaseName === '.' || $itemBaseName === '..') {
 				continue;
 			}
-			if (substr($item, -1) == DIRECTORY_SEPARATOR) {
+			if (StringHelper::substr($item, -1, 1) == DIRECTORY_SEPARATOR) {
 				static::removeDirectory($item);
 			} else {
 				unlink($item);
