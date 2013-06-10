@@ -9,7 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
-use yii\base\HttpException;
+use yii\web\HttpException;
 use yii\base\InvalidConfigException;
 
 /**

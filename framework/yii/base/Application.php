@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\web\HttpException;
 
 /**
  * Application is the base class for all application classes.

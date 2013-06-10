@@ -8,7 +8,7 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\HttpException;
+use yii\web\HttpException;
 use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;

@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\web\HttpException;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
