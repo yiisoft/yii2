@@ -673,9 +673,9 @@ class Command extends \yii\base\Component
 	 * @param string $table the table that the primary key constraint will be removed from.
 	 * @return Command the command object itself
 	 */
-	public function dropPrimarykey($name, $table)
+	public function dropPrimaryKey($name, $table)
 	{
-		$sql = $this->db->getQueryBuilder()->dropPrimarykey($name, $table);
+		$sql = $this->db->getQueryBuilder()->dropPrimaryKey($name, $table);
 		return $this->setSql($sql);
 	}
 
