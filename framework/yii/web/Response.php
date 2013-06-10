@@ -158,7 +158,7 @@ class Response extends \yii\base\Response
 	public function setStatusCode($value, $text = null)
 	{
 		$this->_statusCode = (int)$value;
-		if ($this->isInvalid()) {
+		if ($this->getIsInvalid()) {
 			throw new InvalidParamException("The HTTP status code is invalid: $value");
 		}
 		if ($text === null) {
@@ -565,7 +565,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response has a valid [[statusCode]].
 	 */
-	public function isInvalid()
+	public function getIsInvalid()
 	{
 		return $this->getStatusCode() < 100 || $this->getStatusCode() >= 600;
 	}
@@ -573,7 +573,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response is informational
 	 */
-	public function isInformational()
+	public function getIsInformational()
 	{
 		return $this->getStatusCode() >= 100 && $this->getStatusCode() < 200;
 	}
@@ -581,7 +581,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response is successful
 	 */
-	public function isSuccessful()
+	public function getIsSuccessful()
 	{
 		return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
 	}
@@ -589,7 +589,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response is a redirection
 	 */
-	public function isRedirection()
+	public function getIsRedirection()
 	{
 		return $this->getStatusCode() >= 300 && $this->getStatusCode() < 400;
 	}
@@ -597,7 +597,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response indicates a client error
 	 */
-	public function isClientError()
+	public function getIsClientError()
 	{
 		return $this->getStatusCode() >= 400 && $this->getStatusCode() < 500;
 	}
@@ -605,7 +605,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response indicates a server error
 	 */
-	public function isServerError()
+	public function getIsServerError()
 	{
 		return $this->getStatusCode() >= 500 && $this->getStatusCode() < 600;
 	}
@@ -613,7 +613,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response is OK
 	 */
-	public function isOk()
+	public function getIsOk()
 	{
 		return 200 === $this->getStatusCode();
 	}
@@ -621,7 +621,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response indicates the current request is forbidden
 	 */
-	public function isForbidden()
+	public function getIsForbidden()
 	{
 		return 403 === $this->getStatusCode();
 	}
@@ -629,7 +629,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response indicates the currently requested resource is not found
 	 */
-	public function isNotFound()
+	public function getIsNotFound()
 	{
 		return 404 === $this->getStatusCode();
 	}
@@ -637,7 +637,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @return boolean whether this response is empty
 	 */
-	public function isEmpty()
+	public function getIsEmpty()
 	{
 		return in_array($this->getStatusCode(), array(201, 204, 304));
 	}
