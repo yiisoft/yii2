@@ -9,6 +9,9 @@ use yii\test\TestCase;
  */
 class FileHelperTest extends TestCase
 {
+	/**
+	 * @var string test files path.
+	 */
 	private $testFilePath = '';
 
 	public function setUp()
@@ -46,7 +49,8 @@ class FileHelperTest extends TestCase
 
 	// Tests :
 
-	public function testCopyDirectory() {
+	public function testCopyDirectory()
+	{
 		$basePath = $this->testFilePath;
 		$srcDirName = $basePath . DIRECTORY_SEPARATOR . 'test_src_dir';
 		mkdir($srcDirName, 0777, true);
@@ -67,5 +71,28 @@ class FileHelperTest extends TestCase
 			$this->assertTrue(file_exists($fileName), 'Directory file is missing!');
 			$this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
 		}
+	}
+
+	public function testRemoveDirectory()
+	{
+		$basePath = $this->testFilePath;
+		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_for_remove';
+		mkdir($dirName, 0777, true);
+		$files = array(
+			'file1.txt' => 'file 1 content',
+			'file2.txt' => 'file 2 content',
+		);
+		foreach ($files as $name => $content) {
+			file_put_contents($dirName . DIRECTORY_SEPARATOR . $name, $content);
+		}
+		$subDirName = $dirName . DIRECTORY_SEPARATOR . 'test_sub_dir';
+		mkdir($subDirName, 0777, true);
+		foreach ($files as $name => $content) {
+			file_put_contents($subDirName . DIRECTORY_SEPARATOR . $name, $content);
+		}
+
+		FileHelper::removeDirectory($dirName);
+
+		$this->assertFalse(file_exists($dirName), 'Unable to remove directory!');
 	}
 }
