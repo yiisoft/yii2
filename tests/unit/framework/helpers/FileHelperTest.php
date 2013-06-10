@@ -95,4 +95,33 @@ class FileHelperTest extends TestCase
 
 		$this->assertFalse(file_exists($dirName), 'Unable to remove directory!');
 	}
+
+	public function testFindFiles()
+	{
+		$basePath = $this->testFilePath;
+		$expectedFiles = array();
+
+		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_for_remove';
+		mkdir($dirName, 0777, true);
+		$files = array(
+			'file1.txt' => 'file 1 content',
+			'file2.txt' => 'file 2 content',
+		);
+		foreach ($files as $name => $content) {
+			$fileName = $dirName . DIRECTORY_SEPARATOR . $name;
+			file_put_contents($fileName, $content);
+			$expectedFiles[] = $fileName;
+		}
+		$subDirName = $dirName . DIRECTORY_SEPARATOR . 'test_sub_dir';
+		mkdir($subDirName, 0777, true);
+		foreach ($files as $name => $content) {
+			$fileName = $subDirName . DIRECTORY_SEPARATOR . $name;
+			file_put_contents($fileName, $content);
+			$expectedFiles[] = $fileName;
+		}
+
+		$foundFiles = FileHelper::findFiles($dirName);
+		sort($expectedFiles);
+		$this->assertEquals($expectedFiles, $foundFiles);
+	}
 }
