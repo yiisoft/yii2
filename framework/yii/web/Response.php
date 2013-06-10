@@ -93,7 +93,7 @@ class Response extends \yii\base\Response
 		415 => 'Unsupported Media Type',
 		416 => 'Requested range unsatisfiable',
 		417 => 'Expectation failed',
-		418 => 'I’m a teapot',
+		418 => 'I\'m a teapot',
 		422 => 'Unprocessable entity',
 		423 => 'Locked',
 		424 => 'Method failure',
@@ -117,6 +117,9 @@ class Response extends \yii\base\Response
 		511 => 'Network Authentication Required',
 	);
 
+	/**
+	 * @var integer the HTTP status code to send with the response.
+	 */
 	private $_statusCode;
 	/**
 	 * @var HeaderCollection
@@ -144,6 +147,9 @@ class Response extends \yii\base\Response
 		parent::end();
 	}
 
+	/**
+	 * @return integer the HTTP status code to send with the response.
+	 */
 	public function getStatusCode()
 	{
 		return $this->_statusCode;
@@ -298,7 +304,7 @@ class Response extends \yii\base\Response
 	 * @param string $attachmentName the file name shown to the user.
 	 * @param string $mimeType the MIME type of the content.
 	 */
-	public function sendContentAsFile($content, $attachmentName = 'file', $mimeType = 'application/octet-stream')
+	public function sendContentAsFile($content, $attachmentName, $mimeType = 'application/octet-stream')
 	{
 		$this->getHeaders()
 			->addDefault('Pragma', 'public')
@@ -321,7 +327,7 @@ class Response extends \yii\base\Response
 	 * @param string $mimeType the MIME type of the stream content.
 	 * @throws HttpException if the requested range cannot be satisfied.
 	 */
-	public function sendStreamAsFile($handle, $attachmentName = 'file', $mimeType = 'application/octet-stream')
+	public function sendStreamAsFile($handle, $attachmentName, $mimeType = 'application/octet-stream')
 	{
 		$headers = $this->getHeaders();
 		fseek($handle, 0, SEEK_END);
@@ -573,7 +579,7 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * @return boolean whether this response is successfully
+	 * @return boolean whether this response is successful
 	 */
 	public function isSuccessful()
 	{
