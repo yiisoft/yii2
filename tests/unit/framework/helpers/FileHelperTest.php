@@ -266,4 +266,16 @@ class FileHelperTest extends TestCase
 		$foundFiles = FileHelper::findFiles($dirName, $options);
 		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
 	}
+
+	public function testMkdir() {
+		$basePath = $this->testFilePath;
+
+		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir';
+		FileHelper::mkdir($dirName);
+		$this->assertTrue(file_exists($dirName), 'Unable to create directory!');
+
+		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
+		FileHelper::mkdir($dirName, null, true);
+		$this->assertTrue(file_exists($dirName), 'Unable to create directory recursively!');
+	}
 }
