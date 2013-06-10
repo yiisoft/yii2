@@ -268,7 +268,7 @@ class Response extends \yii\base\Response
 	 * @param string $content content to be set.
 	 * @param string $mimeType mime type of the content. If null, it will be guessed automatically based on the given file name.
 	 * @param boolean $terminate whether to terminate the current application after calling this method
-	 * @throws \yii\base\HttpException when range request is not satisfiable.
+	 * @throws HttpException when range request is not satisfiable.
 	 */
 	public function sendFile($fileName, $content, $mimeType = null, $terminate = true)
 	{
@@ -366,49 +366,51 @@ class Response extends \yii\base\Response
 	 * specified by that header using web server internals including all optimizations like caching-headers.
 	 *
 	 * As this header directive is non-standard different directives exists for different web servers applications:
-	 * <ul>
-	 * <li>Apache: {@link http://tn123.org/mod_xsendfile X-Sendfile}</li>
-	 * <li>Lighttpd v1.4: {@link http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file X-LIGHTTPD-send-file}</li>
-	 * <li>Lighttpd v1.5: {@link http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file X-Sendfile}</li>
-	 * <li>Nginx: {@link http://wiki.nginx.org/XSendfile X-Accel-Redirect}</li>
-	 * <li>Cherokee: {@link http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile X-Sendfile and X-Accel-Redirect}</li>
-	 * </ul>
+	 * 
+	 * - Apache: [X-Sendfile](http://tn123.org/mod_xsendfile) 
+	 * - Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+	 * - Lighttpd v1.5: [X-Sendfile](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+	 * - Nginx: [X-Accel-Redirect](http://wiki.nginx.org/XSendfile)
+	 * - Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
+	 *
 	 * So for this method to work the X-SENDFILE option/module should be enabled by the web server and
 	 * a proper xHeader should be sent.
 	 *
-	 * <b>Note:</b>
-	 * This option allows to download files that are not under web folders, and even files that are otherwise protected (deny from all) like .htaccess
+	 * **Note**
+	 * 
+	 * This option allows to download files that are not under web folders, and even files that are otherwise protected 
+	 * (deny from all) like `.htaccess`.
 	 *
-	 * <b>Side effects</b>:
+	 * **Side effects**
+	 * 
 	 * If this option is disabled by the web server, when this method is called a download configuration dialog
 	 * will open but the downloaded file will have 0 bytes.
 	 *
-	 * <b>Known issues</b>:
+	 * **Known issues**
+	 * 
 	 * There is a Bug with Internet Explorer 6, 7 and 8 when X-SENDFILE is used over an SSL connection, it will show
-	 * an error message like this: "Internet Explorer was not able to open this Internet site. The requested site is either unavailable or cannot be found.".
-	 * You can work around this problem by removing the <code>Pragma</code>-header.
+	 * an error message like this: "Internet Explorer was not able to open this Internet site. The requested site 
+	 * is either unavailable or cannot be found.". You can work around this problem by removing the `Pragma`-header.
 	 *
-	 * <b>Example</b>:
-	 * <pre>
-	 * <?php
-	 *    Yii::app()->request->xSendFile('/home/user/Pictures/picture1.jpg', array(
-	 *        'saveName' => 'image1.jpg',
-	 *        'mimeType' => 'image/jpeg',
-	 *        'terminate' => false,
-	 *    ));
-	 * ?>
-	 * </pre>
+	 * **Example**
+	 * 
+	 * ~~~
+	 * Yii::app()->request->xSendFile('/home/user/Pictures/picture1.jpg', array(
+	 *      'saveName' => 'image1.jpg',
+	 *      'mimeType' => 'image/jpeg',
+	 *      'terminate' => false,
+	 * ));
+	 *
 	 * @param string $filePath file name with full path
 	 * @param array $options additional options:
-	 * <ul>
-	 * <li>saveName: file name shown to the user, if not set real file name will be used</li>
-	 * <li>mimeType: mime type of the file, if not set it will be guessed automatically based on the file name, if set to null no content-type header will be sent.</li>
-	 * <li>xHeader: appropriate x-sendfile header, defaults to "X-Sendfile"</li>
-	 * <li>terminate: whether to terminate the current application after calling this method, defaults to true</li>
-	 * <li>forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true</li>
-	 * <li>addHeaders: an array of additional http headers in header-value pairs</li>
-	 * </ul>
-	 * @todo
+	 *
+	 * - saveName: file name shown to the user, if not set real file name will be used
+	 * - mimeType: mime type of the file, if not set it will be guessed automatically based on the file name,
+	 *   if set to null no content-type header will be sent.
+	 * - xHeader: appropriate x-sendfile header, defaults to "X-Sendfile"
+	 * - terminate: whether to terminate the current application after calling this method, defaults to true
+	 * - forceDownload: specifies whether the file will be downloaded or shown inline, defaults to true
+	 * - addHeaders: an array of additional http headers in header-value pairs
 	 */
 	public function xSendFile($filePath, $options = array())
 	{
