@@ -47,20 +47,42 @@ class FileHelperTest extends TestCase
 		}
 	}
 
+	/**
+	 * Creates test files structure,
+	 * @param array $items file system objects to be created in format: objectName => objectContent
+	 * Arrays specifies directories, other values - files.
+	 * @param string $basePath structure base file path.
+	 */
+	protected function createFileStructure(array $items, $basePath = '') {
+		if (empty($basePath)) {
+			$basePath = $this->testFilePath;
+		}
+		foreach ($items as $name => $content) {
+			$itemName = $basePath . DIRECTORY_SEPARATOR . $name;
+			if (is_array($content)) {
+				mkdir($itemName, 0777, true);
+				$this->createFileStructure($content, $itemName);
+			} else {
+				file_put_contents($itemName, $content);
+			}
+		}
+	}
+
 	// Tests :
 
 	public function testCopyDirectory()
 	{
-		$basePath = $this->testFilePath;
-		$srcDirName = $basePath . DIRECTORY_SEPARATOR . 'test_src_dir';
-		mkdir($srcDirName, 0777, true);
+		$srcDirName = 'test_src_dir';
 		$files = array(
 			'file1.txt' => 'file 1 content',
 			'file2.txt' => 'file 2 content',
 		);
-		foreach ($files as $name => $content) {
-			file_put_contents($srcDirName . DIRECTORY_SEPARATOR . $name, $content);
-		}
+		$this->createFileStructure(array(
+			$srcDirName => $files
+		));
+
+		$basePath = $this->testFilePath;
+		$srcDirName = $basePath . DIRECTORY_SEPARATOR . $srcDirName;
 		$dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_dst_dir';
 
 		FileHelper::copyDirectory($srcDirName, $dstDirName);
@@ -75,21 +97,20 @@ class FileHelperTest extends TestCase
 
 	public function testRemoveDirectory()
 	{
+		$dirName = 'test_dir_for_remove';
+		$this->createFileStructure(array(
+			$dirName => array(
+				'file1.txt' => 'file 1 content',
+				'file2.txt' => 'file 2 content',
+				'test_sub_dir' => array(
+					'sub_dir_file_1.txt' => 'sub dir file 1 content',
+					'sub_dir_file_2.txt' => 'sub dir file 2 content',
+				),
+			),
+		));
+
 		$basePath = $this->testFilePath;
-		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_for_remove';
-		mkdir($dirName, 0777, true);
-		$files = array(
-			'file1.txt' => 'file 1 content',
-			'file2.txt' => 'file 2 content',
-		);
-		foreach ($files as $name => $content) {
-			file_put_contents($dirName . DIRECTORY_SEPARATOR . $name, $content);
-		}
-		$subDirName = $dirName . DIRECTORY_SEPARATOR . 'test_sub_dir';
-		mkdir($subDirName, 0777, true);
-		foreach ($files as $name => $content) {
-			file_put_contents($subDirName . DIRECTORY_SEPARATOR . $name, $content);
-		}
+		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
 
 		FileHelper::removeDirectory($dirName);
 
@@ -98,27 +119,25 @@ class FileHelperTest extends TestCase
 
 	public function testFindFiles()
 	{
+		$dirName = 'test_dir';
+		$this->createFileStructure(array(
+			$dirName => array(
+				'file_1.txt' => 'file 1 content',
+				'file_2.txt' => 'file 2 content',
+				'test_sub_dir' => array(
+					'file_1_1.txt' => 'sub dir file 1 content',
+					'file_1_2.txt' => 'sub dir file 2 content',
+				),
+			),
+		));
 		$basePath = $this->testFilePath;
-		$expectedFiles = array();
-
-		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_for_remove';
-		mkdir($dirName, 0777, true);
-		$files = array(
-			'file1.txt' => 'file 1 content',
-			'file2.txt' => 'file 2 content',
+		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
+		$expectedFiles = array(
+			$dirName . DIRECTORY_SEPARATOR . 'file_1.txt',
+			$dirName . DIRECTORY_SEPARATOR . 'file_2.txt',
+			$dirName . DIRECTORY_SEPARATOR . 'test_sub_dir' . DIRECTORY_SEPARATOR . 'file_1_1.txt',
+			$dirName . DIRECTORY_SEPARATOR . 'test_sub_dir' . DIRECTORY_SEPARATOR . 'file_1_2.txt',
 		);
-		foreach ($files as $name => $content) {
-			$fileName = $dirName . DIRECTORY_SEPARATOR . $name;
-			file_put_contents($fileName, $content);
-			$expectedFiles[] = $fileName;
-		}
-		$subDirName = $dirName . DIRECTORY_SEPARATOR . 'test_sub_dir';
-		mkdir($subDirName, 0777, true);
-		foreach ($files as $name => $content) {
-			$fileName = $subDirName . DIRECTORY_SEPARATOR . $name;
-			file_put_contents($fileName, $content);
-			$expectedFiles[] = $fileName;
-		}
 
 		$foundFiles = FileHelper::findFiles($dirName);
 		sort($expectedFiles);
