@@ -17,8 +17,14 @@ use Yii;
  */
 class Application extends Module
 {
-	const EVENT_BEFORE_REQUEST = 'beforeRequest';
-	const EVENT_AFTER_REQUEST = 'afterRequest';
+	/**
+	 * @event Event an event that is triggered at the beginning of [[run()]].
+	 */
+	const EVENT_BEFORE_RUN = 'beforeRun';
+	/**
+	 * @event Event an event that is triggered at the end of [[run()]].
+	 */
+	const EVENT_AFTER_RUN = 'afterRun';
 	/**
 	 * @var string the application name.
 	 */
@@ -148,7 +154,7 @@ class Application extends Module
 		if (!$this->_ended) {
 			$this->_ended = true;
 			$this->getResponse()->end();
-			$this->afterRequest();
+			$this->afterRun();
 		}
 
 		if ($exit) {
@@ -163,29 +169,29 @@ class Application extends Module
 	 */
 	public function run()
 	{
-		$this->beforeRequest();
+		$this->beforeRun();
 		$response = $this->getResponse();
 		$response->begin();
 		$status = $this->processRequest();
 		$response->end();
-		$this->afterRequest();
+		$this->afterRun();
 		return $status;
 	}
 
 	/**
-	 * Raises the [[EVENT_BEFORE_REQUEST]] event right BEFORE the application processes the request.
+	 * Raises the [[EVENT_BEFORE_RUN]] event right BEFORE the application processes the request.
 	 */
-	public function beforeRequest()
+	public function beforeRun()
 	{
-		$this->trigger(self::EVENT_BEFORE_REQUEST);
+		$this->trigger(self::EVENT_BEFORE_RUN);
 	}
 
 	/**
-	 * Raises the [[EVENT_AFTER_REQUEST]] event right AFTER the application processes the request.
+	 * Raises the [[EVENT_AFTER_RUN]] event right AFTER the application processes the request.
 	 */
-	public function afterRequest()
+	public function afterRun()
 	{
-		$this->trigger(self::EVENT_AFTER_REQUEST);
+		$this->trigger(self::EVENT_AFTER_RUN);
 	}
 
 	/**
