@@ -196,19 +196,15 @@ class FileHelper
 	 * Returns the files found under the specified directory and subdirectories.
 	 * @param string $dir the directory under which the files will be looked for.
 	 * @param array $options options for file searching. Valid options are:
-	 * <ul>
-	 * <li>fileTypes: array, list of file name suffix (without dot). Only files with these suffixes will be returned.</li>
-	 * <li>exclude: array, list of directory and file exclusions. Each exclusion can be either a name or a path.
-	 * If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
-	 * '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
-	 * file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
-	 * </li>
-	 * <li>level: integer, recursion depth, default=-1.
-	 * Level -1 means searching for all directories and files under the directory;
-	 * Level 0 means searching for only the files DIRECTLY under the directory;
-	 * level N means searching for those directories that are within N levels.
-	 * </li>
-	 * </ul>
+	 * - fileTypes: array, list of file name suffix (without dot). Only files with these suffixes will be returned.
+	 * - exclude: array, list of directory and file exclusions. Each exclusion can be either a name or a path.
+	 *   If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
+	 *   '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
+	 *   file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
+	 * - level: integer, recursion depth, default=-1.
+	 *   Level -1 means searching for all directories and files under the directory;
+	 *   Level 0 means searching for only the files DIRECTLY under the directory;
+	 *   level N means searching for those directories that are within N levels.
 	 * @return array files found under the directory. The file list is sorted.
 	 */
 	public static function findFiles($dir, array $options = array())
