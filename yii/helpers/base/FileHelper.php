@@ -134,12 +134,21 @@ class FileHelper
 	 *
 	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0777.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
-	 * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
-	 *   If the callback returns false, the copy operation for the sub-directory or file will be cancelled.
+	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
+	 *   If the callback returns false, the the sub-directory or file will not be copied.
+	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be copied.
+	 * - fileTypes: array, list of file name suffix (without dot). Only files with these suffixes will be copied.
+	 * - only: array, list of patterns that the files or directories should match if they want to be copied.
+	 *   A path matches a pattern if it contains the pattern string at its end. For example,
+	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
+	 *   directories whose name ends with '.svn'. Note, the '/' characters in a pattern matches both '/' and '\'.
+	 *   If a file/directory matches both a name in "only" and "except", it will NOT be copied.
+	 * - except: array, list of patterns that the files or directories should NOT match if they want to be copied.
+	 *   For more details on how to specify the patterns, please refer to the "only" option.
+	 * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
+	 * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
-	 *   file to be copied from, while `$to` is the copy target.
-	 * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
-	 *   The signature of the callback is similar to that of `beforeCopy`.
+	 *   file copied from, while `$to` is the copy target.
 	 */
 	public static function copyDirectory($src, $dst, $options = array())
 	{
@@ -154,7 +163,7 @@ class FileHelper
 			}
 			$from = $src . DIRECTORY_SEPARATOR . $file;
 			$to = $dst . DIRECTORY_SEPARATOR . $file;
-			if (!isset($options['beforeCopy']) || call_user_func($options['beforeCopy'], $from, $to)) {
+			if (static::filterPath($from, $options)) {
 				if (is_file($from)) {
 					copy($from, $to);
 					if (isset($options['fileMode'])) {
@@ -177,21 +186,22 @@ class FileHelper
 	 */
 	public static function removeDirectory($dir)
 	{
-		$items = glob($dir . DIRECTORY_SEPARATOR . '{,.}*', GLOB_MARK | GLOB_BRACE);
-		foreach ($items as $item) {
-			$itemBaseName = basename($item);
-			if ($itemBaseName === '.' || $itemBaseName === '..') {
+		if (!is_dir($dir) || !($handle = opendir($dir))) {
+			return;
+		}
+		while (($file = readdir($handle)) !== false) {
+			if ($file === '.' || $file === '..') {
 				continue;
 			}
-			if (StringHelper::substr($item, -1, 1) == DIRECTORY_SEPARATOR) {
-				static::removeDirectory($item);
+			$path = $dir . DIRECTORY_SEPARATOR . $file;
+			if (is_file($path)) {
+				unlink($path);
 			} else {
-				unlink($item);
+				static::removeDirectory($path);
 			}
 		}
-		if (is_dir($dir)) {
-			rmdir($dir);
-		}
+		closedir($handle);
+		rmdir($dir);
 	}
 
 	/**
@@ -200,18 +210,17 @@ class FileHelper
 	 * @param array $options options for file searching. Valid options are:
 	 *
 	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
-	 *   If the callback returns false, the the sub-directory or file will not be placed to the result set.
-	 *   The signature of the callback should be: `function ($base, $name, $isFile)`, where `$base` is the name of directory,
-	 *   which contains file or sub-directory, `$name` file or sub-directory name, `$isFile` indicates if object is a file or a directory.
+	 *   If the callback returns false, the the sub-directory or file will be excluded from the returning result.
+	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
 	 * - fileTypes: array, list of file name suffix (without dot). Only files with these suffixes will be returned.
-	 * - only: array, list of path names that the files or directories should match if they want to be put in the result set.
-	 *   The matching is done in a partial manner. For example, the '.svn' will match all files and directories whose name ends with '.svn'.
-	 *   And the name '/a/b' will match all files and directories ending with '/a/b'.
-	 *   Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
-	 *   If a file/directory matches both a name in "only" and "except", it will NOT be put in the result set.
-	 * - except: array, list of path names that the files or directories should NOT match if they want to be put in the result set.
-	 * - recursive: boolean, whether the files should be looked recursively under all subdirectories.
-	 *   Defaults to true.
+	 * - only: array, list of patterns that the files or directories should match if they want to be returned.
+	 *   A path matches a pattern if it contains the pattern string at its end. For example,
+	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
+	 *   directories whose name ends with '.svn'. Note, the '/' characters in a pattern matches both '/' and '\'.
+	 *   If a file/directory matches both a name in "only" and "except", it will NOT be returned.
+	 * - except: array, list of patterns that the files or directories should NOT match if they want to be returned.
+	 *   For more details on how to specify the patterns, please refer to the "only" option.
+	 * - recursive: boolean, whether the files under the subdirectories should also be lookied for. Defaults to true.
 	 * @return array files found under the directory. The file list is sorted.
 	 */
 	public static function findFiles($dir, $options = array())
@@ -223,7 +232,7 @@ class FileHelper
 				continue;
 			}
 			$path = $dir . DIRECTORY_SEPARATOR . $file;
-			if (static::validatePath($path, $options)) {
+			if (static::filterPath($path, $options)) {
 				if (is_file($path)) {
 					$list[] = $path;
 				} elseif (!isset($options['recursive']) || $options['recursive']) {
@@ -236,62 +245,61 @@ class FileHelper
 	}
 
 	/**
-	 * Validates a file or directory, checking if it match given conditions.
-	 * @param string $path the path of the file or directory to be validated
-	 * @param array $options options for file searching.
-	 * @return boolean whether the file or directory is valid
+	 * Checks if the given file path satisfies the filtering options.
+	 * @param string $path the path of the file or directory to be checked
+	 * @param array $options the filtering options. See [[findFiles()]] for explanations of
+	 * the supported options.
+	 * @return boolean whether the file or directory satisfies the filtering options.
 	 */
-	protected static function validatePath($path, $options)
+	protected static function filterPath($path, $options)
 	{
 		if (isset($options['filter']) && !call_user_func($options['filter'], $path)) {
 			return false;
 		}
 		$path = str_replace('\\', '/', $path);
-		$n = strlen($path);
+		$n = StringHelper::strlen($path);
 		if (!empty($options['except'])) {
 			foreach ($options['except'] as $name) {
-				if (strrpos($path, $name) === $n - strlen($name)) {
+				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
 					return false;
 				}
 			}
 		}
 		if (!empty($options['only'])) {
 			foreach ($options['only'] as $name) {
-				if (strrpos($path, $name) !== $n - strlen($name)) {
+				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) !== $name) {
 					return false;
 				}
 			}
 		}
-		if (!empty($options['fileTypes'])) {
-			if (!is_file($path)) {
-				return true;
-			}
-			if (($type = pathinfo($path, PATHINFO_EXTENSION)) !== '') {
-				return in_array($type, $options['fileTypes']);
-			} else {
-				return false;
-			}
+		if (!empty($options['fileTypes']) && is_file($path)) {
+			return in_array(pathinfo($path, PATHINFO_EXTENSION), $options['fileTypes']);
+		} else {
+			return true;
 		}
-		return true;
 	}
 
 	/**
-	 * Shared environment safe version of mkdir. Supports recursive creation.
-	 * For avoidance of umask side-effects chmod is used.
+	 * Makes directory.
+	 *
+	 * This method is similar to the PHP `mkdir()` function except that
+	 * it uses `chmod()` to set the permission of the created directory
+	 * in order to avoid the impact of the `umask` setting.
 	 *
 	 * @param string $path path to be created.
-	 * @param integer $mode  the permission to be set for created directory. If not set  0777 will be used.
-	 * @param boolean $recursive whether to create directory structure recursive if parent dirs do not exist.
-	 * @return boolean result of mkdir.
-	 * @see mkdir
+	 * @param integer $mode the permission to be set for created directory.
+	 * @param boolean $recursive whether to create parent directories if they do not exist.
+	 * @return boolean whether the directory is created successfully
 	 */
-	public static function mkdir($path, $mode = null, $recursive = false)
+	public static function mkdir($path, $mode = 0777, $recursive = true)
 	{
-		$prevDir = dirname($path);
-		if ($recursive && !is_dir($path) && !is_dir($prevDir)) {
-			static::mkdir(dirname($path), $mode, true);
+		if (is_dir($path)) {
+			return true;
 		}
-		$mode = isset($mode) ? $mode : 0777;
+		$parentDir = dirname($path);
+		if ($recursive && !is_dir($parentDir)) {
+			static::mkdir($parentDir, $mode, true);
+		}
 		$result = mkdir($path, $mode);
 		chmod($path, $mode);
 		return $result;
