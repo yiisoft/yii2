@@ -309,14 +309,14 @@ class Response extends \yii\base\Response
 			throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
 		}
 
-		$headers->addDefault('Pragma', 'public')
-			->addDefault('Accept-Ranges', 'bytes')
-			->addDefault('Expires', '0')
-			->addDefault('Content-Type', $mimeType)
-			->addDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-			->addDefault('Content-Transfer-Encoding', 'binary')
-			->addDefault('Content-Length', StringHelper::strlen($content))
-			->addDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
+		$headers->setDefault('Pragma', 'public')
+			->setDefault('Accept-Ranges', 'bytes')
+			->setDefault('Expires', '0')
+			->setDefault('Content-Type', $mimeType)
+			->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+			->setDefault('Content-Transfer-Encoding', 'binary')
+			->setDefault('Content-Length', StringHelper::strlen($content))
+			->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
 		list($begin, $end) = $range;
 		if ($begin !=0 || $end != $contentLength - 1) {
@@ -360,14 +360,14 @@ class Response extends \yii\base\Response
 
 		$length = $end - $begin + 1;
 
-		$headers->addDefault('Pragma', 'public')
-			->addDefault('Accept-Ranges', 'bytes')
-			->addDefault('Expires', '0')
-			->addDefault('Content-Type', $mimeType)
-			->addDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-			->addDefault('Content-Transfer-Encoding', 'binary')
-			->addDefault('Content-Length', $length)
-			->addDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
+		$headers->setDefault('Pragma', 'public')
+			->setDefault('Accept-Ranges', 'bytes')
+			->setDefault('Expires', '0')
+			->setDefault('Content-Type', $mimeType)
+			->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+			->setDefault('Content-Transfer-Encoding', 'binary')
+			->setDefault('Content-Length', $length)
+			->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
 		$this->send();
 
@@ -478,9 +478,9 @@ class Response extends \yii\base\Response
 		}
 
 		$this->getHeaders()
-			->addDefault($xHeader, $filePath)
-			->addDefault('Content-Type', $mimeType)
-			->addDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
+			->setDefault($xHeader, $filePath)
+			->setDefault('Content-Type', $mimeType)
+			->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
 		$this->send();
 	}
