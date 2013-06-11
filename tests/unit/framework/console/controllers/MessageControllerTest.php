@@ -17,6 +17,9 @@ class MessageControllerTest extends TestCase
 	{
 		$this->sourcePath = Yii::getAlias('@yiiunit/runtime/test_source');
 		$this->createDir($this->sourcePath);
+		if (!file_exists($this->sourcePath)) {
+			$this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
+		}
 		$this->messagePath = Yii::getAlias('@yiiunit/runtime/test_messages');
 		$this->createDir($this->messagePath);
 		$this->configFileName = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . 'message_controller_test_config.php';
@@ -81,8 +84,9 @@ class MessageControllerTest extends TestCase
 	protected function createMessageController()
 	{
 		$module = $this->getMock('yii\\base\\Module', array('fake'), array('console'));
-		$command = new MessageController('message', $module);
-		return $command;
+		$messageController = new MessageController('message', $module);
+		$messageController->interactive = false;
+		return $messageController;
 	}
 
 	/**
@@ -91,7 +95,7 @@ class MessageControllerTest extends TestCase
 	 * @param array $args action arguments.
 	 * @return string command output.
 	 */
-	protected function runMessageControllerAction($actionId, array $args=array())
+	protected function runMessageControllerAction($actionId, array $args = array())
 	{
 		$controller = $this->createMessageController();
 		ob_start();
@@ -166,13 +170,11 @@ class MessageControllerTest extends TestCase
 
 	public function testCreateTranslation()
 	{
-		$this->markTestIncomplete('MessageController is incomplete');
-
 		$language = 'en';
 
 		$category = 'test_category';
 		$message = 'test message';
-		$sourceFileContent = "Yii::t('{$category}','{$message}')";
+		$sourceFileContent = "Yii::t('{$category}', '{$message}')";
 		$this->createSourceFile($sourceFileContent);
 
 		$this->composeConfigFile(array(
