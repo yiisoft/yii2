@@ -215,6 +215,7 @@ class FileHelperTest extends TestCase
 
 		$foundFiles = FileHelper::findFiles($dirName);
 		sort($expectedFiles);
+		sort($foundFiles);
 		$this->assertEquals($expectedFiles, $foundFiles);
 	}
 
