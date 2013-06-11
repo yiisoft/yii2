@@ -204,17 +204,12 @@ class Response extends \yii\base\Response
 	{
 		$this->sendHeaders();
 		$this->sendContent();
-
-		if (function_exists('fastcgi_finish_request')) {
-			fastcgi_finish_request();
-		} else {
-			for ($level = ob_get_level(); $level > 0; --$level) {
-				if (!@ob_end_flush()) {
-					ob_clean();
-				}
+		for ($level = ob_get_level(); $level > 0; --$level) {
+			if (!@ob_end_flush()) {
+				ob_clean();
 			}
-			flush();
 		}
+		flush();
 	}
 
 	public function reset()
@@ -306,8 +301,15 @@ class Response extends \yii\base\Response
 	 */
 	public function sendContentAsFile($content, $attachmentName, $mimeType = 'application/octet-stream')
 	{
-		$this->getHeaders()
-			->addDefault('Pragma', 'public')
+		$headers = $this->getHeaders();
+		$contentLength = StringHelper::strlen($content);
+		$range = $this->getHttpRange($contentLength);
+		if ($range === false) {
+			$headers->set('Content-Range', "bytes */$contentLength");
+			throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
+		}
+
+		$headers->addDefault('Pragma', 'public')
 			->addDefault('Accept-Ranges', 'bytes')
 			->addDefault('Expires', '0')
 			->addDefault('Content-Type', $mimeType)
@@ -316,7 +318,16 @@ class Response extends \yii\base\Response
 			->addDefault('Content-Length', StringHelper::strlen($content))
 			->addDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
-		$this->content = $content;
+		list($begin, $end) = $range;
+		if ($begin !=0 || $end != $contentLength - 1) {
+			$this->setStatusCode(206);
+			$headers->set('Content-Range', "bytes $begin-$end/$contentLength");
+			$this->content = StringHelper::substr($content, $begin, $end - $begin + 1);
+		} else {
+			$this->setStatusCode(200);
+			$this->content = $content;
+		}
+
 		$this->send();
 	}
 
@@ -345,10 +356,6 @@ class Response extends \yii\base\Response
 			$headers->set('Content-Range', "bytes $begin-$end/$fileSize");
 		} else {
 			$this->setStatusCode(200);
-		}
-
-		if (isset($options['mimeType'])) {
-			$headers->set('Content-Type', $options['mimeType']);
 		}
 
 		$length = $end - $begin + 1;
