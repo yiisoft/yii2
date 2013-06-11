@@ -25,8 +25,8 @@
 	},
 	"extra": {
 		"yii-install-writable": [
-			"backstage/runtime",
-			"backstage/www/assets",
+			"backend/runtime",
+			"backend/www/assets",
 
 			"console/runtime",
 			"console/migrations",

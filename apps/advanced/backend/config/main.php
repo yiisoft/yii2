@@ -13,7 +13,7 @@ return array(
 	'basePath' => dirname(__DIR__),
 	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
 	'preload' => array('log'),
-	'controllerNamespace' => 'backstage\controllers',
+	'controllerNamespace' => 'backend\controllers',
 	'modules' => array(
 	),
 	'components' => array(

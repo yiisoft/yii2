@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\web\HttpException;
 
 /**
  * Application is the base class for all application classes.
@@ -17,8 +18,14 @@ use Yii;
  */
 class Application extends Module
 {
-	const EVENT_BEFORE_REQUEST = 'beforeRequest';
-	const EVENT_AFTER_REQUEST = 'afterRequest';
+	/**
+	 * @event Event an event that is triggered at the beginning of [[run()]].
+	 */
+	const EVENT_BEFORE_RUN = 'beforeRun';
+	/**
+	 * @event Event an event that is triggered at the end of [[run()]].
+	 */
+	const EVENT_AFTER_RUN = 'afterRun';
 	/**
 	 * @var string the application name.
 	 */
@@ -128,6 +135,10 @@ class Application extends Module
 			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
+			// Allocating twice more than required to display memory exhausted error
+			// in case of trying to allocate last 1 byte while all memory is taken.
+			$this->_memoryReserve = str_repeat('x', 1024 * 256);
+			register_shutdown_function(array($this, 'handleFatalError'));
 		}
 	}
 
@@ -142,10 +153,9 @@ class Application extends Module
 	{
 		if (!$this->_ended) {
 			$this->_ended = true;
-			$this->afterRequest();
+			$this->getResponse()->end();
+			$this->afterRun();
 		}
-
-		$this->handleFatalError();
 
 		if ($exit) {
 			exit($status);
@@ -159,30 +169,30 @@ class Application extends Module
 	 */
 	public function run()
 	{
-		$this->beforeRequest();
-		// Allocating twice more than required to display memory exhausted error
-		// in case of trying to allocate last 1 byte while all memory is taken.
-		$this->_memoryReserve = str_repeat('x', 1024 * 256);
+		$this->beforeRun();
+		$response = $this->getResponse();
+		$response->begin();
 		register_shutdown_function(array($this, 'end'), 0, false);
 		$status = $this->processRequest();
-		$this->afterRequest();
+		$response->end();
+		$this->afterRun();
 		return $status;
 	}
 
 	/**
-	 * Raises the [[EVENT_BEFORE_REQUEST]] event right BEFORE the application processes the request.
+	 * Raises the [[EVENT_BEFORE_RUN]] event right BEFORE the application processes the request.
 	 */
-	public function beforeRequest()
+	public function beforeRun()
 	{
-		$this->trigger(self::EVENT_BEFORE_REQUEST);
+		$this->trigger(self::EVENT_BEFORE_RUN);
 	}
 
 	/**
-	 * Raises the [[EVENT_AFTER_REQUEST]] event right AFTER the application processes the request.
+	 * Raises the [[EVENT_AFTER_RUN]] event right AFTER the application processes the request.
 	 */
-	public function afterRequest()
+	public function afterRun()
 	{
-		$this->trigger(self::EVENT_AFTER_REQUEST);
+		$this->trigger(self::EVENT_AFTER_RUN);
 	}
 
 	/**
@@ -312,6 +322,15 @@ class Application extends Module
 	public function getRequest()
 	{
 		return $this->getComponent('request');
+	}
+
+	/**
+	 * Returns the response component.
+	 * @return \yii\web\Response|\yii\console\Response the response component
+	 */
+	public function getResponse()
+	{
+		return $this->getComponent('response');
 	}
 
 	/**

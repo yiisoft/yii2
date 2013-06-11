@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\web\HttpException;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -82,11 +83,12 @@ class ErrorHandler extends Component
 		} elseif (!(Yii::$app instanceof \yii\web\Application)) {
 			Yii::$app->renderException($exception);
 		} else {
+			$response = Yii::$app->getResponse();
 			if (!headers_sent()) {
 				if ($exception instanceof HttpException) {
-					header('HTTP/1.0 ' . $exception->statusCode . ' ' . $exception->getName());
+					$response->setStatusCode($exception->statusCode);
 				} else {
-					header('HTTP/1.0 500 ' . get_class($exception));
+					$response->setStatusCode(500);
 				}
 			}
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
@@ -100,13 +102,13 @@ class ErrorHandler extends Component
 
 				$view = new View();
 				$request = '';
-				foreach (array('GET', 'POST', 'SERVER', 'FILES', 'COOKIE', 'SESSION', 'ENV') as $name) {
-					if (!empty($GLOBALS['_' . $name])) {
-						$request .= '$_' . $name . ' = ' . var_export($GLOBALS['_' . $name], true) . ";\n\n";
+				foreach (array('_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV') as $name) {
+					if (!empty($GLOBALS[$name])) {
+						$request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
 					}
 				}
 				$request = rtrim($request, "\n\n");
-				echo $view->renderFile($this->mainView, array(
+				$response->content = $view->renderFile($this->mainView, array(
 					'exception' => $exception,
 					'request' => $request,
 				), $this);

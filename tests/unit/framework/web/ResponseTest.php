@@ -1,45 +1,30 @@
 <?php
 
-namespace yii\web;
+namespace yiiunit\framework\web;
 
-use yiiunit\framework\web\ResponseTest;
+use Yii;
+use yii\helpers\StringHelper;
 
-/**
- * Mock PHP header function to check for sent headers
- * @param string $string
- * @param bool $replace
- * @param int $httpResponseCode
- */
-function header($string, $replace = true, $httpResponseCode = null) {
-	ResponseTest::$headers[] = $string;
-	// TODO implement replace
-
-	if ($httpResponseCode !== null) {
-		ResponseTest::$httpResponseCode = $httpResponseCode;
+class Response extends \yii\web\Response
+{
+	public function send()
+	{
+		// does nothing to allow testing
 	}
 }
 
-namespace yiiunit\framework\web;
-
-use yii\helpers\StringHelper;
-use yii\web\Response;
-
 class ResponseTest extends \yiiunit\TestCase
 {
-	public static $headers = array();
-	public static $httpResponseCode = 200;
+	/**
+	 * @var Response
+	 */
+	public $response;
 
 	protected function setUp()
 	{
 		parent::setUp();
 		$this->mockApplication();
-		$this->reset();
-	}
-
-	protected function reset()
-	{
-		static::$headers = array();
-		static::$httpResponseCode = 200;
+		$this->response = new Response;
 	}
 
 	public function rightRanges()
@@ -56,18 +41,22 @@ class ResponseTest extends \yiiunit\TestCase
 	/**
 	 * @dataProvider rightRanges
 	 */
-	public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedFile)
+	public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedContent)
 	{
-		$content = $this->generateTestFileContent();
+		$dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+		$fullContent = file_get_contents($dataFile);
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
-		$sent = $this->runSendFile('testFile.txt', $content, null);
+		ob_start();
+		$this->response->sendFile($dataFile);
+		$content = ob_get_clean();
 
-		$this->assertEquals($expectedFile, $sent);
-		$this->assertTrue(in_array('HTTP/1.1 206 Partial Content', static::$headers));
-		$this->assertTrue(in_array('Accept-Ranges: bytes', static::$headers));
-		$this->assertArrayHasKey('Content-Range: bytes ' . $expectedHeader . '/' . StringHelper::strlen($content), array_flip(static::$headers));
-		$this->assertTrue(in_array('Content-Type: text/plain', static::$headers));
-		$this->assertTrue(in_array('Content-Length: ' . $length, static::$headers));
+		$this->assertEquals($expectedContent, $content);
+		$this->assertEquals(206, $this->response->statusCode);
+		$headers = $this->response->headers;
+		$this->assertEquals("bytes", $headers->get('Accept-Ranges'));
+		$this->assertEquals("bytes " . $expectedHeader . '/' . StringHelper::strlen($fullContent), $headers->get('Content-Range'));
+		$this->assertEquals('text/plain', $headers->get('Content-Type'));
+		$this->assertEquals("$length", $headers->get('Content-Length'));
 	}
 
 	public function wrongRanges()
@@ -87,25 +76,15 @@ class ResponseTest extends \yiiunit\TestCase
 	 */
 	public function testSendFileWrongRanges($rangeHeader)
 	{
-		$this->setExpectedException('yii\base\HttpException', 'Requested Range Not Satisfiable');
+		$this->setExpectedException('yii\web\HttpException');
 
-		$content = $this->generateTestFileContent();
+		$dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
-		$this->runSendFile('testFile.txt', $content, null);
+		$this->response->sendFile($dataFile);
 	}
 
 	protected function generateTestFileContent()
 	{
 		return '12ёжик3456798áèabcdefghijklmnopqrstuvwxyz!"§$%&/(ёжик)=?';
-	}
-
-	protected function runSendFile($fileName, $content, $mimeType)
-	{
-		ob_start();
-		ob_implicit_flush(false);
-		$response = new Response();
-		$response->sendFile($fileName, $content, $mimeType, false);
-		$file = ob_get_clean();
-		return $file;
 	}
 }

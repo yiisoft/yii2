@@ -268,6 +268,41 @@ class QueryBuilder extends \yii\base\Object
 	{
 		return "DROP TABLE " . $this->db->quoteTableName($table);
 	}
+	
+	/**
+	 * Builds a SQL statement for adding a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 * @return string the SQL statement for adding a primary key constraint to an existing table.
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		if (is_string($columns)) {
+			$columns=preg_split('/\s*,\s*/',$columns,-1,PREG_SPLIT_NO_EMPTY);
+		}
+		
+		foreach ($columns as $i=>$col) {
+			$columns[$i]=$this->db->quoteColumnName($col);
+		}
+		
+		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+			. $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
+			. implode(', ', $columns). ' )';
+	}	
+	
+	/**
+	 * Builds a SQL statement for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return string the SQL statement for removing a primary key constraint from an existing table.	 *
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+			. ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+		
+	}	
 
 	/**
 	 * Builds a SQL statement for truncating a DB table.
