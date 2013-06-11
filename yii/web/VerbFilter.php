@@ -10,7 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\ActionEvent;
 use yii\base\Behavior;
-use yii\base\HttpException;
+use yii\web\HttpException;
 
 /**
  * VerbFilter is an action filter that filters by HTTP request methods.
@@ -70,7 +70,7 @@ class VerbFilter extends Behavior
 	/**
 	 * @param ActionEvent $event
 	 * @return boolean
-	 * @throws \yii\base\HttpException when the request method is not allowed.
+	 * @throws HttpException when the request method is not allowed.
 	 */
 	public function beforeAction($event)
 	{
@@ -81,7 +81,7 @@ class VerbFilter extends Behavior
 			if (!in_array($verb, $allowed)) {
 				$event->isValid = false;
 				// http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7
-				header('Allow: ' . implode(', ', $allowed));
+				Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $allowed));
 				throw new HttpException(405, 'Method Not Allowed. This url can only handle the following request methods: ' . implode(', ', $allowed));
 			}
 		}

@@ -43,8 +43,10 @@ class StringHelper
 
 	/**
 	 * Returns the trailing name component of a path.
-	 * This method does the same as the php function basename() except that it will
+	 * This method does the same as the php function `basename()` except that it will
 	 * always use \ and / as directory separators, independent of the operating system.
+	 * This method was mainly created to work on php namespaces. When working with real
+	 * file paths, php's `basename()` should work fine for you.
 	 * Note: this method is not aware of the actual filesystem, or path components such as "..".
 	 * @param string $path A path string.
 	 * @param string $suffix If the name component ends in suffix this will also be cut off.

@@ -654,6 +654,32 @@ class Command extends \yii\base\Component
 	}
 
 	/**
+	 * Creates a SQL command for adding a primary key constraint to an existing table.
+	 * The method will properly quote the table and column names.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 * @return Command the command object itself.
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		$sql = $this->db->getQueryBuilder()->addPrimaryKey($name, $table, $columns);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return Command the command object itself
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		$sql = $this->db->getQueryBuilder()->dropPrimaryKey($name, $table);
+		return $this->setSql($sql);
+	}
+
+	/**
 	 * Creates a SQL command for adding a foreign key constraint to an existing table.
 	 * The method will properly quote the table and column names.
 	 * @param string $name the name of the foreign key constraint.
