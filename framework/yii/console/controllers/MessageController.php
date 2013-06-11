@@ -17,6 +17,13 @@ use yii\helpers\FileHelper;
  * The extracted messages are saved as PHP message source files
  * under the specified directory.
  *
+ * Usage:
+ * 1. Create a configuration file using 'template' action:
+ *    yii message/template /path/to/myapp/messages/config.php
+ * 2. Edit the created config file, adjusting it for your web application needs.
+ * 3. Run the 'generate' action, using created config:
+ *    yii message /path/to/myapp/messages/config.php
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
