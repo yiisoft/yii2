@@ -197,7 +197,7 @@ class Modal extends Widget
 		$this->options = array_merge(array(
 			'class' => 'modal hide',
 		), $this->options);
-		$this->addCssClass($this->options, 'modal');
+		Html::addCssClass($this->options, 'modal');
 
 		$this->clientOptions = array_merge(array(
 			'show' => false,

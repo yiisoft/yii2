@@ -1373,6 +1373,44 @@ class Html
 	}
 
 	/**
+	 * Adds a CSS class to the specified options.
+	 * If the CSS class is already in the options, it will not be added again.
+	 * @param array $options the options to be modified.
+	 * @param string $class the CSS class to be added
+	 */
+	public static function addCssClass(&$options, $class)
+	{
+		if (isset($options['class'])) {
+			$classes = ' ' . $options['class'] . ' ';
+			if (($pos = strpos($classes, ' ' . $class . ' ')) === false) {
+				$options['class'] .= ' ' . $class;
+			}
+		} else {
+			$options['class'] = $class;
+		}
+	}
+
+	/**
+	 * Removes a CSS class from the specified options.
+	 * @param array $options the options to be modified.
+	 * @param string $class the CSS class to be removed
+	 */
+	public static function removeCssClass(&$options, $class)
+	{
+		if (isset($options['class'])) {
+			$classes = array_unique(preg_split('/\s+/', $options['class'] . ' ' . $class, -1, PREG_SPLIT_NO_EMPTY));
+			if (($index = array_search($class, $classes)) !== false) {
+				unset($classes[$index]);
+			}
+			if (empty($classes)) {
+				unset($options['class']);
+			} else {
+				$options['class'] = implode(' ', $classes);
+			}
+		}
+	}
+
+	/**
 	 * Returns the real attribute name from the given attribute expression.
 	 *
 	 * An attribute expression is an attribute name prefixed and/or suffixed with array indexes.

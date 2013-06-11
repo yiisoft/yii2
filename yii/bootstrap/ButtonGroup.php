@@ -61,7 +61,7 @@ class ButtonGroup extends Widget
 	{
 		parent::init();
 		$this->clientOptions = false;
-		$this->addCssClass($this->options, 'btn-group');
+		Html::addCssClass($this->options, 'btn-group');
 	}
 
 	/**
