@@ -251,7 +251,7 @@ class FileHelper
 	 * the supported options.
 	 * @return boolean whether the file or directory satisfies the filtering options.
 	 */
-	protected static function filterPath($path, $options)
+	public static function filterPath($path, $options)
 	{
 		if (isset($options['filter']) && !call_user_func($options['filter'], $path)) {
 			return false;
