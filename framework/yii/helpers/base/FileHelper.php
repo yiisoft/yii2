@@ -10,6 +10,7 @@
 namespace yii\helpers\base;
 
 use Yii;
+use yii\helpers\StringHelper;
 
 /**
  * Filesystem helper
@@ -95,7 +96,7 @@ class FileHelper
 			}
 		}
 
-		return $checkExtension ? self::getMimeTypeByExtension($file) : null;
+		return $checkExtension ? static::getMimeTypeByExtension($file) : null;
 	}
 
 	/**
@@ -168,5 +169,154 @@ class FileHelper
 			}
 		}
 		closedir($handle);
+	}
+
+	/**
+	 * Removes a directory recursively.
+	 * @param string $dir to be deleted recursively.
+	 */
+	public static function removeDirectory($dir)
+	{
+		$items = glob($dir . DIRECTORY_SEPARATOR . '{,.}*', GLOB_MARK | GLOB_BRACE);
+		foreach ($items as $item) {
+			$itemBaseName = basename($item);
+			if ($itemBaseName === '.' || $itemBaseName === '..') {
+				continue;
+			}
+			if (StringHelper::substr($item, -1, 1) == DIRECTORY_SEPARATOR) {
+				static::removeDirectory($item);
+			} else {
+				unlink($item);
+			}
+		}
+		if (is_dir($dir)) {
+			rmdir($dir);
+		}
+	}
+
+	/**
+	 * Returns the files found under the specified directory and subdirectories.
+	 * @param string $dir the directory under which the files will be looked for.
+	 * @param array $options options for file searching. Valid options are:
+	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
+	 *   If the callback returns false, the the sub-directory or file will not be placed to result set.
+	 *   The signature of the callback should be: `function ($base, $name, $isFile)`, where `$base` is the name of directory,
+	 *   which contains file or sub-directory, `$name` file or sub-directory name, `$isFile` indicates if object is a file or a directory.
+	 * - fileTypes: array, list of file name suffix (without dot). Only files with these suffixes will be returned.
+	 * - exclude: array, list of directory and file exclusions. Each exclusion can be either a name or a path.
+	 *   If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
+	 *   '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
+	 *   file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
+	 * - level: integer, recursion depth, default=-1.
+	 *   Level -1 means searching for all directories and files under the directory;
+	 *   Level 0 means searching for only the files DIRECTLY under the directory;
+	 *   level N means searching for those directories that are within N levels.
+	 * @return array files found under the directory. The file list is sorted.
+	 */
+	public static function findFiles($dir, array $options = array())
+	{
+		$level = array_key_exists('level', $options) ? $options['level'] : -1;
+		$filterOptions = $options;
+		$list = static::findFilesRecursive($dir, '', $filterOptions, $level);
+		sort($list);
+		return $list;
+	}
+
+	/**
+	 * Returns the files found under the specified directory and subdirectories.
+	 * This method is mainly used by [[findFiles]].
+	 * @param string $dir the source directory.
+	 * @param string $base the path relative to the original source directory.
+	 * @param array $filterOptions list of filter options.
+	 * - filter: a PHP callback, which results indicates if file will be returned.
+	 * - fileTypes: list of file name suffix (without dot). Only files with these suffixes will be returned.
+	 * - exclude: list of directory and file exclusions. Each exclusion can be either a name or a path.
+	 * @param integer $level recursion depth. It defaults to -1.
+	 * Level -1 means searching for all directories and files under the directory;
+	 * Level 0 means searching for only the files DIRECTLY under the directory;
+	 * level N means searching for those directories that are within N levels.
+	 * @return array files found under the directory.
+	 */
+	protected static function findFilesRecursive($dir, $base, array $filterOptions, $level)
+	{
+		$list = array();
+		$handle = opendir($dir);
+		while (($file = readdir($handle)) !== false) {
+			if ($file === '.' || $file === '..') {
+				continue;
+			}
+			$path = $dir . DIRECTORY_SEPARATOR . $file;
+			$isFile = is_file($path);
+			if (static::validatePath($base, $file, $isFile, $filterOptions)) {
+				if ($isFile) {
+					$list[] = $path;
+				} elseif ($level) {
+					$list = array_merge($list, static::findFilesRecursive($path, $base . DIRECTORY_SEPARATOR . $file, $filterOptions, $level-1));
+				}
+			}
+		}
+		closedir($handle);
+		return $list;
+	}
+
+	/**
+	 * Validates a file or directory, checking if it match given conditions.
+	 * @param string $base the path relative to the original source directory
+	 * @param string $name the file or directory name
+	 * @param boolean $isFile whether this is a file
+	 * @param array $filterOptions list of filter options.
+	 * - filter: a PHP callback, which results indicates if file will be returned.
+	 * - fileTypes: list of file name suffix (without dot). Only files with these suffixes will be returned.
+	 * - exclude: list of directory and file exclusions. Each exclusion can be either a name or a path.
+	 * If a file or directory name or path matches the exclusion, false will be returned. For example, an exclusion of
+	 * '.svn' will return false for all files and directories whose name is '.svn'. And an exclusion of '/a/b' will return false for
+	 * file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
+	 * @return boolean whether the file or directory is valid
+	 */
+	protected static function validatePath($base, $name, $isFile, array $filterOptions)
+	{
+		if (isset($filterOptions['filter']) && !call_user_func($filterOptions['filter'], $base, $name, $isFile)) {
+			return false;
+		}
+		if (!empty($filterOptions['exclude'])) {
+			foreach ($filterOptions['exclude'] as $e) {
+				if ($name === $e || strpos($base . DIRECTORY_SEPARATOR . $name, $e) === 0) {
+					return false;
+				}
+			}
+		}
+		if (!empty($filterOptions['fileTypes'])) {
+			if (!$isFile) {
+				return true;
+			}
+			if (($type = pathinfo($name, PATHINFO_EXTENSION)) !== '') {
+				return in_array($type, $filterOptions['fileTypes']);
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Shared environment safe version of mkdir. Supports recursive creation.
+	 * For avoidance of umask side-effects chmod is used.
+	 *
+	 * @param string $path path to be created.
+	 * @param integer $mode  the permission to be set for created directory. If not set  0777 will be used.
+	 * @param boolean $recursive whether to create directory structure recursive if parent dirs do not exist.
+	 * @return boolean result of mkdir.
+	 * @see mkdir
+	 */
+	public static function mkdir($path, $mode = null, $recursive = false)
+	{
+		$prevDir = dirname($path);
+		if ($recursive && !is_dir($path) && !is_dir($prevDir)) {
+			static::mkdir(dirname($path), $mode, true);
+		}
+		$mode = isset($mode) ? $mode : 0777;
+		$result = mkdir($path, $mode);
+		chmod($path, $mode);
+		return $result;
 	}
 }
