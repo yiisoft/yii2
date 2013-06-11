@@ -141,7 +141,7 @@ class FileHelper
 	 *   A path matches a pattern if it contains the pattern string at its end. For example,
 	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
 	 *   directories whose name ends with '.svn'. Note, the '/' characters in a pattern matches both '/' and '\'.
-	 *   If a file/directory matches both a name in "only" and "except", it will NOT be copied.
+	 *   If a file/directory matches a pattern in both "only" and "except", it will NOT be copied.
 	 * - except: array, list of patterns that the files or directories should NOT match if they want to be copied.
 	 *   For more details on how to specify the patterns, please refer to the "only" option.
 	 * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
@@ -215,10 +215,10 @@ class FileHelper
 	 *   A path matches a pattern if it contains the pattern string at its end. For example,
 	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
 	 *   directories whose name ends with '.svn'. Note, the '/' characters in a pattern matches both '/' and '\'.
-	 *   If a file/directory matches both a name in "only" and "except", it will NOT be returned.
+	 *   If a file/directory matches a pattern in both in "only" and "except", it will NOT be returned.
 	 * - except: array, list of patterns that the files or directories should NOT match if they want to be returned.
 	 *   For more details on how to specify the patterns, please refer to the "only" option.
-	 * - recursive: boolean, whether the files under the subdirectories should also be lookied for. Defaults to true.
+	 * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
 	 * @return array files found under the directory. The file list is sorted.
 	 */
 	public static function findFiles($dir, $options = array())
