@@ -137,7 +137,7 @@ class FileHelper
 	 * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
 	 *   If the callback returns false, the copy operation for the sub-directory or file will be cancelled.
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
- 	 *   file to be copied from, while `$to` is the copy target.
+	 *   file to be copied from, while `$to` is the copy target.
 	 * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
 	 *   The signature of the callback is similar to that of `beforeCopy`.
 	 */
@@ -172,8 +172,8 @@ class FileHelper
 	}
 
 	/**
-	 * Removes a directory recursively.
-	 * @param string $dir to be deleted recursively.
+	 * Removes a directory (and all its content) recursively.
+	 * @param string $dir the directory to be deleted recursively.
 	 */
 	public static function removeDirectory($dir)
 	{
@@ -198,46 +198,23 @@ class FileHelper
 	 * Returns the files found under the specified directory and subdirectories.
 	 * @param string $dir the directory under which the files will be looked for.
 	 * @param array $options options for file searching. Valid options are:
+	 *
 	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
-	 *   If the callback returns false, the the sub-directory or file will not be placed to result set.
+	 *   If the callback returns false, the the sub-directory or file will not be placed to the result set.
 	 *   The signature of the callback should be: `function ($base, $name, $isFile)`, where `$base` is the name of directory,
 	 *   which contains file or sub-directory, `$name` file or sub-directory name, `$isFile` indicates if object is a file or a directory.
 	 * - fileTypes: array, list of file name suffix (without dot). Only files with these suffixes will be returned.
-	 * - exclude: array, list of directory and file exclusions. Each exclusion can be either a name or a path.
-	 *   If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
-	 *   '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
-	 *   file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
-	 * - level: integer, recursion depth, default=-1.
-	 *   Level -1 means searching for all directories and files under the directory;
-	 *   Level 0 means searching for only the files DIRECTLY under the directory;
-	 *   level N means searching for those directories that are within N levels.
+	 * - only: array, list of path names that the files or directories should match if they want to be put in the result set.
+	 *   The matching is done in a partial manner. For example, the '.svn' will match all files and directories whose name ends with '.svn'.
+	 *   And the name '/a/b' will match all files and directories ending with '/a/b'.
+	 *   Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
+	 *   If a file/directory matches both a name in "only" and "except", it will NOT be put in the result set.
+	 * - except: array, list of path names that the files or directories should NOT match if they want to be put in the result set.
+	 * - recursive: boolean, whether the files should be looked recursively under all subdirectories.
+	 *   Defaults to true.
 	 * @return array files found under the directory. The file list is sorted.
 	 */
-	public static function findFiles($dir, array $options = array())
-	{
-		$level = array_key_exists('level', $options) ? $options['level'] : -1;
-		$filterOptions = $options;
-		$list = static::findFilesRecursive($dir, '', $filterOptions, $level);
-		sort($list);
-		return $list;
-	}
-
-	/**
-	 * Returns the files found under the specified directory and subdirectories.
-	 * This method is mainly used by [[findFiles]].
-	 * @param string $dir the source directory.
-	 * @param string $base the path relative to the original source directory.
-	 * @param array $filterOptions list of filter options.
-	 * - filter: a PHP callback, which results indicates if file will be returned.
-	 * - fileTypes: list of file name suffix (without dot). Only files with these suffixes will be returned.
-	 * - exclude: list of directory and file exclusions. Each exclusion can be either a name or a path.
-	 * @param integer $level recursion depth. It defaults to -1.
-	 * Level -1 means searching for all directories and files under the directory;
-	 * Level 0 means searching for only the files DIRECTLY under the directory;
-	 * level N means searching for those directories that are within N levels.
-	 * @return array files found under the directory.
-	 */
-	protected static function findFilesRecursive($dir, $base, array $filterOptions, $level)
+	public static function findFiles($dir, $options = array())
 	{
 		$list = array();
 		$handle = opendir($dir);
@@ -246,12 +223,11 @@ class FileHelper
 				continue;
 			}
 			$path = $dir . DIRECTORY_SEPARATOR . $file;
-			$isFile = is_file($path);
-			if (static::validatePath($base, $file, $isFile, $filterOptions)) {
-				if ($isFile) {
+			if (static::validatePath($path, $options)) {
+				if (is_file($path)) {
 					$list[] = $path;
-				} elseif ($level) {
-					$list = array_merge($list, static::findFilesRecursive($path, $base . DIRECTORY_SEPARATOR . $file, $filterOptions, $level-1));
+				} elseif (!isset($options['recursive']) || $options['recursive']) {
+					$list = array_merge($list, static::findFiles($path, $options));
 				}
 			}
 		}
@@ -261,36 +237,37 @@ class FileHelper
 
 	/**
 	 * Validates a file or directory, checking if it match given conditions.
-	 * @param string $base the path relative to the original source directory
-	 * @param string $name the file or directory name
-	 * @param boolean $isFile whether this is a file
-	 * @param array $filterOptions list of filter options.
-	 * - filter: a PHP callback, which results indicates if file will be returned.
-	 * - fileTypes: list of file name suffix (without dot). Only files with these suffixes will be returned.
-	 * - exclude: list of directory and file exclusions. Each exclusion can be either a name or a path.
-	 * If a file or directory name or path matches the exclusion, false will be returned. For example, an exclusion of
-	 * '.svn' will return false for all files and directories whose name is '.svn'. And an exclusion of '/a/b' will return false for
-	 * file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
+	 * @param string $path the path of the file or directory to be validated
+	 * @param array $options options for file searching.
 	 * @return boolean whether the file or directory is valid
 	 */
-	protected static function validatePath($base, $name, $isFile, array $filterOptions)
+	protected static function validatePath($path, $options)
 	{
-		if (isset($filterOptions['filter']) && !call_user_func($filterOptions['filter'], $base, $name, $isFile)) {
+		if (isset($options['filter']) && !call_user_func($options['filter'], $path)) {
 			return false;
 		}
-		if (!empty($filterOptions['exclude'])) {
-			foreach ($filterOptions['exclude'] as $e) {
-				if ($name === $e || strpos($base . DIRECTORY_SEPARATOR . $name, $e) === 0) {
+		$path = str_replace('\\', '/', $path);
+		$n = strlen($path);
+		if (!empty($options['except'])) {
+			foreach ($options['except'] as $name) {
+				if (strrpos($path, $name) === $n - strlen($name)) {
 					return false;
 				}
 			}
 		}
-		if (!empty($filterOptions['fileTypes'])) {
-			if (!$isFile) {
+		if (!empty($options['only'])) {
+			foreach ($options['only'] as $name) {
+				if (strrpos($path, $name) !== $n - strlen($name)) {
+					return false;
+				}
+			}
+		}
+		if (!empty($options['fileTypes'])) {
+			if (!is_file($path)) {
 				return true;
 			}
-			if (($type = pathinfo($name, PATHINFO_EXTENSION)) !== '') {
-				return in_array($type, $filterOptions['fileTypes']);
+			if (($type = pathinfo($path, PATHINFO_EXTENSION)) !== '') {
+				return in_array($type, $options['fileTypes']);
 			} else {
 				return false;
 			}
