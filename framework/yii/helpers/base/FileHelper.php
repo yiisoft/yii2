@@ -67,7 +67,7 @@ class FileHelper
 		if ($language === $sourceLanguage) {
 			return $file;
 		}
-		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $sourceLanguage . DIRECTORY_SEPARATOR . StringHelper::basename($file);
+		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $sourceLanguage . DIRECTORY_SEPARATOR . basename($file);
 		return is_file($desiredFile) ? $desiredFile : $file;
 	}
 
@@ -179,7 +179,7 @@ class FileHelper
 	{
 		$items = glob($dir . DIRECTORY_SEPARATOR . '{,.}*', GLOB_MARK | GLOB_BRACE);
 		foreach ($items as $item) {
-			$itemBaseName = StringHelper::basename($item);
+			$itemBaseName = basename($item);
 			if ($itemBaseName === '.' || $itemBaseName === '..') {
 				continue;
 			}
