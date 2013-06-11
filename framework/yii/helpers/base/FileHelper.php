@@ -137,7 +137,6 @@ class FileHelper
 	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
 	 *   If the callback returns false, the the sub-directory or file will not be copied.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be copied.
-	 * - fileTypes: array, list of file name suffix (without dot). Only files with these suffixes will be copied.
 	 * - only: array, list of patterns that the files or directories should match if they want to be copied.
 	 *   A path matches a pattern if it contains the pattern string at its end. For example,
 	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
@@ -212,7 +211,6 @@ class FileHelper
 	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
 	 *   If the callback returns false, the the sub-directory or file will be excluded from the returning result.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
-	 * - fileTypes: array, list of file name suffix (without dot). Only files with these suffixes will be returned.
 	 * - only: array, list of patterns that the files or directories should match if they want to be returned.
 	 *   A path matches a pattern if it contains the pattern string at its end. For example,
 	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
@@ -272,11 +270,7 @@ class FileHelper
 				}
 			}
 		}
-		if (!empty($options['fileTypes']) && is_file($path)) {
-			return in_array(pathinfo($path, PATHINFO_EXTENSION), $options['fileTypes']);
-		} else {
-			return true;
-		}
+		return true;
 	}
 
 	/**

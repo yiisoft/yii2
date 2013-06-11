@@ -268,31 +268,6 @@ class FileHelperTest extends TestCase
 		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
 	}
 
-	/**
-	 * @depends testFindFiles
-	 */
-	public function testFindFilesFileType()
-	{
-		$dirName = 'test_dir';
-		$fileType = 'dat';
-		$fileName = 'test_file.' . $fileType;
-		$excludeFileName = 'exclude_file.txt';
-		$this->createFileStructure(array(
-			$dirName => array(
-				$fileName => 'file content',
-				$excludeFileName => 'exclude file content',
-			),
-		));
-		$basePath = $this->testFilePath;
-		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
-
-		$options = array(
-			'fileTypes' => array($fileType),
-		);
-		$foundFiles = FileHelper::findFiles($dirName, $options);
-		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
-	}
-
 	public function testMkdir() {
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
