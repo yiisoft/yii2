@@ -45,7 +45,7 @@ class FileHelperTest extends TestCase
 	 */
 	protected function removeDir($dirName)
 	{
-		if (!empty($dirName) && file_exists($dirName)) {
+		if (!empty($dirName) && is_dir($dirName)) {
 			if ($handle = opendir($dirName)) {
 				while (false !== ($entry = readdir($handle))) {
 					if ($entry != '.' && $entry != '..') {
@@ -235,8 +235,8 @@ class FileHelperTest extends TestCase
 		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
 
 		$options = array(
-			'filter' => function($base, $name, $isFile) use ($passedFileName) {
-				return ($passedFileName == $name);
+			'filter' => function($path) use ($passedFileName) {
+				return $passedFileName == basename($path);
 			}
 		);
 		$foundFiles = FileHelper::findFiles($dirName, $options);
@@ -261,7 +261,7 @@ class FileHelperTest extends TestCase
 		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
 
 		$options = array(
-			'exclude' => array($excludeFileName),
+			'except' => array($excludeFileName),
 		);
 		$foundFiles = FileHelper::findFiles($dirName, $options);
 		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
