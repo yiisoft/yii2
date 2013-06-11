@@ -135,7 +135,7 @@ class FileHelper
 	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0777.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
 	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
-	 *   If the callback returns false, the the sub-directory or file will not be copied.
+	 *   If the callback returns false, then the sub-directory or file will not be copied.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be copied.
 	 * - only: array, list of patterns that the files or directories should match if they want to be copied.
 	 *   A path matches a pattern if it contains the pattern string at its end. For example,
@@ -152,7 +152,7 @@ class FileHelper
 	public static function copyDirectory($src, $dst, $options = array())
 	{
 		if (!is_dir($dst)) {
-			mkdir($dst, isset($options['dirMode']) ? $options['dirMode'] : 0777, true);
+			static::mkdir($dst, isset($options['dirMode']) ? $options['dirMode'] : 0777, true);
 		}
 
 		$handle = opendir($src);
@@ -209,7 +209,7 @@ class FileHelper
 	 * @param array $options options for file searching. Valid options are:
 	 *
 	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
-	 *   If the callback returns false, the the sub-directory or file will be excluded from the returning result.
+	 *   If the callback returns false, then the sub-directory or file will be excluded from the returning result.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
 	 * - only: array, list of patterns that the files or directories should match if they want to be returned.
 	 *   A path matches a pattern if it contains the pattern string at its end. For example,
