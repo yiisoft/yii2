@@ -30,8 +30,7 @@ use yii\helpers\Console;
 class Controller extends \yii\base\Controller
 {
 	/**
-	 * @var boolean whether the call of [[confirm()]] requires a user input.
-	 * If false, [[confirm()]] will always return true no matter what user enters or not.
+	 * @var boolean whether to run the command interactively.
 	 */
 	public $interactive = true;
 
