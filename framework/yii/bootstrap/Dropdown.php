@@ -46,7 +46,7 @@ class Dropdown extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->addCssClass($this->options, 'dropdown-menu');
+		Html::addCssClass($this->options, 'dropdown-menu');
 	}
 
 	/**
@@ -81,7 +81,7 @@ class Dropdown extends Widget
 			$linkOptions['tabindex'] = '-1';
 
 			if (isset($item['items'])) {
-				$this->addCssClass($options, 'dropdown-submenu');
+				Html::addCssClass($options, 'dropdown-submenu');
 				$content = Html::a($label, '#', $linkOptions) . $this->renderItems($item['items']);
 			} else {
 				$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);

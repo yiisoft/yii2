@@ -82,20 +82,4 @@ class Widget extends \yii\base\Widget
 			$view->registerJs(implode("\n", $js));
 		}
 	}
-
-	/**
-	 * Adds a CSS class to the specified options.
-	 * This method will ensure that the CSS class is unique and the "class" option is properly formatted.
-	 * @param array $options the options to be modified.
-	 * @param string $class the CSS class to be added
-	 */
-	protected function addCssClass(&$options, $class)
-	{
-		if (isset($options['class'])) {
-			$classes = preg_split('/\s+/', $options['class'] . ' ' . $class, -1, PREG_SPLIT_NO_EMPTY);
-			$options['class'] = implode(' ', array_unique($classes));
-		} else {
-			$options['class'] = $class;
-		}
-	}
 }

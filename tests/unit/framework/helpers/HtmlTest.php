@@ -434,6 +434,38 @@ EOD;
 		Html::$showBooleanAttributeValues = true;
 	}
 
+	public function testAddCssClass()
+	{
+		$options = array();
+		Html::addCssClass($options, 'test');
+		$this->assertEquals(array('class' => 'test'), $options);
+		Html::addCssClass($options, 'test');
+		$this->assertEquals(array('class' => 'test'), $options);
+		Html::addCssClass($options, 'test2');
+		$this->assertEquals(array('class' => 'test test2'), $options);
+		Html::addCssClass($options, 'test');
+		$this->assertEquals(array('class' => 'test test2'), $options);
+		Html::addCssClass($options, 'test2');
+		$this->assertEquals(array('class' => 'test test2'), $options);
+		Html::addCssClass($options, 'test3');
+		$this->assertEquals(array('class' => 'test test2 test3'), $options);
+		Html::addCssClass($options, 'test2');
+		$this->assertEquals(array('class' => 'test test2 test3'), $options);
+	}
+
+	public function testRemoveCssClass()
+	{
+		$options = array('class' => 'test test2 test3');
+		Html::removeCssClass($options, 'test2');
+		$this->assertEquals(array('class' => 'test test3'), $options);
+		Html::removeCssClass($options, 'test2');
+		$this->assertEquals(array('class' => 'test test3'), $options);
+		Html::removeCssClass($options, 'test');
+		$this->assertEquals(array('class' => 'test3'), $options);
+		Html::removeCssClass($options, 'test3');
+		$this->assertEquals(array(), $options);
+	}
+
 	protected function getDataItems()
 	{
 		return array(

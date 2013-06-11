@@ -93,7 +93,7 @@ class Tabs extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->addCssClass($this->options, 'nav nav-tabs');
+		Html::addCssClass($this->options, 'nav nav-tabs');
 	}
 
 	/**
@@ -123,10 +123,10 @@ class Tabs extends Widget
 
 			if (isset($item['items'])) {
 				$label .= ' <b class="caret"></b>';
-				$this->addCssClass($headerOptions, 'dropdown');
+				Html::addCssClass($headerOptions, 'dropdown');
 
 				if ($this->renderDropdown($item['items'], $panes)) {
-					$this->addCssClass($headerOptions, 'active');
+					Html::addCssClass($headerOptions, 'active');
 				}
 
 				$header = Html::a($label, "#", array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown')) . "\n"
@@ -135,10 +135,10 @@ class Tabs extends Widget
 				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
 				$options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $n);
 
-				$this->addCssClass($options, 'tab-pane');
+				Html::addCssClass($options, 'tab-pane');
 				if (ArrayHelper::remove($item, 'active')) {
-					$this->addCssClass($options, 'active');
-					$this->addCssClass($headerOptions, 'active');
+					Html::addCssClass($options, 'active');
+					Html::addCssClass($headerOptions, 'active');
 				}
 				$header = Html::a($label, '#' . $options['id'], array('data-toggle' => 'tab', 'tabindex' => '-1'));
 				$panes[] = Html::tag('div', $item['content'], $options);
@@ -175,10 +175,10 @@ class Tabs extends Widget
 
 			$content = ArrayHelper::remove($item, 'content');
 			$options = ArrayHelper::remove($item, 'contentOptions', array());
-			$this->addCssClass($options, 'tab-pane');
+			Html::addCssClass($options, 'tab-pane');
 			if (ArrayHelper::remove($item, 'active')) {
-				$this->addCssClass($options, 'active');
-				$this->addCssClass($item['options'], 'active');
+				Html::addCssClass($options, 'active');
+				Html::addCssClass($item['options'], 'active');
 				$itemActive = true;
 			}
 

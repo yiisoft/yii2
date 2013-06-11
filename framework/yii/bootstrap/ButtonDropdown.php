@@ -64,7 +64,7 @@ class ButtonDropdown extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->addCssClass($this->options, 'btn-group');
+		Html::addCssClass($this->options, 'btn-group');
 	}
 
 	/**
@@ -85,12 +85,12 @@ class ButtonDropdown extends Widget
 	 */
 	protected function renderButton()
 	{
-		$this->addCssClass($this->buttonOptions, 'btn');
+		Html::addCssClass($this->buttonOptions, 'btn');
 		if ($this->split) {
 			$tag = 'button';
 			$options = $this->buttonOptions;
 			$this->buttonOptions['data-toggle'] = 'dropdown';
-			$this->addCssClass($this->buttonOptions, 'dropdown-toggle');
+			Html::addCssClass($this->buttonOptions, 'dropdown-toggle');
 			$splitButton = Button::widget(array(
 				'label' => '<span class="caret"></span>',
 				'encodeLabel' => false,
@@ -103,7 +103,7 @@ class ButtonDropdown extends Widget
 			if (!isset($options['href'])) {
 				$options['href'] = '#';
 			}
-			$this->addCssClass($options, 'dropdown-toggle');
+			Html::addCssClass($options, 'dropdown-toggle');
 			$options['data-toggle'] = 'dropdown';
 			$splitButton = '';
 		}

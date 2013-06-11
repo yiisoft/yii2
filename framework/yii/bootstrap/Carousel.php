@@ -70,7 +70,7 @@ class Carousel extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->addCssClass($this->options, 'carousel');
+		Html::addCssClass($this->options, 'carousel');
 	}
 
 	/**
@@ -96,7 +96,7 @@ class Carousel extends Widget
 		for ($i = 0, $count = count($this->items); $i < $count; $i++) {
 			$options = array('data-target' => '#' . $this->options['id'], 'data-slide-to' => $i);
 			if ($i === 0) {
-				$this->addCssClass($options, 'active');
+				Html::addCssClass($options, 'active');
 			}
 			$indicators[] = Html::tag('li', '', $options);
 		}
@@ -140,9 +140,9 @@ class Carousel extends Widget
 			throw new InvalidConfigException('The "content" option is required.');
 		}
 
-		$this->addCssClass($options, 'item');
+		Html::addCssClass($options, 'item');
 		if ($index === 0) {
-			$this->addCssClass($options, 'active');
+			Html::addCssClass($options, 'active');
 		}
 
 		return Html::tag('div', $content . "\n" . $caption, $options);

@@ -79,7 +79,7 @@ class Nav extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->addCssClass($this->options, 'nav');
+		Html::addCssClass($this->options, 'nav');
 	}
 
 	/**
@@ -125,13 +125,13 @@ class Nav extends Widget
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
 
 		if (ArrayHelper::getValue($item, 'active')) {
-			$this->addCssClass($options, 'active');
+			Html::addCssClass($options, 'active');
 		}
 
 		if ($items !== null) {
 			$linkOptions['data-toggle'] = 'dropdown';
-			$this->addCssClass($options, 'dropdown');
-			$this->addCssClass($urlOptions, 'dropdown-toggle');
+			Html::addCssClass($options, 'dropdown');
+			Html::addCssClass($urlOptions, 'dropdown-toggle');
 			$label .= ' ' . Html::tag('b', '', array('class' => 'caret'));
 			if (is_array($items)) {
 				$items = Dropdown::widget(array(

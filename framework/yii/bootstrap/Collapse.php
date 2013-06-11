@@ -66,7 +66,7 @@ class Collapse extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->addCssClass($this->options, 'accordion');
+		Html::addCssClass($this->options, 'accordion');
 	}
 
 	/**
@@ -90,7 +90,7 @@ class Collapse extends Widget
 		$index = 0;
 		foreach ($this->items as $header => $item) {
 			$options = ArrayHelper::getValue($item, 'options', array());
-			$this->addCssClass($options, 'accordion-group');
+			Html::addCssClass($options, 'accordion-group');
 			$items[] = Html::tag('div', $this->renderItem($header, $item, ++$index), $options);
 		}
 
@@ -111,7 +111,7 @@ class Collapse extends Widget
 			$id = $this->options['id'] . '-collapse' . $index;
 			$options = ArrayHelper::getValue($item, 'contentOptions', array());
 			$options['id'] = $id;
-			$this->addCssClass($options, 'accordion-body collapse');
+			Html::addCssClass($options, 'accordion-body collapse');
 
 			$header = Html::a($header, '#' . $id, array(
 					'class' => 'accordion-toggle',

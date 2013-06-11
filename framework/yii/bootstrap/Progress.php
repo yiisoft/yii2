@@ -94,7 +94,7 @@ class Progress extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->addCssClass($this->options, 'progress');
+		Html::addCssClass($this->options, 'progress');
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Progress extends Widget
 	 */
 	protected function renderBar($percent, $label = '', $options = array())
 	{
-		$this->addCssClass($options, 'bar');
+		Html::addCssClass($options, 'bar');
 		$options['style'] = "width:{$percent}%";
 		return Html::tag('div', $label, $options);
 	}
