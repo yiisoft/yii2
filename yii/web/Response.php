@@ -498,20 +498,20 @@ class Response extends \yii\base\Response
 	 * @param array|string $url the URL to be redirected to. [[\yii\helpers\Html::url()]]
 	 * will be used to normalize the URL. If the resulting URL is still a relative URL
 	 * (one without host info), the current request host info will be used.
-	 * @param boolean $terminate whether to terminate the current application
-	 * @param integer $statusCode the HTTP status code. Defaults to 302.
+	 * @param integer $statusCode the HTTP status code. If null, it will use 302
+	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
-	 * for details about HTTP status code.
-	 * Note that if the request is an AJAX request, [[ajaxRedirectCode]] will be used instead.
+	 * for details about HTTP status code
+	 * @param boolean $terminate whether to terminate the current application
 	 */
-	public function redirect($url, $terminate = true, $statusCode = 302)
+	public function redirect($url, $statusCode = null, $terminate = true)
 	{
 		$url = Html::url($url);
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
 			$url = Yii::$app->getRequest()->getHostInfo() . $url;
 		}
-		if (Yii::$app->getRequest()->getIsAjax()) {
-			$statusCode = $this->ajaxRedirectCode;
+		if ($statusCode === null) {
+			$statusCode = Yii::$app->getRequest()->getIsAjax() ? $this->ajaxRedirectCode : 302;
 		}
 		$this->getHeaders()->set('Location', $url);
 		$this->setStatusCode($statusCode);
@@ -615,7 +615,7 @@ class Response extends \yii\base\Response
 	 */
 	public function getIsOk()
 	{
-		return 200 === $this->getStatusCode();
+		return $this->getStatusCode() == 200;
 	}
 
 	/**
@@ -623,7 +623,7 @@ class Response extends \yii\base\Response
 	 */
 	public function getIsForbidden()
 	{
-		return 403 === $this->getStatusCode();
+		return $this->getStatusCode() == 403;
 	}
 
 	/**
@@ -631,7 +631,7 @@ class Response extends \yii\base\Response
 	 */
 	public function getIsNotFound()
 	{
-		return 404 === $this->getStatusCode();
+		return $this->getStatusCode() == 404;
 	}
 
 	/**
