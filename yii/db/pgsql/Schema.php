@@ -243,6 +243,9 @@ ORDER BY
 SQL;
 
 		$columns = $this->db->createCommand($sql)->queryAll();
+		if (empty($columns)) {
+			return false;
+		}
 		foreach ($columns as $column) {
 			$column = $this->loadColumnSchema($column);
 			$table->columns[$column->name] = $column;
