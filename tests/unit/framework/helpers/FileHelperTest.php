@@ -169,7 +169,7 @@ class FileHelperTest extends TestCase
 		$this->assertFileMode($fileMode, $dstDirName . DIRECTORY_SEPARATOR . $fileName, 'Copied file has wrong mode!');
 	}
 
-	public function testRemoveDirectory()
+	public function stestRemoveDirectory()
 	{
 		$dirName = 'test_dir_for_remove';
 		$this->createFileStructure(array(
@@ -295,13 +295,8 @@ class FileHelperTest extends TestCase
 
 	public function testMkdir() {
 		$basePath = $this->testFilePath;
-
-		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir';
-		FileHelper::mkdir($dirName);
-		$this->assertTrue(file_exists($dirName), 'Unable to create directory!');
-
 		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
-		FileHelper::mkdir($dirName, null, true);
+		FileHelper::mkdir($dirName);
 		$this->assertTrue(file_exists($dirName), 'Unable to create directory recursively!');
 	}
 
