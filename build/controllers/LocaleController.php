@@ -5,6 +5,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace app\controllers;
+
 use yii\console\Controller;
 use yii\helpers\FileHelper;
 
