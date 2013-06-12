@@ -356,8 +356,7 @@ class PhpManager extends Manager
 	 */
 	public function saveItem($item, $oldName = null)
 	{
-		if ($oldName !== null && ($newName = $item->getName()) !== $oldName) // name changed
-		{
+		if ($oldName !== null && ($newName = $item->getName()) !== $oldName) { // name changed
 			if (isset($this->_items[$newName])) {
 				throw new InvalidParamException("Unable to change the item name. The name '$newName' is already used by another item.");
 			}
