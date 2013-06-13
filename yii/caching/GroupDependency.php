@@ -42,11 +42,11 @@ class GroupDependency extends Dependency
 	 */
 	protected function generateDependencyData($cache)
 	{
-		if ($cache->get(array(__CLASS__, $this->group)) === false) {
-			// If the cutoff timestamp is not initialized or is swapped out of the cache, we need to set it.
-			$this->invalidate($cache, array(__CLASS__, $this->group));
+		$version = $cache->get(array(__CLASS__, $this->group));
+		if ($version === false) {
+			$version = $this->invalidate($cache, array(__CLASS__, $this->group));
 		}
-		return microtime(true);
+		return $version;
 	}
 
 	/**
@@ -56,17 +56,20 @@ class GroupDependency extends Dependency
 	 */
 	public function getHasChanged($cache)
 	{
-		$time = $cache->get(array(__CLASS__, $this->group));
-		return $time === false || $time > $this->data;
+		$version = $cache->get(array(__CLASS__, $this->group));
+		return $version === false || $version !== $this->data;
 	}
 
 	/**
 	 * Invalidates all of the cached data items that have the same [[group]].
 	 * @param Cache $cache the cache component that caches the data items
 	 * @param string $group the group name
+	 * @return string the current version number
 	 */
 	public static function invalidate($cache, $group)
 	{
-		$cache->set(array(__CLASS__, $group), microtime(true));
+		$version = microtime();
+		$cache->set(array(__CLASS__, $group), $version);
+		return $version;
 	}
 }
