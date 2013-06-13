@@ -11,6 +11,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\base\InvalidCallException;
 use yii\caching\Cache;
+use yii\caching\GroupDependency;
 
 /**
  * Schema is the base class for concrete DBMS-specific schema classes.
@@ -93,7 +94,7 @@ abstract class Schema extends \yii\base\Object
 				if ($refresh || ($table = $cache->get($key)) === false) {
 					$table = $this->loadTableSchema($realName);
 					if ($table !== null) {
-						$cache->set($key, $table, $db->schemaCacheDuration);
+						$cache->set($key, $table, $db->schemaCacheDuration, new GroupDependency($this->getCacheGroup()));
 					}
 				}
 				return $this->_tables[$name] = $table;
@@ -107,7 +108,7 @@ abstract class Schema extends \yii\base\Object
 	 * @param string $name the table name
 	 * @return mixed the cache key
 	 */
-	public function getCacheKey($name)
+	protected function getCacheKey($name)
 	{
 		return array(
 			__CLASS__,
@@ -115,6 +116,20 @@ abstract class Schema extends \yii\base\Object
 			$this->db->username,
 			$name,
 		);
+	}
+
+	/**
+	 * Returns the cache group name.
+	 * This allows [[refresh()]] to invalidate all cached table schemas.
+	 * @return string the cache group name
+	 */
+	protected function getCacheGroup()
+	{
+		return md5(serialize(array(
+			__CLASS__,
+			$this->db->dsn,
+			$this->db->username,
+		)));
 	}
 
 	/**
@@ -176,9 +191,7 @@ abstract class Schema extends \yii\base\Object
 		/** @var $cache Cache */
 		$cache = is_string($this->db->schemaCache) ? Yii::$app->getComponent($this->db->schemaCache) : $this->db->schemaCache;
 		if ($this->db->enableSchemaCache && $cache instanceof Cache) {
-			foreach ($this->_tables as $name => $table) {
-				$cache->delete($this->getCacheKey($name));
-			}
+			GroupDependency::invalidate($cache, $this->getCacheGroup());
 		}
 		$this->_tableNames = array();
 		$this->_tables = array();
