@@ -46,35 +46,38 @@ abstract class Dependency extends \yii\base\Object
 	/**
 	 * Evaluates the dependency by generating and saving the data related with dependency.
 	 * This method is invoked by cache before writing data into it.
+	 * @param Cache $cache the cache component that is currently evaluating this dependency
 	 */
-	public function evaluateDependency()
+	public function evaluateDependency($cache)
 	{
 		if (!$this->reusable) {
-			$this->data = $this->generateDependencyData();
+			$this->data = $this->generateDependencyData($cache);
 		} else {
 			if ($this->_hash === null) {
 				$this->_hash = sha1(serialize($this));
 			}
 			if (!array_key_exists($this->_hash, self::$_reusableData)) {
-				self::$_reusableData[$this->_hash] = $this->generateDependencyData();
+				self::$_reusableData[$this->_hash] = $this->generateDependencyData($cache);
 			}
 			$this->data = self::$_reusableData[$this->_hash];
 		}
 	}
 
 	/**
+	 * Returns a value indicating whether the dependency has changed.
+	 * @param Cache $cache the cache component that is currently evaluating this dependency
 	 * @return boolean whether the dependency has changed.
 	 */
-	public function getHasChanged()
+	public function getHasChanged($cache)
 	{
 		if (!$this->reusable) {
-			return $this->generateDependencyData() !== $this->data;
+			return $this->generateDependencyData($cache) !== $this->data;
 		} else {
 			if ($this->_hash === null) {
 				$this->_hash = sha1(serialize($this));
 			}
 			if (!array_key_exists($this->_hash, self::$_reusableData)) {
-				self::$_reusableData[$this->_hash] = $this->generateDependencyData();
+				self::$_reusableData[$this->_hash] = $this->generateDependencyData($cache);
 			}
 			return self::$_reusableData[$this->_hash] !== $this->data;
 		}
@@ -91,7 +94,8 @@ abstract class Dependency extends \yii\base\Object
 	/**
 	 * Generates the data needed to determine if dependency has been changed.
 	 * Derived classes should override this method to generate the actual dependency data.
+	 * @param Cache $cache the cache component that is currently evaluating this dependency
 	 * @return mixed the data needed to determine if dependency has been changed.
 	 */
-	abstract protected function generateDependencyData();
+	abstract protected function generateDependencyData($cache);
 }
