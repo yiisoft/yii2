@@ -76,7 +76,7 @@ abstract class Dependency extends \yii\base\Object
 			if (!array_key_exists($this->_hash, self::$_reusableData)) {
 				self::$_reusableData[$this->_hash] = $this->generateDependencyData();
 			}
-			return self::$_reusableData[$this->_hash] !== $this->_data;
+			return self::$_reusableData[$this->_hash] !== $this->data;
 		}
 	}
 
