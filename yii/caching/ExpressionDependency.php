@@ -24,26 +24,26 @@ class ExpressionDependency extends Dependency
 {
 	/**
 	 * @var string the string representation of a PHP expression whose result is used to determine the dependency.
-	 * A PHP expression can be any PHP code that has a value. To learn more about what an expression is,
+	 * A PHP expression can be any PHP code that evaluates to a value. To learn more about what an expression is,
 	 * please refer to the [php manual](http://www.php.net/manual/en/language.expressions.php).
 	 */
 	public $expression;
 	/**
-	 * @var mixed custom data associated with this dependency. In [[expression]], you may compare the value of
-	 * this property with the latest data to determine if the dependency has changed or not.
+	 * @var mixed custom parameters associated with this dependency. You may get the value
+	 * of this property in [[expression]] using `$this->params`.
 	 */
-	public $data;
+	public $params;
 
 	/**
 	 * Constructor.
 	 * @param string $expression the PHP expression whose result is used to determine the dependency.
-	 * @param mixed $data the custom data associated with this dependency
+	 * @param mixed $params the custom parameters associated with this dependency
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($expression = 'true', $data = null, $config = array())
+	public function __construct($expression = 'true', $params = null, $config = array())
 	{
 		$this->expression = $expression;
-		$this->data = $data;
+		$this->params = $params;
 		parent::__construct($config);
 	}
 
