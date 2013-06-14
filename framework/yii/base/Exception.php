@@ -29,11 +29,24 @@ class Exception extends \Exception implements Arrayable
 	 */
 	public function toArray()
 	{
-		return array(
+		$array = array(
 			'type' => get_class($this),
 			'name' => $this->getName(),
 			'message' => $this->getMessage(),
 			'code' => $this->getCode(),
 		);
+		if (($prev = $this->getPrevious()) !== null) {
+			if ($prev instanceof self) {
+				$array['previous'] = $prev->toArray();
+			} else {
+				$array['previous'] = array(
+					'type' => get_class($prev),
+					'name' => 'Exception',
+					'message' => $prev->getMessage(),
+					'code' => $prev->getCode(),
+				);
+			}
+		}
+		return $array;
 	}
 }
