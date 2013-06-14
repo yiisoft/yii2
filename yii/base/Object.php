@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * @include @yii/base/Object.md
@@ -223,11 +222,10 @@ class Object implements Arrayable
 	/**
 	 * Converts the object into an array.
 	 * The default implementation will return all public property values as an array.
-	 * However, if the object is traversable, it will return the data obtained by the data iteration.
 	 * @return array the array representation of the object
 	 */
 	public function toArray()
 	{
-		return ArrayHelper::toArray($this, false);
+		return Yii::getObjectVars($this);
 	}
 }
