@@ -147,8 +147,8 @@ abstract class Validator extends Component
 			$params['class'] = __NAMESPACE__ . '\InlineValidator';
 			$params['method'] = $type;
 		} else {
-			if (isset(self::$builtInValidators[$type])) {
-				$type = self::$builtInValidators[$type];
+			if (isset(static::$builtInValidators[$type])) {
+				$type = static::$builtInValidators[$type];
 			}
 			if (is_array($type)) {
 				foreach ($type as $name => $value) {
