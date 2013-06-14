@@ -16,16 +16,12 @@ use yii\web\HttpException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Application extends Module
+abstract class Application extends Module
 {
 	/**
-	 * @event Event an event that is triggered at the beginning of [[run()]].
+	 * @event ResponseEvent an event that is triggered after [[handle()]] returns a response.
 	 */
-	const EVENT_BEFORE_RUN = 'beforeRun';
-	/**
-	 * @event Event an event that is triggered at the end of [[run()]].
-	 */
-	const EVENT_AFTER_RUN = 'afterRun';
+	const EVENT_RESPONSE = 'response';
 	/**
 	 * @var string the application name.
 	 */
@@ -54,7 +50,7 @@ class Application extends Module
 	 */
 	public $preload = array();
 	/**
-	 * @var \yii\web\Controller|\yii\console\Controller the currently active controller instance
+	 * @var Controller the currently active controller instance
 	 */
 	public $controller;
 	/**
@@ -62,8 +58,6 @@ class Application extends Module
 	 * If this is false, layout will be disabled.
 	 */
 	public $layout = 'main';
-
-	private $_ended = false;
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
@@ -143,67 +137,32 @@ class Application extends Module
 	}
 
 	/**
-	 * Terminates the application.
-	 * This method replaces PHP's exit() function by calling [[afterRequest()]] before exiting.
-	 * @param integer $status exit status (value 0 means normal exit while other values mean abnormal exit).
-	 * @param boolean $exit whether to exit the current request.
-	 * It defaults to true, meaning the PHP's exit() function will be called at the end of this method.
-	 */
-	public function end($status = 0, $exit = true)
-	{
-		if (!$this->_ended) {
-			$this->_ended = true;
-			$this->getResponse()->end();
-			$this->afterRun();
-		}
-
-		if ($exit) {
-			exit($status);
-		}
-	}
-
-	/**
 	 * Runs the application.
 	 * This is the main entrance of an application.
 	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
 	 */
 	public function run()
 	{
-		$this->beforeRun();
-		$response = $this->getResponse();
-		$response->begin();
-		register_shutdown_function(array($this, 'end'), 0, false);
-		$status = $this->processRequest();
-		$response->end();
-		$this->afterRun();
-		return $status;
+		$response = $this->handle($this->getRequest());
+
+		$event = new ResponseEvent($response);
+		$this->trigger(self::EVENT_RESPONSE, $event);
+		$event->response->send();
+
+		return $response->exitStatus;
 	}
 
 	/**
-	 * Raises the [[EVENT_BEFORE_RUN]] event right BEFORE the application processes the request.
+	 * Handles the specified request.
+	 *
+	 * This method should return an instance of [[Response]] or its child class
+	 * which represents the handling result of the request.
+	 *
+	 * @param Request $request the request to be handled
+	 * @return Response the resulting response
 	 */
-	public function beforeRun()
-	{
-		$this->trigger(self::EVENT_BEFORE_RUN);
-	}
+	abstract public function handle($request);
 
-	/**
-	 * Raises the [[EVENT_AFTER_RUN]] event right AFTER the application processes the request.
-	 */
-	public function afterRun()
-	{
-		$this->trigger(self::EVENT_AFTER_RUN);
-	}
-
-	/**
-	 * Processes the request.
-	 * Child classes should override this method with actual request processing logic.
-	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
-	 */
-	public function processRequest()
-	{
-		return 0;
-	}
 
 	private $_runtimePath;
 
@@ -325,15 +284,6 @@ class Application extends Module
 	}
 
 	/**
-	 * Returns the response component.
-	 * @return \yii\web\Response|\yii\console\Response the response component
-	 */
-	public function getResponse()
-	{
-		return $this->getComponent('response');
-	}
-
-	/**
 	 * Returns the view object.
 	 * @return View the view object that is used to render various view files.
 	 */
@@ -400,7 +350,7 @@ class Application extends Module
 	 * This method is implemented as a PHP exception handler. It requires
 	 * that constant YII_ENABLE_ERROR_HANDLER be defined true.
 	 *
-	 * @param \Exception $exception exception that is not caught
+	 * @param \Exception $exception the exception that is not caught
 	 */
 	public function handleException($exception)
 	{
@@ -410,17 +360,13 @@ class Application extends Module
 
 		try {
 			$this->logException($exception);
-
 			if (($handler = $this->getErrorHandler()) !== null) {
 				$handler->handle($exception);
 			} else {
-				$this->renderException($exception);
+				echo $this->renderException($exception);
 			}
-
-			$this->end(1);
-
 		} catch (\Exception $e) {
-			// exception could be thrown in end() or ErrorHandler::handle()
+			// exception could be thrown in ErrorHandler::handle()
 			$msg = (string)$e;
 			$msg .= "\nPrevious exception:\n";
 			$msg .= (string)$exception;
@@ -468,29 +414,28 @@ class Application extends Module
 	 */
 	public function handleFatalError()
 	{
-		if (YII_ENABLE_ERROR_HANDLER) {
-			$error = error_get_last();
+		$error = error_get_last();
 
-			if (ErrorException::isFatalError($error)) {
-				unset($this->_memoryReserve);
-				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
-				// use error_log because it's too late to use Yii log
-				error_log($exception);
+		if (ErrorException::isFatalError($error)) {
+			unset($this->_memoryReserve);
+			$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+			// use error_log because it's too late to use Yii log
+			error_log($exception);
 
-				if (($handler = $this->getErrorHandler()) !== null) {
-					$handler->handle($exception);
-				} else {
-					$this->renderException($exception);
-				}
-
-				exit(1);
+			if (($handler = $this->getErrorHandler()) !== null) {
+				$handler->handle($exception);
+			} else {
+				echo $this->renderException($exception);
 			}
+
+			exit(1);
 		}
 	}
 
 	/**
 	 * Renders an exception without using rich format.
 	 * @param \Exception $exception the exception to be rendered.
+	 * @return string the rendering result
 	 */
 	public function renderException($exception)
 	{
@@ -499,14 +444,17 @@ class Application extends Module
 		} else {
 			$message = YII_DEBUG ? (string)$exception : 'Error: ' . $exception->getMessage();
 		}
-		if (PHP_SAPI) {
-			echo $message . "\n";
+		if (PHP_SAPI === 'cli') {
+			return $message . "\n";
 		} else {
-			echo '<pre>' . htmlspecialchars($message, ENT_QUOTES, $this->charset) . '</pre>';
+			return '<pre>' . htmlspecialchars($message, ENT_QUOTES, $this->charset) . '</pre>';
 		}
 	}
 
-	// todo: to be polished
+	/**
+	 * Logs the given exception
+	 * @param \Exception $exception the exception to be logged
+	 */
 	protected function logException($exception)
 	{
 		$category = get_class($exception);

@@ -2,7 +2,6 @@
 /**
  * @var \yii\base\View $this
  * @var \Exception $exception
- * @var string $request
  * @var \yii\base\ErrorHandler $context
  */
 $context = $this->context;
@@ -389,7 +388,7 @@ pre .diff .change{
 
 	<div class="request">
 		<div class="code">
-			<pre><?php echo $context->htmlEncode($request); ?></pre>
+			<?php echo $context->renderRequest(); ?>
 		</div>
 	</div>
 

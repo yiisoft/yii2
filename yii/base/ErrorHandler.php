@@ -9,6 +9,7 @@ namespace yii\base;
 
 use Yii;
 use yii\web\HttpException;
+use yii\web\Response;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -42,9 +43,13 @@ class ErrorHandler extends Component
 	 */
 	public $errorAction;
 	/**
-	 * @var string the path of the view file for rendering exceptions and errors.
+	 * @var string the path of the view file for rendering exceptions without call stack information.
 	 */
-	public $mainView = '@yii/views/errorHandler/main.php';
+	public $errorView = '@yii/views/errorHandler/error.php';
+	/**
+	 * @var string the path of the view file for rendering exceptions.
+	 */
+	public $exceptionView = '@yii/views/errorHandler/exception.php';
 	/**
 	 * @var string the path of the view file for rendering exceptions and errors call stack element.
 	 */
@@ -73,26 +78,31 @@ class ErrorHandler extends Component
 	}
 
 	/**
-	 * Renders exception.
-	 * @param \Exception $exception to be handled.
+	 * Renders the exception.
+	 * @param \Exception $exception the exception to be handled.
 	 */
 	protected function renderException($exception)
 	{
-		if ($this->errorAction !== null) {
-			Yii::$app->runAction($this->errorAction);
-		} elseif (!(Yii::$app instanceof \yii\web\Application)) {
-			Yii::$app->renderException($exception);
-		} else {
-			$response = Yii::$app->getResponse();
-			if (!headers_sent()) {
-				if ($exception instanceof HttpException) {
-					$response->setStatusCode($exception->statusCode);
-				} else {
-					$response->setStatusCode(500);
-				}
+		if (Yii::$app instanceof \yii\console\Application) {
+			echo Yii::$app->renderException($exception);
+			return;
+		}
+
+		$useErrorView = !YII_DEBUG || $exception instanceof UserException;
+
+		if ($useErrorView && $this->errorAction !== null) {
+			$result = Yii::$app->runAction($this->errorAction);
+			if ($result instanceof Response) {
+				$response = $result;
+			} else {
+				$response = new Response;
+				$response->content = $result;
 			}
+		} else {
+			$response = new Response;
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-				Yii::$app->renderException($exception);
+				// AJAX request
+				$response->content = Yii::$app->renderException($exception);
 			} else {
 				// if there is an error during error rendering it's useful to
 				// display PHP error in debug mode instead of a blank screen
@@ -101,19 +111,20 @@ class ErrorHandler extends Component
 				}
 
 				$view = new View();
-				$request = '';
-				foreach (array('_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV') as $name) {
-					if (!empty($GLOBALS[$name])) {
-						$request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
-					}
-				}
-				$request = rtrim($request, "\n\n");
-				$response->content = $view->renderFile($this->mainView, array(
+				$file = $useErrorView ? $this->errorView : $this->exceptionView;
+				$response->content = $view->renderFile($file, array(
 					'exception' => $exception,
-					'request' => $request,
 				), $this);
 			}
 		}
+
+		if ($exception instanceof HttpException) {
+			$response->setStatusCode($exception->statusCode);
+		} else {
+			$response->setStatusCode(500);
+		}
+
+		$response->send();
 	}
 
 	/**
@@ -133,7 +144,9 @@ class ErrorHandler extends Component
 	{
 		// the following manual level counting is to deal with zlib.output_compression set to On
 		for ($level = ob_get_level(); $level > 0; --$level) {
-			@ob_end_clean();
+			if (!@ob_end_clean()) {
+				ob_clean();
+			}
 		}
 	}
 
@@ -227,6 +240,21 @@ class ErrorHandler extends Component
 			'begin' => $begin,
 			'end' => $end,
 		), $this);
+	}
+
+	/**
+	 * Renders the request information.
+	 * @return string the rendering result
+	 */
+	public function renderRequest()
+	{
+		$request = '';
+		foreach (array('_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV') as $name) {
+			if (!empty($GLOBALS[$name])) {
+				$request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
+			}
+		}
+		return '<pre>' . rtrim($request, "\n") . '</pre>';
 	}
 
 	/**

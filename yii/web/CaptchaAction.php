@@ -116,7 +116,7 @@ class CaptchaAction extends Action
 		if (isset($_GET[self::REFRESH_GET_VAR])) {
 			// AJAX request for regenerating code
 			$code = $this->getVerifyCode(true);
-			echo json_encode(array(
+			return json_encode(array(
 				'hash1' => $this->generateValidationHash($code),
 				'hash2' => $this->generateValidationHash(strtolower($code)),
 				// we add a random 'v' parameter so that FireFox can refresh the image
@@ -124,9 +124,9 @@ class CaptchaAction extends Action
 				'url' => $this->controller->createUrl($this->id, array('v' => uniqid())),
 			));
 		} else {
-			$this->renderImage($this->getVerifyCode());
+			$this->setHttpHeaders();
+			return $this->renderImage($this->getVerifyCode());
 		}
-		Yii::$app->end();
 	}
 
 	/**
@@ -230,9 +230,9 @@ class CaptchaAction extends Action
 	protected function renderImage($code)
 	{
 		if (Captcha::checkRequirements() === 'gd') {
-			$this->renderImageByGD($code);
+			return $this->renderImageByGD($code);
 		} else {
-			$this->renderImageByImagick($code);
+			return $this->renderImageByImagick($code);
 		}
 	}
 
@@ -277,10 +277,10 @@ class CaptchaAction extends Action
 
 		imagecolordeallocate($image, $foreColor);
 
-		$this->sendHttpHeaders();
-
+		ob_start();
 		imagepng($image);
 		imagedestroy($image);
+		return ob_get_clean();
 	}
 
 	/**
@@ -317,14 +317,13 @@ class CaptchaAction extends Action
 		}
 
 		$image->setImageFormat('png');
-		Yii::$app->getResponse()->content = (string)$image;
-		$this->sendHttpHeaders();
+		return $image;
 	}
 
 	/**
-	 * Sends the HTTP headers needed by image response.
+	 * Sets the HTTP headers needed by image response.
 	 */
-	protected function sendHttpHeaders()
+	protected function setHttpHeaders()
 	{
 		Yii::$app->getResponse()->getHeaders()
 			->set('Pragma', 'public')

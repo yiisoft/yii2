@@ -39,13 +39,10 @@ class Response extends \yii\base\Response
 	 */
 	public $statusText;
 	/**
-	 * @var string the charset to use. If not set, [[\yii\base\Application::charset]] will be used.
+	 * @var string the version of the HTTP protocol to use. If not set, it will be determined via `$_SERVER['SERVER_PROTOCOL']`,
+	 * or '1.1' if that is not available.
 	 */
-	public $charset;
-	/**
-	 * @var string the version of the HTTP protocol to use
-	 */
-	public $version = '1.0';
+	public $version;
 	/**
 	 * @var array list of HTTP status codes and the corresponding texts
 	 */
@@ -129,22 +126,13 @@ class Response extends \yii\base\Response
 
 	public function init()
 	{
-		if ($this->charset === null) {
-			$this->charset = Yii::$app->charset;
+		if ($this->version === null) {
+			if (isset($_SERVER['SERVER_PROTOCOL']) && $_SERVER['SERVER_PROTOCOL'] === '1.0') {
+				$this->version = '1.0';
+			} else {
+				$this->version = '1.1';
+			}
 		}
-	}
-
-	public function begin()
-	{
-		parent::begin();
-		$this->beginBuffer();
-	}
-
-	public function end()
-	{
-		$this->content .= $this->endBuffer();
-		$this->send();
-		parent::end();
 	}
 
 	/**
@@ -204,15 +192,10 @@ class Response extends \yii\base\Response
 	{
 		$this->sendHeaders();
 		$this->sendContent();
-		for ($level = ob_get_level(); $level > 0; --$level) {
-			if (!@ob_end_flush()) {
-				ob_clean();
-			}
-		}
-		flush();
+		$this->clear();
 	}
 
-	public function reset()
+	public function clear()
 	{
 		$this->_headers = null;
 		$this->_statusCode = null;
@@ -239,7 +222,6 @@ class Response extends \yii\base\Response
 					header("$name: $value", false);
 				}
 			}
-			$headers->removeAll();
 		}
 		$this->sendCookies();
 	}
@@ -272,7 +254,6 @@ class Response extends \yii\base\Response
 	protected function sendContent()
 	{
 		echo $this->content;
-		$this->content = null;
 	}
 
 	/**
@@ -298,6 +279,7 @@ class Response extends \yii\base\Response
 	 * @param string $content the content to be sent. The existing [[content]] will be discarded.
 	 * @param string $attachmentName the file name shown to the user.
 	 * @param string $mimeType the MIME type of the content.
+	 * @throws HttpException if the requested range is not satisfiable
 	 */
 	public function sendContentAsFile($content, $attachmentName, $mimeType = 'application/octet-stream')
 	{
@@ -509,9 +491,9 @@ class Response extends \yii\base\Response
 	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
-	 * @param boolean $terminate whether to terminate the current application
+	 * @return Response the response object itself
 	 */
-	public function redirect($url, $statusCode = null, $terminate = true)
+	public function redirect($url, $statusCode = null)
 	{
 		$url = Html::url($url);
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
@@ -522,22 +504,20 @@ class Response extends \yii\base\Response
 		}
 		$this->getHeaders()->set('Location', $url);
 		$this->setStatusCode($statusCode);
-		if ($terminate) {
-			Yii::$app->end();
-		}
+		return $this;
 	}
 
 	/**
 	 * Refreshes the current page.
 	 * The effect of this method call is the same as the user pressing the refresh button of his browser
 	 * (without re-posting data).
-	 * @param boolean $terminate whether to terminate the current application after calling this method
 	 * @param string $anchor the anchor that should be appended to the redirection URL.
 	 * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
+	 * @return Response the response object itself
 	 */
-	public function refresh($terminate = true, $anchor = '')
+	public function refresh($anchor = '')
 	{
-		$this->redirect(Yii::$app->getRequest()->getUrl() . $anchor, $terminate);
+		return $this->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
 	}
 
 	private $_cookies;
