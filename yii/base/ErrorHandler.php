@@ -90,6 +90,8 @@ class ErrorHandler extends Component
 		$useErrorView = !YII_DEBUG || $exception instanceof UserException;
 
 		$response = Yii::$app->getResponse();
+		$response->getHeaders()->removeAll();
+
 		if ($useErrorView && $this->errorAction !== null) {
 			$result = Yii::$app->runAction($this->errorAction);
 			if ($result instanceof Response) {
