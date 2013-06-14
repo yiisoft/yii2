@@ -6,7 +6,6 @@
  */
 namespace yii;
 
-use yii\base\Arrayable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
