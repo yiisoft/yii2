@@ -8,7 +8,7 @@
 namespace yii\helpers\base;
 
 use yii\base\InvalidParamException;
-use yii\base\Jsonable;
+use yii\base\Arrayable;
 use yii\web\JsExpression;
 
 /**
@@ -91,9 +91,8 @@ class Json
 				$token = '!{[' . count($expressions) . ']}!';
 				$expressions['"' . $token . '"'] = $data->expression;
 				return $token;
-			} elseif ($data instanceof Jsonable) {
-				return $data->toJson();
 			} else {
+				$data = $data instanceof Arrayable ? $data->toArray() : get_object_vars($data);
 				$result = array();
 				foreach ($data as $key => $value) {
 					if (is_array($value) || is_object($value)) {

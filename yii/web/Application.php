@@ -71,7 +71,9 @@ class Application extends \yii\base\Application
 				return $result;
 			} else {
 				$response = $this->getResponse();
-				$response->content = $result;
+				if ($result !== null) {
+					$response->setContent($result);
+				}
 				return $response;
 			}
 		} catch (InvalidRouteException $e) {

@@ -8,15 +8,16 @@
 namespace yii\base;
 
 /**
- * Jsonable should be implemented by classes that need to be represented in JSON format.
+ * Arrayable should be implemented by classes that need to be represented in array format.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-interface Jsonable
+interface Arrayable
 {
 	/**
-	 * @return string the JSON representation of this object
+	 * Converts the object into an array.
+	 * @return array the array representation of this object
 	 */
-	public function toJson();
+	public function toArray();
 }
