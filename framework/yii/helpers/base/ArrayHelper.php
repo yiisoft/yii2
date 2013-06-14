@@ -8,6 +8,7 @@
 namespace yii\helpers\base;
 
 use Yii;
+use yii\base\Arrayable;
 use yii\base\InvalidParamException;
 
 /**
@@ -19,6 +20,31 @@ use yii\base\InvalidParamException;
  */
 class ArrayHelper
 {
+	/**
+	 * Converts the object into an array.
+	 * @param object|array $object the object to be converted into an array
+	 * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
+	 * @return array the array representation of the object
+	 */
+	public static function toArray($object, $recursive = true)
+	{
+		if ($object instanceof Arrayable) {
+			$object = $object->toArray();
+			if (!$recursive) {
+				return $object;
+			}
+		}
+		$result = array();
+		foreach ($object as $key => $value) {
+			if ($recursive && (is_array($value) || is_object($value))) {
+				$result[$key] = static::toArray($value, true);
+			} else {
+				$result[$key] = $value;
+			}
+		}
+		return $result;
+	}
+
 	/**
 	 * Merges two or more arrays into one recursively.
 	 * If each array has an element with the same string key value, the latter
