@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * @include @yii/base/Object.md
@@ -227,6 +228,6 @@ class Object implements Arrayable
 	 */
 	public function toArray()
 	{
-		return Yii::toArray($this, false);
+		return ArrayHelper::toArray($this, false);
 	}
 }
