@@ -8,6 +8,6 @@ class SiteController extends Controller
 
 	public function actionHello()
 	{
-		echo 'hello world';
+		return 'hello world';
 	}
 }

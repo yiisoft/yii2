@@ -10,16 +10,16 @@ class SiteController extends Controller
 {
 	public function actionIndex()
 	{
-		echo $this->render('index');
+		return $this->render('index');
 	}
 
 	public function actionLogin()
 	{
 		$model = new LoginForm();
 		if ($this->populate($_POST, $model) && $model->login()) {
-			Yii::$app->response->redirect(array('site/index'));
+			return Yii::$app->response->redirect(array('site/index'));
 		} else {
-			echo $this->render('login', array(
+			return $this->render('login', array(
 				'model' => $model,
 			));
 		}
@@ -27,7 +27,7 @@ class SiteController extends Controller
 
 	public function actionLogout()
 	{
-		Yii::$app->getUser()->logout();
-		Yii::$app->getResponse()->redirect(array('site/index'));
+		Yii::$app->user->logout();
+		return Yii::$app->response->redirect(array('site/index'));
 	}
 }

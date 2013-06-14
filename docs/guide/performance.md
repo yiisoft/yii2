@@ -97,7 +97,7 @@ return array(
 ```
 
 You can use `CacheSession` to store sessions using cache. Note that some
-cache storages such as memcached has no guaranteee that session data will not
+cache storage such as memcached has no guarantee that session data will not
 be lost leading to unexpected logouts.
 
 Improving application
@@ -152,14 +152,14 @@ class PostController extends Controller
 	public function actionIndex()
 	{
 		$posts = Post::find()->orderBy('id DESC')->limit(100)->asArray()->all();
-		echo $this->render('index', array(
+		return $this->render('index', array(
 			'posts' => $posts,
 		));
 	}
 }
 ```
 
-In the view you should access fields of each invidual record from `$posts` as array:
+In the view you should access fields of each individual record from `$posts` as array:
 
 ```php
 foreach ($posts as $post) {

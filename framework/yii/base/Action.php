@@ -66,7 +66,7 @@ class Action extends Component
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
 	 * @param array $params the parameters to be bound to the action's run() method.
-	 * @return integer the exit status (0 means normal, non-zero means abnormal).
+	 * @return mixed the result of the action
 	 * @throws InvalidConfigException if the action class does not have a run() method
 	 */
 	public function runWithParams($params)
@@ -75,6 +75,6 @@ class Action extends Component
 			throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
 		}
 		$args = $this->controller->bindActionParams($this, $params);
-		return (int)call_user_func_array(array($this, 'run'), $args);
+		return call_user_func_array(array($this, 'run'), $args);
 	}
 }

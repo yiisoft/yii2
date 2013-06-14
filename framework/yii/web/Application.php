@@ -42,18 +42,23 @@ class Application extends \yii\base\Application
 	 * Defaults to null, meaning catch-all is not effective.
 	 */
 	public $catchAll;
+	/**
+	 * @var Controller the currently active controller instance
+	 */
+	public $controller;
 
 
 	/**
-	 * Processes the request.
-	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
-	 * @throws HttpException if the request cannot be resolved.
+	 * Handles the specified request.
+	 * @param Request $request the request to be handled
+	 * @return Response the resulting response
+	 * @throws HttpException if the requested route is invalid
 	 */
-	public function processRequest()
+	public function handle($request)
 	{
-		$request = $this->getRequest();
 		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
 		Yii::setAlias('@www', $request->getBaseUrl());
+
 		if (empty($this->catchAll)) {
 			list ($route, $params) = $request->resolve();
 		} else {
@@ -61,10 +66,18 @@ class Application extends \yii\base\Application
 			$params = array_splice($this->catchAll, 1);
 		}
 		try {
-			return $this->runAction($route, $params);
+			$result = $this->runAction($route, $params);
+			if ($result instanceof Response) {
+				return $result;
+			} else {
+				$response = $this->getResponse();
+				$response->content = $result;
+				return $response;
+			}
 		} catch (InvalidRouteException $e) {
 			throw new HttpException(404, $e->getMessage(), $e->getCode(), $e);
 		}
+
 	}
 
 	private $_homeUrl;

@@ -60,6 +60,10 @@ class Application extends \yii\base\Application
 	 * Defaults to true.
 	 */
 	public $enableCoreCommands = true;
+	/**
+	 * @var Controller the currently active controller instance
+	 */
+	public $controller;
 
 	/**
 	 * Initialize the application.
@@ -81,6 +85,24 @@ class Application extends \yii\base\Application
 	}
 
 	/**
+	 * Handles the specified request.
+	 * @param Request $request the request to be handled
+	 * @return Response the resulting response
+	 */
+	public function handle($request)
+	{
+		list ($route, $params) = $request->resolve();
+		$result = $this->runAction($route, $params);
+		if ($result instanceof Response) {
+			return $result;
+		} else {
+			$response = $this->getResponse();
+			$response->exitStatus = (int)$result;
+			return $response;
+		}
+	}
+
+	/**
 	 * Processes the request.
 	 * The request is represented in terms of a controller route and action parameters.
 	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
@@ -96,6 +118,15 @@ class Application extends \yii\base\Application
 		} else {
 			throw new Exception(\Yii::t('yii', 'This script must be run from the command line.'));
 		}
+	}
+
+	/**
+	 * Returns the response component.
+	 * @return Response the response component
+	 */
+	public function getResponse()
+	{
+		return $this->getComponent('response');
 	}
 
 	/**

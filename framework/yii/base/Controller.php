@@ -100,7 +100,7 @@ class Controller extends Component
 	 * If the action ID is empty, the method will use [[defaultAction]].
 	 * @param string $id the ID of the action to be executed.
 	 * @param array $params the parameters (name-value pairs) to be passed to the action.
-	 * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
+	 * @return mixed the result of the action
 	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
 	 * @see createAction
 	 */
@@ -110,16 +110,16 @@ class Controller extends Component
 		if ($action !== null) {
 			$oldAction = $this->action;
 			$this->action = $action;
-			$status = 1;
+			$result = null;
 			if ($this->module->beforeAction($action)) {
 				if ($this->beforeAction($action)) {
-					$status = $action->runWithParams($params);
+					$result = $action->runWithParams($params);
 					$this->afterAction($action);
 				}
 				$this->module->afterAction($action);
 			}
 			$this->action = $oldAction;
-			return $status;
+			return $result;
 		} else {
 			throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
 		}
@@ -158,21 +158,6 @@ class Controller extends Component
 	public function bindActionParams($action, $params)
 	{
 		return array();
-	}
-
-	/**
-	 * Forwards the current execution flow to handle a new request specified by a route.
-	 * The only difference between this method and [[run()]] is that after calling this method,
-	 * the application will exit.
-	 * @param string $route the route to be handled, e.g., 'view', 'comment/view', '/admin/comment/view'.
-	 * @param array $params the parameters to be passed to the action.
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
-	 * @see run
-	 */
-	public function forward($route, $params = array())
-	{
-		$status = $this->run($route, $params);
-		Yii::$app->end($status);
 	}
 
 	/**

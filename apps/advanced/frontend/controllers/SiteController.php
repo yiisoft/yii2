@@ -20,16 +20,16 @@ class SiteController extends Controller
 
 	public function actionIndex()
 	{
-		echo $this->render('index');
+		return $this->render('index');
 	}
 
 	public function actionLogin()
 	{
 		$model = new LoginForm();
 		if ($this->populate($_POST, $model) && $model->login()) {
-			Yii::$app->response->redirect(array('site/index'));
+			return Yii::$app->response->redirect(array('site/index'));
 		} else {
-			echo $this->render('login', array(
+			return $this->render('login', array(
 				'model' => $model,
 			));
 		}
@@ -37,8 +37,8 @@ class SiteController extends Controller
 
 	public function actionLogout()
 	{
-		Yii::$app->getUser()->logout();
-		Yii::$app->getResponse()->redirect(array('site/index'));
+		Yii::$app->user->logout();
+		return Yii::$app->response->redirect(array('site/index'));
 	}
 
 	public function actionContact()
@@ -46,9 +46,9 @@ class SiteController extends Controller
 		$model = new ContactForm;
 		if ($this->populate($_POST, $model) && $model->contact(Yii::$app->params['adminEmail'])) {
 			Yii::$app->session->setFlash('contactFormSubmitted');
-			Yii::$app->response->refresh();
+			return Yii::$app->response->refresh();
 		} else {
-			echo $this->render('contact', array(
+			return $this->render('contact', array(
 				'model' => $model,
 			));
 		}
@@ -56,6 +56,6 @@ class SiteController extends Controller
 
 	public function actionAbout()
 	{
-		echo $this->render('about');
+		return $this->render('about');
 	}
 }

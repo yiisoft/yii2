@@ -39,11 +39,11 @@ class InlineAction extends Action
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
 	 * @param array $params action parameters
-	 * @return integer the exit status (0 means normal, non-zero means abnormal).
+	 * @return mixed the result of the action
 	 */
 	public function runWithParams($params)
 	{
 		$args = $this->controller->bindActionParams($this, $params);
-		return (int)call_user_func_array(array($this->controller, $this->actionMethod), $args);
+		return call_user_func_array(array($this->controller, $this->actionMethod), $args);
 	}
 }

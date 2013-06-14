@@ -22,4 +22,4 @@ $config = yii\helpers\ArrayHelper::merge(
 );
 
 $application = new yii\console\Application($config);
-$application->run();
+return $application->run();
