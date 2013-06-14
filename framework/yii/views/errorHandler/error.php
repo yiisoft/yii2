@@ -1,10 +1,9 @@
 <?php
 /**
  * @var \Exception $exception
- * @var \yii\base\ErrorHandler $context
+ * @var \yii\base\ErrorHandler $this
  */
-$context = $this->context;
-$title = $context->htmlEncode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception));
+$title = $this->htmlEncode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception));
 ?>
 <!DOCTYPE html>
 <html>
@@ -52,7 +51,7 @@ $title = $context->htmlEncode($exception instanceof \yii\base\Exception ? $excep
 
 <body>
 <h1><?php echo $title?></h1>
-<h2><?php echo nl2br($context->htmlEncode($exception->getMessage()))?></h2>
+<h2><?php echo nl2br($this->htmlEncode($exception->getMessage()))?></h2>
 <p>
 	The above error occurred while the Web server was processing your request.
 </p>

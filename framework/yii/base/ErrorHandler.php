@@ -110,11 +110,10 @@ class ErrorHandler extends Component
 					ini_set('display_errors', 1);
 				}
 
-				$view = new View();
 				$file = $useErrorView ? $this->errorView : $this->exceptionView;
-				$response->content = $view->renderFile($file, array(
+				$response->content = $this->renderFile($file, array(
 					'exception' => $exception,
-				), $this);
+				));
 			}
 		}
 
@@ -176,14 +175,18 @@ class ErrorHandler extends Component
 	}
 
 	/**
-	 * Creates HTML containing link to the page with the information on given HTTP status code.
-	 * @param integer $statusCode to be used to generate information link.
-	 * @param string $statusDescription Description to display after the the status code.
-	 * @return string generated HTML with HTTP status code information.
+	 * Renders a view file as a PHP script.
+	 * @param string $_file_ the view file.
+	 * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return string the rendering result
 	 */
-	public function createHttpStatusLink($statusCode, $statusDescription)
+	public function renderFile($_file_, $_params_)
 	{
-		return '<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int)$statusCode .'" target="_blank">HTTP ' . (int)$statusCode . ' &ndash; ' . $statusDescription . '</a>';
+		ob_start();
+		ob_implicit_flush(false);
+		extract($_params_, EXTR_OVERWRITE);
+		require(Yii::getAlias($_file_));
+		return ob_get_clean();
 	}
 
 	/**
@@ -194,14 +197,13 @@ class ErrorHandler extends Component
 	 */
 	public function renderPreviousExceptions($exception)
 	{
-		if (($previous = $exception->getPrevious()) === null) {
+		if (($previous = $exception->getPrevious()) !== null) {
+			return $this->renderFile($this->previousExceptionView, array(
+				'exception' => $previous,
+			));
+		} else {
 			return '';
 		}
-		$view = new View();
-		return $view->renderFile($this->previousExceptionView, array(
-			'exception' => $previous,
-			'previousHtml' => $this->renderPreviousExceptions($previous),
-		), $this);
 	}
 
 	/**
@@ -229,8 +231,7 @@ class ErrorHandler extends Component
 			$end = $line + $half < $lineCount ? $line + $half : $lineCount - 1;
 		}
 
-		$view = new View();
-		return $view->renderFile($this->callStackItemView, array(
+		return $this->renderFile($this->callStackItemView, array(
 			'file' => $file,
 			'line' => $line,
 			'class' => $class,
@@ -239,7 +240,7 @@ class ErrorHandler extends Component
 			'lines' => $lines,
 			'begin' => $begin,
 			'end' => $end,
-		), $this);
+		));
 	}
 
 	/**
@@ -265,6 +266,17 @@ class ErrorHandler extends Component
 	public function isCoreFile($file)
 	{
 		return $file === null || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
+	}
+
+	/**
+	 * Creates HTML containing link to the page with the information on given HTTP status code.
+	 * @param integer $statusCode to be used to generate information link.
+	 * @param string $statusDescription Description to display after the the status code.
+	 * @return string generated HTML with HTTP status code information.
+	 */
+	public function createHttpStatusLink($statusCode, $statusDescription)
+	{
+		return '<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int)$statusCode .'" target="_blank">HTTP ' . (int)$statusCode . ' &ndash; ' . $statusDescription . '</a>';
 	}
 
 	/**
