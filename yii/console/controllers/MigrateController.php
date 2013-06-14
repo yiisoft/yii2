@@ -151,7 +151,7 @@ class MigrateController extends Controller
 		$migrations = $this->getNewMigrations();
 		if (empty($migrations)) {
 			echo "No new migration found. Your system is up-to-date.\n";
-			Yii::$app->end();
+			return;
 		}
 
 		$total = count($migrations);
