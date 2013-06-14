@@ -406,6 +406,10 @@ class HelpController extends Controller
 			if ($type === null) {
 				$type = gettype($defaultValue);
 			}
+			if (is_bool($defaultValue)) {
+				// show as integer to avoid confusion
+				$defaultValue = (int)$defaultValue;
+			}
 			$doc = "$type (defaults to " . var_export($defaultValue, true) . ")";
 		} elseif (trim($type) !== '') {
 			$doc = $type;
