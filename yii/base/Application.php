@@ -347,8 +347,7 @@ abstract class Application extends Module
 	/**
 	 * Handles uncaught PHP exceptions.
 	 *
-	 * This method is implemented as a PHP exception handler. It requires
-	 * that constant YII_ENABLE_ERROR_HANDLER be defined true.
+	 * This method is implemented as a PHP exception handler.
 	 *
 	 * @param \Exception $exception the exception that is not caught
 	 */
@@ -394,6 +393,14 @@ abstract class Application extends Module
 	public function handleError($code, $message, $file, $line)
 	{
 		if (error_reporting() !== 0) {
+			// load ErrorException manually here because autoloading them will not work
+			// when error occurs while autoloading a class
+			if (!class_exists('\\yii\\base\\Exception', false)) {
+				require_once(__DIR__ . '/Exception.php');
+			}
+			if (!class_exists('\\yii\\base\\ErrorException', false)) {
+				require_once(__DIR__ . '/ErrorException.php');
+			}
 			$exception = new ErrorException($message, $code, $code, $file, $line);
 
 			// in case error appeared in __toString method we can't throw any exception
@@ -402,6 +409,7 @@ abstract class Application extends Module
 			foreach ($trace as $frame) {
 				if ($frame['function'] == '__toString') {
 					$this->handleException($exception);
+					return;
 				}
 			}
 
@@ -418,6 +426,14 @@ abstract class Application extends Module
 
 		if (ErrorException::isFatalError($error)) {
 			unset($this->_memoryReserve);
+			// load ErrorException manually here because autoloading them will not work
+			// when error occurs while autoloading a class
+			if (!class_exists('\\yii\\base\\Exception', false)) {
+				require_once(__DIR__ . '/Exception.php');
+			}
+			if (!class_exists('\\yii\\base\\ErrorException', false)) {
+				require_once(__DIR__ . '/ErrorException.php');
+			}
 			$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
 			// use error_log because it's too late to use Yii log
 			error_log($exception);
