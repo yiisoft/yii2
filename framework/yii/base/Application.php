@@ -19,10 +19,6 @@ use yii\web\HttpException;
 abstract class Application extends Module
 {
 	/**
-	 * @event ResponseEvent an event that is triggered after [[handle()]] returns a response.
-	 */
-	const EVENT_RESPONSE = 'response';
-	/**
 	 * @var string the application name.
 	 */
 	public $name = 'My Application';
@@ -144,11 +140,7 @@ abstract class Application extends Module
 	public function run()
 	{
 		$response = $this->handle($this->getRequest());
-
-		$event = new ResponseEvent($response);
-		$this->trigger(self::EVENT_RESPONSE, $event);
-		$event->response->send();
-
+		$response->send();
 		return $response->exitStatus;
 	}
 
@@ -422,18 +414,19 @@ abstract class Application extends Module
 	 */
 	public function handleFatalError()
 	{
+		// load ErrorException manually here because autoloading them will not work
+		// when error occurs while autoloading a class
+		if (!class_exists('\\yii\\base\\Exception', false)) {
+			require_once(__DIR__ . '/Exception.php');
+		}
+		if (!class_exists('\\yii\\base\\ErrorException', false)) {
+			require_once(__DIR__ . '/ErrorException.php');
+		}
+
 		$error = error_get_last();
 
 		if (ErrorException::isFatalError($error)) {
 			unset($this->_memoryReserve);
-			// load ErrorException manually here because autoloading them will not work
-			// when error occurs while autoloading a class
-			if (!class_exists('\\yii\\base\\Exception', false)) {
-				require_once(__DIR__ . '/Exception.php');
-			}
-			if (!class_exists('\\yii\\base\\ErrorException', false)) {
-				require_once(__DIR__ . '/ErrorException.php');
-			}
 			$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
 			// use error_log because it's too late to use Yii log
 			error_log($exception);

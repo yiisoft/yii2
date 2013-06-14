@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\web\HttpException;
 use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
@@ -23,6 +24,21 @@ use yii\helpers\StringHelper;
  */
 class Response extends \yii\base\Response
 {
+	const FORMAT_RAW = 'raw';
+	const FORMAT_HTML = 'html';
+	const FORMAT_JSON = 'json';
+	const FORMAT_JSONP = 'jsonp';
+	const FORMAT_XML = 'xml';
+
+	/**
+	 * @var string the response format.
+	 */
+	public $format = self::FORMAT_HTML;
+	/**
+	 * @var string the charset of the text response. If not set, it will use
+	 * the value of [[Application::charset]].
+	 */
+	public $charset;
 	/**
 	 * @var integer the HTTP status code that should be used when redirecting in AJAX mode.
 	 * This is used by [[redirect()]]. A 2xx code should normally be used for this purpose
@@ -30,10 +46,6 @@ class Response extends \yii\base\Response
 	 * @see redirect
 	 */
 	public $ajaxRedirectCode = 278;
-	/**
-	 * @var string
-	 */
-	public $content;
 	/**
 	 * @var string
 	 */
@@ -133,6 +145,9 @@ class Response extends \yii\base\Response
 				$this->version = '1.1';
 			}
 		}
+		if ($this->charset === null) {
+			$this->charset = Yii::$app->charset;
+		}
 	}
 
 	/**
@@ -172,7 +187,7 @@ class Response extends \yii\base\Response
 	public function renderJson($data)
 	{
 		$this->getHeaders()->set('Content-Type', 'application/json');
-		$this->content = Json::encode($data);
+		$this->setContent(Json::encode($data));
 		$this->send();
 	}
 
@@ -180,16 +195,16 @@ class Response extends \yii\base\Response
 	{
 		$this->getHeaders()->set('Content-Type', 'text/javascript');
 		$data = Json::encode($data);
-		$this->content = "$callbackName($data);";
+		$this->setContent("$callbackName($data);");
 		$this->send();
 	}
 
 	/**
 	 * Sends the response to the client.
-	 * @return boolean true if the response was sent
 	 */
 	public function send()
 	{
+		parent::send();
 		$this->sendHeaders();
 		$this->sendContent();
 		$this->clear();
@@ -199,8 +214,8 @@ class Response extends \yii\base\Response
 	{
 		$this->_headers = null;
 		$this->_statusCode = null;
+		$this->_content = null;
 		$this->statusText = null;
-		$this->content = null;
 	}
 
 	/**
@@ -253,7 +268,7 @@ class Response extends \yii\base\Response
 	 */
 	protected function sendContent()
 	{
-		echo $this->content;
+		echo $this->getContent();
 	}
 
 	/**
@@ -304,10 +319,10 @@ class Response extends \yii\base\Response
 		if ($begin !=0 || $end != $contentLength - 1) {
 			$this->setStatusCode(206);
 			$headers->set('Content-Range', "bytes $begin-$end/$contentLength");
-			$this->content = StringHelper::substr($content, $begin, $end - $begin + 1);
+			$this->setContent(StringHelper::substr($content, $begin, $end - $begin + 1), self::FORMAT_RAW);
 		} else {
 			$this->setStatusCode(200);
-			$this->content = $content;
+			$this->setContent($content, self::FORMAT_RAW);
 		}
 
 		$this->send();
@@ -627,5 +642,45 @@ class Response extends \yii\base\Response
 	public function getIsEmpty()
 	{
 		return in_array($this->getStatusCode(), array(201, 204, 304));
+	}
+
+	private $_content;
+
+	public function getContent()
+	{
+		return $this->_content;
+	}
+
+	public function setContent($value, $format = null)
+	{
+		if ($format !== null) {
+			$this->format = $format;
+		}
+		$this->_content = $this->formatContent($value, $format);
+	}
+
+	protected function formatContent($data, $format)
+	{
+		switch ($this->format) {
+			case self::FORMAT_RAW:
+				return $data;
+			case self::FORMAT_HTML:
+				$this->getHeaders()->setDefault('Content-Type', 'text/html; charset=' . $this->charset);
+				return $data;
+			case self::FORMAT_JSON:
+				$this->getHeaders()->set('Content-Type', 'application/json');
+				return Json::encode($data);
+			case self::FORMAT_JSONP:
+				$this->getHeaders()->set('Content-Type', 'text/javascript');
+				if (is_array($data) && isset($data['data'], $data['callback'])) {
+					return sprintf('%s(%s);', $data['callback'], Json::encode($data['data']));
+				} else {
+					throw new InvalidParamException("The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.");
+				}
+			case self::FORMAT_XML:
+				// todo
+			default:
+				throw new InvalidConfigException("Unsupported response format: $format");
+		}
 	}
 }

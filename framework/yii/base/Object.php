@@ -8,14 +8,13 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\Json;
 
 /**
  * @include @yii/base/Object.md
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Object implements Jsonable
+class Object implements Arrayable
 {
 	/**
 	 * @return string the fully qualified name of this class.
@@ -221,12 +220,13 @@ class Object implements Jsonable
 	}
 
 	/**
-	 * Returns the JSON representation of this object.
-	 * The default implementation will return all public member variables.
-	 * @return string the JSON representation of this object.
+	 * Converts the object into an array.
+	 * The default implementation will return all public property values as an array.
+	 * However, if the object is traversable, it will return the data obtained by the data iteration.
+	 * @return array the array representation of the object
 	 */
-	public function toJson()
+	public function toArray()
 	{
-		return Json::encode(Yii::getObjectVars($this));
+		return Yii::toArray($this, false);
 	}
 }

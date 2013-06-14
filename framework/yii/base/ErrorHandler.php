@@ -9,7 +9,6 @@ namespace yii\base;
 
 use Yii;
 use yii\web\HttpException;
-use yii\web\Response;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -90,31 +89,41 @@ class ErrorHandler extends Component
 
 		$useErrorView = !YII_DEBUG || $exception instanceof UserException;
 
+		$response = Yii::$app->getResponse();
 		if ($useErrorView && $this->errorAction !== null) {
 			$result = Yii::$app->runAction($this->errorAction);
 			if ($result instanceof Response) {
 				$response = $result;
 			} else {
-				$response = new Response;
-				$response->content = $result;
+				$response->setContent($result);
 			}
-		} else {
-			$response = new Response;
+		} elseif ($response->format === \yii\web\Response::FORMAT_HTML) {
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 				// AJAX request
-				$response->content = Yii::$app->renderException($exception);
+				$response->setContent(Yii::$app->renderException($exception));
 			} else {
 				// if there is an error during error rendering it's useful to
 				// display PHP error in debug mode instead of a blank screen
 				if (YII_DEBUG) {
 					ini_set('display_errors', 1);
 				}
-
 				$file = $useErrorView ? $this->errorView : $this->exceptionView;
-				$response->content = $this->renderFile($file, array(
+				$response->setContent($this->renderFile($file, array(
 					'exception' => $exception,
-				));
+				)));
 			}
+		} else {
+			if ($exception instanceof Exception) {
+				$content = $exception->toArray();
+			} else {
+				$content = array(
+					'type' => get_class($exception),
+					'name' => 'Exception',
+					'message' => $exception->getMessage(),
+					'code' => $exception->getCode(),
+				);
+			}
+			$response->setContent($content);
 		}
 
 		if ($exception instanceof HttpException) {
