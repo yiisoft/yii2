@@ -184,21 +184,6 @@ class Response extends \yii\base\Response
 		return $this->_headers;
 	}
 
-	public function renderJson($data)
-	{
-		$this->getHeaders()->set('Content-Type', 'application/json');
-		$this->setContent(Json::encode($data));
-		$this->send();
-	}
-
-	public function renderJsonp($data, $callbackName)
-	{
-		$this->getHeaders()->set('Content-Type', 'text/javascript');
-		$data = Json::encode($data);
-		$this->setContent("$callbackName($data);");
-		$this->send();
-	}
-
 	/**
 	 * Sends the response to the client.
 	 */
