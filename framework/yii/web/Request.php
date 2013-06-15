@@ -27,7 +27,7 @@ class Request extends \yii\base\Request
 	 * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
 	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
 	 */
-	public $enableCsrfValidation = false;
+	public $enableCsrfValidation = true;
 	/**
 	 * @var string the name of the token used to prevent CSRF. Defaults to 'YII_CSRF_TOKEN'.
 	 * This property is effectively only when {@link enableCsrfValidation} is true.
@@ -771,7 +771,10 @@ class Request extends \yii\base\Request
 		$this->_cookieValidationKey = $value;
 	}
 
-	private $_csrfToken;
+	/**
+	 * @var Cookie
+	 */
+	private $_csrfCookie;
 
 	/**
 	 * Returns the random token used to perform CSRF validation.
@@ -781,16 +784,15 @@ class Request extends \yii\base\Request
 	 */
 	public function getCsrfToken()
 	{
-		if ($this->_csrfToken === null) {
-			$cookies = $this->getCookies();
-			if (($this->_csrfToken = $cookies->getValue($this->csrfTokenName)) === null) {
-				$cookie = $this->createCsrfCookie();
-				$this->_csrfToken = $cookie->value;
-				$cookies->add($cookie);
+		if ($this->_csrfCookie === null) {
+			$this->_csrfCookie = $this->getCookies()->get($this->csrfTokenName);
+			if ($this->_csrfCookie === null) {
+				$this->_csrfCookie = $this->createCsrfCookie();
+				Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
 			}
 		}
 
-		return $this->_csrfToken;
+		return $this->_csrfCookie->value;
 	}
 
 	/**

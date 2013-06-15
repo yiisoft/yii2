@@ -21,6 +21,9 @@ use yii\helpers\Html;
  */
 class CaptchaValidator extends Validator
 {
+	/**
+	 * @var boolean whether to skip this validator if the input is empty.
+	 */
 	public $skipOnEmpty = false;
 	/**
 	 * @var boolean whether the comparison is case sensitive. Defaults to false.
