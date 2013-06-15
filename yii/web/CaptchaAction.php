@@ -173,7 +173,7 @@ class CaptchaAction extends Action
 	{
 		$code = $this->getVerifyCode();
 		$valid = $caseSensitive ? ($input === $code) : strcasecmp($input, $code) === 0;
-		$session = Yii::$app->session;
+		$session = Yii::$app->getSession();
 		$session->open();
 		$name = $this->getSessionKey() . 'count';
 		$session[$name] = $session[$name] + 1;
