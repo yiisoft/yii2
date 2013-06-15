@@ -630,17 +630,41 @@ class Response extends \yii\base\Response
 
 	private $_content;
 
+	/**
+	 * @return string the content of this response
+	 */
 	public function getContent()
 	{
 		return $this->_content;
 	}
 
-	public function setContent($value, $format = null)
+	/**
+	 * Sets the content of this response.
+	 * The existing content will be overwritten.
+	 * Depending on the value of [[format]], the data will be properly formatted.
+	 * @param mixed $data the data that needs to be converted into the response content.
+	 * @param string $format the format of the response. The following formats are
+	 * supported by the default implementation:
+	 *
+	 * - [[FORMAT_RAW]]: the data will be treated as the response content without any conversion.
+	 *   No extra HTTP header will be added.
+	 * - [[FORMAT_HTML]]: the data will be treated as the response content without any conversion.
+	 *   The "Content-Type" header will set as "text/html" if it is not set previously.
+	 * - [[FORMAT_JSON]]: the data will be converted into JSON format, and the "Content-Type"
+	 *   header will be set as "application/json".
+	 * - [[FORMAT_JSONP]]: the data will be converted into JSONP format, and the "Content-Type"
+	 *   header will be set as "text/javascript". Note that in this case `$data` must be an array
+	 *   with "data" and "callback" elements. The former refers to the actual data to be sent,
+	 *   while the latter refers to the name of the JavaScript callback.
+	 * - [[FORMAT_XML]]: the data will be converted into XML format, and the "Content-Type"
+	 *   header will be set as "application/xml" if no previous "Content-Type" header is set.
+	 */
+	public function setContent($data, $format = null)
 	{
 		if ($format !== null) {
 			$this->format = $format;
 		}
-		$this->_content = $this->formatContent($value, $format);
+		$this->_content = $this->formatContent($data, $format);
 	}
 
 	protected function formatContent($data, $format)
@@ -655,7 +679,7 @@ class Response extends \yii\base\Response
 				$this->getHeaders()->set('Content-Type', 'application/json');
 				return Json::encode($data);
 			case self::FORMAT_JSONP:
-				$this->getHeaders()->set('Content-Type', 'text/javascript');
+				$this->getHeaders()->set('Content-Type', 'text/javascript; charset=' . $this->charset);
 				if (is_array($data) && isset($data['data'], $data['callback'])) {
 					return sprintf('%s(%s);', $data['callback'], Json::encode($data['data']));
 				} else {
