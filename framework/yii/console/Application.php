@@ -88,14 +88,9 @@ class Application extends \yii\base\Application
 	 * Handles the specified request.
 	 * @param Request $request the request to be handled
 	 * @return Response the resulting response
-	 * @throws Exception when script is not running on command line.
-	 * @throws Exception if the route is invalid
 	 */
 	public function handleRequest($request)
 	{
-		if (!$request->getIsConsoleRequest()) {
-			throw new Exception(\Yii::t('yii', 'This script must be run from the command line.'));
-		}
 		list ($route, $params) = $request->resolve();
 		$result = $this->runAction($route, $params);
 		if ($result instanceof Response) {
