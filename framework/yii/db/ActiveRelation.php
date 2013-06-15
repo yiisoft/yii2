@@ -8,8 +8,6 @@
 
 namespace yii\db;
 
-use yii\db\Connection;
-use yii\db\Command;
 use yii\base\InvalidConfigException;
 
 /**

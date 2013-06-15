@@ -9,7 +9,6 @@ namespace yii\logging;
 
 use Yii;
 use yii\base\Component;
-use yii\base\Application;
 
 /**
  * Router manages [[Target|log targets]] that record log messages in different media.
