@@ -53,7 +53,7 @@ class Application extends \yii\base\Application
 	 * @return Response the resulting response
 	 * @throws HttpException if the requested route is invalid
 	 */
-	public function handle($request)
+	public function handleRequest($request)
 	{
 		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
 		Yii::setAlias('@www', $request->getBaseUrl());
@@ -78,7 +78,6 @@ class Application extends \yii\base\Application
 		} catch (InvalidRouteException $e) {
 			throw new HttpException(404, $e->getMessage(), $e->getCode(), $e);
 		}
-
 	}
 
 	private $_homeUrl;

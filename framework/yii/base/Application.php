@@ -139,7 +139,7 @@ abstract class Application extends Module
 	 */
 	public function run()
 	{
-		$response = $this->handle($this->getRequest());
+		$response = $this->handleRequest($this->getRequest());
 		$response->send();
 		return $response->exitStatus;
 	}
@@ -153,7 +153,7 @@ abstract class Application extends Module
 	 * @param Request $request the request to be handled
 	 * @return Response the resulting response
 	 */
-	abstract public function handle($request);
+	abstract public function handleRequest($request);
 
 
 	private $_runtimePath;
