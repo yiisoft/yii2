@@ -14,9 +14,6 @@ use yii\base\InvalidParamException;
 use yii\base\ModelEvent;
 use yii\base\UnknownMethodException;
 use yii\base\InvalidCallException;
-use yii\db\Connection;
-use yii\db\TableSchema;
-use yii\db\Expression;
 use yii\helpers\StringHelper;
 use yii\helpers\Inflector;
 

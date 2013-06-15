@@ -10,7 +10,6 @@ namespace yii\web;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
-use yii\web\HttpException;
 
 /**
  * AccessControl provides simple access control based on a set of rules.

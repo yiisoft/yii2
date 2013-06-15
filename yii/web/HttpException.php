@@ -8,7 +8,6 @@
 namespace yii\web;
 
 use yii\base\UserException;
-use yii\web\Response;
 
 /**
  * HttpException represents an exception caused by an improper request of the end-user.

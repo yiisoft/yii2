@@ -10,7 +10,6 @@
 namespace yii\helpers\base;
 
 use Yii;
-use yii\helpers\StringHelper;
 
 /**
  * Filesystem helper
@@ -255,17 +254,17 @@ class FileHelper
 			return false;
 		}
 		$path = str_replace('\\', '/', $path);
-		$n = StringHelper::strlen($path);
+		$n = \yii\helpers\StringHelper::strlen($path);
 		if (!empty($options['except'])) {
 			foreach ($options['except'] as $name) {
-				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
+				if (\yii\helpers\StringHelper::substr($path, -\yii\helpers\StringHelper::strlen($name), $n) === $name) {
 					return false;
 				}
 			}
 		}
 		if (!empty($options['only'])) {
 			foreach ($options['only'] as $name) {
-				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) !== $name) {
+				if (\yii\helpers\StringHelper::substr($path, -\yii\helpers\StringHelper::strlen($name), $n) !== $name) {
 					return false;
 				}
 			}

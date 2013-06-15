@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\base\Application;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\widgets\Block;

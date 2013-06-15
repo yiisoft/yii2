@@ -8,7 +8,6 @@
 namespace yii\web;
 
 use Yii;
-use yii\web\HttpException;
 use yii\base\InvalidConfigException;
 use yii\helpers\SecurityHelper;
 

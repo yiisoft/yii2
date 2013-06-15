@@ -8,11 +8,6 @@
 
 namespace yii\db;
 
-use yii\db\Connection;
-use yii\db\Command;
-use yii\db\QueryBuilder;
-use yii\db\Expression;
-
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
  *
