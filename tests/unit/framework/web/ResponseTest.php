@@ -5,7 +5,7 @@ namespace yiiunit\framework\web;
 use Yii;
 use yii\helpers\StringHelper;
 
-class Response extends \yii\web\Response
+class MockResponse extends \yii\web\Response
 {
 	public function send()
 	{
@@ -16,7 +16,7 @@ class Response extends \yii\web\Response
 class ResponseTest extends \yiiunit\TestCase
 {
 	/**
-	 * @var Response
+	 * @var MockResponse
 	 */
 	public $response;
 
@@ -24,7 +24,7 @@ class ResponseTest extends \yiiunit\TestCase
 	{
 		parent::setUp();
 		$this->mockApplication();
-		$this->response = new Response;
+		$this->response = new MockResponse;
 	}
 
 	public function rightRanges()
