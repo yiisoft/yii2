@@ -132,7 +132,7 @@ class Controller extends Component
 	 * the route will start from the application; otherwise, it will start from the parent module of this controller.
 	 * @param string $route the route to be handled, e.g., 'view', 'comment/view', '/admin/comment/view'.
 	 * @param array $params the parameters to be passed to the action.
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+	 * @return mixed the result of the action
 	 * @see runAction
 	 * @see forward
 	 */
