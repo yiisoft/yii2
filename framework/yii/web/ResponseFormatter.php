@@ -21,5 +21,5 @@ interface ResponseFormatter
 	 * @param mixed $data the data to be formatted
 	 * @return string the formatted result
 	 */
-	function format($response, $data);
+	public function format($response, $data);
 }
