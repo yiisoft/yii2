@@ -283,7 +283,8 @@ class User extends Component
 			$this->setReturnUrl($request->getUrl());
 		}
 		if ($this->loginUrl !== null) {
-			Yii::$app->controller->getResponse()->redirect($this->loginUrl)->send();
+			$response = Yii::$app->getResponse();
+			$response->redirect($this->loginUrl)->send();
 			exit();
 		} else {
 			throw new HttpException(403, Yii::t('yii', 'Login Required'));
@@ -371,7 +372,7 @@ class User extends Component
 				$cookie = new Cookie($this->identityCookie);
 				$cookie->value = $value;
 				$cookie->expire = time() + (int)$data[2];
-				Yii::$app->controller->getResponse()->getCookies()->add($cookie);
+				Yii::$app->getResponse()->getCookies()->add($cookie);
 			}
 		}
 	}
@@ -394,7 +395,7 @@ class User extends Component
 			$duration,
 		));
 		$cookie->expire = time() + $duration;
-		Yii::$app->controller->getResponse()->getCookies()->add($cookie);
+		Yii::$app->getResponse()->getCookies()->add($cookie);
 	}
 
 	/**
@@ -428,7 +429,7 @@ class User extends Component
 				$this->sendIdentityCookie($identity, $duration);
 			}
 		} elseif ($this->enableAutoLogin) {
-			Yii::$app->controller->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+			Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
 		}
 	}
 

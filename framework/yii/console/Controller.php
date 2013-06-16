@@ -135,16 +135,6 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
-	 * Handles the return value of an action
-	 * @param mixed $result
-	 * @param Action $action
-	 */
-	protected function handleActionResult(&$result, $action)
-	{
-		$action->getResponse()->exitStatus = (int)$result;
-	}
-
-	/**
 	 * Formats a string with ANSI codes
 	 *
 	 * You may pass additional parameters using the constants defined in [[yii\helpers\base\Console]].

@@ -15,7 +15,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Controller extends Component
+class Controller extends Component
 {
 	/**
 	 * @event ActionEvent an event raised right before executing a controller action.
@@ -110,36 +110,19 @@ abstract class Controller extends Component
 		if ($action !== null) {
 			$oldAction = $this->action;
 			$this->action = $action;
+			$result = null;
 			if ($this->module->beforeAction($action)) {
 				if ($this->beforeAction($action)) {
 					$result = $action->runWithParams($params);
-					if ($result !== null) {
-						$this->handleActionResult($result, $action);
-					}
 					$this->afterAction($action);
 				}
 				$this->module->afterAction($action);
 			}
 			$this->action = $oldAction;
-			return $action->getResponse();
+			return $result;
 		} else {
 			throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
 		}
-	}
-
-	/**
-	 * Handles the return value of an action
-	 * @param mixed $result
-	 * @param Action $action
-	 */
-	protected abstract function handleActionResult(&$result, $action);
-
-	/**
-	 * @return Response the response object of the current action. null if no action is running
-	 */
-	public function getResponse()
-	{
-		return $this->action !== null ? $this->action->getResponse() : null;
 	}
 
 	/**
