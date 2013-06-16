@@ -571,7 +571,7 @@ abstract class Module extends Component
 	 * If the route is empty, the method will use [[defaultRoute]].
 	 * @param string $route the route that specifies the action.
 	 * @param array $params the parameters to be passed to the action
-	 * @return Response the resulting response of the action.
+	 * @return mixed the result of the action.
 	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
 	 */
 	public function runAction($route, $params = array())
@@ -582,9 +582,9 @@ abstract class Module extends Component
 			list($controller, $actionID) = $parts;
 			$oldController = Yii::$app->controller;
 			Yii::$app->controller = $controller;
-			$response = $controller->runAction($actionID, $params);
+			$result = $controller->runAction($actionID, $params);
 			Yii::$app->controller = $oldController;
-			return $response;
+			return $result;
 		} else {
 			throw new InvalidRouteException('Unable to resolve the request "' . trim($this->getUniqueId() . '/' . $route, '/') . '".');
 		}

@@ -7,8 +7,6 @@
 
 namespace yii\base;
 
-use Yii;
-
 /**
  * Action is the base class for all controller action classes.
  *
@@ -41,31 +39,6 @@ class Action extends Component
 	 * @var Controller the controller that owns this action
 	 */
 	public $controller;
-	/**
-	 * @var Response
-	 */
-	private $_response;
-
-
-	/**
-	 * @return Response|\yii\console\Response|\yii\web\Response
-	 */
-	public function getResponse()
-	{
-		if ($this->_response === null) {
-			// TODO use applications response factory here
-			//$this->_response = new Response();
-		}
-		return $this->_response;
-	}
-
-	/**
-	 * @param Response $response
-	 */
-	public function setResponse($response)
-	{
-		$this->_response = $response;
-	}
 
 	/**
 	 * Constructor.

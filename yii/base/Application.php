@@ -155,6 +155,7 @@ abstract class Application extends Module
 	 */
 	abstract public function handleRequest($request);
 
+
 	private $_runtimePath;
 
 	/**
