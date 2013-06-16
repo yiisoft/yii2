@@ -9,6 +9,7 @@ namespace yii\base;
 
 use Yii;
 use yii\web\HttpException;
+use yii\web\Response;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -89,8 +90,13 @@ class ErrorHandler extends Component
 
 		$useErrorView = !YII_DEBUG || $exception instanceof UserException;
 
-		$response = Yii::$app->getResponse();
-		$response->getHeaders()->removeAll();
+		if (Yii::$app->controller !== null) {
+			$response = Yii::$app->controller->getResponse();
+			$response->getHeaders()->removeAll();
+		}
+		if (empty($response)) {
+			$response = new Response();
+		}
 
 		if ($useErrorView && $this->errorAction !== null) {
 			$result = Yii::$app->runAction($this->errorAction);

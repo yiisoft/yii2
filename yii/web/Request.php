@@ -788,7 +788,7 @@ class Request extends \yii\base\Request
 			$this->_csrfCookie = $this->getCookies()->get($this->csrfTokenName);
 			if ($this->_csrfCookie === null) {
 				$this->_csrfCookie = $this->createCsrfCookie();
-				Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
+				Yii::$app->controller->getResponse()->getCookies()->add($this->_csrfCookie);
 			}
 		}
 
