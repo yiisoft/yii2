@@ -41,17 +41,27 @@ class Action extends Component
 	 * @var Controller the controller that owns this action
 	 */
 	public $controller;
-
+	/**
+	 * @var Response
+	 */
 	private $_response;
 
+
+	/**
+	 * @return Response|\yii\console\Response|\yii\web\Response
+	 */
 	public function getResponse()
 	{
 		if ($this->_response === null) {
-			$this->_response = Yii::$app->createResponse();
+			// TODO use applications response factory here
+			//$this->_response = new Response();
 		}
 		return $this->_response;
 	}
 
+	/**
+	 * @param Response $response
+	 */
 	public function setResponse($response)
 	{
 		$this->_response = $response;
@@ -92,8 +102,6 @@ class Action extends Component
 			throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
 		}
 		$args = $this->controller->bindActionParams($this, $params);
-		$response = $this->getResponse();
-		$response->result = call_user_func_array(array($this, 'run'), $args);
-		return $response;
+		return call_user_func_array(array($this, 'run'), $args);
 	}
 }

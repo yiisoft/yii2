@@ -65,8 +65,7 @@ class Application extends \yii\base\Application
 			$params = array_splice($this->catchAll, 1);
 		}
 		try {
-			$response = $this->runAction($route, $params);
-			return $response;
+			return $this->runAction($route, $params);
 		} catch (InvalidRouteException $e) {
 			throw new HttpException(404, $e->getMessage(), $e->getCode(), $e);
 		}
@@ -108,15 +107,6 @@ class Application extends \yii\base\Application
 	}
 
 	/**
-	 * Returns the response component.
-	 * @return Response the response component
-	 */
-	public function createResponse()
-	{
-		return new Response();
-	}
-
-	/**
 	 * Returns the session component.
 	 * @return Session the session component
 	 */
@@ -153,9 +143,6 @@ class Application extends \yii\base\Application
 		$this->setComponents(array(
 			'request' => array(
 				'class' => 'yii\web\Request',
-			),
-			'response' => array(
-				'class' => 'yii\web\Response',
 			),
 			'session' => array(
 				'class' => 'yii\web\Session',
