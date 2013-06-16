@@ -1,9 +1,11 @@
 <?php
+use yii\helpers\Html;
+
 /**
  * @var \Exception $exception
  * @var \yii\base\ErrorHandler $this
  */
-$title = $this->htmlEncode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception));
+$title = Html::encode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception));
 ?>
 <!DOCTYPE html>
 <html>
@@ -51,7 +53,7 @@ $title = $this->htmlEncode($exception instanceof \yii\base\Exception ? $exceptio
 
 <body>
 <h1><?php echo $title?></h1>
-<h2><?php echo nl2br($this->htmlEncode($exception->getMessage()))?></h2>
+<h2><?php echo nl2br(Html::encode($exception->getMessage()))?></h2>
 <p>
 	The above error occurred while the Web server was processing your request.
 </p>
