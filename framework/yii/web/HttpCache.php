@@ -74,8 +74,8 @@ class HttpCache extends ActionFilter
 			$etag = $this->generateEtag($seed);
 		}
 
-		$this->sendCacheControlHeader();
-		$response = Yii::$app->getResponse();
+		$response = $action->getResponse();
+		$this->sendCacheControlHeader($response);
 		if ($etag !== null) {
 			$response->getHeaders()->set('Etag', $etag);
 		}
@@ -109,12 +109,13 @@ class HttpCache extends ActionFilter
 
 	/**
 	 * Sends the cache control header to the client
+	 * @param Response $response
 	 * @see cacheControl
 	 */
-	protected function sendCacheControlHeader()
+	protected function sendCacheControlHeader($response)
 	{
 		session_cache_limiter('public');
-		$headers = Yii::$app->getResponse()->getHeaders();
+		$headers = $response->getHeaders();
 		$headers->set('Pragma');
 		if ($this->cacheControlHeader !== null) {
 			$headers->set('Cache-Control', $this->cacheControlHeader);
