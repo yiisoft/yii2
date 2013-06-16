@@ -9,6 +9,7 @@ namespace yii\base;
 
 use Yii;
 use yii\web\HttpException;
+use yii\helpers\Html;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -138,16 +139,6 @@ class ErrorHandler extends Component
 	}
 
 	/**
-	 * Converts special characters to HTML entities.
-	 * @param string $text to encode.
-	 * @return string encoded original text.
-	 */
-	public function htmlEncode($text)
-	{
-		return htmlspecialchars($text, ENT_QUOTES, Yii::$app->charset);
-	}
-
-	/**
 	 * Removes all output echoed before calling this method.
 	 */
 	public function clearOutput()
@@ -171,15 +162,13 @@ class ErrorHandler extends Component
 		if (strpos($code, '\\') !== false) {
 			// namespaced class
 			foreach (explode('\\', $code) as $part) {
-				$html .= '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($part) . '" target="_blank">' . $this->htmlEncode($part) . '</a>\\';
+				$html .= Html::a(Html::encode($part), 'http://yiiframework.com/doc/api/2.0/' . Html::encode($part), array('target' => '_blank')) . '\\';
 			}
 			$html = rtrim($html, '\\');
 		} elseif (strpos($code, '()') !== false) {
 			// method/function call
-			$self = $this;
-			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) use ($self) {
-				return '<a href="http://yiiframework.com/doc/api/2.0/' . $self->htmlEncode($matches[1]) . '" target="_blank">' .
-					$self->htmlEncode($matches[1]) . '</a>()';
+			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) {
+				return Html::a(Html::encode($matches[1]), 'http://yiiframework.com/doc/api/2.0/' . Html::encode($matches[1]), array('target' => '_blank')) . '()';
 			}, $code);
 		}
 		return $html;
@@ -287,7 +276,7 @@ class ErrorHandler extends Component
 	 */
 	public function createHttpStatusLink($statusCode, $statusDescription)
 	{
-		return '<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int)$statusCode .'" target="_blank">HTTP ' . (int)$statusCode . ' &ndash; ' . $statusDescription . '</a>';
+		return Html::a('HTTP ' . (int)$statusCode . ' &ndash; ' . $statusDescription, 'http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int)$statusCode, array('target' => '_blank'));
 	}
 
 	/**
@@ -309,7 +298,7 @@ class ErrorHandler extends Component
 			foreach ($serverUrls as $url => $keywords) {
 				foreach ($keywords as $keyword) {
 					if (stripos($_SERVER['SERVER_SOFTWARE'], $keyword) !== false) {
-						return '<a href="' . $url . '" target="_blank">' . $this->htmlEncode($_SERVER['SERVER_SOFTWARE']) . '</a>';
+						return Html::a(Html::encode($_SERVER['SERVER_SOFTWARE']), $url, array('target' => '_blank'));
 					}
 				}
 			}
@@ -324,6 +313,6 @@ class ErrorHandler extends Component
 	 */
 	public function createFrameworkVersionLink()
 	{
-		return '<a href="http://github.com/yiisoft/yii2/" target="_blank">' . $this->htmlEncode(Yii::getVersion()) . '</a>';
+		return Html::a(Html::encode(Yii::getVersion()), 'http://github.com/yiisoft/yii2/', array('target' => '_blank'));
 	}
 }
