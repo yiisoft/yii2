@@ -93,22 +93,18 @@ class Application extends \yii\base\Application
 	{
 		list ($route, $params) = $request->resolve();
 		$result = $this->runAction($route, $params);
-		if ($result instanceof Response) {
-			return $result;
-		} else {
-			$response = $this->getResponse();
-			$response->exitStatus = (int)$result;
-			return $response;
-		}
+		$response = $this->getResponse();
+		$response->exitStatus = (int)$result;
+		return $response;
 	}
 
 	/**
 	 * Returns the response component.
 	 * @return Response the response component
 	 */
-	public function getResponse()
+	public function createResponse()
 	{
-		return $this->getComponent('response');
+		return new Response();
 	}
 
 	/**

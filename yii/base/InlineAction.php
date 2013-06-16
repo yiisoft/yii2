@@ -44,6 +44,8 @@ class InlineAction extends Action
 	public function runWithParams($params)
 	{
 		$args = $this->controller->bindActionParams($this, $params);
-		return call_user_func_array(array($this->controller, $this->actionMethod), $args);
+		$response = $this->getResponse();
+		$response->result = call_user_func_array(array($this->controller, $this->actionMethod), $args);
+		return $response;
 	}
 }

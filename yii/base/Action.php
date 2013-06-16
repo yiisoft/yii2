@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use Yii;
+
 /**
  * Action is the base class for all controller action classes.
  *
@@ -39,6 +41,21 @@ class Action extends Component
 	 * @var Controller the controller that owns this action
 	 */
 	public $controller;
+
+	private $_response;
+
+	public function getResponse()
+	{
+		if ($this->_response === null) {
+			$this->_response = Yii::$app->createResponse();
+		}
+		return $this->_response;
+	}
+
+	public function setResponse($response)
+	{
+		$this->_response = $response;
+	}
 
 	/**
 	 * Constructor.
@@ -75,6 +92,8 @@ class Action extends Component
 			throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
 		}
 		$args = $this->controller->bindActionParams($this, $params);
-		return call_user_func_array(array($this, 'run'), $args);
+		$response = $this->getResponse();
+		$response->result = call_user_func_array(array($this, 'run'), $args);
+		return $response;
 	}
 }
