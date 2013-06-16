@@ -1,4 +1,6 @@
 <?php
+use yii\helpers\Html;
+
 /**
  * @var string|null $file
  * @var integer|null $line
@@ -16,7 +18,7 @@
 	<div class="element-wrap">
 		<div class="element">
 			<span class="item-number"><?php echo (int)$index; ?>.</span>
-			<span class="text"><?php if ($file !== null) echo 'in ' . $this->htmlEncode($file); ?></span>
+			<span class="text"><?php if ($file !== null) echo 'in ' . Html::encode($file); ?></span>
 			<?php if ($method !== null): ?>
 				<span class="call">
 					<?php if ($file !== null) echo '&ndash;' ?>
@@ -36,7 +38,7 @@
 				<pre><?php
 					// fill empty lines with a whitespace to avoid rendering problems in opera
 					for ($i = $begin; $i <= $end; ++$i) {
-						echo (trim($lines[$i]) == '') ? " \n" : $this->htmlEncode($lines[$i]);
+						echo (trim($lines[$i]) == '') ? " \n" : Html::encode($lines[$i]);
 					}
 				?></pre>
 			</div>
