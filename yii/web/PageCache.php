@@ -66,6 +66,11 @@ class PageCache extends ActionFilter
 	 * the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
 	 */
 	public $enabled = true;
+	/**
+	 * @var View the view component to use for caching. If not set, the default application view component
+	 * [[Application::view]] will be used.
+	 */
+	public $view;
 
 
 	public function init()
