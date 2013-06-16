@@ -88,39 +88,13 @@ class Application extends \yii\base\Application
 	 * Handles the specified request.
 	 * @param Request $request the request to be handled
 	 * @return Response the resulting response
+	 * @throws Exception if the route is invalid
 	 */
 	public function handleRequest($request)
 	{
 		list ($route, $params) = $request->resolve();
-		$result = $this->runAction($route, $params);
-		$response = $this->getResponse();
-		$response->exitStatus = (int)$result;
-		return $response;
-	}
-
-	/**
-	 * Returns the response component.
-	 * @return Response the response component
-	 */
-	public function createResponse()
-	{
-		return new Response();
-	}
-
-	/**
-	 * Runs a controller action specified by a route.
-	 * This method parses the specified route and creates the corresponding child module(s), controller and action
-	 * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
-	 * If the route is empty, the method will use [[defaultRoute]].
-	 * @param string $route the route that specifies the action.
-	 * @param array $params the parameters to be passed to the action
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
-	 * @throws Exception if the route is invalid
-	 */
-	public function runAction($route, $params = array())
-	{
 		try {
-			return parent::runAction($route, $params);
+			return $this->runAction($route, $params);
 		} catch (InvalidRouteException $e) {
 			throw new Exception(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)), 0, $e);
 		}
@@ -151,9 +125,6 @@ class Application extends \yii\base\Application
 		$this->setComponents(array(
 			'request' => array(
 				'class' => 'yii\console\Request',
-			),
-			'response' => array(
-				'class' => 'yii\console\Response',
 			),
 		));
 	}
