@@ -96,7 +96,7 @@ class Controller extends Component
 	}
 
 	/**
-	 * Runs an action with the specified action ID and parameters.
+	 * Runs an action within this controller with the specified action ID and parameters.
 	 * If the action ID is empty, the method will use [[defaultAction]].
 	 * @param string $id the ID of the action to be executed.
 	 * @param array $params the parameters (name-value pairs) to be passed to the action.
