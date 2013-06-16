@@ -17,9 +17,6 @@ class HtmlTest extends TestCase
 					'class' => 'yii\web\Request',
 					'url' => '/test',
 				),
-				'response' => array(
-					'class' => 'yii\web\Response',
-				),
 			),
 		));
 	}

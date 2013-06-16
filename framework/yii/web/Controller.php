@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\Action;
 use yii\base\InlineAction;
 
 /**
@@ -59,6 +60,16 @@ class Controller extends \yii\base\Controller
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Handles the return value of an action
+	 * @param mixed $result
+	 * @param Action $action
+	 */
+	protected function handleActionResult(&$result, $action)
+	{
+		$action->getResponse()->setContent($result);
 	}
 
 	/**
