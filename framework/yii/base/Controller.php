@@ -111,6 +111,7 @@ class Controller extends Component
 			$oldAction = $this->action;
 			$this->action = $action;
 			$result = null;
+			// TODO beforeAction may also create a response somehow.
 			if ($this->module->beforeAction($action)) {
 				if ($this->beforeAction($action)) {
 					$result = $action->runWithParams($params);
