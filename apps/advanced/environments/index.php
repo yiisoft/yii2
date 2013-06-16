@@ -23,7 +23,7 @@ return array(
 			// handled by composer.json already
 		),
 		'executable' => array(
-			'yiic',
+			'yii',
 		),
 	),
 	'Production' => array(
@@ -32,7 +32,7 @@ return array(
 			// handled by composer.json already
 		),
 		'executable' => array(
-			'yiic',
+			'yii',
 		),
 	),
 );
