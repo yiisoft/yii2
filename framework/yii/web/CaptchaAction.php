@@ -325,7 +325,7 @@ class CaptchaAction extends Action
 	 */
 	protected function setHttpHeaders()
 	{
-		Yii::$app->getResponse()->getHeaders()
+		$this->getResponse()->getHeaders()
 			->set('Pragma', 'public')
 			->set('Expires', '0')
 			->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')

@@ -65,16 +65,7 @@ class Application extends \yii\base\Application
 			$params = array_splice($this->catchAll, 1);
 		}
 		try {
-			$result = $this->runAction($route, $params);
-			if ($result instanceof Response) {
-				return $result;
-			} else {
-				$response = $this->getResponse();
-				if ($result !== null) {
-					$response->setContent($result);
-				}
-				return $response;
-			}
+			return $this->runAction($route, $params);
 		} catch (InvalidRouteException $e) {
 			throw new HttpException(404, $e->getMessage(), $e->getCode(), $e);
 		}
@@ -116,15 +107,6 @@ class Application extends \yii\base\Application
 	}
 
 	/**
-	 * Returns the response component.
-	 * @return Response the response component
-	 */
-	public function getResponse()
-	{
-		return $this->getComponent('response');
-	}
-
-	/**
 	 * Returns the session component.
 	 * @return Session the session component
 	 */
@@ -161,9 +143,6 @@ class Application extends \yii\base\Application
 		$this->setComponents(array(
 			'request' => array(
 				'class' => 'yii\web\Request',
-			),
-			'response' => array(
-				'class' => 'yii\web\Response',
 			),
 			'session' => array(
 				'class' => 'yii\web\Session',
