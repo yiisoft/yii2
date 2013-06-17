@@ -71,7 +71,7 @@ class Application extends \yii\base\Application
 			} else {
 				$response = $this->getResponse();
 				if ($result !== null) {
-					$response->setContent($result);
+					$response->data = $result;
 				}
 				return $response;
 			}

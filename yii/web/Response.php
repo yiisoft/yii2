@@ -23,6 +23,20 @@ use yii\helpers\StringHelper;
  */
 class Response extends \yii\base\Response
 {
+	/**
+	 * @event ResponseEvent an event that is triggered at the beginning of [[send()]].
+	 */
+	const EVENT_BEFORE_SEND = 'beforeSend';
+	/**
+	 * @event ResponseEvent an event that is triggered at the end of [[send()]].
+	 */
+	const EVENT_AFTER_SEND = 'afterSend';
+	/**
+	 * @event ResponseEvent an event that is triggered right after [[prepare()]] is called in [[send()]].
+	 * You may respond to this event to filter the response content before it is sent to the client.
+	 */
+	const EVENT_PREPARE = 'prepare';
+
 	const FORMAT_RAW = 'raw';
 	const FORMAT_HTML = 'html';
 	const FORMAT_JSON = 'json';
@@ -30,15 +44,45 @@ class Response extends \yii\base\Response
 	const FORMAT_XML = 'xml';
 
 	/**
-	 * @var string the response format.
+	 * @var string the response format. This determines how to convert [[data]] into [[content]]
+	 * when the latter is not set. By default, the following formats are supported:
+	 *
+	 * - [[FORMAT_RAW]]: the data will be treated as the response content without any conversion.
+	 *   No extra HTTP header will be added.
+	 * - [[FORMAT_HTML]]: the data will be treated as the response content without any conversion.
+	 *   The "Content-Type" header will set as "text/html" if it is not set previously.
+	 * - [[FORMAT_JSON]]: the data will be converted into JSON format, and the "Content-Type"
+	 *   header will be set as "application/json".
+	 * - [[FORMAT_JSONP]]: the data will be converted into JSONP format, and the "Content-Type"
+	 *   header will be set as "text/javascript". Note that in this case `$data` must be an array
+	 *   with "data" and "callback" elements. The former refers to the actual data to be sent,
+	 *   while the latter refers to the name of the JavaScript callback.
+	 * - [[FORMAT_XML]]: the data will be converted into XML format. Please refer to [[XmlResponseFormatter]]
+	 *   for more details.
+	 *
+	 * You may customize the formatting process or support additional formats by configuring [[formatters]].
+	 * @see formatters
 	 */
 	public $format = self::FORMAT_HTML;
 	/**
 	 * @var array the formatters for converting data into the response content of the specified [[format]].
 	 * The array keys are the format names, and the array values are the corresponding configurations
 	 * for creating the formatter objects.
+	 * @see format
 	 */
 	public $formatters;
+	/**
+	 * @var mixed the original response data. When this is not null, it will be converted into [[content]]
+	 * according to [[format]] when the response is being sent out.
+	 * @see content
+	 */
+	public $data;
+	/**
+	 * @var string the response content. When [[data]] is not null, it will be converted into [[content]]
+	 * according to [[format]] when the response is being sent out.
+	 * @see data
+	 */
+	public $content;
 	/**
 	 * @var string the charset of the text response. If not set, it will use
 	 * the value of [[Application::charset]].
@@ -203,9 +247,12 @@ class Response extends \yii\base\Response
 	 */
 	public function send()
 	{
-		parent::send();
+		$this->trigger(self::EVENT_BEFORE_SEND, new ResponseEvent($this));
+		$this->prepare();
+		$this->trigger(self::EVENT_PREPARE, new ResponseEvent($this));
 		$this->sendHeaders();
 		$this->sendContent();
+		$this->trigger(self::EVENT_AFTER_SEND, new ResponseEvent($this));
 		$this->clear();
 	}
 
@@ -217,7 +264,8 @@ class Response extends \yii\base\Response
 		$this->_headers = null;
 		$this->_cookies = null;
 		$this->_statusCode = null;
-		$this->_content = null;
+		$this->data = null;
+		$this->content = null;
 		$this->statusText = null;
 	}
 
@@ -271,7 +319,7 @@ class Response extends \yii\base\Response
 	 */
 	protected function sendContent()
 	{
-		echo $this->getContent();
+		echo $this->content;
 	}
 
 	/**
@@ -322,12 +370,13 @@ class Response extends \yii\base\Response
 		if ($begin !=0 || $end != $contentLength - 1) {
 			$this->setStatusCode(206);
 			$headers->set('Content-Range', "bytes $begin-$end/$contentLength");
-			$this->setContent(StringHelper::substr($content, $begin, $end - $begin + 1), self::FORMAT_RAW);
+			$this->content = StringHelper::substr($content, $begin, $end - $begin + 1);
 		} else {
 			$this->setStatusCode(200);
-			$this->setContent($content, self::FORMAT_RAW);
+			$this->content = $content;
 		}
 
+		$this->format = self::FORMAT_RAW;
 		$this->send();
 	}
 
@@ -368,7 +417,8 @@ class Response extends \yii\base\Response
 			->setDefault('Content-Transfer-Encoding', 'binary')
 			->setDefault('Content-Length', $length)
 			->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
-
+		$this->format = self::FORMAT_RAW;
+		$this->data = $this->content = null;
 		$this->send();
 
 		fseek($handle, $begin);
@@ -647,88 +697,56 @@ class Response extends \yii\base\Response
 		return in_array($this->getStatusCode(), array(201, 204, 304));
 	}
 
-	private $_content;
-
 	/**
-	 * @return string the content of this response
-	 */
-	public function getContent()
-	{
-		return $this->_content;
-	}
-
-	/**
-	 * Sets the content of this response.
-	 * The existing content will be overwritten.
-	 * Depending on the value of [[format]], the data will be properly formatted.
-	 * @param mixed $data the data that needs to be converted into the response content.
-	 * @param string $format the format of the response. The [[formatters]] property specifies
-	 * the supported formats and the corresponding formatters. Additionally, the following formats are
-	 * supported if they are not found in [[formatters]]:
-	 *
-	 * - [[FORMAT_RAW]]: the data will be treated as the response content without any conversion.
-	 *   No extra HTTP header will be added.
-	 * - [[FORMAT_HTML]]: the data will be treated as the response content without any conversion.
-	 *   The "Content-Type" header will set as "text/html" if it is not set previously.
-	 * - [[FORMAT_JSON]]: the data will be converted into JSON format, and the "Content-Type"
-	 *   header will be set as "application/json".
-	 * - [[FORMAT_JSONP]]: the data will be converted into JSONP format, and the "Content-Type"
-	 *   header will be set as "text/javascript". Note that in this case `$data` must be an array
-	 *   with "data" and "callback" elements. The former refers to the actual data to be sent,
-	 *   while the latter refers to the name of the JavaScript callback.
-	 * - [[FORMAT_XML]]: the data will be converted into XML format. Please refer to [[XmlResponseFormatter]]
-	 *   for more details.
-	 */
-	public function setContent($data, $format = null)
-	{
-		if ($format !== null) {
-			$this->format = $format;
-		}
-		$this->_content = $this->formatContent($data, $format);
-	}
-
-	/**
-	 * Formats the given data as the specified format.
-	 * @param mixed $data the data to be formatted.
-	 * @param string $format the format to use.
-	 * @return string the formatting result.
+	 * Prepares for sending the response.
+	 * The default implementation will convert [[data]] into [[content]] and set headers accordingly.
 	 * @throws InvalidParamException if `$format` is not supported
 	 * @throws InvalidConfigException if the formatter for the specified format is invalid
 	 */
-	protected function formatContent($data, $format)
+	protected function prepare()
 	{
-		if (isset($this->formatters[$format])) {
-			$formatter = $this->formatters[$format];
+		if ($this->data === null) {
+			return;
+		}
+
+		if (isset($this->formatters[$this->format])) {
+			$formatter = $this->formatters[$this->format];
 			if (!is_object($formatter)) {
 				$formatter = Yii::createObject($formatter);
 			}
 			if ($formatter instanceof ResponseFormatter) {
-				return $formatter->format($this, $data);
+				$formatter->format($this);
+				return;
 			} else {
-				throw new InvalidConfigException("The '$format' response formatter is invalid. It must implement the ResponseFormatter interface.");
+				throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatter interface.");
 			}
 		}
 
 		switch ($this->format) {
 			case self::FORMAT_RAW:
-				return $data;
+				$this->content = $this->data;
+				break;
 			case self::FORMAT_HTML:
 				$this->getHeaders()->setDefault('Content-Type', 'text/html; charset=' . $this->charset);
-				return $data;
+				$this->content = $this->data;
+				break;
 			case self::FORMAT_JSON:
 				$this->getHeaders()->set('Content-Type', 'application/json');
-				return Json::encode($data);
+				$this->content = Json::encode($this->data);
+				break;
 			case self::FORMAT_JSONP:
 				$this->getHeaders()->set('Content-Type', 'text/javascript; charset=' . $this->charset);
-				if (is_array($data) && isset($data['data'], $data['callback'])) {
-					return sprintf('%s(%s);', $data['callback'], Json::encode($data['data']));
+				if (is_array($this->data) && isset($this->data['data'], $this->data['callback'])) {
+					$this->content = sprintf('%s(%s);', $this->data['callback'], Json::encode($this->data['data']));
+					break;
 				} else {
 					throw new InvalidParamException("The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.");
 				}
 			case self::FORMAT_XML:
-				return Yii::createObject('yii\web\XmlResponseFormatter')->format($this, $data);
+				$this->content = Yii::createObject(XmlResponseFormatter::className())->format($this);
+				break;
 			default:
-				throw new InvalidConfigException("Unsupported response format: $format");
+				throw new InvalidConfigException("Unsupported response format: {$this->format}");
 		}
 	}
 }

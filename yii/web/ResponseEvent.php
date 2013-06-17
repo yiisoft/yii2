@@ -5,7 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\web;
+
+use yii\base\Event;
 
 /**
  * ResponseEvent represents the event data for the [[Application::EVENT_RESPONSE]] event.
@@ -21,9 +23,6 @@ class ResponseEvent extends Event
 {
 	/**
 	 * @var Response the response object associated with this event.
-	 * You may modify the content in this response or replace it
-	 * with a new response object. The updated or new response will
-	 * be used as the final out.
 	 */
 	public $response;
 

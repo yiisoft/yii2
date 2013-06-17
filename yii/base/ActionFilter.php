@@ -57,7 +57,7 @@ class ActionFilter extends Behavior
 	public function afterFilter($event)
 	{
 		if ($this->isActive($event->action)) {
-			$this->afterAction($event->action);
+			$this->afterAction($event->action, $event->result);
 		}
 	}
 
@@ -76,8 +76,9 @@ class ActionFilter extends Behavior
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
 	 * @param Action $action the action just executed.
+	 * @param mixed $result the action execution result
 	 */
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
 	}
 
