@@ -31,15 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
 	<?php echo $form->field($model, 'email')->textInput(); ?>
 	<?php echo $form->field($model, 'subject')->textInput(); ?>
 	<?php echo $form->field($model, 'body')->textArea(array('rows' => 6)); ?>
-	<?php
-		$field = $form->field($model, 'verifyCode');
-		echo $field->begin()
-			. $field->label()
-			. Captcha::widget()
-			. Html::activeTextInput($model, 'verifyCode', array('class' => 'input-medium'))
-			. $field->error()
-			. $field->end();
-	?>
+	<?php echo $form->field($model, 'verifyCode')->widget(Captcha::className(), array(
+		'options' => array('class' => 'input-medium'),
+	)); ?>
 	<div class="form-actions">
 		<?php echo Html::submitButton('Submit', null, null, array('class' => 'btn btn-primary')); ?>
 	</div>
