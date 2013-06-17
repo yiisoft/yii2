@@ -337,9 +337,9 @@ class YiiBase
 		$className = ltrim($className, '\\');
 
 		if (isset(self::$classMap[$className])) {
-			$classFile = static::getAlias(self::$classMap[$className]);
-			if (!is_file($classFile)) {
-				throw new InvalidConfigException("Class file does not exist: $classFile");
+			$classFile = self::$classMap[$className];
+			if ($classFile[0] === '@') {
+				$classFile = static::getAlias($classFile);
 			}
 		} else {
 			// follow PSR-0 to determine the class file
