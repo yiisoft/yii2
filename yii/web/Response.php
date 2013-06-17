@@ -706,8 +706,7 @@ class Response extends \yii\base\Response
 	/**
 	 * Prepares for sending the response.
 	 * The default implementation will convert [[data]] into [[content]] and set headers accordingly.
-	 * @throws InvalidParamException if `$format` is not supported
-	 * @throws InvalidConfigException if the formatter for the specified format is invalid
+	 * @throws InvalidConfigException if the formatter for the specified format is invalid or [[format]] is not supported
 	 */
 	protected function prepare()
 	{
@@ -744,10 +743,11 @@ class Response extends \yii\base\Response
 				$this->getHeaders()->set('Content-Type', 'text/javascript; charset=' . $this->charset);
 				if (is_array($this->data) && isset($this->data['data'], $this->data['callback'])) {
 					$this->content = sprintf('%s(%s);', $this->data['callback'], Json::encode($this->data['data']));
-					break;
 				} else {
-					throw new InvalidParamException("The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.");
+					$this->content = '';
+					Yii::warning("The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.", __METHOD__);
 				}
+				break;
 			case self::FORMAT_XML:
 				$this->content = Yii::createObject(XmlResponseFormatter::className())->format($this);
 				break;
