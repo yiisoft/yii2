@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * ResponseFormatter specifies the interface needed to format data for a Web response object.
+ * ResponseFormatter specifies the interface needed to format a response before it is sent out.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,10 +16,8 @@ namespace yii\web;
 interface ResponseFormatter
 {
 	/**
-	 * Formats the given data for the response.
-	 * @param Response $response the response object that will accept the formatted result
-	 * @param mixed $data the data to be formatted
-	 * @return string the formatted result
+	 * Formats the specified response.
+	 * @param Response $response the response to be formatted.
 	 */
-	public function format($response, $data);
+	public function format($response);
 }

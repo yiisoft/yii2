@@ -45,19 +45,17 @@ class XmlResponseFormatter extends Component implements ResponseFormatter
 	public $itemTag = 'item';
 
 	/**
-	 * Formats the given data for the response.
-	 * @param Response $response the response object that will accept the formatted result
-	 * @param mixed $data the data to be formatted
-	 * @return string the formatted result
+	 * Formats the specified response.
+	 * @param Response $response the response to be formatted.
 	 */
-	public function format($response, $data)
+	public function format($response)
 	{
 		$response->getHeaders()->set('Content-Type', $this->contentType);
 		$dom = new DOMDocument($this->version, $this->encoding === null ? $response->charset : $this->encoding);
 		$root = new DOMElement($this->rootTag);
 		$dom->appendChild($root);
-		$this->buildXml($root, $data);
-		return $dom->saveXML();
+		$this->buildXml($root, $response->data);
+		$response->content = $dom->saveXML();
 	}
 
 	/**

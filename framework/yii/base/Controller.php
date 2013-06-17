@@ -114,9 +114,9 @@ class Controller extends Component
 			if ($this->module->beforeAction($action)) {
 				if ($this->beforeAction($action)) {
 					$result = $action->runWithParams($params);
-					$this->afterAction($action);
+					$this->afterAction($action, $result);
 				}
-				$this->module->afterAction($action);
+				$this->module->afterAction($action, $result);
 			}
 			$this->action = $oldAction;
 			return $result;
@@ -208,10 +208,13 @@ class Controller extends Component
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
 	 * @param Action $action the action just executed.
+	 * @param mixed $result the action return result.
 	 */
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
-		$this->trigger(self::EVENT_AFTER_ACTION, new ActionEvent($action));
+		$event = new ActionEvent($action);
+		$event->result = &$result;
+		$this->trigger(self::EVENT_AFTER_ACTION, $event);
 	}
 
 	/**

@@ -45,73 +45,92 @@ class XmlResponseFormatterTest extends \yiiunit\TestCase
 		$this->formatter = new XmlResponseFormatter;
 	}
 
-	public function testFormatScalars()
+	/**
+	 * @param mixed $data the data to be formatted 
+	 * @param string $xml the expected XML body
+	 * @dataProvider formatScalarDataProvider
+	 */
+	public function testFormatScalar($data, $xml)
 	{
 		$head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-
-		$xml = $head . "<response></response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, null));
-
-		$xml = $head . "<response>1</response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, 1));
-
-		$xml = $head . "<response>abc</response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, 'abc'));
-
-		$xml = $head . "<response>1</response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, true));
+		$this->response->data = $data;
+		$this->formatter->format($this->response);
+		$this->assertEquals($head . $xml, $this->response->content);
+	}
+	
+	public function formatScalarDataProvider()
+	{
+		return array(
+			array(null, "<response></response>\n"),
+			array(1, "<response>1</response>\n"),
+			array('abc', "<response>abc</response>\n"),
+			array(true, "<response>1</response>\n"),
+			array("<>", "<response>&lt;&gt;</response>\n"),
+		);
 	}
 
-	public function testFormatArrays()
+	/**
+	 * @param mixed $data the data to be formatted
+	 * @param string $xml the expected XML body
+	 * @dataProvider formatArrayDataProvider
+	 */
+	public function testFormatArrays($data, $xml)
 	{
 		$head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-
-		$xml = $head . "<response/>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, array()));
-
-		$xml = $head . "<response><item>1</item><item>abc</item></response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, array(1, 'abc')));
-
-		$xml = $head . "<response><a>1</a><b>abc</b></response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, array(
-			'a' => 1,
-			'b' => 'abc',
-		)));
-
-		$xml = $head . "<response><item>1</item><item>abc</item><item><item>2</item><item>def</item></item><item>1</item></response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, array(
-			1,
-			'abc',
-			array(2, 'def'),
-			true,
-		)));
-
-		$xml = $head . "<response><a>1</a><b>abc</b><c><item>2</item><item>def</item></c><item>1</item></response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, array(
-			'a' => 1,
-			'b' => 'abc',
-			'c' => array(2, 'def'),
-			true,
-		)));
+		$this->response->data = $data;
+		$this->formatter->format($this->response);
+		$this->assertEquals($head . $xml, $this->response->content);
 	}
 
-	public function testFormatObjects()
+	public function formatArrayDataProvider()
+	{
+		return array(
+			array(array(), "<response/>\n"),
+			array(array(1, 'abc'), "<response><item>1</item><item>abc</item></response>\n"),
+			array(array(
+				'a' => 1,
+				'b' => 'abc',
+			), "<response><a>1</a><b>abc</b></response>\n"),
+			array(array(
+				1,
+				'abc',
+				array(2, 'def'),
+				true,
+			), "<response><item>1</item><item>abc</item><item><item>2</item><item>def</item></item><item>1</item></response>\n"),
+			array(array(
+				'a' => 1,
+				'b' => 'abc',
+				'c' => array(2, '<>'),
+				true,
+			), "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>1</item></response>\n"),
+		);
+	}
+
+	/**
+	 * @param mixed $data the data to be formatted
+	 * @param string $xml the expected XML body
+	 * @dataProvider formatObjectDataProvider
+	 */
+	public function testFormatObjects($data, $xml)
 	{
 		$head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+		$this->response->data = $data;
+		$this->formatter->format($this->response);
+		$this->assertEquals($head . $xml, $this->response->content);
+	}
 
-		$xml = $head . "<response><Post><id>123</id><title>abc</title></Post></response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, new Post(123, 'abc')));
-
-		$xml = $head . "<response><Post><id>123</id><title>abc</title></Post><Post><id>456</id><title>def</title></Post></response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, array(
-			new Post(123, 'abc'),
-			new Post(456, 'def'),
-		)));
-
-		$xml = $head . "<response><Post><id>123</id><title>abc</title></Post><a><Post><id>456</id><title>def</title></Post></a></response>\n";
-		$this->assertEquals($xml, $this->formatter->format($this->response, array(
-			new Post(123, 'abc'),
-			'a' => new Post(456, 'def'),
-		)));
+	public function formatObjectDataProvider()
+	{
+		return array(
+			array(new Post(123, 'abc'), "<response><Post><id>123</id><title>abc</title></Post></response>\n"),
+			array(array(
+				new Post(123, 'abc'),
+				new Post(456, 'def'),
+			), "<response><Post><id>123</id><title>abc</title></Post><Post><id>456</id><title>def</title></Post></response>\n"),
+			array(array(
+				new Post(123, '<>'),
+				'a' => new Post(456, 'def'),
+			), "<response><Post><id>123</id><title>&lt;&gt;</title></Post><a><Post><id>456</id><title>def</title></Post></a></response>\n"),
+		);
 	}
 }

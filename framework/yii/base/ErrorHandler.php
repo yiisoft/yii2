@@ -97,12 +97,12 @@ class ErrorHandler extends Component
 			if ($result instanceof Response) {
 				$response = $result;
 			} else {
-				$response->setContent($result);
+				$response->data = $result;
 			}
 		} elseif ($response->format === \yii\web\Response::FORMAT_HTML) {
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 				// AJAX request
-				$response->setContent(Yii::$app->renderException($exception));
+				$response->data = Yii::$app->renderException($exception);
 			} else {
 				// if there is an error during error rendering it's useful to
 				// display PHP error in debug mode instead of a blank screen
@@ -110,22 +110,21 @@ class ErrorHandler extends Component
 					ini_set('display_errors', 1);
 				}
 				$file = $useErrorView ? $this->errorView : $this->exceptionView;
-				$response->setContent($this->renderFile($file, array(
+				$response->data = $this->renderFile($file, array(
 					'exception' => $exception,
-				)));
+				));
 			}
 		} else {
-			if ($exception instanceof Exception) {
-				$content = $exception->toArray();
+			if ($exception instanceof Arrayable) {
+				$response->data = $exception;
 			} else {
-				$content = array(
+				$response->data = array(
 					'type' => get_class($exception),
 					'name' => 'Exception',
 					'message' => $exception->getMessage(),
 					'code' => $exception->getCode(),
 				);
 			}
-			$response->setContent($content);
 		}
 
 		if ($exception instanceof HttpException) {
