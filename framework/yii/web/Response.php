@@ -319,7 +319,13 @@ class Response extends \yii\base\Response
 	 */
 	protected function sendContent()
 	{
-		echo $this->content;
+		if (is_array($this->content)) {
+			echo 'array()';
+		} elseif (is_object($this->content)) {
+			echo method_exists($this->content, '__toString') ? (string)$this->content : get_class($this->content);
+		} else {
+			echo $this->content;
+		}
 	}
 
 	/**
@@ -723,11 +729,11 @@ class Response extends \yii\base\Response
 		}
 
 		switch ($this->format) {
-			case self::FORMAT_RAW:
-				$this->content = $this->data;
-				break;
 			case self::FORMAT_HTML:
 				$this->getHeaders()->setDefault('Content-Type', 'text/html; charset=' . $this->charset);
+				$this->content = $this->data;
+				break;
+			case self::FORMAT_RAW:
 				$this->content = $this->data;
 				break;
 			case self::FORMAT_JSON:
