@@ -126,8 +126,8 @@ abstract class Application extends Module
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
 			// Allocating twice more than required to display memory exhausted error
-			// in case of trying to allocate last 1 byte while all memory is taken.
-			$this->_memoryReserve = str_repeat('x', 1024 * 256);
+			// in case of trying to allocate last 1 byte while all memory is taken. 1024 * 256 bytes
+			$this->_memoryReserve = str_repeat('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 1024);
 			register_shutdown_function(array($this, 'handleFatalError'));
 		}
 	}
