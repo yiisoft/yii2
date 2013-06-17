@@ -26,6 +26,9 @@ namespace yii\helpers;
  *
  * For more details please refer to HTMLPurifier documentation](http://htmlpurifier.org/).
  *
+ * Note that you should add `ezyang/htmlpurifier` to your composer.json `require` section and run `composer install`
+ * before using it.
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */

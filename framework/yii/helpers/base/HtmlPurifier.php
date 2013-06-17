@@ -25,7 +25,9 @@ class HtmlPurifier
 	 */
 	public static function process($content, $config = null)
 	{
-		$purifier=\HTMLPurifier::instance($config);
+		$configInstance = \HTMLPurifier_Config::create($config);
+		$configInstance->autoFinalize = false;
+		$purifier=\HTMLPurifier::instance($configInstance);
 		$purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
 		return $purifier->purify($content);
 	}
