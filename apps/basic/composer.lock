@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "91ba258de768b93025f86071f3bb4b84",
+    "hash": "a558e011d6b5c7e8a1fda1afc159561c",
     "packages": [
         {
             "name": "yiisoft/yii2",
@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "3ad6334be076a80df3b2ea0b57f38bd0c6901989"
+                "reference": "ce2e402a2682bbc680154725abd6d3c423e6aaa5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/3ad6334be076a80df3b2ea0b57f38bd0c6901989",
-                "reference": "3ad6334be076a80df3b2ea0b57f38bd0c6901989",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/ce2e402a2682bbc680154725abd6d3c423e6aaa5",
+                "reference": "ce2e402a2682bbc680154725abd6d3c423e6aaa5",
                 "shasum": ""
             },
             "require": {
@@ -97,7 +97,7 @@
                 "framework",
                 "yii"
             ],
-            "time": "2013-06-02 19:19:29"
+            "time": "2013-06-17 04:48:05"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -105,12 +105,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-composer.git",
-                "reference": "7ce4060faca940b836ab88de207638940a0a0568"
+                "reference": "660ef5a4ea6945e6b754d009f6029b110ab4797d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-composer/zipball/7ce4060faca940b836ab88de207638940a0a0568",
-                "reference": "7ce4060faca940b836ab88de207638940a0a0568",
+                "url": "https://api.github.com/repos/yiisoft/yii2-composer/zipball/660ef5a4ea6945e6b754d009f6029b110ab4797d",
+                "reference": "660ef5a4ea6945e6b754d009f6029b110ab4797d",
                 "shasum": ""
             },
             "require": {
@@ -141,7 +141,7 @@
                 "update",
                 "yii"
             ],
-            "time": "2013-05-23 19:12:45"
+            "time": "2013-06-06 11:51:55"
         }
     ],
     "packages-dev": [
