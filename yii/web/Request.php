@@ -658,40 +658,133 @@ class Request extends \yii\base\Request
 		}
 	}
 
-	private $_preferredLanguages;
+	private $_contentTypes;
 
 	/**
-	 * Returns the user preferred languages.
-	 * The languages returned are ordered by user's preference, starting with the language that the user
-	 * prefers the most.
-	 * @return string the user preferred languages. An empty array may be returned if the user has no preference.
+	 * Returns the content types accepted by the end user.
+	 * This is determined by the `Accept` HTTP header.
+	 * @return array the content types ordered by the preference level. The first element
+	 * represents the most preferred content type.
 	 */
-	public function getPreferredLanguages()
+	public function getAcceptedContentTypes()
 	{
-		if ($this->_preferredLanguages === null) {
-			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ($n = preg_match_all('/([\w\-_]+)\s*(;\s*q\s*=\s*(\d*\.\d*))?/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches)) > 0) {
-				$languages = array();
-				for ($i = 0; $i < $n; ++$i) {
-					$languages[$matches[1][$i]] = empty($matches[3][$i]) ? 1.0 : floatval($matches[3][$i]);
-				}
-				arsort($languages);
-				$this->_preferredLanguages = array_keys($languages);
+		if ($this->_contentTypes === null) {
+			if (isset($_SERVER['HTTP_ACCEPT'])) {
+				$this->_contentTypes = $this->parseAcceptHeader($_SERVER['HTTP_ACCEPT']);
 			} else {
-				$this->_preferredLanguages = array();
+				$this->_contentTypes = array();
 			}
 		}
-		return $this->_preferredLanguages;
+		return $this->_contentTypes;
 	}
 
 	/**
-	 * Returns the language most preferred by the user.
-	 * @return string|boolean the language most preferred by the user. If the user has no preference, false
-	 * will be returned.
+	 * @param array $value the content types that are accepted by the end user. They should
+	 * be ordered by the preference level.
 	 */
-	public function getPreferredLanguage()
+	public function setAcceptedContentTypes($value)
 	{
-		$languages = $this->getPreferredLanguages();
-		return isset($languages[0]) ? $languages[0] : false;
+		$this->_contentTypes = $value;
+	}
+
+	private $_languages;
+
+	/**
+	 * Returns the languages accepted by the end user.
+	 * This is determined by the `Accept-Language` HTTP header.
+	 * @return array the languages ordered by the preference level. The first element
+	 * represents the most preferred language.
+	 */
+	public function getAcceptedLanguages()
+	{
+		if ($this->_languages === null) {
+			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+				$this->_languages = $this->parseAcceptHeader($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+			} else {
+				$this->_languages = array();
+			}
+		}
+		return $this->_languages;
+	}
+
+	/**
+	 * @param array $value the languages that are accepted by the end user. They should
+	 * be ordered by the preference level.
+	 */
+	public function setAcceptedLanguages($value)
+	{
+		$this->_languages = $value;
+	}
+
+	/**
+	 * Parses the given `Accept` (or `Accept-Language`) header.
+	 * This method will return the accepted values ordered by their preference level.
+	 * @param string $header the header to be parsed
+	 * @return array the accept values ordered by their preference level.
+	 */
+	protected function parseAcceptHeader($header)
+	{
+		$accepts = array();
+		$n = preg_match_all('/\s*([\w\/\-\*]+)\s*(?:;\s*q\s*=\s*([\d\.]+))?[^,]*/', $header, $matches, PREG_SET_ORDER);
+		for ($i = 0; $i < $n; ++$i) {
+			if (!empty($matches[$i][1])) {
+				$accepts[] = array($matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1, $i);
+			}
+		}
+		usort($accepts, function ($a, $b) {
+			if ($a[1] > $b[1]) {
+				return -1;
+			} elseif ($a[1] < $b[1]) {
+				return 1;
+			} elseif ($a[0] === $b[0]) {
+				return $a[2] > $b[2] ? 1 : -1;
+			} elseif ($a[0] === '*/*') {
+				return 1;
+			} elseif ($b[0] === '*/*') {
+				return -1;
+			} else {
+				$wa = $a[0][strlen($a[0]) - 1] === '*';
+				$wb = $b[0][strlen($b[0]) - 1] === '*';
+				if ($wa xor $wb) {
+					return $wa ? 1 : -1;
+				} else {
+					return $a[2] > $b[2] ? 1 : -1;
+				}
+			}
+		});
+		$result = array();
+		foreach ($accepts as $accept) {
+			$result[] = $accept[0];
+		}
+		return array_unique($result);
+	}
+
+	/**
+	 * Returns the user-preferred language that should be used by this application.
+	 * The language resolution is based on the user preferred languages and the languages
+	 * supported by the application. The method will try to find the best match.
+	 * @param array $languages a list of the languages supported by the application.
+	 * If empty, this method will return the first language returned by [[getAcceptedLanguages()]].
+	 * @return string the language that the application should use. Null is returned if both [[getAcceptedLanguages()]]
+	 * and `$languages` are empty.
+	 */
+	public function getPreferredLanguage($languages = array())
+	{
+		$acceptedLanguages = $this->getAcceptedLanguages();
+		if (empty($languages)) {
+			return isset($acceptedLanguages[0]) ? $acceptedLanguages[0] : null;
+		}
+		foreach ($acceptedLanguages as $acceptedLanguage) {
+			$acceptedLanguage = str_replace('-', '_', strtolower($acceptedLanguage));
+			foreach ($languages as $language) {
+				$language = str_replace('-', '_', strtolower($language));
+				// en_us==en_us, en==en_us, en_us==en
+				if ($language === $acceptedLanguage || strpos($acceptedLanguage, $language . '_') === 0 || strpos($language, $acceptedLanguage . '_') === 0) {
+					return $language;
+				}
+			}
+		}
+		return reset($languages);
 	}
 
 	/**
