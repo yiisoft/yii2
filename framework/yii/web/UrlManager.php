@@ -167,7 +167,7 @@ class UrlManager extends Component
 	public function parseRequest($request)
 	{
 		if ($this->enablePrettyUrl) {
-			$pathInfo = $request->pathInfo;
+			$pathInfo = $request->getPathInfo();
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
 				if (($result = $rule->parseRequest($this, $request)) !== false) {

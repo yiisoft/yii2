@@ -23,3 +23,4 @@ class Yii extends \yii\YiiBase
 }
 
 spl_autoload_register(array('Yii', 'autoload'));
+Yii::$classMap = include(__DIR__ . '/classes.php');
