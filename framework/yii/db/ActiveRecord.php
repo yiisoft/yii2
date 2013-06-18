@@ -1439,7 +1439,7 @@ class ActiveRecord extends Model
 	{
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
-		if (isset($scenarios[$scenario], $scenario[$scenario]['atomic']) && is_array($scenarios[$scenario]['atomic'])) {
+		if (isset($scenarios[$scenario], $scenarios[$scenario]['atomic']) && is_array($scenarios[$scenario]['atomic'])) {
 			return in_array($operation, $scenarios[$scenario]['atomic']);
 		} else {
 			return false;
