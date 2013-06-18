@@ -60,7 +60,7 @@ abstract class Application extends Module
 	 * the help of this reserved memory. If you set this value to be 0, no memory will be reserved.
 	 * Defaults to 256KB.
 	 */
-	public $reservedMemorySize = 262144;
+	public $memoryReserveSize = 262144;
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
@@ -132,8 +132,8 @@ abstract class Application extends Module
 			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
-			if ($this->reservedMemorySize > 0) {
-				$this->_memoryReserve = str_repeat('x', $this->reservedMemorySize);
+			if ($this->memoryReserveSize > 0) {
+				$this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
 			}
 			register_shutdown_function(array($this, 'handleFatalError'));
 		}
