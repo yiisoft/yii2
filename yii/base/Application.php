@@ -54,6 +54,13 @@ abstract class Application extends Module
 	 * If this is false, layout will be disabled.
 	 */
 	public $layout = 'main';
+	/**
+	 * @var integer the size of the reserved memory. A portion of memory is pre-allocated so that
+	 * when an out-of-memory issue occurs, the error handler is able to handle the error with
+	 * the help of this reserved memory. If you set this value to be 0, no memory will be reserved.
+	 * Defaults to 256KB.
+	 */
+	public $reservedMemorySize = 262144;
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
@@ -125,9 +132,9 @@ abstract class Application extends Module
 			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
-			// Allocating twice more than required to display memory exhausted error
-			// in case of trying to allocate last 1 byte while all memory is taken. 1024 * 256 bytes
-			$this->_memoryReserve = str_repeat('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 1024);
+			if ($this->reservedMemorySize > 0) {
+				$this->_memoryReserve = str_repeat('x', $this->reservedMemorySize);
+			}
 			register_shutdown_function(array($this, 'handleFatalError'));
 		}
 	}
