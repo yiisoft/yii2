@@ -186,9 +186,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 */
 	public function formName()
 	{
-		$class = get_class($this);
-		$pos = strrpos($class, '\\');
-		return $pos === false ? $class : substr($class, $pos + 1);
+		$reflector = new \ReflectionClass($this);
+		return $reflector->getShortName();
 	}
 
 	/**
