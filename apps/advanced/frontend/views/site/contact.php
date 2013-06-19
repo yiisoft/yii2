@@ -24,15 +24,14 @@ $this->params['breadcrumbs'][] = $this->title;
 </p>
 
 <?php $form = ActiveForm::begin(array(
-	'model' => $model,
 	'options' => array('class' => 'form-horizontal'),
 	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
 )); ?>
-	<?php echo $form->field('name')->textInput(); ?>
-	<?php echo $form->field('email')->textInput(); ?>
-	<?php echo $form->field('subject')->textInput(); ?>
-	<?php echo $form->field('body')->textArea(array('rows' => 6)); ?>
-	<?php echo $form->field('verifyCode')->widget(Captcha::className(), array(
+	<?php echo $form->field($model, 'name')->textInput(); ?>
+	<?php echo $form->field($model, 'email')->textInput(); ?>
+	<?php echo $form->field($model, 'subject')->textInput(); ?>
+	<?php echo $form->field($model, 'body')->textArea(array('rows' => 6)); ?>
+	<?php echo $form->field($model, 'verifyCode')->widget(Captcha::className(), array(
 		'options' => array('class' => 'input-medium'),
 	)); ?>
 	<div class="form-actions">
