@@ -21,13 +21,7 @@ use yii\base\Model;
 class Html
 {
 	/**
-	 * @var boolean whether to close void (empty) elements. Defaults to true.
-	 * @see voidElements
-	 */
-	public static $closeVoidElements = true;
-	/**
 	 * @var array list of void elements (element name => 1)
-	 * @see closeVoidElements
 	 * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
 	 */
 	public static $voidElements = array(
@@ -49,15 +43,8 @@ class Html
 		'wbr' => 1,
 	);
 	/**
-	 * @var boolean whether to show the values of boolean attributes in element tags.
-	 * If false, only the attribute names will be generated.
-	 * @see booleanAttributes
-	 */
-	public static $showBooleanAttributeValues = true;
-	/**
 	 * @var array list of boolean attributes. The presence of a boolean attribute on
 	 * an element represents the true value, and the absence of the attribute represents the false value.
-	 * @see showBooleanAttributeValues
 	 * @see http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes
 	 */
 	public static $booleanAttributes = array(
@@ -165,12 +152,8 @@ class Html
 	 */
 	public static function tag($name, $content = '', $options = array())
 	{
-		$html = '<' . $name . static::renderTagAttributes($options);
-		if (isset(static::$voidElements[strtolower($name)])) {
-			return $html . (static::$closeVoidElements ? ' />' : '>');
-		} else {
-			return $html . ">$content</$name>";
-		}
+		$html = "<$name" . static::renderTagAttributes($options) . '>';
+		return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
 	}
 
 	/**
@@ -185,7 +168,7 @@ class Html
 	 */
 	public static function beginTag($name, $options = array())
 	{
-		return '<' . $name . static::renderTagAttributes($options) . '>';
+		return "<$name" . static::renderTagAttributes($options) . '>';
 	}
 
 	/**
@@ -201,16 +184,6 @@ class Html
 	}
 
 	/**
-	 * Encloses the given content within a CDATA tag.
-	 * @param string $content the content to be enclosed within the CDATA tag
-	 * @return string the CDATA tag with the enclosed content.
-	 */
-	public static function cdata($content)
-	{
-		return '<![CDATA[' . $content . ']]>';
-	}
-
-	/**
 	 * Generates a style tag.
 	 * @param string $content the style content
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -221,10 +194,7 @@ class Html
 	 */
 	public static function style($content, $options = array())
 	{
-		if (!isset($options['type'])) {
-			$options['type'] = 'text/css';
-		}
-		return static::tag('style', "/*<![CDATA[*/\n{$content}\n/*]]>*/", $options);
+		return static::tag('style', $content, $options);
 	}
 
 	/**
@@ -238,10 +208,7 @@ class Html
 	 */
 	public static function script($content, $options = array())
 	{
-		if (!isset($options['type'])) {
-			$options['type'] = 'text/javascript';
-		}
-		return static::tag('script', "/*<![CDATA[*/\n{$content}\n/*]]>*/", $options);
+		return static::tag('script', $content, $options);
 	}
 
 	/**
@@ -256,7 +223,6 @@ class Html
 	public static function cssFile($url, $options = array())
 	{
 		$options['rel'] = 'stylesheet';
-		$options['type'] = 'text/css';
 		$options['href'] = static::url($url);
 		return static::tag('link', '', $options);
 	}
@@ -272,7 +238,6 @@ class Html
 	 */
 	public static function jsFile($url, $options = array())
 	{
-		$options['type'] = 'text/javascript';
 		$options['src'] = static::url($url);
 		return static::tag('script', '', $options);
 	}
@@ -313,7 +278,10 @@ class Html
 			// we use hidden fields to add them back
 			foreach (explode('&', substr($action, $pos + 1)) as $pair) {
 				if (($pos1 = strpos($pair, '=')) !== false) {
-					$hiddenInputs[] = static::hiddenInput(urldecode(substr($pair, 0, $pos1)), urldecode(substr($pair, $pos1 + 1)));
+					$hiddenInputs[] = static::hiddenInput(
+						urldecode(substr($pair, 0, $pos1)),
+						urldecode(substr($pair, $pos1 + 1))
+					);
 				} else {
 					$hiddenInputs[] = static::hiddenInput(urldecode($pair), '');
 				}
@@ -395,7 +363,7 @@ class Html
 		if (!isset($options['alt'])) {
 			$options['alt'] = '';
 		}
-		return static::tag('img', null, $options);
+		return static::tag('img', '', $options);
 	}
 
 	/**
@@ -424,14 +392,10 @@ class Html
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * If the options does not contain "type", a "type" attribute with value "button" will be rendered.
 	 * @return string the generated button tag
 	 */
 	public static function button($content = 'Button', $options = array())
 	{
-		if (!isset($options['type'])) {
-			$options['type'] = 'button';
-		}
 		return static::tag('button', $content, $options);
 	}
 
@@ -482,7 +446,7 @@ class Html
 		$options['type'] = $type;
 		$options['name'] = $name;
 		$options['value'] = $value;
-		return static::tag('input', null, $options);
+		return static::tag('input', '', $options);
 	}
 
 	/**
@@ -497,7 +461,7 @@ class Html
 	{
 		$options['type'] = 'button';
 		$options['value'] = $label;
-		return static::tag('input', null, $options);
+		return static::tag('input', '', $options);
 	}
 
 	/**
@@ -512,7 +476,7 @@ class Html
 	{
 		$options['type'] = 'submit';
 		$options['value'] = $label;
-		return static::tag('input', null, $options);
+		return static::tag('input', '', $options);
 	}
 
 	/**
@@ -526,7 +490,7 @@ class Html
 	{
 		$options['type'] = 'reset';
 		$options['value'] = $label;
-		return static::tag('input', null, $options);
+		return static::tag('input', '', $options);
 	}
 
 	/**
@@ -1315,7 +1279,7 @@ class Html
 		foreach ($attributes as $name => $value) {
 			if (isset(static::$booleanAttributes[strtolower($name)])) {
 				if ($value || strcasecmp($name, $value) === 0) {
-					$html .= static::$showBooleanAttributeValues ? " $name=\"$name\"" : " $name";
+					$html .= " $name";
 				}
 			} elseif ($value !== null) {
 				$html .= " $name=\"" . static::encode($value) . '"';
