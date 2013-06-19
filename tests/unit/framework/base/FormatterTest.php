@@ -96,7 +96,7 @@ class FormatterTest extends TestCase
 	public function testAsImage()
 	{
 		$value = 'http://sample.com/img.jpg';
-		$this->assertSame("<img src=\"$value\" alt=\"\" />", $this->formatter->asImage($value));
+		$this->assertSame("<img src=\"$value\" alt=\"\">", $this->formatter->asImage($value));
 	}
 
 	public function testAsBoolean()
