@@ -124,6 +124,20 @@ class Html
 	);
 
 	/**
+	 * @var array @todo comment
+	 *
+	 * For example:
+	 * ```
+	 * array(
+	 *     'script' => array('type'),
+	 *     'link' => array('type'),
+	 * )
+	 * ```
+	 */
+	public $ignoreTagAttributes = array();
+
+
+	/**
 	 * Encodes special characters into HTML entities.
 	 * The [[yii\base\Application::charset|application charset]] will be used for encoding.
 	 * @param string $content the content to be encoded
