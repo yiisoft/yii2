@@ -22,7 +22,6 @@ class Html
 {
 	/**
 	 * @var array list of void elements (element name => 1)
-	 * @see closeVoidElements
 	 * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
 	 */
 	public static $voidElements = array(
@@ -46,7 +45,6 @@ class Html
 	/**
 	 * @var array list of boolean attributes. The presence of a boolean attribute on
 	 * an element represents the true value, and the absence of the attribute represents the false value.
-	 * @see showBooleanAttributeValues
 	 * @see http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes
 	 */
 	public static $booleanAttributes = array(
