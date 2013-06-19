@@ -49,19 +49,12 @@ class HtmlTest extends TestCase
 		$this->assertEquals('<div>content</div>', Html::tag('div', 'content'));
 		$this->assertEquals('<input type="text" name="test" value="&lt;&gt;" />', Html::tag('input', '', array('type' => 'text', 'name' => 'test', 'value' => '<>')));
 
-		Html::$closeVoidElements = false;
-
 		$this->assertEquals('<br>', Html::tag('br'));
 		$this->assertEquals('<span></span>', Html::tag('span'));
 		$this->assertEquals('<div>content</div>', Html::tag('div', 'content'));
 		$this->assertEquals('<input type="text" name="test" value="&lt;&gt;">', Html::tag('input', '', array('type' => 'text', 'name' => 'test', 'value' => '<>')));
 
-		Html::$closeVoidElements = true;
-
-		$this->assertEquals('<span disabled="disabled"></span>', Html::tag('span', '', array('disabled' => true)));
-		Html::$showBooleanAttributeValues = false;
 		$this->assertEquals('<span disabled></span>', Html::tag('span', '', array('disabled' => true)));
-		Html::$showBooleanAttributeValues = true;
 	}
 
 	public function testBeginTag()
@@ -76,36 +69,30 @@ class HtmlTest extends TestCase
 		$this->assertEquals('</span>', Html::endTag('span'));
 	}
 
-	public function testCdata()
-	{
-		$data = 'test<>';
-		$this->assertEquals('<![CDATA[' . $data . ']]>', Html::cdata($data));
-	}
-
 	public function testStyle()
 	{
 		$content = 'a <>';
-		$this->assertEquals("<style type=\"text/css\">/*<![CDATA[*/\n{$content}\n/*]]>*/</style>", Html::style($content));
-		$this->assertEquals("<style type=\"text/less\">/*<![CDATA[*/\n{$content}\n/*]]>*/</style>", Html::style($content, array('type' => 'text/less')));
+		$this->assertEquals("<style>$content</style>", Html::style($content));
+		$this->assertEquals("<style type=\"text/less\">$content</style>", Html::style($content, array('type' => 'text/less')));
 	}
 
 	public function testScript()
 	{
 		$content = 'a <>';
-		$this->assertEquals("<script type=\"text/javascript\">/*<![CDATA[*/\n{$content}\n/*]]>*/</script>", Html::script($content));
-		$this->assertEquals("<script type=\"text/js\">/*<![CDATA[*/\n{$content}\n/*]]>*/</script>", Html::script($content, array('type' => 'text/js')));
+		$this->assertEquals("<script>$content</script>", Html::script($content));
+		$this->assertEquals("<script type=\"text/js\">$content</script>", Html::script($content, array('type' => 'text/js')));
 	}
 
 	public function testCssFile()
 	{
-		$this->assertEquals('<link type="text/css" href="http://example.com" rel="stylesheet" />', Html::cssFile('http://example.com'));
-		$this->assertEquals('<link type="text/css" href="/test" rel="stylesheet" />', Html::cssFile(''));
+		$this->assertEquals('<link href="http://example.com" rel="stylesheet" />', Html::cssFile('http://example.com'));
+		$this->assertEquals('<link href="/test" rel="stylesheet" />', Html::cssFile(''));
 	}
 
 	public function testJsFile()
 	{
-		$this->assertEquals('<script type="text/javascript" src="http://example.com"></script>', Html::jsFile('http://example.com'));
-		$this->assertEquals('<script type="text/javascript" src="/test"></script>', Html::jsFile(''));
+		$this->assertEquals('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
+		$this->assertEquals('<script src="/test"></script>', Html::jsFile(''));
 	}
 
 	public function testBeginForm()
@@ -432,9 +419,7 @@ EOD;
 	{
 		$this->assertEquals('', Html::renderTagAttributes(array()));
 		$this->assertEquals(' name="test" value="1&lt;&gt;"', Html::renderTagAttributes(array('name' => 'test', 'empty' => null, 'value' => '1<>')));
-		Html::$showBooleanAttributeValues = false;
 		$this->assertEquals(' checked disabled', Html::renderTagAttributes(array('checked' => 'checked', 'disabled' => true, 'hidden' => false)));
-		Html::$showBooleanAttributeValues = true;
 	}
 
 	public function testAddCssClass()
