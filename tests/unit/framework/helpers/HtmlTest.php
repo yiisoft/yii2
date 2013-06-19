@@ -240,7 +240,7 @@ EOD;
 		$expected = <<<EOD
 <select name="test">
 <option value="value1">text1</option>
-<option value="value2" selected="selected">text2</option>
+<option value="value2" selected>text2</option>
 </select>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
@@ -277,14 +277,14 @@ EOD;
 		$this->assertEqualsWithoutLE($expected, Html::listBox('test', 'value2', $this->getDataItems()));
 		$expected = <<<EOD
 <select name="test" size="4">
-<option value="value1" selected="selected">text1</option>
-<option value="value2" selected="selected">text2</option>
+<option value="value1" selected>text1</option>
+<option value="value2" selected>text2</option>
 </select>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::listBox('test', array('value1', 'value2'), $this->getDataItems()));
 
 		$expected = <<<EOD
-<select name="test[]" multiple="multiple" size="4">
+<select name="test[]" multiple size="4">
 
 </select>
 EOD;
@@ -385,11 +385,11 @@ EOD;
 		);
 		$expected = <<<EOD
 <option value="">please&nbsp;select&lt;&gt;</option>
-<option value="value1" selected="selected">label1</option>
+<option value="value1" selected>label1</option>
 <optgroup label="group1">
 <option value="value11">label11</option>
 <optgroup label="group11">
-<option class="option" value="value111" selected="selected">label111</option>
+<option class="option" value="value111" selected>label111</option>
 </optgroup>
 <optgroup class="group" label="group12">
 
