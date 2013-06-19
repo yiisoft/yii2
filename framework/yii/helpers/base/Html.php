@@ -152,11 +152,8 @@ class Html
 	 */
 	public static function tag($name, $content = '', $options = array())
 	{
-		if (isset(static::$voidElements[strtolower($name)])) {
-			return static::beginTag($name, $options);
-		} else {
-			return static::beginTag($name, $options) . $content . static::endTag($name);
-		}
+		$html = "<$name" . static::renderTagAttributes($options) . '>';
+		return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
 	}
 
 	/**
