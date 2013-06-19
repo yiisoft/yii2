@@ -36,6 +36,6 @@ $this->params['breadcrumbs'][] = $this->title;
 		'options' => array('class' => 'input-medium'),
 	)); ?>
 	<div class="form-actions">
-		<?php echo Html::submitButton('Submit', null, null, array('class' => 'btn btn-primary')); ?>
+		<?php echo Html::submitButton('Submit', array('class' => 'btn btn-primary')); ?>
 	</div>
 <?php ActiveForm::end(); ?>

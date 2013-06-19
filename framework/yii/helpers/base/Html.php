@@ -421,18 +421,14 @@ class Html
 	 * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
 	 * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
 	 * you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param string $name the name attribute. If it is null, the name attribute will not be generated.
-	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * If the options does not contain "type", a "type" attribute with value "button" will be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function button($content = 'Button', $name = null, $value = null, $options = array())
+	public static function button($content = 'Button', $options = array())
 	{
-		$options['name'] = $name;
-		$options['value'] = $value;
 		if (!isset($options['type'])) {
 			$options['type'] = 'button';
 		}
@@ -444,17 +440,15 @@ class Html
 	 * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
 	 * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
 	 * you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param string $name the name attribute. If it is null, the name attribute will not be generated.
-	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated submit button tag
 	 */
-	public static function submitButton($content = 'Submit', $name = null, $value = null, $options = array())
+	public static function submitButton($content = 'Submit', $options = array())
 	{
 		$options['type'] = 'submit';
-		return static::button($content, $name, $value, $options);
+		return static::button($content, $options);
 	}
 
 	/**
@@ -462,17 +456,15 @@ class Html
 	 * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
 	 * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
 	 * you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param string $name the name attribute. If it is null, the name attribute will not be generated.
-	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated reset button tag
 	 */
-	public static function resetButton($content = 'Reset', $name = null, $value = null, $options = array())
+	public static function resetButton($content = 'Reset', $options = array())
 	{
 		$options['type'] = 'reset';
-		return static::button($content, $name, $value, $options);
+		return static::button($content, $options);
 	}
 
 	/**
@@ -495,43 +487,46 @@ class Html
 
 	/**
 	 * Generates an input button.
-	 * @param string $name the name attribute.
-	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+	 * @param string $label the value attribute. If it is null, the value attribute will not be generated.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function buttonInput($name, $value = 'Button', $options = array())
+	public static function buttonInput($label = 'Button', $options = array())
 	{
-		return static::input('button', $name, $value, $options);
+		$options['type'] = 'button';
+		$options['value'] = $label;
+		return static::tag('input', null, $options);
 	}
 
 	/**
 	 * Generates a submit input button.
-	 * @param string $name the name attribute. If it is null, the name attribute will not be generated.
-	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+	 * @param string $label the value attribute. If it is null, the value attribute will not be generated.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated button tag
 	 */
-	public static function submitInput($name = null, $value = 'Submit', $options = array())
+	public static function submitInput($label = 'Submit', $options = array())
 	{
-		return static::input('submit', $name, $value, $options);
+		$options['type'] = 'submit';
+		$options['value'] = $label;
+		return static::tag('input', null, $options);
 	}
 
 	/**
 	 * Generates a reset input button.
-	 * @param string $name the name attribute. If it is null, the name attribute will not be generated.
-	 * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+	 * @param string $label the value attribute. If it is null, the value attribute will not be generated.
 	 * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
 	 * Attributes whose value is null will be ignored and not put in the tag returned.
 	 * @return string the generated button tag
 	 */
-	public static function resetInput($name = null, $value = 'Reset', $options = array())
+	public static function resetInput($label = 'Reset', $options = array())
 	{
-		return static::input('reset', $name, $value, $options);
+		$options['type'] = 'reset';
+		$options['value'] = $label;
+		return static::tag('input', null, $options);
 	}
 
 	/**

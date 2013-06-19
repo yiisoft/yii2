@@ -154,20 +154,20 @@ class HtmlTest extends TestCase
 	public function testButton()
 	{
 		$this->assertEquals('<button type="button">Button</button>', Html::button());
-		$this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('content<>', 'test', 'value'));
-		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', 'test', 'value', array('type' => 'submit', 'class' => "t")));
+		$this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('content<>', array('name' => 'test', 'value' => 'value')));
+		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', array('type' => 'submit', 'name' => 'test', 'value' => 'value', 'class' => "t")));
 	}
 
 	public function testSubmitButton()
 	{
 		$this->assertEquals('<button type="submit">Submit</button>', Html::submitButton());
-		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::submitButton('content<>', 'test', 'value', array('class' => 't')));
+		$this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::submitButton('content<>', array('name' => 'test', 'value' => 'value', 'class' => 't')));
 	}
 
 	public function testResetButton()
 	{
 		$this->assertEquals('<button type="reset">Reset</button>', Html::resetButton());
-		$this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', 'test', 'value', array('class' => 't')));
+		$this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', array('name' => 'test', 'value' => 'value', 'class' => 't')));
 	}
 
 	public function testInput()
@@ -178,20 +178,20 @@ class HtmlTest extends TestCase
 
 	public function testButtonInput()
 	{
-		$this->assertEquals('<input type="button" name="test" value="Button" />', Html::buttonInput('test'));
-		$this->assertEquals('<input type="button" class="a" name="test" value="text" />', Html::buttonInput('test', 'text', array('class' => 'a')));
+		$this->assertEquals('<input type="button" value="Button" />', Html::buttonInput());
+		$this->assertEquals('<input type="button" class="a" name="test" value="text" />', Html::buttonInput('text', array('name' => 'test', 'class' => 'a')));
 	}
 
 	public function testSubmitInput()
 	{
 		$this->assertEquals('<input type="submit" value="Submit" />', Html::submitInput());
-		$this->assertEquals('<input type="submit" class="a" name="test" value="text" />', Html::submitInput('test', 'text', array('class' => 'a')));
+		$this->assertEquals('<input type="submit" class="a" name="test" value="text" />', Html::submitInput('text', array('name' => 'test', 'class' => 'a')));
 	}
 
 	public function testResetInput()
 	{
 		$this->assertEquals('<input type="reset" value="Reset" />', Html::resetInput());
-		$this->assertEquals('<input type="reset" class="a" name="test" value="text" />', Html::resetInput('test', 'text', array('class' => 'a')));
+		$this->assertEquals('<input type="reset" class="a" name="test" value="text" />', Html::resetInput('text', array('name' => 'test', 'class' => 'a')));
 	}
 
 	public function testTextInput()
