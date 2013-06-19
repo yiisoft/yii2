@@ -1,7 +1,9 @@
 <?php
-Yii::setAlias('common', '../');
-Yii::setAlias('frontend', '../../frontend');
-Yii::setAlias('backend', '../../frontend');
+
+Yii::setAlias('common', __DIR__ . '/../');
+Yii::setAlias('frontend', __DIR__ . '/../../frontend');
+Yii::setAlias('backend', __DIR__ . '/../../backend');
+
 return array(
 	'adminEmail' => 'admin@example.com',
 
