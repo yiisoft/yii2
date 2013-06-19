@@ -327,9 +327,9 @@ is a container consisting of a label, an input, and an error message. It is repr
 as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
 
 ```php
-<?php $form = yii\widgets\ActiveForm::begin(); ?>
-	<?php echo $form->field($model, 'username')->textInput(); ?>
-	<?php echo $form->field($model, 'password')->passwordInput(); ?>
+<?php $form = yii\widgets\ActiveForm::begin(array('model' => $model)); ?>
+	<?php echo $form->field('username')->textInput(); ?>
+	<?php echo $form->field('password')->passwordInput(); ?>
 	<div class="form-actions">
 		<?php echo Html::submitButton('Login'); ?>
 	</div>

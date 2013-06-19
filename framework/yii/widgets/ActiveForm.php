@@ -8,6 +8,7 @@
 namespace yii\widgets;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Html;
@@ -30,6 +31,12 @@ class ActiveForm extends Widget
 	 * Defaults to 'post'.
 	 */
 	public $method = 'post';
+	/**
+	 * @var Model the model associated with this form. This property must be set if you call [[field()]]
+	 * to create input fields. If a form is associated with multiple models, this property is not needed
+	 * and you should use [[mfield()]] to create input fields.
+	 */
+	public $model;
 	/**
 	 * @var array the HTML attributes (name-value pairs) for the form tag.
 	 * The values will be HTML-encoded using [[Html::encode()]].
@@ -208,17 +215,50 @@ class ActiveForm extends Widget
 	}
 
 	/**
-	 * Generates a form field.
+	 * Generates a form field using [[model]] and the specified attribute.
+	 *
 	 * A form field is associated with a model and an attribute. It contains a label, an input and an error message
-	 * and use them to interact with end users to collect their inputs for the attribute.
+	 * and uses them to interact with end users to collect their input for the attribute.
+	 *
+	 * This method is mainly used for a form with a single model.
+	 *
+	 * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
+	 * about attribute expression.
+	 * @param array $options the additional configurations for the field object
+	 * @return ActiveField the created ActiveField object
+	 * @throws InvalidConfigException if [[model]] is not specified
+	 * @see fieldConfig
+	 * @see mfield
+	 */
+	public function field($attribute, $options = array())
+	{
+		if (!$this->model instanceof Model) {
+			throw new InvalidConfigException('The "model" property must be set.');
+		}
+		return Yii::createObject(array_merge($this->fieldConfig, $options, array(
+			'model' => $this->model,
+			'attribute' => $attribute,
+			'form' => $this,
+		)));
+	}
+
+	/**
+	 * Generates a form field using the specified model and attribute.
+	 *
+	 * This method differs from [[field()]] in that the model is passed as a parameter rather than obtained
+	 * from [[model]].
+	 *
+	 * This method is mainly used for a form with multiple models.
+	 *
 	 * @param Model $model the data model
 	 * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
 	 * about attribute expression.
 	 * @param array $options the additional configurations for the field object
 	 * @return ActiveField the created ActiveField object
 	 * @see fieldConfig
+	 * @see field
 	 */
-	public function field($model, $attribute, $options = array())
+	public function mfield($model, $attribute, $options = array())
 	{
 		return Yii::createObject(array_merge($this->fieldConfig, $options, array(
 			'model' => $model,
