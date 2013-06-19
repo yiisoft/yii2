@@ -1390,12 +1390,11 @@ class ActiveRecord extends Model
 	protected function getNamespacedClass($class)
 	{
 		if (strpos($class, '\\') === false) {
-			$primaryClass = get_class($this);
-			if (($pos = strrpos($primaryClass, '\\')) !== false) {
-				return substr($primaryClass, 0, $pos + 1) . $class;
-			}
+			$reflector = new \ReflectionClass($this);
+			return $reflector->getNamespaceName() . '\\' . $class;
+		} else {
+			return $class;
 		}
-		return $class;
 	}
 
 	/**
