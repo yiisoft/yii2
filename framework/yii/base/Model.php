@@ -473,10 +473,36 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Adds a new error to the specified attribute.
-	 * @param string $attribute attribute name
-	 * @param string $error new error message
+	 *
+	 * Second parameter's default value is `false`, meaning that no error message was given. Missing
+	 * error message could be used in the following situation: assume we're dealing with a model HTML
+	 * form which is not displaying any textual error information (e.g. error fields are highlighted
+	 * by color), and at the same time we're validating some attribute with [[InlineValidator]].
+	 * Our code would look something like this:
+	 *
+	 * ```php
+	 * class Venue extends Model
+	 * {
+	 *     public $address;
+	 *
+	 *     public function validateAddress()
+	 *     {
+	 *         if ($this->addressIsInvalid()) {
+	 *             // no error message specified since we're not displaying textual information about it
+	 *             $this->addError('address');
+	 *         }
+	 *     }
+	 * }
+	 * ```
+	 *
+	 * This feature of empty error message could also be used with relations to mark them
+	 * as having errors.
+	 *
+	 * @param string $attribute attribute name.
+	 * @param string|boolean $error new error message. Defaults to false meaning that no error message
+	 * was provided, i.e. empty message.
 	 */
-	public function addError($attribute, $error)
+	public function addError($attribute, $error = false)
 	{
 		$this->_errors[$attribute][] = $error;
 	}
