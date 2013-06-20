@@ -463,4 +463,33 @@ EOD;
 			'value  2' => 'text  2',
 		);
 	}
+
+	public function testSpaceless()
+	{
+		ob_start();
+		ob_implicit_flush(false);
+
+		echo "<body>\n";
+		Html::spaceless();
+		echo "\t<div class='wrapper'>\n";
+
+		Html::spaceless();
+		echo "\t\t<div class='left-column'>\n";
+		echo "\t\t\t<p>This is a left bar!</p>\n";
+		echo "\t\t</div>\n\n";
+		echo "\t\t<div class='right-column'>\n";
+		echo "\t\t\t<p>This is a right bar!</p>\n";
+		echo "\t\t</div>\n";
+		Html::endSpaceless();
+
+		echo "\t</div>\n";
+		Html::endSpaceless();
+		echo "\t<p>Bye!</p>\n";
+		echo "</body>\n";
+
+		$this->assertEquals(
+			"<body>\n<div class='wrapper'><div class='left-column'><p>This is a left bar!</p></div><div class='right-column'><p>This is a right bar!</p></div></div>\t<p>Bye!</p>\n</body>\n",
+			ob_get_clean()
+		);
+	}
 }
