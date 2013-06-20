@@ -1476,4 +1476,53 @@ class Html
 		$name = strtolower(static::getInputName($model, $attribute));
 		return str_replace(array('[]', '][', '[', ']', ' '), array('', '-', '-', '', '-'), $name);
 	}
+
+	/**
+	 * Removes whitespace characters between HTML tags. Whitespaces within HTML tags or in a plain text
+	 * are always kept untouched. This method must be used in a succession with [[endSpaceless()]].
+	 *
+	 * Usage example:
+	 * ```php
+	 * <body>
+	 *     <?php \yii\helpers\Html::spaceless(); ?>
+	 *         <div class="navbar">
+	 *             <!-- other tags -->
+	 *         </div>
+	 *         <div class="content">
+	 *             <!-- other tags -->
+	 *         </div>
+	 *     <?php \yii\helpers\Html::endSpaceless(); ?>
+	 * </body>
+	 * ```
+	 *
+	 * This example would generate the following HTML:
+	 * ```html
+	 * <body>
+	 *     <div class="navbar"><!-- other tags --></div><div class="content"><!-- other tags --></div></body>
+	 * ```
+	 *
+	 * This method is not designed for content compression (you should use `gzip` output compression to achieve it).
+	 * Main intention is to strip out extra whitespace characters between HTML tags in order to avoid browser
+	 * rendering quirks in some circumstances (e.g. newlines between inline-block elements).
+	 *
+	 * Note, never use this method with `pre` or `textarea` tags. It's not that easy to deal with such tags
+	 * as it may seem at first sight. For this case you should consider using
+	 * [HTML Tidy Project](http://tidy.sourceforge.net/) instead.
+	 *
+	 * @see http://tidy.sourceforge.net/
+	 */
+	public static function spaceless()
+	{
+		ob_start();
+		ob_implicit_flush(false);
+	}
+
+	/**
+	 * Call this method to specify the end of your area to be cleaned from whitespace characters.
+	 * @see spaceless
+	 */
+	public static function endSpaceless()
+	{
+		echo trim(preg_replace('/>\s+</', '><', ob_get_clean()));
+	}
 }
