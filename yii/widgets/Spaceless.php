@@ -14,6 +14,7 @@ use yii\base\Widget;
  * or in a plain text are always left untouched.
  *
  * Usage example:
+ *
  * ```php
  * <body>
  *     <?php Spaceless::begin(); ?>
@@ -28,6 +29,7 @@ use yii\base\Widget;
  * ```
  *
  * This example will generate the following HTML:
+ *
  * ```html
  * <body>
  *     <div class="navbar"><!-- other tags --></div><div class="content"><!-- other tags --></div></body>
