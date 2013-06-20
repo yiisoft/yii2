@@ -494,7 +494,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *             // IMPORTANT:
 	 *             // mark current model as having error, even if attributes of this model are
 	 *             // all valid; this is needed to preserve main model to be saved since related
-	 *             // visitors are invalid
+	 *             // visitors are invalid; error message is useless and meaningless here
 	 *             $this->addError('visitors');
 	 *         }
 	 *     }
