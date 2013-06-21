@@ -473,8 +473,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Adds a new error to the specified attribute.
-	 * @param string $attribute attribute name
-	 * @param string $error new error message
+	 * @param string $attribute attribute name.
+	 * @param string $error new error message. Defaults to empty string.
 	 */
 	public function addError($attribute, $error = '')
 	{
