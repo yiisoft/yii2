@@ -473,39 +473,11 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Adds a new error to the specified attribute.
-	 *
-	 * Second parameter's default value is `false`, meaning that no error message was given. Missing
-	 * error message could be used in the following situation: assume we're dealing with cascade
-	 * validation and saving of related methods. Our sample code would look like as follows:
-	 *
-	 * ```php
-	 * class Venue extends ActiveRecord
-	 * {
-	 *     public function afterValidate()
-	 *     {
-	 *         parent::afterValidate();
-	 *
-	 *         // perform related visitors cascade validation
-	 *         $result = true;
-	 *         foreach ($this->visitors as $visitor) {
-	 *             $result = $visitor->validate() && $result;
-	 *         }
-	 *         if (!$result) {
-	 *             // IMPORTANT:
-	 *             // mark current model as having error, even if attributes of this model are
-	 *             // all valid; this is needed to preserve main model to be saved since related
-	 *             // visitors are invalid; error message is useless and meaningless here
-	 *             $this->addError('visitors');
-	 *         }
-	 *     }
-	 * }
-	 * ```
-	 *
 	 * @param string $attribute attribute name.
-	 * @param string|boolean $error new error message. Defaults to false meaning that no error message
-	 * was provided, i.e. empty message.
+	 * @param string|boolean $error new error message. Defaults to empty string meaning that
+	 * no error message was provided.
 	 */
-	public function addError($attribute, $error = false)
+	public function addError($attribute, $error = '')
 	{
 		$this->_errors[$attribute][] = $error;
 	}
