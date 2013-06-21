@@ -79,7 +79,7 @@ class User extends ActiveRecord implements Identity
 		return array(
 			array('username', 'filter', 'filter' => 'trim'),
 			array('username', 'required'),
-			array('username', 'length', 'min' => 2, 'max' => 255),
+			array('username', 'string', 'min' => 2, 'max' => 255),
 
 			array('email', 'filter', 'filter' => 'trim'),
 			array('email', 'required'),
@@ -87,7 +87,7 @@ class User extends ActiveRecord implements Identity
 			array('email', 'unique', 'message' => 'This email address has already been taken.'),
 
 			array('password', 'required'),
-			array('password', 'length', 'min' => 6),
+			array('password', 'string', 'min' => 6),
 		);
 	}
 
