@@ -476,7 +476,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * @param string $attribute attribute name
 	 * @param string $error new error message
 	 */
-	public function addError($attribute, $error)
+	public function addError($attribute, $error = '')
 	{
 		$this->_errors[$attribute][] = $error;
 	}
