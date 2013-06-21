@@ -134,11 +134,19 @@ class AssetBundle extends Object
 
 		$this->publish($view->getAssetManager());
 
-		foreach ($this->js as $js) {
-			$view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
+		foreach ($this->js as $js => $config) {
+			if (is_array($config)) {
+				$view->registerJsFile($this->baseUrl . '/' . $js, array_merge($this->jsOptions, $config));
+			} else {
+				$view->registerJsFile($this->baseUrl . '/' . $config, $this->jsOptions);
+			}
 		}
-		foreach ($this->css as $css) {
-			$view->registerCssFile($this->baseUrl . '/' . $css, $this->cssOptions);
+		foreach ($this->css as $css => $config) {
+			if (is_array($config)) {
+				$view->registerCssFile($this->baseUrl . '/' . $css, array_merge($this->cssOptions, $config));
+			} else {
+				$view->registerCssFile($this->baseUrl . '/' . $config, $this->cssOptions);
+			}
 		}
 	}
 
