@@ -21,6 +21,9 @@ return array(
 				),
 			),
 		),
+		'mutex' => array(
+			'class' => 'yii\base\Mutex',
+		),
 	),
 	'params' => $params,
 );
