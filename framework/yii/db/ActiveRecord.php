@@ -339,9 +339,12 @@ class ActiveRecord extends Model
 	 */
 	public function __get($name)
 	{
+		$t = Inflector::underscore($name);
 		if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
 			return $this->_attributes[$name];
-		} elseif (isset($this->getTableSchema()->columns[$name])) {
+		} elseif (isset($this->_attributes[$t]) || array_key_exists($t, $this->_attributes)) {
+			return $this->_attributes[$t];
+		} elseif (isset($this->getTableSchema()->columns[$name], $this->getTableSchema()->columns[$t])) {
 			return null;
 		} else {
 			$t = strtolower($name);
@@ -365,8 +368,11 @@ class ActiveRecord extends Model
 	 */
 	public function __set($name, $value)
 	{
+		$t = Inflector::underscore($name);
 		if (isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
 			$this->_attributes[$name] = $value;
+		} elseif (isset($this->_attributes[$t]) || isset($this->getTableSchema()->columns[$t])) {
+			$this->_attributes[$t] = $value;
 		} else {
 			parent::__set($name, $value);
 		}
@@ -395,8 +401,11 @@ class ActiveRecord extends Model
 	 */
 	public function __unset($name)
 	{
+		$t = Inflector::underscore($name);
 		if (isset($this->getTableSchema()->columns[$name])) {
 			unset($this->_attributes[$name]);
+		} elseif (isset($this->getTableSchema()->columns[$t])) {
+			unset($this->_attributes[$t]);
 		} else {
 			$t = strtolower($name);
 			if (isset($this->_related[$t])) {
