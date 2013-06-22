@@ -74,4 +74,34 @@ abstract class Request extends Component
 			throw new InvalidConfigException('Unable to determine the entry script file path.');
 		}
 	}
+
+	/**
+	 * Return the parameters of the request
+	 * @return array|null The parameters of the request
+	 */
+  public function getParams()
+	{
+		if ( $this->_params !== null ) {
+			return $this->_params;
+		}
+		 $this->_params = array();
+
+		foreach ( $_POST as $name => $value ) {
+			$current = &$this->_params;
+			$parts = explode('_',$name);
+			$count = count($parts);
+			for( $ii=0 ; $ii < $count - 1 ; $ii++ ) {
+				$nn = $parts[$ii];
+				if ( array_key_exists($nn,$current) === false ) {
+					$current[$nn] = array();
+				}
+				$current = &$current[$nn];
+			}
+			$nn = $parts[$count-1];
+			$current[$nn] = $value;
+		}
+		return $this->_params;
+	}
+	private $_params = null;
 }
+
