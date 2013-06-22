@@ -7,6 +7,9 @@
 
 namespace yii\mutex;
 
+/**
+ * @inheritdoc
+ */
 class Mutex extends base\Mutex
 {
 }

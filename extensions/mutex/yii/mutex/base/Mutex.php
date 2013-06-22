@@ -12,8 +12,7 @@ use yii\base\InvalidCallException;
 
 /**
  * Mutex helper class provides implementation of the mutual exclusion technique which is used to prevent
- * running same code block in two or more processes at the same time (critical section). This class can
- * be used as follows:
+ * running same code block in two or more processes at the same time. This class can be used as follows:
  *
  * ```php
  * class FooController extends \yii\console\Controller
