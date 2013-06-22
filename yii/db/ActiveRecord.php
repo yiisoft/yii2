@@ -523,11 +523,16 @@ class ActiveRecord extends Model
 	 * Sets the named attribute value.
 	 * @param string $name the attribute name
 	 * @param mixed $value the attribute value.
+	 * @throws InvalidParamException if the named attribute does not exist.
 	 * @see hasAttribute
 	 */
 	public function setAttribute($name, $value)
 	{
-		$this->_attributes[$name] = $value;
+		if (isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
+			$this->_attributes[$name] = $value;
+		} else {
+			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
+		}
 	}
 
 	/**
@@ -567,11 +572,16 @@ class ActiveRecord extends Model
 	 * Sets the old value of the named attribute.
 	 * @param string $name the attribute name
 	 * @param mixed $value the old attribute value.
+	 * @throws InvalidParamException if the named attribute does not exist.
 	 * @see hasAttribute
 	 */
 	public function setOldAttribute($name, $value)
 	{
-		$this->_oldAttributes[$name] = $value;
+		if (isset($this->_oldAttributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
+			$this->_oldAttributes[$name] = $value;
+		} else {
+			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
+		}
 	}
 
 	/**
