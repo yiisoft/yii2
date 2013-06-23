@@ -35,7 +35,7 @@ class Response extends \yii\base\Response
 	 * @event ResponseEvent an event that is triggered right after [[prepare()]] is called in [[send()]].
 	 * You may respond to this event to filter the response content before it is sent to the client.
 	 */
-	const EVENT_PREPARE = 'prepare';
+	const EVENT_AFTER_PREPARE = 'afterPrepare';
 
 	const FORMAT_RAW = 'raw';
 	const FORMAT_HTML = 'html';
@@ -218,6 +218,11 @@ class Response extends \yii\base\Response
 	 */
 	public function setStatusCode($value, $text = null)
 	{
+		if ($value === null) {
+			$this->_statusCode = null;
+			$this->statusText = null;
+			return;
+		}
 		$this->_statusCode = (int)$value;
 		if ($this->getIsInvalid()) {
 			throw new InvalidParamException("The HTTP status code is invalid: $value");
@@ -249,7 +254,7 @@ class Response extends \yii\base\Response
 	{
 		$this->trigger(self::EVENT_BEFORE_SEND, new ResponseEvent($this));
 		$this->prepare();
-		$this->trigger(self::EVENT_PREPARE, new ResponseEvent($this));
+		$this->trigger(self::EVENT_AFTER_PREPARE, new ResponseEvent($this));
 		$this->sendHeaders();
 		$this->sendContent();
 		$this->trigger(self::EVENT_AFTER_SEND, new ResponseEvent($this));
@@ -319,13 +324,7 @@ class Response extends \yii\base\Response
 	 */
 	protected function sendContent()
 	{
-		if (is_array($this->content)) {
-			echo 'array()';
-		} elseif (is_object($this->content)) {
-			echo method_exists($this->content, '__toString') ? (string)$this->content : get_class($this->content);
-		} else {
-			echo $this->content;
-		}
+		echo $this->content;
 	}
 
 	/**
@@ -721,38 +720,43 @@ class Response extends \yii\base\Response
 			}
 			if ($formatter instanceof ResponseFormatter) {
 				$formatter->format($this);
-				return;
 			} else {
 				throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatter interface.");
 			}
+		} else {
+			switch ($this->format) {
+				case self::FORMAT_HTML:
+					$this->getHeaders()->setDefault('Content-Type', 'text/html; charset=' . $this->charset);
+					$this->content = $this->data;
+					break;
+				case self::FORMAT_RAW:
+					$this->content = $this->data;
+					break;
+				case self::FORMAT_JSON:
+					$this->getHeaders()->set('Content-Type', 'application/json');
+					$this->content = Json::encode($this->data);
+					break;
+				case self::FORMAT_JSONP:
+					$this->getHeaders()->set('Content-Type', 'text/javascript; charset=' . $this->charset);
+					if (is_array($this->data) && isset($this->data['data'], $this->data['callback'])) {
+						$this->content = sprintf('%s(%s);', $this->data['callback'], Json::encode($this->data['data']));
+					} else {
+						$this->content = '';
+						Yii::warning("The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.", __METHOD__);
+					}
+					break;
+				case self::FORMAT_XML:
+					$this->content = Yii::createObject(XmlResponseFormatter::className())->format($this);
+					break;
+				default:
+					throw new InvalidConfigException("Unsupported response format: {$this->format}");
+			}
 		}
 
-		switch ($this->format) {
-			case self::FORMAT_HTML:
-				$this->getHeaders()->setDefault('Content-Type', 'text/html; charset=' . $this->charset);
-				$this->content = $this->data;
-				break;
-			case self::FORMAT_RAW:
-				$this->content = $this->data;
-				break;
-			case self::FORMAT_JSON:
-				$this->getHeaders()->set('Content-Type', 'application/json');
-				$this->content = Json::encode($this->data);
-				break;
-			case self::FORMAT_JSONP:
-				$this->getHeaders()->set('Content-Type', 'text/javascript; charset=' . $this->charset);
-				if (is_array($this->data) && isset($this->data['data'], $this->data['callback'])) {
-					$this->content = sprintf('%s(%s);', $this->data['callback'], Json::encode($this->data['data']));
-				} else {
-					$this->content = '';
-					Yii::warning("The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.", __METHOD__);
-				}
-				break;
-			case self::FORMAT_XML:
-				$this->content = Yii::createObject(XmlResponseFormatter::className())->format($this);
-				break;
-			default:
-				throw new InvalidConfigException("Unsupported response format: {$this->format}");
+		if (is_array($this->content)) {
+			$this->content = 'array()';
+		} elseif (is_object($this->content)) {
+			$this->content = method_exists($this->content, '__toString') ? (string)$this->content : get_class($this->content);
 		}
 	}
 }
