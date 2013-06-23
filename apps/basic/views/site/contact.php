@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </p>
 
 <?php $form = ActiveForm::begin(array(
-	'options' => array('class' => 'form-horizontal'),
+	'options' => array('class' => 'form-horizontal', 'id' => 'contact-form'),
 	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
 )); ?>
 	<?php echo $form->field($model, 'name')->textInput(); ?>

@@ -1,14 +1,9 @@
 <?php
-$params = require(__DIR__ . '/params.php');
+
 return array(
 	'id' => 'bootstrap',
 	'basePath' => dirname(__DIR__),
 	'preload' => array('log'),
-	'modules' => array(
-//		'debug' => array(
-//			'class' => 'yii\debug\Module',
-//		)
-	),
 	'components' => array(
 		'cache' => array(
 			'class' => 'yii\caching\FileCache',
@@ -27,11 +22,8 @@ return array(
 					'class' => 'yii\logging\FileTarget',
 					'levels' => array('error', 'warning'),
 				),
-//				array(
-//					'class' => 'yii\logging\DebugTarget',
-//				)
 			),
 		),
 	),
-	'params' => $params,
+	'params' => require(__DIR__ . '/params.php'),
 );

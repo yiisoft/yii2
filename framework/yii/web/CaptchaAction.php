@@ -87,7 +87,7 @@ class CaptchaAction extends Action
 	 */
 	public $fontFile = '@yii/web/SpicyRice.ttf';
 	/**
-	 * @var string the fixed verification code. When this is property is set,
+	 * @var string the fixed verification code. When this property is set,
 	 * [[getVerifyCode()]] will always return the value of this property.
 	 * This is mainly used in automated tests where we want to be able to reproduce
 	 * the same verification code each time we run the tests.
