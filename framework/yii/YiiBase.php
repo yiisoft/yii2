@@ -65,7 +65,7 @@ class YiiBase
 	 * @var boolean whether to search PHP include_path when autoloading unknown classes.
 	 * You may want to turn this off if you are also using autoloaders from other libraries.
 	 */
-	public static $enableIncludePath = true;
+	public static $enableIncludePath = false;
 	/**
 	 * @var \yii\console\Application|\yii\web\Application the application instance
 	 */
