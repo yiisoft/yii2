@@ -21,6 +21,11 @@ defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
  */
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 /**
+ * This constant defines in which environment the application is running. Defaults to 'prod', meaning production environment.
+ * You may define this constant in the bootstrap script. The value could be 'prod' (production), 'dev' (development), 'test', 'staging', etc.
+ */
+defined('YII_ENV') or define('YII_ENV', 'prod');
+/**
  * This constant defines how much call stack information (file name and line number) should be logged by Yii::trace().
  * Defaults to 0, meaning no backtrace information. If it is greater than 0,
  * at most that number of call stacks will be logged. Note, only user application call stacks are considered.
