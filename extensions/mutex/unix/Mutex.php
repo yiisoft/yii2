@@ -12,9 +12,9 @@ class Mutex extends \yii\mutex\Mutex
 
 	public function init()
 	{
-//		if (stripos(php_uname('s'), 'win') === 0) {
-//			throw new InvalidConfigException('');
-//		}
+		if (stripos(php_uname('s'), 'win') === 0) {
+			throw new InvalidConfigException('');
+		}
 	}
 
 	protected function acquire($name, $timeout = 0)
