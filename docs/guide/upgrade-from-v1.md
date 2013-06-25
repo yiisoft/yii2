@@ -288,7 +288,6 @@ public function behaviors()
             'class' => 'yii\web\AccessControl',
             'rules' => array(
                 array('allow' => true, 'actions' => array('admin'), 'roles' => array('@')),
-                array('allow' => false),
             ),
         ),
     );

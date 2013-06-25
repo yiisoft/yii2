@@ -17,7 +17,7 @@ use yii\base\ActionFilter;
  * AccessControl is an action filter. It will check its [[rules]] to find
  * the first rule that matches the current context variables (such as user IP address, user role).
  * The matching rule will dictate whether to allow or deny the access to the requested controller
- * action.
+ * action. If no rule matches, the access will be denied.
  *
  * To use AccessControl, declare it in the `behaviors()` method of your controller class.
  * For example, the following declarations will allow authenticated users to access the "create"
@@ -105,7 +105,7 @@ class AccessControl extends ActionFilter
 		/** @var $rule AccessRule */
 		foreach ($this->rules as $rule) {
 			if ($allow = $rule->allows($action, $user, $request)) {
-				break;
+				return true;
 			} elseif ($allow === false) {
 				if (isset($rule->denyCallback)) {
 					call_user_func($rule->denyCallback, $rule);
@@ -117,7 +117,7 @@ class AccessControl extends ActionFilter
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
