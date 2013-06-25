@@ -849,7 +849,8 @@ class Html
 	 * @param array $options options (name => config) for the radio button list. The following options are supported:
 	 *
 	 * - encode: boolean, whether to HTML-encode the items. Defaults to true.
-	 *   This option is ignored if the `item` option below is specified.
+	 *   This option is ignored if the `item` option is specified.
+	 * - itemOptions: array, the HTML attributes for the `li` tags. This option is ignored if the `item` option is specified.
 	 * - item: callable, a callback that is used to generate each individual list item.
 	 *   The signature of this callback must be:
 	 *
@@ -870,13 +871,14 @@ class Html
 		$tag = isset($options['tag']) ? $options['tag'] : 'ul';
 		$encode = !isset($options['encode']) || $options['encode'];
 		$formatter = isset($options['item']) ? $options['item'] : null;
-		unset($options['tag'], $options['encode'], $options['item']);
+		$itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : array();
+		unset($options['tag'], $options['encode'], $options['item'], $options['itemOptions']);
 		$results = array();
 		foreach ($items as $index => $item) {
 			if ($formatter !== null) {
 				$results[] = call_user_func($formatter, $index, $item);
 			} else {
-				$results[] = '<li>' . ($encode ? static::encode($item) : $item) . '</li>';
+				$results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
 			}
 		}
 		return static::tag($tag, "\n" . implode("\n", $results) . "\n", $options);
@@ -889,6 +891,8 @@ class Html
 	 * @param array $options options (name => config) for the radio button list. The following options are supported:
 	 *
 	 * - encode: boolean, whether to HTML-encode the items. Defaults to true.
+	 *   This option is ignored if the `item` option is specified.
+	 * - itemOptions: array, the HTML attributes for the `li` tags. This option is ignored if the `item` option is specified.
 	 * - item: callable, a callback that is used to generate each individual list item.
 	 *   The signature of this callback must be:
 	 *
