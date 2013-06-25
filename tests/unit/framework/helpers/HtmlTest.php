@@ -401,12 +401,14 @@ EOD;
 		);
 		$expected = <<<EOD
 <ol>
-<li>1</li>
-<li>abc</li>
-<li>&lt;&gt;</li>
+<li class="ti">1</li>
+<li class="ti">abc</li>
+<li class="ti">&lt;&gt;</li>
 </ol>
 EOD;
-		$this->assertEqualsWithoutLE($expected, Html::ol($data));
+		$this->assertEqualsWithoutLE($expected, Html::ol($data, array(
+			'itemOptions' => array('class' => 'ti'),
+		)));
 		$expected = <<<EOD
 <ol class="test">
 <li class="item-0">1</li>
