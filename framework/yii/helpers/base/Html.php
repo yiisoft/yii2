@@ -9,7 +9,6 @@ namespace yii\helpers\base;
 
 use Yii;
 use yii\base\InvalidParamException;
-use yii\helpers\ArrayHelper;
 use yii\web\Request;
 use yii\base\Model;
 
@@ -844,6 +843,7 @@ class Html
 	 * @param array $options options (name => config) for the radio button list. The following options are supported:
 	 *
 	 * - encode: boolean, whether to HTML-encode the items. Defaults to true.
+	 *   This option is ignored if the `item` option below is specified.
 	 * - item: callable, a callback that is used to generate each individual list item.
 	 *   The signature of this callback must be:
 	 *
