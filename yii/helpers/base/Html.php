@@ -9,6 +9,7 @@ namespace yii\helpers\base;
 
 use Yii;
 use yii\base\InvalidParamException;
+use yii\helpers\ArrayHelper;
 use yii\web\Request;
 use yii\base\Model;
 
@@ -834,6 +835,70 @@ class Html
 		}
 
 		return $hidden . implode($separator, $lines);
+	}
+
+	/**
+	 * Generates an unordered list.
+	 * @param array|\Traversable $items the items for generating the list. Each item generates a single list item.
+	 * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true.
+	 * @param array $options options (name => config) for the radio button list. The following options are supported:
+	 *
+	 * - encode: boolean, whether to HTML-encode the items. Defaults to true.
+	 * - item: callable, a callback that is used to generate each individual list item.
+	 *   The signature of this callback must be:
+	 *
+	 * ~~~
+	 * function ($index, $item)
+	 * ~~~
+	 *
+	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
+	 * the whole list item tag.
+	 *
+	 * @return string the generated unordered list. An empty string is returned if `$items` is empty.
+	 */
+	public static function ul($items, $options = array())
+	{
+		if (empty($items)) {
+			return '';
+		}
+		$tag = isset($options['tag']) ? $options['tag'] : 'ul';
+		$encode = !isset($options['encode']) || $options['encode'];
+		$formatter = isset($options['item']) ? $options['item'] : null;
+		unset($options['tag'], $options['encode'], $options['item']);
+		$results = array();
+		foreach ($items as $index => $item) {
+			if ($formatter !== null) {
+				$results[] = call_user_func($formatter, $index, $item);
+			} else {
+				$results[] = '<li>' . ($encode ? static::encode($item) : $item) . '</li>';
+			}
+		}
+		return static::tag($tag, "\n" . implode("\n", $results) . "\n", $options);
+	}
+
+	/**
+	 * Generates an ordered list.
+	 * @param array|\Traversable $items the items for generating the list. Each item generates a single list item.
+	 * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true.
+	 * @param array $options options (name => config) for the radio button list. The following options are supported:
+	 *
+	 * - encode: boolean, whether to HTML-encode the items. Defaults to true.
+	 * - item: callable, a callback that is used to generate each individual list item.
+	 *   The signature of this callback must be:
+	 *
+	 * ~~~
+	 * function ($index, $item)
+	 * ~~~
+	 *
+	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
+	 * the whole list item tag.
+	 *
+	 * @return string the generated ordered list. An empty string is returned if `$items` is empty.
+	 */
+	public static function ol($items, $options = array())
+	{
+		$options['tag'] = 'ol';
+		return static::ul($items, $options);
 	}
 
 	/**
