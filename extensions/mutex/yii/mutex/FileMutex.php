@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\mutex\unix;
+namespace yii\mutex;
 
 use Yii;
 use yii\base\InvalidConfigException;
@@ -14,8 +14,13 @@ use yii\base\InvalidConfigException;
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */
-class Mutex extends \yii\mutex\Mutex
+class FileMutex extends Mutex
 {
+	/**
+	 * @var string the directory to store mutex files. You may use path alias here.
+	 * If not set, it will use the "mutex" subdirectory under the application runtime path.
+	 */
+	public $mutexPath = '@runtime/mutex';
 	/**
 	 * @var resource[] stores all opened lock files. Keys are lock names and values are file handles.
 	 */
@@ -30,7 +35,11 @@ class Mutex extends \yii\mutex\Mutex
 	public function init()
 	{
 		if (stripos(php_uname('s'), 'win') === 0) {
-			throw new InvalidConfigException('');
+			throw new InvalidConfigException('FileMutex does not have MS Windows operating system support.');
+		}
+		$this->mutexPath = Yii::getAlias($this->mutexPath);
+		if (!is_dir($this->mutexPath)) {
+			mkdir($this->mutexPath, 0777, true);
 		}
 	}
 
@@ -40,9 +49,9 @@ class Mutex extends \yii\mutex\Mutex
 	 * @param integer $timeout to wait for lock to become released.
 	 * @return boolean acquiring result.
 	 */
-	protected function acquire($name, $timeout = 0)
+	protected function acquireLock($name, $timeout = 0)
 	{
-		$file = fopen(Yii::$app->getRuntimePath() . '/mutex.' . md5($name) . '.lock', 'w+');
+		$file = fopen($this->mutexPath . '/' . md5($name) . '.lock', 'w+');
 		if ($file === false) {
 			return false;
 		}
@@ -64,7 +73,7 @@ class Mutex extends \yii\mutex\Mutex
 	 * @param string $name of the lock to be released.
 	 * @return boolean release result.
 	 */
-	protected function release($name)
+	protected function releaseLock($name)
 	{
 		if (!isset($this->_files[$name]) || !flock($this->_files[$name], LOCK_UN)) {
 			return false;
@@ -73,27 +82,5 @@ class Mutex extends \yii\mutex\Mutex
 			unset($this->_files[$name]);
 			return true;
 		}
-	}
-
-	/**
-	 * This method may optionally be extended by concrete mutex implementations. Checks whether lock has been
-	 * already acquired by given name.
-	 * @param string $name of the lock to be released.
-	 * @return null|boolean whether lock has been already acquired. Returns `null` in case this feature
-	 * is not supported by concrete mutex implementation.
-	 */
-	protected function getIsAcquired($name)
-	{
-		return false;
-	}
-
-	/**
-	 * This method should be extended by concrete mutex implementations. Returns whether current mutex
-	 * implementation can be used in a distributed environment.
-	 * @return boolean whether current mutex implementation can be used in a distributed environment.
-	 */
-	public function getIsDistributed()
-	{
-		return false;
 	}
 }

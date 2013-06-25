@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\mutex\db\mysql;
+namespace yii\mutex;
 
 use Yii;
 use yii\base\InvalidConfigException;
@@ -14,7 +14,7 @@ use yii\base\InvalidConfigException;
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */
-class Mutex extends \yii\mutex\db\Mutex
+class MysqlMutex extends Mutex
 {
 	/**
 	 * Initializes MySQL specific mutex component implementation.
@@ -24,7 +24,7 @@ class Mutex extends \yii\mutex\db\Mutex
 	{
 		parent::init();
 		if ($this->db->driverName !== 'mysql') {
-			throw new InvalidConfigException('');
+			throw new InvalidConfigException('In order to use MysqlMutex connection must be configured to use MySQL database.');
 		}
 	}
 
@@ -35,7 +35,7 @@ class Mutex extends \yii\mutex\db\Mutex
 	 * @return boolean acquiring result.
 	 * @see http://dev.mysql.com/doc/refman/5.0/en/miscellaneous-functions.html#function_get-lock
 	 */
-	protected function acquire($name, $timeout = 0)
+	protected function acquireLock($name, $timeout = 0)
 	{
 		return (boolean)$this->db
 			->createCommand('SELECT GET_LOCK(:name, :timeout)', array(':name' => $name, ':timeout' => $timeout))
@@ -48,25 +48,10 @@ class Mutex extends \yii\mutex\db\Mutex
 	 * @return boolean release result.
 	 * @see http://dev.mysql.com/doc/refman/5.0/en/miscellaneous-functions.html#function_release-lock
 	 */
-	protected function release($name)
+	protected function releaseLock($name)
 	{
 		return (boolean)$this->db
 			->createCommand('SELECT RELEASE_LOCK(:name)', array(':name' => $name))
-			->queryScalar();
-	}
-
-	/**
-	 * This method may optionally be extended by concrete mutex implementations. Checks whether lock has been
-	 * already acquired by given name.
-	 * @param string $name of the lock to be released.
-	 * @return null|boolean whether lock has been already acquired. Returns `null` in case this feature
-	 * is not supported by concrete mutex implementation.
-	 * @see http://dev.mysql.com/doc/refman/5.0/en/miscellaneous-functions.html#function_is-free-lock
-	 */
-	protected function getIsAcquired($name)
-	{
-		return (boolean)$this->db
-			->createCommand('SELECT IS_FREE_LOCK(:name)', array(':name' => $name))
 			->queryScalar();
 	}
 }
