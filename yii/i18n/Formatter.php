@@ -120,6 +120,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asDate($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		if ($format === null) {
 			$format = $this->dateFormat;
@@ -153,6 +156,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asTime($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		if ($format === null) {
 			$format = $this->timeFormat;
@@ -186,6 +192,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asDatetime($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		if ($format === null) {
 			$format = $this->datetimeFormat;
@@ -208,6 +217,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asDecimal($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $this->createNumberFormatter(NumberFormatter::DECIMAL, $format)->format($value);
 	}
 
@@ -221,6 +233,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asCurrency($value, $currency = 'USD', $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $this->createNumberFormatter(NumberFormatter::CURRENCY, $format)->formatCurrency($value, $currency);
 	}
 
@@ -233,6 +248,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asPercent($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $this->createNumberFormatter(NumberFormatter::PERCENT, $format)->format($value);
 	}
 
@@ -245,6 +263,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asScientific($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $format)->format($value);
 	}
 
