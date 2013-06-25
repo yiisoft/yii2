@@ -74,7 +74,7 @@ class Mutex extends \yii\mutex\Mutex
 	 */
 	protected function getIsAcquired($name)
 	{
-		
+
 	}
 
 	/**

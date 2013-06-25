@@ -33,7 +33,13 @@ abstract class Mutex extends Component
 	public function init()
 	{
 		if ($this->autoRelease) {
-			register_shutdown_function(array($this, 'shutdownFunction'));
+			$referenceHolder = new stdClass();
+			$referenceHolder->locks = &$this->_locks;
+			register_shutdown_function(function ($ref) {
+				foreach ($ref->locks as $lock) {
+					$this->release($lock);
+				}
+			}, $referenceHolder);
 		}
 	}
 
@@ -42,9 +48,7 @@ abstract class Mutex extends Component
 	 */
 	public function shutdownFunction()
 	{
-		foreach ($this->_locks as $lock) {
-			$this->release($lock);
-		}
+
 	}
 
 	/**

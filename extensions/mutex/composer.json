@@ -22,6 +22,6 @@
 		"yiisoft/yii2": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\smarty": "" }
+		"psr-0": { "yii\\mutex": "" }
 	}
 }
