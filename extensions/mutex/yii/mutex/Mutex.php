@@ -33,23 +33,15 @@ abstract class Mutex extends Component
 	public function init()
 	{
 		if ($this->autoRelease) {
-			$referenceHolder = new stdClass();
-			$referenceHolder->mutex = &$this;
-			$referenceHolder->locks = &$this->_locks;
-			register_shutdown_function(function ($ref) {
-				foreach ($ref->locks as $lock) {
-					$ref->mutex->release($lock);
+			$references = new stdClass();
+			$references->mutex = $this;
+			$references->locks = &$this->_locks;
+			register_shutdown_function(function ($refs) {
+				foreach ($refs->locks as $lock) {
+					$refs->mutex->release($lock);
 				}
-			}, $referenceHolder);
+			}, $references);
 		}
-	}
-
-	/**
-	 * Never call this method directly under any circumstances. This method is intended for internal use only.
-	 */
-	public function shutdownFunction()
-	{
-
 	}
 
 	/**
@@ -69,14 +61,17 @@ abstract class Mutex extends Component
 	}
 
 	/**
-	 * Release acquired lock.
+	 * Release acquired lock. This method will return false in case named lock was not found.
 	 * @param string $name of the lock to be released. This lock must be already created.
-	 * @return boolean lock release result.
+	 * @return boolean lock release result: false in case named lock was not found..
 	 */
 	public function releaseLock($name)
 	{
 		if ($this->release($name)) {
-			unset($this->_locks[array_search($name, $this->_locks)]);
+			$index = array_search($name, $this->_locks);
+			if ($index !== false) {
+				unset($this->_locks[$index]);
+			}
 			return true;
 		} else {
 			return false;
