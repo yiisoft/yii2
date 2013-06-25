@@ -186,7 +186,8 @@ class ArrayHelper
 
 	/**
 	 * Returns the values of a specified column in an array.
-	 * The input array should be multidimensional or an array of objects.
+	 * This function can be used to emulate array_column on pre-5.5 systems
+	 * The input array has to be multidimensional or an array of objects.
 	 *
 	 * For example,
 	 *
@@ -205,21 +206,41 @@ class ArrayHelper
 	 * ~~~
 	 *
 	 * @param array $array
-	 * @param string|\Closure $name
-	 * @param boolean $keepKeys whether to maintain the array keys. If false, the resulting array
-	 * will be re-indexed with integers.
-	 * @return array the list of column values
+	 * @param string|\Closure|null $name
+	 * @param string|boolean $keyName If false, the resulting array
+	 * will be re-indexed using integers. If a string is given, the array will
+	 * be indexed using the corresponding values in the current column.
+	 * Setting this parameter to true preserves the current keys
+	 * @return array|bool the list of column values or the entire column, if the name parameter was set to null.
+	 * If an insufficient amount of parameters was set, this function returns false.
 	 */
-	public static function getColumn($array, $name, $keepKeys = true)
+	public static function getColumn($array, $name, $keyName = false)
 	{
+		if (is_null($name) && (is_bool($keyName) || is_null($keyName))) {
+			return false;
+		}
 		$result = array();
-		if ($keepKeys) {
+		if ($keyName === true) {
 			foreach ($array as $k => $element) {
 				$result[$k] = static::getValue($element, $name);
 			}
-		} else {
+		} elseif ($keyName === false) {
 			foreach ($array as $element) {
 				$result[] = static::getValue($element, $name);
+			}
+		} else {
+			if (!is_null($keyName)) {
+				if (is_null($name)) {
+					foreach ($array as $element) {
+						$result[static::getValue($element, $keyName)] = $element;
+					}
+				} else {
+					foreach ($array as $element) {
+						$result[static::getValue($element, $keyName)] = static::getValue($element, $name);
+					}
+				}
+			} else {
+				return static::getColumn($array, $name);
 			}
 		}
 
