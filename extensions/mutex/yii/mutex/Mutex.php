@@ -34,10 +34,11 @@ abstract class Mutex extends Component
 	{
 		if ($this->autoRelease) {
 			$referenceHolder = new stdClass();
+			$referenceHolder->mutex = &$this;
 			$referenceHolder->locks = &$this->_locks;
 			register_shutdown_function(function ($ref) {
 				foreach ($ref->locks as $lock) {
-					$this->release($lock);
+					$ref->mutex->release($lock);
 				}
 			}, $referenceHolder);
 		}
