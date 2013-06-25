@@ -47,6 +47,7 @@ class FormatterTest extends TestCase
 		$this->assertSame("123,456", $this->formatter->asDecimal($value));
 		$value = '-123456.123';
 		$this->assertSame("-123,456.123", $this->formatter->asDecimal($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
 	}
 
 	public function testAsPercent()
@@ -57,6 +58,7 @@ class FormatterTest extends TestCase
 		$this->assertSame("12%", $this->formatter->asPercent($value));
 		$value = '-0.009343';
 		$this->assertSame("-1%", $this->formatter->asPercent($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asPercent(null));
 	}
 
 	public function testAsScientific()
@@ -67,6 +69,7 @@ class FormatterTest extends TestCase
 		$this->assertSame("1.23456E5", $this->formatter->asScientific($value));
 		$value = '-123456.123';
 		$this->assertSame("-1.23456123E5", $this->formatter->asScientific($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
 	}
 
 	public function testAsCurrency()
@@ -77,6 +80,7 @@ class FormatterTest extends TestCase
 		$this->assertSame("$123.46", $this->formatter->asCurrency($value));
 		$value = '-123456.123';
 		$this->assertSame("($123,456.12)", $this->formatter->asCurrency($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
 	}
 
 	public function testDate()
@@ -84,5 +88,6 @@ class FormatterTest extends TestCase
 		$time = time();
 		$this->assertSame(date('n/j/y', $time), $this->formatter->asDate($time));
 		$this->assertSame(date('F j, Y', $time), $this->formatter->asDate($time, 'long'));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
 	}
 }
