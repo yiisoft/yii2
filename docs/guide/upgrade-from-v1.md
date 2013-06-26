@@ -201,7 +201,7 @@ to a model. For example,
 
 ```php
 $model = new Post;
-if ($this->populate($_POST, $model)) {...}
+if ($model->load($_POST)) {...}
 // which is equivalent to:
 if (isset($_POST['Post'])) {
     $model->attributes = $_POST['Post'];

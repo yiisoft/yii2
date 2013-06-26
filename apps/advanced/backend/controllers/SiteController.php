@@ -16,8 +16,8 @@ class SiteController extends Controller
 	public function actionLogin()
 	{
 		$model = new LoginForm();
-		if ($this->populate($_POST, $model) && $model->login()) {
-			return Yii::$app->response->redirect(array('site/index'));
+		if ($model->load($_POST) && $model->login()) {
+			return $this->redirect(array('site/index'));
 		} else {
 			return $this->render('login', array(
 				'model' => $model,
@@ -28,6 +28,6 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::$app->user->logout();
-		return Yii::$app->response->redirect(array('site/index'));
+		return $this->redirect(array('site/index'));
 	}
 }
