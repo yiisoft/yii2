@@ -638,6 +638,28 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	}
 
 	/**
+	 * Populates the model with the data from end user.
+	 * The data is subject to the safety check by [[setAttributes()]]. If [[formName()]] is not empty,
+	 * the data indexed by [[formName()]] in `$data` will be used to populate the model.
+	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+	 * supplied by end user.
+	 * @return boolean whether the model is successfully populated with some data.
+	 */
+	public function load($data)
+	{
+		$scope = $this->formName();
+		if ($scope == '') {
+			$this->setAttributes($data);
+			return true;
+		} elseif (isset($data[$scope])) {
+			$this->setAttributes($data[$scope]);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Converts the object into an array.
 	 * The default implementation will return [[attributes]].
 	 * @return array the array representation of the object
