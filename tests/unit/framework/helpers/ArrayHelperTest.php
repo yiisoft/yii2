@@ -17,7 +17,7 @@ class ArrayHelperTest extends TestCase
 
 	public function testGetColumn()
 	{
-		$this->assertEmpty(ArrayHelper::getColumn($this->getDataForColumnTest(), null)); //todo WIP
+		$this->assertFalse(ArrayHelper::getColumn($this->getDataForColumnTest(), null)); //todo WIP
 		$result = ArrayHelper::getColumn($this->getDataForColumnTest(), 'first_name');
 		// default
 		$this->assertEquals(
