@@ -21,13 +21,56 @@ use yii\base\InvalidParamException;
 class ArrayHelper
 {
 	/**
-	 * Converts the object into an array.
+	 * Converts an object or an array of objects into an array.
 	 * @param object|array $object the object to be converted into an array
+	 * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
+	 * The properties specified for each class is an array of the following format:
+	 *
+	 * ~~~
+	 * array(
+	 *     'app\models\Post' => array(
+	 *         'id',
+	 *         'title',
+	 *         // the key name in array result => property name
+	 *         'createTime' => 'create_time',
+	 *         // the key name in array result => anonymous function
+	 *         'length' => function ($post) {
+	 *             return strlen($post->content);
+	 *         },
+	 *     ),
+	 * )
+	 * ~~~
+	 *
+	 * The result of `ArrayHelper::toArray($post, $properties)` could be like the following:
+	 *
+	 * ~~~
+	 * array(
+	 *     'id' => 123,
+	 *     'title' => 'test',
+	 *     'createTime' => '2013-01-01 12:00AM',
+	 *     'length' => 301,
+	 * )
+	 * ~~~
+	 *
 	 * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
 	 * @return array the array representation of the object
 	 */
-	public static function toArray($object, $recursive = true)
+	public static function toArray($object, $properties = array(), $recursive = true)
 	{
+		if (!empty($properties) && is_object($object)) {
+			$className = get_class($object);
+			if (!empty($properties[$className])) {
+				$result = array();
+				foreach ($properties[$className] as $key => $name) {
+					if (is_int($key)) {
+						$result[$name] = $object->$name;
+					} else {
+						$result[$key] = static::getValue($object, $name);
+					}
+				}
+				return $result;
+			}
+		}
 		if ($object instanceof Arrayable) {
 			$object = $object->toArray();
 			if (!$recursive) {
