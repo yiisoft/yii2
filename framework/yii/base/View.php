@@ -25,13 +25,21 @@ use yii\widgets\FragmentCache;
 class View extends Component
 {
 	/**
-	 * @event ViewEvent an event that is triggered by [[beginPage()]].
+	 * @event Event an event that is triggered by [[beginPage()]].
 	 */
 	const EVENT_BEGIN_PAGE = 'beginPage';
 	/**
-	 * @event ViewEvent an event that is triggered by [[endPage()]].
+	 * @event Event an event that is triggered by [[endPage()]].
 	 */
 	const EVENT_END_PAGE = 'endPage';
+	/**
+	 * @event Event an event that is triggered by [[beginBody()]].
+	 */
+	const EVENT_BEGIN_BODY = 'beginBody';
+	/**
+	 * @event Event an event that is triggered by [[endBody()]].
+	 */
+	const EVENT_END_BODY = 'endBody';
 	/**
 	 * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
 	 */
@@ -532,6 +540,7 @@ class View extends Component
 	public function beginBody()
 	{
 		echo self::PL_BODY_BEGIN;
+		$this->trigger(self::EVENT_BEGIN_BODY);
 	}
 
 	/**
@@ -539,6 +548,7 @@ class View extends Component
 	 */
 	public function endBody()
 	{
+		$this->trigger(self::EVENT_END_BODY);
 		echo self::PL_BODY_END;
 	}
 
