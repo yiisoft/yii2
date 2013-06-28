@@ -33,7 +33,7 @@ class Json
 	public static function encode($value, $options = 0)
 	{
 		$expressions = array();
-		$value = static::processData($value, $expressions);
+		$value = static::processData($value, $expressions, uniqid());
 		$json = json_encode($value, $options);
 		return empty($expressions) ? $json : strtr($json, $expressions);
 	}
@@ -75,20 +75,21 @@ class Json
 	 * Pre-processes the data before sending it to `json_encode()`.
 	 * @param mixed $data the data to be processed
 	 * @param array $expressions collection of JavaScript expressions
+	 * @param string $expPrefix a prefix internally used to handle JS expressions
 	 * @return mixed the processed data
 	 */
-	protected static function processData($data, &$expressions)
+	protected static function processData($data, &$expressions, $expPrefix)
 	{
 		if (is_array($data)) {
 			foreach ($data as $key => $value) {
 				if (is_array($value) || is_object($value)) {
-					$data[$key] = static::processData($value, $expressions);
+					$data[$key] = static::processData($value, $expressions, $expPrefix);
 				}
 			}
 			return $data;
 		} elseif (is_object($data)) {
 			if ($data instanceof JsExpression) {
-				$token = '!{[' . count($expressions) . ']}!';
+				$token = "!{[$expPrefix=" . count($expressions) . ']}!';
 				$expressions['"' . $token . '"'] = $data->expression;
 				return $token;
 			} else {
@@ -96,7 +97,7 @@ class Json
 				$result = array();
 				foreach ($data as $key => $value) {
 					if (is_array($value) || is_object($value)) {
-						$result[$key] = static::processData($value, $expressions);
+						$result[$key] = static::processData($value, $expressions, $expPrefix);
 					} else {
 						$result[$key] = $value;
 					}
