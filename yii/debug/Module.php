@@ -14,4 +14,5 @@ namespace yii\debug;
 class Module extends \yii\base\Module
 {
 	public $controllerNamespace = 'yii\debug\controllers';
+	public $panels;
 }

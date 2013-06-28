@@ -5,15 +5,16 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\logging;
+namespace yii\debug;
 
 use Yii;
+use yii\logging\Target;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DebugTarget extends Target
+class LogTarget extends Target
 {
 	public $maxLogFiles = 20;
 
@@ -72,6 +73,7 @@ class DebugTarget extends Target
 		$iterator = new \DirectoryIterator(Yii::$app->getRuntimePath() . '/debug');
 		$files = array();
 		foreach ($iterator as $file) {
+			/** @var \DirectoryIterator $file */
 			if (preg_match('/^[\d\-]+\.log$/', $file->getFileName()) && $file->isFile()) {
 				$files[] = $file->getPathname();
 			}

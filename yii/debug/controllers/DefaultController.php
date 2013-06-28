@@ -16,9 +16,11 @@ use yii\web\Controller;
  */
 class DefaultController extends Controller
 {
+	public $layout = 'main';
+
 	public function actionIndex($tag)
 	{
-		echo $tag;
+		return $this->render('index');
 	}
 
 	public function actionToolbar($tag)
@@ -26,9 +28,10 @@ class DefaultController extends Controller
 		$file = Yii::$app->getRuntimePath() . "/debug/$tag.log";
 		if (preg_match('/^[\w\-]+$/', $tag) && is_file($file)) {
 			$data = json_decode(file_get_contents($file), true);
-			echo $this->renderPartial('toolbar', $data);
+			$data['tag'] = $tag;
+			return $this->renderPartial('toolbar', $data);
 		} else {
-			echo "Unable to find debug data tagged with '$tag'.";
+			return "Unable to find debug data tagged with '$tag'.";
 		}
 	}
 }

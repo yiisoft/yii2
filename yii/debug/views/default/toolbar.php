@@ -19,21 +19,22 @@ echo Html::style("
 	margin: 0 10px;
 ");
 ?>
+<div id="yii-debug-toolbar">
+	<div class="yii-debug-toolbar-block">
+		<?php echo Html::a('more details', array('index', 'tag' => $tag)); ?>
+	</div>
 
-<div class="yii-debug-toolbar-block">
+	<div class="yii-debug-toolbar-block">
+		Peak memory: <?php echo sprintf('%.2fMB', $memory / 1048576); ?>
+	</div>
+
+	<div class="yii-debug-toolbar-block">
+		Time spent: <?php echo sprintf('%.3fs', $time); ?>
+	</div>
+
+	<div class="yii-debug-toolbar-block">
+	</div>
+
+	<div class="yii-debug-toolbar-block">
+	</div>
 </div>
-
-<div class="yii-debug-toolbar-block">
-Peak memory: <?php echo sprintf('%.2fMB', $memory / 1048576); ?>
-</div>
-
-<div class="yii-debug-toolbar-block">
-Time spent: <?php echo sprintf('%.3fs', $time); ?>
-</div>
-
-<div class="yii-debug-toolbar-block">
-</div>
-
-<div class="yii-debug-toolbar-block">
-</div>
-
