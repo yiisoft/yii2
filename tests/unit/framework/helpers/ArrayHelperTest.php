@@ -2,16 +2,61 @@
 
 namespace yiiunit\framework\helpers;
 
+use yii\base\Object;
 use yii\helpers\ArrayHelper;
 use yii\test\TestCase;
 use yii\data\Sort;
 
+class Post1
+{
+	public $id = 23;
+	public $title = 'tt';
+}
+
+class Post2 extends Object
+{
+	public $id = 123;
+	public $content = 'test';
+	private $secret = 's';
+	public function getSecret()
+	{
+		return $this->secret;
+	}
+}
+
 class ArrayHelperTest extends TestCase
 {
-	public function testMerge()
+	public function testToArray()
 	{
+		$object = new Post1;
+		$this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object));
+		$object = new Post2;
+		$this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object));
 
+		$object1 = new Post1;
+		$object2 = new Post2;
+		$this->assertEquals(array(
+			get_object_vars($object1),
+			get_object_vars($object2),
+		), ArrayHelper::toArray(array(
+			$object1,
+			$object2,
+		)));
 
+		$object = new Post2;
+		$this->assertEquals(array(
+			'id' => 123,
+			'secret' => 's',
+			'_content' => 'test',
+			'length' => 4,
+		), ArrayHelper::toArray($object, array(
+			$object->className() => array(
+				'id', 'secret',
+				'_content' => 'content',
+				'length' => function ($post) {
+					return strlen($post->content);
+				}
+		))));
 	}
 
 	public function testRemove()
