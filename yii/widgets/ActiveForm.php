@@ -12,6 +12,7 @@ use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /**
  * ActiveForm ...
@@ -103,6 +104,38 @@ class ActiveForm extends Widget
 	 */
 	public $ajaxVar = 'ajax';
 	/**
+	 * @var string|JsExpression a JS callback that will be called when the form is being submitted.
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form) {
+	 *     ...return false to cancel submission...
+	 * }
+	 * ~~~
+	 */
+	public $beforeSubmit;
+	/**
+	 * @var string|JsExpression a JS callback that is called before validating an attribute.
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form, attribute, messages) {
+	 *     ...return false to cancel the validation...
+	 * }
+	 * ~~~
+	 */
+	public $beforeValidate;
+	/**
+	 * @var string|JsExpression a JS callback that is called after validating an attribute.
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form, attribute, messages) {
+	 * }
+	 * ~~~
+	 */
+	public $afterValidate;
+	/**
 	 * @var array the client validation options for individual attributes. Each element of the array
 	 * represents the validation options for a particular attribute.
 	 * @internal
@@ -156,6 +189,11 @@ class ActiveForm extends Widget
 		);
 		if ($this->validationUrl !== null) {
 			$options['validationUrl'] = Html::url($this->validationUrl);
+		}
+		foreach (array('beforeSubmit', 'beforeValidate', 'afterValidate') as $name) {
+			if (($value = $this->$name) !== null) {
+				$options[$name] = $value instanceof JsExpression ? $value : new JsExpression($value);
+			}
 		}
 		return $options;
 	}
