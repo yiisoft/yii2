@@ -18,16 +18,6 @@ use Yii;
 class Controller extends Component
 {
 	/**
-	 * @event ActionEvent an event raised right before executing a controller action.
-	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
-	 */
-	const EVENT_BEFORE_ACTION = 'beforeAction';
-	/**
-	 * @event ActionEvent an event raised right after executing a controller action.
-	 */
-	const EVENT_AFTER_ACTION = 'afterAction';
-
-	/**
 	 * @var string the ID of this controller
 	 */
 	public $id;
@@ -111,12 +101,15 @@ class Controller extends Component
 			$oldAction = $this->action;
 			$this->action = $action;
 			$result = null;
-			if ($this->module->beforeAction($action)) {
-				if ($this->beforeAction($action)) {
-					$result = $action->runWithParams($params);
-					$this->afterAction($action, $result);
-				}
+			$event = new ActionEvent($action);
+			$this->trigger(Application::EVENT_BEFORE_ACTION, $event);
+			if ($event->isValid && $this->module->beforeAction($action) && $this->beforeAction($action)) {
+				$result = $action->runWithParams($params);
+				$this->afterAction($action, $result);
 				$this->module->afterAction($action, $result);
+				$event = new ActionEvent($action);
+				$event->result = &$result;
+				Yii::$app->trigger(Application::EVENT_AFTER_ACTION, $event);
 			}
 			$this->action = $oldAction;
 			return $result;
@@ -199,9 +192,7 @@ class Controller extends Component
 	 */
 	public function beforeAction($action)
 	{
-		$event = new ActionEvent($action);
-		$this->trigger(self::EVENT_BEFORE_ACTION, $event);
-		return $event->isValid;
+		return true;
 	}
 
 	/**
@@ -212,9 +203,6 @@ class Controller extends Component
 	 */
 	public function afterAction($action, &$result)
 	{
-		$event = new ActionEvent($action);
-		$event->result = &$result;
-		$this->trigger(self::EVENT_AFTER_ACTION, $event);
 	}
 
 	/**

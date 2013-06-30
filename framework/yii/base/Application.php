@@ -19,6 +19,23 @@ use yii\web\HttpException;
 abstract class Application extends Module
 {
 	/**
+	 * @event Event an event raised before the application starts to handle a request.
+	 */
+	const EVENT_BEFORE_REQUEST = 'beforeRequest';
+	/**
+	 * @event Event an event raised after the application successfully handles a request (before the response is sent out).
+	 */
+	const EVENT_AFTER_REQUEST = 'afterRequest';
+	/**
+	 * @event ActionEvent an event raised before executing a controller action.
+	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+	 */
+	const EVENT_BEFORE_ACTION = 'beforeAction';
+	/**
+	 * @event ActionEvent an event raised after executing a controller action.
+	 */
+	const EVENT_AFTER_ACTION = 'afterAction';
+	/**
 	 * @var string the application name.
 	 */
 	public $name = 'My Application';
@@ -146,7 +163,9 @@ abstract class Application extends Module
 	 */
 	public function run()
 	{
+		$this->trigger(self::EVENT_BEFORE_REQUEST);
 		$response = $this->handleRequest($this->getRequest());
+		$this->trigger(self::EVENT_AFTER_REQUEST);
 		$response->send();
 		return $response->exitStatus;
 	}

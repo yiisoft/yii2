@@ -37,15 +37,6 @@ use Yii;
 abstract class Module extends Component
 {
 	/**
-	 * @event ActionEvent an event raised before executing a controller action.
-	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
-	 */
-	const EVENT_BEFORE_ACTION = 'beforeAction';
-	/**
-	 * @event ActionEvent an event raised after executing a controller action.
-	 */
-	const EVENT_AFTER_ACTION = 'afterAction';
-	/**
 	 * @var array custom module parameters (name => value).
 	 */
 	public $params = array();
@@ -650,28 +641,25 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * This method is invoked right before an action is to be executed (after all possible filters.)
+	 * This method is invoked right before an action of this module is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
+	 * Make sure you call the parent implementation so that the relevant event is triggered.
 	 * @param Action $action the action to be executed.
 	 * @return boolean whether the action should continue to be executed.
 	 */
 	public function beforeAction($action)
 	{
-		$event = new ActionEvent($action);
-		$this->trigger(self::EVENT_BEFORE_ACTION, $event);
-		return $event->isValid;
+		return true;
 	}
 
 	/**
-	 * This method is invoked right after an action is executed.
+	 * This method is invoked right after an action of this module has been executed.
 	 * You may override this method to do some postprocessing for the action.
+	 * Make sure you call the parent implementation so that the relevant event is triggered.
 	 * @param Action $action the action just executed.
 	 * @param mixed $result the action return result.
 	 */
 	public function afterAction($action, &$result)
 	{
-		$event = new ActionEvent($action);
-		$event->result = &$result;
-		$this->trigger(self::EVENT_AFTER_ACTION, $event);
 	}
 }
