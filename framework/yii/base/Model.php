@@ -583,10 +583,15 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	/**
 	 * Sets the scenario for the model.
 	 * @param string $value the scenario that this model is in.
-	 * @see getScenario
+	 * @throws InvalidParamException if the scenario to be set is unknown
+	 * @see scenarios()
 	 */
 	public function setScenario($value)
 	{
+		$scenarios = $this->scenarios();
+		if (!isset($scenarios[$value])) {
+			throw new InvalidParamException("Setting unknown scenario: $value");
+		}
 		$this->_scenario = $value;
 	}
 
