@@ -50,7 +50,7 @@ abstract class Module extends Component
 	 */
 	public $params = array();
 	/**
-	 * @var array the IDs of the components that should be preloaded when this module is created.
+	 * @var array the IDs of the components or modules that should be preloaded when this module is created.
 	 */
 	public $preload = array();
 	/**
@@ -556,11 +556,18 @@ abstract class Module extends Component
 
 	/**
 	 * Loads components that are declared in [[preload]].
+	 * @throws InvalidConfigException if a component or module to be preloaded is unknown
 	 */
 	public function preloadComponents()
 	{
 		foreach ($this->preload as $id) {
-			$this->getComponent($id);
+			if ($this->hasComponent($id)) {
+				$this->getComponent($id);
+			} elseif ($this->hasModule($id)) {
+				$this->getModule($id);
+			} else {
+				throw new InvalidConfigException("Unknown component or module: $id");
+			}
 		}
 	}
 
