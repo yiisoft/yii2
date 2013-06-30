@@ -55,9 +55,6 @@ class LogTarget extends Target
 	 */
 	public function collect($messages, $final)
 	{
-		if (Yii::$app->getModule('debug', false) !== null) {
-			return;
-		}
 		$this->messages = array_merge($this->messages, $this->filterMessages($messages));
 		if ($final) {
 			$this->export($this->messages);
