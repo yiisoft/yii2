@@ -249,9 +249,16 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * validation rules should be validated.
 	 * @param boolean $clearErrors whether to call [[clearErrors()]] before performing validation
 	 * @return boolean whether the validation is successful without any error.
+	 * @throws InvalidParamException if the current scenario is unknown.
 	 */
 	public function validate($attributes = null, $clearErrors = true)
 	{
+		$scenarios = $this->scenarios();
+		$scenario = $this->getScenario();
+		if (!isset($scenarios[$scenario])) {
+			throw new InvalidParamException("Unknown scenario: $scenario");
+		}
+
 		if ($clearErrors) {
 			$this->clearErrors();
 		}
@@ -580,16 +587,12 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Sets the scenario for the model.
+	 * Note that this method does not check if the scenario exists or not.
+	 * The method [[validate()]] will perform this check.
 	 * @param string $value the scenario that this model is in.
-	 * @throws InvalidParamException if the scenario to be set is unknown
-	 * @see scenarios()
 	 */
 	public function setScenario($value)
 	{
-		$scenarios = $this->scenarios();
-		if (!isset($scenarios[$value])) {
-			throw new InvalidParamException("Setting unknown scenario: $value");
-		}
 		$this->_scenario = $value;
 	}
 
