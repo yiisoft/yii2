@@ -160,10 +160,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$attributes = array();
 		foreach ($this->getActiveValidators() as $validator) {
-			if ($validator->isActive('default')) {
-				foreach ($validator->attributes as $name) {
-					$attributes[$name] = true;
-				}
+			foreach ($validator->attributes as $name) {
+				$attributes[$name] = true;
 			}
 		}
 		return array(
