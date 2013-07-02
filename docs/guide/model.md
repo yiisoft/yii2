@@ -6,9 +6,9 @@ A model in Yii is intended for application data storage and has the following ba
 - attribute declaration: a model defines what is considered an attribute.
 - attribute labels: each attribute may be associated with a label for display purpose.
 - massive attribute assignment.
-- scenario-based validation.
+- scenario-based data validation.
 
-Models of [[\yii\base\Model]] class are typically used to hold data and corresponding validation rules of complex web forms.
+Models extending from [[\yii\base\Model]] class are typically used to hold data and corresponding validation rules of complex web forms.
 The class is also a base for more advanced models with additional functionality such as [Active Record](active-record.md).
 
 Attributes
@@ -20,6 +20,7 @@ may contain a `title` attribute and a `content` attribute which may be
 accessed as follows:
 
 ```php
+$post = new Post;
 $post->title = 'Hello, world';
 $post->content = 'Something interesting is happening';
 echo $post->title;
@@ -27,9 +28,10 @@ echo $post->content;
 ```
 
 Since model implements [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) interface you can use it
-as array:
+as if it was an array:
 
 ```php
+$post = new Post;
 $post['title'] = 'Hello, world';
 $post['content'] = 'Something interesting is happening';
 echo $post['title'];
@@ -48,7 +50,7 @@ class LoginForm extends \yii\base\Model
 }
 ```
 
-In order to change it you can override `attributes()` method that returns a list of model attributes. For example,
+In order to change this, you can override `attributes()` method that returns a list of model attributes. For example,
 [[\yii\db\ActiveRecord]] class implements attributes as DB table columns:
 
 ```php
@@ -63,10 +65,11 @@ class Post extends \yii\db\ActiveRecord
 }
 ```
 
-### Attribute labels
+Attribute labels
+----------------
 
 Attribute labels are mainly used for display purpose. For example, given an attribute `firstName`, we can declare
-a label `First Name` which is more user-friendly and can be displayed to end users.
+a label `First Name` which is more user-friendly and can be displayed to end users as a form label or next to the attribute value.
 
 By default an attribute label is generated using [[\yii\base\Model\generateAttributeLabel()]] but the better way is to
 specify it explicitly like the following:
@@ -81,7 +84,7 @@ class LoginForm extends \yii\base\Model
 	public function attributeLabels()
 	{
 		reuturn array(
-			'usename' => 'Your name',
+			'username' => 'Your name',
 			'password' => 'Your password',
 		);
 	}
@@ -94,7 +97,7 @@ Scenarios
 A model may be used in different scenarios. For example, a `User` model may be used to collect user login inputs,
 and it may also be used for user registration purpose. For this reason, each model has a property named `scenario`
 which stores the name of the scenario that the model is currently being used in. As we will explain in the next
-few sections, the concept of scenario is mainly used in validation and massive attribute assignment.
+few sections, the concept of scenario is mainly used for validation and massive attribute assignment.
 
 Associated with each scenario is a list of attributes that are *active* in that particular scenario. For example,
 in the `login` scenario, only the `username` and `password` attributes are active; while in the `register` scenario,
@@ -116,7 +119,7 @@ class User extends \yii\db\ActiveRecord
 }
 ```
 
-Sometimes, we want to mark that an attribute is not safe for massive assignment (but we still want it to be validated).
+Sometimes, we want to mark an attribute as not safe for massive assignment (but we still want it to be validated).
 We may do so by prefixing an exclamation character to the attribute name when declaring it in `scenarios()`. For example,
 
 ```php
@@ -136,10 +139,10 @@ $model = new LoginForm;
 $model->username = $_POST['username'];
 $model->password = $_POST['password'];
 if ($model->validate()) {
-	// ...login the user...
+	// ... login the user ...
 } else {
 	$errors = $model->getErrors();
-	// ...display the errors to the end user...
+	// ... display the errors to the end user ...
 }
 ```
 
@@ -155,17 +158,17 @@ array(
 	// if not given, it means it is active in all scenarios
 	'on' => 'scenario1, scenario2, ...',
 	// the following name-value pairs will be used
-	// to initialize the validator properties...
-	'name1' => 'value1',
-	'name2' => 'value2',
-	....
+	// to initialize the validator properties
+	'property1' => 'value1',
+	'property2' => 'value2',
+	// ...
 )
 ```
 
 When `validate()` is called, the actual validation rules executed are determined using both of the following criteria:
 
-- the rules must be associated with at least one active attribute;
-- the rules must be active for the current scenario.
+- the rule must be associated with at least one active attribute;
+- the rule must be active for the current scenario.
 
 
 ### Active Attributes
@@ -200,9 +203,10 @@ $attributes = array(
 $post->attributes = $attributes;
 ```
 
-In the code above we're assigning corresponding data to model fields named as array keys. The key difference from mass
+In the code above we're assigning corresponding data to model attributes named as array keys. The key difference from mass
 retrieval that always works for all attributes is that in order to be assigned an attribute should be **safe** else
 it will be ignored.
+
 
 Validation rules and mass assignment
 ------------------------------------
@@ -236,6 +240,7 @@ function scenarios()
 ```
 
 Note that everything is unsafe by default and you can't make field "safe" without specifying scenario.
+
 
 See also
 --------
