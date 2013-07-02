@@ -784,4 +784,78 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$this->$offset = null;
 	}
+
+	/**
+	 * Returns the model id
+	* @return string The model id
+	*/
+	public function getModelId()
+	{
+		return $this->_modelId !== null ? $this->_modelId : static::formName();
+	}
+
+	/**
+	 * Return the model id
+	 * @param $value The model id
+	 */
+	public function setModelId($value)
+	{
+		$this->_modelId = $value;
+	}
+
+	protected $_modelId = null;
+	/**
+	 * Update the attributes of the current model and sub-models
+	 * @param array $params the array of values
+	 * @return bool Whether the bind was successful
+	 */
+
+	public function bind($params)
+	{
+		if ( isset($params[$this->modelId]) ) {
+			$this->setAttributes($params[$this->modelId]);
+			foreach ( $this->_models as $model ) {
+				$model->bind($params[$this->modelId]);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Add sub-model to the current model
+	 * @param Model  $model   The sub-model
+	 * @param string $modelId The sub-model id
+	 */
+	public function addModel($model,$modelId) {
+		$this->_models[$modelId] = $model;
+		$model->owner = $this;
+		$model->modelId = $modelId;
+	}
+
+	/**
+	 * Return the owner of this model
+	 * @return Model The owner model if exists, otherwise null
+	 */
+	public function getOwner() {
+		return $this->_owner;
+	}
+
+	/**
+	 * Update the owner model
+	 * @param $value The owner model
+	 */
+	public function setOwner($value) {
+		$this->_owner = $value;
+	}
+
+	/**
+	 * @var Model the owner model
+	 */
+	private $_owner;
+
+	/**
+	 * @var array The sub-models
+	 */
+	private $_models = array();
 }
