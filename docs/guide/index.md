@@ -23,7 +23,7 @@ Base concepts
 Database
 ========
 
-- [Database Access Objects](dao.md)
+- [Basics](database-basics.md)
 - [Query Builder](query-builder.md)
 - [ActiveRecord](active-record.md)
 - [Database Migration](migration.md)
