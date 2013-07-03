@@ -694,7 +694,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 					$success = true;
 				}
 			} elseif (isset($data[$scope][$i])) {
-				$model->setAttributes($data[$scope[$i]]);
+				$model->setAttributes($data[$scope][$i]);
 				$success = true;
 			}
 		}
