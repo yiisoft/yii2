@@ -163,6 +163,26 @@ A model is now associated with a form name returned by its `formName()` method. 
 mainly used when using HTML forms to collect user inputs for a model. Previously in 1.1,
 this is usually hardcoded as the class name of the model.
 
+A new methods called `load()` and `Model::loadMultiple()` is introduced to simplify the data population from user inputs
+to a model. For example,
+
+```php
+$model = new Post;
+if ($model->load($_POST)) {...}
+// which is equivalent to:
+if (isset($_POST['Post'])) {
+    $model->attributes = $_POST['Post'];
+}
+
+$model->save();
+
+$postTags = array();
+$tagsCount = count($_POST['PostTag']);
+while($tagsCount-- > 0){
+    $postTags[] = new PostTag(array('post_id' => $model->id));
+}
+Model::loadMultiple($postTags, $_POST);
+```
 
 Yii 2.0 introduces a new method called `scenarios()` to declare which attributes require
 validation under which scenario. Child classes should overwrite `scenarios()` to return
@@ -195,18 +215,6 @@ Controllers
 
 The `render()` and `renderPartial()` methods now return the rendering results instead of directly
 sending them out. You have to `echo` them explicitly, e.g., `echo $this->render(...);`.
-
-A new method called `populate()` is introduced to simplify the data population from user inputs
-to a model. For example,
-
-```php
-$model = new Post;
-if ($model->load($_POST)) {...}
-// which is equivalent to:
-if (isset($_POST['Post'])) {
-    $model->attributes = $_POST['Post'];
-}
-```
 
 
 Widgets

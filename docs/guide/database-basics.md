@@ -136,11 +136,11 @@ Quoting table and column names
 Most of the time you would use the following syntax for quoting table and column names:
 
 ```php
-$sql = "SELECT COUNT({{$column}}) FROM [[$table]]";
+$sql = "SELECT COUNT([[$column]]) FROM {{$table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-In the code above `{{X}}` will be converted to properly quoted column name while `[[Y]]` will be converted to properly
+In the code above `[[X]]` will be converted to properly quoted column name while `{{Y}}` will be converted to properly
 quoted table name.
 
 The alternative is to quote table and column names manually using [[\yii\db\Connection::quoteTableName()]] and
