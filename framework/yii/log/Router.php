@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\logging;
+namespace yii\log;
 
 use Yii;
 use yii\base\Component;
@@ -27,15 +27,15 @@ use yii\base\Component;
  *     'preload' => array('log'),
  *     'components' => array(
  *         'log' => array(
- *             'class' => 'yii\logging\Router',
+ *             'class' => 'yii\log\Router',
  *             'targets' => array(
  *                 'file' => array(
- *                     'class' => 'yii\logging\FileTarget',
+ *                     'class' => 'yii\log\FileTarget',
  *                     'levels' => array('trace', 'info'),
  *                     'categories' => array('yii\*'),
  *                 ),
  *                 'email' => array(
- *                     'class' => 'yii\logging\EmailTarget',
+ *                     'class' => 'yii\log\EmailTarget',
  *                     'levels' => array('error', 'warning'),
  *                     'emails' => array('admin@example.com'),
  *                 ),

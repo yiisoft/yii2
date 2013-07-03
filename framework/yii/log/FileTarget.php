@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\logging;
+namespace yii\log;
 
 use Yii;
 use yii\base\InvalidConfigException;
