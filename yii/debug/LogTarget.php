@@ -8,7 +8,7 @@
 namespace yii\debug;
 
 use Yii;
-use yii\logging\Target;
+use yii\log\Target;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>

@@ -10,7 +10,7 @@ use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
-use yii\logging\Logger;
+use yii\log\Logger;
 
 /**
  * Gets the application start timestamp.
@@ -478,7 +478,7 @@ class YiiBase
 	public static function trace($message, $category = 'application')
 	{
 		if (YII_DEBUG) {
-			self::getLogger()->log($message, Logger::LEVEL_TRACE, $category);
+			self::$app->getLog()->log($message, Logger::LEVEL_TRACE, $category);
 		}
 	}
 
@@ -491,7 +491,7 @@ class YiiBase
 	 */
 	public static function error($message, $category = 'application')
 	{
-		self::getLogger()->log($message, Logger::LEVEL_ERROR, $category);
+		self::$app->getLog()->log($message, Logger::LEVEL_ERROR, $category);
 	}
 
 	/**
@@ -503,7 +503,7 @@ class YiiBase
 	 */
 	public static function warning($message, $category = 'application')
 	{
-		self::getLogger()->log($message, Logger::LEVEL_WARNING, $category);
+		self::$app->getLog()->log($message, Logger::LEVEL_WARNING, $category);
 	}
 
 	/**
@@ -515,7 +515,7 @@ class YiiBase
 	 */
 	public static function info($message, $category = 'application')
 	{
-		self::getLogger()->log($message, Logger::LEVEL_INFO, $category);
+		self::$app->getLog()->log($message, Logger::LEVEL_INFO, $category);
 	}
 
 	/**
@@ -537,7 +537,7 @@ class YiiBase
 	 */
 	public static function beginProfile($token, $category = 'application')
 	{
-		self::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+		self::$app->getLog()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
 	}
 
 	/**
@@ -549,29 +549,7 @@ class YiiBase
 	 */
 	public static function endProfile($token, $category = 'application')
 	{
-		self::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
-	}
-
-	/**
-	 * Returns the message logger object.
-	 * @return \yii\logging\Logger message logger
-	 */
-	public static function getLogger()
-	{
-		if (self::$_logger !== null) {
-			return self::$_logger;
-		} else {
-			return self::$_logger = new Logger;
-		}
-	}
-
-	/**
-	 * Sets the logger object.
-	 * @param Logger $logger the logger object.
-	 */
-	public static function setLogger($logger)
-	{
-		self::$_logger = $logger;
+		self::$app->getLog()->log($token, Logger::LEVEL_PROFILE_END, $category);
 	}
 
 	/**

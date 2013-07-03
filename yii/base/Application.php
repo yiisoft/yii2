@@ -266,6 +266,15 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Returns the log component.
+	 * @return \yii\log\Logger the log component
+	 */
+	public function getLog()
+	{
+		return $this->getComponent('log');
+	}
+
+	/**
 	 * Returns the error handler component.
 	 * @return ErrorHandler the error handler application component.
 	 */
@@ -344,6 +353,9 @@ abstract class Application extends Module
 	public function registerCoreComponents()
 	{
 		$this->setComponents(array(
+			'log' => array(
+				'class' => 'yii\log\Logger',
+			),
 			'errorHandler' => array(
 				'class' => 'yii\base\ErrorHandler',
 			),

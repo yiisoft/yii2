@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\logging;
+namespace yii\log;
 
 /**
  * EmailTarget sends selected log messages to the specified email addresses.
