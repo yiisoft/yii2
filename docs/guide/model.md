@@ -69,7 +69,7 @@ Attribute labels
 ----------------
 
 Attribute labels are mainly used for display purpose. For example, given an attribute `firstName`, we can declare
-a label `First Name` which is more user-friendly and can be displayed to end users as a form label or next to the attribute value.
+a label `First Name` which is more user-friendly and can be displayed to end users for example as a form label.
 
 By default an attribute label is generated using [[\yii\base\Model\generateAttributeLabel()]] but the better way is to
 specify it explicitly like the following:
