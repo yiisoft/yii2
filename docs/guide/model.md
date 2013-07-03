@@ -114,6 +114,29 @@ We may do so by prefixing an exclamation character to the attribute name when de
 array('username', 'password', '!secret')
 ```
 
+Active model scenario could be set using one of the following ways:
+
+```php
+class EmployeeController extends \yii\web\Controller
+{
+	public function actionCreate($id = null)
+	{
+		// first way
+		$employee = new Employee(array('scenario' => 'managementPanel'));
+
+		// second way
+		$employee = new Employee;
+		$employee->scenario = 'managementPanel';
+
+		// third way
+		$employee = Employee::find()->where('id = :id', array(':id' => $id))->one();
+		if ($employee !== null) {
+			$employee->setScenario('managementPanel');
+		}
+	}
+}
+```
+
 Validation
 ----------
 
