@@ -133,17 +133,7 @@ $connection->createCommand()->delete('tbl_user', 'status = 0')->execute();
 Quoting table and column names
 ------------------------------
 
-If you are building query string dynamically make sure you're properly quoting table and column names using
-[[\yii\db\Connection::quoteTableName()]] and [[\yii\db\Connection::quoteColumnName()]]:
-
-```php
-$column = $connection->quoteColumnName($column);
-$table = $connection->quoteTableName($table);
-$sql = "SELECT COUNT($column) FROM $table";
-$rowCount = $connection->createCommand($sql)->queryScalar();
-```
-
-Alternatively you can use special syntax when writing SQL:
+Most of the time you would use the following syntax for quoting table and column names:
 
 ```php
 $sql = "SELECT COUNT({{$column}}) FROM [[$table]]";
@@ -153,6 +143,15 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 In the code above `{{X}}` will be converted to properly quoted column name while `[[Y]]` will be converted to properly
 quoted table name.
 
+The alternative is to quote table and column names manually using [[\yii\db\Connection::quoteTableName()]] and
+[[\yii\db\Connection::quoteColumnName()]]:
+
+```php
+$column = $connection->quoteColumnName($column);
+$table = $connection->quoteTableName($table);
+$sql = "SELECT COUNT($column) FROM $table";
+$rowCount = $connection->createCommand($sql)->queryScalar();
+```
 
 Prepared statements
 -------------------
