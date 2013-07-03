@@ -5,6 +5,7 @@ Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/m
 uniform API and solves some inconsistencies between different DBMS. By default Yii supports MySQL, SQLite, PostgreSQL,
 Oracle and MSSQL.
 
+
 Configuration
 -------------
 
@@ -28,21 +29,21 @@ return array(
 );
 ```
 
-After component is configured you can access using the following syntax:
+After the component is configured you can access it using the following syntax:
 
 ```php
 $connection = \Yii::$app->db;
 ```
 
 You can refer to [[\yii\db\Connection]] for a list of properties you can configure. Also note that you can define more
-than one connection components and use both at the same time if needed:
+than one connection component and use both at the same time if needed:
 
 ```php
 $primaryConnection = \Yii::$app->db;
 $secondaryConnection = \Yii::$app->secondDb;
 ```
 
-If you don't want to define connection as application component you can instantiate it directly:
+If you don't want to define the connection as an application component you can instantiate it directly:
 
 ```php
 $connection = new \yii\db\Connection(array(
@@ -52,6 +53,7 @@ $connection = new \yii\db\Connection(array(
 ));
 $connection->open();
 ```
+
 
 Basic SQL queries
 -----------------
@@ -70,7 +72,7 @@ $posts = $command->queryAll();
 When only a single row is returned:
 
 ```php
-$command = $connection->createCommand('SELECT * FROM tbl_post LIMIT 1');
+$command = $connection->createCommand('SELECT * FROM tbl_post WHERE id=1');
 $post = $command->query();
 ```
 
@@ -93,7 +95,7 @@ $postCount = $command->queryScalar();
 If SQL executed doesn't return any data you can use command's `execute` method:
 
 ```php
-$command = $connection->createCommand('UPDATE tbl_post SET status=1');
+$command = $connection->createCommand('UPDATE tbl_post SET status=1 WHERE id=1');
 $command->execute();
 ```
 
@@ -196,7 +198,7 @@ Aside from basic SQL queries [[\yii\db\Command]] contains a set of methods allow
 These can be used as follows:
 
 ```php
-// UPDATE
+// CREATE TABLE
 $connection->createCommand()->createTable('tbl_post', array(
 	'id' => 'pk',
 	'title' => 'string',
