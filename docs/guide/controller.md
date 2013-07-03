@@ -119,9 +119,8 @@ class BlogController extends Controller
 			throw new HttpException(404);
 		}
 
-		$data = \Yii::$app->request->getPost('Post');
-		if($data) {
-			$post->populate($data);
+		if(\Yii::$app->request->isPost)) {
+			$post->load($_POST);
 			if($post->save()) {
 				$this->redirect(array('view', 'id' => $post->id));
 			}
