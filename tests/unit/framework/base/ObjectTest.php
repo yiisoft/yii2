@@ -17,6 +17,7 @@ class ObjectTest extends TestCase
 	protected function setUp()
 	{
 		parent::setUp();
+		$this->mockApplication();
 		$this->object = new NewObject;
 	}
 

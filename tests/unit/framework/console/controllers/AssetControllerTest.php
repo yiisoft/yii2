@@ -20,6 +20,7 @@ class AssetControllerTest extends TestCase
 
 	public function setUp()
 	{
+		$this->mockApplication();
 		$this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . get_class($this);
 		$this->createDir($this->testFilePath);
 		$this->testAssetsBasePath = $this->testFilePath . DIRECTORY_SEPARATOR . 'assets';

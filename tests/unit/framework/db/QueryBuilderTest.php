@@ -11,6 +11,11 @@ use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 
 class QueryBuilderTest extends DatabaseTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
 
 	/**
 	 * @throws \Exception
