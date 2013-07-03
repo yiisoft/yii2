@@ -8,6 +8,7 @@ Getting started
 
 - [Installation](installation.md)
 - [Bootstrap with Yii](bootstrap.md)
+- [Configuration](configuration.md)
 
 Base concepts
 =============
@@ -17,8 +18,6 @@ Base concepts
 - [Model](model.md)
 - [View](view.md)
 - [Application](application.md)
-- [Form](form.md)
-- [Model validation reference](validation.md)
 
 Database
 ========
@@ -31,6 +30,8 @@ Database
 More
 ====
 
+- [Form](form.md)
+- [Model validation reference](validation.md)
 - [Caching](caching.md)
 - [Internationalization](i18n.md)
 - [Extending Yii](extension.md)
@@ -40,7 +41,7 @@ More
 - [URL Management](url.md)
 - [Theming](theming.md)
 - [Error Handling](error.md)
-- [Template](template.md)
+- [Using template engines](template.md)
 - [Console Application](console.md)
 - [Security](security.md)
 - [Performance Tuning](performance.md)
