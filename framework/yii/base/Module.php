@@ -459,7 +459,6 @@ abstract class Module extends Component
 			if ($this->_components[$id] instanceof Object) {
 				return $this->_components[$id];
 			} elseif ($load) {
-				Yii::trace("Loading component: $id", __METHOD__);
 				return $this->_components[$id] = Yii::createObject($this->_components[$id]);
 			}
 		}

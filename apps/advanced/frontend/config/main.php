@@ -12,7 +12,6 @@ return array(
 	'id' => 'app-frontend',
 	'basePath' => dirname(__DIR__),
 	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
-	'preload' => array('log'),
 	'controllerNamespace' => 'frontend\controllers',
 	'modules' => array(
 	),
@@ -27,10 +26,9 @@ return array(
 			'bundles' => require(__DIR__ . '/assets.php'),
 		),
 		'log' => array(
-			'class' => 'yii\logging\Router',
 			'targets' => array(
 				array(
-					'class' => 'yii\logging\FileTarget',
+					'class' => 'yii\log\FileTarget',
 					'levels' => array('error', 'warning'),
 				),
 			),

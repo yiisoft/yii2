@@ -9,7 +9,7 @@ return array(
 		'log' => array(
 			'targets' => array(
 //				array(
-//					'class' => 'yii\logging\DebugTarget',
+//					'class' => 'yii\log\DebugTarget',
 //				)
 			),
 		),

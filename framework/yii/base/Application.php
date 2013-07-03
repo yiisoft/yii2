@@ -141,6 +141,16 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Loads components that are declared in [[preload]].
+	 * @throws InvalidConfigException if a component or module to be preloaded is unknown
+	 */
+	public function preloadComponents()
+	{
+		$this->getComponent('log');
+		parent::preloadComponents();
+	}
+
+	/**
 	 * Registers error handlers.
 	 */
 	public function registerErrorHandlers()
