@@ -468,7 +468,132 @@ can take default values like shown above.
 Atomic operations and scenarios
 -------------------------------
 
-TBD: https://github.com/yiisoft/yii2/issues/226
+TODO: FIXME: WIP, TBD, https://github.com/yiisoft/yii2/issues/226
+
+Imagine situation where you have to save something related to the main model in [[beforeSave()]],
+[[afterSave()]], [[beforeDelete()]] and/or [[afterDelete()]] life cycle methods. Developer may come
+to solution of overriding ActiveRecord [[save()]] method with database transaction wrapping or
+even using transaction in controller action, which is strictly speaking doesn't seems to be a good
+practice (recall skinny-controller fat-model fundamental rule).
+
+Here these ways are (**DO NOT** use them unless you're sure what are you actually doing). Models:
+
+```php
+class Feature extends \yii\db\ActiveRecord
+{
+	// ...
+
+	public function getProduct()
+	{
+		return $this->hasOne('Product', array('product_id' => 'id'));
+	}
+}
+
+class Product extends \yii\db\ActiveRecord
+{
+	// ...
+
+	public function getFeatures()
+	{
+		return $this->hasMany('Feature', array('id' => 'product_id'));
+	}
+}
+```
+
+Overriding [[save()]] method:
+
+```php
+
+class ProductController extends \yii\web\Controller
+{
+	public function actionCreate()
+	{
+		// FIXME: TODO: WIP, TBD
+	}
+}
+```
+
+Using transactions within controller layer:
+
+```php
+class ProductController extends \yii\web\Controller
+{
+	public function actionCreate()
+	{
+		// FIXME: TODO: WIP, TBD
+	}
+}
+```
+
+Instead of using these fragile methods you should consider using atomic scenarios and operations feature.
+
+```php
+class Feature extends \yii\db\ActiveRecord
+{
+	// ...
+
+	public function getProduct()
+	{
+		return $this->hasOne('Product', array('product_id' => 'id'));
+	}
+
+	public function scenarios()
+	{
+		return array(
+			'userCreates' => array(
+				'attributes' => array('name', 'value'),
+				'atomic' => array(self::OP_INSERT),
+			),
+		);
+	}
+}
+
+class Product extends \yii\db\ActiveRecord
+{
+	// ...
+
+	public function getFeatures()
+	{
+		return $this->hasMany('Feature', array('id' => 'product_id'));
+	}
+
+	public function scenarios()
+	{
+		return array(
+			'userCreates' => array(
+				'attributes' => array('title', 'price'),
+				'atomic' => array(self::OP_INSERT),
+			),
+		);
+	}
+
+	public function afterValidate()
+	{
+		parent::afterValidate();
+		// FIXME: TODO: WIP, TBD
+	}
+
+	public function afterSave($insert)
+	{
+		parent::afterSave();
+		if ($this->getScenario() === 'userCreates') {
+			// FIXME: TODO: WIP, TBD
+		}
+	}
+}
+```
+
+Controller is very thin and neat:
+
+```php
+class ProductController extends \yii\web\Controller
+{
+	public function actionCreate()
+	{
+		// FIXME: TODO: WIP, TBD
+	}
+}
+```
 
 See also
 --------
