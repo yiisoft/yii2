@@ -30,7 +30,7 @@ class LogTarget extends Target
 		if (!is_dir($path)) {
 			mkdir($path);
 		}
-		$file = $path . '/' . Yii::getLogger()->getTag() . '.log';
+		$file = $path . '/' . Yii::$app->getLog()->getTag() . '.log';
 		$data = array(
 			'messages' => $messages,
 			'_SERVER' => $_SERVER,

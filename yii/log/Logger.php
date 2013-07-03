@@ -7,8 +7,9 @@
 
 namespace yii\log;
 
-use \yii\base\Component;
-use \yii\base\InvalidConfigException;
+use Yii;
+use yii\base\Component;
+use yii\base\InvalidConfigException;
 
 /**
  * Logger records logged messages in memory and sends them to different targets as needed.
@@ -141,6 +142,11 @@ class Logger extends Component
 	public function init()
 	{
 		parent::init();
+		foreach ($this->targets as $name => $target) {
+			if (!$target instanceof Target) {
+				$this->targets[$name] = Yii::createObject($target);
+			}
+		}
 		register_shutdown_function(array($this, 'flush'), true);
 	}
 
@@ -177,13 +183,15 @@ class Logger extends Component
 
 	/**
 	 * Flushes log messages from memory to targets.
-	 * This method will trigger an [[EVENT_FLUSH]] or [[EVENT_FINAL_FLUSH]] event depending on the $final value.
 	 * @param boolean $final whether this is a final call during a request.
 	 */
 	public function flush($final = false)
 	{
-		if ($this->router) {
-			$this->router->dispatch($this->messages, $final);
+		/** @var Target $target */
+		foreach ($this->targets as $target) {
+			if ($target->enabled) {
+				$target->collect($this->messages, $final);
+			}
 		}
 		$this->messages = array();
 	}
