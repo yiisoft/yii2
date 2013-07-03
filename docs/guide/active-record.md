@@ -162,6 +162,8 @@ $customer->save();  // equivalent to $customer->insert();
 $customer = Customer::find($id);
 $customer->email = 'james@example.com';
 $customer->save();  // equivalent to $customer->update();
+// Note that model attributes will be validated first and
+// model will not be saved unless valid.
 
 // to delete an existing customer record
 $customer = Customer::find($id);
