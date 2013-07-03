@@ -27,6 +27,28 @@ Database
 - [ActiveRecord](active-record.md)
 - [Database Migration](migration.md)
 
+Extensions
+==========
+
+- [Extending Yii](extension.md)
+- [Using template engines](template.md)
+
+Security and access control
+===========================
+
+- [Authentication](authentication.md)
+- [Authorization](authorization.md)
+- [Security](security.md)
+- Role based access control
+
+Toolbox
+=======
+
+- [Automatic Code Generation](gii.md)
+- Debug toolbar
+- [Error Handling](error.md)
+- [Logging](logging.md)
+
 More
 ====
 
@@ -34,17 +56,9 @@ More
 - [Model validation reference](validation.md)
 - [Caching](caching.md)
 - [Internationalization](i18n.md)
-- [Extending Yii](extension.md)
-- [Authentication](authentication.md)
-- [Authorization](authorization.md)
-- [Logging](logging.md)
 - [URL Management](url.md)
 - [Theming](theming.md)
-- [Error Handling](error.md)
-- [Using template engines](template.md)
 - [Console Application](console.md)
-- [Security](security.md)
 - [Performance Tuning](performance.md)
 - [Testing](testing.md)
-- [Automatic Code Generation](gii.md)
 - [Upgrading from 1.1 to 2.0](upgrade-from-v1.md)
