@@ -50,20 +50,8 @@ class LoginForm extends \yii\base\Model
 }
 ```
 
-In order to change this, you can override `attributes()` method that returns a list of model attributes. For example,
-[[\yii\db\ActiveRecord]] class implements attributes as DB table columns:
+In order to change this, you can override `attributes()` method that returns a list of model attribute names.
 
-```php
-// Post is associated with the tbl_post DB table.
-// Its attributes correspond to the columns in tbl_post
-class Post extends \yii\db\ActiveRecord
-{
-	public function table()
-	{
-		return 'tbl_post';
-	}
-}
-```
 
 Attribute labels
 ----------------
