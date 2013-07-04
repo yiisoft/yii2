@@ -2,7 +2,6 @@
 use yii\helpers\Html;
 use yii\widgets\Menu;
 use yii\widgets\Breadcrumbs;
-use yii\debug\Toolbar;
 
 /**
  * @var $this \yii\base\View
@@ -60,7 +59,6 @@ $this->registerAssetBundle('app');
 	</div>
 	<?php $this->endBody(); ?>
 </div>
-<?php echo Toolbar::widget(); ?>
 </body>
 </html>
 <?php $this->endPage(); ?>

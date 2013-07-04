@@ -27,10 +27,9 @@ return array(
 			'bundles' => require(__DIR__ . '/assets.php'),
 		),
 		'log' => array(
-			'class' => 'yii\logging\Router',
 			'targets' => array(
 				array(
-					'class' => 'yii\logging\FileTarget',
+					'class' => 'yii\log\FileTarget',
 					'levels' => array('error', 'warning'),
 				),
 			),

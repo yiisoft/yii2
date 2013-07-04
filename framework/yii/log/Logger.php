@@ -5,13 +5,58 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\logging;
+namespace yii\log;
 
-use \yii\base\Component;
-use \yii\base\InvalidConfigException;
+use Yii;
+use yii\base\Component;
+use yii\base\InvalidConfigException;
 
 /**
- * Logger records logged messages in memory.
+ * Logger records logged messages in memory and sends them to different targets as needed.
+ *
+ * Logger is registered as a core application component and can be accessed using `Yii::$app->log`.
+ * You can call the method [[log()]] to record a single log message. For convenience, a set of shortcut
+ * methods are provided for logging messages of various severity levels via the [[Yii]] class:
+ *
+ * - [[Yii::trace()]]
+ * - [[Yii::error()]]
+ * - [[Yii::warning()]]
+ * - [[Yii::info()]]
+ * - [[Yii::beginProfile()]]
+ * - [[Yii::endProfile()]]
+ *
+ * When enough messages are accumulated in the logger, or when the current request finishes,
+ * the logged messages will be sent to different [[targets]], such as log files, emails.
+ *
+ * You may configure the targets in application configuration, like the following:
+ *
+ * ~~~
+ * array(
+ *     'components' => array(
+ *         'log' => array(
+ *             'targets' => array(
+ *                 'file' => array(
+ *                     'class' => 'yii\log\FileTarget',
+ *                     'levels' => array('trace', 'info'),
+ *                     'categories' => array('yii\*'),
+ *                 ),
+ *                 'email' => array(
+ *                     'class' => 'yii\log\EmailTarget',
+ *                     'levels' => array('error', 'warning'),
+ *                     'emails' => array('admin@example.com'),
+ *                 ),
+ *             ),
+ *         ),
+ *     ),
+ * )
+ * ~~~
+ *
+ * Each log target can have a name and can be referenced via the [[targets]] property
+ * as follows:
+ *
+ * ~~~
+ * Yii::$app->log->targets['file']->enabled = false;
+ * ~~~
  *
  * When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]]
  * to send logged messages to different log targets, such as file, email, Web.
@@ -65,7 +110,7 @@ class Logger extends Component
 	 */
 	public $flushInterval = 1000;
 	/**
-	 * @var array logged messages. This property is mainly managed by [[log()]] and [[flush()]].
+	 * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
 	 * Each log message is of the following structure:
 	 *
 	 * ~~~
@@ -79,9 +124,10 @@ class Logger extends Component
 	 */
 	public $messages = array();
 	/**
-	 * @var Router the log target router registered with this logger.
+	 * @var array the log targets. Each array element represents a single [[Target|log target]] instance
+	 * or the configuration for creating the log target instance.
 	 */
-	public $router;
+	public $targets = array();
 
 
 	/**
@@ -96,6 +142,11 @@ class Logger extends Component
 	public function init()
 	{
 		parent::init();
+		foreach ($this->targets as $name => $target) {
+			if (!$target instanceof Target) {
+				$this->targets[$name] = Yii::createObject($target);
+			}
+		}
 		register_shutdown_function(array($this, 'flush'), true);
 	}
 
@@ -132,13 +183,15 @@ class Logger extends Component
 
 	/**
 	 * Flushes log messages from memory to targets.
-	 * This method will trigger an [[EVENT_FLUSH]] or [[EVENT_FINAL_FLUSH]] event depending on the $final value.
 	 * @param boolean $final whether this is a final call during a request.
 	 */
 	public function flush($final = false)
 	{
-		if ($this->router) {
-			$this->router->dispatch($this->messages, $final);
+		/** @var Target $target */
+		foreach ($this->targets as $target) {
+			if ($target->enabled) {
+				$target->collect($this->messages, $final);
+			}
 		}
 		$this->messages = array();
 	}

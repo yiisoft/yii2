@@ -26,7 +26,6 @@ class Controller extends Component
 	 * @event ActionEvent an event raised right after executing a controller action.
 	 */
 	const EVENT_AFTER_ACTION = 'afterAction';
-
 	/**
 	 * @var string the ID of this controller
 	 */
@@ -111,12 +110,15 @@ class Controller extends Component
 			$oldAction = $this->action;
 			$this->action = $action;
 			$result = null;
-			if ($this->module->beforeAction($action)) {
-				if ($this->beforeAction($action)) {
-					$result = $action->runWithParams($params);
-					$this->afterAction($action, $result);
-				}
+			$event = new ActionEvent($action);
+			$this->trigger(Application::EVENT_BEFORE_ACTION, $event);
+			if ($event->isValid && $this->module->beforeAction($action) && $this->beforeAction($action)) {
+				$result = $action->runWithParams($params);
+				$this->afterAction($action, $result);
 				$this->module->afterAction($action, $result);
+				$event = new ActionEvent($action);
+				$event->result = &$result;
+				Yii::$app->trigger(Application::EVENT_AFTER_ACTION, $event);
 			}
 			$this->action = $oldAction;
 			return $result;
@@ -213,7 +215,7 @@ class Controller extends Component
 	public function afterAction($action, &$result)
 	{
 		$event = new ActionEvent($action);
-		$event->result = &$result;
+		$event->result = & $result;
 		$this->trigger(self::EVENT_AFTER_ACTION, $event);
 	}
 
@@ -244,34 +246,6 @@ class Controller extends Component
 	public function getRoute()
 	{
 		return $this->action !== null ? $this->action->getUniqueId() : $this->getUniqueId();
-	}
-
-	/**
-	 * Populates one or multiple models from the given data array.
-	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array.
-	 * @param Model $model the model to be populated. If there are more than one model to be populated,
-	 * you may supply them as additional parameters.
-	 * @return boolean whether at least one model is successfully populated with the data.
-	 */
-	public function populate($data, $model)
-	{
-		$success = false;
-		if (!empty($data) && is_array($data)) {
-			$models = func_get_args();
-			array_shift($models);
-			foreach ($models as $model) {
-				/** @var Model $model */
-				$scope = $model->formName();
-				if ($scope == '') {
-					$model->setAttributes($data);
-					$success = true;
-				} elseif (isset($data[$scope])) {
-					$model->setAttributes($data[$scope]);
-					$success = true;
-				}
-			}
-		}
-		return $success;
 	}
 
 	/**

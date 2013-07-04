@@ -19,6 +19,23 @@ use yii\web\HttpException;
 abstract class Application extends Module
 {
 	/**
+	 * @event Event an event raised before the application starts to handle a request.
+	 */
+	const EVENT_BEFORE_REQUEST = 'beforeRequest';
+	/**
+	 * @event Event an event raised after the application successfully handles a request (before the response is sent out).
+	 */
+	const EVENT_AFTER_REQUEST = 'afterRequest';
+	/**
+	 * @event ActionEvent an event raised before executing a controller action.
+	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+	 */
+	const EVENT_BEFORE_ACTION = 'beforeAction';
+	/**
+	 * @event ActionEvent an event raised after executing a controller action.
+	 */
+	const EVENT_AFTER_ACTION = 'afterAction';
+	/**
 	 * @var string the application name.
 	 */
 	public $name = 'My Application';
@@ -124,6 +141,16 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Loads components that are declared in [[preload]].
+	 * @throws InvalidConfigException if a component or module to be preloaded is unknown
+	 */
+	public function preloadComponents()
+	{
+		$this->getComponent('log');
+		parent::preloadComponents();
+	}
+
+	/**
 	 * Registers error handlers.
 	 */
 	public function registerErrorHandlers()
@@ -146,7 +173,9 @@ abstract class Application extends Module
 	 */
 	public function run()
 	{
+		$this->trigger(self::EVENT_BEFORE_REQUEST);
 		$response = $this->handleRequest($this->getRequest());
+		$this->trigger(self::EVENT_AFTER_REQUEST);
 		$response->send();
 		return $response->exitStatus;
 	}
@@ -247,6 +276,15 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Returns the log component.
+	 * @return \yii\log\Logger the log component
+	 */
+	public function getLog()
+	{
+		return $this->getComponent('log');
+	}
+
+	/**
 	 * Returns the error handler component.
 	 * @return ErrorHandler the error handler application component.
 	 */
@@ -325,6 +363,9 @@ abstract class Application extends Module
 	public function registerCoreComponents()
 	{
 		$this->setComponents(array(
+			'log' => array(
+				'class' => 'yii\log\Logger',
+			),
 			'errorHandler' => array(
 				'class' => 'yii\base\ErrorHandler',
 			),

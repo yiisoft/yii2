@@ -41,6 +41,9 @@
 		// a callback that is called before validating each attribute. The signature of the callback should be:
 		// function ($form, attribute, messages) { ...return false to cancel the validation...}
 		beforeValidate: undefined,
+		// a callback that is called after an attribute is validated. The signature of the callback should be:
+		// function ($form, attribute, messages)
+		afterValidate: undefined,
 		// the GET parameter name indicating an AJAX-based validation
 		ajaxVar: 'ajax'
 	};
@@ -333,6 +336,9 @@
 			$input = findInput($form, attribute),
 			hasError = false;
 
+		if (data.settings.afterValidate) {
+			data.settings.afterValidate($form, attribute, messages);
+		}
 		attribute.status = 1;
 		if ($input.length) {
 			hasError = messages && $.isArray(messages[attribute.name]) && messages[attribute.name].length;

@@ -83,4 +83,34 @@ class Controller extends \yii\base\Controller
 		}
 		return Yii::$app->getUrlManager()->createUrl($route, $params);
 	}
+
+	/**
+	 * Redirects the browser to the specified URL.
+	 * This method is a shortcut to [[Response::redirect()]].
+	 *
+	 * @param array|string $url the URL to be redirected to. [[\yii\helpers\Html::url()]]
+	 * will be used to normalize the URL. If the resulting URL is still a relative URL
+	 * (one without host info), the current request host info will be used.
+	 * @param integer $statusCode the HTTP status code. If null, it will use 302
+	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
+	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
+	 * for details about HTTP status code
+	 * @return Response the response object itself
+	 */
+	public function redirect($url, $statusCode = null)
+	{
+		return Yii::$app->getResponse()->redirect($url, $statusCode);
+	}
+
+	/**
+	 * Refreshes the current page.
+	 * This method is a shortcut to [[Response::refresh()]].
+	 * @param string $anchor the anchor that should be appended to the redirection URL.
+	 * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
+	 * @return Response the response object itself
+	 */
+	public function refresh($anchor = '')
+	{
+		return Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
+	}
 }

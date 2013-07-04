@@ -8,4 +8,8 @@
 
 class_name: TestGuy
 modules:
-    enabled: [Filesystem, TestHelper]
+    enabled: [Filesystem, TestHelper, Yii2]
+    config:
+        Yii2:
+            entryScript: 'www/index-test.php'
+            url: 'http://localhost/'

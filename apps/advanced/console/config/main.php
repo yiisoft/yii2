@@ -12,7 +12,6 @@ return array(
 	'id' => 'app-console',
 	'basePath' => dirname(__DIR__),
 	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
-	'preload' => array('log'),
 	'controllerNamespace' => 'console\controllers',
 	'modules' => array(
 	),
@@ -20,10 +19,9 @@ return array(
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
 		'log' => array(
-			'class' => 'yii\logging\Router',
 			'targets' => array(
 				array(
-					'class' => 'yii\logging\FileTarget',
+					'class' => 'yii\log\FileTarget',
 					'levels' => array('error', 'warning'),
 				),
 			),

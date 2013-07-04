@@ -9,6 +9,12 @@ use yii\db\DataReader;
 
 class CommandTest extends DatabaseTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	function testConstruct()
 	{
 		$db = $this->getConnection(false);

@@ -27,8 +27,8 @@ class SiteController extends Controller
 	public function actionLogin()
 	{
 		$model = new LoginForm();
-		if ($this->populate($_POST, $model) && $model->login()) {
-			return Yii::$app->response->redirect(array('site/index'));
+		if ($model->load($_POST) && $model->login()) {
+			return $this->redirect(array('site/index'));
 		} else {
 			return $this->render('login', array(
 				'model' => $model,
@@ -39,15 +39,15 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::$app->user->logout();
-		return Yii::$app->response->redirect(array('site/index'));
+		return $this->redirect(array('site/index'));
 	}
 
 	public function actionContact()
 	{
 		$model = new ContactForm;
-		if ($this->populate($_POST, $model) && $model->contact(Yii::$app->params['adminEmail'])) {
+		if ($model->load($_POST) && $model->contact(Yii::$app->params['adminEmail'])) {
 			Yii::$app->session->setFlash('contactFormSubmitted');
-			return Yii::$app->response->refresh();
+			return $this->refresh();
 		} else {
 			return $this->render('contact', array(
 				'model' => $model,

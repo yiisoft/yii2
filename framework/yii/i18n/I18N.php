@@ -161,7 +161,7 @@ class I18N extends Component
 	protected function getPluralRules($language)
 	{
 		if (isset($this->_pluralRules[$language])) {
-			return $this->_pluralRules;
+			return $this->_pluralRules[$language];
 		}
 		$allRules = require(Yii::getAlias($this->pluralRuleFile));
 		if (isset($allRules[$language])) {

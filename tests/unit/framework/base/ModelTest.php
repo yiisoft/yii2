@@ -12,6 +12,12 @@ use yiiunit\data\base\InvalidRulesModel;
  */
 class ModelTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testGetAttributeLabel()
 	{
 		$speaker = new Speaker();

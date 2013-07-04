@@ -101,9 +101,9 @@ class User extends ActiveRecord implements Identity
 
 	public function beforeSave($insert)
 	{
-		if(parent::beforeSave($insert)) {
-			if($this->isNewRecord) {
-				if(!empty($this->password)) {
+		if (parent::beforeSave($insert)) {
+			if ($this->isNewRecord) {
+				if (!empty($this->password)) {
 					$this->password_hash = SecurityHelper::generatePasswordHash($this->password);
 				}
 			}

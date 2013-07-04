@@ -14,6 +14,7 @@ class ActiveRecordTest extends DatabaseTestCase
 	protected function setUp()
 	{
         parent::setUp();
+		$this->mockApplication();
 		ActiveRecord::$db = $this->getConnection();
 	}
 

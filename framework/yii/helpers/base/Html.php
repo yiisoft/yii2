@@ -732,11 +732,12 @@ class Html
 	 * @param string|array $selection the selected value(s).
 	 * @param array $items the data item used to generate the checkboxes.
 	 * The array keys are the labels, while the array values are the corresponding checkbox values.
-	 * Note that the labels will NOT be HTML-encoded, while the values will.
 	 * @param array $options options (name => config) for the checkbox list. The following options are supported:
 	 *
 	 * - unselect: string, the value that should be submitted when none of the checkboxes is selected.
 	 *   By setting this option, a hidden input will be generated.
+	 * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
+	 *   This option is ignored if `item` option is set.
 	 * - separator: string, the HTML code that separates items.
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
@@ -757,6 +758,7 @@ class Html
 		}
 
 		$formatter = isset($options['item']) ? $options['item'] : null;
+		$encode = !isset($options['encode']) || $options['encode'];
 		$lines = array();
 		$index = 0;
 		foreach ($items as $value => $label) {
@@ -766,7 +768,8 @@ class Html
 			if ($formatter !== null) {
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
-				$lines[] = static::label(static::checkbox($name, $checked, array('value' => $value)) . ' ' . $label);
+				$checkbox = static::checkbox($name, $checked, array('value' => $value));
+				$lines[] = static::label($checkbox . ' ' . ($encode ? static::encode($label) : $label));
 			}
 			$index++;
 		}
@@ -790,11 +793,12 @@ class Html
 	 * @param string|array $selection the selected value(s).
 	 * @param array $items the data item used to generate the radio buttons.
 	 * The array keys are the labels, while the array values are the corresponding radio button values.
-	 * Note that the labels will NOT be HTML-encoded, while the values will.
 	 * @param array $options options (name => config) for the radio button list. The following options are supported:
 	 *
 	 * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
 	 *   By setting this option, a hidden input will be generated.
+	 * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
+	 *   This option is ignored if `item` option is set.
 	 * - separator: string, the HTML code that separates items.
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
@@ -810,6 +814,7 @@ class Html
 	 */
 	public static function radioList($name, $selection = null, $items = array(), $options = array())
 	{
+		$encode = !isset($options['encode']) || $options['encode'];
 		$formatter = isset($options['item']) ? $options['item'] : null;
 		$lines = array();
 		$index = 0;
@@ -820,7 +825,8 @@ class Html
 			if ($formatter !== null) {
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
-				$lines[] = static::label(static::radio($name, $checked, array('value' => $value)) . ' ' . $label);
+				$radio = static::radio($name, $checked, array('value' => $value));
+				$lines[] = static::label($radio . ' ' . ($encode ? static::encode($label) : $label));
 			}
 			$index++;
 		}
@@ -834,6 +840,75 @@ class Html
 		}
 
 		return $hidden . implode($separator, $lines);
+	}
+
+	/**
+	 * Generates an unordered list.
+	 * @param array|\Traversable $items the items for generating the list. Each item generates a single list item.
+	 * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true.
+	 * @param array $options options (name => config) for the radio button list. The following options are supported:
+	 *
+	 * - encode: boolean, whether to HTML-encode the items. Defaults to true.
+	 *   This option is ignored if the `item` option is specified.
+	 * - itemOptions: array, the HTML attributes for the `li` tags. This option is ignored if the `item` option is specified.
+	 * - item: callable, a callback that is used to generate each individual list item.
+	 *   The signature of this callback must be:
+	 *
+	 * ~~~
+	 * function ($index, $item)
+	 * ~~~
+	 *
+	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
+	 * the whole list item tag.
+	 *
+	 * @return string the generated unordered list. An empty string is returned if `$items` is empty.
+	 */
+	public static function ul($items, $options = array())
+	{
+		if (empty($items)) {
+			return '';
+		}
+		$tag = isset($options['tag']) ? $options['tag'] : 'ul';
+		$encode = !isset($options['encode']) || $options['encode'];
+		$formatter = isset($options['item']) ? $options['item'] : null;
+		$itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : array();
+		unset($options['tag'], $options['encode'], $options['item'], $options['itemOptions']);
+		$results = array();
+		foreach ($items as $index => $item) {
+			if ($formatter !== null) {
+				$results[] = call_user_func($formatter, $index, $item);
+			} else {
+				$results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
+			}
+		}
+		return static::tag($tag, "\n" . implode("\n", $results) . "\n", $options);
+	}
+
+	/**
+	 * Generates an ordered list.
+	 * @param array|\Traversable $items the items for generating the list. Each item generates a single list item.
+	 * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true.
+	 * @param array $options options (name => config) for the radio button list. The following options are supported:
+	 *
+	 * - encode: boolean, whether to HTML-encode the items. Defaults to true.
+	 *   This option is ignored if the `item` option is specified.
+	 * - itemOptions: array, the HTML attributes for the `li` tags. This option is ignored if the `item` option is specified.
+	 * - item: callable, a callback that is used to generate each individual list item.
+	 *   The signature of this callback must be:
+	 *
+	 * ~~~
+	 * function ($index, $item)
+	 * ~~~
+	 *
+	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
+	 * the whole list item tag.
+	 *
+	 * @return string the generated ordered list. An empty string is returned if `$items` is empty.
+	 */
+	public static function ol($items, $options = array())
+	{
+		$options['tag'] = 'ol';
+		return static::ul($items, $options);
 	}
 
 	/**

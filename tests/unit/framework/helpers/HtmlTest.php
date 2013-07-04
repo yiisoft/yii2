@@ -305,7 +305,7 @@ EOD;
 		$this->assertEqualsWithoutLE($expected, Html::checkboxList('test', array('value2'), $this->getDataItems()));
 
 		$expected = <<<EOD
-<label><input type="checkbox" name="test[]" value="value1&lt;&gt;"> text1<></label>
+<label><input type="checkbox" name="test[]" value="value1&lt;&gt;"> text1&lt;&gt;</label>
 <label><input type="checkbox" name="test[]" value="value  2"> text  2</label>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::checkboxList('test', array('value2'), $this->getDataItems2()));
@@ -341,7 +341,7 @@ EOD;
 		$this->assertEqualsWithoutLE($expected, Html::radioList('test', array('value2'), $this->getDataItems()));
 
 		$expected = <<<EOD
-<label><input type="radio" name="test" value="value1&lt;&gt;"> text1<></label>
+<label><input type="radio" name="test" value="value1&lt;&gt;"> text1&lt;&gt;</label>
 <label><input type="radio" name="test" value="value  2"> text  2</label>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::radioList('test',  array('value2'), $this->getDataItems2()));
@@ -362,6 +362,64 @@ EOD;
 		$this->assertEqualsWithoutLE($expected, Html::radioList('test', array('value2'), $this->getDataItems(), array(
 			'item' => function ($index, $label, $name, $checked, $value) {
 				return $index . Html::label($label . ' ' . Html::radio($name, $checked, array('value' => $value)));
+			}
+		)));
+	}
+
+	public function testUl()
+	{
+		$data = array(
+			1, 'abc', '<>',
+		);
+		$expected = <<<EOD
+<ul>
+<li>1</li>
+<li>abc</li>
+<li>&lt;&gt;</li>
+</ul>
+EOD;
+		$this->assertEqualsWithoutLE($expected, Html::ul($data));
+		$expected = <<<EOD
+<ul class="test">
+<li class="item-0">1</li>
+<li class="item-1">abc</li>
+<li class="item-2"><></li>
+</ul>
+EOD;
+		$this->assertEqualsWithoutLE($expected, Html::ul($data, array(
+			'class' => 'test',
+			'item' => function($index, $item) {
+				return "<li class=\"item-$index\">$item</li>";
+			}
+		)));
+	}
+
+	public function testOl()
+	{
+		$data = array(
+			1, 'abc', '<>',
+		);
+		$expected = <<<EOD
+<ol>
+<li class="ti">1</li>
+<li class="ti">abc</li>
+<li class="ti">&lt;&gt;</li>
+</ol>
+EOD;
+		$this->assertEqualsWithoutLE($expected, Html::ol($data, array(
+			'itemOptions' => array('class' => 'ti'),
+		)));
+		$expected = <<<EOD
+<ol class="test">
+<li class="item-0">1</li>
+<li class="item-1">abc</li>
+<li class="item-2"><></li>
+</ol>
+EOD;
+		$this->assertEqualsWithoutLE($expected, Html::ol($data, array(
+			'class' => 'test',
+			'item' => function($index, $item) {
+				return "<li class=\"item-$index\">$item</li>";
 			}
 		)));
 	}

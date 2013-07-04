@@ -160,10 +160,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$attributes = array();
 		foreach ($this->getActiveValidators() as $validator) {
-			if ($validator->isActive('default')) {
-				foreach ($validator->attributes as $name) {
-					$attributes[$name] = true;
-				}
+			foreach ($validator->attributes as $name) {
+				$attributes[$name] = true;
 			}
 		}
 		return array(
@@ -251,9 +249,16 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * validation rules should be validated.
 	 * @param boolean $clearErrors whether to call [[clearErrors()]] before performing validation
 	 * @return boolean whether the validation is successful without any error.
+	 * @throws InvalidParamException if the current scenario is unknown.
 	 */
 	public function validate($attributes = null, $clearErrors = true)
 	{
+		$scenarios = $this->scenarios();
+		$scenario = $this->getScenario();
+		if (!isset($scenarios[$scenario])) {
+			throw new InvalidParamException("Unknown scenario: $scenario");
+		}
+
 		if ($clearErrors) {
 			$this->clearErrors();
 		}
@@ -582,8 +587,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Sets the scenario for the model.
+	 * Note that this method does not check if the scenario exists or not.
+	 * The method [[validate()]] will perform this check.
 	 * @param string $value the scenario that this model is in.
-	 * @see getScenario
 	 */
 	public function setScenario($value)
 	{
@@ -635,6 +641,80 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 			}
 		}
 		return $attributes;
+	}
+
+	/**
+	 * Populates the model with the data from end user.
+	 * The data to be loaded is `$data[formName]`, where `formName` refers to the value of [[formName()]].
+	 * If [[formName()]] is empty, the whole `$data` array will be used to populate the model.
+	 * The data being populated is subject to the safety check by [[setAttributes()]].
+	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+	 * supplied by end user.
+	 * @return boolean whether the model is successfully populated with some data.
+	 */
+	public function load($data)
+	{
+		$scope = $this->formName();
+		if ($scope == '') {
+			$this->setAttributes($data);
+			return true;
+		} elseif (isset($data[$scope])) {
+			$this->setAttributes($data[$scope]);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Populates a set of models with the data from end user.
+	 * This method is mainly used to collect tabular data input.
+	 * The data to be loaded for each model is `$data[formName][index]`, where `formName`
+	 * refers to the value of [[formName()]], and `index` the index of the model in the `$models` array.
+	 * If [[formName()]] is empty, `$data[index]` will be used to populate each model.
+	 * The data being populated to each model is subject to the safety check by [[setAttributes()]].
+	 * @param array $models the models to be populated. Note that all models should have the same class.
+	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+	 * supplied by end user.
+	 * @return boolean whether the model is successfully populated with some data.
+	 */
+	public static function loadMultiple($models, $data)
+	{
+		/** @var Model $model */
+		$model = reset($models);
+		if ($model === false) {
+			return false;
+		}
+		$success = false;
+		$scope = $model->formName();
+		foreach ($models as $i => $model) {
+			if ($scope == '') {
+				if (isset($data[$i])) {
+					$model->setAttributes($data[$i]);
+					$success = true;
+				}
+			} elseif (isset($data[$scope][$i])) {
+				$model->setAttributes($data[$scope][$i]);
+				$success = true;
+			}
+		}
+		return $success;
+	}
+
+	/**
+	 * Validates multiple models.
+	 * @param array $models the models to be validated
+	 * @return boolean whether all models are valid. False will be returned if one
+	 * or multiple models have validation error.
+	 */
+	public static function validateMultiple($models)
+	{
+		$valid = true;
+		/** @var Model $model */
+		foreach ($models as $model) {
+			$valid = $model->validate() && $valid;
+		}
+		return $valid;
 	}
 
 	/**

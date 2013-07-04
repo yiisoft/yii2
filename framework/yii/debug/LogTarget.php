@@ -5,15 +5,16 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\logging;
+namespace yii\debug;
 
 use Yii;
+use yii\log\Target;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DebugTarget extends Target
+class LogTarget extends Target
 {
 	public $maxLogFiles = 20;
 
@@ -29,7 +30,7 @@ class DebugTarget extends Target
 		if (!is_dir($path)) {
 			mkdir($path);
 		}
-		$file = $path . '/' . Yii::getLogger()->getTag() . '.log';
+		$file = $path . '/' . Yii::$app->getLog()->getTag() . '.log';
 		$data = array(
 			'messages' => $messages,
 			'_SERVER' => $_SERVER,
@@ -54,9 +55,6 @@ class DebugTarget extends Target
 	 */
 	public function collect($messages, $final)
 	{
-		if (Yii::$app->getModule('debug', false) !== null) {
-			return;
-		}
 		$this->messages = array_merge($this->messages, $this->filterMessages($messages));
 		if ($final) {
 			$this->export($this->messages);
@@ -72,6 +70,7 @@ class DebugTarget extends Target
 		$iterator = new \DirectoryIterator(Yii::$app->getRuntimePath() . '/debug');
 		$files = array();
 		foreach ($iterator as $file) {
+			/** @var \DirectoryIterator $file */
 			if (preg_match('/^[\d\-]+\.log$/', $file->getFileName()) && $file->isFile()) {
 				$files[] = $file->getPathname();
 			}
