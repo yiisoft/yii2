@@ -9,7 +9,8 @@ static data in cache and serving it from cache when requested, we save the time 
 
 Using cache in Yii mainly involves configuring and accessing a cache application component. The following
 application configuration specifies a cache component that uses [memcached](http://memcached.org/) with
-two cache servers.
+two cache servers. Note, this configuration should be done in file located at `@app/config/web.php` alias
+in case you're using basic sample application.
 
 ```php
 'components' => array(
@@ -33,14 +34,8 @@ two cache servers.
 
 When the application is running, the cache component can be accessed through `Yii::$app->cache` call.
 
-Yii provides various cache components that can store cached data in different media. For example,
-the [[\yii\caching\MemCache]] component encapsulates the PHP [memcache](http://php.net/manual/en/book.memcache.php)
-and [memcached](http://php.net/manual/en/book.memcached.php) extensions and uses memory as the medium
-of cache storage; the [[\yii\caching\ApcCache]] component encapsulates the PHP
-[APC](http://php.net/manual/en/book.apc.php) extension; and the [[\yii\caching\DbCache]] component stores
-cached data in database table.
-
-The following is a summary of the available cache components:
+Yii provides various cache components that can store cached data in different media. The following
+is a summary of the available cache components:
 
 * [[\yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
@@ -144,7 +139,7 @@ to exploit this feature. In case the underlying cache storage does not support t
 To remove a cached value from cache, call [[delete()]]; and to remove everything from cache, call [[flush()]].
 Be very careful when calling [[flush()]] because it also removes cached data that are from other applications.
 
-Note, because CCache implements ArrayAccess, a cache component can be used liked an array. The followings
+Note, because [[Cache]] implements `ArrayAccess`, a cache component can be used liked an array. The followings
 are some examples:
 
 ```php
