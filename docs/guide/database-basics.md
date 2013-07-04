@@ -25,7 +25,7 @@ return array(
 			//'dsn' => 'sqlsrv:Server=localhost;Database=mydatabase', // MS SQL Server, sqlsrv driver
 			//'dsn' => 'dblib:host=localhost;dbname=mydatabase', // MS SQL Server, dblib driver
 			//'dsn' => 'mssql:host=localhost;dbname=mydatabase', // MS SQL Server, mssql driver
-			//'dsn' => 'oci:dbname=//localhost:1521/testdb', // Oracle
+			//'dsn' => 'oci:dbname=//localhost:1521/mydatabase', // Oracle
 			'username' => 'root',
 			'password' => '',
 			'charset' => 'utf8',
