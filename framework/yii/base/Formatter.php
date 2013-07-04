@@ -71,6 +71,26 @@ class Formatter extends Component
 	}
 
 	/**
+	 * Formats the value based on the give type.
+	 * This method will call one of the "as" methods available in this class to do the formatting.
+	 * For type "xyz", the method "asXyz" will be used. For example, if the type is "html",
+	 * then [[asHtml()]] will be used. Type names are case insensitive.
+	 * @param mixed $value the value to be formatted
+	 * @param string $type the type of the value, e.g., "html", "text".
+	 * @return string the formatting result
+	 * @throws InvalidParamException if the type is not supported by this class.
+	 */
+	public function format($value, $type)
+	{
+		$method = 'as' . $type;
+		if (method_exists($this, $method)) {
+			return $this->$method($value);
+		} else {
+			throw new InvalidParamException("Unknown type: $type");
+		}
+	}
+
+	/**
 	 * Formats the value as is without any formatting.
 	 * This method simply returns back the parameter without any format.
 	 * @param mixed $value the value to be formatted
