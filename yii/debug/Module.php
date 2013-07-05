@@ -17,6 +17,15 @@ use yii\helpers\Html;
  */
 class Module extends \yii\base\Module
 {
+	/**
+	 * @var array the list of IPs that are allowed to access this module.
+	 * Each array element represents a single IP filter which can be either an IP address
+	 * or an address with wildcard (e.g. 192.168.0.*) to represent a network segment.
+	 * The default value is `array('127.0.0.1', '::1')`, which means the module can only be accessed
+	 * by localhost.
+	 */
+	public $allowedIPs = array('127.0.0.1', '::1');
+
 	public $controllerNamespace = 'yii\debug\controllers';
 	/**
 	 * @var array|Panel[]
@@ -40,7 +49,14 @@ class Module extends \yii\base\Module
 	{
 		Yii::$app->getView()->off(View::EVENT_END_BODY, array($this, 'renderToolbar'));
 		unset(Yii::$app->getLog()->targets['debug']);
-		return parent::beforeAction($action);
+
+		$ip = Yii::$app->getRequest()->getUserIP();
+		foreach ($this->allowedIPs as $filter) {
+			if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
+				return parent::beforeAction($action);
+			}
+		}
+		return false;
 	}
 
 	public function renderToolbar($event)
