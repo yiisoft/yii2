@@ -4,6 +4,8 @@
  * @var string $content
  */
 use yii\helpers\Html;
+
+Yii::$app->getView()->registerAssetBundle('yii/bootstrap/responsive');
 ?>
 <!DOCTYPE html>
 <html>
@@ -14,7 +16,11 @@ use yii\helpers\Html;
 </head>
 <body>
 <?php $this->beginBody(); ?>
-<?php echo $content; ?>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<?php echo $content; ?>
+	</div>
+</div>
 <?php $this->endBody(); ?>
 </body>
 <?php $this->endPage(); ?>

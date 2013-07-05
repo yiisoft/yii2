@@ -8,6 +8,7 @@
 namespace yii\debug\panels;
 
 use yii\debug\Panel;
+use yii\helpers\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -38,7 +39,12 @@ EOD;
 
 	public function getDetail()
 	{
-		return '<h2>Request</h2>';
+		return "<h3>\$_GET</h3>\n" . $this->renderTable($this->data['GET']) . "\n"
+			. "<h3>\$_POST</h3>\n" . $this->renderTable($this->data['POST']) . "\n"
+			. "<h3>\$_COOKIE</h3>\n" . $this->renderTable($this->data['COOKIE']) . "\n"
+			. "<h3>\$_FILES</h3>\n" . $this->renderTable($this->data['FILES']) . "\n"
+			. "<h3>\$_SESSION</h3>\n" . $this->renderTable($this->data['SESSION']) . "\n"
+			. "<h3>\$_SERVER</h3>\n" . $this->renderTable($this->data['SERVER']);
 	}
 
 	public function save()
@@ -53,5 +59,18 @@ EOD;
 			'FILES' => empty($_FILES) ? array() : $_FILES,
 			'SESSION' => empty($_SESSION) ? array() : $_SESSION,
 		);
+	}
+
+	protected function renderTable($values)
+	{
+		$rows = array();
+		foreach ($values as $name => $value) {
+			$rows[] = '<tr><th>' . Html::encode($name) . '</th><td>' . Html::encode(var_export($value, true)) . '</td></tr>';
+		}
+		if (!empty($rows)) {
+			return "<table class=\"table table-condensed table-bordered table-hover\">\n<thead>\n<tr><th>Name</th><th>Value</th></tr>\n</thead>\n<tbody>\n" . implode("\n", $rows) . "\n</tbody>\n</table>";
+		} else {
+			return 'Empty.';
+		}
 	}
 }
