@@ -24,9 +24,6 @@ class StringHelper
 	 */
 	public static function strlen($string)
 	{
-		if (!function_exists('mb_strlen')) {
-			throw new \Exception('here');
-		}
 		return mb_strlen($string, '8bit');
 	}
 
