@@ -18,19 +18,28 @@ use yii\helpers\Html;
 class Module extends \yii\base\Module
 {
 	public $controllerNamespace = 'yii\debug\controllers';
-	public $panels;
+	/**
+	 * @var array|Panel[]
+	 */
+	public $panels = array();
 
 	public function init()
 	{
 		parent::init();
-		Yii::$app->log->targets['debug'] = new LogTarget;
+
+		foreach (array_merge($this->corePanels(), $this->panels) as $id => $config) {
+			$config['id'] = $id;
+			$this->panels[$id] = Yii::createObject($config);
+		}
+
+		Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
 		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
 	}
 
 	public function beforeAction($action)
 	{
 		Yii::$app->getView()->off(View::EVENT_END_BODY, array($this, 'renderToolbar'));
-		unset(Yii::$app->log->targets['debug']);
+		unset(Yii::$app->getLog()->targets['debug']);
 		return parent::beforeAction($action);
 	}
 
@@ -48,5 +57,20 @@ class Module extends \yii\base\Module
 			'id' => $id,
 			'style' => 'display: none',
 		));
+	}
+
+	protected function corePanels()
+	{
+		return array(
+			'config' => array(
+				'class' => 'yii\debug\panels\ConfigPanel',
+			),
+			'request' => array(
+				'class' => 'yii\debug\panels\RequestPanel',
+			),
+			'log' => array(
+				'class' => 'yii\debug\panels\LogPanel',
+			),
+		);
 	}
 }

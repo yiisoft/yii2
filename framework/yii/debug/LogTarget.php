@@ -16,32 +16,34 @@ use yii\log\Target;
  */
 class LogTarget extends Target
 {
+	/**
+	 * @var Module
+	 */
+	public $module;
 	public $maxLogFiles = 20;
+
+	public function __construct($module, $config = array())
+	{
+		parent::__construct($config);
+		$this->module = $module;
+	}
 
 	/**
 	 * Exports log messages to a specific destination.
 	 * Child classes must implement this method.
-	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
-	 * of each message.
 	 */
-	public function export($messages)
+	public function export()
 	{
 		$path = Yii::$app->getRuntimePath() . '/debug';
 		if (!is_dir($path)) {
 			mkdir($path);
 		}
-		$file = $path . '/' . Yii::$app->getLog()->getTag() . '.log';
-		$data = array(
-			'messages' => $messages,
-			'_SERVER' => $_SERVER,
-			'_GET' => $_GET,
-			'_POST' => $_POST,
-			'_COOKIE' => $_COOKIE,
-			'_FILES' => empty($_FILES) ? array() : $_FILES,
-			'_SESSION' => empty($_SESSION) ? array() : $_SESSION,
-			'memory' => memory_get_peak_usage(),
-			'time' => microtime(true) - YII_BEGIN_TIME,
-		);
+		$tag = Yii::$app->getLog()->getTag();
+		$file = "$path/$tag.log";
+		$data = array();
+		foreach ($this->module->panels as $panel) {
+			$data[$panel->id] = $panel->save();
+		}
 		file_put_contents($file, json_encode($data));
 	}
 

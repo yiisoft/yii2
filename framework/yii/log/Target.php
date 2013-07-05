@@ -68,18 +68,17 @@ abstract class Target extends Component
 	public $exportInterval = 1000;
 	/**
 	 * @var array the messages that are retrieved from the logger so far by this log target.
+	 * Please refer to [[Logger::messages]] for the details about the message structure.
 	 */
 	public $messages = array();
 
 	private $_levels = 0;
 
 	/**
-	 * Exports log messages to a specific destination.
+	 * Exports log [[messages]] to a specific destination.
 	 * Child classes must implement this method.
-	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
-	 * of each message.
 	 */
-	abstract public function export($messages);
+	abstract public function export();
 
 	/**
 	 * Processes the given log messages.
@@ -97,7 +96,7 @@ abstract class Target extends Component
 			if (($context = $this->getContextMessage()) !== '') {
 				$this->messages[] = array($context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME);
 			}
-			$this->export($this->messages);
+			$this->export();
 			$this->messages = array();
 		}
 	}

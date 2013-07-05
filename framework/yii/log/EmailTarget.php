@@ -38,13 +38,11 @@ class EmailTarget extends Target
 
 	/**
 	 * Sends log messages to specified email addresses.
-	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
-	 * of each message.
 	 */
-	public function export($messages)
+	public function export()
 	{
 		$body = '';
-		foreach ($messages as $message) {
+		foreach ($this->messages as $message) {
 			$body .= $this->formatMessage($message);
 		}
 		$body = wordwrap($body, 70);
