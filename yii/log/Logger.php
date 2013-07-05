@@ -322,4 +322,22 @@ class Logger extends Component
 
 		return $timings;
 	}
+
+	/**
+	 * Returns the text display of the specified level.
+	 * @param integer $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
+	 * @return string the text display of the level
+	 */
+	public static function getLevelName($level)
+	{
+		static $levels = array(
+			self::LEVEL_ERROR => 'error',
+			self::LEVEL_WARNING => 'warning',
+			self::LEVEL_INFO => 'info',
+			self::LEVEL_TRACE => 'trace',
+			self::LEVEL_PROFILE_BEGIN => 'profile begin',
+			self::LEVEL_PROFILE_END => 'profile end',
+		);
+		return isset($levels[$level]) ? $levels[$level] : 'unknown';
+	}
 }
