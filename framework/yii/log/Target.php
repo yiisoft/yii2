@@ -225,16 +225,8 @@ abstract class Target extends Component
 	 */
 	public function formatMessage($message)
 	{
-		static $levels = array(
-			Logger::LEVEL_ERROR => 'error',
-			Logger::LEVEL_WARNING => 'warning',
-			Logger::LEVEL_INFO => 'info',
-			Logger::LEVEL_TRACE => 'trace',
-			Logger::LEVEL_PROFILE_BEGIN => 'profile begin',
-			Logger::LEVEL_PROFILE_END => 'profile end',
-		);
 		list($text, $level, $category, $timestamp) = $message;
-		$level = isset($levels[$level]) ? $levels[$level] : 'unknown';
+		$level = Logger::getLevelName($level);
 		if (!is_string($text)) {
 			$text = var_export($text, true);
 		}

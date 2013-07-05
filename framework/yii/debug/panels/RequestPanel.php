@@ -65,10 +65,18 @@ EOD;
 	{
 		$rows = array();
 		foreach ($values as $name => $value) {
-			$rows[] = '<tr><th>' . Html::encode($name) . '</th><td>' . Html::encode(var_export($value, true)) . '</td></tr>';
+			$rows[] = '<tr><th style="width: 200px;">' . Html::encode($name) . '</th><td><div style="overflow:auto">' . Html::encode(var_export($value, true)) . '</div></td></tr>';
 		}
 		if (!empty($rows)) {
-			return "<table class=\"table table-condensed table-bordered table-hover\">\n<thead>\n<tr><th>Name</th><th>Value</th></tr>\n</thead>\n<tbody>\n" . implode("\n", $rows) . "\n</tbody>\n</table>";
+			$rows = implode("\n", $rows);
+			return <<<EOD
+<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
+<thead><tr><th style="width: 200px;">Name</th><th>Value</th></tr></thead>
+<tbody>
+$rows
+</tbody>
+</table>
+EOD;
 		} else {
 			return 'Empty.';
 		}
