@@ -72,16 +72,14 @@ class DbTarget extends Target
 
 	/**
 	 * Stores log messages to DB.
-	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
-	 * of each message.
 	 */
-	public function export($messages)
+	public function export()
 	{
 		$tableName = $this->db->quoteTableName($this->logTable);
 		$sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[message]])
 				VALUES (:level, :category, :log_time, :message)";
 		$command = $this->db->createCommand($sql);
-		foreach ($messages as $message) {
+		foreach ($this->messages as $message) {
 			$command->bindValues(array(
 				':level' => $message[1],
 				':category' => $message[2],

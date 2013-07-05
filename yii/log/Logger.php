@@ -124,7 +124,7 @@ class Logger extends Component
 	 */
 	public $messages = array();
 	/**
-	 * @var array the log targets. Each array element represents a single [[Target|log target]] instance
+	 * @var array|Target[] the log targets. Each array element represents a single [[Target|log target]] instance
 	 * or the configuration for creating the log target instance.
 	 */
 	public $targets = array();

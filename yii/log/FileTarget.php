@@ -65,14 +65,12 @@ class FileTarget extends Target
 
 	/**
 	 * Sends log messages to specified email addresses.
-	 * @param array $messages the messages to be exported. See [[Logger::messages]] for the structure
-	 * of each message.
 	 * @throws InvalidConfigException if unable to open the log file for writing
 	 */
-	public function export($messages)
+	public function export()
 	{
 		$text = '';
-		foreach ($messages as $message) {
+		foreach ($this->messages as $message) {
 			$text .= $this->formatMessage($message);
 		}
 		if (($fp = @fopen($this->logFile, 'a')) === false) {
