@@ -557,6 +557,12 @@ class Response extends \yii\base\Response
 	 * });
 	 * ~~~
 	 *
+	 * In a controller action you may use this method like this:
+	 *
+	 * ~~~
+	 * return Yii::$app->getResponse()->redirect($url);
+	 * ~~~
+	 *
 	 * @param array|string $url the URL to be redirected to. [[\yii\helpers\Html::url()]]
 	 * will be used to normalize the URL. If the resulting URL is still a relative URL
 	 * (one without host info), the current request host info will be used.
@@ -584,6 +590,13 @@ class Response extends \yii\base\Response
 	 * Refreshes the current page.
 	 * The effect of this method call is the same as the user pressing the refresh button of his browser
 	 * (without re-posting data).
+	 *
+	 * In a controller action you may use this method like this:
+	 *
+	 * ~~~
+	 * return Yii::$app->getResponse()->refresh();
+	 * ~~~
+	 *
 	 * @param string $anchor the anchor that should be appended to the redirection URL.
 	 * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
 	 * @return Response the response object itself
