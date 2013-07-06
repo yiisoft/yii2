@@ -129,13 +129,6 @@ class Logger extends Component
 	 */
 	public $targets = array();
 
-
-	/**
-	 * @var string
-	 */
-	private $_tag;
-
-
 	/**
 	 * Initializes the logger by registering [[flush()]] as a shutdown function.
 	 */
@@ -194,25 +187,6 @@ class Logger extends Component
 			}
 		}
 		$this->messages = array();
-	}
-
-	/**
-	 * @return string a tag that uniquely identifies the current request.
-	 */
-	public function getTag()
-	{
-		if ($this->_tag === null) {
-			$this->_tag = date('Ymd-His', microtime(true));
-		}
-		return $this->_tag;
-	}
-
-	/**
-	 * @param string $tag a tag that uniquely identifies the current request.
-	 */
-	public function setTag($tag)
-	{
-		$this->_tag = $tag;
 	}
 
 	/**

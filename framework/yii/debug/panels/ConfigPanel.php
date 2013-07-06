@@ -24,12 +24,10 @@ class ConfigPanel extends Panel
 
 	public function getSummary()
 	{
-		$link = Html::a('more details', array('index', 'tag' => $this->data['tag']));
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
 	PHP: {$this->data['phpVersion']},
-	Yii: {$this->data['phpVersion']},
-	$link
+	Yii: {$this->data['phpVersion']}
 </div>
 EOD;
 	}
@@ -42,7 +40,6 @@ EOD;
 	public function save()
 	{
 		return array(
-			'tag' => Yii::$app->getLog()->getTag(),
 			'phpVersion' => PHP_VERSION,
 			'yiiVersion' => Yii::getVersion(),
 		);

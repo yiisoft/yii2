@@ -2,7 +2,9 @@
 /**
  * @var \yii\base\View $this
  * @var \yii\debug\Panel[] $panels
+ * @var string $tag
  */
+use yii\helpers\Html;
 ?>
 <style>
 #yii-debug-toolbar {
@@ -28,4 +30,7 @@
 	<?php foreach ($panels as $panel): ?>
 	<?php echo $panel->getSummary(); ?>
 	<?php endforeach; ?>
+	<div class="yii-debug-toolbar-block">
+		<?php echo Html::a('more details', array('index', 'tag' => $tag)); ?>
+	</div>
 </div>

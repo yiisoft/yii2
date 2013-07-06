@@ -63,8 +63,9 @@ class Module extends \yii\base\Module
 	{
 		/** @var View $view */
 		$id = 'yii-debug-toolbar';
+		$tag = Yii::$app->getLog()->targets['debug']->tag;
 		$url = Yii::$app->getUrlManager()->createUrl('debug/default/toolbar', array(
-			'tag' => Yii::$app->getLog()->getTag(),
+			'tag' => $tag,
 		));
 		$view = $event->sender;
 		$view->registerJs("yii.debug.load('$id', '$url');");
