@@ -10,20 +10,31 @@ use yii\helpers\Html;
  */
 ?>
 <div class="default-index">
-	<div class="span3">
-		<div class="well sidebar-nav">
-			<ul class="nav nav-list">
-			<?php
-				foreach ($panels as $panel) {
-					$link = Html::a(Html::encode($panel->getName()), array('debug/default/index', 'tag' => $tag, 'panel' => $panel->id));
-					echo Html::tag('li', $link, array('class' => $panel === $activePanel ? 'active' : null));
-				}
-			?>
-			</ul>
-		</div><!--/.well -->
-	</div><!--/span-->
-	<div class="span9">
-		<?php echo $activePanel->getDetail(); ?>
+	<div class="navbar">
+		<div class="navbar-inner">
+			<div class="container">
+				<span class="brand">Yii Debugger</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span2">
+				<div class="well sidebar-nav">
+					<ul class="nav nav-list">
+						<?php
+						foreach ($panels as $panel) {
+							$link = Html::a(Html::encode($panel->getName()), array('debug/default/index', 'tag' => $tag, 'panel' => $panel->id));
+							echo Html::tag('li', $link, array('class' => $panel === $activePanel ? 'active' : null));
+						}
+						?>
+					</ul>
+				</div><!--/.well -->
+			</div><!--/span-->
+			<div class="span10">
+				<?php echo $activePanel->getDetail(); ?>
+			</div>
+		</div>
 	</div>
 </div>
-
