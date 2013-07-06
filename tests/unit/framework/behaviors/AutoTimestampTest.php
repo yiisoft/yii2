@@ -1,5 +1,8 @@
 <?php
 
+namespace yiiunit\framework\behaviors;
+
+use Yii;
 use yiiunit\TestCase;
 use yii\db\Connection;
 use yii\db\ActiveRecord;
@@ -15,21 +18,12 @@ class AutoTimestampTest extends TestCase
 	 * @var Connection test db connection
 	 */
 	protected $dbConnection;
-	/**
-	 * @var string test table name.
-	 */
-	protected static $testTableName = 'test_table';
-	/**
-	 * @var string test Active Record class name.
-	 */
-	protected static $testActiveRecordClassName;
 
 	public static function setUpBeforeClass()
 	{
 		if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
 			static::markTestSkipped('PDO and SQLite extensions are required.');
 		}
-		static::$testActiveRecordClassName = get_called_class() . '_TestActiveRecord_' . sha1(uniqid());
 	}
 
 	public function setUp() {
@@ -49,9 +43,7 @@ class AutoTimestampTest extends TestCase
 			'create_time' => 'integer',
 			'update_time' => 'integer',
 		);
-		Yii::$app->getDb()->createCommand()->createTable(self::$testTableName, $columns)->execute();
-
-		$this->declareTestActiveRecordClass();
+		Yii::$app->getDb()->createCommand()->createTable('test_auto_timestamp', $columns)->execute();
 	}
 
 	public function tearDown()
@@ -60,54 +52,13 @@ class AutoTimestampTest extends TestCase
 		parent::tearDown();
 	}
 
-	/**
-	 * Declares test Active Record class with auto timestamp behavior attached.
-	 */
-	protected function declareTestActiveRecordClass()
-	{
-		$className = static::$testActiveRecordClassName;
-		if (class_exists($className, false)) {
-			return true;
-		}
-
-		$activeRecordClassName = ActiveRecord::className();
-		$behaviorClassName = AutoTimestamp::className();
-		$tableName = static::$testTableName;
-
-		$classDefinitionCode = <<<EOL
-class {$className} extends {$activeRecordClassName}
-{
-	public function behaviors()
-	{
-		return array(
-			'timestamp' => array(
-				'class' => '{$behaviorClassName}',
-				'attributes' => array(
-					static::EVENT_BEFORE_INSERT => array('create_time', 'update_time'),
-					static::EVENT_BEFORE_UPDATE => 'update_time',
-				),
-			),
-		);
-	}
-
-	public static function tableName()
-	{
-		return '{$tableName}';
-	}
-}
-EOL;
-		eval($classDefinitionCode);
-		return true;
-	}
-
 	// Tests :
 
 	public function testNewRecord()
 	{
 		$currentTime = time();
 
-		$className = static::$testActiveRecordClassName;
-		$model = new $className();
+		$model = new ActiveRecordAutoTimestamp();
 		$model->save(false);
 
 		$this->assertTrue($model->create_time >= $currentTime);
@@ -121,8 +72,7 @@ EOL;
 	{
 		$currentTime = time();
 
-		$className = static::$testActiveRecordClassName;
-		$model = new $className();
+		$model = new ActiveRecordAutoTimestamp();
 		$model->save(false);
 
 		$enforcedTime = $currentTime - 100;
@@ -133,5 +83,33 @@ EOL;
 
 		$this->assertEquals($enforcedTime, $model->create_time, 'Create time has been set on update!');
 		$this->assertTrue($model->update_time >= $currentTime, 'Update time has NOT been set on update!');
+	}
+}
+
+/**
+ * Test Active Record class with [[AutoTimestamp]] behavior attached.
+ *
+ * @property integer $id
+ * @property integer $create_time
+ * @property integer $update_time
+ */
+class ActiveRecordAutoTimestamp extends ActiveRecord
+{
+	public function behaviors()
+	{
+		return array(
+			'timestamp' => array(
+				'class' => AutoTimestamp::className(),
+				'attributes' => array(
+					static::EVENT_BEFORE_INSERT => array('create_time', 'update_time'),
+					static::EVENT_BEFORE_UPDATE => 'update_time',
+				),
+			),
+		);
+	}
+
+	public static function tableName()
+	{
+		return 'test_auto_timestamp';
 	}
 }
