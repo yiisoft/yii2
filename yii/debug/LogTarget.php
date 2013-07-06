@@ -20,12 +20,14 @@ class LogTarget extends Target
 	 * @var Module
 	 */
 	public $module;
-	public $maxLogFiles = 20;
+	public $tag;
+	public $historySize = 20;
 
 	public function __construct($module, $config = array())
 	{
 		parent::__construct($config);
 		$this->module = $module;
+		$this->tag = date('Ymd-His', microtime(true));
 	}
 
 	/**
@@ -38,8 +40,7 @@ class LogTarget extends Target
 		if (!is_dir($path)) {
 			mkdir($path);
 		}
-		$tag = Yii::$app->getLog()->getTag();
-		$file = "$path/$tag.log";
+		$file = "$path/{$this->tag}.log";
 		$data = array();
 		foreach ($this->module->panels as $panel) {
 			$data[$panel->id] = $panel->save();
@@ -78,8 +79,8 @@ class LogTarget extends Target
 			}
 		}
 		sort($files);
-		if (count($files) > $this->maxLogFiles) {
-			$n = count($files) - $this->maxLogFiles;
+		if (count($files) > $this->historySize) {
+			$n = count($files) - $this->historySize;
 			foreach ($files as $i => $file) {
 				if ($i < $n) {
 					unlink($file);

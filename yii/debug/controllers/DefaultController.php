@@ -40,6 +40,7 @@ class DefaultController extends Controller
 	{
 		$this->loadData($tag);
 		return $this->renderPartial('toolbar', array(
+			'tag' => $tag,
 			'panels' => $this->module->panels,
 		));
 	}
