@@ -102,14 +102,6 @@ class Logger extends Component
 
 
 	/**
-	 * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
-	 * Defaults to 1000, meaning the [[flush]] method will be invoked once every 1000 messages logged.
-	 * Set this property to be 0 if you don't want to flush messages until the application terminates.
-	 * This property mainly affects how much memory will be taken by the logged messages.
-	 * A smaller value means less memory, but will increase the execution time due to the overhead of [[flush()]].
-	 */
-	public $flushInterval = 1000;
-	/**
 	 * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
 	 * Each log message is of the following structure:
 	 *
@@ -124,10 +116,23 @@ class Logger extends Component
 	 */
 	public $messages = array();
 	/**
+	 * @var array debug data. This property stores various types of debug data reported at
+	 * different instrument places.
+	 */
+	public $data = array();
+	/**
 	 * @var array|Target[] the log targets. Each array element represents a single [[Target|log target]] instance
 	 * or the configuration for creating the log target instance.
 	 */
 	public $targets = array();
+	/**
+	 * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
+	 * Defaults to 1000, meaning the [[flush]] method will be invoked once every 1000 messages logged.
+	 * Set this property to be 0 if you don't want to flush messages until the application terminates.
+	 * This property mainly affects how much memory will be taken by the logged messages.
+	 * A smaller value means less memory, but will increase the execution time due to the overhead of [[flush()]].
+	 */
+	public $flushInterval = 1000;
 
 	/**
 	 * Initializes the logger by registering [[flush()]] as a shutdown function.
