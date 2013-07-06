@@ -16,11 +16,7 @@ Yii::$app->getView()->registerAssetBundle('yii/bootstrap/responsive');
 </head>
 <body>
 <?php $this->beginBody(); ?>
-<div class="container-fluid">
-	<div class="row-fluid">
-		<?php echo $content; ?>
-	</div>
-</div>
+<?php echo $content; ?>
 <?php $this->endBody(); ?>
 </body>
 <?php $this->endPage(); ?>
