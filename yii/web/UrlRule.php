@@ -28,6 +28,10 @@ class UrlRule extends Object
 	const CREATION_ONLY = 2;
 
 	/**
+	 * @var string the name of this rule. If not set, it will use [[pattern]] as the name.
+	 */
+	public $name;
+	/**
 	 * @var string the pattern used to parse and create the path info part of a URL.
 	 * @see host
 	 */
@@ -105,6 +109,9 @@ class UrlRule extends Object
 			} else {
 				$this->verb = array(strtoupper($this->verb));
 			}
+		}
+		if ($this->name === null) {
+			$this->name = $this->pattern;
 		}
 
 		$this->pattern = trim($this->pattern, '/');
