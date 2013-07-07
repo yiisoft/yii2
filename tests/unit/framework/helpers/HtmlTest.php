@@ -388,7 +388,7 @@ EOD;
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::ul($data, array(
 			'class' => 'test',
-			'item' => function($index, $item) {
+			'item' => function($item, $index) {
 				return "<li class=\"item-$index\">$item</li>";
 			}
 		)));
@@ -418,7 +418,7 @@ EOD;
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::ol($data, array(
 			'class' => 'test',
-			'item' => function($index, $item) {
+			'item' => function($item, $index) {
 				return "<li class=\"item-$index\">$item</li>";
 			}
 		)));
