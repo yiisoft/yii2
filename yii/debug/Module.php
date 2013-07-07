@@ -35,11 +35,17 @@ class Module extends \yii\base\Module
 	 * @var array|Panel[]
 	 */
 	public $panels = array();
+	/**
+	 * @var string the directory storing the debugger data files. This can be specified using a path alias.
+	 */
+	public $dataPath = '@runtime/debug';
+	public $historySize = 5;
 
 	public function init()
 	{
 		parent::init();
 
+		$this->dataPath = Yii::getAlias($this->dataPath);
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
 		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
 
@@ -84,9 +90,6 @@ class Module extends \yii\base\Module
 	protected function corePanels()
 	{
 		return array(
-			'config' => array(
-				'class' => 'yii\debug\panels\ConfigPanel',
-			),
 			'request' => array(
 				'class' => 'yii\debug\panels\RequestPanel',
 			),
@@ -98,6 +101,9 @@ class Module extends \yii\base\Module
 			),
 			'db' => array(
 				'class' => 'yii\debug\panels\DbPanel',
+			),
+			'config' => array(
+				'class' => 'yii\debug\panels\ConfigPanel',
 			),
 		);
 	}

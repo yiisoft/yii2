@@ -11,6 +11,7 @@ use Yii;
 use yii\debug\Panel;
 use yii\helpers\Html;
 use yii\log\Logger;
+use yii\log\Target;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -25,12 +26,29 @@ class LogPanel extends Panel
 
 	public function getSummary()
 	{
-		$count = count($this->data['messages']);
-		return <<<EOD
+		$output = array();
+		$errorCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_ERROR));
+		if ($errorCount === 1) {
+			$output[] = '1 error';
+		} elseif ($errorCount > 1) {
+			$output[] = "$errorCount errors";
+		}
+		$warningCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_WARNING));
+		if ($warningCount === 1) {
+			$output[] = '1 warning';
+		} elseif ($warningCount > 1) {
+			$output[] = "$warningCount warnings";
+		}
+		if (!empty($output)) {
+			$log = implode(', ', $output);
+			return <<<EOD
 <div class="yii-debug-toolbar-block">
-Log messages: $count
+$log
 </div>
 EOD;
+		} else {
+			return '';
+		}
 	}
 
 	public function getDetail()
