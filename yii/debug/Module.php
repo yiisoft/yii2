@@ -39,7 +39,7 @@ class Module extends \yii\base\Module
 	 * @var string the directory storing the debugger data files. This can be specified using a path alias.
 	 */
 	public $dataPath = '@runtime/debug';
-	public $historySize = 5;
+	public $historySize = 50;
 
 	public function init()
 	{
@@ -90,6 +90,9 @@ class Module extends \yii\base\Module
 	protected function corePanels()
 	{
 		return array(
+			'config' => array(
+				'class' => 'yii\debug\panels\ConfigPanel',
+			),
 			'request' => array(
 				'class' => 'yii\debug\panels\RequestPanel',
 			),
@@ -101,9 +104,6 @@ class Module extends \yii\base\Module
 			),
 			'db' => array(
 				'class' => 'yii\debug\panels\DbPanel',
-			),
-			'config' => array(
-				'class' => 'yii\debug\panels\ConfigPanel',
 			),
 		);
 	}

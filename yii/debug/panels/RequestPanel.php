@@ -25,8 +25,8 @@ class RequestPanel extends Panel
 
 	public function getSummary()
 	{
-		$memory = sprintf('%.2fMB', $this->data['memory'] / 1048576);
-		$time = sprintf('%.3fs', $this->data['time']);
+		$memory = sprintf('%.1f MB', $this->data['memory'] / 1048576);
+		$time = number_format($this->data['time'] * 1000) . ' ms';
 
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
