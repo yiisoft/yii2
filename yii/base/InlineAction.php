@@ -46,7 +46,10 @@ class InlineAction extends Action
 	public function runWithParams($params)
 	{
 		$args = $this->controller->bindActionParams($this, $params);
-		Yii::trace("Running '" . get_class($this->controller) . '::' . $this->actionMethod . "()' with parameters: " . var_export($args, true), __METHOD__);
+		Yii::info("Running '" . get_class($this->controller) . '::' . $this->actionMethod . "()' with parameters: " . var_export($args, true), __METHOD__);
+		if (Yii::$app->requestedParams === null) {
+			Yii::$app->requestedParams = $args;
+		}
 		return call_user_func_array(array($this->controller, $this->actionMethod), $args);
 	}
 }

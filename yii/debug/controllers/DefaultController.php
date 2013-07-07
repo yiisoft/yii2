@@ -51,8 +51,8 @@ class DefaultController extends Controller
 		if (preg_match('/^[\w\-]+$/', $tag) && is_file($file)) {
 			$data = json_decode(file_get_contents($file), true);
 			foreach ($this->module->panels as $id => $panel) {
-				if (isset($data[$panel->id])) {
-					$panel->load($data[$panel->id]);
+				if (isset($data[$id])) {
+					$panel->load($data[$id]);
 				} else {
 					// remove the panel since it has not received any data
 					unset($this->module->panels[$id]);

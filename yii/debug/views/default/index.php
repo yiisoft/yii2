@@ -24,8 +24,8 @@ use yii\helpers\Html;
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
 						<?php
-						foreach ($panels as $panel) {
-							$link = Html::a(Html::encode($panel->getName()), array('debug/default/index', 'tag' => $tag, 'panel' => $panel->id));
+						foreach ($panels as $id => $panel) {
+							$link = Html::a(Html::encode($panel->getName()), array('debug/default/index', 'tag' => $tag, 'panel' => $id));
 							echo Html::tag('li', $link, array('class' => $panel === $activePanel ? 'active' : null));
 						}
 						?>

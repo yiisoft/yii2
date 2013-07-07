@@ -9,7 +9,6 @@ namespace yii\debug\panels;
 
 use Yii;
 use yii\debug\Panel;
-use yii\helpers\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>

@@ -77,7 +77,10 @@ class Action extends Component
 			throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
 		}
 		$args = $this->controller->bindActionParams($this, $params);
-		Yii::trace('Running "' . get_class($this) . '::run()" with parameters: ' . var_export($args, true), __METHOD__);
+		Yii::info('Running "' . get_class($this) . '::run()" with parameters: ' . var_export($args, true), __METHOD__);
+		if (Yii::$app->requestedParams === null) {
+			Yii::$app->requestedParams = $args;
+		}
 		return call_user_func_array(array($this, 'run'), $args);
 	}
 }

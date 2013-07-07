@@ -28,6 +28,10 @@ class Module extends \yii\base\Module
 
 	public $controllerNamespace = 'yii\debug\controllers';
 	/**
+	 * @var LogTarget
+	 */
+	public $logTarget;
+	/**
 	 * @var array|Panel[]
 	 */
 	public $panels = array();
@@ -36,19 +40,20 @@ class Module extends \yii\base\Module
 	{
 		parent::init();
 
+		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
+		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
+
 		foreach (array_merge($this->corePanels(), $this->panels) as $id => $config) {
-			$config['id'] = $id;
+			$config['module'] = $this;
 			$this->panels[$id] = Yii::createObject($config);
 		}
-
-		Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
-		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
 	}
 
 	public function beforeAction($action)
 	{
 		Yii::$app->getView()->off(View::EVENT_END_BODY, array($this, 'renderToolbar'));
 		unset(Yii::$app->getLog()->targets['debug']);
+		$this->logTarget = null;
 
 		$ip = Yii::$app->getRequest()->getUserIP();
 		foreach ($this->allowedIPs as $filter) {
@@ -63,7 +68,7 @@ class Module extends \yii\base\Module
 	{
 		/** @var View $view */
 		$id = 'yii-debug-toolbar';
-		$tag = Yii::$app->getLog()->targets['debug']->tag;
+		$tag = $this->logTarget->tag;
 		$url = Yii::$app->getUrlManager()->createUrl('debug/default/toolbar', array(
 			'tag' => $tag,
 		));
@@ -87,6 +92,12 @@ class Module extends \yii\base\Module
 			),
 			'log' => array(
 				'class' => 'yii\debug\panels\LogPanel',
+			),
+			'profiling' => array(
+				'class' => 'yii\debug\panels\ProfilingPanel',
+			),
+			'db' => array(
+				'class' => 'yii\debug\panels\DbPanel',
 			),
 		);
 	}
