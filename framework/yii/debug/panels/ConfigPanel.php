@@ -26,7 +26,7 @@ class ConfigPanel extends Panel
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
 	PHP: {$this->data['phpVersion']},
-	Yii: {$this->data['phpVersion']}
+	Yii: {$this->data['yiiVersion']}
 </div>
 EOD;
 	}
