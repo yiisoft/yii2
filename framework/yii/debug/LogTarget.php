@@ -23,6 +23,10 @@ class LogTarget extends Target
 	public $tag;
 	public $historySize = 20;
 
+	/**
+	 * @param \yii\debug\Module $module
+	 * @param array $config
+	 */
 	public function __construct($module, $config = array())
 	{
 		parent::__construct($config);
@@ -42,8 +46,8 @@ class LogTarget extends Target
 		}
 		$file = "$path/{$this->tag}.log";
 		$data = array();
-		foreach ($this->module->panels as $panel) {
-			$data[$panel->id] = $panel->save();
+		foreach ($this->module->panels as $id => $panel) {
+			$data[$id] = $panel->save();
 		}
 		file_put_contents($file, json_encode($data));
 	}
@@ -58,7 +62,7 @@ class LogTarget extends Target
 	 */
 	public function collect($messages, $final)
 	{
-		$this->messages = array_merge($this->messages, $this->filterMessages($messages));
+		$this->messages = array_merge($this->messages, $messages);
 		if ($final) {
 			$this->export($this->messages);
 			$this->gc();

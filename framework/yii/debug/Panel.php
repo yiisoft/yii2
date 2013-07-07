@@ -15,7 +15,10 @@ use yii\base\Component;
  */
 class Panel extends Component
 {
-	public $id;
+	/**
+	 * @var Module
+	 */
+	public $module;
 	public $data;
 
 	public function getName()

@@ -40,10 +40,21 @@ EOD;
 			$time = date('H:i:s.', $log[3]) . sprintf('%03d', (int)(($log[3] - (int)$log[3]) * 1000));
 			$level = Logger::getLevelName($log[1]);
 			$message = Html::encode(wordwrap($log[0]));
-			$rows[] = "<tr><td style=\"width: 100px;\">$time</td><td style=\"width: 100px;\">$level</td><td style=\"width: 250px;\">{$log[2]}</td><td>$message</td></tr>";
+			if ($log[1] == Logger::LEVEL_ERROR) {
+				$class = ' class="error"';
+			} elseif ($log[1] == Logger::LEVEL_WARNING) {
+				$class = ' class="warning"';
+			} elseif ($log[1] == Logger::LEVEL_INFO) {
+				$class = ' class="info"';
+			} else {
+				$class = '';
+			}
+			$rows[] = "<tr$class><td style=\"width: 100px;\">$time</td><td style=\"width: 100px;\">$level</td><td style=\"width: 250px;\">{$log[2]}</td><td>$message</td></tr>";
 		}
 		$rows = implode("\n", $rows);
 		return <<<EOD
+<h1>Log Messages</h1>
+
 <table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
 <thead>
 <tr>
@@ -62,8 +73,10 @@ EOD;
 
 	public function save()
 	{
+		$target = $this->module->logTarget;
+		$messages = $target->filterMessages($target->messages, Logger::LEVEL_ERROR | Logger::LEVEL_INFO | Logger::LEVEL_WARNING | Logger::LEVEL_TRACE);
 		return array(
-			'messages' => Yii::$app->getLog()->targets['debug']->messages,
+			'messages' => $messages,
 		);
 	}
 }

@@ -90,7 +90,7 @@ abstract class Target extends Component
 	 */
 	public function collect($messages, $final)
 	{
-		$this->messages = array_merge($this->messages, $this->filterMessages($messages));
+		$this->messages = array_merge($this->messages, $this->filterMessages($messages, $this->getLevels(), $this->categories, $this->except));
 		$count = count($this->messages);
 		if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
 			if (($context = $this->getContextMessage()) !== '') {
@@ -178,22 +178,22 @@ abstract class Target extends Component
 	/**
 	 * Filters the given messages according to their categories and levels.
 	 * @param array $messages messages to be filtered
+	 * @param integer $levels the message levels to filter by. This is a bitmap of
+	 * level values. Value 0 means allowing all levels.
+	 * @param array $categories the message categories to filter by. If empty, it means all categories are allowed.
+	 * @param array $except the message categories to exclude. If empty, it means all categories are allowed.
 	 * @return array the filtered messages.
-	 * @see filterByCategory
-	 * @see filterByLevel
 	 */
-	protected function filterMessages($messages)
+	public function filterMessages($messages, $levels = 0, $categories = array(), $except = array())
 	{
-		$levels = $this->getLevels();
-
 		foreach ($messages as $i => $message) {
 			if ($levels && !($levels & $message[1])) {
 				unset($messages[$i]);
 				continue;
 			}
 
-			$matched = empty($this->categories);
-			foreach ($this->categories as $category) {
+			$matched = empty($categories);
+			foreach ($categories as $category) {
 				if ($message[2] === $category || substr($category, -1) === '*' && strpos($message[2], rtrim($category, '*')) === 0) {
 					$matched = true;
 					break;
@@ -201,7 +201,7 @@ abstract class Target extends Component
 			}
 
 			if ($matched) {
-				foreach ($this->except as $category) {
+				foreach ($except as $category) {
 					$prefix = rtrim($category, '*');
 					if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
 						$matched = false;
