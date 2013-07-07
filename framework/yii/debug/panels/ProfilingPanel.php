@@ -49,10 +49,10 @@ class ProfilingPanel extends Panel
 
 		$rows = array();
 		foreach ($timings as $timing) {
-			$time = sprintf('%0.5f', $timing[3]);
-			$procedure = str_repeat('&nbsp;', $timing[0] * 4) . Html::encode($timing[1]);
+			$time = sprintf('%.1f ms', $timing[3] * 1000);
+			$procedure = str_repeat('<span class="indent">→</span>', $timing[0]) . Html::encode($timing[1]);
 			$category = Html::encode($timing[2]);
-			$rows[] = "<tr><td>$category</td><td>$procedure</td><td>{$time}s</td>";
+			$rows[] = "<tr><td style=\"width: 80px;\">$time</td><td style=\"width: 220px;\">$category</td><td>$procedure</td>";
 		}
 		$rows = implode("\n", $rows);
 
@@ -62,9 +62,9 @@ class ProfilingPanel extends Panel
 <table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
 <thead>
 <tr>
-	<th>Category</th>
+	<th style="width: 80px;">Time</th>
+	<th style="width: 220px;">Category</th>
 	<th>Procedure</th>
-	<th>Time</th>
 </tr>
 </thead>
 <tbody>

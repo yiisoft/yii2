@@ -12,12 +12,15 @@ use yii\helpers\Html;
  */
 
 $this->registerAssetBundle('yii/bootstrap/dropdown');
+$this->title = 'Yii Debugger';
 ?>
 <div class="default-index">
 	<div class="navbar">
 		<div class="navbar-inner">
 			<div class="container">
-				<span class="brand">Yii Debugger</span>
+				<?php foreach ($panels as $panel): ?>
+					<?php echo $panel->getSummary(); ?>
+				<?php endforeach; ?>
 			</div>
 		</div>
 	</div>

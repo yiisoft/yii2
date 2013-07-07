@@ -21,13 +21,17 @@ class DefaultController extends Controller
 	public $module;
 	public $layout = 'main';
 
-	public function actionIndex($tag, $panel = null)
+	public function actionIndex($tag = null, $panel = null)
 	{
+		if ($tag === null) {
+			$tags = array_keys($this->getManifest());
+			$tag = end($tags);
+		}
 		$meta = $this->loadData($tag);
 		if (isset($this->module->panels[$panel])) {
 			$activePanel = $this->module->panels[$panel];
 		} else {
-			$activePanel = reset($this->module->panels);
+			$activePanel = $this->module->panels['request'];
 		}
 		return $this->render('index', array(
 			'tag' => $tag,
@@ -45,6 +49,11 @@ class DefaultController extends Controller
 			'tag' => $tag,
 			'panels' => $this->module->panels,
 		));
+	}
+
+	public function actionPhpinfo()
+	{
+		phpinfo();
 	}
 
 	private $_manifest;
