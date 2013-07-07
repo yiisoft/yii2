@@ -27,10 +27,10 @@ use yii\helpers\Html;
 </style>
 
 <div id="yii-debug-toolbar">
+	<div class="yii-debug-toolbar-block">
+		<?php echo Html::a('Yii Debugger', array('index', 'tag' => $tag)); ?>
+	</div>
 	<?php foreach ($panels as $panel): ?>
 	<?php echo $panel->getSummary(); ?>
 	<?php endforeach; ?>
-	<div class="yii-debug-toolbar-block">
-		<?php echo Html::a('more details', array('index', 'tag' => $tag)); ?>
-	</div>
 </div>

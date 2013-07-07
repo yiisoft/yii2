@@ -23,7 +23,7 @@ class DefaultController extends Controller
 
 	public function actionIndex($tag, $panel = null)
 	{
-		$this->loadData($tag);
+		$meta = $this->loadData($tag);
 		if (isset($this->module->panels[$panel])) {
 			$activePanel = $this->module->panels[$panel];
 		} else {
@@ -31,6 +31,8 @@ class DefaultController extends Controller
 		}
 		return $this->render('index', array(
 			'tag' => $tag,
+			'meta' => $meta,
+			'manifest' => $this->getManifest(),
 			'panels' => $this->module->panels,
 			'activePanel' => $activePanel,
 		));
@@ -45,11 +47,39 @@ class DefaultController extends Controller
 		));
 	}
 
+	private $_manifest;
+
+	protected function getManifest()
+	{
+		if ($this->_manifest === null) {
+			$indexFile = $this->module->dataPath . '/index.json';
+			if (is_file($indexFile)) {
+				$this->_manifest = json_decode(file_get_contents($indexFile), true);
+			} else {
+				$this->_manifest = array();
+			}
+			if (count($this->_manifest) > $this->module->historySize) {
+				$n = count($this->_manifest) - $this->module->historySize;
+				foreach (array_keys($this->_manifest) as $tag) {
+					$file = $this->module->dataPath . "/$tag.json";
+					@unlink($file);
+					unset($this->_manifest[$tag]);
+					if (--$n <= 0) {
+						break;
+					}
+				}
+				file_put_contents($indexFile, json_encode($this->_manifest));
+			}
+		}
+		return $this->_manifest;
+	}
+
 	protected function loadData($tag)
 	{
-		$file = Yii::$app->getRuntimePath() . "/debug/$tag.log";
-		if (preg_match('/^[\w\-]+$/', $tag) && is_file($file)) {
-			$data = json_decode(file_get_contents($file), true);
+		$manifest = $this->getManifest();
+		if (isset($manifest[$tag])) {
+			$dataFile = $this->module->dataPath . "/$tag.json";
+			$data = json_decode(file_get_contents($dataFile), true);
 			foreach ($this->module->panels as $id => $panel) {
 				if (isset($data[$id])) {
 					$panel->load($data[$id]);
@@ -58,6 +88,7 @@ class DefaultController extends Controller
 					unset($this->module->panels[$id]);
 				}
 			}
+			return $manifest[$tag];
 		} else {
 			throw new HttpException(404, "Unable to find debug data tagged with '$tag'.");
 		}
