@@ -184,7 +184,7 @@ abstract class Target extends Component
 	 * @param array $except the message categories to exclude. If empty, it means all categories are allowed.
 	 * @return array the filtered messages.
 	 */
-	public function filterMessages($messages, $levels = 0, $categories = array(), $except = array())
+	public static function filterMessages($messages, $levels = 0, $categories = array(), $except = array())
 	{
 		foreach ($messages as $i => $message) {
 			if ($levels && !($levels & $message[1])) {

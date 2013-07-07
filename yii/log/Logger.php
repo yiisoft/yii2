@@ -161,7 +161,7 @@ class Logger extends Component
 	public function log($message, $level, $category = 'application')
 	{
 		$time = microtime(true);
-		if (YII_DEBUG && YII_TRACE_LEVEL > 0) {
+		if (YII_DEBUG && YII_TRACE_LEVEL > 0 && !($level & self::LEVEL_PROFILE)) {
 			$traces = debug_backtrace();
 			$count = 0;
 			foreach ($traces as $trace) {
