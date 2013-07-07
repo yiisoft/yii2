@@ -177,7 +177,7 @@ class CaptchaAction extends Action
 		$session->open();
 		$name = $this->getSessionKey() . 'count';
 		$session[$name] = $session[$name] + 1;
-		if ($session[$name] > $this->testLimit && $this->testLimit > 0) {
+		if ($valid || $session[$name] > $this->testLimit && $this->testLimit > 0) {
 			$this->getVerifyCode(true);
 		}
 		return $valid;
