@@ -7,6 +7,12 @@ use yiiunit\TestCase;
 
 class UrlManagerTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testCreateUrl()
 	{
 		// default setting with '/' as base url

@@ -65,6 +65,8 @@ class Application extends \yii\base\Application
 			$params = array_splice($this->catchAll, 1);
 		}
 		try {
+			Yii::trace("Route requested: '$route'", __METHOD__);
+			$this->requestedRoute = $route;
 			$result = $this->runAction($route, $params);
 			if ($result instanceof Response) {
 				return $result;

@@ -35,13 +35,6 @@ return array(
 		),
 		'depends' => array('yii'),
 	),
-	'yii/debug' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'yii.debug.js',
-		),
-		'depends' => array('yii'),
-	),
 	'yii/punycode' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(
@@ -54,5 +47,18 @@ return array(
 			'jquery.maskedinput.js',
 		),
 		'depends' => array('yii/jquery'),
+	),
+	'yii/debug' => array(
+		'sourcePath' => __DIR__ . '/debug/assets',
+		'css' => array(
+			'main.css',
+		),
+		'js' => array(
+			'yii.debug.js',
+		),
+		'depends' => array(
+			'yii',
+			'yii/bootstrap/responsive',
+		),
 	),
 );

@@ -855,7 +855,7 @@ class Html
 	 *   The signature of this callback must be:
 	 *
 	 * ~~~
-	 * function ($index, $item)
+	 * function ($item, $index)
 	 * ~~~
 	 *
 	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
@@ -876,7 +876,7 @@ class Html
 		$results = array();
 		foreach ($items as $index => $item) {
 			if ($formatter !== null) {
-				$results[] = call_user_func($formatter, $index, $item);
+				$results[] = call_user_func($formatter, $item, $index);
 			} else {
 				$results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
 			}
@@ -897,7 +897,7 @@ class Html
 	 *   The signature of this callback must be:
 	 *
 	 * ~~~
-	 * function ($index, $item)
+	 * function ($item, $index)
 	 * ~~~
 	 *
 	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return

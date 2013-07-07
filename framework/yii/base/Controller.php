@@ -107,6 +107,10 @@ class Controller extends Component
 	{
 		$action = $this->createAction($id);
 		if ($action !== null) {
+			Yii::trace("Route to run: " . $action->getUniqueId(), __METHOD__);
+			if (Yii::$app->requestedAction === null) {
+				Yii::$app->requestedAction = $action;
+			}
 			$oldAction = $this->action;
 			$this->action = $action;
 			$result = null;

@@ -21,13 +21,16 @@ class LogTarget extends Target
 	 */
 	public $module;
 	public $tag;
-	public $historySize = 20;
 
+	/**
+	 * @param \yii\debug\Module $module
+	 * @param array $config
+	 */
 	public function __construct($module, $config = array())
 	{
 		parent::__construct($config);
 		$this->module = $module;
-		$this->tag = date('Ymd-His', microtime(true));
+		$this->tag = uniqid();
 	}
 
 	/**
@@ -36,16 +39,32 @@ class LogTarget extends Target
 	 */
 	public function export()
 	{
-		$path = Yii::$app->getRuntimePath() . '/debug';
+		$path = $this->module->dataPath;
 		if (!is_dir($path)) {
 			mkdir($path);
 		}
-		$file = "$path/{$this->tag}.log";
-		$data = array();
-		foreach ($this->module->panels as $panel) {
-			$data[$panel->id] = $panel->save();
+		$indexFile = "$path/index.json";
+		if (!is_file($indexFile)) {
+			$manifest = array();
+		} else {
+			$manifest = json_decode(file_get_contents($indexFile), true);
 		}
-		file_put_contents($file, json_encode($data));
+		$request = Yii::$app->getRequest();
+		$manifest[$this->tag] = array(
+			'url' => $request->getAbsoluteUrl(),
+			'ajax' => $request->getIsAjax(),
+			'method' => $request->getMethod(),
+			'ip' => $request->getUserIP(),
+			'time' => time(),
+		);
+
+		$dataFile = "$path/{$this->tag}.json";
+		$data = array();
+		foreach ($this->module->panels as $id => $panel) {
+			$data[$id] = $panel->save();
+		}
+		file_put_contents($dataFile, json_encode($data));
+		file_put_contents($indexFile, json_encode($manifest));
 	}
 
 	/**
@@ -58,36 +77,9 @@ class LogTarget extends Target
 	 */
 	public function collect($messages, $final)
 	{
-		$this->messages = array_merge($this->messages, $this->filterMessages($messages));
+		$this->messages = array_merge($this->messages, $messages);
 		if ($final) {
 			$this->export($this->messages);
-			$this->gc();
-		}
-	}
-
-	protected function gc()
-	{
-		if (mt_rand(0, 10000) > 100) {
-			return;
-		}
-		$iterator = new \DirectoryIterator(Yii::$app->getRuntimePath() . '/debug');
-		$files = array();
-		foreach ($iterator as $file) {
-			/** @var \DirectoryIterator $file */
-			if (preg_match('/^[\d\-]+\.log$/', $file->getFileName()) && $file->isFile()) {
-				$files[] = $file->getPathname();
-			}
-		}
-		sort($files);
-		if (count($files) > $this->historySize) {
-			$n = count($files) - $this->historySize;
-			foreach ($files as $i => $file) {
-				if ($i < $n) {
-					unlink($file);
-				} else {
-					break;
-				}
-			}
 		}
 	}
 }

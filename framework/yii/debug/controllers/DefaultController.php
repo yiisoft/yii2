@@ -21,16 +21,22 @@ class DefaultController extends Controller
 	public $module;
 	public $layout = 'main';
 
-	public function actionIndex($tag, $panel = null)
+	public function actionIndex($tag = null, $panel = null)
 	{
-		$this->loadData($tag);
+		if ($tag === null) {
+			$tags = array_keys($this->getManifest());
+			$tag = end($tags);
+		}
+		$meta = $this->loadData($tag);
 		if (isset($this->module->panels[$panel])) {
 			$activePanel = $this->module->panels[$panel];
 		} else {
-			$activePanel = reset($this->module->panels);
+			$activePanel = $this->module->panels['request'];
 		}
 		return $this->render('index', array(
 			'tag' => $tag,
+			'meta' => $meta,
+			'manifest' => $this->getManifest(),
 			'panels' => $this->module->panels,
 			'activePanel' => $activePanel,
 		));
@@ -45,19 +51,53 @@ class DefaultController extends Controller
 		));
 	}
 
+	public function actionPhpinfo()
+	{
+		phpinfo();
+	}
+
+	private $_manifest;
+
+	protected function getManifest()
+	{
+		if ($this->_manifest === null) {
+			$indexFile = $this->module->dataPath . '/index.json';
+			if (is_file($indexFile)) {
+				$this->_manifest = json_decode(file_get_contents($indexFile), true);
+			} else {
+				$this->_manifest = array();
+			}
+			if (count($this->_manifest) > $this->module->historySize) {
+				$n = count($this->_manifest) - $this->module->historySize;
+				foreach (array_keys($this->_manifest) as $tag) {
+					$file = $this->module->dataPath . "/$tag.json";
+					@unlink($file);
+					unset($this->_manifest[$tag]);
+					if (--$n <= 0) {
+						break;
+					}
+				}
+				file_put_contents($indexFile, json_encode($this->_manifest));
+			}
+		}
+		return $this->_manifest;
+	}
+
 	protected function loadData($tag)
 	{
-		$file = Yii::$app->getRuntimePath() . "/debug/$tag.log";
-		if (preg_match('/^[\w\-]+$/', $tag) && is_file($file)) {
-			$data = json_decode(file_get_contents($file), true);
+		$manifest = $this->getManifest();
+		if (isset($manifest[$tag])) {
+			$dataFile = $this->module->dataPath . "/$tag.json";
+			$data = json_decode(file_get_contents($dataFile), true);
 			foreach ($this->module->panels as $id => $panel) {
-				if (isset($data[$panel->id])) {
-					$panel->load($data[$panel->id]);
+				if (isset($data[$id])) {
+					$panel->load($data[$id]);
 				} else {
 					// remove the panel since it has not received any data
 					unset($this->module->panels[$id]);
 				}
 			}
+			return $manifest[$tag];
 		} else {
 			throw new HttpException(404, "Unable to find debug data tagged with '$tag'.");
 		}

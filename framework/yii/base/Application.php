@@ -78,6 +78,18 @@ abstract class Application extends Module
 	 * Defaults to 256KB.
 	 */
 	public $memoryReserveSize = 262144;
+	/**
+	 * @var string the requested route
+	 */
+	public $requestedRoute;
+	/**
+	 * @var Action the requested Action. If null, it means the request cannot be resolved into an action.
+	 */
+	public $requestedAction;
+	/**
+	 * @var array the parameters supplied to the requested action.
+	 */
+	public $requestedParams;
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.

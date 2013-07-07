@@ -5,7 +5,7 @@
  */
 use yii\helpers\Html;
 
-Yii::$app->getView()->registerAssetBundle('yii/bootstrap/responsive');
+Yii::$app->getView()->registerAssetBundle('yii/debug');
 ?>
 <!DOCTYPE html>
 <html>
