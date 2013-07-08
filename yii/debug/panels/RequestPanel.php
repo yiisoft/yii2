@@ -107,7 +107,7 @@ EOD;
 			'flashes' => $session ? $session->getAllFlashes() : array(),
 			'requestHeaders' => $requestHeaders,
 			'responseHeaders' => $responseHeaders,
-			'route' => Yii::$app->requestedAction->getUniqueId(),
+			'route' => Yii::$app->requestedAction ? Yii::$app->requestedAction->getUniqueId() : Yii::$app->requestedRoute,
 			'action' => $action,
 			'actionParams' => Yii::$app->requestedParams,
 			'SERVER' => empty($_SERVER) ? array() : $_SERVER,

@@ -29,11 +29,11 @@ class LogPanel extends Panel
 		$output = array();
 		$errorCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_ERROR));
 		if ($errorCount) {
-			$output[] = '<span class="label label-important">$errorCount</span> ' . ($errorCount > 1 ? 'errors' : 'error');
+			$output[] = '<span class="label label-important">' . $errorCount . '</span> ' . ($errorCount > 1 ? 'errors' : 'error');
 		}
 		$warningCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_WARNING));
 		if ($warningCount) {
-			$output[] = '<span class="label label-warning">$warningCount</span> ' . ($warningCount > 1 ? 'warnings' : 'warning');
+			$output[] = '<span class="label label-warning">' . $warningCount . '</span> ' . ($warningCount > 1 ? 'warnings' : 'warning');
 		}
 		if (!empty($output)) {
 			$log = implode(', ', $output);
