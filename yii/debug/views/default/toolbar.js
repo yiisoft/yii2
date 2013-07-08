@@ -15,13 +15,23 @@
 		};
 		xhr.send(settings.data || '');
 	};
+
 	var e = document.getElementById('yii-debug-toolbar');
 	if (e) {
 		e.style.display = 'block';
 		var url = e.getAttribute('data-url');
 		ajax(url, {
 			success: function(xhr) {
-				e.innerHTML = xhr.responseText;
+				var div = document.createElement('div');
+				div.innerHTML = xhr.responseText;
+				e.parentNode.replaceChild(div, e);
+				if (window.localStorage) {
+					var pref = localStorage.getItem('yii-debug-toolbar');
+					if (pref == 'minimized') {
+						document.getElementById('yii-debug-toolbar').style.display = 'none';
+						document.getElementById('yii-debug-toolbar-min').style.display = 'block';
+					}
+				}
 			},
 			error: function(xhr) {
 				e.innerHTML = xhr.responseText;
