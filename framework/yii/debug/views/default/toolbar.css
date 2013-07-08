@@ -114,12 +114,12 @@
 	background-color: #1a1a1a;
 }
 
-#yii-debug-toolbar-minimize,
-#yii-debug-toolbar-maximize {
+.yii-debug-toolbar-toggler {
 	cursor: pointer;
 	position: absolute;
-	right: 0;
-	width: 20px;
+	right: 4px;
+	bottom: 4px;
+	width: 15px;
 	height: 30px;
 	font-size: 25px;
 	font-weight: 100;
@@ -127,7 +127,6 @@
 	color: #ffffff;
 	text-align: center;
 	background: #222222;
-	border: 3px solid #ffffff;
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
@@ -135,18 +134,44 @@
 	filter: alpha(opacity=50);
 }
 
-#yii-debug-toolbar-maximize {
-	cursor: pointer;
-	position: absolute;
-	right: 100px;
-}
-
-#yii-debug-toolbar-minimize:hover,
-#yii-debug-toolbar-minimize:focus,
-#yii-debug-toolbar-maximize:hover,
-#yii-debug-toolbar-maximize:focus {
+.yii-debug-toolbar-toggler:hover,
+.yii-debug-toolbar-toggler:focus {
 	color: #ffffff;
 	text-decoration: none;
 	opacity: 0.9;
 	filter: alpha(opacity=90);
+}
+
+#yii-debug-toolbar-min {
+	display: none;
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	margin: 0;
+	padding: 0;
+	z-index: 1000000;
+	font: 11px Verdana, Arial, sans-serif;
+	text-align: left;
+	width: 57px;
+	height: 38px;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	-webkit-border-top-left-radius: 6px;
+	-moz-border-top-left-radius: 6px;
+	border-top-left-radius: 6px;
+	background: rgb(237,237,237);
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2VkZWRlZCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUzJSIgc3RvcC1jb2xvcj0iI2Y2ZjZmNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top,  rgba(237,237,237,1) 0%, rgba(246,246,246,1) 53%, rgba(255,255,255,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(53%,rgba(246,246,246,1)), color-stop(100%,rgba(255,255,255,1)));
+	background: -webkit-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(246,246,246,1) 53%,rgba(255,255,255,1) 100%);
+	background: -o-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(246,246,246,1) 53%,rgba(255,255,255,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(246,246,246,1) 53%,rgba(255,255,255,1) 100%);
+	background: linear-gradient(to bottom,  rgba(237,237,237,1) 0%,rgba(246,246,246,1) 53%,rgba(255,255,255,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=0 );
+}
+
+#yii-debug-toolbar-logo {
+	position: fixed;
+	right: 25px;
+	bottom: 4px;
 }
