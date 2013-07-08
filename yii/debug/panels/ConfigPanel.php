@@ -55,7 +55,7 @@ EOD;
 		return "<h1>Configuration</h1>\n"
 			. $this->renderData('Application Configuration', $app) . "\n"
 			. $this->renderData('PHP Configuration', $php) . "\n"
-			. '<div>' . Html::a('Complete phpinfo()', array('phpinfo'), array('class' => 'btn btn-info')) . "</div>\n";
+			. '<div>' . Html::a('phpinfo()', array('phpinfo'), array('class' => 'btn btn-info')) . "</div>\n";
 	}
 
 	protected function renderData($caption, $values)

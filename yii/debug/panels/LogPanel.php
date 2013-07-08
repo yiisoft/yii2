@@ -28,16 +28,12 @@ class LogPanel extends Panel
 	{
 		$output = array();
 		$errorCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_ERROR));
-		if ($errorCount === 1) {
-			$output[] = '1 error';
-		} elseif ($errorCount > 1) {
-			$output[] = "$errorCount errors";
+		if ($errorCount) {
+			$output[] = '<span class="label label-important">$errorCount</span> ' . ($errorCount > 1 ? 'errors' : 'error');
 		}
 		$warningCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_WARNING));
-		if ($warningCount === 1) {
-			$output[] = '1 warning';
-		} elseif ($warningCount > 1) {
-			$output[] = "$warningCount warnings";
+		if ($warningCount) {
+			$output[] = '<span class="label label-warning">$warningCount</span> ' . ($warningCount > 1 ? 'warnings' : 'warning');
 		}
 		if (!empty($output)) {
 			$log = implode(', ', $output);

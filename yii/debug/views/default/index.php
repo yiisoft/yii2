@@ -18,6 +18,9 @@ $this->title = 'Yii Debugger';
 	<div class="navbar">
 		<div class="navbar-inner">
 			<div class="container">
+				<div class="yii-debug-toolbar-block title">
+					Yii Debugger
+				</div>
 				<?php foreach ($panels as $panel): ?>
 					<?php echo $panel->getSummary(); ?>
 				<?php endforeach; ?>

@@ -40,11 +40,14 @@ class Module extends \yii\base\Module
 	 */
 	public $dataPath = '@runtime/debug';
 	public $historySize = 50;
+	public $enabled = true;
 
 	public function init()
 	{
 		parent::init();
-
+		if (!$this->enabled) {
+			return;
+		}
 		$this->dataPath = Yii::getAlias($this->dataPath);
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
 		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
@@ -72,19 +75,17 @@ class Module extends \yii\base\Module
 
 	public function renderToolbar($event)
 	{
-		/** @var View $view */
-		$id = 'yii-debug-toolbar';
-		$tag = $this->logTarget->tag;
 		$url = Yii::$app->getUrlManager()->createUrl('debug/default/toolbar', array(
-			'tag' => $tag,
+			'tag' => $this->logTarget->tag,
 		));
-		$view = $event->sender;
-		$view->registerJs("yii.debug.load('$id', '$url');");
-		$view->registerAssetBundle('yii/debug');
 		echo Html::tag('div', '', array(
-			'id' => $id,
+			'id' => 'yii-debug-toolbar',
+			'data-url' => $url,
 			'style' => 'display: none',
 		));
+		/** @var View $view */
+		$view = $event->sender;
+		echo '<script>' . $view->renderFile(__DIR__ . '/views/default/toolbar.js') . '</script>';
 	}
 
 	protected function corePanels()

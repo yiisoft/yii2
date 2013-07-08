@@ -53,9 +53,6 @@ return array(
 		'css' => array(
 			'main.css',
 		),
-		'js' => array(
-			'yii.debug.js',
-		),
 		'depends' => array(
 			'yii',
 			'yii/bootstrap/responsive',
