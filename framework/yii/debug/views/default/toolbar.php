@@ -13,4 +13,6 @@ use yii\helpers\Html;
 	<?php foreach ($panels as $panel): ?>
 	<?php echo $panel->getSummary(); ?>
 	<?php endforeach; ?>
+	<div id="yii-debug-toolbar-minimize">›</div>
 </div>
+<div id="yii-debug-toolbar-maximize">‹</div>

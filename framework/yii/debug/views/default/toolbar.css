@@ -113,3 +113,40 @@
 #yii-debug-toolbar .badge-inverse[href] {
 	background-color: #1a1a1a;
 }
+
+#yii-debug-toolbar-minimize,
+#yii-debug-toolbar-maximize {
+	cursor: pointer;
+	position: absolute;
+	right: 0;
+	width: 20px;
+	height: 30px;
+	font-size: 25px;
+	font-weight: 100;
+	line-height: 28px;
+	color: #ffffff;
+	text-align: center;
+	background: #222222;
+	border: 3px solid #ffffff;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+}
+
+#yii-debug-toolbar-maximize {
+	cursor: pointer;
+	position: absolute;
+	right: 100px;
+}
+
+#yii-debug-toolbar-minimize:hover,
+#yii-debug-toolbar-minimize:focus,
+#yii-debug-toolbar-maximize:hover,
+#yii-debug-toolbar-maximize:focus {
+	color: #ffffff;
+	text-decoration: none;
+	opacity: 0.9;
+	filter: alpha(opacity=90);
+}
