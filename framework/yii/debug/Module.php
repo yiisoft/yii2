@@ -81,6 +81,7 @@ class Module extends \yii\base\Module
 		echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';
 		/** @var View $view */
 		$view = $event->sender;
+		echo '<style>' . $view->renderFile(__DIR__ . '/views/default/toolbar.css') . '</style>';
 		echo '<script>' . $view->renderFile(__DIR__ . '/views/default/toolbar.js') . '</script>';
 	}
 

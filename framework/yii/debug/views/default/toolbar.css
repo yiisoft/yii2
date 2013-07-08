@@ -117,7 +117,7 @@
 .yii-debug-toolbar-toggler {
 	cursor: pointer;
 	position: absolute;
-	right: 4px;
+	right: 10px;
 	bottom: 4px;
 	width: 15px;
 	height: 30px;
@@ -126,7 +126,7 @@
 	line-height: 28px;
 	color: #ffffff;
 	text-align: center;
-	background: #222222;
+	background: #666666;
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
@@ -152,7 +152,7 @@
 	z-index: 1000000;
 	font: 11px Verdana, Arial, sans-serif;
 	text-align: left;
-	width: 57px;
+	width: 63px;
 	height: 38px;
 	border-top: 1px solid #ccc;
 	border-left: 1px solid #ccc;
@@ -172,6 +172,6 @@
 
 #yii-debug-toolbar-logo {
 	position: fixed;
-	right: 25px;
+	right: 31px;
 	bottom: 4px;
 }
