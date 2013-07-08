@@ -21,11 +21,17 @@ class DefaultController extends Controller
 	public $module;
 	public $layout = 'main';
 
-	public function actionIndex($tag = null, $panel = null)
+	public function actionIndex()
+	{
+		return $this->render('index', array(
+		));
+	}
+
+	public function actionView($tag = null, $panel = null)
 	{
 		if ($tag === null) {
 			$tags = array_keys($this->getManifest());
-			$tag = end($tags);
+			$tag = reset($tags);
 		}
 		$meta = $this->loadData($tag);
 		if (isset($this->module->panels[$panel])) {
@@ -33,7 +39,7 @@ class DefaultController extends Controller
 		} else {
 			$activePanel = $this->module->panels['request'];
 		}
-		return $this->render('index', array(
+		return $this->render('view', array(
 			'tag' => $tag,
 			'meta' => $meta,
 			'manifest' => $this->getManifest(),
@@ -63,21 +69,9 @@ class DefaultController extends Controller
 		if ($this->_manifest === null) {
 			$indexFile = $this->module->dataPath . '/index.json';
 			if (is_file($indexFile)) {
-				$this->_manifest = json_decode(file_get_contents($indexFile), true);
+				$this->_manifest = array_reverse(json_decode(file_get_contents($indexFile), true), true);
 			} else {
 				$this->_manifest = array();
-			}
-			if (count($this->_manifest) > $this->module->historySize) {
-				$n = count($this->_manifest) - $this->module->historySize;
-				foreach (array_keys($this->_manifest) as $tag) {
-					$file = $this->module->dataPath . "/$tag.json";
-					@unlink($file);
-					unset($this->_manifest[$tag]);
-					if (--$n <= 0) {
-						break;
-					}
-				}
-				file_put_contents($indexFile, json_encode($this->_manifest));
 			}
 		}
 		return $this->_manifest;
@@ -91,6 +85,7 @@ class DefaultController extends Controller
 			$data = json_decode(file_get_contents($dataFile), true);
 			foreach ($this->module->panels as $id => $panel) {
 				if (isset($data[$id])) {
+					$panel->tag = $tag;
 					$panel->load($data[$id]);
 				} else {
 					// remove the panel since it has not received any data
