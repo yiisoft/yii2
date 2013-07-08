@@ -50,7 +50,8 @@ class LogTarget extends Target
 			$manifest = json_decode(file_get_contents($indexFile), true);
 		}
 		$request = Yii::$app->getRequest();
-		$manifest[$this->tag] = array(
+		$manifest[$this->tag] = $summary = array(
+			'tag' => $this->tag,
 			'url' => $request->getAbsoluteUrl(),
 			'ajax' => $request->getIsAjax(),
 			'method' => $request->getMethod(),
@@ -64,6 +65,7 @@ class LogTarget extends Target
 		foreach ($this->module->panels as $id => $panel) {
 			$data[$id] = $panel->save();
 		}
+		$data['summary'] = $summary;
 		file_put_contents($dataFile, json_encode($data));
 		file_put_contents($indexFile, json_encode($manifest));
 	}
@@ -86,7 +88,7 @@ class LogTarget extends Target
 
 	protected function gc(&$manifest)
 	{
-		if (rand(0, 100) < 5 && count($manifest) > $this->module->historySize) {
+		if (count($manifest) > $this->module->historySize + 10) {
 			$n = count($manifest) - $this->module->historySize;
 			foreach (array_keys($manifest) as $tag) {
 				$file = $this->module->dataPath . "/$tag.json";
