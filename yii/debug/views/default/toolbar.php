@@ -24,18 +24,15 @@ EOD;
 
 $url = $panels['request']->getUrl();
 ?>
-<style>
-	<?php echo $this->renderFile(__DIR__ . '/toolbar.css'); ?>
-</style>
 <div id="yii-debug-toolbar">
 	<?php foreach ($panels as $panel): ?>
 	<?php echo $panel->getSummary(); ?>
 	<?php endforeach; ?>
-	<a class="yii-debug-toolbar-toggler" href="javascript:void(0);" onclick="<?php echo $minJs; ?>">›</a>
+	<span class="yii-debug-toolbar-toggler" onclick="<?php echo $minJs; ?>">›</span>
 </div>
 <div id="yii-debug-toolbar-min">
 	<a href="<?php echo $url; ?>" title="Open Yii Debugger" id="yii-debug-toolbar-logo">
 		<img width="29" height="30" alt="" src="<?php echo ConfigPanel::getYiiLogo(); ?>">
 	</a>
-	<a class="yii-debug-toolbar-toggler" href="javascript:void(0);" onclick="<?php echo $maxJs; ?>">‹</a>
+	<span class="yii-debug-toolbar-toggler" onclick="<?php echo $maxJs; ?>">‹</span>
 </div>
