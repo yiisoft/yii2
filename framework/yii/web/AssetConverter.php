@@ -39,7 +39,7 @@ class AssetConverter extends Component implements IAssetConverter
 	public function convert($asset, $basePath)
 	{
 		$pos = strrpos($asset, '.');
-		if ($pos === false) {
+		if ($pos !== false) {
 			$ext = substr($asset, $pos + 1);
 			if (isset($this->commands[$ext])) {
 				list ($ext, $command) = $this->commands[$ext];
