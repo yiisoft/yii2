@@ -43,25 +43,32 @@ $this->title = 'Yii Debugger';
 			<div class="span10">
 				<div class="meta alert alert-info">
 					<div class="btn-group">
+						<?php echo Html::a('All', array('index'), array('class' => 'btn')); ?>
 						<button class="btn dropdown-toggle" data-toggle="dropdown">
-							View others
+							Last 10
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<?php foreach ($manifest as $tag2 => $meta2) {
+							<?php
+							$count = 0;
+							foreach ($manifest as $tag2 => $meta2) {
 								$label = $meta2['method'] . ' ' . $meta2['url'] . ($meta2['ajax'] ? ' (AJAX)' : '')
-									. ', ' . date('Y/m/d h:i:sa', $meta2['time'])
+									. ', ' . date('Y-m-d h:i:sa', $meta2['time'])
 									. ', ' . $meta2['ip'] . ', ' . $tag2;
 								$url = array('view', 'tag' => $tag2);
 								echo '<li>' . Html::a(Html::encode($label), $url) . '</li>';
-							} ?>
+								if (++$count >= 10) {
+									break;
+								}
+							}
+							?>
 						</ul>
 					</div>
 					Debugging:
 					<?php echo $meta['method']; ?>
 					<?php echo Html::a(Html::encode($meta['url']), $meta['url']); ?>
 					<?php echo $meta['ajax'] ? ' (AJAX)' : ''; ?>
-					at <?php echo date('Y/m/d h:i:sa', $meta['time']); ?>
+					at <?php echo date('Y-m-d h:i:sa', $meta['time']); ?>
 					by <?php echo $meta['ip']; ?>
 				</div>
 				<?php echo $activePanel->getDetail(); ?>
