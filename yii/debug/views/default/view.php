@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 /**
  * @var \yii\base\View $this
- * @var array $meta
+ * @var array $summary
  * @var string $tag
  * @var array $manifest
  * @var \yii\debug\Panel[] $panels
@@ -51,11 +51,11 @@ $this->title = 'Yii Debugger';
 						<ul class="dropdown-menu">
 							<?php
 							$count = 0;
-							foreach ($manifest as $tag2 => $meta2) {
-								$label = $meta2['method'] . ' ' . $meta2['url'] . ($meta2['ajax'] ? ' (AJAX)' : '')
-									. ', ' . date('Y-m-d h:i:sa', $meta2['time'])
-									. ', ' . $meta2['ip'] . ', ' . $tag2;
-								$url = array('view', 'tag' => $tag2);
+							foreach ($manifest as $meta) {
+								$label = $meta['tag'] . ': ' . $meta['method'] . ' ' . $meta['url'] . ($meta['ajax'] ? ' (AJAX)' : '')
+									. ', ' . date('Y-m-d h:i:s a', $meta['time'])
+									. ', ' . $meta['ip'];
+								$url = array('view', 'tag' => $meta['tag']);
 								echo '<li>' . Html::a(Html::encode($label), $url) . '</li>';
 								if (++$count >= 10) {
 									break;
@@ -64,12 +64,12 @@ $this->title = 'Yii Debugger';
 							?>
 						</ul>
 					</div>
-					Debugging:
-					<?php echo $meta['method']; ?>
-					<?php echo Html::a(Html::encode($meta['url']), $meta['url']); ?>
-					<?php echo $meta['ajax'] ? ' (AJAX)' : ''; ?>
-					at <?php echo date('Y-m-d h:i:sa', $meta['time']); ?>
-					by <?php echo $meta['ip']; ?>
+					<?php echo $summary['tag']; ?>:
+					<?php echo $summary['method']; ?>
+					<?php echo Html::a(Html::encode($summary['url']), $summary['url'], array('class' => 'label')); ?>
+					<?php echo $summary['ajax'] ? ' (AJAX)' : ''; ?>
+					at <?php echo date('Y-m-d h:i:s a', $summary['time']); ?>
+					by <?php echo $summary['ip']; ?>
 				</div>
 				<?php echo $activePanel->getDetail(); ?>
 			</div>

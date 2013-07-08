@@ -17,9 +17,15 @@ use yii\web\HttpException;
  */
 class DefaultController extends Controller
 {
-	/** @var  \yii\debug\Module */
-	public $module;
 	public $layout = 'main';
+	/**
+	 * @var  \yii\debug\Module
+	 */
+	public $module;
+	/**
+	 * @var array the summary data (e.g. URL, time)
+	 */
+	public $summary;
 
 	public function actionIndex()
 	{
@@ -34,7 +40,7 @@ class DefaultController extends Controller
 			$tags = array_keys($this->getManifest());
 			$tag = reset($tags);
 		}
-		$meta = $this->loadData($tag);
+		$this->loadData($tag);
 		if (isset($this->module->panels[$panel])) {
 			$activePanel = $this->module->panels[$panel];
 		} else {
@@ -42,7 +48,7 @@ class DefaultController extends Controller
 		}
 		return $this->render('view', array(
 			'tag' => $tag,
-			'meta' => $meta,
+			'summary' => $this->summary,
 			'manifest' => $this->getManifest(),
 			'panels' => $this->module->panels,
 			'activePanel' => $activePanel,
@@ -93,7 +99,7 @@ class DefaultController extends Controller
 					unset($this->module->panels[$id]);
 				}
 			}
-			return $manifest[$tag];
+			$this->summary = $data['summary'];
 		} else {
 			throw new HttpException(404, "Unable to find debug data tagged with '$tag'.");
 		}
