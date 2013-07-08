@@ -7,6 +7,7 @@
 
 namespace yii\debug;
 
+use Yii;
 use yii\base\Component;
 
 /**
@@ -15,6 +16,8 @@ use yii\base\Component;
  */
 class Panel extends Component
 {
+	public $id;
+	public $tag;
 	/**
 	 * @var Module
 	 */
@@ -44,5 +47,13 @@ class Panel extends Component
 	public function load($data)
 	{
 		$this->data = $data;
+	}
+
+	public function getUrl()
+	{
+		return Yii::$app->getUrlManager()->createUrl($this->module->id . '/default/view', array(
+			'panel' => $this->id,
+			'tag' => $this->tag,
+		));
 	}
 }

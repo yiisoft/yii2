@@ -6,7 +6,7 @@
 	margin: 0;
 	padding: 0;
 	z-index: 1000000;
-	font: 12px Verdana, Arial, sans-serif;
+	font: 11px Verdana, Arial, sans-serif;
 	text-align: left;
 	height: 38px;
 	border-top: 1px solid #ccc;
@@ -45,7 +45,7 @@
 	display: inline-block;
 	padding: 2px 4px;
 	font-size: 11.844px;
-	font-weight: bold;
+	font-weight: normal;
 	line-height: 14px;
 	color: #ffffff;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -112,10 +112,4 @@
 #yii-debug-toolbar .label-inverse[href],
 #yii-debug-toolbar .badge-inverse[href] {
 	background-color: #1a1a1a;
-}
-
-#yii-debug-toolbar .debugger-link a {
-	padding: 3px 5px;
-	font-weight: normal;
-	color: white;
 }

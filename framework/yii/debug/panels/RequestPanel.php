@@ -25,20 +25,21 @@ class RequestPanel extends Panel
 
 	public function getSummary()
 	{
-		$memory = '<span class="label">' . sprintf('%.1f MB', $this->data['memory'] / 1048576) . '</span>';
-		$time = '<span class="label">' . number_format($this->data['time'] * 1000) . ' ms</span>';
+		$memory = sprintf('%.1f MB', $this->data['memory'] / 1048576);
+		$time = number_format($this->data['time'] * 1000) . ' ms';
+		$url = $this->getUrl();
 
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
-Peak memory: $memory
+	<a href="$url">Peak memory: <span class="label">$memory</span></a>
 </div>
 
 <div class="yii-debug-toolbar-block">
-	Time spent: $time
+	<a href="$url">Time spent: <span class="label">$time</span></a>
 </div>
 
 <div class="yii-debug-toolbar-block">
-	Action: {$this->data['action']}
+	<a href="$url">Action: <span class="label">{$this->data['action']}</span></a>
 </div>
 EOD;
 	}

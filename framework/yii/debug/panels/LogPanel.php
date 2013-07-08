@@ -37,9 +37,10 @@ class LogPanel extends Panel
 		}
 		if (!empty($output)) {
 			$log = implode(', ', $output);
+			$url = $this->getUrl();
 			return <<<EOD
 <div class="yii-debug-toolbar-block">
-$log
+	<a href="$url">$log</a>
 </div>
 EOD;
 		} else {

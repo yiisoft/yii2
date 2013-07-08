@@ -9,7 +9,6 @@ namespace yii\debug;
 
 use Yii;
 use yii\base\View;
-use yii\helpers\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -54,6 +53,7 @@ class Module extends \yii\base\Module
 
 		foreach (array_merge($this->corePanels(), $this->panels) as $id => $config) {
 			$config['module'] = $this;
+			$config['id'] = $id;
 			$this->panels[$id] = Yii::createObject($config);
 		}
 	}
@@ -75,14 +75,10 @@ class Module extends \yii\base\Module
 
 	public function renderToolbar($event)
 	{
-		$url = Yii::$app->getUrlManager()->createUrl('debug/default/toolbar', array(
+		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', array(
 			'tag' => $this->logTarget->tag,
 		));
-		echo Html::tag('div', '', array(
-			'id' => 'yii-debug-toolbar',
-			'data-url' => $url,
-			'style' => 'display: none',
-		));
+		echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';
 		/** @var View $view */
 		$view = $event->sender;
 		echo '<script>' . $view->renderFile(__DIR__ . '/views/default/toolbar.js') . '</script>';
