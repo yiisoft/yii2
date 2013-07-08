@@ -57,6 +57,7 @@ class LogTarget extends Target
 			'ip' => $request->getUserIP(),
 			'time' => time(),
 		);
+		$this->gc($manifest);
 
 		$dataFile = "$path/{$this->tag}.json";
 		$data = array();
@@ -80,6 +81,21 @@ class LogTarget extends Target
 		$this->messages = array_merge($this->messages, $messages);
 		if ($final) {
 			$this->export($this->messages);
+		}
+	}
+
+	protected function gc(&$manifest)
+	{
+		if (rand(0, 100) < 5 && count($manifest) > $this->module->historySize) {
+			$n = count($manifest) - $this->module->historySize;
+			foreach (array_keys($manifest) as $tag) {
+				$file = $this->module->dataPath . "/$tag.json";
+				@unlink($file);
+				unset($manifest[$tag]);
+				if (--$n <= 0) {
+					break;
+				}
+			}
 		}
 	}
 }
