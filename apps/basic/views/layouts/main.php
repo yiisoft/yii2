@@ -18,8 +18,8 @@ $this->registerAssetBundle('app');
 	<?php $this->head(); ?>
 </head>
 <body>
+<?php $this->beginBody(); ?>
 <div class="container">
-	<?php $this->beginBody(); ?>
 	<div class="masthead">
 		<h3 class="muted">My Company</h3>
 
@@ -57,8 +57,8 @@ $this->registerAssetBundle('app');
 			Template by <a href="http://twitter.github.io/bootstrap/">Twitter Bootstrap</a>
 		</p>
 	</div>
-	<?php $this->endBody(); ?>
 </div>
+<?php $this->endBody(); ?>
 </body>
 </html>
 <?php $this->endPage(); ?>

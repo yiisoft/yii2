@@ -281,8 +281,8 @@ class Command extends \yii\base\Component
 			return 0;
 		}
 
+		$token = "SQL: $sql";
 		try {
-			$token = "SQL: $sql";
 			Yii::beginProfile($token, __METHOD__);
 
 			$this->prepare();
@@ -403,8 +403,8 @@ class Command extends \yii\base\Component
 			}
 		}
 
+		$token = "SQL: $sql";
 		try {
-			$token = "SQL: $sql";
 			Yii::beginProfile($token, __METHOD__);
 
 			$this->prepare();

@@ -3,6 +3,13 @@
 return array(
 	'id' => 'bootstrap',
 	'basePath' => dirname(__DIR__),
+	'preload' => array('debug'),
+	'modules' => array(
+		'debug' => array(
+			'class' => 'yii\debug\Module',
+			'enabled' => YII_DEBUG && YII_ENV === 'dev',
+		),
+	),
 	'components' => array(
 		'cache' => array(
 			'class' => 'yii\caching\FileCache',

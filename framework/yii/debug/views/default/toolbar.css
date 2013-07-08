@@ -6,7 +6,7 @@
 	margin: 0;
 	padding: 0;
 	z-index: 1000000;
-	font: 11px Verdana, Arial, sans-serif;
+	font: 12px Verdana, Arial, sans-serif;
 	text-align: left;
 	height: 38px;
 	border-top: 1px solid #ccc;
@@ -31,7 +31,7 @@
 
 .yii-debug-toolbar-block a {
 	text-decoration: none;
-	color: black !important;
+	color: black;
 }
 
 .yii-debug-toolbar-block span {
@@ -41,17 +41,81 @@
 	vertical-align: middle;
 }
 
-.yii-debug-toolbar-block.title {
-	display: block;
-	float: left;
-	padding: 4px 8px 4px 20px;
-	margin-left: -20px;
-	font-size: 20px;
-	font-weight: 200;
-	color: #777777;
-	text-shadow: 0 1px 0 #ffffff;
+#yii-debug-toolbar .label {
+	display: inline-block;
+	padding: 2px 4px;
+	font-size: 11.844px;
+	font-weight: bold;
+	line-height: 14px;
+	color: #ffffff;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	white-space: nowrap;
+	vertical-align: baseline;
+	background-color: #999999;
 }
 
-span.indent {
-	color: #ccc;
+#yii-debug-toolbar .label {
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#yii-debug-toolbar .label:empty {
+	display: none;
+}
+
+#yii-debug-toolbar a.label:hover,
+#yii-debug-toolbar a.label:focus {
+	color: #ffffff;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#yii-debug-toolbar .label-important {
+	background-color: #b94a48;
+}
+
+#yii-debug-toolbar .label-important[href] {
+	background-color: #953b39;
+}
+
+#yii-debug-toolbar .label-warning,
+#yii-debug-toolbar .badge-warning {
+	background-color: #f89406;
+}
+
+#yii-debug-toolbar .label-warning[href] {
+	background-color: #c67605;
+}
+
+#yii-debug-toolbar .label-success {
+	background-color: #468847;
+}
+
+#yii-debug-toolbar .label-success[href] {
+	background-color: #356635;
+}
+
+#yii-debug-toolbar .label-info {
+	background-color: #3a87ad;
+}
+
+#yii-debug-toolbar .label-info[href] {
+	background-color: #2d6987;
+}
+
+#yii-debug-toolbar .label-inverse,
+#yii-debug-toolbar .badge-inverse {
+	background-color: #333333;
+}
+
+#yii-debug-toolbar .label-inverse[href],
+#yii-debug-toolbar .badge-inverse[href] {
+	background-color: #1a1a1a;
+}
+
+#yii-debug-toolbar .debugger-link a {
+	padding: 3px 5px;
+	font-weight: normal;
+	color: white;
 }
