@@ -275,13 +275,13 @@ class Command extends \yii\base\Component
 
 		$rawSql = $this->getRawSql();
 
-		Yii::trace("Executing SQL: $rawSql", __METHOD__);
+		Yii::info($rawSql, __METHOD__);
 
 		if ($sql == '') {
 			return 0;
 		}
 
-		$token = "SQL: $sql";
+		$token = $sql;
 		try {
 			Yii::beginProfile($token, __METHOD__);
 
@@ -383,7 +383,7 @@ class Command extends \yii\base\Component
 		$sql = $this->getSql();
 		$rawSql = $this->getRawSql();
 
-		Yii::trace("Querying SQL: $rawSql", __METHOD__);
+		Yii::info($rawSql, __METHOD__);
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {
@@ -403,7 +403,7 @@ class Command extends \yii\base\Component
 			}
 		}
 
-		$token = "SQL: $sql";
+		$token = $sql;
 		try {
 			Yii::beginProfile($token, __METHOD__);
 

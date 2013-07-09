@@ -31,11 +31,11 @@ class RequestPanel extends Panel
 
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
-	<a href="$url">Peak memory: <span class="label">$memory</span></a>
+	<a href="$url">Memory: <span class="label">$memory</span></a>
 </div>
 
 <div class="yii-debug-toolbar-block">
-	<a href="$url">Time spent: <span class="label">$time</span></a>
+	<a href="$url">Time: <span class="label">$time</span></a>
 </div>
 
 <div class="yii-debug-toolbar-block">
