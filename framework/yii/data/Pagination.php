@@ -104,18 +104,8 @@ class Pagination extends Object
 	/**
 	 * @var integer total number of items.
 	 */
-	public $itemCount;
+	public $itemCount = 0;
 
-	/**
-	 * Constructor.
-	 * @param integer $itemCount total number of items.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($itemCount, $config = array())
-	{
-		$this->itemCount = $itemCount;
-		parent::__construct($config);
-	}
 
 	/**
 	 * @return integer number of pages
