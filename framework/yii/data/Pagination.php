@@ -28,7 +28,7 @@ use yii\base\Object;
  * {
  *     $query = Article::find()->where(array('status' => 1));
  *     $countQuery = clone $query;
- *     $pages = new Pagination($countQuery->count());
+ *     $pages = new Pagination(array('itemCount' => $countQuery->count()));
  *     $models = $query->offset($pages->offset)
  *         ->limit($pages->limit)
  *         ->all();
