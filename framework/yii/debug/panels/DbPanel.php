@@ -24,10 +24,20 @@ class DbPanel extends Panel
 
 	public function getSummary()
 	{
-		$queryCount = count($this->data['messages']) / 2;
+		$timings = $this->calculateTimings();
+		$queryCount = count($timings);
+		$queryTime = 0;
+		foreach ($timings as $timing) {
+			$queryTime += $timing[3];
+		}
+		$queryTime = number_format($queryTime * 1000) . ' ms';
+		$url = $this->getUrl();
 		$output = <<<EOD
 <div class="yii-debug-toolbar-block">
-	DB queries: <span class="label">$queryCount</span>
+	<a href="$url">
+		DB queries: <span class="label">$queryCount</span>
+		time: <span class="label">$queryTime</span>
+	</a>
 </div>
 EOD;
 		return $queryCount > 0 ? $output : '';
@@ -35,6 +45,39 @@ EOD;
 
 	public function getDetail()
 	{
+		$timings = $this->calculateTimings();
+		$rows = array();
+		foreach ($timings as $timing) {
+			$duration = sprintf('%.1f ms', $timing[3] * 1000);
+			$procedure = str_repeat('<span class="indent">→</span>', $timing[0]) . Html::encode($timing[1]);
+			$rows[] = "<tr><td style=\"width: 80px;\">$duration</td><td>$procedure</td>";
+		}
+		$rows = implode("\n", $rows);
+
+		return <<<EOD
+<h1>Database Queries</h1>
+
+<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
+<thead>
+<tr>
+	<th style="width: 80px;">Duration</th>
+	<th>Query</th>
+</tr>
+</thead>
+<tbody>
+$rows
+</tbody>
+</table>
+EOD;
+	}
+
+	private $_timings;
+
+	protected function calculateTimings()
+	{
+		if ($this->_timings !== null) {
+			return $this->_timings;
+		}
 		$messages = $this->data['messages'];
 		$timings = array();
 		$stack = array();
@@ -56,32 +99,7 @@ EOD;
 			$timings[$last[4]] = array(count($stack), $last[0], $last[2], $delta);
 		}
 		ksort($timings);
-
-		$rows = array();
-		foreach ($timings as $timing) {
-			$time = date('Y.m.d, H:i:s.', $timing[2]) . round(($timing[2] - floor($timing[2])) * 10000);
-			$duration = sprintf('%.1f ms', $timing[3] * 1000);
-			$procedure = str_repeat('<span class="indent">→</span>', $timing[0]) . Html::encode($timing[1]);
-			$rows[] = "<tr><td style=\"width: 80px;\">$time</td><td style=\"width: 80px;\">$duration</td><td>$procedure</td>";
-		}
-		$rows = implode("\n", $rows);
-
-		return <<<EOD
-<h1>Database Queries</h1>
-
-<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
-<thead>
-<tr>
-	<th style="width: 180px;">Time</th>
-	<th style="width: 80px;">Duration</th>
-	<th>Query</th>
-</tr>
-</thead>
-<tbody>
-$rows
-</tbody>
-</table>
-EOD;
+		return $this->_timings = $timings;
 	}
 
 	public function save()
