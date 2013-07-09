@@ -35,10 +35,9 @@ use yii\db\Connection;
  * And the following example shows how to use ActiveDataProvider without ActiveRecord:
  *
  * ~~~
+ * $query = new Query;
  * $provider = new ActiveDataProvider(array(
- *     'query' => new Query(array(
- *         'from' => 'tbl_post',
- *     )),
+ *     'query' => $query->from('tbl_post'),
  *     'pagination' => array(
  *         'pageSize' => 20,
  *     ),
