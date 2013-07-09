@@ -45,6 +45,19 @@ use yii\base\InvalidParamException;
  * useful for displaying confirmation messages. To use flash messages, simply
  * call methods such as [[setFlash()]], [[getFlash()]].
  *
+ * @property string $id The current session ID.
+ * @property string $name The current session name.
+ * @property boolean $isActive Whether the session has started
+ * @property string $savePath The current session save path, defaults to {@link http://php.net/manual/en/session.configuration.php#ini.session.save-path}.
+ * @property array $cookieParams The session cookie parameters.
+ * @property boolean $useCookies Whether cookies should be used to store session IDs.
+ * @property float $gCProbability The probability (percentage) that the gc (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
+ * @property boolean $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to false.
+ * @property integer $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up, defaults to 1440 seconds.
+ * @property SessionIterator $iterator An iterator for traversing the session variables.
+ * @property integer $count The number of session variables.
+ * @property array $allFlashes The list of all flash messages.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
