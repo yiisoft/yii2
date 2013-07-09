@@ -66,10 +66,10 @@ class DbDependency extends Dependency
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$db->enableQueryCache = false;
-			$result = $db->createCommand($this->sql, $this->params)->queryRow();
+			$result = $db->createCommand($this->sql, $this->params)->queryOne();
 			$db->enableQueryCache = true;
 		} else {
-			$result = $db->createCommand($this->sql, $this->params)->queryRow();
+			$result = $db->createCommand($this->sql, $this->params)->queryOne();
 		}
 		return $result;
 	}

@@ -123,7 +123,7 @@ class ActiveQuery extends Query
 	public function one($db = null)
 	{
 		$command = $this->createCommand($db);
-		$row = $command->queryRow();
+		$row = $command->queryOne();
 		if ($row !== false && !$this->asArray) {
 			/** @var $class ActiveRecord */
 			$class = $this->modelClass;

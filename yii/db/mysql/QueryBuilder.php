@@ -50,7 +50,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	public function renameColumn($table, $oldName, $newName)
 	{
 		$quotedTable = $this->db->quoteTableName($table);
-		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
 		if ($row === false) {
 			throw new Exception("Unable to find column '$oldName' in table '$table'.");
 		}

@@ -212,7 +212,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findConstraints($table)
 	{
-		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryRow();
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
 		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
 		} else {
