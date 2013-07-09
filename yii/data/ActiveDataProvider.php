@@ -18,11 +18,27 @@ use yii\db\Connection;
  *
  * ActiveDataProvider provides data by performing DB queries using [[query]].
  *
- * The following is an example of using ActiveDataProvider:
+ * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
  * ~~~
  * $provider = new ActiveDataProvider(array(
  *     'query' => Post::find(),
+ *     'pagination' => array(
+ *         'pageSize' => 20,
+ *     ),
+ * ));
+ *
+ * // get the posts in the current page
+ * $posts = $provider->getItems();
+ * ~~~
+ *
+ * And the following example shows how to use ActiveDataProvider without ActiveRecord:
+ *
+ * ~~~
+ * $provider = new ActiveDataProvider(array(
+ *     'query' => new Query(array(
+ *         'from' => 'tbl_post',
+ *     )),
  *     'pagination' => array(
  *         'pageSize' => 20,
  *     ),
