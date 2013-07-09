@@ -166,7 +166,7 @@ class Query extends Component
 	 */
 	public function one($db = null)
 	{
-		return $this->createCommand($db)->queryRow();
+		return $this->createCommand($db)->queryOne();
 	}
 
 	/**

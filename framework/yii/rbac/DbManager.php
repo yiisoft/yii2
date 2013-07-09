@@ -303,7 +303,7 @@ class DbManager extends Manager
 		$row = $query->from($this->assignmentTable)
 			->where(array('user_id' => $userId,	'item_name' => $itemName))
 			->createCommand($this->db)
-			->queryRow();
+			->queryOne();
 		if ($row !== false) {
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
@@ -479,7 +479,7 @@ class DbManager extends Manager
 		$row = $query->from($this->itemTable)
 			->where(array('name' => $name))
 			->createCommand($this->db)
-			->queryRow();
+			->queryOne();
 
 		if ($row !== false) {
 			if (($data = @unserialize($row['data'])) === false) {

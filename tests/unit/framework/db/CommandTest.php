@@ -99,22 +99,22 @@ class CommandTest extends DatabaseTestCase
 		$rows = $db->createCommand('SELECT * FROM tbl_customer WHERE id=10')->queryAll();
 		$this->assertEquals(array(), $rows);
 
-		// queryRow
+		// queryOne
 		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
-		$row = $db->createCommand($sql)->queryRow();
+		$row = $db->createCommand($sql)->queryOne();
 		$this->assertEquals(1, $row['id']);
 		$this->assertEquals('user1', $row['name']);
 
 		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
 		$command = $db->createCommand($sql);
 		$command->prepare();
-		$row = $command->queryRow();
+		$row = $command->queryOne();
 		$this->assertEquals(1, $row['id']);
 		$this->assertEquals('user1', $row['name']);
 
 		$sql = 'SELECT * FROM tbl_customer WHERE id=10';
 		$command = $db->createCommand($sql);
-		$this->assertFalse($command->queryRow());
+		$this->assertFalse($command->queryOne());
 
 		// queryColumn
 		$sql = 'SELECT * FROM tbl_customer';
@@ -178,7 +178,7 @@ class CommandTest extends DatabaseTestCase
 		$this->assertEquals(1, $command->execute());
 
 		$sql = 'SELECT * FROM tbl_type';
-		$row = $db->createCommand($sql)->queryRow();
+		$row = $db->createCommand($sql)->queryOne();
 		$this->assertEquals($intCol, $row['int_col']);
 		$this->assertEquals($charCol, $row['char_col']);
 		$this->assertEquals($floatCol, $row['float_col']);
@@ -204,20 +204,20 @@ class CommandTest extends DatabaseTestCase
 		// default: FETCH_ASSOC
 		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
-		$result = $command->queryRow();
+		$result = $command->queryOne();
 		$this->assertTrue(is_array($result) && isset($result['id']));
 
 		// FETCH_OBJ, customized via fetchMode property
 		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
 		$command->fetchMode = \PDO::FETCH_OBJ;
-		$result = $command->queryRow();
+		$result = $command->queryOne();
 		$this->assertTrue(is_object($result));
 
 		// FETCH_NUM, customized in query method
 		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
-		$result = $command->queryRow(array(), \PDO::FETCH_NUM);
+		$result = $command->queryOne(array(), \PDO::FETCH_NUM);
 		$this->assertTrue(is_array($result) && isset($result[0]));
 	}
 

@@ -19,7 +19,7 @@ use yii\caching\Cache;
  *
  * To execute a non-query SQL (such as INSERT, DELETE, UPDATE), call [[execute()]].
  * To execute a SQL statement that returns result data set (such as SELECT),
- * use [[queryAll()]], [[queryRow()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
+ * use [[queryAll()]], [[queryOne()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
  * For example,
  *
  * ~~~
@@ -335,7 +335,7 @@ class Command extends \yii\base\Component
 	 * results in nothing.
 	 * @throws Exception execution failed
 	 */
-	public function queryRow($fetchMode = null)
+	public function queryOne($fetchMode = null)
 	{
 		return $this->queryInternal('fetch', $fetchMode);
 	}
