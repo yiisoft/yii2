@@ -49,6 +49,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 	{
 		$query = new Query;
 		$provider = new ActiveDataProvider(array(
+			'db' => $this->getConnection(),
 			'query' => $query->from('tbl_order')->orderBy('id'),
 		));
 		$orders = $provider->getItems();
@@ -58,6 +59,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 
 		$query = new Query;
 		$provider = new ActiveDataProvider(array(
+			'db' => $this->getConnection(),
 			'query' => $query->from('tbl_order'),
 			'pagination' => array(
 				'pageSize' => 2,
