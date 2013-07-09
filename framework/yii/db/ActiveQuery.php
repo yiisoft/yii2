@@ -55,8 +55,9 @@ class ActiveQuery extends Query
 	 */
 	public $with;
 	/**
-	 * @var string the name of the column by which query results should be indexed by.
-	 * This is only used when the query result is returned as an array when calling [[all()]].
+	 * @var string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row or model data. For more details, see [[indexBy()]].
 	 */
 	public $indexBy;
 	/**
@@ -288,7 +289,19 @@ class ActiveQuery extends Query
 
 	/**
 	 * Sets the [[indexBy]] property.
-	 * @param string $column the name of the column by which the query results should be indexed by.
+	 * @param string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row or model data. The signature of the callable should be:
+	 *
+	 * ~~~
+	 * // $model is an AR instance when `asArray` is false,
+	 * // or an array of column values when `asArray` is true.
+	 * function ($model)
+	 * {
+	 *     // return the index value corresponding to $model
+	 * }
+	 * ~~~
+	 *
 	 * @return ActiveQuery the query object itself
 	 */
 	public function indexBy($column)
@@ -305,7 +318,12 @@ class ActiveQuery extends Query
 				return $rows;
 			}
 			foreach ($rows as $row) {
-				$models[$row[$this->indexBy]] = $row;
+				if (is_string($this->indexBy)) {
+					$key = $row[$this->indexBy];
+				} else {
+					$key = call_user_func($this->indexBy, $row);
+				}
+				$models[$key] = $row;
 			}
 		} else {
 			/** @var $class ActiveRecord */
@@ -317,7 +335,12 @@ class ActiveQuery extends Query
 			} else {
 				foreach ($rows as $row) {
 					$model = $class::create($row);
-					$models[$model->{$this->indexBy}] = $model;
+					if (is_string($this->indexBy)) {
+						$key = $model->{$this->indexBy};
+					} else {
+						$key = call_user_func($this->indexBy, $model);
+					}
+					$models[$key] = $model;
 				}
 			}
 		}
