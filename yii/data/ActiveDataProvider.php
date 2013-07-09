@@ -8,13 +8,13 @@
 namespace yii\data;
 
 use yii\base\InvalidConfigException;
+use yii\db\Query;
 use yii\db\ActiveQuery;
 
 /**
- * ActiveDataProvider implements a data provider based on [[ActiveQuery]].
+ * ActiveDataProvider implements a data provider based on [[Query]] and [[ActiveQuery]].
  *
- * ActiveDataProvider provides data in terms of [[ActiveRecord]] objects. It uses
- * [[query]] to fetch the data items in a sorted and paginated manner.
+ * ActiveDataProvider provides data by performing DB queries using [[query]].
  *
  * The following is an example of using ActiveDataProvider:
  *
@@ -36,16 +36,22 @@ use yii\db\ActiveQuery;
 class ActiveDataProvider extends DataProvider
 {
 	/**
-	 * @var ActiveQuery the query that is used to fetch data items and [[totalItemCount]]
+	 * @var Query the query that is used to fetch data items and [[totalItemCount]]
 	 * if it is not explicitly set.
 	 */
 	public $query;
 	/**
-	 * @var string|callable the attribute that is used as the key of the data items.
-	 * This can be either the name of the attribute, or a callable that returns the key value
-	 * of a given data item. If not set, the primary key of [[ActiveQuery::modelClass]] will be used.
+	 * @var string|callable the column that is used as the key of the data items.
+	 * This can be either a column name, or a callable that returns the key value of a given data item.
+	 *
+	 * If this is not set, the following rules will be used to determine the keys of the data items:
+	 *
+	 * - If [[query]] is an [[ActiveQuery]] instance, the primary keys of [[ActiveQuery::modelClass]] will be used.
+	 * - Otherwise, the keys of the [[items]] array will be used.
+	 *
+	 * @see getKeys()
 	 */
-	public $keyAttribute;
+	public $key;
 
 	private $_items;
 	private $_keys;
@@ -53,7 +59,7 @@ class ActiveDataProvider extends DataProvider
 
 	/**
 	 * Returns the number of data items in the current page.
-	 * This is equivalent to `count($provider->getItems())`.
+	 * This is equivalent to `count($provider->items)`.
 	 * When [[pagination]] is false, this is the same as [[totalItemCount]].
 	 * @param boolean $refresh whether to recalculate the item count. If true,
 	 * this will cause re-fetching of [[items]].
@@ -78,8 +84,8 @@ class ActiveDataProvider extends DataProvider
 		if ($this->getPagination() === false) {
 			return $this->getItemCount($refresh);
 		} elseif ($this->_count === null || $refresh) {
-			if (!$this->query instanceof ActiveQuery) {
-				throw new InvalidConfigException('The "query" property must be an instance of ActiveQuery or its subclass.');
+			if (!$this->query instanceof Query) {
+				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 			}
 			$query = clone $this->query;
 			$this->_count = $query->limit(-1)->offset(-1)->count();
@@ -105,8 +111,8 @@ class ActiveDataProvider extends DataProvider
 	public function getItems($refresh = false)
 	{
 		if ($this->_items === null || $refresh) {
-			if (!$this->query instanceof ActiveQuery) {
-				throw new InvalidConfigException('The "query" property must be an instance of ActiveQuery or its subclass.');
+			if (!$this->query instanceof Query) {
+				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 			}
 			if (($pagination = $this->getPagination()) !== false) {
 				$pagination->itemCount = $this->getTotalItemCount();
@@ -131,8 +137,15 @@ class ActiveDataProvider extends DataProvider
 		if ($this->_keys === null || $refresh) {
 			$this->_keys = array();
 			$items = $this->getItems($refresh);
-			$keyAttribute = $this->keyAttribute;
-			if ($keyAttribute === null) {
+			if ($this->key !== null) {
+				foreach ($items as $item) {
+					if (is_string($this->key)) {
+						$this->_keys[] = $item[$this->key];
+					} else {
+						$this->_keys[] = call_user_func($this->key, $item);
+					}
+				}
+			} elseif ($this->query instanceof ActiveQuery) {
 				/** @var \yii\db\ActiveRecord $class */
 				$class = $this->query->modelClass;
 				$pks = $class::primaryKey();
@@ -151,13 +164,7 @@ class ActiveDataProvider extends DataProvider
 					}
 				}
 			} else {
-				foreach ($items as $item) {
-					if (is_string($this->keyAttribute)) {
-						$this->_keys[] = $item[$this->keyAttribute];
-					} else {
-						$this->_keys[] = call_user_func($item, $this->keyAttribute);
-					}
-				}
+				$this->_keys = array_keys($items);
 			}
 		}
 		return $this->_keys;
