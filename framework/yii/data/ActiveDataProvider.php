@@ -7,9 +7,11 @@
 
 namespace yii\data;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Query;
 use yii\db\ActiveQuery;
+use yii\db\Connection;
 
 /**
  * ActiveDataProvider implements a data provider based on [[Query]] and [[ActiveQuery]].
@@ -52,10 +54,31 @@ class ActiveDataProvider extends DataProvider
 	 * @see getKeys()
 	 */
 	public $key;
+	/**
+	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
+	 * If not set, the default DB connection will be used.
+	 */
+	public $db;
 
 	private $_items;
 	private $_keys;
 	private $_count;
+
+	/**
+	 * Initializes the DbCache component.
+	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
+	 * @throws InvalidConfigException if [[db]] is invalid.
+	 */
+	public function init()
+	{
+		parent::init();
+		if (is_string($this->db)) {
+			$this->db = Yii::$app->getComponent($this->db);
+			if (!$this->db instanceof Connection) {
+				throw new InvalidConfigException('The "db" property must be a valid DB Connection application component.');
+			}
+		}
+	}
 
 	/**
 	 * Returns the number of data items in the current page.
@@ -88,7 +111,7 @@ class ActiveDataProvider extends DataProvider
 				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 			}
 			$query = clone $this->query;
-			$this->_count = $query->limit(-1)->offset(-1)->count();
+			$this->_count = $query->limit(-1)->offset(-1)->count('*', $this->db);
 		}
 		return $this->_count;
 	}
@@ -121,7 +144,7 @@ class ActiveDataProvider extends DataProvider
 			if (($sort = $this->getSort()) !== false) {
 				$this->query->orderBy($sort->getOrders());
 			}
-			$this->_items = $this->query->all();
+			$this->_items = $this->query->all($this->db);
 		}
 		return $this->_items;
 	}
