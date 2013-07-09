@@ -7,6 +7,9 @@
 
 namespace yii\db;
 
+use Yii;
+use yii\base\Component;
+
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
  *
@@ -32,7 +35,7 @@ namespace yii\db;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Query extends \yii\base\Component
+class Query extends Component
 {
 	/**
 	 * Sort ascending
@@ -137,10 +140,139 @@ class Query extends \yii\base\Component
 	public function createCommand($db = null)
 	{
 		if ($db === null) {
-			$db = \Yii::$app->db;
+			$db = Yii::$app->getDb();
 		}
 		$sql = $db->getQueryBuilder()->build($this);
 		return $db->createCommand($sql, $this->params);
+	}
+
+	/**
+	 * Executes the query and returns all results as an array.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 */
+	public function all($db = null)
+	{
+		return $this->createCommand($db)->queryAll();
+	}
+
+	/**
+	 * Executes the query and returns a single row of result.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+	 * results in nothing.
+	 */
+	public function one($db = null)
+	{
+		return $this->createCommand($db)->queryRow();
+	}
+
+	/**
+	 * Returns the query result as a scalar value.
+	 * The value returned will be the first column in the first row of the query results.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return string|boolean the value of the first column in the first row of the query result.
+	 * False is returned if the query result is empty.
+	 */
+	public function scalar($db = null)
+	{
+		return $this->createCommand($db)->queryScalar();
+	}
+
+	/**
+	 * Executes the query and returns the first column of the result.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return array the first column of the query result. An empty array is returned if the query results in nothing.
+	 */
+	public function column($db = null)
+	{
+		return $this->createCommand($db)->queryColumn();
+	}
+
+	/**
+	 * Returns the number of records.
+	 * @param string $q the COUNT expression. Defaults to '*'.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return integer number of records
+	 */
+	public function count($q = '*', $db = null)
+	{
+		$this->select = array("COUNT($q)");
+		return $this->createCommand($db)->queryScalar();
+	}
+
+	/**
+	 * Returns the sum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return integer the sum of the specified column values
+	 */
+	public function sum($q, $db = null)
+	{
+		$this->select = array("SUM($q)");
+		return $this->createCommand($db)->queryScalar();
+	}
+
+	/**
+	 * Returns the average of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return integer the average of the specified column values.
+	 */
+	public function average($q, $db = null)
+	{
+		$this->select = array("AVG($q)");
+		return $this->createCommand($db)->queryScalar();
+	}
+
+	/**
+	 * Returns the minimum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return integer the minimum of the specified column values.
+	 */
+	public function min($q, $db = null)
+	{
+		$this->select = array("MIN($q)");
+		return $this->createCommand($db)->queryScalar();
+	}
+
+	/**
+	 * Returns the maximum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return integer the maximum of the specified column values.
+	 */
+	public function max($q, $db = null)
+	{
+		$this->select = array("MAX($q)");
+		return $this->createCommand($db)->queryScalar();
+	}
+
+	/**
+	 * Returns a value indicating whether the query result contains any row of data.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return boolean whether the query result contains any row of data.
+	 */
+	public function exists($db = null)
+	{
+		$this->select = array(new Expression('1'));
+		return $this->scalar($db) !== false;
 	}
 
 	/**
@@ -536,7 +668,7 @@ class Query extends \yii\base\Component
 
 	/**
 	 * Sets the LIMIT part of the query.
-	 * @param integer $limit the limit
+	 * @param integer $limit the limit. Use null or negative value to disable limit.
 	 * @return Query the query object itself
 	 */
 	public function limit($limit)
@@ -547,7 +679,7 @@ class Query extends \yii\base\Component
 
 	/**
 	 * Sets the OFFSET part of the query.
-	 * @param integer $offset the offset
+	 * @param integer $offset the offset. Use null or negative value to disable offset.
 	 * @return Query the query object itself
 	 */
 	public function offset($offset)
