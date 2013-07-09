@@ -93,11 +93,13 @@ class ActiveQuery extends Query
 
 	/**
 	 * Executes query and returns all results as an array.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
 	 * @return array the query results. If the query results in nothing, an empty array will be returned.
 	 */
-	public function all()
+	public function all($db = null)
 	{
-		$command = $this->createCommand();
+		$command = $this->createCommand($db);
 		$rows = $command->queryAll();
 		if (!empty($rows)) {
 			$models = $this->createModels($rows);
@@ -112,13 +114,15 @@ class ActiveQuery extends Query
 
 	/**
 	 * Executes query and returns a single row of result.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
 	 * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
 	 * the query result may be either an array or an ActiveRecord object. Null will be returned
 	 * if the query results in nothing.
 	 */
-	public function one()
+	public function one($db = null)
 	{
-		$command = $this->createCommand();
+		$command = $this->createCommand($db);
 		$row = $command->queryRow();
 		if ($row !== false && !$this->asArray) {
 			/** @var $class ActiveRecord */
@@ -133,87 +137,6 @@ class ActiveQuery extends Query
 		} else {
 			return $row === false ? null : $row;
 		}
-	}
-
-	/**
-	 * Returns the number of records.
-	 * @param string $q the COUNT expression. Defaults to '*'.
-	 * Make sure you properly quote column names.
-	 * @return integer number of records
-	 */
-	public function count($q = '*')
-	{
-		$this->select = array("COUNT($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the sum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the sum of the specified column values
-	 */
-	public function sum($q)
-	{
-		$this->select = array("SUM($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the average of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the average of the specified column values.
-	 */
-	public function average($q)
-	{
-		$this->select = array("AVG($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the minimum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the minimum of the specified column values.
-	 */
-	public function min($q)
-	{
-		$this->select = array("MIN($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the maximum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the maximum of the specified column values.
-	 */
-	public function max($q)
-	{
-		$this->select = array("MAX($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the query result as a scalar value.
-	 * The value returned will be the first column in the first row of the query results.
-	 * @return string|boolean the value of the first column in the first row of the query result.
-	 * False is returned if the query result is empty.
-	 */
-	public function scalar()
-	{
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns a value indicating whether the query result contains any row of data.
-	 * @return boolean whether the query result contains any row of data.
-	 */
-	public function exists()
-	{
-		$this->select = array(new Expression('1'));
-		return $this->scalar() !== false;
 	}
 
 	/**
