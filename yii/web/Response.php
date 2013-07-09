@@ -289,6 +289,7 @@ class Response extends \yii\base\Response
 		if ($this->_headers) {
 			$headers = $this->getHeaders();
 			foreach ($headers as $name => $values) {
+				$name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
 				foreach ($values as $value) {
 					header("$name: $value", false);
 				}
