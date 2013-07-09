@@ -12,6 +12,9 @@ use yii\base\Component;
 use yii\base\InvalidParamException;
 
 /**
+ * DataProvider is the base class of data provider classes.
+ *
+ * It implements the [[getPagination()]] and [[getSort()]] methods as specified by the [[IDataProvider]] interface.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
