@@ -26,6 +26,7 @@ return array(
 			'bundles' => require(__DIR__ . '/assets.php'),
 		),
 		'log' => array(
+			'traceLevel' => YII_DEBUG ? 3 : 0,
 			'targets' => array(
 				array(
 					'class' => 'yii\log\FileTarget',
