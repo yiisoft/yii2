@@ -67,34 +67,34 @@ class ArrayDataProvider extends DataProvider
 	 */
 	public $allItems;
 
-	private $_count;
+	private $_totalCount;
 
 	/**
 	 * Returns the total number of data items.
 	 * @return integer total number of possible data items.
 	 * @throws InvalidConfigException
 	 */
-	public function getTotalItemCount()
+	public function getTotalCount()
 	{
 		if ($this->getPagination() === false) {
-			return $this->getItemCount();
-		} elseif ($this->_count === null) {
+			return $this->getCount();
+		} elseif ($this->_totalCount === null) {
 			if ($this->allItems !== null) {
-				$this->_count = count($this->allItems);
+				$this->_totalCount = count($this->allItems);
 			} else {
-				throw new InvalidConfigException('Unable to determine total item count: either "allItems" or "totalItemCount" must be set.');
+				throw new InvalidConfigException('Unable to determine total item count: either "allItems" or "totalCount" must be set.');
 			}
 		}
-		return $this->_count;
+		return $this->_totalCount;
 	}
 
 	/**
 	 * Sets the total number of data items.
 	 * @param integer $value the total number of data items.
 	 */
-	public function setTotalItemCount($value)
+	public function setTotalCount($value)
 	{
-		$this->_count = $value;
+		$this->_totalCount = $value;
 	}
 
 	private $_items;
@@ -116,7 +116,7 @@ class ArrayDataProvider extends DataProvider
 			}
 
 			if (($pagination = $this->getPagination()) !== false) {
-				$pagination->itemCount = $this->getTotalItemCount();
+				$pagination->totalCount = $this->getTotalCount();
 				$items = array_slice($items, $pagination->getOffset(), $pagination->getLimit());
 			}
 
