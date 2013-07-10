@@ -281,7 +281,7 @@ class Command extends \yii\base\Component
 			return 0;
 		}
 
-		$token = $sql;
+		$token = $rawSql;
 		try {
 			Yii::beginProfile($token, __METHOD__);
 
@@ -403,7 +403,7 @@ class Command extends \yii\base\Component
 			}
 		}
 
-		$token = $sql;
+		$token = $rawSql;
 		try {
 			Yii::beginProfile($token, __METHOD__);
 
