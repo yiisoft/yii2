@@ -26,12 +26,6 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
  */
 defined('YII_ENV') or define('YII_ENV', 'prod');
 /**
- * This constant defines how much call stack information (file name and line number) should be logged by Yii::trace().
- * Defaults to 0, meaning no backtrace information. If it is greater than 0,
- * at most that number of call stacks will be logged. Note, only user application call stacks are considered.
- */
-defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 0);
-/**
  * This constant defines the framework installation directory.
  */
 defined('YII_PATH') or define('YII_PATH', __DIR__);

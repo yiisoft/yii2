@@ -111,6 +111,7 @@ class Logger extends Component
 	 *   [1] => level (integer)
 	 *   [2] => category (string)
 	 *   [3] => timestamp (float, obtained by microtime(true))
+	 *   [4] => traces (array, debug backtrace, contains the application code call stacks)
 	 * )
 	 * ~~~
 	 */
@@ -133,6 +134,12 @@ class Logger extends Component
 	 * A smaller value means less memory, but will increase the execution time due to the overhead of [[flush()]].
 	 */
 	public $flushInterval = 1000;
+	/**
+	 * @var integer how much call stack information (file name and line number) should be logged for each message.
+	 * Defaults to 0, meaning no backtrace information. If it is greater than 0,
+	 * at most that number of call stacks will be logged. Only application call stacks are considered.
+	 */
+	public $traceLevel = 0;
 
 	/**
 	 * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -150,8 +157,8 @@ class Logger extends Component
 
 	/**
 	 * Logs a message with the given type and category.
-	 * If `YII_DEBUG` is true and `YII_TRACE_LEVEL` is greater than 0, then additional
-	 * call stack information about application code will be appended to the message.
+	 * If [[traceLevel]] is greater than 0, additional call stack information about
+	 * the application code will be logged as well.
 	 * @param string $message the message to be logged.
 	 * @param integer $level the level of the message. This must be one of the following:
 	 * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`,
@@ -161,19 +168,22 @@ class Logger extends Component
 	public function log($message, $level, $category = 'application')
 	{
 		$time = microtime(true);
-		if (YII_DEBUG && YII_TRACE_LEVEL > 0 && !($level & self::LEVEL_PROFILE)) {
-			$traces = debug_backtrace();
+		$traces = array();
+		if ($this->traceLevel > 0) {
 			$count = 0;
-			foreach ($traces as $trace) {
+			$ts = debug_backtrace();
+			array_pop($ts); // remove the last trace since it would be the entry script, not very useful
+			foreach ($ts as $trace) {
 				if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII_PATH) !== 0) {
-					$message .= "\nin {$trace['file']} ({$trace['line']})";
-					if (++$count >= YII_TRACE_LEVEL) {
+					unset($trace['object'], $trace['args']);
+					$traces[] = $trace;
+					if (++$count >= $this->traceLevel) {
 						break;
 					}
 				}
 			}
 		}
-		$this->messages[] = array($message, $level, $category, $time);
+		$this->messages[] = array($message, $level, $category, $time, $traces);
 		if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
 			$this->flush();
 		}

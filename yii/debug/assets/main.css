@@ -36,3 +36,10 @@
 span.indent {
 	color: #ccc;
 }
+
+ul.trace {
+	font-size: 12px;
+	color: #666;
+	margin: 2px 0 0 20px;
+}
+
