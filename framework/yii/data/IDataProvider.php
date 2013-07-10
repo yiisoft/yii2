@@ -22,17 +22,17 @@ interface IDataProvider
 	/**
 	 * Returns the number of data items in the current page.
 	 * This is equivalent to `count($provider->getItems())`.
-	 * When [[pagination]] is false, this is the same as [[totalItemCount]].
+	 * When [[pagination]] is false, this is the same as [[totalCount]].
 	 * @return integer the number of data items in the current page.
 	 */
-	public function getItemCount();
+	public function getCount();
 
 	/**
 	 * Returns the total number of data items.
-	 * When [[pagination]] is false, this is the same as [[itemCount]].
+	 * When [[pagination]] is false, this is the same as [[count]].
 	 * @return integer total number of possible data items.
 	 */
-	public function getTotalItemCount();
+	public function getTotalCount();
 
 	/**
 	 * Returns the data items in the current page.

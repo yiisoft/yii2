@@ -53,7 +53,7 @@ use yii\db\Connection;
 class ActiveDataProvider extends DataProvider
 {
 	/**
-	 * @var Query the query that is used to fetch data items and [[totalItemCount]]
+	 * @var Query the query that is used to fetch data items and [[totalCount]]
 	 * if it is not explicitly set.
 	 */
 	public $query;
@@ -98,29 +98,29 @@ class ActiveDataProvider extends DataProvider
 	/**
 	 * Returns the number of data items in the current page.
 	 * This is equivalent to `count($provider->items)`.
-	 * When [[pagination]] is false, this is the same as [[totalItemCount]].
+	 * When [[pagination]] is false, this is the same as [[totalCount]].
 	 * @param boolean $refresh whether to recalculate the item count. If true,
 	 * this will cause re-fetching of [[items]].
 	 * @return integer the number of data items in the current page.
 	 */
-	public function getItemCount($refresh = false)
+	public function getCount($refresh = false)
 	{
 		return count($this->getItems($refresh));
 	}
 
 	/**
 	 * Returns the total number of data items.
-	 * When [[pagination]] is false, this returns the same value as [[itemCount]].
-	 * If [[totalItemCount]] is not explicitly set, it will be calculated
+	 * When [[pagination]] is false, this returns the same value as [[count]].
+	 * If [[totalCount]] is not explicitly set, it will be calculated
 	 * using [[query]] with a COUNT query.
 	 * @param boolean $refresh whether to recalculate the item count
 	 * @return integer total number of possible data items.
 	 * @throws InvalidConfigException
 	 */
-	public function getTotalItemCount($refresh = false)
+	public function getTotalCount($refresh = false)
 	{
 		if ($this->getPagination() === false) {
-			return $this->getItemCount($refresh);
+			return $this->getCount($refresh);
 		} elseif ($this->_count === null || $refresh) {
 			if (!$this->query instanceof Query) {
 				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
@@ -135,7 +135,7 @@ class ActiveDataProvider extends DataProvider
 	 * Sets the total number of data items.
 	 * @param integer $value the total number of data items.
 	 */
-	public function setTotalItemCount($value)
+	public function setTotalCount($value)
 	{
 		$this->_count = $value;
 	}
@@ -153,7 +153,7 @@ class ActiveDataProvider extends DataProvider
 				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 			}
 			if (($pagination = $this->getPagination()) !== false) {
-				$pagination->itemCount = $this->getTotalItemCount();
+				$pagination->totalCount = $this->getTotalCount();
 				$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
 			}
 			if (($sort = $this->getSort()) !== false) {

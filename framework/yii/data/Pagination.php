@@ -14,7 +14,7 @@ use yii\base\Object;
  * Pagination represents information relevant to pagination of data items.
  *
  * When data needs to be rendered in multiple pages, Pagination can be used to
- * represent information such as [[itemCount|total item count]], [[pageSize|page size]],
+ * represent information such as [[totalCount|total item count]], [[pageSize|page size]],
  * [[page|current page]], etc. These information can be passed to [[yii\widgets\Pager|pagers]]
  * to render pagination buttons or links.
  *
@@ -28,7 +28,7 @@ use yii\base\Object;
  * {
  *     $query = Article::find()->where(array('status' => 1));
  *     $countQuery = clone $query;
- *     $pages = new Pagination(array('itemCount' => $countQuery->count()));
+ *     $pages = new Pagination(array('totalCount' => $countQuery->count()));
  *     $models = $query->offset($pages->offset)
  *         ->limit($pages->limit)
  *         ->all();
@@ -91,7 +91,7 @@ class Pagination extends Object
 	/**
 	 * @var boolean whether to check if [[page]] is within valid range.
 	 * When this property is true, the value of [[page]] will always be between 0 and ([[pageCount]]-1).
-	 * Because [[pageCount]] relies on the correct value of [[itemCount]] which may not be available
+	 * Because [[pageCount]] relies on the correct value of [[totalCount]] which may not be available
 	 * in some cases (e.g. MongoDB), you may want to set this property to be false to disable the page
 	 * number validation. By doing so, [[page]] will return the value indexed by [[pageVar]] in [[params]].
 	 */
@@ -104,7 +104,7 @@ class Pagination extends Object
 	/**
 	 * @var integer total number of items.
 	 */
-	public $itemCount = 0;
+	public $totalCount = 0;
 
 
 	/**
@@ -113,10 +113,10 @@ class Pagination extends Object
 	public function getPageCount()
 	{
 		if ($this->pageSize < 1) {
-			return $this->itemCount > 0 ? 1 : 0;
+			return $this->totalCount > 0 ? 1 : 0;
 		} else {
-			$itemCount = $this->itemCount < 0 ? 0 : (int)$this->itemCount;
-			return (int)(($itemCount + $this->pageSize - 1) / $this->pageSize);
+			$totalCount = $this->totalCount < 0 ? 0 : (int)$this->totalCount;
+			return (int)(($totalCount + $this->pageSize - 1) / $this->pageSize);
 		}
 	}
 
