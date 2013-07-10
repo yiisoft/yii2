@@ -60,7 +60,7 @@ EOD;
 <table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
 <thead>
 <tr>
-	<th style="width: 80px;">Duration</th>
+	<th style="width: 80px;">Time</th>
 	<th>Query</th>
 </tr>
 </thead>
