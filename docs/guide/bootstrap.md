@@ -1,7 +1,7 @@
 Bootstrap with Yii
 ==================
 
-Yii provides a few read-to-use application templates. Based on your needs, you may
+Yii provides a few ready-to-use application templates. Based on your needs, you may
 choose one of them to bootstrap your project.
 
 In following, we describe how to get started with the "Yii 2 Basic Application Template".
