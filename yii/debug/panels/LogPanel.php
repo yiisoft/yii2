@@ -26,26 +26,25 @@ class LogPanel extends Panel
 
 	public function getSummary()
 	{
-		$output = array();
+		$output = array('<span class="label">' . count($this->data['messages']) . '</span>');
+		$title = 'Logged ' . count($this->data['messages']) . ' messages';
 		$errorCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_ERROR));
 		if ($errorCount) {
-			$output[] = '<span class="label label-important">' . $errorCount . '</span> ' . ($errorCount > 1 ? 'errors' : 'error');
+			$output[] = '<span class="label label-important">' . $errorCount . '</span>';
+			$title .= ", $errorCount errors";
 		}
 		$warningCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_WARNING));
 		if ($warningCount) {
-			$output[] = '<span class="label label-warning">' . $warningCount . '</span> ' . ($warningCount > 1 ? 'warnings' : 'warning');
+			$output[] = '<span class="label label-warning">' . $warningCount . '</span>';
+			$title .= ", $warningCount warnings";
 		}
-		if (!empty($output)) {
-			$log = implode(', ', $output);
-			$url = $this->getUrl();
-			return <<<EOD
+		$log = implode('&nbsp;', $output);
+		$url = $this->getUrl();
+		return <<<EOD
 <div class="yii-debug-toolbar-block">
-	<a href="$url">$log</a>
+	<a href="$url" title="$title">Log: $log</a>
 </div>
 EOD;
-		} else {
-			return '';
-		}
 	}
 
 	public function getDetail()
