@@ -55,7 +55,7 @@ $this->title = 'Yii Debugger';
 								$label = $meta['tag'] . ': ' . $meta['method'] . ' ' . $meta['url'] . ($meta['ajax'] ? ' (AJAX)' : '')
 									. ', ' . date('Y-m-d h:i:s a', $meta['time'])
 									. ', ' . $meta['ip'];
-								$url = array('view', 'tag' => $meta['tag']);
+								$url = array('view', 'tag' => $meta['tag'], 'panel' => $activePanel->id);
 								echo '<li>' . Html::a(Html::encode($label), $url) . '</li>';
 								if (++$count >= 10) {
 									break;
