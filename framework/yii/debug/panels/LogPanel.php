@@ -52,19 +52,28 @@ EOD;
 	{
 		$rows = array();
 		foreach ($this->data['messages'] as $log) {
-			$time = date('H:i:s.', $log[3]) . sprintf('%03d', (int)(($log[3] - (int)$log[3]) * 1000));
-			$level = Logger::getLevelName($log[1]);
-			$message = Html::encode(wordwrap($log[0]));
-			if ($log[1] == Logger::LEVEL_ERROR) {
+			list ($message, $level, $category, $time, $traces) = $log;
+			$time = date('H:i:s.', $time) . sprintf('%03d', (int)(($time - (int)$time) * 1000));
+			$message = Html::encode($message);
+			if (!empty($traces)) {
+				$message .= Html::ul($traces, array(
+					'class' => 'trace',
+					'item' => function ($trace) {
+						return "<li>{$trace['file']}({$trace['line']})</li>";
+					},
+				));
+			}
+			if ($level == Logger::LEVEL_ERROR) {
 				$class = ' class="error"';
-			} elseif ($log[1] == Logger::LEVEL_WARNING) {
+			} elseif ($level == Logger::LEVEL_WARNING) {
 				$class = ' class="warning"';
-			} elseif ($log[1] == Logger::LEVEL_INFO) {
+			} elseif ($level == Logger::LEVEL_INFO) {
 				$class = ' class="info"';
 			} else {
 				$class = '';
 			}
-			$rows[] = "<tr$class><td style=\"width: 100px;\">$time</td><td style=\"width: 100px;\">$level</td><td style=\"width: 250px;\">{$log[2]}</td><td>$message</td></tr>";
+			$level = Logger::getLevelName($level);
+			$rows[] = "<tr$class><td style=\"width: 100px;\">$time</td><td style=\"width: 100px;\">$level</td><td style=\"width: 250px;\">$category</td><td>$message</td></tr>";
 		}
 		$rows = implode("\n", $rows);
 		return <<<EOD
