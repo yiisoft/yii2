@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace app\controllers;
+namespace yii\build\controllers;
 
 use yii\console\Exception;
 use yii\console\Controller;
