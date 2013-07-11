@@ -702,10 +702,17 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isOperationAtomic(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		if ($this->isOperationAtomic(self::OP_INSERT)) {
+			$transaction = $db->getTransaction();
+			if ($transaction === null) {
+				$transaction = $db->beginTransaction();
+			} elseif (!$transaction->getIsActive()) {
+				$transaction->begin();
+			}
+		}
 		try {
 			$result = $this->insertInternal($attributes);
-			if ($transaction !== null) {
+			if (isset($transaction) && $transaction->getIsActive()) {
 				if ($result === false) {
 					$transaction->rollback();
 				} else {
@@ -713,7 +720,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if ($transaction !== null) {
+			if (isset($transaction) && $transaction->getIsActive()) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -812,10 +819,17 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isOperationAtomic(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		if ($this->isOperationAtomic(self::OP_UPDATE)) {
+			$transaction = $db->getTransaction();
+			if ($transaction === null) {
+				$transaction = $db->beginTransaction();
+			} elseif (!$transaction->getIsActive()) {
+				$transaction->begin();
+			}
+		}
 		try {
 			$result = $this->updateInternal($attributes);
-			if ($transaction !== null) {
+			if (isset($transaction) && $transaction->getIsActive()) {
 				if ($result === false) {
 					$transaction->rollback();
 				} else {
@@ -823,7 +837,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if ($transaction !== null) {
+			if (isset($transaction) && $transaction->getIsActive()) {
 				$transaction->rollback();
 			}
 			throw $e;
