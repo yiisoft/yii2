@@ -134,9 +134,14 @@ class FileHelper
 	 *
 	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0777.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
-	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
-	 *   If the callback returns false, then the sub-directory or file will not be copied.
-	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be copied.
+	 * - filter: callback, a PHP callback that is called for each directory or file.
+	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
+	 *   The callback can return one of the following values:
+	 *
+	 *   * true: the directory or file will be copied (the "only" and "except" options will be ignored)
+	 *   * false: the directory or file will NOT be copied (the "only" and "except" options will be ignored)
+	 *   * null: the "only" and "except" options will determine whether the directory or file should be copied
+	 *
 	 * - only: array, list of patterns that the files or directories should match if they want to be copied.
 	 *   A path matches a pattern if it contains the pattern string at its end.
 	 *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
@@ -209,9 +214,14 @@ class FileHelper
 	 * @param string $dir the directory under which the files will be looked for.
 	 * @param array $options options for file searching. Valid options are:
 	 *
-	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
-	 *   If the callback returns false, then the sub-directory or file will be excluded from the returning result.
+	 * - filter: callback, a PHP callback that is called for each directory or file.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
+	 *   The callback can return one of the following values:
+	 *
+	 *   * true: the directory or file will be returned (the "only" and "except" options will be ignored)
+	 *   * false: the directory or file will NOT be returned (the "only" and "except" options will be ignored)
+	 *   * null: the "only" and "except" options will determine whether the directory or file should be returned
+	 *
 	 * - only: array, list of patterns that the files or directories should match if they want to be returned.
 	 *   A path matches a pattern if it contains the pattern string at its end.
 	 *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
@@ -253,8 +263,11 @@ class FileHelper
 	 */
 	public static function filterPath($path, $options)
 	{
-		if (isset($options['filter']) && !call_user_func($options['filter'], $path)) {
-			return false;
+		if (isset($options['filter'])) {
+			$result = call_user_func($options['filter'], $path);
+			if (is_bool($result)) {
+				return $result;
+			}
 		}
 		$path = str_replace('\\', '/', $path);
 		if (is_dir($path)) {
@@ -270,10 +283,11 @@ class FileHelper
 		}
 		if (!empty($options['only'])) {
 			foreach ($options['only'] as $name) {
-				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) !== $name) {
-					return false;
+				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) === $name) {
+					return true;
 				}
 			}
+			return false;
 		}
 		return true;
 	}
