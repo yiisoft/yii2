@@ -35,7 +35,7 @@ to the require section of your composer.json.
 Usage & Documentation
 -----------
 
-This extension provides the multiple widgets to work with jquery.ui, as well as a set of compatible jquery.ui files.
+This extension provides multiple widgets to work with jquery.ui, as well as a set of compatible jquery.ui files.
 
 You can use these widgets in your view files after you have registered the corresponding assets.
 

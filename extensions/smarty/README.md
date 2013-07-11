@@ -36,7 +36,7 @@ Usage & Documentation
 -----------
 
 This extension has to be registered prior to usage.
-To do this add the following to the $rendereres property of the view instance you want to use this with:
+To enable this view renderer add it to the $rendereres property of your view object.
 
 Example: 
 ```php

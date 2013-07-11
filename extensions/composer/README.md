@@ -29,7 +29,7 @@ Usage & Documentation
 -----------
 This extensions allows you to hook to certain composer events and prepare your yii2-app for usage.
 
-After the package is installed you have to modify your composer.json to enable this extension.
+After the package is installed, the composer.json file has to be modified to enable this extension.
 
 To see it in action take a look at the example apps in the repository:
 
