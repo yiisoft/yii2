@@ -10,6 +10,7 @@
 namespace yii\helpers\base;
 
 use Yii;
+use yii\helpers\StringHelper as StringHelper2;
 
 /**
  * Filesystem helper
@@ -137,10 +138,11 @@ class FileHelper
 	 *   If the callback returns false, then the sub-directory or file will not be copied.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be copied.
 	 * - only: array, list of patterns that the files or directories should match if they want to be copied.
-	 *   A path matches a pattern if it contains the pattern string at its end. For example,
-	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
-	 *   directories whose name ends with '.svn'. Note, the '/' characters in a pattern matches both '/' and '\'.
-	 *   If a file/directory matches a pattern in both "only" and "except", it will NOT be copied.
+	 *   A path matches a pattern if it contains the pattern string at its end.
+	 *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
+	 *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
+	 *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
+	 *   both '/' and '\' in the paths. If a file/directory matches a pattern in both in "only" and "except", it will NOT be returned.
 	 * - except: array, list of patterns that the files or directories should NOT match if they want to be copied.
 	 *   For more details on how to specify the patterns, please refer to the "only" option.
 	 * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
@@ -211,10 +213,11 @@ class FileHelper
 	 *   If the callback returns false, then the sub-directory or file will be excluded from the returning result.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
 	 * - only: array, list of patterns that the files or directories should match if they want to be returned.
-	 *   A path matches a pattern if it contains the pattern string at its end. For example,
-	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
-	 *   directories whose name ends with '.svn'. Note, the '/' characters in a pattern matches both '/' and '\'.
-	 *   If a file/directory matches a pattern in both in "only" and "except", it will NOT be returned.
+	 *   A path matches a pattern if it contains the pattern string at its end.
+	 *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
+	 *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
+	 *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
+	 *   both '/' and '\' in the paths. If a file/directory matches a pattern in both in "only" and "except", it will NOT be returned.
 	 * - except: array, list of patterns that the files or directories should NOT match if they want to be returned.
 	 *   For more details on how to specify the patterns, please refer to the "only" option.
 	 * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
@@ -254,17 +257,20 @@ class FileHelper
 			return false;
 		}
 		$path = str_replace('\\', '/', $path);
-		$n = \yii\helpers\StringHelper::strlen($path);
+		if (is_dir($path)) {
+			$path .= '/';
+		}
+		$n = StringHelper2::strlen($path);
 		if (!empty($options['except'])) {
 			foreach ($options['except'] as $name) {
-				if (\yii\helpers\StringHelper::substr($path, -\yii\helpers\StringHelper::strlen($name), $n) === $name) {
+				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) === $name) {
 					return false;
 				}
 			}
 		}
 		if (!empty($options['only'])) {
 			foreach ($options['only'] as $name) {
-				if (\yii\helpers\StringHelper::substr($path, -\yii\helpers\StringHelper::strlen($name), $n) !== $name) {
+				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) !== $name) {
 					return false;
 				}
 			}
