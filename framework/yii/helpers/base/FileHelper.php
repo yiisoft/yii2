@@ -142,14 +142,17 @@ class FileHelper
 	 *   * false: the directory or file will NOT be copied (the "only" and "except" options will be ignored)
 	 *   * null: the "only" and "except" options will determine whether the directory or file should be copied
 	 *
-	 * - only: array, list of patterns that the files or directories should match if they want to be copied.
+	 * - only: array, list of patterns that the file paths should match if they want to be copied.
+	 *   A path matches a pattern if it contains the pattern string at its end.
+	 *   For example, '.php' matches all file paths ending with '.php'.
+	 *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
+	 *   If a file path matches a pattern in both "only" and "except", it will NOT be copied.
+	 * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
 	 *   A path matches a pattern if it contains the pattern string at its end.
 	 *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
 	 *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
 	 *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
-	 *   both '/' and '\' in the paths. If a file/directory matches a pattern in both in "only" and "except", it will NOT be returned.
-	 * - except: array, list of patterns that the files or directories should NOT match if they want to be copied.
-	 *   For more details on how to specify the patterns, please refer to the "only" option.
+	 *   both '/' and '\' in the paths.
 	 * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
 	 * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
@@ -222,14 +225,17 @@ class FileHelper
 	 *   * false: the directory or file will NOT be returned (the "only" and "except" options will be ignored)
 	 *   * null: the "only" and "except" options will determine whether the directory or file should be returned
 	 *
-	 * - only: array, list of patterns that the files or directories should match if they want to be returned.
+	 * - only: array, list of patterns that the file paths should match if they want to be returned.
+	 *   A path matches a pattern if it contains the pattern string at its end.
+	 *   For example, '.php' matches all file paths ending with '.php'.
+	 *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
+	 *   If a file path matches a pattern in both "only" and "except", it will NOT be returned.
+	 * - except: array, list of patterns that the file paths or directory paths should match if they want to be excluded from the result.
 	 *   A path matches a pattern if it contains the pattern string at its end.
 	 *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
 	 *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
 	 *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
-	 *   both '/' and '\' in the paths. If a file/directory matches a pattern in both in "only" and "except", it will NOT be returned.
-	 * - except: array, list of patterns that the files or directories should NOT match if they want to be returned.
-	 *   For more details on how to specify the patterns, please refer to the "only" option.
+	 *   both '/' and '\' in the paths.
 	 * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
 	 * @return array files found under the directory. The file list is sorted.
 	 */
@@ -270,10 +276,11 @@ class FileHelper
 			}
 		}
 		$path = str_replace('\\', '/', $path);
-		if (is_dir($path)) {
+		if ($isDir = is_dir($path)) {
 			$path .= '/';
 		}
 		$n = StringHelper2::strlen($path);
+
 		if (!empty($options['except'])) {
 			foreach ($options['except'] as $name) {
 				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) === $name) {
@@ -281,7 +288,8 @@ class FileHelper
 				}
 			}
 		}
-		if (!empty($options['only'])) {
+
+		if (!$isDir && !empty($options['only'])) {
 			foreach ($options['only'] as $name) {
 				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) === $name) {
 					return true;
