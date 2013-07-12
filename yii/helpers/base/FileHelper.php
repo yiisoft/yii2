@@ -10,6 +10,7 @@
 namespace yii\helpers\base;
 
 use Yii;
+use yii\helpers\StringHelper as StringHelper2;
 
 /**
  * Filesystem helper
@@ -133,16 +134,25 @@ class FileHelper
 	 *
 	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0777.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
-	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
-	 *   If the callback returns false, then the sub-directory or file will not be copied.
-	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be copied.
-	 * - only: array, list of patterns that the files or directories should match if they want to be copied.
-	 *   A path matches a pattern if it contains the pattern string at its end. For example,
-	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
-	 *   directories whose name ends with '.svn'. Note, the '/' characters in a pattern matches both '/' and '\'.
-	 *   If a file/directory matches a pattern in both "only" and "except", it will NOT be copied.
-	 * - except: array, list of patterns that the files or directories should NOT match if they want to be copied.
-	 *   For more details on how to specify the patterns, please refer to the "only" option.
+	 * - filter: callback, a PHP callback that is called for each directory or file.
+	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
+	 *   The callback can return one of the following values:
+	 *
+	 *   * true: the directory or file will be copied (the "only" and "except" options will be ignored)
+	 *   * false: the directory or file will NOT be copied (the "only" and "except" options will be ignored)
+	 *   * null: the "only" and "except" options will determine whether the directory or file should be copied
+	 *
+	 * - only: array, list of patterns that the file paths should match if they want to be copied.
+	 *   A path matches a pattern if it contains the pattern string at its end.
+	 *   For example, '.php' matches all file paths ending with '.php'.
+	 *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
+	 *   If a file path matches a pattern in both "only" and "except", it will NOT be copied.
+	 * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
+	 *   A path matches a pattern if it contains the pattern string at its end.
+	 *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
+	 *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
+	 *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
+	 *   both '/' and '\' in the paths.
 	 * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
 	 * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
@@ -207,16 +217,25 @@ class FileHelper
 	 * @param string $dir the directory under which the files will be looked for.
 	 * @param array $options options for file searching. Valid options are:
 	 *
-	 * - filter: callback, a PHP callback that is called for each sub-directory or file.
-	 *   If the callback returns false, then the sub-directory or file will be excluded from the returning result.
+	 * - filter: callback, a PHP callback that is called for each directory or file.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
-	 * - only: array, list of patterns that the files or directories should match if they want to be returned.
-	 *   A path matches a pattern if it contains the pattern string at its end. For example,
-	 *   '/a/b' will match all files and directories ending with '/a/b'; and the '.svn' will match all files and
-	 *   directories whose name ends with '.svn'. Note, the '/' characters in a pattern matches both '/' and '\'.
-	 *   If a file/directory matches a pattern in both in "only" and "except", it will NOT be returned.
-	 * - except: array, list of patterns that the files or directories should NOT match if they want to be returned.
-	 *   For more details on how to specify the patterns, please refer to the "only" option.
+	 *   The callback can return one of the following values:
+	 *
+	 *   * true: the directory or file will be returned (the "only" and "except" options will be ignored)
+	 *   * false: the directory or file will NOT be returned (the "only" and "except" options will be ignored)
+	 *   * null: the "only" and "except" options will determine whether the directory or file should be returned
+	 *
+	 * - only: array, list of patterns that the file paths should match if they want to be returned.
+	 *   A path matches a pattern if it contains the pattern string at its end.
+	 *   For example, '.php' matches all file paths ending with '.php'.
+	 *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
+	 *   If a file path matches a pattern in both "only" and "except", it will NOT be returned.
+	 * - except: array, list of patterns that the file paths or directory paths should match if they want to be excluded from the result.
+	 *   A path matches a pattern if it contains the pattern string at its end.
+	 *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
+	 *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
+	 *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
+	 *   both '/' and '\' in the paths.
 	 * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
 	 * @return array files found under the directory. The file list is sorted.
 	 */
@@ -250,24 +269,33 @@ class FileHelper
 	 */
 	public static function filterPath($path, $options)
 	{
-		if (isset($options['filter']) && !call_user_func($options['filter'], $path)) {
-			return false;
+		if (isset($options['filter'])) {
+			$result = call_user_func($options['filter'], $path);
+			if (is_bool($result)) {
+				return $result;
+			}
 		}
 		$path = str_replace('\\', '/', $path);
-		$n = \yii\helpers\StringHelper::strlen($path);
+		if ($isDir = is_dir($path)) {
+			$path .= '/';
+		}
+		$n = StringHelper2::strlen($path);
+
 		if (!empty($options['except'])) {
 			foreach ($options['except'] as $name) {
-				if (\yii\helpers\StringHelper::substr($path, -\yii\helpers\StringHelper::strlen($name), $n) === $name) {
+				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) === $name) {
 					return false;
 				}
 			}
 		}
-		if (!empty($options['only'])) {
+
+		if (!$isDir && !empty($options['only'])) {
 			foreach ($options['only'] as $name) {
-				if (\yii\helpers\StringHelper::substr($path, -\yii\helpers\StringHelper::strlen($name), $n) !== $name) {
-					return false;
+				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) === $name) {
+					return true;
 				}
 			}
+			return false;
 		}
 		return true;
 	}

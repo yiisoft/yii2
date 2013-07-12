@@ -130,6 +130,13 @@ class Query extends Component
 	 * For example, `array(':name' => 'Dan', ':age' => 31)`.
 	 */
 	public $params;
+	/**
+	 * @var string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row data. For more details, see [[indexBy()]]. This property is only used by [[all()]].
+	 */
+	public $indexBy;
+
 
 	/**
 	 * Creates a DB command that can be used to execute this query.
@@ -147,6 +154,27 @@ class Query extends Component
 	}
 
 	/**
+	 * Sets the [[indexBy]] property.
+	 * @param string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row data. The signature of the callable should be:
+	 *
+	 * ~~~
+	 * function ($row)
+	 * {
+	 *     // return the index value corresponding to $row
+	 * }
+	 * ~~~
+	 *
+	 * @return Query the query object itself
+	 */
+	public function indexBy($column)
+	{
+		$this->indexBy = $column;
+		return $this;
+	}
+
+	/**
 	 * Executes the query and returns all results as an array.
 	 * @param Connection $db the database connection used to generate the SQL statement.
 	 * If this parameter is not given, the `db` application component will be used.
@@ -154,7 +182,20 @@ class Query extends Component
 	 */
 	public function all($db = null)
 	{
-		return $this->createCommand($db)->queryAll();
+		$rows = $this->createCommand($db)->queryAll();
+		if ($this->indexBy === null) {
+			return $rows;
+		}
+		$result = array();
+		foreach ($rows as $row) {
+			if (is_string($this->indexBy)) {
+				$key = $row[$this->indexBy];
+			} else {
+				$key = call_user_func($this->indexBy, $row);
+			}
+			$result[$key] = $row;
+		}
+		return $result;
 	}
 
 	/**
