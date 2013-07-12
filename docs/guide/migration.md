@@ -82,7 +82,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 {
 	public function up()
 	{
-		$this->db->createCommand()->createTable('tbl_news, array(
+		$this->db->createCommand()->createTable('tbl_news', array(
 			'id' => 'pk',
 			'title' => 'string NOT NULL',
 			'content' => 'text',
@@ -118,7 +118,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 		$transaction=$this->getDbConnection()->beginTransaction();
 		try
 		{
-			$this->db->createCommand()->createTable('tbl_news, array(
+			$this->db->createCommand()->createTable('tbl_news', array(
 				'id' => 'pk',
 				'title' => 'string NOT NULL',
 				'content' => 'text',
