@@ -705,7 +705,7 @@ class ActiveRecord extends Model
 		$transaction = $this->isOperationAtomic(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = $this->insertInternal($attributes);
-			if ($transaction !== null) {
+			if ($transaction !== null && $transaction->getIsActive()) {
 				if ($result === false) {
 					$transaction->rollback();
 				} else {
@@ -713,7 +713,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if ($transaction !== null) {
+			if ($transaction !== null && $transaction->getIsActive()) {
 				$transaction->rollback();
 			}
 			throw $e;
@@ -815,7 +815,7 @@ class ActiveRecord extends Model
 		$transaction = $this->isOperationAtomic(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = $this->updateInternal($attributes);
-			if ($transaction !== null) {
+			if ($transaction !== null && $transaction->getIsActive()) {
 				if ($result === false) {
 					$transaction->rollback();
 				} else {
@@ -823,7 +823,7 @@ class ActiveRecord extends Model
 				}
 			}
 		} catch (\Exception $e) {
-			if ($transaction !== null) {
+			if ($transaction !== null && $transaction->getIsActive()) {
 				$transaction->rollback();
 			}
 			throw $e;
