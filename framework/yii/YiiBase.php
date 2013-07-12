@@ -93,7 +93,6 @@ class YiiBase
 	public static $objectConfig = array();
 
 	private static $_imported = array(); // alias => class name or directory
-	private static $_logger;
 
 	/**
 	 * @return string the version of Yii framework
