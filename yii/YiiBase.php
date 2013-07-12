@@ -156,6 +156,9 @@ class YiiBase
 		foreach ($namespaces as $name => $path) {
 			if ($name !== '') {
 				$name = trim(strtr($name, array('\\' => '/', '_' => '/')), '/');
+				if (is_array($path)) {
+					$path = reset($path);
+				}
 				static::setAlias('@' . $name, rtrim($path, '/\\') . '/' . $name);
 			}
 		}
