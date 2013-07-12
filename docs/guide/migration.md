@@ -78,14 +78,15 @@ method returns `false` to indicate that the migration cannot be reverted.
 As an example, let's show the migration about creating a news table.
 
 ```php
+use yii\db\Schema;
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
 	public function up()
 	{
 		$this->db->createCommand()->createTable('tbl_news', array(
-			'id' => 'pk',
+			'id' => Schema::TYPE_PK,
 			'title' => 'string NOT NULL',
-			'content' => 'text',
+			'content' => Schema::TYPE_TEXT,
 		))->execute();
 	}
 
@@ -111,6 +112,7 @@ We could explicitly start a DB transaction and enclose the rest of the DB-relate
 code within the transaction, like the following:
 
 ```php
+use yii\db\Schema;
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
 	public function up()
@@ -119,9 +121,9 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 		try
 		{
 			$this->db->createCommand()->createTable('tbl_news', array(
-				'id' => 'pk',
+				'id' => Schema::TYPE_PK,
 				'title' => 'string NOT NULL',
-				'content' => 'text',
+				'content' => Schema::TYPE_TEXT,
 			))->execute();
 			$transaction->commit();
 		}
