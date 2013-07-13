@@ -48,7 +48,7 @@ use yii\base\Object;
  * }
  *
  * // display pagination
- * LinkPager::widget(array(
+ * echo LinkPager::widget(array(
  *     'pagination' => $pages,
  * ));
  * ~~~
