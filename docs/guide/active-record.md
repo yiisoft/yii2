@@ -3,7 +3,7 @@ Active Record
 
 ActiveRecord implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
 The idea is that an ActiveRecord object is associated with a row in a database table so object properties are mapped
-to colums of the corresponding database row. For example, a `Customer` object is associated with a row in the
+to columns of the corresponding database row. For example, a `Customer` object is associated with a row in the
 `tbl_customer` table.
 
 Instead of writing raw SQL statements to access the data in the table, you can call intuitive methods available in the
@@ -21,7 +21,7 @@ Declaring ActiveRecord Classes
 ------------------------------
 
 To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
-implement `tableName` method like the following:
+implement the `tableName` method like the following:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -39,10 +39,10 @@ class Customer extends \yii\db\ActiveRecord
 Connecting to Database
 ----------------------
 
-ActiveRecord relies on a [[Connection|DB connection]]. By default, it assumes that
-there is an application component named `db` that gives the needed [[Connection]]
-instance which serves as the DB connection. Usually this component is configured
-via application configuration like the following:
+ActiveRecord relies on a [[Connection|DB connection]] to perform the underlying DB operations.
+By default, it assumes that there is an application component named `db` which gives the needed
+[[Connection]] instance. Usually this component is configured via application configuration
+like the following:
 
 ```php
 return array(
@@ -52,26 +52,27 @@ return array(
 			'dsn' => 'mysql:host=localhost;dbname=testdb',
 			'username' => 'demo',
 			'password' => 'demo',
-			// turn on schema caching to improve performance
+			// turn on schema caching to improve performance in production mode
 			// 'schemaCacheDuration' => 3600,
 		),
 	),
 );
 ```
 
-Check [Database basics](database-basics.md) section in order to learn more on how to configure and use database
-connections.
+Please read the [Database basics](database-basics.md) section to learn more on how to configure
+and use database connections.
+
 
 Getting Data from Database
 --------------------------
 
-There are two ActiveRecord methods for getting data:
+There are two ActiveRecord methods for getting data from database:
 
 - [[find()]]
 - [[findBySql()]]
 
-They both return an [[ActiveQuery]] instance. Coupled with the various customization and query methods
-provided by [[ActiveQuery]], ActiveRecord supports very flexible and powerful data retrieval approaches.
+They both return an [[ActiveQuery]] instance. Coupled with various query methods provided
+by [[ActiveQuery]], ActiveRecord supports very flexible and powerful data retrieval approaches.
 
 The followings are some examples,
 
@@ -83,12 +84,12 @@ $customers = Customer::find()
 	->all();
 
 // to return a single customer whose ID is 1:
+$customer = Customer::find(1);
+
+// the above code is equivalent to the following:
 $customer = Customer::find()
 	->where(array('id' => 1))
 	->one();
-
-// or use the following shortcut approach:
-$customer = Customer::find(1);
 
 // to retrieve customers using a raw SQL statement:
 $sql = 'SELECT * FROM tbl_customer';
