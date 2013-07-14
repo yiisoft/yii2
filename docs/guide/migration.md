@@ -106,7 +106,7 @@ For example `pk` will be replaced by `int(11) NOT NULL AUTO_INCREMENT PRIMARY KE
 for MySQL and `integer PRIMARY KEY AUTOINCREMENT NOT NULL` for sqlite.
 See documentation of [[QueryBuilder::getColumnType()]] for more details and a list
 of available types. You may also use the constants defined in [[\yii\db\Schema]] to
-create column types.
+define column types.
 
 
 Transactional Migrations
