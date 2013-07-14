@@ -3,7 +3,7 @@ Active Record
 
 ActiveRecord implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
 The idea is that an ActiveRecord object is associated with a row in a database table so object properties are mapped
-to colums of the corresponding database row. For example, a `Customer` object is associated with a row in the
+to columns of the corresponding database row. For example, a `Customer` object is associated with a row in the
 `tbl_customer` table.
 
 Instead of writing raw SQL statements to access the data in the table, you can call intuitive methods available in the
@@ -21,7 +21,7 @@ Declaring ActiveRecord Classes
 ------------------------------
 
 To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
-implement `tableName` method like the following:
+implement the `tableName` method like the following:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -39,10 +39,10 @@ class Customer extends \yii\db\ActiveRecord
 Connecting to Database
 ----------------------
 
-ActiveRecord relies on a [[Connection|DB connection]]. By default, it assumes that
-there is an application component named `db` that gives the needed [[Connection]]
-instance which serves as the DB connection. Usually this component is configured
-via application configuration like the following:
+ActiveRecord relies on a [[Connection|DB connection]] to perform the underlying DB operations.
+By default, it assumes that there is an application component named `db` which gives the needed
+[[Connection]] instance. Usually this component is configured via application configuration
+like the following:
 
 ```php
 return array(
@@ -52,26 +52,27 @@ return array(
 			'dsn' => 'mysql:host=localhost;dbname=testdb',
 			'username' => 'demo',
 			'password' => 'demo',
-			// turn on schema caching to improve performance
+			// turn on schema caching to improve performance in production mode
 			// 'schemaCacheDuration' => 3600,
 		),
 	),
 );
 ```
 
-Check [Database basics](database-basics.md) section in order to learn more on how to configure and use database
-connections.
+Please read the [Database basics](database-basics.md) section to learn more on how to configure
+and use database connections.
+
 
 Getting Data from Database
 --------------------------
 
-There are two ActiveRecord methods for getting data:
+There are two ActiveRecord methods for getting data from database:
 
 - [[find()]]
 - [[findBySql()]]
 
-They both return an [[ActiveQuery]] instance. Coupled with the various customization and query methods
-provided by [[ActiveQuery]], ActiveRecord supports very flexible and powerful data retrieval approaches.
+They both return an [[ActiveQuery]] instance. Coupled with various query methods provided
+by [[ActiveQuery]], ActiveRecord supports very flexible and powerful data retrieval approaches.
 
 The followings are some examples,
 
@@ -83,12 +84,12 @@ $customers = Customer::find()
 	->all();
 
 // to return a single customer whose ID is 1:
+$customer = Customer::find(1);
+
+// the above code is equivalent to the following:
 $customer = Customer::find()
 	->where(array('id' => 1))
 	->one();
-
-// or use the following shortcut approach:
-$customer = Customer::find(1);
 
 // to retrieve customers using a raw SQL statement:
 $sql = 'SELECT * FROM tbl_customer';
@@ -132,10 +133,10 @@ $values = $customer->attributes;
 ```
 
 
-Persisting Data to Database
----------------------------
+Saving Data to Database
+-----------------------
 
-ActiveRecord provides the following methods to insert, update and delete data:
+ActiveRecord provides the following methods to insert, update and delete data in the database:
 
 - [[save()]]
 - [[insert()]]
@@ -206,9 +207,9 @@ a one-many relationship. For example, a customer has many orders. And the [[hasO
 method declares a many-one or one-one relationship. For example, an order has one customer.
 Both methods take two parameters:
 
-- `$class`: the name of the class related models should use. If specified without
-  a namespace, the namespace will be taken from the declaring class.
-- `$link`: the association between columns from two tables. This should be given as an array.
+- `$class`: the name of the class of the related model(s). If specified without
+  a namespace, the namespace of the related model class will be taken from the declaring class.
+- `$link`: the association between columns from the two tables. This should be given as an array.
   The keys of the array are the names of the columns from the table associated with `$class`,
   while the values of the array are the names of the columns from the declaring class.
   It is a good practice to define relationships based on table foreign keys.
@@ -262,8 +263,8 @@ class Order extends \yii\db\ActiveRecord
 ```
 
 [[ActiveRelation::via()]] method is similar to [[ActiveRelation::viaTable()]] except that
-the first parameter of [[ActiveRelation::via()]] takes a relation name declared in the ActiveRecord class.
-For example, the above `items` relation can be equivalently declared as follows:
+the first parameter of [[ActiveRelation::via()]] takes a relation name declared in the ActiveRecord class
+instead of the pivot table name. For example, the above `items` relation can be equivalently declared as follows:
 
 ```php
 class Order extends \yii\db\ActiveRecord
@@ -314,7 +315,7 @@ How many SQL queries will be performed in the above code, assuming there are mor
 the database? 101! The first SQL query brings back 100 customers. Then for each customer, a SQL query
 is performed to bring back the customer's orders.
 
-To solve the above performance problem, you can use the so-called *eager loading* by calling [[ActiveQuery::with()]]:
+To solve the above performance problem, you can use the so-called *eager loading* approach by calling [[ActiveQuery::with()]]:
 
 ```php
 // SQL executed: SELECT * FROM tbl_customer LIMIT 100
@@ -472,7 +473,7 @@ TODO: FIXME: WIP, TBD, https://github.com/yiisoft/yii2/issues/226
 
 Imagine situation where you have to save something related to the main model in [[beforeSave()]],
 [[afterSave()]], [[beforeDelete()]] and/or [[afterDelete()]] life cycle methods. Developer may come
-to solution of overriding ActiveRecord [[save()]] method with database transaction wrapping or
+to the solution of overriding ActiveRecord [[save()]] method with database transaction wrapping or
 even using transaction in controller action, which is strictly speaking doesn't seems to be a good
 practice (recall skinny-controller fat-model fundamental rule).
 

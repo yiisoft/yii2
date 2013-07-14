@@ -93,7 +93,6 @@ class YiiBase
 	public static $objectConfig = array();
 
 	private static $_imported = array(); // alias => class name or directory
-	private static $_logger;
 
 	/**
 	 * @return string the version of Yii framework
@@ -156,6 +155,9 @@ class YiiBase
 		foreach ($namespaces as $name => $path) {
 			if ($name !== '') {
 				$name = trim(strtr($name, array('\\' => '/', '_' => '/')), '/');
+				if (is_array($path)) {
+					$path = reset($path);
+				}
 				static::setAlias('@' . $name, rtrim($path, '/\\') . '/' . $name);
 			}
 		}
