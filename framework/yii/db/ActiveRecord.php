@@ -594,7 +594,7 @@ class ActiveRecord extends Model
 		if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
 			return $this->_attributes[$name] !== $this->_oldAttributes[$name];
 		} else {
-			return isset($this->_attributes[$name]) || isset($this->_oldAttributes);
+			return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
 		}
 	}
 
