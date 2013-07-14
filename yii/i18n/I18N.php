@@ -113,7 +113,7 @@ class I18N extends Component
 		} else {
 			// try wildcard matching
 			foreach ($this->translations as $pattern => $config) {
-				if (substr($pattern, -1) === '*' && strpos($category, rtrim($pattern, '*')) === 0) {
+				if ($pattern === '*' || substr($pattern, -1) === '*' && strpos($category, rtrim($pattern, '*')) === 0) {
 					$source = $config;
 					break;
 				}
