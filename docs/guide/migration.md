@@ -84,7 +84,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 	{
 		$this->db->createCommand()->createTable('tbl_news, array(
 			'id' => 'pk',
-			'title' => 'string NOT NULL',
+			'title' => 'string(128) NOT NULL',
 			'content' => 'text',
 		))->execute();
 	}
@@ -98,6 +98,16 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 
 The base class [\yii\db\Migration] exposes a database connection via `db`
 property. You can use it for manipulating data and schema of a database.
+
+The column types used in this example are abstract types that will be replaced
+by Yii with the corresponding types depended on your database management system.
+You can use them to write database independent migrations.
+For example `pk` will be replaced by `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
+for MySQL and `integer PRIMARY KEY AUTOINCREMENT NOT NULL` for sqlite.
+See documentation of [[QueryBuilder::getColumnType()]] for more details and a list
+of available types. You may also use the constants defined in [[\yii\db\Schema]] to
+create column types.
+
 
 Transactional Migrations
 ------------------------
