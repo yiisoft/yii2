@@ -1,20 +1,8 @@
 <?php
 
 return array(
-	'yii/jui/core' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'jquery.ui.core.js',
-		),
-		'depends' => array('yii/jquery'),
-	),
-	'yii/jui/widget' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'jquery.ui.widget.js',
-		),
-		'depends' => array('yii/jquery'),
-	),
+	yii\jui\CoreAsset::className(),
+	yii\jui\WidgetAsset::className(),
 	'yii/jui/accordion' => array(
 		'sourcePath' => __DIR__ . '/assets',
 		'js' => array(

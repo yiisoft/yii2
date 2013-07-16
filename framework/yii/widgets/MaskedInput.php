@@ -109,8 +109,9 @@ class MaskedInput extends InputWidget
 		}
 		$id = $this->options['id'];
 		$js .= "jQuery(\"#{$id}\").mask(\"{$this->mask}\"{$options});";
-		$this->getView()->registerAssetBundle('yii/maskedinput');
-		$this->getView()->registerJs($js);
+		$view = $this->getView();
+		MaskedInputAsset::register($view);
+		$view->registerJs($js);
 	}
 
 	/**

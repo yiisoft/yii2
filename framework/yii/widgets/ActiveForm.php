@@ -167,8 +167,9 @@ class ActiveForm extends Widget
 			$id = $this->options['id'];
 			$options = Json::encode($this->getClientOptions());
 			$attributes = Json::encode($this->attributes);
-			$this->getView()->registerAssetBundle('yii/form');
-			$this->getView()->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+			$view = $this->getView();
+			ActiveFormAsset::register($view);
+			$view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
 		}
 		echo Html::endForm();
 	}

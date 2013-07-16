@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Object;
+use yii\base\View;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
@@ -102,6 +103,15 @@ class AssetBundle extends Object
 	public $publishOptions = array();
 
 	/**
+	 * @param View $view
+	 * @return AssetBundle the registered asset bundle instance
+	 */
+	public static function register($view)
+	{
+		return $view->registerAssetBundle(get_called_class());
+	}
+
+	/**
 	 * Initializes the bundle.
 	 */
 	public function init()
@@ -150,7 +160,7 @@ class AssetBundle extends Object
 	 */
 	public function publish($am)
 	{
-		if ($this->sourcePath !== null) {
+		if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
 			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
 		}
 		$converter = $am->getConverter();

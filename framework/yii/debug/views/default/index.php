@@ -7,7 +7,6 @@ use yii\helpers\Html;
  * @var array $manifest
  */
 
-$this->registerAssetBundle('yii/bootstrap/dropdown');
 $this->title = 'Yii Debugger';
 ?>
 <div class="default-index">

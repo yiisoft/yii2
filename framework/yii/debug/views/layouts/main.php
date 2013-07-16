@@ -5,7 +5,7 @@
  */
 use yii\helpers\Html;
 
-Yii::$app->getView()->registerAssetBundle('yii/debug');
+yii\debug\DebugAsset::register($this);
 ?>
 <!DOCTYPE html>
 <html>

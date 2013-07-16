@@ -18,9 +18,6 @@ return array(
 			'class' => 'yii\web\User',
 			'identityClass' => 'app\models\User',
 		),
-		'assetManager' => array(
-			'bundles' => require(__DIR__ . '/assets.php'),
-		),
 		'log' => array(
 			'traceLevel' => YII_DEBUG ? 3 : 0,
 			'targets' => array(

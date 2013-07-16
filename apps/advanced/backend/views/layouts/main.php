@@ -1,4 +1,5 @@
 <?php
+use backend\config\AppAsset;
 use yii\helpers\Html;
 use yii\widgets\Menu;
 use yii\widgets\Breadcrumbs;
@@ -7,7 +8,7 @@ use yii\widgets\Breadcrumbs;
  * @var $this \yii\base\View
  * @var $content string
  */
-$this->registerAssetBundle('app');
+AppAsset::register($this);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>

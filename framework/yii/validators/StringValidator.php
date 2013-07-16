@@ -170,7 +170,7 @@ class StringValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		return 'yii.validation.string(value, messages, ' . json_encode($options) . ');';
 	}
 }

@@ -23,9 +23,6 @@ return array(
 			'class' => 'yii\web\User',
 			'identityClass' => 'common\models\User',
 		),
-		'assetManager' => array(
-			'bundles' => require(__DIR__ . '/assets.php'),
-		),
 		'log' => array(
 			'targets' => array(
 				array(

@@ -88,7 +88,7 @@ class Nav extends Widget
 	public function run()
 	{
 		echo $this->renderItems();
-		$this->getView()->registerAssetBundle('yii/bootstrap');
+		BootstrapAsset::register($this->getView());
 	}
 
 	/**

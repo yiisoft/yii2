@@ -22,10 +22,11 @@ use yii\helpers\FileHelper;
 class AssetManager extends Component
 {
 	/**
-	 * @var array list of available asset bundles. The keys are the bundle names, and the values are the configuration
-	 * arrays for creating the [[AssetBundle]] objects.
+	 * @var array list of available asset bundles. The keys are the class names of the asset bundles,
+	 * and the values are either the configuration arrays for creating the [[AssetBundle]] objects
+	 * or the corresponding asset bundle instances.
 	 */
-	public $bundles;
+	public $bundles = array();
 	/**
 	 * @return string the root directory storing the published asset files.
 	 */
@@ -81,55 +82,29 @@ class AssetManager extends Component
 			$this->basePath = realpath($this->basePath);
 		}
 		$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
-
-		foreach (require(YII_PATH . '/assets.php') as $name => $bundle) {
-			if (!isset($this->bundles[$name])) {
-				$this->bundles[$name] = $bundle;
-			}
-		}
 	}
 
 	/**
-	 * Returns the named bundle.
+	 * Returns the named asset bundle.
+	 *
 	 * This method will first look for the bundle in [[bundles]]. If not found,
-	 * it will attempt to find the bundle from an installed extension using the following procedure:
+	 * it will treat `$name` as the class of the asset bundle and create a new instance of it.
 	 *
-	 * 1. Convert the bundle into a path alias;
-	 * 2. Determine the root alias and use it to locate the bundle manifest file "assets.php";
-	 * 3. Look for the bundle in the manifest file.
-	 *
-	 * For example, given the bundle name "foo/button", the method will first convert it
-	 * into the path alias "@foo/button"; since "@foo" is the root alias, it will look
-	 * for the bundle manifest file "@foo/assets.php". The manifest file should return an array
-	 * that lists the bundles used by the "foo/button" extension. The array format is the same as [[bundles]].
-	 *
-	 * @param string $name the bundle name
-	 * @return AssetBundle the loaded bundle object. Null is returned if the bundle does not exist.
+	 * @param string $name the class name of the asset bundle
+	 * @return AssetBundle the asset bundle instance
+	 * @throws InvalidConfigException if $name does not refer to a valid asset bundle
 	 */
 	public function getBundle($name)
 	{
-		if (!isset($this->bundles[$name])) {
-			$rootAlias = Yii::getRootAlias("@$name");
-			if ($rootAlias !== false) {
-				$manifest = Yii::getAlias("$rootAlias/assets.php", false);
-				if ($manifest !== false && is_file($manifest)) {
-					foreach (require($manifest) as $bn => $config) {
-						$this->bundles[$bn] = $config;
-					}
-				}
+		if (isset($this->bundles[$name])) {
+			if (is_array($this->bundles[$name])) {
+				$this->bundles[$name] = Yii::createObject(array_merge(array('class' => $name), $this->bundles[$name]));
+			} elseif (!$this->bundles[$name] instanceof AssetBundle) {
+				throw new InvalidConfigException("Invalid asset bundle: $name");
 			}
-			if (!isset($this->bundles[$name])) {
-				return null;
-			}
+		} else {
+			$this->bundles[$name] = Yii::createObject($name);
 		}
-		if (is_array($this->bundles[$name])) {
-			$config = $this->bundles[$name];
-			if (!isset($config['class'])) {
-				$config['class'] = 'yii\\web\\AssetBundle';
-			}
-			$this->bundles[$name] = Yii::createObject($config);
-		}
-
 		return $this->bundles[$name];
 	}
 
@@ -142,9 +117,7 @@ class AssetManager extends Component
 	public function getConverter()
 	{
 		if ($this->_converter === null) {
-			$this->_converter = Yii::createObject(array(
-				'class' => 'yii\\web\\AssetConverter',
-			));
+			$this->_converter = Yii::createObject(AssetConverter::className());
 		} elseif (is_array($this->_converter) || is_string($this->_converter)) {
 			$this->_converter = Yii::createObject($this->_converter);
 		}

@@ -205,7 +205,7 @@ class CompareValidator extends Validator
 			'{compareValue}' => $compareValue,
 		)));
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		return 'yii.validation.compare(value, messages, ' . json_encode($options) . ');';
 	}
 }

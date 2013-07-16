@@ -22,9 +22,6 @@ return array(
 			'class' => 'yii\web\User',
 			'identityClass' => 'common\models\User',
 		),
-		'assetManager' => array(
-			'bundles' => require(__DIR__ . '/assets.php'),
-		),
 		'log' => array(
 			'traceLevel' => YII_DEBUG ? 3 : 0,
 			'targets' => array(

@@ -311,9 +311,10 @@ Yii 2.0 introduces a new concept called *asset bundle*. It is similar to script
 packages (managed by `CClientScript`) in 1.1, but with better support.
 
 An asset bundle is a collection of asset files (e.g. JavaScript files, CSS files, image files, etc.)
-under a directory. By registering an asset bundle via `View::registerAssetBundle()`, you
-will be able to make the assets in that bundle accessible via Web, and the current page
-will automatically contain references to the JavaScript and CSS files in that bundle.
+under a directory. Each asset bundle is represented as a class extending `AssetBundle`.
+By registering an asset bundle via `AssetBundle::register()`, you will be able to make
+the assets in that bundle accessible via Web, and the current page will automatically
+contain the references to the JavaScript and CSS files specified in that bundle.
 
 
 
