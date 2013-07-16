@@ -97,8 +97,9 @@ class Captcha extends InputWidget
 		$options = $this->getClientOptions();
 		$options = empty($options) ? '' : Json::encode($options);
 		$id = $this->imageOptions['id'];
-		$this->getView()->registerAssetBundle('yii/captcha');
-		$this->getView()->registerJs("jQuery('#$id').yiiCaptcha($options);");
+		$view = $this->getView();
+		CaptchaAsset::register($view);
+		$view->registerJs("jQuery('#$id').yiiCaptcha($options);");
 	}
 
 	/**

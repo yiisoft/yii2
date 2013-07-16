@@ -10,6 +10,8 @@ namespace yii\base;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\web\JqueryAsset;
+use yii\web\AssetBundle;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
@@ -72,15 +74,15 @@ class View extends Component
 	/**
 	 * This is internally used as the placeholder for receiving the content registered for the head section.
 	 */
-	const PL_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
+	const PH_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
 	/**
 	 * This is internally used as the placeholder for receiving the content registered for the beginning of the body section.
 	 */
-	const PL_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
+	const PH_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
 	/**
 	 * This is internally used as the placeholder for receiving the content registered for the end of the body section.
 	 */
-	const PL_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
+	const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
 
 
 	/**
@@ -519,9 +521,9 @@ class View extends Component
 
 		$content = ob_get_clean();
 		echo strtr($content, array(
-			self::PL_HEAD => $this->renderHeadHtml(),
-			self::PL_BODY_BEGIN => $this->renderBodyBeginHtml(),
-			self::PL_BODY_END => $this->renderBodyEndHtml(),
+			self::PH_HEAD => $this->renderHeadHtml(),
+			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
+			self::PH_BODY_END => $this->renderBodyEndHtml(),
 		));
 
 		unset(
@@ -540,7 +542,7 @@ class View extends Component
 	 */
 	public function beginBody()
 	{
-		echo self::PL_BODY_BEGIN;
+		echo self::PH_BODY_BEGIN;
 		$this->trigger(self::EVENT_BEGIN_BODY);
 	}
 
@@ -550,7 +552,7 @@ class View extends Component
 	public function endBody()
 	{
 		$this->trigger(self::EVENT_END_BODY);
-		echo self::PL_BODY_END;
+		echo self::PH_BODY_END;
 	}
 
 	/**
@@ -558,13 +560,14 @@ class View extends Component
 	 */
 	public function head()
 	{
-		echo self::PL_HEAD;
+		echo self::PH_HEAD;
 	}
 
 	/**
 	 * Registers the named asset bundle.
 	 * All dependent asset bundles will be registered.
 	 * @param string $name the name of the asset bundle.
+	 * @return AssetBundle the registered asset bundle instance
 	 * @throws InvalidConfigException if the asset bundle does not exist or a circular dependency is detected
 	 */
 	public function registerAssetBundle($name)
@@ -582,6 +585,7 @@ class View extends Component
 		} elseif ($this->assetBundles[$name] === false) {
 			throw new InvalidConfigException("A circular dependency is detected for bundle '$name'.");
 		}
+		return $this->assetBundles[$name];
 	}
 
 	/**
@@ -665,7 +669,7 @@ class View extends Component
 		$key = $key ?: md5($js);
 		$this->js[$position][$key] = $js;
 		if ($position === self::POS_READY) {
-			$this->registerAssetBundle('yii/jquery');
+			JqueryAsset::register($this);
 		}
 	}
 

@@ -13,7 +13,7 @@ use yii\base\Model;
 use yii\helpers\Html;
 
 /**
- * TypeAhead renders a typehead bootstrap javascript component.
+ * Typeahead renders a typehead bootstrap javascript component.
  *
  * For example,
  *
@@ -42,7 +42,7 @@ use yii\helpers\Html;
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
-class TypeAhead extends Widget
+class Typeahead extends Widget
 {
 	/**
 	 * @var \yii\base\Model the data model that this widget is associated with

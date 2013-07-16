@@ -105,7 +105,11 @@ class Progress extends Widget
 		echo Html::beginTag('div', $this->options) . "\n";
 		echo $this->renderProgress() . "\n";
 		echo Html::endTag('div') . "\n";
-		$this->getView()->registerAssetBundle(static::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
+		if (self::$responsive) {
+			ResponsiveAsset::register($this->getView());
+		} else {
+			BootstrapAsset::register($this->getView());
+		}
 	}
 
 	/**

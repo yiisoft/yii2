@@ -1,61 +1,11 @@
 <?php
 
 return array(
-	'yii' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'yii.js',
-		),
-		'depends' => array('yii/jquery'),
-	),
-	'yii/jquery' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			YII_DEBUG ? 'jquery.js' : 'jquery.min.js',
-		),
-	),
-	'yii/validation' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'yii.validation.js',
-		),
-		'depends' => array('yii'),
-	),
-	'yii/form' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'yii.activeForm.js',
-		),
-		'depends' => array('yii'),
-	),
-	'yii/captcha' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'yii.captcha.js',
-		),
-		'depends' => array('yii'),
-	),
-	'yii/punycode' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			YII_DEBUG ? 'punycode/punycode.js' : 'punycode/punycode.min.js',
-		),
-	),
-	'yii/maskedinput' => array(
-		'sourcePath' => __DIR__ . '/assets',
-		'js' => array(
-			'jquery.maskedinput.js',
-		),
-		'depends' => array('yii/jquery'),
-	),
-	'yii/debug' => array(
-		'sourcePath' => __DIR__ . '/debug/assets',
-		'css' => array(
-			'main.css',
-		),
-		'depends' => array(
-			'yii',
-			'yii/bootstrap/responsive',
-		),
-	),
+	yii\web\YiiAsset::className(),
+	yii\web\JqueryAsset::className(),
+	yii\validators\PunycodeAsset::className(),
+	yii\validators\ValidationAsset::className(),
+	yii\widgets\ActiveFormAsset::className(),
+	yii\widgets\CaptchaAsset::className(),
+	yii\widgets\MaskedInputAsset::className(),
 );

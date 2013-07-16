@@ -119,7 +119,11 @@ class NavBar extends Widget
 		echo Html::beginTag('div', $this->options);
 		echo $this->renderItems();
 		echo Html::endTag('div');
-		$this->getView()->registerAssetBundle(self::$responsive ? 'yii/bootstrap/responsive' : 'yii/bootstrap');
+		if (self::$responsive) {
+			ResponsiveAsset::register($this->getView());
+		} else {
+			BootstrapAsset::register($this->getView());
+		}
 	}
 
 	/**
@@ -136,7 +140,7 @@ class NavBar extends Widget
 		$brand = Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
 
 		if (self::$responsive) {
-			$this->getView()->registerAssetBundle('yii/bootstrap/collapse');
+			CollapseAsset::register($this->getView());
 			$contents = Html::tag('div',
 					$this->renderToggleButton() .
 					$brand . "\n" .

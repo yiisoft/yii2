@@ -11,8 +11,8 @@ use yii\helpers\Html;
  * @var \yii\debug\Panel $activePanel
  */
 
-$this->registerAssetBundle('yii/bootstrap/dropdown');
 $this->title = 'Yii Debugger';
+yii\bootstrap\DropdownAsset::register($this);
 ?>
 <div class="default-view">
 	<div class="navbar">

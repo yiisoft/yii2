@@ -69,7 +69,7 @@ class YiiBase
 	 * @see getAlias
 	 * @see setAlias
 	 */
-	public static $aliases;
+	public static $aliases = array('@yii' => __DIR__);
 	/**
 	 * @var array initial property values that will be applied to objects newly created via [[createObject]].
 	 * The array keys are class names without leading backslashes "\", and the array values are the corresponding
@@ -616,10 +616,3 @@ class YiiBase
 		return get_object_vars($object);
 	}
 }
-
-YiiBase::$aliases = array(
-	'@yii' => array(
-		'@yii/bootstrap' => __DIR__ . '/bootstrap',
-		'@yii' => __DIR__,
-	),
-);
