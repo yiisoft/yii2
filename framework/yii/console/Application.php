@@ -143,6 +143,7 @@ class Application extends \yii\base\Application
 			'migrate' => 'yii\console\controllers\MigrateController',
 			'cache' => 'yii\console\controllers\CacheController',
 			'asset' => 'yii\console\controllers\AssetController',
+			'serve' => 'yii\console\controllers\ServeController',
 		);
 	}
 
