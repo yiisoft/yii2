@@ -33,6 +33,7 @@ REQUIREMENTS
 
 The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
 
+In order for captcha to work you need either GD2 extension or ImageMagick PHP extension.
 
 INSTALLATION
 ------------
