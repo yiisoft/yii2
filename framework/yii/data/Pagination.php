@@ -33,7 +33,7 @@ use yii\base\Object;
  *         ->limit($pages->limit)
  *         ->all();
  *
- *     $this->render('index', array(
+ *     return $this->render('index', array(
  *          'models' => $models,
  *          'pages' => $pages,
  *     ));
