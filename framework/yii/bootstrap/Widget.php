@@ -71,7 +71,7 @@ class Widget extends \yii\base\Widget
 			BootstrapAsset::register($view);
 		}
 		/** @var \yii\web\AssetBundle $assetClass */
-		$assetClass = 'yii\bootstrap\\' . ucfirst($name);
+		$assetClass = 'yii\bootstrap\\' . ucfirst($name) . 'Asset';
 		$assetClass::register($view);
 
 		if ($this->clientOptions !== false) {
