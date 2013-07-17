@@ -38,7 +38,7 @@ use yii\helpers\Html;
  *         ->orderBy($sort->orders)
  *         ->all();
  *
- *     $this->render('index', array(
+ *     return $this->render('index', array(
  *          'models' => $models,
  *          'sort' => $sort,
  *     ));
