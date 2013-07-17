@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use common\models\LoginForm;
 use frontend\models\ContactForm;
+use common\models\User;
 
 class SiteController extends Controller
 {
@@ -57,5 +58,20 @@ class SiteController extends Controller
 	public function actionAbout()
 	{
 		return $this->render('about');
+	}
+
+	public function actionSignup()
+	{
+		$model = new User();
+		$model->setScenario('signup');
+		if ($model->load($_POST) && $model->save()) {
+			if (Yii::$app->getUser()->login($model)) {
+				$this->redirect('index');
+			}
+		}
+
+		return $this->render('signup', array(
+			'model' => $model,
+		));
 	}
 }
