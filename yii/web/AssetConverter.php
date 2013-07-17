@@ -47,8 +47,8 @@ class AssetConverter extends Component implements IAssetConverter
 				if (@filemtime("$basePath/$result") < filemtime("$basePath/$asset")) {
 					$output = array();
 					$command = strtr($command, array(
-						'{from}' => "$basePath/$asset",
-						'{to}' => "$basePath/$result",
+						'{from}' => escapeshellarg("$basePath/$asset"),
+						'{to}' => escapeshellarg("$basePath/$result"),
 					));
 					exec($command, $output);
 					Yii::info("Converted $asset into $result: " . implode("\n", $output), __METHOD__);
