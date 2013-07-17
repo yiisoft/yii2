@@ -46,7 +46,7 @@ class AssetBundle extends Object
 	 * when it publishes the asset files from [[sourcePath]].
 	 *
 	 * If the bundle contains any assets that are specified in terms of relative file path,
-	 * then this property must be set either manually or automatically (by asset manager via
+	 * then this property must be set either manually or automatically (by [[AssetManager]] via
 	 * asset publishing).
 	 *
 	 * You can use either a directory or an alias of the directory.
