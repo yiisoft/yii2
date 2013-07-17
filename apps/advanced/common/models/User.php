@@ -106,6 +106,7 @@ class User extends ActiveRecord implements Identity
 				if (!empty($this->password)) {
 					$this->password_hash = SecurityHelper::generatePasswordHash($this->password);
 				}
+				$this->auth_key = SecurityHelper::generateRandomKey();
 			}
 			return true;
 		}
