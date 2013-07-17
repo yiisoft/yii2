@@ -27,17 +27,24 @@ AppAsset::register($this);
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container">
-					<?php echo Menu::widget(array(
-						'options' => array('class' => 'nav'),
-						'items' => array(
+					<?php
+						$menuItems = array(
 							array('label' => 'Home', 'url' => array('/site/index')),
 							array('label' => 'About', 'url' => array('/site/about')),
 							array('label' => 'Contact', 'url' => array('/site/contact')),
-							Yii::$app->user->isGuest ?
-								array('label' => 'Login', 'url' => array('/site/login')) :
-								array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout')),
-						),
-					)); ?>
+						);
+						if (Yii::$app->user->isGuest) {
+							$menuItems[] = array('label' => 'Signup', 'url' => array('/site/signup'));
+							$menuItems[] = array('label' => 'Login', 'url' => array('/site/login'));
+						}
+						else {
+							$menuItems[] = array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout'));
+						}
+						echo Menu::widget(array(
+							'options' => array('class' => 'nav'),
+							'items' => $menuItems,
+						));
+					?>
 				</div>
 			</div>
 		</div>
