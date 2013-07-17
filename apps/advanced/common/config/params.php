@@ -6,6 +6,7 @@ Yii::setAlias('backend', __DIR__ . '/../../backend');
 
 return array(
 	'adminEmail' => 'admin@example.com',
+	'supportEmail' => 'support@example.com',
 
 	'components.cache' => array(
 		'class' => 'yii\caching\FileCache',

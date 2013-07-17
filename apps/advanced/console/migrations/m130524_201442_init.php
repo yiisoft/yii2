@@ -12,7 +12,9 @@ class m130524_201442_init extends \yii\db\Migration
 		$this->createTable('tbl_user', array(
 			'id' => Schema::TYPE_PK,
 			'username' => Schema::TYPE_STRING.' NOT NULL',
+			'auth_key' => Schema::TYPE_STRING.'(32) NOT NULL',
 			'password_hash' => Schema::TYPE_STRING.' NOT NULL',
+			'password_reset_token' => Schema::TYPE_STRING.'(32)',
 			'email' => Schema::TYPE_STRING.' NOT NULL',
 			'role' => 'tinyint NOT NULL DEFAULT 10',
 

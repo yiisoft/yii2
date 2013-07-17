@@ -7,6 +7,8 @@ use yii\web\Controller;
 use common\models\LoginForm;
 use frontend\models\ContactForm;
 use common\models\User;
+use yii\web\HttpException;
+use frontend\models\SendPasswordResetTokenForm;
 
 class SiteController extends Controller
 {
@@ -73,5 +75,39 @@ class SiteController extends Controller
 		return $this->render('signup', array(
 			'model' => $model,
 		));
+	}
+
+	public function actionResetPassword($token = null)
+	{
+		if ($token) {
+			$model = User::find(array(
+				'password_reset_token' => $token,
+				'status' => User::STATUS_ACTIVE,
+			));
+
+			if (!$model) {
+				throw new HttpException(400, 'Wrong password reset token.');
+			}
+
+			$model->scenario = 'resetPassword';
+			if ($model->load($_POST) && $model->save()) {
+				// TODO: confirm that password was successfully saved
+				$this->redirect('index');
+			}
+
+			$this->render('resetPassword', array(
+				'model' => $model,
+			));
+		}
+		else {
+			$model = new SendPasswordResetTokenForm();
+			if ($model->load($_POST) && $model->sendEmail()) {
+				// TODO: confirm that password reset token was sent
+				$this->redirect('index');
+			}
+			$this->render('sendPasswordResetTokenForm', array(
+				'model' => $model,
+			));
+		}
 	}
 }

@@ -12,6 +12,7 @@ use yii\web\Identity;
  * @property integer $id
  * @property string $username
  * @property string $password_hash
+ * @property string $password_reset_token
  * @property string $email
  * @property string $auth_key
  * @property integer $role
@@ -66,7 +67,7 @@ class User extends ActiveRecord implements Identity
 
 	public function validateAuthKey($authKey)
 	{
-		return $this->auth_key === $authKey;
+		return $this->getAuthKey() === $authKey;
 	}
 
 	public function validatePassword($password)
@@ -84,7 +85,7 @@ class User extends ActiveRecord implements Identity
 			array('email', 'filter', 'filter' => 'trim'),
 			array('email', 'required'),
 			array('email', 'email'),
-			array('email', 'unique', 'message' => 'This email address has already been taken.'),
+			array('email', 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'),
 
 			array('password', 'required'),
 			array('password', 'string', 'min' => 6),
@@ -96,16 +97,17 @@ class User extends ActiveRecord implements Identity
 		return array(
 			'signup' => array('username', 'email', 'password'),
 			'login' => array('username', 'password'),
+			'resetPassword' => array('password'),
 		);
 	}
 
 	public function beforeSave($insert)
 	{
 		if (parent::beforeSave($insert)) {
+			if (($this->isNewRecord || $this->getScenario() === 'resetPassword') && !empty($this->password)) {
+				$this->password_hash = SecurityHelper::generatePasswordHash($this->password);
+			}
 			if ($this->isNewRecord) {
-				if (!empty($this->password)) {
-					$this->password_hash = SecurityHelper::generatePasswordHash($this->password);
-				}
 				$this->auth_key = SecurityHelper::generateRandomKey();
 			}
 			return true;
