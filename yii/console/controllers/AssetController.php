@@ -41,35 +41,25 @@ class AssetController extends Controller
 	public $defaultAction = 'compress';
 	/**
 	 * @var array list of asset bundles to be compressed.
-	 * The keys are the bundle names, and the values are the configuration
-	 * arrays for creating the [[yii\web\AssetBundle]] objects.
 	 */
 	public $bundles = array();
-	/**
-	 * @var array list of paths to the extensions, which assets should be also compressed.
-	 * Each path should contain asset manifest file named "assets.php".
-	 */
-	public $extensions = array();
 	/**
 	 * @var array list of asset bundles, which represents output compressed files.
 	 * You can specify the name of the output compressed file using 'css' and 'js' keys:
 	 * For example:
+	 *
 	 * ~~~
-	 * 'all' => array(
-	 *     'css' => 'all.css',
-	 *     'js' => 'all.js',
+	 * 'app\config\AllAsset' => array(
+	 *     'js' => 'js/all-{ts}.js',
+	 *     'css' => 'css/all-{ts}.css',
 	 *     'depends' => array( ... ),
 	 * )
 	 * ~~~
+	 *
 	 * File names can contain placeholder "{ts}", which will be filled by current timestamp, while
 	 * file creation.
 	 */
 	public $targets = array();
-	/**
-	 * @var array|\yii\web\AssetManager [[yii\web\AssetManager]] instance or its array configuration, which will be used
-	 * for assets processing.
-	 */
-	private $_assetManager = array();
 	/**
 	 * @var string|callback JavaScript file compressor.
 	 * If a string, it is treated as shell command template, which should contain
@@ -90,6 +80,12 @@ class AssetController extends Controller
 	 * @see https://github.com/yui/yuicompressor/
 	 */
 	public $cssCompressor = 'java -jar yuicompressor.jar {from} -o {to}';
+
+	/**
+	 * @var array|\yii\web\AssetManager [[yii\web\AssetManager]] instance or its array configuration, which will be used
+	 * for assets processing.
+	 */
+	private $_assetManager = array();
 
 	/**
 	 * Returns the asset manager instance.
@@ -137,7 +133,7 @@ class AssetController extends Controller
 	public function actionCompress($configFile, $bundleFile)
 	{
 		$this->loadConfiguration($configFile);
-		$bundles = $this->loadBundles($this->bundles, $this->extensions);
+		$bundles = $this->loadBundles($this->bundles);
 		$targets = $this->loadTargets($this->targets, $bundles);
 		$this->publishBundles($bundles, $this->assetManager);
 		$timestamp = time();
@@ -177,37 +173,20 @@ class AssetController extends Controller
 
 	/**
 	 * Creates full list of source asset bundles.
-	 * @param array[] $bundles list of asset bundle configurations.
-	 * @param array $extensions list of the extension paths.
+	 * @param string[] $bundles list of asset bundle names
 	 * @return \yii\web\AssetBundle[] list of source asset bundles.
 	 */
-	protected function loadBundles($bundles, $extensions)
+	protected function loadBundles($bundles)
 	{
 		echo "Collecting source bundles information...\n";
 
-		$assetManager = $this->getAssetManager();
+		$am = $this->getAssetManager();
 		$result = array();
-
-		$assetManager->bundles = $bundles;
-		foreach ($assetManager->bundles as $name => $bundle) {
-			$result[$name] = $assetManager->getBundle($name);
+		foreach ($bundles as $name) {
+			$result[$name] = $am->getBundle($name);
 		}
-
-		foreach ($extensions as $path) {
-			$manifest = $path . '/assets.php';
-			if (!is_file($manifest)) {
-				continue;
-			}
-			$assetManager->bundles = require($manifest);
-			foreach ($assetManager->bundles as $name => $bundle) {
-				if (!isset($result[$name])) {
-					$result[$name] = $assetManager->getBundle($name);
-				}
-			}
-		}
-
-		foreach ($result as $name => $bundle) {
-			$this->loadBundleDependency($name, $bundle, $result);
+		foreach ($result as $bundle) {
+			$this->loadDependency($bundle, $result);
 		}
 
 		return $result;
@@ -215,30 +194,21 @@ class AssetController extends Controller
 
 	/**
 	 * Loads asset bundle dependencies recursively.
-	 * @param string $name bundle name
 	 * @param \yii\web\AssetBundle $bundle bundle instance
 	 * @param array $result already loaded bundles list.
-	 * @throws \yii\console\Exception on failure.
+	 * @throws Exception on failure.
 	 */
-	protected function loadBundleDependency($name, $bundle, &$result)
+	protected function loadDependency($bundle, &$result)
 	{
-		if (!empty($bundle->depends)) {
-			$assetManager = $this->getAssetManager();
-			foreach ($bundle->depends as $dependencyName) {
-				if (!array_key_exists($dependencyName, $result)) {
-					$dependencyBundle = $assetManager->getBundle($dependencyName);
-					if ($dependencyBundle === null) {
-						throw new Exception("Unable to load dependency bundle '{$dependencyName}' for bundle '{$name}'.");
-					} else {
-						$result[$dependencyName] = false;
-						$this->loadBundleDependency($dependencyName, $dependencyBundle, $result);
-						$result[$dependencyName] = $dependencyBundle;
-					}
-				} else {
-					if ($result[$dependencyName] === false) {
-						throw new Exception("A circular dependency is detected for target '{$dependencyName}'.");
-					}
-				}
+		$am = $this->getAssetManager();
+		foreach ($bundle->depends as $name) {
+			if (!isset($result[$name])) {
+				$dependencyBundle = $am->getBundle($name);
+				$result[$name] = false;
+				$this->loadDependency($dependencyBundle, $result);
+				$result[$name] = $dependencyBundle;
+			} elseif ($result[$name] === false) {
+				throw new Exception("A circular dependency is detected for bundle '$name'.");
 			}
 		}
 	}
@@ -248,7 +218,7 @@ class AssetController extends Controller
 	 * @param array $targets output asset bundles configuration.
 	 * @param \yii\web\AssetBundle[] $bundles list of source asset bundles.
 	 * @return \yii\web\AssetBundle[] list of output asset bundles.
-	 * @throws \yii\console\Exception on failure.
+	 * @throws Exception on failure.
 	 */
 	protected function loadTargets($targets, $bundles)
 	{
@@ -298,7 +268,7 @@ class AssetController extends Controller
 					return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
 				}
 			});
-			$target['class'] = 'yii\\web\\AssetBundle';
+			$target['class'] = $name;
 			$targets[$name] = Yii::createObject($target);
 		}
 		return $targets;
@@ -399,7 +369,7 @@ class AssetController extends Controller
 	 * @param \yii\web\AssetBundle[] $bundles asset bundles list.
 	 * @param string $name bundle name.
 	 * @param array $registered stores already registered names.
-	 * @throws \yii\console\Exception if circular dependency is detected.
+	 * @throws Exception if circular dependency is detected.
 	 */
 	protected function registerBundle($bundles, $name, &$registered)
 	{
@@ -617,27 +587,28 @@ EOD;
 <?php
 /**
  * Configuration file for the "yii asset" console command.
- * Note: in the console environment some path aliases like '@wwwroot' and '@www' may not exist,
- * so corresponding paths should be specified directly.
+ * Note that in the console environment, some path aliases like '@wwwroot' and '@www' may not exist.
+ * Please define these missing path aliases.
  */
 return array(
 	// The list of asset bundles to compress:
-	'bundles' => require('path/to/bundles.php'),
-	// The list of extensions to compress:
-	'extensions' => require('path/to/namespaces.php'),
+	'bundles' => array(
+		// 'yii\web\YiiAsset',
+		// 'yii\web\JqueryAsset',
+	),
 	// Asset bundle for compression output:
 	'targets' => array(
-		'all' => array(
-			'basePath' => __DIR__,
-			'baseUrl' => '/test',
-			'js' => 'all-{ts}.js',
-			'css' => 'all-{ts}.css',
+		'app\config\AllAsset' => array(
+			'basePath' => 'path/to/www',
+			'baseUrl' => '',
+			'js' => 'js/all-{ts}.js',
+			'css' => 'css/all-{ts}.css',
 		),
 	),
 	// Asset manager configuration:
 	'assetManager' => array(
 		'basePath' => __DIR__,
-		'baseUrl' => '/test',
+		'baseUrl' => '',
 	),
 );
 EOD;
