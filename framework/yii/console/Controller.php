@@ -89,22 +89,20 @@ class Controller extends \yii\base\Controller
 	 */
 	public function bindActionParams($action, $params)
 	{
+		$args = array();
 		if (!empty($params)) {
 			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
 				if (in_array($name, $options, true)) {
 					$this->$name = $value;
-					unset($params[$name]);
+				} elseif (is_int($name)) {
+					$args[] = $value;
+				} else {
+					throw new Exception(Yii::t('yii', 'Unknown option: --{name}', array(
+						'{name}' => $name,
+					)));
 				}
 			}
-		}
-
-		$args = isset($params[Request::ANONYMOUS_PARAMS]) ? $params[Request::ANONYMOUS_PARAMS] : array();
-		unset($params[Request::ANONYMOUS_PARAMS]);
-		if (!empty($params)) {
-			throw new Exception(Yii::t('yii', 'Unknown options: {params}', array(
-				'{params}' => implode(', ', array_keys($params)),
-			)));
 		}
 
 		if ($action instanceof InlineAction) {

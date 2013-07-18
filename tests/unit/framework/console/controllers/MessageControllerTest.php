@@ -15,6 +15,7 @@ class MessageControllerTest extends TestCase
 
 	public function setUp()
 	{
+		$this->mockApplication();
 		$this->sourcePath = Yii::getAlias('@yiiunit/runtime/test_source');
 		$this->createDir($this->sourcePath);
 		if (!file_exists($this->sourcePath)) {
@@ -100,10 +101,7 @@ class MessageControllerTest extends TestCase
 		$controller = $this->createMessageController();
 		ob_start();
 		ob_implicit_flush(false);
-		$params = array(
-			\yii\console\Request::ANONYMOUS_PARAMS => $args
-		);
-		$controller->run($actionId, $params);
+		$controller->run($actionId, $args);
 		return ob_get_clean();
 	}
 

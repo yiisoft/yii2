@@ -13,8 +13,6 @@ namespace yii\console;
  */
 class Request extends \yii\base\Request
 {
-	const ANONYMOUS_PARAMS = '-args';
-
 	private $_params;
 
 	/**
@@ -57,13 +55,13 @@ class Request extends \yii\base\Request
 			$route = '';
 		}
 
-		$params = array(self::ANONYMOUS_PARAMS => array());
+		$params = array();
 		foreach ($rawParams as $param) {
 			if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
 				$name = $matches[1];
 				$params[$name] = isset($matches[3]) ? $matches[3] : true;
 			} else {
-				$params[self::ANONYMOUS_PARAMS][] = $param;
+				$params[] = $param;
 			}
 		}
 

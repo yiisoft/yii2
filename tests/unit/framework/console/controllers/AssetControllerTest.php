@@ -79,10 +79,7 @@ class AssetControllerTest extends TestCase
 		$controller = $this->createAssetController();
 		ob_start();
 		ob_implicit_flush(false);
-		$params = array(
-			\yii\console\Request::ANONYMOUS_PARAMS => $args
-		);
-		$controller->run($actionId, $params);
+		$controller->run($actionId, $args);
 		return ob_get_clean();
 	}
 

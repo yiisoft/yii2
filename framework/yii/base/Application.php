@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\Console;
 use yii\web\HttpException;
 
 /**
@@ -510,6 +511,9 @@ abstract class Application extends Module
 	{
 		if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
 			$message = $exception->getName() . ': ' . $exception->getMessage();
+			if (Yii::$app->controller instanceof \yii\console\Controller) {
+				$message = Yii::$app->controller->ansiFormat($message, Console::FG_RED);
+			}
 		} else {
 			$message = YII_DEBUG ? (string)$exception : 'Error: ' . $exception->getMessage();
 		}
