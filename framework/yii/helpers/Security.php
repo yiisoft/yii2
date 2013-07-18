@@ -8,15 +8,15 @@
 namespace yii\helpers;
 
 /**
- * SecurityHelper provides a set of methods to handle common security-related tasks.
+ * Security provides a set of methods to handle common security-related tasks.
  *
- * In particular, SecurityHelper supports the following features:
+ * In particular, Security supports the following features:
  *
  * - Encryption/decryption: [[encrypt()]] and [[decrypt()]]
  * - Data tampering prevention: [[hashData()]] and [[validateData()]]
  * - Password validation: [[generatePasswordHash()]] and [[validatePassword()]]
  *
- * Additionally, SecurityHelper provides [[getSecretKey()]] to support generating
+ * Additionally, Security provides [[getSecretKey()]] to support generating
  * named secret keys. These secret keys, once generated, will be stored in a file
  * and made available in future requests.
  *
@@ -24,6 +24,6 @@ namespace yii\helpers;
  * @author Tom Worster <fsb@thefsb.org>
  * @since 2.0
  */
-class SecurityHelper extends base\SecurityHelper
+class Security extends SecurityBase
 {
 }

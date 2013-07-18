@@ -4,17 +4,17 @@
  * @link http://www.yiiframework.com/
  * @license http://www.yiiframework.com/license/
  */
-namespace yii\helpers\base;
+namespace yii\helpers;
 
 /**
- * HtmlPurifier is the concrete implementation of the [[yii\helpers\HtmlPurifier]] class.
+ * HtmlPurifierBase provides concrete implementation for [[HtmlPurifier]].
  *
- * You should use [[yii\helpers\HtmlPurifier]] instead of this class in your application.
+ * Do not use HtmlPurifierBase. Use [[HtmlPurifier]] instead.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class HtmlPurifier
+class HtmlPurifierBase
 {
 	/**
 	 * Passes markup through HTMLPurifier making it safe to output to end user

@@ -28,6 +28,6 @@ namespace yii\helpers;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class Markdown extends base\Markdown
+class Markdown extends MarkdownBase
 {
 }

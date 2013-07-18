@@ -7,19 +7,20 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\helpers\base;
+namespace yii\helpers;
 
 use Yii;
-use yii\helpers\StringHelper as StringHelper2;
 
 /**
- * Filesystem helper
+ * FileHelperBase provides concrete implementation for [[FileHelper]].
+ *
+ * Do not use FileHelperBase. Use [[FileHelper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class FileHelper
+class FileHelperBase
 {
 	/**
 	 * Normalizes a file/directory path.
@@ -279,11 +280,11 @@ class FileHelper
 		if ($isDir = is_dir($path)) {
 			$path .= '/';
 		}
-		$n = StringHelper2::strlen($path);
+		$n = StringHelper::strlen($path);
 
 		if (!empty($options['except'])) {
 			foreach ($options['except'] as $name) {
-				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) === $name) {
+				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
 					return false;
 				}
 			}
@@ -291,7 +292,7 @@ class FileHelper
 
 		if (!$isDir && !empty($options['only'])) {
 			foreach ($options['only'] as $name) {
-				if (StringHelper2::substr($path, -StringHelper2::strlen($name), $n) === $name) {
+				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
 					return true;
 				}
 			}

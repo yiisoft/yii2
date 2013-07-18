@@ -5,16 +5,18 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\helpers\base;
+namespace yii\helpers;
 
 /**
- * StringHelper
+ * StringHelperBase provides concrete implementation for [[StringHelper]].
+ *
+ * Do not use StringHelperBase. Use [[StringHelper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class StringHelper
+class StringHelperBase
 {
 	/**
 	 * Returns the number of bytes in the given string.

@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\helpers\base;
+namespace yii\helpers;
 
 use Yii;
 use yii\base\InvalidParamException;
@@ -13,12 +13,14 @@ use yii\web\Request;
 use yii\base\Model;
 
 /**
- * Html provides a set of static methods for generating commonly used HTML tags.
+ * HtmlBase provides concrete implementation for [[Html]].
+ *
+ * Do not use HtmlBase. Use [[Html]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Html
+class HtmlBase
 {
 	/**
 	 * @var array list of void elements (element name => 1)

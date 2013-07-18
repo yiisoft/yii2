@@ -5,17 +5,19 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\helpers\base;
+namespace yii\helpers;
 
 use Yii;
 
 /**
- * Inflector pluralizes and singularizes English nouns. It also contains some other useful methods.
+ * InflectorBase provides concrete implementation for [[Inflector]].
+ *
+ * Do not use InflectorBase. Use [[Inflector]] instead.
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
-class Inflector
+class InflectorBase
 {
 	/**
 	 * @var array the rules for converting a word into its plural form.

@@ -4,7 +4,7 @@ use yii\helpers\FileHelper;
 use yii\test\TestCase;
 
 /**
- * Unit test for [[yii\helpers\base\FileHelper]]
+ * Unit test for [[yii\helpers\FileHelper]]
  * @see FileHelper
  */
 class FileHelperTest extends TestCase

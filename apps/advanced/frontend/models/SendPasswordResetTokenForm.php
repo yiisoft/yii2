@@ -4,7 +4,7 @@ namespace frontend\models;
 use yii\base\Model;
 use common\models\User;
 use yii\base\View;
-use yii\helpers\SecurityHelper;
+use yii\helpers\Security;
 
 /**
  * SendPasswordResetTokenForm is the model behind requesting password reset token form.
@@ -33,7 +33,7 @@ class SendPasswordResetTokenForm extends Model
 				'status' => User::STATUS_ACTIVE,
 			));
 			if ($user) {
-				$user->password_reset_token = SecurityHelper::generateRandomKey();
+				$user->password_reset_token = Security::generateRandomKey();
 				if ($user->save(false)) {
 					$view = new View(array(
 						'context' => \Yii::$app->controller,

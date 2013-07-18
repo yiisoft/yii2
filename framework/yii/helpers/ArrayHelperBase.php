@@ -5,20 +5,21 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\helpers\base;
+namespace yii\helpers;
 
 use Yii;
 use yii\base\Arrayable;
 use yii\base\InvalidParamException;
 
 /**
- * ArrayHelper provides additional array functionality you can use in your
- * application.
+ * ArrayHelperBase provides concrete implementation for [[ArrayHelper]].
+ *
+ * Do not use ArrayHelperBase. Use [[ArrayHelper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ArrayHelper
+class ArrayHelperBase
 {
 	/**
 	 * Converts an object or an array of objects into an array.

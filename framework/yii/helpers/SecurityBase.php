@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\helpers\base;
+namespace yii\helpers;
 
 use Yii;
 use yii\base\Exception;
@@ -13,23 +13,15 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
- * SecurityHelper provides a set of methods to handle common security-related tasks.
+ * SecurityBase provides concrete implementation for [[Security]].
  *
- * In particular, SecurityHelper supports the following features:
- *
- * - Encryption/decryption: [[encrypt()]] and [[decrypt()]]
- * - Data tampering prevention: [[hashData()]] and [[validateData()]]
- * - Password validation: [[generatePasswordHash()]] and [[validatePassword()]]
- *
- * Additionally, SecurityHelper provides [[getSecretKey()]] to support generating
- * named secret keys. These secret keys, once generated, will be stored in a file
- * and made available in future requests.
+ * Do not use SecurityBase. Use [[Security]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
  * @since 2.0
  */
-class SecurityHelper
+class SecurityBase
 {
 	/**
 	 * Encrypts data.
@@ -182,11 +174,11 @@ class SecurityHelper
 	 *
 	 * ~~~
 	 * // generates the hash (usually done during user registration or when the password is changed)
-	 * $hash = SecurityHelper::generatePasswordHash($password);
+	 * $hash = Security::generatePasswordHash($password);
 	 * // ...save $hash in database...
 	 *
 	 * // during login, validate if the password entered is correct using $hash fetched from database
-	 * if (SecurityHelper::validatePassword($password, $hash) {
+	 * if (Security::validatePassword($password, $hash) {
 	 *     // password is good
 	 * } else {
 	 *     // password is bad

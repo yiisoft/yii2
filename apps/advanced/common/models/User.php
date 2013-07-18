@@ -2,7 +2,7 @@
 namespace common\models;
 
 use yii\db\ActiveRecord;
-use yii\helpers\SecurityHelper;
+use yii\helpers\Security;
 use yii\web\Identity;
 
 /**
@@ -72,7 +72,7 @@ class User extends ActiveRecord implements Identity
 
 	public function validatePassword($password)
 	{
-		return SecurityHelper::validatePassword($password, $this->password_hash);
+		return Security::validatePassword($password, $this->password_hash);
 	}
 
 	public function rules()
@@ -105,10 +105,10 @@ class User extends ActiveRecord implements Identity
 	{
 		if (parent::beforeSave($insert)) {
 			if (($this->isNewRecord || $this->getScenario() === 'resetPassword') && !empty($this->password)) {
-				$this->password_hash = SecurityHelper::generatePasswordHash($this->password);
+				$this->password_hash = Security::generatePasswordHash($this->password);
 			}
 			if ($this->isNewRecord) {
-				$this->auth_key = SecurityHelper::generateRandomKey();
+				$this->auth_key = Security::generateRandomKey();
 			}
 			return true;
 		}
