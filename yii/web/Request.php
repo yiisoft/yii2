@@ -9,7 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\SecurityHelper;
+use yii\helpers\Security;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -823,7 +823,7 @@ class Request extends \yii\base\Request
 		if ($this->enableCookieValidation) {
 			$key = $this->getCookieValidationKey();
 			foreach ($_COOKIE as $name => $value) {
-				if (is_string($value) && ($value = SecurityHelper::validateData($value, $key)) !== false) {
+				if (is_string($value) && ($value = Security::validateData($value, $key)) !== false) {
 					$cookies[$name] = new Cookie(array(
 						'name' => $name,
 						'value' => @unserialize($value),
@@ -850,7 +850,7 @@ class Request extends \yii\base\Request
 	public function getCookieValidationKey()
 	{
 		if ($this->_cookieValidationKey === null) {
-			$this->_cookieValidationKey = SecurityHelper::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+			$this->_cookieValidationKey = Security::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
 		}
 		return $this->_cookieValidationKey;
 	}

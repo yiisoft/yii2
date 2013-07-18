@@ -5,27 +5,17 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\helpers\base;
+namespace yii\helpers;
 
 /**
- * TODO adjust phpdoc
- * TODO test this on all kinds of terminals, especially windows (check out lib ncurses)
+ * ConsoleBase provides concrete implementation for [[Console]].
  *
- * Console View is the base class for console view components
- *
- * A console view provides functionality to create rich console application by allowing to format output
- * by adding color and font style to it.
- *
- * The following constants are available for formatting:
- *
- * TODO document constants
- *
- *
+ * Do not use ConsoleBase. Use [[Console]] instead.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Console
+class ConsoleBase
 {
 	const FG_BLACK  = 30;
 	const FG_RED    = 31;
