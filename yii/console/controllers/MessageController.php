@@ -71,7 +71,7 @@ class MessageController extends Controller
 	public function actionExtract($configFile)
 	{
 		if (!is_file($configFile)) {
-			throw new Exception("the configuration file {$configFile} does not exist.");
+			throw new Exception("The configuration file does not exist: $configFile");
 		}
 
 		$config = array_merge(array(
