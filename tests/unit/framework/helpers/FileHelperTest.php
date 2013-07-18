@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\base\FileHelper;
+use yii\helpers\FileHelper;
 use yii\test\TestCase;
 
 /**
