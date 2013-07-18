@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php $form = ActiveForm::begin(array('options' => array('class' => 'form-horizontal'))); ?>
 	<?php echo $form->field($model, 'username')->textInput(); ?>
-	<?php echo $form->field($model, 'email')->checkbox(); ?>
+	<?php echo $form->field($model, 'email')->textInput(); ?>
 	<?php echo $form->field($model, 'password')->textInput(); ?>
 	<div class="form-actions">
 		<?php echo Html::submitButton('Signup', array('class' => 'btn btn-primary')); ?>
