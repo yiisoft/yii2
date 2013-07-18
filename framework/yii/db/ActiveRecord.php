@@ -1256,6 +1256,9 @@ class ActiveRecord extends Model
 		$relation = $this->getRelation($name);
 
 		if ($relation->via !== null) {
+			if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
+				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
+			}
 			if (is_array($relation->via)) {
 				/** @var $viaRelation ActiveRelation */
 				list($viaName, $viaRelation) = $relation->via;
