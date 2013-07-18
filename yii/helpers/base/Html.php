@@ -1398,7 +1398,7 @@ class Html
 			return Yii::$app->getRequest()->getUrl();
 		} else {
 			$url = Yii::getAlias($url);
-			if ($url[0] === '/' || $url[0] === '#' || strpos($url, '://')) {
+			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://'))) {
 				return $url;
 			} else {
 				return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
