@@ -102,7 +102,7 @@ class Accordion extends Widget
 		echo Html::beginTag($tag, $options) . "\n";
 		echo $this->renderItems() . "\n";
 		echo Html::endTag($tag) . "\n";
-		$this->registerWidget('accordion');
+		$this->registerWidget('accordion', AccordionAsset::className());
 	}
 
 	/**

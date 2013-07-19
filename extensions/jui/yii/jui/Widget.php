@@ -19,9 +19,10 @@ use yii\helpers\Json;
 class Widget extends \yii\base\Widget
 {
 	/**
-	 * @var string the jQuery UI theme bundle.
+	 * @var string the jQuery UI theme. This refers to an asset bundle class
+	 * representing the JUI theme. The default theme is the official "Smoothness" theme.
 	 */
-	public static $theme = 'yii/jui/theme/base';
+	public static $theme = 'yii\jui\ThemeAsset';
 	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
@@ -57,17 +58,18 @@ class Widget extends \yii\base\Widget
 	/**
 	 * Registers a specific jQuery UI widget and the related events
 	 * @param string $name the name of the jQuery UI widget
-	 * @param boolean $registerTheme whether register theme bundle
+	 * @param string $assetBundle the asset bundle for the widget
 	 */
-	protected function registerWidget($name, $registerTheme = true)
+	protected function registerWidget($name, $assetBundle)
 	{
-		$id = $this->options['id'];
 		$view = $this->getView();
-		$view->registerAssetBundle("yii/jui/$name");
-		if ($registerTheme) {
-			$view->registerAssetBundle(static::$theme . "/$name");
-		}
+		/** @var \yii\web\AssetBundle $assetBundle */
+		$assetBundle::register($view);
+		/** @var \yii\web\AssetBundle $themeAsset */
+		$themeAsset = self::$theme;
+		$themeAsset::register($view);
 
+		$id = $this->options['id'];
 		if ($this->clientOptions !== false) {
 			$options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
 			$js = "jQuery('#$id').$name($options);";

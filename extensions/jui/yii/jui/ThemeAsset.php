@@ -12,16 +12,10 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CoreAsset extends AssetBundle
+class ThemeAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/jui/assets';
-	public $js = array(
-		'jquery.ui.core.js',
-		'jquery.ui.widget.js',
-		'jquery.ui.position.js',
-		'jquery.ui.mouse.js',
-	);
-	public $depends = array(
-		'yii\web\JqueryAsset',
+	public $css = array(
+		'theme/jquery.ui.css',
 	);
 }

@@ -53,30 +53,24 @@ class Menu extends \yii\widgets\Menu
 	public function run()
 	{
 		parent::run();
-		$this->registerWidget('menu');
-	}
 
-	/**
-	 * Registers a specific jQuery UI widget and the related events
-	 * @param string $name the name of the jQuery UI widget
-	 */
-	protected function registerWidget($name)
-	{
-		$id = $this->options['id'];
 		$view = $this->getView();
-		$view->registerAssetBundle("yii/jui/$name");
-		$view->registerAssetBundle(Widget::$theme . "/$name");
+		MenuAsset::register($view);
+		/** @var \yii\web\AssetBundle $themeAsset */
+		$themeAsset = Widget::$theme;
+		$themeAsset::register($view);
 
+		$id = $this->options['id'];
 		if ($this->clientOptions !== false) {
 			$options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
-			$js = "jQuery('#$id').$name($options);";
+			$js = "jQuery('#$id').menu($options);";
 			$view->registerJs($js);
 		}
 
 		if (!empty($this->clientEvents)) {
 			$js = array();
 			foreach ($this->clientEvents as $event => $handler) {
-				$js[] = "jQuery('#$id').on('$name$event', $handler);";
+				$js[] = "jQuery('#$id').on('menu$event', $handler);";
 			}
 			$view->registerJs(implode("\n", $js));
 		}

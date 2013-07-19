@@ -12,16 +12,13 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CoreAsset extends AssetBundle
+class MenuAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/jui/assets';
 	public $js = array(
-		'jquery.ui.core.js',
-		'jquery.ui.widget.js',
-		'jquery.ui.position.js',
-		'jquery.ui.mouse.js',
+		'jquery.ui.menu.js',
 	);
 	public $depends = array(
-		'yii\web\JqueryAsset',
+		'yii\jui\CoreAsset',
 	);
 }

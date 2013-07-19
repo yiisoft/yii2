@@ -57,6 +57,6 @@ class ProgressBar extends Widget
 	public function run()
 	{
 		echo Html::endTag('div') . "\n";
-		$this->registerWidget('progressbar');
+		$this->registerWidget('progressbar', ProgressBarAsset::className());
 	}
 }

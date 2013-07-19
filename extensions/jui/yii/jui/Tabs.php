@@ -117,7 +117,7 @@ class Tabs extends Widget
 		echo Html::beginTag($tag, $options) . "\n";
 		echo $this->renderItems() . "\n";
 		echo Html::endTag($tag) . "\n";
-		$this->registerWidget('tabs');
+		$this->registerWidget('tabs', TabsAsset::className());
 	}
 
 	/**

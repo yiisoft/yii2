@@ -61,9 +61,11 @@ class DatePicker extends InputWidget
 	public function run()
 	{
 		echo $this->renderWidget() . "\n";
-		$this->registerWidget('datepicker');
+		$this->registerWidget('datepicker', DatePickerAsset::className());
 		if ($this->language !== false) {
-			$this->getView()->registerAssetBundle("yii/jui/datepicker/i18n/$this->language");
+			$view = $this->getView();
+			DatePickerRegionalAsset::register($view);
+			$view->registerJs("$('#{$this->options['id']}').datepicker('option', $.datepicker.regional['{$this->language}']);");
 		}
 	}
 

@@ -48,7 +48,7 @@ class AutoComplete extends InputWidget
 	public function run()
 	{
 		echo $this->renderWidget();
-		$this->registerWidget('autocomplete');
+		$this->registerWidget('autocomplete', AutoCompleteAsset::className());
 	}
 
 	/**

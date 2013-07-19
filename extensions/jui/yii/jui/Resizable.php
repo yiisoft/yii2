@@ -47,6 +47,6 @@ class Resizable extends Widget
 	public function run()
 	{
 		echo Html::endTag('div') . "\n";
-		$this->registerWidget('resizable');
+		$this->registerWidget('resizable', ResizableAsset::className());
 	}
 }
