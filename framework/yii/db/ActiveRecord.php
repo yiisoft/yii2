@@ -171,6 +171,87 @@ class ActiveRecord extends Model
 		$query->sql = $sql;
 		return $query->params($params);
 	}
+    
+    /**
+     * Creates an [[ActiveQuery]] instances with a given primary values.
+     * `$data` values can be not only primary keys if array is associative.
+     * Composite primary keys is supported.
+     * 
+     * Examples below return the same ActiveRecord instances:
+	 *
+	 * ~~~
+	 * $customers = Customer::findAllByPk(array(1, 2))->all();
+     * $customers = Customer::findAllByPk(array(
+     *      array('id' => 1,),
+     *      array('id' => 2,)
+     * ))->all();
+     * $customers = Customer::findAllByPk(array(
+     *      array('id' => 1, 'something' => 'else',),
+     *      array('id' => 2, 'something' => 'else',),
+     * ))->all();
+     * $customers = Customer::findAllByPk(array(
+     *      array(1),
+     *      array(2),
+     *  ))->all();
+	 *  ~~~
+     * 
+     * @param array $data array with primary keys
+     * @return ActiveQuery|null When `$data` is empty, not array 
+     * or does not contain primary keys null is returned.
+	 * Oherwise when success the newly created [[ActiveQuery]] instance will be returned
+     * @throws InvalidConfigException if the AR class does not have a primary key
+     * @throws InvalidCallException if `$data` is numeric array and its count does not match primary keys count
+     */
+    public static function findAllByPk(array $data) {
+        if (empty($data) || !is_array($data)) {
+            return null;
+        }
+        
+        $primaryKeys = static::primaryKey();
+        if (!isset($primaryKeys[0])) {
+            throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+        }
+        
+        $query = static::createQuery();
+        $first = key($data);
+        if(!is_array($data[$first])) {
+            return $query->where(array($primaryKeys[0] => $data));
+        }
+
+        // is it a numeric array?
+        if ($data[$first] === array_values($data[$first])) {
+            if (count($primaryKeys) != count($data[$first])) {
+                throw new InvalidCallException('Data values count and ' . get_called_class() . ' primary keys count does not match.');
+            }
+            $keys = array_keys($data[$first]);
+        }else{
+            $keys = $primaryKeys;
+        }
+
+        $pid = 0;
+        foreach ($data as $data) {
+            $params = array();
+            $where = array('and');
+            foreach ($keys as $idx => $name) {
+                // skip row if primary key value is empty
+                if (empty($data[$name])) {
+                    unset($params);
+                    break;
+                }
+                $where[] = '[[' . $primaryKeys[$idx] . ']] = :p' . $pid;
+                $params[':p' . $pid] = $data[$name];
+                $pid++;
+            }
+            if (!empty($params)) {
+                $query->orWhere($where, $params);
+            }
+        }
+        
+        if (!$query->params) {
+            return null;
+        }
+        return $query;
+    }
 
 	/**
 	 * Updates the whole table using the provided attribute values and conditions.
@@ -495,6 +576,77 @@ class ActiveRecord extends Model
 	{
 		$this->_related[strtolower($name)] = $records;
 	}
+    
+    /**
+     * Loads and creates(if needed) a set of [[ActiveRecord]] and populates with the data from end user.
+	 * This method is mainly used to collect tabular data input.
+	 * The data to be loaded for each model is `$data[formName][index]`, where `formName`
+	 * refers to the value of [[formName()]], and `index` the index of the model in the `$models` array.
+	 * If [[formName()]] is empty, `$data[index]` will be used to populate each model.
+	 * The data being populated to each model is subject to the safety check by [[setAttributes()]].
+     * 
+     * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+     * @param array $config name-value pairs that will be used to initialize the new [[ActiveRecord]] properties
+     * such as attributes and scope. If set to false no new instances will be created.
+     * @param string $updateScenario scenario will be set for existing [[ActiveRecord]] instances
+     * If set to false data with primary keys will be skipped.
+     * @return boolean|\static[] When `$data` is empty or not array false is returned.
+     * Otherwise returns loaded and newly created [[ActiveRecord]] instances with populated data.
+     */
+    public static function populate(array $data, array $config=null, $updateScenario = null){
+        if(empty($data) || !is_array($data)){
+            return false;
+        }
+        $baseModel = new static($config);
+        $scope = $baseModel->formName();
+        $dataArray = !empty($data[$scope]) ? $data[$scope] : $data;
+        
+        if ($updateScenario === false) {
+            $primaryKeys = static::primaryKey();
+            foreach ($dataArray as $idx => $items) {
+                foreach ($primaryKeys as $primaryKey) {
+                    if (!empty($items[$primaryKey])) {
+                        unset($dataArray[$idx]);
+                        break;
+                    }
+                }
+            }
+        } else {
+            $activeQuery = static::findAllByPk($dataArray);
+            if($activeQuery == null){
+                $models = array();
+            } else {
+                $models = $activeQuery->all();
+                $primaryKeys = self::primaryKey();
+                foreach ($models as $model){
+                    foreach ($dataArray as $idx => $items){
+                        $found = true;
+                        foreach ($primaryKeys as $primaryKey){
+                            if(empty($items[$primaryKey]) || $model->{$primaryKey} != $items[$primaryKey]){
+                                $found = false;
+                                break;
+                            }
+                        }
+                        if($found){
+                            if(isset($updateScenario)){
+                                $model->setScenario($updateScenario);
+                            }
+                            $model->setAttributes($items);
+                            unset($dataArray[$idx]);
+                        }
+                    }
+                }
+            }
+        }
+        if($config !== false){
+            foreach ($dataArray as $items){
+                $model = clone $baseModel;
+                $model->attributes = $items;
+                $models[] = $model;
+            }
+        }
+        return $models;
+    }
 
 	/**
 	 * Returns the list of all attribute names of the model.
@@ -656,6 +808,27 @@ class ActiveRecord extends Model
 		} else {
 			return $this->update($runValidation, $attributes) !== false;
 		}
+	}
+    
+    /**
+	 * Saves multiple models.
+	 * @param array $models the models to be saved
+     * @param boolean $runValidation whether to perform validation before saving the record.
+	 * If the validation fails, the record will not be saved to database.
+	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
+	 * meaning all attributes that are loaded from DB will be saved.
+	 * @return boolean whether the saving succeeds
+	 * @return boolean whether all models are saved. False will be returned if one
+	 * or multiple models saving is failed.
+	 */
+	public static function saveMultiple(array $models, $runValidation = true, $attributes = null)
+	{
+		$saved = true;
+		/** @var Model $model */
+		foreach ($models as $model) {
+			$saved = $model->save($runValidation, $attributes) && $saved;
+		}
+		return $saved;
 	}
 
 	/**
