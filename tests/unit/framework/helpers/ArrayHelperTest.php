@@ -117,9 +117,10 @@ class ArrayHelperTest extends TestCase
 	public function testMultisortUseSort()
 	{
 		// single key
-		$sort = new Sort();
-		$sort->attributes = array('name', 'age');
-		$sort->defaults = array('name' => Sort::ASC);
+		$sort = new Sort(array(
+			'attributes' => array('name', 'age'),
+			'defaultOrder' => array('name' => Sort::ASC),
+		));
 		$orders = $sort->getOrders();
 
 		$array = array(
@@ -133,9 +134,10 @@ class ArrayHelperTest extends TestCase
 		$this->assertEquals(array('name' => 'c', 'age' => 2), $array[2]);
 
 		// multiple keys
-		$sort = new Sort();
-		$sort->attributes = array('name', 'age');
-		$sort->defaults = array('name' => Sort::ASC, 'age' => Sort::DESC);
+		$sort = new Sort(array(
+			'attributes' => array('name', 'age'),
+			'defaultOrder' => array('name' => Sort::ASC, 'age' => Sort::DESC),
+		));
 		$orders = $sort->getOrders();
 
 		$array = array(
