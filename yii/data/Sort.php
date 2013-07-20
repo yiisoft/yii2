@@ -65,11 +65,6 @@ use yii\helpers\Inflector;
  * sorted by the orders specified by the Sort object. In the view, we show two hyperlinks
  * that can lead to pages with the data sorted by the corresponding attributes.
  *
- * @property array $orders Sort directions indexed by column names. The sort direction
- * can be either [[Sort::ASC]] for ascending order or [[Sort::DESC]] for descending order.
- * @property array $attributeOrders Sort directions indexed by attribute names. The sort
- * direction can be either [[Sort::ASC]] for ascending order or [[Sort::DESC]] for descending order.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -130,6 +125,9 @@ class Sort extends Object
 	 *   if it is not currently sorted (the default value is ascending order).
 	 * - The "label" element specifies what label should be used when calling [[link()]] to create
 	 *   a sort link. If not set, [[Inflector::camel2words()]] will be called to get a label.
+	 *
+	 * Note that if the Sort object is already created, you can only use the full format
+	 * to configure every attribute. Each attribute must include these elements: asc, desc and label.
 	 */
 	public $attributes = array();
 	/**
@@ -156,7 +154,7 @@ class Sort extends Object
 	 *
 	 * @see attributeOrders
 	 */
-	public $defaults;
+	public $defaultOrder;
 	/**
 	 * @var string the route of the controller action for displaying the sorted contents.
 	 * If not set, it means using the currently requested route.
@@ -177,7 +175,7 @@ class Sort extends Object
 	 * If the element does not exist, the [[defaults|default order]] will be used.
 	 *
 	 * @see sortVar
-	 * @see defaults
+	 * @see defaultOrder
 	 */
 	public $params;
 	/**
@@ -185,6 +183,29 @@ class Sort extends Object
 	 * the "urlManager" application component will be used.
 	 */
 	public $urlManager;
+
+	/**
+	 * Normalizes the [[attributes]] property.
+	 */
+	public function init()
+	{
+		$attributes = array();
+		foreach ($this->attributes as $name => $attribute) {
+			if (is_array($attribute)) {
+				$attributes[$name] = $attribute;
+				if (!isset($attribute['label'])) {
+					$attributes[$name]['label'] = Inflector::camel2words($name);
+				}
+			} else {
+				$attributes[$attribute] = array(
+					'asc' => array($attribute => self::ASC),
+					'desc' => array($attribute => self::DESC),
+					'label' => Inflector::camel2words($attribute),
+				);
+			}
+		}
+		$this->attributes = $attributes;
+	}
 
 	/**
 	 * Returns the columns and their corresponding sort directions.
@@ -197,7 +218,7 @@ class Sort extends Object
 		$attributeOrders = $this->getAttributeOrders($recalculate);
 		$orders = array();
 		foreach ($attributeOrders as $attribute => $direction) {
-			$definition = $this->getAttribute($attribute);
+			$definition = $this->attributes[$attribute];
 			$columns = $definition[$direction === self::ASC ? 'asc' : 'desc'];
 			foreach ($columns as $name => $dir) {
 				$orders[$name] = $dir;
@@ -230,7 +251,7 @@ class Sort extends Object
 						}
 					}
 
-					if (($this->getAttribute($attribute)) !== null) {
+					if (isset($this->attributes[$attribute])) {
 						$this->_attributeOrders[$attribute] = $descending;
 						if (!$this->enableMultiSort) {
 							return $this->_attributeOrders;
@@ -238,8 +259,8 @@ class Sort extends Object
 					}
 				}
 			}
-			if (empty($this->_attributeOrders) && is_array($this->defaults)) {
-				$this->_attributeOrders = $this->defaults;
+			if (empty($this->_attributeOrders) && is_array($this->defaultOrder)) {
+				$this->_attributeOrders = $this->defaultOrder;
 			}
 		}
 		return $this->_attributeOrders;
@@ -279,9 +300,8 @@ class Sort extends Object
 		}
 
 		$url = $this->createUrl($attribute);
-		$definition = $this->getAttribute($attribute);
-		$label = isset($definition['label']) ? $definition['label'] : Html::encode(Inflector::camel2words($attribute));
-		return Html::a($label, $url, $options);
+		$definition = $this->attributes[$attribute];
+		return Html::a($definition['label'], $url, $options);
 	}
 
 	/**
@@ -297,9 +317,10 @@ class Sort extends Object
 	 */
 	public function createUrl($attribute)
 	{
-		if (($definition = $this->getAttribute($attribute)) === null) {
+		if (!isset($this->attributes[$attribute])) {
 			throw new InvalidConfigException("Unknown attribute: $attribute");
 		}
+		$definition = $this->attributes[$attribute];
 		$directions = $this->getAttributeOrders();
 		if (isset($directions[$attribute])) {
 			$descending = !$directions[$attribute];
@@ -323,26 +344,5 @@ class Sort extends Object
 		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
 		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
 		return $urlManager->createUrl($route, $params);
-	}
-
-	/**
-	 * Returns the attribute definition of the specified name.
-	 * @param string $name the attribute name
-	 * @return array the sort definition (column names => sort directions).
-	 * Null is returned if the attribute cannot be sorted.
-	 * @see attributes
-	 */
-	public function getAttribute($name)
-	{
-		if (isset($this->attributes[$name])) {
-			return $this->attributes[$name];
-		} elseif (in_array($name, $this->attributes, true)) {
-			return array(
-				'asc' => array($name => self::ASC),
-				'desc' => array($name => self::DESC),
-			);
-		} else {
-			return null;
-		}
 	}
 }
