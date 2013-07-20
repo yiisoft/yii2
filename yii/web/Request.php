@@ -43,7 +43,7 @@ class Request extends \yii\base\Request
 	 */
 	public $enableCookieValidation = true;
 	/**
-	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT or DELETE
+	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
 	 * request tunneled through POST. Default to '_method'.
 	 * @see getMethod
 	 * @see getRestParams
@@ -73,8 +73,8 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, DELETE).
-	 * @return string request method, such as GET, POST, HEAD, PUT, DELETE.
+	 * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, PATCH, DELETE).
+	 * @return string request method, such as GET, POST, HEAD, PUT, PATCH, DELETE.
 	 * The value returned is turned into upper case.
 	 */
 	public function getMethod()
@@ -111,6 +111,15 @@ class Request extends \yii\base\Request
 	public function getIsPut()
 	{
 		return $this->getMethod() === 'PUT';
+	}
+
+	/**
+	 * Returns whether this is a PATCH request.
+	 * @return boolean whether this is a PATCH request.
+	 */
+	public function getIsPatch()
+	{
+		return $this->getMethod() === 'PATCH';
 	}
 
 	/**
@@ -237,6 +246,17 @@ class Request extends \yii\base\Request
 	public function getPut($name, $defaultValue = null)
 	{
 		return $this->getIsPut() ? $this->getRestParam($name, $defaultValue) : null;
+	}
+
+	/**
+	 * Returns the named PATCH parameter value.
+	 * @param string $name the PATCH parameter name
+	 * @param mixed $defaultValue the default parameter value if the PATCH parameter does not exist.
+	 * @return mixed the PATCH parameter value
+	 */
+	public function getPatch($name, $defaultValue = null)
+	{
+		return $this->getIsPatch() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	private $_hostInfo;
@@ -914,7 +934,7 @@ class Request extends \yii\base\Request
 			return;
 		}
 		$method = $this->getMethod();
-		if ($method === 'POST' || $method === 'PUT' || $method === 'DELETE') {
+		if ($method === 'POST' || $method === 'PUT' || $method === 'PATCH' || $method === 'DELETE') {
 			$cookies = $this->getCookies();
 			switch ($method) {
 				case 'POST':
@@ -922,6 +942,9 @@ class Request extends \yii\base\Request
 					break;
 				case 'PUT':
 					$token = $this->getPut($this->csrfTokenName);
+					break;
+				case 'PATCH':
+					$token = $this->getPatch($this->csrfTokenName);
 					break;
 				case 'DELETE':
 					$token = $this->getDelete($this->csrfTokenName);
