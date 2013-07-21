@@ -13,6 +13,8 @@ use yii\helpers\Html;
 use yii\log\Logger;
 
 /**
+ * Debugger panel that collects and displays performance profiling info.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
