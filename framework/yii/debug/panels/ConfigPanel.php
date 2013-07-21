@@ -12,6 +12,8 @@ use yii\debug\Panel;
 use yii\helpers\Html;
 
 /**
+ * Debugger panel that collects and displays application configuration and environment.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
