@@ -7,6 +7,7 @@
 
 namespace yii\widgets;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\data\Sort;
@@ -28,9 +29,13 @@ class LinkSorter extends Widget
 	public $sort;
 	/**
 	 * @var array HTML attributes for the sorter container tag.
-	 * Please refer to [[Html::ul()]] for supported special options.
 	 */
-	public $options = array();
+	public $options = array('class' => 'sorter');
+	/**
+	 * @var string the template used to render the content within the sorter container.
+	 * The token "{links}" will be replaced with the actual sort links.
+	 */
+	public $template;
 
 	/**
 	 * Initializes the sorter.
@@ -40,6 +45,10 @@ class LinkSorter extends Widget
 		if ($this->sort === null) {
 			throw new InvalidConfigException('The "sort" property must be set.');
 		}
+
+		if ($this->template === null) {
+			$this->template = '<label>' . Yii::t('yii', 'Sort by:') . '</label> {links}';
+		}
 	}
 
 	/**
@@ -48,10 +57,22 @@ class LinkSorter extends Widget
 	 */
 	public function run()
 	{
+		$links = strtr($this->template, array(
+			'{links}' => $this->renderSortLinks(),
+		));
+		echo Html::tag('div', $links, $this->options);
+	}
+
+	/**
+	 * Renders the sort links.
+	 * @return string the rendering result
+	 */
+	protected function renderSortLinks()
+	{
 		$links = array();
 		foreach (array_keys($this->sort->attributes) as $name) {
 			$links[] = $this->sort->link($name);
 		}
-		echo Html::ul($links, array_merge($this->options, array('encode' => false)));
+		return Html::ul($links, array('encode' => false));
 	}
 }
