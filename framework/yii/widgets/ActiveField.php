@@ -33,6 +33,7 @@ class ActiveField extends Component
 	public $attribute;
 	/**
 	 * @var string the tag name for the field container.
+	 * When setting this to `false` no tag will be rendered.
 	 */
 	public $tag = 'div';
 	/**
@@ -114,6 +115,10 @@ class ActiveField extends Component
 			$this->form->attributes[$this->attribute] = $options;
 		}
 
+		if ($this->tag === false) {
+			return '';
+		}
+
 		$inputID = Html::getInputId($this->model, $this->attribute);
 		$attribute = Html::getAttributeName($this->attribute);
 		$options = $this->options;
@@ -136,7 +141,11 @@ class ActiveField extends Component
 	 */
 	public function end()
 	{
-		return Html::endTag($this->tag);
+		if ($this->tag === false) {
+			return '';
+		} else {
+			return Html::endTag($this->tag);
+		}
 	}
 
 	/**
