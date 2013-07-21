@@ -226,6 +226,7 @@ class CaptchaAction extends Action
 	/**
 	 * Renders the CAPTCHA image.
 	 * @param string $code the verification code
+	 * @return string image contents
 	 */
 	protected function renderImage($code)
 	{
@@ -239,6 +240,7 @@ class CaptchaAction extends Action
 	/**
 	 * Renders the CAPTCHA image based on the code using GD library.
 	 * @param string $code the verification code
+	 * @return string image contents
 	 */
 	protected function renderImageByGD($code)
 	{
@@ -286,6 +288,7 @@ class CaptchaAction extends Action
 	/**
 	 * Renders the CAPTCHA image based on the code using ImageMagick library.
 	 * @param string $code the verification code
+	 * @return \Imagick image instance. Can be used as string. In this case it will contain image contents.
 	 */
 	protected function renderImageByImagick($code)
 	{
