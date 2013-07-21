@@ -12,7 +12,6 @@ use yii\base\Application;
 use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\console\Exception;
-use yii\console\Request;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
 
