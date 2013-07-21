@@ -16,10 +16,14 @@ DIRECTORY STRUCTURE
 -------------------
 
       apps/                ready-to-use Web apps built on Yii 2
+          advanced/        advanced app template with complex features
           basic/           a simple app supporting user login and contact page
+          benchmark/       app demonstrating the minimal overhead introduced by the framework
       build/               internally used build tools
       docs/                documentation
-      yii/                 framework source files
+      extensions/          extensions 
+      framework/           framework files
+          yii/             framework source files
       tests/               tests of the core framework code
 
 
