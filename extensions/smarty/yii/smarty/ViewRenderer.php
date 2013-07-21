@@ -87,7 +87,6 @@ class ViewRenderer extends BaseViewRenderer
 	 */
 	public function render($view, $file, $params)
 	{
-		$ext = pathinfo($file, PATHINFO_EXTENSION);
 		/** @var \Smarty_Internal_Template $template */
 		$template = $this->smarty->createTemplate($file, null, null, $params, true);
 
