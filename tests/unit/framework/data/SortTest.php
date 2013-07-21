@@ -165,6 +165,6 @@ class SortTest extends TestCase
 			'route' => 'site/index',
 		));
 
-		$this->assertEquals('<a class="asc" href="/index.php?r=site/index&amp;sort=age-desc.name-desc">Age</a>', $sort->link('age'));
+		$this->assertEquals('<a class="asc" href="/index.php?r=site/index&amp;sort=age-desc.name-desc" data-sort="age-desc.name-desc">Age</a>', $sort->link('age'));
 	}
 }
