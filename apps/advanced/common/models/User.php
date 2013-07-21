@@ -45,31 +45,57 @@ class User extends ActiveRecord implements Identity
 		);
 	}
 
+	/**
+	 * Finds an identity by the given ID.
+	 *
+	 * @param string|integer $id the ID to be looked for
+	 * @return Identity|null the identity object that matches the given ID.
+	 */
 	public static function findIdentity($id)
 	{
 		return static::find($id);
 	}
 
+	/**
+	 * Finds user by username
+	 *
+	 * @param string $username
+	 * @return null|User
+	 */
 	public static function findByUsername($username)
 	{
 		return static::find(array('username' => $username, 'status' => static::STATUS_ACTIVE));
 	}
 
+	/**
+	 * @return int|string current user ID
+	 */
 	public function getId()
 	{
 		return $this->id;
 	}
 
+	/**
+	 * @return string current user auth key
+	 */
 	public function getAuthKey()
 	{
 		return $this->auth_key;
 	}
 
+	/**
+	 * @param string $authKey
+	 * @return boolean if auth key is valid for current user
+	 */
 	public function validateAuthKey($authKey)
 	{
 		return $this->getAuthKey() === $authKey;
 	}
 
+	/**
+	 * @param string $password password to validate
+	 * @return bool if password provided is valid for current user
+	 */
 	public function validatePassword($password)
 	{
 		return Security::validatePassword($password, $this->password_hash);
