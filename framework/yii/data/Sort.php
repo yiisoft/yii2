@@ -275,8 +275,8 @@ class Sort extends Object
 	 */
 	public function getAttributeOrder($attribute)
 	{
-		$this->getAttributeOrders();
-		return isset($this->_attributeOrders[$attribute]) ? $this->_attributeOrders[$attribute] : null;
+		$orders = $this->getAttributeOrders();
+		return isset($orders[$attribute]) ? $orders[$attribute] : null;
 	}
 
 	/**
@@ -300,8 +300,8 @@ class Sort extends Object
 		}
 
 		$url = $this->createUrl($attribute);
-		$definition = $this->attributes[$attribute];
-		return Html::a($definition['label'], $url, $options);
+		$options['data-sort'] = $this->createSortVar($attribute);
+		return Html::a($this->attributes[$attribute]['label'], $url, $options);
 	}
 
 	/**
@@ -316,6 +316,23 @@ class Sort extends Object
 	 * @see params
 	 */
 	public function createUrl($attribute)
+	{
+		$params = $this->params === null ? $_GET : $this->params;
+		$params[$this->sortVar] = $this->createSortVar($attribute);
+		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
+		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
+		return $urlManager->createUrl($route, $params);
+	}
+
+	/**
+	 * Creates the sort variable for the specified attribute.
+	 * The newly created sort variable can be used to create a URL that will lead to
+	 * sorting by the specified attribute.
+	 * @param string $attribute the attribute name
+	 * @return string the value of the sort variable
+	 * @throws InvalidConfigException if the specified attribute is not defined in [[attributes]]
+	 */
+	public function createSortVar($attribute)
 	{
 		if (!isset($this->attributes[$attribute])) {
 			throw new InvalidConfigException("Unknown attribute: $attribute");
@@ -339,10 +356,6 @@ class Sort extends Object
 		foreach ($directions as $attribute => $descending) {
 			$sorts[] = $descending ? $attribute . $this->separators[1] . $this->descTag : $attribute;
 		}
-		$params = $this->params === null ? $_GET : $this->params;
-		$params[$this->sortVar] = implode($this->separators[0], $sorts);
-		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
-		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
-		return $urlManager->createUrl($route, $params);
+		return implode($this->separators[0], $sorts);
 	}
 }

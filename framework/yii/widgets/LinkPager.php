@@ -183,7 +183,7 @@ class LinkPager extends Widget
 		}
 		$class = trim($class);
 		$options = array('class' => $class === '' ? null : $class);
-		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page)), $options);
+		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), array('data-page' => $page)), $options);
 	}
 
 	/**

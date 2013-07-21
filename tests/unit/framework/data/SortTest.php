@@ -93,6 +93,27 @@ class SortTest extends TestCase
 		$this->assertNull($sort->getAttributeOrder('xyz'));
 	}
 
+	public function testCreateSortVar()
+	{
+		$sort = new Sort(array(
+			'attributes' => array(
+				'age',
+				'name' => array(
+					'asc' => array('first_name' => Sort::ASC, 'last_name' => Sort::ASC),
+					'desc' => array('first_name' => Sort::DESC, 'last_name' => Sort::DESC),
+				),
+			),
+			'params' => array(
+				'sort' => 'age.name-desc'
+			),
+			'enableMultiSort' => true,
+			'route' => 'site/index',
+		));
+
+		$this->assertEquals('age-desc.name-desc', $sort->createSortVar('age'));
+		$this->assertEquals('name.age', $sort->createSortVar('name'));
+	}
+
 	public function testCreateUrl()
 	{
 		$manager = new UrlManager(array(
