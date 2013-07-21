@@ -22,3 +22,5 @@ $this->params['breadcrumbs'][] = $this->title;
 		<?php echo Html::submitButton('Login', array('class' => 'btn btn-primary')); ?>
 	</div>
 <?php ActiveForm::end(); ?>
+
+<p>If you forgot your password you can <?php echo Html::a('reset it', array('site/requestPasswordReset'))?>.</p>

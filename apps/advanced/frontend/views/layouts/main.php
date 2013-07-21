@@ -3,6 +3,7 @@ use frontend\config\AppAsset;
 use yii\helpers\Html;
 use yii\widgets\Menu;
 use yii\widgets\Breadcrumbs;
+use frontend\widgets\Alert;
 
 /**
  * @var $this \yii\base\View
@@ -54,6 +55,9 @@ AppAsset::register($this);
 	<?php echo Breadcrumbs::widget(array(
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
 	)); ?>
+
+	<?php echo Alert::widget()?>
+
 	<?php echo $content; ?>
 
 	<hr>

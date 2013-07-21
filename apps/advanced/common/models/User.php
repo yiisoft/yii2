@@ -112,6 +112,7 @@ class User extends ActiveRecord implements Identity
 			array('email', 'required'),
 			array('email', 'email'),
 			array('email', 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'),
+			array('email', 'exist', 'message' => 'There is no user with such email.', 'on' => 'requestPasswordResetToken'),
 
 			array('password', 'required'),
 			array('password', 'string', 'min' => 6),
@@ -124,6 +125,7 @@ class User extends ActiveRecord implements Identity
 			'signup' => array('username', 'email', 'password'),
 			'login' => array('username', 'password'),
 			'resetPassword' => array('password'),
+			'requestPasswordResetToken' => array('email'),
 		);
 	}
 
