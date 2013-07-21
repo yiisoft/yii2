@@ -262,6 +262,7 @@ class UrlManagerTest extends TestCase
 		// pretty URL rules
 		$manager = new UrlManager(array(
 			'enablePrettyUrl' => true,
+			'showScriptName' => false,
 			'cache' => null,
 			'rules' => array(
 				'PUT,POST post/<id>/<title>' => 'post/create',

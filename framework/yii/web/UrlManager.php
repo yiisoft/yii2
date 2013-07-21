@@ -82,7 +82,7 @@ class UrlManager extends Component
 	 * @var boolean whether to show entry script name in the constructed URL. Defaults to true.
 	 * This property is used only if [[enablePrettyUrl]] is true.
 	 */
-	public $showScriptName = false;
+	public $showScriptName = true;
 	/**
 	 * @var string the GET variable name for route. This property is used only if [[enablePrettyUrl]] is false.
 	 */
