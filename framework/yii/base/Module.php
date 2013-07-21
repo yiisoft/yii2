@@ -195,7 +195,7 @@ abstract class Module extends Component
 		if ($this instanceof Application) {
 			return '';
 		} elseif ($this->module) {
-			return $this->module->getUniqueId() . '/' . $this->id;
+			return ltrim($this->module->getUniqueId() . '/' . $this->id, '/');
 		} else {
 			return $this->id;
 		}
