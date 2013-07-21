@@ -13,5 +13,4 @@ namespace yii\console;
  */
 class Response extends \yii\base\Response
 {
-	
 }

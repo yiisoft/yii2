@@ -14,7 +14,6 @@ use yii\base\Arrayable;
 use yii\base\Component;
 use yii\helpers\StringHelper;
 
-
 /**
  * XmlResponseFormatter formats the given data into an XML response content.
  *
