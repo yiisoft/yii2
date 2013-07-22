@@ -94,6 +94,11 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function insert($table, $columns, &$params)
 	{
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = array();
+		}
 		$names = array();
 		$placeholders = array();
 		foreach ($columns as $name => $value) {
@@ -106,7 +111,7 @@ class QueryBuilder extends \yii\base\Object
 			} else {
 				$phName = self::PARAM_PREFIX . count($params);
 				$placeholders[] = $phName;
-				$params[$phName] = $value;
+				$params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($value) : $value;
 			}
 		}
 
@@ -164,6 +169,12 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function update($table, $columns, $condition, &$params)
 	{
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = array();
+		}
+
 		$lines = array();
 		foreach ($columns as $name => $value) {
 			if ($value instanceof Expression) {
@@ -174,7 +185,7 @@ class QueryBuilder extends \yii\base\Object
 			} else {
 				$phName = self::PARAM_PREFIX . count($params);
 				$lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
-				$params[$phName] = $value;
+				$params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($value) : $value;
 			}
 		}
 
