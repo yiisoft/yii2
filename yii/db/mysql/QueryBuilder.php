@@ -175,7 +175,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		foreach ($rows as $row) {
 			$vs = array();
 			foreach ($row as $i => $value) {
-				if (isset($columnSchemas[$columns[$i]])) {
+				if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
 					$value = $columnSchemas[$columns[$i]]->typecast($value);
 				}
 				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
