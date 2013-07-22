@@ -115,7 +115,7 @@ class Controller extends Component
 			$this->action = $action;
 			$result = null;
 			$event = new ActionEvent($action);
-			$this->trigger(Application::EVENT_BEFORE_ACTION, $event);
+			Yii::$app->trigger(Application::EVENT_BEFORE_ACTION, $event);
 			if ($event->isValid && $this->module->beforeAction($action) && $this->beforeAction($action)) {
 				$result = $action->runWithParams($params);
 				$this->afterAction($action, $result);
