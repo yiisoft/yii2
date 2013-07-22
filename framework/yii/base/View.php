@@ -576,8 +576,10 @@ class View extends Component
 			$am = $this->getAssetManager();
 			$bundle = $am->getBundle($name);
 			$this->assetBundles[$name] = false;
-			$bundle->registerAssets($this);
-			$this->assetBundles[$name] = true;
+			if($bundle instanceof AssetBundle){
+				$bundle->registerAssets($this);
+				$this->assetBundles[$name] = true;
+			}
 		} elseif ($this->assetBundles[$name] === false) {
 			throw new InvalidConfigException("A circular dependency is detected for bundle '$name'.");
 		}
