@@ -51,6 +51,7 @@ class HtmlBase
 	 */
 	public static $booleanAttributes = array(
 		'async' => 1,
+		'autobuffer' => 1,
 		'autofocus' => 1,
 		'autoplay' => 1,
 		'checked' => 1,
@@ -62,6 +63,7 @@ class HtmlBase
 		'formnovalidate' => 1,
 		'hidden' => 1,
 		'ismap' => 1,
+		'itemscope' => 1,
 		'loop' => 1,
 		'multiple' => 1,
 		'muted' => 1,
@@ -69,6 +71,7 @@ class HtmlBase
 		'noresize' => 1,
 		'novalidate' => 1,
 		'open' => 1,
+		'pubdate' => 1,
 		'readonly' => 1,
 		'required' => 1,
 		'reversed' => 1,
