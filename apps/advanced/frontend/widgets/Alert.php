@@ -20,6 +20,7 @@ use yii\helpers\Html;
  */
 class Alert extends \yii\bootstrap\Alert
 {
+	private $doNotRender = false;
 	public function init()
 	{
 		if ($this->body = \Yii::$app->getSession()->getFlash('error')) {
@@ -31,10 +32,17 @@ class Alert extends \yii\bootstrap\Alert
 		} elseif ($this->body = \Yii::$app->getSession()->getFlash('warning')) {
 
 		} else {
-			// no message passed, no need to render widget
+			$this->doNotRender = true;
 			return;
 		}
 
 		parent::init();
+	}
+
+	public function run()
+	{
+		if (!$this->doNotRender) {
+			parent::run();
+		}
 	}
 }
