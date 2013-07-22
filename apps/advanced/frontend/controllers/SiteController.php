@@ -8,6 +8,7 @@ use common\models\LoginForm;
 use frontend\models\ContactForm;
 use common\models\User;
 use yii\web\HttpException;
+use yii\helpers\Security;
 
 class SiteController extends Controller
 {
@@ -81,14 +82,14 @@ class SiteController extends Controller
 		$model = new User();
 		$model->scenario = 'requestPasswordResetToken';
 		if ($model->load($_POST) && $model->validate()) {
-			if ($this->sendPasswordResetEmail($email)) {
+			if ($this->sendPasswordResetEmail($model->email)) {
 				Yii::$app->getSession()->setFlash('success', 'Check your email for further instructions.');
 				$this->redirect('index');
 			} else {
 				Yii::$app->getSession()->setFlash('error', 'There was an error sending email.');
 			}
 		}
-		$this->render('requestPasswordResetToken', array(
+		return $this->render('requestPasswordResetToken', array(
 			'model' => $model,
 		));
 	}
@@ -110,7 +111,7 @@ class SiteController extends Controller
 			$this->redirect('index');
 		}
 
-		$this->render('resetPassword', array(
+		return $this->render('resetPassword', array(
 			'model' => $model,
 		));
 	}
@@ -132,7 +133,7 @@ class SiteController extends Controller
 			$name = '=?UTF-8?B?' . base64_encode(\Yii::$app->name . ' robot') . '?=';
 			$subject = '=?UTF-8?B?' . base64_encode('Password reset for ' . \Yii::$app->name) . '?=';
 			$body = $this->renderPartial('/emails/passwordResetToken', array(
-				'user' => $this,
+				'user' => $user,
 			));
 			$headers = "From: $name <{$fromEmail}>\r\n" .
 				"MIME-Version: 1.0\r\n" .
