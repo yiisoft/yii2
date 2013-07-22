@@ -20,7 +20,7 @@ use yii\helpers\Html;
  */
 class Alert extends \yii\bootstrap\Alert
 {
-	private $doNotRender = false;
+	private $_doNotRender = false;
 	public function init()
 	{
 		if ($this->body = \Yii::$app->getSession()->getFlash('error')) {
@@ -32,7 +32,7 @@ class Alert extends \yii\bootstrap\Alert
 		} elseif ($this->body = \Yii::$app->getSession()->getFlash('warning')) {
 
 		} else {
-			$this->doNotRender = true;
+			$this->_doNotRender = true;
 			return;
 		}
 
@@ -41,7 +41,7 @@ class Alert extends \yii\bootstrap\Alert
 
 	public function run()
 	{
-		if (!$this->doNotRender) {
+		if (!$this->_doNotRender) {
 			parent::run();
 		}
 	}
