@@ -161,6 +161,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function batchInsert($table, $columns, $rows)
 	{
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = array();
+		}
+
 		foreach ($columns as $i => $name) {
 			$columns[$i] = $this->db->quoteColumnName($name);
 		}
@@ -168,7 +174,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		$values = array();
 		foreach ($rows as $row) {
 			$vs = array();
-			foreach ($row as $value) {
+			foreach ($row as $i => $value) {
+				if (isset($columnSchemas[$columns[$i]])) {
+					$value = $columnSchemas[$columns[$i]]->typecast($value);
+				}
 				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
 			}
 			$values[] = '(' . implode(', ', $vs) . ')';
