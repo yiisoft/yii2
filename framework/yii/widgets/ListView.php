@@ -22,27 +22,51 @@ use yii\helpers\Html;
 class ListView extends Widget
 {
 	/**
-	 * @var array the HTML options for the container tag.
+	 * @var array the HTML attributes for the container tag of the list view.
+	 * The "tag" element specifies the tag name of the container element and defaults to "div".
 	 */
 	public $options = array();
 	/**
-	 * @var \yii\data\IDataProvider the data provider for the view.
+	 * @var \yii\data\IDataProvider the data provider for the view. This property is required.
 	 */
 	public $dataProvider;
+	/**
+	 * @var array the HTML attributes for the container of the rendering result of each data item.
+	 * The "tag" element specifies the tag name of the container element and defaults to "div".
+	 * If "tag" is false, it means no container element will be rendered.
+	 */
 	public $itemOptions = array();
-	public $itemTemplate;
+	/**
+	 * @var string|callback the name of the view for rendering each data item, or a callback (e.g. an anonymous function)
+	 * for rendering each data item. If it specifies a view name, the following variables will
+	 * be available in the view:
+	 *
+	 * - `$item`: mixed, the data item
+	 * - `$key`: mixed, the key value associated with the data item
+	 * - `$index`: integer, the zero-based index of the data item in the items array returned by [[dataProvider]].
+	 * - `$widget`: ListView, this widget instance
+	 *
+	 * Note that the view name is resolved into the view file by the current context of the [[view]] object.
+	 *
+	 * If this property is specified as a callback, it should have the following signature:
+	 *
+	 * ~~~
+	 * function ($item, $key, $index, $widget)
+	 * ~~~
+	 */
+	public $itemView;
 	/**
 	 * @var string the HTML code to be displayed between any two consecutive items.
 	 */
 	public $separator = "\n";
 	/**
 	 * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
-	 * used to render the pager.
+	 * used to render the pager. You can use a different widget class by configuring the "class" element.
 	 */
 	public $pager = array();
 	/**
 	 * @var array the configuration for the sorter widget. By default, [[LinkSorter]] will be
-	 * used to render the sorter.
+	 * used to render the sorter. You can use a different widget class by configuring the "class" element.
 	 */
 	public $sorter = array();
 	/**
@@ -58,12 +82,12 @@ class ListView extends Widget
 	 * - `{page}`: the page number (1-based) current being displayed
 	 * - `{pageCount}`: the number of pages available
 	 */
-	public $summaryContent;
+	public $summary;
 	/**
 	 * @var string the HTML content to be displayed when [[dataProvider]] does not have any data.
 	 * If you do not want to show anything when [[dataProvider]] is empty, you may set this property with an empty string.
 	 */
-	public $emptyContent;
+	public $empty;
 	/**
 	 * @var string the layout that determines how different sections of the list view should be organized.
 	 * The following tokens will be replaced with the corresponding section contents:
@@ -78,50 +102,36 @@ class ListView extends Widget
 
 	/**
 	 * Initializes the view.
-	 * This method will initialize required property values and instantiate {@link columns} objects.
 	 */
 	public function init()
 	{
 		if ($this->dataProvider === null) {
 			throw new InvalidConfigException('The "dataProvider" property must be set.');
 		}
-		if ($this->emptyContent === null) {
-			$this->emptyContent = '<div class="empty">' . Yii::t('yii', 'No results found.') . '</div>';
+		if ($this->empty === null) {
+			$this->empty = '<div class="empty">' . Yii::t('yii', 'No results found.') . '</div>';
 		}
 	}
 
 	/**
-	 * Renders the view.
-	 * This is the main entry of the whole view rendering.
-	 * Child classes should mainly override {@link renderContent} method.
+	 * Runs the widget.
 	 */
 	public function run()
 	{
 		if ($this->dataProvider->getCount() > 0) {
 			$tag = ArrayHelper::remove($this->options, 'tag', 'div');
-			echo Html::tag($tag, $this->renderContent(), $this->options);
+			$content = preg_replace_callback("/{\\w+}/", array($this, 'renderSection'), $this->layout);
+			echo Html::tag($tag, $content, $this->options);
 		} else {
-			echo $this->emptyContent;
+			echo $this->empty;
 		}
 	}
 
 	/**
-	 * Renders the main content of the view.
-	 * The content is divided into sections, such as summary, items, pager.
-	 * Each section is rendered by a method named as "renderXyz", where "Xyz" is the section name.
-	 * The rendering results will replace the corresponding placeholders in {@link template}.
-	 */
-	public function renderContent()
-	{
-		return preg_replace_callback("/{\\w+}/", array($this, 'renderSection'), $this->layout);
-	}
-
-	/**
-	 * Renders a section.
-	 * This method is invoked by {@link renderContent} for every placeholder found in {@link template}.
+	 * Renders a section of the list view.
+	 * This method is invoked for every placeholder found in [[layout]].
 	 * It should return the rendering result that would replace the placeholder.
-	 * @param array $matches the matches, where $matches[0] represents the whole placeholder,
-	 * while $matches[1] contains the name of the matched placeholder.
+	 * @param array $matches the matches, where $matches[0] represents the matching placeholder.
 	 * @return string the rendering result of the section
 	 */
 	protected function renderSection($matches)
@@ -151,13 +161,13 @@ class ListView extends Widget
 			}
 			$page = $pagination->getPage() + 1;
 			$pageCount = $pagination->pageCount;
-			if (($summaryContent = $this->summaryContent) === null) {
+			if (($summaryContent = $this->summary) === null) {
 				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>1</b> result.|Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> results.', $totalCount) . '</div>';
 			}
 		} else {
 			$begin = $page = $pageCount = 1;
 			$end = $totalCount = $count;
-			if (($summaryContent = $this->summaryContent) === null) {
+			if (($summaryContent = $this->summary) === null) {
 				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>1</b> result.|Total <b>{count}</b> results.', $count) . '</div>';
 			}
 		}
@@ -188,14 +198,24 @@ class ListView extends Widget
 
 	/**
 	 * Renders a single data item.
+	 * @param mixed $item the data item to be rendered
+	 * @param mixed $key the key value associated with the data item
+	 * @param integer $index the zero-based index of the data item in the item array returned by [[dataProvider]].
 	 * @return string the rendering result
 	 */
 	public function renderItem($item, $key, $index)
 	{
-		if ($this->itemTemplate === null) {
+		if ($this->itemView === null) {
 			$content = $key;
+		} elseif (is_string($this->itemView)) {
+			$content = $this->getView()->render($this->itemView, array(
+				'item' => $item,
+				'key' => $key,
+				'index' => $index,
+				'widget' => $this,
+			));
 		} else {
-			$content = call_user_func($this->itemTemplate, $item, $key, $index, $this);
+			$content = call_user_func($this->itemView, $item, $key, $index, $this);
 		}
 		$options = $this->itemOptions;
 		$tag = ArrayHelper::remove($options, 'tag', 'div');
