@@ -471,7 +471,7 @@ EOD;
 	{
 		$this->assertEquals('', Html::renderTagAttributes(array()));
 		$this->assertEquals(' name="test" value="1&lt;&gt;"', Html::renderTagAttributes(array('name' => 'test', 'empty' => null, 'value' => '1<>')));
-		$this->assertEquals(' checked disabled', Html::renderTagAttributes(array('checked' => 'checked', 'disabled' => true, 'hidden' => false)));
+		$this->assertEquals(' checked disabled', Html::renderTagAttributes(array('checked' => true, 'disabled' => true, 'hidden' => false)));
 	}
 
 	public function testAddCssClass()

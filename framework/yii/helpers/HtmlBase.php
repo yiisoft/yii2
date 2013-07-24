@@ -45,42 +45,6 @@ class HtmlBase
 		'wbr' => 1,
 	);
 	/**
-	 * @var array list of boolean attributes. The presence of a boolean attribute on
-	 * an element represents the true value, and the absence of the attribute represents the false value.
-	 * @see http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes
-	 */
-	public static $booleanAttributes = array(
-		'async' => 1,
-		'autobuffer' => 1,
-		'autofocus' => 1,
-		'autoplay' => 1,
-		'checked' => 1,
-		'controls' => 1,
-		'declare' => 1,
-		'default' => 1,
-		'defer' => 1,
-		'disabled' => 1,
-		'formnovalidate' => 1,
-		'hidden' => 1,
-		'ismap' => 1,
-		'itemscope' => 1,
-		'loop' => 1,
-		'multiple' => 1,
-		'muted' => 1,
-		'nohref' => 1,
-		'noresize' => 1,
-		'novalidate' => 1,
-		'open' => 1,
-		'pubdate' => 1,
-		'readonly' => 1,
-		'required' => 1,
-		'reversed' => 1,
-		'scoped' => 1,
-		'seamless' => 1,
-		'selected' => 1,
-		'typemustmatch' => 1,
-	);
-	/**
 	 * @var array the preferred order of attributes in a tag. This mainly affects the order of the attributes
 	 * that are rendered by [[renderAttributes()]].
 	 */
@@ -450,7 +414,7 @@ class HtmlBase
 	{
 		$options['type'] = $type;
 		$options['name'] = $name;
-		$options['value'] = $value;
+		$options['value'] = $value === null ? null : (string)$value;
 		return static::tag('input', '', $options);
 	}
 
@@ -1322,7 +1286,7 @@ class HtmlBase
 				$lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
 			} else {
 				$attrs = isset($options[$key]) ? $options[$key] : array();
-				$attrs['value'] = $key;
+				$attrs['value'] = (string)$key;
 				$attrs['selected'] = $selection !== null &&
 					(!is_array($selection) && !strcmp($key, $selection)
 						|| is_array($selection) && in_array($key, $selection));
@@ -1335,12 +1299,11 @@ class HtmlBase
 
 	/**
 	 * Renders the HTML tag attributes.
-	 * Boolean attributes such as s 'checked', 'disabled', 'readonly', will be handled specially
-	 * according to [[booleanAttributes]] and [[showBooleanAttributeValues]].
+	 * Attributes whose values are of boolean type will be treated as [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+	 * And attributes whose values are null will not be rendered.
 	 * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
-	 * Attributes whose value is null will be ignored and not put in the rendering result.
 	 * @return string the rendering result. If the attributes are not empty, they will be rendered
-	 * into a string with a leading white space (such that it can be directly appended to the tag name
+	 * into a string with a leading white space (so that it can be directly appended to the tag name
 	 * in a tag. If there is no attribute, an empty string will be returned.
 	 */
 	public static function renderTagAttributes($attributes)
@@ -1357,8 +1320,8 @@ class HtmlBase
 
 		$html = '';
 		foreach ($attributes as $name => $value) {
-			if (isset(static::$booleanAttributes[strtolower($name)])) {
-				if ($value || strcasecmp($name, $value) === 0) {
+			if (is_bool($value)) {
+				if ($value) {
 					$html .= " $name";
 				}
 			} elseif ($value !== null) {
