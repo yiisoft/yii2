@@ -254,7 +254,7 @@ class ListView extends Widget
 			return '';
 		}
 		/** @var LinkPager $class */
-		$class = ArrayHelper::remove($this->sorter, 'class', LinkPager::className());
+		$class = ArrayHelper::remove($this->pager, 'class', LinkPager::className());
 		$this->pager['pagination'] = $pagination;
 		return $class::widget($this->pager);
 	}
