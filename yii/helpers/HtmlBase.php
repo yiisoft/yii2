@@ -553,7 +553,7 @@ class HtmlBase
 	 */
 	public static function radio($name, $checked = false, $options = array())
 	{
-		$options['checked'] = $checked;
+		$options['checked'] = (boolean)$checked;
 		$value = array_key_exists('value', $options) ? $options['value'] : '1';
 		if (isset($options['uncheck'])) {
 			// add a hidden field so that if the radio button is not selected, it still submits a value
@@ -582,7 +582,7 @@ class HtmlBase
 	 */
 	public static function checkbox($name, $checked = false, $options = array())
 	{
-		$options['checked'] = $checked;
+		$options['checked'] = (boolean)$checked;
 		$value = array_key_exists('value', $options) ? $options['value'] : '1';
 		if (isset($options['uncheck'])) {
 			// add a hidden field so that if the checkbox is not selected, it still submits a value
@@ -1288,7 +1288,7 @@ class HtmlBase
 				$attrs = isset($options[$key]) ? $options[$key] : array();
 				$attrs['value'] = (string)$key;
 				$attrs['selected'] = $selection !== null &&
-					(!is_array($selection) && !strcmp($key, $selection)
+						(!is_array($selection) && !strcmp($key, $selection)
 						|| is_array($selection) && in_array($key, $selection));
 				$lines[] = static::tag('option', str_replace(' ', '&nbsp;', static::encode($value)), $attrs);
 			}
