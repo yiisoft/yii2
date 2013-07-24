@@ -65,11 +65,15 @@ class Controller extends \yii\base\Controller
 	 * Creates a URL using the given route and parameters.
 	 *
 	 * This method enhances [[UrlManager::createUrl()]] by supporting relative routes.
-	 * A relative route is a route without a slash, such as "view". If the route is an empty
-	 * string, [[route]] will be used; Otherwise, [[uniqueId]] will be prepended to a relative route.
+	 * A relative route is a route without a leading slash, such as "view", "post/view".
 	 *
-	 * After this route conversion, the method This method calls [[UrlManager::createUrl()]]
-	 * to create a URL.
+	 * - If the route is an empty string, the current [[route]] will be used;
+	 * - If the route contains no slashes at all, it is considered to be an action ID
+	 *   of the current controller and will be prepended with [[uniqueId]];
+	 * - If the route has no leading slash, it is considered to be a route relative
+	 *   to the current module and will be prepended with the module's uniqueId.
+	 *
+	 * After this route conversion, the method calls [[UrlManager::createUrl()]] to create a URL.
 	 *
 	 * @param string $route the route. This can be either an absolute route or a relative route.
 	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
@@ -78,8 +82,11 @@ class Controller extends \yii\base\Controller
 	public function createUrl($route, $params = array())
 	{
 		if (strpos($route, '/') === false) {
-			// a relative route
+			// empty or an action ID
 			$route = $route === '' ? $this->getRoute() : $this->getUniqueId() . '/' . $route;
+		} elseif ($route[0] !== '/') {
+			// relative to module
+			$route = ltrim($this->module->getUniqueId() . '/' . $route, '/');
 		}
 		return Yii::$app->getUrlManager()->createUrl($route, $params);
 	}
