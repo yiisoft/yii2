@@ -46,7 +46,7 @@ class HtmlBase
 	);
 	/**
 	 * @var array the preferred order of attributes in a tag. This mainly affects the order of the attributes
-	 * that are rendered by [[renderAttributes()]].
+	 * that are rendered by [[renderTagAttributes()]].
 	 */
 	public static $attributeOrder = array(
 		'type',
@@ -1299,7 +1299,8 @@ class HtmlBase
 
 	/**
 	 * Renders the HTML tag attributes.
-	 * Attributes whose values are of boolean type will be treated as [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+	 * Attributes whose values are of boolean type will be treated as
+	 * [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
 	 * And attributes whose values are null will not be rendered.
 	 * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
 	 * @return string the rendering result. If the attributes are not empty, they will be rendered
