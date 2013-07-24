@@ -136,10 +136,12 @@ class Logger extends Component
 	public $flushInterval = 1000;
 	/**
 	 * @var integer how much call stack information (file name and line number) should be logged for each message.
-	 * Defaults to 0, meaning no backtrace information. If it is greater than 0,
-	 * at most that number of call stacks will be logged. Only application call stacks are considered.
+	 * If it is greater than 0, at most that number of call stacks will be logged. Note that only application
+	 * call stacks are counted.
+	 *
+	 * If not set, it will default to 3 when `YII_ENV` is set as "dev", and 0 otherwise.
 	 */
-	public $traceLevel = 0;
+	public $traceLevel;
 
 	/**
 	 * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -147,6 +149,9 @@ class Logger extends Component
 	public function init()
 	{
 		parent::init();
+		if ($this->traceLevel === null) {
+			$this->traceLevel = YII_ENV === 'dev' ? 3 : 0;
+		}
 		foreach ($this->targets as $name => $target) {
 			if (!$target instanceof Target) {
 				$this->targets[$name] = Yii::createObject($target);

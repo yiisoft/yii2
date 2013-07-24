@@ -23,7 +23,6 @@ return array(
 			'identityClass' => 'common\models\User',
 		),
 		'log' => array(
-			'traceLevel' => YII_DEBUG ? 3 : 0,
 			'targets' => array(
 				array(
 					'class' => 'yii\log\FileTarget',
