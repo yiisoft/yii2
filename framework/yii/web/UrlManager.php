@@ -29,6 +29,7 @@ class UrlManager extends Component
 	/**
 	 * @var boolean whether to enable strict parsing. If strict parsing is enabled, the incoming
 	 * requested URL must match at least one of the [[rules]] in order to be treated as a valid request.
+	 * Otherwise, the path info part of the request will be treated as the requested route.
 	 * This property is used only when [[enablePrettyUrl]] is true.
 	 */
 	public $enableStrictParsing = false;
@@ -181,7 +182,7 @@ class UrlManager extends Component
 			}
 
 			$suffix = (string)$this->suffix;
-			if ($suffix !== '' && $suffix !== '/' && $pathInfo !== '') {
+			if ($suffix !== '' && $pathInfo !== '') {
 				$n = strlen($this->suffix);
 				if (substr($pathInfo, -$n) === $this->suffix) {
 					$pathInfo = substr($pathInfo, 0, -$n);

@@ -605,7 +605,6 @@ abstract class Module extends Component
 		if ($route === '') {
 			$route = $this->defaultRoute;
 		}
-		$route = trim($route, '/');
 		if (($pos = strpos($route, '/')) !== false) {
 			$id = substr($route, 0, $pos);
 			$route = substr($route, $pos + 1);

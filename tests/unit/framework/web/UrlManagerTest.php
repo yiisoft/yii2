@@ -163,9 +163,9 @@ class UrlManagerTest extends TestCase
 		$result = $manager->parseRequest($request);
 		$this->assertEquals(array('module/site/index', array()), $result);
 		// pathinfo with trailing slashes
-		$request->pathInfo = 'module/site/index/';
+		$request->pathInfo = '/module/site/index/';
 		$result = $manager->parseRequest($request);
-		$this->assertEquals(array('module/site/index', array()), $result);
+		$this->assertEquals(array('module/site/index/', array()), $result);
 
 		// pretty URL rules
 		$manager = new UrlManager(array(
@@ -182,10 +182,10 @@ class UrlManagerTest extends TestCase
 		$request->pathInfo = 'post/123/this+is+sample';
 		$result = $manager->parseRequest($request);
 		$this->assertEquals(array('post/view', array('id' => '123', 'title' => 'this+is+sample')), $result);
-		// matching pathinfo with trailing slashes
+		// trailing slash is significant
 		$request->pathInfo = 'post/123/this+is+sample/';
 		$result = $manager->parseRequest($request);
-		$this->assertEquals(array('post/view', array('id' => '123', 'title' => 'this+is+sample')), $result);
+		$this->assertEquals(array('post/123/this+is+sample/', array()), $result);
 		// empty pathinfo
 		$request->pathInfo = '';
 		$result = $manager->parseRequest($request);

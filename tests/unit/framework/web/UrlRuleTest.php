@@ -620,7 +620,8 @@ class UrlRuleTest extends TestCase
 					'suffix' => '/',
 				),
 				array(
-					array('posts', 'post/index'),
+					array('posts/', 'post/index'),
+					array('posts', false),
 					array('a', false),
 				),
 			),

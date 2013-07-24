@@ -192,8 +192,7 @@ class UrlRule extends Object
 					// suffix alone is not allowed
 					return false;
 				}
-			} elseif ($suffix !== '/') {
-				// we allow the ending '/' to be optional if it is a suffix
+			} else {
 				return false;
 			}
 		}
