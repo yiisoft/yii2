@@ -417,13 +417,13 @@ class Request extends \yii\base\Request
 	 */
 	public function setPathInfo($value)
 	{
-		$this->_pathInfo = trim($value, '/');
+		$this->_pathInfo = ltrim($value, '/');
 	}
 
 	/**
 	 * Resolves the path info part of the currently requested URL.
 	 * A path info refers to the part that is after the entry script and before the question mark (query string).
-	 * The starting and ending slashes are both removed.
+	 * The starting slashes are both removed (ending slashes will be kept).
 	 * @return string part of the request URL that is after the entry script and before the question mark.
 	 * Note, the returned path info is decoded.
 	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
@@ -465,7 +465,7 @@ class Request extends \yii\base\Request
 			throw new InvalidConfigException('Unable to determine the path info of the current request.');
 		}
 
-		return trim($pathInfo, '/');
+		return ltrim($pathInfo, '/');
 	}
 
 	/**
