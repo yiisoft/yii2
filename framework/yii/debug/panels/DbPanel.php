@@ -51,7 +51,16 @@ EOD;
 		$rows = array();
 		foreach ($timings as $timing) {
 			$duration = sprintf('%.1f ms', $timing[3] * 1000);
-			$procedure = str_repeat('<span class="indent">→</span>', $timing[0]) . Html::encode($timing[1]);
+			$procedure = Html::encode($timing[1]);
+			$traces = $timing[4];
+			if (!empty($traces)) {
+				$procedure .= Html::ul($traces, array(
+					'class' => 'trace',
+					'item' => function ($trace) {
+						return "<li>{$trace['file']}({$trace['line']})</li>";
+					},
+				));
+			}
 			$rows[] = "<tr><td style=\"width: 80px;\">$duration</td><td>$procedure</td>";
 		}
 		$rows = implode("\n", $rows);
@@ -85,12 +94,12 @@ EOD;
 		$stack = array();
 		foreach ($messages as $i => $log) {
 			list($token, $level, $category, $timestamp) = $log;
-			$log[4] = $i;
+			$log[5] = $i;
 			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
 			} elseif ($level == Logger::LEVEL_PROFILE_END) {
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[$last[4]] = array(count($stack), $token, $last[3], $timestamp - $last[3]);
+					$timings[$last[5]] = array(count($stack), $token, $last[3], $timestamp - $last[3], $last[4]);
 				}
 			}
 		}
@@ -98,7 +107,7 @@ EOD;
 		$now = microtime(true);
 		while (($last = array_pop($stack)) !== null) {
 			$delta = $now - $last[3];
-			$timings[$last[4]] = array(count($stack), $last[0], $last[2], $delta);
+			$timings[$last[5]] = array(count($stack), $last[0], $last[2], $delta, $last[4]);
 		}
 		ksort($timings);
 		return $this->_timings = $timings;
