@@ -22,7 +22,7 @@ You can then install the Bootstrap Application using the following command:
 php composer.phar create-project --stability=dev yiisoft/yii2-app-basic yii-basic
 ~~~
 
-Now you should be able to access the Bootstrap Application using the URL `http://localhost/yii-basic/www/`,
+Now you should be able to access the Bootstrap Application using the URL `http://localhost/yii-basic/web/`,
 assuming `yii-basic` is directly under the document root of your Web server.
 
 
@@ -59,7 +59,7 @@ yii-basic/
          contact.php      the view for the 'contact' action
          index.php        the view for the 'index' action
          login.php        the view for the 'login' action
-   www/                   containing Web-accessible resources
+   web/                   containing Web-accessible resources
      index.php            Web application entry script file
      assets/              containing published resource files
      css/                 containing CSS files

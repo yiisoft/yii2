@@ -26,13 +26,13 @@
 	"extra": {
 		"yii-install-writable": [
 			"backend/runtime",
-			"backend/www/assets",
+			"backend/web/assets",
 
 			"console/runtime",
 			"console/migrations",
 
 			"frontend/runtime",
-			"frontend/www/assets"
+			"frontend/web/assets"
 		]
 	}
 }

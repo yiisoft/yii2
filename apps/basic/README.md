@@ -24,7 +24,7 @@ DIRECTORY STRUCTURE
       runtime/            contains files generated during runtime
       vendor/             contains dependent 3rd-party packages
       views/              contains view files for the Web application
-      www/                contains the entry script and Web resources
+      web/                contains the entry script and Web resources
 
 
 
@@ -53,7 +53,7 @@ You can then install the Bootstrap Application using the following command:
 php composer.phar create-project --stability=dev yiisoft/yii2-app-basic yii-basic
 ~~~
 
-Now you should be able to access the application using the URL `http://localhost/yii-basic/www/`,
+Now you should be able to access the application using the URL `http://localhost/yii-basic/web/`,
 assuming `yii-basic` is directly under the document root of your Web server.
 
 

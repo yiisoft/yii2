@@ -22,7 +22,7 @@ use yii\console\Controller;
  *    yii asset /path/to/myapp/config.php /path/to/myapp/config/assets_compressed.php
  * 4. Adjust your web application config to use compressed assets.
  *
- * Note: in the console environment some path aliases like '@wwwroot' and '@www' may not exist,
+ * Note: in the console environment some path aliases like '@webroot' and '@web' may not exist,
  * so corresponding paths inside the configuration should be specified directly.
  *
  * Note: by default this command relies on an external tools to perform actual files compression,
@@ -587,7 +587,7 @@ EOD;
 <?php
 /**
  * Configuration file for the "yii asset" console command.
- * Note that in the console environment, some path aliases like '@wwwroot' and '@www' may not exist.
+ * Note that in the console environment, some path aliases like '@webroot' and '@web' may not exist.
  * Please define these missing path aliases.
  */
 return array(
@@ -599,7 +599,7 @@ return array(
 	// Asset bundle for compression output:
 	'targets' => array(
 		'app\config\AllAsset' => array(
-			'basePath' => 'path/to/www',
+			'basePath' => 'path/to/web',
 			'baseUrl' => '',
 			'js' => 'js/all-{ts}.js',
 			'css' => 'css/all-{ts}.css',

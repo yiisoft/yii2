@@ -245,8 +245,8 @@ Themes
 
 Themes work completely different in 2.0. They are now based on a path map to "translate" a source
 view into a themed view. For example, if the path map for a theme is
-`array('/www/views' => '/www/themes/basic')`, then the themed version for a view file
-`/www/views/site/index.php` will be `/www/themes/basic/site/index.php`.
+`array('/web/views' => '/web/themes/basic')`, then the themed version for a view file
+`/web/views/site/index.php` will be `/web/themes/basic/site/index.php`.
 
 For this reason, theme can now be applied to any view file, even if a view rendered outside
 of the context of a controller or a widget.

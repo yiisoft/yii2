@@ -34,7 +34,7 @@ backend
 	models/             contains backend-specific model classes
 	runtime/            contains files generated during runtime
 	views/              contains view files for the Web application
-	www/                contains the entry script and Web resources
+	web/                contains the entry script and Web resources
 frontend
 	assets/             contains application assets such as JavaScript and CSS
 	config/             contains frontend configurations
@@ -42,7 +42,7 @@ frontend
 	models/             contains frontend-specific model classes
 	runtime/            contains files generated during runtime
 	views/              contains view files for the Web application
-	www/                contains the entry script and Web resources
+	web/                contains the entry script and Web resources
 vendor/                 contains dependent 3rd-party packages
 environments/                contains environment-based overrides
 ```
@@ -107,8 +107,8 @@ the installed application. You only need to do these once for all.
 
 Now you should be able to access:
 
-- the frontend using the URL `http://localhost/yii-advanced/frontend/www/`
-- the backend using the URL `http://localhost/yii-advanced/backend/www/`
+- the frontend using the URL `http://localhost/yii-advanced/frontend/web/`
+- the backend using the URL `http://localhost/yii-advanced/backend/web/`
 
 assuming `yii-advanced` is directly under the document root of your Web server.
 
