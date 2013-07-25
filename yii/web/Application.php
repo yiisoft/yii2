@@ -55,8 +55,8 @@ class Application extends \yii\base\Application
 	 */
 	public function handleRequest($request)
 	{
-		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
-		Yii::setAlias('@www', $request->getBaseUrl());
+		Yii::setAlias('@webroot', dirname($request->getScriptFile()));
+		Yii::setAlias('@web', $request->getBaseUrl());
 
 		if (empty($this->catchAll)) {
 			list ($route, $params) = $request->resolve();

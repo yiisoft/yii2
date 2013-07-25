@@ -30,11 +30,11 @@ class AssetManager extends Component
 	/**
 	 * @return string the root directory storing the published asset files.
 	 */
-	public $basePath = '@wwwroot/assets';
+	public $basePath = '@webroot/assets';
 	/**
 	 * @return string the base URL through which the published asset files can be accessed.
 	 */
-	public $baseUrl = '@www/assets';
+	public $baseUrl = '@web/assets';
 	/**
 	 * @var boolean whether to use symbolic link to publish asset files. Defaults to false, meaning
 	 * asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
