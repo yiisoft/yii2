@@ -25,6 +25,22 @@ class ProfilingPanel extends Panel
 		return 'Profiling';
 	}
 
+	public function getSummary()
+	{
+		$memory = sprintf('%.1f MB', $this->data['memory'] / 1048576);
+		$time = number_format($this->data['time'] * 1000) . ' ms';
+		$url = $this->getUrl();
+
+		return <<<EOD
+<div class="yii-debug-toolbar-block">
+	<a href="$url" title="total processing time">Time: <span class="label">$time</span></a>
+</div>
+<div class="yii-debug-toolbar-block">
+	<a href="$url" title="peak memory consumption">Memory: <span class="label">$memory</span></a>
+</div>
+EOD;
+	}
+
 	public function getDetail()
 	{
 		$messages = $this->data['messages'];
@@ -58,8 +74,13 @@ class ProfilingPanel extends Panel
 		}
 		$rows = implode("\n", $rows);
 
+		$memory = sprintf('%.1f MB', $this->data['memory'] / 1048576);
+		$time = number_format($this->data['time'] * 1000) . ' ms';
+
 		return <<<EOD
-<h1>Performance Profiling</h1>
+<h2>Performance Profiling</h2>
+
+<p>Total processing time: <b>$time</b>; Peak memory: <b>$memory</b>.</p>
 
 <table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
 <thead>
@@ -81,6 +102,8 @@ EOD;
 		$target = $this->module->logTarget;
 		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE);
 		return array(
+			'memory' => memory_get_peak_usage(),
+			'time' => microtime(true) - YII_BEGIN_TIME,
 			'messages' => $messages,
 		);
 	}
