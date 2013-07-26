@@ -9,7 +9,7 @@ If you are looking for a production-ready PHP framework, please use
 Yii 2.0 is still under heavy development. We may make significant changes
 without prior notices. **Yii 2.0 is not ready for production use yet.**
 
-[![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2)
+[![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2)[![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
 
 
 DIRECTORY STRUCTURE
