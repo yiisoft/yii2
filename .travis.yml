@@ -6,7 +6,7 @@ php:
   - 5.5
 
 before_script:
-  - mysql -e 'create database IF NOT EXISTS yiitest;';
-  - psql -U postgres -c 'drop database if exists yiitest;'; 
-  - psql -U postgres -c 'create database yiitest;';
+  - mysql -e 'CREATE DATABASE yiitest;';
+  - psql -U postgres -c 'CREATE DATABASE yiitest;';
+
 script: phpunit
