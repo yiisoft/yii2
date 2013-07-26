@@ -9,6 +9,7 @@ namespace yii\debug\panels;
 
 use Yii;
 use yii\base\InlineAction;
+use yii\bootstrap\Tabs;
 use yii\debug\Panel;
 use yii\helpers\Html;
 
@@ -53,6 +54,33 @@ EOD;
 			'Action' => $this->data['action'],
 			'Parameters' => $this->data['actionParams'],
 		);
+		return Tabs::widget(array(
+			'items' => array(
+				array(
+					'label' => 'Parameters',
+					'content' => $this->renderData('Routing', $data)
+						. $this->renderData('$_GET', $this->data['GET'])
+						. $this->renderData('$_POST', $this->data['POST'])
+						. $this->renderData('$_FILES', $this->data['POST'])
+						. $this->renderData('$_COOKIE', $this->data['COOKIE']),
+					'active' => true,
+				),
+				array(
+					'label' => 'Headers',
+					'content' => $this->renderData('Request Headers', $this->data['requestHeaders'])
+						. $this->renderData('Response Headers', $this->data['responseHeaders']),
+				),
+				array(
+					'label' => 'Session',
+					'content' => $this->renderData('$_SESSION', $this->data['SESSION'])
+						. $this->renderData('Flashes', $this->data['flashes']),
+				),
+				array(
+					'label' => '$_SERVER',
+					'content' => $this->renderData('$_SERVER', $this->data['SERVER']),
+				),
+			),
+		));
 		return "<h1>Request Information</h1>\n"
 			. $this->renderData('Routing', $data) . "\n"
 			. $this->renderData('Flashes', $this->data['flashes']) . "\n"
