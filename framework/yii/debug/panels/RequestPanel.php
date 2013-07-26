@@ -28,19 +28,9 @@ class RequestPanel extends Panel
 
 	public function getSummary()
 	{
-		$memory = sprintf('%.1f MB', $this->data['memory'] / 1048576);
-		$time = number_format($this->data['time'] * 1000) . ' ms';
 		$url = $this->getUrl();
 
 		return <<<EOD
-<div class="yii-debug-toolbar-block">
-	<a href="$url">Memory: <span class="label">$memory</span></a>
-</div>
-
-<div class="yii-debug-toolbar-block">
-	<a href="$url">Time: <span class="label">$time</span></a>
-</div>
-
 <div class="yii-debug-toolbar-block">
 	<a href="$url">Action: <span class="label">{$this->data['action']}</span></a>
 </div>
@@ -81,17 +71,6 @@ EOD;
 				),
 			),
 		));
-		return "<h1>Request Information</h1>\n"
-			. $this->renderData('Routing', $data) . "\n"
-			. $this->renderData('Flashes', $this->data['flashes']) . "\n"
-			. $this->renderData('$_GET', $this->data['GET']) . "\n"
-			. $this->renderData('$_POST', $this->data['POST']) . "\n"
-			. $this->renderData('$_COOKIE', $this->data['COOKIE']) . "\n"
-			. $this->renderData('$_FILES', $this->data['FILES']) . "\n"
-			. $this->renderData('$_SESSION', $this->data['SESSION']) . "\n"
-			. $this->renderData('$_SERVER', $this->data['SERVER']) . "\n"
-			. $this->renderData('Request Headers', $this->data['requestHeaders']) . "\n"
-			. $this->renderData('Response Headers', $this->data['responseHeaders']);
 	}
 
 	public function save()
@@ -133,8 +112,6 @@ EOD;
 		/** @var \yii\web\Session $session */
 		$session = Yii::$app->getComponent('session', false);
 		return array(
-			'memory' => memory_get_peak_usage(),
-			'time' => microtime(true) - YII_BEGIN_TIME,
 			'flashes' => $session ? $session->getAllFlashes() : array(),
 			'requestHeaders' => $requestHeaders,
 			'responseHeaders' => $responseHeaders,
