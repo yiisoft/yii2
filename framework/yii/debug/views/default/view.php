@@ -1,5 +1,7 @@
 <?php
 
+use yii\bootstrap\AffixAsset;
+use yii\bootstrap\DropdownAsset;
 use yii\helpers\Html;
 
 /**
@@ -12,7 +14,8 @@ use yii\helpers\Html;
  */
 
 $this->title = 'Yii Debugger';
-yii\bootstrap\DropdownAsset::register($this);
+DropdownAsset::register($this);
+AffixAsset::register($this);
 ?>
 <div class="default-view">
 	<div class="navbar">
@@ -31,14 +34,14 @@ yii\bootstrap\DropdownAsset::register($this);
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span2">
-					<ul class="nav nav-tabs nav-list nav-stacked">
-						<?php
-						foreach ($panels as $id => $panel) {
-							$link = Html::a(Html::encode($panel->getName()), array('view', 'tag' => $tag, 'panel' => $id));
-							echo Html::tag('li', $link, array('class' => $panel === $activePanel ? 'active' : null));
-						}
-						?>
-					</ul>
+				<ul class="nav nav-tabs nav-list nav-stacked">
+					<?php
+					foreach ($panels as $id => $panel) {
+						$link = Html::a(Html::encode($panel->getName()), array('view', 'tag' => $tag, 'panel' => $id));
+						echo Html::tag('li', $link, array('class' => $panel === $activePanel ? 'active' : null));
+					}
+					?>
+				</ul>
 			</div><!--/span-->
 			<div class="span10">
 				<div class="meta alert alert-info">
