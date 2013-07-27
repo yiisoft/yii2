@@ -31,7 +31,7 @@ use yii\helpers\Inflector;
  *
  * ~~~
  * \yii\widgets\DetailView::widget(array(
- *     'data' => $model,
+ *     'model' => $model,
  *     'attributes' => array(
  *         'title',             // title attribute (in plain text)
  *         'description:html',  // description attribute in HTML
