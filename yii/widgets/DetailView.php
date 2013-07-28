@@ -111,7 +111,8 @@ class DetailView extends Widget
 			$this->formatter = Yii::$app->getFormatter();
 		} elseif (is_array($this->formatter)) {
 			$this->formatter = Yii::createObject($this->formatter);
-		} elseif (!$this->formatter instanceof Formatter) {
+		}
+		if (!$this->formatter instanceof Formatter) {
 			throw new InvalidConfigException('The "formatter" property must be either a Format object or a configuration array.');
 		}
 		$this->normalizeAttributes();
@@ -173,7 +174,7 @@ class DetailView extends Widget
 		foreach ($this->attributes as $i => $attribute) {
 			if (is_string($attribute)) {
 				if (!preg_match('/^(\w+)(\s*:\s*(\w+))?$/', $attribute, $matches)) {
-					throw new InvalidConfigException('The attribute must be in the format of "Name" or "Name:Type"');
+					throw new InvalidConfigException('The attribute must be specified in the format of "Name" or "Name:Type"');
 				}
 				$attribute = array(
 					'name' => $matches[1],
