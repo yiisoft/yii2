@@ -37,7 +37,7 @@ class ErrorHandler extends Component
 	/**
 	 * @var string the route (e.g. 'site/error') to the controller action that will be used
 	 * to display external errors. Inside the action, it can retrieve the error information
-	 * by Yii::$app->errorHandler->error. This property defaults to null, meaning ErrorHandler
+	 * by Yii::$app->errorHandler->exception. This property defaults to null, meaning ErrorHandler
 	 * will handle the error display.
 	 */
 	public $errorAction;
