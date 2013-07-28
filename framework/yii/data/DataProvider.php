@@ -21,6 +21,13 @@ use yii\base\InvalidParamException;
  */
 abstract class DataProvider extends Component implements IDataProvider
 {
+	/**
+	 * @var string an ID that uniquely identifies the data provider among all data providers.
+	 * You should set this property if the same page contains two or more different data providers.
+	 * Otherwise, the [[pagination]] and [[sort]] mainly not work properly.
+	 */
+	public $id;
+
 	private $_sort;
 	private $_pagination;
 
@@ -31,6 +38,9 @@ abstract class DataProvider extends Component implements IDataProvider
 	{
 		if ($this->_pagination === null) {
 			$this->_pagination = new Pagination;
+			if ($this->id !== null) {
+				$this->_pagination->pageVar = $this->id . '-page';
+			}
 		}
 		return $this->_pagination;
 	}
@@ -50,7 +60,13 @@ abstract class DataProvider extends Component implements IDataProvider
 	public function setPagination($value)
 	{
 		if (is_array($value)) {
-			$this->_pagination = Yii::createObject(array_merge(array('class' => 'yii\data\Pagination'), $value));
+			$config = array(
+				'class' => Pagination::className(),
+			);
+			if ($this->id !== null) {
+				$config['pageVar'] = $this->id . '-page';
+			}
+			$this->_pagination = Yii::createObject(array_merge($config, $value));
 		} elseif ($value instanceof Pagination || $value === false) {
 			$this->_pagination = $value;
 		} else {
@@ -65,6 +81,9 @@ abstract class DataProvider extends Component implements IDataProvider
 	{
 		if ($this->_sort === null) {
 			$this->_sort = new Sort;
+			if ($this->id !== null) {
+				$this->_sort->pageVar = $this->id . '-sort';
+			}
 		}
 		return $this->_sort;
 	}
@@ -84,7 +103,13 @@ abstract class DataProvider extends Component implements IDataProvider
 	public function setSort($value)
 	{
 		if (is_array($value)) {
-			$this->_sort = Yii::createObject(array_merge(array('class' => 'yii\data\Sort'), $value));
+			$config = array(
+				'class' => Sort::className(),
+			);
+			if ($this->id !== null) {
+				$config['sortVar'] = $this->id . '-sort';
+			}
+			$this->_sort = Yii::createObject(array_merge($config, $value));
 		} elseif ($value instanceof Sort || $value === false) {
 			$this->_sort = $value;
 		} else {

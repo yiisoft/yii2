@@ -101,7 +101,7 @@ class LinkPager extends Widget
 			throw new InvalidConfigException('The "pagination" property must be set.');
 		}
 		if ($this->template === null) {
-			$this->template = '<label>' . Yii::t('yii', 'Go to page:') . '</label> {pages}';
+			$this->template = '{pages}';
 		}
 	}
 
