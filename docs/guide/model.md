@@ -27,8 +27,8 @@ echo $post->title;
 echo $post->content;
 ```
 
-Since model implements [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) interface you can use it
-as if it was an array:
+Since [[\yii\base\Model|Model]] implements the [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) interface,
+you can also access the attributes like accessing array elements:
 
 ```php
 $post = new Post;
@@ -38,8 +38,9 @@ echo $post['title'];
 echo $post['content'];
 ```
 
-Default model implementation has a strict rule that all its attributes should be explicitly declared as public and
-non-static class properties such as the following:
+By default, [[\yii\base\Model|Model]] requires that attributes be declared as *public* and *non-static*
+class member variables. In the following example, the `LoginForm` model class declares two attributes:
+`username` and `password`.
 
 ```php
 // LoginForm has two attributes: username and password
@@ -50,17 +51,22 @@ class LoginForm extends \yii\base\Model
 }
 ```
 
-In order to change this, you can override `attributes()` method that returns a list of model attribute names.
+Derived model classes may use different ways to declare attributes by overriding the [[\yii\base\Model::attributes()|attributes()]]
+method. For example, [[\yii\db\ActiveRecord]] defines attributes as the column names of the database table
+that is associated with the class.
 
 
-Attribute labels
+Attribute Labels
 ----------------
 
 Attribute labels are mainly used for display purpose. For example, given an attribute `firstName`, we can declare
-a label `First Name` which is more user-friendly and can be displayed to end users for example as a form label.
+a label `First Name` which is more user-friendly and can be displayed to end users in places such as form labels,
+error messages. Given an attribute name, you can obtain its label by calling [[\yii\base\Model::getAttributeLabel()]].
 
-By default an attribute label is generated using [[\yii\base\Model\generateAttributeLabel()]] but the better way is to
-specify it explicitly like the following:
+To declare attribute labels, you should override the [[\yii\base\Model::attributeLabels()]] method and return
+a mapping from attribute names to attribute labels, like shown in the example below. If an attribute is not found
+in this mapping, its label will be generated using the [[\yii\base\Model::generateAttributeLabel()]] method, which
+in many cases, will generate reasonable labels (e.g. `username` to `Username`, `orderNumber` to `Order Number`).
 
 ```php
 // LoginForm has two attributes: username and password
@@ -71,7 +77,7 @@ class LoginForm extends \yii\base\Model
 
 	public function attributeLabels()
 	{
-		reuturn array(
+		return array(
 			'username' => 'Your name',
 			'password' => 'Your password',
 		);
@@ -85,7 +91,7 @@ Scenarios
 A model may be used in different scenarios. For example, a `User` model may be used to collect user login inputs,
 and it may also be used for user registration purpose. For this reason, each model has a property named `scenario`
 which stores the name of the scenario that the model is currently being used in. As we will explain in the next
-few sections, the concept of scenario is mainly used for validation and massive attribute assignment.
+few sections, the concept of scenario is mainly used for data validation and massive attribute assignment.
 
 Associated with each scenario is a list of attributes that are *active* in that particular scenario. For example,
 in the `login` scenario, only the `username` and `password` attributes are active; while in the `register` scenario,
