@@ -18,20 +18,20 @@ use yii\helpers\Html;
 use yii\helpers\Inflector;
 
 /**
- * DetailView displays the detail of a single data [[model]].
+ * DetailView displays the detail of a single data block.
  *
  * DetailView is best used for displaying a model in a regular format (e.g. each model attribute
- * is displayed as a row in a table.) The model can be either an instance of [[Model]] or
+ * is displayed as a row in a table.) The data can be either an instance of [[Model]]
  * or an associative array.
  *
- * DetailView uses the [[attributes]] property to determines which model attributes
+ * DetailView uses the [[attributes]] property to determines which attributes
  * should be displayed and how they should be formatted.
  *
  * A typical usage of DetailView is as follows:
  *
  * ~~~
  * echo DetailView::widget(array(
- *     'model' => $model,
+ *     'data' => $model,
  *     'attributes' => array(
  *         'title',             // title attribute (in plain text)
  *         'description:html',  // description attribute in HTML
@@ -49,10 +49,9 @@ use yii\helpers\Inflector;
 class DetailView extends Widget
 {
 	/**
-	 * @var array|object the data model whose details are to be displayed. This can be either a [[Model]] instance
-	 * or an associative array.
+	 * @var array|object the data to be displayed. This can be either a [[Model]] instance or an associative array.
 	 */
-	public $model;
+	public $data;
 	/**
 	 * @var array a list of attributes to be displayed in the detail view. Each array element
 	 * represents the specification for displaying one particular attribute.
@@ -104,7 +103,7 @@ class DetailView extends Widget
 	 */
 	public function init()
 	{
-		if ($this->model === null) {
+		if ($this->data === null) {
 			throw new InvalidConfigException('Please specify the "data" property.');
 		}
 		if ($this->formatter == null) {
@@ -158,12 +157,12 @@ class DetailView extends Widget
 	protected function normalizeAttributes()
 	{
 		if ($this->attributes === null) {
-			if ($this->model instanceof Model) {
-				$this->attributes = $this->model->attributes();
-			} elseif (is_object($this->model)) {
-				$this->attributes = $this->model instanceof Arrayable ? $this->model->toArray() : array_keys(get_object_vars($this->model));
-			} elseif (is_array($this->model)) {
-				$this->attributes = array_keys($this->model);
+			if ($this->data instanceof Model) {
+				$this->attributes = $this->data->attributes();
+			} elseif (is_object($this->data)) {
+				$this->attributes = $this->data instanceof Arrayable ? $this->data->toArray() : array_keys(get_object_vars($this->data));
+			} elseif (is_array($this->data)) {
+				$this->attributes = array_keys($this->data);
 			} else {
 				throw new InvalidConfigException('The "data" property must be either an array or an object.');
 			}
@@ -191,10 +190,10 @@ class DetailView extends Widget
 			if (isset($attribute['name'])) {
 				$name = $attribute['name'];
 				if (!isset($attribute['label'])) {
-					$attribute['label'] = $this->model instanceof Model ? $this->model->getAttributeLabel($name) : Inflector::camel2words($name, true);
+					$attribute['label'] = $this->data instanceof Model ? $this->data->getAttributeLabel($name) : Inflector::camel2words($name, true);
 				}
 				if (!array_key_exists('value', $attribute)) {
-					$attribute['value'] = ArrayHelper::getValue($this->model, $name);
+					$attribute['value'] = ArrayHelper::getValue($this->data, $name);
 				}
 			} elseif (!isset($attribute['label']) || !array_key_exists('value', $attribute)) {
 				throw new InvalidConfigException('The attribute configuration requires the "name" element to determine the value and display label.');
