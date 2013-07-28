@@ -20,7 +20,7 @@
 			<?php if ($method !== null): ?>
 				<span class="call">
 					<?php if ($file !== null) echo '&ndash;' ?>
-					<?php if ($class !== null) echo $this->addTypeLinks($class) . '→'; ?><?php echo $this->addTypeLinks($method . '()'); ?>
+					<?php if ($class !== null) echo $this->addTypeLinks($class) . '::'; ?><?php echo $this->addTypeLinks($method . '()'); ?>
 				</span>
 			<?php endif; ?>
 			<span class="at"><?php if ($line !== null) echo 'at line'; ?></span>
