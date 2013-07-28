@@ -30,8 +30,8 @@ use yii\helpers\Inflector;
  * A typical usage of DetailView is as follows:
  *
  * ~~~
- * \yii\widgets\DetailView::widget(array(
- *     'data' => $model,
+ * echo DetailView::widget(array(
+ *     'model' => $model,
  *     'attributes' => array(
  *         'title',             // title attribute (in plain text)
  *         'description:html',  // description attribute in HTML
@@ -90,7 +90,7 @@ class DetailView extends Widget
 	 * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
 	 * what container tag should be used. It defaults to "table" if not set.
 	 */
-	public $options = array('class' => 'table table-striped');
+	public $options = array('class' => 'table table-striped table-bordered');
 	/**
 	 * @var array|Formatter the formatter used to format model attribute values into displayable texts.
 	 * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]

@@ -14,9 +14,9 @@ Base concepts
 =============
 
 - [MVC Overview](mvc.md)
-- [Controller](controller.md)
 - [Model](model.md)
 - [View](view.md)
+- [Controller](controller.md)
 - [Application](application.md)
 
 Database

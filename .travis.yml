@@ -5,11 +5,8 @@ php:
   - 5.4
   - 5.5
 
-env:
-  - DB=mysql
-
 before_script:
-  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database IF NOT EXISTS yiitest;'; fi"
-  - psql -U postgres -c 'drop database if exists yiitest;'; 
-  - psql -U postgres -c 'create database yiitest;';
+  - mysql -e 'CREATE DATABASE yiitest;';
+  - psql -U postgres -c 'CREATE DATABASE yiitest;';
+
 script: phpunit
