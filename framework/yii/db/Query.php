@@ -43,7 +43,7 @@ class Query extends Component
 	 */
 	const SORT_ASC = false;
 	/**
-	 * Sort ascending
+	 * Sort descending
 	 * @see orderBy
 	 */
 	const SORT_DESC = true;
