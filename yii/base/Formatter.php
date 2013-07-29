@@ -71,7 +71,7 @@ class Formatter extends Component
 	}
 
 	/**
-	 * Formats the value based on the give type.
+	 * Formats the value based on the given type.
 	 * This method will call one of the "as" methods available in this class to do the formatting.
 	 * For type "xyz", the method "asXyz" will be used. For example, if the type is "html",
 	 * then [[asHtml()]] will be used. Type names are case insensitive.
