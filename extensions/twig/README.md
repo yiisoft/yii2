@@ -47,7 +47,7 @@ return array(
 	'components' => array(
 		'view' => array(
 			'class' => 'yii\base\View',
-			'viewRenderers' => array(
+			'renderers' => array(
 				'twig' => array(
 					'class' => 'yii\twig\ViewRenderer',
 					//'cachePath' => '@runtime/Twig/cache',

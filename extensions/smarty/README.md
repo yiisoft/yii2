@@ -47,7 +47,7 @@ return array(
 	'components' => array(
 		'view' => array(
 			'class' => 'yii\base\View',
-			'viewRenderers' => array(
+			'renderers' => array(
 				'tpl' => array(
 					'class' => 'yii\smarty\ViewRenderer',
 					//'cachePath' => '@runtime/Smarty/cache',
