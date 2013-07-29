@@ -54,7 +54,9 @@ class UrlValidator extends Validator
 	{
 		parent::init();
 		if ($this->enableIDN && !function_exists('idn_to_ascii')) {
+			// @codeCoverageIgnoreStart
 			throw new InvalidConfigException('In order to use IDN validation intl extension must be installed and enabled.');
+			// @codeCoverageIgnoreEnd
 		}
 		if ($this->message === null) {
 			$this->message = Yii::t('yii', '{attribute} is not a valid URL.');
