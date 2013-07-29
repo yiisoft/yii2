@@ -17,8 +17,8 @@ class BooleanValidatorTest extends TestCase
 		$this->assertTrue($val->validateValue(false));
 		$this->assertTrue($val->validateValue('0'));
 		$this->assertTrue($val->validateValue('1'));
-		$this->assertTrue($val->validateValue(null));
-		$this->assertTrue($val->validateValue(array()));
+		$this->assertFalse($val->validateValue(null));
+		$this->assertFalse($val->validateValue(array()));
 		$val->strict = true;
 		$this->assertTrue($val->validateValue('0'));
 		$this->assertTrue($val->validateValue('1'));
