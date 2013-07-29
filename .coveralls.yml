@@ -1,0 +1,4 @@
+service_name: travis-ci
+src_dir: framework/yii
+coverage_clover: tests/unit/runtime/coveralls/clover.xml
+json_path: tests/unit/runtime/coveralls/coveralls-upload.json

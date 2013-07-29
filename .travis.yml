@@ -6,7 +6,13 @@ php:
   - 5.5
 
 before_script:
+  - composer selfupdate && composer --version
+  - composer require satooshi/php-coveralls 0.6.*
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
-script: phpunit
+script:
+  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml
+
+after_script:
+  - php vendor/bin/coveralls
