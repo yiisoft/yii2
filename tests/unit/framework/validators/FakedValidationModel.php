@@ -17,4 +17,9 @@ class FakedValidationModel
 	{
 		$this->errors[$attribute] = $message;
 	}
+	
+	public function resetErrors()
+	{
+		$this->errors = array();
+	}
 }
