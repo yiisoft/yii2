@@ -121,6 +121,7 @@ class UrlValidator extends Validator
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 * @see \yii\Web\ActiveForm::enableClientValidation
+	 * @codeCoverageIgnore
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
