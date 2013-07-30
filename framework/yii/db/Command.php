@@ -765,4 +765,34 @@ class Command extends \yii\base\Component
 		$sql = $this->db->getQueryBuilder()->checkIntegrity($check, $schema);
 		return $this->setSql($sql);
 	}
+
+	/**
+	 * @param \Closure $callable
+	 * @return boolean|null
+	 * @throws \Exception
+	 */
+	public function atomic($callable)
+	{
+		static $activeTransaction;
+		if ($activeTransaction !== null) {
+			$result = call_user_func($callable);
+		} else {
+			$transaction = $this->db->beginTransaction();
+			$activeTransaction = $transaction;
+			try {
+				$result = call_user_func($callable);
+				if ($result === null || $result) {
+					$transaction->commit();
+				} else {
+					$transaction->rollback();
+				}
+				$activeTransaction = null;  // emulate finally
+			} catch (Exception $e) {
+				$transaction->rollback();
+				$activeTransaction = null;  // emulate finally
+				throw $e;
+			}
+		}
+		return $result === null || $result;
+	}
 }
