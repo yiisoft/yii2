@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use yii\base\Object;
 use yii\base\InvalidParamException;
 
 /**
@@ -17,7 +18,7 @@ use yii\base\InvalidParamException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class TableSchema extends \yii\base\Object
+class TableSchema extends Object
 {
 	/**
 	 * @var string name of the catalog (database) that this table belongs to.

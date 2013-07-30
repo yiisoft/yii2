@@ -358,4 +358,14 @@ class Sort extends Object
 		}
 		return implode($this->separators[0], $sorts);
 	}
+
+	/**
+	 * Returns a value indicating whether the sort definition supports sorting by the named attribute.
+	 * @param string $name the attribute name
+	 * @return boolean whether the sort definition supports sorting by the named attribute.
+	 */
+	public function hasAttribute($name)
+	{
+		return isset($this->attributes[$name]);
+	}
 }
