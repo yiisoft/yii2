@@ -120,10 +120,10 @@ class SecurityBase
 		static $keys;
 		$keyFile = Yii::$app->getRuntimePath() . '/keys.php';
 		if ($keys === null) {
-            $keys = array();
+			$keys = array();
 			if (is_file($keyFile)) {
-             	$keys = require($keyFile);
-            }
+				$keys = require($keyFile);
+			}
 		}
 		if (!isset($keys[$name])) {
 			$keys[$name] = static::generateRandomKey($length);
