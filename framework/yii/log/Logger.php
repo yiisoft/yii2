@@ -150,7 +150,7 @@ class Logger extends Component
 	{
 		parent::init();
 		if ($this->traceLevel === null) {
-			$this->traceLevel = YII_ENV === 'dev' ? 3 : 0;
+			$this->traceLevel = YII_ENV_DEV ? 3 : 0;
 		}
 		foreach ($this->targets as $name => $target) {
 			if (!$target instanceof Target) {

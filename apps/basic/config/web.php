@@ -7,7 +7,7 @@ return array(
 	'modules' => array(
 		'debug' => array(
 			'class' => 'yii\debug\Module',
-			'enabled' => YII_DEBUG && YII_ENV === 'dev',
+			'enabled' => YII_DEBUG && YII_ENV_DEV,
 		),
 	),
 	'components' => array(
