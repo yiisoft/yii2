@@ -28,4 +28,9 @@ class FakedValidationModel extends Model
 			parent::__set($name, $value);
 		}
 	}
+
+	public function getAttributeLabel($attr)
+	{
+		return $attr;
+	}
 }
