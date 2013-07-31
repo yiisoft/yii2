@@ -83,6 +83,7 @@ class RegularExpressionValidator extends Validator
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 * @throws InvalidConfigException if the "pattern" is not a valid regular expression
+	 * @codeCoverageIgnore
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
