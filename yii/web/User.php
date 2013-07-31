@@ -416,7 +416,7 @@ class User extends Component
 	public function switchIdentity($identity, $duration = 0)
 	{
 		$session = Yii::$app->getSession();
-		if (YII_ENV !== 'test') {
+		if (!YII_ENV_TEST) {
 			$session->regenerateID(true);
 		}
 		$this->setIdentity($identity);

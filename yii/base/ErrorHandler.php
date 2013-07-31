@@ -82,7 +82,7 @@ class ErrorHandler extends Component
 	 */
 	protected function renderException($exception)
 	{
-		if (Yii::$app instanceof \yii\console\Application || YII_ENV === 'test') {
+		if (Yii::$app instanceof \yii\console\Application || YII_ENV_TEST) {
 			echo Yii::$app->renderException($exception);
 			return;
 		}

@@ -10,9 +10,8 @@ namespace yii\data;
 /**
  * IDataProvider is the interface that must be implemented by data provider classes.
  *
- * Data providers are components that can provide data that are sorted and paginated.
- * Data providers are often used with widgets, such as [[GridView]], [[ListView]]
- * that display data and support sorting and pagination.
+ * Data providers are components that sort and paginate data, and provide them to widgets
+ * such as [[GridView]], [[ListView]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
