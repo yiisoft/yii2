@@ -440,7 +440,7 @@ class ActiveRecord extends Model
 	public function hasOne($class, $link)
 	{
 		return new ActiveRelation(array(
-			'modelClass' => $this->getNamespacedClass($class),
+			'modelClass' => static::getNamespacedClass($class),
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => false,
@@ -478,7 +478,7 @@ class ActiveRecord extends Model
 	public function hasMany($class, $link)
 	{
 		return new ActiveRelation(array(
-			'modelClass' => $this->getNamespacedClass($class),
+			'modelClass' => static::getNamespacedClass($class),
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => true,
@@ -1400,10 +1400,10 @@ class ActiveRecord extends Model
 	 * @param string $class the class name to be namespaced
 	 * @return string the namespaced class name
 	 */
-	protected function getNamespacedClass($class)
+	protected static function getNamespacedClass($class)
 	{
 		if (strpos($class, '\\') === false) {
-			$reflector = new \ReflectionClass($this);
+			$reflector = new \ReflectionClass(static::className());
 			return $reflector->getNamespaceName() . '\\' . $class;
 		} else {
 			return $class;
