@@ -237,8 +237,8 @@ function rules()
 {
 	return array(
 		// rule applied when corresponding field is "safe"
-		array('username', 'length', 'min' => 2),
-		array('first_name', 'length', 'min' => 2),
+		array('username', 'string', 'min' => 2),
+		array('first_name', 'string', 'min' => 2),
 		array('password', 'required'),
 
 		// rule applied when scenario is "signup" no matter if field is "safe" or not
