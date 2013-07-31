@@ -1,5 +1,6 @@
 <?php
 namespace yiiunit\framework\validators;
+
 use yiiunit\framework\validators\FakedValidationModel;
 use yii\validators\BooleanValidator;
 use yiiunit\TestCase;
@@ -31,7 +32,7 @@ class BooleanValidatorTest extends TestCase
 		$this->assertTrue($val->validateValue(true));
 		$this->assertTrue($val->validateValue(false));
 	}
-	
+
 	public function testValidateAttributeAndError()
 	{
 		$obj = new FakedValidationModel;
@@ -41,13 +42,13 @@ class BooleanValidatorTest extends TestCase
 		$obj->attrD = array();
 		$val = new BooleanValidator;
 		$val->validateAttribute($obj, 'attrA');
-		$this->assertFalse(isset($obj->errors['attrA']));
+		$this->assertFalse($obj->hasErrors('attrA'));
 		$val->validateAttribute($obj, 'attrC');
-		$this->assertFalse(isset($obj->errors['attrC']));
+		$this->assertFalse($obj->hasErrors('attrC'));
 		$val->strict = true;
 		$val->validateAttribute($obj, 'attrB');
-		$this->assertFalse(isset($obj->errors['attrB']));
+		$this->assertFalse($obj->hasErrors('attrB'));
 		$val->validateAttribute($obj, 'attrD');
-		$this->assertTrue(isset($obj->errors['attrD']));
+		$this->assertTrue($obj->hasErrors('attrD'));
 	}
 }

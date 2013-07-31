@@ -2,24 +2,30 @@
 
 namespace yiiunit\framework\validators;
 
+use yii\base\Model;
+
 /**
  * @codeCoverageIgnore
  */
-class FakedValidationModel
+class FakedValidationModel extends Model
 {
-	public $errors = array();
-	public function getAttributeLabel($attr)
+	private $attr = array();
+
+	public function __get($name)
 	{
-		return 'Attr-Label: '.$attr;
+		if (stripos($name, 'attr') === 0) {
+			return isset($this->attr[$name]) ? $this->attr[$name] : null;
+		}
+
+		return parent::__get($name);
 	}
-	
-	public function addError($attribute, $message)
+
+	public function __set($name, $value)
 	{
-		$this->errors[$attribute] = $message;
-	}
-	
-	public function resetErrors()
-	{
-		$this->errors = array();
+		if (stripos($name, 'attr') === 0) {
+			$this->attr[$name] = $value;
+		} else {
+			parent::__set($name, $value);
+		}
 	}
 }
