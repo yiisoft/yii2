@@ -440,7 +440,7 @@ class ActiveRecord extends Model
 	public function hasOne($class, $link)
 	{
 		return new ActiveRelation(array(
-			'modelClass' => static::getNamespacedClass($class),
+			'modelClass' => $this->getNamespacedClass($class),
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => false,
@@ -478,7 +478,7 @@ class ActiveRecord extends Model
 	public function hasMany($class, $link)
 	{
 		return new ActiveRelation(array(
-			'modelClass' => static::getNamespacedClass($class),
+			'modelClass' => $this->getNamespacedClass($class),
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => true,
