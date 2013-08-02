@@ -22,7 +22,7 @@ class DataColumn extends Column
 {
 	public $attribute;
 	public $value;
-	public $type;
+	public $format;
 	/**
 	 * @var boolean whether to allow sorting by this column. If true and [[attribute]] is found in
 	 * the sort definition of [[GridView::dataProvider]], then the header cell of this column
@@ -90,6 +90,6 @@ class DataColumn extends Column
 		} else {
 			return parent::renderDataCellContent($item, $index);
 		}
-		return $this->grid->formatter->format($value, $this->type);
+		return $this->grid->formatter->format($value, $this->format);
 	}
 }
