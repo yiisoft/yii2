@@ -189,14 +189,14 @@ class CaptchaAction extends Action
 	 */
 	protected function generateVerifyCode()
 	{
+		if ($this->minLength > $this->maxLength) {
+			$this->maxLength = $this->minLength;
+		}
 		if ($this->minLength < 3) {
 			$this->minLength = 3;
 		}
 		if ($this->maxLength > 20) {
 			$this->maxLength = 20;
-		}
-		if ($this->minLength > $this->maxLength) {
-			$this->maxLength = $this->minLength;
 		}
 		$length = mt_rand($this->minLength, $this->maxLength);
 
