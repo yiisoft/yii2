@@ -1,9 +1,9 @@
 <?php
 /**
  * @var \Exception $exception
- * @var \yii\base\ErrorHandler $this
+ * @var \yii\base\ErrorHandler $handler
  */
-$title = $this->htmlEncode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception));
+$title = $handler->htmlEncode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception));
 ?>
 <!DOCTYPE html>
 <html>
@@ -50,16 +50,17 @@ $title = $this->htmlEncode($exception instanceof \yii\base\Exception ? $exceptio
 </head>
 
 <body>
-<h1><?php echo $title?></h1>
-<h2><?php echo nl2br($this->htmlEncode($exception->getMessage()))?></h2>
-<p>
-	The above error occurred while the Web server was processing your request.
-</p>
-<p>
-	Please contact us if you think this is a server error. Thank you.
-</p>
-<div class="version">
-	<?php echo date('Y-m-d H:i:s', time())?>
-</div>
+	<h1><?php echo $title?></h1>
+	<h2><?php echo nl2br($handler->htmlEncode($exception->getMessage()))?></h2>
+	<p>
+		The above error occurred while the Web server was processing your request.
+	</p>
+	<p>
+		Please contact us if you think this is a server error. Thank you.
+	</p>
+	<div class="version">
+		<?php echo date('Y-m-d H:i:s', time())?>
+	</div>
+	<?php if (method_exists($this, 'endBody')) $this->endBody(); // to allow injecting code into body (mostly by Yii Debug Toolbar) ?>
 </body>
 </html>

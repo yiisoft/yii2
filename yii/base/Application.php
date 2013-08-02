@@ -475,6 +475,8 @@ abstract class Application extends Module
 	 */
 	public function handleFatalError()
 	{
+		unset($this->_memoryReserve);
+
 		// load ErrorException manually here because autoloading them will not work
 		// when error occurs while autoloading a class
 		if (!class_exists('\\yii\\base\\Exception', false)) {
@@ -487,7 +489,6 @@ abstract class Application extends Module
 		$error = error_get_last();
 
 		if (ErrorException::isFatalError($error)) {
-			unset($this->_memoryReserve);
 			$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
 			// use error_log because it's too late to use Yii log
 			error_log($exception);
