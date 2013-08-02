@@ -5,6 +5,7 @@
  */
 $title = $handler->htmlEncode($exception instanceof \yii\base\Exception ? $exception->getName() : get_class($exception));
 ?>
+<?php if (method_exists($this, 'beginPage')) $this->beginPage(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,3 +65,4 @@ $title = $handler->htmlEncode($exception instanceof \yii\base\Exception ? $excep
 	<?php if (method_exists($this, 'endBody')) $this->endBody(); // to allow injecting code into body (mostly by Yii Debug Toolbar) ?>
 </body>
 </html>
+<?php if (method_exists($this, 'endPage')) $this->endPage(); ?>
