@@ -4,6 +4,7 @@
  * @var \yii\base\ErrorHandler $handler
  */
 ?>
+<?php if (method_exists($this, 'beginPage')) $this->beginPage(); ?>
 <!doctype html>
 <html lang="en-us">
 
@@ -488,3 +489,4 @@ window.onload = function() {
 </body>
 
 </html>
+<?php if (method_exists($this, 'endPage')) $this->endPage(); ?>
