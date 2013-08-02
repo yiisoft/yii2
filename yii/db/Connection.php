@@ -307,9 +307,7 @@ class Connection extends Component
 				Yii::endProfile($token, __METHOD__);
 			} catch (\PDOException $e) {
 				Yii::endProfile($token, __METHOD__);
-				Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __METHOD__);
-				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
-				throw new Exception($message, $e->errorInfo, (int)$e->getCode(), $e);
+				throw new Exception($e->getMessage(), $e->errorInfo, (int)$e->getCode(), $e);
 			}
 		}
 	}
