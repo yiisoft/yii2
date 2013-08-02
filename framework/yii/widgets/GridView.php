@@ -26,6 +26,7 @@ class GridView extends ListViewBase
 	const FILTER_POS_FOOTER = 'footer';
 	const FILTER_POS_BODY = 'body';
 
+	public $dataColumnClass = 'yii\widgets\grid\DataColumn';
 	public $caption;
 	public $captionOptions = array();
 	public $tableOptions = array('class' => 'table table-striped table-bordered');
@@ -277,7 +278,7 @@ class GridView extends ListViewBase
 				$column = $this->createDataColumn($column);
 			} else {
 				$column = Yii::createObject(array_merge(array(
-					'class' => DataColumn::className(),
+					'class' => $this->dataColumnClass,
 					'grid' => $this,
 				), $column));
 			}
@@ -300,14 +301,15 @@ class GridView extends ListViewBase
 	 */
 	protected function createDataColumn($text)
 	{
-		if (!preg_match('/^(\w+)(\s*:\s*(\w+))?$/', $text, $matches)) {
-			throw new InvalidConfigException('The column must be specified in the format of "Attribute" or "Attribute:Type"');
+		if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
+			throw new InvalidConfigException('The column must be specified in the format of "Attribute", "Attribute:Format" or "Attribute:Format:Header');
 		}
 		return Yii::createObject(array(
-			'class' => DataColumn::className(),
+			'class' => $this->dataColumnClass,
 			'grid' => $this,
 			'attribute' => $matches[1],
-			'type' => isset($matches[3]) ? $matches[3] : 'text',
+			'format' => isset($matches[3]) ? $matches[3] : 'text',
+			'header' => isset($matches[5]) ? $matches[5] : null,
 		));
 	}
 
