@@ -111,15 +111,14 @@ class ActiveDataProvider extends DataProvider
 	 * When [[pagination]] is false, this returns the same value as [[count]].
 	 * If [[totalCount]] is not explicitly set, it will be calculated
 	 * using [[query]] with a COUNT query.
-	 * @param boolean $refresh whether to recalculate the model count
 	 * @return integer total number of possible data models.
 	 * @throws InvalidConfigException
 	 */
-	public function getTotalCount($refresh = false)
+	public function getTotalCount()
 	{
 		if ($this->getPagination() === false) {
 			return $this->getCount();
-		} elseif ($this->_totalCount === null || $refresh) {
+		} elseif ($this->_totalCount === null) {
 			if (!$this->query instanceof Query) {
 				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 			}
@@ -141,11 +140,22 @@ class ActiveDataProvider extends DataProvider
 	/**
 	 * Returns the data models in the current page.
 	 * @return array the list of data models in the current page.
+	 * @throws InvalidConfigException if [[query]] is not set or invalid.
 	 */
 	public function getModels()
 	{
 		if ($this->_models === null) {
-			$this->loadModels();
+			if (!$this->query instanceof Query) {
+				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
+			}
+			if (($pagination = $this->getPagination()) !== false) {
+				$pagination->totalCount = $this->getTotalCount();
+				$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
+			}
+			if (($sort = $this->getSort()) !== false) {
+				$this->query->orderBy($sort->getOrders());
+			}
+			$this->_models = $this->query->all($this->db);
 		}
 		return $this->_models;
 	}
@@ -194,21 +204,14 @@ class ActiveDataProvider extends DataProvider
 	}
 
 	/**
-	 * Performs query and load data models.
-	 * @throws InvalidConfigException if [[query]] is not set or invalid.
+	 * Refreshes the data provider.
+	 * After calling this method, if [[getModels()]], [[getKeys()]] or [[getTotalCount()]] is called again,
+	 * they will re-execute the query and return the latest data available.
 	 */
-	public function loadModels()
+	public function refresh()
 	{
-		if (!$this->query instanceof Query) {
-			throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
-		}
-		if (($pagination = $this->getPagination()) !== false) {
-			$pagination->totalCount = $this->getTotalCount();
-			$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
-		}
-		if (($sort = $this->getSort()) !== false) {
-			$this->query->orderBy($sort->getOrders());
-		}
-		$this->_models = $this->query->all($this->db);
+		$this->_models = null;
+		$this->_totalCount = null;
+		$this->_keys = null;
 	}
 }
