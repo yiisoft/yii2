@@ -87,7 +87,7 @@ class NavBar extends Widget
 	 *     // optional, the menu item class type of the widget to render. Defaults to "Nav" widget.
 	 *     'class' => 'Menu item class type',
 	 *     // required, the configuration options of the widget.
-	 *     'options'=> array(...),
+	 *     'options' => array(...),
 	 * ),
 	 * // optionally, you can pass a string
 	 * '<form class="navbar-search pull-left" action="">' .
