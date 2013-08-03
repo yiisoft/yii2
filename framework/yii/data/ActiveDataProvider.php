@@ -99,13 +99,11 @@ class ActiveDataProvider extends DataProvider
 	 * Returns the number of data models in the current page.
 	 * This is equivalent to `count($provider->models)`.
 	 * When [[pagination]] is false, this is the same as [[totalCount]].
-	 * @param boolean $refresh whether to recalculate the model count. If true,
-	 * this will cause re-fetching of [[models]].
 	 * @return integer the number of data models in the current page.
 	 */
-	public function getCount($refresh = false)
+	public function getCount()
 	{
-		return count($this->getModels($refresh));
+		return count($this->getModels());
 	}
 
 	/**
@@ -120,7 +118,7 @@ class ActiveDataProvider extends DataProvider
 	public function getTotalCount($refresh = false)
 	{
 		if ($this->getPagination() === false) {
-			return $this->getCount($refresh);
+			return $this->getCount();
 		} elseif ($this->_totalCount === null || $refresh) {
 			if (!$this->query instanceof Query) {
 				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
@@ -142,39 +140,26 @@ class ActiveDataProvider extends DataProvider
 
 	/**
 	 * Returns the data models in the current page.
-	 * @param boolean $refresh whether to re-fetch the data models.
 	 * @return array the list of data models in the current page.
-	 * @throws InvalidConfigException
 	 */
-	public function getModels($refresh = false)
+	public function getModels()
 	{
-		if ($this->_models === null || $refresh) {
-			if (!$this->query instanceof Query) {
-				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
-			}
-			if (($pagination = $this->getPagination()) !== false) {
-				$pagination->totalCount = $this->getTotalCount();
-				$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
-			}
-			if (($sort = $this->getSort()) !== false) {
-				$this->query->orderBy($sort->getOrders());
-			}
-			$this->_models = $this->query->all($this->db);
+		if ($this->_models === null) {
+			$this->loadModels();
 		}
 		return $this->_models;
 	}
 
 	/**
 	 * Returns the key values associated with the data models.
-	 * @param boolean $refresh whether to re-fetch the data models and re-calculate the keys
 	 * @return array the list of key values corresponding to [[models]]. Each data model in [[models]]
 	 * is uniquely identified by the corresponding key value in this array.
 	 */
-	public function getKeys($refresh = false)
+	public function getKeys()
 	{
-		if ($this->_keys === null || $refresh) {
+		if ($this->_keys === null) {
 			$this->_keys = array();
-			$models = $this->getModels($refresh);
+			$models = $this->getModels();
 			if ($this->key !== null) {
 				foreach ($models as $model) {
 					if (is_string($this->key)) {
@@ -206,5 +191,24 @@ class ActiveDataProvider extends DataProvider
 			}
 		}
 		return $this->_keys;
+	}
+
+	/**
+	 * Performs query and load data models.
+	 * @throws InvalidConfigException if [[query]] is not set or invalid.
+	 */
+	public function loadModels()
+	{
+		if (!$this->query instanceof Query) {
+			throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
+		}
+		if (($pagination = $this->getPagination()) !== false) {
+			$pagination->totalCount = $this->getTotalCount();
+			$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
+		}
+		if (($sort = $this->getSort()) !== false) {
+			$this->query->orderBy($sort->getOrders());
+		}
+		$this->_models = $this->query->all($this->db);
 	}
 }
