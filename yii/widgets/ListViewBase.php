@@ -70,7 +70,7 @@ abstract class ListViewBase extends Widget
 
 
 	/**
-	 * Renders the data items.
+	 * Renders the data models.
 	 * @return string the rendering result.
 	 */
 	abstract public function renderItems();

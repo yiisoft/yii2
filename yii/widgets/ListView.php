@@ -19,7 +19,7 @@ use yii\helpers\Html;
 class ListView extends ListViewBase
 {
 	/**
-	 * @var array the HTML attributes for the container of the rendering result of each data item.
+	 * @var array the HTML attributes for the container of the rendering result of each data model.
 	 * The "tag" element specifies the tag name of the container element and defaults to "div".
 	 * If "tag" is false, it means no container element will be rendered.
 	 */
@@ -29,7 +29,7 @@ class ListView extends ListViewBase
 	 * for rendering each data item. If it specifies a view name, the following variables will
 	 * be available in the view:
 	 *
-	 * - `$item`: mixed, the data item
+	 * - `$model`: mixed, the data model
 	 * - `$key`: mixed, the key value associated with the data item
 	 * - `$index`: integer, the zero-based index of the data item in the items array returned by [[dataProvider]].
 	 * - `$widget`: ListView, this widget instance
@@ -39,7 +39,7 @@ class ListView extends ListViewBase
 	 * If this property is specified as a callback, it should have the following signature:
 	 *
 	 * ~~~
-	 * function ($item, $key, $index, $widget)
+	 * function ($model, $key, $index, $widget)
 	 * ~~~
 	 */
 	public $itemView;
@@ -50,40 +50,40 @@ class ListView extends ListViewBase
 
 
 	/**
-	 * Renders all data items.
+	 * Renders all data models.
 	 * @return string the rendering result
 	 */
 	public function renderItems()
 	{
-		$items = $this->dataProvider->getItems();
+		$models = $this->dataProvider->getModels();
 		$keys = $this->dataProvider->getKeys();
 		$rows = array();
-		foreach (array_values($items) as $index => $item) {
-			$rows[] = $this->renderItem($item, $keys[$index], $index);
+		foreach (array_values($models) as $index => $model) {
+			$rows[] = $this->renderItem($model, $keys[$index], $index);
 		}
 		return implode($this->separator, $rows);
 	}
 
 	/**
-	 * Renders a single data item.
-	 * @param mixed $item the data item to be rendered
-	 * @param mixed $key the key value associated with the data item
-	 * @param integer $index the zero-based index of the data item in the item array returned by [[dataProvider]].
+	 * Renders a single data model.
+	 * @param mixed $model the data model to be rendered
+	 * @param mixed $key the key value associated with the data model
+	 * @param integer $index the zero-based index of the data model in the model array returned by [[dataProvider]].
 	 * @return string the rendering result
 	 */
-	public function renderItem($item, $key, $index)
+	public function renderItem($model, $key, $index)
 	{
 		if ($this->itemView === null) {
 			$content = $key;
 		} elseif (is_string($this->itemView)) {
 			$content = $this->getView()->render($this->itemView, array(
-				'item' => $item,
+				'model' => $model,
 				'key' => $key,
 				'index' => $index,
 				'widget' => $this,
 			));
 		} else {
-			$content = call_user_func($this->itemView, $item, $key, $index, $this);
+			$content = call_user_func($this->itemView, $model, $key, $index, $this);
 		}
 		$options = $this->itemOptions;
 		$tag = ArrayHelper::remove($options, 'tag', 'div');

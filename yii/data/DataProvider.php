@@ -118,11 +118,11 @@ abstract class DataProvider extends Component implements IDataProvider
 	}
 
 	/**
-	 * Returns the number of data items in the current page.
-	 * @return integer the number of data items in the current page.
+	 * Returns the number of data models in the current page.
+	 * @return integer the number of data models in the current page.
 	 */
 	public function getCount()
 	{
-		return count($this->getItems());
+		return count($this->getModels());
 	}
 }
