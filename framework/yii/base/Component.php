@@ -221,18 +221,18 @@ class Component extends Object
 	 * - the class has a getter or setter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
 	 * - the class has a member variable with the specified name (when `$checkVar` is true);
-	 * - an attached behavior has a property of the given name (when `$checkBehavior` is true).
+	 * - an attached behavior has a property of the given name (when `$checkBehaviors` is true).
 	 *
 	 * @param string $name the property name
 	 * @param boolean $checkVar whether to treat member variables as properties
-	 * @param boolean $checkBehavior whether to treat behaviors' properties as properties of this component
+	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property is defined
 	 * @see canGetProperty
 	 * @see canSetProperty
 	 */
-	public function hasProperty($name, $checkVar = true, $checkBehavior = true)
+	public function hasProperty($name, $checkVar = true, $checkBehaviors = true)
 	{
-		return $this->canGetProperty($name, $checkVar, $checkBehavior) || $this->canSetProperty($name, $checkVar, $checkBehavior);
+		return $this->canGetProperty($name, $checkVar, $checkBehaviors) || $this->canSetProperty($name, false, $checkBehavior);
 	}
 
 	/**
@@ -242,7 +242,7 @@ class Component extends Object
 	 * - the class has a getter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
 	 * - the class has a member variable with the specified name (when `$checkVar` is true);
-	 * - an attached behavior has a readable property of the given name (when `$checkBehavior` is true).
+	 * - an attached behavior has a readable property of the given name (when `$checkBehaviors` is true).
 	 *
 	 * @param string $name the property name
 	 * @param boolean $checkVar whether to treat member variables as properties
@@ -272,7 +272,7 @@ class Component extends Object
 	 * - the class has a setter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
 	 * - the class has a member variable with the specified name (when `$checkVar` is true);
-	 * - an attached behavior has a writable property of the given name (when `$checkBehavior` is true).
+	 * - an attached behavior has a writable property of the given name (when `$checkBehaviors` is true).
 	 *
 	 * @param string $name the property name
 	 * @param boolean $checkVar whether to treat member variables as properties
