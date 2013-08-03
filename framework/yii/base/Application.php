@@ -449,10 +449,10 @@ abstract class Application extends Module
 			// load ErrorException manually here because autoloading them will not work
 			// when error occurs while autoloading a class
 			if (!class_exists('\\yii\\base\\Exception', false)) {
-				require_once(__DIR__ . '/Exception.php');
+				require_once(__DIR__ . DIRECTORY_SEPARATOR . 'Exception.php');
 			}
 			if (!class_exists('\\yii\\base\\ErrorException', false)) {
-				require_once(__DIR__ . '/ErrorException.php');
+				require_once(__DIR__ . DIRECTORY_SEPARATOR . 'ErrorException.php');
 			}
 			$exception = new ErrorException($message, $code, $code, $file, $line);
 
@@ -478,10 +478,10 @@ abstract class Application extends Module
 		// load ErrorException manually here because autoloading them will not work
 		// when error occurs while autoloading a class
 		if (!class_exists('\\yii\\base\\Exception', false)) {
-			require_once(__DIR__ . '/Exception.php');
+			require_once(__DIR__ . DIRECTORY_SEPARATOR . 'Exception.php');
 		}
 		if (!class_exists('\\yii\\base\\ErrorException', false)) {
-			require_once(__DIR__ . '/ErrorException.php');
+			require_once(__DIR__ . DIRECTORY_SEPARATOR . 'ErrorException.php');
 		}
 
 		$error = error_get_last();
