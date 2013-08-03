@@ -13,7 +13,7 @@ class SiteController extends Controller
 	{
 		return array(
 			'captcha' => array(
-				'class' => 'yii\web\CaptchaAction',
+				'class' => 'yii\captcha\CaptchaAction',
 				'fixedVerifyCode' => YII_ENV_DEV ? 'testme' : null,
 			),
 		);
