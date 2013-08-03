@@ -232,7 +232,7 @@ class Component extends Object
 	 */
 	public function hasProperty($name, $checkVar = true, $checkBehaviors = true)
 	{
-		return $this->canGetProperty($name, $checkVar, $checkBehaviors) || $this->canSetProperty($name, false, $checkBehavior);
+		return $this->canGetProperty($name, $checkVar, $checkBehaviors) || $this->canSetProperty($name, false, $checkBehaviors);
 	}
 
 	/**
