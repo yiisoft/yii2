@@ -23,7 +23,7 @@ use yii\helpers\Html;
  *         'Collapsible Group Item #1' => array(
  *             'content' => 'Anim pariatur cliche...',
  *             // open its content by default
- *             'contentOptions' => array('class'=>'in')
+ *             'contentOptions' => array('class' => 'in')
  *         ),
  *         // another group item
  *         'Collapsible Group Item #2' => array(
@@ -51,9 +51,9 @@ class Collapse extends Widget
 	 *     // required, the content (HTML) of the group
 	 *     'content' => 'Anim pariatur cliche...',
 	 *     // optional the HTML attributes of the content group
-	 *     'contentOptions'=> array(),
+	 *     'contentOptions' => array(),
 	 *     // optional the HTML attributes of the group
-	 *     'options'=> array(),
+	 *     'options' => array(),
 	 * )
 	 * ```
 	 */
