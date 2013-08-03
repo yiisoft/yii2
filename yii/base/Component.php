@@ -220,19 +220,19 @@ class Component extends Object
 	 *
 	 * - the class has a getter or setter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 * - an attached behavior has a property of the given name (when `$checkBehaviors` is true).
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property is defined
 	 * @see canGetProperty
 	 * @see canSetProperty
 	 */
-	public function hasProperty($name, $checkVar = true, $checkBehaviors = true)
+	public function hasProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
-		return $this->canGetProperty($name, $checkVar, $checkBehaviors) || $this->canSetProperty($name, false, $checkBehaviors);
+		return $this->canGetProperty($name, $checkVars, $checkBehaviors) || $this->canSetProperty($name, false, $checkBehaviors);
 	}
 
 	/**
@@ -241,23 +241,23 @@ class Component extends Object
 	 *
 	 * - the class has a getter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 * - an attached behavior has a readable property of the given name (when `$checkBehaviors` is true).
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property can be read
 	 * @see canSetProperty
 	 */
-	public function canGetProperty($name, $checkVar = true, $checkBehaviors = true)
+	public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
-		if (method_exists($this, 'get' . $name) || $checkVar && property_exists($this, $name)) {
+		if (method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name)) {
 			return true;
 		} elseif ($checkBehaviors) {
 			$this->ensureBehaviors();
 			foreach ($this->_behaviors as $behavior) {
-				if ($behavior->canGetProperty($name, $checkVar)) {
+				if ($behavior->canGetProperty($name, $checkVars)) {
 					return true;
 				}
 			}
@@ -271,23 +271,23 @@ class Component extends Object
 	 *
 	 * - the class has a setter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 * - an attached behavior has a writable property of the given name (when `$checkBehaviors` is true).
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property can be written
 	 * @see canGetProperty
 	 */
-	public function canSetProperty($name, $checkVar = true, $checkBehaviors = true)
+	public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
-		if (method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name)) {
+		if (method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name)) {
 			return true;
 		} elseif ($checkBehaviors) {
 			$this->ensureBehaviors();
 			foreach ($this->_behaviors as $behavior) {
-				if ($behavior->canSetProperty($name, $checkVar)) {
+				if ($behavior->canSetProperty($name, $checkVars)) {
 					return true;
 				}
 			}
