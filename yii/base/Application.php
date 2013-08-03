@@ -180,6 +180,16 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Returns an ID that uniquely identifies this module among all modules within the current application.
+	 * Since this is an application instance, it will always return an empty string.
+	 * @return string the unique ID of the module.
+	 */
+	public function getUniqueId()
+	{
+		return '';
+	}
+
+	/**
 	 * Runs the application.
 	 * This is the main entrance of an application.
 	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
