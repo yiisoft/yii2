@@ -37,7 +37,6 @@ class DataColumn extends Column
 	 * If this property is an array, a dropdown list will be generated that uses this property value as
 	 * the list options.
 	 * If you don't want a filter for this data column, set this value to false.
-	 * @since 1.1.1
 	 */
 	public $filter;
 
@@ -49,10 +48,10 @@ class DataColumn extends Column
 			if ($this->enableSorting && ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
 				return $sort->link($this->attribute);
 			}
-			$items = $provider->getItems();
-			if (($item = reset($items)) instanceof Model) {
-				/** @var Model $item */
-				return $item->getAttributeLabel($this->attribute);
+			$models = $provider->getModels();
+			if (($model = reset($models)) instanceof Model) {
+				/** @var Model $model */
+				return $model->getAttributeLabel($this->attribute);
 			} elseif ($provider instanceof ActiveDataProvider) {
 				if ($provider->query instanceof ActiveQuery) {
 					/** @var Model $model */
@@ -81,14 +80,14 @@ class DataColumn extends Column
 		}
 	}
 
-	protected function renderDataCellContent($item, $index)
+	protected function renderDataCellContent($model, $index)
 	{
 		if ($this->value !== null) {
-			$value = call_user_func($this->value, $item, $index, $this);
+			$value = call_user_func($this->value, $model, $index, $this);
 		} elseif ($this->content === null && $this->attribute !== null) {
-			$value = ArrayHelper::getValue($item, $this->attribute);
+			$value = ArrayHelper::getValue($model, $this->attribute);
 		} else {
-			return parent::renderDataCellContent($item, $index);
+			return parent::renderDataCellContent($model, $index);
 		}
 		return $this->grid->formatter->format($value, $this->format);
 	}

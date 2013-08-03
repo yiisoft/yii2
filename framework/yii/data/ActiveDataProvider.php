@@ -29,7 +29,7 @@ use yii\db\Connection;
  * ));
  *
  * // get the posts in the current page
- * $posts = $provider->getItems();
+ * $posts = $provider->getModels();
  * ~~~
  *
  * And the following example shows how to use ActiveDataProvider without ActiveRecord:
@@ -44,7 +44,7 @@ use yii\db\Connection;
  * ));
  *
  * // get the posts in the current page
- * $posts = $provider->getItems();
+ * $posts = $provider->getModels();
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -53,18 +53,18 @@ use yii\db\Connection;
 class ActiveDataProvider extends DataProvider
 {
 	/**
-	 * @var Query the query that is used to fetch data items and [[totalCount]]
+	 * @var Query the query that is used to fetch data models and [[totalCount]]
 	 * if it is not explicitly set.
 	 */
 	public $query;
 	/**
-	 * @var string|callable the column that is used as the key of the data items.
-	 * This can be either a column name, or a callable that returns the key value of a given data item.
+	 * @var string|callable the column that is used as the key of the data models.
+	 * This can be either a column name, or a callable that returns the key value of a given data model.
 	 *
-	 * If this is not set, the following rules will be used to determine the keys of the data items:
+	 * If this is not set, the following rules will be used to determine the keys of the data models:
 	 *
 	 * - If [[query]] is an [[ActiveQuery]] instance, the primary keys of [[ActiveQuery::modelClass]] will be used.
-	 * - Otherwise, the keys of the [[items]] array will be used.
+	 * - Otherwise, the keys of the [[models]] array will be used.
 	 *
 	 * @see getKeys()
 	 */
@@ -75,9 +75,9 @@ class ActiveDataProvider extends DataProvider
 	 */
 	public $db;
 
-	private $_items;
+	private $_models;
 	private $_keys;
-	private $_count;
+	private $_totalCount;
 
 	/**
 	 * Initializes the DbCache component.
@@ -96,59 +96,59 @@ class ActiveDataProvider extends DataProvider
 	}
 
 	/**
-	 * Returns the number of data items in the current page.
-	 * This is equivalent to `count($provider->items)`.
+	 * Returns the number of data models in the current page.
+	 * This is equivalent to `count($provider->models)`.
 	 * When [[pagination]] is false, this is the same as [[totalCount]].
-	 * @param boolean $refresh whether to recalculate the item count. If true,
-	 * this will cause re-fetching of [[items]].
-	 * @return integer the number of data items in the current page.
+	 * @param boolean $refresh whether to recalculate the model count. If true,
+	 * this will cause re-fetching of [[models]].
+	 * @return integer the number of data models in the current page.
 	 */
 	public function getCount($refresh = false)
 	{
-		return count($this->getItems($refresh));
+		return count($this->getModels($refresh));
 	}
 
 	/**
-	 * Returns the total number of data items.
+	 * Returns the total number of data models.
 	 * When [[pagination]] is false, this returns the same value as [[count]].
 	 * If [[totalCount]] is not explicitly set, it will be calculated
 	 * using [[query]] with a COUNT query.
-	 * @param boolean $refresh whether to recalculate the item count
-	 * @return integer total number of possible data items.
+	 * @param boolean $refresh whether to recalculate the model count
+	 * @return integer total number of possible data models.
 	 * @throws InvalidConfigException
 	 */
 	public function getTotalCount($refresh = false)
 	{
 		if ($this->getPagination() === false) {
 			return $this->getCount($refresh);
-		} elseif ($this->_count === null || $refresh) {
+		} elseif ($this->_totalCount === null || $refresh) {
 			if (!$this->query instanceof Query) {
 				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 			}
 			$query = clone $this->query;
-			$this->_count = $query->limit(-1)->offset(-1)->count('*', $this->db);
+			$this->_totalCount = $query->limit(-1)->offset(-1)->count('*', $this->db);
 		}
-		return $this->_count;
+		return $this->_totalCount;
 	}
 
 	/**
-	 * Sets the total number of data items.
-	 * @param integer $value the total number of data items.
+	 * Sets the total number of data models.
+	 * @param integer $value the total number of data models.
 	 */
 	public function setTotalCount($value)
 	{
-		$this->_count = $value;
+		$this->_totalCount = $value;
 	}
 
 	/**
-	 * Returns the data items in the current page.
-	 * @param boolean $refresh whether to re-fetch the data items.
-	 * @return array the list of data items in the current page.
+	 * Returns the data models in the current page.
+	 * @param boolean $refresh whether to re-fetch the data models.
+	 * @return array the list of data models in the current page.
 	 * @throws InvalidConfigException
 	 */
-	public function getItems($refresh = false)
+	public function getModels($refresh = false)
 	{
-		if ($this->_items === null || $refresh) {
+		if ($this->_models === null || $refresh) {
 			if (!$this->query instanceof Query) {
 				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 			}
@@ -159,28 +159,28 @@ class ActiveDataProvider extends DataProvider
 			if (($sort = $this->getSort()) !== false) {
 				$this->query->orderBy($sort->getOrders());
 			}
-			$this->_items = $this->query->all($this->db);
+			$this->_models = $this->query->all($this->db);
 		}
-		return $this->_items;
+		return $this->_models;
 	}
 
 	/**
-	 * Returns the key values associated with the data items.
-	 * @param boolean $refresh whether to re-fetch the data items and re-calculate the keys
-	 * @return array the list of key values corresponding to [[items]]. Each data item in [[items]]
+	 * Returns the key values associated with the data models.
+	 * @param boolean $refresh whether to re-fetch the data models and re-calculate the keys
+	 * @return array the list of key values corresponding to [[models]]. Each data model in [[models]]
 	 * is uniquely identified by the corresponding key value in this array.
 	 */
 	public function getKeys($refresh = false)
 	{
 		if ($this->_keys === null || $refresh) {
 			$this->_keys = array();
-			$items = $this->getItems($refresh);
+			$models = $this->getModels($refresh);
 			if ($this->key !== null) {
-				foreach ($items as $item) {
+				foreach ($models as $model) {
 					if (is_string($this->key)) {
-						$this->_keys[] = $item[$this->key];
+						$this->_keys[] = $model[$this->key];
 					} else {
-						$this->_keys[] = call_user_func($this->key, $item);
+						$this->_keys[] = call_user_func($this->key, $model);
 					}
 				}
 			} elseif ($this->query instanceof ActiveQuery) {
@@ -189,20 +189,20 @@ class ActiveDataProvider extends DataProvider
 				$pks = $class::primaryKey();
 				if (count($pks) === 1) {
 					$pk = $pks[0];
-					foreach ($items as $item) {
-						$this->_keys[] = $item[$pk];
+					foreach ($models as $model) {
+						$this->_keys[] = $model[$pk];
 					}
 				} else {
-					foreach ($items as $item) {
+					foreach ($models as $model) {
 						$keys = array();
 						foreach ($pks as $pk) {
-							$keys[] = $item[$pk];
+							$keys[] = $model[$pk];
 						}
 						$this->_keys[] = json_encode($keys);
 					}
 				}
 			} else {
-				$this->_keys = array_keys($items);
+				$this->_keys = array_keys($models);
 			}
 		}
 		return $this->_keys;
