@@ -28,7 +28,7 @@ use yii\helpers\Html;
  *             'label' => 'Two',
  *             'content' => 'Anim pariatur cliche...',
  *             'headerOptions' => array(...),
- *             'options' => array('id'=>'myveryownID'),
+ *             'options' => array('id' => 'myveryownID'),
  *         ),
  *         array(
  *             'label' => 'Dropdown',
