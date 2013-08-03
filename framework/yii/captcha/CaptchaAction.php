@@ -5,12 +5,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\captcha;
 
 use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
-use yii\widgets\Captcha;
 
 /**
  * CaptchaAction renders a CAPTCHA image.
@@ -85,7 +84,7 @@ class CaptchaAction extends Action
 	/**
 	 * @var string the TrueType font file. This can be either a file path or path alias.
 	 */
-	public $fontFile = '@yii/web/SpicyRice.ttf';
+	public $fontFile = '@yii/captcha/SpicyRice.ttf';
 	/**
 	 * @var string the fixed verification code. When this property is set,
 	 * [[getVerifyCode()]] will always return the value of this property.
@@ -116,12 +115,14 @@ class CaptchaAction extends Action
 		if (isset($_GET[self::REFRESH_GET_VAR])) {
 			// AJAX request for regenerating code
 			$code = $this->getVerifyCode(true);
+			/** @var \yii\web\Controller $controller */
+			$controller = $this->controller;
 			return json_encode(array(
 				'hash1' => $this->generateValidationHash($code),
 				'hash2' => $this->generateValidationHash(strtolower($code)),
 				// we add a random 'v' parameter so that FireFox can refresh the image
 				// when src attribute of image tag is changed
-				'url' => $this->controller->createUrl($this->id, array('v' => uniqid())),
+				'url' => $controller->createUrl($this->id, array('v' => uniqid())),
 			));
 		} else {
 			$this->setHttpHeaders();
@@ -153,7 +154,7 @@ class CaptchaAction extends Action
 			return $this->fixedVerifyCode;
 		}
 
-		$session = Yii::$app->session;
+		$session = Yii::$app->getSession();
 		$session->open();
 		$name = $this->getSessionKey();
 		if ($session[$name] === null || $regenerate) {
@@ -189,14 +190,14 @@ class CaptchaAction extends Action
 	 */
 	protected function generateVerifyCode()
 	{
+		if ($this->minLength > $this->maxLength) {
+			$this->maxLength = $this->minLength;
+		}
 		if ($this->minLength < 3) {
 			$this->minLength = 3;
 		}
 		if ($this->maxLength > 20) {
 			$this->maxLength = 20;
-		}
-		if ($this->minLength > $this->maxLength) {
-			$this->maxLength = $this->minLength;
 		}
 		$length = mt_rand($this->minLength, $this->maxLength);
 

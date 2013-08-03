@@ -15,7 +15,7 @@ class Singer extends Model
 		return array(
 			array('lastName', 'default', 'value' => 'Lennon'),
 			array('lastName', 'required'),
-			array('underscore_style', 'yii\validators\CaptchaValidator'),
+			array('underscore_style', 'yii\captcha\CaptchaValidator'),
 		);
 	}
 }

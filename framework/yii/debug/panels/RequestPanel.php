@@ -12,6 +12,7 @@ use yii\base\InlineAction;
 use yii\bootstrap\Tabs;
 use yii\debug\Panel;
 use yii\helpers\Html;
+use yii\web\Response;
 
 /**
  * Debugger panel that collects and displays request data.
@@ -29,8 +30,23 @@ class RequestPanel extends Panel
 	public function getSummary()
 	{
 		$url = $this->getUrl();
+		$statusCode = $this->data['statusCode'];
+		if ($statusCode === null) {
+			$statusCode = 200;
+		}
+		if ($statusCode >= 200 && $statusCode < 300) {
+			$class = 'label-success';
+		} elseif ($statusCode >= 100 && $statusCode < 200) {
+			$class = 'label-info';
+		} else {
+			$class = 'label-important';
+		}
+		$statusText = Html::encode(isset(Response::$httpStatuses[$statusCode]) ? Response::$httpStatuses[$statusCode] : '');
 
 		return <<<EOD
+<div class="yii-debug-toolbar-block">
+	<a href="$url" title="Status code: $statusCode $statusText"><span class="label $class">$statusCode</span></a>
+</div>
 <div class="yii-debug-toolbar-block">
 	<a href="$url">Action: <span class="label">{$this->data['action']}</span></a>
 </div>
@@ -113,6 +129,7 @@ EOD;
 		$session = Yii::$app->getComponent('session', false);
 		return array(
 			'flashes' => $session ? $session->getAllFlashes() : array(),
+			'statusCode' => Yii::$app->getResponse()->getStatusCode(),
 			'requestHeaders' => $requestHeaders,
 			'responseHeaders' => $responseHeaders,
 			'route' => Yii::$app->requestedAction ? Yii::$app->requestedAction->getUniqueId() : Yii::$app->requestedRoute,

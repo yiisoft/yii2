@@ -30,7 +30,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 		$provider = new ActiveDataProvider(array(
 			'query' => Order::find()->orderBy('id'),
 		));
-		$orders = $provider->getItems();
+		$orders = $provider->getModels();
 		$this->assertEquals(3, count($orders));
 		$this->assertTrue($orders[0] instanceof Order);
 		$this->assertEquals(array(1, 2, 3), $provider->getKeys());
@@ -41,7 +41,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 				'pageSize' => 2,
 			)
 		));
-		$orders = $provider->getItems();
+		$orders = $provider->getModels();
 		$this->assertEquals(2, count($orders));
 	}
 
@@ -52,7 +52,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 			'db' => $this->getConnection(),
 			'query' => $query->from('tbl_order')->orderBy('id'),
 		));
-		$orders = $provider->getItems();
+		$orders = $provider->getModels();
 		$this->assertEquals(3, count($orders));
 		$this->assertTrue(is_array($orders[0]));
 		$this->assertEquals(array(0, 1, 2), $provider->getKeys());
@@ -65,7 +65,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 				'pageSize' => 2,
 			)
 		));
-		$orders = $provider->getItems();
+		$orders = $provider->getModels();
 		$this->assertEquals(2, count($orders));
 	}
 }

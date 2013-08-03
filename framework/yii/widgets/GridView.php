@@ -26,6 +26,7 @@ class GridView extends ListViewBase
 	const FILTER_POS_FOOTER = 'footer';
 	const FILTER_POS_BODY = 'body';
 
+	public $dataColumnClass = 'yii\widgets\grid\DataColumn';
 	public $caption;
 	public $captionOptions = array();
 	public $tableOptions = array('class' => 'table table-striped table-bordered');
@@ -111,7 +112,7 @@ class GridView extends ListViewBase
 	}
 
 	/**
-	 * Renders the data items for the grid view.
+	 * Renders the data models for the grid view.
 	 */
 	public function renderItems()
 	{
@@ -216,22 +217,22 @@ class GridView extends ListViewBase
 	 */
 	public function renderTableBody()
 	{
-		$items = array_values($this->dataProvider->getItems());
+		$models = array_values($this->dataProvider->getModels());
 		$keys = $this->dataProvider->getKeys();
 		$rows = array();
-		foreach ($items as $index => $item) {
+		foreach ($models as $index => $model) {
 			$key = $keys[$index];
 			if ($this->beforeRow !== null) {
-				$row = call_user_func($this->beforeRow, $item, $key, $index);
+				$row = call_user_func($this->beforeRow, $model, $key, $index);
 				if (!empty($row)) {
 					$rows[] = $row;
 				}
 			}
 
-			$rows[] = $this->renderTableRow($item, $key, $index);
+			$rows[] = $this->renderTableRow($model, $key, $index);
 
 			if ($this->afterRow !== null) {
-				$row = call_user_func($this->afterRow, $item, $key, $index);
+				$row = call_user_func($this->afterRow, $model, $key, $index);
 				if (!empty($row)) {
 					$rows[] = $row;
 				}
@@ -241,21 +242,21 @@ class GridView extends ListViewBase
 	}
 
 	/**
-	 * Renders a table row with the given data item and key.
-	 * @param mixed $item the data item
-	 * @param mixed $key the key associated with the data item
-	 * @param integer $index the zero-based index of the data item among the item array returned by [[dataProvider]].
+	 * Renders a table row with the given data model and key.
+	 * @param mixed $model the data model to be rendered
+	 * @param mixed $key the key associated with the data model
+	 * @param integer $index the zero-based index of the data model among the model array returned by [[dataProvider]].
 	 * @return string the rendering result
 	 */
-	public function renderTableRow($item, $key, $index)
+	public function renderTableRow($model, $key, $index)
 	{
 		$cells = array();
 		/** @var \yii\widgets\grid\Column $column */
 		foreach ($this->columns as $column) {
-			$cells[] = $column->renderDataCell($item, $index);
+			$cells[] = $column->renderDataCell($model, $index);
 		}
 		if ($this->rowOptions instanceof Closure) {
-			$options = call_user_func($this->rowOptions, $item, $key, $index);
+			$options = call_user_func($this->rowOptions, $model, $key, $index);
 		} else {
 			$options = $this->rowOptions;
 		}
@@ -277,7 +278,7 @@ class GridView extends ListViewBase
 				$column = $this->createDataColumn($column);
 			} else {
 				$column = Yii::createObject(array_merge(array(
-					'class' => DataColumn::className(),
+					'class' => $this->dataColumnClass,
 					'grid' => $this,
 				), $column));
 			}
@@ -300,23 +301,24 @@ class GridView extends ListViewBase
 	 */
 	protected function createDataColumn($text)
 	{
-		if (!preg_match('/^(\w+)(\s*:\s*(\w+))?$/', $text, $matches)) {
-			throw new InvalidConfigException('The column must be specified in the format of "Attribute" or "Attribute:Type"');
+		if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
+			throw new InvalidConfigException('The column must be specified in the format of "Attribute", "Attribute:Format" or "Attribute:Format:Header');
 		}
 		return Yii::createObject(array(
-			'class' => DataColumn::className(),
+			'class' => $this->dataColumnClass,
 			'grid' => $this,
 			'attribute' => $matches[1],
-			'type' => isset($matches[3]) ? $matches[3] : 'text',
+			'format' => isset($matches[3]) ? $matches[3] : 'text',
+			'header' => isset($matches[5]) ? $matches[5] : null,
 		));
 	}
 
 	protected function guessColumns()
 	{
-		$items = $this->dataProvider->getItems();
-		$item = reset($items);
-		if (is_array($item) || is_object($item)) {
-			foreach ($item as $name => $value) {
+		$models = $this->dataProvider->getModels();
+		$model = reset($models);
+		if (is_array($model) || is_object($model)) {
+			foreach ($model as $name => $value) {
 				$this->columns[] = $name;
 			}
 		} else {

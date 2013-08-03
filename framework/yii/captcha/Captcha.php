@@ -5,13 +5,14 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets;
+namespace yii\Captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use yii\web\CaptchaAction;
+use yii\widgets\InputWidget;
+
 
 /**
  * Captcha renders a CAPTCHA image and an input field that takes user-entered verification code.

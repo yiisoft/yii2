@@ -19,29 +19,29 @@ namespace yii\data;
 interface IDataProvider
 {
 	/**
-	 * Returns the number of data items in the current page.
-	 * This is equivalent to `count($provider->getItems())`.
+	 * Returns the number of data models in the current page.
+	 * This is equivalent to `count($provider->getModels())`.
 	 * When [[pagination]] is false, this is the same as [[totalCount]].
-	 * @return integer the number of data items in the current page.
+	 * @return integer the number of data models in the current page.
 	 */
 	public function getCount();
 
 	/**
-	 * Returns the total number of data items.
+	 * Returns the total number of data models.
 	 * When [[pagination]] is false, this is the same as [[count]].
-	 * @return integer total number of possible data items.
+	 * @return integer total number of possible data models.
 	 */
 	public function getTotalCount();
 
 	/**
-	 * Returns the data items in the current page.
-	 * @return array the list of data items in the current page.
+	 * Returns the data models in the current page.
+	 * @return array the list of data models in the current page.
 	 */
-	public function getItems();
+	public function getModels();
 
 	/**
-	 * Returns the key values associated with the data items.
-	 * @return array the list of key values corresponding to [[items]]. Each data item in [[items]]
+	 * Returns the key values associated with the data models.
+	 * @return array the list of key values corresponding to [[models]]. Each data model in [[models]]
 	 * is uniquely identified by the corresponding key value in this array.
 	 */
 	public function getKeys();

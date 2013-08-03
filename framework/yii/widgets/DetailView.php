@@ -21,7 +21,7 @@ use yii\helpers\Inflector;
  * DetailView displays the detail of a single data [[model]].
  *
  * DetailView is best used for displaying a model in a regular format (e.g. each model attribute
- * is displayed as a row in a table.) The model can be either an instance of [[Model]] or
+ * is displayed as a row in a table.) The model can be either an instance of [[Model]]
  * or an associative array.
  *
  * DetailView uses the [[attributes]] property to determines which model attributes
@@ -105,7 +105,7 @@ class DetailView extends Widget
 	public function init()
 	{
 		if ($this->model === null) {
-			throw new InvalidConfigException('Please specify the "data" property.');
+			throw new InvalidConfigException('Please specify the "model" property.');
 		}
 		if ($this->formatter == null) {
 			$this->formatter = Yii::$app->getFormatter();
@@ -166,7 +166,7 @@ class DetailView extends Widget
 			} elseif (is_array($this->model)) {
 				$this->attributes = array_keys($this->model);
 			} else {
-				throw new InvalidConfigException('The "data" property must be either an array or an object.');
+				throw new InvalidConfigException('The "model" property must be either an array or an object.');
 			}
 			sort($this->attributes);
 		}

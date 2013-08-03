@@ -192,11 +192,16 @@ class ErrorHandler extends Component
 	 */
 	public function renderFile($_file_, $_params_)
 	{
-		ob_start();
-		ob_implicit_flush(false);
-		extract($_params_, EXTR_OVERWRITE);
-		require(Yii::getAlias($_file_));
-		return ob_get_clean();
+		$_params_['handler'] = $this;
+		if ($this->exception instanceof ErrorException) {
+			ob_start();
+			ob_implicit_flush(false);
+			extract($_params_, EXTR_OVERWRITE);
+			require(Yii::getAlias($_file_));
+			return ob_get_clean();
+		} else {
+			return Yii::$app->getView()->renderFile($_file_, $_params_, $this);
+		}
 	}
 
 	/**

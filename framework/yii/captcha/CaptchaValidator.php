@@ -5,11 +5,13 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\validators;
+namespace yii\captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\validators\ValidationAsset;
+use yii\validators\Validator;
 
 /**
  * CaptchaValidator validates that the attribute value is the same as the verification code displayed in the CAPTCHA.
@@ -74,7 +76,7 @@ class CaptchaValidator extends Validator
 	/**
 	 * Returns the CAPTCHA action object.
 	 * @throws InvalidConfigException
-	 * @return \yii\web\CaptchaAction the action object
+	 * @return \yii\captcha\CaptchaAction the action object
 	 */
 	public function getCaptchaAction()
 	{
