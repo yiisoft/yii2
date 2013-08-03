@@ -100,6 +100,8 @@ You can use `CacheSession` to store sessions using cache. Note that some
 cache storage such as memcached has no guarantee that session data will not
 be lost leading to unexpected logouts.
 
+If you have [Redis](http://redis.io/) on your server, it's highly recommended as session storage.
+
 Improving application
 ---------------------
 
