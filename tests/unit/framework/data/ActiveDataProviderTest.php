@@ -68,4 +68,19 @@ class ActiveDataProviderTest extends DatabaseTestCase
 		$orders = $provider->getModels();
 		$this->assertEquals(2, count($orders));
 	}
+
+	public function testRefresh()
+	{
+		$query = new Query;
+		$provider = new ActiveDataProvider(array(
+			'db' => $this->getConnection(),
+			'query' => $query->from('tbl_order')->orderBy('id'),
+		));
+		$this->assertEquals(3, count($provider->getModels()));
+
+		$provider->getPagination()->pageSize = 2;
+		$this->assertEquals(3, count($provider->getModels()));
+		$provider->refresh();
+		$this->assertEquals(2, count($provider->getModels()));
+	}
 }
