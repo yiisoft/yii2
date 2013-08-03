@@ -117,8 +117,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *     array('password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'),
 	 *     // an inline validator defined via the "authenticate()" method in the model class
 	 *     array('password', 'authenticate', 'on' => 'login'),
-	 *     // a validator of class "CaptchaValidator"
-	 *     array('captcha', 'CaptchaValidator'),
+	 *     // a validator of class "DateRangeValidator"
+	 *     array('dateRange', 'DateRangeValidator'),
 	 * );
 	 * ~~~
 	 *
