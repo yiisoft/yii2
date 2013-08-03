@@ -246,15 +246,15 @@ class Component extends Object
 	 *
 	 * @param string $name the property name
 	 * @param boolean $checkVar whether to treat member variables as properties
-	 * @param boolean $checkBehavior whether to treat behaviors' properties as properties of this component
+	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property can be read
 	 * @see canSetProperty
 	 */
-	public function canGetProperty($name, $checkVar = true, $checkBehavior = true)
+	public function canGetProperty($name, $checkVar = true, $checkBehaviors = true)
 	{
 		if (method_exists($this, 'get' . $name) || $checkVar && property_exists($this, $name)) {
 			return true;
-		} else {
+		} elseif ($checkBehaviors) {
 			$this->ensureBehaviors();
 			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canGetProperty($name, $checkVar)) {
@@ -276,15 +276,15 @@ class Component extends Object
 	 *
 	 * @param string $name the property name
 	 * @param boolean $checkVar whether to treat member variables as properties
-	 * @param boolean $checkBehavior whether to treat behaviors' properties as properties of this component
+	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property can be written
 	 * @see canGetProperty
 	 */
-	public function canSetProperty($name, $checkVar = true, $checkBehavior = true)
+	public function canSetProperty($name, $checkVar = true, $checkBehaviors = true)
 	{
 		if (method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name)) {
 			return true;
-		} else {
+		} elseif ($checkBehaviors) {
 			$this->ensureBehaviors();
 			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canSetProperty($name, $checkVar)) {
