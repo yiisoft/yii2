@@ -536,6 +536,16 @@ class ActiveRecord extends Model
 	}
 
 	/**
+	 * Returns a value indicating whether the model has an attribute with the specified name.
+	 * @param string $name the name of the attribute
+	 * @return boolean whether the model has an attribute with the specified name.
+	 */
+	public function hasAttribute($name)
+	{
+		return isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name]);
+	}
+
+	/**
 	 * Returns the old attribute values.
 	 * @return array the old attribute values (name-value pairs)
 	 */
