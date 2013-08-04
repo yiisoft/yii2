@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\Captcha;
+namespace yii\captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
