@@ -39,14 +39,6 @@ ul{
 }
 
 /* base */
-::selection{
-	color: #fff !important;
-	background-color: #e51717 !important;
-}
-::-moz-selection{
-	color: #fff !important;
-	background-color: #e51717 !important;
-}
 a{
 	text-decoration: none;
 }
