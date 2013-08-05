@@ -91,8 +91,9 @@ abstract class ListViewBase extends Widget
 	public function run()
 	{
 		if ($this->dataProvider->getCount() > 0 || $this->empty === false) {
-			$content = preg_replace_callback("/{\\w+}/", function ($matches) {
-				$content = $this->renderSection($matches[0]);
+			$widget = $this;
+			$content = preg_replace_callback("/{\\w+}/", function ($matches) use ($widget) {
+				$content = $widget->renderSection($matches[0]);
 				return $content === false ? $matches[0] : $content;
 			}, $this->layout);
 		} else {
@@ -108,7 +109,7 @@ abstract class ListViewBase extends Widget
 	 * @param string $name the section name, e.g., `{summary}`, `{items}`.
 	 * @return string|boolean the rendering result of the section, or false if the named section is not supported.
 	 */
-	protected function renderSection($name)
+	public function renderSection($name)
 	{
 		switch ($name) {
 			case '{summary}':
