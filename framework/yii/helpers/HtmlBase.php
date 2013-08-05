@@ -1339,11 +1339,12 @@ class HtmlBase
 	 *
 	 * - is an empty string: the currently requested URL will be returned;
 	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
-	 *   is an absolute URL, it will be returned with any change further; Otherwise, the result
+	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
 	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
 	 * - is an array: the first array element is considered a route, while the rest of the name-value
 	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
 	 *   For example: `array('post/index', 'page' => 2)`, `array('index')`.
+	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
 	 *
 	 * @param array|string $url the parameter to be used to generate a valid URL
 	 * @return string the normalized URL
@@ -1355,7 +1356,7 @@ class HtmlBase
 			if (isset($url[0])) {
 				$route = $url[0];
 				$params = array_splice($url, 1);
-				if (Yii::$app->controller !== null) {
+				if (Yii::$app->controller instanceof \yii\web\Controller) {
 					return Yii::$app->controller->createUrl($route, $params);
 				} else {
 					return Yii::$app->getUrlManager()->createUrl($route, $params);
