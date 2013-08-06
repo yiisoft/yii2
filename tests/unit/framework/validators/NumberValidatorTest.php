@@ -141,7 +141,7 @@ class NumberValidatorTest extends TestCase
 	public function testEnsureCustomMessageIsSetOnValidateAttribute()
 	{
 		$val = new NumberValidator(array(
-			'toSmall' => '{attribute} is to small.',
+			'tooSmall' => '{attribute} is to small.',
 			'min' => 5
 		));
 		$model = new FakedValidationModel();
