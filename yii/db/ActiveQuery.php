@@ -124,10 +124,14 @@ class ActiveQuery extends Query
 	{
 		$command = $this->createCommand($db);
 		$row = $command->queryOne();
-		if ($row !== false && !$this->asArray) {
-			/** @var $class ActiveRecord */
-			$class = $this->modelClass;
-			$model = $class::create($row);
+		if ($row !== false) {
+			if ($this->asArray) {
+				$model = $row;
+			} else {
+				/** @var $class ActiveRecord */
+				$class = $this->modelClass;
+				$model = $class::create($row);
+			}
 			if (!empty($this->with)) {
 				$models = array($model);
 				$this->populateRelations($models, $this->with);
@@ -135,7 +139,7 @@ class ActiveQuery extends Query
 			}
 			return $model;
 		} else {
-			return $row === false ? null : $row;
+			return null;
 		}
 	}
 

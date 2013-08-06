@@ -55,7 +55,7 @@ class Carousel extends Widget
 	 *     // required, slide content (HTML), such as an image tag
 	 *     'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg"/>',
 	 *     // optional, the caption (HTML) of the slide
-	 *     'caption'=> '<h4>This is title</h4><p>This is the caption text</p>',
+	 *     'caption' => '<h4>This is title</h4><p>This is the caption text</p>',
 	 *     // optional the HTML attributes of the slide container
 	 *     'options' => array(),
 	 * )

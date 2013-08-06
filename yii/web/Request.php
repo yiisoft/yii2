@@ -864,7 +864,7 @@ class Request extends \yii\base\Request
 	private $_cookieValidationKey;
 
 	/**
-	 * @return string the secret key used for cookie validation. If it was set previously,
+	 * @return string the secret key used for cookie validation. If it was not set previously,
 	 * a random key will be generated and used.
 	 */
 	public function getCookieValidationKey()

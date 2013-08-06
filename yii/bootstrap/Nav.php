@@ -136,6 +136,7 @@ class Nav extends Widget
 			if (is_array($items)) {
 				$items = Dropdown::widget(array(
 					'items' => $items,
+					'encodeLabels' => $this->encodeLabels,
 					'clientOptions' => false,
 				));
 			}

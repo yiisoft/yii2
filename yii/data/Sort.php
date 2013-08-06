@@ -191,17 +191,18 @@ class Sort extends Object
 	{
 		$attributes = array();
 		foreach ($this->attributes as $name => $attribute) {
-			if (is_array($attribute)) {
-				$attributes[$name] = $attribute;
-				if (!isset($attribute['label'])) {
-					$attributes[$name]['label'] = Inflector::camel2words($name);
-				}
-			} else {
+			if (!is_array($attribute)) {
 				$attributes[$attribute] = array(
 					'asc' => array($attribute => self::ASC),
 					'desc' => array($attribute => self::DESC),
 					'label' => Inflector::camel2words($attribute),
 				);
+			} elseif (!isset($attribute['asc'], $attribute['desc'], $attribute['label'])) {
+				$attributes[$name] = array_merge(array(
+					'asc' => array($name => self::ASC),
+					'desc' => array($name => self::DESC),
+					'label' => Inflector::camel2words($name),
+				), $attribute);
 			}
 		}
 		$this->attributes = $attributes;

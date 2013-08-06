@@ -47,7 +47,7 @@ use yii\helpers\Html;
  * echo Progress::widget(array(
  *     'bars' => array(
  *         array('percent' => 30, 'options' => array('class' => 'bar-danger')),
- *         array('percent' => 30, 'label'=>'test', 'options' => array('class' => 'bar-success')),
+ *         array('percent' => 30, 'label' => 'test', 'options' => array('class' => 'bar-success')),
  *         array('percent' => 35, 'options' => array('class' => 'bar-warning'))
  *     )
  * ));

@@ -146,9 +146,9 @@ class Command extends \yii\base\Component
 			try {
 				$this->pdoStatement = $this->db->pdo->prepare($sql);
 			} catch (\Exception $e) {
-				Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __METHOD__);
+				$message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode(), $e);
+				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 			}
 		}
 	}
@@ -293,10 +293,7 @@ class Command extends \yii\base\Component
 			return $n;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			$message = $e->getMessage();
-
-			Yii::error("$message\nFailed to execute SQL: $rawSql", __METHOD__);
-
+			$message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 		}
@@ -430,8 +427,7 @@ class Command extends \yii\base\Component
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			$message = $e->getMessage();
-			Yii::error("$message\nCommand::$method() failed: $rawSql", __METHOD__);
+			$message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 		}

@@ -180,6 +180,16 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Returns an ID that uniquely identifies this module among all modules within the current application.
+	 * Since this is an application instance, it will always return an empty string.
+	 * @return string the unique ID of the module.
+	 */
+	public function getUniqueId()
+	{
+		return '';
+	}
+
+	/**
 	 * Runs the application.
 	 * This is the main entrance of an application.
 	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
@@ -475,6 +485,8 @@ abstract class Application extends Module
 	 */
 	public function handleFatalError()
 	{
+		unset($this->_memoryReserve);
+
 		// load ErrorException manually here because autoloading them will not work
 		// when error occurs while autoloading a class
 		if (!class_exists('\\yii\\base\\Exception', false)) {
@@ -487,7 +499,6 @@ abstract class Application extends Module
 		$error = error_get_last();
 
 		if (ErrorException::isFatalError($error)) {
-			unset($this->_memoryReserve);
 			$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
 			// use error_log because it's too late to use Yii log
 			error_log($exception);
