@@ -152,7 +152,7 @@ class ActiveForm extends Widget
 			$this->options['id'] = $this->getId();
 		}
 		if (!isset($this->fieldConfig['class'])) {
-			$this->fieldConfig['class'] = 'yii\widgets\ActiveField';
+			$this->fieldConfig['class'] = ActiveField::className();
 		}
 		echo Html::beginForm($this->action, $this->method, $this->options);
 	}
