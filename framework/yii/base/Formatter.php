@@ -71,22 +71,36 @@ class Formatter extends Component
 	}
 
 	/**
-	 * Formats the value based on the given type.
+	 * Formats the value based on the given format type.
 	 * This method will call one of the "as" methods available in this class to do the formatting.
-	 * For type "xyz", the method "asXyz" will be used. For example, if the type is "html",
-	 * then [[asHtml()]] will be used. Type names are case insensitive.
+	 * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
+	 * then [[asHtml()]] will be used. Format names are case insensitive.
 	 * @param mixed $value the value to be formatted
-	 * @param string $type the type of the value, e.g., "html", "text".
+	 * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
+	 * parameters of the formatting method, you may use an array. The first element of the array
+	 * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
+	 * method. For example, a format of `array('date', 'Y-m-d')` will cause the invocation of `asDate($value, 'Y-m-d')`.
 	 * @return string the formatting result
 	 * @throws InvalidParamException if the type is not supported by this class.
 	 */
-	public function format($value, $type)
+	public function format($value, $format)
 	{
-		$method = 'as' . $type;
-		if (method_exists($this, $method)) {
-			return $this->$method($value);
+		if (is_array($format)) {
+			if (!isset($format[0])) {
+				throw new InvalidParamException('The $format array must contain at least one element.');
+			}
+			$f = $format[0];
+			$format[0] = $value;
+			$params = $format;
+			$format = $f;
 		} else {
-			throw new InvalidParamException("Unknown type: $type");
+			$params = array($value);
+		}
+		$method = 'as' . $format;
+		if (method_exists($this, $method)) {
+			return call_user_func_array(array($this, $method), $params);
+		} else {
+			throw new InvalidParamException("Unknown type: $format");
 		}
 	}
 

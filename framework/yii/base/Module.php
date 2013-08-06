@@ -192,13 +192,7 @@ abstract class Module extends Component
 	 */
 	public function getUniqueId()
 	{
-		if ($this instanceof Application) {
-			return '';
-		} elseif ($this->module) {
-			return ltrim($this->module->getUniqueId() . '/' . $this->id, '/');
-		} else {
-			return $this->id;
-		}
+		return $this->module ? ltrim($this->module->getUniqueId() . '/' . $this->id, '/') : $this->id;
 	}
 
 	/**

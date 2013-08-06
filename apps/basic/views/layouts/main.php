@@ -23,7 +23,7 @@ app\config\AppAsset::register($this);
 	<div class="masthead">
 		<h3 class="muted">My Company</h3>
 
-		<div class="navbar">
+		<div class="navbar fullwidth">
 			<div class="navbar-inner">
 				<div class="container">
 					<?php echo Menu::widget(array(

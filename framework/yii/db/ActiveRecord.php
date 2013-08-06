@@ -536,6 +536,16 @@ class ActiveRecord extends Model
 	}
 
 	/**
+	 * Returns a value indicating whether the model has an attribute with the specified name.
+	 * @param string $name the name of the attribute
+	 * @return boolean whether the model has an attribute with the specified name.
+	 */
+	public function hasAttribute($name)
+	{
+		return isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name]);
+	}
+
+	/**
 	 * Returns the old attribute values.
 	 * @return array the old attribute values (name-value pairs)
 	 */
@@ -1400,10 +1410,10 @@ class ActiveRecord extends Model
 	 * @param string $class the class name to be namespaced
 	 * @return string the namespaced class name
 	 */
-	protected function getNamespacedClass($class)
+	protected static function getNamespacedClass($class)
 	{
 		if (strpos($class, '\\') === false) {
-			$reflector = new \ReflectionClass($this);
+			$reflector = new \ReflectionClass(static::className());
 			return $reflector->getNamespaceName() . '\\' . $class;
 		} else {
 			return $class;

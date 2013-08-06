@@ -258,7 +258,6 @@ class Response extends \yii\base\Response
 		$this->sendHeaders();
 		$this->sendContent();
 		$this->trigger(self::EVENT_AFTER_SEND, new ResponseEvent($this));
-		$this->clear();
 	}
 
 	/**

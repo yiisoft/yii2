@@ -20,7 +20,7 @@
 	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
-		"twig/twig": "v1.13.0"
+		"twig/twig": "v1.13.2"
 	},
 	"autoload": {
 		"psr-0": { "yii\\twig": "" }

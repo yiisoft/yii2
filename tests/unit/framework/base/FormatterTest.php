@@ -189,4 +189,14 @@ class FormatterTest extends TestCase
 		$this->assertSame("123123,12", $this->formatter->asNumber($value, 2));
 		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asNumber(null));
 	}
+
+	public function testFormat()
+	{
+		$value = time();
+		$this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, 'date'));
+		$this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, 'DATE'));
+		$this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, array('date', 'Y-m-d')));
+		$this->setExpectedException('\yii\base\InvalidParamException');
+		$this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
+	}
 }

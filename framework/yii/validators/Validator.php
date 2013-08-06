@@ -49,7 +49,7 @@ abstract class Validator extends Component
 	 */
 	public static $builtInValidators = array(
 		'boolean' => 'yii\validators\BooleanValidator',
-		'captcha' => 'yii\validators\CaptchaValidator',
+		'captcha' => 'yii\captcha\CaptchaValidator',
 		'compare' => 'yii\validators\CompareValidator',
 		'date' => 'yii\validators\DateValidator',
 		'default' => 'yii\validators\DefaultValueValidator',

@@ -55,7 +55,7 @@ EOD;
 		foreach ($this->data['messages'] as $log) {
 			list ($message, $level, $category, $time, $traces) = $log;
 			$time = date('H:i:s.', $time) . sprintf('%03d', (int)(($time - (int)$time) * 1000));
-			$message = Html::encode($message);
+			$message = nl2br(Html::encode($message));
 			if (!empty($traces)) {
 				$message .= Html::ul($traces, array(
 					'class' => 'trace',

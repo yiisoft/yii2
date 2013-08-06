@@ -8,19 +8,19 @@
  * @var string[] $lines
  * @var integer $begin
  * @var integer $end
- * @var \yii\base\ErrorHandler $this
+ * @var \yii\base\ErrorHandler $handler
  */
 ?>
-<li class="<?php if (!$this->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
+<li class="<?php if (!$handler->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
 	data-line="<?php echo (int)($line - $begin); ?>">
 	<div class="element-wrap">
 		<div class="element">
 			<span class="item-number"><?php echo (int)$index; ?>.</span>
-			<span class="text"><?php if ($file !== null) echo 'in ' . $this->htmlEncode($file); ?></span>
+			<span class="text"><?php if ($file !== null) echo 'in ' . $handler->htmlEncode($file); ?></span>
 			<?php if ($method !== null): ?>
 				<span class="call">
 					<?php if ($file !== null) echo '&ndash;' ?>
-					<?php if ($class !== null) echo $this->addTypeLinks($class) . '::'; ?><?php echo $this->addTypeLinks($method . '()'); ?>
+					<?php if ($class !== null) echo $handler->addTypeLinks($class) . '::'; ?><?php echo $handler->addTypeLinks($method . '()'); ?>
 				</span>
 			<?php endif; ?>
 			<span class="at"><?php if ($line !== null) echo 'at line'; ?></span>
@@ -36,7 +36,7 @@
 				<pre><?php
 					// fill empty lines with a whitespace to avoid rendering problems in opera
 					for ($i = $begin; $i <= $end; ++$i) {
-						echo (trim($lines[$i]) == '') ? " \n" : $this->htmlEncode($lines[$i]);
+						echo (trim($lines[$i]) == '') ? " \n" : $handler->htmlEncode($lines[$i]);
 					}
 				?></pre>
 			</div>
