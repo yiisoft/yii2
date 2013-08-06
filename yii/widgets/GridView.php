@@ -15,6 +15,7 @@ use yii\base\Widget;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\widgets\grid\DataColumn;
+use yii\widgets\grid\GridViewAsset;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -26,7 +27,7 @@ class GridView extends ListViewBase
 	const FILTER_POS_FOOTER = 'footer';
 	const FILTER_POS_BODY = 'body';
 
-	public $dataColumnClass = 'yii\widgets\grid\DataColumn';
+	public $dataColumnClass;
 	public $caption;
 	public $captionOptions = array();
 	public $tableOptions = array('class' => 'table table-striped table-bordered');
@@ -70,7 +71,7 @@ class GridView extends ListViewBase
 	 * - `{sorter}`: the sorter. See [[renderSorter()]].
 	 * - `{pager}`: the pager. See [[renderPager()]].
 	 */
-	public $layout = "{summary}\n{pager}{items}\n{pager}";
+	public $layout = "{items}\n{summary}\n{pager}";
 	public $emptyCell = '&nbsp;';
 	/**
 	 * @var \yii\base\Model the model instance that keeps the user-entered filter data. When this property is set,
@@ -107,8 +108,23 @@ class GridView extends ListViewBase
 		if (!$this->formatter instanceof Formatter) {
 			throw new InvalidConfigException('The "formatter" property must be either a Format object or a configuration array.');
 		}
+		if (!isset($this->options['id'])) {
+			$this->options['id'] = $this->getId();
+		}
 
 		$this->initColumns();
+	}
+
+	/**
+	 * Runs the widget.
+	 */
+	public function run()
+	{
+		$id = $this->options['id'];
+		$view = $this->getView();
+		GridViewAsset::register($view);
+		$view->registerJs("jQuery('#$id').yiiGridView();");
+		parent::run();
 	}
 
 	/**
@@ -272,22 +288,18 @@ class GridView extends ListViewBase
 		if (empty($this->columns)) {
 			$this->guessColumns();
 		}
-		$id = $this->getId();
 		foreach ($this->columns as $i => $column) {
 			if (is_string($column)) {
 				$column = $this->createDataColumn($column);
 			} else {
 				$column = Yii::createObject(array_merge(array(
-					'class' => $this->dataColumnClass,
+					'class' => $this->dataColumnClass ?: DataColumn::className(),
 					'grid' => $this,
 				), $column));
 			}
 			if (!$column->visible) {
 				unset($this->columns[$i]);
 				continue;
-			}
-			if ($column->id === null) {
-				$column->id = $id . '_c' . $i;
 			}
 			$this->columns[$i] = $column;
 		}
@@ -305,7 +317,7 @@ class GridView extends ListViewBase
 			throw new InvalidConfigException('The column must be specified in the format of "Attribute", "Attribute:Format" or "Attribute:Format:Header');
 		}
 		return Yii::createObject(array(
-			'class' => $this->dataColumnClass,
+			'class' => $this->dataColumnClass ?: DataColumn::className(),
 			'grid' => $this,
 			'attribute' => $matches[1],
 			'format' => isset($matches[3]) ? $matches[3] : 'text',
