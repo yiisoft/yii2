@@ -5,19 +5,28 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets\grid;
+namespace yii\grid;
 
 use Closure;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
 /**
+ * CheckboxColumn displays a column of checkboxes in a grid view.
+ * Users may click on the checkboxes to select rows of the grid. The selected rows may be
+ * obtained by calling the following JavaScript code:
+ *
+ * ~~~
+ * var keys = $('#grid').yiiGridView('getSelectedRows');
+ * // keys is an array consisting of the keys associated with the selected rows
+ * ~~~
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class CheckboxColumn extends Column
 {
-	public $name;
+	public $name = 'selection';
 	public $checkboxOptions = array();
 	public $multiple = true;
 
