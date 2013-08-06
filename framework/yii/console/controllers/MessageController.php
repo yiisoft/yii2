@@ -98,7 +98,7 @@ class MessageController extends Controller
 
 		$messages = array();
 		foreach ($files as $file) {
-			$messages = array_merge($messages, $this->extractMessages($file, $config['translator']));
+			$messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator']));
 		}
 
 		foreach ($config['languages'] as $language) {
