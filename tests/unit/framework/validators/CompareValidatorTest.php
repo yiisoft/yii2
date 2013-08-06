@@ -3,9 +3,9 @@ namespace yiiunit\framework\validators;
 
 use yii\base\InvalidConfigException;
 use yii\validators\CompareValidator;
+use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
-require_once __DIR__ . '/FakedValidationModel.php';
 
 
 class CompareValidatorTest extends TestCase

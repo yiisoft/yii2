@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\framework\validators;
+namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
 
@@ -10,6 +10,25 @@ use yii\base\Model;
 class FakedValidationModel extends Model
 {
 	private $attr = array();
+
+	public $val_attr_a;
+	public $val_attr_b;
+	public $val_attr_c;
+	public $val_attr_d;
+
+
+	public function rules()
+	{
+		return array(
+			array('val_attr_a, val_attr_b', 'required', 'on' => 'reqTest'),
+			array('val_attr_c', 'integer'),
+		);
+	}
+
+	public function inlineVal($attribute, $params = array())
+	{
+		return true;
+	}
 
 	public function __get($name)
 	{

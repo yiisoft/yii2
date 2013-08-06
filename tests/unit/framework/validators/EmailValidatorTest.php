@@ -2,6 +2,7 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\EmailValidator;
+use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
 /**

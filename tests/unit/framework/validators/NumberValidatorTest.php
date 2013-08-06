@@ -4,6 +4,7 @@ namespace yiiunit\framework\validators;
 
 
 use yii\validators\NumberValidator;
+use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
 class NumberValidatorTest extends TestCase
