@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets\grid;
+namespace yii\grid;
 
 use yii\web\AssetBundle;
 

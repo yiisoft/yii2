@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets;
+namespace yii\grid;
 
 use Yii;
 use Closure;
@@ -14,8 +14,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
-use yii\widgets\grid\DataColumn;
-use yii\widgets\grid\GridViewAsset;
+use yii\widgets\ListViewBase;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -27,20 +26,69 @@ class GridView extends ListViewBase
 	const FILTER_POS_FOOTER = 'footer';
 	const FILTER_POS_BODY = 'body';
 
-	public $dataColumnClass;
-	public $caption;
-	public $captionOptions = array();
-	public $tableOptions = array('class' => 'table table-striped table-bordered');
-	public $headerRowOptions = array();
-	public $footerRowOptions = array();
-	public $beforeRow;
-	public $afterRow;
-	public $showHeader = true;
-	public $showFooter = false;
 	/**
-	 * @var array|Closure
+	 * @var string the default data column class if the class name is not explicitly specified when configuring a data column.
+	 * Defaults to 'yii\grid\DataColumn'.
+	 */
+	public $dataColumnClass;
+	/**
+	 * @var string the caption of the grid table
+	 * @see captionOptions
+	 */
+	public $caption;
+	/**
+	 * @var array the HTML attributes for the caption element
+	 * @see caption
+	 */
+	public $captionOptions = array();
+	/**
+	 * @var array the HTML attributes for the grid table element
+	 */
+	public $tableOptions = array('class' => 'table table-striped table-bordered');
+	/**
+	 * @var array the HTML attributes for the table header row
+	 */
+	public $headerRowOptions = array();
+	/**
+	 * @var array the HTML attributes for the table footer row
+	 */
+	public $footerRowOptions = array();
+	/**
+	 * @var array|Closure the HTML attributes for the table body rows. This can be either an array
+	 * specifying the common HTML attributes for all body rows, or an anonymous function that
+	 * returns an array of the HTML attributes. The anonymous function will be called once for every
+	 * data model returned by [[dataProvider]]. It should have the following signature:
+	 *
+	 * ~~~php
+	 * function ($model, $key, $index, $grid)
+	 * ~~~
+	 *
+	 * - `$model`: the current data model being rendered
+	 * - `$key`: the key value associated with the current data model
+	 * - `$index`: the zero-based index of the data model in the model array returned by [[dataProvider]]
+	 * - `$grid`: the GridView object
 	 */
 	public $rowOptions = array();
+	/**
+	 * @var Closure an anonymous function that is called once BEFORE rendering each data model.
+	 * It should have the similar signature as [[rowOptions]]. The return result of the function
+	 * will be rendered directly.
+	 */
+	public $beforeRow;
+	/**
+	 * @var Closure an anonymous function that is called once AFTER rendering each data model.
+	 * It should have the similar signature as [[rowOptions]]. The return result of the function
+	 * will be rendered directly.
+	 */
+	public $afterRow;
+	/**
+	 * @var boolean whether to show the header section of the grid table.
+	 */
+	public $showHeader = true;
+	/**
+	 * @var boolean whether to show the footer section of the grid table.
+	 */
+	public $showFooter = false;
 	/**
 	 * @var array|Formatter the formatter used to format model attribute values into displayable texts.
 	 * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
@@ -49,17 +97,31 @@ class GridView extends ListViewBase
 	public $formatter;
 	/**
 	 * @var array grid column configuration. Each array element represents the configuration
-	 * for one particular grid column which can be either a string or an array.
+	 * for one particular grid column. For example,
 	 *
-	 * When a column is specified as a string, it should be in the format of "name:type:header",
-	 * where "type" and "header" are optional. A {@link CDataColumn} instance will be created in this case,
-	 * whose {@link CDataColumn::name}, {@link CDataColumn::type} and {@link CDataColumn::header}
-	 * properties will be initialized accordingly.
+	 * ~~~php
+	 * array(
+	 *     array(
+	 *         'class' => SerialColumn::className(),
+	 *     ),
+	 *     array(
+	 *         'class' => DataColumn::className(),
+	 *         'attribute' => 'name',
+	 *         'format' => 'text',
+	 *         'header' => 'Name',
+	 *     ),
+	 *     array(
+	 *         'class' => CheckboxColumn::className(),
+	 *     ),
+	 * )
+	 * ~~~
 	 *
-	 * When a column is specified as an array, it will be used to create a grid column instance, where
-	 * the 'class' element specifies the column class name (defaults to {@link CDataColumn} if absent).
-	 * Currently, these official column classes are provided: {@link CDataColumn},
-	 * {@link CLinkColumn}, {@link CButtonColumn} and {@link CCheckBoxColumn}.
+	 * If a column is of class [[DataColumn]], the "class" element can be omitted.
+	 *
+	 * As a shortcut format, a string may be used to specify the configuration of a data column
+	 * which only contains "attribute", "format", and/or "header" options: `"attribute:format:header"`.
+	 * For example, the above "name" column can also be specified as: `"name:text:Name"`.
+	 * Both "format" and "header" are optional. They will take default values if absent.
 	 */
 	public $columns = array();
 	/**
@@ -74,24 +136,28 @@ class GridView extends ListViewBase
 	public $layout = "{items}\n{summary}\n{pager}";
 	public $emptyCell = '&nbsp;';
 	/**
-	 * @var \yii\base\Model the model instance that keeps the user-entered filter data. When this property is set,
+	 * @var \yii\base\Model the model that keeps the user-entered filter data. When this property is set,
 	 * the grid view will enable column-based filtering. Each data column by default will display a text field
 	 * at the top that users can fill in to filter the data.
-	 * Note that in order to show an input field for filtering, a column must have its {@link CDataColumn::name}
-	 * property set or have {@link CDataColumn::filter} as the HTML code for the input field.
-	 * When this property is not set (null) the filtering is disabled.
+	 *
+	 * Note that in order to show an input field for filtering, a column must have its [[DataColumn::attribute]]
+	 * property set or have [[DataColumn::filter]] set as the HTML code for the input field.
+	 *
+	 * When this property is not set (null) the filtering feature is disabled.
 	 */
 	public $filterModel;
 	/**
 	 * @var string whether the filters should be displayed in the grid view. Valid values include:
-	 * <ul>
-	 *    <li>header: the filters will be displayed on top of each column's header cell.</li>
-	 *    <li>body: the filters will be displayed right below each column's header cell.</li>
-	 *    <li>footer: the filters will be displayed below each column's footer cell.</li>
-	 * </ul>
+	 *
+	 * - [[FILTER_POS_HEADER]]: the filters will be displayed on top of each column's header cell.
+	 * - [[FILTER_POS_BODY]]: the filters will be displayed right below each column's header cell.
+	 * - [[FILTER_POS_FOOTER]]: the filters will be displayed below each column's footer cell.
 	 */
-	public $filterPosition = 'body';
-	public $filterOptions = array('class' => 'filters');
+	public $filterPosition = self::FILTER_POS_BODY;
+	/**
+	 * @var array the HTML attributes for the filter row element
+	 */
+	public $filterRowOptions = array('class' => 'filters');
 
 	/**
 	 * Initializes the grid view.
@@ -155,7 +221,7 @@ class GridView extends ListViewBase
 	{
 		$requireColumnGroup = false;
 		foreach ($this->columns as $column) {
-			/** @var \yii\widgets\grid\Column $column */
+			/** @var Column $column */
 			if (!empty($column->options)) {
 				$requireColumnGroup = true;
 				break;
@@ -180,7 +246,7 @@ class GridView extends ListViewBase
 	{
 		$cells = array();
 		foreach ($this->columns as $column) {
-			/** @var \yii\widgets\grid\Column $column */
+			/** @var Column $column */
 			$cells[] = $column->renderHeaderCell();
 		}
 		$content = implode('', $cells);
@@ -200,7 +266,7 @@ class GridView extends ListViewBase
 	{
 		$cells = array();
 		foreach ($this->columns as $column) {
-			/** @var \yii\widgets\grid\Column $column */
+			/** @var Column $column */
 			$cells[] = $column->renderFooterCell();
 		}
 		$content = implode('', $cells);
@@ -218,10 +284,10 @@ class GridView extends ListViewBase
 		if ($this->filterModel !== null) {
 			$cells = array();
 			foreach ($this->columns as $column) {
-				/** @var \yii\widgets\grid\Column $column */
+				/** @var Column $column */
 				$cells[] = $column->renderFilterCell();
 			}
-			return Html::tag('tr', implode('', $cells), $this->filterOptions);
+			return Html::tag('tr', implode('', $cells), $this->filterRowOptions);
 		} else {
 			return '';
 		}
@@ -239,7 +305,7 @@ class GridView extends ListViewBase
 		foreach ($models as $index => $model) {
 			$key = $keys[$index];
 			if ($this->beforeRow !== null) {
-				$row = call_user_func($this->beforeRow, $model, $key, $index);
+				$row = call_user_func($this->beforeRow, $model, $key, $index, $this);
 				if (!empty($row)) {
 					$rows[] = $row;
 				}
@@ -248,7 +314,7 @@ class GridView extends ListViewBase
 			$rows[] = $this->renderTableRow($model, $key, $index);
 
 			if ($this->afterRow !== null) {
-				$row = call_user_func($this->afterRow, $model, $key, $index);
+				$row = call_user_func($this->afterRow, $model, $key, $index, $this);
 				if (!empty($row)) {
 					$rows[] = $row;
 				}
@@ -267,12 +333,12 @@ class GridView extends ListViewBase
 	public function renderTableRow($model, $key, $index)
 	{
 		$cells = array();
-		/** @var \yii\widgets\grid\Column $column */
+		/** @var Column $column */
 		foreach ($this->columns as $column) {
 			$cells[] = $column->renderDataCell($model, $index);
 		}
 		if ($this->rowOptions instanceof Closure) {
-			$options = call_user_func($this->rowOptions, $model, $key, $index);
+			$options = call_user_func($this->rowOptions, $model, $key, $index, $this);
 		} else {
 			$options = $this->rowOptions;
 		}
@@ -306,7 +372,7 @@ class GridView extends ListViewBase
 	}
 
 	/**
-	 * Creates a {@link CDataColumn} based on a shortcut column specification string.
+	 * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:header".
 	 * @param string $text the column specification string
 	 * @return DataColumn the column instance
 	 * @throws InvalidConfigException if the column specification is invalid
@@ -314,7 +380,7 @@ class GridView extends ListViewBase
 	protected function createDataColumn($text)
 	{
 		if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
-			throw new InvalidConfigException('The column must be specified in the format of "Attribute", "Attribute:Format" or "Attribute:Format:Header');
+			throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:header');
 		}
 		return Yii::createObject(array(
 			'class' => $this->dataColumnClass ?: DataColumn::className(),

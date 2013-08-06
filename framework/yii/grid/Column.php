@@ -5,14 +5,14 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets\grid;
+namespace yii\grid;
 
 use Closure;
 use yii\base\Object;
 use yii\helpers\Html;
-use yii\widgets\GridView;
 
 /**
+ * Column is the base class of all [[GridView]] column classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
