@@ -29,6 +29,14 @@ class Widget extends Component
 	 */
 	public static $_stack = array();
 
+	/**
+	 * This is a trick for PHP < 5.3.3, so that Widget::widget() isn't considered a constructor
+	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 */
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+	}
 	
 	/**
 	 * Begins a widget.
