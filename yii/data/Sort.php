@@ -203,6 +203,8 @@ class Sort extends Object
 					'desc' => array($name => self::DESC),
 					'label' => Inflector::camel2words($name),
 				), $attribute);
+			} else {
+				$attributes[$name] = $attribute;
 			}
 		}
 		$this->attributes = $attributes;
