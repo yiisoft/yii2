@@ -21,7 +21,6 @@ class SiteController extends Controller
 
 	public function actionIndex()
 	{
-		Yii::warning('test');
 		return $this->render('index');
 	}
 
