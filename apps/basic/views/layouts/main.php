@@ -1,4 +1,6 @@
 <?php
+use yii\bootstrap\Nav;
+use yii\bootstrap\NavBar;
 use yii\helpers\Html;
 use yii\widgets\Menu;
 use yii\widgets\Breadcrumbs;
@@ -19,24 +21,26 @@ app\config\AppAsset::register($this);
 </head>
 <body>
 <?php $this->beginBody(); ?>
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<?php echo Html::a('My Company', Yii::$app->homeUrl, array('class' => 'navbar-brand')); ?>
-			<div class="nav-collapse collapse pull-right">
-				<?php echo Menu::widget(array(
-					'options' => array('class' => 'nav navbar-nav'),
-					'items' => array(
-						array('label' => 'Home', 'url' => array('/site/index')),
-						array('label' => 'About', 'url' => array('/site/about')),
-						array('label' => 'Contact', 'url' => array('/site/contact')),
-						Yii::$app->user->isGuest ?
-							array('label' => 'Login', 'url' => array('/site/login')) :
-							array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout')),
-					),
-				)); ?>
-			</div>
-		</div>
-	</div>
+	<?php
+		NavBar::begin(array(
+			'brandLabel' => 'My Company',
+			'brandUrl' => Yii::$app->homeUrl,
+			'options' => array(
+				'class' => 'navbar-inverse navbar-fixed-top',
+			),
+		));
+		echo Menu::widget(array(
+			'options' => array('class' => 'nav navbar-nav pull-right'),
+			'items' => array(
+				array('label' => 'Home', 'url' => array('/site/index')),
+				array('label' => 'About', 'url' => array('/site/about')),
+				array('label' => 'Contact', 'url' => array('/site/contact')),
+				Yii::$app->user->isGuest ?
+					array('label' => 'Login', 'url' => array('/site/login')) :
+					array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout')),
+			)));
+		NavBar::end();
+	?>
 
 	<div class="container">
 		<?php echo Breadcrumbs::widget(array(
