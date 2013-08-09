@@ -85,11 +85,6 @@ class LinkPager extends Widget
 	 * If this property is null, the "last" page button will not be displayed.
 	 */
 	public $lastPageLabel;
-	/**
-	 * @var string the template used to render the content within the pager container.
-	 * The token "{pages}" will be replaced with the actual page buttons.
-	 */
-	public $template;
 
 
 	/**
@@ -100,9 +95,6 @@ class LinkPager extends Widget
 		if ($this->pagination === null) {
 			throw new InvalidConfigException('The "pagination" property must be set.');
 		}
-		if ($this->template === null) {
-			$this->template = '{pages}';
-		}
 	}
 
 	/**
@@ -111,10 +103,7 @@ class LinkPager extends Widget
 	 */
 	public function run()
 	{
-		$buttons = strtr($this->template, array(
-			'{pages}' => $this->renderPageButtons(),
-		));
-		echo Html::tag('div', $buttons, $this->options);
+		echo $this->renderPageButtons();
 	}
 
 	/**
@@ -160,7 +149,7 @@ class LinkPager extends Widget
 			$buttons[] = $this->renderPageButton($this->lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
 		}
 
-		return Html::tag('ul', implode("\n", $buttons));
+		return Html::tag('ul', implode("\n", $buttons), $this->options);
 	}
 
 	/**

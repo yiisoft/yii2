@@ -10,24 +10,20 @@ use yii\helpers\Html;
 $this->title = 'Yii Debugger';
 ?>
 <div class="default-index">
-	<div class="navbar">
-		<div class="navbar-inner">
-			<div class="container">
-				<div class="yii-debug-toolbar-block title">
-					Yii Debugger
-				</div>
-			</div>
+	<div id="yii-debug-toolbar">
+		<div class="yii-debug-toolbar-block title">
+			Yii Debugger
 		</div>
 	</div>
 
-	<div class="container-fluid">
-		<div class="row-fluid">
+	<div class="container">
+		<div class="row">
 			<h1>Available Debug Data</h1>
 			<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
 				<thead>
 					<tr>
 						<th style="width: 120px;">Tag</th>
-						<th style="width: 160px;">Time</th>
+						<th style="width: 170px;">Time</th>
 						<th style="width: 120px;">IP</th>
 						<th style="width: 60px;">Method</th>
 						<th>URL</th>

@@ -105,11 +105,7 @@ class Progress extends Widget
 		echo Html::beginTag('div', $this->options) . "\n";
 		echo $this->renderProgress() . "\n";
 		echo Html::endTag('div') . "\n";
-		if (self::$responsive) {
-			ResponsiveAsset::register($this->getView());
-		} else {
-			BootstrapAsset::register($this->getView());
-		}
+		BootstrapAsset::register($this->getView());
 	}
 
 	/**

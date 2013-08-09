@@ -23,6 +23,6 @@ class AppAsset extends AssetBundle
 	);
 	public $depends = array(
 		'yii\web\YiiAsset',
-		'yii\bootstrap\ResponsiveAsset',
+		'yii\bootstrap\BootstrapAsset',
 	);
 }

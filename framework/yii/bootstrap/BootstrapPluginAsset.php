@@ -6,21 +6,22 @@
  */
 
 namespace yii\bootstrap;
+
 use yii\web\AssetBundle;
 
 /**
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class AlertAsset extends AssetBundle
+class BootstrapPluginAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/bootstrap/assets';
 	public $js = array(
-		'js/bootstrap-alert.js',
+		'js/bootstrap.js',
 	);
 	public $depends = array(
-		'yii\bootstrap\TransitionAsset',
-		'yii\bootstrap\BootstrapAsset',
 		'yii\web\JqueryAsset',
+		'yii\bootstrap\BootstrapAsset',
 	);
 }

@@ -119,11 +119,7 @@ class NavBar extends Widget
 		echo Html::beginTag('div', $this->options);
 		echo $this->renderItems();
 		echo Html::endTag('div');
-		if (self::$responsive) {
-			ResponsiveAsset::register($this->getView());
-		} else {
-			BootstrapAsset::register($this->getView());
-		}
+		BootstrapPluginAsset::register($this->getView());
 	}
 
 	/**
@@ -139,16 +135,11 @@ class NavBar extends Widget
 		$contents = implode("\n", $items);
 		$brand = Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
 
-		if (self::$responsive) {
-			CollapseAsset::register($this->getView());
-			$contents = Html::tag('div',
-					$this->renderToggleButton() .
-					$brand . "\n" .
-					Html::tag('div', $contents, array('class' => 'nav-collapse collapse navbar-collapse')),
-					array('class' => 'container'));
-		} else {
-			$contents = $brand . "\n" . $contents;
-		}
+		$contents = Html::tag('div',
+				$this->renderToggleButton() .
+				$brand . "\n" .
+				Html::tag('div', $contents, array('class' => 'nav-collapse collapse navbar-collapse')),
+				array('class' => 'container'));
 
 		return Html::tag('div', $contents, array('class' => 'navbar-inner'));
 	}
