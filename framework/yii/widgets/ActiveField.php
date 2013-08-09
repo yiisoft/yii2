@@ -278,20 +278,6 @@ class ActiveField extends Component
 	}
 
 	/**
-	 * Renders a field containing a hidden input.
-	 * This method will generate the "name" and "value" tag attributes automatically for the model attribute
-	 * unless they are explicitly specified in `$options`.
-	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-	 * @return string the rendering result
-	 */
-	public function hiddenInput($options = array())
-	{
-		$options = array_merge($this->inputOptions, $options);
-		return $this->render(Html::activeHiddenInput($this->model, $this->attribute, $options));
-	}
-
-	/**
 	 * Renders a field containing a password input.
 	 * This method will generate the "name" and "value" tag attributes automatically for the model attribute
 	 * unless they are explicitly specified in `$options`.
