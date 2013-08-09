@@ -8,8 +8,11 @@
 namespace yii\base;
 
 use Yii;
+use ArrayAccess;
 use ArrayObject;
 use ArrayIterator;
+use ReflectionClass;
+use IteratorAggregate;
 use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
@@ -42,7 +45,7 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements \IteratorAggregate, \ArrayAccess
+class Model extends Component implements IteratorAggregate, ArrayAccess
 {
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
@@ -184,7 +187,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function formName()
 	{
-		$reflector = new \ReflectionClass($this);
+		$reflector = new ReflectionClass($this);
 		return $reflector->getShortName();
 	}
 
@@ -196,7 +199,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function attributes()
 	{
-		$class = new \ReflectionClass($this);
+		$class = new ReflectionClass($this);
 		$names = array();
 		foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
 			$name = $property->getName();
@@ -608,9 +611,6 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 			return array();
 		}
 		$attributes = array();
-		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
-			$scenarios[$scenario] = $scenarios[$scenario]['attributes'];
-		}
 		foreach ($scenarios[$scenario] as $attribute) {
 			if ($attribute[0] !== '!') {
 				$attributes[] = $attribute;
@@ -630,11 +630,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		if (!isset($scenarios[$scenario])) {
 			return array();
 		}
-		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
-			$attributes = $scenarios[$scenario]['attributes'];
-		} else {
-			$attributes = $scenarios[$scenario];
-		}
+		$attributes = $scenarios[$scenario];
 		foreach ($attributes as $i => $attribute) {
 			if ($attribute[0] === '!') {
 				$attributes[$i] = substr($attribute, 1);
