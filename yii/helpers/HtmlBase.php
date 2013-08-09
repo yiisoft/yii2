@@ -761,9 +761,10 @@ class HtmlBase
 			if ($formatter !== null) {
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
-				$checkbox = static::checkbox($name, $checked, array('value' => $value));
-				$content = static::label($checkbox . ' ' . ($encode ? static::encode($label) : $label));
-				$lines[] = static::tag('div', $content, array('class' => 'checkbox'));
+				$lines[] = static::checkbox($name, $checked, array(
+					'value' => $value,
+					'label' => $encode ? static::encode($label) : $label,
+				));
 			}
 			$index++;
 		}
@@ -819,9 +820,10 @@ class HtmlBase
 			if ($formatter !== null) {
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
-				$radio = static::radio($name, $checked, array('value' => $value));
-				$content = static::label($radio . ' ' . ($encode ? static::encode($label) : $label));
-				$lines[] = static::tag('div', $content, array('class' => 'radio'));
+				$lines[] = static::radio($name, $checked, array(
+					'value' => $value,
+					'label' => $encode ? static::encode($label) : $label,
+				));
 			}
 			$index++;
 		}
