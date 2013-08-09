@@ -570,7 +570,8 @@ class HtmlBase
 			$label = $options['label'];
 			$labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : array();
 			unset($options['label'], $options['labelOptions']);
-			return $hidden . static::label(static::input('radio', $name, $value, $options) . ' ' . $label, null, $labelOptions);
+			$content = static::label(static::input('radio', $name, $value, $options) . ' ' . $label, null, $labelOptions);
+			return $hidden . static::tag('div', $content, array('class' => 'radio'));
 		} else {
 			return $hidden . static::input('radio', $name, $value, $options);
 		}
@@ -610,7 +611,8 @@ class HtmlBase
 			$label = $options['label'];
 			$labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : array();
 			unset($options['label'], $options['labelOptions']);
-			return $hidden . static::label(static::input('checkbox', $name, $value, $options) . ' ' . $label, null, $labelOptions);
+			$content = static::label(static::input('checkbox', $name, $value, $options) . ' ' . $label, null, $labelOptions);
+			return $hidden . static::tag('div', $content, array('class' => 'checkbox'));
 		} else {
 			return $hidden . static::input('checkbox', $name, $value, $options);
 		}
@@ -760,7 +762,8 @@ class HtmlBase
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
 				$checkbox = static::checkbox($name, $checked, array('value' => $value));
-				$lines[] = static::label($checkbox . ' ' . ($encode ? static::encode($label) : $label));
+				$content = static::label($checkbox . ' ' . ($encode ? static::encode($label) : $label));
+				$lines[] = static::tag('div', $content, array('class' => 'checkbox'));
 			}
 			$index++;
 		}
@@ -817,7 +820,8 @@ class HtmlBase
 				$lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
 			} else {
 				$radio = static::radio($name, $checked, array('value' => $value));
-				$lines[] = static::label($radio . ' ' . ($encode ? static::encode($label) : $label));
+				$content = static::label($radio . ' ' . ($encode ? static::encode($label) : $label));
+				$lines[] = static::tag('div', $content, array('class' => 'radio'));
 			}
 			$index++;
 		}
