@@ -10,8 +10,8 @@ of the user interface such as text, form inputs; and the controller manages
 the communication between the model and the view.
 
 Besides implementing MVC, Yii also introduces a front-controller, called
-`Application`, which encapsulates the execution context for the processing
-of a request.  Application collects some information about a user request and
+`application`, which encapsulates the execution context for the processing
+of a request. Application collects information about a user request and
 then dispatches it to an appropriate controller for further handling.
 
 The following diagram shows the static structure of a Yii application:
@@ -21,6 +21,7 @@ The following diagram shows the static structure of a Yii application:
 
 A Typical Workflow
 ------------------
+
 The following diagram shows a typical workflow of a Yii application when
 it is handling a user request:
 

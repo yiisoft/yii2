@@ -7,8 +7,14 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
-class QueryTest extends \yiiunit\MysqlTestCase
+class QueryTest extends DatabaseTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	function testSelect()
 	{
 		// default
@@ -20,7 +26,7 @@ class QueryTest extends \yiiunit\MysqlTestCase
 
 		$query = new Query;
 		$query->select('id, name', 'something')->distinct(true);
-		$this->assertEquals(array('id','name'), $query->select);
+		$this->assertEquals(array('id', 'name'), $query->select);
 		$this->assertTrue($query->distinct);
 		$this->assertEquals('something', $query->selectOption);
 	}

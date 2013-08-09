@@ -4,12 +4,18 @@ namespace yiiunit\framework\db;
 
 use yii\db\Connection;
 
-class ConnectionTest extends \yiiunit\MysqlTestCase
+class ConnectionTest extends DatabaseTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	function testConstruct()
 	{
 		$connection = $this->getConnection(false);
-		$params = $this->getParam('mysql');
+		$params = $this->database;
 
 		$this->assertEquals($params['dsn'], $connection->dsn);
 		$this->assertEquals($params['username'], $connection->username);
@@ -18,7 +24,7 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 
 	function testOpenClose()
 	{
-		$connection = $this->getConnection(false);
+		$connection = $this->getConnection(false, false);
 
 		$this->assertFalse($connection->isActive);
 		$this->assertEquals(null, $connection->pdo);
@@ -39,9 +45,8 @@ class ConnectionTest extends \yiiunit\MysqlTestCase
 
 	function testGetDriverName()
 	{
-		$connection = $this->getConnection(false);
-		$this->assertEquals('mysql', $connection->driverName);
-		$this->assertFalse($connection->isActive);
+		$connection = $this->getConnection(false, false);
+		$this->assertEquals($this->driverName, $connection->driverName);
 	}
 
 	function testQuoteValue()

@@ -33,6 +33,12 @@ class BarBehavior extends Behavior
 
 class BehaviorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testAttachAndAccessing()
 	{
 		$bar = new BarClass();

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="./tests/unit/bootstrap.php"
+		colors="true"
+		convertErrorsToExceptions="true"
+		convertNoticesToExceptions="true"
+		convertWarningsToExceptions="true"
+		stopOnFailure="false">
+		<testsuites>
+			<testsuite name="Yii Test Suite">
+				<directory>./tests/unit</directory>
+			</testsuite>
+		</testsuites>
+		<filter>
+			<blacklist>				
+				<file>framework/yii/helpers/Json.php</file>
+				<file>framework/yii/helpers/StringHelper.php</file>
+				<file>framework/yii/helpers/VarDumper.php</file>
+				<file>framework/yii/helpers/Html.php</file>
+				<file>framework/yii/helpers/Inflector.php</file>
+				<file>framework/yii/helpers/FileHelper.php</file>
+				<file>framework/yii/helpers/ArrayHelper.php</file>
+				<file>framework/yii/helpers/Console.php</file>
+				<file>framework/yii/i18n/GettextFile.php</file>		
+				<file>framework/yii/web/ResponseFormatter.php</file>		
+				<directory suffix="Exception.php">framework/yii/base</directory>
+				<directory suffix=".php">framework/yii/db/mssql</directory>
+				<directory suffix=".php">framework/yii/bootstrap</directory>
+			</blacklist>
+		</filter>
+</phpunit>

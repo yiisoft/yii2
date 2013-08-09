@@ -1,0 +1,23 @@
+{
+	"name": "yiisoft/yii2-app-benchmark",
+	"description": "Yii 2 Benchmark Application",
+	"keywords": ["yii", "framework", "benchmark", "application"],
+	"homepage": "http://www.yiiframework.com/",
+	"type": "project",
+	"license": "BSD-3-Clause",
+	"support": {
+		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/yiisoft/yii2"
+	},
+	"config": {
+	  "vendor-dir": "protected/vendor"
+	},
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.3.0",
+		"yiisoft/yii2": "dev-master"
+	}
+}

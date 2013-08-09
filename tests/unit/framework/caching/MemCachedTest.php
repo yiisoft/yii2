@@ -1,12 +1,11 @@
 <?php
 namespace yiiunit\framework\caching;
 use yii\caching\MemCache;
-use yiiunit\TestCase;
 
 /**
- * Class for testing memcache cache backend
+ * Class for testing memcached cache backend
  */
-class MemCachedTest extends CacheTest
+class MemCachedTest extends CacheTestCase
 {
 	private $_cacheInstance = null;
 
@@ -15,11 +14,11 @@ class MemCachedTest extends CacheTest
 	 */
 	protected function getCacheInstance()
 	{
-		if(!extension_loaded("memcached")) {
+		if (!extension_loaded("memcached")) {
 			$this->markTestSkipped("memcached not installed. Skipping.");
 		}
 
-		if($this->_cacheInstance === null) {
+		if ($this->_cacheInstance === null) {
 			$this->_cacheInstance = new MemCache(array(
 				'useMemcached' => true,
 			));
