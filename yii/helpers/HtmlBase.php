@@ -545,6 +545,10 @@ class HtmlBase
 	 * - uncheck: string, the value associated with the uncheck state of the radio button. When this attribute
 	 *   is present, a hidden input will be generated so that if the radio button is not checked and is submitted,
 	 *   the value of this attribute will still be submitted to the server via the hidden input.
+	 * - label: string, a label displayed next to the radio button.  It will NOT be HTML-encoded. Therefore you can pass
+	 *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
+	 *   When this option is specified, the radio button will be enclosed by a label tag.
+	 * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -562,7 +566,14 @@ class HtmlBase
 		} else {
 			$hidden = '';
 		}
-		return $hidden . static::input('radio', $name, $value, $options);
+		if (isset($options['label'])) {
+			$label = $options['label'];
+			$labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : array();
+			unset($options['label'], $options['labelOptions']);
+			return $hidden . static::label(static::input('radio', $name, $value, $options) . ' ' . $label, null, $labelOptions);
+		} else {
+			return $hidden . static::input('radio', $name, $value, $options);
+		}
 	}
 
 	/**
@@ -574,6 +585,10 @@ class HtmlBase
 	 * - uncheck: string, the value associated with the uncheck state of the checkbox. When this attribute
 	 *   is present, a hidden input will be generated so that if the checkbox is not checked and is submitted,
 	 *   the value of this attribute will still be submitted to the server via the hidden input.
+	 * - label: string, a label displayed next to the checkbox.  It will NOT be HTML-encoded. Therefore you can pass
+	 *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
+	 *   When this option is specified, the checkbox will be enclosed by a label tag.
+	 * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -591,7 +606,14 @@ class HtmlBase
 		} else {
 			$hidden = '';
 		}
-		return $hidden . static::input('checkbox', $name, $value, $options);
+		if (isset($options['label'])) {
+			$label = $options['label'];
+			$labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : array();
+			unset($options['label'], $options['labelOptions']);
+			return $hidden . static::label(static::input('checkbox', $name, $value, $options) . ' ' . $label, null, $labelOptions);
+		} else {
+			return $hidden . static::input('checkbox', $name, $value, $options);
+		}
 	}
 
 	/**
@@ -1025,6 +1047,10 @@ class HtmlBase
 	 *   it will take the default value '0'. This method will render a hidden input so that if the radio button
 	 *   is not checked and is submitted, the value of this attribute will still be submitted to the server
 	 *   via the hidden input.
+	 * - label: string, a label displayed next to the radio button.  It will NOT be HTML-encoded. Therefore you can pass
+	 *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
+	 *   When this option is specified, the radio button will be enclosed by a label tag.
+	 * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1057,6 +1083,10 @@ class HtmlBase
 	 *   it will take the default value '0'. This method will render a hidden input so that if the radio button
 	 *   is not checked and is submitted, the value of this attribute will still be submitted to the server
 	 *   via the hidden input.
+	 * - label: string, a label displayed next to the checkbox.  It will NOT be HTML-encoded. Therefore you can pass
+	 *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
+	 *   When this option is specified, the checkbox will be enclosed by a label tag.
+	 * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.

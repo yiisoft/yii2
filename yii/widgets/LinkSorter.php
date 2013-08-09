@@ -31,11 +31,7 @@ class LinkSorter extends Widget
 	 * @var array HTML attributes for the sorter container tag.
 	 */
 	public $options = array('class' => 'sorter');
-	/**
-	 * @var string the template used to render the content within the sorter container.
-	 * The token "{links}" will be replaced with the actual sort links.
-	 */
-	public $template;
+
 
 	/**
 	 * Initializes the sorter.
@@ -45,10 +41,6 @@ class LinkSorter extends Widget
 		if ($this->sort === null) {
 			throw new InvalidConfigException('The "sort" property must be set.');
 		}
-
-		if ($this->template === null) {
-			$this->template = '<label>' . Yii::t('yii', 'Sort by:') . '</label> {links}';
-		}
 	}
 
 	/**
@@ -57,10 +49,7 @@ class LinkSorter extends Widget
 	 */
 	public function run()
 	{
-		$links = strtr($this->template, array(
-			'{links}' => $this->renderSortLinks(),
-		));
-		echo Html::tag('div', $links, $this->options);
+		echo $this->renderSortLinks();
 	}
 
 	/**

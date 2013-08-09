@@ -1,7 +1,5 @@
 <?php
 
-use yii\bootstrap\AffixAsset;
-use yii\bootstrap\DropdownAsset;
 use yii\helpers\Html;
 
 /**
@@ -14,27 +12,21 @@ use yii\helpers\Html;
  */
 
 $this->title = 'Yii Debugger';
-DropdownAsset::register($this);
-AffixAsset::register($this);
 ?>
 <div class="default-view">
-	<div class="navbar">
-		<div class="navbar-inner">
-			<div class="container">
-				<div class="yii-debug-toolbar-block title">
-					Yii Debugger
-				</div>
-				<?php foreach ($panels as $panel): ?>
-					<?php echo $panel->getSummary(); ?>
-				<?php endforeach; ?>
-			</div>
+	<div id="yii-debug-toolbar">
+		<div class="yii-debug-toolbar-block title">
+			Yii Debugger
 		</div>
+		<?php foreach ($panels as $panel): ?>
+			<?php echo $panel->getSummary(); ?>
+		<?php endforeach; ?>
 	</div>
 
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<div class="span2">
-				<ul class="nav nav-tabs nav-list nav-stacked">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-2">
+				<ul class="nav nav-pills nav-stacked">
 					<?php
 					foreach ($panels as $id => $panel) {
 						$link = Html::a(Html::encode($panel->getName()), array('view', 'tag' => $tag, 'panel' => $id));
@@ -43,7 +35,7 @@ AffixAsset::register($this);
 					?>
 				</ul>
 			</div><!--/span-->
-			<div class="span10">
+			<div class="col-lg-10">
 				<div class="meta alert alert-info">
 					<div class="btn-group">
 						<?php echo Html::a('All', array('index'), array('class' => 'btn')); ?>
@@ -69,7 +61,7 @@ AffixAsset::register($this);
 					</div>
 					<?php echo $summary['tag']; ?>:
 					<?php echo $summary['method']; ?>
-					<?php echo Html::a(Html::encode($summary['url']), $summary['url'], array('class' => 'label')); ?>
+					<?php echo Html::a(Html::encode($summary['url']), $summary['url']); ?>
 					<?php echo $summary['ajax'] ? ' (AJAX)' : ''; ?>
 					at <?php echo date('Y-m-d h:i:s a', $summary['time']); ?>
 					by <?php echo $summary['ip']; ?>
