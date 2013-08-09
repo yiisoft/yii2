@@ -1,5 +1,5 @@
 #yii-debug-toolbar {
-	margin: 0;
+	margin: 0 0 20px 0;
 	padding: 0;
 	z-index: 1000000;
 	font: 11px Verdana, Arial, sans-serif;
@@ -123,11 +123,6 @@ ul.trace {
 	margin: 2px 0 0 0;
 	padding: 0;
 	list-style: none;
-}
-
-.default-index .container,
-.default-view .container {
-	margin-top: 10px;
 }
 
 .callout-danger {
