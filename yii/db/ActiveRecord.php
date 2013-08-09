@@ -399,7 +399,7 @@ class ActiveRecord extends Model
 	 */
 	public function __set($name, $value)
 	{
-		if (isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
+		if ($this->hasAttribute($name)) {
 			$this->_attributes[$name] = $value;
 		} else {
 			parent::__set($name, $value);
@@ -562,7 +562,7 @@ class ActiveRecord extends Model
 	 */
 	public function setAttribute($name, $value)
 	{
-		if (isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
+		if ($this->hasAttribute($name)) {
 			$this->_attributes[$name] = $value;
 		} else {
 			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
