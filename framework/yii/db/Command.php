@@ -275,7 +275,7 @@ class Command extends \yii\base\Component
 
 		$rawSql = $this->getRawSql();
 
-		Yii::info($rawSql, __METHOD__);
+		Yii::trace($rawSql, __METHOD__);
 
 		if ($sql == '') {
 			return 0;
@@ -377,10 +377,9 @@ class Command extends \yii\base\Component
 	private function queryInternal($method, $fetchMode = null)
 	{
 		$db = $this->db;
-		$sql = $this->getSql();
 		$rawSql = $this->getRawSql();
 
-		Yii::info($rawSql, __METHOD__);
+		Yii::trace($rawSql, __METHOD__);
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {

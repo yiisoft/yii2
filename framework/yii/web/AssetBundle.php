@@ -113,6 +113,7 @@ class AssetBundle extends Object
 
 	/**
 	 * Initializes the bundle.
+	 * If you override this method, make sure you call the parent implementation in the last.
 	 */
 	public function init()
 	{
