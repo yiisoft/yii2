@@ -74,7 +74,7 @@ EOD;
 				$class = '';
 			}
 			$level = Logger::getLevelName($level);
-			$rows[] = "<tr$class><td style=\"width: 100px;\">$time</td><td style=\"width: 100px;\">$level</td><td style=\"width: 250px;\">$category</td><td>$message</td></tr>";
+			$rows[] = "<tr$class><td style=\"width: 100px;\">$time</td><td style=\"width: 100px;\">$level</td><td style=\"width: 250px;\">$category</td><td><div style=\"overflow:auto\">$message</div></td></tr>";
 		}
 		$rows = implode("\n", $rows);
 		return <<<EOD

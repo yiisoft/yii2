@@ -269,7 +269,7 @@ class View extends Component
 				$renderer = $this->renderers[$ext];
 				$output = $renderer->render($this, $viewFile, $params);
 			} else {
-				Yii::info("Rendering view file: $viewFile", __METHOD__);
+				Yii::trace("Rendering view file: $viewFile", __METHOD__);
 				$output = $this->renderPhpFile($viewFile, $params);
 			}
 			$this->afterRender($viewFile, $output);
