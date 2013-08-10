@@ -25,7 +25,9 @@ class Module extends \yii\base\Module
 	 * by localhost.
 	 */
 	public $allowedIPs = array('127.0.0.1', '::1');
-
+	/**
+	 * @var string the namespace that controller classes are in.
+	 */
 	public $controllerNamespace = 'yii\debug\controllers';
 	/**
 	 * @var LogTarget
@@ -39,15 +41,16 @@ class Module extends \yii\base\Module
 	 * @var string the directory storing the debugger data files. This can be specified using a path alias.
 	 */
 	public $dataPath = '@runtime/debug';
+	/**
+	 * @var integer the maximum number of debug data files to keep. If there are more files generated,
+	 * the oldest ones will be removed.
+	 */
 	public $historySize = 50;
-	public $enabled = true;
+
 
 	public function init()
 	{
 		parent::init();
-		if (!$this->enabled) {
-			return;
-		}
 		$this->dataPath = Yii::getAlias($this->dataPath);
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
 		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
