@@ -33,10 +33,10 @@ class ProfilingPanel extends Panel
 
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
-	<a href="$url" title="Total processing time">Time: <span class="label">$time</span></a>
+	<a href="$url" title="Total request processing time was $time">Time <span class="label">$time</span></a>
 </div>
 <div class="yii-debug-toolbar-block">
-	<a href="$url" title="Peak memory consumption">Memory: <span class="label">$memory</span></a>
+	<a href="$url" title="Peak memory consumption">Memory <span class="label">$memory</span></a>
 </div>
 EOD;
 	}

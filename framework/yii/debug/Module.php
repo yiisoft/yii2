@@ -9,6 +9,7 @@ namespace yii\debug;
 
 use Yii;
 use yii\base\View;
+use yii\web\HttpException;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -64,17 +65,20 @@ class Module extends \yii\base\Module
 		unset(Yii::$app->getLog()->targets['debug']);
 		$this->logTarget = null;
 
-		$ip = Yii::$app->getRequest()->getUserIP();
-		foreach ($this->allowedIPs as $filter) {
-			if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
-				return parent::beforeAction($action);
-			}
+		if ($this->checkAccess($action)) {
+			return true;
+		} elseif ($action->id === 'toolbar') {
+			return false;
+		} else {
+			throw new HttpException(403, 'You are not allowed to access this page.');
 		}
-		return false;
 	}
 
 	public function renderToolbar($event)
 	{
+		if (!$this->checkAccess()) {
+			return;
+		}
 		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', array(
 			'tag' => $this->logTarget->tag,
 		));
@@ -83,6 +87,17 @@ class Module extends \yii\base\Module
 		$view = $event->sender;
 		echo '<style>' . $view->renderPhpFile(__DIR__ . '/views/default/toolbar.css') . '</style>';
 		echo '<script>' . $view->renderPhpFile(__DIR__ . '/views/default/toolbar.js') . '</script>';
+	}
+
+	protected function checkAccess()
+	{
+		$ip = Yii::$app->getRequest()->getUserIP();
+		foreach ($this->allowedIPs as $filter) {
+			if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected function corePanels()
