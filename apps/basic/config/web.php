@@ -7,7 +7,7 @@ return array(
 	'modules' => array(
 		'debug' => array(
 			'class' => 'yii\debug\Module',
-			'enabled' => YII_DEBUG && YII_ENV_DEV,
+			'enabled' => YII_ENV_DEV,
 		),
 	),
 	'components' => array(
@@ -15,8 +15,10 @@ return array(
 			'class' => 'yii\caching\FileCache',
 		),
 		'user' => array(
-			'class' => 'yii\web\User',
 			'identityClass' => 'app\models\User',
+		),
+		'errorHandler' => array(
+			'errorAction' => 'site/error',
 		),
 		'log' => array(
 			'traceLevel' => YII_DEBUG ? 3 : 0,

@@ -12,9 +12,12 @@ class SiteController extends Controller
 	public function actions()
 	{
 		return array(
+			'error' => array(
+				'class' => 'yii\web\ErrorAction',
+			),
 			'captcha' => array(
 				'class' => 'yii\captcha\CaptchaAction',
-				'fixedVerifyCode' => YII_ENV_DEV ? 'testme' : null,
+				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
 			),
 		);
 	}
