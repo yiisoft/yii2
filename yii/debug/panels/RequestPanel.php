@@ -45,10 +45,10 @@ class RequestPanel extends Panel
 
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
-	<a href="$url" title="Status code: $statusCode $statusText">Status: <span class="label $class">$statusCode</span></a>
+	<a href="$url" title="Status code: $statusCode $statusText">Status <span class="label $class">$statusCode</span></a>
 </div>
 <div class="yii-debug-toolbar-block">
-	<a href="$url">Action: <span class="label">{$this->data['action']}</span></a>
+	<a href="$url">Action <span class="label">{$this->data['action']}</span></a>
 </div>
 EOD;
 	}

@@ -36,9 +36,8 @@ class DbPanel extends Panel
 		$url = $this->getUrl();
 		$output = <<<EOD
 <div class="yii-debug-toolbar-block">
-	<a href="$url">
-		DB queries: <span class="label">$queryCount</span>
-		time: <span class="label">$queryTime</span>
+	<a href="$url" title="Executed $queryCount database queries which took $queryTime.">
+		DB <span class="label">$queryCount</span> <span class="label">$queryTime</span>
 	</a>
 </div>
 EOD;

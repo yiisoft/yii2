@@ -44,7 +44,7 @@ class LogPanel extends Panel
 		$url = $this->getUrl();
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
-	<a href="$url" title="$title">Log: $log</a>
+	<a href="$url" title="$title">Log $log</a>
 </div>
 EOD;
 	}
