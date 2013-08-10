@@ -64,6 +64,7 @@ return array(
 	'yii\bootstrap\ModalAsset' => YII_PATH . '/bootstrap/ModalAsset.php',
 	'yii\bootstrap\Nav' => YII_PATH . '/bootstrap/Nav.php',
 	'yii\bootstrap\NavBar' => YII_PATH . '/bootstrap/NavBar.php',
+	'yii\bootstrap\Panel' => YII_PATH . '/bootstrap/Panel.php',
 	'yii\bootstrap\PopoverAsset' => YII_PATH . '/bootstrap/PopoverAsset.php',
 	'yii\bootstrap\Progress' => YII_PATH . '/bootstrap/Progress.php',
 	'yii\bootstrap\ResponsiveAsset' => YII_PATH . '/bootstrap/ResponsiveAsset.php',
