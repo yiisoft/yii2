@@ -341,15 +341,13 @@ class YiiBase
 	 * 4. Search PHP include_path for the actual class file if [[enableIncludePath]] is true;
 	 * 5. Return false so that other autoloaders have chance to include the class file.
 	 *
-	 * @param string $className class name
+	 * @param string $className the fully qualified class name without leading \
 	 * @return boolean whether the class has been loaded successfully
 	 * @throws InvalidConfigException if the class file does not exist
 	 * @throws UnknownClassException if the class does not exist in the class file
 	 */
 	public static function autoload($className)
 	{
-		$className = ltrim($className, '\\');
-
 		if (isset(self::$classMap[$className])) {
 			$classFile = self::$classMap[$className];
 			if ($classFile[0] === '@') {
