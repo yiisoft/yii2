@@ -52,10 +52,11 @@ class DbDependency extends Dependency
 	/**
 	 * Generates the data needed to determine if dependency has been changed.
 	 * This method returns the value of the global state.
-	 * @throws InvalidConfigException
+	 * @param Cache $cache the cache component that is currently evaluating this dependency
 	 * @return mixed the data needed to determine if dependency has been changed.
+	 * @throws InvalidConfigException if [[db]] is not a valid application component ID
 	 */
-	protected function generateDependencyData()
+	protected function generateDependencyData($cache)
 	{
 		$db = Yii::$app->getComponent($this->db);
 		if (!$db instanceof Connection) {
@@ -65,10 +66,10 @@ class DbDependency extends Dependency
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$db->enableQueryCache = false;
-			$result = $db->createCommand($this->sql, $this->params)->queryRow();
+			$result = $db->createCommand($this->sql, $this->params)->queryOne();
 			$db->enableQueryCache = true;
 		} else {
-			$result = $db->createCommand($this->sql, $this->params)->queryRow();
+			$result = $db->createCommand($this->sql, $this->params)->queryOne();
 		}
 		return $result;
 	}

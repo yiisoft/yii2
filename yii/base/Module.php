@@ -37,20 +37,11 @@ use Yii;
 abstract class Module extends Component
 {
 	/**
-	 * @event ActionEvent an event raised before executing a controller action.
-	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
-	 */
-	const EVENT_BEFORE_ACTION = 'beforeAction';
-	/**
-	 * @event ActionEvent an event raised after executing a controller action.
-	 */
-	const EVENT_AFTER_ACTION = 'afterAction';
-	/**
 	 * @var array custom module parameters (name => value).
 	 */
 	public $params = array();
 	/**
-	 * @var array the IDs of the components that should be preloaded when this module is created.
+	 * @var array the IDs of the components or modules that should be preloaded when this module is created.
 	 */
 	public $preload = array();
 	/**
@@ -88,7 +79,11 @@ abstract class Module extends Component
 	 */
 	public $controllerMap = array();
 	/**
-	 * @var string the namespace that controller classes are in. Default is to use global namespace.
+	 * @var string the namespace that controller classes are in. If not set,
+	 * it will use the "controllers" sub-namespace under the namespace of this module.
+	 * For example, if the namespace of this module is "foo\bar", then the default
+	 * controller namespace would be "foo\bar\controllers".
+	 * If the module is an application, it will default to "app\controllers".
 	 */
 	public $controllerNamespace;
 	/**
@@ -178,6 +173,16 @@ abstract class Module extends Component
 	public function init()
 	{
 		$this->preloadComponents();
+		if ($this->controllerNamespace === null) {
+			if ($this instanceof Application) {
+				$this->controllerNamespace = 'app\\controllers';
+			} else {
+				$class = get_class($this);
+				if (($pos = strrpos($class, '\\')) !== false) {
+					$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
+				}
+			}
+		}
 	}
 
 	/**
@@ -187,13 +192,7 @@ abstract class Module extends Component
 	 */
 	public function getUniqueId()
 	{
-		if ($this instanceof Application) {
-			return '';
-		} elseif ($this->module) {
-			return $this->module->getUniqueId() . '/' . $this->id;
-		} else {
-			return $this->id;
-		}
+		return $this->module ? ltrim($this->module->getUniqueId() . '/' . $this->id, '/') : $this->id;
 	}
 
 	/**
@@ -222,6 +221,9 @@ abstract class Module extends Component
 		$p = realpath($path);
 		if ($p !== false && is_dir($p)) {
 			$this->_basePath = $p;
+			if ($this instanceof Application) {
+				Yii::setAlias('@app', $p);
+			}
 		} else {
 			throw new InvalidParamException("The directory does not exist: $path");
 		}
@@ -409,11 +411,11 @@ abstract class Module extends Component
 	 * ~~~
 	 * array(
 	 *     'comment' => array(
-	 *         'class' => 'app\modules\CommentModule',
+	 *         'class' => 'app\modules\comment\CommentModule',
 	 *         'db' => 'db',
 	 *     ),
 	 *     'booking' => array(
-	 *         'class' => 'app\modules\BookingModule',
+	 *         'class' => 'app\modules\booking\BookingModule',
 	 *     ),
 	 * )
 	 * ~~~
@@ -451,7 +453,6 @@ abstract class Module extends Component
 			if ($this->_components[$id] instanceof Object) {
 				return $this->_components[$id];
 			} elseif ($load) {
-				Yii::trace("Loading component: $id", __METHOD__);
 				return $this->_components[$id] = Yii::createObject($this->_components[$id]);
 			}
 		}
@@ -539,11 +540,18 @@ abstract class Module extends Component
 
 	/**
 	 * Loads components that are declared in [[preload]].
+	 * @throws InvalidConfigException if a component or module to be preloaded is unknown
 	 */
 	public function preloadComponents()
 	{
 		foreach ($this->preload as $id) {
-			$this->getComponent($id);
+			if ($this->hasComponent($id)) {
+				$this->getComponent($id);
+			} elseif ($this->hasModule($id)) {
+				$this->getModule($id);
+			} else {
+				throw new InvalidConfigException("Unknown component or module: $id");
+			}
 		}
 	}
 
@@ -554,20 +562,20 @@ abstract class Module extends Component
 	 * If the route is empty, the method will use [[defaultRoute]].
 	 * @param string $route the route that specifies the action.
 	 * @param array $params the parameters to be passed to the action
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+	 * @return mixed the result of the action.
 	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
 	 */
 	public function runAction($route, $params = array())
 	{
-		$result = $this->createController($route);
-		if (is_array($result)) {
+		$parts = $this->createController($route);
+		if (is_array($parts)) {
 			/** @var $controller Controller */
-			list($controller, $actionID) = $result;
+			list($controller, $actionID) = $parts;
 			$oldController = Yii::$app->controller;
 			Yii::$app->controller = $controller;
-			$status = $controller->runAction($actionID, $params);
+			$result = $controller->runAction($actionID, $params);
 			Yii::$app->controller = $oldController;
-			return $status;
+			return $result;
 		} else {
 			throw new InvalidRouteException('Unable to resolve the request "' . trim($this->getUniqueId() . '/' . $route, '/') . '".');
 		}
@@ -591,7 +599,6 @@ abstract class Module extends Component
 		if ($route === '') {
 			$route = $this->defaultRoute;
 		}
-		$route = trim($route, '/');
 		if (($pos = strpos($route, '/')) !== false) {
 			$id = substr($route, 0, $pos);
 			$route = substr($route, $pos + 1);
@@ -626,25 +633,25 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * This method is invoked right before an action is to be executed (after all possible filters.)
+	 * This method is invoked right before an action of this module is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
+	 * Make sure you call the parent implementation so that the relevant event is triggered.
 	 * @param Action $action the action to be executed.
 	 * @return boolean whether the action should continue to be executed.
 	 */
 	public function beforeAction($action)
 	{
-		$event = new ActionEvent($action);
-		$this->trigger(self::EVENT_BEFORE_ACTION, $event);
-		return $event->isValid;
+		return true;
 	}
 
 	/**
-	 * This method is invoked right after an action is executed.
+	 * This method is invoked right after an action of this module has been executed.
 	 * You may override this method to do some postprocessing for the action.
+	 * Make sure you call the parent implementation so that the relevant event is triggered.
 	 * @param Action $action the action just executed.
+	 * @param mixed $result the action return result.
 	 */
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
-		$this->trigger(self::EVENT_AFTER_ACTION, new ActionEvent($action));
 	}
 }

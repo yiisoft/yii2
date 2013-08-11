@@ -9,9 +9,9 @@ return array(
 	array(
 		'name' => 'PHP version',
 		'mandatory' => true,
-		'condition' => version_compare(PHP_VERSION, '5.3.11', '>='),
+		'condition' => version_compare(PHP_VERSION, '5.3.7', '>='),
 		'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
-		'memo' => 'PHP 5.3.11 or higher is required.',
+		'memo' => 'PHP 5.3.7 or higher is required.',
 	),
 	array(
 		'name' => 'Reflection extension',
@@ -41,8 +41,8 @@ return array(
 	array(
 		'name' => 'Intl extension',
 		'mandatory' => false,
-		'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2'),
+		'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2', '>='),
 		'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
-		'memo' => 'PHP Intl extension 1.0.2 or higher is required when you want to use <abbr title="Internationalized domain names">IDN</abbr>-feature of EmailValidator or UrlValidator.'
+		'memo' => 'PHP Intl extension 1.0.2 or higher is required when you want to use <abbr title="Internationalized domain names">IDN</abbr>-feature of EmailValidator or UrlValidator or the <code>yii\i18n\Formatter</code> class.'
 	),
 );

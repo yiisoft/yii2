@@ -118,4 +118,3 @@ class MessageSource extends Component
 		}
 	}
 }
-

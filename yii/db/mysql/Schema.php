@@ -178,6 +178,7 @@ class Schema extends \yii\db\Schema
 	 * Collects the metadata of table columns.
 	 * @param TableSchema $table the table metadata
 	 * @return boolean whether the table exists in the database
+	 * @throws \Exception if DB query fails
 	 */
 	protected function findColumns($table)
 	{
@@ -185,7 +186,12 @@ class Schema extends \yii\db\Schema
 		try {
 			$columns = $this->db->createCommand($sql)->queryAll();
 		} catch (\Exception $e) {
-			return false;
+			$previous = $e->getPrevious();
+			if ($previous instanceof \PDOException && $previous->getCode() == '42S02') {
+				// table does not exist
+				return false;
+			}
+			throw $e;
 		}
 		foreach ($columns as $info) {
 			$column = $this->loadColumnSchema($info);
@@ -206,7 +212,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findConstraints($table)
 	{
-		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryRow();
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
 		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
 		} else {

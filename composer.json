@@ -64,7 +64,7 @@
 		"source": "https://github.com/yiisoft/yii2"
 	},
 	"require": {
-		"php": ">=5.3.11",
+		"php": ">=5.3.7",
 		"ext-mbstring": "*",
 		"lib-pcre": "*"
 	},
@@ -72,9 +72,9 @@
 		"psr-0": { "yii\\": "/" }
 	},
 	"suggest": {
-		"michelf/php-markdown": "Required for Markdown helper.",
-		"twig/twig": "Required for TwigViewRenderer.",
-		"smarty/smarty": "Required for SmartyViewRenderer.",
-		"ezyang/htmlpurifier": "Required for Purifier helper."
+		"michelf/php-markdown": "Required by Markdown.",
+		"twig/twig": "Required by TwigViewRenderer.",
+		"smarty/smarty": "Required by SmartyViewRenderer.",
+		"ezyang/htmlpurifier": "Required by HtmlPurifier."
 	}
 }

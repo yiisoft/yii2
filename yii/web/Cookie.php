@@ -45,7 +45,7 @@ class Cookie extends \yii\base\Object
 	 * By setting this property to true, the cookie will not be accessible by scripting languages,
 	 * such as JavaScript, which can effectively help to reduce identity theft through XSS attacks.
 	 */
-	public $httponly = false;
+	public $httpOnly = false;
 
 	/**
 	 * Magic method to turn a cookie object into a string without having to explicitly access [[value]].

@@ -23,4 +23,3 @@ class UnknownClassException extends Exception
 		return \Yii::t('yii', 'Unknown Class');
 	}
 }
-

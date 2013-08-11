@@ -8,11 +8,6 @@
 
 namespace yii\db;
 
-use yii\db\Connection;
-use yii\db\Command;
-use yii\db\QueryBuilder;
-use yii\db\Expression;
-
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
  *
@@ -60,8 +55,9 @@ class ActiveQuery extends Query
 	 */
 	public $with;
 	/**
-	 * @var string the name of the column by which query results should be indexed by.
-	 * This is only used when the query result is returned as an array when calling [[all()]].
+	 * @var string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row or model data. For more details, see [[indexBy()]].
 	 */
 	public $indexBy;
 	/**
@@ -97,11 +93,13 @@ class ActiveQuery extends Query
 
 	/**
 	 * Executes query and returns all results as an array.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
 	 * @return array the query results. If the query results in nothing, an empty array will be returned.
 	 */
-	public function all()
+	public function all($db = null)
 	{
-		$command = $this->createCommand();
+		$command = $this->createCommand($db);
 		$rows = $command->queryAll();
 		if (!empty($rows)) {
 			$models = $this->createModels($rows);
@@ -116,18 +114,24 @@ class ActiveQuery extends Query
 
 	/**
 	 * Executes query and returns a single row of result.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
 	 * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
 	 * the query result may be either an array or an ActiveRecord object. Null will be returned
 	 * if the query results in nothing.
 	 */
-	public function one()
+	public function one($db = null)
 	{
-		$command = $this->createCommand();
-		$row = $command->queryRow();
-		if ($row !== false && !$this->asArray) {
-			/** @var $class ActiveRecord */
-			$class = $this->modelClass;
-			$model = $class::create($row);
+		$command = $this->createCommand($db);
+		$row = $command->queryOne();
+		if ($row !== false) {
+			if ($this->asArray) {
+				$model = $row;
+			} else {
+				/** @var $class ActiveRecord */
+				$class = $this->modelClass;
+				$model = $class::create($row);
+			}
 			if (!empty($this->with)) {
 				$models = array($model);
 				$this->populateRelations($models, $this->with);
@@ -135,89 +139,8 @@ class ActiveQuery extends Query
 			}
 			return $model;
 		} else {
-			return $row === false ? null : $row;
+			return null;
 		}
-	}
-
-	/**
-	 * Returns the number of records.
-	 * @param string $q the COUNT expression. Defaults to '*'.
-	 * Make sure you properly quote column names.
-	 * @return integer number of records
-	 */
-	public function count($q = '*')
-	{
-		$this->select = array("COUNT($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the sum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the sum of the specified column values
-	 */
-	public function sum($q)
-	{
-		$this->select = array("SUM($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the average of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the average of the specified column values.
-	 */
-	public function average($q)
-	{
-		$this->select = array("AVG($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the minimum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the minimum of the specified column values.
-	 */
-	public function min($q)
-	{
-		$this->select = array("MIN($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the maximum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the maximum of the specified column values.
-	 */
-	public function max($q)
-	{
-		$this->select = array("MAX($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the query result as a scalar value.
-	 * The value returned will be the first column in the first row of the query results.
-	 * @return string|boolean the value of the first column in the first row of the query result.
-	 * False is returned if the query result is empty.
-	 */
-	public function scalar()
-	{
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns a value indicating whether the query result contains any row of data.
-	 * @return boolean whether the query result contains any row of data.
-	 */
-	public function exists()
-	{
-		$this->select = array(new Expression('1'));
-		return $this->scalar() !== false;
 	}
 
 	/**
@@ -293,7 +216,19 @@ class ActiveQuery extends Query
 
 	/**
 	 * Sets the [[indexBy]] property.
-	 * @param string $column the name of the column by which the query results should be indexed by.
+	 * @param string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row or model data. The signature of the callable should be:
+	 *
+	 * ~~~
+	 * // $model is an AR instance when `asArray` is false,
+	 * // or an array of column values when `asArray` is true.
+	 * function ($model)
+	 * {
+	 *     // return the index value corresponding to $model
+	 * }
+	 * ~~~
+	 *
 	 * @return ActiveQuery the query object itself
 	 */
 	public function indexBy($column)
@@ -310,7 +245,12 @@ class ActiveQuery extends Query
 				return $rows;
 			}
 			foreach ($rows as $row) {
-				$models[$row[$this->indexBy]] = $row;
+				if (is_string($this->indexBy)) {
+					$key = $row[$this->indexBy];
+				} else {
+					$key = call_user_func($this->indexBy, $row);
+				}
+				$models[$key] = $row;
 			}
 		} else {
 			/** @var $class ActiveRecord */
@@ -322,7 +262,12 @@ class ActiveQuery extends Query
 			} else {
 				foreach ($rows as $row) {
 					$model = $class::create($row);
-					$models[$model->{$this->indexBy}] = $model;
+					if (is_string($this->indexBy)) {
+						$key = $model->{$this->indexBy};
+					} else {
+						$key = call_user_func($this->indexBy, $model);
+					}
+					$models[$key] = $model;
 				}
 			}
 		}

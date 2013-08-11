@@ -10,9 +10,41 @@ namespace yii\web;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
-use yii\base\HttpException;
 
 /**
+ * AccessControl provides simple access control based on a set of rules.
+ *
+ * AccessControl is an action filter. It will check its [[rules]] to find
+ * the first rule that matches the current context variables (such as user IP address, user role).
+ * The matching rule will dictate whether to allow or deny the access to the requested controller
+ * action. If no rule matches, the access will be denied.
+ *
+ * To use AccessControl, declare it in the `behaviors()` method of your controller class.
+ * For example, the following declarations will allow authenticated users to access the "create"
+ * and "update" actions and deny all other users from accessing these two actions.
+ *
+ * ~~~
+ * public function behaviors()
+ * {
+ *     return array(
+ *         'access' => array(
+ *             'class' => \yii\web\AccessControl::className(),
+ *             'only' => array('create', 'update'),
+ *             'rules' => array(
+ *                 // allow authenticated users
+ *                 array(
+ *                     'allow' => true,
+ *                     'roles' => array('@'),
+ *                 ),
+ *                 // deny all
+ *                 array(
+ *                     'allow' => false,
+ *                 ),
+ *             ),
+ *         ),
+ *     );
+ * }
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -73,7 +105,7 @@ class AccessControl extends ActionFilter
 		/** @var $rule AccessRule */
 		foreach ($this->rules as $rule) {
 			if ($allow = $rule->allows($action, $user, $request)) {
-				break;
+				return true;
 			} elseif ($allow === false) {
 				if (isset($rule->denyCallback)) {
 					call_user_func($rule->denyCallback, $rule);
@@ -85,7 +117,7 @@ class AccessControl extends ActionFilter
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**

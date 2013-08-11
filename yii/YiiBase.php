@@ -10,26 +10,38 @@ use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
-use yii\logging\Logger;
+use yii\log\Logger;
 
 /**
  * Gets the application start timestamp.
  */
 defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
 /**
+ * This constant defines the framework installation directory.
+ */
+defined('YII_PATH') or define('YII_PATH', __DIR__);
+/**
  * This constant defines whether the application should be in debug mode or not. Defaults to false.
  */
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 /**
- * This constant defines how much call stack information (file name and line number) should be logged by Yii::trace().
- * Defaults to 0, meaning no backtrace information. If it is greater than 0,
- * at most that number of call stacks will be logged. Note, only user application call stacks are considered.
+ * This constant defines in which environment the application is running. Defaults to 'prod', meaning production environment.
+ * You may define this constant in the bootstrap script. The value could be 'prod' (production), 'dev' (development), 'test', 'staging', etc.
  */
-defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 0);
+defined('YII_ENV') or define('YII_ENV', 'prod');
 /**
- * This constant defines the framework installation directory.
+ * Whether the the application is running in production environment
  */
-defined('YII_PATH') or define('YII_PATH', __DIR__);
+defined('YII_ENV_PROD') or define('YII_ENV_PROD', YII_ENV === 'prod');
+/**
+ * Whether the the application is running in development environment
+ */
+defined('YII_ENV_DEV') or define('YII_ENV_DEV', YII_ENV === 'dev');
+/**
+ * Whether the the application is running in testing environment
+ */
+defined('YII_ENV_TEST') or define('YII_ENV_TEST', YII_ENV === 'test');
+
 /**
  * This constant defines whether error handling should be enabled. Defaults to true.
  */
@@ -60,7 +72,7 @@ class YiiBase
 	 * @var boolean whether to search PHP include_path when autoloading unknown classes.
 	 * You may want to turn this off if you are also using autoloaders from other libraries.
 	 */
-	public static $enableIncludePath = true;
+	public static $enableIncludePath = false;
 	/**
 	 * @var \yii\console\Application|\yii\web\Application the application instance
 	 */
@@ -70,7 +82,7 @@ class YiiBase
 	 * @see getAlias
 	 * @see setAlias
 	 */
-	public static $aliases;
+	public static $aliases = array('@yii' => __DIR__);
 	/**
 	 * @var array initial property values that will be applied to objects newly created via [[createObject]].
 	 * The array keys are class names without leading backslashes "\", and the array values are the corresponding
@@ -94,7 +106,6 @@ class YiiBase
 	public static $objectConfig = array();
 
 	private static $_imported = array(); // alias => class name or directory
-	private static $_logger;
 
 	/**
 	 * @return string the version of Yii framework
@@ -157,6 +168,9 @@ class YiiBase
 		foreach ($namespaces as $name => $path) {
 			if ($name !== '') {
 				$name = trim(strtr($name, array('\\' => '/', '_' => '/')), '/');
+				if (is_array($path)) {
+					$path = reset($path);
+				}
 				static::setAlias('@' . $name, rtrim($path, '/\\') . '/' . $name);
 			}
 		}
@@ -325,21 +339,19 @@ class YiiBase
 	 *    it will attempt to include the file associated with the corresponding path alias
 	 *    (e.g. `@PHPUnit/Framework/TestCase.php`);
 	 * 4. Search PHP include_path for the actual class file if [[enableIncludePath]] is true;
-	 * 5. Return false so that other autoloaders have chance to include the class file.
+	 * 5. If none of the above succeeds, do nothing so that other autoloaders have the chance
+	 *    to load the class.
 	 *
-	 * @param string $className class name
+	 * @param string $className the fully qualified class name without leading backslash
 	 * @return boolean whether the class has been loaded successfully
-	 * @throws InvalidConfigException if the class file does not exist
 	 * @throws UnknownClassException if the class does not exist in the class file
 	 */
 	public static function autoload($className)
 	{
-		$className = ltrim($className, '\\');
-
 		if (isset(self::$classMap[$className])) {
-			$classFile = static::getAlias(self::$classMap[$className]);
-			if (!is_file($classFile)) {
-				throw new InvalidConfigException("Class file does not exist: $classFile");
+			$classFile = self::$classMap[$className];
+			if ($classFile[0] === '@') {
+				$classFile = static::getAlias($classFile);
 			}
 		} else {
 			// follow PSR-0 to determine the class file
@@ -365,7 +377,8 @@ class YiiBase
 			}
 
 			if (!isset($classFile)) {
-				// return false to let other autoloaders to try loading the class
+				// return here, not trying to include a file to
+				// let other autoloaders try loading the class
 				return false;
 			}
 		}
@@ -473,7 +486,7 @@ class YiiBase
 	public static function trace($message, $category = 'application')
 	{
 		if (YII_DEBUG) {
-			self::getLogger()->log($message, Logger::LEVEL_TRACE, $category);
+			self::$app->getLog()->log($message, Logger::LEVEL_TRACE, $category);
 		}
 	}
 
@@ -486,7 +499,7 @@ class YiiBase
 	 */
 	public static function error($message, $category = 'application')
 	{
-		self::getLogger()->log($message, Logger::LEVEL_ERROR, $category);
+		self::$app->getLog()->log($message, Logger::LEVEL_ERROR, $category);
 	}
 
 	/**
@@ -498,7 +511,7 @@ class YiiBase
 	 */
 	public static function warning($message, $category = 'application')
 	{
-		self::getLogger()->log($message, Logger::LEVEL_WARNING, $category);
+		self::$app->getLog()->log($message, Logger::LEVEL_WARNING, $category);
 	}
 
 	/**
@@ -510,7 +523,7 @@ class YiiBase
 	 */
 	public static function info($message, $category = 'application')
 	{
-		self::getLogger()->log($message, Logger::LEVEL_INFO, $category);
+		self::$app->getLog()->log($message, Logger::LEVEL_INFO, $category);
 	}
 
 	/**
@@ -532,7 +545,7 @@ class YiiBase
 	 */
 	public static function beginProfile($token, $category = 'application')
 	{
-		self::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+		self::$app->getLog()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
 	}
 
 	/**
@@ -544,29 +557,7 @@ class YiiBase
 	 */
 	public static function endProfile($token, $category = 'application')
 	{
-		self::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
-	}
-
-	/**
-	 * Returns the message logger object.
-	 * @return \yii\logging\Logger message logger
-	 */
-	public static function getLogger()
-	{
-		if (self::$_logger !== null) {
-			return self::$_logger;
-		} else {
-			return self::$_logger = new Logger;
-		}
-	}
-
-	/**
-	 * Sets the logger object.
-	 * @param Logger $logger the logger object.
-	 */
-	public static function setLogger($logger)
-	{
-		self::$_logger = $logger;
+		self::$app->getLog()->log($token, Logger::LEVEL_PROFILE_END, $category);
 	}
 
 	/**
@@ -575,7 +566,7 @@ class YiiBase
 	 */
 	public static function powered()
 	{
-		return 'Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>.';
+		return 'Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>';
 	}
 
 	/**
@@ -606,16 +597,34 @@ class YiiBase
 	public static function t($category, $message, $params = array(), $language = null)
 	{
 		if (self::$app !== null) {
-			return self::$app->getI18N()->translate($category, $message, $params, $language);
+			return self::$app->getI18N()->translate($category, $message, $params, $language ?: self::$app->language);
 		} else {
 			return is_array($params) ? strtr($message, $params) : $message;
 		}
 	}
-}
 
-YiiBase::$aliases = array(
-	'@yii' => array(
-		'@yii/bootstrap' => __DIR__ . '/bootstrap',
-		'@yii' => __DIR__,
-	),
-);
+	/**
+	 * Configures an object with the initial property values.
+	 * @param object $object the object to be configured
+	 * @param array $properties the property initial values given in terms of name-value pairs.
+	 */
+	public static function configure($object, $properties)
+	{
+		foreach ($properties as $name => $value) {
+			$object->$name = $value;
+		}
+	}
+
+	/**
+	 * Returns the public member variables of an object.
+	 * This method is provided such that we can get the public member variables of an object.
+	 * It is different from "get_object_vars()" because the latter will return private
+	 * and protected variables if it is called within the object itself.
+	 * @param object $object the object to be handled
+	 * @return array the public member variables of the object
+	 */
+	public static function getObjectVars($object)
+	{
+		return get_object_vars($object);
+	}
+}

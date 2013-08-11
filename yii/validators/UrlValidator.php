@@ -99,7 +99,7 @@ class UrlValidator extends Validator
 			}
 
 			if ($this->enableIDN) {
-				$value = preg_replace_callback('/:\/\/([^\/]+)/', function($matches) {
+				$value = preg_replace_callback('/:\/\/([^\/]+)/', function ($matches) {
 					return '://' . idn_to_ascii($matches[1]);
 				}, $value);
 			}
@@ -143,9 +143,9 @@ class UrlValidator extends Validator
 			$options['defaultScheme'] = $this->defaultScheme;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		if ($this->enableIDN) {
-			$view->registerAssetBundle('yii/punycode');
+			PunycodeAsset::register($view);
 		}
 		return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
 	}

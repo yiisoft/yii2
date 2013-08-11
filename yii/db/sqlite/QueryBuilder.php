@@ -30,13 +30,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_INTEGER => 'integer',
 		Schema::TYPE_BIGINT => 'bigint',
 		Schema::TYPE_FLOAT => 'float',
-		Schema::TYPE_DECIMAL => 'decimal',
+		Schema::TYPE_DECIMAL => 'decimal(10,0)',
 		Schema::TYPE_DATETIME => 'datetime',
 		Schema::TYPE_TIMESTAMP => 'timestamp',
 		Schema::TYPE_TIME => 'time',
 		Schema::TYPE_DATE => 'date',
 		Schema::TYPE_BINARY => 'blob',
-		Schema::TYPE_BOOLEAN => 'tinyint(1)',
+		Schema::TYPE_BOOLEAN => 'boolean',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
 	);
 
@@ -77,10 +77,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * Enables or disables integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
-	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $schema the schema of the tables. Meaningless for SQLite.
+	 * @param string $table the table name. Meaningless for SQLite.
 	 * @throws NotSupportedException this is not supported by SQLite
 	 */
-	public function checkIntegrity($check = true, $schema = '')
+	public function checkIntegrity($check = true, $schema = '', $table = '')
 	{
 		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
@@ -175,6 +176,31 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @throws NotSupportedException this is not supported by SQLite
 	 */
 	public function alterColumn($table, $column, $type)
+	{
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+	}
+	
+	/**
+	 * Builds a SQL statement for adding a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 * @return string the SQL statement for adding a primary key constraint to an existing table.
+	 * @throws NotSupportedException this is not supported by SQLite
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+	}
+
+	/**
+	 * Builds a SQL statement for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return string the SQL statement for removing a primary key constraint from an existing table.
+	 * @throws NotSupportedException this is not supported by SQLite	 *
+	 */
+	public function dropPrimaryKey($name, $table)
 	{
 		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}

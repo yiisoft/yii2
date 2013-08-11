@@ -28,6 +28,10 @@ class UrlRule extends Object
 	const CREATION_ONLY = 2;
 
 	/**
+	 * @var string the name of this rule. If not set, it will use [[pattern]] as the name.
+	 */
+	public $name;
+	/**
 	 * @var string the pattern used to parse and create the path info part of a URL.
 	 * @see host
 	 */
@@ -106,6 +110,9 @@ class UrlRule extends Object
 				$this->verb = array(strtoupper($this->verb));
 			}
 		}
+		if ($this->name === null) {
+			$this->name = $this->pattern;
+		}
 
 		$this->pattern = trim($this->pattern, '/');
 
@@ -171,7 +178,7 @@ class UrlRule extends Object
 			return false;
 		}
 
-		if ($this->verb !== null && !in_array($request->getRequestMethod(), $this->verb, true)) {
+		if ($this->verb !== null && !in_array($request->getMethod(), $this->verb, true)) {
 			return false;
 		}
 
@@ -185,8 +192,7 @@ class UrlRule extends Object
 					// suffix alone is not allowed
 					return false;
 				}
-			} elseif ($suffix !== '/') {
-				// we allow the ending '/' to be optional if it is a suffix
+			} else {
 				return false;
 			}
 		}

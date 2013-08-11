@@ -8,6 +8,7 @@
 namespace yii\behaviors;
 
 use yii\base\Behavior;
+use yii\base\Event;
 use yii\db\Expression;
 use yii\db\ActiveRecord;
 
@@ -64,36 +65,33 @@ class AutoTimestamp extends Behavior
 	 */
 	public function events()
 	{
-		$events = array();
-		$behavior = $this;
-		foreach ($this->attributes as $event => $attributes) {
-			if (!is_array($attributes)) {
-				$attributes = array($attributes);
-			}
-			$events[$event] = function () use ($behavior, $attributes) {
-				$behavior->updateTimestamp($attributes);
-			};
+		$events = $this->attributes;
+		foreach ($events as $i => $event) {
+			$events[$i] = 'updateTimestamp';
 		}
 		return $events;
 	}
 
 	/**
 	 * Updates the attributes with the current timestamp.
-	 * @param array $attributes list of attributes to be updated.
+	 * @param Event $event
 	 */
-	public function updateTimestamp($attributes)
+	public function updateTimestamp($event)
 	{
-		foreach ($attributes as $attribute) {
-			$this->owner->$attribute = $this->evaluateTimestamp($attribute);
+		$attributes = isset($this->attributes[$event->name]) ? (array)$this->attributes[$event->name] : array();
+		if (!empty($attributes)) {
+			$timestamp = $this->evaluateTimestamp();
+			foreach ($attributes as $attribute) {
+				$this->owner->$attribute = $timestamp;
+			}
 		}
 	}
 
 	/**
-	 * Gets the appropriate timestamp for the specified attribute.
-	 * @param string $attribute attribute name
+	 * Gets the current timestamp.
 	 * @return mixed the timestamp value
 	 */
-	protected function evaluateTimestamp($attribute)
+	protected function evaluateTimestamp()
 	{
 		if ($this->timestamp instanceof Expression) {
 			return $this->timestamp;

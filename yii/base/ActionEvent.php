@@ -22,6 +22,10 @@ class ActionEvent extends Event
 	 */
 	public $action;
 	/**
+	 * @var mixed the action result. Event handlers may modify this property to change the action result.
+	 */
+	public $result;
+	/**
 	 * @var boolean whether to continue running the action. Event handlers of
 	 * [[Controller::EVENT_BEFORE_ACTION]] may set this property to decide whether
 	 * to continue running the current action.

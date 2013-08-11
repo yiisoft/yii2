@@ -26,7 +26,6 @@ class Controller extends Component
 	 * @event ActionEvent an event raised right after executing a controller action.
 	 */
 	const EVENT_AFTER_ACTION = 'afterAction';
-
 	/**
 	 * @var string the ID of this controller
 	 */
@@ -96,11 +95,11 @@ class Controller extends Component
 	}
 
 	/**
-	 * Runs an action with the specified action ID and parameters.
+	 * Runs an action within this controller with the specified action ID and parameters.
 	 * If the action ID is empty, the method will use [[defaultAction]].
 	 * @param string $id the ID of the action to be executed.
 	 * @param array $params the parameters (name-value pairs) to be passed to the action.
-	 * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
+	 * @return mixed the result of the action
 	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
 	 * @see createAction
 	 */
@@ -108,18 +107,25 @@ class Controller extends Component
 	{
 		$action = $this->createAction($id);
 		if ($action !== null) {
+			Yii::trace("Route to run: " . $action->getUniqueId(), __METHOD__);
+			if (Yii::$app->requestedAction === null) {
+				Yii::$app->requestedAction = $action;
+			}
 			$oldAction = $this->action;
 			$this->action = $action;
-			$status = 1;
-			if ($this->module->beforeAction($action)) {
-				if ($this->beforeAction($action)) {
-					$status = $action->runWithParams($params);
-					$this->afterAction($action);
-				}
-				$this->module->afterAction($action);
+			$result = null;
+			$event = new ActionEvent($action);
+			Yii::$app->trigger(Application::EVENT_BEFORE_ACTION, $event);
+			if ($event->isValid && $this->module->beforeAction($action) && $this->beforeAction($action)) {
+				$result = $action->runWithParams($params);
+				$this->afterAction($action, $result);
+				$this->module->afterAction($action, $result);
+				$event = new ActionEvent($action);
+				$event->result = &$result;
+				Yii::$app->trigger(Application::EVENT_AFTER_ACTION, $event);
 			}
 			$this->action = $oldAction;
-			return $status;
+			return $result;
 		} else {
 			throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
 		}
@@ -132,7 +138,7 @@ class Controller extends Component
 	 * the route will start from the application; otherwise, it will start from the parent module of this controller.
 	 * @param string $route the route to be handled, e.g., 'view', 'comment/view', '/admin/comment/view'.
 	 * @param array $params the parameters to be passed to the action.
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+	 * @return mixed the result of the action
 	 * @see runAction
 	 * @see forward
 	 */
@@ -151,58 +157,13 @@ class Controller extends Component
 	/**
 	 * Binds the parameters to the action.
 	 * This method is invoked by [[Action]] when it begins to run with the given parameters.
-	 * This method will check the parameter names that the action requires and return
-	 * the provided parameters according to the requirement. If there is any missing parameter,
-	 * an exception will be thrown.
 	 * @param Action $action the action to be bound with parameters
 	 * @param array $params the parameters to be bound to the action
 	 * @return array the valid parameters that the action can run with.
-	 * @throws InvalidRequestException if there are missing parameters.
 	 */
 	public function bindActionParams($action, $params)
 	{
-		if ($action instanceof InlineAction) {
-			$method = new \ReflectionMethod($this, $action->actionMethod);
-		} else {
-			$method = new \ReflectionMethod($action, 'run');
-		}
-
-		$args = array();
-		$missing = array();
-		foreach ($method->getParameters() as $param) {
-			$name = $param->getName();
-			if (array_key_exists($name, $params)) {
-				$args[] = $params[$name];
-				unset($params[$name]);
-			} elseif ($param->isDefaultValueAvailable()) {
-				$args[] = $param->getDefaultValue();
-			} else {
-				$missing[] = $name;
-			}
-		}
-
-		if (!empty($missing)) {
-			throw new InvalidRequestException(Yii::t('yii', 'Missing required parameters: {params}', array(
-				'{params}' => implode(', ', $missing),
-			)));
-		}
-
-		return $args;
-	}
-
-	/**
-	 * Forwards the current execution flow to handle a new request specified by a route.
-	 * The only difference between this method and [[run()]] is that after calling this method,
-	 * the application will exit.
-	 * @param string $route the route to be handled, e.g., 'view', 'comment/view', '/admin/comment/view'.
-	 * @param array $params the parameters to be passed to the action.
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
-	 * @see run
-	 */
-	public function forward($route, $params = array())
-	{
-		$status = $this->run($route, $params);
-		Yii::$app->end($status);
+		return array();
 	}
 
 	/**
@@ -253,10 +214,13 @@ class Controller extends Component
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
 	 * @param Action $action the action just executed.
+	 * @param mixed $result the action return result.
 	 */
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
-		$this->trigger(self::EVENT_AFTER_ACTION, new ActionEvent($action));
+		$event = new ActionEvent($action);
+		$event->result = & $result;
+		$this->trigger(self::EVENT_AFTER_ACTION, $event);
 	}
 
 	/**
@@ -269,18 +233,6 @@ class Controller extends Component
 	public function getActionParams()
 	{
 		return array();
-	}
-
-	/**
-	 * Validates the parameter being bound to actions.
-	 * This method is invoked when parameters are being bound to the currently requested action.
-	 * Child classes may override this method to throw exceptions when there are missing and/or unknown parameters.
-	 * @param Action $action the currently requested action
-	 * @param array $missingParams the names of the missing parameters
-	 * @param array $unknownParams the unknown parameters (name => value)
-	 */
-	public function validateActionParams($action, $missingParams, $unknownParams)
-	{
 	}
 
 	/**
@@ -298,34 +250,6 @@ class Controller extends Component
 	public function getRoute()
 	{
 		return $this->action !== null ? $this->action->getUniqueId() : $this->getUniqueId();
-	}
-
-	/**
-	 * Populates one or multiple models from the given data array.
-	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array.
-	 * @param Model $model the model to be populated. If there are more than one model to be populated,
-	 * you may supply them as additional parameters.
-	 * @return boolean whether at least one model is successfully populated with the data.
-	 */
-	public function populate($data, $model)
-	{
-		$success = false;
-		if (!empty($data) && is_array($data)) {
-			$models = func_get_args();
-			array_shift($models);
-			foreach ($models as $model) {
-				/** @var Model $model */
-				$scope = $model->formName();
-				if ($scope == '') {
-					$model->setAttributes($data);
-					$success = true;
-				} elseif (isset($data[$scope])) {
-					$model->setAttributes($data[$scope]);
-					$success = true;
-				}
-			}
-		}
-		return $success;
 	}
 
 	/**
@@ -357,7 +281,7 @@ class Controller extends Component
 	 * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
 	 *   looked for under the [[Application::layoutPath|layout path]] of the application;
 	 * - a relative path (e.g. "main"): the actual layout layout file will be looked for under the
-	 *   [[Module::viewPath|view path]] of the context module.
+	 *   [[Module::layoutPath|layout path]] of the context module.
 	 *
 	 * If the layout name does not contain a file extension, it will use the default one `.php`.
 	 *

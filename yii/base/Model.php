@@ -7,9 +7,13 @@
 
 namespace yii\base;
 
+use Yii;
+use ArrayAccess;
 use ArrayObject;
 use ArrayIterator;
-use yii\helpers\StringHelper;
+use ReflectionClass;
+use IteratorAggregate;
+use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
@@ -41,7 +45,7 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements \IteratorAggregate, \ArrayAccess
+class Model extends Component implements IteratorAggregate, ArrayAccess
 {
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
@@ -116,8 +120,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 *     array('password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'),
 	 *     // an inline validator defined via the "authenticate()" method in the model class
 	 *     array('password', 'authenticate', 'on' => 'login'),
-	 *     // a validator of class "CaptchaValidator"
-	 *     array('captcha', 'CaptchaValidator'),
+	 *     // a validator of class "DateRangeValidator"
+	 *     array('dateRange', 'DateRangeValidator'),
 	 * );
 	 * ~~~
 	 *
@@ -159,10 +163,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	{
 		$attributes = array();
 		foreach ($this->getActiveValidators() as $validator) {
-			if ($validator->isActive('default')) {
-				foreach ($validator->attributes as $name) {
-					$attributes[$name] = true;
-				}
+			foreach ($validator->attributes as $name) {
+				$attributes[$name] = true;
 			}
 		}
 		return array(
@@ -185,9 +187,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function formName()
 	{
-		$class = get_class($this);
-		$pos = strrpos($class, '\\');
-		return $pos === false ? $class : substr($class, $pos + 1);
+		$reflector = new ReflectionClass($this);
+		return $reflector->getShortName();
 	}
 
 	/**
@@ -198,7 +199,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function attributes()
 	{
-		$class = new \ReflectionClass($this);
+		$class = new ReflectionClass($this);
 		$names = array();
 		foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
 			$name = $property->getName();
@@ -251,9 +252,16 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * validation rules should be validated.
 	 * @param boolean $clearErrors whether to call [[clearErrors()]] before performing validation
 	 * @return boolean whether the validation is successful without any error.
+	 * @throws InvalidParamException if the current scenario is unknown.
 	 */
 	public function validate($attributes = null, $clearErrors = true)
 	{
+		$scenarios = $this->scenarios();
+		$scenario = $this->getScenario();
+		if (!isset($scenarios[$scenario])) {
+			throw new InvalidParamException("Unknown scenario: $scenario");
+		}
+
 		if ($clearErrors) {
 			$this->clearErrors();
 		}
@@ -476,7 +484,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 * @param string $attribute attribute name
 	 * @param string $error new error message
 	 */
-	public function addError($attribute, $error)
+	public function addError($attribute, $error = '')
 	{
 		$this->_errors[$attribute][] = $error;
 	}
@@ -504,7 +512,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function generateAttributeLabel($name)
 	{
-		return StringHelper::camel2words($name, true);
+		return Inflector::camel2words($name, true);
 	}
 
 	/**
@@ -563,7 +571,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 	public function onUnsafeAttribute($name, $value)
 	{
 		if (YII_DEBUG) {
-			\Yii::info("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
+			Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
 		}
 	}
 
@@ -582,8 +590,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 
 	/**
 	 * Sets the scenario for the model.
+	 * Note that this method does not check if the scenario exists or not.
+	 * The method [[validate()]] will perform this check.
 	 * @param string $value the scenario that this model is in.
-	 * @see getScenario
 	 */
 	public function setScenario($value)
 	{
@@ -602,9 +611,6 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 			return array();
 		}
 		$attributes = array();
-		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
-			$scenarios[$scenario] = $scenarios[$scenario]['attributes'];
-		}
 		foreach ($scenarios[$scenario] as $attribute) {
 			if ($attribute[0] !== '!') {
 				$attributes[] = $attribute;
@@ -624,17 +630,97 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess
 		if (!isset($scenarios[$scenario])) {
 			return array();
 		}
-		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
-			$attributes = $scenarios[$scenario]['attributes'];
-		} else {
-			$attributes = $scenarios[$scenario];
-		}
+		$attributes = $scenarios[$scenario];
 		foreach ($attributes as $i => $attribute) {
 			if ($attribute[0] === '!') {
 				$attributes[$i] = substr($attribute, 1);
 			}
 		}
 		return $attributes;
+	}
+
+	/**
+	 * Populates the model with the data from end user.
+	 * The data to be loaded is `$data[formName]`, where `formName` refers to the value of [[formName()]].
+	 * If [[formName()]] is empty, the whole `$data` array will be used to populate the model.
+	 * The data being populated is subject to the safety check by [[setAttributes()]].
+	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+	 * supplied by end user.
+	 * @return boolean whether the model is successfully populated with some data.
+	 */
+	public function load($data)
+	{
+		$scope = $this->formName();
+		if ($scope == '') {
+			$this->setAttributes($data);
+			return true;
+		} elseif (isset($data[$scope])) {
+			$this->setAttributes($data[$scope]);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Populates a set of models with the data from end user.
+	 * This method is mainly used to collect tabular data input.
+	 * The data to be loaded for each model is `$data[formName][index]`, where `formName`
+	 * refers to the value of [[formName()]], and `index` the index of the model in the `$models` array.
+	 * If [[formName()]] is empty, `$data[index]` will be used to populate each model.
+	 * The data being populated to each model is subject to the safety check by [[setAttributes()]].
+	 * @param array $models the models to be populated. Note that all models should have the same class.
+	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+	 * supplied by end user.
+	 * @return boolean whether the model is successfully populated with some data.
+	 */
+	public static function loadMultiple($models, $data)
+	{
+		/** @var Model $model */
+		$model = reset($models);
+		if ($model === false) {
+			return false;
+		}
+		$success = false;
+		$scope = $model->formName();
+		foreach ($models as $i => $model) {
+			if ($scope == '') {
+				if (isset($data[$i])) {
+					$model->setAttributes($data[$i]);
+					$success = true;
+				}
+			} elseif (isset($data[$scope][$i])) {
+				$model->setAttributes($data[$scope][$i]);
+				$success = true;
+			}
+		}
+		return $success;
+	}
+
+	/**
+	 * Validates multiple models.
+	 * @param array $models the models to be validated
+	 * @return boolean whether all models are valid. False will be returned if one
+	 * or multiple models have validation error.
+	 */
+	public static function validateMultiple($models)
+	{
+		$valid = true;
+		/** @var Model $model */
+		foreach ($models as $model) {
+			$valid = $model->validate() && $valid;
+		}
+		return $valid;
+	}
+
+	/**
+	 * Converts the object into an array.
+	 * The default implementation will return [[attributes]].
+	 * @return array the array representation of the object
+	 */
+	public function toArray()
+	{
+		return $this->getAttributes();
 	}
 
 	/**

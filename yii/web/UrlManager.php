@@ -27,6 +27,13 @@ class UrlManager extends Component
 	 */
 	public $enablePrettyUrl = false;
 	/**
+	 * @var boolean whether to enable strict parsing. If strict parsing is enabled, the incoming
+	 * requested URL must match at least one of the [[rules]] in order to be treated as a valid request.
+	 * Otherwise, the path info part of the request will be treated as the requested route.
+	 * This property is used only when [[enablePrettyUrl]] is true.
+	 */
+	public $enableStrictParsing = false;
+	/**
 	 * @var array the rules for creating and parsing URLs when [[enablePrettyUrl]] is true.
 	 * This property is used only if [[enablePrettyUrl]] is true. Each element in the array
 	 * is the configuration array for creating a single URL rule. The configuration will
@@ -36,6 +43,31 @@ class UrlManager extends Component
 	 * and [[UrlRule::route|route]]: `'pattern' => 'route'`. That is, instead of using a configuration
 	 * array, one can use the key to represent the pattern and the value the corresponding route.
 	 * For example, `'post/<id:\d+>' => 'post/view'`.
+	 *
+	 * For RESTful routing the mentioned shortcut format also allows you to specify the
+	 * [[UrlRule::verb|HTTP verb]] that the rule should apply for.
+	 * You can do that  by prepending it to the pattern, separated by space.
+	 * For example, `'PUT post/<id:\d+>' => 'post/update'`.
+	 * You may specify multiple verbs by separating them with comma
+	 * like this: `'POST,PUT post/index' => 'post/create'`.
+	 * The supported verbs in the shortcut format are: GET, HEAD, POST, PUT, PATCH and DELETE.
+	 * Note that [[UrlRule::mode|mode]] will be set to PARSING_ONLY when specifying verb in this way
+	 * so you normally would not specify a verb for normal GET request.
+	 *
+	 * Here is an example configuration for RESTful CRUD controller:
+	 *
+	 * ~~~php
+	 * array(
+	 *     'dashboard' => 'site/index',
+	 *
+	 *     'POST <controller:\w+>s' => '<controller>/create',
+	 *     '<controller:\w+>s' => '<controller>/index',
+	 *
+	 *     'PUT <controller:\w+>/<id:\d+>'    => '<controller>/update',
+	 *     'DELETE <controller:\w+>/<id:\d+>' => '<controller>/delete',
+	 *     '<controller:\w+>/<id:\d+>'        => '<controller>/view',
+	 * );
+	 * ~~~
 	 *
 	 * Note that if you modify this property after the UrlManager object is created, make sure
 	 * you populate the array with rule objects instead of rule configurations.
@@ -51,7 +83,7 @@ class UrlManager extends Component
 	 * @var boolean whether to show entry script name in the constructed URL. Defaults to true.
 	 * This property is used only if [[enablePrettyUrl]] is true.
 	 */
-	public $showScriptName = false;
+	public $showScriptName = true;
 	/**
 	 * @var string the GET variable name for route. This property is used only if [[enablePrettyUrl]] is false.
 	 */
@@ -97,7 +129,7 @@ class UrlManager extends Component
 			$this->cache = Yii::$app->getComponent($this->cache);
 		}
 		if ($this->cache instanceof Cache) {
-			$key = $this->cache->buildKey(__CLASS__);
+			$key = __CLASS__;
 			$hash = md5(json_encode($this->rules));
 			if (($data = $this->cache->get($key)) !== false && isset($data[1]) && $data[1] === $hash) {
 				$this->rules = $data[0];
@@ -109,9 +141,14 @@ class UrlManager extends Component
 		foreach ($this->rules as $key => $rule) {
 			if (!is_array($rule)) {
 				$rule = array(
-					'pattern' => $key,
 					'route' => $rule,
 				);
+				if (preg_match('/^((?:(GET|HEAD|POST|PUT|PATCH|DELETE),)*(GET|HEAD|POST|PUT|PATCH|DELETE))\s+(.*)$/', $key, $matches)) {
+					$rule['verb'] = explode(',', $matches[1]);
+					$rule['mode'] = UrlRule::PARSING_ONLY;
+					$key = $matches[4];
+				}
+				$rule['pattern'] = $key;
 			}
 			$rules[] = Yii::createObject(array_merge($this->ruleConfig, $rule));
 		}
@@ -131,16 +168,21 @@ class UrlManager extends Component
 	public function parseRequest($request)
 	{
 		if ($this->enablePrettyUrl) {
-			$pathInfo = $request->pathInfo;
+			$pathInfo = $request->getPathInfo();
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
 				if (($result = $rule->parseRequest($this, $request)) !== false) {
+					Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
 					return $result;
 				}
 			}
 
+			if ($this->enableStrictParsing) {
+				return false;
+			}
+
 			$suffix = (string)$this->suffix;
-			if ($suffix !== '' && $suffix !== '/' && $pathInfo !== '') {
+			if ($suffix !== '' && $pathInfo !== '') {
 				$n = strlen($this->suffix);
 				if (substr($pathInfo, -$n) === $this->suffix) {
 					$pathInfo = substr($pathInfo, 0, -$n);
@@ -154,12 +196,14 @@ class UrlManager extends Component
 				}
 			}
 
+			Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 			return array($pathInfo, array());
 		} else {
-			$route = $request->getParam($this->routeVar);
+			$route = $request->get($this->routeVar);
 			if (is_array($route)) {
 				$route = '';
 			}
+			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
 			return array((string)$route, array());
 		}
 	}

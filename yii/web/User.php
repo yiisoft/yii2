@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
-use yii\base\HttpException;
 use yii\base\InvalidConfigException;
 
 /**
@@ -56,7 +55,7 @@ class User extends Component
 	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
 	 * @see Cookie
 	 */
-	public $identityCookie = array('name' => '_identity', 'httponly' => true);
+	public $identityCookie = array('name' => '_identity', 'httpOnly' => true);
 	/**
 	 * @var integer the number of seconds in which the user will be logged out automatically if he
 	 * remains inactive. If this property is not set, the user will be logged out after
@@ -221,7 +220,7 @@ class User extends Component
 			if ($destroySession) {
 				Yii::$app->getSession()->destroy();
 			}
- 			$this->afterLogout($identity);
+			$this->afterLogout($identity);
 		}
 	}
 
@@ -280,11 +279,13 @@ class User extends Component
 	public function loginRequired()
 	{
 		$request = Yii::$app->getRequest();
-		if (!$request->getIsAjaxRequest()) {
+		if (!$request->getIsAjax()) {
 			$this->setReturnUrl($request->getUrl());
 		}
 		if ($this->loginUrl !== null) {
-			Yii::$app->getResponse()->redirect($this->loginUrl);
+			$response = Yii::$app->getResponse();
+			$response->redirect($this->loginUrl)->send();
+			exit();
 		} else {
 			throw new HttpException(403, Yii::t('yii', 'Login Required'));
 		}
@@ -415,7 +416,9 @@ class User extends Component
 	public function switchIdentity($identity, $duration = 0)
 	{
 		$session = Yii::$app->getSession();
-		$session->regenerateID(true);
+		if (!YII_ENV_TEST) {
+			$session->regenerateID(true);
+		}
 		$this->setIdentity($identity);
 		$session->remove($this->idVar);
 		$session->remove($this->authTimeoutVar);

@@ -49,7 +49,7 @@ abstract class Validator extends Component
 	 */
 	public static $builtInValidators = array(
 		'boolean' => 'yii\validators\BooleanValidator',
-		'captcha' => 'yii\validators\CaptchaValidator',
+		'captcha' => 'yii\captcha\CaptchaValidator',
 		'compare' => 'yii\validators\CompareValidator',
 		'date' => 'yii\validators\DateValidator',
 		'default' => 'yii\validators\DefaultValueValidator',
@@ -147,8 +147,8 @@ abstract class Validator extends Component
 			$params['class'] = __NAMESPACE__ . '\InlineValidator';
 			$params['method'] = $type;
 		} else {
-			if (isset(self::$builtInValidators[$type])) {
-				$type = self::$builtInValidators[$type];
+			if (isset(static::$builtInValidators[$type])) {
+				$type = static::$builtInValidators[$type];
 			}
 			if (is_array($type)) {
 				foreach ($type as $name => $value) {
@@ -179,7 +179,7 @@ abstract class Validator extends Component
 		}
 		foreach ($attributes as $attribute) {
 			$skip = $this->skipOnError && $object->hasErrors($attribute)
-				 || $this->skipOnEmpty && $this->isEmpty($object->$attribute);
+				|| $this->skipOnEmpty && $this->isEmpty($object->$attribute);
 			if (!$skip) {
 				$this->validateAttribute($object, $attribute);
 			}

@@ -32,7 +32,7 @@ class RegularExpressionValidator extends Validator
 	 * the regular expression defined via [[pattern]] should NOT match the attribute value.
 	 * @throws InvalidConfigException if the "pattern" is not a valid regular expression
 	 **/
- 	public $not = false;
+	public $not = false;
 
 	/**
 	 * Initializes the validator.
@@ -112,7 +112,7 @@ class RegularExpressionValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		return 'yii.validation.regularExpression(value, messages, ' . Json::encode($options) . ');';
 	}
 }
