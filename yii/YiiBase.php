@@ -339,9 +339,10 @@ class YiiBase
 	 *    it will attempt to include the file associated with the corresponding path alias
 	 *    (e.g. `@PHPUnit/Framework/TestCase.php`);
 	 * 4. Search PHP include_path for the actual class file if [[enableIncludePath]] is true;
-	 * 5. Return false so that other autoloaders have chance to include the class file.
+	 * 5. If none of the above succeeds, do nothing so that other autoloaders have the chance
+	 *    to load the class.
 	 *
-	 * @param string $className the fully qualified class name without leading \
+	 * @param string $className the fully qualified class name without leading backslash
 	 * @return boolean whether the class has been loaded successfully
 	 * @throws UnknownClassException if the class does not exist in the class file
 	 */
@@ -376,7 +377,8 @@ class YiiBase
 			}
 
 			if (!isset($classFile)) {
-				// return false to let other autoloaders to try loading the class
+				// return here, not trying to include a file to
+				// let other autoloaders try loading the class
 				return false;
 			}
 		}
