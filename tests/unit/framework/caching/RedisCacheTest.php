@@ -7,7 +7,7 @@ use yiiunit\TestCase;
 /**
  * Class for testing redis cache backend
  */
-class RedisCacheTest extends CacheTest
+class RedisCacheTest extends CacheTestCase
 {
 	private $_cacheInstance = null;
 
@@ -20,6 +20,7 @@ class RedisCacheTest extends CacheTest
 			'hostname' => 'localhost',
 			'port' => 6379,
 			'database' => 0,
+			'dataTimeout' => 0.1,
 		);
 		$dsn = $config['hostname'] . ':' .$config['port'];
 		if(!@stream_socket_client($dsn, $errorNumber, $errorDescription, 0.5)) {
@@ -42,4 +43,41 @@ class RedisCacheTest extends CacheTest
 		usleep(300000);
 		$this->assertFalse($cache->get('expire_test_ms'));
 	}
+
+	/**
+	 * Store a value that is 2 times buffer size big
+	 * https://github.com/yiisoft/yii2/issues/743
+	 */
+	public function testLargeData()
+	{
+		$cache = $this->getCacheInstance();
+
+		$data=str_repeat('XX',8192); // http://www.php.net/manual/en/function.fread.php
+		$key='bigdata1';
+
+		$this->assertFalse($cache->get($key));
+		$cache->set($key,$data);
+		$this->assertTrue($cache->get($key)===$data);
+
+		// try with multibyte string
+		$data=str_repeat('ЖЫ',8192); // http://www.php.net/manual/en/function.fread.php
+		$key='bigdata2';
+
+		$this->assertFalse($cache->get($key));
+		$cache->set($key,$data);
+		$this->assertTrue($cache->get($key)===$data);
+	}
+
+	public function testMultiByteGetAndSet()
+	{
+		$cache = $this->getCacheInstance();
+
+		$data=array('abc'=>'ежик',2=>'def');
+		$key='data1';
+
+		$this->assertFalse($cache->get($key));
+		$cache->set($key,$data);
+		$this->assertTrue($cache->get($key)===$data);
+	}
+
 }

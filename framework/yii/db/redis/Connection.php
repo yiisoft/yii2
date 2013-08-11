@@ -371,7 +371,7 @@ class Connection extends Component
 		array_unshift($params, $name);
 		$command = '*' . count($params) . "\r\n";
 		foreach($params as $arg) {
-			$command .= '$' . strlen($arg) . "\r\n" . $arg . "\r\n";
+			$command .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
 		}
 
 		\Yii::trace("Executing Redis Command: {$name}", __CLASS__);
@@ -382,11 +382,11 @@ class Connection extends Component
 
 	private function parseResponse($command)
 	{
-		if(($line = fgets($this->_socket))===false) {
+		if(($line = fgets($this->_socket)) === false) {
 			throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
 		}
 		$type = $line[0];
-		$line = substr($line, 1, -2);
+		$line = mb_substr($line, 1, -2, '8bit');
 		switch($type)
 		{
 			case '+': // Status reply
@@ -400,10 +400,16 @@ class Connection extends Component
 				if ($line == '-1') {
 					return null;
 				}
-				if(($data = fread($this->_socket, $line + 2))===false) {
-					throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
+				$length = $line + 2;
+				$data = '';
+				while ($length > 0) {
+					if(($block = fread($this->_socket, $line + 2)) === false) {
+						throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
+					}
+					$data .= $block;
+					$length -= mb_strlen($block, '8bit');
 				}
-				return substr($data, 0, -2);
+				return mb_substr($data, 0, -2, '8bit');
 			case '*': // Multi-bulk replies
 				$count = (int) $line;
 				$data = array();
