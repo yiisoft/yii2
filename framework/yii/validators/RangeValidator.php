@@ -35,7 +35,7 @@ class RangeValidator extends Validator
 	 * @var boolean whether to invert the validation logic. Defaults to false. If set to true,
 	 * the attribute value should NOT be among the list of values defined via [[range]].
 	 **/
- 	public $not = false;
+	public $not = false;
 
 	/**
 	 * Initializes the validator.
@@ -103,7 +103,7 @@ class RangeValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		return 'yii.validation.range(value, messages, ' . json_encode($options) . ');';
 	}
 }

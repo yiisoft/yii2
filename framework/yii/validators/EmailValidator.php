@@ -139,9 +139,9 @@ class EmailValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		if ($this->enableIDN) {
-			$view->registerAssetBundle('yii/punycode');
+			PunycodeAsset::register($view);
 		}
 		return 'yii.validation.email(value, messages, ' . Json::encode($options) . ');';
 	}

@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\widgets\Html;
+use yii\helpers\Html;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -240,7 +240,7 @@ class UploadedFile extends \yii\base\Object
 				self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
 			}
 		} else {
-			self::$_files[$key] = new self($names, $tempNames, $types, $sizes, $errors);
+			self::$_files[$key] = new static($names, $tempNames, $types, $sizes, $errors);
 		}
 	}
 }

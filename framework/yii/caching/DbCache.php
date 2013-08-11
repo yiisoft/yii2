@@ -170,7 +170,7 @@ class DbCache extends Cache
 		} else {
 			return $this->addValue($key, $value, $expire);
 		}
- 	}
+	}
 
 	/**
 	 * Stores a value identified by a key into cache if the cache does not contain this key.

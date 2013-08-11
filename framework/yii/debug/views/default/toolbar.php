@@ -1,39 +1,38 @@
-<?php use yii\helpers\Html;
+<?php
+/**
+ * @var \yii\base\View $this
+ * @var \yii\debug\Panel[] $panels
+ * @var string $tag
+ */
+use yii\debug\panels\ConfigPanel;
 
-echo Html::style("
-#yii-debug-toolbar {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #eee;
-    border-top: 1px solid #ccc;
-    margin: 0;
-    padding: 5px 10px;
-    z-index: 1000000;
-    font: 11px Verdana, Arial, sans-serif;
-    text-align: left;
+$minJs = <<<EOD
+document.getElementById('yii-debug-toolbar').style.display = 'none';
+document.getElementById('yii-debug-toolbar-min').style.display = 'block';
+if (window.localStorage) {
+	localStorage.setItem('yii-debug-toolbar', 'minimized');
 }
-.yii-debug-toolbar-block {
-	float: left;
-	margin: 0 10px;
-");
+EOD;
+
+$maxJs = <<<EOD
+document.getElementById('yii-debug-toolbar-min').style.display = 'none';
+document.getElementById('yii-debug-toolbar').style.display = 'block';
+if (window.localStorage) {
+	localStorage.setItem('yii-debug-toolbar', 'maximized');
+}
+EOD;
+
+$url = $panels['request']->getUrl();
 ?>
-
-<div class="yii-debug-toolbar-block">
+<div id="yii-debug-toolbar">
+	<?php foreach ($panels as $panel): ?>
+	<?php echo $panel->getSummary(); ?>
+	<?php endforeach; ?>
+	<span class="yii-debug-toolbar-toggler" onclick="<?php echo $minJs; ?>">›</span>
 </div>
-
-<div class="yii-debug-toolbar-block">
-Peak memory: <?php echo sprintf('%.2fMB', $memory / 1048576); ?>
+<div id="yii-debug-toolbar-min">
+	<a href="<?php echo $url; ?>" title="Open Yii Debugger" id="yii-debug-toolbar-logo">
+		<img width="29" height="30" alt="" src="<?php echo ConfigPanel::getYiiLogo(); ?>">
+	</a>
+	<span class="yii-debug-toolbar-toggler" onclick="<?php echo $maxJs; ?>">‹</span>
 </div>
-
-<div class="yii-debug-toolbar-block">
-Time spent: <?php echo sprintf('%.3fs', $time); ?>
-</div>
-
-<div class="yii-debug-toolbar-block">
-</div>
-
-<div class="yii-debug-toolbar-block">
-</div>
-

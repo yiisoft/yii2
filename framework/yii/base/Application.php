@@ -8,6 +8,8 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\Console;
+use yii\web\HttpException;
 
 /**
  * Application is the base class for all application classes.
@@ -15,10 +17,25 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Application extends Module
+abstract class Application extends Module
 {
+	/**
+	 * @event Event an event raised before the application starts to handle a request.
+	 */
 	const EVENT_BEFORE_REQUEST = 'beforeRequest';
+	/**
+	 * @event Event an event raised after the application successfully handles a request (before the response is sent out).
+	 */
 	const EVENT_AFTER_REQUEST = 'afterRequest';
+	/**
+	 * @event ActionEvent an event raised before executing a controller action.
+	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+	 */
+	const EVENT_BEFORE_ACTION = 'beforeAction';
+	/**
+	 * @event ActionEvent an event raised after executing a controller action.
+	 */
+	const EVENT_AFTER_ACTION = 'afterAction';
 	/**
 	 * @var string the application name.
 	 */
@@ -47,7 +64,7 @@ class Application extends Module
 	 */
 	public $preload = array();
 	/**
-	 * @var \yii\web\Controller|\yii\console\Controller the currently active controller instance
+	 * @var Controller the currently active controller instance
 	 */
 	public $controller;
 	/**
@@ -55,8 +72,25 @@ class Application extends Module
 	 * If this is false, layout will be disabled.
 	 */
 	public $layout = 'main';
-
-	private $_ended = false;
+	/**
+	 * @var integer the size of the reserved memory. A portion of memory is pre-allocated so that
+	 * when an out-of-memory issue occurs, the error handler is able to handle the error with
+	 * the help of this reserved memory. If you set this value to be 0, no memory will be reserved.
+	 * Defaults to 256KB.
+	 */
+	public $memoryReserveSize = 262144;
+	/**
+	 * @var string the requested route
+	 */
+	public $requestedRoute;
+	/**
+	 * @var Action the requested Action. If null, it means the request cannot be resolved into an action.
+	 */
+	public $requestedAction;
+	/**
+	 * @var array the parameters supplied to the requested action.
+	 */
+	public $requestedParams;
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
@@ -72,25 +106,17 @@ class Application extends Module
 	public function __construct($config = array())
 	{
 		Yii::$app = $this;
-
 		if (!isset($config['id'])) {
 			throw new InvalidConfigException('The "id" configuration is required.');
 		}
-
 		if (isset($config['basePath'])) {
 			$this->setBasePath($config['basePath']);
-			Yii::setAlias('@app', $this->getBasePath());
 			unset($config['basePath']);
 		} else {
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
-		
-		if (isset($config['timeZone'])) {
-			$this->setTimeZone($config['timeZone']);
-			unset($config['timeZone']);
-		} elseif (!ini_get('date.timezone')) {
-			$this->setTimeZone('UTC');
-		} 
+
+		$this->preInit($config);
 
 		$this->registerErrorHandlers();
 		$this->registerCoreComponents();
@@ -99,36 +125,68 @@ class Application extends Module
 	}
 
 	/**
+	 * Pre-initializes the application.
+	 * This method is called at the beginning of the application constructor.
+	 * @param array $config the application configuration
+	 */
+	public function preInit(&$config)
+	{
+		if (isset($config['vendorPath'])) {
+			$this->setVendorPath($config['vendorPath']);
+			unset($config['vendorPath']);
+		} else {
+			// set "@vendor"
+			$this->getVendorPath();
+		}
+		if (isset($config['runtimePath'])) {
+			$this->setRuntimePath($config['runtimePath']);
+			unset($config['runtimePath']);
+		} else {
+			// set "@runtime"
+			$this->getRuntimePath();
+		}
+		if (isset($config['timeZone'])) {
+			$this->setTimeZone($config['timeZone']);
+			unset($config['timeZone']);
+		} elseif (!ini_get('date.timezone')) {
+			$this->setTimeZone('UTC');
+		}
+	}
+
+	/**
+	 * Loads components that are declared in [[preload]].
+	 * @throws InvalidConfigException if a component or module to be preloaded is unknown
+	 */
+	public function preloadComponents()
+	{
+		$this->getComponent('log');
+		parent::preloadComponents();
+	}
+
+	/**
 	 * Registers error handlers.
 	 */
 	public function registerErrorHandlers()
 	{
 		if (YII_ENABLE_ERROR_HANDLER) {
-			ini_set('display_errors', 0);
+			//ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
+			if ($this->memoryReserveSize > 0) {
+				$this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
+			}
+			register_shutdown_function(array($this, 'handleFatalError'));
 		}
 	}
 
 	/**
-	 * Terminates the application.
-	 * This method replaces PHP's exit() function by calling [[afterRequest()]] before exiting.
-	 * @param integer $status exit status (value 0 means normal exit while other values mean abnormal exit).
-	 * @param boolean $exit whether to exit the current request.
-	 * It defaults to true, meaning the PHP's exit() function will be called at the end of this method.
+	 * Returns an ID that uniquely identifies this module among all modules within the current application.
+	 * Since this is an application instance, it will always return an empty string.
+	 * @return string the unique ID of the module.
 	 */
-	public function end($status = 0, $exit = true)
+	public function getUniqueId()
 	{
-		if (!$this->_ended) {
-			$this->_ended = true;
-			$this->afterRequest();
-		}
-
-		$this->handleFatalError();
-
-		if ($exit) {
-			exit($status);
-		}
+		return '';
 	}
 
 	/**
@@ -138,47 +196,31 @@ class Application extends Module
 	 */
 	public function run()
 	{
-		$this->beforeRequest();
-		// Allocating twice more than required to display memory exhausted error
-		// in case of trying to allocate last 1 byte while all memory is taken.
-		$this->_memoryReserve = str_repeat('x', 1024 * 256);
-		register_shutdown_function(array($this, 'end'), 0, false);
-		$status = $this->processRequest();
-		$this->afterRequest();
-		return $status;
-	}
-
-	/**
-	 * Raises the [[EVENT_BEFORE_REQUEST]] event right BEFORE the application processes the request.
-	 */
-	public function beforeRequest()
-	{
 		$this->trigger(self::EVENT_BEFORE_REQUEST);
-	}
-
-	/**
-	 * Raises the [[EVENT_AFTER_REQUEST]] event right AFTER the application processes the request.
-	 */
-	public function afterRequest()
-	{
+		$response = $this->handleRequest($this->getRequest());
 		$this->trigger(self::EVENT_AFTER_REQUEST);
+		$response->send();
+		return $response->exitStatus;
 	}
 
 	/**
-	 * Processes the request.
-	 * Child classes should override this method with actual request processing logic.
-	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
+	 * Handles the specified request.
+	 *
+	 * This method should return an instance of [[Response]] or its child class
+	 * which represents the handling result of the request.
+	 *
+	 * @param Request $request the request to be handled
+	 * @return Response the resulting response
 	 */
-	public function processRequest()
-	{
-		return 0;
-	}
+	abstract public function handleRequest($request);
+
 
 	private $_runtimePath;
 
 	/**
 	 * Returns the directory that stores runtime files.
-	 * @return string the directory that stores runtime files. Defaults to 'protected/runtime'.
+	 * @return string the directory that stores runtime files.
+	 * Defaults to the "runtime" subdirectory under [[basePath]].
 	 */
 	public function getRuntimePath()
 	{
@@ -191,23 +233,19 @@ class Application extends Module
 	/**
 	 * Sets the directory that stores runtime files.
 	 * @param string $path the directory that stores runtime files.
-	 * @throws InvalidConfigException if the directory does not exist or is not writable
 	 */
 	public function setRuntimePath($path)
 	{
-		$path = Yii::getAlias($path);
-		if (is_dir($path) && is_writable($path)) {
-			$this->_runtimePath = $path;
-		} else {
-			throw new InvalidConfigException("Runtime path must be a directory writable by the Web server process: $path");
-		}
+		$this->_runtimePath = Yii::getAlias($path);
+		Yii::setAlias('@runtime', $this->_runtimePath);
 	}
 
 	private $_vendorPath;
 
 	/**
 	 * Returns the directory that stores vendor files.
-	 * @return string the directory that stores vendor files. Defaults to 'protected/vendor'.
+	 * @return string the directory that stores vendor files.
+	 * Defaults to "vendor" directory under [[basePath]].
 	 */
 	public function getVendorPath()
 	{
@@ -224,6 +262,7 @@ class Application extends Module
 	public function setVendorPath($path)
 	{
 		$this->_vendorPath = Yii::getAlias($path);
+		Yii::setAlias('@vendor', $this->_vendorPath);
 	}
 
 	/**
@@ -260,6 +299,15 @@ class Application extends Module
 	}
 
 	/**
+	 * Returns the log component.
+	 * @return \yii\log\Logger the log component
+	 */
+	public function getLog()
+	{
+		return $this->getComponent('log');
+	}
+
+	/**
 	 * Returns the error handler component.
 	 * @return ErrorHandler the error handler application component.
 	 */
@@ -275,6 +323,15 @@ class Application extends Module
 	public function getCache()
 	{
 		return $this->getComponent('cache');
+	}
+
+	/**
+	 * Returns the formatter component.
+	 * @return \yii\base\Formatter the formatter application component.
+	 */
+	public function getFormatter()
+	{
+		return $this->getComponent('formatter');
 	}
 
 	/**
@@ -329,8 +386,14 @@ class Application extends Module
 	public function registerCoreComponents()
 	{
 		$this->setComponents(array(
+			'log' => array(
+				'class' => 'yii\log\Logger',
+			),
 			'errorHandler' => array(
 				'class' => 'yii\base\ErrorHandler',
+			),
+			'formatter' => array(
+				'class' => 'yii\base\Formatter',
 			),
 			'i18n' => array(
 				'class' => 'yii\i18n\I18N',
@@ -347,10 +410,9 @@ class Application extends Module
 	/**
 	 * Handles uncaught PHP exceptions.
 	 *
-	 * This method is implemented as a PHP exception handler. It requires
-	 * that constant YII_ENABLE_ERROR_HANDLER be defined true.
+	 * This method is implemented as a PHP exception handler.
 	 *
-	 * @param \Exception $exception exception that is not caught
+	 * @param \Exception $exception the exception that is not caught
 	 */
 	public function handleException($exception)
 	{
@@ -360,17 +422,13 @@ class Application extends Module
 
 		try {
 			$this->logException($exception);
-
 			if (($handler = $this->getErrorHandler()) !== null) {
 				$handler->handle($exception);
 			} else {
-				$this->renderException($exception);
+				echo $this->renderException($exception);
 			}
-
-			$this->end(1);
-
 		} catch (\Exception $e) {
-			// exception could be thrown in end() or ErrorHandler::handle()
+			// exception could be thrown in ErrorHandler::handle()
 			$msg = (string)$e;
 			$msg .= "\nPrevious exception:\n";
 			$msg .= (string)$exception;
@@ -398,6 +456,14 @@ class Application extends Module
 	public function handleError($code, $message, $file, $line)
 	{
 		if (error_reporting() !== 0) {
+			// load ErrorException manually here because autoloading them will not work
+			// when error occurs while autoloading a class
+			if (!class_exists('\\yii\\base\\Exception', false)) {
+				require_once(__DIR__ . '/Exception.php');
+			}
+			if (!class_exists('\\yii\\base\\ErrorException', false)) {
+				require_once(__DIR__ . '/ErrorException.php');
+			}
 			$exception = new ErrorException($message, $code, $code, $file, $line);
 
 			// in case error appeared in __toString method we can't throw any exception
@@ -406,6 +472,7 @@ class Application extends Module
 			foreach ($trace as $frame) {
 				if ($frame['function'] == '__toString') {
 					$this->handleException($exception);
+					return;
 				}
 			}
 
@@ -418,45 +485,60 @@ class Application extends Module
 	 */
 	public function handleFatalError()
 	{
-		if (YII_ENABLE_ERROR_HANDLER) {
-			$error = error_get_last();
+		unset($this->_memoryReserve);
 
-			if (ErrorException::isFatalError($error)) {
-				unset($this->_memoryReserve);
-				$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
-				// use error_log because it's too late to use Yii log
-				error_log($exception);
+		// load ErrorException manually here because autoloading them will not work
+		// when error occurs while autoloading a class
+		if (!class_exists('\\yii\\base\\Exception', false)) {
+			require_once(__DIR__ . '/Exception.php');
+		}
+		if (!class_exists('\\yii\\base\\ErrorException', false)) {
+			require_once(__DIR__ . '/ErrorException.php');
+		}
 
-				if (($handler = $this->getErrorHandler()) !== null) {
-					$handler->handle($exception);
-				} else {
-					$this->renderException($exception);
-				}
+		$error = error_get_last();
 
-				exit(1);
+		if (ErrorException::isFatalError($error)) {
+			$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+			// use error_log because it's too late to use Yii log
+			error_log($exception);
+
+			if (($handler = $this->getErrorHandler()) !== null) {
+				$handler->handle($exception);
+			} else {
+				echo $this->renderException($exception);
 			}
+
+			exit(1);
 		}
 	}
 
 	/**
 	 * Renders an exception without using rich format.
 	 * @param \Exception $exception the exception to be rendered.
+	 * @return string the rendering result
 	 */
 	public function renderException($exception)
 	{
 		if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
 			$message = $exception->getName() . ': ' . $exception->getMessage();
+			if (Yii::$app->controller instanceof \yii\console\Controller) {
+				$message = Yii::$app->controller->ansiFormat($message, Console::FG_RED);
+			}
 		} else {
 			$message = YII_DEBUG ? (string)$exception : 'Error: ' . $exception->getMessage();
 		}
-		if (PHP_SAPI) {
-			echo $message . "\n";
+		if (PHP_SAPI === 'cli') {
+			return $message . "\n";
 		} else {
-			echo '<pre>' . htmlspecialchars($message, ENT_QUOTES, $this->charset) . '</pre>';
+			return '<pre>' . htmlspecialchars($message, ENT_QUOTES, $this->charset) . '</pre>';
 		}
 	}
 
-	// todo: to be polished
+	/**
+	 * Logs the given exception
+	 * @param \Exception $exception the exception to be logged
+	 */
 	protected function logException($exception)
 	{
 		$category = get_class($exception);

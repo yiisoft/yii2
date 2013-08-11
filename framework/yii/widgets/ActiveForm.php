@@ -12,6 +12,7 @@ use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /**
  * ActiveForm ...
@@ -52,11 +53,11 @@ class ActiveForm extends Widget
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute has validation error.
 	 */
-	public $errorCssClass = 'error';
+	public $errorCssClass = 'has-error';
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute is successfully validated.
 	 */
-	public $successCssClass = 'success';
+	public $successCssClass = 'has-success';
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute is being validated.
 	 */
@@ -103,6 +104,38 @@ class ActiveForm extends Widget
 	 */
 	public $ajaxVar = 'ajax';
 	/**
+	 * @var string|JsExpression a JS callback that will be called when the form is being submitted.
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form) {
+	 *     ...return false to cancel submission...
+	 * }
+	 * ~~~
+	 */
+	public $beforeSubmit;
+	/**
+	 * @var string|JsExpression a JS callback that is called before validating an attribute.
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form, attribute, messages) {
+	 *     ...return false to cancel the validation...
+	 * }
+	 * ~~~
+	 */
+	public $beforeValidate;
+	/**
+	 * @var string|JsExpression a JS callback that is called after validating an attribute.
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form, attribute, messages) {
+	 * }
+	 * ~~~
+	 */
+	public $afterValidate;
+	/**
 	 * @var array the client validation options for individual attributes. Each element of the array
 	 * represents the validation options for a particular attribute.
 	 * @internal
@@ -119,7 +152,7 @@ class ActiveForm extends Widget
 			$this->options['id'] = $this->getId();
 		}
 		if (!isset($this->fieldConfig['class'])) {
-			$this->fieldConfig['class'] = 'yii\widgets\ActiveField';
+			$this->fieldConfig['class'] = ActiveField::className();
 		}
 		echo Html::beginForm($this->action, $this->method, $this->options);
 	}
@@ -134,8 +167,9 @@ class ActiveForm extends Widget
 			$id = $this->options['id'];
 			$options = Json::encode($this->getClientOptions());
 			$attributes = Json::encode($this->attributes);
-			$this->view->registerAssetBundle('yii/form');
-			$this->view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+			$view = $this->getView();
+			ActiveFormAsset::register($view);
+			$view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
 		}
 		echo Html::endForm();
 	}
@@ -156,6 +190,11 @@ class ActiveForm extends Widget
 		);
 		if ($this->validationUrl !== null) {
 			$options['validationUrl'] = Html::url($this->validationUrl);
+		}
+		foreach (array('beforeSubmit', 'beforeValidate', 'afterValidate') as $name) {
+			if (($value = $this->$name) !== null) {
+				$options[$name] = $value instanceof JsExpression ? $value : new JsExpression($value);
+			}
 		}
 		return $options;
 	}

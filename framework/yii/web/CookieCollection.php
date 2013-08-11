@@ -9,7 +9,8 @@ namespace yii\web;
 
 use Yii;
 use ArrayIterator;
-use yii\helpers\SecurityHelper;
+use yii\base\InvalidCallException;
+use yii\base\Object;
 
 /**
  * CookieCollection maintains the cookies available in the current request.
@@ -19,17 +20,12 @@ use yii\helpers\SecurityHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \ArrayAccess, \Countable
+class CookieCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
-	 * @var boolean whether to enable cookie validation. By setting this property to true,
-	 * if a cookie is tampered on the client side, it will be ignored when received on the server side.
+	 * @var boolean whether this collection is read only.
 	 */
-	public $enableValidation = true;
-	/**
-	 * @var string the secret key used for cookie validation. If not set, a random key will be generated and used.
-	 */
-	public $validationKey;
+	public $readOnly = false;
 
 	/**
 	 * @var Cookie[] the cookies in this collection (indexed by the cookie names)
@@ -38,12 +34,14 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 
 	/**
 	 * Constructor.
+	 * @param array $cookies the cookies that this collection initially contains. This should be
+	 * an array of name-value pairs.s
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($config = array())
+	public function __construct($cookies = array(), $config = array())
 	{
+		$this->_cookies = $cookies;
 		parent::__construct($config);
-		$this->_cookies = $this->loadCookies();
 	}
 
 	/**
@@ -101,53 +99,66 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	}
 
 	/**
+	 * Returns whether there is a cookie with the specified name.
+	 * @param string $name the cookie name
+	 * @return boolean whether the named cookie exists
+	 */
+	public function has($name)
+	{
+		return isset($this->_cookies[$name]);
+	}
+
+	/**
 	 * Adds a cookie to the collection.
 	 * If there is already a cookie with the same name in the collection, it will be removed first.
 	 * @param Cookie $cookie the cookie to be added
+	 * @throws InvalidCallException if the cookie collection is read only
 	 */
 	public function add($cookie)
 	{
-		if (isset($this->_cookies[$cookie->name])) {
-			$c = $this->_cookies[$cookie->name];
-			setcookie($c->name, '', 0, $c->path, $c->domain, $c->secure, $c->httponly);
+		if ($this->readOnly) {
+			throw new InvalidCallException('The cookie collection is read only.');
 		}
-
-		$value = $cookie->value;
-		if ($this->enableValidation) {
-			if ($this->validationKey === null) {
-				$key = SecurityHelper::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
-			} else {
-				$key = $this->validationKey;
-			}
-			$value = SecurityHelper::hashData(serialize($value), $key);
-		}
-
-		setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
 		$this->_cookies[$cookie->name] = $cookie;
 	}
 
 	/**
-	 * Removes a cookie from the collection.
+	 * Removes a cookie.
+	 * If `$removeFromBrowser` is true, the cookie will be removed from the browser.
+	 * In this case, a cookie with outdated expiry will be added to the collection.
 	 * @param Cookie|string $cookie the cookie object or the name of the cookie to be removed.
+	 * @param boolean $removeFromBrowser whether to remove the cookie from browser
+	 * @throws InvalidCallException if the cookie collection is read only
 	 */
-	public function remove($cookie)
+	public function remove($cookie, $removeFromBrowser = true)
 	{
-		if (is_string($cookie) && isset($this->_cookies[$cookie])) {
-			$cookie = $this->_cookies[$cookie];
+		if ($this->readOnly) {
+			throw new InvalidCallException('The cookie collection is read only.');
 		}
 		if ($cookie instanceof Cookie) {
-			setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
+			$cookie->expire = 1;
+			$cookie->value = '';
+		} else {
+			$cookie = new Cookie(array(
+				'name' => $cookie,
+				'expire' => 1,
+			));
+		}
+		if ($removeFromBrowser) {
+			$this->_cookies[$cookie->name] = $cookie;
+		} else {
 			unset($this->_cookies[$cookie->name]);
 		}
 	}
 
 	/**
 	 * Removes all cookies.
+	 * @throws InvalidCallException if the cookie collection is read only
 	 */
 	public function removeAll()
 	{
-		foreach ($this->_cookies as $cookie) {
-			setcookie($cookie->name, '', 0, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
+		if ($this->readOnly) {
+			throw new InvalidCallException('The cookie collection is read only.');
 		}
 		$this->_cookies = array();
 	}
@@ -172,7 +183,7 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	 */
 	public function offsetExists($name)
 	{
-		return isset($this->_cookies[$name]);
+		return $this->has($name);
 	}
 
 	/**
@@ -211,37 +222,5 @@ class CookieCollection extends \yii\base\Object implements \IteratorAggregate, \
 	public function offsetUnset($name)
 	{
 		$this->remove($name);
-	}
-
-	/**
-	 * Returns the current cookies in terms of [[Cookie]] objects.
-	 * @return Cookie[] list of current cookies
-	 */
-	protected function loadCookies()
-	{
-		$cookies = array();
-		if ($this->enableValidation) {
-			if ($this->validationKey === null) {
-				$key = SecurityHelper::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
-			} else {
-				$key = $this->validationKey;
-			}
-			foreach ($_COOKIE as $name => $value) {
-				if (is_string($value) && ($value = SecurityHelper::validateData($value, $key)) !== false) {
-					$cookies[$name] = new Cookie(array(
-						'name' => $name,
-						'value' => @unserialize($value),
-					));
-				}
-			}
-		} else {
-			foreach ($_COOKIE as $name => $value) {
-				$cookies[$name] = new Cookie(array(
-					'name' => $name,
-					'value' => $value,
-				));
-			}
-		}
-		return $cookies;
 	}
 }

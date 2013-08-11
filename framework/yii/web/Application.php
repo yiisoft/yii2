@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidRouteException;
 
 /**
  * Application is the base class for all application classes.
@@ -21,18 +22,64 @@ class Application extends \yii\base\Application
 	 * @var string the default route of this application. Defaults to 'site'.
 	 */
 	public $defaultRoute = 'site';
+	/**
+	 * @var array the configuration specifying a controller action which should handle
+	 * all user requests. This is mainly used when the application is in maintenance mode
+	 * and needs to handle all incoming requests via a single action.
+	 * The configuration is an array whose first element specifies the route of the action.
+	 * The rest of the array elements (key-value pairs) specify the parameters to be bound
+	 * to the action. For example,
+	 *
+	 * ~~~
+	 * array(
+	 *     'offline/notice',
+	 *     'param1' => 'value1',
+	 *     'param2' => 'value2',
+	 * )
+	 * ~~~
+	 *
+	 * Defaults to null, meaning catch-all is not effective.
+	 */
+	public $catchAll;
+	/**
+	 * @var Controller the currently active controller instance
+	 */
+	public $controller;
+
 
 	/**
-	 * Processes the request.
-	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
+	 * Handles the specified request.
+	 * @param Request $request the request to be handled
+	 * @return Response the resulting response
+	 * @throws HttpException if the requested route is invalid
 	 */
-	public function processRequest()
+	public function handleRequest($request)
 	{
-		$request = $this->getRequest();
-		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
-		Yii::setAlias('@www', $request->getBaseUrl());
-		list ($route, $params) = $request->resolve();
-		return $this->runAction($route, $params);
+		Yii::setAlias('@webroot', dirname($request->getScriptFile()));
+		Yii::setAlias('@web', $request->getBaseUrl());
+
+		if (empty($this->catchAll)) {
+			list ($route, $params) = $request->resolve();
+		} else {
+			$route = $this->catchAll[0];
+			$params = array_splice($this->catchAll, 1);
+		}
+		try {
+			Yii::trace("Route requested: '$route'", __METHOD__);
+			$this->requestedRoute = $route;
+			$result = $this->runAction($route, $params);
+			if ($result instanceof Response) {
+				return $result;
+			} else {
+				$response = $this->getResponse();
+				if ($result !== null) {
+					$response->data = $result;
+				}
+				return $response;
+			}
+		} catch (InvalidRouteException $e) {
+			throw new HttpException(404, $e->getMessage(), $e->getCode(), $e);
+		}
 	}
 
 	private $_homeUrl;

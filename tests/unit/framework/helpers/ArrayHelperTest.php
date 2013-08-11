@@ -2,16 +2,61 @@
 
 namespace yiiunit\framework\helpers;
 
+use yii\base\Object;
 use yii\helpers\ArrayHelper;
-use yii\helpers\VarDumper;
-use yii\web\Sort;
+use yii\test\TestCase;
+use yii\data\Sort;
 
-class ArrayHelperTest extends \yii\test\TestCase
+class Post1
 {
-	public function testMerge()
+	public $id = 23;
+	public $title = 'tt';
+}
+
+class Post2 extends Object
+{
+	public $id = 123;
+	public $content = 'test';
+	private $secret = 's';
+	public function getSecret()
 	{
+		return $this->secret;
+	}
+}
 
+class ArrayHelperTest extends TestCase
+{
+	public function testToArray()
+	{
+		$object = new Post1;
+		$this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object));
+		$object = new Post2;
+		$this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object));
 
+		$object1 = new Post1;
+		$object2 = new Post2;
+		$this->assertEquals(array(
+			get_object_vars($object1),
+			get_object_vars($object2),
+		), ArrayHelper::toArray(array(
+			$object1,
+			$object2,
+		)));
+
+		$object = new Post2;
+		$this->assertEquals(array(
+			'id' => 123,
+			'secret' => 's',
+			'_content' => 'test',
+			'length' => 4,
+		), ArrayHelper::toArray($object, array(
+			$object->className() => array(
+				'id', 'secret',
+				'_content' => 'content',
+				'length' => function ($post) {
+					return strlen($post->content);
+				}
+		))));
 	}
 
 	public function testRemove()
@@ -72,9 +117,10 @@ class ArrayHelperTest extends \yii\test\TestCase
 	public function testMultisortUseSort()
 	{
 		// single key
-		$sort = new Sort();
-		$sort->attributes = array('name', 'age');
-		$sort->defaults = array('name' => Sort::ASC);
+		$sort = new Sort(array(
+			'attributes' => array('name', 'age'),
+			'defaultOrder' => array('name' => Sort::ASC),
+		));
 		$orders = $sort->getOrders();
 
 		$array = array(
@@ -88,9 +134,10 @@ class ArrayHelperTest extends \yii\test\TestCase
 		$this->assertEquals(array('name' => 'c', 'age' => 2), $array[2]);
 
 		// multiple keys
-		$sort = new Sort();
-		$sort->attributes = array('name', 'age');
-		$sort->defaults = array('name' => Sort::ASC, 'age' => Sort::DESC);
+		$sort = new Sort(array(
+			'attributes' => array('name', 'age'),
+			'defaultOrder' => array('name' => Sort::ASC, 'age' => Sort::DESC),
+		));
 		$orders = $sort->getOrders();
 
 		$array = array(

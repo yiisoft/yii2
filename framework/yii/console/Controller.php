@@ -30,18 +30,29 @@ use yii\helpers\Console;
 class Controller extends \yii\base\Controller
 {
 	/**
-	 * @var boolean whether the call of [[confirm()]] requires a user input.
-	 * If false, [[confirm()]] will always return true no matter what user enters or not.
+	 * @var boolean whether to run the command interactively.
 	 */
 	public $interactive = true;
 
 	/**
-	 * @var bool whether to enable ANSI style in output.
-	 * Setting this will affect [[ansiFormat()]], [[stdout()]] and [[stderr()]].
-	 * If not set it will be auto detected using [[yii\helpers\Console::streamSupportsAnsiColors()]] with STDOUT
-	 * for [[ansiFormat()]] and [[stdout()]] and STDERR for [[stderr()]].
+	 * @var boolean whether to enable ANSI color in the output.
+	 * If not set, ANSI color will only be enabled for terminals that support it.
 	 */
-	public $colors;
+	public $color;
+
+	/**
+	 * Returns a value indicating whether ANSI color is enabled.
+	 *
+	 * ANSI color is enabled only if [[color]] is not set or is set true,
+	 * and the terminal must support ANSI color.
+	 *
+	 * @param resource $stream the stream to check.
+	 * @return boolean Whether to enable ANSI style in output.
+	 */
+	public function isColorEnabled($stream = STDOUT)
+	{
+		return $this->color ===  null ? Console::streamSupportsAnsiColors($stream) : $this->color;
+	}
 
 	/**
 	 * Runs an action with the specified action ID and parameters.
@@ -78,22 +89,20 @@ class Controller extends \yii\base\Controller
 	 */
 	public function bindActionParams($action, $params)
 	{
+		$args = array();
 		if (!empty($params)) {
 			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
 				if (in_array($name, $options, true)) {
 					$this->$name = $value;
-					unset($params[$name]);
+				} elseif (is_int($name)) {
+					$args[] = $value;
+				} else {
+					throw new Exception(Yii::t('yii', 'Unknown option: --{name}', array(
+						'{name}' => $name,
+					)));
 				}
 			}
-		}
-
-		$args = isset($params[Request::ANONYMOUS_PARAMS]) ? $params[Request::ANONYMOUS_PARAMS] : array();
-		unset($params[Request::ANONYMOUS_PARAMS]);
-		if (!empty($params)) {
-			throw new Exception(Yii::t('yii', 'Unknown options: {params}', array(
-				'{params}' => implode(', ', array_keys($params)),
-			)));
 		}
 
 		if ($action instanceof InlineAction) {
@@ -126,9 +135,10 @@ class Controller extends \yii\base\Controller
 	/**
 	 * Formats a string with ANSI codes
 	 *
-	 * You may pass additional parameters using the constants defined in [[yii\helpers\base\Console]].
+	 * You may pass additional parameters using the constants defined in [[yii\helpers\Console]].
 	 *
 	 * Example:
+	 *
 	 * ~~~
 	 * $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
 	 * ~~~
@@ -138,7 +148,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function ansiFormat($string)
 	{
-		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDOUT)) {
+		if ($this->isColorEnabled()) {
 			$args = func_get_args();
 			array_shift($args);
 			$string = Console::ansiFormat($string, $args);
@@ -150,9 +160,10 @@ class Controller extends \yii\base\Controller
 	 * Prints a string to STDOUT
 	 *
 	 * You may optionally format the string with ANSI codes by
-	 * passing additional parameters using the constants defined in [[yii\helpers\base\Console]].
+	 * passing additional parameters using the constants defined in [[yii\helpers\Console]].
 	 *
 	 * Example:
+	 *
 	 * ~~~
 	 * $this->stdout('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
 	 * ~~~
@@ -162,7 +173,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function stdout($string)
 	{
-		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDOUT)) {
+		if ($this->isColorEnabled()) {
 			$args = func_get_args();
 			array_shift($args);
 			$string = Console::ansiFormat($string, $args);
@@ -174,9 +185,10 @@ class Controller extends \yii\base\Controller
 	 * Prints a string to STDERR
 	 *
 	 * You may optionally format the string with ANSI codes by
-	 * passing additional parameters using the constants defined in [[yii\helpers\base\Console]].
+	 * passing additional parameters using the constants defined in [[yii\helpers\Console]].
 	 *
 	 * Example:
+	 *
 	 * ~~~
 	 * $this->stderr('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
 	 * ~~~
@@ -186,7 +198,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function stderr($string)
 	{
-		if ($this->ansi === true || $this->ansi === null && Console::streamSupportsAnsiColors(STDERR)) {
+		if ($this->isColorEnabled(STDERR)) {
 			$args = func_get_args();
 			array_shift($args);
 			$string = Console::ansiFormat($string, $args);
@@ -199,6 +211,7 @@ class Controller extends \yii\base\Controller
 	 *
 	 * @param string $text prompt string
 	 * @param array $options the options to validate the input:
+	 *
 	 *  - required: whether it is required or not
 	 *  - default: default value if no input is inserted by the user
 	 *  - pattern: regular expression pattern to validate user input
@@ -259,6 +272,6 @@ class Controller extends \yii\base\Controller
 	 */
 	public function globalOptions()
 	{
-		return array();
+		return array('color', 'interactive');
 	}
 }

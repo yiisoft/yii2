@@ -9,17 +9,24 @@ If you are looking for a production-ready PHP framework, please use
 Yii 2.0 is still under heavy development. We may make significant changes
 without prior notices. **Yii 2.0 is not ready for production use yet.**
 
-[![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2)
+[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
+[![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2)
+[![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2) 
+[![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
 
 
 DIRECTORY STRUCTURE
 -------------------
 
       apps/                ready-to-use Web apps built on Yii 2
-          bootstrap/       a simple app supporting user login and contact page
+          advanced/        advanced app template with complex features
+          basic/           a simple app supporting user login and contact page
+          benchmark/       app demonstrating the minimal overhead introduced by the framework
       build/               internally used build tools
       docs/                documentation
-      yii/                 framework source files
+      extensions/          extensions 
+      framework/           framework files
+          yii/             framework source files
       tests/               tests of the core framework code
 
 

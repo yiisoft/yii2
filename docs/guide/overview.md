@@ -31,6 +31,10 @@ management systems (CMS), e-commerce systems, etc.
 How does Yii Compare with Other Frameworks?
 -------------------------------------------
 
-Like most PHP frameworks, Yii is an MVC (Model-View-Controller) framework.
-
-TBD
+- Like most PHP frameworks, Yii is an MVC (Model-View-Controller) framework.
+- It is a fullstack framework providing many solutions and components such as logging, session management, caching etc.
+- It has a good balance of simplicity and features.
+- Syntax and overall development usability are taken seriously.
+- Performance is one of the key goals.
+- We are constantly watching other web frameworks out there and getting the best ideas in. Initial Yii release was heavily
+  influenced by Ruby on Rails. Still, we aren't blindly copying anyhting.

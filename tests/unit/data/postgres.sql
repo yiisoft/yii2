@@ -1,165 +1,94 @@
 /**
  * This is the database schema for testing PostgreSQL support of yii Active Record.
- * To test this feature, you need to create a database named 'yii' on 'localhost'
- * and create an account 'test/test' which owns this test database.
+ * To test this feature, you need to create a database named 'yiitest' on 'localhost'
+ * and create an account 'postgres/postgres' which owns this test database.
  */
-CREATE SCHEMA test;
 
-CREATE TABLE test.users
+DROP TABLE IF EXISTS tbl_order_item CASCADE;
+DROP TABLE IF EXISTS tbl_item CASCADE;
+DROP TABLE IF EXISTS tbl_order CASCADE;
+DROP TABLE IF EXISTS tbl_category CASCADE;
+DROP TABLE IF EXISTS tbl_customer CASCADE;
+DROP TABLE IF EXISTS tbl_type CASCADE;
+DROP TABLE IF EXISTS tbl_constraints CASCADE;
+
+CREATE TABLE tbl_constraints
 (
-	id SERIAL NOT NULL PRIMARY KEY,
-	username VARCHAR(128) NOT NULL,
-	password VARCHAR(128) NOT NULL,
-	email VARCHAR(128) NOT NULL
+  id integer not null,
+  field1 varchar(255)
 );
 
-INSERT INTO test.users (username, password, email) VALUES ('user1','pass1','email1');
-INSERT INTO test.users (username, password, email) VALUES ('user2','pass2','email2');
-INSERT INTO test.users (username, password, email) VALUES ('user3','pass3','email3');
-
-CREATE TABLE test.user_friends
-(
-	id INTEGER NOT NULL,
-	friend INTEGER NOT NULL,
-	PRIMARY KEY (id, friend),
-	CONSTRAINT FK_user_id FOREIGN KEY (id)
-		REFERENCES test.users (id) ON DELETE CASCADE ON UPDATE RESTRICT,
-	CONSTRAINT FK_friend_id FOREIGN KEY (friend)
-		REFERENCES test.users (id) ON DELETE CASCADE ON UPDATE RESTRICT
+CREATE TABLE tbl_customer (
+  id serial not null primary key,
+  email varchar(128) NOT NULL,
+  name varchar(128) NOT NULL,
+  address text,
+  status integer DEFAULT 0
 );
 
-INSERT INTO test.user_friends VALUES (1,2);
-INSERT INTO test.user_friends VALUES (1,3);
-INSERT INTO test.user_friends VALUES (2,3);
+comment on column public.tbl_customer.email is 'someone@example.com';
 
-CREATE TABLE test.profiles
-(
-	id SERIAL NOT NULL PRIMARY KEY,
-	first_name VARCHAR(128) NOT NULL,
-	last_name VARCHAR(128) NOT NULL,
-	user_id INTEGER NOT NULL,
-	CONSTRAINT FK_profile_user FOREIGN KEY (user_id)
-		REFERENCES test.users (id) ON DELETE CASCADE ON UPDATE RESTRICT
+CREATE TABLE tbl_category (
+  id serial not null primary key,
+  name varchar(128) NOT NULL
 );
 
-INSERT INTO test.profiles (first_name, last_name, user_id) VALUES ('first 1','last 1',1);
-INSERT INTO test.profiles (first_name, last_name, user_id) VALUES ('first 2','last 2',2);
-
-CREATE TABLE test.posts
-(
-	id SERIAL NOT NULL PRIMARY KEY,
-	title VARCHAR(128) NOT NULL,
-	create_time TIMESTAMP NOT NULL,
-	author_id INTEGER NOT NULL,
-	content TEXT,
-	CONSTRAINT FK_post_author FOREIGN KEY (author_id)
-		REFERENCES test.users (id) ON DELETE CASCADE ON UPDATE RESTRICT
+CREATE TABLE tbl_item (
+  id serial not null primary key,
+  name varchar(128) NOT NULL,
+  category_id integer NOT NULL references tbl_category(id) on UPDATE CASCADE on DELETE CASCADE
 );
 
-INSERT INTO test.posts (title, create_time, author_id, content) VALUES ('post 1',TIMESTAMP '2004-10-19 10:23:54',1,'content 1');
-INSERT INTO test.posts (title, create_time, author_id, content) VALUES ('post 2',TIMESTAMP '2004-10-19 10:23:54',2,'content 2');
-INSERT INTO test.posts (title, create_time, author_id, content) VALUES ('post 3',TIMESTAMP '2004-10-19 10:23:54',2,'content 3');
-INSERT INTO test.posts (title, create_time, author_id, content) VALUES ('post 4',TIMESTAMP '2004-10-19 10:23:54',2,'content 4');
-INSERT INTO test.posts (title, create_time, author_id, content) VALUES ('post 5',TIMESTAMP '2004-10-19 10:23:54',3,'content 5');
-
-CREATE TABLE test.comments
-(
-	id SERIAL NOT NULL PRIMARY KEY,
-	content TEXT NOT NULL,
-	post_id INTEGER NOT NULL,
-	author_id INTEGER NOT NULL,
-	CONSTRAINT FK_post_comment FOREIGN KEY (post_id)
-		REFERENCES test.posts (id) ON DELETE CASCADE ON UPDATE RESTRICT,
-	CONSTRAINT FK_user_comment FOREIGN KEY (author_id)
-		REFERENCES test.users (id) ON DELETE CASCADE ON UPDATE RESTRICT
+CREATE TABLE tbl_order (
+  id serial not null primary key,
+  customer_id integer NOT NULL references tbl_customer(id) on UPDATE CASCADE on DELETE CASCADE,
+  create_time integer NOT NULL,
+  total decimal(10,0) NOT NULL
 );
 
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 1',1, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 2',1, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 3',1, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 4',2, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 5',2, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 6',3, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 7',3, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 8',3, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 9',3, 2);
-INSERT INTO test.comments (content, post_id, author_id) VALUES ('comment 10',5, 3);
-
-CREATE TABLE test.categories
-(
-	id SERIAL NOT NULL PRIMARY KEY,
-	name VARCHAR(128) NOT NULL,
-	parent_id INTEGER,
-	CONSTRAINT FK_category_category FOREIGN KEY (parent_id)
-		REFERENCES test.categories (id) ON DELETE CASCADE ON UPDATE RESTRICT
+CREATE TABLE tbl_order_item (
+  order_id integer NOT NULL references tbl_order(id) on UPDATE CASCADE on DELETE CASCADE,
+  item_id integer NOT NULL references tbl_item(id) on UPDATE CASCADE on DELETE CASCADE,
+  quantity integer NOT NULL,
+  subtotal decimal(10,0) NOT NULL,
+  PRIMARY KEY (order_id,item_id)
 );
 
-INSERT INTO test.categories (name, parent_id) VALUES ('cat 1',NULL);
-INSERT INTO test.categories (name, parent_id) VALUES ('cat 2',NULL);
-INSERT INTO test.categories (name, parent_id) VALUES ('cat 3',NULL);
-INSERT INTO test.categories (name, parent_id) VALUES ('cat 4',1);
-INSERT INTO test.categories (name, parent_id) VALUES ('cat 5',1);
-INSERT INTO test.categories (name, parent_id) VALUES ('cat 6',5);
-INSERT INTO test.categories (name, parent_id) VALUES ('cat 7',5);
-
-CREATE TABLE test.post_category
-(
-	category_id INTEGER NOT NULL,
-	post_id INTEGER NOT NULL,
-	PRIMARY KEY (category_id, post_id),
-	CONSTRAINT FK_post_category_post FOREIGN KEY (post_id)
-		REFERENCES test.posts (id) ON DELETE CASCADE ON UPDATE RESTRICT,
-	CONSTRAINT FK_post_category_category FOREIGN KEY (category_id)
-		REFERENCES test.categories (id) ON DELETE CASCADE ON UPDATE RESTRICT
+CREATE TABLE tbl_type (
+  int_col integer NOT NULL,
+  int_col2 integer DEFAULT '1',
+  char_col char(100) NOT NULL,
+  char_col2 varchar(100) DEFAULT 'something',
+  char_col3 text,
+  float_col double precision NOT NULL,
+  float_col2 double precision DEFAULT '1.23',
+  blob_col bytea,
+  numeric_col decimal(5,2) DEFAULT '33.22',
+  time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
+  bool_col smallint NOT NULL,
+  bool_col2 smallint DEFAULT '1'
 );
 
-INSERT INTO test.post_category (category_id, post_id) VALUES (1,1);
-INSERT INTO test.post_category (category_id, post_id) VALUES (2,1);
-INSERT INTO test.post_category (category_id, post_id) VALUES (3,1);
-INSERT INTO test.post_category (category_id, post_id) VALUES (4,2);
-INSERT INTO test.post_category (category_id, post_id) VALUES (1,2);
-INSERT INTO test.post_category (category_id, post_id) VALUES (1,3);
+INSERT INTO tbl_customer (email, name, address, status) VALUES ('user1@example.com', 'user1', 'address1', 1);
+INSERT INTO tbl_customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
+INSERT INTO tbl_customer (email, name, address, status) VALUES ('user3@example.com', 'user3', 'address3', 2);
 
-CREATE TABLE test.orders
-(
-	key1 INTEGER NOT NULL,
-	key2 INTEGER NOT NULL,
-	name VARCHAR(128),
-	PRIMARY KEY (key1, key2)
-);
+INSERT INTO tbl_category (name) VALUES ('Books');
+INSERT INTO tbl_category (name) VALUES ('Movies');
 
-INSERT INTO test.orders (key1,key2,name) VALUES (1,2,'order 12');
-INSERT INTO test.orders (key1,key2,name) VALUES (1,3,'order 13');
-INSERT INTO test.orders (key1,key2,name) VALUES (2,1,'order 21');
-INSERT INTO test.orders (key1,key2,name) VALUES (2,2,'order 22');
+INSERT INTO tbl_item (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
+INSERT INTO tbl_item (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
+INSERT INTO tbl_item (name, category_id) VALUES ('Ice Age', 2);
+INSERT INTO tbl_item (name, category_id) VALUES ('Toy Story', 2);
+INSERT INTO tbl_item (name, category_id) VALUES ('Cars', 2);
 
-CREATE TABLE test.items
-(
-	id SERIAL NOT NULL PRIMARY KEY,
-	name VARCHAR(128),
-	col1 INTEGER NOT NULL,
-	col2 INTEGER NOT NULL,
-	CONSTRAINT FK_order_item FOREIGN KEY (col1,col2)
-		REFERENCES test.orders (key1,key2) ON DELETE CASCADE ON UPDATE RESTRICT
-);
+INSERT INTO tbl_order (customer_id, create_time, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325502201, 40.0);
 
-INSERT INTO test.items (name,col1,col2) VALUES ('item 1',1,2);
-INSERT INTO test.items (name,col1,col2) VALUES ('item 2',1,2);
-INSERT INTO test.items (name,col1,col2) VALUES ('item 3',1,3);
-INSERT INTO test.items (name,col1,col2) VALUES ('item 4',2,2);
-INSERT INTO test.items (name,col1,col2) VALUES ('item 5',2,2);
-
-CREATE TABLE public.yii_types
-(
-	int_col INT NOT NULL,
-	int_col2 INTEGER DEFAULT 1,
-	char_col CHAR(100) NOT NULL,
-	char_col2 VARCHAR(100) DEFAULT 'something',
-	char_col3 TEXT,
-	numeric_col NUMERIC(4,3) NOT NULL,
-	real_col REAL DEFAULT 1.23,
-	blob_col BYTEA,
-	time TIMESTAMP,
-	bool_col BOOL NOT NULL,
-	bool_col2 BOOLEAN DEFAULT TRUE
-);
+INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);

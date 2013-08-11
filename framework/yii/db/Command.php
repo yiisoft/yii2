@@ -19,7 +19,7 @@ use yii\caching\Cache;
  *
  * To execute a non-query SQL (such as INSERT, DELETE, UPDATE), call [[execute()]].
  * To execute a SQL statement that returns result data set (such as SELECT),
- * use [[queryAll()]], [[queryRow()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
+ * use [[queryAll()]], [[queryOne()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
  * For example,
  *
  * ~~~
@@ -146,9 +146,9 @@ class Command extends \yii\base\Component
 			try {
 				$this->pdoStatement = $this->db->pdo->prepare($sql);
 			} catch (\Exception $e) {
-				Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __METHOD__);
+				$message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode());
+				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 			}
 		}
 	}
@@ -275,14 +275,14 @@ class Command extends \yii\base\Component
 
 		$rawSql = $this->getRawSql();
 
-		Yii::trace("Executing SQL: $rawSql", __METHOD__);
+		Yii::trace($rawSql, __METHOD__);
 
 		if ($sql == '') {
 			return 0;
 		}
 
+		$token = $rawSql;
 		try {
-			$token = "SQL: $sql";
 			Yii::beginProfile($token, __METHOD__);
 
 			$this->prepare();
@@ -293,12 +293,9 @@ class Command extends \yii\base\Component
 			return $n;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			$message = $e->getMessage();
-
-			Yii::error("$message\nFailed to execute SQL: $rawSql", __METHOD__);
-
+			$message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, $errorInfo, (int)$e->getCode());
+			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 		}
 	}
 
@@ -335,7 +332,7 @@ class Command extends \yii\base\Component
 	 * results in nothing.
 	 * @throws Exception execution failed
 	 */
-	public function queryRow($fetchMode = null)
+	public function queryOne($fetchMode = null)
 	{
 		return $this->queryInternal('fetch', $fetchMode);
 	}
@@ -380,10 +377,9 @@ class Command extends \yii\base\Component
 	private function queryInternal($method, $fetchMode = null)
 	{
 		$db = $this->db;
-		$sql = $this->getSql();
 		$rawSql = $this->getRawSql();
 
-		Yii::trace("Querying SQL: $rawSql", __METHOD__);
+		Yii::trace($rawSql, __METHOD__);
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {
@@ -391,20 +387,20 @@ class Command extends \yii\base\Component
 		}
 
 		if (isset($cache) && $cache instanceof Cache) {
-			$cacheKey = $cache->buildKey(array(
+			$cacheKey = array(
 				__CLASS__,
 				$db->dsn,
 				$db->username,
 				$rawSql,
-			));
+			);
 			if (($result = $cache->get($cacheKey)) !== false) {
 				Yii::trace('Query result served from cache', __METHOD__);
 				return $result;
 			}
 		}
 
+		$token = $rawSql;
 		try {
-			$token = "SQL: $sql";
 			Yii::beginProfile($token, __METHOD__);
 
 			$this->prepare();
@@ -430,10 +426,9 @@ class Command extends \yii\base\Component
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			$message = $e->getMessage();
-			Yii::error("$message\nCommand::$method() failed: $rawSql", __METHOD__);
+			$message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
 			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, $errorInfo, (int)$e->getCode());
+			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 		}
 	}
 
@@ -650,6 +645,32 @@ class Command extends \yii\base\Component
 	public function alterColumn($table, $column, $type)
 	{
 		$sql = $this->db->getQueryBuilder()->alterColumn($table, $column, $type);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for adding a primary key constraint to an existing table.
+	 * The method will properly quote the table and column names.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 * @return Command the command object itself.
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		$sql = $this->db->getQueryBuilder()->addPrimaryKey($name, $table, $columns);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return Command the command object itself
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		$sql = $this->db->getQueryBuilder()->dropPrimaryKey($name, $table);
 		return $this->setSql($sql);
 	}
 

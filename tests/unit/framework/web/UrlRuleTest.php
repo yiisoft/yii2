@@ -5,8 +5,9 @@ namespace yiiunit\framework\web;
 use yii\web\UrlManager;
 use yii\web\UrlRule;
 use yii\web\Request;
+use yiiunit\TestCase;
 
-class UrlRuleTest extends \yiiunit\TestCase
+class UrlRuleTest extends TestCase
 {
 	public function testCreateUrl()
 	{
@@ -619,7 +620,8 @@ class UrlRuleTest extends \yiiunit\TestCase
 					'suffix' => '/',
 				),
 				array(
-					array('posts', 'post/index'),
+					array('posts/', 'post/index'),
+					array('posts', false),
 					array('a', false),
 				),
 			),

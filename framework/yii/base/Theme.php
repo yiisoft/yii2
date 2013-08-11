@@ -21,9 +21,9 @@ use yii\helpers\FileHelper;
  * with its themed version if part of its path matches one of the keys in [[pathMap]].
  * Then the matched part will be replaced with the corresponding array value.
  *
- * For example, if [[pathMap]] is `array('/www/views' => '/www/themes/basic')`,
- * then the themed version for a view file `/www/views/site/index.php` will be
- * `/www/themes/basic/site/index.php`.
+ * For example, if [[pathMap]] is `array('/web/views' => '/web/themes/basic')`,
+ * then the themed version for a view file `/web/views/site/index.php` will be
+ * `/web/themes/basic/site/index.php`.
  *
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
@@ -31,8 +31,8 @@ use yii\helpers\FileHelper;
  * ~~~
  * 'view' => array(
  *     'theme' => array(
- *         'basePath' => '@wwwroot/themes/basic',
- *         'baseUrl' => '@www/themes/basic',
+ *         'basePath' => '@webroot/themes/basic',
+ *         'baseUrl' => '@web/themes/basic',
  *     ),
  * ),
  * ~~~
@@ -73,7 +73,7 @@ class Theme extends Component
 	 */
 	public function init()
 	{
-	 	parent::init();
+		parent::init();
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
 				$this->basePath = Yii::getAlias($this->basePath);

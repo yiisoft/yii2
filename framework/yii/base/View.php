@@ -8,9 +8,10 @@
 namespace yii\base;
 
 use Yii;
-use yii\base\Application;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\web\JqueryAsset;
+use yii\web\AssetBundle;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
@@ -26,13 +27,21 @@ use yii\widgets\FragmentCache;
 class View extends Component
 {
 	/**
-	 * @event ViewEvent an event that is triggered by [[beginPage()]].
+	 * @event Event an event that is triggered by [[beginPage()]].
 	 */
 	const EVENT_BEGIN_PAGE = 'beginPage';
 	/**
-	 * @event ViewEvent an event that is triggered by [[endPage()]].
+	 * @event Event an event that is triggered by [[endPage()]].
 	 */
 	const EVENT_END_PAGE = 'endPage';
+	/**
+	 * @event Event an event that is triggered by [[beginBody()]].
+	 */
+	const EVENT_BEGIN_BODY = 'beginBody';
+	/**
+	 * @event Event an event that is triggered by [[endBody()]].
+	 */
+	const EVENT_END_BODY = 'endBody';
 	/**
 	 * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
 	 */
@@ -65,15 +74,15 @@ class View extends Component
 	/**
 	 * This is internally used as the placeholder for receiving the content registered for the head section.
 	 */
-	const PL_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
+	const PH_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
 	/**
 	 * This is internally used as the placeholder for receiving the content registered for the beginning of the body section.
 	 */
-	const PL_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
+	const PH_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
 	/**
 	 * This is internally used as the placeholder for receiving the content registered for the end of the body section.
 	 */
-	const PL_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
+	const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
 
 
 	/**
@@ -88,21 +97,23 @@ class View extends Component
 	/**
 	 * @var array a list of available renderers indexed by their corresponding supported file extensions.
 	 * Each renderer may be a view renderer object or the configuration for creating the renderer object.
-	 * The default setting supports both Smarty and Twig (their corresponding file extension is "tpl"
-	 * and "twig" respectively. Please refer to [[SmartyRenderer]] and [[TwigRenderer]] on how to install
-	 * the needed libraries for these template engines.
+	 * For example, the following configuration enables both Smarty and Twig view renderers:
+	 *
+	 * ~~~
+	 * array(
+	 *     'tpl' => array(
+	 *         'class' => 'yii\smarty\ViewRenderer',
+	 *      ),
+	 *     'twig' => array(
+	 *         'class' => 'yii\twig\ViewRenderer',
+	 *     ),
+	 * )
+	 * ~~~
 	 *
 	 * If no renderer is available for the given view file, the view file will be treated as a normal PHP
 	 * and rendered via [[renderPhpFile()]].
 	 */
-	public $renderers = array(
-		'tpl' => array(
-			'class' => 'yii\renderers\SmartyRenderer',
-		),
-		'twig' => array(
-			'class' => 'yii\renderers\TwigRenderer',
-		),
-	);
+	public $renderers;
 	/**
 	 * @var Theme|array the theme object or the configuration array for creating the theme object.
 	 * If not set, it means theming is not enabled.
@@ -128,8 +139,8 @@ class View extends Component
 	 */
 	public $dynamicPlaceholders = array();
 	/**
-	 * @var array the registered asset bundles. The keys are the bundle names, and the values
-	 * are the corresponding [[AssetBundle]] objects.
+	 * @var array list of the registered asset bundles. The keys are the bundle names, and the values
+	 * are booleans indicating whether the bundles have been registered.
 	 * @see registerAssetBundle
 	 */
 	public $assetBundles;
@@ -233,10 +244,10 @@ class View extends Component
 	public function renderFile($viewFile, $params = array(), $context = null)
 	{
 		$viewFile = Yii::getAlias($viewFile);
+		if ($this->theme !== null) {
+			$viewFile = $this->theme->applyTo($viewFile);
+		}
 		if (is_file($viewFile)) {
-			if ($this->theme !== null) {
-				$viewFile = $this->theme->applyTo($viewFile);
-			}
 			$viewFile = FileHelper::localize($viewFile);
 		} else {
 			throw new InvalidParamException("The view file does not exist: $viewFile");
@@ -258,6 +269,7 @@ class View extends Component
 				$renderer = $this->renderers[$ext];
 				$output = $renderer->render($this, $viewFile, $params);
 			} else {
+				Yii::trace("Rendering view file: $viewFile", __METHOD__);
 				$output = $this->renderPhpFile($viewFile, $params);
 			}
 			$this->afterRender($viewFile, $output);
@@ -509,9 +521,9 @@ class View extends Component
 
 		$content = ob_get_clean();
 		echo strtr($content, array(
-			self::PL_HEAD => $this->renderHeadHtml(),
-			self::PL_BODY_BEGIN => $this->renderBodyBeginHtml(),
-			self::PL_BODY_END => $this->renderBodyEndHtml(),
+			self::PH_HEAD => $this->renderHeadHtml(),
+			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
+			self::PH_BODY_END => $this->renderBodyEndHtml(),
 		));
 
 		unset(
@@ -530,7 +542,8 @@ class View extends Component
 	 */
 	public function beginBody()
 	{
-		echo self::PL_BODY_BEGIN;
+		echo self::PH_BODY_BEGIN;
+		$this->trigger(self::EVENT_BEGIN_BODY);
 	}
 
 	/**
@@ -538,7 +551,8 @@ class View extends Component
 	 */
 	public function endBody()
 	{
-		echo self::PL_BODY_END;
+		$this->trigger(self::EVENT_END_BODY);
+		echo self::PH_BODY_END;
 	}
 
 	/**
@@ -546,13 +560,14 @@ class View extends Component
 	 */
 	public function head()
 	{
-		echo self::PL_HEAD;
+		echo self::PH_HEAD;
 	}
 
 	/**
 	 * Registers the named asset bundle.
 	 * All dependent asset bundles will be registered.
 	 * @param string $name the name of the asset bundle.
+	 * @return AssetBundle the registered asset bundle instance
 	 * @throws InvalidConfigException if the asset bundle does not exist or a circular dependency is detected
 	 */
 	public function registerAssetBundle($name)
@@ -560,16 +575,13 @@ class View extends Component
 		if (!isset($this->assetBundles[$name])) {
 			$am = $this->getAssetManager();
 			$bundle = $am->getBundle($name);
-			if ($bundle !== null) {
-				$this->assetBundles[$name] = false;
-				$bundle->registerAssets($this);
-				$this->assetBundles[$name] = true;
-			} else {
-				throw new InvalidConfigException("Unknown asset bundle: $name");
-			}
+			$this->assetBundles[$name] = false;
+			$bundle->registerAssets($this);
+			$this->assetBundles[$name] = true;
 		} elseif ($this->assetBundles[$name] === false) {
 			throw new InvalidConfigException("A circular dependency is detected for bundle '$name'.");
 		}
+		return $this->assetBundles[$name];
 	}
 
 	/**
@@ -653,12 +665,14 @@ class View extends Component
 		$key = $key ?: md5($js);
 		$this->js[$position][$key] = $js;
 		if ($position === self::POS_READY) {
-			$this->registerAssetBundle('yii/jquery');
+			JqueryAsset::register($this);
 		}
 	}
 
 	/**
 	 * Registers a JS file.
+	 * Please note that when this file depends on other JS files to be registered before,
+	 * for example jQuery, you should use [[registerAssetBundle]] instead.
 	 * @param string $url the JS file to be registered.
 	 * @param array $options the HTML attributes for the script tag. A special option
 	 * named "position" is supported which specifies where the JS script tag should be inserted

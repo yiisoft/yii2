@@ -5,9 +5,7 @@ namespace yiiunit\framework\rbac;
 use Yii;
 use yii\rbac\PhpManager;
 
-//require_once(__DIR__ . '/ManagerTestBase.php');
-
-class PhpManagerTest extends ManagerTestBase
+class PhpManagerTest extends ManagerTestCase
 {
 	protected function setUp()
 	{

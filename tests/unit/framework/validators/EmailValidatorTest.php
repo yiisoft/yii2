@@ -22,7 +22,7 @@ class EmailValidatorTest extends TestCase
 		$validator = new EmailValidator();
 		$validator->checkMX = true;
 
-		$this->assertTrue($validator->validateValue('sam@rmcreative.ru'));
+		$this->assertTrue($validator->validateValue('5011@gmail.com'));
 		$this->assertFalse($validator->validateValue('test@example.com'));
 	}
 }

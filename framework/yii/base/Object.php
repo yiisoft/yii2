@@ -7,12 +7,14 @@
 
 namespace yii\base;
 
+use Yii;
+
 /**
  * @include @yii/base/Object.md
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Object
+class Object implements Arrayable
 {
 	/**
 	 * @return string the fully qualified name of this class.
@@ -38,8 +40,8 @@ class Object
 	 */
 	public function __construct($config = array())
 	{
-		foreach ($config as $name => $value) {
-			$this->$name = $value;
+		if (!empty($config)) {
+			Yii::configure($this, $config);
 		}
 		$this->init();
 	}
@@ -168,17 +170,17 @@ class Object
 	 *
 	 * - the class has a getter or setter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property is defined
 	 * @see canGetProperty
 	 * @see canSetProperty
 	 */
-	public function hasProperty($name, $checkVar = true)
+	public function hasProperty($name, $checkVars = true)
 	{
-		return $this->canGetProperty($name, $checkVar) || $this->canSetProperty($name, false);
+		return $this->canGetProperty($name, $checkVars) || $this->canSetProperty($name, false);
 	}
 
 	/**
@@ -187,16 +189,16 @@ class Object
 	 *
 	 * - the class has a getter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property can be read
 	 * @see canSetProperty
 	 */
-	public function canGetProperty($name, $checkVar = true)
+	public function canGetProperty($name, $checkVars = true)
 	{
-		return method_exists($this, 'get' . $name) || $checkVar && property_exists($this, $name);
+		return method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name);
 	}
 
 	/**
@@ -205,15 +207,25 @@ class Object
 	 *
 	 * - the class has a setter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property can be written
 	 * @see canGetProperty
 	 */
-	public function canSetProperty($name, $checkVar = true)
+	public function canSetProperty($name, $checkVars = true)
 	{
-		return method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name);
+		return method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name);
+	}
+
+	/**
+	 * Converts the object into an array.
+	 * The default implementation will return all public property values as an array.
+	 * @return array the array representation of the object
+	 */
+	public function toArray()
+	{
+		return Yii::getObjectVars($this);
 	}
 }

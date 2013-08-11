@@ -78,16 +78,11 @@ class I18N extends Component
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-	 * @param string $language the language code (e.g. `en_US`, `en`). If this is null, the current
-	 * [[\yii\base\Application::language|application language]] will be used.
+	 * @param string $language the language code (e.g. `en_US`, `en`).
 	 * @return string the translated message.
 	 */
-	public function translate($category, $message, $params = array(), $language = null)
+	public function translate($category, $message, $params, $language)
 	{
-		if ($language === null) {
-			$language = Yii::$app->language;
-		}
-
 		$message = $this->getMessageSource($category)->translate($category, $message, $language);
 
 		if (!is_array($params)) {
@@ -118,7 +113,7 @@ class I18N extends Component
 		} else {
 			// try wildcard matching
 			foreach ($this->translations as $pattern => $config) {
-				if (substr($pattern, -1) === '*' && strpos($category, rtrim($pattern, '*')) === 0) {
+				if ($pattern === '*' || substr($pattern, -1) === '*' && strpos($category, rtrim($pattern, '*')) === 0) {
 					$source = $config;
 					break;
 				}
@@ -166,7 +161,7 @@ class I18N extends Component
 	protected function getPluralRules($language)
 	{
 		if (isset($this->_pluralRules[$language])) {
-			return $this->_pluralRules;
+			return $this->_pluralRules[$language];
 		}
 		$allRules = require(Yii::getAlias($this->pluralRuleFile));
 		if (isset($allRules[$language])) {

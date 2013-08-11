@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use Yii;
+
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
@@ -39,11 +41,15 @@ class InlineAction extends Action
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
 	 * @param array $params action parameters
-	 * @return integer the exit status (0 means normal, non-zero means abnormal).
+	 * @return mixed the result of the action
 	 */
 	public function runWithParams($params)
 	{
 		$args = $this->controller->bindActionParams($this, $params);
-		return (int)call_user_func_array(array($this->controller, $this->actionMethod), $args);
+		Yii::trace('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()', __METHOD__);
+		if (Yii::$app->requestedParams === null) {
+			Yii::$app->requestedParams = $args;
+		}
+		return call_user_func_array(array($this->controller, $this->actionMethod), $args);
 	}
 }

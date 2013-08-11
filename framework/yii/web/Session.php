@@ -45,6 +45,19 @@ use yii\base\InvalidParamException;
  * useful for displaying confirmation messages. To use flash messages, simply
  * call methods such as [[setFlash()]], [[getFlash()]].
  *
+ * @property string $id The current session ID.
+ * @property string $name The current session name.
+ * @property boolean $isActive Whether the session has started
+ * @property string $savePath The current session save path, defaults to {@link http://php.net/manual/en/session.configuration.php#ini.session.save-path}.
+ * @property array $cookieParams The session cookie parameters.
+ * @property boolean $useCookies Whether cookies should be used to store session IDs.
+ * @property float $gCProbability The probability (percentage) that the gc (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
+ * @property boolean $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to false.
+ * @property integer $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up, defaults to 1440 seconds.
+ * @property SessionIterator $iterator An iterator for traversing the session variables.
+ * @property integer $count The number of session variables.
+ * @property array $allFlashes The list of all flash messages.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -63,7 +76,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @var array parameter-value pairs to override default session cookie parameters
 	 */
 	public $cookieParams = array(
-		'httponly' => true
+		'httpOnly' => true
 	);
 
 	/**
@@ -241,26 +254,31 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getCookieParams()
 	{
-		return session_get_cookie_params();
+		$params = session_get_cookie_params();
+		if (isset($params['httponly'])) {
+			$params['httpOnly'] = $params['httponly'];
+			unset($params['httponly']);
+		}
+		return $params;
 	}
 
 	/**
 	 * Sets the session cookie parameters.
 	 * The effect of this method only lasts for the duration of the script.
 	 * Call this method before the session starts.
-	 * @param array $value cookie parameters, valid keys include: lifetime, path, domain, secure and httponly.
+	 * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httpOnly`.
 	 * @throws InvalidParamException if the parameters are incomplete.
 	 * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
 	 */
 	public function setCookieParams($value)
 	{
-		$data = session_get_cookie_params();
+		$data = $this->getCookieParams();
 		extract($data);
 		extract($value);
-		if (isset($lifetime, $path, $domain, $secure, $httponly)) {
-			session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
+		if (isset($lifetime, $path, $domain, $secure, $httpOnly)) {
+			session_set_cookie_params($lifetime, $path, $domain, $secure, $httpOnly);
 		} else {
-			throw new InvalidParamException('Please make sure these parameters are provided: lifetime, path, domain, secure and httponly.');
+			throw new InvalidParamException('Please make sure these parameters are provided: lifetime, path, domain, secure and httpOnly.');
 		}
 	}
 

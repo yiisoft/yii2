@@ -1,12 +1,12 @@
 <?php
 namespace yiiunit\framework\caching;
+use yii\caching\Cache;
 use yii\caching\ZendDataCache;
-use yiiunit\TestCase;
 
 /**
  * Class for testing Zend cache backend
  */
-class ZendDataCacheTest extends CacheTest
+class ZendDataCacheTest extends CacheTestCase
 {
 	private $_cacheInstance = null;
 

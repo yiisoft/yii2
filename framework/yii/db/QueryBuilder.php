@@ -7,7 +7,6 @@
 
 namespace yii\db;
 
-use yii\db\Exception;
 use yii\base\NotSupportedException;
 
 /**
@@ -95,6 +94,11 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function insert($table, $columns, &$params)
 	{
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = array();
+		}
 		$names = array();
 		$placeholders = array();
 		foreach ($columns as $name => $value) {
@@ -107,7 +111,7 @@ class QueryBuilder extends \yii\base\Object
 			} else {
 				$phName = self::PARAM_PREFIX . count($params);
 				$placeholders[] = $phName;
-				$params[$phName] = $value;
+				$params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($value) : $value;
 			}
 		}
 
@@ -165,6 +169,12 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function update($table, $columns, $condition, &$params)
 	{
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = array();
+		}
+
 		$lines = array();
 		foreach ($columns as $name => $value) {
 			if ($value instanceof Expression) {
@@ -175,7 +185,7 @@ class QueryBuilder extends \yii\base\Object
 			} else {
 				$phName = self::PARAM_PREFIX . count($params);
 				$lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
-				$params[$phName] = $value;
+				$params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($value) : $value;
 			}
 		}
 
@@ -267,6 +277,40 @@ class QueryBuilder extends \yii\base\Object
 	public function dropTable($table)
 	{
 		return "DROP TABLE " . $this->db->quoteTableName($table);
+	}
+	
+	/**
+	 * Builds a SQL statement for adding a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 * @return string the SQL statement for adding a primary key constraint to an existing table.
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		if (is_string($columns)) {
+			$columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+		}
+
+		foreach ($columns as $i => $col) {
+			$columns[$i] = $this->db->quoteColumnName($col);
+		}
+		
+		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+			. $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
+			. implode(', ', $columns). ' )';
+	}
+	
+	/**
+	 * Builds a SQL statement for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return string the SQL statement for removing a primary key constraint from an existing table.	 *
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+			. ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
 	}
 
 	/**
@@ -429,10 +473,11 @@ class QueryBuilder extends \yii\base\Object
 	 * Builds a SQL statement for enabling or disabling integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
 	 * @return string the SQL statement for checking integrity
 	 * @throws NotSupportedException if this is not supported by the underlying DBMS
 	 */
-	public function checkIntegrity($check = true, $schema = '')
+	public function checkIntegrity($check = true, $schema = '', $table = '')
 	{
 		throw new NotSupportedException($this->db->getDriverName() . ' does not support enabling/disabling integrity check.');
 	}
@@ -463,6 +508,12 @@ class QueryBuilder extends \yii\base\Object
 	 * the first part will be converted, and the rest of the parts will be appended to the converted result.
 	 * For example, 'string NOT NULL' is converted to 'varchar(255) NOT NULL'.
 	 *
+	 * For some of the abstract types you can also specify a length or precision constraint
+	 * by prepending it in round brackets directly to the type.
+	 * For example `string(32)` will be converted into "varchar(32)" on a MySQL database.
+	 * If the underlying DBMS does not support these kind of constraints for a type it will
+	 * be ignored.
+	 *
 	 * If a type cannot be found in [[typeMap]], it will be returned without any change.
 	 * @param string $type abstract column type
 	 * @return string physical column type.
@@ -471,6 +522,10 @@ class QueryBuilder extends \yii\base\Object
 	{
 		if (isset($this->typeMap[$type])) {
 			return $this->typeMap[$type];
+		} elseif (preg_match('/^(\w+)\((.+?)\)(.*)$/', $type, $matches)) {
+			if (isset($this->typeMap[$matches[1]])) {
+				return preg_replace('/\(.+\)/', '(' . $matches[2] . ')', $this->typeMap[$matches[1]]) . $matches[3];
+			}
 		} elseif (preg_match('/^(\w+)\s+/', $type, $matches)) {
 			if (isset($this->typeMap[$matches[1]])) {
 				return preg_replace('/^\w+/', $this->typeMap[$matches[1]], $type);

@@ -66,6 +66,11 @@ class PageCache extends ActionFilter
 	 * the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
 	 */
 	public $enabled = true;
+	/**
+	 * @var View the view component to use for caching. If not set, the default application view component
+	 * [[Application::view]] will be used.
+	 */
+	public $view;
 
 
 	public function init()
@@ -89,16 +94,26 @@ class PageCache extends ActionFilter
 			$properties[$name] = $this->$name;
 		}
 		$id = $this->varyByRoute ? $action->getUniqueId() : __CLASS__;
-		return $this->view->beginCache($id, $properties);
+		ob_start();
+		ob_implicit_flush(false);
+		if ($this->view->beginCache($id, $properties)) {
+			return true;
+		} else {
+			Yii::$app->getResponse()->content = ob_get_clean();
+			return false;
+		}
 	}
 
 	/**
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
 	 * @param Action $action the action just executed.
+	 * @param mixed $result the action execution result
 	 */
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
+		echo $result;
 		$this->view->endCache();
+		$result = ob_get_clean();
 	}
 }

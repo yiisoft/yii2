@@ -237,10 +237,10 @@ class Connection extends Component
 		'mysql' => 'yii\db\mysql\Schema',    // MySQL
 		'sqlite' => 'yii\db\sqlite\Schema',  // sqlite 3
 		'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
-		'mssql' => 'yii\db\dao\mssql\Schema', // Mssql driver on windows hosts
-		'sqlsrv' => 'yii\db\mssql\Schema',   // Mssql
+		'sqlsrv' => 'yii\db\mssql\Schema',   // newer MSSQL driver on MS Windows hosts
 		'oci' => 'yii\db\oci\Schema',        // Oracle driver
-		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on linux (and maybe others os) hosts
+		'mssql' => 'yii\db\mssql\Schema',    // older MSSQL driver on MS Windows hosts
+		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on GNU/Linux (and maybe other OSes) hosts
 	);
 	/**
 	 * @var Transaction the currently active transaction
@@ -251,15 +251,6 @@ class Connection extends Component
 	 */
 	private $_schema;
 
-	/**
-	 * Closes the connection when this component is being serialized.
-	 * @return array
-	 */
-	public function __sleep()
-	{
-		$this->close();
-		return array_keys(get_object_vars($this));
-	}
 
 	/**
 	 * Returns a value indicating whether the DB connection is established.
@@ -314,12 +305,9 @@ class Connection extends Component
 				$this->pdo = $this->createPdoInstance();
 				$this->initConnection();
 				Yii::endProfile($token, __METHOD__);
-			}
-			catch (\PDOException $e) {
+			} catch (\PDOException $e) {
 				Yii::endProfile($token, __METHOD__);
-				Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __METHOD__);
-				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
-				throw new Exception($message, $e->errorInfo, (int)$e->getCode());
+				throw new Exception($e->getMessage(), $e->errorInfo, (int)$e->getCode(), $e);
 			}
 		}
 	}
@@ -517,7 +505,7 @@ class Connection extends Component
 	{
 		$db = $this;
 		return preg_replace_callback('/(\\{\\{([%\w\-\. ]+)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
-			function($matches) use($db) {
+			function ($matches) use ($db) {
 				if (isset($matches[3])) {
 					return $db->quoteColumnName($matches[3]);
 				} else {

@@ -20,4 +20,5 @@ $application = new yii\console\Application(array(
 	'basePath' => __DIR__ . '/console',
 	'controllerPath' => '@yii/console/controllers',
 ));
-$application->run();
+$exitCode = $application->run();
+exit($exitCode);

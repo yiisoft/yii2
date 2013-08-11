@@ -7,8 +7,14 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
-class QueryTest extends \yiiunit\DatabaseTestCase
+class QueryTest extends DatabaseTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	function testSelect()
 	{
 		// default

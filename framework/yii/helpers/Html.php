@@ -13,6 +13,6 @@ namespace yii\helpers;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Html extends base\Html
+class Html extends HtmlBase
 {
 }

@@ -29,7 +29,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_INTEGER => 'int(11)',
 		Schema::TYPE_BIGINT => 'bigint(20)',
 		Schema::TYPE_FLOAT => 'float',
-		Schema::TYPE_DECIMAL => 'decimal',
+		Schema::TYPE_DECIMAL => 'decimal(10,0)',
 		Schema::TYPE_DATETIME => 'datetime',
 		Schema::TYPE_TIMESTAMP => 'timestamp',
 		Schema::TYPE_TIME => 'time',
@@ -50,7 +50,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	public function renameColumn($table, $oldName, $newName)
 	{
 		$quotedTable = $this->db->quoteTableName($table);
-		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
 		if ($row === false) {
 			throw new Exception("Unable to find column '$oldName' in table '$table'.");
 		}
@@ -89,6 +89,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	}
 
 	/**
+	 * Builds a SQL statement for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return string the SQL statement for removing a primary key constraint from an existing table.
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' DROP PRIMARY KEY';
+	}
+
+	/**
 	 * Creates a SQL statement for resetting the sequence value of a table's primary key.
 	 * The sequence will be reset such that the primary key of the next new row inserted
 	 * will have the specified value or 1.
@@ -113,19 +124,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		} elseif ($table === null) {
 			throw new InvalidParamException("Table not found: $tableName");
 		} else {
-			throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
+			throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
 		}
 	}
 
 	/**
 	 * Builds a SQL statement for enabling or disabling integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
-	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * @param string $table the table name. Meaningless for MySQL.
+	 * @param string $schema the schema of the tables. Meaningless for MySQL.
 	 * @return string the SQL statement for checking integrity
 	 */
-	public function checkIntegrity($check = true, $schema = '')
+	public function checkIntegrity($check = true, $schema = '', $table = '')
 	{
-		return 'SET FOREIGN_KEY_CHECKS=' . ($check ? 1 : 0);
+		return 'SET FOREIGN_KEY_CHECKS = ' . ($check ? 1 : 0);
 	}
 
 	/**
@@ -149,17 +161,29 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function batchInsert($table, $columns, $rows)
 	{
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = array();
+		}
+
+		foreach ($columns as $i => $name) {
+			$columns[$i] = $this->db->quoteColumnName($name);
+		}
+
 		$values = array();
 		foreach ($rows as $row) {
 			$vs = array();
-			foreach ($row as $value) {
+			foreach ($row as $i => $value) {
+				if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
+					$value = $columnSchemas[$columns[$i]]->typecast($value);
+				}
 				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
 			}
-			$values[] = $vs;
+			$values[] = '(' . implode(', ', $vs) . ')';
 		}
 
 		return 'INSERT INTO ' . $this->db->quoteTableName($table)
-			. ' (' . implode(', ', $columns) . ') VALUES ('
-			. implode(', ', $values) . ')';
+			. ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
 	}
 }

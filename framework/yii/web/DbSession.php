@@ -111,7 +111,7 @@ class DbSession extends Session
 		$row = $query->from($this->sessionTable)
 			->where(array('id' => $oldID))
 			->createCommand($this->db)
-			->queryRow();
+			->queryOne();
 		if ($row !== false) {
 			if ($deleteOldSession) {
 				$this->db->createCommand()

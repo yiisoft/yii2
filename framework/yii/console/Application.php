@@ -60,6 +60,10 @@ class Application extends \yii\base\Application
 	 * Defaults to true.
 	 */
 	public $enableCoreCommands = true;
+	/**
+	 * @var Controller the currently active controller instance
+	 */
+	public $controller;
 
 	/**
 	 * Initialize the application.
@@ -81,21 +85,31 @@ class Application extends \yii\base\Application
 	}
 
 	/**
-	 * Processes the request.
-	 * The request is represented in terms of a controller route and action parameters.
-	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
-	 * @throws Exception if the script is not running from the command line
+	 * Handles the specified request.
+	 * @param Request $request the request to be handled
+	 * @return Response the resulting response
 	 */
-	public function processRequest()
+	public function handleRequest($request)
 	{
-		/** @var $request Request */
-		$request = $this->getRequest();
-		if ($request->getIsConsoleRequest()) {
-			list ($route, $params) = $request->resolve();
-			return $this->runAction($route, $params);
+		list ($route, $params) = $request->resolve();
+		$this->requestedRoute = $route;
+		$result = $this->runAction($route, $params);
+		if ($result instanceof Response) {
+			return $result;
 		} else {
-			throw new Exception(\Yii::t('yii', 'This script must be run from the command line.'));
+			$response = $this->getResponse();
+			$response->exitStatus = (int)$result;
+			return $response;
 		}
+	}
+
+	/**
+	 * Returns the response component.
+	 * @return Response the response component
+	 */
+	public function getResponse()
+	{
+		return $this->getComponent('response');
 	}
 
 	/**
@@ -113,7 +127,7 @@ class Application extends \yii\base\Application
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			throw new Exception(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)));
+			throw new Exception(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)), 0, $e);
 		}
 	}
 
@@ -127,7 +141,6 @@ class Application extends \yii\base\Application
 			'message' => 'yii\console\controllers\MessageController',
 			'help' => 'yii\console\controllers\HelpController',
 			'migrate' => 'yii\console\controllers\MigrateController',
-			'app' => 'yii\console\controllers\AppController',
 			'cache' => 'yii\console\controllers\CacheController',
 			'asset' => 'yii\console\controllers\AssetController',
 		);
