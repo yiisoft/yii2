@@ -67,7 +67,7 @@ EOD;
 					'content' => $this->renderData('Routing', $data)
 						. $this->renderData('$_GET', $this->data['GET'])
 						. $this->renderData('$_POST', $this->data['POST'])
-						. $this->renderData('$_FILES', $this->data['POST'])
+						. $this->renderData('$_FILES', $this->data['FILES'])
 						. $this->renderData('$_COOKIE', $this->data['COOKIE']),
 					'active' => true,
 				),
