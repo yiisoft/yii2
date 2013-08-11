@@ -63,7 +63,11 @@ class RedisCache extends Cache
 	/**
 	 * @var float timeout to use for connection to redis. If not set the timeout set in php.ini will be used: ini_get("default_socket_timeout")
 	 */
-	public $timeout = null;
+	public $connectionTimeout = null;
+	/**
+	 * @var float timeout to use for redis socket when reading and writing data. If not set the php default value will be used.
+	 */
+	public $dataTimeout = null;
 	/**
 	 * @var \yii\db\redis\Connection the redis connection
 	 */
@@ -92,7 +96,8 @@ class RedisCache extends Cache
 			$this->_connection = new Connection(array(
 				'dsn' => 'redis://' . $this->hostname . ':' . $this->port . '/' . $this->database,
 				'password' => $this->password,
-				'timeout' => $this->timeout,
+				'connectionTimeout' => $this->connectionTimeout,
+				'dataTimeout' => $this->dataTimeout,
 			));
 		}
 		return $this->_connection;
