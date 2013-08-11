@@ -69,7 +69,7 @@ class Module extends \yii\base\Module
 		$this->logTarget = null;
 
 		if ($this->checkAccess($action)) {
-			return true;
+			return parent::beforeAction($action);
 		} elseif ($action->id === 'toolbar') {
 			return false;
 		} else {
