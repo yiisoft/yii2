@@ -48,7 +48,11 @@ class Connection extends Component
 	/**
 	 * @var float timeout to use for connection to redis. If not set the timeout set in php.ini will be used: ini_get("default_socket_timeout")
 	 */
-	public $timeout = null;
+	public $connectionTimeout = null;
+	/**
+	 * @var float timeout to use for redis socket when reading and writing data. If not set the php default value will be used.
+	 */
+	public $dataTimeout = null;
 
 	/**
 	 * @var array List of available redis commands http://redis.io/commands
@@ -245,9 +249,12 @@ class Connection extends Component
 				$host,
 				$errorNumber,
 				$errorDescription,
-				$this->timeout ? $this->timeout : ini_get("default_socket_timeout")
+				$this->connectionTimeout ? $this->connectionTimeout : ini_get("default_socket_timeout")
 			);
 			if ($this->_socket) {
+				if ($this->dataTimeout !== null) {
+					stream_set_timeout($this->_socket, $timeout=(int)$this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
+				}
 				if ($this->password !== null) {
 					$this->executeCommand('AUTH', array($this->password));
 				}
