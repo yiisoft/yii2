@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InlineAction;
+use yii\helpers\Html;
 
 /**
  * Controller is the base class of Web controllers.
@@ -95,7 +96,7 @@ class Controller extends \yii\base\Controller
 	 * Redirects the browser to the specified URL.
 	 * This method is a shortcut to [[Response::redirect()]].
 	 *
-	 * @param array|string $url the URL to be redirected to. [[\yii\helpers\Html::url()]]
+	 * @param array|string $url the URL to be redirected to. [[Html::url()]]
 	 * will be used to normalize the URL. If the resulting URL is still a relative URL
 	 * (one without host info), the current request host info will be used.
 	 * @param integer $statusCode the HTTP status code. If null, it will use 302
@@ -106,7 +107,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function redirect($url, $statusCode = null)
 	{
-		return Yii::$app->getResponse()->redirect($url, $statusCode);
+		return Yii::$app->getResponse()->redirect(Html::url($url), $statusCode);
 	}
 
 	/**
