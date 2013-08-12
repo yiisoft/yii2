@@ -353,11 +353,10 @@ class YiiBase
 				$path = str_replace('_', '/', $className) . '.php';
 			}
 
-			// try via path alias first
+			// try loading via path alias
 			if (strpos($path, '/') !== false) {
-				$fullPath = static::getAlias('@' . $path, false);
-				if ($fullPath !== false && is_file($fullPath)) {
-					$classFile = $fullPath;
+				$classFile = static::getAlias('@' . $path, false);
+				if ($classFile !== false && is_file($classFile)) {
 					include($classFile);
 				}
 			}
