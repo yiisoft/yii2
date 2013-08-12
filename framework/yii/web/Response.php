@@ -563,9 +563,9 @@ class Response extends \yii\base\Response
 	 * return Yii::$app->getResponse()->redirect($url);
 	 * ~~~
 	 *
-	 * @param array|string $url the URL to be redirected to. [[\yii\helpers\Html::url()]]
-	 * will be used to normalize the URL. If the resulting URL is still a relative URL
-	 * (one without host info), the current request host info will be used.
+	 * @param string $url the URL to be redirected to. This can be a URL or an alias of the URL.
+	 * The URL can be either relative or absolute. If relative, the host info of the current request
+	 * will be prepend to the URL.
 	 * @param integer $statusCode the HTTP status code. If null, it will use 302
 	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
@@ -574,7 +574,7 @@ class Response extends \yii\base\Response
 	 */
 	public function redirect($url, $statusCode = null)
 	{
-		$url = Html::url($url);
+		$url = Yii::getAlias($url);
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
 			$url = Yii::$app->getRequest()->getHostInfo() . $url;
 		}
