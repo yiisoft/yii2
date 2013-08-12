@@ -43,8 +43,8 @@ class Controller extends \yii\base\Controller
 	/**
 	 * Returns a value indicating whether ANSI color is enabled.
 	 *
-	 * ANSI color is enabled only if [[color]] is not set or is set true,
-	 * and the terminal must support ANSI color.
+	 * ANSI color is enabled only if [[color]] is set true or is not set
+	 * and the terminal supports ANSI color.
 	 *
 	 * @param resource $stream the stream to check.
 	 * @return boolean Whether to enable ANSI style in output.
@@ -140,7 +140,7 @@ class Controller extends \yii\base\Controller
 	 * Example:
 	 *
 	 * ~~~
-	 * $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
+	 * echo $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
 	 * ~~~
 	 *
 	 * @param string $string the string to be formatted
@@ -234,7 +234,8 @@ class Controller extends \yii\base\Controller
 	 *
 	 * @param string $message to echo out before waiting for user input
 	 * @param boolean $default this value is returned if no selection is made.
-	 * @return boolean whether user confirmed
+	 * @return boolean whether user confirmed.
+	 * Will return true if [[interactive]] is false.
 	 */
 	public function confirm($message, $default = false)
 	{
