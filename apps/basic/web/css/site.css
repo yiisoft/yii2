@@ -1,19 +1,20 @@
 body {
-  padding-top: 70px;
+	padding-top: 70px;
 }
 
 .footer {
-  border-top: 1px solid #ddd;
-  margin-top: 30px;
-  padding-top: 15px;
-  padding-bottom: 30px;
+	border-top: 1px solid #ddd;
+	margin-top: 30px;
+	padding-top: 15px;
+	padding-bottom: 30px;
 }
 
 .jumbotron {
-  text-align: center;
-  background-color: transparent;
+	text-align: center;
+	background-color: transparent;
 }
+
 .jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
+	font-size: 21px;
+	padding: 14px 24px;
 }
