@@ -6,9 +6,9 @@ use yiiunit\framework\db\ActiveRecordTest;
 
 class MssqlActiveRecordTest extends ActiveRecordTest
 {
-    protected function setUp()
-    {
-        $this->driverName = 'sqlsrv';
-        parent::setUp();
-    }
+	protected function setUp()
+	{
+		$this->driverName = 'sqlsrv';
+		parent::setUp();
+	}
 }

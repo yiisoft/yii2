@@ -8,7 +8,6 @@ use yiiunit\TestCase;
 
 class BarClass extends Component
 {
-
 }
 
 class FooClass extends Component

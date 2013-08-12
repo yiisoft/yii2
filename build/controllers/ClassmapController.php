@@ -33,7 +33,7 @@ class ClassmapController extends Controller
 			$mapFile = YII_PATH . '/classes.php';
 		}
 		$options = array(
-			'filter' => function($path) {
+			'filter' => function ($path) {
 				if (is_file($path)) {
 					$file = basename($path);
 					if ($file[0] < 'A' || $file[0] > 'Z') {

@@ -6,7 +6,8 @@ namespace yii\caching;
  * Mock for the time() function for caching classes
  * @return int
  */
-function time() {
+function time()
+{
 	return \yiiunit\framework\caching\CacheTestCase::$time ?: \time();
 }
 

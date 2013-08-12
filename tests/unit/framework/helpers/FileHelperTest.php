@@ -100,7 +100,7 @@ class FileHelperTest extends TestCase
 	 * @param string $fileName file name.
 	 * @param string $message error message
 	 */
-	protected function assertFileMode($expectedMode, $fileName, $message='')
+	protected function assertFileMode($expectedMode, $fileName, $message = '')
 	{
 		$expectedMode = sprintf('%o', $expectedMode);
 		$this->assertEquals($expectedMode, $this->getMode($fileName), $message);
@@ -236,7 +236,7 @@ class FileHelperTest extends TestCase
 		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
 
 		$options = array(
-			'filter' => function($path) use ($passedFileName) {
+			'filter' => function ($path) use ($passedFileName) {
 				return $passedFileName == basename($path);
 			}
 		);
@@ -268,7 +268,8 @@ class FileHelperTest extends TestCase
 		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
 	}
 
-	public function testMkdir() {
+	public function testMkdir()
+	{
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
 		FileHelper::mkdir($dirName);

@@ -38,8 +38,7 @@ AppAsset::register($this);
 		if (Yii::$app->user->isGuest) {
 			$menuItems[] = array('label' => 'Signup', 'url' => array('/site/signup'));
 			$menuItems[] = array('label' => 'Login', 'url' => array('/site/login'));
-		}
-		else {
+		} else {
 			$menuItems[] = array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout'));
 		}
 		echo Nav::widget(array(

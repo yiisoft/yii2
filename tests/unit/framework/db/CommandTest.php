@@ -15,7 +15,7 @@ class CommandTest extends DatabaseTestCase
 		$this->mockApplication();
 	}
 
-	function testConstruct()
+	public function testConstruct()
 	{
 		$db = $this->getConnection(false);
 
@@ -29,7 +29,7 @@ class CommandTest extends DatabaseTestCase
 		$this->assertEquals($sql, $command->sql);
 	}
 
-	function testGetSetSql()
+	public function testGetSetSql()
 	{
 		$db = $this->getConnection(false);
 
@@ -42,7 +42,7 @@ class CommandTest extends DatabaseTestCase
 		$this->assertEquals($sql2, $command->sql);
 	}
 
-	function testAutoQuoting()
+	public function testAutoQuoting()
 	{
 		$db = $this->getConnection(false);
 
@@ -51,7 +51,7 @@ class CommandTest extends DatabaseTestCase
 		$this->assertEquals("SELECT `id`, `t`.`name` FROM `tbl_customer` t", $command->sql);
 	}
 
-	function testPrepareCancel()
+	public function testPrepareCancel()
 	{
 		$db = $this->getConnection(false);
 
@@ -63,7 +63,7 @@ class CommandTest extends DatabaseTestCase
 		$this->assertEquals(null, $command->pdoStatement);
 	}
 
-	function testExecute()
+	public function testExecute()
 	{
 		$db = $this->getConnection();
 
@@ -80,7 +80,7 @@ class CommandTest extends DatabaseTestCase
 		$command->execute();
 	}
 
-	function testQuery()
+	public function testQuery()
 	{
 		$db = $this->getConnection();
 
@@ -141,7 +141,7 @@ class CommandTest extends DatabaseTestCase
 		$command->query();
 	}
 
-	function testBindParamValue()
+	public function testBindParamValue()
 	{
 		$db = $this->getConnection();
 
@@ -197,7 +197,7 @@ class CommandTest extends DatabaseTestCase
 		$this->assertEquals('user5@example.com', $command->queryScalar());
 	}
 
-	function testFetchMode()
+	public function testFetchMode()
 	{
 		$db = $this->getConnection();
 
@@ -221,78 +221,63 @@ class CommandTest extends DatabaseTestCase
 		$this->assertTrue(is_array($result) && isset($result[0]));
 	}
 
-	function testInsert()
+	public function testInsert()
 	{
-
 	}
 
-	function testUpdate()
+	public function testUpdate()
 	{
-
 	}
 
-	function testDelete()
+	public function testDelete()
 	{
-
 	}
 
-	function testCreateTable()
+	public function testCreateTable()
 	{
-
 	}
 
-	function testRenameTable()
+	public function testRenameTable()
 	{
-
 	}
 
-	function testDropTable()
+	public function testDropTable()
 	{
-
 	}
 
-	function testTruncateTable()
+	public function testTruncateTable()
 	{
-
 	}
 
-	function testAddColumn()
+	public function testAddColumn()
 	{
-
 	}
 
-	function testDropColumn()
+	public function testDropColumn()
 	{
-
 	}
 
-	function testRenameColumn()
+	public function testRenameColumn()
 	{
-
 	}
 
-	function testAlterColumn()
+	public function testAlterColumn()
 	{
-
 	}
 
-	function testAddForeignKey()
+	public function testAddForeignKey()
 	{
-
 	}
 
-	function testDropForeignKey()
+	public function testDropForeignKey()
 	{
-
 	}
 
-	function testCreateIndex()
+	public function testCreateIndex()
 	{
-
 	}
 
-	function testDropIndex()
+	public function testDropIndex()
 	{
-
 	}
 }
