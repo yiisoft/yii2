@@ -31,7 +31,7 @@ class SiteController extends Controller
 	{
 		$model = new LoginForm();
 		if ($model->load($_POST) && $model->login()) {
-			return $this->redirect(array('site/index'));
+			return $this->goHome();
 		} else {
 			return $this->render('login', array(
 				'model' => $model,
@@ -42,7 +42,7 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::$app->user->logout();
-		return $this->redirect(array('site/index'));
+		return $this->goHome();
 	}
 
 	public function actionContact()

@@ -37,7 +37,8 @@ app\config\AppAsset::register($this);
 				Yii::$app->user->isGuest ?
 					array('label' => 'Login', 'url' => array('/site/login')) :
 					array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout')),
-			)));
+			),
+		));
 		NavBar::end();
 	?>
 
