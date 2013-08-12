@@ -37,7 +37,6 @@ return array(
 	'yii\base\Request' => YII_PATH . '/base/Request.php',
 	'yii\base\Response' => YII_PATH . '/base/Response.php',
 	'yii\base\Theme' => YII_PATH . '/base/Theme.php',
-	'yii\base\UnknownClassException' => YII_PATH . '/base/UnknownClassException.php',
 	'yii\base\UnknownMethodException' => YII_PATH . '/base/UnknownMethodException.php',
 	'yii\base\UnknownPropertyException' => YII_PATH . '/base/UnknownPropertyException.php',
 	'yii\base\UserException' => YII_PATH . '/base/UserException.php',
