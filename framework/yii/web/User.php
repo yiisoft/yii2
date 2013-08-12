@@ -45,12 +45,12 @@ class User extends Component
 	 * the name-value pairs are GET parameters used to construct the login URL. For example,
 	 *
 	 * ~~~
-	 * array('site/login', 'ref' => 1)
+	 * array('/site/login', 'ref' => 1)
 	 * ~~~
 	 *
 	 * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
 	 */
-	public $loginUrl = array('site/login');
+	public $loginUrl = array('/site/login');
 	/**
 	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
 	 * @see Cookie
