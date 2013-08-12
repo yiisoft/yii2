@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 /**
  * @var yii\base\View $this
  * @var yii\widgets\ActiveForm $form
- * @var frontend\models\User $model
+ * @var common\models\User $model
  */
 $this->title = 'Request password reset';
 $this->params['breadcrumbs'][] = $this->title;
