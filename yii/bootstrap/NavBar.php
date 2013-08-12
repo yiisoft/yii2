@@ -21,7 +21,7 @@ use yii\helpers\Html;
  * use yii\widgets\Menu;
  *
  * NavBar::begin(array('brandLabel' => 'NavBar Test'));
- * echo Menu::widget(array(
+ * echo Nav::widget(array(
  *     'items' => array(
  *         array('label' => 'Home', 'url' => array('/site/index')),
  *         array('label' => 'About', 'url' => array('/site/about')),
