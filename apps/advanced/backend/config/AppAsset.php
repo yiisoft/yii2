@@ -6,6 +6,7 @@
  */
 
 namespace backend\config;
+
 use yii\web\AssetBundle;
 
 /**
