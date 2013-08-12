@@ -1,7 +1,7 @@
 <?php
-use yii\bootstrap\NavBar;
 use yii\helpers\Html;
-use yii\widgets\Menu;
+use yii\bootstrap\Nav;
+use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 
 /**
@@ -28,8 +28,8 @@ app\config\AppAsset::register($this);
 				'class' => 'navbar-inverse navbar-fixed-top',
 			),
 		));
-		echo Menu::widget(array(
-			'options' => array('class' => 'nav navbar-nav pull-right'),
+		echo Nav::widget(array(
+			'options' => array('class' => 'navbar-nav pull-right'),
 			'items' => array(
 				array('label' => 'Home', 'url' => array('/site/index')),
 				array('label' => 'About', 'url' => array('/site/about')),
