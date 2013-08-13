@@ -74,7 +74,7 @@ abstract class Validator extends Component
 	/**
 	 * @var array list of attributes to be validated.
 	 */
-	public $attributes;
+	public $attributes = array();
 	/**
 	 * @var string the user-defined error message. It may contain the following placeholders which
 	 * will be replaced accordingly by the validator:
