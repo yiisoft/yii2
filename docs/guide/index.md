@@ -75,5 +75,6 @@ More
 - [Theming](theming.md)
 - [Console Application](console.md)
 - [Performance Tuning](performance.md)
+- [Managing assets](assets.md)
 - [Testing](testing.md)
 - [Upgrading from 1.1 to 2.0](upgrade-from-v1.md)
