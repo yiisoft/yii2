@@ -42,10 +42,42 @@ There's also a `common` directory that contains files used by more than one appl
 frontend and backend are both web applications and both contain `web` directory. That's the webroot you should point your
 webserver to.
 
+Each application has its own namespace and alias corresponding to its name. Same applies to common directory.
+
 Configuration and environments
 ------------------------------
 
+There are multiple problems with straightforward approach to configuration:
 
+- Each team member has its own configuration options. Commiting such config will affect other team members.
+- Production database password and API keys should not end up in repository.
+- There are multiple servers: development, testing, production. Each should have its own configuration.
+- Defining all configuration options for each case is very repetitive and takes too much time to maintain.
+
+In order to solve these issues Yii introduces environments concept that is very simple. Each environment is represented
+by a set of files under `environments` directory. `init` command is used to switch between these. What is really does is
+just copying everything from environment directory over the root directory where all applications are.
+
+Typically environment contains application bootstrap files such as `index.php` and config files postfixed with
+`-local.php`. These are added to `.gitignore` and never added to source code repository.
+
+In order to avoid duplication configurations are overrding each other. For example, frontend reads configuration in the
+following order:
+
+- `frontend/config/main.php`
+- `frontend/config/main-local.php`
+
+Parameters are read in the following order:
+
+- `common/config/params.php`
+- `common/config/params-local.php`
+- `frontend/config/params.php`
+- `frontend/config/params-local.php`
+
+The later config file overrides the former.
+
+Another difference is that most application component configurations are moved to params. Since params are read from
+`common` as well it allows you to specify database connection in one file and it will be then used for all applications.
 
 Configuring Composer
 --------------------
