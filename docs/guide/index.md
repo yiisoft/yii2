@@ -7,8 +7,14 @@ Getting started
 ===============
 
 - [Installation](installation.md)
-- [Bootstrap with Yii](bootstrap.md)
 - [Configuration](configuration.md)
+
+Application templates
+=====================
+
+- [Basic](apps-basic.md)
+- [Advanced](apps-advanced.md)
+- [Creating your own application template](apps-own.md)
 
 Base concepts
 =============
@@ -57,13 +63,6 @@ Toolbox
 - [Error Handling](error.md)
 - [Logging](logging.md)
 
-Application templates
-=====================
-
-- [Basic](application-basic.md)
-- [Advanced](application-advanced.md)
-- [Creating your own application template](application-own.md)
-
 More
 ====
 
@@ -76,5 +75,6 @@ More
 - [Theming](theming.md)
 - [Console Application](console.md)
 - [Performance Tuning](performance.md)
+- [Managing assets](assets.md)
 - [Testing](testing.md)
 - [Upgrading from 1.1 to 2.0](upgrade-from-v1.md)
