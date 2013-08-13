@@ -8,7 +8,38 @@ database, signup and password restore out of the box.
 Installation
 ------------
 
-TBD
+### Install via Composer
+
+If you do not have [Composer](http://getcomposer.org/), you may download it from
+[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
+
+~~~
+curl -s http://getcomposer.org/installer | php
+~~~
+
+You can then install the application using the following command:
+
+~~~
+php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-advanced
+~~~
+
+Getting started
+---------------
+
+After you install the application, you have to conduct the following steps to initialize
+the installed application. You only need to do these once for all.
+
+1. Execute the `init` command and select `dev` as environment.
+2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
+3. In `common/config/params.php` set your database details in `components.db` values.
+
+Now you should be able to access:
+
+- the frontend using the URL `http://localhost/yii-advanced/frontend/web/`
+- the backend using the URL `http://localhost/yii-advanced/backend/web/`
+
+assuming `yii-advanced` is directly under the document root of your Web server.
+
 
 Directory structure
 -------------------

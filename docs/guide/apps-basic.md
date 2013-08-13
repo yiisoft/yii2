@@ -10,7 +10,21 @@ and the login page allows users to be authenticated before accessing privileged 
 Installation
 ------------
 
-TBD
+If you do not have [Composer](http://getcomposer.org/), you may download it from
+[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
+
+~~~
+curl -s http://getcomposer.org/installer | php
+~~~
+
+You can then install the Bootstrap Application using the following command:
+
+~~~
+php composer.phar create-project --stability=dev yiisoft/yii2-app-basic yii-basic
+~~~
+
+Now you should be able to access the application using the URL `http://localhost/yii-basic/web/`,
+assuming `yii-basic` is directly under the document root of your Web server.
 
 Directory structure
 -------------------
