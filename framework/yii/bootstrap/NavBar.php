@@ -41,7 +41,7 @@ class NavBar extends Widget
 	 */
 	public $responsive = true;
 	/**
-	 * @var string the text of the brand.
+	 * @var string the text of the brand. Note that this is not HTML-encoded.
 	 * @see http://twitter.github.io/bootstrap/components.html#navbar
 	 */
 	public $brandLabel;

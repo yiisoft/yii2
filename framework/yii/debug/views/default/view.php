@@ -28,7 +28,7 @@ $this->title = 'Yii Debugger';
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-2">
-				<div class="list-group affix-top">
+				<div class="list-group">
 					<?php
 					foreach ($panels as $id => $panel) {
 						$label = '<i class="glyphicon glyphicon-chevron-right"></i>' . Html::encode($panel->getName());
