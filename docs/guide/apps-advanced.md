@@ -1,0 +1,3 @@
+Advanced application template
+=============================
+
