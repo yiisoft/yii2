@@ -7,6 +7,11 @@ The application has four pages: the homepage, the about page, the contact page a
 The contact page displays a contact form that users can fill in to submit their inquiries to the webmaster,
 and the login page allows users to be authenticated before accessing privileged contents.
 
+Installation
+------------
+
+TBD
+
 Directory structure
 -------------------
 

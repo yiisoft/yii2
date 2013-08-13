@@ -5,6 +5,11 @@ This template is for large projects developed in teams where backend is divided 
 to multiple servers etc. This application template also goes a bit further regarding features and provides essential
 database, signup and password restore out of the box.
 
+Installation
+------------
+
+TBD
+
 Directory structure
 -------------------
 
