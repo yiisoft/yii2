@@ -41,17 +41,33 @@ Security and access control
 - [Security](security.md)
 - Role based access control
 
+Data providers, lists and grids
+===============================
+
+- Overview
+- Data providers
+- Grids
+- Lists
+
 Toolbox
 =======
 
 - [Automatic Code Generation](gii.md)
-- Debug toolbar
+- [Debug toolbar and debugger](debugger.md)
 - [Error Handling](error.md)
 - [Logging](logging.md)
+
+Application templates
+=====================
+
+- [Basic](application-basic.md)
+- [Advanced](application-advanced.md)
+- [Creating your own application template](application-own.md)
 
 More
 ====
 
+- [Bootstrap widgets](bootstrap-widgets.md)
 - [Form](form.md)
 - [Model validation reference](validation.md)
 - [Caching](caching.md)
