@@ -194,6 +194,18 @@ class Controller extends Component
 				}
 			}
 		}
+		return $this->missingAction($id);
+	}
+
+	/**
+	 * This method is invoked when the requested action could not be found.
+	 * You may override this method to create an action instance on demand.
+	 * @param string $id the id of the requested action.
+	 * @return Action the newly created action instance. Null if the ID doesn't resolve into any action.
+	 * @see createController
+	 */
+	public function missingAction($id)
+	{
 		return null;
 	}
 
