@@ -9,13 +9,24 @@ use yii\base\Model;
  */
 class FakedValidationModel extends Model
 {
-	private $attr = array();
-
 	public $val_attr_a;
 	public $val_attr_b;
 	public $val_attr_c;
 	public $val_attr_d;
+	private $attr = array();
 
+	/**
+	 * @param array $attributes
+	 * @return self
+	 */
+	public static function createWithAttributes($attributes = array())
+	{
+		$m = new static();
+		foreach ($attributes as $attribute => $value) {
+			$m->$attribute = $value;
+		}
+		return $m;
+	}
 
 	public function rules()
 	{
