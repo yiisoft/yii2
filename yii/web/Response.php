@@ -515,7 +515,7 @@ class Response extends \yii\base\Response
 	 * **Example**
 	 * 
 	 * ~~~
-	 * Yii::app()->request->xSendFile('/home/user/Pictures/picture1.jpg');
+	 * Yii::$app->request->xSendFile('/home/user/Pictures/picture1.jpg');
 	 * ~~~
 	 *
 	 * @param string $filePath file name with full path
@@ -563,9 +563,17 @@ class Response extends \yii\base\Response
 	 * return Yii::$app->getResponse()->redirect($url);
 	 * ~~~
 	 *
-	 * @param array|string $url the URL to be redirected to. [[\yii\helpers\Html::url()]]
-	 * will be used to normalize the URL. If the resulting URL is still a relative URL
-	 * (one without host info), the current request host info will be used.
+	 * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
+	 *
+	 * - a string representing a URL (e.g. "http://example.com")
+	 * - a string representing a URL alias (e.g. "@example.com")
+	 * - an array in the format of `array($route, ...name-value pairs...)` (e.g. `array('site/index', 'ref' => 1)`).
+	 *   Note that the route is with respect to the whole application, instead of relative to a controller or module.
+	 *   [[Html::url()]] will be used to convert the array into a URL.
+	 *
+	 * Any relative URL will be converted into an absolute one by prepending it with the host info
+	 * of the current request.
+	 *
 	 * @param integer $statusCode the HTTP status code. If null, it will use 302
 	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
@@ -574,6 +582,10 @@ class Response extends \yii\base\Response
 	 */
 	public function redirect($url, $statusCode = null)
 	{
+		if (is_array($url) && isset($url[0])) {
+			// ensure the route is absolute
+			$url[0] = '/' . ltrim($url[0], '/');
+		}
 		$url = Html::url($url);
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
 			$url = Yii::$app->getRequest()->getHostInfo() . $url;

@@ -46,7 +46,7 @@ class ButtonDropdown extends Widget
 	/**
 	 * @var array the HTML attributes of the button.
 	 */
-	public $buttonOptions = array();
+	public $options = array();
 	/**
 	 * @var array the configuration array for [[Dropdown]].
 	 */
@@ -58,24 +58,11 @@ class ButtonDropdown extends Widget
 
 
 	/**
-	 * Initializes the widget.
-	 * If you override this method, make sure you call the parent implementation first.
-	 */
-	public function init()
-	{
-		parent::init();
-		Html::addCssClass($this->options, 'btn-group');
-	}
-
-	/**
 	 * Renders the widget.
 	 */
 	public function run()
 	{
-		echo Html::beginTag('div', $this->options) . "\n";
-		echo $this->renderButton() . "\n";
-		echo $this->renderDropdown() . "\n";
-		echo Html::endTag('div') . "\n";
+		echo $this->renderButton() . "\n" . $this->renderDropdown();
 		$this->registerPlugin('button');
 	}
 
@@ -85,21 +72,21 @@ class ButtonDropdown extends Widget
 	 */
 	protected function renderButton()
 	{
-		Html::addCssClass($this->buttonOptions, 'btn');
+		Html::addCssClass($this->options, 'btn');
 		if ($this->split) {
 			$tag = 'button';
-			$options = $this->buttonOptions;
-			$this->buttonOptions['data-toggle'] = 'dropdown';
-			Html::addCssClass($this->buttonOptions, 'dropdown-toggle');
+			$options = $this->options;
+			$this->options['data-toggle'] = 'dropdown';
+			Html::addCssClass($this->options, 'dropdown-toggle');
 			$splitButton = Button::widget(array(
 				'label' => '<span class="caret"></span>',
 				'encodeLabel' => false,
-				'options' => $this->buttonOptions,
+				'options' => $this->options,
 			));
 		} else {
 			$tag = 'a';
 			$this->label .= ' <span class="caret"></span>';
-			$options = $this->buttonOptions;
+			$options = $this->options;
 			if (!isset($options['href'])) {
 				$options['href'] = '#';
 			}

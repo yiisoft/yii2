@@ -5,22 +5,22 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\bootstrap;
+namespace yii\grid;
+
 use yii\web\AssetBundle;
 
 /**
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DropdownAsset extends AssetBundle
+class GridViewAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/bootstrap/assets';
+	public $sourcePath = '@yii/assets';
 	public $js = array(
-		'js/bootstrap-dropdown.js',
+		'yii.gridView.js',
 	);
 	public $depends = array(
-		'yii\bootstrap\TransitionAsset',
-		'yii\bootstrap\BootstrapAsset',
-		'yii\web\JqueryAsset',
+		'yii\web\YiiAsset',
 	);
 }

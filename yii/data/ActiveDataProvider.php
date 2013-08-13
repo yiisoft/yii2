@@ -153,7 +153,7 @@ class ActiveDataProvider extends DataProvider
 				$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
 			}
 			if (($sort = $this->getSort()) !== false) {
-				$this->query->orderBy($sort->getOrders());
+				$this->query->addOrderBy($sort->getOrders());
 			}
 			$this->_models = $this->query->all($this->db);
 		}

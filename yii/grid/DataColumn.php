@@ -5,8 +5,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets\grid;
-use yii\base\InvalidConfigException;
+namespace yii\grid;
+
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
@@ -20,8 +20,22 @@ use yii\helpers\Inflector;
  */
 class DataColumn extends Column
 {
+	/**
+	 * @var string the attribute name associated with this column. When neither [[content]] nor [[value]]
+	 * is specified, the value of the specified attribute will be retrieved from each data model and displayed.
+	 *
+	 * Also, if [[header]] is not specified, the label associated with the attribute will be displayed.
+	 */
 	public $attribute;
+	/**
+	 * @var \Closure an anonymous function that returns the value to be displayed for every data model.
+	 * If this is not set, `$model[$attribute]` will be used to obtain the value.
+	 */
 	public $value;
+	/**
+	 * @var string in which format should the value of each data model be displayed as (e.g. "text", "html").
+	 * Supported formats are determined by the [[GridView::formatter|formatter]] used by the [[GridView]].
+	 */
 	public $format;
 	/**
 	 * @var boolean whether to allow sorting by this column. If true and [[attribute]] is found in
@@ -30,13 +44,13 @@ class DataColumn extends Column
 	 */
 	public $enableSorting = true;
 	/**
-	 * @var string|array|boolean the HTML code representing a filter input (eg a text field, a dropdown list)
-	 * that is used for this data column. This property is effective only when
-	 * {@link CGridView::filter} is set.
-	 * If this property is not set, a text field will be generated as the filter input;
-	 * If this property is an array, a dropdown list will be generated that uses this property value as
-	 * the list options.
-	 * If you don't want a filter for this data column, set this value to false.
+	 * @var string|array|boolean the HTML code representing a filter input (e.g. a text field, a dropdown list)
+	 * that is used for this data column. This property is effective only when [[GridView::filterModel]] is set.
+	 *
+	 * - If this property is not set, a text field will be generated as the filter input;
+	 * - If this property is an array, a dropdown list will be generated that uses this property value as
+	 *   the list options.
+	 * - If you don't want a filter for this data column, set this value to be false.
 	 */
 	public $filter;
 

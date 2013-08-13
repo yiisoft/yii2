@@ -45,10 +45,10 @@ class RequestPanel extends Panel
 
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
-	<a href="$url" title="Status code: $statusCode $statusText"><span class="label $class">$statusCode</span></a>
+	<a href="$url" title="Status code: $statusCode $statusText">Status <span class="label $class">$statusCode</span></a>
 </div>
 <div class="yii-debug-toolbar-block">
-	<a href="$url">Action: <span class="label">{$this->data['action']}</span></a>
+	<a href="$url">Action <span class="label">{$this->data['action']}</span></a>
 </div>
 EOD;
 	}
@@ -67,7 +67,7 @@ EOD;
 					'content' => $this->renderData('Routing', $data)
 						. $this->renderData('$_GET', $this->data['GET'])
 						. $this->renderData('$_POST', $this->data['POST'])
-						. $this->renderData('$_FILES', $this->data['POST'])
+						. $this->renderData('$_FILES', $this->data['FILES'])
 						. $this->renderData('$_COOKIE', $this->data['COOKIE']),
 					'active' => true,
 				),
@@ -151,7 +151,7 @@ EOD;
 		}
 		$rows = array();
 		foreach ($values as $name => $value) {
-			$rows[] = '<tr><th style="width: 200px;">' . Html::encode($name) . '</th><td><div style="overflow:auto">' . Html::encode(var_export($value, true)) . '</div></td></tr>';
+			$rows[] = '<tr><th style="width: 200px;">' . Html::encode($name) . '</th><td>' . Html::encode(var_export($value, true)) . '</td></tr>';
 		}
 		$rows = implode("\n", $rows);
 		return <<<EOD

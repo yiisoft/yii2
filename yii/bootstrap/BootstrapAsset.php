@@ -6,6 +6,7 @@
  */
 
 namespace yii\bootstrap;
+
 use yii\web\AssetBundle;
 
 /**
@@ -17,5 +18,6 @@ class BootstrapAsset extends AssetBundle
 	public $sourcePath = '@yii/bootstrap/assets';
 	public $css = array(
 		'css/bootstrap.css',
+		'css/bootstrap-glyphicons.css',
 	);
 }

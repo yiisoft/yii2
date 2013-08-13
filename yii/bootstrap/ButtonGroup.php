@@ -18,7 +18,7 @@ use yii\helpers\Html;
  * ```php
  * // a button group with items configuration
  * echo ButtonGroup::::widget(array(
- *     'items' => array(
+ *     'buttons' => array(
  *         array('label' => 'A'),
  *         array('label' => 'B'),
  *     )
@@ -26,7 +26,7 @@ use yii\helpers\Html;
  *
  * // button group with an item as a string
  * echo ButtonGroup::::widget(array(
- *     'items' => array(
+ *     'buttons' => array(
  *         Button::widget(array('label' => 'A')),
  *         array('label' => 'B'),
  *     )
@@ -60,7 +60,6 @@ class ButtonGroup extends Widget
 	public function init()
 	{
 		parent::init();
-		$this->clientOptions = false;
 		Html::addCssClass($this->options, 'btn-group');
 	}
 
@@ -70,7 +69,7 @@ class ButtonGroup extends Widget
 	public function run()
 	{
 		echo Html::tag('div', $this->renderButtons(), $this->options);
-		$this->registerPlugin('button');
+		BootstrapAsset::register($this->getView());
 	}
 
 	/**

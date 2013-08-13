@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InlineAction;
+use yii\helpers\Html;
 
 /**
  * Controller is the base class of Web controllers.
@@ -95,18 +96,34 @@ class Controller extends \yii\base\Controller
 	 * Redirects the browser to the specified URL.
 	 * This method is a shortcut to [[Response::redirect()]].
 	 *
-	 * @param array|string $url the URL to be redirected to. [[\yii\helpers\Html::url()]]
-	 * will be used to normalize the URL. If the resulting URL is still a relative URL
-	 * (one without host info), the current request host info will be used.
+	 * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
+	 *
+	 * - a string representing a URL (e.g. "http://example.com")
+	 * - a string representing a URL alias (e.g. "@example.com")
+	 * - an array in the format of `array($route, ...name-value pairs...)` (e.g. `array('site/index', 'ref' => 1)`)
+	 *   [[Html::url()]] will be used to convert the array into a URL.
+	 *
+	 * Any relative URL will be converted into an absolute one by prepending it with the host info
+	 * of the current request.
+	 *
 	 * @param integer $statusCode the HTTP status code. If null, it will use 302
 	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
-	 * @return Response the response object itself
+	 * @return Response the current response object
 	 */
 	public function redirect($url, $statusCode = null)
 	{
-		return Yii::$app->getResponse()->redirect($url, $statusCode);
+		return Yii::$app->getResponse()->redirect(Html::url($url), $statusCode);
+	}
+
+	/**
+	 * Redirects the browser to the home page.
+	 * @return Response the current response object
+	 */
+	public function goHome()
+	{
+		return Yii::$app->getResponse()->redirect(Yii::$app->getHomeUrl());
 	}
 
 	/**

@@ -5,25 +5,20 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets\grid;
+namespace yii\grid;
 
 use Closure;
 use yii\base\Object;
 use yii\helpers\Html;
-use yii\widgets\GridView;
 
 /**
+ * Column is the base class of all [[GridView]] column classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Column extends Object
 {
-	/**
-	 * @var string the ID of this column. This value should be unique among all grid view columns.
-	 * If this is not set, it will be assigned one automatically.
-	 */
-	public $id;
 	/**
 	 * @var GridView the grid view object that owns this column.
 	 */
@@ -49,7 +44,7 @@ class Column extends Object
 	/**
 	 * @var array|\Closure
 	 */
-	public $bodyOptions = array();
+	public $contentOptions = array();
 	public $footerOptions = array();
 	/**
 	 * @var array the HTML attributes for the filter cell tag.
@@ -81,10 +76,10 @@ class Column extends Object
 	 */
 	public function renderDataCell($model, $index)
 	{
-		if ($this->bodyOptions instanceof Closure) {
-			$options = call_user_func($this->bodyOptions, $model, $index, $this);
+		if ($this->contentOptions instanceof Closure) {
+			$options = call_user_func($this->contentOptions, $model, $index, $this);
 		} else {
-			$options = $this->bodyOptions;
+			$options = $this->contentOptions;
 		}
 		return Html::tag('td', $this->renderDataCellContent($model, $index), $options);
 	}

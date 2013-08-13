@@ -53,11 +53,11 @@ class ActiveForm extends Widget
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute has validation error.
 	 */
-	public $errorCssClass = 'error';
+	public $errorCssClass = 'has-error';
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute is successfully validated.
 	 */
-	public $successCssClass = 'success';
+	public $successCssClass = 'has-success';
 	/**
 	 * @var string the CSS class that is added to a field container when the associated attribute is being validated.
 	 */
@@ -152,7 +152,7 @@ class ActiveForm extends Widget
 			$this->options['id'] = $this->getId();
 		}
 		if (!isset($this->fieldConfig['class'])) {
-			$this->fieldConfig['class'] = 'yii\widgets\ActiveField';
+			$this->fieldConfig['class'] = ActiveField::className();
 		}
 		echo Html::beginForm($this->action, $this->method, $this->options);
 	}
