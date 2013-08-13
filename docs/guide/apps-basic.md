@@ -29,9 +29,9 @@ code repository, add it there.
 - `LICENSE.md` - license info. Put your project license there. Especially when opensourcing.
 - `README.md` - basic info about installing template. Consider replacing it with information about your project and its
   installation.
-- `requirements.php` - Yii requirements checker. Don't forget to delete it when deployed to the server.
+- `requirements.php` - Yii requirements checker.
 - `yii` - console application bootstrap.
-- `yii.bat` - console application bootstrap for Windows.
+- `yii.bat` - same for Windows.
 
 
 ### config
