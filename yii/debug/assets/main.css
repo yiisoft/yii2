@@ -146,3 +146,7 @@ ul.trace {
 	float: right;
 	margin-right: -15px;
 }
+
+td, th {
+	overflow: auto;
+}
