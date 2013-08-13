@@ -618,7 +618,7 @@ abstract class Module extends Component
 			$className = str_replace(' ', '', ucwords(implode(' ', explode('-', $id)))) . 'Controller';
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
 			if (!is_file($classFile)) {
-				return false;
+				return $this->missingController($id, $route);
 			}
 			$className = ltrim($this->controllerNamespace . '\\' . $className, '\\');
 			Yii::$classMap[$className] = $classFile;
