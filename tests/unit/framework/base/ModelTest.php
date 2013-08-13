@@ -1,6 +1,7 @@
 <?php
 
 namespace yiiunit\framework\base;
+
 use yii\base\Model;
 use yiiunit\TestCase;
 use yiiunit\data\base\Speaker;

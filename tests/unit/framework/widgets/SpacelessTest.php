@@ -33,6 +33,6 @@ class SpacelessTest extends \yiiunit\TestCase
 
 		$expected="<body>\n<div class='wrapper'><div class='left-column'><p>This is a left bar!</p>".
 			"</div><div class='right-column'><p>This is a right bar!</p></div></div>\t<p>Bye!</p>\n</body>\n";
-		$this->assertEquals($expected,ob_get_clean());
+		$this->assertEquals($expected, ob_get_clean());
 	}
 }

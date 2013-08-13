@@ -6,6 +6,7 @@
  */
 
 namespace frontend\config;
+
 use yii\web\AssetBundle;
 
 /**

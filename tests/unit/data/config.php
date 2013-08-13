@@ -1,5 +1,4 @@
 <?php
-
 return array(
 	'databases' => array(
 		'mysql' => array(
@@ -23,6 +22,6 @@ return array(
 			'username' => 'postgres',
 			'password' => 'postgres',
 			'fixture' => __DIR__ . '/postgres.sql',
-		)
-    )
+		),
+	),
 );

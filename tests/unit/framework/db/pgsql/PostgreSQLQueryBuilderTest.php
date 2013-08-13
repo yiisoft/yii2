@@ -72,5 +72,4 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
 			array(Schema::TYPE_MONEY . ' NOT NULL', 'numeric(19,4) NOT NULL'),
 		);
 	}
-
 }

@@ -78,5 +78,4 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 		$this->setExpectedException('yii\base\NotSupportedException');
 		parent::testAddDropPrimayKey();
 	}
-
 }

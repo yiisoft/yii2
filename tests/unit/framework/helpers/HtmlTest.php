@@ -370,7 +370,7 @@ EOD;
 <div class="radio"><label><input type="radio" name="test" value="value1&lt;&gt;"> text1&lt;&gt;</label></div>
 <div class="radio"><label><input type="radio" name="test" value="value  2"> text  2</label></div>
 EOD;
-		$this->assertEqualsWithoutLE($expected, Html::radioList('test',  array('value2'), $this->getDataItems2()));
+		$this->assertEqualsWithoutLE($expected, Html::radioList('test', array('value2'), $this->getDataItems2()));
 
 		$expected = <<<EOD
 <input type="hidden" name="test" value="0"><div class="radio"><label><input type="radio" name="test" value="value1"> text1</label></div><br>
@@ -414,7 +414,7 @@ EOD;
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::ul($data, array(
 			'class' => 'test',
-			'item' => function($item, $index) {
+			'item' => function ($item, $index) {
 				return "<li class=\"item-$index\">$item</li>";
 			}
 		)));
@@ -444,7 +444,7 @@ EOD;
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::ol($data, array(
 			'class' => 'test',
-			'item' => function($item, $index) {
+			'item' => function ($item, $index) {
 				return "<li class=\"item-$index\">$item</li>";
 			}
 		)));
