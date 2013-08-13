@@ -269,7 +269,7 @@ class View extends Component
 				$renderer = $this->renderers[$ext];
 				$output = $renderer->render($this, $viewFile, $params);
 			} else {
-				Yii::info("Rendering view file: $viewFile", __METHOD__);
+				Yii::trace("Rendering view file: $viewFile", __METHOD__);
 				$output = $this->renderPhpFile($viewFile, $params);
 			}
 			$this->afterRender($viewFile, $output);
@@ -577,7 +577,7 @@ class View extends Component
 			$bundle = $am->getBundle($name);
 			$this->assetBundles[$name] = false;
 			$bundle->registerAssets($this);
-			$this->assetBundles[$name] = true;
+			$this->assetBundles[$name] = $bundle;
 		} elseif ($this->assetBundles[$name] === false) {
 			throw new InvalidConfigException("A circular dependency is detected for bundle '$name'.");
 		}

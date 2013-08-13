@@ -12,9 +12,12 @@ class SiteController extends Controller
 	public function actions()
 	{
 		return array(
+			'error' => array(
+				'class' => 'yii\web\ErrorAction',
+			),
 			'captcha' => array(
 				'class' => 'yii\captcha\CaptchaAction',
-				'fixedVerifyCode' => YII_ENV_DEV ? 'testme' : null,
+				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
 			),
 		);
 	}
@@ -28,7 +31,7 @@ class SiteController extends Controller
 	{
 		$model = new LoginForm();
 		if ($model->load($_POST) && $model->login()) {
-			return $this->redirect(array('site/index'));
+			return $this->goHome();
 		} else {
 			return $this->render('login', array(
 				'model' => $model,
@@ -39,7 +42,7 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::$app->user->logout();
-		return $this->redirect(array('site/index'));
+		return $this->goHome();
 	}
 
 	public function actionContact()

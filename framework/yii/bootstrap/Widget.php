@@ -21,10 +21,6 @@ use yii\helpers\Json;
 class Widget extends \yii\base\Widget
 {
 	/**
-	 * @var boolean whether to use the responsive version of Bootstrap.
-	 */
-	public static $responsive = true;
-	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
 	public $options = array();
@@ -63,16 +59,11 @@ class Widget extends \yii\base\Widget
 	 */
 	protected function registerPlugin($name)
 	{
-		$id = $this->options['id'];
 		$view = $this->getView();
-		if (self::$responsive) {
-			ResponsiveAsset::register($view);
-		} else {
-			BootstrapAsset::register($view);
-		}
-		/** @var \yii\web\AssetBundle $assetClass */
-		$assetClass = 'yii\bootstrap\\' . ucfirst($name) . 'Asset';
-		$assetClass::register($view);
+
+		BootstrapPluginAsset::register($view);
+
+		$id = $this->options['id'];
 
 		if ($this->clientOptions !== false) {
 			$options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);

@@ -44,7 +44,7 @@ class LogPanel extends Panel
 		$url = $this->getUrl();
 		return <<<EOD
 <div class="yii-debug-toolbar-block">
-	<a href="$url" title="$title">Log: $log</a>
+	<a href="$url" title="$title">Log $log</a>
 </div>
 EOD;
 	}
@@ -65,16 +65,16 @@ EOD;
 				));
 			}
 			if ($level == Logger::LEVEL_ERROR) {
-				$class = ' class="error"';
+				$class = ' class="danger"';
 			} elseif ($level == Logger::LEVEL_WARNING) {
 				$class = ' class="warning"';
 			} elseif ($level == Logger::LEVEL_INFO) {
-				$class = ' class="info"';
+				$class = ' class="success"';
 			} else {
 				$class = '';
 			}
 			$level = Logger::getLevelName($level);
-			$rows[] = "<tr$class><td style=\"width: 100px;\">$time</td><td style=\"width: 100px;\">$level</td><td style=\"width: 250px;\">$category</td><td>$message</td></tr>";
+			$rows[] = "<tr$class><td style=\"width: 100px;\">$time</td><td style=\"width: 100px;\">$level</td><td style=\"width: 250px;\">$category</td><td><div>$message</div></td></tr>";
 		}
 		$rows = implode("\n", $rows);
 		return <<<EOD
@@ -84,7 +84,7 @@ EOD;
 <thead>
 <tr>
 	<th style="width: 100px;">Time</th>
-	<th style="width: 100px;">Level</th>
+	<th style="width: 65px;">Level</th>
 	<th style="width: 250px;">Category</th>
 	<th>Message</th>
 </tr>

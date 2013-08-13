@@ -37,7 +37,7 @@ use yii\helpers\Html;
  *             array('label' => 'New Arrivals', 'url' => array('product/index', 'tag' => 'new')),
  *             array('label' => 'Most Popular', 'url' => array('product/index', 'tag' => 'popular')),
  *         )),
- *         array('label' => 'Login', 'url' => array('site/login'), 'visible' => Yii::app()->user->isGuest),
+ *         array('label' => 'Login', 'url' => array('site/login'), 'visible' => Yii::$app->user->isGuest),
  *     ),
  * ));
  * ~~~
@@ -284,7 +284,14 @@ class Menu extends Widget
 	 */
 	protected function isItemActive($item)
 	{
-		if (isset($item['url']) && is_array($item['url']) && trim($item['url'][0], '/') === $this->route) {
+		if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
+			$route = $item['url'][0];
+			if ($route[0] !== '/' && Yii::$app->controller) {
+				$route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
+			}
+			if (ltrim($route, '/') !== $this->route) {
+				return false;
+			}
 			unset($item['url']['#']);
 			if (count($item['url']) > 1) {
 				foreach (array_splice($item['url'], 1) as $name => $value) {

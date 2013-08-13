@@ -7,8 +7,14 @@ Getting started
 ===============
 
 - [Installation](installation.md)
-- [Bootstrap with Yii](bootstrap.md)
 - [Configuration](configuration.md)
+
+Application templates
+=====================
+
+- [Basic](apps-basic.md)
+- [Advanced](apps-advanced.md)
+- [Creating your own application template](apps-own.md)
 
 Base concepts
 =============
@@ -41,17 +47,26 @@ Security and access control
 - [Security](security.md)
 - Role based access control
 
+Data providers, lists and grids
+===============================
+
+- Overview
+- Data providers
+- Grids
+- Lists
+
 Toolbox
 =======
 
 - [Automatic Code Generation](gii.md)
-- Debug toolbar
+- [Debug toolbar and debugger](debugger.md)
 - [Error Handling](error.md)
 - [Logging](logging.md)
 
 More
 ====
 
+- [Bootstrap widgets](bootstrap-widgets.md)
 - [Form](form.md)
 - [Model validation reference](validation.md)
 - [Caching](caching.md)
@@ -60,5 +75,6 @@ More
 - [Theming](theming.md)
 - [Console Application](console.md)
 - [Performance Tuning](performance.md)
+- [Managing assets](assets.md)
 - [Testing](testing.md)
 - [Upgrading from 1.1 to 2.0](upgrade-from-v1.md)

@@ -4,7 +4,15 @@ Installation
 Installing via Composer
 -----------------------
 
-The recommended way of installing Yii is by using Composer package manager.
+The recommended way of installing Yii is by using [Composer](http://getcomposer.org/) package manager. If you do not
+have it, you may download it from [http://getcomposer.org/](http://getcomposer.org/) or run the following command:
+
+```
+curl -s http://getcomposer.org/installer | php
+```
+
+Yii provides a few ready-to-use application templates. Based on your needs, you may choose one of them to bootstrap
+your project.
 
 There are two application templates available:
 
@@ -12,7 +20,8 @@ There are two application templates available:
 - [advanced](https://github.com/yiisoft/yii2-app-advanced) that is a set of frontend, backend, console, common
  (shared code) and environments support.
 
-Please refer to installation instructions on these pages.
+Please refer to installation instructions on these pages. To read more about ideas behing these application templates and
+proposed usage refer to [basic application template](apps-basic.md) and [advanced application template](apps-advanced.md).
 
 Installing from zip
 -------------------

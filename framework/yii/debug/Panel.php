@@ -11,8 +11,8 @@ use Yii;
 use yii\base\Component;
 
 /**
- * Panel is a base class for debugger panel. It defines how data should be collected,
- * what should be dispalyed at debug toolbar and on debugger details view.
+ * Panel is a base class for debugger panel classes. It defines how data should be collected,
+ * what should be displayed at debug toolbar and on debugger details view.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -6,13 +6,13 @@ use yiiunit\framework\db\CommandTest;
 
 class MssqlCommandTest extends CommandTest
 {
-    public function setUp()
-    {
-        $this->driverName = 'sqlsrv';
-        parent::setUp();
-    }
+	public function setUp()
+	{
+		$this->driverName = 'sqlsrv';
+		parent::setUp();
+	}
 
-	function testAutoQuoting()
+	public function testAutoQuoting()
 	{
 		$db = $this->getConnection(false);
 
@@ -21,12 +21,12 @@ class MssqlCommandTest extends CommandTest
 		$this->assertEquals("SELECT [id], [t].[name] FROM [tbl_customer] t", $command->sql);
 	}
 
-	function testPrepareCancel()
+	public function testPrepareCancel()
 	{
 		$this->markTestSkipped('MSSQL driver does not support this feature.');
 	}
 
-	function testBindParamValue()
+	public function testBindParamValue()
 	{
 		$db = $this->getConnection();
 

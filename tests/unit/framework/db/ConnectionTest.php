@@ -12,7 +12,7 @@ class ConnectionTest extends DatabaseTestCase
 		$this->mockApplication();
 	}
 
-	function testConstruct()
+	public function testConstruct()
 	{
 		$connection = $this->getConnection(false);
 		$params = $this->database;
@@ -22,7 +22,7 @@ class ConnectionTest extends DatabaseTestCase
 		$this->assertEquals($params['password'], $connection->password);
 	}
 
-	function testOpenClose()
+	public function testOpenClose()
 	{
 		$connection = $this->getConnection(false, false);
 
@@ -43,13 +43,13 @@ class ConnectionTest extends DatabaseTestCase
 		$connection->open();
 	}
 
-	function testGetDriverName()
+	public function testGetDriverName()
 	{
 		$connection = $this->getConnection(false, false);
 		$this->assertEquals($this->driverName, $connection->driverName);
 	}
 
-	function testQuoteValue()
+	public function testQuoteValue()
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals(123, $connection->quoteValue(123));
@@ -57,7 +57,7 @@ class ConnectionTest extends DatabaseTestCase
 		$this->assertEquals("'It\\'s interesting'", $connection->quoteValue("It's interesting"));
 	}
 
-	function testQuoteTableName()
+	public function testQuoteTableName()
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals('`table`', $connection->quoteTableName('table'));
@@ -68,7 +68,7 @@ class ConnectionTest extends DatabaseTestCase
 		$this->assertEquals('(table)', $connection->quoteTableName('(table)'));
 	}
 
-	function testQuoteColumnName()
+	public function testQuoteColumnName()
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals('`column`', $connection->quoteColumnName('column'));

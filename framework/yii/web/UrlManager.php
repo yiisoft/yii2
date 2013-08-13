@@ -172,7 +172,7 @@ class UrlManager extends Component
 			/** @var $rule UrlRule */
 			foreach ($this->rules as $rule) {
 				if (($result = $rule->parseRequest($this, $request)) !== false) {
-					Yii::info("Request parsed with URL rule: {$rule->name}", __METHOD__);
+					Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
 					return $result;
 				}
 			}
@@ -196,14 +196,14 @@ class UrlManager extends Component
 				}
 			}
 
-			Yii::info('No matching URL rules. Using default URL parsing logic.', __METHOD__);
+			Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 			return array($pathInfo, array());
 		} else {
 			$route = $request->get($this->routeVar);
 			if (is_array($route)) {
 				$route = '';
 			}
-			Yii::info('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
+			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
 			return array((string)$route, array());
 		}
 	}

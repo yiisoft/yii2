@@ -127,7 +127,6 @@ class QueryBuilderTest extends DatabaseTestCase
 		$qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
 		$qb = $this->getQueryBuilder(); // resets the schema
 		$tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-		$this->assertEquals(0, count($tableSchema->primaryKey));		
+		$this->assertEquals(0, count($tableSchema->primaryKey));
 	}
-
 }

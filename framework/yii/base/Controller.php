@@ -281,7 +281,7 @@ class Controller extends Component
 	 * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
 	 *   looked for under the [[Application::layoutPath|layout path]] of the application;
 	 * - a relative path (e.g. "main"): the actual layout layout file will be looked for under the
-	 *   [[Module::viewPath|view path]] of the context module.
+	 *   [[Module::layoutPath|layout path]] of the context module.
 	 *
 	 * If the layout name does not contain a file extension, it will use the default one `.php`.
 	 *

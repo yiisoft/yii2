@@ -72,20 +72,22 @@ class ActiveRecord extends Model
 	const EVENT_AFTER_DELETE = 'afterDelete';
 
 	/**
-	 * Represents insert ActiveRecord operation. This constant is used for specifying set of atomic operations
-	 * for particular scenario in the [[scenarios()]] method.
+	 * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
 	 */
-	const OP_INSERT = 'insert';
+	const OP_INSERT = 0x01;
 	/**
-	 * Represents update ActiveRecord operation. This constant is used for specifying set of atomic operations
-	 * for particular scenario in the [[scenarios()]] method.
+	 * The update operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
 	 */
-	const OP_UPDATE = 'update';
+	const OP_UPDATE = 0x02;
 	/**
-	 * Represents delete ActiveRecord operation. This constant is used for specifying set of atomic operations
-	 * for particular scenario in the [[scenarios()]] method.
+	 * The delete operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
 	 */
-	const OP_DELETE = 'delete';
+	const OP_DELETE = 0x04;
+	/**
+	 * All three operations: insert, update, delete.
+	 * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
+	 */
+	const OP_ALL = 0x07;
 
 	/**
 	 * @var array attribute values indexed by attribute names
@@ -331,6 +333,38 @@ class ActiveRecord extends Model
 	}
 
 	/**
+	 * Declares which DB operations should be performed within a transaction in different scenarios.
+	 * The supported DB operations are: [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]],
+	 * which correspond to the [[insert()]], [[update()]] and [[delete()]] methods, respectively.
+	 * By default, these methods are NOT enclosed in a DB transaction.
+	 *
+	 * In some scenarios, to ensure data consistency, you may want to enclose some or all of them
+	 * in transactions. You can do so by overriding this method and returning the operations
+	 * that need to be transactional. For example,
+	 *
+	 * ~~~
+	 * return array(
+	 *     'admin' => self::OP_INSERT,
+	 *     'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
+	 *     // the above is equivalent to the following:
+	 *     // 'api' => self::OP_ALL,
+	 *
+	 * );
+	 * ~~~
+	 *
+	 * The above declaration specifies that in the "admin" scenario, the insert operation ([[insert()]])
+	 * should be done in a transaction; and in the "api" scenario, all the operations should be done
+	 * in a transaction.
+	 *
+	 * @return array the declarations of transactional operations. The array keys are scenarios names,
+	 * and the array values are the corresponding transaction operations.
+	 */
+	public function transactions()
+	{
+		return array();
+	}
+
+	/**
 	 * PHP getter magic method.
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
@@ -365,7 +399,7 @@ class ActiveRecord extends Model
 	 */
 	public function __set($name, $value)
 	{
-		if (isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
+		if ($this->hasAttribute($name)) {
 			$this->_attributes[$name] = $value;
 		} else {
 			parent::__set($name, $value);
@@ -528,7 +562,7 @@ class ActiveRecord extends Model
 	 */
 	public function setAttribute($name, $value)
 	{
-		if (isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
+		if ($this->hasAttribute($name)) {
 			$this->_attributes[$name] = $value;
 		} else {
 			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
@@ -712,7 +746,7 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isOperationAtomic(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		$transaction = $this->isTransactional(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = $this->insertInternal($attributes);
 			if ($transaction !== null) {
@@ -822,7 +856,7 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isOperationAtomic(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		$transaction = $this->isTransactional(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = $this->updateInternal($attributes);
 			if ($transaction !== null) {
@@ -929,7 +963,7 @@ class ActiveRecord extends Model
 	public function delete()
 	{
 		$db = static::getDb();
-		$transaction = $this->isOperationAtomic(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
+		$transaction = $this->isTransactional(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
 		try {
 			$result = false;
 			if ($this->beforeDelete()) {
@@ -1454,17 +1488,14 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param string $operation possible values are ActiveRecord::INSERT, ActiveRecord::UPDATE and ActiveRecord::DELETE.
-	 * @return boolean whether given operation is atomic. Currently active scenario is taken into account.
+	 * Returns a value indicating whether the specified operation is transactional in the current [[scenario]].
+	 * @param integer $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
+	 * @return boolean whether the specified operation is transactional in the current [[scenario]].
 	 */
-	private function isOperationAtomic($operation)
+	public function isTransactional($operation)
 	{
 		$scenario = $this->getScenario();
-		$scenarios = $this->scenarios();
-		if (isset($scenarios[$scenario], $scenarios[$scenario]['atomic']) && is_array($scenarios[$scenario]['atomic'])) {
-			return in_array($operation, $scenarios[$scenario]['atomic']);
-		} else {
-			return false;
-		}
+		$transactions = $this->transactions();
+		return isset($transactions[$scenario]) && ($transactions[$scenario] & $operation);
 	}
 }

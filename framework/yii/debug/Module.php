@@ -9,6 +9,7 @@ namespace yii\debug;
 
 use Yii;
 use yii\base\View;
+use yii\web\HttpException;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -24,7 +25,9 @@ class Module extends \yii\base\Module
 	 * by localhost.
 	 */
 	public $allowedIPs = array('127.0.0.1', '::1');
-
+	/**
+	 * @var string the namespace that controller classes are in.
+	 */
 	public $controllerNamespace = 'yii\debug\controllers';
 	/**
 	 * @var LogTarget
@@ -38,15 +41,16 @@ class Module extends \yii\base\Module
 	 * @var string the directory storing the debugger data files. This can be specified using a path alias.
 	 */
 	public $dataPath = '@runtime/debug';
+	/**
+	 * @var integer the maximum number of debug data files to keep. If there are more files generated,
+	 * the oldest ones will be removed.
+	 */
 	public $historySize = 50;
-	public $enabled = true;
+
 
 	public function init()
 	{
 		parent::init();
-		if (!$this->enabled) {
-			return;
-		}
 		$this->dataPath = Yii::getAlias($this->dataPath);
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
 		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
@@ -64,17 +68,20 @@ class Module extends \yii\base\Module
 		unset(Yii::$app->getLog()->targets['debug']);
 		$this->logTarget = null;
 
-		$ip = Yii::$app->getRequest()->getUserIP();
-		foreach ($this->allowedIPs as $filter) {
-			if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
-				return parent::beforeAction($action);
-			}
+		if ($this->checkAccess($action)) {
+			return parent::beforeAction($action);
+		} elseif ($action->id === 'toolbar') {
+			return false;
+		} else {
+			throw new HttpException(403, 'You are not allowed to access this page.');
 		}
-		return false;
 	}
 
 	public function renderToolbar($event)
 	{
+		if (!$this->checkAccess()) {
+			return;
+		}
 		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', array(
 			'tag' => $this->logTarget->tag,
 		));
@@ -83,6 +90,17 @@ class Module extends \yii\base\Module
 		$view = $event->sender;
 		echo '<style>' . $view->renderPhpFile(__DIR__ . '/views/default/toolbar.css') . '</style>';
 		echo '<script>' . $view->renderPhpFile(__DIR__ . '/views/default/toolbar.js') . '</script>';
+	}
+
+	protected function checkAccess()
+	{
+		$ip = Yii::$app->getRequest()->getUserIP();
+		foreach ($this->allowedIPs as $filter) {
+			if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected function corePanels()

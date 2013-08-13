@@ -13,7 +13,7 @@ class ActiveRecordTest extends DatabaseTestCase
 {
 	protected function setUp()
 	{
-        parent::setUp();
+		parent::setUp();
 		ActiveRecord::$db = $this->getConnection();
 	}
 
@@ -85,7 +85,7 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertTrue($customers['user3'] instanceof Customer);
 
 		// indexBy callable
-		$customers = Customer::find()->indexBy(function($customer) {
+		$customers = Customer::find()->indexBy(function ($customer) {
 			return $customer->id . '-' . $customer->name;
 		})->orderBy('id')->all();
 		$this->assertEquals(3, count($customers));

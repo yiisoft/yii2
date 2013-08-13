@@ -11,24 +11,29 @@ use yii\captcha\Captcha;
 $this->title = 'Contact';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<h1><?php echo Html::encode($this->title); ?></h1>
+<div class="site-contact">
+	<h1><?php echo Html::encode($this->title); ?></h1>
 
-<p>
-	If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.
-</p>
+	<p>
+		If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.
+	</p>
 
-<?php $form = ActiveForm::begin(array(
-	'options' => array('class' => 'form-horizontal'),
-	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
-)); ?>
-	<?php echo $form->field($model, 'name')->textInput(); ?>
-	<?php echo $form->field($model, 'email')->textInput(); ?>
-	<?php echo $form->field($model, 'subject')->textInput(); ?>
-	<?php echo $form->field($model, 'body')->textArea(array('rows' => 6)); ?>
-	<?php echo $form->field($model, 'verifyCode')->widget(Captcha::className(), array(
-		'options' => array('class' => 'input-medium'),
-	)); ?>
-	<div class="form-actions">
-		<?php echo Html::submitButton('Submit', array('class' => 'btn btn-primary')); ?>
+	<div class="row">
+		<div class="col-lg-5">
+			<?php $form = ActiveForm::begin(array('id' => 'contact-form')); ?>
+				<?php echo $form->field($model, 'name')->textInput(); ?>
+				<?php echo $form->field($model, 'email')->textInput(); ?>
+				<?php echo $form->field($model, 'subject')->textInput(); ?>
+				<?php echo $form->field($model, 'body')->textArea(array('rows' => 6)); ?>
+				<?php echo $form->field($model, 'verifyCode')->widget(Captcha::className(), array(
+					'options' => array('class' => 'form-control'),
+					'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
+				)); ?>
+				<div class="form-actions">
+					<?php echo Html::submitButton('Submit', array('class' => 'btn btn-primary')); ?>
+				</div>
+			<?php ActiveForm::end(); ?>
+		</div>
 	</div>
-<?php ActiveForm::end(); ?>
+
+</div>

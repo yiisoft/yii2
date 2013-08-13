@@ -1,6 +1,6 @@
 <?php
-
 namespace yiiunit\data\ar;
+
 use yii\db\ActiveQuery;
 
 class Customer extends ActiveRecord

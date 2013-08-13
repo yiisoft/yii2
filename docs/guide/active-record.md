@@ -2,18 +2,21 @@ Active Record
 =============
 
 ActiveRecord implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
-The idea is that an ActiveRecord object is associated with a row in a database table so object properties are mapped
-to columns of the corresponding database row. For example, a `Customer` object is associated with a row in the
-`tbl_customer` table.
+The idea is that an [[ActiveRecord]] object is associated with a row in a database table and its attributes are mapped
+to the columns of the corresponding table columns. Reading an ActiveRecord attribute is equivalent to accessing
+the corresponding table column. For example, a `Customer` object is associated with a row in the
+`tbl_customer` table, and its `name` attribute is mapped to the `name` column in the `tbl_customer` table.
+To get the value of the `name` column in the table row, you can simply use the expression `$customer->name`,
+just like reading an object property.
 
-Instead of writing raw SQL statements to access the data in the table, you can call intuitive methods available in the
-corresponding ActiveRecord class to achieve the same goals. For example, calling [[save()]] would insert or update a row
-in the underlying table:
+Instead of writing raw SQL statements to perform database queries, you can call intuitive methods provided
+by ActiveRecord to achieve the same goals. For example, calling [[ActiveRecord::save()|save()]] would
+insert or update a row in the associated table of the ActiveRecord class:
 
 ```php
 $customer = new Customer();
 $customer->name = 'Qiang';
-$customer->save();
+$customer->save();  // a new row is inserted into tbl_customer
 ```
 
 
@@ -24,7 +27,9 @@ To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
 implement the `tableName` method like the following:
 
 ```php
-class Customer extends \yii\db\ActiveRecord
+use yii\db\ActiveRecord;
+
+class Customer extends ActiveRecord
 {
 	/**
 	 * @return string the name of the table associated with this ActiveRecord class.
@@ -52,8 +57,6 @@ return array(
 			'dsn' => 'mysql:host=localhost;dbname=testdb',
 			'username' => 'demo',
 			'password' => 'demo',
-			// turn on schema caching to improve performance in production mode
-			// 'schemaCacheDuration' => 3600,
 		),
 	),
 );
@@ -62,19 +65,22 @@ return array(
 Please read the [Database basics](database-basics.md) section to learn more on how to configure
 and use database connections.
 
+> Tip: To use a different database connection, you may override the [[ActiveRecord::getDb()]] method.
+You may create a base ActiveRecord class and override its [[ActiveRecord::getDb()]] method. You
+then extend from this base class for all those ActiveRecord classes that need to use the same
+DB connection.
 
-Getting Data from Database
---------------------------
 
-There are two ActiveRecord methods for getting data from database:
+Querying Data from Database
+---------------------------
 
-- [[find()]]
-- [[findBySql()]]
+There are two ActiveRecord methods for querying data from database:
 
-They both return an [[ActiveQuery]] instance. Coupled with various query methods provided
-by [[ActiveQuery]], ActiveRecord supports very flexible and powerful data retrieval approaches.
+ - [[ActiveRecord::find()]]
+ - [[ActiveRecord::findBySql()]]
 
-The followings are some examples,
+They both return an [[ActiveQuery]] instance which extends from [[Query]] and thus supports
+the same set of flexible and powerful DB query methods. The followings are some examples,
 
 ```php
 // to retrieve all *active* customers and order them by their ID:
@@ -101,8 +107,10 @@ $count = Customer::find()
 	->count();
 
 // to return customers in terms of arrays rather than `Customer` objects:
-$customers = Customer::find()->asArray()->all();
-// each $customers element is an array of name-value pairs
+$customers = Customer::find()
+	->asArray()
+	->all();
+// each element of $customers is an array of name-value pairs
 
 // to index the result by customer IDs:
 $customers = Customer::find()->indexBy('id')->all();
@@ -115,9 +123,9 @@ Accessing Column Data
 
 ActiveRecord maps each column of the corresponding database table row to an *attribute* in the ActiveRecord
 object. An attribute is like a regular object property whose name is the same as the corresponding column
-name and is case sensitive.
+name and is case-sensitive.
 
-To read the value of a column, we can use the following expression:
+To read the value of a column, you can use the following expression:
 
 ```php
 // "id" is the name of a column in the table associated with $customer ActiveRecord object
@@ -126,28 +134,29 @@ $id = $customer->id;
 $id = $customer->getAttribute('id');
 ```
 
-We can get all column values through the [[attributes]] property:
+You can get all column values through the [[ActiveRecord::attributes]] property:
 
 ```php
 $values = $customer->attributes;
 ```
 
 
-Saving Data to Database
------------------------
+Manipulating Data in Database
+-----------------------------
 
 ActiveRecord provides the following methods to insert, update and delete data in the database:
 
-- [[save()]]
-- [[insert()]]
-- [[update()]]
-- [[delete()]]
-- [[updateCounters()]]
-- [[updateAll()]]
-- [[updateAllCounters()]]
-- [[deleteAll()]]
+- [[ActiveRecord::save()|save()]]
+- [[ActiveRecord::insert()|insert()]]
+- [[ActiveRecord::update()|update()]]
+- [[ActiveRecord::delete()|delete()]]
+- [[ActiveRecord::updateCounters()|updateCounters()]]
+- [[ActiveRecord::updateAll()|updateAll()]]
+- [[ActiveRecord::updateAllCounters()|updateAllCounters()]]
+- [[ActiveRecord::deleteAll()|deleteAll()]]
 
-Note that [[updateAll()]], [[updateAllCounters()]] and [[deleteAll()]] apply to the whole database
+Note that [[ActiveRecord::updateAll()|updateAll()]], [[ActiveRecord::updateAllCounters()|updateAllCounters()]]
+and [[ActiveRecord::deleteAll()|deleteAll()]] are static methods and apply to the whole database
 table, while the rest of the methods only apply to the row associated with the ActiveRecord object.
 
 The followings are some examples:
@@ -163,25 +172,25 @@ $customer->save();  // equivalent to $customer->insert();
 $customer = Customer::find($id);
 $customer->email = 'james@example.com';
 $customer->save();  // equivalent to $customer->update();
-// Note that model attributes will be validated first and
-// model will not be saved unless it's valid.
 
 // to delete an existing customer record
 $customer = Customer::find($id);
 $customer->delete();
 
-// to increment the age of all customers by 1
+// to increment the age of ALL customers by 1
 Customer::updateAllCounters(array('age' => 1));
 ```
 
 
-Getting Relational Data
------------------------
+Querying Relational Data
+------------------------
 
-Using ActiveRecord you can expose relationships as properties. For example, with an appropriate declaration,
-`$customer->orders` can return an array of `Order` objects which represent the orders placed by the specified customer.
+You can use ActiveRecord to query the relational data of a table. The relational data returned can
+be accessed like a property of the ActiveRecord object associated with the primary table.
+For example, with an appropriate relation declaration, by accessing `$customer->orders` you may obtain
+an array of `Order` objects which represent the orders placed by the specified customer.
 
-To declare a relationship, define a getter method which returns an [[ActiveRelation]] object. For example,
+To declare a relation, define a getter method which returns an [[ActiveRelation]] object. For example,
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -201,35 +210,42 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-Within the getter methods above, we call [[hasMany()]] or [[hasOne()]] methods to
-create a new [[ActiveRelation]] object. The [[hasMany()]] method declares
-a one-many relationship. For example, a customer has many orders. And the [[hasOne()]]
-method declares a many-one or one-one relationship. For example, an order has one customer.
-Both methods take two parameters:
+The methods [[ActiveRecord::hasMany()]] and [[ActiveRecord::hasOne()]] used in the above
+are used to model the many-one relationship and one-one relationship in a relational database.
+For example, a customer has many orders, and an order has one customer.
+Both methods take two parameters and return an [[ActiveRelation]] object:
 
-- `$class`: the name of the class of the related model(s). If specified without
-  a namespace, the namespace of the related model class will be taken from the declaring class.
-- `$link`: the association between columns from the two tables. This should be given as an array.
-  The keys of the array are the names of the columns from the table associated with `$class`,
-  while the values of the array are the names of the columns from the declaring class.
-  It is a good practice to define relationships based on table foreign keys.
+ - `$class`: the name of the class of the related model(s). If specified without
+   a namespace, the namespace of the related model class will be taken from the declaring class.
+ - `$link`: the association between columns from the two tables. This should be given as an array.
+   The keys of the array are the names of the columns from the table associated with `$class`,
+   while the values of the array are the names of the columns from the declaring class.
+   It is a good practice to define relationships based on table foreign keys.
 
-After declaring relationships getting relational data is as easy as accessing
-a component property that is defined by the getter method:
+After declaring relations, getting relational data is as easy as accessing a component property
+that is defined by the corresponding getter method:
 
 ```php
-// the orders of a customer
-$customer = Customer::find($id);
+// get the orders of a customer
+$customer = Customer::find(1);
 $orders = $customer->orders;  // $orders is an array of Order objects
-
-// the customer of the first order
-$customer2 = $orders[0]->customer;  // $customer == $customer2
 ```
 
-Because [[ActiveRelation]] extends from [[ActiveQuery]], it has the same query building methods,
-which allows us to customize the query for retrieving the related objects.
-For example, we may declare a `bigOrders` relationship which returns orders whose
-subtotal exceeds certain amount:
+Behind the scene, the above code executes the following two SQL queries, one for each line of code:
+
+```sql
+SELECT * FROM tbl_customer WHERE id=1;
+SELECT * FROM tbl_order WHERE customer_id=1;
+```
+
+> Tip: If you access the expression `$customer->orders` again, will it perform the second SQL query again?
+Nope. The SQL query is only performed the first time when this expression is accessed. Any further
+accesses will only return the previously fetched results that are cached internally. If you want to re-query
+the relational data, simply unset the existing one first: `unset($customer->orders);`.
+
+Sometimes, you may want to pass parameters to a relational query. For example, instead of returning
+all orders of a customer, you may want to return only big orders whose subtotal exceeds a specified amount.
+To do so, declare a `bigOrders` relation with the following getter method:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -243,8 +259,22 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
+Remember that `hasMany()` returns an [[ActiveRelation]] object which extends from [[ActiveQuery]]
+and thus supports the same set of querying methods as [[ActiveQuery]].
+
+With the above declaration, if you access `$customer->bigOrders`, it will only return the orders
+whose subtotal is greater than 100. To specify a different threshold value, use the following code:
+
+```php
+$orders = $customer->getBigOrders(200)->all();
+```
+
+
+Relations with Pivot Table
+--------------------------
+
 Sometimes, two tables are related together via an intermediary table called
-[pivot table](http://en.wikipedia.org/wiki/Pivot_table). To declare such relationships, we can customize
+[pivot table](http://en.wikipedia.org/wiki/Pivot_table). To declare such relations, we can customize
 the [[ActiveRelation]] object by calling its [[ActiveRelation::via()]] or [[ActiveRelation::viaTable()]]
 method.
 
@@ -283,7 +313,10 @@ class Order extends \yii\db\ActiveRecord
 ```
 
 
-When you access the related objects the first time, behind the scene ActiveRecord performs a DB query
+Lazy and Eager Loading
+----------------------
+
+As described earlier, when you access the related objects the first time, ActiveRecord will perform a DB query
 to retrieve the corresponding data and populate it into the related objects. No query will be performed
 if you access the same related objects again. We call this *lazy loading*. For example,
 
@@ -296,9 +329,7 @@ $orders = $customer->orders;
 $orders2 = $customer->orders;
 ```
 
-
-Lazy loading is very convenient to use. However, it may suffer from performance
-issue in the following scenario:
+Lazy loading is very convenient to use. However, it may suffer from a performance issue in the following scenario:
 
 ```php
 // SQL executed: SELECT * FROM tbl_customer LIMIT 100
@@ -313,12 +344,12 @@ foreach ($customers as $customer) {
 
 How many SQL queries will be performed in the above code, assuming there are more than 100 customers in
 the database? 101! The first SQL query brings back 100 customers. Then for each customer, a SQL query
-is performed to bring back the customer's orders.
+is performed to bring back the orders of that customer.
 
 To solve the above performance problem, you can use the so-called *eager loading* approach by calling [[ActiveQuery::with()]]:
 
 ```php
-// SQL executed: SELECT * FROM tbl_customer LIMIT 100
+// SQL executed: SELECT * FROM tbl_customer LIMIT 100;
 //               SELECT * FROM tbl_orders WHERE customer_id IN (1,2,...)
 $customers = Customer::find()->limit(100)
 	->with('orders')->all();
@@ -333,7 +364,7 @@ foreach ($customers as $customer) {
 As you can see, only two SQL queries are needed for the same task.
 
 
-Sometimes, you may want to customize the relational queries on the fly. It can be
+Sometimes, you may want to customize the relational queries on the fly. This can be
 done for both lazy loading and eager loading. For example,
 
 ```php
@@ -357,8 +388,8 @@ Working with Relationships
 ActiveRecord provides the following two methods for establishing and breaking a
 relationship between two ActiveRecord objects:
 
-- [[link()]]
-- [[unlink()]]
+- [[ActiveRecord::link()|link()]]
+- [[ActiveRecord::unlink()|unlink()]]
 
 For example, given a customer and a new order, we can use the following code to make the
 order owned by the customer:
@@ -378,9 +409,9 @@ Data Input and Validation
 -------------------------
 
 ActiveRecord inherits data validation and data input features from [[\yii\base\Model]]. Data validation is called
-automatically when `save()` is performed and is canceling saving in case attributes aren't valid.
+automatically when `save()` is performed. If data validation fails, the saving operation will be cancelled.
 
-For more details refer to [Model](model.md) section of the guide.
+For more details refer to the [Model](model.md) section of this guide.
 
 
 Life Cycles of an ActiveRecord Object
@@ -419,7 +450,7 @@ Finally when calling [[delete()]] to delete an ActiveRecord, we will have the fo
 Scopes
 ------
 
-A scope is a method that customizes a given [[ActiveQuery]] object. Scope methods are defined
+A scope is a method that customizes a given [[ActiveQuery]] object. Scope methods are static and are defined
 in the ActiveRecord classes. They can be invoked through the [[ActiveQuery]] object that is created
 via [[find()]] or [[findBySql()]]. The following is an example:
 
@@ -466,12 +497,16 @@ $customers = Customer::find()->olderThan(50)->all();
 The parameters should follow after the `$query` parameter when defining the scope method, and they
 can take default values like shown above.
 
-Atomic operations and scenarios
--------------------------------
+
+Transactional operations
+------------------------
+
+
+When a few DB operations are related and are executed
 
 TODO: FIXME: WIP, TBD, https://github.com/yiisoft/yii2/issues/226
 
-Imagine situation where you have to save something related to the main model in [[beforeSave()]],
+,
 [[afterSave()]], [[beforeDelete()]] and/or [[afterDelete()]] life cycle methods. Developer may come
 to the solution of overriding ActiveRecord [[save()]] method with database transaction wrapping or
 even using transaction in controller action, which is strictly speaking doesn't seems to be a good
@@ -595,6 +630,16 @@ class ProductController extends \yii\web\Controller
 	}
 }
 ```
+
+Optimistic Locks
+----------------
+
+TODO
+
+Dirty Attributes
+----------------
+
+TODO
 
 See also
 --------

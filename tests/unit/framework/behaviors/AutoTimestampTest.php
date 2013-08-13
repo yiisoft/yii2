@@ -26,7 +26,8 @@ class AutoTimestampTest extends TestCase
 		}
 	}
 
-	public function setUp() {
+	public function setUp()
+	{
 		$this->mockApplication(
 			array(
 				'components' => array(

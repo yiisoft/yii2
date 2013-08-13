@@ -51,7 +51,7 @@ class AssetConverter extends Component implements IAssetConverter
 						'{to}' => escapeshellarg("$basePath/$result"),
 					));
 					exec($command, $output);
-					Yii::info("Converted $asset into $result: " . implode("\n", $output), __METHOD__);
+					Yii::trace("Converted $asset into $result: " . implode("\n", $output), __METHOD__);
 				}
 				return $result;
 			}

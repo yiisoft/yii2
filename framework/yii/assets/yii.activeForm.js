@@ -83,7 +83,7 @@
 
 				var settings = $.extend({}, defaults, options || {});
 				if (settings.validationUrl === undefined) {
-					settings.validationUrl = $form.attr('action');
+					settings.validationUrl = $form.prop('action');
 				}
 				$.each(attributes, function (i) {
 					attributes[i] = $.extend({value: getValue($form, this)}, attributeDefaults, this);
@@ -291,13 +291,13 @@
 			// If the validation is triggered by form submission, ajax validation
 			// should be done only when all inputs pass client validation
 			var $button = data.submitObject,
-				extData = '&' + data.settings.ajaxVar + '=' + $form.attr('id');
-			if ($button && $button.length && $button.attr('name')) {
-				extData += '&' + $button.attr('name') + '=' + $button.attr('value');
+				extData = '&' + data.settings.ajaxVar + '=' + $form.prop('id');
+			if ($button && $button.length && $button.prop('name')) {
+				extData += '&' + $button.prop('name') + '=' + $button.prop('value');
 			}
 			$.ajax({
 				url: data.settings.validationUrl,
-				type: $form.attr('method'),
+				type: $form.prop('method'),
 				data: $form.serialize() + extData,
 				dataType: 'json',
 				success: function (msgs) {
@@ -380,7 +380,7 @@
 
 	var getValue = function ($form, attribute) {
 		var $input = findInput($form, attribute);
-		var type = $input.attr('type');
+		var type = $input.prop('type');
 		if (type === 'checkbox' || type === 'radio') {
 			return $input.filter(':checked').val();
 		} else {

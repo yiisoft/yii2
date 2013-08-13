@@ -1,5 +1,6 @@
 <?php
 namespace yiiunit\framework\caching;
+
 use yii\caching\ApcCache;
 
 /**
@@ -20,7 +21,7 @@ class ApcCacheTest extends CacheTestCase
 			$this->markTestSkipped("APC cli is not enabled. Skipping.");
 		}
 
-		if(!ini_get("apc.enabled") || !ini_get("apc.enable_cli")) {
+		if (!ini_get("apc.enabled") || !ini_get("apc.enable_cli")) {
 			$this->markTestSkipped("APC is installed but not enabled. Skipping.");
 		}
 

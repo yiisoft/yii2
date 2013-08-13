@@ -23,7 +23,8 @@ class JsonTest extends TestCase
 
 		// simple object encoding
 		$data = new \stdClass();
-		$data->a = 1; $data->b = 2;
+		$data->a = 1;
+		$data->b = 2;
 		$this->assertSame('{"a":1,"b":2}', Json::encode($data));
 
 		// expression encoding

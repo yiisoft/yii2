@@ -135,10 +135,6 @@ abstract class ListViewBase extends Widget
 			$totalCount = $this->dataProvider->getTotalCount();
 			$begin = $pagination->getPage() * $pagination->pageSize + 1;
 			$end = $begin + $count - 1;
-			if ($end > $totalCount) {
-				$end = $totalCount;
-				$begin = $end - $count + 1;
-			}
 			$page = $pagination->getPage() + 1;
 			$pageCount = $pagination->pageCount;
 			if (($summaryContent = $this->summary) === null) {

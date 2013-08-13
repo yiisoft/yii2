@@ -22,6 +22,6 @@ class DialogAsset extends AssetBundle
 		'yii\jui\CoreAsset',
 		'yii\jui\ButtonAsset',
 		'yii\jui\DraggableAsset',
-		'yii\jui\Resizable',
+		'yii\jui\ResizableAsset',
 	);
 }

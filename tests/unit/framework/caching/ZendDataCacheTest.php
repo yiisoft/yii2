@@ -1,5 +1,6 @@
 <?php
 namespace yiiunit\framework\caching;
+
 use yii\caching\Cache;
 use yii\caching\ZendDataCache;
 

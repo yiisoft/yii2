@@ -1,7 +1,7 @@
 <?php
 
-use yii\bootstrap\AffixAsset;
-use yii\bootstrap\DropdownAsset;
+use yii\bootstrap\ButtonDropdown;
+use yii\bootstrap\ButtonGroup;
 use yii\helpers\Html;
 
 /**
@@ -14,65 +14,62 @@ use yii\helpers\Html;
  */
 
 $this->title = 'Yii Debugger';
-DropdownAsset::register($this);
-AffixAsset::register($this);
 ?>
 <div class="default-view">
-	<div class="navbar">
-		<div class="navbar-inner">
-			<div class="container">
-				<div class="yii-debug-toolbar-block title">
-					Yii Debugger
-				</div>
-				<?php foreach ($panels as $panel): ?>
-					<?php echo $panel->getSummary(); ?>
-				<?php endforeach; ?>
-			</div>
+	<div id="yii-debug-toolbar">
+		<div class="yii-debug-toolbar-block title">
+			Yii Debugger
 		</div>
+		<?php foreach ($panels as $panel): ?>
+			<?php echo $panel->getSummary(); ?>
+		<?php endforeach; ?>
 	</div>
 
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<div class="span2">
-				<ul class="nav nav-tabs nav-list nav-stacked">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-2">
+				<div class="list-group">
 					<?php
 					foreach ($panels as $id => $panel) {
-						$link = Html::a(Html::encode($panel->getName()), array('view', 'tag' => $tag, 'panel' => $id));
-						echo Html::tag('li', $link, array('class' => $panel === $activePanel ? 'active' : null));
+						$label = '<i class="glyphicon glyphicon-chevron-right"></i>' . Html::encode($panel->getName());
+						echo Html::a($label, array('view', 'tag' => $tag, 'panel' => $id), array(
+							'class' => $panel === $activePanel ? 'list-group-item active' : 'list-group-item',
+						));
 					}
 					?>
-				</ul>
-			</div><!--/span-->
-			<div class="span10">
-				<div class="meta alert alert-info">
-					<div class="btn-group">
-						<?php echo Html::a('All', array('index'), array('class' => 'btn')); ?>
-						<button class="btn dropdown-toggle" data-toggle="dropdown">
-							Last 10
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<?php
-							$count = 0;
-							foreach ($manifest as $meta) {
-								$label = $meta['tag'] . ': ' . $meta['method'] . ' ' . $meta['url'] . ($meta['ajax'] ? ' (AJAX)' : '')
-									. ', ' . date('Y-m-d h:i:s a', $meta['time'])
-									. ', ' . $meta['ip'];
-								$url = array('view', 'tag' => $meta['tag'], 'panel' => $activePanel->id);
-								echo '<li>' . Html::a(Html::encode($label), $url) . '</li>';
-								if (++$count >= 10) {
-									break;
-								}
+				</div>
+			</div>
+			<div class="col-lg-10">
+				<div class="callout callout-danger">
+					<?php
+						$count = 0;
+						$items = array();
+						foreach ($manifest as $meta) {
+							$label = $meta['tag'] . ': ' . $meta['method'] . ' ' . $meta['url'] . ($meta['ajax'] ? ' (AJAX)' : '')
+								. ', ' . date('Y-m-d h:i:s a', $meta['time'])
+								. ', ' . $meta['ip'];
+							$url = array('view', 'tag' => $meta['tag'], 'panel' => $activePanel->id);
+							$items[] = array(
+								'label' => $label,
+								'url' => $url,
+							);
+							if (++$count >= 10) {
+								break;
 							}
-							?>
-						</ul>
-					</div>
-					<?php echo $summary['tag']; ?>:
-					<?php echo $summary['method']; ?>
-					<?php echo Html::a(Html::encode($summary['url']), $summary['url'], array('class' => 'label')); ?>
-					<?php echo $summary['ajax'] ? ' (AJAX)' : ''; ?>
-					at <?php echo date('Y-m-d h:i:s a', $summary['time']); ?>
-					by <?php echo $summary['ip']; ?>
+						}
+						echo ButtonGroup::widget(array(
+							'buttons' => array(
+								Html::a('All', array('index'), array('class' => 'btn btn-default')),
+								ButtonDropdown::widget(array(
+									'label' => 'Last 10',
+									'options' => array('class' => 'btn-default'),
+									'dropdown' => array('items' => $items),
+								)),
+							),
+						));
+						echo "\n" . $summary['tag'] . ': ' . $summary['method'] . ' ' . Html::a(Html::encode($summary['url']), $summary['url']);
+						echo ' at ' . date('Y-m-d h:i:s a', $summary['time']) . ' by ' . $summary['ip'];
+					?>
 				</div>
 				<?php echo $activePanel->getDetail(); ?>
 			</div>

@@ -7,7 +7,6 @@
 
 namespace yii\data;
 
-use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
 /**

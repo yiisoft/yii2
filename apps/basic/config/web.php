@@ -1,22 +1,17 @@
 <?php
 
-return array(
+$config = array(
 	'id' => 'bootstrap',
 	'basePath' => dirname(__DIR__),
-	'preload' => array('debug'),
-	'modules' => array(
-		'debug' => array(
-			'class' => 'yii\debug\Module',
-			'enabled' => YII_DEBUG && YII_ENV_DEV,
-		),
-	),
 	'components' => array(
 		'cache' => array(
 			'class' => 'yii\caching\FileCache',
 		),
 		'user' => array(
-			'class' => 'yii\web\User',
 			'identityClass' => 'app\models\User',
+		),
+		'errorHandler' => array(
+			'errorAction' => 'site/error',
 		),
 		'log' => array(
 			'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -30,3 +25,11 @@ return array(
 	),
 	'params' => require(__DIR__ . '/params.php'),
 );
+
+if (YII_ENV_DEV) {
+	$config['preload'][] = 'debug';
+	$config['modules']['debug'] = 'yii\debug\Module';
+	$config['modules']['gii'] = 'yii\gii\Module';
+}
+
+return $config;
