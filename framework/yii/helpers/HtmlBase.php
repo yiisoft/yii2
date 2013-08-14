@@ -935,6 +935,30 @@ class HtmlBase
 	}
 
 	/**
+	 * Generates a tag that contains the first validation error of the specified model attribute.
+	 * Note that even if there is no validation error, this method will still return an empty error tag.
+	 * @param Model $model the model object
+	 * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+	 * about attribute expression.
+	 * @param array $options the tag options in terms of name-value pairs. The values will be HTML-encoded
+	 * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 *
+	 * The following options are specially handled:
+	 *
+	 * - tag: this specifies the tag name. If not set, "p" will be used.
+	 *
+	 * @return string the generated label tag
+	 */
+	public static function error($model, $attribute, $options = array())
+	{
+		$attribute = static::getAttributeName($attribute);
+		$error = $model->getFirstError($attribute);
+		$tag = isset($options['tag']) ? $options['tag'] : 'p';
+		unset($options['tag']);
+		return Html::tag($tag, Html::encode($error), $options);
+	}
+
+	/**
 	 * Generates an input tag for the given model attribute.
 	 * This method will generate the "name" and "value" tag attributes automatically for the model attribute
 	 * unless they are explicitly specified in `$options`.

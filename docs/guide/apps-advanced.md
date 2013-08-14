@@ -5,6 +5,42 @@ This template is for large projects developed in teams where backend is divided 
 to multiple servers etc. This application template also goes a bit further regarding features and provides essential
 database, signup and password restore out of the box.
 
+Installation
+------------
+
+### Install via Composer
+
+If you do not have [Composer](http://getcomposer.org/), you may download it from
+[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
+
+~~~
+curl -s http://getcomposer.org/installer | php
+~~~
+
+You can then install the application using the following command:
+
+~~~
+php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced /path/to/yii-application
+~~~
+
+Getting started
+---------------
+
+After you install the application, you have to conduct the following steps to initialize
+the installed application. You only need to do these once for all.
+
+1. Execute the `init` command and select `dev` as environment.
+---
+php /path/to/yii-application/init
+---
+2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
+3. In `common/config/params.php` set your database details in `components.db` values.
+
+4. Set document roots of your Web server:
+
+- for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://frontend/`
+- for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
+
 Directory structure
 -------------------
 

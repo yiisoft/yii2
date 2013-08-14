@@ -7,6 +7,24 @@ The application has four pages: the homepage, the about page, the contact page a
 The contact page displays a contact form that users can fill in to submit their inquiries to the webmaster,
 and the login page allows users to be authenticated before accessing privileged contents.
 
+Installation
+------------
+
+If you do not have [Composer](http://getcomposer.org/), you may download it from
+[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
+
+~~~
+curl -s http://getcomposer.org/installer | php
+~~~
+
+You can then install the Bootstrap Application using the following command:
+
+~~~
+php composer.phar create-project --stability=dev yiisoft/yii2-app-basic /path/to/yii-application
+~~~
+
+Now set document root directory of your Web server to /path/to/yii-application/web and you should be able to access the application using the URL `http://localhost/`.
+
 Directory structure
 -------------------
 

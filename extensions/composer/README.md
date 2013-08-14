@@ -1,5 +1,5 @@
 Yii 2.0 Public Preview - Composer Installer
-======================
+===========================================
 
 Thank you for choosing Yii - a high-performance component-based PHP framework.
 
@@ -13,33 +13,32 @@ without prior notices. **Yii 2.0 is not ready for production use yet.**
 
 This is the yii2 composer installer.
 
+
 Installation
-----------------
+------------
 
 This extension offers you enhanced composer handling for your yii2-project. It will therefor require you to use composer.
 
 `
-php composer.phar require yiisoft/yii2-composer *
+php composer.phar require yiisoft/yii2-composer "*"
 `
 
 *Note: You might have to run `php composer.phar selfupdate` before using this extension.*
 
 
 Usage & Documentation
------------
+---------------------
+
 This extensions allows you to hook to certain composer events and prepare your yii2-app for usage.
 
 After the package is installed, the composer.json file has to be modified to enable this extension.
 
 To see it in action take a look at the example apps in the repository:
 
-[Basic](https://github.com/suralc/yii2/blob/master/apps/basic/composer.json#L27)
-[Advanced](https://github.com/suralc/yii2/blob/extensions-readme/apps/advanced/composer.json)
+- [Basic](https://github.com/suralc/yii2/blob/master/apps/basic/composer.json#L27)
+- [Advanced](https://github.com/suralc/yii2/blob/extensions-readme/apps/advanced/composer.json)
 
-However it might be useful to read through the official composer [documentation](http://getcomposer.org/doc/articles/scripts.md) to understand what this extension can to for you and what it can't. 
+However it might be useful to read through the official composer [documentation](http://getcomposer.org/doc/articles/scripts.md)
+to understand what this extension can do for you and what it can't.
 
-You can also use this as an template to create your own composer additions to ease development and deployment of your app.
-
-
-
-
+You can also use this as a template to create your own composer additions to ease development and deployment of your app.
