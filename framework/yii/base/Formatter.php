@@ -251,7 +251,7 @@ class Formatter extends Component
 	 */
 	public function asDate($value, $format = null)
 	{
-		if ($value === null) {
+		if ($value === null || $value === '') {
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
@@ -275,7 +275,7 @@ class Formatter extends Component
 	 */
 	public function asTime($value, $format = null)
 	{
-		if ($value === null) {
+		if ($value === null || $value === '') {
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
@@ -299,7 +299,7 @@ class Formatter extends Component
 	 */
 	public function asDatetime($value, $format = null)
 	{
-		if ($value === null) {
+		if ($value === null || $value === '') {
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
