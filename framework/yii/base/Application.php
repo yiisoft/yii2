@@ -472,7 +472,7 @@ abstract class Application extends Module
 			foreach ($trace as $frame) {
 				if ($frame['function'] == '__toString') {
 					$this->handleException($exception);
-					return;
+					exit(1);
 				}
 			}
 
