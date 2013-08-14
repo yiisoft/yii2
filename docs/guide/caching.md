@@ -119,7 +119,7 @@ public function getCachedData()
 	$value = Yii::$app->getCache()->get($key);
 	if ($value === false) {
 		$value = /* regenerate value because it is not found in cache and then save it in cache for later use */;
-		Yii::$app->cache->set($id, $value);
+		Yii::$app->cache->set($key, $value);
 	}
 	return $value;
 }
