@@ -1,5 +1,5 @@
 Yii 2.0 Public Preview - JUI Extension
-======================
+======================================
 
 Thank you for choosing Yii - a high-performance component-based PHP framework.
 
@@ -13,13 +13,15 @@ without prior notices. **Yii 2.0 is not ready for production use yet.**
 
 This is the yii2-jui extension.
 
+
 Installation
-----------------
+------------
+
 The preferred way to install this extension is [composer](http://getcomposer.org/download/).
 
 Either run
 ```
-php composer.phar require yiisoft/yii2-jui*
+php composer.phar require yiisoft/yii2-jui "*"
 ```
 
 or add
@@ -33,23 +35,21 @@ to the require section of your composer.json.
 
 
 Usage & Documentation
------------
+---------------------
 
 This extension provides multiple widgets to work with jquery.ui, as well as a set of compatible jquery.ui files.
 
 You can use these widgets in your view files after you have registered the corresponding assets.
 
 Example:
------------
+
 ```php
 echo ProgressBar::widget(array(
 	'clientOptions' => array(
 		'value' => 75,
 	),
 ));
+```
 
-For further instructions refer to the guide (once it is finished)
-
-
-
+For further instructions refer to the yii guide.
 

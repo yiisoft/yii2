@@ -1,5 +1,5 @@
 Yii 2.0 Public Preview - Mutex Extension
-======================
+========================================
 
 Thank you for choosing Yii - a high-performance component-based PHP framework.
 
@@ -13,13 +13,15 @@ without prior notices. **Yii 2.0 is not ready for production use yet.**
 
 This is the yii2-mutex extension.
 
+
 Installation
-----------------
+------------
+
 The prefered way to install this extension is through [composer](http://getcomposer.org/download/).
 
 Either run
 ```
-php composer.phar require yiisoft/yii2-mutex *
+php composer.phar require yiisoft/yii2-mutex "*"
 ```
 
 or add
@@ -33,12 +35,8 @@ to the require section of your composer.json.
 
 
 Usage & Documentation
------------
+---------------------
 
 This component can be used to perform actions similar to the concept of [mutual exclusion](http://en.wikipedia.org/wiki/Mutual_exclusion).
 
-For concrete examples and advanced usage refer to the guide.
-
-
-
-
+For concrete examples and advanced usage refer to the yii guide.
