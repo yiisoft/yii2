@@ -11,7 +11,7 @@ $params = array_merge(
 return array(
 	'id' => 'app-backend',
 	'basePath' => dirname(__DIR__),
-	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+	'vendorPath' => dirname(__DIR__) . '/vendor',
 	'preload' => array('log'),
 	'controllerNamespace' => 'backend\controllers',
 	'modules' => array(
