@@ -11,7 +11,7 @@ $params = array_merge(
 return array(
 	'id' => 'app-frontend',
 	'basePath' => dirname(__DIR__),
-	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+	'vendorPath' => dirname(__DIR__) . '/vendor',
 	'controllerNamespace' => 'frontend\controllers',
 	'modules' => array(
 	),
