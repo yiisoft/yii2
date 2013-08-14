@@ -143,6 +143,9 @@ class EmployeeController extends \yii\web\Controller
 }
 ```
 
+In the example above we are using [Active Record](active-record.md). For basic form models it's rarely needed to
+use scenarios since form model is typically used for a single form.
+
 Validation
 ----------
 
