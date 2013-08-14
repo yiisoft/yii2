@@ -75,16 +75,20 @@ class Dropdown extends Widget
 			if (!isset($item['label'])) {
 				throw new InvalidConfigException("The 'label' option is required.");
 			}
-			$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
 			$options = ArrayHelper::getValue($item, 'options', array());
-			$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
-			$linkOptions['tabindex'] = '-1';
-
-			if (isset($item['items'])) {
-				Html::addCssClass($options, 'dropdown-submenu');
-				$content = Html::a($label, '#', $linkOptions) . $this->renderItems($item['items']);
+			if (empty($item['label'])) {
+			    $content = '';
 			} else {
-				$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
+			    $label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
+			    $linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
+			    $linkOptions['tabindex'] = '-1';
+			    
+			    if (isset($item['items'])) {
+			        Html::addCssClass($options, 'dropdown-submenu');
+			        $content = Html::a($label, '#', $linkOptions) . $this->renderItems($item['items']);
+			    } else {
+			        $content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
+			    }
 			}
 			$lines[] = Html::tag('li', $content, $options);
 		}
