@@ -14,7 +14,7 @@ app\config\AppAsset::register($this);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8"/>
+	<meta charset="<?php echo Yii::$app->charset; ?>"/>
 	<title><?php echo Html::encode($this->title); ?></title>
 	<?php $this->head(); ?>
 </head>
