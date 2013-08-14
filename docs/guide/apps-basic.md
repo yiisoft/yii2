@@ -20,11 +20,10 @@ curl -s http://getcomposer.org/installer | php
 You can then install the Bootstrap Application using the following command:
 
 ~~~
-php composer.phar create-project --stability=dev yiisoft/yii2-app-basic yii-basic
+php composer.phar create-project --stability=dev yiisoft/yii2-app-basic /path/to/yii-application
 ~~~
 
-Now you should be able to access the application using the URL `http://localhost/yii-basic/web/`,
-assuming `yii-basic` is directly under the document root of your Web server.
+Now set document root directory of your Web server to /path/to/yii-application/web and you should be able to access the application using the URL `http://localhost/`.
 
 Directory structure
 -------------------
