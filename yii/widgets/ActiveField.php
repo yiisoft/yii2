@@ -146,7 +146,6 @@ class ActiveField extends Component
 	protected function getClientOptions()
 	{
 		$enableClientValidation = $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
-		$enableAjaxValidation = $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
 		if ($enableClientValidation) {
 			$attribute = Html::getAttributeName($this->attribute);
 			$validators = array();
@@ -162,6 +161,7 @@ class ActiveField extends Component
 			}
 		}
 
+		$enableAjaxValidation = $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
 		if ($enableAjaxValidation) {
 			$options['enableAjaxValidation'] = 1;
 		}
@@ -169,12 +169,7 @@ class ActiveField extends Component
 		if ($enableClientValidation && !empty($options['validate']) || $enableAjaxValidation) {
 			$inputID = Html::getInputId($this->model, $this->attribute);
 			$options['name'] = $inputID;
-			$names = array(
-				'validateOnChange',
-				'validateOnType',
-				'validationDelay',
-			);
-			foreach ($names as $name) {
+			foreach (array('validateOnChange', 'validateOnType', 'validationDelay') as $name) {
 				$options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
 			}
 			$options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";
@@ -216,22 +211,18 @@ class ActiveField extends Component
 	 * Note that even if there is no validation error, this method will still return an empty error tag.
 	 * @param array $options the tag options in terms of name-value pairs. It will be merged with [[errorOptions]].
 	 * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
-	 * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
 	 * The following options are specially handled:
 	 *
-	 * - tag: this specifies the tag name. If not set, "span" will be used.
+	 * - tag: this specifies the tag name. If not set, "p" will be used.
 	 *
 	 * @return string the generated label tag
 	 */
 	public function error($options = array())
 	{
 		$options = array_merge($this->errorOptions, $options);
-		$attribute = Html::getAttributeName($this->attribute);
-		$error = $this->model->getFirstError($attribute);
-		$tag = isset($options['tag']) ? $options['tag'] : 'span';
-		unset($options['tag']);
-		return Html::tag($tag, Html::encode($error), $options);
+		return Html::error($this->model, $this->attribute, $options);
 	}
 
 	/**
