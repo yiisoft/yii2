@@ -21,8 +21,9 @@ use yii\helpers\Html;
 class Dropdown extends Widget
 {
 	/**
-	 * @var array list of menu items in the dropdown. Each array element represents a single
-	 * menu with the following structure:
+	 * @var array list of menu items in the dropdown. Each array element can be either an HTML string,
+	 * or an array representing a single menu with the following structure:
+	 *
 	 * - label: string, required, the label of the item link
 	 * - url: string, optional, the url of the item link. Defaults to "#".
 	 * - linkOptions: array, optional, the HTML attributes of the item link.
