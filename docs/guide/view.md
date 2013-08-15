@@ -123,7 +123,7 @@ $this->registerMetaTag(array('description' => 'This is my cool website made with
 $this->registerMetaTag(array('description' => 'This website is about funny raccoons.'), 'meta-description');
 ```
 
-If there are multiple calls with the same value of the second argument (`meta-description` in this case), the later will
+If there are multiple calls with the same value of the second argument (`meta-description` in this case), the latter will
 override the former and only a single tag will be rendered:
 
 ```html
@@ -155,7 +155,7 @@ Same as with meta tags you can specify additional argument to make sure there's 
 ### Registering CSS
 
 You can register CSS using `registerCss` or `registerCssFile`. Former is for outputting code in `<style>` tags directly
-to the page which is not recommended in most cases (but still valid). Later is for registering CSS file. In Yii it's
+to the page which is not recommended in most cases (but still valid). Latter is for registering CSS file. In Yii it's
 much better to [use asset manager](assets.md) to deal with these since it provides extra features so `registerCssFile`
 is manly useful for external CSS files.
 
