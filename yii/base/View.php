@@ -654,7 +654,7 @@ class View extends Component
 	 * - [[POS_BEGIN]]: at the beginning of the body section
 	 * - [[POS_END]]: at the end of the body section
 	 * - [[POS_READY]]: enclosed within jQuery(document).ready(). This is the default value.
-	 *   Note that by using this position, the method will automatically register the jquery js file.
+	 *   Note that by using this position, the method will automatically register the jQuery js file.
 	 *
 	 * @param string $key the key that identifies the JS code block. If null, it will use
 	 * $js as the key. If two JS code blocks are registered with the same key, the latter
