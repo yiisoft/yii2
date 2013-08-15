@@ -123,8 +123,8 @@ $this->registerMetaTag(array('description' => 'This is my cool website made with
 $this->registerMetaTag(array('description' => 'This website is about funny raccoons.'), 'meta-description');
 ```
 
-If there are multiple calls with the same value of the second argument, the later will override the former and only
-a single tag will be rendered:
+If there are multiple calls with the same value of the second argument (`meta-description` in this case), the later will
+override the former and only a single tag will be rendered:
 
 ```html
 <meta description="This website is about funny raccoons.">
