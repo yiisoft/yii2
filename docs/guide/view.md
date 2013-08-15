@@ -37,6 +37,30 @@ Intead of just scalar values you can pass anything else such as arrays or object
 Widgets
 -------
 
+Widgets are a self-contained building blocks for your views. A widget may contain advanced logic, typically takes some
+configuration and data and returns HTML. There is a good number of widgets bundled with Yii such as [active form](form.md),
+breadcrumbs, menu or [wrappers around bootstrap component framework](boostrap-widgets.md). Additionally there are
+extensions providing additional widgets such as official one for jQueryUI components.
+
+In order to use widget you need to do the following:
+
+```php
+// Note that you have to "echo" the result to display it
+echo \yii\widgets\Menu::widget(array('items' => $items));
+
+// Passing an array to initialize the object properties
+$form = \yii\widgets\ActiveForm::begin(array(
+	'options' => array('class' => 'form-horizontal'),
+	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
+));
+... form inputs here ...
+\yii\widgets\ActiveForm::end();
+```
+
+In the code above `widget` method is used for a widget that just outputs content while `begin` and `end` are used for a
+widget that wraps content between method calls with its own output. In case of the form this output is the `<form>` tag
+with some properties set.
+
 Security
 --------
 
@@ -87,11 +111,11 @@ Alternative template languages
 There are offlicial extensions for [Smarty](http://www.smarty.net/) and [Twig](http://twig.sensiolabs.org/). In order
 to learn more refer to [Using template engines](template.md) section of the guide.
 
-Using View object
------------------
+Using View object in templates
+------------------------------
 
-An instance of `yii\base\View` is available in view templates as `$this` variable. Using it you can do many useful things
-including setting page title and meta, registering scripts and accessing the context.
+An instance of `yii\base\View` component is available in view templates as `$this` variable. Using it in templates you
+can do many useful things including setting page title and meta, registering scripts and accessing the context.
 
 ### Setting page title
 
@@ -314,3 +338,21 @@ echo $this->context->getRoute();
 ### Caching blocks
 
 To learn about caching of view fragments please refer to [caching](caching.md) section of the guide.
+
+Customizing View component
+--------------------------
+
+Since view is also an application component named `view` you can replace it with your own component that extends
+from `yii\base\View`. It can be done via application configuration file such as `config/web.php`:
+
+```php
+return array(
+	// ...
+	'components' => array(
+		'view' => array(
+			'class' => 'app\components\View',
+		),
+		// ...
+	),
+);
+```

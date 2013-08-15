@@ -79,3 +79,9 @@ Securing Cookies
 
 - validation
 - httpOnly
+
+See also
+--------
+
+- [Views security](view.md#security)
+
