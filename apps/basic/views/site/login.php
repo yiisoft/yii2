@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div class="row">
 		<div class="col-lg-3">
 			<?php $form = ActiveForm::begin(array('id' => 'login-form')); ?>
-				<?php echo $form->field($model, 'username')->textInput(); ?>
+				<?php echo $form->field($model, 'username'); ?>
 				<?php echo $form->field($model, 'password')->passwordInput(); ?>
 				<?php echo $form->field($model, 'rememberMe')->checkbox(); ?>
 				<div class="form-actions">

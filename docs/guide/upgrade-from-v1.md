@@ -331,12 +331,12 @@ introduces the class map (via `Yii::$classMap`) to overcome this difficulty.
 ------------
 
 Yii 2.0 introduces the *field* concept for building a form using `ActiveForm`. A field
-is a container consisting of a label, an input, and an error message. It is represented
-as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
+is a container consisting of a label, an input, an error message, and/or a hint text.
+It is represented as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
-	<?php echo $form->field($model, 'username')->textInput(); ?>
+	<?php echo $form->field($model, 'username'); ?>
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
 	<div class="form-actions">
 		<?php echo Html::submitButton('Login'); ?>

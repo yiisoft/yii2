@@ -725,8 +725,10 @@ class HtmlBase
 	 * @param string|array $selection the selected value(s).
 	 * @param array $items the data item used to generate the checkboxes.
 	 * The array keys are the labels, while the array values are the corresponding checkbox values.
-	 * @param array $options options (name => config) for the checkbox list. The following options are supported:
+	 * @param array $options options (name => config) for the checkbox list container tag.
+	 * The following options are specially handled:
 	 *
+	 * - tag: string, the tag name of the container element.
 	 * - unselect: string, the value that should be submitted when none of the checkboxes is selected.
 	 *   By setting this option, a hidden input will be generated.
 	 * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
@@ -778,7 +780,10 @@ class HtmlBase
 		}
 		$separator = isset($options['separator']) ? $options['separator'] : "\n";
 
-		return $hidden . implode($separator, $lines);
+		$tag = isset($options['tag']) ? $options['tag'] : 'div';
+		unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item']);
+
+		return $hidden . static::tag($tag, implode($separator, $lines), $options);
 	}
 
 	/**
@@ -836,7 +841,10 @@ class HtmlBase
 			$hidden = '';
 		}
 
-		return $hidden . implode($separator, $lines);
+		$tag = isset($options['tag']) ? $options['tag'] : 'div';
+		unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item']);
+
+		return $hidden . static::tag($tag, implode($separator, $lines), $options);
 	}
 
 	/**
@@ -945,7 +953,7 @@ class HtmlBase
 	 *
 	 * The following options are specially handled:
 	 *
-	 * - tag: this specifies the tag name. If not set, "p" will be used.
+	 * - tag: this specifies the tag name. If not set, "div" will be used.
 	 *
 	 * @return string the generated label tag
 	 */
@@ -953,7 +961,7 @@ class HtmlBase
 	{
 		$attribute = static::getAttributeName($attribute);
 		$error = $model->getFirstError($attribute);
-		$tag = isset($options['tag']) ? $options['tag'] : 'p';
+		$tag = isset($options['tag']) ? $options['tag'] : 'div';
 		unset($options['tag']);
 		return Html::tag($tag, Html::encode($error), $options);
 	}
@@ -1066,7 +1074,6 @@ class HtmlBase
 
 	/**
 	 * Generates a radio button tag for the given model attribute.
-	 * This method will generate the "name" tag attribute automatically unless it is explicitly specified in `$options`.
 	 * This method will generate the "checked" tag attribute according to the model attribute value.
 	 * @param Model $model the model object
 	 * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
@@ -1102,7 +1109,6 @@ class HtmlBase
 
 	/**
 	 * Generates a checkbox tag for the given model attribute.
-	 * This method will generate the "name" tag attribute automatically unless it is explicitly specified in `$options`.
 	 * This method will generate the "checked" tag attribute according to the model attribute value.
 	 * @param Model $model the model object
 	 * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
@@ -1267,6 +1273,9 @@ class HtmlBase
 		if (!array_key_exists('unselect', $options)) {
 			$options['unselect'] = '0';
 		}
+		if (!array_key_exists('id', $options)) {
+			$options['id'] = static::getInputId($model, $attribute);
+		}
 		return static::checkboxList($name, $checked, $items, $options);
 	}
 
@@ -1303,6 +1312,9 @@ class HtmlBase
 		$checked = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
 			$options['unselect'] = '0';
+		}
+		if (!array_key_exists('id', $options)) {
+			$options['id'] = static::getInputId($model, $attribute);
 		}
 		return static::radioList($name, $checked, $items, $options);
 	}
