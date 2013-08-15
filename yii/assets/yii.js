@@ -32,7 +32,7 @@
  *     // ... private functions and properties go here ...
  *
  *     return pub;
- * });
+ * })(jQuery);
  * ~~~
  *
  * Using this structure, you can define public and private functions/properties for a module.
