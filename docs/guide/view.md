@@ -34,13 +34,6 @@ So the view for the action above should be in `views/site/index.php` and can be 
 
 Intead of just scalar values you can pass anything else such as arrays or objects.
 
-Layout
-------
-
-Partials
---------
-
-
 Widgets
 -------
 
@@ -93,3 +86,173 @@ Alternative template languages
 
 There are offlicial extensions for [Smarty](http://www.smarty.net/) and [Twig](http://twig.sensiolabs.org/). In order
 to learn more refer to [Using template engines](template.md) section of the guide.
+
+Using View object
+-----------------
+
+An instance of `yii\base\View` is available in view templates as `$this` variable. Using it you can do many useful things
+including setting page title and meta, registering scripts and accessing the context.
+
+### Setting page title
+
+A common place to set page title are view templates. Since we can access view object with `$this`, setting a title
+becomes as easy as:
+
+```php
+$this->title = 'My page title';
+```
+
+### Adding meta tags
+
+Adding meta tags such as encodig, description, keywords is easy with view object as well:
+
+```php
+$this->registerMetaTag(array('encoding' => 'utf-8'));
+```
+
+The first argument is an map of `<meta>` tag option names and values. The code above will produce:
+
+```html
+<meta encoding="utf-8">
+```
+
+Sometimes there's a need to have only a single tag of a type. In this case you need to specify the second argument:
+
+```html
+$this->registerMetaTag(array('description' => 'This is my cool website made with Yii!'), 'meta-description');
+$this->registerMetaTag(array('description' => 'This website is about funny raccoons.'), 'meta-description');
+```
+
+If there are multiple calls with the same value of the second argument, the later will override the former and only
+a single tag will be rendered:
+
+```html
+<meta description="This website is about funny raccoons.">
+```
+
+### Registering link tags
+
+`<link>` tag is useful in many cases such as customizing favicon, ponting to RSS feed or delegating OpenID to another
+server. Yii view object has a method to work with these:
+
+```php
+$this->registerLinkTag(array(
+	'title' => 'Lives News for Yii Framework',
+	'rel' => 'alternate',
+	'type' => 'application/rss+xml',
+	'href' => 'http://www.yiiframework.com/rss.xml/',
+));
+```
+
+The code above will result in
+
+```html
+<link title="Lives News for Yii Framework" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/" />
+```
+
+Same as with meta tags you can specify additional argument to make sure there's only one link of a type registered.
+
+### Registering CSS
+
+You can register CSS using `registerCss` or `registerCssFile`. Former is for outputting code in `<style>` tags directly
+to the page which is not recommended in most cases (but still valid). Later is for registering CSS file. In Yii it's
+much better to [use asset manager](assets.md) to deal with these since it provides extra features so `registerCssFile`
+is manly useful for external CSS files.
+
+```php
+$this->registerCss("body { background: #f00; }");
+```
+
+The code above will result in adding the following to the head section of the page:
+
+```html
+<style>
+body { background: #f00; }
+</style>
+```
+
+If you want to specify additional properties of the style tag, pass array of name-values to the second argument. If you
+need to make sure there's only a single style tag use third argument as was mentioned in meta tags description.
+
+```php
+$this->registerCssFile("http://example.com/css/themes/black-and-white.css", array('media' => 'print'), 'css-print-theme');
+```
+
+The code above will add a link to CSS file to the head section of the page. The CSS will be used only when printing the
+page. We're using third argument so one of the views could override it.
+
+### Registering scripts
+
+
+
+
+### Registering asset bundles
+
+As was mentioned earlier it's preferred to use asset bundles instead of using CSS and JavaScript directly. You can get
+details on how to define asset bundles in [asset manager](assets.md) section of the guide. As for using already defined
+asset bundle, it's very straightforward:
+
+```php
+frontend\config\AppAsset::register($this);
+```
+
+### Layout
+
+### Partials
+
+Often you need to reuse some HTML markup in many views and often it's too simple to create a full-featured widget for it.
+In this case you may use partials.
+
+Partial is a view as well. It resides in one of directories under `views` and by convention is often started with `_`.
+For example, we need to render a list of user profiles and, at the same time, display individual profile elsewhere.
+
+First we need to define a partial for user profile in `_profile.php`:
+
+```php
+<?php
+use yii\helpers\Html;
+?>
+
+<div class="profile">
+	<h2><?php echo Html::encode($username); ?></h2>
+	<p><?php echo Html::encode($tagline); ?></p>
+</div>
+```
+
+Then we're using it in `index.php` view where we display a list of users:
+
+```php
+<div class="user-index">
+	<?php
+	foreach($users as $user) {
+		echo $this->render('_profile', array(
+			'username' => $user->name,
+			'tagline' => $user->tagline,
+		));
+	}
+	?>
+</div>
+```
+
+Same way we can reuse it in another view displaying a single user profile:
+
+```php
+echo $this->render('_profile', array(
+	'username' => $user->name,
+	'tagline' => $user->tagline,
+));
+```
+
+### Accessing context
+
+Views are generally used either by controller or by widget. In both cases the object that called view rendering is
+available in the view as `$this->context`. For example if we need to print out the current internal request route in a
+view rendered by controller we can use the following:
+
+```php
+echo $this->context->getRoute();
+```
+
+### Caching blocks
+
+
