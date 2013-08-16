@@ -19,15 +19,14 @@ $this->title = 'Welcome to Gii';
 	<p class="lead">Start the fun with the following code generators:</p>
 
 	<div class="row">
-		<?php foreach (array_values($generators) as $i => $generator): ?>
+		<?php foreach ($generators as $id => $generator): ?>
 		<div class="generator col-lg-4">
 			<h3><?php echo Html::encode($generator->getName()); ?></h3>
 			<p><?php echo $generator->getDescription(); ?></p>
-			<p><?php echo Html::a('Start »', $generator->getUrl(), array('class' => 'btn btn-default')); ?></p>
+			<p><?php echo Html::a('Start »', array('default/view', 'id' => $id), array('class' => 'btn btn-default')); ?></p>
 		</div>
 		<?php endforeach; ?>
 	</div>
-
 
 	<p><a class="btn btn-success" href="http://www.yiiframework.com/extensions/?tag=gii">Get More Generators</a></p>
 

@@ -23,4 +23,10 @@ class Generator extends \yii\gii\Generator
 	{
 		return 'This generator helps you to generate the skeleton code needed by a Yii module.';
 	}
+
+
+	public function getViewFile()
+	{
+		return __DIR__ . '/views/form.php';
+	}
 }

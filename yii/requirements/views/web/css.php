@@ -1627,7 +1627,7 @@ select:focus:invalid:focus {
           box-shadow: 0 0 6px #f8b9b7;
 }
 
-.form-actions {
+.form-group {
   padding: 19px 20px 20px;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -1636,14 +1636,14 @@ select:focus:invalid:focus {
   *zoom: 1;
 }
 
-.form-actions:before,
-.form-actions:after {
+.form-group:before,
+.form-group:after {
   display: table;
   line-height: 0;
   content: "";
 }
 
-.form-actions:after {
+.form-group:after {
   clear: both;
 }
 
@@ -1991,7 +1991,7 @@ legend + .control-group {
   margin-top: 10px;
 }
 
-.form-horizontal .form-actions {
+.form-horizontal .form-group {
   padding-left: 180px;
 }
 
