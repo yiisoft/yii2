@@ -67,7 +67,7 @@ More
 ====
 
 - [Bootstrap widgets](bootstrap-widgets.md)
-- [Form](form.md)
+- [Working with forms](form.md)
 - [Model validation reference](validation.md)
 - [Caching](caching.md)
 - [Internationalization](i18n.md)
