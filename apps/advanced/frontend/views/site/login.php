@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				<div style="color:#999;margin:1em 0">
 					If you forgot your password you can <?php echo Html::a('reset it', array('site/request-password-reset'))?>.
 				</div>
-				<div class="form-actions">
+				<div class="form-group">
 					<?php echo Html::submitButton('Login', array('class' => 'btn btn-primary')); ?>
 				</div>
 			<?php ActiveForm::end(); ?>

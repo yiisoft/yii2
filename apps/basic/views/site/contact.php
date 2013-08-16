@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					'options' => array('class' => 'form-control'),
 					'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
 				)); ?>
-				<div class="form-actions">
+				<div class="form-group">
 					<?php echo Html::submitButton('Submit', array('class' => 'btn btn-primary')); ?>
 				</div>
 			<?php ActiveForm::end(); ?>

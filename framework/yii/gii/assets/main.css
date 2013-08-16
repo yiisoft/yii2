@@ -41,3 +41,16 @@ body {
 .hint-block {
 	display: none;
 }
+
+table.code-files .file {
+
+}
+
+table.code-files .action {
+	width: 100px;
+}
+
+table.code-files .check {
+	width: 25px;
+	text-align: center;
+}

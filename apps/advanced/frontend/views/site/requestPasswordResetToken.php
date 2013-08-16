@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		<div class="col-lg-5">
 			<?php $form = ActiveForm::begin(array('id' => 'request-password-reset-form')); ?>
 				<?php echo $form->field($model, 'email'); ?>
-				<div class="form-actions">
+				<div class="form-group">
 					<?php echo Html::submitButton('Send', array('class' => 'btn btn-primary')); ?>
 				</div>
 			<?php ActiveForm::end(); ?>

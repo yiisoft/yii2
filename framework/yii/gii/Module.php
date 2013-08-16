@@ -53,7 +53,6 @@ class Module extends \yii\base\Module
 	{
 		parent::init();
 		foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
-			$config['id'] = $id;
 			$this->generators[$id] = Yii::createObject($config);
 		}
 	}

@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				<?php echo $form->field($model, 'username'); ?>
 				<?php echo $form->field($model, 'email'); ?>
 				<?php echo $form->field($model, 'password')->passwordInput(); ?>
-				<div class="form-actions">
+				<div class="form-group">
 					<?php echo Html::submitButton('Signup', array('class' => 'btn btn-primary')); ?>
 				</div>
 			<?php ActiveForm::end(); ?>

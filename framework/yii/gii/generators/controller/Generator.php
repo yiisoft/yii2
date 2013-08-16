@@ -8,6 +8,8 @@
 namespace yii\gii\generators\controller;
 
 use Yii;
+use yii\gii\CodeFile;
+use yii\helpers\Html;
 
 /**
  *
@@ -31,33 +33,25 @@ class Generator extends \yii\gii\Generator
 			one or several controller actions and their corresponding views.';
 	}
 
-	public function renderForm()
-	{
-		return Yii::$app->getView()->renderFile(__DIR__ . '/views/form.php', array(
-			'model' => $this,
-		));
-	}
-
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
 			array('controller, actions, baseClass', 'filter', 'filter' => 'trim'),
 			array('controller, baseClass', 'required'),
-			array('controller', 'match', 'pattern' => '/^[\w+\\/]*$/', 'message' => '{attribute} should only contain word characters and slashes.'),
-			array('actions', 'match', 'pattern' => '/^\w+[\w\s,]*$/', 'message' => '{attribute} should only contain word characters, spaces and commas.'),
-			array('baseClass', 'match', 'pattern' => '/^[a-zA-Z_][\w\\\\]*$/', 'message' => '{attribute} should only contain word characters and backslashes.'),
+			array('controller', 'match', 'pattern' => '/^[\w+\\/]*$/', 'message' => 'Only word characters and slashes are allowed.'),
+			array('actions', 'match', 'pattern' => '/^\w+[\w\s,]*$/', 'message' => 'Only word characters, spaces and commas are allowed.'),
+			array('baseClass', 'match', 'pattern' => '/^[a-zA-Z_][\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 			array('baseClass', 'validateReservedWord', 'skipOnError' => true),
-			array('baseClass, actions', 'sticky'),
 		));
 	}
 
 	public function attributeLabels()
 	{
-		return array_merge(parent::attributeLabels(), array(
+		return array(
 			'baseClass' => 'Base Class',
 			'controller' => 'Controller ID',
 			'actions' => 'Action IDs',
-		));
+		);
 	}
 
 	public function requiredTemplates()
@@ -70,32 +64,34 @@ class Generator extends \yii\gii\Generator
 
 	public function successMessage()
 	{
-		$link = CHtml::link('try it now', Yii::app()->createUrl($this->controller), array('target' => '_blank'));
+		$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($this->controller), array('target' => '_blank'));
 		return "The controller has been generated successfully. You may $link.";
 	}
 
 	public function prepare()
 	{
-		$this->files = array();
-		$templatePath = $this->templatePath;
+		$files = array();
 
-		$this->files[] = new CCodeFile(
-			$this->controllerFile,
+		$templatePath = $this->getTemplatePath();
+
+		$files[] = new CodeFile(
+			$this->getControllerFile(),
 			$this->render($templatePath . '/controller.php')
 		);
 
 		foreach ($this->getActionIDs() as $action) {
-			$this->files[] = new CCodeFile(
+			$files[] = new CodeFile(
 				$this->getViewFile($action),
 				$this->render($templatePath . '/view.php', array('action' => $action))
 			);
 		}
+
+		return $files;
 	}
 
 	public function getActionIDs()
 	{
-		$actions = preg_split('/[\s,]+/', $this->actions, -1, PREG_SPLIT_NO_EMPTY);
-		$actions = array_unique($actions);
+		$actions = array_unique(preg_split('/[\s,]+/', $this->actions, -1, PREG_SPLIT_NO_EMPTY));
 		sort($actions);
 		return $actions;
 	}
@@ -113,16 +109,16 @@ class Generator extends \yii\gii\Generator
 	{
 		if (($pos = strpos($this->controller, '/')) !== false) {
 			$id = substr($this->controller, 0, $pos);
-			if (($module = Yii::app()->getModule($id)) !== null) {
+			if (($module = Yii::$app->getModule($id)) !== null) {
 				return $module;
 			}
 		}
-		return Yii::app();
+		return Yii::$app;
 	}
 
 	public function getControllerID()
 	{
-		if ($this->getModule() !== Yii::app()) {
+		if ($this->getModule() !== Yii::$app) {
 			$id = substr($this->controller, strpos($this->controller, '/') + 1);
 		} else {
 			$id = $this->controller;
@@ -156,11 +152,5 @@ class Generator extends \yii\gii\Generator
 			$id[0] = strtoupper($id[0]);
 		}
 		return $module->getControllerPath() . '/' . $id . 'Controller.php';
-	}
-
-	public function getViewFile($action)
-	{
-		$module = $this->getModule();
-		return $module->getViewPath() . '/' . $this->getControllerID() . '/' . $action . '.php';
 	}
 }

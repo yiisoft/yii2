@@ -338,7 +338,7 @@ It is represented as an `ActiveField` object. Using fields, you can build a form
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
 	<?php echo $form->field($model, 'username'); ?>
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
-	<div class="form-actions">
+	<div class="form-group">
 		<?php echo Html::submitButton('Login'); ?>
 	</div>
 <?php yii\widgets\ActiveForm::end(); ?>
