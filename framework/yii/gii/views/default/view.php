@@ -11,6 +11,7 @@ use yii\gii\CodeFile;
  * @var yii\widgets\ActiveForm $form
  * @var string $result
  * @var CodeFile[] $files
+ * @var array $answers
  */
 
 $this->title = $generator->getName();
@@ -24,10 +25,10 @@ foreach ($generator->templates as $name => $path) {
 
 	<p><?php echo $generator->getDescription(); ?></p>
 
-	<?php $form = ActiveForm::begin(); ?>
+	<?php $form = ActiveForm::begin(array('fieldConfig' => array('class' => 'yii\gii\ActiveField'))); ?>
 	<div class="row">
 		<div class="col-lg-6">
-			<?php echo $this->renderFile($generator->getViewFile(), array(
+			<?php echo $this->renderFile($generator->formView(), array(
 				'generator' => $generator,
 				'form' => $form,
 			)); ?>
@@ -51,6 +52,7 @@ foreach ($generator->templates as $name => $path) {
 		echo $this->render('_files', array(
 			'generator' => $generator,
 			'files' => $files,
+			'answers' => $answers,
 		));
 	}
 	?>

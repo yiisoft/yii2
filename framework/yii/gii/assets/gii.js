@@ -10,6 +10,15 @@ yii.gii = (function ($) {
 					content: $hint.html()
 				});
 			});
+
+			var $checkAll = $('#check-all');
+			$checkAll.click(function() {
+				$('.code-files .check input').prop('checked', this.checked);
+			});
+			$('.code-files .check input').click(function() {
+				$checkAll.prop('checked', !$('.code-files .check input:not(:checked)').length);
+			});
+			$checkAll.prop('checked', !$('.code-files .check input:not(:checked)').length);
 		}
 	};
 })(jQuery);

@@ -1,8 +1,4 @@
 <?php
-
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
 /**
  * @var yii\base\View $this
  * @var yii\widgets\ActiveForm $form
@@ -17,11 +13,14 @@ use yii\widgets\ActiveForm;
 		<li><code>admin/user</code> generates <code>UserController.php</code> within the <code>admin</code> module.</li>
 	</ul>
 '); ?>
-<?php echo $form->field($generator, 'baseClass')->hint('
-	This is the class that the new controller class will extend from.
-	Please make sure the class exists and can be autoloaded.
-'); ?>
 <?php echo $form->field($generator, 'actions')->hint('
 	Provide one or multiple action IDs to generate empty action method(s) in the controller.
 	Separate multiple action IDs with commas or spaces.
+'); ?>
+<?php echo $form->field($generator, 'ns')->sticky()->hint('
+	This is the namespace that the new controller class will should use.
+'); ?>
+<?php echo $form->field($generator, 'baseClass')->sticky()->hint('
+	This is the class that the new controller class will extend from.
+	Please make sure the class exists and can be autoloaded.
 '); ?>

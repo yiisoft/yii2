@@ -43,6 +43,7 @@ class DefaultController extends Controller
 					$params['result'] = $generator->save($files, $_POST['answers']);
 				} else {
 					$params['files'] = $files;
+					$params['answers'] = isset($_POST['answers']) ? $_POST['answers'] : null;
 				}
 			}
 		}
