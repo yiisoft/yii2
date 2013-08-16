@@ -86,3 +86,34 @@ INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4,
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+/**
+ * (SqLite-)Database Schema for ExistValidatorTest
+ */
+
+DROP TABLE IF EXISTS tbl_validator_exist_main;
+DROP TABLE IF EXISTS tbl_validator_exist_ref;
+
+CREATE TABLE tbl_validator_exist_main (
+  id     INT(11) NOT NULL,
+  field1 VARCHAR(255),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE tbl_validator_exist_ref (
+  id      INT(11) NOT NULL,
+  a_field VARCHAR(255),
+  ref     INT(11),
+  PRIMARY KEY (id)
+);
+
+INSERT INTO tbl_validator_exist_main (id, field1) VALUES (1, 'just a string1');
+INSERT INTO tbl_validator_exist_main (id, field1) VALUES (2, 'just a string2');
+INSERT INTO tbl_validator_exist_main (id, field1) VALUES (3, 'just a string3');
+INSERT INTO tbl_validator_exist_main (id, field1) VALUES (4, 'just a string4');
+INSERT INTO tbl_validator_exist_ref (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
+INSERT INTO tbl_validator_exist_ref (id, a_field, ref) VALUES (2, 'ref_to_2', 2);
+INSERT INTO tbl_validator_exist_ref (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
+INSERT INTO tbl_validator_exist_ref (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
+INSERT INTO tbl_validator_exist_ref (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
+INSERT INTO tbl_validator_exist_ref (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
