@@ -20,6 +20,7 @@ class Generator extends \yii\gii\Generator
 {
 	public $controller;
 	public $baseClass = 'yii\web\Controller';
+	public $ns = 'app\controllers';
 	public $actions = 'index';
 
 	public function getName()
@@ -36,12 +37,13 @@ class Generator extends \yii\gii\Generator
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
-			array('controller, actions, baseClass', 'filter', 'filter' => 'trim'),
+			array('controller, actions, baseClass, ns', 'filter', 'filter' => 'trim'),
 			array('controller, baseClass', 'required'),
 			array('controller', 'match', 'pattern' => '/^[\w+\\/]*$/', 'message' => 'Only word characters and slashes are allowed.'),
 			array('actions', 'match', 'pattern' => '/^\w+[\w\s,]*$/', 'message' => 'Only word characters, spaces and commas are allowed.'),
 			array('baseClass', 'match', 'pattern' => '/^[a-zA-Z_][\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('baseClass', 'validateReservedWord', 'skipOnError' => true),
+			array('baseClass', 'validateReservedWord'),
+			array('ns', 'match', 'pattern' => '/^[a-zA-Z_][\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 		));
 	}
 
@@ -51,6 +53,7 @@ class Generator extends \yii\gii\Generator
 			'baseClass' => 'Base Class',
 			'controller' => 'Controller ID',
 			'actions' => 'Action IDs',
+			'ns' => 'Namespace',
 		);
 	}
 
@@ -152,5 +155,11 @@ class Generator extends \yii\gii\Generator
 			$id[0] = strtoupper($id[0]);
 		}
 		return $module->getControllerPath() . '/' . $id . 'Controller.php';
+	}
+
+	public function getViewFile($action)
+	{
+		$module=$this->getModule();
+		return $module->getViewPath().'/'.$this->getControllerID().'/'.$action.'.php';
 	}
 }

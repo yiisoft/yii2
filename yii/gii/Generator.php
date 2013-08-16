@@ -35,7 +35,7 @@ abstract class Generator extends Model
 	{
 		parent::init();
 		if (!isset($this->templates['default'])) {
-			$this->templates['default'] = $this->getDefaultTemplate();
+			$this->templates['default'] = $this->defaultTemplate();
 		}
 	}
 
@@ -60,13 +60,13 @@ abstract class Generator extends Model
 		return array();
 	}
 
-	public function getViewFile()
+	public function formView()
 	{
 		$class = new ReflectionClass($this);
 		return dirname($class->getFileName()) . '/views/form.php';
 	}
 
-	public function getDefaultTemplate()
+	public function defaultTemplate()
 	{
 		$class = new ReflectionClass($this);
 		return dirname($class->getFileName()) . '/templates';
