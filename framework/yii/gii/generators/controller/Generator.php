@@ -120,7 +120,7 @@ class Generator extends \yii\gii\Generator
 					<li><code>index</code> generates <code>actionIndex()</code></li>
 					<li><code>create-order</code> generates <code>actionCreateOrder()</code></li>
 				</ul>',
-			'ns' => 'This is the namespace that the new controller class will should use.',
+			'ns' => 'This is the namespace that the new controller class will use.',
 			'baseClass' => 'This is the class that the new controller class will extend from. Please make sure the class exists and can be autoloaded.',
 		);
 	}
