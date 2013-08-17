@@ -24,4 +24,12 @@ class Generator extends \yii\gii\Generator
 		return 'This generator generates a controller and views that implement CRUD (Create, Read, Update, Delete)
 			operations for the specified data model.';
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function generate()
+	{
+		return array();
+	}
 }

@@ -11,11 +11,52 @@ use Yii;
 use yii\web\HttpException;
 
 /**
+ * This is the main module class for the Gii module.
+ *
+ * To use Gii, include it as a module in the application configuration like the following:
+ *
+ * ~~~
+ * return array(
+ *     ......
+ *     'modules' => array(
+ *         'gii' => array(
+ *             'class' => 'yii\gii\Module',
+ *         ),
+ *     ),
+ * )
+ * ~~~
+ *
+ * Because Gii generates new code files on the server, you should only use it on your own
+ * development machine. To prevent other people from using this module, by default, Gii
+ * can only be accessed by localhost. You may configure its [[allowedIPs]] property if
+ * you want to make it accessible on other machines.
+ *
+ * With the above configuration, you will be able to access GiiModule in your browser using
+ * the URL `http://localhost/path/to/index.php?r=gii`
+ *
+ * If your application enables [[UrlManager::enablePrettyUrl|pretty URLs]], depending on your
+ * configuration, you may need to add the following URL rules in your application configuration
+ * in order to access Gii:
+ *
+ * ~~~
+ * 'rules'=>array(
+ *     'gii' => 'gii',
+ *     'gii/<controller>' => 'gii/<controller>',
+ *     'gii/<controller>/<action>' => 'gii/<controller>/<action>',
+ *     ...
+ * ),
+ * ~~~
+ *
+ * You can then access Gii via URL: `http://localhost/path/to/index.php/gii`
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Module extends \yii\base\Module
 {
+	/**
+	 * @inheritdoc
+	 */
 	public $controllerNamespace = 'yii\gii\controllers';
 	/**
 	 * @var array the list of IPs that are allowed to access this module.
@@ -26,9 +67,15 @@ class Module extends \yii\base\Module
 	 */
 	public $allowedIPs = array('127.0.0.1', '::1');
 	/**
-	 * @var array a list of path aliases that refer to the directories containing code generators.
-	 * The directory referred by a single path alias may contain multiple code generators, each stored
-	 * under a sub-directory whose name is the generator name.
+	 * @var array|Generator[] a list of generator configurations or instances. The array keys
+	 * are the generator IDs (e.g. "crud"), and the array elements are the corresponding generator
+	 * configurations or the instances.
+	 *
+	 * After the module is initialized, this property will become an array of generator instances
+	 * which are created based on the configurations previously taken by this property.
+	 *
+	 * Newly assigned generators will be merged with the [[coreGenerators()|core ones]], and the former
+	 * takes precedence in case when they have the same generator ID.
 	 */
 	public $generators = array();
 	/**
@@ -46,7 +93,7 @@ class Module extends \yii\base\Module
 
 
 	/**
-	 * Initializes the gii module.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -56,6 +103,9 @@ class Module extends \yii\base\Module
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function beforeAction($action)
 	{
 		if ($this->checkAccess()) {
@@ -65,6 +115,9 @@ class Module extends \yii\base\Module
 		}
 	}
 
+	/**
+	 * @return boolean whether the module can be accessed by the current user
+	 */
 	protected function checkAccess()
 	{
 		$ip = Yii::$app->getRequest()->getUserIP();
@@ -76,6 +129,10 @@ class Module extends \yii\base\Module
 		return false;
 	}
 
+	/**
+	 * Returns the list of the core code generator configurations.
+	 * @return array the list of the core code generator configurations.
+	 */
 	protected function coreGenerators()
 	{
 		return array(

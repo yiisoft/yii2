@@ -23,4 +23,12 @@ class Generator extends \yii\gii\Generator
 	{
 		return 'This generator helps you to generate the skeleton code needed by a Yii module.';
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function generate()
+	{
+		return array();
+	}
 }

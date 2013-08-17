@@ -10,43 +10,69 @@ namespace yii\gii\generators\controller;
 use Yii;
 use yii\gii\CodeFile;
 use yii\helpers\Html;
+use yii\helpers\Inflector;
 
 /**
+ * This generator will generate a controller and one or a few action view files.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Generator extends \yii\gii\Generator
 {
+	/**
+	 * @var string the controller ID
+	 */
 	public $controller;
+	/**
+	 * @var string the base class of the controller
+	 */
 	public $baseClass = 'yii\web\Controller';
+	/**
+	 * @var string the namespace of the controller class
+	 */
 	public $ns = 'app\controllers';
+	/**
+	 * @var string list of action IDs separated by commas or spaces
+	 */
 	public $actions = 'index';
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getName()
 	{
 		return 'Controller Generator';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getDescription()
 	{
 		return 'This generator helps you to quickly generate a new controller class,
 			one or several controller actions and their corresponding views.';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
 			array('controller, actions, baseClass, ns', 'filter', 'filter' => 'trim'),
 			array('controller, baseClass', 'required'),
-			array('controller', 'match', 'pattern' => '/^[\w+\\/]*$/', 'message' => 'Only word characters and slashes are allowed.'),
-			array('actions', 'match', 'pattern' => '/^\w+[\w\s,]*$/', 'message' => 'Only word characters, spaces and commas are allowed.'),
-			array('baseClass', 'match', 'pattern' => '/^[a-zA-Z_][\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
+			array('controller', 'match', 'pattern' => '/^[a-z\\-\\/]*$/', 'message' => 'Only a-z, dashes (-) and slashes (/) are allowed.'),
+			array('actions', 'match', 'pattern' => '/^[a-z\\-,\\s]*$/', 'message' => 'Only a-z, dashes (-), spaces and commas are allowed.'),
+			array('baseClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 			array('baseClass', 'validateReservedWord'),
-			array('ns', 'match', 'pattern' => '/^[a-zA-Z_][\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
+			array('ns', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 		));
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function attributeLabels()
 	{
 		return array(
@@ -57,6 +83,9 @@ class Generator extends \yii\gii\Generator
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function requiredTemplates()
 	{
 		return array(
@@ -65,26 +94,40 @@ class Generator extends \yii\gii\Generator
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function stickyAttributes()
 	{
 		return array('ns', 'baseClass');
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function hints()
 	{
 		return array(
-			'controller' => 'Controller ID should be in lower case and may contain module ID(s). For example:
+			'controller' => 'Controller ID should be in lower case and may contain module ID(s) separated by slashes. For example:
 				<ul>
 					<li><code>order</code> generates <code>OrderController.php</code></li>
 					<li><code>order-item</code> generates <code>OrderItemController.php</code></li>
 					<li><code>admin/user</code> generates <code>UserController.php</code> within the <code>admin</code> module.</li>
 				</ul>',
-			'actions' => 'Provide one or multiple action IDs to generate empty action method(s) in the controller. Separate multiple action IDs with commas or spaces.',
+			'actions' => 'Provide one or multiple action IDs to generate empty action method(s) in the controller. Separate multiple action IDs with commas or spaces.
+				Action IDs should be in lower case. For example:
+				<ul>
+					<li><code>index</code> generates <code>actionIndex()</code></li>
+					<li><code>create-order</code> generates <code>actionCreateOrder()</code></li>
+				</ul>',
 			'ns' => 'This is the namespace that the new controller class will should use.',
 			'baseClass' => 'This is the class that the new controller class will extend from. Please make sure the class exists and can be autoloaded.',
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function successMessage()
 	{
 		$actions = $this->getActionIDs();
@@ -97,7 +140,10 @@ class Generator extends \yii\gii\Generator
 		return "The controller has been generated successfully. You may $link.";
 	}
 
-	public function prepare()
+	/**
+	 * @inheritdoc
+	 */
+	public function generate()
 	{
 		$files = array();
 
@@ -105,19 +151,23 @@ class Generator extends \yii\gii\Generator
 
 		$files[] = new CodeFile(
 			$this->getControllerFile(),
-			$this->generateCode($templatePath . '/controller.php')
+			$this->render($templatePath . '/controller.php')
 		);
 
 		foreach ($this->getActionIDs() as $action) {
 			$files[] = new CodeFile(
 				$this->getViewFile($action),
-				$this->generateCode($templatePath . '/view.php', array('action' => $action))
+				$this->render($templatePath . '/view.php', array('action' => $action))
 			);
 		}
 
 		return $files;
 	}
 
+	/**
+	 * Normalizes [[actions]] into an array of action IDs.
+	 * @return array an array of action IDs entered by the user
+	 */
 	public function getActionIDs()
 	{
 		$actions = array_unique(preg_split('/[\s,]+/', $this->actions, -1, PREG_SPLIT_NO_EMPTY));
@@ -127,10 +177,15 @@ class Generator extends \yii\gii\Generator
 
 	public function getControllerClass()
 	{
+		return Inflector::id2camel($this->getControllerID()) . 'Controller';
+	}
+
+	public function getControllerID()
+	{
 		if (($pos = strrpos($this->controller, '/')) !== false) {
-			return ucfirst(substr($this->controller, $pos + 1)) . 'Controller';
+			return substr($this->controller, $pos + 1);
 		} else {
-			return ucfirst($this->controller) . 'Controller';
+			return $this->controller;
 		}
 	}
 
@@ -145,36 +200,15 @@ class Generator extends \yii\gii\Generator
 		return Yii::$app;
 	}
 
-	public function getControllerID()
-	{
-		if ($this->getModule() !== Yii::$app) {
-			$id = substr($this->controller, strpos($this->controller, '/') + 1);
-		} else {
-			$id = $this->controller;
-		}
-		if (($pos = strrpos($id, '/')) !== false) {
-			$id[$pos + 1] = strtolower($id[$pos + 1]);
-		} else {
-			$id[0] = strtolower($id[0]);
-		}
-		return $id;
-	}
-
 	public function getControllerFile()
 	{
 		$module = $this->getModule();
-		$id = $this->getControllerID();
-		if (($pos = strrpos($id, '/')) !== false) {
-			$id[$pos + 1] = strtoupper($id[$pos + 1]);
-		} else {
-			$id[0] = strtoupper($id[0]);
-		}
-		return $module->getControllerPath() . '/' . $id . 'Controller.php';
+		return $module->getControllerPath() . '/' . $this->getControllerClass() . '.php';
 	}
 
 	public function getViewFile($action)
 	{
-		$module=$this->getModule();
-		return $module->getViewPath().'/'.$this->getControllerID().'/'.$action.'.php';
+		$module = $this->getModule();
+		return $module->getViewPath() . '/' . $this->getControllerID() . '/' . $action . '.php';
 	}
 }
