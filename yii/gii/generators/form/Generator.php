@@ -23,10 +23,4 @@ class Generator extends \yii\gii\Generator
 	{
 		return 'This generator generates a view script file that displays a form to collect input for the specified model class.';
 	}
-
-
-	public function getViewFile()
-	{
-		return __DIR__ . '/views/form.php';
-	}
 }

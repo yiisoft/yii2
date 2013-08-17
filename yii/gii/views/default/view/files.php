@@ -1,0 +1,79 @@
+<?php
+
+use yii\gii\Generator;
+use yii\helpers\Html;
+use yii\gii\CodeFile;
+
+/**
+ * @var $this \yii\base\View
+ * @var $generator \yii\gii\Generator
+ * @var CodeFile[] $files
+ * @var array $answers
+ */
+?>
+<div class="default-view-files">
+	<p>Click on the above <code>Generate</code> button to generate the files selected below:</p>
+
+	<table class="table table-bordered table-striped table-condensed">
+		<thead>
+			<tr>
+				<th class="file">Code File</th>
+				<th class="action">Action</th>
+				<th>
+					<?php
+					foreach ($files as $file) {
+						if ($file->operation !== CodeFile::OP_SKIP) {
+							echo '<input type="checkbox" id="check-all">';
+							break;
+						}
+					}
+					?>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($files as $file): ?>
+			<tr class="<?php echo $file->operation; ?>">
+				<td class="file">
+					<?php echo Html::a(Html::encode($file->getRelativePath()), array('preview', 'file' => $file->id), array('class' => 'preview-code', 'data-title' => $file->getRelativePath())); ?>
+					<?php if ($file->operation === CodeFile::OP_OVERWRITE): ?>
+						<?php echo Html::a('diff', array('diff', 'file' => $file->id), array('class' => 'diff-code label label-warning', 'data-title' => $file->getRelativePath())); ?>
+					<?php endif; ?>
+				</td>
+				<td class="action">
+					<?php
+					if ($file->operation === CodeFile::OP_SKIP) {
+						echo 'unchanged';
+					} else {
+						echo $file->operation;
+					}
+					?>
+				</td>
+				<td class="check">
+					<?php
+					if ($file->operation === CodeFile::OP_SKIP) {
+						echo '&nbsp;';
+					} else {
+						echo Html::checkBox("answers[{$file->id}]", isset($answers) ? isset($answers[$file->id]) : ($file->operation === CodeFile::OP_NEW));
+					}
+					?>
+				</td>
+			</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+
+	<div class="modal fade" id="preview-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Modal title</h4>
+				</div>
+				<div class="modal-body">
+					<p>Please wait ...</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

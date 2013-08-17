@@ -13,6 +13,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\View;
 
+
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -60,6 +61,26 @@ abstract class Generator extends Model
 		return array();
 	}
 
+	public function stickyAttributes()
+	{
+		return array('template');
+	}
+
+	public function hints()
+	{
+		return array();
+	}
+
+	/**
+	 * Returns the message to be displayed when the newly generated code is saved successfully.
+	 * Child classes should override this method if the message needs to be customized.
+	 * @return string the message to be displayed when the newly generated code is saved successfully.
+	 */
+	public function successMessage()
+	{
+		return 'The code has been generated successfully.';
+	}
+
 	public function formView()
 	{
 		$class = new ReflectionClass($this);
@@ -91,7 +112,7 @@ abstract class Generator extends Model
 	{
 		return array(
 			array('template', 'required', 'message' => 'A code template must be selected.'),
-			array('template', 'validateTemplate', 'skipOnError' => true),
+			array('template', 'validateTemplate'),
 		);
 	}
 
@@ -106,17 +127,76 @@ abstract class Generator extends Model
 	}
 
 	/**
-	 * Saves the generated code into files.
+	 * Loads sticky attributes from a file and populates them into the model.
 	 */
-	public function save($files, $answers = array())
+	public function loadStickyAttributes()
 	{
-		$result = true;
-		foreach ($files as $file) {
-			if ($this->confirmed($file)) {
-				$result = $file->save() && $result;
+		$stickyAttributes = $this->stickyAttributes();
+		$attributes[] = 'template';
+		$path = $this->getStickyDataFile();
+		if (is_file($path)) {
+			$result = @include($path);
+			if (is_array($result)) {
+				foreach ($stickyAttributes as $name) {
+					if (isset($result[$name])) {
+						$this->$name = $result[$name];
+					}
+				}
 			}
 		}
-		return $result;
+	}
+
+	/**
+	 * Saves sticky attributes into a file.
+	 */
+	public function saveStickyAttributes()
+	{
+		$stickyAttributes = $this->stickyAttributes();
+		$stickyAttributes[] = 'template';
+		$values = array();
+		foreach ($stickyAttributes as $name) {
+			$values[$name] = $this->$name;
+		}
+		$path = $this->getStickyDataFile();
+		@mkdir(dirname($path), 0755, true);
+		file_put_contents($path, "<?php\nreturn " . var_export($values, true) . ";\n");
+	}
+
+	/**
+	 * @return string the file path that stores the sticky attribute values.
+	 */
+	public function getStickyDataFile()
+	{
+		return Yii::$app->getRuntimePath() . '/gii-' . Yii::getVersion() . '/' . str_replace('\\', '-',get_class($this)) . '.php';
+	}
+
+	/**
+	 * Saves the generated code into files.
+	 * @param CodeFile[] $files
+	 * @param array $answers
+	 * @param boolean $hasError
+	 * @return string
+	 */
+	public function save($files, $answers, &$hasError)
+	{
+		$lines = array('Generating code using template "' . $this->templatePath . '"...');
+		foreach ($files as $file) {;
+			$relativePath = $file->getRelativePath();
+			if (isset($answers[$file->id]) && $file->operation !== CodeFile::OP_SKIP) {
+				$error = $file->save();
+				if (is_string($error)) {
+					$lines[] = "<span class=\"error\">generating $relativePath<br>           $error</span>";
+				} elseif ($file->operation === CodeFile::OP_NEW) {
+					$lines[] = " generated $relativePath";
+				} else {
+					$lines[] = " overwrote $relativePath";
+				}
+			} else {
+				$lines[] = "   skipped $relativePath";
+			}
+		}
+		$lines[] = "done!\n";
+		return implode("\n", $lines);
 	}
 
 	/**
@@ -132,48 +212,11 @@ abstract class Generator extends Model
 		}
 	}
 
-	/**
-	 * @param CodeFile $file whether the code file should be saved
-	 * @return bool whether the confirmation is found in {@link answers} with appropriate {@link operation}
-	 */
-	public function confirmed($file)
-	{
-		return $this->answers === null && $file->operation === CodeFile::OP_NEW
-		|| is_array($this->answers) && isset($this->answers[md5($file->path)]);
-	}
-
-	/**
-	 * Generates the code using the specified code template file.
-	 * This method is manly used in {@link generate} to generate code.
-	 * @param string $templateFile the code template file path
-	 * @param array $_params_ a set of parameters to be extracted and made available in the code template
-	 * @return string the generated code
-	 */
-	public function render($templateFile, $params = array())
+	public function generateCode($template, $params = array())
 	{
 		$view = new View;
-		return $view->renderFile($templateFile, $params, $this);
-	}
-
-	/**
-	 * @return string the code generation result log.
-	 */
-	public function renderResults()
-	{
-		$output = 'Generating code using template "' . $this->templatePath . "\"...\n";
-		foreach ($this->files as $file) {
-			if ($file->error !== null) {
-				$output .= "<span class=\"error\">generating {$file->relativePath}<br/>           {$file->error}</span>\n";
-			} elseif ($file->operation === CodeFile::OP_NEW && $this->confirmed($file)) {
-				$output .= ' generated ' . $file->relativePath . "\n";
-			} elseif ($file->operation === CodeFile::OP_OVERWRITE && $this->confirmed($file)) {
-				$output .= ' overwrote ' . $file->relativePath . "\n";
-			} else {
-				$output .= '   skipped ' . $file->relativePath . "\n";
-			}
-		}
-		$output .= "done!\n";
-		return $output;
+		$params['generator'] = $this;
+		return $view->renderFile($template, $params, $this);
 	}
 
 	/**
@@ -211,6 +254,7 @@ abstract class Generator extends Model
 			'__line__',
 			'__method__',
 			'__namespace__',
+			'__trait__',
 			'abstract',
 			'and',
 			'array',
@@ -242,7 +286,7 @@ abstract class Generator extends Model
 			'exit',
 			'extends',
 			'final',
-			'final',
+			'finally',
 			'for',
 			'foreach',
 			'function',
@@ -273,6 +317,7 @@ abstract class Generator extends Model
 			'switch',
 			'this',
 			'throw',
+			'trait',
 			'try',
 			'unset',
 			'use',
