@@ -50,7 +50,7 @@ is a summary of the available cache components:
   the server doesn't have actual cache support, we can use this cache component. When an actual cache support
   is enabled, we can switch to use the corresponding cache component. In both cases, we can use the same
   code `Yii::$app->cache->get($key)` to attempt retrieving a piece of data without worrying that
-  `Yii::$all->cache` might be `null`.
+  `Yii::$app->cache` might be `null`.
 
 * [[\yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
   to cache large chunk of data (such as pages).
