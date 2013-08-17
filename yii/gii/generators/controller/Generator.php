@@ -175,11 +175,17 @@ class Generator extends \yii\gii\Generator
 		return $actions;
 	}
 
+	/**
+	 * @return string the controller class name without the namespace part.
+	 */
 	public function getControllerClass()
 	{
 		return Inflector::id2camel($this->getControllerID()) . 'Controller';
 	}
 
+	/**
+	 * @return string the controller ID (without the module ID prefix)
+	 */
 	public function getControllerID()
 	{
 		if (($pos = strrpos($this->controller, '/')) !== false) {
@@ -189,6 +195,9 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * @return \yii\base\Module the module that the new controller belongs to
+	 */
 	public function getModule()
 	{
 		if (($pos = strpos($this->controller, '/')) !== false) {
@@ -200,12 +209,19 @@ class Generator extends \yii\gii\Generator
 		return Yii::$app;
 	}
 
+	/**
+	 * @return string the controller class file path
+	 */
 	public function getControllerFile()
 	{
 		$module = $this->getModule();
 		return $module->getControllerPath() . '/' . $this->getControllerClass() . '.php';
 	}
 
+	/**
+	 * @param string $action the action ID
+	 * @return string the action view file path
+	 */
 	public function getViewFile($action)
 	{
 		$module = $this->getModule();
