@@ -38,9 +38,11 @@ class DefaultController extends Controller
 		$params = array('generator' => $generator);
 		if (isset($_POST['preview']) || isset($_POST['generate'])) {
 			if ($generator->validate()) {
+				$generator->saveStickyAttributes();
 				$files = $generator->prepare();
-				if (isset($_POST['generate'], $_POST['answers'])) {
-					$params['result'] = $generator->save($files, $_POST['answers']);
+				if (isset($_POST['generate']) && !empty($_POST['answers'])) {
+					$params['results'] = $generator->save($files, (array)$_POST['answers'], $hasError);
+					$params['hasError'] = $hasError;
 				} else {
 					$params['files'] = $files;
 					$params['answers'] = isset($_POST['answers']) ? $_POST['answers'] : null;
@@ -51,14 +53,45 @@ class DefaultController extends Controller
 		return $this->render('view', $params);
 	}
 
-	public function actionCode($file)
+	public function actionPreview($id, $file)
 	{
-
+		$generator = $this->loadGenerator($id);
+		if ($generator->validate()) {
+			foreach ($generator->prepare() as $f) {
+				if ($f->id === $file) {
+					return $f->preview();
+				}
+			}
+		}
+		throw new HttpException(404, "Code file not found: $file");
 	}
 
-	public function actionDiff($file1, $file2)
+	public function actionDiff($id, $file)
 	{
+		$generator = $this->loadGenerator($id);
+		if ($generator->validate()) {
+			foreach ($generator->prepare() as $f) {
+				if ($f->id === $file) {
+					return $this->renderPartial('diff', array(
+						'diff' => $f->diff(),
+					));
+				}
+			}
+		}
+		throw new HttpException(404, "Code file not found: $file");
+	}
 
+	public function createUrl($route, $params = array())
+	{
+		if (!isset($params['id']) && $this->generator !== null) {
+			foreach ($this->module->generators as $id => $generator) {
+				if ($generator === $this->generator) {
+					$params['id'] = $id;
+					break;
+				}
+			}
+		}
+		return parent::createUrl($route, $params);
 	}
 
 	/**
@@ -71,6 +104,7 @@ class DefaultController extends Controller
 	{
 		if (isset($this->module->generators[$id])) {
 			$this->generator = $this->module->generators[$id];
+			$this->generator->loadStickyAttributes();
 			$this->generator->load($_POST);
 			return $this->generator;
 		} else {

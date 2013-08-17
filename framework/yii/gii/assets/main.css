@@ -42,15 +42,74 @@ body {
 	display: none;
 }
 
-table.code-files .file {
+.default-view .sticky-value {
+	padding: 6px 12px;
+	background: lightyellow;
+}
+
+.default-view .modal-dialog {
+	width: 800px;
+}
+
+.default-view .modal-dialog .error {
 
 }
 
-table.code-files .action {
+.default-view .modal-dialog .error {
+	color: #d9534f;
+}
+
+.default-view .modal-dialog .content {
+	background: #fafafa;
+	border-left: #eee 5px solid;
+	padding: 5px 10px;
+	overflow: auto;
+}
+
+.default-view .modal-dialog code {
+	background: transparent;
+}
+
+.default-view-files table .file {
+
+}
+
+.default-view-files table .action {
 	width: 100px;
 }
 
-table.code-files .check {
+.default-view-files table .check {
 	width: 25px;
 	text-align: center;
+}
+
+.default-view-results pre {
+	overflow: auto;
+	background-color: #333;
+	max-height: 300px;
+	color: white;
+	padding: 10px;
+	border-radius: 0;
+}
+
+.default-view-results pre span.error {
+	background: #FFE0E1;
+	color: black;
+	padding: 1px;
+}
+
+.default-diff pre {
+	padding: 0;
+	margin: 0;
+	background: transparent;
+	border: none;
+}
+
+.default-diff pre del {
+	background: pink;
+}
+
+.default-diff pre ins {
+	background: lightgreen;
+	text-decoration: none;
 }

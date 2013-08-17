@@ -65,9 +65,35 @@ class Generator extends \yii\gii\Generator
 		);
 	}
 
+	public function stickyAttributes()
+	{
+		return array('ns', 'baseClass');
+	}
+
+	public function hints()
+	{
+		return array(
+			'controller' => 'Controller ID should be in lower case and may contain module ID(s). For example:
+				<ul>
+					<li><code>order</code> generates <code>OrderController.php</code></li>
+					<li><code>order-item</code> generates <code>OrderItemController.php</code></li>
+					<li><code>admin/user</code> generates <code>UserController.php</code> within the <code>admin</code> module.</li>
+				</ul>',
+			'actions' => 'Provide one or multiple action IDs to generate empty action method(s) in the controller. Separate multiple action IDs with commas or spaces.',
+			'ns' => 'This is the namespace that the new controller class will should use.',
+			'baseClass' => 'This is the class that the new controller class will extend from. Please make sure the class exists and can be autoloaded.',
+		);
+	}
+
 	public function successMessage()
 	{
-		$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($this->controller), array('target' => '_blank'));
+		$actions = $this->getActionIDs();
+		if (in_array('index', $actions)) {
+			$route = $this->controller . '/index';
+		} else {
+			$route = $this->controller . '/' . reset($actions);
+		}
+		$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($route), array('target' => '_blank'));
 		return "The controller has been generated successfully. You may $link.";
 	}
 
@@ -79,13 +105,13 @@ class Generator extends \yii\gii\Generator
 
 		$files[] = new CodeFile(
 			$this->getControllerFile(),
-			$this->render($templatePath . '/controller.php')
+			$this->generateCode($templatePath . '/controller.php')
 		);
 
 		foreach ($this->getActionIDs() as $action) {
 			$files[] = new CodeFile(
 				$this->getViewFile($action),
-				$this->render($templatePath . '/view.php', array('action' => $action))
+				$this->generateCode($templatePath . '/view.php', array('action' => $action))
 			);
 		}
 
@@ -126,17 +152,6 @@ class Generator extends \yii\gii\Generator
 		} else {
 			$id = $this->controller;
 		}
-		if (($pos = strrpos($id, '/')) !== false) {
-			$id[$pos + 1] = strtolower($id[$pos + 1]);
-		} else {
-			$id[0] = strtolower($id[0]);
-		}
-		return $id;
-	}
-
-	public function getUniqueControllerID()
-	{
-		$id = $this->controller;
 		if (($pos = strrpos($id, '/')) !== false) {
 			$id[$pos + 1] = strtolower($id[$pos + 1]);
 		} else {

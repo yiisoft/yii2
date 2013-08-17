@@ -43,7 +43,6 @@ class Module extends \yii\base\Module
 	 * Defaults to 0777, meaning the directory can be read, written and executed by all users.
 	 */
 	public $newDirMode = 0777;
-	public $enabled = true;
 
 
 	/**

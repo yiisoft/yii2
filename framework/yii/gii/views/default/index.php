@@ -13,7 +13,7 @@ $this->title = 'Welcome to Gii';
 ?>
 <div class="default-index">
 	<div class="page-header">
-		<h1>Welcome to Gii <small>a magic tool that can build up an application for you</small></h1>
+		<h1>Welcome to Gii <small>a magic tool that can write code for you</small></h1>
 	</div>
 
 	<p class="lead">Start the fun with the following code generators:</p>

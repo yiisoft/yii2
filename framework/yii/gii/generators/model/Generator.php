@@ -23,9 +23,4 @@ class Generator extends \yii\gii\Generator
 	{
 		return 'This generator generates a model class for the specified database table.';
 	}
-
-	public function getViewFile()
-	{
-		return __DIR__ . '/views/form.php';
-	}
 }

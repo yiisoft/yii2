@@ -1,8 +1,24 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: qiang
- * Date: 8/15/13
- * Time: 4:45 PM
- * To change this template use File | Settings | File Templates.
+ * This is the template for generating a controller class file.
+ *
+ * @var yii\base\View $this
+ * @var yii\gii\generators\controller\Generator $generator
  */
+?>
+<?php echo "<?php\n"; ?>
+
+<?php if (!empty($generator->ns)): ?>
+namespace <?php echo $generator->ns; ?>;
+<?php endif; ?>
+
+class <?php echo $generator->controllerClass; ?> extends <?php echo '\\' . ltrim($generator->baseClass, '\\') . "\n"; ?>
+{
+<?php foreach($generator->getActionIDs() as $action): ?>
+	public function action<?php echo ucfirst($action); ?>()
+	{
+		return $this->render('<?php echo $action; ?>');
+	}
+
+<?php endforeach; ?>
+}
