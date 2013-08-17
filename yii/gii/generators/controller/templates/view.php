@@ -13,7 +13,7 @@
  */
 <?php echo "?>"; ?>
 
-<h1><?php echo $action; ?></h1>
+<h1><?php echo $generator->getControllerID() . '/' . $action; ?></h1>
 
 <p>
 	You may change the content of this page by modifying

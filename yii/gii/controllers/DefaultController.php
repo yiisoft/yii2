@@ -39,10 +39,10 @@ class DefaultController extends Controller
 		if (isset($_POST['preview']) || isset($_POST['generate'])) {
 			if ($generator->validate()) {
 				$generator->saveStickyAttributes();
-				$files = $generator->prepare();
+				$files = $generator->generate();
 				if (isset($_POST['generate']) && !empty($_POST['answers'])) {
-					$params['results'] = $generator->save($files, (array)$_POST['answers'], $hasError);
-					$params['hasError'] = $hasError;
+					$params['hasError'] = $generator->save($files, (array)$_POST['answers'], $results);
+					$params['results'] = $results;
 				} else {
 					$params['files'] = $files;
 					$params['answers'] = isset($_POST['answers']) ? $_POST['answers'] : null;
@@ -57,9 +57,14 @@ class DefaultController extends Controller
 	{
 		$generator = $this->loadGenerator($id);
 		if ($generator->validate()) {
-			foreach ($generator->prepare() as $f) {
+			foreach ($generator->generate() as $f) {
 				if ($f->id === $file) {
-					return $f->preview();
+					$content = $f->preview();
+					if ($content !== false) {
+						return  '<div class="content">' . $content . '</content>';
+					} else {
+						return '<div class="error">Preview is not available for this file type.</div>';
+					}
 				}
 			}
 		}
@@ -70,7 +75,7 @@ class DefaultController extends Controller
 	{
 		$generator = $this->loadGenerator($id);
 		if ($generator->validate()) {
-			foreach ($generator->prepare() as $f) {
+			foreach ($generator->generate() as $f) {
 				if ($f->id === $file) {
 					return $this->renderPartial('diff', array(
 						'diff' => $f->diff(),

@@ -13,35 +13,47 @@ use yii\gii\components\TextDiff;
 use yii\helpers\Html;
 
 /**
+ * CodeFile represents a code file to be generated.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class CodeFile extends Object
 {
+	/**
+	 * The code file is new.
+	 */
 	const OP_NEW = 'new';
+	/**
+	 * The code file already exists, and the new one may need to overwrite it.
+	 */
 	const OP_OVERWRITE = 'overwrite';
+	/**
+	 * The new code file and the existing one are identical.
+	 */
 	const OP_SKIP = 'skip';
 
+	/**
+	 * @var string an ID that uniquely identifies this code file.
+	 */
 	public $id;
 	/**
 	 * @var string the file path that the new code should be saved to.
 	 */
 	public $path;
 	/**
-	 * @var mixed the newly generated code. If this is null, it means {@link path}
-	 * should be treated as a directory.
+	 * @var string the newly generated code content
 	 */
 	public $content;
 	/**
-	 * @var string the operation to be performed
+	 * @var string the operation to be performed. This can be [[OP_NEW]], [[OP_OVERWRITE]] or [[OP_SKIP]].
 	 */
 	public $operation;
 
 	/**
 	 * Constructor.
 	 * @param string $path the file path that the new code should be saved to.
-	 * @param string $content the newly generated code
+	 * @param string $content the newly generated code content.
 	 */
 	public function __construct($path, $content)
 	{
@@ -56,8 +68,8 @@ class CodeFile extends Object
 	}
 
 	/**
-	 * Saves the code into the file {@link path}.
-	 * @return string|boolean
+	 * Saves the code into the file specified by [[path]].
+	 * @return string|boolean the error occurred while saving the code file, or true if no error.
 	 */
 	public function save()
 	{
@@ -65,9 +77,9 @@ class CodeFile extends Object
 		if ($this->operation === self::OP_NEW) {
 			$dir = dirname($this->path);
 			if (!is_dir($dir)) {
-				$oldmask = @umask(0);
+				$mask = @umask(0);
 				$result = @mkdir($dir, $module->newDirMode, true);
-				@umask($oldmask);
+				@umask($mask);
 				if (!$result) {
 					return "Unable to create the directory '$dir'.";
 				}
@@ -76,9 +88,9 @@ class CodeFile extends Object
 		if (@file_put_contents($this->path, $this->content) === false) {
 			return "Unable to write the file '{$this->path}'.";
 		} else {
-			$oldmask = @umask(0);
+			$mask = @umask(0);
 			@chmod($this->path, $module->newFileMode);
-			@umask($oldmask);
+			@umask($mask);
 		}
 		return true;
 	}
@@ -116,18 +128,18 @@ class CodeFile extends Object
 		}
 
 		if ($type === 'php') {
-			return '<div class="content">' . highlight_string($this->content, true) . '</div>';
-		} elseif(in_array($type, array('txt','js','css'))) {
-			return '<div class="content">' . nl2br(Html::encode($this->content)) . '</div>';
+			return highlight_string($this->content, true);
+		} elseif (!in_array($type, array('jpg', 'gif', 'png', 'exe'))) {
+			return nl2br(Html::encode($this->content));
 		} else {
-			return '<div class="error">Preview is not available for this file type.</div>';
+			return false;
 		}
 	}
 
 	public function diff()
 	{
-		$type = $this->getType();
-		if (!in_array($type, array('php', 'txt','js','css'))) {
+		$type = strtolower($this->getType());
+		if (in_array($type, array('jpg', 'gif', 'png', 'exe'))) {
 			return false;
 		} elseif ($this->operation === self::OP_OVERWRITE) {
 			return TextDiff::compare(file_get_contents($this->path), $this->content);

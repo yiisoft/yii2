@@ -23,4 +23,12 @@ class Generator extends \yii\gii\Generator
 	{
 		return 'This generator generates a model class for the specified database table.';
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function generate()
+	{
+		return array();
+	}
 }
