@@ -207,12 +207,12 @@ page. We're using third argument so one of the views could override it.
 
 ### Registering scripts
 
-With View object you can register scripts. There are two dedicated methods for it: `registerScript` for inline scripts
+With View object you can register scripts. There are two dedicated methods for it: `registerJs` for inline scripts
 and `registerJsFile` for external scripts. Inline scripts are useful for configuration and dynamically generated code.
 The method for adding these can be used as follows:
 
 ```php
-$this->registerScript("var options = ".json_encode($options).";", View::POS_END, 'my-options');
+$this->registerJs("var options = ".json_encode($options).";", View::POS_END, 'my-options');
 ```
 
 First argument is the actual code where we're converting a PHP array of options to JavaScript one. Second argument
