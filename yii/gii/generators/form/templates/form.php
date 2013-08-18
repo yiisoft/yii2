@@ -28,7 +28,7 @@ use yii\widgets\ActiveForm;
 	<?php endforeach; ?>
 
 		<div class="form-group">
-			<?php echo '<?php'; ?> echo Html::submitButton('Login', array('class' => 'btn btn-primary')); ?>
+			<?php echo '<?php'; ?> echo Html::submitButton('Submit', array('class' => 'btn btn-primary')); ?>
 		</div>
 	<?php echo '<?php'; ?> ActiveForm::end(); ?>
 
