@@ -50,6 +50,7 @@ class ActiveRelation extends ActiveQuery
 	 */
 	public $via;
 
+
 	/**
 	 * Specifies the relation associated with the pivot table.
 	 * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
