@@ -74,7 +74,7 @@
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
 		"pear-pear.horde.org/horde_text_diff": "2.0.*",
-		"ezyang/htmlpurifier": "Required by HtmlPurifier."
+		"ezyang/htmlpurifier": "4.5.*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\": "/" }
