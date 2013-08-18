@@ -40,7 +40,7 @@ foreach ($generator->templates as $name => $path) {
 						Please select which set of the templates should be used to generated the code.
 				'); ?>
 				<div class="form-group">
-					<?php echo Html::submitButton('Preview', array('name' => 'preview', 'class' => 'btn btn-primary')); ?>
+					<?php echo Html::submitButton('Preview', array('name' => 'preview', 'class' => 'btn btn-success')); ?>
 
 					<?php if(isset($files)): ?>
 						<?php echo Html::submitButton('Generate', array('name' => 'generate', 'class' => 'btn btn-danger')); ?>

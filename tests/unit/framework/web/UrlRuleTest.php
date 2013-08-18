@@ -461,6 +461,7 @@ class UrlRuleTest extends TestCase
 				),
 				array(
 					array('post/1/a/yes', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'yes')),
+					array('post/1/a/no', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'no')),
 					array('post/2/a/no', 'post/index', array('page' => '2', 'tag' => 'a', 'sort' => 'no')),
 					array('post/2/a', 'post/index', array('page' => '2', 'tag' => 'a', 'sort' => 'yes')),
 					array('post/a/no', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'no')),

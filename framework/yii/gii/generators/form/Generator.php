@@ -21,7 +21,7 @@ class Generator extends \yii\gii\Generator
 	public $modelClass;
 	public $viewPath = '@app/views';
 	public $viewName;
-	public $scenarioName = 'default';
+	public $scenarioName;
 
 
 	/**
@@ -53,20 +53,26 @@ class Generator extends \yii\gii\Generator
 		return $files;
 	}
 
-
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
-			array('modelClass, viewName, scenarioName', 'filter', 'filter' => 'trim'),
+			array('modelClass, viewName, scenarioName, viewPath', 'filter', 'filter' => 'trim'),
 			array('modelClass, viewName, viewPath', 'required'),
-			array('modelClass, viewPath', 'match', 'pattern' => '/^@?\w+[\\-\\/\w+]*$/', 'message' => 'Only word characters, dashes, slashes and @ are allowed.'),
-			array('viewName', 'match', 'pattern' => '/^\w+[\\-\\/\w+]*$/', 'message' => 'Only word characters, dashes and slashes are allowed.'),
+			array('modelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 			array('modelClass', 'validateModel'),
+			array('viewName', 'match', 'pattern' => '/^\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes and slashes are allowed.'),
+			array('viewPath', 'match', 'pattern' => '/^@?\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes, slashes and @ are allowed.'),
 			array('viewPath', 'validateViewPath'),
-			array('scenarioName', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'),
+			array('scenarioName', 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'),
 		));
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function attributeLabels()
 	{
 		return array(
@@ -77,6 +83,9 @@ class Generator extends \yii\gii\Generator
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function requiredTemplates()
 	{
 		return array(
@@ -99,20 +108,32 @@ class Generator extends \yii\gii\Generator
 	public function hints()
 	{
 		return array(
+			'modelClass' => 'This is the model class for collecting the form input. You should provide a fully qualified class name, e.g., <code>app\models\Post</code>.',
+			'viewName' => 'This is the view name with respect to the view path. For example, <code>site/index</code> would generate a <code>site/index.php</code> view file under the view path.',
+			'viewPath' => 'This is the root view path to keep the generated view files. You may provide either a directory or a path alias, e.g., <code>@app/views</code>.',
+			'scenarioName' => 'This is the scenario to be used by the model when collecting the form input. If empty, the default scenario will be used.',
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function successMessage()
 	{
-		$output = <<<EOD
+		$code = highlight_string($this->render($this->getTemplatePath() . '/action.php'), true);
+		return <<<EOD
 <p>The form has been generated successfully.</p>
 <p>You may add the following code in an appropriate controller class to invoke the view:</p>
+<pre style="background:white">
+$code
+</pre>
 EOD;
-		$code = "<?php\n" . $this->render($this->getTemplatePath() . '/action.php');
-		return $output . highlight_string($code, true);
 	}
 
-	public function validateModel($attribute, $params)
+	/**
+	 * Validates the model class to make sure it exists and is valid.
+	 */
+	public function validateModel()
 	{
 		try {
 			if (class_exists($this->modelClass)) {
@@ -128,6 +149,9 @@ EOD;
 		}
 	}
 
+	/**
+	 * Validates [[viewPath]] to make sure it is a valid path or path alias and exists.
+	 */
 	public function validateViewPath()
 	{
 		$path = Yii::getAlias($this->viewPath, false);
@@ -136,11 +160,16 @@ EOD;
 		}
 	}
 
+	/**
+	 * @return array list of safe attributes of [[modelClass]]
+	 */
 	public function getModelAttributes()
 	{
 		/** @var Model $model */
 		$model = new $this->modelClass;
-		$model->setScenario($this->scenarioName);
+		if (!empty($this->scenarioName)) {
+			$model->setScenario($this->scenarioName);
+		}
 		return $model->safeAttributes();
 	}
 }
