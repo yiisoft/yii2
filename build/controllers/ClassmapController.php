@@ -49,6 +49,7 @@ class ClassmapController extends Controller
 				'/debug/',
 				'/console/',
 				'/test/',
+				'/gii/',
 			),
 		);
 		$files = FileHelper::findFiles($root, $options);
