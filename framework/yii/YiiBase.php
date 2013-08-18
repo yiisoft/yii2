@@ -9,6 +9,7 @@ namespace yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\UnknownClassException;
 use yii\log\Logger;
 
 /**
@@ -333,7 +334,11 @@ class YiiBase
 	 *    it will attempt to include the file associated with the corresponding path alias
 	 *    (e.g. `@PHPUnit/Framework/TestCase.php`);
 	 *
+	 * This autoloader allows loading classes that follow the [PSR-0 standard](http://www.php-fig.org/psr/0/).
+	 * Therefor a path alias has to be defined for each top-level namespace.
+	 *
 	 * @param string $className the fully qualified class name without a leading backslash "\"
+	 * @throws UnknownClassException if the class does not exist in the class file
 	 */
 	public static function autoload($className)
 	{
@@ -342,7 +347,6 @@ class YiiBase
 			if ($classFile[0] === '@') {
 				$classFile = static::getAlias($classFile);
 			}
-			include($classFile);
 		} else {
 			// follow PSR-0 to determine the class file
 			if (($pos = strrpos($className, '\\')) !== false) {
@@ -354,12 +358,21 @@ class YiiBase
 			}
 
 			// try loading via path alias
-			if (strpos($path, '/') !== false) {
+			if (strpos($path, '/') === false) {
+				return;
+			} else {
 				$classFile = static::getAlias('@' . $path, false);
-				if ($classFile !== false && is_file($classFile)) {
-					include($classFile);
+				if ($classFile === false || !is_file($classFile)) {
+					return;
 				}
 			}
+		}
+
+		include($classFile);
+
+		if (!class_exists($className, false) && !interface_exists($className, false) &&
+			(!function_exists('trait_exists') || !trait_exists($className, false))) {
+			throw new UnknownClassException("Unable to find '$className' in file: $classFile");
 		}
 	}
 
