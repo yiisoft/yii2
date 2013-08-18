@@ -16,14 +16,14 @@ yii.gii = (function ($) {
 	var initStickyInputs = function () {
 		$('.sticky:not(.error) input,select,textarea').each(function () {
 			var value;
-			if (this.tagName == 'SELECT') {
+			if (this.tagName === 'SELECT') {
 				value = this.options[this.selectedIndex].text;
-			} else if (this.tagName == 'TEXTAREA') {
+			} else if (this.tagName === 'TEXTAREA') {
 				value = $(this).html();
 			} else {
 				value = $(this).val();
 			}
-			if (value == '') {
+			if (value === '') {
 				value = '[empty]';
 			}
 			$(this).before('<div class="sticky-value">' + value + '</div>').hide();
@@ -51,7 +51,7 @@ yii.gii = (function ($) {
 					$modal.find('.content').css('max-height', ($(window).height() - 200) + 'px');
 				},
 				error: function (XMLHttpRequest, textStatus, errorThrown) {
-					$modal.find('.modal-body').html('<div class="error">' + XMLHttpRequest.responseText + '</div>')
+					$modal.find('.modal-body').html('<div class="error">' + XMLHttpRequest.responseText + '</div>');
 				}
 			});
 			return false;
