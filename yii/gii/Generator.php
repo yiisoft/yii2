@@ -231,7 +231,7 @@ abstract class Generator extends Model
 				$error = $file->save();
 				if (is_string($error)) {
 					$hasError = true;
-					$lines[] = "<span class=\"error\">generating $relativePath<br>           $error</span>";
+					$lines[] = "generating $relativePath\n<span class=\"error\">$error</span>";
 				} else {
 					$lines[] = $file->operation === CodeFile::OP_NEW ? " generated $relativePath" : " overwrote $relativePath";
 				}
