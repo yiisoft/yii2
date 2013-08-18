@@ -137,6 +137,10 @@ class NumberValidatorTest extends TestCase
 		$model->attr_number = 3.43;
 		$val->validateAttribute($model, 'attr_number');
 		$this->assertTrue($model->hasErrors('attr_number'));
+		$val = new NumberValidator(array('min' => 1));
+		$model = FakedValidationModel::createWithAttributes(array('attr_num' => array(1,2,3)));
+		$val->validateAttribute($model, 'attr_num');
+		$this->assertTrue($model->hasErrors('attr_num'));
 	}
 
 	public function testEnsureCustomMessageIsSetOnValidateAttribute()

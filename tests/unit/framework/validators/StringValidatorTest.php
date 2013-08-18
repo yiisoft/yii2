@@ -86,6 +86,10 @@ class StringValidatorTest extends TestCase
 		$model->attr_string = 'abc';
 		$val->validateAttribute($model, 'attr_string');
 		$this->assertTrue($model->hasErrors('attr_string'));
+		$val = new StringValidator(array('max' => 1));
+		$model = FakedValidationModel::createWithAttributes(array('attr_str' => array('abc')));
+		$val->validateAttribute($model, 'attr_str');
+		$this->assertTrue($model->hasErrors('attr_str'));
 	}
 
 	public function testEnsureMessagesOnInit()

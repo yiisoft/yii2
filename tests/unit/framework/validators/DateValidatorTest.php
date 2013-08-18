@@ -55,7 +55,10 @@ class DateValidatorTest extends TestCase
 			DateTime::createFromFormat($val->format, '2013-09-13')->getTimestamp(),
 			$model->attr_timestamp
 		);
-
+		$val = new DateValidator();
+		$model = FakedValidationModel::createWithAttributes(array('attr_date' => array()));
+		$val->validateAttribute($model, 'attr_date');
+		$this->assertTrue($model->hasErrors('attr_date'));
 
 	}
 }

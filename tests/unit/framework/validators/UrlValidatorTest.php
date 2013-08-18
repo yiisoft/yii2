@@ -29,6 +29,12 @@ class UrlValidatorTest extends TestCase
 		$this->assertTrue($val->validateValue('yiiframework.com'));
 		$this->assertTrue($val->validateValue('http://yiiframework.com'));
 	}
+
+	public function testValidateValueWithoutScheme()
+	{
+		$val = new UrlValidator(array('pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i'));
+		$this->assertTrue($val->validateValue('yiiframework.com'));
+	}
 	
 	public function testValidateWithCustomScheme()
 	{
