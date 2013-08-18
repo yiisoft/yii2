@@ -17,7 +17,6 @@ class TextDiff
 {
 	public static function compare($lines1, $lines2)
 	{
-		Yii::setAlias('@Horde', '@yii/gii/lib/Horde');
 		if (is_string($lines1)) {
 			$lines1 = explode("\n", $lines1);
 		}
