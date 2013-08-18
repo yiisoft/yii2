@@ -90,9 +90,10 @@ body {
 	color: white;
 	padding: 10px;
 	border-radius: 0;
+	white-space: nowrap;
 }
 
-.default-view-results pre span.error {
+.default-view-results pre .error {
 	background: #FFE0E1;
 	color: black;
 	padding: 1px;
