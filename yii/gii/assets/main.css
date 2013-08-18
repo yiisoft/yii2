@@ -5,8 +5,7 @@ body {
 .footer {
 	border-top: 1px solid #ddd;
 	margin-top: 30px;
-	padding-top: 15px;
-	padding-bottom: 30px;
+	padding: 15px 0 30px;
 }
 
 .jumbotron {
@@ -20,7 +19,8 @@ body {
 }
 
 .navbar-brand {
-	padding: 0 15px;
+	padding: 0;
+	margin: 0;
 }
 
 .default-index .generator {
@@ -53,10 +53,6 @@ body {
 }
 
 .default-view .modal-dialog .error {
-
-}
-
-.default-view .modal-dialog .error {
 	color: #d9534f;
 }
 
@@ -69,10 +65,6 @@ body {
 
 .default-view .modal-dialog code {
 	background: transparent;
-}
-
-.default-view-files table .file {
-
 }
 
 .default-view-files table .action {
