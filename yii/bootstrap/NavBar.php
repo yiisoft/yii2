@@ -65,15 +65,20 @@ class NavBar extends Widget
 		$this->clientOptions = false;
 		Html::addCssClass($this->options, 'navbar');
 		Html::addCssClass($this->brandOptions, 'navbar-brand');
+		if (empty($this->options['role'])) {
+			$this->options['role'] = 'navigation';
+		}
 
-		echo Html::beginTag('div', $this->options);
+		echo Html::beginTag('nav', $this->options);
 		if ($this->responsive) {
 			echo Html::beginTag('div', array('class' => 'container'));
 			echo $this->renderToggleButton();
-			echo Html::beginTag('div', array('class' => 'nav-collapse collapse navbar-responsive-collapse'));
 		}
 		if ($this->brandLabel !== null) {
 			echo Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
+		}
+		if ($this->responsive) {
+			echo Html::beginTag('div', array('class' => 'nav-collapse collapse navbar-responsive-collapse'));
 		}
 	}
 
@@ -86,7 +91,7 @@ class NavBar extends Widget
 			echo Html::endTag('div');
 			echo Html::endTag('div');
 		}
-		echo Html::endTag('div');
+		echo Html::endTag('nav');
 		BootstrapPluginAsset::register($this->getView());
 	}
 
