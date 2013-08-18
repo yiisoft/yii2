@@ -6,8 +6,9 @@
  * @var yii\gii\generators\controller\Generator $generator
  * @var string $action the action ID
  */
+
+echo "<?php\n";
 ?>
-<?php echo "<?php\n"; ?>
 /**
  * @var yii\base\View $this
  */

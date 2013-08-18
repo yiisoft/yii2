@@ -8,8 +8,9 @@ use yii\helpers\Inflector;
  * @var yii\base\View $this
  * @var yii\gii\generators\controller\Generator $generator
  */
+
+echo "<?php\n";
 ?>
-<?php echo "<?php\n"; ?>
 
 <?php if (!empty($generator->ns)): ?>
 namespace <?php echo $generator->ns; ?>;

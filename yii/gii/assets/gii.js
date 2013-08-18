@@ -28,7 +28,7 @@ yii.gii = (function ($) {
 			}
 			$(this).before('<div class="sticky-value">' + value + '</div>').hide();
 		});
-		$('.sticky-value').on('click', function() {
+		$('.sticky-value').on('click', function () {
 			$(this).hide();
 			$(this).next().show().get(0).focus();
 		});
@@ -76,9 +76,18 @@ yii.gii = (function ($) {
 			initPreviewDiffLinks();
 			initConfirmationCheckboxes();
 
-			$('.default-view .form-group input,select,textarea').change(function(){
+			// hide Generate button if any input is changed
+			$('.default-view .form-group input,select,textarea').change(function () {
 				$('.default-view-results,.default-view-files').hide();
 				$('.default-view button[name="generate"]').hide();
+			});
+
+			$('.module-form #generator-moduleclass').change(function () {
+				var value = $(this).val().match(/(\w+)\\\w+$/);
+				var $idInput = $('#generator-moduleid');
+				if (value && value[1] && $idInput.val() == '') {
+					$idInput.val(value[1]);
+				}
 			});
 		}
 	};

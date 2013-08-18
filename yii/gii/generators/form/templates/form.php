@@ -5,8 +5,9 @@
  * @var yii\base\View $this
  * @var yii\gii\generators\form\Generator $generator
  */
+
+echo "<?php\n";
 ?>
-<?php echo "<?php\n"; ?>
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;

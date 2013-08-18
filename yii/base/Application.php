@@ -169,7 +169,7 @@ abstract class Application extends Module
 	public function registerErrorHandlers()
 	{
 		if (YII_ENABLE_ERROR_HANDLER) {
-			//ini_set('display_errors', 0);
+			ini_set('display_errors', 0);
 			set_exception_handler(array($this, 'handleException'));
 			set_error_handler(array($this, 'handleError'), error_reporting());
 			if ($this->memoryReserveSize > 0) {
@@ -419,7 +419,6 @@ abstract class Application extends Module
 		// disable error capturing to avoid recursive errors while handling exceptions
 		restore_error_handler();
 		restore_exception_handler();
-
 		try {
 			$this->logException($exception);
 			if (($handler = $this->getErrorHandler()) !== null) {
