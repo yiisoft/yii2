@@ -73,7 +73,8 @@
 		"php": ">=5.3.7",
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
-		"pear-pear.horde.org/horde_text_diff": "2.0.*"
+		"pear-pear.horde.org/horde_text_diff": "2.0.*",
+		"ezyang/htmlpurifier": "Required by HtmlPurifier."
 	},
 	"autoload": {
 		"psr-0": { "yii\\": "/" }
@@ -81,7 +82,6 @@
 	"suggest": {
 		"michelf/php-markdown": "Required by Markdown.",
 		"twig/twig": "Required by TwigViewRenderer.",
-		"smarty/smarty": "Required by SmartyViewRenderer.",
-		"ezyang/htmlpurifier": "Required by HtmlPurifier."
+		"smarty/smarty": "Required by SmartyViewRenderer."
 	}
 }
