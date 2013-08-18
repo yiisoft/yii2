@@ -55,7 +55,7 @@ class ClassmapController extends Controller
 		$map = array();
 		foreach ($files as $file) {
 			if (($pos = strpos($file, $root)) !== 0) {
-				die("Something wrong: $file");
+				die("Something wrong: $file\n");
 			}
 			$path = str_replace('\\', '/', substr($file, strlen($root)));
 			$map[] = "\t'yii" . substr(str_replace('/', '\\', $path), 0, -4) . "' => YII_PATH . '$path',";
@@ -80,10 +80,10 @@ $map
 
 EOD;
 		if (is_file($mapFile) && file_get_contents($mapFile) === $output) {
-			echo "Nothing changed.";
+			echo "Nothing changed.\n";
 		} else {
 			file_put_contents($mapFile, $output);
-			echo "Class map saved in $mapFile";
+			echo "Class map saved in $mapFile\n";
 		}
 	}
 }
