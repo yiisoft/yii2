@@ -12,6 +12,7 @@ use yii\base\Model;
 use yii\gii\CodeFile;
 
 /**
+ * This generator will generate an action view file based on the specified model class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -124,9 +125,7 @@ class Generator extends \yii\gii\Generator
 		return <<<EOD
 <p>The form has been generated successfully.</p>
 <p>You may add the following code in an appropriate controller class to invoke the view:</p>
-<pre style="background:white">
-$code
-</pre>
+<pre>$code</pre>
 EOD;
 	}
 

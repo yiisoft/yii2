@@ -45,6 +45,7 @@ body {
 .default-view .sticky-value {
 	padding: 6px 12px;
 	background: lightyellow;
+	overflow: auto;
 }
 
 .default-view .modal-dialog {
@@ -97,6 +98,10 @@ body {
 	background: #FFE0E1;
 	color: black;
 	padding: 1px;
+}
+
+.default-view-results .alert pre {
+	background: white;
 }
 
 .default-diff pre {

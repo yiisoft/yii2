@@ -8,8 +8,10 @@ use yii\helpers\Inflector;
  * @var yii\base\View $this
  * @var yii\gii\generators\form\Generator $generator
  */
+
+echo "<?php\n";
 ?>
-<?php echo "<?php\n"; ?>
+
 public function action<?php echo Inflector::id2camel(trim(basename($generator->viewName), '_')); ?>()
 {
 	$model = new <?php echo $generator->modelClass; ?><?php echo empty($generator->scenarioName) ? '' : "(array('scenario' => '{$generator->scenarioName}'))"; ?>;
