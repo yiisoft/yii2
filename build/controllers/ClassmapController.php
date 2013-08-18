@@ -59,8 +59,9 @@ class ClassmapController extends Controller
 				die("Something wrong: $file\n");
 			}
 			$path = str_replace('\\', '/', substr($file, strlen($root)));
-			$map[] = "\t'yii" . substr(str_replace('/', '\\', $path), 0, -4) . "' => YII_PATH . '$path',";
+			$map[$path] = "\t'yii" . substr(str_replace('/', '\\', $path), 0, -4) . "' => YII_PATH . '$path',";
 		}
+		ksort($map);
 		$map = implode("\n", $map);
 		$output = <<<EOD
 <?php
