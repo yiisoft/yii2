@@ -13,12 +13,6 @@
 		"source": "https://github.com/yiisoft/yii2"
 	},
 	"minimum-stability": "dev",
-	"repositories": [
-		{
-			"type": "pear",
-			"url": "http://pear.horde.org"
-		}
-	],
 	"require": {
 		"php": ">=5.3.0",
 		"yiisoft/yii2": "dev-master",

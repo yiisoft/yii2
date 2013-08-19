@@ -143,8 +143,7 @@ class CodeFile extends Object
 		if (in_array($type, array('jpg', 'gif', 'png', 'exe'))) {
 			return false;
 		} elseif ($this->operation === self::OP_OVERWRITE) {
-			list ($diff, $addedLines, $deletedLines) = StringHelper::diff(file($this->path), $this->content);
-			return $diff;
+			return StringHelper::diff(file($this->path), $this->content);
 		} else {
 			return '';
 		}
