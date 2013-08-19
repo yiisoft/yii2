@@ -71,18 +71,17 @@ class StringHelperBase
 
 	/**
 	 * Compares two strings or string arrays, and return their differences.
-	 * This is a wrapper of the Horde_Text_Diff package.
+	 * This is a wrapper of the [phpspec/php-diff](https://packagist.org/packages/phpspec/php-diff) package.
 	 * @param string|array $lines1 the first string or string array to be compared. If it is a string,
 	 * it will be converted into a string array by breaking at newlines.
 	 * @param string|array $lines2 the second string or string array to be compared. If it is a string,
 	 * it will be converted into a string array by breaking at newlines.
-	 * @param string $format the output format. It must be 'context', 'inline', or 'unified'.
-	 * @param string $engine the diff engine to be used. It must be 'auto', 'native', 'shell', 'string', or 'xdiff'.
-	 * @return array the comparison result. The first element is a string representing the detailed comparison result.
-	 * The second and the third elements represent the number of added lines and deleted lines, respectively.
-	 * @throws InvalidParamException if the format or the engine is invalid.
+	 * @param string $format the output format. It must be 'inline', 'unified', 'context', 'side-by-side', or 'array'.
+	 * @return string|array the comparison result. An array is returned if `$format` is 'array'. For all other
+	 * formats, a string is returned.
+	 * @throws InvalidParamException if the format is invalid.
 	 */
-	public static function diff($lines1, $lines2, $format = 'inline', $engine = 'auto')
+	public static function diff($lines1, $lines2, $format = 'inline')
 	{
 		if (!is_array($lines1)) {
 			$lines1 = explode("\n", $lines1);
@@ -90,27 +89,32 @@ class StringHelperBase
 		if (!is_array($lines2)) {
 			$lines2 = explode("\n", $lines2);
 		}
+		foreach ($lines1 as $i => $line) {
+			$lines1[$i] = rtrim($line, "\r\n");
+		}
+		foreach ($lines2 as $i => $line) {
+			$lines2[$i] = rtrim($line, "\r\n");
+		}
 		switch ($format) {
-			case 'context':
-				$renderer = new \Horde_Text_Diff_Renderer_Context();
-				break;
 			case 'inline':
-				$renderer = new \Horde_Text_Diff_Renderer_Inline();
+				$renderer = new \Diff_Renderer_Html_Inline();
+				break;
+			case 'array':
+				$renderer = new \Diff_Renderer_Html_Array();
+				break;
+			case 'side-by-side':
+				$renderer = new \Diff_Renderer_Html_SideBySide();
+				break;
+			case 'context':
+				$renderer = new \Diff_Renderer_Text_Context();
 				break;
 			case 'unified':
-				$renderer = new \Horde_Text_Diff_Renderer_Unified();
+				$renderer = new \Diff_Renderer_Text_Unified();
 				break;
 			default:
-				throw new InvalidParamException("Output format must be 'context', 'inline' or 'unified'.");
+				throw new InvalidParamException("Output format must be 'inline', 'side-by-side', 'array', 'context' or 'unified'.");
 		}
-		if (!in_array($engine, array('auto', 'native', 'shell', 'string', 'xdiff'))) {
-			throw new InvalidParamException("Engine must be 'auto', 'native', 'shell', 'string' or 'xdiff'.");
-		}
-		$diff = new \Horde_Text_Diff($engine, array($lines1, $lines2));
-		return array(
-			$renderer->render($diff),
-			$diff->countAddedLines(),
-			$diff->countDeletedLines(),
-		);
+		$diff = new \Diff($lines1, $lines2);
+		return $diff->render($renderer);
 	}
 }

@@ -63,17 +63,11 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
-	"repositories": [
-		{
-			"type": "pear",
-			"url": "http://pear.horde.org"
-		}
-	],
 	"require": {
 		"php": ">=5.3.7",
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
-		"pear-pear.horde.org/horde_text_diff": "2.0.*",
+		"phpspec/php-diff": "1.0.*",
 		"ezyang/htmlpurifier": "4.5.*"
 	},
 	"autoload": {
