@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Object;
 use yii\gii\components\TextDiff;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 
 /**
  * CodeFile represents a code file to be generated.
@@ -142,7 +143,8 @@ class CodeFile extends Object
 		if (in_array($type, array('jpg', 'gif', 'png', 'exe'))) {
 			return false;
 		} elseif ($this->operation === self::OP_OVERWRITE) {
-			return TextDiff::compare(file_get_contents($this->path), $this->content);
+			list ($diff, $addedLines, $deletedLines) = StringHelper::diff(file($this->path), $this->content);
+			return $diff;
 		} else {
 			return '';
 		}
