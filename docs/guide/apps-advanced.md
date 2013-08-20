@@ -97,7 +97,7 @@ just copying everything from environment directory over the root directory where
 Typically environment contains application bootstrap files such as `index.php` and config files suffixed with
 `-local.php`. These are added to `.gitignore` and never added to source code repository.
 
-In order to avoid duplication configurations are overrading each other. For example, frontend reads configuration in the
+In order to avoid duplication configurations are overriding each other. For example, frontend reads configuration in the
 following order:
 
 - `frontend/config/main.php`
