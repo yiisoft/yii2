@@ -85,7 +85,7 @@ Configuration and environments
 
 There are multiple problems with straightforward approach to configuration:
 
-- Each team member has its own configuration options. Commiting such config will affect other team members.
+- Each team member has its own configuration options. Committing such config will affect other team members.
 - Production database password and API keys should not end up in repository.
 - There are multiple servers: development, testing, production. Each should have its own configuration.
 - Defining all configuration options for each case is very repetitive and takes too much time to maintain.
@@ -94,10 +94,10 @@ In order to solve these issues Yii introduces environments concept that is very 
 by a set of files under `environments` directory. `init` command is used to switch between these. What is really does is
 just copying everything from environment directory over the root directory where all applications are.
 
-Typically environment contains application bootstrap files such as `index.php` and config files postfixed with
+Typically environment contains application bootstrap files such as `index.php` and config files suffixed with
 `-local.php`. These are added to `.gitignore` and never added to source code repository.
 
-In order to avoid duplication configurations are overrding each other. For example, frontend reads configuration in the
+In order to avoid duplication configurations are overrading each other. For example, frontend reads configuration in the
 following order:
 
 - `frontend/config/main.php`
@@ -118,7 +118,7 @@ Another difference is that most application component configurations are moved t
 Configuring Composer
 --------------------
 
-After application template is installed it's a good idea to adjust defaul `composer.json` that can be found in the root
+After application template is installed it's a good idea to adjust default `composer.json` that can be found in the root
 directory:
 
 ```javascript
