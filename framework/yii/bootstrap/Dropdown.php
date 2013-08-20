@@ -28,10 +28,6 @@ class Dropdown extends Widget
 	 * - url: string, optional, the url of the item link. Defaults to "#".
 	 * - linkOptions: array, optional, the HTML attributes of the item link.
 	 * - options: array, optional, the HTML attributes of the item.
-	 * - items: array, optional, the dropdown items configuration array. if `items` is set, then `url` of the parent
-	 *   item will be ignored and automatically set to "#"
-	 *
-	 * @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
 	 */
 	public $items = array();
 	/**
@@ -80,13 +76,7 @@ class Dropdown extends Widget
 			$options = ArrayHelper::getValue($item, 'options', array());
 			$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
 			$linkOptions['tabindex'] = '-1';
-
-			if (isset($item['items'])) {
-				Html::addCssClass($options, 'dropdown-submenu');
-				$content = Html::a($label, '#', $linkOptions) . $this->renderItems($item['items']);
-			} else {
-				$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
-			}
+			$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
 			$lines[] = Html::tag('li', $content, $options);
 		}
 

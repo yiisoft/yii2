@@ -10,13 +10,18 @@ namespace yii\bootstrap;
 use yii\web\AssetBundle;
 
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
+ * Bootstrap 2 theme for Bootstrap 3
+ *
+ * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class BootstrapAsset extends AssetBundle
+class BootstrapThemeAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/bootstrap/assets';
 	public $css = array(
-		'css/bootstrap.css',
+		'js/bootstrap-theme.css',
+	);
+	public $depends = array(
+		'yii\bootstrap\BootstrapAsset',
 	);
 }

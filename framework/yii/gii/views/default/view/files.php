@@ -63,7 +63,7 @@ use yii\gii\CodeFile;
 		</tbody>
 	</table>
 
-	<div class="modal fade" id="preview-modal">
+	<div class="modal fade" id="preview-modal" tabindex="-1" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
