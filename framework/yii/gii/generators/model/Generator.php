@@ -8,6 +8,8 @@
 namespace yii\gii\generators\model;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\gii\CodeFile;
 
 /**
  *
@@ -36,16 +38,15 @@ class Generator extends \yii\gii\Generator
 
 	public function getDescription()
 	{
-		return 'This generator generates a model class for the specified database table.';
+		return 'This generator generates an ActiveRecord class for the specified database table.';
 	}
 
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
 			array('tablePrefix, baseClass, tableName, modelClass, modelPath, connectionId', 'filter', 'filter' => 'trim'),
-			array('connectionId, tableName, modelPath, baseClass', 'required'),
+			array('tableName, modelPath, baseClass', 'required'),
 			array('tablePrefix, tableName, modelPath', 'match', 'pattern' => '/^(\w+[\w\.]*|\*?|\w+\.\*)$/', 'message' => '{attribute} should only contain word characters, dots, and an optional ending asterisk.'),
-			array('connectionId', 'validateConnectionId'),
 			array('tableName', 'validateTableName'),
 			array('tablePrefix, modelClass', 'match', 'pattern' => '/^[a-zA-Z_]\w*$/', 'message' => '{attribute} should only contain word characters.'),
 			array('baseClass', 'match', 'pattern' => '/^[a-zA-Z_][\w\\\\]*$/', 'message' => '{attribute} should only contain word characters and backslashes.'),
@@ -57,7 +58,7 @@ class Generator extends \yii\gii\Generator
 
 	public function attributeLabels()
 	{
-		return array_merge(parent::attributeLabels(), array(
+		return array(
 			'tablePrefix' => 'Table Prefix',
 			'tableName' => 'Table Name',
 			'modelPath' => 'Model Path',
@@ -66,7 +67,7 @@ class Generator extends \yii\gii\Generator
 			'buildRelations' => 'Build Relations',
 			'commentsAsLabels' => 'Use Column Comments as Attribute Labels',
 			'connectionId' => 'Database Connection',
-		));
+		);
 	}
 
 	public function requiredTemplates()
@@ -78,15 +79,14 @@ class Generator extends \yii\gii\Generator
 
 	public function stickyAttributes()
 	{
-		return array('connectionId', 'tablePrefix', 'modelPath', 'baseClass', 'buildRelations', 'commentsAsLabels');
+		return array('tablePrefix', 'modelPath', 'baseClass', 'buildRelations', 'commentsAsLabels');
 	}
 
 	public function generate()
 	{
-		if (Yii::$app->{$this->connectionId} === null) {
-			throw new CHttpException(500, 'A valid database connection is required to run this generator.');
+		if (($db = Yii::$app->{$this->db}) === null) {
+			throw new InvalidConfigException('The "db" property must refer to a valid DB connection.');
 		}
-		$this->tablePrefix = Yii::$app->{$this->connectionId}->tablePrefix;
 
 		if (($pos = strrpos($this->tableName, '.')) !== false) {
 			$schema = substr($this->tableName, 0, $pos);
@@ -95,25 +95,16 @@ class Generator extends \yii\gii\Generator
 			$schema = '';
 			$tableName = $this->tableName;
 		}
-		if ($tableName[strlen($tableName) - 1] === '*') {
-			$tables = Yii::$app->{$this->connectionId}->schema->getTables($schema);
-			if ($this->tablePrefix != '') {
-				foreach ($tables as $i => $table) {
-					if (strpos($table->name, $this->tablePrefix) !== 0) {
-						unset($tables[$i]);
-					}
-				}
-			}
+		if (strpos($tableName, '*') !== false) {
+			$tables = $db->getSchema()->getTableSchemas($schema);
 		} else {
-			$tables = array($this->getTableSchema($this->tableName));
+			$tables = array($db->getTableSchema($this->tableName, true));
 		}
 
-		$this->files = array();
-		$templatePath = $this->templatePath;
-		$this->relations = $this->generateRelations();
+		$files = array();
+		$relations = $this->generateRelations();
 
 		foreach ($tables as $table) {
-			$tableName = $this->removePrefix($table->name);
 			$className = $this->generateClassName($table->name);
 			$params = array(
 				'tableName' => $schema === '' ? $tableName : $schema . '.' . $tableName,
@@ -122,13 +113,14 @@ class Generator extends \yii\gii\Generator
 				'labels' => $this->generateLabels($table),
 				'rules' => $this->generateRules($table),
 				'relations' => isset($this->relations[$className]) ? $this->relations[$className] : array(),
-				'connectionId' => $this->connectionId,
 			);
-			$this->files[] = new CCodeFile(
-				Yii::getPathOfAlias($this->modelPath) . '/' . $className . '.php',
-				$this->render($templatePath . '/model.php', $params)
+			$files[] = new CodeFile(
+				Yii::getAlias($this->modelPath) . '/' . $className . '.php',
+				$this->render('model.php', $params)
 			);
 		}
+
+		return $files;
 	}
 
 	public function validateTableName($attribute, $params)
@@ -192,13 +184,6 @@ class Generator extends \yii\gii\Generator
 			if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $column->name)) {
 				return $table->name . '.' . $column->name;
 			}
-		}
-	}
-
-	public function validateModelPath($attribute, $params)
-	{
-		if (Yii::getPathOfAlias($this->modelPath) === false) {
-			$this->addError('modelPath', 'Model Path must be a valid path alias.');
 		}
 	}
 

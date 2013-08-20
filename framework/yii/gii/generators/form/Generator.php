@@ -49,7 +49,7 @@ class Generator extends \yii\gii\Generator
 		$files = array();
 		$files[] = new CodeFile(
 			Yii::getAlias($this->viewPath) . '/' . $this->viewName . '.php',
-			$this->render($this->getTemplatePath() . '/form.php')
+			$this->render('form.php')
 		);
 		return $files;
 	}
@@ -121,7 +121,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function successMessage()
 	{
-		$code = highlight_string($this->render($this->getTemplatePath() . '/action.php'), true);
+		$code = highlight_string($this->render('action.php'), true);
 		return <<<EOD
 <p>The form has been generated successfully.</p>
 <p>You may add the following code in an appropriate controller class to invoke the view:</p>

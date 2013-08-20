@@ -116,14 +116,14 @@ abstract class Generator extends Model
 
 	/**
 	 * Returns the view file for the input form of the generator.
-	 * The default implementation will return the "form.php" file under the "views" subdirectory of the
-	 * directory containing the generator class file.
+	 * The default implementation will return the "form.php" file under the directory
+	 * that contains the generator class file.
 	 * @return string the view file for the input form of the generator.
 	 */
 	public function formView()
 	{
 		$class = new ReflectionClass($this);
-		return dirname($class->getFileName()) . '/views/form.php';
+		return dirname($class->getFileName()) . '/form.php';
 	}
 
 	/**
@@ -261,7 +261,8 @@ abstract class Generator extends Model
 	/**
 	 * Generates code using the specified code template and parameters.
 	 * Note that the code template will be used as a PHP file.
-	 * @param string $template the code template file
+	 * @param string $template the code template file. This must be specified as a file path
+	 * relative to [[templatePath]].
 	 * @param array $params list of parameters to be passed to the template file.
 	 * @return string the generated code
 	 */
@@ -269,7 +270,7 @@ abstract class Generator extends Model
 	{
 		$view = new View;
 		$params['generator'] = $this;
-		return $view->renderFile($template, $params, $this);
+		return $view->renderFile($this->getTemplatePath() . '/' . $template, $params, $this);
 	}
 
 	/**

@@ -123,18 +123,17 @@ EOD;
 	{
 		$files = array();
 		$modulePath = $this->getModulePath();
-		$templatePath = $this->getTemplatePath();
 		$files[] = new CodeFile(
 			$modulePath . '/' . StringHelper::basename($this->moduleClass) . '.php',
-			$this->render("$templatePath/module.php")
+			$this->render("module.php")
 		);
 		$files[] = new CodeFile(
 			$modulePath . '/controllers/DefaultController.php',
-			$this->render("$templatePath/controller.php")
+			$this->render("controller.php")
 		);
 		$files[] = new CodeFile(
 			$modulePath . '/views/default/index.php',
-			$this->render("$templatePath/view.php")
+			$this->render("view.php")
 		);
 
 		return $files;
