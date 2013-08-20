@@ -85,7 +85,7 @@ Configuration and environments
 
 There are multiple problems with straightforward approach to configuration:
 
-- Each team member has its own configuration options. Commiting such config will affect other team members.
+- Each team member has its own configuration options. Committing such config will affect other team members.
 - Production database password and API keys should not end up in repository.
 - There are multiple servers: development, testing, production. Each should have its own configuration.
 - Defining all configuration options for each case is very repetitive and takes too much time to maintain.
