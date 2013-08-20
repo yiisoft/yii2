@@ -4,7 +4,7 @@ Configuration
 In Yii application and majority of components have sensible defaults so it's unlikely you spend lots of time configuring
 it. Still there are some mandatory options such as database connection you should set up.
 
-How application is configured depends on application template but there are some genral principles applying in any case.
+How application is configured depends on application template but there are some general principles applying in any case.
 
 Configuring options in bootstrap file
 -------------------------------------
@@ -39,7 +39,7 @@ return array(
 );
 ```
 
-In the above array keys are names of application properties. Depending on application type you can check properies of
+In the above array keys are names of application properties. Depending on application type you can check properties of
 either `\yii\web\Application` or `\yii\console\Application`. Both are extended from `\yii\base\Application`.
 
 > Note that you can configure not only public class properties but anything accessible via setter. For example, to

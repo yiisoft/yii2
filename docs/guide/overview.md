@@ -37,4 +37,4 @@ How does Yii Compare with Other Frameworks?
 - Syntax and overall development usability are taken seriously.
 - Performance is one of the key goals.
 - We are constantly watching other web frameworks out there and getting the best ideas in. Initial Yii release was heavily
-  influenced by Ruby on Rails. Still, we aren't blindly copying anyhting.
+  influenced by Ruby on Rails. Still, we aren't blindly copying anything.

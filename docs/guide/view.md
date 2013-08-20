@@ -1,7 +1,7 @@
 View
 ====
 
-View is an important part of MVC and is reponsible for how data is presented to the end user.
+View is an important part of MVC and is responsible for how data is presented to the end user.
 
 Basics
 ------
@@ -32,7 +32,7 @@ So the view for the action above should be in `views/site/index.php` and can be 
 <p>Hello, <?php echo $username?>!</p>
 ```
 
-Intead of just scalar values you can pass anything else such as arrays or objects.
+Instead of just scalar values you can pass anything else such as arrays or objects.
 
 Widgets
 -------
@@ -108,7 +108,7 @@ Note that besides HTMLPurifier does excellent job making output safe it's not ve
 Alternative template languages
 ------------------------------
 
-There are offlicial extensions for [Smarty](http://www.smarty.net/) and [Twig](http://twig.sensiolabs.org/). In order
+There are official extensions for [Smarty](http://www.smarty.net/) and [Twig](http://twig.sensiolabs.org/). In order
 to learn more refer to [Using template engines](template.md) section of the guide.
 
 Using View object in templates
@@ -128,7 +128,7 @@ $this->title = 'My page title';
 
 ### Adding meta tags
 
-Adding meta tags such as encodig, description, keywords is easy with view object as well:
+Adding meta tags such as encoding, description, keywords is easy with view object as well:
 
 ```php
 $this->registerMetaTag(array('encoding' => 'utf-8'));
@@ -156,7 +156,7 @@ override the former and only a single tag will be rendered:
 
 ### Registering link tags
 
-`<link>` tag is useful in many cases such as customizing favicon, ponting to RSS feed or delegating OpenID to another
+`<link>` tag is useful in many cases such as customizing favicon, pointing to RSS feed or delegating OpenID to another
 server. Yii view object has a method to work with these:
 
 ```php

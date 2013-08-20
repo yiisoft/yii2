@@ -169,7 +169,7 @@ WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 Order
 -----
 
-For odering results `orderBy` and `addOrderBy` could be used:
+For ordering results `orderBy` and `addOrderBy` could be used:
 
 ```php
 $query->orderBy(array(

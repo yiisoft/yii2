@@ -59,7 +59,7 @@ If user isn't specifying any route i.e. using URL like `http://example.com/`, Yi
 used. It is determined by [[\yii\web\Application::defaultRoute]] method and is `site` by default meaning that `SiteController`
 will be loaded.
 
-A controller has a default action. When the user request does not specify which action to execute by usign an URL such as
+A controller has a default action. When the user request does not specify which action to execute by using an URL such as
 `http://example.com/?r=site`, the default action will be executed. By default, the default action is named as `index`.
 It can be changed by setting the [[\yii\base\Controller::defaultAction]] property.
 
