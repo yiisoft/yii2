@@ -147,17 +147,15 @@ class Generator extends \yii\gii\Generator
 	{
 		$files = array();
 
-		$templatePath = $this->getTemplatePath();
-
 		$files[] = new CodeFile(
 			$this->getControllerFile(),
-			$this->render($templatePath . '/controller.php')
+			$this->render('controller.php')
 		);
 
 		foreach ($this->getActionIDs() as $action) {
 			$files[] = new CodeFile(
 				$this->getViewFile($action),
-				$this->render($templatePath . '/view.php', array('action' => $action))
+				$this->render('view.php', array('action' => $action))
 			);
 		}
 
