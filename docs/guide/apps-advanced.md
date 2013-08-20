@@ -94,10 +94,10 @@ In order to solve these issues Yii introduces environments concept that is very 
 by a set of files under `environments` directory. `init` command is used to switch between these. What is really does is
 just copying everything from environment directory over the root directory where all applications are.
 
-Typically environment contains application bootstrap files such as `index.php` and config files postfixed with
+Typically environment contains application bootstrap files such as `index.php` and config files suffixed with
 `-local.php`. These are added to `.gitignore` and never added to source code repository.
 
-In order to avoid duplication configurations are overrding each other. For example, frontend reads configuration in the
+In order to avoid duplication configurations are overrading each other. For example, frontend reads configuration in the
 following order:
 
 - `frontend/config/main.php`
