@@ -108,7 +108,7 @@ point for functional testing.
 Configuring Composer
 --------------------
 
-After application template is installed it's a good idea to adjust defaul `composer.json` that can be found in the root
+After application template is installed it's a good idea to adjust default `composer.json` that can be found in the root
 directory:
 
 ```javascript
