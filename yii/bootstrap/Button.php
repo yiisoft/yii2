@@ -17,7 +17,7 @@ use yii\helpers\Html;
  * ```php
  * echo Button::widget(array(
  *     'label' => 'Action',
- *     'options' => array('class' => 'btn-large'),
+ *     'options' => array('class' => 'btn-lg'),
  * ));
  * ```
  * @see http://twitter.github.io/bootstrap/javascript.html#buttons

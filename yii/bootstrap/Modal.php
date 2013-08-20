@@ -199,7 +199,9 @@ class Modal extends Widget
 	protected function initOptions()
 	{
 		$this->options = array_merge(array(
-			'class' => 'modal fade',
+			'class' => 'fade',
+			'role' => 'dialog',
+			'tabindex' => -1,
 		), $this->options);
 		Html::addCssClass($this->options, 'modal');
 

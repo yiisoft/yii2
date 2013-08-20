@@ -37,10 +37,6 @@ use yii\helpers\Html;
 class NavBar extends Widget
 {
 	/**
-	 * @var boolean whether to enable a collapsing responsive navbar.
-	 */
-	public $responsive = true;
-	/**
 	 * @var string the text of the brand. Note that this is not HTML-encoded.
 	 * @see http://twitter.github.io/bootstrap/components.html#navbar
 	 */
@@ -55,6 +51,7 @@ class NavBar extends Widget
 	 */
 	public $brandOptions = array();
 
+	public $screenReaderToggleText = 'Toggle navigation';
 
 	/**
 	 * Initializes the widget.
@@ -63,23 +60,23 @@ class NavBar extends Widget
 	{
 		parent::init();
 		$this->clientOptions = false;
-		Html::addCssClass($this->options, 'navbar');
+		Html::addCssClass($this->options, 'navbar navbar-default');
 		Html::addCssClass($this->brandOptions, 'navbar-brand');
 		if (empty($this->options['role'])) {
 			$this->options['role'] = 'navigation';
 		}
 
 		echo Html::beginTag('nav', $this->options);
-		if ($this->responsive) {
-			echo Html::beginTag('div', array('class' => 'container'));
-			echo $this->renderToggleButton();
-		}
+		echo Html::beginTag('div', array('class' => 'container'));
+
+		echo Html::beginTag('div', array('class' => 'navbar-header'));
+		echo $this->renderToggleButton();
 		if ($this->brandLabel !== null) {
 			echo Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
 		}
-		if ($this->responsive) {
-			echo Html::beginTag('div', array('class' => 'nav-collapse collapse navbar-responsive-collapse'));
-		}
+		echo Html::endTag('div');
+
+		echo Html::beginTag('div', array('class' => 'collapse navbar-collapse navbar-ex1-collapse'));
 	}
 
 	/**
@@ -87,10 +84,9 @@ class NavBar extends Widget
 	 */
 	public function run()
 	{
-		if ($this->responsive) {
-			echo Html::endTag('div');
-			echo Html::endTag('div');
-		}
+
+		echo Html::endTag('div');
+		echo Html::endTag('div');
 		echo Html::endTag('nav');
 		BootstrapPluginAsset::register($this->getView());
 	}
@@ -102,10 +98,11 @@ class NavBar extends Widget
 	protected function renderToggleButton()
 	{
 		$bar = Html::tag('span', '', array('class' => 'icon-bar'));
-		return Html::button("{$bar}\n{$bar}\n{$bar}", array(
+		$screenReader = '<span class="sr-only">'.$this->screenReaderToggleText.'</span>';
+		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", array(
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
-			'data-target' => '.navbar-responsive-collapse',
+			'data-target' => '.navbar-ex1-collapse',
 		));
 	}
 }
