@@ -19,7 +19,7 @@ class BootstrapThemeAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/bootstrap/assets';
 	public $css = array(
-		'js/bootstrap-theme.css',
+		'css/bootstrap-theme.css',
 	);
 	public $depends = array(
 		'yii\bootstrap\BootstrapAsset',
