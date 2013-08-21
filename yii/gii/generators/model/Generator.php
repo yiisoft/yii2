@@ -9,7 +9,9 @@ namespace yii\gii\generators\model;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\db\Connection;
 use yii\gii\CodeFile;
+use yii\helpers\Inflector;
 
 /**
  *
@@ -19,17 +21,13 @@ use yii\gii\CodeFile;
 class Generator extends \yii\gii\Generator
 {
 	public $db = 'db';
+	public $ns = 'app\models';
 	public $tableName;
 	public $modelClass;
 	public $baseClass = '\yii\db\ActiveRecord';
-	public $buildRelations = true;
+	public $generateRelations = true;
 	public $commentsAsLabels = false;
 
-	/**
-	 * @var array list of candidate relation code. The array are indexed by AR class names and relation names.
-	 * Each element represents the code of the one relation in one AR class.
-	 */
-	protected $relations;
 
 	public function getName()
 	{
@@ -44,29 +42,30 @@ class Generator extends \yii\gii\Generator
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
-			array('tablePrefix, baseClass, tableName, modelClass, modelPath, connectionId', 'filter', 'filter' => 'trim'),
-			array('tableName, modelPath, baseClass', 'required'),
-			array('tablePrefix, tableName, modelPath', 'match', 'pattern' => '/^(\w+[\w\.]*|\*?|\w+\.\*)$/', 'message' => '{attribute} should only contain word characters, dots, and an optional ending asterisk.'),
+			array('db, ns, tableName, modelClass, baseClass', 'filter', 'filter' => 'trim'),
+			array('db, ns, tableName, baseClass', 'required'),
+			array('db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'),
+			array('ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'),
+			array('tableName', 'match', 'pattern' => '/^(\w+\.)?[\w\.\*]+$/', 'message' => 'Only word characters, asterisks and dot are allowed.'),
+			array('db', 'validateDb'),
+			array('ns', 'validateNamespace'),
 			array('tableName', 'validateTableName'),
-			array('tablePrefix, modelClass', 'match', 'pattern' => '/^[a-zA-Z_]\w*$/', 'message' => '{attribute} should only contain word characters.'),
-			array('baseClass', 'match', 'pattern' => '/^[a-zA-Z_][\w\\\\]*$/', 'message' => '{attribute} should only contain word characters and backslashes.'),
-			array('modelPath', 'validateModelPath'),
-			array('baseClass, modelClass', 'validateReservedWord'),
+			array('modelClass', 'validateModelClass'),
 			array('baseClass', 'validateBaseClass'),
+			array('generateRelations, commentsAsLabels', 'boolean'),
 		));
 	}
 
 	public function attributeLabels()
 	{
 		return array(
-			'tablePrefix' => 'Table Prefix',
+			'ns' => 'Namespace',
+			'db' => 'Database Connection ID',
 			'tableName' => 'Table Name',
-			'modelPath' => 'Model Path',
 			'modelClass' => 'Model Class',
 			'baseClass' => 'Base Class',
-			'buildRelations' => 'Build Relations',
+			'generateRelations' => 'Generate Relations',
 			'commentsAsLabels' => 'Use Column Comments as Attribute Labels',
-			'connectionId' => 'Database Connection',
 		);
 	}
 
@@ -79,14 +78,17 @@ class Generator extends \yii\gii\Generator
 
 	public function stickyAttributes()
 	{
-		return array('tablePrefix', 'modelPath', 'baseClass', 'buildRelations', 'commentsAsLabels');
+		return array('ns', 'db', 'baseClass', 'generateRelations', 'commentsAsLabels');
+	}
+
+	public function getDbConnection()
+	{
+		return Yii::$app->{$this->db};
 	}
 
 	public function generate()
 	{
-		if (($db = Yii::$app->{$this->db}) === null) {
-			throw new InvalidConfigException('The "db" property must refer to a valid DB connection.');
-		}
+		$db = $this->getDbConnection();
 
 		if (($pos = strrpos($this->tableName, '.')) !== false) {
 			$schema = substr($this->tableName, 0, $pos);
@@ -96,23 +98,20 @@ class Generator extends \yii\gii\Generator
 			$tableName = $this->tableName;
 		}
 		if (strpos($tableName, '*') !== false) {
-			$tables = $db->getSchema()->getTableSchemas($schema);
+			$tables = $db->getSchema()->getTableNames($schema);
 		} else {
 			$tables = array($db->getTableSchema($this->tableName, true));
 		}
 
 		$files = array();
-		$relations = $this->generateRelations();
 
 		foreach ($tables as $table) {
 			$className = $this->generateClassName($table->name);
 			$params = array(
 				'tableName' => $schema === '' ? $tableName : $schema . '.' . $tableName,
-				'modelClass' => $className,
+				'className' => $className,
 				'columns' => $table->columns,
 				'labels' => $this->generateLabels($table),
-				'rules' => $this->generateRules($table),
-				'relations' => isset($this->relations[$className]) ? $this->relations[$className] : array(),
 			);
 			$files[] = new CodeFile(
 				Yii::getAlias($this->modelPath) . '/' . $className . '.php',
@@ -121,55 +120,6 @@ class Generator extends \yii\gii\Generator
 		}
 
 		return $files;
-	}
-
-	public function validateTableName($attribute, $params)
-	{
-		if ($this->hasErrors()) {
-			return;
-		}
-
-		$invalidTables = array();
-		$invalidColumns = array();
-
-		if ($this->tableName[strlen($this->tableName) - 1] === '*') {
-			if (($pos = strrpos($this->tableName, '.')) !== false) {
-				$schema = substr($this->tableName, 0, $pos);
-			} else {
-				$schema = '';
-			}
-
-			$this->modelClass = '';
-			$tables = Yii::$app->{$this->connectionId}->schema->getTables($schema);
-			foreach ($tables as $table) {
-				if ($this->tablePrefix == '' || strpos($table->name, $this->tablePrefix) === 0) {
-					if (in_array(strtolower($table->name), self::$keywords)) {
-						$invalidTables[] = $table->name;
-					}
-					if (($invalidColumn = $this->checkColumns($table)) !== null) {
-						$invalidColumns[] = $invalidColumn;
-					}
-				}
-			}
-		} else {
-			if (($table = $this->getTableSchema($this->tableName)) === null) {
-				$this->addError('tableName', "Table '{$this->tableName}' does not exist.");
-			}
-			if ($this->modelClass === '') {
-				$this->addError('modelClass', 'Model Class cannot be blank.');
-			}
-
-			if (!$this->hasErrors($attribute) && ($invalidColumn = $this->checkColumns($table)) !== null) {
-				$invalidColumns[] = $invalidColumn;
-			}
-		}
-
-		if ($invalidTables != array()) {
-			$this->addError('tableName', 'Model class cannot take a reserved PHP keyword! Table name: ' . implode(', ', $invalidTables) . ".");
-		}
-		if ($invalidColumns != array()) {
-			$this->addError('tableName', 'Column names that does not follow PHP variable naming convention: ' . implode(', ', $invalidColumns) . ".");
-		}
 	}
 
 	/*
@@ -187,38 +137,23 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
-	public function validateBaseClass($attribute, $params)
-	{
-		$class = @Yii::import($this->baseClass, true);
-		if (!is_string($class) || !$this->classExists($class)) {
-			$this->addError('baseClass', "Class '{$this->baseClass}' does not exist or has syntax error.");
-		} elseif ($class !== 'CActiveRecord' && !is_subclass_of($class, 'CActiveRecord')) {
-			$this->addError('baseClass', "'{$this->model}' must extend from CActiveRecord.");
-		}
-	}
-
 	public function getTableSchema($tableName)
 	{
-		$connection = Yii::$app->{$this->connectionId};
-		return $connection->getSchema()->getTable($tableName, $connection->schemaCachingDuration !== 0);
+		$db = $this->getDbConnection();
+		return $db->getSchema()->getTable($tableName, true);
 	}
 
 	public function generateLabels($table)
 	{
 		$labels = array();
 		foreach ($table->columns as $column) {
-			if ($this->commentsAsLabels && $column->comment) {
+			if ($this->commentsAsLabels && !empty($column->comment)) {
 				$labels[$column->name] = $column->comment;
 			} else {
-				$label = ucwords(trim(strtolower(str_replace(array('-', '_'), ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $column->name)))));
-				$label = preg_replace('/\s+/', ' ', $label);
+				$label = Inflector::camel2words($column->name);
 				if (strcasecmp(substr($label, -3), ' id') === 0) {
-					$label = substr($label, 0, -3);
+					$label = substr($label, 0, -3) . ' ID';
 				}
-				if ($label === 'Id') {
-					$label = 'ID';
-				}
-				$label = str_replace("'", "\\'", $label);
 				$labels[$column->name] = $label;
 			}
 		}
@@ -306,7 +241,7 @@ class Generator extends \yii\gii\Generator
 
 	protected function generateRelations()
 	{
-		if (!$this->buildRelations) {
+		if (!$this->generateRelations) {
 			return array();
 		}
 
@@ -445,10 +380,79 @@ class Generator extends \yii\gii\Generator
 		return $name;
 	}
 
-	public function validateConnectionId($attribute, $params)
+	public function validateDb()
 	{
-		if (Yii::$app->hasComponent($this->connectionId) === false || !(Yii::$app->getComponent($this->connectionId) instanceof CDbConnection)) {
-			$this->addError('connectionId', 'A valid database connection is required to run this generator.');
+		if (Yii::$app->hasComponent($this->db) === false || !(Yii::$app->getComponent($this->db) instanceof Connection)) {
+			$this->addError('db', 'A valid database connection is required to run this generator.');
+		}
+	}
+
+	public function validateNamespace()
+	{
+	}
+
+	public function validateModelClass()
+	{
+		if ($this->isReservedKeyword($this->modelClass)) {
+			$this->addError('modelClass', 'The name is a reserved PHP keyword.');
+		}
+		if (strpos($this->tableName, '*') === false && $this->modelClass == '') {
+			$this->addError('modelClass', 'Model Class cannot be blank.');
+		}
+	}
+
+	public function validateTableName()
+	{
+		$invalidTables = array();
+		$invalidColumns = array();
+
+		if ($this->tableName[strlen($this->tableName) - 1] === '*') {
+			if (($pos = strrpos($this->tableName, '.')) !== false) {
+				$schema = substr($this->tableName, 0, $pos);
+			} else {
+				$schema = '';
+			}
+
+			$this->modelClass = '';
+			$tables = $this->getDbConnection()->schema->getTables($schema);
+			foreach ($tables as $table) {
+				if ($this->tablePrefix == '' || strpos($table->name, $this->tablePrefix) === 0) {
+					if (in_array(strtolower($table->name), self::$keywords)) {
+						$invalidTables[] = $table->name;
+					}
+					if (($invalidColumn = $this->checkColumns($table)) !== null) {
+						$invalidColumns[] = $invalidColumn;
+					}
+				}
+			}
+		} else {
+			if (($table = $this->getTableSchema($this->tableName)) === null) {
+				$this->addError('tableName', "Table '{$this->tableName}' does not exist.");
+			}
+			if ($this->modelClass === '') {
+				$this->addError('modelClass', 'Model Class cannot be blank.');
+			}
+
+			if (!$this->hasErrors($attribute) && ($invalidColumn = $this->checkColumns($table)) !== null) {
+				$invalidColumns[] = $invalidColumn;
+			}
+		}
+
+		if ($invalidTables != array()) {
+			$this->addError('tableName', 'Model class cannot take a reserved PHP keyword! Table name: ' . implode(', ', $invalidTables) . ".");
+		}
+		if ($invalidColumns != array()) {
+			$this->addError('tableName', 'Column names that does not follow PHP variable naming convention: ' . implode(', ', $invalidColumns) . ".");
+		}
+	}
+
+	public function validateBaseClass()
+	{
+		$class = @Yii::import($this->baseClass, true);
+		if (!is_string($class) || !$this->classExists($class)) {
+			$this->addError('baseClass', "Class '{$this->baseClass}' does not exist or has syntax error.");
+		} elseif ($class !== 'CActiveRecord' && !is_subclass_of($class, 'CActiveRecord')) {
+			$this->addError('baseClass', "'{$this->model}' must extend from CActiveRecord.");
 		}
 	}
 }

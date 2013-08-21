@@ -294,11 +294,10 @@ abstract class Generator extends Model
 	}
 
 	/**
-	 * Validates an attribute to make sure it is not taking a PHP reserved keyword.
-	 * @param string $attribute the attribute to be validated
-	 * @param array $params validation parameters
+	 * @param string $value the attribute to be validated
+	 * @return boolean whether the value is a reserved PHP keyword.
 	 */
-	public function validateReservedWord($attribute, $params)
+	public function isReservedKeyword($value)
 	{
 		static $keywords = array(
 			'__class__',
@@ -381,12 +380,6 @@ abstract class Generator extends Model
 			'while',
 			'xor',
 		);
-		$value = $this->$attribute;
-		foreach (explode('\\', strtolower($value)) as $name) {
-			if (in_array($name, $keywords)) {
-				$this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot take a reserved PHP keyword.');
-				return;
-			}
-		}
+		return in_array(strtolower($value), $keywords, true);
 	}
 }

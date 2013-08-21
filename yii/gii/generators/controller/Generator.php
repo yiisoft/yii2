@@ -65,7 +65,6 @@ class Generator extends \yii\gii\Generator
 			array('controller', 'match', 'pattern' => '/^[a-z\\-\\/]*$/', 'message' => 'Only a-z, dashes (-) and slashes (/) are allowed.'),
 			array('actions', 'match', 'pattern' => '/^[a-z\\-,\\s]*$/', 'message' => 'Only a-z, dashes (-), spaces and commas are allowed.'),
 			array('baseClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('baseClass', 'validateReservedWord'),
 			array('ns', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 		));
 	}
