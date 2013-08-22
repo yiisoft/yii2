@@ -13,7 +13,7 @@ $className = substr($className, $pos + 1);
 echo "<?php\n";
 ?>
 
-namespace <?php echo $ns; ?>
+namespace <?php echo $ns; ?>;
 
 
 class <?php echo $className; ?> extends \yii\web\Module
