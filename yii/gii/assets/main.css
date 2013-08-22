@@ -47,6 +47,11 @@ body {
 	overflow: auto;
 }
 
+.default-view .form-group label.help {
+	border-bottom: 1px dashed #888;
+	cursor: help;
+}
+
 .default-view .modal-dialog {
 	width: 800px;
 }

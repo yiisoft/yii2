@@ -4,9 +4,9 @@ yii.gii = (function ($) {
 	var initHintBlocks = function () {
 		$('.hint-block').each(function () {
 			var $hint = $(this);
-			$hint.parent().find('input,select,textarea').popover({
+			$hint.parent().find('label').addClass('help').popover({
 				html: true,
-				trigger: 'focus',
+				trigger: 'hover',
 				placement: 'right',
 				content: $hint.html()
 			});
