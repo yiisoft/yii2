@@ -771,7 +771,7 @@ class Response extends \yii\base\Response
 					}
 					break;
 				case self::FORMAT_XML:
-					$this->content = Yii::createObject(XmlResponseFormatter::className())->format($this);
+					Yii::createObject(XmlResponseFormatter::className())->format($this);
 					break;
 				default:
 					throw new InvalidConfigException("Unsupported response format: {$this->format}");
