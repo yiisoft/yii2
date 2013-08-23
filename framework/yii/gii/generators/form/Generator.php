@@ -63,7 +63,7 @@ class Generator extends \yii\gii\Generator
 			array('modelClass, viewName, scenarioName, viewPath', 'filter', 'filter' => 'trim'),
 			array('modelClass, viewName, viewPath', 'required'),
 			array('modelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('modelClass', 'validateModel'),
+			array('modelClass', 'validateClass', 'extends' => Model::className()),
 			array('viewName', 'match', 'pattern' => '/^\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes and slashes are allowed.'),
 			array('viewPath', 'match', 'pattern' => '/^@?\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes, slashes and @ are allowed.'),
 			array('viewPath', 'validateViewPath'),
@@ -127,25 +127,6 @@ class Generator extends \yii\gii\Generator
 <p>You may add the following code in an appropriate controller class to invoke the view:</p>
 <pre>$code</pre>
 EOD;
-	}
-
-	/**
-	 * Validates the model class to make sure it exists and is valid.
-	 */
-	public function validateModel()
-	{
-		try {
-			if (class_exists($this->modelClass)) {
-				if (!is_subclass_of($this->modelClass, Model::className())) {
-					$this->addError('modelClass', "'{$this->modelClass}' must extend from Model or its child class.");
-				}
-			} else {
-				$this->addError('modelClass', "Class '{$this->modelClass}' does not exist or has syntax error.");
-			}
-		} catch (\Exception $e) {
-			$this->addError('modelClass', "Class '{$this->modelClass}' does not exist or has syntax error.");
-			return;
-		}
 	}
 
 	/**
