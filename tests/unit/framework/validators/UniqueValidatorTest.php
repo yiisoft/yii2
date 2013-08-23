@@ -44,6 +44,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 		$val->validateAttribute($m, 'ref');
 		$this->assertTrue($m->hasErrors('ref'));
 		$m = new ValidatorTestRefModel();
+		$m->id = 7;
 		$m->ref = 12121;
 		$val->validateAttribute($m, 'ref');
 		$this->assertFalse($m->hasErrors('ref'));

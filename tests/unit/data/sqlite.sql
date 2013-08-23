@@ -95,16 +95,14 @@ DROP TABLE IF EXISTS tbl_validator_main;
 DROP TABLE IF EXISTS tbl_validator_ref;
 
 CREATE TABLE tbl_validator_main (
-  id     INT(11) NOT NULL,
-  field1 VARCHAR(255),
-  PRIMARY KEY (id)
+  id     INTEGER PRIMARY KEY ,
+  field1 VARCHAR(255)
 );
 
 CREATE TABLE tbl_validator_ref (
-  id      INT(11) NOT NULL,
+  id      INTEGER PRIMARY KEY ,
   a_field VARCHAR(255),
-  ref     INT(11),
-  PRIMARY KEY (id)
+  ref     INT(11)
 );
 
 INSERT INTO tbl_validator_main (id, field1) VALUES (1, 'just a string1');

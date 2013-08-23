@@ -128,6 +128,12 @@ class CompareValidatorTest extends TestCase
 		$val->validateAttribute($model, 'attr_test');
 		$this->assertTrue($model->hasErrors('attr_test'));
 		$this->assertFalse($model->hasErrors('attr_test_repeat'));
+		// not existing op
+		$val = new CompareValidator();
+		$val->operator = '<>';
+		$model = FakedValidationModel::createWithAttributes(array('attr_o' => 5, 'attr_o_repeat' => 5 ));
+		$val->validateAttribute($model, 'attr_o');
+		$this->assertTrue($model->hasErrors('attr_o'));
 	}
 
 	public function testValidateAttributeOperators()

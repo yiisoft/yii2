@@ -205,6 +205,23 @@ class FileValidatorTest extends TestCase
 		$this->assertSame(FileValidator::className() . '::validateFile', $log['messages'][0][2]);
 	}
 
+	public function testValidateAttributeType()
+	{
+		$val = new FileValidator(array('types' => 'jpeg, jpg'));
+		$m = FakedValidationModel::createWithAttributes(
+			array(
+				'attr_jpg' => $this->createTestFiles(array(array('name' => 'one.jpeg'))),
+				'attr_exe' => $this->createTestFiles(array(array('name' => 'bad.exe'))),
+			)
+		);
+		$val->validateAttribute($m, 'attr_jpg');
+		$this->assertFalse($m->hasErrors('attr_jpg'));
+		$val->validateAttribute($m, 'attr_exe');
+		$this->assertTrue($m->hasErrors('attr_exe'));
+		$this->assertTrue(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions ') !== false);
+	}
+
+
 	protected function createModelForAttributeTest()
 	{
 		return FakedValidationModel::createWithAttributes(
