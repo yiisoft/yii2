@@ -781,7 +781,7 @@ class Response extends \yii\base\Response
 		if (is_array($this->content)) {
 			$this->content = 'array()';
 		} elseif (is_object($this->content)) {
-			$this->content = method_exists($this->content, '__toString') ? (string)$this->content : get_class($this->content);
+			$this->content = method_exists($this->content, '__toString') ? $this->content->__toString() : get_class($this->content);
 		}
 	}
 }
