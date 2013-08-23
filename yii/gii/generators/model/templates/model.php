@@ -6,12 +6,12 @@
  * @var yii\gii\generators\model\Generator $generator
  * @var string $tableName
  * @var string $className
- * @var yii\db\ColumnSchema[] $columns
+ * @var yii\db\TableSchema $tableSchema
  * @var string[] $labels
  *
  * - $tableName: the table name for this class (prefix is already removed if necessary)
  * - $modelClass: the model class name
- * - $columns: list of table columns (name=>CDbColumnSchema)
+ * - $tableSchema: list of table columns (name=>CDbColumnSchema)
  * - $labels: list of attribute labels (name=>label)
  * - $rules: list of validation rules
  * - $relations: list of relations (name=>relation declaration)
@@ -31,7 +31,7 @@ namespace <?php echo $ns; ?>;
  *
  * Attributes:
  *
-<?php foreach ($columns as $column): ?>
+<?php foreach ($tableSchema->columns as $column): ?>
  * @property <?php echo "{$column->phpType} \${$column->name}\n"; ?>
 <?php endforeach; ?>
  */

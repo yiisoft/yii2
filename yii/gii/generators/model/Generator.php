@@ -8,6 +8,7 @@
 namespace yii\gii\generators\model;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\db\Connection;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
@@ -50,7 +51,7 @@ class Generator extends \yii\gii\Generator
 			array('ns', 'validateNamespace'),
 			array('tableName', 'validateTableName'),
 			array('modelClass', 'validateModelClass'),
-			array('baseClass', 'validateBaseClass'),
+			array('baseClass', 'validateClass', 'params' => array('extends' => ActiveRecord::className())),
 			array('generateRelations, generateLabelsFromComments', 'boolean'),
 		));
 	}
@@ -83,7 +84,7 @@ class Generator extends \yii\gii\Generator
 			'baseClass' => 'This is the base class of the new ActiveRecord class. It should be a fully qualified namespaced class name.',
 			'generateRelations' => 'This indicates whether the generator should generate relations based on
 				foreign key constraints it detects in the database. Note that if your database contains too many tables,
-				you may want to uncheck this option to accelerate the code generation process.',
+				you may want to uncheck this option to accelerate the code generation proc	ess.',
 			'generateLabelsFromComments' => 'This indicates whether the generator should generate attribute labels
 				by using the comments of the corresponding DB columns.',
 		);
@@ -101,6 +102,9 @@ class Generator extends \yii\gii\Generator
 		return array('ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments');
 	}
 
+	/**
+	 * @return Connection
+	 */
 	public function getDbConnection()
 	{
 		return Yii::$app->{$this->db};
@@ -108,33 +112,18 @@ class Generator extends \yii\gii\Generator
 
 	public function generate()
 	{
-		$db = $this->getDbConnection();
-
-		if (($pos = strrpos($this->tableName, '.')) !== false) {
-			$schema = substr($this->tableName, 0, $pos);
-			$tableName = substr($this->tableName, $pos + 1);
-		} else {
-			$schema = '';
-			$tableName = $this->tableName;
-		}
-		if (strpos($tableName, '*') !== false) {
-			$tables = $db->getSchema()->getTableNames($schema);
-		} else {
-			$tables = array($db->getTableSchema($this->tableName, true));
-		}
-
 		$files = array();
-
-		foreach ($tables as $table) {
-			$className = $this->generateClassName($table->name);
+		foreach ($this->getTableNames() as $tableName) {
+			$className = $this->generateClassName($tableName);
+			$tableSchema = $this->getTableSchema($tableName);
 			$params = array(
-				'tableName' => $schema === '' ? $tableName : $schema . '.' . $tableName,
+				'tableName' => $tableName,
 				'className' => $className,
-				'columns' => $table->columns,
-				'labels' => $this->generateLabels($table),
+				'tableSchema' => $tableSchema,
+				'labels' => $this->generateLabels($tableSchema),
 			);
 			$files[] = new CodeFile(
-				Yii::getAlias($this->modelPath) . '/' . $className . '.php',
+				Yii::getAlias('@' . $this->ns) . '/' . $className . '.php',
 				$this->render('model.php', $params)
 			);
 		}
@@ -142,25 +131,9 @@ class Generator extends \yii\gii\Generator
 		return $files;
 	}
 
-	/*
-	 * Check that all database field names conform to PHP variable naming rules
-	 * For example mysql allows field name like "2011aa", but PHP does not allow variable like "$model->2011aa"
-	 * @param CDbTableSchema $table the table schema object
-	 * @return string the invalid table column name. Null if no error.
-	 */
-	public function checkColumns($table)
-	{
-		foreach ($table->columns as $column) {
-			if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $column->name)) {
-				return $table->name . '.' . $column->name;
-			}
-		}
-	}
-
 	public function getTableSchema($tableName)
 	{
-		$db = $this->getDbConnection();
-		return $db->getSchema()->getTable($tableName, true);
+		return $this->getDbConnection()->getTableSchema($tableName, true);
 	}
 
 	public function generateLabels($table)
@@ -403,18 +376,22 @@ class Generator extends \yii\gii\Generator
 	public function validateDb()
 	{
 		if (Yii::$app->hasComponent($this->db) === false || !(Yii::$app->getComponent($this->db) instanceof Connection)) {
-			$this->addError('db', 'A valid database connection is required to run this generator.');
+			$this->addError('db', 'Database Connection ID must refer to a valid application component.');
 		}
 	}
 
 	public function validateNamespace()
 	{
+		$path = Yii::getAlias('@' . ltrim($this->ns, '\\'), false);
+		if ($path === false) {
+			$this->addError('ns', 'Namespace must be associated with an existing directory.');
+		}
 	}
 
 	public function validateModelClass()
 	{
 		if ($this->isReservedKeyword($this->modelClass)) {
-			$this->addError('modelClass', 'The name is a reserved PHP keyword.');
+			$this->addError('modelClass', 'Class name cannot be a reserved PHP keyword.');
 		}
 		if (strpos($this->tableName, '*') === false && $this->modelClass == '') {
 			$this->addError('modelClass', 'Model Class cannot be blank.');
@@ -423,56 +400,41 @@ class Generator extends \yii\gii\Generator
 
 	public function validateTableName()
 	{
-		$invalidTables = array();
-		$invalidColumns = array();
-
-		if ($this->tableName[strlen($this->tableName) - 1] === '*') {
-			if (($pos = strrpos($this->tableName, '.')) !== false) {
-				$schema = substr($this->tableName, 0, $pos);
-			} else {
-				$schema = '';
-			}
-
-			$this->modelClass = '';
-			$tables = $this->getDbConnection()->schema->getTables($schema);
+		$tables = $this->getTableNames();
+		if (empty($tables)) {
+			$this->addError('tableName', "Table '{$this->tableName}' does not exist.'");
+		} else {
 			foreach ($tables as $table) {
-				if ($this->tablePrefix == '' || strpos($table->name, $this->tablePrefix) === 0) {
-					if (in_array(strtolower($table->name), self::$keywords)) {
-						$invalidTables[] = $table->name;
-					}
-					if (($invalidColumn = $this->checkColumns($table)) !== null) {
-						$invalidColumns[] = $invalidColumn;
-					}
+				$class = $this->generateClassName($table);
+				if ($this->isReservedKeyword($class)) {
+					$this->addError('tableName', "Table '$table' would generate a class which is a reserved PHP keyword.");
+					break;
 				}
 			}
-		} else {
-			if (($table = $this->getTableSchema($this->tableName)) === null) {
-				$this->addError('tableName', "Table '{$this->tableName}' does not exist.");
-			}
-			if ($this->modelClass === '') {
-				$this->addError('modelClass', 'Model Class cannot be blank.');
-			}
-
-			if (!$this->hasErrors($attribute) && ($invalidColumn = $this->checkColumns($table)) !== null) {
-				$invalidColumns[] = $invalidColumn;
-			}
-		}
-
-		if ($invalidTables != array()) {
-			$this->addError('tableName', 'Model class cannot take a reserved PHP keyword! Table name: ' . implode(', ', $invalidTables) . ".");
-		}
-		if ($invalidColumns != array()) {
-			$this->addError('tableName', 'Column names that does not follow PHP variable naming convention: ' . implode(', ', $invalidColumns) . ".");
 		}
 	}
 
-	public function validateBaseClass()
+	protected function getTableNames()
 	{
-		$class = @Yii::import($this->baseClass, true);
-		if (!is_string($class) || !$this->classExists($class)) {
-			$this->addError('baseClass', "Class '{$this->baseClass}' does not exist or has syntax error.");
-		} elseif ($class !== 'CActiveRecord' && !is_subclass_of($class, 'CActiveRecord')) {
-			$this->addError('baseClass', "'{$this->model}' must extend from CActiveRecord.");
+		$db = $this->getDbConnection();
+		$tableNames = array();
+		if ($this->tableName[strlen($this->tableName) - 1] === '*') {
+			if (($pos = strrpos($this->tableName, '.')) !== false) {
+				$schema = substr($this->tableName, 0, $pos);
+				$pattern = '/' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '/';
+			} else {
+				$schema = '';
+				$pattern = '/' . str_replace('*', '\w+', $this->tableName) . '/';
+			}
+
+			foreach ($db->schema->getTableNames($schema) as $table) {
+				if (preg_match($pattern, $table)) {
+					$tableNames[] = $schema === '' ? $table : ($schema . '.' . $table);
+				}
+			}
+		} elseif (($table = $db->getTableSchema($this->tableName, true)) !== null) {
+			$tableNames[] = $this->tableName;
 		}
+		return $tableNames;
 	}
 }

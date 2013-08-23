@@ -294,6 +294,28 @@ abstract class Generator extends Model
 	}
 
 	/**
+	 * An inline validator that checks if the attribute value refers to an existing class name.
+	 * If the `extends` option is specified, it will also check if the class is a child class
+	 * of the class represented by the `extends` option.
+	 * @param string $attribute the attribute being validated
+	 * @param array $params the validation options
+	 */
+	public function validateClass($attribute, $params)
+	{
+		try {
+			if (class_exists($this->$attribute)) {
+				if (isset($params['extends']) && !is_subclass_of($this->$attribute, $params['extends'])) {
+					$this->addError($attribute, "'{$this->$attribute}' must extend from {$params['extends']} or its child class.");
+				}
+			} else {
+				$this->addError($attribute, "Class '{$this->$attribute}' does not exist or has syntax error.");
+			}
+		} catch (\Exception $e) {
+			$this->addError($attribute, "Class '{$this->$attribute}' does not exist or has syntax error.");
+		}
+	}
+
+	/**
 	 * @param string $value the attribute to be validated
 	 * @return boolean whether the value is a reserved PHP keyword.
 	 */
