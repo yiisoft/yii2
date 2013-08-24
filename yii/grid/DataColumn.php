@@ -35,8 +35,10 @@ class DataColumn extends Column
 	/**
 	 * @var string in which format should the value of each data model be displayed as (e.g. "text", "html").
 	 * Supported formats are determined by the [[GridView::formatter|formatter]] used by the [[GridView]].
+	 * Default format is "text" which will format the value as an HTML-encoded plain text when
+	 * [[\yii\base\Formatter]] or [[\yii\i18n\Formatter]] is used.
 	 */
-	public $format;
+	public $format = 'text';
 	/**
 	 * @var boolean whether to allow sorting by this column. If true and [[attribute]] is found in
 	 * the sort definition of [[GridView::dataProvider]], then the header cell of this column
