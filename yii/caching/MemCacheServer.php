@@ -50,5 +50,4 @@ class MemCacheServer extends \yii\base\Object
 	* @var integer value in milliseconds which will be used for connecting to the server. Takes precedence over timeout
  	*/
 	public $timemoutms = 2000;
-
 }
