@@ -47,7 +47,8 @@ class MemCacheServer extends \yii\base\Object
 	 */
 	public $status = true;
 	/**
-	* @var integer value in milliseconds which will be used for connecting to the server. Takes precedence over timeout
+	* @var integer value in milliseconds which will be used for connecting to the server.
+	* Takes precedence over timeout. This is used by memcache only.
  	*/
 	public $timemoutms = 2000;
 }
