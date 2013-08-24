@@ -127,7 +127,7 @@ class Sort extends Object
 	 *   a sort link. If not set, [[Inflector::camel2words()]] will be called to get a label.
 	 *
 	 * Note that if the Sort object is already created, you can only use the full format
-	 * to configure every attribute. Each attribute must include these elements: asc, desc and label.
+	 * to configure every attribute. Each attribute must include these elements: asc and desc.
 	 */
 	public $attributes = array();
 	/**
@@ -195,13 +195,11 @@ class Sort extends Object
 				$attributes[$attribute] = array(
 					'asc' => array($attribute => self::ASC),
 					'desc' => array($attribute => self::DESC),
-					'label' => Inflector::camel2words($attribute),
 				);
-			} elseif (!isset($attribute['asc'], $attribute['desc'], $attribute['label'])) {
+			} elseif (!isset($attribute['asc'], $attribute['desc'])) {
 				$attributes[$name] = array_merge(array(
 					'asc' => array($name => self::ASC),
 					'desc' => array($name => self::DESC),
-					'label' => Inflector::camel2words($name),
 				), $attribute);
 			} else {
 				$attributes[$name] = $attribute;
@@ -304,7 +302,12 @@ class Sort extends Object
 
 		$url = $this->createUrl($attribute);
 		$options['data-sort'] = $this->createSortVar($attribute);
-		return Html::a($this->attributes[$attribute]['label'], $url, $options);
+		if (isset($this->attributes[$attribute]['label'])) {
+			$label = $this->attributes[$attribute]['label'];
+		} else {
+			$label = Inflector::camel2words($attribute);
+		}
+		return Html::a($label, $url, $options);
 	}
 
 	/**
