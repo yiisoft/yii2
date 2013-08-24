@@ -94,7 +94,7 @@ class MemCache extends Cache
 					$cache->addServer($server->host, $server->port, $server->weight);
 				} else {
 					$cache->addServer($server->host, $server->port, $server->persistent,
-						$server->weight, $server->timeout, $server->retryInterval, $server->status);
+						$server->weight, $server->timeout, $server->retryInterval, $server->status, null, $server->timemoutms);
 				}
 			}
 		} else {
