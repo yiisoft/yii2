@@ -150,4 +150,50 @@ class ArrayHelperTest extends TestCase
 		$this->assertEquals(array('name' => 'a', 'age' => 1), $array[1]);
 		$this->assertEquals(array('name' => 'b', 'age' => 3), $array[2]);
 	}
+
+	public function valueProvider()
+	{
+		return array(
+			array('name', 'test'),
+			array('noname', null),
+			array('noname', 'test', 'test'),
+			array('post.id', 5),
+			array('post.id', 5, 'test'),
+			array('nopost.id', null),
+			array('nopost.id', 'test', 'test'),
+			array('post.author.name', 'cebe'),
+			array('post.author.noname', null),
+			array('post.author.noname', 'test', 'test'),
+			array('post.author.profile.title', '1337'),
+			array(function($array, $defaultValue) {
+				return $array['date'] . $defaultValue;
+			}, '31-12-2113test', 'test'),
+		);
+	}
+
+	/**
+	 * @dataProvider valueProvider
+	 *
+	 * @param $key
+	 * @param $expected
+	 * @param null $default
+	 */
+	public function testGetValue($key, $expected, $default=null)
+	{
+		$array = array(
+			'name' => 'test',
+			'date' => '31-12-2113',
+			'post' => array(
+				'id' => 5,
+				'author' => array(
+					'name' => 'cebe',
+					'profile' => array(
+						'title' => '1337',
+					),
+				),
+			),
+		);
+
+		$this->assertEquals($expected, ArrayHelper::getValue($array, $key, $default));
+	}
 }

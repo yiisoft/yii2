@@ -149,7 +149,15 @@ class ArrayHelperBase
 	{
 		if ($key instanceof \Closure) {
 			return $key($array, $default);
-		} elseif (is_array($array)) {
+		}
+		if (($pos = strrpos($key, '.')) !== false) {
+			$array = static::getValue($array, substr($key, 0, $pos));
+			if ($array === null) {
+				return $default;
+			}
+			$key = substr($key, $pos + 1);
+		}
+		if (is_array($array)) {
 			return isset($array[$key]) || array_key_exists($key, $array) ? $array[$key] : $default;
 		} else {
 			return $array->$key;
