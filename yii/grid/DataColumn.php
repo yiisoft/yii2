@@ -62,23 +62,31 @@ class DataColumn extends Column
 		if ($this->attribute !== null && $this->header === null) {
 			$provider = $this->grid->dataProvider;
 			if ($this->enableSorting && ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+				if (!isset($sort->attributes[$this->attribute]['label'])) {
+					$sort->attributes[$this->attribute]['label'] = $this->getHeaderLabel();
+				}
 				return $sort->link($this->attribute);
 			}
-			$models = $provider->getModels();
-			if (($model = reset($models)) instanceof Model) {
-				/** @var Model $model */
-				return $model->getAttributeLabel($this->attribute);
-			} elseif ($provider instanceof ActiveDataProvider) {
-				if ($provider->query instanceof ActiveQuery) {
-					/** @var Model $model */
-					$model = new $provider->query->modelClass;
-					return $model->getAttributeLabel($this->attribute);
-				}
-			}
-			return Inflector::camel2words($this->attribute);
+			return $this->getHeaderLabel();
 		} else {
 			return parent::renderHeaderCellContent();
 		}
+	}
+
+	protected function getHeaderLabel()
+	{
+		$provider = $this->grid->dataProvider;
+		if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQuery) {
+			/** @var Model $model */
+			$model = new $provider->query->modelClass;
+			return $model->getAttributeLabel($this->attribute);
+		}
+		$models = $provider->getModels();
+		if (($model = reset($models)) instanceof Model) {
+			/** @var Model $model */
+			return $model->getAttributeLabel($this->attribute);
+		}
+		return Inflector::camel2words($this->attribute);
 	}
 
 	protected function renderFilterCellContent()
