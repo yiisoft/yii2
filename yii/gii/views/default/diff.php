@@ -10,6 +10,6 @@
 	<?php elseif (empty($diff)): ?>
 		<div class="alert alert-success">Identical.</div>
 	<?php else: ?>
-			<?php echo $diff; ?>
+		<div class="content"><?php echo $diff; ?></div>
 	<?php endif; ?>
 </div>
