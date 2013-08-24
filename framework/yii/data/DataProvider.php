@@ -80,10 +80,7 @@ abstract class DataProvider extends Component implements IDataProvider
 	public function getSort()
 	{
 		if ($this->_sort === null) {
-			$this->_sort = new Sort;
-			if ($this->id !== null) {
-				$this->_sort->pageVar = $this->id . '-sort';
-			}
+			$this->setSort(array());
 		}
 		return $this->_sort;
 	}
