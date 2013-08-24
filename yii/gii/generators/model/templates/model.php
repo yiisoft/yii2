@@ -17,14 +17,10 @@
  * - $relations: list of relations (name=>relation declaration)
  */
 
-$pos = strrpos($className, '\\');
-$ns = ltrim(substr($className, 0, $pos), '\\');
-$className = substr($className, $pos + 1);
-
 echo "<?php\n";
 ?>
 
-namespace <?php echo $ns; ?>;
+namespace <?php echo $generator->ns; ?>;
 
 /**
  * This is the model class for table "<?php echo $tableName; ?>".

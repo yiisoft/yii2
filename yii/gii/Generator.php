@@ -302,16 +302,19 @@ abstract class Generator extends Model
 	 */
 	public function validateClass($attribute, $params)
 	{
+		$class = $this->$attribute;
 		try {
-			if (class_exists($this->$attribute)) {
-				if (isset($params['extends']) && !is_subclass_of($this->$attribute, $params['extends'])) {
-					$this->addError($attribute, "'{$this->$attribute}' must extend from {$params['extends']} or its child class.");
+			if (class_exists($class)) {
+				if (isset($params['extends'])) {
+					if (ltrim($class, '\\') !== ltrim($params['extends'], '\\') && !is_subclass_of($class, $params['extends'])) {
+						$this->addError($attribute, "'$class' must extend from {$params['extends']} or its child class.");
+					}
 				}
 			} else {
-				$this->addError($attribute, "Class '{$this->$attribute}' does not exist or has syntax error.");
+				$this->addError($attribute, "Class '$class' does not exist or has syntax error.");
 			}
 		} catch (\Exception $e) {
-			$this->addError($attribute, "Class '{$this->$attribute}' does not exist or has syntax error.");
+			$this->addError($attribute, "Class '$class' does not exist or has syntax error.");
 		}
 	}
 
