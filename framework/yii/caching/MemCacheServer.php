@@ -37,7 +37,7 @@ class MemCacheServer extends \yii\base\Object
 	/**
 	 * @var integer value in seconds which will be used for connecting to the server. This is used by memcache only.
 	 */
-	public $timeout = 15;
+	public $timeout = 1;
 	/**
 	 * @var integer how often a failed server will be retried (in seconds). This is used by memcache only.
 	 */
@@ -46,4 +46,15 @@ class MemCacheServer extends \yii\base\Object
 	 * @var boolean if the server should be flagged as online upon a failure. This is used by memcache only.
 	 */
 	public $status = true;
+	/**
+	 * @var \Closure allows the user to specify a callback function to run upon encountering an error.
+	 * The callback is run before failover is attempted. The function takes	two parameters,
+	 * the [[host]] and the [[port]] of the failed server.
+	 */
+	public $failureCallback = null;
+	/**
+	 * @var integer value in milliseconds which will be used for connecting to the server.
+	 * Takes precedence over [[timeout]]. This is used by memcache only.
+	 */
+	public $timemoutms = 1000;
 }
