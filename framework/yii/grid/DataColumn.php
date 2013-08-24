@@ -59,14 +59,16 @@ class DataColumn extends Column
 
 	protected function renderHeaderCellContent()
 	{
-		if ($this->attribute !== null && $this->header === null) {
-			$provider = $this->grid->dataProvider;
-			if ($this->enableSorting && ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-				if (!isset($sort->attributes[$this->attribute]['label'])) {
-					$sort->attributes[$this->attribute]['label'] = $this->getHeaderLabel();
-				}
-				return $sort->link($this->attribute);
+		$provider = $this->grid->dataProvider;
+		if ($this->attribute !== null && $this->enableSorting &&
+			($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+
+			$label = $this->getHeaderLabel();
+			if (($this->header !== null || !isset($sort->attributes[$this->attribute]['label'])) && trim($label) !== '') {
+				$sort->attributes[$this->attribute]['label'] = $label;
 			}
+			return $sort->link($this->attribute);
+		} elseif ($this->header === null) {
 			return $this->getHeaderLabel();
 		} else {
 			return parent::renderHeaderCellContent();
@@ -76,6 +78,9 @@ class DataColumn extends Column
 	protected function getHeaderLabel()
 	{
 		$provider = $this->grid->dataProvider;
+		if ($this->header !== null) {
+			return $this->header;
+		}
 		if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQuery) {
 			/** @var Model $model */
 			$model = new $provider->query->modelClass;
