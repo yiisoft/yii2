@@ -24,7 +24,7 @@ class Generator extends \yii\gii\Generator
 	public $ns = 'app\models';
 	public $tableName;
 	public $modelClass;
-	public $baseClass = '\yii\db\ActiveRecord';
+	public $baseClass = 'yii\db\ActiveRecord';
 	public $generateRelations = true;
 	public $generateLabelsFromComments = false;
 
@@ -46,7 +46,7 @@ class Generator extends \yii\gii\Generator
 			array('db, ns, tableName, baseClass', 'required'),
 			array('db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'),
 			array('ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('tableName', 'match', 'pattern' => '/^(\w+\.)?\w+\*?$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'),
+			array('tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'),
 			array('db', 'validateDb'),
 			array('ns', 'validateNamespace'),
 			array('tableName', 'validateTableName'),
@@ -123,7 +123,7 @@ class Generator extends \yii\gii\Generator
 				'labels' => $this->generateLabels($tableSchema),
 			);
 			$files[] = new CodeFile(
-				Yii::getAlias('@' . $this->ns) . '/' . $className . '.php',
+				Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
 				$this->render('model.php', $params)
 			);
 		}
@@ -142,6 +142,8 @@ class Generator extends \yii\gii\Generator
 		foreach ($table->columns as $column) {
 			if ($this->generateLabelsFromComments && !empty($column->comment)) {
 				$labels[$column->name] = $column->comment;
+			} elseif (!strcasecmp($column->name, 'id')) {
+				$labels[$column->name] = 'ID';
 			} else {
 				$label = Inflector::camel2words($column->name);
 				if (strcasecmp(substr($label, -3), ' id') === 0) {
@@ -317,22 +319,30 @@ class Generator extends \yii\gii\Generator
 
 	protected function generateClassName($tableName)
 	{
-		if ($this->tableName === $tableName || ($pos = strrpos($this->tableName, '.')) !== false && substr($this->tableName, $pos + 1) === $tableName) {
-			return $this->modelClass;
-		}
-
-		$tableName = $this->removePrefix($tableName, false);
-		if (($pos = strpos($tableName, '.')) !== false) // remove schema part (e.g. remove 'public2.' from 'public2.post')
-		{
+		if (($pos = strrpos($tableName, '.')) !== false) {
 			$tableName = substr($tableName, $pos + 1);
 		}
-		$className = '';
-		foreach (explode('_', $tableName) as $name) {
-			if ($name !== '') {
-				$className .= ucfirst($name);
+
+		$db = $this->getDbConnection();
+		$patterns = array();
+		if (strpos($this->tableName, '*') !== false) {
+			$pattern = $this->tableName;
+			if (($pos = strrpos($pattern, '.')) !== false) {
+				$pattern = substr($pattern, $pos + 1);
+			}
+			$patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
+		}
+		if (!empty($db->tablePrefix)) {
+			$patterns[] = "/^{$db->tablePrefix}(.*?)|(.*?){$db->tablePrefix}$/";
+		}
+
+		$className = $tableName;
+		foreach ($patterns as $pattern) {
+			if (preg_match($pattern, $tableName, $matches)) {
+				$className = $matches[1];
 			}
 		}
-		return $className;
+		return Inflector::id2camel($className, '_');
 	}
 
 	/**
@@ -375,14 +385,17 @@ class Generator extends \yii\gii\Generator
 
 	public function validateDb()
 	{
-		if (Yii::$app->hasComponent($this->db) === false || !(Yii::$app->getComponent($this->db) instanceof Connection)) {
-			$this->addError('db', 'Database Connection ID must refer to a valid application component.');
+		if (Yii::$app->hasComponent($this->db) === false) {
+			$this->addError('db', 'There is no application component named "db".');
+		} elseif (!Yii::$app->getComponent($this->db) instanceof Connection) {
+			$this->addError('db', 'The "db" application component must be a DB connection instance.');
 		}
 	}
 
 	public function validateNamespace()
 	{
-		$path = Yii::getAlias('@' . ltrim($this->ns, '\\'), false);
+		$this->ns = ltrim($this->ns, '\\');
+		$path = Yii::getAlias('@' . str_replace('\\', '/', $this->ns), false);
 		if ($path === false) {
 			$this->addError('ns', 'Namespace must be associated with an existing directory.');
 		}
@@ -400,14 +413,18 @@ class Generator extends \yii\gii\Generator
 
 	public function validateTableName()
 	{
+		if (($pos = strpos($this->tableName, '*')) !== false && strpos($this->tableName, '*', $pos + 1) !== false) {
+			$this->addError('tableName', 'At most one asterisk is allowed.');
+			return;
+		}
 		$tables = $this->getTableNames();
 		if (empty($tables)) {
-			$this->addError('tableName', "Table '{$this->tableName}' does not exist.'");
+			$this->addError('tableName', "Table '{$this->tableName}' does not exist.");
 		} else {
 			foreach ($tables as $table) {
 				$class = $this->generateClassName($table);
 				if ($this->isReservedKeyword($class)) {
-					$this->addError('tableName', "Table '$table' would generate a class which is a reserved PHP keyword.");
+					$this->addError('tableName', "Table '$table' will generate a class which is a reserved PHP keyword.");
 					break;
 				}
 			}
@@ -418,13 +435,13 @@ class Generator extends \yii\gii\Generator
 	{
 		$db = $this->getDbConnection();
 		$tableNames = array();
-		if ($this->tableName[strlen($this->tableName) - 1] === '*') {
+		if (strpos($this->tableName, '*') !== false) {
 			if (($pos = strrpos($this->tableName, '.')) !== false) {
 				$schema = substr($this->tableName, 0, $pos);
-				$pattern = '/' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '/';
+				$pattern = '/^' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '$/';
 			} else {
 				$schema = '';
-				$pattern = '/' . str_replace('*', '\w+', $this->tableName) . '/';
+				$pattern = '/^' . str_replace('*', '\w+', $this->tableName) . '$/';
 			}
 
 			foreach ($db->schema->getTableNames($schema) as $table) {
