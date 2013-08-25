@@ -210,7 +210,7 @@ abstract class Generator extends Model
 	 */
 	public function getStickyDataFile()
 	{
-		return Yii::$app->getRuntimePath() . '/gii-' . Yii::getVersion() . '/' . str_replace('\\', '-',get_class($this)) . '.php';
+		return Yii::$app->getRuntimePath() . '/gii-' . Yii::getVersion() . '/' . str_replace('\\', '-', get_class($this)) . '.php';
 	}
 
 	/**
@@ -225,7 +225,7 @@ abstract class Generator extends Model
 	{
 		$lines = array('Generating code using template "' . $this->getTemplatePath() . '"...');
 		$hasError = false;
-		foreach ($files as $file) {;
+		foreach ($files as $file) {
 			$relativePath = $file->getRelativePath();
 			if (isset($answers[$file->id]) && $file->operation !== CodeFile::OP_SKIP) {
 				$error = $file->save();
