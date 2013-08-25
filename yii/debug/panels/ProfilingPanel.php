@@ -47,23 +47,20 @@ EOD;
 		$timings = array();
 		$stack = array();
 		foreach ($messages as $i => $log) {
-			list($token, $level, $category, $timestamp) = $log;
-			$log[4] = $i;
+			list($token, $level, $category, $timestamp, $traces) = $log;
 			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
 			} elseif ($level == Logger::LEVEL_PROFILE_END) {
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[$last[4]] = array(count($stack), $token, $category, $timestamp - $last[3]);
+					$timings[] = array(count($stack), $token, $category, $timestamp - $last[3], $traces);
 				}
 			}
 		}
 
 		$now = microtime(true);
 		while (($last = array_pop($stack)) !== null) {
-			$delta = $now - $last[3];
-			$timings[$last[4]] = array(count($stack), $last[0], $last[2], $delta);
+			$timings[] = array(count($stack), $last[0], $last[2], $now - $last[3], $last[4]);
 		}
-		ksort($timings);
 
 		$rows = array();
 		foreach ($timings as $timing) {
