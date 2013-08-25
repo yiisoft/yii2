@@ -8,6 +8,7 @@
  * @var string $className
  * @var yii\db\TableSchema $tableSchema
  * @var string[] $labels
+ * @var string[] $rules
  *
  * - $tableName: the table name for this class (prefix is already removed if necessary)
  * - $modelClass: the model class name
@@ -39,6 +40,14 @@ class <?php echo $className; ?> extends <?php echo '\\' . ltrim($generator->base
 	public function tableName()
 	{
 		return '<?php echo $tableName; ?>';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function rules()
+	{
+		return array(<?php echo "\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t"; ?>);
 	}
 
 	/**
