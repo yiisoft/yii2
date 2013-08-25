@@ -10,6 +10,7 @@ namespace yii\gii\generators\model;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
+use yii\db\Schema;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
 
@@ -121,6 +122,7 @@ class Generator extends \yii\gii\Generator
 				'className' => $className,
 				'tableSchema' => $tableSchema,
 				'labels' => $this->generateLabels($tableSchema),
+				'rules' => $this->generateRules($tableSchema),
 			);
 			$files[] = new CodeFile(
 				Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
@@ -155,48 +157,56 @@ class Generator extends \yii\gii\Generator
 		return $labels;
 	}
 
+	/**
+	 * @param \yii\db\TableSchema $table
+	 * @return array
+	 */
 	public function generateRules($table)
 	{
-		$rules = array();
-		$required = array();
-		$integers = array();
-		$numerical = array();
-		$length = array();
-		$safe = array();
+		$types = array();
+		$lengths = array();
 		foreach ($table->columns as $column) {
 			if ($column->autoIncrement) {
 				continue;
 			}
-			$r = !$column->allowNull && $column->defaultValue === null;
-			if ($r) {
-				$required[] = $column->name;
+			if (!$column->allowNull && $column->defaultValue === null) {
+				$types['required'][] = $column->name;
 			}
-			if ($column->type === 'integer') {
-				$integers[] = $column->name;
-			} elseif ($column->type === 'double') {
-				$numerical[] = $column->name;
-			} elseif ($column->type === 'string' && $column->size > 0) {
-				$length[$column->size][] = $column->name;
-			} elseif (!$column->isPrimaryKey && !$r) {
-				$safe[] = $column->name;
+			switch ($column->type) {
+				case Schema::TYPE_SMALLINT:
+				case Schema::TYPE_INTEGER:
+				case Schema::TYPE_BIGINT:
+					$types['integer'][] = $column->name;
+					break;
+				case Schema::TYPE_BOOLEAN:
+					$types['boolean'][] = $column->name;
+					break;
+				case Schema::TYPE_FLOAT:
+				case Schema::TYPE_DECIMAL:
+				case Schema::TYPE_MONEY:
+					$types['number'][] = $column->name;
+					break;
+				case Schema::TYPE_DATE:
+				case Schema::TYPE_TIME:
+				case Schema::TYPE_DATETIME:
+				case Schema::TYPE_TIMESTAMP:
+					$types['safe'][] = $column->name;
+					break;
+				default: // strings
+					if ($column->size > 0) {
+						$lengths[$column->size][] = $column->name;
+					} else {
+						$types['string'][] = $column->name;
+					}
 			}
 		}
-		if ($required !== array()) {
-			$rules[] = "array('" . implode(', ', $required) . "', 'required')";
+
+		$rules = array();
+		foreach ($types as $type => $columns) {
+			$rules[] = "array('" . implode(', ', $columns) . "', '$type')";
 		}
-		if ($integers !== array()) {
-			$rules[] = "array('" . implode(', ', $integers) . "', 'numerical', 'integerOnly'=>true)";
-		}
-		if ($numerical !== array()) {
-			$rules[] = "array('" . implode(', ', $numerical) . "', 'numerical')";
-		}
-		if ($length !== array()) {
-			foreach ($length as $len => $cols) {
-				$rules[] = "array('" . implode(', ', $cols) . "', 'length', 'max'=>$len)";
-			}
-		}
-		if ($safe !== array()) {
-			$rules[] = "array('" . implode(', ', $safe) . "', 'safe')";
+		foreach ($lengths as $length => $columns) {
+			$rules[] = "array('" . implode(', ', $columns) . "', 'string', 'max' => $length)";
 		}
 
 		return $rules;
@@ -317,34 +327,6 @@ class Generator extends \yii\gii\Generator
 			&& $table->foreignKeys[$pk[0]][0] !== $table->foreignKeys[$pk[1]][0]); // and the foreign keys point different tables
 	}
 
-	protected function generateClassName($tableName)
-	{
-		if (($pos = strrpos($tableName, '.')) !== false) {
-			$tableName = substr($tableName, $pos + 1);
-		}
-
-		$db = $this->getDbConnection();
-		$patterns = array();
-		if (strpos($this->tableName, '*') !== false) {
-			$pattern = $this->tableName;
-			if (($pos = strrpos($pattern, '.')) !== false) {
-				$pattern = substr($pattern, $pos + 1);
-			}
-			$patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
-		}
-		if (!empty($db->tablePrefix)) {
-			$patterns[] = "/^{$db->tablePrefix}(.*?)|(.*?){$db->tablePrefix}$/";
-		}
-
-		$className = $tableName;
-		foreach ($patterns as $pattern) {
-			if (preg_match($pattern, $tableName, $matches)) {
-				$className = $matches[1];
-			}
-		}
-		return Inflector::id2camel($className, '_');
-	}
-
 	/**
 	 * Generate a name for use as a relation name (inside relations() function in a model).
 	 * @param string the name of the table to hold the relation
@@ -431,8 +413,14 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	private $_tableNames;
+	private $_classNames;
+
 	protected function getTableNames()
 	{
+		if ($this->_tableNames !== null) {
+			return $this->_tableNames;
+		}
 		$db = $this->getDbConnection();
 		$tableNames = array();
 		if (strpos($this->tableName, '*') !== false) {
@@ -451,7 +439,42 @@ class Generator extends \yii\gii\Generator
 			}
 		} elseif (($table = $db->getTableSchema($this->tableName, true)) !== null) {
 			$tableNames[] = $this->tableName;
+			$this->_classNames[$this->tableName] = $this->modelClass;
 		}
-		return $tableNames;
+		return $this->_tableNames = $tableNames;
+	}
+
+	protected function generateClassName($tableName)
+	{
+		if (isset($this->_classNames[$tableName])) {
+			return $this->_classNames[$tableName];
+		}
+
+		if (($pos = strrpos($tableName, '.')) !== false) {
+			$tableName = substr($tableName, $pos + 1);
+		}
+
+		$db = $this->getDbConnection();
+		$patterns = array();
+		if (strpos($this->tableName, '*') !== false) {
+			$pattern = $this->tableName;
+			if (($pos = strrpos($pattern, '.')) !== false) {
+				$pattern = substr($pattern, $pos + 1);
+			}
+			$patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
+		}
+		if (!empty($db->tablePrefix)) {
+			$patterns[] = "/^{$db->tablePrefix}(.*?)|(.*?){$db->tablePrefix}$/";
+		} else {
+			$patterns[] = "/^tbl_(.*?)$/";
+		}
+
+		$className = $tableName;
+		foreach ($patterns as $pattern) {
+			if (preg_match($pattern, $tableName, $matches)) {
+				$className = $matches[1];
+			}
+		}
+		return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
 	}
 }
