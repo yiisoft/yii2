@@ -218,16 +218,7 @@ class ActiveDataProvider extends DataProvider
 	}
 
 	/**
-	 * Sets the sort definition for this data provider.
-	 * @param array|Sort|boolean $value the sort definition to be used by this data provider.
-	 * This can be one of the following:
-	 *
-	 * - a configuration array for creating the sort definition object. The "class" element defaults
-	 *   to 'yii\data\Sort'
-	 * - an instance of [[Sort]] or its subclass
-	 * - false, if sorting needs to be disabled.
-	 *
-	 * @throws InvalidParamException
+	 * @inheritdoc
 	 */
 	public function setSort($value)
 	{
