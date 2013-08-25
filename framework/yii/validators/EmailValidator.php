@@ -64,7 +64,9 @@ class EmailValidator extends Validator
 	{
 		parent::init();
 		if ($this->enableIDN && !function_exists('idn_to_ascii')) {
+			// @codeCoverageIgnoreStart
 			throw new InvalidConfigException('In order to use IDN validation intl extension must be installed and enabled.');
+			// @codeCoverageIgnoreEnd
 		}
 		if ($this->message === null) {
 			$this->message = Yii::t('yii', '{attribute} is not a valid email address.');
@@ -122,6 +124,7 @@ class EmailValidator extends Validator
 	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
+	 * @codeCoverageIgnore
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
