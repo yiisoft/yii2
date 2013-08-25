@@ -35,6 +35,7 @@ use yii\base\NotSupportedException;
  * - `integer`: [[NumberValidator]]
  * - `match`: [[RegularExpressionValidator]]
  * - `required`: [[RequiredValidator]]
+ * - `safe`: [[SafeValidator]]
  * - `string`: [[StringValidator]]
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
@@ -66,6 +67,7 @@ abstract class Validator extends Component
 		'match' => 'yii\validators\RegularExpressionValidator',
 		'number' => 'yii\validators\NumberValidator',
 		'required' => 'yii\validators\RequiredValidator',
+		'safe' => 'yii\validators\SafeValidator',
 		'string' => 'yii\validators\StringValidator',
 		'unique' => 'yii\validators\UniqueValidator',
 		'url' => 'yii\validators\UrlValidator',
