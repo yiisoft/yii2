@@ -26,6 +26,7 @@ class Dropdown extends Widget
 	 *
 	 * - label: string, required, the label of the item link
 	 * - url: string, optional, the url of the item link. Defaults to "#".
+	 * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
 	 * - linkOptions: array, optional, the HTML attributes of the item link.
 	 * - options: array, optional, the HTML attributes of the item.
 	 */
@@ -64,7 +65,11 @@ class Dropdown extends Widget
 	protected function renderItems($items)
 	{
 		$lines = array();
-		foreach ($items as $item) {
+		foreach ($items as $i => $item) {
+			if (isset($item['visible']) && !$item['visible']) {
+				unset($items[$i]);
+				continue;
+			}
 			if (is_string($item)) {
 				$lines[] = $item;
 				continue;
