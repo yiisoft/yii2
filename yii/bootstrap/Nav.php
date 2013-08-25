@@ -60,6 +60,7 @@ class Nav extends Widget
 	 *
 	 * - label: string, required, the nav item label.
 	 * - url: optional, the item's URL. Defaults to "#".
+	 * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
 	 * - linkOptions: array, optional, the HTML attributes of the item's link.
 	 * - options: array, optional, the HTML attributes of the item container (LI).
 	 * - active: boolean, optional, whether the item should be on active state or not.
@@ -123,7 +124,11 @@ class Nav extends Widget
 	public function renderItems()
 	{
 		$items = array();
-		foreach ($this->items as $item) {
+		foreach ($this->items as $i => $item) {
+			if (isset($item['visible']) && !$item['visible']) {
+				unset($items[$i]);
+				continue;
+			}
 			$items[] = $this->renderItem($item);
 		}
 
