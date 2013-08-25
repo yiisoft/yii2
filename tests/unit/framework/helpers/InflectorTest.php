@@ -131,5 +131,11 @@ class InflectorTest extends TestCase
 	public function testOrdinalize()
 	{
 		$this->assertEquals('21st', Inflector::ordinalize('21'));
+		$this->assertEquals('22nd', Inflector::ordinalize('22'));
+		$this->assertEquals('23rd', Inflector::ordinalize('23'));
+		$this->assertEquals('24th', Inflector::ordinalize('24'));
+		$this->assertEquals('25th', Inflector::ordinalize('25'));
+		$this->assertEquals('111th', Inflector::ordinalize('111'));
+		$this->assertEquals('113th', Inflector::ordinalize('113'));
 	}
 }
