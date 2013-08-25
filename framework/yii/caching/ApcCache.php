@@ -81,7 +81,6 @@ class ApcCache extends Cache
 
 	/**
 	 * Checks existence of a key in cache.
-	 * This is the implementation of the method declared in the parent class.
 	 * @param string $key the key to be checked.
 	 * @return boolean true if the key exists false if not
 	 */
