@@ -209,7 +209,7 @@ class ArrayHelperBase
 	 * // )
 	 *
 	 * // using anonymous function
-	 * $result = ArrayHelper::index($array, function(element) {
+	 * $result = ArrayHelper::index($array, function ($element) {
 	 *     return $element['id'];
 	 * });
 	 * ~~~
@@ -243,7 +243,7 @@ class ArrayHelperBase
 	 * // the result is: array( '123', '345')
 	 *
 	 * // using anonymous function
-	 * $result = ArrayHelper::getColumn($array, function(element) {
+	 * $result = ArrayHelper::getColumn($array, function ($element) {
 	 *     return $element['id'];
 	 * });
 	 * ~~~
