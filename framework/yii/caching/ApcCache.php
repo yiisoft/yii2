@@ -80,6 +80,31 @@ class ApcCache extends Cache
 	}
 
 	/**
+	 * Checks existence of a key in cache.
+	 * This is the implementation of the method declared in the parent class.
+	 * @param string $key the key to be checked.
+	 * @return boolean true if the key exists false if not
+	 */
+	protected function existKey($key)
+	{
+		return apc_exists($key);
+	}
+
+	/**
+	 * Checks existence of multiple keys in cache.
+	 * @param array $keys keys to be checked.
+	 * @return array Key/value pair being the cache key name checked, and a boolean status of existence in cache.
+	 */
+	protected function existKeys($keys)
+	{
+		$existence = array();
+		foreach ($keys as $key){
+			$existence[$key] = $this->existKey($key);
+		}
+		return $existence;
+	}
+
+	/**
 	 * Deletes all values from cache.
 	 * This is the implementation of the method declared in the parent class.
 	 * @return boolean whether the flush operation was successful.
