@@ -63,7 +63,7 @@ class Generator extends \yii\gii\Generator
 			array('modelClass, viewName, scenarioName, viewPath', 'filter', 'filter' => 'trim'),
 			array('modelClass, viewName, viewPath', 'required'),
 			array('modelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('modelClass', 'validateClass', 'extends' => Model::className()),
+			array('modelClass', 'validateClass', 'params' => array('extends' => Model::className())),
 			array('viewName', 'match', 'pattern' => '/^\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes and slashes are allowed.'),
 			array('viewPath', 'match', 'pattern' => '/^@?\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes, slashes and @ are allowed.'),
 			array('viewPath', 'validateViewPath'),
