@@ -2,19 +2,19 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\db\TableSchema;
+use yii\db\redis\RecordSchema;
 
 class Item extends ActiveRecord
 {
-	public static function tableName()
-	{
-		return 'tbl_item';
-	}
-
 	public static function getTableSchema()
 	{
-		return new TableSchema(array(
+		return new RecordSchema(array(
+			'name' => 'item',
 			'primaryKey' => array('id'),
+			'sequenceName' => 'id',
+			'foreignKeys' => array(
+				// TODO for defining relations
+			),
 			'columns' => array(
 				'id' => 'integer',
 				'name' => 'string',

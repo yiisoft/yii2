@@ -20,7 +20,7 @@ use yii\db\TableSchema;
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
- * @include @yii/db/ActiveRecord.md
+ *
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -68,30 +68,18 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		return $query;
 	}
 
+	public static function hashPk($pk)
+	{
+		return (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+	}
+
 	/**
-	 * Creates an [[ActiveQuery]] instance with a given SQL statement.
-	 *
-	 * Note that because the SQL statement is already specified, calling additional
-	 * query modification methods (such as `where()`, `order()`) on the created [[ActiveQuery]]
-	 * instance will have no effect. However, calling `with()`, `asArray()` or `indexBy()` is
-	 * still fine.
-	 *
-	 * Below is an example:
-	 *
-	 * ~~~
-	 * $customers = Customer::findBySql('SELECT * FROM tbl_customer')->all();
-	 * ~~~
-	 *
-	 * @param string $sql the SQL statement to be executed
-	 * @param array $params parameters to be bound to the SQL statement during execution.
-	 * @return ActiveQuery the newly created [[ActiveQuery]] instance
+	 * @inheritdoc
 	 */
 	public static function findBySql($sql, $params = array())
 	{
 		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord');
 	}
-
-
 
 	/**
 	 * Creates an [[ActiveQuery]] instance.
@@ -107,6 +95,14 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		));
 	}
 
+	/**
+	 * Declares the name of the database table associated with this AR class.
+	 * @return string the table name
+	 */
+	public static function tableName()
+	{
+		return static::getTableSchema()->name;
+	}
 
 	/**
 	 * Returns the schema information of the DB table associated with this AR class.
@@ -114,6 +110,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function getTableSchema()
 	{
+		// TODO should be cached
 		throw new InvalidConfigException(__CLASS__.'::getTableSchema() needs to be overridden in subclasses and return a TableSchema.');
 	}
 
@@ -173,9 +170,9 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 				}
 //			}
 			// save pk in a findall pool
-			$db->executeCommand('RPUSH', array(static::tableName(), implode('-', $pk))); // TODO escape PK glue
+			$db->executeCommand('RPUSH', array(static::tableName(), static::hashPk($pk)));
 
-			$key = static::tableName() . ':a:' . implode('-', $pk); // TODO escape PK glue
+			$key = static::tableName() . ':a:' . static::hashPk($pk);
 			// save attributes
 			$args = array($key);
 			foreach($values as $attribute => $value) {
@@ -216,7 +213,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		}
 		$n=0;
 		foreach($condition as $pk) {
-			$key = static::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+			$key = static::tableName() . ':a:' . static::hashPk($pk);
 			// save attributes
 			$args = array($key);
 			foreach($attributes as $attribute => $value) {
@@ -257,7 +254,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		}
 		$n=0;
 		foreach($condition as $pk) { // TODO allow multiple pks as condition
-			$key = static::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+			$key = static::tableName() . ':a:' . static::hashPk($pk);
 			foreach($counters as $attribute => $value) {
 				$db->executeCommand('HINCRBY', array($key, $attribute, $value));
 			}
@@ -292,13 +289,11 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		}
 		$attributeKeys = array();
 		foreach($condition as $pk) {
-			if (is_array($pk)) {
-				$pk = implode('-', $pk);
-			}
-			$db->executeCommand('LREM', array(static::tableName(), 0, $pk)); // TODO escape PK glue
-			$attributeKeys[] = static::tableName() . ':a:' . $pk; // TODO escape PK glue
+			$pk = static::hashPk($pk);
+			$db->executeCommand('LREM', array(static::tableName(), 0, $pk));
+			$attributeKeys[] = static::tableName() . ':a:' . $pk;
 		}
-		return $db->executeCommand('DEL', $attributeKeys);
+		return $db->executeCommand('DEL', $attributeKeys);// TODO make this atomic or document as NOT
 	}
 
 	/**

@@ -2,7 +2,7 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\db\TableSchema;
+use yii\db\redis\RecordSchema;
 
 class Customer extends ActiveRecord
 {
@@ -21,7 +21,8 @@ class Customer extends ActiveRecord
 
 	public static function getTableSchema()
 	{
-		return new TableSchema(array(
+		return new RecordSchema(array(
+			'name' => 'customer',
 			'primaryKey' => array('id'),
 			'columns' => array(
 				'id' => 'integer',

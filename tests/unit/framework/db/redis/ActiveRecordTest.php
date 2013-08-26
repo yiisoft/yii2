@@ -9,10 +9,31 @@ use yiiunit\data\ar\redis\OrderItem;
 use yiiunit\data\ar\redis\Order;
 use yiiunit\data\ar\redis\Item;
 
+/*
+Users:
+1 - user1
+2 - user2
+3 - user3
+
+Items: 1-5
+
+Order: 1-3
+
+OrderItem:
+1 - order: 1
+2 - order: 1
+3 - order: 2
+4 - order: 2
+5 - order: 2
+6 - order: 3
+
+ */
+
 class ActiveRecordTest extends RedisTestCase
 {
 	public function setUp()
 	{
+		parent::setUp();
 		ActiveRecord::$db = $this->getConnection();
 
 		$customer = new Customer();
@@ -72,8 +93,6 @@ class ActiveRecordTest extends RedisTestCase
 		$orderItem = new OrderItem();
 		$orderItem->setAttributes(array('order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0), false);
 		$orderItem->save(false);
-
-		parent::setUp();
 	}
 
 	public function testFind()
@@ -331,6 +350,8 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals(4, $customer->id);
 		$this->assertFalse($customer->isNewRecord);
 	}
+
+	// TODO test serial column incr
 
 	public function testUpdate()
 	{

@@ -12,6 +12,7 @@ namespace yii\db\redis;
 use \yii\base\Component;
 use yii\base\InvalidConfigException;
 use \yii\db\Exception;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -337,7 +338,7 @@ class Connection extends Component
 	 */
 	public function __call($name, $params)
 	{
-		$redisCommand = strtoupper(StringHelper::camel2words($name, false));
+		$redisCommand = strtoupper(Inflector::camel2words($name, false));
 		if (in_array($redisCommand, $this->redisCommands)) {
 			return $this->executeCommand($name, $params);
 		} else {

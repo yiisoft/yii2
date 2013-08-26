@@ -2,15 +2,10 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\db\TableSchema;
+use yii\db\redis\RecordSchema;
 
 class Order extends ActiveRecord
 {
-	public static function tableName()
-	{
-		return 'tbl_order';
-	}
-
 	public function getCustomer()
 	{
 		return $this->hasOne('Customer', array('id' => 'customer_id'));
@@ -49,7 +44,8 @@ class Order extends ActiveRecord
 
 	public static function getTableSchema()
 	{
-		return new TableSchema(array(
+		return new RecordSchema(array(
+			'name' => 'orders',
 			'primaryKey' => array('id'),
 			'columns' => array(
 				'id' => 'integer',

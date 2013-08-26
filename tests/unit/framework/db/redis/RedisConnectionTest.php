@@ -4,7 +4,7 @@ namespace yiiunit\framework\db\redis;
 
 use yii\db\redis\Connection;
 
-class ConnectionTest extends RedisTestCase
+class RedisConnectionTest extends RedisTestCase
 {
 	/**
 	 * Empty DSN should throw exception

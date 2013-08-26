@@ -12,7 +12,10 @@ class RedisTestCase extends TestCase
 {
 	protected function setUp()
 	{
-		$params = $this->getParam('redis');
+		$this->mockApplication();
+
+		$databases = $this->getParam('databases');
+		$params = isset($databases['redis']) ? $databases['redis'] : null;
 		if ($params === null || !isset($params['dsn'])) {
 			$this->markTestSkipped('No redis server connection configured.');
 		}
@@ -34,7 +37,8 @@ class RedisTestCase extends TestCase
 	 */
 	public function getConnection($reset = true)
 	{
-		$params = $this->getParam('redis');
+		$databases = $this->getParam('databases');
+		$params = isset($databases['redis']) ? $databases['redis'] : array();
 		$db = new \yii\db\redis\Connection;
 		$db->dsn = $params['dsn'];
 		$db->password = $params['password'];
