@@ -31,8 +31,8 @@ class DataColumn extends Column
 	 * @var string label to be displayed in the [[header|header cell]] and also to be used as the sorting
 	 * link label when sorting is enabled for this column.
 	 * If it is not set and the models provided by the GridViews data provider are instances
-	 * of [[ActiveRecord]], the label will be determined via [[ActiveRecord::getAttributeLabel()]].
-	 * Otherwise [[yii\helpers\Inflector::camel2words]] will be used to get a label.
+	 * of [[yii\db\ActiveRecord]], the label will be determined using [[yii\db\ActiveRecord::getAttributeLabel()]].
+	 * Otherwise [[yii\helpers\Inflector::camel2words()]] will be used to get a label.
 	 */
 	public $label;
 	/**
