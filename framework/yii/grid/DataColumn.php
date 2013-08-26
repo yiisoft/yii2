@@ -72,36 +72,36 @@ class DataColumn extends Column
 
 	protected function renderHeaderCellContent()
 	{
-		if ($this->header === null) {
-			$provider = $this->grid->dataProvider;
+		if ($this->header !== null || $this->label === null && $this->attribute === null) {
+			return parent::renderHeaderCellContent();
+		}
 
-			if ($this->label === null) {
-				if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQuery) {
+		$provider = $this->grid->dataProvider;
+
+		if ($this->label === null) {
+			if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQuery) {
+				/** @var Model $model */
+				$model = new $provider->query->modelClass;
+				$label = $model->getAttributeLabel($this->attribute);
+			} else {
+				$models = $provider->getModels();
+				if (($model = reset($models)) instanceof Model) {
 					/** @var Model $model */
-					$model = new $provider->query->modelClass;
 					$label = $model->getAttributeLabel($this->attribute);
 				} else {
-					$models = $provider->getModels();
-					if (($model = reset($models)) instanceof Model) {
-						/** @var Model $model */
-						$label = $model->getAttributeLabel($this->attribute);
-					} else {
-						$label = Inflector::camel2words($this->attribute);
-					}
+					$label = Inflector::camel2words($this->attribute);
 				}
-			} else {
-				$label = $this->label;
-			}
-
-			if ($this->attribute !== null && $this->enableSorting &&
-				($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-
-				return $sort->link($this->attribute, Html::encode($label), $this->sortLinkOptions);
-			} else {
-				return Html::encode($label);
 			}
 		} else {
-			return parent::renderHeaderCellContent();
+			$label = $this->label;
+		}
+
+		if ($this->attribute !== null && $this->enableSorting &&
+			($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+
+			return $sort->link($this->attribute, Html::encode($label), $this->sortLinkOptions);
+		} else {
+			return Html::encode($label);
 		}
 	}
 
