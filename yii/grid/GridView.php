@@ -108,7 +108,7 @@ class GridView extends ListViewBase
 	 *         'class' => DataColumn::className(),
 	 *         'attribute' => 'name',
 	 *         'format' => 'text',
-	 *         'header' => 'Name',
+	 *         'label' => 'Name',
 	 *     ),
 	 *     array(
 	 *         'class' => CheckboxColumn::className(),
@@ -119,9 +119,9 @@ class GridView extends ListViewBase
 	 * If a column is of class [[DataColumn]], the "class" element can be omitted.
 	 *
 	 * As a shortcut format, a string may be used to specify the configuration of a data column
-	 * which only contains "attribute", "format", and/or "header" options: `"attribute:format:header"`.
+	 * which only contains "attribute", "format", and/or "label" options: `"attribute:format:label"`.
 	 * For example, the above "name" column can also be specified as: `"name:text:Name"`.
-	 * Both "format" and "header" are optional. They will take default values if absent.
+	 * Both "format" and "label" are optional. They will take default values if absent.
 	 */
 	public $columns = array();
 	/**
@@ -372,7 +372,7 @@ class GridView extends ListViewBase
 	}
 
 	/**
-	 * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:header".
+	 * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:label".
 	 * @param string $text the column specification string
 	 * @return DataColumn the column instance
 	 * @throws InvalidConfigException if the column specification is invalid
@@ -380,14 +380,14 @@ class GridView extends ListViewBase
 	protected function createDataColumn($text)
 	{
 		if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
-			throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:header');
+			throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label');
 		}
 		return Yii::createObject(array(
 			'class' => $this->dataColumnClass ?: DataColumn::className(),
 			'grid' => $this,
 			'attribute' => $matches[1],
 			'format' => isset($matches[3]) ? $matches[3] : 'text',
-			'header' => isset($matches[5]) ? $matches[5] : null,
+			'label' => isset($matches[5]) ? $matches[5] : null,
 		));
 	}
 
