@@ -423,12 +423,12 @@ class InflectorBase
 	/**
 	 * Converts a class name to its table name (pluralized)
 	 * naming conventions. For example, converts "Person" to "people"
-	 * @param string $class_name the class name for getting related table_name
+	 * @param string $className the class name for getting related table_name
 	 * @return string
 	 */
-	public static function tableize($class_name)
+	public static function tableize($className)
 	{
-		return static::pluralize(static::underscore($class_name));
+		return static::pluralize(static::underscore($className));
 	}
 
 	/**
@@ -452,12 +452,12 @@ class InflectorBase
 
 	/**
 	 * Converts a table name to its class name. For example, converts "people" to "Person"
-	 * @param string $table_name
+	 * @param string $tableName
 	 * @return string
 	 */
-	public static function classify($table_name)
+	public static function classify($tableName)
 	{
-		return static::camelize(static::singularize($table_name));
+		return static::camelize(static::singularize($tableName));
 	}
 
 	/**

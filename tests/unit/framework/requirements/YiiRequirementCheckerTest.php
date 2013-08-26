@@ -60,7 +60,8 @@ class YiiRequirementCheckerTest extends TestCase
 	/**
 	 * @depends testCheck
 	 */
-	public function testCheckEval() {
+	public function testCheckEval()
+	{
 		$requirementsChecker = new YiiRequirementChecker();
 
 		$requirements = array(

@@ -30,7 +30,7 @@ class SiteController extends Controller
 	{
 		$model = new LoginForm();
 		if ($model->load($_POST) && $model->login()) {
-			return $this->redirect(array('site/index'));
+			return $this->goHome();
 		} else {
 			return $this->render('login', array(
 				'model' => $model,
@@ -41,7 +41,7 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::$app->user->logout();
-		return $this->redirect(array('site/index'));
+		return $this->goHome();
 	}
 
 	public function actionContact()
@@ -68,7 +68,7 @@ class SiteController extends Controller
 		$model->setScenario('signup');
 		if ($model->load($_POST) && $model->save()) {
 			if (Yii::$app->getUser()->login($model)) {
-				$this->redirect('index');
+				return $this->goHome();
 			}
 		}
 
@@ -84,7 +84,7 @@ class SiteController extends Controller
 		if ($model->load($_POST) && $model->validate()) {
 			if ($this->sendPasswordResetEmail($model->email)) {
 				Yii::$app->getSession()->setFlash('success', 'Check your email for further instructions.');
-				$this->redirect('index');
+				return $this->goHome();
 			} else {
 				Yii::$app->getSession()->setFlash('error', 'There was an error sending email.');
 			}
@@ -108,7 +108,7 @@ class SiteController extends Controller
 		$model->scenario = 'resetPassword';
 		if ($model->load($_POST) && $model->save()) {
 			Yii::$app->getSession()->setFlash('success', 'New password was saved.');
-			$this->redirect('index');
+			return $this->goHome();
 		}
 
 		return $this->render('resetPassword', array(

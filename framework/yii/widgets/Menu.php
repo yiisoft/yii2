@@ -250,7 +250,7 @@ class Menu extends Widget
 			}
 			$hasActiveChild = false;
 			if (isset($item['items'])) {
-				$items[$i]['items'] = $this->normalizeItems($item['items'], $route, $hasActiveChild);
+				$items[$i]['items'] = $this->normalizeItems($item['items'], $hasActiveChild);
 				if (empty($items[$i]['items']) && $this->hideEmptyItems) {
 					unset($items[$i]['items']);
 					if (!isset($item['url'])) {
@@ -284,7 +284,14 @@ class Menu extends Widget
 	 */
 	protected function isItemActive($item)
 	{
-		if (isset($item['url']) && is_array($item['url']) && trim($item['url'][0], '/') === $this->route) {
+		if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
+			$route = $item['url'][0];
+			if ($route[0] !== '/' && Yii::$app->controller) {
+				$route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
+			}
+			if (ltrim($route, '/') !== $this->route) {
+				return false;
+			}
 			unset($item['url']['#']);
 			if (count($item['url']) > 1) {
 				foreach (array_splice($item['url'], 1) as $name => $value) {

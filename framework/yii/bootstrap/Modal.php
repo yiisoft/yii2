@@ -88,6 +88,8 @@ class Modal extends Widget
 
 		echo $this->renderToggleButton() . "\n";
 		echo Html::beginTag('div', $this->options) . "\n";
+		echo Html::beginTag('div', array('class' => 'modal-dialog')) . "\n";
+		echo Html::beginTag('div', array('class' => 'modal-content')) . "\n";
 		echo $this->renderHeader() . "\n";
 		echo $this->renderBodyBegin() . "\n";
 	}
@@ -99,6 +101,8 @@ class Modal extends Widget
 	{
 		echo "\n" . $this->renderBodyEnd();
 		echo "\n" . $this->renderFooter();
+		echo "\n" . Html::endTag('div'); // modal-content
+		echo "\n" . Html::endTag('div'); // modal-dialog
 		echo "\n" . Html::endTag('div');
 
 		$this->registerPlugin('modal');
@@ -195,7 +199,9 @@ class Modal extends Widget
 	protected function initOptions()
 	{
 		$this->options = array_merge(array(
-			'class' => 'modal hide',
+			'class' => 'fade',
+			'role' => 'dialog',
+			'tabindex' => -1,
 		), $this->options);
 		Html::addCssClass($this->options, 'modal');
 

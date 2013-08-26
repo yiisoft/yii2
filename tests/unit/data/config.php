@@ -1,5 +1,4 @@
 <?php
-
 return array(
 	'databases' => array(
 		'mysql' => array(
@@ -27,7 +26,6 @@ return array(
 		'redis' => array(
 			'dsn' => 'redis://localhost:6379/0',
 			'password' => null,
-			//		'fixture' => __DIR__ . '/mysql.sql',
 		),
-    )
+	),
 );

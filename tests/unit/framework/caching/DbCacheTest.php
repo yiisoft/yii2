@@ -35,11 +35,11 @@ class DbCacheTest extends CacheTestCase
 	 * @param bool $reset whether to clean up the test database
 	 * @return \yii\db\Connection
 	 */
-	function getConnection($reset = true)
+	public function getConnection($reset = true)
 	{
 		if ($this->_connection === null) {
 			$databases = $this->getParam('databases');
-            $params = $databases['mysql'];
+			$params = $databases['mysql'];
 			$db = new \yii\db\Connection;
 			$db->dsn = $params['dsn'];
 			$db->username = $params['username'];

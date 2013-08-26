@@ -28,15 +28,17 @@ $this->title = 'Yii Debugger';
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-2">
-				<ul class="nav nav-pills nav-stacked">
+				<div class="list-group">
 					<?php
 					foreach ($panels as $id => $panel) {
-						$link = Html::a(Html::encode($panel->getName()), array('view', 'tag' => $tag, 'panel' => $id));
-						echo Html::tag('li', $link, array('class' => $panel === $activePanel ? 'active' : null));
+						$label = '<i class="glyphicon glyphicon-chevron-right"></i>' . Html::encode($panel->getName());
+						echo Html::a($label, array('view', 'tag' => $tag, 'panel' => $id), array(
+							'class' => $panel === $activePanel ? 'list-group-item active' : 'list-group-item',
+						));
 					}
 					?>
-				</ul>
-			</div><!--/span-->
+				</div>
+			</div>
 			<div class="col-lg-10">
 				<div class="callout callout-danger">
 					<?php

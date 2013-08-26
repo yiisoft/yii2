@@ -100,7 +100,7 @@ class FileHelperTest extends TestCase
 	 * @param string $fileName file name.
 	 * @param string $message error message
 	 */
-	protected function assertFileMode($expectedMode, $fileName, $message='')
+	protected function assertFileMode($expectedMode, $fileName, $message = '')
 	{
 		$expectedMode = sprintf('%o', $expectedMode);
 		$this->assertEquals($expectedMode, $this->getMode($fileName), $message);
@@ -169,7 +169,7 @@ class FileHelperTest extends TestCase
 		$this->assertFileMode($fileMode, $dstDirName . DIRECTORY_SEPARATOR . $fileName, 'Copied file has wrong mode!');
 	}
 
-	public function stestRemoveDirectory()
+	public function testRemoveDirectory()
 	{
 		$dirName = 'test_dir_for_remove';
 		$this->createFileStructure(array(
@@ -189,6 +189,9 @@ class FileHelperTest extends TestCase
 		FileHelper::removeDirectory($dirName);
 
 		$this->assertFalse(file_exists($dirName), 'Unable to remove directory!');
+
+		// should be silent about non-existing directories
+		FileHelper::removeDirectory($basePath . DIRECTORY_SEPARATOR . 'nonExisting');
 	}
 
 	public function testFindFiles()
@@ -236,7 +239,7 @@ class FileHelperTest extends TestCase
 		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
 
 		$options = array(
-			'filter' => function($path) use ($passedFileName) {
+			'filter' => function ($path) use ($passedFileName) {
 				return $passedFileName == basename($path);
 			}
 		);
@@ -268,11 +271,13 @@ class FileHelperTest extends TestCase
 		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
 	}
 
-	public function testMkdir() {
+	public function testMkdir()
+	{
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
-		FileHelper::mkdir($dirName);
+		$this->assertTrue(FileHelper::mkdir($dirName), 'FileHelper::mkdir should return true if directory was created!');
 		$this->assertTrue(file_exists($dirName), 'Unable to create directory recursively!');
+		$this->assertTrue(FileHelper::mkdir($dirName), 'FileHelper::mkdir should return true for already existing directories!');
 	}
 
 	public function testGetMimeTypeByExtension()
@@ -290,5 +295,21 @@ class FileHelperTest extends TestCase
 			$this->assertNull(FileHelper::getMimeTypeByExtension($fileName));
 			$this->assertEquals($mimeType, FileHelper::getMimeTypeByExtension($fileName, $magicFile));
 		}
+	}
+
+	public function testGetMimeType()
+	{
+		$file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.txt';
+		file_put_contents($file, 'some text');
+		$this->assertEquals('text/plain', FileHelper::getMimeType($file));
+
+		$file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.json';
+		file_put_contents($file, '{"a": "b"}');
+		$this->assertEquals('text/plain', FileHelper::getMimeType($file));
+	}
+
+	public function testNormalizePath()
+	{
+		$this->assertEquals(DIRECTORY_SEPARATOR.'home'.DIRECTORY_SEPARATOR.'demo', FileHelper::normalizePath('/home\demo/'));
 	}
 }

@@ -175,7 +175,7 @@ class NewObject extends Object
 
 	public function getExecute()
 	{
-		return function($param) {
+		return function ($param) {
 			return $param * 2;
 		};
 	}

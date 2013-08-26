@@ -114,17 +114,15 @@ class ErrorHandler extends Component
 					'exception' => $exception,
 				));
 			}
+		} elseif ($exception instanceof Arrayable) {
+			$response->data = $exception;
 		} else {
-			if ($exception instanceof Arrayable) {
-				$response->data = $exception;
-			} else {
-				$response->data = array(
-					'type' => get_class($exception),
-					'name' => 'Exception',
-					'message' => $exception->getMessage(),
-					'code' => $exception->getCode(),
-				);
-			}
+			$response->data = array(
+				'type' => get_class($exception),
+				'name' => 'Exception',
+				'message' => $exception->getMessage(),
+				'code' => $exception->getCode(),
+			);
 		}
 
 		if ($exception instanceof HttpException) {

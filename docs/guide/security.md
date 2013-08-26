@@ -1,7 +1,7 @@
 Security
 ========
 
-Hashing and verifyig passwords
+Hashing and verifying passwords
 ------------------------------
 
 It is important not to store passwords in plain text but, contrary to popular belief, just using `md5` or `sha1` to
@@ -79,3 +79,9 @@ Securing Cookies
 
 - validation
 - httpOnly
+
+See also
+--------
+
+- [Views security](view.md#security)
+

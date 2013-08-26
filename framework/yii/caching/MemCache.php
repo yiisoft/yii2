@@ -93,8 +93,13 @@ class MemCache extends Cache
 				if ($this->useMemcached) {
 					$cache->addServer($server->host, $server->port, $server->weight);
 				} else {
-					$cache->addServer($server->host, $server->port, $server->persistent,
-						$server->weight, $server->timeout, $server->retryInterval, $server->status);
+					// $timeout is used for memcache versions that do not have timeoutms parameter
+					$timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
+					$cache->addServer(
+						$server->host, $server->port, $server->persistent,
+						$server->weight, $timeout, $server->retryInterval,
+						$server->status, $server->failureCallback, $server->timeout
+					);
 				}
 			}
 		} else {

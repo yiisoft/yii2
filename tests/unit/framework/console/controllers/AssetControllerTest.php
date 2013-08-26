@@ -226,7 +226,7 @@ class AssetControllerTest extends TestCase
 					'yii',
 				),
 			),
-		);;
+		);
 		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
 		$configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';

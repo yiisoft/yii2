@@ -46,7 +46,7 @@ class ViewRenderer extends BaseViewRenderer
 			'cache' => Yii::getAlias($this->cachePath),
 		), $this->options));
 
-		$this->twig->addFunction('path', new \Twig_Function_Function(function($path, $args = array()){
+		$this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = array()) {
 			return Html::url(array_merge(array($path), $args));
 		}));
 

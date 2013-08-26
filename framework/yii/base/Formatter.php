@@ -314,11 +314,7 @@ class Formatter extends Component
 	protected function normalizeDatetimeValue($value)
 	{
 		if (is_string($value)) {
-			if (ctype_digit($value) || $value[0] === '-' && ctype_digit(substr($value, 1))) {
-				return (int)$value;
-			} else {
-				return strtotime($value);
-			}
+			return is_numeric($value) || $value === '' ? (int)$value : strtotime($value);
 		} elseif ($value instanceof DateTime) {
 			return $value->getTimestamp();
 		} else {

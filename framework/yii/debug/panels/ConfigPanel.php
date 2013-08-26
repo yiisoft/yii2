@@ -64,7 +64,12 @@ EOD;
 		return "<h1>Configuration</h1>\n"
 			. $this->renderData('Application Configuration', $app) . "\n"
 			. $this->renderData('PHP Configuration', $php) . "\n"
-			. '<div>' . Html::a('phpinfo()', array('phpinfo'), array('class' => 'btn btn-info')) . "</div>\n";
+			. $this->getPhpInfo();
+	}
+
+	protected function getPhpInfo()
+	{
+		return '<div>' . Html::a('Show phpinfo »', array('phpinfo'), array('class' => 'btn btn-primary')) . "</div>\n";
 	}
 
 	protected function renderData($caption, $values)
@@ -74,7 +79,7 @@ EOD;
 		}
 		$rows = array();
 		foreach ($values as $name => $value) {
-			$rows[] = '<tr><th style="width: 200px;">' . Html::encode($name) . '</th><td><div style="overflow:auto">' . Html::encode($value) . '</div></td></tr>';
+			$rows[] = '<tr><th style="width:200px;">' . Html::encode($name) . '</th><td style="overflow:auto">' . Html::encode($value) . '</td></tr>';
 		}
 		$rows = implode("\n", $rows);
 		return <<<EOD

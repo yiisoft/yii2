@@ -22,7 +22,7 @@ class Order extends ActiveRecord
 	public function getItems()
 	{
 		return $this->hasMany('Item', array('id' => 'item_id'))
-			->via('orderItems', function($q) {
+			->via('orderItems', function ($q) {
 				// additional query configuration
 			})->orderBy('id');
 	}

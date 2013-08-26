@@ -322,23 +322,23 @@ EOD;
 
 	public function testCheckboxList()
 	{
-		$this->assertEquals('', Html::checkboxList('test'));
+		$this->assertEquals('<div></div>', Html::checkboxList('test'));
 
 		$expected = <<<EOD
-<div class="checkbox"><label><input type="checkbox" name="test[]" value="value1"> text1</label></div>
-<div class="checkbox"><label><input type="checkbox" name="test[]" value="value2" checked> text2</label></div>
+<div><div class="checkbox"><label><input type="checkbox" name="test[]" value="value1"> text1</label></div>
+<div class="checkbox"><label><input type="checkbox" name="test[]" value="value2" checked> text2</label></div></div>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::checkboxList('test', array('value2'), $this->getDataItems()));
 
 		$expected = <<<EOD
-<div class="checkbox"><label><input type="checkbox" name="test[]" value="value1&lt;&gt;"> text1&lt;&gt;</label></div>
-<div class="checkbox"><label><input type="checkbox" name="test[]" value="value  2"> text  2</label></div>
+<div><div class="checkbox"><label><input type="checkbox" name="test[]" value="value1&lt;&gt;"> text1&lt;&gt;</label></div>
+<div class="checkbox"><label><input type="checkbox" name="test[]" value="value  2"> text  2</label></div></div>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::checkboxList('test', array('value2'), $this->getDataItems2()));
 
 		$expected = <<<EOD
-<input type="hidden" name="test" value="0"><div class="checkbox"><label><input type="checkbox" name="test[]" value="value1"> text1</label></div><br>
-<div class="checkbox"><label><input type="checkbox" name="test[]" value="value2" checked> text2</label></div>
+<input type="hidden" name="test" value="0"><div><div class="checkbox"><label><input type="checkbox" name="test[]" value="value1"> text1</label></div><br>
+<div class="checkbox"><label><input type="checkbox" name="test[]" value="value2" checked> text2</label></div></div>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::checkboxList('test', array('value2'), $this->getDataItems(), array(
 			'separator' => "<br>\n",
@@ -346,8 +346,8 @@ EOD;
 		)));
 
 		$expected = <<<EOD
-0<label>text1 <input type="checkbox" name="test[]" value="value1"></label>
-1<label>text2 <input type="checkbox" name="test[]" value="value2" checked></label>
+<div>0<label>text1 <input type="checkbox" name="test[]" value="value1"></label>
+1<label>text2 <input type="checkbox" name="test[]" value="value2" checked></label></div>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::checkboxList('test', array('value2'), $this->getDataItems(), array(
 			'item' => function ($index, $label, $name, $checked, $value) {
@@ -358,23 +358,23 @@ EOD;
 
 	public function testRadioList()
 	{
-		$this->assertEquals('', Html::radioList('test'));
+		$this->assertEquals('<div></div>', Html::radioList('test'));
 
 		$expected = <<<EOD
-<div class="radio"><label><input type="radio" name="test" value="value1"> text1</label></div>
-<div class="radio"><label><input type="radio" name="test" value="value2" checked> text2</label></div>
+<div><div class="radio"><label><input type="radio" name="test" value="value1"> text1</label></div>
+<div class="radio"><label><input type="radio" name="test" value="value2" checked> text2</label></div></div>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::radioList('test', array('value2'), $this->getDataItems()));
 
 		$expected = <<<EOD
-<div class="radio"><label><input type="radio" name="test" value="value1&lt;&gt;"> text1&lt;&gt;</label></div>
-<div class="radio"><label><input type="radio" name="test" value="value  2"> text  2</label></div>
+<div><div class="radio"><label><input type="radio" name="test" value="value1&lt;&gt;"> text1&lt;&gt;</label></div>
+<div class="radio"><label><input type="radio" name="test" value="value  2"> text  2</label></div></div>
 EOD;
-		$this->assertEqualsWithoutLE($expected, Html::radioList('test',  array('value2'), $this->getDataItems2()));
+		$this->assertEqualsWithoutLE($expected, Html::radioList('test', array('value2'), $this->getDataItems2()));
 
 		$expected = <<<EOD
-<input type="hidden" name="test" value="0"><div class="radio"><label><input type="radio" name="test" value="value1"> text1</label></div><br>
-<div class="radio"><label><input type="radio" name="test" value="value2" checked> text2</label></div>
+<input type="hidden" name="test" value="0"><div><div class="radio"><label><input type="radio" name="test" value="value1"> text1</label></div><br>
+<div class="radio"><label><input type="radio" name="test" value="value2" checked> text2</label></div></div>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::radioList('test', array('value2'), $this->getDataItems(), array(
 			'separator' => "<br>\n",
@@ -382,8 +382,8 @@ EOD;
 		)));
 
 		$expected = <<<EOD
-0<label>text1 <input type="radio" name="test" value="value1"></label>
-1<label>text2 <input type="radio" name="test" value="value2" checked></label>
+<div>0<label>text1 <input type="radio" name="test" value="value1"></label>
+1<label>text2 <input type="radio" name="test" value="value2" checked></label></div>
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::radioList('test', array('value2'), $this->getDataItems(), array(
 			'item' => function ($index, $label, $name, $checked, $value) {
@@ -414,7 +414,7 @@ EOD;
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::ul($data, array(
 			'class' => 'test',
-			'item' => function($item, $index) {
+			'item' => function ($item, $index) {
 				return "<li class=\"item-$index\">$item</li>";
 			}
 		)));
@@ -444,7 +444,7 @@ EOD;
 EOD;
 		$this->assertEqualsWithoutLE($expected, Html::ol($data, array(
 			'class' => 'test',
-			'item' => function($item, $index) {
+			'item' => function ($item, $index) {
 				return "<li class=\"item-$index\">$item</li>";
 			}
 		)));

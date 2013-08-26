@@ -75,5 +75,4 @@ class ConsoleTest extends TestCase
 			sleep(1);
 		}
 	}*/
-
 }

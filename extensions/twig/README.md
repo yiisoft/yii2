@@ -1,5 +1,5 @@
 Yii 2.0 Public Preview - Twig View Renderer
-======================
+===========================================
 
 Thank you for choosing Yii - a high-performance component-based PHP framework.
 
@@ -13,13 +13,15 @@ without prior notices. **Yii 2.0 is not ready for production use yet.**
 
 This is the yii2-twig extension.
 
+
 Installation
-----------------
+------------
+
 The prefered way to install this extension is through [composer](http://getcomposer.org/download/).
 
 Either run
 ```
-php composer.phar require yiisoft/yii2-twig *
+php composer.phar require yiisoft/yii2-twig "*"
 ```
 
 or add
@@ -33,7 +35,7 @@ to the require section of your composer.json.
 
 
 Usage & Documentation
------------
+---------------------
 
 This extension has to be registered prior to usage.
 To enable this view renderer add it to the $rendereres property of your view object.
@@ -59,6 +61,4 @@ return array(
 );
 ```
 
-For further instructions refer to the related section in the guide.
-
-
+For further instructions refer to the related section in the yii guide.

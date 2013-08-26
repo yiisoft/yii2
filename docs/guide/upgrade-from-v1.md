@@ -149,11 +149,12 @@ $content = Yii::$app->view->renderFile($viewFile, $params);
 Also, there is no more `CClientScript` in Yii 2.0. The `View` class has taken over its role
 with significant improvements. For more details, please see the "assets" subsection.
 
-While Yii 2.0 continues to use PHP as its main template language, it comes with built-in
-support for two popular template engines: Smarty and Twig. The Prado template engine is
+While Yii 2.0 continues to use PHP as its main template language, it comes with two official extensions
+adding support for two popular template engines: Smarty and Twig. The Prado template engine is
 no longer supported. To use these template engines, you just need to use `tpl` as the file
 extension for your Smarty views, or `twig` for Twig views. You may also configure the
-`View::renderers` property to use other template engines.
+`View::renderers` property to use other template engines. See [Using template engines](template.md) section
+of the guide for more details.
 
 
 Models
@@ -209,6 +210,8 @@ Because of the above change, Yii 2.0 no longer has "safe" and "unsafe" validator
 If your model only has one scenario (very common), you do not have to overwrite `scenarios()`,
 and everything will still work like the 1.1 way.
 
+To learn more about Yii 2.0 models refer to [Models](model.md) section of the guide.
+
 
 Controllers
 -----------
@@ -216,6 +219,7 @@ Controllers
 The `render()` and `renderPartial()` methods now return the rendering results instead of directly
 sending them out. You have to `echo` them explicitly, e.g., `echo $this->render(...);`.
 
+To learn more about Yii 2.0 controllers refer to [Controller](controller.md) section of the guide.
 
 Widgets
 -------
@@ -331,14 +335,14 @@ introduces the class map (via `Yii::$classMap`) to overcome this difficulty.
 ------------
 
 Yii 2.0 introduces the *field* concept for building a form using `ActiveForm`. A field
-is a container consisting of a label, an input, and an error message. It is represented
-as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
+is a container consisting of a label, an input, an error message, and/or a hint text.
+It is represented as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
-	<?php echo $form->field($model, 'username')->textInput(); ?>
+	<?php echo $form->field($model, 'username'); ?>
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
-	<div class="form-actions">
+	<div class="form-group">
 		<?php echo Html::submitButton('Login'); ?>
 	</div>
 <?php yii\widgets\ActiveForm::end(); ?>
