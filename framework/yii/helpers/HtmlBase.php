@@ -1449,42 +1449,58 @@ class HtmlBase
 	}
 
 	/**
-	 * Adds a CSS class to the specified options.
-	 * If the CSS class is already in the options, it will not be added again.
-	 * @param array $options the options to be modified.
-	 * @param string $class the CSS class to be added
-	 */
+	* Check class exits on $options[class]
+	* @param array $options the html options.
+	* @param string $class the CSS class to check exist
+	* @return boolean
+	*/
+	public static function hasCssClass($options, $class)
+	{
+		if (isset($options['class']))
+		{
+		    $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
+		    return array_search($class, $classes) !== false;
+		}
+		return false;
+	}
+	
+	/**
+	* Adds a CSS class to the specified options.
+	* If the CSS class is already in the options, it will not be added again.
+	* @param array $options the options to be modified.
+	* @param string $class the CSS class to be added
+	*/
 	public static function addCssClass(&$options, $class)
 	{
-		if (isset($options['class'])) {
-			$classes = ' ' . $options['class'] . ' ';
-			if (($pos = strpos($classes, ' ' . $class . ' ')) === false) {
-				$options['class'] .= ' ' . $class;
-			}
-		} else {
-			$options['class'] = $class;
+		if (!self::cssClassExist($options, $class))
+		{
+		    if (isset($options['class']))
+		    {
+		        $options['class'] .= ' ' . $class;
+		    } else
+		    {
+		        $options['class'] = $class;
+		    }
+		}
+	}
+	
+	/**
+	* Removes a CSS class from the specified options.
+	* @param array $options the options to be modified.
+	* @param string $class the CSS class to be removed
+	*/
+	public static function removeCssClass(&$options, $class)
+	{
+		if (isset($options['class']) && self::cssClassExist($options, $class))
+		{
+		    $options['class'] = trim(preg_replace('/(^|\s)' . preg_quote($class) . '(\s|$)/', ' ', $options['class']));
+		    if (empty($options['class']))
+		    {
+		        unset($options['class']);
+		    }
 		}
 	}
 
-	/**
-	 * Removes a CSS class from the specified options.
-	 * @param array $options the options to be modified.
-	 * @param string $class the CSS class to be removed
-	 */
-	public static function removeCssClass(&$options, $class)
-	{
-		if (isset($options['class'])) {
-			$classes = array_unique(preg_split('/\s+/', $options['class'] . ' ' . $class, -1, PREG_SPLIT_NO_EMPTY));
-			if (($index = array_search($class, $classes)) !== false) {
-				unset($classes[$index]);
-			}
-			if (empty($classes)) {
-				unset($options['class']);
-			} else {
-				$options['class'] = implode(' ', $classes);
-			}
-		}
-	}
 
 	/**
 	 * Returns the real attribute name from the given attribute expression.
