@@ -286,8 +286,8 @@ class Sort extends Object
 	 * with "asc" or "desc".
 	 * @param string $attribute the attribute name by which the data should be sorted by.
 	 * @param string $label the label to be used for the generated link.
-	 * If this is null, the label defined in [[attributes]] we be used.
-	 * If there is no label defined, [[Inflector::camel2words()]] will be called to get a label.
+	 * If this is null, the label defined in [[attributes]] will be used.
+	 * If no label is defined, [[yii\helpers\Inflector::camel2words()]] will be called to get a label.
 	 * @param array $options additional HTML attributes for the hyperlink tag
 	 * @return string the generated hyperlink
 	 * @throws InvalidConfigException if the attribute is unknown
