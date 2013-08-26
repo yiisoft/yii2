@@ -285,11 +285,14 @@ class Sort extends Object
 	 * Based on the sort direction, the CSS class of the generated hyperlink will be appended
 	 * with "asc" or "desc".
 	 * @param string $attribute the attribute name by which the data should be sorted by.
+	 * @param string $label the label to be used for the generated link.
+	 * If this is null, the label defined in [[attributes]] we be used.
+	 * If there is no label defined, [[Inflector::camel2words()]] will be called to get a label.
 	 * @param array $options additional HTML attributes for the hyperlink tag
 	 * @return string the generated hyperlink
 	 * @throws InvalidConfigException if the attribute is unknown
 	 */
-	public function link($attribute, $options = array())
+	public function link($attribute, $label = null, $options = array())
 	{
 		if (($direction = $this->getAttributeOrder($attribute)) !== null) {
 			$class = $direction ? 'desc' : 'asc';
@@ -302,10 +305,13 @@ class Sort extends Object
 
 		$url = $this->createUrl($attribute);
 		$options['data-sort'] = $this->createSortVar($attribute);
-		if (isset($this->attributes[$attribute]['label'])) {
-			$label = $this->attributes[$attribute]['label'];
-		} else {
-			$label = Inflector::camel2words($attribute);
+
+		if ($label === null) {
+			if (isset($this->attributes[$attribute]['label'])) {
+				$label = $this->attributes[$attribute]['label'];
+			} else {
+				$label = Inflector::camel2words($attribute);
+			}
 		}
 		return Html::a($label, $url, $options);
 	}
