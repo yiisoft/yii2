@@ -262,7 +262,7 @@ class SecurityBase
 	protected static function generateSalt($cost = 13)
 	{
 		$cost = (int)$cost;
-		if ($cost < 4 || $cost > 30) {
+		if ($cost < 4 || $cost > 31) {
 			throw new InvalidParamException('Cost must be between 4 and 31.');
 		}
 
