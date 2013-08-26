@@ -112,7 +112,7 @@ class ActiveQuery extends \yii\base\Component
 		}
 		$rows = array();
 		foreach($primaryKeys as $pk) {
-			$key = $modelClass::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+			$key = $modelClass::tableName() . ':a:' . $modelClass::hashPk($pk);
 			// get attributes
 			$data = $db->executeCommand('HGETALL', array($key));
 			$row = array();
@@ -148,7 +148,7 @@ class ActiveQuery extends \yii\base\Component
 			$primaryKeys = $db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $start + 1));
 		}
 		$pk = reset($primaryKeys);
-		$key = $modelClass::tableName() . ':a:' . (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+		$key = $modelClass::tableName() . ':a:' . $modelClass::hashPk($pk);
 		// get attributes
 		$data = $db->executeCommand('HGETALL', array($key));
 		if ($data === array()) {
