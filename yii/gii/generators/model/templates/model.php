@@ -4,18 +4,12 @@
  *
  * @var yii\base\View $this
  * @var yii\gii\generators\model\Generator $generator
- * @var string $tableName
- * @var string $className
+ * @var string $tableName full table name
+ * @var string $className class name
  * @var yii\db\TableSchema $tableSchema
- * @var string[] $labels
- * @var string[] $rules
- *
- * - $tableName: the table name for this class (prefix is already removed if necessary)
- * - $modelClass: the model class name
- * - $tableSchema: list of table columns (name=>CDbColumnSchema)
- * - $labels: list of attribute labels (name=>label)
- * - $rules: list of validation rules
- * - $relations: list of relations (name=>relation declaration)
+ * @var string[] $labels list of attribute labels (name=>label)
+ * @var string[] $rules list of validation rules
+ * @var array $relations list of relations (name=>relation declaration)
  */
 
 echo "<?php\n";
@@ -26,18 +20,22 @@ namespace <?php echo $generator->ns; ?>;
 /**
  * This is the model class for table "<?php echo $tableName; ?>".
  *
- * Attributes:
- *
 <?php foreach ($tableSchema->columns as $column): ?>
  * @property <?php echo "{$column->phpType} \${$column->name}\n"; ?>
 <?php endforeach; ?>
+<?php if (!empty($relations)): ?>
+ *
+<?php foreach ($relations as $name => $relation): ?>
+ * @property <?php echo $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n"; ?>
+<?php endforeach; ?>
+<?php endif; ?>
  */
 class <?php echo $className; ?> extends <?php echo '\\' . ltrim($generator->baseClass, '\\') . "\n"; ?>
 {
 	/**
 	 * @inheritdoc
 	 */
-	public function tableName()
+	public static function tableName()
 	{
 		return '<?php echo $tableName; ?>';
 	}
@@ -61,4 +59,14 @@ class <?php echo $className; ?> extends <?php echo '\\' . ltrim($generator->base
 <?php endforeach; ?>
 		);
 	}
+<?php foreach ($relations as $name => $relation): ?>
+
+	/**
+	 * @return \yii\db\ActiveRelation
+	 */
+	public function get<?php echo $name; ?>()
+	{
+		<?php echo $relation[0] . "\n"; ?>
+	}
+<?php endforeach; ?>
 }

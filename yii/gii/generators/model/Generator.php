@@ -15,6 +15,7 @@ use yii\gii\CodeFile;
 use yii\helpers\Inflector;
 
 /**
+ * This generator will generate one or multiple ActiveRecord classes for the specified database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -30,16 +31,25 @@ class Generator extends \yii\gii\Generator
 	public $generateLabelsFromComments = false;
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getName()
 	{
 		return 'Model Generator';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getDescription()
 	{
 		return 'This generator generates an ActiveRecord class for the specified database table.';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
@@ -57,6 +67,9 @@ class Generator extends \yii\gii\Generator
 		));
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function attributeLabels()
 	{
 		return array(
@@ -70,6 +83,9 @@ class Generator extends \yii\gii\Generator
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function hints()
 	{
 		return array(
@@ -91,6 +107,9 @@ class Generator extends \yii\gii\Generator
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function requiredTemplates()
 	{
 		return array(
@@ -98,31 +117,32 @@ class Generator extends \yii\gii\Generator
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function stickyAttributes()
 	{
 		return array('ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments');
 	}
 
 	/**
-	 * @return Connection
+	 * @inheritdoc
 	 */
-	public function getDbConnection()
-	{
-		return Yii::$app->{$this->db};
-	}
-
 	public function generate()
 	{
 		$files = array();
+		$relations = $this->generateRelations();
+		$db = $this->getDbConnection();
 		foreach ($this->getTableNames() as $tableName) {
 			$className = $this->generateClassName($tableName);
-			$tableSchema = $this->getTableSchema($tableName);
+			$tableSchema = $db->getTableSchema($tableName);
 			$params = array(
 				'tableName' => $tableName,
 				'className' => $className,
 				'tableSchema' => $tableSchema,
 				'labels' => $this->generateLabels($tableSchema),
 				'rules' => $this->generateRules($tableSchema),
+				'relations' => isset($relations[$className]) ? $relations[$className] : array(),
 			);
 			$files[] = new CodeFile(
 				Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
@@ -133,11 +153,11 @@ class Generator extends \yii\gii\Generator
 		return $files;
 	}
 
-	public function getTableSchema($tableName)
-	{
-		return $this->getDbConnection()->getTableSchema($tableName, true);
-	}
-
+	/**
+	 * Generates the attribute labels for the specified table.
+	 * @param \yii\db\TableSchema $table the table schema
+	 * @return array the generated attribute labels (name => label)
+	 */
 	public function generateLabels($table)
 	{
 		$labels = array();
@@ -158,8 +178,9 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @param \yii\db\TableSchema $table
-	 * @return array
+	 * Generates validation rules for the specified table.
+	 * @param \yii\db\TableSchema $table the table schema
+	 * @return array the generated validation rules
 	 */
 	public function generateRules($table)
 	{
@@ -212,159 +233,165 @@ class Generator extends \yii\gii\Generator
 		return $rules;
 	}
 
-	public function getRelations($className)
-	{
-		return isset($this->relations[$className]) ? $this->relations[$className] : array();
-	}
-
-	protected function removePrefix($tableName, $addBrackets = true)
-	{
-		if ($addBrackets && Yii::$app->{$this->connectionId}->tablePrefix == '') {
-			return $tableName;
-		}
-		$prefix = $this->tablePrefix != '' ? $this->tablePrefix : Yii::$app->{$this->connectionId}->tablePrefix;
-		if ($prefix != '') {
-			if ($addBrackets && Yii::$app->{$this->connectionId}->tablePrefix != '') {
-				$prefix = Yii::$app->{$this->connectionId}->tablePrefix;
-				$lb = '{{';
-				$rb = '}}';
-			} else {
-				$lb = $rb = '';
-			}
-			if (($pos = strrpos($tableName, '.')) !== false) {
-				$schema = substr($tableName, 0, $pos);
-				$name = substr($tableName, $pos + 1);
-				if (strpos($name, $prefix) === 0) {
-					return $schema . '.' . $lb . substr($name, strlen($prefix)) . $rb;
-				}
-			} elseif (strpos($tableName, $prefix) === 0) {
-				return $lb . substr($tableName, strlen($prefix)) . $rb;
-			}
-		}
-		return $tableName;
-	}
-
+	/**
+	 * @return array the generated relation declarations
+	 */
 	protected function generateRelations()
 	{
 		if (!$this->generateRelations) {
 			return array();
 		}
 
-		$schemaName = '';
+		$db = $this->getDbConnection();
+
 		if (($pos = strpos($this->tableName, '.')) !== false) {
 			$schemaName = substr($this->tableName, 0, $pos);
+		} else {
+			$schemaName = '';
 		}
 
 		$relations = array();
-		foreach (Yii::$app->{$this->connectionId}->schema->getTables($schemaName) as $table) {
-			if ($this->tablePrefix != '' && strpos($table->name, $this->tablePrefix) !== 0) {
+		foreach ($db->getSchema()->getTableSchemas($schemaName) as $table) {
+			$tableName = $table->name;
+			$className = $this->generateClassName($tableName);
+			foreach ($table->foreignKeys as $refs) {
+				$refTable = $refs[0];
+				unset($refs[0]);
+				$fks = array_keys($refs);
+				$refClassName = $this->generateClassName($refTable);
+
+				// Add relation for this table
+				$link = $this->generateRelationLink(array_flip($refs));
+				$relationName = $this->generateRelationName($relations, $className, $table, $fks[0], false);
+				$relations[$className][$relationName] = array(
+					"return \$this->hasOne('$refClassName', $link);",
+					$refClassName,
+					false,
+				);
+
+				// Add relation for the referenced table
+				$hasMany = false;
+				foreach ($fks as $key) {
+					if (!in_array($key, $table->primaryKey, true)) {
+						$hasMany = true;
+						break;
+					}
+				}
+				$link = $this->generateRelationLink($refs);
+				$relationName = $this->generateRelationName($relations, $refClassName, $refTable, $className, $hasMany);
+				$relations[$refClassName][$relationName] = array(
+					"return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "('$className', $link);",
+					$className,
+					$hasMany,
+				);
+			}
+
+			if (($fks = $this->checkPivotTable($table)) === false) {
 				continue;
 			}
-			$tableName = $table->name;
+			$table0 = $fks[$table->primaryKey[0]][0];
+			$table1 = $fks[$table->primaryKey[1]][0];
+			$className0 = $this->generateClassName($table0);
+			$className1 = $this->generateClassName($table1);
 
-			if ($this->isRelationTable($table)) {
-				$pks = $table->primaryKey;
-				$fks = $table->foreignKeys;
+			$link = $this->generateRelationLink(array($fks[$table->primaryKey[1]][1] => $table->primaryKey[1]));
+			$viaLink = $this->generateRelationLink(array($table->primaryKey[0] => $fks[$table->primaryKey[0]][1]));
+			$relationName = $this->generateRelationName($relations, $className0, $db->getTableSchema($table0), $table->primaryKey[1], true);
+			$relations[$className0][$relationName] = array(
+				"return \$this->hasMany('$className1', $link)->viaTable('{$table->name}', $viaLink);",
+				$className0,
+				true,
+			);
 
-				$table0 = $fks[$pks[0]][0];
-				$table1 = $fks[$pks[1]][0];
-				$className0 = $this->generateClassName($table0);
-				$className1 = $this->generateClassName($table1);
-
-				$unprefixedTableName = $this->removePrefix($tableName);
-
-				$relationName = $this->generateRelationName($table0, $table1, true);
-				$relations[$className0][$relationName] = "array(self::MANY_MANY, '$className1', '$unprefixedTableName($pks[0], $pks[1])')";
-
-				$relationName = $this->generateRelationName($table1, $table0, true);
-
-				$i = 1;
-				$rawName = $relationName;
-				while (isset($relations[$className1][$relationName])) {
-					$relationName = $rawName . $i++;
-				}
-
-				$relations[$className1][$relationName] = "array(self::MANY_MANY, '$className0', '$unprefixedTableName($pks[1], $pks[0])')";
-			} else {
-				$className = $this->generateClassName($tableName);
-				foreach ($table->foreignKeys as $fkName => $fkEntry) {
-					// Put table and key name in variables for easier reading
-					$refTable = $fkEntry[0]; // Table name that current fk references to
-					$refKey = $fkEntry[1]; // Key in that table being referenced
-					$refClassName = $this->generateClassName($refTable);
-
-					// Add relation for this table
-					$relationName = $this->generateRelationName($tableName, $fkName, false);
-					$relations[$className][$relationName] = "array(self::BELONGS_TO, '$refClassName', '$fkName')";
-
-					// Add relation for the referenced table
-					$relationType = $table->primaryKey === $fkName ? 'HAS_ONE' : 'HAS_MANY';
-					$relationName = $this->generateRelationName($refTable, $this->removePrefix($tableName, false), $relationType === 'HAS_MANY');
-					$i = 1;
-					$rawName = $relationName;
-					while (isset($relations[$refClassName][$relationName])) {
-						$relationName = $rawName . ($i++);
-					}
-					$relations[$refClassName][$relationName] = "array(self::$relationType, '$className', '$fkName')";
-				}
-			}
+			$link = $this->generateRelationLink(array($fks[$table->primaryKey[0]][1] => $table->primaryKey[0]));
+			$viaLink = $this->generateRelationLink(array($table->primaryKey[1] => $fks[$table->primaryKey[1]][1]));
+			$relationName = $this->generateRelationName($relations, $className1, $db->getTableSchema($table1), $table->primaryKey[0], true);
+			$relations[$className1][$relationName] = array(
+				"return \$this->hasMany('$className0', $link)->viaTable('{$table->name}', $viaLink);",
+				$className1,
+				true,
+			);
 		}
 		return $relations;
 	}
 
 	/**
-	 * Checks if the given table is a "many to many" pivot table.
-	 * Their PK has 2 fields, and both of those fields are also FK to other separate tables.
-	 * @param CDbTableSchema table to inspect
-	 * @return boolean true if table matches description of helpter table.
+	 * Generates the link parameter to be used in generating the relation declaration.
+	 * @param array $refs reference constraint
+	 * @return string the generated link parameter.
 	 */
-	protected function isRelationTable($table)
+	protected function generateRelationLink($refs)
 	{
-		$pk = $table->primaryKey;
-		return (count($pk) === 2 // we want 2 columns
-			&& isset($table->foreignKeys[$pk[0]]) // pk column 1 is also a foreign key
-			&& isset($table->foreignKeys[$pk[1]]) // pk column 2 is also a foriegn key
-			&& $table->foreignKeys[$pk[0]][0] !== $table->foreignKeys[$pk[1]][0]); // and the foreign keys point different tables
+		$pairs = array();
+		foreach ($refs as $a => $b) {
+			$pairs[] = "'$a' => '$b'";
+		}
+		return 'array(' . implode(', ', $pairs) . ')';
 	}
 
 	/**
-	 * Generate a name for use as a relation name (inside relations() function in a model).
-	 * @param string the name of the table to hold the relation
-	 * @param string the foreign key name
-	 * @param boolean whether the relation would contain multiple objects
+	 * Checks if the given table is a pivot table.
+	 * For simplicity, this method only deals with the case where the pivot contains two PK columns,
+	 * each referencing a column in a different table.
+	 * @param \yii\db\TableSchema the table being checked
+	 * @return array|boolean the relevant foreign key constraint information if the table is a pivot table,
+	 * or false if the table is not a pivot table.
+	 */
+	protected function checkPivotTable($table)
+	{
+		$pk = $table->primaryKey;
+		if (count($pk) !== 2) {
+			return false;
+		}
+		$fks = array();
+		foreach ($table->foreignKeys as $refs) {
+			if (count($refs) === 2) {
+				if (isset($refs[$pk[0]])) {
+					$fks[$pk[0]] = array($refs[0], $refs[$pk[0]]);
+				} elseif (isset($refs[$pk[1]])) {
+					$fks[$pk[1]] = array($refs[0], $refs[$pk[1]]);
+				}
+			}
+		}
+		if (count($fks) === 2 && $fks[$pk[0]][0] !== $fks[$pk[1]][0]) {
+			return $fks;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Generate a relation name for the specified table and a base name.
+	 * @param array $relations the relations being generated currently.
+	 * @param string $className the class name that will contain the relation declarations
+	 * @param \yii\db\TableSchema $table the table schema
+	 * @param string $key a base name that the relation name may be generated from
+	 * @param boolean $multiple whether this is a has-many relation
 	 * @return string the relation name
 	 */
-	protected function generateRelationName($tableName, $fkName, $multiple)
+	protected function generateRelationName($relations, $className, $table, $key, $multiple)
 	{
-		if (strcasecmp(substr($fkName, -2), 'id') === 0 && strcasecmp($fkName, 'id')) {
-			$relationName = rtrim(substr($fkName, 0, -2), '_');
-		} else {
-			$relationName = $fkName;
+		if (strcasecmp(substr($key, -2), 'id') === 0 && strcasecmp($key, 'id')) {
+			$key = rtrim(substr($key, 0, -2), '_');
 		}
-		$relationName[0] = strtolower($relationName);
-
 		if ($multiple) {
-			$relationName = $this->pluralize($relationName);
+			$key = Inflector::pluralize($key);
 		}
-
-		$names = preg_split('/_+/', $relationName, -1, PREG_SPLIT_NO_EMPTY);
-		if (empty($names)) {
-			return $relationName;
-		} // unlikely
-		for ($name = $names[0], $i = 1; $i < count($names); ++$i) {
-			$name .= ucfirst($names[$i]);
-		}
-
-		$rawName = $name;
-		$table = Yii::$app->{$this->connectionId}->schema->getTable($tableName);
+		$name = $rawName = Inflector::id2camel($key, '_');
 		$i = 0;
 		while (isset($table->columns[$name])) {
+			$name = $rawName . ($i++);
+		}
+		while (isset($relations[$className][$name])) {
 			$name = $rawName . ($i++);
 		}
 
 		return $name;
 	}
 
+	/**
+	 * Validates the [[db]] attribute.
+	 */
 	public function validateDb()
 	{
 		if (Yii::$app->hasComponent($this->db) === false) {
@@ -374,6 +401,9 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * Validates the [[ns]] attribute.
+	 */
 	public function validateNamespace()
 	{
 		$this->ns = ltrim($this->ns, '\\');
@@ -383,6 +413,9 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * Validates the [[modelClass]] attribute.
+	 */
 	public function validateModelClass()
 	{
 		if ($this->isReservedKeyword($this->modelClass)) {
@@ -393,6 +426,9 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * Validates the [[tableName]] attribute.
+	 */
 	public function validateTableName()
 	{
 		if (($pos = strpos($this->tableName, '*')) !== false && strpos($this->tableName, '*', $pos + 1) !== false) {
@@ -416,6 +452,9 @@ class Generator extends \yii\gii\Generator
 	private $_tableNames;
 	private $_classNames;
 
+	/**
+	 * @return array the table names that match the pattern specified by [[tableName]].
+	 */
 	protected function getTableNames()
 	{
 		if ($this->_tableNames !== null) {
@@ -444,6 +483,11 @@ class Generator extends \yii\gii\Generator
 		return $this->_tableNames = $tableNames;
 	}
 
+	/**
+	 * Generates a class name from the specified table name.
+	 * @param string $tableName the table name (which may contain schema prefix)
+	 * @return string the generated class name
+	 */
 	protected function generateClassName($tableName)
 	{
 		if (isset($this->_classNames[$tableName])) {
@@ -476,5 +520,13 @@ class Generator extends \yii\gii\Generator
 			}
 		}
 		return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
+	}
+
+	/**
+	 * @return Connection the DB connection as specified by [[db]].
+	 */
+	protected function getDbConnection()
+	{
+		return Yii::$app->{$this->db};
 	}
 }
