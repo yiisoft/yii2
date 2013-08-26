@@ -9,6 +9,8 @@ namespace yii\data;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\db\Query;
 use yii\db\ActiveQuery;
 use yii\db\Connection;
@@ -213,5 +215,26 @@ class ActiveDataProvider extends DataProvider
 		$this->_models = null;
 		$this->_totalCount = null;
 		$this->_keys = null;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setSort($value)
+	{
+		parent::setSort($value);
+		if (($sort = $this->getSort()) !== false && empty($sort->attributes) &&
+			$this->query instanceof ActiveQuery) {
+
+			/** @var Model $model */
+			$model = new $this->query->modelClass;
+			foreach($model->attributes() as $attribute) {
+				$sort->attributes[$attribute] = array(
+					'asc' => array($attribute => Sort::ASC),
+					'desc' => array($attribute => Sort::DESC),
+					'label' => $model->getAttributeLabel($attribute),
+				);
+			}
+		}
 	}
 }
