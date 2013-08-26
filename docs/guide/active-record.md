@@ -1,17 +1,15 @@
 Active Record
 =============
 
-ActiveRecord implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
-The idea is that an [[ActiveRecord]] object is associated with a row in a database table and its attributes are mapped
-to the columns of the corresponding table columns. Reading an ActiveRecord attribute is equivalent to accessing
-the corresponding table column. For example, a `Customer` object is associated with a row in the
-`tbl_customer` table, and its `name` attribute is mapped to the `name` column in the `tbl_customer` table.
-To get the value of the `name` column in the table row, you can simply use the expression `$customer->name`,
-just like reading an object property.
+Active Record implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
+The premise behind Active Record is that an individual [[ActiveRecord]] object is associated with a specific row in a database table. The object's attributes are mapped to the columns of the corresponding table. Therefore, referencing an Active Record attribute is equivalent to accessing
+the corresponding table column for that record. 
 
-Instead of writing raw SQL statements to perform database queries, you can call intuitive methods provided
-by ActiveRecord to achieve the same goals. For example, calling [[ActiveRecord::save()|save()]] would
-insert or update a row in the associated table of the ActiveRecord class:
+For example, say that the `Customer` ActiveRecord class is associated with the
+`tbl_customer` table. This would mean that the class's `name` attribute is automatically mapped to the `name` column in `tbl_customer`.
+Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of the `name` column for the table row, you can simply use the expression `$customer->name`. In this example, Active Record is providing an object-oriented way to access data stored in the database, just as you would access any object property. But Active Record provides much more functionality than this.
+
+With Active Record, instead of writing raw SQL statements to perform database queries, you can call intuitive methods to achieve the same goals. For example, calling [[ActiveRecord::save()|save()]] would perform an INSERT or UPDATE query, creating or updating a row in the associated table of the ActiveRecord class:
 
 ```php
 $customer = new Customer();
@@ -24,7 +22,7 @@ Declaring ActiveRecord Classes
 ------------------------------
 
 To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
-implement the `tableName` method like the following:
+implement the `tableName` method:
 
 ```php
 use yii\db\ActiveRecord;
@@ -41,13 +39,12 @@ class Customer extends ActiveRecord
 }
 ```
 
-Connecting to Database
+Connecting to the Database
 ----------------------
 
 ActiveRecord relies on a [[Connection|DB connection]] to perform the underlying DB operations.
-By default, it assumes that there is an application component named `db` which gives the needed
-[[Connection]] instance. Usually this component is configured via application configuration
-like the following:
+By default, ActiveRecord assumes that there is an application component named `db` which provides the needed
+[[Connection]] instance. Usually this component is configured in application configuration file:
 
 ```php
 return array(
@@ -65,13 +62,10 @@ return array(
 Please read the [Database basics](database-basics.md) section to learn more on how to configure
 and use database connections.
 
-> Tip: To use a different database connection, you may override the [[ActiveRecord::getDb()]] method.
-You may create a base ActiveRecord class and override its [[ActiveRecord::getDb()]] method. You
-then extend from this base class for all those ActiveRecord classes that need to use the same
-DB connection.
+> Tip: To use a different database connection, you need to override the [[ActiveRecord::getDb()]] method. To do that, create a base class that extends ActiveRecord. In the base class, override the [[ActiveRecord::getDb()]] method. Then extend your new base class for all of your ActiveRecord classes that need to use the same alternative database connection.
 
 
-Querying Data from Database
+Querying Data from the Database
 ---------------------------
 
 There are two ActiveRecord methods for querying data from database:
@@ -79,8 +73,8 @@ There are two ActiveRecord methods for querying data from database:
  - [[ActiveRecord::find()]]
  - [[ActiveRecord::findBySql()]]
 
-They both return an [[ActiveQuery]] instance which extends from [[Query]] and thus supports
-the same set of flexible and powerful DB query methods. The followings are some examples,
+Both methods return an [[ActiveQuery]] instance, which extends from [[Query]]  thus supporting
+the same set of flexible and powerful DB query methods. The followings examples demonstrate some of the possibilities.
 
 ```php
 // to retrieve all *active* customers and order them by their ID:
@@ -122,10 +116,10 @@ Accessing Column Data
 ---------------------
 
 ActiveRecord maps each column of the corresponding database table row to an *attribute* in the ActiveRecord
-object. An attribute is like a regular object property whose name is the same as the corresponding column
-name and is case-sensitive.
+object. The attribute behaves like any regular object public property. The attribute's name will be the same as the corresponding column
+name, and is case-sensitive.
 
-To read the value of a column, you can use the following expression:
+To read the value of a column, you can use the following syntax:
 
 ```php
 // "id" is the name of a column in the table associated with $customer ActiveRecord object
@@ -141,7 +135,7 @@ $values = $customer->attributes;
 ```
 
 
-Manipulating Data in Database
+Manipulating Data in the Database
 -----------------------------
 
 ActiveRecord provides the following methods to insert, update and delete data in the database:
@@ -157,9 +151,7 @@ ActiveRecord provides the following methods to insert, update and delete data in
 
 Note that [[ActiveRecord::updateAll()|updateAll()]], [[ActiveRecord::updateAllCounters()|updateAllCounters()]]
 and [[ActiveRecord::deleteAll()|deleteAll()]] are static methods and apply to the whole database
-table, while the rest of the methods only apply to the row associated with the ActiveRecord object.
-
-The followings are some examples:
+table, while the other methods only apply to the row associated with the ActiveRecord object through which the method is being called.
 
 ```php
 // to insert a new customer record
