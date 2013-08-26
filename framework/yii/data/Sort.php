@@ -125,6 +125,7 @@ class Sort extends Object
 	 *   if it is not currently sorted (the default value is ascending order).
 	 * - The "label" element specifies what label should be used when calling [[link()]] to create
 	 *   a sort link. If not set, [[Inflector::camel2words()]] will be called to get a label.
+	 *   Note that it will not be HTML-encoded.
 	 *
 	 * Note that if the Sort object is already created, you can only use the full format
 	 * to configure every attribute. Each attribute must include these elements: asc and desc.
@@ -285,14 +286,15 @@ class Sort extends Object
 	 * Based on the sort direction, the CSS class of the generated hyperlink will be appended
 	 * with "asc" or "desc".
 	 * @param string $attribute the attribute name by which the data should be sorted by.
-	 * @param string $label the label to be used for the generated link.
-	 * If this is null, the label defined in [[attributes]] will be used.
+	 * @param array $options additional HTML attributes for the hyperlink tag.
+	 * There is one special attribute `label` which will be used as the label of the hyperlink.
+	 * If this is not set, the label defined in [[attributes]] will be used.
 	 * If no label is defined, [[yii\helpers\Inflector::camel2words()]] will be called to get a label.
-	 * @param array $options additional HTML attributes for the hyperlink tag
+	 * Note that it will not be HTML-encoded.
 	 * @return string the generated hyperlink
 	 * @throws InvalidConfigException if the attribute is unknown
 	 */
-	public function link($attribute, $label = null, $options = array())
+	public function link($attribute, $options = array())
 	{
 		if (($direction = $this->getAttributeOrder($attribute)) !== null) {
 			$class = $direction ? 'desc' : 'asc';
@@ -306,7 +308,10 @@ class Sort extends Object
 		$url = $this->createUrl($attribute);
 		$options['data-sort'] = $this->createSortVar($attribute);
 
-		if ($label === null) {
+		if (isset($options['label'])) {
+			$label = $options['label'];
+			unset($options['label']);
+		} else {
 			if (isset($this->attributes[$attribute]['label'])) {
 				$label = $this->attributes[$attribute]['label'];
 			} else {
