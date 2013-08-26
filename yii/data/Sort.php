@@ -53,7 +53,7 @@ use yii\helpers\Inflector;
  *
  * ~~~
  * // display links leading to sort actions
- * echo $sort->link('name', 'Name') . ' | ' . $sort->link('age', 'Age');
+ * echo $sort->link('name') . ' | ' . $sort->link('age');
  *
  * foreach ($models as $model) {
  *     // display $model here

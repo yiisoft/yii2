@@ -233,9 +233,10 @@ class ConsoleBase
 	/**
 	 * Returns the ANSI format code.
 	 *
-	 * @param array $format You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xtermFgColor]] and [[xtermBgColor]].
-	 * TODO: documentation
-	 * @return string
+	 * @param array $format An array containing formatting values.
+	 * You can pass any of the FG_*, BG_* and TEXT_* constants
+	 * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
+	 * @return string The ANSI format code according to the given formatting constants.
 	 */
 	public static function ansiFormatCode($format)
 	{
@@ -243,10 +244,12 @@ class ConsoleBase
 	}
 
 	/**
-	 * Sets the ANSI format for any text that is printed afterwards.
+	 * Echoes an ANSI format code that affects the formatting of any text that is printed afterwards.
 	 *
-	 * @param array $format You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xtermFgColor]] and [[xtermBgColor]].
-	 * TODO: documentation
+	 * @param array $format An array containing formatting values.
+	 * You can pass any of the FG_*, BG_* and TEXT_* constants
+	 * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
+	 * @see ansiFormatCode()
 	 * @see ansiFormatEnd()
 	 */
 	public static function beginAnsiFormat($format)
@@ -256,8 +259,8 @@ class ConsoleBase
 
 	/**
 	 * Resets any ANSI format set by previous method [[ansiFormatBegin()]]
-	 * Any output after this is will have default text style.
-	 * This is equal to
+	 * Any output after this will have default text format.
+	 * This is equal to calling
 	 *
 	 * ```php
 	 * echo Console::ansiFormatCode(array(Console::RESET))
@@ -272,8 +275,9 @@ class ConsoleBase
 	 * Will return a string formatted with the given ANSI style
 	 *
 	 * @param string $string the string to be formatted
-	 * @param array $format array containing formatting values.
-	 * You can pass any of the FG_*, BG_* and TEXT_* constants and also [[xtermFgColor]] and [[xtermBgColor]].
+	 * @param array $format An array containing formatting values.
+	 * You can pass any of the FG_*, BG_* and TEXT_* constants
+	 * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
 	 * @return string
 	 */
 	public static function ansiFormat($string, $format = array())
@@ -284,7 +288,7 @@ class ConsoleBase
 
 	/**
 	 * Returns the ansi format code for xterm foreground color.
-	 * You can pass the returnvalue of this to one of the formatting methods:
+	 * You can pass the return value of this to one of the formatting methods:
 	 * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
 	 *
 	 * @param integer $colorCode xterm color code
@@ -297,8 +301,8 @@ class ConsoleBase
 	}
 
 	/**
-	 * Returns the ansi format code for xterm foreground color.
-	 * You can pass the returnvalue of this to one of the formatting methods:
+	 * Returns the ansi format code for xterm background color.
+	 * You can pass the return value of this to one of the formatting methods:
 	 * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
 	 *
 	 * @param integer $colorCode xterm color code
@@ -321,7 +325,12 @@ class ConsoleBase
 		return preg_replace('/\033\[[\d;?]*\w/', '', $string);
 	}
 
-	// TODO refactor and review
+	/**
+	 * Converts an ANSI formatted string to HTML
+	 * @param $string
+	 * @return mixed
+	 */
+	// TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
 	public static function ansiToHtml($string)
 	{
 		$tags = 0;
@@ -427,6 +436,7 @@ class ConsoleBase
 		);
 	}
 
+	// TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
 	public function markdownToAnsi()
 	{
 		// TODO implement
@@ -435,7 +445,6 @@ class ConsoleBase
 	/**
 	 * Converts a string to ansi formatted by replacing patterns like %y (for yellow) with ansi control codes
 	 *
-	 * // TODO documentation
 	 * Uses almost the same syntax as https://github.com/pear/Console_Color2/blob/master/Console/Color2.php
 	 * The conversion table is: ('bold' meaning 'light' on some
 	 * terminals). It's almost the same conversion table irssi uses.
@@ -468,6 +477,7 @@ class ConsoleBase
 	 * @param bool   $colored Should the string be colored?
 	 * @return string
 	 */
+	// TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
 	public static function renderColoredString($string, $colored = true)
 	{
 		static $conversions = array(
@@ -531,6 +541,7 @@ class ConsoleBase
 	 * @access public
 	 * @return string
 	 */
+	// TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
 	public static function escape($string)
 	{
 		return str_replace('%', '%%', $string);
@@ -562,7 +573,7 @@ class ConsoleBase
 	}
 
 	/**
-	 * Usage: list($w, $h) = ConsoleHelper::getScreenSize();
+	 * Usage: list($width, $height) = ConsoleHelper::getScreenSize();
 	 *
 	 * @param bool $refresh whether to force checking and not re-use cached size value.
 	 * This is useful to detect changing window size while the application is running but may

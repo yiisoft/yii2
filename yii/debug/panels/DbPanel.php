@@ -8,6 +8,7 @@
 namespace yii\debug\panels;
 
 use yii\debug\Panel;
+use yii\helpers\ArrayHelper;
 use yii\log\Logger;
 use yii\helpers\Html;
 
@@ -47,6 +48,7 @@ EOD;
 	public function getDetail()
 	{
 		$timings = $this->calculateTimings();
+		ArrayHelper::multisort($timings, 3, true);
 		$rows = array();
 		foreach ($timings as $timing) {
 			$duration = sprintf('%.1f ms', $timing[3] * 1000);

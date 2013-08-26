@@ -44,7 +44,7 @@ class GroupDependency extends Dependency
 	{
 		$version = $cache->get(array(__CLASS__, $this->group));
 		if ($version === false) {
-			$version = $this->invalidate($cache, array(__CLASS__, $this->group));
+			$version = $this->invalidate($cache, $this->group);
 		}
 		return $version;
 	}

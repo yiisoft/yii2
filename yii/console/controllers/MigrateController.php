@@ -97,7 +97,7 @@ class MigrateController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), array(
-			'migrationPath', 'migrationTable', 'db', 'templateFile', 'interactive'
+			'migrationPath', 'migrationTable', 'db', 'templateFile', 'interactive', 'color'
 		));
 	}
 

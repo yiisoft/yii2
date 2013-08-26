@@ -151,7 +151,7 @@ EOD;
 		}
 		$rows = array();
 		foreach ($values as $name => $value) {
-			$rows[] = '<tr><th style="width: 200px;">' . Html::encode($name) . '</th><td><div style="overflow:auto">' . Html::encode(var_export($value, true)) . '</div></td></tr>';
+			$rows[] = '<tr><th style="width: 200px;">' . Html::encode($name) . '</th><td>' . Html::encode(var_export($value, true)) . '</td></tr>';
 		}
 		$rows = implode("\n", $rows);
 		return <<<EOD

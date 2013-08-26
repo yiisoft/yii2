@@ -69,11 +69,6 @@ class YiiBase
 	 */
 	public static $classMap = array();
 	/**
-	 * @var boolean whether to search PHP include_path when autoloading unknown classes.
-	 * You may want to turn this off if you are also using autoloaders from other libraries.
-	 */
-	public static $enableIncludePath = false;
-	/**
 	 * @var \yii\console\Application|\yii\web\Application the application instance
 	 */
 	public static $app;
@@ -338,12 +333,11 @@ class YiiBase
 	 * 3. If the class is named in PEAR style (e.g. `PHPUnit_Framework_TestCase`),
 	 *    it will attempt to include the file associated with the corresponding path alias
 	 *    (e.g. `@PHPUnit/Framework/TestCase.php`);
-	 * 4. Search PHP include_path for the actual class file if [[enableIncludePath]] is true;
-	 * 5. If none of the above succeeds, do nothing so that other autoloaders have the chance
-	 *    to load the class.
 	 *
-	 * @param string $className the fully qualified class name without leading backslash
-	 * @return boolean whether the class has been loaded successfully
+	 * This autoloader allows loading classes that follow the [PSR-0 standard](http://www.php-fig.org/psr/0/).
+	 * Therefor a path alias has to be defined for each top-level namespace.
+	 *
+	 * @param string $className the fully qualified class name without a leading backslash "\"
 	 * @throws UnknownClassException if the class does not exist in the class file
 	 */
 	public static function autoload($className)
@@ -363,32 +357,21 @@ class YiiBase
 				$path = str_replace('_', '/', $className) . '.php';
 			}
 
-			// try via path alias first
-			if (strpos($path, '/') !== false) {
-				$fullPath = static::getAlias('@' . $path, false);
-				if ($fullPath !== false && is_file($fullPath)) {
-					$classFile = $fullPath;
+			// try loading via path alias
+			if (strpos($path, '/') === false) {
+				return;
+			} else {
+				$classFile = static::getAlias('@' . $path, false);
+				if ($classFile === false || !is_file($classFile)) {
+					return;
 				}
-			}
-
-			// search include_path
-			if (!isset($classFile) && self::$enableIncludePath && ($fullPath = stream_resolve_include_path($path)) !== false) {
-				$classFile = $fullPath;
-			}
-
-			if (!isset($classFile)) {
-				// return here, not trying to include a file to
-				// let other autoloaders try loading the class
-				return false;
 			}
 		}
 
 		include($classFile);
 
-		if (class_exists($className, false) || interface_exists($className, false) ||
-			function_exists('trait_exists') && trait_exists($className, false)) {
-			return true;
-		} else {
+		if (!class_exists($className, false) && !interface_exists($className, false) &&
+			(!function_exists('trait_exists') || !trait_exists($className, false))) {
 			throw new UnknownClassException("Unable to find '$className' in file: $classFile");
 		}
 	}

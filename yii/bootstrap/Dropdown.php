@@ -21,16 +21,14 @@ use yii\helpers\Html;
 class Dropdown extends Widget
 {
 	/**
-	 * @var array list of menu items in the dropdown. Each array element represents a single
-	 * menu with the following structure:
+	 * @var array list of menu items in the dropdown. Each array element can be either an HTML string,
+	 * or an array representing a single menu with the following structure:
+	 *
 	 * - label: string, required, the label of the item link
 	 * - url: string, optional, the url of the item link. Defaults to "#".
+	 * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
 	 * - linkOptions: array, optional, the HTML attributes of the item link.
 	 * - options: array, optional, the HTML attributes of the item.
-	 * - items: array, optional, the dropdown items configuration array. if `items` is set, then `url` of the parent
-	 *   item will be ignored and automatically set to "#"
-	 *
-	 * @see https://github.com/twitter/bootstrap/issues/5050#issuecomment-11741727
 	 */
 	public $items = array();
 	/**
@@ -67,7 +65,11 @@ class Dropdown extends Widget
 	protected function renderItems($items)
 	{
 		$lines = array();
-		foreach ($items as $item) {
+		foreach ($items as $i => $item) {
+			if (isset($item['visible']) && !$item['visible']) {
+				unset($items[$i]);
+				continue;
+			}
 			if (is_string($item)) {
 				$lines[] = $item;
 				continue;
@@ -79,13 +81,7 @@ class Dropdown extends Widget
 			$options = ArrayHelper::getValue($item, 'options', array());
 			$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
 			$linkOptions['tabindex'] = '-1';
-
-			if (isset($item['items'])) {
-				Html::addCssClass($options, 'dropdown-submenu');
-				$content = Html::a($label, '#', $linkOptions) . $this->renderItems($item['items']);
-			} else {
-				$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
-			}
+			$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
 			$lines[] = Html::tag('li', $content, $options);
 		}
 

@@ -66,7 +66,9 @@
 	"require": {
 		"php": ">=5.3.7",
 		"ext-mbstring": "*",
-		"lib-pcre": "*"
+		"lib-pcre": "*",
+		"phpspec/php-diff": "1.0.*",
+		"ezyang/htmlpurifier": "4.5.*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\": "/" }
@@ -74,7 +76,6 @@
 	"suggest": {
 		"michelf/php-markdown": "Required by Markdown.",
 		"twig/twig": "Required by TwigViewRenderer.",
-		"smarty/smarty": "Required by SmartyViewRenderer.",
-		"ezyang/htmlpurifier": "Required by HtmlPurifier."
+		"smarty/smarty": "Required by SmartyViewRenderer."
 	}
 }

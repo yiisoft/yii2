@@ -25,7 +25,7 @@ $this->title = 'Yii Debugger';
 						<th style="width: 120px;">Tag</th>
 						<th style="width: 170px;">Time</th>
 						<th style="width: 120px;">IP</th>
-						<th style="width: 60px;">Method</th>
+						<th style="width: 70px;">Method</th>
 						<th>URL</th>
 					</tr>
 				</thead>

@@ -283,8 +283,7 @@ class User extends Component
 			$this->setReturnUrl($request->getUrl());
 		}
 		if ($this->loginUrl !== null) {
-			$response = Yii::$app->getResponse();
-			$response->redirect($this->loginUrl)->send();
+			Yii::$app->getResponse()->redirect($this->loginUrl)->send();
 			exit();
 		} else {
 			throw new HttpException(403, Yii::t('yii', 'Login Required'));

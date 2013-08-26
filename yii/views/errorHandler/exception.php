@@ -56,13 +56,14 @@ html,body{
 /* header */
 .header{
 	min-width: 860px; /* 960px - 50px * 2 */
-	margin: 40px auto 30px auto;
-	padding: 0 50px;
+	margin: 0 auto;
+	background: #f3f3f3;
+	padding: 40px 50px 30px 50px;
+	border-bottom: #ccc 1px solid;
 }
 .header h1{
 	font-size: 30px;
 	color: #e57373;
-	text-shadow: 0 1px 0 #cacaca;
 	margin-bottom: 30px;
 }
 .header h1 span, .header h1 span a{
@@ -80,7 +81,6 @@ html,body{
 }
 .header h2{
 	font-size: 20px;
-	text-shadow: 0 1px 0 #cacaca;
 }
 
 /* previous exceptions */
@@ -102,12 +102,10 @@ html,body{
 	margin-top: -5px;
 	margin-left: -25px;
 	color: #e51717;
-	text-shadow: 0 1px 0 #cacaca;
 }
 .header .previous h2{
 	font-size: 20px;
 	color: #e57373;
-	text-shadow: 0 1px 0 #cacaca;
 	margin-bottom: 10px;
 }
 .header .previous h2 span{
@@ -157,7 +155,6 @@ html,body{
 }
 .call-stack ul li a:hover{
 	color: #000;
-	text-shadow: 0 1px 0 #cacaca;
 }
 .call-stack ul li .item-number{
 	width: 45px;
@@ -270,7 +267,6 @@ html,body{
 .footer p{
 	font-size: 16px;
 	padding-bottom: 10px;
-	text-shadow: 0 1px 0 #cacaca;
 }
 .footer p a{
 	color: #505050;
@@ -370,9 +366,9 @@ pre .diff .change{
 	<div class="call-stack">
 		<ul>
 			<?php echo $handler->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, 1); ?>
-			<?php for ($i = 1, $trace = $exception->getTrace(), $length = count($trace); $i < $length; ++$i): ?>
+			<?php for ($i = 0, $trace = $exception->getTrace(), $length = count($trace); $i < $length; ++$i): ?>
 				<?php echo $handler->renderCallStackItem(@$trace[$i]['file'] ?: null, @$trace[$i]['line'] ?: null,
-					@$trace[$i]['class'] ?: null, @$trace[$i]['function'] ?: null, $i + 1); ?>
+					@$trace[$i]['class'] ?: null, @$trace[$i]['function'] ?: null, $i + 2); ?>
 			<?php endfor; ?>
 		</ul>
 	</div>
