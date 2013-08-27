@@ -59,6 +59,26 @@ class FileCache extends Cache
 	}
 
 	/**
+	 * Checks whether a specified key exists in the cache.
+	 * This can be faster than getting the value from the cache if the data is big.
+	 * Note that this method does not check whether the dependency associated
+	 * with the cached data, if there is any, has changed. So a call to [[get]]
+	 * may return false while exists returns true.
+	 * @param mixed $key a key identifying the cached value. This can be a simple string or
+	 * a complex data structure consisting of factors representing the key.
+	 * @return boolean true if a value exists in cache, false if the value is not in the cache or expired.
+	 */
+	public function exists($key)
+	{
+		$cacheFile = $this->getCacheFile($this->buildKey($key));
+		if (($time = @filemtime($cacheFile)) > time()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Retrieves a value from cache with a specified key.
 	 * This is the implementation of the method declared in the parent class.
 	 * @param string $key a unique key identifying the cached value
