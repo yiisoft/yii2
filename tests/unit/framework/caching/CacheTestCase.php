@@ -91,6 +91,18 @@ abstract class CacheTestCase extends TestCase
 		$this->assertEquals('array_test', $array['array_test']);
 	}
 
+	public function testExists()
+	{
+		$cache = $this->prepare();
+
+		$this->assertTrue($cache->exists('string_test'));
+		// check whether exists affects the value
+		$this->assertEquals('string_test', $cache->get('string_test'));
+
+		$this->assertTrue($cache->exists('number_test'));
+		$this->assertFalse($cache->exists('not_exists'));
+	}
+
 	public function testArrayAccess()
 	{
 		$cache = $this->getCacheInstance();
