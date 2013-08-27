@@ -21,6 +21,16 @@ namespace yii\caching;
 class ApcCache extends Cache
 {
 	/**
+	 * Checks the existence of a key in APC cache.
+	 * @param string $key the key to be checked.
+	 * @return boolean if the key exists or not
+	 */
+	public function keyExists($key)
+	{
+		return apc_exists($key);
+	}
+
+	/**
 	 * Retrieves a value from cache with a specified key.
 	 * This is the implementation of the method declared in the parent class.
 	 * @param string $key a unique key identifying the cached value
