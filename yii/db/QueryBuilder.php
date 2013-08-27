@@ -851,8 +851,8 @@ class QueryBuilder extends \yii\base\Object
 			$column = $this->db->quoteColumnName($column);
 		}
 		$phName1 = self::PARAM_PREFIX . count($params);
-		$phName2 = self::PARAM_PREFIX . count($params);
 		$params[$phName1] = $value1;
+		$phName2 = self::PARAM_PREFIX . count($params);
 		$params[$phName2] = $value2;
 
 		return "$column $operator $phName1 AND $phName2";
