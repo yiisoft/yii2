@@ -17,6 +17,20 @@ use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
 /**
+ * 
+ * @property CookieCollection $cookies The cookie collection.
+ * @property HeaderCollection $headers The header collection
+ * @property boolean $isClientError Whether this response indicates a client error.
+ * @property boolean $isEmpty Whether this response is empty.
+ * @property boolean $isForbidden Whether this response indicates the current request is forbidden.
+ * @property boolean $isInformational Whether this response is informational.
+ * @property boolean $isInvalid Whether this response has a valid [[statusCode]].
+ * @property boolean $isNotFound Whether this response indicates the currently requested resource is not found.
+ * @property boolean $isOk Whether this response is OK.
+ * @property boolean $isRedirection Whether this response is a redirection.
+ * @property boolean $isServerError Whether this response indicates a server error.
+ * @property boolean $isSuccessful Whether this response is successful.
+ * @property integer $statusCode the HTTP status code to send with the response.
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -237,7 +251,7 @@ class Response extends \yii\base\Response
 	/**
 	 * Returns the header collection.
 	 * The header collection contains the currently registered HTTP headers.
-	 * @return HeaderCollection the header collection
+	 * @return HeaderCollection the header collection.
 	 */
 	public function getHeaders()
 	{
@@ -672,7 +686,7 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * @return boolean whether this response is a redirection
+	 * @return boolean whether this response is a redirection.
 	 */
 	public function getIsRedirection()
 	{
@@ -680,7 +694,7 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * @return boolean whether this response indicates a client error
+	 * @return boolean whether this response indicates a client error.
 	 */
 	public function getIsClientError()
 	{
@@ -688,7 +702,7 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * @return boolean whether this response indicates a server error
+	 * @return boolean whether this response indicates a server error.
 	 */
 	public function getIsServerError()
 	{
@@ -696,7 +710,7 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * @return boolean whether this response is OK
+	 * @return boolean whether this response is OK.
 	 */
 	public function getIsOk()
 	{
@@ -704,7 +718,7 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * @return boolean whether this response indicates the current request is forbidden
+	 * @return boolean whether this response indicates the current request is forbidden.
 	 */
 	public function getIsForbidden()
 	{
@@ -712,7 +726,7 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * @return boolean whether this response indicates the currently requested resource is not found
+	 * @return boolean whether this response indicates the currently requested resource is not found.
 	 */
 	public function getIsNotFound()
 	{
@@ -720,7 +734,7 @@ class Response extends \yii\base\Response
 	}
 
 	/**
-	 * @return boolean whether this response is empty
+	 * @return boolean whether this response is empty.
 	 */
 	public function getIsEmpty()
 	{
@@ -730,7 +744,7 @@ class Response extends \yii\base\Response
 	/**
 	 * Prepares for sending the response.
 	 * The default implementation will convert [[data]] into [[content]] and set headers accordingly.
-	 * @throws InvalidConfigException if the formatter for the specified format is invalid or [[format]] is not supported
+	 * @throws InvalidConfigException if the formatter for the specified format is invalid or [[format]] is not supported.
 	 */
 	protected function prepare()
 	{

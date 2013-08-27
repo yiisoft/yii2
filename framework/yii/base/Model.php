@@ -39,6 +39,7 @@ use yii\validators\Validator;
  * @property ArrayObject $validators All the validators declared in the model.
  * @property array $activeValidators The validators applicable to the current [[scenario]].
  * @property array $errors Errors for all attributes or the specified attribute. Empty array is returned if no error.
+ * @property array $firstErrors The first errors. An empty array will be returned if there is no error.
  * @property array $attributes Attribute values (name => value).
  * @property string $scenario The scenario that this model is in.
  *
