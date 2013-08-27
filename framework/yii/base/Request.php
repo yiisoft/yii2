@@ -8,6 +8,8 @@
 namespace yii\base;
 
 /**
+ * @property boolean $isConsoleRequest the value indicating whether the current request is made via console
+ * @property string $scriptFile entry script file path (processed w/ realpath())
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

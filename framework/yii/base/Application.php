@@ -13,7 +13,25 @@ use yii\web\HttpException;
 
 /**
  * Application is the base class for all application classes.
- *
+ * 
+ * @property \yii\rbac\Manager $authManager The auth manager for this application.
+ * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
+ * @property \yii\db\Connection $db The database connection
+ * @property ErrorHandler $errorHandler The error handler application component.
+ * @property \yii\base\Formatter|\yii\i18n\Formatter $formatter the formatter application component. 
+ * If not config component formatter default return \yii\base\Formatter
+ * @property \yii\i18n\I18N $i18n the internationalization component
+ * @property \yii\log\Logger $log The log component
+ * @property \yii\web\Request|\yii\console\Request $request The request component
+ * @property string runtimePath The directory that stores runtime files.
+ * Defaults to the "runtime" subdirectory under [[basePath]].
+ * @property string $timezone The time zone used by this application.
+ * @property string $uniqueId The unique ID of the module.
+ * @property \yii\web\UrlManager $urlManager The URL manager for this application.
+ * @property string $vendorPath the directory that stores vendor files.
+ * Defaults to "vendor" directory under [[basePath]].
+ * @property View $view The view object that is used to render various view files.
+ * 
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
