@@ -49,6 +49,12 @@ use yii\db\Connection;
  * $posts = $provider->getModels();
  * ~~~
  *
+ * @property integer $count The number of data models in the current page.
+ * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]]
+ * is uniquely identified by the corresponding key value in this array.
+ * @property array $models The list of data models in the current page.
+ * @property integer $totalCount Total number of possible data models.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

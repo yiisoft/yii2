@@ -17,11 +17,13 @@ use yii\helpers\StringHelper;
 
 /**
  *
- *
- *
  * @method mixed set($key, $value) Set the string value of a key
  * @method mixed get($key) Set the string value of a key
  * TODO document methods
+ *
+ * @property string $driverName Name of the DB driver.
+ * @property boolean $isActive Whether the DB connection is established.
+ * @property Transaction $transaction The currently active transaction. Null if no active transaction.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

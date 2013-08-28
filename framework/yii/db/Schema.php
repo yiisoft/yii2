@@ -19,9 +19,8 @@ use yii\caching\GroupDependency;
  *
  * Schema represents the database schema information that is DBMS specific.
  *
- * @property QueryBuilder $queryBuilder the query builder for the DBMS represented by this schema
- * @property array $tableNames the names of all tables in this database.
- * @property array $tableSchemas the schema information for all tables in this database.
+ * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the sequence object.
+ * @property QueryBuilder $queryBuilder The query builder for this connection.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

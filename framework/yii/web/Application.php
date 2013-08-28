@@ -13,6 +13,13 @@ use yii\base\InvalidRouteException;
 /**
  * Application is the base class for all application classes.
  *
+ * @property AssetManager $assetManager The asset manager component.
+ * @property string $homeUrl The homepage URL.
+ * @property Request $request The request component.
+ * @property Response $response The response component.
+ * @property Session $session The session component.
+ * @property User $user The user component.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

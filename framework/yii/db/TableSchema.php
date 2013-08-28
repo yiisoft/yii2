@@ -13,7 +13,7 @@ use yii\base\InvalidParamException;
 /**
  * TableSchema represents the metadata of a database table.
  *
- * @property array $columnNames list of column names
+ * @property array $columnNames List of column names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

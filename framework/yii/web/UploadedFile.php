@@ -10,6 +10,19 @@ namespace yii\web;
 use yii\helpers\Html;
 
 /**
+ *
+ * @property integer $error The error code.
+ * @property boolean $hasError Whether there is an error with the uploaded file.
+ * Check [[error]] for detailed error code information.
+ * @property string $name The original name of the file being uploaded.
+ * @property integer $size The actual size of the uploaded file in bytes.
+ * @property string $tempName The path of the uploaded file on the server.
+ * Note, this is a temporary file which will be automatically deleted by PHP
+ * after the current request is processed.
+ * @property string $type The MIME-type of the uploaded file (such as "image/gif").
+ * Since this MIME type is not checked on the server side, do not take this value for granted.
+ * Instead, use [[FileHelper::getMimeType()]] to determine the exact MIME type.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

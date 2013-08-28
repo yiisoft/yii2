@@ -15,7 +15,8 @@ use yii\base\Object;
 /**
  * CookieCollection maintains the cookies available in the current request.
  *
- * @property integer $count the number of cookies in the collection
+ * @property integer $count The number of cookies in the collection.
+ * @property ArrayIterator $iterator An iterator for traversing the cookies in the collection.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

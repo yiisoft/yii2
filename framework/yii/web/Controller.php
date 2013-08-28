@@ -14,7 +14,6 @@ use yii\helpers\Html;
 /**
  * Controller is the base class of Web controllers.
  *
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

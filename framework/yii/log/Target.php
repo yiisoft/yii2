@@ -22,7 +22,8 @@ use yii\base\InvalidConfigException;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
- * @property integer $levels the message levels that this target is interested in.
+ * @property integer $levels The message levels that this target is interested in. This is a bitmap of
+ * level values. Defaults to 0, meaning  all available levels.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

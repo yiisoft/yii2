@@ -44,7 +44,8 @@ use yii\caching\Cache;
  *
  * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
  *
- * @property string $sql the SQL statement to be executed
+ * @property string $rawSql The raw SQL.
+ * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

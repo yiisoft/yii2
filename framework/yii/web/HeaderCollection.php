@@ -14,6 +14,9 @@ use ArrayIterator;
 /**
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.
  *
+ * @property integer $count The number of headers in the collection.
+ * @property ArrayIterator $iterator An iterator for traversing the headers in the collection.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

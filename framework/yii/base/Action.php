@@ -28,6 +28,8 @@ use Yii;
  * And the parameters provided for the action are: `array('id' => 1)`.
  * Then the `run()` method will be invoked as `run(1)` automatically.
  *
+ * @property string $uniqueId The unique ID of this action among the whole application.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

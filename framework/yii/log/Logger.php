@@ -61,6 +61,12 @@ use yii\base\InvalidConfigException;
  * When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]]
  * to send logged messages to different log targets, such as file, email, Web.
  *
+ * @property array $dbProfiling The first element indicates the number of SQL statements executed,
+ * and the second element the total time spent in SQL execution.
+ * @property float $elapsedTime The total elapsed time in seconds for current request.
+ * @property array $profiling The profiling results. Each array element has the following structure:
+ *  `array($token, $category, $time)`.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

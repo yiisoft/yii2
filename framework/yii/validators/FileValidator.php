@@ -13,6 +13,8 @@ use yii\web\UploadedFile;
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.
  *
+ * @property integer $sizeLimit The size limit for uploaded files.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
