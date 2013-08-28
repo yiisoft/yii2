@@ -39,6 +39,8 @@ use yii\db\redis\Connection;
  * )
  * ~~~
  *
+ * @property \yii\db\redis\Connection $connection This property is read-only.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */

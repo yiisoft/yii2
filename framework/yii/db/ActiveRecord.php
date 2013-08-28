@@ -22,13 +22,16 @@ use yii\helpers\Inflector;
  *
  * @include @yii/db/ActiveRecord.md
  *
- * @property Connection $db the database connection used by this AR class.
- * @property TableSchema $tableSchema the schema information of the DB table associated with this AR class.
- * @property array $oldAttributes the old attribute values (name-value pairs).
- * @property array $dirtyAttributes the changed attribute values (name-value pairs).
- * @property boolean $isNewRecord whether the record is new and should be inserted when calling [[save()]].
- * @property mixed $primaryKey the primary key value.
- * @property mixed $oldPrimaryKey the old primary key value.
+ * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
+ * read-only.
+ * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
+ * @property array $oldAttributes The old attribute values (name-value pairs).
+ * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
+ * returned if the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be
+ * returned if the key value is null). This property is read-only.
+ * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
+ * the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
+ * the key value is null). This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

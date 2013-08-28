@@ -53,13 +53,13 @@ use yii\base\Object;
  * ));
  * ~~~
  *
- * @property integer $limit The limit of the data. This may be used to set the
- * LIMIT value for a SQL statement for fetching the current page of data.
- * Note that if the page size is infinite, a value -1 will be returned.
- * @property integer $offset The offset of the data. This may be used to set the
- * OFFSET value for a SQL statement for fetching the current page of data.
+ * @property integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement
+ * for fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned.
+ * This property is read-only.
+ * @property integer $offset The offset of the data. This may be used to set the OFFSET value for a SQL
+ * statement for fetching the current page of data. This property is read-only.
  * @property integer $page The zero-based current page number.
- * @property integer $pageCount Number of pages.
+ * @property integer $pageCount Number of pages. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

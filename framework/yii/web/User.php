@@ -21,9 +21,10 @@ use yii\base\InvalidConfigException;
  * the actual user authentication logic and is often backed by a user database table.
  *
  * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
- * @property Identity $identity The identity object associated with the currently logged user.
- * Null is returned if the user is not logged in (not authenticated).
- * @property boolean $isGuest Whether the current user is a guest.
+ * This property is read-only.
+ * @property Identity $identity The identity object associated with the currently logged user. Null is
+ * returned if the user is not logged in (not authenticated).
+ * @property boolean $isGuest Whether the current user is a guest. This property is read-only.
  * @property string $returnUrl The URL that the user should be redirected to after login.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

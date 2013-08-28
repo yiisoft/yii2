@@ -89,13 +89,16 @@ use yii\caching\Cache;
  * )
  * ~~~
  *
+ * @property string $driverName Name of the DB driver. This property is read-only.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction.
- * @property Schema $schema The database schema information for the current connection.
- * @property QueryBuilder $queryBuilder The query builder.
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the sequence object.
- * @property string $driverName Name of the DB driver currently being used.
- * @property array $querySummary The statistical results of SQL queries.
+ * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
+ * sequence object. This property is read-only.
+ * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
+ * read-only.
+ * @property Schema $schema The schema information for the database opened by this connection. This property
+ * is read-only.
+ * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
+ * property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

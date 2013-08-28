@@ -33,9 +33,9 @@ use yii\base\InvalidParamException;
  * at appropriate places in the application code to check if the current user
  * has the needed permission for an operation.
  *
- * @property array $roles Roles (name => Item).
- * @property array $tasks Tasks (name => Item).
- * @property array $operations Operations (name => Item).
+ * @property Item[] $operations Operations (name => AuthItem). This property is read-only.
+ * @property Item[] $roles Roles (name => AuthItem). This property is read-only.
+ * @property Item[] $tasks Tasks (name => AuthItem). This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>

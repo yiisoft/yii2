@@ -18,7 +18,7 @@ use yii\validators\Validator;
  *
  * CaptchaValidator should be used together with [[CaptchaAction]].
  *
- * @property \yii\captcha\CaptchaAction $captchaAction The action object.
+ * @property \yii\captcha\CaptchaAction $captchaAction The action object. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

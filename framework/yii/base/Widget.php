@@ -14,7 +14,8 @@ use Yii;
  *
  * @property string $id ID of the widget.
  * @property View $view The view object that can be used to render views or view files.
- * @property string $viewPath The directory containing the view files for this widget.
+ * @property string $viewPath The directory containing the view files for this widget. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
