@@ -82,7 +82,7 @@ class PhpDocController extends Controller
 		}
 
 		if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object') {
-			$this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\Object\n", Console::FG_BLUE, Console::BOLD);
+			$this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\Object.\n", Console::FG_BLUE, Console::BOLD);
 			return false;
 		}
 
@@ -92,7 +92,11 @@ class PhpDocController extends Controller
 		$seenSince = false;
 		$seenAuthor = false;
 
+		// TODO move these checks to different action
 		$lines = explode("\n", $newDoc);
+		if (trim($lines[1]) == '*' || substr(trim($lines[1]), 0, 3) == '* @') {
+			$this->stderr("[WARN] Class $className has no short description.\n", Console::FG_YELLOW, Console::BOLD);
+		}
 		foreach($lines as $line) {
 			if (substr(trim($line), 0, 9) == '* @since ') {
 				$seenSince = true;
@@ -218,11 +222,11 @@ class PhpDocController extends Controller
 			$className = $namespace . '\\' . $class['name'];
 
 			$gets = $this->match(
-				'#\* @return (?<type>\w+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
+				'#\* @return (?<type>[\w\\|\\\\]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
 				'[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
 				$class['content']);
 			$sets = $this->match(
-				'#\* @param (?<type>\w+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
+				'#\* @param (?<type>[\w\\|\\\\]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
 				'[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
 				$class['content']);
 			$acrs = array_merge($gets, $sets);
@@ -247,14 +251,25 @@ class PhpDocController extends Controller
 			if (count($props) > 0) {
 				$phpdoc .= " *\n";
 				foreach ($props as $propName => &$prop) {
-					$phpdoc .= ' * @';
-//	                if (isset($prop['get']) && isset($prop['set'])) // Few IDEs support complex syntax
-						$phpdoc .= 'property';
-//					elseif (isset($prop['get']))
-//						$phpdoc .= 'property-read';
-//					elseif (isset($prop['set']))
-//						$phpdoc .= 'property-write';
-					$phpdoc .= ' ' . $this->getPropParam($prop, 'type') . " $$propName " . $this->getPropParam($prop, 'comment') . "\n";
+					$docline = ' * @';
+					$docline .= 'property'; // Do not use property-read and property-write as few IDEs support complex syntax.
+					if (isset($prop['get']) && isset($prop['set'])) {
+						$note = '';
+					} elseif (isset($prop['get'])) {
+						$note = ' This property is read-only.';
+//						$docline .= '-read';
+					} elseif (isset($prop['set'])) {
+						$note = ' This property is write-only.';
+//						$docline .= '-write';
+					}
+					$docline .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
+					$comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
+					foreach ($comment as &$cline) {
+						$cline = ltrim($cline, '* ');
+					}
+					$docline = wordwrap($docline . implode(' ', $comment), 110, "\n * ") . "\n";
+
+					$phpdoc .= $docline;
 				}
 				$phpdoc .= " *\n";
 			}
