@@ -20,16 +20,16 @@ use Yii;
  * [[components|Components]] may be registered with the module so that they are globally
  * accessible within the module.
  *
- * @property string $uniqueId An ID that uniquely identifies this module among all modules within
- * the current application.
- * @property string $basePath The root directory of the module. Defaults to the directory containing the module class.
- * @property string $controllerPath The directory containing the controller classes. Defaults to "[[basePath]]/controllers".
- * @property string $viewPath The directory containing the view files within this module. Defaults to "[[basePath]]/views".
- * @property string $layoutPath The directory containing the layout view files within this module. Defaults to "[[viewPath]]/layouts".
- * @property array $modules The configuration of the currently installed modules (module ID => configuration).
- * @property array $components The components (indexed by their IDs) registered within this module.
- * @property array $import List of aliases to be imported. This property is write-only.
- * @property array $aliases List of aliases to be defined. This property is write-only.
+ * @property array $aliases List of path aliases to be defined. The array keys are alias names (must start
+ * with '@') and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
+ * This property is write-only.
+ * @property string $basePath The root directory of the module.
+ * @property array $components The components (indexed by their IDs).
+ * @property string $controllerPath The directory that contains the controller classes.
+ * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
+ * @property array $modules The modules (indexed by their IDs).
+ * @property string $uniqueId The unique ID of the module. This property is read-only.
+ * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/view".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -304,6 +304,9 @@ abstract class Module extends Component
 	 * Defines path aliases.
 	 * This method calls [[Yii::setAlias()]] to register the path aliases.
 	 * This method is provided so that you can define path aliases when configuring a module.
+	 * @property array list of path aliases to be defined. The array keys are alias names
+	 * (must start with '@') and the array values are the corresponding paths or aliases.
+	 * See [[setAliases()]] for an example.
 	 * @param array $aliases list of path aliases to be defined. The array keys are alias names
 	 * (must start with '@') and the array values are the corresponding paths or aliases.
 	 * For example,

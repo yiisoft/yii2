@@ -13,19 +13,32 @@ use yii\helpers\FileHelper;
 
 /**
  * PhpDocController is there to help maintaining PHPDoc annotation in class files
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
 class PhpDocController extends Controller
 {
+	public $defaultAction = 'property';
+
+	/**
+	 * @var bool whether to update class docs directly. Setting this to false will just output docs
+	 * for copy and paste.
+	 */
+	public $updateFiles = true;
+
 	/**
 	 * Generates @property annotations in class files from getters and setters
 	 *
-	 * @param null $root the directory to parse files from
-	 * @param bool $updateFiles whether to update class docs directly
+	 * Property description will be taken from getter or setter or from an @property annotation
+	 * in the getters docblock if there is one defined.
+	 *
+	 * See https://github.com/yiisoft/yii2/wiki/Core-framework-code-style#documentation for details.
+	 *
+	 * @param null $root the directory to parse files from. Defaults to YII_PATH.
 	 */
-	public function actionProperty($root=null, $updateFiles=true)
+	public function actionProperty($root=null)
 	{
 		if ($root === null) {
 			$root = YII_PATH;
@@ -58,7 +71,7 @@ class PhpDocController extends Controller
 			$result = $this->generateClassPropertyDocs($file);
 			if ($result !== false) {
 				list($className, $phpdoc) = $result;
-				if ($updateFiles) {
+				if ($this->updateFiles) {
 					if ($this->updateClassPropertyDocs($file, $className, $phpdoc)) {
 						$nFilesUpdated++;
 					}
@@ -70,8 +83,13 @@ class PhpDocController extends Controller
 			$nFilesTotal++;
 		}
 
-		$this->stdout("\n\nParsed $nFilesTotal files.\n");
+		$this->stdout("\nParsed $nFilesTotal files.\n");
 		$this->stdout("Updated $nFilesUpdated files.\n");
+	}
+
+	public function globalOptions()
+	{
+		return array_merge(parent::globalOptions(), array('updateFiles'));
 	}
 
 	protected function updateClassPropertyDocs($file, $className, $propertyDoc)
@@ -229,7 +247,12 @@ class PhpDocController extends Controller
 				'#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
 				'[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
 				$class['content']);
-			$acrs = array_merge($gets, $sets);
+			// check for @property annotations in getter and setter
+			$properties = $this->match(
+				'#\* @(?<kind>property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
+				'[\s\n]{2,}public function [g|s]et(?<name>\w+)\(((?:,? ?\$\w+ ?= ?[^,]+)*|\$\w+(?:, ?\$\w+ ?= ?[^,]+)*)\)#',
+				$class['content']);
+			$acrs = array_merge($properties, $gets, $sets);
 			//print_r($acrs); continue;
 
 			$props = array();
@@ -243,10 +266,6 @@ class PhpDocController extends Controller
 			}
 
 			ksort($props);
-
-//          foreach ($props as $propName => &$prop) // I don't like write-only props...
-//				if (!isset($prop['get']))
-//				    unset($props[$propName]);
 
 			if (count($props) > 0) {
 				$phpdoc .= " *\n";
@@ -265,6 +284,8 @@ class PhpDocController extends Controller
 					} elseif (isset($prop['set'])) {
 						$note = ' This property is write-only.';
 //						$docline .= '-write';
+					} else {
+						continue;
 					}
 					$docline .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
 					$comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
@@ -302,6 +323,6 @@ class PhpDocController extends Controller
 
 	protected function getPropParam($prop, $param)
 	{
-		return isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param];
+		return isset($prop['property']) ? $prop['property'][$param] : (isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param]);
 	}
 }
