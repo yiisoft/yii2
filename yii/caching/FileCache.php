@@ -71,11 +71,7 @@ class FileCache extends Cache
 	public function exists($key)
 	{
 		$cacheFile = $this->getCacheFile($this->buildKey($key));
-		if (($time = @filemtime($cacheFile)) > time()) {
-			return true;
-		} else {
-			return false;
-		}
+		return @filemtime($cacheFile) > time();
 	}
 
 	/**
@@ -87,7 +83,7 @@ class FileCache extends Cache
 	protected function getValue($key)
 	{
 		$cacheFile = $this->getCacheFile($key);
-		if (($time = @filemtime($cacheFile)) > time()) {
+		if (@filemtime($cacheFile) > time()) {
 			return @file_get_contents($cacheFile);
 		} else {
 			return false;
