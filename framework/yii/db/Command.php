@@ -44,7 +44,8 @@ use yii\caching\Cache;
  *
  * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
  *
- * @property string $rawSql The raw SQL. This property is read-only.
+ * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
+ * [[sql]]. This property is read-only.
  * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -103,7 +104,7 @@ class Command extends \yii\base\Component
 	 * Returns the raw SQL by inserting parameter values into the corresponding placeholders in [[sql]].
 	 * Note that the return value of this method should mainly be used for logging purpose.
 	 * It is likely that this method returns an invalid SQL due to improper replacement of parameter placeholders.
-	 * @return string the raw SQL
+	 * @return string the raw SQL with parameter values inserted into the corresponding placeholders in [[sql]].
 	 */
 	public function getRawSql()
 	{

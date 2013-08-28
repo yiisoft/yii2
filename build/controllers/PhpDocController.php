@@ -253,8 +253,12 @@ class PhpDocController extends Controller
 				foreach ($props as $propName => &$prop) {
 					$docline = ' * @';
 					$docline .= 'property'; // Do not use property-read and property-write as few IDEs support complex syntax.
+					$note = '';
 					if (isset($prop['get']) && isset($prop['set'])) {
-						$note = '';
+						if ($prop['get']['type'] != $prop['set']['type']) {
+							$note = ' Note that the type of this property differs in getter and setter.'
+								  . ' See [[get'.ucfirst($propName).'()]] and [[set'.ucfirst($propName).'()]] for details.';
+						}
 					} elseif (isset($prop['get'])) {
 						$note = ' This property is read-only.';
 //						$docline .= '-read';

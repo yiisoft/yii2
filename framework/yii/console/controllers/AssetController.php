@@ -28,7 +28,8 @@ use yii\console\Controller;
  * Note: by default this command relies on an external tools to perform actual files compression,
  * check [[jsCompressor]] and [[cssCompressor]] for more details.
  *
- * @property \yii\web\AssetManager $assetManager Asset manager instance.
+ * @property \yii\web\AssetManager $assetManager Asset manager instance. Note that the type of this property
+ * differs in getter and setter. See [[getAssetManager()]] and [[setAssetManager()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
