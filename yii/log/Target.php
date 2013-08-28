@@ -23,7 +23,8 @@ use yii\base\InvalidConfigException;
  * may specify [[except]] to exclude messages of certain categories.
  *
  * @property integer $levels The message levels that this target is interested in. This is a bitmap of level
- * values. Defaults to 0, meaning  all available levels.
+ * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
+ * and setter. See [[getLevels()]] and [[setLevels()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
