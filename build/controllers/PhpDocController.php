@@ -54,21 +54,21 @@ class PhpDocController extends Controller
 		$files = FileHelper::findFiles($root, $options);
 		$nFilesTotal = 0;
 		$nFilesUpdated = 0;
-	    foreach ($files as $file) {
-		    $result = $this->generateClassPropertyDocs($file);
-		    if ($result !== false) {
-			    list($className, $phpdoc) = $result;
-		        if ($updateFiles) {
-			        if ($this->updateClassPropertyDocs($file, $className, $phpdoc)) {
-				        $nFilesUpdated++;
-			        }
-		        } elseif (!empty($phpdoc)) {
-		            $this->stdout("\n[ " . $file . " ]\n\n", Console::BOLD);
-		            $this->stdout($phpdoc);
-		        }
-	        }
-	        $nFilesTotal++;
-	    }
+		foreach ($files as $file) {
+			$result = $this->generateClassPropertyDocs($file);
+			if ($result !== false) {
+				list($className, $phpdoc) = $result;
+				if ($updateFiles) {
+					if ($this->updateClassPropertyDocs($file, $className, $phpdoc)) {
+						$nFilesUpdated++;
+					}
+				} elseif (!empty($phpdoc)) {
+					$this->stdout("\n[ " . $file . " ]\n\n", Console::BOLD);
+					$this->stdout($phpdoc);
+				}
+			}
+			$nFilesTotal++;
+		}
 
 		$this->stdout("\n\nParsed $nFilesTotal files.\n");
 		$this->stdout("Updated $nFilesUpdated files.\n");
@@ -189,12 +189,12 @@ class PhpDocController extends Controller
 
 	protected function generateClassPropertyDocs($fileName)
 	{
-	    $phpdoc = "";
-	    $file = str_replace("\r", "", str_replace("\t", " ", file_get_contents($fileName, true)));
+		$phpdoc = "";
+		$file = str_replace("\r", "", str_replace("\t", " ", file_get_contents($fileName, true)));
 		$ns = $this->match('#\nnamespace (?<name>[\w\\\\]+);\n#', $file);
 		$namespace = reset($ns);
 		$namespace = $namespace['name'];
-	    $classes = $this->match('#\n(?:abstract )?class (?<name>\w+)( |\n)(extends )?.+\{(?<content>.*)\n\}(\n|$)#', $file);
+		$classes = $this->match('#\n(?:abstract )?class (?<name>\w+)( |\n)(extends )?.+\{(?<content>.*)\n\}(\n|$)#', $file);
 
 		if (count($classes) > 1) {
 			$this->stderr("[ERR] There should be only one class in a file: $fileName\n", Console::FG_RED);
@@ -213,74 +213,76 @@ class PhpDocController extends Controller
 		}
 
 		$className = null;
-	    foreach ($classes as &$class) {
+		foreach ($classes as &$class) {
 
-		    $className = $namespace . '\\' . $class['name'];
+			$className = $namespace . '\\' . $class['name'];
 
-	        $gets = $this->match(
-	            '#\* @return (?<type>\w+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-	            '[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
-	            $class['content']);
-	        $sets = $this->match(
-	            '#\* @param (?<type>\w+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-	            '[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
-	            $class['content']);
-	        $acrs = array_merge($gets, $sets);
-	        //print_r($acrs); continue;
+			$gets = $this->match(
+				'#\* @return (?<type>\w+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
+				'[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
+				$class['content']);
+			$sets = $this->match(
+				'#\* @param (?<type>\w+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
+				'[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
+				$class['content']);
+			$acrs = array_merge($gets, $sets);
+			//print_r($acrs); continue;
 
-	        $props = array();
-	        foreach ($acrs as &$acr) {
-	            $acr['name'] = lcfirst($acr['name']);
-	            $acr['comment'] = trim(preg_replace('#(^|\n)\s+\*\s?#', '$1 * ', $acr['comment']));
-	            $props[$acr['name']][$acr['kind']] = array(
-	                'type' => $acr['type'],
-	                'comment' => $this->fixSentence($acr['comment']),
-	            );
-	        }
+			$props = array();
+			foreach ($acrs as &$acr) {
+				$acr['name'] = lcfirst($acr['name']);
+				$acr['comment'] = trim(preg_replace('#(^|\n)\s+\*\s?#', '$1 * ', $acr['comment']));
+				$props[$acr['name']][$acr['kind']] = array(
+					'type' => $acr['type'],
+					'comment' => $this->fixSentence($acr['comment']),
+				);
+			}
+
+			ksort($props);
 
 //          foreach ($props as $propName => &$prop) // I don't like write-only props...
 //				if (!isset($prop['get']))
 //				    unset($props[$propName]);
 
-	        if (count($props) > 0) {
-	            $phpdoc .= " *\n";
-	            foreach ($props as $propName => &$prop) {
-	                $phpdoc .= ' * @';
+			if (count($props) > 0) {
+				$phpdoc .= " *\n";
+				foreach ($props as $propName => &$prop) {
+					$phpdoc .= ' * @';
 //	                if (isset($prop['get']) && isset($prop['set'])) // Few IDEs support complex syntax
 						$phpdoc .= 'property';
 //					elseif (isset($prop['get']))
 //						$phpdoc .= 'property-read';
 //					elseif (isset($prop['set']))
 //						$phpdoc .= 'property-write';
-	                $phpdoc .= ' ' . $this->getPropParam($prop, 'type') . " $$propName " . $this->getPropParam($prop, 'comment') . "\n";
-	            }
-	            $phpdoc .= " *\n";
-	        }
-	    }
-	    return array($className, $phpdoc);
+					$phpdoc .= ' ' . $this->getPropParam($prop, 'type') . " $$propName " . $this->getPropParam($prop, 'comment') . "\n";
+				}
+				$phpdoc .= " *\n";
+			}
+		}
+		return array($className, $phpdoc);
 	}
 
 	protected function match($pattern, $subject)
 	{
-	    $sets = array();
-	    preg_match_all($pattern . 'suU', $subject, $sets, PREG_SET_ORDER);
-	    foreach ($sets as &$set)
-	        foreach ($set as $i => $match)
-	            if (is_numeric($i) /*&& $i != 0*/)
-	                unset($set[$i]);
-	    return $sets;
+		$sets = array();
+		preg_match_all($pattern . 'suU', $subject, $sets, PREG_SET_ORDER);
+		foreach ($sets as &$set)
+			foreach ($set as $i => $match)
+				if (is_numeric($i) /*&& $i != 0*/)
+					unset($set[$i]);
+		return $sets;
 	}
 
 	protected function fixSentence($str)
 	{
 		// TODO fix word wrap
-	    if ($str == '')
-	        return '';
-	    return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
+		if ($str == '')
+			return '';
+		return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
 	}
 
 	protected function getPropParam($prop, $param)
 	{
-	    return isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param];
+		return isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param];
 	}
 }
