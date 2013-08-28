@@ -17,6 +17,10 @@ use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
 /**
+ * The web Response class represents an HTTP response
+ *
+ * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
+ * It also controls the HTTP [[statusCode|status code]].
  *
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.

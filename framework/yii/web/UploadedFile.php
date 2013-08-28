@@ -10,6 +10,12 @@ namespace yii\web;
 use yii\helpers\Html;
 
 /**
+ * UploadedFile represents the information for an uploaded file.
+ *
+ * You can call [[getInstance()]] to retrieve the instance of an uploaded file,
+ * and then use [[saveAs()]] to save it on the server.
+ * You may also query other information about the file, including [[name]],
+ * [[tempName]], [[type]], [[size]] and [[error]].
  *
  * @property integer $error The error code. This property is read-only.
  * @property boolean $hasError Whether there is an error with the uploaded file. Check [[error]] for detailed

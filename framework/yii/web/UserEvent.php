@@ -10,6 +10,7 @@ namespace yii\web;
 use yii\base\Event;
 
 /**
+ * This event class is used for Events triggered by the [[User]] class.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

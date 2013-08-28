@@ -12,7 +12,7 @@ use yii\base\InlineAction;
 use yii\helpers\Html;
 
 /**
- * Controller is the base class of Web controllers.
+ * Controller is the base class of web controllers.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

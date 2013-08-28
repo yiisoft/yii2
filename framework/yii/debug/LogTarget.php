@@ -11,6 +11,8 @@ use Yii;
 use yii\log\Target;
 
 /**
+ * The debug LogTarget is used to store logs for later use in the debugger tool
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

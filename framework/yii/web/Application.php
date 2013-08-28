@@ -11,7 +11,7 @@ use Yii;
 use yii\base\InvalidRouteException;
 
 /**
- * Application is the base class for all application classes.
+ * Application is the base class for all web application classes.
  *
  * @property AssetManager $assetManager The asset manager component. This property is read-only.
  * @property string $homeUrl The homepage URL.
