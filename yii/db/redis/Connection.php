@@ -21,9 +21,10 @@ use yii\helpers\StringHelper;
  * @method mixed get($key) Set the string value of a key
  * TODO document methods
  *
- * @property string $driverName Name of the DB driver.
- * @property boolean $isActive Whether the DB connection is established.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction.
+ * @property string $driverName Name of the DB driver. This property is read-only.
+ * @property boolean $isActive Whether the DB connection is established. This property is read-only.
+ * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
+ * property is read-only.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

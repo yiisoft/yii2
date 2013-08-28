@@ -23,7 +23,7 @@ use yii\base\InvalidParamException;
  * (for example, the authorization data for a personal blog system).
  * Use [[DbManager]] for more complex authorization data.
  *
- * @property array $authItems The authorization items of the specific type.
+ * @property Item[] $items The authorization items of the specific type. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>

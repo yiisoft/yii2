@@ -24,6 +24,8 @@ use yii\base\InvalidParamException;
  * the three tables used to store the authorization data by setting [[itemTable]],
  * [[itemChildTable]] and [[assignmentTable]].
  *
+ * @property Item[] $items The authorization items of the specific type. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0

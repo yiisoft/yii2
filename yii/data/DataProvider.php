@@ -16,8 +16,9 @@ use yii\base\InvalidParamException;
  *
  * It implements the [[getPagination()]] and [[getSort()]] methods as specified by the [[IDataProvider]] interface.
  *
- * @property integer $count The number of data models in the current page.
- * @property Pagination $pagination The pagination object. If this is false, it means the pagination is disabled.
+ * @property integer $count The number of data models in the current page. This property is read-only.
+ * @property Pagination $pagination The pagination object. If this is false, it means the pagination is
+ * disabled.
  * @property Sort $sort The sorting object. If this is false, it means the sorting is disabled.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

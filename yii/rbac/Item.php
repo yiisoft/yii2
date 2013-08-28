@@ -18,6 +18,7 @@ use yii\base\Object;
  * A user may be assigned one or several authorization items (called [[Assignment]] assignments).
  * He can perform an operation only when it is among his assigned items.
  *
+ * @property Item[] $children All child items of this item. This property is read-only.
  * @property string $name The item name.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

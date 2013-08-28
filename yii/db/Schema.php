@@ -19,8 +19,12 @@ use yii\caching\GroupDependency;
  *
  * Schema represents the database schema information that is DBMS specific.
  *
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the sequence object.
- * @property QueryBuilder $queryBuilder The query builder for this connection.
+ * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
+ * sequence object. This property is read-only.
+ * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
+ * @property string[] $tableNames All table names in the database. This property is read-only.
+ * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
+ * instance of [[TableSchema]] or its child class. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

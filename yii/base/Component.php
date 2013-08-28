@@ -11,6 +11,9 @@ use Yii;
 
 /**
  * @include @yii/base/Component.md
+ *
+ * @property Behavior[] $behaviors List of behaviors attached to this component. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
