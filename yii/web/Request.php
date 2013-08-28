@@ -12,6 +12,11 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Security;
 
 /**
+ * The web Request class represents an HTTP request
+ *
+ * It encapsulates the $_SERVER variable and resolves its inconsistency among different Web servers.
+ * Also it provides an interface to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
+ * parameters sent via other HTTP methods like PUT or DELETE.
  *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
  * @property string $acceptTypes User browser accept types, null if not present. This property is read-only.
