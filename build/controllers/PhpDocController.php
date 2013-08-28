@@ -81,6 +81,11 @@ class PhpDocController extends Controller
 			$this->stderr("[ERR] Unable to create ReflectionClass for class: $className loaded class is not from file: $file\n", Console::FG_RED);
 		}
 
+		if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object') {
+			$this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\Object\n", Console::FG_BLUE, Console::BOLD);
+			return false;
+		}
+
 		$oldDoc = $ref->getDocComment();
 		$newDoc = $this->cleanDocComment($this->updateDocComment($oldDoc, $propertyDoc));
 
@@ -103,7 +108,7 @@ class PhpDocController extends Controller
 			$this->stderr("[ERR] No @author found in class doc in file: $file\n", Console::FG_RED);
 		}
 
-		if ($oldDoc != $newDoc) {
+		if (trim($oldDoc) != trim($newDoc)) {
 
 			$fileContent = explode("\n", file_get_contents($file));
 			$start = $ref->getStartLine() - 2;
