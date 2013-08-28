@@ -20,7 +20,7 @@ use yii\base\InvalidParamException;
  * @property Pagination|boolean $pagination The pagination object. If this is false, it means the pagination
  * is disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
  * [[setPagination()]] for details.
- * @property Sort|boolean $sort The sorting object. If this is false, it means that sorting is disabled. Note
+ * @property Sort|boolean $sort The sorting object. If this is false, it means the sorting is disabled. Note
  * that the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

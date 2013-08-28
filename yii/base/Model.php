@@ -36,11 +36,17 @@ use yii\validators\Validator;
  * You may directly use Model to store model data, or extend it with customization.
  * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
  *
- * @property ArrayObject $validators All the validators declared in the model.
- * @property array $activeValidators The validators applicable to the current [[scenario]].
- * @property array $errors Errors for all attributes or the specified attribute. Empty array is returned if no error.
+ * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
+ * [[scenario]]. This property is read-only.
  * @property array $attributes Attribute values (name => value).
- * @property string $scenario The scenario that this model is in.
+ * @property array $errors An array of errors for all attributes. Empty array is returned if no error. The
+ * result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is read-only.
+ * @property array $firstErrors The first errors. An empty array will be returned if there is no error. This
+ * property is read-only.
+ * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
+ * read-only.
+ * @property string $scenario The scenario that this model is in. Defaults to 'default'.
+ * @property ArrayObject $validators All the validators declared in the model. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -423,6 +429,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	/**
 	 * Returns the errors for all attribute or a single attribute.
 	 * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+	 * @property array An array of errors for all attributes. Empty array is returned if no error.
+	 * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
 	 * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
 	 * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
 	 *
