@@ -9,6 +9,7 @@ namespace yii\build\controllers;
 
 use yii\console\Controller;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 
 /**
  * PhpDocController is there to help maintaining PHPDoc annotation in class files
@@ -21,40 +22,162 @@ class PhpDocController extends Controller
 	/**
 	 * Generates @property annotations in class files from getters and setters
 	 *
-	 * @param string $directory the directory to parse files from
-	 * @param boolean $updateFiles whether to update class docs directly
+	 * @param null $root the directory to parse files from
+	 * @param bool $updateFiles whether to update class docs directly
 	 */
-	public function actionProperty($directory=null, $updateFiles=false)
+	public function actionProperty($root=null, $updateFiles=true)
 	{
-		if ($directory === null) {
-			$directory = dirname(dirname(__DIR__)) . '/framework/yii';
+		if ($root === null) {
+			$root = YII_PATH;
 		}
-
+		$root = FileHelper::normalizePath($root);
+		$options = array(
+			'filter' => function ($path) {
+				if (is_file($path)) {
+					$file = basename($path);
+					if ($file[0] < 'A' || $file[0] > 'Z') {
+						return false;
+					}
+				}
+				return null;
+			},
+			'only' => array('.php'),
+			'except' => array(
+				'YiiBase.php',
+				'Yii.php',
+				'/debug/views/',
+				'/requirements/',
+				'/gii/views/',
+				'/gii/generators/',
+			),
+		);
+		$files = FileHelper::findFiles($root, $options);
 		$nFilesTotal = 0;
-	    $files = new \RegexIterator(
-	        new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory)),
-		    '#^.+\.php$#i',
-		    \RecursiveRegexIterator::GET_MATCH
-	    );
+		$nFilesUpdated = 0;
 	    foreach ($files as $file) {
-	        list($className, $phpdoc) = $this->generateClassPropertyDocs($file[0]);
-	        if ($phpdoc !== false) {
+		    $result = $this->generateClassPropertyDocs($file);
+		    if ($result !== false) {
+			    list($className, $phpdoc) = $result;
 		        if ($updateFiles) {
-			        $this->updateClassPropertyDocs($file[0], $className, $phpdoc);
-		        } else {
-		            $this->stdout("\n[ " . $file[0] . " ]\n\n", Console::BOLD);
-		            $this->stdout($phpdoc . "\n");
+			        if ($this->updateClassPropertyDocs($file, $className, $phpdoc)) {
+				        $nFilesUpdated++;
+			        }
+		        } elseif (!empty($phpdoc)) {
+		            $this->stdout("\n[ " . $file . " ]\n\n", Console::BOLD);
+		            $this->stdout($phpdoc);
 		        }
 	        }
 	        $nFilesTotal++;
 	    }
 
 		$this->stdout("\n\nParsed $nFilesTotal files.\n");
+		$this->stdout("Updated $nFilesUpdated files.\n");
 	}
 
-	protected function updateClassPropertyDocs($file, $className, $phpDoc)
+	protected function updateClassPropertyDocs($file, $className, $propertyDoc)
 	{
-		// TODO implement
+		$ref = new \ReflectionClass($className);
+		if ($ref->getFileName() != $file) {
+			$this->stderr("[ERR] Unable to create ReflectionClass for class: $className loaded class is not from file: $file\n", Console::FG_RED);
+		}
+
+		$oldDoc = $ref->getDocComment();
+		$newDoc = $this->cleanDocComment($this->updateDocComment($oldDoc, $propertyDoc));
+
+		$seenSince = false;
+		$seenAuthor = false;
+
+		$lines = explode("\n", $newDoc);
+		foreach($lines as $line) {
+			if (substr(trim($line), 0, 9) == '* @since ') {
+				$seenSince = true;
+			} elseif (substr(trim($line), 0, 10) == '* @author ') {
+				$seenAuthor = true;
+			}
+		}
+
+		if (!$seenSince) {
+			$this->stderr("[ERR] No @since found in class doc in file: $file\n", Console::FG_RED);
+		}
+		if (!$seenAuthor) {
+			$this->stderr("[ERR] No @author found in class doc in file: $file\n", Console::FG_RED);
+		}
+
+		if ($oldDoc != $newDoc) {
+
+			$fileContent = file($file);
+			$start = $ref->getStartLine();
+			$docStart = $start - count(explode("\n", $oldDoc));
+
+			$newFileContent = array();
+			foreach($fileContent as $i => $line) {
+				if ($i > $start || $i < $docStart) {
+					$newFileContent[] = $line;
+				} else {
+					$newFileContent[] = trim($newDoc);
+				}
+			}
+
+			file_put_contents($file, implode("\n", $newFileContent));
+
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * remove multi empty lines and trim trailing whitespace
+	 *
+	 * @param $doc
+	 * @return string
+	 */
+	protected function cleanDocComment($doc)
+	{
+		$lines = explode("\n", $doc);
+		$n = count($lines);
+		for($i = 0; $i < $n; $i++) {
+			$lines[$i] = rtrim($lines[$i]);
+			if (trim($lines[$i]) == '*' && trim($lines[$i + 1]) == '*') {
+				unset($lines[$i]);
+			}
+		}
+		return implode("\n", $lines);
+	}
+
+	/**
+	 * replace property annotations in doc comment
+	 * @param $doc
+	 * @param $properties
+	 * @return string
+	 */
+	protected function updateDocComment($doc, $properties)
+	{
+		$lines = explode("\n", $doc);
+		$propertyPart = false;
+		$propertyPosition = false;
+		foreach($lines as $i => $line) {
+			if (substr(trim($line), 0, 12) == '* @property ') {
+				$propertyPart = true;
+			} elseif ($propertyPart && trim($line) == '*') {
+				$propertyPosition = $i;
+				$propertyPart = false;
+			}
+			if (substr(trim($line), 0, 10) == '* @author ' && $propertyPosition === false) {
+				$propertyPosition = $i;
+				$propertyPart = false;
+			}
+			if ($propertyPart) {
+				unset($lines[$i]);
+			}
+		}
+		$finalDoc = '';
+		foreach($lines as $i => $line) {
+			$finalDoc .= $line . "\n";
+			if ($i == $propertyPosition) {
+				$finalDoc .= $properties;
+			}
+		}
+		return $finalDoc;
 	}
 
 	protected function generateClassPropertyDocs($fileName)
@@ -64,14 +187,21 @@ class PhpDocController extends Controller
 		$ns = $this->match('#\nnamespace (?<name>[\w\\\\]+);\n#', $file);
 		$namespace = reset($ns);
 		$namespace = $namespace['name'];
-	    $classes = $this->match('#\n(?:abstract )?class (?<name>\w+) extends .+\{(?<content>.+)\n\}(\n|$)#', $file);
+	    $classes = $this->match('#\n(?:abstract )?class (?<name>\w+)( |\n)(extends )?.+\{(?<content>.*)\n\}(\n|$)#', $file);
 
 		if (count($classes) > 1) {
 			$this->stderr("[ERR] There should be only one class in a file: $fileName\n", Console::FG_RED);
 			return false;
 		}
 		if (count($classes) < 1) {
-			$this->stderr("[ERR] No class in file: $fileName\n", Console::FG_RED);
+			$interfaces = $this->match('#\ninterface (?<name>\w+)\n\{(?<content>.+)\n\}(\n|$)#', $file);
+			if (count($interfaces) == 1) {
+				return false;
+			} elseif (count($interfaces) > 1) {
+				$this->stderr("[ERR] There should be only one interface in a file: $fileName\n", Console::FG_RED);
+			} else {
+				$this->stderr("[ERR] No class in file: $fileName\n", Console::FG_RED);
+			}
 			return false;
 		}
 

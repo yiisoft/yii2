@@ -17,6 +17,7 @@ use yii\db\Exception;
  *
  * @property boolean $isActive Whether the transaction is active. This property is read-only.
  *
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class Transaction extends \yii\base\Object
