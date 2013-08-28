@@ -244,8 +244,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * after the actual validation, respectively. If [[beforeValidate()]] returns false,
 	 * the validation will be cancelled and [[afterValidate()]] will not be called.
 	 *
-	 * Errors found during the validation can be retrieved via [[getErrors()]]
-	 * and [[getError()]].
+	 * Errors found during the validation can be retrieved via [[getErrors()]],
+	 * [[getFirstErrors()]] and [[getFirstError()]].
 	 *
 	 * @param array $attributes list of attributes that should be validated.
 	 * If this parameter is empty, it means any attribute listed in the applicable
@@ -438,7 +438,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * )
 	 * ~~~
 	 *
-	 * @see getError
+	 * @see getFirstErrors
+	 * @see getFirstError
 	 */
 	public function getErrors($attribute = null)
 	{
@@ -452,6 +453,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	/**
 	 * Returns the first error of every attribute in the model.
 	 * @return array the first errors. An empty array will be returned if there is no error.
+	 * @see getErrors
+	 * @see getFirstError
 	 */
 	public function getFirstErrors()
 	{
@@ -473,6 +476,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * @param string $attribute attribute name.
 	 * @return string the error message. Null is returned if no error.
 	 * @see getErrors
+	 * @see getFirstErrors
 	 */
 	public function getFirstError($attribute)
 	{
