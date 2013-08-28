@@ -17,6 +17,21 @@ use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
 /**
+ *
+ * @property CookieCollection $cookies The cookie collection.
+ * @property HeaderCollection $headers The header collection.
+ * @property boolean $isClientError Whether this response indicates a client error.
+ * @property boolean $isEmpty Whether this response is empty.
+ * @property boolean $isForbidden Whether this response indicates the current request is forbidden.
+ * @property boolean $isInformational Whether this response is informational.
+ * @property boolean $isInvalid Whether this response has a valid [[statusCode]].
+ * @property boolean $isNotFound Whether this response indicates the currently requested resource is not found.
+ * @property boolean $isOk Whether this response is OK.
+ * @property boolean $isRedirection Whether this response is a redirection.
+ * @property boolean $isServerError Whether this response indicates a server error.
+ * @property boolean $isSuccessful Whether this response is successful.
+ * @property integer $statusCode The HTTP status code to send with the response.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

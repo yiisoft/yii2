@@ -14,6 +14,11 @@ use yii\base\Component;
  * Panel is a base class for debugger panel classes. It defines how data should be collected,
  * what should be displayed at debug toolbar and on debugger details view.
  *
+ * @property string $detail Content that is displayed in debugger detail view.
+ * @property string $name Name of the panel.
+ * @property string $summary Content that is displayed at debug toolbar.
+ * @property string $url URL pointing to panel detail view.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

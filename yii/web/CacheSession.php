@@ -21,6 +21,8 @@ use yii\base\InvalidConfigException;
  * may be swapped out and get lost. Therefore, you must make sure the cache used by this component
  * is NOT volatile. If you want to use database as storage medium, use [[DbSession]] is a better choice.
  *
+ * @property boolean $useCustomStorage Whether to use custom storage.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

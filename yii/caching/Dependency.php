@@ -13,8 +13,6 @@ namespace yii\caching;
  * Child classes should override its [[generateDependencyData()]] for generating
  * the actual dependency data.
  *
- * @property boolean $hasChanged Whether the dependency has changed.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

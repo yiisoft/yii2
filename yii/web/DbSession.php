@@ -17,9 +17,9 @@ use yii\base\InvalidConfigException;
  *
  * By default, DbSession stores session data in a DB table named 'tbl_session'. This table
  * must be pre-created. The table name can be changed by setting [[sessionTable]].
- * 
+ *
  * The following example shows how you can configure the application to use DbSession:
- * 
+ *
  * ~~~
  * 'session' => array(
  *     'class' => 'yii\web\DbSession',
@@ -27,6 +27,8 @@ use yii\base\InvalidConfigException;
  *     // 'sessionTable' => 'my_session',
  * )
  * ~~~
+ *
+ * @property boolean $useCustomStorage Whether to use custom storage.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

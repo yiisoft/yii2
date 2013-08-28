@@ -18,6 +18,8 @@ use yii\base\Object;
  * A user may be assigned one or several authorization items (called [[Assignment]] assignments).
  * He can perform an operation only when it is among his assigned items.
  *
+ * @property string $name The item name.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0

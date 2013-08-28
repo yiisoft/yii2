@@ -45,6 +45,8 @@ use yii\base\InvalidRouteException;
  * yii help
  * ~~~
  *
+ * @property Response $response The response component.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

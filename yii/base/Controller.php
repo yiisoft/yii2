@@ -12,6 +12,12 @@ use Yii;
 /**
  * Controller is the base class for classes containing controller logic.
  *
+ * @property array $actionParams The request parameters (name-value pairs) to be used for action parameter binding.
+ * @property string $route The route (module ID, controller ID and action ID) of the current request.
+ * @property string $uniqueId The controller ID that is prefixed with the module ID (if any).
+ * @property View $view The view object that can be used to render views or view files.
+ * @property string $viewPath The directory containing the view files for this controller.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -16,6 +16,9 @@ use yii\helpers\StringHelper;
 /**
  * CodeFile represents a code file to be generated.
  *
+ * @property string $relativePath The code file path relative to the application base path.
+ * @property string $type The code file extension (e.g. php, txt).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
