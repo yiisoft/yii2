@@ -105,16 +105,18 @@ class PhpDocController extends Controller
 
 		if ($oldDoc != $newDoc) {
 
-			$fileContent = file($file);
-			$start = $ref->getStartLine();
-			$docStart = $start - count(explode("\n", $oldDoc));
+			$fileContent = explode("\n", file_get_contents($file));
+			$start = $ref->getStartLine() - 2;
+			$docStart = $start - count(explode("\n", $oldDoc)) + 1;
 
 			$newFileContent = array();
-			foreach($fileContent as $i => $line) {
+			$n = count($fileContent);
+			for($i = 0; $i < $n; $i++) {
 				if ($i > $start || $i < $docStart) {
-					$newFileContent[] = $line;
+					$newFileContent[] = $fileContent[$i];
 				} else {
 					$newFileContent[] = trim($newDoc);
+					$i = $start;
 				}
 			}
 
@@ -163,7 +165,7 @@ class PhpDocController extends Controller
 				$propertyPart = false;
 			}
 			if (substr(trim($line), 0, 10) == '* @author ' && $propertyPosition === false) {
-				$propertyPosition = $i;
+				$propertyPosition = $i - 1;
 				$propertyPart = false;
 			}
 			if ($propertyPart) {
