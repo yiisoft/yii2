@@ -23,6 +23,7 @@ use yii\helpers\StringHelper;
  * @method mixed get($key) Set the string value of a key
  * TODO document methods
  *
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class Connection extends Component
