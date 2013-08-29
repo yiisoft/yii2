@@ -55,22 +55,24 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * Generates a SELECT SQL statement from a [[Query]] object.
 	 * @param Query $query the [[Query]] object from which the SQL statement will be generated
-	 * @return string the generated SQL statement
+	 * @return array the generated SQL statement (the first array element) and the corresponding
+	 * parameters to be bound to the SQL statement (the second array element).
 	 */
 	public function build($query)
 	{
+		$params = $query->params;
 		$clauses = array(
 			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
 			$this->buildFrom($query->from),
-			$this->buildJoin($query->join, $query->params),
-			$this->buildWhere($query->where, $query->params),
+			$this->buildJoin($query->join, $params),
+			$this->buildWhere($query->where, $params),
 			$this->buildGroupBy($query->groupBy),
-			$this->buildHaving($query->having, $query->params),
-			$this->buildUnion($query->union, $query->params),
+			$this->buildHaving($query->having, $params),
+			$this->buildUnion($query->union, $params),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
 		);
-		return implode($this->separator, array_filter($clauses));
+		return array(implode($this->separator, array_filter($clauses)), $params);
 	}
 
 	/**
@@ -718,9 +720,11 @@ class QueryBuilder extends \yii\base\Object
 		}
 		foreach ($unions as $i => $union) {
 			if ($union instanceof Query) {
+				// save the original parameters so that we can restore them later to prevent from modifying the query object
+				$originalParams = $union->params;
 				$union->addParams($params);
-				$unions[$i] = $this->build($union);
-				$params = $union->params;
+				list ($unions[$i], $params) = $this->build($union);
+				$union->params = $originalParams;
 			}
 		}
 		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
