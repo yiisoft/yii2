@@ -30,7 +30,7 @@ foreach ($generator->templates as $name => $path) {
 
 	<?php $form = ActiveForm::begin(array('fieldConfig' => array('class' => ActiveField::className()))); ?>
 		<div class="row">
-			<div class="col-lg-6">
+			<div class="col-lg-8">
 				<?php echo $this->renderFile($generator->formView(), array(
 					'generator' => $generator,
 					'form' => $form,
