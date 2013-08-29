@@ -50,6 +50,16 @@ class ActiveRelation extends ActiveQuery
 	 */
 	public $via;
 
+	/**
+	 * Clones internal objects.
+	 */
+	public function __clone()
+	{
+		if (is_object($this->via)) {
+			// make a clone of "via" object so that the same query object can be reused multiple times
+			$this->via = clone $this->via;
+		}
+	}
 
 	/**
 	 * Specifies the relation associated with the pivot table.
