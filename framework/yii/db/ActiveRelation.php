@@ -297,7 +297,7 @@ class ActiveRelation extends ActiveQuery
 		/** @var $primaryModel ActiveRecord */
 		$primaryModel = reset($primaryModels);
 		$db = $primaryModel->getDb();
-		$sql = $db->getQueryBuilder()->build($this);
-		return $db->createCommand($sql, $this->params)->queryAll();
+		list ($sql, $params) = $db->getQueryBuilder()->build($this);
+		return $db->createCommand($sql, $params)->queryAll();
 	}
 }

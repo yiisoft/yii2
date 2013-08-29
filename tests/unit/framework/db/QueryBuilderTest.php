@@ -112,7 +112,7 @@ class QueryBuilderTest extends DatabaseTestCase
 		}
 	}
 
-	public function testAddDropPrimayKey()
+	public function testAddDropPrimaryKey()
 	{
 		$tableName = 'tbl_constraints';
 		$pkeyName = $tableName . "_pkey";
