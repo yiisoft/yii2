@@ -9,6 +9,7 @@ namespace yii\mutex;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\FileHelper;
 
 /**
  * @author resurtm <resurtm@gmail.com>
@@ -21,6 +22,19 @@ class FileMutex extends Mutex
 	 * Defaults to the "mutex" subdirectory under the application runtime path.
 	 */
 	public $mutexPath = '@runtime/mutex';
+	/**
+	 * @var integer the permission to be set for newly created mutex files.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
+	 * If not set, the permission will be determined by the current environment.
+	 */
+	public $fileMode;
+	/**
+	 * @var integer the permission to be set for newly created directories.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
+	 * Defaults to 0775, meaning the directory is read-writable by owner and group,
+	 * but read-only for other users.
+	 */
+	public $dirMode = 0775;
 	/**
 	 * @var resource[] stores all opened lock files. Keys are lock names and values are file handles.
 	 */
@@ -39,21 +53,25 @@ class FileMutex extends Mutex
 		}
 		$this->mutexPath = Yii::getAlias($this->mutexPath);
 		if (!is_dir($this->mutexPath)) {
-			mkdir($this->mutexPath, 0777, true);
+			FileHelper::createDirectory($this->mutexPath, $this->dirMode, true);
 		}
 	}
 
 	/**
-	 * This method should be extended by concrete mutex implementations. Acquires lock by given name.
+	 * Acquires lock by given name.
 	 * @param string $name of the lock to be acquired.
 	 * @param integer $timeout to wait for lock to become released.
 	 * @return boolean acquiring result.
 	 */
 	protected function acquireLock($name, $timeout = 0)
 	{
-		$file = fopen($this->mutexPath . '/' . md5($name) . '.lock', 'w+');
+		$fileName = $this->mutexPath . '/' . md5($name) . '.lock';
+		$file = fopen($fileName, 'w+');
 		if ($file === false) {
 			return false;
+		}
+		if ($this->fileMode !== null) {
+			@chmod($fileName, $this->fileMode);
 		}
 		$waitTime = 0;
 		while (!flock($file, LOCK_EX | LOCK_NB)) {
