@@ -16,7 +16,7 @@ echo "<?php\n";
 namespace <?php echo $ns; ?>;
 
 
-class <?php echo $className; ?> extends \yii\web\Module
+class <?php echo $className; ?> extends \yii\base\Module
 {
 	public $controllerNamespace = '<?php echo $generator->getControllerNamespace(); ?>';
 
