@@ -803,7 +803,7 @@ class QueryBuilder extends \yii\base\Object
 		$parts = array();
 		foreach ($condition as $column => $value) {
 			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('in', array($column, $value), $params);
+				$parts[] = $this->buildInCondition('IN', array($column, $value), $params);
 			} else {
 				if (strpos($column, '(') === false) {
 					$column = $this->db->quoteColumnName($column);
