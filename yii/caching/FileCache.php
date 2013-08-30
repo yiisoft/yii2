@@ -8,6 +8,7 @@
 namespace yii\caching;
 
 use Yii;
+use yii\helpers\FileHelper;
 
 /**
  * FileCache implements a cache component using files.
@@ -45,6 +46,20 @@ class FileCache extends Cache
 	 * This number should be between 0 and 1000000. A value 0 means no GC will be performed at all.
 	 **/
 	public $gcProbability = 10;
+	/**
+	 * @var integer the permission to be set for newly created cache files.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
+	 * If not set, the permission will be determined by the current environment.
+	 */
+	public $fileMode;
+	/**
+	 * @var integer the permission to be set for newly created directories.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
+	 * Defaults to 0775, meaning the directory is read-writable by owner and group,
+	 * but read-only for other users.
+	 */
+	public $dirMode = 0775;
+
 
 	/**
 	 * Initializes this component by ensuring the existence of the cache path.
@@ -54,7 +69,7 @@ class FileCache extends Cache
 		parent::init();
 		$this->cachePath = Yii::getAlias($this->cachePath);
 		if (!is_dir($this->cachePath)) {
-			mkdir($this->cachePath, 0777, true);
+			FileHelper::createDirectory($this->cachePath, $this->dirMode, true);
 		}
 	}
 
@@ -108,10 +123,12 @@ class FileCache extends Cache
 
 		$cacheFile = $this->getCacheFile($key);
 		if ($this->directoryLevel > 0) {
-			@mkdir(dirname($cacheFile), 0777, true);
+			@FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);
 		}
 		if (@file_put_contents($cacheFile, $value, LOCK_EX) !== false) {
-			@chmod($cacheFile, 0777);
+			if ($this->fileMode !== null) {
+				@chmod($cacheFile, $this->fileMode);
+			}
 			return @touch($cacheFile, $expire);
 		} else {
 			return false;
