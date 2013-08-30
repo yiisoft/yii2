@@ -287,8 +287,10 @@ class User extends Component
 	public function loginRequired()
 	{
 		$request = Yii::$app->getRequest();
-		if ($this->loginUrl !== null && !$request->getIsAjax()) {
+		if (!$request->getIsAjax()) {
 			$this->setReturnUrl($request->getUrl());
+		}
+		if ($this->loginUrl !== null) {
 			Yii::$app->getResponse()->redirect($this->loginUrl)->send();
 			exit();
 		} else {
