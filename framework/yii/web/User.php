@@ -290,8 +290,8 @@ class User extends Component
 		if ($request->getIsAjax()) {
 			throw new HttpException(401,'Authorization Required');
 		}else{
-            		$this->setReturnUrl($request->getUrl());
-        	}
+			$this->setReturnUrl($request->getUrl());
+		}
 		if ($this->loginUrl !== null) {
 			Yii::$app->getResponse()->redirect($this->loginUrl)->send();
 			exit();
