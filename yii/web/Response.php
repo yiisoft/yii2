@@ -781,7 +781,7 @@ class Response extends \yii\base\Response
 					$this->content = $this->data;
 					break;
 				case self::FORMAT_JSON:
-					$this->getHeaders()->set('Content-Type', 'application/json');
+					$this->getHeaders()->set('Content-Type', 'application/json; charset=' . $this->charset);
 					$this->content = Json::encode($this->data);
 					break;
 				case self::FORMAT_JSONP:
