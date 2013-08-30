@@ -18,7 +18,7 @@ class FileMutex extends Mutex
 {
 	/**
 	 * @var string the directory to store mutex files. You may use path alias here.
-	 * If not set, it will use the "mutex" subdirectory under the application runtime path.
+	 * Defaults to the "mutex" subdirectory under the application runtime path.
 	 */
 	public $mutexPath = '@runtime/mutex';
 	/**
@@ -69,7 +69,7 @@ class FileMutex extends Mutex
 	}
 
 	/**
-	 * This method should be extended by concrete mutex implementations. Releases lock by given name.
+	 * Releases lock by given name.
 	 * @param string $name of the lock to be released.
 	 * @return boolean release result.
 	 */
