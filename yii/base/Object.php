@@ -220,6 +220,19 @@ class Object implements Arrayable
 	}
 
 	/**
+	 * Returns a value indicating whether a method is defined.
+	 *
+	 * The default implementation is a call to php function `method_exists()`.
+	 * You may override this method when you implemented the php magic method `__call()`.
+	 * @param string $name the property name
+	 * @return boolean whether the property is defined
+	 */
+	public function hasMethod($name)
+	{
+		return method_exists($this, $name);
+	}
+
+	/**
 	 * Converts the object into an array.
 	 * The default implementation will return all public property values as an array.
 	 * @return array the array representation of the object
