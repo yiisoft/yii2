@@ -35,7 +35,7 @@ class DefaultController extends Controller
 	public function actionView($id)
 	{
 		$generator = $this->loadGenerator($id);
-		$params = array('generator' => $generator);
+		$params = array('generator' => $generator, 'id' => $id);
 		if (isset($_POST['preview']) || isset($_POST['generate'])) {
 			if ($generator->validate()) {
 				$generator->saveStickyAttributes();

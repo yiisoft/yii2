@@ -28,7 +28,10 @@ foreach ($generator->templates as $name => $path) {
 
 	<p><?php echo $generator->getDescription(); ?></p>
 
-	<?php $form = ActiveForm::begin(array('fieldConfig' => array('class' => ActiveField::className()))); ?>
+	<?php $form = ActiveForm::begin(array(
+		'id' => "$id-generator",
+		'fieldConfig' => array('class' => ActiveField::className()),
+	)); ?>
 		<div class="row">
 			<div class="col-lg-8">
 				<?php echo $this->renderFile($generator->formView(), array(
