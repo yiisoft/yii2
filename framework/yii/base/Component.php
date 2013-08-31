@@ -199,7 +199,7 @@ class Component extends Object
 
 		$this->ensureBehaviors();
 		foreach ($this->_behaviors as $object) {
-			if (method_exists($object, $name)) {
+			if (method_exists($object, $name) || $object->hasMethod($name)) {
 				return call_user_func_array(array($object, $name), $params);
 			}
 		}
@@ -291,6 +291,32 @@ class Component extends Object
 			$this->ensureBehaviors();
 			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canSetProperty($name, $checkVars)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns a value indicating whether a method is defined.
+	 * A method is defined if:
+	 *
+	 * - the class has a method with the specified name
+	 * - an attached behavior has a method with the given name (when `$checkBehaviors` is true).
+	 *
+	 * @param string $name the property name
+	 * @param boolean $checkBehaviors whether to treat behaviors' methods as methods of this component
+	 * @return boolean whether the property is defined
+	 */
+	public function hasMethod($name, $checkBehaviors = true)
+	{
+		if (method_exists($this, $name)) {
+			return true;
+		} elseif ($checkBehaviors) {
+			$this->ensureBehaviors();
+			foreach ($this->_behaviors as $behavior) {
+				if ($behavior->hasMethod($name)) {
 					return true;
 				}
 			}

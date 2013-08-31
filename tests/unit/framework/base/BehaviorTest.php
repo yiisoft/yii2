@@ -28,6 +28,22 @@ class BarBehavior extends Behavior
 	{
 		return 'behavior method';
 	}
+
+	public function __call($name, $params)
+	{
+		if ($name == 'magicBehaviorMethod') {
+			return 'Magic Behavior Method Result!';
+		}
+		return parent::__call($name, $params);
+	}
+
+	public function hasMethod($name)
+	{
+		if ($name == 'magicBehaviorMethod') {
+			return true;
+		}
+		return parent::hasMethod($name);
+	}
 }
 
 class BehaviorTest extends TestCase
@@ -59,4 +75,29 @@ class BehaviorTest extends TestCase
 		$this->assertEquals('behavior property', $foo->behaviorProperty);
 		$this->assertEquals('behavior method', $foo->behaviorMethod());
 	}
+
+	public function testMagicMethods()
+	{
+		$bar = new BarClass();
+		$behavior = new BarBehavior();
+
+		$this->assertFalse($bar->hasMethod('magicBehaviorMethod'));
+		$bar->attachBehavior('bar', $behavior);
+		$this->assertFalse($bar->hasMethod('magicBehaviorMethod', false));
+		$this->assertTrue($bar->hasMethod('magicBehaviorMethod'));
+
+		$this->assertEquals('Magic Behavior Method Result!', $bar->magicBehaviorMethod());
+	}
+
+	public function testCallUnknownMethod()
+	{
+		$bar = new BarClass();
+		$behavior = new BarBehavior();
+		$this->setExpectedException('yii\base\UnknownMethodException');
+
+		$this->assertFalse($bar->hasMethod('nomagicBehaviorMethod'));
+		$bar->attachBehavior('bar', $behavior);
+		$bar->nomagicBehaviorMethod();
+	}
+
 }
