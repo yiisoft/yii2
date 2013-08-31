@@ -299,6 +299,32 @@ class Component extends Object
 	}
 
 	/**
+	 * Returns a value indicating whether a method is defined.
+	 * A method is defined if:
+	 *
+	 * - the class has a method with the specified name
+	 * - an attached behavior has a method with the given name (when `$checkBehaviors` is true).
+	 *
+	 * @param string $name the property name
+	 * @param boolean $checkBehaviors whether to treat behaviors' methods as methods of this component
+	 * @return boolean whether the property is defined
+	 */
+	public function hasMethod($name, $checkBehaviors = true)
+	{
+		if (method_exists($this, $name)) {
+			return true;
+		} elseif ($checkBehaviors) {
+			$this->ensureBehaviors();
+			foreach ($this->_behaviors as $behavior) {
+				if ($behavior->hasMethod($name)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Returns a list of behaviors that this component should behave as.
 	 *
 	 * Child classes may override this method to specify the behaviors they want to behave as.
