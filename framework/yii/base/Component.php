@@ -264,8 +264,8 @@ class Component extends Object
 					return true;
 				}
 			}
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -294,8 +294,8 @@ class Component extends Object
 					return true;
 				}
 			}
-			return false;
 		}
+		return false;
 	}
 
 	/**
