@@ -199,7 +199,7 @@ class Component extends Object
 
 		$this->ensureBehaviors();
 		foreach ($this->_behaviors as $object) {
-			if (method_exists($object, $name) || $object->hasMethod($name)) {
+			if ($object->hasMethod($name)) {
 				return call_user_func_array(array($object, $name), $params);
 			}
 		}
