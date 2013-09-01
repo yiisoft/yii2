@@ -61,8 +61,7 @@ class Object implements Arrayable
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `$value = $object->property;`.
 	 * @param string $name the property name
-	 * @return mixed the property value, event handlers attached to the event,
-	 * the named behavior, or the value of a behavior's property
+	 * @return mixed the property value
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @see __set
 	 */

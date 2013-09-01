@@ -137,7 +137,7 @@ class Nav extends Widget
 
 	/**
 	 * Renders a widget's item.
-	 * @param mixed $item the item to render.
+	 * @param string|array $item the item to render.
 	 * @return string the rendering result.
 	 * @throws InvalidConfigException
 	 */

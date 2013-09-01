@@ -86,7 +86,7 @@ abstract class Application extends Module
 	 */
 	public $controller;
 	/**
-	 * @var mixed the layout that should be applied for views in this application. Defaults to 'main'.
+	 * @var string|boolean the layout that should be applied for views in this application. Defaults to 'main'.
 	 * If this is false, layout will be disabled.
 	 */
 	public $layout = 'main';
