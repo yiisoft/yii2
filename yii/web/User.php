@@ -140,7 +140,7 @@ class User extends Component
 				$this->_identity = null;
 			} else {
 				/** @var $class Identity */
-				$class = Yii::import($this->identityClass);
+				$class = $this->identityClass;
 				$this->_identity = $class::findIdentity($id);
 			}
 		}
