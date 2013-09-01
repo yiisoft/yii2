@@ -57,7 +57,11 @@ class Component extends Object
 				}
 			}
 		}
-		throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
+		if (method_exists($this, 'set' . $name)) {
+			throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
+		} else {
+			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
+		}
 	}
 
 	/**
