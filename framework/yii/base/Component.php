@@ -38,8 +38,7 @@ class Component extends Object
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `$value = $component->property;`.
 	 * @param string $name the property name
-	 * @return mixed the property value, event handlers attached to the event,
-	 * the behavior, or the value of a behavior's property
+	 * @return mixed the property value or the value of a behavior's property
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @see __set
 	 */

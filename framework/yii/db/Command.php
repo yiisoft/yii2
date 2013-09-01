@@ -62,7 +62,7 @@ class Command extends \yii\base\Component
 	 */
 	public $pdoStatement;
 	/**
-	 * @var mixed the default fetch mode for this command.
+	 * @var integer the default fetch mode for this command.
 	 * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
 	 */
 	public $fetchMode = \PDO::FETCH_ASSOC;
@@ -314,7 +314,7 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement and returns ALL rows at once.
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return array all rows of the query result. Each array element is an array representing a row of data.
 	 * An empty array is returned if the query results in nothing.
@@ -328,7 +328,7 @@ class Command extends \yii\base\Component
 	/**
 	 * Executes the SQL statement and returns the first row of the result.
 	 * This method is best used when only the first row of result is needed for a query.
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
 	 * results in nothing.
@@ -371,7 +371,7 @@ class Command extends \yii\base\Component
 	/**
 	 * Performs the actual DB query of a SQL statement.
 	 * @param string $method method of PDOStatement to be called
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return mixed the method execution result
 	 * @throws Exception if the query causes any problem
@@ -501,7 +501,7 @@ class Command extends \yii\base\Component
 	 *
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name => value) to be updated.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param string|array $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
@@ -525,7 +525,7 @@ class Command extends \yii\base\Component
 	 * Note that the created command is not executed until [[execute()]] is called.
 	 *
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param string|array $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself

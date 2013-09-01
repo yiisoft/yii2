@@ -21,7 +21,7 @@ use yii\web\UploadedFile;
 class FileValidator extends Validator
 {
 	/**
-	 * @var mixed a list of file name extensions that are allowed to be uploaded.
+	 * @var array|string a list of file name extensions that are allowed to be uploaded.
 	 * This can be either an array or a string consisting of file extension names
 	 * separated by space or comma (e.g. "gif, jpg").
 	 * Extension names are case-insensitive. Defaults to null, meaning all file name

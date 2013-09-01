@@ -163,7 +163,7 @@ class QueryBuilder extends \yii\base\Object
 	 *
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name => value) to be updated.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param array|string $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the binding parameters that will be modified by this method
 	 * so that they can be bound to the DB command later.
@@ -207,7 +207,7 @@ class QueryBuilder extends \yii\base\Object
 	 * The method will properly escape the table and column names.
 	 *
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param array|string $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the binding parameters that will be modified by this method
 	 * so that they can be bound to the DB command later.
@@ -461,7 +461,7 @@ class QueryBuilder extends \yii\base\Object
 	 * The sequence will be reset such that the primary key of the next new row inserted
 	 * will have the specified value or 1.
 	 * @param string $table the name of the table whose primary key sequence will be reset
-	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+	 * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
 	 * the next new row's primary key will have a value 1.
 	 * @return string the SQL statement for resetting sequence
 	 * @throws NotSupportedException if this is not supported by the underlying DBMS
