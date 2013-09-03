@@ -30,6 +30,7 @@ foreach ($generator->templates as $name => $path) {
 
 	<?php $form = ActiveForm::begin(array(
 		'id' => "$id-generator",
+		'successCssClass' => '',
 		'fieldConfig' => array('class' => ActiveField::className()),
 	)); ?>
 		<div class="row">

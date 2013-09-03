@@ -7,6 +7,7 @@
 
 namespace yii\gii\generators\crud;
 
+use yii\base\Model;
 use yii\db\ActiveRecord;
 use yii\gii\CodeFile;
 use yii\web\Controller;
@@ -21,6 +22,9 @@ class Generator extends \yii\gii\Generator
 	public $modelClass;
 	public $controllerID;
 	public $baseControllerClass = 'yii\web\Controller';
+	public $indexWidgetType = 'grid';
+	public $enableSearch = true;
+	public $searchModelClass;
 
 	public function getName()
 	{
@@ -36,9 +40,9 @@ class Generator extends \yii\gii\Generator
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
-			array('modelClass, controllerID, baseControllerClass', 'filter', 'filter' => 'trim'),
-			array('modelClass, controllerID, baseControllerClass', 'required'),
-			array('modelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
+			array('modelClass, searchModelClass, controllerID, baseControllerClass', 'filter', 'filter' => 'trim'),
+			array('modelClass, searchModelClass, controllerID, baseControllerClass', 'required'),
+			array('modelClass, searchModelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 			array('modelClass', 'validateClass', 'params' => array('extends' => ActiveRecord::className())),
 			array('controllerID', 'match', 'pattern' => '/^[a-z\\-\\/]*$/', 'message' => 'Only a-z, dashes (-) and slashes (/) are allowed.'),
 			array('baseControllerClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
@@ -52,6 +56,9 @@ class Generator extends \yii\gii\Generator
 			'modelClass' => 'Model Class',
 			'controllerID' => 'Controller ID',
 			'baseControllerClass' => 'Base Controller Class',
+			'indexWidgetType' => 'Widget Used in Index Page',
+			'enableSearch' => 'Enable Search',
+			'searchModelClass' => 'Search Model Class',
 		));
 	}
 
@@ -72,6 +79,13 @@ class Generator extends \yii\gii\Generator
 				</ul>',
 			'baseControllerClass' => 'This is the class that the new CRUD controller class will extend from.
 				You should provide a fully qualified class name, e.g., <code>yii\web\Controller</code>.',
+			'indexWidgetType' => 'This is the widget type to be used in the index page to display list of the models.
+				You may choose either <code>GridView</code> or <code>ListView</code>',
+			'enableSearch' => 'Whether to enable the search functionality on the index page. When search is enabled,
+				a search form will be displayed on the index page, and the index page will display the search results.',
+			'searchModelClass' => 'This is the class representing the data being collecting in the search form.
+			 	A fully qualified namespaced class name is required, e.g., <code>app\models\PostSearchForm</code>.
+				This is only used when search is enabled.',
 		);
 	}
 
@@ -87,7 +101,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function stickyAttributes()
 	{
-		return array('baseControllerClass');
+		return array('baseControllerClass', 'indexWidgetType', 'enableSearch');
 	}
 
 	/**
