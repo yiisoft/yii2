@@ -7,9 +7,11 @@
 
 namespace yii\gii\generators\crud;
 
+use Yii;
 use yii\base\Model;
 use yii\db\ActiveRecord;
 use yii\gii\CodeFile;
+use yii\helpers\Inflector;
 use yii\web\Controller;
 
 /**
@@ -41,12 +43,15 @@ class Generator extends \yii\gii\Generator
 	{
 		return array_merge(parent::rules(), array(
 			array('modelClass, searchModelClass, controllerID, baseControllerClass', 'filter', 'filter' => 'trim'),
-			array('modelClass, searchModelClass, controllerID, baseControllerClass', 'required'),
+			array('modelClass, controllerID, baseControllerClass', 'required'),
 			array('modelClass, searchModelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 			array('modelClass', 'validateClass', 'params' => array('extends' => ActiveRecord::className())),
 			array('controllerID', 'match', 'pattern' => '/^[a-z\\-\\/]*$/', 'message' => 'Only a-z, dashes (-) and slashes (/) are allowed.'),
 			array('baseControllerClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
 			array('baseControllerClass', 'validateClass', 'params' => array('extends' => Controller::className())),
+			array('enableSearch', 'boolean'),
+			array('indexWidgetType', 'in', 'range' => array('grid', 'list')),
+			array('searchModelClass', 'validateSearchModelClass'),
 		));
 	}
 
@@ -104,6 +109,13 @@ class Generator extends \yii\gii\Generator
 		return array('baseControllerClass', 'indexWidgetType', 'enableSearch');
 	}
 
+	public function validateSearchModelClass()
+	{
+		if ($this->enableSearch && empty($this->searchModelClass)) {
+			$this->addError('searchModelClass', 'Search Model Class cannot be empty.');
+		}
+	}
+
 	/**
 	 * @inheritdoc
 	 */
@@ -111,20 +123,75 @@ class Generator extends \yii\gii\Generator
 	{
 		$files = array();
 		$files[] = new CodeFile(
-			$this->controllerFile,
+			$this->getControllerFile(),
 			$this->render('controller.php')
 		);
+		$viewPath = $this->getViewPath();
 
-		$files = scandir($this->getTemplatePath());
-		foreach ($files as $file) {
-			if (is_file($templatePath . '/' . $file) && CFileHelper::getExtension($file) === 'php' && $file !== 'controller.php') {
-				$files[] = new CodeFile(
-					$this->viewPath . DIRECTORY_SEPARATOR . $file,
-					$this->render($templatePath . '/' . $file)
-				);
+		$templatePath = $this->getTemplatePath() . '/views';
+		foreach (scandir($templatePath) as $file) {
+			if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+				$files[] = new CodeFile("$viewPath/$file", $this->render("views/$file"));
 			}
 		}
 
+		if ($this->enableSearch) {
+
+		}
+
 		return $files;
+	}
+
+
+	/**
+	 * @return string the controller class name without the namespace part.
+	 */
+	public function getControllerClass()
+	{
+		return Inflector::id2camel($this->getControllerID()) . 'Controller';
+	}
+
+	/**
+	 * @return string the controller ID (without the module ID prefix)
+	 */
+	public function getControllerID()
+	{
+		if (($pos = strrpos($this->controllerID, '/')) !== false) {
+			return substr($this->controllerID, $pos + 1);
+		} else {
+			return $this->controllerID;
+		}
+	}
+
+	/**
+	 * @return \yii\base\Module the module that the new controller belongs to
+	 */
+	public function getModule()
+	{
+		if (($pos = strpos($this->controllerID, '/')) !== false) {
+			$id = substr($this->controllerID, 0, $pos);
+			if (($module = Yii::$app->getModule($id)) !== null) {
+				return $module;
+			}
+		}
+		return Yii::$app;
+	}
+
+	/**
+	 * @return string the controller class file path
+	 */
+	public function getControllerFile()
+	{
+		$module = $this->getModule();
+		return $module->getControllerPath() . '/' . $this->getControllerClass() . '.php';
+	}
+
+	/**
+	 * @return string the action view file path
+	 */
+	public function getViewPath()
+	{
+		$module = $this->getModule();
+		return $module->getViewPath() . '/' . $this->getControllerID() ;
 	}
 }
