@@ -74,6 +74,8 @@ You can then install the application using the following command:
 php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-advanced
 ~~~
 
+Note that in order to install some dependencies you must have `php_openssl` extension enabled.
+
 
 ### Install from an Archive File
 
