@@ -5,13 +5,4 @@ return array(
 //			'class' => 'yii\debug\Module',
 //		),
 	),
-	'components' => array(
-		'log' => array(
-			'targets' => array(
-//				array(
-//					'class' => 'yii\log\DebugTarget',
-//				)
-			),
-		),
-	),
 );

@@ -14,6 +14,7 @@ return array(
 	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
 	'controllerNamespace' => 'frontend\controllers',
 	'modules' => array(
+		'gii' => 'yii\gii\Module'
 	),
 	'components' => array(
 		'db' => $params['components.db'],
