@@ -40,6 +40,7 @@ class Component extends Object
 	 * @param string $name the property name
 	 * @return mixed the property value or the value of a behavior's property
 	 * @throws UnknownPropertyException if the property is not defined
+	 * @throws InvalidCallException if the property is write-only.
 	 * @see __set
 	 */
 	public function __get($name)
