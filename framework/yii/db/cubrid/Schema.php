@@ -43,9 +43,6 @@ class Schema extends \yii\db\Schema
 		'time' => self::TYPE_TIME,
 		'timestamp' => self::TYPE_TIMESTAMP,
 		'datetime' => self::TYPE_DATETIME,
-		// Bit string data types
-//		'bit' => self::TYPE_BINARY, // TODO
-//		'bit varying' => self::TYPE_BINARY,
 		// String data types
 		'char' => self::TYPE_STRING,
 		'varchar' => self::TYPE_STRING,
@@ -56,6 +53,9 @@ class Schema extends \yii\db\Schema
 		// BLOB/CLOB data types
 		'blob' => self::TYPE_BINARY,
 		'clob' => self::TYPE_BINARY,
+		// Bit string data types
+//		'bit' => self::TYPE_STRING,
+//		'bit varying' => self::TYPE_STRING,
 		// Collection data types (TODO are considered strings for now, naybe support conversion?)
 //		'set' => self::TYPE_STRING,
 //		'multiset' => self::TYPE_STRING,
@@ -106,7 +106,7 @@ class Schema extends \yii\db\Schema
 		$tableInfo = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
 
 		if (isset($tableInfo[0]['NAME'])) {
-			$table = new TableSchema;
+			$table = new TableSchema();
 			$table->name = $tableInfo[0]['NAME'];
 
 			$sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
@@ -145,7 +145,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function loadColumnSchema($info)
 	{
-		$column = new ColumnSchema;
+		$column = new ColumnSchema();
 
 		$column->name = $info['Field'];
 		$column->allowNull = $info['Null'] === 'YES';
@@ -174,13 +174,13 @@ class Schema extends \yii\db\Schema
 					if (isset($values[1])) {
 						$column->scale = (int)$values[1];
 					}
-					if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
-						$column->type = 'boolean';
-					} elseif ($type === 'bit' || $type === 'bit varying') {
-						if ($column->size > 32) {
-							$column->type = 'bigint';
+					if ($type === 'bit' || $type === 'bit varying') {
+						if ($column->size === 1) {
+							$column->type = self::TYPE_BOOLEAN;
+						} elseif ($column->size > 32) {
+							$column->type = self::TYPE_BIGINT;
 						} elseif ($column->size === 32) {
-							$column->type = 'integer';
+							$column->type = self::TYPE_INTEGER;
 						}
 					}
 				}
