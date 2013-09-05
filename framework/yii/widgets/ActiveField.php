@@ -333,7 +333,8 @@ class ActiveField extends Component
 		if ($this->inputOptions !== array('class' => 'form-control')) {
 			$options = array_merge($this->inputOptions, $options);
 		}
-		$this->parts['{input}'] = Html::activeFileInput($this->model, $this->attribute, $options);
+		$this->parts['{input}'] = Html::activeFileInput($this->model, $this->attribute, $options)
+            . Html::activeFileInput($this->model, $this->attribute, $options);
 		return $this;
 	}
 
