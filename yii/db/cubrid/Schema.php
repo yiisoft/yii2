@@ -7,6 +7,7 @@
 
 namespace yii\db\cubrid;
 
+use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
@@ -84,6 +85,29 @@ class Schema extends \yii\db\Schema
 	public function quoteSimpleColumnName($name)
 	{
 		return strpos($name, '`') !== false || $name === '*' ? $name : '`' . $name . '`';
+	}
+
+	/**
+	 * Quotes a string value for use in a query.
+	 * Note that if the parameter is not a string, it will be returned without change.
+	 * @param string $str string to be quoted
+	 * @return string the properly quoted string
+	 * @see http://www.php.net/manual/en/function.PDO-quote.php
+	 */
+	public function quoteValue($str)
+	{
+		throw new NotSupportedException('quoteValue is currently broken in cubrid PDO');
+		// TODO implement workaround
+/*		if (!is_string($str)) {
+			return $str;
+		}
+
+		$this->db->open();
+		if (($value = $this->db->pdo->quote($str)) !== false) {
+			return $value;
+		} else { // the driver doesn't support quote (e.g. oci)
+			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
+		}*/
 	}
 
 	/**
