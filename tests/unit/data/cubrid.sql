@@ -71,8 +71,8 @@ CREATE TABLE `tbl_type` (
   `blob_col` blob,
   `numeric_col` decimal(5,2) DEFAULT '33.22',
   `time` timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
-  `bool_col` bit(1) NOT NULL,
-  `bool_col2` bit(1) DEFAULT B'1'
+  `bool_col` smallint NOT NULL,
+  `bool_col2` smallint DEFAULT 1
 );
 
 INSERT INTO tbl_customer (email, name, address, status) VALUES ('user1@example.com', 'user1', 'address1', 1);

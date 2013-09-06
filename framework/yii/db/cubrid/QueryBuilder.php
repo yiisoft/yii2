@@ -34,7 +34,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_TIME => 'time',
 		Schema::TYPE_DATE => 'date',
 		Schema::TYPE_BINARY => 'blob',
-		Schema::TYPE_BOOLEAN => 'bit(1)',
+		Schema::TYPE_BOOLEAN => 'smallint',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
 	);
 
