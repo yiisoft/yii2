@@ -227,7 +227,7 @@ class Schema extends \yii\db\Schema
 		$tableNames = array();
 		foreach($tables as $table) {
 			// do not list system tables
-			if ($table['TYPE'] !== 0) {
+			if ($table['TYPE'] != 0) {
 				$tableNames[] = $table['NAME'];
 			}
 		}
