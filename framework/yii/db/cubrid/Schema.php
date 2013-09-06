@@ -96,18 +96,17 @@ class Schema extends \yii\db\Schema
 	 */
 	public function quoteValue($str)
 	{
-		throw new NotSupportedException('quoteValue is currently broken in cubrid PDO');
-		// TODO implement workaround
-/*		if (!is_string($str)) {
+		if (!is_string($str)) {
 			return $str;
 		}
 
 		$this->db->open();
-		if (($value = $this->db->pdo->quote($str)) !== false) {
-			return $value;
-		} else { // the driver doesn't support quote (e.g. oci)
+		// workaround for broken PDO::quote() implementation in CUBRID 9.1.0 http://jira.cubrid.org/browse/APIS-658
+		if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION), '9.1.0', '<=')) {
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
-		}*/
+		} else {
+			return $this->db->pdo->quote($str);
+		}
 	}
 
 	/**
