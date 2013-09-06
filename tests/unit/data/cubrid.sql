@@ -66,6 +66,7 @@ CREATE TABLE `tbl_type` (
   `char_col` char(100) NOT NULL,
   `char_col2` varchar(100) DEFAULT 'something',
   `char_col3` string,
+  `enum_col` enum('a', 'b'),
   `float_col` double NOT NULL,
   `float_col2` double DEFAULT '1.23',
   `blob_col` blob,
