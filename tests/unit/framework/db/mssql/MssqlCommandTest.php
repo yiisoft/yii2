@@ -6,11 +6,7 @@ use yiiunit\framework\db\CommandTest;
 
 class MssqlCommandTest extends CommandTest
 {
-	public function setUp()
-	{
-		$this->driverName = 'sqlsrv';
-		parent::setUp();
-	}
+	protected $driverName = 'sqlsrv';
 
 	public function testAutoQuoting()
 	{

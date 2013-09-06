@@ -16,7 +16,6 @@ abstract class DatabaseTestCase extends TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		$this->mockApplication();
 		$databases = $this->getParam('databases');
 		$this->database = $databases[$this->driverName];
 		$pdo_database = 'pdo_'.$this->driverName;
@@ -24,6 +23,7 @@ abstract class DatabaseTestCase extends TestCase
 		if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
 			$this->markTestSkipped('pdo and pdo_'.$pdo_database.' extension are required.');
 		}
+		$this->mockApplication();
 	}
 
 	protected function tearDown()
@@ -31,6 +31,7 @@ abstract class DatabaseTestCase extends TestCase
 		if ($this->db) {
 			$this->db->close();
 		}
+		$this->destroyApplication();
 	}
 
 	/**

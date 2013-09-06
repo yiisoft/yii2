@@ -5,11 +5,7 @@ use yiiunit\framework\db\ConnectionTest;
 
 class SqliteConnectionTest extends ConnectionTest
 {
-	protected function setUp()
-	{
-		$this->driverName = 'sqlite';
-		parent::setUp();
-	}
+	protected $driverName = 'sqlite';
 
 	public function testConstruct()
 	{

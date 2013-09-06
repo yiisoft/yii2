@@ -8,7 +8,7 @@ use yiiunit\framework\db\QueryBuilderTest;
 
 class SqliteQueryBuilderTest extends QueryBuilderTest
 {
-	public $driverName = 'sqlite';
+	protected $driverName = 'sqlite';
 
 	public function columnTypes()
 	{

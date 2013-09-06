@@ -6,11 +6,7 @@ use yiiunit\framework\db\ConnectionTest;
 
 class MssqlConnectionTest extends ConnectionTest
 {
-	public function setUp()
-	{
-		$this->driverName = 'sqlsrv';
-		parent::setUp();
-	}
+	protected $driverName = 'sqlsrv';
 
 	public function testQuoteValue()
 	{

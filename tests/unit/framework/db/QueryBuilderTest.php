@@ -12,12 +12,6 @@ use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 
 class QueryBuilderTest extends DatabaseTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->mockApplication();
-	}
-
 	/**
 	 * @throws \Exception
 	 * @return QueryBuilder

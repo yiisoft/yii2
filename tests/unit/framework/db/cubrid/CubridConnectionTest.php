@@ -5,11 +5,7 @@ use yiiunit\framework\db\ConnectionTest;
 
 class CubridConnectionTest extends ConnectionTest
 {
-	protected function setUp()
-	{
-		$this->driverName = 'cubrid';
-		parent::setUp();
-	}
+	public $driverName = 'cubrid';
 
 	public function testQuoteValue()
 	{

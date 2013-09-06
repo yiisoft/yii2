@@ -9,12 +9,6 @@ use yii\db\DataReader;
 
 class QueryTest extends DatabaseTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->mockApplication();
-	}
-
 	public function testSelect()
 	{
 		// default
