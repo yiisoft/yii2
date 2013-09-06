@@ -8,15 +8,10 @@ use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
 use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
+use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 
 class QueryBuilderTest extends DatabaseTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->mockApplication();
-	}
-
 	/**
 	 * @throws \Exception
 	 * @return QueryBuilder
@@ -32,6 +27,8 @@ class QueryBuilderTest extends DatabaseTestCase
 				return new MssqlQueryBuilder($this->getConnection());
 			case 'pgsql':
 				return new PgsqlQueryBuilder($this->getConnection());
+			case 'cubrid':
+				return new CubridQueryBuilder($this->getConnection());
 		}
 		throw new \Exception('Test is not implemented for ' . $this->driverName);
 	}

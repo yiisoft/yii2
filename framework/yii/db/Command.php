@@ -181,7 +181,7 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindParam($name, $value, $this->getPdoType($value));
+			$this->pdoStatement->bindParam($name, $value, $this->db->schema->getPdoType($value));
 		} elseif ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
 		} elseif ($driverOptions === null) {
@@ -208,7 +208,7 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindValue($name, $value, $this->getPdoType($value));
+			$this->pdoStatement->bindValue($name, $value, $this->db->schema->getPdoType($value));
 		} else {
 			$this->pdoStatement->bindValue($name, $value, $dataType);
 		}
@@ -236,32 +236,13 @@ class Command extends \yii\base\Component
 					$type = $value[1];
 					$value = $value[0];
 				} else {
-					$type = $this->getPdoType($value);
+					$type = $this->db->schema->getPdoType($value);
 				}
 				$this->pdoStatement->bindValue($name, $value, $type);
 				$this->_params[$name] = $value;
 			}
 		}
 		return $this;
-	}
-
-	/**
-	 * Determines the PDO type for the give PHP data value.
-	 * @param mixed $data the data whose PDO type is to be determined
-	 * @return integer the PDO type
-	 * @see http://www.php.net/manual/en/pdo.constants.php
-	 */
-	private function getPdoType($data)
-	{
-		static $typeMap = array(
-			'boolean' => \PDO::PARAM_BOOL,
-			'integer' => \PDO::PARAM_INT,
-			'string' => \PDO::PARAM_STR,
-			'resource' => \PDO::PARAM_LOB,
-			'NULL' => \PDO::PARAM_NULL,
-		);
-		$type = gettype($data);
-		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 
 	/**
@@ -472,7 +453,7 @@ class Command extends \yii\base\Component
 	 * ))->execute();
 	 * ~~~
 	 *
-	 * Not that the values in each row must match the corresponding column names.
+	 * Note that the values in each row must match the corresponding column names.
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column names

@@ -201,7 +201,7 @@ class Connection extends Component
 	public $queryCache = 'cache';
 	/**
 	 * @var string the charset used for database connection. The property is only used
-	 * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
+	 * for MySQL, PostgreSQL and CUBRID databases. Defaults to null, meaning using default charset
 	 * as specified by the database.
 	 *
 	 * Note that if you're using GBK or BIG5 then it's highly recommended to
@@ -244,6 +244,7 @@ class Connection extends Component
 		'oci' => 'yii\db\oci\Schema',        // Oracle driver
 		'mssql' => 'yii\db\mssql\Schema',    // older MSSQL driver on MS Windows hosts
 		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+		'cubrid' => 'yii\db\cubrid\Schema',  // CUBRID
 	);
 	/**
 	 * @var Transaction the currently active transaction
@@ -361,7 +362,7 @@ class Connection extends Component
 		if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
 			$this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
 		}
-		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli'))) {
+		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli', 'cubrid'))) {
 			$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
 		}
 		$this->trigger(self::EVENT_AFTER_OPEN);

@@ -2,13 +2,11 @@
 
 namespace yiiunit\framework\db\pgsql;
 
-use yii\base\NotSupportedException;
 use yii\db\pgsql\Schema;
 use yiiunit\framework\db\QueryBuilderTest;
 
 class PostgreSQLQueryBuilderTest extends QueryBuilderTest
 {
-
 	public $driverName = 'pgsql';
 	
 	public function columnTypes()
