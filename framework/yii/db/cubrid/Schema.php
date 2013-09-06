@@ -243,4 +243,23 @@ class Schema extends \yii\db\Schema
 		}
 		return $tableNames;
 	}
+
+	/**
+	 * Determines the PDO type for the give PHP data value.
+	 * @param mixed $data the data whose PDO type is to be determined
+	 * @return integer the PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
+	 */
+	public function getPdoType($data)
+	{
+		static $typeMap = array(
+			'boolean' => \PDO::PARAM_STR, // CUBRID PDO does not support PARAM_BOOL
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'resource' => \PDO::PARAM_LOB,
+			'NULL' => \PDO::PARAM_NULL,
+		);
+		$type = gettype($data);
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
+	}
 }
