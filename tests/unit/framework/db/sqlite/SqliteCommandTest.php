@@ -5,11 +5,7 @@ use yiiunit\framework\db\CommandTest;
 
 class SqliteCommandTest extends CommandTest
 {
-	protected function setUp()
-	{
-		$this->driverName = 'sqlite';
-		parent::setUp();
-	}
+	protected $driverName = 'sqlite';
 
 	public function testAutoQuoting()
 	{

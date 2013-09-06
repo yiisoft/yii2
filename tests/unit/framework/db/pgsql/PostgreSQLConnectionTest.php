@@ -5,11 +5,7 @@ use yiiunit\framework\db\ConnectionTest;
 
 class PostgreSQLConnectionTest extends ConnectionTest
 {
-	public function setUp()
-	{
-		$this->driverName = 'pgsql';
-		parent::setUp();
-	}
+	protected $driverName = 'pgsql';
 
 	public function testConnection()
 	{
