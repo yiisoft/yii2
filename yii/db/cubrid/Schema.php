@@ -198,15 +198,6 @@ class Schema extends \yii\db\Schema
 					if (isset($values[1])) {
 						$column->scale = (int)$values[1];
 					}
-					if ($type === 'bit' || $type === 'bit varying') {
-						if ($column->size === 1) {
-							$column->type = self::TYPE_BOOLEAN;
-						} elseif ($column->size > 32) {
-							$column->type = self::TYPE_BIGINT;
-						} elseif ($column->size === 32) {
-							$column->type = self::TYPE_INTEGER;
-						}
-					}
 				}
 			}
 		}
@@ -253,7 +244,7 @@ class Schema extends \yii\db\Schema
 	public function getPdoType($data)
 	{
 		static $typeMap = array(
-			'boolean' => \PDO::PARAM_STR, // CUBRID PDO does not support PARAM_BOOL
+			'boolean' => \PDO::PARAM_INT, // CUBRID PDO does not support PARAM_BOOL
 			'integer' => \PDO::PARAM_INT,
 			'string' => \PDO::PARAM_STR,
 			'resource' => \PDO::PARAM_LOB,
