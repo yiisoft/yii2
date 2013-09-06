@@ -148,12 +148,16 @@ class Schema extends \yii\db\Schema
 
 			$foreignKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
 			foreach($foreignKeys as $key) {
-				$table->foreignKeys[] = array(
-					$key['PKTABLE_NAME'],
-					$key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
-					// TODO support composite foreign keys
-				);
+				if (isset($table->foreignKeys[$key['FK_NAME']])) {
+					$table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
+				} else {
+					$table->foreignKeys[$key['FK_NAME']] = array(
+						$key['PKTABLE_NAME'],
+						$key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
+					);
+				}
 			}
+			$table->foreignKeys = array_values($table->foreignKeys);
 
 			return $table;
 		} else {

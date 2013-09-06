@@ -56,6 +56,11 @@ class SchemaTest extends DatabaseTestCase
 		}
 	}
 
+	public function testGetNonExistingTableSchema()
+	{
+		$this->assertNull($this->getConnection()->schema->getTableSchema('nonexisting_table'));
+	}
+
 	public function testSchemaCache()
 	{
 		/** @var Schema $schema */
@@ -66,5 +71,19 @@ class SchemaTest extends DatabaseTestCase
 		$noCacheTable = $schema->getTableSchema('tbl_type', true);
 		$cachedTable = $schema->getTableSchema('tbl_type', true);
 		$this->assertEquals($noCacheTable, $cachedTable);
+	}
+
+	public function testCompositeFk()
+	{
+		/** @var Schema $schema */
+		$schema = $this->getConnection()->schema;
+
+		$table = $schema->getTableSchema('tbl_composite_fk');
+
+		$this->assertCount(1, $table->foreignKeys);
+		$this->assertTrue(isset($table->foreignKeys[0]));
+		$this->assertEquals('tbl_order_item', $table->foreignKeys[0][0]);
+		$this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
+		$this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
 	}
 }

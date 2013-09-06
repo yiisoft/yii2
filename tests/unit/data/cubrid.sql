@@ -3,6 +3,7 @@
  * The database setup in config.php is required to perform then relevant tests:
  */
 
+DROP TABLE IF EXISTS tbl_composite_fk;
 DROP TABLE IF EXISTS tbl_order_item;
 DROP TABLE IF EXISTS tbl_item;
 DROP TABLE IF EXISTS tbl_order;
@@ -74,6 +75,14 @@ CREATE TABLE `tbl_type` (
   `time` timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   `bool_col` smallint NOT NULL,
   `bool_col2` smallint DEFAULT 1
+);
+
+CREATE TABLE `tbl_composite_fk` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `tbl_order_item` (`order_id`,`item_id`) ON DELETE CASCADE
 );
 
 INSERT INTO tbl_customer (email, name, address, status) VALUES ('user1@example.com', 'user1', 'address1', 1);
