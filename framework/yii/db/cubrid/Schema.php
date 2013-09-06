@@ -55,14 +55,14 @@ class Schema extends \yii\db\Schema
 		'blob' => self::TYPE_BINARY,
 		'clob' => self::TYPE_BINARY,
 		// Bit string data types
-//		'bit' => self::TYPE_STRING,
-//		'bit varying' => self::TYPE_STRING,
-		// Collection data types (TODO are considered strings for now, naybe support conversion?)
-//		'set' => self::TYPE_STRING,
-//		'multiset' => self::TYPE_STRING,
-//		'list' => self::TYPE_STRING,
-//		'sequence' => self::TYPE_STRING,
-//		'enum' => self::TYPE_STRING,
+		'bit' => self::TYPE_STRING,
+		'bit varying' => self::TYPE_STRING,
+		// Collection data types (considered strings for now, may add support for them later)
+		'set' => self::TYPE_STRING,
+		'multiset' => self::TYPE_STRING,
+		'list' => self::TYPE_STRING,
+		'sequence' => self::TYPE_STRING,
+		'enum' => self::TYPE_STRING,
 	);
 
 	/**
