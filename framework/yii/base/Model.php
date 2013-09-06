@@ -164,7 +164,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * If an attribute should NOT be massively assigned (thus considered unsafe),
 	 * please prefix the attribute with an exclamation character (e.g. '!rank').
 	 *
-	 * The default implementation of this method will all scenarios found in the [[rules()]]
+	 * The default implementation of this method will return all scenarios found in the [[rules()]]
 	 * declaration. A special scenario named [[DEFAULT_SCENARIO]] will contain all attributes
 	 * found in the [[rules()]]. Each scenario will be associated with the attributes that
 	 * are being validated by the validation rules that apply to the scenario.
