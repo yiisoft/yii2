@@ -338,10 +338,9 @@ abstract class Module extends Component
 
 	/**
 	 * Retrieves the named module.
-	 * @param string $id module ID (case-sensitive)
+	 * @param string $id module ID (case-sensitive).
 	 * @param boolean $load whether to load the module if it is not yet loaded.
-	 * @return Module|null the module instance, null if the module
-	 * does not exist.
+	 * @return Module|null the module instance, null if the module does not exist.
 	 * @see hasModule()
 	 */
 	public function getModule($id, $load = true)
