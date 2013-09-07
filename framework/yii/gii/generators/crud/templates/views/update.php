@@ -1,31 +1,31 @@
 <?php
+
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
+
 /**
- * The following variables are available in this template:
- * - $this: the CrudCode object
+ * @var yii\base\View $this
+ * @var yii\gii\generators\crud\Generator $generator
  */
-?>
-<?php echo "<?php\n"; ?>
-/* @var $this <?php echo $this->getControllerClass(); ?> */
-/* @var $model <?php echo $this->getModelClass(); ?> */
 
-<?php
-$nameColumn=$this->guessNameColumn($this->tableSchema->columns);
-$label=$this->pluralize($this->class2name($this->modelClass));
-echo "\$this->breadcrumbs=array(
-	'$label'=>array('index'),
-	\$model->{$nameColumn}=>array('view','id'=>\$model->{$this->tableSchema->primaryKey}),
-	'Update',
-);\n";
+echo "<?php\n";
 ?>
 
-$this->menu=array(
-	array('label'=>'List <?php echo $this->modelClass; ?>', 'url'=>array('index')),
-	array('label'=>'Create <?php echo $this->modelClass; ?>', 'url'=>array('create')),
-	array('label'=>'View <?php echo $this->modelClass; ?>', 'url'=>array('view', 'id'=>$model-><?php echo $this->tableSchema->primaryKey; ?>)),
-	array('label'=>'Manage <?php echo $this->modelClass; ?>', 'url'=>array('admin')),
-);
+use yii\helpers\Html;
+
+/**
+* @var yii\base\View $this
+* @var <?php echo ltrim($generator->modelClass, '\\'); ?> $model
+*/
+
+$this->title = 'Modify <?php echo Inflector::camel2words(StringHelper::basename($generator->modelClass)); ?>: ' . $model-><?php echo $generator->getNameAttribute(); ?>;
 ?>
+<div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-update">
 
-<h1>Update <?php echo $this->modelClass." <?php echo \$model->{$this->tableSchema->primaryKey}; ?>"; ?></h1>
+	<h1><?php echo "<?php"; ?> echo Html::encode($this->title); ?></h1>
 
-<?php echo "<?php \$this->renderPartial('_form', array('model'=>\$model)); ?>"; ?>
+	<?php echo "<?php"; ?> echo $this->render('_form', array(
+		'model' => $model,
+	)); ?>
+
+</div>
