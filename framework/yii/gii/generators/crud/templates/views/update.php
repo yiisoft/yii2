@@ -14,11 +14,11 @@ echo "<?php\n";
 use yii\helpers\Html;
 
 /**
-* @var yii\base\View $this
-* @var <?php echo ltrim($generator->modelClass, '\\'); ?> $model
-*/
+ * @var yii\base\View $this
+ * @var <?php echo ltrim($generator->modelClass, '\\'); ?> $model
+ */
 
-$this->title = 'Modify <?php echo Inflector::camel2words(StringHelper::basename($generator->modelClass)); ?>: ' . $model-><?php echo $generator->getNameAttribute(); ?>;
+$this->title = 'Update <?php echo Inflector::camel2words(StringHelper::basename($generator->modelClass)); ?>: ' . $model-><?php echo $generator->getNameAttribute(); ?>;
 ?>
 <div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-update">
 

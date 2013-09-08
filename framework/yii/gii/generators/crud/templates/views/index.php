@@ -1,29 +1,54 @@
 <?php
+
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
+
 /**
- * The following variables are available in this template:
- * - $this: the CrudCode object
+ * @var yii\base\View $this
+ * @var yii\gii\generators\crud\Generator $generator
  */
+
+/** @var \yii\db\ActiveRecord $model */
+$class = $generator->modelClass;
+$pks = $class::primaryKey();
+if (count($pks) === 1) {
+	$viewUrl = "array('view', 'id' => \$model->{$pks[0]})";
+} else {
+	$params = array();
+	foreach ($pks as $pk) {
+		$params[] = "'$pk' => \$model->$pk";
+	}
+	$viewUrl = "array('view', " . implode(', ', $params) . ')';
+}
+
+$nameAttribute = $generator->getNameAttribute();
+
+echo "<?php\n";
 ?>
-<?php echo "<?php\n"; ?>
-/* @var $this <?php echo $this->getControllerClass(); ?> */
-/* @var $dataProvider CActiveDataProvider */
 
-<?php
-$label=$this->pluralize($this->class2name($this->modelClass));
-echo "\$this->breadcrumbs=array(
-	'$label',
-);\n";
+use yii\helpers\Html;
+use <?php echo $generator->indexWidgetType === 'grid' ? 'yii\grid\GridView' : 'yii\widgets\ListView'; ?>;
+
+/**
+ * @var yii\base\View $this
+ * @var yii\data\ActiveDataProvider $dataProvider
+ */
+
+$this->title = '<?php echo Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>';
 ?>
+<div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-index">
 
-$this->menu=array(
-	array('label'=>'Create <?php echo $this->modelClass; ?>', 'url'=>array('create')),
-	array('label'=>'Manage <?php echo $this->modelClass; ?>', 'url'=>array('admin')),
-);
-?>
+	<h1><?php echo "<?php"; ?> echo Html::encode($this->title); ?></h1>
 
-<h1><?php echo $label; ?></h1>
+<?php if ($generator->indexWidgetType === 'grid'): ?>
 
-<?php echo "<?php"; ?> $this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
-)); ?>
+<?php else: ?>
+<?php echo "\t<?php"; ?> echo ListView::widget(array(
+		'dataProvider' => $dataProvider,
+		'itemView' => function ($model, $key, $index, $widget) {
+			return Html::a(Html::encode($model-><?php echo $nameAttribute; ?>), <?php echo $viewUrl; ?>);
+		},
+	)); ?>
+<?php endif; ?>
+
+</div>

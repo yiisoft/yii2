@@ -151,7 +151,7 @@ class Generator extends \yii\gii\Generator
 
 		$templatePath = $this->getTemplatePath() . '/views';
 		foreach (scandir($templatePath) as $file) {
-			if (!in_array($file, array('create.php', 'update.php', 'view.php'))) {
+			if (!in_array($file, array('index.php', 'create.php', 'update.php', 'view.php', '_form.php'))) {
 				continue;
 			}
 			if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
@@ -204,5 +204,56 @@ class Generator extends \yii\gii\Generator
 		}
 		$pk = $class::primaryKey();
 		return $pk[0];
+	}
+
+	/**
+	 * @param ActiveRecord $model
+	 * @param string $attribute
+	 * @return string
+	 */
+	public function generateActiveField($model, $attribute)
+	{
+		$tableSchema = $model->getTableSchema();
+		if (!isset($tableSchema->columns[$attribute])) {
+			return "\$form->field(\$model, '$attribute');";
+		}
+		$column = $tableSchema->columns[$attribute];
+		if ($column->phpType === 'boolean') {
+			return "\$form->field(\$model, '$attribute')->checkbox();";
+		} elseif ($column->type === 'text') {
+			return "\$form->field(\$model, '$attribute')->textarea(array('rows' => 6));";
+		} else {
+			if (preg_match('/^(password|pass|passwd|passcode)$/i', $column->name)) {
+				$input = 'passwordInput';
+			} else {
+				$input = 'textInput';
+			}
+			if ($column->phpType !== 'string' || $column->size === null) {
+				return "\$form->field(\$model, '$attribute')->$input();";
+			} else {
+				return "\$form->field(\$model, '$attribute')->$input(array('maxlength' => $column->size));";
+			}
+		}
+	}
+
+	/**
+	 * @param \yii\db\ColumnSchema $column
+	 * @return string
+	 */
+	public function generateColumnFormat($column)
+	{
+		if ($column->phpType === 'boolean') {
+			return 'boolean';
+		} elseif ($column->type === 'text') {
+			return 'ntext';
+		} elseif (stripos($column->name, 'time') !== false && $column->phpType === 'integer') {
+			return 'datetime';
+		} elseif (stripos($column->name, 'email') !== false) {
+			return 'email';
+		} elseif (stripos($column->name, 'url') !== false) {
+			return 'url';
+		} else {
+			return 'text';
+		}
 	}
 }

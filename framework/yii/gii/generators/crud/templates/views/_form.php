@@ -1,49 +1,45 @@
 <?php
+
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
+
 /**
- * The following variables are available in this template:
- * - $this: the CrudCode object
+ * @var yii\base\View $this
+ * @var yii\gii\generators\crud\Generator $generator
+ */
+
+/** @var \yii\db\ActiveRecord $model */
+$class = $generator->modelClass;
+$model = new $class;
+$safeAttributes = $model->safeAttributes();
+if (empty($safeAttributes)) {
+	$safeAttributes = $model->getTableSchema()->columnNames;
+}
+
+echo "<?php\n";
+?>
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/**
+ * @var yii\base\View $this
+ * @var <?php echo ltrim($generator->modelClass, '\\'); ?> $model
+ * @var yii\widgets\ActiveForm $form
  */
 ?>
-<?php echo "<?php\n"; ?>
-/* @var $this <?php echo $this->getControllerClass(); ?> */
-/* @var $model <?php echo $this->getModelClass(); ?> */
-/* @var $form CActiveForm */
-?>
 
-<div class="form">
+<div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-form">
 
-<?php echo "<?php \$form=\$this->beginWidget('CActiveForm', array(
-	'id'=>'".$this->class2id($this->modelClass)."-form',
-	// Please note: When you enable ajax validation, make sure the corresponding
-	// controller action is handling ajax validation correctly.
-	// There is a call to performAjaxValidation() commented in generated controller code.
-	// See class documentation of CActiveForm for details on this.
-	'enableAjaxValidation'=>false,
-)); ?>\n"; ?>
+	<?php echo '<?php'; ?> $form = ActiveForm::begin(); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+<?php foreach ($safeAttributes as $attribute) {
+	echo "\t\t<?php echo " . $generator->generateActiveField($model, $attribute) . " ?>\n\n";
+} ?>
+		<div class="form-group">
+			<?php echo '<?php'; ?> echo Html::submitButton($model->isNewRecord ? 'Create' : 'Update', array('class' => 'btn btn-primary')); ?>
+		</div>
 
-	<?php echo "<?php echo \$form->errorSummary(\$model); ?>\n"; ?>
+	<?php echo '<?php'; ?> ActiveForm::end(); ?>
 
-<?php
-foreach($this->tableSchema->columns as $column)
-{
-	if($column->autoIncrement)
-		continue;
-?>
-	<div class="row">
-		<?php echo "<?php echo ".$this->generateActiveLabel($this->modelClass,$column)."; ?>\n"; ?>
-		<?php echo "<?php echo ".$this->generateActiveField($this->modelClass,$column)."; ?>\n"; ?>
-		<?php echo "<?php echo \$form->error(\$model,'{$column->name}'); ?>\n"; ?>
-	</div>
-
-<?php
-}
-?>
-	<div class="row buttons">
-		<?php echo "<?php echo CHtml::submitButton(\$model->isNewRecord ? 'Create' : 'Save'); ?>\n"; ?>
-	</div>
-
-<?php echo "<?php \$this->endWidget(); ?>\n"; ?>
-
-</div><!-- form -->
+</div>
