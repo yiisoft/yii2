@@ -98,10 +98,10 @@ class Pagination extends Object
 	 */
 	public $validatePage = true;
 	/**
-	 * @var integer number of items on each page. Defaults to 10.
+	 * @var integer number of items on each page. Defaults to 20.
 	 * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
 	 */
-	public $pageSize = 10;
+	public $pageSize = 20;
 	/**
 	 * @var integer total number of items.
 	 */
