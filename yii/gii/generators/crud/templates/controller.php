@@ -51,6 +51,20 @@ use yii\web\HttpException;
 class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename($generator->baseControllerClass) . "\n"; ?>
 {
 	/**
+	 * Lists all <?php echo $modelClass; ?> models.
+	 * @return mixed
+	 */
+	public function actionIndex()
+	{
+		$dataProvider = new ActiveDataProvider(array(
+			'query' => <?php echo $modelClass; ?>::find(),
+		));
+		return $this->render('index', array(
+			'dataProvider' => $dataProvider,
+		));
+	}
+
+	/**
 	 * Displays a single <?php echo $modelClass; ?> model.
 	 * <?php echo $paramComments . "\n"; ?>
 	 * @return mixed
@@ -112,20 +126,8 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 	}
 
 	/**
-	 * Lists all models.
-	 * @return mixed
-	 */
-	public function actionIndex()
-	{
-		$dataProvider = new ActiveDataProvider('<?php echo $modelClass; ?>');
-		return $this->render('index', array(
-			'dataProvider' => $dataProvider,
-		));
-	}
-
-	/**
-	 * Returns the data model based on its primary key value.
-	 * If the data model is not found, a 404 HTTP exception will be thrown.
+	 * Finds the <?php echo $modelClass; ?> model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
 	 * <?php echo $paramComments . "\n"; ?>
 	 * @return <?php echo $modelClass; ?> the loaded model
 	 * @throws HttpException if the model cannot be found
@@ -143,10 +145,10 @@ if (count($pks) === 1) {
 	$condition = 'array(' . implode(', ', $condition) . ')';
 }
 ?>
-		$model = <?php echo $modelClass; ?>::find(<?php echo $condition; ?>);
-		if ($model === null) {
+		if (($model = <?php echo $modelClass; ?>::find(<?php echo $condition; ?>)) !== null) {
+			return $model;
+		} else {
 			throw new HttpException(404, 'The requested page does not exist.');
 		}
-		return $model;
 	}
 }
