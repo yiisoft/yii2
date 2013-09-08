@@ -376,7 +376,7 @@ class ActiveRecord extends Model
 	 */
 	public function __get($name)
 	{
-		if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
+		if (array_key_exists($name, $this->_attributes)) {
 			return $this->_attributes[$name];
 		} elseif (isset($this->getTableSchema()->columns[$name])) {
 			return null;
