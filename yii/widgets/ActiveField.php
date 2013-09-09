@@ -374,7 +374,6 @@ class ActiveField extends Component
 	 */
 	public function radio($options = array(), $enclosedByLabel = true)
 	{
-		$options = array_merge($this->inputOptions, $options);
 		if ($enclosedByLabel) {
 			if (!isset($options['label'])) {
 				$options['label'] = Html::encode($this->model->getAttributeLabel($this->attribute));
@@ -410,7 +409,6 @@ class ActiveField extends Component
 	 */
 	public function checkbox($options = array(), $enclosedByLabel = true)
 	{
-		$options = array_merge($this->inputOptions, $options);
 		if ($enclosedByLabel) {
 			if (!isset($options['label'])) {
 				$options['label'] = Html::encode($this->model->getAttributeLabel($this->attribute));
