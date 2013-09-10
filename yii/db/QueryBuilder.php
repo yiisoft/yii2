@@ -912,11 +912,6 @@ class QueryBuilder extends \yii\base\Object
 
 	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
 	{
-		foreach ($columns as $i => $column) {
-			if (strpos($column, '(') === false) {
-				$columns[$i] = $this->db->quoteColumnName($column);
-			}
-		}
 		$vss = array();
 		foreach ($values as $value) {
 			$vs = array();
@@ -930,6 +925,11 @@ class QueryBuilder extends \yii\base\Object
 				}
 			}
 			$vss[] = '(' . implode(', ', $vs) . ')';
+		}
+		foreach ($columns as $i => $column) {
+			if (strpos($column, '(') === false) {
+				$columns[$i] = $this->db->quoteColumnName($column);
+			}
 		}
 		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
 	}
