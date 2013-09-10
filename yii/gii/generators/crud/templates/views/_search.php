@@ -1,38 +1,45 @@
 <?php
+
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
+
 /**
- * The following variables are available in this template:
- * - $this: the CrudCode object
+ * @var yii\base\View $this
+ * @var yii\gii\generators\crud\Generator $generator
+ */
+
+echo "<?php\n";
+?>
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/**
+ * @var yii\base\View $this
+ * @var <?php echo ltrim($generator->searchModelClass, '\\'); ?> $model
+ * @var yii\widgets\ActiveForm $form
  */
 ?>
-<?php echo "<?php\n"; ?>
-/* @var $this <?php echo $this->getControllerClass(); ?> */
-/* @var $model <?php echo $this->getModelClass(); ?> */
-/* @var $form CActiveForm */
-?>
 
-<div class="wide form">
+<div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-search">
 
-<?php echo "<?php \$form=\$this->beginWidget('CActiveForm', array(
-	'action'=>Yii::app()->createUrl(\$this->route),
-	'method'=>'get',
-)); ?>\n"; ?>
+	<?php echo '<?php'; ?> $form = ActiveForm::begin(array('method' => 'get')); ?>
 
-<?php foreach($this->tableSchema->columns as $column): ?>
 <?php
-	$field=$this->generateInputField($this->modelClass,$column);
-	if(strpos($field,'password')!==false)
-		continue;
+$count = 0;
+foreach ($generator->getTableSchema()->getColumnNames() as $attribute) {
+	if (++$count < 6) {
+		echo "\t\t<?php echo " . $generator->generateActiveSearchField($attribute) . " ?>\n";
+	} else {
+		echo "\t\t<?php // echo " . $generator->generateActiveSearchField($attribute) . " ?>\n";
+	}
+}
 ?>
-	<div class="row">
-		<?php echo "<?php echo \$form->label(\$model,'{$column->name}'); ?>\n"; ?>
-		<?php echo "<?php echo ".$this->generateActiveField($this->modelClass,$column)."; ?>\n"; ?>
-	</div>
+		<div class="form-group">
+			<?php echo '<?php'; ?> echo Html::submitButton('Search', array('class' => 'btn btn-primary')); ?>
+			<?php echo '<?php'; ?> echo Html::resetButton('Reset', array('class' => 'btn btn-default')); ?>
+		</div>
 
-<?php endforeach; ?>
-	<div class="row buttons">
-		<?php echo "<?php echo CHtml::submitButton('Search'); ?>\n"; ?>
-	</div>
+	<?php echo '<?php'; ?> ActiveForm::end(); ?>
 
-<?php echo "<?php \$this->endWidget(); ?>\n"; ?>
-
-</div><!-- search-form -->
+</div>

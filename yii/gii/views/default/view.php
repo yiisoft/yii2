@@ -40,7 +40,7 @@ foreach ($generator->templates as $name => $path) {
 					'form' => $form,
 				)); ?>
 				<?php echo $form->field($generator, 'template')->sticky()
-					->label(array('label' => 'Code Template'))
+					->label('Code Template')
 					->dropDownList($templates)->hint('
 						Please select which set of the templates should be used to generated the code.
 				'); ?>

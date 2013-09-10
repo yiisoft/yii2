@@ -9,8 +9,7 @@ use yii\helpers\StringHelper;
  */
 
 /** @var \yii\db\ActiveRecord $model */
-$class = $generator->modelClass;
-$model = new $class;
+$model = new $generator->modelClass;
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
 	$safeAttributes = $model->getTableSchema()->columnNames;
@@ -34,7 +33,7 @@ use yii\widgets\ActiveForm;
 	<?php echo '<?php'; ?> $form = ActiveForm::begin(); ?>
 
 <?php foreach ($safeAttributes as $attribute) {
-	echo "\t\t<?php echo " . $generator->generateActiveField($model, $attribute) . " ?>\n\n";
+	echo "\t\t<?php echo " . $generator->generateActiveField($attribute) . " ?>\n\n";
 } ?>
 		<div class="form-group">
 			<?php echo '<?php'; ?> echo Html::submitButton($model->isNewRecord ? 'Create' : 'Update', array('class' => 'btn btn-primary')); ?>
