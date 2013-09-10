@@ -200,7 +200,7 @@ SQL;
 			}
 			$citem = array($foreignTable);
 			foreach ($columns as $idx => $column) {
-				$citem[] = array($fcolumns[$idx] => $column);
+				$citem[$fcolumns[$idx]] = $column;
 			}
 			$table->foreignKeys[] = $citem;
 		}
