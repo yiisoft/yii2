@@ -9,38 +9,22 @@ use yii\helpers\StringHelper;
  * @var yii\gii\generators\crud\Generator $generator
  */
 
-$pos = strrpos($generator->controllerClass, '\\');
-$ns = ltrim(substr($generator->controllerClass, 0, $pos), '\\');
-$controllerClass = substr($generator->controllerClass, $pos + 1);
-$pos = strrpos($generator->modelClass, '\\');
-$modelClass = $pos === false ? $generator->modelClass : substr($generator->modelClass, $pos + 1);
+$controllerClass = StringHelper::basename($generator->controllerClass);
+$modelClass = StringHelper::basename($generator->modelClass);
+$searchModelClass = StringHelper::basename($generator->searchModelClass);
 
-/** @var \yii\db\ActiveRecord $class */
-$class = $generator->modelClass;
-$pks = $class::primaryKey();
-$schema = $class::getTableSchema();
-if (count($pks) === 1) {
-	$ids = '$id';
-	$params = "array('id' => \$model->{$pks[0]})";
-	$paramComments = '@param ' . $schema->columns[$pks[0]]->phpType . ' $id';
-} else {
-	$ids = '$' . implode(', $', $pks);
-	$params = array();
-	$paramComments = array();
-	foreach ($pks as $pk) {
-		$paramComments[] = '@param ' . $schema->columns[$pk]->phpType . ' $' . $pk;
-		$params[] = "'$pk' => \$model->$pk";
-	}
-	$params = implode(', ', $params);
-	$paramComments = implode("\n\t * ", $paramComments);
-}
+$pks = $generator->getTableSchema()->primaryKey;
+$urlParams = $generator->generateUrlParams();
+$actionParams = $generator->generateActionParams();
+$actionParamComments = $generator->generateActionParamComments();
 
 echo "<?php\n";
 ?>
 
-namespace <?php echo $ns; ?>;
+namespace <?php echo StringHelper::dirname(ltrim($generator->controllerClass, '\\')); ?>;
 
 use <?php echo ltrim($generator->modelClass, '\\'); ?>;
+use <?php echo ltrim($generator->searchModelClass, '\\'); ?>;
 use yii\data\ActiveDataProvider;
 use <?php echo ltrim($generator->baseControllerClass, '\\'); ?>;
 use yii\web\HttpException;
@@ -56,23 +40,24 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 	 */
 	public function actionIndex()
 	{
-		$dataProvider = new ActiveDataProvider(array(
-			'query' => <?php echo $modelClass; ?>::find(),
-		));
+		$searchModel = new <?php echo $searchModelClass; ?>;
+		$dataProvider = $searchModel->search($_GET);
+
 		return $this->render('index', array(
 			'dataProvider' => $dataProvider,
+			'searchModel' => $searchModel,
 		));
 	}
 
 	/**
 	 * Displays a single <?php echo $modelClass; ?> model.
-	 * <?php echo $paramComments . "\n"; ?>
+	 * <?php echo implode("\n\t * ", $actionParamComments) . "\n"; ?>
 	 * @return mixed
 	 */
-	public function actionView(<?php echo $ids; ?>)
+	public function actionView(<?php echo $actionParams; ?>)
 	{
 		return $this->render('view', array(
-			'model' => $this->findModel(<?php echo $ids; ?>),
+			'model' => $this->findModel(<?php echo $actionParams; ?>),
 		));
 	}
 
@@ -86,7 +71,7 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 		$model = new <?php echo $modelClass; ?>;
 
 		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(array('view', <?php echo $params; ?>));
+			return $this->redirect(array('view', <?php echo $urlParams; ?>));
 		} else {
 			return $this->render('create', array(
 				'model' => $model,
@@ -97,15 +82,15 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 	/**
 	 * Updates an existing <?php echo $modelClass; ?> model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * <?php echo $paramComments . "\n"; ?>
+	 * <?php echo implode("\n\t * ", $actionParamComments) . "\n"; ?>
 	 * @return mixed
 	 */
-	public function actionUpdate(<?php echo $ids; ?>)
+	public function actionUpdate(<?php echo $actionParams; ?>)
 	{
-		$model = $this->findModel(<?php echo $ids; ?>);
+		$model = $this->findModel(<?php echo $actionParams; ?>);
 
 		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(array('view', <?php echo $params; ?>));
+			return $this->redirect(array('view', <?php echo $urlParams; ?>));
 		} else {
 			return $this->render('update', array(
 				'model' => $model,
@@ -116,23 +101,23 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 	/**
 	 * Deletes an existing <?php echo $modelClass; ?> model.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
-	 * <?php echo $paramComments . "\n"; ?>
+	 * <?php echo implode("\n\t * ", $actionParamComments) . "\n"; ?>
 	 * @return mixed
 	 */
-	public function actionDelete(<?php echo $ids; ?>)
+	public function actionDelete(<?php echo $actionParams; ?>)
 	{
-		$this->findModel(<?php echo $ids; ?>)->delete();
+		$this->findModel(<?php echo $actionParams; ?>)->delete();
 		return $this->redirect(array('index'));
 	}
 
 	/**
 	 * Finds the <?php echo $modelClass; ?> model based on its primary key value.
 	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 * <?php echo $paramComments . "\n"; ?>
+	 * <?php echo implode("\n\t * ", $actionParamComments) . "\n"; ?>
 	 * @return <?php echo $modelClass; ?> the loaded model
 	 * @throws HttpException if the model cannot be found
 	 */
-	protected function findModel(<?php echo $ids; ?>)
+	protected function findModel(<?php echo $actionParams; ?>)
 	{
 <?php
 if (count($pks) === 1) {

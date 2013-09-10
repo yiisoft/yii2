@@ -19,6 +19,8 @@ use yii\helpers\Html;
  */
 
 $this->title = 'Create <?php echo Inflector::camel2words(StringHelper::basename($generator->modelClass)); ?>';
+$this->params['breadcrumbs'][] = array('label' => '<?php echo Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>', 'url' => array('index'));
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-create">
 

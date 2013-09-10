@@ -81,11 +81,6 @@ yii.gii = (function ($) {
 				$('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
 			}).change();
 
-			// crud generator: hide Search Model Class input if search is not enabled
-			$('#crud-generator #generator-enablesearch').on('change', function () {
-				$('#crud-generator .field-generator-searchmodelclass').toggle(this.checked);
-			}).change();
-
 			// hide Generate button if any input is changed
 			$('.default-view .form-group input,select,textarea').change(function () {
 				$('.default-view-results,.default-view-files').hide();
