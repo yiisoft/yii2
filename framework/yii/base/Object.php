@@ -155,9 +155,8 @@ class Object implements Arrayable
 	 */
 	public function __call($name, $params)
 	{
-		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) {
-			$func = $this->$getter();
+		if ($this->canGetProperty($name)) {
+			$func = $this->$name;
 			if ($func instanceof \Closure) {
 				return call_user_func_array($func, $params);
 			}
