@@ -88,7 +88,7 @@ When only a single row is returned:
 
 ```php
 $command = $connection->createCommand('SELECT * FROM tbl_post WHERE id=1');
-$post = $command->query();
+$post = $command->queryOne();
 ```
 
 When there are multiple values from the same column:
