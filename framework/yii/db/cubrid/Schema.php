@@ -57,7 +57,7 @@ class Schema extends \yii\db\Schema
 		// Bit string data types
 		'bit' => self::TYPE_STRING,
 		'bit varying' => self::TYPE_STRING,
-		// Collection data types (considered strings for now, may add support for them later)
+		// Collection data types (considered strings for now)
 		'set' => self::TYPE_STRING,
 		'multiset' => self::TYPE_STRING,
 		'list' => self::TYPE_STRING,
@@ -73,7 +73,7 @@ class Schema extends \yii\db\Schema
 	 */
 	public function quoteSimpleTableName($name)
 	{
-		return strpos($name, "`") !== false ? $name : "`" . $name . "`";
+		return strpos($name, '"') !== false ? $name : '"' . $name . '"';
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Schema extends \yii\db\Schema
 	 */
 	public function quoteSimpleColumnName($name)
 	{
-		return strpos($name, '`') !== false || $name === '*' ? $name : '`' . $name . '`';
+		return strpos($name, '"') !== false || $name === '*' ? $name : '"' . $name . '"';
 	}
 
 	/**
