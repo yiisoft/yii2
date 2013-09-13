@@ -137,6 +137,33 @@ class Request extends \yii\base\Request
 	}
 
 	/**
+	 * Returns whether this is a GET request.
+	 * @return boolean whether this is a GET request.
+	 */
+	public function getIsGet()
+	{
+		return $this->getMethod() === 'GET';
+	}
+
+	/**
+	 * Returns whether this is an OPTIONS request.
+	 * @return boolean whether this is a OPTIONS request.
+	 */
+	public function getIsOptions()
+	{
+		return $this->getMethod() === 'OPTIONS';
+	}
+  
+	/**
+	 * Returns whether this is a HEAD request.
+	 * @return boolean whether this is a HEAD request.
+	 */
+	public function getIsHead()
+	{
+		return $this->getMethod() === 'HEAD';
+	}
+  
+	/**
 	 * Returns whether this is a POST request.
 	 * @return boolean whether this is a POST request.
 	 */
