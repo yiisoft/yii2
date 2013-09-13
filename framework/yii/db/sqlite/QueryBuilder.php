@@ -23,7 +23,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
 	public $typeMap = array(
-		Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+		Schema::TYPE_PK => 'integer primary key autoincrement not null',
 		Schema::TYPE_STRING => 'varchar(255)',
 		Schema::TYPE_TEXT => 'text',
 		Schema::TYPE_SMALLINT => 'smallint',
