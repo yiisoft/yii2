@@ -210,7 +210,8 @@ class Schema extends \yii\db\Schema
 		if ($column->type === 'timestamp' && $info['Default'] === 'CURRENT_TIMESTAMP' ||
 			$column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' ||
 			$column->type === 'date' && $info['Default'] === 'SYS_DATE' ||
-			$column->type === 'time' && $info['Default'] === 'SYS_TIME') {
+			$column->type === 'time' && $info['Default'] === 'SYS_TIME'
+		) {
 			$column->defaultValue = new Expression($info['Default']);
 		} else {
 			$column->defaultValue = $column->typecast($info['Default']);
