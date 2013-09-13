@@ -134,11 +134,6 @@ class ObjectTest extends TestCase
 		$this->assertEquals('new text', $this->object->object->text);
 	}
 
-	public function testAnonymousFunctionProperty()
-	{
-		$this->assertEquals(2, $this->object->execute(1));
-	}
-
 	public function testConstruct()
 	{
 		$object = new NewObject(array('text' => 'test text'));
