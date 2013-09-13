@@ -1,13 +1,12 @@
 Bootstrap widgets
 =================
 
-Yii includes support of [Bootstrap 3](http://getbootstrap.com/) markup and components framework out of the box. It is an
-excellent framework that allows you to speed up development a lot.
+Yii includes support for the [Bootstrap 3](http://getbootstrap.com/) markup and components framework out of the box. Bootstrap is an excellent, responsive framework that can greatly speed up your development process.
 
-Bootstrap is generally about two parts:
+The core of Bootstrap is represented by two parts:
 
-- Basics such as grid system, typography, helper classes and responsive utilities.
-- Ready to use components such as menus, pagination, modal boxes, tabs etc.
+- CSS basics, such as grid layout system, typography, helper classes, and responsive utilities.
+- Ready to use components, such as menus, pagination, modal boxes, tabs etc.
 
 Basics
 ------
