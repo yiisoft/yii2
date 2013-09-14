@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\db\sqlite;
 
-use yii\base\NotSupportedException;
 use yii\db\sqlite\Schema;
 use yiiunit\framework\db\QueryBuilderTest;
 
