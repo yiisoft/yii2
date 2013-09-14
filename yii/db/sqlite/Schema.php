@@ -126,7 +126,13 @@ class Schema extends \yii\db\Schema
 		$sql = "PRAGMA foreign_key_list(" . $this->quoteSimpleTableName($table->name) . ')';
 		$keys = $this->db->createCommand($sql)->queryAll();
 		foreach ($keys as $key) {
-			$table->foreignKeys[] = array($key['table'], $key['from'] => $key['to']);
+			$id = (int)$key['id'];
+			if (!isset($table->foreignKeys[$id])) {
+				$table->foreignKeys[$id] = array($key['table'], $key['from'] => $key['to']);
+			} else {
+				// composite FK
+				$table->foreignKeys[$id][$key['from']] = $key['to'];
+			}
 		}
 	}
 
