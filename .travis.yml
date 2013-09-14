@@ -30,7 +30,7 @@ before_script:
   - echo '{"cubrid":{"version":"'$CUBRID_VERSION'"},"run_list":["cubrid::demodb"]}' > cubrid_chef.json
   # Install CUBRID via Chef Solo. Download all cookbooks from a remote URL.
   - sudo chef-solo -c tests/unit/data/cubrid-solo.rb -j cubrid_chef.json -r http://sourceforge.net/projects/cubrid/files/CUBRID-Demo-Virtual-Machines/Vagrant/chef-cookbooks.tar.gz/download
-
+  - sudo pecl install pdo_cubrid
 
 script:
   - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose
