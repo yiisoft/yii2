@@ -889,6 +889,7 @@ class ActiveRecord extends Model
 		}
 		$values = $this->getDirtyAttributes($attributes);
 		if (empty($values)) {
+			$this->afterSave(false);
 			return 0;
 		}
 		$condition = $this->getOldPrimaryKey(true);
