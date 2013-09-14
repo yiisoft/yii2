@@ -33,7 +33,7 @@ before_script:
 
 
 script:
-  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml
+  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose
 
 after_script:
   - php vendor/bin/coveralls
