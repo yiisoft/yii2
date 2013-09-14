@@ -69,4 +69,13 @@ class CubridCommandTest extends CommandTest
 		$command->bindValue(':name', 'user5');
 		$this->assertEquals('user5@example.com', $command->queryScalar());
 	}
+
+	public function testAutoQuoting()
+	{
+		$db = $this->getConnection(false);
+
+		$sql = 'SELECT [[id]], [[t.name]] FROM {{tbl_customer}} t';
+		$command = $db->createCommand($sql);
+		$this->assertEquals('SELECT "id", "t"."name" FROM "tbl_customer" t', $command->sql);
+	}
 }
