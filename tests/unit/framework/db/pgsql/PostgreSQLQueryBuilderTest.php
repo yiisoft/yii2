@@ -12,10 +12,10 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
 	public function columnTypes()
 	{
 		return array(
-			array(Schema::TYPE_PK, 'serial not null primary key'),
-			array(Schema::TYPE_PK . '(8)', 'serial not null primary key'),
-			array(Schema::TYPE_PK . ' CHECK (value > 5)', 'serial not null primary key CHECK (value > 5)'),
-			array(Schema::TYPE_PK . '(8) CHECK (value > 5)', 'serial not null primary key CHECK (value > 5)'),
+			array(Schema::TYPE_PK, 'serial NOT NULL PRIMARY KEY'),
+			array(Schema::TYPE_PK . '(8)', 'serial NOT NULL PRIMARY KEY'),
+			array(Schema::TYPE_PK . ' CHECK (value > 5)', 'serial NOT NULL PRIMARY KEY CHECK (value > 5)'),
+			array(Schema::TYPE_PK . '(8) CHECK (value > 5)', 'serial NOT NULL PRIMARY KEY CHECK (value > 5)'),
 			array(Schema::TYPE_STRING, 'varchar(255)'),
 			array(Schema::TYPE_STRING . '(32)', 'varchar(32)'),
 			array(Schema::TYPE_STRING . ' CHECK (value LIKE "test%")', 'varchar(255) CHECK (value LIKE "test%")'),
