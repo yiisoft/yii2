@@ -13,6 +13,9 @@ class MockResponse extends \yii\web\Response
 	}
 }
 
+/**
+ * @group web
+ */
 class ResponseTest extends \yiiunit\TestCase
 {
 	/**

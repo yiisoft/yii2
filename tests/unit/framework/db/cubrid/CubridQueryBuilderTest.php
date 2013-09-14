@@ -6,6 +6,10 @@ use yii\base\NotSupportedException;
 use yii\db\sqlite\Schema;
 use yiiunit\framework\db\QueryBuilderTest;
 
+/**
+ * @group db
+ * @group cubrid
+ */
 class CubridQueryBuilderTest extends QueryBuilderTest
 {
 	public $driverName = 'cubrid';

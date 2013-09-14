@@ -10,6 +10,10 @@ use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class QueryBuilderTest extends DatabaseTestCase
 {
 	/**

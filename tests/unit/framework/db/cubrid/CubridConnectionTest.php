@@ -3,6 +3,10 @@ namespace yiiunit\framework\db\cubrid;
 
 use yiiunit\framework\db\ConnectionTest;
 
+/**
+ * @group db
+ * @group cubrid
+ */
 class CubridConnectionTest extends ConnectionTest
 {
 	public $driverName = 'cubrid';

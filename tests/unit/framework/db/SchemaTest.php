@@ -5,6 +5,10 @@ namespace yiiunit\framework\db;
 use yii\caching\FileCache;
 use yii\db\Schema;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class SchemaTest extends DatabaseTestCase
 {
 

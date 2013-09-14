@@ -7,6 +7,10 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class CommandTest extends DatabaseTestCase
 {
 	public function testConstruct()

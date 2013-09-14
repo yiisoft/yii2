@@ -9,7 +9,7 @@ use yiiunit\data\base\Singer;
 use yiiunit\data\base\InvalidRulesModel;
 
 /**
- * ModelTest
+ * @group base
  */
 class ModelTest extends TestCase
 {

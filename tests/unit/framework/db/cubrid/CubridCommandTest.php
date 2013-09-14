@@ -3,6 +3,10 @@ namespace yiiunit\framework\db\cubrid;
 
 use yiiunit\framework\db\CommandTest;
 
+/**
+ * @group db
+ * @group cubrid
+ */
 class CubridCommandTest extends CommandTest
 {
 	public $driverName = 'cubrid';

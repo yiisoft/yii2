@@ -5,6 +5,9 @@ namespace yiiunit\framework\i18n;
 use yii\i18n\GettextMoFile;
 use yiiunit\TestCase;
 
+/**
+ * @group i18n
+ */
 class GettextMoFileTest extends TestCase
 {
 	public function testLoad()

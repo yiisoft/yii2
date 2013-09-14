@@ -3,6 +3,10 @@ namespace yiiunit\framework\db\sqlite;
 
 use yiiunit\framework\db\CommandTest;
 
+/**
+ * @group db
+ * @group sqlite
+ */
 class SqliteCommandTest extends CommandTest
 {
 	protected $driverName = 'sqlite';

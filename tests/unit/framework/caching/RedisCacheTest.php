@@ -6,6 +6,8 @@ use yiiunit\TestCase;
 
 /**
  * Class for testing redis cache backend
+ * @group redis
+ * @group caching
  */
 class RedisCacheTest extends CacheTestCase
 {

@@ -5,7 +5,7 @@ use yii\base\Object;
 use yiiunit\TestCase;
 
 /**
- * ObjectTest
+ * @group base
  */
 class ObjectTest extends TestCase
 {

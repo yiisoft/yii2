@@ -4,6 +4,10 @@ namespace yiiunit\framework\db;
 
 use yii\db\Connection;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class ConnectionTest extends DatabaseTestCase
 {
 	public function testConstruct()

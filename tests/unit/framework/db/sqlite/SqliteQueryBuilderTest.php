@@ -5,6 +5,10 @@ namespace yiiunit\framework\db\sqlite;
 use yii\db\sqlite\Schema;
 use yiiunit\framework\db\QueryBuilderTest;
 
+/**
+ * @group db
+ * @group sqlite
+ */
 class SqliteQueryBuilderTest extends QueryBuilderTest
 {
 	protected $driverName = 'sqlite';

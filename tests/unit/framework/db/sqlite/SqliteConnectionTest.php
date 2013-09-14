@@ -3,6 +3,10 @@ namespace yiiunit\framework\db\sqlite;
 
 use yiiunit\framework\db\ConnectionTest;
 
+/**
+ * @group db
+ * @group sqlite
+ */
 class SqliteConnectionTest extends ConnectionTest
 {
 	protected $driverName = 'sqlite';

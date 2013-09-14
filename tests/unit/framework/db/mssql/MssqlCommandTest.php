@@ -4,6 +4,10 @@ namespace yiiunit\framework\db\mssql;
 
 use yiiunit\framework\db\CommandTest;
 
+/**
+ * @group db
+ * @group mssql
+ */
 class MssqlCommandTest extends CommandTest
 {
 	protected $driverName = 'sqlsrv';

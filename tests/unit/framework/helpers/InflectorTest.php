@@ -6,6 +6,9 @@ use Yii;
 use yii\helpers\Inflector;
 use yiiunit\TestCase;
 
+/**
+ * @group helpers
+ */
 class InflectorTest extends TestCase
 {
 	public function testPluralize()

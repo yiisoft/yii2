@@ -5,6 +5,9 @@ namespace yiiunit\framework\rbac;
 use Yii;
 use yii\rbac\PhpManager;
 
+/**
+ * @group rbac
+ */
 class PhpManagerTest extends ManagerTestCase
 {
 	protected function setUp()

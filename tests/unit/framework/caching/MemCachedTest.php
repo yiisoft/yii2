@@ -5,6 +5,8 @@ use yii\caching\MemCache;
 
 /**
  * Class for testing memcached cache backend
+ * @group memcached
+ * @group caching
  */
 class MemCachedTest extends CacheTestCase
 {

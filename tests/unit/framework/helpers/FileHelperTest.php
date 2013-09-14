@@ -6,6 +6,7 @@ use yii\test\TestCase;
 /**
  * Unit test for [[yii\helpers\FileHelper]]
  * @see FileHelper
+ * @group helpers
  */
 class FileHelperTest extends TestCase
 {

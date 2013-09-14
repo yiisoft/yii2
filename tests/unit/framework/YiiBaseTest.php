@@ -6,6 +6,7 @@ use yiiunit\TestCase;
 
 /**
  * YiiBaseTest
+ * @group base
  */
 class YiiBaseTest extends TestCase
 {

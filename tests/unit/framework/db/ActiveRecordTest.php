@@ -9,6 +9,10 @@ use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class ActiveRecordTest extends DatabaseTestCase
 {
 	protected function setUp()
