@@ -18,7 +18,7 @@ use yii\base\Event;
 class UserEvent extends Event
 {
 	/**
-	 * @var Identity the identity object associated with this event
+	 * @var IdentityInterface the identity object associated with this event
 	 */
 	public $identity;
 	/**

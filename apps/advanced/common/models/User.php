@@ -3,7 +3,7 @@ namespace common\models;
 
 use yii\db\ActiveRecord;
 use yii\helpers\Security;
-use yii\web\Identity;
+use yii\web\IdentityInterface;
 
 /**
  * Class User
@@ -20,7 +20,7 @@ use yii\web\Identity;
  * @property integer $create_time
  * @property integer $update_time
  */
-class User extends ActiveRecord implements Identity
+class User extends ActiveRecord implements IdentityInterface
 {
 	/**
 	 * @var string the raw password. Used to collect password input and isn't saved in database
@@ -49,7 +49,7 @@ class User extends ActiveRecord implements Identity
 	 * Finds an identity by the given ID.
 	 *
 	 * @param string|integer $id the ID to be looked for
-	 * @return Identity|null the identity object that matches the given ID.
+	 * @return IdentityInterface|null the identity object that matches the given ID.
 	 */
 	public static function findIdentity($id)
 	{

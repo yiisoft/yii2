@@ -766,10 +766,10 @@ class Response extends \yii\base\Response
 			if (!is_object($formatter)) {
 				$formatter = Yii::createObject($formatter);
 			}
-			if ($formatter instanceof ResponseFormatter) {
+			if ($formatter instanceof ResponseFormatterInterface) {
 				$formatter->format($this);
 			} else {
-				throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatter interface.");
+				throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatterInterface.");
 			}
 		} else {
 			switch ($this->format) {

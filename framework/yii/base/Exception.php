@@ -13,7 +13,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Exception extends \Exception implements Arrayable
+class Exception extends \Exception implements ArrayableInterface
 {
 	/**
 	 * @return string the user-friendly name of this exception
