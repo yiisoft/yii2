@@ -1,9 +1,12 @@
 <?php
-
+$params = require(__DIR__ . '/params.php');
 $config = array(
 	'id' => 'bootstrap',
 	'basePath' => dirname(__DIR__),
 	'components' => array(
+		'request' => array(
+			'enableCsrfValidation' => true,
+		),
 		'cache' => array(
 			'class' => 'yii\caching\FileCache',
 		),
@@ -23,7 +26,7 @@ $config = array(
 			),
 		),
 	),
-	'params' => require(__DIR__ . '/params.php'),
+	'params' => $params,
 );
 
 if (YII_ENV_DEV) {
