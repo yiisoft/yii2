@@ -24,6 +24,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public $typeMap = array(
 		Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+		Schema::TYPE_BIGPK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
 		Schema::TYPE_STRING => 'varchar(255)',
 		Schema::TYPE_TEXT => 'text',
 		Schema::TYPE_SMALLINT => 'smallint',

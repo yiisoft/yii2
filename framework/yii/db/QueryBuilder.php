@@ -491,6 +491,7 @@ class QueryBuilder extends \yii\base\Object
 	 * physical types):
 	 *
 	 * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
+	 * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
 	 * - `string`: string type, will be converted into "varchar(255)"
 	 * - `text`: a long string type, will be converted into "text"
 	 * - `smallint`: a small integer type, will be converted into "smallint(6)"

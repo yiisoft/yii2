@@ -9,6 +9,7 @@ namespace yii\db\mysql;
 
 use yii\db\Exception;
 use yii\base\InvalidParamException;
+use yii\db\sqlite\Schema;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -23,6 +24,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public $typeMap = array(
 		Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
 		Schema::TYPE_STRING => 'varchar(255)',
 		Schema::TYPE_TEXT => 'text',
 		Schema::TYPE_SMALLINT => 'smallint(6)',

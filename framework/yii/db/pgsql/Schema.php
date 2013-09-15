@@ -255,7 +255,7 @@ SELECT
              information_schema._pg_char_max_length(information_schema._pg_truetypid(a, t), information_schema._pg_truetypmod(a, t))
              AS numeric
 	) AS size,
-	a.attnum = any (ct.conkey) as is_pkey			
+	a.attnum = any (ct.conkey) as is_pkey
 FROM
 	pg_class c
 	LEFT JOIN pg_attribute a ON a.attrelid = c.oid
