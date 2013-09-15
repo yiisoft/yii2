@@ -17,19 +17,25 @@ return array(
 	'modules' => array(
 	),
 	'components' => array(
+		'request' => array(
+			'enableCsrfValidation' => true,
+		),
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
 		'user' => array(
-			'class' => 'yii\web\User',
 			'identityClass' => 'common\models\User',
 		),
 		'log' => array(
+			'traceLevel' => YII_DEBUG ? 3 : 0,
 			'targets' => array(
 				array(
 					'class' => 'yii\log\FileTarget',
 					'levels' => array('error', 'warning'),
 				),
 			),
+		),
+		'errorHandler' => array(
+			'errorAction' => 'site/error',
 		),
 	),
 	'params' => $params,

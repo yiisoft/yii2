@@ -8,6 +8,36 @@ use common\models\LoginForm;
 
 class SiteController extends Controller
 {
+	public function behaviors()
+	{
+		return array(
+			'access' => array(
+				'class' => \yii\web\AccessControl::className(),
+				'rules' => array(
+					array(
+						'actions' => array('login'),
+						'allow' => true,
+						'roles' => array('?'),
+					),
+					array(
+						'actions' => array('logout', 'index'),
+						'allow' => true,
+						'roles' => array('@'),
+					),
+				),
+			),
+		);
+	}
+
+	public function actions()
+	{
+		return array(
+			'error' => array(
+				'class' => 'yii\web\ErrorAction',
+			),
+		);
+	}
+
 	public function actionIndex()
 	{
 		return $this->render('index');
