@@ -133,19 +133,19 @@ class SecurityBase
 	}
 
 	/**
-	 * Generates a random key.
+	 * Generates a random key. The key may contain uppercase and lowercase latin letters, digits, underscore, dash and dot.
 	 * @param integer $length the length of the key that should be generated
 	 * @return string the generated random key
 	 */
 	public static function generateRandomKey($length = 32)
 	{
 		if (function_exists('openssl_random_pseudo_bytes')) {
-			$key = strtr(base64_encode(openssl_random_pseudo_bytes($length, $strong)), array('+' => '_', '/' => '~'));
+			$key = strtr(base64_encode(openssl_random_pseudo_bytes($length, $strong)), array('+' => '_', '/' => '-', '=' => '.'));
 			if ($strong) {
 				return substr($key, 0, $length);
 			}
 		}
-		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_~';
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
 		return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
 	}
 
