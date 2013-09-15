@@ -238,7 +238,7 @@ class HtmlBase
 				$method = 'post';
 			}
 			if ($request->enableCsrfValidation) {
-				$hiddenInputs[] = static::hiddenInput($request->csrfTokenName, $request->getCsrfToken());
+				$hiddenInputs[] = static::hiddenInput($request->csrfVar, $request->getCsrfToken());
 			}
 		}
 
