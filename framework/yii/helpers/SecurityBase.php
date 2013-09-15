@@ -140,12 +140,12 @@ class SecurityBase
 	public static function generateRandomKey($length = 32)
 	{
 		if (function_exists('openssl_random_pseudo_bytes')) {
-			$key = base64_encode(openssl_random_pseudo_bytes($length, $strong));
+			$key = strtr(base64_encode(openssl_random_pseudo_bytes($length, $strong)), array('+' => '_', '/' => '~'));
 			if ($strong) {
 				return substr($key, 0, $length);
 			}
 		}
-		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_~';
 		return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
 	}
 
