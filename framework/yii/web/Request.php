@@ -73,16 +73,16 @@ class Request extends \yii\base\Request
 	 * from the same application. If not, a 400 HTTP exception will be raised.
 	 *
 	 * Note, this feature requires that the user client accepts cookie. Also, to use this feature,
-	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfTokenName]].
+	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfVar]].
 	 * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
 	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
 	 */
 	public $enableCsrfValidation = false;
 	/**
-	 * @var string the name of the token used to prevent CSRF. Defaults to 'YII_CSRF_TOKEN'.
-	 * This property is effectively only when {@link enableCsrfValidation} is true.
+	 * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
+	 * This property is effectively only when [[enableCsrfValidation]] is true.
 	 */
-	public $csrfTokenName = '_csrf';
+	public $csrfVar = '_csrf';
 	/**
 	 * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
 	 * @see Cookie
@@ -975,7 +975,7 @@ class Request extends \yii\base\Request
 	public function getCsrfToken()
 	{
 		if ($this->_csrfCookie === null) {
-			$this->_csrfCookie = $this->getCookies()->get($this->csrfTokenName);
+			$this->_csrfCookie = $this->getCookies()->get($this->csrfVar);
 			if ($this->_csrfCookie === null) {
 				$this->_csrfCookie = $this->createCsrfCookie();
 				Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
@@ -994,7 +994,7 @@ class Request extends \yii\base\Request
 	protected function createCsrfCookie()
 	{
 		$options = $this->csrfCookie;
-		$options['name'] = $this->csrfTokenName;
+		$options['name'] = $this->csrfVar;
 		$options['value'] = sha1(uniqid(mt_rand(), true));
 		return new Cookie($options);
 	}
@@ -1015,19 +1015,19 @@ class Request extends \yii\base\Request
 			$cookies = $this->getCookies();
 			switch ($method) {
 				case 'POST':
-					$token = $this->getPost($this->csrfTokenName);
+					$token = $this->getPost($this->csrfVar);
 					break;
 				case 'PUT':
-					$token = $this->getPut($this->csrfTokenName);
+					$token = $this->getPut($this->csrfVar);
 					break;
 				case 'PATCH':
-					$token = $this->getPatch($this->csrfTokenName);
+					$token = $this->getPatch($this->csrfVar);
 					break;
 				case 'DELETE':
-					$token = $this->getDelete($this->csrfTokenName);
+					$token = $this->getDelete($this->csrfVar);
 			}
 
-			if (empty($token) || $cookies->getValue($this->csrfTokenName) !== $token) {
+			if (empty($token) || $cookies->getValue($this->csrfVar) !== $token) {
 				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
 			}
 		}
