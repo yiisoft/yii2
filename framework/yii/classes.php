@@ -15,7 +15,7 @@ return array(
 	'yii\base\ActionEvent' => YII_PATH . '/base/ActionEvent.php',
 	'yii\base\ActionFilter' => YII_PATH . '/base/ActionFilter.php',
 	'yii\base\Application' => YII_PATH . '/base/Application.php',
-	'yii\base\Arrayable' => YII_PATH . '/base/IArrayable',
+	'yii\base\Arrayable' => YII_PATH . '/base/IArrayable.php',
 	'yii\base\Behavior' => YII_PATH . '/base/Behavior.php',
 	'yii\base\Component' => YII_PATH . '/base/Component.php',
 	'yii\base\Controller' => YII_PATH . '/base/Controller.php',
