@@ -8,12 +8,12 @@
 namespace yii\web;
 
 /**
- * The AssetConverterInterface interface must be implemented by asset converter classes.
+ * The IAssetConverter interface must be implemented by asset converter classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-interface AssetConverterInterface
+interface IAssetConverter
 {
 	/**
 	 * Converts a given asset file into a CSS or JS file.

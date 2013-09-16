@@ -16,7 +16,7 @@ use yii\base\Component;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class AssetConverter extends Component implements AssetConverterInterface
+class AssetConverter extends Component implements IAssetConverter
 {
 	/**
 	 * @var array the commands that are used to perform the asset conversion.

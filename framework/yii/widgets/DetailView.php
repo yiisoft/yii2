@@ -8,7 +8,7 @@
 namespace yii\widgets;
 
 use Yii;
-use yii\base\ArrayableInterface;
+use yii\base\IArrayable;
 use yii\base\Formatter;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
@@ -162,7 +162,7 @@ class DetailView extends Widget
 			if ($this->model instanceof Model) {
 				$this->attributes = $this->model->attributes();
 			} elseif (is_object($this->model)) {
-				$this->attributes = $this->model instanceof ArrayableInterface ? $this->model->toArray() : array_keys(get_object_vars($this->model));
+				$this->attributes = $this->model instanceof IArrayable ? $this->model->toArray() : array_keys(get_object_vars($this->model));
 			} elseif (is_array($this->model)) {
 				$this->attributes = array_keys($this->model);
 			} else {

@@ -14,7 +14,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Object implements ArrayableInterface
+class Object implements IArrayable
 {
 	/**
 	 * @return string the fully qualified name of this class.

@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
-use yii\base\ArrayableInterface;
+use yii\base\IArrayable;
 use yii\base\InvalidParamException;
 
 /**
@@ -72,7 +72,7 @@ class ArrayHelperBase
 				return $result;
 			}
 		}
-		if ($object instanceof ArrayableInterface) {
+		if ($object instanceof IArrayable) {
 			$object = $object->toArray();
 			if (!$recursive) {
 				return $object;
