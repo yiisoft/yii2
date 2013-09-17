@@ -100,7 +100,6 @@ class YiiBase
 	 */
 	public static $objectConfig = array();
 
-	private static $_imported = array(); // alias => class name or directory
 
 	/**
 	 * @return string the version of Yii framework
@@ -108,40 +107,6 @@ class YiiBase
 	public static function getVersion()
 	{
 		return '2.0-dev';
-	}
-
-	/**
-	 * Imports a class by its alias.
-	 *
-	 * This method is provided to support autoloading of non-namespaced classes.
-	 * Such a class can be specified in terms of an alias. For example, the alias `@old/code/Sample`
-	 * may represent the `Sample` class under the directory `@old/code` (a path alias).
-	 *
-	 * By importing a class, the class is put in an internal storage such that when
-	 * the class is used for the first time, the class autoloader will be able to
-	 * find the corresponding class file and include it. For this reason, this method
-	 * is much lighter than `include()`.
-	 *
-	 * You may import the same class multiple times. Only the first importing will count.
-	 *
-	 * @param string $alias the class to be imported. This may be either a class alias or a fully-qualified class name.
-	 * If the latter, it will be returned back without change.
-	 * @return string the actual class name that `$alias` refers to
-	 * @throws Exception if the alias is invalid
-	 */
-	public static function import($alias)
-	{
-		if (strncmp($alias, '@', 1)) {
-			return $alias;
-		} else {
-			$alias = static::getAlias($alias);
-			if (!isset(self::$_imported[$alias])) {
-				$className = basename($alias);
-				self::$_imported[$alias] = $className;
-				self::$classMap[$className] = $alias . '.php';
-			}
-			return self::$_imported[$alias];
-		}
 	}
 
 	/**
@@ -370,7 +335,7 @@ class YiiBase
 
 		include($classFile);
 
-		if (!class_exists($className, false) && !interface_exists($className, false) &&
+		if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) &&
 			(!function_exists('trait_exists') || !trait_exists($className, false))) {
 			throw new UnknownClassException("Unable to find '$className' in file: $classFile");
 		}
@@ -429,10 +394,6 @@ class YiiBase
 			unset($config['class']);
 		} else {
 			throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
-		}
-
-		if (!class_exists($class, false)) {
-			$class = static::import($class);
 		}
 
 		$class = ltrim($class, '\\');

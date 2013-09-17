@@ -6,6 +6,7 @@ use yii\test\TestCase;
 
 /**
  * StringHelperTest
+ * @group helpers
  */
 class StringHelperTest extends TestCase
 {

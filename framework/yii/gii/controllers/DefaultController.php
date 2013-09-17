@@ -7,6 +7,7 @@
 
 namespace yii\gii\controllers;
 
+use Yii;
 use yii\web\Controller;
 use yii\web\HttpException;
 
@@ -35,7 +36,7 @@ class DefaultController extends Controller
 	public function actionView($id)
 	{
 		$generator = $this->loadGenerator($id);
-		$params = array('generator' => $generator);
+		$params = array('generator' => $generator, 'id' => $id);
 		if (isset($_POST['preview']) || isset($_POST['generate'])) {
 			if ($generator->validate()) {
 				$generator->saveStickyAttributes();
@@ -86,6 +87,26 @@ class DefaultController extends Controller
 		throw new HttpException(404, "Code file not found: $file");
 	}
 
+	/**
+	 * Runs an action defined in the generator.
+	 * Given an action named "xyz", the method "actionXyz()" in the generator will be called.
+	 * If the method does not exist, a 400 HTTP exception will be thrown.
+	 * @param string $id the ID of the generator
+	 * @param string $name the action name
+	 * @return mixed the result of the action.
+	 * @throws HttpException if the action method does not exist.
+	 */
+	public function actionAction($id, $name)
+	{
+		$generator = $this->loadGenerator($id);
+		$method = 'action' . $name;
+		if (method_exists($generator, $method)) {
+			return $generator->$method();
+		} else {
+			throw new HttpException(400, "Unknown generator action: $name");
+		}
+	}
+
 	public function createUrl($route, $params = array())
 	{
 		if (!isset($params['id']) && $this->generator !== null) {
@@ -97,6 +118,18 @@ class DefaultController extends Controller
 			}
 		}
 		return parent::createUrl($route, $params);
+	}
+
+	public function createActionUrl($name, $params = array())
+	{
+		foreach ($this->module->generators as $id => $generator) {
+			if ($generator === $this->generator) {
+				$params['id'] = $id;
+				break;
+			}
+		}
+		$params['name'] = $name;
+		return parent::createUrl('action', $params);
 	}
 
 	/**

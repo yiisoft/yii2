@@ -12,6 +12,56 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Security;
 
 /**
+ * The web Request class represents an HTTP request
+ *
+ * It encapsulates the $_SERVER variable and resolves its inconsistency among different Web servers.
+ * Also it provides an interface to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
+ * parameters sent via other HTTP methods like PUT or DELETE.
+ *
+ * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
+ * @property string $acceptTypes User browser accept types, null if not present. This property is read-only.
+ * @property array $acceptedContentTypes The content types ordered by the preference level. The first element
+ * represents the most preferred content type.
+ * @property array $acceptedLanguages The languages ordered by the preference level. The first element
+ * represents the most preferred language.
+ * @property string $baseUrl The relative URL for the application.
+ * @property string $cookieValidationKey The secret key used for cookie validation. If it was not set
+ * previously, a random key will be generated and used.
+ * @property CookieCollection $cookies The cookie collection. This property is read-only.
+ * @property string $csrfToken The random token for CSRF validation. This property is read-only.
+ * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
+ * `http://www.yiiframework.com`).
+ * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
+ * @property boolean $isDelete Whether this is a DELETE request. This property is read-only.
+ * @property boolean $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
+ * read-only.
+ * @property boolean $isPatch Whether this is a PATCH request. This property is read-only.
+ * @property boolean $isPost Whether this is a POST request. This property is read-only.
+ * @property boolean $isPut Whether this is a PUT request. This property is read-only.
+ * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
+ * read-only.
+ * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
+ * turned into upper case. This property is read-only.
+ * @property string $pathInfo Part of the request URL that is after the entry script and before the question
+ * mark. Note, the returned path info is already URL-decoded.
+ * @property integer $port Port number for insecure requests.
+ * @property string $preferredLanguage The language that the application should use. Null is returned if both
+ * [[getAcceptedLanguages()]] and `$languages` are empty. This property is read-only.
+ * @property string $queryString Part of the request URL that is after the question mark. This property is
+ * read-only.
+ * @property string $rawBody The request body. This property is read-only.
+ * @property string $referrer URL referrer, null if not present. This property is read-only.
+ * @property array $restParams The RESTful request parameters.
+ * @property string $scriptFile The entry script file path.
+ * @property string $scriptUrl The relative URL of the entry script.
+ * @property integer $securePort Port number for secure requests.
+ * @property string $serverName Server name. This property is read-only.
+ * @property integer $serverPort Server port number. This property is read-only.
+ * @property string $url The currently requested relative URL. Note that the URI returned is URL-encoded.
+ * @property string $userAgent User agent, null if not present. This property is read-only.
+ * @property string $userHost User host name, null if cannot be determined. This property is read-only.
+ * @property string $userIP User IP address. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -23,16 +73,16 @@ class Request extends \yii\base\Request
 	 * from the same application. If not, a 400 HTTP exception will be raised.
 	 *
 	 * Note, this feature requires that the user client accepts cookie. Also, to use this feature,
-	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfTokenName]].
+	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfVar]].
 	 * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
 	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
 	 */
 	public $enableCsrfValidation = false;
 	/**
-	 * @var string the name of the token used to prevent CSRF. Defaults to 'YII_CSRF_TOKEN'.
-	 * This property is effectively only when {@link enableCsrfValidation} is true.
+	 * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
+	 * This property is effectively only when [[enableCsrfValidation]] is true.
 	 */
-	public $csrfTokenName = '_csrf';
+	public $csrfVar = '_csrf';
 	/**
 	 * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
 	 * @see Cookie
@@ -86,6 +136,33 @@ class Request extends \yii\base\Request
 		}
 	}
 
+	/**
+	 * Returns whether this is a GET request.
+	 * @return boolean whether this is a GET request.
+	 */
+	public function getIsGet()
+	{
+		return $this->getMethod() === 'GET';
+	}
+
+	/**
+	 * Returns whether this is an OPTIONS request.
+	 * @return boolean whether this is a OPTIONS request.
+	 */
+	public function getIsOptions()
+	{
+		return $this->getMethod() === 'OPTIONS';
+	}
+  
+	/**
+	 * Returns whether this is a HEAD request.
+	 * @return boolean whether this is a HEAD request.
+	 */
+	public function getIsHead()
+	{
+		return $this->getMethod() === 'HEAD';
+	}
+  
 	/**
 	 * Returns whether this is a POST request.
 	 * @return boolean whether this is a POST request.
@@ -898,7 +975,7 @@ class Request extends \yii\base\Request
 	public function getCsrfToken()
 	{
 		if ($this->_csrfCookie === null) {
-			$this->_csrfCookie = $this->getCookies()->get($this->csrfTokenName);
+			$this->_csrfCookie = $this->getCookies()->get($this->csrfVar);
 			if ($this->_csrfCookie === null) {
 				$this->_csrfCookie = $this->createCsrfCookie();
 				Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
@@ -917,7 +994,7 @@ class Request extends \yii\base\Request
 	protected function createCsrfCookie()
 	{
 		$options = $this->csrfCookie;
-		$options['name'] = $this->csrfTokenName;
+		$options['name'] = $this->csrfVar;
 		$options['value'] = sha1(uniqid(mt_rand(), true));
 		return new Cookie($options);
 	}
@@ -938,19 +1015,19 @@ class Request extends \yii\base\Request
 			$cookies = $this->getCookies();
 			switch ($method) {
 				case 'POST':
-					$token = $this->getPost($this->csrfTokenName);
+					$token = $this->getPost($this->csrfVar);
 					break;
 				case 'PUT':
-					$token = $this->getPut($this->csrfTokenName);
+					$token = $this->getPut($this->csrfVar);
 					break;
 				case 'PATCH':
-					$token = $this->getPatch($this->csrfTokenName);
+					$token = $this->getPatch($this->csrfVar);
 					break;
 				case 'DELETE':
-					$token = $this->getDelete($this->csrfTokenName);
+					$token = $this->getDelete($this->csrfVar);
 			}
 
-			if (empty($token) || $cookies->getValue($this->csrfTokenName) !== $token) {
+			if (empty($token) || $cookies->getValue($this->csrfVar) !== $token) {
 				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
 			}
 		}

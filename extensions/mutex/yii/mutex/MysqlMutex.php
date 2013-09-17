@@ -29,7 +29,7 @@ class MysqlMutex extends Mutex
 	}
 
 	/**
-	 * This method should be extended by concrete mutex implementations. Acquires lock by given name.
+	 * Acquires lock by given name.
 	 * @param string $name of the lock to be acquired.
 	 * @param integer $timeout to wait for lock to become released.
 	 * @return boolean acquiring result.
@@ -43,7 +43,7 @@ class MysqlMutex extends Mutex
 	}
 
 	/**
-	 * This method should be extended by concrete mutex implementations. Releases lock by given name.
+	 * Releases lock by given name.
 	 * @param string $name of the lock to be released.
 	 * @return boolean release result.
 	 * @see http://dev.mysql.com/doc/refman/5.0/en/miscellaneous-functions.html#function_release-lock

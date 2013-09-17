@@ -21,6 +21,9 @@ use yii\widgets\FragmentCache;
  *
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  *
+ * @property \yii\web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
+ * component.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

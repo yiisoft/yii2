@@ -28,15 +28,19 @@ foreach ($generator->templates as $name => $path) {
 
 	<p><?php echo $generator->getDescription(); ?></p>
 
-	<?php $form = ActiveForm::begin(array('fieldConfig' => array('class' => ActiveField::className()))); ?>
+	<?php $form = ActiveForm::begin(array(
+		'id' => "$id-generator",
+		'successCssClass' => '',
+		'fieldConfig' => array('class' => ActiveField::className()),
+	)); ?>
 		<div class="row">
-			<div class="col-lg-6">
+			<div class="col-lg-8">
 				<?php echo $this->renderFile($generator->formView(), array(
 					'generator' => $generator,
 					'form' => $form,
 				)); ?>
 				<?php echo $form->field($generator, 'template')->sticky()
-					->label(array('label' => 'Code Template'))
+					->label('Code Template')
 					->dropDownList($templates)->hint('
 						Please select which set of the templates should be used to generated the code.
 				'); ?>

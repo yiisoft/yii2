@@ -9,6 +9,7 @@ namespace yii\log;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\FileHelper;
 
 /**
  * FileTarget records log messages in a file.
@@ -37,6 +38,19 @@ class FileTarget extends Target
 	 * @var integer number of log files used for rotation. Defaults to 5.
 	 */
 	public $maxLogFiles = 5;
+	/**
+	 * @var integer the permission to be set for newly created log files.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
+	 * If not set, the permission will be determined by the current environment.
+	 */
+	public $fileMode;
+	/**
+	 * @var integer the permission to be set for newly created directories.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
+	 * Defaults to 0775, meaning the directory is read-writable by owner and group,
+	 * but read-only for other users.
+	 */
+	public $dirMode = 0775;
 
 
 	/**
@@ -53,7 +67,7 @@ class FileTarget extends Target
 		}
 		$logPath = dirname($this->logFile);
 		if (!is_dir($logPath)) {
-			@mkdir($logPath, 0777, true);
+			FileHelper::createDirectory($logPath, $this->dirMode, true);
 		}
 		if ($this->maxLogFiles < 1) {
 			$this->maxLogFiles = 1;
@@ -86,6 +100,9 @@ class FileTarget extends Target
 			@fwrite($fp, $text);
 			@flock($fp, LOCK_UN);
 			@fclose($fp);
+		}
+		if ($this->fileMode !== null) {
+			@chmod($this->logFile, $this->fileMode);
 		}
 	}
 

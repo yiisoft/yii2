@@ -7,41 +7,53 @@
 
 namespace yii\web;
 
+use yii\base\Object;
 use yii\helpers\Html;
 
 /**
+ * UploadedFile represents the information for an uploaded file.
+ *
+ * You can call [[getInstance()]] to retrieve the instance of an uploaded file,
+ * and then use [[saveAs()]] to save it on the server.
+ * You may also query other information about the file, including [[name]],
+ * [[tempName]], [[type]], [[size]] and [[error]].
+ *
+ * @property boolean $hasError Whether there is an error with the uploaded file. Check [[error]] for detailed
+ * error code information. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UploadedFile extends \yii\base\Object
+class UploadedFile extends Object
 {
 	private static $_files;
-	private $_name;
-	private $_tempName;
-	private $_type;
-	private $_size;
-	private $_error;
-
 
 	/**
-	 * Constructor.
-	 * Instead of using the constructor to create a new instance,
-	 * you should normally call [[getInstance()]] or [[getInstances()]]
-	 * to obtain new instances.
-	 * @param string $name the original name of the file being uploaded
-	 * @param string $tempName the path of the uploaded file on the server.
-	 * @param string $type the MIME-type of the uploaded file (such as "image/gif").
-	 * @param integer $size the actual size of the uploaded file in bytes
-	 * @param integer $error the error code
+	 * @var string the original name of the file being uploaded
 	 */
-	public function __construct($name, $tempName, $type, $size, $error)
-	{
-		$this->_name = $name;
-		$this->_tempName = $tempName;
-		$this->_type = $type;
-		$this->_size = $size;
-		$this->_error = $error;
-	}
+	public $name;
+	/**
+	 * @var string the path of the uploaded file on the server.
+	 * Note, this is a temporary file which will be automatically deleted by PHP
+	 * after the current request is processed.
+	 */
+	public $tempName;
+	/**
+	 * @var string the MIME-type of the uploaded file (such as "image/gif").
+	 * Since this MIME type is not checked on the server side, do not take this value for granted.
+	 * Instead, use [[FileHelper::getMimeType()]] to determine the exact MIME type.
+	 */
+	public $type;
+	/**
+	 * @var integer the actual size of the uploaded file in bytes
+	 */
+	public $size;
+	/**
+	 * @var integer an error code describing the status of this file uploading.
+	 * @see http://www.php.net/manual/en/features.file-upload.errors.php
+	 */
+	public $error;
+
 
 	/**
 	 * String output.
@@ -51,7 +63,7 @@ class UploadedFile extends \yii\base\Object
 	 */
 	public function __toString()
 	{
-		return $this->_name;
+		return $this->name;
 	}
 
 	/**
@@ -142,60 +154,14 @@ class UploadedFile extends \yii\base\Object
 	 */
 	public function saveAs($file, $deleteTempFile = true)
 	{
-		if ($this->_error == UPLOAD_ERR_OK) {
+		if ($this->error == UPLOAD_ERR_OK) {
 			if ($deleteTempFile) {
-				return move_uploaded_file($this->_tempName, $file);
-			} elseif (is_uploaded_file($this->_tempName)) {
-				return copy($this->_tempName, $file);
+				return move_uploaded_file($this->tempName, $file);
+			} elseif (is_uploaded_file($this->tempName)) {
+				return copy($this->tempName, $file);
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * @return string the original name of the file being uploaded
-	 */
-	public function getName()
-	{
-		return $this->_name;
-	}
-
-	/**
-	 * @return string the path of the uploaded file on the server.
-	 * Note, this is a temporary file which will be automatically deleted by PHP
-	 * after the current request is processed.
-	 */
-	public function getTempName()
-	{
-		return $this->_tempName;
-	}
-
-	/**
-	 * @return string the MIME-type of the uploaded file (such as "image/gif").
-	 * Since this MIME type is not checked on the server side, do not take this value for granted.
-	 * Instead, use [[FileHelper::getMimeType()]] to determine the exact MIME type.
-	 */
-	public function getType()
-	{
-		return $this->_type;
-	}
-
-	/**
-	 * @return integer the actual size of the uploaded file in bytes
-	 */
-	public function getSize()
-	{
-		return $this->_size;
-	}
-
-	/**
-	 * Returns an error code describing the status of this file uploading.
-	 * @return integer the error code
-	 * @see http://www.php.net/manual/en/features.file-upload.errors.php
-	 */
-	public function getError()
-	{
-		return $this->_error;
 	}
 
 	/**
@@ -204,7 +170,7 @@ class UploadedFile extends \yii\base\Object
 	 */
 	public function getHasError()
 	{
-		return $this->_error != UPLOAD_ERR_OK;
+		return $this->error != UPLOAD_ERR_OK;
 	}
 
 	/**
@@ -240,7 +206,13 @@ class UploadedFile extends \yii\base\Object
 				self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
 			}
 		} else {
-			self::$_files[$key] = new static($names, $tempNames, $types, $sizes, $errors);
+			self::$_files[$key] = new static(array(
+				'name' => $names,
+				'tempName' => $tempNames,
+				'type' => $types,
+				'size' => $sizes,
+				'error' => $errors,
+			));
 		}
 	}
 }

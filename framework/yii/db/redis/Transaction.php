@@ -15,8 +15,10 @@ use yii\db\Exception;
 /**
  * Transaction represents a DB transaction.
  *
- * @property boolean $isActive Whether the transaction is active. This property is read-only.
+ * @property boolean $isActive Whether this transaction is active. Only an active transaction can [[commit()]]
+ * or [[rollBack()]]. This property is read-only.
  *
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class Transaction extends \yii\base\Object

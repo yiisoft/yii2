@@ -7,7 +7,6 @@
 
 namespace yii\db\mssql;
 
-use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
 /**
@@ -332,10 +331,8 @@ SQL;
 
 	/**
 	 * Returns all table names in the database.
-	 * This method should be overridden by child classes in order to support this feature
-	 * because the default implementation simply throws an exception.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * @return array all table names in the database. The names have NO the schema name prefix.
+	 * @return array all table names in the database. The names have NO schema name prefix.
 	 */
 	protected function findTableNames($schema = '')
 	{

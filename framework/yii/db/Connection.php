@@ -89,13 +89,16 @@ use yii\caching\Cache;
  * )
  * ~~~
  *
+ * @property string $driverName Name of the DB driver. This property is read-only.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction.
- * @property Schema $schema The database schema information for the current connection.
- * @property QueryBuilder $queryBuilder The query builder.
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the sequence object.
- * @property string $driverName Name of the DB driver currently being used.
- * @property array $querySummary The statistical results of SQL queries.
+ * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
+ * sequence object. This property is read-only.
+ * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
+ * read-only.
+ * @property Schema $schema The schema information for the database opened by this connection. This property
+ * is read-only.
+ * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
+ * property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -198,7 +201,7 @@ class Connection extends Component
 	public $queryCache = 'cache';
 	/**
 	 * @var string the charset used for database connection. The property is only used
-	 * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
+	 * for MySQL, PostgreSQL and CUBRID databases. Defaults to null, meaning using default charset
 	 * as specified by the database.
 	 *
 	 * Note that if you're using GBK or BIG5 then it's highly recommended to
@@ -241,6 +244,7 @@ class Connection extends Component
 		'oci' => 'yii\db\oci\Schema',        // Oracle driver
 		'mssql' => 'yii\db\mssql\Schema',    // older MSSQL driver on MS Windows hosts
 		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+		'cubrid' => 'yii\db\cubrid\Schema',  // CUBRID
 	);
 	/**
 	 * @var Transaction the currently active transaction
@@ -358,7 +362,7 @@ class Connection extends Component
 		if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
 			$this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
 		}
-		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli'))) {
+		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli', 'cubrid'))) {
 			$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
 		}
 		$this->trigger(self::EVENT_AFTER_OPEN);

@@ -16,6 +16,8 @@ use yiiunit\data\ar\Order;
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @group data
  */
 class ActiveDataProviderTest extends DatabaseTestCase
 {

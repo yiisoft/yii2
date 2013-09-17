@@ -55,22 +55,24 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * Generates a SELECT SQL statement from a [[Query]] object.
 	 * @param Query $query the [[Query]] object from which the SQL statement will be generated
-	 * @return string the generated SQL statement
+	 * @return array the generated SQL statement (the first array element) and the corresponding
+	 * parameters to be bound to the SQL statement (the second array element).
 	 */
 	public function build($query)
 	{
+		$params = $query->params;
 		$clauses = array(
 			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
 			$this->buildFrom($query->from),
-			$this->buildJoin($query->join, $query->params),
-			$this->buildWhere($query->where, $query->params),
+			$this->buildJoin($query->join, $params),
+			$this->buildWhere($query->where, $params),
 			$this->buildGroupBy($query->groupBy),
-			$this->buildHaving($query->having, $query->params),
-			$this->buildUnion($query->union, $query->params),
+			$this->buildHaving($query->having, $params),
+			$this->buildUnion($query->union, $params),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
 		);
-		return implode($this->separator, array_filter($clauses));
+		return array(implode($this->separator, array_filter($clauses)), $params);
 	}
 
 	/**
@@ -132,7 +134,7 @@ class QueryBuilder extends \yii\base\Object
 	 * ))->execute();
 	 * ~~~
 	 *
-	 * Not that the values in each row must match the corresponding column names.
+	 * Note that the values in each row must match the corresponding column names.
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column names
@@ -161,7 +163,7 @@ class QueryBuilder extends \yii\base\Object
 	 *
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name => value) to be updated.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param array|string $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the binding parameters that will be modified by this method
 	 * so that they can be bound to the DB command later.
@@ -205,7 +207,7 @@ class QueryBuilder extends \yii\base\Object
 	 * The method will properly escape the table and column names.
 	 *
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param array|string $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the binding parameters that will be modified by this method
 	 * so that they can be bound to the DB command later.
@@ -459,7 +461,7 @@ class QueryBuilder extends \yii\base\Object
 	 * The sequence will be reset such that the primary key of the next new row inserted
 	 * will have the specified value or 1.
 	 * @param string $table the name of the table whose primary key sequence will be reset
-	 * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+	 * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
 	 * the next new row's primary key will have a value 1.
 	 * @return string the SQL statement for resetting sequence
 	 * @throws NotSupportedException if this is not supported by the underlying DBMS
@@ -489,6 +491,7 @@ class QueryBuilder extends \yii\base\Object
 	 * physical types):
 	 *
 	 * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
+	 * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
 	 * - `string`: string type, will be converted into "varchar(255)"
 	 * - `text`: a long string type, will be converted into "text"
 	 * - `smallint`: a small integer type, will be converted into "smallint(6)"
@@ -718,9 +721,11 @@ class QueryBuilder extends \yii\base\Object
 		}
 		foreach ($unions as $i => $union) {
 			if ($union instanceof Query) {
+				// save the original parameters so that we can restore them later to prevent from modifying the query object
+				$originalParams = $union->params;
 				$union->addParams($params);
-				$unions[$i] = $this->build($union);
-				$params = $union->params;
+				list ($unions[$i], $params) = $this->build($union);
+				$union->params = $originalParams;
 			}
 		}
 		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
@@ -799,7 +804,7 @@ class QueryBuilder extends \yii\base\Object
 		$parts = array();
 		foreach ($condition as $column => $value) {
 			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('in', array($column, $value), $params);
+				$parts[] = $this->buildInCondition('IN', array($column, $value), $params);
 			} else {
 				if (strpos($column, '(') === false) {
 					$column = $this->db->quoteColumnName($column);
@@ -908,11 +913,6 @@ class QueryBuilder extends \yii\base\Object
 
 	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
 	{
-		foreach ($columns as $i => $column) {
-			if (strpos($column, '(') === false) {
-				$columns[$i] = $this->db->quoteColumnName($column);
-			}
-		}
 		$vss = array();
 		foreach ($values as $value) {
 			$vs = array();
@@ -926,6 +926,11 @@ class QueryBuilder extends \yii\base\Object
 				}
 			}
 			$vss[] = '(' . implode(', ', $vs) . ')';
+		}
+		foreach ($columns as $i => $column) {
+			if (strpos($column, '(') === false) {
+				$columns[$i] = $this->db->quoteColumnName($column);
+			}
 		}
 		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
 	}

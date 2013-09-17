@@ -54,3 +54,5 @@ http://localhost/yii-benchmark/index.php/site/hello
 
 In the above, we assume `yii-benchmark` is directly under the document root of your Web server.
 
+Note that in order to install some dependencies you must have `php_openssl` extension enabled.
+

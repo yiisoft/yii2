@@ -44,7 +44,9 @@ use yii\caching\Cache;
  *
  * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
  *
- * @property string $sql the SQL statement to be executed
+ * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
+ * [[sql]]. This property is read-only.
+ * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -60,7 +62,7 @@ class Command extends \yii\base\Component
 	 */
 	public $pdoStatement;
 	/**
-	 * @var mixed the default fetch mode for this command.
+	 * @var integer the default fetch mode for this command.
 	 * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
 	 */
 	public $fetchMode = \PDO::FETCH_ASSOC;
@@ -102,7 +104,7 @@ class Command extends \yii\base\Component
 	 * Returns the raw SQL by inserting parameter values into the corresponding placeholders in [[sql]].
 	 * Note that the return value of this method should mainly be used for logging purpose.
 	 * It is likely that this method returns an invalid SQL due to improper replacement of parameter placeholders.
-	 * @return string the raw SQL
+	 * @return string the raw SQL with parameter values inserted into the corresponding placeholders in [[sql]].
 	 */
 	public function getRawSql()
 	{
@@ -179,7 +181,7 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindParam($name, $value, $this->getPdoType($value));
+			$this->pdoStatement->bindParam($name, $value, $this->db->schema->getPdoType($value));
 		} elseif ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
 		} elseif ($driverOptions === null) {
@@ -206,7 +208,7 @@ class Command extends \yii\base\Component
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindValue($name, $value, $this->getPdoType($value));
+			$this->pdoStatement->bindValue($name, $value, $this->db->schema->getPdoType($value));
 		} else {
 			$this->pdoStatement->bindValue($name, $value, $dataType);
 		}
@@ -234,32 +236,13 @@ class Command extends \yii\base\Component
 					$type = $value[1];
 					$value = $value[0];
 				} else {
-					$type = $this->getPdoType($value);
+					$type = $this->db->schema->getPdoType($value);
 				}
 				$this->pdoStatement->bindValue($name, $value, $type);
 				$this->_params[$name] = $value;
 			}
 		}
 		return $this;
-	}
-
-	/**
-	 * Determines the PDO type for the give PHP data value.
-	 * @param mixed $data the data whose PDO type is to be determined
-	 * @return integer the PDO type
-	 * @see http://www.php.net/manual/en/pdo.constants.php
-	 */
-	private function getPdoType($data)
-	{
-		static $typeMap = array(
-			'boolean' => \PDO::PARAM_BOOL,
-			'integer' => \PDO::PARAM_INT,
-			'string' => \PDO::PARAM_STR,
-			'resource' => \PDO::PARAM_LOB,
-			'NULL' => \PDO::PARAM_NULL,
-		);
-		$type = gettype($data);
-		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 
 	/**
@@ -312,7 +295,7 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement and returns ALL rows at once.
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return array all rows of the query result. Each array element is an array representing a row of data.
 	 * An empty array is returned if the query results in nothing.
@@ -326,7 +309,7 @@ class Command extends \yii\base\Component
 	/**
 	 * Executes the SQL statement and returns the first row of the result.
 	 * This method is best used when only the first row of result is needed for a query.
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
 	 * results in nothing.
@@ -369,7 +352,7 @@ class Command extends \yii\base\Component
 	/**
 	 * Performs the actual DB query of a SQL statement.
 	 * @param string $method method of PDOStatement to be called
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return mixed the method execution result
 	 * @throws Exception if the query causes any problem
@@ -470,7 +453,7 @@ class Command extends \yii\base\Component
 	 * ))->execute();
 	 * ~~~
 	 *
-	 * Not that the values in each row must match the corresponding column names.
+	 * Note that the values in each row must match the corresponding column names.
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column names
@@ -499,7 +482,7 @@ class Command extends \yii\base\Component
 	 *
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name => value) to be updated.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param string|array $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
@@ -523,7 +506,7 @@ class Command extends \yii\base\Component
 	 * Note that the created command is not executed until [[execute()]] is called.
 	 *
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param string|array $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself

@@ -14,6 +14,8 @@ use yii\data\Sort;
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @group data
  */
 class SortTest extends TestCase
 {

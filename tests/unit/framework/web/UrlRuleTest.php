@@ -7,6 +7,9 @@ use yii\web\UrlRule;
 use yii\web\Request;
 use yiiunit\TestCase;
 
+/**
+ * @group web
+ */
 class UrlRuleTest extends TestCase
 {
 	public function testCreateUrl()

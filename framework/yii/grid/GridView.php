@@ -124,16 +124,6 @@ class GridView extends ListViewBase
 	 * Both "format" and "label" are optional. They will take default values if absent.
 	 */
 	public $columns = array();
-	/**
-	 * @var string the layout that determines how different sections of the list view should be organized.
-	 * The following tokens will be replaced with the corresponding section contents:
-	 *
-	 * - `{summary}`: the summary section. See [[renderSummary()]].
-	 * - `{items}`: the list items. See [[renderItems()]].
-	 * - `{sorter}`: the sorter. See [[renderSorter()]].
-	 * - `{pager}`: the pager. See [[renderPager()]].
-	 */
-	public $layout = "{items}\n{summary}\n{pager}";
 	public $emptyCell = '&nbsp;';
 	/**
 	 * @var \yii\base\Model the model that keeps the user-entered filter data. When this property is set,

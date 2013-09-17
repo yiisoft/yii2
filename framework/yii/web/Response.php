@@ -17,6 +17,29 @@ use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
 /**
+ * The web Response class represents an HTTP response
+ *
+ * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
+ * It also controls the HTTP [[statusCode|status code]].
+ *
+ * @property CookieCollection $cookies The cookie collection. This property is read-only.
+ * @property HeaderCollection $headers The header collection. This property is read-only.
+ * @property boolean $isClientError Whether this response indicates a client error. This property is
+ * read-only.
+ * @property boolean $isEmpty Whether this response is empty. This property is read-only.
+ * @property boolean $isForbidden Whether this response indicates the current request is forbidden. This
+ * property is read-only.
+ * @property boolean $isInformational Whether this response is informational. This property is read-only.
+ * @property boolean $isInvalid Whether this response has a valid [[statusCode]]. This property is read-only.
+ * @property boolean $isNotFound Whether this response indicates the currently requested resource is not
+ * found. This property is read-only.
+ * @property boolean $isOk Whether this response is OK. This property is read-only.
+ * @property boolean $isRedirection Whether this response is a redirection. This property is read-only.
+ * @property boolean $isServerError Whether this response indicates a server error. This property is
+ * read-only.
+ * @property boolean $isSuccessful Whether this response is successful. This property is read-only.
+ * @property integer $statusCode The HTTP status code to send with the response.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

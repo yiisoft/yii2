@@ -13,19 +13,13 @@ use yii\base\InvalidParamException;
 /**
  * TableSchema represents the metadata of a database table.
  *
- * @property array $columnNames list of column names
+ * @property array $columnNames List of column names. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class TableSchema extends Object
 {
-	/**
-	 * @var string name of the catalog (database) that this table belongs to.
-	 * Defaults to null, meaning no catalog (or the current database).
-	 * This property is only meaningful for MSSQL.
-	 */
-	public $catalogName;
 	/**
 	 * @var string name of the schema that this table belongs to.
 	 */

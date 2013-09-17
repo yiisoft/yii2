@@ -61,8 +61,7 @@ class Object implements Arrayable
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `$value = $object->property;`.
 	 * @param string $name the property name
-	 * @return mixed the property value, event handlers attached to the event,
-	 * the named behavior, or the value of a behavior's property
+	 * @return mixed the property value
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @see __set
 	 */
@@ -71,6 +70,8 @@ class Object implements Arrayable
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
 			return $this->$getter();
+		} elseif (method_exists($this, 'set' . $name)) {
+			throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
 		} else {
 			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
 		}
@@ -142,8 +143,6 @@ class Object implements Arrayable
 
 	/**
 	 * Calls the named method which is not a class method.
-	 * If the name refers to a component property whose value is
-	 * an anonymous function, the method will execute the function.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when an unknown method is being invoked.
@@ -154,13 +153,6 @@ class Object implements Arrayable
 	 */
 	public function __call($name, $params)
 	{
-		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) {
-			$func = $this->$getter();
-			if ($func instanceof \Closure) {
-				return call_user_func_array($func, $params);
-			}
-		}
 		throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
 	}
 
@@ -217,6 +209,19 @@ class Object implements Arrayable
 	public function canSetProperty($name, $checkVars = true)
 	{
 		return method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name);
+	}
+
+	/**
+	 * Returns a value indicating whether a method is defined.
+	 *
+	 * The default implementation is a call to php function `method_exists()`.
+	 * You may override this method when you implemented the php magic method `__call()`.
+	 * @param string $name the property name
+	 * @return boolean whether the property is defined
+	 */
+	public function hasMethod($name)
+	{
+		return method_exists($this, $name);
 	}
 
 	/**

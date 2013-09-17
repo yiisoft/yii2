@@ -66,7 +66,7 @@ abstract class ListViewBase extends Widget
 	 * - `{sorter}`: the sorter. See [[renderSorter()]].
 	 * - `{pager}`: the pager. See [[renderPager()]].
 	 */
-	public $layout = "{summary}\n{sorter}\n{items}\n{pager}";
+	public $layout = "{summary}\n{items}\n{pager}";
 
 
 	/**

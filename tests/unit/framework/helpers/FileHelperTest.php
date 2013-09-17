@@ -6,6 +6,7 @@ use yii\test\TestCase;
 /**
  * Unit test for [[yii\helpers\FileHelper]]
  * @see FileHelper
+ * @group helpers
  */
 class FileHelperTest extends TestCase
 {
@@ -271,13 +272,13 @@ class FileHelperTest extends TestCase
 		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
 	}
 
-	public function testMkdir()
+	public function testCreateDirectory()
 	{
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
-		$this->assertTrue(FileHelper::mkdir($dirName), 'FileHelper::mkdir should return true if directory was created!');
+		$this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true if directory was created!');
 		$this->assertTrue(file_exists($dirName), 'Unable to create directory recursively!');
-		$this->assertTrue(FileHelper::mkdir($dirName), 'FileHelper::mkdir should return true for already existing directories!');
+		$this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true for already existing directories!');
 	}
 
 	public function testGetMimeTypeByExtension()

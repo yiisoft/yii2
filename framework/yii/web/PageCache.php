@@ -14,6 +14,8 @@ use yii\base\View;
 use yii\caching\Dependency;
 
 /**
+ * The PageCache provides functionality for whole page caching
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

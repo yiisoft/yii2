@@ -143,7 +143,7 @@ class ArrayHelperBase
 	 * or an anonymous function returning the value. The anonymous function signature should be:
 	 * `function($array, $defaultValue)`.
 	 * @param mixed $default the default value to be returned if the specified key does not exist
-	 * @return mixed the value of the
+	 * @return mixed the value of the element if found, default value otherwise
 	 */
 	public static function getValue($array, $key, $default = null)
 	{

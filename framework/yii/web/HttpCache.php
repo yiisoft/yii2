@@ -12,6 +12,8 @@ use yii\base\ActionFilter;
 use yii\base\Action;
 
 /**
+ * The HttpCache provides functionality for caching via HTTP Last-Modified and Etag headers
+ *
  * @author Da:Sourcerer <webmaster@dasourcerer.net>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

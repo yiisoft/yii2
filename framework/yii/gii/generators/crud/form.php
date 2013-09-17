@@ -6,5 +6,11 @@
  */
 
 echo $form->field($generator, 'modelClass');
-echo $form->field($generator, 'controllerID');
+echo $form->field($generator, 'searchModelClass');
+echo $form->field($generator, 'controllerClass');
 echo $form->field($generator, 'baseControllerClass');
+echo $form->field($generator, 'moduleID');
+echo $form->field($generator, 'indexWidgetType')->dropDownList(array(
+	'grid' => 'GridView',
+	'list' => 'ListView',
+));

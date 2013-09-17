@@ -7,6 +7,7 @@ use yiiunit\TestCase;
 /**
  * Test case for [[YiiRequirementChecker]].
  * @see YiiRequirementChecker
+ * @group requirements
  */
 class YiiRequirementCheckerTest extends TestCase
 {

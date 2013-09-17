@@ -39,10 +39,10 @@ use yii\base\InvalidCallException;
  * [[fetchMode]]. See the [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
  * for more details about possible fetch mode.
  *
- * @property boolean $isClosed whether the reader is closed or not.
- * @property integer $rowCount number of rows contained in the result.
- * @property integer $columnCount the number of columns in the result set.
- * @property mixed $fetchMode fetch mode used when retrieving the data.
+ * @property integer $columnCount The number of columns in the result set. This property is read-only.
+ * @property integer $fetchMode Fetch mode. This property is write-only.
+ * @property boolean $isClosed Whether the reader is closed or not. This property is read-only.
+ * @property integer $rowCount Number of rows contained in the result. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -73,7 +73,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	 * Binds a column to a PHP variable.
 	 * When rows of data are being fetched, the corresponding column value
 	 * will be set in the variable. Note, the fetch mode must include PDO::FETCH_BOUND.
-	 * @param mixed $column Number of the column (1-indexed) or name of the column
+	 * @param integer|string $column Number of the column (1-indexed) or name of the column
 	 * in the result set. If using the column name, be aware that the name
 	 * should match the case of the column, as returned by the driver.
 	 * @param mixed $value Name of the PHP variable to which the column will be bound.
@@ -91,7 +91,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
 	/**
 	 * Set the default fetch mode for this statement
-	 * @param mixed $mode fetch mode
+	 * @param integer $mode fetch mode
 	 * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
 	 */
 	public function setFetchMode($mode)
@@ -112,7 +112,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	/**
 	 * Returns a single column from the next row of a result set.
 	 * @param integer $columnIndex zero-based column index
-	 * @return mixed the column of the current row, false if no more row available
+	 * @return mixed the column of the current row, false if no more rows available
 	 */
 	public function readColumn($columnIndex)
 	{

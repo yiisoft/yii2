@@ -45,6 +45,7 @@ abstract class Mutex extends Component
 	}
 
 	/**
+	 * Acquires lock by given name.
 	 * @param string $name of the lock to be acquired. Must be unique.
 	 * @param integer $timeout to wait for lock to be released. Defaults to zero meaning that method will return
 	 * false immediately in case lock was already acquired.

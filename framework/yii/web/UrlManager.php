@@ -14,6 +14,10 @@ use yii\caching\Cache;
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
  *
+ * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend URLs it creates.
+ * @property string $hostInfo The host info (e.g. "http://www.example.com") that is used by
+ * [[createAbsoluteUrl()]] to prepend URLs it creates.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

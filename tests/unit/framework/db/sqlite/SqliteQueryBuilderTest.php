@@ -2,13 +2,16 @@
 
 namespace yiiunit\framework\db\sqlite;
 
-use yii\base\NotSupportedException;
 use yii\db\sqlite\Schema;
 use yiiunit\framework\db\QueryBuilderTest;
 
+/**
+ * @group db
+ * @group sqlite
+ */
 class SqliteQueryBuilderTest extends QueryBuilderTest
 {
-	public $driverName = 'sqlite';
+	protected $driverName = 'sqlite';
 
 	public function columnTypes()
 	{
@@ -73,9 +76,9 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 		);
 	}
 	
-	public function testAddDropPrimayKey()
+	public function testAddDropPrimaryKey()
 	{
 		$this->setExpectedException('yii\base\NotSupportedException');
-		parent::testAddDropPrimayKey();
+		parent::testAddDropPrimaryKey();
 	}
 }

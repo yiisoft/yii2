@@ -35,6 +35,9 @@ class Post3 extends Object
 	}
 }
 
+/**
+ * @group helpers
+ */
 class ArrayHelperTest extends TestCase
 {
 	public function testToArray()

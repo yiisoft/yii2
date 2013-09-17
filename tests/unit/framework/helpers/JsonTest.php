@@ -7,6 +7,9 @@ use yii\helpers\Json;
 use yii\test\TestCase;
 use yii\web\JsExpression;
 
+/**
+ * @group helpers
+ */
 class JsonTest extends TestCase
 {
 	public function testEncode()
