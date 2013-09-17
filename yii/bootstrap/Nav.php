@@ -67,7 +67,7 @@ class Nav extends Widget
 	 * - items: array|string, optional, the configuration array for creating a [[Dropdown]] widget,
 	 *   or a string representing the dropdown menu. Note that Bootstrap does not support sub-dropdown menus.
 	 *
-	 * It a menu item is a string, it will be rendered directly without HTML encoding.
+	 * If a menu item is a string, it will be rendered directly without HTML encoding.
 	 */
 	public $items = array();
 	/**
