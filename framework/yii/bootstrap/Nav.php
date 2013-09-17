@@ -56,7 +56,7 @@ class Nav extends Widget
 {
 	/**
 	 * @var array list of items in the nav widget. Each array element represents a single
-	 * menu item with the following structure:
+	 * menu item which can be either a string or an array with the following structure:
 	 *
 	 * - label: string, required, the nav item label.
 	 * - url: optional, the item's URL. Defaults to "#".
@@ -66,6 +66,8 @@ class Nav extends Widget
 	 * - active: boolean, optional, whether the item should be on active state or not.
 	 * - items: array|string, optional, the configuration array for creating a [[Dropdown]] widget,
 	 *   or a string representing the dropdown menu. Note that Bootstrap does not support sub-dropdown menus.
+	 *
+	 * It a menu item is a string, it will be rendered directly without HTML encoding.
 	 */
 	public $items = array();
 	/**
