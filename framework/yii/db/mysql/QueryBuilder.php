@@ -9,7 +9,6 @@ namespace yii\db\mysql;
 
 use yii\db\Exception;
 use yii\base\InvalidParamException;
-use yii\db\mysql\Schema;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.

@@ -7,7 +7,6 @@
 
 namespace yii\db\mssql;
 
-use yii\db\mssql\TableSchema;
 use yii\db\ColumnSchema;
 
 /**
