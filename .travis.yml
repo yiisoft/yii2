@@ -10,6 +10,7 @@ env:
 
 services:
   - redis-server
+  - memcached
 
 before_script:
   - composer self-update && composer --version
