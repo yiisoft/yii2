@@ -7,7 +7,6 @@
 
 namespace yii\db\cubrid;
 
-use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
