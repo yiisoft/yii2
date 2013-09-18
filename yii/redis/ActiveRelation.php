@@ -8,9 +8,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\redis;
-
-use yii\base\NotSupportedException;
+namespace yii\redis;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -19,7 +17,7 @@ use yii\base\NotSupportedException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveRelation extends \yii\db\redis\ActiveQuery
+class ActiveRelation extends \yii\redis\ActiveQuery
 {
 	/**
 	 * @var boolean whether this relation should populate all query results into AR instances.

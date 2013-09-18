@@ -8,7 +8,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\redis;
+namespace yii\redis;
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
