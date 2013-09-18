@@ -45,45 +45,14 @@ class ActiveRelation extends \yii\redis\ActiveQuery
 	/**
 	 * Specifies the relation associated with the pivot table.
 	 * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
-	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
-	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
 	 * @return ActiveRelation the relation object itself.
 	 */
-	public function via($relationName, $callable = null)
+	public function via($relationName)
 	{
 		$relation = $this->primaryModel->getRelation($relationName);
 		$this->via = array($relationName, $relation);
-		if ($callable !== null) {
-			call_user_func($callable, $relation);
-		}
 		return $this;
 	}
-
-	/**
-	 * Specifies the pivot table.
-	 * @param string $tableName the name of the pivot table.
-	 * @param array $link the link between the pivot table and the table associated with [[primaryModel]].
-	 * The keys of the array represent the columns in the pivot table, and the values represent the columns
-	 * in the [[primaryModel]] table.
-	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
-	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
-	 * @return ActiveRelation
-	 * /
-	public function viaTable($tableName, $link, $callable = null)
-	{
-		$relation = new ActiveRelation(array(
-			'modelClass' => get_class($this->primaryModel),
-			'from' => array($tableName),
-			'link' => $link,
-			'multiple' => true,
-			'asArray' => true,
-		));
-		$this->via = $relation;
-		if ($callable !== null) {
-			call_user_func($callable, $relation);
-		}
-		return $this;
-	}*/
 
 	/**
 	 * Finds the related records and populates them into the primary models.
