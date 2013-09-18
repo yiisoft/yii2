@@ -18,11 +18,22 @@ class CacheSessionTest extends \yiiunit\TestCase
 		Yii::$app->setComponent('cache', new FileCache());
 	}
 
-	public function testCreate()
+	public function testCacheSession()
 	{
 		$session = new CacheSession();
 
 		$session->writeSession('test', 'sessionData');
 		$this->assertEquals('sessionData', $session->readSession('test'));
+		$session->destroySession('test');
+		$this->assertEquals('', $session->readSession('test'));
+	}
+
+	public function testInvalidCache()
+	{
+		$this->setExpectedException('yii\base\InvalidConfigException');
+
+		$session = new CacheSession(array(
+			'cache' => 'invalid',
+		));
 	}
 }
