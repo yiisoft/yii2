@@ -12,7 +12,6 @@ use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\web\JqueryAsset;
 use yii\web\AssetBundle;
-use yii\web\Request;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
@@ -711,7 +710,7 @@ class View extends Component
 		}
 
 		$request = Yii::$app->getRequest();
-		if ($request instanceof Request && $request->enableCsrfValidation) {
+		if ($request instanceof \yii\web\Request && $request->enableCsrfValidation) {
 			$lines[] = Html::tag('meta', '', array('name' => 'csrf-var', 'content' => $request->csrfVar));
 			$lines[] = Html::tag('meta', '', array('name' => 'csrf-token', 'content' => $request->getCsrfToken()));
 		}
