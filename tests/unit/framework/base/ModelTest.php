@@ -75,6 +75,32 @@ class ModelTest extends TestCase
 		$this->assertEquals('Qiang', $speaker->firstName);
 	}
 
+	public function testLoad()
+	{
+		$singer = new Singer();
+		$this->assertEquals('Singer', $singer->formName());
+
+		$post = array('firstName' => 'Qiang');
+
+		Speaker::$formName = '';
+		$model = new Speaker();
+		$model->setScenario('test');
+		$this->assertTrue($model->load($post));
+		$this->assertEquals('Qiang', $model->firstName);
+
+		Speaker::$formName = 'Speaker';
+		$model = new Speaker();
+		$model->setScenario('test');
+		$this->assertTrue($model->load(array('Speaker' => $post)));
+		$this->assertEquals('Qiang', $model->firstName);
+
+		Speaker::$formName = 'Speaker';
+		$model = new Speaker();
+		$model->setScenario('test');
+		$this->assertFalse($model->load(array('Example' => array())));
+		$this->assertEquals('', $model->firstName);
+	}
+
 	public function testActiveAttributes()
 	{
 		// by default mass assignment doesn't work at all
