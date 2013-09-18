@@ -13,4 +13,4 @@ Hello <?php echo Html::encode($user->username)?>,
 
 Follow the link below to reset your password:
 
-<?php Html::a(Html::encode($resetLink), $resetLink)?>
+<?php echo Html::a(Html::encode($resetLink), $resetLink)?>
