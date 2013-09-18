@@ -43,7 +43,20 @@
  */
 yii = (function ($) {
 	var pub = {
-		version: '2.0',
+		/**
+		 * @return string|undefined the CSRF variable name. Undefined is returned is CSRF validation is not enabled.
+		 */
+		getCsrfVar: function() {
+			return $('meta[name=csrf-var]').prop('content');
+		},
+
+		/**
+		 * @return string|undefined the CSRF token. Undefined is returned is CSRF validation is not enabled.
+		 */
+		getCsrfToken: function() {
+			return $('meta[name=csrf-token]').prop('content');
+		},
+
 		initModule: function (module) {
 			if (module.isActive === undefined || module.isActive) {
 				if ($.isFunction(module.init)) {

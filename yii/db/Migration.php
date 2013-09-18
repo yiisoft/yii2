@@ -162,7 +162,7 @@ class Migration extends \yii\base\Component
 	 * The method will properly escape the column names and bind the values to be updated.
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name => value) to be updated.
-	 * @param mixed $condition the conditions that will be put in the WHERE part. Please
+	 * @param array|string $condition the conditions that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 */
@@ -177,7 +177,7 @@ class Migration extends \yii\base\Component
 	/**
 	 * Creates and executes a DELETE SQL statement.
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $condition the conditions that will be put in the WHERE part. Please
+	 * @param array|string $condition the conditions that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 */

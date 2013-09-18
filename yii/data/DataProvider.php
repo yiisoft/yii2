@@ -16,6 +16,13 @@ use yii\base\InvalidParamException;
  *
  * It implements the [[getPagination()]] and [[getSort()]] methods as specified by the [[IDataProvider]] interface.
  *
+ * @property integer $count The number of data models in the current page. This property is read-only.
+ * @property Pagination|boolean $pagination The pagination object. If this is false, it means the pagination
+ * is disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
+ * [[setPagination()]] for details.
+ * @property Sort|boolean $sort The sorting object. If this is false, it means the sorting is disabled. Note
+ * that the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -32,7 +39,7 @@ abstract class DataProvider extends Component implements IDataProvider
 	private $_pagination;
 
 	/**
-	 * @return Pagination the pagination object. If this is false, it means the pagination is disabled.
+	 * @return Pagination|boolean the pagination object. If this is false, it means the pagination is disabled.
 	 */
 	public function getPagination()
 	{
@@ -75,7 +82,7 @@ abstract class DataProvider extends Component implements IDataProvider
 	}
 
 	/**
-	 * @return Sort the sorting object. If this is false, it means the sorting is disabled.
+	 * @return Sort|boolean the sorting object. If this is false, it means the sorting is disabled.
 	 */
 	public function getSort()
 	{

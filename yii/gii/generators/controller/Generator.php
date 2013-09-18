@@ -78,7 +78,7 @@ class Generator extends \yii\gii\Generator
 			'baseClass' => 'Base Class',
 			'controller' => 'Controller ID',
 			'actions' => 'Action IDs',
-			'ns' => 'Namespace',
+			'ns' => 'Controller Namespace',
 		);
 	}
 

@@ -53,12 +53,13 @@ use yii\base\Object;
  * ));
  * ~~~
  *
- * @property integer $pageCount Number of pages.
- * @property integer $page The zero-based index of the current page.
- * @property integer $offset The offset of the data. This may be used to set the
- * OFFSET value for a SQL statement for fetching the current page of data.
- * @property integer $limit The limit of the data. This may be used to set the
- * LIMIT value for a SQL statement for fetching the current page of data.
+ * @property integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement
+ * for fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned.
+ * This property is read-only.
+ * @property integer $offset The offset of the data. This may be used to set the OFFSET value for a SQL
+ * statement for fetching the current page of data. This property is read-only.
+ * @property integer $page The zero-based current page number.
+ * @property integer $pageCount Number of pages. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -97,10 +98,10 @@ class Pagination extends Object
 	 */
 	public $validatePage = true;
 	/**
-	 * @var integer number of items on each page. Defaults to 10.
+	 * @var integer number of items on each page. Defaults to 20.
 	 * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
 	 */
-	public $pageSize = 10;
+	public $pageSize = 20;
 	/**
 	 * @var integer total number of items.
 	 */

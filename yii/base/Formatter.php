@@ -309,7 +309,7 @@ class Formatter extends Component
 	/**
 	 * Normalizes the given datetime value as one that can be taken by various date/time formatting methods.
 	 * @param mixed $value the datetime value to be normalized.
-	 * @return mixed the normalized datetime value
+	 * @return integer the normalized datetime value
 	 */
 	protected function normalizeDatetimeValue($value)
 	{

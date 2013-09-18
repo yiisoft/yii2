@@ -12,6 +12,8 @@ use yii\base\View;
 use yii\web\HttpException;
 
 /**
+ * The Yii Debug Module provides the debug toolbar and debugger
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

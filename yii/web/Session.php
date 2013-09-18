@@ -45,18 +45,27 @@ use yii\base\InvalidParamException;
  * useful for displaying confirmation messages. To use flash messages, simply
  * call methods such as [[setFlash()]], [[getFlash()]].
  *
- * @property string $id The current session ID.
- * @property string $name The current session name.
- * @property boolean $isActive Whether the session has started
- * @property string $savePath The current session save path, defaults to {@link http://php.net/manual/en/session.configuration.php#ini.session.save-path}.
+ * @property array $allFlashes Flash messages (key => message). This property is read-only.
  * @property array $cookieParams The session cookie parameters.
- * @property boolean $useCookies Whether cookies should be used to store session IDs.
- * @property float $gCProbability The probability (percentage) that the gc (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
- * @property boolean $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to false.
- * @property integer $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up, defaults to 1440 seconds.
- * @property SessionIterator $iterator An iterator for traversing the session variables.
- * @property integer $count The number of session variables.
- * @property array $allFlashes The list of all flash messages.
+ * @property integer $count The number of session variables. This property is read-only.
+ * @property string $flash The key identifying the flash message. Note that flash messages and normal session
+ * variables share the same name space. If you have a normal session variable using the same name, its value will
+ * be overwritten by this method. This property is write-only.
+ * @property float $gCProbability The probability (percentage) that the GC (garbage collection) process is
+ * started on every session initialization, defaults to 1 meaning 1% chance.
+ * @property string $id The current session ID.
+ * @property boolean $isActive Whether the session has started. This property is read-only.
+ * @property SessionIterator $iterator An iterator for traversing the session variables. This property is
+ * read-only.
+ * @property string $name The current session name.
+ * @property string $savePath The current session save path, defaults to '/tmp'.
+ * @property integer $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up.
+ * The default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
+ * @property boolean|null $useCookies The value indicating whether cookies should be used to store session
+ * IDs.
+ * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property boolean $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to
+ * false.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

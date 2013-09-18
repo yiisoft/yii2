@@ -133,7 +133,7 @@ class FileHelperBase
 	 * @param string $dst the destination directory
 	 * @param array $options options for directory copy. Valid options are:
 	 *
-	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0777.
+	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0775.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
 	 * - filter: callback, a PHP callback that is called for each directory or file.
 	 *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
@@ -162,7 +162,7 @@ class FileHelperBase
 	public static function copyDirectory($src, $dst, $options = array())
 	{
 		if (!is_dir($dst)) {
-			static::mkdir($dst, isset($options['dirMode']) ? $options['dirMode'] : 0777, true);
+			static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
 		}
 
 		$handle = opendir($src);
@@ -302,25 +302,25 @@ class FileHelperBase
 	}
 
 	/**
-	 * Makes directory.
+	 * Creates a new directory.
 	 *
 	 * This method is similar to the PHP `mkdir()` function except that
 	 * it uses `chmod()` to set the permission of the created directory
 	 * in order to avoid the impact of the `umask` setting.
 	 *
-	 * @param string $path path to be created.
-	 * @param integer $mode the permission to be set for created directory.
+	 * @param string $path path of the directory to be created.
+	 * @param integer $mode the permission to be set for the created directory.
 	 * @param boolean $recursive whether to create parent directories if they do not exist.
 	 * @return boolean whether the directory is created successfully
 	 */
-	public static function mkdir($path, $mode = 0777, $recursive = true)
+	public static function createDirectory($path, $mode = 0775, $recursive = true)
 	{
 		if (is_dir($path)) {
 			return true;
 		}
 		$parentDir = dirname($path);
 		if ($recursive && !is_dir($parentDir)) {
-			static::mkdir($parentDir, $mode, true);
+			static::createDirectory($parentDir, $mode, true);
 		}
 		$result = mkdir($path, $mode);
 		chmod($path, $mode);

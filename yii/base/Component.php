@@ -11,6 +11,9 @@ use Yii;
 
 /**
  * @include @yii/base/Component.md
+ *
+ * @property Behavior[] $behaviors List of behaviors attached to this component. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -35,9 +38,9 @@ class Component extends Object
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `$value = $component->property;`.
 	 * @param string $name the property name
-	 * @return mixed the property value, event handlers attached to the event,
-	 * the behavior, or the value of a behavior's property
+	 * @return mixed the property value or the value of a behavior's property
 	 * @throws UnknownPropertyException if the property is not defined
+	 * @throws InvalidCallException if the property is write-only.
 	 * @see __set
 	 */
 	public function __get($name)
@@ -55,7 +58,11 @@ class Component extends Object
 				}
 			}
 		}
-		throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
+		if (method_exists($this, 'set' . $name)) {
+			throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
+		} else {
+			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
+		}
 	}
 
 	/**
@@ -172,9 +179,8 @@ class Component extends Object
 
 	/**
 	 * Calls the named method which is not a class method.
-	 * If the name refers to a component property whose value is
-	 * an anonymous function, the method will execute the function.
-	 * Otherwise, it will check if any attached behavior has
+	 *
+	 * This method will check if any attached behavior has
 	 * the named method and will execute it if available.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
@@ -186,17 +192,9 @@ class Component extends Object
 	 */
 	public function __call($name, $params)
 	{
-		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) {
-			$func = $this->$getter();
-			if ($func instanceof \Closure) {
-				return call_user_func_array($func, $params);
-			}
-		}
-
 		$this->ensureBehaviors();
 		foreach ($this->_behaviors as $object) {
-			if (method_exists($object, $name)) {
+			if ($object->hasMethod($name)) {
 				return call_user_func_array(array($object, $name), $params);
 			}
 		}
@@ -261,8 +259,8 @@ class Component extends Object
 					return true;
 				}
 			}
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -291,8 +289,34 @@ class Component extends Object
 					return true;
 				}
 			}
-			return false;
 		}
+		return false;
+	}
+
+	/**
+	 * Returns a value indicating whether a method is defined.
+	 * A method is defined if:
+	 *
+	 * - the class has a method with the specified name
+	 * - an attached behavior has a method with the given name (when `$checkBehaviors` is true).
+	 *
+	 * @param string $name the property name
+	 * @param boolean $checkBehaviors whether to treat behaviors' methods as methods of this component
+	 * @return boolean whether the property is defined
+	 */
+	public function hasMethod($name, $checkBehaviors = true)
+	{
+		if (method_exists($this, $name)) {
+			return true;
+		} elseif ($checkBehaviors) {
+			$this->ensureBehaviors();
+			foreach ($this->_behaviors as $behavior) {
+				if ($behavior->hasMethod($name)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

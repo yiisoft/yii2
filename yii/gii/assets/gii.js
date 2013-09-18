@@ -76,6 +76,11 @@ yii.gii = (function ($) {
 			initPreviewDiffLinks();
 			initConfirmationCheckboxes();
 
+			// model generator: hide class name input when table name input contains *
+			$('#model-generator #generator-tablename').on('change', function () {
+				$('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
+			}).change();
+
 			// hide Generate button if any input is changed
 			$('.default-view .form-group input,select,textarea').change(function () {
 				$('.default-view-results,.default-view-files').hide();

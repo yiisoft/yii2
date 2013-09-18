@@ -28,6 +28,11 @@ class LinkSorter extends Widget
 	 */
 	public $sort;
 	/**
+	 * @var array list of the attributes that support sorting. If not set, it will be determined
+	 * using [[Sort::attributes]].
+	 */
+	public $attributes;
+	/**
 	 * @var array HTML attributes for the sorter container tag.
 	 */
 	public $options = array('class' => 'sorter');
@@ -58,8 +63,9 @@ class LinkSorter extends Widget
 	 */
 	protected function renderSortLinks()
 	{
+		$attributes = empty($this->atttributes) ? array_keys($this->sort->attributes) : $this->attributes;
 		$links = array();
-		foreach (array_keys($this->sort->attributes) as $name) {
+		foreach ($attributes as $name) {
 			$links[] = $this->sort->link($name);
 		}
 		return Html::ul($links, array('encode' => false));

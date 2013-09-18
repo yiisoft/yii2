@@ -31,15 +31,17 @@ use yii\base\ActionFilter;
  *             'class' => \yii\web\AccessControl::className(),
  *             'only' => array('create', 'update'),
  *             'rules' => array(
+ *                 // deny all POST requests
+ *                 array(
+ *                     'allow' => false,
+ *                     'verbs' => array('POST')
+ *                 ),
  *                 // allow authenticated users
  *                 array(
  *                     'allow' => true,
  *                     'roles' => array('@'),
  *                 ),
- *                 // deny all
- *                 array(
- *                     'allow' => false,
- *                 ),
+ *                 // everything else is denied
  *             ),
  *         ),
  *     );
