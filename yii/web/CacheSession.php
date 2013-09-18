@@ -42,13 +42,13 @@ class CacheSession extends Session
 	 */
 	public function init()
 	{
-		parent::init();
 		if (is_string($this->cache)) {
 			$this->cache = Yii::$app->getComponent($this->cache);
 		}
 		if (!$this->cache instanceof Cache) {
 			throw new InvalidConfigException('CacheSession::cache must refer to the application component ID of a cache object.');
 		}
+		parent::init();
 	}
 
 	/**
