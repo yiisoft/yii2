@@ -114,6 +114,12 @@ class ActiveRecordTest extends RedisTestCase
 		$customer = Customer::find(2);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
+		$customer = Customer::find(5);
+		$this->assertNull($customer);
+
+		// query scalar
+		$customerName = Customer::find()->primaryKeys(2)->scalar('name');
+		$this->assertEquals('user2', $customerName);
 
 		// find by column values
 		$customer = Customer::find(array('id' => 2));
@@ -127,14 +133,7 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(2, $customer->id);*/
 
-		// find custom column
-/*		$customer = Customer::find()->select(array('*', '(status*2) AS status2'))
-			->where(array('name' => 'user3'))->one();
-		$this->assertEquals(3, $customer->id);
-		$this->assertEquals(4, $customer->status2);*/
-
 		// find count, sum, average, min, max, scalar
-		$this->assertEquals(3, Customer::find()->count());
 /*		$this->assertEquals(2, Customer::find()->where('id=1 OR id=2')->count());
 		$this->assertEquals(6, Customer::find()->sum('id'));
 		$this->assertEquals(2, Customer::find()->average('id'));
@@ -161,6 +160,64 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertTrue($customers['user1'] instanceof Customer);
 		$this->assertTrue($customers['user2'] instanceof Customer);
 		$this->assertTrue($customers['user3'] instanceof Customer);
+	}
+
+	public function testFindCount()
+	{
+		$this->assertEquals(3, Customer::find()->count());
+		$this->assertEquals(1, Customer::find()->limit(1)->count());
+		$this->assertEquals(2, Customer::find()->limit(2)->count());
+		$this->assertEquals(1, Customer::find()->offset(2)->limit(2)->count());
+	}
+
+	public function testFindLimit()
+	{
+		// all()
+		$customers = Customer::find()->all();
+		$this->assertEquals(3, count($customers));
+
+		$customers = Customer::find()->limit(1)->all();
+		$this->assertEquals(1, count($customers));
+		$this->assertEquals('user1', $customers[0]->name);
+
+		$customers = Customer::find()->limit(1)->offset(1)->all();
+		$this->assertEquals(1, count($customers));
+		$this->assertEquals('user2', $customers[0]->name);
+
+		$customers = Customer::find()->limit(1)->offset(2)->all();
+		$this->assertEquals(1, count($customers));
+		$this->assertEquals('user3', $customers[0]->name);
+
+		$customers = Customer::find()->limit(2)->offset(1)->all();
+		$this->assertEquals(2, count($customers));
+		$this->assertEquals('user2', $customers[0]->name);
+		$this->assertEquals('user3', $customers[1]->name);
+
+		$customers = Customer::find()->limit(2)->offset(3)->all();
+		$this->assertEquals(0, count($customers));
+
+		// one()
+		$customer = Customer::find()->one();
+		$this->assertEquals('user1', $customer->name);
+
+		$customer = Customer::find()->offset(0)->one();
+		$this->assertEquals('user1', $customer->name);
+
+		$customer = Customer::find()->offset(1)->one();
+		$this->assertEquals('user2', $customer->name);
+
+		$customer = Customer::find()->offset(2)->one();
+		$this->assertEquals('user3', $customer->name);
+
+		$customer = Customer::find()->offset(3)->one();
+		$this->assertNull($customer);
+
+	}
+
+	public function testExists()
+	{
+		$this->assertTrue(Customer::find()->primaryKeys(2)->exists());
+		$this->assertFalse(Customer::find()->primaryKeys(5)->exists());
 	}
 
 //	public function testFindLazy()
