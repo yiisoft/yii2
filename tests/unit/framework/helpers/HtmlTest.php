@@ -6,6 +6,9 @@ use Yii;
 use yii\helpers\Html;
 use yiiunit\TestCase;
 
+/**
+ * @group helpers
+ */
 class HtmlTest extends TestCase
 {
 	protected function setUp()

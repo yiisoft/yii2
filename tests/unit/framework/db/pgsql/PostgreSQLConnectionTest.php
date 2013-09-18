@@ -3,13 +3,13 @@ namespace yiiunit\framework\db\pgsql;
 
 use yiiunit\framework\db\ConnectionTest;
 
+/**
+ * @group db
+ * @group pgsql
+ */
 class PostgreSQLConnectionTest extends ConnectionTest
 {
-	public function setUp()
-	{
-		$this->driverName = 'pgsql';
-		parent::setUp();
-	}
+	protected $driverName = 'pgsql';
 
 	public function testConnection()
 	{

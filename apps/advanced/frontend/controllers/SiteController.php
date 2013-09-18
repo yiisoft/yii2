@@ -12,11 +12,37 @@ use yii\helpers\Security;
 
 class SiteController extends Controller
 {
+	public function behaviors()
+	{
+		return array(
+			'access' => array(
+				'class' => \yii\web\AccessControl::className(),
+				'only' => array('login', 'logout', 'signup'),
+				'rules' => array(
+					array(
+						'actions' => array('login', 'signup'),
+						'allow' => true,
+						'roles' => array('?'),
+					),
+					array(
+						'actions' => array('logout'),
+						'allow' => true,
+						'roles' => array('@'),
+					),
+				),
+			),
+		);
+	}
+
 	public function actions()
 	{
 		return array(
+			'error' => array(
+				'class' => 'yii\web\ErrorAction',
+			),
 			'captcha' => array(
 				'class' => 'yii\captcha\CaptchaAction',
+				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
 			),
 		);
 	}

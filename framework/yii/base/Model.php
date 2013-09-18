@@ -36,17 +36,28 @@ use yii\validators\Validator;
  * You may directly use Model to store model data, or extend it with customization.
  * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
  *
- * @property ArrayObject $validators All the validators declared in the model.
- * @property array $activeValidators The validators applicable to the current [[scenario]].
- * @property array $errors Errors for all attributes or the specified attribute. Empty array is returned if no error.
+ * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
+ * [[scenario]]. This property is read-only.
  * @property array $attributes Attribute values (name => value).
- * @property string $scenario The scenario that this model is in.
+ * @property array $errors An array of errors for all attributes. Empty array is returned if no error. The
+ * result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is read-only.
+ * @property array $firstErrors The first errors. An empty array will be returned if there is no error. This
+ * property is read-only.
+ * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
+ * read-only.
+ * @property string $scenario The scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
+ * @property ArrayObject $validators All the validators declared in the model. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Model extends Component implements IteratorAggregate, ArrayAccess
 {
+	/**
+	 * The name of the default scenario.
+	 */
+	const DEFAULT_SCENARIO = 'default';
+
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
 	 * [[ModelEvent::isValid]] to be false to stop the validation.
@@ -68,7 +79,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	/**
 	 * @var string current scenario
 	 */
-	private $_scenario = 'default';
+	private $_scenario = self::DEFAULT_SCENARIO;
 
 	/**
 	 * Returns the validation rules for attributes.
@@ -104,6 +115,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * // $params refers to validation parameters given in the rule
 	 * function validatorName($attribute, $params)
 	 * ~~~
+	 *
+	 * In the above `$attribute` refers to currently validated attribute name while `$params` contains an array of
+	 * validator configuration options such as `max` in case of `length` validator. Currently validate attribute value
+	 * can be accessed as `$this->[$attribute]`.
 	 *
 	 * Yii also provides a set of [[Validator::builtInValidators|built-in validators]].
 	 * They each has an alias name which can be used when specifying a validation rule.
@@ -153,23 +168,39 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * If an attribute should NOT be massively assigned (thus considered unsafe),
 	 * please prefix the attribute with an exclamation character (e.g. '!rank').
 	 *
-	 * The default implementation of this method will return a 'default' scenario
-	 * which corresponds to all attributes listed in the validation rules applicable
-	 * to the 'default' scenario.
+	 * The default implementation of this method will return all scenarios found in the [[rules()]]
+	 * declaration. A special scenario named [[DEFAULT_SCENARIO]] will contain all attributes
+	 * found in the [[rules()]]. Each scenario will be associated with the attributes that
+	 * are being validated by the validation rules that apply to the scenario.
 	 *
 	 * @return array a list of scenarios and the corresponding active attributes.
 	 */
 	public function scenarios()
 	{
-		$attributes = array();
-		foreach ($this->getActiveValidators() as $validator) {
-			foreach ($validator->attributes as $name) {
-				$attributes[$name] = true;
+		$scenarios = array();
+		$defaults = array();
+		/** @var $validator Validator */
+		foreach ($this->getValidators() as $validator) {
+			if (empty($validator->on)) {
+				foreach ($validator->attributes as $attribute) {
+					$defaults[$attribute] = true;
+				}
+			} else {
+				foreach ($validator->on as $scenario) {
+					foreach ($validator->attributes as $attribute) {
+						$scenarios[$scenario][$attribute] = true;
+					}
+				}
 			}
 		}
-		return array(
-			'default' => array_keys($attributes),
-		);
+		foreach ($scenarios as $scenario => $attributes) {
+			foreach (array_keys($defaults) as $attribute) {
+				$attributes[$attribute] = true;
+			}
+			$scenarios[$scenario] = array_keys($attributes);
+		}
+		$scenarios[self::DEFAULT_SCENARIO] = array_keys($defaults);
+		return $scenarios;
 	}
 
 	/**
@@ -244,8 +275,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * after the actual validation, respectively. If [[beforeValidate()]] returns false,
 	 * the validation will be cancelled and [[afterValidate()]] will not be called.
 	 *
-	 * Errors found during the validation can be retrieved via [[getErrors()]]
-	 * and [[getError()]].
+	 * Errors found during the validation can be retrieved via [[getErrors()]],
+	 * [[getFirstErrors()]] and [[getFirstError()]].
 	 *
 	 * @param array $attributes list of attributes that should be validated.
 	 * If this parameter is empty, it means any attribute listed in the applicable
@@ -423,6 +454,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	/**
 	 * Returns the errors for all attribute or a single attribute.
 	 * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+	 * @property array An array of errors for all attributes. Empty array is returned if no error.
+	 * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
 	 * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
 	 * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
 	 *
@@ -438,7 +471,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * )
 	 * ~~~
 	 *
-	 * @see getError
+	 * @see getFirstErrors
+	 * @see getFirstError
 	 */
 	public function getErrors($attribute = null)
 	{
@@ -452,6 +486,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	/**
 	 * Returns the first error of every attribute in the model.
 	 * @return array the first errors. An empty array will be returned if there is no error.
+	 * @see getErrors
+	 * @see getFirstError
 	 */
 	public function getFirstErrors()
 	{
@@ -473,6 +509,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * @param string $attribute attribute name.
 	 * @return string the error message. Null is returned if no error.
 	 * @see getErrors
+	 * @see getFirstErrors
 	 */
 	public function getFirstError($attribute)
 	{
@@ -581,7 +618,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Scenario affects how validation is performed and which attributes can
 	 * be massively assigned.
 	 *
-	 * @return string the scenario that this model is in. Defaults to 'default'.
+	 * @return string the scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
 	 */
 	public function getScenario()
 	{

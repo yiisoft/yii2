@@ -11,6 +11,8 @@ use yii\behaviors\AutoTimestamp;
 /**
  * Unit test for [[\yii\behaviors\AutoTimestamp]].
  * @see AutoTimestamp
+ *
+ * @group behaviors
  */
 class AutoTimestampTest extends TestCase
 {

@@ -47,7 +47,6 @@ use yii\helpers\StringHelper;
  * - [[deleteValue()]]: delete the value with the specified key from cache
  * - [[flushValues()]]: delete all values from cache
  *
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -131,6 +130,25 @@ abstract class Cache extends Component implements \ArrayAccess
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Checks whether a specified key exists in the cache.
+	 * This can be faster than getting the value from the cache if the data is big.
+	 * In case a cache does not support this feature natively, this method will try to simulate it
+	 * but has no performance improvement over getting it.
+	 * Note that this method does not check whether the dependency associated
+	 * with the cached data, if there is any, has changed. So a call to [[get]]
+	 * may return false while exists returns true.
+	 * @param mixed $key a key identifying the cached value. This can be a simple string or
+	 * a complex data structure consisting of factors representing the key.
+	 * @return boolean true if a value exists in cache, false if the value is not in the cache or expired.
+	 */
+	public function exists($key)
+	{
+		$key = $this->buildKey($key);
+		$value = $this->getValue($key);
+		return $value !== false;
 	}
 
 	/**

@@ -22,13 +22,16 @@ use yii\helpers\Inflector;
  *
  * @include @yii/db/ActiveRecord.md
  *
- * @property Connection $db the database connection used by this AR class.
- * @property TableSchema $tableSchema the schema information of the DB table associated with this AR class.
- * @property array $oldAttributes the old attribute values (name-value pairs).
- * @property array $dirtyAttributes the changed attribute values (name-value pairs).
- * @property boolean $isNewRecord whether the record is new and should be inserted when calling [[save()]].
- * @property mixed $primaryKey the primary key value.
- * @property mixed $oldPrimaryKey the old primary key value.
+ * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
+ * read-only.
+ * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
+ * @property array $oldAttributes The old attribute values (name-value pairs).
+ * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
+ * returned if the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be
+ * returned if the key value is null). This property is read-only.
+ * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
+ * the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
+ * the key value is null). This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -746,21 +749,21 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isTransactional(self::OP_INSERT) && $db->getTransaction() === null ? $db->beginTransaction() : null;
-		try {
-			$result = $this->insertInternal($attributes);
-			if ($transaction !== null) {
+		if ($this->isTransactional(self::OP_INSERT) && $db->getTransaction() === null) {
+			$transaction = $db->beginTransaction();
+			try {
+				$result = $this->insertInternal($attributes);
 				if ($result === false) {
 					$transaction->rollback();
 				} else {
 					$transaction->commit();
 				}
-			}
-		} catch (\Exception $e) {
-			if ($transaction !== null) {
+			} catch (\Exception $e) {
 				$transaction->rollback();
+				throw $e;
 			}
-			throw $e;
+		} else {
+			$result = $this->insertInternal($attributes);
 		}
 		return $result;
 	}
@@ -856,21 +859,21 @@ class ActiveRecord extends Model
 			return false;
 		}
 		$db = static::getDb();
-		$transaction = $this->isTransactional(self::OP_UPDATE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
-		try {
-			$result = $this->updateInternal($attributes);
-			if ($transaction !== null) {
+		if ($this->isTransactional(self::OP_UPDATE) && $db->getTransaction() === null) {
+			$transaction = $db->beginTransaction();
+			try {
+				$result = $this->updateInternal($attributes);
 				if ($result === false) {
 					$transaction->rollback();
 				} else {
 					$transaction->commit();
 				}
-			}
-		} catch (\Exception $e) {
-			if ($transaction !== null) {
+			} catch (\Exception $e) {
 				$transaction->rollback();
+				throw $e;
 			}
-			throw $e;
+		} else {
+			$result = $this->updateInternal($attributes);
 		}
 		return $result;
 	}
@@ -886,6 +889,7 @@ class ActiveRecord extends Model
 		}
 		$values = $this->getDirtyAttributes($attributes);
 		if (empty($values)) {
+			$this->afterSave(false);
 			return 0;
 		}
 		$condition = $this->getOldPrimaryKey(true);
@@ -1007,6 +1011,16 @@ class ActiveRecord extends Model
 	}
 
 	/**
+	 * Sets the value indicating whether the record is new.
+	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
+	 * @see getIsNewRecord
+	 */
+	public function setIsNewRecord($value)
+	{
+		$this->_oldAttributes = $value ? null : $this->_attributes;
+	}
+
+	/**
 	 * Initializes the object.
 	 * This method is called at the end of the constructor.
 	 * The default implementation will trigger an [[EVENT_INIT]] event.
@@ -1028,16 +1042,6 @@ class ActiveRecord extends Model
 	public function afterFind()
 	{
 		$this->trigger(self::EVENT_AFTER_FIND);
-	}
-
-	/**
-	 * Sets the value indicating whether the record is new.
-	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
-	 * @see getIsNewRecord
-	 */
-	public function setIsNewRecord($value)
-	{
-		$this->_oldAttributes = $value ? null : $this->_attributes;
 	}
 
 	/**

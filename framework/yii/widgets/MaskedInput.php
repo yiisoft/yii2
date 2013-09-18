@@ -18,17 +18,17 @@ use yii\web\JsExpression;
  * MaskedInput is similar to [[Html::textInput()]] except that
  * an input mask will be used to force users to enter properly formatted data,
  * such as phone numbers, social security numbers.
- * 
+ *
  * To use MaskedInput, you must set the [[mask]] property. The following example
  * shows how to use MaskedInput to collect phone numbers:
- * 
+ *
  * ~~~
  * echo MaskedInput::widget(array(
  *     'name' => 'phone',
  *     'mask' => '999-999-9999',
  * ));
  * ~~~
- * 
+ *
  * The masked text field is implemented based on the [jQuery masked input plugin](http://digitalbush.com/projects/masked-input-plugin).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

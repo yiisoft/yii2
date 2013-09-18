@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 
 /**
  * User is the class for the "user" application component that manages the user authentication status.
@@ -19,6 +20,14 @@ use yii\base\InvalidConfigException;
  *
  * User works with a class implementing the [[Identity]] interface. This class implements
  * the actual user authentication logic and is often backed by a user database table.
+ *
+ * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
+ * This property is read-only.
+ * @property Identity $identity The identity object associated with the currently logged user. Null is
+ * returned if the user is not logged in (not authenticated).
+ * @property boolean $isGuest Whether the current user is a guest. This property is read-only.
+ * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
+ * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -132,7 +141,7 @@ class User extends Component
 				$this->_identity = null;
 			} else {
 				/** @var $class Identity */
-				$class = Yii::import($this->identityClass);
+				$class = $this->identityClass;
 				$this->_identity = $class::findIdentity($id);
 			}
 		}
@@ -247,20 +256,34 @@ class User extends Component
 	 * This property is usually used by the login action. If the login is successful,
 	 * the action should read this property and use it to redirect the user browser.
 	 * @param string|array $defaultUrl the default return URL in case it was not set previously.
-	 * If this is null, it means [[Application::homeUrl]] will be redirected to.
-	 * Please refer to [[\yii\helpers\Html::url()]] on acceptable URL formats.
+	 * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
+	 * Please refer to [[setReturnUrl()]] on accepted format of the URL.
 	 * @return string the URL that the user should be redirected to after login.
 	 * @see loginRequired
 	 */
 	public function getReturnUrl($defaultUrl = null)
 	{
 		$url = Yii::$app->getSession()->get($this->returnUrlVar, $defaultUrl);
+		if (is_array($url)) {
+			if (isset($url[0])) {
+				$route = array_shift($url);
+				return Yii::$app->getUrlManager()->createUrl($route, $url);
+			} else {
+				$url = null;
+			}
+		}
 		return $url === null ? Yii::$app->getHomeUrl() : $url;
 	}
 
 	/**
 	 * @param string|array $url the URL that the user should be redirected to after login.
-	 * Please refer to [[\yii\helpers\Html::url()]] on acceptable URL formats.
+	 * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
+	 * The first element of the array should be the route, and the rest of
+	 * the name-value pairs are GET parameters used to construct the URL. For example,
+	 *
+	 * ~~~
+	 * array('admin/index', 'ref' => 1)
+	 * ~~~
 	 */
 	public function setReturnUrl($url)
 	{

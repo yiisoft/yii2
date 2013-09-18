@@ -4,13 +4,13 @@ namespace yiiunit\framework\db\mssql;
 
 use yiiunit\framework\db\CommandTest;
 
+/**
+ * @group db
+ * @group mssql
+ */
 class MssqlCommandTest extends CommandTest
 {
-	public function setUp()
-	{
-		$this->driverName = 'sqlsrv';
-		parent::setUp();
-	}
+	protected $driverName = 'sqlsrv';
 
 	public function testAutoQuoting()
 	{

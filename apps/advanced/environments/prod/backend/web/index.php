@@ -1,6 +1,6 @@
 <?php
-// comment out the following line to disable debug mode
 defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_ENV') or define('YII_ENV', 'prod');
 
 require(__DIR__ . '/../../vendor/autoload.php');
 require(__DIR__ . '/../../vendor/yiisoft/yii2/yii/Yii.php');

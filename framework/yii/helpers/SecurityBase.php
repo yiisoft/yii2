@@ -133,19 +133,19 @@ class SecurityBase
 	}
 
 	/**
-	 * Generates a random key.
+	 * Generates a random key. The key may contain uppercase and lowercase latin letters, digits, underscore, dash and dot.
 	 * @param integer $length the length of the key that should be generated
 	 * @return string the generated random key
 	 */
 	public static function generateRandomKey($length = 32)
 	{
 		if (function_exists('openssl_random_pseudo_bytes')) {
-			$key = base64_encode(openssl_random_pseudo_bytes($length, $strong));
+			$key = strtr(base64_encode(openssl_random_pseudo_bytes($length, $strong)), '+/=', '_-.');
 			if ($strong) {
 				return substr($key, 0, $length);
 			}
 		}
-		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
 		return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
 	}
 
@@ -262,7 +262,7 @@ class SecurityBase
 	protected static function generateSalt($cost = 13)
 	{
 		$cost = (int)$cost;
-		if ($cost < 4 || $cost > 30) {
+		if ($cost < 4 || $cost > 31) {
 			throw new InvalidParamException('Cost must be between 4 and 31.');
 		}
 

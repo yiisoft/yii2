@@ -129,6 +129,35 @@ class Schema extends \yii\db\Schema
 	}
 
 	/**
+	 * Returns all table names in the database.
+	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+	 * If not empty, the returned table names will be prefixed with the schema name.
+	 * @return array all table names in the database.
+	 */
+	protected function findTableNames($schema = '')
+	{
+		if ($schema === '') {
+			$schema = $this->defaultSchema;
+		}
+		$sql = <<<EOD
+SELECT table_name, table_schema FROM information_schema.tables
+WHERE table_schema=:schema AND table_type='BASE TABLE'
+EOD;
+		$command = $this->db->createCommand($sql);
+		$command->bindParam(':schema', $schema);
+		$rows = $command->queryAll();
+		$names = array();
+		foreach ($rows as $row) {
+			if ($schema === $this->defaultSchema) {
+				$names[] = $row['table_name'];
+			} else {
+				$names[] = $row['table_schema'] . '.' . $row['table_name'];
+			}
+		}
+		return $names;
+	}
+
+	/**
 	 * Collects the foreign key column details for the given table.
 	 * @param TableSchema $table the table metadata
 	 */
@@ -171,7 +200,7 @@ SQL;
 			}
 			$citem = array($foreignTable);
 			foreach ($columns as $idx => $column) {
-				$citem[] = array($fcolumns[$idx] => $column);
+				$citem[$fcolumns[$idx]] = $column;
 			}
 			$table->foreignKeys[] = $citem;
 		}
@@ -226,7 +255,7 @@ SELECT
              information_schema._pg_char_max_length(information_schema._pg_truetypid(a, t), information_schema._pg_truetypmod(a, t))
              AS numeric
 	) AS size,
-	a.attnum = any (ct.conkey) as is_pkey			
+	a.attnum = any (ct.conkey) as is_pkey
 FROM
 	pg_class c
 	LEFT JOIN pg_attribute a ON a.attrelid = c.oid

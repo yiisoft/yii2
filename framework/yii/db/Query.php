@@ -149,8 +149,8 @@ class Query extends Component
 		if ($db === null) {
 			$db = Yii::$app->getDb();
 		}
-		$sql = $db->getQueryBuilder()->build($this);
-		return $db->createCommand($sql, $this->params);
+		list ($sql, $params) = $db->getQueryBuilder()->build($this);
+		return $db->createCommand($sql, $params);
 	}
 
 	/**

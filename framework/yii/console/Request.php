@@ -8,6 +8,9 @@
 namespace yii\console;
 
 /**
+ *
+ * @property array $params The command line arguments. It does not include the entry script name.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -7,14 +7,12 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class QueryTest extends DatabaseTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->mockApplication();
-	}
-
 	public function testSelect()
 	{
 		// default

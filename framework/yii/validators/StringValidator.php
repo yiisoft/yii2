@@ -52,7 +52,7 @@ class StringValidator extends Validator
 	 */
 	public $tooLong;
 	/**
-	 * @var string user-defined error message used when the length of the value is not equal to [[is]].
+	 * @var string user-defined error message used when the length of the value is not equal to [[length]].
 	 */
 	public $notEqual;
 	/**

@@ -16,6 +16,9 @@ use yii\helpers\FileHelper;
 /**
  * AssetManager manages asset bundles and asset publishing.
  *
+ * @property IAssetConverter $converter The asset converter. Note that the type of this property differs in
+ * getter and setter. See [[getConverter()]] and [[setConverter()]] for details.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -55,16 +58,17 @@ class AssetManager extends Component
 	public $linkAssets = false;
 	/**
 	 * @var integer the permission to be set for newly published asset files.
-	 * This value will be used by PHP chmod() function.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
 	 * If not set, the permission will be determined by the current environment.
 	 */
 	public $fileMode;
 	/**
 	 * @var integer the permission to be set for newly generated asset directories.
-	 * This value will be used by PHP chmod() function.
-	 * Defaults to 0777, meaning the directory can be read, written and executed by all users.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
+	 * Defaults to 0775, meaning the directory is read-writable by owner and group,
+	 * but read-only for other users.
 	 */
-	public $dirMode = 0777;
+	public $dirMode = 0775;
 
 	/**
 	 * Initializes the component.
@@ -202,7 +206,7 @@ class AssetManager extends Component
 			$dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
 
 			if (!is_dir($dstDir)) {
-				mkdir($dstDir, $this->dirMode, true);
+				FileHelper::createDirectory($dstDir, $this->dirMode, true);
 			}
 
 			if ($this->linkAssets) {

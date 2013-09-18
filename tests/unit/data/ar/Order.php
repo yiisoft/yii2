@@ -2,6 +2,14 @@
 
 namespace yiiunit\data\ar;
 
+/**
+ * Class Order
+ *
+ * @property integer $id
+ * @property integer $customer_id
+ * @property integer $create_time
+ * @property string $total
+ */
 class Order extends ActiveRecord
 {
 	public static function tableName()

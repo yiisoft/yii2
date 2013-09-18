@@ -6,6 +6,10 @@ use Yii;
 use yii\helpers\Console;
 use yiiunit\TestCase;
 
+/**
+ * @group helpers
+ * @group console
+ */
 class ConsoleTest extends TestCase
 {
 	public function testStripAnsiFormat()

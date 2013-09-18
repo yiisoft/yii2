@@ -9,6 +9,28 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+	public function behaviors()
+	{
+		return array(
+			'access' => array(
+				'class' => \yii\web\AccessControl::className(),
+				'only' => array('login', 'logout'),
+				'rules' => array(
+					array(
+						'actions' => array('login'),
+						'allow' => true,
+						'roles' => array('?'),
+					),
+					array(
+						'actions' => array('logout'),
+						'allow' => true,
+						'roles' => array('@'),
+					),
+				),
+			),
+		);
+	}
+
 	public function actions()
 	{
 		return array(

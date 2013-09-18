@@ -3,6 +3,7 @@
  * The database setup in config.php is required to perform then relevant tests:
  */
 
+DROP TABLE IF EXISTS tbl_composite_fk CASCADE;
 DROP TABLE IF EXISTS tbl_order_item CASCADE;
 DROP TABLE IF EXISTS tbl_item CASCADE;
 DROP TABLE IF EXISTS tbl_order CASCADE;
@@ -61,6 +62,14 @@ CREATE TABLE `tbl_order_item` (
   CONSTRAINT `FK_order_item_order_id` FOREIGN KEY (`order_id`) REFERENCES `tbl_order` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_order_item_item_id` FOREIGN KEY (`item_id`) REFERENCES `tbl_item` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tbl_composite_fk` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `tbl_order_item` (`order_id`,`item_id`) ON DELETE CASCADE
+);
 
 CREATE TABLE `tbl_type` (
   `int_col` int(11) NOT NULL,

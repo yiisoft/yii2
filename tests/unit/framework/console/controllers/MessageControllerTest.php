@@ -6,6 +6,8 @@ use yii\console\controllers\MessageController;
 /**
  * Unit test for [[\yii\console\controllers\MessageController]].
  * @see MessageController
+ *
+ * @group console
  */
 class MessageControllerTest extends TestCase
 {

@@ -9,7 +9,7 @@ namespace yii\grid;
 
 /**
  * SerialColumn displays a column of row numbers (1-based).
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

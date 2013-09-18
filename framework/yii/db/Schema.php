@@ -19,9 +19,12 @@ use yii\caching\GroupDependency;
  *
  * Schema represents the database schema information that is DBMS specific.
  *
- * @property QueryBuilder $queryBuilder the query builder for the DBMS represented by this schema
- * @property array $tableNames the names of all tables in this database.
- * @property array $tableSchemas the schema information for all tables in this database.
+ * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
+ * sequence object. This property is read-only.
+ * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
+ * @property string[] $tableNames All table names in the database. This property is read-only.
+ * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
+ * instance of [[TableSchema]] or its child class. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -32,6 +35,7 @@ abstract class Schema extends Object
 	 * The followings are the supported abstract column data types.
 	 */
 	const TYPE_PK = 'pk';
+	const TYPE_BIGPK = 'bigpk';
 	const TYPE_STRING = 'string';
 	const TYPE_TEXT = 'text';
 	const TYPE_SMALLINT = 'smallint';
@@ -213,7 +217,7 @@ abstract class Schema extends Object
 	 * This method should be overridden by child classes in order to support this feature
 	 * because the default implementation simply throws an exception.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * @return array all table names in the database. The names have NO the schema name prefix.
+	 * @return array all table names in the database. The names have NO schema name prefix.
 	 * @throws NotSupportedException if this method is called
 	 */
 	protected function findTableNames($schema = '')

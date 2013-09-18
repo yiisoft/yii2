@@ -7,7 +7,7 @@
 
 namespace yii\caching;
 
-use yii\db\redis\Connection;
+use yii\redis\Connection;
 
 /**
  * RedisCache implements a cache application component based on [redis](http://redis.io/).
@@ -39,6 +39,8 @@ use yii\db\redis\Connection;
  * )
  * ~~~
  *
+ * @property Connection $connection The redis connection object. This property is read-only.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
@@ -69,7 +71,7 @@ class RedisCache extends Cache
 	 */
 	public $dataTimeout = null;
 	/**
-	 * @var \yii\db\redis\Connection the redis connection
+	 * @var Connection the redis connection
 	 */
 	private $_connection;
 
@@ -86,9 +88,7 @@ class RedisCache extends Cache
 	/**
 	 * Returns the redis connection object.
 	 * Establishes a connection to the redis server if it does not already exists.
-	 *
-	 * TODO throw exception on error
-	 * @return \yii\db\redis\Connection
+	 * @return Connection the redis connection object.
 	 */
 	public function getConnection()
 	{
@@ -101,6 +101,21 @@ class RedisCache extends Cache
 			));
 		}
 		return $this->_connection;
+	}
+
+	/**
+	 * Checks whether a specified key exists in the cache.
+	 * This can be faster than getting the value from the cache if the data is big.
+	 * Note that this method does not check whether the dependency associated
+	 * with the cached data, if there is any, has changed. So a call to [[get]]
+	 * may return false while exists returns true.
+	 * @param mixed $key a key identifying the cached value. This can be a simple string or
+	 * a complex data structure consisting of factors representing the key.
+	 * @return boolean true if a value exists in cache, false if the value is not in the cache or expired.
+	 */
+	public function exists($key)
+	{
+		return (bool) $this->_connection->executeCommand('EXISTS', array($this->buildKey($key)));
 	}
 
 	/**

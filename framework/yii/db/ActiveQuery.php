@@ -156,6 +156,8 @@ class ActiveQuery extends Query
 		if ($db === null) {
 			$db = $modelClass::getDb();
 		}
+
+		$params = $this->params;
 		if ($this->sql === null) {
 			if ($this->from === null) {
 				$tableName = $modelClass::tableName();
@@ -164,11 +166,9 @@ class ActiveQuery extends Query
 				}
 				$this->from = array($tableName);
 			}
-			/** @var $qb QueryBuilder */
-			$qb = $db->getQueryBuilder();
-			$this->sql = $qb->build($this);
+			list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
 		}
-		return $db->createCommand($this->sql, $this->params);
+		return $db->createCommand($this->sql, $params);
 	}
 
 	/**

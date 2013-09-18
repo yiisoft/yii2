@@ -5,7 +5,7 @@ use yii\base\Object;
 use yiiunit\TestCase;
 
 /**
- * ObjectTest
+ * @group base
  */
 class ObjectTest extends TestCase
 {
@@ -132,11 +132,6 @@ class ObjectTest extends TestCase
 		$this->assertEquals('object text', $this->object->object->text);
 		$this->object->object->text = 'new text';
 		$this->assertEquals('new text', $this->object->object->text);
-	}
-
-	public function testAnonymousFunctionProperty()
-	{
-		$this->assertEquals(2, $this->object->execute(1));
 	}
 
 	public function testConstruct()

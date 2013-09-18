@@ -13,6 +13,10 @@ use yii\caching\Cache;
 use yii\caching\Dependency;
 
 /**
+ *
+ * @property string|boolean $cachedContent The cached content. False is returned if valid content is not found
+ * in the cache. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

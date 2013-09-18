@@ -27,6 +27,12 @@ use yii\base\View;
  * - [[generate()]]: generates the code based on the current user input and the specified code template files.
  *   This is the place where main code generation code resides.
  *
+ * @property string $description The detailed description of the generator. This property is read-only.
+ * @property string $stickyDataFile The file path that stores the sticky attribute values. This property is
+ * read-only.
+ * @property string $templatePath The root path of the template files that are currently being used. This
+ * property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -315,6 +321,28 @@ abstract class Generator extends Model
 			}
 		} catch (\Exception $e) {
 			$this->addError($attribute, "Class '$class' does not exist or has syntax error.");
+		}
+	}
+
+	/**
+	 * An inline validator that checks if the attribute value refers to a valid namespaced class name.
+	 * The validator will check if the directory containing the new class file exist or not.
+	 * @param string $attribute the attribute being validated
+	 * @param array $params the validation options
+	 */
+	public function validateNewClass($attribute, $params)
+	{
+		$class = ltrim($this->$attribute, '\\');
+		if (($pos = strrpos($class, '\\')) === false) {
+			$this->addError($attribute, "The class name must contain fully qualified namespace name.");
+		} else {
+			$ns = substr($class, 0, $pos);
+			$path = Yii::getAlias('@' . str_replace('\\', '/', $ns), false);
+			if ($path === false) {
+				$this->addError($attribute, "The class namespace is invalid: $ns");
+			} elseif (!is_dir($path)) {
+				$this->addError($attribute, "Please make sure the directory containing this class exists: $path");
+			}
 		}
 	}
 

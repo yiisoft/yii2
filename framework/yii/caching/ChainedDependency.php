@@ -14,8 +14,6 @@ namespace yii\caching;
  * considered changed; When [[dependOnAll]] is false, if one of the dependencies has NOT changed,
  * this dependency is considered NOT changed.
  *
- * @property boolean $hasChanged Whether the dependency is changed or not.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

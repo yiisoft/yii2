@@ -10,9 +10,7 @@ use yii\base\Formatter;
 use yiiunit\TestCase;
 
 /**
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @group base
  */
 class FormatterTest extends TestCase
 {
