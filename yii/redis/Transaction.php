@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\redis;
+namespace yii\redis;
 
 use yii\base\InvalidConfigException;
 use yii\db\Exception;

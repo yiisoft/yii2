@@ -7,7 +7,7 @@
 
 namespace yii\caching;
 
-use yii\db\redis\Connection;
+use yii\redis\Connection;
 
 /**
  * RedisCache implements a cache application component based on [redis](http://redis.io/).
@@ -39,7 +39,7 @@ use yii\db\redis\Connection;
  * )
  * ~~~
  *
- * @property \yii\db\redis\Connection $connection This property is read-only.
+ * @property Connection $connection The redis connection object. This property is read-only.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -71,7 +71,7 @@ class RedisCache extends Cache
 	 */
 	public $dataTimeout = null;
 	/**
-	 * @var \yii\db\redis\Connection the redis connection
+	 * @var Connection the redis connection
 	 */
 	private $_connection;
 
@@ -88,9 +88,7 @@ class RedisCache extends Cache
 	/**
 	 * Returns the redis connection object.
 	 * Establishes a connection to the redis server if it does not already exists.
-	 *
-	 * TODO throw exception on error
-	 * @return \yii\db\redis\Connection
+	 * @return Connection the redis connection object.
 	 */
 	public function getConnection()
 	{

@@ -7,11 +7,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\redis;
+namespace yii\redis;
 
-use \yii\base\Component;
+use yii\base\Component;
 use yii\base\InvalidConfigException;
-use \yii\db\Exception;
+use yii\db\Exception;
 use yii\helpers\Inflector;
 
 /**
