@@ -107,7 +107,7 @@ class ActiveQuery extends \yii\base\Component
 		$db = $modelClass::getDb();
 		if (($primaryKeys = $this->primaryKeys) === null) {
 			$start = $this->offset === null ? 0 : $this->offset;
-			$end = $this->limit === null ? -1 : $start + $this->limit;
+			$end = $this->limit === null ? -1 : $start + $this->limit - 1;
 			$primaryKeys = $db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $end));
 		}
 		$rows = array();
@@ -145,7 +145,7 @@ class ActiveQuery extends \yii\base\Component
 		$db = $modelClass::getDb();
 		if (($primaryKeys = $this->primaryKeys) === null) {
 			$start = $this->offset === null ? 0 : $this->offset;
-			$primaryKeys = $db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $start + 1));
+			$primaryKeys = $db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $start));
 		}
 		$pk = reset($primaryKeys);
 		$key = $modelClass::tableName() . ':a:' . $modelClass::hashPk($pk);
@@ -184,7 +184,13 @@ class ActiveQuery extends \yii\base\Component
 		$modelClass = $this->modelClass;
 		/** @var Connection $db */
 		$db = $modelClass::getDb();
-		return $db->executeCommand('LLEN', array($modelClass::tableName()));
+		if ($this->offset === null && $this->limit === null) {
+			return $db->executeCommand('LLEN', array($modelClass::tableName()));
+		} else {
+			$start = $this->offset === null ? 0 : $this->offset;
+			$end = $this->limit === null ? -1 : $start + $this->limit - 1;
+			return count($db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $end)));
+		}
 	}
 
 	/**
@@ -225,7 +231,7 @@ class ActiveQuery extends \yii\base\Component
 	 * Sets the LIMIT part of the query.
 	 * TODO: refactor, it is duplicated from yii/db/Query
 	 * @param integer $limit the limit
-	 * @return Query the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function limit($limit)
 	{
@@ -237,7 +243,7 @@ class ActiveQuery extends \yii\base\Component
 	 * Sets the OFFSET part of the query.
 	 * TODO: refactor, it is duplicated from yii/db/Query
 	 * @param integer $offset the offset
-	 * @return Query the query object itself
+	 * @return ActiveQuery the query object itself
 	 */
 	public function offset($offset)
 	{
