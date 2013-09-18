@@ -164,7 +164,7 @@ class SiteController extends Controller
 			$headers = "From: $name <{$fromEmail}>\r\n" .
 				"MIME-Version: 1.0\r\n" .
 				"Content-type: text/plain; charset=UTF-8";
-			return mail($fromEmail, $subject, $body, $headers);
+			return mail($email, $subject, $body, $headers);
 		}
 
 		return false;
