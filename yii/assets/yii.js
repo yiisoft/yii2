@@ -43,12 +43,19 @@
  */
 yii = (function ($) {
 	var pub = {
-		// version of Yii framework
-		version: '2.0',
-		// CSRF token name and value. If this is set and a form is created and submitted using JavaScript
-		// via POST, the CSRF token should be submitted too to pass CSRF validation.
-		csrfVar: undefined,
-		csrfToken: undefined,
+		/**
+		 * @return string|undefined the CSRF variable name. Undefined is returned is CSRF validation is not enabled.
+		 */
+		getCsrfVar: function() {
+			return $('meta[name=csrf-var]').attr('content');
+		},
+
+		/**
+		 * @return string|undefined the CSRF token. Undefined is returned is CSRF validation is not enabled.
+		 */
+		getCsrfToken: function() {
+			return $('meta[name=csrf-token]').attr('content');
+		},
 
 		initModule: function (module) {
 			if (module.isActive === undefined || module.isActive) {
