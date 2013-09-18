@@ -2,7 +2,7 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\db\redis\RecordSchema;
+use yii\redis\RecordSchema;
 
 class Customer extends ActiveRecord
 {
@@ -12,7 +12,7 @@ class Customer extends ActiveRecord
 	public $status2;
 
 	/**
-	 * @return \yii\db\redis\ActiveRelation
+	 * @return \yii\redis\ActiveRelation
 	 */
 	public function getOrders()
 	{

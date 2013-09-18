@@ -8,7 +8,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\redis;
+namespace yii\redis;
 
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
@@ -70,7 +70,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 
 	public static function hashPk($pk)
 	{
-		return (is_array($pk) ? implode('-', $pk) : $pk); // TODO escape PK glue
+		return is_array($pk) ? implode('-', $pk) : $pk; // TODO escape PK glue
 	}
 
 	/**

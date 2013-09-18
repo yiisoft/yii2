@@ -7,7 +7,7 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\db\redis\Connection;
+use yii\redis\Connection;
 
 /**
  * ActiveRecord is ...
@@ -15,7 +15,7 @@ use yii\db\redis\Connection;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveRecord extends \yii\db\redis\ActiveRecord
+class ActiveRecord extends \yii\redis\ActiveRecord
 {
 	public static $db;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace yiiunit\framework\db\redis;
+namespace yiiunit\framework\redis;
 
-use yii\db\redis\Connection;
+use yii\redis\Connection;
 use yiiunit\TestCase;
 
 /**
@@ -39,18 +39,12 @@ class RedisTestCase extends TestCase
 	{
 		$databases = $this->getParam('databases');
 		$params = isset($databases['redis']) ? $databases['redis'] : array();
-		$db = new \yii\db\redis\Connection;
+		$db = new Connection;
 		$db->dsn = $params['dsn'];
 		$db->password = $params['password'];
 		if ($reset) {
 			$db->open();
 			$db->flushall();
-/*			$lines = explode(';', file_get_contents($params['fixture']));
-			foreach ($lines as $line) {
-				if (trim($line) !== '') {
-					$db->pdo->exec($line);
-				}
-			}*/
 		}
 		return $db;
 	}

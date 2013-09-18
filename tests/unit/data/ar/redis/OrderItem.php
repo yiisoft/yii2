@@ -2,7 +2,7 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\db\redis\RecordSchema;
+use yii\redis\RecordSchema;
 
 class OrderItem extends ActiveRecord
 {

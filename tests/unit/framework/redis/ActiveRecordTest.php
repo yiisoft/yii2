@@ -1,8 +1,8 @@
 <?php
 
-namespace yiiunit\framework\db\redis;
+namespace yiiunit\framework\redis;
 
-use yii\db\redis\ActiveQuery;
+use yii\redis\ActiveQuery;
 use yiiunit\data\ar\redis\ActiveRecord;
 use yiiunit\data\ar\redis\Customer;
 use yiiunit\data\ar\redis\OrderItem;

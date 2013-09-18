@@ -5,7 +5,7 @@
  * @author Carsten Brandt <mail@cebe.cc>
  */
 
-namespace yii\db\redis;
+namespace yii\redis;
 
 
 use yii\base\InvalidConfigException;

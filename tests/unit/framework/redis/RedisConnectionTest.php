@@ -1,8 +1,8 @@
 <?php
 
-namespace yiiunit\framework\db\redis;
+namespace yiiunit\framework\redis;
 
-use yii\db\redis\Connection;
+use yii\redis\Connection;
 
 class RedisConnectionTest extends RedisTestCase
 {
