@@ -3,7 +3,9 @@
 namespace app\controllers;
 
 use Yii;
+use yii\web\AccessControl;
 use yii\web\Controller;
+use yii\web\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 
@@ -13,7 +15,7 @@ class SiteController extends Controller
 	{
 		return array(
 			'access' => array(
-				'class' => \yii\web\AccessControl::className(),
+				'class' => AccessControl::className(),
 				'only' => array('login', 'logout'),
 				'rules' => array(
 					array(
@@ -26,6 +28,12 @@ class SiteController extends Controller
 						'allow' => true,
 						'roles' => array('@'),
 					),
+				),
+			),
+			'verbs' => array(
+				'class' => VerbFilter::className(),
+				'actions' => array(
+					'logout' => array('post'),
 				),
 			),
 		);
