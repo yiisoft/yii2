@@ -1027,29 +1027,25 @@ class Request extends \yii\base\Request
 	 */
 	public function validateCsrfToken()
 	{
-		if (!$this->enableCsrfValidation) {
-			return true;
-		}
 		$method = $this->getMethod();
-		if ($method === 'POST' || $method === 'PUT' || $method === 'PATCH' || $method === 'DELETE') {
-			$trueToken = $this->getCookies()->getValue($this->csrfVar);
-			switch ($method) {
-				case 'POST':
-					$token = $this->getPost($this->csrfVar);
-					break;
-				case 'PUT':
-					$token = $this->getPut($this->csrfVar);
-					break;
-				case 'PATCH':
-					$token = $this->getPatch($this->csrfVar);
-					break;
-				case 'DELETE':
-					$token = $this->getDelete($this->csrfVar);
-			}
-
-			return !empty($token) && $token === $trueToken || $this->getCsrfTokenFromHeader() === $trueToken;
-		} else {
+		if (!$this->enableCsrfValidation || !in_array($method, array('POST', 'PUT', 'PATCH', 'DELETE'), true)) {
 			return true;
 		}
+		$trueToken = $this->getCookies()->getValue($this->csrfVar);
+		switch ($method) {
+			case 'PUT':
+				$token = $this->getPut($this->csrfVar);
+				break;
+			case 'PATCH':
+				$token = $this->getPatch($this->csrfVar);
+				break;
+			case 'DELETE':
+				$token = $this->getDelete($this->csrfVar);
+				break;
+			default:
+				$token = $this->getPost($this->csrfVar);
+				break;
+		}
+		return $token === $trueToken || $this->getCsrfTokenFromHeader() === $trueToken;
 	}
 }
