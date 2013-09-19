@@ -20,6 +20,12 @@ use yii\helpers\Html;
 class Controller extends \yii\base\Controller
 {
 	/**
+	 * @var boolean whether to enable CSRF validation for the actions in this controller.
+	 * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
+	 */
+	public $enableCsrfValidation = true;
+
+	/**
 	 * Binds the parameters to the action.
 	 * This method is invoked by [[Action]] when it begins to run with the given parameters.
 	 * This method will check the parameter names that the action requires and return
@@ -59,6 +65,18 @@ class Controller extends \yii\base\Controller
 		}
 
 		return $args;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeAction($action)
+	{
+		if (parent::beforeAction($action)) {
+			return !$this->enableCsrfValidation || Yii::$app->getRequest()->validateCsrfToken();
+		} else {
+			return false;
+		}
 	}
 
 	/**

@@ -87,6 +87,7 @@ class Request extends \yii\base\Request
 	 * In JavaScript, you may get the values of [[csrfVar]] and [[csrfToken]] via `yii.getCsrfVar()` and
 	 * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
 	 *
+	 * @see Controller::enableCsrfValidation
 	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
 	 */
 	public $enableCsrfValidation = false;
@@ -122,8 +123,6 @@ class Request extends \yii\base\Request
 	 */
 	public function resolve()
 	{
-		$this->validateCsrfToken();
-
 		$result = Yii::$app->getUrlManager()->parseRequest($this);
 		if ($result !== false) {
 			list ($route, $params) = $result;
@@ -1023,6 +1022,7 @@ class Request extends \yii\base\Request
 	 * Performs the CSRF validation.
 	 * The method will compare the CSRF token obtained from a cookie and from a POST field.
 	 * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
+	 * This method is called in [[Controller::beforeAction()]].
 	 * @throws HttpException if the validation fails
 	 */
 	public function validateCsrfToken()
