@@ -1023,12 +1023,12 @@ class Request extends \yii\base\Request
 	 * The method will compare the CSRF token obtained from a cookie and from a POST field.
 	 * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
 	 * This method is called in [[Controller::beforeAction()]].
-	 * @throws HttpException if the validation fails
+	 * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
 	 */
 	public function validateCsrfToken()
 	{
 		if (!$this->enableCsrfValidation) {
-			return;
+			return true;
 		}
 		$method = $this->getMethod();
 		if ($method === 'POST' || $method === 'PUT' || $method === 'PATCH' || $method === 'DELETE') {
@@ -1047,10 +1047,9 @@ class Request extends \yii\base\Request
 					$token = $this->getDelete($this->csrfVar);
 			}
 
-			$valid = !empty($token) && $token === $trueToken || $this->getCsrfTokenFromHeader() === $trueToken;
-			if (!$valid) {
-				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
-			}
+			return !empty($token) && $token === $trueToken || $this->getCsrfTokenFromHeader() === $trueToken;
+		} else {
+			return true;
 		}
 	}
 }
