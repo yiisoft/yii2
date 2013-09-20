@@ -44,9 +44,13 @@
 yii = (function ($) {
 	var pub = {
 		/**
-		 * The selector for links that support confirmation and form submission.
+		 * The selector for clickable elements that need to support confirmation and form submission.
 		 */
-		linkClickSelector: 'a[data-confirm], a[data-method]',
+		clickableSelector: 'a, button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]',
+		/**
+		 * The selector for changeable elements that need to support confirmation and form submission.
+		 */
+		changeableSelector: 'select, input, textarea',
 
 		/**
 		 * @return string|undefined the CSRF variable name. Undefined is returned is CSRF validation is not enabled.
@@ -75,40 +79,43 @@ yii = (function ($) {
 
 		/**
 		 * Returns a value indicating whether to allow executing the action defined for the specified element.
+		 * This method recognizes the `data-confirm` attribute of the element and uses it
+		 * as the message in a confirmation dialog. The method will return true if this special attribute
+		 * is not defined or if the user confirms the message.
 		 * @param $e the jQuery representation of the element
 		 * @return boolean whether to allow executing the action defined for the specified element.
 		 */
 		allowAction: function ($e) {
 			var message = $e.data('confirm');
-			if (!message) {
-				return true;
-			}
-			return pub.confirm(message);
+			return message === undefined || pub.confirm(message);
 		},
 
 		/**
-		 * Handles form submission triggered by elements with "method" data attribute.
-		 * If the element is enclosed within an existing form, the form will be submitted.
-		 * Otherwise, a new form will be created and submitted. The new form's method and action
-		 * are determined using the element's "method" and "action" data attributes, respectively.
-		 * If the "action" data attribute is not specified, it will try the "href" property and
-		 * the current URL.
+		 * Handles the action triggered by user.
+		 * This method recognizes the `data-method` attribute of the element. If the attribute exists,
+		 * the method will submit the form containing this element. If there is no containing form, a form
+		 * will be created and submitted using the method given by this attribute value (e.g. "post", "put").
+		 * For hyperlinks, the form action will take the value of the "href" attribute of the link.
+		 * For other elements, either the containing form action or the current page URL will be used
+		 * as the form action URL.
+		 *
+		 * If the `data-method` attribute is not defined, the default element action will be performed.
+		 *
 		 * @param $e the jQuery representation of the element
+		 * @return boolean whether to execute the default action for the element.
 		 */
-		handleSubmit: function ($e) {
+		handleAction: function ($e) {
 			var method = $e.data('method');
 			if (method === undefined) {
-				return;
+				return true;
 			}
 
 			var $form = $e.closest('form');
-			if (!$form.length) {
-				var action = $e.data('action');
-				if (action === undefined) {
-					action = $e.prop('href');
-					if (action === undefined) {
-						action = window.location.href;
-					}
+			var newForm = !$form.length;
+			if (newForm) {
+				var action = $e.prop('href');
+				if (!action || !action.match(/(^\/|:\/\/)/)) {
+					action = window.location.href;
 				}
 				$form = $('<form method="' + method + '" action="' + action + '"></form>');
 				var target = $e.prop('target');
@@ -132,6 +139,12 @@ yii = (function ($) {
 			}
 
 			$form.trigger('submit');
+
+			if (newForm) {
+				$form.remove();
+			}
+
+			return false;
 		},
 
 		initModule: function (module) {
@@ -150,16 +163,22 @@ yii = (function ($) {
 		init: function () {
 			var $document = $(document);
 
-			$document.on('click.yii', pub.linkClickSelector, function () {
+			$document.on('click.yii', pub.clickableSelector, function (event) {
 				var $this = $(this);
-				if (!pub.allowAction($this)) {
-					$this.stopImmediatePropagation();
-					return false;
+				if (pub.allowAction($this)) {
+					return pub.handleAction($this);
 				} else {
-					if ($this.data('method')) {
-						pub.handleSubmit($this);
-						return false;
-					}
+					event.stopImmediatePropagation();
+					return false;
+				}
+			});
+			$document.on('change.yii', pub.changeableSelector, function (event) {
+				var $this = $(this);
+				if (pub.allowAction($this)) {
+					return pub.handleAction($this);
+				} else {
+					event.stopImmediatePropagation();
+					return false;
 				}
 			});
 		}
