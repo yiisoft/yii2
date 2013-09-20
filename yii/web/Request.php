@@ -76,7 +76,7 @@ class Request extends \yii\base\Request
 	const CSRF_HEADER = 'X-CSRF-TOKEN';
 
 	/**
-	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to false.
+	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
 	 * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
 	 * from the same application. If not, a 400 HTTP exception will be raised.
 	 *
@@ -90,7 +90,7 @@ class Request extends \yii\base\Request
 	 * @see Controller::enableCsrfValidation
 	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
 	 */
-	public $enableCsrfValidation = false;
+	public $enableCsrfValidation = true;
 	/**
 	 * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
 	 * This property is used only when [[enableCsrfValidation]] is true.

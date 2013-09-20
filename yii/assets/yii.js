@@ -163,6 +163,12 @@ yii = (function ($) {
 		init: function () {
 			var $document = $(document);
 
+			$.ajaxPrefilter(function (options, originalOptions, xhr) {
+				if (!options.crossDomain && pub.getCsrfVar()) {
+					xhr.setRequestHeader('X-CSRF-TOKEN', pub.getCsrfToken());
+				}
+			});
+
 			$document.on('click.yii', pub.clickableSelector, function (event) {
 				var $this = $(this);
 				if (pub.allowAction($this)) {
