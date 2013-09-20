@@ -163,12 +163,22 @@ yii = (function ($) {
 		init: function () {
 			var $document = $(document);
 
+			// automatically send CSRF token for all AJAX requests
 			$.ajaxPrefilter(function (options, originalOptions, xhr) {
 				if (!options.crossDomain && pub.getCsrfVar()) {
-					xhr.setRequestHeader('X-CSRF-TOKEN', pub.getCsrfToken());
+					xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
 				}
 			});
 
+			// handle AJAX redirection
+			$document.ajaxComplete(function (event, xhr, settings) {
+				var url = xhr.getResponseHeader('X-Redirect');
+				if (url) {
+					window.location = url;
+				}
+			});
+
+			// handle data-confirm and data-method for clickable elements
 			$document.on('click.yii', pub.clickableSelector, function (event) {
 				var $this = $(this);
 				if (pub.allowAction($this)) {
@@ -178,6 +188,8 @@ yii = (function ($) {
 					return false;
 				}
 			});
+
+			// handle data-confirm and data-method for changeable elements
 			$document.on('change.yii', pub.changeableSelector, function (event) {
 				var $this = $(this);
 				if (pub.allowAction($this)) {

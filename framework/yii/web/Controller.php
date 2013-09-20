@@ -126,8 +126,7 @@ class Controller extends \yii\base\Controller
 	 * Any relative URL will be converted into an absolute one by prepending it with the host info
 	 * of the current request.
 	 *
-	 * @param integer $statusCode the HTTP status code. If null, it will use 302
-	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
+	 * @param integer $statusCode the HTTP status code. If null, it will use 302.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
 	 * @return Response the current response object
