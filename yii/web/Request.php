@@ -73,7 +73,7 @@ class Request extends \yii\base\Request
 	/**
 	 * The name of the HTTP header for sending CSRF token.
 	 */
-	const CSRF_HEADER = 'X-CSRF-TOKEN';
+	const CSRF_HEADER = 'X-CSRF-Token';
 
 	/**
 	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
