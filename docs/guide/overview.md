@@ -24,7 +24,7 @@ Yii is a generic Web programming framework that can be used for developing
 virtually any type of Web application.  Because it is light-weight and
 equipped with sophisticated caching mechanisms, it is especially suited
 to high-traffic applications, such as portals, forums, content
-management systems (CMS), e-commerce systems, etc.
+management systems (CMS), e-commerce projects, etc.
 
 
 How does Yii Compare with Other Frameworks?

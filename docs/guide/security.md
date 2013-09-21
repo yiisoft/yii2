@@ -4,12 +4,9 @@ Security
 Hashing and verifying passwords
 ------------------------------
 
-It is important not to store passwords in plain text but, contrary to popular belief, just using `md5` or `sha1` to
-compute and verify hashes isn't a good way either. Modern hardware allows to brute force these very fast.
+Most developers know that you cannot store passwords in plain text, but many believe it's safe to hash passwords using `md5` or `sha1`. There was a time when those hashing algorithms were sufficient, but modern hardware makes it possible to break those hashes very quickly using a brute force attack.
 
-In order to truly secure user passwords even in case your database is leaked you need to use a function that is resistant
-to brute-force such as bcrypt. In PHP it can be achieved by using [crypt function](http://php.net/manual/en/function.crypt.php)
-but since usage isn't trivial and one can easily misuse it, Yii provides two helper functions for generating hash from
+In order to truly secure user passwords, even in the worst case scenario (your database is broken into), you need to use a hashing algorithm that is resistant to brute force attacks. The best current choice is bcrypt. In PHP, you can create a bcrypt hash by using [crypt function](http://php.net/manual/en/function.crypt.php). However, this function is not easy to use properly, so Yii provides two helper functions for generating hash from
 password and verifying existing hash.
 
 When user sets his password we're taking password string from POST and then getting a hash:
