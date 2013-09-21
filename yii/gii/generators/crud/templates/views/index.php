@@ -63,7 +63,7 @@ foreach ($generator->getTableSchema()->columns as $column) {
 			'class' => 'item',
 		),
 		'itemView' => function ($model, $key, $index, $widget) {
-			return Html::a(Html::encode($model-><?php echo $nameAttribute; ?>), array('view', <?php echo $urlParams; ?>);
+			return Html::a(Html::encode($model-><?php echo $nameAttribute; ?>), array('view', <?php echo $urlParams; ?>));
 		},
 	)); ?>
 <?php endif; ?>
