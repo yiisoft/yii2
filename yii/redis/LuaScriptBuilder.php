@@ -19,16 +19,26 @@ class LuaScriptBuilder extends \yii\base\Object
 {
 	public function buildAll($query)
 	{
+		// TODO add support for orderBy
 		$modelClass = $query->modelClass;
 		$key = $modelClass::tableName();
-		return $this->build($query, "n=n+1 pks[n] = redis.call('HGETALL','$key:a:' .. pk)", 'pks'); // TODO quote
+		return $this->build($query, "n=n+1 pks[n]=redis.call('HGETALL','$key:a:' .. pk)", 'pks'); // TODO quote
 	}
 
 	public function buildOne($query)
 	{
+		// TODO add support for orderBy
 		$modelClass = $query->modelClass;
 		$key = $modelClass::tableName();
 		return $this->build($query, "do return redis.call('HGETALL','$key:a:' .. pk) end", 'pks'); // TODO quote
+	}
+
+	public function buildColumn($query, $field)
+	{
+		// TODO add support for orderBy and indexBy
+		$modelClass = $query->modelClass;
+		$key = $modelClass::tableName();
+		return $this->build($query, "n=n+1 pks[n]=redis.call('HGET','$key:a:' .. pk,'$field')", 'pks'); // TODO quote
 	}
 
 	public function buildCount($query)
@@ -41,6 +51,27 @@ class LuaScriptBuilder extends \yii\base\Object
 		$modelClass = $query->modelClass;
 		$key = $modelClass::tableName();
 		return $this->build($query, "n=n+redis.call('HGET','$key:a:' .. pk,'$field')", 'n'); // TODO quote
+	}
+
+	public function buildAverage($query, $field)
+	{
+		$modelClass = $query->modelClass;
+		$key = $modelClass::tableName();
+		return $this->build($query, "n=n+1 if v==nil then v=0 end v=v+redis.call('HGET','$key:a:' .. pk,'$field')", 'v/n'); // TODO quote
+	}
+
+	public function buildMin($query, $field)
+	{
+		$modelClass = $query->modelClass;
+		$key = $modelClass::tableName();
+		return $this->build($query, "n=redis.call('HGET','$key:a:' .. pk,'$field') if v==nil or n<v then v=n end", 'v'); // TODO quote
+	}
+
+	public function buildMax($query, $field)
+	{
+		$modelClass = $query->modelClass;
+		$key = $modelClass::tableName();
+		return $this->build($query, "n=redis.call('HGET','$key:a:' .. pk,'$field') if v==nil or n>v then v=n end", 'v'); // TODO quote
 	}
 
 	/**
@@ -69,6 +100,7 @@ class LuaScriptBuilder extends \yii\base\Object
 local allpks=redis.call('LRANGE','$key',0,-1)
 local pks={}
 local n=0
+local v=nil
 local i=0
 for k,pk in ipairs(allpks) do
     $loadColumnValues
@@ -97,47 +129,6 @@ EOF;
 		}
 
 		return "'" . addcslashes(str_replace("'", "\\'", $str), "\000\n\r\\\032") . "'";
-	}
-
-	/**
-	 * @param array $columns
-	 * @return string the GROUP BY clause
-	 */
-	public function buildGroupBy($columns)
-	{
-		return empty($columns) ? '' : 'GROUP BY ' . $this->buildColumns($columns);
-	}
-
-	/**
-	 * @param string|array $condition
-	 * @param array $params the binding parameters to be populated
-	 * @return string the HAVING clause built from [[query]].
-	 */
-	public function buildHaving($condition, &$params)
-	{
-		$having = $this->buildCondition($condition, $params);
-		return $having === '' ? '' : 'HAVING ' . $having;
-	}
-
-	/**
-	 * @param array $columns
-	 * @return string the ORDER BY clause built from [[query]].
-	 */
-	public function buildOrderBy($columns)
-	{
-		if (empty($columns)) {
-			return '';
-		}
-		$orders = array();
-		foreach ($columns as $name => $direction) {
-			if (is_object($direction)) {
-				$orders[] = (string)$direction;
-			} else {
-				$orders[] = $this->db->quoteColumnName($name) . ($direction === Query::SORT_DESC ? ' DESC' : '');
-			}
-		}
-
-		return 'ORDER BY ' . implode(', ', $orders);
 	}
 
 	/**
