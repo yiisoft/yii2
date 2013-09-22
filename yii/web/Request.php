@@ -1001,7 +1001,8 @@ class Request extends \yii\base\Request
 	 */
 	public function getCsrfTokenFromHeader()
 	{
-		return isset($_SERVER[self::CSRF_HEADER]) ? $_SERVER[self::CSRF_HEADER] : null;
+		$key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
+		return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
 	}
 
 	/**
