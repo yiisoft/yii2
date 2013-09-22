@@ -38,36 +38,6 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		return \Yii::$app->redis;
 	}
 
-	/**
-	 * Creates an [[ActiveQuery]] instance for query purpose.
-	 *
-	 * @include @yii/db/ActiveRecord-find.md
-	 *
-	 * @param mixed $q the query parameter. This can be one of the followings:
-	 *
-	 *  - a scalar value (integer or string): query by a single primary key value and return the
-	 *    corresponding record.
-	 *  - an array of name-value pairs: query by a set of column values and return a single record matching all of them.
-	 *  - null: return a new [[ActiveQuery]] object for further query purpose.
-	 *
-	 * @return ActiveQuery|ActiveRecord|null When `$q` is null, a new [[ActiveQuery]] instance
-	 * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
-	 * returned (null will be returned if there is no matching).
-	 * @see createQuery()
-	 */
-	public static function find($q = null) // TODO optimize API
-	{
-		$query = static::createQuery();
-		if (is_array($q)) {
-			return $query->primaryKeys($q)->one();
-		} elseif ($q !== null) {
-			// query by primary key
-			$primaryKey = static::primaryKey();
-			return $query->primaryKeys(array($primaryKey[0] => $q))->one();
-		}
-		return $query;
-	}
-
 	public static function hashPk($pk)
 	{
 		return is_array($pk) ? implode('-', $pk) : $pk; // TODO escape PK glue

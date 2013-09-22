@@ -66,6 +66,11 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public $asArray;
 	/**
+	 * @var array query condition. This refers to the WHERE clause in a SQL statement.
+	 * @see where()
+	 */
+	public $where;
+	/**
 	 * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit.
 	 */
 	public $limit;
@@ -75,26 +80,6 @@ class ActiveQuery extends \yii\base\Component
 	 * If less than zero it means starting n elements from the end.
 	 */
 	public $offset;
-	/**
-	 * @var array array of primary keys of the records to find.
-	 */
-	public $primaryKeys;
-
-	/**
-	 * List of multiple pks must be zero based
-	 *
-	 * @param $primaryKeys
-	 * @return ActiveQuery
-	 */
-	public function primaryKeys($primaryKeys) {
-		if (is_array($primaryKeys) && isset($primaryKeys[0])) {
-			$this->primaryKeys = $primaryKeys;
-		} else {
-			$this->primaryKeys = array($primaryKeys);
-		}
-
-		return $this;
-	}
 
 	/**
 	 * Executes query and returns all results as an array.
@@ -105,22 +90,20 @@ class ActiveQuery extends \yii\base\Component
 		$modelClass = $this->modelClass;
 		/** @var Connection $db */
 		$db = $modelClass::getDb();
-		if (($primaryKeys = $this->primaryKeys) === null) {
-			$start = $this->offset === null ? 0 : $this->offset;
-			$end = $this->limit === null ? -1 : $start + $this->limit - 1;
-			$primaryKeys = $db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $end));
-		}
+
+		$script = $db->luaScriptBuilder->buildAll($this);
+		$data = $db->executeCommand('EVAL', array($script, 0));
+
 		$rows = array();
-		foreach($primaryKeys as $pk) {
-			$key = $modelClass::tableName() . ':a:' . $modelClass::hashPk($pk);
-			// get attributes
-			$data = $db->executeCommand('HGETALL', array($key));
+		foreach($data as $dataRow) {
 			$row = array();
-			for($i=0;$i<count($data);) {
-				$row[$data[$i++]] = $data[$i++];
+			$c = count($dataRow);
+			for($i = 0; $i < $c; ) {
+				$row[$dataRow[$i++]] = $dataRow[$i++];
 			}
 			$rows[] = $row;
 		}
+
 		if ($rows !== array()) {
 			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
@@ -143,19 +126,16 @@ class ActiveQuery extends \yii\base\Component
 		$modelClass = $this->modelClass;
 		/** @var Connection $db */
 		$db = $modelClass::getDb();
-		if (($primaryKeys = $this->primaryKeys) === null) {
-			$start = $this->offset === null ? 0 : $this->offset;
-			$primaryKeys = $db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $start));
-		}
-		$pk = reset($primaryKeys);
-		$key = $modelClass::tableName() . ':a:' . $modelClass::hashPk($pk);
-		// get attributes
-		$data = $db->executeCommand('HGETALL', array($key));
+
+		$script = $db->luaScriptBuilder->buildOne($this);
+		$data = $db->executeCommand('EVAL', array($script, 0));
+
 		if ($data === array()) {
 			return null;
 		}
 		$row = array();
-		for($i=0;$i<count($data);) {
+		$c = count($data);
+		for($i = 0; $i < $c; ) {
 			$row[$data[$i++]] = $data[$i++];
 		}
 		if (!$this->asArray) {
@@ -184,13 +164,26 @@ class ActiveQuery extends \yii\base\Component
 		$modelClass = $this->modelClass;
 		/** @var Connection $db */
 		$db = $modelClass::getDb();
-		if ($this->offset === null && $this->limit === null) {
+		if ($this->offset === null && $this->limit === null && $this->where === null) {
 			return $db->executeCommand('LLEN', array($modelClass::tableName()));
 		} else {
-			$start = $this->offset === null ? 0 : $this->offset;
-			$end = $this->limit === null ? -1 : $start + $this->limit - 1;
-			return count($db->executeCommand('LRANGE', array($modelClass::tableName(), $start, $end)));
+			$script = $db->luaScriptBuilder->buildCount($this);
+			return $db->executeCommand('EVAL', array($script, 0));
 		}
+	}
+
+	/**
+	 * Returns the number of records.
+	 * @param string $column the column to sum up
+	 * @return integer number of records
+	 */
+	public function sum($column)
+	{
+		$modelClass = $this->modelClass;
+		/** @var Connection $db */
+		$db = $modelClass::getDb();
+		$script = $db->luaScriptBuilder->buildSum($this, $column);
+		return $db->executeCommand('EVAL', array($script, 0));
 	}
 
 	/**
@@ -293,6 +286,118 @@ class ActiveQuery extends \yii\base\Component
 	public function indexBy($column)
 	{
 		$this->indexBy = $column;
+		return $this;
+	}
+
+	/**
+	 * Sets the WHERE part of the query.
+	 *
+	 * The method requires a $condition parameter, and optionally a $params parameter
+	 * specifying the values to be bound to the query.
+	 *
+	 * The $condition parameter should be either a string (e.g. 'id=1') or an array.
+	 * If the latter, it must be in one of the following two formats:
+	 *
+	 * - hash format: `array('column1' => value1, 'column2' => value2, ...)`
+	 * - operator format: `array(operator, operand1, operand2, ...)`
+	 *
+	 * A condition in hash format represents the following SQL expression in general:
+	 * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+	 * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
+	 * in the generated expression. Below are some examples:
+	 *
+	 * - `array('type' => 1, 'status' => 2)` generates `(type = 1) AND (status = 2)`.
+	 * - `array('id' => array(1, 2, 3), 'status' => 2)` generates `(id IN (1, 2, 3)) AND (status = 2)`.
+	 * - `array('status' => null) generates `status IS NULL`.
+	 *
+	 * A condition in operator format generates the SQL expression according to the specified operator, which
+	 * can be one of the followings:
+	 *
+	 * - `and`: the operands should be concatenated together using `AND`. For example,
+	 * `array('and', 'id=1', 'id=2')` will generate `id=1 AND id=2`. If an operand is an array,
+	 * it will be converted into a string using the rules described here. For example,
+	 * `array('and', 'type=1', array('or', 'id=1', 'id=2'))` will generate `type=1 AND (id=1 OR id=2)`.
+	 * The method will NOT do any quoting or escaping.
+	 *
+	 * - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
+	 *
+	 * - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
+	 * starting and ending values of the range that the column is in.
+	 * For example, `array('between', 'id', 1, 10)` will generate `id BETWEEN 1 AND 10`.
+	 *
+	 * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
+	 * in the generated condition.
+	 *
+	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
+	 * the range of the values that the column or DB expression should be in. For example,
+	 * `array('in', 'id', array(1, 2, 3))` will generate `id IN (1, 2, 3)`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
+	 *
+	 * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
+	 * the values that the column or DB expression should be like.
+	 * For example, `array('like', 'name', '%tester%')` will generate `name LIKE '%tester%'`.
+	 * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
+	 * using `AND`. For example, `array('like', 'name', array('%test%', '%sample%'))` will generate
+	 * `name LIKE '%test%' AND name LIKE '%sample%'`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
+	 * predicates when operand 2 is an array.
+	 *
+	 * - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
+	 * in the generated condition.
+	 *
+	 * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
+	 * the `NOT LIKE` predicates.
+	 *
+	 * @param string|array $condition the conditions that should be put in the WHERE part.
+	 * @return ActiveQuery the query object itself
+	 * @see andWhere()
+	 * @see orWhere()
+	 */
+	public function where($condition)
+	{
+		$this->where = $condition;
+		return $this;
+	}
+
+	/**
+	 * Adds an additional WHERE condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'AND' operator.
+	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @return ActiveQuery the query object itself
+	 * @see where()
+	 * @see orWhere()
+	 */
+	public function andWhere($condition)
+	{
+		if ($this->where === null) {
+			$this->where = $condition;
+		} else {
+			$this->where = array('and', $this->where, $condition);
+		}
+		return $this;
+	}
+
+	/**
+	 * Adds an additional WHERE condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'OR' operator.
+	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @return ActiveQuery the query object itself
+	 * @see where()
+	 * @see andWhere()
+	 */
+	public function orWhere($condition)
+	{
+		if ($this->where === null) {
+			$this->where = $condition;
+		} else {
+			$this->where = array('or', $this->where, $condition);
+		}
 		return $this;
 	}
 
