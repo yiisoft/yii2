@@ -56,11 +56,6 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public $with;
 	/**
-	 * @var string the name of the column by which query results should be indexed by.
-	 * This is only used when the query result is returned as an array when calling [[all()]].
-	 */
-	public $indexBy;
-	/**
 	 * @var boolean whether to return each record as an array. If false (default), an object
 	 * of [[modelClass]] will be created to represent each record.
 	 */
@@ -80,6 +75,18 @@ class ActiveQuery extends \yii\base\Component
 	 * If less than zero it means starting n elements from the end.
 	 */
 	public $offset;
+	/**
+	 * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
+	 * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
+	 * can be either [[Query::SORT_ASC]] or [[Query::SORT_DESC]]. The array may also contain [[Expression]] objects.
+	 * If that is the case, the expressions will be converted into strings without any change.
+	 */
+	public $orderBy;
+	/**
+	 * @var string the name of the column by which query results should be indexed by.
+	 * This is only used when the query result is returned as an array when calling [[all()]].
+	 */
+	public $indexBy;
 
 	/**
 	 * Executes query and returns all results as an array.
@@ -154,6 +161,21 @@ class ActiveQuery extends \yii\base\Component
 	}
 
 	/**
+	 * Executes the query and returns the first column of the result.
+	 * @param string $column name of the column to select
+	 * @return array the first column of the query result. An empty array is returned if the query results in nothing.
+	 */
+	public function column($column)
+	{
+		// TODO add support for indexBy and orderBy
+		$modelClass = $this->modelClass;
+		/** @var Connection $db */
+		$db = $modelClass::getDb();
+		$script = $db->luaScriptBuilder->buildColumn($this, $column);
+		return $db->executeCommand('EVAL', array($script, 0));
+	}
+
+	/**
 	 * Returns the number of records.
 	 * @param string $q the COUNT expression. Defaults to '*'.
 	 * Make sure you properly quote column names.
@@ -187,8 +209,54 @@ class ActiveQuery extends \yii\base\Component
 	}
 
 	/**
+	 * Returns the average of the specified column values.
+	 * @param string $column the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @return integer the average of the specified column values.
+	 */
+	public function average($column)
+	{
+		$modelClass = $this->modelClass;
+		/** @var Connection $db */
+		$db = $modelClass::getDb();
+		$script = $db->luaScriptBuilder->buildAverage($this, $column);
+		return $db->executeCommand('EVAL', array($script, 0));
+	}
+
+	/**
+	 * Returns the minimum of the specified column values.
+	 * @param string $column the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @return integer the minimum of the specified column values.
+	 */
+	public function min($column)
+	{
+		$modelClass = $this->modelClass;
+		/** @var Connection $db */
+		$db = $modelClass::getDb();
+		$script = $db->luaScriptBuilder->buildMin($this, $column);
+		return $db->executeCommand('EVAL', array($script, 0));
+	}
+
+	/**
+	 * Returns the maximum of the specified column values.
+	 * @param string $column the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @return integer the maximum of the specified column values.
+	 */
+	public function max($column)
+	{
+		$modelClass = $this->modelClass;
+		/** @var Connection $db */
+		$db = $modelClass::getDb();
+		$script = $db->luaScriptBuilder->buildMax($this, $column);
+		return $db->executeCommand('EVAL', array($script, 0));
+	}
+
+	/**
 	 * Returns the query result as a scalar value.
 	 * The value returned will be the first column in the first row of the query results.
+	 * @param string $column name of the column to select
 	 * @return string|boolean the value of the first column in the first row of the query result.
 	 * False is returned if the query result is empty.
 	 */
@@ -210,7 +278,6 @@ class ActiveQuery extends \yii\base\Component
 
 	/**
 	 * Sets the [[asArray]] property.
-	 * TODO: refactor, it is duplicated from yii/db/ActiveQuery
 	 * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
 	 * @return ActiveQuery the query object itself
 	 */
@@ -221,8 +288,62 @@ class ActiveQuery extends \yii\base\Component
 	}
 
 	/**
+	 * Sets the ORDER BY part of the query.
+	 * @param string|array $columns the columns (and the directions) to be ordered by.
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return Query the query object itself
+	 * @see addOrderBy()
+	 */
+	public function orderBy($columns)
+	{
+		$this->orderBy = $this->normalizeOrderBy($columns);
+		return $this;
+	}
+
+	/**
+	 * Adds additional ORDER BY columns to the query.
+	 * @param string|array $columns the columns (and the directions) to be ordered by.
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return Query the query object itself
+	 * @see orderBy()
+	 */
+	public function addOrderBy($columns)
+	{
+		$columns = $this->normalizeOrderBy($columns);
+		if ($this->orderBy === null) {
+			$this->orderBy = $columns;
+		} else {
+			$this->orderBy = array_merge($this->orderBy, $columns);
+		}
+		return $this;
+	}
+
+	protected function normalizeOrderBy($columns)
+	{
+		if (is_array($columns)) {
+			return $columns;
+		} else {
+			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+			$result = array();
+			foreach ($columns as $column) {
+				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
+					$result[$matches[1]] = strcasecmp($matches[2], 'desc') ? self::SORT_ASC : self::SORT_DESC;
+				} else {
+					$result[$column] = self::SORT_ASC;
+				}
+			}
+			return $result;
+		}
+	}
+
+	/**
 	 * Sets the LIMIT part of the query.
-	 * TODO: refactor, it is duplicated from yii/db/Query
 	 * @param integer $limit the limit
 	 * @return ActiveQuery the query object itself
 	 */
@@ -234,7 +355,6 @@ class ActiveQuery extends \yii\base\Component
 
 	/**
 	 * Sets the OFFSET part of the query.
-	 * TODO: refactor, it is duplicated from yii/db/Query
 	 * @param integer $offset the offset
 	 * @return ActiveQuery the query object itself
 	 */
@@ -264,7 +384,6 @@ class ActiveQuery extends \yii\base\Component
 	 * ))->all();
 	 * ~~~
 	 *
-	 * TODO: refactor, it is duplicated from yii/db/ActiveQuery
 	 * @return ActiveQuery the query object itself
 	 */
 	public function with()
@@ -279,7 +398,6 @@ class ActiveQuery extends \yii\base\Component
 
 	/**
 	 * Sets the [[indexBy]] property.
-	 * TODO: refactor, it is duplicated from yii/db/ActiveQuery
 	 * @param string $column the name of the column by which the query results should be indexed by.
 	 * @return ActiveQuery the query object itself
 	 */

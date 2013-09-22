@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\redis;
 
+use yii\db\Query;
 use yii\redis\ActiveQuery;
 use yiiunit\data\ar\redis\ActiveRecord;
 use yiiunit\data\ar\redis\Customer;
@@ -134,11 +135,10 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals(2, $customer->id);
 
 		// find count, sum, average, min, max, scalar
-/*		$this->assertEquals(6, Customer::find()->sum('id'));
+		$this->assertEquals(6, Customer::find()->sum('id'));
 		$this->assertEquals(2, Customer::find()->average('id'));
 		$this->assertEquals(1, Customer::find()->min('id'));
 		$this->assertEquals(3, Customer::find()->max('id'));
-		$this->assertEquals(3, Customer::find()->select('COUNT(*)')->scalar());*/
 
 		// scope
 //		$this->assertEquals(2, Customer::find()->active()->count());
@@ -225,6 +225,12 @@ class ActiveRecordTest extends RedisTestCase
 	{
 		$this->assertEquals(6, OrderItem::find()->count());
 		$this->assertEquals(7, OrderItem::find()->sum('quantity'));
+	}
+
+	public function testFindColumn()
+	{
+		$this->assertEquals(array('user1', 'user2', 'user3'), Customer::find()->column('name'));
+//		TODO $this->assertEquals(array('user3', 'user2', 'user1'), Customer::find()->orderBy(array('name' => Query::SORT_DESC))->column('name'));
 	}
 
 	public function testExists()

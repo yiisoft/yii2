@@ -20,8 +20,6 @@ use yii\db\TableSchema;
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
- *
- *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
