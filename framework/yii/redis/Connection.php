@@ -333,6 +333,11 @@ class Connection extends Component
 		}
 	}
 
+	public function getLuaScriptBuilder()
+	{
+		return new LuaScriptBuilder();
+	}
+
 	/**
 	 *
 	 * @param string $name

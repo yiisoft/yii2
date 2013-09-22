@@ -118,7 +118,7 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertNull($customer);
 
 		// query scalar
-		$customerName = Customer::find()->primaryKeys(2)->scalar('name');
+		$customerName = Customer::find()->where(array('id' => 2))->scalar('name');
 		$this->assertEquals('user2', $customerName);
 
 		// find by column values
@@ -129,13 +129,12 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertNull($customer);
 
 		// find by attributes
-/*		$customer = Customer::find()->where(array('name' => 'user2'))->one();
+		$customer = Customer::find()->where(array('name' => 'user2'))->one();
 		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals(2, $customer->id);*/
+		$this->assertEquals(2, $customer->id);
 
 		// find count, sum, average, min, max, scalar
-/*		$this->assertEquals(2, Customer::find()->where('id=1 OR id=2')->count());
-		$this->assertEquals(6, Customer::find()->sum('id'));
+/*		$this->assertEquals(6, Customer::find()->sum('id'));
 		$this->assertEquals(2, Customer::find()->average('id'));
 		$this->assertEquals(1, Customer::find()->min('id'));
 		$this->assertEquals(3, Customer::find()->max('id'));
@@ -145,7 +144,7 @@ class ActiveRecordTest extends RedisTestCase
 //		$this->assertEquals(2, Customer::find()->active()->count());
 
 		// asArray
-		$customer = Customer::find()->primaryKeys(array(2))->asArray()->one();
+		$customer = Customer::find()->where(array('id' => 2))->asArray()->one();
 		$this->assertEquals(array(
 			'id' => '2',
 			'email' => 'user2@example.com',
@@ -214,10 +213,24 @@ class ActiveRecordTest extends RedisTestCase
 
 	}
 
+	public function testFindComplexCondition()
+	{
+		$this->assertEquals(2, Customer::find()->where(array('OR', array('id' => 1), array('id' => 2)))->count());
+		$this->assertEquals(2, count(Customer::find()->where(array('OR', array('id' => 1), array('id' => 2)))->all()));
+
+		// TODO more conditions
+	}
+
+	public function testSum()
+	{
+		$this->assertEquals(6, OrderItem::find()->count());
+		$this->assertEquals(7, OrderItem::find()->sum('quantity'));
+	}
+
 	public function testExists()
 	{
-		$this->assertTrue(Customer::find()->primaryKeys(2)->exists());
-		$this->assertFalse(Customer::find()->primaryKeys(5)->exists());
+		$this->assertTrue(Customer::find()->where(array('id' => 2))->exists());
+		$this->assertFalse(Customer::find()->where(array('id' => 5))->exists());
 	}
 
 //	public function testFindLazy()
