@@ -585,7 +585,7 @@ class QueryBuilder extends \yii\base\Object
 
 		foreach ($tables as $i => $table) {
 			if (strpos($table, '(') === false) {
-				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
+				if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
 					$tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
 				} else {
 					$tables[$i] = $this->db->quoteTableName($table);
@@ -619,7 +619,7 @@ class QueryBuilder extends \yii\base\Object
 				// 0:join type, 1:table name, 2:on-condition
 				$table = $join[1];
 				if (strpos($table, '(') === false) {
-					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
+					if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
 						$table = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
 					} else {
 						$table = $this->db->quoteTableName($table);
