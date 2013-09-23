@@ -1,15 +1,15 @@
 Model
 =====
 
-A model in Yii is intended for application data storage and has the following basic features:
+In keeping with the MVC approach, a model in Yii is intended for storing or temporarily representing application data. Yii models have the following basic features:
 
-- attribute declaration: a model defines what is considered an attribute.
-- attribute labels: each attribute may be associated with a label for display purpose.
-- massive attribute assignment.
-- scenario-based data validation.
+- Attribute declaration: a model defines what is considered an attribute.
+- Attribute labels: each attribute may be associated with a label for display purpose.
+- Massive attribute assignment: the ability to populate multiple model attributes in one step.
+- Scenario-based data validation.
 
-Models extending from [[\yii\base\Model]] class are typically used to hold data and corresponding validation rules of complex web forms.
-The class is also a base for more advanced models with additional functionality such as [Active Record](active-record.md).
+Models in Yii extend from the [[\yii\base\Model]] class. Models are typically used to both hold data and define the validation rules for that data. The validation rules greatly simply the generation of models from complex web forms.
+The Model class is also the base for more advanced models with additional functionality such as [Active Record](active-record.md).
 
 Attributes
 ----------
