@@ -123,7 +123,6 @@ class User extends ActiveRecord implements Identity
 	{
 		return array(
 			'signup' => array('username', 'email', 'password'),
-			'login' => array('username', 'password'),
 			'resetPassword' => array('password'),
 			'requestPasswordResetToken' => array('email'),
 		);
