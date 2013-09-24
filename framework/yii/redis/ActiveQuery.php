@@ -12,10 +12,10 @@ namespace yii\redis;
 use yii\base\NotSupportedException;
 
 /**
- * ActiveQuery represents a DB query associated with an Active Record class.
+ * ActiveQuery represents a query associated with an Active Record class.
  *
- * ActiveQuery instances are usually created by [[yii\db\redis\ActiveRecord::find()]]
- * and [[yii\db\redis\ActiveRecord::count()]].
+ * ActiveQuery instances are usually created by [[ActiveRecord::find()]]
+ * and [[ActiveRecord::count()]].
  *
  * ActiveQuery mainly provides the following methods to retrieve the query results:
  *
@@ -29,7 +29,7 @@ use yii\base\NotSupportedException;
  * - [[scalar()]]: returns the value of the first column in the first row of the query result.
  * - [[exists()]]: returns a value indicating whether the query result has data or not.
  *
- * You can use query methods, such as [[limit()]], [[orderBy()]] to customize the query options.
+ * You can use query methods, such as [[where()]], [[limit()]] and [[orderBy()]] to customize the query options.
  *
  * ActiveQuery also provides the following additional query options:
  *
@@ -49,6 +49,17 @@ use yii\base\NotSupportedException;
 class ActiveQuery extends \yii\base\Component
 {
 	/**
+	 * Sort ascending
+	 * @see orderBy
+	 */
+	const SORT_ASC = false;
+	/**
+	 * Sort descending
+	 * @see orderBy
+	 */
+	const SORT_DESC = true;
+
+	/**
 	 * @var string the name of the ActiveRecord class.
 	 */
 	public $modelClass;
@@ -57,12 +68,18 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public $with;
 	/**
+	 * @var string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row or model data. For more details, see [[indexBy()]].
+	 */
+	public $indexBy;
+	/**
 	 * @var boolean whether to return each record as an array. If false (default), an object
 	 * of [[modelClass]] will be created to represent each record.
 	 */
 	public $asArray;
 	/**
-	 * @var array query condition. This refers to the WHERE clause in a SQL statement.
+	 * @var array the query condition.
 	 * @see where()
 	 */
 	public $where;
@@ -79,15 +96,10 @@ class ActiveQuery extends \yii\base\Component
 	/**
 	 * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
 	 * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
-	 * can be either [[Query::SORT_ASC]] or [[Query::SORT_DESC]]. The array may also contain [[Expression]] objects.
+	 * can be either [[ActiveQuery::SORT_ASC]] or [[ActiveQuery::SORT_DESC]]. The array may also contain [[Expression]] objects.
 	 * If that is the case, the expressions will be converted into strings without any change.
 	 */
 	public $orderBy;
-	/**
-	 * @var string the name of the column by which query results should be indexed by.
-	 * This is only used when the query result is returned as an array when calling [[all()]].
-	 */
-	public $indexBy;
 
 	/**
 	 * PHP magic method.
@@ -125,8 +137,7 @@ class ActiveQuery extends \yii\base\Component
 			}
 			$rows[] = $row;
 		}
-
-		if ($rows !== array()) {
+		if (!empty($rows)) {
 			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
 				$this->populateRelations($models, $this->with);
@@ -155,19 +166,19 @@ class ActiveQuery extends \yii\base\Component
 		for($i = 0; $i < $c; ) {
 			$row[$data[$i++]] = $data[$i++];
 		}
-		if (!$this->asArray) {
+		if ($this->asArray) {
+			$model = $row;
+		} else {
 			/** @var $class ActiveRecord */
 			$class = $this->modelClass;
 			$model = $class::create($row);
-			if (!empty($this->with)) {
-				$models = array($model);
-				$this->populateRelations($models, $this->with);
-				$model = $models[0];
-			}
-			return $model;
-		} else {
-			return $row;
 		}
+		if (!empty($this->with)) {
+			$models = array($model);
+			$this->populateRelations($models, $this->with);
+			$model = $models[0];
+		}
+		return $model;
 	}
 
 	/**
@@ -389,6 +400,8 @@ class ActiveQuery extends \yii\base\Component
 		return false;
 	}
 
+	// TODO: refactor. code below here is all duplicated from yii/db/ActiveQuery and yii/db/Query
+
 	/**
 	 * Sets the [[asArray]] property.
 	 * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
@@ -512,7 +525,19 @@ class ActiveQuery extends \yii\base\Component
 
 	/**
 	 * Sets the [[indexBy]] property.
-	 * @param string $column the name of the column by which the query results should be indexed by.
+	 * @param string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row or model data. The signature of the callable should be:
+	 *
+	 * ~~~
+	 * // $model is an AR instance when `asArray` is false,
+	 * // or an array of column values when `asArray` is true.
+	 * function ($model)
+	 * {
+	 *     // return the index value corresponding to $model
+	 * }
+	 * ~~~
+	 *
 	 * @return ActiveQuery the query object itself
 	 */
 	public function indexBy($column)
@@ -633,7 +658,6 @@ class ActiveQuery extends \yii\base\Component
 		return $this;
 	}
 
-	// TODO: refactor, it is duplicated from yii/db/ActiveQuery
 	private function createModels($rows)
 	{
 		$models = array();
@@ -671,7 +695,6 @@ class ActiveQuery extends \yii\base\Component
 		return $models;
 	}
 
-	// TODO: refactor, it is duplicated from yii/db/ActiveQuery
 	private function populateRelations(&$models, $with)
 	{
 		$primaryModel = new $this->modelClass;
@@ -686,7 +709,6 @@ class ActiveQuery extends \yii\base\Component
 	}
 
 	/**
-	 * TODO: refactor, it is duplicated from yii/db/ActiveQuery
 	 * @param ActiveRecord $model
 	 * @param array $with
 	 * @return ActiveRelation[]
