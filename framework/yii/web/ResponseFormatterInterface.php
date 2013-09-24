@@ -8,12 +8,12 @@
 namespace yii\web;
 
 /**
- * ResponseFormatter specifies the interface needed to format a response before it is sent out.
+ * ResponseFormatterInterface specifies the interface needed to format a response before it is sent out.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-interface ResponseFormatter
+interface ResponseFormatterInterface
 {
 	/**
 	 * Formats the specified response.
