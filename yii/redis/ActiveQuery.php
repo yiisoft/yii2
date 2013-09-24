@@ -642,7 +642,12 @@ class ActiveQuery extends \yii\base\Component
 				return $rows;
 			}
 			foreach ($rows as $row) {
-				$models[$row[$this->indexBy]] = $row;
+				if (is_string($this->indexBy)) {
+					$key = $row[$this->indexBy];
+				} else {
+					$key = call_user_func($this->indexBy, $row);
+				}
+				$models[$key] = $row;
 			}
 		} else {
 			/** @var $class ActiveRecord */
@@ -654,7 +659,12 @@ class ActiveQuery extends \yii\base\Component
 			} else {
 				foreach ($rows as $row) {
 					$model = $class::create($row);
-					$models[$model->{$this->indexBy}] = $model;
+					if (is_string($this->indexBy)) {
+						$key = $model->{$this->indexBy};
+					} else {
+						$key = call_user_func($this->indexBy, $model);
+					}
+					$models[$key] = $model;
 				}
 			}
 		}
