@@ -159,6 +159,16 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertTrue($customers['user1'] instanceof Customer);
 		$this->assertTrue($customers['user2'] instanceof Customer);
 		$this->assertTrue($customers['user3'] instanceof Customer);
+
+		// indexBy callable
+		$customers = Customer::find()->indexBy(function ($customer) {
+			return $customer->id . '-' . $customer->name;
+//		})->orderBy('id')->all();
+		})->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertTrue($customers['1-user1'] instanceof Customer);
+		$this->assertTrue($customers['2-user2'] instanceof Customer);
+		$this->assertTrue($customers['3-user3'] instanceof Customer);
 	}
 
 	public function testFindCount()
