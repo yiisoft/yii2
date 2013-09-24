@@ -116,7 +116,7 @@ class ErrorHandler extends Component
 					'exception' => $exception,
 				));
 			}
-		} elseif ($exception instanceof Arrayable) {
+		} elseif ($exception instanceof IArrayable) {
 			$response->data = $exception;
 		} else {
 			$response->data = array(

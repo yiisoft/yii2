@@ -454,7 +454,7 @@ User and Identity
 -----------------
 
 The `CWebUser` class in 1.1 is now replaced by `\yii\Web\User`, and there is no more
-`CUserIdentity` class. Instead, you should implement the `Identity` interface which
+`CUserIdentity` class. Instead, you should implement the `IIdentity` interface which
 is much more straightforward to implement. The bootstrap application provides such an example.
 
 

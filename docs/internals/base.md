@@ -29,7 +29,7 @@ This method is a powerful way to instantiate a class. Differences from `new`:
 
 To support class dependencies and their lazy loading.
 
-### [[Initable]] interface
+### [[IInitable]] interface
 
 Developer will implement initable interface if running `init()` needed and will
 skip it if not.

@@ -21,7 +21,7 @@
 				<file>framework/yii/helpers/ArrayHelper.php</file>
 				<file>framework/yii/helpers/Console.php</file>
 				<file>framework/yii/i18n/GettextFile.php</file>		
-				<file>framework/yii/web/ResponseFormatter.php</file>		
+				<file>framework/yii/web/IResponseFormatter.php</file>
 				<directory suffix="Exception.php">framework/yii/base</directory>
 				<directory suffix=".php">framework/yii/db/mssql</directory>
 				<directory suffix=".php">framework/yii/bootstrap</directory>

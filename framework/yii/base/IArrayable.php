@@ -8,12 +8,12 @@
 namespace yii\base;
 
 /**
- * Arrayable should be implemented by classes that need to be represented in array format.
+ * IArrayable should be implemented by classes that need to be represented in array format.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-interface Arrayable
+interface IArrayable
 {
 	/**
 	 * Converts the object into an array.

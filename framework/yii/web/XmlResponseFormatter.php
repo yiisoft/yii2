@@ -10,7 +10,7 @@ namespace yii\web;
 use DOMDocument;
 use DOMElement;
 use DOMText;
-use yii\base\Arrayable;
+use yii\base\IArrayable;
 use yii\base\Component;
 use yii\helpers\StringHelper;
 
@@ -20,7 +20,7 @@ use yii\helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class XmlResponseFormatter extends Component implements ResponseFormatter
+class XmlResponseFormatter extends Component implements IResponseFormatter
 {
 	/**
 	 * @var string the Content-Type header for the response
@@ -66,7 +66,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatter
 		if (is_object($data)) {
 			$child = new DOMElement(StringHelper::basename(get_class($data)));
 			$element->appendChild($child);
-			if ($data instanceof Arrayable) {
+			if ($data instanceof IArrayable) {
 				$this->buildXml($child, $data->toArray());
 			} else {
 				$array = array();
