@@ -16,6 +16,7 @@ use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
 use yii\db\TableSchema;
+use yii\helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -26,6 +27,11 @@ use yii\db\TableSchema;
 abstract class ActiveRecord extends \yii\db\ActiveRecord
 {
 	/**
+	 * @var array cache for TableSchema instances
+	 */
+	private static $_tables = array();
+
+	/**
 	 * Returns the database connection used by this AR class.
 	 * By default, the "redis" application component is used as the database connection.
 	 * You may override this method if you want to use a different database connection.
@@ -34,11 +40,6 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	public static function getDb()
 	{
 		return \Yii::$app->redis;
-	}
-
-	public static function hashPk($pk)
-	{
-		return is_array($pk) ? implode('-', $pk) : $pk; // TODO escape PK glue
 	}
 
 	/**
@@ -73,13 +74,26 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * This method is ment to be overridden in redis ActiveRecord subclasses to return a [[RecordSchema]] instance.
+	 * @return RecordSchema
+	 * @throws \yii\base\InvalidConfigException
+	 */
+	public static function getRecordSchema()
+	{
+		throw new InvalidConfigException(__CLASS__.'::getRecordSchema() needs to be overridden in subclasses and return a RecordSchema.');
+	}
+
+	/**
 	 * Returns the schema information of the DB table associated with this AR class.
 	 * @return TableSchema the schema information of the DB table associated with this AR class.
 	 */
 	public static function getTableSchema()
 	{
-		// TODO should be cached
-		throw new InvalidConfigException(__CLASS__.'::getTableSchema() needs to be overridden in subclasses and return a TableSchema.');
+		$class = get_called_class();
+		if (isset(self::$_tables[$class])) {
+			return self::$_tables[$class];
+		}
+		return self::$_tables[$class] = static::getRecordSchema();
 	}
 
 	/**
@@ -138,9 +152,9 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 				}
 //			}
 			// save pk in a findall pool
-			$db->executeCommand('RPUSH', array(static::tableName(), static::hashPk($pk)));
+			$db->executeCommand('RPUSH', array(static::tableName(), static::buildKey($pk)));
 
-			$key = static::tableName() . ':a:' . static::hashPk($pk);
+			$key = static::tableName() . ':a:' . static::buildKey($pk);
 			// save attributes
 			$args = array($key);
 			foreach($values as $attribute => $value) {
@@ -161,34 +175,45 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 * For example, to change the status to be 1 for all customers whose status is 2:
 	 *
 	 * ~~~
-	 * Customer::updateAll(array('status' => 1), 'status = 2');
+	 * Customer::updateAll(array('status' => 1), array('id' => 2));
 	 * ~~~
 	 *
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
-	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+	 * @param array $params this parameter is ignored in redis implementation.
 	 * @return integer the number of rows updated
 	 */
-	public static function updateAll($attributes, $condition = '', $params = array())
+	public static function updateAll($attributes, $condition = null, $params = array())
 	{
 		$db = static::getDb();
-		if ($condition==='') {
-			$condition = $db->executeCommand('LRANGE', array(static::tableName(), 0, -1));
-		}
 		if (empty($attributes)) {
 			return 0;
 		}
 		$n=0;
-		foreach($condition as $pk) {
-			$key = static::tableName() . ':a:' . static::hashPk($pk);
+		foreach(static::fetchPks($condition) as $pk) {
+			$newPk = $pk;
+			$pk = static::buildKey($pk);
+			$key = static::tableName() . ':a:' . $pk;
 			// save attributes
 			$args = array($key);
 			foreach($attributes as $attribute => $value) {
+				if (isset($newPk[$attribute])) {
+					$newPk[$attribute] = $value;
+				}
 				$args[] = $attribute;
 				$args[] = $value;
 			}
+			$newPk = static::buildKey($newPk);
+			$newKey = static::tableName() . ':a:' . $newPk;
 			$db->executeCommand('HMSET', $args);
+			// rename index
+			if ($newPk != $pk) {
+				// TODO make this atomic
+				$db->executeCommand('LINSERT', array(static::tableName(), 'AFTER', $pk, $newPk));
+				$db->executeCommand('LREM', array(static::tableName(), 0, $pk));
+				$db->executeCommand('RENAME', array($key, $newKey));
+			}
 			$n++;
 		}
 
@@ -205,24 +230,17 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 *
 	 * @param array $counters the counters to be updated (attribute name => increment value).
 	 * Use negative values if you want to decrement the counters.
-	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
-	 * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
+	 * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+	 * @param array $params this parameter is ignored in redis implementation.
 	 * @return integer the number of rows updated
 	 */
-	public static function updateAllCounters($counters, $condition = '', $params = array())
+	public static function updateAllCounters($counters, $condition = null, $params = array())
 	{
-		if (is_array($condition) && !isset($condition[0])) { // TODO do this in all *All methods
-			$condition = array($condition);
-		}
 		$db = static::getDb();
-		if ($condition==='') {
-			$condition = $db->executeCommand('LRANGE', array(static::tableName(), 0, -1));
-		}
 		$n=0;
-		foreach($condition as $pk) { // TODO allow multiple pks as condition
-			$key = static::tableName() . ':a:' . static::hashPk($pk);
+		foreach(static::fetchPks($condition) as $pk) {
+			$key = static::tableName() . ':a:' . static::buildKey($pk);
 			foreach($counters as $attribute => $value) {
 				$db->executeCommand('HINCRBY', array($key, $attribute, $value));
 			}
@@ -241,27 +259,72 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 * Customer::deleteAll('status = 3');
 	 * ~~~
 	 *
-	 * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name=>value) to be bound to the query.
+	 * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+	 * @param array $params this parameter is ignored in redis implementation.
 	 * @return integer the number of rows deleted
 	 */
-	public static function deleteAll($condition = '', $params = array())
+	public static function deleteAll($condition = null, $params = array())
 	{
 		$db = static::getDb();
-		if ($condition==='') {
-			$condition = $db->executeCommand('LRANGE', array(static::tableName(), 0, -1));
-		}
-		if (empty($condition)) {
-			return 0;
-		}
 		$attributeKeys = array();
-		foreach($condition as $pk) {
-			$pk = static::hashPk($pk);
+		foreach(static::fetchPks($condition) as $pk) {
+			$pk = static::buildKey($pk);
 			$db->executeCommand('LREM', array(static::tableName(), 0, $pk));
 			$attributeKeys[] = static::tableName() . ':a:' . $pk;
 		}
+		if (empty($attributeKeys)) {
+			return 0;
+		}
 		return $db->executeCommand('DEL', $attributeKeys);// TODO make this atomic or document as NOT
+	}
+
+	private static function fetchPks($condition)
+	{
+		$query = static::createQuery();
+		$query->where($condition);
+		$records = $query->asArray()->all(); // TODO limit fetched columns to pk
+		$primaryKey = static::primaryKey();
+
+		$pks = array();
+		foreach($records as $record) {
+			$pk = array();
+			foreach($primaryKey as $key) {
+				$pk[$key] = $record[$key];
+			}
+			$pks[] = $pk;
+		}
+		return $pks;
+	}
+
+
+	/**
+	 * Builds a normalized key from a given primary key value.
+	 *
+	 * @param mixed $key the key to be normalized
+	 * @return string the generated key
+	 */
+	public static function buildKey($key)
+	{
+		if (is_numeric($key)) {
+			return $key;
+		} elseif (is_string($key)) {
+			return ctype_alnum($key) && StringHelper::strlen($key) <= 32 ? $key : md5($key);
+		} elseif (is_array($key)) {
+			if (count($key) == 1) {
+				return self::buildKey(reset($key));
+			}
+			$isNumeric = true;
+			foreach($key as $value) {
+				if (!is_numeric($value)) {
+					$isNumeric = false;
+				}
+			}
+			if ($isNumeric) {
+				return implode('-', $key);
+			}
+		}
+		return md5(json_encode($key));
 	}
 
 	/**
