@@ -286,7 +286,7 @@ EOF;
 		$value1 = $this->quoteValue($value1);
 		$value2 = $this->quoteValue($value2);
 		$column = $this->addColumn($column, $columns);
-		return "$column > $value1 and $column < $value2";
+		return "$column >= $value1 and $column <= $value2";
 	}
 
 	private function buildInCondition($operator, $operands, &$columns)
