@@ -582,12 +582,22 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * A flash message is available only in the current request and the next request.
 	 * @param string $key the key identifying the flash message
 	 * @param mixed $defaultValue value to be returned if the flash message does not exist.
+	 * @param boolean $delete whether to delete this flash message right after this method is called.
+	 * If false, the flash message will be automatically deleted after the next request.
 	 * @return mixed the flash message
 	 */
-	public function getFlash($key, $defaultValue = null)
+	public function getFlash($key, $defaultValue = null, $delete = false)
 	{
 		$counters = $this->get($this->flashVar, array());
-		return isset($counters[$key]) ? $this->get($key, $defaultValue) : $defaultValue;
+		if (isset($counters[$key])) {
+			$value = $this->get($key, $defaultValue);
+			if ($delete) {
+				$this->removeFlash($key);
+			}
+			return $value;
+		} else {
+			return $defaultValue;
+		}
 	}
 
 	/**
