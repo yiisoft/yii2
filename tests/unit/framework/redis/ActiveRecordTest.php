@@ -10,26 +10,6 @@ use yiiunit\data\ar\redis\OrderItem;
 use yiiunit\data\ar\redis\Order;
 use yiiunit\data\ar\redis\Item;
 
-/*
-Users:
-1 - user1
-2 - user2
-3 - user3
-
-Items: 1-5
-
-Order: 1-3
-
-OrderItem:
-1 - order: 1
-2 - order: 1
-3 - order: 2
-4 - order: 2
-5 - order: 2
-6 - order: 3
-
- */
-
 class ActiveRecordTest extends RedisTestCase
 {
 	public function setUp()
@@ -231,7 +211,11 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals(2, Customer::find()->where(array('OR', array('id' => 1), array('id' => 2)))->count());
 		$this->assertEquals(2, count(Customer::find()->where(array('OR', array('id' => 1), array('id' => 2)))->all()));
 
-		// TODO more conditions
+		$this->assertEquals(2, Customer::find()->where(array('id' => array(1,2)))->count());
+		$this->assertEquals(2, count(Customer::find()->where(array('id' => array(1,2)))->all()));
+
+		$this->assertEquals(1, Customer::find()->where(array('AND', array('id' => array(2,3)), array('BETWEEN', 'status', 2, 4)))->count());
+		$this->assertEquals(1, count(Customer::find()->where(array('AND', array('id' => array(2,3)), array('BETWEEN', 'status', 2, 4)))->all()));
 	}
 
 	public function testSum()
