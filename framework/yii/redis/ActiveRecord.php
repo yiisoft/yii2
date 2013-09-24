@@ -1,10 +1,7 @@
 <?php
 /**
- * ActiveRecord class file.
- *
- * @author Carsten Brandt <mail@cebe.cc>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -12,9 +9,7 @@ namespace yii\redis;
 
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
-use yii\base\UnknownMethodException;
 use yii\db\TableSchema;
 use yii\helpers\StringHelper;
 
@@ -48,126 +43,6 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	public static function findBySql($sql, $params = array())
 	{
 		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord');
-	}
-
-	/**
-	 * Creates an [[ActiveQuery]] instance.
-	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
-	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-	 * written for querying `Customer` purpose.)
-	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
-	 */
-	public static function createQuery()
-	{
-		return new ActiveQuery(array(
-			'modelClass' => get_called_class(),
-		));
-	}
-
-	/**
-	 * Declares the name of the database table associated with this AR class.
-	 * @return string the table name
-	 */
-	public static function tableName()
-	{
-		return static::getTableSchema()->name;
-	}
-
-	/**
-	 * This method is ment to be overridden in redis ActiveRecord subclasses to return a [[RecordSchema]] instance.
-	 * @return RecordSchema
-	 * @throws \yii\base\InvalidConfigException
-	 */
-	public static function getRecordSchema()
-	{
-		throw new InvalidConfigException(__CLASS__.'::getRecordSchema() needs to be overridden in subclasses and return a RecordSchema.');
-	}
-
-	/**
-	 * Returns the schema information of the DB table associated with this AR class.
-	 * @return TableSchema the schema information of the DB table associated with this AR class.
-	 */
-	public static function getTableSchema()
-	{
-		$class = get_called_class();
-		if (isset(self::$_tables[$class])) {
-			return self::$_tables[$class];
-		}
-		return self::$_tables[$class] = static::getRecordSchema();
-	}
-
-	/**
-	 * Inserts a row into the associated database table using the attribute values of this record.
-	 *
-	 * This method performs the following steps in order:
-	 *
-	 * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
-	 *    fails, it will skip the rest of the steps;
-	 * 2. call [[afterValidate()]] when `$runValidation` is true.
-	 * 3. call [[beforeSave()]]. If the method returns false, it will skip the
-	 *    rest of the steps;
-	 * 4. insert the record into database. If this fails, it will skip the rest of the steps;
-	 * 5. call [[afterSave()]];
-	 *
-	 * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
-	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
-	 * will be raised by the corresponding methods.
-	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
-	 *
-	 * If the table's primary key is auto-incremental and is null during insertion,
-	 * it will be populated with the actual value after insertion.
-	 *
-	 * For example, to insert a customer record:
-	 *
-	 * ~~~
-	 * $customer = new Customer;
-	 * $customer->name = $name;
-	 * $customer->email = $email;
-	 * $customer->insert();
-	 * ~~~
-	 *
-	 * @param boolean $runValidation whether to perform validation before saving the record.
-	 * If the validation fails, the record will not be inserted into the database.
-	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
-	 * meaning all attributes that are loaded from DB will be saved.
-	 * @return boolean whether the attributes are valid and the record is inserted successfully.
-	 */
-	public function insert($runValidation = true, $attributes = null)
-	{
-		if ($runValidation && !$this->validate($attributes)) {
-			return false;
-		}
-		if ($this->beforeSave(true)) {
-			$db = static::getDb();
-			$values = $this->getDirtyAttributes($attributes);
-			$pk = array();
-//			if ($values === array()) {
-				foreach ($this->primaryKey() as $key) {
-					$pk[$key] = $values[$key] = $this->getAttribute($key);
-					if ($pk[$key] === null) {
-						$pk[$key] = $values[$key] = $db->executeCommand('INCR', array(static::tableName() . ':s:' . $key));
-						$this->setAttribute($key, $values[$key]);
-					}
-				}
-//			}
-			// save pk in a findall pool
-			$db->executeCommand('RPUSH', array(static::tableName(), static::buildKey($pk)));
-
-			$key = static::tableName() . ':a:' . static::buildKey($pk);
-			// save attributes
-			$args = array($key);
-			foreach($values as $attribute => $value) {
-				$args[] = $attribute;
-				$args[] = $value;
-			}
-			$db->executeCommand('HMSET', $args);
-
-			$this->setOldAttributes($values);
-			$this->afterSave(true);
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -328,6 +203,53 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * Creates an [[ActiveQuery]] instance.
+	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
+	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
+	 * written for querying `Customer` purpose.)
+	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+	 */
+	public static function createQuery()
+	{
+		return new ActiveQuery(array(
+			'modelClass' => get_called_class(),
+		));
+	}
+
+	/**
+	 * Declares the name of the database table associated with this AR class.
+	 * @return string the table name
+	 */
+	public static function tableName()
+	{
+		return static::getTableSchema()->name;
+	}
+
+	/**
+	 * This method is ment to be overridden in redis ActiveRecord subclasses to return a [[RecordSchema]] instance.
+	 * @return RecordSchema
+	 * @throws \yii\base\InvalidConfigException
+	 */
+	public static function getRecordSchema()
+	{
+		throw new InvalidConfigException(__CLASS__.'::getRecordSchema() needs to be overridden in subclasses and return a RecordSchema.');
+	}
+
+	/**
+	 * Returns the schema information of the DB table associated with this AR class.
+	 * @return TableSchema the schema information of the DB table associated with this AR class.
+	 */
+	public static function getTableSchema()
+	{
+		$class = get_called_class();
+		if (isset(self::$_tables[$class])) {
+			return self::$_tables[$class];
+		}
+		return self::$_tables[$class] = static::getRecordSchema();
+	}
+
+
+	/**
 	 * Declares a `has-one` relation.
 	 * The declaration is returned in terms of an [[ActiveRelation]] instance
 	 * through which the related record can be queried and retrieved back.
@@ -403,5 +325,125 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 			'link' => $link,
 			'multiple' => true,
 		));
+	}
+
+	/**
+	 * @inheritDocs
+	 */
+	public function insert($runValidation = true, $attributes = null)
+	{
+		if ($runValidation && !$this->validate($attributes)) {
+			return false;
+		}
+		if ($this->beforeSave(true)) {
+			$db = static::getDb();
+			$values = $this->getDirtyAttributes($attributes);
+			$pk = array();
+//			if ($values === array()) {
+			foreach ($this->primaryKey() as $key) {
+				$pk[$key] = $values[$key] = $this->getAttribute($key);
+				if ($pk[$key] === null) {
+					$pk[$key] = $values[$key] = $db->executeCommand('INCR', array(static::tableName() . ':s:' . $key));
+					$this->setAttribute($key, $values[$key]);
+				}
+			}
+//			}
+			// save pk in a findall pool
+			$db->executeCommand('RPUSH', array(static::tableName(), static::buildKey($pk)));
+
+			$key = static::tableName() . ':a:' . static::buildKey($pk);
+			// save attributes
+			$args = array($key);
+			foreach($values as $attribute => $value) {
+				$args[] = $attribute;
+				$args[] = $value;
+			}
+			$db->executeCommand('HMSET', $args);
+
+			$this->setOldAttributes($values);
+			$this->afterSave(true);
+			return true;
+		}
+		return false;
+	}
+
+	// TODO port these changes back to AR
+	/**
+	 * @inheritDocs
+	 */
+	public function link($name, $model, $extraColumns = array())
+	{
+		$relation = $this->getRelation($name);
+
+		if ($relation->via !== null) {
+			if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
+				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
+			}
+			if (is_array($relation->via)) {
+				/** @var $viaRelation ActiveRelation */
+				list($viaName, $viaRelation) = $relation->via;
+				/** @var $viaClass ActiveRecord */
+				$viaClass = $viaRelation->modelClass;
+				// unset $viaName so that it can be reloaded to reflect the change
+				// unset($this->_related[strtolower($viaName)]); // TODO this needs private access
+			} else {
+				throw new NotSupportedException('redis does not support relations via table.');
+			}
+			$columns = array();
+			foreach ($viaRelation->link as $a => $b) {
+				$columns[$a] = $this->$b;
+			}
+			foreach ($relation->link as $a => $b) {
+				$columns[$b] = $model->$a;
+			}
+			foreach ($extraColumns as $k => $v) {
+				$columns[$k] = $v;
+			}
+			$record = new $viaClass();
+			foreach($columns as $column => $value) {
+				$record->$column = $value;
+			}
+			$record->insert();
+		} else {
+			parent::link($name, $model, $extraColumns);
+		}
+	}
+
+	/**
+	 * @inheritDocs
+	 */
+	public function unlink($name, $model, $delete = false)
+	{
+		$relation = $this->getRelation($name);
+
+		if ($relation->via !== null) {
+			if (is_array($relation->via)) {
+				/** @var $viaRelation ActiveRelation */
+				list($viaName, $viaRelation) = $relation->via;
+				/** @var $viaClass ActiveRecord */
+				$viaClass = $viaRelation->modelClass;
+				//unset($this->_related[strtolower($viaName)]); // TODO this needs private access
+			} else {
+				throw new NotSupportedException('redis does not support relations via table.');
+			}
+			$columns = array();
+			foreach ($viaRelation->link as $a => $b) {
+				$columns[$a] = $this->$b;
+			}
+			foreach ($relation->link as $a => $b) {
+				$columns[$b] = $model->$a;
+			}
+			if ($delete) {
+				$viaClass::deleteAll($columns);
+			} else {
+				$nulls = array();
+				foreach (array_keys($columns) as $a) {
+					$nulls[$a] = null;
+				}
+				$viaClass::updateAll($nulls, $columns);
+			}
+		} else {
+			parent::unlink($name, $model, $delete);
+		}
 	}
 }

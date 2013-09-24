@@ -1,10 +1,7 @@
 <?php
 /**
- * ActiveRecord class file.
- *
- * @author Carsten Brandt <mail@cebe.cc>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 

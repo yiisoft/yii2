@@ -319,21 +319,20 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals(1, $order->customer_id);
 		$this->assertEquals(1, $order->customer->id);
 
-		// TODO support via
-//		// via model
-//		$order = Order::find(1);
-//		$this->assertEquals(2, count($order->items));
-//		$this->assertEquals(2, count($order->orderItems));
-//		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
-//		$this->assertNull($orderItem);
-//		$item = Item::find(3);
-//		$order->link('items', $item, array('quantity' => 10, 'subtotal' => 100));
-//		$this->assertEquals(3, count($order->items));
-//		$this->assertEquals(3, count($order->orderItems));
-//		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
-//		$this->assertTrue($orderItem instanceof OrderItem);
-//		$this->assertEquals(10, $orderItem->quantity);
-//		$this->assertEquals(100, $orderItem->subtotal);
+		// via model
+		$order = Order::find(1);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(2, count($order->orderItems));
+		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
+		$this->assertNull($orderItem);
+		$item = Item::find(3);
+		$order->link('items', $item, array('quantity' => 10, 'subtotal' => 100));
+		$this->assertEquals(3, count($order->items));
+		$this->assertEquals(3, count($order->orderItems));
+		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
+		$this->assertTrue($orderItem instanceof OrderItem);
+		$this->assertEquals(10, $orderItem->quantity);
+		$this->assertEquals(100, $orderItem->subtotal);
 	}
 
 	public function testUnlink()
@@ -345,14 +344,13 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals(1, count($customer->orders));
 		$this->assertNull(Order::find(3));
 
-		// TODO support via
-//		// via model
-//		$order = Order::find(2);
-//		$this->assertEquals(3, count($order->items));
-//		$this->assertEquals(3, count($order->orderItems));
-//		$order->unlink('items', $order->items[2], true);
-//		$this->assertEquals(2, count($order->items));
-//		$this->assertEquals(2, count($order->orderItems));
+		// via model
+		$order = Order::find(2);
+		$this->assertEquals(3, count($order->items));
+		$this->assertEquals(3, count($order->orderItems));
+		$order->unlink('items', $order->items[2], true);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(2, count($order->orderItems));
 	}
 
 	public function testInsert()
