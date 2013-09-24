@@ -450,11 +450,11 @@ This feature is especially useful if you are developing an application that supp
 different DBMS.
 
 
-User and Identity
------------------
+User and IdentityInterface
+--------------------------
 
 The `CWebUser` class in 1.1 is now replaced by `\yii\Web\User`, and there is no more
-`CUserIdentity` class. Instead, you should implement the `Identity` interface which
+`CUserIdentity` class. Instead, you should implement the `IdentityInterface` which
 is much more straightforward to implement. The bootstrap application provides such an example.
 
 

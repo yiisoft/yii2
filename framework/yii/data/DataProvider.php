@@ -14,7 +14,7 @@ use yii\base\InvalidParamException;
 /**
  * DataProvider is the base class of data provider classes.
  *
- * It implements the [[getPagination()]] and [[getSort()]] methods as specified by the [[IDataProvider]] interface.
+ * It implements the [[getPagination()]] and [[getSort()]] methods as specified by the [[DataProviderInterface]].
  *
  * @property integer $count The number of data models in the current page. This property is read-only.
  * @property Pagination|boolean $pagination The pagination object. If this is false, it means the pagination
@@ -26,7 +26,7 @@ use yii\base\InvalidParamException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class DataProvider extends Component implements IDataProvider
+abstract class DataProvider extends Component implements DataProviderInterface
 {
 	/**
 	 * @var string an ID that uniquely identifies the data provider among all data providers.
