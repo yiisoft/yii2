@@ -25,7 +25,7 @@ abstract class ListViewBase extends Widget
 	 */
 	public $options = array();
 	/**
-	 * @var \yii\data\IDataProvider the data provider for the view. This property is required.
+	 * @var \yii\data\DataProviderInterface the data provider for the view. This property is required.
 	 */
 	public $dataProvider;
 	/**
