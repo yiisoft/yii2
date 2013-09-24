@@ -9,6 +9,7 @@
  */
 
 namespace yii\redis;
+use yii\base\InvalidConfigException;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -42,20 +43,70 @@ class ActiveRelation extends \yii\redis\ActiveQuery
 	public $via;
 
 	/**
+	 * Clones internal objects.
+	 */
+	public function __clone()
+	{
+		if (is_object($this->via)) {
+			// make a clone of "via" object so that the same query object can be reused multiple times
+			$this->via = clone $this->via;
+		}
+	}
+
+	/**
 	 * Specifies the relation associated with the pivot table.
 	 * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
+	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
+	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
 	 * @return ActiveRelation the relation object itself.
 	 */
-	public function via($relationName)
+	public function via($relationName, $callable = null)
 	{
 		$relation = $this->primaryModel->getRelation($relationName);
 		$this->via = array($relationName, $relation);
+		if ($callable !== null) {
+			call_user_func($callable, $relation);
+		}
 		return $this;
 	}
 
 	/**
+	 * Creates a DB command that can be used to execute this query.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
+	 * @return Command the created DB command instance.
+	 */
+	protected function executeScript($type, $column=null)
+	{
+		if ($this->primaryModel !== null) {
+			// lazy loading
+			if ($this->via instanceof self) {
+				// via pivot table
+				$viaModels = $this->via->findPivotRows(array($this->primaryModel));
+				$this->filterByModels($viaModels);
+			} elseif (is_array($this->via)) {
+				// via relation
+				/** @var $viaQuery ActiveRelation */
+				list($viaName, $viaQuery) = $this->via;
+				if ($viaQuery->multiple) {
+					$viaModels = $viaQuery->all();
+					$this->primaryModel->populateRelation($viaName, $viaModels);
+				} else {
+					$model = $viaQuery->one();
+					$this->primaryModel->populateRelation($viaName, $model);
+					$viaModels = $model === null ? array() : array($model);
+				}
+				$this->filterByModels($viaModels);
+			} else {
+				$this->filterByModels(array($this->primaryModel));
+			}
+		}
+		return parent::executeScript($type, $column);
+	}
+
+	/**
 	 * Finds the related records and populates them into the primary models.
-	 * This method is internally by [[ActiveQuery]]. Do not call it directly.
+	 * This method is internally used by [[ActiveQuery]]. Do not call it directly.
 	 * @param string $name the relation name
 	 * @param array $primaryModels primary models
 	 * @return array the related models
@@ -68,14 +119,12 @@ class ActiveRelation extends \yii\redis\ActiveQuery
 		}
 
 		if ($this->via instanceof self) {
-			// TODO
 			// via pivot table
 			/** @var $viaQuery ActiveRelation */
 			$viaQuery = $this->via;
 			$viaModels = $viaQuery->findPivotRows($primaryModels);
 			$this->filterByModels($viaModels);
 		} elseif (is_array($this->via)) {
-			// TODO
 			// via relation
 			/** @var $viaQuery ActiveRelation */
 			list($viaName, $viaQuery) = $this->via;
@@ -185,7 +234,6 @@ class ActiveRelation extends \yii\redis\ActiveQuery
 		}
 	}
 
-
 	/**
 	 * @param array $models
 	 */
@@ -193,7 +241,7 @@ class ActiveRelation extends \yii\redis\ActiveQuery
 	{
 		$attributes = array_keys($this->link);
 		$values = array();
-		if (count($attributes) ===1) {
+		if (count($attributes) === 1) {
 			// single key
 			$attribute = reset($this->link);
 			foreach ($models as $model) {
@@ -209,7 +257,22 @@ class ActiveRelation extends \yii\redis\ActiveQuery
 				$values[] = $v;
 			}
 		}
-		$this->primaryKeys($values);
+		$this->andWhere(array('in', $attributes, array_unique($values, SORT_REGULAR)));
 	}
 
+	/**
+	 * @param ActiveRecord[] $primaryModels
+	 * @return array
+	 */
+	private function findPivotRows($primaryModels)
+	{
+		if (empty($primaryModels)) {
+			return array();
+		}
+		$this->filterByModels($primaryModels);
+		/** @var $primaryModel ActiveRecord */
+		$primaryModel = reset($primaryModels);
+		$db = $primaryModel->getDb(); // TODO use different db in db overlapping relations
+		return $this->all();
+	}
 }

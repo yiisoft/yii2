@@ -8,6 +8,8 @@
 namespace yii\redis;
 
 use yii\base\NotSupportedException;
+use yii\db\Exception;
+use yii\db\Expression;
 
 /**
  * LuaScriptBuilder builds lua scripts used for retrieving data from redis.
@@ -17,67 +19,115 @@ use yii\base\NotSupportedException;
  */
 class LuaScriptBuilder extends \yii\base\Object
 {
+	/**
+	 * Builds a Lua script for finding a list of records
+	 * @param ActiveQuery $query the query used to build the script
+	 * @return string
+	 */
 	public function buildAll($query)
 	{
 		// TODO add support for orderBy
 		$modelClass = $query->modelClass;
-		$key = $modelClass::tableName();
-		return $this->build($query, "n=n+1 pks[n]=redis.call('HGETALL','$key:a:' .. pk)", 'pks'); // TODO quote
+		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		return $this->build($query, "n=n+1 pks[n]=redis.call('HGETALL',$key .. pk)", 'pks'); // TODO properly hash pk
 	}
 
+	/**
+	 * Builds a Lua script for finding one record
+	 * @param ActiveQuery $query the query used to build the script
+	 * @return string
+	 */
 	public function buildOne($query)
 	{
 		// TODO add support for orderBy
 		$modelClass = $query->modelClass;
-		$key = $modelClass::tableName();
-		return $this->build($query, "do return redis.call('HGETALL','$key:a:' .. pk) end", 'pks'); // TODO quote
+		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		return $this->build($query, "do return redis.call('HGETALL',$key .. pk) end", 'pks'); // TODO properly hash pk
 	}
 
-	public function buildColumn($query, $field)
+	/**
+	 * Builds a Lua script for finding a column
+	 * @param ActiveQuery $query the query used to build the script
+	 * @param string $column name of the column
+	 * @return string
+	 */
+	public function buildColumn($query, $column)
 	{
 		// TODO add support for orderBy and indexBy
 		$modelClass = $query->modelClass;
-		$key = $modelClass::tableName();
-		return $this->build($query, "n=n+1 pks[n]=redis.call('HGET','$key:a:' .. pk,'$field')", 'pks'); // TODO quote
+		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		return $this->build($query, "n=n+1 pks[n]=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'pks'); // TODO properly hash pk
 	}
 
+	/**
+	 * Builds a Lua script for getting count of records
+	 * @param ActiveQuery $query the query used to build the script
+	 * @return string
+	 */
 	public function buildCount($query)
 	{
 		return $this->build($query, 'n=n+1', 'n');
 	}
 
-	public function buildSum($query, $field)
+	/**
+	 * Builds a Lua script for finding the sum of a column
+	 * @param ActiveQuery $query the query used to build the script
+	 * @param string $column name of the column
+	 * @return string
+	 */
+	public function buildSum($query, $column)
 	{
 		$modelClass = $query->modelClass;
-		$key = $modelClass::tableName();
-		return $this->build($query, "n=n+redis.call('HGET','$key:a:' .. pk,'$field')", 'n'); // TODO quote
-	}
-
-	public function buildAverage($query, $field)
-	{
-		$modelClass = $query->modelClass;
-		$key = $modelClass::tableName();
-		return $this->build($query, "n=n+1 if v==nil then v=0 end v=v+redis.call('HGET','$key:a:' .. pk,'$field')", 'v/n'); // TODO quote
-	}
-
-	public function buildMin($query, $field)
-	{
-		$modelClass = $query->modelClass;
-		$key = $modelClass::tableName();
-		return $this->build($query, "n=redis.call('HGET','$key:a:' .. pk,'$field') if v==nil or n<v then v=n end", 'v'); // TODO quote
-	}
-
-	public function buildMax($query, $field)
-	{
-		$modelClass = $query->modelClass;
-		$key = $modelClass::tableName();
-		return $this->build($query, "n=redis.call('HGET','$key:a:' .. pk,'$field') if v==nil or n>v then v=n end", 'v'); // TODO quote
+		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		return $this->build($query, "n=n+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'n'); // TODO properly hash pk
 	}
 
 	/**
-	 * @param ActiveQuery $query
+	 * Builds a Lua script for finding the average of a column
+	 * @param ActiveQuery $query the query used to build the script
+	 * @param string $column name of the column
+	 * @return string
 	 */
-	public function build($query, $buildResult, $return)
+	public function buildAverage($query, $column)
+	{
+		$modelClass = $query->modelClass;
+		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		return $this->build($query, "n=n+1 if v==nil then v=0 end v=v+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'v/n'); // TODO properly hash pk
+	}
+
+	/**
+	 * Builds a Lua script for finding the min value of a column
+	 * @param ActiveQuery $query the query used to build the script
+	 * @param string $column name of the column
+	 * @return string
+	 */
+	public function buildMin($query, $column)
+	{
+		$modelClass = $query->modelClass;
+		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n<v then v=n end", 'v'); // TODO properly hash pk
+	}
+
+	/**
+	 * Builds a Lua script for finding the max value of a column
+	 * @param ActiveQuery $query the query used to build the script
+	 * @param string $column name of the column
+	 * @return string
+	 */
+	public function buildMax($query, $column)
+	{
+		$modelClass = $query->modelClass;
+		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n>v then v=n end", 'v'); // TODO properly hash pk
+	}
+
+	/**
+	 * @param ActiveQuery $query the query used to build the script
+	 * @param string $buildResult the lua script for building the result
+	 * @param string $return the lua variable that should be returned
+	 * @return string
+	 */
+	private function build($query, $buildResult, $return)
 	{
 		$columns = array();
 		if ($query->where !== null) {
@@ -90,10 +140,10 @@ class LuaScriptBuilder extends \yii\base\Object
 		$limitCondition = 'i>' . $start . ($query->limit === null ? '' : ' and i<=' . ($start + $query->limit));
 
 		$modelClass = $query->modelClass;
-		$key = $modelClass::tableName();
+		$key = $this->quoteValue($modelClass::tableName() . ':a:');
 		$loadColumnValues = '';
-		foreach($columns as $column) {
-			$loadColumnValues .= "local $column=redis.call('HGET','$key:a:' .. pk, '$column')\n"; // TODO properly hash pk
+		foreach($columns as $column => $alias) {
+			$loadColumnValues .= "local $alias=redis.call('HGET',$key .. pk, '$column')\n"; // TODO properly hash pk
 		}
 
 		return <<<EOF
@@ -116,13 +166,27 @@ EOF;
 	}
 
 	/**
+	 * Adds a column to the list of columns to retrieve and creates an alias
+	 * @param string $column the column name to add
+	 * @param array $columns list of columns given by reference
+	 * @return string the alias generated for the column name
+	 */
+	private function addColumn($column, &$columns)
+	{
+		if (isset($columns[$column])) {
+			return $columns[$column];
+		}
+		$name = 'c' . preg_replace("/[^A-z]+/", "", $column) . count($columns);
+		return $columns[$column] = $name;
+	}
+
+	/**
 	 * Quotes a string value for use in a query.
-	 * Note that if the parameter is not a string, it will be returned without change.
+	 * Note that if the parameter is not a string or int, it will be returned without change.
 	 * @param string $str string to be quoted
 	 * @return string the properly quoted string
-	 * @see http://www.php.net/manual/en/function.PDO-quote.php
 	 */
-	public function quoteValue($str)
+	private function quoteValue($str)
 	{
 		if (!is_string($str) && !is_int($str)) {
 			return $str;
@@ -132,12 +196,13 @@ EOF;
 	}
 
 	/**
-	 * Parses the condition specification and generates the corresponding SQL expression.
-	 * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
+	 * Parses the condition specification and generates the corresponding Lua expression.
+	 * @param string|array $condition the condition specification. Please refer to [[ActiveQuery::where()]]
 	 * on how to specify a condition.
-	 * @param array $params the binding parameters to be populated
+	 * @param array $columns the list of columns and aliases to be used
 	 * @return string the generated SQL expression
 	 * @throws \yii\db\Exception if the condition is in bad format
+	 * @throws \yii\base\NotSupportedException if the condition is not an array
 	 */
 	public function buildCondition($condition, &$columns)
 	{
@@ -175,13 +240,12 @@ EOF;
 	{
 		$parts = array();
 		foreach ($condition as $column => $value) {
-			// TODO replace special chars and keywords in column name
-			$columns[$column] = $column;
 			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('IN', array($column, $value), $columns);
+				$parts[] = $this->buildInCondition('in', array($column, $value), $columns);
 			} else {
+				$column = $this->addColumn($column, $columns);
 				if ($value === null) {
-					$parts[] = $column.'==nil';
+					$parts[] = "$column==nil";
 				} elseif ($value instanceof Expression) {
 					$parts[] = "$column==" . $value->expression;
 				} else {
@@ -219,16 +283,14 @@ EOF;
 
 		list($column, $value1, $value2) = $operands;
 
-		// TODO replace special chars and keywords in column name
 		$value1 = $this->quoteValue($value1);
 		$value2 = $this->quoteValue($value2);
-		$columns[$column] = $column;
+		$column = $this->addColumn($column, $columns);
 		return "$column > $value1 and $column < $value2";
 	}
 
 	private function buildInCondition($operator, $operands, &$columns)
 	{
-		// TODO adjust implementation to respect NOT IN operator
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
 		}
@@ -238,7 +300,7 @@ EOF;
 		$values = (array)$values;
 
 		if (empty($values) || $column === array()) {
-			return $operator === 'IN' ? '0==1' : '';
+			return $operator === 'in' ? 'false' : 'true';
 		}
 
 		if (count($column) > 1) {
@@ -246,59 +308,47 @@ EOF;
 		} elseif (is_array($column)) {
 			$column = reset($column);
 		}
+		$columnAlias = $this->addColumn($column, $columns);
 		$parts = array();
 		foreach ($values as $i => $value) {
 			if (is_array($value)) {
 				$value = isset($value[$column]) ? $value[$column] : null;
 			}
-			// TODO replace special chars and keywords in column name
 			if ($value === null) {
-				$parts[] = 'type('.$column.')=="nil"';
+				$parts[] = "$columnAlias==nil";
 			} elseif ($value instanceof Expression) {
-				$parts[] = "$column==" . $value->expression;
+				$parts[] = "$columnAlias==" . $value->expression;
 			} else {
 				$value = $this->quoteValue($value);
-				$parts[] = "$column==$value";
+				$parts[] = "$columnAlias==$value";
 			}
 		}
-		if (count($parts) > 1) {
-			return "(" . implode(' or ', $parts) . ')';
-		} else {
-			$operator = $operator === 'IN' ? '' : '!';
-			return "$operator({$values[0]})";
-		}
+		$operator = $operator === 'in' ? '' : 'not ';
+		return "$operator(" . implode(' or ', $parts) . ')';
 	}
 
-	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
+	protected function buildCompositeInCondition($operator, $inColumns, $values, &$columns)
 	{
-		throw new NotSupportedException('composie IN is not yet supported.');
-		// TODO implement correclty
 		$vss = array();
 		foreach ($values as $value) {
 			$vs = array();
-			foreach ($columns as $column) {
+			foreach ($inColumns as $column) {
+				$column = $this->addColumn($column, $columns);
 				if (isset($value[$column])) {
-					$phName = self::PARAM_PREFIX . count($params);
-					$params[$phName] = $value[$column];
-					$vs[] = $phName;
+					$vs[] = "$column==" . $this->quoteValue($value[$column]);
 				} else {
-					$vs[] = 'NULL';
+					$vs[] = "$column==nil";
 				}
 			}
-			$vss[] = '(' . implode(', ', $vs) . ')';
+			$vss[] = '(' . implode(' and ', $vs) . ')';
 		}
-		foreach ($columns as $i => $column) {
-			if (strpos($column, '(') === false) {
-				$columns[$i] = $this->db->quoteColumnName($column);
-			}
-		}
-		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
+		$operator = $operator === 'in' ? '' : 'not ';
+		return "$operator(" . implode(' or ', $vss) . ')';
 	}
 
-	private function buildLikeCondition($operator, $operands, &$params)
+	private function buildLikeCondition($operator, $operands, &$columns)
 	{
 		throw new NotSupportedException('LIKE is not yet supported.');
-		// TODO implement correclty
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
 		}
@@ -308,25 +358,23 @@ EOF;
 		$values = (array)$values;
 
 		if (empty($values)) {
-			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
+			return $operator === 'like' || $operator === 'or like' ? 'false' : 'true';
 		}
 
-		if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
-			$andor = ' AND ';
+		if ($operator === 'like' || $operator === 'not like') {
+			$andor = ' and ';
 		} else {
-			$andor = ' OR ';
-			$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
+			$andor = ' or ';
+			$operator = $operator === 'or like' ? 'like' : 'not like';
 		}
 
-		if (strpos($column, '(') === false) {
-			$column = $this->db->quoteColumnName($column);
-		}
+		$column = $this->addColumn($column, $columns);
 
 		$parts = array();
 		foreach ($values as $value) {
-			$phName = self::PARAM_PREFIX . count($params);
-			$params[$phName] = $value;
-			$parts[] = "$column $operator $phName";
+			// TODO implement matching here correctly
+			$value = $this->quoteValue($value);
+			$parts[] = "$column $operator $value";
 		}
 
 		return implode($andor, $parts);

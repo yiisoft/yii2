@@ -9,6 +9,7 @@
  */
 
 namespace yii\redis;
+use yii\base\NotSupportedException;
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
@@ -89,18 +90,30 @@ class ActiveQuery extends \yii\base\Component
 	public $indexBy;
 
 	/**
-	 * Executes query and returns all results as an array.
-	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 * Executes a script created by [[LuaScriptBuilder]]
+	 * @param $type
+	 * @param null $column
+	 * @return array|bool|null|string
 	 */
-	public function all()
+	private function executeScript($type, $column=null)
 	{
 		$modelClass = $this->modelClass;
 		/** @var Connection $db */
 		$db = $modelClass::getDb();
 
-		$script = $db->luaScriptBuilder->buildAll($this);
-		$data = $db->executeCommand('EVAL', array($script, 0));
+		$method = 'build' . $type;
+		$script = $db->getLuaScriptBuilder()->$method($this, $column);
+		return $db->executeCommand('EVAL', array($script, 0));
+	}
 
+	/**
+	 * Executes query and returns all results as an array.
+	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 */
+	public function all()
+	{
+		// TODO add support for orderBy
+		$data = $this->executeScript('All');
 		$rows = array();
 		foreach($data as $dataRow) {
 			$row = array();
@@ -130,13 +143,8 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function one()
 	{
-		$modelClass = $this->modelClass;
-		/** @var Connection $db */
-		$db = $modelClass::getDb();
-
-		$script = $db->luaScriptBuilder->buildOne($this);
-		$data = $db->executeCommand('EVAL', array($script, 0));
-
+		// TODO add support for orderBy
+		$data = $this->executeScript('One');
 		if ($data === array()) {
 			return null;
 		}
@@ -168,11 +176,7 @@ class ActiveQuery extends \yii\base\Component
 	public function column($column)
 	{
 		// TODO add support for indexBy and orderBy
-		$modelClass = $this->modelClass;
-		/** @var Connection $db */
-		$db = $modelClass::getDb();
-		$script = $db->luaScriptBuilder->buildColumn($this, $column);
-		return $db->executeCommand('EVAL', array($script, 0));
+		return $this->executeScript('Column', $column);
 	}
 
 	/**
@@ -183,14 +187,13 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function count()
 	{
-		$modelClass = $this->modelClass;
-		/** @var Connection $db */
-		$db = $modelClass::getDb();
 		if ($this->offset === null && $this->limit === null && $this->where === null) {
+			$modelClass = $this->modelClass;
+			/** @var Connection $db */
+			$db = $modelClass::getDb();
 			return $db->executeCommand('LLEN', array($modelClass::tableName()));
 		} else {
-			$script = $db->luaScriptBuilder->buildCount($this);
-			return $db->executeCommand('EVAL', array($script, 0));
+			return $this->executeScript('Count');
 		}
 	}
 
@@ -201,11 +204,7 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function sum($column)
 	{
-		$modelClass = $this->modelClass;
-		/** @var Connection $db */
-		$db = $modelClass::getDb();
-		$script = $db->luaScriptBuilder->buildSum($this, $column);
-		return $db->executeCommand('EVAL', array($script, 0));
+		return $this->executeScript('Sum', $column);
 	}
 
 	/**
@@ -216,11 +215,7 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function average($column)
 	{
-		$modelClass = $this->modelClass;
-		/** @var Connection $db */
-		$db = $modelClass::getDb();
-		$script = $db->luaScriptBuilder->buildAverage($this, $column);
-		return $db->executeCommand('EVAL', array($script, 0));
+		return $this->executeScript('Average', $column);
 	}
 
 	/**
@@ -231,11 +226,7 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function min($column)
 	{
-		$modelClass = $this->modelClass;
-		/** @var Connection $db */
-		$db = $modelClass::getDb();
-		$script = $db->luaScriptBuilder->buildMin($this, $column);
-		return $db->executeCommand('EVAL', array($script, 0));
+		return $this->executeScript('Min', $column);
 	}
 
 	/**
@@ -246,11 +237,7 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public function max($column)
 	{
-		$modelClass = $this->modelClass;
-		/** @var Connection $db */
-		$db = $modelClass::getDb();
-		$script = $db->luaScriptBuilder->buildMax($this, $column);
-		return $db->executeCommand('EVAL', array($script, 0));
+		return $this->executeScript('Max', $column);
 	}
 
 	/**
@@ -294,7 +281,7 @@ class ActiveQuery extends \yii\base\Component
 	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return Query the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see addOrderBy()
 	 */
 	public function orderBy($columns)
@@ -310,7 +297,7 @@ class ActiveQuery extends \yii\base\Component
 	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return Query the query object itself
+	 * @return ActiveQuery the query object itself
 	 * @see orderBy()
 	 */
 	public function addOrderBy($columns)
@@ -326,6 +313,7 @@ class ActiveQuery extends \yii\base\Component
 
 	protected function normalizeOrderBy($columns)
 	{
+		throw new NotSupportedException('orderBy is currently not supported');
 		if (is_array($columns)) {
 			return $columns;
 		} else {
