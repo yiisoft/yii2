@@ -239,17 +239,17 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertFalse(Customer::find()->where(array('id' => 5))->exists());
 	}
 
-//	public function testFindLazy()
-//	{
-//		/** @var $customer Customer */
-//		$customer = Customer::find(2);
-//		$orders = $customer->orders;
-//		$this->assertEquals(2, count($orders));
-//
-//		$orders = $customer->getOrders()->primaryKeys(array(3))->all();
-//		$this->assertEquals(1, count($orders));
-//		$this->assertEquals(3, $orders[0]->id);
-//	}
+	public function testFindLazy()
+	{
+		/** @var $customer Customer */
+		$customer = Customer::find(2);
+		$orders = $customer->orders;
+		$this->assertEquals(2, count($orders));
+
+		$orders = $customer->getOrders()->where(array('id' => 3))->all();
+		$this->assertEquals(1, count($orders));
+		$this->assertEquals(3, $orders[0]->id);
+	}
 
 //	public function testFindEager()
 //	{
