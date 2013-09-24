@@ -90,20 +90,22 @@ class ActiveQuery extends \yii\base\Component
 	public $indexBy;
 
 	/**
-	 * Executes a script created by [[LuaScriptBuilder]]
-	 * @param $type
-	 * @param null $column
-	 * @return array|bool|null|string
+	 * PHP magic method.
+	 * This method allows calling static method defined in [[modelClass]] via this query object.
+	 * It is mainly implemented for supporting the feature of scope.
+	 * @param string $name the method name to be called
+	 * @param array $params the parameters passed to the method
+	 * @return mixed the method return result
 	 */
-	private function executeScript($type, $column=null)
+	public function __call($name, $params)
 	{
-		$modelClass = $this->modelClass;
-		/** @var Connection $db */
-		$db = $modelClass::getDb();
-
-		$method = 'build' . $type;
-		$script = $db->getLuaScriptBuilder()->$method($this, $column);
-		return $db->executeCommand('EVAL', array($script, 0));
+		if (method_exists($this->modelClass, $name)) {
+			array_unshift($params, $this);
+			call_user_func_array(array($this->modelClass, $name), $params);
+			return $this;
+		} else {
+			return parent::__call($name, $params);
+		}
 	}
 
 	/**
@@ -262,6 +264,130 @@ class ActiveQuery extends \yii\base\Component
 		return $this->one() !== null;
 	}
 
+	/**
+	 * Executes a script created by [[LuaScriptBuilder]]
+	 * @param string $type
+	 * @param null $column
+	 * @return array|bool|null|string
+	 */
+	protected function executeScript($type, $columnName=null)
+	{
+		if (($data = $this->findByPk($type)) === false) {
+			$modelClass = $this->modelClass;
+			/** @var Connection $db */
+			$db = $modelClass::getDb();
+
+			$method = 'build' . $type;
+			$script = $db->getLuaScriptBuilder()->$method($this, $columnName);
+			return $db->executeCommand('EVAL', array($script, 0));
+		}
+		return $data;
+	}
+
+	/**
+	 * Fetch by pk if possible as this is much faster
+	 */
+	private function findByPk($type, $columnName = null)
+	{
+		$modelClass = $this->modelClass;
+		if (is_array($this->where) && !isset($this->where[0]) && $modelClass::isPrimaryKey(array_keys($this->where))) {
+			/** @var Connection $db */
+			$db = $modelClass::getDb();
+
+			if (count($this->where) == 1) {
+				$pks = (array) reset($this->where);
+			} else {
+				// TODO support IN for composite PK
+				return false;
+			}
+
+			$start = $this->offset === null ? 0 : $this->offset;
+			$i = 0;
+			$data = array();
+			foreach($pks as $pk) {
+				if (++$i > $start && ($this->limit === null || $i <= $start + $this->limit)) {
+					$key = $modelClass::tableName() . ':a:' . $modelClass::buildKey($pk);
+					$data[] = $db->executeCommand('HGETALL', array($key));
+					if ($type === 'One' && $this->orderBy === null) {
+						break;
+					}
+				}
+			}
+			// TODO support orderBy
+
+			switch($type) {
+				case 'All':
+					return $data;
+				case 'One':
+					return reset($data);
+				case 'Column':
+					// TODO support indexBy
+					$column = array();
+					foreach($data as $dataRow) {
+						$row = array();
+						$c = count($dataRow);
+						for($i = 0; $i < $c; ) {
+							$row[$dataRow[$i++]] = $dataRow[$i++];
+						}
+						$column[] = $row[$columnName];
+					}
+					return $column;
+				case 'Count':
+					return count($data);
+				case 'Sum':
+					$sum = 0;
+					foreach($data as $dataRow) {
+						$c = count($dataRow);
+						for($i = 0; $i < $c; ) {
+							if ($dataRow[$i++] == $columnName) {
+								$sum += $dataRow[$i];
+								break;
+							}
+						}
+					}
+					return $sum;
+				case 'Average':
+					$sum = 0;
+					$count = 0;
+					foreach($data as $dataRow) {
+						$count++;
+						$c = count($dataRow);
+						for($i = 0; $i < $c; ) {
+							if ($dataRow[$i++] == $columnName) {
+								$sum += $dataRow[$i];
+								break;
+							}
+						}
+					}
+					return $sum / $count;
+				case 'Min':
+					$min = null;
+					foreach($data as $dataRow) {
+						$c = count($dataRow);
+						for($i = 0; $i < $c; ) {
+							if ($dataRow[$i++] == $columnName && ($min == null || $dataRow[$i] < $min)) {
+								$min = $dataRow[$i];
+								break;
+							}
+						}
+					}
+					return $min;
+				case 'Max':
+					$max = null;
+					foreach($data as $dataRow) {
+						$c = count($dataRow);
+						for($i = 0; $i < $c; ) {
+							if ($dataRow[$i++] == $columnName && ($max == null || $dataRow[$i] > $max)) {
+								$max = $dataRow[$i];
+								break;
+							}
+						}
+					}
+					return $max;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Sets the [[asArray]] property.

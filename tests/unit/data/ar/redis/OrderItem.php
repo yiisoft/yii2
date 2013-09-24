@@ -16,7 +16,7 @@ class OrderItem extends ActiveRecord
 		return $this->hasOne('Item', array('id' => 'item_id'));
 	}
 
-	public static function getTableSchema()
+	public static function getRecordSchema()
 	{
 		return new RecordSchema(array(
 			'name' => 'order_item',

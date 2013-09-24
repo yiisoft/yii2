@@ -40,6 +40,12 @@ class ActiveRecordTest extends DatabaseTestCase
 		$customer = Customer::find(2);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
+		$customer = Customer::find(5);
+		$this->assertNull($customer);
+
+		// query scalar
+		$customerName = Customer::find()->where(array('id' => 2))->scalar('name');
+		$this->assertEquals('user2', $customerName);
 
 		// find by column values
 		$customer = Customer::find(array('id' => 2, 'name' => 'user2'));

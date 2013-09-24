@@ -29,7 +29,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		// TODO add support for orderBy
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
-		return $this->build($query, "n=n+1 pks[n]=redis.call('HGETALL',$key .. pk)", 'pks'); // TODO properly hash pk
+		return $this->build($query, "n=n+1 pks[n]=redis.call('HGETALL',$key .. pk)", 'pks');
 	}
 
 	/**
@@ -42,7 +42,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		// TODO add support for orderBy
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
-		return $this->build($query, "do return redis.call('HGETALL',$key .. pk) end", 'pks'); // TODO properly hash pk
+		return $this->build($query, "do return redis.call('HGETALL',$key .. pk) end", 'pks');
 	}
 
 	/**
@@ -56,7 +56,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		// TODO add support for orderBy and indexBy
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
-		return $this->build($query, "n=n+1 pks[n]=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'pks'); // TODO properly hash pk
+		return $this->build($query, "n=n+1 pks[n]=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'pks');
 	}
 
 	/**
@@ -79,7 +79,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	{
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
-		return $this->build($query, "n=n+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'n'); // TODO properly hash pk
+		return $this->build($query, "n=n+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'n');
 	}
 
 	/**
@@ -92,7 +92,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	{
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
-		return $this->build($query, "n=n+1 if v==nil then v=0 end v=v+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'v/n'); // TODO properly hash pk
+		return $this->build($query, "n=n+1 if v==nil then v=0 end v=v+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'v/n');
 	}
 
 	/**
@@ -105,7 +105,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	{
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
-		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n<v then v=n end", 'v'); // TODO properly hash pk
+		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n<v then v=n end", 'v');
 	}
 
 	/**
@@ -118,7 +118,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	{
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
-		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n>v then v=n end", 'v'); // TODO properly hash pk
+		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n>v then v=n end", 'v');
 	}
 
 	/**
@@ -140,14 +140,14 @@ class LuaScriptBuilder extends \yii\base\Object
 		$limitCondition = 'i>' . $start . ($query->limit === null ? '' : ' and i<=' . ($start + $query->limit));
 
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		$key = $this->quoteValue($modelClass::tableName());
 		$loadColumnValues = '';
 		foreach($columns as $column => $alias) {
-			$loadColumnValues .= "local $alias=redis.call('HGET',$key .. pk, '$column')\n"; // TODO properly hash pk
+			$loadColumnValues .= "local $alias=redis.call('HGET',$key .. ':a:' .. pk, '$column')\n";
 		}
 
 		return <<<EOF
-local allpks=redis.call('LRANGE','$key',0,-1)
+local allpks=redis.call('LRANGE',$key,0,-1)
 local pks={}
 local n=0
 local v=nil

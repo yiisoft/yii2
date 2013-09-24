@@ -42,7 +42,7 @@ class Order extends ActiveRecord
 	}
 
 
-	public static function getTableSchema()
+	public static function getRecordSchema()
 	{
 		return new RecordSchema(array(
 			'name' => 'orders',

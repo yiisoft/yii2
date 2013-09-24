@@ -6,15 +6,12 @@ use yii\redis\RecordSchema;
 
 class Item extends ActiveRecord
 {
-	public static function getTableSchema()
+	public static function getRecordSchema()
 	{
 		return new RecordSchema(array(
 			'name' => 'item',
 			'primaryKey' => array('id'),
 			'sequenceName' => 'id',
-			'foreignKeys' => array(
-				// TODO for defining relations
-			),
 			'columns' => array(
 				'id' => 'integer',
 				'name' => 'string',

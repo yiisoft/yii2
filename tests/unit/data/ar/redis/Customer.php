@@ -19,7 +19,12 @@ class Customer extends ActiveRecord
 		return $this->hasMany('Order', array('customer_id' => 'id'));
 	}
 
-	public static function getTableSchema()
+	public static function active($query)
+	{
+		$query->andWhere(array('status' => 1));
+	}
+
+	public static function getRecordSchema()
 	{
 		return new RecordSchema(array(
 			'name' => 'customer',
