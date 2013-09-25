@@ -367,83 +367,14 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		return false;
 	}
 
-	// TODO port these changes back to AR
 	/**
-	 * @inheritDocs
+	 * Returns a value indicating whether the specified operation is transactional in the current [[scenario]].
+	 * This method will always return false as transactional operations are not supported by redis.
+	 * @param integer $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
+	 * @return boolean whether the specified operation is transactional in the current [[scenario]].
 	 */
-	public function link($name, $model, $extraColumns = array())
+	public function isTransactional($operation)
 	{
-		$relation = $this->getRelation($name);
-
-		if ($relation->via !== null) {
-			if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
-				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
-			}
-			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
-				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
-				$viaClass = $viaRelation->modelClass;
-				// unset $viaName so that it can be reloaded to reflect the change
-				// unset($this->_related[strtolower($viaName)]); // TODO this needs private access
-			} else {
-				throw new NotSupportedException('redis does not support relations via table.');
-			}
-			$columns = array();
-			foreach ($viaRelation->link as $a => $b) {
-				$columns[$a] = $this->$b;
-			}
-			foreach ($relation->link as $a => $b) {
-				$columns[$b] = $model->$a;
-			}
-			foreach ($extraColumns as $k => $v) {
-				$columns[$k] = $v;
-			}
-			$record = new $viaClass();
-			foreach($columns as $column => $value) {
-				$record->$column = $value;
-			}
-			$record->insert();
-		} else {
-			parent::link($name, $model, $extraColumns);
-		}
-	}
-
-	/**
-	 * @inheritDocs
-	 */
-	public function unlink($name, $model, $delete = false)
-	{
-		$relation = $this->getRelation($name);
-
-		if ($relation->via !== null) {
-			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
-				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
-				$viaClass = $viaRelation->modelClass;
-				//unset($this->_related[strtolower($viaName)]); // TODO this needs private access
-			} else {
-				throw new NotSupportedException('redis does not support relations via table.');
-			}
-			$columns = array();
-			foreach ($viaRelation->link as $a => $b) {
-				$columns[$a] = $this->$b;
-			}
-			foreach ($relation->link as $a => $b) {
-				$columns[$b] = $model->$a;
-			}
-			if ($delete) {
-				$viaClass::deleteAll($columns);
-			} else {
-				$nulls = array();
-				foreach (array_keys($columns) as $a) {
-					$nulls[$a] = null;
-				}
-				$viaClass::updateAll($nulls, $columns);
-			}
-		} else {
-			parent::unlink($name, $model, $delete);
-		}
+		return false;
 	}
 }
