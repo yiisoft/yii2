@@ -210,6 +210,7 @@ class Controller extends Component
 	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
+	 * If you override this method, please make sure you call the parent implementation first.
 	 * @param Action $action the action to be executed.
 	 * @return boolean whether the action should continue to be executed.
 	 */
@@ -223,6 +224,7 @@ class Controller extends Component
 	/**
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
+	 * If you override this method, please make sure you call the parent implementation first.
 	 * @param Action $action the action just executed.
 	 * @param mixed $result the action return result.
 	 */

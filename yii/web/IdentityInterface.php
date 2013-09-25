@@ -8,13 +8,13 @@
 namespace yii\web;
 
 /**
- * Identity is the interface that should be implemented by a class providing identity information.
+ * IdentityInterface is the interface that should be implemented by a class providing identity information.
  *
  * This interface can typically be implemented by a user model class. For example, the following
  * code shows how to implement this interface by a User ActiveRecord class:
  *
  * ~~~
- * class User extends ActiveRecord implements Identity
+ * class User extends ActiveRecord implements IdentityInterface
  * {
  *     public static function findIdentity($id)
  *     {
@@ -41,12 +41,12 @@ namespace yii\web;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-interface Identity
+interface IdentityInterface
 {
 	/**
 	 * Finds an identity by the given ID.
 	 * @param string|integer $id the ID to be looked for
-	 * @return Identity the identity object that matches the given ID.
+	 * @return IdentityInterface the identity object that matches the given ID.
 	 * Null should be returned if such an identity cannot be found
 	 * or the identity is not in an active state (disabled, deleted, etc.)
 	 */

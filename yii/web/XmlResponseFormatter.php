@@ -20,7 +20,7 @@ use yii\helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class XmlResponseFormatter extends Component implements ResponseFormatter
+class XmlResponseFormatter extends Component implements ResponseFormatterInterface
 {
 	/**
 	 * @var string the Content-Type header for the response
