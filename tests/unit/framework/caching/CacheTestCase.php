@@ -148,7 +148,7 @@ abstract class CacheTestCase extends TestCase
 		sleep(1);
 		$this->assertEquals('expire_test', $cache->get('expire_test'));
 		// wait a bit more than 2 sec to avoid random test failure
-		if ($_ENV['TRAVIS'] && substr(StringHelper::basename(get_class($this)), 0, 8) == 'MemCache') {
+		if (isset($_ENV['TRAVIS']) && substr(StringHelper::basename(get_class($this)), 0, 8) == 'MemCache') {
 			sleep(3); // usleep with 2,5 seconds does not work well on travis and memcache
 		} else {
 			usleep(2500000);
