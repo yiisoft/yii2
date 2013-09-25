@@ -54,6 +54,10 @@ foreach ($generator->getTableSchema()->columns as $column) {
 	}
 }
 ?>
+
+			array(
+				'class' => 'yii\grid\ActionColumn',
+			),
 		),
 	)); ?>
 <?php else: ?>

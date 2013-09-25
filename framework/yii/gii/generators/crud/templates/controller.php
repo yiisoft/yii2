@@ -28,12 +28,25 @@ use <?php echo ltrim($generator->searchModelClass, '\\'); ?>;
 use yii\data\ActiveDataProvider;
 use <?php echo ltrim($generator->baseControllerClass, '\\'); ?>;
 use yii\web\HttpException;
+use yii\web\VerbFilter;
 
 /**
  * <?php echo $controllerClass; ?> implements the CRUD actions for <?php echo $modelClass; ?> model.
  */
 class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename($generator->baseControllerClass) . "\n"; ?>
 {
+	public function behaviors()
+	{
+		return array(
+			'verbs' => array(
+				'class' => VerbFilter::className(),
+				'actions' => array(
+					'delete' => array('post'),
+				),
+			),
+		);
+	}
+
 	/**
 	 * Lists all <?php echo $modelClass; ?> models.
 	 * @return mixed
