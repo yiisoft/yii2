@@ -8,7 +8,7 @@
 namespace yii\data;
 
 /**
- * IDataProvider is the interface that must be implemented by data provider classes.
+ * DataProviderInterface is the interface that must be implemented by data provider classes.
  *
  * Data providers are components that sort and paginate data, and provide them to widgets
  * such as [[GridView]], [[ListView]].
@@ -16,7 +16,7 @@ namespace yii\data;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-interface IDataProvider
+interface DataProviderInterface
 {
 	/**
 	 * Returns the number of data models in the current page.

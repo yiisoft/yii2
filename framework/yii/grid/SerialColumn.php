@@ -15,6 +15,8 @@ namespace yii\grid;
  */
 class SerialColumn extends Column
 {
+	public $header = '#';
+
 	/**
 	 * Renders the data cell content.
 	 * @param mixed $model the data model

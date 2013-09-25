@@ -19,6 +19,7 @@ class HtmlTest extends TestCase
 				'request' => array(
 					'class' => 'yii\web\Request',
 					'url' => '/test',
+					'enableCsrfValidation' => false,
 				),
 				'response' => array(
 					'class' => 'yii\web\Response',

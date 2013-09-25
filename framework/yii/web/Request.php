@@ -73,10 +73,10 @@ class Request extends \yii\base\Request
 	/**
 	 * The name of the HTTP header for sending CSRF token.
 	 */
-	const CSRF_HEADER = 'X-CSRF-TOKEN';
+	const CSRF_HEADER = 'X-CSRF-Token';
 
 	/**
-	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to false.
+	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
 	 * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
 	 * from the same application. If not, a 400 HTTP exception will be raised.
 	 *
@@ -87,9 +87,10 @@ class Request extends \yii\base\Request
 	 * In JavaScript, you may get the values of [[csrfVar]] and [[csrfToken]] via `yii.getCsrfVar()` and
 	 * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
 	 *
+	 * @see Controller::enableCsrfValidation
 	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
 	 */
-	public $enableCsrfValidation = false;
+	public $enableCsrfValidation = true;
 	/**
 	 * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
 	 * This property is used only when [[enableCsrfValidation]] is true.
@@ -122,8 +123,6 @@ class Request extends \yii\base\Request
 	 */
 	public function resolve()
 	{
-		$this->validateCsrfToken();
-
 		$result = Yii::$app->getUrlManager()->parseRequest($this);
 		if ($result !== false) {
 			list ($route, $params) = $result;
@@ -1002,7 +1001,8 @@ class Request extends \yii\base\Request
 	 */
 	public function getCsrfTokenFromHeader()
 	{
-		return isset($_SERVER[self::CSRF_HEADER]) ? $_SERVER[self::CSRF_HEADER] : null;
+		$key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
+		return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
 	}
 
 	/**
@@ -1023,34 +1023,30 @@ class Request extends \yii\base\Request
 	 * Performs the CSRF validation.
 	 * The method will compare the CSRF token obtained from a cookie and from a POST field.
 	 * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
-	 * @throws HttpException if the validation fails
+	 * This method is called in [[Controller::beforeAction()]].
+	 * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
 	 */
 	public function validateCsrfToken()
 	{
-		if (!$this->enableCsrfValidation) {
-			return;
-		}
 		$method = $this->getMethod();
-		if ($method === 'POST' || $method === 'PUT' || $method === 'PATCH' || $method === 'DELETE') {
-			$trueToken = $this->getCookies()->getValue($this->csrfVar);
-			switch ($method) {
-				case 'POST':
-					$token = $this->getPost($this->csrfVar);
-					break;
-				case 'PUT':
-					$token = $this->getPut($this->csrfVar);
-					break;
-				case 'PATCH':
-					$token = $this->getPatch($this->csrfVar);
-					break;
-				case 'DELETE':
-					$token = $this->getDelete($this->csrfVar);
-			}
-
-			$valid = !empty($token) && $token === $trueToken || $this->getCsrfTokenFromHeader() === $trueToken;
-			if (!$valid) {
-				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
-			}
+		if (!$this->enableCsrfValidation || !in_array($method, array('POST', 'PUT', 'PATCH', 'DELETE'), true)) {
+			return true;
 		}
+		$trueToken = $this->getCookies()->getValue($this->csrfVar);
+		switch ($method) {
+			case 'PUT':
+				$token = $this->getPut($this->csrfVar);
+				break;
+			case 'PATCH':
+				$token = $this->getPatch($this->csrfVar);
+				break;
+			case 'DELETE':
+				$token = $this->getDelete($this->csrfVar);
+				break;
+			default:
+				$token = $this->getPost($this->csrfVar);
+				break;
+		}
+		return $token === $trueToken || $this->getCsrfTokenFromHeader() === $trueToken;
 	}
 }

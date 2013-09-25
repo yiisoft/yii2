@@ -43,6 +43,8 @@ $this->params['breadcrumbs'][] = $this->title;
 		'dataProvider' => $dataProvider,
 		'filterModel' => $searchModel,
 		'columns' => array(
+			array('class' => 'yii\grid\SerialColumn'),
+
 <?php
 $count = 0;
 foreach ($generator->getTableSchema()->columns as $column) {
@@ -54,6 +56,8 @@ foreach ($generator->getTableSchema()->columns as $column) {
 	}
 }
 ?>
+
+			array('class' => 'yii\grid\ActionColumn'),
 		),
 	)); ?>
 <?php else: ?>
@@ -63,7 +67,7 @@ foreach ($generator->getTableSchema()->columns as $column) {
 			'class' => 'item',
 		),
 		'itemView' => function ($model, $key, $index, $widget) {
-			return Html::a(Html::encode($model-><?php echo $nameAttribute; ?>), array('view', <?php echo $urlParams; ?>);
+			return Html::a(Html::encode($model-><?php echo $nameAttribute; ?>), array('view', <?php echo $urlParams; ?>));
 		},
 	)); ?>
 <?php endif; ?>

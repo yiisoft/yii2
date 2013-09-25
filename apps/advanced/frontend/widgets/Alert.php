@@ -23,13 +23,13 @@ class Alert extends \yii\bootstrap\Alert
 	private $_doNotRender = false;
 	public function init()
 	{
-		if ($this->body = \Yii::$app->getSession()->getFlash('error')) {
+		if ($this->body = \Yii::$app->getSession()->getFlash('error', null, true)) {
 			Html::addCssClass($this->options, 'alert-danger');
-		} elseif ($this->body = \Yii::$app->getSession()->getFlash('success')) {
+		} elseif ($this->body = \Yii::$app->getSession()->getFlash('success', null, true)) {
 			Html::addCssClass($this->options, 'alert-success');
-		} elseif ($this->body = \Yii::$app->getSession()->getFlash('info')) {
+		} elseif ($this->body = \Yii::$app->getSession()->getFlash('info', null, true)) {
 			Html::addCssClass($this->options, 'alert-info');
-		} elseif ($this->body = \Yii::$app->getSession()->getFlash('warning')) {
+		} elseif ($this->body = \Yii::$app->getSession()->getFlash('warning', null, true)) {
 			Html::addCssClass($this->options, 'alert-warning');
 		} else {
 			$this->_doNotRender = true;
