@@ -1310,9 +1310,7 @@ class ActiveRecord extends Model
 			if (is_array($relation->via)) {
 				/** @var $viaRelation ActiveRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
 				$viaClass = $viaRelation->modelClass;
-				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
 				unset($this->_related[strtolower($viaName)]);
 			} else {
@@ -1329,8 +1327,19 @@ class ActiveRecord extends Model
 			foreach ($extraColumns as $k => $v) {
 				$columns[$k] = $v;
 			}
-			static::getDb()->createCommand()
-				->insert($viaTable, $columns)->execute();
+			if (is_array($relation->via)) {
+				/** @var $viaClass ActiveRecord */
+				/** @var $record ActiveRecord */
+				$record = new $viaClass();
+				foreach($columns as $column => $value) {
+					$record->$column = $value;
+				}
+				$record->insert(false);
+			} else {
+				/** @var $viaTable string */
+				static::getDb()->createCommand()
+					->insert($viaTable, $columns)->execute();
+			}
 		} else {
 			$p1 = $model->isPrimaryKey(array_keys($relation->link));
 			$p2 = $this->isPrimaryKey(array_values($relation->link));
@@ -1385,9 +1394,7 @@ class ActiveRecord extends Model
 			if (is_array($relation->via)) {
 				/** @var $viaRelation ActiveRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
 				$viaClass = $viaRelation->modelClass;
-				$viaTable = $viaClass::tableName();
 				unset($this->_related[strtolower($viaName)]);
 			} else {
 				$viaRelation = $relation->via;
@@ -1400,15 +1407,29 @@ class ActiveRecord extends Model
 			foreach ($relation->link as $a => $b) {
 				$columns[$b] = $model->$a;
 			}
-			$command = static::getDb()->createCommand();
-			if ($delete) {
-				$command->delete($viaTable, $columns)->execute();
-			} else {
-				$nulls = array();
-				foreach (array_keys($columns) as $a) {
-					$nulls[$a] = null;
+			if (is_array($relation->via)) {
+				/** @var $viaClass ActiveRecord */
+				if ($delete) {
+					$viaClass::deleteAll($columns);
+				} else {
+					$nulls = array();
+					foreach (array_keys($columns) as $a) {
+						$nulls[$a] = null;
+					}
+					$viaClass::updateAll($nulls, $columns);
 				}
-				$command->update($viaTable, $nulls, $columns)->execute();
+			} else {
+				/** @var $viaTable string */
+				$command = static::getDb()->createCommand();
+				if ($delete) {
+					$command->delete($viaTable, $columns)->execute();
+				} else {
+					$nulls = array();
+					foreach (array_keys($columns) as $a) {
+						$nulls[$a] = null;
+					}
+					$command->update($viaTable, $nulls, $columns)->execute();
+				}
 			}
 		} else {
 			$p1 = $model->isPrimaryKey(array_keys($relation->link));
