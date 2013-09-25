@@ -60,10 +60,10 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function updateAll($attributes, $condition = null, $params = array())
 	{
-		$db = static::getDb();
 		if (empty($attributes)) {
 			return 0;
 		}
+		$db = static::getDb();
 		$n=0;
 		foreach(static::fetchPks($condition) as $pk) {
 			$newPk = $pk;
@@ -113,6 +113,9 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function updateAllCounters($counters, $condition = null, $params = array())
 	{
+		if (empty($counters)) {
+			return 0;
+		}
 		$db = static::getDb();
 		$n=0;
 		foreach(static::fetchPks($condition) as $pk) {
@@ -176,7 +179,6 @@ class ActiveRecord extends \yii\db\ActiveRecord
 		}
 		return $pks;
 	}
-
 
 	/**
 	 * Builds a normalized key from a given primary key value.
