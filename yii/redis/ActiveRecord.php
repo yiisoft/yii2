@@ -7,7 +7,6 @@
 
 namespace yii\redis;
 
-use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\db\TableSchema;
@@ -19,7 +18,7 @@ use yii\helpers\StringHelper;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-abstract class ActiveRecord extends \yii\db\ActiveRecord
+class ActiveRecord extends \yii\db\ActiveRecord
 {
 	/**
 	 * @var array cache for TableSchema instances
@@ -81,17 +80,19 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 			}
 			$newPk = static::buildKey($newPk);
 			$newKey = static::tableName() . ':a:' . $newPk;
-			$db->executeCommand('HMSET', $args);
-			// rename index
+			// rename index if pk changed
 			if ($newPk != $pk) {
-				// TODO make this atomic
+				$db->executeCommand('MULTI');
+				$db->executeCommand('HMSET', $args);
 				$db->executeCommand('LINSERT', array(static::tableName(), 'AFTER', $pk, $newPk));
 				$db->executeCommand('LREM', array(static::tableName(), 0, $pk));
 				$db->executeCommand('RENAME', array($key, $newKey));
+				$db->executeCommand('EXEC');
+			} else {
+				$db->executeCommand('HMSET', $args);
 			}
 			$n++;
 		}
-
 		return $n;
 	}
 
@@ -143,7 +144,9 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	{
 		$db = static::getDb();
 		$attributeKeys = array();
-		foreach(static::fetchPks($condition) as $pk) {
+		$pks = static::fetchPks($condition);
+		$db->executeCommand('MULTI');
+		foreach($pks as $pk) {
 			$pk = static::buildKey($pk);
 			$db->executeCommand('LREM', array(static::tableName(), 0, $pk));
 			$attributeKeys[] = static::tableName() . ':a:' . $pk;
@@ -151,7 +154,9 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		if (empty($attributeKeys)) {
 			return 0;
 		}
-		return $db->executeCommand('DEL', $attributeKeys);// TODO make this atomic or document as NOT
+		$db->executeCommand('DEL', $attributeKeys);
+		$result = $db->executeCommand('EXEC');
+		return end($result);
 	}
 
 	private static function fetchPks($condition)
