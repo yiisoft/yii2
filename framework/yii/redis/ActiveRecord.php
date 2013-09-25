@@ -155,6 +155,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 			$attributeKeys[] = static::tableName() . ':a:' . $pk;
 		}
 		if (empty($attributeKeys)) {
+			$db->executeCommand('EXEC');
 			return 0;
 		}
 		$db->executeCommand('DEL', $attributeKeys);
