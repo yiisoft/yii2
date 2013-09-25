@@ -386,7 +386,7 @@ class ActiveRecord extends Model
 				return $this->_related[$t];
 			}
 			$value = parent::__get($name);
-			if ($value instanceof ActiveRelation) {
+			if ($value instanceof ActiveRelation || $value instanceof \yii\redis\ActiveRelation) { // TODO this should be done differently remove dep on redis
 				return $this->_related[$t] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
@@ -1272,7 +1272,7 @@ class ActiveRecord extends Model
 		$getter = 'get' . $name;
 		try {
 			$relation = $this->$getter();
-			if ($relation instanceof ActiveRelation) {
+			if ($relation instanceof ActiveRelation || $relation instanceof \yii\redis\ActiveRelation) { // TODO this should be done differently remove dep on redis
 				return $relation;
 			}
 		} catch (UnknownMethodException $e) {
