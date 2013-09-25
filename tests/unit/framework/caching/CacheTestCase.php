@@ -13,6 +13,7 @@ function time()
 
 namespace yiiunit\framework\caching;
 
+use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 use yii\caching\Cache;
 
@@ -147,7 +148,11 @@ abstract class CacheTestCase extends TestCase
 		sleep(1);
 		$this->assertEquals('expire_test', $cache->get('expire_test'));
 		// wait a bit more than 2 sec to avoid random test failure
-		usleep(2500000);
+		if ($_ENV['TRAVIS'] && substr(StringHelper::basename(get_class($this)), 0, 8) == 'MemCache') {
+			sleep(3); // usleep with 2,5 seconds does not work well on travis and memcache
+		} else {
+			usleep(2500000);
+		}
 		$this->assertFalse($cache->get('expire_test'));
 	}
 
