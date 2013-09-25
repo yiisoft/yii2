@@ -44,7 +44,7 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertNull($customer);
 
 		// query scalar
-		$customerName = Customer::find()->where(array('id' => 2))->scalar('name');
+		$customerName = Customer::find()->where(array('id' => 2))->select('name')->scalar();
 		$this->assertEquals('user2', $customerName);
 
 		// find by column values
