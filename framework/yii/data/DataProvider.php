@@ -48,6 +48,7 @@ abstract class DataProvider extends Component implements DataProviderInterface
 			if ($this->id !== null) {
 				$this->_pagination->pageVar = $this->id . '-page';
 			}
+			$this->_pagination->totalCount = $this->getTotalCount();
 		}
 		return $this->_pagination;
 	}
