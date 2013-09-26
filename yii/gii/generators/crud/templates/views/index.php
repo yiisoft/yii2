@@ -30,13 +30,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<h1><?php echo "<?php"; ?> echo Html::encode($this->title); ?></h1>
 
-	<?php echo '<?php'; ?> echo $this->render('_search', array('model' => $searchModel)); ?>
+	<?php echo '<?php' . ($generator->indexWidgetType === 'grid' ? ' //' : ''); ?> echo $this->render('_search', array('model' => $searchModel)); ?>
 
-	<hr>
-
-	<div>
+	<p>
 		<?php echo '<?php'; ?> echo Html::a('Create <?php echo StringHelper::basename($generator->modelClass); ?>', array('create'), array('class' => 'btn btn-danger')); ?>
-	</div>
+	</p>
 
 <?php if ($generator->indexWidgetType === 'grid'): ?>
 	<?php echo "<?php"; ?> echo GridView::widget(array(
