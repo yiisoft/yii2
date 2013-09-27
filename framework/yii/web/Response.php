@@ -581,7 +581,7 @@ class Response extends \yii\base\Response
 	 * In a controller action you may use this method like this:
 	 *
 	 * ~~~
-	 * return Yii::$app->getResponse()->redirect($url)->send();
+	 * return Yii::$app->getResponse()->redirect($url);
 	 * ~~~
 	 *
 	 * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
