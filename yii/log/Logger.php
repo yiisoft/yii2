@@ -220,7 +220,7 @@ class Logger extends Component
 	 * Returns the total elapsed time since the start of the current request.
 	 * This method calculates the difference between now and the timestamp
 	 * defined by constant `YII_BEGIN_TIME` which is evaluated at the beginning
-	 * of [[YiiBase]] class file.
+	 * of [[AbstractYii]] class file.
 	 * @return float the total elapsed time in seconds for current request.
 	 */
 	public function getElapsedTime()
