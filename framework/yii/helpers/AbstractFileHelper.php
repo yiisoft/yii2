@@ -12,15 +12,15 @@ namespace yii\helpers;
 use Yii;
 
 /**
- * FileHelperBase provides concrete implementation for [[FileHelper]].
+ * AbstractFileHelper provides concrete implementation for [[FileHelper]].
  *
- * Do not use FileHelperBase. Use [[FileHelper]] instead.
+ * Do not use AbstractFileHelper. Use [[FileHelper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class FileHelperBase
+abstract class AbstractFileHelper
 {
 	/**
 	 * Normalizes a file/directory path.

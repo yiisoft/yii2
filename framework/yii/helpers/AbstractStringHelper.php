@@ -10,15 +10,15 @@ namespace yii\helpers;
 use yii\base\InvalidParamException;
 
 /**
- * StringHelperBase provides concrete implementation for [[StringHelper]].
+ * AbstractStringHelper provides concrete implementation for [[StringHelper]].
  *
- * Do not use StringHelperBase. Use [[StringHelper]] instead.
+ * Do not use AbstractStringHelper. Use [[StringHelper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class StringHelperBase
+abstract class AbstractStringHelper
 {
 	/**
 	 * Returns the number of bytes in the given string.

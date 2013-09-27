@@ -23,6 +23,6 @@ namespace yii\helpers;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class VarDumper extends VarDumperBase
+class VarDumper extends AbstractVarDumper
 {
 }

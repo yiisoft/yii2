@@ -8,14 +8,14 @@
 namespace yii\helpers;
 
 /**
- * ConsoleBase provides concrete implementation for [[Console]].
+ * AbstractConsole provides concrete implementation for [[Console]].
  *
- * Do not use ConsoleBase. Use [[Console]] instead.
+ * Do not use AbstractConsole. Use [[Console]] instead.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ConsoleBase
+abstract class AbstractConsole
 {
 	const FG_BLACK  = 30;
 	const FG_RED    = 31;
