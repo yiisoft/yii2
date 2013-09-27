@@ -20,7 +20,8 @@
 	},
 	"scripts": {
 		"post-create-project-cmd": [
-			"yii\\composer\\InstallHandler::setPermissions"
+			"yii\\composer\\InstallHandler::setPermissions",
+			"./init"
 		]
 	},
 	"extra": {
