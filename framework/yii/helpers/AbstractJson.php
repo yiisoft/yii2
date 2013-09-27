@@ -12,14 +12,14 @@ use yii\base\Arrayable;
 use yii\web\JsExpression;
 
 /**
- * JsonBase provides concrete implementation for [[Json]].
+ * AbstractJson provides concrete implementation for [[Json]].
  *
- * Do not use JsonBase. Use [[Json]] instead.
+ * Do not use AbstractJson. Use [[Json]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class JsonBase
+abstract class AbstractJson
 {
 	/**
 	 * Encodes the given value into a JSON string.

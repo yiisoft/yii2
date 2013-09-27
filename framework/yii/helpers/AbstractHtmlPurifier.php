@@ -7,14 +7,14 @@
 namespace yii\helpers;
 
 /**
- * HtmlPurifierBase provides concrete implementation for [[HtmlPurifier]].
+ * AbstractHtmlPurifier provides concrete implementation for [[HtmlPurifier]].
  *
- * Do not use HtmlPurifierBase. Use [[HtmlPurifier]] instead.
+ * Do not use AbstractHtmlPurifier. Use [[HtmlPurifier]] instead.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class HtmlPurifierBase
+abstract class AbstractHtmlPurifier
 {
 	/**
 	 * Passes markup through HTMLPurifier making it safe to output to end user
