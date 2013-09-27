@@ -24,6 +24,6 @@ namespace yii\helpers;
  * @author Tom Worster <fsb@thefsb.org>
  * @since 2.0
  */
-class Security extends SecurityBase
+class Security extends AbstractSecurity
 {
 }

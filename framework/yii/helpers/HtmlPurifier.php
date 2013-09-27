@@ -32,6 +32,6 @@ namespace yii\helpers;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class HtmlPurifier extends HtmlPurifierBase
+class HtmlPurifier extends AbstractHtmlPurifier
 {
 }

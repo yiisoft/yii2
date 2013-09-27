@@ -14,6 +14,6 @@ namespace yii\helpers;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ArrayHelper extends ArrayHelperBase
+class ArrayHelper extends AbstractArrayHelper
 {
 }

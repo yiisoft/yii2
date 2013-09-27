@@ -9,14 +9,14 @@
 namespace yii\helpers;
 
 /**
- * VarDumperBase provides concrete implementation for [[VarDumper]].
+ * AbstractVarDumper provides concrete implementation for [[VarDumper]].
  *
- * Do not use VarDumperBase. Use [[VarDumper]] instead.
+ * Do not use AbstractVarDumper. Use [[VarDumper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class VarDumperBase
+abstract class AbstractVarDumper
 {
 	private static $_objects;
 	private static $_output;
