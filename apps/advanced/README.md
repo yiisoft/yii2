@@ -107,6 +107,7 @@ the installed application. You only need to do these once for all.
 or `init --env=Production`.
 2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
 3. In `common/config/params.php` set your database details in `components.db` values.
+4. Apply migrations with `yii migrate`.
 
 Now you should be able to access:
 
