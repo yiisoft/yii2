@@ -43,6 +43,8 @@ return array(
 		'mandatory' => false,
 		'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2', '>='),
 		'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
-		'memo' => 'PHP Intl extension 1.0.2 or higher is required when you want to use <abbr title="Internationalized domain names">IDN</abbr>-feature of EmailValidator or UrlValidator or the <code>yii\i18n\Formatter</code> class.'
+		'memo' => 'PHP Intl extension 1.0.2 or higher is required when you want to use advanced parameters formatting
+		in <code>\Yii::t()</code>, <abbr title="Internationalized domain names">IDN</abbr>-feature of
+		<code>EmailValidator</code> or <code>UrlValidator</code> or the <code>yii\i18n\Formatter</code> class.'
 	),
 );
