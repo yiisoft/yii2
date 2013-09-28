@@ -517,12 +517,15 @@ class Generator extends \yii\gii\Generator
 		}
 
 		$className = $tableName;
+		$className2 = '';
 		foreach ($patterns as $pattern) {
 			if (preg_match($pattern, $tableName, $matches)) {
-				$className = $matches[1];
+				$className2 .= $matches[1];
 			}
 		}
-		return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
+		if ($className2 === '')
+			$className2 = $className;
+		return $this->_classNames[$tableName] = Inflector::id2camel($className2, '_');
 	}
 
 	/**
