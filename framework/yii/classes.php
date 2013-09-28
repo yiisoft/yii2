@@ -235,7 +235,7 @@ return array(
 	'yii\widgets\LinkPager' => YII_PATH . '/widgets/LinkPager.php',
 	'yii\widgets\LinkSorter' => YII_PATH . '/widgets/LinkSorter.php',
 	'yii\widgets\ListView' => YII_PATH . '/widgets/ListView.php',
-	'yii\widgets\ListViewBase' => YII_PATH . '/widgets/ListViewBase.php',
+	'yii\widgets\BaseListView' => YII_PATH . '/widgets/BaseListView.php',
 	'yii\widgets\MaskedInput' => YII_PATH . '/widgets/MaskedInput.php',
 	'yii\widgets\MaskedInputAsset' => YII_PATH . '/widgets/MaskedInputAsset.php',
 	'yii\widgets\Menu' => YII_PATH . '/widgets/Menu.php',
