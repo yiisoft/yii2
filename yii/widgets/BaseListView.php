@@ -17,7 +17,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ListViewBase extends Widget
+abstract class BaseListView extends Widget
 {
 	/**
 	 * @var array the HTML attributes for the container tag of the list view.

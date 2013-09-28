@@ -14,13 +14,13 @@ use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
-use yii\widgets\ListViewBase;
+use yii\widgets\BaseListView;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class GridView extends ListViewBase
+class GridView extends BaseListView
 {
 	const FILTER_POS_HEADER = 'header';
 	const FILTER_POS_FOOTER = 'footer';
