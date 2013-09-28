@@ -14,6 +14,6 @@ namespace yii\helpers;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Json extends JsonBase
+class Json extends BaseJson
 {
 }

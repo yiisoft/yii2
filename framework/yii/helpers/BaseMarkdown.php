@@ -10,14 +10,14 @@ namespace yii\helpers;
 use Michelf\MarkdownExtra;
 
 /**
- * MarkdownBase provides concrete implementation for [[Markdown]].
+ * BaseMarkdown provides concrete implementation for [[Markdown]].
  *
- * Do not use MarkdownBase. Use [[Markdown]] instead.
+ * Do not use BaseMarkdown. Use [[Markdown]] instead.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class MarkdownBase
+class BaseMarkdown
 {
 	/**
 	 * @var MarkdownExtra

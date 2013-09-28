@@ -14,6 +14,6 @@ namespace yii\helpers;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Console extends ConsoleBase
+class Console extends BaseConsole
 {
 }

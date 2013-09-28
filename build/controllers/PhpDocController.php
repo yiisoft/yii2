@@ -56,7 +56,7 @@ class PhpDocController extends Controller
 			},
 			'only' => array('.php'),
 			'except' => array(
-				'YiiBase.php',
+				'BaseYii.php',
 				'Yii.php',
 				'/debug/views/',
 				'/requirements/',
