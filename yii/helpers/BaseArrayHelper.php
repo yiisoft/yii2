@@ -12,14 +12,14 @@ use yii\base\Arrayable;
 use yii\base\InvalidParamException;
 
 /**
- * AbstractArrayHelper provides concrete implementation for [[ArrayHelper]].
+ * BaseArrayHelper provides concrete implementation for [[ArrayHelper]].
  *
- * Do not use AbstractArrayHelper. Use [[ArrayHelper]] instead.
+ * Do not use BaseArrayHelper. Use [[ArrayHelper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class AbstractArrayHelper
+class BaseArrayHelper
 {
 	/**
 	 * Converts an object or an array of objects into an array.
