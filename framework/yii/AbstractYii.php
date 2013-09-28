@@ -49,15 +49,15 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 
 
 /**
- * YiiBase is the core helper class for the Yii framework.
+ * AbstractYii is the core helper class for the Yii framework.
  *
- * Do not use YiiBase directly. Instead, use its child class [[Yii]] where
- * you can customize methods of YiiBase.
+ * Do not use AbstractYii directly. Instead, use its child class [[Yii]] where
+ * you can customize methods of AbstractYii.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class YiiBase
+abstract class AbstractYii
 {
 	/**
 	 * @var array class map used by the Yii autoloading mechanism.

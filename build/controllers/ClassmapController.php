@@ -45,7 +45,7 @@ class ClassmapController extends Controller
 			'only' => array('.php'),
 			'except' => array(
 				'Yii.php',
-				'YiiBase.php',
+				'AbstractYii.php',
 				'/debug/',
 				'/console/',
 				'/test/',
