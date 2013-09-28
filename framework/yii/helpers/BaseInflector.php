@@ -10,14 +10,14 @@ namespace yii\helpers;
 use Yii;
 
 /**
- * AbstractInflector provides concrete implementation for [[Inflector]].
+ * BaseInflector provides concrete implementation for [[Inflector]].
  *
- * Do not use AbstractInflector. Use [[Inflector]] instead.
+ * Do not use BaseInflector. Use [[Inflector]] instead.
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
-abstract class AbstractInflector
+class BaseInflector
 {
 	/**
 	 * @var array the rules for converting a word into its plural form.

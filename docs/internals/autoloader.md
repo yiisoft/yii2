@@ -16,4 +16,4 @@ PEAR-style libraries
 References
 ----------
 
-- AbstractYii::autoload
+- BaseYii::autoload

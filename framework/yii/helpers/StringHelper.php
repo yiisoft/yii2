@@ -14,6 +14,6 @@ namespace yii\helpers;
  * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class StringHelper extends AbstractStringHelper
+class StringHelper extends BaseStringHelper
 {
 }

@@ -13,15 +13,15 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
- * AbstractSecurity provides concrete implementation for [[Security]].
+ * BaseSecurity provides concrete implementation for [[Security]].
  *
- * Do not use AbstractSecurity. Use [[Security]] instead.
+ * Do not use BaseSecurity. Use [[Security]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
  * @since 2.0
  */
-abstract class AbstractSecurity
+class BaseSecurity
 {
 	/**
 	 * Encrypts data.
