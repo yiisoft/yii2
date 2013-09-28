@@ -14,8 +14,6 @@ namespace yii\i18n;
  * - Issues no error when an insufficient number of arguments have been provided. Instead, the placeholders will not be
  *   substituted.
  *
- * @see http://php.net/manual/en/migration55.changed-functions.php
- *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
@@ -30,9 +28,12 @@ class MessageFormatter extends \MessageFormatter
 	 */
 	public function format($args)
 	{
-		$pattern = self::replaceNamedArguments($this->getPattern(), $args);
-		$this->setPattern($pattern);
-		return parent::format(array_values($args));
+		if (self::needFix()) {
+			$pattern = self::replaceNamedArguments($this->getPattern(), $args);
+			$this->setPattern($pattern);
+			$args = array_values($args);
+		}
+		return parent::format($args);
 	}
 
 	/**
@@ -46,8 +47,11 @@ class MessageFormatter extends \MessageFormatter
 	 */
 	public static function formatMessage($locale, $pattern, $args)
 	{
-		$pattern = self::replaceNamedArguments($pattern, $args);
-		return parent::formatMessage($locale, $pattern, array_values($args));
+		if (self::needFix()) {
+			$pattern = self::replaceNamedArguments($pattern, $args);
+			$args = array_values($args);
+		}
+		return parent::formatMessage($locale, $pattern, $args);
 	}
 
 	/**
@@ -66,9 +70,25 @@ class MessageFormatter extends \MessageFormatter
 				return $input[1] . $map[$name] . $input[3];
 			}
 			else {
+				//return $input[1] . $name . $input[3];
 				return "'" . $input[1] . $name . $input[3] . "'";
 			}
 		}, $pattern);
+	}
+
+	/**
+	 * Checks if fix should be applied
+	 *
+	 * @see http://php.net/manual/en/migration55.changed-functions.php
+	 * @return boolean if fix should be applied
+	 */
+	private static function needFix()
+	{
+		return (
+			!defined('INTL_ICU_VERSION') ||
+			version_compare(INTL_ICU_VERSION, '48.0.0', '<') ||
+			version_compare(PHP_VERSION, '5.5.0', '<')
+		);
 	}
 }
  

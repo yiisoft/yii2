@@ -32,6 +32,39 @@ class MessageFormatterTest extends TestCase
 		));
 
 		$this->assertEquals($expected, $result);
+
+		$pattern = <<<_MSG_
+{gender_of_host, select,
+  female {{num_guests, plural, offset:1
+	  =0 {{host} does not give a party.}
+	  =1 {{host} invites {guest} to her party.}
+	  =2 {{host} invites {guest} and one other person to her party.}
+	 other {{host} invites {guest} and # other people to her party.}}}
+  male {{num_guests, plural, offset:1
+	  =0 {{host} does not give a party.}
+	  =1 {{host} invites {guest} to his party.}
+	  =2 {{host} invites {guest} and one other person to his party.}
+	 other {{host} invites {guest} and # other people to his party.}}}
+  other {{num_guests, plural, offset:1
+	  =0 {{host} does not give a party.}
+	  =1 {{host} invites {guest} to their party.}
+	  =2 {{host} invites {guest} and one other person to their party.}
+	  other {{host} invites {guest} and # other people to their party.}}}}
+_MSG_;
+		$result = MessageFormatter::formatMessage('en_US', $pattern, array(
+			'gender_of_host' => 'male',
+			'num_guests' => 4,
+			'host' => 'ralph',
+			'guest' => 'beep'
+		));
+		$this->assertEquals('ralph invites beep and 3 other people to his party.', $result);
+
+		$pattern = '{name} is {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!';
+		$result = MessageFormatter::formatMessage('en_US', $pattern, array(
+			'name' => 'Alexander',
+			'gender' => 'male',
+		));
+		$this->assertEquals('Alexander is male and he loves Yii!', $result);
 	}
 
 	public function testInsufficientArguments()
