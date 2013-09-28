@@ -13,14 +13,14 @@ use yii\web\Request;
 use yii\base\Model;
 
 /**
- * HtmlBase provides concrete implementation for [[Html]].
+ * BaseHtml provides concrete implementation for [[Html]].
  *
- * Do not use HtmlBase. Use [[Html]] instead.
+ * Do not use BaseHtml. Use [[Html]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HtmlBase
+class BaseHtml
 {
 	/**
 	 * @var array list of void elements (element name => 1)
