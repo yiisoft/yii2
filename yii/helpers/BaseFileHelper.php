@@ -177,7 +177,7 @@ class BaseFileHelper
 			$from = $src . DIRECTORY_SEPARATOR . $file;
 			$to = $dst . DIRECTORY_SEPARATOR . $file;
 			if (static::filterPath($from, $options)) {
-				if (!isset($options['beforeCopy']) || !call_user_func($options['beforeCopy'], $from, $to)) {
+				if (isset($options['beforeCopy']) && !call_user_func($options['beforeCopy'], $from, $to)) {
 					continue;
 				}
 				if (is_file($from)) {
