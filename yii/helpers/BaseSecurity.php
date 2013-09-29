@@ -104,10 +104,10 @@ class BaseSecurity
 	*/
 	protected static function stripPadding($data)
 	{
-		$end = StringHelper::substr($data, -1);
+		$end = StringHelper::substr($data, -1, NULL);
 		$last = ord($end);
 		$n = StringHelper::strlen($data) - $last;
-		if (StringHelper::substr($data, $n) == str_repeat($end, $last)) {
+		if (StringHelper::substr($data, $n, NULL) == str_repeat($end, $last)) {
 			return StringHelper::substr($data, 0, $n);
 		}
 		return false;
