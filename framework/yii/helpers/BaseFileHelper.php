@@ -309,6 +309,26 @@ class BaseFileHelper
 	}
 
 	/**
+	 * Create a new file
+	 * If necessary recursive crete directory
+	 *
+	 * @param $path path of the file to be created
+	 * @param int $mode the permission to be set for the created file
+	 * @return bool whether the file is created successfully
+	 */
+	public static function createFile($path, $mode = 0644)
+	{
+		if (file_exists($path)) return true;
+		$dirname = dirname($path);
+		if (!file_exists($dirname))
+			static::createDirectory($dirname);
+		$fp = fopen($path, 'w');
+		fclose($fp);
+		chmod($path, $mode);
+		return true;
+	}
+
+	/**
 	 * Creates a new directory.
 	 *
 	 * This method is similar to the PHP `mkdir()` function except that
