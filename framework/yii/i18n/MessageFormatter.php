@@ -57,7 +57,7 @@ class MessageFormatter extends \MessageFormatter
 	/**
 	 * Replace named placeholders with numeric placeholders.
 	 *
-	 * @param string $pattern The pattern string to relace things into.
+	 * @param string $pattern The pattern string to replace things into.
 	 * @param array $args The array of values to insert into the format string.
 	 * @return string The pattern string with placeholders replaced.
 	 */
