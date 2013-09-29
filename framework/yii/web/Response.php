@@ -559,7 +559,20 @@ class Response extends \yii\base\Response
 	/**
 	 * Redirects the browser to the specified URL.
 	 *
-	 * This method will send out a "Location" header to achieve the redirection.
+	 * This method adds a "Location" header to the current response. Note that it does not send out
+	 * the header until [[send()]] is called. In a controller action you may use this method as follows:
+	 *
+	 * ~~~
+	 * return Yii::$app->getResponse()->redirect($url);
+	 * ~~~
+	 *
+	 * In other places, if you want to send out the "Location" header immediately, you should use
+	 * the following code:
+	 *
+	 * ~~~
+	 * Yii::$app->getResponse()->redirect($url)->send();
+	 * return;
+	 * ~~~
 	 *
 	 * In AJAX mode, this normally will not work as expected unless there are some
 	 * client-side JavaScript code handling the redirection. To help achieve this goal,
@@ -576,12 +589,6 @@ class Response extends \yii\base\Response
 	 *         window.location = url;
 	 *     }
 	 * });
-	 * ~~~
-	 *
-	 * In a controller action you may use this method like this:
-	 *
-	 * ~~~
-	 * return Yii::$app->getResponse()->redirect($url);
 	 * ~~~
 	 *
 	 * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
