@@ -156,8 +156,7 @@ class BaseFileHelper
 	 *   both '/' and '\' in the paths.
 	 * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
 	 * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
-	 *   This option is used only when publishing a directory. If the callback returns false, the copy
-	 *   operation for the sub-directory or file will be cancelled.
+	 *   If the callback returns false, the copy operation for the sub-directory or file will be cancelled.
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
 	 *   file to be copied from, while `$to` is the copy target.
 	 * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
@@ -178,8 +177,8 @@ class BaseFileHelper
 			$from = $src . DIRECTORY_SEPARATOR . $file;
 			$to = $dst . DIRECTORY_SEPARATOR . $file;
 			if (static::filterPath($from, $options)) {
-				if (isset($options['beforeCopy'])) {
-					call_user_func($options['beforeCopy'], $from, $to);
+				if (!isset($options['beforeCopy']) || !call_user_func($options['beforeCopy'], $from, $to)) {
+					continue;
 				}
 				if (is_file($from)) {
 					copy($from, $to);
