@@ -117,7 +117,6 @@ class BaseSecurity
 	* Derives a key from the given password (PBKDF2).
 	* @param string $password the source password
 	* @param string $salt the random salt
-	* @param int $iterations the number of iterations
 	* @return string the derived key
 	*/
 	protected static function deriveKey($password, $salt)
