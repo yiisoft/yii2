@@ -60,7 +60,8 @@ is a summary of the available cache components:
   the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
   balancers, etc.)
 
-* [[\yii\caching\RedisCache]]: implements a cache component based on [Redis](http://redis.io/) NoSQL database.
+* [[\yii\caching\RedisCache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
+  (redis version 2.6 or higher is required).
 
 * [[\yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([see also](http://php.net/manual/en/book.wincache.php)) extension.
