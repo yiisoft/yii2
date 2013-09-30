@@ -29,5 +29,8 @@ return array(
 			'password' => 'postgres',
 			'fixture' => __DIR__ . '/postgres.sql',
 		),
+		'elasticsearch' => array(
+			'dsn' => 'elasticsearch://localhost:9200'
+		),
 	),
 );

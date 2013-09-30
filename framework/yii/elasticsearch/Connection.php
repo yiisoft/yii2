@@ -5,13 +5,15 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\elasticsearch;
+namespace yii\elasticsearch;
 
 
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 
 /**
+ * elasticsearch Connection is used to connect to an elasticsearch cluster version 0.20 or higher
+ *
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -24,7 +26,13 @@ class Connection extends Component
 	const EVENT_AFTER_OPEN = 'afterOpen';
 
 	// TODO add autodetection of cluster nodes
-	public $nodes = array();
+	// http://localhost:9200/_cluster/nodes
+	public $nodes = array(
+		array(
+			'host' => 'localhost',
+			'port' => 9200,
+		)
+	);
 
 	// TODO use timeouts
 	/**
@@ -71,6 +79,11 @@ class Connection extends Component
 	 */
 	public function open()
 	{
+		foreach($this->nodes as $key => $node) {
+			if (is_array($node)) {
+				$this->nodes[$key] = new Node($node);
+			}
+		}
 /*		if ($this->_socket === null) {
 			if (empty($this->dsn)) {
 				throw new InvalidConfigException('Connection.dsn cannot be empty.');
@@ -140,5 +153,34 @@ class Connection extends Component
 	public function getDriverName()
 	{
 		return 'elasticsearch';
+	}
+
+	public function getNodeInfo()
+	{
+		// TODO HTTP request to localhost:9200/
+	}
+
+	public function http()
+	{
+		return new \Guzzle\Http\Client('http://localhost:9200/');
+	}
+
+	public function get($url)
+	{
+		$c = $this->initCurl($url);
+
+		$result = curl_exec($c);
+		curl_close($c);
+	}
+
+	private function initCurl($url)
+	{
+		$c = curl_init('http://localhost:9200/' . $url);
+		$fp = fopen("example_homepage.txt", "w");
+
+		curl_setopt($c, CURLOPT_FOLLOWLOCATION, false);
+
+		curl_setopt($c, CURLOPT_FILE, $fp);
+		curl_setopt($c, CURLOPT_HEADER, 0);
 	}
 }

@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\elasticsearch;
+namespace yii\elasticsearch;
 
 
 use yii\base\Object;

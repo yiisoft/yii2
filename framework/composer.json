@@ -74,6 +74,7 @@
 		"psr-0": { "yii\\": "/" }
 	},
 	"suggest": {
+		"guzzle/http": "Required by elasticsearch.",
 		"michelf/php-markdown": "Required by Markdown.",
 		"twig/twig": "Required by TwigViewRenderer.",
 		"smarty/smarty": "Required by SmartyViewRenderer."
