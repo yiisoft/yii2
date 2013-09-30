@@ -97,6 +97,10 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals('user2', $customer->name);
 		$customer = Customer::find(5);
 		$this->assertNull($customer);
+		$customer = Customer::find(array('id' => array(5, 6, 1)));
+		$this->assertEquals(1, count($customer));
+		$customer = Customer::find()->where(array('id' => array(5, 6, 1)))->one();
+		$this->assertNotNull($customer);
 
 		// query scalar
 		$customerName = Customer::find()->where(array('id' => 2))->scalar('name');
