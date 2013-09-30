@@ -6,6 +6,8 @@ use yii\console\controllers\AssetController;
 /**
  * Unit test for [[\yii\console\controllers\AssetController]].
  * @see AssetController
+ *
+ * @group console
  */
 class AssetControllerTest extends TestCase
 {

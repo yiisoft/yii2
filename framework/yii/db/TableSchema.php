@@ -21,12 +21,6 @@ use yii\base\InvalidParamException;
 class TableSchema extends Object
 {
 	/**
-	 * @var string name of the catalog (database) that this table belongs to.
-	 * Defaults to null, meaning no catalog (or the current database).
-	 * This property is only meaningful for MSSQL.
-	 */
-	public $catalogName;
-	/**
 	 * @var string name of the schema that this table belongs to.
 	 */
 	public $schemaName;

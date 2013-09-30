@@ -5,6 +5,9 @@ use yii\web\Request;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
 
+/**
+ * @group web
+ */
 class UrlManagerTest extends TestCase
 {
 	protected function setUp()

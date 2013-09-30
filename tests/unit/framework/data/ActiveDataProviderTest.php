@@ -16,6 +16,8 @@ use yiiunit\data\ar\Order;
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @group data
  */
 class ActiveDataProviderTest extends DatabaseTestCase
 {
@@ -78,6 +80,23 @@ class ActiveDataProviderTest extends DatabaseTestCase
 		));
 		$this->assertEquals(3, count($provider->getModels()));
 
+		$provider->getPagination()->pageSize = 2;
+		$this->assertEquals(3, count($provider->getModels()));
+		$provider->refresh();
+		$this->assertEquals(2, count($provider->getModels()));
+	}
+	
+	public function testPaginationBeforeModels() 
+	{
+		$query = new Query;
+		$provider = new ActiveDataProvider(array(
+			'db' => $this->getConnection(),
+			'query' => $query->from('tbl_order')->orderBy('id'),
+		));
+		$pagination = $provider->getPagination();
+		$this->assertEquals(1, $pagination->getPageCount());
+		$this->assertCount(3, $provider->getModels());
+		
 		$provider->getPagination()->pageSize = 2;
 		$this->assertEquals(3, count($provider->getModels()));
 		$provider->refresh();

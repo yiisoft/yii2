@@ -5,14 +5,24 @@ php:
   - 5.4
   - 5.5
 
+env:
+  - CUBRID_VERSION=9.1.0
+
+services:
+  - redis-server
+  - memcached
+
 before_script:
   - composer self-update && composer --version
   - composer require satooshi/php-coveralls 0.6.*
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
+  - tests/unit/data/travis/apc-setup.sh
+  - tests/unit/data/travis/memcache-setup.sh
+  - tests/unit/data/travis/cubrid-setup.sh
 
 script:
-  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml
+  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata
 
 after_script:
   - php vendor/bin/coveralls

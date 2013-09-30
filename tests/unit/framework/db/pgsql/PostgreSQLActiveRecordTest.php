@@ -4,11 +4,11 @@ namespace yiiunit\framework\db\pgsql;
 
 use yiiunit\framework\db\ActiveRecordTest;
 
+/**
+ * @group db
+ * @group pgsql
+ */
 class PostgreSQLActiveRecordTest extends ActiveRecordTest
 {
-	protected function setUp()
-	{
-		$this->driverName = 'pgsql';
-		parent::setUp();
-	}
+	protected $driverName = 'pgsql';
 }

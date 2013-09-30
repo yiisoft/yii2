@@ -12,11 +12,37 @@ use yii\helpers\Security;
 
 class SiteController extends Controller
 {
+	public function behaviors()
+	{
+		return array(
+			'access' => array(
+				'class' => \yii\web\AccessControl::className(),
+				'only' => array('login', 'logout', 'signup'),
+				'rules' => array(
+					array(
+						'actions' => array('login', 'signup'),
+						'allow' => true,
+						'roles' => array('?'),
+					),
+					array(
+						'actions' => array('logout'),
+						'allow' => true,
+						'roles' => array('@'),
+					),
+				),
+			),
+		);
+	}
+
 	public function actions()
 	{
 		return array(
+			'error' => array(
+				'class' => 'yii\web\ErrorAction',
+			),
 			'captcha' => array(
 				'class' => 'yii\captcha\CaptchaAction',
+				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
 			),
 		);
 	}
@@ -138,7 +164,7 @@ class SiteController extends Controller
 			$headers = "From: $name <{$fromEmail}>\r\n" .
 				"MIME-Version: 1.0\r\n" .
 				"Content-type: text/plain; charset=UTF-8";
-			return mail($fromEmail, $subject, $body, $headers);
+			return mail($email, $subject, $body, $headers);
 		}
 
 		return false;

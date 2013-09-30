@@ -325,6 +325,28 @@ abstract class Generator extends Model
 	}
 
 	/**
+	 * An inline validator that checks if the attribute value refers to a valid namespaced class name.
+	 * The validator will check if the directory containing the new class file exist or not.
+	 * @param string $attribute the attribute being validated
+	 * @param array $params the validation options
+	 */
+	public function validateNewClass($attribute, $params)
+	{
+		$class = ltrim($this->$attribute, '\\');
+		if (($pos = strrpos($class, '\\')) === false) {
+			$this->addError($attribute, "The class name must contain fully qualified namespace name.");
+		} else {
+			$ns = substr($class, 0, $pos);
+			$path = Yii::getAlias('@' . str_replace('\\', '/', $ns), false);
+			if ($path === false) {
+				$this->addError($attribute, "The class namespace is invalid: $ns");
+			} elseif (!is_dir($path)) {
+				$this->addError($attribute, "Please make sure the directory containing this class exists: $path");
+			}
+		}
+	}
+
+	/**
 	 * @param string $value the attribute to be validated
 	 * @return boolean whether the value is a reserved PHP keyword.
 	 */

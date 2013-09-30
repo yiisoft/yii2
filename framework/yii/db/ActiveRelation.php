@@ -279,7 +279,9 @@ class ActiveRelation extends ActiveQuery
 			// single key
 			$attribute = reset($this->link);
 			foreach ($models as $model) {
-				$values[] = $model[$attribute];
+				if (($value = $model[$attribute]) !== null) {
+					$values[] = $value;
+				}
 			}
 		} else {
 			// composite keys

@@ -1,6 +1,12 @@
 <?php
 return array(
 	'databases' => array(
+		'cubrid' => array(
+			'dsn' => 'cubrid:dbname=demodb;host=localhost;port=33000',
+			'username' => 'dba',
+			'password' => '',
+			'fixture' => __DIR__ . '/cubrid.sql',
+		),
 		'mysql' => array(
 			'dsn' => 'mysql:host=127.0.0.1;dbname=yiitest',
 			'username' => 'travis',

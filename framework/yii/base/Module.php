@@ -338,10 +338,9 @@ abstract class Module extends Component
 
 	/**
 	 * Retrieves the named module.
-	 * @param string $id module ID (case-sensitive)
+	 * @param string $id module ID (case-sensitive).
 	 * @param boolean $load whether to load the module if it is not yet loaded.
-	 * @return Module|null the module instance, null if the module
-	 * does not exist.
+	 * @return Module|null the module instance, null if the module does not exist.
 	 * @see hasModule()
 	 */
 	public function getModule($id, $load = true)
@@ -618,7 +617,7 @@ abstract class Module extends Component
 		if (isset($this->controllerMap[$id])) {
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
 		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
-			$className = str_replace(' ', '', ucwords(implode(' ', explode('-', $id)))) . 'Controller';
+			$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $id))) . 'Controller';
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
 			if (!is_file($classFile)) {
 				return false;

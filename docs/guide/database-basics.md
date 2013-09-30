@@ -2,8 +2,14 @@ Database basics
 ===============
 
 Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/ref.pdo.php). It provides
-uniform API and solves some inconsistencies between different DBMS. By default Yii supports MySQL, SQLite, PostgreSQL,
-Oracle and MSSQL.
+uniform API and solves some inconsistencies between different DBMS. By default Yii supports the following DBMS:
+
+- [MySQL](http://www.mysql.com/)
+- [SQLite](http://sqlite.org/)
+- [PostgreSQL](http://www.postgresql.org/)
+- [CUBRID](http://www.cubrid.org/) (version 9.1.0 and higher).
+- Oracle
+- MSSQL
 
 
 Configuration
@@ -22,6 +28,7 @@ return array(
 			'dsn' => 'mysql:host=localhost;dbname=mydatabase', // MySQL, MariaDB
 			//'dsn' => 'sqlite:/path/to/database/file', // SQLite
 			//'dsn' => 'pgsql:host=localhost;port=5432;dbname=mydatabase', // PostgreSQL
+			//'dsn' => 'cubrid:dbname=demodb;host=localhost;port=33000', // CUBRID
 			//'dsn' => 'sqlsrv:Server=localhost;Database=mydatabase', // MS SQL Server, sqlsrv driver
 			//'dsn' => 'dblib:host=localhost;dbname=mydatabase', // MS SQL Server, dblib driver
 			//'dsn' => 'mssql:host=localhost;dbname=mydatabase', // MS SQL Server, mssql driver
@@ -34,8 +41,10 @@ return array(
 	// ...
 );
 ```
+Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
+on the format of the DSN string.
 
-After the component is configured you can access it using the following syntax:
+After the connection component is configured you can access it using the following syntax:
 
 ```php
 $connection = \Yii::$app->db;
@@ -79,7 +88,7 @@ When only a single row is returned:
 
 ```php
 $command = $connection->createCommand('SELECT * FROM tbl_post WHERE id=1');
-$post = $command->query();
+$post = $command->queryOne();
 ```
 
 When there are multiple values from the same column:

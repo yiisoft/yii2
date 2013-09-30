@@ -23,6 +23,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public $typeMap = array(
 		Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
 		Schema::TYPE_STRING => 'varchar(255)',
 		Schema::TYPE_TEXT => 'text',
 		Schema::TYPE_SMALLINT => 'smallint(6)',
@@ -152,7 +153,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * ))->execute();
 	 * ~~~
 	 *
-	 * Not that the values in each row must match the corresponding column names.
+	 * Note that the values in each row must match the corresponding column names.
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column names

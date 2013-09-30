@@ -93,6 +93,8 @@ class ErrorHandler extends Component
 		$response->getHeaders()->removeAll();
 
 		if ($useErrorView && $this->errorAction !== null) {
+			// disable CSRF validation so that errorAction can run in case the error is caused by CSRF validation failure
+			Yii::$app->getRequest()->enableCsrfValidation = false;
 			$result = Yii::$app->runAction($this->errorAction);
 			if ($result instanceof Response) {
 				$response = $result;

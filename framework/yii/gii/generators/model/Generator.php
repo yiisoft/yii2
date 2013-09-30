@@ -93,8 +93,11 @@ class Generator extends \yii\gii\Generator
 			'db' => 'This is the ID of the DB application component.',
 			'tableName' => 'This is the name of the DB table that the new ActiveRecord class is associated with, e.g. <code>tbl_post</code>.
 				The table name may consist of the DB schema part if needed, e.g. <code>public.tbl_post</code>.
-				The table name may contain an asterisk at the end to match multiple table names, e.g. <code>tbl_*</code>.
-				In this case, multiple ActiveRecord classes will be generated, one for each matching table name.',
+				The table name may contain an asterisk to match multiple table names, e.g. <code>tbl_*</code>
+				will match tables who name starts with <code>tbl_</code>. In this case, multiple ActiveRecord classes
+				will be generated, one for each matching table name; and the class names will be generated from
+				the matching characters. For example, table <code>tbl_post</code> will generate <code>Post</code>
+				class.',
 			'modelClass' => 'This is the name of the ActiveRecord class to be generated. The class name should not contain
 				the namespace part as it is specified in "Namespace". You do not need to specify the class name
 				if "Table Name" contains an asterisk at the end, in which case multiple ActiveRecord classes will be generated.',

@@ -246,14 +246,14 @@ class Command extends \yii\base\Component
 	}
 
 	/**
-	 * Determines the PDO type for the give PHP data value.
+	 * Determines the PDO type for the given PHP data value.
 	 * @param mixed $data the data whose PDO type is to be determined
 	 * @return integer the PDO type
 	 * @see http://www.php.net/manual/en/pdo.constants.php
 	 */
 	private function getPdoType($data)
 	{
-		static $typeMap = array(
+		static $typeMap = array( // php type => PDO type
 			'boolean' => \PDO::PARAM_BOOL,
 			'integer' => \PDO::PARAM_INT,
 			'string' => \PDO::PARAM_STR,
@@ -472,7 +472,7 @@ class Command extends \yii\base\Component
 	 * ))->execute();
 	 * ~~~
 	 *
-	 * Not that the values in each row must match the corresponding column names.
+	 * Note that the values in each row must match the corresponding column names.
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column names

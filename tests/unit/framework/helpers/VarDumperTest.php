@@ -4,6 +4,9 @@ namespace yiiunit\framework\helpers;
 use \yii\helpers\VarDumper;
 use yii\test\TestCase;
 
+/**
+ * @group helpers
+ */
 class VarDumperTest extends TestCase
 {
 	public function testDumpObject()

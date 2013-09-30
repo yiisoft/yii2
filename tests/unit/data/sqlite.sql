@@ -3,6 +3,7 @@
  * The database setup in config.php is required to perform then relevant tests:
  */
 
+DROP TABLE IF EXISTS tbl_composite_fk;
 DROP TABLE IF EXISTS tbl_order_item;
 DROP TABLE IF EXISTS tbl_item;
 DROP TABLE IF EXISTS tbl_order;
@@ -46,6 +47,14 @@ CREATE TABLE tbl_order_item (
   quantity INTEGER NOT NULL,
   subtotal decimal(10,0) NOT NULL,
   PRIMARY KEY (order_id, item_id)
+);
+
+CREATE TABLE `tbl_composite_fk` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `tbl_order_item` (`order_id`,`item_id`) ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_type (

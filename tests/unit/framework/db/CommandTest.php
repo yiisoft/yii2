@@ -7,14 +7,12 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class CommandTest extends DatabaseTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->mockApplication();
-	}
-
 	public function testConstruct()
 	{
 		$db = $this->getConnection(false);
@@ -220,6 +218,29 @@ class CommandTest extends DatabaseTestCase
 		$result = $command->queryOne(array(), \PDO::FETCH_NUM);
 		$this->assertTrue(is_array($result) && isset($result[0]));
 	}
+
+	// getPDOType is currently private
+//	public function testGetPDOType()
+//	{
+//		$values = array(
+//			array(null, \PDO::PARAM_NULL),
+//			array('', \PDO::PARAM_STR),
+//			array('hello', \PDO::PARAM_STR),
+//			array(0, \PDO::PARAM_INT),
+//			array(1, \PDO::PARAM_INT),
+//			array(1337, \PDO::PARAM_INT),
+//			array(true, \PDO::PARAM_BOOL),
+//			array(false, \PDO::PARAM_BOOL),
+//			array($fp=fopen(__FILE__, 'rb'), \PDO::PARAM_LOB),
+//		);
+//
+//		$command = $this->getConnection()->createCommand();
+//
+//		foreach($values as $value) {
+//			$this->assertEquals($value[1], $command->getPdoType($value[0]));
+//		}
+//		fclose($fp);
+//	}
 
 	public function testInsert()
 	{

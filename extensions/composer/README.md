@@ -17,11 +17,11 @@ This is the yii2 composer installer.
 Installation
 ------------
 
-This extension offers you enhanced composer handling for your yii2-project. It will therefor require you to use composer.
+This extension offers you enhanced Composer handling for your yii2-project. It will therefore require you to use Composer.
 
-`
+```
 php composer.phar require yiisoft/yii2-composer "*"
-`
+```
 
 *Note: You might have to run `php composer.phar selfupdate` before using this extension.*
 
@@ -29,9 +29,9 @@ php composer.phar require yiisoft/yii2-composer "*"
 Usage & Documentation
 ---------------------
 
-This extensions allows you to hook to certain composer events and prepare your yii2-app for usage.
+This extension allows you to hook to certain composer events and automate preparing your Yii2 application for further usage.
 
-After the package is installed, the composer.json file has to be modified to enable this extension.
+After the package is installed, the `composer.json` file has to be modified to enable this extension.
 
 To see it in action take a look at the example apps in the repository:
 

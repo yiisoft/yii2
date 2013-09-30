@@ -708,6 +708,13 @@ class View extends Component
 		if (!empty($this->metaTags)) {
 			$lines[] = implode("\n", $this->metaTags);
 		}
+
+		$request = Yii::$app->getRequest();
+		if ($request instanceof \yii\web\Request && $request->enableCsrfValidation) {
+			$lines[] = Html::tag('meta', '', array('name' => 'csrf-var', 'content' => $request->csrfVar));
+			$lines[] = Html::tag('meta', '', array('name' => 'csrf-token', 'content' => $request->getCsrfToken()));
+		}
+
 		if (!empty($this->linkTags)) {
 			$lines[] = implode("\n", $this->linkTags);
 		}

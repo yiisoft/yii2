@@ -5,6 +5,8 @@ use yii\caching\ApcCache;
 
 /**
  * Class for testing APC cache backend
+ * @group apc
+ * @group caching
  */
 class ApcCacheTest extends CacheTestCase
 {

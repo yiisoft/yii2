@@ -112,13 +112,6 @@ class Response extends \yii\base\Response
 	 */
 	public $charset;
 	/**
-	 * @var integer the HTTP status code that should be used when redirecting in AJAX mode.
-	 * This is used by [[redirect()]]. A 2xx code should normally be used for this purpose
-	 * so that the AJAX handler will treat the response as a success.
-	 * @see redirect
-	 */
-	public $ajaxRedirectCode = 278;
-	/**
 	 * @var string
 	 */
 	public $statusText;
@@ -565,25 +558,37 @@ class Response extends \yii\base\Response
 
 	/**
 	 * Redirects the browser to the specified URL.
-	 * This method will send out a "Location" header to achieve the redirection.
-	 * In AJAX mode, this normally will not work as expected unless there are some
-	 * client-side JavaScript code handling the redirection. To help achieve this goal,
-	 * this method will use [[ajaxRedirectCode]] as the HTTP status code when performing
-	 * redirection in AJAX mode. The following JavaScript code may be used on the client
-	 * side to handle the redirection response:
 	 *
-	 * ~~~
-	 * $(document).ajaxSuccess(function(event, xhr, settings) {
-	 *     if (xhr.status == 278) {
-	 *         window.location = xhr.getResponseHeader('Location');
-	 *     }
-	 * });
-	 * ~~~
-	 *
-	 * In a controller action you may use this method like this:
+	 * This method adds a "Location" header to the current response. Note that it does not send out
+	 * the header until [[send()]] is called. In a controller action you may use this method as follows:
 	 *
 	 * ~~~
 	 * return Yii::$app->getResponse()->redirect($url);
+	 * ~~~
+	 *
+	 * In other places, if you want to send out the "Location" header immediately, you should use
+	 * the following code:
+	 *
+	 * ~~~
+	 * Yii::$app->getResponse()->redirect($url)->send();
+	 * return;
+	 * ~~~
+	 *
+	 * In AJAX mode, this normally will not work as expected unless there are some
+	 * client-side JavaScript code handling the redirection. To help achieve this goal,
+	 * this method will send out a "X-Redirect" header instead of "Location".
+	 *
+	 * If you use the "yii" JavaScript module, it will handle the AJAX redirection as
+	 * described above. Otherwise, you should write the following JavaScript code to
+	 * handle the redirection:
+	 *
+	 * ~~~
+	 * $document.ajaxComplete(function (event, xhr, settings) {
+	 *     var url = xhr.getResponseHeader('X-Redirect');
+	 *     if (url) {
+	 *         window.location = url;
+	 *     }
+	 * });
 	 * ~~~
 	 *
 	 * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
@@ -597,8 +602,7 @@ class Response extends \yii\base\Response
 	 * Any relative URL will be converted into an absolute one by prepending it with the host info
 	 * of the current request.
 	 *
-	 * @param integer $statusCode the HTTP status code. If null, it will use 302
-	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
+	 * @param integer $statusCode the HTTP status code. If null, it will use 302.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
 	 * @return Response the response object itself
@@ -613,11 +617,14 @@ class Response extends \yii\base\Response
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
 			$url = Yii::$app->getRequest()->getHostInfo() . $url;
 		}
-		if ($statusCode === null) {
-			$statusCode = Yii::$app->getRequest()->getIsAjax() ? $this->ajaxRedirectCode : 302;
+
+		if (Yii::$app->getRequest()->getIsAjax()) {
+			$this->getHeaders()->set('X-Redirect', $url);
+		} else {
+			$this->getHeaders()->set('Location', $url);
 		}
-		$this->getHeaders()->set('Location', $url);
 		$this->setStatusCode($statusCode);
+
 		return $this;
 	}
 
@@ -766,10 +773,10 @@ class Response extends \yii\base\Response
 			if (!is_object($formatter)) {
 				$formatter = Yii::createObject($formatter);
 			}
-			if ($formatter instanceof ResponseFormatter) {
+			if ($formatter instanceof ResponseFormatterInterface) {
 				$formatter->format($this);
 			} else {
-				throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatter interface.");
+				throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatterInterface.");
 			}
 		} else {
 			switch ($this->format) {

@@ -4,14 +4,12 @@ namespace yiiunit\framework\db;
 
 use yii\db\Connection;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class ConnectionTest extends DatabaseTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->mockApplication();
-	}
-
 	public function testConstruct()
 	{
 		$connection = $this->getConnection(false);

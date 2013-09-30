@@ -36,7 +36,9 @@ app\config\AppAsset::register($this);
 				array('label' => 'Contact', 'url' => array('/site/contact')),
 				Yii::$app->user->isGuest ?
 					array('label' => 'Login', 'url' => array('/site/login')) :
-					array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout')),
+					array('label' => 'Logout (' . Yii::$app->user->identity->username .')' ,
+						'url' => array('/site/logout'),
+						'linkOptions' => array('data-method' => 'post')),
 			),
 		));
 		NavBar::end();

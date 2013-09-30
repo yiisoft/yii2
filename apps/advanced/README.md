@@ -74,6 +74,8 @@ You can then install the application using the following command:
 php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-advanced
 ~~~
 
+Note that in order to install some dependencies you must have `php_openssl` extension enabled.
+
 
 ### Install from an Archive File
 
@@ -101,9 +103,11 @@ GETTING STARTED
 After you install the application, you have to conduct the following steps to initialize
 the installed application. You only need to do these once for all.
 
-1. Execute the `init` command and select `dev` as environment.
+1. Execute the `init` command and select `dev` as environment. Alternatively you can execute it as `init --env=Development`
+or `init --env=Production`.
 2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
 3. In `common/config/params.php` set your database details in `components.db` values.
+4. Apply migrations with `yii migrate`.
 
 Now you should be able to access:
 

@@ -87,7 +87,14 @@ class MemCache extends Cache
 		parent::init();
 		$servers = $this->getServers();
 		$cache = $this->getMemCache();
-		if (count($servers)) {
+		if (empty($servers)) {
+			$cache->addServer('127.0.0.1', 11211);
+		} else {
+			if (!$this->useMemcached) {
+				// different version of memcache may have different number of parameters for the addServer method.
+				$class = new \ReflectionClass($cache);
+				$paramCount = $class->getMethod('addServer')->getNumberOfParameters();
+			}
 			foreach ($servers as $server) {
 				if ($server->host === null) {
 					throw new InvalidConfigException("The 'host' property must be specified for every memcache server.");
@@ -97,15 +104,21 @@ class MemCache extends Cache
 				} else {
 					// $timeout is used for memcache versions that do not have timeoutms parameter
 					$timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
-					$cache->addServer(
-						$server->host, $server->port, $server->persistent,
-						$server->weight, $timeout, $server->retryInterval,
-						$server->status, $server->failureCallback, $server->timeout
-					);
+					if ($paramCount === 9) {
+						$cache->addServer(
+							$server->host, $server->port, $server->persistent,
+							$server->weight, $timeout, $server->retryInterval,
+							$server->status, $server->failureCallback, $server->timeout
+						);
+					} else {
+						$cache->addServer(
+							$server->host, $server->port, $server->persistent,
+							$server->weight, $timeout, $server->retryInterval,
+							$server->status, $server->failureCallback
+						);
+					}
 				}
 			}
-		} else {
-			$cache->addServer('127.0.0.1', 11211);
 		}
 	}
 

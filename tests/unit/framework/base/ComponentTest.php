@@ -17,6 +17,9 @@ function globalEventHandler2($event)
 	$event->handled = true;
 }
 
+/**
+ * @group base
+ */
 class ComponentTest extends TestCase
 {
 	/**

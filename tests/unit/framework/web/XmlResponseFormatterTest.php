@@ -26,6 +26,8 @@ class Post extends Object
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @group web
  */
 class XmlResponseFormatterTest extends \yiiunit\TestCase
 {

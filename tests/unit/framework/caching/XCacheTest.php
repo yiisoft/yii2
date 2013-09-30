@@ -5,6 +5,8 @@ use yii\caching\XCache;
 
 /**
  * Class for testing xcache backend
+ * @group xcache
+ * @group caching
  */
 class XCacheTest extends CacheTestCase
 {

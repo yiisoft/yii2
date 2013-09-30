@@ -1,11 +1,10 @@
 Using template engines
 ======================
 
-By default Yii uses PHP as template language but you can configure it to be able
-to render templates with special engines such as Twig or Smarty.
+By default Yii uses PHP as template language, but you can configure it to support other rendering engines, such as [Twig](http://twig.sensiolabs.org/) or [Smarty](http://www.smarty.net/).
 
-The component responsible for rendering a view is called `view`. You can add
-a custom template engines as follows:
+The `view` component is responsible for rendering views. You can add
+a custom template engines by reconfiguring this component's behavior:
 
 ```php
 array(
@@ -27,15 +26,13 @@ array(
 )
 ```
 
-Note that Smarty and Twig are not bundled with Yii and you have to download and
-unpack these yourself and then specify `twigPath` and `smartyPath` respectively.
+Note that the Smarty and Twig packages themselves are not bundled with Yii. You must download them yourself. Then unpack the packages and place the resulting files in a logical location, such as the application's `protected/vendor` folder. Finally, specify the correct `smartyPath` or `twigPath`, as in the code above (for Twig).
 
 Twig
 ----
 
-In order to use Twig you need to put you templates in files with extension `.twig`
-(or another one if configured differently).
-Also you need to specify this extension explicitly when calling `$this->render()`
+To use Twig, you need to create templates in files with the `.twig` extension (or use another file extension but configure the component accordingly).
+Unlike standard view files, when using Twig, you must include the extension  when calling `$this->render()`
 or `$this->renderPartial()` from your controller:
 
 ```php
@@ -44,25 +41,25 @@ echo $this->render('renderer.twig', array('username' => 'Alex'));
 
 ### Additional functions
 
-Additionally to regular Twig syntax the following is available in Yii:
+Yii adds the following construct to the standard Twig syntax:
 
 ```php
 <a href="{{ path('blog/view', {'alias' : post.alias}) }}">{{ post.title }}</a>
 ```
 
-path function calls `Html::url()` internally.
+Internally, the `path()` function calls Yii's `Html::url()` method.
 
 ### Additional variables
 
-- `app` = `\Yii::$app`
-- `this` = current `View` object
+Within Twig templates, you can also make use of these variables:
+
+- `app`, which equates to `\Yii::$app`
+- `this`, which equates to the current `View` object
 
 Smarty
 ------
 
-In order to use Smarty you need to put you templates in files with extension `.tpl`
-(or another one if configured differently).
-Also you need to specify this extension explicitly when calling `$this->render()`
+To use Smarty, you need to create templates in files with the `.tpl` extension (or use another file extension but configure the component accordingly). Unlike standard view files, when using Smarty, you must include the extension  when calling `$this->render()`
 or `$this->renderPartial()` from your controller:
 
 ```php
@@ -71,16 +68,18 @@ echo $this->render('renderer.tpl', array('username' => 'Alex'));
 
 ### Additional functions
 
-Additionally to regular Smarty syntax the following is available in Yii:
+Yii adds the following construct to the standard Smarty syntax:
 
 ```php
 <a href="{path route='blog/view' alias=$post.alias}">{$post.title}</a>
 ```
 
-path function calls `Html::url()` internally.
+Internally, the `path()` function calls Yii's `Html::url()` method.
 
 ### Additional variables
 
-- `$app` = `\Yii::$app`
-- `$this` = current `View` object
+Within Smarty templates, you can also make use of these variables:
+
+- `$app`, which equates to `\Yii::$app`
+- `$this`, which equates to the current `View` object
 

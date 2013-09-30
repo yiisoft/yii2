@@ -56,6 +56,8 @@ php composer.phar create-project --stability=dev yiisoft/yii2-app-basic yii-basi
 Now you should be able to access the application using the URL `http://localhost/yii-basic/web/`,
 assuming `yii-basic` is directly under the document root of your Web server.
 
+Note that in order to install some dependencies you must have `php_openssl` extension enabled.
+
 
 ### Install from an Archive File
 

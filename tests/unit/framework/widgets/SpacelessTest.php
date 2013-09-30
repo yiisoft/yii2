@@ -4,6 +4,9 @@ namespace yiiunit\framework\widgets;
 
 use yii\widgets\Spaceless;
 
+/**
+ * @group widgets
+ */
 class SpacelessTest extends \yiiunit\TestCase
 {
 	public function testWidget()

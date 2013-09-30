@@ -46,6 +46,9 @@ class BarBehavior extends Behavior
 	}
 }
 
+/**
+ * @group base
+ */
 class BehaviorTest extends TestCase
 {
 	protected function setUp()

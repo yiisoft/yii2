@@ -135,7 +135,7 @@ class FileValidator extends Validator
 				return;
 			}
 			foreach ($files as $i => $file) {
-				if (!$file instanceof UploadedFile || $file->getError() == UPLOAD_ERR_NO_FILE) {
+				if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
 					unset($files[$i]);
 				}
 			}
@@ -152,7 +152,7 @@ class FileValidator extends Validator
 			}
 		} else {
 			$file = $object->$attribute;
-			if ($file instanceof UploadedFile && $file->getError() != UPLOAD_ERR_NO_FILE) {
+			if ($file instanceof UploadedFile && $file->error != UPLOAD_ERR_NO_FILE) {
 				$this->validateFile($object, $attribute, $file);
 			} else {
 				$this->addError($object, $attribute, $this->uploadRequired);
@@ -168,37 +168,37 @@ class FileValidator extends Validator
 	 */
 	protected function validateFile($object, $attribute, $file)
 	{
-		switch ($file->getError()) {
+		switch ($file->error) {
 			case UPLOAD_ERR_OK:
-				if ($this->maxSize !== null && $file->getSize() > $this->maxSize) {
-					$this->addError($object, $attribute, $this->tooBig, array('{file}' => $file->getName(), '{limit}' => $this->getSizeLimit()));
+				if ($this->maxSize !== null && $file->size > $this->maxSize) {
+					$this->addError($object, $attribute, $this->tooBig, array('{file}' => $file->name, '{limit}' => $this->getSizeLimit()));
 				}
-				if ($this->minSize !== null && $file->getSize() < $this->minSize) {
-					$this->addError($object, $attribute, $this->tooSmall, array('{file}' => $file->getName(), '{limit}' => $this->minSize));
+				if ($this->minSize !== null && $file->size < $this->minSize) {
+					$this->addError($object, $attribute, $this->tooSmall, array('{file}' => $file->name, '{limit}' => $this->minSize));
 				}
-				if (!empty($this->types) && !in_array(strtolower(pathinfo($file->getName(), PATHINFO_EXTENSION)), $this->types, true)) {
-					$this->addError($object, $attribute, $this->wrongType, array('{file}' => $file->getName(), '{extensions}' => implode(', ', $this->types)));
+				if (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
+					$this->addError($object, $attribute, $this->wrongType, array('{file}' => $file->name, '{extensions}' => implode(', ', $this->types)));
 				}
 				break;
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
-				$this->addError($object, $attribute, $this->tooBig, array('{file}' => $file->getName(), '{limit}' => $this->getSizeLimit()));
+				$this->addError($object, $attribute, $this->tooBig, array('{file}' => $file->name, '{limit}' => $this->getSizeLimit()));
 				break;
 			case UPLOAD_ERR_PARTIAL:
 				$this->addError($object, $attribute, $this->message);
-				Yii::warning('File was only partially uploaded: ' . $file->getName(), __METHOD__);
+				Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
 				break;
 			case UPLOAD_ERR_NO_TMP_DIR:
 				$this->addError($object, $attribute, $this->message);
-				Yii::warning('Missing the temporary folder to store the uploaded file: ' . $file->getName(), __METHOD__);
+				Yii::warning('Missing the temporary folder to store the uploaded file: ' . $file->name, __METHOD__);
 				break;
 			case UPLOAD_ERR_CANT_WRITE:
 				$this->addError($object, $attribute, $this->message);
-				Yii::warning('Failed to write the uploaded file to disk: ' . $file->getName(), __METHOD__);
+				Yii::warning('Failed to write the uploaded file to disk: ' . $file->name, __METHOD__);
 				break;
 			case UPLOAD_ERR_EXTENSION:
 				$this->addError($object, $attribute, $this->message);
-				Yii::warning('File upload was stopped by some PHP extension: ' . $file->getName(), __METHOD__);
+				Yii::warning('File upload was stopped by some PHP extension: ' . $file->name, __METHOD__);
 				break;
 			default:
 				break;

@@ -6,6 +6,8 @@ use yii\caching\ZendDataCache;
 
 /**
  * Class for testing Zend cache backend
+ * @group zenddata
+ * @group caching
  */
 class ZendDataCacheTest extends CacheTestCase
 {

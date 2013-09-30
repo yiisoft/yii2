@@ -9,6 +9,7 @@
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_ENV') or define('YII_ENV', 'prod');
 
 // fcgi doesn't have STDIN defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
@@ -23,4 +24,5 @@ $config = yii\helpers\ArrayHelper::merge(
 );
 
 $application = new yii\console\Application($config);
-return $application->run();
+$exitCode = $application->run();
+exit($exitCode);

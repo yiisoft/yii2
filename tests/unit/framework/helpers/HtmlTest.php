@@ -6,6 +6,9 @@ use Yii;
 use yii\helpers\Html;
 use yiiunit\TestCase;
 
+/**
+ * @group helpers
+ */
 class HtmlTest extends TestCase
 {
 	protected function setUp()
@@ -16,6 +19,7 @@ class HtmlTest extends TestCase
 				'request' => array(
 					'class' => 'yii\web\Request',
 					'url' => '/test',
+					'enableCsrfValidation' => false,
 				),
 				'response' => array(
 					'class' => 'yii\web\Response',

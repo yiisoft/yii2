@@ -20,6 +20,12 @@ use yii\helpers\Html;
 class Controller extends \yii\base\Controller
 {
 	/**
+	 * @var boolean whether to enable CSRF validation for the actions in this controller.
+	 * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
+	 */
+	public $enableCsrfValidation = true;
+
+	/**
 	 * Binds the parameters to the action.
 	 * This method is invoked by [[Action]] when it begins to run with the given parameters.
 	 * This method will check the parameter names that the action requires and return
@@ -59,6 +65,21 @@ class Controller extends \yii\base\Controller
 		}
 
 		return $args;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeAction($action)
+	{
+		if (parent::beforeAction($action)) {
+			if ($this->enableCsrfValidation && !Yii::$app->getRequest()->validateCsrfToken()) {
+				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -105,8 +126,7 @@ class Controller extends \yii\base\Controller
 	 * Any relative URL will be converted into an absolute one by prepending it with the host info
 	 * of the current request.
 	 *
-	 * @param integer $statusCode the HTTP status code. If null, it will use 302
-	 * for normal requests, and [[ajaxRedirectCode]] for AJAX requests.
+	 * @param integer $statusCode the HTTP status code. If null, it will use 302.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
 	 * @return Response the current response object

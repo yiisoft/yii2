@@ -16,4 +16,4 @@ PEAR-style libraries
 References
 ----------
 
-- YiiBase::autoload
+- BaseYii::autoload
