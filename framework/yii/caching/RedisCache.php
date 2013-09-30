@@ -155,7 +155,7 @@ class RedisCache extends Cache
 	 * This can be a floating point number to specify the time in milliseconds.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function setValue($key,$value,$expire)
+	protected function setValue($key,$value,$expire = 0)
 	{
 		if ($expire == 0) {
 			return (bool) $this->_connection->executeCommand('SET', array($key, $value));
@@ -175,7 +175,7 @@ class RedisCache extends Cache
 	 * This can be a floating point number to specify the time in milliseconds.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function addValue($key,$value,$expire)
+	protected function addValue($key,$value,$expire = 0)
 	{
 		if ($expire == 0) {
 			return (bool) $this->_connection->executeCommand('SETNX', array($key, $value));

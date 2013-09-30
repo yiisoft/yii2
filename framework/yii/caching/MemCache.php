@@ -190,7 +190,7 @@ class MemCache extends Cache
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function setValue($key, $value, $expire)
+	protected function setValue($key, $value, $expire = 0)
 	{
 		if ($expire > 0) {
 			$expire += time();
@@ -210,7 +210,7 @@ class MemCache extends Cache
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function addValue($key, $value, $expire)
+	protected function addValue($key, $value, $expire = 0)
 	{
 		if ($expire > 0) {
 			$expire += time();
