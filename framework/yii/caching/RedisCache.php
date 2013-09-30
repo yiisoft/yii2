@@ -10,7 +10,7 @@ namespace yii\caching;
 use yii\redis\Connection;
 
 /**
- * RedisCache implements a cache application component based on [redis](http://redis.io/).
+ * RedisCache implements a cache application component based on [redis](http://redis.io/) version 2.6 or higher.
  *
  * RedisCache needs to be configured with [[hostname]], [[port]] and [[database]] of the server
  * to connect to. By default RedisCache assumes there is a redis server running on localhost at
