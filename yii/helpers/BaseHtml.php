@@ -13,14 +13,14 @@ use yii\web\Request;
 use yii\base\Model;
 
 /**
- * HtmlBase provides concrete implementation for [[Html]].
+ * BaseHtml provides concrete implementation for [[Html]].
  *
- * Do not use HtmlBase. Use [[Html]] instead.
+ * Do not use BaseHtml. Use [[Html]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HtmlBase
+class BaseHtml
 {
 	/**
 	 * @var array list of void elements (element name => 1)
@@ -238,7 +238,7 @@ class HtmlBase
 				$method = 'post';
 			}
 			if ($request->enableCsrfValidation) {
-				$hiddenInputs[] = static::hiddenInput($request->csrfTokenName, $request->getCsrfToken());
+				$hiddenInputs[] = static::hiddenInput($request->csrfVar, $request->getCsrfToken());
 			}
 		}
 
@@ -1049,7 +1049,10 @@ class HtmlBase
 	 */
 	public static function activeFileInput($model, $attribute, $options = array())
 	{
-		return static::activeInput('file', $model, $attribute, $options);
+		// add a hidden field so that if a model only has a file field, we can
+		// still use isset($_POST[$modelClass]) to detect if the input is submitted
+		return static::activeHiddenInput($model, $attribute, array('id' => null, 'value' => ''))
+			. static::activeInput('file', $model, $attribute, $options);
 	}
 
 	/**

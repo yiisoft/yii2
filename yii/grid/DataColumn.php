@@ -68,6 +68,12 @@ class DataColumn extends Column
 	 * - If you don't want a filter for this data column, set this value to be false.
 	 */
 	public $filter;
+	/**
+	 * @var array the HTML attributes for the filter input fields. This property is used in combination with
+	 * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
+	 * render the HTML attributes for the generated filter input fields.
+	 */
+	public $filterInputOptions = array('class' => 'form-control');
 
 
 	protected function renderHeaderCellContent()
@@ -111,9 +117,10 @@ class DataColumn extends Column
 			return $this->filter;
 		} elseif ($this->filter !== false && $this->grid->filterModel instanceof Model && $this->attribute !== null) {
 			if (is_array($this->filter)) {
-				return Html::activeDropDownList($this->grid->filterModel, $this->attribute, $this->filter, array('prompt' => ''));
+				$options = array_merge(array('prompt' => ''), $this->filterInputOptions);
+				return Html::activeDropDownList($this->grid->filterModel, $this->attribute, $this->filter, $options);
 			} else {
-				return Html::activeTextInput($this->grid->filterModel, $this->attribute);
+				return Html::activeTextInput($this->grid->filterModel, $this->attribute, $this->filterInputOptions);
 			}
 		} else {
 			return parent::renderFilterCellContent();

@@ -14,13 +14,13 @@ use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
-use yii\widgets\ListViewBase;
+use yii\widgets\BaseListView;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class GridView extends ListViewBase
+class GridView extends BaseListView
 {
 	const FILTER_POS_HEADER = 'header';
 	const FILTER_POS_FOOTER = 'footer';
@@ -124,16 +124,6 @@ class GridView extends ListViewBase
 	 * Both "format" and "label" are optional. They will take default values if absent.
 	 */
 	public $columns = array();
-	/**
-	 * @var string the layout that determines how different sections of the list view should be organized.
-	 * The following tokens will be replaced with the corresponding section contents:
-	 *
-	 * - `{summary}`: the summary section. See [[renderSummary()]].
-	 * - `{items}`: the list items. See [[renderItems()]].
-	 * - `{sorter}`: the sorter. See [[renderSorter()]].
-	 * - `{pager}`: the pager. See [[renderPager()]].
-	 */
-	public $layout = "{items}\n{summary}\n{pager}";
 	public $emptyCell = '&nbsp;';
 	/**
 	 * @var \yii\base\Model the model that keeps the user-entered filter data. When this property is set,

@@ -143,8 +143,6 @@ class Object implements Arrayable
 
 	/**
 	 * Calls the named method which is not a class method.
-	 * If the name refers to a component property whose value is
-	 * an anonymous function, the method will execute the function.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when an unknown method is being invoked.
@@ -155,13 +153,6 @@ class Object implements Arrayable
 	 */
 	public function __call($name, $params)
 	{
-		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) {
-			$func = $this->$getter();
-			if ($func instanceof \Closure) {
-				return call_user_func_array($func, $params);
-			}
-		}
 		throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
 	}
 

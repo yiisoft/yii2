@@ -12,15 +12,15 @@ namespace yii\helpers;
 use Yii;
 
 /**
- * FileHelperBase provides concrete implementation for [[FileHelper]].
+ * BaseFileHelper provides concrete implementation for [[FileHelper]].
  *
- * Do not use FileHelperBase. Use [[FileHelper]] instead.
+ * Do not use BaseFileHelper. Use [[FileHelper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class FileHelperBase
+class BaseFileHelper
 {
 	/**
 	 * Normalizes a file/directory path.
@@ -155,6 +155,10 @@ class FileHelperBase
 	 *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
 	 *   both '/' and '\' in the paths.
 	 * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
+	 * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
+	 *   If the callback returns false, the copy operation for the sub-directory or file will be cancelled.
+	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
+	 *   file to be copied from, while `$to` is the copy target.
 	 * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
 	 *   file copied from, while `$to` is the copy target.
@@ -173,6 +177,9 @@ class FileHelperBase
 			$from = $src . DIRECTORY_SEPARATOR . $file;
 			$to = $dst . DIRECTORY_SEPARATOR . $file;
 			if (static::filterPath($from, $options)) {
+				if (isset($options['beforeCopy']) && !call_user_func($options['beforeCopy'], $from, $to)) {
+					continue;
+				}
 				if (is_file($from)) {
 					copy($from, $to);
 					if (isset($options['fileMode'])) {

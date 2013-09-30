@@ -156,7 +156,6 @@ class ActiveDataProvider extends DataProvider
 				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 			}
 			if (($pagination = $this->getPagination()) !== false) {
-				$pagination->totalCount = $this->getTotalCount();
 				$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
 			}
 			if (($sort = $this->getSort()) !== false) {

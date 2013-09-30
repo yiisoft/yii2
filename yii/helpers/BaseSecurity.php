@@ -13,31 +13,51 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
- * SecurityBase provides concrete implementation for [[Security]].
+ * BaseSecurity provides concrete implementation for [[Security]].
  *
- * Do not use SecurityBase. Use [[Security]] instead.
+ * Do not use BaseSecurity. Use [[Security]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
  * @since 2.0
  */
-class SecurityBase
+class BaseSecurity
 {
+	/**
+	 * Uses AES, block size is 128-bit (16 bytes).
+	 */
+	const CRYPT_BLOCK_SIZE = 16;
+
+	/**
+	 * Uses AES-192, key size is 192-bit (24 bytes).
+	 */
+	const CRYPT_KEY_SIZE = 24;
+
+	/**
+	 * Uses SHA-256.
+	 */
+	const DERIVATION_HASH = 'sha256';
+
+	/**
+	 * Uses 1000 iterations.
+	 */
+	const DERIVATION_ITERATIONS = 1000;
+
 	/**
 	 * Encrypts data.
 	 * @param string $data data to be encrypted.
-	 * @param string $key the encryption secret key
+	 * @param string $password the encryption password
 	 * @return string the encrypted data
 	 * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
 	 * @see decrypt()
 	 */
-	public static function encrypt($data, $key)
+	public static function encrypt($data, $password)
 	{
 		$module = static::openCryptModule();
-		// 192-bit (24 bytes) key size
-		$key = StringHelper::substr($key, 0, 24);
+		$data = static::addPadding($data);
 		srand();
 		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_RAND);
+		$key = static::deriveKey($password, $iv);
 		mcrypt_generic_init($module, $key, $iv);
 		$encrypted = $iv . mcrypt_generic($module, $data);
 		mcrypt_generic_deinit($module);
@@ -48,23 +68,69 @@ class SecurityBase
 	/**
 	 * Decrypts data
 	 * @param string $data data to be decrypted.
-	 * @param string $key the decryption secret key
+	 * @param string $password the decryption password
 	 * @return string the decrypted data
 	 * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
 	 * @see encrypt()
 	 */
-	public static function decrypt($data, $key)
+	public static function decrypt($data, $password)
 	{
 		$module = static::openCryptModule();
-		// 192-bit (24 bytes) key size
-		$key = StringHelper::substr($key, 0, 24);
 		$ivSize = mcrypt_enc_get_iv_size($module);
 		$iv = StringHelper::substr($data, 0, $ivSize);
+		$key = static::deriveKey($password, $iv);
 		mcrypt_generic_init($module, $key, $iv);
 		$decrypted = mdecrypt_generic($module, StringHelper::substr($data, $ivSize, StringHelper::strlen($data)));
 		mcrypt_generic_deinit($module);
 		mcrypt_module_close($module);
-		return rtrim($decrypted, "\0");
+		return static::stripPadding($decrypted);
+	}
+
+	/**
+	* Adds a padding to the given data (PKCS #7).
+	* @param string $data the data to pad
+	* @return string the padded data
+	*/
+	protected static function addPadding($data)
+	{
+		$pad = self::CRYPT_BLOCK_SIZE - (StringHelper::strlen($data) % self::CRYPT_BLOCK_SIZE);
+		return $data . str_repeat(chr($pad), $pad);
+	}
+
+	/**
+	* Strips the padding from the given data.
+	* @param string $data the data to trim
+	* @return string the trimmed data
+	*/
+	protected static function stripPadding($data)
+	{
+		$end = StringHelper::substr($data, -1, NULL);
+		$last = ord($end);
+		$n = StringHelper::strlen($data) - $last;
+		if (StringHelper::substr($data, $n, NULL) == str_repeat($end, $last)) {
+			return StringHelper::substr($data, 0, $n);
+		}
+		return false;
+	}
+
+	/**
+	* Derives a key from the given password (PBKDF2).
+	* @param string $password the source password
+	* @param string $salt the random salt
+	* @return string the derived key
+	*/
+	protected static function deriveKey($password, $salt)
+	{
+		if (function_exists('hash_pbkdf2')) {
+			return hash_pbkdf2(self::DERIVATION_HASH, $password, $salt, self::DERIVATION_ITERATIONS, self::CRYPT_KEY_SIZE, true);
+		}
+		$hmac = hash_hmac(self::DERIVATION_HASH, $salt . pack('N', 1), $password, true);
+		$xorsum  = $hmac;
+		for ($i = 1; $i < self::DERIVATION_ITERATIONS; $i++) {
+			$hmac = hash_hmac(self::DERIVATION_HASH, $hmac, $password, true);
+			$xorsum ^= $hmac;
+		}
+		return substr($xorsum, 0, self::CRYPT_KEY_SIZE);
 	}
 
 	/**
@@ -133,19 +199,19 @@ class SecurityBase
 	}
 
 	/**
-	 * Generates a random key.
+	 * Generates a random key. The key may contain uppercase and lowercase latin letters, digits, underscore, dash and dot.
 	 * @param integer $length the length of the key that should be generated
 	 * @return string the generated random key
 	 */
 	public static function generateRandomKey($length = 32)
 	{
 		if (function_exists('openssl_random_pseudo_bytes')) {
-			$key = base64_encode(openssl_random_pseudo_bytes($length, $strong));
+			$key = strtr(base64_encode(openssl_random_pseudo_bytes($length, $strong)), '+/=', '_-.');
 			if ($strong) {
 				return substr($key, 0, $length);
 			}
 		}
-		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
 		return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
 	}
 

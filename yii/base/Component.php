@@ -40,6 +40,7 @@ class Component extends Object
 	 * @param string $name the property name
 	 * @return mixed the property value or the value of a behavior's property
 	 * @throws UnknownPropertyException if the property is not defined
+	 * @throws InvalidCallException if the property is write-only.
 	 * @see __set
 	 */
 	public function __get($name)
@@ -178,9 +179,8 @@ class Component extends Object
 
 	/**
 	 * Calls the named method which is not a class method.
-	 * If the name refers to a component property whose value is
-	 * an anonymous function, the method will execute the function.
-	 * Otherwise, it will check if any attached behavior has
+	 *
+	 * This method will check if any attached behavior has
 	 * the named method and will execute it if available.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
@@ -192,14 +192,6 @@ class Component extends Object
 	 */
 	public function __call($name, $params)
 	{
-		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) {
-			$func = $this->$getter();
-			if ($func instanceof \Closure) {
-				return call_user_func_array($func, $params);
-			}
-		}
-
 		$this->ensureBehaviors();
 		foreach ($this->_behaviors as $object) {
 			if ($object->hasMethod($name)) {

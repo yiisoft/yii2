@@ -17,7 +17,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ListViewBase extends Widget
+abstract class BaseListView extends Widget
 {
 	/**
 	 * @var array the HTML attributes for the container tag of the list view.
@@ -25,7 +25,7 @@ abstract class ListViewBase extends Widget
 	 */
 	public $options = array();
 	/**
-	 * @var \yii\data\IDataProvider the data provider for the view. This property is required.
+	 * @var \yii\data\DataProviderInterface the data provider for the view. This property is required.
 	 */
 	public $dataProvider;
 	/**
@@ -66,7 +66,7 @@ abstract class ListViewBase extends Widget
 	 * - `{sorter}`: the sorter. See [[renderSorter()]].
 	 * - `{pager}`: the pager. See [[renderPager()]].
 	 */
-	public $layout = "{summary}\n{sorter}\n{items}\n{pager}";
+	public $layout = "{summary}\n{items}\n{pager}";
 
 
 	/**

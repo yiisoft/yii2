@@ -35,6 +35,7 @@ abstract class Schema extends Object
 	 * The followings are the supported abstract column data types.
 	 */
 	const TYPE_PK = 'pk';
+	const TYPE_BIGPK = 'bigpk';
 	const TYPE_STRING = 'string';
 	const TYPE_TEXT = 'text';
 	const TYPE_SMALLINT = 'smallint';
@@ -216,7 +217,7 @@ abstract class Schema extends Object
 	 * This method should be overridden by child classes in order to support this feature
 	 * because the default implementation simply throws an exception.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * @return array all table names in the database. The names have NO the schema name prefix.
+	 * @return array all table names in the database. The names have NO schema name prefix.
 	 * @throws NotSupportedException if this method is called
 	 */
 	protected function findTableNames($schema = '')

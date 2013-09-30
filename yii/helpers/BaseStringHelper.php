@@ -10,15 +10,15 @@ namespace yii\helpers;
 use yii\base\InvalidParamException;
 
 /**
- * StringHelperBase provides concrete implementation for [[StringHelper]].
+ * BaseStringHelper provides concrete implementation for [[StringHelper]].
  *
- * Do not use StringHelperBase. Use [[StringHelper]] instead.
+ * Do not use BaseStringHelper. Use [[StringHelper]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class StringHelperBase
+class BaseStringHelper
 {
 	/**
 	 * Returns the number of bytes in the given string.
@@ -47,8 +47,8 @@ class StringHelperBase
 
 	/**
 	 * Returns the trailing name component of a path.
-	 * This method does the same as the php function `basename()` except that it will
-	 * always use \ and / as directory separators, independent of the operating system.
+	 * This method is similar to the php function `basename()` except that it will
+	 * treat both \ and / as directory separators, independent of the operating system.
 	 * This method was mainly created to work on php namespaces. When working with real
 	 * file paths, php's `basename()` should work fine for you.
 	 * Note: this method is not aware of the actual filesystem, or path components such as "..".
@@ -67,6 +67,24 @@ class StringHelperBase
 			return mb_substr($path, $pos + 1);
 		}
 		return $path;
+	}
+
+	/**
+	 * Returns parent directory's path.
+	 * This method is similar to `dirname()` except that it will treat
+	 * both \ and / as directory separators, independent of the operating system.
+	 * @param string $path A path string.
+	 * @return string the parent directory's path.
+	 * @see http://www.php.net/manual/en/function.basename.php
+	 */
+	public static function dirname($path)
+	{
+		$pos = mb_strrpos(str_replace('\\', '/', $path), '/');
+		if ($pos !== false) {
+			return mb_substr($path, 0, $pos);
+		} else {
+			return $path;
+		}
 	}
 
 	/**

@@ -134,7 +134,7 @@ class QueryBuilder extends \yii\base\Object
 	 * ))->execute();
 	 * ~~~
 	 *
-	 * Not that the values in each row must match the corresponding column names.
+	 * Note that the values in each row must match the corresponding column names.
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column names
@@ -491,6 +491,7 @@ class QueryBuilder extends \yii\base\Object
 	 * physical types):
 	 *
 	 * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
+	 * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
 	 * - `string`: string type, will be converted into "varchar(255)"
 	 * - `text`: a long string type, will be converted into "text"
 	 * - `smallint`: a small integer type, will be converted into "smallint(6)"
@@ -584,7 +585,7 @@ class QueryBuilder extends \yii\base\Object
 
 		foreach ($tables as $i => $table) {
 			if (strpos($table, '(') === false) {
-				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/i', $table, $matches)) { // with alias
+				if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
 					$tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
 				} else {
 					$tables[$i] = $this->db->quoteTableName($table);
@@ -618,7 +619,7 @@ class QueryBuilder extends \yii\base\Object
 				// 0:join type, 1:table name, 2:on-condition
 				$table = $join[1];
 				if (strpos($table, '(') === false) {
-					if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)(.*)$/', $table, $matches)) { // with alias
+					if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
 						$table = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
 					} else {
 						$table = $this->db->quoteTableName($table);
@@ -912,11 +913,6 @@ class QueryBuilder extends \yii\base\Object
 
 	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
 	{
-		foreach ($columns as $i => $column) {
-			if (strpos($column, '(') === false) {
-				$columns[$i] = $this->db->quoteColumnName($column);
-			}
-		}
 		$vss = array();
 		foreach ($values as $value) {
 			$vs = array();
@@ -930,6 +926,11 @@ class QueryBuilder extends \yii\base\Object
 				}
 			}
 			$vss[] = '(' . implode(', ', $vs) . ')';
+		}
+		foreach ($columns as $i => $column) {
+			if (strpos($column, '(') === false) {
+				$columns[$i] = $this->db->quoteColumnName($column);
+			}
 		}
 		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
 	}

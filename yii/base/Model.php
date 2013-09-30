@@ -45,7 +45,7 @@ use yii\validators\Validator;
  * property is read-only.
  * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
  * read-only.
- * @property string $scenario The scenario that this model is in. Defaults to 'default'.
+ * @property string $scenario The scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
  * @property ArrayObject $validators All the validators declared in the model. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -53,6 +53,11 @@ use yii\validators\Validator;
  */
 class Model extends Component implements IteratorAggregate, ArrayAccess
 {
+	/**
+	 * The name of the default scenario.
+	 */
+	const DEFAULT_SCENARIO = 'default';
+
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
 	 * [[ModelEvent::isValid]] to be false to stop the validation.
@@ -74,7 +79,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	/**
 	 * @var string current scenario
 	 */
-	private $_scenario = 'default';
+	private $_scenario = self::DEFAULT_SCENARIO;
 
 	/**
 	 * Returns the validation rules for attributes.
@@ -110,6 +115,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * // $params refers to validation parameters given in the rule
 	 * function validatorName($attribute, $params)
 	 * ~~~
+	 *
+	 * In the above `$attribute` refers to currently validated attribute name while `$params` contains an array of
+	 * validator configuration options such as `max` in case of `length` validator. Currently validate attribute value
+	 * can be accessed as `$this->[$attribute]`.
 	 *
 	 * Yii also provides a set of [[Validator::builtInValidators|built-in validators]].
 	 * They each has an alias name which can be used when specifying a validation rule.
@@ -159,23 +168,39 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * If an attribute should NOT be massively assigned (thus considered unsafe),
 	 * please prefix the attribute with an exclamation character (e.g. '!rank').
 	 *
-	 * The default implementation of this method will return a 'default' scenario
-	 * which corresponds to all attributes listed in the validation rules applicable
-	 * to the 'default' scenario.
+	 * The default implementation of this method will return all scenarios found in the [[rules()]]
+	 * declaration. A special scenario named [[DEFAULT_SCENARIO]] will contain all attributes
+	 * found in the [[rules()]]. Each scenario will be associated with the attributes that
+	 * are being validated by the validation rules that apply to the scenario.
 	 *
 	 * @return array a list of scenarios and the corresponding active attributes.
 	 */
 	public function scenarios()
 	{
-		$attributes = array();
-		foreach ($this->getActiveValidators() as $validator) {
-			foreach ($validator->attributes as $name) {
-				$attributes[$name] = true;
+		$scenarios = array();
+		$defaults = array();
+		/** @var $validator Validator */
+		foreach ($this->getValidators() as $validator) {
+			if (empty($validator->on)) {
+				foreach ($validator->attributes as $attribute) {
+					$defaults[$attribute] = true;
+				}
+			} else {
+				foreach ($validator->on as $scenario) {
+					foreach ($validator->attributes as $attribute) {
+						$scenarios[$scenario][$attribute] = true;
+					}
+				}
 			}
 		}
-		return array(
-			'default' => array_keys($attributes),
-		);
+		foreach ($scenarios as $scenario => $attributes) {
+			foreach (array_keys($defaults) as $attribute) {
+				$attributes[$attribute] = true;
+			}
+			$scenarios[$scenario] = array_keys($attributes);
+		}
+		$scenarios[self::DEFAULT_SCENARIO] = array_keys($defaults);
+		return $scenarios;
 	}
 
 	/**
@@ -593,7 +618,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Scenario affects how validation is performed and which attributes can
 	 * be massively assigned.
 	 *
-	 * @return string the scenario that this model is in. Defaults to 'default'.
+	 * @return string the scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
 	 */
 	public function getScenario()
 	{

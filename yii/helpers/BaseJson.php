@@ -12,14 +12,14 @@ use yii\base\Arrayable;
 use yii\web\JsExpression;
 
 /**
- * JsonBase provides concrete implementation for [[Json]].
+ * BaseJson provides concrete implementation for [[Json]].
  *
- * Do not use JsonBase. Use [[Json]] instead.
+ * Do not use BaseJson. Use [[Json]] instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class JsonBase
+class BaseJson
 {
 	/**
 	 * Encodes the given value into a JSON string.
