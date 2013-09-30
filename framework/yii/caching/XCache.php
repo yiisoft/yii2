@@ -59,7 +59,7 @@ class XCache extends Cache
 	 */
 	protected function setValue($key, $value, $expire = 0)
 	{
-		return xcache_set($key, $value, $expire = 0);
+		return xcache_set($key, $value, $expire);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class XCache extends Cache
 	 */
 	protected function addValue($key, $value, $expire = 0)
 	{
-		return !xcache_isset($key) ? $this->setValue($key, $value, $expire = 0) : false;
+		return !xcache_isset($key) ? $this->setValue($key, $value, $expire) : false;
 	}
 
 	/**

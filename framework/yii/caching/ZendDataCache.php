@@ -43,7 +43,7 @@ class ZendDataCache extends Cache
 	 */
 	protected function setValue($key, $value, $expire = 0)
 	{
-		return zend_shm_cache_store($key, $value, $expire = 0);
+		return zend_shm_cache_store($key, $value, $expire);
 	}
 
 	/**
@@ -57,7 +57,7 @@ class ZendDataCache extends Cache
 	 */
 	protected function addValue($key, $value, $expire = 0)
 	{
-		return zend_shm_cache_fetch($key) === null ? $this->setValue($key, $value, $expire = 0) : false;
+		return zend_shm_cache_fetch($key) === null ? $this->setValue($key, $value, $expire) : false;
 	}
 
 	/**

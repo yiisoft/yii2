@@ -185,7 +185,7 @@ class MemCache extends Cache
 			$expire = 0;
 		}
 
-		return $this->useMemcached ? $this->_cache->set($key, $value, $expire = 0) : $this->_cache->set($key, $value, 0, $expire = 0);
+		return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
 	}
 
 	/**
@@ -205,7 +205,7 @@ class MemCache extends Cache
 			$expire = 0;
 		}
 
-		return $this->useMemcached ? $this->_cache->add($key, $value, $expire = 0) : $this->_cache->add($key, $value, 0, $expire = 0);
+		return $this->useMemcached ? $this->_cache->add($key, $value, $expire) : $this->_cache->add($key, $value, 0, $expire);
 	}
 
 	/**

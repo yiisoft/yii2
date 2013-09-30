@@ -68,7 +68,7 @@ class ApcCache extends Cache
 	 */
 	protected function setValue($key, $value, $expire = 0)
 	{
-		return apc_store($key, $value, $expire = 0);
+		return apc_store($key, $value, $expire);
 	}
 
 	/**
@@ -81,7 +81,7 @@ class ApcCache extends Cache
 	 */
 	protected function addValue($key, $value, $expire = 0)
 	{
-		return apc_add($key, $value, $expire = 0);
+		return apc_add($key, $value, $expire);
 	}
 
 	/**

@@ -129,7 +129,7 @@ class FileCache extends Cache
 			if ($this->fileMode !== null) {
 				@chmod($cacheFile, $this->fileMode);
 			}
-			return @touch($cacheFile, $expire = 0);
+			return @touch($cacheFile, $expire);
 		} else {
 			return false;
 		}
@@ -150,7 +150,7 @@ class FileCache extends Cache
 		if (@filemtime($cacheFile) > time()) {
 			return false;
 		}
-		return $this->setValue($key, $value, $expire = 0);
+		return $this->setValue($key, $value, $expire);
 	}
 
 	/**

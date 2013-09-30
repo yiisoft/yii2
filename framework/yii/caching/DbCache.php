@@ -197,7 +197,7 @@ class DbCache extends Cache
 			$this->gc();
 			return true;
 		} else {
-			return $this->addValue($key, $value, $expire = 0);
+			return $this->addValue($key, $value, $expire);
 		}
 	}
 

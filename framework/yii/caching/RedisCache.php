@@ -186,7 +186,7 @@ class RedisCache extends Cache
 			$expire = (int) ($expire * 1000);
 			$this->_connection->executeCommand('MULTI');
 			$this->_connection->executeCommand('SETNX', array($key, $value));
-			$this->_connection->executeCommand('PEXPIRE', array($key, $expire = 0));
+			$this->_connection->executeCommand('PEXPIRE', array($key, $expire));
 			$response = $this->_connection->executeCommand('EXEC');
 			return (bool) $response[0];
 		}
