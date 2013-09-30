@@ -589,9 +589,13 @@ class ActiveField extends Component
 	 */
 	protected function getClientOptions()
 	{
+		$attribute = Html::getAttributeName($this->attribute);
+		if (!in_array($attribute, $this->model->activeAttributes(), true)) {
+			return array();
+		}
+
 		$enableClientValidation = $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
 		if ($enableClientValidation) {
-			$attribute = Html::getAttributeName($this->attribute);
 			$validators = array();
 			foreach ($this->model->getActiveValidators($attribute) as $validator) {
 				/** @var \yii\validators\Validator $validator */
