@@ -6,6 +6,8 @@
  */
 
 namespace yii\elasticsearch;
+use Guzzle\Http\Client;
+use Guzzle\Http\Exception\MultiTransferException;
 use yii\base\NotSupportedException;
 use yii\db\Exception;
 use yii\helpers\Json;
@@ -78,14 +80,20 @@ class ActiveQuery extends \yii\base\Component
 	 */
 	public $asArray;
 	/**
+	 * @var array the columns being selected. For example, `array('id', 'name')`.
+	 * This is used to construct the SELECT clause in a SQL statement. If not set, if means selecting all columns.
+	 * @see select()
+	 */
+	public $select;
+	/**
 	 * @var array the query condition.
 	 * @see where()
 	 */
 	public $where;
 	/**
-	 * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit.
+	 * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit. TODO infinite possible in ES?
 	 */
-	public $limit;
+	public $limit = 10;
 	/**
 	 * @var integer zero-based offset from where the records are to be returned.
 	 * If not set, it means starting from the beginning.
@@ -128,12 +136,10 @@ class ActiveQuery extends \yii\base\Component
 		// TODO add support for orderBy
 		$data = $this->executeScript('All');
 		$rows = array();
+		print_r($data);
 		foreach($data as $dataRow) {
-			$row = array();
-			$c = count($dataRow);
-			for($i = 0; $i < $c; ) {
-				$row[$dataRow[$i++]] = $dataRow[$i++];
-			}
+			$row = $dataRow['_source'];
+			$row['id'] = $dataRow['_id'];
 			$rows[] = $row;
 		}
 		if (!empty($rows)) {
@@ -157,14 +163,11 @@ class ActiveQuery extends \yii\base\Component
 	{
 		// TODO add support for orderBy
 		$data = $this->executeScript('One');
-		if ($data === array()) {
+		if (!isset($data['_source'])) {
 			return null;
 		}
-		$row = array();
-		$c = count($data);
-		for($i = 0; $i < $c; ) {
-			$row[$data[$i++]] = $data[$i++];
-		}
+		$row = $data['_source'];
+		$row['id'] = $data['_id'];
 		if ($this->asArray) {
 			$model = $row;
 		} else {
@@ -284,12 +287,13 @@ class ActiveQuery extends \yii\base\Component
 	{
 		if (($data = $this->findByPk($type)) === false) {
 			$modelClass = $this->modelClass;
-			/** @var Connection $db */
-			$db = $modelClass::getDb();
+			$http = $modelClass::getDb()->http();
 
-			$method = 'build' . $type;
-			$script = $db->getLuaScriptBuilder()->$method($this, $columnName);
-			return $db->executeCommand('EVAL', array($script, 0));
+			$url = '/' . $modelClass::indexName() . '/' . $modelClass::indexType() . '/_search';
+			$query = $modelClass::getDb()->getQueryBuilder()->build($this);
+			$response = $http->post($url, null, Json::encode($query))->send();
+			$data = Json::decode($response->getBody(true));
+			return $data['hits']['hits'];
 		}
 		return $data;
 	}
@@ -301,46 +305,47 @@ class ActiveQuery extends \yii\base\Component
 	{
 		$modelClass = $this->modelClass;
 		if (is_array($this->where) && !isset($this->where[0]) && $modelClass::isPrimaryKey(array_keys($this->where))) {
-			/** @var Connection $db */
-			$db = $modelClass::getDb();
+			/** @var Client $http */
+			$http = $modelClass::getDb()->http();
 
 			$pks = (array) reset($this->where);
 
-			$start = $this->offset === null ? 0 : $this->offset;
-			$i = 0;
-			$data = array();
-			$url = '/' . $modelClass::indexName() . '/' . $modelClass::indexType() . '/';
+			$query = array('docs' => array());
 			foreach($pks as $pk) {
-				if (++$i > $start && ($this->limit === null || $i <= $start + $this->limit)) {
-					$request = $db->http()->get($url . $pk);
-					$response = $request->send();
-					if ($response->getStatusCode() == 404) {
-						// ignore?
-					} else {
-						$data[] = Json::decode($response->getBody(true));
-						if ($type === 'One' && $this->orderBy === null) {
-							break;
-						}
-					}
+				$doc = array('_id' => $pk);
+				if (!empty($this->select)) {
+					$doc['fields'] = $this->select;
 				}
+				$query['docs'][] = $doc;
 			}
+			$url = '/' . $modelClass::indexName() . '/' . $modelClass::indexType() . '/_mget';
+			$response = $http->post($url, null, Json::encode($query))->send();
+			$data = Json::decode($response->getBody(true));
+
+			$start = $this->offset === null ? 0 : $this->offset;
+			$data = array_slice($data['docs'], $start, $this->limit);
+
 			// TODO support orderBy
 
 			switch($type) {
 				case 'All':
 					return $data;
 				case 'One':
-					return reset($data);
+					return empty($data) ? null : reset($data);
 				case 'Column':
-					// TODO support indexBy
 					$column = array();
-					foreach($data as $dataRow) {
-						$row = array();
-						$c = count($dataRow);
-						for($i = 0; $i < $c; ) {
-							$row[$dataRow[$i++]] = $dataRow[$i++];
+					foreach($data as $row) {
+						$row['_source']['id'] = $row['_id'];
+						if ($this->indexBy === null) {
+							$column[] = $row['_source'][$columnName];
+						} else {
+							if (is_string($this->indexBy)) {
+								$key = $row['_source'][$this->indexBy];
+							} else {
+								$key = call_user_func($this->indexBy, $row['_source']);
+							}
+							$models[$key] = $row;
 						}
-						$column[] = $row[$columnName];
 					}
 					return $column;
 				case 'Count':
@@ -410,6 +415,24 @@ class ActiveQuery extends \yii\base\Component
 	public function asArray($value = true)
 	{
 		$this->asArray = $value;
+		return $this;
+	}
+
+	/**
+	 * Sets the SELECT part of the query.
+	 * @param string|array $columns the columns to be selected.
+	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
+	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return Query the query object itself
+	 */
+	public function select($columns)
+	{
+		if (!is_array($columns)) {
+			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+		}
+		$this->select = $columns;
 		return $this;
 	}
 
