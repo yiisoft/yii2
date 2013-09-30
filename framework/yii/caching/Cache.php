@@ -212,7 +212,7 @@ abstract class Cache extends Component implements \ArrayAccess
 			$value = call_user_func($this->serializer[0], array($value, $dependency));
 		}
 		$key = $this->buildKey($key);
-		return $this->setValue($key, $value, $expire);
+		return $this->setValue($key, $value, $expire = 0);
 	}
 
 	/**
@@ -238,7 +238,7 @@ abstract class Cache extends Component implements \ArrayAccess
 			$value = call_user_func($this->serializer[0], array($value, $dependency));
 		}
 		$key = $this->buildKey($key);
-		return $this->addValue($key, $value, $expire);
+		return $this->addValue($key, $value, $expire = 0);
 	}
 
 	/**
@@ -281,7 +281,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	abstract protected function setValue($key, $value, $expire);
+	abstract protected function setValue($key, $value, $expire = 0);
 
 	/**
 	 * Stores a value identified by a key into cache if the cache does not contain this key.
@@ -292,7 +292,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	abstract protected function addValue($key, $value, $expire);
+	abstract protected function addValue($key, $value, $expire = 0);
 
 	/**
 	 * Deletes a value with the specified key from cache
