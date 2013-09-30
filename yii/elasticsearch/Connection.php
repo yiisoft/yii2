@@ -160,27 +160,18 @@ class Connection extends Component
 		// TODO HTTP request to localhost:9200/
 	}
 
+	public function getQueryBuilder()
+	{
+		return new QueryBuilder($this);
+	}
+
+	/**
+	 * @return \Guzzle\Http\Client
+	 */
 	public function http()
 	{
-		return new \Guzzle\Http\Client('http://localhost:9200/');
-	}
-
-	public function get($url)
-	{
-		$c = $this->initCurl($url);
-
-		$result = curl_exec($c);
-		curl_close($c);
-	}
-
-	private function initCurl($url)
-	{
-		$c = curl_init('http://localhost:9200/' . $url);
-		$fp = fopen("example_homepage.txt", "w");
-
-		curl_setopt($c, CURLOPT_FOLLOWLOCATION, false);
-
-		curl_setopt($c, CURLOPT_FILE, $fp);
-		curl_setopt($c, CURLOPT_HEADER, 0);
+		$guzzle = new \Guzzle\Http\Client('http://localhost:9200/');
+		//$guzzle->setDefaultOption()
+		return $guzzle;
 	}
 }

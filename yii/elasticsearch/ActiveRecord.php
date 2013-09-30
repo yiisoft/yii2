@@ -64,38 +64,42 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function updateAll($attributes, $condition = null, $params = array())
 	{
+		// TODO add support for further options as described in http://www.elasticsearch.org/guide/reference/api/bulk/
 		if (empty($attributes)) {
 			return 0;
 		}
-		$db = static::getDb();
+		if (count($condition) != 1 || !isset($condition[reset(static::primaryKey())])) {
+			throw new NotSupportedException('UpdateAll is only supported by primary key in elasticsearch.');
+		}
+		if (isset($attributes[reset(static::primaryKey())])) {
+			throw new NotSupportedException('Updating the primary key is currently not supported by elasticsearch.');
+		}
+		$query = '';
+		foreach((array) reset($condition) as $pk) {
+			if (is_array($pk)) {
+				$pk = reset($pk);
+			}
+			$action = Json::encode(array(
+				"update" => array(
+					"_id" => $pk,
+					"_type" => static::indexType(),
+					"_index" => static::indexName(),
+				),
+			));
+			$data = Json::encode(array(
+				"doc" => $attributes
+			));
+			$query .= $action . "\n" . $data . "\n";
+			// TODO implement pk change
+		}
+		$url = '/' . static::indexName() . '/' . static::indexType() . '/_bulk';
+		$response = static::getDb()->http()->post($url, array(), $query)->send();
+		$body = Json::decode($response->getBody(true));
 		$n=0;
-		foreach(static::fetchPks($condition) as $pk) {
-			$newPk = $pk;
-			$pk = static::buildKey($pk);
-			$key = static::tableName() . ':a:' . $pk;
-			// save attributes
-			$args = array($key);
-			foreach($attributes as $attribute => $value) {
-				if (isset($newPk[$attribute])) {
-					$newPk[$attribute] = $value;
-				}
-				$args[] = $attribute;
-				$args[] = $value;
+		foreach($body['items'] as $item) {
+			if ($item['update']['ok']) {
+				$n++;
 			}
-			$newPk = static::buildKey($newPk);
-			$newKey = static::tableName() . ':a:' . $newPk;
-			// rename index if pk changed
-			if ($newPk != $pk) {
-				$db->executeCommand('MULTI');
-				$db->executeCommand('HMSET', $args);
-				$db->executeCommand('LINSERT', array(static::tableName(), 'AFTER', $pk, $newPk));
-				$db->executeCommand('LREM', array(static::tableName(), 0, $pk));
-				$db->executeCommand('RENAME', array($key, $newKey));
-				$db->executeCommand('EXEC');
-			} else {
-				$db->executeCommand('HMSET', $args);
-			}
-			$n++;
 		}
 		return $n;
 	}
@@ -117,19 +121,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function updateAllCounters($counters, $condition = null, $params = array())
 	{
-		if (empty($counters)) {
-			return 0;
-		}
-		$db = static::getDb();
-		$n=0;
-		foreach(static::fetchPks($condition) as $pk) {
-			$key = static::tableName() . ':a:' . static::buildKey($pk);
-			foreach($counters as $attribute => $value) {
-				$db->executeCommand('HINCRBY', array($key, $attribute, $value));
-			}
-			$n++;
-		}
-		return $n;
+		throw new NotSupportedException('Update Counters is not supported by elasticsearch.');
 	}
 
 	/**
@@ -149,23 +141,36 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function deleteAll($condition = null, $params = array())
 	{
-		$db = static::getDb();
-		$attributeKeys = array();
-		$pks = static::fetchPks($condition);
-		$db->executeCommand('MULTI');
-		foreach($pks as $pk) {
-			$pk = static::buildKey($pk);
-			$db->executeCommand('LREM', array(static::tableName(), 0, $pk));
-			$attributeKeys[] = static::tableName() . ':a:' . $pk;
+		// TODO use delete By Query feature
+		// http://www.elasticsearch.org/guide/reference/api/delete-by-query/
+		if (count($condition) != 1 || !isset($condition[reset(static::primaryKey())])) {
+			throw new NotSupportedException('DeleteAll is only supported by primary key in elasticsearch.');
 		}
-		if (empty($attributeKeys)) {
-			$db->executeCommand('EXEC');
-			return 0;
+		$query = '';
+		foreach((array) reset($condition) as $pk) {
+			if (is_array($pk)) {
+				$pk = reset($pk);
+			}
+			$query .= Json::encode(array(
+				"delete" => array(
+					"_id" => $pk,
+					"_type" => static::indexType(),
+					"_index" => static::indexName(),
+				),
+			)) . "\n";
 		}
-		$db->executeCommand('DEL', $attributeKeys);
-		$result = $db->executeCommand('EXEC');
-		return end($result);
+		$url = '/' . static::indexName() . '/' . static::indexType() . '/_bulk';
+		$response = static::getDb()->http()->post($url, array(), $query)->send();
+		$body = Json::decode($response->getBody(true));
+		$n=0;
+		foreach($body['items'] as $item) {
+			if ($item['delete']['ok']) {
+				$n++;
+			}
+		}
+		return $n;
 	}
+
 	/**
 	 * Creates an [[ActiveQuery]] instance.
 	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
@@ -187,16 +192,6 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	public static function tableName()
 	{
 		return static::getTableSchema()->name;
-	}
-
-	/**
-	 * This method is ment to be overridden in redis ActiveRecord subclasses to return a [[RecordSchema]] instance.
-	 * @return RecordSchema
-	 * @throws \yii\base\InvalidConfigException
-	 */
-	public static function getRecordSchema()
-	{
-		throw new InvalidConfigException(__CLASS__.'::getRecordSchema() needs to be overridden in subclasses and return a RecordSchema.');
 	}
 
 	public static function primaryKey()
