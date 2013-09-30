@@ -315,9 +315,12 @@ class ActiveQuery extends \yii\base\Component
 			foreach($pks as $pk) {
 				if (++$i > $start && ($this->limit === null || $i <= $start + $this->limit)) {
 					$key = $modelClass::tableName() . ':a:' . $modelClass::buildKey($pk);
-					$data[] = $db->executeCommand('HGETALL', array($key));
-					if ($type === 'One' && $this->orderBy === null) {
-						break;
+					$result = $db->executeCommand('HGETALL', array($key));
+					if (!empty($result)) {
+						$data[] = $result;
+						if ($type === 'One' && $this->orderBy === null) {
+							break;
+						}
 					}
 				}
 			}
