@@ -146,6 +146,19 @@ class Controller extends \yii\base\Controller
 	}
 
 	/**
+	 * Redirects the browser to the last visited page.
+	 * @param string|array $defaultUrl the default return URL in case it was not set previously.
+	 * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
+	 * Please refer to [[User::setReturnUrl()]] on accepted format of the URL.
+	 * @return Response the current response object
+	 * @see User::getReturnUrl()
+	 */
+	public function goBack($defaultUrl = null)
+	{
+		return Yii::$app->getResponse()->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
+	}
+
+	/**
 	 * Refreshes the current page.
 	 * This method is a shortcut to [[Response::refresh()]].
 	 * @param string $anchor the anchor that should be appended to the redirection URL.
