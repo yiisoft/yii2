@@ -103,9 +103,9 @@ class Pagination extends Object
 	 */
 	public $pageSize = 20;
 	/**
-	 * @var integer total number of items.
+	 * @var integer total number of items, null indicating not still avaliable.
 	 */
-	public $totalCount = 0;
+	public $totalCount = null;
 
 
 	/**

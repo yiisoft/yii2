@@ -123,7 +123,7 @@ class ActiveDataProvider extends DataProvider
 	 */
 	public function getTotalCount()
 	{
-		if ($this->getPagination() === false) {
+		if (!$this->paginationEnabled) {
 			return $this->getCount();
 		} elseif ($this->_totalCount === null) {
 			if (!$this->query instanceof Query) {
