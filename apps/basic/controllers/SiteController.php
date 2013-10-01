@@ -61,7 +61,7 @@ class SiteController extends Controller
 	{
 		$model = new LoginForm();
 		if ($model->load($_POST) && $model->login()) {
-			return $this->goHome();
+			return $this->goBack();
 		} else {
 			return $this->render('login', array(
 				'model' => $model,
