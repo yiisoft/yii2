@@ -45,6 +45,9 @@ class ActiveDataProviderTest extends DatabaseTestCase
 		));
 		$orders = $provider->getModels();
 		$this->assertEquals(2, count($orders));
+		
+		$pagination = $provider->getPagination();
+		$this->assertEquals(2, $pagination->getPageCount());
 	}
 
 	public function testQuery()
@@ -69,6 +72,9 @@ class ActiveDataProviderTest extends DatabaseTestCase
 		));
 		$orders = $provider->getModels();
 		$this->assertEquals(2, count($orders));
+		
+		$pagination = $provider->getPagination();
+		$this->assertEquals(2, $pagination->getPageCount());
 	}
 
 	public function testRefresh()
@@ -82,8 +88,10 @@ class ActiveDataProviderTest extends DatabaseTestCase
 
 		$provider->getPagination()->pageSize = 2;
 		$this->assertEquals(3, count($provider->getModels()));
+		
 		$provider->refresh();
 		$this->assertEquals(2, count($provider->getModels()));
+		$this->assertEquals(2, $provider->getPagination()->getPageCount());
 	}
 	
 	public function testPaginationBeforeModels() 

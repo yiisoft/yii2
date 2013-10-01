@@ -34,7 +34,9 @@ abstract class DataProvider extends Component implements DataProviderInterface
 	 * Otherwise, the [[pagination]] and [[sort]] mainly not work properly.
 	 */
 	public $id;
-
+	
+	protected $paginationEnabled = true;
+	
 	private $_sort;
 	private $_pagination;
 
@@ -43,14 +45,20 @@ abstract class DataProvider extends Component implements DataProviderInterface
 	 */
 	public function getPagination()
 	{
-		if ($this->_pagination === null) {
-			$this->_pagination = new Pagination;
+		$pagination = $this->_pagination;
+		
+		if ($pagination === null) {
+			$pagination = new Pagination;
 			if ($this->id !== null) {
-				$this->_pagination->pageVar = $this->id . '-page';
+				$pagination->pageVar = $this->id . '-page';
 			}
-			$this->_pagination->totalCount = $this->getTotalCount();
+			$this->_pagination = $pagination;
 		}
-		return $this->_pagination;
+		
+		if ($pagination !== false && $pagination->totalCount === null) {
+			$pagination->totalCount = $this->getTotalCount();
+		}
+		return $pagination;
 	}
 
 	/**
@@ -77,6 +85,9 @@ abstract class DataProvider extends Component implements DataProviderInterface
 			$this->_pagination = Yii::createObject(array_merge($config, $value));
 		} elseif ($value instanceof Pagination || $value === false) {
 			$this->_pagination = $value;
+			if ($value === false) {
+				$this->paginationEnabled = false;
+			}
 		} else {
 			throw new InvalidParamException('Only Pagination instance, configuration array or false is allowed.');
 		}
