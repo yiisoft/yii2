@@ -383,7 +383,7 @@ abstract class Application extends Module
 	 * Returns the internationalization (i18n) component
 	 * @return \yii\i18n\I18N the internationalization component
 	 */
-	public function getI18N()
+	public function getI18n()
 	{
 		return $this->getComponent('i18n');
 	}
