@@ -157,6 +157,9 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 	}
 
 	/**
+	 * Returns the pagination object used by this data provider.
+	 * Note that you should call [[prepare()]] or [[getModels()]] first to get correct values
+	 * of [[Pagination::totalCount]] and [[Pagination::pageCount]].
 	 * @return Pagination|boolean the pagination object. If this is false, it means the pagination is disabled.
 	 */
 	public function getPagination()
