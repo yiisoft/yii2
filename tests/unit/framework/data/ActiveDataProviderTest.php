@@ -94,9 +94,10 @@ class ActiveDataProviderTest extends DatabaseTestCase
 			'query' => $query->from('tbl_order')->orderBy('id'),
 		));
 		$pagination = $provider->getPagination();
-		$this->assertEquals(1, $pagination->getPageCount());
+		$this->assertEquals(0, $pagination->getPageCount());
 		$this->assertCount(3, $provider->getModels());
-		
+		$this->assertEquals(1, $pagination->getPageCount());
+
 		$provider->getPagination()->pageSize = 2;
 		$this->assertEquals(3, count($provider->getModels()));
 		$provider->refresh();

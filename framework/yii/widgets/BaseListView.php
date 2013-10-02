@@ -83,6 +83,7 @@ abstract class BaseListView extends Widget
 		if ($this->dataProvider === null) {
 			throw new InvalidConfigException('The "dataProvider" property must be set.');
 		}
+		$this->dataProvider->prepare();
 	}
 
 	/**
