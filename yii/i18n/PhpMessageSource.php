@@ -26,6 +26,8 @@ use Yii;
  * );
  * ~~~
  *
+ * You may use [[fileMap]] to customize the association between category names and the file names.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -60,10 +62,8 @@ class PhpMessageSource extends MessageSource
 		$messageFile = Yii::getAlias($this->basePath) . "/$language/";
 		if (isset($this->fileMap[$category])) {
 			$messageFile .= $this->fileMap[$category];
-		} elseif (($pos = strrpos($category, '\\')) !== false) {
-			$messageFile .= (substr($category, $pos) . '.php');
 		} else {
-			$messageFile .= "$category.php";
+			$messageFile .= str_replace('\\', '/', $category) . '.php';
 		}
 		if (is_file($messageFile)) {
 			$messages = include($messageFile);
