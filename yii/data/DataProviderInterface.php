@@ -19,6 +19,18 @@ namespace yii\data;
 interface DataProviderInterface
 {
 	/**
+	 * Prepares the data models and keys.
+	 *
+	 * This method will prepare the data models and keys that can be retrieved via
+	 * [[getModels()]] and [[getKeys()]].
+	 *
+	 * This method will be implicitly called by [[getModels()]] and [[getKeys()]] if it has not been called before.
+	 *
+	 * @param boolean $forcePrepare whether to force data preparation even if it has been done before.
+	 */
+	public function prepare($forcePrepare = false);
+
+	/**
 	 * Returns the number of data models in the current page.
 	 * This is equivalent to `count($provider->getModels())`.
 	 * When [[pagination]] is false, this is the same as [[totalCount]].
