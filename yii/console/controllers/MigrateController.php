@@ -584,7 +584,7 @@ class MigrateController extends Controller
 			->from($this->migrationTable)
 			->orderBy('version DESC')
 			->limit($limit)
-			->createCommand()
+			->createCommand($this->db)
 			->queryAll();
 		$history = ArrayHelper::map($rows, 'version', 'apply_time');
 		unset($history[self::BASE_MIGRATION]);
