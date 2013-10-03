@@ -464,6 +464,9 @@ class Generator extends \yii\gii\Generator
 			return $this->_tableNames;
 		}
 		$db = $this->getDbConnection();
+		if ($db === null) {
+			return array();
+		}
 		$tableNames = array();
 		if (strpos($this->tableName, '*') !== false) {
 			if (($pos = strrpos($this->tableName, '.')) !== false) {
