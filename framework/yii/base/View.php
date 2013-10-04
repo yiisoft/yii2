@@ -507,7 +507,7 @@ class View extends Component
 	/**
 	 * Marks the beginning of an HTML page.
 	 */
-	public function beginPage()
+	public function MarkBeginPage()
 	{
 		ob_start();
 		ob_implicit_flush(false);
@@ -518,7 +518,7 @@ class View extends Component
 	/**
 	 * Marks the ending of an HTML page.
 	 */
-	public function endPage()
+	public function MarkEndPage()
 	{
 		$this->trigger(self::EVENT_END_PAGE);
 
@@ -543,7 +543,7 @@ class View extends Component
 	/**
 	 * Marks the beginning of an HTML body section.
 	 */
-	public function beginBody()
+	public function MarkBeginBody()
 	{
 		echo self::PH_BODY_BEGIN;
 		$this->trigger(self::EVENT_BEGIN_BODY);
@@ -552,7 +552,7 @@ class View extends Component
 	/**
 	 * Marks the ending of an HTML body section.
 	 */
-	public function endBody()
+	public function MarkEndBody()
 	{
 		$this->trigger(self::EVENT_END_BODY);
 		echo self::PH_BODY_END;
@@ -561,7 +561,7 @@ class View extends Component
 	/**
 	 * Marks the position of an HTML head section.
 	 */
-	public function head()
+	public function MarkHead()
 	{
 		echo self::PH_HEAD;
 	}
