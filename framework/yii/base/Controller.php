@@ -272,7 +272,7 @@ class Controller extends Component
 	 * - path alias (e.g. "@app/views/site/index");
 	 * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
 	 *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
-	 * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
+	 * - absolute path within module 'views' directory (e.g. "/site/index"): the view name starts with a single slash.
 	 *   The actual view file will be looked for under the [[Module::viewPath|view path]] of [[module]].
 	 * - relative path (e.g. "index"): the actual view file will be looked for under [[viewPath]].
 	 *
@@ -290,9 +290,11 @@ class Controller extends Component
 	 *    and context module. The layout name can be
 	 *
 	 * - a path alias (e.g. "@app/views/layouts/main");
-	 * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
+	 * - an absolute path (e.g. "//main"): the layout name starts with a slash. The actual layout file will be
 	 *   looked for under the [[Application::layoutPath|layout path]] of the application;
-	 * - a relative path (e.g. "main"): the actual layout layout file will be looked for under the
+	 * - absolute path within module 'views' directory (e.g. "/layouts/main"): the layout name starts with a single slash.
+	 *   The actual layout file will be looked for under the [[Module::viewPath|view path]] of [[module]].
+	 * - a relative path (e.g. "main"): the actual layout file will be looked for under the
 	 *   [[Module::layoutPath|layout path]] of the context module.
 	 *
 	 * If the layout name does not contain a file extension, it will use the default one `.php`.
@@ -377,6 +379,17 @@ class Controller extends Component
 	}
 
 	/**
+	 * Returns the directory containing layout files for this controller.
+	 * The default implementation returns the directory named as 'layouts' under the [[module]]'s
+	 * [[viewPath]] directory.
+	 * @return string the directory containing the layout files for this controller.
+	 */
+	public function getLayoutPath()
+	{
+		return $this->module->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
+	}
+
+	/**
 	 * Finds the view file based on the given view name.
 	 * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
 	 * on how to specify this parameter.
@@ -425,11 +438,16 @@ class Controller extends Component
 		}
 
 		if (strncmp($view, '@', 1) === 0) {
+			// e.g. "@app/views/main"
 			$file = Yii::getAlias($view);
+		} elseif (strncmp($view, '//', 2) === 0) {
+			// e.g. "//layouts/main"
+			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
 		} elseif (strncmp($view, '/', 1) === 0) {
-			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+			// e.g. "/layouts/main"
+			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
 		} else {
-			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+			$file = $this->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
 		}
 
 		if (pathinfo($file, PATHINFO_EXTENSION) === '') {
@@ -437,4 +455,5 @@ class Controller extends Component
 		}
 		return $file;
 	}
+}
 }
