@@ -1,8 +1,8 @@
 Configuration
 =============
 
-In Yii application and majority of components have sensible defaults so it's unlikely you spend lots of time configuring
-it. Still there are some mandatory options such as database connection you should set up.
+Yii applications rely upon components to perform most of the common tasks, such as connecting to a database, routing browser requests, and handling sessions. How these stock components behave can be adjusted by *configuring* your Yii application. The majority of components have sensible defaults, so it's unlikely that you'll spend a lot of time configuring
+it. Still there are some mandatory settings, such as the database connection, that you will have to establish.
 
 How application is configured depends on application template but there are some general principles applying in any case.
 
