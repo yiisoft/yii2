@@ -73,7 +73,7 @@ class DataColumn extends Column
 	 * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
 	 * render the HTML attributes for the generated filter input fields.
 	 */
-	public $filterInputOptions = array('class' => 'form-control');
+	public $filterInputOptions = array('class' => 'form-control', 'id' => null);
 
 
 	protected function renderHeaderCellContent()

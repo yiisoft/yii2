@@ -23,7 +23,10 @@ use yii\widgets\ActiveForm;
 
 <div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-search">
 
-	<?php echo '<?php'; ?> $form = ActiveForm::begin(array('method' => 'get')); ?>
+	<?php echo '<?php'; ?> $form = ActiveForm::begin(array(
+		'action' => array('index'),
+		'method' => 'get',
+	)); ?>
 
 <?php
 $count = 0;
