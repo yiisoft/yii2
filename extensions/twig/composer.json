@@ -23,6 +23,6 @@
 		"twig/twig": "1.13.*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\twig": "" }
+		"psr-0": { "yii\\twig\\": "" }
 	}
 }

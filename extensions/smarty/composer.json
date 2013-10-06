@@ -23,6 +23,6 @@
 		"smarty/smarty": "v3.1.13"
 	},
 	"autoload": {
-		"psr-0": { "yii\\smarty": "" }
+		"psr-0": { "yii\\smarty\\": "" }
 	}
 }
