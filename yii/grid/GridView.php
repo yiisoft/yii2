@@ -14,6 +14,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\widgets\BaseListView;
 
 /**
@@ -137,6 +138,14 @@ class GridView extends BaseListView
 	 */
 	public $filterModel;
 	/**
+	 * @var string|array the URL for returning the filtering result. [[Html::url()]] will be called to
+	 * normalize the URL. If not set, the current controller action will be used.
+	 * When the user makes change to any filter input, the current filtering inputs will be appended
+	 * as GET parameters to this URL.
+	 */
+	public $filterUrl;
+	public $filterSelector;
+	/**
 	 * @var string whether the filters should be displayed in the grid view. Valid values include:
 	 *
 	 * - [[FILTER_POS_HEADER]]: the filters will be displayed on top of each column's header cell.
@@ -167,6 +176,9 @@ class GridView extends BaseListView
 		if (!isset($this->options['id'])) {
 			$this->options['id'] = $this->getId();
 		}
+		if (!isset($this->filterRowOptions['id'])) {
+			$this->filterRowOptions['id'] = $this->options['id'] . '-filters';
+		}
 
 		$this->initColumns();
 	}
@@ -177,10 +189,31 @@ class GridView extends BaseListView
 	public function run()
 	{
 		$id = $this->options['id'];
+		$options = Json::encode($this->getClientOptions());
 		$view = $this->getView();
 		GridViewAsset::register($view);
-		$view->registerJs("jQuery('#$id').yiiGridView();");
+		$view->registerJs("jQuery('#$id').yiiGridView($options);");
 		parent::run();
+	}
+
+
+	/**
+	 * Returns the options for the grid view JS widget.
+	 * @return array the options
+	 */
+	protected function getClientOptions()
+	{
+		$filterUrl = isset($this->filterUrl) ? $this->filterUrl : array(Yii::$app->controller->action->id);
+		$id = $this->filterRowOptions['id'];
+		$filterSelector = "#$id input, #$id select";
+		if (isset($this->filterSelector)) {
+			$filterSelector .= ', ' . $this->filterSelector;
+		}
+
+		return array(
+			'filterUrl' => Html::url($filterUrl),
+			'filterSelector' => $filterSelector,
+		);
 	}
 
 	/**
