@@ -46,7 +46,7 @@ class QueryBuilder extends \yii\base\Object
 	{
 		$searchQuery = array();
 		$this->buildSelect($searchQuery, $query->select);
-//		$this->buildFrom(&$searchQuery, $query->from);
+//		$this->buildFrom($searchQuery, $query->from);
 		$this->buildCondition($searchQuery, $query->where);
 		$this->buildOrderBy($searchQuery, $query->orderBy);
 		$this->buildLimit($searchQuery, $query->limit, $query->offset);
@@ -209,7 +209,12 @@ class QueryBuilder extends \yii\base\Object
 
 	private function buildHashCondition(&$query, $condition)
 	{
-		$query['query']['term'] = $condition;
+		foreach($condition as $attribute => $value) {
+			// ['query']['filteredQuery']
+			$query['filter']['bool']['must'][] = array(
+				'term' => array($attribute => $value),
+			);
+		}
 		return; // TODO more
 		$parts = array();
 		foreach ($condition as $column => $value) {

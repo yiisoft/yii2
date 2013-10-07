@@ -54,6 +54,23 @@ class Connection extends Component
 	}
 
 	/**
+	 * Creates a command for execution.
+	 * @param string $query the SQL statement to be executed
+	 * @return Command the DB command
+	 */
+	public function createCommand($query = null, $index = null, $type = null)
+	{
+		$this->open();
+		$command = new Command(array(
+			'db' => $this,
+			'query' => $query,
+			'index' => $index,
+			'type' => $type,
+		));
+		return $command;
+	}
+
+	/**
 	 * Closes the connection when this component is being serialized.
 	 * @return array
 	 */

@@ -325,7 +325,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 			$values = $this->getDirtyAttributes($attributes);
 			$key = reset($this->primaryKey());
 			$pk = $this->getAttribute($key);
-			unset($values[$key]);
+			//unset($values[$key]);
 
 			// save attributes
 			if ($pk === null) {
