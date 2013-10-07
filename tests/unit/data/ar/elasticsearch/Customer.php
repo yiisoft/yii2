@@ -35,6 +35,6 @@ class Customer extends ActiveRecord
 
 	public static function active($query)
 	{
-		$query->andWhere('status=1');
+		$query->andWhere(array('status' => 1));
 	}
 }
