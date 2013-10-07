@@ -42,7 +42,7 @@ DOCUMENTATION
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.
 
-We are writing more documentation to get you started and learn more in depth.
+[Definitive Guide draft](docs/guide/index.md) is available. It's not complete yet but main parts are already OK.
 
 
 HOW TO PARTICIPATE
