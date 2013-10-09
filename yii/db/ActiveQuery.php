@@ -55,12 +55,6 @@ class ActiveQuery extends Query
 	 */
 	public $with;
 	/**
-	 * @var string|callable $column the name of the column by which the query results should be indexed by.
-	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-	 * row or model data. For more details, see [[indexBy()]].
-	 */
-	public $indexBy;
-	/**
 	 * @var boolean whether to return each record as an array. If false (default), an object
 	 * of [[modelClass]] will be created to represent each record.
 	 */
