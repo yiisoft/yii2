@@ -7,7 +7,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\renderers;
+namespace yii\twig;
 
 use Yii;
 use yii\base\View;
