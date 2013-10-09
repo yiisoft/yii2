@@ -17,6 +17,14 @@ use Composer\Repository\InstalledRepositoryInterface;
  */
 class Installer extends LibraryInstaller
 {
+	const EXTRA_WRITABLES = 'yii-writables';
+	const EXTRA_EXECUTABLES = 'yii-executables';
+	const EXTRA_CONFIG = 'yii-config';
+	const EXTRA_COMMANDS = 'yii-commands';
+	const EXTRA_ALIASES = 'yii-aliases';
+	const EXTRA_PREINIT = 'yii-preinit';
+	const EXTRA_INIT = 'yii-init';
+
 	/**
 	 * @inheritdoc
 	 */
@@ -65,11 +73,11 @@ class Installer extends LibraryInstaller
 
 		$extra = $package->getExtra();
 
-		if (isset($extra['preinit']) && is_string($extra['preinit'])) {
-			$extension['preinit'] = "<vendor-dir>/$root/" . ltrim(str_replace('\\', '/', $extra['preinit']), '/');
+		if (isset($extra[self::EXTRA_PREINIT]) && is_string($extra[self::EXTRA_PREINIT])) {
+			$extension[self::EXTRA_PREINIT] = "<vendor-dir>/$root/" . ltrim(str_replace('\\', '/', $extra[self::EXTRA_PREINIT]), '/');
 		}
-		if (isset($extra['init']) && is_string($extra['init'])) {
-			$extension['init'] = "<vendor-dir>/$root/" . ltrim(str_replace('\\', '/', $extra['init']), '/');
+		if (isset($extra[self::EXTRA_INIT]) && is_string($extra[self::EXTRA_INIT])) {
+			$extension[self::EXTRA_INIT] = "<vendor-dir>/$root/" . ltrim(str_replace('\\', '/', $extra[self::EXTRA_INIT]), '/');
 		}
 
 		if (isset($extra['aliases']) && is_array($extra['aliases'])) {
@@ -115,11 +123,11 @@ class Installer extends LibraryInstaller
 					$extension['aliases'][$alias] = '<vendor-dir>' . substr($path, $n);
 				}
 			}
-			if (isset($extension['preinit'])) {
-				$extension['preinit'] = '<vendor-dir>' . substr($extension['preinit'], $n);
+			if (isset($extension[self::EXTRA_PREINIT])) {
+				$extension[self::EXTRA_PREINIT] = '<vendor-dir>' . substr($extension[self::EXTRA_PREINIT], $n);
 			}
-			if (isset($extension['init'])) {
-				$extension['init'] = '<vendor-dir>' . substr($extension['init'], $n);
+			if (isset($extension[self::EXTRA_INIT])) {
+				$extension[self::EXTRA_INIT] = '<vendor-dir>' . substr($extension[self::EXTRA_INIT], $n);
 			}
 		}
 		return $extensions;
@@ -130,5 +138,71 @@ class Installer extends LibraryInstaller
 		$file = $this->vendorDir . '/yii-extensions.php';
 		$array = str_replace("'<vendor-dir>", '$vendorDir . \'', var_export($extensions, true));
 		file_put_contents($file, "<?php\n\$vendorDir = __DIR__;\n\nreturn $array;\n");
+	}
+
+
+	/**
+	 * Sets the correct permissions of files and directories.
+	 * @param CommandEvent $event
+	 */
+	public static function setPermissions($event)
+	{
+		$options = array_merge(array(
+			self::EXTRA_WRITABLES => array(),
+			self::EXTRA_EXECUTABLES => array(),
+		), $event->getComposer()->getPackage()->getExtra());
+
+		foreach ((array)$options[self::EXTRA_WRITABLES] as $path) {
+			echo "Setting writable: $path ...";
+			if (is_dir($path)) {
+				chmod($path, 0777);
+				echo "done\n";
+			} else {
+				echo "The directory was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path;
+				return;
+			}
+		}
+
+		foreach ((array)$options[self::EXTRA_EXECUTABLES] as $path) {
+			echo "Setting executable: $path ...";
+			if (is_file($path)) {
+				chmod($path, 0755);
+				echo "done\n";
+			} else {
+				echo "\n\tThe file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Executes a yii command.
+	 * @param CommandEvent $event
+	 */
+	public static function run($event)
+	{
+		$options = array_merge(array(
+			self::EXTRA_COMMANDS => array(),
+		), $event->getComposer()->getPackage()->getExtra());
+
+		if (!isset($options[self::EXTRA_CONFIG])) {
+			throw new Exception('Please specify the "' . self::EXTRA_CONFIG . '" parameter in composer.json.');
+		}
+		$configFile = getcwd() . '/' . $options[self::EXTRA_CONFIG];
+		if (!is_file($configFile)) {
+			throw new Exception("Config file does not exist: $configFile");
+		}
+
+		require_once(__DIR__ . '/../../../yii2/yii/Yii.php');
+		$application = new Application(require($configFile));
+		$request = $application->getRequest();
+
+		foreach ((array)$options[self::EXTRA_COMMANDS] as $command) {
+			$params = str_getcsv($command, ' '); // see http://stackoverflow.com/a/6609509/291573
+			$request->setParams($params);
+			list($route, $params) = $request->resolve();
+			echo "Running command: yii {$command}\n";
+			$application->runAction($route, $params);
+		}
 	}
 }
