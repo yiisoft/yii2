@@ -380,6 +380,17 @@ class UrlRuleTest extends TestCase
 				),
 			),
 			array(
+				'with dot', // https://github.com/yiisoft/yii/issues/2945
+				array(
+					'pattern' => 'posts.html',
+					'route' => 'post/index',
+				),
+				array(
+					array('posts.html', 'post/index'),
+					array('postsahtml', false),
+				),
+			),
+			array(
 				'creation only',
 				array(
 					'pattern' => 'posts',
