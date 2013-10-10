@@ -166,7 +166,7 @@ class Query extends Component
 	 * }
 	 * ~~~
 	 *
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 */
 	public function indexBy($column)
 	{
@@ -325,7 +325,7 @@ class Query extends Component
 	 * (which means the column contains a DB expression).
 	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 */
 	public function select($columns, $option = null)
 	{
@@ -340,7 +340,7 @@ class Query extends Component
 	/**
 	 * Sets the value indicating whether to SELECT DISTINCT or not.
 	 * @param bool $value whether to SELECT DISTINCT or not.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 */
 	public function distinct($value = true)
 	{
@@ -355,7 +355,7 @@ class Query extends Component
 	 * Table names can contain schema prefixes (e.g. `'public.tbl_user'`) and/or table aliases (e.g. `'tbl_user u'`).
 	 * The method will automatically quote the table names unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 */
 	public function from($tables)
 	{
@@ -431,7 +431,7 @@ class Query extends Component
 	 *
 	 * @param string|array $condition the conditions that should be put in the WHERE part.
 	 * @param array $params the parameters (name => value) to be bound to the query.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see andWhere()
 	 * @see orWhere()
 	 */
@@ -448,7 +448,7 @@ class Query extends Component
 	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see where()
 	 * @see orWhere()
 	 */
@@ -469,7 +469,7 @@ class Query extends Component
 	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see where()
 	 * @see andWhere()
 	 */
@@ -560,7 +560,7 @@ class Query extends Component
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see addGroupBy()
 	 */
 	public function groupBy($columns)
@@ -578,7 +578,7 @@ class Query extends Component
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. array('id', 'name')).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see groupBy()
 	 */
 	public function addGroupBy($columns)
@@ -599,7 +599,7 @@ class Query extends Component
 	 * @param string|array $condition the conditions to be put after HAVING.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see andHaving()
 	 * @see orHaving()
 	 */
@@ -616,7 +616,7 @@ class Query extends Component
 	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see having()
 	 * @see orHaving()
 	 */
@@ -637,7 +637,7 @@ class Query extends Component
 	 * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
 	 * on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see having()
 	 * @see andHaving()
 	 */
@@ -659,7 +659,7 @@ class Query extends Component
 	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see addOrderBy()
 	 */
 	public function orderBy($columns)
@@ -675,7 +675,7 @@ class Query extends Component
 	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see orderBy()
 	 */
 	public function addOrderBy($columns)
@@ -710,7 +710,7 @@ class Query extends Component
 	/**
 	 * Sets the LIMIT part of the query.
 	 * @param integer $limit the limit. Use null or negative value to disable limit.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 */
 	public function limit($limit)
 	{
@@ -721,7 +721,7 @@ class Query extends Component
 	/**
 	 * Sets the OFFSET part of the query.
 	 * @param integer $offset the offset. Use null or negative value to disable offset.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 */
 	public function offset($offset)
 	{
@@ -732,7 +732,7 @@ class Query extends Component
 	/**
 	 * Appends a SQL statement using UNION operator.
 	 * @param string|Query $sql the SQL statement to be appended using UNION
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 */
 	public function union($sql)
 	{
@@ -744,7 +744,7 @@ class Query extends Component
 	 * Sets the parameters to be bound to the query.
 	 * @param array $params list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name' => 'Dan', ':age' => 31)`.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see addParams()
 	 */
 	public function params($params)
@@ -757,7 +757,7 @@ class Query extends Component
 	 * Adds additional parameters to be bound to the query.
 	 * @param array $params list of query parameter values indexed by parameter placeholders.
 	 * For example, `array(':name' => 'Dan', ':age' => 31)`.
-	 * @return Query the query object itself
+	 * @return static the query object itself
 	 * @see params()
 	 */
 	public function addParams($params)

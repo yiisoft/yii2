@@ -168,7 +168,7 @@ class ActiveQuery extends Query
 	/**
 	 * Sets the [[asArray]] property.
 	 * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
-	 * @return ActiveQuery the query object itself
+	 * @return static the query object itself
 	 */
 	public function asArray($value = true)
 	{
@@ -196,7 +196,7 @@ class ActiveQuery extends Query
 	 * ))->all();
 	 * ~~~
 	 *
-	 * @return ActiveQuery the query object itself
+	 * @return static the query object itself
 	 */
 	public function with()
 	{
@@ -223,12 +223,11 @@ class ActiveQuery extends Query
 	 * }
 	 * ~~~
 	 *
-	 * @return ActiveQuery the query object itself
+	 * @return static the query object itself
 	 */
 	public function indexBy($column)
 	{
-		$this->indexBy = $column;
-		return $this;
+		parent::indexBy($column);
 	}
 
 	private function createModels($rows)

@@ -66,7 +66,7 @@ class ActiveRelation extends ActiveQuery
 	 * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
 	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
 	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
-	 * @return ActiveRelation the relation object itself.
+	 * @return static the relation object itself.
 	 */
 	public function via($relationName, $callable = null)
 	{
@@ -86,7 +86,7 @@ class ActiveRelation extends ActiveQuery
 	 * in the [[primaryModel]] table.
 	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
 	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
-	 * @return ActiveRelation
+	 * @return static
 	 */
 	public function viaTable($tableName, $link, $callable = null)
 	{
