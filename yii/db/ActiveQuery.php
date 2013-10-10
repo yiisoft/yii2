@@ -227,7 +227,7 @@ class ActiveQuery extends Query
 	 */
 	public function indexBy($column)
 	{
-		parent::indexBy($column);
+		return parent::indexBy($column);
 	}
 
 	private function createModels($rows)
