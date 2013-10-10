@@ -605,7 +605,7 @@ class Response extends \yii\base\Response
 	 * @param integer $statusCode the HTTP status code. If null, it will use 302.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
-	 * @return Response the response object itself
+	 * @return static the response object itself
 	 */
 	public function redirect($url, $statusCode = null)
 	{

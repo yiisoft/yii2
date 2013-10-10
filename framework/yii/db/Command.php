@@ -88,7 +88,7 @@ class Command extends \yii\base\Component
 	 * Specifies the SQL statement to be executed.
 	 * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
 	 * @param string $sql the SQL statement to be set.
-	 * @return Command this command instance
+	 * @return static this command instance
 	 */
 	public function setSql($sql)
 	{
@@ -174,7 +174,7 @@ class Command extends \yii\base\Component
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
 	 * @param integer $length length of the data type
 	 * @param mixed $driverOptions the driver-specific options
-	 * @return Command the current command being executed
+	 * @return static the current command being executed
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
 	 */
 	public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
@@ -201,7 +201,7 @@ class Command extends \yii\base\Component
 	 * placeholders, this will be the 1-indexed position of the parameter.
 	 * @param mixed $value The value to bind to the parameter
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-	 * @return Command the current command being executed
+	 * @return static the current command being executed
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
 	 */
 	public function bindValue($name, $value, $dataType = null)
@@ -225,7 +225,7 @@ class Command extends \yii\base\Component
 	 * e.g. `array(':name' => 'John', ':age' => 25)`. By default, the PDO type of each value is determined
 	 * by its PHP type. You may explicitly specify the PDO type by using an array: `array(value, type)`,
 	 * e.g. `array(':name' => 'John', ':profile' => array($profile, \PDO::PARAM_LOB))`.
-	 * @return Command the current command being executed
+	 * @return static the current command being executed
 	 */
 	public function bindValues($values)
 	{
