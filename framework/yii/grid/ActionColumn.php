@@ -73,6 +73,10 @@ class ActionColumn extends Column
 			return call_user_func($this->urlCreator, $model, $action);
 		} else {
 			$route = Inflector::camel2id(StringHelper::basename(get_class($model))) . '/' . $action;
+			$module = Yii::$app->controller->module->getUniqueId();
+			if($module !== ''){
+				$route = $module.'/'.$route;
+			}
 			$params = $model->getPrimaryKey(true);
 			if (count($params) === 1) {
 				$params = array('id' => reset($params));
