@@ -42,10 +42,10 @@ class AssetBundleTest extends \yiiunit\TestCase
 		$view = $this->getView();
 
 		$this->assertEmpty($view->assetBundles);
-		TestJqueryAsset::register($view);
+		TestSimpleAsset::register($view);
 		$this->assertEquals(1, count($view->assetBundles));
-		$this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
-		$this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset'] instanceof AssetBundle);
+		$this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
+		$this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset'] instanceof AssetBundle);
 
 		$expected = <<<EOF
 123<script src="/js/jquery.js"></script>
@@ -60,11 +60,13 @@ EOF;
 
 		$this->assertEmpty($view->assetBundles);
 		TestAssetBundle::register($view);
-		$this->assertEquals(2, count($view->assetBundles));
+		$this->assertEquals(3, count($view->assetBundles));
 		$this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetBundle', $view->assetBundles);
 		$this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
+		$this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetLevel3', $view->assetBundles);
 		$this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle'] instanceof AssetBundle);
 		$this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset'] instanceof AssetBundle);
+		$this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3'] instanceof AssetBundle);
 
 		$expected = <<<EOF
 1<link href="/files/cssFile.css" rel="stylesheet">
@@ -105,17 +107,21 @@ EOF;
 			TestJqueryAsset::register($view);
 		}
 		TestAssetBundle::register($view);
-		$this->assertEquals(2, count($view->assetBundles));
+		$this->assertEquals(3, count($view->assetBundles));
 		$this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetBundle', $view->assetBundles);
 		$this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
+		$this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetLevel3', $view->assetBundles);
 
 		$this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle'] instanceof AssetBundle);
 		$this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset'] instanceof AssetBundle);
+		$this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3'] instanceof AssetBundle);
 
 		$this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions);
 		$this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions['position']);
 		$this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']->jsOptions);
 		$this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']->jsOptions['position']);
+		$this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']->jsOptions);
+		$this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']->jsOptions['position']);
 
 		switch($pos)
 		{
@@ -183,6 +189,21 @@ EOF;
 		$this->setExpectedException('yii\\base\\InvalidConfigException');
 		TestAssetBundle::register($view);
 	}
+
+	public function testCircularDependency()
+	{
+		$this->setExpectedException('yii\\base\\InvalidConfigException');
+		TestAssetCircleA::register($this->getView());
+	}
+}
+
+class TestSimpleAsset extends AssetBundle
+{
+	public $basePath = '@testWebRoot/js';
+	public $baseUrl = '@testWeb/js';
+	public $js = array(
+		'jquery.js',
+	);
 }
 
 class TestAssetBundle extends AssetBundle
@@ -206,5 +227,38 @@ class TestJqueryAsset extends AssetBundle
 	public $baseUrl = '@testWeb/js';
 	public $js = array(
 		'jquery.js',
+	);
+	public $depends = array(
+		'yiiunit\\framework\\web\\TestAssetLevel3'
+	);
+}
+
+class TestAssetLevel3 extends AssetBundle
+{
+	public $basePath = '@testWebRoot/js';
+	public $baseUrl = '@testWeb/js';
+}
+
+class TestAssetCircleA extends AssetBundle
+{
+	public $basePath = '@testWebRoot/js';
+	public $baseUrl = '@testWeb/js';
+	public $js = array(
+		'jquery.js',
+	);
+	public $depends = array(
+		'yiiunit\\framework\\web\\TestAssetCircleB'
+	);
+}
+
+class TestAssetCircleB extends AssetBundle
+{
+	public $basePath = '@testWebRoot/js';
+	public $baseUrl = '@testWeb/js';
+	public $js = array(
+		'jquery.js',
+	);
+	public $depends = array(
+		'yiiunit\\framework\\web\\TestAssetCircleA'
 	);
 }
