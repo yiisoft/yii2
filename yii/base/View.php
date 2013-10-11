@@ -142,11 +142,11 @@ class View extends Component
 	 */
 	public $dynamicPlaceholders = array();
 	/**
-	 * @var array list of the registered asset bundles. The keys are the bundle names, and the values
-	 * are booleans indicating whether the bundles have been registered.
+	 * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
+	 * are the registered [[AssetBundle]] objects.
 	 * @see registerAssetBundle
 	 */
-	public $assetBundles;
+	public $assetBundles = array();
 	/**
 	 * @var string the page title
 	 */
@@ -523,6 +523,9 @@ class View extends Component
 		$this->trigger(self::EVENT_END_PAGE);
 
 		$content = ob_get_clean();
+		foreach(array_keys($this->assetBundles) as $bundle) {
+			$this->registerAssetFiles($bundle);
+		}
 		echo strtr($content, array(
 			self::PH_HEAD => $this->renderHeadHtml(),
 			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
@@ -530,7 +533,6 @@ class View extends Component
 		));
 
 		unset(
-			$this->assetBundles,
 			$this->metaTags,
 			$this->linkTags,
 			$this->css,
@@ -538,6 +540,24 @@ class View extends Component
 			$this->js,
 			$this->jsFiles
 		);
+	}
+
+	/**
+	 * Registers all files provided by an asset bundle including depending bundles files.
+	 * Removes a bundle from [[assetBundles]] once registered.
+	 * @param string $name name of the bundle to register
+	 */
+	private function registerAssetFiles($name)
+	{
+		if (!isset($this->assetBundles[$name])) {
+			return;
+		}
+		$bundle = $this->assetBundles[$name];
+		foreach($bundle->depends as $dep) {
+			$this->registerAssetFiles($dep);
+		}
+		$bundle->registerAssets($this);
+		unset($this->assetBundles[$name]);
 	}
 
 	/**
@@ -570,21 +590,44 @@ class View extends Component
 	 * Registers the named asset bundle.
 	 * All dependent asset bundles will be registered.
 	 * @param string $name the name of the asset bundle.
+	 * @param integer|null $position if set, this forces a minimum position for javascript files.
+	 * This will adjust depending assets javascript file position or fail if requirement can not be met.
+	 * If this is null, asset bundles position settings will not be changed.
+	 * See [[registerJsFile]] for more details on javascript position.
 	 * @return AssetBundle the registered asset bundle instance
 	 * @throws InvalidConfigException if the asset bundle does not exist or a circular dependency is detected
 	 */
-	public function registerAssetBundle($name)
+	public function registerAssetBundle($name, $position = null)
 	{
 		if (!isset($this->assetBundles[$name])) {
 			$am = $this->getAssetManager();
 			$bundle = $am->getBundle($name);
 			$this->assetBundles[$name] = false;
-			$bundle->registerAssets($this);
+			// register dependencies
+			$pos = isset($bundle->jsOptions['position']) ? $bundle->jsOptions['position'] : null;
+			foreach ($bundle->depends as $dep) {
+				$this->registerAssetBundle($dep, $pos);
+			}
 			$this->assetBundles[$name] = $bundle;
 		} elseif ($this->assetBundles[$name] === false) {
 			throw new InvalidConfigException("A circular dependency is detected for bundle '$name'.");
+		} else {
+			$bundle = $this->assetBundles[$name];
 		}
-		return $this->assetBundles[$name];
+
+		if ($position !== null) {
+			$pos = isset($bundle->jsOptions['position']) ? $bundle->jsOptions['position'] : null;
+			if ($pos === null) {
+				$bundle->jsOptions['position'] = $pos = $position;
+			} elseif ($pos > $position) {
+				throw new InvalidConfigException("An asset bundle that depends on '$name' has a higher javascript file position configured than '$name'.");
+			}
+			// update position for all dependencies
+			foreach ($bundle->depends as $dep) {
+				$this->registerAssetBundle($dep, $pos);
+			}
+		}
+		return $bundle;
 	}
 
 	/**
