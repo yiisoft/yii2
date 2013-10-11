@@ -130,7 +130,6 @@ class AssetBundle extends Object
 
 	/**
 	 * Registers the CSS and JS files with the given view.
-	 * This method will first register all dependent asset bundles.
 	 * It will then try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
 	 * CSS or JS files using [[AssetManager::converter|asset converter]].
 	 * @param \yii\base\View $view the view that the asset files to be registered with.
@@ -139,10 +138,6 @@ class AssetBundle extends Object
 	 */
 	public function registerAssets($view)
 	{
-		foreach ($this->depends as $name) {
-			$view->registerAssetBundle($name);
-		}
-
 		$this->publish($view->getAssetManager());
 
 		foreach ($this->js as $js) {
