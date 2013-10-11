@@ -620,7 +620,7 @@ class View extends Component
 			if ($pos === null) {
 				$bundle->jsOptions['position'] = $pos = $position;
 			} elseif ($pos > $position) {
-				throw new InvalidConfigException("A dependend AssetBundle of '$name' requires a higher position but it conflicts with the position set for '$name'!");
+				throw new InvalidConfigException("An asset bundle that depends on '$name' has a higher javascript file position configured than '$name'.");
 			}
 			foreach ($bundle->depends as $dep) {
 				$this->registerAssetBundle($dep, $pos);
