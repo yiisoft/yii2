@@ -251,7 +251,7 @@ class Command extends \yii\base\Component
 	 * @return integer the PDO type
 	 * @see http://www.php.net/manual/en/pdo.constants.php
 	 */
-	private function getPdoType($data)
+	protected function getPdoType($data)
 	{
 		static $typeMap = array( // php type => PDO type
 			'boolean' => \PDO::PARAM_BOOL,
