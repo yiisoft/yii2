@@ -543,6 +543,24 @@ class View extends Component
 	}
 
 	/**
+	 * Registers all files provided by an asset bundle including depending bundles files.
+	 * Removes a bundle from [[assetBundles]] once registered.
+	 * @param string $name name of the bundle to register
+	 */
+	private function registerAssetFiles($name)
+	{
+		if (!isset($this->assetBundles[$name])) {
+			return;
+		}
+		$bundle = $this->assetBundles[$name];
+		foreach($bundle->depends as $dep) {
+			$this->registerAssetFiles($dep);
+		}
+		$bundle->registerAssets($this);
+		unset($this->assetBundles[$name]);
+	}
+
+	/**
 	 * Marks the beginning of an HTML body section.
 	 */
 	public function beginBody()
@@ -568,25 +586,14 @@ class View extends Component
 		echo self::PH_HEAD;
 	}
 
-	protected function registerAssetFiles($name)
-	{
-		if (!isset($this->assetBundles[$name])) {
-			return;
-		}
-		$bundle = $this->assetBundles[$name];
-		foreach($bundle->depends as $depName) {
-			$this->registerAssetFiles($depName);
-		}
-		$bundle->registerAssets($this);
-		unset($this->assetBundles[$name]);
-	}
-
 	/**
 	 * Registers the named asset bundle.
 	 * All dependent asset bundles will be registered.
 	 * @param string $name the name of the asset bundle.
-	 * @param integer|null $position optional parameter to force a minimum Javascript position TODO link to relevant method
-	 * Null means to register on default position.
+	 * @param integer|null $position if set, this forces a minimum position for javascript files.
+	 * This will adjust depending assets javascript file position or fail if requirement can not be met.
+	 * If this is null, asset bundles position settings will not be changed.
+	 * See [[registerJsFile]] for more details on javascript position.
 	 * @return AssetBundle the registered asset bundle instance
 	 * @throws InvalidConfigException if the asset bundle does not exist or a circular dependency is detected
 	 */
