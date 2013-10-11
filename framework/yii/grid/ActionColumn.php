@@ -74,8 +74,8 @@ class ActionColumn extends Column
 		} else {
 			$route = Inflector::camel2id(StringHelper::basename(get_class($model))) . '/' . $action;
 			$module = Yii::$app->controller->module->getUniqueId();
-			if($module !== ''){
-				$route = $module.'/'.$route;
+			if($module !== '') {
+				$route = $module . '/' . $route;
 			}
 			$params = $model->getPrimaryKey(true);
 			if (count($params) === 1) {
