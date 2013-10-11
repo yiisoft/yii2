@@ -602,12 +602,12 @@ class Response extends \yii\base\Response
 	 * Any relative URL will be converted into an absolute one by prepending it with the host info
 	 * of the current request.
 	 *
-	 * @param integer $statusCode the HTTP status code. If null, it will use 302.
+	 * @param integer $statusCode the HTTP status code. Defaults to 302.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
 	 * @return static the response object itself
 	 */
-	public function redirect($url, $statusCode = null)
+	public function redirect($url, $statusCode = 302)
 	{
 		if (is_array($url) && isset($url[0])) {
 			// ensure the route is absolute
