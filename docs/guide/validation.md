@@ -38,7 +38,7 @@ Compares the specified attribute value with another value and validates if they 
 
 Verifies if the attribute represents a date, time or datetime in a proper format.
 
-- `format` the date format that the value being validated should follow accodring to [[http://www.php.net/manual/en/datetime.createfromformat.php]]. _('Y-m-d')_
+- `format` the date format that the value being validated should follow according to [[http://www.php.net/manual/en/datetime.createfromformat.php]]. _('Y-m-d')_
 - `timestampAttribute` the name of the attribute to receive the parsing result.
 
 ### `default`: [[DefaultValueValidator]]
