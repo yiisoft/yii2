@@ -175,7 +175,9 @@ $customer->delete();
 Customer::updateAllCounters(array('age' => 1));
 ```
 
-Notice that you can always use the `save` method, and ActiveRecord will automatically perform an INSERT for new records and an UPDATE for existing ones.
+> Info: The `save()` method will either perform an `INSERT` or `UPDATE` SQL statement, depending
+  on whether the ActiveRecord being saved is new or not by checking `ActiveRecord::isNewRecord`.
+
 
 Data Input and Validation
 -------------------------
