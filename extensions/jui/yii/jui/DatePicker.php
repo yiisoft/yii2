@@ -65,14 +65,14 @@ class DatePicker extends InputWidget
 		if ($this->language !== false) {
 			$view = $this->getView();
 			DatePickerRegionalAsset::register($view);
-			// do not pass in any options when creating the widget
-			// set the options later so that the options can be combined with regional options
+
+			$options = Json::encode($this->clientOptions);
+			$view->registerJs("$('#{$this->options['id']}').datepicker($.extend({}, $.datepicker.regional['{$this->language}'], $options));");
+
 			$options = $this->clientOptions;
-			$this->clientOptions = array();
+			$this->clientOptions = false;  // the datepicker js widget is already registered
 			$this->registerWidget('datepicker', DatePickerAsset::className());
 			$this->clientOptions = $options;
-			$options = Json::encode($options);
-			$view->registerJs("$('#{$this->options['id']}').datepicker('option', $.extend({}, $.datepicker.regional['{$this->language}'], $options));");
 		} else {
 			$this->registerWidget('datepicker', DatePickerAsset::className());
 		}
