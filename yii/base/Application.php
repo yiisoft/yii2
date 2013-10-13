@@ -450,7 +450,11 @@ abstract class Application extends Module
 			$msg .= "\nPrevious exception:\n";
 			$msg .= (string)$exception;
 			if (YII_DEBUG) {
-				echo $msg;
+				if (PHP_SAPI === 'cli') {
+					echo $msg . "\n";
+				} else {
+					echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, $this->charset) . '</pre>';
+				}
 			}
 			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
 			error_log($msg);
