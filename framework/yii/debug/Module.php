@@ -8,6 +8,7 @@
 namespace yii\debug;
 
 use Yii;
+use yii\base\Application;
 use yii\base\View;
 use yii\web\HttpException;
 
@@ -55,7 +56,11 @@ class Module extends \yii\base\Module
 		parent::init();
 		$this->dataPath = Yii::getAlias($this->dataPath);
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
-		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
+		// do not initialize view component before application is ready (needed when debug in preload)
+		$module = $this;
+		Yii::$app->on(Application::EVENT_BEFORE_ACTION, function() use ($module) {
+			Yii::$app->getView()->on(View::EVENT_END_BODY, array($module, 'renderToolbar'));
+		});
 
 		foreach (array_merge($this->corePanels(), $this->panels) as $id => $config) {
 			$config['module'] = $this;
