@@ -9,6 +9,7 @@ namespace yii\jui;
 
 use Yii;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * DatePicker renders an datepicker jQuery UI widget.
@@ -61,11 +62,19 @@ class DatePicker extends InputWidget
 	public function run()
 	{
 		echo $this->renderWidget() . "\n";
-		$this->registerWidget('datepicker', DatePickerAsset::className());
 		if ($this->language !== false) {
 			$view = $this->getView();
 			DatePickerRegionalAsset::register($view);
-			$view->registerJs("$('#{$this->options['id']}').datepicker('option', $.datepicker.regional['{$this->language}']);");
+			// do not pass in any options when creating the widget
+			// set the options later so that the options can be combined with regional options
+			$options = $this->clientOptions;
+			$this->clientOptions = array();
+			$this->registerWidget('datepicker', DatePickerAsset::className());
+			$this->clientOptions = $options;
+			$options = Json::encode($options);
+			$view->registerJs("$('#{$this->options['id']}').datepicker('option', $.extend({}, $.datepicker.regional['{$this->language}'], $options));");
+		} else {
+			$this->registerWidget('datepicker', DatePickerAsset::className());
 		}
 	}
 
