@@ -182,7 +182,6 @@ class CompareValidator extends Validator
 	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @throws InvalidConfigException if CompareValidator::operator is invalid
-	 * @codeCoverageIgnore
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{

@@ -81,8 +81,6 @@ class RegularExpressionValidator extends Validator
 	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
-	 * @throws InvalidConfigException if the "pattern" is not a valid regular expression
-	 * @codeCoverageIgnore
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
