@@ -4,9 +4,6 @@ namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
 
-/**
- * @codeCoverageIgnore
- */
 class FakedValidationModel extends Model
 {
 	public $val_attr_a;
