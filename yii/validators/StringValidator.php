@@ -149,12 +149,10 @@ class StringValidator extends Validator
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$label = $object->getAttributeLabel($attribute);
-		$value = $object->$attribute;
 
 		$options = array(
 			'message' => Html::encode(strtr($this->message, array(
 				'{attribute}' => $label,
-				'{value}' => $value,
 			))),
 		);
 
@@ -162,7 +160,6 @@ class StringValidator extends Validator
 			$options['min'] = $this->min;
 			$options['tooShort'] = Html::encode(strtr($this->tooShort, array(
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{min}' => $this->min,
 			)));
 		}
@@ -170,7 +167,6 @@ class StringValidator extends Validator
 			$options['max'] = $this->max;
 			$options['tooLong'] = Html::encode(strtr($this->tooLong, array(
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{max}' => $this->max,
 			)));
 		}
@@ -178,7 +174,6 @@ class StringValidator extends Validator
 			$options['is'] = $this->length;
 			$options['notEqual'] = Html::encode(strtr($this->notEqual, array(
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{length}' => $this->is,
 			)));
 		}

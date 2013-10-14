@@ -121,13 +121,11 @@ class NumberValidator extends Validator
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$label = $object->getAttributeLabel($attribute);
-		$value = $object->$attribute;
 
 		$options = array(
 			'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
 			'message' => Html::encode(strtr($this->message, array(
 				'{attribute}' => $label,
-				'{value}' => $value,
 			))),
 		);
 
@@ -135,7 +133,6 @@ class NumberValidator extends Validator
 			$options['min'] = $this->min;
 			$options['tooSmall'] = Html::encode(strtr($this->tooSmall, array(
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{min}' => $this->min,
 			)));
 		}
@@ -143,7 +140,6 @@ class NumberValidator extends Validator
 			$options['max'] = $this->max;
 			$options['tooBig'] = Html::encode(strtr($this->tooBig, array(
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{max}' => $this->max,
 			)));
 		}

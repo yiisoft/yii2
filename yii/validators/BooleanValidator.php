@@ -90,7 +90,6 @@ class BooleanValidator extends Validator
 			'falseValue' => $this->falseValue,
 			'message' => Html::encode(strtr($this->message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
 				'{true}' => $this->trueValue,
 				'{false}' => $this->falseValue,
 			))),

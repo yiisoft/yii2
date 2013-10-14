@@ -132,7 +132,6 @@ class UrlValidator extends Validator
 			'pattern' => new JsExpression($pattern),
 			'message' => Html::encode(strtr($this->message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
 			))),
 			'enableIDN' => (boolean)$this->enableIDN,
 		);
