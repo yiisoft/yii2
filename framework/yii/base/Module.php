@@ -620,7 +620,7 @@ abstract class Module extends Component
 			$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $id))) . 'Controller';
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
 			if (!is_file($classFile)) {
-				return false;
+				return $this->missingController($id, $route);
 			}
 			$className = ltrim($this->controllerNamespace . '\\' . $className, '\\');
 			Yii::$classMap[$className] = $classFile;
@@ -631,7 +631,21 @@ abstract class Module extends Component
 			}
 		}
 
-		return isset($controller) ? array($controller, $route) : false;
+		return isset($controller) ? array($controller, $route) : $this->missingController($id, $route);
+	}
+
+	/**
+	 * This method is invoked when the requested controller could not be found.
+	 * You may override this method to create a controller instance on demand.
+	 * @param string $id the id of the requested controller.
+	 * @param string $action the id of the requested action.
+	 * @return array|boolean If the controller is created successfully, it will be returned together
+	 * with the requested action ID. Otherwise false will be returned.
+	 * @see createController
+	 */
+	public function missingController($id, $action)
+	{
+		return false;
 	}
 
 	/**
