@@ -19,12 +19,7 @@ class ExistValidatorTest extends DatabaseTestCase
 	public function setUp()
 	{
 		parent::setUp();
-		ActiveRecord::$db = Yii::$app->getComponent('db');
-	}
-
-	public function tearDown()
-	{
-		parent::tearDown();
+		ActiveRecord::$db = $this->getConnection();
 	}
 
 	public function testValidateValueExpectedException()

@@ -12,7 +12,6 @@ abstract class DatabaseTestCase extends TestCase
 	 * @var Connection
 	 */
 	protected $db;
-	protected $initializeAppWithDb = false;
 
 	protected function setUp()
 	{
@@ -23,9 +22,6 @@ abstract class DatabaseTestCase extends TestCase
 
 		if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
 			$this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
-		}
-		if ($this->initializeAppWithDb === true) {
-			\Yii::$app->setComponent('db', $this->getConnection());
 		}
 		$this->mockApplication();
 	}

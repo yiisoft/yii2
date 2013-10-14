@@ -20,7 +20,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 	public function setUp()
 	{
 		parent::setUp();
-		ActiveRecord::$db = Yii::$app->getComponent('db');
+		ActiveRecord::$db = $this->getConnection();
 	}
 
 	public function testAssureMessageSetOnInit()
