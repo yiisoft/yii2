@@ -141,9 +141,21 @@ class FileValidatorTest extends TestCase
 			$error = isset($param['error']) ? $param['error'] : UPLOAD_ERR_OK;
 			if (count($params) == 1) {
 				$error = empty($param) ? UPLOAD_ERR_NO_FILE : $error;
-				return new UploadedFile($name, $tempName, $type, $size, $error);
+				return new UploadedFile(array(
+					'name' => $name,
+					'tempName' => $tempName,
+					'type' => $type,
+					'size' => $size,
+					'error' => $error
+				));
 			}
-			$files[] = new UploadedFile($name, $tempName, $type, $size, $error);
+			$files[] = new UploadedFile(array(
+				'name' => $name,
+				'tempName' => $tempName,
+				'type' => $type,
+				'size' => $size,
+				'error' => $error
+			));
 		}
 		return $files;
 	}
@@ -166,7 +178,7 @@ class FileValidatorTest extends TestCase
 		$this->assertTrue(
 			stripos(
 				current($m->getErrors('attr_files')),
-				str_ireplace(array('{file}', '{limit}'), array($m->attr_files->getName(), 128), $val->tooBig)
+				str_ireplace(array('{file}', '{limit}'), array($m->attr_files->name, 128), $val->tooBig)
 			) !== false
 		);
 		// to Small
@@ -177,7 +189,7 @@ class FileValidatorTest extends TestCase
 		$this->assertTrue(
 			stripos(
 				current($m->getErrors('attr_files')),
-				str_ireplace(array('{file}', '{limit}'), array($m->attr_files->getName(), 2048), $val->tooSmall)
+				str_ireplace(array('{file}', '{limit}'), array($m->attr_files->name, 2048), $val->tooSmall)
 			) !== false
 		);
 		// UPLOAD_ERR_INI_SIZE/UPLOAD_ERR_FORM_SIZE
@@ -190,7 +202,7 @@ class FileValidatorTest extends TestCase
 				current($m->getErrors('attr_err_ini')),
 				str_ireplace(
 					array('{file}', '{limit}'),
-					array($m->attr_err_ini->getName(), $val->getSizeLimit()),
+					array($m->attr_err_ini->name, $val->getSizeLimit()),
 					$val->tooBig
 				)
 			) !== false
