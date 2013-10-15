@@ -96,7 +96,7 @@ class View extends Component
 	/**
 	 * @var mixed custom parameters that are shared among view templates.
 	 */
-	public $params;
+	public $params = array();
 	/**
 	 * @var array a list of available renderers indexed by their corresponding supported file extensions.
 	 * Each renderer may be a view renderer object or the configuration for creating the renderer object.
