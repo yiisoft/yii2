@@ -10,7 +10,16 @@ sudo apt-get install cubrid
 sudo apt-get install cubrid-demodb
 
 # cubrid pdo
-sudo apt-get install php5-cubrid
-echo '/opt/cubrid/' | pecl install pdo_cubrid
-echo "extension=pdo_cubrid.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-/etc/profile.d/cubrid.sh
+install_pdo_cubrid() {
+    wget "http://pecl.php.net/get/PDO_CUBRID-9.2.0.0001.tgz" &&
+    tar -zxf "PDO_CUBRID-9.2.0.0001.tgz" &&
+    sh -c "cd PDO_CUBRID-9.2.0.0001 && phpize && ./configure && make && sudo make install"
+
+    echo "extension=pdo_cubrid.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+    return $?
+}
+
+install_pdo_cubrid > ~/pdo_cubrid.log || ( echo "=== PDO CUBRID BUILD FAILED ==="; cat ~/pdo_cubrid.log )
+
+echo "Installed CUBRID `dpkg -s cubrid |grep Version`"
