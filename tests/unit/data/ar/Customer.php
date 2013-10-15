@@ -1,8 +1,6 @@
 <?php
 namespace yiiunit\data\ar;
 
-use yii\db\ActiveQuery;
-
 /**
  * Class Customer
  *

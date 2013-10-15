@@ -13,7 +13,6 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 class ExistValidatorTest extends DatabaseTestCase
 {
-	protected $initializeAppWithDb = true;
 	protected $driverName = 'mysql';
 
 	public function setUp()

@@ -14,7 +14,6 @@ use yiiunit\TestCase;
 
 class UniqueValidatorTest extends DatabaseTestCase
 {
-	protected $initializeAppWithDb = true;
 	protected $driverName = 'mysql';
 
 	public function setUp()
