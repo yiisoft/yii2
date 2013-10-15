@@ -101,7 +101,8 @@ class Schema extends \yii\db\Schema
 
 		$this->db->open();
 		// workaround for broken PDO::quote() implementation in CUBRID 9.1.0 http://jira.cubrid.org/browse/APIS-658
-		if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION), '9.1.0', '<=')) {
+		$version = $this->db->pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION);
+		if (version_compare($version, '8.4.4.0002', '<') || $version[0] == '9' && version_compare($version, '9.2.0.0002', '<=')) {
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
 		} else {
 			return $this->db->pdo->quote($str);
