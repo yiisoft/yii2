@@ -87,18 +87,17 @@ class Generator extends \yii\gii\Generator
 
 		$output = <<<EOD
 <p>The module has been generated successfully.</p>
-<p>To access the module, you need to modify the application configuration as follows:</p>
+<p>To access the module, you need to add this to your application configuration:</p>
 EOD;
 		$code = <<<EOD
 <?php
-return array(
-	'modules'=>array(
+	......
+	'modules' => array(
 		'{$this->moduleID}' => array(
 			'class' => '{$this->moduleClass}',
 		),
 	),
-    ......
-);
+	......
 EOD;
 
 		return $output . '<pre>' . highlight_string($code, true) . '</pre>';
