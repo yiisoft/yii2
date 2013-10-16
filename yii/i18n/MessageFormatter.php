@@ -65,7 +65,8 @@ class MessageFormatter extends \MessageFormatter
 	{
 		$map = array_flip(array_keys($args));
 
-		// parsing http://icu-project.org/apiref/icu4c/classMessageFormat.html#details
+		// parsing pattern base on ICU grammar:
+		// http://icu-project.org/apiref/icu4c/classMessageFormat.html#details
 		$parts = explode('{', $pattern);
 		$c = count($parts);
 		$pattern = $parts[0];
@@ -73,26 +74,29 @@ class MessageFormatter extends \MessageFormatter
 		$stack = array();
 		for($i = 1; $i < $c; $i++) {
 			if (preg_match('~^\A(\s*)([\d\w]+)(\s*)([},])(\s*)(.*)\z$~u', $parts[$i], $matches)) {
-				$d++;
-				// replace normal arg if it was set
-				if (isset($map[$matches[2]])) {
-					$q = '';
-					$pattern .= '{' . $matches[1] . $map[$matches[2]] . $matches[3];
-				} else {
-					// quote unused args
-					$q = '';//($matches[4] == '}' && isset($stack[$d]) && !($stack[$d] == 'plural' || $stack[$d] == 'select')) ? "'" : "";
-					$pattern .= "$q{" . $matches[1] . $matches[2] . $matches[3];
-				}
-				$pattern .= ($term = $matches[4] . $q . $matches[5] . $matches[6]);
-				// check type current level
-				$stack[$d] = ($matches[4] == ',') ? substr($matches[6], 0, 6) : 'none';
-				// if it's plural or select, the next bracket is NOT begin of a message then!
-				if ($stack[$d] == 'plural' || $stack[$d] == 'select') {
-					$i++;
-					$d -= substr_count($term, '}');
-				} else {
-					$d -= substr_count($term, '}');
-					continue;
+				// if we are not inside a plural or select this is a message
+				if (!isset($stack[$d]) || $stack[$d] != 'plural' && $stack[$d] != 'select') {
+					$d++;
+					// replace normal arg if it is available
+					if (isset($map[$matches[2]])) {
+						$q = '';
+						$pattern .= '{' . $matches[1] . $map[$matches[2]] . $matches[3];
+					} else {
+						// quote unused args
+						$q = ($matches[4] == '}') ? "'" : "";
+						$pattern .= "$q{" . $matches[1] . $matches[2] . $matches[3];
+					}
+					$pattern .= ($term = $matches[4] . $q . $matches[5] . $matches[6]);
+					// store type of current level
+					$stack[$d] = ($matches[4] == ',') ? substr($matches[6], 0, 6) : 'none';
+					// if it's plural or select, the next bracket is NOT begin of a message then!
+					if ($stack[$d] == 'plural' || $stack[$d] == 'select') {
+						$i++;
+						$d -= substr_count($term, '}');
+					} else {
+						$d -= substr_count($term, '}');
+						continue;
+					}
 				}
 			}
 			$pattern .= '{' . $parts[$i];
