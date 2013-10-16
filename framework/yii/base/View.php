@@ -58,22 +58,22 @@ class View extends Component
 	 * The location of registered JavaScript code block or files.
 	 * This means the location is in the head section.
 	 */
-	const POS_HEAD = 1;
+	const POS_HEAD = 'POS_HEAD';
 	/**
 	 * The location of registered JavaScript code block or files.
 	 * This means the location is at the beginning of the body section.
 	 */
-	const POS_BEGIN = 2;
+	const POS_BEGIN = 'POS_BEGIN';
 	/**
 	 * The location of registered JavaScript code block or files.
 	 * This means the location is at the end of the body section.
 	 */
-	const POS_END = 3;
+	const POS_END = 'POS_END';
 	/**
 	 * The location of registered JavaScript code block.
 	 * This means the JavaScript code block will be enclosed within `jQuery(document).ready()`.
 	 */
-	const POS_READY = 4;
+	const POS_READY = 'POS_READY';
 	/**
 	 * This is internally used as the placeholder for receiving the content registered for the head section.
 	 */
@@ -773,7 +773,7 @@ class View extends Component
 		if (!empty($this->js[self::POS_HEAD])) {
 			$lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), array('type' => 'text/javascript'));
 		}
-		return empty($lines) ? '' : implode("\n", $lines) . "\n";
+		return empty($lines) ? '' : "\n" . implode("\n", $lines) . "\n";
 	}
 
 	/**
@@ -790,7 +790,7 @@ class View extends Component
 		if (!empty($this->js[self::POS_BEGIN])) {
 			$lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]), array('type' => 'text/javascript'));
 		}
-		return empty($lines) ? '' : implode("\n", $lines) . "\n";
+		return empty($lines) ? '' : "\n" . implode("\n", $lines) . "\n";
 	}
 
 	/**
@@ -811,6 +811,6 @@ class View extends Component
 			$js = "jQuery(document).ready(function(){\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
 			$lines[] = Html::script($js, array('type' => 'text/javascript'));
 		}
-		return empty($lines) ? '' : implode("\n", $lines) . "\n";
+		return empty($lines) ? '' : "\n" . implode("\n", $lines) . "\n";
 	}
 }
