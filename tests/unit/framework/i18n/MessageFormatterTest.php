@@ -142,11 +142,18 @@ _MSG_
 	}
 
 	/**
-	 * when instantiating a MessageFormatter with invalid pattern it should be null
+	 * When instantiating a MessageFormatter with invalid pattern it should be null with default settings.
+	 * It will be IntlException if intl.use_exceptions=1 and PHP 5.5 or newer or an error if intl.error_level is not 0.
 	 */
 	public function testNullConstructor()
 	{
-		$this->assertNull(new MessageFormatter('en_US', ''));
+		if(ini_get('intl.use_exceptions')) {
+			$this->setExpectedException('IntlException');
+		}
+
+		if (!ini_get('intl.error_level') || ini_get('intl.use_exceptions')) {
+			$this->assertNull(new MessageFormatter('en_US', ''));
+		}
 	}
 
 	public function testNoParams()
