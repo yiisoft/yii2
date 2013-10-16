@@ -13,6 +13,7 @@ namespace yii\i18n;
  * - Accepts named arguments and mixed numeric and named arguments.
  * - Issues no error when an insufficient number of arguments have been provided. Instead, the placeholders will not be
  *   substituted.
+ * - Fixes PHP 5.5 weird placeholder replacememt in case no arguments are provided at all (https://bugs.php.net/bug.php?id=65920).
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -29,6 +30,10 @@ class MessageFormatter extends \MessageFormatter
 	 */
 	public function format($args)
 	{
+		if ($args === array()) {
+			return $this->getPattern();
+		}
+
 		if (self::needFix()) {
 			$pattern = self::replaceNamedArguments($this->getPattern(), $args);
 			$this->setPattern($pattern);
@@ -48,6 +53,10 @@ class MessageFormatter extends \MessageFormatter
 	 */
 	public static function formatMessage($locale, $pattern, $args)
 	{
+		if ($args === array()) {
+			return $pattern;
+		}
+
 		if (self::needFix()) {
 			$pattern = self::replaceNamedArguments($pattern, $args);
 			$args = array_values($args);
