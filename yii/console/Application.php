@@ -9,6 +9,7 @@
 
 namespace yii\console;
 
+use Yii;
 use yii\base\InvalidRouteException;
 
 /**
@@ -129,7 +130,7 @@ class Application extends \yii\base\Application
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			throw new Exception(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)), 0, $e);
+			throw new Exception(Yii::t('yii', 'Unknown command "{command}".', array('command' => $route)), 0, $e);
 		}
 	}
 
