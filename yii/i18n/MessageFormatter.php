@@ -123,11 +123,7 @@ class MessageFormatter extends \MessageFormatter
 	 */
 	private static function needFix()
 	{
-		return (
-			!defined('INTL_ICU_VERSION') ||
-			version_compare(INTL_ICU_VERSION, '48.0.0', '<') ||
-			version_compare(PHP_VERSION, '5.5.0', '<')
-		);
+		return version_compare(PHP_VERSION, '5.5.0', '<');
 	}
 }
  
