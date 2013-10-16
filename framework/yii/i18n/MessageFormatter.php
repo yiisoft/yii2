@@ -73,7 +73,7 @@ class MessageFormatter extends \MessageFormatter
 		$d = 0;
 		$stack = array();
 		for($i = 1; $i < $c; $i++) {
-			if (preg_match('~^\A(\s*)([\d\w]+)(\s*)([},])(\s*)(.*)\z$~u', $parts[$i], $matches)) {
+			if (preg_match('~^(\s*)([\d\w]+)(\s*)([},])(\s*)(.*)$~us', $parts[$i], $matches)) {
 				// if we are not inside a plural or select this is a message
 				if (!isset($stack[$d]) || $stack[$d] != 'plural' && $stack[$d] != 'select') {
 					$d++;
