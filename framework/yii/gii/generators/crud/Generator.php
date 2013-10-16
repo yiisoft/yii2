@@ -117,7 +117,7 @@ class Generator extends \yii\gii\Generator
 	public function validateModuleID()
 	{
 		if (!empty($this->moduleID)) {
-			$module = Yii::$app->getModule($this->moduleID);
+			$module = $this->getModule();
 			if ($module === null) {
 				$this->addError('moduleID', "Module '{$this->moduleID}' does not exist.");
 			}
@@ -149,6 +149,28 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
+	 * Retrieves the module|sub-module specified by $this->moduleID.
+	 * @return Module|null the module instance, null if the module does not exist.
+	 */
+	public function getModule()
+	{
+		if (strpos('/', $this->moduleID) === 0) {
+			$module = Yii::$app->getModule($this->moduleID);
+		} else {
+			// it's a sub-module
+			$ids = explode('/', $this->moduleID);
+			$module = Yii::$app;
+			foreach ($ids as $id) {
+				$module = $module->getModule($id);
+				if($module === null){
+					break;
+				}
+			}
+		}
+		return $module;
+	}
+
+	/**
 	 * @return string the controller ID (without the module ID prefix)
 	 */
 	public function getControllerID()
@@ -163,7 +185,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function getViewPath()
 	{
-		$module = empty($this->moduleID) ? Yii::$app : Yii::$app->getModule($this->moduleID);
+		$module = empty($this->moduleID) ? Yii::$app : $this->getModule();
 		return $module->getViewPath() . '/' . $this->getControllerID() ;
 	}
 
