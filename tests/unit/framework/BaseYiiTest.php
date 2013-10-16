@@ -5,10 +5,10 @@ use Yii;
 use yiiunit\TestCase;
 
 /**
- * YiiBaseTest
+ * BaseYiiTest
  * @group base
  */
-class YiiBaseTest extends TestCase
+class BaseYiiTest extends TestCase
 {
 	public $aliases;
 
