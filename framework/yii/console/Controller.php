@@ -99,7 +99,7 @@ class Controller extends \yii\base\Controller
 					$args[] = $value;
 				} else {
 					throw new Exception(Yii::t('yii', 'Unknown option: --{name}', array(
-						'{name}' => $name,
+						'name' => $name,
 					)));
 				}
 			}
@@ -125,7 +125,7 @@ class Controller extends \yii\base\Controller
 
 		if (!empty($missing)) {
 			throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', array(
-				'{params}' => implode(', ', $missing),
+				'params' => implode(', ', $missing),
 			)));
 		}
 

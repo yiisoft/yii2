@@ -60,7 +60,7 @@ class Controller extends \yii\base\Controller
 
 		if (!empty($missing)) {
 			throw new HttpException(400, Yii::t('yii', 'Missing required parameters: {params}', array(
-				'{params}' => implode(', ', $missing),
+				'params' => implode(', ', $missing),
 			)));
 		}
 
