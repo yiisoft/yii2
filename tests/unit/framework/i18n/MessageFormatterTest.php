@@ -22,6 +22,13 @@ class MessageFormatterTest extends TestCase
 	const SUBJECT = 'сабж';
 	const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
+	protected function setUp()
+	{
+		if (!extension_loaded("intl")) {
+			$this->markTestSkipped("intl not installed. Skipping.");
+		}
+	}
+
 	public function patterns()
 	{
 		return array(
@@ -34,6 +41,7 @@ class MessageFormatterTest extends TestCase
 				)
 			),
 
+			// This one was provided by Aura.Intl. Thanks!
 			array(<<<_MSG_
 {gender_of_host, select,
   female {{num_guests, plural, offset:1
@@ -117,7 +125,7 @@ _MSG_
 	public function testNamedArgumentsStatic($pattern, $expected, $args)
 	{
 		$result = MessageFormatter::formatMessage('en_US', $pattern, $args);
-		$this->assertEquals($expected, $result);
+		$this->assertEquals($expected, $result, intl_get_error_message());
 	}
 
 	/**
@@ -127,7 +135,7 @@ _MSG_
 	{
 		$formatter = new MessageFormatter('en_US', $pattern);
 		$result = $formatter->format($args);
-		$this->assertEquals($expected, $result);
+		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
 	public function testInsufficientArguments()
@@ -138,7 +146,7 @@ _MSG_
 			self::N => self::N_VALUE,
 		));
 
-		$this->assertEquals($expected, $result);
+		$this->assertEquals($expected, $result, intl_get_error_message());
 	}
 
 	/**
@@ -160,10 +168,10 @@ _MSG_
 	{
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
 		$result = MessageFormatter::formatMessage('en_US', $pattern, array());
-		$this->assertEquals($pattern, $result);
+		$this->assertEquals($pattern, $result, intl_get_error_message());
 
 		$formatter = new MessageFormatter('en_US', $pattern);
 		$result = $formatter->format(array());
-		$this->assertEquals($pattern, $result);
+		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
 	}
 }
