@@ -15,6 +15,7 @@ namespace yii\i18n;
  *   substituted.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class MessageFormatter extends \MessageFormatter
@@ -55,7 +56,7 @@ class MessageFormatter extends \MessageFormatter
 	}
 
 	/**
-	 * Replace named placeholders with numeric placeholders.
+	 * Replace named placeholders with numeric placeholders and quote unused.
 	 *
 	 * @param string $pattern The pattern string to replace things into.
 	 * @param array $args The array of values to insert into the format string.
@@ -65,7 +66,7 @@ class MessageFormatter extends \MessageFormatter
 	{
 		$map = array_flip(array_keys($args));
 
-		// parsing pattern base on ICU grammar:
+		// parsing pattern based on ICU grammar:
 		// http://icu-project.org/apiref/icu4c/classMessageFormat.html#details
 		$parts = explode('{', $pattern);
 		$c = count($parts);
