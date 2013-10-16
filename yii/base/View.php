@@ -773,7 +773,7 @@ class View extends Component
 		if (!empty($this->js[self::POS_HEAD])) {
 			$lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), array('type' => 'text/javascript'));
 		}
-		return empty($lines) ? '' : implode("\n", $lines) . "\n";
+		return empty($lines) ? '' : implode("\n", $lines);
 	}
 
 	/**
@@ -790,7 +790,7 @@ class View extends Component
 		if (!empty($this->js[self::POS_BEGIN])) {
 			$lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]), array('type' => 'text/javascript'));
 		}
-		return empty($lines) ? '' : implode("\n", $lines) . "\n";
+		return empty($lines) ? '' : implode("\n", $lines);
 	}
 
 	/**
@@ -811,6 +811,6 @@ class View extends Component
 			$js = "jQuery(document).ready(function(){\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
 			$lines[] = Html::script($js, array('type' => 'text/javascript'));
 		}
-		return empty($lines) ? '' : implode("\n", $lines) . "\n";
+		return empty($lines) ? '' : implode("\n", $lines);
 	}
 }
