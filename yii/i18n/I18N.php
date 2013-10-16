@@ -10,7 +10,6 @@ namespace yii\i18n;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\log\Logger;
 
 /**
@@ -73,23 +72,25 @@ class I18N extends Component
 	public function translate($category, $message, $params, $language)
 	{
 		$message = $this->getMessageSource($category)->translate($category, $message, $language);
-		if (empty($params)) {
+
+		$params = (array)$params;
+		if ($params === array()) {
 			return $message;
 		}
 
-		$params = (array)$params;
 		if (class_exists('MessageFormatter', false) && preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
 			$formatter = new MessageFormatter($language, $message);
 			if ($formatter === null) {
-				\Yii::$app->getLog()->log("$language message from category $category is invalid. Message is: $message.", Logger::LEVEL_WARNING, 'application');
+				Yii::warning("$language message from category $category is invalid. Message is: $message.");
+				return $message;
+			}
+			$result = $formatter->format($params);
+			if ($result === false) {
+				$errorMessage = $formatter->getErrorMessage();
+				Yii::warning("$language message from category $category failed with error: $errorMessage. Message is: $message.");
+				return $message;
 			} else {
-				$result = $formatter->format($params);
-				if ($result === false) {
-					$errorMessage = $formatter->getErrorMessage();
-					\Yii::$app->getLog()->log("$language message from category $category failed with error: $errorMessage. Message is: $message.", Logger::LEVEL_WARNING, 'application');
-				} else {
-					return $result;
-				}
+				return $result;
 			}
 		}
 
