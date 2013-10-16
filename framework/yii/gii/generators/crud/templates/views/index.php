@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<?php echo '<?php' . ($generator->indexWidgetType === 'grid' ? ' //' : ''); ?> echo $this->render('_search', array('model' => $searchModel)); ?>
 
 	<p>
-		<?php echo '<?php'; ?> echo Html::a('Create <?php echo StringHelper::basename($generator->modelClass); ?>', array('create'), array('class' => 'btn btn-danger')); ?>
+		<?php echo '<?php'; ?> echo Html::a('Create <?php echo StringHelper::basename($generator->modelClass); ?>', array('create'), array('class' => 'btn btn-success')); ?>
 	</p>
 
 <?php if ($generator->indexWidgetType === 'grid'): ?>
