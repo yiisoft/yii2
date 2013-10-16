@@ -12,6 +12,6 @@ class GettextMessageSourceTest extends TestCase
 {
 	public function testLoadMessages()
 	{
-		$this->markTestSkipped();
+		$this->markTestIncomplete();
 	}
 }

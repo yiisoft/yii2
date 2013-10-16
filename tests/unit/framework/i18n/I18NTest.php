@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\i18n;
 
+use yii\base\Model;
 use yii\i18n\I18N;
 use yii\i18n\MessageFormatter;
 use yii\i18n\PhpMessageSource;
@@ -62,4 +63,23 @@ class I18NTest extends TestCase
 		$this->assertEquals('Er heißt DA VINCI und ist 42 km/h schnell.', $this->i18n->translate('test', $msg, $params, 'de_DE'));
 	}
 
+	public function testSpecialParams()
+	{
+		$msg = 'His speed is about {0} km/h.';
+
+		$this->assertEquals('His speed is about 0 km/h.', $this->i18n->translate('test', $msg, 0, 'en_US'));
+		$this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, 42, 'en_US'));
+		$this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, null, 'en_US'));
+		$this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, array(), 'en_US'));
+
+		$msg = 'His name is {name} and he is {age} years old.';
+		$model = new ParamModel();
+		$this->assertEquals('His name is peer and he is 5 years old.', $this->i18n->translate('test', $msg, $model, 'en_US'));
+	}
+}
+
+class ParamModel extends Model
+{
+	public $name = 'peer';
+	public $age = 5;
 }
