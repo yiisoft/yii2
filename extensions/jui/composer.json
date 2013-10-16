@@ -16,6 +16,6 @@
 		"yiisoft/yii2": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\jui": "" }
+		"psr-0": { "yii\\jui\\": "" }
 	}
 }

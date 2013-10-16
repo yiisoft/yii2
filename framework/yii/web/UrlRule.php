@@ -156,6 +156,7 @@ class UrlRule extends Object
 				}
 			}
 		}
+		$tr['.'] = '\\.';
 
 		$this->_template = preg_replace('/<(\w+):?([^>]+)?>/', '<$1>', $this->pattern);
 		$this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';

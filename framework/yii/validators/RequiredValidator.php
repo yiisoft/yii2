@@ -123,7 +123,6 @@ class RequiredValidator extends Validator
 
 		$options['message'] = Html::encode(strtr($options['message'], array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
 		)));
 
 		ValidationAsset::register($view);

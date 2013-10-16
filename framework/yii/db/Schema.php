@@ -187,6 +187,26 @@ abstract class Schema extends Object
 	}
 
 	/**
+	 * Determines the PDO type for the given PHP data value.
+	 * @param mixed $data the data whose PDO type is to be determined
+	 * @return integer the PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
+	 */
+	public function getPdoType($data)
+	{
+		static $typeMap = array(
+			// php type => PDO type
+			'boolean' => \PDO::PARAM_BOOL,
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'resource' => \PDO::PARAM_LOB,
+			'NULL' => \PDO::PARAM_NULL,
+		);
+		$type = gettype($data);
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
+	}
+
+	/**
 	 * Refreshes the schema.
 	 * This method cleans up all cached table schemas so that they can be re-created later
 	 * to reflect the database schema change.

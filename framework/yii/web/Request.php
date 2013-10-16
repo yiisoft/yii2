@@ -29,6 +29,8 @@ use yii\helpers\Security;
  * previously, a random key will be generated and used.
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $csrfToken The random token for CSRF validation. This property is read-only.
+ * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
+ * if no such header is sent. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
@@ -74,6 +76,7 @@ class Request extends \yii\base\Request
 	 * The name of the HTTP header for sending CSRF token.
 	 */
 	const CSRF_HEADER = 'X-CSRF-Token';
+
 
 	/**
 	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.

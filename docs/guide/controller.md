@@ -35,6 +35,9 @@ class SiteController extends Controller
 ```
 
 As you can see, typical controller contains actions that are public class methods named as `actionSomething`.
+The output of an action is what the method returns. The return value will be handled by the `response` application
+component which can convert the output to differnet formats such as JSON for example. The default behavior
+is to output the value unchanged though.
 
 Routes
 ------
@@ -182,7 +185,6 @@ Filters
 
 Catching all incoming requests
 ------------------------------
-
 
 See also
 --------

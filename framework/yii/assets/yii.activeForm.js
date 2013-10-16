@@ -345,7 +345,7 @@
 			var $container = $form.find(attribute.container);
 			var $error = $container.find(attribute.error);
 			if (hasError) {
-				$error.html(messages[attribute.name][0]);
+				$error.text(messages[attribute.name][0]);
 				$container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
 					.addClass(data.settings.errorCssClass);
 			} else {

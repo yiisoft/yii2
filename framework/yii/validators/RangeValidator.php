@@ -96,7 +96,6 @@ class RangeValidator extends Validator
 			'not' => $this->not,
 			'message' => Html::encode(strtr($this->message, array(
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
 			))),
 		);
 		if ($this->skipOnEmpty) {

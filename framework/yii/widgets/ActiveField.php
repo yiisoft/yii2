@@ -221,7 +221,7 @@ class ActiveField extends Component
 	 * @param array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
 	 * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
 	 * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function label($label = null, $options = array())
 	{
@@ -244,7 +244,7 @@ class ActiveField extends Component
 	 *
 	 * - tag: this specifies the tag name. If not set, "div" will be used.
 	 *
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function error($options = array())
 	{
@@ -263,7 +263,7 @@ class ActiveField extends Component
 	 *
 	 * - tag: this specifies the tag name. If not set, "div" will be used.
 	 *
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function hint($content, $options = array())
 	{
@@ -278,7 +278,7 @@ class ActiveField extends Component
 	 * @param string $type the input type (e.g. 'text', 'password')
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function input($type, $options = array())
 	{
@@ -293,7 +293,7 @@ class ActiveField extends Component
 	 * unless they are explicitly specified in `$options`.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function textInput($options = array())
 	{
@@ -308,7 +308,7 @@ class ActiveField extends Component
 	 * unless they are explicitly specified in `$options`.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function passwordInput($options = array())
 	{
@@ -323,7 +323,7 @@ class ActiveField extends Component
 	 * unless they are explicitly specified in `$options`.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function fileInput($options = array())
 	{
@@ -339,7 +339,7 @@ class ActiveField extends Component
 	 * The model attribute value will be used as the content in the textarea.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function textarea($options = array())
 	{
@@ -367,7 +367,7 @@ class ActiveField extends Component
 	 * @param boolean $enclosedByLabel whether to enclose the radio within the label.
 	 * If true, the method will still use [[template]] to layout the checkbox and the error message
 	 * except that the radio is enclosed by the label tag.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function radio($options = array(), $enclosedByLabel = true)
 	{
@@ -402,7 +402,7 @@ class ActiveField extends Component
 	 * @param boolean $enclosedByLabel whether to enclose the checkbox within the label.
 	 * If true, the method will still use [[template]] to layout the checkbox and the error message
 	 * except that the checkbox is enclosed by the label tag.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function checkbox($options = array(), $enclosedByLabel = true)
 	{
@@ -448,7 +448,7 @@ class ActiveField extends Component
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function dropDownList($items, $options = array())
 	{
@@ -490,7 +490,7 @@ class ActiveField extends Component
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function listBox($items, $options = array())
 	{
@@ -522,7 +522,7 @@ class ActiveField extends Component
 	 * where $index is the zero-based index of the checkbox in the whole list; $label
 	 * is the label for the checkbox; and $name, $value and $checked represent the name,
 	 * value and the checked status of the checkbox input.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function checkboxList($items, $options = array())
 	{
@@ -552,7 +552,7 @@ class ActiveField extends Component
 	 * where $index is the zero-based index of the radio button in the whole list; $label
 	 * is the label for the radio button; and $name, $value and $checked represent the name,
 	 * value and the checked status of the radio button input.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function radioList($items, $options = array())
 	{
@@ -571,7 +571,7 @@ class ActiveField extends Component
 	 *
 	 * @param string $class the widget class name
 	 * @param array $config name-value pairs that will be used to initialize the widget
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
 	public function widget($class, $config = array())
 	{
@@ -589,9 +589,13 @@ class ActiveField extends Component
 	 */
 	protected function getClientOptions()
 	{
+		$attribute = Html::getAttributeName($this->attribute);
+		if (!in_array($attribute, $this->model->activeAttributes(), true)) {
+			return array();
+		}
+
 		$enableClientValidation = $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
 		if ($enableClientValidation) {
-			$attribute = Html::getAttributeName($this->attribute);
 			$validators = array();
 			foreach ($this->model->getActiveValidators($attribute) as $validator) {
 				/** @var \yii\validators\Validator $validator */

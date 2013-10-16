@@ -170,6 +170,7 @@ class CompareValidator extends Validator
 			case '>=': return $value >= $this->compareValue;
 			case '<': return $value < $this->compareValue;
 			case '<=': return $value <= $this->compareValue;
+			default: return false;
 		}
 	}
 
@@ -201,7 +202,7 @@ class CompareValidator extends Validator
 
 		$options['message'] = Html::encode(strtr($this->message, array(
 			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
+			'{compareAttribute}' => $compareValue,
 			'{compareValue}' => $compareValue,
 		)));
 

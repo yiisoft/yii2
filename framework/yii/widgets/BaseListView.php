@@ -17,7 +17,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class ListViewBase extends Widget
+abstract class BaseListView extends Widget
 {
 	/**
 	 * @var array the HTML attributes for the container tag of the list view.
@@ -83,6 +83,7 @@ abstract class ListViewBase extends Widget
 		if ($this->dataProvider === null) {
 			throw new InvalidConfigException('The "dataProvider" property must be set.');
 		}
+		$this->dataProvider->prepare();
 	}
 
 	/**
@@ -131,14 +132,14 @@ abstract class ListViewBase extends Widget
 	public function renderSummary()
 	{
 		$count = $this->dataProvider->getCount();
-		if (($pagination = $this->dataProvider->getPagination()) !== false) {
+		if (($pagination = $this->dataProvider->getPagination()) !== false && $count > 0) {
 			$totalCount = $this->dataProvider->getTotalCount();
 			$begin = $pagination->getPage() * $pagination->pageSize + 1;
 			$end = $begin + $count - 1;
 			$page = $pagination->getPage() + 1;
 			$pageCount = $pagination->pageCount;
 			if (($summaryContent = $this->summary) === null) {
-				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>1</b> item.|Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> items.', $totalCount) . '</div>';
+				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> item.|Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> items.', $totalCount) . '</div>';
 			}
 		} else {
 			$begin = $page = $pageCount = 1;

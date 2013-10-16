@@ -45,6 +45,10 @@ class JsonTest extends TestCase
 			'b' => new JsExpression($expression2),
 		);
 		$this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::encode($data));
+
+		// https://github.com/yiisoft/yii2/issues/957
+		$data = (object)null;
+		$this->assertSame('{}', Json::encode($data));
 	}
 
 	public function testDecode()

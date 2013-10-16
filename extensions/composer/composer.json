@@ -22,6 +22,6 @@
 		"yiisoft/yii2": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\composer": "" }
+		"psr-0": { "yii\\composer\\": "" }
 	}
 }

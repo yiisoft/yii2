@@ -32,6 +32,10 @@ class ActiveField extends \yii\widgets\ActiveField
 		}
 	}
 
+	/**
+	 * Makes filed remember its value between page reloads
+	 * @return static the field object itself
+	 */
 	public function sticky()
 	{
 		$this->options['class'] .= ' sticky';

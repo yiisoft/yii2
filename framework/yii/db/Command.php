@@ -88,7 +88,7 @@ class Command extends \yii\base\Component
 	 * Specifies the SQL statement to be executed.
 	 * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
 	 * @param string $sql the SQL statement to be set.
-	 * @return Command this command instance
+	 * @return static this command instance
 	 */
 	public function setSql($sql)
 	{
@@ -174,15 +174,16 @@ class Command extends \yii\base\Component
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
 	 * @param integer $length length of the data type
 	 * @param mixed $driverOptions the driver-specific options
-	 * @return Command the current command being executed
+	 * @return static the current command being executed
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
 	 */
 	public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindParam($name, $value, $this->getPdoType($value));
-		} elseif ($length === null) {
+			$dataType = $this->db->getSchema()->getPdoType($value);
+		}
+		if ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
 		} elseif ($driverOptions === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length);
@@ -201,17 +202,16 @@ class Command extends \yii\base\Component
 	 * placeholders, this will be the 1-indexed position of the parameter.
 	 * @param mixed $value The value to bind to the parameter
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-	 * @return Command the current command being executed
+	 * @return static the current command being executed
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
 	 */
 	public function bindValue($name, $value, $dataType = null)
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindValue($name, $value, $this->getPdoType($value));
-		} else {
-			$this->pdoStatement->bindValue($name, $value, $dataType);
+			$dataType = $this->db->getSchema()->getPdoType($value);
 		}
+		$this->pdoStatement->bindValue($name, $value, $dataType);
 		$this->_params[$name] = $value;
 		return $this;
 	}
@@ -225,7 +225,7 @@ class Command extends \yii\base\Component
 	 * e.g. `array(':name' => 'John', ':age' => 25)`. By default, the PDO type of each value is determined
 	 * by its PHP type. You may explicitly specify the PDO type by using an array: `array(value, type)`,
 	 * e.g. `array(':name' => 'John', ':profile' => array($profile, \PDO::PARAM_LOB))`.
-	 * @return Command the current command being executed
+	 * @return static the current command being executed
 	 */
 	public function bindValues($values)
 	{
@@ -236,32 +236,13 @@ class Command extends \yii\base\Component
 					$type = $value[1];
 					$value = $value[0];
 				} else {
-					$type = $this->getPdoType($value);
+					$type = $this->db->getSchema()->getPdoType($value);
 				}
 				$this->pdoStatement->bindValue($name, $value, $type);
 				$this->_params[$name] = $value;
 			}
 		}
 		return $this;
-	}
-
-	/**
-	 * Determines the PDO type for the given PHP data value.
-	 * @param mixed $data the data whose PDO type is to be determined
-	 * @return integer the PDO type
-	 * @see http://www.php.net/manual/en/pdo.constants.php
-	 */
-	private function getPdoType($data)
-	{
-		static $typeMap = array( // php type => PDO type
-			'boolean' => \PDO::PARAM_BOOL,
-			'integer' => \PDO::PARAM_INT,
-			'string' => \PDO::PARAM_STR,
-			'resource' => \PDO::PARAM_LOB,
-			'NULL' => \PDO::PARAM_NULL,
-		);
-		$type = gettype($data);
-		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 
 	/**

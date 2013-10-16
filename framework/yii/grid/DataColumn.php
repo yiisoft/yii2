@@ -73,7 +73,7 @@ class DataColumn extends Column
 	 * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
 	 * render the HTML attributes for the generated filter input fields.
 	 */
-	public $filterInputOptions = array('class' => 'form-control');
+	public $filterInputOptions = array('class' => 'form-control', 'id' => null);
 
 
 	protected function renderHeaderCellContent()
@@ -115,7 +115,9 @@ class DataColumn extends Column
 	{
 		if (is_string($this->filter)) {
 			return $this->filter;
-		} elseif ($this->filter !== false && $this->grid->filterModel instanceof Model && $this->attribute !== null) {
+		} elseif ($this->filter !== false && $this->grid->filterModel instanceof Model &&
+				  $this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute))
+		{
 			if (is_array($this->filter)) {
 				$options = array_merge(array('prompt' => ''), $this->filterInputOptions);
 				return Html::activeDropDownList($this->grid->filterModel, $this->attribute, $this->filter, $options);
