@@ -65,6 +65,38 @@ _MSG_;
 			'gender' => 'male',
 		));
 		$this->assertEquals('Alexander is male and he loves Yii!', $result);
+
+		// verify pattern in select does not get replaced
+		$pattern = '{name} is {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!';
+		$result = MessageFormatter::formatMessage('en_US', $pattern, array(
+			'name' => 'Alexander',
+			'gender' => 'male',
+			 // following should not be replaced
+			'he' => 'wtf',
+			'she' => 'wtf',
+			'it' => 'wtf',
+		));
+		$this->assertEquals('Alexander is male and he loves Yii!', $result);
+
+		// verify pattern in select message gets replaced
+		$pattern = '{name} is {gender} and {gender, select, female{she} male{{he}} other{it}} loves Yii!';
+		$result = MessageFormatter::formatMessage('en_US', $pattern, array(
+			'name' => 'Alexander',
+			'gender' => 'male',
+			'he' => 'wtf',
+			'she' => 'wtf',
+		));
+		$this->assertEquals('Alexander is male and wtf loves Yii!', $result);
+
+		// some parser specific verifications
+		$pattern = '{gender} and {gender, select, female{she} male{{he}} other{it}} loves {nr, number} is {gender}!';
+		$result = MessageFormatter::formatMessage('en_US', $pattern, array(
+			'nr' => 42,
+			'gender' => 'male',
+			'he' => 'wtf',
+			'she' => 'wtf',
+		));
+		$this->assertEquals('male and wtf loves 42 is male!', $result);
 	}
 
 	public function testInsufficientArguments()
