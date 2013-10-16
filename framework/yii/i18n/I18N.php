@@ -73,24 +73,31 @@ class I18N extends Component
 	public function translate($category, $message, $params, $language)
 	{
 		$message = $this->getMessageSource($category)->translate($category, $message, $language);
-		$params = (array)$params;
+		if (empty($params)) {
+			return $message;
+		}
 
+		$params = (array)$params;
 		if (class_exists('MessageFormatter', false) && preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
 			$formatter = new MessageFormatter($language, $message);
 			if ($formatter === null) {
-				\Yii::$app->getLog()->log("$language message from category $category failed. Message is: $message.", Logger::LEVEL_WARNING, 'application');
-			}
-			$result = $formatter->format($params);
-			if ($result === false) {
-				$errorMessage = $formatter->getErrorMessage();
-				\Yii::$app->getLog()->log("$language message from category $category failed with error: $errorMessage. Message is: $message.", Logger::LEVEL_WARNING, 'application');
-			}
-			else {
-				return $result;
+				\Yii::$app->getLog()->log("$language message from category $category is invalid. Message is: $message.", Logger::LEVEL_WARNING, 'application');
+			} else {
+				$result = $formatter->format($params);
+				if ($result === false) {
+					$errorMessage = $formatter->getErrorMessage();
+					\Yii::$app->getLog()->log("$language message from category $category failed with error: $errorMessage. Message is: $message.", Logger::LEVEL_WARNING, 'application');
+				} else {
+					return $result;
+				}
 			}
 		}
 
-		return empty($params) ? $message : strtr($message, $params);
+		$p = array();
+		foreach($params as $name => $value) {
+			$p['{' . $name . '}'] = $value;
+		}
+		return strtr($message, $p);
 	}
 
 	/**

@@ -140,4 +140,23 @@ _MSG_
 
 		$this->assertEquals($expected, $result);
 	}
+
+	/**
+	 * when instantiating a MessageFormatter with invalid pattern it should be null
+	 */
+	public function testNullConstructor()
+	{
+		$this->assertNull(new MessageFormatter('en_US', ''));
+	}
+
+	public function testNoParams()
+	{
+		$pattern = '{'.self::SUBJECT.'} is '.self::N;
+		$result = MessageFormatter::formatMessage('en_US', $pattern, array());
+		$this->assertEquals($pattern, $result);
+
+		$formatter = new MessageFormatter('en_US', $pattern);
+		$result = $formatter->format(array());
+		$this->assertEquals($pattern, $result);
+	}
 }
