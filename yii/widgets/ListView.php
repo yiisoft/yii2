@@ -16,7 +16,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ListView extends ListViewBase
+class ListView extends BaseListView
 {
 	/**
 	 * @var array the HTML attributes for the container of the rendering result of each data model.

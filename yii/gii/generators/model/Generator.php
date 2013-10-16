@@ -464,6 +464,9 @@ class Generator extends \yii\gii\Generator
 			return $this->_tableNames;
 		}
 		$db = $this->getDbConnection();
+		if ($db === null) {
+			return array();
+		}
 		$tableNames = array();
 		if (strpos($this->tableName, '*') !== false) {
 			if (($pos = strrpos($this->tableName, '.')) !== false) {
@@ -511,7 +514,8 @@ class Generator extends \yii\gii\Generator
 			$patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
 		}
 		if (!empty($db->tablePrefix)) {
-			$patterns[] = "/^{$db->tablePrefix}(.*?)|(.*?){$db->tablePrefix}$/";
+			$patterns[] = "/^{$db->tablePrefix}(.*?)$/";
+			$patterns[] = "/^(.*?){$db->tablePrefix}$/";
 		} else {
 			$patterns[] = "/^tbl_(.*?)$/";
 		}
@@ -520,6 +524,7 @@ class Generator extends \yii\gii\Generator
 		foreach ($patterns as $pattern) {
 			if (preg_match($pattern, $tableName, $matches)) {
 				$className = $matches[1];
+				break;
 			}
 		}
 		return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');

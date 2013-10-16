@@ -422,10 +422,22 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Returns a value indicating whether the attribute is safe for massive assignments.
 	 * @param string $attribute attribute name
 	 * @return boolean whether the attribute is safe for massive assignments
+	 * @see safeAttributes()
 	 */
 	public function isAttributeSafe($attribute)
 	{
 		return in_array($attribute, $this->safeAttributes(), true);
+	}
+
+	/**
+	 * Returns a value indicating whether the attribute is active in the current scenario.
+	 * @param string $attribute attribute name
+	 * @return boolean whether the attribute is active in the current scenario
+	 * @see activeAttributes()
+	 */
+	public function isAttributeActive($attribute)
+	{
+		return in_array($attribute, $this->activeAttributes(), true);
 	}
 
 	/**

@@ -101,7 +101,8 @@ class Schema extends \yii\db\Schema
 
 		$this->db->open();
 		// workaround for broken PDO::quote() implementation in CUBRID 9.1.0 http://jira.cubrid.org/browse/APIS-658
-		if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION), '9.1.0', '<=')) {
+		$version = $this->db->pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION);
+		if (version_compare($version, '8.4.4.0002', '<') || $version[0] == '9' && version_compare($version, '9.2.0.0002', '<=')) {
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
 		} else {
 			return $this->db->pdo->quote($str);
@@ -236,5 +237,25 @@ class Schema extends \yii\db\Schema
 			}
 		}
 		return $tableNames;
+	}
+
+	/**
+	 * Determines the PDO type for the given PHP data value.
+	 * @param mixed $data the data whose PDO type is to be determined
+	 * @return integer the PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
+	 */
+	public function getPdoType($data)
+	{
+		static $typeMap = array(
+			// php type => PDO type
+			'boolean' => \PDO::PARAM_INT, // PARAM_BOOL is not supported by CUBRID PDO
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'resource' => \PDO::PARAM_LOB,
+			'NULL' => \PDO::PARAM_NULL,
+		);
+		$type = gettype($data);
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 }

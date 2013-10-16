@@ -383,7 +383,7 @@ abstract class Application extends Module
 	 * Returns the internationalization (i18n) component
 	 * @return \yii\i18n\I18N the internationalization component
 	 */
-	public function getI18N()
+	public function getI18n()
 	{
 		return $this->getComponent('i18n');
 	}
@@ -450,7 +450,11 @@ abstract class Application extends Module
 			$msg .= "\nPrevious exception:\n";
 			$msg .= (string)$exception;
 			if (YII_DEBUG) {
-				echo $msg;
+				if (PHP_SAPI === 'cli') {
+					echo $msg . "\n";
+				} else {
+					echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, $this->charset) . '</pre>';
+				}
 			}
 			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
 			error_log($msg);

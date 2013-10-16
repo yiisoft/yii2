@@ -541,7 +541,7 @@ class BaseYii
 	public static function t($category, $message, $params = array(), $language = null)
 	{
 		if (self::$app !== null) {
-			return self::$app->getI18N()->translate($category, $message, $params, $language ?: self::$app->language);
+			return self::$app->getI18n()->translate($category, $message, $params, $language ?: self::$app->language);
 		} else {
 			return is_array($params) ? strtr($message, $params) : $message;
 		}

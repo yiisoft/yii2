@@ -72,12 +72,11 @@ class ActionColumn extends Column
 		if ($this->urlCreator instanceof Closure) {
 			return call_user_func($this->urlCreator, $model, $action);
 		} else {
-			$route = Inflector::camel2id(StringHelper::basename(get_class($model))) . '/' . $action;
 			$params = $model->getPrimaryKey(true);
 			if (count($params) === 1) {
 				$params = array('id' => reset($params));
 			}
-			return Yii::$app->getUrlManager()->createUrl($route, $params);
+			return Yii::$app->controller->createUrl($action, $params);
 		}
 	}
 

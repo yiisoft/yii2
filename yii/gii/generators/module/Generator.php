@@ -147,6 +147,9 @@ EOD;
 		if (strpos($this->moduleClass, '\\') === false || Yii::getAlias('@' . str_replace('\\', '/', $this->moduleClass)) === false) {
 			$this->addError('moduleClass', 'Module class must be properly namespaced.');
 		}
+		if (substr($this->moduleClass, -1, 1) == '\\') {
+			$this->addError('moduleClass', 'Module class name must not be empty. Please enter a fully qualified class name. e.g. "app\\modules\\admin\\Module".');
+		}
 	}
 
 	/**

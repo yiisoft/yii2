@@ -45,7 +45,7 @@ class Application extends \yii\base\Application
 	 * )
 	 * ~~~
 	 *
-	 * Defaults to null, meaning catch-all is not effective.
+	 * Defaults to null, meaning catch-all is not used.
 	 */
 	public $catchAll;
 	/**
