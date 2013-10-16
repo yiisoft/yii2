@@ -34,7 +34,7 @@ class MessageFormatter extends \MessageFormatter
 			return $this->getPattern();
 		}
 
-		if (self::needFix()) {
+		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
 			$pattern = self::replaceNamedArguments($this->getPattern(), $args);
 			$this->setPattern($pattern);
 			$args = array_values($args);
@@ -57,7 +57,7 @@ class MessageFormatter extends \MessageFormatter
 			return $pattern;
 		}
 
-		if (self::needFix()) {
+		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
 			$pattern = self::replaceNamedArguments($pattern, $args);
 			$args = array_values($args);
 		}
@@ -113,17 +113,6 @@ class MessageFormatter extends \MessageFormatter
 			$d += 1 - substr_count($parts[$i], '}');
 		}
 		return $pattern;
-	}
-
-	/**
-	 * Checks if fix should be applied
-	 *
-	 * @see http://php.net/manual/en/migration55.changed-functions.php
-	 * @return boolean if fix should be applied
-	 */
-	private static function needFix()
-	{
-		return version_compare(PHP_VERSION, '5.5.0', '<');
 	}
 }
  
