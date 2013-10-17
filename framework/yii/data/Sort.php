@@ -234,6 +234,9 @@ class Sort extends Object
 		return $orders;
 	}
 
+	/**
+	 * @var array the currently requested sort order as computed by [[getAttributeOrders]].
+	 */
 	private $_attributeOrders;
 
 	/**
