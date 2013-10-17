@@ -53,10 +53,17 @@ class VendorMessageTest extends TestCase
 		$value = 'test public field value';
 		$message->publicField = $value;
 		$this->assertEquals($value, $message->publicField, 'Unable to access public property!');
+		$this->assertTrue(isset($message->publicField), 'Unable to check if public property is set!');
+		unset($message->publicField);
+		$this->assertFalse(isset($message->publicField), 'Unable to unset the public property!');
 
 		$value = 'test private field value';
 		$message->privateField = $value;
 		$this->assertEquals($value, $message->privateField, 'Unable to access virtual property!');
+		$this->assertTrue(isset($message->privateField), 'Unable to check if private property is set!');
+		unset($message->privateField);
+		$this->assertFalse(isset($message->privateField), 'Unable to unset the private property!');
+
 	}
 }
 

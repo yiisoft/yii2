@@ -8,6 +8,8 @@
 namespace yii\email;
 
 use Yii;
+use yii\base\InvalidCallException;
+use yii\base\UnknownPropertyException;
 
 /**
  * Class VendorMessage
@@ -24,30 +26,77 @@ class VendorMessage extends BaseMessage
 
 	public function __get($name)
 	{
-		$vendorMessage = $this->getVendorMessage();
-		if (property_exists($vendorMessage, $name)) {
-			return $vendorMessage->$name;
-		}
-		$getter = 'get' . $name;
-		if (method_exists($vendorMessage, $getter)) {
-			return $vendorMessage->$getter();
-		} else {
+		try {
 			return parent::__get($name);
+		} catch (UnknownPropertyException $exception) {
+			$vendorMessage = $this->getVendorMessage();
+			if (property_exists($vendorMessage, $name)) {
+				return $vendorMessage->$name;
+			}
+			$getter = 'get' . $name;
+			if (method_exists($vendorMessage, $getter)) {
+				return $vendorMessage->$getter();
+			} else {
+				throw $exception;
+			}
 		}
 	}
 
 	public function __set($name, $value)
 	{
-		$vendorMessage = $this->getVendorMessage();
-		if (property_exists($vendorMessage, $name)) {
-			$vendorMessage->$name = $value;
-			return;
-		}
-		$setter = 'set' . $name;
-		if (method_exists($vendorMessage, $setter)) {
-			$vendorMessage->$setter($value);
-		} else {
+		try {
 			parent::__set($name, $value);
+		} catch (UnknownPropertyException $exception) {
+			$vendorMessage = $this->getVendorMessage();
+			if (property_exists($vendorMessage, $name)) {
+				$vendorMessage->$name = $value;
+				return;
+			}
+			$setter = 'set' . $name;
+			if (method_exists($vendorMessage, $setter)) {
+				$vendorMessage->$setter($value);
+			} else {
+				throw $exception;
+			}
+		}
+	}
+
+	public function __isset($name)
+	{
+		$getter = 'get' . $name;
+		if (method_exists($this, $getter)) {
+			return $this->$getter() !== null;
+		} else {
+			$vendorMessage = $this->getVendorMessage();
+			if (property_exists($vendorMessage, $name)) {
+				return isset($vendorMessage->$name);
+			}
+			if (method_exists($vendorMessage, $getter)) {
+				return ($vendorMessage->$getter() !== null);
+			} else {
+				return false;
+			}
+		}
+	}
+
+	public function __unset($name)
+	{
+		$setter = 'set' . $name;
+		if (method_exists($this, $setter)) {
+			$this->$setter(null);
+		} elseif (method_exists($this, 'get' . $name)) {
+			throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '::' . $name);
+		} else {
+			$vendorMessage = $this->getVendorMessage();
+			if (property_exists($vendorMessage, $name)) {
+				unset($vendorMessage->$name);
+			} else {
+				if (method_exists($vendorMessage, $setter)) {
+					$vendorMessage->$setter(null);
+				} elseif (method_exists($vendorMessage, 'get' . $name)) {
+					throw new InvalidCallException('Unsetting read-only property: ' . get_class($vendorMessage) . '::' . $name);
+				}
+			}
 		}
 	}
 
