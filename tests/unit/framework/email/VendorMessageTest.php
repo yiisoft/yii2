@@ -4,7 +4,7 @@ namespace yiiunit\framework\email;
 
 use Yii;
 use yii\email\VendorMailer;
-use yii\email\VendorMessage;
+use yii\email\VendorMessage as AbstractVendorMessage;
 use yiiunit\TestCase;
 
 class VendorMessageTest extends TestCase
@@ -63,8 +63,20 @@ class VendorMessageTest extends TestCase
 		$this->assertTrue(isset($message->privateField), 'Unable to check if private property is set!');
 		unset($message->privateField);
 		$this->assertFalse(isset($message->privateField), 'Unable to unset the private property!');
-
 	}
+}
+
+class VendorMessage extends AbstractVendorMessage
+{
+	public function setFrom($from) {}
+
+	public function setTo($to) {}
+
+	public function setSubject($subject) {}
+
+	public function setText($text) {}
+
+	public function setHtml($html) {}
 }
 
 class TestVendorMessage

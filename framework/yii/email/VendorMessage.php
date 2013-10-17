@@ -17,7 +17,7 @@ use yii\base\UnknownPropertyException;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class VendorMessage extends BaseMessage
+abstract class VendorMessage extends BaseMessage
 {
 	/**
 	 * @var object vendor message instance.
