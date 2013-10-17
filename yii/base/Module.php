@@ -333,7 +333,20 @@ abstract class Module extends Component
 	 */
 	public function hasModule($id)
 	{
-		return isset($this->_modules[$id]);
+		if (strpos($id, '/') === false) {
+			return isset($this->_modules[$id]);
+		} else {
+			// it's a sub-module
+			$ids = explode('/', $id);
+			$module = $this;
+			foreach ($ids as $id) {
+				if (!isset($module->_modules[$id])) {
+					return false;
+				}
+				$module = $module->getModule($id);
+			}
+			return true;
+		}
 	}
 
 	/**
@@ -345,13 +358,23 @@ abstract class Module extends Component
 	 */
 	public function getModule($id, $load = true)
 	{
-		if (isset($this->_modules[$id])) {
-			if ($this->_modules[$id] instanceof Module) {
-				return $this->_modules[$id];
-			} elseif ($load) {
-				Yii::trace("Loading module: $id", __METHOD__);
-				return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
+		if (strpos($id, '/') === false) {
+			if (isset($this->_modules[$id])) {
+				if ($this->_modules[$id] instanceof Module) {
+					return $this->_modules[$id];
+				} elseif ($load) {
+					Yii::trace("Loading module: $id", __METHOD__);
+					return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
+				}
 			}
+		} else {
+			// it's a sub-module
+			$ids = explode('/', $id);
+			$module = $this;
+			foreach ($ids as $id) {
+				$module = $module->getModule($id);
+			}
+			return $module;
 		}
 		return null;
 	}
