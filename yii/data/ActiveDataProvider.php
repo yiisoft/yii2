@@ -77,7 +77,7 @@ class ActiveDataProvider extends BaseDataProvider
 	public $db;
 
 	/**
-	 * Initializes the DbCache component.
+	 * Initializes the DB connection component.
 	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
 	 * @throws InvalidConfigException if [[db]] is invalid.
 	 */
