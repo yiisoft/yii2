@@ -117,7 +117,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * ~~~
 	 *
 	 * In the above `$attribute` refers to currently validated attribute name while `$params` contains an array of
-	 * validator configuration options such as `max` in case of `length` validator. Currently validate attribute value
+	 * validator configuration options such as `max` in case of `string` validator. Currently validate attribute value
 	 * can be accessed as `$this->[$attribute]`.
 	 *
 	 * Yii also provides a set of [[Validator::builtInValidators|built-in validators]].
@@ -129,8 +129,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * array(
 	 *     // built-in "required" validator
 	 *     array('username', 'required'),
-	 *     // built-in "length" validator customized with "min" and "max" properties
-	 *     array('username', 'length', 'min' => 3, 'max' => 12),
+	 *     // built-in "string" validator customized with "min" and "max" properties
+	 *     array('username', 'string', 'min' => 3, 'max' => 12),
 	 *     // built-in "compare" validator that is used in "register" scenario only
 	 *     array('password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'),
 	 *     // an inline validator defined via the "authenticate()" method in the model class

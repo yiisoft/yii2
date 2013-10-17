@@ -1,7 +1,8 @@
 View
 ====
 
-View is an important part of MVC and is responsible for how data is presented to the end user.
+View is an important part of MVC and is responsible for presenting data to end users.
+
 
 Basics
 ------

@@ -197,7 +197,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function getModule()
 	{
-		if (($pos = strpos($this->controller, '/')) !== false) {
+		if (($pos = strrpos($this->controller, '/')) !== false) {
 			$id = substr($this->controller, 0, $pos);
 			if (($module = Yii::$app->getModule($id)) !== null) {
 				return $module;
