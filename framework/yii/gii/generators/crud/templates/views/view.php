@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<h1><?php echo "<?php"; ?> echo Html::encode($this->title); ?></h1>
 
 	<p>
-		<?php echo '<?php'; ?> echo Html::a('Update', array('update', <?php echo $urlParams; ?>), array('class' => 'btn btn-danger')); ?>
+		<?php echo '<?php'; ?> echo Html::a('Update', array('update', <?php echo $urlParams; ?>), array('class' => 'btn btn-primary')); ?>
 		<?php echo '<?php'; ?> echo Html::a('Delete', array('delete', <?php echo $urlParams; ?>), array(
 			'class' => 'btn btn-danger',
 			'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
