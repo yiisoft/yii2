@@ -7,7 +7,6 @@
 
 namespace yii\email;
 
-use yii\base\Object;
 use Yii;
 
 /**
@@ -16,7 +15,7 @@ use Yii;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class VendorMessage extends Object
+class VendorMessage extends BaseMessage
 {
 	/**
 	 * @var object vendor message instance.
@@ -79,14 +78,5 @@ class VendorMessage extends Object
 	protected function createVendorMessage()
 	{
 		return Yii::$app->getComponent('email')->createVendorMessage();
-	}
-
-	/**
-	 * Sends this email message.
-	 * @return boolean success.
-	 */
-	public function send()
-	{
-		return Yii::$app->getComponent('email')->send($this);
 	}
 }

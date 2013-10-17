@@ -7,6 +7,10 @@ use yii\email\swift\Mailer;
 use yii\email\VendorMessage;
 use yiiunit\TestCase;
 
+/**
+ * @group email
+ * @group swiftmailer
+ */
 class MailerTest extends TestCase
 {
 	public function setUp()
