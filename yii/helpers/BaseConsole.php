@@ -700,14 +700,14 @@ class BaseConsole
 	public static function prompt($text, $options = array())
 	{
 		$options = ArrayHelper::merge(
-			$options,
 			array(
 				'required'  => false,
 				'default'   => null,
 				'pattern'   => null,
 				'validator' => null,
 				'error'     => 'Invalid input.',
-			)
+			),
+			$options
 		);
 		$error   = null;
 
