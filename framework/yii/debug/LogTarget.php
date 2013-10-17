@@ -49,7 +49,7 @@ class LogTarget extends Target
 		if (!is_file($indexFile)) {
 			$manifest = array();
 		} else {
-			$manifest = json_decode(file_get_contents($indexFile), true);
+			$manifest = unserialize(file_get_contents($indexFile));
 		}
 		$request = Yii::$app->getRequest();
 		$manifest[$this->tag] = $summary = array(
@@ -68,8 +68,8 @@ class LogTarget extends Target
 			$data[$id] = $panel->save();
 		}
 		$data['summary'] = $summary;
-		file_put_contents($dataFile, json_encode($data));
-		file_put_contents($indexFile, json_encode($manifest));
+		file_put_contents($dataFile, serialize($data));
+		file_put_contents($indexFile, serialize($manifest));
 	}
 
 	/**
