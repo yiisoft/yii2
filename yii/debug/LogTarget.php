@@ -45,7 +45,7 @@ class LogTarget extends Target
 		if (!is_dir($path)) {
 			mkdir($path);
 		}
-		$indexFile = "$path/index.json";
+		$indexFile = "$path/index.php";
 		if (!is_file($indexFile)) {
 			$manifest = array();
 		} else {
@@ -62,7 +62,7 @@ class LogTarget extends Target
 		);
 		$this->gc($manifest);
 
-		$dataFile = "$path/{$this->tag}.json";
+		$dataFile = "$path/{$this->tag}.php";
 		$data = array();
 		foreach ($this->module->panels as $id => $panel) {
 			$data[$id] = $panel->save();
@@ -93,7 +93,7 @@ class LogTarget extends Target
 		if (count($manifest) > $this->module->historySize + 10) {
 			$n = count($manifest) - $this->module->historySize;
 			foreach (array_keys($manifest) as $tag) {
-				$file = $this->module->dataPath . "/$tag.json";
+				$file = $this->module->dataPath . "/$tag.php";
 				@unlink($file);
 				unset($manifest[$tag]);
 				if (--$n <= 0) {
