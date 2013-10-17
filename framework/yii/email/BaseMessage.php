@@ -11,7 +11,12 @@ use yii\base\Object;
 use Yii;
 
 /**
- * Class BaseMessage
+ * BaseMessage represent the single email message.
+ * It functionality depends on application component 'email',
+ * which should provide the actual email sending functionality as well as
+ * default message configuration.
+ *
+ * @see BaseMailer
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -24,6 +29,16 @@ abstract class BaseMessage extends Object
 	public function getMailer()
 	{
 		return Yii::$app->getComponent('email');
+	}
+
+	/**
+	 * Initializes the object.
+	 * This method is invoked at the end of the constructor after the object is initialized with the
+	 * given configuration.
+	 */
+	public function init()
+	{
+		Yii::configure($this, $this->getMailer()->getDefaultMessageConfig());
 	}
 
 	/**

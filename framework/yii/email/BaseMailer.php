@@ -10,13 +10,46 @@ namespace yii\email;
 use yii\base\Component;
 
 /**
- * Class Mailer
+ * BaseMailer provides the basic interface for the email mailer application component.
+ * It provides the default configuration for the email messages.
+ * Particular implementation of mailer should provide implementation for the [[send()]] method.
+ *
+ * @see BaseMessage
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 abstract class BaseMailer extends Component
 {
+	/**
+	 * @var array configuration, which should be applied by default to any new created
+	 * email message instance.
+	 * For example:
+	 * ~~~
+	 * array(
+	 *     'encoding' => 'UTF-8',
+	 *     'from' => 'noreply@mydomain.com',
+	 * )
+	 * ~~~
+	 */
+	private $_defaultMessageConfig = array();
+
+	/**
+	 * @param array $defaultMessageConfig default message config
+	 */
+	public function setDefaultMessageConfig(array $defaultMessageConfig)
+	{
+		$this->_defaultMessageConfig = $defaultMessageConfig;
+	}
+
+	/**
+	 * @return array default message config
+	 */
+	public function getDefaultMessageConfig()
+	{
+		return $this->_defaultMessageConfig;
+	}
+
 	/**
 	 * Sends the given email message.
 	 * @param object $message email message instance
