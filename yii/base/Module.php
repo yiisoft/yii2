@@ -326,25 +326,40 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Checks whether the named module exists.
-	 * @param string $id module ID
+	 * Checks whether the child module of the specified ID exists.
+	 * This method supports checking the existence of both child and grand child modules.
+	 * @param string $id module ID. For grand child modules, use ID path relative to this module (e.g. `admin/content`).
 	 * @return boolean whether the named module exists. Both loaded and unloaded modules
 	 * are considered.
 	 */
 	public function hasModule($id)
 	{
-		return isset($this->_modules[$id]);
+		if (($pos = strpos($id, '/')) !== false) {
+			// sub-module
+			$module = $this->getModule(substr($id, 0, $pos));
+			return $module === null ? false : $module->hasModule(substr($id, $pos + 1));
+		} else {
+			return isset($this->_modules[$id]);
+		}
 	}
 
 	/**
-	 * Retrieves the named module.
-	 * @param string $id module ID (case-sensitive).
+	 * Retrieves the child module of the specified ID.
+	 * This method supports retrieving both child modules and grand child modules.
+	 * @param string $id module ID (case-sensitive). To retrieve grand child modules,
+	 * use ID path relative to this module (e.g. `admin/content`).
 	 * @param boolean $load whether to load the module if it is not yet loaded.
 	 * @return Module|null the module instance, null if the module does not exist.
 	 * @see hasModule()
 	 */
 	public function getModule($id, $load = true)
 	{
+		if (($pos = strpos($id, '/')) !== false) {
+			// sub-module
+			$module = $this->getModule(substr($id, 0, $pos));
+			return $module === null ? null : $module->getModule(substr($id, $pos + 1), $load);
+		}
+
 		if (isset($this->_modules[$id])) {
 			if ($this->_modules[$id] instanceof Module) {
 				return $this->_modules[$id];
