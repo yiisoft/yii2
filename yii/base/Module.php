@@ -546,10 +546,15 @@ abstract class Module extends Component
 	public function setComponents($components)
 	{
 		foreach ($components as $id => $component) {
-			if (isset($this->_components[$id]['class']) && !isset($component['class'])) {
-				$component['class'] = $this->_components[$id]['class'];
+			if (isset($this->_components[$id]) && !($this->_components[$id] instanceof Object)) {
+				if (isset($this->_components[$id]['class']) && !isset($component['class'])) {
+					$component['class'] = $this->_components[$id]['class'];
+				}
+				$this->_components[$id] = $component;
 			}
-			$this->_components[$id] = $component;
+			else {
+				throw new Exception('Cannot set component "'.$id.'" that is already instantiated.');
+			}
 		}
 	}
 
