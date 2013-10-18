@@ -175,7 +175,7 @@ class ErrorHandler extends Component
 			$html = rtrim($html, '\\');
 		} elseif (strpos($code, '()') !== false) {
 			// method/function call
-			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) use ($this) {
+			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) {
 				return '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($matches[1]) . '" target="_blank">' .
 					$this->htmlEncode($matches[1]) . '</a>()';
 			}, $code);
