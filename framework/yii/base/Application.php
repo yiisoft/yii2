@@ -172,6 +172,20 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Initializes the application.
+	 * This method is called after the application is created and initialized with property values
+	 * given in configuration.
+	 */
+	public function init()
+	{
+		$this->preloadComponents();
+		if ($this->controllerNamespace === null) {
+			$this->controllerNamespace = 'app\\controllers';
+		}
+	}
+
+
+	/**
 	 * Loads components that are declared in [[preload]].
 	 * @throws InvalidConfigException if a component or module to be preloaded is unknown
 	 */
