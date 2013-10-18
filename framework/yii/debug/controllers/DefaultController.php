@@ -74,7 +74,7 @@ class DefaultController extends Controller
 	protected function getManifest()
 	{
 		if ($this->_manifest === null) {
-			$indexFile = $this->module->dataPath . '/index.php';
+			$indexFile = $this->module->dataPath . '/index.data';
 			if (is_file($indexFile)) {
 				$this->_manifest = array_reverse(unserialize(file_get_contents($indexFile)), true);
 			} else {
@@ -88,7 +88,7 @@ class DefaultController extends Controller
 	{
 		$manifest = $this->getManifest();
 		if (isset($manifest[$tag])) {
-			$dataFile = $this->module->dataPath . "/$tag.php";
+			$dataFile = $this->module->dataPath . "/$tag.data";
 			$data = unserialize(file_get_contents($dataFile));
 			foreach ($this->module->panels as $id => $panel) {
 				if (isset($data[$id])) {
