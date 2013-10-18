@@ -17,10 +17,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<div class="col-lg-5">
-			<?php $form = ActiveForm::begin(array('id' => 'request-password-reset-form')); ?>
+			<?php $form = ActiveForm::begin(['id' => 'request-password-reset-form']); ?>
 				<?php echo $form->field($model, 'email'); ?>
 				<div class="form-group">
-					<?php echo Html::submitButton('Send', array('class' => 'btn btn-primary')); ?>
+					<?php echo Html::submitButton('Send', ['class' => 'btn btn-primary']); ?>
 				</div>
 			<?php ActiveForm::end(); ?>
 		</div>
