@@ -222,6 +222,18 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Sets the root directory of the applicaition and the @app alias.
+	 * This method can only be invoked at the beginning of the constructor.
+	 * @param string $path the root directory of the application.
+	 * @throws InvalidParamException if the directory does not exist.
+	 */
+	public function setBasePath($path)
+	{
+		parent::setBasePath($path);
+		Yii::setAlias('@app', $this->getBasePath());
+	}
+
+	/**
 	 * Runs the application.
 	 * This is the main entrance of an application.
 	 * @return integer the exit status (0 means normal, non-zero values mean abnormal)
