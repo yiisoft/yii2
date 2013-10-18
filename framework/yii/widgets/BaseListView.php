@@ -92,7 +92,7 @@ abstract class BaseListView extends Widget
 	public function run()
 	{
 		if ($this->dataProvider->getCount() > 0 || $this->empty === false) {
-			$content = preg_replace_callback("/{\\w+}/", function ($matches) use ($this) {
+			$content = preg_replace_callback("/{\\w+}/", function ($matches) {
 				$content = $this->renderSection($matches[0]);
 				return $content === false ? $matches[0] : $content;
 			}, $this->layout);
