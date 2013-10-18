@@ -1,12 +1,14 @@
 <?php
 namespace yiiunit\framework\caching;
-use yii\caching\FileCache;
-use yiiunit\TestCase;
+
+use yii\caching\WinCache;
 
 /**
  * Class for testing wincache backend
+ * @group wincache
+ * @group caching
  */
-class WinCacheTest extends CacheTest
+class WinCacheTest extends CacheTestCase
 {
 	private $_cacheInstance = null;
 
@@ -15,15 +17,15 @@ class WinCacheTest extends CacheTest
 	 */
 	protected function getCacheInstance()
 	{
-		if(!extension_loaded('wincache')) {
+		if (!extension_loaded('wincache')) {
 			$this->markTestSkipped("Wincache not installed. Skipping.");
 		}
 
-		if(!ini_get('wincache.ucenabled')) {
+		if (!ini_get('wincache.ucenabled')) {
 			$this->markTestSkipped("Wincache user cache disabled. Skipping.");
 		}
 
-		if($this->_cacheInstance === null) {
+		if ($this->_cacheInstance === null) {
 			$this->_cacheInstance = new WinCache();
 		}
 		return $this->_cacheInstance;

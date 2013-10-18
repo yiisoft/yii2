@@ -97,8 +97,10 @@ return array(
 ```
 
 You can use `CacheSession` to store sessions using cache. Note that some
-cache storages such as memcached has no guaranteee that session data will not
+cache storage such as memcached has no guarantee that session data will not
 be lost leading to unexpected logouts.
+
+If you have [Redis](http://redis.io/) on your server, it's highly recommended as session storage.
 
 Improving application
 ---------------------
@@ -114,7 +116,7 @@ If a whole page remains relative static, we can use the page caching approach to
 save the rendering cost for the whole page.
 
 
-### Leveraging HTTP to save procesing time and bandwidth
+### Leveraging HTTP to save processing time and bandwidth
 
 TBD
 
@@ -132,7 +134,7 @@ but it may slow down INSERT, UPDATE or DELETE queries.
 For complex queries, it is recommended to create a database view for it instead
 of issuing the queries inside the PHP code and asking DBMS to parse them repetitively.
 
-Do not overuse Active Record. Although Active Record is good at modelling data
+Do not overuse Active Record. Although Active Record is good at modeling data
 in an OOP fashion, it actually degrades performance due to the fact that it needs
 to create one or several objects to represent each row of query result. For data
 intensive applications, using DAO or database APIs at lower level could be
@@ -152,17 +154,17 @@ class PostController extends Controller
 	public function actionIndex()
 	{
 		$posts = Post::find()->orderBy('id DESC')->limit(100)->asArray()->all();
-		echo $this->render('index', array(
+		return $this->render('index', array(
 			'posts' => $posts,
 		));
 	}
 }
 ```
 
-In the view you should access fields of each invidual record from `$posts` as array:
+In the view you should access fields of each individual record from `$posts` as array:
 
 ```php
-foreach($posts as $post) {
+foreach ($posts as $post) {
 	echo $post['title']."<br>";
 }
 ```

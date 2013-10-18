@@ -7,9 +7,13 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
-class QueryTest extends \yiiunit\DatabaseTestCase
+/**
+ * @group db
+ * @group mysql
+ */
+class QueryTest extends DatabaseTestCase
 {
-	function testSelect()
+	public function testSelect()
 	{
 		// default
 		$query = new Query;
@@ -20,19 +24,19 @@ class QueryTest extends \yiiunit\DatabaseTestCase
 
 		$query = new Query;
 		$query->select('id, name', 'something')->distinct(true);
-		$this->assertEquals(array('id','name'), $query->select);
+		$this->assertEquals(array('id', 'name'), $query->select);
 		$this->assertTrue($query->distinct);
 		$this->assertEquals('something', $query->selectOption);
 	}
 
-	function testFrom()
+	public function testFrom()
 	{
 		$query = new Query;
 		$query->from('tbl_user');
 		$this->assertEquals(array('tbl_user'), $query->from);
 	}
 
-	function testWhere()
+	public function testWhere()
 	{
 		$query = new Query;
 		$query->where('id = :id', array(':id' => 1));
@@ -48,12 +52,11 @@ class QueryTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals(array(':id' => 1, ':name' => 'something', ':age' => '30'), $query->params);
 	}
 
-	function testJoin()
+	public function testJoin()
 	{
-
 	}
 
-	function testGroup()
+	public function testGroup()
 	{
 		$query = new Query;
 		$query->groupBy('team');
@@ -66,7 +69,7 @@ class QueryTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals(array('team', 'company', 'age'), $query->groupBy);
 	}
 
-	function testHaving()
+	public function testHaving()
 	{
 		$query = new Query;
 		$query->having('id = :id', array(':id' => 1));
@@ -82,7 +85,7 @@ class QueryTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals(array(':id' => 1, ':name' => 'something', ':age' => '30'), $query->params);
 	}
 
-	function testOrder()
+	public function testOrder()
 	{
 		$query = new Query;
 		$query->orderBy('team');
@@ -101,7 +104,7 @@ class QueryTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals(array('team' => false, 'company' => true, 'age' => false), $query->orderBy);
 	}
 
-	function testLimitOffset()
+	public function testLimitOffset()
 	{
 		$query = new Query;
 		$query->limit(10)->offset(5);
@@ -109,8 +112,7 @@ class QueryTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals(5, $query->offset);
 	}
 
-	function testUnion()
+	public function testUnion()
 	{
-
 	}
 }

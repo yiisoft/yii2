@@ -1,8 +1,15 @@
 <?php
-
 namespace yiiunit\data\ar;
-use yii\db\ActiveQuery;
 
+/**
+ * Class Customer
+ *
+ * @property integer $id
+ * @property string $name
+ * @property string $email
+ * @property string $address
+ * @property integer $status
+ */
 class Customer extends ActiveRecord
 {
 	const STATUS_ACTIVE = 1;

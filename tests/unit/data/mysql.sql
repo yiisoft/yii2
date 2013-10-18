@@ -3,12 +3,21 @@
  * The database setup in config.php is required to perform then relevant tests:
  */
 
+DROP TABLE IF EXISTS tbl_composite_fk CASCADE;
 DROP TABLE IF EXISTS tbl_order_item CASCADE;
 DROP TABLE IF EXISTS tbl_item CASCADE;
 DROP TABLE IF EXISTS tbl_order CASCADE;
 DROP TABLE IF EXISTS tbl_category CASCADE;
 DROP TABLE IF EXISTS tbl_customer CASCADE;
 DROP TABLE IF EXISTS tbl_type CASCADE;
+DROP TABLE IF EXISTS tbl_constraints CASCADE;
+
+CREATE TABLE `tbl_constraints`
+(
+  `id` integer not null,
+  `field1` varchar(255)
+);
+
 
 CREATE TABLE `tbl_customer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -54,6 +63,14 @@ CREATE TABLE `tbl_order_item` (
   CONSTRAINT `FK_order_item_item_id` FOREIGN KEY (`item_id`) REFERENCES `tbl_item` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `tbl_composite_fk` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `tbl_order_item` (`order_id`,`item_id`) ON DELETE CASCADE
+);
+
 CREATE TABLE `tbl_type` (
   `int_col` int(11) NOT NULL,
   `int_col2` int(11) DEFAULT '1',
@@ -92,3 +109,35 @@ INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4,
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+
+/**
+ * (MySQL-)Database Schema for validator tests
+ */
+
+DROP TABLE IF EXISTS tbl_validator_main CASCADE;
+DROP TABLE IF EXISTS tbl_validator_ref CASCADE;
+
+CREATE TABLE tbl_validator_main (
+  `id`     INT(11) NOT NULL AUTO_INCREMENT,
+  `field1` VARCHAR(255),
+  PRIMARY KEY (`id`)
+) ENGINE =InnoDB  DEFAULT CHARSET =utf8;
+
+CREATE TABLE tbl_validator_ref (
+  `id`      INT(11) NOT NULL AUTO_INCREMENT,
+  `a_field` VARCHAR(255),
+  `ref`     INT(11),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO tbl_validator_main (id, field1) VALUES (1, 'just a string1');
+INSERT INTO tbl_validator_main (id, field1) VALUES (2, 'just a string2');
+INSERT INTO tbl_validator_main (id, field1) VALUES (3, 'just a string3');
+INSERT INTO tbl_validator_main (id, field1) VALUES (4, 'just a string4');
+INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_3', 3);
+INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_5', 5);

@@ -7,9 +7,13 @@ use yii\db\Command;
 use yii\db\Query;
 use yii\db\DataReader;
 
-class CommandTest extends \yiiunit\DatabaseTestCase
+/**
+ * @group db
+ * @group mysql
+ */
+class CommandTest extends DatabaseTestCase
 {
-	function testConstruct()
+	public function testConstruct()
 	{
 		$db = $this->getConnection(false);
 
@@ -23,7 +27,7 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals($sql, $command->sql);
 	}
 
-	function testGetSetSql()
+	public function testGetSetSql()
 	{
 		$db = $this->getConnection(false);
 
@@ -36,7 +40,7 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals($sql2, $command->sql);
 	}
 
-	function testAutoQuoting()
+	public function testAutoQuoting()
 	{
 		$db = $this->getConnection(false);
 
@@ -45,7 +49,7 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals("SELECT `id`, `t`.`name` FROM `tbl_customer` t", $command->sql);
 	}
 
-	function testPrepareCancel()
+	public function testPrepareCancel()
 	{
 		$db = $this->getConnection(false);
 
@@ -57,7 +61,7 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals(null, $command->pdoStatement);
 	}
 
-	function testExecute()
+	public function testExecute()
 	{
 		$db = $this->getConnection();
 
@@ -74,7 +78,7 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$command->execute();
 	}
 
-	function testQuery()
+	public function testQuery()
 	{
 		$db = $this->getConnection();
 
@@ -93,22 +97,22 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$rows = $db->createCommand('SELECT * FROM tbl_customer WHERE id=10')->queryAll();
 		$this->assertEquals(array(), $rows);
 
-		// queryRow
+		// queryOne
 		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
-		$row = $db->createCommand($sql)->queryRow();
+		$row = $db->createCommand($sql)->queryOne();
 		$this->assertEquals(1, $row['id']);
 		$this->assertEquals('user1', $row['name']);
 
 		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
 		$command = $db->createCommand($sql);
 		$command->prepare();
-		$row = $command->queryRow();
+		$row = $command->queryOne();
 		$this->assertEquals(1, $row['id']);
 		$this->assertEquals('user1', $row['name']);
 
 		$sql = 'SELECT * FROM tbl_customer WHERE id=10';
 		$command = $db->createCommand($sql);
-		$this->assertFalse($command->queryRow());
+		$this->assertFalse($command->queryOne());
 
 		// queryColumn
 		$sql = 'SELECT * FROM tbl_customer';
@@ -135,12 +139,12 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$command->query();
 	}
 
-	function testBindParamValue()
+	public function testBindParamValue()
 	{
 		$db = $this->getConnection();
 
 		// bindParam
-		$sql = 'INSERT INTO tbl_customer(email,name,address) VALUES (:email, :name, :address)';
+		$sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, :name, :address)';
 		$command = $db->createCommand($sql);
 		$email = 'user4@example.com';
 		$name = 'user4';
@@ -172,7 +176,7 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals(1, $command->execute());
 
 		$sql = 'SELECT * FROM tbl_type';
-		$row = $db->createCommand($sql)->queryRow();
+		$row = $db->createCommand($sql)->queryOne();
 		$this->assertEquals($intCol, $row['int_col']);
 		$this->assertEquals($charCol, $row['char_col']);
 		$this->assertEquals($floatCol, $row['float_col']);
@@ -191,102 +195,87 @@ class CommandTest extends \yiiunit\DatabaseTestCase
 		$this->assertEquals('user5@example.com', $command->queryScalar());
 	}
 
-	function testFetchMode()
+	public function testFetchMode()
 	{
 		$db = $this->getConnection();
 
 		// default: FETCH_ASSOC
 		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
-		$result = $command->queryRow();
+		$result = $command->queryOne();
 		$this->assertTrue(is_array($result) && isset($result['id']));
 
 		// FETCH_OBJ, customized via fetchMode property
 		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
 		$command->fetchMode = \PDO::FETCH_OBJ;
-		$result = $command->queryRow();
+		$result = $command->queryOne();
 		$this->assertTrue(is_object($result));
 
 		// FETCH_NUM, customized in query method
 		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
-		$result = $command->queryRow(array(), \PDO::FETCH_NUM);
+		$result = $command->queryOne(array(), \PDO::FETCH_NUM);
 		$this->assertTrue(is_array($result) && isset($result[0]));
 	}
 
-	function testInsert()
+	public function testInsert()
 	{
-
 	}
 
-	function testUpdate()
+	public function testUpdate()
 	{
-
 	}
 
-	function testDelete()
+	public function testDelete()
 	{
-
 	}
 
-	function testCreateTable()
+	public function testCreateTable()
 	{
-
 	}
 
-	function testRenameTable()
+	public function testRenameTable()
 	{
-
 	}
 
-	function testDropTable()
+	public function testDropTable()
 	{
-
 	}
 
-	function testTruncateTable()
+	public function testTruncateTable()
 	{
-
 	}
 
-	function testAddColumn()
+	public function testAddColumn()
 	{
-
 	}
 
-	function testDropColumn()
+	public function testDropColumn()
 	{
-
 	}
 
-	function testRenameColumn()
+	public function testRenameColumn()
 	{
-
 	}
 
-	function testAlterColumn()
+	public function testAlterColumn()
 	{
-
 	}
 
-	function testAddForeignKey()
+	public function testAddForeignKey()
 	{
-
 	}
 
-	function testDropForeignKey()
+	public function testDropForeignKey()
 	{
-
 	}
 
-	function testCreateIndex()
+	public function testCreateIndex()
 	{
-
 	}
 
-	function testDropIndex()
+	public function testDropIndex()
 	{
-
 	}
 }

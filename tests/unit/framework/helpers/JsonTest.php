@@ -4,9 +4,13 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\Json;
+use yii\test\TestCase;
 use yii\web\JsExpression;
 
-class JsonTest extends \yii\test\TestCase
+/**
+ * @group helpers
+ */
+class JsonTest extends TestCase
 {
 	public function testEncode()
 	{
@@ -22,7 +26,8 @@ class JsonTest extends \yii\test\TestCase
 
 		// simple object encoding
 		$data = new \stdClass();
-		$data->a = 1; $data->b = 2;
+		$data->a = 1;
+		$data->b = 2;
 		$this->assertSame('{"a":1,"b":2}', Json::encode($data));
 
 		// expression encoding
@@ -40,6 +45,10 @@ class JsonTest extends \yii\test\TestCase
 			'b' => new JsExpression($expression2),
 		);
 		$this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::encode($data));
+
+		// https://github.com/yiisoft/yii2/issues/957
+		$data = (object)null;
+		$this->assertSame('{}', Json::encode($data));
 	}
 
 	public function testDecode()

@@ -94,7 +94,7 @@
   </fileset>
 
   <fileset dir="." id="executables">
-    <include name="${build.src.dir}/**/yiic" />
+    <include name="${build.src.dir}/**/yii" />
   </fileset>
 
   <target name="src" depends="sync">
@@ -265,7 +265,7 @@ Please update yiisite/common/data/versions.php file with the following code:
 
     where &lt;target name&gt; can be one of the following:
 
-    - sync    : synchronize yiilite.php and YiiBase.php
+    - sync    : synchronize yiilite.php and BaseYii.php
     - message : extract i18n messages of the framework
     - src     : build source release
     - doc     : build documentation release (Windows only)

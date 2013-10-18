@@ -17,6 +17,9 @@ function globalEventHandler2($event)
 	$event->handled = true;
 }
 
+/**
+ * @group base
+ */
 class ComponentTest extends TestCase
 {
 	/**
@@ -24,13 +27,16 @@ class ComponentTest extends TestCase
 	 */
 	protected $component;
 
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
+		$this->mockApplication();
 		$this->component = new NewComponent();
 	}
 
-	public function tearDown()
+	protected function tearDown()
 	{
+		parent::tearDown();
 		$this->component = null;
 	}
 
@@ -191,7 +197,7 @@ class ComponentTest extends TestCase
 		$this->assertFalse($this->component->event->handled);
 
 		$eventRaised = false;
-		$this->component->on('click', function($event) use (&$eventRaised) {
+		$this->component->on('click', function ($event) use (&$eventRaised) {
 			$eventRaised = true;
 		});
 		$this->component->raiseEvent();
@@ -199,7 +205,7 @@ class ComponentTest extends TestCase
 
 		// raise event w/o parameters
 		$eventRaised = false;
-		$this->component->on('test', function($event) use (&$eventRaised) {
+		$this->component->on('test', function ($event) use (&$eventRaised) {
 			$eventRaised = true;
 		});
 		$this->component->trigger('test');
@@ -328,7 +334,7 @@ class NewComponent extends Component
 
 	public function getExecute()
 	{
-		return function($param) {
+		return function ($param) {
 			return $param * 2;
 		};
 	}

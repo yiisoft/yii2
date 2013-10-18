@@ -1,5 +1,6 @@
 <?php
 namespace yiiunit\data\base;
+
 use yii\base\Model;
 
 /**
@@ -15,6 +16,13 @@ class Speaker extends Model
 
 	protected $protectedProperty;
 	private $_privateProperty;
+
+	public static $formName = 'Speaker';
+
+	public function formName()
+	{
+		return static::$formName;
+	}
 
 	public function attributeLabels()
 	{

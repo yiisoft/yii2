@@ -1,6 +1,7 @@
 <?php
 
 namespace yiiunit\framework\base;
+
 use yii\base\Model;
 use yiiunit\TestCase;
 use yiiunit\data\base\Speaker;
@@ -8,11 +9,17 @@ use yiiunit\data\base\Singer;
 use yiiunit\data\base\InvalidRulesModel;
 
 /**
- * ModelTest
+ * @group base
  */
 class ModelTest extends TestCase
 {
-	public function testGetAttributeLalel()
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
+	public function testGetAttributeLabel()
 	{
 		$speaker = new Speaker();
 		$this->assertEquals('First Name', $speaker->getAttributeLabel('firstName'));
@@ -66,6 +73,32 @@ class ModelTest extends TestCase
 		$speaker->setAttributes(array('firstName' => 'Qiang', 'underscore_style' => 'test'), false);
 		$this->assertEquals('test', $speaker->underscore_style);
 		$this->assertEquals('Qiang', $speaker->firstName);
+	}
+
+	public function testLoad()
+	{
+		$singer = new Singer();
+		$this->assertEquals('Singer', $singer->formName());
+
+		$post = array('firstName' => 'Qiang');
+
+		Speaker::$formName = '';
+		$model = new Speaker();
+		$model->setScenario('test');
+		$this->assertTrue($model->load($post));
+		$this->assertEquals('Qiang', $model->firstName);
+
+		Speaker::$formName = 'Speaker';
+		$model = new Speaker();
+		$model->setScenario('test');
+		$this->assertTrue($model->load(array('Speaker' => $post)));
+		$this->assertEquals('Qiang', $model->firstName);
+
+		Speaker::$formName = 'Speaker';
+		$model = new Speaker();
+		$model->setScenario('test');
+		$this->assertFalse($model->load(array('Example' => array())));
+		$this->assertEquals('', $model->firstName);
 	}
 
 	public function testActiveAttributes()
@@ -155,7 +188,7 @@ class ModelTest extends TestCase
 
 		// iteration
 		$attributes = array();
-		foreach($speaker as $key => $attribute) {
+		foreach ($speaker as $key => $attribute) {
 			$attributes[$key] = $attribute;
 		}
 		$this->assertEquals(array(

@@ -1,5 +1,6 @@
 <?php
 namespace yiiunit\data\base;
+
 use yii\base\Model;
 
 /**
@@ -13,5 +14,4 @@ class InvalidRulesModel extends Model
 			array('test'),
 		);
 	}
-
 }

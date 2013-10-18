@@ -5,7 +5,7 @@ use yii\base\Object;
 use yiiunit\TestCase;
 
 /**
- * ObjectTest
+ * @group base
  */
 class ObjectTest extends TestCase
 {
@@ -14,13 +14,16 @@ class ObjectTest extends TestCase
 	 */
 	protected $object;
 
-	public function setUp()
+	protected function setUp()
 	{
+		parent::setUp();
+		$this->mockApplication();
 		$this->object = new NewObject;
 	}
 
-	public function tearDown()
+	protected function tearDown()
 	{
+		parent::tearDown();
 		$this->object = null;
 	}
 
@@ -131,11 +134,6 @@ class ObjectTest extends TestCase
 		$this->assertEquals('new text', $this->object->object->text);
 	}
 
-	public function testAnonymousFunctionProperty()
-	{
-		$this->assertEquals(2, $this->object->execute(1));
-	}
-
 	public function testConstruct()
 	{
 		$object = new NewObject(array('text' => 'test text'));
@@ -172,7 +170,7 @@ class NewObject extends Object
 
 	public function getExecute()
 	{
-		return function($param) {
+		return function ($param) {
 			return $param * 2;
 		};
 	}

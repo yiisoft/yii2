@@ -5,6 +5,9 @@ namespace yiiunit\framework\i18n;
 use yii\i18n\GettextPoFile;
 use yiiunit\TestCase;
 
+/**
+ * @group i18n
+ */
 class GettextPoFileTest extends TestCase
 {
 	public function testLoad()

@@ -5,8 +5,12 @@ namespace yiiunit\framework\web;
 use yii\web\UrlManager;
 use yii\web\UrlRule;
 use yii\web\Request;
+use yiiunit\TestCase;
 
-class UrlRuleTest extends \yiiunit\TestCase
+/**
+ * @group web
+ */
+class UrlRuleTest extends TestCase
 {
 	public function testCreateUrl()
 	{
@@ -26,7 +30,7 @@ class UrlRuleTest extends \yiiunit\TestCase
 	public function testParseRequest()
 	{
 		$manager = new UrlManager(array('cache' => null));
-		$request = new Request;
+		$request = new Request(array('hostInfo' => 'http://en.example.com'));
 		$suites = $this->getTestsForParseRequest();
 		foreach ($suites as $i => $suite) {
 			list ($name, $config, $tests) = $suite;
@@ -327,6 +331,19 @@ class UrlRuleTest extends \yiiunit\TestCase
 					array('post/index', array('page' => 1), 'posts/?page=1'),
 				),
 			),
+			array(
+				'with host info',
+				array(
+					'pattern' => 'post/<page:\d+>/<tag>',
+					'route' => 'post/index',
+					'defaults' => array('page' => 1),
+					'host' => 'http://<lang:en|fr>.example.com',
+				),
+				array(
+					array('post/index', array('page' => 1, 'tag' => 'a'), false),
+					array('post/index', array('page' => 1, 'tag' => 'a', 'lang' => 'en'), 'http://en.example.com/post/a'),
+				),
+			),
 		);
 	}
 
@@ -360,6 +377,17 @@ class UrlRuleTest extends \yiiunit\TestCase
 				array(
 					array('posts', 'post/index'),
 					array('a', false),
+				),
+			),
+			array(
+				'with dot', // https://github.com/yiisoft/yii/issues/2945
+				array(
+					'pattern' => 'posts.html',
+					'route' => 'post/index',
+				),
+				array(
+					array('posts.html', 'post/index'),
+					array('postsahtml', false),
 				),
 			),
 			array(
@@ -447,6 +475,7 @@ class UrlRuleTest extends \yiiunit\TestCase
 				),
 				array(
 					array('post/1/a/yes', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'yes')),
+					array('post/1/a/no', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'no')),
 					array('post/2/a/no', 'post/index', array('page' => '2', 'tag' => 'a', 'sort' => 'no')),
 					array('post/2/a', 'post/index', array('page' => '2', 'tag' => 'a', 'sort' => 'yes')),
 					array('post/a/no', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'no')),
@@ -606,8 +635,22 @@ class UrlRuleTest extends \yiiunit\TestCase
 					'suffix' => '/',
 				),
 				array(
-					array('posts', 'post/index'),
+					array('posts/', 'post/index'),
+					array('posts', false),
 					array('a', false),
+				),
+			),
+			array(
+				'with host info',
+				array(
+					'pattern' => 'post/<page:\d+>',
+					'route' => 'post/index',
+					'host' => 'http://<lang:en|fr>.example.com',
+				),
+				array(
+					array('post/1', 'post/index', array('page' => '1', 'lang' => 'en')),
+					array('post/a', false),
+					array('post/1/a', false),
 				),
 			),
 		);
