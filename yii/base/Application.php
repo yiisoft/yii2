@@ -141,7 +141,6 @@ abstract class Application extends Module
 
 		Component::__construct($config);
 
-		$this->preloadComponents();
 		if ($this->controllerNamespace === null) {
 			$this->controllerNamespace = 'app\\controllers';
 		}
