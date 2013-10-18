@@ -205,8 +205,7 @@ class Connection extends Component
 	 * as specified by the database.
 	 *
 	 * Note that if you're using GBK or BIG5 then it's highly recommended to
-	 * update to PHP 5.3.6+ and to specify charset via DSN like
-	 * 'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'.
+	 * specify charset via DSN like 'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'.
 	 */
 	public $charset;
 	/**
