@@ -139,10 +139,18 @@ class AssetBundle extends Object
 	public function registerAssets($view)
 	{
 		foreach ($this->js as $js) {
-			$view->registerJsFile($this->baseUrl . '/' . ltrim($js, '/'), $this->jsOptions);
+			if ($js[0] === '/') {
+				$view->registerJsFile($this->baseUrl . $js, $this->jsOptions);
+			} else {
+				$view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
+			}
 		}
 		foreach ($this->css as $css) {
-			$view->registerCssFile($this->baseUrl . '/' . ltrim($css, '/'), $this->cssOptions);
+			if ($css[0] === '/') {
+				$view->registerCssFile($this->baseUrl . $css, $this->cssOptions);
+			} else {
+				$view->registerCssFile($this->baseUrl . '/' . $css, $this->cssOptions);
+			}
 		}
 	}
 
