@@ -9,20 +9,20 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
 	public $password;
 	public $authKey;
 
-	private static $users = array(
-		'100' => array(
+	private static $users = [
+		'100' => [
 			'id' => '100',
 			'username' => 'admin',
 			'password' => 'admin',
 			'authKey' => 'test100key',
-		),
-		'101' => array(
+		],
+		'101' => [
 			'id' => '101',
 			'username' => 'demo',
 			'password' => 'demo',
 			'authKey' => 'test101key',
-		),
-	);
+		],
+	];
 
 	public static function findIdentity($id)
 	{
