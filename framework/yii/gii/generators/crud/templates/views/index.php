@@ -15,29 +15,29 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
-use <?php echo $generator->indexWidgetType === 'grid' ? 'yii\grid\GridView' : 'yii\widgets\ListView'; ?>;
+use <?=$generator->indexWidgetType === 'grid' ? 'yii\grid\GridView' : 'yii\widgets\ListView'; ?>;
 
 /**
  * @var yii\base\View $this
  * @var yii\data\ActiveDataProvider $dataProvider
- * @var <?php echo ltrim($generator->searchModelClass, '\\'); ?> $searchModel
+ * @var <?=ltrim($generator->searchModelClass, '\\'); ?> $searchModel
  */
 
-$this->title = '<?php echo Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>';
+$this->title = '<?=Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-index">
+<div class="<?=Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-index">
 
-	<h1><?php echo "<?php"; ?> echo Html::encode($this->title); ?></h1>
+	<h1><?="<?php"; ?> echo Html::encode($this->title); ?></h1>
 
-	<?php echo '<?php' . ($generator->indexWidgetType === 'grid' ? ' //' : ''); ?> echo $this->render('_search', array('model' => $searchModel)); ?>
+	<?='<?php' . ($generator->indexWidgetType === 'grid' ? ' //' : ''); ?> echo $this->render('_search', array('model' => $searchModel)); ?>
 
 	<p>
-		<?php echo '<?php'; ?> echo Html::a('Create <?php echo StringHelper::basename($generator->modelClass); ?>', array('create'), array('class' => 'btn btn-success')); ?>
+		<?='<?php'; ?> echo Html::a('Create <?=StringHelper::basename($generator->modelClass); ?>', array('create'), array('class' => 'btn btn-success')); ?>
 	</p>
 
 <?php if ($generator->indexWidgetType === 'grid'): ?>
-	<?php echo "<?php"; ?> echo GridView::widget(array(
+	<?="<?php"; ?> echo GridView::widget(array(
 		'dataProvider' => $dataProvider,
 		'filterModel' => $searchModel,
 		'columns' => array(
@@ -59,13 +59,13 @@ foreach ($generator->getTableSchema()->columns as $column) {
 		),
 	)); ?>
 <?php else: ?>
-	<?php echo "<?php"; ?> echo ListView::widget(array(
+	<?="<?php"; ?> echo ListView::widget(array(
 		'dataProvider' => $dataProvider,
 		'itemOptions' => array(
 			'class' => 'item',
 		),
 		'itemView' => function ($model, $key, $index, $widget) {
-			return Html::a(Html::encode($model-><?php echo $nameAttribute; ?>), array('view', <?php echo $urlParams; ?>));
+			return Html::a(Html::encode($model-><?=$nameAttribute; ?>), array('view', <?=$urlParams; ?>));
 		},
 	)); ?>
 <?php endif; ?>

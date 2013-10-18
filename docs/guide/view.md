@@ -30,7 +30,7 @@ as the corresponding key.
 So the view for the action above should be in `views/site/index.php` and can be something like:
 
 ```php
-<p>Hello, <?php echo $username?>!</p>
+<p>Hello, <?=$username?>!</p>
 ```
 
 Instead of just scalar values you can pass anything else such as arrays or objects.
@@ -78,7 +78,7 @@ use yii\helpers\Html;
 ?>
 
 <div class="username">
-	<?php echo Html::encode($user->name); ?>
+	<?=Html::encode($user->name); ?>
 </div>
 ```
 
@@ -99,7 +99,7 @@ use yii\helpers\HtmlPurifier;
 ?>
 
 <div class="post">
-	<?php echo HtmlPurifier::process($post->text); ?>
+	<?=HtmlPurifier::process($post->text); ?>
 </div>
 ```
 
@@ -258,16 +258,16 @@ use yii\helpers\Html;
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
-<html lang="<?php echo Yii::$app->charset; ?>">
+<html lang="<?=Yii::$app->charset; ?>">
 <head>
-	<meta charset="<?php echo Yii::$app->charset; ?>"/>
-	<title><?php echo Html::encode($this->title); ?></title>
+	<meta charset="<?=Yii::$app->charset; ?>"/>
+	<title><?=Html::encode($this->title); ?></title>
 	<?php $this->head(); ?>
 </head>
 <body>
 <?php $this->beginBody(); ?>
 	<div class="container">
-		<?php echo $content; ?>
+		<?=$content; ?>
 	</div>
 	<footer class="footer">© 2013 me :)</footer>
 <?php $this->endBody(); ?>
@@ -297,8 +297,8 @@ use yii\helpers\Html;
 ?>
 
 <div class="profile">
-	<h2><?php echo Html::encode($username); ?></h2>
-	<p><?php echo Html::encode($tagline); ?></p>
+	<h2><?=Html::encode($username); ?></h2>
+	<p><?=Html::encode($tagline); ?></p>
 </div>
 ```
 

@@ -15,18 +15,18 @@ use yii\helpers\Html;
 
 /**
  * @var yii\base\View $this
- * @var <?php echo ltrim($generator->modelClass, '\\'); ?> $model
+ * @var <?=ltrim($generator->modelClass, '\\'); ?> $model
  */
 
-$this->title = 'Create <?php echo Inflector::camel2words(StringHelper::basename($generator->modelClass)); ?>';
-$this->params['breadcrumbs'][] = array('label' => '<?php echo Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>', 'url' => array('index'));
+$this->title = 'Create <?=Inflector::camel2words(StringHelper::basename($generator->modelClass)); ?>';
+$this->params['breadcrumbs'][] = array('label' => '<?=Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>', 'url' => array('index'));
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-create">
+<div class="<?=Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-create">
 
-	<h1><?php echo "<?php"; ?> echo Html::encode($this->title); ?></h1>
+	<h1><?="<?php"; ?> echo Html::encode($this->title); ?></h1>
 
-	<?php echo "<?php"; ?> echo $this->render('_form', array(
+	<?="<?php"; ?> echo $this->render('_form', array(
 		'model' => $model,
 	)); ?>
 

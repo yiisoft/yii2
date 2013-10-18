@@ -15,29 +15,29 @@
 echo "<?php\n";
 ?>
 
-namespace <?php echo $generator->ns; ?>;
+namespace <?=$generator->ns; ?>;
 
 /**
- * This is the model class for table "<?php echo $tableName; ?>".
+ * This is the model class for table "<?=$tableName; ?>".
  *
 <?php foreach ($tableSchema->columns as $column): ?>
- * @property <?php echo "{$column->phpType} \${$column->name}\n"; ?>
+ * @property <?="{$column->phpType} \${$column->name}\n"; ?>
 <?php endforeach; ?>
 <?php if (!empty($relations)): ?>
  *
 <?php foreach ($relations as $name => $relation): ?>
- * @property <?php echo $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n"; ?>
+ * @property <?=$relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n"; ?>
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?php echo $className; ?> extends <?php echo '\\' . ltrim($generator->baseClass, '\\') . "\n"; ?>
+class <?=$className; ?> extends <?='\\' . ltrim($generator->baseClass, '\\') . "\n"; ?>
 {
 	/**
 	 * @inheritdoc
 	 */
 	public static function tableName()
 	{
-		return '<?php echo $tableName; ?>';
+		return '<?=$tableName; ?>';
 	}
 
 	/**
@@ -45,7 +45,7 @@ class <?php echo $className; ?> extends <?php echo '\\' . ltrim($generator->base
 	 */
 	public function rules()
 	{
-		return array(<?php echo "\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t"; ?>);
+		return array(<?="\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t"; ?>);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class <?php echo $className; ?> extends <?php echo '\\' . ltrim($generator->base
 	{
 		return array(
 <?php foreach ($labels as $name => $label): ?>
-			<?php echo "'$name' => '" . addslashes($label) . "',\n"; ?>
+			<?="'$name' => '" . addslashes($label) . "',\n"; ?>
 <?php endforeach; ?>
 		);
 	}
@@ -64,9 +64,9 @@ class <?php echo $className; ?> extends <?php echo '\\' . ltrim($generator->base
 	/**
 	 * @return \yii\db\ActiveRelation
 	 */
-	public function get<?php echo $name; ?>()
+	public function get<?=$name; ?>()
 	{
-		<?php echo $relation[0] . "\n"; ?>
+		<?=$relation[0] . "\n"; ?>
 	}
 <?php endforeach; ?>
 }

@@ -21,19 +21,19 @@ $actionParamComments = $generator->generateActionParamComments();
 echo "<?php\n";
 ?>
 
-namespace <?php echo StringHelper::dirname(ltrim($generator->controllerClass, '\\')); ?>;
+namespace <?=StringHelper::dirname(ltrim($generator->controllerClass, '\\')); ?>;
 
-use <?php echo ltrim($generator->modelClass, '\\'); ?>;
-use <?php echo ltrim($generator->searchModelClass, '\\'); ?>;
+use <?=ltrim($generator->modelClass, '\\'); ?>;
+use <?=ltrim($generator->searchModelClass, '\\'); ?>;
 use yii\data\ActiveDataProvider;
-use <?php echo ltrim($generator->baseControllerClass, '\\'); ?>;
+use <?=ltrim($generator->baseControllerClass, '\\'); ?>;
 use yii\web\HttpException;
 use yii\web\VerbFilter;
 
 /**
- * <?php echo $controllerClass; ?> implements the CRUD actions for <?php echo $modelClass; ?> model.
+ * <?=$controllerClass; ?> implements the CRUD actions for <?=$modelClass; ?> model.
  */
-class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename($generator->baseControllerClass) . "\n"; ?>
+class <?=$controllerClass; ?> extends <?=StringHelper::basename($generator->baseControllerClass) . "\n"; ?>
 {
 	public function behaviors()
 	{
@@ -48,12 +48,12 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 	}
 
 	/**
-	 * Lists all <?php echo $modelClass; ?> models.
+	 * Lists all <?=$modelClass; ?> models.
 	 * @return mixed
 	 */
 	public function actionIndex()
 	{
-		$searchModel = new <?php echo $searchModelClass; ?>;
+		$searchModel = new <?=$searchModelClass; ?>;
 		$dataProvider = $searchModel->search($_GET);
 
 		return $this->render('index', array(
@@ -63,28 +63,28 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 	}
 
 	/**
-	 * Displays a single <?php echo $modelClass; ?> model.
-	 * <?php echo implode("\n\t * ", $actionParamComments) . "\n"; ?>
+	 * Displays a single <?=$modelClass; ?> model.
+	 * <?=implode("\n\t * ", $actionParamComments) . "\n"; ?>
 	 * @return mixed
 	 */
-	public function actionView(<?php echo $actionParams; ?>)
+	public function actionView(<?=$actionParams; ?>)
 	{
 		return $this->render('view', array(
-			'model' => $this->findModel(<?php echo $actionParams; ?>),
+			'model' => $this->findModel(<?=$actionParams; ?>),
 		));
 	}
 
 	/**
-	 * Creates a new <?php echo $modelClass; ?> model.
+	 * Creates a new <?=$modelClass; ?> model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 * @return mixed
 	 */
 	public function actionCreate()
 	{
-		$model = new <?php echo $modelClass; ?>;
+		$model = new <?=$modelClass; ?>;
 
 		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(array('view', <?php echo $urlParams; ?>));
+			return $this->redirect(array('view', <?=$urlParams; ?>));
 		} else {
 			return $this->render('create', array(
 				'model' => $model,
@@ -93,17 +93,17 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 	}
 
 	/**
-	 * Updates an existing <?php echo $modelClass; ?> model.
+	 * Updates an existing <?=$modelClass; ?> model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * <?php echo implode("\n\t * ", $actionParamComments) . "\n"; ?>
+	 * <?=implode("\n\t * ", $actionParamComments) . "\n"; ?>
 	 * @return mixed
 	 */
-	public function actionUpdate(<?php echo $actionParams; ?>)
+	public function actionUpdate(<?=$actionParams; ?>)
 	{
-		$model = $this->findModel(<?php echo $actionParams; ?>);
+		$model = $this->findModel(<?=$actionParams; ?>);
 
 		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(array('view', <?php echo $urlParams; ?>));
+			return $this->redirect(array('view', <?=$urlParams; ?>));
 		} else {
 			return $this->render('update', array(
 				'model' => $model,
@@ -112,25 +112,25 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 	}
 
 	/**
-	 * Deletes an existing <?php echo $modelClass; ?> model.
+	 * Deletes an existing <?=$modelClass; ?> model.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
-	 * <?php echo implode("\n\t * ", $actionParamComments) . "\n"; ?>
+	 * <?=implode("\n\t * ", $actionParamComments) . "\n"; ?>
 	 * @return mixed
 	 */
-	public function actionDelete(<?php echo $actionParams; ?>)
+	public function actionDelete(<?=$actionParams; ?>)
 	{
-		$this->findModel(<?php echo $actionParams; ?>)->delete();
+		$this->findModel(<?=$actionParams; ?>)->delete();
 		return $this->redirect(array('index'));
 	}
 
 	/**
-	 * Finds the <?php echo $modelClass; ?> model based on its primary key value.
+	 * Finds the <?=$modelClass; ?> model based on its primary key value.
 	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 * <?php echo implode("\n\t * ", $actionParamComments) . "\n"; ?>
-	 * @return <?php echo $modelClass; ?> the loaded model
+	 * <?=implode("\n\t * ", $actionParamComments) . "\n"; ?>
+	 * @return <?=$modelClass; ?> the loaded model
 	 * @throws HttpException if the model cannot be found
 	 */
-	protected function findModel(<?php echo $actionParams; ?>)
+	protected function findModel(<?=$actionParams; ?>)
 	{
 <?php
 if (count($pks) === 1) {
@@ -143,7 +143,7 @@ if (count($pks) === 1) {
 	$condition = 'array(' . implode(', ', $condition) . ')';
 }
 ?>
-		if (($model = <?php echo $modelClass; ?>::find(<?php echo $condition; ?>)) !== null) {
+		if (($model = <?=$modelClass; ?>::find(<?=$condition; ?>)) !== null) {
 			return $model;
 		} else {
 			throw new HttpException(404, 'The requested page does not exist.');

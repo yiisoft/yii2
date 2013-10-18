@@ -14,7 +14,7 @@
 <body>
 <?php $this->beginBody(); ?>
 
-<?php echo $content; ?>
+<?=$content; ?>
 
 <?php $this->endBody(); ?>
 </body>
