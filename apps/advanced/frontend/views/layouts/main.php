@@ -23,35 +23,35 @@ AppAsset::register($this);
 <body>
 	<?php $this->beginBody(); ?>
 	<?php
-		NavBar::begin(array(
+		NavBar::begin([
 			'brandLabel' => 'My Company',
 			'brandUrl' => Yii::$app->homeUrl,
-			'options' => array(
+			'options' => [
 				'class' => 'navbar-inverse navbar-fixed-top',
-			),
-		));
-		$menuItems = array(
-			array('label' => 'Home', 'url' => array('/site/index')),
-			array('label' => 'About', 'url' => array('/site/about')),
-			array('label' => 'Contact', 'url' => array('/site/contact')),
-		);
+			],
+		]);
+		$menuItems = [
+			['label' => 'Home', 'url' => ['/site/index']],
+			['label' => 'About', 'url' => ['/site/about']],
+			['label' => 'Contact', 'url' => ['/site/contact']],
+		];
 		if (Yii::$app->user->isGuest) {
-			$menuItems[] = array('label' => 'Signup', 'url' => array('/site/signup'));
-			$menuItems[] = array('label' => 'Login', 'url' => array('/site/login'));
+			$menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+			$menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
 		} else {
-			$menuItems[] = array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout'));
+			$menuItems[] = ['label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => ['/site/logout']];
 		}
-		echo Nav::widget(array(
-			'options' => array('class' => 'navbar-nav pull-right'),
+		echo Nav::widget([
+			'options' => ['class' => 'navbar-nav pull-right'],
 			'items' => $menuItems,
-		));
+		]);
 		NavBar::end();
 	?>
 
 	<div class="container">
-	<?php echo Breadcrumbs::widget(array(
-		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
-	)); ?>
+	<?php echo Breadcrumbs::widget([
+		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+	]); ?>
 	<?php echo Alert::widget()?>
 	<?php echo $content; ?>
 	</div>

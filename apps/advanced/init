@@ -73,7 +73,7 @@ echo "\n  ... initialization completed.\n\n";
 
 function getFileList($root, $basePath = '')
 {
-	$files = array();
+	$files = [];
 	$handle = opendir($root);
 	while (($path = readdir($handle)) !== false) {
 		if ($path === '.svn' || $path === '.' || $path === '..') {
@@ -135,13 +135,13 @@ function copyFile($root, $source, $target, &$all)
 
 function getParams()
 {
-	$rawParams = array();
+	$rawParams = [];
 	if (isset($_SERVER['argv'])) {
 		$rawParams = $_SERVER['argv'];
 		array_shift($rawParams);
 	}
 
-	$params = array();
+	$params = [];
 	foreach ($rawParams as $param) {
 		if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
 			$name = $matches[1];
