@@ -214,7 +214,9 @@ class ActiveForm extends Widget
 	 */
 	public function errorSummary($models, $options = [])
 	{
-		$models = (array)$models;
+		if (!is_array($models)) {
+			$models = [$models];
+		}
 
 		$lines = [];
 		foreach ($models as $model) {
