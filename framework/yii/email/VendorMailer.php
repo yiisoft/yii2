@@ -10,7 +10,12 @@ namespace yii\email;
 use yii\base\InvalidConfigException;
 
 /**
- * Class VendorMailer
+ * VendorMailer is a base class for the mailers, which use external library (vendor)
+ * to perform their job.
+ * This class provides the ability to compose and wrap the actual email mailer
+ * and message under the basic interface.
+ *
+ * @see VendorMessage
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -63,15 +68,21 @@ abstract class VendorMailer extends BaseMailer
 	}
 
 	/**
-	 * Sets up the vendor autoloader if any is specified.
+	 * Sets up the vendor autoloader, if any is specified.
 	 */
 	protected function setupVendorAutoload()
 	{
 		if (!empty($this->autoload)) {
 			if (is_string($this->autoload) && file_exists($this->autoload)) {
-				require_once($this->autoload);
+				if (file_exists($this->autoload)) {
+					require_once($this->autoload);
+				} elseif (function_exists($this->autoload)) {
+					spl_autoload_register($this->autoload);
+				} else {
+					throw new InvalidConfigException('"' . get_class($this) . '::autoload" value "' . $this->autoload . '" is invalid: no such function or file exists.');
+				}
 			} else {
-				spl_autoload_register($this->autoload, true, true);
+				spl_autoload_register($this->autoload);
 			}
 		}
 	}

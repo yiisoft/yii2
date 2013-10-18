@@ -12,6 +12,8 @@ use yii\email\VendorMessage;
 /**
  * Class Message
  *
+ * @see http://swiftmailer.org/docs/messages.html
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

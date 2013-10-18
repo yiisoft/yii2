@@ -12,7 +12,15 @@ use yii\base\InvalidCallException;
 use yii\base\UnknownPropertyException;
 
 /**
- * Class VendorMessage
+ * VendorMessage is a base class for email messages, which use external library (vendor) to be sent.
+ * This class wraps around vendor message object, allowing access to its properties and methods
+ * directly via magic methods.
+ * This class will introduce a magic properties based on setters and getters of the vendor object
+ * at the same convention as introduced at [[Object]].
+ * Note: methods and properties declared in this class or its descendant will always take precedence
+ * over the vendor's ones.
+ *
+ * @see VendorMailer
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -24,6 +32,9 @@ abstract class VendorMessage extends BaseMessage
 	 */
 	private $_vendorMessage;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function __get($name)
 	{
 		try {
@@ -42,6 +53,9 @@ abstract class VendorMessage extends BaseMessage
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function __set($name, $value)
 	{
 		try {
@@ -61,6 +75,9 @@ abstract class VendorMessage extends BaseMessage
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function __isset($name)
 	{
 		$getter = 'get' . $name;
@@ -79,6 +96,9 @@ abstract class VendorMessage extends BaseMessage
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function __unset($name)
 	{
 		$setter = 'set' . $name;
@@ -100,6 +120,9 @@ abstract class VendorMessage extends BaseMessage
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function __call($name, $params)
 	{
 		$vendorMessage = $this->getVendorMessage();
