@@ -136,7 +136,6 @@ class AssetController extends Controller
 		$this->loadConfiguration($configFile);
 		$bundles = $this->loadBundles($this->bundles);
 		$targets = $this->loadTargets($this->targets, $bundles);
-		$this->publishBundles($bundles, $this->assetManager);
 		$timestamp = time();
 		foreach ($targets as $name => $target) {
 			echo "Creating output bundle '{$name}':\n";
@@ -273,21 +272,6 @@ class AssetController extends Controller
 			$targets[$name] = Yii::createObject($target);
 		}
 		return $targets;
-	}
-
-	/**
-	 * Publishes given asset bundles.
-	 * @param \yii\web\AssetBundle[] $bundles asset bundles to be published.
-	 */
-	protected function publishBundles($bundles)
-	{
-		echo "\nPublishing bundles:\n";
-		$assetManager = $this->getAssetManager();
-		foreach ($bundles as $name => $bundle) {
-			$bundle->publish($assetManager);
-			echo "  '".$name."' published.\n";
-		}
-		echo "\n";
 	}
 
 	/**
