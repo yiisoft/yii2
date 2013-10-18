@@ -167,20 +167,16 @@ abstract class Module extends Component
 	/**
 	 * Initializes the module.
 	 * This method is called after the module is created and initialized with property values
-	 * given in configuration. The default implement will create a path alias using the module [[id]]
+	 * given in configuration. The default implementation will create a path alias using the module [[id]]
 	 * and then call [[preloadComponents()]] to load components that are declared in [[preload]].
 	 */
 	public function init()
 	{
 		$this->preloadComponents();
 		if ($this->controllerNamespace === null) {
-			if ($this instanceof Application) {
-				$this->controllerNamespace = 'app\\controllers';
-			} else {
-				$class = get_class($this);
-				if (($pos = strrpos($class, '\\')) !== false) {
-					$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
-				}
+			$class = get_class($this);
+			if (($pos = strrpos($class, '\\')) !== false) {
+				$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
 			}
 		}
 	}
