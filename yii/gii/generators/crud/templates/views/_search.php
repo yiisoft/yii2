@@ -16,14 +16,14 @@ use yii\widgets\ActiveForm;
 
 /**
  * @var yii\base\View $this
- * @var <?php echo ltrim($generator->searchModelClass, '\\'); ?> $model
+ * @var <?=ltrim($generator->searchModelClass, '\\'); ?> $model
  * @var yii\widgets\ActiveForm $form
  */
 ?>
 
-<div class="<?php echo Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-search">
+<div class="<?=Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-search">
 
-	<?php echo '<?php'; ?> $form = ActiveForm::begin(array(
+	<?='<?php'; ?> $form = ActiveForm::begin(array(
 		'action' => array('index'),
 		'method' => 'get',
 	)); ?>
@@ -32,17 +32,17 @@ use yii\widgets\ActiveForm;
 $count = 0;
 foreach ($generator->getTableSchema()->getColumnNames() as $attribute) {
 	if (++$count < 6) {
-		echo "\t\t<?php echo " . $generator->generateActiveSearchField($attribute) . " ?>\n";
+		echo "\t\t<?=" . $generator->generateActiveSearchField($attribute) . " ?>\n";
 	} else {
 		echo "\t\t<?php // echo " . $generator->generateActiveSearchField($attribute) . " ?>\n";
 	}
 }
 ?>
 		<div class="form-group">
-			<?php echo '<?php'; ?> echo Html::submitButton('Search', array('class' => 'btn btn-primary')); ?>
-			<?php echo '<?php'; ?> echo Html::resetButton('Reset', array('class' => 'btn btn-default')); ?>
+			<?='<?php'; ?> echo Html::submitButton('Search', array('class' => 'btn btn-primary')); ?>
+			<?='<?php'; ?> echo Html::resetButton('Reset', array('class' => 'btn btn-default')); ?>
 		</div>
 
-	<?php echo '<?php'; ?> ActiveForm::end(); ?>
+	<?='<?php'; ?> ActiveForm::end(); ?>
 
 </div>

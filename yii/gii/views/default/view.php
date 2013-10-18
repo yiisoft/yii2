@@ -24,9 +24,9 @@ foreach ($generator->templates as $name => $path) {
 }
 ?>
 <div class="default-view">
-	<h1><?php echo Html::encode($this->title); ?></h1>
+	<h1><?=Html::encode($this->title); ?></h1>
 
-	<p><?php echo $generator->getDescription(); ?></p>
+	<p><?=$generator->getDescription(); ?></p>
 
 	<?php $form = ActiveForm::begin(array(
 		'id' => "$id-generator",
@@ -35,20 +35,20 @@ foreach ($generator->templates as $name => $path) {
 	)); ?>
 		<div class="row">
 			<div class="col-lg-8">
-				<?php echo $this->renderFile($generator->formView(), array(
+				<?=$this->renderFile($generator->formView(), array(
 					'generator' => $generator,
 					'form' => $form,
 				)); ?>
-				<?php echo $form->field($generator, 'template')->sticky()
+				<?=$form->field($generator, 'template')->sticky()
 					->label('Code Template')
 					->dropDownList($templates)->hint('
 						Please select which set of the templates should be used to generated the code.
 				'); ?>
 				<div class="form-group">
-					<?php echo Html::submitButton('Preview', array('name' => 'preview', 'class' => 'btn btn-primary')); ?>
+					<?=Html::submitButton('Preview', array('name' => 'preview', 'class' => 'btn btn-primary')); ?>
 
 					<?php if(isset($files)): ?>
-						<?php echo Html::submitButton('Generate', array('name' => 'generate', 'class' => 'btn btn-success')); ?>
+						<?=Html::submitButton('Generate', array('name' => 'generate', 'class' => 'btn btn-success')); ?>
 					<?php endif; ?>
 				</div>
 			</div>

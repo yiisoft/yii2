@@ -13,12 +13,12 @@ $className = substr($className, $pos + 1);
 echo "<?php\n";
 ?>
 
-namespace <?php echo $ns; ?>;
+namespace <?=$ns; ?>;
 
 
-class <?php echo $className; ?> extends \yii\base\Module
+class <?=$className; ?> extends \yii\base\Module
 {
-	public $controllerNamespace = '<?php echo $generator->getControllerNamespace(); ?>';
+	public $controllerNamespace = '<?=$generator->getControllerNamespace(); ?>';
 
 	public function init()
 	{

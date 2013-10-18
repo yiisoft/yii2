@@ -21,7 +21,7 @@ $this->title = 'Yii Debugger';
 			Yii Debugger
 		</div>
 		<?php foreach ($panels as $panel): ?>
-			<?php echo $panel->getSummary(); ?>
+			<?=$panel->getSummary(); ?>
 		<?php endforeach; ?>
 	</div>
 
@@ -71,7 +71,7 @@ $this->title = 'Yii Debugger';
 						echo ' at ' . date('Y-m-d h:i:s a', $summary['time']) . ' by ' . $summary['ip'];
 					?>
 				</div>
-				<?php echo $activePanel->getDetail(); ?>
+				<?=$activePanel->getDetail(); ?>
 			</div>
 		</div>
 	</div>

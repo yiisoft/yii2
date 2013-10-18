@@ -14,7 +14,7 @@ $asset = yii\gii\GiiAsset::register($this);
 <html lang="en">
 <head>
 	<meta charset="utf-8"/>
-	<title><?php echo Html::encode($this->title); ?></title>
+	<title><?=Html::encode($this->title); ?></title>
 	<?php $this->head(); ?>
 </head>
 <body>
@@ -39,13 +39,13 @@ NavBar::end();
 ?>
 
 <div class="container">
-	<?php echo $content; ?>
+	<?=$content; ?>
 </div>
 
 <footer class="footer">
 	<div class="container">
 		<p class="pull-left">A Product of <a href="http://www.yiisoft.com/">Yii Software LLC</a></p>
-		<p class="pull-right"><?php echo Yii::powered(); ?></p>
+		<p class="pull-right"><?=Yii::powered(); ?></p>
 	</div>
 </footer>
 

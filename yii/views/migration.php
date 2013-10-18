@@ -8,7 +8,7 @@
 echo "<?php\n";
 ?>
 
-class <?php echo $className; ?> extends \yii\db\Migration
+class <?=$className; ?> extends \yii\db\Migration
 {
 	public function up()
 	{
@@ -17,7 +17,7 @@ class <?php echo $className; ?> extends \yii\db\Migration
 
 	public function down()
 	{
-		echo "<?php echo $className; ?> cannot be reverted.\n";
+		echo "<?=$className; ?> cannot be reverted.\n";
 		return false;
 	}
 }

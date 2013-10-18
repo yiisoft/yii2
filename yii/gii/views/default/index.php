@@ -21,9 +21,9 @@ $this->title = 'Welcome to Gii';
 	<div class="row">
 		<?php foreach ($generators as $id => $generator): ?>
 		<div class="generator col-lg-4">
-			<h3><?php echo Html::encode($generator->getName()); ?></h3>
-			<p><?php echo $generator->getDescription(); ?></p>
-			<p><?php echo Html::a('Start »', array('default/view', 'id' => $id), array('class' => 'btn btn-default')); ?></p>
+			<h3><?=Html::encode($generator->getName()); ?></h3>
+			<p><?=$generator->getDescription(); ?></p>
+			<p><?=Html::a('Start »', array('default/view', 'id' => $id), array('class' => 'btn btn-default')); ?></p>
 		</div>
 		<?php endforeach; ?>
 	</div>

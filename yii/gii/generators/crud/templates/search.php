@@ -19,23 +19,23 @@ $searchConditions = $generator->generateSearchConditions();
 echo "<?php\n";
 ?>
 
-namespace <?php echo StringHelper::dirname(ltrim($generator->searchModelClass, '\\')); ?>;
+namespace <?=StringHelper::dirname(ltrim($generator->searchModelClass, '\\')); ?>;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use <?php echo ltrim($generator->modelClass, '\\'); ?>;
+use <?=ltrim($generator->modelClass, '\\'); ?>;
 
 /**
- * <?php echo $searchModelClass; ?> represents the model behind the search form about <?php echo $modelClass; ?>.
+ * <?=$searchModelClass; ?> represents the model behind the search form about <?=$modelClass; ?>.
  */
-class <?php echo $searchModelClass; ?> extends Model
+class <?=$searchModelClass; ?> extends Model
 {
-	public $<?php echo implode(";\n\tpublic $", $searchAttributes); ?>;
+	public $<?=implode(";\n\tpublic $", $searchAttributes); ?>;
 
 	public function rules()
 	{
 		return array(
-			<?php echo implode(",\n\t\t\t", $rules); ?>,
+			<?=implode(",\n\t\t\t", $rules); ?>,
 		);
 	}
 
@@ -46,14 +46,14 @@ class <?php echo $searchModelClass; ?> extends Model
 	{
 		return array(
 <?php foreach ($labels as $name => $label): ?>
-			<?php echo "'$name' => '" . addslashes($label) . "',\n"; ?>
+			<?="'$name' => '" . addslashes($label) . "',\n"; ?>
 <?php endforeach; ?>
 		);
 	}
 
 	public function search($params)
 	{
-		$query = <?php echo $modelClass; ?>::find();
+		$query = <?=$modelClass; ?>::find();
 		$dataProvider = new ActiveDataProvider(array(
 			'query' => $query,
 		));
@@ -62,7 +62,7 @@ class <?php echo $searchModelClass; ?> extends Model
 			return $dataProvider;
 		}
 
-		<?php echo implode("\n\t\t", $searchConditions); ?>
+		<?=implode("\n\t\t", $searchConditions); ?>
 
 		return $dataProvider;
 	}
