@@ -34,11 +34,10 @@ abstract class Mutex extends Component
 	public function init()
 	{
 		if ($this->autoRelease) {
-			$mutex = $this;
 			$locks = &$this->_locks;
-			register_shutdown_function(function () use ($mutex, &$locks) {
+			register_shutdown_function(function () use ($this, &$locks) {
 				foreach ($locks as $lock) {
-					$mutex->release($lock);
+					$this->release($lock);
 				}
 			});
 		}
