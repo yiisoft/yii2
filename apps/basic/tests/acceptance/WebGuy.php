@@ -36,7 +36,7 @@ class WebGuy extends \Codeception\AbstractGuy
      *
      * ``` php
      * <?php
-     * $I->submitForm('#login', array('login' => 'davert', 'password' => '123456'));
+     * $I->submitForm('#login', ['login' => 'davert', 'password' => '123456']);
      *
      * ```
      *
@@ -55,7 +55,7 @@ class WebGuy extends \Codeception\AbstractGuy
      *
      * ``` php
      * <?php
-     * $I->submitForm('#userForm', array('user' => array('login' => 'Davert', 'password' => '123456', 'agree' => true)));
+     * $I->submitForm('#userForm', ['user' => ['login' => 'Davert', 'password' => '123456', 'agree' => true]]);
      *
      * ```
      * Note, that pricing plan will be set to Paid, as it's selected on page.
@@ -89,8 +89,8 @@ class WebGuy extends \Codeception\AbstractGuy
      *
      * ``` php
      * <?php
-     * $I->sendAjaxPostRequest('/updateSettings', array('notifications' => true); // POST
-     * $I->sendAjaxGetRequest('/updateSettings', array('notifications' => true); // GET
+     * $I->sendAjaxPostRequest('/updateSettings', ['notifications' => true]; // POST
+     * $I->sendAjaxGetRequest('/updateSettings', ['notifications' => true]; // GET
      *
      * ```
      *
