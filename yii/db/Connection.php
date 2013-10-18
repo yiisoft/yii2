@@ -508,13 +508,12 @@ class Connection extends Component
 	 */
 	public function quoteSql($sql)
 	{
-		$db = $this;
 		return preg_replace_callback('/(\\{\\{(%?[\w\-\. ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
-			function ($matches) use ($db) {
+			function ($matches) use ($this) {
 				if (isset($matches[3])) {
-					return $db->quoteColumnName($matches[3]);
+					return $this->quoteColumnName($matches[3]);
 				} else {
-					return str_replace('%', $db->tablePrefix, $db->quoteTableName($matches[2]));
+					return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
 				}
 			}, $sql);
 	}

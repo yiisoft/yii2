@@ -88,11 +88,10 @@ class ActionColumn extends Column
 	 */
 	protected function renderDataCellContent($model, $index)
 	{
-		$column = $this;
-		return preg_replace_callback('/\\{(\w+)\\}/', function ($matches) use ($model, $column) {
+		return preg_replace_callback('/\\{(\w+)\\}/', function ($matches) use ($this, $model) {
 			$name = $matches[1];
-			if (isset($column->buttons[$name])) {
-				return call_user_func($column->buttons[$name], $model, $column);
+			if (isset($this->buttons[$name])) {
+				return call_user_func($this->buttons[$name], $model, $this);
 			} else {
 				return '';
 			}

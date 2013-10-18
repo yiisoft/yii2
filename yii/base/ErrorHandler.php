@@ -175,10 +175,9 @@ class ErrorHandler extends Component
 			$html = rtrim($html, '\\');
 		} elseif (strpos($code, '()') !== false) {
 			// method/function call
-			$self = $this;
-			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) use ($self) {
-				return '<a href="http://yiiframework.com/doc/api/2.0/' . $self->htmlEncode($matches[1]) . '" target="_blank">' .
-					$self->htmlEncode($matches[1]) . '</a>()';
+			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) use ($this) {
+				return '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($matches[1]) . '" target="_blank">' .
+					$this->htmlEncode($matches[1]) . '</a>()';
 			}, $code);
 		}
 		return $html;

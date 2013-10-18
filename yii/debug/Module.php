@@ -57,9 +57,8 @@ class Module extends \yii\base\Module
 		$this->dataPath = Yii::getAlias($this->dataPath);
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
 		// do not initialize view component before application is ready (needed when debug in preload)
-		$module = $this;
-		Yii::$app->on(Application::EVENT_BEFORE_ACTION, function() use ($module) {
-			Yii::$app->getView()->on(View::EVENT_END_BODY, array($module, 'renderToolbar'));
+		Yii::$app->on(Application::EVENT_BEFORE_ACTION, function() use ($this) {
+			Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
 		});
 
 		foreach (array_merge($this->corePanels(), $this->panels) as $id => $config) {
