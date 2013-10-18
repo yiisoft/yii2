@@ -5,6 +5,9 @@ namespace yiiunit\framework\email;
 use yii\email\VendorMailer;
 use yii\test\TestCase;
 
+/**
+ * @group email
+ */
 class VendorMailerTest extends TestCase
 {
 	/**

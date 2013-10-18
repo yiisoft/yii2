@@ -7,6 +7,9 @@ use yii\email\BaseMailer;
 use yii\email\BaseMessage;
 use yiiunit\TestCase;
 
+/**
+ * @group email
+ */
 class BaseMailerTest extends TestCase
 {
 	public function setUp()
@@ -42,6 +45,9 @@ class BaseMailerTest extends TestCase
 	}
 }
 
+/**
+ * Test Mailer class
+ */
 class Mailer extends BaseMailer
 {
 	public $sentMessages = array();
@@ -52,6 +58,9 @@ class Mailer extends BaseMailer
 	}
 }
 
+/**
+ * Test Message class
+ */
 class Message extends BaseMessage
 {
 	public $id;

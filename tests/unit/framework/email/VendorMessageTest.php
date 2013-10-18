@@ -7,6 +7,9 @@ use yii\email\VendorMailer;
 use yii\email\VendorMessage as AbstractVendorMessage;
 use yiiunit\TestCase;
 
+/**
+ * @group email
+ */
 class VendorMessageTest extends TestCase
 {
 	public function setUp()
@@ -28,7 +31,7 @@ class VendorMessageTest extends TestCase
 
 	public function testGetVendorMessage()
 	{
-		$message = new VendorMessage();
+		$message = new TestMessage();
 		$vendorMessage = $message->getVendorMessage();
 		$this->assertTrue(is_object($vendorMessage), 'Unable to get vendor message!');
 	}
@@ -38,7 +41,7 @@ class VendorMessageTest extends TestCase
 	 */
 	public function testVendorMethodCall()
 	{
-		$message = new VendorMessage();
+		$message = new TestMessage();
 		$result = $message->composeString();
 		$this->assertNotEmpty($result, 'Unable to call method of vendor message!');
 	}
@@ -48,7 +51,7 @@ class VendorMessageTest extends TestCase
 	 */
 	public function testVendorPropertyAccess()
 	{
-		$message = new VendorMessage();
+		$message = new TestMessage();
 
 		$value = 'test public field value';
 		$message->publicField = $value;
@@ -66,7 +69,10 @@ class VendorMessageTest extends TestCase
 	}
 }
 
-class VendorMessage extends AbstractVendorMessage
+/**
+ * Test Message class
+ */
+class TestMessage extends AbstractVendorMessage
 {
 	public function setFrom($from) {}
 
@@ -79,6 +85,9 @@ class VendorMessage extends AbstractVendorMessage
 	public function setHtml($html) {}
 }
 
+/**
+ * Test Vendor Message class
+ */
 class TestVendorMessage
 {
 	public $publicField;
@@ -100,6 +109,9 @@ class TestVendorMessage
 	}
 }
 
+/**
+ * Test Mailer class
+ */
 class TestMailer extends VendorMailer
 {
 	public $sentMessages = array();
