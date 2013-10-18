@@ -28,7 +28,7 @@ class LogPanel extends Panel
 
 	public function getSummary()
 	{
-		$output = array('<span class="label">' . count($this->data['messages']) . '</span>');
+		$output = ['<span class="label">' . count($this->data['messages']) . '</span>'];
 		$title = 'Logged ' . count($this->data['messages']) . ' messages';
 		$errorCount = count(Target::filterMessages($this->data['messages'], Logger::LEVEL_ERROR));
 		if ($errorCount) {
@@ -51,18 +51,18 @@ EOD;
 
 	public function getDetail()
 	{
-		$rows = array();
+		$rows = [];
 		foreach ($this->data['messages'] as $log) {
 			list ($message, $level, $category, $time, $traces) = $log;
 			$time = date('H:i:s.', $time) . sprintf('%03d', (int)(($time - (int)$time) * 1000));
 			$message = nl2br(Html::encode($message));
 			if (!empty($traces)) {
-				$message .= Html::ul($traces, array(
+				$message .= Html::ul($traces, [
 					'class' => 'trace',
 					'item' => function ($trace) {
 						return "<li>{$trace['file']}({$trace['line']})</li>";
 					},
-				));
+				]);
 			}
 			if ($level == Logger::LEVEL_ERROR) {
 				$class = ' class="danger"';
@@ -100,8 +100,6 @@ EOD;
 	{
 		$target = $this->module->logTarget;
 		$messages = $target->filterMessages($target->messages, Logger::LEVEL_ERROR | Logger::LEVEL_INFO | Logger::LEVEL_WARNING | Logger::LEVEL_TRACE);
-		return array(
-			'messages' => $messages,
-		);
+		return ['messages' => $messages];
 	}
 }

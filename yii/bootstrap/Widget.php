@@ -23,21 +23,21 @@ class Widget extends \yii\base\Widget
 	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var array the options for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible options.
 	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
 	 * how to use the "Modal" plugin and the supported options (e.g. "remote").
 	 */
-	public $clientOptions = array();
+	public $clientOptions = [];
 	/**
 	 * @var array the event handlers for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible events.
 	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
 	 * how to use the "Modal" plugin and the supported events (e.g. "shown").
 	 */
-	public $clientEvents = array();
+	public $clientEvents = [];
 
 
 	/**
@@ -72,7 +72,7 @@ class Widget extends \yii\base\Widget
 		}
 
 		if (!empty($this->clientEvents)) {
-			$js = array();
+			$js = [];
 			foreach ($this->clientEvents as $event => $handler) {
 				$js[] = "jQuery('#$id').on('$event', $handler);";
 			}

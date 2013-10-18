@@ -27,16 +27,16 @@ use yii\redis\Connection;
  * To use RedisCache as the cache application component, configure the application as follows,
  *
  * ~~~
- * array(
- *     'components'=>array(
- *         'cache'=>array(
- *             'class'=>'RedisCache',
- *             'hostname'=>'localhost',
- *             'port'=>6379,
- *             'database'=>0,
- *         ),
- *     ),
- * )
+ * [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => 'RedisCache',
+ *             'hostname' => 'localhost',
+ *             'port' => 6379,
+ *             'database' => 0,
+ *         ],
+ *     ],
+ * ]
  * ~~~
  *
  * @property Connection $connection The redis connection object. This property is read-only.
@@ -93,12 +93,12 @@ class RedisCache extends Cache
 	public function getConnection()
 	{
 		if ($this->_connection === null) {
-			$this->_connection = new Connection(array(
+			$this->_connection = new Connection([
 				'dsn' => 'redis://' . $this->hostname . ':' . $this->port . '/' . $this->database,
 				'password' => $this->password,
 				'connectionTimeout' => $this->connectionTimeout,
 				'dataTimeout' => $this->dataTimeout,
-			));
+			]);
 		}
 		return $this->_connection;
 	}
@@ -115,7 +115,7 @@ class RedisCache extends Cache
 	 */
 	public function exists($key)
 	{
-		return (bool) $this->_connection->executeCommand('EXISTS', array($this->buildKey($key)));
+		return (bool) $this->_connection->executeCommand('EXISTS', [$this->buildKey($key)]);
 	}
 
 	/**
@@ -126,7 +126,7 @@ class RedisCache extends Cache
 	 */
 	protected function getValue($key)
 	{
-		return $this->_connection->executeCommand('GET', array($key));
+		return $this->_connection->executeCommand('GET', [$key]);
 	}
 
 	/**
@@ -137,7 +137,7 @@ class RedisCache extends Cache
 	protected function getValues($keys)
 	{
 		$response = $this->_connection->executeCommand('MGET', $keys);
-		$result = array();
+		$result = [];
 		$i = 0;
 		foreach($keys as $key) {
 			$result[$key] = $response[$i++];
@@ -158,10 +158,10 @@ class RedisCache extends Cache
 	protected function setValue($key,$value,$expire)
 	{
 		if ($expire == 0) {
-			return (bool) $this->_connection->executeCommand('SET', array($key, $value));
+			return (bool) $this->_connection->executeCommand('SET', [$key, $value]);
 		} else {
 			$expire = (int) ($expire * 1000);
-			return (bool) $this->_connection->executeCommand('PSETEX', array($key, $expire, $value));
+			return (bool) $this->_connection->executeCommand('PSETEX', [$key, $expire, $value]);
 		}
 	}
 
@@ -178,13 +178,13 @@ class RedisCache extends Cache
 	protected function addValue($key,$value,$expire)
 	{
 		if ($expire == 0) {
-			return (bool) $this->_connection->executeCommand('SETNX', array($key, $value));
+			return (bool) $this->_connection->executeCommand('SETNX', [$key, $value]);
 		} else {
 			// TODO consider requiring redis version >= 2.6.12 that supports this in one command
 			$expire = (int) ($expire * 1000);
 			$this->_connection->executeCommand('MULTI');
-			$this->_connection->executeCommand('SETNX', array($key, $value));
-			$this->_connection->executeCommand('PEXPIRE', array($key, $expire));
+			$this->_connection->executeCommand('SETNX', [$key, $value]);
+			$this->_connection->executeCommand('PEXPIRE', [$key, $expire]);
 			$response = $this->_connection->executeCommand('EXEC');
 			return (bool) $response[0];
 		}
@@ -198,7 +198,7 @@ class RedisCache extends Cache
 	 */
 	protected function deleteValue($key)
 	{
-		return (bool) $this->_connection->executeCommand('DEL', array($key));
+		return (bool) $this->_connection->executeCommand('DEL', [$key]);
 	}
 
 	/**

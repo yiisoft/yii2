@@ -19,15 +19,15 @@ use yii\helpers\Html;
  */
 
 $this->title = 'Create <?=Inflector::camel2words(StringHelper::basename($generator->modelClass)); ?>';
-$this->params['breadcrumbs'][] = array('label' => '<?=Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>', 'url' => array('index'));
+$this->params['breadcrumbs'][] = ['label' => '<?=Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="<?=Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-create">
 
 	<h1><?="<?php"; ?> echo Html::encode($this->title); ?></h1>
 
-	<?="<?php"; ?> echo $this->render('_form', array(
+	<?="<?php"; ?> echo $this->render('_form', [
 		'model' => $model,
-	)); ?>
+	]); ?>
 
 </div>

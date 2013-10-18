@@ -24,21 +24,21 @@ class GiiAsset extends AssetBundle
 	/**
 	 * @inheritdoc
 	 */
-	public $css = array(
+	public $css = [
 		'main.css',
-	);
+	];
 	/**
 	 * @inheritdoc
 	 */
-	public $js = array(
+	public $js = [
 		'gii.js',
-	);
+	];
 	/**
 	 * @inheritdoc
 	 */
-	public $depends = array(
+	public $depends = [
 		'yii\web\YiiAsset',
 		'yii\bootstrap\BootstrapAsset',
 		'yii\bootstrap\BootstrapPluginAsset',
-	);
+	];
 }

@@ -20,21 +20,19 @@ $asset = yii\gii\GiiAsset::register($this);
 <body>
 <?php $this->beginBody(); ?>
 <?php
-NavBar::begin(array(
+NavBar::begin([
 	'brandLabel' => Html::img($asset->baseUrl . '/logo.png'),
-	'brandUrl' => array('default/index'),
-	'options' => array(
-		'class' => 'navbar-inverse navbar-fixed-top',
-	),
-));
-echo Nav::widget(array(
-	'options' => array('class' => 'nav navbar-nav pull-right'),
-	'items' => array(
-		array('label' => 'Home', 'url' => array('default/index')),
-		array('label' => 'Help', 'url' => 'http://www.yiiframework.com/doc/guide/topics.gii'),
-		array('label' => 'Application', 'url' => Yii::$app->homeUrl),
-	),
-));
+	'brandUrl' => ['default/index'],
+	'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
+]);
+echo Nav::widget([
+	'options' => ['class' => 'nav navbar-nav pull-right'],
+	'items' => [
+		['label' => 'Home', 'url' => ['default/index']],
+		['label' => 'Help', 'url' => 'http://www.yiiframework.com/doc/guide/topics.gii'],
+		['label' => 'Application', 'url' => Yii::$app->homeUrl],
+	],
+]);
 NavBar::end();
 ?>
 

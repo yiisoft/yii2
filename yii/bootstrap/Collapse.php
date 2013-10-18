@@ -17,22 +17,22 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Collapse::widget(array(
- *     'items' => array(
+ * echo Collapse::widget([
+ *     'items' => [
  *         // equivalent to the above
- *         'Collapsible Group Item #1' => array(
+ *         'Collapsible Group Item #1' => [
  *             'content' => 'Anim pariatur cliche...',
  *             // open its content by default
- *             'contentOptions' => array('class' => 'in')
- *         ),
+ *             'contentOptions' => ['class' => 'in']
+ *         ],
  *         // another group item
- *         'Collapsible Group Item #2' => array(
+ *         'Collapsible Group Item #2' => [
  *             'content' => 'Anim pariatur cliche...',
- *             'contentOptions' => array(...),
- *             'options' => array(...),
- *         ),
- *     )
- * ));
+ *             'contentOptions' => [...],
+ *             'options' => [...],
+ *         ],
+ *     ]
+ * ]);
  * ```
  *
  * @see http://twitter.github.io/bootstrap/javascript.html#collapse
@@ -47,17 +47,17 @@ class Collapse extends Widget
 	 *
 	 * ```php
 	 * // item key is the actual group header
-	 * 'Collapsible Group Item #1' => array(
+	 * 'Collapsible Group Item #1' => [
 	 *     // required, the content (HTML) of the group
 	 *     'content' => 'Anim pariatur cliche...',
 	 *     // optional the HTML attributes of the content group
-	 *     'contentOptions' => array(),
+	 *     'contentOptions' => [],
 	 *     // optional the HTML attributes of the group
-	 *     'options' => array(),
-	 * )
+	 *     'options' => [],
+	 * ]
 	 * ```
 	 */
-	public $items = array();
+	public $items = [];
 
 
 	/**
@@ -86,10 +86,10 @@ class Collapse extends Widget
 	 */
 	public function renderItems()
 	{
-		$items = array();
+		$items = [];
 		$index = 0;
 		foreach ($this->items as $header => $item) {
-			$options = ArrayHelper::getValue($item, 'options', array());
+			$options = ArrayHelper::getValue($item, 'options', []);
 			Html::addCssClass($options, 'accordion-group');
 			$items[] = Html::tag('div', $this->renderItem($header, $item, ++$index), $options);
 		}
@@ -109,23 +109,23 @@ class Collapse extends Widget
 	{
 		if (isset($item['content'])) {
 			$id = $this->options['id'] . '-collapse' . $index;
-			$options = ArrayHelper::getValue($item, 'contentOptions', array());
+			$options = ArrayHelper::getValue($item, 'contentOptions', []);
 			$options['id'] = $id;
 			Html::addCssClass($options, 'accordion-body collapse');
 
-			$header = Html::a($header, '#' . $id, array(
+			$header = Html::a($header, '#' . $id, [
 					'class' => 'accordion-toggle',
 					'data-toggle' => 'collapse',
 					'data-parent' => '#' . $this->options['id']
-				)) . "\n";
+				]) . "\n";
 
-			$content = Html::tag('div', $item['content'], array('class' => 'accordion-inner')) . "\n";
+			$content = Html::tag('div', $item['content'], ['class' => 'accordion-inner']) . "\n";
 		} else {
 			throw new InvalidConfigException('The "content" option is required.');
 		}
-		$group = array();
+		$group = [];
 
-		$group[] = Html::tag('div', $header, array('class' => 'accordion-heading'));
+		$group[] = Html::tag('div', $header, ['class' => 'accordion-heading']);
 		$group[] = Html::tag('div', $content, $options);
 
 		return implode("\n", $group);

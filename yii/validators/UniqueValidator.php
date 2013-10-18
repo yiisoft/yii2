@@ -70,7 +70,7 @@ class UniqueValidator extends Validator
 		}
 
 		$query = $className::find();
-		$query->where(array($column->name => $value));
+		$query->where([$column->name => $value]);
 
 		if (!$object instanceof ActiveRecord || $object->getIsNewRecord()) {
 			// if current $object isn't in the database yet then it's OK just to call exists()

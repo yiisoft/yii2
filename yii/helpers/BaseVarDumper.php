@@ -47,7 +47,7 @@ class BaseVarDumper
 	public static function dumpAsString($var, $depth = 10, $highlight = false)
 	{
 		self::$_output = '';
-		self::$_objects = array();
+		self::$_objects = [];
 		self::$_depth = $depth;
 		self::dumpInternal($var, 0);
 		if ($highlight) {
@@ -87,20 +87,20 @@ class BaseVarDumper
 				break;
 			case 'array':
 				if (self::$_depth <= $level) {
-					self::$_output .= 'array(...)';
+					self::$_output .= '[...]';
 				} elseif (empty($var)) {
-					self::$_output .= 'array()';
+					self::$_output .= '[]';
 				} else {
 					$keys = array_keys($var);
 					$spaces = str_repeat(' ', $level * 4);
-					self::$_output .= "array\n" . $spaces . '(';
+					self::$_output .= '[';
 					foreach ($keys as $key) {
 						self::$_output .= "\n" . $spaces . '    ';
 						self::dumpInternal($key, 0);
 						self::$_output .= ' => ';
 						self::dumpInternal($var[$key], $level + 1);
 					}
-					self::$_output .= "\n" . $spaces . ')';
+					self::$_output .= "\n" . $spaces . ']';
 				}
 				break;
 			case 'object':
@@ -115,7 +115,7 @@ class BaseVarDumper
 					$spaces = str_repeat(' ', $level * 4);
 					self::$_output .= "$className#$id\n" . $spaces . '(';
 					foreach ($members as $key => $value) {
-						$keyDisplay = strtr(trim($key), array("\0" => ':'));
+						$keyDisplay = strtr(trim($key), ["\0" => ':']);
 						self::$_output .= "\n" . $spaces . "    [$keyDisplay] => ";
 						self::dumpInternal($value, $level + 1);
 					}

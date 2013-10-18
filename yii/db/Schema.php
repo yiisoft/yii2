@@ -58,11 +58,11 @@ abstract class Schema extends Object
 	/**
 	 * @var array list of ALL table names in the database
 	 */
-	private $_tableNames = array();
+	private $_tableNames = [];
 	/**
 	 * @var array list of loaded table metadata (table name => TableSchema)
 	 */
-	private $_tables = array();
+	private $_tables = [];
 	/**
 	 * @var QueryBuilder the query builder for this database
 	 */
@@ -115,12 +115,12 @@ abstract class Schema extends Object
 	 */
 	protected function getCacheKey($name)
 	{
-		return array(
+		return [
 			__CLASS__,
 			$this->db->dsn,
 			$this->db->username,
 			$name,
-		);
+		];
 	}
 
 	/**
@@ -130,11 +130,11 @@ abstract class Schema extends Object
 	 */
 	protected function getCacheGroup()
 	{
-		return md5(serialize(array(
+		return md5(serialize([
 			__CLASS__,
 			$this->db->dsn,
 			$this->db->username,
-		)));
+		]));
 	}
 
 	/**
@@ -147,7 +147,7 @@ abstract class Schema extends Object
 	 */
 	public function getTableSchemas($schema = '', $refresh = false)
 	{
-		$tables = array();
+		$tables = [];
 		foreach ($this->getTableNames($schema, $refresh) as $name) {
 			if ($schema !== '') {
 				$name = $schema . '.' . $name;
@@ -194,14 +194,14 @@ abstract class Schema extends Object
 	 */
 	public function getPdoType($data)
 	{
-		static $typeMap = array(
+		static $typeMap = [
 			// php type => PDO type
 			'boolean' => \PDO::PARAM_BOOL,
 			'integer' => \PDO::PARAM_INT,
 			'string' => \PDO::PARAM_STR,
 			'resource' => \PDO::PARAM_LOB,
 			'NULL' => \PDO::PARAM_NULL,
-		);
+		];
 		$type = gettype($data);
 		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
@@ -218,8 +218,8 @@ abstract class Schema extends Object
 		if ($this->db->enableSchemaCache && $cache instanceof Cache) {
 			GroupDependency::invalidate($cache, $this->getCacheGroup());
 		}
-		$this->_tableNames = array();
-		$this->_tables = array();
+		$this->_tableNames = [];
+		$this->_tables = [];
 	}
 
 	/**
@@ -378,13 +378,13 @@ abstract class Schema extends Object
 	 */
 	protected function getColumnPhpType($column)
 	{
-		static $typeMap = array( // abstract type => php type
+		static $typeMap = [ // abstract type => php type
 			'smallint' => 'integer',
 			'integer' => 'integer',
 			'bigint' => 'integer',
 			'boolean' => 'boolean',
 			'float' => 'double',
-		);
+		];
 		if (isset($typeMap[$column->type])) {
 			if ($column->type === 'bigint') {
 				return PHP_INT_SIZE == 8 && !$column->unsigned ? 'integer' : 'string';

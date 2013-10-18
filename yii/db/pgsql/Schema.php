@@ -31,7 +31,7 @@ class Schema extends \yii\db\Schema
 	 * @var array mapping from physical column types (keys) to abstract
 	 * column types (values)
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		'abstime' => self::TYPE_TIMESTAMP,
 		'bit' => self::TYPE_STRING,
 		'boolean' => self::TYPE_BOOLEAN,
@@ -70,7 +70,7 @@ class Schema extends \yii\db\Schema
 		'bit varying' => self::TYPE_STRING,
 		'character varying' => self::TYPE_STRING,
 		'xml' => self::TYPE_STRING
-	);
+	];
 
 	/**
 	 * Creates a query builder for the PostgreSQL database.
@@ -146,7 +146,7 @@ EOD;
 		$command = $this->db->createCommand($sql);
 		$command->bindParam(':schema', $schema);
 		$rows = $command->queryAll();
-		$names = array();
+		$names = [];
 		foreach ($rows as $row) {
 			if ($schema === $this->defaultSchema) {
 				$names[] = $row['table_name'];
@@ -198,7 +198,7 @@ SQL;
 			} else {
 				$foreignTable = $constraint['foreign_table_name'];
 			}
-			$citem = array($foreignTable);
+			$citem = [$foreignTable];
 			foreach ($columns as $idx => $column) {
 				$citem[$fcolumns[$idx]] = $column;
 			}
@@ -281,7 +281,7 @@ SQL;
 			if ($column->isPrimaryKey === true) {
 				$table->primaryKey[] = $column->name;
 				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1) {
-					$table->sequenceName = preg_replace(array('/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'), '', $column->defaultValue);
+					$table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
 				}
 			}
 		}
@@ -301,7 +301,7 @@ SQL;
 		$column->comment = $info['column_comment'];
 		$column->dbType = $info['data_type'];
 		$column->defaultValue = $info['column_default'];
-		$column->enumValues = explode(',', str_replace(array("''"), array("'"), $info['enum_values']));
+		$column->enumValues = explode(',', str_replace(["''"], ["'"], $info['enum_values']));
 		$column->unsigned = false; // has no meanining in PG
 		$column->isPrimaryKey = $info['is_pkey'];
 		$column->name = $info['column_name'];

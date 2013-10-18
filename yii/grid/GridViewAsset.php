@@ -17,10 +17,10 @@ use yii\web\AssetBundle;
 class GridViewAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/assets';
-	public $js = array(
+	public $js = [
 		'yii.gridView.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\web\YiiAsset',
-	);
+	];
 }

@@ -1,13 +1,13 @@
 <?php
 
-return array(
+return [
 	// string, required, root directory of all source files
 	'sourcePath' => __DIR__,
 	// string, required, root directory containing message translations.
 	'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
 	// array, required, list of language codes that the extracted messages
-	// should be translated to. For example, array('zh_cn', 'de').
-	'languages' => array('de'),
+	// should be translated to. For example, ['zh_cn', 'de'].
+	'languages' => ['de'],
 	// string, the name of the function for translating messages.
 	// Defaults to 'Yii::t'. This is used as a mark to find the messages to be
 	// translated. You may use a string for single function name or an array for
@@ -29,11 +29,11 @@ return array(
 	// and the '.svn' will match all files and directories whose name ends with '.svn'.
 	// Note, the '/' characters in a pattern matches both '/' and '\'.
 	// If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
-	'only' => array('.php'),
+	'only' => ['.php'],
 	// array, list of patterns that specify which files/directories should NOT be processed.
 	// If empty or not set, all files/directories will be processed.
 	// Please refer to "only" for details about the patterns.
-	'except' => array(
+	'except' => [
 		'.svn',
 		'.git',
 		'.gitignore',
@@ -41,5 +41,5 @@ return array(
 		'.hgignore',
 		'.hgkeep',
 		'/messages',
-	),
-);
+	],
+];

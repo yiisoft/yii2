@@ -10,7 +10,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-return array(
+return [
 	'yii\base\Action' => YII_PATH . '/base/Action.php',
 	'yii\base\ActionEvent' => YII_PATH . '/base/ActionEvent.php',
 	'yii\base\ActionFilter' => YII_PATH . '/base/ActionFilter.php',
@@ -241,4 +241,4 @@ return array(
 	'yii\widgets\MaskedInputAsset' => YII_PATH . '/widgets/MaskedInputAsset.php',
 	'yii\widgets\Menu' => YII_PATH . '/widgets/Menu.php',
 	'yii\widgets\Spaceless' => YII_PATH . '/widgets/Spaceless.php',
-);
+];

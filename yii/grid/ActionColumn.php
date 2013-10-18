@@ -20,7 +20,7 @@ use yii\helpers\StringHelper;
 class ActionColumn extends Column
 {
 	public $template = '{view} {update} {delete}';
-	public $buttons = array();
+	public $buttons = [];
 	public $urlCreator;
 
 	public function init()
@@ -35,29 +35,29 @@ class ActionColumn extends Column
 			$this->buttons['view'] = function ($model, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, 'view');
-				return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, array(
+				return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
 					'title' => Yii::t('yii', 'View'),
-				));
+				]);
 			};
 		}
 		if (!isset($this->buttons['update'])) {
 			$this->buttons['update'] = function ($model, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, 'update');
-				return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, array(
+				return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
 					'title' => Yii::t('yii', 'Update'),
-				));
+				]);
 			};
 		}
 		if (!isset($this->buttons['delete'])) {
 			$this->buttons['delete'] = function ($model, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, 'delete');
-				return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, array(
+				return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
 					'title' => Yii::t('yii', 'Delete'),
 					'data-confirm' => Yii::t('yii', 'Are you sure to delete this item?'),
 					'data-method' => 'post',
-				));
+				]);
 			};
 		}
 	}
@@ -74,7 +74,7 @@ class ActionColumn extends Column
 		} else {
 			$params = $model->getPrimaryKey(true);
 			if (count($params) === 1) {
-				$params = array('id' => reset($params));
+				$params = ['id' => reset($params)];
 			}
 			return Yii::$app->controller->createUrl($action, $params);
 		}

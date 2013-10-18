@@ -23,10 +23,10 @@ use yii\widgets\ActiveForm;
 
 <div class="<?=Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-search">
 
-	<?='<?php'; ?> $form = ActiveForm::begin(array(
-		'action' => array('index'),
+	<?='<?php'; ?> $form = ActiveForm::begin([
+		'action' => ['index'],
 		'method' => 'get',
-	)); ?>
+	]); ?>
 
 <?php
 $count = 0;
@@ -39,8 +39,8 @@ foreach ($generator->getTableSchema()->getColumnNames() as $attribute) {
 }
 ?>
 		<div class="form-group">
-			<?='<?php'; ?> echo Html::submitButton('Search', array('class' => 'btn btn-primary')); ?>
-			<?='<?php'; ?> echo Html::resetButton('Reset', array('class' => 'btn btn-default')); ?>
+			<?='<?php'; ?> echo Html::submitButton('Search', ['class' => 'btn btn-primary']); ?>
+			<?='<?php'; ?> echo Html::resetButton('Reset', ['class' => 'btn btn-default']); ?>
 		</div>
 
 	<?='<?php'; ?> ActiveForm::end(); ?>

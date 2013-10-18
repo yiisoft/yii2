@@ -48,7 +48,7 @@ abstract class Validator extends Component
 	/**
 	 * @var array list of built-in validators (name => class or configuration)
 	 */
-	public static $builtInValidators = array(
+	public static $builtInValidators = [
 		'boolean' => 'yii\validators\BooleanValidator',
 		'captcha' => 'yii\captcha\CaptchaValidator',
 		'compare' => 'yii\validators\CompareValidator',
@@ -60,10 +60,10 @@ abstract class Validator extends Component
 		'file' => 'yii\validators\FileValidator',
 		'filter' => 'yii\validators\FilterValidator',
 		'in' => 'yii\validators\RangeValidator',
-		'integer' => array(
+		'integer' => [
 			'class' => 'yii\validators\NumberValidator',
 			'integerOnly' => true,
-		),
+		],
 		'match' => 'yii\validators\RegularExpressionValidator',
 		'number' => 'yii\validators\NumberValidator',
 		'required' => 'yii\validators\RequiredValidator',
@@ -71,12 +71,12 @@ abstract class Validator extends Component
 		'string' => 'yii\validators\StringValidator',
 		'unique' => 'yii\validators\UniqueValidator',
 		'url' => 'yii\validators\UrlValidator',
-	);
+	];
 
 	/**
 	 * @var array list of attributes to be validated.
 	 */
-	public $attributes = array();
+	public $attributes = [];
 	/**
 	 * @var string the user-defined error message. It may contain the following placeholders which
 	 * will be replaced accordingly by the validator:
@@ -88,11 +88,11 @@ abstract class Validator extends Component
 	/**
 	 * @var array list of scenarios that the validator can be applied to.
 	 */
-	public $on = array();
+	public $on = [];
 	/**
 	 * @var array list of scenarios that the validator should not be applied to.
 	 */
-	public $except = array();
+	public $except = [];
 	/**
 	 * @var boolean whether this validation rule should be skipped if the attribute being validated
 	 * already has some validation error according to some previous rules. Defaults to true.
@@ -129,7 +129,7 @@ abstract class Validator extends Component
 	 * @param array $params initial values to be applied to the validator properties
 	 * @return Validator the validator
 	 */
-	public static function createValidator($type, $object, $attributes, $params = array())
+	public static function createValidator($type, $object, $attributes, $params = [])
 	{
 		if (!is_array($attributes)) {
 			$attributes = preg_split('/[\s,]+/', $attributes, -1, PREG_SPLIT_NO_EMPTY);
@@ -248,7 +248,7 @@ abstract class Validator extends Component
 	 * @param string $message the error message
 	 * @param array $params values for the placeholders in the error message
 	 */
-	public function addError($object, $attribute, $message, $params = array())
+	public function addError($object, $attribute, $message, $params = [])
 	{
 		$value = $object->$attribute;
 		$params['{attribute}'] = $object->getAttributeLabel($attribute);
@@ -266,7 +266,7 @@ abstract class Validator extends Component
 	 */
 	public function isEmpty($value, $trim = false)
 	{
-		return $value === null || $value === array() || $value === ''
+		return $value === null || $value === [] || $value === ''
 			|| $trim && is_scalar($value) && trim($value) === '';
 	}
 }

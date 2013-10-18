@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
 class DebugAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/debug/assets';
-	public $css = array(
+	public $css = [
 		'main.css',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\web\YiiAsset',
 		'yii\bootstrap\BootstrapAsset',
-	);
+	];
 }

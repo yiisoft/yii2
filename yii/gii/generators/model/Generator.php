@@ -52,19 +52,19 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function rules()
 	{
-		return array_merge(parent::rules(), array(
-			array('db, ns, tableName, modelClass, baseClass', 'filter', 'filter' => 'trim'),
-			array('db, ns, tableName, baseClass', 'required'),
-			array('db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'),
-			array('ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'),
-			array('db', 'validateDb'),
-			array('ns', 'validateNamespace'),
-			array('tableName', 'validateTableName'),
-			array('modelClass', 'validateModelClass'),
-			array('baseClass', 'validateClass', 'params' => array('extends' => ActiveRecord::className())),
-			array('generateRelations, generateLabelsFromComments', 'boolean'),
-		));
+		return array_merge(parent::rules(), [
+			['db, ns, tableName, modelClass, baseClass', 'filter', 'filter' => 'trim'],
+			['db, ns, tableName, baseClass', 'required'],
+			['db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
+			['ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			['tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
+			['db', 'validateDb'],
+			['ns', 'validateNamespace'],
+			['tableName', 'validateTableName'],
+			['modelClass', 'validateModelClass'],
+			['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
+			['generateRelations, generateLabelsFromComments', 'boolean'],
+		]);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'ns' => 'Namespace',
 			'db' => 'Database Connection ID',
 			'tableName' => 'Table Name',
@@ -80,7 +80,7 @@ class Generator extends \yii\gii\Generator
 			'baseClass' => 'Base Class',
 			'generateRelations' => 'Generate Relations',
 			'generateLabelsFromComments' => 'Generate Labels from DB Comments',
-		);
+		];
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function hints()
 	{
-		return array(
+		return [
 			'ns' => 'This is the namespace of the ActiveRecord class to be generated, e.g., <code>app\models</code>',
 			'db' => 'This is the ID of the DB application component.',
 			'tableName' => 'This is the name of the DB table that the new ActiveRecord class is associated with, e.g. <code>tbl_post</code>.
@@ -107,7 +107,7 @@ class Generator extends \yii\gii\Generator
 				you may want to uncheck this option to accelerate the code generation proc	ess.',
 			'generateLabelsFromComments' => 'This indicates whether the generator should generate attribute labels
 				by using the comments of the corresponding DB columns.',
-		);
+		];
 	}
 
 	/**
@@ -115,9 +115,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function requiredTemplates()
 	{
-		return array(
-			'model.php',
-		);
+		return ['model.php'];
 	}
 
 	/**
@@ -125,7 +123,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function stickyAttributes()
 	{
-		return array('ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments');
+		return ['ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments'];
 	}
 
 	/**
@@ -133,20 +131,20 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generate()
 	{
-		$files = array();
+		$files = [];
 		$relations = $this->generateRelations();
 		$db = $this->getDbConnection();
 		foreach ($this->getTableNames() as $tableName) {
 			$className = $this->generateClassName($tableName);
 			$tableSchema = $db->getTableSchema($tableName);
-			$params = array(
+			$params = [
 				'tableName' => $tableName,
 				'className' => $className,
 				'tableSchema' => $tableSchema,
 				'labels' => $this->generateLabels($tableSchema),
 				'rules' => $this->generateRules($tableSchema),
-				'relations' => isset($relations[$className]) ? $relations[$className] : array(),
-			);
+				'relations' => isset($relations[$className]) ? $relations[$className] : [],
+			];
 			$files[] = new CodeFile(
 				Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
 				$this->render('model.php', $params)
@@ -163,7 +161,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generateLabels($table)
 	{
-		$labels = array();
+		$labels = [];
 		foreach ($table->columns as $column) {
 			if ($this->generateLabelsFromComments && !empty($column->comment)) {
 				$labels[$column->name] = $column->comment;
@@ -187,8 +185,8 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generateRules($table)
 	{
-		$types = array();
-		$lengths = array();
+		$types = [];
+		$lengths = [];
 		foreach ($table->columns as $column) {
 			if ($column->autoIncrement) {
 				continue;
@@ -225,12 +223,12 @@ class Generator extends \yii\gii\Generator
 			}
 		}
 
-		$rules = array();
+		$rules = [];
 		foreach ($types as $type => $columns) {
-			$rules[] = "array('" . implode(', ', $columns) . "', '$type')";
+			$rules[] = "['" . implode(', ', $columns) . "', '$type']";
 		}
 		foreach ($lengths as $length => $columns) {
-			$rules[] = "array('" . implode(', ', $columns) . "', 'string', 'max' => $length)";
+			$rules[] = "['" . implode(', ', $columns) . "', 'string', 'max' => $length]";
 		}
 
 		return $rules;
@@ -242,7 +240,7 @@ class Generator extends \yii\gii\Generator
 	protected function generateRelations()
 	{
 		if (!$this->generateRelations) {
-			return array();
+			return [];
 		}
 
 		$db = $this->getDbConnection();
@@ -253,7 +251,7 @@ class Generator extends \yii\gii\Generator
 			$schemaName = '';
 		}
 
-		$relations = array();
+		$relations = [];
 		foreach ($db->getSchema()->getTableSchemas($schemaName) as $table) {
 			$tableName = $table->name;
 			$className = $this->generateClassName($tableName);
@@ -266,11 +264,11 @@ class Generator extends \yii\gii\Generator
 				// Add relation for this table
 				$link = $this->generateRelationLink(array_flip($refs));
 				$relationName = $this->generateRelationName($relations, $className, $table, $fks[0], false);
-				$relations[$className][$relationName] = array(
+				$relations[$className][$relationName] = [
 					"return \$this->hasOne('$refClassName', $link);",
 					$refClassName,
 					false,
-				);
+				];
 
 				// Add relation for the referenced table
 				$hasMany = false;
@@ -282,11 +280,11 @@ class Generator extends \yii\gii\Generator
 				}
 				$link = $this->generateRelationLink($refs);
 				$relationName = $this->generateRelationName($relations, $refClassName, $refTable, $className, $hasMany);
-				$relations[$refClassName][$relationName] = array(
+				$relations[$refClassName][$relationName] = [
 					"return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "('$className', $link);",
 					$className,
 					$hasMany,
-				);
+				];
 			}
 
 			if (($fks = $this->checkPivotTable($table)) === false) {
@@ -297,23 +295,23 @@ class Generator extends \yii\gii\Generator
 			$className0 = $this->generateClassName($table0);
 			$className1 = $this->generateClassName($table1);
 
-			$link = $this->generateRelationLink(array($fks[$table->primaryKey[1]][1] => $table->primaryKey[1]));
-			$viaLink = $this->generateRelationLink(array($table->primaryKey[0] => $fks[$table->primaryKey[0]][1]));
+			$link = $this->generateRelationLink([$fks[$table->primaryKey[1]][1] => $table->primaryKey[1]]);
+			$viaLink = $this->generateRelationLink([$table->primaryKey[0] => $fks[$table->primaryKey[0]][1]]);
 			$relationName = $this->generateRelationName($relations, $className0, $db->getTableSchema($table0), $table->primaryKey[1], true);
-			$relations[$className0][$relationName] = array(
+			$relations[$className0][$relationName] = [
 				"return \$this->hasMany('$className1', $link)->viaTable('{$table->name}', $viaLink);",
 				$className0,
 				true,
-			);
+			];
 
-			$link = $this->generateRelationLink(array($fks[$table->primaryKey[0]][1] => $table->primaryKey[0]));
-			$viaLink = $this->generateRelationLink(array($table->primaryKey[1] => $fks[$table->primaryKey[1]][1]));
+			$link = $this->generateRelationLink([$fks[$table->primaryKey[0]][1] => $table->primaryKey[0]]);
+			$viaLink = $this->generateRelationLink([$table->primaryKey[1] => $fks[$table->primaryKey[1]][1]]);
 			$relationName = $this->generateRelationName($relations, $className1, $db->getTableSchema($table1), $table->primaryKey[0], true);
-			$relations[$className1][$relationName] = array(
+			$relations[$className1][$relationName] = [
 				"return \$this->hasMany('$className0', $link)->viaTable('{$table->name}', $viaLink);",
 				$className1,
 				true,
-			);
+			];
 		}
 		return $relations;
 	}
@@ -325,11 +323,11 @@ class Generator extends \yii\gii\Generator
 	 */
 	protected function generateRelationLink($refs)
 	{
-		$pairs = array();
+		$pairs = [];
 		foreach ($refs as $a => $b) {
 			$pairs[] = "'$a' => '$b'";
 		}
-		return 'array(' . implode(', ', $pairs) . ')';
+		return '[' . implode(', ', $pairs) . ']';
 	}
 
 	/**
@@ -346,13 +344,13 @@ class Generator extends \yii\gii\Generator
 		if (count($pk) !== 2) {
 			return false;
 		}
-		$fks = array();
+		$fks = [];
 		foreach ($table->foreignKeys as $refs) {
 			if (count($refs) === 2) {
 				if (isset($refs[$pk[0]])) {
-					$fks[$pk[0]] = array($refs[0], $refs[$pk[0]]);
+					$fks[$pk[0]] = [$refs[0], $refs[$pk[0]]];
 				} elseif (isset($refs[$pk[1]])) {
-					$fks[$pk[1]] = array($refs[0], $refs[$pk[1]]);
+					$fks[$pk[1]] = [$refs[0], $refs[$pk[1]]];
 				}
 			}
 		}
@@ -465,9 +463,9 @@ class Generator extends \yii\gii\Generator
 		}
 		$db = $this->getDbConnection();
 		if ($db === null) {
-			return array();
+			return [];
 		}
-		$tableNames = array();
+		$tableNames = [];
 		if (strpos($this->tableName, '*') !== false) {
 			if (($pos = strrpos($this->tableName, '.')) !== false) {
 				$schema = substr($this->tableName, 0, $pos);
@@ -505,7 +503,7 @@ class Generator extends \yii\gii\Generator
 		}
 
 		$db = $this->getDbConnection();
-		$patterns = array();
+		$patterns = [];
 		if (strpos($this->tableName, '*') !== false) {
 			$pattern = $this->tableName;
 			if (($pos = strrpos($pattern, '.')) !== false) {

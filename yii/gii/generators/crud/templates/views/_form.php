@@ -36,7 +36,7 @@ use yii\widgets\ActiveForm;
 	echo "\t\t<?=" . $generator->generateActiveField($attribute) . " ?>\n\n";
 } ?>
 		<div class="form-group">
-			<?='<?php'; ?> echo Html::submitButton($model->isNewRecord ? 'Create' : 'Update', array('class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary')); ?>
+			<?='<?php'; ?> echo Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']); ?>
 		</div>
 
 	<?='<?php'; ?> ActiveForm::end(); ?>

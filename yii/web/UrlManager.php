@@ -61,7 +61,7 @@ class UrlManager extends Component
 	 * Here is an example configuration for RESTful CRUD controller:
 	 *
 	 * ~~~php
-	 * array(
+	 * [
 	 *     'dashboard' => 'site/index',
 	 *
 	 *     'POST <controller:\w+>s' => '<controller>/create',
@@ -70,13 +70,13 @@ class UrlManager extends Component
 	 *     'PUT <controller:\w+>/<id:\d+>'    => '<controller>/update',
 	 *     'DELETE <controller:\w+>/<id:\d+>' => '<controller>/delete',
 	 *     '<controller:\w+>/<id:\d+>'        => '<controller>/view',
-	 * );
+	 * ];
 	 * ~~~
 	 *
 	 * Note that if you modify this property after the UrlManager object is created, make sure
 	 * you populate the array with rule objects instead of rule configurations.
 	 */
-	public $rules = array();
+	public $rules = [];
 	/**
 	 * @var string the URL suffix used when in 'path' format.
 	 * For example, ".html" can be used so that the URL looks like pointing to a static HTML page.
@@ -105,9 +105,7 @@ class UrlManager extends Component
 	 * @var array the default configuration of URL rules. Individual rule configurations
 	 * specified via [[rules]] will take precedence when the same property of the rule is configured.
 	 */
-	public $ruleConfig = array(
-		'class' => 'yii\web\UrlRule',
-	);
+	public $ruleConfig = ['class' => 'yii\web\UrlRule'];
 
 	private $_baseUrl;
 	private $_hostInfo;
@@ -141,12 +139,10 @@ class UrlManager extends Component
 			}
 		}
 
-		$rules = array();
+		$rules = [];
 		foreach ($this->rules as $key => $rule) {
 			if (!is_array($rule)) {
-				$rule = array(
-					'route' => $rule,
-				);
+				$rule = ['route' => $rule];
 				if (preg_match('/^((?:(GET|HEAD|POST|PUT|PATCH|DELETE),)*(GET|HEAD|POST|PUT|PATCH|DELETE))\s+(.*)$/', $key, $matches)) {
 					$rule['verb'] = explode(',', $matches[1]);
 					$rule['mode'] = UrlRule::PARSING_ONLY;
@@ -159,7 +155,7 @@ class UrlManager extends Component
 		$this->rules = $rules;
 
 		if (isset($key, $hash)) {
-			$this->cache->set($key, array($this->rules, $hash));
+			$this->cache->set($key, [$this->rules, $hash]);
 		}
 	}
 
@@ -201,14 +197,14 @@ class UrlManager extends Component
 			}
 
 			Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
-			return array($pathInfo, array());
+			return [$pathInfo, []];
 		} else {
 			$route = $request->get($this->routeVar);
 			if (is_array($route)) {
 				$route = '';
 			}
 			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
-			return array((string)$route, array());
+			return [(string)$route, []];
 		}
 	}
 
@@ -219,7 +215,7 @@ class UrlManager extends Component
 	 * @param array $params the parameters (name-value pairs)
 	 * @return string the created URL
 	 */
-	public function createUrl($route, $params = array())
+	public function createUrl($route, $params = [])
 	{
 		$anchor = isset($params['#']) ? '#' . $params['#'] : '';
 		unset($params['#'], $params[$this->routeVar]);
@@ -267,7 +263,7 @@ class UrlManager extends Component
 	 * @return string the created URL
 	 * @see createUrl()
 	 */
-	public function createAbsoluteUrl($route, $params = array())
+	public function createAbsoluteUrl($route, $params = [])
 	{
 		$url = $this->createUrl($route, $params);
 		if (strpos($url, '://') !== false) {

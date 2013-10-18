@@ -34,7 +34,7 @@ abstract class Dependency extends \yii\base\Object
 	/**
 	 * @var array static storage of cached data for reusable dependencies.
 	 */
-	private static $_reusableData = array();
+	private static $_reusableData = [];
 	/**
 	 * @var string a unique hash value for this cache dependency.
 	 */
@@ -86,7 +86,7 @@ abstract class Dependency extends \yii\base\Object
 	 */
 	public static function resetReusableData()
 	{
-		self::$_reusableData = array();
+		self::$_reusableData = [];
 	}
 
 	/**

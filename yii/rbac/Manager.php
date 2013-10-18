@@ -58,7 +58,7 @@ abstract class Manager extends Component
 	 * And then declare 'authenticated' in this property so that it can be applied to
 	 * every authenticated user.
 	 */
-	public $defaultRoles = array();
+	public $defaultRoles = [];
 
 	/**
 	 * Creates a role.
@@ -159,7 +159,7 @@ abstract class Manager extends Component
 	 */
 	protected function checkItemChildType($parentType, $childType)
 	{
-		static $types = array('operation', 'task', 'role');
+		static $types = ['operation', 'task', 'role'];
 		if ($parentType < $childType) {
 			throw new InvalidParamException("Cannot add an item of type '{$types[$childType]}' to an item of type '{$types[$parentType]}'.");
 		}
@@ -174,7 +174,7 @@ abstract class Manager extends Component
 	 * with the tasks and roles assigned to the user.
 	 * @return boolean whether the operations can be performed by the user.
 	 */
-	abstract public function checkAccess($userId, $itemName, $params = array());
+	abstract public function checkAccess($userId, $itemName, $params = []);
 
 	/**
 	 * Creates an authorization item.

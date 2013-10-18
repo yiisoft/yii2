@@ -30,10 +30,10 @@ class GettextPoFile extends GettextFile
 			. 'msgid\s+((?:".*(?<!\\\\)"\s*)+)\s+' // message ID, i.e. original string
 			. 'msgstr\s+((?:".*(?<!\\\\)"\s*)+)/'; // translated string
 		$content = file_get_contents($filePath);
-		$matches = array();
+		$matches = [];
 		$matchCount = preg_match_all($pattern, $content, $matches);
 
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < $matchCount; ++$i) {
 			if ($matches[2][$i] == $context) {
 				$id = $this->decode($matches[3][$i]);
@@ -74,8 +74,8 @@ class GettextPoFile extends GettextFile
 	protected function encode($string)
 	{
 		return str_replace(
-			array('"', "\n", "\t", "\r"),
-			array('\\"', '\\n', '\\t', '\\r'),
+			['"', "\n", "\t", "\r"],
+			['\\"', '\\n', '\\t', '\\r'],
 			$string
 		);
 	}
@@ -88,8 +88,8 @@ class GettextPoFile extends GettextFile
 	protected function decode($string)
 	{
 		$string = preg_replace(
-			array('/"\s+"/', '/\\\\n/', '/\\\\r/', '/\\\\t/', '/\\\\"/'),
-			array('', "\n", "\r", "\t", '"'),
+			['/"\s+"/', '/\\\\n/', '/\\\\r/', '/\\\\t/', '/\\\\"/'],
+			['', "\n", "\r", "\t", '"'],
 			$string
 		);
 		return substr(rtrim($string), 1, -1);

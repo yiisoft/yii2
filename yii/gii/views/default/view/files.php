@@ -35,9 +35,9 @@ use yii\gii\CodeFile;
 			<?php foreach ($files as $file): ?>
 			<tr class="<?=$file->operation; ?>">
 				<td class="file">
-					<?=Html::a(Html::encode($file->getRelativePath()), array('preview', 'file' => $file->id), array('class' => 'preview-code', 'data-title' => $file->getRelativePath())); ?>
+					<?=Html::a(Html::encode($file->getRelativePath()), ['preview', 'file' => $file->id], ['class' => 'preview-code', 'data-title' => $file->getRelativePath()]); ?>
 					<?php if ($file->operation === CodeFile::OP_OVERWRITE): ?>
-						<?=Html::a('diff', array('diff', 'file' => $file->id), array('class' => 'diff-code label label-warning', 'data-title' => $file->getRelativePath())); ?>
+						<?=Html::a('diff', ['diff', 'file' => $file->id], ['class' => 'diff-code label label-warning', 'data-title' => $file->getRelativePath()]); ?>
 					<?php endif; ?>
 				</td>
 				<td class="action">

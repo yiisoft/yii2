@@ -30,7 +30,7 @@ class MessageFormatter extends \MessageFormatter
 	 */
 	public function format($args)
 	{
-		if ($args === array()) {
+		if ($args === []) {
 			return $this->getPattern();
 		}
 
@@ -53,7 +53,7 @@ class MessageFormatter extends \MessageFormatter
 	 */
 	public static function formatMessage($locale, $pattern, $args)
 	{
-		if ($args === array()) {
+		if ($args === []) {
 			return $pattern;
 		}
 
@@ -81,7 +81,7 @@ class MessageFormatter extends \MessageFormatter
 		$c = count($parts);
 		$pattern = $parts[0];
 		$d = 0;
-		$stack = array();
+		$stack = [];
 		for($i = 1; $i < $c; $i++) {
 			if (preg_match('~^(\s*)([\d\w]+)(\s*)([},])(\s*)(.*)$~us', $parts[$i], $matches)) {
 				// if we are not inside a plural or select this is a message

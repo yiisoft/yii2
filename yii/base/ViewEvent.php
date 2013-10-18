@@ -36,7 +36,7 @@ class ViewEvent extends Event
 	 * @param string $viewFile the view file path that is being rendered by [[View::renderFile()]].
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($viewFile, $config = array())
+	public function __construct($viewFile, $config = [])
 	{
 		$this->viewFile = $viewFile;
 		parent::__construct($config);
