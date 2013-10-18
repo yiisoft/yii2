@@ -7,6 +7,8 @@ use yii\email\VendorMailer;
 /**
  * Class Mailer
  *
+ * @see http://swiftmailer.org
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -17,17 +19,23 @@ class Mailer extends VendorMailer
 	 */
 	public function init()
 	{
-		if (empty($this->autoload)) {
+		if (!class_exists('Swift', false) && empty($this->autoload)) {
 			$this->autoload = __DIR__ . '/autoload.php';
 		}
 		parent::init();
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function send($message)
 	{
 		return ($this->getVendorMailer()->send($message->getVendorMessage()) > 0);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function createVendorMailer(array $config)
 	{
 		if (array_key_exists('transport', $config)) {
@@ -38,6 +46,9 @@ class Mailer extends VendorMailer
 		return \Swift_Mailer::newInstance($this->createTransport($transportConfig));
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function createVendorMessage()
 	{
 		return new \Swift_Message();

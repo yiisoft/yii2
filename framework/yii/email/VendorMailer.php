@@ -32,6 +32,7 @@ abstract class VendorMailer extends BaseMailer
 
 	/**
 	 * Initializes the object.
+	 * Registers the vendor autoloader if any.
 	 */
 	public function init()
 	{
