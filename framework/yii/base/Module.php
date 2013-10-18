@@ -130,6 +130,12 @@ abstract class Module extends Component
 		$this->id = $id;
 		$this->module = $parent;
 		parent::__construct($config);
+		if ($this->controllerNamespace === null) {
+			$class = get_class($this);
+			if (($pos = strrpos($class, '\\')) !== false) {
+				$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
+			}
+		}
 	}
 
 	/**
@@ -173,12 +179,6 @@ abstract class Module extends Component
 	public function init()
 	{
 		$this->preloadComponents();
-		if ($this->controllerNamespace === null) {
-			$class = get_class($this);
-			if (($pos = strrpos($class, '\\')) !== false) {
-				$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
-			}
-		}
 	}
 
 	/**

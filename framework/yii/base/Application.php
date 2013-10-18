@@ -140,6 +140,11 @@ abstract class Application extends Module
 		$this->registerCoreComponents();
 
 		Component::__construct($config);
+
+		$this->preloadComponents();
+		if ($this->controllerNamespace === null) {
+			$this->controllerNamespace = 'app\\controllers';
+		}
 	}
 
 	/**
@@ -170,20 +175,6 @@ abstract class Application extends Module
 			$this->setTimeZone('UTC');
 		}
 	}
-
-	/**
-	 * Initializes the application.
-	 * This method is called after the application is created and initialized with property values
-	 * given in configuration.
-	 */
-	public function init()
-	{
-		$this->preloadComponents();
-		if ($this->controllerNamespace === null) {
-			$this->controllerNamespace = 'app\\controllers';
-		}
-	}
-
 
 	/**
 	 * Loads components that are declared in [[preload]].
