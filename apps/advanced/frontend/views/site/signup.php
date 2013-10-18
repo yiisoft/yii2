@@ -17,12 +17,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<div class="col-lg-5">
-			<?php $form = ActiveForm::begin(array('id' => 'form-signup')); ?>
+			<?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
 				<?php echo $form->field($model, 'username'); ?>
 				<?php echo $form->field($model, 'email'); ?>
 				<?php echo $form->field($model, 'password')->passwordInput(); ?>
 				<div class="form-group">
-					<?php echo Html::submitButton('Signup', array('class' => 'btn btn-primary')); ?>
+					<?php echo Html::submitButton('Signup', ['class' => 'btn btn-primary']); ?>
 				</div>
 			<?php ActiveForm::end(); ?>
 		</div>

@@ -34,15 +34,15 @@ class User extends ActiveRecord implements IdentityInterface
 
 	public function behaviors()
 	{
-		return array(
-			'timestamp' => array(
+		return [
+			'timestamp' => [
 				'class' => 'yii\behaviors\AutoTimestamp',
-				'attributes' => array(
-					ActiveRecord::EVENT_BEFORE_INSERT => array('create_time', 'update_time'),
+				'attributes' => [
+					ActiveRecord::EVENT_BEFORE_INSERT => ['create_time', 'update_time'],
 					ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
-				),
-			),
-		);
+				],
+			],
+		];
 	}
 
 	/**
@@ -64,7 +64,7 @@ class User extends ActiveRecord implements IdentityInterface
 	 */
 	public static function findByUsername($username)
 	{
-		return static::find(array('username' => $username, 'status' => static::STATUS_ACTIVE));
+		return static::find(['username' => $username, 'status' => static::STATUS_ACTIVE]);
 	}
 
 	/**
@@ -103,29 +103,29 @@ class User extends ActiveRecord implements IdentityInterface
 
 	public function rules()
 	{
-		return array(
-			array('username', 'filter', 'filter' => 'trim'),
-			array('username', 'required'),
-			array('username', 'string', 'min' => 2, 'max' => 255),
+		return [
+			['username', 'filter', 'filter' => 'trim'],
+			['username', 'required'],
+			['username', 'string', 'min' => 2, 'max' => 255],
 
-			array('email', 'filter', 'filter' => 'trim'),
-			array('email', 'required'),
-			array('email', 'email'),
-			array('email', 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'),
-			array('email', 'exist', 'message' => 'There is no user with such email.', 'on' => 'requestPasswordResetToken'),
+			['email', 'filter', 'filter' => 'trim'],
+			['email', 'required'],
+			['email', 'email'],
+			['email', 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'],
+			['email', 'exist', 'message' => 'There is no user with such email.', 'on' => 'requestPasswordResetToken'],
 
-			array('password', 'required'),
-			array('password', 'string', 'min' => 6),
-		);
+			['password', 'required'],
+			['password', 'string', 'min' => 6],
+		];
 	}
 
 	public function scenarios()
 	{
-		return array(
-			'signup' => array('username', 'email', 'password'),
-			'resetPassword' => array('password'),
-			'requestPasswordResetToken' => array('email'),
-		);
+		return [
+			'signup' => ['username', 'email', 'password'],
+			'resetPassword' => ['password'],
+			'requestPasswordResetToken' => ['email'],
+		];
 	}
 
 	public function beforeSave($insert)

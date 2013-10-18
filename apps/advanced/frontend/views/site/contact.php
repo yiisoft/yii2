@@ -20,17 +20,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<div class="col-lg-5">
-			<?php $form = ActiveForm::begin(array('id' => 'contact-form')); ?>
+			<?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
 				<?php echo $form->field($model, 'name'); ?>
 				<?php echo $form->field($model, 'email'); ?>
 				<?php echo $form->field($model, 'subject'); ?>
-				<?php echo $form->field($model, 'body')->textArea(array('rows' => 6)); ?>
-				<?php echo $form->field($model, 'verifyCode')->widget(Captcha::className(), array(
-					'options' => array('class' => 'form-control'),
+				<?php echo $form->field($model, 'body')->textArea(['rows' => 6]); ?>
+				<?php echo $form->field($model, 'verifyCode')->widget(Captcha::className(), [
+					'options' => ['class' => 'form-control'],
 					'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
-				)); ?>
+				]); ?>
 				<div class="form-group">
-					<?php echo Html::submitButton('Submit', array('class' => 'btn btn-primary')); ?>
+					<?php echo Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
 				</div>
 			<?php ActiveForm::end(); ?>
 		</div>

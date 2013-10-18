@@ -48,10 +48,10 @@ script via the following URL in a Web browser:
 http://hostname/path/to/yii/requirements/index.php
 ~~~
 
-Yii requires PHP 5.3.7, so the server must have PHP 5.3.7 or above installed and
+Yii requires PHP 5.4.0, so the server must have PHP 5.4.0 or above installed and
 available to the web server. Yii has been tested with [Apache HTTP server](http://httpd.apache.org/)
 on Windows and Linux. It may also run on other Web servers and platforms,
-provided PHP 5.3 is supported.
+provided PHP 5.4 is supported.
 
 
 Recommended Apache Configuration

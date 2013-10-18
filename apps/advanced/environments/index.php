@@ -16,23 +16,23 @@
  * );
  * ```
  */
-return array(
-	'Development' => array(
+return [
+	'Development' => [
 		'path' => 'dev',
-		'writable' => array(
+		'writable' => [
 			// handled by composer.json already
-		),
-		'executable' => array(
+		],
+		'executable' => [
 			'yii',
-		),
-	),
-	'Production' => array(
+		],
+	],
+	'Production' => [
 		'path' => 'prod',
-		'writable' => array(
+		'writable' => [
 			// handled by composer.json already
-		),
-		'executable' => array(
+		],
+		'executable' => [
 			'yii',
-		),
-	),
-);
+		],
+	],
+];
