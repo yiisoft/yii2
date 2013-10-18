@@ -123,7 +123,7 @@ class <?php echo $controllerClass; ?> extends <?php echo StringHelper::basename(
 if (count($pks) === 1) {
 	$condition = '$id';
 } else {
-	$condition = array();
+	$condition = [];
 	foreach ($pks as $pk) {
 		$condition[] = "'$pk' => \$$pk";
 	}

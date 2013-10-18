@@ -55,7 +55,7 @@ class Behavior extends \yii\base\Object
 	 */
 	public function events()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -69,7 +69,7 @@ class Behavior extends \yii\base\Object
 	{
 		$this->owner = $owner;
 		foreach ($this->events() as $event => $handler) {
-			$owner->on($event, is_string($handler) ? array($this, $handler) : $handler);
+			$owner->on($event, is_string($handler) ? [$this, $handler] : $handler);
 		}
 	}
 
@@ -83,7 +83,7 @@ class Behavior extends \yii\base\Object
 	{
 		if ($this->owner) {
 			foreach ($this->events() as $event => $handler) {
-				$this->owner->off($event, is_string($handler) ? array($this, $handler) : $handler);
+				$this->owner->off($event, is_string($handler) ? [$this, $handler] : $handler);
 			}
 			$this->owner = null;
 		}

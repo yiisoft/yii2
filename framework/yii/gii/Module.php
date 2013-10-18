@@ -66,7 +66,7 @@ class Module extends \yii\base\Module
 	 * The default value is `array('127.0.0.1', '::1')`, which means the module can only be accessed
 	 * by localhost.
 	 */
-	public $allowedIPs = array('127.0.0.1', '::1');
+	public $allowedIPs = ['127.0.0.1', '::1'];
 	/**
 	 * @var array|Generator[] a list of generator configurations or instances. The array keys
 	 * are the generator IDs (e.g. "crud"), and the array elements are the corresponding generator
@@ -78,7 +78,7 @@ class Module extends \yii\base\Module
 	 * Newly assigned generators will be merged with the [[coreGenerators()|core ones]], and the former
 	 * takes precedence in case when they have the same generator ID.
 	 */
-	public $generators = array();
+	public $generators = [];
 	/**
 	 * @var integer the permission to be set for newly generated code files.
 	 * This value will be used by PHP chmod function.
@@ -136,22 +136,22 @@ class Module extends \yii\base\Module
 	 */
 	protected function coreGenerators()
 	{
-		return array(
-			'model' => array(
+		return [
+			'model' => [
 				'class' => 'yii\gii\generators\model\Generator',
-			),
-			'crud' => array(
+			],
+			'crud' => [
 				'class' => 'yii\gii\generators\crud\Generator',
-			),
-			'controller' => array(
+			],
+			'controller' => [
 				'class' => 'yii\gii\generators\controller\Generator',
-			),
-			'form' => array(
+			],
+			'form' => [
 				'class' => 'yii\gii\generators\form\Generator',
-			),
-			'module' => array(
+			],
+			'module' => [
 				'class' => 'yii\gii\generators\module\Generator',
-			),
-		);
+			],
+		];
 	}
 }

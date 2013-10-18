@@ -10,8 +10,8 @@ class InvalidRulesModel extends Model
 {
 	public function rules()
 	{
-		return array(
-			array('test'),
-		);
+		return [
+			['test'],
+		];
 	}
 }

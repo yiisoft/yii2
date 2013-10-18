@@ -46,7 +46,7 @@ class ButtonGroup extends Widget
 	 * - label: string, required, the button label.
 	 * - options: array, optional, the HTML attributes of the button.
 	 */
-	public $buttons = array();
+	public $buttons = [];
 	/**
 	 * @var boolean whether to HTML-encode the button labels.
 	 */
@@ -78,16 +78,16 @@ class ButtonGroup extends Widget
 	 */
 	protected function renderButtons()
 	{
-		$buttons = array();
+		$buttons = [];
 		foreach ($this->buttons as $button) {
 			if (is_array($button)) {
 				$label = ArrayHelper::getValue($button, 'label');
 				$options = ArrayHelper::getValue($button, 'options');
-				$buttons[] = Button::widget(array(
+				$buttons[] = Button::widget([
 					'label' => $label,
 					'options' => $options,
 					'encodeLabel' => $this->encodeLabels
-				));
+				]);
 			} else {
 				$buttons[] = $button;
 			}

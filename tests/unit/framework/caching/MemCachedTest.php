@@ -22,9 +22,9 @@ class MemCachedTest extends CacheTestCase
 		}
 
 		if ($this->_cacheInstance === null) {
-			$this->_cacheInstance = new MemCache(array(
+			$this->_cacheInstance = new MemCache([
 				'useMemcached' => true,
-			));
+			]);
 		}
 		return $this->_cacheInstance;
 	}

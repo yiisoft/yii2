@@ -11,7 +11,7 @@
  * @since 2.0
  */
 
-return array(
+return [
 	'ai' => 'application/postscript',
 	'aif' => 'audio/x-aiff',
 	'aifc' => 'audio/x-aiff',
@@ -184,4 +184,4 @@ return array(
 	'xwd' => 'image/x-xwindowdump',
 	'xyz' => 'chemical/x-pdb',
 	'zip' => 'application/zip',
-);
+];

@@ -56,18 +56,18 @@ class I18N extends Component
 	{
 		parent::init();
 		if (!isset($this->translations['yii'])) {
-			$this->translations['yii'] = array(
+			$this->translations['yii'] = [
 				'class' => 'yii\i18n\PhpMessageSource',
 				'sourceLanguage' => 'en_US',
 				'basePath' => '@yii/messages',
-			);
+			];
 		}
 		if (!isset($this->translations['app'])) {
-			$this->translations['app'] = array(
+			$this->translations['app'] = [
 				'class' => 'yii\i18n\PhpMessageSource',
 				'sourceLanguage' => 'en_US',
 				'basePath' => '@app/messages',
-			);
+			];
 		}
 	}
 
@@ -86,7 +86,7 @@ class I18N extends Component
 		$message = $this->getMessageSource($category)->translate($category, $message, $language);
 
 		if (!is_array($params)) {
-			$params = array($params);
+			$params = [$params];
 		}
 
 		if (isset($params[0])) {
@@ -150,7 +150,7 @@ class I18N extends Component
 		return isset($chunks[$n]) ? $chunks[$n] : $chunks[0];
 	}
 
-	private $_pluralRules = array(); // language => rule set
+	private $_pluralRules = []; // language => rule set
 
 	/**
 	 * Returns the plural rules for the given language code.
@@ -167,7 +167,7 @@ class I18N extends Component
 		if (isset($allRules[$language])) {
 			return $this->_pluralRules[$language] = $allRules[$language];
 		} elseif (preg_match('/^[a-z]+/', strtolower($language), $matches)) {
-			return $this->_pluralRules[$language] = isset($allRules[$matches[0]]) ? $allRules[$matches[0]] : array();
+			return $this->_pluralRules[$language] = isset($allRules[$matches[0]]) ? $allRules[$matches[0]] : [];
 		} else {
 			throw new InvalidParamException("Invalid language code: $language");
 		}

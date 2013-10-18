@@ -38,7 +38,7 @@ class FileMutex extends Mutex
 	/**
 	 * @var resource[] stores all opened lock files. Keys are lock names and values are file handles.
 	 */
-	private $_files = array();
+	private $_files = [];
 
 
 	/**

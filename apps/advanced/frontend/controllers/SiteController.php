@@ -14,37 +14,37 @@ class SiteController extends Controller
 {
 	public function behaviors()
 	{
-		return array(
-			'access' => array(
+		return [
+			'access' => [
 				'class' => \yii\web\AccessControl::className(),
-				'only' => array('login', 'logout', 'signup'),
-				'rules' => array(
-					array(
-						'actions' => array('login', 'signup'),
+				'only' => ['login', 'logout', 'signup'],
+				'rules' => [
+					[
+						'actions' => ['login', 'signup'],
 						'allow' => true,
-						'roles' => array('?'),
-					),
-					array(
-						'actions' => array('logout'),
+						'roles' => ['?'],
+					],
+					[
+						'actions' => ['logout'],
 						'allow' => true,
-						'roles' => array('@'),
-					),
-				),
-			),
-		);
+						'roles' => ['@'],
+					],
+				],
+			],
+		];
 	}
 
 	public function actions()
 	{
-		return array(
-			'error' => array(
+		return [
+			'error' => [
 				'class' => 'yii\web\ErrorAction',
-			),
-			'captcha' => array(
+			],
+			'captcha' => [
 				'class' => 'yii\captcha\CaptchaAction',
 				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-			),
-		);
+			],
+		];
 	}
 
 	public function actionIndex()
@@ -58,9 +58,9 @@ class SiteController extends Controller
 		if ($model->load($_POST) && $model->login()) {
 			return $this->goHome();
 		} else {
-			return $this->render('login', array(
+			return $this->render('login', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 
@@ -77,9 +77,9 @@ class SiteController extends Controller
 			Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
 			return $this->refresh();
 		} else {
-			return $this->render('contact', array(
+			return $this->render('contact', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 
@@ -98,9 +98,9 @@ class SiteController extends Controller
 			}
 		}
 
-		return $this->render('signup', array(
+		return $this->render('signup', [
 			'model' => $model,
-		));
+		]);
 	}
 
 	public function actionRequestPasswordReset()
@@ -115,17 +115,17 @@ class SiteController extends Controller
 				Yii::$app->getSession()->setFlash('error', 'There was an error sending email.');
 			}
 		}
-		return $this->render('requestPasswordResetToken', array(
+		return $this->render('requestPasswordResetToken', [
 			'model' => $model,
-		));
+		]);
 	}
 
 	public function actionResetPassword($token)
 	{
-		$model = User::find(array(
+		$model = User::find([
 			'password_reset_token' => $token,
 			'status' => User::STATUS_ACTIVE,
-		));
+		]);
 
 		if (!$model) {
 			throw new HttpException(400, 'Wrong password reset token.');
@@ -137,17 +137,17 @@ class SiteController extends Controller
 			return $this->goHome();
 		}
 
-		return $this->render('resetPassword', array(
+		return $this->render('resetPassword', [
 			'model' => $model,
-		));
+		]);
 	}
 
 	private function sendPasswordResetEmail($email)
 	{
-		$user = User::find(array(
+		$user = User::find([
 			'status' => User::STATUS_ACTIVE,
 			'email' => $email,
-		));
+		]);
 
 		if (!$user) {
 			return false;
@@ -158,9 +158,9 @@ class SiteController extends Controller
 			$fromEmail = \Yii::$app->params['supportEmail'];
 			$name = '=?UTF-8?B?' . base64_encode(\Yii::$app->name . ' robot') . '?=';
 			$subject = '=?UTF-8?B?' . base64_encode('Password reset for ' . \Yii::$app->name) . '?=';
-			$body = $this->renderPartial('/emails/passwordResetToken', array(
+			$body = $this->renderPartial('/emails/passwordResetToken', [
 				'user' => $user,
-			));
+			]);
 			$headers = "From: $name <{$fromEmail}>\r\n" .
 				"MIME-Version: 1.0\r\n" .
 				"Content-type: text/plain; charset=UTF-8";

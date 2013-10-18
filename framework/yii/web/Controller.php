@@ -38,8 +38,8 @@ class Controller extends \yii\base\Controller
 			$method = new \ReflectionMethod($action, 'run');
 		}
 
-		$args = array();
-		$missing = array();
+		$args = [];
+		$missing = [];
 		foreach ($method->getParameters() as $param) {
 			$name = $param->getName();
 			if (array_key_exists($name, $params)) {
@@ -53,9 +53,9 @@ class Controller extends \yii\base\Controller
 		}
 
 		if (!empty($missing)) {
-			throw new HttpException(400, Yii::t('yii', 'Missing required parameters: {params}', array(
+			throw new HttpException(400, Yii::t('yii', 'Missing required parameters: {params}', [
 				'{params}' => implode(', ', $missing),
-			)));
+			]));
 		}
 
 		return $args;
@@ -79,7 +79,7 @@ class Controller extends \yii\base\Controller
 	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
 	 * @return string the created URL
 	 */
-	public function createUrl($route, $params = array())
+	public function createUrl($route, $params = [])
 	{
 		if (strpos($route, '/') === false) {
 			// empty or an action ID

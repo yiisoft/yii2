@@ -26,7 +26,7 @@ class Module extends \yii\base\Module
 	 * The default value is `array('127.0.0.1', '::1')`, which means the module can only be accessed
 	 * by localhost.
 	 */
-	public $allowedIPs = array('127.0.0.1', '::1');
+	public $allowedIPs = ['127.0.0.1', '::1'];
 	/**
 	 * @var string the namespace that controller classes are in.
 	 */
@@ -38,7 +38,7 @@ class Module extends \yii\base\Module
 	/**
 	 * @var array|Panel[]
 	 */
-	public $panels = array();
+	public $panels = [];
 	/**
 	 * @var string the directory storing the debugger data files. This can be specified using a path alias.
 	 */
@@ -55,7 +55,7 @@ class Module extends \yii\base\Module
 		parent::init();
 		$this->dataPath = Yii::getAlias($this->dataPath);
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
-		Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
+		Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 
 		foreach (array_merge($this->corePanels(), $this->panels) as $id => $config) {
 			$config['module'] = $this;
@@ -66,7 +66,7 @@ class Module extends \yii\base\Module
 
 	public function beforeAction($action)
 	{
-		Yii::$app->getView()->off(View::EVENT_END_BODY, array($this, 'renderToolbar'));
+		Yii::$app->getView()->off(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 		unset(Yii::$app->getLog()->targets['debug']);
 		$this->logTarget = null;
 
@@ -84,9 +84,9 @@ class Module extends \yii\base\Module
 		if (!$this->checkAccess()) {
 			return;
 		}
-		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', array(
+		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', [
 			'tag' => $this->logTarget->tag,
-		));
+		]);
 		echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';
 		/** @var View $view */
 		$view = $event->sender;
@@ -107,22 +107,22 @@ class Module extends \yii\base\Module
 
 	protected function corePanels()
 	{
-		return array(
-			'config' => array(
+		return [
+			'config' => [
 				'class' => 'yii\debug\panels\ConfigPanel',
-			),
-			'request' => array(
+			],
+			'request' => [
 				'class' => 'yii\debug\panels\RequestPanel',
-			),
-			'log' => array(
+			],
+			'log' => [
 				'class' => 'yii\debug\panels\LogPanel',
-			),
-			'profiling' => array(
+			],
+			'profiling' => [
 				'class' => 'yii\debug\panels\ProfilingPanel',
-			),
-			'db' => array(
+			],
+			'db' => [
 				'class' => 'yii\debug\panels\DbPanel',
-			),
-		);
+			],
+		];
 	}
 }

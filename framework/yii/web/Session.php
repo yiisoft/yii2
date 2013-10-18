@@ -84,9 +84,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	/**
 	 * @var array parameter-value pairs to override default session cookie parameters
 	 */
-	public $cookieParams = array(
+	public $cookieParams = [
 		'httpOnly' => true
-	);
+	];
 
 	/**
 	 * Initializes the application component.
@@ -98,7 +98,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		if ($this->autoStart) {
 			$this->open();
 		}
-		register_shutdown_function(array($this, 'close'));
+		register_shutdown_function([$this, 'close']);
 	}
 
 	/**
@@ -131,12 +131,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		if (!$this->_opened) {
 			if ($this->getUseCustomStorage()) {
 				@session_set_save_handler(
-					array($this, 'openSession'),
-					array($this, 'closeSession'),
-					array($this, 'readSession'),
-					array($this, 'writeSession'),
-					array($this, 'destroySession'),
-					array($this, 'gcSession')
+					[$this, 'openSession'],
+					[$this, 'closeSession'],
+					[$this, 'readSession'],
+					[$this, 'writeSession'],
+					[$this, 'destroySession'],
+					[$this, 'gcSession']
 				);
 			}
 
@@ -561,7 +561,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	protected function updateFlashCounters()
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		if (is_array($counters)) {
 			foreach ($counters as $key => $count) {
 				if ($count) {
@@ -586,7 +586,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getFlash($key, $defaultValue = null)
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		return isset($counters[$key]) ? $this->get($key, $defaultValue) : $defaultValue;
 	}
 
@@ -596,8 +596,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getAllFlashes()
 	{
-		$counters = $this->get($this->flashVar, array());
-		$flashes = array();
+		$counters = $this->get($this->flashVar, []);
+		$flashes = [];
 		foreach (array_keys($counters) as $key) {
 			if (isset($_SESSION[$key])) {
 				$flashes[$key] = $_SESSION[$key];
@@ -616,7 +616,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function setFlash($key, $value = true)
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		$counters[$key] = 0;
 		$_SESSION[$key] = $value;
 		$_SESSION[$this->flashVar] = $counters;
@@ -632,7 +632,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function removeFlash($key)
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		$value = isset($_SESSION[$key], $counters[$key]) ? $_SESSION[$key] : null;
 		unset($counters[$key], $_SESSION[$key]);
 		$_SESSION[$this->flashVar] = $counters;
@@ -647,7 +647,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function removeAllFlashes()
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		foreach (array_keys($counters) as $key) {
 			unset($_SESSION[$key]);
 		}

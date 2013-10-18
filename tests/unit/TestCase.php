@@ -39,12 +39,12 @@ abstract class TestCase extends \yii\test\TestCase
 	 * @param array $config The application configuration, if needed
 	 * @param string $appClass name of the application class to create
 	 */
-	protected function mockApplication($config = array(), $appClass = '\yii\console\Application')
+	protected function mockApplication($config = [], $appClass = '\yii\console\Application')
 	{
-		static $defaultConfig = array(
+		static $defaultConfig = [
 			'id' => 'testapp',
 			'basePath' => __DIR__,
-		);
+		];
 
 		new $appClass(array_merge($defaultConfig, $config));
 	}

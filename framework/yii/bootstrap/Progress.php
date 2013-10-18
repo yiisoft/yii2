@@ -69,7 +69,7 @@ class Progress extends Widget
 	/**
 	 * @var array the HTML attributes of the
 	 */
-	public $barOptions = array();
+	public $barOptions = [];
 	/**
 	 * @var array a set of bars that are stacked together to form a single progress bar.
 	 * Each bar is an array of the following structure:
@@ -118,13 +118,13 @@ class Progress extends Widget
 		if (empty($this->bars)) {
 			return $this->renderBar($this->percent, $this->label, $this->barOptions);
 		}
-		$bars = array();
+		$bars = [];
 		foreach ($this->bars as $bar) {
 			$label = ArrayHelper::getValue($bar, 'label', '');
 			if (!isset($bar['percent'])) {
 				throw new InvalidConfigException("The 'percent' option is required.");
 			}
-			$options = ArrayHelper::getValue($bar, 'options', array());
+			$options = ArrayHelper::getValue($bar, 'options', []);
 			$bars[] = $this->renderBar($bar['percent'], $label, $options);
 		}
 		return implode("\n", $bars);
@@ -137,7 +137,7 @@ class Progress extends Widget
 	 * @param array $options the HTML attributes of the bar
 	 * @return string the rendering result.
 	 */
-	protected function renderBar($percent, $label = '', $options = array())
+	protected function renderBar($percent, $label = '', $options = [])
 	{
 		Html::addCssClass($options, 'bar');
 		$options['style'] = "width:{$percent}%";

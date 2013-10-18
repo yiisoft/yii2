@@ -20,7 +20,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		Schema::TYPE_PK => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY',
 		Schema::TYPE_BIGPK => 'bigint NOT NULL AUTO_INCREMENT PRIMARY KEY',
 		Schema::TYPE_STRING => 'varchar(255)',
@@ -37,7 +37,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_BINARY => 'blob',
 		Schema::TYPE_BOOLEAN => 'smallint',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
-	);
+	];
 
 	/**
 	 * Creates a SQL statement for resetting the sequence value of a table's primary key.
@@ -92,16 +92,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
 			$columnSchemas = $tableSchema->columns;
 		} else {
-			$columnSchemas = array();
+			$columnSchemas = [];
 		}
 
 		foreach ($columns as $i => $name) {
 			$columns[$i] = $this->db->quoteColumnName($name);
 		}
 
-		$values = array();
+		$values = [];
 		foreach ($rows as $row) {
-			$vs = array();
+			$vs = [];
 			foreach ($row as $i => $value) {
 				if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
 					$value = $columnSchemas[$columns[$i]]->typecast($value);

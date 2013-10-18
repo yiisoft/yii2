@@ -67,9 +67,9 @@ abstract class DataProvider extends Component implements IDataProvider
 	public function setPagination($value)
 	{
 		if (is_array($value)) {
-			$config = array(
+			$config = [
 				'class' => Pagination::className(),
-			);
+			];
 			if ($this->id !== null) {
 				$config['pageVar'] = $this->id . '-page';
 			}
@@ -87,7 +87,7 @@ abstract class DataProvider extends Component implements IDataProvider
 	public function getSort()
 	{
 		if ($this->_sort === null) {
-			$this->setSort(array());
+			$this->setSort([]);
 		}
 		return $this->_sort;
 	}
@@ -107,9 +107,9 @@ abstract class DataProvider extends Component implements IDataProvider
 	public function setSort($value)
 	{
 		if (is_array($value)) {
-			$config = array(
+			$config = [
 				'class' => Sort::className(),
-			);
+			];
 			if ($this->id !== null) {
 				$config['sortVar'] = $this->id . '-sort';
 			}

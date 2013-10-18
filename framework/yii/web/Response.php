@@ -130,7 +130,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @var array list of HTTP status codes and the corresponding texts
 	 */
-	public static $httpStatuses = array(
+	public static $httpStatuses = [
 		100 => 'Continue',
 		101 => 'Switching Protocols',
 		102 => 'Processing',
@@ -196,7 +196,7 @@ class Response extends \yii\base\Response
 		509 => 'Bandwidth Limit Exceeded',
 		510 => 'Not Extended',
 		511 => 'Network Authentication Required',
-	);
+	];
 
 	/**
 	 * @var integer the HTTP status code to send with the response.
@@ -470,7 +470,7 @@ class Response extends \yii\base\Response
 	protected function getHttpRange($fileSize)
 	{
 		if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
-			return array(0, $fileSize - 1);
+			return [0, $fileSize - 1];
 		}
 		if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
 			return false;
@@ -491,7 +491,7 @@ class Response extends \yii\base\Response
 		if ($start < 0 || $start > $end) {
 			return false;
 		} else {
-			return array($start, $end);
+			return [$start, $end];
 		}
 	}
 
@@ -747,7 +747,7 @@ class Response extends \yii\base\Response
 	 */
 	public function getIsEmpty()
 	{
-		return in_array($this->getStatusCode(), array(201, 204, 304));
+		return in_array($this->getStatusCode(), [201, 204, 304]);
 	}
 
 	/**

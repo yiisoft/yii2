@@ -110,19 +110,19 @@ class ErrorHandler extends Component
 					ini_set('display_errors', 1);
 				}
 				$file = $useErrorView ? $this->errorView : $this->exceptionView;
-				$response->data = $this->renderFile($file, array(
+				$response->data = $this->renderFile($file, [
 					'exception' => $exception,
-				));
+				]);
 			}
 		} elseif ($exception instanceof Arrayable) {
 			$response->data = $exception;
 		} else {
-			$response->data = array(
+			$response->data = [
 				'type' => get_class($exception),
 				'name' => 'Exception',
 				'message' => $exception->getMessage(),
 				'code' => $exception->getCode(),
-			);
+			];
 		}
 
 		if ($exception instanceof HttpException) {
@@ -211,9 +211,9 @@ class ErrorHandler extends Component
 	public function renderPreviousExceptions($exception)
 	{
 		if (($previous = $exception->getPrevious()) !== null) {
-			return $this->renderFile($this->previousExceptionView, array(
+			return $this->renderFile($this->previousExceptionView, [
 				'exception' => $previous,
-			));
+			]);
 		} else {
 			return '';
 		}
@@ -230,7 +230,7 @@ class ErrorHandler extends Component
 	 */
 	public function renderCallStackItem($file, $line, $class, $method, $index)
 	{
-		$lines = array();
+		$lines = [];
 		$begin = $end = 0;
 		if ($file !== null && $line !== null) {
 			$line--; // adjust line number from one-based to zero-based
@@ -244,7 +244,7 @@ class ErrorHandler extends Component
 			$end = $line + $half < $lineCount ? $line + $half : $lineCount - 1;
 		}
 
-		return $this->renderFile($this->callStackItemView, array(
+		return $this->renderFile($this->callStackItemView, [
 			'file' => $file,
 			'line' => $line,
 			'class' => $class,
@@ -253,7 +253,7 @@ class ErrorHandler extends Component
 			'lines' => $lines,
 			'begin' => $begin,
 			'end' => $end,
-		));
+		]);
 	}
 
 	/**
@@ -263,7 +263,7 @@ class ErrorHandler extends Component
 	public function renderRequest()
 	{
 		$request = '';
-		foreach (array('_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV') as $name) {
+		foreach (['_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV'] as $name) {
 			if (!empty($GLOBALS[$name])) {
 				$request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
 			}
@@ -299,14 +299,14 @@ class ErrorHandler extends Component
 	 */
 	public function createServerInformationLink()
 	{
-		static $serverUrls = array(
-			'http://httpd.apache.org/' => array('apache'),
-			'http://nginx.org/' => array('nginx'),
-			'http://lighttpd.net/' => array('lighttpd'),
-			'http://gwan.com/' => array('g-wan', 'gwan'),
-			'http://iis.net/' => array('iis', 'services'),
-			'http://php.net/manual/en/features.commandline.webserver.php' => array('development'),
-		);
+		static $serverUrls = [
+			'http://httpd.apache.org/' => ['apache'],
+			'http://nginx.org/' => ['nginx'],
+			'http://lighttpd.net/' => ['lighttpd'],
+			'http://gwan.com/' => ['g-wan', 'gwan'],
+			'http://iis.net/' => ['iis', 'services'],
+			'http://php.net/manual/en/features.commandline.webserver.php' => ['development'],
+		];
 		if (isset($_SERVER['SERVER_SOFTWARE'])) {
 			foreach ($serverUrls as $url => $keywords) {
 				foreach ($keywords as $keyword) {

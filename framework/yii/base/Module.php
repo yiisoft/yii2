@@ -39,11 +39,11 @@ abstract class Module extends Component
 	/**
 	 * @var array custom module parameters (name => value).
 	 */
-	public $params = array();
+	public $params = [];
 	/**
 	 * @var array the IDs of the components or modules that should be preloaded when this module is created.
 	 */
-	public $preload = array();
+	public $preload = [];
 	/**
 	 * @var string an ID that uniquely identifies this module among other modules which have the same [[module|parent]].
 	 */
@@ -77,7 +77,7 @@ abstract class Module extends Component
 	 * )
 	 * ~~~
 	 */
-	public $controllerMap = array();
+	public $controllerMap = [];
 	/**
 	 * @var string the namespace that controller classes are in. If not set,
 	 * it will use the "controllers" sub-namespace under the namespace of this module.
@@ -113,11 +113,11 @@ abstract class Module extends Component
 	/**
 	 * @var array child modules of this module
 	 */
-	private $_modules = array();
+	private $_modules = [];
 	/**
 	 * @var array components registered under this module
 	 */
-	private $_components = array();
+	private $_components = [];
 
 	/**
 	 * Constructor.
@@ -125,7 +125,7 @@ abstract class Module extends Component
 	 * @param Module $parent the parent module (if any)
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $parent = null, $config = array())
+	public function __construct($id, $parent = null, $config = [])
 	{
 		$this->id = $id;
 		$this->module = $parent;
@@ -386,7 +386,7 @@ abstract class Module extends Component
 	public function getModules($loadedOnly = false)
 	{
 		if ($loadedOnly) {
-			$modules = array();
+			$modules = [];
 			foreach ($this->_modules as $module) {
 				if ($module instanceof Module) {
 					$modules[] = $module;
@@ -491,7 +491,7 @@ abstract class Module extends Component
 	public function getComponents($loadedOnly = false)
 	{
 		if ($loadedOnly) {
-			$components = array();
+			$components = [];
 			foreach ($this->_components as $component) {
 				if ($component instanceof Component) {
 					$components[] = $component;
@@ -567,7 +567,7 @@ abstract class Module extends Component
 	 * @return mixed the result of the action.
 	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
 	 */
-	public function runAction($route, $params = array())
+	public function runAction($route, $params = [])
 	{
 		$parts = $this->createController($route);
 		if (is_array($parts)) {
@@ -631,7 +631,7 @@ abstract class Module extends Component
 			}
 		}
 
-		return isset($controller) ? array($controller, $route) : false;
+		return isset($controller) ? [$controller, $route] : false;
 	}
 
 	/**

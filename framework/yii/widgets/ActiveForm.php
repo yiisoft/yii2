@@ -36,7 +36,7 @@ class ActiveForm extends Widget
 	 * The values will be HTML-encoded using [[Html::encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var array the default configuration used by [[field()]] when creating a new field object.
 	 */
@@ -140,7 +140,7 @@ class ActiveForm extends Widget
 	 * represents the validation options for a particular attribute.
 	 * @internal
 	 */
-	public $attributes = array();
+	public $attributes = [];
 
 	/**
 	 * Initializes the widget.
@@ -180,18 +180,18 @@ class ActiveForm extends Widget
 	 */
 	protected function getClientOptions()
 	{
-		$options = array(
+		$options = [
 			'errorSummary' => '.' . $this->errorSummaryCssClass,
 			'validateOnSubmit' => $this->validateOnSubmit,
 			'errorCssClass' => $this->errorCssClass,
 			'successCssClass' => $this->successCssClass,
 			'validatingCssClass' => $this->validatingCssClass,
 			'ajaxVar' => $this->ajaxVar,
-		);
+		];
 		if ($this->validationUrl !== null) {
 			$options['validationUrl'] = Html::url($this->validationUrl);
 		}
-		foreach (array('beforeSubmit', 'beforeValidate', 'afterValidate') as $name) {
+		foreach (['beforeSubmit', 'beforeValidate', 'afterValidate'] as $name) {
 			if (($value = $this->$name) !== null) {
 				$options[$name] = $value instanceof JsExpression ? $value : new JsExpression($value);
 			}
@@ -212,13 +212,13 @@ class ActiveForm extends Widget
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated error summary
 	 */
-	public function errorSummary($models, $options = array())
+	public function errorSummary($models, $options = [])
 	{
 		if (!is_array($models)) {
-			$models = array($models);
+			$models = [$models];
 		}
 
-		$lines = array();
+		$lines = [];
 		foreach ($models as $model) {
 			/** @var $model Model */
 			foreach ($model->getFirstErrors() as $error) {
@@ -257,12 +257,12 @@ class ActiveForm extends Widget
 	 * @return ActiveField the created ActiveField object
 	 * @see fieldConfig
 	 */
-	public function field($model, $attribute, $options = array())
+	public function field($model, $attribute, $options = [])
 	{
-		return Yii::createObject(array_merge($this->fieldConfig, $options, array(
+		return Yii::createObject(array_merge($this->fieldConfig, $options, [
 			'model' => $model,
 			'attribute' => $attribute,
 			'form' => $this,
-		)));
+		]));
 	}
 }

@@ -24,7 +24,7 @@ class Schema extends \yii\db\Schema
 	 * Please refer to [CUBRID manual](http://www.cubrid.org/manual/91/en/sql/datatype.html) for
 	 * details on data types.
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		// Numeric data types
 		'short' => self::TYPE_SMALLINT,
 		'smallint' => self::TYPE_SMALLINT,
@@ -62,7 +62,7 @@ class Schema extends \yii\db\Schema
 		'list' => self::TYPE_STRING,
 		'sequence' => self::TYPE_STRING,
 		'enum' => self::TYPE_STRING,
-	);
+	];
 
 	/**
 	 * Quotes a table name for use in a query.
@@ -150,10 +150,10 @@ class Schema extends \yii\db\Schema
 				if (isset($table->foreignKeys[$key['FK_NAME']])) {
 					$table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
 				} else {
-					$table->foreignKeys[$key['FK_NAME']] = array(
+					$table->foreignKeys[$key['FK_NAME']] = [
 						$key['PKTABLE_NAME'],
 						$key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
-					);
+					];
 				}
 			}
 			$table->foreignKeys = array_values($table->foreignKeys);
@@ -228,7 +228,7 @@ class Schema extends \yii\db\Schema
 	{
 		$this->db->open();
 		$tables = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
-		$tableNames = array();
+		$tableNames = [];
 		foreach($tables as $table) {
 			// do not list system tables
 			if ($table['TYPE'] != 0) {
@@ -246,13 +246,13 @@ class Schema extends \yii\db\Schema
 	 */
 	public function getPdoType($data)
 	{
-		static $typeMap = array(
+		static $typeMap = [
 			'boolean' => \PDO::PARAM_INT, // CUBRID PDO does not support PARAM_BOOL
 			'integer' => \PDO::PARAM_INT,
 			'string' => \PDO::PARAM_STR,
 			'resource' => \PDO::PARAM_LOB,
 			'NULL' => \PDO::PARAM_NULL,
-		);
+		];
 		$type = gettype($data);
 		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}

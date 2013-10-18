@@ -17,12 +17,12 @@ use yii\base\View;
 class YiiAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/assets';
-	public $js = array(
+	public $js = [
 		'yii.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\web\JqueryAsset',
-	);
+	];
 
 	/**
 	 * @inheritdoc

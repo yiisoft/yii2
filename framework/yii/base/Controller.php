@@ -72,7 +72,7 @@ class Controller extends Component
 	 * @param Module $module the module that this controller belongs to.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $module, $config = array())
+	public function __construct($id, $module, $config = [])
 	{
 		$this->id = $id;
 		$this->module = $module;
@@ -101,7 +101,7 @@ class Controller extends Component
 	 */
 	public function actions()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -113,7 +113,7 @@ class Controller extends Component
 	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
 	 * @see createAction
 	 */
-	public function runAction($id, $params = array())
+	public function runAction($id, $params = [])
 	{
 		$action = $this->createAction($id);
 		if ($action !== null) {
@@ -152,7 +152,7 @@ class Controller extends Component
 	 * @see runAction
 	 * @see forward
 	 */
-	public function run($route, $params = array())
+	public function run($route, $params = [])
 	{
 		$pos = strpos($route, '/');
 		if ($pos === false) {
@@ -173,7 +173,7 @@ class Controller extends Component
 	 */
 	public function bindActionParams($action, $params)
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -242,7 +242,7 @@ class Controller extends Component
 	 */
 	public function getActionParams()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -301,13 +301,13 @@ class Controller extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file or the layout file does not exist.
 	 */
-	public function render($view, $params = array())
+	public function render($view, $params = [])
 	{
 		$viewFile = $this->findViewFile($view);
 		$output = $this->getView()->renderFile($viewFile, $params, $this);
 		$layoutFile = $this->findLayoutFile();
 		if ($layoutFile !== false) {
-			return $this->getView()->renderFile($layoutFile, array('content' => $output), $this);
+			return $this->getView()->renderFile($layoutFile, ['content' => $output], $this);
 		} else {
 			return $output;
 		}
@@ -321,7 +321,7 @@ class Controller extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function renderPartial($view, $params = array())
+	public function renderPartial($view, $params = [])
 	{
 		$viewFile = $this->findViewFile($view);
 		return $this->getView()->renderFile($viewFile, $params, $this);
@@ -334,7 +334,7 @@ class Controller extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function renderFile($file, $params = array())
+	public function renderFile($file, $params = [])
 	{
 		return $this->getView()->renderFile($file, $params, $this);
 	}

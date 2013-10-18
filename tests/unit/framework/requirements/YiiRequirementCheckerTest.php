@@ -15,29 +15,29 @@ class YiiRequirementCheckerTest extends TestCase
 	{
 		$requirementsChecker = new YiiRequirementChecker();
 
-		$requirements = array(
-			'requirementPass' => array(
+		$requirements = [
+			'requirementPass' => [
 				'name' => 'Requirement 1',
 				'mandatory' => true,
 				'condition' => true,
 				'by' => 'Requirement 1',
 				'memo' => 'Requirement 1',
-			),
-			'requirementError' => array(
+			],
+			'requirementError' => [
 				'name' => 'Requirement 2',
 				'mandatory' => true,
 				'condition' => false,
 				'by' => 'Requirement 2',
 				'memo' => 'Requirement 2',
-			),
-			'requirementWarning' => array(
+			],
+			'requirementWarning' => [
 				'name' => 'Requirement 3',
 				'mandatory' => false,
 				'condition' => false,
 				'by' => 'Requirement 3',
 				'memo' => 'Requirement 3',
-			),
-		);
+			],
+		];
 
 		$checkResult = $requirementsChecker->check($requirements)->getResult();
 		$summary = $checkResult['summary'];
@@ -65,22 +65,22 @@ class YiiRequirementCheckerTest extends TestCase
 	{
 		$requirementsChecker = new YiiRequirementChecker();
 
-		$requirements = array(
-			'requirementPass' => array(
+		$requirements = [
+			'requirementPass' => [
 				'name' => 'Requirement 1',
 				'mandatory' => true,
 				'condition' => 'eval:2>1',
 				'by' => 'Requirement 1',
 				'memo' => 'Requirement 1',
-			),
-			'requirementError' => array(
+			],
+			'requirementError' => [
 				'name' => 'Requirement 2',
 				'mandatory' => true,
 				'condition' => 'eval:2<1',
 				'by' => 'Requirement 2',
 				'memo' => 'Requirement 2',
-			),
-		);
+			],
+		];
 
 		$checkResult = $requirementsChecker->check($requirements)->getResult();
 		$checkedRequirements = $checkResult['requirements'];
@@ -99,24 +99,24 @@ class YiiRequirementCheckerTest extends TestCase
 	{
 		$requirementsChecker = new YiiRequirementChecker();
 
-		$requirements1 = array(
-			array(
+		$requirements1 = [
+			[
 				'name' => 'Requirement 1',
 				'mandatory' => true,
 				'condition' => true,
 				'by' => 'Requirement 1',
 				'memo' => 'Requirement 1',
-			),
-		);
-		$requirements2 = array(
-			array(
+			],
+		];
+		$requirements2 = [
+			[
 				'name' => 'Requirement 2',
 				'mandatory' => true,
 				'condition' => true,
 				'by' => 'Requirement 2',
 				'memo' => 'Requirement 2',
-			),
-		);
+			],
+		];
 		$checkResult = $requirementsChecker->check($requirements1)->check($requirements2)->getResult();
 
 		$mergedRequirements = array_merge($requirements1, $requirements2);
@@ -141,15 +141,15 @@ class YiiRequirementCheckerTest extends TestCase
 	 */
 	public function dataProviderGetByteSize()
 	{
-		return array(
-			array('456', 456),
-			array('5K', 5*1024),
-			array('16KB', 16*1024),
-			array('4M', 4*1024*1024),
-			array('14MB', 14*1024*1024),
-			array('7G', 7*1024*1024*1024),
-			array('12GB', 12*1024*1024*1024),
-		);
+		return [
+			['456', 456],
+			['5K', 5*1024],
+			['16KB', 16*1024],
+			['4M', 4*1024*1024],
+			['14MB', 14*1024*1024],
+			['7G', 7*1024*1024*1024],
+			['12GB', 12*1024*1024*1024],
+		];
 	}
 
 	/**
@@ -171,13 +171,13 @@ class YiiRequirementCheckerTest extends TestCase
 	 */
 	public function dataProviderCompareByteSize()
 	{
-		return array(
-			array('2M', '2K', '>', true),
-			array('2M', '2K', '>=', true),
-			array('1K', '1024', '==', true),
-			array('10M', '11M', '<', true),
-			array('10M', '11M', '<=', true),
-		);
+		return [
+			['2M', '2K', '>', true],
+			['2M', '2K', '>=', true],
+			['1K', '1024', '==', true],
+			['10M', '11M', '<', true],
+			['10M', '11M', '<=', true],
+		];
 	}
 
 	/**

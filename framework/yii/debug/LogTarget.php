@@ -28,7 +28,7 @@ class LogTarget extends Target
 	 * @param \yii\debug\Module $module
 	 * @param array $config
 	 */
-	public function __construct($module, $config = array())
+	public function __construct($module, $config = [])
 	{
 		parent::__construct($config);
 		$this->module = $module;
@@ -47,23 +47,23 @@ class LogTarget extends Target
 		}
 		$indexFile = "$path/index.json";
 		if (!is_file($indexFile)) {
-			$manifest = array();
+			$manifest = [];
 		} else {
 			$manifest = json_decode(file_get_contents($indexFile), true);
 		}
 		$request = Yii::$app->getRequest();
-		$manifest[$this->tag] = $summary = array(
+		$manifest[$this->tag] = $summary = [
 			'tag' => $this->tag,
 			'url' => $request->getAbsoluteUrl(),
 			'ajax' => $request->getIsAjax(),
 			'method' => $request->getMethod(),
 			'ip' => $request->getUserIP(),
 			'time' => time(),
-		);
+		];
 		$this->gc($manifest);
 
 		$dataFile = "$path/{$this->tag}.json";
-		$data = array();
+		$data = [];
 		foreach ($this->module->panels as $id => $panel) {
 			$data[$id] = $panel->save();
 		}

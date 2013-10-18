@@ -75,7 +75,7 @@ class DatePicker extends InputWidget
 	 */
 	protected function renderWidget()
 	{
-		$contents = array();
+		$contents = [];
 
 		if ($this->inline === false) {
 			if ($this->hasModel()) {

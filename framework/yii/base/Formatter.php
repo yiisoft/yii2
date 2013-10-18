@@ -63,7 +63,7 @@ class Formatter extends Component
 	public function init()
 	{
 		if (empty($this->booleanFormat)) {
-			$this->booleanFormat = array(Yii::t('yii', 'No'), Yii::t('yii', 'Yes'));
+			$this->booleanFormat = [Yii::t('yii', 'No'), Yii::t('yii', 'Yes')];
 		}
 		if ($this->nullDisplay === null) {
 			$this->nullDisplay = Yii::t('yii', '(not set)');
@@ -94,11 +94,11 @@ class Formatter extends Component
 			$params = $format;
 			$format = $f;
 		} else {
-			$params = array($value);
+			$params = [$value];
 		}
 		$method = 'as' . $format;
 		if (method_exists($this, $method)) {
-			return call_user_func_array(array($this, $method), $params);
+			return call_user_func_array([$this, $method], $params);
 		} else {
 			throw new InvalidParamException("Unknown type: $format");
 		}

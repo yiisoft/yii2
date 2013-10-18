@@ -106,7 +106,7 @@ class ArrayDataProvider extends DataProvider
 	{
 		if ($this->_models === null) {
 			if (($models = $this->allModels) === null) {
-				return array();
+				return [];
 			}
 
 			if (($sort = $this->getSort()) !== false) {
@@ -142,7 +142,7 @@ class ArrayDataProvider extends DataProvider
 	public function getKeys()
 	{
 		if ($this->_keys === null) {
-			$this->_keys = array();
+			$this->_keys = [];
 			$models = $this->getModels();
 			if ($this->key !== null) {
 				foreach ($models as $model) {

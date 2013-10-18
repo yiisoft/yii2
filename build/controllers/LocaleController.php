@@ -37,9 +37,9 @@ class LocaleController extends Controller
 
 		$xml = simplexml_load_file($xmlFile);
 
-		$allRules = array();
+		$allRules = [];
 
-		$patterns = array(
+		$patterns = [
 			'/n in 0..1/' => '(n==0||n==1)',
 			'/\s+is\s+not\s+/i' => '!=', //is not
 			'/\s+is\s+/i' => '==', //is
@@ -48,11 +48,11 @@ class LocaleController extends Controller
 			'/^(.*?)\s+in\s+(\d+)\.\.(\d+)/i' => 'in_array($1,range($2,$3))', //in
 			'/^(.*?)\s+not\s+within\s+(\d+)\.\.(\d+)/i' => '($1<$2||$1>$3)', //not within
 			'/^(.*?)\s+within\s+(\d+)\.\.(\d+)/i' => '($1>=$2&&$1<=$3)', //within
-		);
+		];
 		foreach ($xml->plurals->pluralRules as $node) {
 			$attributes = $node->attributes();
 			$locales = explode(' ', $attributes['locales']);
-			$rules = array();
+			$rules = [];
 
 			if (!empty($node->pluralRule)) {
 				foreach ($node->pluralRule as $rule) {
@@ -78,12 +78,12 @@ class LocaleController extends Controller
 			}
 		}
 		// hard fix for "br": the rule is too complex
-		$allRules['br'] = array(
+		$allRules['br'] = [
 			0 => 'fmod($n,10)==1&&!in_array(fmod($n,100),array(11,71,91))',
 			1 => 'fmod($n,10)==2&&!in_array(fmod($n,100),array(12,72,92))',
 			2 => 'in_array(fmod($n,10),array(3,4,9))&&!in_array(fmod($n,100),array_merge(range(10,19),range(70,79),range(90,99)))',
 			3 => 'fmod($n,1000000)==0&&$n!=0',
-		);
+		];
 		if (preg_match('/\d+/', $xml->version['number'], $matches)) {
 			$revision = $matches[0];
 		} else {

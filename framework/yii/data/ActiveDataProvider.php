@@ -175,7 +175,7 @@ class ActiveDataProvider extends DataProvider
 	public function getKeys()
 	{
 		if ($this->_keys === null) {
-			$this->_keys = array();
+			$this->_keys = [];
 			$models = $this->getModels();
 			if ($this->key !== null) {
 				foreach ($models as $model) {
@@ -196,7 +196,7 @@ class ActiveDataProvider extends DataProvider
 					}
 				} else {
 					foreach ($models as $model) {
-						$keys = array();
+						$keys = [];
 						foreach ($pks as $pk) {
 							$keys[] = $model[$pk];
 						}
@@ -234,11 +234,11 @@ class ActiveDataProvider extends DataProvider
 			/** @var Model $model */
 			$model = new $this->query->modelClass;
 			foreach($model->attributes() as $attribute) {
-				$sort->attributes[$attribute] = array(
-					'asc' => array($attribute => Sort::ASC),
-					'desc' => array($attribute => Sort::DESC),
+				$sort->attributes[$attribute] = [
+					'asc' => [$attribute => Sort::ASC],
+					'desc' => [$attribute => Sort::DESC],
 					'label' => $model->getAttributeLabel($attribute),
-				);
+				];
 			}
 		}
 	}

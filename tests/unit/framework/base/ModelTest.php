@@ -33,44 +33,44 @@ class ModelTest extends TestCase
 		$speaker->firstName = 'Qiang';
 		$speaker->lastName = 'Xue';
 
-		$this->assertEquals(array(
+		$this->assertEquals([
 			'firstName' => 'Qiang',
 			'lastName' => 'Xue',
 			'customLabel' => null,
 			'underscore_style' => null,
-		), $speaker->getAttributes());
+		], $speaker->getAttributes());
 
-		$this->assertEquals(array(
+		$this->assertEquals([
 			'firstName' => 'Qiang',
 			'lastName' => 'Xue',
-		), $speaker->getAttributes(array('firstName', 'lastName')));
+		], $speaker->getAttributes(['firstName', 'lastName']));
 
-		$this->assertEquals(array(
+		$this->assertEquals([
 			'firstName' => 'Qiang',
 			'lastName' => 'Xue',
-		), $speaker->getAttributes(null, array('customLabel', 'underscore_style')));
+		], $speaker->getAttributes(null, ['customLabel', 'underscore_style']));
 
-		$this->assertEquals(array(
+		$this->assertEquals([
 			'firstName' => 'Qiang',
-		), $speaker->getAttributes(array('firstName', 'lastName'), array('lastName', 'customLabel', 'underscore_style')));
+		], $speaker->getAttributes(['firstName', 'lastName'], ['lastName', 'customLabel', 'underscore_style']));
 	}
 
 	public function testSetAttributes()
 	{
 		// by default mass assignment doesn't work at all
 		$speaker = new Speaker();
-		$speaker->setAttributes(array('firstName' => 'Qiang', 'underscore_style' => 'test'));
+		$speaker->setAttributes(['firstName' => 'Qiang', 'underscore_style' => 'test']);
 		$this->assertNull($speaker->firstName);
 		$this->assertNull($speaker->underscore_style);
 
 		// in the test scenario
 		$speaker = new Speaker();
 		$speaker->setScenario('test');
-		$speaker->setAttributes(array('firstName' => 'Qiang', 'underscore_style' => 'test'));
+		$speaker->setAttributes(['firstName' => 'Qiang', 'underscore_style' => 'test']);
 		$this->assertNull($speaker->underscore_style);
 		$this->assertEquals('Qiang', $speaker->firstName);
 
-		$speaker->setAttributes(array('firstName' => 'Qiang', 'underscore_style' => 'test'), false);
+		$speaker->setAttributes(['firstName' => 'Qiang', 'underscore_style' => 'test'], false);
 		$this->assertEquals('test', $speaker->underscore_style);
 		$this->assertEquals('Qiang', $speaker->firstName);
 	}
@@ -83,7 +83,7 @@ class ModelTest extends TestCase
 
 		$speaker = new Speaker();
 		$speaker->setScenario('test');
-		$this->assertEquals(array('firstName', 'lastName', 'underscore_style'), $speaker->activeAttributes());
+		$this->assertEquals(['firstName', 'lastName', 'underscore_style'], $speaker->activeAttributes());
 	}
 
 	public function testIsAttributeSafe()
@@ -110,34 +110,34 @@ class ModelTest extends TestCase
 		$this->assertFalse($speaker->hasErrors('firstName'));
 
 		$speaker->addError('firstName', 'Something is wrong!');
-		$this->assertEquals(array('firstName' => array('Something is wrong!')), $speaker->getErrors());
-		$this->assertEquals(array('Something is wrong!'), $speaker->getErrors('firstName'));
+		$this->assertEquals(['firstName' => ['Something is wrong!']], $speaker->getErrors());
+		$this->assertEquals(['Something is wrong!'], $speaker->getErrors('firstName'));
 
 		$speaker->addError('firstName', 'Totally wrong!');
-		$this->assertEquals(array('firstName' => array('Something is wrong!', 'Totally wrong!')), $speaker->getErrors());
-		$this->assertEquals(array('Something is wrong!', 'Totally wrong!'), $speaker->getErrors('firstName'));
+		$this->assertEquals(['firstName' => ['Something is wrong!', 'Totally wrong!']], $speaker->getErrors());
+		$this->assertEquals(['Something is wrong!', 'Totally wrong!'], $speaker->getErrors('firstName'));
 
 		$this->assertTrue($speaker->hasErrors());
 		$this->assertTrue($speaker->hasErrors('firstName'));
 		$this->assertFalse($speaker->hasErrors('lastName'));
 
-		$this->assertEquals(array('Something is wrong!'), $speaker->getFirstErrors());
+		$this->assertEquals(['Something is wrong!'], $speaker->getFirstErrors());
 		$this->assertEquals('Something is wrong!', $speaker->getFirstError('firstName'));
 		$this->assertNull($speaker->getFirstError('lastName'));
 
 		$speaker->addError('lastName', 'Another one!');
-		$this->assertEquals(array(
-			'firstName' => array(
+		$this->assertEquals([
+			'firstName' => [
 				'Something is wrong!',
 				'Totally wrong!',
-			),
-			'lastName' => array('Another one!'),
-		), $speaker->getErrors());
+			],
+			'lastName' => ['Another one!'],
+		], $speaker->getErrors());
 
 		$speaker->clearErrors('firstName');
-		$this->assertEquals(array(
-			'lastName' => array('Another one!'),
-		), $speaker->getErrors());
+		$this->assertEquals([
+			'lastName' => ['Another one!'],
+		], $speaker->getErrors());
 
 		$speaker->clearErrors();
 		$this->assertEmpty($speaker->getErrors());
@@ -161,16 +161,16 @@ class ModelTest extends TestCase
 		$this->assertTrue(isset($speaker['firstName']));
 
 		// iteration
-		$attributes = array();
+		$attributes = [];
 		foreach ($speaker as $key => $attribute) {
 			$attributes[$key] = $attribute;
 		}
-		$this->assertEquals(array(
+		$this->assertEquals([
 			'firstName' => 'Qiang',
 			'lastName' => null,
 			'customLabel' => null,
 			'underscore_style' => null,
-		), $attributes);
+		], $attributes);
 
 		// unset
 		unset($speaker['firstName']);
@@ -183,14 +183,14 @@ class ModelTest extends TestCase
 	public function testDefaults()
 	{
 		$singer = new Model();
-		$this->assertEquals(array(), $singer->rules());
-		$this->assertEquals(array(), $singer->attributeLabels());
+		$this->assertEquals([], $singer->rules());
+		$this->assertEquals([], $singer->attributeLabels());
 	}
 
 	public function testDefaultScenarios()
 	{
 		$singer = new Singer();
-		$this->assertEquals(array('default' => array('lastName', 'underscore_style')), $singer->scenarios());
+		$this->assertEquals(['default' => ['lastName', 'underscore_style']], $singer->scenarios());
 	}
 
 	public function testIsAttributeRequired()

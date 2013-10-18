@@ -68,12 +68,12 @@ class PhpMessageSource extends MessageSource
 		if (is_file($messageFile)) {
 			$messages = include($messageFile);
 			if (!is_array($messages)) {
-				$messages = array();
+				$messages = [];
 			}
 			return $messages;
 		} else {
 			Yii::error("The message file for category '$category' does not exist: $messageFile", __METHOD__);
-			return array();
+			return [];
 		}
 	}
 }

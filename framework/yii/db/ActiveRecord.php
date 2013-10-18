@@ -95,7 +95,7 @@ class ActiveRecord extends Model
 	/**
 	 * @var array attribute values indexed by attribute names
 	 */
-	private $_attributes = array();
+	private $_attributes = [];
 	/**
 	 * @var array old attribute values indexed by attribute names.
 	 */
@@ -144,7 +144,7 @@ class ActiveRecord extends Model
 			// query by primary key
 			$primaryKey = static::primaryKey();
 			if (isset($primaryKey[0])) {
-				return $query->where(array($primaryKey[0] => $q))->one();
+				return $query->where([$primaryKey[0] => $q])->one();
 			} else {
 				throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
 			}
@@ -170,7 +170,7 @@ class ActiveRecord extends Model
 	 * @param array $params parameters to be bound to the SQL statement during execution.
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance
 	 */
-	public static function findBySql($sql, $params = array())
+	public static function findBySql($sql, $params = [])
 	{
 		$query = static::createQuery();
 		$query->sql = $sql;
@@ -191,7 +191,7 @@ class ActiveRecord extends Model
 	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return integer the number of rows updated
 	 */
-	public static function updateAll($attributes, $condition = '', $params = array())
+	public static function updateAll($attributes, $condition = '', $params = [])
 	{
 		$command = static::getDb()->createCommand();
 		$command->update(static::tableName(), $attributes, $condition, $params);
@@ -214,11 +214,11 @@ class ActiveRecord extends Model
 	 * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
 	 * @return integer the number of rows updated
 	 */
-	public static function updateAllCounters($counters, $condition = '', $params = array())
+	public static function updateAllCounters($counters, $condition = '', $params = [])
 	{
 		$n = 0;
 		foreach ($counters as $name => $value) {
-			$counters[$name] = new Expression("[[$name]]+:bp{$n}", array(":bp{$n}" => $value));
+			$counters[$name] = new Expression("[[$name]]+:bp{$n}", [":bp{$n}" => $value]);
 			$n++;
 		}
 		$command = static::getDb()->createCommand();
@@ -241,7 +241,7 @@ class ActiveRecord extends Model
 	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return integer the number of rows deleted
 	 */
-	public static function deleteAll($condition = '', $params = array())
+	public static function deleteAll($condition = '', $params = [])
 	{
 		$command = static::getDb()->createCommand();
 		$command->delete(static::tableName(), $condition, $params);
@@ -257,9 +257,9 @@ class ActiveRecord extends Model
 	 */
 	public static function createQuery()
 	{
-		return new ActiveQuery(array(
+		return new ActiveQuery([
 			'modelClass' => get_called_class(),
-		));
+		]);
 	}
 
 	/**
@@ -364,7 +364,7 @@ class ActiveRecord extends Model
 	 */
 	public function transactions()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -476,12 +476,12 @@ class ActiveRecord extends Model
 	 */
 	public function hasOne($class, $link)
 	{
-		return new ActiveRelation(array(
+		return new ActiveRelation([
 			'modelClass' => $this->getNamespacedClass($class),
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => false,
-		));
+		]);
 	}
 
 	/**
@@ -514,12 +514,12 @@ class ActiveRecord extends Model
 	 */
 	public function hasMany($class, $link)
 	{
-		return new ActiveRelation(array(
+		return new ActiveRelation([
 			'modelClass' => $this->getNamespacedClass($class),
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => true,
-		));
+		]);
 	}
 
 	/**
@@ -588,7 +588,7 @@ class ActiveRecord extends Model
 	 */
 	public function getOldAttributes()
 	{
-		return $this->_oldAttributes === null ? array() : $this->_oldAttributes;
+		return $this->_oldAttributes === null ? [] : $this->_oldAttributes;
 	}
 
 	/**
@@ -657,7 +657,7 @@ class ActiveRecord extends Model
 			$names = $this->attributes();
 		}
 		$names = array_flip($names);
-		$attributes = array();
+		$attributes = [];
 		if ($this->_oldAttributes === null) {
 			foreach ($this->_attributes as $name => $value) {
 				if (isset($names[$name])) {
@@ -1176,7 +1176,7 @@ class ActiveRecord extends Model
 		if (count($keys) === 1 && !$asArray) {
 			return isset($this->_attributes[$keys[0]]) ? $this->_attributes[$keys[0]] : null;
 		} else {
-			$values = array();
+			$values = [];
 			foreach ($keys as $name) {
 				$values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
 			}
@@ -1202,7 +1202,7 @@ class ActiveRecord extends Model
 		if (count($keys) === 1 && !$asArray) {
 			return isset($this->_oldAttributes[$keys[0]]) ? $this->_oldAttributes[$keys[0]] : null;
 		} else {
-			$values = array();
+			$values = [];
 			foreach ($keys as $name) {
 				$values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
 			}
@@ -1299,7 +1299,7 @@ class ActiveRecord extends Model
 	 * (i.e., a relation set with `[[ActiveRelation::via()]]` or `[[ActiveRelation::viaTable()]]`.)
 	 * @throws InvalidCallException if the method is unable to link two models.
 	 */
-	public function link($name, $model, $extraColumns = array())
+	public function link($name, $model, $extraColumns = [])
 	{
 		$relation = $this->getRelation($name);
 
@@ -1319,7 +1319,7 @@ class ActiveRecord extends Model
 				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
 			}
-			$columns = array();
+			$columns = [];
 			foreach ($viaRelation->link as $a => $b) {
 				$columns[$a] = $this->$b;
 			}
@@ -1393,7 +1393,7 @@ class ActiveRecord extends Model
 				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
 			}
-			$columns = array();
+			$columns = [];
 			foreach ($viaRelation->link as $a => $b) {
 				$columns[$a] = $this->$b;
 			}
@@ -1404,7 +1404,7 @@ class ActiveRecord extends Model
 			if ($delete) {
 				$command->delete($viaTable, $columns)->execute();
 			} else {
-				$nulls = array();
+				$nulls = [];
 				foreach (array_keys($columns) as $a) {
 					$nulls[$a] = null;
 				}

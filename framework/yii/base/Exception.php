@@ -40,19 +40,19 @@ class Exception extends \Exception implements Arrayable
 	protected function toArrayRecursive($exception)
 	{
 		if ($exception instanceof self) {
-			$array = array(
+			$array = [
 				'type' => get_class($this),
 				'name' => $this->getName(),
 				'message' => $this->getMessage(),
 				'code' => $this->getCode(),
-			);
+			];
 		} else {
-			$array = array(
+			$array = [
 				'type' => get_class($exception),
 				'name' => 'Exception',
 				'message' => $exception->getMessage(),
 				'code' => $exception->getCode(),
-			);
+			];
 		}
 		if (($prev = $exception->getPrevious()) !== null) {
 			$array['previous'] = $this->toArrayRecursive($prev);

@@ -21,7 +21,7 @@ class Schema extends \yii\db\Schema
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		'tinyint' => self::TYPE_SMALLINT,
 		'bit' => self::TYPE_SMALLINT,
 		'smallint' => self::TYPE_SMALLINT,
@@ -47,7 +47,7 @@ class Schema extends \yii\db\Schema
 		'time' => self::TYPE_TIME,
 		'timestamp' => self::TYPE_TIMESTAMP,
 		'enum' => self::TYPE_STRING,
-	);
+	];
 
 	/**
 	 * Quotes a table name for use in a query.
@@ -225,7 +225,7 @@ class Schema extends \yii\db\Schema
 			foreach ($matches as $match) {
 				$fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
 				$pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
-				$constraint = array(str_replace('`', '', $match[2]));
+				$constraint = [str_replace('`', '', $match[2])];
 				foreach ($fks as $k => $name) {
 					$constraint[$name] = $pks[$k];
 				}

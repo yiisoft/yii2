@@ -44,7 +44,7 @@ class PhpDocController extends Controller
 			$root = YII_PATH;
 		}
 		$root = FileHelper::normalizePath($root);
-		$options = array(
+		$options = [
 			'filter' => function ($path) {
 				if (is_file($path)) {
 					$file = basename($path);
@@ -54,16 +54,16 @@ class PhpDocController extends Controller
 				}
 				return null;
 			},
-			'only' => array('.php'),
-			'except' => array(
+			'only' => ['.php'],
+			'except' => [
 				'YiiBase.php',
 				'Yii.php',
 				'/debug/views/',
 				'/requirements/',
 				'/gii/views/',
 				'/gii/generators/',
-			),
-		);
+			],
+		];
 		$files = FileHelper::findFiles($root, $options);
 		$nFilesTotal = 0;
 		$nFilesUpdated = 0;
@@ -89,7 +89,7 @@ class PhpDocController extends Controller
 
 	public function globalOptions()
 	{
-		return array_merge(parent::globalOptions(), array('updateFiles'));
+		return array_merge(parent::globalOptions(), ['updateFiles']);
 	}
 
 	protected function updateClassPropertyDocs($file, $className, $propertyDoc)
@@ -136,7 +136,7 @@ class PhpDocController extends Controller
 			$start = $ref->getStartLine() - 2;
 			$docStart = $start - count(explode("\n", $oldDoc)) + 1;
 
-			$newFileContent = array();
+			$newFileContent = [];
 			$n = count($fileContent);
 			for($i = 0; $i < $n; $i++) {
 				if ($i > $start || $i < $docStart) {
@@ -255,14 +255,14 @@ class PhpDocController extends Controller
 			$acrs = array_merge($properties, $gets, $sets);
 			//print_r($acrs); continue;
 
-			$props = array();
+			$props = [];
 			foreach ($acrs as &$acr) {
 				$acr['name'] = lcfirst($acr['name']);
 				$acr['comment'] = trim(preg_replace('#(^|\n)\s+\*\s?#', '$1 * ', $acr['comment']));
-				$props[$acr['name']][$acr['kind']] = array(
+				$props[$acr['name']][$acr['kind']] = [
 					'type' => $acr['type'],
 					'comment' => $this->fixSentence($acr['comment']),
-				);
+				];
 			}
 
 			ksort($props);
@@ -299,12 +299,12 @@ class PhpDocController extends Controller
 				$phpdoc .= " *\n";
 			}
 		}
-		return array($className, $phpdoc);
+		return [$className, $phpdoc];
 	}
 
 	protected function match($pattern, $subject)
 	{
-		$sets = array();
+		$sets = [];
 		preg_match_all($pattern . 'suU', $subject, $sets, PREG_SET_ORDER);
 		foreach ($sets as &$set)
 			foreach ($set as $i => $match)

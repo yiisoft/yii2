@@ -13,7 +13,7 @@ class CubridSchemaTest extends SchemaTest
 
 	public function testGetPDOType()
 	{
-		$values = array(
+		$values = [
 			null => \PDO::PARAM_NULL,
 			'' => \PDO::PARAM_STR,
 			'hello' => \PDO::PARAM_STR,
@@ -22,7 +22,7 @@ class CubridSchemaTest extends SchemaTest
 			1337 => \PDO::PARAM_INT,
 			true => \PDO::PARAM_INT, // CUBRID PDO does not support PARAM_BOOL
 			false => \PDO::PARAM_INT, // CUBRID PDO does not support PARAM_BOOL
-		);
+		];
 
 		$schema = $this->getConnection()->schema;
 

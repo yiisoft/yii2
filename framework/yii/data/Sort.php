@@ -135,7 +135,7 @@ class Sort extends Object
 	 * Note that if the Sort object is already created, you can only use the full format
 	 * to configure every attribute. Each attribute must include these elements: asc and desc.
 	 */
-	public $attributes = array();
+	public $attributes = [];
 	/**
 	 * @var string the name of the parameter that specifies which attributes to be sorted
 	 * in which direction. Defaults to 'sort'.
@@ -172,7 +172,7 @@ class Sort extends Object
 	 * attributes, while the second element specifies the character separating attribute name
 	 * and the corresponding sort direction. Defaults to `array('.', '-')`.
 	 */
-	public $separators = array('.', '-');
+	public $separators = ['.', '-'];
 	/**
 	 * @var array parameters (name => value) that should be used to obtain the current sort directions
 	 * and to create new sort URLs. If not set, $_GET will be used instead.
@@ -195,18 +195,18 @@ class Sort extends Object
 	 */
 	public function init()
 	{
-		$attributes = array();
+		$attributes = [];
 		foreach ($this->attributes as $name => $attribute) {
 			if (!is_array($attribute)) {
-				$attributes[$attribute] = array(
-					'asc' => array($attribute => self::ASC),
-					'desc' => array($attribute => self::DESC),
-				);
+				$attributes[$attribute] = [
+					'asc' => [$attribute => self::ASC],
+					'desc' => [$attribute => self::DESC],
+				];
 			} elseif (!isset($attribute['asc'], $attribute['desc'])) {
-				$attributes[$name] = array_merge(array(
-					'asc' => array($name => self::ASC),
-					'desc' => array($name => self::DESC),
-				), $attribute);
+				$attributes[$name] = array_merge([
+					'asc' => [$name => self::ASC],
+					'desc' => [$name => self::DESC],
+				], $attribute);
 			} else {
 				$attributes[$name] = $attribute;
 			}
@@ -223,7 +223,7 @@ class Sort extends Object
 	public function getOrders($recalculate = false)
 	{
 		$attributeOrders = $this->getAttributeOrders($recalculate);
-		$orders = array();
+		$orders = [];
 		foreach ($attributeOrders as $attribute => $direction) {
 			$definition = $this->attributes[$attribute];
 			$columns = $definition[$direction === self::ASC ? 'asc' : 'desc'];
@@ -246,7 +246,7 @@ class Sort extends Object
 	public function getAttributeOrders($recalculate = false)
 	{
 		if ($this->_attributeOrders === null || $recalculate) {
-			$this->_attributeOrders = array();
+			$this->_attributeOrders = [];
 			$params = $this->params === null ? $_GET : $this->params;
 			if (isset($params[$this->sortVar]) && is_scalar($params[$this->sortVar])) {
 				$attributes = explode($this->separators[0], $params[$this->sortVar]);
@@ -299,7 +299,7 @@ class Sort extends Object
 	 * @return string the generated hyperlink
 	 * @throws InvalidConfigException if the attribute is unknown
 	 */
-	public function link($attribute, $options = array())
+	public function link($attribute, $options = [])
 	{
 		if (($direction = $this->getAttributeOrder($attribute)) !== null) {
 			$class = $direction ? 'desc' : 'asc';
@@ -369,12 +369,12 @@ class Sort extends Object
 		}
 
 		if ($this->enableMultiSort) {
-			$directions = array_merge(array($attribute => $descending), $directions);
+			$directions = array_merge([$attribute => $descending], $directions);
 		} else {
-			$directions = array($attribute => $descending);
+			$directions = [$attribute => $descending];
 		}
 
-		$sorts = array();
+		$sorts = [];
 		foreach ($directions as $attribute => $descending) {
 			$sorts[] = $descending ? $attribute . $this->separators[1] . $this->descTag : $attribute;
 		}

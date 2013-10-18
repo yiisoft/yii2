@@ -36,7 +36,7 @@ class DefaultController extends Controller
 	public function actionView($id)
 	{
 		$generator = $this->loadGenerator($id);
-		$params = array('generator' => $generator, 'id' => $id);
+		$params = ['generator' => $generator, 'id' => $id];
 		if (isset($_POST['preview']) || isset($_POST['generate'])) {
 			if ($generator->validate()) {
 				$generator->saveStickyAttributes();
@@ -78,9 +78,9 @@ class DefaultController extends Controller
 		if ($generator->validate()) {
 			foreach ($generator->generate() as $f) {
 				if ($f->id === $file) {
-					return $this->renderPartial('diff', array(
+					return $this->renderPartial('diff', [
 						'diff' => $f->diff(),
-					));
+					]);
 				}
 			}
 		}
@@ -107,7 +107,7 @@ class DefaultController extends Controller
 		}
 	}
 
-	public function createUrl($route, $params = array())
+	public function createUrl($route, $params = [])
 	{
 		if (!isset($params['id']) && $this->generator !== null) {
 			foreach ($this->module->generators as $id => $generator) {
@@ -120,7 +120,7 @@ class DefaultController extends Controller
 		return parent::createUrl($route, $params);
 	}
 
-	public function createActionUrl($name, $params = array())
+	public function createActionUrl($name, $params = [])
 	{
 		foreach ($this->module->generators as $id => $generator) {
 			if ($generator === $this->generator) {

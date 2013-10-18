@@ -186,7 +186,7 @@ class Query extends Component
 		if ($this->indexBy === null) {
 			return $rows;
 		}
-		$result = array();
+		$result = [];
 		foreach ($rows as $row) {
 			if (is_string($this->indexBy)) {
 				$key = $row[$this->indexBy];
@@ -244,7 +244,7 @@ class Query extends Component
 	 */
 	public function count($q = '*', $db = null)
 	{
-		$this->select = array("COUNT($q)");
+		$this->select = ["COUNT($q)"];
 		return $this->createCommand($db)->queryScalar();
 	}
 
@@ -258,7 +258,7 @@ class Query extends Component
 	 */
 	public function sum($q, $db = null)
 	{
-		$this->select = array("SUM($q)");
+		$this->select = ["SUM($q)"];
 		return $this->createCommand($db)->queryScalar();
 	}
 
@@ -272,7 +272,7 @@ class Query extends Component
 	 */
 	public function average($q, $db = null)
 	{
-		$this->select = array("AVG($q)");
+		$this->select = ["AVG($q)"];
 		return $this->createCommand($db)->queryScalar();
 	}
 
@@ -286,7 +286,7 @@ class Query extends Component
 	 */
 	public function min($q, $db = null)
 	{
-		$this->select = array("MIN($q)");
+		$this->select = ["MIN($q)"];
 		return $this->createCommand($db)->queryScalar();
 	}
 
@@ -300,7 +300,7 @@ class Query extends Component
 	 */
 	public function max($q, $db = null)
 	{
-		$this->select = array("MAX($q)");
+		$this->select = ["MAX($q)"];
 		return $this->createCommand($db)->queryScalar();
 	}
 
@@ -312,7 +312,7 @@ class Query extends Component
 	 */
 	public function exists($db = null)
 	{
-		$this->select = array(new Expression('1'));
+		$this->select = [new Expression('1')];
 		return $this->scalar($db) !== false;
 	}
 
@@ -435,7 +435,7 @@ class Query extends Component
 	 * @see andWhere()
 	 * @see orWhere()
 	 */
-	public function where($condition, $params = array())
+	public function where($condition, $params = [])
 	{
 		$this->where = $condition;
 		$this->addParams($params);
@@ -452,12 +452,12 @@ class Query extends Component
 	 * @see where()
 	 * @see orWhere()
 	 */
-	public function andWhere($condition, $params = array())
+	public function andWhere($condition, $params = [])
 	{
 		if ($this->where === null) {
 			$this->where = $condition;
 		} else {
-			$this->where = array('and', $this->where, $condition);
+			$this->where = ['and', $this->where, $condition];
 		}
 		$this->addParams($params);
 		return $this;
@@ -473,12 +473,12 @@ class Query extends Component
 	 * @see where()
 	 * @see andWhere()
 	 */
-	public function orWhere($condition, $params = array())
+	public function orWhere($condition, $params = [])
 	{
 		if ($this->where === null) {
 			$this->where = $condition;
 		} else {
-			$this->where = array('or', $this->where, $condition);
+			$this->where = ['or', $this->where, $condition];
 		}
 		$this->addParams($params);
 		return $this;
@@ -497,9 +497,9 @@ class Query extends Component
 	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 */
-	public function join($type, $table, $on = '', $params = array())
+	public function join($type, $table, $on = '', $params = [])
 	{
-		$this->join[] = array($type, $table, $on);
+		$this->join[] = [$type, $table, $on];
 		return $this->addParams($params);
 	}
 
@@ -514,9 +514,9 @@ class Query extends Component
 	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return Query the query object itself
 	 */
-	public function innerJoin($table, $on = '', $params = array())
+	public function innerJoin($table, $on = '', $params = [])
 	{
-		$this->join[] = array('INNER JOIN', $table, $on);
+		$this->join[] = ['INNER JOIN', $table, $on];
 		return $this->addParams($params);
 	}
 
@@ -531,9 +531,9 @@ class Query extends Component
 	 * @param array $params the parameters (name => value) to be bound to the query
 	 * @return Query the query object itself
 	 */
-	public function leftJoin($table, $on = '', $params = array())
+	public function leftJoin($table, $on = '', $params = [])
 	{
-		$this->join[] = array('LEFT JOIN', $table, $on);
+		$this->join[] = ['LEFT JOIN', $table, $on];
 		return $this->addParams($params);
 	}
 
@@ -548,9 +548,9 @@ class Query extends Component
 	 * @param array $params the parameters (name => value) to be bound to the query
 	 * @return Query the query object itself
 	 */
-	public function rightJoin($table, $on = '', $params = array())
+	public function rightJoin($table, $on = '', $params = [])
 	{
-		$this->join[] = array('RIGHT JOIN', $table, $on);
+		$this->join[] = ['RIGHT JOIN', $table, $on];
 		return $this->addParams($params);
 	}
 
@@ -603,7 +603,7 @@ class Query extends Component
 	 * @see andHaving()
 	 * @see orHaving()
 	 */
-	public function having($condition, $params = array())
+	public function having($condition, $params = [])
 	{
 		$this->having = $condition;
 		$this->addParams($params);
@@ -620,12 +620,12 @@ class Query extends Component
 	 * @see having()
 	 * @see orHaving()
 	 */
-	public function andHaving($condition, $params = array())
+	public function andHaving($condition, $params = [])
 	{
 		if ($this->having === null) {
 			$this->having = $condition;
 		} else {
-			$this->having = array('and', $this->having, $condition);
+			$this->having = ['and', $this->having, $condition];
 		}
 		$this->addParams($params);
 		return $this;
@@ -641,12 +641,12 @@ class Query extends Component
 	 * @see having()
 	 * @see andHaving()
 	 */
-	public function orHaving($condition, $params = array())
+	public function orHaving($condition, $params = [])
 	{
 		if ($this->having === null) {
 			$this->having = $condition;
 		} else {
-			$this->having = array('or', $this->having, $condition);
+			$this->having = ['or', $this->having, $condition];
 		}
 		$this->addParams($params);
 		return $this;
@@ -695,7 +695,7 @@ class Query extends Component
 			return $columns;
 		} else {
 			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			$result = array();
+			$result = [];
 			foreach ($columns as $column) {
 				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
 					$result[$matches[1]] = strcasecmp($matches[2], 'desc') ? self::SORT_ASC : self::SORT_DESC;

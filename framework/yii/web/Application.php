@@ -167,22 +167,22 @@ class Application extends \yii\base\Application
 	public function registerCoreComponents()
 	{
 		parent::registerCoreComponents();
-		$this->setComponents(array(
-			'request' => array(
+		$this->setComponents([
+			'request' => [
 				'class' => 'yii\web\Request',
-			),
-			'response' => array(
+			],
+			'response' => [
 				'class' => 'yii\web\Response',
-			),
-			'session' => array(
+			],
+			'session' => [
 				'class' => 'yii\web\Session',
-			),
-			'user' => array(
+			],
+			'user' => [
 				'class' => 'yii\web\User',
-			),
-			'assetManager' => array(
+			],
+			'assetManager' => [
 				'class' => 'yii\web\AssetManager',
-			),
-		));
+			],
+		]);
 	}
 }

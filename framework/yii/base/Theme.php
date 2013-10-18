@@ -76,12 +76,12 @@ class Theme extends Component
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
 				$this->basePath = Yii::getAlias($this->basePath);
-				$this->pathMap = array(Yii::$app->getBasePath() => $this->basePath);
+				$this->pathMap = [Yii::$app->getBasePath() => $this->basePath];
 			} else {
 				throw new InvalidConfigException('The "basePath" property must be set.');
 			}
 		}
-		$paths = array();
+		$paths = [];
 		foreach ($this->pathMap as $from => $to) {
 			$from = FileHelper::normalizePath(Yii::getAlias($from));
 			$to = FileHelper::normalizePath(Yii::getAlias($to));

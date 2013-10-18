@@ -52,7 +52,7 @@ class VerbFilter extends Behavior
 	 * allowed methods (e.g. GET, HEAD, PUT) as the value.
 	 * If an action is not listed all request methods are considered allowed.
 	 */
-	public $actions = array();
+	public $actions = [];
 
 
 	/**
@@ -61,9 +61,9 @@ class VerbFilter extends Behavior
 	 */
 	public function events()
 	{
-		return array(
+		return [
 			Controller::EVENT_BEFORE_ACTION => 'beforeAction',
-		);
+		];
 	}
 
 	/**

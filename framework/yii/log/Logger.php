@@ -122,17 +122,17 @@ class Logger extends Component
 	 * )
 	 * ~~~
 	 */
-	public $messages = array();
+	public $messages = [];
 	/**
 	 * @var array debug data. This property stores various types of debug data reported at
 	 * different instrument places.
 	 */
-	public $data = array();
+	public $data = [];
 	/**
 	 * @var array|Target[] the log targets. Each array element represents a single [[Target|log target]] instance
 	 * or the configuration for creating the log target instance.
 	 */
-	public $targets = array();
+	public $targets = [];
 	/**
 	 * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
 	 * Defaults to 1000, meaning the [[flush]] method will be invoked once every 1000 messages logged.
@@ -164,7 +164,7 @@ class Logger extends Component
 				$this->targets[$name] = Yii::createObject($target);
 			}
 		}
-		register_shutdown_function(array($this, 'flush'), true);
+		register_shutdown_function([$this, 'flush'], true);
 	}
 
 	/**
@@ -180,7 +180,7 @@ class Logger extends Component
 	public function log($message, $level, $category = 'application')
 	{
 		$time = microtime(true);
-		$traces = array();
+		$traces = [];
 		if ($this->traceLevel > 0) {
 			$count = 0;
 			$ts = debug_backtrace();
@@ -195,7 +195,7 @@ class Logger extends Component
 				}
 			}
 		}
-		$this->messages[] = array($message, $level, $category, $time, $traces);
+		$this->messages[] = [$message, $level, $category, $time, $traces];
 		if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
 			$this->flush();
 		}
@@ -213,7 +213,7 @@ class Logger extends Component
 				$target->collect($this->messages, $final);
 			}
 		}
-		$this->messages = array();
+		$this->messages = [];
 	}
 
 	/**
@@ -243,7 +243,7 @@ class Logger extends Component
 	 * @return array the profiling results. Each array element has the following structure:
 	 *  `array($token, $category, $time)`.
 	 */
-	public function getProfiling($categories = array(), $excludeCategories = array())
+	public function getProfiling($categories = [], $excludeCategories = [])
 	{
 		$timings = $this->calculateTimings();
 		if (empty($categories) && empty($excludeCategories)) {
@@ -288,27 +288,27 @@ class Logger extends Component
 	 */
 	public function getDbProfiling()
 	{
-		$timings = $this->getProfiling(array('yii\db\Command::query', 'yii\db\Command::execute'));
+		$timings = $this->getProfiling(['yii\db\Command::query', 'yii\db\Command::execute']);
 		$count = count($timings);
 		$time = 0;
 		foreach ($timings as $timing) {
 			$time += $timing[1];
 		}
-		return array($count, $time);
+		return [$count, $time];
 	}
 
 	private function calculateTimings()
 	{
-		$timings = array();
+		$timings = [];
 
-		$stack = array();
+		$stack = [];
 		foreach ($this->messages as $log) {
 			list($token, $level, $category, $timestamp) = $log;
 			if ($level == self::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
 			} elseif ($level == self::LEVEL_PROFILE_END) {
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[] = array($token, $category, $timestamp - $last[3]);
+					$timings[] = [$token, $category, $timestamp - $last[3]];
 				} else {
 					throw new InvalidConfigException("Unmatched profiling block: $token");
 				}
@@ -318,7 +318,7 @@ class Logger extends Component
 		$now = microtime(true);
 		while (($last = array_pop($stack)) !== null) {
 			$delta = $now - $last[3];
-			$timings[] = array($last[0], $last[2], $delta);
+			$timings[] = [$last[0], $last[2], $delta];
 		}
 
 		return $timings;
@@ -331,14 +331,14 @@ class Logger extends Component
 	 */
 	public static function getLevelName($level)
 	{
-		static $levels = array(
+		static $levels = [
 			self::LEVEL_ERROR => 'error',
 			self::LEVEL_WARNING => 'warning',
 			self::LEVEL_INFO => 'info',
 			self::LEVEL_TRACE => 'trace',
 			self::LEVEL_PROFILE_BEGIN => 'profile begin',
 			self::LEVEL_PROFILE_END => 'profile end',
-		);
+		];
 		return isset($levels[$level]) ? $levels[$level] : 'unknown';
 	}
 }

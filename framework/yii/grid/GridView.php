@@ -40,19 +40,19 @@ class GridView extends ListViewBase
 	 * @var array the HTML attributes for the caption element
 	 * @see caption
 	 */
-	public $captionOptions = array();
+	public $captionOptions = [];
 	/**
 	 * @var array the HTML attributes for the grid table element
 	 */
-	public $tableOptions = array('class' => 'table table-striped table-bordered');
+	public $tableOptions = ['class' => 'table table-striped table-bordered'];
 	/**
 	 * @var array the HTML attributes for the table header row
 	 */
-	public $headerRowOptions = array();
+	public $headerRowOptions = [];
 	/**
 	 * @var array the HTML attributes for the table footer row
 	 */
-	public $footerRowOptions = array();
+	public $footerRowOptions = [];
 	/**
 	 * @var array|Closure the HTML attributes for the table body rows. This can be either an array
 	 * specifying the common HTML attributes for all body rows, or an anonymous function that
@@ -68,7 +68,7 @@ class GridView extends ListViewBase
 	 * - `$index`: the zero-based index of the data model in the model array returned by [[dataProvider]]
 	 * - `$grid`: the GridView object
 	 */
-	public $rowOptions = array();
+	public $rowOptions = [];
 	/**
 	 * @var Closure an anonymous function that is called once BEFORE rendering each data model.
 	 * It should have the similar signature as [[rowOptions]]. The return result of the function
@@ -123,7 +123,7 @@ class GridView extends ListViewBase
 	 * For example, the above "name" column can also be specified as: `"name:text:Name"`.
 	 * Both "format" and "label" are optional. They will take default values if absent.
 	 */
-	public $columns = array();
+	public $columns = [];
 	public $emptyCell = '&nbsp;';
 	/**
 	 * @var \yii\base\Model the model that keeps the user-entered filter data. When this property is set,
@@ -147,7 +147,7 @@ class GridView extends ListViewBase
 	/**
 	 * @var array the HTML attributes for the filter row element
 	 */
-	public $filterRowOptions = array('class' => 'filters');
+	public $filterRowOptions = ['class' => 'filters'];
 
 	/**
 	 * Initializes the grid view.
@@ -188,13 +188,13 @@ class GridView extends ListViewBase
 	 */
 	public function renderItems()
 	{
-		$content = array_filter(array(
+		$content = array_filter([
 			$this->renderCaption(),
 			$this->renderColumnGroup(),
 			$this->showHeader ? $this->renderTableHeader() : false,
 			$this->showFooter ? $this->renderTableFooter() : false,
 			$this->renderTableBody(),
-		));
+		]);
 		return Html::tag('table', implode("\n", $content), $this->tableOptions);
 	}
 
@@ -218,7 +218,7 @@ class GridView extends ListViewBase
 			}
 		}
 		if ($requireColumnGroup) {
-			$cols = array();
+			$cols = [];
 			foreach ($this->columns as $column) {
 				$cols[] = Html::tag('col', '', $column->options);
 			}
@@ -234,7 +234,7 @@ class GridView extends ListViewBase
 	 */
 	public function renderTableHeader()
 	{
-		$cells = array();
+		$cells = [];
 		foreach ($this->columns as $column) {
 			/** @var Column $column */
 			$cells[] = $column->renderHeaderCell();
@@ -254,7 +254,7 @@ class GridView extends ListViewBase
 	 */
 	public function renderTableFooter()
 	{
-		$cells = array();
+		$cells = [];
 		foreach ($this->columns as $column) {
 			/** @var Column $column */
 			$cells[] = $column->renderFooterCell();
@@ -272,7 +272,7 @@ class GridView extends ListViewBase
 	public function renderFilters()
 	{
 		if ($this->filterModel !== null) {
-			$cells = array();
+			$cells = [];
 			foreach ($this->columns as $column) {
 				/** @var Column $column */
 				$cells[] = $column->renderFilterCell();
@@ -291,7 +291,7 @@ class GridView extends ListViewBase
 	{
 		$models = array_values($this->dataProvider->getModels());
 		$keys = $this->dataProvider->getKeys();
-		$rows = array();
+		$rows = [];
 		foreach ($models as $index => $model) {
 			$key = $keys[$index];
 			if ($this->beforeRow !== null) {
@@ -322,7 +322,7 @@ class GridView extends ListViewBase
 	 */
 	public function renderTableRow($model, $key, $index)
 	{
-		$cells = array();
+		$cells = [];
 		/** @var Column $column */
 		foreach ($this->columns as $column) {
 			$cells[] = $column->renderDataCell($model, $index);
@@ -348,10 +348,10 @@ class GridView extends ListViewBase
 			if (is_string($column)) {
 				$column = $this->createDataColumn($column);
 			} else {
-				$column = Yii::createObject(array_merge(array(
+				$column = Yii::createObject(array_merge([
 					'class' => $this->dataColumnClass ?: DataColumn::className(),
 					'grid' => $this,
-				), $column));
+				], $column));
 			}
 			if (!$column->visible) {
 				unset($this->columns[$i]);
@@ -372,13 +372,13 @@ class GridView extends ListViewBase
 		if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
 			throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label');
 		}
-		return Yii::createObject(array(
+		return Yii::createObject([
 			'class' => $this->dataColumnClass ?: DataColumn::className(),
 			'grid' => $this,
 			'attribute' => $matches[1],
 			'format' => isset($matches[3]) ? $matches[3] : 'text',
 			'label' => isset($matches[5]) ? $matches[5] : null,
-		));
+		]);
 	}
 
 	protected function guessColumns()

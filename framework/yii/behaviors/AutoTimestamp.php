@@ -46,10 +46,10 @@ class AutoTimestamp extends Behavior
 	 * The default setting is to update the `create_time` attribute upon AR insertion,
 	 * and update the `update_time` attribute upon AR updating.
 	 */
-	public $attributes = array(
+	public $attributes = [
 		ActiveRecord::EVENT_BEFORE_INSERT => 'create_time',
 		ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
-	);
+	];
 	/**
 	 * @var \Closure|Expression The expression that will be used for generating the timestamp.
 	 * This can be either an anonymous function that returns the timestamp value,
@@ -78,7 +78,7 @@ class AutoTimestamp extends Behavior
 	 */
 	public function updateTimestamp($event)
 	{
-		$attributes = isset($this->attributes[$event->name]) ? (array)$this->attributes[$event->name] : array();
+		$attributes = isset($this->attributes[$event->name]) ? (array)$this->attributes[$event->name] : [];
 		if (!empty($attributes)) {
 			$timestamp = $this->evaluateTimestamp();
 			foreach ($attributes as $attribute) {

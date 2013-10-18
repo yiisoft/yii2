@@ -70,16 +70,16 @@ class AccessControl extends ActionFilter
 	 * @var array the default configuration of access rules. Individual rule configurations
 	 * specified via [[rules]] will take precedence when the same property of the rule is configured.
 	 */
-	public $ruleConfig = array(
+	public $ruleConfig = [
 		'class' => 'yii\web\AccessRule',
-	);
+	];
 	/**
 	 * @var array a list of access rule objects or configuration arrays for creating the rule objects.
 	 * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] first
 	 * before it is used for creating the rule object.
 	 * @see ruleConfig
 	 */
-	public $rules = array();
+	public $rules = [];
 
 	/**
 	 * Initializes the [[rules]] array by instantiating rule objects from configurations.

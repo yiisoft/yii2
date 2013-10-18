@@ -23,7 +23,7 @@ $this->title = 'Welcome to Gii';
 		<div class="generator col-lg-4">
 			<h3><?php echo Html::encode($generator->getName()); ?></h3>
 			<p><?php echo $generator->getDescription(); ?></p>
-			<p><?php echo Html::a('Start »', array('default/view', 'id' => $id), array('class' => 'btn btn-default')); ?></p>
+			<p><?php echo Html::a('Start »', ['default/view', 'id' => $id], ['class' => 'btn btn-default']); ?></p>
 		</div>
 		<?php endforeach; ?>
 	</div>

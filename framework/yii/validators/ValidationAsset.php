@@ -15,10 +15,10 @@ use yii\web\AssetBundle;
 class ValidationAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/assets';
-	public $js = array(
+	public $js = [
 		'yii.validation.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\web\YiiAsset',
-	);
+	];
 }

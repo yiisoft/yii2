@@ -31,7 +31,7 @@ class MarkdownBase
 	 * @param array $config
 	 * @return string
 	 */
-	public static function process($content, $config = array())
+	public static function process($content, $config = [])
 	{
 		if (static::$markdown === null) {
 			static::$markdown = new MarkdownExtra();

@@ -148,7 +148,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function rules()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -177,8 +177,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function scenarios()
 	{
-		$scenarios = array();
-		$defaults = array();
+		$scenarios = [];
+		$defaults = [];
 		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
 			if (empty($validator->on)) {
@@ -231,7 +231,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	public function attributes()
 	{
 		$class = new ReflectionClass($this);
-		$names = array();
+		$names = [];
 		foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
 			$name = $property->getName();
 			if (!$property->isStatic()) {
@@ -259,7 +259,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function attributeLabels()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -367,7 +367,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function getActiveValidators($attribute = null)
 	{
-		$validators = array();
+		$validators = [];
 		$scenario = $this->getScenario();
 		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
@@ -477,9 +477,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	public function getErrors($attribute = null)
 	{
 		if ($attribute === null) {
-			return $this->_errors === null ? array() : $this->_errors;
+			return $this->_errors === null ? [] : $this->_errors;
 		} else {
-			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
+			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
 		}
 	}
 
@@ -492,9 +492,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	public function getFirstErrors()
 	{
 		if (empty($this->_errors)) {
-			return array();
+			return [];
 		} else {
-			$errors = array();
+			$errors = [];
 			foreach ($this->_errors as $attributeErrors) {
 				if (isset($attributeErrors[0])) {
 					$errors[] = $attributeErrors[0];
@@ -533,7 +533,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	public function clearErrors($attribute = null)
 	{
 		if ($attribute === null) {
-			$this->_errors = array();
+			$this->_errors = [];
 		} else {
 			unset($this->_errors[$attribute]);
 		}
@@ -560,9 +560,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * @param array $except list of attributes whose value should NOT be returned.
 	 * @return array attribute values (name => value).
 	 */
-	public function getAttributes($names = null, $except = array())
+	public function getAttributes($names = null, $except = [])
 	{
-		$values = array();
+		$values = [];
 		if ($names === null) {
 			$names = $this->attributes();
 		}
@@ -645,9 +645,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (!isset($scenarios[$scenario])) {
-			return array();
+			return [];
 		}
-		$attributes = array();
+		$attributes = [];
 		foreach ($scenarios[$scenario] as $attribute) {
 			if ($attribute[0] !== '!') {
 				$attributes[] = $attribute;
@@ -665,7 +665,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (!isset($scenarios[$scenario])) {
-			return array();
+			return [];
 		}
 		$attributes = $scenarios[$scenario];
 		foreach ($attributes as $i => $attribute) {

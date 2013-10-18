@@ -91,8 +91,8 @@ class PageCache extends ActionFilter
 	 */
 	public function beforeAction($action)
 	{
-		$properties = array();
-		foreach (array('cache', 'duration', 'dependency', 'variations', 'enabled') as $name) {
+		$properties = [];
+		foreach (['cache', 'duration', 'dependency', 'variations', 'enabled'] as $name) {
 			$properties[$name] = $this->$name;
 		}
 		$id = $this->varyByRoute ? $action->getUniqueId() : __CLASS__;

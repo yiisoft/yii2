@@ -67,7 +67,7 @@ class Alert extends Widget
 	 * Please refer to the [Alert plugin help](http://twitter.github.com/bootstrap/javascript.html#alerts)
 	 * for the supported HTML attributes.
 	 */
-	public $closeButton = array();
+	public $closeButton = [];
 
 
 	/**
@@ -136,18 +136,18 @@ class Alert extends Widget
 	 */
 	protected function initOptions()
 	{
-		$this->options = array_merge(array(
+		$this->options = array_merge([
 			'class' => 'fade in',
-		), $this->options);
+		], $this->options);
 
 		Html::addCssClass($this->options, 'alert');
 
 		if ($this->closeButton !== null) {
-			$this->closeButton = array_merge(array(
+			$this->closeButton = array_merge([
 				'data-dismiss' => 'alert',
 				'aria-hidden' => 'true',
 				'class' => 'close',
-			), $this->closeButton);
+			], $this->closeButton);
 		}
 	}
 }

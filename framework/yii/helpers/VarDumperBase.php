@@ -47,7 +47,7 @@ class VarDumperBase
 	public static function dumpAsString($var, $depth = 10, $highlight = false)
 	{
 		self::$_output = '';
-		self::$_objects = array();
+		self::$_objects = [];
 		self::$_depth = $depth;
 		self::dumpInternal($var, 0);
 		if ($highlight) {
@@ -115,7 +115,7 @@ class VarDumperBase
 					$spaces = str_repeat(' ', $level * 4);
 					self::$_output .= "$className#$id\n" . $spaces . '(';
 					foreach ($members as $key => $value) {
-						$keyDisplay = strtr(trim($key), array("\0" => ':'));
+						$keyDisplay = strtr(trim($key), ["\0" => ':']);
 						self::$_output .= "\n" . $spaces . "    [$keyDisplay] => ";
 						self::dumpInternal($value, $level + 1);
 					}

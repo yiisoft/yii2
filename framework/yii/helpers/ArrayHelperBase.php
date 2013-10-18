@@ -56,12 +56,12 @@ class ArrayHelperBase
 	 * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
 	 * @return array the array representation of the object
 	 */
-	public static function toArray($object, $properties = array(), $recursive = true)
+	public static function toArray($object, $properties = [], $recursive = true)
 	{
 		if (!empty($properties) && is_object($object)) {
 			$className = get_class($object);
 			if (!empty($properties[$className])) {
-				$result = array();
+				$result = [];
 				foreach ($properties[$className] as $key => $name) {
 					if (is_int($key)) {
 						$result[$name] = $object->$name;
@@ -78,7 +78,7 @@ class ArrayHelperBase
 				return $object;
 			}
 		}
-		$result = array();
+		$result = [];
 		foreach ($object as $key => $value) {
 			if ($recursive && (is_array($value) || is_object($value))) {
 				$result[$key] = static::toArray($value, true);
@@ -220,7 +220,7 @@ class ArrayHelperBase
 	 */
 	public static function index($array, $key)
 	{
-		$result = array();
+		$result = [];
 		foreach ($array as $element) {
 			$value = static::getValue($element, $key);
 			$result[$value] = $element;
@@ -256,7 +256,7 @@ class ArrayHelperBase
 	 */
 	public static function getColumn($array, $name, $keepKeys = true)
 	{
-		$result = array();
+		$result = [];
 		if ($keepKeys) {
 			foreach ($array as $k => $element) {
 				$result[$k] = static::getValue($element, $name);
@@ -313,7 +313,7 @@ class ArrayHelperBase
 	 */
 	public static function map($array, $from, $to, $group = null)
 	{
-		$result = array();
+		$result = [];
 		foreach ($array as $element) {
 			$key = static::getValue($element, $from);
 			$value = static::getValue($element, $to);
@@ -347,7 +347,7 @@ class ArrayHelperBase
 	 */
 	public static function multisort(&$array, $key, $descending = false, $sortFlag = SORT_REGULAR, $caseSensitive = true)
 	{
-		$keys = is_array($key) ? $key : array($key);
+		$keys = is_array($key) ? $key : [$key];
 		if (empty($keys) || empty($array)) {
 			return;
 		}
@@ -367,7 +367,7 @@ class ArrayHelperBase
 		} elseif (count($caseSensitive) !== $n) {
 			throw new InvalidParamException('The length of $caseSensitive parameter must be the same as that of $keys.');
 		}
-		$args = array();
+		$args = [];
 		foreach ($keys as $i => $key) {
 			$flag = $sortFlag[$i];
 			$cs = $caseSensitive[$i];
@@ -376,7 +376,7 @@ class ArrayHelperBase
 					$flag = $flag | SORT_FLAG_CASE;
 					$args[] = static::getColumn($array, $key);
 				} else {
-					$column = array();
+					$column = [];
 					foreach (static::getColumn($array, $key) as $k => $value) {
 						$column[$k] = mb_strtolower($value);
 					}
@@ -409,7 +409,7 @@ class ArrayHelperBase
 		if ($charset === null) {
 			$charset = Yii::$app->charset;
 		}
-		$d = array();
+		$d = [];
 		foreach ($data as $key => $value) {
 			if (!$valuesOnly && is_string($key)) {
 				$key = htmlspecialchars($key, ENT_QUOTES, $charset);
@@ -435,7 +435,7 @@ class ArrayHelperBase
 	 */
 	public static function htmlDecode($data, $valuesOnly = true)
 	{
-		$d = array();
+		$d = [];
 		foreach ($data as $key => $value) {
 			if (!$valuesOnly && is_string($key)) {
 				$key = htmlspecialchars_decode($key, ENT_QUOTES);

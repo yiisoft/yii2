@@ -69,7 +69,7 @@ class Nav extends Widget
 	 *
 	 * If a menu item is a string, it will be rendered directly without HTML encoding.
 	 */
-	public $items = array();
+	public $items = [];
 	/**
 	 * @var boolean whether the nav items labels should be HTML-encoded.
 	 */
@@ -125,7 +125,7 @@ class Nav extends Widget
 	 */
 	public function renderItems()
 	{
-		$items = array();
+		$items = [];
 		foreach ($this->items as $i => $item) {
 			if (isset($item['visible']) && !$item['visible']) {
 				unset($items[$i]);
@@ -152,10 +152,10 @@ class Nav extends Widget
 			throw new InvalidConfigException("The 'label' option is required.");
 		}
 		$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
-		$options = ArrayHelper::getValue($item, 'options', array());
+		$options = ArrayHelper::getValue($item, 'options', []);
 		$items = ArrayHelper::getValue($item, 'items');
 		$url = Html::url(ArrayHelper::getValue($item, 'url', '#'));
-		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
+		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
 
 		if (isset($item['active'])) {
 			$active = ArrayHelper::remove($item, 'active', false);
@@ -171,13 +171,13 @@ class Nav extends Widget
 			$linkOptions['data-toggle'] = 'dropdown';
 			Html::addCssClass($options, 'dropdown');
 			Html::addCssClass($urlOptions, 'dropdown-toggle');
-			$label .= ' ' . Html::tag('b', '', array('class' => 'caret'));
+			$label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
 			if (is_array($items)) {
-				$items = Dropdown::widget(array(
+				$items = Dropdown::widget([
 					'items' => $items,
 					'encodeLabels' => $this->encodeLabels,
 					'clientOptions' => false,
-				));
+				]);
 			}
 		}
 

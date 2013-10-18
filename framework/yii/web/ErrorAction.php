@@ -98,11 +98,11 @@ class ErrorAction extends Action
 		if (Yii::$app->getRequest()->getIsAjax()) {
 			return "$name: $message";
 		} else {
-			return $this->controller->render($this->view ?: $this->id, array(
+			return $this->controller->render($this->view ?: $this->id, [
 				'name' => $name,
 				'message' => $message,
 				'exception' => $exception,
-			));
+			]);
 		}
 	}
 }

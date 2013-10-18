@@ -112,13 +112,13 @@ class StringValidator extends Validator
 		$length = mb_strlen($value, $this->encoding);
 
 		if ($this->min !== null && $length < $this->min) {
-			$this->addError($object, $attribute, $this->tooShort, array('{min}' => $this->min));
+			$this->addError($object, $attribute, $this->tooShort, ['{min}' => $this->min]);
 		}
 		if ($this->max !== null && $length > $this->max) {
-			$this->addError($object, $attribute, $this->tooLong, array('{max}' => $this->max));
+			$this->addError($object, $attribute, $this->tooLong, ['{max}' => $this->max]);
 		}
 		if ($this->length !== null && $length !== $this->length) {
-			$this->addError($object, $attribute, $this->notEqual, array('{length}' => $this->length));
+			$this->addError($object, $attribute, $this->notEqual, ['{length}' => $this->length]);
 		}
 	}
 
@@ -151,36 +151,36 @@ class StringValidator extends Validator
 		$label = $object->getAttributeLabel($attribute);
 		$value = $object->$attribute;
 
-		$options = array(
-			'message' => Html::encode(strtr($this->message, array(
+		$options = [
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $label,
 				'{value}' => $value,
-			))),
-		);
+			])),
+		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooShort'] = Html::encode(strtr($this->tooShort, array(
+			$options['tooShort'] = Html::encode(strtr($this->tooShort, [
 				'{attribute}' => $label,
 				'{value}' => $value,
 				'{min}' => $this->min,
-			)));
+			]));
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooLong'] = Html::encode(strtr($this->tooLong, array(
+			$options['tooLong'] = Html::encode(strtr($this->tooLong, [
 				'{attribute}' => $label,
 				'{value}' => $value,
 				'{max}' => $this->max,
-			)));
+			]));
 		}
 		if ($this->length !== null) {
 			$options['is'] = $this->length;
-			$options['notEqual'] = Html::encode(strtr($this->notEqual, array(
+			$options['notEqual'] = Html::encode(strtr($this->notEqual, [
 				'{attribute}' => $label,
 				'{value}' => $value,
 				'{length}' => $this->is,
-			)));
+			]));
 		}
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

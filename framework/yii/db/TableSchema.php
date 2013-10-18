@@ -31,7 +31,7 @@ class TableSchema extends Object
 	/**
 	 * @var string[] primary keys of this table.
 	 */
-	public $primaryKey = array();
+	public $primaryKey = [];
 	/**
 	 * @var string sequence name for the primary key. Null if no sequence.
 	 */
@@ -47,11 +47,11 @@ class TableSchema extends Object
 	 * )
 	 * ~~~
 	 */
-	public $foreignKeys = array();
+	public $foreignKeys = [];
 	/**
 	 * @var ColumnSchema[] column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
 	 */
-	public $columns = array();
+	public $columns = [];
 
 	/**
 	 * Gets the named column metadata.
@@ -81,7 +81,7 @@ class TableSchema extends Object
 	public function fixPrimaryKey($keys)
 	{
 		if (!is_array($keys)) {
-			$keys = array($keys);
+			$keys = [$keys];
 		}
 		$this->primaryKey = $keys;
 		foreach ($this->columns as $column) {

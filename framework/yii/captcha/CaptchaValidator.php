@@ -107,15 +107,15 @@ class CaptchaValidator extends Validator
 		$captcha = $this->getCaptchaAction();
 		$code = $captcha->getVerifyCode(false);
 		$hash = $captcha->generateValidationHash($this->caseSensitive ? $code : strtolower($code));
-		$options = array(
+		$options = [
 			'hash' => $hash,
 			'hashKey' => 'yiiCaptcha/' . $this->captchaAction,
 			'caseSensitive' => $this->caseSensitive,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{value}' => $object->$attribute,
-			))),
-		);
+			])),
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}

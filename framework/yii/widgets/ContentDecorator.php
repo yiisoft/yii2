@@ -24,7 +24,7 @@ class ContentDecorator extends Widget
 	/**
 	 * @var array the parameters (name => value) to be extracted and made available in the decorative view.
 	 */
-	public $params = array();
+	public $params = [];
 
 	/**
 	 * Starts recording a clip.

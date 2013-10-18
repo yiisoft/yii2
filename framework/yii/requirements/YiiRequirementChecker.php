@@ -74,14 +74,14 @@ class YiiRequirementChecker
 			$this->usageError('Requirements must be an array, "' . gettype($requirements) . '" has been given!');
 		}
 		if (!isset($this->result) || !is_array($this->result)) {
-			$this->result = array(
-				'summary' => array(
+			$this->result = [
+				'summary' => [
 					'total' => 0,
 					'errors' => 0,
 					'warnings' => 0,
-				),
-				'requirements' => array(),
-			);
+				],
+				'requirements' => [],
+			];
 		}
 		foreach ($requirements as $key => $rawRequirement) {
 			$requirement = $this->normalizeRequirement($rawRequirement, $key);

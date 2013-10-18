@@ -103,6 +103,6 @@ class CacheSession extends Session
 	 */
 	protected function calculateKey($id)
 	{
-		return array(__CLASS__, $id);
+		return [__CLASS__, $id];
 	}
 }

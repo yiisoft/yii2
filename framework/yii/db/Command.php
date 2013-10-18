@@ -73,7 +73,7 @@ class Command extends \yii\base\Component
 	/**
 	 * @var array the parameter log information (name => value)
 	 */
-	private $_params = array();
+	private $_params = [];
 
 	/**
 	 * Returns the SQL statement for this command.
@@ -95,7 +95,7 @@ class Command extends \yii\base\Component
 		if ($sql !== $this->_sql) {
 			$this->cancel();
 			$this->_sql = $this->db->quoteSql($sql);
-			$this->_params = array();
+			$this->_params = [];
 		}
 		return $this;
 	}
@@ -111,7 +111,7 @@ class Command extends \yii\base\Component
 		if (empty($this->_params)) {
 			return $this->_sql;
 		} else {
-			$params = array();
+			$params = [];
 			foreach ($this->_params as $name => $value) {
 				if (is_string($value)) {
 					$params[$name] = $this->db->quoteValue($value);
@@ -370,12 +370,12 @@ class Command extends \yii\base\Component
 		}
 
 		if (isset($cache) && $cache instanceof Cache) {
-			$cacheKey = array(
+			$cacheKey = [
 				__CLASS__,
 				$db->dsn,
 				$db->username,
 				$rawSql,
-			);
+			];
 			if (($result = $cache->get($cacheKey)) !== false) {
 				Yii::trace('Query result served from cache', __METHOD__);
 				return $result;
@@ -395,7 +395,7 @@ class Command extends \yii\base\Component
 				if ($fetchMode === null) {
 					$fetchMode = $this->fetchMode;
 				}
-				$result = call_user_func_array(array($this->pdoStatement, $method), (array)$fetchMode);
+				$result = call_user_func_array([$this->pdoStatement, $method], (array)$fetchMode);
 				$this->pdoStatement->closeCursor();
 			}
 
@@ -436,7 +436,7 @@ class Command extends \yii\base\Component
 	 */
 	public function insert($table, $columns)
 	{
-		$params = array();
+		$params = [];
 		$sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
@@ -487,7 +487,7 @@ class Command extends \yii\base\Component
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
 	 */
-	public function update($table, $columns, $condition = '', $params = array())
+	public function update($table, $columns, $condition = '', $params = [])
 	{
 		$sql = $this->db->getQueryBuilder()->update($table, $columns, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);
@@ -511,7 +511,7 @@ class Command extends \yii\base\Component
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
 	 */
-	public function delete($table, $condition = '', $params = array())
+	public function delete($table, $condition = '', $params = [])
 	{
 		$sql = $this->db->getQueryBuilder()->delete($table, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);

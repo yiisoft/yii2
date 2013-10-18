@@ -64,7 +64,7 @@ class MaskedInput extends InputWidget
 	/**
 	 * @var array the HTML attributes for the input tag.
 	 */
-	public $options = array();
+	public $options = [];
 
 
 	/**
@@ -119,7 +119,7 @@ class MaskedInput extends InputWidget
 	 */
 	protected function getClientOptions()
 	{
-		$options = array();
+		$options = [];
 		if ($this->placeholder !== null) {
 			$options['placeholder'] = $this->placeholder;
 		}

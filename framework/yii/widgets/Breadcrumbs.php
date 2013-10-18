@@ -54,7 +54,7 @@ class Breadcrumbs extends Widget
 	/**
 	 * @var array the HTML attributes for the breadcrumb container tag.
 	 */
-	public $options = array('class' => 'breadcrumb');
+	public $options = ['class' => 'breadcrumb'];
 	/**
 	 * @var boolean whether to HTML-encode the link labels.
 	 */
@@ -80,7 +80,7 @@ class Breadcrumbs extends Widget
 	 * If a link is active, you only need to specify its "label", and instead of writing `array('label' => $label)`,
 	 * you should simply use `$label`.
 	 */
-	public $links = array();
+	public $links = [];
 	/**
 	 * @var string the template used to render each inactive item in the breadcrumbs. The token `{link}`
 	 * will be replaced with the actual HTML link for each inactive item.
@@ -100,18 +100,18 @@ class Breadcrumbs extends Widget
 		if (empty($this->links)) {
 			return;
 		}
-		$links = array();
+		$links = [];
 		if ($this->homeLink === null) {
-			$links[] = $this->renderItem(array(
+			$links[] = $this->renderItem([
 				'label' => Yii::t('yii', 'Home'),
 				'url' => Yii::$app->homeUrl,
-			), $this->itemTemplate);
+			], $this->itemTemplate);
 		} elseif ($this->homeLink !== false) {
 			$links[] = $this->renderItem($this->homeLink, $this->itemTemplate);
 		}
 		foreach ($this->links as $link) {
 			if (!is_array($link)) {
-				$link = array('label' => $link);
+				$link = ['label' => $link];
 			}
 			$links[] = $this->renderItem($link, isset($link['url']) ? $this->itemTemplate : $this->activeItemTemplate);
 		}
@@ -133,9 +133,9 @@ class Breadcrumbs extends Widget
 			throw new InvalidConfigException('The "label" element is required for each link.');
 		}
 		if (isset($link['url'])) {
-			return strtr($template, array('{link}' => Html::a($label, $link['url'])));
+			return strtr($template, ['{link}' => Html::a($label, $link['url'])]);
 		} else {
-			return strtr($template, array('{link}' => $label));
+			return strtr($template, ['{link}' => $label]);
 		}
 	}
 }

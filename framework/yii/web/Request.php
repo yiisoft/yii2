@@ -87,7 +87,7 @@ class Request extends \yii\base\Request
 	 * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
 	 * @see Cookie
 	 */
-	public $csrfCookie = array('httpOnly' => true);
+	public $csrfCookie = ['httpOnly' => true];
 	/**
 	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
 	 */
@@ -116,7 +116,7 @@ class Request extends \yii\base\Request
 		if ($result !== false) {
 			list ($route, $params) = $result;
 			$_GET = array_merge($_GET, $params);
-			return array($route, $_GET);
+			return [$route, $_GET];
 		} else {
 			throw new HttpException(404, Yii::t('yii', 'Page not found.'));
 		}
@@ -231,7 +231,7 @@ class Request extends \yii\base\Request
 			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
 			} else {
-				$this->_restParams = array();
+				$this->_restParams = [];
 				if (function_exists('mb_parse_str')) {
 					mb_parse_str($this->getRawBody(), $this->_restParams);
 				} else {
@@ -769,7 +769,7 @@ class Request extends \yii\base\Request
 			if (isset($_SERVER['HTTP_ACCEPT'])) {
 				$this->_contentTypes = $this->parseAcceptHeader($_SERVER['HTTP_ACCEPT']);
 			} else {
-				$this->_contentTypes = array();
+				$this->_contentTypes = [];
 			}
 		}
 		return $this->_contentTypes;
@@ -798,7 +798,7 @@ class Request extends \yii\base\Request
 			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 				$this->_languages = $this->parseAcceptHeader($_SERVER['HTTP_ACCEPT_LANGUAGE']);
 			} else {
-				$this->_languages = array();
+				$this->_languages = [];
 			}
 		}
 		return $this->_languages;
@@ -821,11 +821,11 @@ class Request extends \yii\base\Request
 	 */
 	protected function parseAcceptHeader($header)
 	{
-		$accepts = array();
+		$accepts = [];
 		$n = preg_match_all('/\s*([\w\/\-\*]+)\s*(?:;\s*q\s*=\s*([\d\.]+))?[^,]*/', $header, $matches, PREG_SET_ORDER);
 		for ($i = 0; $i < $n; ++$i) {
 			if (!empty($matches[$i][1])) {
-				$accepts[] = array($matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1, $i);
+				$accepts[] = [$matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1, $i];
 			}
 		}
 		usort($accepts, function ($a, $b) {
@@ -849,7 +849,7 @@ class Request extends \yii\base\Request
 				}
 			}
 		});
-		$result = array();
+		$result = [];
 		foreach ($accepts as $accept) {
 			$result[] = $accept[0];
 		}
@@ -865,7 +865,7 @@ class Request extends \yii\base\Request
 	 * @return string the language that the application should use. Null is returned if both [[getAcceptedLanguages()]]
 	 * and `$languages` are empty.
 	 */
-	public function getPreferredLanguage($languages = array())
+	public function getPreferredLanguage($languages = [])
 	{
 		$acceptedLanguages = $this->getAcceptedLanguages();
 		if (empty($languages)) {
@@ -903,9 +903,9 @@ class Request extends \yii\base\Request
 	public function getCookies()
 	{
 		if ($this->_cookies === null) {
-			$this->_cookies = new CookieCollection($this->loadCookies(), array(
+			$this->_cookies = new CookieCollection($this->loadCookies(), [
 				'readOnly' => true,
-			));
+			]);
 		}
 		return $this->_cookies;
 	}
@@ -916,23 +916,23 @@ class Request extends \yii\base\Request
 	 */
 	protected function loadCookies()
 	{
-		$cookies = array();
+		$cookies = [];
 		if ($this->enableCookieValidation) {
 			$key = $this->getCookieValidationKey();
 			foreach ($_COOKIE as $name => $value) {
 				if (is_string($value) && ($value = Security::validateData($value, $key)) !== false) {
-					$cookies[$name] = new Cookie(array(
+					$cookies[$name] = new Cookie([
 						'name' => $name,
 						'value' => @unserialize($value),
-					));
+					]);
 				}
 			}
 		} else {
 			foreach ($_COOKIE as $name => $value) {
-				$cookies[$name] = new Cookie(array(
+				$cookies[$name] = new Cookie([
 					'name' => $name,
 					'value' => $value,
-				));
+				]);
 			}
 		}
 		return $cookies;

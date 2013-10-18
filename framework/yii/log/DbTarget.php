@@ -80,12 +80,12 @@ class DbTarget extends Target
 				VALUES (:level, :category, :log_time, :message)";
 		$command = $this->db->createCommand($sql);
 		foreach ($this->messages as $message) {
-			$command->bindValues(array(
+			$command->bindValues([
 				':level' => $message[1],
 				':category' => $message[2],
 				':log_time' => $message[3],
 				':message' => $message[0],
-			))->execute();
+			])->execute();
 		}
 	}
 }

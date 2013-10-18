@@ -195,7 +195,7 @@ class Component extends Object
 		$this->ensureBehaviors();
 		foreach ($this->_behaviors as $object) {
 			if ($object->hasMethod($name)) {
-				return call_user_func_array(array($object, $name), $params);
+				return call_user_func_array([$object, $name], $params);
 			}
 		}
 
@@ -347,7 +347,7 @@ class Component extends Object
 	 */
 	public function behaviors()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -391,7 +391,7 @@ class Component extends Object
 	public function on($name, $handler, $data = null)
 	{
 		$this->ensureBehaviors();
-		$this->_events[$name][] = array($handler, $data);
+		$this->_events[$name][] = [$handler, $data];
 	}
 
 	/**
@@ -408,7 +408,7 @@ class Component extends Object
 		$this->ensureBehaviors();
 		if (isset($this->_events[$name])) {
 			if ($handler === null) {
-				$this->_events[$name] = array();
+				$this->_events[$name] = [];
 			} else {
 				$removed = false;
 				foreach ($this->_events[$name] as $i => $event) {
@@ -543,7 +543,7 @@ class Component extends Object
 				$this->detachBehavior($name);
 			}
 		}
-		$this->_behaviors = array();
+		$this->_behaviors = [];
 	}
 
 	/**
@@ -552,7 +552,7 @@ class Component extends Object
 	public function ensureBehaviors()
 	{
 		if ($this->_behaviors === null) {
-			$this->_behaviors = array();
+			$this->_behaviors = [];
 			foreach ($this->behaviors() as $name => $behavior) {
 				$this->attachBehaviorInternal($name, $behavior);
 			}

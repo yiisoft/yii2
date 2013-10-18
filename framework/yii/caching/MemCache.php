@@ -76,7 +76,7 @@ class MemCache extends Cache
 	/**
 	 * @var array list of memcache server configurations
 	 */
-	private $_servers = array();
+	private $_servers = [];
 
 	/**
 	 * Initializes this application component.
