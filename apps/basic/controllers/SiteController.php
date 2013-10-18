@@ -13,43 +13,43 @@ class SiteController extends Controller
 {
 	public function behaviors()
 	{
-		return array(
-			'access' => array(
+		return [
+			'access' => [
 				'class' => AccessControl::className(),
-				'only' => array('login', 'logout'),
-				'rules' => array(
-					array(
-						'actions' => array('login'),
+				'only' => ['login', 'logout'],
+				'rules' => [
+					[
+						'actions' => ['login'],
 						'allow' => true,
-						'roles' => array('?'),
-					),
-					array(
-						'actions' => array('logout'),
-						'allow' => true,
-						'roles' => array('@'),
-					),
-				),
-			),
-			'verbs' => array(
+						'roles' => ['?'],
+					],
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+						'roles' => ['@'],
+					],
+				],
+			],
+			'verbs' => [
 				'class' => VerbFilter::className(),
-				'actions' => array(
-					'logout' => array('post'),
-				),
-			),
-		);
+				'actions' => [
+					'logout' => ['post'],
+				],
+			],
+		];
 	}
 
 	public function actions()
 	{
-		return array(
-			'error' => array(
+		return [
+			'error' => [
 				'class' => 'yii\web\ErrorAction',
-			),
-			'captcha' => array(
+			],
+			'captcha' => [
 				'class' => 'yii\captcha\CaptchaAction',
 				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-			),
-		);
+			],
+		];
 	}
 
 	public function actionIndex()
@@ -63,9 +63,9 @@ class SiteController extends Controller
 		if ($model->load($_POST) && $model->login()) {
 			return $this->goBack();
 		} else {
-			return $this->render('login', array(
+			return $this->render('login', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 
@@ -75,21 +75,21 @@ class SiteController extends Controller
 		return $this->goHome();
 	}
 
-	public function actionContact()
+    public function actionContact()
 	{
 		$model = new ContactForm;
 		if ($model->load($_POST) && $model->contact(Yii::$app->params['adminEmail'])) {
 			Yii::$app->session->setFlash('contactFormSubmitted');
 			return $this->refresh();
 		} else {
-			return $this->render('contact', array(
+			return $this->render('contact', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 
-	public function actionAbout()
-	{
-		return $this->render('about');
-	}
+    public function actionAbout()
+    {
+        return $this->render('about');
+    }
 }

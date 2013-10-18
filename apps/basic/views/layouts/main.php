@@ -21,33 +21,33 @@ app\config\AppAsset::register($this);
 <body>
 <?php $this->beginBody(); ?>
 	<?php
-		NavBar::begin(array(
+		NavBar::begin([
 			'brandLabel' => 'My Company',
 			'brandUrl' => Yii::$app->homeUrl,
-			'options' => array(
+			'options' => [
 				'class' => 'navbar-inverse navbar-fixed-top',
-			),
-		));
-		echo Nav::widget(array(
-			'options' => array('class' => 'navbar-nav pull-right'),
-			'items' => array(
-				array('label' => 'Home', 'url' => array('/site/index')),
-				array('label' => 'About', 'url' => array('/site/about')),
-				array('label' => 'Contact', 'url' => array('/site/contact')),
+			],
+		]);
+		echo Nav::widget([
+			'options' => ['class' => 'navbar-nav pull-right'],
+			'items' => [
+				['label' => 'Home', 'url' => ['/site/index']],
+				['label' => 'About', 'url' => ['/site/about']],
+				['label' => 'Contact', 'url' => ['/site/contact']],
 				Yii::$app->user->isGuest ?
-					array('label' => 'Login', 'url' => array('/site/login')) :
-					array('label' => 'Logout (' . Yii::$app->user->identity->username .')' ,
-						'url' => array('/site/logout'),
-						'linkOptions' => array('data-method' => 'post')),
-			),
-		));
+					['label' => 'Login', 'url' => ['/site/login']] :
+					['label' => 'Logout (' . Yii::$app->user->identity->username .')' ,
+						'url' => ['/site/logout'],
+						'linkOptions' => ['data-method' => 'post']],
+			],
+		]);
 		NavBar::end();
 	?>
 
 	<div class="container">
-		<?php echo Breadcrumbs::widget(array(
-			'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
-		)); ?>
+		<?php echo Breadcrumbs::widget([
+			'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+		]); ?>
 		<?php echo $content; ?>
 	</div>
 

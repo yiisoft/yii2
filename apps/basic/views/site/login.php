@@ -15,26 +15,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<p>Please fill out the following fields to login:</p>
 
-	<?php $form = ActiveForm::begin(array(
+	<?php $form = ActiveForm::begin([
 		'id' => 'login-form',
-		'options' => array('class' => 'form-horizontal'),
-		'fieldConfig' => array(
+		'options' => ['class' => 'form-horizontal'],
+		'fieldConfig' => [
 			'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-			'labelOptions' => array('class' => 'col-lg-1 control-label'),
-		),
-	)); ?>
+			'labelOptions' => ['class' => 'col-lg-1 control-label'],
+		],
+	]); ?>
 
 	<?php echo $form->field($model, 'username'); ?>
 
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
 
-	<?php echo $form->field($model, 'rememberMe', array(
+	<?php echo $form->field($model, 'rememberMe', [
 		'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-	))->checkbox(); ?>
+	])->checkbox(); ?>
 
 	<div class="form-group">
 		<div class="col-lg-offset-1 col-lg-11">
-			<?php echo Html::submitButton('Login', array('class' => 'btn btn-primary')); ?>
+			<?php echo Html::submitButton('Login', ['class' => 'btn btn-primary']); ?>
 		</div>
 	</div>
 
