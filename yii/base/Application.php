@@ -80,7 +80,7 @@ abstract class Application extends Module
 	/**
 	 * @var array IDs of the components that need to be loaded when the application starts.
 	 */
-	public $preload = array();
+	public $preload = [];
 	/**
 	 * @var Controller the currently active controller instance
 	 */
@@ -121,7 +121,7 @@ abstract class Application extends Module
 	 * Note that the configuration must contain both [[id]] and [[basePath]].
 	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		Yii::$app = $this;
 		if (!isset($config['id'])) {
@@ -188,12 +188,12 @@ abstract class Application extends Module
 	{
 		if (YII_ENABLE_ERROR_HANDLER) {
 			ini_set('display_errors', 0);
-			set_exception_handler(array($this, 'handleException'));
-			set_error_handler(array($this, 'handleError'), error_reporting());
+			set_exception_handler([$this, 'handleException']);
+			set_error_handler([$this, 'handleError'], error_reporting());
 			if ($this->memoryReserveSize > 0) {
 				$this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
 			}
-			register_shutdown_function(array($this, 'handleFatalError'));
+			register_shutdown_function([$this, 'handleFatalError']);
 		}
 	}
 
@@ -403,26 +403,14 @@ abstract class Application extends Module
 	 */
 	public function registerCoreComponents()
 	{
-		$this->setComponents(array(
-			'log' => array(
-				'class' => 'yii\log\Logger',
-			),
-			'errorHandler' => array(
-				'class' => 'yii\base\ErrorHandler',
-			),
-			'formatter' => array(
-				'class' => 'yii\base\Formatter',
-			),
-			'i18n' => array(
-				'class' => 'yii\i18n\I18N',
-			),
-			'urlManager' => array(
-				'class' => 'yii\web\UrlManager',
-			),
-			'view' => array(
-				'class' => 'yii\base\View',
-			),
-		));
+		$this->setComponents([
+			'log' => ['class' => 'yii\log\Logger'],
+			'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
+			'formatter' => ['class' => 'yii\base\Formatter'],
+			'i18n' => ['class' => 'yii\i18n\I18N'],
+			'urlManager' => ['class' => 'yii\web\UrlManager'],
+			'view' => ['class' => 'yii\base\View'],
+		]);
 	}
 
 	/**

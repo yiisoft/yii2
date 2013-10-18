@@ -18,39 +18,39 @@ use yii\helpers\Html;
  *
  * ```php
  * // default with label
- * echo Progress::widget(array(
+ * echo Progress::widget([
  *     'percent' => 60,
  *     'label' => 'test',
- * ));
+ * ]);
  *
  * // styled
- * echo Progress::widget(array(
+ * echo Progress::widget([
  *     'percent' => 65,
- *     'barOptions' => array('class' => 'bar-danger')
- * ));
+ *     'barOptions' => ['class' => 'bar-danger']
+ * ]);
  *
  * // striped
- * echo Progress::widget(array(
+ * echo Progress::widget([
  *     'percent' => 70,
- *     'barOptions' => array('class' => 'bar-warning'),
- *     'options' => array('class' => 'progress-striped')
- * ));
+ *     'barOptions' => ['class' => 'bar-warning'],
+ *     'options' => ['class' => 'progress-striped']
+ * ]);
  *
  * // striped animated
- * echo Progress::widget(array(
+ * echo Progress::widget([
  *     'percent' => 70,
- *     'barOptions' => array('class' => 'bar-success'),
- *     'options' => array('class' => 'active progress-striped')
- * ));
+ *     'barOptions' => ['class' => 'bar-success'],
+ *     'options' => ['class' => 'active progress-striped']
+ * ]);
  *
  * // stacked bars
- * echo Progress::widget(array(
- *     'bars' => array(
- *         array('percent' => 30, 'options' => array('class' => 'bar-danger')),
- *         array('percent' => 30, 'label' => 'test', 'options' => array('class' => 'bar-success')),
- *         array('percent' => 35, 'options' => array('class' => 'bar-warning'))
- *     )
- * ));
+ * echo Progress::widget([
+ *     'bars' => [
+ *         ['percent' => 30, 'options' => ['class' => 'bar-danger']],
+ *         ['percent' => 30, 'label' => 'test', 'options' => ['class' => 'bar-success']],
+ *         ['percent' => 35, 'options' => array['class' => 'bar-warning']],
+ *     ]
+ * ]);
  * ```
  * @see http://twitter.github.io/bootstrap/components.html#progress
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
@@ -69,20 +69,20 @@ class Progress extends Widget
 	/**
 	 * @var array the HTML attributes of the
 	 */
-	public $barOptions = array();
+	public $barOptions = [];
 	/**
 	 * @var array a set of bars that are stacked together to form a single progress bar.
 	 * Each bar is an array of the following structure:
 	 *
 	 * ```php
-	 * array(
+	 * [
 	 *     // required, the amount of progress as a percentage.
 	 *     'percent' => 30,
 	 *     // optional, the label to be displayed on the bar
 	 *     'label' => '30%',
 	 *     // optional, array, additional HTML attributes for the bar tag
-	 *     'options' => array(),
-	 * )
+	 *     'options' => [],
+	 * ]
 	 */
 	public $bars;
 
@@ -118,13 +118,13 @@ class Progress extends Widget
 		if (empty($this->bars)) {
 			return $this->renderBar($this->percent, $this->label, $this->barOptions);
 		}
-		$bars = array();
+		$bars = [];
 		foreach ($this->bars as $bar) {
 			$label = ArrayHelper::getValue($bar, 'label', '');
 			if (!isset($bar['percent'])) {
 				throw new InvalidConfigException("The 'percent' option is required.");
 			}
-			$options = ArrayHelper::getValue($bar, 'options', array());
+			$options = ArrayHelper::getValue($bar, 'options', []);
 			$bars[] = $this->renderBar($bar['percent'], $label, $options);
 		}
 		return implode("\n", $bars);
@@ -137,7 +137,7 @@ class Progress extends Widget
 	 * @param array $options the HTML attributes of the bar
 	 * @return string the rendering result.
 	 */
-	protected function renderBar($percent, $label = '', $options = array())
+	protected function renderBar($percent, $label = '', $options = [])
 	{
 		Html::addCssClass($options, 'bar');
 		$options['style'] = "width:{$percent}%";

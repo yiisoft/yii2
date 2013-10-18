@@ -69,7 +69,7 @@ class AssetBundle extends Object
 	/**
 	 * @var array list of the bundle names that this bundle depends on
 	 */
-	public $depends = array();
+	public $depends = [];
 	/**
 	 * @var array list of JavaScript files that this bundle contains. Each JavaScript file can
 	 * be either a file path (without leading slash) relative to [[basePath]] or a URL representing
@@ -77,7 +77,7 @@ class AssetBundle extends Object
 	 *
 	 * Note that only forward slash "/" can be used as directory separator.
 	 */
-	public $js = array();
+	public $js = [];
 	/**
 	 * @var array list of CSS files that this bundle contains. Each CSS file can
 	 * be either a file path (without leading slash) relative to [[basePath]] or a URL representing
@@ -85,22 +85,22 @@ class AssetBundle extends Object
 	 *
 	 * Note that only forward slash "/" can be used as directory separator.
 	 */
-	public $css = array();
+	public $css = [];
 	/**
 	 * @var array the options that will be passed to [[\yii\base\View::registerJsFile()]]
 	 * when registering the JS files in this bundle.
 	 */
-	public $jsOptions = array();
+	public $jsOptions = [];
 	/**
 	 * @var array the options that will be passed to [[\yii\base\View::registerCssFile()]]
 	 * when registering the CSS files in this bundle.
 	 */
-	public $cssOptions = array();
+	public $cssOptions = [];
 	/**
 	 * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
 	 * is being published.
 	 */
-	public $publishOptions = array();
+	public $publishOptions = [];
 
 	/**
 	 * @param View $view

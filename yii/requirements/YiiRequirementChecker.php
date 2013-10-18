@@ -19,15 +19,15 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * ~~~php
  * require_once('path/to/YiiRequirementChecker.php');
  * $requirementsChecker = new YiiRequirementChecker();
- * $requirements = array(
- *     array(
+ * $requirements = [
+ *     [
  *         'name' => 'PHP Some Extension',
  *         'mandatory' => true,
  *         'condition' => extension_loaded('some_extension'),
  *         'by' => 'Some application feature',
  *         'memo' => 'PHP extension "some_extension" required',
- *     ),
- * );
+ *     ],
+ * ];
  * $requirementsChecker->checkYii()->check($requirements)->render();
  * ~~~
  *
@@ -38,12 +38,12 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * For example:
  *
  * ~~~
- * $requirements = array(
- *     array(
+ * $requirements = [
+ *     [
  *         'name' => 'Upload max file size',
  *         'condition' => 'eval:$this->checkUploadMaxFileSize("5M")',
- *     ),
- * );
+ *     ],
+ * ];
  * ~~~
  *
  * Note: this class definition does not match ordinary Yii style, because it should match PHP 4.3
@@ -74,14 +74,14 @@ class YiiRequirementChecker
 			$this->usageError('Requirements must be an array, "' . gettype($requirements) . '" has been given!');
 		}
 		if (!isset($this->result) || !is_array($this->result)) {
-			$this->result = array(
-				'summary' => array(
+			$this->result = [
+				'summary' => [
 					'total' => 0,
 					'errors' => 0,
 					'warnings' => 0,
-				),
-				'requirements' => array(),
-			);
+				],
+				'requirements' => [],
+			];
 		}
 		foreach ($requirements as $key => $rawRequirement) {
 			$requirement = $this->normalizeRequirement($rawRequirement, $key);
@@ -118,21 +118,21 @@ class YiiRequirementChecker
 	 * Return the check results.
 	 * @return array|null check results in format:
 	 * <code>
-	 * array(
-	 *     'summary' => array(
+	 * [
+	 *     'summary' => [
 	 *         'total' => total number of checks,
 	 *         'errors' => number of errors,
 	 *         'warnings' => number of warnings,
-	 *     ),
-	 *     'requirements' => array(
-	 *         array(
+	 *     ],
+	 *     'requirements' => [
+	 *         [
 	 *             ...
 	 *             'error' => is there an error,
 	 *             'warning' => is there a warning,
-	 *         ),
+	 *         ],
 	 *         ...
-	 *     ),
-	 * )
+	 *     ],
+	 * ]
 	 * </code>
 	 */
 	function getResult()

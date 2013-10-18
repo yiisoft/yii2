@@ -78,7 +78,7 @@ class ActiveQuery extends Query
 	{
 		if (method_exists($this->modelClass, $name)) {
 			array_unshift($params, $this);
-			call_user_func_array(array($this->modelClass, $name), $params);
+			call_user_func_array([$this->modelClass, $name], $params);
 			return $this;
 		} else {
 			return parent::__call($name, $params);
@@ -102,7 +102,7 @@ class ActiveQuery extends Query
 			}
 			return $models;
 		} else {
-			return array();
+			return [];
 		}
 	}
 
@@ -127,7 +127,7 @@ class ActiveQuery extends Query
 				$model = $class::create($row);
 			}
 			if (!empty($this->with)) {
-				$models = array($model);
+				$models = [$model];
 				$this->populateRelations($models, $this->with);
 				$model = $models[0];
 			}
@@ -156,9 +156,9 @@ class ActiveQuery extends Query
 			if ($this->from === null) {
 				$tableName = $modelClass::tableName();
 				if ($this->select === null && !empty($this->join)) {
-					$this->select = array("$tableName.*");
+					$this->select = ["$tableName.*"];
 				}
-				$this->from = array($tableName);
+				$this->from = [$tableName];
 			}
 			list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
 		}
@@ -188,12 +188,12 @@ class ActiveQuery extends Query
 	 * // find customers together with their orders and country
 	 * Customer::find()->with('orders', 'country')->all();
 	 * // find customers together with their country and orders of status 1
-	 * Customer::find()->with(array(
+	 * Customer::find()->with([
 	 *     'orders' => function($query) {
 	 *         $query->andWhere('status = 1');
 	 *     },
 	 *     'country',
-	 * ))->all();
+	 * ])->all();
 	 * ~~~
 	 *
 	 * @return static the query object itself
@@ -232,7 +232,7 @@ class ActiveQuery extends Query
 
 	private function createModels($rows)
 	{
-		$models = array();
+		$models = [];
 		if ($this->asArray) {
 			if ($this->indexBy === null) {
 				return $rows;
@@ -287,7 +287,7 @@ class ActiveQuery extends Query
 	 */
 	private function normalizeRelations($model, $with)
 	{
-		$relations = array();
+		$relations = [];
 		foreach ($with as $name => $callback) {
 			if (is_integer($name)) {
 				$name = $callback;

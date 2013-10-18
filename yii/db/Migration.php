@@ -135,7 +135,7 @@ class Migration extends \yii\base\Component
 	 * @param array $params input parameters (name => value) for the SQL execution.
 	 * See [[Command::execute()]] for more details.
 	 */
-	public function execute($sql, $params = array())
+	public function execute($sql, $params = [])
 	{
 		echo "    > execute SQL: $sql ...";
 		$time = microtime(true);
@@ -166,7 +166,7 @@ class Migration extends \yii\base\Component
 	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 */
-	public function update($table, $columns, $condition = '', $params = array())
+	public function update($table, $columns, $condition = '', $params = [])
 	{
 		echo "    > update $table ...";
 		$time = microtime(true);
@@ -181,7 +181,7 @@ class Migration extends \yii\base\Component
 	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 */
-	public function delete($table, $condition = '', $params = array())
+	public function delete($table, $condition = '', $params = [])
 	{
 		echo "    > delete from $table ...";
 		$time = microtime(true);

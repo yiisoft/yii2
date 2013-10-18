@@ -125,15 +125,15 @@ class EmailValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$options = array(
+		$options = [
 			'pattern' => new JsExpression($this->pattern),
 			'fullPattern' => new JsExpression($this->fullPattern),
 			'allowName' => $this->allowName,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-			))),
+			])),
 			'enableIDN' => (boolean)$this->enableIDN,
-		);
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}

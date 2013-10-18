@@ -23,7 +23,7 @@ abstract class BaseListView extends Widget
 	 * @var array the HTML attributes for the container tag of the list view.
 	 * The "tag" element specifies the tag name of the container element and defaults to "div".
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var \yii\data\DataProviderInterface the data provider for the view. This property is required.
 	 */
@@ -32,12 +32,12 @@ abstract class BaseListView extends Widget
 	 * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
 	 * used to render the pager. You can use a different widget class by configuring the "class" element.
 	 */
-	public $pager = array();
+	public $pager = [];
 	/**
 	 * @var array the configuration for the sorter widget. By default, [[LinkSorter]] will be
 	 * used to render the sorter. You can use a different widget class by configuring the "class" element.
 	 */
-	public $sorter = array();
+	public $sorter = [];
 	/**
 	 * @var string the HTML content to be displayed as the summary of the list view.
 	 * If you do not want to show the summary, you may set it with an empty string.
@@ -147,14 +147,14 @@ abstract class BaseListView extends Widget
 				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>{count}</b> {0, plural, =1{item} other{items}}.', $count) . '</div>';
 			}
 		}
-		return strtr($summaryContent, array(
+		return strtr($summaryContent, [
 			'{begin}' => $begin,
 			'{end}' => $end,
 			'{count}' => $count,
 			'{totalCount}' => $totalCount,
 			'{page}' => $page,
 			'{pageCount}' => $pageCount,
-		));
+		]);
 	}
 
 	/**

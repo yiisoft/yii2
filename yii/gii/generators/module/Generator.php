@@ -44,13 +44,13 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function rules()
 	{
-		return array_merge(parent::rules(), array(
-			array('moduleID, moduleClass', 'filter', 'filter' => 'trim'),
-			array('moduleID, moduleClass', 'required'),
-			array('moduleID', 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'),
-			array('moduleClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('moduleClass', 'validateModuleClass'),
-		));
+		return array_merge(parent::rules(), [
+			['moduleID, moduleClass', 'filter', 'filter' => 'trim'],
+			['moduleID, moduleClass', 'required'],
+			['moduleID', 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'],
+			['moduleClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			['moduleClass', 'validateModuleClass'],
+		]);
 	}
 
 	/**
@@ -58,10 +58,10 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'moduleID' => 'Module ID',
 			'moduleClass' => 'Module Class',
-		);
+		];
 	}
 
 	/**
@@ -69,10 +69,10 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function hints()
 	{
-		return array(
+		return [
 			'moduleID' => 'This refers to the ID of the module, e.g., <code>admin</code>.',
 			'moduleClass' => 'This is the fully qualified class name of the module, e.g., <code>app\modules\admin\Module</code>.',
-		);
+		];
 	}
 
 	/**
@@ -81,7 +81,7 @@ class Generator extends \yii\gii\Generator
 	public function successMessage()
 	{
 		if (Yii::$app->hasModule($this->moduleID)) {
-			$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($this->moduleID), array('target' => '_blank'));
+			$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($this->moduleID), ['target' => '_blank']);
 			return "The module has been generated successfully. You may $link.";
 		}
 
@@ -92,11 +92,11 @@ EOD;
 		$code = <<<EOD
 <?php
 	......
-	'modules' => array(
-		'{$this->moduleID}' => array(
+	'modules' => [
+		'{$this->moduleID}' => [
 			'class' => '{$this->moduleClass}',
-		),
-	),
+		],
+	],
 	......
 EOD;
 
@@ -108,11 +108,7 @@ EOD;
 	 */
 	public function requiredTemplates()
 	{
-		return array(
-			'module.php',
-			'controller.php',
-			'view.php',
-		);
+		return ['module.php', 'controller.php', 'view.php'];
 	}
 
 	/**
@@ -120,7 +116,7 @@ EOD;
 	 */
 	public function generate()
 	{
-		$files = array();
+		$files = [];
 		$modulePath = $this->getModulePath();
 		$files[] = new CodeFile(
 			$modulePath . '/' . StringHelper::basename($this->moduleClass) . '.php',

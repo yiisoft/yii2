@@ -163,12 +163,12 @@ abstract class Cache extends Component implements \ArrayAccess
 	 */
 	public function mget($keys)
 	{
-		$keyMap = array();
+		$keyMap = [];
 		foreach ($keys as $key) {
 			$keyMap[$key] = $this->buildKey($key);
 		}
 		$values = $this->getValues(array_values($keyMap));
-		$results = array();
+		$results = [];
 		foreach ($keyMap as $key => $newKey) {
 			$results[$key] = false;
 			if (isset($values[$newKey])) {
@@ -207,9 +207,9 @@ abstract class Cache extends Component implements \ArrayAccess
 			$dependency->evaluateDependency($this);
 		}
 		if ($this->serializer === null) {
-			$value = serialize(array($value, $dependency));
+			$value = serialize([$value, $dependency]);
 		} elseif ($this->serializer !== false) {
-			$value = call_user_func($this->serializer[0], array($value, $dependency));
+			$value = call_user_func($this->serializer[0], [$value, $dependency]);
 		}
 		$key = $this->buildKey($key);
 		return $this->setValue($key, $value, $expire);
@@ -233,9 +233,9 @@ abstract class Cache extends Component implements \ArrayAccess
 			$dependency->evaluateDependency($this);
 		}
 		if ($this->serializer === null) {
-			$value = serialize(array($value, $dependency));
+			$value = serialize([$value, $dependency]);
 		} elseif ($this->serializer !== false) {
-			$value = call_user_func($this->serializer[0], array($value, $dependency));
+			$value = call_user_func($this->serializer[0], [$value, $dependency]);
 		}
 		$key = $this->buildKey($key);
 		return $this->addValue($key, $value, $expire);
@@ -319,7 +319,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 */
 	protected function getValues($keys)
 	{
-		$results = array();
+		$results = [];
 		foreach ($keys as $key) {
 			$results[$key] = $this->getValue($key);
 		}

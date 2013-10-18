@@ -46,7 +46,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generate()
 	{
-		$files = array();
+		$files = [];
 		$files[] = new CodeFile(
 			Yii::getAlias($this->viewPath) . '/' . $this->viewName . '.php',
 			$this->render('form.php')
@@ -59,16 +59,16 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function rules()
 	{
-		return array_merge(parent::rules(), array(
-			array('modelClass, viewName, scenarioName, viewPath', 'filter', 'filter' => 'trim'),
-			array('modelClass, viewName, viewPath', 'required'),
-			array('modelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('modelClass', 'validateClass', 'params' => array('extends' => Model::className())),
-			array('viewName', 'match', 'pattern' => '/^\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes and slashes are allowed.'),
-			array('viewPath', 'match', 'pattern' => '/^@?\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes, slashes and @ are allowed.'),
-			array('viewPath', 'validateViewPath'),
-			array('scenarioName', 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'),
-		));
+		return array_merge(parent::rules(), [
+			['modelClass, viewName, scenarioName, viewPath', 'filter', 'filter' => 'trim'],
+			['modelClass, viewName, viewPath', 'required'],
+			['modelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			['modelClass', 'validateClass', 'params' => ['extends' => Model::className()]],
+			['viewName', 'match', 'pattern' => '/^\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes and slashes are allowed.'],
+			['viewPath', 'match', 'pattern' => '/^@?\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes, slashes and @ are allowed.'],
+			['viewPath', 'validateViewPath'],
+			['scenarioName', 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'],
+		]);
 	}
 
 	/**
@@ -76,12 +76,12 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'modelClass' => 'Model Class',
 			'viewName' => 'View Name',
 			'viewPath' => 'View Path',
 			'scenarioName' => 'Scenario',
-		);
+		];
 	}
 
 	/**
@@ -89,10 +89,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function requiredTemplates()
 	{
-		return array(
-			'form.php',
-			'action.php',
-		);
+		return ['form.php', 'action.php'];
 	}
 
 	/**
@@ -100,7 +97,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function stickyAttributes()
 	{
-		return array('viewPath', 'scenarioName');
+		return ['viewPath', 'scenarioName'];
 	}
 
 	/**
@@ -108,12 +105,12 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function hints()
 	{
-		return array(
+		return [
 			'modelClass' => 'This is the model class for collecting the form input. You should provide a fully qualified class name, e.g., <code>app\models\Post</code>.',
 			'viewName' => 'This is the view name with respect to the view path. For example, <code>site/index</code> would generate a <code>site/index.php</code> view file under the view path.',
 			'viewPath' => 'This is the root view path to keep the generated view files. You may provide either a directory or a path alias, e.g., <code>@app/views</code>.',
 			'scenarioName' => 'This is the scenario to be used by the model when collecting the form input. If empty, the default scenario will be used.',
-		);
+		];
 	}
 
 	/**

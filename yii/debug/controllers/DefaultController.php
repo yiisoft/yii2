@@ -29,9 +29,7 @@ class DefaultController extends Controller
 
 	public function actionIndex()
 	{
-		return $this->render('index', array(
-			'manifest' => $this->getManifest(),
-		));
+		return $this->render('index', ['manifest' => $this->getManifest()]);
 	}
 
 	public function actionView($tag = null, $panel = null)
@@ -46,22 +44,22 @@ class DefaultController extends Controller
 		} else {
 			$activePanel = $this->module->panels['request'];
 		}
-		return $this->render('view', array(
+		return $this->render('view', [
 			'tag' => $tag,
 			'summary' => $this->summary,
 			'manifest' => $this->getManifest(),
 			'panels' => $this->module->panels,
 			'activePanel' => $activePanel,
-		));
+		]);
 	}
 
 	public function actionToolbar($tag)
 	{
 		$this->loadData($tag);
-		return $this->renderPartial('toolbar', array(
+		return $this->renderPartial('toolbar', [
 			'tag' => $tag,
 			'panels' => $this->module->panels,
-		));
+		]);
 	}
 
 	public function actionPhpinfo()
@@ -78,7 +76,7 @@ class DefaultController extends Controller
 			if (is_file($indexFile)) {
 				$this->_manifest = array_reverse(unserialize(file_get_contents($indexFile)), true);
 			} else {
-				$this->_manifest = array();
+				$this->_manifest = [];
 			}
 		}
 		return $this->_manifest;

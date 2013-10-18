@@ -30,7 +30,7 @@ class Dropdown extends Widget
 	 * - linkOptions: array, optional, the HTML attributes of the item link.
 	 * - options: array, optional, the HTML attributes of the item.
 	 */
-	public $items = array();
+	public $items = [];
 	/**
 	 * @var boolean whether the labels for header items should be HTML-encoded.
 	 */
@@ -64,7 +64,7 @@ class Dropdown extends Widget
 	 */
 	protected function renderItems($items)
 	{
-		$lines = array();
+		$lines = [];
 		foreach ($items as $i => $item) {
 			if (isset($item['visible']) && !$item['visible']) {
 				unset($items[$i]);
@@ -78,8 +78,8 @@ class Dropdown extends Widget
 				throw new InvalidConfigException("The 'label' option is required.");
 			}
 			$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
-			$options = ArrayHelper::getValue($item, 'options', array());
-			$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
+			$options = ArrayHelper::getValue($item, 'options', []);
+			$linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
 			$linkOptions['tabindex'] = '-1';
 			$content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
 			$lines[] = Html::tag('li', $content, $options);

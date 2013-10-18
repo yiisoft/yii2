@@ -17,20 +17,18 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Carousel::widget(array(
- *     'items' => array(
+ * echo Carousel::widget([
+ *     'items' => [
  *         // the item contains only the image
  *         '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg"/>',
  *         // equivalent to the above
- *         array(
- *             'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg"/>',
- *         ),
+ *         ['content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg"/>'],
  *         // the item contains both the image and the caption
- *         array(
+ *         [
  *             'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-03.jpg"/>',
  *             'caption' => '<h4>This is title</h4><p>This is the caption text</p>',
- *             'options' => array(...),
- *         ),
+ *             'options' => [...],
+ *         ],
  *     )
  * ));
  * ```
@@ -45,23 +43,23 @@ class Carousel extends Widget
 	 * @var array|boolean the labels for the previous and the next control buttons.
 	 * If false, it means the previous and the next control buttons should not be displayed.
 	 */
-	public $controls = array('&lsaquo;', '&rsaquo;');
+	public $controls = ['&lsaquo;', '&rsaquo;'];
 	/**
 	 * @var array list of slides in the carousel. Each array element represents a single
 	 * slide with the following structure:
 	 *
 	 * ```php
-	 * array(
+	 * [
 	 *     // required, slide content (HTML), such as an image tag
 	 *     'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg"/>',
 	 *     // optional, the caption (HTML) of the slide
 	 *     'caption' => '<h4>This is title</h4><p>This is the caption text</p>',
 	 *     // optional the HTML attributes of the slide container
-	 *     'options' => array(),
-	 * )
+	 *     'options' => [],
+	 * ]
 	 * ```
 	 */
-	public $items = array();
+	public $items = [];
 
 
 	/**
@@ -92,15 +90,15 @@ class Carousel extends Widget
 	 */
 	public function renderIndicators()
 	{
-		$indicators = array();
+		$indicators = [];
 		for ($i = 0, $count = count($this->items); $i < $count; $i++) {
-			$options = array('data-target' => '#' . $this->options['id'], 'data-slide-to' => $i);
+			$options = ['data-target' => '#' . $this->options['id'], 'data-slide-to' => $i];
 			if ($i === 0) {
 				Html::addCssClass($options, 'active');
 			}
 			$indicators[] = Html::tag('li', '', $options);
 		}
-		return Html::tag('ol', implode("\n", $indicators), array('class' => 'carousel-indicators'));
+		return Html::tag('ol', implode("\n", $indicators), ['class' => 'carousel-indicators']);
 	}
 
 	/**
@@ -109,11 +107,11 @@ class Carousel extends Widget
 	 */
 	public function renderItems()
 	{
-		$items = array();
+		$items = [];
 		for ($i = 0, $count = count($this->items); $i < $count; $i++) {
 			$items[] = $this->renderItem($this->items[$i], $i);
 		}
-		return Html::tag('div', implode("\n", $items), array('class' => 'carousel-inner'));
+		return Html::tag('div', implode("\n", $items), ['class' => 'carousel-inner']);
 	}
 
 	/**
@@ -128,14 +126,14 @@ class Carousel extends Widget
 		if (is_string($item)) {
 			$content = $item;
 			$caption = null;
-			$options = array();
+			$options = [];
 		} elseif (isset($item['content'])) {
 			$content = $item['content'];
 			$caption = ArrayHelper::getValue($item, 'caption');
 			if ($caption !== null) {
-				$caption = Html::tag('div', $caption, array('class' => 'carousel-caption'));
+				$caption = Html::tag('div', $caption, ['class' => 'carousel-caption']);
 			}
-			$options = ArrayHelper::getValue($item, 'options', array());
+			$options = ArrayHelper::getValue($item, 'options', []);
 		} else {
 			throw new InvalidConfigException('The "content" option is required.');
 		}
@@ -155,14 +153,14 @@ class Carousel extends Widget
 	public function renderControls()
 	{
 		if (isset($this->controls[0], $this->controls[1])) {
-			return Html::a($this->controls[0], '#' . $this->options['id'], array(
+			return Html::a($this->controls[0], '#' . $this->options['id'], [
 				'class' => 'left carousel-control',
 				'data-slide' => 'prev',
-			)) . "\n"
-			. Html::a($this->controls[1], '#' . $this->options['id'], array(
+			]) . "\n"
+			. Html::a($this->controls[1], '#' . $this->options['id'], [
 				'class' => 'right carousel-control',
 				'data-slide' => 'next',
-			));
+			]);
 		} elseif ($this->controls === false) {
 			return '';
 		} else {

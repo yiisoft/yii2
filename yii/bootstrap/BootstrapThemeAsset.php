@@ -18,10 +18,10 @@ use yii\web\AssetBundle;
 class BootstrapThemeAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/bootstrap/assets';
-	public $css = array(
+	public $css = [
 		'css/bootstrap-theme.css',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\bootstrap\BootstrapAsset',
-	);
+	];
 }

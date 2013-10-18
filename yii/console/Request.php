@@ -29,7 +29,7 @@ class Request extends \yii\base\Request
 				$this->_params = $_SERVER['argv'];
 				array_shift($this->_params);
 			} else {
-				$this->_params = array();
+				$this->_params = [];
 			}
 		}
 		return $this->_params;
@@ -58,7 +58,7 @@ class Request extends \yii\base\Request
 			$route = '';
 		}
 
-		$params = array();
+		$params = [];
 		foreach ($rawParams as $param) {
 			if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
 				$name = $matches[1];
@@ -68,6 +68,6 @@ class Request extends \yii\base\Request
 			}
 		}
 
-		return array($route, $params);
+		return [$route, $params];
 	}
 }

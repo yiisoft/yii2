@@ -27,17 +27,17 @@ use yii\helpers\Html;
  * The following example shows how to use Menu:
  *
  * ~~~
- * echo Menu::widget(array(
- *     'items' => array(
+ * echo Menu::widget([
+ *     'items' => [
  *         // Important: you need to specify url as 'controller/action',
  *         // not just as 'controller' even if default action is used.
- *         array('label' => 'Home', 'url' => array('site/index')),
+ *         ['label' => 'Home', 'url' => ['site/index']],
  *         // 'Products' menu item will be selected as long as the route is 'product/index'
- *         array('label' => 'Products', 'url' => array('product/index'), 'items' => array(
- *             array('label' => 'New Arrivals', 'url' => array('product/index', 'tag' => 'new')),
- *             array('label' => 'Most Popular', 'url' => array('product/index', 'tag' => 'popular')),
- *         )),
- *         array('label' => 'Login', 'url' => array('site/login'), 'visible' => Yii::$app->user->isGuest),
+ *         ['label' => 'Products', 'url' => ['product/index'), 'items' => [
+ *             ['label' => 'New Arrivals', 'url' => ['product/index', 'tag' => 'new']],
+ *             ['label' => 'Most Popular', 'url' => ['product/index', 'tag' => 'popular']],
+ *         ]],
+ *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
  *     ),
  * ));
  * ~~~
@@ -67,14 +67,14 @@ class Menu extends Widget
 	 *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead.
 	 * - options: array, optional, the HTML attributes for the menu container tag.
 	 */
-	public $items = array();
+	public $items = [];
 	/**
 	 * @var array list of HTML attributes for the menu container tag. This will be overwritten
 	 * by the "options" set in individual [[items]]. The following special options are recognized:
 	 *
 	 * - tag: string, defaults to "li", the tag name of the item container tags.
 	 */
-	public $itemOptions = array();
+	public $itemOptions = [];
 	/**
 	 * @var string the template used to render the body of a menu which is a link.
 	 * In this template, the token `{url}` will be replaced with the corresponding link URL;
@@ -122,7 +122,7 @@ class Menu extends Widget
 	 *
 	 * - tag: string, defaults to "ul", the tag name of the item container tags.
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var string the CSS class that will be assigned to the first item in the main menu or each submenu.
 	 * Defaults to null, meaning no such CSS class will be assigned.
@@ -174,11 +174,11 @@ class Menu extends Widget
 	protected function renderItems($items)
 	{
 		$n = count($items);
-		$lines = array();
+		$lines = [];
 		foreach ($items as $i => $item) {
-			$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
+			$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
 			$tag = ArrayHelper::remove($options, 'tag', 'li');
-			$class = array();
+			$class = [];
 			if ($item['active']) {
 				$class[] = $this->activeCssClass;
 			}
@@ -198,9 +198,9 @@ class Menu extends Widget
 
 			$menu = $this->renderItem($item);
 			if (!empty($item['items'])) {
-				$menu .= strtr($this->submenuTemplate, array(
+				$menu .= strtr($this->submenuTemplate, [
 					'{items}' => $this->renderItems($item['items']),
-				));
+				]);
 			}
 			$lines[] = Html::tag($tag, $menu, $options);
 		}
@@ -217,15 +217,15 @@ class Menu extends Widget
 	{
 		if (isset($item['url'])) {
 			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
-			return strtr($template, array(
+			return strtr($template, [
 				'{url}' => Html::url($item['url']),
 				'{label}' => $item['label'],
-			));
+			]);
 		} else {
 			$template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
-			return strtr($template, array(
+			return strtr($template, [
 				'{label}' => $item['label'],
-			));
+			]);
 		}
 	}
 

@@ -17,34 +17,34 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Tabs::widget(array(
- *     'items' => array(
- *         array(
+ * echo Tabs::widget([
+ *     'items' => [
+ *         [
  *             'label' => 'One',
  *             'content' => 'Anim pariatur cliche...',
  *             'active' => true
- *         ),
- *         array(
+ *         ],
+ *         [
  *             'label' => 'Two',
  *             'content' => 'Anim pariatur cliche...',
- *             'headerOptions' => array(...),
- *             'options' => array('id' => 'myveryownID'),
- *         ),
- *         array(
+ *             'headerOptions' => [...],
+ *             'options' => ['id' => 'myveryownID'],
+ *         ],
+ *         [
  *             'label' => 'Dropdown',
- *             'items' => array(
- *                  array(
+ *             'items' => [
+ *                  [
  *                      'label' => 'DropdownA',
  *                      'content' => 'DropdownA, Anim pariatur cliche...',
- *                  ),
- *                  array(
+ *                  ],
+ *                  [
  *                      'label' => 'DropdownB',
  *                      'content' => 'DropdownB, Anim pariatur cliche...',
- *                  ),
- *             ),
- *         ),
- *     ),
- * ));
+ *                  ],
+ *             ],
+ *         ],
+ *     ],
+ * ]);
  * ```
  *
  * @see http://twitter.github.io/bootstrap/javascript.html#tabs
@@ -68,19 +68,19 @@ class Tabs extends Widget
 	 *     * content: string, required if `items` is not set. The content (HTML) of the tab pane.
 	 *     * contentOptions: optional, array, the HTML attributes of the tab content container.
 	 */
-	public $items = array();
+	public $items = [];
 	/**
 	 * @var array list of HTML attributes for the item container tags. This will be overwritten
 	 * by the "options" set in individual [[items]]. The following special options are recognized:
 	 *
 	 * - tag: string, defaults to "div", the tag name of the item container tags.
 	 */
-	public $itemOptions = array();
+	public $itemOptions = [];
 	/**
 	 * @var array list of HTML attributes for the header container tags. This will be overwritten
 	 * by the "headerOptions" set in individual [[items]].
 	 */
-	public $headerOptions = array();
+	public $headerOptions = [];
 	/**
 	 * @var boolean whether the labels for header items should be HTML-encoded.
 	 */
@@ -112,14 +112,14 @@ class Tabs extends Widget
 	 */
 	protected function renderItems()
 	{
-		$headers = array();
-		$panes = array();
+		$headers = [];
+		$panes = [];
 		foreach ($this->items as $n => $item) {
 			if (!isset($item['label'])) {
 				throw new InvalidConfigException("The 'label' option is required.");
 			}
 			$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
-			$headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', array()));
+			$headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', []));
 
 			if (isset($item['items'])) {
 				$label .= ' <b class="caret"></b>';
@@ -129,10 +129,10 @@ class Tabs extends Widget
 					Html::addCssClass($headerOptions, 'active');
 				}
 
-				$header = Html::a($label, "#", array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown')) . "\n"
-					. Dropdown::widget(array('items' => $item['items'], 'clientOptions' => false));
+				$header = Html::a($label, "#", ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']) . "\n"
+					. Dropdown::widget(['items' => $item['items'], 'clientOptions' => false]);
 			} elseif (isset($item['content'])) {
-				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
+				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
 				$options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $n);
 
 				Html::addCssClass($options, 'tab-pane');
@@ -140,7 +140,7 @@ class Tabs extends Widget
 					Html::addCssClass($options, 'active');
 					Html::addCssClass($headerOptions, 'active');
 				}
-				$header = Html::a($label, '#' . $options['id'], array('data-toggle' => 'tab'));
+				$header = Html::a($label, '#' . $options['id'], ['data-toggle' => 'tab']);
 				$panes[] = Html::tag('div', $item['content'], $options);
 			} else {
 				throw new InvalidConfigException("Either the 'content' or 'items' option must be set.");
@@ -150,7 +150,7 @@ class Tabs extends Widget
 		}
 
 		return Html::tag('ul', implode("\n", $headers), $this->options) . "\n"
-			. Html::tag('div', implode("\n", $panes), array('class' => 'tab-content'));
+			. Html::tag('div', implode("\n", $panes), ['class' => 'tab-content']);
 	}
 
 	/**
@@ -174,7 +174,7 @@ class Tabs extends Widget
 			}
 
 			$content = ArrayHelper::remove($item, 'content');
-			$options = ArrayHelper::remove($item, 'contentOptions', array());
+			$options = ArrayHelper::remove($item, 'contentOptions', []);
 			Html::addCssClass($options, 'tab-pane');
 			if (ArrayHelper::remove($item, 'active')) {
 				Html::addCssClass($options, 'active');

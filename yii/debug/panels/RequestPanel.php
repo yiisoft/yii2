@@ -55,14 +55,14 @@ EOD;
 
 	public function getDetail()
 	{
-		$data = array(
+		$data = [
 			'Route' => $this->data['route'],
 			'Action' => $this->data['action'],
 			'Parameters' => $this->data['actionParams'],
-		);
-		return Tabs::widget(array(
-			'items' => array(
-				array(
+		];
+		return Tabs::widget([
+			'items' => [
+				[
 					'label' => 'Parameters',
 					'content' => $this->renderData('Routing', $data)
 						. $this->renderData('$_GET', $this->data['GET'])
@@ -70,23 +70,23 @@ EOD;
 						. $this->renderData('$_FILES', $this->data['FILES'])
 						. $this->renderData('$_COOKIE', $this->data['COOKIE']),
 					'active' => true,
-				),
-				array(
+				],
+				[
 					'label' => 'Headers',
 					'content' => $this->renderData('Request Headers', $this->data['requestHeaders'])
 						. $this->renderData('Response Headers', $this->data['responseHeaders']),
-				),
-				array(
+				],
+				[
 					'label' => 'Session',
 					'content' => $this->renderData('$_SESSION', $this->data['SESSION'])
 						. $this->renderData('Flashes', $this->data['flashes']),
-				),
-				array(
+				],
+				[
 					'label' => '$_SERVER',
 					'content' => $this->renderData('$_SERVER', $this->data['SERVER']),
-				),
-			),
-		));
+				],
+			],
+		]);
 	}
 
 	public function save()
@@ -96,16 +96,16 @@ EOD;
 		} elseif (function_exists('http_get_request_headers')) {
 			$requestHeaders = http_get_request_headers();
 		} else {
-			$requestHeaders = array();
+			$requestHeaders = [];
 		}
-		$responseHeaders = array();
+		$responseHeaders = [];
 		foreach (headers_list() as $header) {
 			if (($pos = strpos($header, ':')) !== false) {
 				$name = substr($header, 0, $pos);
 				$value = trim(substr($header, $pos + 1));
 				if (isset($responseHeaders[$name])) {
 					if (!is_array($responseHeaders[$name])) {
-						$responseHeaders[$name] = array($responseHeaders[$name], $value);
+						$responseHeaders[$name] = [$responseHeaders[$name], $value];
 					} else {
 						$responseHeaders[$name][] = $value;
 					}
@@ -127,21 +127,21 @@ EOD;
 		}
 		/** @var \yii\web\Session $session */
 		$session = Yii::$app->getComponent('session', false);
-		return array(
-			'flashes' => $session ? $session->getAllFlashes() : array(),
+		return [
+			'flashes' => $session ? $session->getAllFlashes() : [],
 			'statusCode' => Yii::$app->getResponse()->getStatusCode(),
 			'requestHeaders' => $requestHeaders,
 			'responseHeaders' => $responseHeaders,
 			'route' => Yii::$app->requestedAction ? Yii::$app->requestedAction->getUniqueId() : Yii::$app->requestedRoute,
 			'action' => $action,
 			'actionParams' => Yii::$app->requestedParams,
-			'SERVER' => empty($_SERVER) ? array() : $_SERVER,
-			'GET' => empty($_GET) ? array() : $_GET,
-			'POST' => empty($_POST) ? array() : $_POST,
-			'COOKIE' => empty($_COOKIE) ? array() : $_COOKIE,
-			'FILES' => empty($_FILES) ? array() : $_FILES,
-			'SESSION' => empty($_SESSION) ? array() : $_SESSION,
-		);
+			'SERVER' => empty($_SERVER) ? [] : $_SERVER,
+			'GET' => empty($_GET) ? [] : $_GET,
+			'POST' => empty($_POST) ? [] : $_POST,
+			'COOKIE' => empty($_COOKIE) ? [] : $_COOKIE,
+			'FILES' => empty($_FILES) ? [] : $_FILES,
+			'SESSION' => empty($_SESSION) ? [] : $_SESSION,
+		];
 	}
 
 	protected function renderData($caption, $values)
@@ -149,7 +149,7 @@ EOD;
 		if (empty($values)) {
 			return "<h3>$caption</h3>\n<p>Empty.</p>";
 		}
-		$rows = array();
+		$rows = [];
 		foreach ($values as $name => $value) {
 			$rows[] = '<tr><th style="width: 200px;">' . Html::encode($name) . '</th><td>' . htmlspecialchars(var_export($value, true), ENT_QUOTES|ENT_SUBSTITUTE, \Yii::$app->charset, TRUE) . '</td></tr>';
 		}

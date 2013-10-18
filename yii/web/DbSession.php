@@ -21,11 +21,11 @@ use yii\base\InvalidConfigException;
  * The following example shows how you can configure the application to use DbSession:
  *
  * ~~~
- * 'session' => array(
+ * 'session' => [
  *     'class' => 'yii\web\DbSession',
  *     // 'db' => 'mydb',
  *     // 'sessionTable' => 'my_session',
- * )
+ * ]
  * ~~~
  *
  * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
@@ -111,13 +111,13 @@ class DbSession extends Session
 
 		$query = new Query;
 		$row = $query->from($this->sessionTable)
-			->where(array('id' => $oldID))
+			->where(['id' => $oldID])
 			->createCommand($this->db)
 			->queryOne();
 		if ($row !== false) {
 			if ($deleteOldSession) {
 				$this->db->createCommand()
-					->update($this->sessionTable, array('id' => $newID), array('id' => $oldID))
+					->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
 					->execute();
 			} else {
 				$row['id'] = $newID;
@@ -128,10 +128,10 @@ class DbSession extends Session
 		} else {
 			// shouldn't reach here normally
 			$this->db->createCommand()
-				->insert($this->sessionTable, array(
+				->insert($this->sessionTable, [
 					'id' => $newID,
 					'expire' => time() + $this->getTimeout(),
-				))->execute();
+				])->execute();
 		}
 	}
 
@@ -144,9 +144,9 @@ class DbSession extends Session
 	public function readSession($id)
 	{
 		$query = new Query;
-		$data = $query->select(array('data'))
+		$data = $query->select(['data'])
 			->from($this->sessionTable)
-			->where('[[expire]]>:expire AND [[id]]=:id', array(':expire' => time(), ':id' => $id))
+			->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id])
 			->createCommand($this->db)
 			->queryScalar();
 		return $data === false ? '' : $data;
@@ -166,21 +166,21 @@ class DbSession extends Session
 		try {
 			$expire = time() + $this->getTimeout();
 			$query = new Query;
-			$exists = $query->select(array('id'))
+			$exists = $query->select(['id'])
 				->from($this->sessionTable)
-				->where(array('id' => $id))
+				->where(['id' => $id])
 				->createCommand($this->db)
 				->queryScalar();
 			if ($exists === false) {
 				$this->db->createCommand()
-					->insert($this->sessionTable, array(
+					->insert($this->sessionTable, [
 						'id' => $id,
 						'data' => $data,
 						'expire' => $expire,
-					))->execute();
+					])->execute();
 			} else {
 				$this->db->createCommand()
-					->update($this->sessionTable, array('data' => $data, 'expire' => $expire), array('id' => $id))
+					->update($this->sessionTable, ['data' => $data, 'expire' => $expire], ['id' => $id])
 					->execute();
 			}
 		} catch (\Exception $e) {
@@ -202,7 +202,7 @@ class DbSession extends Session
 	public function destroySession($id)
 	{
 		$this->db->createCommand()
-			->delete($this->sessionTable, array('id' => $id))
+			->delete($this->sessionTable, ['id' => $id])
 			->execute();
 		return true;
 	}
@@ -216,7 +216,7 @@ class DbSession extends Session
 	public function gcSession($maxLifetime)
 	{
 		$this->db->createCommand()
-			->delete($this->sessionTable, '[[expire]]<:expire', array(':expire' => time()))
+			->delete($this->sessionTable, '[[expire]]<:expire', [':expire' => time()])
 			->execute();
 		return true;
 	}

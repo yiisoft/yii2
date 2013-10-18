@@ -69,7 +69,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
 			if ($data instanceof Arrayable) {
 				$this->buildXml($child, $data->toArray());
 			} else {
-				$array = array();
+				$array = [];
 				foreach ($data as $name => $value) {
 					$array[$name] = $value;
 				}

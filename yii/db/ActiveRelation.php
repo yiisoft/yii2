@@ -71,7 +71,7 @@ class ActiveRelation extends ActiveQuery
 	public function via($relationName, $callable = null)
 	{
 		$relation = $this->primaryModel->getRelation($relationName);
-		$this->via = array($relationName, $relation);
+		$this->via = [$relationName, $relation];
 		if ($callable !== null) {
 			call_user_func($callable, $relation);
 		}
@@ -90,13 +90,13 @@ class ActiveRelation extends ActiveQuery
 	 */
 	public function viaTable($tableName, $link, $callable = null)
 	{
-		$relation = new ActiveRelation(array(
+		$relation = new ActiveRelation([
 			'modelClass' => get_class($this->primaryModel),
-			'from' => array($tableName),
+			'from' => [$tableName],
 			'link' => $link,
 			'multiple' => true,
 			'asArray' => true,
-		));
+		]);
 		$this->via = $relation;
 		if ($callable !== null) {
 			call_user_func($callable, $relation);
@@ -116,7 +116,7 @@ class ActiveRelation extends ActiveQuery
 			// lazy loading
 			if ($this->via instanceof self) {
 				// via pivot table
-				$viaModels = $this->via->findPivotRows(array($this->primaryModel));
+				$viaModels = $this->via->findPivotRows([$this->primaryModel]);
 				$this->filterByModels($viaModels);
 			} elseif (is_array($this->via)) {
 				// via relation
@@ -128,11 +128,11 @@ class ActiveRelation extends ActiveQuery
 				} else {
 					$model = $viaQuery->one();
 					$this->primaryModel->populateRelation($viaName, $model);
-					$viaModels = $model === null ? array() : array($model);
+					$viaModels = $model === null ? [] : [$model];
 				}
 				$this->filterByModels($viaModels);
 			} else {
-				$this->filterByModels(array($this->primaryModel));
+				$this->filterByModels([$this->primaryModel]);
 			}
 		}
 		return parent::createCommand($db);
@@ -178,7 +178,7 @@ class ActiveRelation extends ActiveQuery
 					$primaryModels[$i][$name] = $model;
 				}
 			}
-			return array($model);
+			return [$model];
 		} else {
 			$models = $this->all();
 			if (isset($viaModels, $viaQuery)) {
@@ -190,7 +190,7 @@ class ActiveRelation extends ActiveQuery
 			$link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
 			foreach ($primaryModels as $i => $primaryModel) {
 				$key = $this->getModelKey($primaryModel, $link);
-				$value = isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? array() : null);
+				$value = isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? [] : null);
 				if ($primaryModel instanceof ActiveRecord) {
 					$primaryModel->populateRelation($name, $value);
 				} else {
@@ -210,7 +210,7 @@ class ActiveRelation extends ActiveQuery
 	 */
 	private function buildBuckets($models, $link, $viaModels = null, $viaLink = null)
 	{
-		$buckets = array();
+		$buckets = [];
 		$linkKeys = array_keys($link);
 		foreach ($models as $i => $model) {
 			$key = $this->getModelKey($model, $linkKeys);
@@ -222,7 +222,7 @@ class ActiveRelation extends ActiveQuery
 		}
 
 		if ($viaModels !== null) {
-			$viaBuckets = array();
+			$viaBuckets = [];
 			$viaLinkKeys = array_keys($viaLink);
 			$linkValues = array_values($link);
 			foreach ($viaModels as $viaModel) {
@@ -257,7 +257,7 @@ class ActiveRelation extends ActiveQuery
 	private function getModelKey($model, $attributes)
 	{
 		if (count($attributes) > 1) {
-			$key = array();
+			$key = [];
 			foreach ($attributes as $attribute) {
 				$key[] = $model[$attribute];
 			}
@@ -274,7 +274,7 @@ class ActiveRelation extends ActiveQuery
 	private function filterByModels($models)
 	{
 		$attributes = array_keys($this->link);
-		$values = array();
+		$values = [];
 		if (count($attributes) === 1) {
 			// single key
 			$attribute = reset($this->link);
@@ -286,14 +286,14 @@ class ActiveRelation extends ActiveQuery
 		} else {
 			// composite keys
 			foreach ($models as $model) {
-				$v = array();
+				$v = [];
 				foreach ($this->link as $attribute => $link) {
 					$v[$attribute] = $model[$link];
 				}
 				$values[] = $v;
 			}
 		}
-		$this->andWhere(array('in', $attributes, array_unique($values, SORT_REGULAR)));
+		$this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
 	}
 
 	/**
@@ -303,7 +303,7 @@ class ActiveRelation extends ActiveQuery
 	private function findPivotRows($primaryModels)
 	{
 		if (empty($primaryModels)) {
-			return array();
+			return [];
 		}
 		$this->filterByModels($primaryModels);
 		/** @var $primaryModel ActiveRecord */

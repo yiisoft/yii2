@@ -37,14 +37,14 @@ class <?=$controllerClass; ?> extends <?=StringHelper::basename($generator->base
 {
 	public function behaviors()
 	{
-		return array(
-			'verbs' => array(
+		return [
+			'verbs' => [
 				'class' => VerbFilter::className(),
-				'actions' => array(
-					'delete' => array('post'),
-				),
-			),
-		);
+				'actions' => [
+					'delete' => ['post'],
+				],
+			],
+		];
 	}
 
 	/**
@@ -56,10 +56,10 @@ class <?=$controllerClass; ?> extends <?=StringHelper::basename($generator->base
 		$searchModel = new <?=$searchModelClass; ?>;
 		$dataProvider = $searchModel->search($_GET);
 
-		return $this->render('index', array(
+		return $this->render('index', [
 			'dataProvider' => $dataProvider,
 			'searchModel' => $searchModel,
-		));
+		]);
 	}
 
 	/**
@@ -69,9 +69,9 @@ class <?=$controllerClass; ?> extends <?=StringHelper::basename($generator->base
 	 */
 	public function actionView(<?=$actionParams; ?>)
 	{
-		return $this->render('view', array(
+		return $this->render('view', [
 			'model' => $this->findModel(<?=$actionParams; ?>),
-		));
+		]);
 	}
 
 	/**
@@ -84,11 +84,11 @@ class <?=$controllerClass; ?> extends <?=StringHelper::basename($generator->base
 		$model = new <?=$modelClass; ?>;
 
 		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(array('view', <?=$urlParams; ?>));
+			return $this->redirect(['view', <?=$urlParams; ?>]);
 		} else {
-			return $this->render('create', array(
+			return $this->render('create', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 
@@ -103,11 +103,11 @@ class <?=$controllerClass; ?> extends <?=StringHelper::basename($generator->base
 		$model = $this->findModel(<?=$actionParams; ?>);
 
 		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(array('view', <?=$urlParams; ?>));
+			return $this->redirect(['view', <?=$urlParams; ?>]);
 		} else {
-			return $this->render('update', array(
+			return $this->render('update', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 
@@ -120,7 +120,7 @@ class <?=$controllerClass; ?> extends <?=StringHelper::basename($generator->base
 	public function actionDelete(<?=$actionParams; ?>)
 	{
 		$this->findModel(<?=$actionParams; ?>)->delete();
-		return $this->redirect(array('index'));
+		return $this->redirect(['index']);
 	}
 
 	/**
@@ -136,11 +136,11 @@ class <?=$controllerClass; ?> extends <?=StringHelper::basename($generator->base
 if (count($pks) === 1) {
 	$condition = '$id';
 } else {
-	$condition = array();
+	$condition = [];
 	foreach ($pks as $pk) {
 		$condition[] = "'$pk' => \$$pk";
 	}
-	$condition = 'array(' . implode(', ', $condition) . ')';
+	$condition = '[' . implode(', ', $condition) . ']';
 }
 ?>
 		if (($model = <?=$modelClass; ?>::find(<?=$condition; ?>)) !== null) {

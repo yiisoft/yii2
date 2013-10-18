@@ -85,23 +85,23 @@ class GettextMoFile extends GettextFile
 		$sourceOffset = $this->readInteger($fileHandle);
 		$targetOffset = $this->readInteger($fileHandle);
 
-		$sourceLengths = array();
-		$sourceOffsets = array();
+		$sourceLengths = [];
+		$sourceOffsets = [];
 		fseek($fileHandle, $sourceOffset);
 		for ($i = 0; $i < $count; ++$i) {
 			$sourceLengths[] = $this->readInteger($fileHandle);
 			$sourceOffsets[] = $this->readInteger($fileHandle);
 		}
 
-		$targetLengths = array();
-		$targetOffsets = array();
+		$targetLengths = [];
+		$targetOffsets = [];
 		fseek($fileHandle, $targetOffset);
 		for ($i = 0; $i < $count; ++$i) {
 			$targetLengths[] = $this->readInteger($fileHandle);
 			$targetOffsets[] = $this->readInteger($fileHandle);
 		}
 
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < $count; ++$i) {
 			$id = $this->readString($fileHandle, $sourceLengths[$i], $sourceOffsets[$i]);
 			$separatorPosition = strpos($id, chr(4));

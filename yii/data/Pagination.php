@@ -26,17 +26,17 @@ use yii\base\Object;
  * ~~~
  * function actionIndex()
  * {
- *     $query = Article::find()->where(array('status' => 1));
+ *     $query = Article::find()->where(['status' => 1]);
  *     $countQuery = clone $query;
- *     $pages = new Pagination(array('totalCount' => $countQuery->count()));
+ *     $pages = new Pagination(['totalCount' => $countQuery->count()]);
  *     $models = $query->offset($pages->offset)
  *         ->limit($pages->limit)
  *         ->all();
  *
- *     return $this->render('index', array(
+ *     return $this->render('index', [
  *          'models' => $models,
  *          'pages' => $pages,
- *     ));
+ *     ]);
  * }
  * ~~~
  *
@@ -48,9 +48,9 @@ use yii\base\Object;
  * }
  *
  * // display pagination
- * echo LinkPager::widget(array(
+ * echo LinkPager::widget([
  *     'pagination' => $pages,
- * ));
+ * ]);
  * ~~~
  *
  * @property integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement

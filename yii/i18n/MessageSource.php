@@ -38,7 +38,7 @@ class MessageSource extends Component
 	 */
 	public $sourceLanguage;
 
-	private $_messages = array();
+	private $_messages = [];
 
 	/**
 	 * Initializes this component.
@@ -62,7 +62,7 @@ class MessageSource extends Component
 	 */
 	protected function loadMessages($category, $language)
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -106,11 +106,11 @@ class MessageSource extends Component
 		if (isset($this->_messages[$key][$message]) && $this->_messages[$key][$message] !== '') {
 			return $this->_messages[$key][$message];
 		} elseif ($this->hasEventHandlers('missingTranslation')) {
-			$event = new MissingTranslationEvent(array(
+			$event = new MissingTranslationEvent([
 				'category' => $category,
 				'message' => $message,
 				'language' => $language,
-			));
+			]);
 			$this->trigger(self::EVENT_MISSING_TRANSLATION, $event);
 			return $this->_messages[$key] = $event->message;
 		} else {

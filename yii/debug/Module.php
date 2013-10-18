@@ -24,10 +24,10 @@ class Module extends \yii\base\Module
 	 * @var array the list of IPs that are allowed to access this module.
 	 * Each array element represents a single IP filter which can be either an IP address
 	 * or an address with wildcard (e.g. 192.168.0.*) to represent a network segment.
-	 * The default value is `array('127.0.0.1', '::1')`, which means the module can only be accessed
+	 * The default value is `['127.0.0.1', '::1']`, which means the module can only be accessed
 	 * by localhost.
 	 */
-	public $allowedIPs = array('127.0.0.1', '::1');
+	public $allowedIPs = ['127.0.0.1', '::1'];
 	/**
 	 * @var string the namespace that controller classes are in.
 	 */
@@ -39,7 +39,7 @@ class Module extends \yii\base\Module
 	/**
 	 * @var array|Panel[]
 	 */
-	public $panels = array();
+	public $panels = [];
 	/**
 	 * @var string the directory storing the debugger data files. This can be specified using a path alias.
 	 */
@@ -58,7 +58,7 @@ class Module extends \yii\base\Module
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
 		// do not initialize view component before application is ready (needed when debug in preload)
 		Yii::$app->on(Application::EVENT_BEFORE_ACTION, function() {
-			Yii::$app->getView()->on(View::EVENT_END_BODY, array($this, 'renderToolbar'));
+			Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 		});
 
 		foreach (array_merge($this->corePanels(), $this->panels) as $id => $config) {
@@ -70,7 +70,7 @@ class Module extends \yii\base\Module
 
 	public function beforeAction($action)
 	{
-		Yii::$app->getView()->off(View::EVENT_END_BODY, array($this, 'renderToolbar'));
+		Yii::$app->getView()->off(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 		unset(Yii::$app->getLog()->targets['debug']);
 		$this->logTarget = null;
 
@@ -88,9 +88,9 @@ class Module extends \yii\base\Module
 		if (!$this->checkAccess()) {
 			return;
 		}
-		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', array(
+		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', [
 			'tag' => $this->logTarget->tag,
-		));
+		]);
 		echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';
 		/** @var View $view */
 		$view = $event->sender;
@@ -111,22 +111,12 @@ class Module extends \yii\base\Module
 
 	protected function corePanels()
 	{
-		return array(
-			'config' => array(
-				'class' => 'yii\debug\panels\ConfigPanel',
-			),
-			'request' => array(
-				'class' => 'yii\debug\panels\RequestPanel',
-			),
-			'log' => array(
-				'class' => 'yii\debug\panels\LogPanel',
-			),
-			'profiling' => array(
-				'class' => 'yii\debug\panels\ProfilingPanel',
-			),
-			'db' => array(
-				'class' => 'yii\debug\panels\DbPanel',
-			),
-		);
+		return [
+			'config' => ['class' => 'yii\debug\panels\ConfigPanel'],
+			'request' => ['class' => 'yii\debug\panels\RequestPanel'],
+			'log' => ['class' => 'yii\debug\panels\LogPanel'],
+			'profiling' => ['class' => 'yii\debug\panels\ProfilingPanel'],
+			'db' => ['class' => 'yii\debug\panels\DbPanel'],
+		];
 	}
 }

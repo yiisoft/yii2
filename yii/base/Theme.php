@@ -21,7 +21,7 @@ use yii\helpers\FileHelper;
  * with its themed version if part of its path matches one of the keys in [[pathMap]].
  * Then the matched part will be replaced with the corresponding array value.
  *
- * For example, if [[pathMap]] is `array('/web/views' => '/web/themes/basic')`,
+ * For example, if [[pathMap]] is `['/web/views' => '/web/themes/basic']`,
  * then the themed version for a view file `/web/views/site/index.php` will be
  * `/web/themes/basic/site/index.php`.
  *
@@ -29,12 +29,12 @@ use yii\helpers\FileHelper;
  * component like the following:
  *
  * ~~~
- * 'view' => array(
- *     'theme' => array(
+ * 'view' => [
+ *     'theme' => [
  *         'basePath' => '@webroot/themes/basic',
  *         'baseUrl' => '@web/themes/basic',
- *     ),
- * ),
+ *     ],
+ * ],
  * ~~~
  *
  * The above configuration specifies a theme located under the "themes/basic" directory of the Web folder
@@ -76,12 +76,12 @@ class Theme extends Component
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
 				$this->basePath = Yii::getAlias($this->basePath);
-				$this->pathMap = array(Yii::$app->getBasePath() => $this->basePath);
+				$this->pathMap = [Yii::$app->getBasePath() => $this->basePath];
 			} else {
 				throw new InvalidConfigException('The "basePath" property must be set.');
 			}
 		}
-		$paths = array();
+		$paths = [];
 		foreach ($this->pathMap as $from => $to) {
 			$from = FileHelper::normalizePath(Yii::getAlias($from));
 			$to = FileHelper::normalizePath(Yii::getAlias($to));

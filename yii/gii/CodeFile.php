@@ -62,7 +62,7 @@ class CodeFile extends Object
 	 */
 	public function __construct($path, $content)
 	{
-		$this->path = strtr($path, array('/' => DIRECTORY_SEPARATOR, '\\' => DIRECTORY_SEPARATOR));
+		$this->path = strtr($path, ['/' => DIRECTORY_SEPARATOR, '\\' => DIRECTORY_SEPARATOR]);
 		$this->content = $content;
 		$this->id = md5($this->path);
 		if (is_file($path)) {
@@ -134,7 +134,7 @@ class CodeFile extends Object
 
 		if ($type === 'php') {
 			return highlight_string($this->content, true);
-		} elseif (!in_array($type, array('jpg', 'gif', 'png', 'exe'))) {
+		} elseif (!in_array($type, ['jpg', 'gif', 'png', 'exe'])) {
 			return nl2br(Html::encode($this->content));
 		} else {
 			return false;
@@ -144,7 +144,7 @@ class CodeFile extends Object
 	public function diff()
 	{
 		$type = strtolower($this->getType());
-		if (in_array($type, array('jpg', 'gif', 'png', 'exe'))) {
+		if (in_array($type, ['jpg', 'gif', 'png', 'exe'])) {
 			return false;
 		} elseif ($this->operation === self::OP_OVERWRITE) {
 			return StringHelper::diff(file($this->path), $this->content);

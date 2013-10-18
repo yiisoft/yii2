@@ -30,17 +30,17 @@ use yii\helpers\Inflector;
  * A typical usage of DetailView is as follows:
  *
  * ~~~
- * echo DetailView::widget(array(
+ * echo DetailView::widget([
  *     'model' => $model,
- *     'attributes' => array(
+ *     'attributes' => [
  *         'title',             // title attribute (in plain text)
  *         'description:html',  // description attribute in HTML
- *         array(               // the owner name of the model
+ *         [                    // the owner name of the model
  *             'label' => 'Owner',
  *             'value' => $model->owner->name,
- *         ),
- *     ),
- * ));
+ *         ],
+ *     ],
+ * ]);
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -90,7 +90,7 @@ class DetailView extends Widget
 	 * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
 	 * what container tag should be used. It defaults to "table" if not set.
 	 */
-	public $options = array('class' => 'table table-striped table-bordered');
+	public $options = ['class' => 'table table-striped table-bordered'];
 	/**
 	 * @var array|Formatter the formatter used to format model attribute values into displayable texts.
 	 * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
@@ -124,7 +124,7 @@ class DetailView extends Widget
 	 */
 	public function run()
 	{
-		$rows = array();
+		$rows = [];
 		$i = 0;
 		foreach ($this->attributes as $attribute) {
 			$rows[] = $this->renderAttribute($attribute, $i++);
@@ -143,10 +143,10 @@ class DetailView extends Widget
 	protected function renderAttribute($attribute, $index)
 	{
 		if (is_string($this->template)) {
-			return strtr($this->template, array(
+			return strtr($this->template, [
 				'{label}' => $attribute['label'],
 				'{value}' => $this->formatter->format($attribute['value'], $attribute['type']),
-			));
+			]);
 		} else {
 			return call_user_func($this->template, $attribute, $index, $this);
 		}
@@ -176,10 +176,10 @@ class DetailView extends Widget
 				if (!preg_match('/^(\w+)(\s*:\s*(\w+))?$/', $attribute, $matches)) {
 					throw new InvalidConfigException('The attribute must be specified in the format of "Name" or "Name:Type"');
 				}
-				$attribute = array(
+				$attribute = [
 					'name' => $matches[1],
 					'type' => isset($matches[3]) ? $matches[3] : 'text',
-				);
+				];
 			}
 
 			if (!is_array($attribute)) {

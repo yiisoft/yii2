@@ -31,7 +31,7 @@ class InlineAction extends Action
 	 * @param string $actionMethod the controller method that  this inline action is associated with
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $controller, $actionMethod, $config = array())
+	public function __construct($id, $controller, $actionMethod, $config = [])
 	{
 		$this->actionMethod = $actionMethod;
 		parent::__construct($id, $controller, $config);
@@ -50,6 +50,6 @@ class InlineAction extends Action
 		if (Yii::$app->requestedParams === null) {
 			Yii::$app->requestedParams = $args;
 		}
-		return call_user_func_array(array($this->controller, $this->actionMethod), $args);
+		return call_user_func_array([$this->controller, $this->actionMethod], $args);
 	}
 }
