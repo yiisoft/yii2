@@ -28,7 +28,7 @@ class BaseYiiTest extends TestCase
 	{
 		$this->assertEquals(YII_PATH, Yii::getAlias('@yii'));
 
-		Yii::$aliases = array();
+		Yii::$aliases = [];
 		$this->assertFalse(Yii::getAlias('@yii', false));
 
 		Yii::setAlias('@yii', '/yii/framework');

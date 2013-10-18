@@ -17,26 +17,26 @@ use yii\helpers\Json;
  * For example:
  *
  * ```php
- * echo DatePicker::widget(array(
+ * echo DatePicker::widget([
  *     'language' => 'ru',
  *     'model' => $model,
  *     'attribute' => 'country',
- *     'clientOptions' => array(
+ *     'clientOptions' => [
  *         'dateFormat' => 'yy-mm-dd',
- *     ),
- * ));
+ *     ],
+ * ]);
  * ```
  *
  * The following example will use the name property instead:
  *
  * ```php
- * echo DatePicker::widget(array(
+ * echo DatePicker::widget([
  *     'language' => 'ru',
  *     'name'  => 'country',
- *     'clientOptions' => array(
+ *     'clientOptions' => [
  *         'dateFormat' => 'yy-mm-dd',
- *     ),
- * ));
+ *     ],
+ * ]);
  *```
  *
  * @see http://api.jqueryui.com/datepicker/
@@ -84,7 +84,7 @@ class DatePicker extends InputWidget
 	 */
 	protected function renderWidget()
 	{
-		$contents = array();
+		$contents = [];
 
 		if ($this->inline === false) {
 			if ($this->hasModel()) {

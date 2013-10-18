@@ -25,7 +25,7 @@ use Yii;
  * public function run($id, $type = 'book') { ... }
  * ~~~
  *
- * And the parameters provided for the action are: `array('id' => 1)`.
+ * And the parameters provided for the action are: `['id' => 1]`.
  * Then the `run()` method will be invoked as `run(1)` automatically.
  *
  * @property string $uniqueId The unique ID of this action among the whole application. This property is
@@ -51,7 +51,7 @@ class Action extends Component
 	 * @param Controller $controller the controller that owns this action
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $controller, $config = array())
+	public function __construct($id, $controller, $config = [])
 	{
 		$this->id = $id;
 		$this->controller = $controller;
@@ -84,6 +84,6 @@ class Action extends Component
 		if (Yii::$app->requestedParams === null) {
 			Yii::$app->requestedParams = $args;
 		}
-		return call_user_func_array(array($this, 'run'), $args);
+		return call_user_func_array([$this, 'run'], $args);
 	}
 }

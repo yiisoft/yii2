@@ -17,13 +17,13 @@ class FilterValidatorTest extends TestCase
 
 	public function testValidateAttribute()
 	{
-		$m = FakedValidationModel::createWithAttributes(array(
+		$m = FakedValidationModel::createWithAttributes([
 				'attr_one' => '  to be trimmed  ',
 				'attr_two' => 'set this to null',
 				'attr_empty1' => '',
 				'attr_empty2' => null
-		));
-		$val = new FilterValidator(array('filter' => 'trim'));
+		]);
+		$val = new FilterValidator(['filter' => 'trim']);
 		$val->validateAttribute($m, 'attr_one');
 		$this->assertSame('to be trimmed', $m->attr_one);
 		$val->filter = function ($value) {
@@ -31,7 +31,7 @@ class FilterValidatorTest extends TestCase
 		};
 		$val->validateAttribute($m, 'attr_two');
 		$this->assertNull($m->attr_two);
-		$val->filter = array($this, 'notToBeNull');
+		$val->filter = [$this, 'notToBeNull'];
 		$val->validateAttribute($m, 'attr_empty1');
 		$this->assertSame($this->notToBeNull(''), $m->attr_empty1);
 		$val->skipOnEmpty = true;

@@ -16,9 +16,7 @@ View is typically called from controller action like the following:
 ```php
 public function actionIndex()
 {
-	return $this->render('index', array(
-		'username' => 'samdark',
-	));
+	return $this->render('index', ['username' => 'samdark']);
 }
 ```
 
@@ -47,13 +45,13 @@ In order to use widget you need to do the following:
 
 ```php
 // Note that you have to "echo" the result to display it
-echo \yii\widgets\Menu::widget(array('items' => $items));
+echo \yii\widgets\Menu::widget(['items' => $items]);
 
 // Passing an array to initialize the object properties
-$form = \yii\widgets\ActiveForm::begin(array(
-	'options' => array('class' => 'form-horizontal'),
-	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
-));
+$form = \yii\widgets\ActiveForm::begin([
+	'options' => ['class' => 'form-horizontal'],
+	'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
+]);
 ... form inputs here ...
 \yii\widgets\ActiveForm::end();
 ```
@@ -132,7 +130,7 @@ $this->title = 'My page title';
 Adding meta tags such as encoding, description, keywords is easy with view object as well:
 
 ```php
-$this->registerMetaTag(array('encoding' => 'utf-8'));
+$this->registerMetaTag(['encoding' => 'utf-8']);
 ```
 
 The first argument is an map of `<meta>` tag option names and values. The code above will produce:
@@ -144,8 +142,8 @@ The first argument is an map of `<meta>` tag option names and values. The code a
 Sometimes there's a need to have only a single tag of a type. In this case you need to specify the second argument:
 
 ```html
-$this->registerMetaTag(array('description' => 'This is my cool website made with Yii!'), 'meta-description');
-$this->registerMetaTag(array('description' => 'This website is about funny raccoons.'), 'meta-description');
+$this->registerMetaTag(['description' => 'This is my cool website made with Yii!'], 'meta-description');
+$this->registerMetaTag(['description' => 'This website is about funny raccoons.'], 'meta-description');
 ```
 
 If there are multiple calls with the same value of the second argument (`meta-description` in this case), the latter will
@@ -161,12 +159,12 @@ override the former and only a single tag will be rendered:
 server. Yii view object has a method to work with these:
 
 ```php
-$this->registerLinkTag(array(
+$this->registerLinkTag([
 	'title' => 'Lives News for Yii Framework',
 	'rel' => 'alternate',
 	'type' => 'application/rss+xml',
 	'href' => 'http://www.yiiframework.com/rss.xml/',
-));
+]);
 ```
 
 The code above will result in
@@ -200,7 +198,7 @@ If you want to specify additional properties of the style tag, pass array of nam
 need to make sure there's only a single style tag use third argument as was mentioned in meta tags description.
 
 ```php
-$this->registerCssFile("http://example.com/css/themes/black-and-white.css", array('media' => 'print'), 'css-print-theme');
+$this->registerCssFile("http://example.com/css/themes/black-and-white.css", ['media' => 'print'], 'css-print-theme');
 ```
 
 The code above will add a link to CSS file to the head section of the page. The CSS will be used only when printing the
@@ -308,10 +306,10 @@ Then we're using it in `index.php` view where we display a list of users:
 <div class="user-index">
 	<?php
 	foreach($users as $user) {
-		echo $this->render('_profile', array(
+		echo $this->render('_profile', [
 			'username' => $user->name,
 			'tagline' => $user->tagline,
-		));
+		]);
 	}
 	?>
 </div>
@@ -320,10 +318,10 @@ Then we're using it in `index.php` view where we display a list of users:
 Same way we can reuse it in another view displaying a single user profile:
 
 ```php
-echo $this->render('_profile', array(
+echo $this->render('_profile', [
 	'username' => $user->name,
 	'tagline' => $user->tagline,
-));
+]);
 ```
 
 ### Accessing context
@@ -347,13 +345,13 @@ Since view is also an application component named `view` you can replace it with
 from `yii\base\View`. It can be done via application configuration file such as `config/web.php`:
 
 ```php
-return array(
+return [
 	// ...
-	'components' => array(
-		'view' => array(
+	'components' => [
+		'view' => [
 			'class' => 'app\components\View',
-		),
+		],
 		// ...
-	),
-);
+	],
+];
 ```

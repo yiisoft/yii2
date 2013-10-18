@@ -7,7 +7,7 @@ use yii\validators\Validator;
 
 class TestValidator extends Validator
 {
-	private $_validatedAttributes = array();
+	private $_validatedAttributes = [];
 	private $_setErrorOnValidateAttribute = false;
 
 	public function validateAttribute($object, $attribute)

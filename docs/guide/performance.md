@@ -41,11 +41,11 @@ to save the time of parsing database schema. This can be done by setting the
 `protected/config/main.php`:
 
 ```php
-return array(
+return [
 	// ...
-	'components' => array(
+	'components' => [
 		// ...
-		'db' => array(
+		'db' => [
 			'class' => 'yii\db\Connection',
 			'dsn' => 'mysql:host=localhost;dbname=mydatabase',
 			'username' => 'root',
@@ -57,12 +57,12 @@ return array(
 
 			// Name of the cache component used. Default is 'cache'.
 			//'schemaCache' => 'cache',
-		),
-		'cache' => array(
+		],
+		'cache' => [
 			'class' => 'yii\caching\FileCache',
-		),
-	),
-);
+		],
+	],
+];
 ```
 
 Note that `cache` application component should be configured.
@@ -79,10 +79,10 @@ switch to another storage such as database. You can do so by configuring your
 application via `protected/config/main.php`:
 
 ```php
-return array(
+return [
 	// ...
-	'components' => array(
-		'session' => array(
+	'components' => [
+		'session' => [
 			'class' => 'yii\web\DbSession',
 
 			// Set the following if want to use DB component other than
@@ -91,9 +91,9 @@ return array(
 
 			// To override default session table set the following
 			// 'sessionTable' => 'my_session',
-		),
-	),
-);
+		],
+	],
+];
 ```
 
 You can use `CacheSession` to store sessions using cache. Note that some
@@ -154,9 +154,7 @@ class PostController extends Controller
 	public function actionIndex()
 	{
 		$posts = Post::find()->orderBy('id DESC')->limit(100)->asArray()->all();
-		return $this->render('index', array(
-			'posts' => $posts,
-		));
+		return $this->render('index', ['posts' => $posts]);
 	}
 }
 ```

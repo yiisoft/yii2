@@ -29,17 +29,15 @@ use yii\helpers\ArrayHelper;
  *
  * ~~~
  * $query = new Query;
- * $provider = new ArrayDataProvider(array(
+ * $provider = new ArrayDataProvider([
  *     'allModels' => $query->from('tbl_post')->all(),
- *     'sort' => array(
- *         'attributes' => array(
- *              'id', 'username', 'email',
- *         ),
+ *     'sort' => [
+ *         'attributes' => ['id', 'username', 'email'],
  *     ),
- *     'pagination' => array(
+ *     'pagination' => [
  *         'pageSize' => 10,
- *     ),
- * ));
+ *     ],
+ * ]);
  * // get the posts in the current page
  * $posts = $provider->getModels();
  * ~~~
@@ -73,7 +71,7 @@ class ArrayDataProvider extends BaseDataProvider
 	protected function prepareModels()
 	{
 		if (($models = $this->allModels) === null) {
-			return array();
+			return [];
 		}
 
 		if (($sort = $this->getSort()) !== false) {
@@ -94,7 +92,7 @@ class ArrayDataProvider extends BaseDataProvider
 	protected function prepareKeys($models)
 	{
 		if ($this->key !== null) {
-			$keys = array();
+			$keys = [];
 			foreach ($models as $model) {
 				if (is_string($this->key)) {
 					$keys[] = $model[$this->key];

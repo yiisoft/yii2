@@ -44,8 +44,8 @@ class Controller extends \yii\base\Controller
 			$method = new \ReflectionMethod($action, 'run');
 		}
 
-		$args = array();
-		$missing = array();
+		$args = [];
+		$missing = [];
 		foreach ($method->getParameters() as $param) {
 			$name = $param->getName();
 			if (array_key_exists($name, $params)) {
@@ -59,9 +59,9 @@ class Controller extends \yii\base\Controller
 		}
 
 		if (!empty($missing)) {
-			throw new HttpException(400, Yii::t('yii', 'Missing required parameters: {params}', array(
+			throw new HttpException(400, Yii::t('yii', 'Missing required parameters: {params}', [
 				'params' => implode(', ', $missing),
-			)));
+			]));
 		}
 
 		return $args;
@@ -100,7 +100,7 @@ class Controller extends \yii\base\Controller
 	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
 	 * @return string the created URL
 	 */
-	public function createUrl($route, $params = array())
+	public function createUrl($route, $params = [])
 	{
 		if (strpos($route, '/') === false) {
 			// empty or an action ID
@@ -120,7 +120,7 @@ class Controller extends \yii\base\Controller
 	 *
 	 * - a string representing a URL (e.g. "http://example.com")
 	 * - a string representing a URL alias (e.g. "@example.com")
-	 * - an array in the format of `array($route, ...name-value pairs...)` (e.g. `array('site/index', 'ref' => 1)`)
+	 * - an array in the format of `[$route, ...name-value pairs...]` (e.g. `['site/index', 'ref' => 1]`)
 	 *   [[Html::url()]] will be used to convert the array into a URL.
 	 *
 	 * Any relative URL will be converted into an absolute one by prepending it with the host info

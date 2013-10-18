@@ -50,12 +50,12 @@ In order to ensure the above life cycles, if a child class of Object needs to ov
 it should be done like the following:
 
 ~~~
-public function __construct($param1, $param2, ..., $config = array())
+public function __construct($param1, $param2, ..., $config = [])
 {
     ...
     parent::__construct($config);
 }
 ~~~
 
-That is, a `$config` parameter (defaults to `array()`) should be declared as the last parameter
+That is, a `$config` parameter (defaults to `[]`) should be declared as the last parameter
 of the constructor, and the parent implementation should be called at the end of the constructor.

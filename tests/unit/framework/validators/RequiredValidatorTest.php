@@ -12,14 +12,14 @@ class RequiredValidatorTest extends TestCase
 	{
 		$val = new RequiredValidator();
 		$this->assertFalse($val->validateValue(null));
-		$this->assertFalse($val->validateValue(array()));
+		$this->assertFalse($val->validateValue([]));
 		$this->assertTrue($val->validateValue('not empty'));
-		$this->assertTrue($val->validateValue(array('with', 'elements')));
+		$this->assertTrue($val->validateValue(['with', 'elements']));
 	}
 
 	public function testValidateValueWithValue()
 	{
-		$val = new RequiredValidator(array('requiredValue' => 55));
+		$val = new RequiredValidator(['requiredValue' => 55]);
 		$this->assertTrue($val->validateValue(55));
 		$this->assertTrue($val->validateValue("55"));
 		$this->assertTrue($val->validateValue("0x37"));
@@ -37,17 +37,17 @@ class RequiredValidatorTest extends TestCase
 	{
 		// empty req-value
 		$val = new RequiredValidator();
-		$m = FakedValidationModel::createWithAttributes(array('attr_val' => null));
+		$m = FakedValidationModel::createWithAttributes(['attr_val' => null]);
 		$val->validateAttribute($m, 'attr_val');
 		$this->assertTrue($m->hasErrors('attr_val'));
 		$this->assertTrue(stripos(current($m->getErrors('attr_val')), 'blank') !== false);
-		$val = new RequiredValidator(array('requiredValue' => 55));
-		$m = FakedValidationModel::createWithAttributes(array('attr_val' => 56));
+		$val = new RequiredValidator(['requiredValue' => 55]);
+		$m = FakedValidationModel::createWithAttributes(['attr_val' => 56]);
 		$val->validateAttribute($m, 'attr_val');
 		$this->assertTrue($m->hasErrors('attr_val'));
 		$this->assertTrue(stripos(current($m->getErrors('attr_val')), 'must be') !== false);
-		$val = new RequiredValidator(array('requiredValue' => 55));
-		$m = FakedValidationModel::createWithAttributes(array('attr_val' => 55));
+		$val = new RequiredValidator(['requiredValue' => 55]);
+		$m = FakedValidationModel::createWithAttributes(['attr_val' => 55]);
 		$val->validateAttribute($m, 'attr_val');
 		$this->assertFalse($m->hasErrors('attr_val'));
 	}

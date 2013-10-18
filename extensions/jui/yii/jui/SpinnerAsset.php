@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
 class SpinnerAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/jui/assets';
-	public $js = array(
+	public $js = [
 		'jquery.ui.spinner.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\jui\CoreAsset',
 		'yii\jui\ButtonAsset',
-	);
+	];
 }

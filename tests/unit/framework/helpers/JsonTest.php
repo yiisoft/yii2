@@ -19,9 +19,9 @@ class JsonTest extends TestCase
 		$this->assertSame('"1"', Json::encode($data));
 
 		// simple array encoding
-		$data = array(1, 2);
+		$data = [1, 2];
 		$this->assertSame('[1,2]', Json::encode($data));
-		$data = array('a' => 1, 'b' => 2);
+		$data = ['a' => 1, 'b' => 2];
 		$this->assertSame('{"a":1,"b":2}', Json::encode($data));
 
 		// simple object encoding
@@ -38,12 +38,12 @@ class JsonTest extends TestCase
 		// complex data
 		$expression1 = 'function (a) {}';
 		$expression2 = 'function (b) {}';
-		$data = array(
-			'a' => array(
+		$data = [
+			'a' => [
 				1, new JsExpression($expression1)
-			),
+			],
 			'b' => new JsExpression($expression2),
-		);
+		];
 		$this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::encode($data));
 
 		// https://github.com/yiisoft/yii2/issues/957
@@ -59,7 +59,7 @@ class JsonTest extends TestCase
 
 		// array decoding
 		$json = '{"a":1,"b":2}';
-		$this->assertSame(array('a' => 1, 'b' => 2), Json::decode($json));
+		$this->assertSame(['a' => 1, 'b' => 2], Json::decode($json));
 
 		// exception
 		$json = '{"a":1,"b":2';

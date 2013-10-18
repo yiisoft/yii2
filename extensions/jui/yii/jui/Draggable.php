@@ -15,11 +15,9 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * Draggable::begin(array(
- *     'clientOptions' => array(
- *         'grid' => array(50, 20),
- *     ),
- * ));
+ * Draggable::begin([
+ *     'clientOptions' => ['grid' => [50, 20]],
+ * ]);
  *
  * echo 'Draggable contents here...';
  *

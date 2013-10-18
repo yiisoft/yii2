@@ -125,12 +125,12 @@ class Application extends \yii\base\Application
 	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
 	 * @throws Exception if the route is invalid
 	 */
-	public function runAction($route, $params = array())
+	public function runAction($route, $params = [])
 	{
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			throw new Exception(Yii::t('yii', 'Unknown command "{command}".', array('command' => $route)), 0, $e);
+			throw new Exception(Yii::t('yii', 'Unknown command "{command}".', ['command' => $route]), 0, $e);
 		}
 	}
 
@@ -140,13 +140,13 @@ class Application extends \yii\base\Application
 	 */
 	public function coreCommands()
 	{
-		return array(
+		return [
 			'message' => 'yii\console\controllers\MessageController',
 			'help' => 'yii\console\controllers\HelpController',
 			'migrate' => 'yii\console\controllers\MigrateController',
 			'cache' => 'yii\console\controllers\CacheController',
 			'asset' => 'yii\console\controllers\AssetController',
-		);
+		];
 	}
 
 	/**
@@ -156,13 +156,9 @@ class Application extends \yii\base\Application
 	public function registerCoreComponents()
 	{
 		parent::registerCoreComponents();
-		$this->setComponents(array(
-			'request' => array(
-				'class' => 'yii\console\Request',
-			),
-			'response' => array(
-				'class' => 'yii\console\Response',
-			),
-		));
+		$this->setComponents([
+			'request' => ['class' => 'yii\console\Request'],
+			'response' => ['class' => 'yii\console\Response'],
+		]);
 	}
 }

@@ -60,7 +60,7 @@ class InlineValidator extends Validator
 	{
 		$method = $this->method;
 		if (is_string($method)) {
-			$method = array($object, $method);
+			$method = [$object, $method];
 		}
 		call_user_func($method, $attribute, $this->params);
 	}
@@ -91,7 +91,7 @@ class InlineValidator extends Validator
 		if ($this->clientValidate !== null) {
 			$method = $this->clientValidate;
 			if (is_string($method)) {
-				$method = array($object, $method);
+				$method = [$object, $method];
 			}
 			return call_user_func($method, $attribute);
 		} else {

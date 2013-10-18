@@ -21,16 +21,16 @@ use yii\helpers\Html;
  */
 
 $this->title = 'Update <?=Inflector::camel2words(StringHelper::basename($generator->modelClass)); ?>: ' . $model-><?=$generator->getNameAttribute(); ?>;
-$this->params['breadcrumbs'][] = array('label' => '<?=Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>', 'url' => array('index'));
-$this->params['breadcrumbs'][] = array('label' => $model-><?=$generator->getNameAttribute(); ?>, 'url' => array('view', <?=$urlParams; ?>));
+$this->params['breadcrumbs'][] = ['label' => '<?=Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))); ?>', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model-><?=$generator->getNameAttribute(); ?>, 'url' => ['view', <?=$urlParams; ?>]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="<?=Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-update">
 
 	<h1><?="<?php"; ?> echo Html::encode($this->title); ?></h1>
 
-	<?="<?php"; ?> echo $this->render('_form', array(
+	<?="<?php"; ?> echo $this->render('_form', [
 		'model' => $model,
-	)); ?>
+	]); ?>
 
 </div>

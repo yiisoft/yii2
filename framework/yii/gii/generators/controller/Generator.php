@@ -59,14 +59,14 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function rules()
 	{
-		return array_merge(parent::rules(), array(
-			array('controller, actions, baseClass, ns', 'filter', 'filter' => 'trim'),
-			array('controller, baseClass', 'required'),
-			array('controller', 'match', 'pattern' => '/^[a-z\\-\\/]*$/', 'message' => 'Only a-z, dashes (-) and slashes (/) are allowed.'),
-			array('actions', 'match', 'pattern' => '/^[a-z\\-,\\s]*$/', 'message' => 'Only a-z, dashes (-), spaces and commas are allowed.'),
-			array('baseClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('ns', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-		));
+		return array_merge(parent::rules(), [
+			['controller, actions, baseClass, ns', 'filter', 'filter' => 'trim'],
+			['controller, baseClass', 'required'],
+			['controller', 'match', 'pattern' => '/^[a-z\\-\\/]*$/', 'message' => 'Only a-z, dashes (-) and slashes (/) are allowed.'],
+			['actions', 'match', 'pattern' => '/^[a-z\\-,\\s]*$/', 'message' => 'Only a-z, dashes (-), spaces and commas are allowed.'],
+			['baseClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			['ns', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+		]);
 	}
 
 	/**
@@ -74,12 +74,12 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'baseClass' => 'Base Class',
 			'controller' => 'Controller ID',
 			'actions' => 'Action IDs',
 			'ns' => 'Controller Namespace',
-		);
+		];
 	}
 
 	/**
@@ -87,10 +87,10 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function requiredTemplates()
 	{
-		return array(
+		return [
 			'controller.php',
 			'view.php',
-		);
+		];
 	}
 
 	/**
@@ -98,7 +98,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function stickyAttributes()
 	{
-		return array('ns', 'baseClass');
+		return ['ns', 'baseClass'];
 	}
 
 	/**
@@ -106,7 +106,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function hints()
 	{
-		return array(
+		return [
 			'controller' => 'Controller ID should be in lower case and may contain module ID(s) separated by slashes. For example:
 				<ul>
 					<li><code>order</code> generates <code>OrderController.php</code></li>
@@ -121,7 +121,7 @@ class Generator extends \yii\gii\Generator
 				</ul>',
 			'ns' => 'This is the namespace that the new controller class will use.',
 			'baseClass' => 'This is the class that the new controller class will extend from. Please make sure the class exists and can be autoloaded.',
-		);
+		];
 	}
 
 	/**
@@ -135,7 +135,7 @@ class Generator extends \yii\gii\Generator
 		} else {
 			$route = $this->controller . '/' . reset($actions);
 		}
-		$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($route), array('target' => '_blank'));
+		$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($route), ['target' => '_blank']);
 		return "The controller has been generated successfully. You may $link.";
 	}
 
@@ -144,7 +144,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generate()
 	{
-		$files = array();
+		$files = [];
 
 		$files[] = new CodeFile(
 			$this->getControllerFile(),
@@ -154,7 +154,7 @@ class Generator extends \yii\gii\Generator
 		foreach ($this->getActionIDs() as $action) {
 			$files[] = new CodeFile(
 				$this->getViewFile($action),
-				$this->render('view.php', array('action' => $action))
+				$this->render('view.php', ['action' => $action])
 			);
 		}
 

@@ -42,30 +42,30 @@ class Generator extends \yii\gii\Generator
 
 	public function rules()
 	{
-		return array_merge(parent::rules(), array(
-			array('moduleID, controllerClass, modelClass, searchModelClass, baseControllerClass', 'filter', 'filter' => 'trim'),
-			array('modelClass, searchModelClass, controllerClass, baseControllerClass, indexWidgetType', 'required'),
-			array('modelClass, controllerClass, baseControllerClass, searchModelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'),
-			array('modelClass', 'validateClass', 'params' => array('extends' => ActiveRecord::className())),
-			array('baseControllerClass', 'validateClass', 'params' => array('extends' => Controller::className())),
-			array('controllerClass', 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'),
-			array('controllerClass, searchModelClass', 'validateNewClass'),
-			array('indexWidgetType', 'in', 'range' => array('grid', 'list')),
-			array('modelClass', 'validateModelClass'),
-			array('moduleID', 'validateModuleID'),
-		));
+		return array_merge(parent::rules(), [
+			['moduleID, controllerClass, modelClass, searchModelClass, baseControllerClass', 'filter', 'filter' => 'trim'],
+			['modelClass, searchModelClass, controllerClass, baseControllerClass, indexWidgetType', 'required'],
+			['modelClass, controllerClass, baseControllerClass, searchModelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			['modelClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
+			['baseControllerClass', 'validateClass', 'params' => ['extends' => Controller::className()]],
+			['controllerClass', 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
+			['controllerClass, searchModelClass', 'validateNewClass'],
+			['indexWidgetType', 'in', 'range' => ['grid', 'list']],
+			['modelClass', 'validateModelClass'],
+			['moduleID', 'validateModuleID'],
+		]);
 	}
 
 	public function attributeLabels()
 	{
-		return array_merge(parent::attributeLabels(), array(
+		return array_merge(parent::attributeLabels(), [
 			'modelClass' => 'Model Class',
 			'moduleID' => 'Module ID',
 			'controllerClass' => 'Controller Class',
 			'baseControllerClass' => 'Base Controller Class',
 			'indexWidgetType' => 'Widget Used in Index Page',
 			'searchModelClass' => 'Search Model Class',
-		));
+		]);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function hints()
 	{
-		return array(
+		return [
 			'modelClass' => 'This is the ActiveRecord class associated with the table that CRUD will be built upon.
 				You should provide a fully qualified class name, e.g., <code>app\models\Post</code>.',
 			'controllerClass' => 'This is the name of the controller class to be generated. You should
@@ -86,14 +86,12 @@ class Generator extends \yii\gii\Generator
 				You may choose either <code>GridView</code> or <code>ListView</code>',
 			'searchModelClass' => 'This is the class representing the data being collecting in the search form.
 			 	A fully qualified namespaced class name is required, e.g., <code>app\models\search\PostSearch</code>.',
-		);
+		];
 	}
 
 	public function requiredTemplates()
 	{
-		return array(
-			'controller.php',
-		);
+		return ['controller.php'];
 	}
 
 	/**
@@ -101,7 +99,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function stickyAttributes()
 	{
-		return array('baseControllerClass', 'moduleID', 'indexWidgetType');
+		return ['baseControllerClass', 'moduleID', 'indexWidgetType'];
 	}
 
 	public function validateModelClass()
@@ -131,10 +129,10 @@ class Generator extends \yii\gii\Generator
 	{
 		$controllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
 		$searchModel = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->searchModelClass, '\\') . '.php'));
-		$files = array(
+		$files = [
 			new CodeFile($controllerFile, $this->render('controller.php')),
 			new CodeFile($searchModel, $this->render('search.php')),
-		);
+		];
 
 		$viewPath = $this->getViewPath();
 		$templatePath = $this->getTemplatePath() . '/views';
@@ -194,7 +192,7 @@ class Generator extends \yii\gii\Generator
 		if ($column->phpType === 'boolean') {
 			return "\$form->field(\$model, '$attribute')->checkbox();";
 		} elseif ($column->type === 'text') {
-			return "\$form->field(\$model, '$attribute')->textarea(array('rows' => 6));";
+			return "\$form->field(\$model, '$attribute')->textarea(['rows' => 6]);";
 		} else {
 			if (preg_match('/^(password|pass|passwd|passcode)$/i', $column->name)) {
 				$input = 'passwordInput';
@@ -204,7 +202,7 @@ class Generator extends \yii\gii\Generator
 			if ($column->phpType !== 'string' || $column->size === null) {
 				return "\$form->field(\$model, '$attribute')->$input();";
 			} else {
-				return "\$form->field(\$model, '$attribute')->$input(array('maxlength' => $column->size));";
+				return "\$form->field(\$model, '$attribute')->$input(['maxlength' => $column->size]);";
 			}
 		}
 	}
@@ -252,7 +250,7 @@ class Generator extends \yii\gii\Generator
 	public function generateSearchRules()
 	{
 		$table = $this->getTableSchema();
-		$types = array();
+		$types = [];
 		foreach ($table->columns as $column) {
 			switch ($column->type) {
 				case Schema::TYPE_SMALLINT:
@@ -278,9 +276,9 @@ class Generator extends \yii\gii\Generator
 			}
 		}
 
-		$rules = array();
+		$rules = [];
 		foreach ($types as $type => $columns) {
-			$rules[] = "array('" . implode(', ', $columns) . "', '$type')";
+			$rules[] = "['" . implode(', ', $columns) . "', '$type']";
 		}
 
 		return $rules;
@@ -298,7 +296,7 @@ class Generator extends \yii\gii\Generator
 	public function generateSearchLabels()
 	{
 		$table = $this->getTableSchema();
-		$labels = array();
+		$labels = [];
 		foreach ($table->columns as $column) {
 			if (!strcasecmp($column->name, 'id')) {
 				$labels[$column->name] = 'ID';
@@ -316,7 +314,7 @@ class Generator extends \yii\gii\Generator
 	public function generateSearchConditions()
 	{
 		$table = $this->getTableSchema();
-		$conditions = array();
+		$conditions = [];
 		foreach ($table->columns as $column) {
 			switch ($column->type) {
 				case Schema::TYPE_SMALLINT:
@@ -347,7 +345,7 @@ class Generator extends \yii\gii\Generator
 		if (count($pks) === 1) {
 			return "'id' => \$model->{$pks[0]}";
 		} else {
-			$params = array();
+			$params = [];
 			foreach ($pks as $pk) {
 				$params[] = "'$pk' => \$model->$pk";
 			}
@@ -370,9 +368,9 @@ class Generator extends \yii\gii\Generator
 		$table = $this->getTableSchema();
 		$pks = $table->primaryKey;
 		if (count($pks) === 1) {
-			return array('@param ' . $table->columns[$pks[0]]->phpType . ' $id');
+			return ['@param ' . $table->columns[$pks[0]]->phpType . ' $id'];
 		} else {
-			$params = array();
+			$params = [];
 			foreach ($pks as $pk) {
 				$params[] = '@param ' . $table->columns[$pk]->phpType . ' $' . $pk;
 			}

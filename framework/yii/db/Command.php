@@ -36,10 +36,10 @@ use yii\caching\Cache;
  * [[update()]], etc. For example,
  *
  * ~~~
- * $connection->createCommand()->insert('tbl_user', array(
+ * $connection->createCommand()->insert('tbl_user', [
  *     'name' => 'Sam',
  *     'age' => 30,
- * ))->execute();
+ * ])->execute();
  * ~~~
  *
  * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
@@ -73,7 +73,7 @@ class Command extends \yii\base\Component
 	/**
 	 * @var array the parameter log information (name => value)
 	 */
-	private $_params = array();
+	private $_params = [];
 
 	/**
 	 * Returns the SQL statement for this command.
@@ -95,7 +95,7 @@ class Command extends \yii\base\Component
 		if ($sql !== $this->_sql) {
 			$this->cancel();
 			$this->_sql = $this->db->quoteSql($sql);
-			$this->_params = array();
+			$this->_params = [];
 		}
 		return $this;
 	}
@@ -111,7 +111,7 @@ class Command extends \yii\base\Component
 		if (empty($this->_params)) {
 			return $this->_sql;
 		} else {
-			$params = array();
+			$params = [];
 			foreach ($this->_params as $name => $value) {
 				if (is_string($value)) {
 					$params[$name] = $this->db->quoteValue($value);
@@ -222,9 +222,9 @@ class Command extends \yii\base\Component
 	 * Note that the SQL data type of each value is determined by its PHP type.
 	 * @param array $values the values to be bound. This must be given in terms of an associative
 	 * array with array keys being the parameter names, and array values the corresponding parameter values,
-	 * e.g. `array(':name' => 'John', ':age' => 25)`. By default, the PDO type of each value is determined
-	 * by its PHP type. You may explicitly specify the PDO type by using an array: `array(value, type)`,
-	 * e.g. `array(':name' => 'John', ':profile' => array($profile, \PDO::PARAM_LOB))`.
+	 * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
+	 * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
+	 * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
 	 * @return static the current command being executed
 	 */
 	public function bindValues($values)
@@ -370,12 +370,12 @@ class Command extends \yii\base\Component
 		}
 
 		if (isset($cache) && $cache instanceof Cache) {
-			$cacheKey = array(
+			$cacheKey = [
 				__CLASS__,
 				$db->dsn,
 				$db->username,
 				$rawSql,
-			);
+			];
 			if (($result = $cache->get($cacheKey)) !== false) {
 				Yii::trace('Query result served from cache', __METHOD__);
 				return $result;
@@ -395,7 +395,7 @@ class Command extends \yii\base\Component
 				if ($fetchMode === null) {
 					$fetchMode = $this->fetchMode;
 				}
-				$result = call_user_func_array(array($this->pdoStatement, $method), (array)$fetchMode);
+				$result = call_user_func_array([$this->pdoStatement, $method], (array)$fetchMode);
 				$this->pdoStatement->closeCursor();
 			}
 
@@ -420,10 +420,10 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->insert('tbl_user', array(
+	 * $connection->createCommand()->insert('tbl_user', [
 	 *     'name' => 'Sam',
 	 *     'age' => 30,
-	 * ))->execute();
+	 * ])->execute();
 	 * ~~~
 	 *
 	 * The method will properly escape the column names, and bind the values to be inserted.
@@ -436,7 +436,7 @@ class Command extends \yii\base\Component
 	 */
 	public function insert($table, $columns)
 	{
-		$params = array();
+		$params = [];
 		$sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
@@ -446,11 +446,11 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->batchInsert('tbl_user', array('name', 'age'), array(
-	 *     array('Tom', 30),
-	 *     array('Jane', 20),
-	 *     array('Linda', 25),
-	 * ))->execute();
+	 * $connection->createCommand()->batchInsert('tbl_user', ['name', 'age'], [
+	 *     ['Tom', 30],
+	 *     ['Jane', 20],
+	 *     ['Linda', 25],
+	 * ])->execute();
 	 * ~~~
 	 *
 	 * Note that the values in each row must match the corresponding column names.
@@ -471,9 +471,7 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->update('tbl_user', array(
-	 *     'status' => 1,
-	 * ), 'age > 30')->execute();
+	 * $connection->createCommand()->update('tbl_user', ['status' => 1], 'age > 30')->execute();
 	 * ~~~
 	 *
 	 * The method will properly escape the column names and bind the values to be updated.
@@ -487,7 +485,7 @@ class Command extends \yii\base\Component
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
 	 */
-	public function update($table, $columns, $condition = '', $params = array())
+	public function update($table, $columns, $condition = '', $params = [])
 	{
 		$sql = $this->db->getQueryBuilder()->update($table, $columns, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);
@@ -511,7 +509,7 @@ class Command extends \yii\base\Component
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
 	 */
-	public function delete($table, $condition = '', $params = array())
+	public function delete($table, $condition = '', $params = [])
 	{
 		$sql = $this->db->getQueryBuilder()->delete($table, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);

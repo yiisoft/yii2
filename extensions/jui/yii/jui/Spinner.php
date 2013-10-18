@@ -16,24 +16,20 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Spinner::widget(array(
+ * echo Spinner::widget([
  *     'model' => $model,
  *     'attribute' => 'country',
- *     'clientOptions' => array(
- *         'step' => 2,
- *     ),
- * ));
+ *     'clientOptions' => ['step' => 2],
+ * ]);
  * ```
  *
  * The following example will use the name property instead:
  *
  * ```php
- * echo Spinner::widget(array(
+ * echo Spinner::widget([
  *     'name'  => 'country',
- *     'clientOptions' => array(
- *         'step' => 2,
- *     ),
- * ));
+ *     'clientOptions' => ['step' => 2],
+ * ]);
  *```
  *
  * @see http://api.jqueryui.com/spinner/

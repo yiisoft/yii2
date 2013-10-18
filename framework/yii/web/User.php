@@ -54,17 +54,17 @@ class User extends Component
 	 * the name-value pairs are GET parameters used to construct the login URL. For example,
 	 *
 	 * ~~~
-	 * array('site/login', 'ref' => 1)
+	 * ['site/login', 'ref' => 1]
 	 * ~~~
 	 *
 	 * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
 	 */
-	public $loginUrl = array('site/login');
+	public $loginUrl = ['site/login'];
 	/**
 	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
 	 * @see Cookie
 	 */
-	public $identityCookie = array('name' => '_identity', 'httpOnly' => true);
+	public $identityCookie = ['name' => '_identity', 'httpOnly' => true];
 	/**
 	 * @var integer the number of seconds in which the user will be logged out automatically if he
 	 * remains inactive. If this property is not set, the user will be logged out after
@@ -94,7 +94,7 @@ class User extends Component
 	 */
 	public $returnUrlVar = '__returnUrl';
 
-	private $_access = array();
+	private $_access = [];
 
 
 	/**
@@ -282,7 +282,7 @@ class User extends Component
 	 * the name-value pairs are GET parameters used to construct the URL. For example,
 	 *
 	 * ~~~
-	 * array('admin/index', 'ref' => 1)
+	 * ['admin/index', 'ref' => 1]
 	 * ~~~
 	 */
 	public function setReturnUrl($url)
@@ -324,10 +324,10 @@ class User extends Component
 	 */
 	protected function beforeLogin($identity, $cookieBased)
 	{
-		$event = new UserEvent(array(
+		$event = new UserEvent([
 			'identity' => $identity,
 			'cookieBased' => $cookieBased,
-		));
+		]);
 		$this->trigger(self::EVENT_BEFORE_LOGIN, $event);
 		return $event->isValid;
 	}
@@ -342,10 +342,10 @@ class User extends Component
 	 */
 	protected function afterLogin($identity, $cookieBased)
 	{
-		$this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent(array(
+		$this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent([
 			'identity' => $identity,
 			'cookieBased' => $cookieBased,
-		)));
+		]));
 	}
 
 	/**
@@ -358,9 +358,9 @@ class User extends Component
 	 */
 	protected function beforeLogout($identity)
 	{
-		$event = new UserEvent(array(
+		$event = new UserEvent([
 			'identity' => $identity,
-		));
+		]);
 		$this->trigger(self::EVENT_BEFORE_LOGOUT, $event);
 		return $event->isValid;
 	}
@@ -374,9 +374,9 @@ class User extends Component
 	 */
 	protected function afterLogout($identity)
 	{
-		$this->trigger(self::EVENT_AFTER_LOGOUT, new UserEvent(array(
+		$this->trigger(self::EVENT_AFTER_LOGOUT, new UserEvent([
 			'identity' => $identity,
-		)));
+		]));
 	}
 
 	/**
@@ -411,11 +411,11 @@ class User extends Component
 	protected function sendIdentityCookie($identity, $duration)
 	{
 		$cookie = new Cookie($this->identityCookie);
-		$cookie->value = json_encode(array(
+		$cookie->value = json_encode([
 			$identity->getId(),
 			$identity->getAuthKey(),
 			$duration,
-		));
+		]);
 		$cookie->expire = time() + $duration;
 		Yii::$app->getResponse()->getCookies()->add($cookie);
 	}
@@ -487,10 +487,10 @@ class User extends Component
 	 * before, its result will be directly returned when calling this method to check the same
 	 * operation. If this parameter is false, this method will always call
 	 * [[AuthManager::checkAccess()]] to obtain the up-to-date access result. Note that this
-	 * caching is effective only within the same request and only works when `$params = array()`.
+	 * caching is effective only within the same request and only works when `$params = []`.
 	 * @return boolean whether the operations can be performed by this user.
 	 */
-	public function checkAccess($operation, $params = array(), $allowCaching = true)
+	public function checkAccess($operation, $params = [], $allowCaching = true)
 	{
 		$auth = Yii::$app->getAuthManager();
 		if ($auth === null) {

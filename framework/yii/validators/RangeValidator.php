@@ -87,17 +87,17 @@ class RangeValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$range = array();
+		$range = [];
 		foreach ($this->range as $value) {
 			$range[] = (string)$value;
 		}
-		$options = array(
+		$options = [
 			'range' => $range,
 			'not' => $this->not,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-			))),
-		);
+			])),
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}

@@ -98,13 +98,13 @@ class RegularExpressionValidator extends Validator
 			$pattern .= preg_replace('/[^igm]/', '', $flag);
 		}
 
-		$options = array(
+		$options = [
 			'pattern' => new JsExpression($pattern),
 			'not' => $this->not,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-			))),
-		);
+			])),
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}

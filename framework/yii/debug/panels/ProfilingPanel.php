@@ -44,25 +44,25 @@ EOD;
 	public function getDetail()
 	{
 		$messages = $this->data['messages'];
-		$timings = array();
-		$stack = array();
+		$timings = [];
+		$stack = [];
 		foreach ($messages as $i => $log) {
 			list($token, $level, $category, $timestamp, $traces) = $log;
 			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
 			} elseif ($level == Logger::LEVEL_PROFILE_END) {
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[] = array(count($stack), $token, $category, $timestamp - $last[3], $traces);
+					$timings[] = [count($stack), $token, $category, $timestamp - $last[3], $traces];
 				}
 			}
 		}
 
 		$now = microtime(true);
 		while (($last = array_pop($stack)) !== null) {
-			$timings[] = array(count($stack), $last[0], $last[2], $now - $last[3], $last[4]);
+			$timings[] = [count($stack), $last[0], $last[2], $now - $last[3], $last[4]];
 		}
 
-		$rows = array();
+		$rows = [];
 		foreach ($timings as $timing) {
 			$time = sprintf('%.1f ms', $timing[3] * 1000);
 			$procedure = str_repeat('<span class="indent">→</span>', $timing[0]) . Html::encode($timing[1]);
@@ -98,10 +98,10 @@ EOD;
 	{
 		$target = $this->module->logTarget;
 		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE);
-		return array(
+		return [
 			'memory' => memory_get_peak_usage(),
 			'time' => microtime(true) - YII_BEGIN_TIME,
 			'messages' => $messages,
-		);
+		];
 	}
 }

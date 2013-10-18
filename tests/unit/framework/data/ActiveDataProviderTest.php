@@ -29,20 +29,20 @@ class ActiveDataProviderTest extends DatabaseTestCase
 
 	public function testActiveQuery()
 	{
-		$provider = new ActiveDataProvider(array(
+		$provider = new ActiveDataProvider([
 			'query' => Order::find()->orderBy('id'),
-		));
+		]);
 		$orders = $provider->getModels();
 		$this->assertEquals(3, count($orders));
 		$this->assertTrue($orders[0] instanceof Order);
-		$this->assertEquals(array(1, 2, 3), $provider->getKeys());
+		$this->assertEquals([1, 2, 3], $provider->getKeys());
 
-		$provider = new ActiveDataProvider(array(
+		$provider = new ActiveDataProvider([
 			'query' => Order::find(),
-			'pagination' => array(
+			'pagination' => [
 				'pageSize' => 2,
-			)
-		));
+			]
+		]);
 		$orders = $provider->getModels();
 		$this->assertEquals(2, count($orders));
 	}
@@ -50,23 +50,23 @@ class ActiveDataProviderTest extends DatabaseTestCase
 	public function testQuery()
 	{
 		$query = new Query;
-		$provider = new ActiveDataProvider(array(
+		$provider = new ActiveDataProvider([
 			'db' => $this->getConnection(),
 			'query' => $query->from('tbl_order')->orderBy('id'),
-		));
+		]);
 		$orders = $provider->getModels();
 		$this->assertEquals(3, count($orders));
 		$this->assertTrue(is_array($orders[0]));
-		$this->assertEquals(array(0, 1, 2), $provider->getKeys());
+		$this->assertEquals([0, 1, 2], $provider->getKeys());
 
 		$query = new Query;
-		$provider = new ActiveDataProvider(array(
+		$provider = new ActiveDataProvider([
 			'db' => $this->getConnection(),
 			'query' => $query->from('tbl_order'),
-			'pagination' => array(
+			'pagination' => [
 				'pageSize' => 2,
-			)
-		));
+			]
+		]);
 		$orders = $provider->getModels();
 		$this->assertEquals(2, count($orders));
 	}
@@ -74,10 +74,10 @@ class ActiveDataProviderTest extends DatabaseTestCase
 	public function testRefresh()
 	{
 		$query = new Query;
-		$provider = new ActiveDataProvider(array(
+		$provider = new ActiveDataProvider([
 			'db' => $this->getConnection(),
 			'query' => $query->from('tbl_order')->orderBy('id'),
-		));
+		]);
 		$this->assertEquals(3, count($provider->getModels()));
 
 		$provider->getPagination()->pageSize = 2;
@@ -89,10 +89,10 @@ class ActiveDataProviderTest extends DatabaseTestCase
 	public function testPaginationBeforeModels() 
 	{
 		$query = new Query;
-		$provider = new ActiveDataProvider(array(
+		$provider = new ActiveDataProvider([
 			'db' => $this->getConnection(),
 			'query' => $query->from('tbl_order')->orderBy('id'),
-		));
+		]);
 		$pagination = $provider->getPagination();
 		$this->assertEquals(0, $pagination->getPageCount());
 		$this->assertCount(3, $provider->getModels());

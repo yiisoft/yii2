@@ -26,21 +26,21 @@ class Widget extends \yii\base\Widget
 	/**
 	 * @var array the HTML attributes for the widget container tag.
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var array the options for the underlying jQuery UI widget.
 	 * Please refer to the corresponding jQuery UI widget Web page for possible options.
 	 * For example, [this page](http://api.jqueryui.com/accordion/) shows
 	 * how to use the "Accordion" widget and the supported options (e.g. "header").
 	 */
-	public $clientOptions = array();
+	public $clientOptions = [];
 	/**
 	 * @var array the event handlers for the underlying jQuery UI widget.
 	 * Please refer to the corresponding jQuery UI widget Web page for possible events.
 	 * For example, [this page](http://api.jqueryui.com/accordion/) shows
 	 * how to use the "Accordion" widget and the supported events (e.g. "create").
 	 */
-	public $clientEvents = array();
+	public $clientEvents = [];
 
 
 	/**
@@ -77,7 +77,7 @@ class Widget extends \yii\base\Widget
 		}
 
 		if (!empty($this->clientEvents)) {
-			$js = array();
+			$js = [];
 			foreach ($this->clientEvents as $event => $handler) {
 				$js[] = "jQuery('#$id').on('$name$event', $handler);";
 			}

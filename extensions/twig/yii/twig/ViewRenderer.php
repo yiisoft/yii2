@@ -31,7 +31,7 @@ class ViewRenderer extends BaseViewRenderer
 	 * @var array Twig options
 	 * @see http://twig.sensiolabs.org/doc/api.html#environment-options
 	 */
-	public $options = array();
+	public $options = [];
 
 	/**
 	 * @var \Twig_Environment
@@ -42,12 +42,12 @@ class ViewRenderer extends BaseViewRenderer
 	{
 		$loader = new \Twig_Loader_String();
 
-		$this->twig = new \Twig_Environment($loader, array_merge(array(
+		$this->twig = new \Twig_Environment($loader, array_merge([
 			'cache' => Yii::getAlias($this->cachePath),
-		), $this->options));
+		], $this->options));
 
-		$this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = array()) {
-			return Html::url(array_merge(array($path), $args));
+		$this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = []) {
+			return Html::url(array_merge([$path], $args));
 		}));
 
 		$this->twig->addGlobal('app', \Yii::$app);

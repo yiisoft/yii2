@@ -34,9 +34,9 @@ class <?=$searchModelClass; ?> extends Model
 
 	public function rules()
 	{
-		return array(
+		return [
 			<?=implode(",\n\t\t\t", $rules); ?>,
-		);
+		];
 	}
 
 	/**
@@ -44,19 +44,19 @@ class <?=$searchModelClass; ?> extends Model
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 <?php foreach ($labels as $name => $label): ?>
 			<?="'$name' => '" . addslashes($label) . "',\n"; ?>
 <?php endforeach; ?>
-		);
+		];
 	}
 
 	public function search($params)
 	{
 		$query = <?=$modelClass; ?>::find();
-		$dataProvider = new ActiveDataProvider(array(
+		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
-		));
+		]);
 
 		if (!($this->load($params) && $this->validate())) {
 			return $dataProvider;
@@ -74,10 +74,10 @@ class <?=$searchModelClass; ?> extends Model
 			return;
 		}
 		if ($partialMatch) {
-			$value = '%' . strtr($value, array('%'=>'\%', '_'=>'\_', '\\'=>'\\\\')) . '%';
-			$query->andWhere(array('like', $attribute, $value));
+			$value = '%' . strtr($value, ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\']) . '%';
+			$query->andWhere(['like', $attribute, $value]);
 		} else {
-			$query->andWhere(array($attribute => $value));
+			$query->andWhere([$attribute => $value]);
 		}
 	}
 }

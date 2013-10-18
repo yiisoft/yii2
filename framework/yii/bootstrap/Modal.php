@@ -18,12 +18,10 @@ use yii\helpers\Html;
  * and [[end()]] calls within the modal window:
  *
  * ~~~php
- * Modal::begin(array(
+ * Modal::begin([
  *     'header' => '<h2>Hello world</h2>',
- *     'toggleButton' => array(
- *         'label' => 'click me',
- *     ),
- * ));
+ *     'toggleButton' => ['label' => 'click me'],
+ * ]);
  *
  * echo 'Say hello...';
  *
@@ -59,7 +57,7 @@ class Modal extends Widget
 	 * Please refer to the [Modal plugin help](http://twitter.github.com/bootstrap/javascript.html#modals)
 	 * for the supported HTML attributes.
 	 */
-	public $closeButton = array();
+	public $closeButton = [];
 	/**
 	 * @var array the options for rendering the toggle button tag.
 	 * The toggle button is used to toggle the visibility of the modal window.
@@ -88,8 +86,8 @@ class Modal extends Widget
 
 		echo $this->renderToggleButton() . "\n";
 		echo Html::beginTag('div', $this->options) . "\n";
-		echo Html::beginTag('div', array('class' => 'modal-dialog')) . "\n";
-		echo Html::beginTag('div', array('class' => 'modal-content')) . "\n";
+		echo Html::beginTag('div', ['class' => 'modal-dialog']) . "\n";
+		echo Html::beginTag('div', ['class' => 'modal-content']) . "\n";
 		echo $this->renderHeader() . "\n";
 		echo $this->renderBodyBegin() . "\n";
 	}
@@ -119,7 +117,7 @@ class Modal extends Widget
 			$this->header = $button . "\n" . $this->header;
 		}
 		if ($this->header !== null) {
-			return Html::tag('div', "\n" . $this->header . "\n", array('class' => 'modal-header'));
+			return Html::tag('div', "\n" . $this->header . "\n", ['class' => 'modal-header']);
 		} else {
 			return null;
 		}
@@ -131,7 +129,7 @@ class Modal extends Widget
 	 */
 	protected function renderBodyBegin()
 	{
-		return Html::beginTag('div', array('class' => 'modal-body'));
+		return Html::beginTag('div', ['class' => 'modal-body']);
 	}
 
 	/**
@@ -150,7 +148,7 @@ class Modal extends Widget
 	protected function renderFooter()
 	{
 		if ($this->footer !== null) {
-			return Html::tag('div', "\n" . $this->footer . "\n", array('class' => 'modal-footer'));
+			return Html::tag('div', "\n" . $this->footer . "\n", ['class' => 'modal-footer']);
 		} else {
 			return null;
 		}
@@ -198,31 +196,29 @@ class Modal extends Widget
 	 */
 	protected function initOptions()
 	{
-		$this->options = array_merge(array(
+		$this->options = array_merge([
 			'class' => 'fade',
 			'role' => 'dialog',
 			'tabindex' => -1,
-		), $this->options);
+		], $this->options);
 		Html::addCssClass($this->options, 'modal');
 		
 		if ($this->clientOptions !== false) {
-			$this->clientOptions = array_merge(array(
-				'show' => false,
-			), $this->clientOptions);
+			$this->clientOptions = array_merge(['show' => false], $this->clientOptions);
 		}
 
 		if ($this->closeButton !== null) {
-			$this->closeButton = array_merge(array(
+			$this->closeButton = array_merge([
 				'data-dismiss' => 'modal',
 				'aria-hidden' => 'true',
 				'class' => 'close',
-			), $this->closeButton);
+			], $this->closeButton);
 		}
 
 		if ($this->toggleButton !== null) {
-			$this->toggleButton = array_merge(array(
+			$this->toggleButton = array_merge([
 				'data-toggle' => 'modal',
-			), $this->toggleButton);
+			], $this->toggleButton);
 			if (!isset($this->toggleButton['data-target']) && !isset($this->toggleButton['href'])) {
 				$this->toggleButton['data-target'] = '#' . $this->options['id'];
 			}

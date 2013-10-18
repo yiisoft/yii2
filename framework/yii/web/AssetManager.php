@@ -29,7 +29,7 @@ class AssetManager extends Component
 	 * and the values are either the configuration arrays for creating the [[AssetBundle]] objects
 	 * or the corresponding asset bundle instances.
 	 */
-	public $bundles = array();
+	public $bundles = [];
 	/**
 	 * @return string the root directory storing the published asset files.
 	 */
@@ -146,7 +146,7 @@ class AssetManager extends Component
 	/**
 	 * @var array published assets
 	 */
-	private $_published = array();
+	private $_published = [];
 
 	/**
 	 * Publishes a file or a directory.
@@ -192,7 +192,7 @@ class AssetManager extends Component
 	 * @return array the path (directory or file path) and the URL that the asset is published as.
 	 * @throws InvalidParamException if the asset to be published does not exist.
 	 */
-	public function publish($path, $options = array())
+	public function publish($path, $options = [])
 	{
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
@@ -224,7 +224,7 @@ class AssetManager extends Component
 				}
 			}
 
-			return $this->_published[$path] = array($dstFile, $this->baseUrl . "/$dir/$fileName");
+			return $this->_published[$path] = [$dstFile, $this->baseUrl . "/$dir/$fileName"];
 		} else {
 			$dir = $this->hash($src . filemtime($src));
 			$dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
@@ -233,10 +233,10 @@ class AssetManager extends Component
 					symlink($src, $dstDir);
 				}
 			} elseif (!is_dir($dstDir) || !empty($options['forceCopy'])) {
-				$opts = array(
+				$opts = [
 					'dirMode' => $this->dirMode,
 					'fileMode' => $this->fileMode,
-				);
+				];
 				if (isset($options['beforeCopy'])) {
 					$opts['beforeCopy'] = $options['beforeCopy'];
 				} else {
@@ -250,7 +250,7 @@ class AssetManager extends Component
 				FileHelper::copyDirectory($src, $dstDir, $opts);
 			}
 
-			return $this->_published[$path] = array($dstDir, $this->baseUrl . '/' . $dir);
+			return $this->_published[$path] = [$dstDir, $this->baseUrl . '/' . $dir];
 		}
 	}
 

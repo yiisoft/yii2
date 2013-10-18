@@ -29,10 +29,10 @@ class AssetBundleTest extends \yiiunit\TestCase
 	protected function getView()
 	{
 		$view = new View();
-		$view->setAssetManager(new AssetManager(array(
+		$view->setAssetManager(new AssetManager([
 			'basePath' => '@testWebRoot/assets',
 			'baseUrl' => '@testWeb/assets',
-		)));
+		]));
 
 		return $view;
 	}
@@ -76,14 +76,14 @@ EOF;
 
 	public function positionProvider()
 	{
-		return array(
-			array(View::POS_HEAD, true),
-			array(View::POS_HEAD, false),
-			array(View::POS_BEGIN, true),
-			array(View::POS_BEGIN, false),
-			array(View::POS_END, true),
-			array(View::POS_END, false),
-		);
+		return [
+			[View::POS_HEAD, true],
+			[View::POS_HEAD, false],
+			[View::POS_BEGIN, true],
+			[View::POS_BEGIN, false],
+			[View::POS_END, true],
+			[View::POS_END, false],
+		];
 	}
 
 	/**
@@ -93,11 +93,11 @@ EOF;
 	{
 		$view = $this->getView();
 
-		$view->getAssetManager()->bundles['yiiunit\\framework\\web\\TestAssetBundle'] = array(
-			'jsOptions' => array(
+		$view->getAssetManager()->bundles['yiiunit\\framework\\web\\TestAssetBundle'] = [
+			'jsOptions' => [
 				'position' => $pos,
-			),
-		);
+			],
+		];
 
 		$this->assertEmpty($view->assetBundles);
 		if ($jqAlreadyRegistered) {
@@ -148,12 +148,12 @@ EOF;
 
 	public function positionProvider2()
 	{
-		return array(
-			array(View::POS_BEGIN, true),
-			array(View::POS_BEGIN, false),
-			array(View::POS_END, true),
-			array(View::POS_END, false),
-		);
+		return [
+			[View::POS_BEGIN, true],
+			[View::POS_BEGIN, false],
+			[View::POS_END, true],
+			[View::POS_END, false],
+		];
 	}
 
 	/**
@@ -163,16 +163,16 @@ EOF;
 	{
 		$view = $this->getView();
 
-		$view->getAssetManager()->bundles['yiiunit\\framework\\web\\TestAssetBundle'] = array(
-			'jsOptions' => array(
+		$view->getAssetManager()->bundles['yiiunit\\framework\\web\\TestAssetBundle'] = [
+			'jsOptions' => [
 				'position' => $pos - 1,
-			),
-		);
-		$view->getAssetManager()->bundles['yiiunit\\framework\\web\\TestJqueryAsset'] = array(
-			'jsOptions' => array(
+			],
+		];
+		$view->getAssetManager()->bundles['yiiunit\\framework\\web\\TestJqueryAsset'] = [
+			'jsOptions' => [
 				'position' => $pos,
-			),
-		);
+			],
+		];
 
 		$this->assertEmpty($view->assetBundles);
 		if ($jqAlreadyRegistered) {
@@ -193,36 +193,36 @@ class TestSimpleAsset extends AssetBundle
 {
 	public $basePath = '@testWebRoot/js';
 	public $baseUrl = '@testWeb/js';
-	public $js = array(
+	public $js = [
 		'jquery.js',
-	);
+	];
 }
 
 class TestAssetBundle extends AssetBundle
 {
 	public $basePath = '@testWebRoot/files';
 	public $baseUrl = '@testWeb/files';
-	public $css = array(
+	public $css = [
 		'cssFile.css',
-	);
-	public $js = array(
+	];
+	public $js = [
 		'jsFile.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yiiunit\\framework\\web\\TestJqueryAsset'
-	);
+	];
 }
 
 class TestJqueryAsset extends AssetBundle
 {
 	public $basePath = '@testWebRoot/js';
 	public $baseUrl = '@testWeb/js';
-	public $js = array(
+	public $js = [
 		'jquery.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yiiunit\\framework\\web\\TestAssetLevel3'
-	);
+	];
 }
 
 class TestAssetLevel3 extends AssetBundle
@@ -235,22 +235,22 @@ class TestAssetCircleA extends AssetBundle
 {
 	public $basePath = '@testWebRoot/js';
 	public $baseUrl = '@testWeb/js';
-	public $js = array(
+	public $js = [
 		'jquery.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yiiunit\\framework\\web\\TestAssetCircleB'
-	);
+	];
 }
 
 class TestAssetCircleB extends AssetBundle
 {
 	public $basePath = '@testWebRoot/js';
 	public $baseUrl = '@testWeb/js';
-	public $js = array(
+	public $js = [
 		'jquery.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yiiunit\\framework\\web\\TestAssetCircleA'
-	);
+	];
 }

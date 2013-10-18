@@ -17,20 +17,20 @@ use yii\helpers\Html;
  *
  * ```php
  * // a button group with items configuration
- * echo ButtonGroup::::widget(array(
- *     'buttons' => array(
- *         array('label' => 'A'),
- *         array('label' => 'B'),
- *     )
- * ));
+ * echo ButtonGroup::::widget([
+ *     'buttons' => [
+ *         ['label' => 'A'],
+ *         ['label' => 'B'],
+ *     ]
+ * ]);
  *
  * // button group with an item as a string
- * echo ButtonGroup::::widget(array(
- *     'buttons' => array(
- *         Button::widget(array('label' => 'A')),
- *         array('label' => 'B'),
- *     )
- * ));
+ * echo ButtonGroup::::widget([
+ *     'buttons' => [
+ *         Button::widget(['label' => 'A']),
+ *         ['label' => 'B'],
+ *     ]
+ * ]);
  * ```
  * @see http://twitter.github.io/bootstrap/javascript.html#buttons
  * @see http://twitter.github.io/bootstrap/components.html#buttonGroups
@@ -46,7 +46,7 @@ class ButtonGroup extends Widget
 	 * - label: string, required, the button label.
 	 * - options: array, optional, the HTML attributes of the button.
 	 */
-	public $buttons = array();
+	public $buttons = [];
 	/**
 	 * @var boolean whether to HTML-encode the button labels.
 	 */
@@ -78,16 +78,16 @@ class ButtonGroup extends Widget
 	 */
 	protected function renderButtons()
 	{
-		$buttons = array();
+		$buttons = [];
 		foreach ($this->buttons as $button) {
 			if (is_array($button)) {
 				$label = ArrayHelper::getValue($button, 'label');
 				$options = ArrayHelper::getValue($button, 'options');
-				$buttons[] = Button::widget(array(
+				$buttons[] = Button::widget([
 					'label' => $label,
 					'options' => $options,
 					'encodeLabel' => $this->encodeLabels
-				));
+				]);
 			} else {
 				$buttons[] = $button;
 			}

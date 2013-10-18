@@ -16,24 +16,24 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo AutoComplete::widget(array(
+ * echo AutoComplete::widget([
  *     'model' => $model,
  *     'attribute' => 'country',
- *     'clientOptions' => array(
- *         'source' => array('USA', 'RUS'),
- *     ),
- * ));
+ *     'clientOptions' => [
+ *         'source' => ['USA', 'RUS'],
+ *     ],
+ * ]);
  * ```
  *
  * The following example will use the name property instead:
  *
  * ```php
- * echo AutoComplete::widget(array(
- *     'name'  => 'country',
- *     'clientOptions' => array(
- *         'source' => array('USA', 'RUS'),
- *     ),
- * ));
+ * echo AutoComplete::widget([
+ *     'name' => 'country',
+ *     'clientOptions' => [
+ *         'source' => ['USA', 'RUS'],
+ *     ],
+ * ]);
  *```
  *
  * @see http://api.jqueryui.com/autocomplete/

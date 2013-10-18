@@ -13,17 +13,17 @@ class CubridSchemaTest extends SchemaTest
 
 	public function testGetPDOType()
 	{
-		$values = array(
-			array(null, \PDO::PARAM_NULL),
-			array('', \PDO::PARAM_STR),
-			array('hello', \PDO::PARAM_STR),
-			array(0, \PDO::PARAM_INT),
-			array(1, \PDO::PARAM_INT),
-			array(1337, \PDO::PARAM_INT),
-			array(true, \PDO::PARAM_INT),
-			array(false, \PDO::PARAM_INT),
-			array($fp=fopen(__FILE__, 'rb'), \PDO::PARAM_LOB),
-		);
+		$values = [
+			[null, \PDO::PARAM_NULL],
+			['', \PDO::PARAM_STR],
+			['hello', \PDO::PARAM_STR],
+			[0, \PDO::PARAM_INT],
+			[1, \PDO::PARAM_INT],
+			[1337, \PDO::PARAM_INT],
+			[true, \PDO::PARAM_INT],
+			[false, \PDO::PARAM_INT],
+			[$fp=fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+		];
 
 		/** @var Schema $schema */
 		$schema = $this->getConnection()->schema;

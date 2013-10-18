@@ -93,10 +93,10 @@ class BlogController extends Controller
 			$text = $post->getHistory($version);
 		}
 
-		return $this->render('view', array(
+		return $this->render('view', [
 			'post' => $post,
 			'text' => $text,
-		));
+		]);
 	}
 }
 ```
@@ -128,13 +128,11 @@ class BlogController extends Controller
 		if(\Yii::$app->request->isPost)) {
 			$post->load($_POST);
 			if($post->save()) {
-				$this->redirect(array('view', 'id' => $post->id));
+				$this->redirect(['view', 'id' => $post->id]);
 			}
 		}
 
-		return $this->render('update', array(
-			'post' => $post,
-		));
+		return $this->render('update', ['post' => $post]);
 	}
 }
 ```
@@ -167,13 +165,12 @@ public SiteController extends \yii\web\Controller
 {
 	public function actions()
 	{
-		return array(
-			'about' => array(
+		return [
+			'about' => [
 				'class' => '@app/actions/Page',
-					'view' => 'about',
-				),
-			),
-		);
+				'view' => 'about',
+			],
+		];
 	}
 }
 ```

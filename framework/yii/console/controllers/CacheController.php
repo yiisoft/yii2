@@ -25,7 +25,7 @@ class CacheController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$caches = array();
+		$caches = [];
 		$components = Yii::$app->getComponents();
 		foreach ($components as $name => $component) {
 			if ($component instanceof Cache) {

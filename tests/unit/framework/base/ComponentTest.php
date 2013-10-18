@@ -187,7 +187,7 @@ class ComponentTest extends TestCase
 
 	public function testTrigger()
 	{
-		$this->component->on('click', array($this->component, 'myEventHandler'));
+		$this->component->on('click', [$this->component, 'myEventHandler']);
 		$this->assertFalse($this->component->eventHandled);
 		$this->assertNull($this->component->event);
 		$this->component->raiseEvent();
@@ -223,7 +223,7 @@ class ComponentTest extends TestCase
 	{
 		$component = new NewComponent;
 		$component->on('click', 'yiiunit\framework\base\globalEventHandler2');
-		$component->on('click', array($this->component, 'myEventHandler'));
+		$component->on('click', [$this->component, 'myEventHandler']);
 		$component->raiseEvent();
 		$this->assertTrue($component->eventHandled);
 		$this->assertFalse($this->component->eventHandled);
@@ -250,7 +250,7 @@ class ComponentTest extends TestCase
 
 		$p = 'as b';
 		$component = new NewComponent;
-		$component->$p = array('class' => 'NewBehavior');
+		$component->$p = ['class' => 'NewBehavior'];
 		$this->assertSame($behavior, $component->getBehavior('a'));
 		$this->assertTrue($component->hasProperty('p'));
 		$component->test();
@@ -265,12 +265,12 @@ class ComponentTest extends TestCase
 
 		$behavior = new NewBehavior;
 
-		$component->attachBehaviors(array(
+		$component->attachBehaviors([
 			'a' => $behavior,
 			'b' => $behavior,
-		));
+		]);
 
-		$this->assertSame(array('a' => $behavior, 'b' => $behavior), $component->getBehaviors());
+		$this->assertSame(['a' => $behavior, 'b' => $behavior], $component->getBehaviors());
 	}
 
 	public function testDetachBehavior()
@@ -310,7 +310,7 @@ class NewComponent extends Component
 {
 	private $_object = null;
 	private $_text = 'default';
-	private $_items = array();
+	private $_items = [];
 	public $content;
 
 	public function getText()

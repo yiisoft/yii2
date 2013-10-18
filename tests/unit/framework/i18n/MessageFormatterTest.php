@@ -31,18 +31,18 @@ class MessageFormatterTest extends TestCase
 
 	public function patterns()
 	{
-		return array(
-			array(
+		return [
+			[
 				'{'.self::SUBJECT.'} is {'.self::N.', number}', // pattern
 				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
-				array( // params
+				[ // params
 					self::N => self::N_VALUE,
 					self::SUBJECT => self::SUBJECT_VALUE,
-				)
-			),
+				]
+			],
 
 			// This one was provided by Aura.Intl. Thanks!
-			array(<<<_MSG_
+			[<<<_MSG_
 {gender_of_host, select,
   female {{num_guests, plural, offset:1
 	  =0 {{host} does not give a party.}
@@ -62,61 +62,61 @@ class MessageFormatterTest extends TestCase
 _MSG_
 				,
 				'ralph invites beep and 3 other people to his party.',
-				array(
+				[
 					'gender_of_host' => 'male',
 					'num_guests' => 4,
 					'host' => 'ralph',
 					'guest' => 'beep'
-				)
-			),
+				]
+			],
 
-			array(
+			[
 				'{name} is {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!',
 				'Alexander is male and he loves Yii!',
-				array(
+				[
 					'name' => 'Alexander',
 					'gender' => 'male',
-				),
-			),
+				],
+			],
 
 			// verify pattern in select does not get replaced
-			array(
+			[
 				'{name} is {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!',
 				'Alexander is male and he loves Yii!',
-				array(
+				[
 					'name' => 'Alexander',
 					'gender' => 'male',
 					 // following should not be replaced
 					'he' => 'wtf',
 					'she' => 'wtf',
 					'it' => 'wtf',
-				)
-			),
+				]
+			],
 
 			// verify pattern in select message gets replaced
-			array(
+			[
 				'{name} is {gender} and {gender, select, female{she} male{{he}} other{it}} loves Yii!',
 				'Alexander is male and wtf loves Yii!',
-				array(
+				[
 					'name' => 'Alexander',
 					'gender' => 'male',
 					'he' => 'wtf',
 					'she' => 'wtf',
-				),
-			),
+				],
+			],
 
 			// some parser specific verifications
-			array(
+			[
 				'{gender} and {gender, select, female{she} male{{he}} other{it}} loves {nr, number} is {gender}!',
 				'male and wtf loves 42 is male!',
-				array(
+				[
 					'nr' => 42,
 					'gender' => 'male',
 					'he' => 'wtf',
 					'she' => 'wtf',
-				),
-			),
-		);
+				],
+			],
+		];
 	}
 
 	/**
@@ -142,9 +142,9 @@ _MSG_
 	{
 		$expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
 
-		$result = MessageFormatter::formatMessage('en_US', '{'.self::SUBJECT.'} is {'.self::N.', number}', array(
+		$result = MessageFormatter::formatMessage('en_US', '{'.self::SUBJECT.'} is {'.self::N.', number}', [
 			self::N => self::N_VALUE,
-		));
+		]);
 
 		$this->assertEquals($expected, $result, intl_get_error_message());
 	}
@@ -167,11 +167,11 @@ _MSG_
 	public function testNoParams()
 	{
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
-		$result = MessageFormatter::formatMessage('en_US', $pattern, array());
+		$result = MessageFormatter::formatMessage('en_US', $pattern, []);
 		$this->assertEquals($pattern, $result, intl_get_error_message());
 
 		$formatter = new MessageFormatter('en_US', $pattern);
-		$result = $formatter->format(array());
+		$result = $formatter->format([]);
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
 	}
 }

@@ -7,23 +7,23 @@ The `view` component is responsible for rendering views. You can add
 a custom template engines by reconfiguring this component's behavior:
 
 ```php
-array(
-	'components' => array(
-		'view' => array(
+[
+	'components' => [
+		'view' => [
 			'class' => 'yii\base\View',
-			'renderers' => array(
-				'tpl' => array(
+			'renderers' => [
+				'tpl' => [
 					'class' => 'yii\renderers\SmartyViewRenderer',
-				),
-				'twig' => array(
+				],
+				'twig' => [
 					'class' => 'yii\renderers\TwigViewRenderer',
 					'twigPath' => '@app/vendors/Twig',
-				),
+				],
 				// ...
-			),
-		),
-	),
-)
+			],
+		],
+	],
+]
 ```
 
 Note that the Smarty and Twig packages themselves are not bundled with Yii. You must download them yourself. Then unpack the packages and place the resulting files in a logical location, such as the application's `protected/vendor` folder. Finally, specify the correct `smartyPath` or `twigPath`, as in the code above (for Twig).
@@ -36,7 +36,7 @@ Unlike standard view files, when using Twig, you must include the extension  whe
 or `$this->renderPartial()` from your controller:
 
 ```php
-echo $this->render('renderer.twig', array('username' => 'Alex'));
+echo $this->render('renderer.twig', ['username' => 'Alex']);
 ```
 
 ### Additional functions
@@ -63,7 +63,7 @@ To use Smarty, you need to create templates in files with the `.tpl` extension (
 or `$this->renderPartial()` from your controller:
 
 ```php
-echo $this->render('renderer.tpl', array('username' => 'Alex'));
+echo $this->render('renderer.tpl', ['username' => 'Alex']);
 ```
 
 ### Additional functions

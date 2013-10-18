@@ -42,7 +42,7 @@ abstract class Generator extends Model
 	 * @var array a list of available code templates. The array keys are the template names,
 	 * and the array values are the corresponding template paths or path aliases.
 	 */
-	public $templates = array();
+	public $templates = [];
 	/**
 	 * @var string the name of the code template that the user has selected.
 	 * The value of this property is internally managed by this class.
@@ -85,7 +85,7 @@ abstract class Generator extends Model
 	 */
 	public function requiredTemplates()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -96,7 +96,7 @@ abstract class Generator extends Model
 	 */
 	public function stickyAttributes()
 	{
-		return array('template');
+		return ['template'];
 	}
 
 	/**
@@ -107,7 +107,7 @@ abstract class Generator extends Model
 	 */
 	public function hints()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -159,17 +159,17 @@ abstract class Generator extends Model
 	 * rules are included:
 	 *
 	 * ~~~
-	 * return array_merge(parent::rules(), array(
+	 * return array_merge(parent::rules(), [
 	 *     ...rules for the child class...
-	 * ));
+	 * ]);
 	 * ~~~
 	 */
 	public function rules()
 	{
-		return array(
-			array('template', 'required', 'message' => 'A code template must be selected.'),
-			array('template', 'validateTemplate'),
-		);
+		return [
+			['template', 'required', 'message' => 'A code template must be selected.'],
+			['template', 'validateTemplate'],
+		];
 	}
 
 	/**
@@ -201,7 +201,7 @@ abstract class Generator extends Model
 	{
 		$stickyAttributes = $this->stickyAttributes();
 		$stickyAttributes[] = 'template';
-		$values = array();
+		$values = [];
 		foreach ($stickyAttributes as $name) {
 			$values[$name] = $this->$name;
 		}
@@ -229,7 +229,7 @@ abstract class Generator extends Model
 	 */
 	public function save($files, $answers, &$results)
 	{
-		$lines = array('Generating code using template "' . $this->getTemplatePath() . '"...');
+		$lines = ['Generating code using template "' . $this->getTemplatePath() . '"...'];
 		$hasError = false;
 		foreach ($files as $file) {
 			$relativePath = $file->getRelativePath();
@@ -272,7 +272,7 @@ abstract class Generator extends Model
 	 * @param array $params list of parameters to be passed to the template file.
 	 * @return string the generated code
 	 */
-	public function render($template, $params = array())
+	public function render($template, $params = [])
 	{
 		$view = new View;
 		$params['generator'] = $this;
@@ -352,7 +352,7 @@ abstract class Generator extends Model
 	 */
 	public function isReservedKeyword($value)
 	{
-		static $keywords = array(
+		static $keywords = [
 			'__class__',
 			'__dir__',
 			'__file__',
@@ -432,7 +432,7 @@ abstract class Generator extends Model
 			'var',
 			'while',
 			'xor',
-		);
+		];
 		return in_array(strtolower($value), $keywords, true);
 	}
 }

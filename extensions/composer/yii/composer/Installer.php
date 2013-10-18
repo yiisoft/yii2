@@ -63,7 +63,7 @@ class Installer extends LibraryInstaller
 
 	protected function addPackage(PackageInterface $package)
 	{
-		$extension = array('name' => $package->getPrettyName());
+		$extension = ['name' => $package->getPrettyName()];
 
 		$root = $package->getPrettyName();
 		if ($targetDir = $package->getTargetDir()) {
@@ -112,7 +112,7 @@ class Installer extends LibraryInstaller
 	{
 		$file = $this->vendorDir . '/yii-extensions.php';
 		if (!is_file($file)) {
-			return array();
+			return [];
 		}
 		$extensions = require($file);
 		/** @var string $vendorDir defined in yii-extensions.php */
@@ -147,10 +147,10 @@ class Installer extends LibraryInstaller
 	 */
 	public static function setPermissions($event)
 	{
-		$options = array_merge(array(
-			self::EXTRA_WRITABLES => array(),
-			self::EXTRA_EXECUTABLES => array(),
-		), $event->getComposer()->getPackage()->getExtra());
+		$options = array_merge([
+			self::EXTRA_WRITABLES => [],
+			self::EXTRA_EXECUTABLES => [],
+		], $event->getComposer()->getPackage()->getExtra());
 
 		foreach ((array)$options[self::EXTRA_WRITABLES] as $path) {
 			echo "Setting writable: $path ...";
@@ -181,9 +181,9 @@ class Installer extends LibraryInstaller
 	 */
 	public static function run($event)
 	{
-		$options = array_merge(array(
-			self::EXTRA_COMMANDS => array(),
-		), $event->getComposer()->getPackage()->getExtra());
+		$options = array_merge([
+			self::EXTRA_COMMANDS => [],
+		], $event->getComposer()->getPackage()->getExtra());
 
 		if (!isset($options[self::EXTRA_CONFIG])) {
 			throw new Exception('Please specify the "' . self::EXTRA_CONFIG . '" parameter in composer.json.');

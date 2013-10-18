@@ -44,11 +44,11 @@ You can use these widgets in your view files after you have registered the corre
 Example:
 
 ```php
-echo ProgressBar::widget(array(
-	'clientOptions' => array(
+echo ProgressBar::widget([
+	'clientOptions' => [
 		'value' => 75,
-	),
-));
+	],
+]);
 ```
 
 For further instructions refer to the yii guide.

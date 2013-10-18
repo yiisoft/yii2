@@ -41,9 +41,9 @@ class PhpManager extends Manager
 	 */
 	public $authFile;
 
-	private $_items = array(); // itemName => item
-	private $_children = array(); // itemName, childName => child
-	private $_assignments = array(); // userId, itemName => assignment
+	private $_items = []; // itemName => item
+	private $_children = []; // itemName, childName => child
+	private $_assignments = []; // userId, itemName => assignment
 
 	/**
 	 * Initializes the application component.
@@ -69,7 +69,7 @@ class PhpManager extends Manager
 	 * this array, which holds the value of `$userId`.
 	 * @return boolean whether the operations can be performed by the user.
 	 */
-	public function checkAccess($userId, $itemName, $params = array())
+	public function checkAccess($userId, $itemName, $params = [])
 	{
 		if (!isset($this->_items[$itemName])) {
 			return false;
@@ -165,10 +165,10 @@ class PhpManager extends Manager
 	public function getItemChildren($names)
 	{
 		if (is_string($names)) {
-			return isset($this->_children[$names]) ? $this->_children[$names] : array();
+			return isset($this->_children[$names]) ? $this->_children[$names] : [];
 		}
 
-		$children = array();
+		$children = [];
 		foreach ($names as $name) {
 			if (isset($this->_children[$name])) {
 				$children = array_merge($children, $this->_children[$name]);
@@ -194,13 +194,13 @@ class PhpManager extends Manager
 		} elseif (isset($this->_assignments[$userId][$itemName])) {
 			throw new InvalidParamException("Authorization item '$itemName' has already been assigned to user '$userId'.");
 		} else {
-			return $this->_assignments[$userId][$itemName] = new Assignment(array(
+			return $this->_assignments[$userId][$itemName] = new Assignment([
 				'manager' => $this,
 				'userId' => $userId,
 				'itemName' => $itemName,
 				'bizRule' => $bizRule,
 				'data' => $data,
-			));
+			]);
 		}
 	}
 
@@ -251,7 +251,7 @@ class PhpManager extends Manager
 	 */
 	public function getAssignments($userId)
 	{
-		return isset($this->_assignments[$userId]) ? $this->_assignments[$userId] : array();
+		return isset($this->_assignments[$userId]) ? $this->_assignments[$userId] : [];
 	}
 
 	/**
@@ -267,7 +267,7 @@ class PhpManager extends Manager
 		if ($userId === null && $type === null) {
 			return $this->_items;
 		}
-		$items = array();
+		$items = [];
 		if ($userId === null) {
 			foreach ($this->_items as $name => $item) {
 				/** @var $item Item */
@@ -307,14 +307,14 @@ class PhpManager extends Manager
 		if (isset($this->_items[$name])) {
 			throw new Exception('Unable to add an item whose name is the same as an existing item.');
 		}
-		return $this->_items[$name] = new Item(array(
+		return $this->_items[$name] = new Item([
 			'manager' => $this,
 			'name' => $name,
 			'type' => $type,
 			'description' => $description,
 			'bizRule' => $bizRule,
 			'data' => $data,
-		));
+		]);
 	}
 
 	/**
@@ -398,15 +398,15 @@ class PhpManager extends Manager
 	 */
 	public function save()
 	{
-		$items = array();
+		$items = [];
 		foreach ($this->_items as $name => $item) {
 			/** @var $item Item */
-			$items[$name] = array(
+			$items[$name] = [
 				'type' => $item->type,
 				'description' => $item->description,
 				'bizRule' => $item->bizRule,
 				'data' => $item->data,
-			);
+			];
 			if (isset($this->_children[$name])) {
 				foreach ($this->_children[$name] as $child) {
 					/** @var $child Item */
@@ -419,10 +419,10 @@ class PhpManager extends Manager
 			foreach ($assignments as $name => $assignment) {
 				/** @var $assignment Assignment */
 				if (isset($items[$name])) {
-					$items[$name]['assignments'][$userId] = array(
+					$items[$name]['assignments'][$userId] = [
 						'bizRule' => $assignment->bizRule,
 						'data' => $assignment->data,
-					);
+					];
 				}
 			}
 		}
@@ -440,14 +440,14 @@ class PhpManager extends Manager
 		$items = $this->loadFromFile($this->authFile);
 
 		foreach ($items as $name => $item) {
-			$this->_items[$name] = new Item(array(
+			$this->_items[$name] = new Item([
 				'manager' => $this,
 				'name' => $name,
 				'type' => $item['type'],
 				'description' => $item['description'],
 				'bizRule' => $item['bizRule'],
 				'data' => $item['data'],
-			));
+			]);
 		}
 
 		foreach ($items as $name => $item) {
@@ -460,13 +460,13 @@ class PhpManager extends Manager
 			}
 			if (isset($item['assignments'])) {
 				foreach ($item['assignments'] as $userId => $assignment) {
-					$this->_assignments[$userId][$name] = new Assignment(array(
+					$this->_assignments[$userId][$name] = new Assignment([
 						'manager' => $this,
 						'userId' => $userId,
 						'itemName' => $name,
 						'bizRule' => $assignment['bizRule'],
 						'data' => $assignment['data'],
-					));
+					]);
 				}
 			}
 		}
@@ -478,8 +478,8 @@ class PhpManager extends Manager
 	public function clearAll()
 	{
 		$this->clearAssignments();
-		$this->_children = array();
-		$this->_items = array();
+		$this->_children = [];
+		$this->_items = [];
 	}
 
 	/**
@@ -487,7 +487,7 @@ class PhpManager extends Manager
 	 */
 	public function clearAssignments()
 	{
-		$this->_assignments = array();
+		$this->_assignments = [];
 	}
 
 	/**
@@ -524,7 +524,7 @@ class PhpManager extends Manager
 		if (is_file($file)) {
 			return require($file);
 		} else {
-			return array();
+			return [];
 		}
 	}
 
