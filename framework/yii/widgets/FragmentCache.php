@@ -39,10 +39,10 @@ class FragmentCache extends Widget
 	 * For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'class' => 'yii\caching\DbDependency',
 	 *     'sql' => 'SELECT MAX(lastModified) FROM Post',
-	 * )
+	 * ]
 	 * ~~~
 	 *
 	 * would make the output cache depends on the last modified time of all posts.
@@ -56,9 +56,9 @@ class FragmentCache extends Widget
 	 * according to the current application language:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     Yii::$app->language,
-	 * )
+	 * ]
 	 */
 	public $variations;
 	/**
@@ -108,7 +108,7 @@ class FragmentCache extends Widget
 			if (is_array($this->dependency)) {
 				$this->dependency = Yii::createObject($this->dependency);
 			}
-			$data = array($content, $this->dynamicPlaceholders);
+			$data = [$content, $this->dynamicPlaceholders];
 			$this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
 
 			if (empty($this->getView()->cacheStack) && !empty($this->dynamicPlaceholders)) {
@@ -167,7 +167,7 @@ class FragmentCache extends Widget
 	 */
 	protected function calculateKey()
 	{
-		$factors = array(__CLASS__, $this->getId());
+		$factors = [__CLASS__, $this->getId()];
 		if (is_array($this->variations)) {
 			foreach ($this->variations as $factor) {
 				$factors[] = $factor;

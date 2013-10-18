@@ -112,13 +112,13 @@ class FileHelperTest extends TestCase
 	public function testCopyDirectory()
 	{
 		$srcDirName = 'test_src_dir';
-		$files = array(
+		$files = [
 			'file1.txt' => 'file 1 content',
 			'file2.txt' => 'file 2 content',
-		);
-		$this->createFileStructure(array(
+		];
+		$this->createFileStructure([
 			$srcDirName => $files
-		));
+		]);
 
 		$basePath = $this->testFilePath;
 		$srcDirName = $basePath . DIRECTORY_SEPARATOR . $srcDirName;
@@ -146,12 +146,12 @@ class FileHelperTest extends TestCase
 		$srcDirName = 'test_src_dir';
 		$subDirName = 'test_sub_dir';
 		$fileName = 'test_file.txt';
-		$this->createFileStructure(array(
-			$srcDirName => array(
-				$subDirName => array(),
+		$this->createFileStructure([
+			$srcDirName => [
+				$subDirName => [],
 				$fileName => 'test file content',
-			),
-		));
+			],
+		]);
 
 		$basePath = $this->testFilePath;
 		$srcDirName = $basePath . DIRECTORY_SEPARATOR . $srcDirName;
@@ -159,10 +159,10 @@ class FileHelperTest extends TestCase
 
 		$dirMode = 0755;
 		$fileMode = 0755;
-		$options = array(
+		$options = [
 			'dirMode' => $dirMode,
 			'fileMode' => $fileMode,
-		);
+		];
 		FileHelper::copyDirectory($srcDirName, $dstDirName, $options);
 
 		$this->assertFileMode($dirMode, $dstDirName, 'Destination directory has wrong mode!');
@@ -173,16 +173,16 @@ class FileHelperTest extends TestCase
 	public function testRemoveDirectory()
 	{
 		$dirName = 'test_dir_for_remove';
-		$this->createFileStructure(array(
-			$dirName => array(
+		$this->createFileStructure([
+			$dirName => [
 				'file1.txt' => 'file 1 content',
 				'file2.txt' => 'file 2 content',
-				'test_sub_dir' => array(
+				'test_sub_dir' => [
 					'sub_dir_file_1.txt' => 'sub dir file 1 content',
 					'sub_dir_file_2.txt' => 'sub dir file 2 content',
-				),
-			),
-		));
+				],
+			],
+		]);
 
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
@@ -198,24 +198,24 @@ class FileHelperTest extends TestCase
 	public function testFindFiles()
 	{
 		$dirName = 'test_dir';
-		$this->createFileStructure(array(
-			$dirName => array(
+		$this->createFileStructure([
+			$dirName => [
 				'file_1.txt' => 'file 1 content',
 				'file_2.txt' => 'file 2 content',
-				'test_sub_dir' => array(
+				'test_sub_dir' => [
 					'file_1_1.txt' => 'sub dir file 1 content',
 					'file_1_2.txt' => 'sub dir file 2 content',
-				),
-			),
-		));
+				],
+			],
+		]);
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
-		$expectedFiles = array(
+		$expectedFiles = [
 			$dirName . DIRECTORY_SEPARATOR . 'file_1.txt',
 			$dirName . DIRECTORY_SEPARATOR . 'file_2.txt',
 			$dirName . DIRECTORY_SEPARATOR . 'test_sub_dir' . DIRECTORY_SEPARATOR . 'file_1_1.txt',
 			$dirName . DIRECTORY_SEPARATOR . 'test_sub_dir' . DIRECTORY_SEPARATOR . 'file_1_2.txt',
-		);
+		];
 
 		$foundFiles = FileHelper::findFiles($dirName);
 		sort($expectedFiles);
@@ -230,22 +230,22 @@ class FileHelperTest extends TestCase
 	{
 		$dirName = 'test_dir';
 		$passedFileName = 'passed.txt';
-		$this->createFileStructure(array(
-			$dirName => array(
+		$this->createFileStructure([
+			$dirName => [
 				$passedFileName => 'passed file content',
 				'declined.txt' => 'declined file content',
-			),
-		));
+			],
+		]);
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
 
-		$options = array(
+		$options = [
 			'filter' => function ($path) use ($passedFileName) {
 				return $passedFileName == basename($path);
 			}
-		);
+		];
 		$foundFiles = FileHelper::findFiles($dirName, $options);
-		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $passedFileName), $foundFiles);
+		$this->assertEquals([$dirName . DIRECTORY_SEPARATOR . $passedFileName], $foundFiles);
 	}
 
 	/**
@@ -256,20 +256,20 @@ class FileHelperTest extends TestCase
 		$dirName = 'test_dir';
 		$fileName = 'test_file.txt';
 		$excludeFileName = 'exclude_file.txt';
-		$this->createFileStructure(array(
-			$dirName => array(
+		$this->createFileStructure([
+			$dirName => [
 				$fileName => 'file content',
 				$excludeFileName => 'exclude file content',
-			),
-		));
+			],
+		]);
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
 
-		$options = array(
-			'except' => array($excludeFileName),
-		);
+		$options = [
+			'except' => [$excludeFileName],
+		];
 		$foundFiles = FileHelper::findFiles($dirName, $options);
-		$this->assertEquals(array($dirName . DIRECTORY_SEPARATOR . $fileName), $foundFiles);
+		$this->assertEquals([$dirName . DIRECTORY_SEPARATOR . $fileName], $foundFiles);
 	}
 
 	public function testCreateDirectory()
@@ -284,10 +284,10 @@ class FileHelperTest extends TestCase
 	public function testGetMimeTypeByExtension()
 	{
 		$magicFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type.php';
-		$mimeTypeMap = array(
+		$mimeTypeMap = [
 			'txa' => 'application/json',
 			'txb' => 'another/mime',
-		);
+		];
 		$magicFileContent = '<?php return ' . var_export($mimeTypeMap, true) . ';';
 		file_put_contents($magicFile, $magicFileContent);
 

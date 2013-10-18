@@ -69,7 +69,7 @@ class ExistValidator extends Validator
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 		$query = $className::find();
-		$query->where(array($attributeName => $value));
+		$query->where([$attributeName => $value]);
 		if (!$query->exists()) {
 			$this->addError($object, $attribute, $this->message);
 		}
@@ -95,7 +95,7 @@ class ExistValidator extends Validator
 		/** @var $className \yii\db\ActiveRecord */
 		$className = $this->className;
 		$query = $className::find();
-		$query->where(array($this->attributeName => $value));
+		$query->where([$this->attributeName => $value]);
 		return $query->exists();
 	}
 }

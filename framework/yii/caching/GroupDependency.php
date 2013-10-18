@@ -28,7 +28,7 @@ class GroupDependency extends Dependency
 	 * @param string $group the group name
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($group, $config = array())
+	public function __construct($group, $config = [])
 	{
 		$this->group = $group;
 		parent::__construct($config);
@@ -42,7 +42,7 @@ class GroupDependency extends Dependency
 	 */
 	protected function generateDependencyData($cache)
 	{
-		$version = $cache->get(array(__CLASS__, $this->group));
+		$version = $cache->get([__CLASS__, $this->group]);
 		if ($version === false) {
 			$version = $this->invalidate($cache, $this->group);
 		}
@@ -56,7 +56,7 @@ class GroupDependency extends Dependency
 	 */
 	public function getHasChanged($cache)
 	{
-		$version = $cache->get(array(__CLASS__, $this->group));
+		$version = $cache->get([__CLASS__, $this->group]);
 		return $version === false || $version !== $this->data;
 	}
 
@@ -69,7 +69,7 @@ class GroupDependency extends Dependency
 	public static function invalidate($cache, $group)
 	{
 		$version = microtime();
-		$cache->set(array(__CLASS__, $group), $version);
+		$cache->set([__CLASS__, $group], $version);
 		return $version;
 	}
 }

@@ -32,7 +32,7 @@ class ClassmapController extends Controller
 		if ($mapFile === null) {
 			$mapFile = YII_PATH . '/classes.php';
 		}
-		$options = array(
+		$options = [
 			'filter' => function ($path) {
 				if (is_file($path)) {
 					$file = basename($path);
@@ -42,18 +42,18 @@ class ClassmapController extends Controller
 				}
 				return null;
 			},
-			'only' => array('.php'),
-			'except' => array(
+			'only' => ['.php'],
+			'except' => [
 				'Yii.php',
 				'BaseYii.php',
 				'/debug/',
 				'/console/',
 				'/test/',
 				'/gii/',
-			),
-		);
+			],
+		];
 		$files = FileHelper::findFiles($root, $options);
-		$map = array();
+		$map = [];
 		foreach ($files as $file) {
 			if (($pos = strpos($file, $root)) !== 0) {
 				die("Something wrong: $file\n");
@@ -76,9 +76,9 @@ class ClassmapController extends Controller
  * @license http://www.yiiframework.com/license/
  */
 
-return array(
+return [
 $map
-);
+];
 
 EOD;
 		if (is_file($mapFile) && file_get_contents($mapFile) === $output) {

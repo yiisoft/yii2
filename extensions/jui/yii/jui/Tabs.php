@@ -17,47 +17,33 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Tabs::widget(array(
- *     'items' => array(
- *         array(
+ * echo Tabs::widget([
+ *     'items' => [
+ *         [
  *             'label' => 'Tab one',
  *             'content' => 'Mauris mauris ante, blandit et, ultrices a, suscipit eget...',
- *         ),
- *         array(
+ *         ],
+ *         [
  *             'label' => 'Tab two',
  *             'content' => 'Sed non urna. Phasellus eu ligula. Vestibulum sit amet purus...',
- *             'options' => array(
- *                 'tag' => 'div',
- *             ),
- *             'headerOptions' => array(
- *                 'class' => 'my-class',
- *             ),
- *         ),
- *         array(
+ *             'options' => ['tag' => 'div'],
+ *             'headerOptions' => ['class' => 'my-class'],
+ *         ],
+ *         [
  *             'label' => 'Tab with custom id',
  *             'content' => 'Morbi tincidunt, dui sit amet facilisis feugiat...',
- *             'options' => array(
- *                'id' => 'my-tab',
- *             ),
- *         ),
- *         array(
+ *             'options' => ['id' => 'my-tab'],
+ *         ],
+ *         [
  *             'label' => 'Ajax tab',
- *             'url' => array('ajax/content'),
- *         ),
+ *             'url' => ['ajax/content'],
+ *         ],
  *     ),
- *     'options' => array(
- *         'tag' => 'div',
- *     ),
- *     'itemOptions' => array(
- *         'tag' => 'div',
- *     ),
- *     'headerOptions' => array(
- *         'class' => 'my-class',
- *     ),
- *     'clientOptions' => array(
- *         'collapsible' => false,
- *     ),
- * ));
+ *     'options' => ['tag' => 'div'],
+ *     'itemOptions' => ['tag' => 'div'],
+ *     'headerOptions' => ['class' => 'my-class'],
+ *     'clientOptions' => ['collapsible' => false],
+ * ]);
  * ```
  *
  * @see http://api.jqueryui.com/tabs/
@@ -71,7 +57,7 @@ class Tabs extends Widget
 	 *
 	 * - tag: string, defaults to "div", the tag name of the container tag of this widget
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var array list of tab items. Each item can be an array of the following structure:
 	 *
@@ -84,19 +70,19 @@ class Tabs extends Widget
 	 * - options: array, optional, the HTML attributes of the header.
 	 * - headerOptions: array, optional, the HTML attributes for the header container tag.
 	 */
-	public $items = array();
+	public $items = [];
 	/**
 	 * @var array list of HTML attributes for the item container tags. This will be overwritten
 	 * by the "options" set in individual [[items]]. The following special options are recognized:
 	 *
 	 * - tag: string, defaults to "div", the tag name of the item container tags.
 	 */
-	public $itemOptions = array();
+	public $itemOptions = [];
 	/**
 	 * @var array list of HTML attributes for the header container tags. This will be overwritten
 	 * by the "headerOptions" set in individual [[items]].
 	 */
-	public $headerOptions = array();
+	public $headerOptions = [];
 	/**
 	 * @var string the default header template to render the link.
 	 */
@@ -127,8 +113,8 @@ class Tabs extends Widget
 	 */
 	protected function renderItems()
 	{
-		$headers = array();
-		$items = array();
+		$headers = [];
+		$items = [];
 		foreach ($this->items as $n => $item) {
 			if (!isset($item['label'])) {
 				throw new InvalidConfigException("The 'label' option is required.");
@@ -139,7 +125,7 @@ class Tabs extends Widget
 				if (!isset($item['content'])) {
 					throw new InvalidConfigException("The 'content' or 'url' option is required.");
 				}
-				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', array()));
+				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
 				$tag = ArrayHelper::remove($options, 'tag', 'div');
 				if (!isset($options['id'])) {
 					$options['id'] = $this->options['id'] . '-tab' . $n;
@@ -147,12 +133,12 @@ class Tabs extends Widget
 				$url = '#' . $options['id'];
 				$items[] = Html::tag($tag, $item['content'], $options);
 			}
-			$headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', array()));
+			$headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', []));
 			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
-			$headers[] = Html::tag('li', strtr($template, array(
+			$headers[] = Html::tag('li', strtr($template, [
 				'{label}' => $this->encodeLabels ? Html::encode($item['label']) : $item['label'],
 				'{url}' => $url,
-			)), $headerOptions);
+			]), $headerOptions);
 		}
 		return Html::tag('ul', implode("\n", $headers)) . "\n" . implode("\n", $items);
 	}

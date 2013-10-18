@@ -10,13 +10,13 @@ class FakedValidationModel extends Model
 	public $val_attr_b;
 	public $val_attr_c;
 	public $val_attr_d;
-	private $attr = array();
+	private $attr = [];
 
 	/**
 	 * @param array $attributes
 	 * @return self
 	 */
-	public static function createWithAttributes($attributes = array())
+	public static function createWithAttributes($attributes = [])
 	{
 		$m = new static();
 		foreach ($attributes as $attribute => $value) {
@@ -27,13 +27,13 @@ class FakedValidationModel extends Model
 
 	public function rules()
 	{
-		return array(
-			array('val_attr_a, val_attr_b', 'required', 'on' => 'reqTest'),
-			array('val_attr_c', 'integer'),
-		);
+		return [
+			['val_attr_a, val_attr_b', 'required', 'on' => 'reqTest'],
+			['val_attr_c', 'integer'],
+		];
 	}
 
-	public function inlineVal($attribute, $params = array())
+	public function inlineVal($attribute, $params = [])
 	{
 		return true;
 	}

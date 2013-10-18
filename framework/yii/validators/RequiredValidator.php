@@ -74,9 +74,9 @@ class RequiredValidator extends Validator
 			if ($this->requiredValue === null) {
 				$this->addError($object, $attribute, $this->message);
 			} else {
-				$this->addError($object, $attribute, $this->message, array(
+				$this->addError($object, $attribute, $this->message, [
 					'{requiredValue}' => $this->requiredValue,
-				));
+				]);
 			}
 		}
 	}
@@ -108,11 +108,11 @@ class RequiredValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$options = array();
+		$options = [];
 		if ($this->requiredValue !== null) {
-			$options['message'] = strtr($this->message, array(
+			$options['message'] = strtr($this->message, [
 				'{requiredValue}' => $this->requiredValue,
-			));
+			]);
 			$options['requiredValue'] = $this->requiredValue;
 		} else {
 			$options['message'] = $this->message;
@@ -121,9 +121,9 @@ class RequiredValidator extends Validator
 			$options['strict'] = 1;
 		}
 
-		$options['message'] = Html::encode(strtr($options['message'], array(
+		$options['message'] = Html::encode(strtr($options['message'], [
 			'{attribute}' => $object->getAttributeLabel($attribute),
-		)));
+		]));
 
 		ValidationAsset::register($view);
 		return 'yii.validation.required(value, messages, ' . json_encode($options) . ');';

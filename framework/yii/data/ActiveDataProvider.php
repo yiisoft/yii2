@@ -22,12 +22,12 @@ use yii\db\Connection;
  * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
  * ~~~
- * $provider = new ActiveDataProvider(array(
+ * $provider = new ActiveDataProvider([
  *     'query' => Post::find(),
- *     'pagination' => array(
+ *     'pagination' => [
  *         'pageSize' => 20,
- *     ),
- * ));
+ *     ],
+ * ]);
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
@@ -37,12 +37,12 @@ use yii\db\Connection;
  *
  * ~~~
  * $query = new Query;
- * $provider = new ActiveDataProvider(array(
+ * $provider = new ActiveDataProvider([
  *     'query' => $query->from('tbl_post'),
- *     'pagination' => array(
+ *     'pagination' => [
  *         'pageSize' => 20,
- *     ),
- * ));
+ *     ],
+ * ]);
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
@@ -115,7 +115,7 @@ class ActiveDataProvider extends BaseDataProvider
 	 */
 	protected function prepareKeys($models)
 	{
-		$keys = array();
+		$keys = [];
 		if ($this->key !== null) {
 			foreach ($models as $model) {
 				if (is_string($this->key)) {
@@ -136,7 +136,7 @@ class ActiveDataProvider extends BaseDataProvider
 				}
 			} else {
 				foreach ($models as $model) {
-					$kk = array();
+					$kk = [];
 					foreach ($pks as $pk) {
 						$kk[] = $model[$pk];
 					}
@@ -171,11 +171,11 @@ class ActiveDataProvider extends BaseDataProvider
 			/** @var Model $model */
 			$model = new $this->query->modelClass;
 			foreach($model->attributes() as $attribute) {
-				$sort->attributes[$attribute] = array(
-					'asc' => array($attribute => Sort::ASC),
-					'desc' => array($attribute => Sort::DESC),
+				$sort->attributes[$attribute] = [
+					'asc' => [$attribute => Sort::ASC],
+					'desc' => [$attribute => Sort::DESC],
 					'label' => $model->getAttributeLabel($attribute),
-				);
+				];
 			}
 		}
 	}

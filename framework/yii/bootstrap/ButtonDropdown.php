@@ -16,21 +16,15 @@ use yii\helpers\Html;
  *
  * ```php
  * // a button group using Dropdown widget
- * echo ButtonDropdown::widget(array(
+ * echo ButtonDropdown::widget([
  *     'label' => 'Action',
- *     'dropdown' => array(
- *         'items' => array(
- *             array(
- *                 'label' => 'DropdownA',
- *                 'url' => '/',
- *             ),
- *             array(
- *                 'label' => 'DropdownB',
- *                 'url' => '#',
- *             ),
- *         ),
- *     ),
- * ));
+ *     'dropdown' => [
+ *         'items' => [
+ *             ['label' => 'DropdownA', 'url' => '/'],
+ *             ['label' => 'DropdownB', 'url' => '#'],
+ *         ],
+ *     ],
+ * ]);
  * ```
  * @see http://twitter.github.io/bootstrap/javascript.html#buttons
  * @see http://twitter.github.io/bootstrap/components.html#buttonDropdowns
@@ -46,11 +40,11 @@ class ButtonDropdown extends Widget
 	/**
 	 * @var array the HTML attributes of the button.
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var array the configuration array for [[Dropdown]].
 	 */
-	public $dropdown = array();
+	public $dropdown = [];
 	/**
 	 * @var boolean whether to display a group of split-styled button group.
 	 */
@@ -78,11 +72,11 @@ class ButtonDropdown extends Widget
 			$options = $this->options;
 			$this->options['data-toggle'] = 'dropdown';
 			Html::addCssClass($this->options, 'dropdown-toggle');
-			$splitButton = Button::widget(array(
+			$splitButton = Button::widget([
 				'label' => '<span class="caret"></span>',
 				'encodeLabel' => false,
 				'options' => $this->options,
-			));
+			]);
 		} else {
 			$tag = 'a';
 			$this->label .= ' <span class="caret"></span>';
@@ -94,12 +88,12 @@ class ButtonDropdown extends Widget
 			$options['data-toggle'] = 'dropdown';
 			$splitButton = '';
 		}
-		return Button::widget(array(
+		return Button::widget([
 			'tagName' => $tag,
 			'label' => $this->label,
 			'options' => $options,
 			'encodeLabel' => false,
-		)) . "\n" . $splitButton;
+		]) . "\n" . $splitButton;
 	}
 
 	/**

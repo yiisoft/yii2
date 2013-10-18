@@ -16,6 +16,6 @@ class ValidatorTestMainModel extends ActiveRecord
 
 	public function getReferences()
 	{
-		return $this->hasMany(ValidatorTestRefModel::className(), array('ref' => 'id'));
+		return $this->hasMany(ValidatorTestRefModel::className(), ['ref' => 'id']);
 	}
 }

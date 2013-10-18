@@ -28,8 +28,8 @@ class BaseArrayHelper
 	 * The properties specified for each class is an array of the following format:
 	 *
 	 * ~~~
-	 * array(
-	 *     'app\models\Post' => array(
+	 * [
+	 *     'app\models\Post' => [
 	 *         'id',
 	 *         'title',
 	 *         // the key name in array result => property name
@@ -38,30 +38,30 @@ class BaseArrayHelper
 	 *         'length' => function ($post) {
 	 *             return strlen($post->content);
 	 *         },
-	 *     ),
-	 * )
+	 *     ],
+	 * ]
 	 * ~~~
 	 *
 	 * The result of `ArrayHelper::toArray($post, $properties)` could be like the following:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'id' => 123,
 	 *     'title' => 'test',
 	 *     'createTime' => '2013-01-01 12:00AM',
 	 *     'length' => 301,
-	 * )
+	 * ]
 	 * ~~~
 	 *
 	 * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
 	 * @return array the array representation of the object
 	 */
-	public static function toArray($object, $properties = array(), $recursive = true)
+	public static function toArray($object, $properties = [], $recursive = true)
 	{
 		if (!empty($properties) && is_object($object)) {
 			$className = get_class($object);
 			if (!empty($properties[$className])) {
-				$result = array();
+				$result = [];
 				foreach ($properties[$className] as $key => $name) {
 					if (is_int($key)) {
 						$result[$name] = $object->$name;
@@ -78,7 +78,7 @@ class BaseArrayHelper
 				return $object;
 			}
 		}
-		$result = array();
+		$result = [];
 		foreach ($object as $key => $value) {
 			if ($recursive && (is_array($value) || is_object($value))) {
 				$result[$key] = static::toArray($value, true);
@@ -163,11 +163,11 @@ class BaseArrayHelper
 	 * Usage examples,
 	 *
 	 * ~~~
-	 * // $array = array('type' => 'A', 'options' => array(1, 2));
+	 * // $array = ['type' => 'A', 'options' => [1, 2]];
 	 * // working with array
 	 * $type = \yii\helpers\ArrayHelper::remove($array, 'type');
 	 * // $array content
-	 * // $array = array('options' => array(1, 2));
+	 * // $array = ['options' => [1, 2]];
 	 * ~~~
 	 *
 	 * @param array $array the array to extract value from
@@ -197,16 +197,16 @@ class BaseArrayHelper
 	 * For example,
 	 *
 	 * ~~~
-	 * $array = array(
-	 *     array('id' => '123', 'data' => 'abc'),
-	 *     array('id' => '345', 'data' => 'def'),
-	 * );
+	 * $array = [
+	 *     ['id' => '123', 'data' => 'abc'],
+	 *     ['id' => '345', 'data' => 'def'],
+	 * ];
 	 * $result = ArrayHelper::index($array, 'id');
 	 * // the result is:
-	 * // array(
-	 * //     '123' => array('id' => '123', 'data' => 'abc'),
-	 * //     '345' => array('id' => '345', 'data' => 'def'),
-	 * // )
+	 * // [
+	 * //     '123' => ['id' => '123', 'data' => 'abc'],
+	 * //     '345' => ['id' => '345', 'data' => 'def'],
+	 * // ]
 	 *
 	 * // using anonymous function
 	 * $result = ArrayHelper::index($array, function ($element) {
@@ -220,7 +220,7 @@ class BaseArrayHelper
 	 */
 	public static function index($array, $key)
 	{
-		$result = array();
+		$result = [];
 		foreach ($array as $element) {
 			$value = static::getValue($element, $key);
 			$result[$value] = $element;
@@ -235,12 +235,12 @@ class BaseArrayHelper
 	 * For example,
 	 *
 	 * ~~~
-	 * $array = array(
-	 *     array('id' => '123', 'data' => 'abc'),
-	 *     array('id' => '345', 'data' => 'def'),
-	 * );
+	 * $array = [
+	 *     ['id' => '123', 'data' => 'abc'],
+	 *     ['id' => '345', 'data' => 'def'],
+	 * ];
 	 * $result = ArrayHelper::getColumn($array, 'id');
-	 * // the result is: array( '123', '345')
+	 * // the result is: ['123', '345']
 	 *
 	 * // using anonymous function
 	 * $result = ArrayHelper::getColumn($array, function ($element) {
@@ -256,7 +256,7 @@ class BaseArrayHelper
 	 */
 	public static function getColumn($array, $name, $keepKeys = true)
 	{
-		$result = array();
+		$result = [];
 		if ($keepKeys) {
 			foreach ($array as $k => $element) {
 				$result[$k] = static::getValue($element, $name);
@@ -278,31 +278,31 @@ class BaseArrayHelper
 	 * For example,
 	 *
 	 * ~~~
-	 * $array = array(
-	 *     array('id' => '123', 'name' => 'aaa', 'class' => 'x'),
-	 *     array('id' => '124', 'name' => 'bbb', 'class' => 'x'),
-	 *     array('id' => '345', 'name' => 'ccc', 'class' => 'y'),
+	 * $array = [
+	 *     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
+	 *     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
+	 *     ['id' => '345', 'name' => 'ccc', 'class' => 'y'],
 	 * );
 	 *
 	 * $result = ArrayHelper::map($array, 'id', 'name');
 	 * // the result is:
-	 * // array(
+	 * // [
 	 * //     '123' => 'aaa',
 	 * //     '124' => 'bbb',
 	 * //     '345' => 'ccc',
-	 * // )
+	 * // ]
 	 *
 	 * $result = ArrayHelper::map($array, 'id', 'name', 'class');
 	 * // the result is:
-	 * // array(
-	 * //     'x' => array(
+	 * // [
+	 * //     'x' => [
 	 * //         '123' => 'aaa',
 	 * //         '124' => 'bbb',
-	 * //     ),
-	 * //     'y' => array(
+	 * //     ],
+	 * //     'y' => [
 	 * //         '345' => 'ccc',
-	 * //     ),
-	 * // )
+	 * //     ],
+	 * // ]
 	 * ~~~
 	 *
 	 * @param array $array
@@ -313,7 +313,7 @@ class BaseArrayHelper
 	 */
 	public static function map($array, $from, $to, $group = null)
 	{
-		$result = array();
+		$result = [];
 		foreach ($array as $element) {
 			$key = static::getValue($element, $from);
 			$value = static::getValue($element, $to);
@@ -347,7 +347,7 @@ class BaseArrayHelper
 	 */
 	public static function multisort(&$array, $key, $descending = false, $sortFlag = SORT_REGULAR, $caseSensitive = true)
 	{
-		$keys = is_array($key) ? $key : array($key);
+		$keys = is_array($key) ? $key : [$key];
 		if (empty($keys) || empty($array)) {
 			return;
 		}
@@ -367,7 +367,7 @@ class BaseArrayHelper
 		} elseif (count($caseSensitive) !== $n) {
 			throw new InvalidParamException('The length of $caseSensitive parameter must be the same as that of $keys.');
 		}
-		$args = array();
+		$args = [];
 		foreach ($keys as $i => $key) {
 			$flag = $sortFlag[$i];
 			$cs = $caseSensitive[$i];
@@ -376,7 +376,7 @@ class BaseArrayHelper
 					$flag = $flag | SORT_FLAG_CASE;
 					$args[] = static::getColumn($array, $key);
 				} else {
-					$column = array();
+					$column = [];
 					foreach (static::getColumn($array, $key) as $k => $value) {
 						$column[$k] = mb_strtolower($value);
 					}
@@ -409,7 +409,7 @@ class BaseArrayHelper
 		if ($charset === null) {
 			$charset = Yii::$app->charset;
 		}
-		$d = array();
+		$d = [];
 		foreach ($data as $key => $value) {
 			if (!$valuesOnly && is_string($key)) {
 				$key = htmlspecialchars($key, ENT_QUOTES, $charset);
@@ -435,7 +435,7 @@ class BaseArrayHelper
 	 */
 	public static function htmlDecode($data, $valuesOnly = true)
 	{
-		$d = array();
+		$d = [];
 		foreach ($data as $key => $value) {
 			if (!$valuesOnly && is_string($key)) {
 				$key = htmlspecialchars_decode($key, ENT_QUOTES);

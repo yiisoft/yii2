@@ -17,11 +17,11 @@ convenient way to include bootstrap assets in your pages with a single line adde
 `config` directory:
 
 ```php
-public $depends = array(
+public $depends = [
 	'yii\web\YiiAsset',
 	'yii\bootstrap\BootstrapAsset', // this line
 	// 'yii\bootstrap\BootstrapThemeAsset' // uncomment to apply bootstrap 2 style to bootstrap 3
-);
+];
 ```
 
 Using bootstrap through Yii asset manager allows you to minimize its resources and combine with your own resources when

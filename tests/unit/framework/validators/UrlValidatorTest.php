@@ -25,23 +25,23 @@ class UrlValidatorTest extends TestCase
 	
 	public function testValidateValueWithDefaultScheme()
 	{
-		$val = new UrlValidator(array('defaultScheme' => 'https'));
+		$val = new UrlValidator(['defaultScheme' => 'https']);
 		$this->assertTrue($val->validateValue('yiiframework.com'));
 		$this->assertTrue($val->validateValue('http://yiiframework.com'));
 	}
 
 	public function testValidateValueWithoutScheme()
 	{
-		$val = new UrlValidator(array('pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i'));
+		$val = new UrlValidator(['pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i']);
 		$this->assertTrue($val->validateValue('yiiframework.com'));
 	}
 	
 	public function testValidateWithCustomScheme()
 	{
-		$val = new UrlValidator(array(
-			'validSchemes' => array('http', 'https', 'ftp', 'ftps'),
+		$val = new UrlValidator([
+			'validSchemes' => ['http', 'https', 'ftp', 'ftps'],
 			'defaultScheme' => 'http',
-		));
+		]);
 		$this->assertTrue($val->validateValue('ftp://ftp.ruhr-uni-bochum.de/'));
 		$this->assertTrue($val->validateValue('google.de'));
 		$this->assertTrue($val->validateValue('http://google.de'));
@@ -57,9 +57,9 @@ class UrlValidatorTest extends TestCase
 			$this->markTestSkipped('intl package required');
 			return;
 		}
-		$val = new UrlValidator(array(
+		$val = new UrlValidator([
 			'enableIDN' => true,
-		));
+		]);
 		$this->assertTrue($val->validateValue('http://äüößìà.de'));
 		// converted via http://mct.verisign-grs.com/convertServlet
 		$this->assertTrue($val->validateValue('http://xn--zcack7ayc9a.de'));

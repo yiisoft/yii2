@@ -67,7 +67,7 @@ class BaseYii
 	 * @see import
 	 * @see autoload
 	 */
-	public static $classMap = array();
+	public static $classMap = [];
 	/**
 	 * @var \yii\console\Application|\yii\web\Application the application instance
 	 */
@@ -77,28 +77,28 @@ class BaseYii
 	 * @see getAlias
 	 * @see setAlias
 	 */
-	public static $aliases = array('@yii' => __DIR__);
+	public static $aliases = ['@yii' => __DIR__];
 	/**
 	 * @var array initial property values that will be applied to objects newly created via [[createObject]].
 	 * The array keys are class names without leading backslashes "\", and the array values are the corresponding
 	 * name-value pairs for initializing the created class instances. For example,
 	 *
 	 * ~~~
-	 * array(
-	 *     'Bar' => array(
+	 * [
+	 *     'Bar' => [
 	 *         'prop1' => 'value1',
 	 *         'prop2' => 'value2',
-	 *     ),
-	 *     'mycompany\foo\Car' => array(
+	 *     ],
+	 *     'mycompany\foo\Car' => [
 	 *         'prop1' => 'value1',
 	 *         'prop2' => 'value2',
-	 *     ),
-	 * )
+	 *     ],
+	 * ]
 	 * ~~~
 	 *
 	 * @see createObject
 	 */
-	public static $objectConfig = array();
+	public static $objectConfig = [];
 
 
 	/**
@@ -127,7 +127,7 @@ class BaseYii
 	{
 		foreach ($namespaces as $name => $path) {
 			if ($name !== '') {
-				$name = trim(strtr($name, array('\\' => '/', '_' => '/')), '/');
+				$name = trim(strtr($name, ['\\' => '/', '_' => '/']), '/');
 				if (is_array($path)) {
 					$path = reset($path);
 				}
@@ -262,16 +262,16 @@ class BaseYii
 				if ($pos === false) {
 					self::$aliases[$root] = $path;
 				} else {
-					self::$aliases[$root] = array($alias => $path);
+					self::$aliases[$root] = [$alias => $path];
 				}
 			} elseif (is_string(self::$aliases[$root])) {
 				if ($pos === false) {
 					self::$aliases[$root] = $path;
 				} else {
-					self::$aliases[$root] = array(
+					self::$aliases[$root] = [
 						$alias => $path,
 						$root => self::$aliases[$root],
-					);
+					];
 				}
 			} else {
 				self::$aliases[$root][$alias] = $path;
@@ -360,17 +360,17 @@ class BaseYii
 	 *
 	 * ~~~
 	 * $object = \Yii::createObject('@app/components/GoogleMap');
-	 * $object = \Yii::createObject(array(
+	 * $object = \Yii::createObject([
 	 *     'class' => '\app\components\GoogleMap',
 	 *     'apiKey' => 'xyz',
-	 * ));
+	 * ]);
 	 * ~~~
 	 *
 	 * This method can be used to create any object as long as the object's constructor is
 	 * defined like the following:
 	 *
 	 * ~~~
-	 * public function __construct(..., $config = array()) {
+	 * public function __construct(..., $config = []) {
 	 * }
 	 * ~~~
 	 *
@@ -384,11 +384,11 @@ class BaseYii
 	 */
 	public static function createObject($config)
 	{
-		static $reflections = array();
+		static $reflections = [];
 
 		if (is_string($config)) {
 			$class = $config;
-			$config = array();
+			$config = [];
 		} elseif (isset($config['class'])) {
 			$class = $config['class'];
 			unset($config['class']);
@@ -538,7 +538,7 @@ class BaseYii
 	 * [[\yii\base\Application::language|application language]] will be used.
 	 * @return string the translated message.
 	 */
-	public static function t($category, $message, $params = array(), $language = null)
+	public static function t($category, $message, $params = [], $language = null)
 	{
 		if (self::$app !== null) {
 			return self::$app->getI18n()->translate($category, $message, $params, $language ?: self::$app->language);

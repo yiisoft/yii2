@@ -14,7 +14,7 @@ class UrlRuleTest extends TestCase
 {
 	public function testCreateUrl()
 	{
-		$manager = new UrlManager(array('cache' => null));
+		$manager = new UrlManager(['cache' => null]);
 		$suites = $this->getTestsForCreateUrl();
 		foreach ($suites as $i => $suite) {
 			list ($name, $config, $tests) = $suite;
@@ -29,8 +29,8 @@ class UrlRuleTest extends TestCase
 
 	public function testParseRequest()
 	{
-		$manager = new UrlManager(array('cache' => null));
-		$request = new Request(array('hostInfo' => 'http://en.example.com'));
+		$manager = new UrlManager(['cache' => null]);
+		$request = new Request(['hostInfo' => 'http://en.example.com']);
 		$suites = $this->getTestsForParseRequest();
 		foreach ($suites as $i => $suite) {
 			list ($name, $config, $tests) = $suite;
@@ -38,12 +38,12 @@ class UrlRuleTest extends TestCase
 			foreach ($tests as $j => $test) {
 				$request->pathInfo = $test[0];
 				$route = $test[1];
-				$params = isset($test[2]) ? $test[2] : array();
+				$params = isset($test[2]) ? $test[2] : [];
 				$result = $rule->parseRequest($manager, $request);
 				if ($route === false) {
 					$this->assertFalse($result, "Test#$i-$j: $name");
 				} else {
-					$this->assertEquals(array($route, $params), $result, "Test#$i-$j: $name");
+					$this->assertEquals([$route, $params], $result, "Test#$i-$j: $name");
 				}
 			}
 		}
@@ -58,293 +58,293 @@ class UrlRuleTest extends TestCase
 		//     route
 		//     params
 		//     expected output
-		return array(
-			array(
+		return [
+			[
 				'empty pattern',
-				array(
+				[
 					'pattern' => '',
 					'route' => 'post/index',
-				),
-				array(
-					array('post/index', array(), ''),
-					array('comment/index', array(), false),
-					array('post/index', array('page' => 1), '?page=1'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', [], ''],
+					['comment/index', [], false],
+					['post/index', ['page' => 1], '?page=1'],
+				],
+			],
+			[
 				'without param',
-				array(
+				[
 					'pattern' => 'posts',
 					'route' => 'post/index',
-				),
-				array(
-					array('post/index', array(), 'posts'),
-					array('comment/index', array(), false),
-					array('post/index', array('page' => 1), 'posts?page=1'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', [], 'posts'],
+					['comment/index', [], false],
+					['post/index', ['page' => 1], 'posts?page=1'],
+				],
+			],
+			[
 				'parsing only',
-				array(
+				[
 					'pattern' => 'posts',
 					'route' => 'post/index',
 					'mode' => UrlRule::PARSING_ONLY,
-				),
-				array(
-					array('post/index', array(), false),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', [], false],
+				],
+			],
+			[
 				'with param',
-				array(
+				[
 					'pattern' => 'post/<page>',
 					'route' => 'post/index',
-				),
-				array(
-					array('post/index', array(), false),
-					array('comment/index', array(), false),
-					array('post/index', array('page' => 1), 'post/1'),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post/1?tag=a'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', [], false],
+					['comment/index', [], false],
+					['post/index', ['page' => 1], 'post/1'],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post/1?tag=a'],
+				],
+			],
+			[
 				'with param requirement',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>',
 					'route' => 'post/index',
-				),
-				array(
-					array('post/index', array('page' => 'abc'), false),
-					array('post/index', array('page' => 1), 'post/1'),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post/1?tag=a'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', ['page' => 'abc'], false],
+					['post/index', ['page' => 1], 'post/1'],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post/1?tag=a'],
+				],
+			],
+			[
 				'with multiple params',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>-<tag>',
 					'route' => 'post/index',
-				),
-				array(
-					array('post/index', array('page' => '1abc'), false),
-					array('post/index', array('page' => 1), false),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post/1-a'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', ['page' => '1abc'], false],
+					['post/index', ['page' => 1], false],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post/1-a'],
+				],
+			],
+			[
 				'with optional param',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>/<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
-				),
-				array(
-					array('post/index', array('page' => 1), false),
-					array('post/index', array('page' => '1abc', 'tag' => 'a'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post/a'),
-					array('post/index', array('page' => 2, 'tag' => 'a'), 'post/2/a'),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/index', ['page' => 1], false],
+					['post/index', ['page' => '1abc', 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post/a'],
+					['post/index', ['page' => 2, 'tag' => 'a'], 'post/2/a'],
+				],
+			],
+			[
 				'with optional param not in pattern',
-				array(
+				[
 					'pattern' => 'post/<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
-				),
-				array(
-					array('post/index', array('page' => 1), false),
-					array('post/index', array('page' => '1abc', 'tag' => 'a'), false),
-					array('post/index', array('page' => 2, 'tag' => 'a'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post/a'),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/index', ['page' => 1], false],
+					['post/index', ['page' => '1abc', 'tag' => 'a'], false],
+					['post/index', ['page' => 2, 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post/a'],
+				],
+			],
+			[
 				'multiple optional params',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>/<tag>/<sort:yes|no>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1, 'sort' => 'yes'),
-				),
-				array(
-					array('post/index', array('page' => 1), false),
-					array('post/index', array('page' => '1abc', 'tag' => 'a'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a', 'sort' => 'YES'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a', 'sort' => 'yes'), 'post/a'),
-					array('post/index', array('page' => 2, 'tag' => 'a', 'sort' => 'yes'), 'post/2/a'),
-					array('post/index', array('page' => 2, 'tag' => 'a', 'sort' => 'no'), 'post/2/a/no'),
-					array('post/index', array('page' => 1, 'tag' => 'a', 'sort' => 'no'), 'post/a/no'),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1, 'sort' => 'yes'],
+				],
+				[
+					['post/index', ['page' => 1], false],
+					['post/index', ['page' => '1abc', 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'YES'], false],
+					['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'yes'], 'post/a'],
+					['post/index', ['page' => 2, 'tag' => 'a', 'sort' => 'yes'], 'post/2/a'],
+					['post/index', ['page' => 2, 'tag' => 'a', 'sort' => 'no'], 'post/2/a/no'],
+					['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'no'], 'post/a/no'],
+				],
+			],
+			[
 				'optional param and required param separated by dashes',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>-<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
-				),
-				array(
-					array('post/index', array('page' => 1), false),
-					array('post/index', array('page' => '1abc', 'tag' => 'a'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post/-a'),
-					array('post/index', array('page' => 2, 'tag' => 'a'), 'post/2-a'),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/index', ['page' => 1], false],
+					['post/index', ['page' => '1abc', 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post/-a'],
+					['post/index', ['page' => 2, 'tag' => 'a'], 'post/2-a'],
+				],
+			],
+			[
 				'optional param at the end',
-				array(
+				[
 					'pattern' => 'post/<tag>/<page:\d+>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
-				),
-				array(
-					array('post/index', array('page' => 1), false),
-					array('post/index', array('page' => '1abc', 'tag' => 'a'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post/a'),
-					array('post/index', array('page' => 2, 'tag' => 'a'), 'post/a/2'),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/index', ['page' => 1], false],
+					['post/index', ['page' => '1abc', 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post/a'],
+					['post/index', ['page' => 2, 'tag' => 'a'], 'post/a/2'],
+				],
+			],
+			[
 				'consecutive optional params',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>/<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1, 'tag' => 'a'),
-				),
-				array(
-					array('post/index', array('page' => 1), false),
-					array('post/index', array('page' => '1abc', 'tag' => 'a'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post'),
-					array('post/index', array('page' => 2, 'tag' => 'a'), 'post/2'),
-					array('post/index', array('page' => 1, 'tag' => 'b'), 'post/b'),
-					array('post/index', array('page' => 2, 'tag' => 'b'), 'post/2/b'),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1, 'tag' => 'a'],
+				],
+				[
+					['post/index', ['page' => 1], false],
+					['post/index', ['page' => '1abc', 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post'],
+					['post/index', ['page' => 2, 'tag' => 'a'], 'post/2'],
+					['post/index', ['page' => 1, 'tag' => 'b'], 'post/b'],
+					['post/index', ['page' => 2, 'tag' => 'b'], 'post/2/b'],
+				],
+			],
+			[
 				'consecutive optional params separated by dash',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>-<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1, 'tag' => 'a'),
-				),
-				array(
-					array('post/index', array('page' => 1), false),
-					array('post/index', array('page' => '1abc', 'tag' => 'a'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a'), 'post/-'),
-					array('post/index', array('page' => 1, 'tag' => 'b'), 'post/-b'),
-					array('post/index', array('page' => 2, 'tag' => 'a'), 'post/2-'),
-					array('post/index', array('page' => 2, 'tag' => 'b'), 'post/2-b'),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1, 'tag' => 'a'],
+				],
+				[
+					['post/index', ['page' => 1], false],
+					['post/index', ['page' => '1abc', 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a'], 'post/-'],
+					['post/index', ['page' => 1, 'tag' => 'b'], 'post/-b'],
+					['post/index', ['page' => 2, 'tag' => 'a'], 'post/2-'],
+					['post/index', ['page' => 2, 'tag' => 'b'], 'post/2-b'],
+				],
+			],
+			[
 				'route has parameters',
-				array(
+				[
 					'pattern' => '<controller>/<action>',
 					'route' => '<controller>/<action>',
-					'defaults' => array(),
-				),
-				array(
-					array('post/index', array('page' => 1), 'post/index?page=1'),
-					array('module/post/index', array(), false),
-				),
-			),
-			array(
+					'defaults' => [],
+				],
+				[
+					['post/index', ['page' => 1], 'post/index?page=1'],
+					['module/post/index', [], false],
+				],
+			],
+			[
 				'route has parameters with regex',
-				array(
+				[
 					'pattern' => '<controller:post|comment>/<action>',
 					'route' => '<controller>/<action>',
-					'defaults' => array(),
-				),
-				array(
-					array('post/index', array('page' => 1), 'post/index?page=1'),
-					array('comment/index', array('page' => 1), 'comment/index?page=1'),
-					array('test/index', array('page' => 1), false),
-					array('post', array(), false),
-					array('module/post/index', array(), false),
-					array('post/index', array('controller' => 'comment'), 'post/index?controller=comment'),
-				),
-			),
-			array(
+					'defaults' => [],
+				],
+				[
+					['post/index', ['page' => 1], 'post/index?page=1'],
+					['comment/index', ['page' => 1], 'comment/index?page=1'],
+					['test/index', ['page' => 1], false],
+					['post', [], false],
+					['module/post/index', [], false],
+					['post/index', ['controller' => 'comment'], 'post/index?controller=comment'],
+				],
+			],
+			[
 				'route has default parameter',
-				array(
+				[
 					'pattern' => '<controller:post|comment>/<action>',
 					'route' => '<controller>/<action>',
-					'defaults' => array('action' => 'index'),
-				),
-				array(
-					array('post/view', array('page' => 1), 'post/view?page=1'),
-					array('comment/view', array('page' => 1), 'comment/view?page=1'),
-					array('test/view', array('page' => 1), false),
-					array('test/index', array('page' => 1), false),
-					array('post/index', array('page' => 1), 'post?page=1'),
-				),
-			),
-			array(
+					'defaults' => ['action' => 'index'],
+				],
+				[
+					['post/view', ['page' => 1], 'post/view?page=1'],
+					['comment/view', ['page' => 1], 'comment/view?page=1'],
+					['test/view', ['page' => 1], false],
+					['test/index', ['page' => 1], false],
+					['post/index', ['page' => 1], 'post?page=1'],
+				],
+			],
+			[
 				'empty pattern with suffix',
-				array(
+				[
 					'pattern' => '',
 					'route' => 'post/index',
 					'suffix' => '.html',
-				),
-				array(
-					array('post/index', array(), ''),
-					array('comment/index', array(), false),
-					array('post/index', array('page' => 1), '?page=1'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', [], ''],
+					['comment/index', [], false],
+					['post/index', ['page' => 1], '?page=1'],
+				],
+			],
+			[
 				'regular pattern with suffix',
-				array(
+				[
 					'pattern' => 'posts',
 					'route' => 'post/index',
 					'suffix' => '.html',
-				),
-				array(
-					array('post/index', array(), 'posts.html'),
-					array('comment/index', array(), false),
-					array('post/index', array('page' => 1), 'posts.html?page=1'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', [], 'posts.html'],
+					['comment/index', [], false],
+					['post/index', ['page' => 1], 'posts.html?page=1'],
+				],
+			],
+			[
 				'empty pattern with slash suffix',
-				array(
+				[
 					'pattern' => '',
 					'route' => 'post/index',
 					'suffix' => '/',
-				),
-				array(
-					array('post/index', array(), ''),
-					array('comment/index', array(), false),
-					array('post/index', array('page' => 1), '?page=1'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', [], ''],
+					['comment/index', [], false],
+					['post/index', ['page' => 1], '?page=1'],
+				],
+			],
+			[
 				'regular pattern with slash suffix',
-				array(
+				[
 					'pattern' => 'posts',
 					'route' => 'post/index',
 					'suffix' => '/',
-				),
-				array(
-					array('post/index', array(), 'posts/'),
-					array('comment/index', array(), false),
-					array('post/index', array('page' => 1), 'posts/?page=1'),
-				),
-			),
-			array(
+				],
+				[
+					['post/index', [], 'posts/'],
+					['comment/index', [], false],
+					['post/index', ['page' => 1], 'posts/?page=1'],
+				],
+			],
+			[
 				'with host info',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>/<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
+					'defaults' => ['page' => 1],
 					'host' => 'http://<lang:en|fr>.example.com',
-				),
-				array(
-					array('post/index', array('page' => 1, 'tag' => 'a'), false),
-					array('post/index', array('page' => 1, 'tag' => 'a', 'lang' => 'en'), 'http://en.example.com/post/a'),
-				),
-			),
-		);
+				],
+				[
+					['post/index', ['page' => 1, 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'http://en.example.com/post/a'],
+				],
+			],
+		];
 	}
 
 	protected function getTestsForParseRequest()
@@ -356,303 +356,303 @@ class UrlRuleTest extends TestCase
 		//     pathInfo
 		//     expected route, or false if the rule doesn't apply
 		//     expected params, or not set if empty
-		return array(
-			array(
+		return [
+			[
 				'empty pattern',
-				array(
+				[
 					'pattern' => '',
 					'route' => 'post/index',
-				),
-				array(
-					array('', 'post/index'),
-					array('a', false),
-				),
-			),
-			array(
+				],
+				[
+					['', 'post/index'],
+					['a', false],
+				],
+			],
+			[
 				'without param',
-				array(
+				[
 					'pattern' => 'posts',
 					'route' => 'post/index',
-				),
-				array(
-					array('posts', 'post/index'),
-					array('a', false),
-				),
-			),
-			array(
+				],
+				[
+					['posts', 'post/index'],
+					['a', false],
+				],
+			],
+			[
 				'with dot', // https://github.com/yiisoft/yii/issues/2945
-				array(
+				[
 					'pattern' => 'posts.html',
 					'route' => 'post/index',
-				),
-				array(
-					array('posts.html', 'post/index'),
-					array('postsahtml', false),
-				),
-			),
-			array(
+				],
+				[
+					['posts.html', 'post/index'],
+					['postsahtml', false],
+				],
+			],
+			[
 				'creation only',
-				array(
+				[
 					'pattern' => 'posts',
 					'route' => 'post/index',
 					'mode' => UrlRule::CREATION_ONLY,
-				),
-				array(
-					array('posts', false),
-				),
-			),
-			array(
+				],
+				[
+					['posts', false],
+				],
+			],
+			[
 				'with param',
-				array(
+				[
 					'pattern' => 'post/<page>',
 					'route' => 'post/index',
-				),
-				array(
-					array('post/1', 'post/index', array('page' => '1')),
-					array('post/a', 'post/index', array('page' => 'a')),
-					array('post', false),
-					array('posts', false),
-				),
-			),
-			array(
+				],
+				[
+					['post/1', 'post/index', ['page' => '1']],
+					['post/a', 'post/index', ['page' => 'a']],
+					['post', false],
+					['posts', false],
+				],
+			],
+			[
 				'with param requirement',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>',
 					'route' => 'post/index',
-				),
-				array(
-					array('post/1', 'post/index', array('page' => '1')),
-					array('post/a', false),
-					array('post/1/a', false),
-				),
-			),
-			array(
+				],
+				[
+					['post/1', 'post/index', ['page' => '1']],
+					['post/a', false],
+					['post/1/a', false],
+				],
+			],
+			[
 				'with multiple params',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>-<tag>',
 					'route' => 'post/index',
-				),
-				array(
-					array('post/1-a', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/a', false),
-					array('post/1', false),
-					array('post/1/a', false),
-				),
-			),
-			array(
+				],
+				[
+					['post/1-a', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/a', false],
+					['post/1', false],
+					['post/1/a', false],
+				],
+			],
+			[
 				'with optional param',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>/<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
-				),
-				array(
-					array('post/1/a', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/2/a', 'post/index', array('page' => '2', 'tag' => 'a')),
-					array('post/a', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/1', 'post/index', array('page' => '1', 'tag' => '1')),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/1/a', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/2/a', 'post/index', ['page' => '2', 'tag' => 'a']],
+					['post/a', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/1', 'post/index', ['page' => '1', 'tag' => '1']],
+				],
+			],
+			[
 				'with optional param not in pattern',
-				array(
+				[
 					'pattern' => 'post/<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
-				),
-				array(
-					array('post/a', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/1', 'post/index', array('page' => '1', 'tag' => '1')),
-					array('post', false),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/a', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/1', 'post/index', ['page' => '1', 'tag' => '1']],
+					['post', false],
+				],
+			],
+			[
 				'multiple optional params',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>/<tag>/<sort:yes|no>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1, 'sort' => 'yes'),
-				),
-				array(
-					array('post/1/a/yes', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'yes')),
-					array('post/1/a/no', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'no')),
-					array('post/2/a/no', 'post/index', array('page' => '2', 'tag' => 'a', 'sort' => 'no')),
-					array('post/2/a', 'post/index', array('page' => '2', 'tag' => 'a', 'sort' => 'yes')),
-					array('post/a/no', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'no')),
-					array('post/a', 'post/index', array('page' => '1', 'tag' => 'a', 'sort' => 'yes')),
-					array('post', false),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1, 'sort' => 'yes'],
+				],
+				[
+					['post/1/a/yes', 'post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'yes']],
+					['post/1/a/no', 'post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'no']],
+					['post/2/a/no', 'post/index', ['page' => '2', 'tag' => 'a', 'sort' => 'no']],
+					['post/2/a', 'post/index', ['page' => '2', 'tag' => 'a', 'sort' => 'yes']],
+					['post/a/no', 'post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'no']],
+					['post/a', 'post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'yes']],
+					['post', false],
+				],
+			],
+			[
 				'optional param and required param separated by dashes',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>-<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
-				),
-				array(
-					array('post/1-a', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/2-a', 'post/index', array('page' => '2', 'tag' => 'a')),
-					array('post/-a', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/a', false),
-					array('post-a', false),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/1-a', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/2-a', 'post/index', ['page' => '2', 'tag' => 'a']],
+					['post/-a', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/a', false],
+					['post-a', false],
+				],
+			],
+			[
 				'optional param at the end',
-				array(
+				[
 					'pattern' => 'post/<tag>/<page:\d+>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1),
-				),
-				array(
-					array('post/a/1', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/a/2', 'post/index', array('page' => '2', 'tag' => 'a')),
-					array('post/a', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/2', 'post/index', array('page' => '1', 'tag' => '2')),
-					array('post', false),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/a/1', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/a/2', 'post/index', ['page' => '2', 'tag' => 'a']],
+					['post/a', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/2', 'post/index', ['page' => '1', 'tag' => '2']],
+					['post', false],
+				],
+			],
+			[
 				'consecutive optional params',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>/<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1, 'tag' => 'a'),
-				),
-				array(
-					array('post/2/b', 'post/index', array('page' => '2', 'tag' => 'b')),
-					array('post/2', 'post/index', array('page' => '2', 'tag' => 'a')),
-					array('post', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post/b', 'post/index', array('page' => '1', 'tag' => 'b')),
-					array('post//b', false),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1, 'tag' => 'a'],
+				],
+				[
+					['post/2/b', 'post/index', ['page' => '2', 'tag' => 'b']],
+					['post/2', 'post/index', ['page' => '2', 'tag' => 'a']],
+					['post', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post/b', 'post/index', ['page' => '1', 'tag' => 'b']],
+					['post//b', false],
+				],
+			],
+			[
 				'consecutive optional params separated by dash',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>-<tag>',
 					'route' => 'post/index',
-					'defaults' => array('page' => 1, 'tag' => 'a'),
-				),
-				array(
-					array('post/2-b', 'post/index', array('page' => '2', 'tag' => 'b')),
-					array('post/2-', 'post/index', array('page' => '2', 'tag' => 'a')),
-					array('post/-b', 'post/index', array('page' => '1', 'tag' => 'b')),
-					array('post/-', 'post/index', array('page' => '1', 'tag' => 'a')),
-					array('post', false),
-				),
-			),
-			array(
+					'defaults' => ['page' => 1, 'tag' => 'a'],
+				],
+				[
+					['post/2-b', 'post/index', ['page' => '2', 'tag' => 'b']],
+					['post/2-', 'post/index', ['page' => '2', 'tag' => 'a']],
+					['post/-b', 'post/index', ['page' => '1', 'tag' => 'b']],
+					['post/-', 'post/index', ['page' => '1', 'tag' => 'a']],
+					['post', false],
+				],
+			],
+			[
 				'route has parameters',
-				array(
+				[
 					'pattern' => '<controller>/<action>',
 					'route' => '<controller>/<action>',
-					'defaults' => array(),
-				),
-				array(
-					array('post/index', 'post/index'),
-					array('module/post/index', false),
-				),
-			),
-			array(
+					'defaults' => [],
+				],
+				[
+					['post/index', 'post/index'],
+					['module/post/index', false],
+				],
+			],
+			[
 				'route has parameters with regex',
-				array(
+				[
 					'pattern' => '<controller:post|comment>/<action>',
 					'route' => '<controller>/<action>',
-					'defaults' => array(),
-				),
-				array(
-					array('post/index', 'post/index'),
-					array('comment/index', 'comment/index'),
-					array('test/index', false),
-					array('post', false),
-					array('module/post/index', false),
-				),
-			),
-			array(
+					'defaults' => [],
+				],
+				[
+					['post/index', 'post/index'],
+					['comment/index', 'comment/index'],
+					['test/index', false],
+					['post', false],
+					['module/post/index', false],
+				],
+			],
+			[
 				'route has default parameter',
-				array(
+				[
 					'pattern' => '<controller:post|comment>/<action>',
 					'route' => '<controller>/<action>',
-					'defaults' => array('action' => 'index'),
-				),
-				array(
-					array('post/view', 'post/view'),
-					array('comment/view', 'comment/view'),
-					array('test/view', false),
-					array('post', 'post/index'),
-					array('posts', false),
-					array('test', false),
-					array('index', false),
-				),
-			),
-			array(
+					'defaults' => ['action' => 'index'],
+				],
+				[
+					['post/view', 'post/view'],
+					['comment/view', 'comment/view'],
+					['test/view', false],
+					['post', 'post/index'],
+					['posts', false],
+					['test', false],
+					['index', false],
+				],
+			],
+			[
 				'empty pattern with suffix',
-				array(
+				[
 					'pattern' => '',
 					'route' => 'post/index',
 					'suffix' => '.html',
-				),
-				array(
-					array('', 'post/index'),
-					array('.html', false),
-					array('a.html', false),
-				),
-			),
-			array(
+				],
+				[
+					['', 'post/index'],
+					['.html', false],
+					['a.html', false],
+				],
+			],
+			[
 				'regular pattern with suffix',
-				array(
+				[
 					'pattern' => 'posts',
 					'route' => 'post/index',
 					'suffix' => '.html',
-				),
-				array(
-					array('posts.html', 'post/index'),
-					array('posts', false),
-					array('posts.HTML', false),
-					array('a.html', false),
-					array('a', false),
-				),
-			),
-			array(
+				],
+				[
+					['posts.html', 'post/index'],
+					['posts', false],
+					['posts.HTML', false],
+					['a.html', false],
+					['a', false],
+				],
+			],
+			[
 				'empty pattern with slash suffix',
-				array(
+				[
 					'pattern' => '',
 					'route' => 'post/index',
 					'suffix' => '/',
-				),
-				array(
-					array('', 'post/index'),
-					array('a', false),
-				),
-			),
-			array(
+				],
+				[
+					['', 'post/index'],
+					['a', false],
+				],
+			],
+			[
 				'regular pattern with slash suffix',
-				array(
+				[
 					'pattern' => 'posts',
 					'route' => 'post/index',
 					'suffix' => '/',
-				),
-				array(
-					array('posts/', 'post/index'),
-					array('posts', false),
-					array('a', false),
-				),
-			),
-			array(
+				],
+				[
+					['posts/', 'post/index'],
+					['posts', false],
+					['a', false],
+				],
+			],
+			[
 				'with host info',
-				array(
+				[
 					'pattern' => 'post/<page:\d+>',
 					'route' => 'post/index',
 					'host' => 'http://<lang:en|fr>.example.com',
-				),
-				array(
-					array('post/1', 'post/index', array('page' => '1', 'lang' => 'en')),
-					array('post/a', false),
-					array('post/1/a', false),
-				),
-			),
-		);
+				],
+				[
+					['post/1', 'post/index', ['page' => '1', 'lang' => 'en']],
+					['post/a', false],
+					['post/1/a', false],
+				],
+			],
+		];
 	}
 }

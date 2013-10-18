@@ -96,21 +96,17 @@ class View extends Component
 	/**
 	 * @var mixed custom parameters that are shared among view templates.
 	 */
-	public $params = array();
+	public $params = [];
 	/**
 	 * @var array a list of available renderers indexed by their corresponding supported file extensions.
 	 * Each renderer may be a view renderer object or the configuration for creating the renderer object.
 	 * For example, the following configuration enables both Smarty and Twig view renderers:
 	 *
 	 * ~~~
-	 * array(
-	 *     'tpl' => array(
-	 *         'class' => 'yii\smarty\ViewRenderer',
-	 *      ),
-	 *     'twig' => array(
-	 *         'class' => 'yii\twig\ViewRenderer',
-	 *     ),
-	 * )
+	 * [
+	 *     'tpl' => ['class' => 'yii\smarty\ViewRenderer'],
+	 *     'twig' => ['class' => 'yii\twig\ViewRenderer'],
+	 * ]
 	 * ~~~
 	 *
 	 * If no renderer is available for the given view file, the view file will be treated as a normal PHP
@@ -134,19 +130,19 @@ class View extends Component
 	 * is used internally to implement the content caching feature. Do not modify it directly.
 	 * @internal
 	 */
-	public $cacheStack = array();
+	public $cacheStack = [];
 	/**
 	 * @var array a list of placeholders for embedding dynamic contents. This property
 	 * is used internally to implement the content caching feature. Do not modify it directly.
 	 * @internal
 	 */
-	public $dynamicPlaceholders = array();
+	public $dynamicPlaceholders = [];
 	/**
 	 * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
 	 * are the registered [[AssetBundle]] objects.
 	 * @see registerAssetBundle
 	 */
-	public $assetBundles = array();
+	public $assetBundles = [];
 	/**
 	 * @var string the page title
 	 */
@@ -214,7 +210,7 @@ class View extends Component
 	 * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
 	 * @see renderFile
 	 */
-	public function render($view, $params = array())
+	public function render($view, $params = [])
 	{
 		if ($this->context instanceof Controller) {
 			return $this->context->renderPartial($view, $params);
@@ -244,7 +240,7 @@ class View extends Component
 	 * @return string the rendering result
 	 * @throws InvalidParamException if the view file does not exist
 	 */
-	public function renderFile($viewFile, $params = array(), $context = null)
+	public function renderFile($viewFile, $params = [], $context = null)
 	{
 		$viewFile = Yii::getAlias($viewFile);
 		if ($this->theme !== null) {
@@ -328,7 +324,7 @@ class View extends Component
 	 * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
 	 * @return string the rendering result
 	 */
-	public function renderPhpFile($_file_, $_params_ = array())
+	public function renderPhpFile($_file_, $_params_ = [])
 	{
 		ob_start();
 		ob_implicit_flush(false);
@@ -393,11 +389,11 @@ class View extends Component
 	 */
 	public function beginBlock($id, $renderInPlace = false)
 	{
-		return Block::begin(array(
+		return Block::begin([
 			'id' => $id,
 			'renderInPlace' => $renderInPlace,
 			'view' => $this,
-		));
+		]);
 	}
 
 	/**
@@ -425,13 +421,13 @@ class View extends Component
 	 * @return ContentDecorator the ContentDecorator widget instance
 	 * @see ContentDecorator
 	 */
-	public function beginContent($viewFile, $params = array())
+	public function beginContent($viewFile, $params = [])
 	{
-		return ContentDecorator::begin(array(
+		return ContentDecorator::begin([
 			'viewFile' => $viewFile,
 			'params' => $params,
 			'view' => $this,
-		));
+		]);
 	}
 
 	/**
@@ -461,7 +457,7 @@ class View extends Component
 	 * @return boolean whether you should generate the content for caching.
 	 * False if the cached version is available.
 	 */
-	public function beginCache($id, $properties = array())
+	public function beginCache($id, $properties = [])
 	{
 		$properties['id'] = $id;
 		$properties['view'] = $this;
@@ -526,11 +522,11 @@ class View extends Component
 		foreach(array_keys($this->assetBundles) as $bundle) {
 			$this->registerAssetFiles($bundle);
 		}
-		echo strtr($content, array(
+		echo strtr($content, [
 			self::PH_HEAD => $this->renderHeadHtml(),
 			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
 			self::PH_BODY_END => $this->renderBodyEndHtml(),
-		));
+		]);
 
 		unset(
 			$this->metaTags,
@@ -670,7 +666,7 @@ class View extends Component
 	 * $css as the key. If two CSS code blocks are registered with the same key, the latter
 	 * will overwrite the former.
 	 */
-	public function registerCss($css, $options = array(), $key = null)
+	public function registerCss($css, $options = [], $key = null)
 	{
 		$key = $key ?: md5($css);
 		$this->css[$key] = Html::style($css, $options);
@@ -684,7 +680,7 @@ class View extends Component
 	 * $url as the key. If two CSS files are registered with the same key, the latter
 	 * will overwrite the former.
 	 */
-	public function registerCssFile($url, $options = array(), $key = null)
+	public function registerCssFile($url, $options = [], $key = null)
 	{
 		$key = $key ?: $url;
 		$this->cssFiles[$key] = Html::cssFile($url, $options);
@@ -732,7 +728,7 @@ class View extends Component
 	 * $url as the key. If two JS files are registered with the same key, the latter
 	 * will overwrite the former.
 	 */
-	public function registerJsFile($url, $options = array(), $key = null)
+	public function registerJsFile($url, $options = [], $key = null)
 	{
 		$position = isset($options['position']) ? $options['position'] : self::POS_END;
 		unset($options['position']);
@@ -747,15 +743,15 @@ class View extends Component
 	 */
 	protected function renderHeadHtml()
 	{
-		$lines = array();
+		$lines = [];
 		if (!empty($this->metaTags)) {
 			$lines[] = implode("\n", $this->metaTags);
 		}
 
 		$request = Yii::$app->getRequest();
 		if ($request instanceof \yii\web\Request && $request->enableCsrfValidation) {
-			$lines[] = Html::tag('meta', '', array('name' => 'csrf-var', 'content' => $request->csrfVar));
-			$lines[] = Html::tag('meta', '', array('name' => 'csrf-token', 'content' => $request->getCsrfToken()));
+			$lines[] = Html::tag('meta', '', ['name' => 'csrf-var', 'content' => $request->csrfVar]);
+			$lines[] = Html::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
 		}
 
 		if (!empty($this->linkTags)) {
@@ -771,7 +767,7 @@ class View extends Component
 			$lines[] = implode("\n", $this->jsFiles[self::POS_HEAD]);
 		}
 		if (!empty($this->js[self::POS_HEAD])) {
-			$lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), array('type' => 'text/javascript'));
+			$lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), ['type' => 'text/javascript']);
 		}
 		return empty($lines) ? '' : implode("\n", $lines);
 	}
@@ -783,12 +779,12 @@ class View extends Component
 	 */
 	protected function renderBodyBeginHtml()
 	{
-		$lines = array();
+		$lines = [];
 		if (!empty($this->jsFiles[self::POS_BEGIN])) {
 			$lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
 		}
 		if (!empty($this->js[self::POS_BEGIN])) {
-			$lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]), array('type' => 'text/javascript'));
+			$lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]), ['type' => 'text/javascript']);
 		}
 		return empty($lines) ? '' : implode("\n", $lines);
 	}
@@ -800,16 +796,16 @@ class View extends Component
 	 */
 	protected function renderBodyEndHtml()
 	{
-		$lines = array();
+		$lines = [];
 		if (!empty($this->jsFiles[self::POS_END])) {
 			$lines[] = implode("\n", $this->jsFiles[self::POS_END]);
 		}
 		if (!empty($this->js[self::POS_END])) {
-			$lines[] = Html::script(implode("\n", $this->js[self::POS_END]), array('type' => 'text/javascript'));
+			$lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
 		}
 		if (!empty($this->js[self::POS_READY])) {
 			$js = "jQuery(document).ready(function(){\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
-			$lines[] = Html::script($js, array('type' => 'text/javascript'));
+			$lines[] = Html::script($js, ['type' => 'text/javascript']);
 		}
 		return empty($lines) ? '' : implode("\n", $lines);
 	}

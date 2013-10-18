@@ -20,13 +20,13 @@ use yii\helpers\Html;
  * use yii\bootstrap\NavBar;
  * use yii\widgets\Menu;
  *
- * NavBar::begin(array('brandLabel' => 'NavBar Test'));
- * echo Nav::widget(array(
- *     'items' => array(
- *         array('label' => 'Home', 'url' => array('/site/index')),
- *         array('label' => 'About', 'url' => array('/site/about')),
- *     ),
- * ));
+ * NavBar::begin(['brandLabel' => 'NavBar Test']);
+ * echo Nav::widget([
+ *     'items' => [
+ *         ['label' => 'Home', 'url' => ['/site/index']],
+ *         ['label' => 'About', 'url' => ['/site/about']],
+ *     ],
+ * ]);
  * NavBar::end();
  * ```
  *
@@ -49,7 +49,7 @@ class NavBar extends Widget
 	/**
 	 * @var array the HTML attributes of the brand link.
 	 */
-	public $brandOptions = array();
+	public $brandOptions = [];
 
 	public $screenReaderToggleText = 'Toggle navigation';
 
@@ -67,16 +67,16 @@ class NavBar extends Widget
 		}
 
 		echo Html::beginTag('nav', $this->options);
-		echo Html::beginTag('div', array('class' => 'container'));
+		echo Html::beginTag('div', ['class' => 'container']);
 
-		echo Html::beginTag('div', array('class' => 'navbar-header'));
+		echo Html::beginTag('div', ['class' => 'navbar-header']);
 		echo $this->renderToggleButton();
 		if ($this->brandLabel !== null) {
 			echo Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
 		}
 		echo Html::endTag('div');
 
-		echo Html::beginTag('div', array('class' => 'collapse navbar-collapse navbar-ex1-collapse'));
+		echo Html::beginTag('div', ['class' => 'collapse navbar-collapse navbar-ex1-collapse']);
 	}
 
 	/**
@@ -97,12 +97,12 @@ class NavBar extends Widget
 	 */
 	protected function renderToggleButton()
 	{
-		$bar = Html::tag('span', '', array('class' => 'icon-bar'));
+		$bar = Html::tag('span', '', ['class' => 'icon-bar']);
 		$screenReader = '<span class="sr-only">'.$this->screenReaderToggleText.'</span>';
-		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", array(
+		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
 			'data-target' => '.navbar-ex1-collapse',
-		));
+		]);
 	}
 }

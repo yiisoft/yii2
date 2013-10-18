@@ -39,14 +39,14 @@ class QueryBuilder extends \yii\base\Object
 	 * This is mainly used to support creating/modifying tables using DB-independent data type specifications.
 	 * Child classes should override this property to declare supported type mappings.
 	 */
-	public $typeMap = array();
+	public $typeMap = [];
 
 	/**
 	 * Constructor.
 	 * @param Connection $connection the database connection.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($connection, $config = array())
+	public function __construct($connection, $config = [])
 	{
 		$this->db = $connection;
 		parent::__construct($config);
@@ -61,7 +61,7 @@ class QueryBuilder extends \yii\base\Object
 	public function build($query)
 	{
 		$params = $query->params;
-		$clauses = array(
+		$clauses = [
 			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
 			$this->buildFrom($query->from),
 			$this->buildJoin($query->join, $params),
@@ -71,8 +71,8 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildUnion($query->union, $params),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
-		);
-		return array(implode($this->separator, array_filter($clauses)), $params);
+		];
+		return [implode($this->separator, array_filter($clauses)), $params];
 	}
 
 	/**
@@ -80,10 +80,10 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $sql = $queryBuilder->insert('tbl_user', array(
+	 * $sql = $queryBuilder->insert('tbl_user', [
 	 *	 'name' => 'Sam',
 	 *	 'age' => 30,
-	 * ), $params);
+	 * ], $params);
 	 * ~~~
 	 *
 	 * The method will properly escape the table and column names.
@@ -99,10 +99,10 @@ class QueryBuilder extends \yii\base\Object
 		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
 			$columnSchemas = $tableSchema->columns;
 		} else {
-			$columnSchemas = array();
+			$columnSchemas = [];
 		}
-		$names = array();
-		$placeholders = array();
+		$names = [];
+		$placeholders = [];
 		foreach ($columns as $name => $value) {
 			$names[] = $this->db->quoteColumnName($name);
 			if ($value instanceof Expression) {
@@ -127,11 +127,11 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->batchInsert('tbl_user', array('name', 'age'), array(
-	 *     array('Tom', 30),
-	 *     array('Jane', 20),
-	 *     array('Linda', 25),
-	 * ))->execute();
+	 * $connection->createCommand()->batchInsert('tbl_user', ['name', 'age'], [
+	 *     ['Tom', 30],
+	 *     ['Jane', 20],
+	 *     ['Linda', 25],
+	 * ])->execute();
 	 * ~~~
 	 *
 	 * Note that the values in each row must match the corresponding column names.
@@ -153,10 +153,8 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $params = array();
-	 * $sql = $queryBuilder->update('tbl_user', array(
-	 *	 'status' => 1,
-	 * ), 'age > 30', $params);
+	 * $params = [];
+	 * $sql = $queryBuilder->update('tbl_user', ['status' => 1], 'age > 30', $params);
 	 * ~~~
 	 *
 	 * The method will properly escape the table and column names.
@@ -174,10 +172,10 @@ class QueryBuilder extends \yii\base\Object
 		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
 			$columnSchemas = $tableSchema->columns;
 		} else {
-			$columnSchemas = array();
+			$columnSchemas = [];
 		}
 
-		$lines = array();
+		$lines = [];
 		foreach ($columns as $name => $value) {
 			if ($value instanceof Expression) {
 				$lines[] = $this->db->quoteColumnName($name) . '=' . $value->expression;
@@ -234,11 +232,11 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $sql = $queryBuilder->createTable('tbl_user', array(
+	 * $sql = $queryBuilder->createTable('tbl_user', [
 	 *	 'id' => 'pk',
 	 *	 'name' => 'string',
 	 *	 'age' => 'integer',
-	 * ));
+	 * ]);
 	 * ~~~
 	 *
 	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
@@ -248,7 +246,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function createTable($table, $columns, $options = null)
 	{
-		$cols = array();
+		$cols = [];
 		foreach ($columns as $name => $type) {
 			if (is_string($name)) {
 				$cols[] = "\t" . $this->db->quoteColumnName($name) . ' ' . $this->getColumnType($type);
@@ -680,7 +678,7 @@ class QueryBuilder extends \yii\base\Object
 		if (empty($columns)) {
 			return '';
 		}
-		$orders = array();
+		$orders = [];
 		foreach ($columns as $name => $direction) {
 			if (is_object($direction)) {
 				$orders[] = (string)$direction;
@@ -767,7 +765,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function buildCondition($condition, &$params)
 	{
-		static $builders = array(
+		static $builders = [
 			'AND' => 'buildAndCondition',
 			'OR' => 'buildAndCondition',
 			'BETWEEN' => 'buildBetweenCondition',
@@ -778,7 +776,7 @@ class QueryBuilder extends \yii\base\Object
 			'NOT LIKE' => 'buildLikeCondition',
 			'OR LIKE' => 'buildLikeCondition',
 			'OR NOT LIKE' => 'buildLikeCondition',
-		);
+		];
 
 		if (!is_array($condition)) {
 			return (string)$condition;
@@ -801,10 +799,10 @@ class QueryBuilder extends \yii\base\Object
 
 	private function buildHashCondition($condition, &$params)
 	{
-		$parts = array();
+		$parts = [];
 		foreach ($condition as $column => $value) {
 			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('IN', array($column, $value), $params);
+				$parts[] = $this->buildInCondition('IN', [$column, $value], $params);
 			} else {
 				if (strpos($column, '(') === false) {
 					$column = $this->db->quoteColumnName($column);
@@ -828,7 +826,7 @@ class QueryBuilder extends \yii\base\Object
 
 	private function buildAndCondition($operator, $operands, &$params)
 	{
-		$parts = array();
+		$parts = [];
 		foreach ($operands as $operand) {
 			if (is_array($operand)) {
 				$operand = $this->buildCondition($operand, $params);
@@ -873,7 +871,7 @@ class QueryBuilder extends \yii\base\Object
 
 		$values = (array)$values;
 
-		if (empty($values) || $column === array()) {
+		if (empty($values) || $column === []) {
 			return $operator === 'IN' ? '0=1' : '';
 		}
 
@@ -913,9 +911,9 @@ class QueryBuilder extends \yii\base\Object
 
 	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
 	{
-		$vss = array();
+		$vss = [];
 		foreach ($values as $value) {
-			$vs = array();
+			$vs = [];
 			foreach ($columns as $column) {
 				if (isset($value[$column])) {
 					$phName = self::PARAM_PREFIX . count($params);
@@ -960,7 +958,7 @@ class QueryBuilder extends \yii\base\Object
 			$column = $this->db->quoteColumnName($column);
 		}
 
-		$parts = array();
+		$parts = [];
 		foreach ($values as $value) {
 			$phName = self::PARAM_PREFIX . count($params);
 			$params[$phName] = $value;

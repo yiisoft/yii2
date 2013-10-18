@@ -16,26 +16,26 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Slider::widget(array(
+ * echo Slider::widget([
  *     'model' => $model,
  *     'attribute' => 'amount',
- *     'clientOptions' => array(
+ *     'clientOptions' => [
  *         'min' => 1,
  *         'max' => 10,
- *     ),
- * ));
+ *     ],
+ * ]);
  * ```
  *
  * The following example will use the name property instead:
  *
  * ```php
- * echo Slider::widget(array(
+ * echo Slider::widget([
  *     'name'  => 'amount',
- *     'clientOptions' => array(
+ *     'clientOptions' => [
  *         'min' => 1,
  *         'max' => 10,
- *     ),
- * ));
+ *     ],
+ * ]);
  *```
  *
  * @see http://api.jqueryui.com/slider/

@@ -39,11 +39,11 @@ abstract class Module extends Component
 	/**
 	 * @var array custom module parameters (name => value).
 	 */
-	public $params = array();
+	public $params = [];
 	/**
 	 * @var array the IDs of the components or modules that should be preloaded when this module is created.
 	 */
-	public $preload = array();
+	public $preload = [];
 	/**
 	 * @var string an ID that uniquely identifies this module among other modules which have the same [[module|parent]].
 	 */
@@ -68,16 +68,16 @@ abstract class Module extends Component
 	 * in the array are used to initialize the corresponding controller properties. For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *   'account' => '@app/controllers/UserController',
-	 *   'article' => array(
+	 *   'article' => [
 	 *      'class' => '@app/controllers/PostController',
 	 *      'pageTitle' => 'something new',
-	 *   ),
-	 * )
+	 *   ],
+	 * ]
 	 * ~~~
 	 */
-	public $controllerMap = array();
+	public $controllerMap = [];
 	/**
 	 * @var string the namespace that controller classes are in. If not set,
 	 * it will use the "controllers" sub-namespace under the namespace of this module.
@@ -113,11 +113,11 @@ abstract class Module extends Component
 	/**
 	 * @var array child modules of this module
 	 */
-	private $_modules = array();
+	private $_modules = [];
 	/**
 	 * @var array components registered under this module
 	 */
-	private $_components = array();
+	private $_components = [];
 
 	/**
 	 * Constructor.
@@ -125,7 +125,7 @@ abstract class Module extends Component
 	 * @param Module $parent the parent module (if any)
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $parent = null, $config = array())
+	public function __construct($id, $parent = null, $config = [])
 	{
 		$this->id = $id;
 		$this->module = $parent;
@@ -312,10 +312,10 @@ abstract class Module extends Component
 	 * For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *	'@models' => '@app/models', // an existing alias
 	 *	'@backend' => __DIR__ . '/../backend',  // a directory
-	 * )
+	 * ]
 	 * ~~~
 	 */
 	public function setAliases($aliases)
@@ -401,7 +401,7 @@ abstract class Module extends Component
 	public function getModules($loadedOnly = false)
 	{
 		if ($loadedOnly) {
-			$modules = array();
+			$modules = [];
 			foreach ($this->_modules as $module) {
 				if ($module instanceof Module) {
 					$modules[] = $module;
@@ -426,15 +426,13 @@ abstract class Module extends Component
 	 * The following is an example for registering two sub-modules:
 	 *
 	 * ~~~
-	 * array(
-	 *     'comment' => array(
+	 * [
+	 *     'comment' => [
 	 *         'class' => 'app\modules\comment\CommentModule',
 	 *         'db' => 'db',
-	 *     ),
-	 *     'booking' => array(
-	 *         'class' => 'app\modules\booking\BookingModule',
-	 *     ),
-	 * )
+	 *     ],
+	 *     'booking' => ['class' => 'app\modules\booking\BookingModule'],
+	 * ]
 	 * ~~~
 	 *
 	 * @param array $modules modules (id => module configuration or instances)
@@ -506,7 +504,7 @@ abstract class Module extends Component
 	public function getComponents($loadedOnly = false)
 	{
 		if ($loadedOnly) {
-			$components = array();
+			$components = [];
 			foreach ($this->_components as $component) {
 				if ($component instanceof Component) {
 					$components[] = $component;
@@ -531,16 +529,16 @@ abstract class Module extends Component
 	 * The following is an example for setting two components:
 	 *
 	 * ~~~
-	 * array(
-	 *     'db' => array(
+	 * [
+	 *     'db' => [
 	 *         'class' => 'yii\db\Connection',
 	 *         'dsn' => 'sqlite:path/to/file.db',
-	 *     ),
-	 *     'cache' => array(
+	 *     ],
+	 *     'cache' => [
 	 *         'class' => 'yii\caching\DbCache',
 	 *         'db' => 'db',
-	 *     ),
-	 * )
+	 *     ],
+	 * ]
 	 * ~~~
 	 *
 	 * @param array $components components (id => component configuration or instance)
@@ -582,7 +580,7 @@ abstract class Module extends Component
 	 * @return mixed the result of the action.
 	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
 	 */
-	public function runAction($route, $params = array())
+	public function runAction($route, $params = [])
 	{
 		$parts = $this->createController($route);
 		if (is_array($parts)) {
@@ -646,7 +644,7 @@ abstract class Module extends Component
 			}
 		}
 
-		return isset($controller) ? array($controller, $route) : false;
+		return isset($controller) ? [$controller, $route] : false;
 	}
 
 	/**

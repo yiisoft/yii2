@@ -15,10 +15,10 @@ use yii\web\AssetBundle;
 class MenuAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/jui/assets';
-	public $js = array(
+	public $js = [
 		'jquery.ui.menu.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\jui\CoreAsset',
-	);
+	];
 }

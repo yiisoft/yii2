@@ -42,7 +42,7 @@ class DbDependency extends Dependency
 	 * @param array $params the parameters (name => value) to be bound to the SQL statement specified by [[sql]].
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($sql, $params = array(), $config = array())
+	public function __construct($sql, $params = [], $config = [])
 	{
 		$this->sql = $sql;
 		$this->params = $params;

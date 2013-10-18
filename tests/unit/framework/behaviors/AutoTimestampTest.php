@@ -30,22 +30,20 @@ class AutoTimestampTest extends TestCase
 
 	public function setUp()
 	{
-		$this->mockApplication(
-			array(
-				'components' => array(
-					'db' => array(
-						'class' => '\yii\db\Connection',
-						'dsn' => 'sqlite::memory:',
-					)
-				)
-			)
-		);
+		$this->mockApplication([
+			'components' => [
+				'db' => [
+					'class' => '\yii\db\Connection',
+					'dsn' => 'sqlite::memory:',
+				]
+			]
+		]);
 
-		$columns = array(
+		$columns = [
 			'id' => 'pk',
 			'create_time' => 'integer',
 			'update_time' => 'integer',
-		);
+		];
 		Yii::$app->getDb()->createCommand()->createTable('test_auto_timestamp', $columns)->execute();
 	}
 
@@ -100,15 +98,15 @@ class ActiveRecordAutoTimestamp extends ActiveRecord
 {
 	public function behaviors()
 	{
-		return array(
-			'timestamp' => array(
+		return [
+			'timestamp' => [
 				'class' => AutoTimestamp::className(),
-				'attributes' => array(
-					static::EVENT_BEFORE_INSERT => array('create_time', 'update_time'),
+				'attributes' => [
+					static::EVENT_BEFORE_INSERT => ['create_time', 'update_time'],
 					static::EVENT_BEFORE_UPDATE => 'update_time',
-				),
-			),
-		);
+				],
+			],
+		];
 	}
 
 	public static function tableName()

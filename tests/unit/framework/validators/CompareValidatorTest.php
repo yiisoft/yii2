@@ -22,12 +22,12 @@ class CompareValidatorTest extends TestCase
 	{
 		$value = 18449;
 		// default config
-		$val = new CompareValidator(array('compareValue' => $value));
+		$val = new CompareValidator(['compareValue' => $value]);
 		$this->assertTrue($val->validateValue($value));
 		$this->assertTrue($val->validateValue((string)$value));
 		$this->assertFalse($val->validateValue($value + 1));
 		foreach ($this->getOperationTestData($value) as $op => $tests) {
-			$val = new CompareValidator(array('compareValue' => $value));
+			$val = new CompareValidator(['compareValue' => $value]);
 			$val->operator = $op;
 			foreach ($tests as $test) {
 				$this->assertEquals($test[1], $val->validateValue($test[0]));
@@ -37,53 +37,52 @@ class CompareValidatorTest extends TestCase
 
 	protected function getOperationTestData($value)
 	{
-		return array(
-			'===' => array(
-				array($value, true),
-				array((string)$value, false),
-				array((float)$value, false),
-				array($value + 1, false),
-			),
-			'!=' => array(
-				array($value, false),
-				array((string)$value, false),
-				array((float)$value, false),
-				array($value + 0.00001, true),
-				array(false, true),
-			),
-			'!==' => array(
-				array($value, false),
-				array((string)$value, true),
-				array((float)$value, true),
-				array(false, true),
-			),
-			'>' => array(
-				array($value, false),
-				array($value + 1, true),
-				array($value - 1, false),
-			),
-			'>=' => array(
-				array($value, true),
-				array($value + 1, true),
-				array($value - 1, false),
-			),
-			'<' => array(
-				array($value, false),
-				array($value + 1, false),
-				array($value - 1, true),
-			),
-			'<=' => array(
-				array($value, true),
-				array($value + 1, false),
-				array($value - 1, true),
-			),
-			//'non-op' => array(
-			//	array($value, false),
-			//	array($value + 1, false),
-			//	array($value - 1, false),
-			//),
-
-		);
+		return [
+			'===' => [
+				[$value, true],
+				[(string)$value, false],
+				[(float)$value, false],
+				[$value + 1, false],
+			],
+			'!=' => [
+				[$value, false],
+				[(string)$value, false],
+				[(float)$value, false],
+				[$value + 0.00001, true],
+				[false, true],
+			],
+			'!==' => [
+				[$value, false],
+				[(string)$value, true],
+				[(float)$value, true],
+				[false, true],
+			],
+			'>' => [
+				[$value, false],
+				[$value + 1, true],
+				[$value - 1, false],
+			],
+			'>=' => [
+				[$value, true],
+				[$value + 1, true],
+				[$value - 1, false],
+			],
+			'<' => [
+				[$value, false],
+				[$value + 1, false],
+				[$value - 1, true],
+			],
+			'<=' => [
+				[$value, true],
+				[$value + 1, false],
+				[$value - 1, true],
+			],
+			//'non-op' => [
+			//	[$value, false],
+			//	[$value + 1, false],
+			//	[$value - 1, false],
+			//],
+		];
 	}
 
 	public function testValidateAttribute()
@@ -91,22 +90,22 @@ class CompareValidatorTest extends TestCase
 		// invalid-array
 		$val = new CompareValidator;
 		$model = new FakedValidationModel;
-		$model->attr = array('test_val');
+		$model->attr = ['test_val'];
 		$val->validateAttribute($model, 'attr');
 		$this->assertTrue($model->hasErrors('attr'));
-		$val = new CompareValidator(array('compareValue' => 'test-string'));
+		$val = new CompareValidator(['compareValue' => 'test-string']);
 		$model = new FakedValidationModel;
 		$model->attr_test = 'test-string';
 		$val->validateAttribute($model, 'attr_test');
 		$this->assertFalse($model->hasErrors('attr_test'));
-		$val = new CompareValidator(array('compareAttribute' => 'attr_test_val'));
+		$val = new CompareValidator(['compareAttribute' => 'attr_test_val']);
 		$model = new FakedValidationModel;
 		$model->attr_test = 'test-string';
 		$model->attr_test_val = 'test-string';
 		$val->validateAttribute($model, 'attr_test');
 		$this->assertFalse($model->hasErrors('attr_test'));
 		$this->assertFalse($model->hasErrors('attr_test_val'));
-		$val = new CompareValidator(array('compareAttribute' => 'attr_test_val'));
+		$val = new CompareValidator(['compareAttribute' => 'attr_test_val']);
 		$model = new FakedValidationModel;
 		$model->attr_test = 'test-string';
 		$model->attr_test_val = 'test-string-false';
@@ -131,7 +130,7 @@ class CompareValidatorTest extends TestCase
 		// not existing op
 		$val = new CompareValidator();
 		$val->operator = '<>';
-		$model = FakedValidationModel::createWithAttributes(array('attr_o' => 5, 'attr_o_repeat' => 5 ));
+		$model = FakedValidationModel::createWithAttributes(['attr_o' => 5, 'attr_o_repeat' => 5]);
 		$val->validateAttribute($model, 'attr_o');
 		$this->assertTrue($model->hasErrors('attr_o'));
 	}
@@ -140,7 +139,7 @@ class CompareValidatorTest extends TestCase
 	{
 		$value = 55;
 		foreach ($this->getOperationTestData($value) as $operator => $tests) {
-			$val = new CompareValidator(array('operator' => $operator, 'compareValue' => $value));
+			$val = new CompareValidator(['operator' => $operator, 'compareValue' => $value]);
 			foreach ($tests as $test) {
 				$model = new FakedValidationModel;
 				$model->attr_test = $test[0];
@@ -154,11 +153,11 @@ class CompareValidatorTest extends TestCase
 	public function testEnsureMessageSetOnInit()
 	{
 		foreach ($this->getOperationTestData(1337) as $operator => $tests) {
-			$val = new CompareValidator(array('operator' => $operator));
+			$val = new CompareValidator(['operator' => $operator]);
 			$this->assertTrue(strlen($val->message) > 1);
 		}
 		try {
-			$val = new CompareValidator(array('operator' => '<>'));
+			$val = new CompareValidator(['operator' => '<>']);
 		} catch (InvalidConfigException $e) {
 			return;
 		}

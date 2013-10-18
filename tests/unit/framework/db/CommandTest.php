@@ -95,7 +95,7 @@ class CommandTest extends DatabaseTestCase
 		$this->assertEquals('user3', $row['name']);
 
 		$rows = $db->createCommand('SELECT * FROM tbl_customer WHERE id=10')->queryAll();
-		$this->assertEquals(array(), $rows);
+		$this->assertEquals([], $rows);
 
 		// queryOne
 		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
@@ -120,7 +120,7 @@ class CommandTest extends DatabaseTestCase
 		$this->assertEquals(range(1, 3), $column);
 
 		$command = $db->createCommand('SELECT id FROM tbl_customer WHERE id=10');
-		$this->assertEquals(array(), $command->queryColumn());
+		$this->assertEquals([], $command->queryColumn());
 
 		// queryScalar
 		$sql = 'SELECT * FROM tbl_customer ORDER BY id';
@@ -215,7 +215,7 @@ class CommandTest extends DatabaseTestCase
 		// FETCH_NUM, customized in query method
 		$sql = 'SELECT * FROM tbl_customer';
 		$command = $db->createCommand($sql);
-		$result = $command->queryOne(array(), \PDO::FETCH_NUM);
+		$result = $command->queryOne([], \PDO::FETCH_NUM);
 		$this->assertTrue(is_array($result) && isset($result[0]));
 	}
 

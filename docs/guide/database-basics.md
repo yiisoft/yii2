@@ -19,11 +19,11 @@ In order to start using database you need to configure database connection compo
 to application configuration (for "basic" web application it's `config/web.php`) like the following:
 
 ```php
-return array(
+return [
 	// ...
-	'components' => array(
+	'components' => [
 		// ...
-		'db' => array(
+		'db' => [
 			'class' => 'yii\db\Connection',
 			'dsn' => 'mysql:host=localhost;dbname=mydatabase', // MySQL, MariaDB
 			//'dsn' => 'sqlite:/path/to/database/file', // SQLite
@@ -36,10 +36,10 @@ return array(
 			'username' => 'root',
 			'password' => '',
 			'charset' => 'utf8',
-		),
-	),
+		],
+	],
 	// ...
-);
+];
 ```
 Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
 on the format of the DSN string.
@@ -61,11 +61,11 @@ $secondaryConnection = \Yii::$app->secondDb;
 If you don't want to define the connection as an application component you can instantiate it directly:
 
 ```php
-$connection = new \yii\db\Connection(array(
+$connection = new \yii\db\Connection([
 	'dsn' => $dsn,
  	'username' => $username,
  	'password' => $password,
-));
+]);
 $connection->open();
 ```
 
@@ -118,22 +118,20 @@ Alternatively the following syntax that takes care of proper table and column na
 
 ```php
 // INSERT
-$connection->createCommand()->insert('tbl_user', array(
+$connection->createCommand()->insert('tbl_user', [
 	'name' => 'Sam',
 	'age' => 30,
-))->execute();
+])->execute();
 
 // INSERT multiple rows at once
-$connection->createCommand()->batchInsert('tbl_user', array('name', 'age'), array(
-	array('Tom', 30),
-	array('Jane', 20),
-	array('Linda', 25),
-))->execute();
+$connection->createCommand()->batchInsert('tbl_user', ['name', 'age'], [
+	['Tom', 30],
+	['Jane', 20],
+	['Linda', 25],
+])->execute();
 
 // UPDATE
-$connection->createCommand()->update('tbl_user', array(
-	'status' => 1,
-), 'age > 30')->execute();
+$connection->createCommand()->update('tbl_user', ['status' => 1], 'age > 30')->execute();
 
 // DELETE
 $connection->createCommand()->delete('tbl_user', 'status = 0')->execute();
@@ -236,11 +234,11 @@ These can be used as follows:
 
 ```php
 // CREATE TABLE
-$connection->createCommand()->createTable('tbl_post', array(
+$connection->createCommand()->createTable('tbl_post', [
 	'id' => 'pk',
 	'title' => 'string',
 	'text' => 'text',
-);
+];
 ```
 
 For the full reference check [[\yii\db\Command]].

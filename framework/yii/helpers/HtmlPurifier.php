@@ -19,9 +19,9 @@ namespace yii\helpers;
  * If you want to configure it:
  *
  * ```php
- * echo HtmlPurifier::process($html, array(
+ * echo HtmlPurifier::process($html, [
  *     'Attr.EnableID' => true,
- * ));
+ * ]);
  * ```
  *
  * For more details please refer to HTMLPurifier documentation](http://htmlpurifier.org/).

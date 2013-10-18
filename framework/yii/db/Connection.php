@@ -28,11 +28,11 @@ use yii\caching\Cache;
  * the DB connection:
  *
  * ~~~
- * $connection = new \yii\db\Connection(array(
+ * $connection = new \yii\db\Connection([
  *     'dsn' => $dsn,
  *     'username' => $username,
  *     'password' => $password,
- * ));
+ * ]);
  * $connection->open();
  * ~~~
  *
@@ -76,17 +76,17 @@ use yii\caching\Cache;
  * configuration like the following:
  *
  * ~~~
- * array(
- *	 'components' => array(
- *		 'db' => array(
+ * [
+ *	 'components' => [
+ *		 'db' => [
  *			 'class' => '\yii\db\Connection',
  *			 'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
  *			 'username' => 'root',
  *			 'password' => '',
  *			 'charset' => 'utf8',
- *		 ),
- *	 ),
- * )
+ *		 ],
+ *	 ],
+ * ]
  * ~~~
  *
  * @property string $driverName Name of the DB driver. This property is read-only.
@@ -159,7 +159,7 @@ class Connection extends Component
 	 * The table names may contain schema prefix, if any. Do not quote the table names.
 	 * @see enableSchemaCache
 	 */
-	public $schemaCacheExclude = array();
+	public $schemaCacheExclude = [];
 	/**
 	 * @var Cache|string the cache object or the ID of the cache application component that
 	 * is used to cache the table metadata.
@@ -233,7 +233,7 @@ class Connection extends Component
 	 * You normally do not need to set this property unless you want to use your own
 	 * [[Schema]] class to support DBMS that is not supported by Yii.
 	 */
-	public $schemaMap = array(
+	public $schemaMap = [
 		'pgsql' => 'yii\db\pgsql\Schema',    // PostgreSQL
 		'mysqli' => 'yii\db\mysql\Schema',   // MySQL
 		'mysql' => 'yii\db\mysql\Schema',    // MySQL
@@ -244,7 +244,7 @@ class Connection extends Component
 		'mssql' => 'yii\db\mssql\Schema',    // older MSSQL driver on MS Windows hosts
 		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on GNU/Linux (and maybe other OSes) hosts
 		'cubrid' => 'yii\db\cubrid\Schema',  // CUBRID
-	);
+	];
 	/**
 	 * @var Transaction the currently active transaction
 	 */
@@ -361,7 +361,7 @@ class Connection extends Component
 		if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
 			$this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
 		}
-		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli', 'cubrid'))) {
+		if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'])) {
 			$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
 		}
 		$this->trigger(self::EVENT_AFTER_OPEN);
@@ -373,13 +373,13 @@ class Connection extends Component
 	 * @param array $params the parameters to be bound to the SQL statement
 	 * @return Command the DB command
 	 */
-	public function createCommand($sql = null, $params = array())
+	public function createCommand($sql = null, $params = [])
 	{
 		$this->open();
-		$command = new Command(array(
+		$command = new Command([
 			'db' => $this,
 			'sql' => $sql,
-		));
+		]);
 		return $command->bindValues($params);
 	}
 
@@ -399,9 +399,7 @@ class Connection extends Component
 	public function beginTransaction()
 	{
 		$this->open();
-		$this->_transaction = new Transaction(array(
-			'db' => $this,
-		));
+		$this->_transaction = new Transaction(['db' => $this]);
 		$this->_transaction->begin();
 		return $this->_transaction;
 	}

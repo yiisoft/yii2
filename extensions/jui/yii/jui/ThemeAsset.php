@@ -15,7 +15,7 @@ use yii\web\AssetBundle;
 class ThemeAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/jui/assets';
-	public $css = array(
+	public $css = [
 		'theme/jquery.ui.css',
-	);
+	];
 }

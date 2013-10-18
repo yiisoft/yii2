@@ -45,7 +45,7 @@ class <?=$className; ?> extends <?='\\' . ltrim($generator->baseClass, '\\') . "
 	 */
 	public function rules()
 	{
-		return array(<?="\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t"; ?>);
+		return [<?="\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t"; ?>];
 	}
 
 	/**
@@ -53,11 +53,11 @@ class <?=$className; ?> extends <?='\\' . ltrim($generator->baseClass, '\\') . "
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 <?php foreach ($labels as $name => $label): ?>
 			<?="'$name' => '" . addslashes($label) . "',\n"; ?>
 <?php endforeach; ?>
-		);
+		];
 	}
 <?php foreach ($relations as $name => $relation): ?>
 

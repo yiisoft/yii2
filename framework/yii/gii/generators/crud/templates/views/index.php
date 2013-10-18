@@ -30,18 +30,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<h1><?="<?php"; ?> echo Html::encode($this->title); ?></h1>
 
-	<?='<?php' . ($generator->indexWidgetType === 'grid' ? ' //' : ''); ?> echo $this->render('_search', array('model' => $searchModel)); ?>
+	<?='<?php' . ($generator->indexWidgetType === 'grid' ? ' //' : ''); ?> echo $this->render('_search', ['model' => $searchModel]); ?>
 
 	<p>
-		<?='<?php'; ?> echo Html::a('Create <?=StringHelper::basename($generator->modelClass); ?>', array('create'), array('class' => 'btn btn-success')); ?>
+		<?='<?php'; ?> echo Html::a('Create <?=StringHelper::basename($generator->modelClass); ?>', ['create'], ['class' => 'btn btn-success']); ?>
 	</p>
 
 <?php if ($generator->indexWidgetType === 'grid'): ?>
-	<?="<?php"; ?> echo GridView::widget(array(
+	<?="<?php"; ?> echo GridView::widget([
 		'dataProvider' => $dataProvider,
 		'filterModel' => $searchModel,
-		'columns' => array(
-			array('class' => 'yii\grid\SerialColumn'),
+		'columns' => [
+			['class' => 'yii\grid\SerialColumn'],
 
 <?php
 $count = 0;
@@ -55,19 +55,17 @@ foreach ($generator->getTableSchema()->columns as $column) {
 }
 ?>
 
-			array('class' => 'yii\grid\ActionColumn'),
-		),
-	)); ?>
+			['class' => 'yii\grid\ActionColumn'],
+		],
+	]); ?>
 <?php else: ?>
-	<?="<?php"; ?> echo ListView::widget(array(
+	<?="<?php"; ?> echo ListView::widget([
 		'dataProvider' => $dataProvider,
-		'itemOptions' => array(
-			'class' => 'item',
-		),
+		'itemOptions' => ['class' => 'item'],
 		'itemView' => function ($model, $key, $index, $widget) {
-			return Html::a(Html::encode($model-><?=$nameAttribute; ?>), array('view', <?=$urlParams; ?>));
+			return Html::a(Html::encode($model-><?=$nameAttribute; ?>), ['view', <?=$urlParams; ?>]);
 		},
-	)); ?>
+	]); ?>
 <?php endif; ?>
 
 </div>

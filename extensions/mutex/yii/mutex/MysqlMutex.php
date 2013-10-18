@@ -38,7 +38,7 @@ class MysqlMutex extends Mutex
 	protected function acquireLock($name, $timeout = 0)
 	{
 		return (boolean)$this->db
-			->createCommand('SELECT GET_LOCK(:name, :timeout)', array(':name' => $name, ':timeout' => $timeout))
+			->createCommand('SELECT GET_LOCK(:name, :timeout)', [':name' => $name, ':timeout' => $timeout])
 			->queryScalar();
 	}
 
@@ -51,7 +51,7 @@ class MysqlMutex extends Mutex
 	protected function releaseLock($name)
 	{
 		return (boolean)$this->db
-			->createCommand('SELECT RELEASE_LOCK(:name)', array(':name' => $name))
+			->createCommand('SELECT RELEASE_LOCK(:name)', [':name' => $name])
 			->queryScalar();
 	}
 }

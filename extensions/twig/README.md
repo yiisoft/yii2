@@ -44,21 +44,21 @@ Example:
 ```php
 <?php
 // config.php
-return array(
+return [
 	//....
-	'components' => array(
-		'view' => array(
+	'components' => [
+		'view' => [
 			'class' => 'yii\base\View',
-			'renderers' => array(
-				'twig' => array(
+			'renderers' => [
+				'twig' => [
 					'class' => 'yii\twig\ViewRenderer',
 					//'cachePath' => '@runtime/Twig/cache',
-					//'options' => array(), /*  Array of twig options */
-				),
-			),
-		),
-	),
-);
+					//'options' => [], /*  Array of twig options */
+				],
+			],
+		],
+	],
+];
 ```
 
 For further instructions refer to the related section in the yii guide.

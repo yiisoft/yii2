@@ -186,7 +186,7 @@ class BaseSecurity
 		static $keys;
 		$keyFile = Yii::$app->getRuntimePath() . '/keys.php';
 		if ($keys === null) {
-			$keys = array();
+			$keys = [];
 			if (is_file($keyFile)) {
 				$keys = require($keyFile);
 			}

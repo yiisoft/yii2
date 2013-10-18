@@ -13,7 +13,7 @@ class InflectorTest extends TestCase
 {
 	public function testPluralize()
 	{
-		$testData = array(
+		$testData = [
 			'move' => 'moves',
 			'foot' => 'feet',
 			'child' => 'children',
@@ -30,7 +30,7 @@ class InflectorTest extends TestCase
 			'bus' => 'buses',
 			'test' => 'tests',
 			'car' => 'cars',
-		);
+		];
 
 		foreach ($testData as $testIn => $testOut) {
 			$this->assertEquals($testOut, Inflector::pluralize($testIn));
@@ -40,7 +40,7 @@ class InflectorTest extends TestCase
 
 	public function testSingularize()
 	{
-		$testData = array(
+		$testData = [
 			'moves' => 'move',
 			'feet' => 'foot',
 			'children' => 'child',
@@ -57,7 +57,7 @@ class InflectorTest extends TestCase
 			'buses' => 'bus',
 			'tests' => 'test',
 			'cars' => 'car',
-		);
+		];
 		foreach ($testData as $testIn => $testOut) {
 			$this->assertEquals($testOut, Inflector::singularize($testIn));
 			$this->assertEquals(ucfirst($testOut), ucfirst(Inflector::singularize($testIn)));

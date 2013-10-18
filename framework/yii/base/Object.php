@@ -38,7 +38,7 @@ class Object implements Arrayable
 	 *
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		if (!empty($config)) {
 			Yii::configure($this, $config);

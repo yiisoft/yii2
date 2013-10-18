@@ -18,7 +18,7 @@ class BooleanValidatorTest extends TestCase
 		$this->assertTrue($val->validateValue('0'));
 		$this->assertTrue($val->validateValue('1'));
 		$this->assertFalse($val->validateValue(null));
-		$this->assertFalse($val->validateValue(array()));
+		$this->assertFalse($val->validateValue([]));
 		$val->strict = true;
 		$this->assertTrue($val->validateValue('0'));
 		$this->assertTrue($val->validateValue('1'));
@@ -27,7 +27,7 @@ class BooleanValidatorTest extends TestCase
 		$val->trueValue = true;
 		$val->falseValue = false;
 		$this->assertFalse($val->validateValue('0'));
-		$this->assertFalse($val->validateValue(array()));
+		$this->assertFalse($val->validateValue([]));
 		$this->assertTrue($val->validateValue(true));
 		$this->assertTrue($val->validateValue(false));
 	}
@@ -38,7 +38,7 @@ class BooleanValidatorTest extends TestCase
 		$obj->attrA = true;
 		$obj->attrB = '1';
 		$obj->attrC = '0';
-		$obj->attrD = array();
+		$obj->attrD = [];
 		$val = new BooleanValidator;
 		$val->validateAttribute($obj, 'attrA');
 		$this->assertFalse($obj->hasErrors('attrA'));

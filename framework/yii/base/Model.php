@@ -90,12 +90,12 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Each rule is an array with the following structure:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'attribute list',
 	 *     'validator type',
 	 *     'on' => 'scenario name',
 	 *     ...other parameters...
-	 * )
+	 * ]
 	 * ~~~
 	 *
 	 * where
@@ -126,18 +126,18 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Below are some examples:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     // built-in "required" validator
-	 *     array('username', 'required'),
+	 *     ['username', 'required'],
 	 *     // built-in "string" validator customized with "min" and "max" properties
-	 *     array('username', 'string', 'min' => 3, 'max' => 12),
+	 *     ['username', 'string', 'min' => 3, 'max' => 12],
 	 *     // built-in "compare" validator that is used in "register" scenario only
-	 *     array('password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'),
+	 *     ['password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'],
 	 *     // an inline validator defined via the "authenticate()" method in the model class
-	 *     array('password', 'authenticate', 'on' => 'login'),
+	 *     ['password', 'authenticate', 'on' => 'login'],
 	 *     // a validator of class "DateRangeValidator"
-	 *     array('dateRange', 'DateRangeValidator'),
-	 * );
+	 *     ['dateRange', 'DateRangeValidator'],
+	 * ];
 	 * ~~~
 	 *
 	 * Note, in order to inherit rules defined in the parent class, a child class needs to
@@ -148,7 +148,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function rules()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -157,11 +157,11 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * The returned array should be in the following format:
 	 *
 	 * ~~~
-	 * array(
-	 *     'scenario1' => array('attribute11', 'attribute12', ...),
-	 *     'scenario2' => array('attribute21', 'attribute22', ...),
+	 * [
+	 *     'scenario1' => ['attribute11', 'attribute12', ...],
+	 *     'scenario2' => ['attribute21', 'attribute22', ...],
 	 *     ...
-	 * )
+	 * ]
 	 * ~~~
 	 *
 	 * By default, an active attribute that is considered safe and can be massively assigned.
@@ -177,8 +177,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function scenarios()
 	{
-		$scenarios = array();
-		$defaults = array();
+		$scenarios = [];
+		$defaults = [];
 		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
 			if (empty($validator->on)) {
@@ -231,7 +231,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	public function attributes()
 	{
 		$class = new ReflectionClass($this);
-		$names = array();
+		$names = [];
 		foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
 			$name = $property->getName();
 			if (!$property->isStatic()) {
@@ -259,7 +259,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function attributeLabels()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -367,7 +367,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function getActiveValidators($attribute = null)
 	{
-		$validators = array();
+		$validators = [];
 		$scenario = $this->getScenario();
 		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
@@ -472,15 +472,15 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
 	 *
 	 * ~~~
-	 * array(
-	 *     'username' => array(
+	 * [
+	 *     'username' => [
 	 *         'Username is required.',
 	 *         'Username must contain only word characters.',
-	 *     ),
-	 *     'email' => array(
+	 *     ],
+	 *     'email' => [
 	 *         'Email address is invalid.',
-	 *     )
-	 * )
+	 *     ]
+	 * ]
 	 * ~~~
 	 *
 	 * @see getFirstErrors
@@ -489,9 +489,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	public function getErrors($attribute = null)
 	{
 		if ($attribute === null) {
-			return $this->_errors === null ? array() : $this->_errors;
+			return $this->_errors === null ? [] : $this->_errors;
 		} else {
-			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
+			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
 		}
 	}
 
@@ -504,9 +504,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	public function getFirstErrors()
 	{
 		if (empty($this->_errors)) {
-			return array();
+			return [];
 		} else {
-			$errors = array();
+			$errors = [];
 			foreach ($this->_errors as $attributeErrors) {
 				if (isset($attributeErrors[0])) {
 					$errors[] = $attributeErrors[0];
@@ -545,7 +545,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	public function clearErrors($attribute = null)
 	{
 		if ($attribute === null) {
-			$this->_errors = array();
+			$this->_errors = [];
 		} else {
 			unset($this->_errors[$attribute]);
 		}
@@ -572,9 +572,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * @param array $except list of attributes whose value should NOT be returned.
 	 * @return array attribute values (name => value).
 	 */
-	public function getAttributes($names = null, $except = array())
+	public function getAttributes($names = null, $except = [])
 	{
-		$values = array();
+		$values = [];
 		if ($names === null) {
 			$names = $this->attributes();
 		}
@@ -657,9 +657,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (!isset($scenarios[$scenario])) {
-			return array();
+			return [];
 		}
-		$attributes = array();
+		$attributes = [];
 		foreach ($scenarios[$scenario] as $attribute) {
 			if ($attribute[0] !== '!') {
 				$attributes[] = $attribute;
@@ -677,7 +677,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (!isset($scenarios[$scenario])) {
-			return array();
+			return [];
 		}
 		$attributes = $scenarios[$scenario];
 		foreach ($attributes as $i => $attribute) {

@@ -49,18 +49,18 @@ EOD;
 	{
 		$timings = $this->calculateTimings();
 		ArrayHelper::multisort($timings, 3, true);
-		$rows = array();
+		$rows = [];
 		foreach ($timings as $timing) {
 			$duration = sprintf('%.1f ms', $timing[3] * 1000);
 			$procedure = Html::encode($timing[1]);
 			$traces = $timing[4];
 			if (!empty($traces)) {
-				$procedure .= Html::ul($traces, array(
+				$procedure .= Html::ul($traces, [
 					'class' => 'trace',
 					'item' => function ($trace) {
 						return "<li>{$trace['file']}({$trace['line']})</li>";
 					},
-				));
+				]);
 			}
 			$rows[] = "<tr><td style=\"width: 80px;\">$duration</td><td>$procedure</td>";
 		}
@@ -91,8 +91,8 @@ EOD;
 			return $this->_timings;
 		}
 		$messages = $this->data['messages'];
-		$timings = array();
-		$stack = array();
+		$timings = [];
+		$stack = [];
 		foreach ($messages as $i => $log) {
 			list($token, $level, $category, $timestamp) = $log;
 			$log[5] = $i;
@@ -100,7 +100,7 @@ EOD;
 				$stack[] = $log;
 			} elseif ($level == Logger::LEVEL_PROFILE_END) {
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[$last[5]] = array(count($stack), $token, $last[3], $timestamp - $last[3], $last[4]);
+					$timings[$last[5]] = [count($stack), $token, $last[3], $timestamp - $last[3], $last[4]];
 				}
 			}
 		}
@@ -108,7 +108,7 @@ EOD;
 		$now = microtime(true);
 		while (($last = array_pop($stack)) !== null) {
 			$delta = $now - $last[3];
-			$timings[$last[5]] = array(count($stack), $last[0], $last[2], $delta, $last[4]);
+			$timings[$last[5]] = [count($stack), $last[0], $last[2], $delta, $last[4]];
 		}
 		ksort($timings);
 		return $this->_timings = $timings;
@@ -117,9 +117,7 @@ EOD;
 	public function save()
 	{
 		$target = $this->module->logTarget;
-		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE, array('yii\db\Command::queryInternal'));
-		return array(
-			'messages' => $messages,
-		);
+		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE, ['yii\db\Command::queryInternal']);
+		return ['messages' => $messages];
 	}
 }

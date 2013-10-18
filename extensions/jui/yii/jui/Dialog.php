@@ -15,11 +15,11 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * Dialog::begin(array(
- *     'clientOptions' => array(
+ * Dialog::begin([
+ *     'clientOptions' => [
  *         'modal' => true,
- *     ),
- * ));
+ *     ],
+ * ]);
  *
  * echo 'Dialog contents here...';
  *

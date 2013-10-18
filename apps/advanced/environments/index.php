@@ -6,14 +6,14 @@
  * format:
  *
  * ```php
- * return array(
- *     'environment name' => array(
+ * return [
+ *     'environment name' => [
  *         'path' => 'directory storing the local files',
- *         'writable' => array(
+ *         'writable' => [
  *             // list of directories that should be set writable
- *         ),
- *     ),
- * );
+ *         ],
+ *     ],
+ * ];
  * ```
  */
 return [

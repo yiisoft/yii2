@@ -32,7 +32,7 @@ class Widget extends Component
 	 * is maintained by [[begin()]] and [[end()]] methods.
 	 * @internal
 	 */
-	public static $_stack = array();
+	public static $_stack = [];
 
 	
 	/**
@@ -42,7 +42,7 @@ class Widget extends Component
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 * @return Widget the newly created widget instance
 	 */
-	public static function begin($config = array())
+	public static function begin($config = [])
 	{
 		$config['class'] = get_called_class();
 		/** @var Widget $widget */
@@ -78,7 +78,7 @@ class Widget extends Component
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 * @return string the rendering result of the widget.
 	 */
-	public static function widget($config = array())
+	public static function widget($config = [])
 	{
 		ob_start();
 		ob_implicit_flush(false);
@@ -165,7 +165,7 @@ class Widget extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function render($view, $params = array())
+	public function render($view, $params = [])
 	{
 		$viewFile = $this->findViewFile($view);
 		return $this->getView()->renderFile($viewFile, $params, $this);
@@ -178,7 +178,7 @@ class Widget extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function renderFile($file, $params = array())
+	public function renderFile($file, $params = [])
 	{
 		return $this->getView()->renderFile($file, $params, $this);
 	}

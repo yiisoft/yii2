@@ -29,7 +29,7 @@ class FileDependency extends Dependency
 	 * @param string $fileName name of the file whose change is to be checked.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($fileName = null, $config = array())
+	public function __construct($fileName = null, $config = [])
 	{
 		$this->fileName = $fileName;
 		parent::__construct($config);

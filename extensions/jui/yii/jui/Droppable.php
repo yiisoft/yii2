@@ -15,11 +15,9 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * Droppable::begin(array(
- *     'clientOptions' => array(
- *         'accept' => '.special',
- *     ),
- * ));
+ * Droppable::begin([
+ *     'clientOptions' => ['accept' => '.special'],
+ * ]);
  *
  * echo 'Droppable body here...';
  *

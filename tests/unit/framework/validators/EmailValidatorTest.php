@@ -44,7 +44,7 @@ class EmailValidatorTest extends TestCase
 			$this->markTestSkipped('Intl extension required');
 			return;
 		}
-		$val = new EmailValidator(array('enableIDN' => true));
+		$val = new EmailValidator(['enableIDN' => true]);
 		$this->assertTrue($val->validateValue('5011@example.com'));
 		$this->assertTrue($val->validateValue('example@äüößìà.de'));
 		$this->assertTrue($val->validateValue('example@xn--zcack7ayc9a.de'));
@@ -52,7 +52,7 @@ class EmailValidatorTest extends TestCase
 
 	public function testValidateValueWithName()
 	{
-		$val = new EmailValidator(array('allowName' => true));
+		$val = new EmailValidator(['allowName' => true]);
 		$this->assertTrue($val->validateValue('test@example.com'));
 		$this->assertTrue($val->validateValue('John Smith <john.smith@example.com>'));
 		$this->assertFalse($val->validateValue('John Smith <example.com>'));

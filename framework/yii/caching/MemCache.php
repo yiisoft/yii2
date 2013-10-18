@@ -28,25 +28,25 @@ use yii\base\InvalidConfigException;
  * To use MemCache as the cache application component, configure the application as follows,
  *
  * ~~~
- * array(
- *     'components' => array(
- *         'cache' => array(
+ * [
+ *     'components' => [
+ *         'cache' => [
  *             'class' => 'MemCache',
- *             'servers' => array(
- *                 array(
+ *             'servers' => [
+ *                 [
  *                     'host' => 'server1',
  *                     'port' => 11211,
  *                     'weight' => 60,
- *                 ),
- *                 array(
+ *                 ],
+ *                 [
  *                     'host' => 'server2',
  *                     'port' => 11211,
  *                     'weight' => 40,
- *                 ),
- *             ),
- *         ),
- *     ),
- * )
+ *                 ],
+ *             ],
+ *         ],
+ *     ],
+ * ]
  * ~~~
  *
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
@@ -76,7 +76,7 @@ class MemCache extends Cache
 	/**
 	 * @var array list of memcache server configurations
 	 */
-	private $_servers = array();
+	private $_servers = [];
 
 	/**
 	 * Initializes this application component.

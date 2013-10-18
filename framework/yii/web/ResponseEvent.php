@@ -31,7 +31,7 @@ class ResponseEvent extends Event
 	 * @param Response $response the response object associated with this event.
 	 * @param array $config the configuration array for initializing the newly created object.
 	 */
-	public function __construct($response, $config = array())
+	public function __construct($response, $config = [])
 	{
 		$this->response = $response;
 		parent::__construct($config);

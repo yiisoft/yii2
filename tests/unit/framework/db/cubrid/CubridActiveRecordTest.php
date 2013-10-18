@@ -33,10 +33,10 @@ class CubridActiveRecordTest extends ActiveRecordTest
 		$customer->refresh();
 		$this->assertEquals(0, $customer->status);
 
-		$customers = Customer::find()->where(array('status' => true))->all();
+		$customers = Customer::find()->where(['status' => true])->all();
 		$this->assertEquals(2, count($customers));
 
-		$customers = Customer::find()->where(array('status' => false))->all();
+		$customers = Customer::find()->where(['status' => false])->all();
 		$this->assertEquals(1, count($customers));
 	}
 }

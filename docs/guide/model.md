@@ -77,10 +77,10 @@ class LoginForm extends \yii\base\Model
 
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'username' => 'Your name',
 			'password' => 'Your password',
-		);
+		];
 	}
 }
 ```
@@ -105,10 +105,10 @@ class User extends \yii\db\ActiveRecord
 {
 	public function scenarios()
 	{
-		return array(
-			'login' => array('username', 'password'),
-			'register' => array('username', 'email', 'password'),
-		);
+		return [
+			'login' => ['username', 'password'],
+			'register' => ['username', 'email', 'password'],
+		];
 	}
 }
 ```
@@ -117,7 +117,7 @@ Sometimes, we want to mark an attribute as not safe for massive assignment (but 
 We may do so by prefixing an exclamation character to the attribute name when declaring it in `scenarios()`. For example,
 
 ```php
-array('username', 'password', '!secret')
+['username', 'password', '!secret']
 ```
 
 Active model scenario could be set using one of the following ways:
@@ -128,14 +128,14 @@ class EmployeeController extends \yii\web\Controller
 	public function actionCreate($id = null)
 	{
 		// first way
-		$employee = new Employee(array('scenario' => 'managementPanel'));
+		$employee = new Employee(['scenario' => 'managementPanel']);
 
 		// second way
 		$employee = new Employee;
 		$employee->scenario = 'managementPanel';
 
 		// third way
-		$employee = Employee::find()->where('id = :id', array(':id' => $id))->one();
+		$employee = Employee::find()->where('id = :id', [':id' => $id])->one();
 		if ($employee !== null) {
 			$employee->setScenario('managementPanel');
 		}
@@ -171,7 +171,7 @@ or several attributes and is effective in one or several scenarios. A rule can b
 instance of a [[\yii\validators\Validator]] child class, or an array with the following format:
 
 ```php
-array(
+[
 	'attribute1, attribute2, ...',
 	'validator class or alias',
 	// specifies in which scenario(s) this rule is active.
@@ -182,7 +182,7 @@ array(
 	'property1' => 'value1',
 	'property2' => 'value2',
 	// ...
-)
+]
 ```
 
 When `validate()` is called, the actual validation rules executed are determined using both of the following criteria:
@@ -216,10 +216,10 @@ var_dump($attributes);
 Using the same `attributes` property you can massively assign data from associative array to model attributes:
 
 ```php
-$attributes = array(
+$attributes = [
 	'title' => 'Model attributes',
 	'create_time' => time(),
-);
+];
 $post->attributes = $attributes;
 ```
 
@@ -238,24 +238,24 @@ assignment is described in `scenarios` method:
 ```php
 function rules()
 {
-	return array(
+	return [
 		// rule applied when corresponding field is "safe"
-		array('username', 'string', 'length' => array(4, 32)),
-		array('first_name', 'string', 'max' => 128),
-		array('password', 'required'),
+		['username', 'string', 'length' => [4, 32]],
+		['first_name', 'string', 'max' => 128],
+		['password', 'required'],
 
 		// rule applied when scenario is "signup" no matter if field is "safe" or not
-		array('hashcode', 'check', 'on' => 'signup'),
-	);
+		['hashcode', 'check', 'on' => 'signup'],
+	];
 }
 
 function scenarios()
 {
-	return array(
+	return [
 		// on signup allow mass assignment of username
-		'signup' => array('username', 'password'),
-		'update' => array('username', 'first_name'),
-	);
+		'signup' => ['username', 'password'],
+		'update' => ['username', 'first_name'],
+	];
 }
 ```
 

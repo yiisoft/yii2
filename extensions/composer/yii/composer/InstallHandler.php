@@ -36,10 +36,10 @@ class InstallHandler
 	 */
 	public static function setPermissions($event)
 	{
-		$options = array_merge(array(
-			self::PARAM_WRITABLE => array(),
-			self::PARAM_EXECUTABLE => array(),
-		), $event->getComposer()->getPackage()->getExtra());
+		$options = array_merge([
+			self::PARAM_WRITABLE => [],
+			self::PARAM_EXECUTABLE => [],
+		], $event->getComposer()->getPackage()->getExtra());
 
 		foreach ((array)$options[self::PARAM_WRITABLE] as $path) {
 			echo "Setting writable: $path ...";
@@ -70,9 +70,9 @@ class InstallHandler
 	 */
 	public static function run($event)
 	{
-		$options = array_merge(array(
-			self::PARAM_COMMANDS => array(),
-		), $event->getComposer()->getPackage()->getExtra());
+		$options = array_merge([
+			self::PARAM_COMMANDS => [],
+		], $event->getComposer()->getPackage()->getExtra());
 
 		if (!isset($options[self::PARAM_CONFIG])) {
 			throw new Exception('Please specify the "' . self::PARAM_CONFIG . '" parameter in composer.json.');

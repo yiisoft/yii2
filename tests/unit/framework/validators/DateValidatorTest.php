@@ -44,7 +44,7 @@ class DateValidatorTest extends TestCase
 		$val->validateAttribute($model, 'attr_date');
 		$this->assertTrue($model->hasErrors('attr_date'));
 		//// timestamp attribute
-		$val = new DateValidator(array('timestampAttribute' => 'attr_timestamp'));
+		$val = new DateValidator(['timestampAttribute' => 'attr_timestamp']);
 		$model = new FakedValidationModel;
 		$model->attr_date = '2013-09-13';
 		$model->attr_timestamp = true;
@@ -56,7 +56,7 @@ class DateValidatorTest extends TestCase
 			$model->attr_timestamp
 		);
 		$val = new DateValidator();
-		$model = FakedValidationModel::createWithAttributes(array('attr_date' => array()));
+		$model = FakedValidationModel::createWithAttributes(['attr_date' => []]);
 		$val->validateAttribute($model, 'attr_date');
 		$this->assertTrue($model->hasErrors('attr_date'));
 

@@ -8,35 +8,34 @@ $params = array_merge(
 	require(__DIR__ . '/params-local.php')
 );
 
-return array(
+return [
 	'id' => 'app-backend',
 	'basePath' => dirname(__DIR__),
 	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
-	'preload' => array('log'),
+	'preload' => ['log'],
 	'controllerNamespace' => 'backend\controllers',
-	'modules' => array(
-	),
-	'components' => array(
-		'request' => array(
+	'modules' => [],
+	'components' => [
+		'request' => [
 			'enableCsrfValidation' => true,
-		),
+		],
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
-		'user' => array(
+		'user' => [
 			'identityClass' => 'common\models\User',
-		),
-		'log' => array(
+		],
+		'log' => [
 			'traceLevel' => YII_DEBUG ? 3 : 0,
-			'targets' => array(
-				array(
+			'targets' => [
+				[
 					'class' => 'yii\log\FileTarget',
-					'levels' => array('error', 'warning'),
-				),
-			),
-		),
-		'errorHandler' => array(
+					'levels' => ['error', 'warning'],
+				],
+			],
+		],
+		'errorHandler' => [
 			'errorAction' => 'site/error',
-		),
-	),
+		],
+	],
 	'params' => $params,
-);
+];
