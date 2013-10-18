@@ -138,8 +138,6 @@ class AssetBundle extends Object
 	 */
 	public function registerAssets($view)
 	{
-		$this->publish($view->getAssetManager());
-
 		foreach ($this->js as $js) {
 			$view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
 		}
