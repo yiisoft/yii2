@@ -54,6 +54,13 @@ abstract class Application extends Module
 	 * @event ActionEvent an event raised after executing a controller action.
 	 */
 	const EVENT_AFTER_ACTION = 'afterAction';
+
+	/**
+	 * @var string the namespace that controller classes are in. If not set,
+	 * it will use the "app\controllers" namespace.
+	 */
+	public $controllerNamespace = 'app\\controllers';
+
 	/**
 	 * @var string the application name.
 	 */
@@ -140,10 +147,6 @@ abstract class Application extends Module
 		$this->registerCoreComponents();
 
 		Component::__construct($config);
-
-		if ($this->controllerNamespace === null) {
-			$this->controllerNamespace = 'app\\controllers';
-		}
 	}
 
 	/**

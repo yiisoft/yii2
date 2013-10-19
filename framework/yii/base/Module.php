@@ -83,7 +83,6 @@ abstract class Module extends Component
 	 * it will use the "controllers" sub-namespace under the namespace of this module.
 	 * For example, if the namespace of this module is "foo\bar", then the default
 	 * controller namespace would be "foo\bar\controllers".
-	 * If the module is an application, it will default to "app\controllers".
 	 */
 	public $controllerNamespace;
 	/**
@@ -127,9 +126,9 @@ abstract class Module extends Component
 	 */
 	public function __construct($id, $parent = null, $config = [])
 	{
+		parent::__construct($config);
 		$this->id = $id;
 		$this->module = $parent;
-		parent::__construct($config);
 		if ($this->controllerNamespace === null) {
 			$class = get_class($this);
 			if (($pos = strrpos($class, '\\')) !== false) {
