@@ -16,14 +16,14 @@ use yii\widgets\ActiveForm;
 
 /**
  * @var yii\base\View $this
- * @var <?=ltrim($generator->searchModelClass, '\\'); ?> $model
+ * @var <?= ltrim($generator->searchModelClass, '\\') ?> $model
  * @var yii\widgets\ActiveForm $form
  */
 ?>
 
-<div class="<?=Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-search">
+<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-search">
 
-	<?='<?php'; ?> $form = ActiveForm::begin([
+	<?= '<?php' ?> $form = ActiveForm::begin([
 		'action' => ['index'],
 		'method' => 'get',
 	]); ?>
@@ -39,10 +39,10 @@ foreach ($generator->getTableSchema()->getColumnNames() as $attribute) {
 }
 ?>
 		<div class="form-group">
-			<?='<?php'; ?> echo Html::submitButton('Search', ['class' => 'btn btn-primary']); ?>
-			<?='<?php'; ?> echo Html::resetButton('Reset', ['class' => 'btn btn-default']); ?>
+			<?= '<?php' ?> echo Html::submitButton('Search', ['class' => 'btn btn-primary']); ?>
+			<?= '<?php' ?> echo Html::resetButton('Reset', ['class' => 'btn btn-default']); ?>
 		</div>
 
-	<?='<?php'; ?> ActiveForm::end(); ?>
+	<?= '<?php' ?> ActiveForm::end(); ?>
 
 </div>

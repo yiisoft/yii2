@@ -76,7 +76,7 @@ use yii\helpers\Html;
 ?>
 
 <div class="username">
-	<?=Html::encode($user->name); ?>
+	<?= Html::encode($user->name) ?>
 </div>
 ```
 
@@ -97,7 +97,7 @@ use yii\helpers\HtmlPurifier;
 ?>
 
 <div class="post">
-	<?=HtmlPurifier::process($post->text); ?>
+	<?= HtmlPurifier::process($post->text) ?>
 </div>
 ```
 
@@ -256,16 +256,16 @@ use yii\helpers\Html;
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
-<html lang="<?=Yii::$app->charset; ?>">
+<html lang="<?= Yii::$app->charset ?>">
 <head>
-	<meta charset="<?=Yii::$app->charset; ?>"/>
-	<title><?=Html::encode($this->title); ?></title>
+	<meta charset="<?= Yii::$app->charset ?>"/>
+	<title><?= Html::encode($this->title) ?></title>
 	<?php $this->head(); ?>
 </head>
 <body>
 <?php $this->beginBody(); ?>
 	<div class="container">
-		<?=$content; ?>
+		<?= $content ?>
 	</div>
 	<footer class="footer">© 2013 me :)</footer>
 <?php $this->endBody(); ?>
@@ -295,8 +295,8 @@ use yii\helpers\Html;
 ?>
 
 <div class="profile">
-	<h2><?=Html::encode($username); ?></h2>
-	<p><?=Html::encode($tagline); ?></p>
+	<h2><?= Html::encode($username) ?></h2>
+	<p><?= Html::encode($tagline) ?></p>
 </div>
 ```
 

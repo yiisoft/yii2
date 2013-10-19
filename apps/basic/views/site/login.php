@@ -11,7 +11,7 @@ $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
-	<h1><?=Html::encode($this->title); ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
 	<p>Please fill out the following fields to login:</p>
 
@@ -24,9 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
 		],
 	]); ?>
 
-	<?=$form->field($model, 'username'); ?>
+	<?= $form->field($model, 'username') ?>
 
-	<?=$form->field($model, 'password')->passwordInput(); ?>
+	<?= $form->field($model, 'password')->passwordInput() ?>
 
 	<?=$form->field($model, 'rememberMe', [
 		'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="form-group">
 		<div class="col-lg-offset-1 col-lg-11">
-			<?=Html::submitButton('Login', ['class' => 'btn btn-primary']); ?>
+			<?= Html::submitButton('Login', ['class' => 'btn btn-primary']) ?>
 		</div>
 	</div>
 
