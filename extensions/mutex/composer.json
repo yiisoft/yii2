@@ -23,5 +23,5 @@
 	},
 	"autoload": {
 		"psr-0": { "yii\\mutex\\": "" }
-	},
+	}
 }
