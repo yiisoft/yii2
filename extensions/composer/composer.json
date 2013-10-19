@@ -20,5 +20,8 @@
 	"minimum-stability": "dev",
 	"autoload": {
 		"psr-0": { "yii\\composer\\": "" }
+	},
+	"extra": {
+		"class": "yii\\composer\\InstallerPlugin"
 	}
 }
