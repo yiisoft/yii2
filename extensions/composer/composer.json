@@ -23,5 +23,8 @@
 	},
 	"extra": {
 		"class": "yii\\composer\\InstallerPlugin"
+	},
+	"require": {
+		"composer-plugin-api": "1.0.0"
 	}
 }
