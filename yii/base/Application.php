@@ -54,6 +54,13 @@ abstract class Application extends Module
 	 * @event ActionEvent an event raised after executing a controller action.
 	 */
 	const EVENT_AFTER_ACTION = 'afterAction';
+
+	/**
+	 * @var string the namespace that controller classes are in. If not set,
+	 * it will use the "app\controllers" namespace.
+	 */
+	public $controllerNamespace = 'app\\controllers';
+
 	/**
 	 * @var string the application name.
 	 */
@@ -218,6 +225,18 @@ abstract class Application extends Module
 	public function getUniqueId()
 	{
 		return '';
+	}
+
+	/**
+	 * Sets the root directory of the applicaition and the @app alias.
+	 * This method can only be invoked at the beginning of the constructor.
+	 * @param string $path the root directory of the application.
+	 * @throws InvalidParamException if the directory does not exist.
+	 */
+	public function setBasePath($path)
+	{
+		parent::setBasePath($path);
+		Yii::setAlias('@app', $this->getBasePath());
 	}
 
 	/**
