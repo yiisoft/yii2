@@ -15,29 +15,29 @@
 echo "<?php\n";
 ?>
 
-namespace <?=$generator->ns; ?>;
+namespace <?= $generator->ns ?>;
 
 /**
- * This is the model class for table "<?=$tableName; ?>".
+ * This is the model class for table "<?= $tableName ?>".
  *
 <?php foreach ($tableSchema->columns as $column): ?>
- * @property <?="{$column->phpType} \${$column->name}\n"; ?>
+ * @property <?= "{$column->phpType} \${$column->name}\n" ?>
 <?php endforeach; ?>
 <?php if (!empty($relations)): ?>
  *
 <?php foreach ($relations as $name => $relation): ?>
- * @property <?=$relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n"; ?>
+ * @property <?= $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n" ?>
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?=$className; ?> extends <?='\\' . ltrim($generator->baseClass, '\\') . "\n"; ?>
+class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
 	/**
 	 * @inheritdoc
 	 */
 	public static function tableName()
 	{
-		return '<?=$tableName; ?>';
+		return '<?= $tableName ?>';
 	}
 
 	/**
@@ -45,7 +45,7 @@ class <?=$className; ?> extends <?='\\' . ltrim($generator->baseClass, '\\') . "
 	 */
 	public function rules()
 	{
-		return [<?="\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t"; ?>];
+		return [<?= "\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t" ?>];
 	}
 
 	/**
@@ -55,7 +55,7 @@ class <?=$className; ?> extends <?='\\' . ltrim($generator->baseClass, '\\') . "
 	{
 		return [
 <?php foreach ($labels as $name => $label): ?>
-			<?="'$name' => '" . addslashes($label) . "',\n"; ?>
+			<?= "'$name' => '" . addslashes($label) . "',\n" ?>
 <?php endforeach; ?>
 		];
 	}
@@ -64,9 +64,9 @@ class <?=$className; ?> extends <?='\\' . ltrim($generator->baseClass, '\\') . "
 	/**
 	 * @return \yii\db\ActiveRelation
 	 */
-	public function get<?=$name; ?>()
+	public function get<?= $name ?>()
 	{
-		<?=$relation[0] . "\n"; ?>
+		<?= $relation[0] . "\n" ?>
 	}
 <?php endforeach; ?>
 }

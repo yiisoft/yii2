@@ -12,9 +12,9 @@ use yii\helpers\Inflector;
 echo "<?php\n";
 ?>
 
-public function action<?=Inflector::id2camel(trim(basename($generator->viewName), '_')); ?>()
+public function action<?= Inflector::id2camel(trim(basename($generator->viewName), '_')) ?>()
 {
-	$model = new <?=$generator->modelClass; ?><?=empty($generator->scenarioName) ? '' : "(['scenario' => '{$generator->scenarioName}'])"; ?>;
+	$model = new <?= $generator->modelClass ?><?= empty($generator->scenarioName) ? '' : "(['scenario' => '{$generator->scenarioName}'])" ?>;
 
 	if ($model->load($_POST)) {
 		if($model->validate()) {
@@ -22,7 +22,7 @@ public function action<?=Inflector::id2camel(trim(basename($generator->viewName)
 			return;
 		}
 	}
-	return $this->render('<?=$generator->viewName; ?>', [
+	return $this->render('<?= $generator->viewName ?>', [
 		'model' => $model,
 	]);
 }

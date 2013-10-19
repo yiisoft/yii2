@@ -24,9 +24,9 @@ foreach ($generator->templates as $name => $path) {
 }
 ?>
 <div class="default-view">
-	<h1><?=Html::encode($this->title); ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
-	<p><?=$generator->getDescription(); ?></p>
+	<p><?= $generator->getDescription() ?></p>
 
 	<?php $form = ActiveForm::begin([
 		'id' => "$id-generator",
@@ -45,10 +45,10 @@ foreach ($generator->templates as $name => $path) {
 						Please select which set of the templates should be used to generated the code.
 				'); ?>
 				<div class="form-group">
-					<?=Html::submitButton('Preview', ['name' => 'preview', 'class' => 'btn btn-primary']); ?>
+					<?= Html::submitButton('Preview', ['name' => 'preview', 'class' => 'btn btn-primary']) ?>
 
 					<?php if(isset($files)): ?>
-						<?=Html::submitButton('Generate', ['name' => 'generate', 'class' => 'btn btn-success']); ?>
+						<?= Html::submitButton('Generate', ['name' => 'generate', 'class' => 'btn btn-success']) ?>
 					<?php endif; ?>
 				</div>
 			</div>

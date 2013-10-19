@@ -23,22 +23,22 @@ use yii\widgets\ActiveForm;
 
 /**
  * @var yii\base\View $this
- * @var <?=ltrim($generator->modelClass, '\\'); ?> $model
+ * @var <?= ltrim($generator->modelClass, '\\') ?> $model
  * @var yii\widgets\ActiveForm $form
  */
 ?>
 
-<div class="<?=Inflector::camel2id(StringHelper::basename($generator->modelClass)); ?>-form">
+<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-form">
 
-	<?='<?php'; ?> $form = ActiveForm::begin(); ?>
+	<?= '<?php' ?> $form = ActiveForm::begin(); ?>
 
 <?php foreach ($safeAttributes as $attribute) {
 	echo "\t\t<?=" . $generator->generateActiveField($attribute) . " ?>\n\n";
 } ?>
 		<div class="form-group">
-			<?='<?php'; ?> echo Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']); ?>
+			<?= '<?php' ?> echo Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']); ?>
 		</div>
 
-	<?='<?php'; ?> ActiveForm::end(); ?>
+	<?= '<?php' ?> ActiveForm::end(); ?>
 
 </div>
