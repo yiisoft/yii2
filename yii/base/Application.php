@@ -109,6 +109,19 @@ abstract class Application extends Module
 	 * @var array the parameters supplied to the requested action.
 	 */
 	public $requestedParams;
+	/**
+	 * @var array list of installed Yii extensions. Each array element represents a single extension
+	 * with the following structure:
+	 *
+	 * ~~~
+	 * [
+	 *     'name' => 'extension name',
+	 *     'version' => 'version number',
+	 *     'bootstrap' => 'BootstrapClassName',
+	 * ]
+	 * ~~~
+	 */
+	public $extensions = array();
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
