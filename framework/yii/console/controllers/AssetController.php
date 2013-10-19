@@ -595,7 +595,7 @@ return [
 		'basePath' => __DIR__,
 		'baseUrl' => '',
 	],
-);
+];
 EOD;
 		if (file_exists($configFile)) {
 			if (!$this->confirm("File '{$configFile}' already exists. Do you wish to overwrite it?")) {
