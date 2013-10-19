@@ -1,8 +1,8 @@
 {
 	"name": "yiisoft/yii2-composer",
-	"description": "The composer integration for the Yii framework",
-	"keywords": ["yii", "composer", "install", "update"],
-	"type": "library",
+	"description": "The composer plugin for Yii extension installer",
+	"keywords": ["yii", "composer", "extension installer"],
+	"type": "composer-plugin",
 	"license": "BSD-3-Clause",
 	"support": {
 		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
@@ -18,9 +18,6 @@
 		}
 	],
 	"minimum-stability": "dev",
-	"require": {
-		"yiisoft/yii2": "*"
-	},
 	"autoload": {
 		"psr-0": { "yii\\composer\\": "" }
 	}

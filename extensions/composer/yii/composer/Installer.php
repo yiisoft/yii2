@@ -10,6 +10,9 @@ namespace yii\composer;
 use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 use Composer\Repository\InstalledRepositoryInterface;
+use Composer\Script\CommandEvent;
+use yii\console\Application;
+use yii\console\Exception;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -17,20 +20,18 @@ use Composer\Repository\InstalledRepositoryInterface;
  */
 class Installer extends LibraryInstaller
 {
-	const EXTRA_WRITABLES = 'yii-writables';
-	const EXTRA_EXECUTABLES = 'yii-executables';
+	const EXTRA_WRITABLE = 'writable';
+	const EXTRA_EXECUTABLE = 'executable';
 	const EXTRA_CONFIG = 'yii-config';
 	const EXTRA_COMMANDS = 'yii-commands';
-	const EXTRA_ALIASES = 'yii-aliases';
-	const EXTRA_PREINIT = 'yii-preinit';
-	const EXTRA_INIT = 'yii-init';
+	const EXTRA_BOOTSTRAP = 'bootstrap';
 
 	/**
 	 * @inheritdoc
 	 */
 	public function supports($packageType)
 	{
-		return $packageType === 'yii2-extension';
+		return $packageType === 'yii-extension';
 	}
 
 	/**
@@ -63,81 +64,39 @@ class Installer extends LibraryInstaller
 
 	protected function addPackage(PackageInterface $package)
 	{
-		$extension = ['name' => $package->getPrettyName()];
-
-		$root = $package->getPrettyName();
-		if ($targetDir = $package->getTargetDir()) {
-			$root .= '/' . trim($targetDir, '/');
-		}
-		$root = trim($root, '/');
+		$extension = [
+			'name' => $package->getPrettyName(),
+			'version' => $package->getVersion(),
+		];
 
 		$extra = $package->getExtra();
 
-		if (isset($extra[self::EXTRA_PREINIT]) && is_string($extra[self::EXTRA_PREINIT])) {
-			$extension[self::EXTRA_PREINIT] = "<vendor-dir>/$root/" . ltrim(str_replace('\\', '/', $extra[self::EXTRA_PREINIT]), '/');
-		}
-		if (isset($extra[self::EXTRA_INIT]) && is_string($extra[self::EXTRA_INIT])) {
-			$extension[self::EXTRA_INIT] = "<vendor-dir>/$root/" . ltrim(str_replace('\\', '/', $extra[self::EXTRA_INIT]), '/');
-		}
-
-		if (isset($extra['aliases']) && is_array($extra['aliases'])) {
-			foreach ($extra['aliases'] as $alias => $path) {
-				$extension['aliases']['@' . ltrim($alias, '@')] = "<vendor-dir>/$root/" . ltrim(str_replace('\\', '/', $path), '/');
-			}
-		}
-
-		if (!empty($aliases)) {
-			foreach ($aliases as $alias => $path) {
-				if (strncmp($alias, '@', 1) !== 0) {
-					$alias = '@' . $alias;
-				}
-				$path = trim(str_replace('\\', '/', $path), '/');
-				$extension['aliases'][$alias] = $root . '/' . $path;
-			}
+		if (isset($extra[self::EXTRA_BOOTSTRAP]) && is_string($extra[self::EXTRA_BOOTSTRAP])) {
+			$extension['bootstrap'] = $extra[self::EXTRA_BOOTSTRAP];
 		}
 
 		$extensions = $this->loadExtensions();
-		$extensions[$package->getId()] = $extension;
+		$extensions[$package->getUniqueName()] = $extension;
 		$this->saveExtensions($extensions);
 	}
 
 	protected function removePackage(PackageInterface $package)
 	{
 		$packages = $this->loadExtensions();
-		unset($packages[$package->getId()]);
+		unset($packages[$package->getUniqueName()]);
 		$this->saveExtensions($packages);
 	}
 
 	protected function loadExtensions()
 	{
 		$file = $this->vendorDir . '/yii-extensions.php';
-		if (!is_file($file)) {
-			return [];
-		}
-		$extensions = require($file);
-		/** @var string $vendorDir defined in yii-extensions.php */
-		$n = strlen($vendorDir);
-		foreach ($extensions as &$extension) {
-			if (isset($extension['aliases'])) {
-				foreach ($extension['aliases'] as $alias => $path) {
-					$extension['aliases'][$alias] = '<vendor-dir>' . substr($path, $n);
-				}
-			}
-			if (isset($extension[self::EXTRA_PREINIT])) {
-				$extension[self::EXTRA_PREINIT] = '<vendor-dir>' . substr($extension[self::EXTRA_PREINIT], $n);
-			}
-			if (isset($extension[self::EXTRA_INIT])) {
-				$extension[self::EXTRA_INIT] = '<vendor-dir>' . substr($extension[self::EXTRA_INIT], $n);
-			}
-		}
-		return $extensions;
+		return is_file($file) ? require($file) : [];
 	}
 
 	protected function saveExtensions(array $extensions)
 	{
 		$file = $this->vendorDir . '/yii-extensions.php';
-		$array = str_replace("'<vendor-dir>", '$vendorDir . \'', var_export($extensions, true));
-		file_put_contents($file, "<?php\n\$vendorDir = __DIR__;\n\nreturn $array;\n");
+		file_put_contents($file, "<?php\nreturn " . var_export($extensions, true) . ";\n");
 	}
 
 
@@ -148,11 +107,11 @@ class Installer extends LibraryInstaller
 	public static function setPermissions($event)
 	{
 		$options = array_merge([
-			self::EXTRA_WRITABLES => [],
-			self::EXTRA_EXECUTABLES => [],
+			self::EXTRA_WRITABLE => [],
+			self::EXTRA_EXECUTABLE => [],
 		], $event->getComposer()->getPackage()->getExtra());
 
-		foreach ((array)$options[self::EXTRA_WRITABLES] as $path) {
+		foreach ((array)$options[self::EXTRA_WRITABLE] as $path) {
 			echo "Setting writable: $path ...";
 			if (is_dir($path)) {
 				chmod($path, 0777);
@@ -163,7 +122,7 @@ class Installer extends LibraryInstaller
 			}
 		}
 
-		foreach ((array)$options[self::EXTRA_EXECUTABLES] as $path) {
+		foreach ((array)$options[self::EXTRA_EXECUTABLE] as $path) {
 			echo "Setting executable: $path ...";
 			if (is_file($path)) {
 				chmod($path, 0755);

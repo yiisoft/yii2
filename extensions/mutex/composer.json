@@ -2,7 +2,7 @@
 	"name": "yiisoft/yii2-mutex",
 	"description": "Mutual exclusion extension for the Yii framework",
 	"keywords": ["yii", "mutex"],
-	"type": "library",
+	"type": "yii-extension",
 	"license": "BSD-3-Clause",
 	"support": {
 		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
@@ -23,5 +23,8 @@
 	},
 	"autoload": {
 		"psr-0": { "yii\\mutex\\": "" }
+	},
+	"extra": {
+		"bootstrap": "yii\\mutex\\Extension"
 	}
 }
