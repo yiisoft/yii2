@@ -73,7 +73,7 @@ class View extends Component
 	 * The location of registered JavaScript code block.
 	 * This means the JavaScript code block will be enclosed within `jQuery(document).ready()`.
 	 */
-	const POS_READY = 4
+	const POS_READY = 4;
 	/**
 	 * Default position for js files 
 	 */
