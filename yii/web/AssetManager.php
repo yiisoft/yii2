@@ -95,10 +95,12 @@ class AssetManager extends Component
 	 * it will treat `$name` as the class of the asset bundle and create a new instance of it.
 	 *
 	 * @param string $name the class name of the asset bundle
+	 * @param boolean $publish whether to publish the asset files in the asset bundle before it is returned.
+	 * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
 	 * @return AssetBundle the asset bundle instance
 	 * @throws InvalidConfigException if $name does not refer to a valid asset bundle
 	 */
-	public function getBundle($name)
+	public function getBundle($name, $publish = true)
 	{
 		if (isset($this->bundles[$name])) {
 			if ($this->bundles[$name] instanceof AssetBundle) {
@@ -111,8 +113,10 @@ class AssetManager extends Component
 		} else {
 			$bundle = Yii::createObject($name);
 		}
-		/** @var AssetBundle $bundle */
-		$bundle->publish($this);
+		if ($publish) {
+			/** @var AssetBundle $bundle */
+			$bundle->publish($this);
+		}
 		return $this->bundles[$name] = $bundle;
 	}
 
