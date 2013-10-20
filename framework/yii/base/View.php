@@ -75,6 +75,10 @@ class View extends Component
 	 */
 	const POS_READY = 4;
 	/**
+	 * Default position for js files 
+	 */
+	public $jsDefaultPosition = self::POS_END;
+	/**
 	 * This is internally used as the placeholder for receiving the content registered for the head section.
 	 */
 	const PH_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
@@ -730,7 +734,7 @@ class View extends Component
 	 */
 	public function registerJsFile($url, $options = [], $key = null)
 	{
-		$position = isset($options['position']) ? $options['position'] : self::POS_END;
+		$position = isset($options['position']) ? $options['position'] : $this->jsDefaultPosition;
 		unset($options['position']);
 		$key = $key ?: $url;
 		$this->jsFiles[$position][$key] = Html::jsFile($url, $options);
