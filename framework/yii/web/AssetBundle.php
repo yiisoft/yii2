@@ -15,8 +15,9 @@ use yii\base\View;
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
  *
- * Each asset bundle has a unique name that globally identifies it among all asset bundles
- * used in an application.
+ * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application.
+ * The name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php)
+ * of the class representing it.
  *
  * An asset bundle can depend on other asset bundles. When registering an asset bundle
  * with a view, all its dependent asset bundles will be automatically registered.
@@ -130,11 +131,7 @@ class AssetBundle extends Object
 
 	/**
 	 * Registers the CSS and JS files with the given view.
-	 * It will then try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
-	 * CSS or JS files using [[AssetManager::converter|asset converter]].
-	 * @param \yii\base\View $view the view that the asset files to be registered with.
-	 * @throws InvalidConfigException if [[baseUrl]] or [[basePath]] is not set when the bundle
-	 * contains internal CSS or JS files.
+	 * @param \yii\base\View $view the view that the asset files are to be registered with.
 	 */
 	public function registerAssets($view)
 	{
@@ -156,6 +153,8 @@ class AssetBundle extends Object
 
 	/**
 	 * Publishes the asset bundle if its source code is not under Web-accessible directory.
+	 * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
+	 * CSS or JS files using [[AssetManager::converter|asset converter]].
 	 * @param AssetManager $am the asset manager to perform the asset publishing
 	 * @throws InvalidConfigException if [[baseUrl]] or [[basePath]] is not set when the bundle
 	 * contains internal CSS or JS files.
