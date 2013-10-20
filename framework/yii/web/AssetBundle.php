@@ -133,7 +133,7 @@ class AssetBundle extends Object
 	 * Registers the CSS and JS files with the given view.
 	 * @param \yii\base\View $view the view that the asset files are to be registered with.
 	 */
-	public function registerAssets($view)
+	public function registerAssetFiles($view)
 	{
 		foreach ($this->js as $js) {
 			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
