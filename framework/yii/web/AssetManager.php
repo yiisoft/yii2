@@ -111,8 +111,6 @@ class AssetManager extends Component
 		} else {
 			$bundle = Yii::createObject($name);
 		}
-		/** @var AssetBundle $bundle */
-		$bundle->publish($this);
 		return $this->bundles[$name] = $bundle;
 	}
 

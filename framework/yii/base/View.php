@@ -605,6 +605,7 @@ class View extends Component
 				$this->registerAssetBundle($dep, $pos);
 			}
 			$this->assetBundles[$name] = $bundle;
+			$bundle->publish($am);
 		} elseif ($this->assetBundles[$name] === false) {
 			throw new InvalidConfigException("A circular dependency is detected for bundle '$name'.");
 		} else {
