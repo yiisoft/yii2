@@ -1,11 +1,38 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\email\swift;
 
 use yii\email\VendorMailer;
 
 /**
- * Class Mailer
+ * Mailer based on SwiftMailer library.
+ *
+ * By default PHP 'mail' function will be used as default email transport.
+ * You can setup different email transport via [[vendorMailer]] property:
+ * ~~~
+ * 'components' => array(
+ *     ...
+ *     'email' => array(
+ *         'class' => 'yii\email\swift\Mailer',
+ *         'vendorMailer' => [
+ *             'transport' => [
+ *                 'type' => 'smtp',
+ *                 'host' => 'localhost',
+ *                 'username' => 'username',
+ *                 'password' => 'password',
+ *                 'port' => '587',
+ *                 'encryption' => 'tls',
+ *             ],
+ *         ],
+ *     ),
+ *     ...
+ * ),
+ * ~~~
  *
  * @see http://swiftmailer.org
  *
@@ -15,7 +42,7 @@ use yii\email\VendorMailer;
 class Mailer extends VendorMailer
 {
 	/**
-	 * Initializes the object.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -34,7 +61,9 @@ class Mailer extends VendorMailer
 	}
 
 	/**
-	 * @inheritdoc
+	 * Creates Swift mailer instance from given configuration.
+	 * @param array $config mailer configuration.
+	 * @return \Swift_Mailer mailer instance.
 	 */
 	protected function createVendorMailer(array $config)
 	{
@@ -47,7 +76,8 @@ class Mailer extends VendorMailer
 	}
 
 	/**
-	 * @inheritdoc
+	 * Creates the Swift email message instance.
+	 * @return \Swift_Message email message instance.
 	 */
 	public function createVendorMessage()
 	{

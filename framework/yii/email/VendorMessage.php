@@ -22,6 +22,8 @@ use yii\base\UnknownPropertyException;
  *
  * @see VendorMailer
  *
+ * @property object $vendorMessage vendor message instance.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

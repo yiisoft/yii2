@@ -17,6 +17,8 @@ use yii\base\InvalidConfigException;
  *
  * @see VendorMessage
  *
+ * @property array|object $vendorMailer vendor mailer instance or its array configuration.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -37,7 +39,7 @@ abstract class VendorMailer extends BaseMailer
 
 	/**
 	 * Initializes the object.
-	 * Registers the vendor autoloader if any.
+	 * Registers the vendor autoloader, if any.
 	 */
 	public function init()
 	{

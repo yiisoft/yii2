@@ -16,6 +16,9 @@ use yii\base\Component;
  *
  * @see BaseMessage
  *
+ * @property array $defaultMessageConfig configuration, which should be applied by default to any
+ * new created email message instance.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -29,6 +32,7 @@ abstract class BaseMailer extends Component
 	 * array(
 	 *     'encoding' => 'UTF-8',
 	 *     'from' => 'noreply@mydomain.com',
+	 *     'bcc' => 'email.test@mydomain.com',
 	 * )
 	 * ~~~
 	 */

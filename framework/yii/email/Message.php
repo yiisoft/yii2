@@ -23,7 +23,7 @@ use yii\email\swift\Message as SwiftMessage;
  * ~~~
  *
  * This particular class uses 'SwiftMailer' library to perform the message sending.
- * Note: you can replace usage of this class by your own one using [[Yii::$classMap]]:
+ * Note: you can replace usage of this class by your own one, using [[Yii::$classMap]]:
  * ~~~
  * Yii::$classMap['yii\email\Message'] = '/path/to/my/email/Message.php'
  * ~~~
