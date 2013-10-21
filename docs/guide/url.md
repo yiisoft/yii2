@@ -97,7 +97,7 @@ Complimentary to creating URLs Yii is handling transforming custom URLs back int
 ### Strict URL parsing
 
 By default if there's no custom rule for URL and URL matches default format such as `/site/page` Yii tries to run a
-corresponding controller's action. This beahvior could be disabled so if there's no custom rule match, a 404 not found
+corresponding controller's action. This behavior could be disabled so if there's no custom rule match, a 404 not found
 error will be produced immediately.
 
 ```php
