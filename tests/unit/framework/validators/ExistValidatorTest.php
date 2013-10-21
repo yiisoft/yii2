@@ -54,7 +54,13 @@ class ExistValidatorTest extends DatabaseTestCase
 	public function testValidateAttribute()
 	{
 		// existing value on different table
+		// 1. fully qualified name of the class
 		$val = new ExistValidator(['className' => ValidatorTestMainModel::className(), 'attributeName' => 'id']);
+		$m = ValidatorTestRefModel::find(['id' => 1]);
+		$val->validateAttribute($m, 'ref');
+		$this->assertFalse($m->hasErrors());
+		// 2. short name of the class without namespace
+		$val = new ExistValidator(['className' => 'ValidatorTestMainModel', 'attributeName' => 'id']);
 		$m = ValidatorTestRefModel::find(['id' => 1]);
 		$val->validateAttribute($m, 'ref');
 		$this->assertFalse($m->hasErrors());
