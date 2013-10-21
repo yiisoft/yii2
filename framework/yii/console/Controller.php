@@ -63,7 +63,7 @@ class Controller extends \yii\base\Controller
 	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
 	 * @see createAction
 	 */
-	public function runAction($id, $params = array())
+	public function runAction($id, $params = [])
 	{
 		if (!empty($params)) {
 			$options = $this->globalOptions();
@@ -89,7 +89,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function bindActionParams($action, $params)
 	{
-		$args = array();
+		$args = [];
 		if (!empty($params)) {
 			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
@@ -98,9 +98,7 @@ class Controller extends \yii\base\Controller
 				} elseif (is_int($name)) {
 					$args[] = $value;
 				} else {
-					throw new Exception(Yii::t('yii', 'Unknown option: --{name}', array(
-						'{name}' => $name,
-					)));
+					throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
 				}
 			}
 		}
@@ -111,7 +109,7 @@ class Controller extends \yii\base\Controller
 			$method = new \ReflectionMethod($action, 'run');
 		}
 
-		$missing = array();
+		$missing = [];
 		foreach ($method->getParameters() as $i => $param) {
 			$name = $param->getName();
 			if (!isset($args[$i])) {
@@ -124,9 +122,7 @@ class Controller extends \yii\base\Controller
 		}
 
 		if (!empty($missing)) {
-			throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', array(
-				'{params}' => implode(', ', $missing),
-			)));
+			throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
 		}
 
 		return $args;
@@ -220,7 +216,7 @@ class Controller extends \yii\base\Controller
 	 *      - $error: the error value passed by reference if validation failed.
 	 * @return string the user input
 	 */
-	public function prompt($text, $options = array())
+	public function prompt($text, $options = [])
 	{
 		if ($this->interactive) {
 			return Console::prompt($text, $options);
@@ -255,7 +251,7 @@ class Controller extends \yii\base\Controller
 	 *
 	 * @return string An option character the user chose
 	 */
-	public function select($prompt, $options = array())
+	public function select($prompt, $options = [])
 	{
 		return Console::select($prompt, $options);
 	}
@@ -273,6 +269,6 @@ class Controller extends \yii\base\Controller
 	 */
 	public function globalOptions()
 	{
-		return array('color', 'interactive');
+		return ['color', 'interactive'];
 	}
 }

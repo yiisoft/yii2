@@ -15,10 +15,10 @@ use yii\web\AssetBundle;
 class MaskedInputAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/assets';
-	public $js = array(
+	public $js = [
 		'jquery.maskedinput.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\web\YiiAsset',
-	);
+	];
 }

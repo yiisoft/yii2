@@ -1,7 +1,8 @@
 View
 ====
 
-View is an important part of MVC and is responsible for how data is presented to the end user.
+View is an important part of MVC and is responsible for presenting data to end users.
+
 
 Basics
 ------
@@ -15,9 +16,7 @@ View is typically called from controller action like the following:
 ```php
 public function actionIndex()
 {
-	return $this->render('index', array(
-		'username' => 'samdark',
-	));
+	return $this->render('index', ['username' => 'samdark']);
 }
 ```
 
@@ -29,7 +28,7 @@ as the corresponding key.
 So the view for the action above should be in `views/site/index.php` and can be something like:
 
 ```php
-<p>Hello, <?php echo $username?>!</p>
+<p>Hello, <?=$username?>!</p>
 ```
 
 Instead of just scalar values you can pass anything else such as arrays or objects.
@@ -46,13 +45,13 @@ In order to use widget you need to do the following:
 
 ```php
 // Note that you have to "echo" the result to display it
-echo \yii\widgets\Menu::widget(array('items' => $items));
+echo \yii\widgets\Menu::widget(['items' => $items]);
 
 // Passing an array to initialize the object properties
-$form = \yii\widgets\ActiveForm::begin(array(
-	'options' => array('class' => 'form-horizontal'),
-	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
-));
+$form = \yii\widgets\ActiveForm::begin([
+	'options' => ['class' => 'form-horizontal'],
+	'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
+]);
 ... form inputs here ...
 \yii\widgets\ActiveForm::end();
 ```
@@ -77,7 +76,7 @@ use yii\helpers\Html;
 ?>
 
 <div class="username">
-	<?php echo Html::encode($user->name); ?>
+	<?= Html::encode($user->name) ?>
 </div>
 ```
 
@@ -98,7 +97,7 @@ use yii\helpers\HtmlPurifier;
 ?>
 
 <div class="post">
-	<?php echo HtmlPurifier::process($post->text); ?>
+	<?= HtmlPurifier::process($post->text) ?>
 </div>
 ```
 
@@ -131,7 +130,7 @@ $this->title = 'My page title';
 Adding meta tags such as encoding, description, keywords is easy with view object as well:
 
 ```php
-$this->registerMetaTag(array('encoding' => 'utf-8'));
+$this->registerMetaTag(['encoding' => 'utf-8']);
 ```
 
 The first argument is an map of `<meta>` tag option names and values. The code above will produce:
@@ -143,8 +142,8 @@ The first argument is an map of `<meta>` tag option names and values. The code a
 Sometimes there's a need to have only a single tag of a type. In this case you need to specify the second argument:
 
 ```html
-$this->registerMetaTag(array('description' => 'This is my cool website made with Yii!'), 'meta-description');
-$this->registerMetaTag(array('description' => 'This website is about funny raccoons.'), 'meta-description');
+$this->registerMetaTag(['description' => 'This is my cool website made with Yii!'], 'meta-description');
+$this->registerMetaTag(['description' => 'This website is about funny raccoons.'], 'meta-description');
 ```
 
 If there are multiple calls with the same value of the second argument (`meta-description` in this case), the latter will
@@ -160,12 +159,12 @@ override the former and only a single tag will be rendered:
 server. Yii view object has a method to work with these:
 
 ```php
-$this->registerLinkTag(array(
+$this->registerLinkTag([
 	'title' => 'Lives News for Yii Framework',
 	'rel' => 'alternate',
 	'type' => 'application/rss+xml',
 	'href' => 'http://www.yiiframework.com/rss.xml/',
-));
+]);
 ```
 
 The code above will result in
@@ -199,7 +198,7 @@ If you want to specify additional properties of the style tag, pass array of nam
 need to make sure there's only a single style tag use third argument as was mentioned in meta tags description.
 
 ```php
-$this->registerCssFile("http://example.com/css/themes/black-and-white.css", array('media' => 'print'), 'css-print-theme');
+$this->registerCssFile("http://example.com/css/themes/black-and-white.css", ['media' => 'print'], 'css-print-theme');
 ```
 
 The code above will add a link to CSS file to the head section of the page. The CSS will be used only when printing the
@@ -257,16 +256,16 @@ use yii\helpers\Html;
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
-<html lang="<?php echo Yii::$app->charset; ?>">
+<html lang="<?= Yii::$app->charset ?>">
 <head>
-	<meta charset="<?php echo Yii::$app->charset; ?>"/>
-	<title><?php echo Html::encode($this->title); ?></title>
+	<meta charset="<?= Yii::$app->charset ?>"/>
+	<title><?= Html::encode($this->title) ?></title>
 	<?php $this->head(); ?>
 </head>
 <body>
 <?php $this->beginBody(); ?>
 	<div class="container">
-		<?php echo $content; ?>
+		<?= $content ?>
 	</div>
 	<footer class="footer">© 2013 me :)</footer>
 <?php $this->endBody(); ?>
@@ -296,8 +295,8 @@ use yii\helpers\Html;
 ?>
 
 <div class="profile">
-	<h2><?php echo Html::encode($username); ?></h2>
-	<p><?php echo Html::encode($tagline); ?></p>
+	<h2><?= Html::encode($username) ?></h2>
+	<p><?= Html::encode($tagline) ?></p>
 </div>
 ```
 
@@ -307,10 +306,10 @@ Then we're using it in `index.php` view where we display a list of users:
 <div class="user-index">
 	<?php
 	foreach($users as $user) {
-		echo $this->render('_profile', array(
+		echo $this->render('_profile', [
 			'username' => $user->name,
 			'tagline' => $user->tagline,
-		));
+		]);
 	}
 	?>
 </div>
@@ -319,10 +318,10 @@ Then we're using it in `index.php` view where we display a list of users:
 Same way we can reuse it in another view displaying a single user profile:
 
 ```php
-echo $this->render('_profile', array(
+echo $this->render('_profile', [
 	'username' => $user->name,
 	'tagline' => $user->tagline,
-));
+]);
 ```
 
 ### Accessing context
@@ -346,13 +345,13 @@ Since view is also an application component named `view` you can replace it with
 from `yii\base\View`. It can be done via application configuration file such as `config/web.php`:
 
 ```php
-return array(
+return [
 	// ...
-	'components' => array(
-		'view' => array(
+	'components' => [
+		'view' => [
 			'class' => 'app\components\View',
-		),
+		],
 		// ...
-	),
-);
+	],
+];
 ```

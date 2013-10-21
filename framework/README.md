@@ -16,6 +16,6 @@ without prior notices. **Yii 2.0 is not ready for production use yet.**
 REQUIREMENTS
 ------------
 
-The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
+The minimum requirement by Yii is that your Web server supports PHP 5.4.0.
 
 

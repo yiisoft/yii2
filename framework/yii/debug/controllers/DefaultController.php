@@ -29,9 +29,7 @@ class DefaultController extends Controller
 
 	public function actionIndex()
 	{
-		return $this->render('index', array(
-			'manifest' => $this->getManifest(),
-		));
+		return $this->render('index', ['manifest' => $this->getManifest()]);
 	}
 
 	public function actionView($tag = null, $panel = null)
@@ -46,22 +44,22 @@ class DefaultController extends Controller
 		} else {
 			$activePanel = $this->module->panels['request'];
 		}
-		return $this->render('view', array(
+		return $this->render('view', [
 			'tag' => $tag,
 			'summary' => $this->summary,
 			'manifest' => $this->getManifest(),
 			'panels' => $this->module->panels,
 			'activePanel' => $activePanel,
-		));
+		]);
 	}
 
 	public function actionToolbar($tag)
 	{
 		$this->loadData($tag);
-		return $this->renderPartial('toolbar', array(
+		return $this->renderPartial('toolbar', [
 			'tag' => $tag,
 			'panels' => $this->module->panels,
-		));
+		]);
 	}
 
 	public function actionPhpinfo()
@@ -74,11 +72,11 @@ class DefaultController extends Controller
 	protected function getManifest()
 	{
 		if ($this->_manifest === null) {
-			$indexFile = $this->module->dataPath . '/index.json';
+			$indexFile = $this->module->dataPath . '/index.data';
 			if (is_file($indexFile)) {
-				$this->_manifest = array_reverse(json_decode(file_get_contents($indexFile), true), true);
+				$this->_manifest = array_reverse(unserialize(file_get_contents($indexFile)), true);
 			} else {
-				$this->_manifest = array();
+				$this->_manifest = [];
 			}
 		}
 		return $this->_manifest;
@@ -88,8 +86,8 @@ class DefaultController extends Controller
 	{
 		$manifest = $this->getManifest();
 		if (isset($manifest[$tag])) {
-			$dataFile = $this->module->dataPath . "/$tag.json";
-			$data = json_decode(file_get_contents($dataFile), true);
+			$dataFile = $this->module->dataPath . "/$tag.data";
+			$data = unserialize(file_get_contents($dataFile));
 			foreach ($this->module->panels as $id => $panel) {
 				if (isset($data[$id])) {
 					$panel->tag = $tag;

@@ -23,12 +23,12 @@ class AssetConverter extends Component implements AssetConverterInterface
 	 * The keys are the asset file extension names, and the values are the corresponding
 	 * target script types (either "css" or "js") and the commands used for the conversion.
 	 */
-	public $commands = array(
-		'less' => array('css', 'lessc {from} {to}'),
-		'scss' => array('css', 'sass {from} {to}'),
-		'sass' => array('css', 'sass {from} {to}'),
-		'styl' => array('js', 'stylus < {from} > {to}'),
-	);
+	public $commands = [
+		'less' => ['css', 'lessc {from} {to}'],
+		'scss' => ['css', 'sass {from} {to}'],
+		'sass' => ['css', 'sass {from} {to}'],
+		'styl' => ['js', 'stylus < {from} > {to}'],
+	];
 
 	/**
 	 * Converts a given asset file into a CSS or JS file.
@@ -45,11 +45,11 @@ class AssetConverter extends Component implements AssetConverterInterface
 				list ($ext, $command) = $this->commands[$ext];
 				$result = substr($asset, 0, $pos + 1) . $ext;
 				if (@filemtime("$basePath/$result") < filemtime("$basePath/$asset")) {
-					$output = array();
-					$command = strtr($command, array(
+					$output = [];
+					$command = strtr($command, [
 						'{from}' => escapeshellarg("$basePath/$asset"),
 						'{to}' => escapeshellarg("$basePath/$result"),
-					));
+					]);
 					exec($command, $output);
 					Yii::trace("Converted $asset into $result: " . implode("\n", $output), __METHOD__);
 				}

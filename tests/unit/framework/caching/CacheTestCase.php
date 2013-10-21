@@ -54,7 +54,7 @@ abstract class CacheTestCase extends TestCase
 		$cache->flush();
 		$cache->set('string_test', 'string_test');
 		$cache->set('number_test', 42);
-		$cache->set('array_test', array('array_test' => 'array_test'));
+		$cache->set('array_test', ['array_test' => 'array_test']);
 		$cache['arrayaccess_test'] = new \stdClass();
 
 		return $cache;
@@ -76,7 +76,7 @@ abstract class CacheTestCase extends TestCase
 
 		$this->assertTrue($cache->set('string_test', 'string_test'));
 		$this->assertTrue($cache->set('number_test', 42));
-		$this->assertTrue($cache->set('array_test', array('array_test' => 'array_test')));
+		$this->assertTrue($cache->set('array_test', ['array_test' => 'array_test']));
 	}
 
 	public function testGet()
@@ -134,10 +134,10 @@ abstract class CacheTestCase extends TestCase
 	{
 		$cache = $this->prepare();
 
-		$this->assertEquals(array('string_test' => 'string_test', 'number_test' => 42), $cache->mget(array('string_test', 'number_test')));
+		$this->assertEquals(['string_test' => 'string_test', 'number_test' => 42], $cache->mget(['string_test', 'number_test']));
 		// ensure that order does not matter
-		$this->assertEquals(array('number_test' => 42, 'string_test' => 'string_test'), $cache->mget(array('number_test', 'string_test')));
-		$this->assertEquals(array('number_test' => 42, 'non_existent_key' => null), $cache->mget(array('number_test', 'non_existent_key')));
+		$this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->mget(['number_test', 'string_test']));
+		$this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->mget(['number_test', 'non_existent_key']));
 	}
 
 	public function testExpire()

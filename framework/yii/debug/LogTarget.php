@@ -28,7 +28,7 @@ class LogTarget extends Target
 	 * @param \yii\debug\Module $module
 	 * @param array $config
 	 */
-	public function __construct($module, $config = array())
+	public function __construct($module, $config = [])
 	{
 		parent::__construct($config);
 		$this->module = $module;
@@ -45,31 +45,31 @@ class LogTarget extends Target
 		if (!is_dir($path)) {
 			mkdir($path);
 		}
-		$indexFile = "$path/index.json";
+		$indexFile = "$path/index.data";
 		if (!is_file($indexFile)) {
-			$manifest = array();
+			$manifest = [];
 		} else {
-			$manifest = json_decode(file_get_contents($indexFile), true);
+			$manifest = unserialize(file_get_contents($indexFile));
 		}
 		$request = Yii::$app->getRequest();
-		$manifest[$this->tag] = $summary = array(
+		$manifest[$this->tag] = $summary = [
 			'tag' => $this->tag,
 			'url' => $request->getAbsoluteUrl(),
 			'ajax' => $request->getIsAjax(),
 			'method' => $request->getMethod(),
 			'ip' => $request->getUserIP(),
 			'time' => time(),
-		);
+		];
 		$this->gc($manifest);
 
-		$dataFile = "$path/{$this->tag}.json";
-		$data = array();
+		$dataFile = "$path/{$this->tag}.data";
+		$data = [];
 		foreach ($this->module->panels as $id => $panel) {
 			$data[$id] = $panel->save();
 		}
 		$data['summary'] = $summary;
-		file_put_contents($dataFile, json_encode($data));
-		file_put_contents($indexFile, json_encode($manifest));
+		file_put_contents($dataFile, serialize($data));
+		file_put_contents($indexFile, serialize($manifest));
 	}
 
 	/**
@@ -93,7 +93,7 @@ class LogTarget extends Target
 		if (count($manifest) > $this->module->historySize + 10) {
 			$n = count($manifest) - $this->module->historySize;
 			foreach (array_keys($manifest) as $tag) {
-				$file = $this->module->dataPath . "/$tag.json";
+				$file = $this->module->dataPath . "/$tag.data";
 				@unlink($file);
 				unset($manifest[$tag]);
 				if (--$n <= 0) {

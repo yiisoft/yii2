@@ -15,22 +15,20 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo ProgressBar::widget(array(
- *     'clientOptions' => array(
+ * echo ProgressBar::widget([
+ *     'clientOptions' => [
  *         'value' => 75,
- *     ),
- * ));
+ *     ],
+ * ]);
  * ```
  *
  * The following example will show the content enclosed between the [[begin()]]
  * and [[end()]] calls within the widget container:
  *
  * ~~~php
- * ProgressBar::widget(array(
- *     'clientOptions' => array(
- *         'value' => 75,
- *     ),
- * ));
+ * ProgressBar::widget([
+ *     'clientOptions' => ['value' => 75],
+  * ]);
  *
  * echo '<div class="progress-label">Loading...</div>';
  *

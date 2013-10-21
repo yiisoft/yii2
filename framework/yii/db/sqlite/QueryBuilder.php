@@ -22,7 +22,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
 		Schema::TYPE_BIGPK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
 		Schema::TYPE_STRING => 'varchar(255)',
@@ -39,7 +39,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_BINARY => 'blob',
 		Schema::TYPE_BOOLEAN => 'boolean',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
-	);
+	];
 
 	/**
 	 * Creates a SQL statement for resetting the sequence value of a table's primary key.

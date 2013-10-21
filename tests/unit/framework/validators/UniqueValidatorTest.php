@@ -51,15 +51,15 @@ class UniqueValidatorTest extends DatabaseTestCase
 		$val->validateAttribute($m, 'ref');
 		$this->assertFalse($m->hasErrors('ref'));
 		// array error
-		$m = FakedValidationModel::createWithAttributes(array('attr_arr' => array('a', 'b')));
+		$m = FakedValidationModel::createWithAttributes(['attr_arr' => ['a', 'b']]);
 		$val->validateAttribute($m, 'attr_arr');
 		$this->assertTrue($m->hasErrors('attr_arr'));
 	}
 
 	public function testValidateAttributeOfNonARModel()
 	{
-		$val = new UniqueValidator(array('className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref'));
-		$m = FakedValidationModel::createWithAttributes(array('attr_1' => 5, 'attr_2' => 1313));
+		$val = new UniqueValidator(['className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref']);
+		$m = FakedValidationModel::createWithAttributes(['attr_1' => 5, 'attr_2' => 1313]);
 		$val->validateAttribute($m, 'attr_1');
 		$this->assertTrue($m->hasErrors('attr_1'));
 		$val->validateAttribute($m, 'attr_2');
@@ -68,7 +68,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 
 	public function testValidateNonDatabaseAttribute()
 	{
-		$val = new UniqueValidator(array('className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref'));
+		$val = new UniqueValidator(['className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref']);
 		$m = ValidatorTestMainModel::find(1);
 		$val->validateAttribute($m, 'testMainVal');
 		$this->assertFalse($m->hasErrors('testMainVal'));

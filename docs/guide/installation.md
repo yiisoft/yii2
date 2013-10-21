@@ -48,10 +48,10 @@ script via the following URL in a Web browser:
 http://hostname/path/to/yii/requirements/index.php
 ~~~
 
-Yii requires PHP 5.3.7, so the server must have PHP 5.3.7 or above installed and
+Yii requires PHP 5.4.0, so the server must have PHP 5.4.0 or above installed and
 available to the web server. Yii has been tested with [Apache HTTP server](http://httpd.apache.org/)
 on Windows and Linux. It may also run on other Web servers and platforms,
-provided PHP 5.3 is supported.
+provided PHP 5.4 is supported.
 
 
 Recommended Apache Configuration
@@ -83,57 +83,28 @@ Yii to catch all requests to nonexistent files, which allows us to have nice-loo
 
 ~~~
 server {
-    set $host_path "/www/mysite";
-    access_log  /www/mysite/log/access.log  main;
-
-    server_name  mysite;
-    root  $host_path/htdocs;
-    set $yii_bootstrap "index.php";
-
     charset utf-8;
 
+    listen       80;
+    server_name  mysite.local;
+    root         /path/to/project/webroot/directory
+
+    access_log  /path/to/project/log/access.log  main;
+
     location / {
-        index  index.html $yii_bootstrap;
-        try_files $uri $uri/ /$yii_bootstrap?$args;
+        try_files   $uri $uri/ /index.php?$args; # Redirect everything that isn't real file to index.php including arguments.
     }
 
-    location ~ ^/(protected|framework|themes/\w+/views) {
-        deny  all;
-    }
-
-    #avoid processing of calls to unexisting static files by yii
-    location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
-        try_files $uri =404;
-    }
-
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #
-    location ~ \.php {
-        fastcgi_split_path_info  ^(.+\.php)(.*)$;
-
-        #let yii catch the calls to unexising PHP files
-        set $fsn /$yii_bootstrap;
-        if (-f $document_root$fastcgi_script_name){
-            set $fsn $fastcgi_script_name;
-        }
-
-        #for php-cgi
+    location ~ \.php$ {
+        include fastcgi.conf;
         fastcgi_pass   127.0.0.1:9000;
-        #for php-fpm
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
-        include fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME  $document_root$fsn;
-
-        #PATH_INFO and PATH_TRANSLATED can be omitted, but RFC 3875 specifies them for CGI
-        fastcgi_param  PATH_INFO        $fastcgi_path_info;
-        fastcgi_param  PATH_TRANSLATED  $document_root$fsn;
     }
 
-    location ~ /\.ht {
-        deny  all;
+    location ~ /\.(ht|svn|git) {
+        deny all;
     }
 }
 ~~~
 
-Using this configuration you can set `cgi.fix_pathinfo=0` in php.ini to avoid
-many unnecessary system `stat()` calls.
+Make sure to set `cgi.fix_pathinfo=0` in php.ini to avoid many unnecessary system `stat()` calls.

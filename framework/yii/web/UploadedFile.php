@@ -122,9 +122,9 @@ class UploadedFile extends Object
 	{
 		$files = static::loadFiles();
 		if (isset($files[$name])) {
-			return array($files[$name]);
+			return [$files[$name]];
 		}
-		$results = array();
+		$results = [];
 		foreach ($files as $key => $file) {
 			if (strpos($key, "{$name}[") === 0) {
 				$results[] = self::$_files[$key];
@@ -180,7 +180,7 @@ class UploadedFile extends Object
 	private static function loadFiles()
 	{
 		if (self::$_files === null) {
-			self::$_files = array();
+			self::$_files = [];
 			if (isset($_FILES) && is_array($_FILES)) {
 				foreach ($_FILES as $class => $info) {
 					self::loadFilesRecursive($class, $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
@@ -206,13 +206,13 @@ class UploadedFile extends Object
 				self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
 			}
 		} else {
-			self::$_files[$key] = new static(array(
+			self::$_files[$key] = new static([
 				'name' => $names,
 				'tempName' => $tempNames,
 				'type' => $types,
 				'size' => $sizes,
 				'error' => $errors,
-			));
+			]);
 		}
 	}
 }

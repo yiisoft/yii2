@@ -25,7 +25,7 @@ abstract class Mutex extends Component
 	/**
 	 * @var string[] names of the locks acquired in the current PHP process.
 	 */
-	private $_locks = array();
+	private $_locks = [];
 
 
 	/**
@@ -34,11 +34,10 @@ abstract class Mutex extends Component
 	public function init()
 	{
 		if ($this->autoRelease) {
-			$mutex = $this;
 			$locks = &$this->_locks;
-			register_shutdown_function(function () use ($mutex, &$locks) {
+			register_shutdown_function(function () use (&$locks) {
 				foreach ($locks as $lock) {
-					$mutex->release($lock);
+					$this->release($lock);
 				}
 			});
 		}

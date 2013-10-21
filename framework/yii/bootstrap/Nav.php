@@ -18,34 +18,28 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Nav::widget(array(
- *     'items' => array(
- *         array(
+ * echo Nav::widget([
+ *     'items' => [
+ *         [
  *             'label' => 'Home',
- *             'url' => array('site/index'),
- *             'linkOptions' => array(...),
+ *             'url' => ['site/index'],
+ *             'linkOptions' => [...],
  *         ),
- *         array(
+ *         [
  *             'label' => 'Dropdown',
- *             'items' => array(
- *                  array(
+ *             'items' => [
+ *                  [
  *                      'label' => 'Level 1 -DropdownA',
  *                      'url' => '#',
- *                      'items' => array(
- *                          array(
- *                              'label' => 'Level 2 -DropdownA',
- *                              'url' => '#',
- *                          ),
- *                      ),
- *                  ),
- *                  array(
- *                      'label' => 'Level 1 -DropdownB',
- *                      'url' => '#',
- *                  ),
- *             ),
- *         ),
- *     ),
- * ));
+ *                      'items' => [
+ *                          ['label' => 'Level 2 -DropdownA', 'url' => '#'],
+ *                      ],
+ *                  ],
+ *                  ['label' => 'Level 1 -DropdownB', 'url' => '#'],
+ *             ],
+ *         ],
+ *     ],
+ * ]);
  * ```
  *
  * @see http://twitter.github.io/bootstrap/components.html#nav
@@ -69,7 +63,7 @@ class Nav extends Widget
 	 *
 	 * If a menu item is a string, it will be rendered directly without HTML encoding.
 	 */
-	public $items = array();
+	public $items = [];
 	/**
 	 * @var boolean whether the nav items labels should be HTML-encoded.
 	 */
@@ -125,7 +119,7 @@ class Nav extends Widget
 	 */
 	public function renderItems()
 	{
-		$items = array();
+		$items = [];
 		foreach ($this->items as $i => $item) {
 			if (isset($item['visible']) && !$item['visible']) {
 				unset($items[$i]);
@@ -152,10 +146,10 @@ class Nav extends Widget
 			throw new InvalidConfigException("The 'label' option is required.");
 		}
 		$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
-		$options = ArrayHelper::getValue($item, 'options', array());
+		$options = ArrayHelper::getValue($item, 'options', []);
 		$items = ArrayHelper::getValue($item, 'items');
 		$url = Html::url(ArrayHelper::getValue($item, 'url', '#'));
-		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', array());
+		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
 
 		if (isset($item['active'])) {
 			$active = ArrayHelper::remove($item, 'active', false);
@@ -171,13 +165,13 @@ class Nav extends Widget
 			$linkOptions['data-toggle'] = 'dropdown';
 			Html::addCssClass($options, 'dropdown');
 			Html::addCssClass($urlOptions, 'dropdown-toggle');
-			$label .= ' ' . Html::tag('b', '', array('class' => 'caret'));
+			$label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
 			if (is_array($items)) {
-				$items = Dropdown::widget(array(
+				$items = Dropdown::widget([
 					'items' => $items,
 					'encodeLabels' => $this->encodeLabels,
 					'clientOptions' => false,
-				));
+				]);
 			}
 		}
 

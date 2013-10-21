@@ -29,9 +29,7 @@ class FormatterTest extends TestCase
 			$this->markTestSkipped('intl extension is required.');
 		}
 		$this->mockApplication();
-		$this->formatter = new Formatter(array(
-			'locale' => 'en_US',
-		));
+		$this->formatter = new Formatter(['locale' => 'en_US']);
 	}
 
 	protected function tearDown()

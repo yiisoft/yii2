@@ -32,7 +32,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	/**
 	 * @var Cookie[] the cookies in this collection (indexed by the cookie names)
 	 */
-	private $_cookies = array();
+	private $_cookies = [];
 
 	/**
 	 * Constructor.
@@ -40,7 +40,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 * an array of name-value pairs.s
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($cookies = array(), $config = array())
+	public function __construct($cookies = [], $config = [])
 	{
 		$this->_cookies = $cookies;
 		parent::__construct($config);
@@ -141,10 +141,10 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 			$cookie->expire = 1;
 			$cookie->value = '';
 		} else {
-			$cookie = new Cookie(array(
+			$cookie = new Cookie([
 				'name' => $cookie,
 				'expire' => 1,
-			));
+			]);
 		}
 		if ($removeFromBrowser) {
 			$this->_cookies[$cookie->name] = $cookie;
@@ -162,7 +162,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 		if ($this->readOnly) {
 			throw new InvalidCallException('The cookie collection is read only.');
 		}
-		$this->_cookies = array();
+		$this->_cookies = [];
 	}
 
 	/**

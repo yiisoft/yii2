@@ -12,18 +12,18 @@ class RangeValidatorTest extends TestCase
 	public function testInitException()
 	{
 		$this->setExpectedException('yii\base\InvalidConfigException', 'The "range" property must be set.');
-		$val = new RangeValidator(array('range' => 'not an array'));
+		$val = new RangeValidator(['range' => 'not an array']);
 	}
 
 	public function testAssureMessageSetOnInit()
 	{
-		$val = new RangeValidator(array('range' => array()));
+		$val = new RangeValidator(['range' => []]);
 		$this->assertTrue(is_string($val->message));
 	}
 
 	public function testValidateValue()
 	{
-		$val = new RangeValidator(array('range' => range(1, 10, 1)));
+		$val = new RangeValidator(['range' => range(1, 10, 1)]);
 		$this->assertTrue($val->validateValue(1));
 		$this->assertFalse($val->validateValue(0));
 		$this->assertFalse($val->validateValue(11));
@@ -35,7 +35,7 @@ class RangeValidatorTest extends TestCase
 
 	public function testValidateValueStrict()
 	{
-		$val = new RangeValidator(array('range' => range(1, 10, 1), 'strict' => true));
+		$val = new RangeValidator(['range' => range(1, 10, 1), 'strict' => true]);
 		$this->assertTrue($val->validateValue(1));
 		$this->assertTrue($val->validateValue(5));
 		$this->assertTrue($val->validateValue(10));
@@ -46,7 +46,7 @@ class RangeValidatorTest extends TestCase
 
 	public function testValidateValueNot()
 	{
-		$val = new RangeValidator(array('range' => range(1, 10, 1), 'not' => true));
+		$val = new RangeValidator(['range' => range(1, 10, 1), 'not' => true]);
 		$this->assertFalse($val->validateValue(1));
 		$this->assertTrue($val->validateValue(0));
 		$this->assertTrue($val->validateValue(11));
@@ -58,8 +58,8 @@ class RangeValidatorTest extends TestCase
 
 	public function testValidateAttribute()
 	{
-		$val = new RangeValidator(array('range' => range(1, 10, 1)));
-		$m = FakedValidationModel::createWithAttributes(array('attr_r1' => 5, 'attr_r2' => 999));
+		$val = new RangeValidator(['range' => range(1, 10, 1)]);
+		$m = FakedValidationModel::createWithAttributes(['attr_r1' => 5, 'attr_r2' => 999]);
 		$val->validateAttribute($m, 'attr_r1');
 		$this->assertFalse($m->hasErrors());
 		$val->validateAttribute($m, 'attr_r2');

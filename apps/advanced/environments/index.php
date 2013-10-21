@@ -6,33 +6,33 @@
  * format:
  *
  * ```php
- * return array(
- *     'environment name' => array(
+ * return [
+ *     'environment name' => [
  *         'path' => 'directory storing the local files',
- *         'writable' => array(
+ *         'writable' => [
  *             // list of directories that should be set writable
- *         ),
- *     ),
- * );
+ *         ],
+ *     ],
+ * ];
  * ```
  */
-return array(
-	'Development' => array(
+return [
+	'Development' => [
 		'path' => 'dev',
-		'writable' => array(
+		'writable' => [
 			// handled by composer.json already
-		),
-		'executable' => array(
+		],
+		'executable' => [
 			'yii',
-		),
-	),
-	'Production' => array(
+		],
+	],
+	'Production' => [
 		'path' => 'prod',
-		'writable' => array(
+		'writable' => [
 			// handled by composer.json already
-		),
-		'executable' => array(
+		],
+		'executable' => [
 			'yii',
-		),
-	),
-);
+		],
+	],
+];

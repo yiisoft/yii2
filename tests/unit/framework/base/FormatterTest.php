@@ -193,7 +193,7 @@ class FormatterTest extends TestCase
 		$value = time();
 		$this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, 'date'));
 		$this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, 'DATE'));
-		$this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, array('date', 'Y-m-d')));
+		$this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, ['date', 'Y-m-d']));
 		$this->setExpectedException('\yii\base\InvalidParamException');
 		$this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
 	}

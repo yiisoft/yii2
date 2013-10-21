@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
 class AccordionAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/jui/assets';
-	public $js = array(
+	public $js = [
 		'jquery.ui.accordion.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\jui\CoreAsset',
 		'yii\jui\EffectAsset',
-	);
+	];
 }

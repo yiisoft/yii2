@@ -5,10 +5,10 @@ use Yii;
 use yiiunit\TestCase;
 
 /**
- * YiiBaseTest
+ * BaseYiiTest
  * @group base
  */
-class YiiBaseTest extends TestCase
+class BaseYiiTest extends TestCase
 {
 	public $aliases;
 
@@ -28,7 +28,7 @@ class YiiBaseTest extends TestCase
 	{
 		$this->assertEquals(YII_PATH, Yii::getAlias('@yii'));
 
-		Yii::$aliases = array();
+		Yii::$aliases = [];
 		$this->assertFalse(Yii::getAlias('@yii', false));
 
 		Yii::setAlias('@yii', '/yii/framework');

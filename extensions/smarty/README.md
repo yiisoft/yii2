@@ -45,20 +45,20 @@ Example:
 ```php
 <?php
 // config.php
-return array(
+return [
 	//....
-	'components' => array(
-		'view' => array(
+	'components' => [
+		'view' => [
 			'class' => 'yii\base\View',
-			'renderers' => array(
-				'tpl' => array(
+			'renderers' => [
+				'tpl' => [
 					'class' => 'yii\smarty\ViewRenderer',
 					//'cachePath' => '@runtime/Smarty/cache',
-				),
-			),
-		),
-	),
-);
+				],
+			],
+		],
+	],
+];
 ```
 
 For further instructions refer to the related section in the yii guide.

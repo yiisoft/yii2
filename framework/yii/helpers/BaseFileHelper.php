@@ -33,7 +33,7 @@ class BaseFileHelper
 	 */
 	public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
 	{
-		return rtrim(strtr($path, array('/' => $ds, '\\' => $ds)), $ds);
+		return rtrim(strtr($path, ['/' => $ds, '\\' => $ds]), $ds);
 	}
 
 	/**
@@ -110,7 +110,7 @@ class BaseFileHelper
 	 */
 	public static function getMimeTypeByExtension($file, $magicFile = null)
 	{
-		static $mimeTypes = array();
+		static $mimeTypes = [];
 		if ($magicFile === null) {
 			$magicFile = __DIR__ . '/mimeTypes.php';
 		}
@@ -163,7 +163,7 @@ class BaseFileHelper
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
 	 *   file copied from, while `$to` is the copy target.
 	 */
-	public static function copyDirectory($src, $dst, $options = array())
+	public static function copyDirectory($src, $dst, $options = [])
 	{
 		if (!is_dir($dst)) {
 			static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
@@ -247,9 +247,9 @@ class BaseFileHelper
 	 * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
 	 * @return array files found under the directory. The file list is sorted.
 	 */
-	public static function findFiles($dir, $options = array())
+	public static function findFiles($dir, $options = [])
 	{
-		$list = array();
+		$list = [];
 		$handle = opendir($dir);
 		while (($file = readdir($handle)) !== false) {
 			if ($file === '.' || $file === '..') {

@@ -29,12 +29,12 @@ stored in a PHP file in `/config` directory of the application and looks like th
 
 ```php
 <?php
-return array(
+return [
 	'id' => 'applicationId',
 	'basePath' => dirname(__DIR__),
-	'components' => array(
+	'components' => [
 		// ...
-	),
+	],
 	'params' => require(__DIR__ . '/params.php'),
 );
 ```
@@ -53,31 +53,25 @@ Majority of Yii functionality are application components. These are attached to 
 
 ```php
 <?php
-return array(
+return [
 	'id' => 'applicationId',
 	'basePath' => dirname(__DIR__),
-	'components' => array(
-		'cache' => array(
-			'class' => 'yii\caching\FileCache',
-		),
-		'user' => array(
-			'identityClass' => 'app\models\User',
-		),
-		'errorHandler' => array(
-			'errorAction' => 'site/error',
-		),
-		'log' => array(
+	'components' => [
+		'cache' => ['class' => 'yii\caching\FileCache'],
+		'user' => ['identityClass' => 'app\models\User'],
+		'errorHandler' => ['errorAction' => 'site/error'],
+		'log' => [
 			'traceLevel' => YII_DEBUG ? 3 : 0,
-			'targets' => array(
-				array(
+			'targets' => [
+				[
 					'class' => 'yii\log\FileTarget',
-					'levels' => array('error', 'warning'),
-				),
-			),
-		),
-	),
+					'levels' => ['error', 'warning'],
+				],
+			],
+		],
+	],
 	// ...
-);
+];
 ```
 
 In the above four components are configured: `cache`, `user`, `errorHandler`, `log`. Each entry key is a component ID

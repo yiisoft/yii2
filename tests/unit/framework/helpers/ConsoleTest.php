@@ -57,11 +57,11 @@ class ConsoleTest extends TestCase
 		echo 'a';
 		Console::restoreCursorPosition();
 		echo 'a';
-		Console::beginAnsiFormat(array(Console::FG_GREEN, Console::BG_BLUE, Console::UNDERLINE));
+		Console::beginAnsiFormat([Console::FG_GREEN, Console::BG_BLUE, Console::UNDERLINE]);
 		echo 'a';
 		Console::endAnsiFormat();
 		echo 'a';
-		Console::beginAnsiFormat(array(Console::xtermBgColor(128), Console::xtermFgColor(55)));
+		Console::beginAnsiFormat([Console::xtermBgColor(128), Console::xtermFgColor(55)]);
 		echo 'a';
 		Console::endAnsiFormat();
 		echo 'a';

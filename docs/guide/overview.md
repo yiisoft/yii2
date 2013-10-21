@@ -11,7 +11,7 @@ Requirements
 ------------
 
 To run a Yii-powered Web application, you need a Web server that supports
-PHP 5.3.? or greater.
+PHP 5.4.0 or greater.
 
 For developers who want to use Yii, understanding object-oriented
 programming (OOP) is very helpful, because Yii is a pure OOP framework.

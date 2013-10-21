@@ -10,32 +10,32 @@ class SiteController extends Controller
 {
 	public function behaviors()
 	{
-		return array(
-			'access' => array(
+		return [
+			'access' => [
 				'class' => \yii\web\AccessControl::className(),
-				'rules' => array(
-					array(
-						'actions' => array('login'),
+				'rules' => [
+					[
+						'actions' => ['login'],
 						'allow' => true,
-						'roles' => array('?'),
-					),
-					array(
-						'actions' => array('logout', 'index'),
+						'roles' => ['?'],
+					],
+					[
+						'actions' => ['logout', 'index'],
 						'allow' => true,
-						'roles' => array('@'),
-					),
-				),
-			),
-		);
+						'roles' => ['@'],
+					],
+				],
+			],
+		];
 	}
 
 	public function actions()
 	{
-		return array(
-			'error' => array(
+		return [
+			'error' => [
 				'class' => 'yii\web\ErrorAction',
-			),
-		);
+			],
+		];
 	}
 
 	public function actionIndex()
@@ -49,9 +49,9 @@ class SiteController extends Controller
 		if ($model->load($_POST) && $model->login()) {
 			return $this->goHome();
 		} else {
-			return $this->render('login', array(
+			return $this->render('login', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 

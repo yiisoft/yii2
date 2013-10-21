@@ -77,9 +77,9 @@ class Panel extends Component
 	 */
 	public function getUrl()
 	{
-		return Yii::$app->getUrlManager()->createUrl($this->module->id . '/default/view', array(
+		return Yii::$app->getUrlManager()->createUrl($this->module->id . '/default/view', [
 			'panel' => $this->id,
 			'tag' => $this->tag,
-		));
+		]);
 	}
 }

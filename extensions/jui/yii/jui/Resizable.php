@@ -15,11 +15,11 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * Resizable::begin(array(
- *     'clientOptions' => array(
- *         'grid' => array(20, 10),
- *     ),
- * ));
+ * Resizable::begin([
+ *     'clientOptions' => [
+ *         'grid' => [20, 10],
+ *     ],
+ * ]);
  *
  * echo 'Resizable contents here...';
  *

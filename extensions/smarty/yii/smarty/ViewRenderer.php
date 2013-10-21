@@ -44,7 +44,7 @@ class ViewRenderer extends BaseViewRenderer
 		$this->smarty->setCompileDir(Yii::getAlias($this->compilePath));
 		$this->smarty->setCacheDir(Yii::getAlias($this->cachePath));
 
-		$this->smarty->registerPlugin('function', 'path', array($this, 'smarty_function_path'));
+		$this->smarty->registerPlugin('function', 'path', [$this, 'smarty_function_path']);
 	}
 
 	/**

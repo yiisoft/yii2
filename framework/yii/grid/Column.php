@@ -39,17 +39,17 @@ class Column extends Object
 	 * @var boolean whether this column is visible. Defaults to true.
 	 */
 	public $visible = true;
-	public $options = array();
-	public $headerOptions = array();
+	public $options = [];
+	public $headerOptions = [];
 	/**
 	 * @var array|\Closure
 	 */
-	public $contentOptions = array();
-	public $footerOptions = array();
+	public $contentOptions = [];
+	public $footerOptions = [];
 	/**
 	 * @var array the HTML attributes for the filter cell tag.
 	 */
-	public $filterOptions=array();
+	public $filterOptions=[];
 
 
 	/**

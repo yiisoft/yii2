@@ -13,23 +13,23 @@ two cache servers. Note, this configuration should be done in file located at `@
 in case you're using basic sample application.
 
 ```php
-'components' => array(
-	'cache' => array(
+'components' => [
+	'cache' => [
 		'class' => '\yii\caching\MemCache',
-		'servers' => array(
-			array(
+		'servers' => [
+			[
 				'host' => 'server1',
 				'port' => 11211,
 				'weight' => 100,
-			),
-			array(
+			],
+			[
 				'host' => 'server2',
 				'port' => 11211,
 				'weight' => 50,
-			),
-		),
-	),
-),
+			],
+		],
+	],
+],
 ```
 
 When the application is running, the cache component can be accessed through `Yii::$app->cache` call.

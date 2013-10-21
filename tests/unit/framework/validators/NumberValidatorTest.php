@@ -14,7 +14,7 @@ class NumberValidatorTest extends TestCase
 		$val = new NumberValidator;
 		$this->assertTrue(is_string($val->message));
 		$this->assertTrue(is_null($val->max));
-		$val = new NumberValidator(array('min' => -1, 'max' => 20, 'integerOnly' => true));
+		$val = new NumberValidator(['min' => -1, 'max' => 20, 'integerOnly' => true]);
 		$this->assertTrue(is_string($val->message));
 		$this->assertTrue(is_string($val->tooSmall));
 		$this->assertTrue(is_string($val->tooBig));
@@ -30,7 +30,7 @@ class NumberValidatorTest extends TestCase
 		$this->assertTrue($val->validateValue(25.45));
 		$this->assertFalse($val->validateValue('25,45'));
 		$this->assertFalse($val->validateValue('12:45'));
-		$val = new NumberValidator(array('integerOnly' => true));
+		$val = new NumberValidator(['integerOnly' => true]);
 		$this->assertTrue($val->validateValue(20));
 		$this->assertTrue($val->validateValue(0));
 		$this->assertFalse($val->validateValue(25.45));
@@ -51,7 +51,7 @@ class NumberValidatorTest extends TestCase
 		$this->assertFalse($val->validateValue('-e3'));
 		$this->assertFalse($val->validateValue('-4.534-e-12')); // 'signed' exponent
 		$this->assertFalse($val->validateValue('12.23^4')); // expression instead of value
-		$val = new NumberValidator(array('integerOnly' => true));
+		$val = new NumberValidator(['integerOnly' => true]);
 		$this->assertFalse($val->validateValue('-1.23'));
 		$this->assertFalse($val->validateValue('-4.423e-12'));
 		$this->assertFalse($val->validateValue('12E3'));
@@ -63,12 +63,12 @@ class NumberValidatorTest extends TestCase
 
 	public function testValidateValueMin()
 	{
-		$val = new NumberValidator(array('min' => 1));
+		$val = new NumberValidator(['min' => 1]);
 		$this->assertTrue($val->validateValue(1));
 		$this->assertFalse($val->validateValue(-1));
 		$this->assertFalse($val->validateValue('22e-12'));
 		$this->assertTrue($val->validateValue(PHP_INT_MAX + 1));
-		$val = new NumberValidator(array('min' => 1), array('integerOnly' => true));
+		$val = new NumberValidator(['min' => 1], ['integerOnly' => true]);
 		$this->assertTrue($val->validateValue(1));
 		$this->assertFalse($val->validateValue(-1));
 		$this->assertFalse($val->validateValue('22e-12'));
@@ -77,12 +77,12 @@ class NumberValidatorTest extends TestCase
 
 	public function testValidateValueMax()
 	{
-		$val = new NumberValidator(array('max' => 1.25));
+		$val = new NumberValidator(['max' => 1.25]);
 		$this->assertTrue($val->validateValue(1));
 		$this->assertFalse($val->validateValue(1.5));
 		$this->assertTrue($val->validateValue('22e-12'));
 		$this->assertTrue($val->validateValue('125e-2'));
-		$val = new NumberValidator(array('max' => 1.25, 'integerOnly' => true));
+		$val = new NumberValidator(['max' => 1.25, 'integerOnly' => true]);
 		$this->assertTrue($val->validateValue(1));
 		$this->assertFalse($val->validateValue(1.5));
 		$this->assertFalse($val->validateValue('22e-12'));
@@ -91,12 +91,12 @@ class NumberValidatorTest extends TestCase
 
 	public function testValidateValueRange()
 	{
-		$val = new NumberValidator(array('min' => -10, 'max' => 20));
+		$val = new NumberValidator(['min' => -10, 'max' => 20]);
 		$this->assertTrue($val->validateValue(0));
 		$this->assertTrue($val->validateValue(-10));
 		$this->assertFalse($val->validateValue(-11));
 		$this->assertFalse($val->validateValue(21));
-		$val = new NumberValidator(array('min' => -10, 'max' => 20, 'integerOnly' => true));
+		$val = new NumberValidator(['min' => -10, 'max' => 20, 'integerOnly' => true]);
 		$this->assertTrue($val->validateValue(0));
 		$this->assertFalse($val->validateValue(-11));
 		$this->assertFalse($val->validateValue(22));
@@ -113,7 +113,7 @@ class NumberValidatorTest extends TestCase
 		$model->attr_number = '43^32'; //expression
 		$val->validateAttribute($model, 'attr_number');
 		$this->assertTrue($model->hasErrors('attr_number'));
-		$val = new NumberValidator(array('min' => 10));
+		$val = new NumberValidator(['min' => 10]);
 		$model = new FakedValidationModel();
 		$model->attr_number = 10;
 		$val->validateAttribute($model, 'attr_number');
@@ -121,7 +121,7 @@ class NumberValidatorTest extends TestCase
 		$model->attr_number = 5;
 		$val->validateAttribute($model, 'attr_number');
 		$this->assertTrue($model->hasErrors('attr_number'));
-		$val = new NumberValidator(array('max' => 10));
+		$val = new NumberValidator(['max' => 10]);
 		$model = new FakedValidationModel();
 		$model->attr_number = 10;
 		$val->validateAttribute($model, 'attr_number');
@@ -129,7 +129,7 @@ class NumberValidatorTest extends TestCase
 		$model->attr_number = 15;
 		$val->validateAttribute($model, 'attr_number');
 		$this->assertTrue($model->hasErrors('attr_number'));
-		$val = new NumberValidator(array('max' => 10, 'integerOnly' => true));
+		$val = new NumberValidator(['max' => 10, 'integerOnly' => true]);
 		$model = new FakedValidationModel();
 		$model->attr_number = 10;
 		$val->validateAttribute($model, 'attr_number');
@@ -137,18 +137,18 @@ class NumberValidatorTest extends TestCase
 		$model->attr_number = 3.43;
 		$val->validateAttribute($model, 'attr_number');
 		$this->assertTrue($model->hasErrors('attr_number'));
-		$val = new NumberValidator(array('min' => 1));
-		$model = FakedValidationModel::createWithAttributes(array('attr_num' => array(1,2,3)));
+		$val = new NumberValidator(['min' => 1]);
+		$model = FakedValidationModel::createWithAttributes(['attr_num' => [1,2,3]]);
 		$val->validateAttribute($model, 'attr_num');
 		$this->assertTrue($model->hasErrors('attr_num'));
 	}
 
 	public function testEnsureCustomMessageIsSetOnValidateAttribute()
 	{
-		$val = new NumberValidator(array(
+		$val = new NumberValidator([
 			'tooSmall' => '{attribute} is to small.',
 			'min' => 5
-		));
+		]);
 		$model = new FakedValidationModel();
 		$model->attr_number = 0;
 		$val->validateAttribute($model, 'attr_number');

@@ -2,7 +2,7 @@
 	"name": "yiisoft/yii2-jui",
 	"description": "The Jquery UI extension for the Yii framework",
 	"keywords": ["yii", "Jquery UI", "renderer"],
-	"type": "library",
+	"type": "yii-extension",
 	"license": "BSD-3-Clause",
 	"support": {
 		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
@@ -17,5 +17,8 @@
 	},
 	"autoload": {
 		"psr-0": { "yii\\jui\\": "" }
+	},
+	"extra": {
+		"bootstrap": "yii\\jui\\Extension"
 	}
 }

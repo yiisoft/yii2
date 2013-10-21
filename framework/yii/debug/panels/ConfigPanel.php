@@ -49,18 +49,18 @@ EOD;
 
 	public function getDetail()
 	{
-		$app = array(
+		$app = [
 			'Yii Version' => $this->data['application']['yii'],
 			'Application Name' => $this->data['application']['name'],
 			'Environment' => $this->data['application']['env'],
 			'Debug Mode' => $this->data['application']['debug'] ? 'Yes' : 'No',
-		);
-		$php = array(
+		];
+		$php = [
 			'PHP Version' => $this->data['php']['version'],
 			'Xdebug' => $this->data['php']['xdebug'] ? 'Enabled' : 'Disabled',
 			'APC' => $this->data['php']['apc'] ? 'Enabled' : 'Disabled',
 			'Memcache' => $this->data['php']['memcache'] ? 'Enabled' : 'Disabled',
-		);
+		];
 		return "<h1>Configuration</h1>\n"
 			. $this->renderData('Application Configuration', $app) . "\n"
 			. $this->renderData('PHP Configuration', $php) . "\n"
@@ -69,7 +69,7 @@ EOD;
 
 	protected function getPhpInfo()
 	{
-		return '<div>' . Html::a('Show phpinfo »', array('phpinfo'), array('class' => 'btn btn-primary')) . "</div>\n";
+		return '<div>' . Html::a('Show phpinfo »', ['phpinfo'], ['class' => 'btn btn-primary']) . "</div>\n";
 	}
 
 	protected function renderData($caption, $values)
@@ -77,7 +77,7 @@ EOD;
 		if (empty($values)) {
 			return "<h3>$caption</h3>\n<p>Empty.</p>";
 		}
-		$rows = array();
+		$rows = [];
 		foreach ($values as $name => $value) {
 			$rows[] = '<tr><th style="width:200px;">' . Html::encode($name) . '</th><td style="overflow:auto">' . Html::encode($value) . '</td></tr>';
 		}
@@ -95,21 +95,21 @@ EOD;
 
 	public function save()
 	{
-		return array(
+		return [
 			'phpVersion' => PHP_VERSION,
 			'yiiVersion' => Yii::getVersion(),
-			'application' => array(
+			'application' => [
 				'yii' => Yii::getVersion(),
 				'name' => Yii::$app->name,
 				'env' => YII_ENV,
 				'debug' => YII_DEBUG,
-			),
-			'php' => array(
+			],
+			'php' => [
 				'version' => PHP_VERSION,
 				'xdebug' => extension_loaded('xdebug'),
 				'apc' => extension_loaded('apc'),
 				'memcache' => extension_loaded('memcache'),
-			),
-		);
+			],
+		];
 	}
 }

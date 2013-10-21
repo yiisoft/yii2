@@ -16,14 +16,12 @@ use yii\web\HttpException;
  * To use Gii, include it as a module in the application configuration like the following:
  *
  * ~~~
- * return array(
+ * return [
  *     ......
- *     'modules' => array(
- *         'gii' => array(
- *             'class' => 'yii\gii\Module',
- *         ),
- *     ),
- * )
+ *     'modules' => [
+ *         'gii' => ['class' => 'yii\gii\Module'],
+ *     ],
+ * ]
  * ~~~
  *
  * Because Gii generates new code files on the server, you should only use it on your own
@@ -40,12 +38,12 @@ use yii\web\HttpException;
  * in order to access Gii:
  *
  * ~~~
- * 'rules'=>array(
+ * 'rules' => [
  *     'gii' => 'gii',
  *     'gii/<controller>' => 'gii/<controller>',
  *     'gii/<controller>/<action>' => 'gii/<controller>/<action>',
  *     ...
- * ),
+ * ],
  * ~~~
  *
  * You can then access Gii via URL: `http://localhost/path/to/index.php/gii`
@@ -63,10 +61,10 @@ class Module extends \yii\base\Module
 	 * @var array the list of IPs that are allowed to access this module.
 	 * Each array element represents a single IP filter which can be either an IP address
 	 * or an address with wildcard (e.g. 192.168.0.*) to represent a network segment.
-	 * The default value is `array('127.0.0.1', '::1')`, which means the module can only be accessed
+	 * The default value is `['127.0.0.1', '::1']`, which means the module can only be accessed
 	 * by localhost.
 	 */
-	public $allowedIPs = array('127.0.0.1', '::1');
+	public $allowedIPs = ['127.0.0.1', '::1'];
 	/**
 	 * @var array|Generator[] a list of generator configurations or instances. The array keys
 	 * are the generator IDs (e.g. "crud"), and the array elements are the corresponding generator
@@ -78,7 +76,7 @@ class Module extends \yii\base\Module
 	 * Newly assigned generators will be merged with the [[coreGenerators()|core ones]], and the former
 	 * takes precedence in case when they have the same generator ID.
 	 */
-	public $generators = array();
+	public $generators = [];
 	/**
 	 * @var integer the permission to be set for newly generated code files.
 	 * This value will be used by PHP chmod function.
@@ -136,22 +134,12 @@ class Module extends \yii\base\Module
 	 */
 	protected function coreGenerators()
 	{
-		return array(
-			'model' => array(
-				'class' => 'yii\gii\generators\model\Generator',
-			),
-			'crud' => array(
-				'class' => 'yii\gii\generators\crud\Generator',
-			),
-			'controller' => array(
-				'class' => 'yii\gii\generators\controller\Generator',
-			),
-			'form' => array(
-				'class' => 'yii\gii\generators\form\Generator',
-			),
-			'module' => array(
-				'class' => 'yii\gii\generators\module\Generator',
-			),
-		);
+		return [
+			'model' => ['class' => 'yii\gii\generators\model\Generator'],
+			'crud' => ['class' => 'yii\gii\generators\crud\Generator'],
+			'controller' => ['class' => 'yii\gii\generators\controller\Generator'],
+			'form' => ['class' => 'yii\gii\generators\form\Generator'],
+			'module' => ['class' => 'yii\gii\generators\module\Generator'],
+		];
 	}
 }

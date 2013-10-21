@@ -40,7 +40,7 @@ it can be properly configured:
 ```php
 class MyClass extends \yii\Object
 {
-    public function __construct($param1, $param2, $config = array())
+    public function __construct($param1, $param2, $config = [])
     {
         // ... initialization before configuration is applied
 
@@ -65,11 +65,11 @@ By following this convention, you will be able to create and configure a new obj
 using a configuration array like the following:
 
 ```php
-$object = Yii::createObject(array(
+$object = Yii::createObject([
     'class' => 'MyClass',
     'property1' => 'abc',
     'property2' => 'cde',
-), $param1, $param2);
+], $param1, $param2);
 ```
 
 
@@ -177,10 +177,10 @@ if (isset($_POST['Post'])) {
 
 $model->save();
 
-$postTags = array();
+$postTags = [];
 $tagsCount = count($_POST['PostTag']);
 while($tagsCount-- > 0){
-    $postTags[] = new PostTag(array('post_id' => $model->id));
+    $postTags[] = new PostTag(['post_id' => $model->id]);
 }
 Model::loadMultiple($postTags, $_POST);
 ```
@@ -193,10 +193,10 @@ a list of scenarios and the corresponding attributes that need to be validated w
 ```php
 public function scenarios()
 {
-    return array(
-        'backend' => array('email', 'role'),
-        'frontend' => array('email', '!name'),
-    );
+    return [
+        'backend' => ['email', 'role'],
+        'frontend' => ['email', '!name'],
+    ];
 }
 ```
 
@@ -229,13 +229,13 @@ methods of the `Widget` class. For example,
 
 ```php
 // Note that you have to "echo" the result to display it
-echo \yii\widgets\Menu::widget(array('items' => $items));
+echo \yii\widgets\Menu::widget(['items' => $items]);
 
 // Passing an array to initialize the object properties
-$form = \yii\widgets\ActiveForm::begin(array(
-	'options' => array('class' => 'form-horizontal'),
-	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
-));
+$form = \yii\widgets\ActiveForm::begin([
+	'options' => ['class' => 'form-horizontal'],
+	'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
+]);
 ... form inputs here ...
 \yii\widgets\ActiveForm::end();
 ```
@@ -249,7 +249,7 @@ Themes
 
 Themes work completely different in 2.0. They are now based on a path map to "translate" a source
 view into a themed view. For example, if the path map for a theme is
-`array('/web/views' => '/web/themes/basic')`, then the themed version for a view file
+`['/web/views' => '/web/themes/basic']`, then the themed version for a view file
 `/web/views/site/index.php` will be `/web/themes/basic/site/index.php`.
 
 For this reason, theme can now be applied to any view file, even if a view rendered outside
@@ -295,11 +295,11 @@ code in a controller:
 ```php
 public function behaviors()
 {
-    return array(
-        'access' => array(
+    return [
+        'access' => [
             'class' => 'yii\web\AccessControl',
-            'rules' => array(
-                array('allow' => true, 'actions' => array('admin'), 'roles' => array('@')),
+            'rules' => [
+                ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
             ),
         ),
     );
@@ -340,10 +340,10 @@ It is represented as an `ActiveField` object. Using fields, you can build a form
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
-	<?php echo $form->field($model, 'username'); ?>
-	<?php echo $form->field($model, 'password')->passwordInput(); ?>
+	<?= $form->field($model, 'username') ?>
+	<?= $form->field($model, 'password')->passwordInput() ?>
 	<div class="form-group">
-		<?php echo Html::submitButton('Login'); ?>
+		<?= Html::submitButton('Login') ?>
 	</div>
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
@@ -386,7 +386,7 @@ class Customer extends \yii\db\ActiveRecord
 {
 	public function getOrders()
 	{
-		return $this->hasMany('Order', array('customer_id' => 'id'));
+		return $this->hasMany('Order', ['customer_id' => 'id']);
 	}
 }
 ```
@@ -409,7 +409,7 @@ use the `find()` method:
 ```php
 // to retrieve all *active* customers and order them by their ID:
 $customers = Customer::find()
-	->where(array('status' => $active))
+	->where(['status' => $active])
 	->orderBy('id')
 	->all();
 // return the customer whose PK is 1
@@ -467,11 +467,11 @@ both `post/popular` and `post/1/popular`. In 1.1, you would have to use two rule
 the same goal.
 
 ```php
-array(
+[
 	'pattern' => 'post/<page:\d+>/<tag>',
 	'route' => 'post/index',
-	'defaults' => array('page' => 1),
-)
+	'defaults' => ['page' => 1],
+]
 ```
 
 

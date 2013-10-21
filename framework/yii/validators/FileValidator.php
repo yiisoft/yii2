@@ -144,7 +144,7 @@ class FileValidator extends Validator
 				$this->addError($object, $attribute, $this->uploadRequired);
 			}
 			if (count($files) > $this->maxFiles) {
-				$this->addError($object, $attribute, $this->tooMany, array('{attribute}' => $attribute, '{limit}' => $this->maxFiles));
+				$this->addError($object, $attribute, $this->tooMany, ['{attribute}' => $attribute, '{limit}' => $this->maxFiles]);
 			} else {
 				foreach ($files as $file) {
 					$this->validateFile($object, $attribute, $file);
@@ -171,18 +171,18 @@ class FileValidator extends Validator
 		switch ($file->error) {
 			case UPLOAD_ERR_OK:
 				if ($this->maxSize !== null && $file->size > $this->maxSize) {
-					$this->addError($object, $attribute, $this->tooBig, array('{file}' => $file->name, '{limit}' => $this->getSizeLimit()));
+					$this->addError($object, $attribute, $this->tooBig, ['{file}' => $file->name, '{limit}' => $this->getSizeLimit()]);
 				}
 				if ($this->minSize !== null && $file->size < $this->minSize) {
-					$this->addError($object, $attribute, $this->tooSmall, array('{file}' => $file->name, '{limit}' => $this->minSize));
+					$this->addError($object, $attribute, $this->tooSmall, ['{file}' => $file->name, '{limit}' => $this->minSize]);
 				}
 				if (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
-					$this->addError($object, $attribute, $this->wrongType, array('{file}' => $file->name, '{extensions}' => implode(', ', $this->types)));
+					$this->addError($object, $attribute, $this->wrongType, ['{file}' => $file->name, '{extensions}' => implode(', ', $this->types)]);
 				}
 				break;
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
-				$this->addError($object, $attribute, $this->tooBig, array('{file}' => $file->name, '{limit}' => $this->getSizeLimit()));
+				$this->addError($object, $attribute, $this->tooBig, ['{file}' => $file->name, '{limit}' => $this->getSizeLimit()]);
 				break;
 			case UPLOAD_ERR_PARTIAL:
 				$this->addError($object, $attribute, $this->message);

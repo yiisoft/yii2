@@ -2,7 +2,7 @@
 	"name": "yiisoft/yii2-smarty",
 	"description": "The Smarty integration for the Yii framework",
 	"keywords": ["yii", "smarty", "renderer"],
-	"type": "library",
+	"type": "yii-extension",
 	"license": "BSD-3-Clause",
 	"support": {
 		"issues": "https://github.com/yiisoft/yii2/issues?state=open",

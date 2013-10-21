@@ -38,7 +38,7 @@ class ChainedDependency extends Dependency
 	 * Each array element should be a dependency object.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($dependencies = array(), $config = array())
+	public function __construct($dependencies = [], $config = [])
 	{
 		$this->dependencies = $dependencies;
 		parent::__construct($config);

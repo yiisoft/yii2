@@ -23,7 +23,7 @@ abstract class BaseListView extends Widget
 	 * @var array the HTML attributes for the container tag of the list view.
 	 * The "tag" element specifies the tag name of the container element and defaults to "div".
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var \yii\data\DataProviderInterface the data provider for the view. This property is required.
 	 */
@@ -32,12 +32,12 @@ abstract class BaseListView extends Widget
 	 * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
 	 * used to render the pager. You can use a different widget class by configuring the "class" element.
 	 */
-	public $pager = array();
+	public $pager = [];
 	/**
 	 * @var array the configuration for the sorter widget. By default, [[LinkSorter]] will be
 	 * used to render the sorter. You can use a different widget class by configuring the "class" element.
 	 */
-	public $sorter = array();
+	public $sorter = [];
 	/**
 	 * @var string the HTML content to be displayed as the summary of the list view.
 	 * If you do not want to show the summary, you may set it with an empty string.
@@ -92,9 +92,8 @@ abstract class BaseListView extends Widget
 	public function run()
 	{
 		if ($this->dataProvider->getCount() > 0 || $this->empty === false) {
-			$widget = $this;
-			$content = preg_replace_callback("/{\\w+}/", function ($matches) use ($widget) {
-				$content = $widget->renderSection($matches[0]);
+			$content = preg_replace_callback("/{\\w+}/", function ($matches) {
+				$content = $this->renderSection($matches[0]);
 				return $content === false ? $matches[0] : $content;
 			}, $this->layout);
 		} else {
@@ -139,23 +138,23 @@ abstract class BaseListView extends Widget
 			$page = $pagination->getPage() + 1;
 			$pageCount = $pagination->pageCount;
 			if (($summaryContent = $this->summary) === null) {
-				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> item.|Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> items.', $totalCount) . '</div>';
+				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> {0, plural, =1{item} other{items}}.', $totalCount) . '</div>';
 			}
 		} else {
 			$begin = $page = $pageCount = 1;
 			$end = $totalCount = $count;
 			if (($summaryContent = $this->summary) === null) {
-				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>1</b> item.|Total <b>{count}</b> items.', $count) . '</div>';
+				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>{count}</b> {0, plural, =1{item} other{items}}.', $count) . '</div>';
 			}
 		}
-		return strtr($summaryContent, array(
+		return strtr($summaryContent, [
 			'{begin}' => $begin,
 			'{end}' => $end,
 			'{count}' => $count,
 			'{totalCount}' => $totalCount,
 			'{page}' => $page,
 			'{pageCount}' => $pageCount,
-		));
+		]);
 	}
 
 	/**

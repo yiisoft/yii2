@@ -57,10 +57,10 @@ class BooleanValidator extends Validator
 	{
 		$value = $object->$attribute;
 		if (!$this->validateValue($value)) {
-			$this->addError($object, $attribute, $this->message, array(
+			$this->addError($object, $attribute, $this->message, [
 				'{true}' => $this->trueValue,
 				'{false}' => $this->falseValue,
-			));
+			]);
 		}
 	}
 
@@ -85,15 +85,15 @@ class BooleanValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$options = array(
+		$options = [
 			'trueValue' => $this->trueValue,
 			'falseValue' => $this->falseValue,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{true}' => $this->trueValue,
 				'{false}' => $this->falseValue,
-			))),
-		);
+			])),
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}

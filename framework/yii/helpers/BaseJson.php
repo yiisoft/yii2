@@ -33,7 +33,7 @@ class BaseJson
 	 */
 	public static function encode($value, $options = 0)
 	{
-		$expressions = array();
+		$expressions = [];
 		$value = static::processData($value, $expressions, uniqid());
 		$json = json_encode($value, $options);
 		return empty($expressions) ? $json : strtr($json, $expressions);
@@ -88,7 +88,7 @@ class BaseJson
 				return $token;
 			}
 			$data = $data instanceof Arrayable ? $data->toArray() : get_object_vars($data);
-			if ($data === array() && !$data instanceof Arrayable) {
+			if ($data === [] && !$data instanceof Arrayable) {
 				return new \stdClass();
 			}
 		}

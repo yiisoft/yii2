@@ -26,7 +26,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	/**
 	 * @var array the headers in this collection (indexed by the header names)
 	 */
-	private $_headers = array();
+	private $_headers = [];
 
 	/**
 	 * Returns an iterator for traversing the headers in the collection.
@@ -156,7 +156,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 */
 	public function removeAll()
 	{
-		$this->_headers = array();
+		$this->_headers = [];
 	}
 
 	/**

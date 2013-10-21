@@ -19,25 +19,25 @@ class FileValidatorTest extends TestCase
 	public function testAssureMessagesSetOnInit()
 	{
 		$val = new FileValidator();
-		foreach (array('message', 'uploadRequired', 'tooMany', 'wrongType', 'tooBig', 'tooSmall') as $attr) {
+		foreach (['message', 'uploadRequired', 'tooMany', 'wrongType', 'tooBig', 'tooSmall'] as $attr) {
 			$this->assertTrue(is_string($val->$attr));
 		}
 	}
 
 	public function testTypeSplitOnInit()
 	{
-		$val = new FileValidator(array('types' => 'jpeg, jpg, gif'));
-		$this->assertEquals(array('jpeg', 'jpg', 'gif'), $val->types);
-		$val = new FileValidator(array('types' => 'jpeg'));
-		$this->assertEquals(array('jpeg'), $val->types);
-		$val = new FileValidator(array('types' => ''));
-		$this->assertEquals(array(), $val->types);
-		$val = new FileValidator(array('types' => array()));
-		$this->assertEquals(array(), $val->types);
+		$val = new FileValidator(['types' => 'jpeg, jpg, gif']);
+		$this->assertEquals(['jpeg', 'jpg', 'gif'], $val->types);
+		$val = new FileValidator(['types' => 'jpeg']);
+		$this->assertEquals(['jpeg'], $val->types);
+		$val = new FileValidator(['types' => '']);
+		$this->assertEquals([], $val->types);
+		$val = new FileValidator(['types' => []]);
+		$this->assertEquals([], $val->types);
 		$val = new FileValidator();
-		$this->assertEquals(array(), $val->types);
-		$val = new FileValidator(array('types' => array('jpeg', 'exe')));
-		$this->assertEquals(array('jpeg', 'exe'), $val->types);
+		$this->assertEquals([], $val->types);
+		$val = new FileValidator(['types' => ['jpeg', 'exe']]);
+		$this->assertEquals(['jpeg', 'exe'], $val->types);
 	}
 
 	public function testGetSizeLimit()
@@ -74,34 +74,36 @@ class FileValidatorTest extends TestCase
 
 	public function testValidateAttributeMultiple()
 	{
-		$val = new FileValidator(array('maxFiles' => 2));
-		$m = FakedValidationModel::createWithAttributes(array('attr_files' => 'path'));
+		$val = new FileValidator(['maxFiles' => 2]);
+		$m = FakedValidationModel::createWithAttributes(['attr_files' => 'path']);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertTrue($m->hasErrors('attr_files'));
-		$m = FakedValidationModel::createWithAttributes(array('attr_files' => array()));
+		$m = FakedValidationModel::createWithAttributes(['attr_files' => []]);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertTrue($m->hasErrors('attr_files'));
 		$this->assertSame($val->uploadRequired, current($m->getErrors('attr_files')));
 		$m = FakedValidationModel::createWithAttributes(
-			array(
+			[
 				'attr_files' => $this->createTestFiles(
-					array(
-						array(
+					[
+						[
 							'name' => 'test_up_1.txt',
 							'size' => 1024,
-						),
-						array(
+						],
+						[
 							'error' => UPLOAD_ERR_NO_FILE,
-						),
-					)
+						],
+					]
 				)
-			)
+			]
 		);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertFalse($m->hasErrors('attr_files'));
-		$m = FakedValidationModel::createWithAttributes(
-			array('attr_files' => $this->createTestFiles(array(array(''), array(''), array(''),)))
-		);
+		$m = FakedValidationModel::createWithAttributes([
+			'attr_files' => $this->createTestFiles([
+				[''], [''], ['']
+			])
+		]);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertTrue($m->hasErrors());
 		$this->assertTrue(stripos(current($m->getErrors('attr_files')), 'you can upload at most') !== false);
@@ -111,7 +113,7 @@ class FileValidatorTest extends TestCase
 	 * @param array $params
 	 * @return UploadedFile[]
 	 */
-	protected function createTestFiles($params = array())
+	protected function createTestFiles($params = [])
 	{
 		$rndString = function ($len = 10) {
 			$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -121,10 +123,10 @@ class FileValidatorTest extends TestCase
 			}
 			return $randomString;
 		};
-		$files = array();
+		$files = [];
 		foreach ($params as $param) {
 			if (empty($param) && count($params) != 1) {
-				$files[] = array('no instance of UploadedFile');
+				$files[] = ['no instance of UploadedFile'];
 				continue;
 			}
 			$name = isset($param['name']) ? $param['name'] : $rndString();
@@ -141,21 +143,21 @@ class FileValidatorTest extends TestCase
 			$error = isset($param['error']) ? $param['error'] : UPLOAD_ERR_OK;
 			if (count($params) == 1) {
 				$error = empty($param) ? UPLOAD_ERR_NO_FILE : $error;
-				return new UploadedFile(array(
+				return new UploadedFile([
 					'name' => $name,
 					'tempName' => $tempName,
 					'type' => $type,
 					'size' => $size,
 					'error' => $error
-				));
+				]);
 			}
-			$files[] = new UploadedFile(array(
+			$files[] = new UploadedFile([
 				'name' => $name,
 				'tempName' => $tempName,
 				'type' => $type,
 				'size' => $size,
 				'error' => $error
-			));
+			]);
 		}
 		return $files;
 	}
@@ -172,24 +174,24 @@ class FileValidatorTest extends TestCase
 		$this->assertSame($val->uploadRequired, current($m->getErrors('attr_files_empty')));
 		$m = $this->createModelForAttributeTest();
 		// too big
-		$val = new FileValidator(array('maxSize' => 128));
+		$val = new FileValidator(['maxSize' => 128]);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertTrue($m->hasErrors('attr_files'));
 		$this->assertTrue(
 			stripos(
 				current($m->getErrors('attr_files')),
-				str_ireplace(array('{file}', '{limit}'), array($m->attr_files->name, 128), $val->tooBig)
+				str_ireplace(['{file}', '{limit}'], [$m->attr_files->name, 128], $val->tooBig)
 			) !== false
 		);
 		// to Small
 		$m = $this->createModelForAttributeTest();
-		$val = new FileValidator(array('minSize' => 2048));
+		$val = new FileValidator(['minSize' => 2048]);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertTrue($m->hasErrors('attr_files'));
 		$this->assertTrue(
 			stripos(
 				current($m->getErrors('attr_files')),
-				str_ireplace(array('{file}', '{limit}'), array($m->attr_files->name, 2048), $val->tooSmall)
+				str_ireplace(['{file}', '{limit}'], [$m->attr_files->name, 2048], $val->tooSmall)
 			) !== false
 		);
 		// UPLOAD_ERR_INI_SIZE/UPLOAD_ERR_FORM_SIZE
@@ -201,8 +203,8 @@ class FileValidatorTest extends TestCase
 			stripos(
 				current($m->getErrors('attr_err_ini')),
 				str_ireplace(
-					array('{file}', '{limit}'),
-					array($m->attr_err_ini->name, $val->getSizeLimit()),
+					['{file}', '{limit}'],
+					[$m->attr_err_ini->name, $val->getSizeLimit()],
 					$val->tooBig
 				)
 			) !== false
@@ -219,12 +221,12 @@ class FileValidatorTest extends TestCase
 
 	public function testValidateAttributeType()
 	{
-		$val = new FileValidator(array('types' => 'jpeg, jpg'));
+		$val = new FileValidator(['types' => 'jpeg, jpg']);
 		$m = FakedValidationModel::createWithAttributes(
-			array(
-				'attr_jpg' => $this->createTestFiles(array(array('name' => 'one.jpeg'))),
-				'attr_exe' => $this->createTestFiles(array(array('name' => 'bad.exe'))),
-			)
+			[
+				'attr_jpg' => $this->createTestFiles([['name' => 'one.jpeg']]),
+				'attr_exe' => $this->createTestFiles([['name' => 'bad.exe']]),
+			]
 		);
 		$val->validateAttribute($m, 'attr_jpg');
 		$this->assertFalse($m->hasErrors('attr_jpg'));
@@ -237,20 +239,17 @@ class FileValidatorTest extends TestCase
 	protected function createModelForAttributeTest()
 	{
 		return FakedValidationModel::createWithAttributes(
-			array(
-				'attr_files' => $this->createTestFiles(
-					array(
-						array('name' => 'abc.jpg', 'size' => 1024, 'type' => 'image/jpeg'),
-					)
-				),
-				'attr_files_empty' => $this->createTestFiles(array(array())),
-				'attr_err_ini' => $this->createTestFiles(array(array('error' => UPLOAD_ERR_INI_SIZE))),
-				'attr_err_part' => $this->createTestFiles(array(array('error' => UPLOAD_ERR_PARTIAL))),
-				'attr_err_tmp' => $this->createTestFiles(array(array('error' => UPLOAD_ERR_NO_TMP_DIR))),
-				'attr_err_write' => $this->createTestFiles(array(array('error' => UPLOAD_ERR_CANT_WRITE))),
-				'attr_err_ext' => $this->createTestFiles(array(array('error' => UPLOAD_ERR_EXTENSION))),
-
-			)
+			[
+				'attr_files' => $this->createTestFiles([
+					['name' => 'abc.jpg', 'size' => 1024, 'type' => 'image/jpeg'],
+				]),
+				'attr_files_empty' => $this->createTestFiles([[]]),
+				'attr_err_ini' => $this->createTestFiles([['error' => UPLOAD_ERR_INI_SIZE]]),
+				'attr_err_part' => $this->createTestFiles([['error' => UPLOAD_ERR_PARTIAL]]),
+				'attr_err_tmp' => $this->createTestFiles([['error' => UPLOAD_ERR_NO_TMP_DIR]]),
+				'attr_err_write' => $this->createTestFiles([['error' => UPLOAD_ERR_CANT_WRITE]]),
+				'attr_err_ext' => $this->createTestFiles([['error' => UPLOAD_ERR_EXTENSION]]),
+			]
 		);
 	}
 

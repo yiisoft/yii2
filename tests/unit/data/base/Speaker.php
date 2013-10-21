@@ -26,22 +26,20 @@ class Speaker extends Model
 
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'customLabel' => 'This is the custom label',
-		);
+		];
 	}
 
 	public function rules()
 	{
-		return array(
-
-		);
+		return [];
 	}
 
 	public function scenarios()
 	{
-		return array(
-			'test' => array('firstName', 'lastName', '!underscore_style'),
-		);
+		return [
+			'test' => ['firstName', 'lastName', '!underscore_style'],
+		];
 	}
 }

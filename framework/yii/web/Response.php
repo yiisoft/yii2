@@ -123,7 +123,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @var array list of HTTP status codes and the corresponding texts
 	 */
-	public static $httpStatuses = array(
+	public static $httpStatuses = [
 		100 => 'Continue',
 		101 => 'Switching Protocols',
 		102 => 'Processing',
@@ -189,7 +189,7 @@ class Response extends \yii\base\Response
 		509 => 'Bandwidth Limit Exceeded',
 		510 => 'Not Extended',
 		511 => 'Network Authentication Required',
-	);
+	];
 
 	/**
 	 * @var integer the HTTP status code to send with the response.
@@ -463,7 +463,7 @@ class Response extends \yii\base\Response
 	protected function getHttpRange($fileSize)
 	{
 		if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
-			return array(0, $fileSize - 1);
+			return [0, $fileSize - 1];
 		}
 		if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
 			return false;
@@ -484,7 +484,7 @@ class Response extends \yii\base\Response
 		if ($start < 0 || $start > $end) {
 			return false;
 		} else {
-			return array($start, $end);
+			return [$start, $end];
 		}
 	}
 
@@ -595,7 +595,7 @@ class Response extends \yii\base\Response
 	 *
 	 * - a string representing a URL (e.g. "http://example.com")
 	 * - a string representing a URL alias (e.g. "@example.com")
-	 * - an array in the format of `array($route, ...name-value pairs...)` (e.g. `array('site/index', 'ref' => 1)`).
+	 * - an array in the format of `[$route, ...name-value pairs...]` (e.g. `['site/index', 'ref' => 1]`).
 	 *   Note that the route is with respect to the whole application, instead of relative to a controller or module.
 	 *   [[Html::url()]] will be used to convert the array into a URL.
 	 *
@@ -656,10 +656,10 @@ class Response extends \yii\base\Response
 	 *
 	 * ~~~
 	 * // add a cookie
-	 * $response->cookies->add(new Cookie(array(
+	 * $response->cookies->add(new Cookie([
 	 *     'name' => $name,
 	 *     'value' => $value,
-	 * ));
+	 * ]);
 	 *
 	 * // remove a cookie
 	 * $response->cookies->remove('name');
@@ -754,7 +754,7 @@ class Response extends \yii\base\Response
 	 */
 	public function getIsEmpty()
 	{
-		return in_array($this->getStatusCode(), array(201, 204, 304));
+		return in_array($this->getStatusCode(), [201, 204, 304]);
 	}
 
 	/**

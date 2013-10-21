@@ -19,24 +19,24 @@ $searchConditions = $generator->generateSearchConditions();
 echo "<?php\n";
 ?>
 
-namespace <?php echo StringHelper::dirname(ltrim($generator->searchModelClass, '\\')); ?>;
+namespace <?= StringHelper::dirname(ltrim($generator->searchModelClass, '\\')) ?>;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use <?php echo ltrim($generator->modelClass, '\\'); ?>;
+use <?= ltrim($generator->modelClass, '\\') ?>;
 
 /**
- * <?php echo $searchModelClass; ?> represents the model behind the search form about <?php echo $modelClass; ?>.
+ * <?= $searchModelClass ?> represents the model behind the search form about <?= $modelClass ?>.
  */
-class <?php echo $searchModelClass; ?> extends Model
+class <?= $searchModelClass ?> extends Model
 {
-	public $<?php echo implode(";\n\tpublic $", $searchAttributes); ?>;
+	public $<?= implode(";\n\tpublic $", $searchAttributes) ?>;
 
 	public function rules()
 	{
-		return array(
-			<?php echo implode(",\n\t\t\t", $rules); ?>,
-		);
+		return [
+			<?= implode(",\n\t\t\t", $rules) ?>,
+		];
 	}
 
 	/**
@@ -44,25 +44,25 @@ class <?php echo $searchModelClass; ?> extends Model
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 <?php foreach ($labels as $name => $label): ?>
-			<?php echo "'$name' => '" . addslashes($label) . "',\n"; ?>
+			<?= "'$name' => '" . addslashes($label) . "',\n" ?>
 <?php endforeach; ?>
-		);
+		];
 	}
 
 	public function search($params)
 	{
-		$query = <?php echo $modelClass; ?>::find();
-		$dataProvider = new ActiveDataProvider(array(
+		$query = <?= $modelClass ?>::find();
+		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
-		));
+		]);
 
 		if (!($this->load($params) && $this->validate())) {
 			return $dataProvider;
 		}
 
-		<?php echo implode("\n\t\t", $searchConditions); ?>
+		<?= implode("\n\t\t", $searchConditions) ?>
 
 		return $dataProvider;
 	}
@@ -74,10 +74,10 @@ class <?php echo $searchModelClass; ?> extends Model
 			return;
 		}
 		if ($partialMatch) {
-			$value = '%' . strtr($value, array('%'=>'\%', '_'=>'\_', '\\'=>'\\\\')) . '%';
-			$query->andWhere(array('like', $attribute, $value));
+			$value = '%' . strtr($value, ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\']) . '%';
+			$query->andWhere(['like', $attribute, $value]);
 		} else {
-			$query->andWhere(array($attribute => $value));
+			$query->andWhere([$attribute => $value]);
 		}
 	}
 }

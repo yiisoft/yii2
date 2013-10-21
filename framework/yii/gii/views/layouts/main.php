@@ -14,38 +14,36 @@ $asset = yii\gii\GiiAsset::register($this);
 <html lang="en">
 <head>
 	<meta charset="utf-8"/>
-	<title><?php echo Html::encode($this->title); ?></title>
+	<title><?= Html::encode($this->title) ?></title>
 	<?php $this->head(); ?>
 </head>
 <body>
 <?php $this->beginBody(); ?>
 <?php
-NavBar::begin(array(
+NavBar::begin([
 	'brandLabel' => Html::img($asset->baseUrl . '/logo.png'),
-	'brandUrl' => array('default/index'),
-	'options' => array(
-		'class' => 'navbar-inverse navbar-fixed-top',
-	),
-));
-echo Nav::widget(array(
-	'options' => array('class' => 'nav navbar-nav pull-right'),
-	'items' => array(
-		array('label' => 'Home', 'url' => array('default/index')),
-		array('label' => 'Help', 'url' => 'http://www.yiiframework.com/doc/guide/topics.gii'),
-		array('label' => 'Application', 'url' => Yii::$app->homeUrl),
-	),
-));
+	'brandUrl' => ['default/index'],
+	'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
+]);
+echo Nav::widget([
+	'options' => ['class' => 'nav navbar-nav pull-right'],
+	'items' => [
+		['label' => 'Home', 'url' => ['default/index']],
+		['label' => 'Help', 'url' => 'http://www.yiiframework.com/doc/guide/topics.gii'],
+		['label' => 'Application', 'url' => Yii::$app->homeUrl],
+	],
+]);
 NavBar::end();
 ?>
 
 <div class="container">
-	<?php echo $content; ?>
+	<?= $content ?>
 </div>
 
 <footer class="footer">
 	<div class="container">
 		<p class="pull-left">A Product of <a href="http://www.yiisoft.com/">Yii Software LLC</a></p>
-		<p class="pull-right"><?php echo Yii::powered(); ?></p>
+		<p class="pull-right"><?= Yii::powered() ?></p>
 	</div>
 </footer>
 

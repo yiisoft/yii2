@@ -39,11 +39,11 @@ abstract class Module extends Component
 	/**
 	 * @var array custom module parameters (name => value).
 	 */
-	public $params = array();
+	public $params = [];
 	/**
 	 * @var array the IDs of the components or modules that should be preloaded when this module is created.
 	 */
-	public $preload = array();
+	public $preload = [];
 	/**
 	 * @var string an ID that uniquely identifies this module among other modules which have the same [[module|parent]].
 	 */
@@ -68,22 +68,21 @@ abstract class Module extends Component
 	 * in the array are used to initialize the corresponding controller properties. For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *   'account' => '@app/controllers/UserController',
-	 *   'article' => array(
+	 *   'article' => [
 	 *      'class' => '@app/controllers/PostController',
 	 *      'pageTitle' => 'something new',
-	 *   ),
-	 * )
+	 *   ],
+	 * ]
 	 * ~~~
 	 */
-	public $controllerMap = array();
+	public $controllerMap = [];
 	/**
 	 * @var string the namespace that controller classes are in. If not set,
 	 * it will use the "controllers" sub-namespace under the namespace of this module.
 	 * For example, if the namespace of this module is "foo\bar", then the default
 	 * controller namespace would be "foo\bar\controllers".
-	 * If the module is an application, it will default to "app\controllers".
 	 */
 	public $controllerNamespace;
 	/**
@@ -113,11 +112,11 @@ abstract class Module extends Component
 	/**
 	 * @var array child modules of this module
 	 */
-	private $_modules = array();
+	private $_modules = [];
 	/**
 	 * @var array components registered under this module
 	 */
-	private $_components = array();
+	private $_components = [];
 
 	/**
 	 * Constructor.
@@ -125,7 +124,7 @@ abstract class Module extends Component
 	 * @param Module $parent the parent module (if any)
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $parent = null, $config = array())
+	public function __construct($id, $parent = null, $config = [])
 	{
 		$this->id = $id;
 		$this->module = $parent;
@@ -167,20 +166,16 @@ abstract class Module extends Component
 	/**
 	 * Initializes the module.
 	 * This method is called after the module is created and initialized with property values
-	 * given in configuration. The default implement will create a path alias using the module [[id]]
+	 * given in configuration. The default implementation will create a path alias using the module [[id]]
 	 * and then call [[preloadComponents()]] to load components that are declared in [[preload]].
 	 */
 	public function init()
 	{
 		$this->preloadComponents();
 		if ($this->controllerNamespace === null) {
-			if ($this instanceof Application) {
-				$this->controllerNamespace = 'app\\controllers';
-			} else {
-				$class = get_class($this);
-				if (($pos = strrpos($class, '\\')) !== false) {
-					$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
-				}
+			$class = get_class($this);
+			if (($pos = strrpos($class, '\\')) !== false) {
+				$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
 			}
 		}
 	}
@@ -221,9 +216,6 @@ abstract class Module extends Component
 		$p = realpath($path);
 		if ($p !== false && is_dir($p)) {
 			$this->_basePath = $p;
-			if ($this instanceof Application) {
-				Yii::setAlias('@app', $p);
-			}
 		} else {
 			throw new InvalidParamException("The directory does not exist: $path");
 		}
@@ -312,10 +304,10 @@ abstract class Module extends Component
 	 * For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *	'@models' => '@app/models', // an existing alias
 	 *	'@backend' => __DIR__ . '/../backend',  // a directory
-	 * )
+	 * ]
 	 * ~~~
 	 */
 	public function setAliases($aliases)
@@ -326,25 +318,40 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Checks whether the named module exists.
-	 * @param string $id module ID
+	 * Checks whether the child module of the specified ID exists.
+	 * This method supports checking the existence of both child and grand child modules.
+	 * @param string $id module ID. For grand child modules, use ID path relative to this module (e.g. `admin/content`).
 	 * @return boolean whether the named module exists. Both loaded and unloaded modules
 	 * are considered.
 	 */
 	public function hasModule($id)
 	{
-		return isset($this->_modules[$id]);
+		if (($pos = strpos($id, '/')) !== false) {
+			// sub-module
+			$module = $this->getModule(substr($id, 0, $pos));
+			return $module === null ? false : $module->hasModule(substr($id, $pos + 1));
+		} else {
+			return isset($this->_modules[$id]);
+		}
 	}
 
 	/**
-	 * Retrieves the named module.
-	 * @param string $id module ID (case-sensitive).
+	 * Retrieves the child module of the specified ID.
+	 * This method supports retrieving both child modules and grand child modules.
+	 * @param string $id module ID (case-sensitive). To retrieve grand child modules,
+	 * use ID path relative to this module (e.g. `admin/content`).
 	 * @param boolean $load whether to load the module if it is not yet loaded.
 	 * @return Module|null the module instance, null if the module does not exist.
 	 * @see hasModule()
 	 */
 	public function getModule($id, $load = true)
 	{
+		if (($pos = strpos($id, '/')) !== false) {
+			// sub-module
+			$module = $this->getModule(substr($id, 0, $pos));
+			return $module === null ? null : $module->getModule(substr($id, $pos + 1), $load);
+		}
+
 		if (isset($this->_modules[$id])) {
 			if ($this->_modules[$id] instanceof Module) {
 				return $this->_modules[$id];
@@ -386,7 +393,7 @@ abstract class Module extends Component
 	public function getModules($loadedOnly = false)
 	{
 		if ($loadedOnly) {
-			$modules = array();
+			$modules = [];
 			foreach ($this->_modules as $module) {
 				if ($module instanceof Module) {
 					$modules[] = $module;
@@ -411,15 +418,13 @@ abstract class Module extends Component
 	 * The following is an example for registering two sub-modules:
 	 *
 	 * ~~~
-	 * array(
-	 *     'comment' => array(
+	 * [
+	 *     'comment' => [
 	 *         'class' => 'app\modules\comment\CommentModule',
 	 *         'db' => 'db',
-	 *     ),
-	 *     'booking' => array(
-	 *         'class' => 'app\modules\booking\BookingModule',
-	 *     ),
-	 * )
+	 *     ],
+	 *     'booking' => ['class' => 'app\modules\booking\BookingModule'],
+	 * ]
 	 * ~~~
 	 *
 	 * @param array $modules modules (id => module configuration or instances)
@@ -491,7 +496,7 @@ abstract class Module extends Component
 	public function getComponents($loadedOnly = false)
 	{
 		if ($loadedOnly) {
-			$components = array();
+			$components = [];
 			foreach ($this->_components as $component) {
 				if ($component instanceof Component) {
 					$components[] = $component;
@@ -516,16 +521,16 @@ abstract class Module extends Component
 	 * The following is an example for setting two components:
 	 *
 	 * ~~~
-	 * array(
-	 *     'db' => array(
+	 * [
+	 *     'db' => [
 	 *         'class' => 'yii\db\Connection',
 	 *         'dsn' => 'sqlite:path/to/file.db',
-	 *     ),
-	 *     'cache' => array(
+	 *     ],
+	 *     'cache' => [
 	 *         'class' => 'yii\caching\DbCache',
 	 *         'db' => 'db',
-	 *     ),
-	 * )
+	 *     ],
+	 * ]
 	 * ~~~
 	 *
 	 * @param array $components components (id => component configuration or instance)
@@ -567,7 +572,7 @@ abstract class Module extends Component
 	 * @return mixed the result of the action.
 	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
 	 */
-	public function runAction($route, $params = array())
+	public function runAction($route, $params = [])
 	{
 		$parts = $this->createController($route);
 		if (is_array($parts)) {
@@ -631,7 +636,7 @@ abstract class Module extends Component
 			}
 		}
 
-		return isset($controller) ? array($controller, $route) : false;
+		return isset($controller) ? [$controller, $route] : false;
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 	yii\jui\CoreAsset::className(),
 	yii\jui\EffectAsset::className(),
 	yii\jui\AccordionAsset::className(),
@@ -20,4 +20,4 @@ return array(
 	yii\jui\DraggableAsset::className(),
 	yii\jui\DroppableAsset::className(),
 	yii\jui\MenuAsset::className(),
-);
+];

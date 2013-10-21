@@ -64,7 +64,8 @@
 		"source": "https://github.com/yiisoft/yii2"
 	},
 	"require": {
-		"php": ">=5.3.7",
+		"php": ">=5.4.0",
+		"yiisoft/yii2-composer": "*",
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
 		"phpspec/php-diff": "1.0.*",

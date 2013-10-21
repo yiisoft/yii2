@@ -17,28 +17,18 @@ use yii\helpers\Html;
  * For example:
  *
  * ```php
- * echo Sortable::widget(array(
- *     'items' => array(
+ * echo Sortable::widget([
+ *     'items' => [
  *         'Item 1',
- *         array(
- *             'content' => 'Item2',
- *         ),
- *         array(
+ *         ['content' => 'Item2'],
+ *         [
  *             'content' => 'Item3',
- *             'options' => array(
- *                 'tag' => 'li',
- *             ),
- *         ),
- *     ),
- *     'options' => array(
- *         'tag' => 'ul',
- *     ),
- *     'itemOptions' => array(
- *         'tag' => 'li',
- *     ),
- *     'clientOptions' => array(
- *         'cursor' => 'move',
- *     ),
+ *             'options' => ['tag' => 'li'],
+ *         ],
+ *     ],
+ *     'options' => ['tag' => 'ul'],
+ *     'itemOptions' => ['tag' => 'li'],
+ *     'clientOptions' => ['cursor' => 'move'],
  * ));
  * ```
  *
@@ -53,27 +43,27 @@ class Sortable extends Widget
 	 *
 	 * - tag: string, defaults to "ul", the tag name of the container tag of this widget
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var array list of sortable items. Each item can be a string representing the item content
 	 * or an array of the following structure:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'content' => 'item content',
 	 *     // the HTML attributes of the item container tag. This will overwrite "itemOptions".
-	 *     'options' => array(),
-	 * )
+	 *     'options' => [],
+	 * ]
 	 * ~~~
 	 */
-	public $items = array();
+	public $items = [];
 	/**
 	 * @var array list of HTML attributes for the item container tags. This will be overwritten
 	 * by the "options" set in individual [[items]]. The following special options are recognized:
 	 *
 	 * - tag: string, defaults to "li", the tag name of the item container tags.
 	 */
-	public $itemOptions = array();
+	public $itemOptions = [];
 
 
 	/**
@@ -96,7 +86,7 @@ class Sortable extends Widget
 	 */
 	public function renderItems()
 	{
-		$items = array();
+		$items = [];
 		foreach ($this->items as $item) {
 			$options = $this->itemOptions;
 			$tag = ArrayHelper::remove($options, 'tag', 'li');
@@ -104,7 +94,7 @@ class Sortable extends Widget
 				if (!isset($item['content'])) {
 					throw new InvalidConfigException("The 'content' option is required.");
 				}
-				$options = array_merge($options, ArrayHelper::getValue($item, 'options', array()));
+				$options = array_merge($options, ArrayHelper::getValue($item, 'options', []));
 				$tag = ArrayHelper::remove($options, 'tag', $tag);
 				$items[] = Html::tag($tag, $item['content'], $options);
 			} else {

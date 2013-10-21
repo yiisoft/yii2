@@ -18,12 +18,12 @@ class RedisCacheTest extends CacheTestCase
 	 */
 	protected function getCacheInstance()
 	{
-		$config = array(
+		$config = [
 			'hostname' => 'localhost',
 			'port' => 6379,
 			'database' => 0,
 			'dataTimeout' => 0.1,
-		);
+		];
 		$dsn = $config['hostname'] . ':' .$config['port'];
 		if(!@stream_socket_client($dsn, $errorNumber, $errorDescription, 0.5)) {
 			$this->markTestSkipped('No redis server running at ' . $dsn .' : ' . $errorNumber . ' - ' . $errorDescription);
@@ -74,7 +74,7 @@ class RedisCacheTest extends CacheTestCase
 	{
 		$cache = $this->getCacheInstance();
 
-		$data=array('abc'=>'ежик',2=>'def');
+		$data=['abc'=>'ежик',2=>'def'];
 		$key='data1';
 
 		$this->assertFalse($cache->get($key));

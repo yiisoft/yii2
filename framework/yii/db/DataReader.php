@@ -62,7 +62,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	 * @param Command $command the command generating the query result
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct(Command $command, $config = array())
+	public function __construct(Command $command, $config = [])
 	{
 		$this->_statement = $command->pdoStatement;
 		$this->_statement->setFetchMode(\PDO::FETCH_ASSOC);
@@ -97,7 +97,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 	public function setFetchMode($mode)
 	{
 		$params = func_get_args();
-		call_user_func_array(array($this->_statement, 'setFetchMode'), $params);
+		call_user_func_array([$this->_statement, 'setFetchMode'], $params);
 	}
 
 	/**

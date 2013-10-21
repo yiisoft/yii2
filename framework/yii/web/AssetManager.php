@@ -29,7 +29,7 @@ class AssetManager extends Component
 	 * and the values are either the configuration arrays for creating the [[AssetBundle]] objects
 	 * or the corresponding asset bundle instances.
 	 */
-	public $bundles = array();
+	public $bundles = [];
 	/**
 	 * @return string the root directory storing the published asset files.
 	 */
@@ -95,21 +95,29 @@ class AssetManager extends Component
 	 * it will treat `$name` as the class of the asset bundle and create a new instance of it.
 	 *
 	 * @param string $name the class name of the asset bundle
+	 * @param boolean $publish whether to publish the asset files in the asset bundle before it is returned.
+	 * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
 	 * @return AssetBundle the asset bundle instance
 	 * @throws InvalidConfigException if $name does not refer to a valid asset bundle
 	 */
-	public function getBundle($name)
+	public function getBundle($name, $publish = true)
 	{
 		if (isset($this->bundles[$name])) {
-			if (is_array($this->bundles[$name])) {
-				$this->bundles[$name] = Yii::createObject(array_merge(array('class' => $name), $this->bundles[$name]));
-			} elseif (!$this->bundles[$name] instanceof AssetBundle) {
+			if ($this->bundles[$name] instanceof AssetBundle) {
+				return $this->bundles[$name];
+			} elseif (is_array($this->bundles[$name])) {
+				$bundle = Yii::createObject(array_merge(array('class' => $name), $this->bundles[$name]));
+			} else {
 				throw new InvalidConfigException("Invalid asset bundle: $name");
 			}
 		} else {
-			$this->bundles[$name] = Yii::createObject($name);
+			$bundle = Yii::createObject($name);
 		}
-		return $this->bundles[$name];
+		if ($publish) {
+			/** @var AssetBundle $bundle */
+			$bundle->publish($this);
+		}
+		return $this->bundles[$name] = $bundle;
 	}
 
 	private $_converter;
@@ -142,7 +150,7 @@ class AssetManager extends Component
 	/**
 	 * @var array published assets
 	 */
-	private $_published = array();
+	private $_published = [];
 
 	/**
 	 * Publishes a file or a directory.
@@ -188,7 +196,7 @@ class AssetManager extends Component
 	 * @return array the path (directory or file path) and the URL that the asset is published as.
 	 * @throws InvalidParamException if the asset to be published does not exist.
 	 */
-	public function publish($path, $options = array())
+	public function publish($path, $options = [])
 	{
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
@@ -220,7 +228,7 @@ class AssetManager extends Component
 				}
 			}
 
-			return $this->_published[$path] = array($dstFile, $this->baseUrl . "/$dir/$fileName");
+			return $this->_published[$path] = [$dstFile, $this->baseUrl . "/$dir/$fileName"];
 		} else {
 			$dir = $this->hash($src . filemtime($src));
 			$dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
@@ -229,10 +237,10 @@ class AssetManager extends Component
 					symlink($src, $dstDir);
 				}
 			} elseif (!is_dir($dstDir) || !empty($options['forceCopy'])) {
-				$opts = array(
+				$opts = [
 					'dirMode' => $this->dirMode,
 					'fileMode' => $this->fileMode,
-				);
+				];
 				if (isset($options['beforeCopy'])) {
 					$opts['beforeCopy'] = $options['beforeCopy'];
 				} else {
@@ -246,7 +254,7 @@ class AssetManager extends Component
 				FileHelper::copyDirectory($src, $dstDir, $opts);
 			}
 
-			return $this->_published[$path] = array($dstDir, $this->baseUrl . '/' . $dir);
+			return $this->_published[$path] = [$dstDir, $this->baseUrl . '/' . $dir];
 		}
 	}
 

@@ -18,37 +18,37 @@ use yii\gii\CodeFile;
  */
 
 $this->title = $generator->getName();
-$templates = array();
+$templates = [];
 foreach ($generator->templates as $name => $path) {
 	$templates[$name] = "$name ($path)";
 }
 ?>
 <div class="default-view">
-	<h1><?php echo Html::encode($this->title); ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
-	<p><?php echo $generator->getDescription(); ?></p>
+	<p><?= $generator->getDescription() ?></p>
 
-	<?php $form = ActiveForm::begin(array(
+	<?php $form = ActiveForm::begin([
 		'id' => "$id-generator",
 		'successCssClass' => '',
-		'fieldConfig' => array('class' => ActiveField::className()),
-	)); ?>
+		'fieldConfig' => ['class' => ActiveField::className()],
+	]); ?>
 		<div class="row">
 			<div class="col-lg-8">
-				<?php echo $this->renderFile($generator->formView(), array(
+				<?=$this->renderFile($generator->formView(), [
 					'generator' => $generator,
 					'form' => $form,
-				)); ?>
-				<?php echo $form->field($generator, 'template')->sticky()
+				]); ?>
+				<?=$form->field($generator, 'template')->sticky()
 					->label('Code Template')
 					->dropDownList($templates)->hint('
 						Please select which set of the templates should be used to generated the code.
 				'); ?>
 				<div class="form-group">
-					<?php echo Html::submitButton('Preview', array('name' => 'preview', 'class' => 'btn btn-success')); ?>
+					<?= Html::submitButton('Preview', ['name' => 'preview', 'class' => 'btn btn-primary']) ?>
 
 					<?php if(isset($files)): ?>
-						<?php echo Html::submitButton('Generate', array('name' => 'generate', 'class' => 'btn btn-danger')); ?>
+						<?= Html::submitButton('Generate', ['name' => 'generate', 'class' => 'btn btn-success']) ?>
 					<?php endif; ?>
 				</div>
 			</div>
@@ -56,17 +56,17 @@ foreach ($generator->templates as $name => $path) {
 
 		<?php
 		if (isset($results)) {
-			echo $this->render('view/results', array(
+			echo $this->render('view/results', [
 				'generator' => $generator,
 				'results' => $results,
 				'hasError' => $hasError,
-			));
+			]);
 		} elseif (isset($files)) {
-			echo $this->render('view/files', array(
+			echo $this->render('view/files', [
 				'generator' => $generator,
 				'files' => $files,
 				'answers' => $answers,
-			));
+			]);
 		}
 		?>
 	<?php ActiveForm::end(); ?>

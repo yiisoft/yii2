@@ -28,7 +28,7 @@ if ($exception instanceof \yii\base\UserException) {
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title><?php echo $handler->htmlEncode($name); ?></title>
+	<title><?= $handler->htmlEncode($name) ?></title>
 
 	<style>
 		body {
@@ -69,8 +69,8 @@ if ($exception instanceof \yii\base\UserException) {
 </head>
 
 <body>
-	<h1><?php echo $handler->htmlEncode($name); ?></h1>
-	<h2><?php echo nl2br($handler->htmlEncode($message)); ?></h2>
+	<h1><?= $handler->htmlEncode($name) ?></h1>
+	<h2><?= nl2br($handler->htmlEncode($message)) ?></h2>
 	<p>
 		The above error occurred while the Web server was processing your request.
 	</p>
@@ -78,7 +78,7 @@ if ($exception instanceof \yii\base\UserException) {
 		Please contact us if you think this is a server error. Thank you.
 	</p>
 	<div class="version">
-		<?php echo date('Y-m-d H:i:s', time()); ?>
+		<?= date('Y-m-d H:i:s', time()) ?>
 	</div>
 	<?php if (method_exists($this, 'endBody')) $this->endBody(); // to allow injecting code into body (mostly by Yii Debug Toolbar) ?>
 </body>

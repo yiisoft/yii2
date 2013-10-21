@@ -15,10 +15,10 @@ use yii\helpers\Html;
  * For example,
  *
  * ```php
- * echo Button::widget(array(
+ * echo Button::widget([
  *     'label' => 'Action',
- *     'options' => array('class' => 'btn-lg'),
- * ));
+ *     'options' => ['class' => 'btn-lg'],
+ * ]);
  * ```
  * @see http://twitter.github.io/bootstrap/javascript.html#buttons
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
