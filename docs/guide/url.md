@@ -8,7 +8,7 @@ This approach allows you to adjust URLs in a single config file without touching
 Internal route
 --------------
 
-Internal routes and parameters are what you're dealing with when implementing an application usuing Yii.
+Internal routes and parameters are what you're dealing with when implementing an application using Yii.
 
 Each controller and its action has a corresponding internal route such as `site/index`. Here `site` is referred to as
 controller ID while `test` is referred to as action ID. If controller belongs to a module, internal route is prefixed
@@ -19,7 +19,7 @@ Creating URLs
 
 As was already mentioned, the most important rule is to always use URL manager to create URLs. Url manages is an
 application component with `urlManager` id that is accessible both from web and console applications via
-`\Yii::$app->urlManager` and has two following URL creation methods availabe:
+`\Yii::$app->urlManager` and has two following URL creation methods available:
 
 - createUrl($route, $params = [])
 - createAbsoluteUrl($route, $params = [])
@@ -97,7 +97,7 @@ Complimentary to creating URLs Yii is handling transforming custom URLs back int
 ### Strict URL parsing
 
 By default if there's no custom rule for URL and URL matches default format such as `/site/page` Yii tries to run a
-corresponding controller's action. This beahvior coule be disabled so if there's no custom rule match, a 404 not found
+corresponding controller's action. This beahvior could be disabled so if there's no custom rule match, a 404 not found
 error will be produced immediately.
 
 ```php
