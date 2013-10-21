@@ -83,6 +83,8 @@ class TestMessage extends AbstractVendorMessage
 	public function setText($text) {}
 
 	public function setHtml($html) {}
+
+	public function createAttachment($content, $fileName, $contentType = 'application/octet-stream') {}
 }
 
 /**

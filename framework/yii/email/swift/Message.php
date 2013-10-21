@@ -82,4 +82,19 @@ class Message extends VendorMessage
 	{
 		$this->getVendorMessage()->setBody($html, 'text/html');
 	}
+
+	/**
+	 * Create file attachment for the email message.
+	 * @param string $content - attachment file content.
+	 * @param string $fileName - attachment file name.
+	 * @param string $contentType - MIME type of the attachment file, by default 'application/octet-stream' will be used.
+	 */
+	public function createAttachment($content, $fileName, $contentType = 'application/octet-stream')
+	{
+		if (empty($contentType)) {
+			$contentType = 'application/octet-stream';
+		}
+		$attachment = \Swift_Attachment::newInstance($content, $fileName, $contentType);
+		$this->getVendorMessage()->attach($attachment);
+	}
 }

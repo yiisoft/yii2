@@ -7,7 +7,9 @@
 
 namespace yii\email;
 
+use yii\base\InvalidParamException;
 use yii\base\Object;
+use yii\helpers\FileHelper;
 use Yii;
 
 /**
@@ -90,4 +92,34 @@ abstract class BaseMessage extends Object
 	 * @param string $html message HTML content.
 	 */
 	abstract public function setHtml($html);
+
+	/**
+	 * Create file attachment for the email message.
+	 * @param string $content attachment file content.
+	 * @param string $fileName attachment file name.
+	 * @param string $contentType MIME type of the attachment file, by default 'application/octet-stream' will be used.
+	 */
+	abstract public function createAttachment($content, $fileName, $contentType = 'application/octet-stream');
+
+	/**
+	 * Attaches existing file to the email message.
+	 * @param string $fileName full file name
+	 * @param string $contentType MIME type of the attachment file, if empty it will be suggested automatically.
+	 * @param string $attachFileName name, which should be used for attachment, if empty file base name will be used.
+	 * @throws \yii\base\InvalidParamException if given file does not exist.
+	 */
+	public function attachFile($fileName, $contentType = null, $attachFileName = null)
+	{
+		if (!file_exists($fileName)) {
+			throw new InvalidParamException('Unable to attach file "' . $fileName . '": file does not exists!');
+		}
+		if (empty($contentType)) {
+			$contentType = FileHelper::getMimeType($fileName);
+		}
+		if (empty($attachFileName)) {
+			$attachFileName = basename($fileName);
+		}
+		$content = file_get_contents($fileName);
+		$this->createAttachment($content, $attachFileName, $contentType);
+	}
 }
