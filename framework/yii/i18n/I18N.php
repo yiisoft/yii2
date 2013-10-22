@@ -78,7 +78,7 @@ class I18N extends Component
 			return $message;
 		}
 
-		if (class_exists('MessageFormatter', false) && preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
+		if (preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
 			$formatter = new MessageFormatter($language, $message);
 			if ($formatter === null) {
 				Yii::warning("$language message from category $category is invalid. Message is: $message.");
