@@ -144,6 +144,24 @@ abstract class Application extends Module
 	public function __construct($config = [])
 	{
 		Yii::$app = $this;
+
+		$this->preInit($config);
+		$this->registerErrorHandlers();
+		$this->registerCoreComponents();
+
+		Component::__construct($config);
+	}
+
+	/**
+	 * Pre-initializes the application.
+	 * This method is called at the beginning of the application constructor.
+	 * It initializes several important application properties.
+	 * If you override this method, please make sure you call the parent implementation.
+	 * @param array $config the application configuration
+	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
+	 */
+	public function preInit(&$config)
+	{
 		if (!isset($config['id'])) {
 			throw new InvalidConfigException('The "id" configuration is required.');
 		}
@@ -154,21 +172,6 @@ abstract class Application extends Module
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
 
-		$this->preInit($config);
-
-		$this->registerErrorHandlers();
-		$this->registerCoreComponents();
-
-		Component::__construct($config);
-	}
-
-	/**
-	 * Pre-initializes the application.
-	 * This method is called at the beginning of the application constructor.
-	 * @param array $config the application configuration
-	 */
-	public function preInit(&$config)
-	{
 		if (isset($config['vendorPath'])) {
 			$this->setVendorPath($config['vendorPath']);
 			unset($config['vendorPath']);
@@ -183,11 +186,37 @@ abstract class Application extends Module
 			// set "@runtime"
 			$this->getRuntimePath();
 		}
+
 		if (isset($config['timeZone'])) {
 			$this->setTimeZone($config['timeZone']);
 			unset($config['timeZone']);
 		} elseif (!ini_get('date.timezone')) {
 			$this->setTimeZone('UTC');
+		}
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		parent::init();
+		$this->initExtensions($this->extensions);
+	}
+
+	/**
+	 * Initializes the extensions.
+	 * @param array $extensions the extensions to be initialized. Please refer to [[extensions]]
+	 * for the structure of the extension array.
+	 */
+	protected function initExtensions($extensions)
+	{
+		foreach ($extensions as $extension) {
+			if (isset($extension['bootstrap'])) {
+				/** @var Extension $class */
+				$class = $extension['bootstrap'];
+				$class::init();
+			}
 		}
 	}
 
