@@ -58,7 +58,15 @@ class UniqueValidatorTest extends DatabaseTestCase
 
 	public function testValidateAttributeOfNonARModel()
 	{
+		// 1. fully qualified name of the class
 		$val = new UniqueValidator(['className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref']);
+		$m = FakedValidationModel::createWithAttributes(['attr_1' => 5, 'attr_2' => 1313]);
+		$val->validateAttribute($m, 'attr_1');
+		$this->assertTrue($m->hasErrors('attr_1'));
+		$val->validateAttribute($m, 'attr_2');
+		$this->assertFalse($m->hasErrors('attr_2'));
+		// 2. short name of the class without namespace
+		$val = new UniqueValidator(['className' => 'ValidatorTestRefModel', 'attributeName' => 'ref']);
 		$m = FakedValidationModel::createWithAttributes(['attr_1' => 5, 'attr_2' => 1313]);
 		$val->validateAttribute($m, 'attr_1');
 		$this->assertTrue($m->hasErrors('attr_1'));

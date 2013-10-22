@@ -23,6 +23,9 @@ class UniqueValidator extends Validator
 	 * @var string the ActiveRecord class name or alias of the class
 	 * that should be used to look for the attribute value being validated.
 	 * Defaults to null, meaning using the ActiveRecord class of the attribute being validated.
+	 * If the given class name is not namespaced, it will be changed to use
+	 * the same namespace as the AR class of the currently validated object.
+	 * Note, this rule only applies to [[validateAttribute()]] method.
 	 * @see attributeName
 	 */
 	public $className;
@@ -61,7 +64,14 @@ class UniqueValidator extends Validator
 		}
 
 		/** @var $className \yii\db\ActiveRecord */
-		$className = $this->className === null ? get_class($object) : $this->className;
+		if ($this->className === null) {
+			$className = get_class($object);
+		} elseif (strpos($this->className, '\\') === false) {
+			$reflector = new \ReflectionClass($object::className());
+			$className = $reflector->getNamespaceName() . '\\' . $this->className;
+		} else {
+			$className = $this->className;
+		}
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
 		$table = $className::getTableSchema();
