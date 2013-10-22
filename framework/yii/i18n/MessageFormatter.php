@@ -7,6 +7,10 @@
 
 namespace yii\i18n;
 
+if (!class_exists('MessageFormatter', false)) {
+	require_once(__DIR__ . '/BaseMessageFormatter.php');
+}
+
 /**
  * MessageFormatter is an enhanced version of PHP intl class that no matter which PHP and ICU versions are used:
  *
