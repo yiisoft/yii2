@@ -456,7 +456,7 @@ class ActiveRecord extends Model
 	 * ~~~
 	 * public function getCountry()
 	 * {
-	 *     return $this->hasOne('Country', ['id' => 'country_id']);
+	 *     return $this->hasOne(Country::className(), ['id' => 'country_id']);
 	 * }
 	 * ~~~
 	 *
@@ -475,7 +475,7 @@ class ActiveRecord extends Model
 	public function hasOne($class, $link)
 	{
 		return new ActiveRelation([
-			'modelClass' => $this->getNamespacedClass($class),
+			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => false,
@@ -496,7 +496,7 @@ class ActiveRecord extends Model
 	 * ~~~
 	 * public function getOrders()
 	 * {
-	 *     return $this->hasMany('Order', ['customer_id' => 'id']);
+	 *     return $this->hasMany(Order::className(), ['customer_id' => 'id']);
 	 * }
 	 * ~~~
 	 *
@@ -513,7 +513,7 @@ class ActiveRecord extends Model
 	public function hasMany($class, $link)
 	{
 		return new ActiveRelation([
-			'modelClass' => $this->getNamespacedClass($class),
+			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => true,
@@ -1435,24 +1435,6 @@ class ActiveRecord extends Model
 					unset($this->_related[$name][$a]);
 				}
 			}
-		}
-	}
-
-	/**
-	 * Changes the given class name into a namespaced one.
-	 * If the given class name is already namespaced, no change will be made.
-	 * Otherwise, the class name will be changed to use the same namespace as
-	 * the current AR class.
-	 * @param string $class the class name to be namespaced
-	 * @return string the namespaced class name
-	 */
-	protected static function getNamespacedClass($class)
-	{
-		if (strpos($class, '\\') === false) {
-			$reflector = new \ReflectionClass(static::className());
-			return $reflector->getNamespaceName() . '\\' . $class;
-		} else {
-			return $class;
 		}
 	}
 
