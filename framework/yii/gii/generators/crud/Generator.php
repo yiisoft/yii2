@@ -190,9 +190,9 @@ class Generator extends \yii\gii\Generator
 		}
 		$column = $tableSchema->columns[$attribute];
 		if ($column->phpType === 'boolean') {
-			return "\$form->field(\$model, '$attribute')->checkbox();";
+			return "\$form->field(\$model, '$attribute')->checkbox()";
 		} elseif ($column->type === 'text') {
-			return "\$form->field(\$model, '$attribute')->textarea(['rows' => 6]);";
+			return "\$form->field(\$model, '$attribute')->textarea(['rows' => 6])";
 		} else {
 			if (preg_match('/^(password|pass|passwd|passcode)$/i', $column->name)) {
 				$input = 'passwordInput';
@@ -200,9 +200,9 @@ class Generator extends \yii\gii\Generator
 				$input = 'textInput';
 			}
 			if ($column->phpType !== 'string' || $column->size === null) {
-				return "\$form->field(\$model, '$attribute')->$input();";
+				return "\$form->field(\$model, '$attribute')->$input()";
 			} else {
-				return "\$form->field(\$model, '$attribute')->$input(['maxlength' => $column->size]);";
+				return "\$form->field(\$model, '$attribute')->$input(['maxlength' => $column->size])";
 			}
 		}
 	}
@@ -216,9 +216,9 @@ class Generator extends \yii\gii\Generator
 		$tableSchema = $this->getTableSchema();
 		$column = $tableSchema->columns[$attribute];
 		if ($column->phpType === 'boolean') {
-			return "\$form->field(\$model, '$attribute')->checkbox();";
+			return "\$form->field(\$model, '$attribute')->checkbox()";
 		} else {
-			return "\$form->field(\$model, '$attribute');";
+			return "\$form->field(\$model, '$attribute')";
 		}
 	}
 
