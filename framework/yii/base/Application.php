@@ -128,7 +128,7 @@ abstract class Application extends Module
 	 * ]
 	 * ~~~
 	 */
-	public $extensions = array();
+	public $extensions = [];
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
