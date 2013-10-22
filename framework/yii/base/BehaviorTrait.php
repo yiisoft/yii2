@@ -12,7 +12,9 @@ namespace yii\base;
  * which can be added via other traits.
  *
  * For example: if the class has an event 'beforeSave' it can introduce method named
- * 'onBeforeSave_inline', which will be automatically triggered when event raises.
+ * 'onBeforeSave_uniqueSuffix', which will be automatically triggered when event raises.
+ * Note: watch for the naming collisions, ensure any inline handler declared either in class
+ * or via trait has a unique name (with unique suffix)!
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
