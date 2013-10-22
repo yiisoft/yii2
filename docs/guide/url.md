@@ -11,7 +11,7 @@ Internal route
 Internal routes and parameters are what you're dealing with when implementing an application using Yii.
 
 Each controller and its action has a corresponding internal route such as `site/index`. Here `site` is referred to as
-controller ID while `test` is referred to as action ID. If controller belongs to a module, internal route is prefixed
+controller ID while `index` is referred to as action ID. If controller belongs to a module, internal route is prefixed
 with the module ID such as `blog/post/index` for a blog module.
 
 Creating URLs
