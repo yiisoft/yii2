@@ -51,7 +51,13 @@ class I18NTest extends TestCase
 		$params = ['n' => 42];
 		$this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en_US'));
 		$this->assertEquals('Seine Geschwindigkeit beträgt 42 km/h.', $this->i18n->translate('test', $msg, $params, 'de_DE'));
+	}
 
+	public function testTranslateParams2()
+	{
+		if (!extension_loaded("intl")) {
+			$this->markTestSkipped("intl not installed. Skipping.");
+		}
 		$msg = 'His name is {name} and his speed is about {n, number} km/h.';
 		$params = [
 			'n' => 42,
