@@ -75,7 +75,7 @@ class RequiredValidator extends Validator
 				$this->addError($object, $attribute, $this->message);
 			} else {
 				$this->addError($object, $attribute, $this->message, [
-					'{requiredValue}' => $this->requiredValue,
+					'requiredValue' => $this->requiredValue,
 				]);
 			}
 		}

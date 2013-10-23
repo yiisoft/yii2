@@ -91,10 +91,10 @@ class NumberValidator extends Validator
 			$this->addError($object, $attribute, $this->message);
 		}
 		if ($this->min !== null && $value < $this->min) {
-			$this->addError($object, $attribute, $this->tooSmall, ['{min}' => $this->min]);
+			$this->addError($object, $attribute, $this->tooSmall, ['min' => $this->min]);
 		}
 		if ($this->max !== null && $value > $this->max) {
-			$this->addError($object, $attribute, $this->tooBig, ['{max}' => $this->max]);
+			$this->addError($object, $attribute, $this->tooBig, ['max' => $this->max]);
 		}
 	}
 

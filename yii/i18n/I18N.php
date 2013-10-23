@@ -63,6 +63,9 @@ class I18N extends Component
 	/**
 	 * Translates a message to the specified language.
 	 *
+	 * After translation the message will be parsed using [[MessageFormatter]] if it contains
+	 * ITU message format and `$params` are not empty.
+	 *
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
@@ -88,6 +91,44 @@ class I18N extends Component
 			if ($result === false) {
 				$errorMessage = $formatter->getErrorMessage();
 				Yii::warning("$language message from category $category failed with error: $errorMessage. Message is: $message.");
+				return $message;
+			} else {
+				return $result;
+			}
+		}
+
+		$p = [];
+		foreach($params as $name => $value) {
+			$p['{' . $name . '}'] = $value;
+		}
+		return strtr($message, $p);
+	}
+
+	/**
+	 * Formats a message using using [[MessageFormatter]].
+	 *
+	 * @param string $message the message to be formatted.
+	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
+	 * @param string $language the language code (e.g. `en_US`, `en`).
+	 * @return string the formatted message.
+	 */
+	public function format($message, $params, $language)
+	{
+		$params = (array)$params;
+		if ($params === []) {
+			return $message;
+		}
+
+		if (preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
+			$formatter = new MessageFormatter($language, $message);
+			if ($formatter === null) {
+				Yii::warning("Message for $language is invalid: $message.");
+				return $message;
+			}
+			$result = $formatter->format($params);
+			if ($result === false) {
+				$errorMessage = $formatter->getErrorMessage();
+				Yii::warning("Formatting message for $language failed with error: $errorMessage. Message is: $message.");
 				return $message;
 			} else {
 				return $result;
