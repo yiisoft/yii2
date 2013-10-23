@@ -3,6 +3,7 @@ $params = require(__DIR__ . '/params.php');
 $config = [
 	'id' => 'bootstrap',
 	'basePath' => dirname(__DIR__),
+	'extensions' => require(__DIR__ . '/../vendor/yii-extensions.php'),
 	'components' => [
 		'request' => [
 			'enableCsrfValidation' => true,
