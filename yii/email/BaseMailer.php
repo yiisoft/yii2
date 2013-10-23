@@ -18,7 +18,8 @@ use Yii;
  *
  * @see BaseMessage
  *
- * @property array $view view instance or its array configuration.
+ * @property \yii\base\View|array $view view instance or its array configuration.
+ * @property \yii\email\ViewResolver|array $viewResolver view resolver instance or its array configuration.
  * @property array $defaultMessageConfig configuration, which should be applied by default to any
  * new created email message instance.
  *
@@ -31,6 +32,10 @@ abstract class BaseMailer extends Component
 	 * @var \yii\base\View|array view instance or its array configuration.
 	 */
 	private $_view = [];
+	/**
+	 * @var \yii\email\ViewResolver|array view resolver instance or its array configuration.
+	 */
+	private $_viewResolver = [];
 	/**
 	 * @var array configuration, which should be applied by default to any new created
 	 * email message instance.
@@ -69,6 +74,29 @@ abstract class BaseMailer extends Component
 	}
 
 	/**
+	 * @param array|\yii\email\ViewResolver $viewResolver view resolver instance or its array configuration.
+	 * @throws \yii\base\InvalidConfigException on invalid argument.
+	 */
+	public function setViewResolver($viewResolver)
+	{
+		if (!is_array($viewResolver) && !is_object($viewResolver)) {
+			throw new InvalidConfigException('"' . get_class($this) . '::viewResolver" should be either object or array, "' . gettype($viewResolver) . '" given.');
+		}
+		$this->_viewResolver = $viewResolver;
+	}
+
+	/**
+	 * @return \yii\email\ViewResolver view resolver.
+	 */
+	public function getViewResolver()
+	{
+		if (!is_object($this->_viewResolver)) {
+			$this->_viewResolver = $this->createViewResolver($this->_viewResolver);
+		}
+		return $this->_viewResolver;
+	}
+
+	/**
 	 * @param array $defaultMessageConfig default message config
 	 */
 	public function setDefaultMessageConfig(array $defaultMessageConfig)
@@ -94,7 +122,19 @@ abstract class BaseMailer extends Component
 		if (!array_key_exists('class', $config)) {
 			$config['class'] = '\yii\base\View';
 		}
-		$config['context'] = $this;
+		return Yii::createObject($config);
+	}
+
+	/**
+	 * Creates view resolver instance from given configuration.
+	 * @param array $config view resolver configuration.
+	 * @return \yii\email\ViewResolver view resolver instance.
+	 */
+	protected function createViewResolver(array $config)
+	{
+		if (!array_key_exists('class', $config)) {
+			$config['class'] = '\yii\email\ViewResolver';
+		}
 		return Yii::createObject($config);
 	}
 
@@ -121,5 +161,16 @@ abstract class BaseMailer extends Component
 			}
 		}
 		return $successCount;
+	}
+
+	/**
+	 * Renders a view.
+	 * @param string $view the view name or the path alias of the view file.
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return string string the rendering result
+	 */
+	public function render($view, $params = [])
+	{
+		return $this->getView()->renderFile($this->getViewResolver()->findViewFile($view), $params, $this);
 	}
 }
