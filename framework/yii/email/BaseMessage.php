@@ -134,4 +134,18 @@ abstract class BaseMessage extends Object
 		$content = file_get_contents($fileName);
 		$this->createAttachment($content, $attachFileName, $contentType);
 	}
+
+	/**
+	 * Renders a view.
+	 * The view to be rendered can be specified in one of the following formats:
+	 * - path alias (e.g. "@app/emails/contact/body");
+	 * - relative path (e.g. "contact"): the actual view file will be resolved by [[resolveView]].
+	 * @param string $view the view name or the path alias of the view file.
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return string string the rendering result
+	 */
+	public function render($view, $params = [])
+	{
+		return $this->getMailer()->render($view, $params);
+	}
 }
