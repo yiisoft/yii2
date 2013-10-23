@@ -29,6 +29,8 @@ class Dropdown extends Widget
 	 * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
 	 * - linkOptions: array, optional, the HTML attributes of the item link.
 	 * - options: array, optional, the HTML attributes of the item.
+	 *
+	 * To insert divider use `<li role="presentation" class="divider"></li>`.
 	 */
 	public $items = [];
 	/**
