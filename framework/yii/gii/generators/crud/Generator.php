@@ -8,7 +8,6 @@
 namespace yii\gii\generators\crud;
 
 use Yii;
-use yii\base\Model;
 use yii\db\ActiveRecord;
 use yii\db\Schema;
 use yii\gii\CodeFile;

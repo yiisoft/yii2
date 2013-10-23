@@ -2,7 +2,6 @@
 namespace yiiunit\framework\caching;
 use yii\caching\MemCache;
 use yii\caching\RedisCache;
-use yiiunit\TestCase;
 
 /**
  * Class for testing redis cache backend

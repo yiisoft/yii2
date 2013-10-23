@@ -9,7 +9,6 @@ namespace yiiunit\framework\i18n;
 
 use yii\base\Model;
 use yii\i18n\I18N;
-use yii\i18n\MessageFormatter;
 use yii\i18n\PhpMessageSource;
 use yiiunit\TestCase;
 

@@ -13,7 +13,6 @@ function time()
 
 namespace yiiunit\framework\caching;
 
-use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 use yii\caching\Cache;
 

@@ -1,8 +1,4 @@
 <?php
-
-use yii\gii\Generator;
-use yii\gii\CodeFile;
-
 /**
  * @var yii\base\View $this
  * @var yii\gii\Generator $generator

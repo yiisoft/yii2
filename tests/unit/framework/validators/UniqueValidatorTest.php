@@ -10,7 +10,6 @@ use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
 use yiiunit\framework\db\DatabaseTestCase;
-use yiiunit\TestCase;
 
 class UniqueValidatorTest extends DatabaseTestCase
 {
