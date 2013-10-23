@@ -40,41 +40,40 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * Sets message sender.
-	 * @param string|array $from sender email address, if array is given,
-	 * its first element should be sender email address, second - sender name.
+	 * @inheritdoc
 	 */
 	public function setFrom($from)
 	{
-		if (is_array($from)) {
-			list ($address, $name) = $from;
-		} else {
-			$address = $from;
-			$name = null;
-		}
-		$this->getSwiftMessage()->setFrom($address, $name);
-		$this->getSwiftMessage()->setReplyTo($address, $name);
+		$this->getSwiftMessage()->setFrom($from);
+		$this->getSwiftMessage()->setReplyTo($from);
 	}
 
 	/**
-	 * Sets message receiver.
-	 * @param string|array $to receiver email address, if array is given,
-	 * its first element should be receiver email address, second - receiver name.
+	 * @inheritdoc
 	 */
 	public function setTo($to)
 	{
-		if (is_array($to)) {
-			list ($address, $name) = $to;
-		} else {
-			$address = $to;
-			$name = null;
-		}
-		$this->getSwiftMessage()->setTo($address, $name);
+		$this->getSwiftMessage()->setTo($to);
 	}
 
 	/**
-	 * Sets message subject.
-	 * @param string $subject message subject
+	 * @inheritdoc
+	 */
+	public function setCc($cc)
+	{
+		$this->getSwiftMessage()->setCc($cc);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setBcc($bcc)
+	{
+		$this->getSwiftMessage()->setBcc($bcc);
+	}
+
+	/**
+	 * @inheritdoc
 	 */
 	public function setSubject($subject)
 	{
@@ -82,8 +81,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * Sets message plain text content.
-	 * @param string $text message plain text content.
+	 * @inheritdoc
 	 */
 	public function setText($text)
 	{
@@ -91,8 +89,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * Sets message HTML content.
-	 * @param string $html message HTML content.
+	 * @inheritdoc
 	 */
 	public function setHtml($html)
 	{
@@ -100,8 +97,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * Add message plain text content part.
-	 * @param string $text message plain text content.
+	 * @inheritdoc
 	 */
 	public function addText($text)
 	{
@@ -109,8 +105,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * Add message HTML content part.
-	 * @param string $html message HTML content.
+	 * @inheritdoc
 	 */
 	public function addHtml($html)
 	{
@@ -118,10 +113,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * Create file attachment for the email message.
-	 * @param string $content - attachment file content.
-	 * @param string $fileName - attachment file name.
-	 * @param string $contentType - MIME type of the attachment file, by default 'application/octet-stream' will be used.
+	 * @inheritdoc
 	 */
 	public function createAttachment($content, $fileName, $contentType = 'application/octet-stream')
 	{

@@ -22,6 +22,17 @@ use yii\email\swift\Message as SwiftMessage;
  * $email->send();
  * ~~~
  *
+ * You can use message object to render view, which can be used to compose the message content:
+ * ~~~
+ * $email = new Message();
+ * $email->from = $contactForm->email;
+ * $email->to = 'admin@domain.com';
+ * $email->subject = $email->render('contact/subject', ['form' => $contactForm]);
+ * $email->addHtml($email->render('contact/html', ['form' => $contactForm]));
+ * $email->addText($email->render('contact/text', ['form' => $contactForm]));
+ * $email->send();
+ * ~~~
+ *
  * This particular class uses 'SwiftMailer' library to perform the message sending.
  * Note: you can replace usage of this class by your own one, using [[Yii::$classMap]]:
  * ~~~

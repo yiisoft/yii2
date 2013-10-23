@@ -173,6 +173,10 @@ class Message extends BaseMessage
 
 	public function setTo($to) {}
 
+	public function setCc($cc) {}
+
+	public function setBcc($bcc) {}
+
 	public function setSubject($subject) {}
 
 	public function setText($text) {}
