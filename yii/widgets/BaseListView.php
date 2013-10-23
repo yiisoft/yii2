@@ -131,30 +131,32 @@ abstract class BaseListView extends Widget
 	public function renderSummary()
 	{
 		$count = $this->dataProvider->getCount();
-		if (($pagination = $this->dataProvider->getPagination()) !== false && $count > 0) {
+		if (($pagination = $this->dataProvider->getPagination()) !== false) {
 			$totalCount = $this->dataProvider->getTotalCount();
 			$begin = $pagination->getPage() * $pagination->pageSize + 1;
 			$end = $begin + $count - 1;
 			$page = $pagination->getPage() + 1;
 			$pageCount = $pagination->pageCount;
 			if (($summaryContent = $this->summary) === null) {
-				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> {0, plural, =1{item} other{items}}.', $totalCount) . '</div>';
+				$summaryContent = '<div class="summary">'
+					. Yii::t('yii', 'Showing <b>{totalCount, plural, =0{0} other{{begin}-{end}}}</b> of <b>{totalCount}</b> {totalCount, plural, one{item} other{items}}.')
+					. '</div>';
 			}
 		} else {
 			$begin = $page = $pageCount = 1;
 			$end = $totalCount = $count;
 			if (($summaryContent = $this->summary) === null) {
-				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>{count}</b> {0, plural, =1{item} other{items}}.', $count) . '</div>';
+				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>{count}</b> {count, plural, one{item} other{items}}.') . '</div>';
 			}
 		}
-		return strtr($summaryContent, [
-			'{begin}' => $begin,
-			'{end}' => $end,
-			'{count}' => $count,
-			'{totalCount}' => $totalCount,
-			'{page}' => $page,
-			'{pageCount}' => $pageCount,
-		]);
+		return Yii::$app->getI18n()->format($summaryContent, [
+			'begin' => $begin,
+			'end' => $end,
+			'count' => $count,
+			'totalCount' => $totalCount,
+			'page' => $page,
+			'pageCount' => $pageCount,
+		], Yii::$app->language);
 	}
 
 	/**
