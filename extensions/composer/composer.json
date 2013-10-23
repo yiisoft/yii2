@@ -22,7 +22,7 @@
 		"psr-0": { "yii\\composer\\": "" }
 	},
 	"extra": {
-		"class": "yii\\composer\\InstallerPlugin"
+		"class": "yii\\composer\\Plugin"
 	},
 	"require": {
 		"composer-plugin-api": "1.0.0"
