@@ -6,7 +6,6 @@
  */
 namespace yii;
 
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;

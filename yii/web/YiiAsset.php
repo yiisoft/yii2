@@ -7,9 +7,6 @@
 
 namespace yii\web;
 
-use Yii;
-use yii\base\View;
-
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

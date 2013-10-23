@@ -11,8 +11,6 @@ use Yii;
 use Closure;
 use yii\base\Formatter;
 use yii\base\InvalidConfigException;
-use yii\base\Widget;
-use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\BaseListView;
