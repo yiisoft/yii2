@@ -220,7 +220,7 @@ class ValidatorTest extends TestCase
 		$errors = $m->getErrors('attr_msg_val');
 		$this->assertEquals('attr_msg_val::array()', $errors[0]);
 		$m = $this->getTestModel(['attr_msg_val' => 'abc']);
-		$val->addError($m, 'attr_msg_val', '{attribute}::{value}::{param}', ['{param}' => 'param_value']);
+		$val->addError($m, 'attr_msg_val', '{attribute}::{value}::{param}', ['param' => 'param_value']);
 		$errors = $m->getErrors('attr_msg_val');
 		$this->assertEquals('attr_msg_val::abc::param_value', $errors[0]);
 	}
