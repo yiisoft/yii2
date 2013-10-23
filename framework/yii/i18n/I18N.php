@@ -63,7 +63,7 @@ class I18N extends Component
 	/**
 	 * Translates a message to the specified language.
 	 *
-	 * After translation the message will be parsed using [[MessageFormatter]] if it contains
+	 * After translation the message will be formatted using [[MessageFormatter]] if it contains
 	 * ITU message format and `$params` are not empty.
 	 *
 	 * @param string $category the message category.
