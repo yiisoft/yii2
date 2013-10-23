@@ -12,6 +12,11 @@ use yiiunit\TestCase;
 
 class ValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
 
 	protected function getTestModel($additionalAttributes = [])
 	{

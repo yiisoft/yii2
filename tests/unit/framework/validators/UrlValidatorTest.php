@@ -9,6 +9,12 @@ use yiiunit\TestCase;
  */
 class UrlValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testValidateValue()
 	{
 		$val = new UrlValidator;

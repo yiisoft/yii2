@@ -10,6 +10,12 @@ use yiiunit\TestCase;
 
 class DateValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testEnsureMessageIsSet()
 	{
 		$val = new DateValidator;

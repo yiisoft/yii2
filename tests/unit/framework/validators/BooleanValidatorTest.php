@@ -10,6 +10,12 @@ use yiiunit\TestCase;
  */
 class BooleanValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testValidateValue()
 	{
 		$val = new BooleanValidator;
