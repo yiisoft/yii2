@@ -144,11 +144,11 @@ directory:
 	},
 	"scripts": {
 		"post-create-project-cmd": [
-			"yii\\composer\\InstallHandler::setPermissions"
+			"yii\\composer\\Installer::setPermission"
 		]
 	},
 	"extra": {
-		"yii-install-writable": [
+		"writable": [
 			"backend/runtime",
 			"backend/web/assets",
 
