@@ -10,6 +10,11 @@ use yiiunit\TestCase;
 
 class CompareValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
 
 	public function testValidateValueException()
 	{

@@ -9,6 +9,12 @@ use yiiunit\TestCase;
 
 class NumberValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testEnsureMessageOnInit()
 	{
 		$val = new NumberValidator;

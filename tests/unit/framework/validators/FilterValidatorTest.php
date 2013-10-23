@@ -9,6 +9,12 @@ use yiiunit\TestCase;
 
 class FilterValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testAssureExceptionOnInit()
 	{
 		$this->setExpectedException('yii\base\InvalidConfigException');

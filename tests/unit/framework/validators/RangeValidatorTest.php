@@ -9,6 +9,12 @@ use yiiunit\TestCase;
 
 class RangeValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testInitException()
 	{
 		$this->setExpectedException('yii\base\InvalidConfigException', 'The "range" property must be set.');

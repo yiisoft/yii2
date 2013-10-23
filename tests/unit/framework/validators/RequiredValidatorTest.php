@@ -8,6 +8,12 @@ use yiiunit\TestCase;
 
 class RequiredValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testValidateValueWithDefaults()
 	{
 		$val = new RequiredValidator();
