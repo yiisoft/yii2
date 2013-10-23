@@ -113,7 +113,6 @@ class CaptchaValidator extends Validator
 			'caseSensitive' => $this->caseSensitive,
 			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
 			])),
 		];
 		if ($this->skipOnEmpty) {
