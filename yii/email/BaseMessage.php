@@ -94,6 +94,18 @@ abstract class BaseMessage extends Object
 	abstract public function setHtml($html);
 
 	/**
+	 * Add message plain text content part.
+	 * @param string $text message plain text content.
+	 */
+	abstract public function addText($text);
+
+	/**
+	 * Add message HTML content part.
+	 * @param string $html message HTML content.
+	 */
+	abstract public function addHtml($html);
+
+	/**
 	 * Create file attachment for the email message.
 	 * @param string $content attachment file content.
 	 * @param string $fileName attachment file name.
