@@ -15,6 +15,7 @@ return [
 	'controllerNamespace' => 'console\controllers',
 	'modules' => [
 	],
+	'extensions' => require(__DIR__ . '/../../vendor/yii-extensions.php'),
 	'components' => [
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
