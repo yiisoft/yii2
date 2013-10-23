@@ -1140,8 +1140,15 @@ class ActiveRecord extends Model
 				$this->_attributes[$name] = $record->_attributes[$name];
 			}
 			$this->_oldAttributes = $this->_attributes;
+			foreach ($this->_related as $key => $related) {
+				unset($this->_related[$key]);
+			}
 		} else {
 			foreach ($attributes as $name) {
+				if (array_key_exists($name, $this->_related)) {
+					unset($this->_related[$name]);
+					continue;
+				}
 				$this->_oldAttributes[$name] = $this->_attributes[$name] = $record->_attributes[$name];
 			}
 		}
