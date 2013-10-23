@@ -93,5 +93,9 @@ class Message extends BaseMessage
 
 	public function setHtml($html) {}
 
+	public function addText($text) {}
+
+	public function addHtml($html) {}
+
 	public function createAttachment($content, $fileName, $contentType = 'application/octet-stream') {}
 }

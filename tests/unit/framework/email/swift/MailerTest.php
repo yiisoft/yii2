@@ -71,20 +71,4 @@ class MailerTest extends TestCase
 		$message = $mailer->createSwiftMessage();
 		$this->assertTrue(is_object($message), 'Unable to create Swift message instance!');
 	}
-
-	/**
-	 * @depends testGetSwiftMailer
-	 * @depends testCreateSwiftMessage
-	 */
-	public function testSend()
-	{
-		$emailAddress = 'someuser@somedomain.com';
-		$message = new Message();
-		$message->setTo($emailAddress);
-		$message->setFrom($emailAddress);
-		$message->setSubject('Yii Swift Test');
-		$message->setText('Yii Swift Test body');
-		$message->send();
-		$this->assertTrue(true);
-	}
 }

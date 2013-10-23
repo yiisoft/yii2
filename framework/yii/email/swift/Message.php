@@ -100,6 +100,24 @@ class Message extends BaseMessage
 	}
 
 	/**
+	 * Add message plain text content part.
+	 * @param string $text message plain text content.
+	 */
+	public function addText($text)
+	{
+		$this->getSwiftMessage()->addPart($text, 'text/plain');
+	}
+
+	/**
+	 * Add message HTML content part.
+	 * @param string $html message HTML content.
+	 */
+	public function addHtml($html)
+	{
+		$this->getSwiftMessage()->addPart($html, 'text/html');
+	}
+
+	/**
 	 * Create file attachment for the email message.
 	 * @param string $content - attachment file content.
 	 * @param string $fileName - attachment file name.
