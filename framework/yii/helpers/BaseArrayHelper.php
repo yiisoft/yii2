@@ -336,7 +336,7 @@ class BaseArrayHelper
 	 * @param boolean|array $descending whether to sort in descending or ascending order. When
 	 * sorting by multiple keys with different descending orders, use an array of descending flags.
 	 * @param integer|array $sortFlag the PHP sort flag. Valid values include
-	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING` and `SORT_LOCALE_STRING`.
+	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
 	 * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
 	 * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
 	 * @param boolean|array $caseSensitive whether to sort string in case-sensitive manner. This parameter
@@ -372,16 +372,8 @@ class BaseArrayHelper
 			$flag = $sortFlag[$i];
 			$cs = $caseSensitive[$i];
 			if (!$cs && ($flag === SORT_STRING)) {
-				if (defined('SORT_FLAG_CASE')) {
-					$flag = $flag | SORT_FLAG_CASE;
-					$args[] = static::getColumn($array, $key);
-				} else {
-					$column = [];
-					foreach (static::getColumn($array, $key) as $k => $value) {
-						$column[$k] = mb_strtolower($value);
-					}
-					$args[] = $column;
-				}
+				$flag = $flag | SORT_FLAG_CASE;
+				$args[] = static::getColumn($array, $key);
 			} else {
 				$args[] = static::getColumn($array, $key);
 			}
