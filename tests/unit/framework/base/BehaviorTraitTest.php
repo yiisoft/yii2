@@ -13,6 +13,9 @@ use yii\base\BehaviorTrait;
 use yii\base\Component;
 use yiiunit\TestCase;
 
+/**
+ * @group base
+ */
 class BehaviorTraitTest extends TestCase
 {
 	public function testEvent() {
@@ -20,7 +23,7 @@ class BehaviorTraitTest extends TestCase
 
 		$expectedOutput = implode("\n", [
 				'yiiunit\framework\base\TestComponent::runEventTest',
-				'yiiunit\framework\base\TestTrait::onAfterEventTest_TestTrait',
+				'yiiunit\framework\base\TestTrait::afterEventTestHandlerByTestTrait',
 				'custom event handler',
 			]) . "\n";
 		$this->expectOutputString($expectedOutput);
@@ -48,7 +51,7 @@ class TestComponent extends Component
 
 trait TestTrait
 {
-	public function onAfterEventTest_TestTrait()
+	public function afterEventTestHandlerByTestTrait()
 	{
 		echo __METHOD__ . "\n";
 	}
