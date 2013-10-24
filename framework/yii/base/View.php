@@ -89,7 +89,7 @@ class View extends Component
 
 
 	/**
-	 * @var ViewContext the context under which the [[renderFile()]] method is being invoked.
+	 * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
 	 */
 	public $context;
 	/**
@@ -244,7 +244,7 @@ class View extends Component
 			if ($context === null) {
 				$context = $this->context;
 			}
-			if ($context instanceof ViewContext) {
+			if ($context instanceof ViewContextInterface) {
 				$file = $context->findViewFile($view);
 			} else {
 				throw new InvalidCallException('Current context is not supported.');
