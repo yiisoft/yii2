@@ -20,7 +20,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Widget extends Component
+class Widget extends Component implements ViewContext
 {
 	/**
 	 * @var integer a counter used to generate [[id]] for widgets.
@@ -167,8 +167,7 @@ class Widget extends Component
 	 */
 	public function render($view, $params = [])
 	{
-		$viewFile = $this->findViewFile($view);
-		return $this->getView()->renderFile($viewFile, $params, $this);
+		return $this->getView()->render($view, $params, $this);
 	}
 
 	/**
@@ -197,25 +196,12 @@ class Widget extends Component
 
 	/**
 	 * Finds the view file based on the given view name.
-	 * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
-	 * on how to specify this parameter.
+	 * File will be searched under [[viewPath]] directory.
+	 * @param string $view the view name.
 	 * @return string the view file path. Note that the file may not exist.
 	 */
-	protected function findViewFile($view)
+	public function findViewFile($view)
 	{
-		if (strncmp($view, '@', 1) === 0) {
-			// e.g. "@app/views/main"
-			$file = Yii::getAlias($view);
-		} elseif (strncmp($view, '//', 2) === 0) {
-			// e.g. "//layouts/main"
-			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} elseif (strncmp($view, '/', 1) === 0 && Yii::$app->controller !== null) {
-			// e.g. "/site/index"
-			$file = Yii::$app->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} else {
-			$file = $this->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		}
-
-		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file;
+		return $this->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
 	}
 }
