@@ -25,7 +25,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Controller extends Component implements ViewContext
+class Controller extends Component implements ViewContextInterface
 {
 	/**
 	 * @event ActionEvent an event raised right before executing a controller action.
