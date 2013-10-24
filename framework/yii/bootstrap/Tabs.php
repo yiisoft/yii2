@@ -85,6 +85,10 @@ class Tabs extends Widget
 	 * @var boolean whether the labels for header items should be HTML-encoded.
 	 */
 	public $encodeLabels = true;
+	/**
+	 * @var string, specifies the Bootstrap tab styling.
+	 */
+	public $navType = 'nav-tabs';
 
 
 	/**
@@ -93,7 +97,7 @@ class Tabs extends Widget
 	public function init()
 	{
 		parent::init();
-		Html::addCssClass($this->options, 'nav nav-tabs');
+		Html::addCssClass($this->options, 'nav ' . $this->navType);
 	}
 
 	/**
