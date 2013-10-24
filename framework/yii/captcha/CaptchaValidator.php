@@ -18,8 +18,6 @@ use yii\validators\Validator;
  *
  * CaptchaValidator should be used together with [[CaptchaAction]].
  *
- * @property \yii\captcha\CaptchaAction $captchaAction The action object. This property is read-only.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -71,16 +69,16 @@ class CaptchaValidator extends Validator
 	 */
 	public function validateValue($value)
 	{
-		$captcha = $this->getCaptchaAction();
+		$captcha = $this->createCaptchaAction();
 		return !is_array($value) && $captcha->validate($value, $this->caseSensitive);
 	}
 
 	/**
-	 * Returns the CAPTCHA action object.
-	 * @throws InvalidConfigException
+	 * Creates the CAPTCHA action object from the route specified by [[captchaAction]].
 	 * @return \yii\captcha\CaptchaAction the action object
+	 * @throws InvalidConfigException
 	 */
-	public function getCaptchaAction()
+	public function createCaptchaAction()
 	{
 		$ca = Yii::$app->createController($this->captchaAction);
 		if ($ca !== false) {
@@ -104,7 +102,7 @@ class CaptchaValidator extends Validator
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$captcha = $this->getCaptchaAction();
+		$captcha = $this->createCaptchaAction();
 		$code = $captcha->getVerifyCode(false);
 		$hash = $captcha->generateValidationHash($this->caseSensitive ? $code : strtolower($code));
 		$options = [
