@@ -39,7 +39,7 @@ use yii\base\InvalidConfigException;
  *                     'class' => 'yii\log\FileTarget',
  *                     'levels' => ['trace', 'info'],
  *                     'categories' => ['yii\*'],
- *                 ),
+ *                 ],
  *                 'email' => [
  *                     'class' => 'yii\log\EmailTarget',
  *                     'levels' => ['error', 'warning'],

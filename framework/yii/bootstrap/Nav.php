@@ -24,7 +24,7 @@ use yii\helpers\Html;
  *             'label' => 'Home',
  *             'url' => ['site/index'],
  *             'linkOptions' => [...],
- *         ),
+ *         ],
  *         [
  *             'label' => 'Dropdown',
  *             'items' => [
