@@ -29,8 +29,8 @@ use yii\helpers\Html;
  *             'caption' => '<h4>This is title</h4><p>This is the caption text</p>',
  *             'options' => [...],
  *         ],
- *     )
- * ));
+ *     ]
+ * ]);
  * ```
  *
  * @see http://twitter.github.io/bootstrap/javascript.html#carousel
