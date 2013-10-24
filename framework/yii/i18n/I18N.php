@@ -45,14 +45,14 @@ class I18N extends Component
 		parent::init();
 		if (!isset($this->translations['yii'])) {
 			$this->translations['yii'] = [
-				'class' => 'yii\i18n\PhpMessageSource',
+				'class' => PhpMessageSource::className(),
 				'sourceLanguage' => 'en_US',
 				'basePath' => '@yii/messages',
 			];
 		}
 		if (!isset($this->translations['app'])) {
 			$this->translations['app'] = [
-				'class' => 'yii\i18n\PhpMessageSource',
+				'class' => PhpMessageSource::className(),
 				'sourceLanguage' => 'en_US',
 				'basePath' => '@app/messages',
 			];
@@ -74,33 +74,7 @@ class I18N extends Component
 	public function translate($category, $message, $params, $language)
 	{
 		$message = $this->getMessageSource($category)->translate($category, $message, $language);
-
-		$params = (array)$params;
-		if ($params === []) {
-			return $message;
-		}
-
-		if (preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
-			$formatter = new MessageFormatter($language, $message);
-			if ($formatter === null) {
-				Yii::warning("$language message from category $category is invalid. Message is: $message.");
-				return $message;
-			}
-			$result = $formatter->format($params);
-			if ($result === false) {
-				$errorMessage = $formatter->getErrorMessage();
-				Yii::warning("$language message from category $category failed with error: $errorMessage. Message is: $message.");
-				return $message;
-			} else {
-				return $result;
-			}
-		}
-
-		$p = [];
-		foreach($params as $name => $value) {
-			$p['{' . $name . '}'] = $value;
-		}
-		return strtr($message, $p);
+		return $this->format($message, $params, $language);
 	}
 
 	/**
@@ -121,13 +95,13 @@ class I18N extends Component
 		if (preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
 			$formatter = new MessageFormatter($language, $message);
 			if ($formatter === null) {
-				Yii::warning("Message for $language is invalid: $message.");
+				Yii::warning("Unable to format message in language '$language': $message.");
 				return $message;
 			}
 			$result = $formatter->format($params);
 			if ($result === false) {
 				$errorMessage = $formatter->getErrorMessage();
-				Yii::warning("Formatting message for $language failed with error: $errorMessage. Message is: $message.");
+				Yii::warning("Formatting message for language '$language' failed with error: $errorMessage. The message being formatted was: $message.");
 				return $message;
 			} else {
 				return $result;

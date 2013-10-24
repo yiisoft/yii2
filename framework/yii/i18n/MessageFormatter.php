@@ -13,7 +13,9 @@ if (!class_exists('MessageFormatter', false)) {
 defined('YII_INTL_MESSAGE_FALLBACK') || define('YII_INTL_MESSAGE_FALLBACK', false);
 
 /**
- * MessageFormatter is an enhanced version of PHP intl class that no matter which PHP and ICU versions are used:
+ * MessageFormatter enhances the message formatter class provided by PHP intl extension.
+ *
+ * The following enhancements are provided:
  *
  * - Accepts named arguments and mixed numeric and named arguments.
  * - Issues no error when an insufficient number of arguments have been provided. Instead, the placeholders will not be
