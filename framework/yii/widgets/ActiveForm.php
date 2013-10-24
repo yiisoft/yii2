@@ -300,6 +300,6 @@ class ActiveForm extends Widget
 			}
 		}
 
-		return Json::encode($result);
+		return $result;
 	}	
 }
