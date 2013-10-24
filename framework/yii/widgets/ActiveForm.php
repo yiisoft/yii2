@@ -265,4 +265,41 @@ class ActiveForm extends Widget
 			'form' => $this,
 		]));
 	}
+	
+	/**
+	 * Validates one or several models and returns the results in JSON format.
+	 * This is a helper method that simplifies the way of writing AJAX validation code.
+	 * @param mixed $models a single model instance or an array of models.
+	 * @param array $attributes list of attributes that should be validated. Defaults to null,
+	 * meaning any attribute listed in the applicable validation rules of the models should be
+	 * validated. If this parameter is given as a list of attributes, only
+	 * the listed attributes will be validated.
+	 * @param boolean $loadInput whether to load the data from $_POST array in this method.
+	 * If this is true, the model will be populated from <code>$_POST[ModelClass]</code>.
+	 * @return string the JSON representation of the validation error messages.
+	 */
+	public static function validate($models, $attributes = null,  $loadInput=true)
+	{
+		$result = [];
+		if(!is_array($models)) {
+			$models = [$models];
+		}
+
+		/**
+		 * @var \yii\base\Model $model
+		 */
+		foreach($models as $model)
+		{
+			if($loadInput) {
+				$model->load($_POST);
+			}
+
+			$model->validate($attributes);
+			foreach($model->getErrors() as $attribute=>$errors) {
+				$result[Html::getInputId($model,$attribute)] = $errors;
+			}
+		}
+
+		return Json::encode($result);
+	}	
 }
