@@ -118,12 +118,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function open()
 	{
-		// this is available in PHP 5.4.0+
-		if (function_exists('session_status')) {
-			if (session_status() == PHP_SESSION_ACTIVE) {
-				$this->_opened = true;
-				return;
-			}
+		if (session_status() == PHP_SESSION_ACTIVE) {
+			$this->_opened = true;
+			return;
 		}
 
 		if (!$this->_opened) {
