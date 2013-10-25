@@ -1,10 +1,10 @@
 <?php
 
-namespace yiiunit\framework\email\swift;
+namespace yiiunit\extensions\swiftmailer;
 
 use Yii;
-use yii\email\swift\Mailer;
-use yii\email\swift\Message;
+use yii\swiftmailer\Mailer;
+use yii\swiftmailer\Message;
 use yiiunit\TestCase;
 
 /**

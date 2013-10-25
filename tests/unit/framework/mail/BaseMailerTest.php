@@ -1,12 +1,12 @@
 <?php
 
-namespace yiiunit\framework\email;
+namespace yiiunit\framework\mail;
 
 use Yii;
 use yii\base\View;
-use yii\email\BaseMailer;
-use yii\email\BaseMessage;
-use yii\email\ViewResolver;
+use yii\mail\BaseMailer;
+use yii\mail\BaseMessage;
+use yii\mail\ViewResolver;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 

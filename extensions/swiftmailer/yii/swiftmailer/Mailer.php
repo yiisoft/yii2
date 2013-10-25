@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\email\swift;
+namespace yii\swiftmailer;
 
 use yii\base\InvalidConfigException;
 use yii\email\BaseMailer;
@@ -40,12 +40,6 @@ use yii\email\BaseMailer;
  */
 class Mailer extends BaseMailer
 {
-	/**
-	 * @var string|callback SwiftMailer autoloader callback or path to autoloader file.
-	 * If the SwiftMailer classes autoloading is already managed in some other place,
-	 * for example via Composer, you should leave this field blank.
-	 */
-	public $autoload;
 	/**
 	 * @var \Swift_Mailer Swift mailer instance.
 	 */
@@ -87,37 +81,6 @@ class Mailer extends BaseMailer
 			$this->_transport = $this->createTransport($this->_transport);
 		}
 		return $this->_transport;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		$this->setupSwiftMailerAutoload();
-	}
-
-	/**
-	 * Sets up the SwiftMailer autoloader, if it is specified.
-	 */
-	protected function setupSwiftMailerAutoload()
-	{
-		if (!class_exists('Swift', false)) {
-			if (empty($this->autoload)) {
-				$this->autoload = __DIR__ . '/autoload.php';
-			}
-			if (is_string($this->autoload)) {
-				if (file_exists($this->autoload)) {
-					require_once($this->autoload);
-				} elseif (function_exists($this->autoload)) {
-					spl_autoload_register($this->autoload);
-				} else {
-					throw new InvalidConfigException('"' . get_class($this) . '::autoload" value "' . $this->autoload . '" is invalid: no such function or file exists.');
-				}
-			} else {
-				spl_autoload_register($this->autoload);
-			}
-		}
 	}
 
 	/**

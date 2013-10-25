@@ -1,8 +1,8 @@
 <?php
 
-namespace yiiunit\framework\email;
+namespace yiiunit\framework\mail;
 
-use yii\email\ViewResolver;
+use yii\mail\ViewResolver;
 use Yii;
 use yiiunit\TestCase;
 
@@ -16,6 +16,10 @@ class ViewResolverTest extends TestCase
 	 */
 	protected $testViewPath = '@yiiunit/emails';
 
+	/**
+	 * Data provider for [[testFindViewFile()]]
+	 * @return array test data.
+	 */
 	public function dataProviderFindViewFile()
 	{
 		$alias = '@yiiunit';

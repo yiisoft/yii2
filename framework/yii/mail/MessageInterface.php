@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\email;
+namespace yii\mail;
 
 /**
  * Class MessageInterface

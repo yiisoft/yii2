@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\email\swift;
+namespace yii\swiftmailer;
 
 use yii\email\BaseMessage;
 
@@ -13,9 +13,9 @@ use yii\email\BaseMessage;
  * Email message based on SwiftMailer library.
  *
  * @see http://swiftmailer.org/docs/messages.html
- * @see \yii\email\swift\Mailer
+ * @see \yii\swiftmailer\Mailer
  *
- * @method \yii\email\swift\Mailer getMailer() returns mailer instance.
+ * @method Mailer getMailer() returns mailer instance.
  * @property \Swift_Message $swiftMessage vendor message instance.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
