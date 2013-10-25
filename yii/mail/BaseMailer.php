@@ -48,7 +48,7 @@ abstract class BaseMailer extends Component
 	 * )
 	 * ~~~
 	 */
-	private $_defaultMessageConfig = [];
+	public $messageConfig = [];
 
 	/**
 	 * @param array|\yii\base\View $view view instance or its array configuration.
@@ -94,22 +94,6 @@ abstract class BaseMailer extends Component
 			$this->_viewResolver = $this->createViewResolver($this->_viewResolver);
 		}
 		return $this->_viewResolver;
-	}
-
-	/**
-	 * @param array $defaultMessageConfig default message config
-	 */
-	public function setDefaultMessageConfig(array $defaultMessageConfig)
-	{
-		$this->_defaultMessageConfig = $defaultMessageConfig;
-	}
-
-	/**
-	 * @return array default message config
-	 */
-	public function getDefaultMessageConfig()
-	{
-		return $this->_defaultMessageConfig;
 	}
 
 	/**
