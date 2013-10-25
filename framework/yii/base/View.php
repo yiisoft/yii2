@@ -706,9 +706,6 @@ class View extends Component
 	{
 		$key = $key ?: md5($js);
 		$this->js[$position][$key] = $js;
-		if ($position === self::POS_READY) {
-			JqueryAsset::register($this);
-		}
 	}
 
 	/**
