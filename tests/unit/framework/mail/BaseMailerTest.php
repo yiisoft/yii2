@@ -111,15 +111,15 @@ class BaseMailerTest extends TestCase
 
 	public function testDefaultMessageConfig()
 	{
-		$defaultMessageConfig = array(
+		$messageConfig = array(
 			'id' => 'test-id',
 			'encoding' => 'test-encoding',
 		);
-		Yii::$app->getComponent('email')->setDefaultMessageConfig($defaultMessageConfig);
+		Yii::$app->getComponent('email')->messageConfig = $messageConfig;
 
 		$message = new Message();
 
-		foreach ($defaultMessageConfig as $name => $value) {
+		foreach ($messageConfig as $name => $value) {
 			$this->assertEquals($value, $message->$name);
 		}
 	}

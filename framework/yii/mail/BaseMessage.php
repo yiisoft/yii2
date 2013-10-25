@@ -49,7 +49,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 	 */
 	public function init()
 	{
-		Yii::configure($this, $this->getMailer()->getDefaultMessageConfig());
+		Yii::configure($this, $this->getMailer()->messageConfig);
 	}
 
 	/**
