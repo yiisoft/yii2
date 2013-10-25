@@ -8,7 +8,7 @@
 namespace yii\swiftmailer;
 
 use yii\base\InvalidConfigException;
-use yii\email\BaseMailer;
+use yii\mail\BaseMailer;
 
 /**
  * Mailer based on SwiftMailer library.

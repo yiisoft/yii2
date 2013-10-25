@@ -5,13 +5,14 @@ namespace yiiunit\extensions\swiftmailer;
 use Yii;
 use yii\swiftmailer\Mailer;
 use yii\swiftmailer\Message;
-use yiiunit\TestCase;
+use yiiunit\VendorTestCase;
 
 /**
+ * @group vendor
  * @group email
  * @group swiftmailer
  */
-class MessageTest extends TestCase
+class MessageTest extends VendorTestCase
 {
 	/**
 	 * @var string test email address, which will be used as receiver for the messages.
@@ -20,10 +21,11 @@ class MessageTest extends TestCase
 
 	public function setUp()
 	{
-		$this->mockApplication(array(
-			'vendorPath' => Yii::getAlias('@yiiunit/vendor')
-		));
-		Yii::$app->setComponent('email', $this->createTestEmailComponent());
+		$this->mockApplication([
+			'components' => [
+				'email' => $this->createTestEmailComponent()
+			]
+		]);
 	}
 
 	/**

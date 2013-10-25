@@ -7,7 +7,7 @@
 
 namespace yii\swiftmailer;
 
-use yii\email\BaseMessage;
+use yii\mail\BaseMessage;
 
 /**
  * Email message based on SwiftMailer library.
