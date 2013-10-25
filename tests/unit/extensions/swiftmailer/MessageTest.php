@@ -82,7 +82,7 @@ class MessageTest extends VendorTestCase
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Create Attachment Test');
 		$message->setText('Yii Swift Create Attachment Test body');
-		$message->createAttachment('Test attachment content', 'test.txt');
+		$message->attachContentAsFile('Test attachment content', 'test.txt');
 		$this->assertTrue($message->send());
 	}
 

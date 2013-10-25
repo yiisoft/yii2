@@ -115,7 +115,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function createAttachment($content, $fileName, $contentType = 'application/octet-stream')
+	public function attachContentAsFile($content, $fileName, $contentType = 'application/octet-stream')
 	{
 		if (empty($contentType)) {
 			$contentType = 'application/octet-stream';

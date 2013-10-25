@@ -82,12 +82,12 @@ interface MessageInterface
 	public function addHtml($html);
 
 	/**
-	 * Create file attachment for the email message.
+	 * Attach specified content as file for the email message.
 	 * @param string $content attachment file content.
 	 * @param string $fileName attachment file name.
 	 * @param string $contentType MIME type of the attachment file, by default 'application/octet-stream' will be used.
 	 */
-	public function createAttachment($content, $fileName, $contentType = 'application/octet-stream');
+	public function attachContentAsFile($content, $fileName, $contentType = 'application/octet-stream');
 
 	/**
 	 * Attaches existing file to the email message.

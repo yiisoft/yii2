@@ -75,7 +75,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 			$attachFileName = basename($fileName);
 		}
 		$content = file_get_contents($fileName);
-		$this->createAttachment($content, $attachFileName, $contentType);
+		$this->attachContentAsFile($content, $attachFileName, $contentType);
 	}
 
 	/**
