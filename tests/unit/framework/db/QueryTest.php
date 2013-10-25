@@ -2,10 +2,7 @@
 
 namespace yiiunit\framework\db;
 
-use yii\db\Connection;
-use yii\db\Command;
 use yii\db\Query;
-use yii\db\DataReader;
 
 /**
  * @group db

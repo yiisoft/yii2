@@ -10,7 +10,6 @@ namespace yii\i18n;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\log\Logger;
 
 /**
  * I18N provides features related with internationalization (I18N) and localization (L10N).
@@ -63,6 +62,9 @@ class I18N extends Component
 	/**
 	 * Translates a message to the specified language.
 	 *
+	 * After translation the message will be formatted using [[MessageFormatter]] if it contains
+	 * ICU message format and `$params` are not empty.
+	 *
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
@@ -72,22 +74,34 @@ class I18N extends Component
 	public function translate($category, $message, $params, $language)
 	{
 		$message = $this->getMessageSource($category)->translate($category, $message, $language);
+		return $this->format($message, $params, $language);
+	}
 
+	/**
+	 * Formats a message using using [[MessageFormatter]].
+	 *
+	 * @param string $message the message to be formatted.
+	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
+	 * @param string $language the language code (e.g. `en_US`, `en`).
+	 * @return string the formatted message.
+	 */
+	public function format($message, $params, $language)
+	{
 		$params = (array)$params;
 		if ($params === []) {
 			return $message;
 		}
 
-		if (class_exists('MessageFormatter', false) && preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
+		if (preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
 			$formatter = new MessageFormatter($language, $message);
 			if ($formatter === null) {
-				Yii::warning("$language message from category $category is invalid. Message is: $message.");
+				Yii::warning("Unable to format message in language '$language': $message.");
 				return $message;
 			}
 			$result = $formatter->format($params);
 			if ($result === false) {
 				$errorMessage = $formatter->getErrorMessage();
-				Yii::warning("$language message from category $category failed with error: $errorMessage. Message is: $message.");
+				Yii::warning("Formatting message for language '$language' failed with error: $errorMessage. The message being formatted was: $message.");
 				return $message;
 			} else {
 				return $result;

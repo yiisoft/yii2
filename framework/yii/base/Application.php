@@ -85,10 +85,6 @@ abstract class Application extends Module
 	 */
 	public $sourceLanguage = 'en_US';
 	/**
-	 * @var array IDs of the components that need to be loaded when the application starts.
-	 */
-	public $preload = [];
-	/**
 	 * @var Controller the currently active controller instance
 	 */
 	public $controller;

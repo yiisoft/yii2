@@ -21,15 +21,15 @@ use yii\widgets\ActiveForm;
 
 <div class="<?= str_replace('/', '-', trim($generator->viewName, '_')) ?>">
 
-	<?= '<?php' ?> $form = ActiveForm::begin(); ?>
+	<?= "<?php " ?>$form = ActiveForm::begin(); ?>
 
 	<?php foreach ($generator->getModelAttributes() as $attribute): ?>
-	<?= '<?php' ?> echo $form->field($model, '<?= $attribute ?>'); ?>
+	<?= "<?= " ?>$form->field($model, '<?= $attribute ?>') ?>
 	<?php endforeach; ?>
 
 		<div class="form-group">
-			<?= '<?php' ?> echo Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
+			<?= "<?= " ?>Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
 		</div>
-	<?= '<?php' ?> ActiveForm::end(); ?>
+	<?= "<?php " ?>ActiveForm::end(); ?>
 
 </div><!-- <?= str_replace('/', '-', trim($generator->viewName, '-')) ?> -->

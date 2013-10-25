@@ -11,6 +11,12 @@ use yiiunit\TestCase;
  */
 class EmailValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testValidateValue()
 	{
 		$validator = new EmailValidator();

@@ -18,6 +18,7 @@ class ExistValidatorTest extends DatabaseTestCase
 	public function setUp()
 	{
 		parent::setUp();
+		$this->mockApplication();
 		ActiveRecord::$db = $this->getConnection();
 	}
 

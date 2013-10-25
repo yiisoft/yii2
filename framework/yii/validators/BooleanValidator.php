@@ -58,8 +58,8 @@ class BooleanValidator extends Validator
 		$value = $object->$attribute;
 		if (!$this->validateValue($value)) {
 			$this->addError($object, $attribute, $this->message, [
-				'{true}' => $this->trueValue,
-				'{false}' => $this->falseValue,
+				'true' => $this->trueValue,
+				'false' => $this->falseValue,
 			]);
 		}
 	}

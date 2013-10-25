@@ -143,8 +143,8 @@ class CompareValidator extends Validator
 		}
 		if (!$valid) {
 			$this->addError($object, $attribute, $this->message, [
-				'{compareAttribute}' => $compareLabel,
-				'{compareValue}' => $compareValue,
+				'compareAttribute' => $compareLabel,
+				'compareValue' => $compareValue,
 			]);
 		}
 	}

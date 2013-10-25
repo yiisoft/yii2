@@ -15,6 +15,7 @@ return [
 	'preload' => ['log'],
 	'controllerNamespace' => 'backend\controllers',
 	'modules' => [],
+	'extensions' => require(__DIR__ . '/../../vendor/yii-extensions.php'),
 	'components' => [
 		'request' => [
 			'enableCsrfValidation' => true,

@@ -68,7 +68,16 @@ class AssetBundle extends Object
 	 */
 	public $baseUrl;
 	/**
-	 * @var array list of the bundle names that this bundle depends on
+	 * @var array list of bundle class names that this bundle depends on.
+	 *
+	 * For example:
+	 *
+	 * ```php
+	 * public $depends = [
+	 *    'yii\web\YiiAsset',
+	 *    'yii\bootstrap\BootstrapAsset',
+	 * ];
+	 * ```
 	 */
 	public $depends = [];
 	/**

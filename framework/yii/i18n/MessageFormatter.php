@@ -7,13 +7,23 @@
 
 namespace yii\i18n;
 
+if (!class_exists('MessageFormatter', false)) {
+	require_once(__DIR__ . '/FallbackMessageFormatter.php');
+}
+defined('YII_INTL_MESSAGE_FALLBACK') || define('YII_INTL_MESSAGE_FALLBACK', false);
+
 /**
- * MessageFormatter is an enhanced version of PHP intl class that no matter which PHP and ICU versions are used:
+ * MessageFormatter enhances the message formatter class provided by PHP intl extension.
+ *
+ * The following enhancements are provided:
  *
  * - Accepts named arguments and mixed numeric and named arguments.
  * - Issues no error when an insufficient number of arguments have been provided. Instead, the placeholders will not be
  *   substituted.
  * - Fixes PHP 5.5 weird placeholder replacement in case no arguments are provided at all (https://bugs.php.net/bug.php?id=65920).
+ * - Offers limited support for message formatting in case PHP intl extension is not installed.
+ *   However it is highly recommended that you install [PHP intl extension](http://php.net/manual/en/book.intl.php) if you want
+ *   to use MessageFormatter features.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -34,7 +44,7 @@ class MessageFormatter extends \MessageFormatter
 			return $this->getPattern();
 		}
 
-		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+		if (version_compare(PHP_VERSION, '5.5.0', '<') && !YII_INTL_MESSAGE_FALLBACK) {
 			$pattern = self::replaceNamedArguments($this->getPattern(), $args);
 			$this->setPattern($pattern);
 			$args = array_values($args);
@@ -57,7 +67,7 @@ class MessageFormatter extends \MessageFormatter
 			return $pattern;
 		}
 
-		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+		if (version_compare(PHP_VERSION, '5.5.0', '<') && !YII_INTL_MESSAGE_FALLBACK) {
 			$pattern = self::replaceNamedArguments($pattern, $args);
 			$args = array_values($args);
 		}

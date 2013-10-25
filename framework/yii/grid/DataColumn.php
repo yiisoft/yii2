@@ -41,10 +41,10 @@ class DataColumn extends Column
 	 */
 	public $value;
 	/**
-	 * @var string in which format should the value of each data model be displayed as (e.g. "text", "html").
-	 * Supported formats are determined by the [[GridView::formatter|formatter]] used by the [[GridView]].
-	 * Default format is "text" which will format the value as an HTML-encoded plain text when
-	 * [[\yii\base\Formatter]] or [[\yii\i18n\Formatter]] is used.
+	 * @var string|array in which format should the value of each data model be displayed as (e.g. "text", "html",
+	 * ['date', 'Y-m-d']). Supported formats are determined by the [[GridView::formatter|formatter]] used by
+	 * the [[GridView]]. Default format is "text" which will format the value as an HTML-encoded plain text when
+	 * [[\yii\base\Formatter::format()]] or [[\yii\i18n\Formatter::format()]] is used.
 	 */
 	public $format = 'text';
 	/**

@@ -8,7 +8,6 @@
 namespace yii\bootstrap;
 
 use Yii;
-use yii\base\View;
 use yii\helpers\Json;
 
 /**

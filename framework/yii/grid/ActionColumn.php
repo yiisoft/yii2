@@ -10,8 +10,6 @@ namespace yii\grid;
 use Yii;
 use Closure;
 use yii\helpers\Html;
-use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>

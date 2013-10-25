@@ -6,7 +6,6 @@
  */
 namespace yii;
 
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
@@ -107,33 +106,6 @@ class BaseYii
 	public static function getVersion()
 	{
 		return '2.0-dev';
-	}
-
-	/**
-	 * Imports a set of namespaces.
-	 *
-	 * By importing a namespace, the method will create an alias for the directory corresponding
-	 * to the namespace. For example, if "foo\bar" is a namespace associated with the directory
-	 * "path/to/foo/bar", then an alias "@foo/bar" will be created for this directory.
-	 *
-	 * This method is typically invoked in the bootstrap file to import the namespaces of
-	 * the installed extensions. By default, Composer, when installing new extensions, will
-	 * generate such a mapping file which can be loaded and passed to this method.
-	 *
-	 * @param array $namespaces the namespaces to be imported. The keys are the namespaces,
-	 * and the values are the corresponding directories.
-	 */
-	public static function importNamespaces($namespaces)
-	{
-		foreach ($namespaces as $name => $path) {
-			if ($name !== '') {
-				$name = trim(strtr($name, ['\\' => '/', '_' => '/']), '/');
-				if (is_array($path)) {
-					$path = reset($path);
-				}
-				static::setAlias('@' . $name, rtrim($path, '/\\') . '/' . $name);
-			}
-		}
 	}
 
 	/**
@@ -335,8 +307,7 @@ class BaseYii
 
 		include($classFile);
 
-		if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) &&
-			(!function_exists('trait_exists') || !trait_exists($className, false))) {
+		if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
 			throw new UnknownClassException("Unable to find '$className' in file: $classFile");
 		}
 	}
@@ -543,7 +514,11 @@ class BaseYii
 		if (self::$app !== null) {
 			return self::$app->getI18n()->translate($category, $message, $params, $language ?: self::$app->language);
 		} else {
-			return is_array($params) ? strtr($message, $params) : $message;
+			$p = [];
+			foreach((array) $params as $name => $value) {
+				$p['{' . $name . '}'] = $value;
+			}
+			return ($p === []) ? $message : strtr($message, $p);
 		}
 	}
 

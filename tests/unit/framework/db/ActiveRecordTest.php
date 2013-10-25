@@ -1,7 +1,6 @@
 <?php
 namespace yiiunit\framework\db;
 
-use yii\db\Query;
 use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;

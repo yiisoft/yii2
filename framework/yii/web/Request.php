@@ -246,11 +246,7 @@ class Request extends \yii\base\Request
 				$this->_restParams = $_POST;
 			} else {
 				$this->_restParams = [];
-				if (function_exists('mb_parse_str')) {
-					mb_parse_str($this->getRawBody(), $this->_restParams);
-				} else {
-					parse_str($this->getRawBody(), $this->_restParams);
-				}
+				mb_parse_str($this->getRawBody(), $this->_restParams);
 			}
 		}
 		return $this->_restParams;

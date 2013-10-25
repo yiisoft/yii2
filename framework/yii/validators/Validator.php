@@ -251,9 +251,9 @@ abstract class Validator extends Component
 	public function addError($object, $attribute, $message, $params = [])
 	{
 		$value = $object->$attribute;
-		$params['{attribute}'] = $object->getAttributeLabel($attribute);
-		$params['{value}'] = is_array($value) ? 'array()' : $value;
-		$object->addError($attribute, strtr($message, $params));
+		$params['attribute'] = $object->getAttributeLabel($attribute);
+		$params['value'] = is_array($value) ? 'array()' : $value;
+		$object->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));
 	}
 
 	/**

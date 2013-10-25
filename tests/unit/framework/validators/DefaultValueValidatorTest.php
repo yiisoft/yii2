@@ -8,6 +8,12 @@ use yiiunit\TestCase;
  */
 class DefaultValueValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testValidateAttribute()
 	{
 		$val = new DefaultValueValidator;

@@ -9,7 +9,6 @@ namespace yiiunit\framework\i18n;
 
 use yii\base\Model;
 use yii\i18n\I18N;
-use yii\i18n\MessageFormatter;
 use yii\i18n\PhpMessageSource;
 use yiiunit\TestCase;
 
@@ -51,7 +50,13 @@ class I18NTest extends TestCase
 		$params = ['n' => 42];
 		$this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en_US'));
 		$this->assertEquals('Seine Geschwindigkeit beträgt 42 km/h.', $this->i18n->translate('test', $msg, $params, 'de_DE'));
+	}
 
+	public function testTranslateParams2()
+	{
+		if (!extension_loaded("intl")) {
+			$this->markTestSkipped("intl not installed. Skipping.");
+		}
 		$msg = 'His name is {name} and his speed is about {n, number} km/h.';
 		$params = [
 			'n' => 42,

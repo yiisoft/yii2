@@ -10,7 +10,6 @@ use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
 use yiiunit\framework\db\DatabaseTestCase;
-use yiiunit\TestCase;
 
 class UniqueValidatorTest extends DatabaseTestCase
 {
@@ -19,6 +18,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 	public function setUp()
 	{
 		parent::setUp();
+		$this->mockApplication();
 		ActiveRecord::$db = $this->getConnection();
 	}
 

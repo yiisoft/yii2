@@ -10,7 +10,6 @@ defined('YII_ENV') or define('YII_ENV', 'test');
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../vendor/yiisoft/yii2/yii/Yii.php');
-Yii::importNamespaces(require(__DIR__ . '/../vendor/composer/autoload_namespaces.php'));
 
 $config = require(__DIR__ . '/../config/web-test.php');
 

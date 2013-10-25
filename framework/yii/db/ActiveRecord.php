@@ -1125,26 +1125,20 @@ class ActiveRecord extends Model
 
 	/**
 	 * Repopulates this active record with the latest data.
-	 * @param array $attributes
 	 * @return boolean whether the row still exists in the database. If true, the latest data
-	 * will be populated to this active record.
+	 * will be populated to this active record. Otherwise, this record will remain unchanged.
 	 */
-	public function refresh($attributes = null)
+	public function refresh()
 	{
 		$record = $this->find($this->getPrimaryKey(true));
 		if ($record === null) {
 			return false;
 		}
-		if ($attributes === null) {
-			foreach ($this->attributes() as $name) {
-				$this->_attributes[$name] = $record->_attributes[$name];
-			}
-			$this->_oldAttributes = $this->_attributes;
-		} else {
-			foreach ($attributes as $name) {
-				$this->_oldAttributes[$name] = $this->_attributes[$name] = $record->_attributes[$name];
-			}
+		foreach ($this->attributes() as $name) {
+			$this->_attributes[$name] = $record->_attributes[$name];
 		}
+		$this->_oldAttributes = $this->_attributes;
+		$this->_related = null;
 		return true;
 	}
 

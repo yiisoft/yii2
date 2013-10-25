@@ -9,6 +9,12 @@ use yiiunit\TestCase;
 
 class RegularExpressionValidatorTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testValidateValue()
 	{
 		$val = new RegularExpressionValidator(['pattern' => '/^[a-zA-Z0-9](\.)?([^\/]*)$/m']);

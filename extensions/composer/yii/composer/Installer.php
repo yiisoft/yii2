@@ -11,8 +11,6 @@ use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Script\CommandEvent;
-use yii\console\Application;
-use yii\console\Exception;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -20,11 +18,9 @@ use yii\console\Exception;
  */
 class Installer extends LibraryInstaller
 {
+	const EXTRA_BOOTSTRAP = 'bootstrap';
 	const EXTRA_WRITABLE = 'writable';
 	const EXTRA_EXECUTABLE = 'executable';
-	const EXTRA_CONFIG = 'yii-config';
-	const EXTRA_COMMANDS = 'yii-commands';
-	const EXTRA_BOOTSTRAP = 'bootstrap';
 
 	/**
 	 * @inheritdoc
@@ -101,10 +97,10 @@ class Installer extends LibraryInstaller
 
 
 	/**
-	 * Sets the correct permissions of files and directories.
+	 * Sets the correct permission for the files and directories listed in the extra section.
 	 * @param CommandEvent $event
 	 */
-	public static function setPermissions($event)
+	public static function setPermission($event)
 	{
 		$options = array_merge([
 			self::EXTRA_WRITABLE => [],
@@ -131,37 +127,6 @@ class Installer extends LibraryInstaller
 				echo "\n\tThe file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
 				return;
 			}
-		}
-	}
-
-	/**
-	 * Executes a yii command.
-	 * @param CommandEvent $event
-	 */
-	public static function run($event)
-	{
-		$options = array_merge([
-			self::EXTRA_COMMANDS => [],
-		], $event->getComposer()->getPackage()->getExtra());
-
-		if (!isset($options[self::EXTRA_CONFIG])) {
-			throw new Exception('Please specify the "' . self::EXTRA_CONFIG . '" parameter in composer.json.');
-		}
-		$configFile = getcwd() . '/' . $options[self::EXTRA_CONFIG];
-		if (!is_file($configFile)) {
-			throw new Exception("Config file does not exist: $configFile");
-		}
-
-		require_once(__DIR__ . '/../../../yii2/yii/Yii.php');
-		$application = new Application(require($configFile));
-		$request = $application->getRequest();
-
-		foreach ((array)$options[self::EXTRA_COMMANDS] as $command) {
-			$params = str_getcsv($command, ' '); // see http://stackoverflow.com/a/6609509/291573
-			$request->setParams($params);
-			list($route, $params) = $request->resolve();
-			echo "Running command: yii {$command}\n";
-			$application->runAction($route, $params);
 		}
 	}
 }

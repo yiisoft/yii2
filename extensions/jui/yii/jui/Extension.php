@@ -7,20 +7,21 @@
 
 namespace yii\jui;
 
-use yii\web\AssetBundle;
+use Yii;
 
 /**
+ * This is the bootstrap class for the Yii JUI extension.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class AccordionAsset extends AssetBundle
+class Extension extends \yii\base\Extension
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.accordion.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-		'yii\jui\EffectAsset',
-	];
+	/**
+	 * @inheritdoc
+	 */
+	public static function init()
+	{
+		Yii::setAlias('@yii/jui', __DIR__);
+	}
 }
