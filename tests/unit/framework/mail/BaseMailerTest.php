@@ -188,4 +188,9 @@ class Message extends BaseMessage
 	public function addHtml($html) {}
 
 	public function attachContentAsFile($content, $fileName, $contentType = 'application/octet-stream') {}
+
+	public function __toString()
+	{
+		return get_class($this);
+	}
 }

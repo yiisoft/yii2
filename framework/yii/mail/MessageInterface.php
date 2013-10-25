@@ -113,4 +113,11 @@ interface MessageInterface
 	 * @return string string the rendering result
 	 */
 	public function render($view, $params = []);
+
+	/**
+	 * String output.
+	 * This is PHP magic method that returns string representation of an object.
+	 * @return string the string representation of the object
+	 */
+	public function __toString();
 }

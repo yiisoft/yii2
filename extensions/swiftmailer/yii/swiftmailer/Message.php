@@ -49,11 +49,27 @@ class Message extends BaseMessage
 	}
 
 	/**
+	 * @return string from address of this message.
+	 */
+	public function getFrom()
+	{
+		return $this->getSwiftMessage()->getFrom();
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function setTo($to)
 	{
 		$this->getSwiftMessage()->setTo($to);
+	}
+
+	/**
+	 * @return array To addresses of this message.
+	 */
+	public function getTo()
+	{
+		return $this->getSwiftMessage()->getTo();
 	}
 
 	/**
@@ -65,6 +81,14 @@ class Message extends BaseMessage
 	}
 
 	/**
+	 * @return array Cc address of this message.
+	 */
+	public function getCc()
+	{
+		return $this->getSwiftMessage()->getCc();
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function setBcc($bcc)
@@ -73,11 +97,27 @@ class Message extends BaseMessage
 	}
 
 	/**
+	 * @return array Bcc addresses of this message.
+	 */
+	public function getBcc()
+	{
+		return $this->getSwiftMessage()->getBcc();
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function setSubject($subject)
 	{
 		$this->getSwiftMessage()->setSubject($subject);
+	}
+
+	/**
+	 * @return string the subject of this message.
+	 */
+	public function getSubject()
+	{
+		return $this->getSwiftMessage()->getSubject();
 	}
 
 	/**
@@ -122,5 +162,13 @@ class Message extends BaseMessage
 		}
 		$attachment = \Swift_Attachment::newInstance($content, $fileName, $contentType);
 		$this->getSwiftMessage()->attach($attachment);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function __toString()
+	{
+		return $this->getSwiftMessage()->toString();
 	}
 }
