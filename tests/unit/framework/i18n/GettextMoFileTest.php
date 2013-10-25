@@ -5,6 +5,9 @@ namespace yiiunit\framework\i18n;
 use yii\i18n\GettextMoFile;
 use yiiunit\TestCase;
 
+/**
+ * @group i18n
+ */
 class GettextMoFileTest extends TestCase
 {
 	public function testLoad()
@@ -41,7 +44,7 @@ class GettextMoFileTest extends TestCase
 	{
 		// initial data
 		$s = chr(4);
-		$messages = array(
+		$messages = [
 			'Hello!' => 'Привет!',
 			"context1{$s}Hello?" => 'Привет?',
 			'Hello!?' => '',
@@ -50,7 +53,7 @@ class GettextMoFileTest extends TestCase
 			"context2{$s}\nNew lines\n" => "\nПереносы строк\n",
 			"context2{$s}\tTabs\t" => "\tТабы\t",
 			"context2{$s}\rCarriage returns\r" => "\rВозвраты кареток\r",
-		);
+		];
 
 		// create temporary directory and dump messages
 		$poFileDirectory = __DIR__ . '/../../runtime/i18n';

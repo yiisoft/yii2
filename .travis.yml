@@ -1,14 +1,24 @@
 language: php
 
 php:
-  - 5.3
   - 5.4
   - 5.5
 
-env:
-  - DB=mysql
+services:
+  - redis-server
+  - memcached
 
 before_script:
-  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database IF NOT EXISTS yiitest;'; fi"
+  - composer self-update && composer --version
+  - composer require satooshi/php-coveralls 0.6.*
+  - mysql -e 'CREATE DATABASE yiitest;';
+  - psql -U postgres -c 'CREATE DATABASE yiitest;';
+  - tests/unit/data/travis/apc-setup.sh
+  - tests/unit/data/travis/memcache-setup.sh
+  - tests/unit/data/travis/cubrid-setup.sh
 
-script: phpunit
+script:
+  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata
+
+after_script:
+  - php vendor/bin/coveralls

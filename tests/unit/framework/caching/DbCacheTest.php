@@ -3,12 +3,13 @@
 namespace yiiunit\framework\caching;
 
 use yii\caching\DbCache;
-use yiiunit\TestCase;
 
 /**
  * Class for testing file cache backend
+ * @group db
+ * @group caching
  */
-class DbCacheTest extends CacheTest
+class DbCacheTest extends CacheTestCase
 {
 	private $_cacheInstance;
 	private $_connection;
@@ -36,11 +37,11 @@ class DbCacheTest extends CacheTest
 	 * @param bool $reset whether to clean up the test database
 	 * @return \yii\db\Connection
 	 */
-	function getConnection($reset = true)
+	public function getConnection($reset = true)
 	{
 		if ($this->_connection === null) {
 			$databases = $this->getParam('databases');
-            $params = $databases['mysql'];
+			$params = $databases['mysql'];
 			$db = new \yii\db\Connection;
 			$db->dsn = $params['dsn'];
 			$db->username = $params['username'];
@@ -66,9 +67,7 @@ class DbCacheTest extends CacheTest
 	protected function getCacheInstance()
 	{
 		if ($this->_cacheInstance === null) {
-			$this->_cacheInstance = new DbCache(array(
-				'db' => $this->getConnection(),
-			));
+			$this->_cacheInstance = new DbCache(['db' => $this->getConnection()]);
 		}
 		return $this->_cacheInstance;
 	}

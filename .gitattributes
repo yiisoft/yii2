@@ -1,0 +1,23 @@
+# Autodetect text files
+* text=auto
+
+# ...Unless the name matches the following overriding patterns
+
+# Definitively text files
+*.php  text
+*.css  text
+*.js   text
+*.txt  text
+*.md   text
+*.xml  text
+*.json text
+*.bat  text
+*.sql  text
+*.xml  text
+*.yml  text
+
+# Ensure those won't be messed up with
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.ttf  binary

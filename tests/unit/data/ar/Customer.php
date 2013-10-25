@@ -1,8 +1,15 @@
 <?php
-
 namespace yiiunit\data\ar;
-use yii\db\ActiveQuery;
 
+/**
+ * Class Customer
+ *
+ * @property integer $id
+ * @property string $name
+ * @property string $email
+ * @property string $address
+ * @property integer $status
+ */
 class Customer extends ActiveRecord
 {
 	const STATUS_ACTIVE = 1;
@@ -17,7 +24,7 @@ class Customer extends ActiveRecord
 
 	public function getOrders()
 	{
-		return $this->hasMany('Order', array('customer_id' => 'id'))->orderBy('id');
+		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
 	}
 
 	public static function active($query)

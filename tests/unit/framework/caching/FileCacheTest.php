@@ -1,12 +1,13 @@
 <?php
 namespace yiiunit\framework\caching;
+
 use yii\caching\FileCache;
-use yiiunit\TestCase;
 
 /**
  * Class for testing file cache backend
+ * @group caching
  */
-class FileCacheTest extends CacheTest
+class FileCacheTest extends CacheTestCase
 {
 	private $_cacheInstance = null;
 
@@ -16,9 +17,7 @@ class FileCacheTest extends CacheTest
 	protected function getCacheInstance()
 	{
 		if ($this->_cacheInstance === null) {
-			$this->_cacheInstance = new FileCache(array(
-				'cachePath' => '@yiiunit/runtime/cache',
-			));
+			$this->_cacheInstance = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
 		}
 		return $this->_cacheInstance;
 	}

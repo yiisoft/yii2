@@ -1,8 +1,13 @@
 <?php
 namespace yiiunit\framework\helpers;
-use \yii\helpers\VarDumper;
 
-class VarDumperTest extends \yii\test\TestCase
+use \yii\helpers\VarDumper;
+use yii\test\TestCase;
+
+/**
+ * @group helpers
+ */
+class VarDumperTest extends TestCase
 {
 	public function testDumpObject()
 	{

@@ -8,7 +8,7 @@ $customers = Customer::find()->all();
 
 // find all active customers and order them by their age:
 $customers = Customer::find()
-    ->where(array('status' => 1))
+    ->where(['status' => 1])
     ->orderBy('age')
     ->all();
 
@@ -16,11 +16,11 @@ $customers = Customer::find()
 $customer = Customer::find(10);
 
 // the above is equivalent to:
-$customer = Customer::find()->where(array('id' => 10))->one();
+$customer = Customer::find()->where(['id' => 10])->one();
 
 // find a single customer whose age is 30 and whose status is 1
-$customer = Customer::find(array('age' => 30, 'status' => 1));
+$customer = Customer::find(['age' => 30, 'status' => 1]);
 
 // the above is equivalent to:
-$customer = Customer::find()->where(array('age' => 30, 'status' => 1))->one();
+$customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
 ~~~

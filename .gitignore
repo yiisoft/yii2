@@ -14,3 +14,9 @@ Thumbs.db
 
 # composer vendor dir
 /yii/vendor
+
+# composer itself is not needed
+composer.phar
+
+# Mac DS_Store Files
+.DS_Store

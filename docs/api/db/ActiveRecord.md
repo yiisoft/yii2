@@ -40,18 +40,18 @@ instance which serves as the DB connection. Usually this component is configured
 via application configuration like the following:
 
 ~~~
-return array(
-	'components' => array(
-		'db' => array(
+return [
+	'components' => [
+		'db' => [
 			'class' => 'yii\db\Connection',
 			'dsn' => 'mysql:host=localhost;dbname=testdb',
 			'username' => 'demo',
 			'password' => 'demo',
 			// turn on schema caching to improve performance
 			// 'schemaCacheDuration' => 3600,
-		),
-	),
-);
+		],
+	],
+];
 ~~~
 
 
@@ -70,13 +70,13 @@ The followings are some examples,
 ~~~
 // to retrieve all *active* customers and order them by their ID:
 $customers = Customer::find()
-	->where(array('status' => $active))
+	->where(['status' => $active])
 	->orderBy('id')
 	->all();
 
 // to return a single customer whose ID is 1:
 $customer = Customer::find()
-	->where(array('id' => 1))
+	->where(['id' => 1])
 	->one();
 
 // or use the following shortcut approach:
@@ -88,7 +88,7 @@ $customers = Customer::findBySql($sql)->all();
 
 // to return the number of *active* customers:
 $count = Customer::find()
-	->where(array('status' => $active))
+	->where(['status' => $active])
 	->count();
 
 // to return customers in terms of arrays rather than `Customer` objects:
@@ -158,7 +158,7 @@ $customer = Customer::find($id);
 $customer->delete();
 
 // to increment the age of all customers by 1
-Customer::updateAllCounters(array('age' => 1));
+Customer::updateAllCounters(['age' => 1]);
 ~~~
 
 
@@ -175,7 +175,7 @@ class Customer extends \yii\db\ActiveRecord
 {
 	public function getOrders()
 	{
-		return $this->hasMany('Order', array('customer_id' => 'id'));
+		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
 	}
 }
 
@@ -183,7 +183,7 @@ class Order extends \yii\db\ActiveRecord
 {
 	public function getCustomer()
 	{
-		return $this->hasOne('Customer', array('id' => 'customer_id'));
+		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
 	}
 }
 ~~~
@@ -194,8 +194,7 @@ a one-many relationship. For example, a customer has many orders. And the [[hasO
 method declares a many-one or one-one relationship. For example, an order has one customer.
 Both methods take two parameters:
 
-- `$class`: the name of the class related models should use. If specified without
-  a namespace, the namespace will be taken from the declaring class.
+- `$class`: the name of the class that the related models should use.
 - `$link`: the association between columns from two tables. This should be given as an array.
   The keys of the array are the names of the columns from the table associated with `$class`,
   while the values of the array are the names of the columns from the declaring class.
@@ -223,8 +222,8 @@ class Customer extends \yii\db\ActiveRecord
 {
 	public function getBigOrders($threshold = 100)
 	{
-		return $this->hasMany('Order', array('customer_id' => 'id'))
-			->where('subtotal > :threshold', array(':threshold' => $threshold))
+		return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+			->where('subtotal > :threshold', [':threshold' => $threshold])
 			->orderBy('id');
 	}
 }
@@ -244,8 +243,8 @@ class Order extends \yii\db\ActiveRecord
 {
 	public function getItems()
 	{
-		return $this->hasMany('Item', array('id' => 'item_id'))
-			->viaTable('tbl_order_item', array('order_id' => 'id'));
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
+			->viaTable('tbl_order_item', ['order_id' => 'id']);
 	}
 }
 ~~~
@@ -259,12 +258,12 @@ class Order extends \yii\db\ActiveRecord
 {
 	public function getOrderItems()
 	{
-		return $this->hasMany('OrderItem', array('order_id' => 'id'));
+		return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
 	}
 
 	public function getItems()
 	{
-		return $this->hasMany('Item', array('id' => 'item_id'))
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
 			->via('orderItems');
 	}
 }
@@ -331,11 +330,11 @@ $orders = $customer->getOrders()->where('subtotal>100')->all();
 
 // eager loading: SELECT * FROM tbl_customer LIMIT 10
                   SELECT * FROM tbl_order WHERE customer_id IN (1,2,...) AND subtotal>100
-$customers = Customer::find()->limit(100)->with(array(
+$customers = Customer::find()->limit(100)->with([
 	'orders' => function($query) {
 		$query->andWhere('subtotal>100');
 	},
-))->all();
+])->all();
 ~~~
 
 
@@ -437,7 +436,7 @@ class Customer extends \yii\db\ActiveRecord
 	 */
 	public static function olderThan($query, $age = 30)
 	{
-		$query->andWhere('age > :age', array(':age' => $age));
+		$query->andWhere('age > :age', [':age' => $age]);
 	}
 }
 
@@ -446,3 +445,7 @@ $customers = Customer::find()->olderThan(50)->all();
 
 The parameters should follow after the `$query` parameter when defining the scope method, and they
 can take default values like shown above.
+
+### Atomic operations and scenarios
+
+TBD

@@ -5,7 +5,7 @@ namespace yiiunit;
 /**
  * This is the base class for all yii framework unit tests.
  */
-class TestCase extends \yii\test\TestCase
+abstract class TestCase extends \yii\test\TestCase
 {
 	public static $params;
 
@@ -37,16 +37,16 @@ class TestCase extends \yii\test\TestCase
 	 * Populates Yii::$app with a new application
 	 * The application will be destroyed on tearDown() automatically.
 	 * @param array $config The application configuration, if needed
+	 * @param string $appClass name of the application class to create
 	 */
-	protected function mockApplication($config=array())
+	protected function mockApplication($config = [], $appClass = '\yii\console\Application')
 	{
-		static $defaultConfig = array(
+		static $defaultConfig = [
 			'id' => 'testapp',
 			'basePath' => __DIR__,
-		);
+		];
 
-		$appClass = $this->getParam( 'appClass', '\yii\web\Application' );
-		new $appClass(array_merge($defaultConfig,$config));
+		new $appClass(array_merge($defaultConfig, $config));
 	}
 
 	/**

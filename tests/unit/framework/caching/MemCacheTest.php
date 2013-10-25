@@ -1,12 +1,14 @@
 <?php
 namespace yiiunit\framework\caching;
+
 use yii\caching\MemCache;
-use yiiunit\TestCase;
 
 /**
  * Class for testing memcache cache backend
+ * @group memcache
+ * @group caching
  */
-class MemCacheTest extends CacheTest
+class MemCacheTest extends CacheTestCase
 {
 	private $_cacheInstance = null;
 

@@ -1,12 +1,14 @@
 <?php
 namespace yiiunit\framework\caching;
+
 use yii\caching\XCache;
-use yiiunit\TestCase;
 
 /**
  * Class for testing xcache backend
+ * @group xcache
+ * @group caching
  */
-class XCacheTest extends CacheTest
+class XCacheTest extends CacheTestCase
 {
 	private $_cacheInstance = null;
 
