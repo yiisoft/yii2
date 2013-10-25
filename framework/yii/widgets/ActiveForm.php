@@ -265,4 +265,93 @@ class ActiveForm extends Widget
 			'form' => $this,
 		]));
 	}
+
+	/**
+	 * Validates one or several models and returns an error message array indexed by the attribute IDs.
+	 * This is a helper method that simplifies the way of writing AJAX validation code.
+	 *
+	 * For example, you may use the following code in a controller action to respond
+	 * to an AJAX validation request:
+	 *
+	 * ~~~
+	 * $model = new Post;
+	 * $model->load($_POST);
+	 * if (Yii::$app->request->isAjax) {
+	 *     Yii::$app->response->format = Response::FORMAT_JSON;
+	 *     return ActiveForm::validate($model);
+	 * }
+	 * // ... respond to non-AJAX request ...
+	 * ~~~
+	 *
+	 * To validate multiple models, simply pass each model as a parameter to this method, like
+	 * the following:
+	 *
+	 * ~~~
+	 * ActiveForm::validate($model1, $model2, ...);
+	 * ~~~
+	 *
+	 * @param Model $model the model to be validated
+	 * @param mixed $attributes list of attributes that should be validated.
+	 * If this parameter is empty, it means any attribute listed in the applicable
+	 * validation rules should be validated.
+	 *
+	 * When this method is used to validate multiple models, this parameter will be interpreted
+	 * as a model.
+	 *
+	 * @return array the error message array indexed by the attribute IDs.
+	 */
+	public static function validate($model, $attributes = null)
+	{
+		$result = [];
+		if ($attributes instanceof Model) {
+			// validating multiple models
+			$models = func_get_args();
+			$attributes = null;
+		} else {
+			$models = [$model];
+		}
+		/** @var Model $model */
+		foreach ($models as $model) {
+			$model->validate($attributes);
+			foreach ($model->getErrors() as $attribute => $errors) {
+				$result[Html::getInputId($model, $attribute)] = $errors;
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Validates an array of model instances and returns an error message array indexed by the attribute IDs.
+	 * This is a helper method that simplifies the way of writing AJAX validation code for tabular input.
+	 *
+	 * For example, you may use the following code in a controller action to respond
+	 * to an AJAX validation request:
+	 *
+	 * ~~~
+	 * // ... load $models ...
+	 * if (Yii::$app->request->isAjax) {
+	 *     Yii::$app->response->format = Response::FORMAT_JSON;
+	 *     return ActiveForm::validateMultiple($models);
+	 * }
+	 * // ... respond to non-AJAX request ...
+	 * ~~~
+	 *
+	 * @param array $models an array of models to be validated.
+	 * @param mixed $attributes list of attributes that should be validated.
+	 * If this parameter is empty, it means any attribute listed in the applicable
+	 * validation rules should be validated.
+	 * @return array the error message array indexed by the attribute IDs.
+	 */
+	public static function validateMultiple($models, $attributes = null)
+	{
+		$result = [];
+		/** @var Model $model */
+		foreach ($models as $i => $model) {
+			$model->validate($attributes);
+			foreach ($model->getErrors() as $attribute => $errors) {
+				$result[Html::getInputId($model, "[$i]" . $attribute)] = $errors;
+			}
+		}
+		return $result;
+	}
 }
