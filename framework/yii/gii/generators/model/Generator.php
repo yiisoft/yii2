@@ -265,8 +265,8 @@ class Generator extends \yii\gii\Generator
 				$link = $this->generateRelationLink(array_flip($refs));
 				$relationName = $this->generateRelationName($relations, $className, $table, $fks[0], false);
 				$relations[$className][$relationName] = [
-					"return \$this->hasOne('$this->ns\\$refClassName', $link);",
-					$this->ns . '\\' . $refClassName,
+					"return \$this->hasOne($refClassName::className(), $link);",
+					$refClassName,
 					false,
 				];
 
@@ -281,8 +281,8 @@ class Generator extends \yii\gii\Generator
 				$link = $this->generateRelationLink($refs);
 				$relationName = $this->generateRelationName($relations, $refClassName, $refTable, $className, $hasMany);
 				$relations[$refClassName][$relationName] = [
-					"return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "('$this->ns\\$className', $link);",
-					$this->ns . '\\' . $className,
+					"return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "($refClassName::className(), $link);",
+					$className,
 					$hasMany,
 				];
 			}
@@ -299,8 +299,8 @@ class Generator extends \yii\gii\Generator
 			$viaLink = $this->generateRelationLink([$table->primaryKey[0] => $fks[$table->primaryKey[0]][1]]);
 			$relationName = $this->generateRelationName($relations, $className0, $db->getTableSchema($table0), $table->primaryKey[1], true);
 			$relations[$className0][$relationName] = [
-				"return \$this->hasMany('$this->ns\\$className1', $link)->viaTable('{$table->name}', $viaLink);",
-				$this->ns . '\\' . $className0,
+				"return \$this->hasMany($className1::className(), $link)->viaTable('{$table->name}', $viaLink);",
+				$className0,
 				true,
 			];
 
@@ -308,8 +308,8 @@ class Generator extends \yii\gii\Generator
 			$viaLink = $this->generateRelationLink([$table->primaryKey[1] => $fks[$table->primaryKey[1]][1]]);
 			$relationName = $this->generateRelationName($relations, $className1, $db->getTableSchema($table1), $table->primaryKey[0], true);
 			$relations[$className1][$relationName] = [
-				"return \$this->hasMany('$this->ns\\$className0', $link)->viaTable('{$table->name}', $viaLink);",
-				$this->ns . '\\' . $className1,
+				"return \$this->hasMany($className0::className(), $link)->viaTable('{$table->name}', $viaLink);",
+				$className1,
 				true,
 			];
 		}
