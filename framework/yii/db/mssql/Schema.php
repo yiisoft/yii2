@@ -117,8 +117,10 @@ class Schema extends \yii\db\Schema
 		$this->resolveTableNames($table, $name);
 		$this->findPrimaryKeys($table);
 		if ($this->findColumns($table)) {
-			$this->findForeignKeys($table);
+			$this->findConstraints($table);
 			return $table;
+		} else {
+			return null;
 		}
 	}
 
@@ -292,7 +294,7 @@ SQL;
 	 * Collects the foreign key column details for the given table.
 	 * @param TableSchema $table the table metadata
 	 */
-	protected function findForeignKeys($table)
+	protected function findConstraints($table)
 	{
 		$referentialConstraintsTableName = 'information_schema.referential_constraints';
 		$keyColumnUsageTableName = 'information_schema.key_column_usage';
