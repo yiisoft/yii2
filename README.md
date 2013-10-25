@@ -24,13 +24,9 @@ DIRECTORY STRUCTURE
           benchmark/       app demonstrating the minimal overhead introduced by the framework
       build/               internally used build tools
       docs/                documentation
-<<<<<<< HEAD:readme.md
-      yii/                 framework source files
-=======
       extensions/          extensions 
       framework/           framework files
           yii/             framework source files
->>>>>>> upstream/master:README.md
       tests/               tests of the core framework code
 
 
