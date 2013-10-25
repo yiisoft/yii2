@@ -1,6 +1,5 @@
 <?php
 
-use yii\gii\Generator;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\gii\components\ActiveField;

@@ -41,7 +41,7 @@ abstract class Module extends Component
 	 */
 	public $params = [];
 	/**
-	 * @var array the IDs of the components or modules that should be preloaded when this module is created.
+	 * @var array the IDs of the components or modules that should be preloaded right after initialization.
 	 */
 	public $preload = [];
 	/**

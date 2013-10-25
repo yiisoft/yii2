@@ -42,9 +42,9 @@ use yii\base\ActionFilter;
  *                     'roles' => ['@'],
  *                 ],
  *                 // everything else is denied
- *             ),
- *         ),
- *     );
+ *             ],
+ *         ],
+ *     ];
  * }
  * ~~~
  *

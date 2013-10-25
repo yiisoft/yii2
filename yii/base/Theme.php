@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
 
 /**

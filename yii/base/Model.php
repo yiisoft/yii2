@@ -748,16 +748,21 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 
 	/**
 	 * Validates multiple models.
+	 * This method will validate every model. The models being validated may
+	 * be of the same or different types.
 	 * @param array $models the models to be validated
+	 * @param array $attributes list of attributes that should be validated.
+	 * If this parameter is empty, it means any attribute listed in the applicable
+	 * validation rules should be validated.
 	 * @return boolean whether all models are valid. False will be returned if one
 	 * or multiple models have validation error.
 	 */
-	public static function validateMultiple($models)
+	public static function validateMultiple($models, $attributes = null)
 	{
 		$valid = true;
 		/** @var Model $model */
 		foreach ($models as $model) {
-			$valid = $model->validate() && $valid;
+			$valid = $model->validate($attributes) && $valid;
 		}
 		return $valid;
 	}

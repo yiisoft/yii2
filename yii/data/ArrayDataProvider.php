@@ -33,7 +33,7 @@ use yii\helpers\ArrayHelper;
  *     'allModels' => $query->from('tbl_post')->all(),
  *     'sort' => [
  *         'attributes' => ['id', 'username', 'email'],
- *     ),
+ *     ],
  *     'pagination' => [
  *         'pageSize' => 10,
  *     ],

@@ -12,7 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 
 /**
- * CUniqueValidator validates that the attribute value is unique in the corresponding database table.
+ * UniqueValidator validates that the attribute value is unique in the corresponding database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
