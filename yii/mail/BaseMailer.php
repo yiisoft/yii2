@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\email;
+namespace yii\mail;
 
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -19,7 +19,7 @@ use Yii;
  * @see BaseMessage
  *
  * @property \yii\base\View|array $view view instance or its array configuration.
- * @property \yii\email\ViewResolver|array $viewResolver view resolver instance or its array configuration.
+ * @property \yii\mail\ViewResolver|array $viewResolver view resolver instance or its array configuration.
  * @property array $defaultMessageConfig configuration, which should be applied by default to any
  * new created email message instance.
  *
@@ -33,7 +33,7 @@ abstract class BaseMailer extends Component
 	 */
 	private $_view = [];
 	/**
-	 * @var \yii\email\ViewResolver|array view resolver instance or its array configuration.
+	 * @var \yii\mail\ViewResolver|array view resolver instance or its array configuration.
 	 */
 	private $_viewResolver = [];
 	/**
@@ -74,7 +74,7 @@ abstract class BaseMailer extends Component
 	}
 
 	/**
-	 * @param array|\yii\email\ViewResolver $viewResolver view resolver instance or its array configuration.
+	 * @param array|\yii\mail\ViewResolver $viewResolver view resolver instance or its array configuration.
 	 * @throws \yii\base\InvalidConfigException on invalid argument.
 	 */
 	public function setViewResolver($viewResolver)
@@ -86,7 +86,7 @@ abstract class BaseMailer extends Component
 	}
 
 	/**
-	 * @return \yii\email\ViewResolver view resolver.
+	 * @return \yii\mail\ViewResolver view resolver.
 	 */
 	public function getViewResolver()
 	{
@@ -128,12 +128,12 @@ abstract class BaseMailer extends Component
 	/**
 	 * Creates view resolver instance from given configuration.
 	 * @param array $config view resolver configuration.
-	 * @return \yii\email\ViewResolver view resolver instance.
+	 * @return \yii\mail\ViewResolver view resolver instance.
 	 */
 	protected function createViewResolver(array $config)
 	{
 		if (!array_key_exists('class', $config)) {
-			$config['class'] = '\yii\email\ViewResolver';
+			$config['class'] = '\yii\mail\ViewResolver';
 		}
 		return Yii::createObject($config);
 	}

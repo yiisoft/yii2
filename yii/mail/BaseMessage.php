@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\email;
+namespace yii\mail;
 
 use yii\base\InvalidParamException;
 use yii\base\Object;
@@ -20,7 +20,7 @@ use Yii;
  *
  * @see BaseMailer
  *
- * @property \yii\email\BaseMailer $mailer mailer component instance. This property is read-only.
+ * @property \yii\mail\BaseMailer $mailer mailer component instance. This property is read-only.
  * @property string|array $from sender email address.
  * @property string|array $to receiver email address.
  * @property string|array $cc copy receiver email address.
@@ -35,7 +35,7 @@ use Yii;
 abstract class BaseMessage extends Object implements MessageInterface
 {
 	/**
-	 * @return \yii\email\BaseMailer
+	 * @return \yii\mail\BaseMailer
 	 */
 	public function getMailer()
 	{
