@@ -38,6 +38,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_MONEY => 'decimal(19,4)',
 	);
 
+  /**
+   * Builds a SQL statement for renaming a DB table.
+   * @param string $table the table to be renamed. The name will be properly quoted by the method.
+   * @param string $newName the new table name. The name will be properly quoted by the method.
+   * @return string the SQL statement for renaming a DB table.
+   * @since 1.1.6
+   */
+  public function renameTable($table, $newName)
+  {
+    $quotedTable = $this->db->quoteTableName($table);
+    return "sp_rename '$quotedTable', '$newName'";
+  }
 
   /**
    * Builds a SQL statement for renaming a column.
