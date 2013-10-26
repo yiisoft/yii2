@@ -89,6 +89,11 @@ class GridView extends BaseListView
 	 */
 	public $showFooter = false;
 	/**
+	 * @var string|boolean the HTML content to be displayed when [[dataProvider]] does not have any data.
+	 * If false, the grid view will still be displayed (without body content though).
+	 */
+	public $empty = false;
+	/**
 	 * @var array|Formatter the formatter used to format model attribute values into displayable texts.
 	 * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
 	 * instance. If this property is not set, the "formatter" application component will be used.
