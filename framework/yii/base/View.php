@@ -259,16 +259,16 @@ class View extends Component
 
 		$output = '';
 		if ($this->beforeRender($viewFile)) {
+			Yii::trace("Rendering view file: $viewFile", __METHOD__);
 			$ext = pathinfo($viewFile, PATHINFO_EXTENSION);
 			if (isset($this->renderers[$ext])) {
-				if (is_array($this->renderers[$ext])) {
+				if (is_array($this->renderers[$ext]) || is_string($this->renders[$ext])) {
 					$this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
 				}
 				/** @var ViewRenderer $renderer */
 				$renderer = $this->renderers[$ext];
 				$output = $renderer->render($this, $viewFile, $params);
 			} else {
-				Yii::trace("Rendering view file: $viewFile", __METHOD__);
 				$output = $this->renderPhpFile($viewFile, $params);
 			}
 			$this->afterRender($viewFile, $output);
