@@ -38,41 +38,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_MONEY => 'decimal(19,4)',
 	);
 
-	/**
+
+  /**
    * Builds a SQL statement for renaming a column.
    * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-   * @param string $oldName the old name of the column. The name will be properly quoted by the method.
+   * @param string $name the old name of the column. The name will be properly quoted by the method.
    * @param string $newName the new name of the column. The name will be properly quoted by the method.
-   * @return string the SQL statement for renaming a DB column.
-   * @throws Exception
+   * @return string the SQL statement for renaming a DB column by build-in stored procedure defined by MS SQL.
+   * @since 1.1.6
    */
   public function renameColumn($table, $oldName, $newName)
   {
-          $quotedTable = $this->db->quoteTableName($table);
-          $row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
-          if ($row === false) {
-                  throw new Exception("Unable to find column '$oldName' in table '$table'.");
-          }
-          if (isset($row['Create Table'])) {
-                  $sql = $row['Create Table'];
-          } else {
-                  $row = array_values($row);
-                  $sql = $row[1];
-          }
-          if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches)) {
-                  foreach ($matches[1] as $i => $c) {
-                          if ($c === $oldName) {
-                                  return "ALTER TABLE $quotedTable CHANGE "
-                                          . $this->db->quoteColumnName($oldName) . ' '
-                                          . $this->db->quoteColumnName($newName) . ' '
-                                          . $matches[2][$i];
-                          }
-                  }
-          }
-          // try to give back a SQL anyway
-          return "ALTER TABLE $quotedTable CHANGE "
-                  . $this->db->quoteColumnName($oldName) . ' '
-                  . $this->db->quoteColumnName($newName);
+    $quotedTable = $this->db->quoteTableName($table);
+    return "sp_rename '$quotedTable.$oldName', '$newName', 'COLUMN'";
   }
 
   /**
