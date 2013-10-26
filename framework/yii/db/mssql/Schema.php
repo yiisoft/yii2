@@ -339,16 +339,21 @@ SQL;
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * @return array all table names in the database. The names have NO the schema name prefix.
 	 */
-	protected function findTableNames($schema = '')
+	protected function findTableNames($schema = '',$includeViews=true)
 	{
 		if ($schema === '') {
 			$schema = static::DEFAULT_SCHEMA;
 		}
 
+		if($includeViews)
+    	$condition=" in ('BASE TABLE','VIEW')";
+    else
+      $condition=" = 'BASE TABLE'";
+
 		$sql = <<<SQL
 SELECT [t].[table]
 FROM [information_schema].[tables] AS [t]
-WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
+WHERE [t].[table_schema] = :schema AND [t].[table_type] $condition
 SQL;
 
 		$names = $this->db->createCommand($sql, array(':schema' => $schema))->queryColumn();

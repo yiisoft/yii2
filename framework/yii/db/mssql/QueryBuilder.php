@@ -98,6 +98,34 @@ class QueryBuilder extends \yii\db\QueryBuilder
           return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
   }
 
+  /**
+	 * @param integer $limit
+	 * @param integer $offset
+	 * @return string the LIMIT and OFFSET clauses built from [[query]].
+	 */
+	public function buildLimit($limit, $offset)
+	{
+		$sql = '';
+		if ($limit !== null && $limit >= 0) {
+			$sql = 'LIMIT ' . (int)$limit;
+		}
+		if ($offset > 0) {
+			$sql .= ' OFFSET ' . (int)$offset;
+		}
+		return ltrim($sql);
+	}
+
+	public function applyLimit($sql, $limit, $offset)
+  {
+    $limit = $limit!==null ? (int)$limit : -1;
+    $offset = $offset!==null ? (int)$offset : -1;
+    if ($limit > 0 && $offset <= 0) //just limit
+            $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i',"\\1SELECT\\2 TOP $limit", $sql);
+    elseif($limit > 0 && $offset > 0)
+            $sql = $this->rewriteLimitOffsetSql($sql, $limit,$offset);
+    return $sql;
+  }
+
 //	public function update($table, $columns, $condition, &$params)
 //	{
 //		return '';
