@@ -262,7 +262,7 @@ class View extends Component
 			Yii::trace("Rendering view file: $viewFile", __METHOD__);
 			$ext = pathinfo($viewFile, PATHINFO_EXTENSION);
 			if (isset($this->renderers[$ext])) {
-				if (is_array($this->renderers[$ext]) || is_string($this->renders[$ext])) {
+				if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
 					$this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
 				}
 				/** @var ViewRenderer $renderer */
