@@ -17,7 +17,7 @@ use yii\helpers\Html;
  *
  * ```php
  * // a button group with items configuration
- * echo ButtonGroup::::widget([
+ * echo ButtonGroup::widget([
  *     'buttons' => [
  *         ['label' => 'A'],
  *         ['label' => 'B'],
@@ -25,7 +25,7 @@ use yii\helpers\Html;
  * ]);
  *
  * // button group with an item as a string
- * echo ButtonGroup::::widget([
+ * echo ButtonGroup::widget([
  *     'buttons' => [
  *         Button::widget(['label' => 'A']),
  *         ['label' => 'B'],
