@@ -66,7 +66,7 @@ class FallbackMessageFormatter
 	 * @param array $args Arguments to insert into the format string
 	 * @return string The formatted string, or `FALSE` if an error occurred
 	 */
-	public function format(array $args)
+	public function format($args)
 	{
 		return static::formatMessage($this->_locale, $this->_pattern, $args);
 	}
@@ -79,7 +79,7 @@ class FallbackMessageFormatter
 	 * @param array $args The array of values to insert into the format string
 	 * @return string The formatted pattern string or `FALSE` if an error occurred
 	 */
-	public static function formatMessage($locale, $pattern, array $args)
+	public static function formatMessage($locale, $pattern, $args)
 	{
 		if (($tokens = static::tokenizePattern($pattern)) === false) {
 			return false;
