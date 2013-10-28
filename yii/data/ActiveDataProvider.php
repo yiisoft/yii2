@@ -170,7 +170,7 @@ class ActiveDataProvider extends BaseDataProvider
 		if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQuery) {
 			/** @var Model $model */
 			$model = new $this->query->modelClass;
-			foreach($model->attributes() as $attribute) {
+			foreach ($model->attributes() as $attribute) {
 				$sort->attributes[$attribute] = [
 					'asc' => [$attribute => Sort::ASC],
 					'desc' => [$attribute => Sort::DESC],

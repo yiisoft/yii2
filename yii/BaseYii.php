@@ -515,7 +515,7 @@ class BaseYii
 			return self::$app->getI18n()->translate($category, $message, $params, $language ?: self::$app->language);
 		} else {
 			$p = [];
-			foreach((array) $params as $name => $value) {
+			foreach ((array) $params as $name => $value) {
 				$p['{' . $name . '}'] = $value;
 			}
 			return ($p === []) ? $message : strtr($message, $p);

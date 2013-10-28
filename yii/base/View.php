@@ -519,7 +519,7 @@ class View extends Component
 		$this->trigger(self::EVENT_END_PAGE);
 
 		$content = ob_get_clean();
-		foreach(array_keys($this->assetBundles) as $bundle) {
+		foreach (array_keys($this->assetBundles) as $bundle) {
 			$this->registerAssetFiles($bundle);
 		}
 		echo strtr($content, [
@@ -549,7 +549,7 @@ class View extends Component
 			return;
 		}
 		$bundle = $this->assetBundles[$name];
-		foreach($bundle->depends as $dep) {
+		foreach ($bundle->depends as $dep) {
 			$this->registerAssetFiles($dep);
 		}
 		$bundle->registerAssetFiles($this);
