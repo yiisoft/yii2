@@ -17,6 +17,9 @@ class Customer extends ActiveRecord
 
 	public $status2;
 
+	public static $afterSaveInsert = null;
+	public static $afterSaveNewRecord = null;
+
 	public static function tableName()
 	{
 		return 'tbl_customer';
@@ -30,5 +33,12 @@ class Customer extends ActiveRecord
 	public static function active($query)
 	{
 		$query->andWhere('status=1');
+	}
+
+	public function afterSave($insert)
+	{
+		static::$afterSaveInsert = $insert;
+		static::$afterSaveNewRecord = $this->isNewRecord;
+		parent::afterSave($insert);
 	}
 }
