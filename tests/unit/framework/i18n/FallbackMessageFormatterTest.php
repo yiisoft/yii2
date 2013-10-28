@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\i18n;
 
-use yii\i18n\FallbackMessageFormatter;
+use yii\i18n\MessageFormatter;
 use yiiunit\TestCase;
 
 /**
@@ -115,19 +115,10 @@ _MSG_
 	/**
 	 * @dataProvider patterns
 	 */
-	public function testNamedArgumentsStatic($pattern, $expected, $args)
+	public function testNamedArguments($pattern, $expected, $args)
 	{
-		$result = FallbackMessageFormatter::formatMessage('en_US', $pattern, $args);
-		$this->assertEquals($expected, $result);
-	}
-
-	/**
-	 * @dataProvider patterns
-	 */
-	public function testNamedArgumentsObject($pattern, $expected, $args)
-	{
-		$formatter = new FallbackMessageFormatter('en_US', $pattern);
-		$result = $formatter->format($args);
+		$formatter = new FallbackMessageFormatter();
+		$result = $formatter->fallbackFormat($pattern, $args, 'en_US');
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
@@ -135,9 +126,10 @@ _MSG_
 	{
 		$expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
 
-		$result = FallbackMessageFormatter::formatMessage('en_US', '{'.self::SUBJECT.'} is {'.self::N.'}', [
+		$formatter = new FallbackMessageFormatter();
+		$result = $formatter->fallbackFormat('{'.self::SUBJECT.'} is {'.self::N.'}', [
 			self::N => self::N_VALUE,
-		]);
+		], 'en_US');
 
 		$this->assertEquals($expected, $result);
 	}
@@ -145,11 +137,17 @@ _MSG_
 	public function testNoParams()
 	{
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
-		$result = FallbackMessageFormatter::formatMessage('en_US', $pattern, []);
-		$this->assertEquals($pattern, $result);
 
-		$formatter = new FallbackMessageFormatter('en_US', $pattern);
-		$result = $formatter->format([]);
+		$formatter = new FallbackMessageFormatter();
+		$result = $formatter->fallbackFormat($pattern, [], 'en_US');
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
+	}
+}
+
+class FallbackMessageFormatter extends MessageFormatter
+{
+	public function fallbackFormat($pattern, $args, $locale)
+	{
+		return parent::fallbackFormat($pattern, $args, $locale);
 	}
 }

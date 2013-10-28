@@ -20,7 +20,7 @@ use yii\web\HttpException;
  * @property \yii\db\Connection $db The database connection. This property is read-only.
  * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
- * @property \yii\i18n\I18N $i18N The internationalization component. This property is read-only.
+ * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
  * @property \yii\log\Logger $log The log component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
