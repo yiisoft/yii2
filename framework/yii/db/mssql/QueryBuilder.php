@@ -85,18 +85,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
   }
 
   /**
-   * Builds a SQL statement for dropping a foreign key constraint.
-   * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-   * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
-   * @return string the SQL statement for dropping a foreign key constraint.
-   */
-  public function dropForeignKey($name, $table)
-  {
-          return 'ALTER TABLE ' . $this->db->quoteTableName($table)
-                  . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
-  }
-
-  /**
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return string the LIMIT and OFFSET clauses built from [[query]].
