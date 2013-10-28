@@ -316,7 +316,7 @@ class MessageFormatter extends Component
 					}
 				}
 				if ($message !== false) {
-					return $this->fallbackFormat($locale, $message, $args);
+					return $this->fallbackFormat($message, $args, $locale);
 				}
 			break;
 			case 'plural':
@@ -351,7 +351,7 @@ class MessageFormatter extends Component
 					}
 				}
 				if ($message !== false) {
-					return $this->fallbackFormat($locale, $message, $args);
+					return $this->fallbackFormat($message, $args, $locale);
 				}
 				break;
 		}
