@@ -41,6 +41,15 @@ class MessageFormatterTest extends TestCase
 				]
 			],
 
+			[
+				'{'.self::SUBJECT.'} is {'.self::N.', number, integer}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					self::N => self::N_VALUE,
+					self::SUBJECT => self::SUBJECT_VALUE,
+				]
+			],
+
 			// This one was provided by Aura.Intl. Thanks!
 			[<<<_MSG_
 {gender_of_host, select,
@@ -119,6 +128,79 @@ _MSG_
 		];
 	}
 
+	public function parsePatterns()
+	{
+		return [
+			[
+				self::SUBJECT_VALUE.' is {0, number}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					0 => self::N_VALUE,
+				]
+			],
+
+			[
+				self::SUBJECT_VALUE.' is {'.self::N.', number}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					self::N => self::N_VALUE,
+				]
+			],
+
+			[
+				self::SUBJECT_VALUE.' is {'.self::N.', number, integer}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					self::N => self::N_VALUE,
+				]
+			],
+
+			[
+				"{0,number,integer} monkeys on {1,number,integer} trees make {2,number} monkeys per tree",
+				"4,560 monkeys on 123 trees make 37.073 monkeys per tree",
+				[
+					0 => 4560,
+					1 => 123,
+					2 => 37.073
+				],
+				'en_US'
+			],
+
+			[
+				"{0,number,integer} Affen auf {1,number,integer} Bäumen sind {2,number} Affen pro Baum",
+				"4.560 Affen auf 123 Bäumen sind 37,073 Affen pro Baum",
+				[
+					0 => 4560,
+					1 => 123,
+					2 => 37.073
+				],
+				'de',
+			],
+
+			[
+				"{monkeyCount,number,integer} monkeys on {trees,number,integer} trees make {monkeysPerTree,number} monkeys per tree",
+				"4,560 monkeys on 123 trees make 37.073 monkeys per tree",
+				[
+					'monkeyCount' => 4560,
+					'trees' => 123,
+					'monkeysPerTree' => 37.073
+				],
+				'en_US'
+			],
+
+			[
+				"{monkeyCount,number,integer} Affen auf {trees,number,integer} Bäumen sind {monkeysPerTree,number} Affen pro Baum",
+				"4.560 Affen auf 123 Bäumen sind 37,073 Affen pro Baum",
+				[
+					'monkeyCount' => 4560,
+					'trees' => 123,
+					'monkeysPerTree' => 37.073
+				],
+				'de',
+			],
+		];
+	}
+
 	/**
 	 * @dataProvider patterns
 	 */
@@ -127,6 +209,16 @@ _MSG_
 		$formatter = new MessageFormatter();
 		$result = $formatter->format($pattern, $args, 'en_US');
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
+	}
+
+	/**
+	 * @dataProvider parsePatterns
+	 */
+	public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en_US')
+	{
+		$formatter = new MessageFormatter();
+		$result = $formatter->parse($pattern, $expected, $locale);
+		$this->assertEquals($args, $result, $formatter->getErrorMessage() . ' Pattern: ' . $pattern);
 	}
 
 	public function testInsufficientArguments()
