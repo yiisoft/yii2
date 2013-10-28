@@ -94,6 +94,8 @@ abstract class CacheTestCase extends TestCase
 
 	public function testMset()
 	{
+		$this->markTestIncomplete('Work in progress');
+
 		$cache = $this->getCacheInstance();
 		$cache->flush();
 
