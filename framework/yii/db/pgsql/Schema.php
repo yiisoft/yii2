@@ -34,7 +34,7 @@ class Schema extends \yii\db\Schema
 	public $typeMap = [
 		'abstime' => self::TYPE_TIMESTAMP,
 		'bit' => self::TYPE_STRING,
-		'boolean' => self::TYPE_BOOLEAN,
+		'bool' => self::TYPE_BOOLEAN,
 		'box' => self::TYPE_STRING,
 		'character' => self::TYPE_STRING,
 		'bytea' => self::TYPE_BINARY,
