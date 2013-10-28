@@ -122,19 +122,10 @@ _MSG_
 	/**
 	 * @dataProvider patterns
 	 */
-	public function testNamedArgumentsStatic($pattern, $expected, $args)
-	{
-		$result = MessageFormatter::formatMessage('en_US', $pattern, $args);
-		$this->assertEquals($expected, $result, intl_get_error_message());
-	}
-
-	/**
-	 * @dataProvider patterns
-	 */
 	public function testNamedArgumentsObject($pattern, $expected, $args)
 	{
-		$formatter = new MessageFormatter('en_US', $pattern);
-		$result = $formatter->format($args);
+		$formatter = new MessageFormatter();
+		$result = $formatter->format('en_US', $pattern, $args);
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
@@ -142,36 +133,19 @@ _MSG_
 	{
 		$expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
 
-		$result = MessageFormatter::formatMessage('en_US', '{'.self::SUBJECT.'} is {'.self::N.', number}', [
+		$formatter = new MessageFormatter();
+		$result = $formatter->format('en_US', '{'.self::SUBJECT.'} is {'.self::N.', number}', [
 			self::N => self::N_VALUE,
 		]);
 
-		$this->assertEquals($expected, $result, intl_get_error_message());
-	}
-
-	/**
-	 * When instantiating a MessageFormatter with invalid pattern it should be null with default settings.
-	 * It will be IntlException if intl.use_exceptions=1 and PHP 5.5 or newer or an error if intl.error_level is not 0.
-	 */
-	public function testNullConstructor()
-	{
-		if(ini_get('intl.use_exceptions')) {
-			$this->setExpectedException('IntlException');
-		}
-
-		if (!ini_get('intl.error_level') || ini_get('intl.use_exceptions')) {
-			$this->assertNull(new MessageFormatter('en_US', ''));
-		}
+		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
 	public function testNoParams()
 	{
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
-		$result = MessageFormatter::formatMessage('en_US', $pattern, []);
-		$this->assertEquals($pattern, $result, intl_get_error_message());
-
-		$formatter = new MessageFormatter('en_US', $pattern);
-		$result = $formatter->format([]);
+		$formatter = new MessageFormatter();
+		$result = $formatter->format('en_US', $pattern, []);
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
 	}
 }

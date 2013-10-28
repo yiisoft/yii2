@@ -78,7 +78,7 @@ class I18N extends Component
 	}
 
 	/**
-	 * Formats a message using using [[MessageFormatter]].
+	 * Formats a message using [[MessageFormatter]].
 	 *
 	 * @param string $message the message to be formatted.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
@@ -93,12 +93,8 @@ class I18N extends Component
 		}
 
 		if (preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
-			$formatter = new MessageFormatter($language, $message);
-			if ($formatter === null) {
-				Yii::warning("Unable to format message in language '$language': $message.");
-				return $message;
-			}
-			$result = $formatter->format($params);
+			$formatter = new MessageFormatter();
+			$result = $formatter->format($language, $message, $params);
 			if ($result === false) {
 				$errorMessage = $formatter->getErrorMessage();
 				Yii::warning("Formatting message for language '$language' failed with error: $errorMessage. The message being formatted was: $message.");
