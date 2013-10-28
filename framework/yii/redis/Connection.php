@@ -384,7 +384,7 @@ class Connection extends Component
 
 	private function parseResponse($command)
 	{
-		if(($line = fgets($this->_socket)) === false) {
+		if (($line = fgets($this->_socket)) === false) {
 			throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
 		}
 		$type = $line[0];
@@ -405,7 +405,7 @@ class Connection extends Component
 				$length = $line + 2;
 				$data = '';
 				while ($length > 0) {
-					if(($block = fread($this->_socket, $line + 2)) === false) {
+					if (($block = fread($this->_socket, $line + 2)) === false) {
 						throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
 					}
 					$data .= $block;
@@ -415,7 +415,7 @@ class Connection extends Component
 			case '*': // Multi-bulk replies
 				$count = (int) $line;
 				$data = [];
-				for($i = 0; $i < $count; $i++) {
+				for ($i = 0; $i < $count; $i++) {
 					$data[] = $this->parseResponse($command);
 				}
 				return $data;

@@ -179,7 +179,7 @@ $model->save();
 
 $postTags = [];
 $tagsCount = count($_POST['PostTag']);
-while($tagsCount-- > 0){
+while ($tagsCount-- > 0) {
     $postTags[] = new PostTag(['post_id' => $model->id]);
 }
 Model::loadMultiple($postTags, $_POST);

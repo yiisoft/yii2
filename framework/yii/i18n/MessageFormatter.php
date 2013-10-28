@@ -190,7 +190,7 @@ class MessageFormatter extends Component
 		$pattern = $parts[0];
 		$d = 0;
 		$stack = [];
-		for($i = 1; $i < $c; $i++) {
+		for ($i = 1; $i < $c; $i++) {
 			if (preg_match('~^(\s*)([\d\w]+)(\s*)([},])(\s*)(.*)$~us', $parts[$i], $matches)) {
 				// if we are not inside a plural or select this is a message
 				if (!isset($stack[$d]) || $stack[$d] != 'plural' && $stack[$d] != 'select') {
@@ -257,7 +257,7 @@ class MessageFormatter extends Component
 			return [$pattern];
 		}
 		$tokens = [mb_substr($pattern, 0, $pos)];
-		while(true) {
+		while (true) {
 			$open = mb_strpos($pattern, '{', $pos + 1);
 			$close = mb_strpos($pattern, '}', $pos + 1);
 			if ($open === false && $close === false) {
@@ -326,7 +326,7 @@ class MessageFormatter extends Component
 				$select = static::tokenizePattern($token[2]);
 				$c = count($select);
 				$message = false;
-				for($i = 0; $i + 1 < $c; $i++) {
+				for ($i = 0; $i + 1 < $c; $i++) {
 					if (is_array($select[$i]) || !is_array($select[$i + 1])) {
 						return false;
 					}
@@ -352,7 +352,7 @@ class MessageFormatter extends Component
 				$c = count($plural);
 				$message = false;
 				$offset = 0;
-				for($i = 0; $i + 1 < $c; $i++) {
+				for ($i = 0; $i + 1 < $c; $i++) {
 					if (is_array($plural[$i]) || !is_array($plural[$i + 1])) {
 						return false;
 					}

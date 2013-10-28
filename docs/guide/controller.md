@@ -89,7 +89,7 @@ class BlogController extends Controller
 		$post = Post::find($id);
 		$text = $post->text;
 
-		if($version) {
+		if ($version) {
 			$text = $post->getHistory($version);
 		}
 
@@ -121,13 +121,13 @@ class BlogController extends Controller
 	public function actionUpdate($id)
 	{
 		$post = Post::find($id);
-		if(!$post) {
+		if (!$post) {
 			throw new HttpException(404);
 		}
 
-		if(\Yii::$app->request->isPost)) {
+		if (\Yii::$app->request->isPost)) {
 			$post->load($_POST);
-			if($post->save()) {
+			if ($post->save()) {
 				$this->redirect(['view', 'id' => $post->id]);
 			}
 		}

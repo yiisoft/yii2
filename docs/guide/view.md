@@ -305,7 +305,7 @@ Then we're using it in `index.php` view where we display a list of users:
 ```php
 <div class="user-index">
 	<?php
-	foreach($users as $user) {
+	foreach ($users as $user) {
 		echo $this->render('_profile', [
 			'username' => $user->name,
 			'tagline' => $user->tagline,
