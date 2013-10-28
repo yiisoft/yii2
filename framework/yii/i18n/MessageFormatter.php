@@ -116,7 +116,7 @@ class MessageFormatter extends Component
 	 * Parses an input string according to an [ICU message format](http://userguide.icu-project.org/formatparse/messages) pattern.
 	 *
 	 * It uses the PHP intl extension's [MessageFormatter::parse()](http://www.php.net/manual/en/messageformatter.parsemessage.php)
-	 * and works around some issues.
+	 * and adds support for named arguments.
 	 * Usage of this method requires PHP intl extension to be installed.
 	 *
 	 * @param string $pattern The pattern to use for parsing the message.
@@ -134,11 +134,24 @@ class MessageFormatter extends Component
 			throw new NotSupportedException('You have to install PHP intl extension to use this feature.');
 		}
 
-		// TODO try to support named args
-//		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-//			$message = $this->replaceNamedArguments($message, $params);
-//			$params = array_values($params);
-//		}
+		// replace named arguments
+		if (($tokens = $this->tokenizePattern($pattern)) === false) {
+			return false;
+		}
+		$map = [];
+		foreach($tokens as $i => $token) {
+			if (is_array($token)) {
+				$param = trim($token[0]);
+				if (!isset($map[$param])) {
+					$map[$param] = count($map);
+				}
+				$token[0] = $map[$param];
+				$tokens[$i] = '{' . implode(',', $token) . '}';
+			}
+		}
+		$pattern = implode('', $tokens);
+		$map = array_flip($map);
+
 		$formatter = new \MessageFormatter($language, $pattern);
 		if ($formatter === null) {
 			$this->_errorCode = -1;
@@ -151,9 +164,12 @@ class MessageFormatter extends Component
 			$this->_errorMessage = $formatter->getErrorMessage();
 			return false;
 		} else {
-			return $result;
+			$values = [];
+			foreach($result as $key => $value) {
+				$values[$map[$key]] = $value;
+			}
+			return $values;
 		}
-
 	}
 
 	/**

@@ -34,6 +34,24 @@ class FallbackMessageFormatterTest extends TestCase
 				]
 			],
 
+			[
+				'{'.self::SUBJECT.'} is {'.self::N.', number}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					self::N => self::N_VALUE,
+					self::SUBJECT => self::SUBJECT_VALUE,
+				]
+			],
+
+			[
+				'{'.self::SUBJECT.'} is {'.self::N.', number, integer}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					self::N => self::N_VALUE,
+					self::SUBJECT => self::SUBJECT_VALUE,
+				]
+			],
+
 			// This one was provided by Aura.Intl. Thanks!
 			[<<<_MSG_
 {gender_of_host, select,
