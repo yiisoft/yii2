@@ -89,7 +89,7 @@ class MessageFormatter extends Component
 		}
 
 		if (!class_exists('MessageFormatter', false)) {
-			return $this->fallbackFormat($language, $pattern, $params);
+			return $this->fallbackFormat($pattern, $params, $language);
 		}
 
 		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
