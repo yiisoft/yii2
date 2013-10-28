@@ -289,7 +289,6 @@ class MessageFormatter extends Component
 		$type = isset($token[1]) ? trim($token[1]) : 'none';
 		switch($type)
 		{
-			case 'number':
 			case 'date':
 			case 'time':
 			case 'spellout':
@@ -298,6 +297,11 @@ class MessageFormatter extends Component
 			case 'choice':
 			case 'selectordinal':
 				throw new NotSupportedException("Message format '$type' is not supported. You have to install PHP intl extension to use this feature.");
+			case 'number':
+				if (is_int($arg) && (!isset($token[2]) || trim($token[2]) == 'integer')) {
+					return $arg;
+				}
+				throw new NotSupportedException("Message format 'number' is only supported for integer values. You have to install PHP intl extension to use this feature.");
 			case 'none': return $arg;
 			case 'select':
 				/* http://icu-project.org/apiref/icu4c/classicu_1_1SelectFormat.html
