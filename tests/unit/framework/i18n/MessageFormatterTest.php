@@ -122,10 +122,10 @@ _MSG_
 	/**
 	 * @dataProvider patterns
 	 */
-	public function testNamedArgumentsObject($pattern, $expected, $args)
+	public function testNamedArguments($pattern, $expected, $args)
 	{
 		$formatter = new MessageFormatter();
-		$result = $formatter->format('en_US', $pattern, $args);
+		$result = $formatter->format($pattern, $args, 'en_US');
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
@@ -134,9 +134,9 @@ _MSG_
 		$expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
 
 		$formatter = new MessageFormatter();
-		$result = $formatter->format('en_US', '{'.self::SUBJECT.'} is {'.self::N.', number}', [
+		$result = $formatter->format('{'.self::SUBJECT.'} is {'.self::N.', number}', [
 			self::N => self::N_VALUE,
-		]);
+		], 'en_US');
 
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
@@ -145,7 +145,7 @@ _MSG_
 	{
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
 		$formatter = new MessageFormatter();
-		$result = $formatter->format('en_US', $pattern, []);
+		$result = $formatter->format($pattern, [], 'en_US');
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
 	}
 }

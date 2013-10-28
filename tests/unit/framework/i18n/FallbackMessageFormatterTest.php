@@ -118,7 +118,7 @@ _MSG_
 	public function testNamedArgumentsObject($pattern, $expected, $args)
 	{
 		$formatter = new FallbackMessageFormatter();
-		$result = $formatter->format('en_US', $pattern, $args);
+		$result = $formatter->fallbackFormat($pattern, $args, 'en_US');
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
@@ -127,9 +127,9 @@ _MSG_
 		$expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
 
 		$formatter = new FallbackMessageFormatter();
-		$result = $formatter->format('en_US', '{'.self::SUBJECT.'} is {'.self::N.'}', [
+		$result = $formatter->fallbackFormat('{'.self::SUBJECT.'} is {'.self::N.'}', [
 			self::N => self::N_VALUE,
-		]);
+		], 'en_US');
 
 		$this->assertEquals($expected, $result);
 	}
@@ -139,15 +139,15 @@ _MSG_
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
 
 		$formatter = new FallbackMessageFormatter();
-		$result = $formatter->format('en_US', $pattern, []);
+		$result = $formatter->fallbackFormat($pattern, [], 'en_US');
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
 	}
 }
 
 class FallbackMessageFormatter extends MessageFormatter
 {
-	public function fallbackFormat($locale, $pattern, $args = [])
+	public function fallbackFormat($pattern, $args, $locale)
 	{
-		return parent::fallbackFormat($locale, $pattern, $args);
+		return parent::fallbackFormat($pattern, $args, $locale);
 	}
 }
