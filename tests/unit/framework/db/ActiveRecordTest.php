@@ -295,10 +295,14 @@ class ActiveRecordTest extends DatabaseTestCase
 
 		$this->assertNull($customer->id);
 		$this->assertTrue($customer->isNewRecord);
+		Customer::$afterSaveNewRecord = null;
+		Customer::$afterSaveInsert = null;
 
 		$customer->save();
 
 		$this->assertEquals(4, $customer->id);
+		$this->assertFalse(Customer::$afterSaveNewRecord);
+		$this->assertTrue(Customer::$afterSaveInsert);
 		$this->assertFalse($customer->isNewRecord);
 	}
 
@@ -309,10 +313,15 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 		$this->assertFalse($customer->isNewRecord);
+		Customer::$afterSaveNewRecord = null;
+		Customer::$afterSaveInsert = null;
+
 		$customer->name = 'user2x';
 		$customer->save();
 		$this->assertEquals('user2x', $customer->name);
 		$this->assertFalse($customer->isNewRecord);
+		$this->assertFalse(Customer::$afterSaveNewRecord);
+		$this->assertFalse(Customer::$afterSaveInsert);
 		$customer2 = Customer::find(2);
 		$this->assertEquals('user2x', $customer2->name);
 
