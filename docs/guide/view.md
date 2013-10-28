@@ -28,7 +28,7 @@ as the corresponding key.
 So the view for the action above should be in `views/site/index.php` and can be something like:
 
 ```php
-<p>Hello, <?=$username?>!</p>
+<p>Hello, <?= $username ?>!</p>
 ```
 
 Instead of just scalar values you can pass anything else such as arrays or objects.
