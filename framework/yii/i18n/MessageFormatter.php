@@ -116,7 +116,7 @@ class MessageFormatter extends Component
 	 * Parses an input string according to an [ICU message format](http://userguide.icu-project.org/formatparse/messages) pattern.
 	 *
 	 * It uses the PHP intl extension's [MessageFormatter::parse()](http://www.php.net/manual/en/messageformatter.parsemessage.php)
-	 * and works around some issues.
+	 * and adds support for named arguments.
 	 * Usage of this method requires PHP intl extension to be installed.
 	 *
 	 * @param string $pattern The pattern to use for parsing the message.
