@@ -158,7 +158,7 @@ class ActiveDataProvider extends BaseDataProvider
 			throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
 		}
 		$query = clone $this->query;
-		return $query->limit(-1)->offset(-1)->count('*', $this->db);
+		return (int) $query->limit(-1)->offset(-1)->count('*', $this->db);
 	}
 
 	/**
