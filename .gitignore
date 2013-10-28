@@ -20,3 +20,6 @@ composer.phar
 
 # Mac DS_Store Files
 .DS_Store
+
+# local phpunit config
+/phpunit.xml
