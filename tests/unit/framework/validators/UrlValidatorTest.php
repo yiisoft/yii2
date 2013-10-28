@@ -59,7 +59,7 @@ class UrlValidatorTest extends TestCase
 	
 	public function testValidateWithIdn()
 	{
-		if(!function_exists('idn_to_ascii')) {
+		if (!function_exists('idn_to_ascii')) {
 			$this->markTestSkipped('intl package required');
 			return;
 		}

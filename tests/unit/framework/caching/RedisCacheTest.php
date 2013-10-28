@@ -24,11 +24,11 @@ class RedisCacheTest extends CacheTestCase
 			'dataTimeout' => 0.1,
 		];
 		$dsn = $config['hostname'] . ':' .$config['port'];
-		if(!@stream_socket_client($dsn, $errorNumber, $errorDescription, 0.5)) {
+		if (!@stream_socket_client($dsn, $errorNumber, $errorDescription, 0.5)) {
 			$this->markTestSkipped('No redis server running at ' . $dsn .' : ' . $errorNumber . ' - ' . $errorDescription);
 		}
 
-		if($this->_cacheInstance === null) {
+		if ($this->_cacheInstance === null) {
 			$this->_cacheInstance = new RedisCache($config);
 		}
 		return $this->_cacheInstance;

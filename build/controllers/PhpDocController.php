@@ -115,7 +115,7 @@ class PhpDocController extends Controller
 		if (trim($lines[1]) == '*' || substr(trim($lines[1]), 0, 3) == '* @') {
 			$this->stderr("[WARN] Class $className has no short description.\n", Console::FG_YELLOW, Console::BOLD);
 		}
-		foreach($lines as $line) {
+		foreach ($lines as $line) {
 			if (substr(trim($line), 0, 9) == '* @since ') {
 				$seenSince = true;
 			} elseif (substr(trim($line), 0, 10) == '* @author ') {
@@ -138,7 +138,7 @@ class PhpDocController extends Controller
 
 			$newFileContent = [];
 			$n = count($fileContent);
-			for($i = 0; $i < $n; $i++) {
+			for ($i = 0; $i < $n; $i++) {
 				if ($i > $start || $i < $docStart) {
 					$newFileContent[] = $fileContent[$i];
 				} else {
@@ -164,7 +164,7 @@ class PhpDocController extends Controller
 	{
 		$lines = explode("\n", $doc);
 		$n = count($lines);
-		for($i = 0; $i < $n; $i++) {
+		for ($i = 0; $i < $n; $i++) {
 			$lines[$i] = rtrim($lines[$i]);
 			if (trim($lines[$i]) == '*' && trim($lines[$i + 1]) == '*') {
 				unset($lines[$i]);
@@ -184,7 +184,7 @@ class PhpDocController extends Controller
 		$lines = explode("\n", $doc);
 		$propertyPart = false;
 		$propertyPosition = false;
-		foreach($lines as $i => $line) {
+		foreach ($lines as $i => $line) {
 			if (substr(trim($line), 0, 12) == '* @property ') {
 				$propertyPart = true;
 			} elseif ($propertyPart && trim($line) == '*') {
@@ -200,7 +200,7 @@ class PhpDocController extends Controller
 			}
 		}
 		$finalDoc = '';
-		foreach($lines as $i => $line) {
+		foreach ($lines as $i => $line) {
 			$finalDoc .= $line . "\n";
 			if ($i == $propertyPosition) {
 				$finalDoc .= $properties;
