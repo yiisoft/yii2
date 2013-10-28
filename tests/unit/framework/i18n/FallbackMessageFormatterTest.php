@@ -115,7 +115,7 @@ _MSG_
 	/**
 	 * @dataProvider patterns
 	 */
-	public function testNamedArgumentsObject($pattern, $expected, $args)
+	public function testNamedArguments($pattern, $expected, $args)
 	{
 		$formatter = new FallbackMessageFormatter();
 		$result = $formatter->fallbackFormat($pattern, $args, 'en_US');
