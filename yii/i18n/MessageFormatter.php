@@ -11,11 +11,13 @@ use yii\base\Component;
 use yii\base\NotSupportedException;
 
 /**
- * MessageFormatter enhances the message formatter class provided by PHP intl extension.
+ * MessageFormatter allows formatting messages via [ICU message format](http://userguide.icu-project.org/formatparse/messages)
+ *
+ * This class enhances the message formatter class provided by the PHP intl extension.
  *
  * The following enhancements are provided:
  *
- * - Accepts named arguments and mixed numeric and named arguments.
+ * - It accepts named arguments and mixed numeric and named arguments.
  * - Issues no error when an insufficient number of arguments have been provided. Instead, the placeholders will not be
  *   substituted.
  * - Fixes PHP 5.5 weird placeholder replacement in case no arguments are provided at all (https://bugs.php.net/bug.php?id=65920).
@@ -23,24 +25,18 @@ use yii\base\NotSupportedException;
  *   However it is highly recommended that you install [PHP intl extension](http://php.net/manual/en/book.intl.php) if you want
  *   to use MessageFormatter features.
  *
- * FallbackMessageFormatter is a fallback implementation for the PHP intl MessageFormatter that is
- * used in case PHP intl extension is not installed.
+ *   The fallback implementation only supports the following message formats:
+ *   - plural formatting for english
+ *   - select format
+ *   - simple parameters
+ *   - integer number parameters
  *
- * Do not use this class directly. Use [[MessageFormatter]] instead, which will automatically detect
- * installed version of PHP intl and use the fallback if it is not installed.
+ *   The fallback implementation does NOT support the ['apostrophe-friendly' syntax](http://www.php.net/manual/en/messageformatter.formatmessage.php).
+ *   Also messages that are working with the fallback implementation are not necessarily compatible with the
+ *   PHP intl MessageFormatter so do not rely on the fallback if you are able to install intl extension somehow.
  *
- * It is highly recommended that you install [PHP intl extension](http://php.net/manual/en/book.intl.php) if you want to use
- * MessageFormatter features.
- *
- * This implementation only supports to following message formats:
- * - plural formatting for english
- * - select format
- * - simple parameters
- *
- * The pattern also does NOT support the ['apostrophe-friendly' syntax](http://www.php.net/manual/en/messageformatter.formatmessage.php).
- *
- * Messages that can be parsed are also not necessarily compatible with the ICU formatting method so do not expect messages that work without intl installed
- * to work with intl
+ * @property string $errorCode Code of the last error. This property is read-only.
+ * @property string $errorMessage Description of the last error. This property is read-only.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -52,9 +48,9 @@ class MessageFormatter extends Component
 	private $_errorMessage = '';
 
 	/**
-	 * Get the error text from the last operation
+	 * Get the error code from the last operation
 	 * @link http://php.net/manual/en/messageformatter.geterrorcode.php
-	 * @return string Description of the last error.
+	 * @return string Code of the last error.
 	 */
 	public function getErrorCode()
 	{
@@ -72,34 +68,38 @@ class MessageFormatter extends Component
 	}
 
 	/**
-	 * Formats a message via ICU message format.
+	 * Formats a message via [ICU message format](http://userguide.icu-project.org/formatparse/messages)
 	 *
-	 * @link http://php.net/manual/en/messageformatter.formatmessage.php
+	 * It uses the PHP intl extension's [MessageFormatter](http://www.php.net/manual/en/class.messageformatter.php)
+	 * and works around some issues.
+	 * If PHP intl is not installed a fallback will be used that supports a subset of the ICU message format.
+	 *
+	 * @param string $pattern The pattern string to insert parameters into.
+	 * @param array $params The array of name value pairs to insert into the format string.
 	 * @param string $language The locale to use for formatting locale-dependent parts
-	 * @param string $message The pattern string to insert things into.
-	 * @param array $params The array of values to insert into the format string
 	 * @return string|boolean The formatted pattern string or `FALSE` if an error occurred
 	 */
-	public function format($language, $message, $params)
+	public function format($pattern, $params, $language)
 	{
 		$this->_errorCode = 0;
 		$this->_errorMessage = '';
 
 		if ($params === []) {
-			return $message;
+			return $pattern;
 		}
 
 		if (!class_exists('MessageFormatter', false)) {
-			return $this->fallbackFormat($language, $message, $params);
+			return $this->fallbackFormat($language, $pattern, $params);
 		}
 
 		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-			$message = $this->replaceNamedArguments($message, $params);
+			$pattern = $this->replaceNamedArguments($pattern, $params);
 			$params = array_values($params);
 		}
-		$formatter = new \MessageFormatter($language, $message);
+		$formatter = new \MessageFormatter($language, $pattern);
 		if ($formatter === null) {
-			$this->_errorMessage = "Unable to format message in language '$language'.";
+			$this->_errorCode = -1;
+			$this->_errorMessage = "Message pattern is invalid.";
 			return false;
 		}
 		$result = $formatter->format($params);
@@ -113,16 +113,19 @@ class MessageFormatter extends Component
 	}
 
 	/**
-	 * Parse input string according to a message pattern
+	 * Parses an input string according to an [ICU message format](http://userguide.icu-project.org/formatparse/messages) pattern.
 	 *
-	 * @link http://www.php.net/manual/en/messageformatter.parsemessage.php
+	 * It uses the PHP intl extension's [MessageFormatter::parse()](http://www.php.net/manual/en/messageformatter.parsemessage.php)
+	 * and works around some issues.
+	 * Usage of this method requires PHP intl extension to be installed.
+	 *
+	 * @param string $pattern The pattern to use for parsing the message.
+	 * @param string $message The message to parse, conforming to the pattern.
 	 * @param string $language The locale to use for formatting locale-dependent parts
-	 * @param string $pattern The pattern with which to parse the message.
-	 * @param array $message The message to parse, conforming to the pattern.
-	 * @return string|boolean An array containing items extracted, or `FALSE` on error.
+	 * @return array|boolean An array containing items extracted, or `FALSE` on error.
 	 * @throws \yii\base\NotSupportedException when PHP intl extension is not installed.
 	 */
-	public function parse($language, $pattern, $message)
+	public function parse($pattern, $message, $language)
 	{
 		$this->_errorCode = 0;
 		$this->_errorMessage = '';
@@ -138,7 +141,8 @@ class MessageFormatter extends Component
 //		}
 		$formatter = new \MessageFormatter($language, $pattern);
 		if ($formatter === null) {
-			$this->_errorMessage = "Unable to parse message in language '$language'.";
+			$this->_errorCode = -1;
+			$this->_errorMessage = "Message pattern is invalid.";
 			return false;
 		}
 		$result = $formatter->parse($message);
@@ -205,12 +209,12 @@ class MessageFormatter extends Component
 
 	/**
 	 * Fallback implementation for MessageFormatter::formatMessage
-	 * @param string $language The locale to use for formatting locale-dependent parts
-	 * @param string $message The pattern string to insert things into.
-	 * @param array $params The array of values to insert into the format string
+	 * @param string $pattern The pattern string to insert things into.
+	 * @param array $args The array of values to insert into the format string
+	 * @param string $locale The locale to use for formatting locale-dependent parts
 	 * @return string|boolean The formatted pattern string or `FALSE` if an error occurred
 	 */
-	protected function fallbackFormat($locale, $pattern, $args = [])
+	protected function fallbackFormat($pattern, $args, $locale)
 	{
 		if (($tokens = $this->tokenizePattern($pattern)) === false) {
 			return false;
