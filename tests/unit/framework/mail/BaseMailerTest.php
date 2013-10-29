@@ -85,33 +85,6 @@ class BaseMailerTest extends TestCase
 		$this->assertTrue(is_object($view), 'Unable to get default view!');
 	}
 
-	public function testSetupViewResolver()
-	{
-		$mailer = new Mailer();
-
-		$viewResolver = new ViewResolver();
-		$mailer->setViewResolver($viewResolver);
-		$this->assertEquals($viewResolver, $mailer->getViewResolver(), 'Unable to setup view resolver!');
-
-		$viewResolverConfig = [
-			'viewPath' => '/test/view/path',
-		];
-		$mailer->setViewResolver($viewResolverConfig);
-		$viewResolver = $mailer->getViewResolver();
-		$this->assertTrue(is_object($viewResolver), 'Unable to setup view resolver via config!');
-		$this->assertEquals($viewResolverConfig['viewPath'], $viewResolver->viewPath, 'Unable to configure view resolver via config array!');
-	}
-
-	/**
-	 * @depends testSetupViewResolver
-	 */
-	public function testGetDefaultViewResolver()
-	{
-		$mailer = new Mailer();
-		$viewResolver = $mailer->getViewResolver();
-		$this->assertTrue(is_object($viewResolver), 'Unable to get default view resolver!');
-	}
-
 	public function testCreateMessage()
 	{
 		$mailer = new Mailer();
@@ -152,14 +125,13 @@ class BaseMailerTest extends TestCase
 
 	/**
 	 * @depends testGetDefaultView
-	 * @depends testGetDefaultViewResolver
 	 */
 	public function testRender()
 	{
 		$mailer = new Mailer();
 
 		$filePath = $this->getTestFilePath();
-		$mailer->getViewResolver()->viewPath = $filePath;
+		$mailer->viewPath = $filePath;
 
 		$viewName = 'test_view';
 		$fileName = $filePath . DIRECTORY_SEPARATOR . $viewName . '.php';
