@@ -182,10 +182,6 @@ class Message extends BaseMessage
 
 	public function setHtml($html) {}
 
-	public function addText($text) {}
-
-	public function addHtml($html) {}
-
 	public function attachContent($content, array $options = []) {}
 
 	public function attachFile($fileName, array $options = []) {}

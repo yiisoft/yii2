@@ -125,7 +125,7 @@ class Message extends BaseMessage
 	 */
 	public function setText($text)
 	{
-		$this->getSwiftMessage()->setBody($text, 'text/plain');
+		$this->setBody($text, 'text/plain');
 	}
 
 	/**
@@ -133,23 +133,51 @@ class Message extends BaseMessage
 	 */
 	public function setHtml($html)
 	{
-		$this->getSwiftMessage()->setBody($html, 'text/html');
+		$this->setBody($html, 'text/html');
 	}
 
 	/**
-	 * @inheritdoc
+	 * Sets the message body.
+	 * If body is already set and its content type matches given one, it will
+	 * be overridden, if content type miss match the multipart message will be composed.
+	 * @param string $body body content.
+	 * @param string $contentType body content type.
 	 */
-	public function addText($text)
+	protected function setBody($body, $contentType)
 	{
-		$this->getSwiftMessage()->addPart($text, 'text/plain');
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function addHtml($html)
-	{
-		$this->getSwiftMessage()->addPart($html, 'text/html');
+		$message = $this->getSwiftMessage();
+		$oldBody = $message->getBody();
+		if (empty($oldBody)) {
+			$parts = $message->getChildren();
+			$partFound = false;
+			foreach ($parts as $key => $part) {
+				if (!($part instanceof \Swift_Mime_Attachment)) {
+					/* @var $part \Swift_Mime_MimePart */
+					if ($part->getContentType() == $contentType) {
+						unset($parts[$key]);
+						$partFound = true;
+						break;
+					}
+				}
+			}
+			if ($partFound) {
+				reset($parts);
+				$message->setChildren($parts);
+				$message->addPart($body, $contentType);
+			} else {
+				$message->setBody($body, $contentType);
+			}
+		} else {
+			$oldContentType = $message->getContentType();
+			if ($oldContentType == $contentType) {
+				$message->setBody($body, $contentType);
+			} else {
+				$message->setBody(null);
+				$message->setContentType(null);
+				$message->addPart($oldBody, $oldContentType);
+				$message->addPart($body, $contentType);
+			}
+		}
 	}
 
 	/**

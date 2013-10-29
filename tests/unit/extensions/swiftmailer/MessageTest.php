@@ -182,8 +182,8 @@ class MessageTest extends VendorTestCase
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Alternative Body Test');
-		$message->addHtml('<b>Yii Swift</b> test HTML body');
-		$message->addText('Yii Swift test plain text body');
+		$message->setHtml('<b>Yii Swift</b> test HTML body');
+		$message->setText('Yii Swift test plain text body');
 		$this->assertTrue($message->send());
 	}
 }
