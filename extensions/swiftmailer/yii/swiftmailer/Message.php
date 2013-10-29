@@ -155,13 +155,61 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function attachContentAsFile($content, $fileName, $contentType = 'application/octet-stream')
+	public function attachFile($fileName, array $options = [])
 	{
-		if (empty($contentType)) {
-			$contentType = 'application/octet-stream';
+		$attachment = \Swift_Attachment::fromPath($fileName);
+		if (!empty($options['fileName'])) {
+			$attachment->setFilename($options['fileName']);
 		}
-		$attachment = \Swift_Attachment::newInstance($content, $fileName, $contentType);
+		if (!empty($options['contentType'])) {
+			$attachment->setContentType($options['contentType']);
+		}
 		$this->getSwiftMessage()->attach($attachment);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function attachContent($content, array $options = [])
+	{
+		$attachment = \Swift_Attachment::newInstance($content);
+		if (!empty($options['fileName'])) {
+			$attachment->setFilename($options['fileName']);
+		}
+		if (!empty($options['contentType'])) {
+			$attachment->setContentType($options['contentType']);
+		}
+		$this->getSwiftMessage()->attach($attachment);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function embedFile($fileName, array $options = [])
+	{
+		$embedFile = \Swift_EmbeddedFile::fromPath($fileName);
+		if (!empty($options['fileName'])) {
+			$embedFile->setFilename($options['fileName']);
+		}
+		if (!empty($options['contentType'])) {
+			$embedFile->setContentType($options['contentType']);
+		}
+		return $this->getSwiftMessage()->embed($embedFile);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function embedContent($content, array $options = [])
+	{
+		$embedFile = \Swift_EmbeddedFile::newInstance($content);
+		if (!empty($options['fileName'])) {
+				$embedFile->setFilename($options['fileName']);
+			}
+		if (!empty($options['contentType'])) {
+			$embedFile->setContentType($options['contentType']);
+		}
+		return $this->getSwiftMessage()->embed($embedFile);
 	}
 
 	/**

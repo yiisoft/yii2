@@ -3,6 +3,7 @@
 namespace yiiunit\extensions\swiftmailer;
 
 use Yii;
+use yii\helpers\FileHelper;
 use yii\swiftmailer\Mailer;
 use yii\swiftmailer\Message;
 use yiiunit\VendorTestCase;
@@ -26,6 +27,26 @@ class MessageTest extends VendorTestCase
 				'mail' => $this->createTestEmailComponent()
 			]
 		]);
+		$filePath = $this->getTestFilePath();
+		if (!file_exists($filePath)) {
+			FileHelper::createDirectory($filePath);
+		}
+	}
+
+	public function tearDown()
+	{
+		$filePath = $this->getTestFilePath();
+		if (file_exists($filePath)) {
+			FileHelper::removeDirectory($filePath);
+		}
+	}
+
+	/**
+	 * @return string test file path.
+	 */
+	protected function getTestFilePath()
+	{
+		return Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . basename(get_class($this)) . '_' . getmypid();
 	}
 
 	/**
@@ -43,6 +64,26 @@ class MessageTest extends VendorTestCase
 	protected function createTestMessage()
 	{
 		return Yii::$app->getComponent('mail')->createMessage();
+	}
+
+	/**
+	 * Creates image file with given text.
+	 * @param string $fileName file name.
+	 * @param string $text text to be applied on image.
+	 * @return string image file full name.
+	 */
+	protected function createImageFile($fileName = 'test.jpg', $text = 'Test Image')
+	{
+		if (!function_exists('imagecreatetruecolor')) {
+			$this->markTestSkipped('GD lib required.');
+		}
+		$fileFullName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $fileName;
+		$image = imagecreatetruecolor(120, 20);
+		$textColor = imagecolorallocate($image, 233, 14, 91);
+		imagestring($image, 1, 5, 5, $text, $textColor);
+		imagejpeg($image, $fileFullName);
+		imagedestroy($image);
+		return $fileFullName;
 	}
 
 	// Tests :
@@ -83,14 +124,52 @@ class MessageTest extends VendorTestCase
 	/**
 	 * @depends testSend
 	 */
-	public function testCreateAttachment()
+	public function testAttachContent()
 	{
 		$message = $this->createTestMessage();
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Create Attachment Test');
 		$message->setText('Yii Swift Create Attachment Test body');
-		$message->attachContentAsFile('Test attachment content', 'test.txt');
+		$message->attachContent('Test attachment content', ['fileName' => 'test.txt']);
+		$this->assertTrue($message->send());
+	}
+
+	/**
+	 * @depends testSend
+	 */
+	public function testEmbedFile()
+	{
+		$fileName = $this->createImageFile('embed_file.jpg', 'Embed Image File');
+
+		$message = $this->createTestMessage();
+
+		$cid = $message->embedFile($fileName);
+
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Embed File Test');
+		$message->setHtml('Embed image: <img src="' . $cid. '" alt="pic">');
+
+		$this->assertTrue($message->send());
+	}
+
+	/**
+	 * @depends testSend
+	 */
+	public function testEmbedContent()
+	{
+		$fileName = $this->createImageFile('embed_file.jpg', 'Embed Image File');
+
+		$message = $this->createTestMessage();
+
+		$cid = $message->embedContent(file_get_contents($fileName), ['contentType' => 'image/jpeg']);
+
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Embed File Test');
+		$message->setHtml('Embed image: <img src="' . $cid. '" alt="pic">');
+
 		$this->assertTrue($message->send());
 	}
 
