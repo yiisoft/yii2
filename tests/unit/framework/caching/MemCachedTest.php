@@ -29,6 +29,7 @@ class MemCachedTest extends CacheTestCase
 
 	public function testExpire()
 	{
+		print_r($_ENV);
 		if (isset($_ENV['TRAVIS']) && $_ENV['TRAVIS']) {
 			$this->markTestSkipped('Can not reliably test memcached expiry on travis-ci.');
 		}
