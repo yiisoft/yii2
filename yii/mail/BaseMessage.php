@@ -39,17 +39,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 	 */
 	public function getMailer()
 	{
-		return Yii::$app->getComponent('email');
-	}
-
-	/**
-	 * Initializes the object.
-	 * This method is invoked at the end of the constructor after the object is initialized with the
-	 * given configuration.
-	 */
-	public function init()
-	{
-		Yii::configure($this, $this->getMailer()->messageConfig);
+		return Yii::$app->getComponent('mail');
 	}
 
 	/**

@@ -8,7 +8,7 @@
 namespace yii\mail;
 
 /**
- * Class MessageInterface
+ * MessageInterface is an interface, which email message should apply.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
