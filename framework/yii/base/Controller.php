@@ -25,7 +25,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Controller extends Component
+class Controller extends Component implements ViewContextInterface
 {
 	/**
 	 * @event ActionEvent an event raised right before executing a controller action.
@@ -305,8 +305,7 @@ class Controller extends Component
 	 */
 	public function render($view, $params = [])
 	{
-		$viewFile = $this->findViewFile($view);
-		$output = $this->getView()->renderFile($viewFile, $params, $this);
+		$output = $this->getView()->render($view, $params, $this);
 		$layoutFile = $this->findLayoutFile();
 		if ($layoutFile !== false) {
 			return $this->getView()->renderFile($layoutFile, ['content' => $output], $this);
@@ -325,8 +324,7 @@ class Controller extends Component
 	 */
 	public function renderPartial($view, $params = [])
 	{
-		$viewFile = $this->findViewFile($view);
-		return $this->getView()->renderFile($viewFile, $params, $this);
+		return $this->getView()->render($view, $params, $this);
 	}
 
 	/**
@@ -382,22 +380,9 @@ class Controller extends Component
 	 * on how to specify this parameter.
 	 * @return string the view file path. Note that the file may not exist.
 	 */
-	protected function findViewFile($view)
+	public function findViewFile($view)
 	{
-		if (strncmp($view, '@', 1) === 0) {
-			// e.g. "@app/views/main"
-			$file = Yii::getAlias($view);
-		} elseif (strncmp($view, '//', 2) === 0) {
-			// e.g. "//layouts/main"
-			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} elseif (strncmp($view, '/', 1) === 0) {
-			// e.g. "/site/index"
-			$file = $this->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} else {
-			$file = $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
-		}
-
-		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file;
+		return $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
 	}
 
 	/**
