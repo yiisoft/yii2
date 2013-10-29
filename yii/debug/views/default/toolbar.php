@@ -26,13 +26,13 @@ $url = $panels['request']->getUrl();
 ?>
 <div id="yii-debug-toolbar">
 	<?php foreach ($panels as $panel): ?>
-	<?=$panel->getSummary(); ?>
+	<?= $panel->getSummary() ?>
 	<?php endforeach; ?>
-	<span class="yii-debug-toolbar-toggler" onclick="<?=$minJs; ?>">›</span>
+	<span class="yii-debug-toolbar-toggler" onclick="<?= $minJs ?>">›</span>
 </div>
 <div id="yii-debug-toolbar-min">
-	<a href="<?=$url; ?>" title="Open Yii Debugger" id="yii-debug-toolbar-logo">
-		<img width="29" height="30" alt="" src="<?=ConfigPanel::getYiiLogo(); ?>">
+	<a href="<?= $url ?>" title="Open Yii Debugger" id="yii-debug-toolbar-logo">
+		<img width="29" height="30" alt="" src="<?= ConfigPanel::getYiiLogo() ?>">
 	</a>
-	<span class="yii-debug-toolbar-toggler" onclick="<?=$maxJs; ?>">‹</span>
+	<span class="yii-debug-toolbar-toggler" onclick="<?= $maxJs ?>">‹</span>
 </div>

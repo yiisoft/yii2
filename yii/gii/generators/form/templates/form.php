@@ -14,22 +14,22 @@ use yii\widgets\ActiveForm;
 
 /**
  * @var yii\base\View $this
- * @var <?=$generator->modelClass; ?> $model
+ * @var <?= $generator->modelClass ?> $model
  * @var ActiveForm $form
  */
-<?="?>"; ?>
+<?= "?>" ?>
 
-<div class="<?=str_replace('/', '-', trim($generator->viewName, '_')); ?>">
+<div class="<?= str_replace('/', '-', trim($generator->viewName, '_')) ?>">
 
-	<?='<?php'; ?> $form = ActiveForm::begin(); ?>
+	<?= '<?php' ?> $form = ActiveForm::begin(); ?>
 
 	<?php foreach ($generator->getModelAttributes() as $attribute): ?>
-	<?='<?php'; ?> echo $form->field($model, '<?=$attribute; ?>'); ?>
+	<?= '<?php' ?> echo $form->field($model, '<?= $attribute ?>'); ?>
 	<?php endforeach; ?>
 
 		<div class="form-group">
-			<?='<?php'; ?> echo Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
+			<?= '<?php' ?> echo Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
 		</div>
-	<?='<?php'; ?> ActiveForm::end(); ?>
+	<?= '<?php' ?> ActiveForm::end(); ?>
 
-</div><!-- <?=str_replace('/', '-', trim($generator->viewName, '-')); ?> -->
+</div><!-- <?= str_replace('/', '-', trim($generator->viewName, '-')) ?> -->

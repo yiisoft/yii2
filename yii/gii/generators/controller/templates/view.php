@@ -12,11 +12,11 @@ echo "<?php\n";
 /**
  * @var yii\base\View $this
  */
-<?="?>"; ?>
+<?= "?>" ?>
 
-<h1><?=$generator->getControllerID() . '/' . $action; ?></h1>
+<h1><?= $generator->getControllerID() . '/' . $action ?></h1>
 
 <p>
 	You may change the content of this page by modifying
-	the file <code><?='<?php'; ?> echo __FILE__; ?></code>.
+	the file <code><?= '<?php' ?> echo __FILE__; ?></code>.
 </p>

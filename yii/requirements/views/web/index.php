@@ -52,18 +52,18 @@
 		<table class="table table-bordered">
 			<tr><th>Name</th><th>Result</th><th>Required By</th><th>Memo</th></tr>
 			<?php foreach($requirements as $requirement): ?>
-			<tr class="<?=$requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'error' : 'warning'); ?>">
+			<tr class="<?= $requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'error' : 'warning') ?>">
 				<td>
-				<?=$requirement['name']; ?>
+				<?= $requirement['name'] ?>
 				</td>
 				<td>
-				<span class="result"><?=$requirement['condition'] ? 'Passed' : ($requirement['mandatory'] ? 'Failed' : 'Warning'); ?></span>
+				<span class="result"><?= $requirement['condition'] ? 'Passed' : ($requirement['mandatory'] ? 'Failed' : 'Warning') ?></span>
 				</td>
 				<td>
-				<?=$requirement['by']; ?>
+				<?= $requirement['by'] ?>
 				</td>
 				<td>
-				<?=$requirement['memo']; ?>
+				<?= $requirement['memo'] ?>
 				</td>
 			</tr>
 			<?php endforeach; ?>
@@ -74,7 +74,7 @@
 	<hr>
 
 	<div class="footer">
-		<p>Server: <?=$this->getServerInfo() . ' ' . $this->getNowDate(); ?></p>
+		<p>Server: <?= $this->getServerInfo() . ' ' . $this->getNowDate() ?></p>
 		<p>Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a></p>
 	</div>
 </div>

@@ -540,7 +540,7 @@ class View extends Component
 
 	/**
 	 * Registers all files provided by an asset bundle including depending bundles files.
-	 * Removes a bundle from [[assetBundles]] once registered.
+	 * Removes a bundle from [[assetBundles]] once files are registered.
 	 * @param string $name name of the bundle to register
 	 */
 	private function registerAssetFiles($name)
@@ -552,7 +552,7 @@ class View extends Component
 		foreach($bundle->depends as $dep) {
 			$this->registerAssetFiles($dep);
 		}
-		$bundle->registerAssets($this);
+		$bundle->registerAssetFiles($this);
 		unset($this->assetBundles[$name]);
 	}
 

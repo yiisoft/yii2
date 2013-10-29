@@ -25,7 +25,7 @@ $activeGenerator = Yii::$app->controller->generator;
 		</div>
 	</div>
 	<div class="col-lg-9">
-		<?=$content; ?>
+		<?= $content ?>
 	</div>
 </div>
 <?php $this->endContent(); ?>
