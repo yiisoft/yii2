@@ -63,8 +63,8 @@ CREATE TABLE `tbl_order_item` (
 );
 
 CREATE TABLE tbl_null_values (
-  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `var1` INT UNSIGNED NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `var1` INT NULL,
   `var2` INT NULL,
   `var3` INT DEFAULT NULL,
   `stringcol` VARCHAR (32) DEFAULT NULL,
