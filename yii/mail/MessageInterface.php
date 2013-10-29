@@ -16,6 +16,12 @@ namespace yii\mail;
 interface MessageInterface
 {
 	/**
+	 * Set the character set of this message.
+	 * @param string $charset character set name.
+	 */
+	public function setCharset($charset);
+
+	/**
 	 * Sets message sender.
 	 * @param string|array $from sender email address.
 	 * You may pass an array of addresses if this message is from multiple people.
