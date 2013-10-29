@@ -225,8 +225,8 @@ class View extends Component
 	 * on how to specify this parameter.
 	 * @param object $context the context that the view should be used to search the view file. If null,
 	 * existing [[context]] will be used.
-	 * @throws InvalidCallException if [[context]] is required and invalid.
 	 * @return string the view file path. Note that the file may not exist.
+	 * @throws InvalidCallException if [[context]] is required and invalid.
 	 */
 	protected function findViewFile($view, $context = null)
 	{
@@ -236,9 +236,13 @@ class View extends Component
 		} elseif (strncmp($view, '//', 2) === 0) {
 			// e.g. "//layouts/main"
 			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} elseif (strncmp($view, '/', 1) === 0 && Yii::$app->controller !== null) {
+		} elseif (strncmp($view, '/', 1) === 0) {
 			// e.g. "/site/index"
-			$file = Yii::$app->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+			if (Yii::$app->controller !== null) {
+				$file = Yii::$app->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+			} else {
+				throw new InvalidCallException("Unable to locate view file for view '$view': no active controller.");
+			}
 		} else {
 			// context required
 			if ($context === null) {
@@ -247,7 +251,7 @@ class View extends Component
 			if ($context instanceof ViewContextInterface) {
 				$file = $context->findViewFile($view);
 			} else {
-				throw new InvalidCallException('Current context is not supported.');
+				throw new InvalidCallException("Unable to locate view file for view '$view': no active view context.");
 			}
 		}
 

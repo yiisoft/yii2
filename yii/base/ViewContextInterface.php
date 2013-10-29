@@ -8,13 +8,9 @@
 namespace yii\base;
 
 /**
- * ViewContextInterface represents possible context for the view rendering.
- * It determines the way the non-global view files are searched.
- * This interface introduces method [[findViewFile]], which will be used
- * at [[View::render()]] to determine the file by view name, which does
- * not match default format.
+ * ViewContextInterface is the interface that should implemented by classes who want to support relative view names.
  *
- * @see View
+ * The method [[findViewFile()]] should be implemented to convert a relative view name into a file path.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -22,8 +18,8 @@ namespace yii\base;
 interface ViewContextInterface
 {
 	/**
-	 * Finds the view file based on the given view name.
-	 * @param string $view the view name.
+	 * Finds the view file corresponding to the specified relative view name.
+	 * @param string $view a relative view name. The name does NOT start with a slash.
 	 * @return string the view file path. Note that the file may not exist.
 	 */
 	public function findViewFile($view);
