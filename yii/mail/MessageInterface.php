@@ -70,18 +70,6 @@ interface MessageInterface
 	public function setHtml($html);
 
 	/**
-	 * Add message plain text content part.
-	 * @param string $text message plain text content.
-	 */
-	public function addText($text);
-
-	/**
-	 * Add message HTML content part.
-	 * @param string $html message HTML content.
-	 */
-	public function addHtml($html);
-
-	/**
 	 * Attach specified content as file for the email message.
 	 * @param string $content attachment file content.
 	 * @param array $options options for embed file. Valid options are:
