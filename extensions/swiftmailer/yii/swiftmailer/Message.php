@@ -42,6 +42,22 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
+	public function setCharset($charset)
+	{
+		$this->getSwiftMessage()->setCharset($charset);
+	}
+
+	/**
+	 * @return string the character set of this message.
+	 */
+	public function getCharset()
+	{
+		return $this->getSwiftMessage()->getCharset();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function setFrom($from)
 	{
 		$this->getSwiftMessage()->setFrom($from);
@@ -232,8 +248,8 @@ class Message extends BaseMessage
 	{
 		$embedFile = \Swift_EmbeddedFile::newInstance($content);
 		if (!empty($options['fileName'])) {
-				$embedFile->setFilename($options['fileName']);
-			}
+			$embedFile->setFilename($options['fileName']);
+		}
 		if (!empty($options['contentType'])) {
 			$embedFile->setContentType($options['contentType']);
 		}

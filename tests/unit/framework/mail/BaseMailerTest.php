@@ -168,6 +168,8 @@ class Message extends BaseMessage
 	public $id;
 	public $encoding;
 
+	public function setCharset($charset) {}
+
 	public function setFrom($from) {}
 
 	public function setTo($to) {}

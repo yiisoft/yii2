@@ -21,6 +21,7 @@ use Yii;
  * @see BaseMailer
  *
  * @property \yii\mail\BaseMailer $mailer mailer component instance. This property is read-only.
+ * @property string $charset the character set of this message.
  * @property string|array $from sender email address.
  * @property string|array $to receiver email address.
  * @property string|array $cc copy receiver email address.
