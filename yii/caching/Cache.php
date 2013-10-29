@@ -192,7 +192,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * If the cache already contains such a key, the existing value and
 	 * expiration time will be replaced with the new ones, respectively.
 	 *
-	 * @param mixed $key a key identifying the value to be cached value. This can be a simple string or
+	 * @param mixed $key a key identifying the value to be cached. This can be a simple string or
 	 * a complex data structure consisting of factors representing the key.
 	 * @param mixed $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
@@ -218,7 +218,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	/**
 	 * Stores a value identified by a key into cache if the cache does not contain this key.
 	 * Nothing will be done if the cache already contains the key.
-	 * @param mixed $key a key identifying the value to be cached value. This can be a simple string or
+	 * @param mixed $key a key identifying the value to be cached. This can be a simple string or
 	 * a complex data structure consisting of factors representing the key.
 	 * @param mixed $value the value to be cached
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.

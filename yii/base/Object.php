@@ -63,6 +63,7 @@ class Object implements Arrayable
 	 * @param string $name the property name
 	 * @return mixed the property value
 	 * @throws UnknownPropertyException if the property is not defined
+	 * @throws InvalidCallException if the property is write-only
 	 * @see __set
 	 */
 	public function __get($name)
@@ -85,7 +86,7 @@ class Object implements Arrayable
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
 	 * @throws UnknownPropertyException if the property is not defined
-	 * @throws InvalidCallException if the property is read-only.
+	 * @throws InvalidCallException if the property is read-only
 	 * @see __get
 	 */
 	public function __set($name, $value)

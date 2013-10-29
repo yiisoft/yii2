@@ -139,7 +139,7 @@ class RedisCache extends Cache
 		$response = $this->_connection->executeCommand('MGET', $keys);
 		$result = [];
 		$i = 0;
-		foreach($keys as $key) {
+		foreach ($keys as $key) {
 			$result[$key] = $response[$i++];
 		}
 		return $result;
