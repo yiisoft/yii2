@@ -9,7 +9,7 @@ use yiiunit\VendorTestCase;
 
 /**
  * @group vendor
- * @group email
+ * @group mail
  * @group swiftmailer
  */
 class MailerTest extends VendorTestCase
@@ -65,12 +65,5 @@ class MailerTest extends VendorTestCase
 	{
 		$mailer = new Mailer();
 		$this->assertTrue(is_object($mailer->getSwiftMailer()), 'Unable to get Swift mailer instance!');
-	}
-
-	public function testCreateSwiftMessage()
-	{
-		$mailer = new Mailer();
-		$message = $mailer->createSwiftMessage();
-		$this->assertTrue(is_object($message), 'Unable to create Swift message instance!');
 	}
 }

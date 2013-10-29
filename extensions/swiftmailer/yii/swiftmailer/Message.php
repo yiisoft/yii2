@@ -34,7 +34,7 @@ class Message extends BaseMessage
 	public function getSwiftMessage()
 	{
 		if (!is_object($this->_swiftMessage)) {
-			$this->_swiftMessage = $this->getMailer()->createSwiftMessage();
+			$this->_swiftMessage = $this->createSwiftMessage();
 		}
 		return $this->_swiftMessage;
 	}
@@ -170,5 +170,14 @@ class Message extends BaseMessage
 	public function __toString()
 	{
 		return $this->getSwiftMessage()->toString();
+	}
+
+	/**
+	 * Creates the Swift email message instance.
+	 * @return \Swift_Message email message instance.
+	 */
+	protected function createSwiftMessage()
+	{
+		return new \Swift_Message();
 	}
 }

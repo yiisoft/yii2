@@ -7,7 +7,7 @@ use Yii;
 use yiiunit\TestCase;
 
 /**
- * @group email
+ * @group mail
  */
 class ViewResolverTest extends TestCase
 {

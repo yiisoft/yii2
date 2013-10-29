@@ -11,14 +11,17 @@ use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
 /**
- * @group email
+ * @group mail
  */
 class BaseMailerTest extends TestCase
 {
 	public function setUp()
 	{
-		$this->mockApplication();
-		Yii::$app->setComponent('email', $this->createTestEmailComponent());
+		$this->mockApplication([
+			'components' => [
+				'mail' => $this->createTestEmailComponent()
+			]
+		]);
 		$filePath = $this->getTestFilePath();
 		if (!file_exists($filePath)) {
 			FileHelper::createDirectory($filePath);
@@ -109,15 +112,38 @@ class BaseMailerTest extends TestCase
 		$this->assertTrue(is_object($viewResolver), 'Unable to get default view resolver!');
 	}
 
-	public function testDefaultMessageConfig()
+	public function testCreateMessage()
 	{
+		$mailer = new Mailer();
+		$message = $mailer->createMessage();
+		$this->assertTrue(is_object($message), 'Unable to create message instance!');
+		$this->assertEquals($mailer->messageClass, get_class($message), 'Invalid message class!');
+
 		$messageConfig = array(
 			'id' => 'test-id',
 			'encoding' => 'test-encoding',
 		);
-		Yii::$app->getComponent('email')->messageConfig = $messageConfig;
+		$message = $mailer->createMessage($messageConfig);
 
-		$message = new Message();
+		foreach ($messageConfig as $name => $value) {
+			$this->assertEquals($value, $message->$name, 'Unable to apply message config!');
+		}
+	}
+
+	/**
+	 * @depends testCreateMessage
+	 */
+	public function testDefaultMessageConfig()
+	{
+		$mailer = new Mailer();
+
+		$messageConfig = array(
+			'id' => 'test-id',
+			'encoding' => 'test-encoding',
+		);
+		$mailer->messageConfig = $messageConfig;
+
+		$message = $mailer->createMessage();
 
 		foreach ($messageConfig as $name => $value) {
 			$this->assertEquals($value, $message->$name);
@@ -153,6 +179,7 @@ class BaseMailerTest extends TestCase
  */
 class Mailer extends BaseMailer
 {
+	public $messageClass = 'yiiunit\framework\mail\Message';
 	public $sentMessages = array();
 
 	public function send($message)

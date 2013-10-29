@@ -9,7 +9,7 @@ use yiiunit\VendorTestCase;
 
 /**
  * @group vendor
- * @group email
+ * @group mail
  * @group swiftmailer
  */
 class MessageTest extends VendorTestCase
@@ -23,7 +23,7 @@ class MessageTest extends VendorTestCase
 	{
 		$this->mockApplication([
 			'components' => [
-				'email' => $this->createTestEmailComponent()
+				'mail' => $this->createTestEmailComponent()
 			]
 		]);
 	}
@@ -35,6 +35,14 @@ class MessageTest extends VendorTestCase
 	{
 		$component = new Mailer();
 		return $component;
+	}
+
+	/**
+	 * @return Message test message instance.
+	 */
+	protected function createTestMessage()
+	{
+		return Yii::$app->getComponent('mail')->createMessage();
 	}
 
 	// Tests :
@@ -50,7 +58,7 @@ class MessageTest extends VendorTestCase
 	 */
 	public function testSend()
 	{
-		$message = new Message();
+		$message = $this->createTestMessage();
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Test');
@@ -63,7 +71,7 @@ class MessageTest extends VendorTestCase
 	 */
 	public function testAttachFile()
 	{
-		$message = new Message();
+		$message = $this->createTestMessage();
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Attach File Test');
@@ -77,7 +85,7 @@ class MessageTest extends VendorTestCase
 	 */
 	public function testCreateAttachment()
 	{
-		$message = new Message();
+		$message = $this->createTestMessage();
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Create Attachment Test');
@@ -91,7 +99,7 @@ class MessageTest extends VendorTestCase
 	 */
 	public function testSendAlternativeBody()
 	{
-		$message = new Message();
+		$message = $this->createTestMessage();
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Alternative Body Test');

@@ -19,7 +19,7 @@ use yii\mail\BaseMailer;
  * 'components' => array(
  *     ...
  *     'email' => array(
- *         'class' => 'yii\email\swift\Mailer',
+ *         'class' => 'yii\swiftmailer\Mailer',
  *         'transport' => [
  *             'class' => 'Swift_SmtpTransport',
  *             'host' => 'localhost',
@@ -35,11 +35,17 @@ use yii\mail\BaseMailer;
  *
  * @see http://swiftmailer.org
  *
+ * @method Message createMessage(array $config = []) creates new message instance from given configuration.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 class Mailer extends BaseMailer
 {
+	/**
+	 * @var string message default class name.
+	 */
+	public $messageClass = 'yii\swiftmailer\Message';
 	/**
 	 * @var \Swift_Mailer Swift mailer instance.
 	 */
@@ -130,14 +136,5 @@ class Mailer extends BaseMailer
 			}
 		}
 		return $transport;
-	}
-
-	/**
-	 * Creates the Swift email message instance.
-	 * @return \Swift_Message email message instance.
-	 */
-	public function createSwiftMessage()
-	{
-		return new \Swift_Message();
 	}
 }

@@ -20,13 +20,11 @@ use Yii;
  *
  * @property \yii\base\View|array $view view instance or its array configuration.
  * @property \yii\mail\ViewResolver|array $viewResolver view resolver instance or its array configuration.
- * @property array $defaultMessageConfig configuration, which should be applied by default to any
- * new created email message instance.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-abstract class BaseMailer extends Component
+abstract class BaseMailer extends Component implements MailerInterface
 {
 	/**
 	 * @var \yii\base\View|array view instance or its array configuration.
@@ -49,6 +47,10 @@ abstract class BaseMailer extends Component
 	 * ~~~
 	 */
 	public $messageConfig = [];
+	/**
+	 * @var string message default class name.
+	 */
+	public $messageClass = 'yii\mail\BaseMessage';
 
 	/**
 	 * @param array|\yii\base\View $view view instance or its array configuration.
@@ -123,11 +125,20 @@ abstract class BaseMailer extends Component
 	}
 
 	/**
-	 * Sends the given email message.
-	 * @param object $message email message instance
-	 * @return boolean whether the message has been sent.
+	 * Creates new message instance from given configuration.
+	 * Message configuration will be merged with [[messageConfig]].
+	 * If 'class' parameter is omitted [[messageClass]], will be used.
+	 * @param array $config message configuration.
+	 * @return MessageInterface message instance.
 	 */
-	abstract public function send($message);
+	public function createMessage(array $config = [])
+	{
+		$config = array_merge($this->messageConfig, $config);
+		if (!array_key_exists('class', $config)) {
+			$config['class'] = $this->messageClass;
+		}
+		return Yii::createObject($config);
+	}
 
 	/**
 	 * Sends a couple of messages at once.
@@ -135,9 +146,10 @@ abstract class BaseMailer extends Component
 	 * saving resources, for example on open/close connection operations,
 	 * they may override this method to create their specific implementation.
 	 * @param array $messages list of email messages, which should be sent.
-	 * @return integer number of successfull sends
+	 * @return integer number of successful sends.
 	 */
-	public function sendMultiple(array $messages) {
+	public function sendMultiple(array $messages)
+	{
 		$successCount = 0;
 		foreach ($messages as $message) {
 			if ($this->send($message)) {
