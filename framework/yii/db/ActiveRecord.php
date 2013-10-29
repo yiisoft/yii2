@@ -93,6 +93,10 @@ class ActiveRecord extends Model
 	const OP_ALL = 0x07;
 
 	/**
+	 * @var string the name of the class to use for relations.
+	 */
+	protected $relationClassName = 'yii\\db\\ActiveRelation';
+	/**
 	 * @var array attribute values indexed by attribute names
 	 */
 	private $_attributes = [];
@@ -384,7 +388,7 @@ class ActiveRecord extends Model
 				return $this->_related[$t];
 			}
 			$value = parent::__get($name);
-			if ($value instanceof ActiveRelation) {
+			if ($value instanceof $this->relationClassName) {
 				return $this->_related[$t] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
@@ -474,7 +478,7 @@ class ActiveRecord extends Model
 	 */
 	public function hasOne($class, $link)
 	{
-		return new ActiveRelation([
+		return new $this->relationClassName([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -512,7 +516,7 @@ class ActiveRecord extends Model
 	 */
 	public function hasMany($class, $link)
 	{
-		return new ActiveRelation([
+		return new $this->relationClassName([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -1264,7 +1268,7 @@ class ActiveRecord extends Model
 		$getter = 'get' . $name;
 		try {
 			$relation = $this->$getter();
-			if ($relation instanceof ActiveRelation) {
+			if ($relation instanceof $this->relationClassName) {
 				return $relation;
 			}
 		} catch (UnknownMethodException $e) {
