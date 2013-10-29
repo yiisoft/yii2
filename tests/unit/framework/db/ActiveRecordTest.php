@@ -4,6 +4,7 @@ namespace yiiunit\framework\db;
 use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
@@ -374,5 +375,55 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(2, $ret);
 		$customers = Customer::find()->all();
 		$this->assertEquals(0, count($customers));
+	}
+
+	public function testStoreNull()
+	{
+		$record = new NullValues();
+		$this->assertNull($record->var1);
+		$this->assertNull($record->var2);
+		$this->assertNull($record->var3);
+		$this->assertNull($record->stringcol);
+
+		$record->id = 1;
+
+		$record->var1 = 123;
+		$record->var2 = 456;
+		$record->var3 = 789;
+		$record->stringcol = 'hello!';
+
+		$record->save(false);
+		$this->assertTrue($record->refresh());
+
+		$this->assertEquals(123, $record->var1);
+		$this->assertEquals(456, $record->var2);
+		$this->assertEquals(789, $record->var3);
+		$this->assertEquals('hello!', $record->stringcol);
+
+		$record->var1 = null;
+		$record->var2 = null;
+		$record->var3 = null;
+		$record->stringcol = null;
+
+		$record->save(false);
+		$this->assertTrue($record->refresh());
+
+		$this->assertNull($record->var1);
+		$this->assertNull($record->var2);
+		$this->assertNull($record->var3);
+		$this->assertNull($record->stringcol);
+
+		$record->var1 = 0;
+		$record->var2 = 0;
+		$record->var3 = 0;
+		$record->stringcol = '';
+
+		$record->save(false);
+		$this->assertTrue($record->refresh());
+
+		$this->assertEquals(0, $record->var1);
+		$this->assertEquals(0, $record->var2);
+		$this->assertEquals(0, $record->var3);
+		$this->assertEquals('', $record->stringcol);
 	}
 }

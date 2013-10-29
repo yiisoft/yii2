@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS tbl_item;
 DROP TABLE IF EXISTS tbl_order;
 DROP TABLE IF EXISTS tbl_category;
 DROP TABLE IF EXISTS tbl_customer;
+DROP TABLE IF EXISTS tbl_null_values;
 DROP TABLE IF EXISTS tbl_type;
 DROP TABLE IF EXISTS tbl_constraints;
 
@@ -60,6 +61,16 @@ CREATE TABLE `tbl_order_item` (
   CONSTRAINT `FK_order_item_order_id` FOREIGN KEY (`order_id`) REFERENCES `tbl_order` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_order_item_item_id` FOREIGN KEY (`item_id`) REFERENCES `tbl_item` (`id`) ON DELETE CASCADE
 );
+
+CREATE TABLE tbl_null_values (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `var1` INT UNSIGNED NULL,
+  `var2` INT NULL,
+  `var3` INT DEFAULT NULL,
+  `stringcol` VARCHAR (32) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
 
 CREATE TABLE `tbl_type` (
   `int_col` int(11) NOT NULL,

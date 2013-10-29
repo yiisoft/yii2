@@ -4,6 +4,7 @@ IF OBJECT_ID('[dbo].[tbl_order]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_order];
 IF OBJECT_ID('[dbo].[tbl_category]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_category];
 IF OBJECT_ID('[dbo].[tbl_customer]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_customer];
 IF OBJECT_ID('[dbo].[tbl_type]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_type];
+IF OBJECT_ID('[dbo].[tbl_null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_null_values];
 
 CREATE TABLE [dbo].[tbl_customer] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
@@ -52,6 +53,15 @@ CREATE TABLE [dbo].[tbl_order_item] (
 		[order_id] ASC,
 		[item_id] ASC
 	) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[tbl_null_values] (
+  id [int] UNSIGNED NOT NULL,
+  var1 [int] UNSIGNED NULL,
+  var2 [int] NULL,
+  var3 [int] DEFAULT NULL,
+  stringcol [varchar](32) DEFAULT NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE [dbo].[tbl_type] (
