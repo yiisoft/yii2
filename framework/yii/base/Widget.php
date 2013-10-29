@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use ReflectionClass;
 
 /**
  * Widget is the base class for widgets.
@@ -189,8 +190,7 @@ class Widget extends Component implements ViewContextInterface
 	 */
 	public function getViewPath()
 	{
-		$className = get_class($this);
-		$class = new \ReflectionClass($className);
+		$class = new ReflectionClass($this);
 		return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
 	}
 
@@ -202,6 +202,6 @@ class Widget extends Component implements ViewContextInterface
 	 */
 	public function findViewFile($view)
 	{
-		return $this->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+		return $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
 	}
 }
