@@ -10,7 +10,6 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * User is the class for the "user" application component that manages the user authentication status.

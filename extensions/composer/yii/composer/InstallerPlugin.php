@@ -28,7 +28,7 @@ class InstallerPlugin implements PluginInterface
 		$composer->getInstallationManager()->addInstaller($installer);
 		$file = rtrim($composer->getConfig()->get('vendor-dir'), '/') . '/yii-extensions.php';
 		if (!is_file($file)) {
-			file_put_contents($file, "<?php\nreturn array();\n");
+			file_put_contents($file, "<?php\nreturn [];\n");
 		}
 	}
 }

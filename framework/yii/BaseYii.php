@@ -335,8 +335,7 @@ class BaseYii
 
 		include($classFile);
 
-		if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) &&
-			(!function_exists('trait_exists') || !trait_exists($className, false))) {
+		if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
 			throw new UnknownClassException("Unable to find '$className' in file: $classFile");
 		}
 	}

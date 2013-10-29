@@ -19,17 +19,17 @@ class Order extends ActiveRecord
 
 	public function getCustomer()
 	{
-		return $this->hasOne('Customer', ['id' => 'customer_id']);
+		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
 	}
 
 	public function getOrderItems()
 	{
-		return $this->hasMany('OrderItem', ['order_id' => 'id']);
+		return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
 	}
 
 	public function getItems()
 	{
-		return $this->hasMany('Item', ['id' => 'item_id'])
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
 			->via('orderItems', function ($q) {
 				// additional query configuration
 			})->orderBy('id');
@@ -37,7 +37,7 @@ class Order extends ActiveRecord
 
 	public function getBooks()
 	{
-		return $this->hasMany('Item', ['id' => 'item_id'])
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
 			->viaTable('tbl_order_item', ['order_id' => 'id'])
 			->where(['category_id' => 1]);
 	}

@@ -32,11 +32,11 @@ $this->title = 'Yii Debugger';
 				<tbody>
 					<?php foreach ($manifest as $tag => $data): ?>
 					<tr>
-						<td><?=Html::a($tag, ['view', 'tag' => $tag]); ?></td>
-						<td><?=date('Y-m-d h:i:sa', $data['time']); ?></td>
-						<td><?=$data['ip']; ?></td>
-						<td><?=$data['method']; ?></td>
-						<td><?=$data['url']; ?></td>
+						<td><?= Html::a($tag, ['view', 'tag' => $tag]) ?></td>
+						<td><?= date('Y-m-d h:i:sa', $data['time']) ?></td>
+						<td><?= $data['ip'] ?></td>
+						<td><?= $data['method'] ?></td>
+						<td><?= $data['url'] ?></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>

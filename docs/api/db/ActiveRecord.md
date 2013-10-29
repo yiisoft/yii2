@@ -175,7 +175,7 @@ class Customer extends \yii\db\ActiveRecord
 {
 	public function getOrders()
 	{
-		return $this->hasMany('Order', ['customer_id' => 'id']);
+		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
 	}
 }
 
@@ -183,7 +183,7 @@ class Order extends \yii\db\ActiveRecord
 {
 	public function getCustomer()
 	{
-		return $this->hasOne('Customer', ['id' => 'customer_id']);
+		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
 	}
 }
 ~~~
@@ -194,8 +194,7 @@ a one-many relationship. For example, a customer has many orders. And the [[hasO
 method declares a many-one or one-one relationship. For example, an order has one customer.
 Both methods take two parameters:
 
-- `$class`: the name of the class related models should use. If specified without
-  a namespace, the namespace will be taken from the declaring class.
+- `$class`: the name of the class that the related models should use.
 - `$link`: the association between columns from two tables. This should be given as an array.
   The keys of the array are the names of the columns from the table associated with `$class`,
   while the values of the array are the names of the columns from the declaring class.
@@ -223,7 +222,7 @@ class Customer extends \yii\db\ActiveRecord
 {
 	public function getBigOrders($threshold = 100)
 	{
-		return $this->hasMany('Order', ['customer_id' => 'id'])
+		return $this->hasMany(Order::className(), ['customer_id' => 'id'])
 			->where('subtotal > :threshold', [':threshold' => $threshold])
 			->orderBy('id');
 	}
@@ -244,7 +243,7 @@ class Order extends \yii\db\ActiveRecord
 {
 	public function getItems()
 	{
-		return $this->hasMany('Item', ['id' => 'item_id'])
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
 			->viaTable('tbl_order_item', ['order_id' => 'id']);
 	}
 }
@@ -259,12 +258,12 @@ class Order extends \yii\db\ActiveRecord
 {
 	public function getOrderItems()
 	{
-		return $this->hasMany('OrderItem', ['order_id' => 'id']);
+		return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
 	}
 
 	public function getItems()
 	{
-		return $this->hasMany('Item', ['id' => 'item_id'])
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
 			->via('orderItems');
 	}
 }

@@ -16,8 +16,8 @@ AppAsset::register($this);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="<?=Yii::$app->charset; ?>"/>
-	<title><?=Html::encode($this->title); ?></title>
+	<meta charset="<?= Yii::$app->charset ?>"/>
+	<title><?= Html::encode($this->title) ?></title>
 	<?php $this->head(); ?>
 </head>
 <body>
@@ -53,13 +53,13 @@ AppAsset::register($this);
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
 	]); ?>
 	<?=Alert::widget()?>
-	<?=$content; ?>
+	<?= $content ?>
 	</div>
 
 	<footer class="footer">
 		<div class="container">
-		<p class="pull-left">&copy; My Company <?=date('Y'); ?></p>
-		<p class="pull-right"><?=Yii::powered(); ?></p>
+		<p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+		<p class="pull-right"><?= Yii::powered() ?></p>
 		</div>
 	</footer>
 

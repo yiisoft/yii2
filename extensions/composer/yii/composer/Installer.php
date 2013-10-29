@@ -31,7 +31,7 @@ class Installer extends LibraryInstaller
 	 */
 	public function supports($packageType)
 	{
-		return $packageType === 'yii-extension';
+		return $packageType === 'yii2-extension';
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Installer extends LibraryInstaller
 	protected function addPackage(PackageInterface $package)
 	{
 		$extension = [
-			'name' => $package->getPrettyName(),
+			'name' => $package->getName(),
 			'version' => $package->getVersion(),
 		];
 
@@ -76,14 +76,14 @@ class Installer extends LibraryInstaller
 		}
 
 		$extensions = $this->loadExtensions();
-		$extensions[$package->getUniqueName()] = $extension;
+		$extensions[$package->getName()] = $extension;
 		$this->saveExtensions($extensions);
 	}
 
 	protected function removePackage(PackageInterface $package)
 	{
 		$packages = $this->loadExtensions();
-		unset($packages[$package->getUniqueName()]);
+		unset($packages[$package->getName()]);
 		$this->saveExtensions($packages);
 	}
 

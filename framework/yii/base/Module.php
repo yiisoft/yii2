@@ -83,7 +83,6 @@ abstract class Module extends Component
 	 * it will use the "controllers" sub-namespace under the namespace of this module.
 	 * For example, if the namespace of this module is "foo\bar", then the default
 	 * controller namespace would be "foo\bar\controllers".
-	 * If the module is an application, it will default to "app\controllers".
 	 */
 	public $controllerNamespace;
 	/**
@@ -167,22 +166,20 @@ abstract class Module extends Component
 	/**
 	 * Initializes the module.
 	 * This method is called after the module is created and initialized with property values
-	 * given in configuration. The default implement will create a path alias using the module [[id]]
+	 * given in configuration. The default implementation will create a path alias using the module [[id]]
 	 * and then call [[preloadComponents()]] to load components that are declared in [[preload]].
+	 *
+	 * If you override this method, please make sure you call the parent implementation.
 	 */
 	public function init()
 	{
-		$this->preloadComponents();
 		if ($this->controllerNamespace === null) {
-			if ($this instanceof Application) {
-				$this->controllerNamespace = 'app\\controllers';
-			} else {
-				$class = get_class($this);
-				if (($pos = strrpos($class, '\\')) !== false) {
-					$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
-				}
+			$class = get_class($this);
+			if (($pos = strrpos($class, '\\')) !== false) {
+				$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
 			}
 		}
+		$this->preloadComponents();
 	}
 
 	/**
@@ -221,9 +218,6 @@ abstract class Module extends Component
 		$p = realpath($path);
 		if ($p !== false && is_dir($p)) {
 			$this->_basePath = $p;
-			if ($this instanceof Application) {
-				Yii::setAlias('@app', $p);
-			}
 		} else {
 			throw new InvalidParamException("The directory does not exist: $path");
 		}

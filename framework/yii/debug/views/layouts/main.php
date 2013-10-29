@@ -11,12 +11,12 @@ yii\debug\DebugAsset::register($this);
 <html>
 <?php $this->beginPage(); ?>
 <head>
-	<title><?=Html::encode($this->title); ?></title>
+	<title><?= Html::encode($this->title) ?></title>
 	<?php $this->head(); ?>
 </head>
 <body>
 <?php $this->beginBody(); ?>
-<?=$content; ?>
+<?= $content ?>
 <?php $this->endBody(); ?>
 </body>
 <?php $this->endPage(); ?>

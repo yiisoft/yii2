@@ -18,5 +18,5 @@ use yii\gii\CodeFile;
 		echo '<div class="alert alert-success">' . $generator->successMessage() . '</div>';
 	}
 	?>
-	<pre><?=nl2br($results); ?></pre>
+	<pre><?= nl2br($results) ?></pre>
 </div>

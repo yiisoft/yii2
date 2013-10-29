@@ -2,7 +2,7 @@
 	"name": "yiisoft/yii2-twig",
 	"description": "The Twig integration for the Yii framework",
 	"keywords": ["yii", "twig", "renderer"],
-	"type": "yii-extension",
+	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
 		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
@@ -13,7 +13,7 @@
 	},
 	"authors": [
 		{
-			"name": "Alenxader Makarov",
+			"name": "Alexander Makarov",
 			"email": "sam@rmcreative.ru"
 		}
 	],
