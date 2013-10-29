@@ -139,7 +139,7 @@ abstract class BaseListView extends Widget
 			$pageCount = $pagination->pageCount;
 			if (($summaryContent = $this->summary) === null) {
 				$summaryContent = '<div class="summary">'
-					. Yii::t('yii', 'Showing <b>{totalCount, plural, =0{0} other{{begin, number, integer}-{end, number, integer}}}</b> of <b>{totalCount, number, integer}</b> {totalCount, plural, one{item} other{items}}.')
+					. Yii::t('yii', 'Showing <b>{totalCount, plural, zero{0} other{{begin, number, integer}-{end, number, integer}}}</b> of <b>{totalCount, number, integer}</b> {totalCount, plural, one{item} other{items}}.')
 					. '</div>';
 			}
 		} else {
