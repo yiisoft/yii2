@@ -41,6 +41,15 @@ class MessageFormatterTest extends TestCase
 				]
 			],
 
+			[
+				'{'.self::SUBJECT.'} is {'.self::N.', number, integer}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					self::N => self::N_VALUE,
+					self::SUBJECT => self::SUBJECT_VALUE,
+				]
+			],
+
 			// This one was provided by Aura.Intl. Thanks!
 			[<<<_MSG_
 {gender_of_host, select,
@@ -119,59 +128,116 @@ _MSG_
 		];
 	}
 
-	/**
-	 * @dataProvider patterns
-	 */
-	public function testNamedArgumentsStatic($pattern, $expected, $args)
+	public function parsePatterns()
 	{
-		$result = MessageFormatter::formatMessage('en_US', $pattern, $args);
-		$this->assertEquals($expected, $result, intl_get_error_message());
+		return [
+			[
+				self::SUBJECT_VALUE.' is {0, number}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					0 => self::N_VALUE,
+				]
+			],
+
+			[
+				self::SUBJECT_VALUE.' is {'.self::N.', number}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					self::N => self::N_VALUE,
+				]
+			],
+
+			[
+				self::SUBJECT_VALUE.' is {'.self::N.', number, integer}', // pattern
+				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				[ // params
+					self::N => self::N_VALUE,
+				]
+			],
+
+			[
+				"{0,number,integer} monkeys on {1,number,integer} trees make {2,number} monkeys per tree",
+				"4,560 monkeys on 123 trees make 37.073 monkeys per tree",
+				[
+					0 => 4560,
+					1 => 123,
+					2 => 37.073
+				],
+				'en_US'
+			],
+
+			[
+				"{0,number,integer} Affen auf {1,number,integer} Bäumen sind {2,number} Affen pro Baum",
+				"4.560 Affen auf 123 Bäumen sind 37,073 Affen pro Baum",
+				[
+					0 => 4560,
+					1 => 123,
+					2 => 37.073
+				],
+				'de',
+			],
+
+			[
+				"{monkeyCount,number,integer} monkeys on {trees,number,integer} trees make {monkeysPerTree,number} monkeys per tree",
+				"4,560 monkeys on 123 trees make 37.073 monkeys per tree",
+				[
+					'monkeyCount' => 4560,
+					'trees' => 123,
+					'monkeysPerTree' => 37.073
+				],
+				'en_US'
+			],
+
+			[
+				"{monkeyCount,number,integer} Affen auf {trees,number,integer} Bäumen sind {monkeysPerTree,number} Affen pro Baum",
+				"4.560 Affen auf 123 Bäumen sind 37,073 Affen pro Baum",
+				[
+					'monkeyCount' => 4560,
+					'trees' => 123,
+					'monkeysPerTree' => 37.073
+				],
+				'de',
+			],
+		];
 	}
 
 	/**
 	 * @dataProvider patterns
 	 */
-	public function testNamedArgumentsObject($pattern, $expected, $args)
+	public function testNamedArguments($pattern, $expected, $args)
 	{
-		$formatter = new MessageFormatter('en_US', $pattern);
-		$result = $formatter->format($args);
+		$formatter = new MessageFormatter();
+		$result = $formatter->format($pattern, $args, 'en_US');
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
+	}
+
+	/**
+	 * @dataProvider parsePatterns
+	 */
+	public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en_US')
+	{
+		$formatter = new MessageFormatter();
+		$result = $formatter->parse($pattern, $expected, $locale);
+		$this->assertEquals($args, $result, $formatter->getErrorMessage() . ' Pattern: ' . $pattern);
 	}
 
 	public function testInsufficientArguments()
 	{
 		$expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
 
-		$result = MessageFormatter::formatMessage('en_US', '{'.self::SUBJECT.'} is {'.self::N.', number}', [
+		$formatter = new MessageFormatter();
+		$result = $formatter->format('{'.self::SUBJECT.'} is {'.self::N.', number}', [
 			self::N => self::N_VALUE,
-		]);
+		], 'en_US');
 
-		$this->assertEquals($expected, $result, intl_get_error_message());
-	}
-
-	/**
-	 * When instantiating a MessageFormatter with invalid pattern it should be null with default settings.
-	 * It will be IntlException if intl.use_exceptions=1 and PHP 5.5 or newer or an error if intl.error_level is not 0.
-	 */
-	public function testNullConstructor()
-	{
-		if(ini_get('intl.use_exceptions')) {
-			$this->setExpectedException('IntlException');
-		}
-
-		if (!ini_get('intl.error_level') || ini_get('intl.use_exceptions')) {
-			$this->assertNull(new MessageFormatter('en_US', ''));
-		}
+		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
 	public function testNoParams()
 	{
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
-		$result = MessageFormatter::formatMessage('en_US', $pattern, []);
-		$this->assertEquals($pattern, $result, intl_get_error_message());
-
-		$formatter = new MessageFormatter('en_US', $pattern);
-		$result = $formatter->format([]);
+		$formatter = new MessageFormatter();
+		$result = $formatter->format($pattern, [], 'en_US');
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
 	}
 }

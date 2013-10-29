@@ -73,7 +73,7 @@ class ConsoleTest extends TestCase
 
 /*	public function testScreenSize()
 	{
-		for($i = 1; $i < 20; $i++) {
+		for ($i = 1; $i < 20; $i++) {
 			echo implode(', ', Console::getScreenSize(true)) . "\n";
 			ob_flush();
 			sleep(1);

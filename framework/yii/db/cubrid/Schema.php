@@ -147,7 +147,7 @@ class Schema extends \yii\db\Schema
 			}
 
 			$foreignKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
-			foreach($foreignKeys as $key) {
+			foreach ($foreignKeys as $key) {
 				if (isset($table->foreignKeys[$key['FK_NAME']])) {
 					$table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
 				} else {
@@ -230,7 +230,7 @@ class Schema extends \yii\db\Schema
 		$this->db->open();
 		$tables = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
 		$tableNames = [];
-		foreach($tables as $table) {
+		foreach ($tables as $table) {
 			// do not list system tables
 			if ($table['TYPE'] != 0) {
 				$tableNames[] = $table['NAME'];

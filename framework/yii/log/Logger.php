@@ -65,8 +65,8 @@ use yii\base\InvalidConfigException;
  * second element the total time spent in SQL execution. This property is read-only.
  * @property float $elapsedTime The total elapsed time in seconds for current request. This property is
  * read-only.
- * @property array $profiling The profiling results. Each array element has the following structure:
- * `[$token, $category, $time]`. This property is read-only.
+ * @property array $profiling The profiling results. Each array element has the following structure: `[$token,
+ * $category, $time]`. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

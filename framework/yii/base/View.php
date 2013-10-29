@@ -89,8 +89,7 @@ class View extends Component
 
 
 	/**
-	 * @var object the context under which the [[renderFile()]] method is being invoked.
-	 * This can be a controller, a widget, or any other object.
+	 * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
 	 */
 	public $context;
 	/**
@@ -196,29 +195,67 @@ class View extends Component
 	/**
 	 * Renders a view.
 	 *
-	 * This method delegates the call to the [[context]] object:
+	 * The view to be rendered can be specified in one of the following formats:
 	 *
-	 * - If [[context]] is a controller, the [[Controller::renderPartial()]] method will be called;
-	 * - If [[context]] is a widget, the [[Widget::render()]] method will be called;
-	 * - Otherwise, an InvalidCallException exception will be thrown.
+	 * - path alias (e.g. "@app/views/site/index");
+	 * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
+	 *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
+	 * - absolute path within current module (e.g. "/site/index"): the view name starts with a single slash.
+	 *   The actual view file will be looked for under the [[Module::viewPath|view path]] of [[module]].
+	 * - resolving any other format will be performed via [[ViewContext::findViewFile()]].
 	 *
 	 * @param string $view the view name. Please refer to [[Controller::findViewFile()]]
 	 * and [[Widget::findViewFile()]] on how to specify this parameter.
 	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @param object $context the context that the view should use for rendering the view. If null,
+	 * existing [[context]] will be used.
 	 * @return string the rendering result
-	 * @throws InvalidCallException if [[context]] is neither a controller nor a widget.
 	 * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
 	 * @see renderFile
 	 */
-	public function render($view, $params = [])
+	public function render($view, $params = [], $context = null)
 	{
-		if ($this->context instanceof Controller) {
-			return $this->context->renderPartial($view, $params);
-		} elseif ($this->context instanceof Widget) {
-			return $this->context->render($view, $params);
+		$viewFile = $this->findViewFile($view, $context);
+		return $this->renderFile($viewFile, $params, $context);
+	}
+
+	/**
+	 * Finds the view file based on the given view name.
+	 * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
+	 * on how to specify this parameter.
+	 * @param object $context the context that the view should be used to search the view file. If null,
+	 * existing [[context]] will be used.
+	 * @return string the view file path. Note that the file may not exist.
+	 * @throws InvalidCallException if [[context]] is required and invalid.
+	 */
+	protected function findViewFile($view, $context = null)
+	{
+		if (strncmp($view, '@', 1) === 0) {
+			// e.g. "@app/views/main"
+			$file = Yii::getAlias($view);
+		} elseif (strncmp($view, '//', 2) === 0) {
+			// e.g. "//layouts/main"
+			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+		} elseif (strncmp($view, '/', 1) === 0) {
+			// e.g. "/site/index"
+			if (Yii::$app->controller !== null) {
+				$file = Yii::$app->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
+			} else {
+				throw new InvalidCallException("Unable to locate view file for view '$view': no active controller.");
+			}
 		} else {
-			throw new InvalidCallException('View::render() is not supported for the current context.');
+			// context required
+			if ($context === null) {
+				$context = $this->context;
+			}
+			if ($context instanceof ViewContextInterface) {
+				$file = $context->findViewFile($view);
+			} else {
+				throw new InvalidCallException("Unable to locate view file for view '$view': no active view context.");
+			}
 		}
+
+		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file;
 	}
 
 	/**
@@ -519,7 +556,7 @@ class View extends Component
 		$this->trigger(self::EVENT_END_PAGE);
 
 		$content = ob_get_clean();
-		foreach(array_keys($this->assetBundles) as $bundle) {
+		foreach (array_keys($this->assetBundles) as $bundle) {
 			$this->registerAssetFiles($bundle);
 		}
 		echo strtr($content, [
@@ -549,7 +586,7 @@ class View extends Component
 			return;
 		}
 		$bundle = $this->assetBundles[$name];
-		foreach($bundle->depends as $dep) {
+		foreach ($bundle->depends as $dep) {
 			$this->registerAssetFiles($dep);
 		}
 		$bundle->registerAssetFiles($this);
