@@ -8,8 +8,6 @@
 
 namespace yii\db;
 
-use yii\base\InvalidConfigException;
-
 /**
  * ActiveRelation represents a relation between two Active Record classes.
  *
@@ -22,19 +20,15 @@ use yii\base\InvalidConfigException;
  *
  * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
  *
+ * @property array|ActiveRelation $via the query associated with the pivot table. Please call [[via()]]
+ * or [[viaTable()]] to set this property instead of directly setting it.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class ActiveRelation extends ActiveQuery
 {
 	use \yii\ar\ActiveRelation;
-
-	/**
-	 * @var array|ActiveRelation the query associated with the pivot table. Please call [[via()]]
-	 * or [[viaTable()]] to set this property instead of directly setting it.
-	 */
-	public $via;
-
 
 	/**
 	 * Specifies the pivot table.
