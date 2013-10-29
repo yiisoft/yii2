@@ -84,18 +84,42 @@ interface MessageInterface
 	/**
 	 * Attach specified content as file for the email message.
 	 * @param string $content attachment file content.
-	 * @param string $fileName attachment file name.
-	 * @param string $contentType MIME type of the attachment file, by default 'application/octet-stream' will be used.
+	 * @param array $options options for embed file. Valid options are:
+	 * - fileName: name, which should be used to attach file.
+	 * - contentType: attached file MIME type.
 	 */
-	public function attachContentAsFile($content, $fileName, $contentType = 'application/octet-stream');
+	public function attachContent($content, array $options = []);
 
 	/**
 	 * Attaches existing file to the email message.
 	 * @param string $fileName full file name
-	 * @param string $contentType MIME type of the attachment file, if empty it will be suggested automatically.
-	 * @param string $attachFileName name, which should be used for attachment, if empty file base name will be used.
+	 * @param array $options options for embed file. Valid options are:
+	 * - fileName: name, which should be used to attach file.
+	 * - contentType: attached file MIME type.
 	 */
-	public function attachFile($fileName, $contentType = null, $attachFileName = null);
+	public function attachFile($fileName, array $options = []);
+
+	/**
+	 * Attach a file and return it's CID source.
+	 * This method should be used when embedding images or other data in a message.
+	 * @param string $fileName file name.
+	 * @param array $options options for embed file. Valid options are:
+	 * - fileName: name, which should be used to attach file.
+	 * - contentType: attached file MIME type.
+	 * @return string attachment CID.
+	 */
+	public function embedFile($fileName, array $options = []);
+
+	/**
+	 * Attach a content as file and return it's CID source.
+	 * This method should be used when embedding images or other data in a message.
+	 * @param string $content  attachment file content.
+	 * @param array $options options for embed file. Valid options are:
+	 * - fileName: name, which should be used to attach file.
+	 * - contentType: attached file MIME type.
+	 * @return string attachment CID.
+	 */
+	public function embedContent($content, array $options = []);
 
 	/**
 	 * Sends this email message.

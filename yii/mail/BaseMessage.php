@@ -53,24 +53,6 @@ abstract class BaseMessage extends Object implements MessageInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function attachFile($fileName, $contentType = null, $attachFileName = null)
-	{
-		if (!file_exists($fileName)) {
-			throw new InvalidParamException('Unable to attach file "' . $fileName . '": file does not exists!');
-		}
-		if (empty($contentType)) {
-			$contentType = FileHelper::getMimeType($fileName);
-		}
-		if (empty($attachFileName)) {
-			$attachFileName = basename($fileName);
-		}
-		$content = file_get_contents($fileName);
-		$this->attachContentAsFile($content, $attachFileName, $contentType);
-	}
-
-	/**
-	 * @inheritdoc
-	 */
 	public function render($view, $params = [])
 	{
 		return $this->getMailer()->render($view, $params);
