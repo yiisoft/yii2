@@ -113,6 +113,18 @@ class Generator extends \yii\gii\Generator
 	/**
 	 * @inheritdoc
 	 */
+	public function autoCompleteData()
+	{
+		return [
+			'tableName' => function () {
+				return $this->getDbConnection()->getSchema()->getTableNames();
+			},
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function requiredTemplates()
 	{
 		return ['model.php'];
