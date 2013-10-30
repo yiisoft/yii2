@@ -406,24 +406,25 @@ class Component extends Object
 	public function off($name, $handler = null)
 	{
 		$this->ensureBehaviors();
-		if (isset($this->_events[$name])) {
-			if ($handler === null) {
-				$this->_events[$name] = [];
-			} else {
-				$removed = false;
-				foreach ($this->_events[$name] as $i => $event) {
-					if ($event[0] === $handler) {
-						unset($this->_events[$name][$i]);
-						$removed = true;
-					}
-				}
-				if ($removed) {
-					$this->_events[$name] = array_values($this->_events[$name]);
-				}
-				return $removed;
-			}
+		if (empty($this->_events[$name])) {
+			return false;
 		}
-		return false;
+		if ($handler === null) {
+			unset($this->_events[$name]);
+			return true;
+		} else {
+			$removed = false;
+			foreach ($this->_events[$name] as $i => $event) {
+				if ($event[0] === $handler) {
+					unset($this->_events[$name][$i]);
+					$removed = true;
+				}
+			}
+			if ($removed) {
+				$this->_events[$name] = array_values($this->_events[$name]);
+			}
+			return $removed;
+		}
 	}
 
 	/**
