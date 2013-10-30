@@ -135,18 +135,21 @@ abstract class BaseListView extends Widget
 			$totalCount = $this->dataProvider->getTotalCount();
 			$begin = $pagination->getPage() * $pagination->pageSize + 1;
 			$end = $begin + $count - 1;
+			if ($begin > $end) {
+				$begin = $end;
+			}
 			$page = $pagination->getPage() + 1;
 			$pageCount = $pagination->pageCount;
 			if (($summaryContent = $this->summary) === null) {
 				$summaryContent = '<div class="summary">'
-					. Yii::t('yii', 'Showing <b>{totalCount, plural, zero{0} other{{begin, number, integer}-{end, number, integer}}}</b> of <b>{totalCount, number, integer}</b> {totalCount, plural, one{item} other{items}}.')
+					. Yii::t('yii', 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.')
 					. '</div>';
 			}
 		} else {
 			$begin = $page = $pageCount = 1;
 			$end = $totalCount = $count;
 			if (($summaryContent = $this->summary) === null) {
-				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>{count, number, integer}</b> {count, plural, one{item} other{items}}.') . '</div>';
+				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.') . '</div>';
 			}
 		}
 		return Yii::$app->getI18n()->format($summaryContent, [
