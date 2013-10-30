@@ -146,7 +146,7 @@ abstract class BaseListView extends Widget
 			$begin = $page = $pageCount = 1;
 			$end = $totalCount = $count;
 			if (($summaryContent = $this->summary) === null) {
-				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>{count}</b> {count, plural, one{item} other{items}}.') . '</div>';
+				$summaryContent = '<div class="summary">' . Yii::t('yii', 'Total <b>{count, number, integer}</b> {count, plural, one{item} other{items}}.') . '</div>';
 			}
 		}
 		return Yii::$app->getI18n()->format($summaryContent, [
