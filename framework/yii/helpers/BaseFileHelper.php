@@ -271,14 +271,21 @@ class BaseFileHelper
 
 	/**
 	 * find first existing file by baseName and an array of possible extensions
-	 *
-	 * @param $baseName string
-	 * @param $extensions array
+	 * e.g. findFileByExtensions('views/index', ['tpl', 'php']) will look for theses files
+	 * - views/index
+	 * - views/index.tpl
+	 * - views/index.php
+	 * and return the first one found.
+	 * or null if none found
+	 * @param string $baseName base FileName to be found
+	 * @param array $extensions fileExtensions to test
 	 * @return string first found file or null
 	 */
 	public static function findFileByExtensions($baseName, $extensions)
 	{
-		if (is_file($baseName)) return $baseName;
+		if (is_file($baseName)) {
+			return $baseName;
+		}
 		foreach($extensions as $ext) {
 			if (is_file($testFile = $baseName . '.' . $ext)) {
 				return $testFile;
