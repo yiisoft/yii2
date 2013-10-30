@@ -302,7 +302,6 @@ class ComponentTest extends TestCase
 		$component->detachBehaviors();
 		$this->assertNull($component->getBehavior('a'));
 		$this->assertNull($component->getBehavior('b'));
-
 	}
 }
 
