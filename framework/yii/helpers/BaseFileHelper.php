@@ -54,10 +54,11 @@ class BaseFileHelper
 	 * If not set, the value of [[\yii\base\Application::language]] will be used.
 	 * @param string $sourceLanguage the language that the original file is in.
 	 * If not set, the value of [[\yii\base\Application::sourceLanguage]] will be used.
+	 * @param array $possibleExtensions optional array of possible fileExtensions to look for
 	 * @return string the matching localized file, or the original file if the localized version is not found.
 	 * If the target and the source language codes are the same, the original file will be returned.
 	 */
-	public static function localize($file, $language = null, $sourceLanguage = null)
+	public static function localize($file, $language = null, $sourceLanguage = null, $possibleExtensions = [])
 	{
 		if ($language === null) {
 			$language = Yii::$app->language;
@@ -69,7 +70,7 @@ class BaseFileHelper
 			return $file;
 		}
 		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $sourceLanguage . DIRECTORY_SEPARATOR . basename($file);
-		return is_file($desiredFile) ? $desiredFile : $file;
+		return ($firstExistingFile = FileHelper::findFileByExtensions($desiredFile, $possibleExtensions)) ? $firstExistingFile : $file;
 	}
 
 	/**
@@ -266,6 +267,31 @@ class BaseFileHelper
 		}
 		closedir($handle);
 		return $list;
+	}
+
+	/**
+	 * find first existing file by baseName and an array of possible extensions
+	 * e.g. findFileByExtensions('views/index', ['tpl', 'php']) will look for theses files
+	 * - views/index
+	 * - views/index.tpl
+	 * - views/index.php
+	 * and return the first one found.
+	 * or null if none found
+	 * @param string $baseName base FileName to be found
+	 * @param array $extensions fileExtensions to test
+	 * @return string first found file or null
+	 */
+	public static function findFileByExtensions($baseName, $extensions)
+	{
+		if (is_file($baseName)) {
+			return $baseName;
+		}
+		foreach($extensions as $ext) {
+			if (is_file($testFile = $baseName . '.' . $ext)) {
+				return $testFile;
+			}
+		}
+		return null;
 	}
 
 	/**

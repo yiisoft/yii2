@@ -98,17 +98,18 @@ class Theme extends Component
 	 * Converts a file to a themed file if possible.
 	 * If there is no corresponding themed file, the original file will be returned.
 	 * @param string $path the file to be themed
+	 * @param array $possibleExtensions optional array of possible fileExtensions to look for
 	 * @return string the themed file, or the original file if the themed version is not available.
 	 */
-	public function applyTo($path)
+	public function applyTo($path, $possibleExtensions = [])
 	{
 		$path = FileHelper::normalizePath($path);
 		foreach ($this->pathMap as $from => $to) {
 			if (strpos($path, $from) === 0) {
 				$n = strlen($from);
 				$file = $to . substr($path, $n);
-				if (is_file($file)) {
-					return $file;
+				if ($firstExistingFile = FileHelper::findFileByExtensions($file, $possibleExtensions)) {
+					return $firstExistingFile;
 				}
 			}
 		}

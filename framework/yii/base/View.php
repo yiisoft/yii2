@@ -255,7 +255,7 @@ class View extends Component
 			}
 		}
 
-		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file;
+		return $file;
 	}
 
 	/**
@@ -280,11 +280,14 @@ class View extends Component
 	public function renderFile($viewFile, $params = [], $context = null)
 	{
 		$viewFile = Yii::getAlias($viewFile);
+		$fileExtensions = $this->getViewFileTypes();
 		if ($this->theme !== null) {
-			$viewFile = $this->theme->applyTo($viewFile);
+			$viewFile = $this->theme->applyTo($viewFile, $fileExtensions);
 		}
-		if (is_file($viewFile)) {
-			$viewFile = FileHelper::localize($viewFile);
+		if (is_file($localizedFile = FileHelper::localize($viewFile, $fileExtensions))) {
+			$viewFile = $localizedFile;
+		} elseif ($firstExistingFile = FileHelper::findFileByExtensions($viewFile, $fileExtensions)) {
+			$viewFile = $firstExistingFile;
 		} else {
 			throw new InvalidParamException("The view file does not exist: $viewFile");
 		}
@@ -314,6 +317,17 @@ class View extends Component
 		$this->context = $oldContext;
 
 		return $output;
+	}
+
+	/**
+	 * Get all file-extensions for view-files that installed renderers could handle.
+	 * @return array of extensions.
+	 */
+	public function getViewFileTypes()
+	{
+		$extensions = empty($this->renderers) ? [] : array_keys($this->renderers);
+		$extensions[] = 'php';
+		return $extensions;
 	}
 
 	/**
