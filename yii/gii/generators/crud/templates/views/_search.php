@@ -34,7 +34,7 @@ foreach ($generator->getTableSchema()->getColumnNames() as $attribute) {
 	if (++$count < 6) {
 		echo "\t\t<?= " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
 	} else {
-		echo "\t\t<?= // " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
+		echo "\t\t<?php // echo " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
 	}
 }
 ?>

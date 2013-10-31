@@ -111,6 +111,17 @@ abstract class Generator extends Model
 	}
 
 	/**
+	 * Returns the list of auto complete values.
+	 * The array keys are the attribute names, and the array values are the corresponding auto complete values.
+	 * Auto complete values can also be callable typed in order one want to make postponed data generation.
+	 * @return array the list of auto complete values
+	 */
+	public function autoCompleteData()
+	{
+		return [];
+	}
+
+	/**
 	 * Returns the message to be displayed when the newly generated code is saved successfully.
 	 * Child classes may override this method to customize the message.
 	 * @return string the message to be displayed when the newly generated code is saved successfully.

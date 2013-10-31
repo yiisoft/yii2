@@ -26,12 +26,14 @@ class GiiAsset extends AssetBundle
 	 */
 	public $css = [
 		'main.css',
+		'typeahead.js-bootstrap.css',
 	];
 	/**
 	 * @inheritdoc
 	 */
 	public $js = [
 		'gii.js',
+		'typeahead.js',
 	];
 	/**
 	 * @inheritdoc

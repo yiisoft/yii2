@@ -8,6 +8,7 @@
 namespace yii\gii\components;
 
 use yii\gii\Generator;
+use yii\helpers\Json;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -30,15 +31,36 @@ class ActiveField extends \yii\widgets\ActiveField
 		if (isset($hints[$this->attribute])) {
 			$this->hint($hints[$this->attribute]);
 		}
+		$autoCompleteData = $this->model->autoCompleteData();
+		if (isset($autoCompleteData[$this->attribute])) {
+			if (is_callable($autoCompleteData[$this->attribute])) {
+				$this->autoComplete(call_user_func($autoCompleteData[$this->attribute]));
+			} else {
+				$this->autoComplete($autoCompleteData[$this->attribute]);
+			}
+		}
 	}
 
 	/**
-	 * Makes filed remember its value between page reloads
+	 * Makes field remember its value between page reloads
 	 * @return static the field object itself
 	 */
 	public function sticky()
 	{
 		$this->options['class'] .= ' sticky';
+		return $this;
+	}
+
+	/**
+	 * Makes field auto completable
+	 * @param array $data auto complete data (array of callables or scalars)
+	 * @return static the field object itself
+	 */
+	public function autoComplete($data)
+	{
+		static $counter = 0;
+		$this->inputOptions['class'] .= ' typeahead-' . (++$counter);
+		$this->form->getView()->registerJs("jQuery('.typeahead-{$counter}').typeahead({local: " . Json::encode($data) . "});");
 		return $this;
 	}
 }
