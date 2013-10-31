@@ -44,6 +44,7 @@ class Generator extends \yii\gii\Generator
 		return array_merge(parent::rules(), [
 			['moduleID, controllerClass, modelClass, searchModelClass, baseControllerClass', 'filter', 'filter' => 'trim'],
 			['modelClass, searchModelClass, controllerClass, baseControllerClass, indexWidgetType', 'required'],
+			['searchModelClass', 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
 			['modelClass, controllerClass, baseControllerClass, searchModelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
 			['modelClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
 			['baseControllerClass', 'validateClass', 'params' => ['extends' => Controller::className()]],
