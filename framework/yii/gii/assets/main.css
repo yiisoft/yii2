@@ -201,3 +201,11 @@ body {
 .DifferencesInline .ChangeReplace del {
 	background: #e99;
 }
+
+/* additional styles for typeahead.js-bootstrap.css */
+.twitter-typeahead {
+    display: block !important;
+}
+.twitter-typeahead .tt-hint {
+    padding: 6px 12px !important;
+}

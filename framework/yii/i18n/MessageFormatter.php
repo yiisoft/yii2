@@ -92,7 +92,7 @@ class MessageFormatter extends Component
 			return $this->fallbackFormat($pattern, $params, $language);
 		}
 
-		if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+		if (version_compare(PHP_VERSION, '5.5.0', '<') || version_compare(INTL_ICU_VERSION, '4.8', '<')) {
 			$pattern = $this->replaceNamedArguments($pattern, $params);
 			$params = array_values($params);
 		}
