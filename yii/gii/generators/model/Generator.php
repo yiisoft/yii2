@@ -61,7 +61,7 @@ class Generator extends \yii\gii\Generator
 			['db', 'validateDb'],
 			['ns', 'validateNamespace'],
 			['tableName', 'validateTableName'],
-			['modelClass', 'validateModelClass'],
+			['modelClass', 'validateModelClass', 'skipOnEmpty' => false],
 			['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
 			['generateRelations, generateLabelsFromComments', 'boolean'],
 		]);
@@ -93,14 +93,14 @@ class Generator extends \yii\gii\Generator
 			'db' => 'This is the ID of the DB application component.',
 			'tableName' => 'This is the name of the DB table that the new ActiveRecord class is associated with, e.g. <code>tbl_post</code>.
 				The table name may consist of the DB schema part if needed, e.g. <code>public.tbl_post</code>.
-				The table name may contain an asterisk to match multiple table names, e.g. <code>tbl_*</code>
+				The table name may end with asterisk to match multiple table names, e.g. <code>tbl_*</code>
 				will match tables who name starts with <code>tbl_</code>. In this case, multiple ActiveRecord classes
 				will be generated, one for each matching table name; and the class names will be generated from
 				the matching characters. For example, table <code>tbl_post</code> will generate <code>Post</code>
 				class.',
 			'modelClass' => 'This is the name of the ActiveRecord class to be generated. The class name should not contain
 				the namespace part as it is specified in "Namespace". You do not need to specify the class name
-				if "Table Name" contains an asterisk at the end, in which case multiple ActiveRecord classes will be generated.',
+				if "Table Name" ends with asterisk, in which case multiple ActiveRecord classes will be generated.',
 			'baseClass' => 'This is the base class of the new ActiveRecord class. It should be a fully qualified namespaced class name.',
 			'generateRelations' => 'This indicates whether the generator should generate relations based on
 				foreign key constraints it detects in the database. Note that if your database contains too many tables,
@@ -434,8 +434,8 @@ class Generator extends \yii\gii\Generator
 		if ($this->isReservedKeyword($this->modelClass)) {
 			$this->addError('modelClass', 'Class name cannot be a reserved PHP keyword.');
 		}
-		if (strpos($this->tableName, '*') === false && $this->modelClass == '') {
-			$this->addError('modelClass', 'Model Class cannot be blank.');
+		if (substr($this->tableName, -1) !== '*' && $this->modelClass == '') {
+			$this->addError('modelClass', 'Model Class cannot be blank if table name does not end with asterisk.');
 		}
 	}
 
@@ -444,8 +444,8 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function validateTableName()
 	{
-		if (($pos = strpos($this->tableName, '*')) !== false && strpos($this->tableName, '*', $pos + 1) !== false) {
-			$this->addError('tableName', 'At most one asterisk is allowed.');
+		if (($pos = strpos($this->tableName, '*')) !== false && substr($this->tableName, -1) !== '*') {
+			$this->addError('tableName', 'Asterisk is only allowed as the last character.');
 			return;
 		}
 		$tables = $this->getTableNames();
