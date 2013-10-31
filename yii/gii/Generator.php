@@ -250,7 +250,7 @@ abstract class Generator extends Model
 					$hasError = true;
 					$lines[] = "generating $relativePath\n<span class=\"error\">$error</span>";
 				} else {
-					$lines[] = $file->operation === CodeFile::OP_NEW ? " generated $relativePath" : " overwrote $relativePath";
+					$lines[] = $file->operation === CodeFile::OP_CREATE ? " generated $relativePath" : " overwrote $relativePath";
 				}
 			} else {
 				$lines[] = "   skipped $relativePath";

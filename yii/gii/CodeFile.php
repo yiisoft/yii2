@@ -28,7 +28,7 @@ class CodeFile extends Object
 	/**
 	 * The code file is new.
 	 */
-	const OP_NEW = 'new';
+	const OP_CREATE = 'create';
 	/**
 	 * The code file already exists, and the new one may need to overwrite it.
 	 */
@@ -68,7 +68,7 @@ class CodeFile extends Object
 		if (is_file($path)) {
 			$this->operation = file_get_contents($path) === $content ? self::OP_SKIP : self::OP_OVERWRITE;
 		} else {
-			$this->operation = self::OP_NEW;
+			$this->operation = self::OP_CREATE;
 		}
 	}
 
@@ -79,7 +79,7 @@ class CodeFile extends Object
 	public function save()
 	{
 		$module = Yii::$app->controller->module;
-		if ($this->operation === self::OP_NEW) {
+		if ($this->operation === self::OP_CREATE) {
 			$dir = dirname($this->path);
 			if (!is_dir($dir)) {
 				$mask = @umask(0);

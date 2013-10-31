@@ -53,7 +53,7 @@ use yii\gii\CodeFile;
 					if ($file->operation === CodeFile::OP_SKIP) {
 						echo '&nbsp;';
 					} else {
-						echo Html::checkBox("answers[{$file->id}]", isset($answers) ? isset($answers[$file->id]) : ($file->operation === CodeFile::OP_NEW));
+						echo Html::checkBox("answers[{$file->id}]", isset($answers) ? isset($answers[$file->id]) : ($file->operation === CodeFile::OP_CREATE));
 					}
 					?>
 				</td>
