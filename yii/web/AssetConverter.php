@@ -28,6 +28,8 @@ class AssetConverter extends Component implements AssetConverterInterface
 		'scss' => ['css', 'sass {from} {to}'],
 		'sass' => ['css', 'sass {from} {to}'],
 		'styl' => ['js', 'stylus < {from} > {to}'],
+		'coffee' => ['js', 'coffee -p {from} > {to}'],
+		'ts' => ['js', 'tsc --out {to} {from}'],
 	];
 
 	/**
