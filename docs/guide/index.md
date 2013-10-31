@@ -77,4 +77,5 @@ More
 - [Performance Tuning](performance.md)
 - [Managing assets](assets.md)
 - [Testing](testing.md)
+- [Composer](composer.md)
 - [Upgrading from 1.1 to 2.0](upgrade-from-v1.md)
