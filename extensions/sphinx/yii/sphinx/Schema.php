@@ -8,18 +8,12 @@
 namespace yii\sphinx;
 
 /**
- * Class Connection
+ * Class Schema
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Connection extends \yii\db\Connection
+class Schema extends \yii\db\mysql\Schema
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $schemaMap = [
-		'mysqli' => 'yii\sphinx\Schema',   // MySQL
-		'mysql' => 'yii\sphinx\Schema',    // MySQL
-	];
+	//
 }
