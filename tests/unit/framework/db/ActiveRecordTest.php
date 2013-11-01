@@ -426,4 +426,32 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(0, $record->var3);
 		$this->assertEquals('', $record->stringcol);
 	}
+
+	/**
+	 * Some PDO implementations(e.g. cubrid) do not support boolean values.
+	 * Make sure this does not affect AR layer.
+	 */
+	public function testBooleanAttribute()
+	{
+		$customer = new Customer();
+		$customer->name = 'boolean customer';
+		$customer->email = 'mail@example.com';
+		$customer->status = true;
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(1, $customer->status);
+
+		$customer->status = false;
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(0, $customer->status);
+
+		$customers = Customer::find()->where(['status' => true])->all();
+		$this->assertEquals(2, count($customers));
+
+		$customers = Customer::find()->where(['status' => false])->all();
+		$this->assertEquals(1, count($customers));
+	}
 }
