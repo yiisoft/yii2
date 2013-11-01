@@ -15,7 +15,7 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
-use <?= $generator->indexWidgetType === 'grid' ? "yii\grid\GridView" : "yii\widgets\ListView" ?>;
+use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
 
 /**
  * @var yii\base\View $this
