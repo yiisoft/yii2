@@ -281,7 +281,7 @@ SQL;
 			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey === true) {
 				$table->primaryKey[] = $column->name;
-				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1) {
+				if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
 					$table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
 				}
 			}
