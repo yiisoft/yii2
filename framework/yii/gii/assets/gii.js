@@ -14,7 +14,7 @@ yii.gii = (function ($) {
 	};
 
 	var initStickyInputs = function () {
-		$('.sticky:not(.error) input[type="text"],select,textarea').each(function () {
+		$('.sticky:not(.error)').find('input[type="text"],select,textarea').each(function () {
 			var value;
 			if (this.tagName === 'SELECT') {
 				value = this.options[this.selectedIndex].text;
