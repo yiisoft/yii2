@@ -427,6 +427,25 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals('', $record->stringcol);
 	}
 
+	public function testStoreEmpty()
+	{
+		$record = new NullValues();
+		$record->id = 1;
+
+		// this is to simulate empty html form submission
+		$record->var1 = '';
+		$record->var2 = '';
+		$record->var3 = '';
+		$record->stringcol = '';
+
+		$record->save(false);
+		$this->assertTrue($record->refresh());
+
+		// https://github.com/yiisoft/yii2/commit/34945b0b69011bc7cab684c7f7095d837892a0d4#commitcomment-4458225
+		$this->assertTrue($record->var1 === $record->var2);
+		$this->assertTrue($record->var2 === $record->var3);
+	}
+
 	/**
 	 * Some PDO implementations(e.g. cubrid) do not support boolean values.
 	 * Make sure this does not affect AR layer.
