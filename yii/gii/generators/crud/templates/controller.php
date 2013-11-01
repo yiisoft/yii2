@@ -12,6 +12,9 @@ use yii\helpers\StringHelper;
 $controllerClass = StringHelper::basename($generator->controllerClass);
 $modelClass = StringHelper::basename($generator->modelClass);
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
+if ($modelClass === $searchModelClass) {
+	$searchModelAlias = $searchModelClass.'Search';
+}
 
 $pks = $generator->getTableSchema()->primaryKey;
 $urlParams = $generator->generateUrlParams();
@@ -24,7 +27,7 @@ echo "<?php\n";
 namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
 
 use <?= ltrim($generator->modelClass, '\\') ?>;
-use <?= ltrim($generator->searchModelClass, '\\') ?>;
+use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)):?> as <?= $searchModelAlias ?><?php endif ?>;
 use yii\data\ActiveDataProvider;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\HttpException;
@@ -53,7 +56,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 */
 	public function actionIndex()
 	{
-		$searchModel = new <?= $searchModelClass ?>;
+		$searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>;
 		$dataProvider = $searchModel->search($_GET);
 
 		return $this->render('index', [
