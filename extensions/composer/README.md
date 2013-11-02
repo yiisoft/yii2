@@ -23,7 +23,7 @@ like the following:
 }
 ```
 
-You may specify a bootstrap class in the `extra` section. The class will be executed each time
+You may specify a bootstrap class in the `extra` section. The `init()` method of the class will be executed each time
 the Yii 2 application is responding to a request. For example,
 
 ```json
