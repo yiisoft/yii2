@@ -85,13 +85,13 @@ class Installer extends LibraryInstaller
 
 	protected function loadExtensions()
 	{
-		$file = $this->vendorDir . '/yii-extensions.php';
+		$file = $this->vendorDir . '/yiisoft/extensions.php';
 		return is_file($file) ? require($file) : [];
 	}
 
 	protected function saveExtensions(array $extensions)
 	{
-		$file = $this->vendorDir . '/yii-extensions.php';
+		$file = $this->vendorDir . '/yiisoft/extensions.php';
 		file_put_contents($file, "<?php\nreturn " . var_export($extensions, true) . ";\n");
 	}
 
