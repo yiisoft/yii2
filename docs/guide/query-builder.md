@@ -45,7 +45,7 @@ $query->select(['tbl_user.name AS author', 'tbl_post.title as title']) // <-- sp
 	->leftJoin('tbl_post', 'tbl_post.user_id = tbl_user.id'); // <-- join with another table
 ```
 
-In the code above we've used `leftJoin` method to select from two related tables at the same time. Firsrt parameter
+In the code above we've used `leftJoin` method to select from two related tables at the same time. First parameter
 specifies table name and the second is the join condition. Query builder has the following methods to join tables:
 
 - `innerJoin`

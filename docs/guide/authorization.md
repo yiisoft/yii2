@@ -7,7 +7,7 @@ of controlling it.
 Access control basics
 ---------------------
 
-Basic acces control is very simple to implement using [[\yii\web\AccessControl]]:
+Basic access control is very simple to implement using [[\yii\web\AccessControl]]:
 
 ```php
 class SiteController extends Controller

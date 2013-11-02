@@ -16,7 +16,7 @@ return [
 	'modules' => [
 		'gii' => 'yii\gii\Module'
 	],
-	'extensions' => require(__DIR__ . '/../../vendor/yii-extensions.php'),
+	'extensions' => require(__DIR__ . '/../../vendor/yiisoft/extensions.php'),
 	'components' => [
 		'request' => [
 			'enableCsrfValidation' => true,

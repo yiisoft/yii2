@@ -13,16 +13,37 @@ use yii\helpers\FileHelper;
 /**
  * Theme represents an application theme.
  *
- * A theme is directory consisting of view and layout files which are meant to replace their
- * non-themed counterparts.
+ * When [[View]] renders a view file, it will check the [[Application::theme|active theme]]
+ * to see if there is a themed version of the view file exists. If so, the themed version will be rendered instead.
  *
- * Theme uses [[pathMap]] to achieve the file replacement. A view or layout file will be replaced
- * with its themed version if part of its path matches one of the keys in [[pathMap]].
- * Then the matched part will be replaced with the corresponding array value.
+ * A theme is a directory consisting of view files which are meant to replace their non-themed counterparts.
+ *
+ * Theme uses [[pathMap]] to achieve the view file replacement:
+ *
+ * 1. It first looks for a key in [[pathMap]] that is a substring of the given view file path;
+ * 2. If such a key exists, the corresponding value will be used to replace the corresponding part
+ *    in the view file path;
+ * 3. It will then check if the updated view file exists or not. If so, that file will be used
+ *    to replace the original view file.
+ * 4. If Step 2 or 3 fails, the original view file will be used.
  *
  * For example, if [[pathMap]] is `['/web/views' => '/web/themes/basic']`,
  * then the themed version for a view file `/web/views/site/index.php` will be
  * `/web/themes/basic/site/index.php`.
+ *
+ * It is possible to map a single path to multiple paths. For example,
+ *
+ * ~~~
+ * 'pathMap' => [
+ *     '/web/views' => [
+ *         '/web/themes/christmas',
+ *         '/web/themes/basic',
+ *     ],
+ * ]
+ * ~~~
+ *
+ * In this case, the themed version could be either `/web/themes/christmas/site/index.php` or
+ * `/web/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
  *
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
@@ -75,16 +96,18 @@ class Theme extends Component
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
 				$this->basePath = Yii::getAlias($this->basePath);
-				$this->pathMap = [Yii::$app->getBasePath() => $this->basePath];
+				$this->pathMap = [Yii::$app->getBasePath() => [$this->basePath]];
 			} else {
 				throw new InvalidConfigException('The "basePath" property must be set.');
 			}
 		}
 		$paths = [];
-		foreach ($this->pathMap as $from => $to) {
+		foreach ($this->pathMap as $from => $tos) {
 			$from = FileHelper::normalizePath(Yii::getAlias($from));
-			$to = FileHelper::normalizePath(Yii::getAlias($to));
-			$paths[$from . DIRECTORY_SEPARATOR] = $to . DIRECTORY_SEPARATOR;
+			foreach ((array)$tos as $to) {
+				$to = FileHelper::normalizePath(Yii::getAlias($to));
+				$paths[$from . DIRECTORY_SEPARATOR][] = $to . DIRECTORY_SEPARATOR;
+			}
 		}
 		$this->pathMap = $paths;
 		if ($this->baseUrl === null) {
@@ -103,12 +126,14 @@ class Theme extends Component
 	public function applyTo($path)
 	{
 		$path = FileHelper::normalizePath($path);
-		foreach ($this->pathMap as $from => $to) {
+		foreach ($this->pathMap as $from => $tos) {
 			if (strpos($path, $from) === 0) {
 				$n = strlen($from);
-				$file = $to . substr($path, $n);
-				if (is_file($file)) {
-					return $file;
+				foreach ($tos as $to) {
+					$file = $to . substr($path, $n);
+					if (is_file($file)) {
+						return $file;
+					}
 				}
 			}
 		}
