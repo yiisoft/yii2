@@ -16,7 +16,7 @@ use yii\helpers\FileHelper;
  * When [[View]] renders a view file, it will check the [[Application::theme|active theme]]
  * to see if there is a themed version of the view file exists. If so, the themed version will be rendered instead.
  *
- * A theme is directory consisting of view files which are meant to replace their non-themed counterparts.
+ * A theme is a directory consisting of view files which are meant to replace their non-themed counterparts.
  *
  * Theme uses [[pathMap]] to achieve the view file replacement:
  *
