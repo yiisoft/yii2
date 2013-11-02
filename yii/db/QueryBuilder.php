@@ -797,7 +797,13 @@ class QueryBuilder extends \yii\base\Object
 		}
 	}
 
-	private function buildHashCondition($condition, &$params)
+	/**
+	 * Creates a condition based on column-value pairs.
+	 * @param array $condition the condition specification.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 */
+	public function buildHashCondition($condition, &$params)
 	{
 		$parts = [];
 		foreach ($condition as $column => $value) {
@@ -824,7 +830,14 @@ class QueryBuilder extends \yii\base\Object
 		return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
 	}
 
-	private function buildAndCondition($operator, $operands, &$params)
+	/**
+	 * Connects two or more SQL expressions with the `AND` or `OR` operator.
+	 * @param string $operator the operator to use for connecting the given operands
+	 * @param array $operands the SQL expressions to connect.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 */
+	public function buildAndCondition($operator, $operands, &$params)
 	{
 		$parts = [];
 		foreach ($operands as $operand) {
@@ -842,7 +855,16 @@ class QueryBuilder extends \yii\base\Object
 		}
 	}
 
-	private function buildBetweenCondition($operator, $operands, &$params)
+	/**
+	 * Creates an SQL expressions with the `BETWEEN` operator.
+	 * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+	 * @param array $operands the first operand is the column name. The second and third operands
+	 * describe the interval that column value should be in.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 * @throws Exception if wrong number of operands have been given.
+	 */
+	public function buildBetweenCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1], $operands[2])) {
 			throw new Exception("Operator '$operator' requires three operands.");
@@ -861,7 +883,19 @@ class QueryBuilder extends \yii\base\Object
 		return "$column $operator $phName1 AND $phName2";
 	}
 
-	private function buildInCondition($operator, $operands, &$params)
+	/**
+	 * Creates an SQL expressions with the `IN` operator.
+	 * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
+	 * @param array $operands the first operand is the column name. If it is an array
+	 * a composite IN condition will be generated.
+	 * The second operand is an array of values that column value should be among.
+	 * If it is an empty array the generated expression will be a `false` value if
+	 * operator is `IN` and empty if operator is `NOT IN`.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 * @throws Exception if wrong number of operands have been given.
+	 */
+	public function buildInCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
@@ -933,7 +967,19 @@ class QueryBuilder extends \yii\base\Object
 		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
 	}
 
-	private function buildLikeCondition($operator, $operands, &$params)
+	/**
+	 * Creates an SQL expressions with the `LIKE` operator.
+	 * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
+	 * @param array $operands the first operand is the column name.
+	 * The second operand is a single value or an array of values that column value
+	 * should be compared with.
+	 * If it is an empty array the generated expression will be a `false` value if
+	 * operator is `LIKE` or `OR LIKE` and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 * @throws Exception if wrong number of operands have been given.
+	 */
+	public function buildLikeCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
