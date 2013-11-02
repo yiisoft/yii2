@@ -118,6 +118,8 @@ class Schema extends \yii\db\Schema
 		if ($this->findColumns($table)) {
 			$this->findForeignKeys($table);
 			return $table;
+		} else {
+			return null;
 		}
 	}
 
