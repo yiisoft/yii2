@@ -1266,6 +1266,8 @@ class ActiveRecord extends Model
 			$relation = $this->$getter();
 			if ($relation instanceof ActiveRelation) {
 				return $relation;
+			} else {
+				return null;
 			}
 		} catch (UnknownMethodException $e) {
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
