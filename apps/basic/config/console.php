@@ -6,7 +6,7 @@ return [
 	'preload' => ['log'],
 	'controllerPath' => dirname(__DIR__) . '/commands',
 	'controllerNamespace' => 'app\commands',
-	'extensions' => require(__DIR__ . '/../vendor/yii-extensions.php'),
+	'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
 	'components' => [
 		'cache' => [
 			'class' => 'yii\caching\FileCache',
