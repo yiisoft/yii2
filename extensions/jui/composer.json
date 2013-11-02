@@ -18,6 +18,7 @@
 	"autoload": {
 		"psr-0": { "yii\\jui\\": "" }
 	},
+	"target-dir": "yii/jui",
 	"extra": {
 		"bootstrap": "yii\\jui\\Extension"
 	}
