@@ -68,7 +68,7 @@
 		"yiisoft/yii2-composer": "*",
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
-		"phpspec/php-diff": "1.0.*",
+		"phpspec/php-diff": "dev-master",
 		"ezyang/htmlpurifier": "4.5.*"
 	},
 	"autoload": {
