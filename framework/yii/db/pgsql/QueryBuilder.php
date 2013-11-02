@@ -145,10 +145,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function buildCondition($condition, &$params)
 	{
-		if (isset($params) && is_array($params)) {
-			foreach ($params as $k => $v) {
-				$params[$k] = is_bool($v) ? (int)$v : $v;
+		if (is_array($condition)) {
+			foreach ($condition as $k => $v) {
+				$condition[$k] = is_bool($v) ? (int)$v : $v;
 			}
+		} else {
+			$condition = is_bool($condition) ? (int)$condition : $condition;
 		}
 		parent::buildCondition($condition, $params);
 	}
