@@ -38,7 +38,7 @@ Widgets
 
 Widgets are a self-contained building blocks for your views. A widget may contain advanced logic, typically takes some
 configuration and data and returns HTML. There is a good number of widgets bundled with Yii such as [active form](form.md),
-breadcrumbs, menu or [wrappers around bootstrap component framework](boostrap-widgets.md). Additionally there are
+breadcrumbs, menu or [wrappers around bootstrap component framework](bootstrap-widgets.md). Additionally there are
 extensions providing additional widgets such as official one for jQueryUI components.
 
 In order to use widget you need to do the following:
