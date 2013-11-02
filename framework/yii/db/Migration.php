@@ -158,6 +158,21 @@ class Migration extends \yii\base\Component
 	}
 
 	/**
+	 * Creates and executes an batch INSERT SQL statement.
+	 * The method will properly escape the column names, and bind the values to be inserted.
+	 * @param string $table the table that new rows will be inserted into.
+	 * @param array $columns the column names.
+	 * @param array $rows the rows to be batch inserted into the table
+	 */
+	public function batchInsert($table, $columns, $rows)
+	{
+		echo "    > insert into $table ...";
+		$time = microtime(true);
+		$this->db->createCommand()->batchInsert($table, $columns, $rows)->execute();
+		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+	}
+
+	/**
 	 * Creates and executes an UPDATE SQL statement.
 	 * The method will properly escape the column names and bind the values to be updated.
 	 * @param string $table the table to be updated.
