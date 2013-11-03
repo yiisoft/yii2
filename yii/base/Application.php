@@ -208,6 +208,11 @@ abstract class Application extends Module
 	protected function initExtensions($extensions)
 	{
 		foreach ($extensions as $extension) {
+			if (!empty($extension['alias'])) {
+				foreach ($extension['alias'] as $name => $path) {
+					Yii::setAlias($name, $path);
+				}
+			}
 			if (isset($extension['bootstrap'])) {
 				/** @var Extension $class */
 				$class = $extension['bootstrap'];
