@@ -13,7 +13,8 @@
 	},
 	"minimum-stability": "dev",
 	"require": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"yiisoft/yii2-bootstrap": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\gii\\": "" }
