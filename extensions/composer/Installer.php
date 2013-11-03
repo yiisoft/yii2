@@ -85,23 +85,23 @@ class Installer extends LibraryInstaller
 	protected function generateDefaultAlias(PackageInterface $package)
 	{
 		$autoload = $package->getAutoload();
-		if (!empty($autoload['psr-0'])) {
-			$fs = new Filesystem;
-			$vendorDir = $fs->normalizePath($this->vendorDir);
-			foreach ($autoload['psr-0'] as $name => $path) {
-				$name = str_replace('\\', '/', trim($name, '\\'));
-				if (!$fs->isAbsolutePath($path)) {
-					$path = $this->vendorDir . '/' . $path;
-				}
-				$path = $fs->normalizePath($path);
-				if (strpos($path . '/', $vendorDir . '/') === 0) {
-					return ["@$name" => '<vendor-dir>' . substr($path, strlen($vendorDir)) . '/' . $name];
-				} else {
-					return ["@$name" => $path . '/' . $name];
-				}
+		if (empty($autoload['psr-0'])) {
+			return false;
+		}
+		$fs = new Filesystem;
+		$vendorDir = $fs->normalizePath($this->vendorDir);
+		foreach ($autoload['psr-0'] as $name => $path) {
+			$name = str_replace('\\', '/', trim($name, '\\'));
+			if (!$fs->isAbsolutePath($path)) {
+				$path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
+			}
+			$path = $fs->normalizePath($path);
+			if (strpos($path . '/', $vendorDir . '/') === 0) {
+				return ["@$name" => '<vendor-dir>' . substr($path, strlen($vendorDir)) . '/' . $name];
+			} else {
+				return ["@$name" => $path . '/' . $name];
 			}
 		}
-		return false;
 	}
 
 	protected function removePackage(PackageInterface $package)
