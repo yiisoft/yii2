@@ -13,7 +13,8 @@
 	},
 	"minimum-stability": "dev",
 	"require": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"twitter/bootstrap": "3.0.*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\bootstrap\\": "" }
