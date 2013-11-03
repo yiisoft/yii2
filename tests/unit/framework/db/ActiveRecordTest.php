@@ -79,6 +79,7 @@ class ActiveRecordTest extends DatabaseTestCase
 			'name' => 'user2',
 			'address' => 'address2',
 			'status' => '1',
+			'default_value' => '1',
 		], $customer);
 
 		// indexBy
@@ -472,5 +473,47 @@ class ActiveRecordTest extends DatabaseTestCase
 
 		$customers = Customer::find()->where(['status' => false])->all();
 		$this->assertEquals(1, count($customers));
+	}
+
+	public function testDefaultValue()
+	{
+		$customer = new Customer();
+		$customer->name = 'default value customer';
+		$customer->email = 'mail@example.com';
+		$customer->status = true;
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(1, $customer->default_value);
+
+		$customer->default_value = 2;
+		$customer->refresh();
+		$this->assertEquals(2, $customer->default_value);
+
+		$customer = new Customer();
+		$customer->name = 'default value customer';
+		$customer->email = 'mail@example.com';
+		$customer->status = true;
+		$customer->default_value = 2;
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(2, $customer->default_value);
+
+		$customer = new Customer();
+		$customer->setAttributes([
+			'name'          => 'default value customer',
+			'email'         => 'mail@example.com',
+			'status'        => true,
+			'default_value' => 2,
+		], false);
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(2, $customer->default_value);
+
+		/** @var Customer $customer */
+		$customer = Customer::find(array('email' => 'user3@example.com'));
+		$this->assertEquals(2, $customer->default_value);
 	}
 }

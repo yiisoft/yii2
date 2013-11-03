@@ -17,6 +17,8 @@ class Customer extends ActiveRecord
 
 	public $status2;
 
+	public $default_value = 1;
+
 	public static $afterSaveInsert = null;
 	public static $afterSaveNewRecord = null;
 

@@ -24,7 +24,8 @@ CREATE TABLE tbl_customer (
   email varchar(128) NOT NULL,
   name varchar(128) NOT NULL,
   address text,
-  status integer DEFAULT 0
+  status integer DEFAULT 0,
+  default_value integer DEFAULT 1
 );
 
 comment on column public.tbl_customer.email is 'someone@example.com';
@@ -81,7 +82,7 @@ CREATE TABLE tbl_type (
 
 INSERT INTO tbl_customer (email, name, address, status) VALUES ('user1@example.com', 'user1', 'address1', 1);
 INSERT INTO tbl_customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO tbl_customer (email, name, address, status) VALUES ('user3@example.com', 'user3', 'address3', 2);
+INSERT INTO tbl_customer (email, name, address, status, default_value) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
 
 INSERT INTO tbl_category (name) VALUES ('Books');
 INSERT INTO tbl_category (name) VALUES ('Movies');

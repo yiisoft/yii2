@@ -12,6 +12,7 @@ CREATE TABLE [dbo].[tbl_customer] (
 	[name] [varchar](128) NOT NULL,
 	[address] [text],
 	[status] [int] DEFAULT 0,
+	[default_value] [int] DEFAULT 1,
 	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (
 		[id] ASC
 	) ON [PRIMARY]
@@ -81,7 +82,7 @@ CREATE TABLE [dbo].[tbl_type] (
 
 INSERT INTO [dbo].[tbl_customer] ([email], [name], [address], [status]) VALUES ('user1@example.com', 'user1', 'address1', 1);
 INSERT INTO [dbo].[tbl_customer] ([email], [name], [address], [status]) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO [dbo].[tbl_customer] ([email], [name], [address], [status]) VALUES ('user3@example.com', 'user3', 'address3', 2);
+INSERT INTO [dbo].[tbl_customer] ([email], [name], [address], [status], [default_value]) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
 
 INSERT INTO [dbo].[tbl_category] ([name]) VALUES ('Books');
 INSERT INTO [dbo].[tbl_category] ([name]) VALUES ('Movies');
