@@ -9,7 +9,7 @@ a set of standalone pages to display more detailed debug information.
 Installation
 ------------
 
-The preferred way to install this extension is [composer](http://getcomposer.org/download/).
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
 Either run
 
