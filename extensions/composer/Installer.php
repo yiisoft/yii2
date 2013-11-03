@@ -90,6 +90,7 @@ class Installer extends LibraryInstaller
 		}
 		$fs = new Filesystem;
 		$vendorDir = $fs->normalizePath($this->vendorDir);
+		$aliases = [];
 		foreach ($autoload['psr-0'] as $name => $path) {
 			$name = str_replace('\\', '/', trim($name, '\\'));
 			if (!$fs->isAbsolutePath($path)) {
@@ -97,11 +98,12 @@ class Installer extends LibraryInstaller
 			}
 			$path = $fs->normalizePath($path);
 			if (strpos($path . '/', $vendorDir . '/') === 0) {
-				return ["@$name" => '<vendor-dir>' . substr($path, strlen($vendorDir)) . '/' . $name];
+				$aliases["@$name"] = '<vendor-dir>' . substr($path, strlen($vendorDir)) . '/' . $name;
 			} else {
-				return ["@$name" => $path . '/' . $name];
+				$aliases["@$name"] = $path . '/' . $name;
 			}
 		}
+		return $aliases;
 	}
 
 	protected function removePackage(PackageInterface $package)
