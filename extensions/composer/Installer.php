@@ -95,7 +95,7 @@ class Installer extends LibraryInstaller
 				}
 				$path = $fs->normalizePath($path);
 				if (strpos($path . '/', $vendorDir . '/') === 0) {
-					return ["@$name" => '<vendor-dir>/' . substr($path, strlen($vendorDir))] . '/' . $name;
+					return ["@$name" => '<vendor-dir>/' . substr($path, strlen($vendorDir)) . '/' . $name];
 				} else {
 					return ["@$name" => $path . '/' . $name];
 				}
