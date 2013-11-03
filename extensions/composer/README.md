@@ -1,8 +1,6 @@
 Yii 2 Composer Installer
 ========================
 
-[![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2)
-
 This is the composer installer for Yii 2 extensions. It implements a new composer package type named `yii2-extension`,
 which should be used by all Yii 2 extensions if they are distributed as composer packages.
 
