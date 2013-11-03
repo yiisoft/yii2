@@ -303,7 +303,7 @@ SQL;
 		$column->dbType = $info['data_type'];
 		$column->defaultValue = $info['column_default'];
 		$column->enumValues = explode(',', str_replace(["''"], ["'"], $info['enum_values']));
-		$column->unsigned = false; // has no meanining in PG
+		$column->unsigned = false; // has no meaning in PG
 		$column->isPrimaryKey = $info['is_pkey'];
 		$column->name = $info['column_name'];
 		$column->precision = $info['numeric_precision'];

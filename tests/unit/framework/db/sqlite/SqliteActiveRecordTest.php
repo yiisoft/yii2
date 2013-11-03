@@ -36,10 +36,10 @@ class SqliteActiveRecordTest extends ActiveRecordTest
 		$this->assertTrue(0 == $customer->status);
 
 		// select with boolean values does not seem to work in sqlite
-//		$customers = Customer::find()->where(['status' => true])->all();
-//		$this->assertEquals(2, count($customers));
-//
-//		$customers = Customer::find()->where(['status' => false])->all();
-//		$this->assertEquals(1, count($customers));
+		$customers = Customer::find()->where(['status' => true])->all();
+		$this->assertEquals(2, count($customers));
+
+		$customers = Customer::find()->where(['status' => false])->all();
+		$this->assertEquals(1, count($customers));
 	}
 }
