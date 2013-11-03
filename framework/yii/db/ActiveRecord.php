@@ -1216,7 +1216,8 @@ class ActiveRecord extends Model
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$record->_attributes[$name] = $value;
-			} else {
+			}
+			if (property_exists($record, $name)) {
 				$record->$name = $value;
 			}
 		}

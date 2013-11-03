@@ -26,6 +26,7 @@ CREATE TABLE `tbl_customer` (
   `name` varchar(128) NOT NULL,
   `address` string,
   `status` int (11) DEFAULT 0,
+  `default_value` int(11) DEFAULT 1,
   PRIMARY KEY (`id`)
 );
 
@@ -96,7 +97,7 @@ CREATE TABLE `tbl_composite_fk` (
 
 INSERT INTO tbl_customer (email, name, address, status) VALUES ('user1@example.com', 'user1', 'address1', 1);
 INSERT INTO tbl_customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO tbl_customer (email, name, address, status) VALUES ('user3@example.com', 'user3', 'address3', 2);
+INSERT INTO tbl_customer (email, name, address, status, default_value) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
 
 INSERT INTO tbl_category (name) VALUES ('Books');
 INSERT INTO tbl_category (name) VALUES ('Movies');
