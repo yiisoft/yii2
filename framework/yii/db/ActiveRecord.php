@@ -532,6 +532,45 @@ class ActiveRecord extends Model
 	}
 
 	/**
+	 * Check whether the named relation has been populated with records.
+	 * @param string $name the relation name (case-insensitive)
+	 * @return bool whether relation has been populated with records.
+	 */
+	public function isRelationPopulated($name)
+	{
+		return array_key_exists(strtolower($name), $this->_related);
+	}
+
+	/**
+	 * @return array list of populated relation names
+	 */
+	public function getPopulatedRelationNames()
+	{
+		$relations = array_keys($this->_related);
+		$reflection = new \ReflectionClass($this);
+		foreach($relations as $i => $relation) {
+			if ($reflection->hasMethod('get' . $relation)) {
+				$method = $reflection->getMethod('get' . $relation);
+				$relations[$i] = lcfirst(substr($method->name, 3));
+			}
+		}
+		return $relations;
+	}
+
+	/**
+	 * @return array all populated relations
+	 */
+	public function getPopulatedRelations()
+	{
+		$relations = $this->getPopulatedRelationNames();
+		$data = [];
+		foreach($relations as $name) {
+			$data[$name] = $this->_related[strtolower($name)];
+		}
+		return $data;
+	}
+
+	/**
 	 * Returns the list of all attribute names of the model.
 	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
