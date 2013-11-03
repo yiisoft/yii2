@@ -14,7 +14,7 @@ single line of code in a view file would render a Bootstrap Progress plugin:
 Installation
 ------------
 
-The preferred way to install this extension is [composer](http://getcomposer.org/download/).
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
 Either run
 
