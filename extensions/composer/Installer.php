@@ -11,6 +11,7 @@ use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Script\CommandEvent;
+use Composer\Util\Filesystem;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -21,6 +22,8 @@ class Installer extends LibraryInstaller
 	const EXTRA_BOOTSTRAP = 'bootstrap';
 	const EXTRA_WRITABLE = 'writable';
 	const EXTRA_EXECUTABLE = 'executable';
+
+	const EXTENSION_FILE = 'yiisoft/extensions.php';
 
 	/**
 	 * @inheritdoc
@@ -65,8 +68,11 @@ class Installer extends LibraryInstaller
 			'version' => $package->getVersion(),
 		];
 
+		$alias = $this->generateDefaultAlias($package);
+		if (!empty($alias)) {
+			$extension['alias'] = $alias;
+		}
 		$extra = $package->getExtra();
-
 		if (isset($extra[self::EXTRA_BOOTSTRAP]) && is_string($extra[self::EXTRA_BOOTSTRAP])) {
 			$extension['bootstrap'] = $extra[self::EXTRA_BOOTSTRAP];
 		}
@@ -74,6 +80,28 @@ class Installer extends LibraryInstaller
 		$extensions = $this->loadExtensions();
 		$extensions[$package->getName()] = $extension;
 		$this->saveExtensions($extensions);
+	}
+
+	protected function generateDefaultAlias(PackageInterface $package)
+	{
+		$autoload = $package->getAutoload();
+		if (!empty($autoload['psr-0'])) {
+			$fs = new Filesystem;
+			$vendorDir = $fs->normalizePath($this->vendorDir);
+			foreach ($autoload['psr-0'] as $name => $path) {
+				$name = str_replace('\\', '/', trim($name, '\\'));
+				if (!$fs->isAbsolutePath($path)) {
+					$path = $this->vendorDir . '/' . $path;
+				}
+				$path = $fs->normalizePath($path);
+				if (strpos($path . '/', $vendorDir . '/') === 0) {
+					return "['@$name' => '<vendor-dir>/" . ltrim(var_export(substr($path, strlen($vendorDir)), true), "'") . "']";
+				} else {
+					return "['@$name' => " . var_export($path, true) . ']';
+				}
+			}
+		}
+		return false;
 	}
 
 	protected function removePackage(PackageInterface $package)
@@ -85,14 +113,34 @@ class Installer extends LibraryInstaller
 
 	protected function loadExtensions()
 	{
-		$file = $this->vendorDir . '/yiisoft/extensions.php';
-		return is_file($file) ? require($file) : [];
+		$file = $this->vendorDir . '/' . self::EXTENSION_FILE;
+		if (!is_file($file)) {
+			return [];
+		}
+		$extensions = require($file);
+
+		$vendorDir = str_replace('\\', '/', $this->vendorDir);
+		$n = strlen($vendorDir);
+
+		foreach ($extensions as &$extension) {
+			if (isset($extension['alias'])) {
+				foreach ($extension['alias'] as $alias => $path) {
+					$path = str_replace('\\', '/', $path);
+					if (strpos($path . '/', $vendorDir . '/') === 0) {
+						$extension['alias'][$alias] = '<vendor-dir>' . substr($path, $n);
+					}
+				}
+			}
+		}
+
+		return $extensions;
 	}
 
 	protected function saveExtensions(array $extensions)
 	{
-		$file = $this->vendorDir . '/yiisoft/extensions.php';
-		file_put_contents($file, "<?php\nreturn " . var_export($extensions, true) . ";\n");
+		$file = $this->vendorDir . '/' . self::EXTENSION_FILE;
+		$array = str_replace("'<vendor-dir>", '$vendorDir . \'', var_export($extensions, true));
+		file_put_contents($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\n\nreturn $array;\n");
 	}
 
 
