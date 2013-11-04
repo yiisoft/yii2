@@ -31,11 +31,20 @@ class Generator extends \yii\gii\Generator
 	/**
 	 * @var string the namespace of the controller class
 	 */
-	public $ns = 'app\controllers';
+	public $ns;
 	/**
 	 * @var string list of action IDs separated by commas or spaces
 	 */
 	public $actions = 'index';
+
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		parent::init();
+		$this->ns = \Yii::$app->controllerNamespace;
+	}
 
 	/**
 	 * @inheritdoc
