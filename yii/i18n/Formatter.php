@@ -131,7 +131,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -167,7 +172,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format]);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -203,7 +213,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format]);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
