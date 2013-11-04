@@ -9,6 +9,7 @@ namespace yii\swiftmailer;
 
 use yii\base\InvalidConfigException;
 use yii\mail\BaseMailer;
+use Yii;
 
 /**
  * Mailer based on SwiftMailer library.
@@ -94,6 +95,7 @@ class Mailer extends BaseMailer
 	 */
 	public function send($message)
 	{
+		Yii::trace('Sending email message', __METHOD__);
 		return ($this->getSwiftMailer()->send($message->getSwiftMessage()) > 0);
 	}
 
