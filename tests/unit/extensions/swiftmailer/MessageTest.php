@@ -86,12 +86,63 @@ class MessageTest extends VendorTestCase
 		return $fileFullName;
 	}
 
+	/**
+	 * Finds the attachment object in the message.
+	 * @param Message $message message instance
+	 * @return null|\Swift_Mime_Attachment attachment instance.
+	 */
+	protected function getAttachment(Message $message)
+	{
+		$messageParts = $message->getSwiftMessage()->getChildren();
+		$attachment = null;
+		foreach ($messageParts as $part) {
+			if ($part instanceof \Swift_Mime_Attachment) {
+				$attachment = $part;
+				break;
+			}
+		}
+		return $attachment;
+	}
+
 	// Tests :
 
 	public function testGetSwiftMessage()
 	{
 		$message = new Message();
 		$this->assertTrue(is_object($message->getSwiftMessage()), 'Unable to get Swift message!');
+	}
+
+	/**
+	 * @depends testGetSwiftMessage
+	 */
+	public function testSetupHeaders()
+	{
+		$charset = 'utf-16';
+		$subject = 'Test Subject';
+		$to = 'someuser@somedomain.com';
+
+		$messageString = $this->createTestMessage()
+			->setCharset($charset)
+			->setSubject($subject)
+			->setTo($to)
+			->__toString();
+
+		$this->assertContains('charset=' . $charset, $messageString, 'Incorrect charset!');
+		$this->assertContains('Subject: ' . $subject, $messageString, 'Incorrect "Subject" header!');
+		$this->assertContains('To: ' . $to, $messageString, 'Incorrect "To" header!');
+	}
+
+	/**
+	 * @depends testGetSwiftMessage
+	 */
+	public function testSetupFrom()
+	{
+		$from = 'someuser@somedomain.com';
+		$messageString = $this->createTestMessage()
+			->setFrom($from)
+			->__toString();
+		$this->assertContains('From: ' . $from, $messageString, 'Incorrect "From" header!');
+		$this->assertContains('Reply-To: ' . $from, $messageString, 'Incorrect "Reply-To" header!');
 	}
 
 	/**
@@ -113,12 +164,19 @@ class MessageTest extends VendorTestCase
 	public function testAttachFile()
 	{
 		$message = $this->createTestMessage();
+
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Attach File Test');
 		$message->setText('Yii Swift Attach File Test body');
-		$message->attachFile(__FILE__);
+		$fileName = __FILE__;
+		$message->attachFile($fileName);
+
 		$this->assertTrue($message->send());
+
+		$attachment = $this->getAttachment($message);
+		$this->assertTrue(is_object($attachment), 'No attachment found!');
+		$this->assertContains($attachment->getFilename(), $fileName, 'Invalid file name!');
 	}
 
 	/**
@@ -127,12 +185,20 @@ class MessageTest extends VendorTestCase
 	public function testAttachContent()
 	{
 		$message = $this->createTestMessage();
+
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Create Attachment Test');
 		$message->setText('Yii Swift Create Attachment Test body');
-		$message->attachContent('Test attachment content', ['fileName' => 'test.txt']);
+		$fileName = 'test.txt';
+		$fileContent = 'Test attachment content';
+		$message->attachContent($fileContent, ['fileName' => $fileName]);
+
 		$this->assertTrue($message->send());
+
+		$attachment = $this->getAttachment($message);
+		$this->assertTrue(is_object($attachment), 'No attachment found!');
+		$this->assertEquals($fileName, $attachment->getFilename(), 'Invalid file name!');
 	}
 
 	/**
@@ -152,6 +218,10 @@ class MessageTest extends VendorTestCase
 		$message->setHtml('Embed image: <img src="' . $cid. '" alt="pic">');
 
 		$this->assertTrue($message->send());
+
+		$attachment = $this->getAttachment($message);
+		$this->assertTrue(is_object($attachment), 'No attachment found!');
+		$this->assertContains($attachment->getFilename(), $fileName, 'Invalid file name!');
 	}
 
 	/**
@@ -159,11 +229,14 @@ class MessageTest extends VendorTestCase
 	 */
 	public function testEmbedContent()
 	{
-		$fileName = $this->createImageFile('embed_file.jpg', 'Embed Image File');
-
+		$fileFullName = $this->createImageFile('embed_file.jpg', 'Embed Image File');
 		$message = $this->createTestMessage();
 
-		$cid = $message->embedContent(file_get_contents($fileName), ['contentType' => 'image/jpeg']);
+		$fileName = basename($fileFullName);
+		$contentType = 'image/jpeg';
+		$fileContent = file_get_contents($fileFullName);
+
+		$cid = $message->embedContent($fileContent, ['fileName' => $fileName, 'contentType' => $contentType]);
 
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
@@ -171,6 +244,11 @@ class MessageTest extends VendorTestCase
 		$message->setHtml('Embed image: <img src="' . $cid. '" alt="pic">');
 
 		$this->assertTrue($message->send());
+
+		$attachment = $this->getAttachment($message);
+		$this->assertTrue(is_object($attachment), 'No attachment found!');
+		$this->assertEquals($fileName, $attachment->getFilename(), 'Invalid file name!');
+		$this->assertEquals($contentType, $attachment->getContentType(), 'Invalid content type!');
 	}
 
 	/**
@@ -179,11 +257,30 @@ class MessageTest extends VendorTestCase
 	public function testSendAlternativeBody()
 	{
 		$message = $this->createTestMessage();
+
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Alternative Body Test');
 		$message->setHtml('<b>Yii Swift</b> test HTML body');
 		$message->setText('Yii Swift test plain text body');
+
 		$this->assertTrue($message->send());
+
+		$messageParts = $message->getSwiftMessage()->getChildren();
+		$textPresent = false;
+		$htmlPresent = false;
+		foreach ($messageParts as $part) {
+			if (!($part instanceof \Swift_Mime_Attachment)) {
+				/* @var $part \Swift_Mime_MimePart */
+				if ($part->getContentType() == 'text/plain') {
+					$textPresent = true;
+				}
+				if ($part->getContentType() == 'text/html') {
+					$htmlPresent = true;
+				}
+			}
+		}
+		$this->assertTrue($textPresent, 'No text!');
+		$this->assertTrue($htmlPresent, 'No HTML!');
 	}
 }
