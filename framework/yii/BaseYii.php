@@ -321,18 +321,12 @@ class BaseYii
 	 * the rest of the name-value pairs in the array will be used to initialize
 	 * the corresponding object properties.
 	 *
-	 * The object type can be either a class name or the [[getAlias()|alias]] of
-	 * the class. For example,
-	 *
-	 * - `app\components\GoogleMap`: fully-qualified namespaced class.
-	 * - `@app/components/GoogleMap`: an alias, used for non-namespaced class.
-	 *
 	 * Below are some usage examples:
 	 *
 	 * ~~~
 	 * $object = \Yii::createObject('@app/components/GoogleMap');
 	 * $object = \Yii::createObject([
-	 *     'class' => '\app\components\GoogleMap',
+	 *     'class' => 'app\components\GoogleMap',
 	 *     'apiKey' => 'xyz',
 	 * ]);
 	 * ~~~
