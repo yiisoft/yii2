@@ -10,6 +10,8 @@ namespace yii\mail;
 /**
  * MailerInterface is an interface, which any mailer should apply.
  *
+ * @see MessageInterface
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

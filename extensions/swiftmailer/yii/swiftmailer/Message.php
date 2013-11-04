@@ -45,6 +45,7 @@ class Message extends BaseMessage
 	public function setCharset($charset)
 	{
 		$this->getSwiftMessage()->setCharset($charset);
+		return $this;
 	}
 
 	/**
@@ -62,6 +63,7 @@ class Message extends BaseMessage
 	{
 		$this->getSwiftMessage()->setFrom($from);
 		$this->getSwiftMessage()->setReplyTo($from);
+		return $this;
 	}
 
 	/**
@@ -78,6 +80,7 @@ class Message extends BaseMessage
 	public function setTo($to)
 	{
 		$this->getSwiftMessage()->setTo($to);
+		return $this;
 	}
 
 	/**
@@ -94,6 +97,7 @@ class Message extends BaseMessage
 	public function setCc($cc)
 	{
 		$this->getSwiftMessage()->setCc($cc);
+		return $this;
 	}
 
 	/**
@@ -110,6 +114,7 @@ class Message extends BaseMessage
 	public function setBcc($bcc)
 	{
 		$this->getSwiftMessage()->setBcc($bcc);
+		return $this;
 	}
 
 	/**
@@ -126,6 +131,7 @@ class Message extends BaseMessage
 	public function setSubject($subject)
 	{
 		$this->getSwiftMessage()->setSubject($subject);
+		return $this;
 	}
 
 	/**
@@ -142,6 +148,7 @@ class Message extends BaseMessage
 	public function setText($text)
 	{
 		$this->setBody($text, 'text/plain');
+		return $this;
 	}
 
 	/**
@@ -150,6 +157,7 @@ class Message extends BaseMessage
 	public function setHtml($html)
 	{
 		$this->setBody($html, 'text/html');
+		return $this;
 	}
 
 	/**
@@ -209,6 +217,7 @@ class Message extends BaseMessage
 			$attachment->setContentType($options['contentType']);
 		}
 		$this->getSwiftMessage()->attach($attachment);
+		return $this;
 	}
 
 	/**
@@ -224,6 +233,7 @@ class Message extends BaseMessage
 			$attachment->setContentType($options['contentType']);
 		}
 		$this->getSwiftMessage()->attach($attachment);
+		return $this;
 	}
 
 	/**
