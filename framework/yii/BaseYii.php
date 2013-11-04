@@ -324,7 +324,7 @@ class BaseYii
 	 * Below are some usage examples:
 	 *
 	 * ~~~
-	 * $object = \Yii::createObject('@app/components/GoogleMap');
+	 * $object = \Yii::createObject('app\components\GoogleMap');
 	 * $object = \Yii::createObject([
 	 *     'class' => 'app\components\GoogleMap',
 	 *     'apiKey' => 'xyz',
