@@ -283,4 +283,23 @@ class MessageTest extends VendorTestCase
 		$this->assertTrue($textPresent, 'No text!');
 		$this->assertTrue($htmlPresent, 'No HTML!');
 	}
+
+	/**
+	 * @depends testGetSwiftMessage
+	 */
+	public function testSerialize()
+	{
+		$message = $this->createTestMessage();
+
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Alternative Body Test');
+		$message->setText('Yii Swift test plain text body');
+
+		$serializedMessage = serialize($message);
+		$this->assertNotEmpty($serializedMessage, 'Unable to serialize message!');
+
+		$unserializedMessaage = unserialize($serializedMessage);
+		$this->assertEquals($message, $unserializedMessaage, 'Unable to unserialize message!');
+	}
 }
