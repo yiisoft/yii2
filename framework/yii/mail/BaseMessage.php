@@ -36,7 +36,7 @@ use Yii;
 abstract class BaseMessage extends Object implements MessageInterface
 {
 	/**
-	 * @return \yii\mail\BaseMailer
+	 * @return \yii\mail\BaseMailer mailer component instance.
 	 */
 	public function getMailer()
 	{
@@ -54,8 +54,18 @@ abstract class BaseMessage extends Object implements MessageInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function render($view, $params = [])
+	public function renderHtml($view, $params = [])
 	{
-		return $this->getMailer()->render($view, $params);
+		$this->setHtml($this->render($view, $params, $this->getMailer()->htmlLayout));
+		return $this;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function renderText($view, $params = [])
+	{
+		$this->setText($this->render($view, $params, $this->getMailer()->textLayout));
+		return $this;
 	}
 }

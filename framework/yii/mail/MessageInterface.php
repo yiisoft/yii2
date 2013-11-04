@@ -122,15 +122,26 @@ interface MessageInterface
 	public function send();
 
 	/**
-	 * Renders a view.
+	 * Fills up HTML body rendering a view.
 	 * The view to be rendered can be specified in one of the following formats:
-	 * - path alias (e.g. "@app/emails/contact/body");
-	 * - relative path (e.g. "contact"): the actual view file will be resolved by [[resolveView]].
+	 * - path alias (e.g. "@app/mails/contact/body");
+	 * - relative path (e.g. "contact"): the actual view file will be resolved by [[\yii\base\ViewContextInterface]].
 	 * @param string $view the view name or the path alias of the view file.
 	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-	 * @return string string the rendering result
+	 * @return static self reference.
 	 */
-	public function render($view, $params = []);
+	public function renderHtml($view, $params = []);
+
+	/**
+	 * Fills up plain text body rendering a view.
+	 * The view to be rendered can be specified in one of the following formats:
+	 * - path alias (e.g. "@app/mails/contact/body");
+	 * - relative path (e.g. "contact"): the actual view file will be resolved by [[\yii\base\ViewContextInterface]].
+	 * @param string $view the view name or the path alias of the view file.
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return static self reference.
+	 */
+	public function renderText($view, $params = []);
 
 	/**
 	 * String output.

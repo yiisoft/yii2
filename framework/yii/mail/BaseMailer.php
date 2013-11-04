@@ -20,7 +20,6 @@ use yii\base\ViewContextInterface;
  * @see BaseMessage
  *
  * @property \yii\base\View|array $view view instance or its array configuration.
- * @property \yii\mail\ViewResolver|array $viewResolver view resolver instance or its array configuration.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -35,6 +34,14 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var string directory containing view files for this email messages.
 	 */
 	public $viewPath = '@app/mailviews';
+	/**
+	 * @var string HTML layout view name.
+	 */
+	public $htmlLayout = 'layouts/html';
+	/**
+	 * @var string text layout view name.
+	 */
+	public $textLayout = 'layouts/text';
 	/**
 	 * @var array configuration, which should be applied by default to any new created
 	 * email message instance.
@@ -128,11 +135,17 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * Renders a view.
 	 * @param string $view the view name or the path alias of the view file.
 	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-	 * @return string string the rendering result
+	 * @param string|boolean $layout layout view name, if false given no layout will be applied.
+	 * @return string the rendering result.
 	 */
-	public function render($view, $params = [])
+	public function render($view, $params = [], $layout = false)
 	{
-		return $this->getView()->render($view, $params, $this);
+		$output = $this->getView()->render($view, $params, $this);
+		if ($layout !== false) {
+			return $this->getView()->render($layout, ['content' => $output], $this);
+		} else {
+			return $output;
+		}
 	}
 
 	/**

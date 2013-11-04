@@ -134,15 +134,39 @@ class BaseMailerTest extends TestCase
 		$mailer->viewPath = $filePath;
 
 		$viewName = 'test_view';
-		$fileName = $filePath . DIRECTORY_SEPARATOR . $viewName . '.php';
-		$fileContent = '<?php echo $testParam; ?>';
-		file_put_contents($fileName, $fileContent);
+		$viewFileName = $filePath . DIRECTORY_SEPARATOR . $viewName . '.php';
+		$viewFileContent = '<?php echo $testParam; ?>';
+		file_put_contents($viewFileName, $viewFileContent);
 
 		$params = [
 			'testParam' => 'test output'
 		];
 		$renderResult = $mailer->render($viewName, $params);
 		$this->assertEquals($params['testParam'], $renderResult);
+	}
+
+	/**
+	 * @depends testRender
+	 */
+	public function testRenderLayout()
+	{
+		$mailer = new Mailer();
+
+		$filePath = $this->getTestFilePath();
+		$mailer->viewPath = $filePath;
+
+		$viewName = 'test_view';
+		$viewFileName = $filePath . DIRECTORY_SEPARATOR . $viewName . '.php';
+		$viewFileContent = 'view file content';
+		file_put_contents($viewFileName, $viewFileContent);
+
+		$layoutName = 'test_layout';
+		$layoutFileName = $filePath . DIRECTORY_SEPARATOR . $layoutName . '.php';
+		$layoutFileContent = 'Begin Layout <?php echo $content; ?> End Layout';
+		file_put_contents($layoutFileName, $layoutFileContent);
+
+		$renderResult = $mailer->render($viewName, [], $layoutName);
+		$this->assertEquals('Begin Layout ' . $viewFileContent . ' End Layout', $renderResult);
 	}
 }
 
