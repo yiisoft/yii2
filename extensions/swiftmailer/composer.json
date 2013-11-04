@@ -20,7 +20,7 @@
 	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
-		"swiftmailer/swiftmailer": ">=v5.0"
+		"swiftmailer/swiftmailer": "@stable"
 	},
 	"autoload": {
 		"psr-0": { "yii\\swiftmailer\\": "" }
