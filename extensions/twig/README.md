@@ -11,7 +11,7 @@ return [
 	'components' => [
 		'view' => [
 			'renderers' => [
-				'tpl' => [
+				'twig' => [
 					'class' => 'yii\twig\ViewRenderer',
 					//'cachePath' => '@runtime/Twig/cache',
 					//'options' => [], /*  Array of twig options */
