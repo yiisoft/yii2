@@ -6,7 +6,6 @@ use Yii;
 use yii\base\View;
 use yii\mail\BaseMailer;
 use yii\mail\BaseMessage;
-use yii\mail\ViewResolver;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
