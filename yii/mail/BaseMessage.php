@@ -56,7 +56,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 	 */
 	public function renderHtml($view, $params = [])
 	{
-		$this->setHtml($this->render($view, $params, $this->getMailer()->htmlLayout));
+		$this->setHtml($this->getMailer()->render($view, $params, $this->getMailer()->htmlLayout));
 		return $this;
 	}
 
@@ -65,7 +65,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 	 */
 	public function renderText($view, $params = [])
 	{
-		$this->setText($this->render($view, $params, $this->getMailer()->textLayout));
+		$this->setText($this->getMailer()->render($view, $params, $this->getMailer()->textLayout));
 		return $this;
 	}
 }
