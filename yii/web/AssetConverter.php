@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\Exception;
 
 /**
  * AssetConverter supports conversion of several popular script formats into JS or CSS scripts.
@@ -24,7 +25,7 @@ class AssetConverter extends Component implements AssetConverterInterface
 	 * target script types (either "css" or "js") and the commands used for the conversion.
 	 */
 	public $commands = [
-		'less' => ['css', 'lessc {from} {to}'],
+		'less' => ['css', 'lessc {from} {to} --no-color'],
 		'scss' => ['css', 'sass {from} {to}'],
 		'sass' => ['css', 'sass {from} {to}'],
 		'styl' => ['js', 'stylus < {from} > {to}'],
@@ -82,10 +83,12 @@ class AssetConverter extends Component implements AssetConverterInterface
 		}
 		$status = proc_close($proc);
 
-		if ($status !== 0) {
-			Yii::error("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr\n");
-		} else {
+		if ($status === 0) {
 			Yii::trace("Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__);
+		} elseif (YII_DEBUG) {
+			throw new Exception("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr");
+		} else {
+			Yii::error("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr");
 		}
 		return $status === 0;
 	}
