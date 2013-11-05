@@ -96,7 +96,6 @@ class Module extends \yii\base\Module
 	 */
 	public function init()
 	{
-		Yii::setAlias('@yii/gii', __DIR__);
 		parent::init();
 		foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
 			$this->generators[$id] = Yii::createObject($config);

@@ -53,7 +53,6 @@ class Module extends \yii\base\Module
 
 	public function init()
 	{
-		Yii::setAlias('@yii/debug', __DIR__);
 		parent::init();
 		$this->dataPath = Yii::getAlias($this->dataPath);
 		$this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
