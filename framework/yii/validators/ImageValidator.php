@@ -140,28 +140,16 @@ class ImageValidator extends FileValidator
 	}
 
 	/**
-	 * Validates the attribute of the object using {@link validateImage}.
-	 * If there is any error, the error message is added to the object.
+	 * Internally validates a file object.
 	 * @param \yii\base\Model $object the object being validated
 	 * @param string $attribute the attribute being validated
+	 * @param UploadedFile $file uploaded file passed to check against a set of rules
 	 */
-	public function validateAttribute($object, $attribute)
+	protected function validateFile($object, $attribute, $file)
 	{
-		parent::validateAttribute($object, $attribute);
+		parent::validateFile($object, $attribute, $file);
 		
-		if ($object->hasErrors()) {
-			return;
-		}
-		
-		if ($this->maxFiles > 1) {
-			$files = $object->$attribute;
-			$object->$attribute = array_values($files);
-			
-			foreach ($files as $file) {
-				$this->validateImage($object, $attribute, $file);
-			}
-		} else {
-			$file = $object->$attribute;
+		if (false === $object->hasErrors($attribute)) {
 			$this->validateImage($object, $attribute, $file);
 		}
 	}
