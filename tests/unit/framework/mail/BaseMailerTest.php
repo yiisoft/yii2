@@ -84,10 +84,10 @@ class BaseMailerTest extends TestCase
 		$this->assertTrue(is_object($view), 'Unable to get default view!');
 	}
 
-	public function testCreateMessage()
+	public function testComposeMessage()
 	{
 		$mailer = new Mailer();
-		$message = $mailer->createMessage();
+		$message = $mailer->compose();
 		$this->assertTrue(is_object($message), 'Unable to create message instance!');
 		$this->assertEquals($mailer->messageClass, get_class($message), 'Invalid message class!');
 
@@ -95,7 +95,7 @@ class BaseMailerTest extends TestCase
 			'id' => 'test-id',
 			'encoding' => 'test-encoding',
 		);
-		$message = $mailer->createMessage($messageConfig);
+		$message = $mailer->compose($messageConfig);
 
 		foreach ($messageConfig as $name => $value) {
 			$this->assertEquals($value, $message->$name, 'Unable to apply message config!');
@@ -103,21 +103,34 @@ class BaseMailerTest extends TestCase
 	}
 
 	/**
-	 * @depends testCreateMessage
+	 * @depends testComposeMessage
 	 */
 	public function testDefaultMessageConfig()
 	{
 		$mailer = new Mailer();
 
-		$messageConfig = array(
+		$notPropertyConfig = [
+			'from' => 'from@domain.com',
+			'to' => 'to@domain.com',
+			'cc' => 'cc@domain.com',
+			'bcc' => 'bcc@domain.com',
+			'subject' => 'Test subject',
+			'text' => 'Test text body',
+			'html' => 'Test HTML body',
+		];
+		$propertyConfig = [
 			'id' => 'test-id',
 			'encoding' => 'test-encoding',
-		);
+		];
+		$messageConfig = array_merge($notPropertyConfig, $propertyConfig);
 		$mailer->messageConfig = $messageConfig;
 
-		$message = $mailer->createMessage();
+		$message = $mailer->compose();
 
-		foreach ($messageConfig as $name => $value) {
+		foreach ($notPropertyConfig as $name => $value) {
+			$this->assertEquals($value, $message->{'_' . $name});
+		}
+		foreach ($propertyConfig as $name => $value) {
 			$this->assertEquals($value, $message->$name);
 		}
 	}
@@ -190,22 +203,50 @@ class Message extends BaseMessage
 {
 	public $id;
 	public $encoding;
+	public $_from;
+	public $_to;
+	public $_cc;
+	public $_bcc;
+	public $_subject;
+	public $_text;
+	public $_html;
 
 	public function setCharset($charset) {}
 
-	public function setFrom($from) {}
+	public function from($from) {
+		$this->_from = $from;
+		return $this;
+	}
 
-	public function setTo($to) {}
+	public function to($to) {
+		$this->_to = $to;
+		return $this;
+	}
 
-	public function setCc($cc) {}
+	public function cc($cc) {
+		$this->_cc = $cc;
+		return $this;
+	}
 
-	public function setBcc($bcc) {}
+	public function bcc($bcc) {
+		$this->_bcc = $bcc;
+		return $this;
+	}
 
-	public function setSubject($subject) {}
+	public function subject($subject) {
+		$this->_subject = $subject;
+		return $this;
+	}
 
-	public function setText($text) {}
+	public function text($text) {
+		$this->_text = $text;
+		return $this;
+	}
 
-	public function setHtml($html) {}
+	public function html($html) {
+		$this->_html = $html;
+		return $this;
+	}
 
 	public function attachContent($content, array $options = []) {}
 

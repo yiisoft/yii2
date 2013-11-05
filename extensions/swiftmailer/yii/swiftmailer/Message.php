@@ -59,7 +59,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function setFrom($from)
+	public function from($from)
 	{
 		$this->getSwiftMessage()->setFrom($from);
 		$this->getSwiftMessage()->setReplyTo($from);
@@ -67,85 +67,45 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @return string from address of this message.
-	 */
-	public function getFrom()
-	{
-		return $this->getSwiftMessage()->getFrom();
-	}
-
-	/**
 	 * @inheritdoc
 	 */
-	public function setTo($to)
+	public function to($to)
 	{
 		$this->getSwiftMessage()->setTo($to);
 		return $this;
 	}
 
 	/**
-	 * @return array To addresses of this message.
-	 */
-	public function getTo()
-	{
-		return $this->getSwiftMessage()->getTo();
-	}
-
-	/**
 	 * @inheritdoc
 	 */
-	public function setCc($cc)
+	public function cc($cc)
 	{
 		$this->getSwiftMessage()->setCc($cc);
 		return $this;
 	}
 
 	/**
-	 * @return array Cc address of this message.
-	 */
-	public function getCc()
-	{
-		return $this->getSwiftMessage()->getCc();
-	}
-
-	/**
 	 * @inheritdoc
 	 */
-	public function setBcc($bcc)
+	public function bcc($bcc)
 	{
 		$this->getSwiftMessage()->setBcc($bcc);
 		return $this;
 	}
 
 	/**
-	 * @return array Bcc addresses of this message.
-	 */
-	public function getBcc()
-	{
-		return $this->getSwiftMessage()->getBcc();
-	}
-
-	/**
 	 * @inheritdoc
 	 */
-	public function setSubject($subject)
+	public function subject($subject)
 	{
 		$this->getSwiftMessage()->setSubject($subject);
 		return $this;
 	}
 
 	/**
-	 * @return string the subject of this message.
-	 */
-	public function getSubject()
-	{
-		return $this->getSwiftMessage()->getSubject();
-	}
-
-	/**
 	 * @inheritdoc
 	 */
-	public function setText($text)
+	public function text($text)
 	{
 		$this->setBody($text, 'text/plain');
 		return $this;
@@ -154,7 +114,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function setHtml($html)
+	public function html($html)
 	{
 		$this->setBody($html, 'text/html');
 		return $this;

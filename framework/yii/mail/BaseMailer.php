@@ -45,10 +45,18 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	/**
 	 * @var array configuration, which should be applied by default to any new created
 	 * email message instance.
+	 * In addition to normal [[Yii::createObject()]] behavior extra config keys are available:
+	 *  - 'from' invokes [[MessageInterface::from()]]
+	 *  - 'to' invokes [[MessageInterface::to()]]
+	 *  - 'cc' invokes [[MessageInterface::cc()]]
+	 *  - 'bcc' invokes [[MessageInterface::bcc()]]
+	 *  - 'subject' invokes [[MessageInterface::subject()]]
+	 *  - 'text' invokes [[MessageInterface::text()]]
+	 *  - 'html' invokes [[MessageInterface::html()]]
 	 * For example:
 	 * ~~~
 	 * array(
-	 *     'encoding' => 'UTF-8',
+	 *     'charset' => 'UTF-8',
 	 *     'from' => 'noreply@mydomain.com',
 	 *     'bcc' => 'email.test@mydomain.com',
 	 * )
@@ -100,16 +108,37 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * Creates new message instance from given configuration.
 	 * Message configuration will be merged with [[messageConfig]].
 	 * If 'class' parameter is omitted [[messageClass]], will be used.
-	 * @param array $config message configuration.
+	 * @param array $config message configuration. See [[messageConfig]]
+	 * for the configuration format details.
 	 * @return MessageInterface message instance.
 	 */
-	public function createMessage(array $config = [])
+	public function compose(array $config = [])
 	{
 		$config = array_merge($this->messageConfig, $config);
 		if (!array_key_exists('class', $config)) {
 			$config['class'] = $this->messageClass;
 		}
-		return Yii::createObject($config);
+		$configMethodNames = [
+			'from',
+			'to',
+			'cc',
+			'bcc',
+			'subject',
+			'text',
+			'html',
+		];
+		$methodBasedConfig = [];
+		foreach ($config as $name => $value) {
+			if (in_array($name, $configMethodNames, true)) {
+				$methodBasedConfig[$name] = $value;
+				unset($config[$name]);
+			}
+		}
+		$message = Yii::createObject($config);
+		foreach ($methodBasedConfig as $name => $value) {
+			$message->$name($value);
+		}
+		return $message;
 	}
 
 	/**
