@@ -53,7 +53,31 @@ class BaseMessageTest extends TestCase
 		$viewName = 'test/html/view';
 		$message->renderHtml($viewName);
 		$expectedHtml = 'view=' . $viewName . ' layout=' . $mailer->htmlLayout;
-		$this->assertEquals($expectedHtml, $message->html, 'Unable to render text!');
+		$this->assertEquals($expectedHtml, $message->html, 'Unable to render html!');
+	}
+
+	/**
+	 * @depends testRender
+	 */
+	public function testComposeBody()
+	{
+		$mailer = $this->getMailer();
+		$message = $mailer->compose();
+
+		$viewName = 'test/html/view';
+		$message->body($viewName);
+		$expectedHtml = 'view=' . $viewName . ' layout=' . $mailer->htmlLayout;
+		$this->assertEquals($expectedHtml, $message->html, 'Unable to compose html!');
+		$expectedText = strip_tags($expectedHtml);
+		$this->assertEquals($expectedText, $message->text, 'Unable to compose text from html!');
+
+		$textViewName = 'test/text/view';
+		$htmlViewName = 'test/html/view';
+		$message->body(['text' => $textViewName, 'html' => $htmlViewName]);
+		$expectedHtml = 'view=' . $htmlViewName . ' layout=' . $mailer->htmlLayout;
+		$this->assertEquals($expectedHtml, $message->html, 'Unable to compose html from separated view!');
+		$expectedText = 'view=' . $textViewName . ' layout=' . $mailer->textLayout;
+		$this->assertEquals($expectedText, $message->text, 'Unable to compose text from separated view!');
 	}
 
 	public function testSend()
