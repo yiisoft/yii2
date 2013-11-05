@@ -167,6 +167,17 @@ interface MessageInterface
 	public function renderText($view, $params = []);
 
 	/**
+	 * Composes the message HTML and plain text body.
+	 * @param string|array $view varies method behavior depending on type:
+	 *  - string - the view name or the path alias of the HTML body view file, in this case
+	 * text body will be composed from html one using [[strip_tags()]] function.
+	 *  - array - list of views for each body type in format: ['html' => 'htmlView', 'text' => 'textView']
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return static self reference.
+	 */
+	public function body($view, $params = []);
+
+	/**
 	 * String output.
 	 * This is PHP magic method that returns string representation of an object.
 	 * @return string the string representation of the object

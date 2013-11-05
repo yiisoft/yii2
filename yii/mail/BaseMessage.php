@@ -61,4 +61,20 @@ abstract class BaseMessage extends Object implements MessageInterface
 		$this->text($this->getMailer()->render($view, $params, $this->getMailer()->textLayout));
 		return $this;
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function body($view, $params = [])
+	{
+		if (is_array($view)) {
+			$this->renderHtml($view['html'], $params);
+			$this->renderText($view['text'], $params);
+		} else {
+			$html = $this->getMailer()->render($view, $params, $this->getMailer()->htmlLayout);
+			$this->html($html);
+			$this->text(strip_tags($html));
+		}
+		return $this;
+	}
 }
