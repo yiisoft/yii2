@@ -31,6 +31,7 @@ use yii\base\NotSupportedException;
  * - `exist`: [[ExistValidator]]
  * - `file`: [[FileValidator]]
  * - `filter`: [[FilterValidator]]
+ * - `image`: [[ImageValidator]]
  * - `in`: [[RangeValidator]]
  * - `integer`: [[NumberValidator]]
  * - `match`: [[RegularExpressionValidator]]
@@ -59,6 +60,7 @@ abstract class Validator extends Component
 		'exist' => 'yii\validators\ExistValidator',
 		'file' => 'yii\validators\FileValidator',
 		'filter' => 'yii\validators\FilterValidator',
+		'image' => 'yii\validators\ImageValidator',
 		'in' => 'yii\validators\RangeValidator',
 		'integer' => [
 			'class' => 'yii\validators\NumberValidator',
