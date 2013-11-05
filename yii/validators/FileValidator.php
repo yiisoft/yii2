@@ -168,7 +168,7 @@ class FileValidator extends Validator
 	 * @param string $attribute the attribute being validated
 	 * @param UploadedFile $file uploaded file passed to check against a set of rules
 	 */
-	protected function validateFile($object, $attribute, $file)
+	public function validateFile($object, $attribute, $file)
 	{
 		switch ($file->error) {
 			case UPLOAD_ERR_OK:

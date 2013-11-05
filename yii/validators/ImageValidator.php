@@ -145,11 +145,11 @@ class ImageValidator extends FileValidator
 	 * @param string $attribute the attribute being validated
 	 * @param UploadedFile $file uploaded file passed to check against a set of rules
 	 */
-	protected function validateFile($object, $attribute, $file)
+	public function validateFile($object, $attribute, $file)
 	{
 		parent::validateFile($object, $attribute, $file);
 		
-		if (false === $object->hasErrors($attribute)) {
+		if (!$object->hasErrors($attribute)) {
 			$this->validateImage($object, $attribute, $file);
 		}
 	}
