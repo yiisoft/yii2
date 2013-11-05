@@ -18,7 +18,7 @@ class BaseMailerTest extends TestCase
 	{
 		$this->mockApplication([
 			'components' => [
-				'mail' => $this->createTestEmailComponent()
+				'mail' => $this->createTestMailComponent(),
 			]
 		]);
 		$filePath = $this->getTestFilePath();
@@ -46,10 +46,19 @@ class BaseMailerTest extends TestCase
 	/**
 	 * @return Mailer test email component instance.
 	 */
-	protected function createTestEmailComponent()
+	protected function createTestMailComponent()
 	{
 		$component = new Mailer();
+		$component->viewPath = $this->getTestFilePath();
 		return $component;
+	}
+
+	/**
+	 * @return Mailer mailer instance
+	 */
+	protected function getTestMailComponent()
+	{
+		return Yii::$app->getComponent('mail');
 	}
 
 	// Tests :
@@ -135,18 +144,17 @@ class BaseMailerTest extends TestCase
 		}
 	}
 
+
+
 	/**
 	 * @depends testGetDefaultView
 	 */
 	public function testRender()
 	{
-		$mailer = new Mailer();
-
-		$filePath = $this->getTestFilePath();
-		$mailer->viewPath = $filePath;
+		$mailer = $this->getTestMailComponent();
 
 		$viewName = 'test_view';
-		$viewFileName = $filePath . DIRECTORY_SEPARATOR . $viewName . '.php';
+		$viewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $viewName . '.php';
 		$viewFileContent = '<?php echo $testParam; ?>';
 		file_put_contents($viewFileName, $viewFileContent);
 
@@ -158,14 +166,35 @@ class BaseMailerTest extends TestCase
 	}
 
 	/**
+	 * @depends testComposeMessage
+	 * @depends testRender
+	 */
+	public function testComposeSetupMethods()
+	{
+		$mailer = $this->getTestMailComponent();
+		$mailer->textLayout = false;
+
+		$viewName = 'test_view';
+		$viewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $viewName . '.php';
+		$viewFileContent = 'view file content';
+		file_put_contents($viewFileName, $viewFileContent);
+
+		$messageConfig = array(
+			'renderText' => [$viewName],
+		);
+		$message = $mailer->compose($messageConfig);
+
+		$this->assertEquals($viewFileContent, $message->_text);
+	}
+
+	/**
 	 * @depends testRender
 	 */
 	public function testRenderLayout()
 	{
-		$mailer = new Mailer();
+		$mailer = $this->getTestMailComponent();
 
 		$filePath = $this->getTestFilePath();
-		$mailer->viewPath = $filePath;
 
 		$viewName = 'test_view';
 		$viewFileName = $filePath . DIRECTORY_SEPARATOR . $viewName . '.php';

@@ -46,19 +46,23 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var array configuration, which should be applied by default to any new created
 	 * email message instance.
 	 * In addition to normal [[Yii::createObject()]] behavior extra config keys are available:
-	 *  - 'from' invokes [[MessageInterface::from()]]
-	 *  - 'to' invokes [[MessageInterface::to()]]
-	 *  - 'cc' invokes [[MessageInterface::cc()]]
-	 *  - 'bcc' invokes [[MessageInterface::bcc()]]
-	 *  - 'subject' invokes [[MessageInterface::subject()]]
-	 *  - 'text' invokes [[MessageInterface::text()]]
-	 *  - 'html' invokes [[MessageInterface::html()]]
+	 *  - 'from' argument for [[MessageInterface::from()]]
+	 *  - 'to' argument for [[MessageInterface::to()]]
+	 *  - 'cc' argument for [[MessageInterface::cc()]]
+	 *  - 'bcc' argument for [[MessageInterface::bcc()]]
+	 *  - 'subject' argument for [[MessageInterface::subject()]]
+	 *  - 'text' argument for [[MessageInterface::text()]]
+	 *  - 'html' argument for [[MessageInterface::html()]]
+	 *  - 'renderText' list of arguments for [[MessageInterface::renderText()]]
+	 *  - 'renderHtml' list of arguments for [[MessageInterface::renderHtml()]]
+	 *  - 'body' list of arguments for [[MessageInterface::body()]]
 	 * For example:
 	 * ~~~
 	 * array(
 	 *     'charset' => 'UTF-8',
 	 *     'from' => 'noreply@mydomain.com',
 	 *     'bcc' => 'email.test@mydomain.com',
+	 *     'renderText' => ['default/text', ['companyName' => 'YiiApp']],
 	 * )
 	 * ~~~
 	 */
@@ -118,7 +122,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		if (!array_key_exists('class', $config)) {
 			$config['class'] = $this->messageClass;
 		}
-		$configMethodNames = [
+		$directSetterNames = [
 			'from',
 			'to',
 			'cc',
@@ -127,16 +131,29 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			'text',
 			'html',
 		];
-		$methodBasedConfig = [];
+		$setupMethodNames = [
+			'renderText',
+			'renderHtml',
+			'body',
+		];
+		$directSetterConfig = [];
+		$setupMethodConfig = [];
 		foreach ($config as $name => $value) {
-			if (in_array($name, $configMethodNames, true)) {
-				$methodBasedConfig[$name] = $value;
+			if (in_array($name, $directSetterNames, true)) {
+				$directSetterConfig[$name] = $value;
+				unset($config[$name]);
+			}
+			if (in_array($name, $setupMethodNames, true)) {
+				$setupMethodConfig[$name] = $value;
 				unset($config[$name]);
 			}
 		}
 		$message = Yii::createObject($config);
-		foreach ($methodBasedConfig as $name => $value) {
+		foreach ($directSetterConfig as $name => $value) {
 			$message->$name($value);
+		}
+		foreach ($setupMethodConfig as $method => $arguments) {
+			call_user_func_array(array($message, $method), $arguments);
 		}
 		return $message;
 	}
