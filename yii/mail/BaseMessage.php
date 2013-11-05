@@ -22,13 +22,6 @@ use Yii;
  *
  * @property \yii\mail\BaseMailer $mailer mailer component instance. This property is read-only.
  * @property string $charset the character set of this message.
- * @property string|array $from sender email address.
- * @property string|array $to receiver email address.
- * @property string|array $cc copy receiver email address.
- * @property string|array $bcc hidden copy receiver email address.
- * @property string $subject message subject.
- * @property string $text message plain text content.
- * @property string $html message HTML content.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -56,7 +49,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 	 */
 	public function renderHtml($view, $params = [])
 	{
-		$this->setHtml($this->getMailer()->render($view, $params, $this->getMailer()->htmlLayout));
+		$this->html($this->getMailer()->render($view, $params, $this->getMailer()->htmlLayout));
 		return $this;
 	}
 
@@ -65,7 +58,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 	 */
 	public function renderText($view, $params = [])
 	{
-		$this->setText($this->getMailer()->render($view, $params, $this->getMailer()->textLayout));
+		$this->text($this->getMailer()->render($view, $params, $this->getMailer()->textLayout));
 		return $this;
 	}
 }

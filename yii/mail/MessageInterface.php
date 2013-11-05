@@ -12,10 +12,10 @@ namespace yii\mail;
  * Together with application component, which matches the [[MailerInterface]],
  * it introduces following mail sending syntax:
  * ~~~php
- * Yii::$app->mail->createMessage()
- *     ->setFrom('from@domain.com')
- *     ->setTo('to@domain.com')
- *     ->setSubject('Message Subject')
+ * Yii::$app->mail->compose()
+ *     ->from('from@domain.com')
+ *     ->to('to@domain.com')
+ *     ->subject('Message Subject')
  *     ->renderText('text/view')
  *     ->renderHtml('html/view')
  *     ->send();
@@ -43,7 +43,7 @@ interface MessageInterface
 	 * [email => name].
 	 * @return static self reference.
 	 */
-	public function setFrom($from);
+	public function from($from);
 
 	/**
 	 * Sets message receiver.
@@ -53,7 +53,7 @@ interface MessageInterface
 	 * [email => name].
 	 * @return static self reference.
 	 */
-	public function setTo($to);
+	public function to($to);
 
 	/**
 	 * Set the Cc (additional copy receiver) addresses of this message.
@@ -63,7 +63,7 @@ interface MessageInterface
 	 * [email => name].
 	 * @return static self reference.
 	 */
-	public function setCc($cc);
+	public function cc($cc);
 
 	/**
 	 * Set the Bcc (hidden copy receiver) addresses of this message.
@@ -73,28 +73,28 @@ interface MessageInterface
 	 * [email => name].
 	 * @return static self reference.
 	 */
-	public function setBcc($bcc);
+	public function bcc($bcc);
 
 	/**
 	 * Sets message subject.
 	 * @param string $subject message subject
 	 * @return static self reference.
 	 */
-	public function setSubject($subject);
+	public function subject($subject);
 
 	/**
 	 * Sets message plain text content.
 	 * @param string $text message plain text content.
 	 * @return static self reference.
 	 */
-	public function setText($text);
+	public function text($text);
 
 	/**
 	 * Sets message HTML content.
 	 * @param string $html message HTML content.
 	 * @return static self reference.
 	 */
-	public function setHtml($html);
+	public function html($html);
 
 	/**
 	 * Attach specified content as file for the email message.
