@@ -65,7 +65,7 @@ class BaseMessageTest extends TestCase
 		$message = $mailer->compose();
 
 		$viewName = 'test/html/view';
-		$message->body($viewName);
+		$message->renderBody($viewName);
 		$expectedHtml = 'view=' . $viewName . ' layout=' . $mailer->htmlLayout;
 		$this->assertEquals($expectedHtml, $message->html, 'Unable to compose html!');
 		$expectedText = strip_tags($expectedHtml);
@@ -73,7 +73,7 @@ class BaseMessageTest extends TestCase
 
 		$textViewName = 'test/text/view';
 		$htmlViewName = 'test/html/view';
-		$message->body(['text' => $textViewName, 'html' => $htmlViewName]);
+		$message->renderBody(['text' => $textViewName, 'html' => $htmlViewName]);
 		$expectedHtml = 'view=' . $htmlViewName . ' layout=' . $mailer->htmlLayout;
 		$this->assertEquals($expectedHtml, $message->html, 'Unable to compose html from separated view!');
 		$expectedText = 'view=' . $textViewName . ' layout=' . $mailer->textLayout;
