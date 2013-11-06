@@ -15,6 +15,10 @@ class SiteController extends Controller
 				'class' => \yii\web\AccessControl::className(),
 				'rules' => [
 					[
+						'actions' => ['error'],
+						'allow' => true,
+					],
+					[
 						'actions' => ['login'],
 						'allow' => true,
 						'roles' => ['?'],
