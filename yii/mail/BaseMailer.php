@@ -46,6 +46,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var array configuration, which should be applied by default to any new created
 	 * email message instance.
 	 * In addition to normal [[Yii::createObject()]] behavior extra config keys are available:
+	 *  - 'charset' argument for [[MessageInterface::charset()]]
 	 *  - 'from' argument for [[MessageInterface::from()]]
 	 *  - 'to' argument for [[MessageInterface::to()]]
 	 *  - 'cc' argument for [[MessageInterface::cc()]]
@@ -123,6 +124,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			$config['class'] = $this->messageClass;
 		}
 		$directSetterNames = [
+			'charset',
 			'from',
 			'to',
 			'cc',

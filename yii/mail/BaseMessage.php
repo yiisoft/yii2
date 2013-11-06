@@ -21,7 +21,6 @@ use Yii;
  * @see BaseMailer
  *
  * @property \yii\mail\BaseMailer $mailer mailer component instance. This property is read-only.
- * @property string $charset the character set of this message.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -76,5 +75,21 @@ abstract class BaseMessage extends Object implements MessageInterface
 			$this->text(strip_tags($html));
 		}
 		return $this;
+	}
+
+	/**
+	 * PHP magic method that returns the string representation of this object.
+	 * @return string the string representation of this object.
+	 */
+	public function __toString()
+	{
+		// __toString cannot throw exception
+		// use trigger_error to bypass this limitation
+		try {
+			return $this->toString();
+		} catch (\Exception $e) {
+			trigger_error($e->getMessage());
+			return '';
+		}
 	}
 }

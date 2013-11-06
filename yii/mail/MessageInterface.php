@@ -33,7 +33,7 @@ interface MessageInterface
 	 * @param string $charset character set name.
 	 * @return static self reference.
 	 */
-	public function setCharset($charset);
+	public function charset($charset);
 
 	/**
 	 * Sets message sender.
@@ -97,6 +97,16 @@ interface MessageInterface
 	public function html($html);
 
 	/**
+	 * Attaches existing file to the email message.
+	 * @param string $fileName full file name
+	 * @param array $options options for embed file. Valid options are:
+	 * - fileName: name, which should be used to attach file.
+	 * - contentType: attached file MIME type.
+	 * @return static self reference.
+	 */
+	public function attach($fileName, array $options = []);
+
+	/**
 	 * Attach specified content as file for the email message.
 	 * @param string $content attachment file content.
 	 * @param array $options options for embed file. Valid options are:
@@ -107,16 +117,6 @@ interface MessageInterface
 	public function attachContent($content, array $options = []);
 
 	/**
-	 * Attaches existing file to the email message.
-	 * @param string $fileName full file name
-	 * @param array $options options for embed file. Valid options are:
-	 * - fileName: name, which should be used to attach file.
-	 * - contentType: attached file MIME type.
-	 * @return static self reference.
-	 */
-	public function attachFile($fileName, array $options = []);
-
-	/**
 	 * Attach a file and return it's CID source.
 	 * This method should be used when embedding images or other data in a message.
 	 * @param string $fileName file name.
@@ -125,7 +125,7 @@ interface MessageInterface
 	 * - contentType: attached file MIME type.
 	 * @return string attachment CID.
 	 */
-	public function embedFile($fileName, array $options = []);
+	public function embed($fileName, array $options = []);
 
 	/**
 	 * Attach a content as file and return it's CID source.
@@ -178,9 +178,8 @@ interface MessageInterface
 	public function body($view, $params = []);
 
 	/**
-	 * String output.
-	 * This is PHP magic method that returns string representation of an object.
-	 * @return string the string representation of the object
+	 * Returns string representation of this message.
+	 * @return string the string representation of this message.
 	 */
-	public function __toString();
+	public function toString();
 }
