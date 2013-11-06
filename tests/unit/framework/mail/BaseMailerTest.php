@@ -96,7 +96,7 @@ class BaseMailerTest extends TestCase
 	public function testComposeMessage()
 	{
 		$mailer = new Mailer();
-		$message = $mailer->compose();
+		$message = $mailer->message();
 		$this->assertTrue(is_object($message), 'Unable to create message instance!');
 		$this->assertEquals($mailer->messageClass, get_class($message), 'Invalid message class!');
 
@@ -104,7 +104,7 @@ class BaseMailerTest extends TestCase
 			'id' => 'test-id',
 			'encoding' => 'test-encoding',
 		);
-		$message = $mailer->compose($messageConfig);
+		$message = $mailer->message($messageConfig);
 
 		foreach ($messageConfig as $name => $value) {
 			$this->assertEquals($value, $message->$name, 'Unable to apply message config!');
@@ -135,7 +135,7 @@ class BaseMailerTest extends TestCase
 		$messageConfig = array_merge($notPropertyConfig, $propertyConfig);
 		$mailer->messageConfig = $messageConfig;
 
-		$message = $mailer->compose();
+		$message = $mailer->message();
 
 		foreach ($notPropertyConfig as $name => $value) {
 			$this->assertEquals($value, $message->{'_' . $name});
@@ -181,7 +181,7 @@ class BaseMailerTest extends TestCase
 		$messageConfig = array(
 			'renderText' => [$viewName],
 		);
-		$message = $mailer->compose($messageConfig);
+		$message = $mailer->message($messageConfig);
 
 		$this->assertEquals($viewFileContent, $message->_text);
 	}

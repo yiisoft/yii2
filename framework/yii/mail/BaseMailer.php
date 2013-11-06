@@ -118,7 +118,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * for the configuration format details.
 	 * @return MessageInterface message instance.
 	 */
-	public function compose(array $config = [])
+	public function message(array $config = [])
 	{
 		$config = array_merge($this->messageConfig, $config);
 		if (!array_key_exists('class', $config)) {

@@ -22,7 +22,7 @@ interface MailerInterface
 	 * @param array $config message configuration.
 	 * @return MessageInterface message instance.
 	 */
-	public function compose(array $config = []);
+	public function message(array $config = []);
 
 	/**
 	 * Sends the given email message.

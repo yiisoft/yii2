@@ -43,7 +43,7 @@ class BaseMessageTest extends TestCase
 	public function testRender()
 	{
 		$mailer = $this->getMailer();
-		$message = $mailer->compose();
+		$message = $mailer->message();
 
 		$viewName = 'test/text/view';
 		$message->renderText($viewName);
@@ -62,7 +62,7 @@ class BaseMessageTest extends TestCase
 	public function testComposeBody()
 	{
 		$mailer = $this->getMailer();
-		$message = $mailer->compose();
+		$message = $mailer->message();
 
 		$viewName = 'test/html/view';
 		$message->renderBody($viewName);
@@ -83,7 +83,7 @@ class BaseMessageTest extends TestCase
 	public function testSend()
 	{
 		$mailer = $this->getMailer();
-		$message = $mailer->compose();
+		$message = $mailer->message();
 		$message->send();
 		$this->assertEquals($message, $mailer->sentMessages[0], 'Unable to send message!');
 	}
