@@ -293,7 +293,7 @@ class Generator extends \yii\gii\Generator
 				$link = $this->generateRelationLink($refs);
 				$relationName = $this->generateRelationName($relations, $refClassName, $refTable, $className, $hasMany);
 				$relations[$refClassName][$relationName] = [
-					"return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "($refClassName::className(), $link);",
+					"return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "($className::className(), $link);",
 					$className,
 					$hasMany,
 				];
