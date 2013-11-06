@@ -5,7 +5,7 @@ use yii\bootstrap\ButtonGroup;
 use yii\helpers\Html;
 
 /**
- * @var \yii\base\View $this
+ * @var \yii\web\View $this
  * @var array $summary
  * @var string $tag
  * @var array $manifest

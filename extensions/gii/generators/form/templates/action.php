@@ -5,7 +5,7 @@ use yii\helpers\Inflector;
 /**
  * This is the template for generating an action view file.
  *
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\gii\generators\form\Generator $generator
  */
 

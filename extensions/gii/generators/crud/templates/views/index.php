@@ -4,7 +4,7 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
 
@@ -18,7 +18,7 @@ use yii\helpers\Html;
 use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\data\ActiveDataProvider $dataProvider
  * @var <?= ltrim($generator->searchModelClass, '\\') ?> $searchModel
  */

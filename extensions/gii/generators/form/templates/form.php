@@ -2,7 +2,7 @@
 /**
  * This is the template for generating an action view file.
  *
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\gii\generators\form\Generator $generator
  */
 
@@ -13,7 +13,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var <?= $generator->modelClass ?> $model
  * @var ActiveForm $form
  */

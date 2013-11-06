@@ -471,7 +471,7 @@ abstract class Application extends Module
 			'formatter' => ['class' => 'yii\base\Formatter'],
 			'i18n' => ['class' => 'yii\i18n\I18N'],
 			'urlManager' => ['class' => 'yii\web\UrlManager'],
-			'view' => ['class' => 'yii\base\View'],
+			'view' => ['class' => 'yii\web\View'],
 		]);
 	}
 

@@ -213,6 +213,7 @@ return [
 	'yii\web\User' => YII_PATH . '/web/User.php',
 	'yii\web\UserEvent' => YII_PATH . '/web/UserEvent.php',
 	'yii\web\VerbFilter' => YII_PATH . '/web/VerbFilter.php',
+	'yii\web\View' => YII_PATH . '/web/View.php',
 	'yii\web\XmlResponseFormatter' => YII_PATH . '/web/XmlResponseFormatter.php',
 	'yii\web\YiiAsset' => YII_PATH . '/web/YiiAsset.php',
 	'yii\widgets\ActiveField' => YII_PATH . '/widgets/ActiveField.php',

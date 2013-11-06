@@ -2,7 +2,7 @@
 /**
  * This is the template for generating an action view file.
  *
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\gii\generators\controller\Generator $generator
  * @var string $action the action ID
  */
@@ -10,7 +10,7 @@
 echo "<?php\n";
 ?>
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  */
 <?= "?>" ?>
 
