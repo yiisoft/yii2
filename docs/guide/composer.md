@@ -58,6 +58,18 @@ Again, you may need to provide specific path references.
 In both cases, after some waiting, the required packages will be installed and ready to use in your Yii application. No additional configuration of those packages will be required.
 
 
+FAQ
+---
+
+### Getting "You must enable the openssl extension to download files via https"
+
+If you're using WAMP check [this answer at StackOverflow](http://stackoverflow.com/a/14265815/1106908).
+
+### Getting "Failed to clone <URL here>, git was not found, check that it is installed and in your Path env."
+
+Either install git or try adding `--prefer-dist` to the end of `install` or `update` command.
+
+
 See also
 --------
 
