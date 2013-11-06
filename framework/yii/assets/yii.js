@@ -169,6 +169,14 @@ yii = (function ($) {
 					xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
 				}
 			});
+			
+			// filter out already included javascript files
+			var loadedAssets = [];
+			$.ajaxPrefilter("script", function(options, originalOptions, jqXHR) {
+				$('script[src="' + options.url.match(/(http:\/\/.*?)?(\/.+)/i)[2] + '"]' ).length || -1 !== $.inArray(options.url, loadedAssets)
+					? jqXHR.abort()
+					: loadedAssets.push(options.url);
+			});
 
 			// handle AJAX redirection
 			$document.ajaxComplete(function (event, xhr, settings) {
