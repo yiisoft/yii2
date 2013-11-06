@@ -15,6 +15,7 @@ use yii\web\AssetBundle;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
+use yii\base\InvalidConfigException;
 
 /**
  * View represents a view object in the MVC pattern.
