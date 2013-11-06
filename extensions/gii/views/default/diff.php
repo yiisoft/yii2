@@ -1,6 +1,6 @@
 <?php
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var mixed $diff
  */
 ?>

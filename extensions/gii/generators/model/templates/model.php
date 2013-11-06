@@ -2,7 +2,7 @@
 /**
  * This is the template for generating the model class of a specified table.
  *
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\gii\generators\model\Generator $generator
  * @var string $tableName full table name
  * @var string $className class name

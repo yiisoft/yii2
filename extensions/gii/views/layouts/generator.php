@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 
 /**
- * @var $this \yii\base\View
+ * @var $this \yii\web\View
  * @var $content string
  * @var yii\gii\Generator[] $generators
  * @var yii\gii\Generator $activeGenerator

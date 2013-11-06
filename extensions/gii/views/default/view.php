@@ -6,7 +6,7 @@ use yii\gii\components\ActiveField;
 use yii\gii\CodeFile;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\gii\Generator $generator
  * @var string $id
  * @var yii\widgets\ActiveForm $form

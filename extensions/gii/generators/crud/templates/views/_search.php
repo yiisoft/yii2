@@ -4,7 +4,7 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
 
@@ -15,7 +15,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var <?= ltrim($generator->searchModelClass, '\\') ?> $model
  * @var yii\widgets\ActiveForm $form
  */

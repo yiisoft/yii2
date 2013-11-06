@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\gii\CodeFile;
 
 /**
- * @var $this \yii\base\View
+ * @var $this \yii\web\View
  * @var $generator \yii\gii\Generator
  * @var CodeFile[] $files
  * @var array $answers

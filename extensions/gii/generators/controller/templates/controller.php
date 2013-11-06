@@ -5,7 +5,7 @@ use yii\helpers\Inflector;
 /**
  * This is the template for generating a controller class file.
  *
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\gii\generators\controller\Generator $generator
  */
 

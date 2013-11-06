@@ -11,7 +11,7 @@ use Yii;
 use ReflectionClass;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\base\View;
+use yii\web\View;
 
 
 /**
