@@ -179,7 +179,7 @@ class CompareValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated
 	 * @return string the client-side validation script
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @throws InvalidConfigException if CompareValidator::operator is invalid
 	 */

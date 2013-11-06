@@ -10,7 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Object;
-use yii\base\View;
+use yii\web\View;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
@@ -97,12 +97,12 @@ class AssetBundle extends Object
 	 */
 	public $css = [];
 	/**
-	 * @var array the options that will be passed to [[\yii\base\View::registerJsFile()]]
+	 * @var array the options that will be passed to [[\yii\web\View::registerJsFile()]]
 	 * when registering the JS files in this bundle.
 	 */
 	public $jsOptions = [];
 	/**
-	 * @var array the options that will be passed to [[\yii\base\View::registerCssFile()]]
+	 * @var array the options that will be passed to [[\yii\web\View::registerCssFile()]]
 	 * when registering the CSS files in this bundle.
 	 */
 	public $cssOptions = [];
@@ -140,7 +140,7 @@ class AssetBundle extends Object
 
 	/**
 	 * Registers the CSS and JS files with the given view.
-	 * @param \yii\base\View $view the view that the asset files are to be registered with.
+	 * @param \yii\web\View $view the view that the asset files are to be registered with.
 	 */
 	public function registerAssetFiles($view)
 	{
