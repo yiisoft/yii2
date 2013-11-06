@@ -119,6 +119,7 @@ class BaseMailerTest extends TestCase
 		$mailer = new Mailer();
 
 		$notPropertyConfig = [
+			'charset' => 'utf-16',
 			'from' => 'from@domain.com',
 			'to' => 'to@domain.com',
 			'cc' => 'cc@domain.com',
@@ -143,8 +144,6 @@ class BaseMailerTest extends TestCase
 			$this->assertEquals($value, $message->$name);
 		}
 	}
-
-
 
 	/**
 	 * @depends testGetDefaultView
@@ -217,7 +216,7 @@ class BaseMailerTest extends TestCase
 class Mailer extends BaseMailer
 {
 	public $messageClass = 'yiiunit\framework\mail\Message';
-	public $sentMessages = array();
+	public $sentMessages = [];
 
 	public function send($message)
 	{
@@ -232,6 +231,7 @@ class Message extends BaseMessage
 {
 	public $id;
 	public $encoding;
+	public $_charset;
 	public $_from;
 	public $_to;
 	public $_cc;
@@ -240,52 +240,63 @@ class Message extends BaseMessage
 	public $_text;
 	public $_html;
 
-	public function setCharset($charset) {}
+	public function charset($charset)
+	{
+		$this->_charset = $charset;
+		return $this;
+	}
 
-	public function from($from) {
+	public function from($from)
+	{
 		$this->_from = $from;
 		return $this;
 	}
 
-	public function to($to) {
+	public function to($to)
+	{
 		$this->_to = $to;
 		return $this;
 	}
 
-	public function cc($cc) {
+	public function cc($cc)
+	{
 		$this->_cc = $cc;
 		return $this;
 	}
 
-	public function bcc($bcc) {
+	public function bcc($bcc)
+	{
 		$this->_bcc = $bcc;
 		return $this;
 	}
 
-	public function subject($subject) {
+	public function subject($subject)
+	{
 		$this->_subject = $subject;
 		return $this;
 	}
 
-	public function text($text) {
+	public function text($text)
+	{
 		$this->_text = $text;
 		return $this;
 	}
 
-	public function html($html) {
+	public function html($html)
+	{
 		$this->_html = $html;
 		return $this;
 	}
 
 	public function attachContent($content, array $options = []) {}
 
-	public function attachFile($fileName, array $options = []) {}
+	public function attach($fileName, array $options = []) {}
 
-	public function embedFile($fileName, array $options = []) {}
+	public function embed($fileName, array $options = []) {}
 
 	public function embedContent($content, array $options = []) {}
 
-	public function __toString()
+	public function toString()
 	{
 		return get_class($this);
 	}

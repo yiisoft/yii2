@@ -116,7 +116,7 @@ class TestMessage extends BaseMessage
 	public $text;
 	public $html;
 
-	public function setCharset($charset) {}
+	public function charset($charset) {}
 
 	public function from($from) {}
 
@@ -138,13 +138,13 @@ class TestMessage extends BaseMessage
 
 	public function attachContent($content, array $options = []) {}
 
-	public function attachFile($fileName, array $options = []) {}
+	public function attach($fileName, array $options = []) {}
 
-	public function embedFile($fileName, array $options = []) {}
+	public function embed($fileName, array $options = []) {}
 
 	public function embedContent($content, array $options = []) {}
 
-	public function __toString()
+	public function toString()
 	{
 		return get_class($this);
 	}

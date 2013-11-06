@@ -124,12 +124,12 @@ class MessageTest extends VendorTestCase
 		$bcc = 'bccuser@somedomain.com';
 
 		$messageString = $this->createTestMessage()
-			->setCharset($charset)
+			->charset($charset)
 			->subject($subject)
 			->to($to)
 			->cc($cc)
 			->bcc($bcc)
-			->__toString();
+			->toString();
 
 		$this->assertContains('charset=' . $charset, $messageString, 'Incorrect charset!');
 		$this->assertContains('Subject: ' . $subject, $messageString, 'Incorrect "Subject" header!');
@@ -146,7 +146,7 @@ class MessageTest extends VendorTestCase
 		$from = 'someuser@somedomain.com';
 		$messageString = $this->createTestMessage()
 			->from($from)
-			->__toString();
+			->toString();
 		$this->assertContains('From: ' . $from, $messageString, 'Incorrect "From" header!');
 		$this->assertContains('Reply-To: ' . $from, $messageString, 'Incorrect "Reply-To" header!');
 	}
@@ -176,7 +176,7 @@ class MessageTest extends VendorTestCase
 		$message->subject('Yii Swift Attach File Test');
 		$message->text('Yii Swift Attach File Test body');
 		$fileName = __FILE__;
-		$message->attachFile($fileName);
+		$message->attach($fileName);
 
 		$this->assertTrue($message->send());
 
@@ -216,7 +216,7 @@ class MessageTest extends VendorTestCase
 
 		$message = $this->createTestMessage();
 
-		$cid = $message->embedFile($fileName);
+		$cid = $message->embed($fileName);
 
 		$message->to($this->testEmailReceiver);
 		$message->from('someuser@somedomain.com');

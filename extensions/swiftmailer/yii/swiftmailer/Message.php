@@ -42,18 +42,10 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function setCharset($charset)
+	public function charset($charset)
 	{
 		$this->getSwiftMessage()->setCharset($charset);
 		return $this;
-	}
-
-	/**
-	 * @return string the character set of this message.
-	 */
-	public function getCharset()
-	{
-		return $this->getSwiftMessage()->getCharset();
 	}
 
 	/**
@@ -167,7 +159,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function attachFile($fileName, array $options = [])
+	public function attach($fileName, array $options = [])
 	{
 		$attachment = \Swift_Attachment::fromPath($fileName);
 		if (!empty($options['fileName'])) {
@@ -199,7 +191,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function embedFile($fileName, array $options = [])
+	public function embed($fileName, array $options = [])
 	{
 		$embedFile = \Swift_EmbeddedFile::fromPath($fileName);
 		if (!empty($options['fileName'])) {
@@ -229,7 +221,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function __toString()
+	public function toString()
 	{
 		return $this->getSwiftMessage()->toString();
 	}
