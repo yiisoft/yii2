@@ -54,9 +54,10 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 *  - 'subject' argument for [[MessageInterface::subject()]]
 	 *  - 'text' argument for [[MessageInterface::text()]]
 	 *  - 'html' argument for [[MessageInterface::html()]]
+	 *  - 'body' argument for [[MessageInterface::body()]]
 	 *  - 'renderText' list of arguments for [[MessageInterface::renderText()]]
 	 *  - 'renderHtml' list of arguments for [[MessageInterface::renderHtml()]]
-	 *  - 'body' list of arguments for [[MessageInterface::body()]]
+	 *  - 'renderBody' list of arguments for [[MessageInterface::renderBody()]]
 	 * For example:
 	 * ~~~
 	 * array(
@@ -132,11 +133,12 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			'subject',
 			'text',
 			'html',
+			'body',
 		];
 		$setupMethodNames = [
 			'renderText',
 			'renderHtml',
-			'body',
+			'renderBody',
 		];
 		$directSetterConfig = [];
 		$setupMethodConfig = [];

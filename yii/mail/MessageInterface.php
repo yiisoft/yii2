@@ -97,6 +97,16 @@ interface MessageInterface
 	public function html($html);
 
 	/**
+	 * Sets message HTML and plain text content.
+	 * @param string|array $body varies method behavior depending on type:
+	 *  - string - the HTML body content, in this case text body will be composed from
+	 * html one using [[strip_tags()]] function.
+	 *  - array - list of body contents for each body type in format: ['html' => 'htmlContent', 'text' => 'textContent']
+	 * @return static self reference.
+	 */
+	public function body($body);
+
+	/**
 	 * Attaches existing file to the email message.
 	 * @param string $fileName full file name
 	 * @param array $options options for embed file. Valid options are:
@@ -175,7 +185,7 @@ interface MessageInterface
 	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
 	 * @return static self reference.
 	 */
-	public function body($view, $params = []);
+	public function renderBody($view, $params = []);
 
 	/**
 	 * Returns string representation of this message.

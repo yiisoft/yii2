@@ -46,6 +46,21 @@ abstract class BaseMessage extends Object implements MessageInterface
 	/**
 	 * @inheritdoc
 	 */
+	public function body($body)
+	{
+		if (is_array($body)) {
+			$this->html($body['html']);
+			$this->text($body['text']);
+		} else {
+			$this->html($body);
+			$this->text(strip_tags($body));
+		}
+		return $this;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function renderHtml($view, $params = [])
 	{
 		$this->html($this->getMailer()->render($view, $params, $this->getMailer()->htmlLayout));
@@ -64,15 +79,14 @@ abstract class BaseMessage extends Object implements MessageInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function body($view, $params = [])
+	public function renderBody($view, $params = [])
 	{
 		if (is_array($view)) {
 			$this->renderHtml($view['html'], $params);
 			$this->renderText($view['text'], $params);
 		} else {
 			$html = $this->getMailer()->render($view, $params, $this->getMailer()->htmlLayout);
-			$this->html($html);
-			$this->text(strip_tags($html));
+			$this->body($html);
 		}
 		return $this;
 	}
