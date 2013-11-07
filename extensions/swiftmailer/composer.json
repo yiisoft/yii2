@@ -24,5 +24,6 @@
 	},
 	"autoload": {
 		"psr-0": { "yii\\swiftmailer\\": "" }
-	}
+	},
+	"target-dir": "yii/swiftmailer"
 }
