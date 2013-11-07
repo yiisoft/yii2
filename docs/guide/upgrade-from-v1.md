@@ -106,6 +106,15 @@ Yii::$app->on($eventName, $handler);
 Yii::$app->trigger($eventName);
 ```
 
+If you need to handle all instances of a class instead of the object you can attach a handler like the following:
+
+```php
+Event::on([ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT], function ($event) {
+	Yii::trace(get_class($event->sender) . ' is inserted.');
+});
+```
+
+The code above defines a handler that will be triggered for every Active Record object's `EVENT_AFTER_INSERT` event.
 
 Path Alias
 ----------

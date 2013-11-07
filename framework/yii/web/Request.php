@@ -290,59 +290,74 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns the named GET parameter value.
 	 * If the GET parameter does not exist, the second parameter to this method will be returned.
-	 * @param string $name the GET parameter name
+	 * @param string $name the GET parameter name. If not specified, whole $_GET is returned.
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
 	 * @return mixed the GET parameter value
 	 * @see getPost
 	 */
-	public function get($name, $defaultValue = null)
+	public function get($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $_GET;
+		}
 		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
 	}
 
 	/**
 	 * Returns the named POST parameter value.
 	 * If the POST parameter does not exist, the second parameter to this method will be returned.
-	 * @param string $name the POST parameter name
+	 * @param string $name the POST parameter name. If not specified, whole $_POST is returned.
 	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
 	 * @return mixed the POST parameter value
 	 * @see getParam
 	 */
-	public function getPost($name, $defaultValue = null)
+	public function getPost($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $_POST;
+		}
 		return isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
 	}
 
 	/**
 	 * Returns the named DELETE parameter value.
-	 * @param string $name the DELETE parameter name
+	 * @param string $name the DELETE parameter name. If not specified, an array of DELETE parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the DELETE parameter does not exist.
 	 * @return mixed the DELETE parameter value
 	 */
-	public function getDelete($name, $defaultValue = null)
+	public function getDelete($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $this->getRestParams();
+		}
 		return $this->getIsDelete() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	/**
 	 * Returns the named PUT parameter value.
-	 * @param string $name the PUT parameter name
+	 * @param string $name the PUT parameter name. If not specified, an array of PUT parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the PUT parameter does not exist.
 	 * @return mixed the PUT parameter value
 	 */
-	public function getPut($name, $defaultValue = null)
+	public function getPut($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $this->getRestParams();
+		}
 		return $this->getIsPut() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	/**
 	 * Returns the named PATCH parameter value.
-	 * @param string $name the PATCH parameter name
+	 * @param string $name the PATCH parameter name. If not specified, an array of PATCH parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the PATCH parameter does not exist.
 	 * @return mixed the PATCH parameter value
 	 */
-	public function getPatch($name, $defaultValue = null)
+	public function getPatch($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $this->getRestParams();
+		}
 		return $this->getIsPatch() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 

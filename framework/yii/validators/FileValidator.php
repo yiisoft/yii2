@@ -26,6 +26,7 @@ class FileValidator extends Validator
 	 * separated by space or comma (e.g. "gif, jpg").
 	 * Extension names are case-insensitive. Defaults to null, meaning all file name
 	 * extensions are allowed.
+	 * @see wrongType
 	 */
 	public $types;
 	/**
@@ -46,6 +47,7 @@ class FileValidator extends Validator
 	 * @var integer the maximum file count the given attribute can hold.
 	 * It defaults to 1, meaning single file upload. By defining a higher number,
 	 * multiple uploads become possible.
+	 * @see tooMany
 	 */
 	public $maxFiles = 1;
 	/**
@@ -76,9 +78,10 @@ class FileValidator extends Validator
 	public $tooSmall;
 	/**
 	 * @var string the error message used when the uploaded file has an extension name
-	 * that is not listed in [[extensions]]. You may use the following tokens in the message:
+	 * that is not listed in [[types]]. You may use the following tokens in the message:
 	 *
 	 * - {attribute}: the attribute name
+	 * - {file}: the uploaded file name
 	 * - {extensions}: the list of the allowed extensions.
 	 */
 	public $wrongType;
@@ -87,7 +90,6 @@ class FileValidator extends Validator
 	 * You may use the following tokens in the message:
 	 *
 	 * - {attribute}: the attribute name
-	 * - {file}: the uploaded file name
 	 * - {limit}: the value of [[maxFiles]]
 	 */
 	public $tooMany;
@@ -166,7 +168,7 @@ class FileValidator extends Validator
 	 * @param string $attribute the attribute being validated
 	 * @param UploadedFile $file uploaded file passed to check against a set of rules
 	 */
-	protected function validateFile($object, $attribute, $file)
+	public function validateFile($object, $attribute, $file)
 	{
 		switch ($file->error) {
 			case UPLOAD_ERR_OK:

@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS tbl_order CASCADE;
 DROP TABLE IF EXISTS tbl_category CASCADE;
 DROP TABLE IF EXISTS tbl_customer CASCADE;
 DROP TABLE IF EXISTS tbl_type CASCADE;
+DROP TABLE IF EXISTS tbl_null_values CASCADE;
 DROP TABLE IF EXISTS tbl_constraints CASCADE;
 
 CREATE TABLE tbl_constraints
@@ -52,6 +53,15 @@ CREATE TABLE tbl_order_item (
   quantity integer NOT NULL,
   subtotal decimal(10,0) NOT NULL,
   PRIMARY KEY (order_id,item_id)
+);
+
+CREATE TABLE tbl_null_values (
+  id INT NOT NULL,
+  var1 INT NULL,
+  var2 INT NULL,
+  var3 INT DEFAULT NULL,
+  stringcol VARCHAR(32) DEFAULT NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE tbl_type (

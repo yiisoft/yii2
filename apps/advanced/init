@@ -18,7 +18,7 @@ if (empty($params['env'])) {
 
 	if (!ctype_digit($answer) || !in_array($answer, range(0, count($envs) - 1))) {
 		echo "\n  Quit initialization.\n";
-		exit(1);
+		exit(0);
 	}
 
 	if (isset($envNames[$answer])) {
@@ -42,7 +42,7 @@ if (empty($params['env'])) {
 	$answer = trim(fgets(STDIN));
 	if (strncasecmp($answer, 'y', 1)) {
 		echo "\n  Quit initialization.\n";
-		exit(1);
+		exit(0);
 	}
 }
 

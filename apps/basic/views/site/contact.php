@@ -4,7 +4,7 @@ use yii\widgets\ActiveForm;
 use yii\captcha\Captcha;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\widgets\ActiveForm $form
  * @var app\models\ContactForm $model
  */

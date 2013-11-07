@@ -4,6 +4,7 @@ namespace yiiunit\framework\db;
 use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
@@ -374,5 +375,102 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(2, $ret);
 		$customers = Customer::find()->all();
 		$this->assertEquals(0, count($customers));
+	}
+
+	public function testStoreNull()
+	{
+		$record = new NullValues();
+		$this->assertNull($record->var1);
+		$this->assertNull($record->var2);
+		$this->assertNull($record->var3);
+		$this->assertNull($record->stringcol);
+
+		$record->id = 1;
+
+		$record->var1 = 123;
+		$record->var2 = 456;
+		$record->var3 = 789;
+		$record->stringcol = 'hello!';
+
+		$record->save(false);
+		$this->assertTrue($record->refresh());
+
+		$this->assertEquals(123, $record->var1);
+		$this->assertEquals(456, $record->var2);
+		$this->assertEquals(789, $record->var3);
+		$this->assertEquals('hello!', $record->stringcol);
+
+		$record->var1 = null;
+		$record->var2 = null;
+		$record->var3 = null;
+		$record->stringcol = null;
+
+		$record->save(false);
+		$this->assertTrue($record->refresh());
+
+		$this->assertNull($record->var1);
+		$this->assertNull($record->var2);
+		$this->assertNull($record->var3);
+		$this->assertNull($record->stringcol);
+
+		$record->var1 = 0;
+		$record->var2 = 0;
+		$record->var3 = 0;
+		$record->stringcol = '';
+
+		$record->save(false);
+		$this->assertTrue($record->refresh());
+
+		$this->assertEquals(0, $record->var1);
+		$this->assertEquals(0, $record->var2);
+		$this->assertEquals(0, $record->var3);
+		$this->assertEquals('', $record->stringcol);
+	}
+
+	public function testStoreEmpty()
+	{
+		$record = new NullValues();
+		$record->id = 1;
+
+		// this is to simulate empty html form submission
+		$record->var1 = '';
+		$record->var2 = '';
+		$record->var3 = '';
+		$record->stringcol = '';
+
+		$record->save(false);
+		$this->assertTrue($record->refresh());
+
+		// https://github.com/yiisoft/yii2/commit/34945b0b69011bc7cab684c7f7095d837892a0d4#commitcomment-4458225
+		$this->assertTrue($record->var1 === $record->var2);
+		$this->assertTrue($record->var2 === $record->var3);
+	}
+
+	/**
+	 * Some PDO implementations(e.g. cubrid) do not support boolean values.
+	 * Make sure this does not affect AR layer.
+	 */
+	public function testBooleanAttribute()
+	{
+		$customer = new Customer();
+		$customer->name = 'boolean customer';
+		$customer->email = 'mail@example.com';
+		$customer->status = true;
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(1, $customer->status);
+
+		$customer->status = false;
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(0, $customer->status);
+
+		$customers = Customer::find()->where(['status' => true])->all();
+		$this->assertEquals(2, count($customers));
+
+		$customers = Customer::find()->where(['status' => false])->all();
+		$this->assertEquals(1, count($customers));
 	}
 }

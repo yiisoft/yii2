@@ -22,13 +22,6 @@ class MessageFormatterTest extends TestCase
 	const SUBJECT = 'сабж';
 	const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
-	protected function setUp()
-	{
-		if (!extension_loaded("intl")) {
-			$this->markTestSkipped("intl not installed. Skipping.");
-		}
-	}
-
 	public function patterns()
 	{
 		return [
@@ -76,7 +69,9 @@ _MSG_
 					'num_guests' => 4,
 					'host' => 'ralph',
 					'guest' => 'beep'
-				]
+				],
+				defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.8', '<'),
+				'select format is available in ICU > 4.4 and plural format with =X selector is avilable since 4.8'
 			],
 
 			[
@@ -86,6 +81,8 @@ _MSG_
 					'name' => 'Alexander',
 					'gender' => 'male',
 				],
+				defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
+				'select format is available in ICU > 4.4'
 			],
 
 			// verify pattern in select does not get replaced
@@ -99,7 +96,9 @@ _MSG_
 					'he' => 'wtf',
 					'she' => 'wtf',
 					'it' => 'wtf',
-				]
+				],
+				defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
+				'select format is available in ICU > 4.4'
 			],
 
 			// verify pattern in select message gets replaced
@@ -112,6 +111,8 @@ _MSG_
 					'he' => 'wtf',
 					'she' => 'wtf',
 				],
+				defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.8', '<'),
+				'parameters in select format do not seem to work in ICU < 4.8'
 			],
 
 			// some parser specific verifications
@@ -124,6 +125,92 @@ _MSG_
 					'he' => 'wtf',
 					'she' => 'wtf',
 				],
+				defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
+				'select format is available in ICU > 4.4'
+			],
+
+			// test ICU version compatibility
+			[
+				'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
+				'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
+				[],
+			],
+			[
+				'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
+				'Showing <b>1-10</b> of <b>12</b> items.',
+				[// A
+					'begin' => 1,
+					'end' => 10,
+					'count' => 10,
+					'totalCount' => 12,
+					'page' => 1,
+					'pageCount' => 2,
+				]
+			],
+			[
+				'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
+				'Showing <b>1-1</b> of <b>1</b> item.',
+				[// B
+					'begin' => 1,
+					'end' => 1,
+					'count' => 1,
+					'totalCount' => 1,
+					'page' => 1,
+					'pageCount' => 1,
+				]
+			],
+			[
+				'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
+				'Showing <b>0-0</b> of <b>0</b> items.',
+				[// C
+					'begin' => 0,
+					'end' => 0,
+					'count' => 0,
+					'totalCount' => 0,
+					'page' => 1,
+					'pageCount' => 1,
+				]
+			],
+			[
+				'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
+				'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
+				[]
+			],
+			[
+				'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
+				'Total <b>1</b> item.',
+				[
+					'count' => 1,
+				]
+			],
+			[
+				'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
+				'Total <b>1</b> item.',
+				[
+					'begin' => 5,
+					'count' => 1,
+					'end' => 10,
+				]
+			],
+			[
+				'{0, plural, one {offer} other {offers}}',
+				'{0, plural, one {offer} other {offers}}',
+				[],
+			],
+			[
+				'{0, plural, one {offer} other {offers}}',
+				'offers',
+				[0],
+			],
+			[
+				'{0, plural, one {offer} other {offers}}',
+				'offer',
+				[1],
+			],
+			[
+				'{0, plural, one {offer} other {offers}}',
+				'offers',
+				[13],
 			],
 		];
 	}
@@ -204,8 +291,11 @@ _MSG_
 	/**
 	 * @dataProvider patterns
 	 */
-	public function testNamedArguments($pattern, $expected, $args)
+	public function testNamedArguments($pattern, $expected, $args, $skip = false, $skipMessage = '')
 	{
+		if ($skip) {
+			$this->markTestSkipped($skipMessage);
+		}
 		$formatter = new MessageFormatter();
 		$result = $formatter->format($pattern, $args, 'en_US');
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
@@ -216,6 +306,10 @@ _MSG_
 	 */
 	public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en_US')
 	{
+		if (!extension_loaded("intl")) {
+			$this->markTestSkipped("intl not installed. Skipping.");
+		}
+
 		$formatter = new MessageFormatter();
 		$result = $formatter->parse($pattern, $expected, $locale);
 		$this->assertEquals($args, $result, $formatter->getErrorMessage() . ' Pattern: ' . $pattern);

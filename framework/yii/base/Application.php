@@ -208,6 +208,11 @@ abstract class Application extends Module
 	protected function initExtensions($extensions)
 	{
 		foreach ($extensions as $extension) {
+			if (!empty($extension['alias'])) {
+				foreach ($extension['alias'] as $name => $path) {
+					Yii::setAlias($name, $path);
+				}
+			}
 			if (isset($extension['bootstrap'])) {
 				/** @var Extension $class */
 				$class = $extension['bootstrap'];
@@ -466,7 +471,7 @@ abstract class Application extends Module
 			'formatter' => ['class' => 'yii\base\Formatter'],
 			'i18n' => ['class' => 'yii\i18n\I18N'],
 			'urlManager' => ['class' => 'yii\web\UrlManager'],
-			'view' => ['class' => 'yii\base\View'],
+			'view' => ['class' => 'yii\web\View'],
 		]);
 	}
 

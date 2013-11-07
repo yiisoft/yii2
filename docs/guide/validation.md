@@ -8,7 +8,7 @@ Standard Yii validators
 -----------------------
 
 Standard Yii validators could be specified using aliases instead of referring to class names. Here's the list of all
-validators budled with Yii with their most useful properties:
+validators bundled with Yii with their most useful properties:
 
 ### `boolean`: [[BooleanValidator]]
 

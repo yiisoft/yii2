@@ -153,7 +153,7 @@ class Schema extends \yii\db\Schema
 
 		$column->type = self::TYPE_STRING;
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
-			$type = $matches[1];
+			$type = strtolower($matches[1]);
 			if (isset($this->typeMap[$type])) {
 				$column->type = $this->typeMap[$type];
 			}

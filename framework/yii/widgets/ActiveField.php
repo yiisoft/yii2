@@ -324,6 +324,7 @@ class ActiveField extends Component
 	 */
 	public function fileInput($options = [])
 	{
+		// https://github.com/yiisoft/yii2/pull/795
 		if ($this->inputOptions !== ['class' => 'form-control']) {
 			$options = array_merge($this->inputOptions, $options);
 		}

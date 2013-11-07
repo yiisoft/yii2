@@ -24,6 +24,10 @@ class Controller extends \yii\base\Controller
 	 * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
 	 */
 	public $enableCsrfValidation = true;
+	/**
+	 * @var array the parameters bound to the current action. This is mainly used by [[getCanonicalUrl()]].
+	 */
+	public $actionParams = [];
 
 	/**
 	 * Binds the parameters to the action.
@@ -46,13 +50,14 @@ class Controller extends \yii\base\Controller
 
 		$args = [];
 		$missing = [];
+		$actionParams = [];
 		foreach ($method->getParameters() as $param) {
 			$name = $param->getName();
 			if (array_key_exists($name, $params)) {
-				$args[] = $params[$name];
+				$args[] = $actionParams[$name] = $params[$name];
 				unset($params[$name]);
 			} elseif ($param->isDefaultValueAvailable()) {
-				$args[] = $param->getDefaultValue();
+				$args[] = $actionParams[$name] = $param->getDefaultValue();
 			} else {
 				$missing[] = $name;
 			}
@@ -63,6 +68,8 @@ class Controller extends \yii\base\Controller
 				'params' => implode(', ', $missing),
 			]));
 		}
+		
+		$this->actionParams = $actionParams;
 
 		return $args;
 	}
@@ -110,6 +117,22 @@ class Controller extends \yii\base\Controller
 			$route = ltrim($this->module->getUniqueId() . '/' . $route, '/');
 		}
 		return Yii::$app->getUrlManager()->createUrl($route, $params);
+	}
+
+	/**
+	 * Returns the canonical URL of the currently requested page.
+	 * The canonical URL is constructed using [[route]] and [[actionParams]]. You may use the following code
+	 * in the layout view to add a link tag about canonical URL:
+	 *
+	 * ~~~
+	 * $this->registerLinkTag(['rel' => 'canonical', 'href' => Yii::$app->controller->canonicalUrl]);
+	 * ~~~
+	 *
+	 * @return string
+	 */
+	public function getCanonicalUrl()
+	{
+		return Yii::$app->getUrlManager()->createAbsoluteUrl($this->getRoute(), $this->actionParams);
 	}
 
 	/**
