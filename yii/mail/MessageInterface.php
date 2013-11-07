@@ -97,16 +97,6 @@ interface MessageInterface
 	public function html($html);
 
 	/**
-	 * Sets message HTML and plain text content.
-	 * @param string|array $body varies method behavior depending on type:
-	 *  - string - the HTML body content, in this case text body will be composed from
-	 * html one using [[strip_tags()]] function.
-	 *  - array - list of body contents for each body type in format: ['html' => 'htmlContent', 'text' => 'textContent']
-	 * @return static self reference.
-	 */
-	public function body($body);
-
-	/**
 	 * Attaches existing file to the email message.
 	 * @param string $fileName full file name
 	 * @param array $options options for embed file. Valid options are:
@@ -153,39 +143,6 @@ interface MessageInterface
 	 * @return boolean success.
 	 */
 	public function send();
-
-	/**
-	 * Fills up HTML body rendering a view.
-	 * The view to be rendered can be specified in one of the following formats:
-	 * - path alias (e.g. "@app/mails/contact/body");
-	 * - relative path (e.g. "contact"): the actual view file will be resolved by [[\yii\base\ViewContextInterface]].
-	 * @param string $view the view name or the path alias of the view file.
-	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-	 * @return static self reference.
-	 */
-	public function renderHtml($view, $params = []);
-
-	/**
-	 * Fills up plain text body rendering a view.
-	 * The view to be rendered can be specified in one of the following formats:
-	 * - path alias (e.g. "@app/mails/contact/body");
-	 * - relative path (e.g. "contact"): the actual view file will be resolved by [[\yii\base\ViewContextInterface]].
-	 * @param string $view the view name or the path alias of the view file.
-	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-	 * @return static self reference.
-	 */
-	public function renderText($view, $params = []);
-
-	/**
-	 * Composes the message HTML and plain text body.
-	 * @param string|array $view varies method behavior depending on type:
-	 *  - string - the view name or the path alias of the HTML body view file, in this case
-	 * text body will be composed from html one using [[strip_tags()]] function.
-	 *  - array - list of views for each body type in format: ['html' => 'htmlView', 'text' => 'textView']
-	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-	 * @return static self reference.
-	 */
-	public function renderBody($view, $params = []);
 
 	/**
 	 * Returns string representation of this message.

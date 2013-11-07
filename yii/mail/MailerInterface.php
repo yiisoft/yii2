@@ -18,11 +18,18 @@ namespace yii\mail;
 interface MailerInterface
 {
 	/**
-	 * Creates new message instance from given configuration.
-	 * @param array $config message configuration.
+	 * Creates new message optionally filling up its body via view rendering.
+	 * The view to be rendered can be specified in one of the following formats:
+	 * - path alias (e.g. "@app/mails/contact/body");
+	 * - relative path (e.g. "contact"): the actual view file will be resolved by [[\yii\base\ViewContextInterface]].
+	 * @param string|array $view view, which should be used to render message body
+	 *  - if string - the view name or the path alias of the HTML body view file, in this case
+	 * text body will be composed automatically from html one.
+	 *  - if array - list of views for each body type in format: ['html' => 'htmlView', 'text' => 'textView']
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
 	 * @return MessageInterface message instance.
 	 */
-	public function message(array $config = []);
+	public function compose($view = null, array $params = []);
 
 	/**
 	 * Sends the given email message.
