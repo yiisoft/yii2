@@ -11,6 +11,7 @@ namespace yii\mail;
  * MessageInterface is an interface, which email message should apply.
  * Together with application component, which matches the [[MailerInterface]],
  * it introduces following mail sending syntax:
+ *
  * ~~~php
  * Yii::$app->mail->compose()
  *     ->from('from@domain.com')
@@ -100,8 +101,10 @@ interface MessageInterface
 	 * Attaches existing file to the email message.
 	 * @param string $fileName full file name
 	 * @param array $options options for embed file. Valid options are:
+	 *
 	 * - fileName: name, which should be used to attach file.
 	 * - contentType: attached file MIME type.
+	 *
 	 * @return static self reference.
 	 */
 	public function attach($fileName, array $options = []);
@@ -110,8 +113,10 @@ interface MessageInterface
 	 * Attach specified content as file for the email message.
 	 * @param string $content attachment file content.
 	 * @param array $options options for embed file. Valid options are:
+	 *
 	 * - fileName: name, which should be used to attach file.
 	 * - contentType: attached file MIME type.
+	 *
 	 * @return static self reference.
 	 */
 	public function attachContent($content, array $options = []);
@@ -121,8 +126,10 @@ interface MessageInterface
 	 * This method should be used when embedding images or other data in a message.
 	 * @param string $fileName file name.
 	 * @param array $options options for embed file. Valid options are:
+	 *
 	 * - fileName: name, which should be used to attach file.
 	 * - contentType: attached file MIME type.
+	 *
 	 * @return string attachment CID.
 	 */
 	public function embed($fileName, array $options = []);
@@ -132,8 +139,10 @@ interface MessageInterface
 	 * This method should be used when embedding images or other data in a message.
 	 * @param string $content  attachment file content.
 	 * @param array $options options for embed file. Valid options are:
+	 *
 	 * - fileName: name, which should be used to attach file.
 	 * - contentType: attached file MIME type.
+	 *
 	 * @return string attachment CID.
 	 */
 	public function embedContent($content, array $options = []);
