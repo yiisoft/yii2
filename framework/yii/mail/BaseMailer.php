@@ -7,9 +7,9 @@
 
 namespace yii\mail;
 
+use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use Yii;
 use yii\base\ViewContextInterface;
 
 /**
@@ -46,6 +46,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var array configuration, which should be applied by default to any new created
 	 * email message instance.
 	 * In addition to normal [[Yii::createObject()]] behavior extra config keys are available:
+	 *
 	 *  - 'charset' argument for [[MessageInterface::charset()]]
 	 *  - 'from' argument for [[MessageInterface::from()]]
 	 *  - 'to' argument for [[MessageInterface::to()]]
@@ -54,7 +55,9 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 *  - 'subject' argument for [[MessageInterface::subject()]]
 	 *  - 'textBody' argument for [[MessageInterface::textBody()]]
 	 *  - 'htmlBody' argument for [[MessageInterface::htmlBody()]]
+	 *
 	 * For example:
+	 *
 	 * ~~~
 	 * array(
 	 *     'charset' => 'UTF-8',

@@ -7,9 +7,9 @@
 
 namespace yii\swiftmailer;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\mail\BaseMailer;
-use Yii;
 
 /**
  * Mailer based on SwiftMailer library.
@@ -116,13 +116,14 @@ class Mailer extends BaseMailer
 	 */
 	protected function createTransport(array $config)
 	{
-		if (array_key_exists('class', $config)) {
+		if (isset($config['class'])) {
 			$className = $config['class'];
 			unset($config['class']);
 		} else {
 			$className = 'Swift_MailTransport';
 		}
-		$transport = call_user_func([$className, 'newInstance']);
+		/** @var \Swift_MailTransport $transport */
+		$transport = $className::newInstance();
 		if (!empty($config)) {
 			foreach ($config as $name => $value) {
 				if (property_exists($transport, $name)) {

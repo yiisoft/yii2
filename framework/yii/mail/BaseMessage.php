@@ -7,9 +7,7 @@
 
 namespace yii\mail;
 
-use yii\base\InvalidParamException;
 use yii\base\Object;
-use yii\helpers\FileHelper;
 use Yii;
 
 /**
