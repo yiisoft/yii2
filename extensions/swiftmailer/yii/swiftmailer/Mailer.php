@@ -36,7 +36,7 @@ use Yii;
  *
  * @see http://swiftmailer.org
  *
- * @method Message message(array $config = []) creates new message instance from given configuration.
+ * @method Message compose($view = null, array $params = []) creates new message optionally filling up its body via view rendering.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

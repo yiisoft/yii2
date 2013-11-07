@@ -93,26 +93,16 @@ class BaseMailerTest extends TestCase
 		$this->assertTrue(is_object($view), 'Unable to get default view!');
 	}
 
-	public function testComposeMessage()
+	public function testCreateMessage()
 	{
 		$mailer = new Mailer();
-		$message = $mailer->message();
+		$message = $mailer->compose();
 		$this->assertTrue(is_object($message), 'Unable to create message instance!');
 		$this->assertEquals($mailer->messageClass, get_class($message), 'Invalid message class!');
-
-		$messageConfig = array(
-			'id' => 'test-id',
-			'encoding' => 'test-encoding',
-		);
-		$message = $mailer->message($messageConfig);
-
-		foreach ($messageConfig as $name => $value) {
-			$this->assertEquals($value, $message->$name, 'Unable to apply message config!');
-		}
 	}
 
 	/**
-	 * @depends testComposeMessage
+	 * @depends testCreateMessage
 	 */
 	public function testDefaultMessageConfig()
 	{
@@ -135,7 +125,7 @@ class BaseMailerTest extends TestCase
 		$messageConfig = array_merge($notPropertyConfig, $propertyConfig);
 		$mailer->messageConfig = $messageConfig;
 
-		$message = $mailer->message();
+		$message = $mailer->compose();
 
 		foreach ($notPropertyConfig as $name => $value) {
 			$this->assertEquals($value, $message->{'_' . $name});
@@ -165,28 +155,6 @@ class BaseMailerTest extends TestCase
 	}
 
 	/**
-	 * @depends testComposeMessage
-	 * @depends testRender
-	 */
-	public function testComposeSetupMethods()
-	{
-		$mailer = $this->getTestMailComponent();
-		$mailer->textLayout = false;
-
-		$viewName = 'test_view';
-		$viewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $viewName . '.php';
-		$viewFileContent = 'view file content';
-		file_put_contents($viewFileName, $viewFileContent);
-
-		$messageConfig = array(
-			'renderText' => [$viewName],
-		);
-		$message = $mailer->message($messageConfig);
-
-		$this->assertEquals($viewFileContent, $message->_text);
-	}
-
-	/**
 	 * @depends testRender
 	 */
 	public function testRenderLayout()
@@ -207,6 +175,38 @@ class BaseMailerTest extends TestCase
 
 		$renderResult = $mailer->render($viewName, [], $layoutName);
 		$this->assertEquals('Begin Layout ' . $viewFileContent . ' End Layout', $renderResult);
+	}
+
+	/**
+	 * @depends testCreateMessage
+	 * @depends testRender
+	 */
+	public function testCompose()
+	{
+		$mailer = $this->getTestMailComponent();
+		$mailer->htmlLayout = false;
+		$mailer->textLayout = false;
+
+		$htmlViewName = 'test_html_view';
+		$htmlViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $htmlViewName . '.php';
+		$htmlViewFileContent = 'HTML <b>view file</b> content';
+		file_put_contents($htmlViewFileName, $htmlViewFileContent);
+		
+		$textViewName = 'test_text_view';
+		$textViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $textViewName . '.php';
+		$textViewFileContent = 'Plain text view file content';
+		file_put_contents($textViewFileName, $textViewFileContent);
+
+		$message = $mailer->compose([
+			'html' => $htmlViewName,
+			'text' => $textViewName,
+		]);
+		$this->assertEquals($htmlViewFileContent, $message->_html, 'Unable to render html!');
+		$this->assertEquals($textViewFileContent, $message->_text, 'Unable to render text!');
+
+		$message = $mailer->compose($htmlViewName);
+		$this->assertEquals($htmlViewFileContent, $message->_html, 'Unable to render html by direct view!');
+		$this->assertEquals(strip_tags($htmlViewFileContent), $message->_text, 'Unable to render text by direct view!');
 	}
 }
 

@@ -33,7 +33,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	/**
 	 * @var string directory containing view files for this email messages.
 	 */
-	public $viewPath = '@app/mailviews';
+	public $viewPath = '@app/mails';
 	/**
 	 * @var string HTML layout view name.
 	 */
@@ -54,17 +54,12 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 *  - 'subject' argument for [[MessageInterface::subject()]]
 	 *  - 'text' argument for [[MessageInterface::text()]]
 	 *  - 'html' argument for [[MessageInterface::html()]]
-	 *  - 'body' argument for [[MessageInterface::body()]]
-	 *  - 'renderText' list of arguments for [[MessageInterface::renderText()]]
-	 *  - 'renderHtml' list of arguments for [[MessageInterface::renderHtml()]]
-	 *  - 'renderBody' list of arguments for [[MessageInterface::renderBody()]]
 	 * For example:
 	 * ~~~
 	 * array(
 	 *     'charset' => 'UTF-8',
 	 *     'from' => 'noreply@mydomain.com',
-	 *     'bcc' => 'email.test@mydomain.com',
-	 *     'renderText' => ['default/text', ['companyName' => 'YiiApp']],
+	 *     'bcc' => 'developer@mydomain.com',
 	 * )
 	 * ~~~
 	 */
@@ -111,16 +106,37 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	}
 
 	/**
-	 * Creates new message instance from given configuration.
-	 * Message configuration will be merged with [[messageConfig]].
-	 * If 'class' parameter is omitted [[messageClass]], will be used.
-	 * @param array $config message configuration. See [[messageConfig]]
-	 * for the configuration format details.
+	 * @inheritdoc
+	 */
+	public function compose($view = null, array $params = [])
+	{
+		$message = $this->createMessage();
+		if ($view !== null) {
+			$params['message'] = $message;
+			if (is_array($view)) {
+				if (array_key_exists('html', $view)) {
+					$message->html($this->render($view['html'], $params, $this->htmlLayout));
+				}
+				if (array_key_exists('text', $view)) {
+					$message->text($this->render($view['text'], $params, $this->textLayout));
+				}
+			} else {
+				$html = $this->render($view, $params, $this->htmlLayout);
+				$message->html($html);
+				$message->text(strip_tags($html));
+			}
+		}
+		return $message;
+	}
+
+	/**
+	 * Creates mew message instance using configuration from [[messageConfig]].
+	 * If 'class' parameter is omitted, [[messageClass]] will be used.
 	 * @return MessageInterface message instance.
 	 */
-	public function message(array $config = [])
+	protected function createMessage()
 	{
-		$config = array_merge($this->messageConfig, $config);
+		$config = $this->messageConfig;
 		if (!array_key_exists('class', $config)) {
 			$config['class'] = $this->messageClass;
 		}
@@ -133,31 +149,17 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			'subject',
 			'text',
 			'html',
-			'body',
-		];
-		$setupMethodNames = [
-			'renderText',
-			'renderHtml',
-			'renderBody',
 		];
 		$directSetterConfig = [];
-		$setupMethodConfig = [];
 		foreach ($config as $name => $value) {
 			if (in_array($name, $directSetterNames, true)) {
 				$directSetterConfig[$name] = $value;
-				unset($config[$name]);
-			}
-			if (in_array($name, $setupMethodNames, true)) {
-				$setupMethodConfig[$name] = $value;
 				unset($config[$name]);
 			}
 		}
 		$message = Yii::createObject($config);
 		foreach ($directSetterConfig as $name => $value) {
 			$message->$name($value);
-		}
-		foreach ($setupMethodConfig as $method => $arguments) {
-			call_user_func_array(array($message, $method), $arguments);
 		}
 		return $message;
 	}

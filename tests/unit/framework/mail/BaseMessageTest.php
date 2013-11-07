@@ -40,52 +40,26 @@ class BaseMessageTest extends TestCase
 
 	// Tests :
 
-	public function testRender()
+	public function testGetMailer()
 	{
 		$mailer = $this->getMailer();
-		$message = $mailer->message();
-
-		$viewName = 'test/text/view';
-		$message->renderText($viewName);
-		$expectedText = 'view=' . $viewName . ' layout=' . $mailer->textLayout;
-		$this->assertEquals($expectedText, $message->text, 'Unable to render text!');
-
-		$viewName = 'test/html/view';
-		$message->renderHtml($viewName);
-		$expectedHtml = 'view=' . $viewName . ' layout=' . $mailer->htmlLayout;
-		$this->assertEquals($expectedHtml, $message->html, 'Unable to render html!');
-	}
-
-	/**
-	 * @depends testRender
-	 */
-	public function testComposeBody()
-	{
-		$mailer = $this->getMailer();
-		$message = $mailer->message();
-
-		$viewName = 'test/html/view';
-		$message->renderBody($viewName);
-		$expectedHtml = 'view=' . $viewName . ' layout=' . $mailer->htmlLayout;
-		$this->assertEquals($expectedHtml, $message->html, 'Unable to compose html!');
-		$expectedText = strip_tags($expectedHtml);
-		$this->assertEquals($expectedText, $message->text, 'Unable to compose text from html!');
-
-		$textViewName = 'test/text/view';
-		$htmlViewName = 'test/html/view';
-		$message->renderBody(['text' => $textViewName, 'html' => $htmlViewName]);
-		$expectedHtml = 'view=' . $htmlViewName . ' layout=' . $mailer->htmlLayout;
-		$this->assertEquals($expectedHtml, $message->html, 'Unable to compose html from separated view!');
-		$expectedText = 'view=' . $textViewName . ' layout=' . $mailer->textLayout;
-		$this->assertEquals($expectedText, $message->text, 'Unable to compose text from separated view!');
+		$message = $mailer->compose();
+		$this->assertEquals($mailer, $message->getMailer());
 	}
 
 	public function testSend()
 	{
 		$mailer = $this->getMailer();
-		$message = $mailer->message();
+		$message = $mailer->compose();
 		$message->send();
 		$this->assertEquals($message, $mailer->sentMessages[0], 'Unable to send message!');
+	}
+
+	public function testToString()
+	{
+		$mailer = $this->getMailer();
+		$message = $mailer->compose();
+		$this->assertEquals($message->toString(), '' . $message);
 	}
 }
 
@@ -96,11 +70,6 @@ class TestMailer extends BaseMailer
 {
 	public $messageClass = 'yiiunit\framework\mail\TestMessage';
 	public $sentMessages = array();
-
-	public function render($view, $params = [], $layout = false)
-	{
-		return 'view=' . $view . ' layout=' . $layout;
-	}
 
 	public function send($message)
 	{
