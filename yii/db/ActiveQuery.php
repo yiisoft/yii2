@@ -182,11 +182,18 @@ class ActiveQuery extends Query
 	 * The parameters to this method can be either one or multiple strings, or a single array
 	 * of relation names and the optional callbacks to customize the relations.
 	 *
+	 * A relation name can refer to a relation defined in [[modelClass]]
+	 * or a sub-relation that stands for a relation of a related record.
+	 * For example, `orders.address` means the `address` relation defined
+	 * in the model class corresponding to the `orders` relation.
+	 *
 	 * The followings are some usage examples:
 	 *
 	 * ~~~
 	 * // find customers together with their orders and country
 	 * Customer::find()->with('orders', 'country')->all();
+	 * // find customers together with their orders and the orders' shipping address
+	 * Customer::find()->with('orders.address')->all();
 	 * // find customers together with their country and orders of status 1
 	 * Customer::find()->with([
 	 *     'orders' => function($query) {
