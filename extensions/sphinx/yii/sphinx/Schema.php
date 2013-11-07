@@ -15,5 +15,13 @@ namespace yii\sphinx;
  */
 class Schema extends \yii\db\mysql\Schema
 {
-	//
+	/**
+	 * Creates a query builder for the database.
+	 * This method may be overridden by child classes to create a DBMS-specific query builder.
+	 * @return QueryBuilder query builder instance
+	 */
+	public function createQueryBuilder()
+	{
+		return new QueryBuilder($this->db);
+	}
 }

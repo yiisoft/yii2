@@ -18,7 +18,7 @@ before_script:
   - tests/unit/data/travis/cubrid-setup.sh
 
 script:
-  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata
+  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,sphinx
 
 after_script:
   - php vendor/bin/coveralls
