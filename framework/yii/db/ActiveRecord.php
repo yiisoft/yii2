@@ -379,13 +379,12 @@ class ActiveRecord extends Model
 		} elseif ($this->hasAttribute($name)) {
 			return null;
 		} else {
-			$t = strtolower($name);
-			if (isset($this->_related[$t]) || array_key_exists($t, $this->_related)) {
-				return $this->_related[$t];
+			if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+				return $this->_related[$name];
 			}
 			$value = parent::__get($name);
 			if ($value instanceof ActiveRelation) {
-				return $this->_related[$t] = $value->multiple ? $value->all() : $value->one();
+				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
 			}
@@ -433,9 +432,8 @@ class ActiveRecord extends Model
 		if ($this->hasAttribute($name)) {
 			unset($this->_attributes[$name]);
 		} else {
-			$t = strtolower($name);
-			if (isset($this->_related[$t])) {
-				unset($this->_related[$t]);
+			if (isset($this->_related[$name])) {
+				unset($this->_related[$name]);
 			} else {
 				parent::__unset($name);
 			}
