@@ -1,0 +1,28 @@
+{
+	"name": "yiisoft/yii2-swiftmailer",
+	"description": "The SwiftMailer integration for the Yii framework",
+	"keywords": ["yii", "swift", "swiftmailer", "mail", "email", "mailer"],
+	"type": "yii2-extension",
+	"license": "BSD-3-Clause",
+	"support": {
+		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/yiisoft/yii2"
+	},
+	"authors": [
+		{
+			"name": "Paul Klimov",
+			"email": "klimov.paul@gmail.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"yiisoft/yii2": "*",
+		"swiftmailer/swiftmailer": "@stable"
+	},
+	"autoload": {
+		"psr-0": { "yii\\swiftmailer\\": "" }
+	}
+}
