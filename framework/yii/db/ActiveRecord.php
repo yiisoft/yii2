@@ -521,7 +521,7 @@ class ActiveRecord extends Model
 	/**
 	 * Populates the named relation with the related records.
 	 * Note that this method does not check if the relation exists or not.
-	 * @param string $name the relation name (case-insensitive)
+	 * @param string $name the relation name (case-sensitive)
 	 * @param ActiveRecord|array|null the related records to be populated into the relation.
 	 */
 	public function populateRelation($name, $records)
@@ -531,7 +531,7 @@ class ActiveRecord extends Model
 
 	/**
 	 * Check whether the named relation has been populated with records.
-	 * @param string $name the relation name (case-insensitive)
+	 * @param string $name the relation name (case-sensitive)
 	 * @return bool whether relation has been populated with records.
 	 */
 	public function isRelationPopulated($name)
@@ -540,7 +540,8 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * @return array all populated relations
+	 * Returns all populated relations.
+	 * @return array an array of relation data indexed by relation names.
 	 */
 	public function getPopulatedRelations()
 	{
