@@ -9,6 +9,15 @@ namespace yii\mail;
 
 /**
  * MailerInterface is an interface, which any mailer should apply.
+ * Mailer creates and sends messages. Also it allows composition of the message
+ * body via view rendering:
+ * ~~~php
+ * Yii::$app->mail->compose('contact/html', ['contactForm' => $form])
+ *     ->from('from@domain.com')
+ *     ->to($form->email)
+ *     ->subject($form->subject)
+ *     ->send();
+ * ~~~
  *
  * @see MessageInterface
  *

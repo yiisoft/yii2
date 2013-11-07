@@ -16,8 +16,8 @@ namespace yii\mail;
  *     ->from('from@domain.com')
  *     ->to('to@domain.com')
  *     ->subject('Message Subject')
- *     ->renderText('text/view')
- *     ->renderHtml('html/view')
+ *     ->textBody('Plain text content')
+ *     ->htmlBody('<b>HTML content</b>')
  *     ->send();
  * ~~~
  *
