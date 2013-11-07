@@ -97,11 +97,11 @@ class TestMessage extends BaseMessage
 
 	public function subject($subject) {}
 
-	public function text($text) {
+	public function textBody($text) {
 		$this->text = $text;
 	}
 
-	public function html($html) {
+	public function htmlBody($html) {
 		$this->html = $html;
 	}
 

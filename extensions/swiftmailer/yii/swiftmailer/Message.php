@@ -97,7 +97,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function text($text)
+	public function textBody($text)
 	{
 		$this->setBody($text, 'text/plain');
 		return $this;
@@ -106,7 +106,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function html($html)
+	public function htmlBody($html)
 	{
 		$this->setBody($html, 'text/html');
 		return $this;

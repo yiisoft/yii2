@@ -115,8 +115,8 @@ class BaseMailerTest extends TestCase
 			'cc' => 'cc@domain.com',
 			'bcc' => 'bcc@domain.com',
 			'subject' => 'Test subject',
-			'text' => 'Test text body',
-			'html' => 'Test HTML body',
+			'textBody' => 'Test text body',
+			'htmlBody' => 'Test HTML body',
 		];
 		$propertyConfig = [
 			'id' => 'test-id',
@@ -201,12 +201,12 @@ class BaseMailerTest extends TestCase
 			'html' => $htmlViewName,
 			'text' => $textViewName,
 		]);
-		$this->assertEquals($htmlViewFileContent, $message->_html, 'Unable to render html!');
-		$this->assertEquals($textViewFileContent, $message->_text, 'Unable to render text!');
+		$this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
+		$this->assertEquals($textViewFileContent, $message->_textBody, 'Unable to render text!');
 
 		$message = $mailer->compose($htmlViewName);
-		$this->assertEquals($htmlViewFileContent, $message->_html, 'Unable to render html by direct view!');
-		$this->assertEquals(strip_tags($htmlViewFileContent), $message->_text, 'Unable to render text by direct view!');
+		$this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html by direct view!');
+		$this->assertEquals(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
 	}
 }
 
@@ -237,8 +237,8 @@ class Message extends BaseMessage
 	public $_cc;
 	public $_bcc;
 	public $_subject;
-	public $_text;
-	public $_html;
+	public $_textBody;
+	public $_htmlBody;
 
 	public function charset($charset)
 	{
@@ -276,15 +276,15 @@ class Message extends BaseMessage
 		return $this;
 	}
 
-	public function text($text)
+	public function textBody($text)
 	{
-		$this->_text = $text;
+		$this->_textBody = $text;
 		return $this;
 	}
 
-	public function html($html)
+	public function htmlBody($html)
 	{
-		$this->_html = $html;
+		$this->_htmlBody = $html;
 		return $this;
 	}
 

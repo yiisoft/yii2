@@ -87,14 +87,14 @@ interface MessageInterface
 	 * @param string $text message plain text content.
 	 * @return static self reference.
 	 */
-	public function text($text);
+	public function textBody($text);
 
 	/**
 	 * Sets message HTML content.
 	 * @param string $html message HTML content.
 	 * @return static self reference.
 	 */
-	public function html($html);
+	public function htmlBody($html);
 
 	/**
 	 * Attaches existing file to the email message.
