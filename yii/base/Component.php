@@ -358,13 +358,13 @@ class Component extends Object
 	public function hasEventHandlers($name)
 	{
 		$this->ensureBehaviors();
-		return !empty($this->_events[$name]);
+		return !empty($this->_events[$name]) || Event::hasHandlers($this, $name);
 	}
 
 	/**
 	 * Attaches an event handler to an event.
 	 *
-	 * An event handler must be a valid PHP callback. The followings are
+	 * The event handler must be a valid PHP callback. The followings are
 	 * some examples:
 	 *
 	 * ~~~
@@ -374,7 +374,7 @@ class Component extends Object
 	 * 'handleClick'                     // global function handleClick()
 	 * ~~~
 	 *
-	 * An event handler must be defined with the following signature,
+	 * The event handler must be defined with the following signature,
 	 *
 	 * ~~~
 	 * function ($event)
@@ -406,24 +406,25 @@ class Component extends Object
 	public function off($name, $handler = null)
 	{
 		$this->ensureBehaviors();
-		if (isset($this->_events[$name])) {
-			if ($handler === null) {
-				$this->_events[$name] = [];
-			} else {
-				$removed = false;
-				foreach ($this->_events[$name] as $i => $event) {
-					if ($event[0] === $handler) {
-						unset($this->_events[$name][$i]);
-						$removed = true;
-					}
-				}
-				if ($removed) {
-					$this->_events[$name] = array_values($this->_events[$name]);
-				}
-				return $removed;
-			}
+		if (empty($this->_events[$name])) {
+			return false;
 		}
-		return false;
+		if ($handler === null) {
+			unset($this->_events[$name]);
+			return true;
+		} else {
+			$removed = false;
+			foreach ($this->_events[$name] as $i => $event) {
+				if ($event[0] === $handler) {
+					unset($this->_events[$name][$i]);
+					$removed = true;
+				}
+			}
+			if ($removed) {
+				$this->_events[$name] = array_values($this->_events[$name]);
+			}
+			return $removed;
+		}
 	}
 
 	/**
@@ -454,6 +455,7 @@ class Component extends Object
 				}
 			}
 		}
+		Event::trigger($this, $name, $event);
 	}
 
 	/**

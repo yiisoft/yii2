@@ -241,7 +241,7 @@ abstract class Module extends Component
 	 * Sets the directory that contains the controller classes.
 	 * @param string $path the directory that contains the controller classes.
 	 * This can be either a directory name or a path alias.
-	 * @throws Exception if the directory is invalid
+	 * @throws InvalidParamException if the directory is invalid
 	 */
 	public function setControllerPath($path)
 	{
@@ -264,7 +264,7 @@ abstract class Module extends Component
 	/**
 	 * Sets the directory that contains the view files.
 	 * @param string $path the root directory of view files.
-	 * @throws Exception if the directory is invalid
+	 * @throws InvalidParamException if the directory is invalid
 	 */
 	public function setViewPath($path)
 	{
@@ -287,7 +287,7 @@ abstract class Module extends Component
 	/**
 	 * Sets the directory that contains the layout files.
 	 * @param string $path the root directory of layout files.
-	 * @throws Exception if the directory is invalid
+	 * @throws InvalidParamException if the directory is invalid
 	 */
 	public function setLayoutPath($path)
 	{

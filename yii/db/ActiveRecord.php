@@ -103,7 +103,7 @@ class ActiveRecord extends Model
 	/**
 	 * @var array related models indexed by the relation names
 	 */
-	private $_related;
+	private $_related = [];
 
 
 	/**
@@ -376,11 +376,11 @@ class ActiveRecord extends Model
 	{
 		if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
 			return $this->_attributes[$name];
-		} elseif (isset($this->getTableSchema()->columns[$name])) {
+		} elseif ($this->hasAttribute($name)) {
 			return null;
 		} else {
 			$t = strtolower($name);
-			if (isset($this->_related[$t]) || $this->_related !== null && array_key_exists($t, $this->_related)) {
+			if (isset($this->_related[$t]) || array_key_exists($t, $this->_related)) {
 				return $this->_related[$t];
 			}
 			$value = parent::__get($name);
@@ -430,7 +430,7 @@ class ActiveRecord extends Model
 	 */
 	public function __unset($name)
 	{
-		if (isset($this->getTableSchema()->columns[$name])) {
+		if ($this->hasAttribute($name)) {
 			unset($this->_attributes[$name]);
 		} else {
 			$t = strtolower($name);
@@ -542,6 +542,16 @@ class ActiveRecord extends Model
 	}
 
 	/**
+	 * Returns a value indicating whether the model has an attribute with the specified name.
+	 * @param string $name the name of the attribute
+	 * @return boolean whether the model has an attribute with the specified name.
+	 */
+	public function hasAttribute($name)
+	{
+		return isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name]);
+	}
+
+	/**
 	 * Returns the named attribute value.
 	 * If this record is the result of a query and the attribute is not loaded,
 	 * null will be returned.
@@ -568,16 +578,6 @@ class ActiveRecord extends Model
 		} else {
 			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
 		}
-	}
-
-	/**
-	 * Returns a value indicating whether the model has an attribute with the specified name.
-	 * @param string $name the name of the attribute
-	 * @return boolean whether the model has an attribute with the specified name.
-	 */
-	public function hasAttribute($name)
-	{
-		return isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name]);
 	}
 
 	/**
@@ -622,7 +622,7 @@ class ActiveRecord extends Model
 	 */
 	public function setOldAttribute($name, $value)
 	{
-		if (isset($this->_oldAttributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
+		if (isset($this->_oldAttributes[$name]) || $this->hasAttribute($name)) {
 			$this->_oldAttributes[$name] = $value;
 		} else {
 			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
@@ -1138,7 +1138,7 @@ class ActiveRecord extends Model
 			$this->_attributes[$name] = $record->_attributes[$name];
 		}
 		$this->_oldAttributes = $this->_attributes;
-		$this->_related = null;
+		$this->_related = [];
 		return true;
 	}
 
@@ -1266,6 +1266,8 @@ class ActiveRecord extends Model
 			$relation = $this->$getter();
 			if ($relation instanceof ActiveRelation) {
 				return $relation;
+			} else {
+				return null;
 			}
 		} catch (UnknownMethodException $e) {
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);

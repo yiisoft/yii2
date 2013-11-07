@@ -359,7 +359,7 @@ pre .diff .change{
 				}
 			?></h1>
 		<?php endif; ?>
-		<h2><?= $handler->htmlEncode($exception->getMessage()) ?></h2>
+		<h2><?= nl2br($handler->htmlEncode($exception->getMessage())) ?></h2>
 		<?= $handler->renderPreviousExceptions($exception) ?>
 	</div>
 
