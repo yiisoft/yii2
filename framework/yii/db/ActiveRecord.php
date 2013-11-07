@@ -528,7 +528,7 @@ class ActiveRecord extends Model
 	 */
 	public function populateRelation($name, $records)
 	{
-		$this->_related[strtolower($name)] = $records;
+		$this->_related[$name] = $records;
 	}
 
 	/**
@@ -538,23 +538,7 @@ class ActiveRecord extends Model
 	 */
 	public function isRelationPopulated($name)
 	{
-		return array_key_exists(strtolower($name), $this->_related);
-	}
-
-	/**
-	 * @return array list of populated relation names
-	 */
-	public function getPopulatedRelationNames()
-	{
-		$relations = array_keys($this->_related);
-		$reflection = new \ReflectionClass($this);
-		foreach($relations as $i => $relation) {
-			if ($reflection->hasMethod('get' . $relation)) {
-				$method = $reflection->getMethod('get' . $relation);
-				$relations[$i] = lcfirst(substr($method->name, 3));
-			}
-		}
-		return $relations;
+		return array_key_exists($name, $this->_related);
 	}
 
 	/**
@@ -562,12 +546,7 @@ class ActiveRecord extends Model
 	 */
 	public function getPopulatedRelations()
 	{
-		$relations = $this->getPopulatedRelationNames();
-		$data = [];
-		foreach($relations as $name) {
-			$data[$name] = $this->_related[strtolower($name)];
-		}
-		return $data;
+		return $this->_related;
 	}
 
 	/**
@@ -1325,7 +1304,7 @@ class ActiveRecord extends Model
 	 *
 	 * Note that this method requires that the primary key value is not null.
 	 *
-	 * @param string $name the name of the relationship
+	 * @param string $name the case sensitive name of the relationship
 	 * @param ActiveRecord $model the model to be linked with the current one.
 	 * @param array $extraColumns additional column values to be saved into the pivot table.
 	 * This parameter is only meaningful for a relationship involving a pivot table
@@ -1347,7 +1326,7 @@ class ActiveRecord extends Model
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
-				unset($this->_related[strtolower($viaName)]);
+				unset($this->_related[$viaName]);
 			} else {
 				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
@@ -1403,7 +1382,7 @@ class ActiveRecord extends Model
 	 * The model with the foreign key of the relationship will be deleted if `$delete` is true.
 	 * Otherwise, the foreign key will be set null and the model will be saved without validation.
 	 *
-	 * @param string $name the name of the relationship.
+	 * @param string $name the case sensitive name of the relationship.
 	 * @param ActiveRecord $model the model to be unlinked from the current one.
 	 * @param boolean $delete whether to delete the model that contains the foreign key.
 	 * If false, the model's foreign key will be set null and saved.
@@ -1421,7 +1400,7 @@ class ActiveRecord extends Model
 				/** @var $viaClass ActiveRecord */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
-				unset($this->_related[strtolower($viaName)]);
+				unset($this->_related[$viaName]);
 			} else {
 				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
