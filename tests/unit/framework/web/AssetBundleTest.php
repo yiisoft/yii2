@@ -8,7 +8,7 @@
 namespace yiiunit\framework\web;
 
 use Yii;
-use yii\base\View;
+use yii\web\View;
 use yii\web\AssetBundle;
 use yii\web\AssetManager;
 

@@ -31,6 +31,7 @@ use yii\base\NotSupportedException;
  * - `exist`: [[ExistValidator]]
  * - `file`: [[FileValidator]]
  * - `filter`: [[FilterValidator]]
+ * - `image`: [[ImageValidator]]
  * - `in`: [[RangeValidator]]
  * - `integer`: [[NumberValidator]]
  * - `match`: [[RegularExpressionValidator]]
@@ -59,6 +60,7 @@ abstract class Validator extends Component
 		'exist' => 'yii\validators\ExistValidator',
 		'file' => 'yii\validators\FileValidator',
 		'filter' => 'yii\validators\FilterValidator',
+		'image' => 'yii\validators\ImageValidator',
 		'in' => 'yii\validators\RangeValidator',
 		'integer' => [
 			'class' => 'yii\validators\NumberValidator',
@@ -213,7 +215,7 @@ abstract class Validator extends Component
 	 *
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script. Null if the validator does not support
 	 * client-side validation.

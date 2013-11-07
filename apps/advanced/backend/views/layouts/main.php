@@ -6,7 +6,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 
 /**
- * @var $this \yii\base\View
+ * @var $this \yii\web\View
  * @var $content string
  */
 AppAsset::register($this);

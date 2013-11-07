@@ -1,6 +1,8 @@
 Security
 ========
 
+Good security is vital to the health and success of many websites. Unfortunately, many developers may cut corners when it comes to security due to a lack of understanding or too large of an implementation hurdle. To make your Yii-based site as secure as possible, the Yii framework has baked in several excellent, and easy to use, security features. 
+
 Hashing and verifying passwords
 ------------------------------
 
@@ -28,7 +30,7 @@ if (Security::validatePassword($password, $hash)) {
 ```
 
 
-Random data
+Creating random data
 -----------
 
 Random data is useful in many cases. For example, when resetting a password via email you need to generate a token,
@@ -63,8 +65,10 @@ Then when user want to read it:
 $data = \yii\helpers\Security::decrypt($encryptedData, $secretWord);
 ```
 
-Making sure data wasn't modified
+Confirming data integrity
 --------------------------------
+
+Making sure data wasn't modified
 
 hashData()
 validateData()

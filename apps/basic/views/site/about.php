@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  */
 $this->title = 'About';
 $this->params['breadcrumbs'][] = $this->title;

@@ -36,7 +36,7 @@ return [
 		// ...
 	],
 	'params' => require(__DIR__ . '/params.php'),
-);
+];
 ```
 
 In the above array keys are names of application properties. Depending on application type you can check properties of

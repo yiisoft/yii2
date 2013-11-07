@@ -17,10 +17,10 @@ class SiteController extends Controller
 		return [
 			'access' => [
 				'class' => \yii\web\AccessControl::className(),
-				'only' => ['login', 'logout', 'signup'],
+				'only' => ['logout', 'signup'],
 				'rules' => [
 					[
-						'actions' => ['login', 'signup'],
+						'actions' => ['signup'],
 						'allow' => true,
 						'roles' => ['?'],
 					],
@@ -54,6 +54,10 @@ class SiteController extends Controller
 
 	public function actionLogin()
 	{
+		if (!\Yii::$app->user->isGuest) {
+			$this->goHome();
+		}
+
 		$model = new LoginForm();
 		if ($model->load($_POST) && $model->login()) {
 			return $this->goHome();

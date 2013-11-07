@@ -66,9 +66,10 @@
 	"require": {
 		"php": ">=5.4.0",
 		"yiisoft/yii2-composer": "*",
+		"yiisoft/jquery": "1.10.*",
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
-		"phpspec/php-diff": "1.0.*",
+		"phpspec/php-diff": "dev-master",
 		"ezyang/htmlpurifier": "4.5.*"
 	},
 	"autoload": {
