@@ -52,8 +52,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 *  - 'cc' argument for [[MessageInterface::cc()]]
 	 *  - 'bcc' argument for [[MessageInterface::bcc()]]
 	 *  - 'subject' argument for [[MessageInterface::subject()]]
-	 *  - 'text' argument for [[MessageInterface::text()]]
-	 *  - 'html' argument for [[MessageInterface::html()]]
+	 *  - 'textBody' argument for [[MessageInterface::textBody()]]
+	 *  - 'htmlBody' argument for [[MessageInterface::htmlBody()]]
 	 * For example:
 	 * ~~~
 	 * array(
@@ -115,15 +115,15 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			$params['message'] = $message;
 			if (is_array($view)) {
 				if (array_key_exists('html', $view)) {
-					$message->html($this->render($view['html'], $params, $this->htmlLayout));
+					$message->htmlBody($this->render($view['html'], $params, $this->htmlLayout));
 				}
 				if (array_key_exists('text', $view)) {
-					$message->text($this->render($view['text'], $params, $this->textLayout));
+					$message->textBody($this->render($view['text'], $params, $this->textLayout));
 				}
 			} else {
 				$html = $this->render($view, $params, $this->htmlLayout);
-				$message->html($html);
-				$message->text(strip_tags($html));
+				$message->htmlBody($html);
+				$message->textBody(strip_tags($html));
 			}
 		}
 		return $message;
@@ -147,8 +147,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			'cc',
 			'bcc',
 			'subject',
-			'text',
-			'html',
+			'textBody',
+			'htmlBody',
 		];
 		$directSetterConfig = [];
 		foreach ($config as $name => $value) {
