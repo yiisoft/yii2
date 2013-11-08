@@ -20,7 +20,8 @@ use yii\web\View;
  *
  * @see BaseMessage
  *
- * @property View|array $view view instance or its array configuration.
+ * @property View $view View instance. Note that the type of this property differs in getter and setter. See
+ * [[getView()]] and [[setView()]] for details.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
