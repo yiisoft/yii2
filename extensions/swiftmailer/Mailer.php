@@ -145,7 +145,7 @@ class Mailer extends BaseMailer
 					$transport->$name = $value;
 				} else {
 					$setter = 'set' . $name;
-					if (method_exists($transport, $setter)) {
+					if (method_exists($transport, $setter) || method_exists($transport, '__call')) {
 						$transport->$setter($value);
 					} else {
 						throw new InvalidConfigException('Setting unknown property: ' . get_class($transport) . '::' . $name);

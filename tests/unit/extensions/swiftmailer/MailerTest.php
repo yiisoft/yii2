@@ -53,6 +53,8 @@ class MailerTest extends VendorTestCase
 		$transportConfig = [
 			'class' => 'Swift_SmtpTransport',
 			'host' => 'localhost',
+			'username' => 'username',
+			'password' => 'password',
 		];
 		$mailer->setTransport($transportConfig);
 		$transport = $mailer->getTransport();
