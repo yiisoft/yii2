@@ -173,9 +173,13 @@ yii = (function ($) {
 			// filter out already included javascript files
 			var loadedAssets = [];
 			$.ajaxPrefilter("script", function(options, originalOptions, jqXHR) {
-				$('script[src="' + options.url.match(/(http:\/\/.*?)?(\/.+)/i)[2] + '"]' ).length || -1 !== $.inArray(options.url, loadedAssets)
-					? jqXHR.abort()
-					: loadedAssets.push(options.url);
+				if (-1 !== options.url.indexOf('filter=false')) {
+					options.url = options.url.replace(/(\?filter=false$)|(filter=false&)|(&filter=false)/i, '');
+				} else {
+					$('script[src="' + options.url.match(/(http:\/\/.*?)?(\/.+)/i)[2] + '"]' ).length || -1 !== $.inArray(options.url, loadedAssets)
+						? jqXHR.abort()
+						: loadedAssets.push(options.url);
+				}
 			});
 
 			// handle AJAX redirection
