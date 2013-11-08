@@ -379,13 +379,12 @@ class ActiveRecord extends Model
 		} elseif ($this->hasAttribute($name)) {
 			return null;
 		} else {
-			$t = strtolower($name);
-			if (isset($this->_related[$t]) || array_key_exists($t, $this->_related)) {
-				return $this->_related[$t];
+			if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+				return $this->_related[$name];
 			}
 			$value = parent::__get($name);
 			if ($value instanceof ActiveRelation) {
-				return $this->_related[$t] = $value->multiple ? $value->all() : $value->one();
+				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
 			}
@@ -433,9 +432,8 @@ class ActiveRecord extends Model
 		if ($this->hasAttribute($name)) {
 			unset($this->_attributes[$name]);
 		} else {
-			$t = strtolower($name);
-			if (isset($this->_related[$t])) {
-				unset($this->_related[$t]);
+			if (isset($this->_related[$name])) {
+				unset($this->_related[$name]);
 			} else {
 				parent::__unset($name);
 			}
@@ -523,12 +521,31 @@ class ActiveRecord extends Model
 	/**
 	 * Populates the named relation with the related records.
 	 * Note that this method does not check if the relation exists or not.
-	 * @param string $name the relation name (case-insensitive)
+	 * @param string $name the relation name (case-sensitive)
 	 * @param ActiveRecord|array|null the related records to be populated into the relation.
 	 */
 	public function populateRelation($name, $records)
 	{
-		$this->_related[strtolower($name)] = $records;
+		$this->_related[$name] = $records;
+	}
+
+	/**
+	 * Check whether the named relation has been populated with records.
+	 * @param string $name the relation name (case-sensitive)
+	 * @return bool whether relation has been populated with records.
+	 */
+	public function isRelationPopulated($name)
+	{
+		return array_key_exists($name, $this->_related);
+	}
+
+	/**
+	 * Returns all populated relations.
+	 * @return array an array of relation data indexed by relation names.
+	 */
+	public function getPopulatedRelations()
+	{
+		return $this->_related;
 	}
 
 	/**
@@ -1286,7 +1303,7 @@ class ActiveRecord extends Model
 	 *
 	 * Note that this method requires that the primary key value is not null.
 	 *
-	 * @param string $name the name of the relationship
+	 * @param string $name the case sensitive name of the relationship
 	 * @param ActiveRecord $model the model to be linked with the current one.
 	 * @param array $extraColumns additional column values to be saved into the pivot table.
 	 * This parameter is only meaningful for a relationship involving a pivot table
@@ -1308,7 +1325,7 @@ class ActiveRecord extends Model
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
-				unset($this->_related[strtolower($viaName)]);
+				unset($this->_related[$viaName]);
 			} else {
 				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
@@ -1364,7 +1381,7 @@ class ActiveRecord extends Model
 	 * The model with the foreign key of the relationship will be deleted if `$delete` is true.
 	 * Otherwise, the foreign key will be set null and the model will be saved without validation.
 	 *
-	 * @param string $name the name of the relationship.
+	 * @param string $name the case sensitive name of the relationship.
 	 * @param ActiveRecord $model the model to be unlinked from the current one.
 	 * @param boolean $delete whether to delete the model that contains the foreign key.
 	 * If false, the model's foreign key will be set null and saved.
@@ -1382,7 +1399,7 @@ class ActiveRecord extends Model
 				/** @var $viaClass ActiveRecord */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
-				unset($this->_related[strtolower($viaName)]);
+				unset($this->_related[$viaName]);
 			} else {
 				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);

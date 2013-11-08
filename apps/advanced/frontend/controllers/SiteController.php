@@ -159,6 +159,7 @@ class SiteController extends Controller
 
 		$user->password_reset_token = Security::generateRandomKey();
 		if ($user->save(false)) {
+			// todo: refactor it with mail component. pay attention to the arrangement of mail view files
 			$fromEmail = \Yii::$app->params['supportEmail'];
 			$name = '=?UTF-8?B?' . base64_encode(\Yii::$app->name . ' robot') . '?=';
 			$subject = '=?UTF-8?B?' . base64_encode('Password reset for ' . \Yii::$app->name) . '?=';
