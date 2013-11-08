@@ -10,7 +10,6 @@ namespace yii\web;
 use Yii;
 use yii\base\ActionFilter;
 use yii\base\Action;
-use yii\base\View;
 use yii\caching\Dependency;
 
 /**
@@ -69,7 +68,7 @@ class PageCache extends ActionFilter
 	 */
 	public $enabled = true;
 	/**
-	 * @var View the view component to use for caching. If not set, the default application view component
+	 * @var \yii\base\View the view component to use for caching. If not set, the default application view component
 	 * [[Application::view]] will be used.
 	 */
 	public $view;
