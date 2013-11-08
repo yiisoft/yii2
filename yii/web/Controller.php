@@ -14,7 +14,8 @@ use yii\helpers\Html;
 /**
  * Controller is the base class of web controllers.
  *
- * @property string $canonicalUrl This property is read-only.
+ * @property string $canonicalUrl The canonical URL of the currently requested page. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -130,7 +131,7 @@ class Controller extends \yii\base\Controller
 	 * $this->registerLinkTag(['rel' => 'canonical', 'href' => Yii::$app->controller->canonicalUrl]);
 	 * ~~~
 	 *
-	 * @return string
+	 * @return string the canonical URL of the currently requested page
 	 */
 	public function getCanonicalUrl()
 	{
