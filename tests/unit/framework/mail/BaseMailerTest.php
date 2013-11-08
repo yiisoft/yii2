@@ -233,6 +233,7 @@ class Message extends BaseMessage
 	public $encoding;
 	public $_charset;
 	public $_from;
+	public $_replyTo;
 	public $_to;
 	public $_cc;
 	public $_bcc;
@@ -240,10 +241,20 @@ class Message extends BaseMessage
 	public $_textBody;
 	public $_htmlBody;
 
+	public function getCharset()
+	{
+		return $this->_charset;
+	}
+
 	public function setCharset($charset)
 	{
 		$this->_charset = $charset;
 		return $this;
+	}
+
+	public function getFrom()
+	{
+		return $this->_from;
 	}
 
 	public function setFrom($from)
@@ -252,10 +263,20 @@ class Message extends BaseMessage
 		return $this;
 	}
 
+	public function getTo()
+	{
+		return $this->_to;
+	}
+
 	public function setTo($to)
 	{
 		$this->_to = $to;
 		return $this;
+	}
+
+	public function getCc()
+	{
+		return $this->_cc;
 	}
 
 	public function setCc($cc)
@@ -264,15 +285,36 @@ class Message extends BaseMessage
 		return $this;
 	}
 
+	public function getBcc()
+	{
+		return $this->_bcc;
+	}
+
 	public function setBcc($bcc)
 	{
 		$this->_bcc = $bcc;
 		return $this;
 	}
 
+	public function getSubject()
+	{
+		return $this->_subject;
+	}
+
 	public function setSubject($subject)
 	{
 		$this->_subject = $subject;
+		return $this;
+	}
+
+	public function getReplyTo()
+	{
+		return $this->_replyTo;
+	}
+
+	public function setReplyTo($replyTo)
+	{
+		$this->_replyTo = $replyTo;
 		return $this;
 	}
 
