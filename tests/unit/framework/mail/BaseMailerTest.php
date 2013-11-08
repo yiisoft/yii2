@@ -240,49 +240,49 @@ class Message extends BaseMessage
 	public $_textBody;
 	public $_htmlBody;
 
-	public function charset($charset)
+	public function setCharset($charset)
 	{
 		$this->_charset = $charset;
 		return $this;
 	}
 
-	public function from($from)
+	public function setFrom($from)
 	{
 		$this->_from = $from;
 		return $this;
 	}
 
-	public function to($to)
+	public function setTo($to)
 	{
 		$this->_to = $to;
 		return $this;
 	}
 
-	public function cc($cc)
+	public function setCc($cc)
 	{
 		$this->_cc = $cc;
 		return $this;
 	}
 
-	public function bcc($bcc)
+	public function setBcc($bcc)
 	{
 		$this->_bcc = $bcc;
 		return $this;
 	}
 
-	public function subject($subject)
+	public function setSubject($subject)
 	{
 		$this->_subject = $subject;
 		return $this;
 	}
 
-	public function textBody($text)
+	public function setTextBody($text)
 	{
 		$this->_textBody = $text;
 		return $this;
 	}
 
-	public function htmlBody($html)
+	public function setHtmlBody($html)
 	{
 		$this->_htmlBody = $html;
 		return $this;

@@ -11,14 +11,14 @@ use yii\base\Object;
 use Yii;
 
 /**
- * BaseMessage represent the single email message.
- * It functionality depends on application component 'email',
- * which should provide the actual email sending functionality as well as
- * default message configuration.
+ * BaseMessage serves as a base class that implements the [[send()]] method required by [[MessageInterface]].
+ *
+ * By default, [[send()]] will use the "mail" application component to send the current message.
+ * The "mail" application component should be a mailer instance implementing [[MailerInterface]].
  *
  * @see BaseMailer
  *
- * @property \yii\mail\BaseMailer $mailer mailer component instance. This property is read-only.
+ * @property BaseMailer $mailer mailer component instance. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -26,7 +26,7 @@ use Yii;
 abstract class BaseMessage extends Object implements MessageInterface
 {
 	/**
-	 * @return \yii\mail\BaseMailer mailer component instance.
+	 * @return MailerInterface the mailer component
 	 */
 	public function getMailer()
 	{

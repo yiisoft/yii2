@@ -124,11 +124,11 @@ class MessageTest extends VendorTestCase
 		$bcc = 'bccuser@somedomain.com';
 
 		$messageString = $this->createTestMessage()
-			->charset($charset)
-			->subject($subject)
-			->to($to)
-			->cc($cc)
-			->bcc($bcc)
+			->setCharset($charset)
+			->setSubject($subject)
+			->setTo($to)
+			->setCc($cc)
+			->setBcc($bcc)
 			->toString();
 
 		$this->assertContains('charset=' . $charset, $messageString, 'Incorrect charset!');
@@ -145,7 +145,7 @@ class MessageTest extends VendorTestCase
 	{
 		$from = 'someuser@somedomain.com';
 		$messageString = $this->createTestMessage()
-			->from($from)
+			->setFrom($from)
 			->toString();
 		$this->assertContains('From: ' . $from, $messageString, 'Incorrect "From" header!');
 		$this->assertContains('Reply-To: ' . $from, $messageString, 'Incorrect "Reply-To" header!');
@@ -157,10 +157,10 @@ class MessageTest extends VendorTestCase
 	public function testSend()
 	{
 		$message = $this->createTestMessage();
-		$message->to($this->testEmailReceiver);
-		$message->from('someuser@somedomain.com');
-		$message->subject('Yii Swift Test');
-		$message->textBody('Yii Swift Test body');
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Test');
+		$message->setTextBody('Yii Swift Test body');
 		$this->assertTrue($message->send());
 	}
 
@@ -171,10 +171,10 @@ class MessageTest extends VendorTestCase
 	{
 		$message = $this->createTestMessage();
 
-		$message->to($this->testEmailReceiver);
-		$message->from('someuser@somedomain.com');
-		$message->subject('Yii Swift Attach File Test');
-		$message->textBody('Yii Swift Attach File Test body');
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Attach File Test');
+		$message->setTextBody('Yii Swift Attach File Test body');
 		$fileName = __FILE__;
 		$message->attach($fileName);
 
@@ -192,10 +192,10 @@ class MessageTest extends VendorTestCase
 	{
 		$message = $this->createTestMessage();
 
-		$message->to($this->testEmailReceiver);
-		$message->from('someuser@somedomain.com');
-		$message->subject('Yii Swift Create Attachment Test');
-		$message->textBody('Yii Swift Create Attachment Test body');
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Create Attachment Test');
+		$message->setTextBody('Yii Swift Create Attachment Test body');
 		$fileName = 'test.txt';
 		$fileContent = 'Test attachment content';
 		$message->attachContent($fileContent, ['fileName' => $fileName]);
@@ -218,10 +218,10 @@ class MessageTest extends VendorTestCase
 
 		$cid = $message->embed($fileName);
 
-		$message->to($this->testEmailReceiver);
-		$message->from('someuser@somedomain.com');
-		$message->subject('Yii Swift Embed File Test');
-		$message->htmlBody('Embed image: <img src="' . $cid. '" alt="pic">');
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Embed File Test');
+		$message->setHtmlBody('Embed image: <img src="' . $cid. '" alt="pic">');
 
 		$this->assertTrue($message->send());
 
@@ -244,10 +244,10 @@ class MessageTest extends VendorTestCase
 
 		$cid = $message->embedContent($fileContent, ['fileName' => $fileName, 'contentType' => $contentType]);
 
-		$message->to($this->testEmailReceiver);
-		$message->from('someuser@somedomain.com');
-		$message->subject('Yii Swift Embed File Test');
-		$message->htmlBody('Embed image: <img src="' . $cid. '" alt="pic">');
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Embed File Test');
+		$message->setHtmlBody('Embed image: <img src="' . $cid. '" alt="pic">');
 
 		$this->assertTrue($message->send());
 
@@ -264,11 +264,11 @@ class MessageTest extends VendorTestCase
 	{
 		$message = $this->createTestMessage();
 
-		$message->to($this->testEmailReceiver);
-		$message->from('someuser@somedomain.com');
-		$message->subject('Yii Swift Alternative Body Test');
-		$message->htmlBody('<b>Yii Swift</b> test HTML body');
-		$message->textBody('Yii Swift test plain text body');
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Alternative Body Test');
+		$message->setHtmlBody('<b>Yii Swift</b> test HTML body');
+		$message->setTextBody('Yii Swift test plain text body');
 
 		$this->assertTrue($message->send());
 
@@ -297,10 +297,10 @@ class MessageTest extends VendorTestCase
 	{
 		$message = $this->createTestMessage();
 
-		$message->to($this->testEmailReceiver);
-		$message->from('someuser@somedomain.com');
-		$message->subject('Yii Swift Alternative Body Test');
-		$message->textBody('Yii Swift test plain text body');
+		$message->setTo($this->testEmailReceiver);
+		$message->setFrom('someuser@somedomain.com');
+		$message->setSubject('Yii Swift Alternative Body Test');
+		$message->setTextBody('Yii Swift test plain text body');
 
 		$serializedMessage = serialize($message);
 		$this->assertNotEmpty($serializedMessage, 'Unable to serialize message!');

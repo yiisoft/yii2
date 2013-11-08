@@ -85,23 +85,23 @@ class TestMessage extends BaseMessage
 	public $text;
 	public $html;
 
-	public function charset($charset) {}
+	public function setCharset($charset) {}
 
-	public function from($from) {}
+	public function setFrom($from) {}
 
-	public function to($to) {}
+	public function setTo($to) {}
 
-	public function cc($cc) {}
+	public function setCc($cc) {}
 
-	public function bcc($bcc) {}
+	public function setBcc($bcc) {}
 
-	public function subject($subject) {}
+	public function setSubject($subject) {}
 
-	public function textBody($text) {
+	public function setTextBody($text) {
 		$this->text = $text;
 	}
 
-	public function htmlBody($html) {
+	public function setHtmlBody($html) {
 		$this->html = $html;
 	}
 

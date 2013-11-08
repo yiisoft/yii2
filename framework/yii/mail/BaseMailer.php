@@ -11,15 +11,16 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\ViewContextInterface;
+use yii\web\View;
 
 /**
- * BaseMailer provides the basic interface for the email mailer application component.
- * It provides the default configuration for the email messages.
- * Particular implementation of mailer should provide implementation for the [[send()]] method.
+ * BaseMailer serves as a base class that implements the basic functions required by [[MailerInterface]].
+ *
+ * Concrete child classes should may focus on implementing the [[send()]] method.
  *
  * @see BaseMessage
  *
- * @property \yii\base\View|array $view view instance or its array configuration.
+ * @property View|array $view view instance or its array configuration.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -32,60 +33,59 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	private $_view = [];
 	/**
 	 * @var string directory containing view files for this email messages.
+	 * This can be specified as an absolute path or path alias.
 	 */
 	public $viewPath = '@app/mails';
 	/**
-	 * @var string HTML layout view name.
+	 * @var string|boolean HTML layout view name. This is the layout used to render HTML mail body.
+	 * The property can take the following values:
+	 *
+	 * - a relative view name: a view file relative to [[viewPath]], e.g., 'layouts/html'.
+	 * - a path alias: an absolute view file path specified as a path alias, e.g., '@app/mails/html'.
+	 * - a boolean false: the layout is disabled.
 	 */
 	public $htmlLayout = 'layouts/html';
 	/**
-	 * @var string text layout view name.
+	 * @var string|boolean text layout view name. This is the layout used to render TEXT mail body.
+	 * Please refer to [[htmlLayout]] for possible values that this property can take.
 	 */
 	public $textLayout = 'layouts/text';
 	/**
-	 * @var array configuration, which should be applied by default to any new created
-	 * email message instance.
-	 * In addition to normal [[Yii::createObject()]] behavior extra config keys are available:
-	 *
-	 *  - 'charset' argument for [[MessageInterface::charset()]]
-	 *  - 'from' argument for [[MessageInterface::from()]]
-	 *  - 'to' argument for [[MessageInterface::to()]]
-	 *  - 'cc' argument for [[MessageInterface::cc()]]
-	 *  - 'bcc' argument for [[MessageInterface::bcc()]]
-	 *  - 'subject' argument for [[MessageInterface::subject()]]
-	 *  - 'textBody' argument for [[MessageInterface::textBody()]]
-	 *  - 'htmlBody' argument for [[MessageInterface::htmlBody()]]
+	 * @var array the configuration that should be applied to any newly created
+	 * email message instance by [[createMessage()]] or [[compose()]]. Any valid property defined
+	 * by [[MessageInterface]] can be configured, such as `from`, `to`, `subject`, `textBody`, `htmlBody`, etc.
 	 *
 	 * For example:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'charset' => 'UTF-8',
 	 *     'from' => 'noreply@mydomain.com',
 	 *     'bcc' => 'developer@mydomain.com',
-	 * )
+	 * ]
 	 * ~~~
 	 */
 	public $messageConfig = [];
 	/**
-	 * @var string message default class name.
+	 * @var string the default class name of the new message instances created by [[createMessage()]]
 	 */
 	public $messageClass = 'yii\mail\BaseMessage';
 
 	/**
-	 * @param array|\yii\base\View $view view instance or its array configuration.
-	 * @throws \yii\base\InvalidConfigException on invalid argument.
+	 * @param array|View $view view instance or its array configuration that will be used to
+	 * render message bodies.
+	 * @throws InvalidConfigException on invalid argument.
 	 */
 	public function setView($view)
 	{
 		if (!is_array($view) && !is_object($view)) {
-			throw new InvalidConfigException('"' . get_class($this) . '::view" should be either object or array, "' . gettype($view) . '" given.');
+			throw new InvalidConfigException('"' . get_class($this) . '::view" should be either object or configuration array, "' . gettype($view) . '" given.');
 		}
 		$this->_view = $view;
 	}
 
 	/**
-	 * @return \yii\base\View view instance.
+	 * @return View view instance.
 	 */
 	public function getView()
 	{
@@ -98,18 +98,35 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	/**
 	 * Creates view instance from given configuration.
 	 * @param array $config view configuration.
-	 * @return \yii\base\View view instance.
+	 * @return View view instance.
 	 */
 	protected function createView(array $config)
 	{
 		if (!array_key_exists('class', $config)) {
-			$config['class'] = 'yii\web\View';
+			$config['class'] = View::className();
 		}
 		return Yii::createObject($config);
 	}
 
 	/**
-	 * @inheritdoc
+	 * Creates a new message instance and optionally composes its body content via view rendering.
+	 *
+	 * @param string|array $view the view to be used for rendering the message body. This can be:
+	 *
+	 * - a string, which represents the view name or path alias for rendering the HTML body of the email.
+	 *   In this case, the text body will be generated by applying `strip_tags()` to the HTML body.
+	 * - an array with 'html' and/or 'text' elements. The 'html' element refers to the view name or path alias
+	 *   for rendering the HTML body, while 'text' element is for rendering the text body. For example,
+	 *   `['html' => 'contact-html', 'text' => 'contact-text']`.
+	 * - null, meaning the message instance will be returned without body content.
+	 *
+	 * The view to be rendered can be specified in one of the following formats:
+	 *
+	 * - path alias (e.g. "@app/mails/contact");
+	 * - a relative view name (e.g. "contact"): the actual view file will be resolved by [[findViewFile()]]
+	 *
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return MessageInterface message instance.
 	 */
 	public function compose($view = null, array $params = [])
 	{
@@ -117,24 +134,32 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		if ($view !== null) {
 			$params['message'] = $message;
 			if (is_array($view)) {
-				if (array_key_exists('html', $view)) {
-					$message->htmlBody($this->render($view['html'], $params, $this->htmlLayout));
+				if (isset($view['html'])) {
+					$html = $this->render($view['html'], $params, $this->htmlLayout);
 				}
-				if (array_key_exists('text', $view)) {
-					$message->textBody($this->render($view['text'], $params, $this->textLayout));
+				if (isset($view['text'])) {
+					$text = $this->render($view['text'], $params, $this->textLayout);
 				}
 			} else {
 				$html = $this->render($view, $params, $this->htmlLayout);
-				$message->htmlBody($html);
-				$message->textBody(strip_tags($html));
+			}
+			if (isset($html)) {
+				$message->setHtmlBody($html);
+			}
+			if (isset($text)) {
+				$message->setTextBody($text);
+			} elseif (isset($html)) {
+				$message->setTextBody(strip_tags($html));
 			}
 		}
 		return $message;
 	}
 
 	/**
-	 * Creates mew message instance using configuration from [[messageConfig]].
-	 * If 'class' parameter is omitted, [[messageClass]] will be used.
+	 * Creates a new message instance.
+	 * The newly created instance will be initialized with the configuration specified by [[messageConfig]].
+	 * If the configuration does not specify a 'class', the [[messageClass]] will be used as the class
+	 * of the new message instance.
 	 * @return MessageInterface message instance.
 	 */
 	protected function createMessage()
@@ -143,37 +168,18 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		if (!array_key_exists('class', $config)) {
 			$config['class'] = $this->messageClass;
 		}
-		$directSetterNames = [
-			'charset',
-			'from',
-			'to',
-			'cc',
-			'bcc',
-			'subject',
-			'textBody',
-			'htmlBody',
-		];
-		$directSetterConfig = [];
-		foreach ($config as $name => $value) {
-			if (in_array($name, $directSetterNames, true)) {
-				$directSetterConfig[$name] = $value;
-				unset($config[$name]);
-			}
-		}
-		$message = Yii::createObject($config);
-		foreach ($directSetterConfig as $name => $value) {
-			$message->$name($value);
-		}
-		return $message;
+		return Yii::createObject($config);
 	}
 
 	/**
-	 * Sends a couple of messages at once.
-	 * Note: some particular mailers may benefit from sending messages as batch,
-	 * saving resources, for example on open/close connection operations,
-	 * they may override this method to create their specific implementation.
+	 * Sends multiple messages at once.
+	 *
+	 * The default implementation simply calls [[send()]] multiple times.
+	 * Child classes may override this method to implement more efficient way of
+	 * sending multiple messages.
+	 *
 	 * @param array $messages list of email messages, which should be sent.
-	 * @return integer number of successful sends.
+	 * @return integer number of messages that are successfully sent.
 	 */
 	public function sendMultiple(array $messages)
 	{
@@ -187,10 +193,11 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	}
 
 	/**
-	 * Renders a view.
+	 * Renders the specified view with optional parameters and layout.
+	 * The view will be rendered using the [[view]] component.
 	 * @param string $view the view name or the path alias of the view file.
 	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-	 * @param string|boolean $layout layout view name, if false given no layout will be applied.
+	 * @param string|boolean $layout layout view name or path alias. If false, no layout will be applied.
 	 * @return string the rendering result.
 	 */
 	public function render($view, $params = [], $layout = false)
@@ -205,6 +212,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 
 	/**
 	 * Finds the view file corresponding to the specified relative view name.
+	 * This method will return the view file by prefixing the view name with [[viewPath]].
 	 * @param string $view a relative view name. The name does NOT start with a slash.
 	 * @return string the view file path. Note that the file may not exist.
 	 */

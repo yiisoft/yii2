@@ -12,10 +12,10 @@ use yii\base\InvalidConfigException;
 use yii\mail\BaseMailer;
 
 /**
- * Mailer based on SwiftMailer library.
+ * Mailer implements a mailer based on SwiftMailer.
  *
- * By default PHP 'mail' function will be used as default email transport.
- * You can setup different email transport via [[vendorMailer]] property:
+ * To use Mailer, you should configure it in the application configuration like the following,
+ *
  * ~~~
  * 'components' => array(
  *     ...
@@ -34,9 +34,20 @@ use yii\mail\BaseMailer;
  * ),
  * ~~~
  *
- * @see http://swiftmailer.org
+ * You may also skip the configuration of the [[transport]] property. In that case, the default
+ * PHP `mail()` function will be used to send emails.
  *
- * @method Message compose($view = null, array $params = []) creates new message optionally filling up its body via view rendering.
+ * To send an email, you may use the following code:
+ *
+ * ~~~
+ * Yii::$app->mail->compose('contact/html', ['contactForm' => $form])
+ *     ->setFrom('from@domain.com')
+ *     ->setTo($form->email)
+ *     ->setSubject($form->subject)
+ *     ->send();
+ * ~~~
+ *
+ * @see http://swiftmailer.org
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -69,7 +80,7 @@ class Mailer extends BaseMailer
 
 	/**
 	 * @param array|\Swift_Transport $transport
-	 * @throws \yii\base\InvalidConfigException on invalid argument.
+	 * @throws InvalidConfigException on invalid argument.
 	 */
 	public function setTransport($transport)
 	{
@@ -95,8 +106,12 @@ class Mailer extends BaseMailer
 	 */
 	public function send($message)
 	{
-		Yii::trace('Sending email message', __METHOD__);
-		return ($this->getSwiftMailer()->send($message->getSwiftMessage()) > 0);
+		$address = $message->getTo();
+		if (is_array($address)) {
+			$address = implode(', ', $address);
+		}
+		Yii::trace('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
+		return $this->getSwiftMailer()->send($message->getSwiftMessage()) > 0;
 	}
 
 	/**

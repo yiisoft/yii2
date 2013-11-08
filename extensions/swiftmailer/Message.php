@@ -10,10 +10,10 @@ namespace yii\swiftmailer;
 use yii\mail\BaseMessage;
 
 /**
- * Email message based on SwiftMailer library.
+ * Message implements a message class based on SwiftMailer.
  *
  * @see http://swiftmailer.org/docs/messages.html
- * @see \yii\swiftmailer\Mailer
+ * @see Mailer
  *
  * @method Mailer getMailer() returns mailer instance.
  * @property \Swift_Message $swiftMessage vendor message instance.
@@ -42,7 +42,15 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function charset($charset)
+	public function getCharset()
+	{
+		$this->getSwiftMessage()->getCharset();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setCharset($charset)
 	{
 		$this->getSwiftMessage()->setCharset($charset);
 		return $this;
@@ -51,17 +59,49 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function from($from)
+	public function getFrom()
+	{
+		$this->getSwiftMessage()->getFrom();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setFrom($from)
 	{
 		$this->getSwiftMessage()->setFrom($from);
-		$this->getSwiftMessage()->setReplyTo($from);
 		return $this;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function to($to)
+	public function getReplyTo()
+	{
+		$this->getSwiftMessage()->getReplyTo();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setReplyTo($replyTo)
+	{
+		$this->getSwiftMessage()->setReplyTo($replyTo);
+		return $this;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function getTo()
+	{
+		$this->getSwiftMessage()->getTo();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setTo($to)
 	{
 		$this->getSwiftMessage()->setTo($to);
 		return $this;
@@ -70,7 +110,15 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function cc($cc)
+	public function getCc()
+	{
+		$this->getSwiftMessage()->getCc();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setCc($cc)
 	{
 		$this->getSwiftMessage()->setCc($cc);
 		return $this;
@@ -79,7 +127,15 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function bcc($bcc)
+	public function getBcc()
+	{
+		$this->getSwiftMessage()->getBcc();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setBcc($bcc)
 	{
 		$this->getSwiftMessage()->setBcc($bcc);
 		return $this;
@@ -88,7 +144,15 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function subject($subject)
+	public function getSubject()
+	{
+		$this->getSwiftMessage()->getSubject();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setSubject($subject)
 	{
 		$this->getSwiftMessage()->setSubject($subject);
 		return $this;
@@ -97,7 +161,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function textBody($text)
+	public function setTextBody($text)
 	{
 		$this->setBody($text, 'text/plain');
 		return $this;
@@ -106,7 +170,7 @@ class Message extends BaseMessage
 	/**
 	 * @inheritdoc
 	 */
-	public function htmlBody($html)
+	public function setHtmlBody($html)
 	{
 		$this->setBody($html, 'text/html');
 		return $this;
