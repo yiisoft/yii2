@@ -14,6 +14,8 @@ use yii\helpers\Html;
 /**
  * Controller is the base class of web controllers.
  *
+ * @property string $canonicalUrl This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

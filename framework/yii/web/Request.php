@@ -31,6 +31,8 @@ use yii\helpers\Security;
  * @property string $csrfToken The random token for CSRF validation. This property is read-only.
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
  * if no such header is sent. This property is read-only.
+ * @property array $delete The DELETE request parameter values. This property is read-only.
+ * @property array $get The GET request parameter values. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
@@ -47,11 +49,14 @@ use yii\helpers\Security;
  * read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
  * turned into upper case. This property is read-only.
+ * @property array $patch The PATCH request parameter values. This property is read-only.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
+ * @property array $post The POST request parameter values. This property is read-only.
  * @property string $preferredLanguage The language that the application should use. Null is returned if both
  * [[getAcceptedLanguages()]] and `$languages` are empty. This property is read-only.
+ * @property array $put The PUT request parameter values. This property is read-only.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
  * @property string $rawBody The request body. This property is read-only.
@@ -304,12 +309,22 @@ class Request extends \yii\base\Request
 	}
 
 	/**
+	 * Returns the GET request parameter values.
+	 * @return array the GET request parameter values
+	 */
+	public function getGet()
+	{
+		return $_GET;
+	}
+
+	/**
 	 * Returns the named POST parameter value.
 	 * If the POST parameter does not exist, the second parameter to this method will be returned.
 	 * @param string $name the POST parameter name. If not specified, whole $_POST is returned.
 	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
+	 * @property array the POST request parameter values
 	 * @return mixed the POST parameter value
-	 * @see getParam
+	 * @see get
 	 */
 	public function getPost($name = null, $defaultValue = null)
 	{
@@ -323,6 +338,7 @@ class Request extends \yii\base\Request
 	 * Returns the named DELETE parameter value.
 	 * @param string $name the DELETE parameter name. If not specified, an array of DELETE parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the DELETE parameter does not exist.
+	 * @property array the DELETE request parameter values
 	 * @return mixed the DELETE parameter value
 	 */
 	public function getDelete($name = null, $defaultValue = null)
@@ -337,6 +353,7 @@ class Request extends \yii\base\Request
 	 * Returns the named PUT parameter value.
 	 * @param string $name the PUT parameter name. If not specified, an array of PUT parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the PUT parameter does not exist.
+	 * @property array the PUT request parameter values
 	 * @return mixed the PUT parameter value
 	 */
 	public function getPut($name = null, $defaultValue = null)
@@ -351,6 +368,7 @@ class Request extends \yii\base\Request
 	 * Returns the named PATCH parameter value.
 	 * @param string $name the PATCH parameter name. If not specified, an array of PATCH parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the PATCH parameter does not exist.
+	 * @property array the PATCH request parameter values
 	 * @return mixed the PATCH parameter value
 	 */
 	public function getPatch($name = null, $defaultValue = null)
