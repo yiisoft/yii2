@@ -119,6 +119,8 @@ class MessageTest extends VendorTestCase
 	{
 		$charset = 'utf-16';
 		$subject = 'Test Subject';
+		$from = 'from@somedomain.com';
+		$replyTo = 'reply-to@somedomain.com';
 		$to = 'someuser@somedomain.com';
 		$cc = 'ccuser@somedomain.com';
 		$bcc = 'bccuser@somedomain.com';
@@ -126,6 +128,8 @@ class MessageTest extends VendorTestCase
 		$messageString = $this->createTestMessage()
 			->setCharset($charset)
 			->setSubject($subject)
+			->setFrom($from)
+			->setReplyTo($replyTo)
 			->setTo($to)
 			->setCc($cc)
 			->setBcc($bcc)
@@ -133,22 +137,11 @@ class MessageTest extends VendorTestCase
 
 		$this->assertContains('charset=' . $charset, $messageString, 'Incorrect charset!');
 		$this->assertContains('Subject: ' . $subject, $messageString, 'Incorrect "Subject" header!');
+		$this->assertContains('From: ' . $from, $messageString, 'Incorrect "From" header!');
+		$this->assertContains('Reply-To: ' . $replyTo, $messageString, 'Incorrect "Reply-To" header!');
 		$this->assertContains('To: ' . $to, $messageString, 'Incorrect "To" header!');
 		$this->assertContains('Cc: ' . $cc, $messageString, 'Incorrect "Cc" header!');
 		$this->assertContains('Bcc: ' . $bcc, $messageString, 'Incorrect "Bcc" header!');
-	}
-
-	/**
-	 * @depends testGetSwiftMessage
-	 */
-	public function testSetupFrom()
-	{
-		$from = 'someuser@somedomain.com';
-		$messageString = $this->createTestMessage()
-			->setFrom($from)
-			->toString();
-		$this->assertContains('From: ' . $from, $messageString, 'Incorrect "From" header!');
-		$this->assertContains('Reply-To: ' . $from, $messageString, 'Incorrect "Reply-To" header!');
 	}
 
 	/**
