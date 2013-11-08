@@ -85,15 +85,31 @@ class TestMessage extends BaseMessage
 	public $text;
 	public $html;
 
+	public function getCharset() {return '';}
+
 	public function setCharset($charset) {}
+
+	public function getFrom() {return '';}
 
 	public function setFrom($from) {}
 
+	public function getReplyTo() {return '';}
+
+	public function setReplyTo($replyTo) {}
+
+	public function getTo() {return '';}
+
 	public function setTo($to) {}
+
+	public function getCc() {return '';}
 
 	public function setCc($cc) {}
 
+	public function getBcc() {return '';}
+
 	public function setBcc($bcc) {}
+
+	public function getSubject() {return '';}
 
 	public function setSubject($subject) {}
 
