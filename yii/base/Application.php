@@ -15,6 +15,7 @@ use yii\web\HttpException;
  * Application is the base class for all application classes.
  *
  * @property \yii\rbac\Manager $authManager The auth manager for this application. This property is read-only.
+ * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
@@ -261,6 +262,7 @@ abstract class Application extends Module
 	 * Sets the root directory of the applicaition and the @app alias.
 	 * This method can only be invoked at the beginning of the constructor.
 	 * @param string $path the root directory of the application.
+	 * @property string the root directory of the application.
 	 * @throws InvalidParamException if the directory does not exist.
 	 */
 	public function setBasePath($path)
