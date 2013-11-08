@@ -44,7 +44,7 @@ class Message extends BaseMessage
 	 */
 	public function getCharset()
 	{
-		$this->getSwiftMessage()->getCharset();
+		return $this->getSwiftMessage()->getCharset();
 	}
 
 	/**
@@ -61,7 +61,7 @@ class Message extends BaseMessage
 	 */
 	public function getFrom()
 	{
-		$this->getSwiftMessage()->getFrom();
+		return $this->getSwiftMessage()->getFrom();
 	}
 
 	/**
@@ -78,7 +78,7 @@ class Message extends BaseMessage
 	 */
 	public function getReplyTo()
 	{
-		$this->getSwiftMessage()->getReplyTo();
+		return $this->getSwiftMessage()->getReplyTo();
 	}
 
 	/**
@@ -95,7 +95,7 @@ class Message extends BaseMessage
 	 */
 	public function getTo()
 	{
-		$this->getSwiftMessage()->getTo();
+		return $this->getSwiftMessage()->getTo();
 	}
 
 	/**
@@ -112,7 +112,7 @@ class Message extends BaseMessage
 	 */
 	public function getCc()
 	{
-		$this->getSwiftMessage()->getCc();
+		return $this->getSwiftMessage()->getCc();
 	}
 
 	/**
@@ -129,7 +129,7 @@ class Message extends BaseMessage
 	 */
 	public function getBcc()
 	{
-		$this->getSwiftMessage()->getBcc();
+		return $this->getSwiftMessage()->getBcc();
 	}
 
 	/**
@@ -146,7 +146,7 @@ class Message extends BaseMessage
 	 */
 	public function getSubject()
 	{
-		$this->getSwiftMessage()->getSubject();
+		return $this->getSwiftMessage()->getSubject();
 	}
 
 	/**
