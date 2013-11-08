@@ -19,6 +19,7 @@ return [
 	'components' => [
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
+		'mail' => $params['components.mail'],
 		'log' => [
 			'targets' => [
 				[

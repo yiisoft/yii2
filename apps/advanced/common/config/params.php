@@ -12,6 +12,10 @@ return [
 		'class' => 'yii\caching\FileCache',
 	],
 
+	'components.mail' => [
+		'class' => 'yii\swiftmailer\Mailer',
+	],
+
 	'components.db' => [
 		'class' => 'yii\db\Connection',
 		'dsn' => 'mysql:host=localhost;dbname=yii2advanced',

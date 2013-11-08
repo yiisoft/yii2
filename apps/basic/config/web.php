@@ -17,6 +17,9 @@ $config = [
 		'errorHandler' => [
 			'errorAction' => 'site/error',
 		],
+		'mail' => [
+			'class' => 'yii\swiftmailer\Mailer',
+		],
 		'log' => [
 			'traceLevel' => YII_DEBUG ? 3 : 0,
 			'targets' => [

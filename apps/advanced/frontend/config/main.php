@@ -23,6 +23,7 @@ return [
 		],
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
+		'mail' => $params['components.mail'],
 		'user' => [
 			'identityClass' => 'common\models\User',
 		],
