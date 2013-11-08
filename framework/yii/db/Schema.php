@@ -99,7 +99,9 @@ abstract class Schema extends Object
 				if ($refresh || ($table = $cache->get($key)) === false) {
 					$table = $this->loadTableSchema($realName);
 					if ($table !== null) {
-						$cache->set($key, $table, $db->schemaCacheDuration, new GroupDependency($this->getCacheGroup()));
+						$cache->set($key, $table, $db->schemaCacheDuration, new GroupDependency([
+							'group' => $this->getCacheGroup(),
+						]));
 					}
 				}
 				return $this->_tables[$name] = $table;
