@@ -41,7 +41,7 @@ class Controller extends \yii\base\Controller
 	 * @param \yii\base\Action $action the action to be bound with parameters
 	 * @param array $params the parameters to be bound to the action
 	 * @return array the valid parameters that the action can run with.
-	 * @throws HttpException if there are missing parameters.
+	 * @throws HttpException if there are missing or invalid parameters.
 	 */
 	public function bindActionParams($action, $params)
 	{
@@ -57,7 +57,15 @@ class Controller extends \yii\base\Controller
 		foreach ($method->getParameters() as $param) {
 			$name = $param->getName();
 			if (array_key_exists($name, $params)) {
-				$args[] = $actionParams[$name] = $params[$name];
+				if ($param->isArray()) {
+					$args[] = $actionParams[$name] = is_array($params[$name]) ? $params[$name] : [$params[$name]];
+				} elseif (!is_array($params[$name])) {
+					$args[] = $actionParams[$name] = $params[$name];
+				} else {
+					throw new HttpException(400, Yii::t('yii', 'Invalid data received for parameter "{param}".', [
+						'param' => $name,
+					]));
+				}
 				unset($params[$name]);
 			} elseif ($param->isDefaultValueAvailable()) {
 				$args[] = $actionParams[$name] = $param->getDefaultValue();
