@@ -15,7 +15,11 @@
 		{
 			"name": "Paul Klimov",
 			"email": "klimov.paul@gmail.com"
-		}
+		},
+        {
+            "name": "Dmitry Erofeev",
+            "email": "dmeroff@gmail.com"
+        }
 	],
 	"minimum-stability": "dev",
 	"require": {

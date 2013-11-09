@@ -3,7 +3,7 @@ SwiftMailer Extension for Yii 2
 
 This extension provides a `SwiftMailer` mail solution for Yii 2.
 
-To use this extension,  simply add the following code in your application configuration:
+To use this extension, simply add the following code in your application configuration:
 
 ```php
 return [
@@ -11,6 +11,20 @@ return [
 	'components' => [
 		'mail' => [
 			'class' => 'yii\swiftmailer\Mailer',
+		],
+	],
+];
+```
+
+Extension also includes `FileMailer` that saves mails as files under runtime directory.
+It can be useful during development. To use it add the following code in your application configuration:
+
+```php
+return [
+	//....
+	'components' => [
+		'mail' => [
+			'class' => 'yii\swiftmailer\FileMailer',
 		],
 	],
 ];
