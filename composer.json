@@ -69,7 +69,7 @@
 		"yiisoft/jquery": "1.10.*",
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
-		"phpspec/php-diff": "dev-master",
+		"phpspec/php-diff": ">=1.0.2",
 		"ezyang/htmlpurifier": "4.5.*"
 	},
 	"autoload": {
