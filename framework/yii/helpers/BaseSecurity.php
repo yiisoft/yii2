@@ -175,7 +175,7 @@ class BaseSecurity
 	/**
 	 * Returns a secret key associated with the specified name.
 	 * If the secret key does not exist, a random key will be generated
-	 * and saved in the file "keys.php" under the application's runtime directory
+	 * and saved in the file "keys.data" under the application's runtime directory
 	 * so that the same secret key can be returned in future requests.
 	 * @param string $name the name that is associated with the secret key
 	 * @param integer $length the length of the key that should be generated if not exists
@@ -184,16 +184,16 @@ class BaseSecurity
 	public static function getSecretKey($name, $length = 32)
 	{
 		static $keys;
-		$keyFile = Yii::$app->getRuntimePath() . '/keys.php';
+		$keyFile = Yii::$app->getRuntimePath() . '/keys.data';
 		if ($keys === null) {
 			$keys = [];
 			if (is_file($keyFile)) {
-				$keys = require($keyFile);
+				$keys = unserialize(file_get_contents($keyFile));
 			}
 		}
 		if (!isset($keys[$name])) {
 			$keys[$name] = static::generateRandomKey($length);
-			file_put_contents($keyFile, "<?php\nreturn " . var_export($keys, true) . ";\n");
+			file_put_contents($keyFile, serialize($keys));
 		}
 		return $keys[$name];
 	}

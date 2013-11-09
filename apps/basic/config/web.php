@@ -1,7 +1,7 @@
 <?php
 $params = require(__DIR__ . '/params.php');
 $config = [
-	'id' => 'bootstrap',
+	'id' => 'basic',
 	'basePath' => dirname(__DIR__),
 	'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
 	'components' => [
