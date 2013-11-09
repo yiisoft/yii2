@@ -193,7 +193,7 @@ abstract class Generator extends Model
 		$attributes[] = 'template';
 		$path = $this->getStickyDataFile();
 		if (is_file($path)) {
-			$result = unserialize(file_get_contents($path));
+			$result = json_decode(file_get_contents($path), true);
 			if (is_array($result)) {
 				foreach ($stickyAttributes as $name) {
 					if (isset($result[$name])) {
@@ -218,7 +218,7 @@ abstract class Generator extends Model
 		}
 		$path = $this->getStickyDataFile();
 		@mkdir(dirname($path), 0755, true);
-		file_put_contents($path, serialize($values));
+		file_put_contents($path, json_encode($values));
 	}
 
 	/**
@@ -227,7 +227,7 @@ abstract class Generator extends Model
 	 */
 	public function getStickyDataFile()
 	{
-		return Yii::$app->getRuntimePath() . '/gii-' . Yii::getVersion() . '/' . str_replace('\\', '-', get_class($this)) . '.data';
+		return Yii::$app->getRuntimePath() . '/gii-' . Yii::getVersion() . '/' . str_replace('\\', '-', get_class($this)) . '.json';
 	}
 
 	/**
