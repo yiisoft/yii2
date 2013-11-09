@@ -184,16 +184,16 @@ class BaseSecurity
 	public static function getSecretKey($name, $length = 32)
 	{
 		static $keys;
-		$keyFile = Yii::$app->getRuntimePath() . '/keys.data';
+		$keyFile = Yii::$app->getRuntimePath() . '/keys.json';
 		if ($keys === null) {
 			$keys = [];
 			if (is_file($keyFile)) {
-				$keys = unserialize(file_get_contents($keyFile));
+				$keys = json_decode(file_get_contents($keyFile), true);
 			}
 		}
 		if (!isset($keys[$name])) {
 			$keys[$name] = static::generateRandomKey($length);
-			file_put_contents($keyFile, serialize($keys));
+			file_put_contents($keyFile, json_encode($keys));
 		}
 		return $keys[$name];
 	}
