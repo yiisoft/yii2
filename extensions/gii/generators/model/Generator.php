@@ -104,7 +104,7 @@ class Generator extends \yii\gii\Generator
 			'baseClass' => 'This is the base class of the new ActiveRecord class. It should be a fully qualified namespaced class name.',
 			'generateRelations' => 'This indicates whether the generator should generate relations based on
 				foreign key constraints it detects in the database. Note that if your database contains too many tables,
-				you may want to uncheck this option to accelerate the code generation proc	ess.',
+				you may want to uncheck this option to accelerate the code generation process.',
 			'generateLabelsFromComments' => 'This indicates whether the generator should generate attribute labels
 				by using the comments of the corresponding DB columns.',
 		];
