@@ -23,8 +23,7 @@
 	},
 	"scripts": {
 		"post-create-project-cmd": [
-			"yii\\composer\\Installer::setPermission",
-			"./init"
+			"yii\\composer\\Installer::setPermission"
 		]
 	},
 	"extra": {
