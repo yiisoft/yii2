@@ -63,8 +63,8 @@ EOD;
 		];
 		return "<h1>Configuration</h1>\n"
 			. $this->renderData('Application Configuration', $app) . "\n"
-			. $this->renderData('PHP Configuration', $php) . "\n"
 			. $this->renderExtensions()
+			. $this->renderData('PHP Configuration', $php) . "\n"
 			. $this->getPhpInfo();
 	}
 
@@ -103,7 +103,7 @@ EOD;
 		foreach ($this->data['extensions'] as $extension) {
 			$data[$extension['name']] = $extension['version'];
 		}
-		return $this->renderData('Extensions', $data) . "\n";
+		return $this->renderData('Installed Extensions', $data) . "\n";
 	}
 
 	public function save()
