@@ -101,7 +101,7 @@ EOD;
 		}
 		$data = [];
 		foreach ($this->data['extensions'] as $extension) {
-			$data[$extension['name']] = $data['version'];
+			$data[$extension['name']] = $extension['version'];
 		}
 		return $this->renderData('Extensions', $data) . "\n";
 	}
