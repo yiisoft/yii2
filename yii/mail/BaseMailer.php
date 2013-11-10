@@ -81,6 +81,12 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var callback a PHP callback that will be called by [[send()]] when [[useFileTransport]] is true.
 	 * The callback should return a file name which will be used to save the email message.
 	 * If not set, the file name will be generated based on the current timestamp.
+	 *
+	 * The signature of the callback is:
+	 *
+	 * ~~~
+	 * function ($mailer, $message)
+	 * ~~~
 	 */
 	public $fileTransportCallback;
 
@@ -272,7 +278,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			mkdir($path, 0777, true);
 		}
 		if ($this->fileTransportCallback !== null) {
-			$file = $path . '/' . call_user_func($this->fileTransportCallback);
+			$file = $path . '/' . call_user_func($this->fileTransportCallback, $this, $message);
 		} else {
 			$time = microtime(true);
 			$file = $path . '/' . date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.txt';
