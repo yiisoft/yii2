@@ -20,7 +20,7 @@ class GiiAsset extends AssetBundle
 	/**
 	 * @inheritdoc
 	 */
-	public $sourcePath = '@yii/gii/assets';
+	public $sourcePath = '@gii/assets';
 	/**
 	 * @inheritdoc
 	 */
