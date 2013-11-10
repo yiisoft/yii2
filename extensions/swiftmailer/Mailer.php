@@ -104,7 +104,7 @@ class Mailer extends BaseMailer
 	/**
 	 * @inheritdoc
 	 */
-	public function send($message)
+	protected function sendMessage($message)
 	{
 		$address = $message->getTo();
 		if (is_array($address)) {

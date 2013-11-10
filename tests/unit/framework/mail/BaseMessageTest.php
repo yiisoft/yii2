@@ -71,7 +71,7 @@ class TestMailer extends BaseMailer
 	public $messageClass = 'yiiunit\framework\mail\TestMessage';
 	public $sentMessages = array();
 
-	public function send($message)
+	protected function sendMessage($message)
 	{
 		$this->sentMessages[] = $message;
 	}
