@@ -53,10 +53,13 @@ abstract class BaseListView extends Widget
 	 */
 	public $summary;
 	/**
-	 * @var string|boolean the HTML content to be displayed when [[dataProvider]] does not have any data.
-	 * If false, the list view will still be displayed (without body content though).
+	 * @var boolean whether to show the list view if [[dataProvider]] returns no data.
 	 */
-	public $empty;
+	public $showOnEmpty = false;
+	/**
+	 * @var string the HTML content to be displayed when [[dataProvider]] does not have any data.
+	 */
+	public $emptyText;
 	/**
 	 * @var string the layout that determines how different sections of the list view should be organized.
 	 * The following tokens will be replaced with the corresponding section contents:
@@ -83,6 +86,9 @@ abstract class BaseListView extends Widget
 		if ($this->dataProvider === null) {
 			throw new InvalidConfigException('The "dataProvider" property must be set.');
 		}
+		if ($this->emptyText === null) {
+			$this->emptyText = Yii::t('yii', 'No results found.');
+		}
 		$this->dataProvider->prepare();
 	}
 
@@ -91,13 +97,13 @@ abstract class BaseListView extends Widget
 	 */
 	public function run()
 	{
-		if ($this->dataProvider->getCount() > 0 || $this->empty === false) {
+		if ($this->dataProvider->getCount() > 0 || $this->showOnEmpty) {
 			$content = preg_replace_callback("/{\\w+}/", function ($matches) {
 				$content = $this->renderSection($matches[0]);
 				return $content === false ? $matches[0] : $content;
 			}, $this->layout);
 		} else {
-			$content = '<div class="empty">' . ($this->empty === null ? Yii::t('yii', 'No results found.') : $this->empty) . '</div>';
+			$content = $this->renderEmpty();
 		}
 		$tag = ArrayHelper::remove($this->options, 'tag', 'div');
 		echo Html::tag($tag, $content, $this->options);
@@ -123,6 +129,16 @@ abstract class BaseListView extends Widget
 			default:
 				return false;
 		}
+	}
+
+	/**
+	 * Renders the HTML content indicating that the list view has no data.
+	 * @return string the rendering result
+	 * @see emptyText
+	 */
+	public function renderEmpty()
+	{
+		return '<div class="empty">' . ($this->emptyText === null ? Yii::t('yii', 'No results found.') : $this->emptyText) . '</div>';
 	}
 
 	/**
