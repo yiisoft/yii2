@@ -56,7 +56,7 @@ class SphinxTestCase extends TestCase
 	protected static function loadClassMap()
 	{
 		$baseNameSpace = 'yii/sphinx';
-		$basePath = realpath(__DIR__. '/../../../../extensions/sphinx/yii/sphinx');
+		$basePath = realpath(__DIR__. '/../../../../extensions/sphinx');
 		$files = FileHelper::findFiles($basePath);
 		foreach ($files as $file) {
 			$classRelativePath = str_replace($basePath, '', $file);
