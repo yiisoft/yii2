@@ -82,7 +82,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public $flashVar = '__flash';
 
 	/**
-	 * @var array parameter-value pairs to override default session cookie parameters
+	 * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
+	 * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
+	 * @see setCookieParams()
 	 */
 	public $cookieParams = ['httpOnly' => true];
 
