@@ -308,13 +308,12 @@ class ActiveQuery extends Query
 				$childName = null;
 			}
 
-			$t = strtolower($name);
-			if (!isset($relations[$t])) {
+			if (!isset($relations[$name])) {
 				$relation = $model->getRelation($name);
 				$relation->primaryModel = null;
-				$relations[$t] = $relation;
+				$relations[$name] = $relation;
 			} else {
-				$relation = $relations[$t];
+				$relation = $relations[$name];
 			}
 
 			if (isset($childName)) {
