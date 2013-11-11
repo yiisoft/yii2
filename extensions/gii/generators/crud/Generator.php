@@ -341,7 +341,9 @@ class Generator extends \yii\gii\Generator
 
 	public function generateUrlParams()
 	{
-		$pks = $this->getTableSchema()->primaryKey;
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		$pks = $class::primaryKey();
 		if (count($pks) === 1) {
 			return "'id' => \$model->{$pks[0]}";
 		} else {
@@ -355,7 +357,9 @@ class Generator extends \yii\gii\Generator
 
 	public function generateActionParams()
 	{
-		$pks = $this->getTableSchema()->primaryKey;
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		$pks = $class::primaryKey();
 		if (count($pks) === 1) {
 			return '$id';
 		} else {
@@ -366,7 +370,9 @@ class Generator extends \yii\gii\Generator
 	public function generateActionParamComments()
 	{
 		$table = $this->getTableSchema();
-		$pks = $table->primaryKey;
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		$pks = $class::primaryKey();
 		if (count($pks) === 1) {
 			return ['@param ' . $table->columns[$pks[0]]->phpType . ' $id'];
 		} else {
