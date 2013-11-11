@@ -343,10 +343,10 @@ class GridView extends BaseListView
 		}
 
 		if (empty($rows)) {
-			return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
-		} else {
 			$colspan = count($this->columns);
 			return "<tbody>\n<tr><td colspan=\"$colspan\">" . $this->renderEmpty() . "</td></tr>\n</tbody>";
+		} else {
+			return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
 		}
 	}
 
