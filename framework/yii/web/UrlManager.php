@@ -251,7 +251,7 @@ class UrlManager extends Component
 			if (!empty($params)) {
 				$url .= '&' . http_build_query($params);
 			}
-			return $url;
+			return $url . $anchor;
 		}
 	}
 
