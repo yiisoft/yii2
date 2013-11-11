@@ -3,6 +3,7 @@
 namespace yiiunit\extensions\sphinx;
 
 use yii\db\DataReader;
+use yii\db\Expression;
 
 /**
  * @group sphinx
@@ -128,12 +129,34 @@ class CommandTest extends SphinxTestCase
 		$command = $db->createCommand()->update(
 			'yii2_test_rt_index',
 			[
-				'title' => 'Test title',
-				'content' => 'Test content',
 				'type_id' => $newTypeId,
 			],
 			'id = 1'
 		);
 		$this->assertEquals(1, $command->execute(), 'Unable to execute update!');
+
+		list($row) = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
+		$this->assertEquals($newTypeId, $row['type_id'], 'Unable to update attribute value!');
+	}
+
+	/**
+	 * @depends testInsert
+	 */
+	public function testDelete()
+	{
+		$db = $this->getConnection();
+
+		$db->createCommand()->insert('yii2_test_rt_index', [
+			'title' => 'Test title',
+			'content' => 'Test content',
+			'type_id' => 2,
+			'id' => 1,
+		])->execute();
+
+		$command = $db->createCommand()->delete('yii2_test_rt_index', 'id = 1');
+		$this->assertEquals(1, $command->execute(), 'Unable to execute delete!');
+
+		$rows = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
+		$this->assertEquals(0, count($rows), 'Unable to delete record!');
 	}
 }

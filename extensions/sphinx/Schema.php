@@ -19,6 +19,23 @@ use yii\db\TableSchema;
 class Schema extends \yii\db\mysql\Schema
 {
 	/**
+	 * @var array mapping from physical column types (keys) to abstract column types (values)
+	 */
+	public $typeMap = [
+		'field' => self::TYPE_STRING,
+		'string' => self::TYPE_STRING,
+		'ordinal' => self::TYPE_STRING,
+		'integer' => self::TYPE_INTEGER,
+		'int' => self::TYPE_INTEGER,
+		'uint' => self::TYPE_INTEGER,
+		'bigint' => self::TYPE_BIGINT,
+		'timestamp' => self::TYPE_TIMESTAMP,
+		'bool' => self::TYPE_BOOLEAN,
+		'float' => self::TYPE_FLOAT,
+		'mva' => self::TYPE_STRING,
+	];
+
+	/**
 	 * Creates a query builder for the database.
 	 * This method may be overridden by child classes to create a DBMS-specific query builder.
 	 * @return QueryBuilder query builder instance
