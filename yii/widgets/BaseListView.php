@@ -147,6 +147,9 @@ abstract class BaseListView extends Widget
 	public function renderSummary()
 	{
 		$count = $this->dataProvider->getCount();
+		if ($count <= 0) {
+			return '';
+		}
 		if (($pagination = $this->dataProvider->getPagination()) !== false) {
 			$totalCount = $this->dataProvider->getTotalCount();
 			$begin = $pagination->getPage() * $pagination->pageSize + 1;
