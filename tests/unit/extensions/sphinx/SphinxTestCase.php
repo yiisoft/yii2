@@ -75,7 +75,7 @@ class SphinxTestCase extends TestCase
 		if (!$reset && $this->sphinx) {
 			return $this->sphinx;
 		}
-		$db = new \yii\db\Connection;
+		$db = new \yii\sphinx\Connection;
 		$db->dsn = $this->sphinxConfig['dsn'];
 		if (isset($this->sphinxConfig['username'])) {
 			$db->username = $this->sphinxConfig['username'];
@@ -97,5 +97,16 @@ class SphinxTestCase extends TestCase
 		}
 		$this->sphinx = $db;
 		return $db;
+	}
+
+	/**
+	 * Truncates the runtime index.
+	 * @param string $indexName index name.
+	 */
+	protected function truncateRuntimeIndex($indexName)
+	{
+		if ($this->sphinx) {
+			$this->sphinx->createCommand('TRUNCATE RTINDEX ' . $indexName)->execute();
+		}
 	}
 }

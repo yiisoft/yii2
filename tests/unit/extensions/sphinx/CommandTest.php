@@ -9,6 +9,14 @@ use yii\db\DataReader;
  */
 class CommandTest extends SphinxTestCase
 {
+	protected function tearDown()
+	{
+		$this->truncateRuntimeIndex('yii2_test_rt_index');
+		parent::tearDown();
+	}
+
+	// Tests :
+
 	public function testExecute()
 	{
 		$db = $this->getConnection();
@@ -81,5 +89,51 @@ class CommandTest extends SphinxTestCase
 		$command = $db->createCommand('bad SQL');
 		$this->setExpectedException('\yii\db\Exception');
 		$command->query();
+	}
+
+	/**
+	 * @depends testQuery
+	 */
+	public function testInsert()
+	{
+		$db = $this->getConnection();
+
+		$command = $db->createCommand()->insert('yii2_test_rt_index', [
+			'title' => 'Test title',
+			'content' => 'Test content',
+			'type_id' => 2,
+			'id' => 1,
+		]);
+		$this->assertEquals(1, $command->execute(), 'Unable to execute insert!');
+
+		$rows = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
+		$this->assertEquals(1, count($rows), 'No row inserted!');
+	}
+
+	/**
+	 * @depends testInsert
+	 */
+	public function testUpdate()
+	{
+		$db = $this->getConnection();
+
+		$db->createCommand()->insert('yii2_test_rt_index', [
+			'title' => 'Test title',
+			'content' => 'Test content',
+			'type_id' => 2,
+			'id' => 1,
+		])->execute();
+
+		$newTypeId = 5;
+		$command = $db->createCommand()->update(
+			'yii2_test_rt_index',
+			[
+				'title' => 'Test title',
+				'content' => 'Test content',
+				'type_id' => $newTypeId,
+			],
+			'id = 1'
+		);
+		$this->assertEquals(1, $command->execute(), 'Unable to execute update!');
 	}
 }
