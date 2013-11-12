@@ -768,12 +768,7 @@ class View extends Component
 	public function registerJsFile($url, $options = [], $key = null)
 	{
 		$position = isset($options['position']) ? $options['position'] : self::POS_END;
-		if (Yii::$app->getRequest()->isAjax && isset($options['filter']) && false === $options['filter'])
-		{
-			$headers = Yii::$app->getResponse()->getHeaders();
-			$headers->add('X-Asset-Filter', $url);
-		}
-		unset($options['position'], $options['filter']);
+		unset($options['position']);
 		$key = $key ?: $url;
 		$this->jsFiles[$position][$key] = Html::jsFile($url, $options);
 	}
