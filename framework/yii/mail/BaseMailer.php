@@ -210,7 +210,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		if (is_array($address)) {
 			$address = implode(', ', array_keys($address));
 		}
-		Yii::trace('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
+		Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
 
 		if ($this->useFileTransport) {
 			return $this->saveMessage($message);
