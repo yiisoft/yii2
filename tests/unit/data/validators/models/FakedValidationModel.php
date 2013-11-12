@@ -29,7 +29,7 @@ class FakedValidationModel extends Model
 	{
 		return [
 			[['val_attr_a', 'val_attr_b'], 'required', 'on' => 'reqTest'],
-			[['val_attr_c'], 'integer'],
+			['val_attr_c', 'integer'],
 		];
 	}
 
