@@ -1,14 +1,14 @@
 <?php
-use frontend\config\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
+use frontend\config\AppAsset;
 use frontend\widgets\Alert;
 
 /**
- * @var $this \yii\web\View
- * @var $content string
+ * @var \yii\web\View $this
+ * @var string $content
  */
 AppAsset::register($this);
 ?>
@@ -49,10 +49,10 @@ AppAsset::register($this);
 	?>
 
 	<div class="container">
-	<?=Breadcrumbs::widget([
+	<?= Breadcrumbs::widget([
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-	]); ?>
-	<?=Alert::widget()?>
+	]) ?>
+	<?= Alert::widget() ?>
 	<?= $content ?>
 	</div>
 
