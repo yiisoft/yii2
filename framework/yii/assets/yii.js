@@ -170,15 +170,27 @@ yii = (function ($) {
 				}
 			});
 			
+			// attach a done event to get response headers
+			var assetFilter = [];
+			$.ajaxPrefilter(function (options, originalOptions, xhr) {
+				if ("script" !== options.dataType) {
+					xhr.done(function (data, status, xhr) {
+						var filter = xhr.getResponseHeader('X-Asset-Filter');
+						$.merge(assetFilter, (filter || '').split(',').map($.trim));
+					});
+				}
+			});
+			
 			// filter out already included javascript files
-			var loadedAssets = [];
-			$.ajaxPrefilter("script", function(options, originalOptions, jqXHR) {
-				if (-1 !== options.url.indexOf('filter=false')) {
-					options.url = options.url.replace(/(\?filter=false$)|(filter=false&)|(&filter=false)/i, '');
-				} else {
-					$('script[src="' + options.url.match(/(http:\/\/.*?)?(\/.+)/i)[2] + '"]' ).length || -1 !== $.inArray(options.url, loadedAssets)
-						? jqXHR.abort()
-						: loadedAssets.push(options.url);
+			var prefixStrip = /(http[s]?:\/\/.*?)?(\/.+)/i;
+			var loadedAssets = $('script').filter(function() { return this.src; }).map(function() { return prefixStrip.exec(this.src)[2]; }).toArray();
+			$.ajaxPrefilter('script', function (options, originalOptions, xhr) {
+				var url = prefixStrip.exec(options.url)[2];
+				if (-1 === $.inArray(url, assetFilter) && -1 !== $.inArray(url, loadedAssets)) {
+					xhr.abort();
+				}
+				if (-1 === $.inArray(url, loadedAssets)) {
+					loadedAssets.push(url);
 				}
 			});
 
@@ -188,6 +200,7 @@ yii = (function ($) {
 				if (url) {
 					window.location = url;
 				}
+				assetFilter = [];
 			});
 
 			// handle data-confirm and data-method for clickable elements
