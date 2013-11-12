@@ -39,7 +39,7 @@ class ValidatorTest extends TestCase
 		$val = TestValidator::createValidator(
 			'boolean',
 			$model,
-			'attr_test1, attr_test2',
+			['attr_test1', 'attr_test2'],
 			['on' => ['a', 'b']]
 		);
 		$this->assertInstanceOf(BooleanValidator::className(), $val);
@@ -48,8 +48,8 @@ class ValidatorTest extends TestCase
 		$val = TestValidator::createValidator(
 			'boolean',
 			$model,
-			'attr_test1, attr_test2',
-			['on' => 'a, b', 'except' => 'c,d,e']
+			['attr_test1', 'attr_test2'],
+			['on' => ['a', 'b'], 'except' => ['c', 'd', 'e']]
 		);
 		$this->assertInstanceOf(BooleanValidator::className(), $val);
 		$this->assertSame(['a', 'b'], $val->on);
