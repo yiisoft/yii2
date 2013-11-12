@@ -26,3 +26,16 @@ CREATE TABLE IF NOT EXISTS `yii2_test_item` (
 INSERT INTO `yii2_test_item` (`id`, `name`, `description`, `category_id`, `price`) VALUES
 (1, 'pencil', 'Simple pencil', 1, 2.5),
 (2, 'table', 'Wooden table', 2, 100);
+
+CREATE TABLE IF NOT EXISTS `yii2_test_article_tag` (
+  `article_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY (`article_id`,`tag_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `yii2_test_article_tag` (`article_id`, `tag_id`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 3),
+(2, 4);

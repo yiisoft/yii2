@@ -86,9 +86,6 @@ class Schema extends \yii\db\mysql\Schema
 			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey) {
 				$table->primaryKey[] = $column->name;
-				if ($column->autoIncrement) {
-					$table->sequenceName = '';
-				}
 			}
 		}
 		return true;
@@ -104,9 +101,9 @@ class Schema extends \yii\db\mysql\Schema
 		$column = new ColumnSchema;
 
 		$column->name = $info['Field'];
+		$column->isPrimaryKey = ($column->name == 'id');
 		// Not supported :
 		//$column->allowNull = $info['Null'] === 'YES';
-		//$column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
 		//$column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;
 		//$column->comment = $info['Comment'];
 
