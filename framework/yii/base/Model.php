@@ -100,7 +100,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 *
 	 * where
 	 *
-	 *  - attribute list: required, specifies the attributes array to be validated;
+	 *  - attribute list: required, specifies the attributes array to be validated, for single attribute you can pass string;
 	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
 	 *    class method, the name of a built-in validator, or a validator class name (or its path alias).
 	 *  - on: optional, specifies the [[scenario|scenarios]] array when the validation
@@ -128,15 +128,15 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * ~~~
 	 * [
 	 *     // built-in "required" validator
-	 *     [['username'], 'required'],
+	 *     [['username', 'password'], 'required'],
 	 *     // built-in "string" validator customized with "min" and "max" properties
-	 *     [['username'], 'string', 'min' => 3, 'max' => 12],
+	 *     ['username', 'string', 'min' => 3, 'max' => 12],
 	 *     // built-in "compare" validator that is used in "register" scenario only
-	 *     [['password'], 'compare', 'compareAttribute' => 'password2', 'on' => 'register'],
+	 *     ['password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'],
 	 *     // an inline validator defined via the "authenticate()" method in the model class
-	 *     [['password'], 'authenticate', 'on' => 'login'],
+	 *     ['password', 'authenticate', 'on' => 'login'],
 	 *     // a validator of class "DateRangeValidator"
-	 *     [['dateRange'], 'DateRangeValidator'],
+	 *     ['dateRange', 'DateRangeValidator'],
 	 * ];
 	 * ~~~
 	 *
