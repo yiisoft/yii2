@@ -131,17 +131,9 @@ abstract class Validator extends Component
 	 * @param array $params initial values to be applied to the validator properties
 	 * @return Validator the validator
 	 */
-	public static function createValidator($type, $object, $attributes, $params = [])
+	public static function createValidator($type, $object, array $attributes, $params = [])
 	{
-		$params['attributes'] = (array) $attributes;
-
-		if (isset($params['on'])) {
-			$params['on'] = (array) $params['on'];
-		}
-
-		if (isset($params['except'])) {
-			$params['except'] = (array) $params['except'];
-		}
+		$params['attributes'] = $attributes;
 
 		if (method_exists($object, $type)) {
 			// method-based validator
