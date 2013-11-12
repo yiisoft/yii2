@@ -116,8 +116,8 @@ class Request extends \yii\base\Request
 	/**
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
 	 * request tunneled through POST. Default to '_method'.
-	 * @see getMethod
-	 * @see getRestParams
+	 * @see getMethod()
+	 * @see getRestParams()
 	 */
 	public $restVar = '_method';
 
@@ -242,7 +242,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns the request parameters for the RESTful request.
 	 * @return array the RESTful request parameters
-	 * @see getMethod
+	 * @see getMethod()
 	 */
 	public function getRestParams()
 	{
@@ -298,7 +298,7 @@ class Request extends \yii\base\Request
 	 * @param string $name the GET parameter name. If not specified, whole $_GET is returned.
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
 	 * @return mixed the GET parameter value
-	 * @see getPost
+	 * @see getPost()
 	 */
 	public function get($name = null, $defaultValue = null)
 	{
@@ -324,7 +324,7 @@ class Request extends \yii\base\Request
 	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
 	 * @property array the POST request parameter values
 	 * @return mixed the POST parameter value
-	 * @see get
+	 * @see get()
 	 */
 	public function getPost($name = null, $defaultValue = null)
 	{
@@ -387,7 +387,7 @@ class Request extends \yii\base\Request
 	 * By default this is determined based on the user request information.
 	 * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
 	 * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.yiiframework.com`)
-	 * @see setHostInfo
+	 * @see setHostInfo()
 	 */
 	public function getHostInfo()
 	{
@@ -426,7 +426,7 @@ class Request extends \yii\base\Request
 	 * This is similar to [[scriptUrl]] except that it does not include the script file name,
 	 * and the ending slashes are removed.
 	 * @return string the relative URL for the application
-	 * @see setScriptUrl
+	 * @see setScriptUrl()
 	 */
 	public function getBaseUrl()
 	{
@@ -743,7 +743,7 @@ class Request extends \yii\base\Request
 	 * Defaults to 80, or the port specified by the server if the current
 	 * request is insecure.
 	 * @return integer port number for insecure requests.
-	 * @see setPort
+	 * @see setPort()
 	 */
 	public function getPort()
 	{
@@ -774,7 +774,7 @@ class Request extends \yii\base\Request
 	 * Defaults to 443, or the port specified by the server if the current
 	 * request is secure.
 	 * @return integer port number for secure requests.
-	 * @see setSecurePort
+	 * @see setSecurePort()
 	 */
 	public function getSecurePort()
 	{
