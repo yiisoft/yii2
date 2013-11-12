@@ -129,8 +129,8 @@ class User extends Component
 	 * Returns the identity object associated with the currently logged user.
 	 * @return IdentityInterface the identity object associated with the currently logged user.
 	 * Null is returned if the user is not logged in (not authenticated).
-	 * @see login
-	 * @see logout
+	 * @see login()
+	 * @see logout()
 	 */
 	public function getIdentity()
 	{
@@ -266,7 +266,7 @@ class User extends Component
 	 * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
 	 * Please refer to [[setReturnUrl()]] on accepted format of the URL.
 	 * @return string the URL that the user should be redirected to after login.
-	 * @see loginRequired
+	 * @see loginRequired()
 	 */
 	public function getReturnUrl($defaultUrl = null)
 	{
@@ -413,7 +413,7 @@ class User extends Component
 	 * information in the cookie.
 	 * @param IdentityInterface $identity
 	 * @param integer $duration number of seconds that the user can remain in logged-in status.
-	 * @see loginByCookie
+	 * @see loginByCookie()
 	 */
 	protected function sendIdentityCookie($identity, $duration)
 	{

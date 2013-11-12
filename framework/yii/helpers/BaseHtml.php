@@ -86,7 +86,7 @@ class BaseHtml
 	 * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
 	 * HTML entities in `$content` will not be further encoded.
 	 * @return string the encoded content
-	 * @see decode
+	 * @see decode()
 	 * @see http://www.php.net/manual/en/function.htmlspecialchars.php
 	 */
 	public static function encode($content, $doubleEncode = true)
@@ -99,7 +99,7 @@ class BaseHtml
 	 * This is the opposite of [[encode()]].
 	 * @param string $content the content to be decoded
 	 * @return string the decoded content
-	 * @see encode
+	 * @see encode()
 	 * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
 	 */
 	public static function decode($content)
@@ -116,8 +116,8 @@ class BaseHtml
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated HTML tag
-	 * @see beginTag
-	 * @see endTag
+	 * @see beginTag()
+	 * @see endTag()
 	 */
 	public static function tag($name, $content = '', $options = [])
 	{
@@ -132,8 +132,8 @@ class BaseHtml
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated start tag
-	 * @see endTag
-	 * @see tag
+	 * @see endTag()
+	 * @see tag()
 	 */
 	public static function beginTag($name, $options = [])
 	{
@@ -144,8 +144,8 @@ class BaseHtml
 	 * Generates an end tag.
 	 * @param string $name the tag name
 	 * @return string the generated end tag
-	 * @see beginTag
-	 * @see tag
+	 * @see beginTag()
+	 * @see tag()
 	 */
 	public static function endTag($name)
 	{
@@ -187,7 +187,7 @@ class BaseHtml
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated link tag
-	 * @see url
+	 * @see url()
 	 */
 	public static function cssFile($url, $options = [])
 	{
@@ -203,7 +203,7 @@ class BaseHtml
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated script tag
-	 * @see url
+	 * @see url()
 	 */
 	public static function jsFile($url, $options = [])
 	{
@@ -222,7 +222,7 @@ class BaseHtml
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated form start tag.
-	 * @see endForm
+	 * @see endForm()
 	 */
 	public static function beginForm($action = '', $method = 'post', $options = [])
 	{
@@ -271,7 +271,7 @@ class BaseHtml
 	/**
 	 * Generates a form end tag.
 	 * @return string the generated tag
-	 * @see beginForm
+	 * @see beginForm()
 	 */
 	public static function endForm()
 	{
@@ -290,7 +290,7 @@ class BaseHtml
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated hyperlink
-	 * @see url
+	 * @see url()
 	 */
 	public static function a($text, $url = null, $options = [])
 	{

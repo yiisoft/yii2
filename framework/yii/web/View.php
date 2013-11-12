@@ -72,7 +72,7 @@ class View extends \yii\base\View
 	/**
 	 * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
 	 * are the registered [[AssetBundle]] objects.
-	 * @see registerAssetBundle
+	 * @see registerAssetBundle()
 	 */
 	public $assetBundles = [];
 	/**
@@ -81,32 +81,32 @@ class View extends \yii\base\View
 	public $title;
 	/**
 	 * @var array the registered meta tags.
-	 * @see registerMetaTag
+	 * @see registerMetaTag()
 	 */
 	public $metaTags;
 	/**
 	 * @var array the registered link tags.
-	 * @see registerLinkTag
+	 * @see registerLinkTag()
 	 */
 	public $linkTags;
 	/**
 	 * @var array the registered CSS code blocks.
-	 * @see registerCss
+	 * @see registerCss()
 	 */
 	public $css;
 	/**
 	 * @var array the registered CSS files.
-	 * @see registerCssFile
+	 * @see registerCssFile()
 	 */
 	public $cssFiles;
 	/**
 	 * @var array the registered JS code blocks
-	 * @see registerJs
+	 * @see registerJs()
 	 */
 	public $js;
 	/**
 	 * @var array the registered JS files.
-	 * @see registerJsFile
+	 * @see registerJsFile()
 	 */
 	public $jsFiles;
 

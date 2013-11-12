@@ -328,7 +328,7 @@ class BaseInflector
 	 * Converts a word like "send_email" to "SendEmail". It
 	 * will remove non alphanumeric character from the word, so
 	 * "who's online" will be converted to "WhoSOnline"
-	 * @see variablize
+	 * @see variablize()
 	 * @param string $word the word to CamelCase
 	 * @return string
 	 */
