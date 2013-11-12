@@ -260,7 +260,7 @@ class Command extends \yii\base\Component
 
 		$rawSql = $this->getRawSql();
 
-		Yii::trace($rawSql, __METHOD__);
+		Yii::info($rawSql, __METHOD__);
 
 		if ($sql == '') {
 			return 0;
@@ -364,7 +364,7 @@ class Command extends \yii\base\Component
 		$db = $this->db;
 		$rawSql = $this->getRawSql();
 
-		Yii::trace($rawSql, __METHOD__);
+		Yii::info($rawSql, __METHOD__);
 
 		/** @var $cache \yii\caching\Cache */
 		if ($db->enableQueryCache && $method !== '') {
