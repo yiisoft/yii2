@@ -10,12 +10,12 @@ echo "<?php\n";
 
 class <?= $className ?> extends \yii\db\Migration
 {
-	public function up()
+	public function safeUp()
 	{
 
 	}
 
-	public function down()
+	public function safeDown()
 	{
 		echo "<?= $className ?> cannot be reverted.\n";
 		return false;
