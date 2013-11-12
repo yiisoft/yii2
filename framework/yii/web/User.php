@@ -180,6 +180,9 @@ class User extends Component
 	{
 		if ($this->beforeLogin($identity, false)) {
 			$this->switchIdentity($identity, $duration);
+			$id = $identity->getId();
+			$ip = Yii::$app->getRequest()->getUserIP();
+			Yii::info("User '$id' logged in from $ip.", __METHOD__);
 			$this->afterLogin($identity, false);
 		}
 		return !$this->getIsGuest();
@@ -205,6 +208,8 @@ class User extends Component
 				if ($identity !== null && $identity->validateAuthKey($authKey)) {
 					if ($this->beforeLogin($identity, true)) {
 						$this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
+						$ip = Yii::$app->getRequest()->getUserIP();
+						Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
 						$this->afterLogin($identity, true);
 					}
 				} elseif ($identity !== null) {
@@ -225,6 +230,9 @@ class User extends Component
 		$identity = $this->getIdentity();
 		if ($identity !== null && $this->beforeLogout($identity)) {
 			$this->switchIdentity(null);
+			$id = $identity->getId();
+			$ip = Yii::$app->getRequest()->getUserIP();
+			Yii::info("User '$id' logged out from $ip.", __METHOD__);
 			if ($destroySession) {
 				Yii::$app->getSession()->destroy();
 			}
