@@ -410,7 +410,7 @@ class View extends Component
 	{
 		$properties['id'] = $id;
 		$properties['view'] = $this;
-		/** @var $cache FragmentCache */
+		/** @var FragmentCache $cache */
 		$cache = FragmentCache::begin($properties);
 		if ($cache->getCachedContent() !== false) {
 			$this->endCache();

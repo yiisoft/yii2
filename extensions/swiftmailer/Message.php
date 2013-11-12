@@ -192,7 +192,7 @@ class Message extends BaseMessage
 			$partFound = false;
 			foreach ($parts as $key => $part) {
 				if (!($part instanceof \Swift_Mime_Attachment)) {
-					/* @var $part \Swift_Mime_MimePart */
+					/* @var \Swift_Mime_MimePart $part */
 					if ($part->getContentType() == $contentType) {
 						unset($parts[$key]);
 						$partFound = true;

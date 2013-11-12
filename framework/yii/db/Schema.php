@@ -92,7 +92,7 @@ abstract class Schema extends Object
 		$realName = $this->getRawTableName($name);
 
 		if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-			/** @var $cache Cache */
+			/** @var Cache $cache */
 			$cache = is_string($db->schemaCache) ? Yii::$app->getComponent($db->schemaCache) : $db->schemaCache;
 			if ($cache instanceof Cache) {
 				$key = $this->getCacheKey($name);
@@ -215,7 +215,7 @@ abstract class Schema extends Object
 	 */
 	public function refresh()
 	{
-		/** @var $cache Cache */
+		/** @var Cache $cache */
 		$cache = is_string($this->db->schemaCache) ? Yii::$app->getComponent($this->db->schemaCache) : $this->db->schemaCache;
 		if ($this->db->enableSchemaCache && $cache instanceof Cache) {
 			GroupDependency::invalidate($cache, $this->getCacheGroup());
