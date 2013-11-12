@@ -55,9 +55,11 @@ class ActiveRelation extends ActiveQuery
 	 */
 	public function __clone()
 	{
+		// make a clone of "via" object so that the same query object can be reused multiple times
 		if (is_object($this->via)) {
-			// make a clone of "via" object so that the same query object can be reused multiple times
 			$this->via = clone $this->via;
+		} elseif (is_array($this->via)) {
+			$this->via = [$this->via[0], clone $this->via[1]];
 		}
 	}
 
