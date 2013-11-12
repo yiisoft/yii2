@@ -91,19 +91,19 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 *
 	 * ~~~
 	 * [
-	 *     'attribute list',
+	 *     ['attribute1', 'attribute2'],
 	 *     'validator type',
-	 *     'on' => 'scenario name',
+	 *     'on' => ['scenario1', 'scenario2'],
 	 *     ...other parameters...
 	 * ]
 	 * ~~~
 	 *
 	 * where
 	 *
-	 *  - attribute list: required, specifies the attributes (separated by commas) to be validated;
+	 *  - attribute list: required, specifies the attributes array to be validated;
 	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
 	 *    class method, the name of a built-in validator, or a validator class name (or its path alias).
-	 *  - on: optional, specifies the [[scenario|scenarios]] (separated by commas) when the validation
+	 *  - on: optional, specifies the [[scenario|scenarios]] array when the validation
 	 *    rule can be applied. If this option is not set, the rule will apply to all scenarios.
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
 	 *    Please refer to individual validator class API for possible properties.
@@ -128,15 +128,15 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * ~~~
 	 * [
 	 *     // built-in "required" validator
-	 *     ['username', 'required'],
+	 *     [['username'], 'required'],
 	 *     // built-in "string" validator customized with "min" and "max" properties
-	 *     ['username', 'string', 'min' => 3, 'max' => 12],
+	 *     [['username'], 'string', 'min' => 3, 'max' => 12],
 	 *     // built-in "compare" validator that is used in "register" scenario only
-	 *     ['password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'],
+	 *     [['password'], 'compare', 'compareAttribute' => 'password2', 'on' => 'register'],
 	 *     // an inline validator defined via the "authenticate()" method in the model class
-	 *     ['password', 'authenticate', 'on' => 'login'],
+	 *     [['password'], 'authenticate', 'on' => 'login'],
 	 *     // a validator of class "DateRangeValidator"
-	 *     ['dateRange', 'DateRangeValidator'],
+	 *     [['dateRange'], 'DateRangeValidator'],
 	 * ];
 	 * ~~~
 	 *
