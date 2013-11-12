@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use ArrayAccess;
 use ArrayObject;
 use ArrayIterator;
 use ReflectionClass;
@@ -51,7 +50,7 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements IteratorAggregate, ArrayAccess
+class Model extends Component implements IteratorAggregate
 {
 	/**
 	 * The name of the default scenario.
@@ -785,52 +784,5 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	{
 		$attributes = $this->getAttributes();
 		return new ArrayIterator($attributes);
-	}
-
-	/**
-	 * Returns whether there is an element at the specified offset.
-	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `isset($model[$offset])`.
-	 * @param mixed $offset the offset to check on
-	 * @return boolean
-	 */
-	public function offsetExists($offset)
-	{
-		return $this->$offset !== null;
-	}
-
-	/**
-	 * Returns the element at the specified offset.
-	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$value = $model[$offset];`.
-	 * @param mixed $offset the offset to retrieve element.
-	 * @return mixed the element at the offset, null if no element is found at the offset
-	 */
-	public function offsetGet($offset)
-	{
-		return $this->$offset;
-	}
-
-	/**
-	 * Sets the element at the specified offset.
-	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$model[$offset] = $item;`.
-	 * @param integer $offset the offset to set element
-	 * @param mixed $item the element value
-	 */
-	public function offsetSet($offset, $item)
-	{
-		$this->$offset = $item;
-	}
-
-	/**
-	 * Sets the element value at the specified offset to null.
-	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `unset($model[$offset])`.
-	 * @param mixed $offset the offset to unset element
-	 */
-	public function offsetUnset($offset)
-	{
-		$this->$offset = null;
 	}
 }
