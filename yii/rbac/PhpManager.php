@@ -36,8 +36,8 @@ class PhpManager extends Manager
 	 * If not set, it will be using 'protected/data/rbac.php' as the data file.
 	 * Make sure this file is writable by the Web server process if the authorization
 	 * needs to be changed.
-	 * @see loadFromFile
-	 * @see saveToFile
+	 * @see loadFromFile()
+	 * @see saveToFile()
 	 */
 	public $authFile;
 
@@ -517,7 +517,7 @@ class PhpManager extends Manager
 	 * Loads the authorization data from a PHP script file.
 	 * @param string $file the file path.
 	 * @return array the authorization data
-	 * @see saveToFile
+	 * @see saveToFile()
 	 */
 	protected function loadFromFile($file)
 	{
@@ -532,7 +532,7 @@ class PhpManager extends Manager
 	 * Saves the authorization data to a PHP script file.
 	 * @param array $data the authorization data
 	 * @param string $file the file path.
-	 * @see loadFromFile
+	 * @see loadFromFile()
 	 */
 	protected function saveToFile($data, $file)
 	{

@@ -123,7 +123,7 @@ class View extends Component
 	 * existing [[context]] will be used.
 	 * @return string the rendering result
 	 * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
-	 * @see renderFile
+	 * @see renderFile()
 	 */
 	public function render($view, $params = [], $context = null)
 	{
