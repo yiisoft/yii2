@@ -150,7 +150,6 @@ class Controller extends Component implements ViewContextInterface
 	 * @param array $params the parameters to be passed to the action.
 	 * @return mixed the result of the action
 	 * @see runAction()
-	 * @see forward
 	 */
 	public function run($route, $params = [])
 	{

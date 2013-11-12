@@ -63,7 +63,6 @@ class BaseYii
 	 * The array keys are the class names (without leading backslashes), and the array values
 	 * are the corresponding class file paths (or path aliases). This property mainly affects
 	 * how [[autoload()]] works.
-	 * @see import
 	 * @see autoload()
 	 */
 	public static $classMap = [];
