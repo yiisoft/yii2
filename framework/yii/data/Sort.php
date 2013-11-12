@@ -170,9 +170,9 @@ class Sort extends Object
 	 * @var array separators used in the generated URL. This must be an array consisting of
 	 * two elements. The first element specifies the character separating different
 	 * attributes, while the second element specifies the character separating attribute name
-	 * and the corresponding sort direction. Defaults to `['.', '-']`.
+	 * and the corresponding sort direction. Defaults to `['~', '-']`.
 	 */
-	public $separators = ['.', '-'];
+	public $separators = ['~', '-'];
 	/**
 	 * @var array parameters (name => value) that should be used to obtain the current sort directions
 	 * and to create new sort URLs. If not set, $_GET will be used instead.
