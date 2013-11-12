@@ -169,7 +169,7 @@ class UrlManager extends Component
 	{
 		if ($this->enablePrettyUrl) {
 			$pathInfo = $request->getPathInfo();
-			/** @var $rule UrlRule */
+			/** @var UrlRule $rule */
 			foreach ($this->rules as $rule) {
 				if (($result = $rule->parseRequest($this, $request)) !== false) {
 					Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
@@ -224,7 +224,7 @@ class UrlManager extends Component
 		$baseUrl = $this->getBaseUrl();
 
 		if ($this->enablePrettyUrl) {
-			/** @var $rule UrlRule */
+			/** @var UrlRule $rule */
 			foreach ($this->rules as $rule) {
 				if (($url = $rule->createUrl($this, $route, $params)) !== false) {
 					if ($rule->host !== null) {
@@ -282,7 +282,7 @@ class UrlManager extends Component
 	public function getBaseUrl()
 	{
 		if ($this->_baseUrl === null) {
-			/** @var $request \yii\web\Request */
+			/** @var \yii\web\Request $request */
 			$request = Yii::$app->getRequest();
 			$this->_baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
 		}

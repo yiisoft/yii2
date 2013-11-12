@@ -112,7 +112,7 @@ abstract class Target extends Component
 	{
 		$context = [];
 		if ($this->logUser && ($user = Yii::$app->getComponent('user', false)) !== null) {
-			/** @var $user \yii\web\User */
+			/** @var \yii\web\User $user */
 			$context[] = 'User: ' . $user->getId();
 		}
 

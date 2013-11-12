@@ -120,7 +120,7 @@ class ActiveRelation extends ActiveQuery
 				$this->filterByModels($viaModels);
 			} elseif (is_array($this->via)) {
 				// via relation
-				/** @var $viaQuery ActiveRelation */
+				/** @var ActiveRelation $viaQuery */
 				list($viaName, $viaQuery) = $this->via;
 				if ($viaQuery->multiple) {
 					$viaModels = $viaQuery->all();
@@ -154,13 +154,13 @@ class ActiveRelation extends ActiveQuery
 
 		if ($this->via instanceof self) {
 			// via pivot table
-			/** @var $viaQuery ActiveRelation */
+			/** @var ActiveRelation $viaQuery */
 			$viaQuery = $this->via;
 			$viaModels = $viaQuery->findPivotRows($primaryModels);
 			$this->filterByModels($viaModels);
 		} elseif (is_array($this->via)) {
 			// via relation
-			/** @var $viaQuery ActiveRelation */
+			/** @var ActiveRelation $viaQuery */
 			list($viaName, $viaQuery) = $this->via;
 			$viaQuery->primaryModel = null;
 			$viaModels = $viaQuery->findWith($viaName, $primaryModels);
@@ -306,7 +306,7 @@ class ActiveRelation extends ActiveQuery
 			return [];
 		}
 		$this->filterByModels($primaryModels);
-		/** @var $primaryModel ActiveRecord */
+		/** @var ActiveRecord $primaryModel */
 		$primaryModel = reset($primaryModels);
 		$db = $primaryModel->getDb();
 		list ($sql, $params) = $db->getQueryBuilder()->build($this);
