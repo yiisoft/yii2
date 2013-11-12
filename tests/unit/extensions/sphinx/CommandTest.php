@@ -103,7 +103,7 @@ class CommandTest extends SphinxTestCase
 			'title' => 'Test title',
 			'content' => 'Test content',
 			'type_id' => 2,
-			'category' => [41, 42],
+			//'category' => [41, 42],
 			'id' => 1,
 		]);
 		$this->assertEquals(1, $command->execute(), 'Unable to execute insert!');
