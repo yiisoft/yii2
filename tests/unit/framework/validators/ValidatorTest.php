@@ -54,7 +54,7 @@ class ValidatorTest extends TestCase
 		$this->assertInstanceOf(BooleanValidator::className(), $val);
 		$this->assertSame(['a', 'b'], $val->on);
 		$this->assertSame(['c', 'd', 'e'], $val->except);
-		$val = TestValidator::createValidator('inlineVal', $model, 'val_attr_a');
+		$val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a']);
 		$this->assertInstanceOf(InlineValidator::className(), $val);
 		$this->assertSame('inlineVal', $val->method);
 	}
