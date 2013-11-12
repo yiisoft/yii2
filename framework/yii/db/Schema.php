@@ -291,7 +291,7 @@ abstract class Schema extends Object
 	 * then this method will do nothing.
 	 * @param string $name table name
 	 * @return string the properly quoted table name
-	 * @see quoteSimpleTableName
+	 * @see quoteSimpleTableName()
 	 */
 	public function quoteTableName($name)
 	{
@@ -316,7 +316,7 @@ abstract class Schema extends Object
 	 * then this method will do nothing.
 	 * @param string $name column name
 	 * @return string the properly quoted column name
-	 * @see quoteSimpleColumnName
+	 * @see quoteSimpleColumnName()
 	 */
 	public function quoteColumnName($name)
 	{
