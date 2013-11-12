@@ -48,4 +48,20 @@ class Connection extends \yii\db\Connection
 	{
 		return $this->getSchema()->quoteIndexName($name);
 	}
+
+	/**
+	 * Creates a command for execution.
+	 * @param string $sql the SQL statement to be executed
+	 * @param array $params the parameters to be bound to the SQL statement
+	 * @return Command the Sphinx command
+	 */
+	public function createCommand($sql = null, $params = [])
+	{
+		$this->open();
+		$command = new Command([
+			'db' => $this,
+			'sql' => $sql,
+		]);
+		return $command->bindValues($params);
+	}
 }

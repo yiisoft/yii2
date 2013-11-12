@@ -62,7 +62,7 @@ class Schema extends Object
 		'timestamp' => self::TYPE_TIMESTAMP,
 		'bool' => self::TYPE_BOOLEAN,
 		'float' => self::TYPE_FLOAT,
-		'mva' => self::TYPE_STRING,
+		'mva' => self::TYPE_INTEGER,
 	];
 
 	/**

@@ -10,7 +10,6 @@ namespace yii\sphinx;
 use Yii;
 use yii\base\Component;
 use yii\caching\Cache;
-use yii\db\DataReader;
 use yii\db\Exception;
 
 /**
@@ -432,8 +431,9 @@ class Command extends Component
 	 */
 	public function batchInsert($index, $columns, $rows)
 	{
-		$sql = $this->db->getQueryBuilder()->batchInsert($index, $columns, $rows);
-		return $this->setSql($sql);
+		$params = [];
+		$sql = $this->db->getQueryBuilder()->batchInsert($index, $columns, $rows, $params);
+		return $this->setSql($sql)->bindValues($params);
 	}
 
 	/**

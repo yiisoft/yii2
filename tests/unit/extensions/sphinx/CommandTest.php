@@ -2,7 +2,7 @@
 
 namespace yiiunit\extensions\sphinx;
 
-use yii\db\DataReader;
+use yii\sphinx\DataReader;
 use yii\db\Expression;
 
 /**
@@ -103,13 +103,52 @@ class CommandTest extends SphinxTestCase
 			'title' => 'Test title',
 			'content' => 'Test content',
 			'type_id' => 2,
-			//'category' => [41, 42],
+			'category' => [1, 2],
 			'id' => 1,
 		]);
 		$this->assertEquals(1, $command->execute(), 'Unable to execute insert!');
 
 		$rows = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
 		$this->assertEquals(1, count($rows), 'No row inserted!');
+	}
+
+	/**
+	 * @depends testInsert
+	 */
+	public function testBatchInsert()
+	{
+		$db = $this->getConnection();
+
+		$command = $db->createCommand()->batchInsert(
+			'yii2_test_rt_index',
+			[
+				'title',
+				'content',
+				'type_id',
+				'category',
+				'id',
+			],
+			[
+				[
+					'Test title 1',
+					'Test content 1',
+					1,
+					[1, 2],
+					1,
+				],
+				[
+					'Test title 2',
+					'Test content 2',
+					2,
+					[3, 4],
+					2,
+				],
+			]
+		);
+		$this->assertEquals(2, $command->execute(), 'Unable to execute batch insert!');
+
+		$rows = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
+		$this->assertEquals(2, count($rows), 'No rows inserted!');
 	}
 
 	/**
@@ -131,6 +170,7 @@ class CommandTest extends SphinxTestCase
 			'yii2_test_rt_index',
 			[
 				'type_id' => $newTypeId,
+				'category' => [3, 4],
 			],
 			'id = 1'
 		);
