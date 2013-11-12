@@ -1,5 +1,5 @@
 <?php
-$rootDir = __DIR__ . '/../..';
+$rootDir = dirname(dirname(__DIR__));
 
 $params = array_merge(
 	require($rootDir . '/common/config/params.php'),
@@ -11,11 +11,11 @@ $params = array_merge(
 return [
 	'id' => 'app-backend',
 	'basePath' => dirname(__DIR__),
-	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+	'vendorPath' => $rootDir . '/vendor',
 	'preload' => ['log'],
 	'controllerNamespace' => 'backend\controllers',
 	'modules' => [],
-	'extensions' => require(__DIR__ . '/../../vendor/yiisoft/extensions.php'),
+	'extensions' => require($rootDir . '/vendor/yiisoft/extensions.php'),
 	'components' => [
 		'request' => [
 			'enableCsrfValidation' => true,
