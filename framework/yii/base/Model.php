@@ -349,7 +349,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * $model->validators[] = $newValidator;
 	 * ~~~
 	 *
-	 * @return ArrayObject all the validators declared in the model.
+	 * @return ArrayObject|\yii\validators\Validator[] all the validators declared in the model.
 	 */
 	public function getValidators()
 	{
@@ -369,7 +369,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	{
 		$validators = [];
 		$scenario = $this->getScenario();
-		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
 			if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->attributes, true))) {
 				$validators[] = $validator;

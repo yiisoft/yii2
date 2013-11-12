@@ -117,7 +117,7 @@ class ActiveRecordTest extends DatabaseTestCase
 
 	public function testFindLazy()
 	{
-		/** @var $customer Customer */
+		/** @var Customer $customer */
 		$customer = Customer::find(2);
 		$orders = $customer->orders;
 		$this->assertEquals(2, count($orders));
@@ -137,7 +137,7 @@ class ActiveRecordTest extends DatabaseTestCase
 
 	public function testFindLazyVia()
 	{
-		/** @var $order Order */
+		/** @var Order $order */
 		$order = Order::find(1);
 		$this->assertEquals(1, $order->id);
 		$this->assertEquals(2, count($order->items));
@@ -162,7 +162,7 @@ class ActiveRecordTest extends DatabaseTestCase
 
 	public function testFindLazyViaTable()
 	{
-		/** @var $order Order */
+		/** @var Order $order */
 		$order = Order::find(1);
 		$this->assertEquals(1, $order->id);
 		$this->assertEquals(2, count($order->books));

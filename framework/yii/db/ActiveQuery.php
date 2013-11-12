@@ -122,7 +122,7 @@ class ActiveQuery extends Query
 			if ($this->asArray) {
 				$model = $row;
 			} else {
-				/** @var $class ActiveRecord */
+				/** @var ActiveRecord $class */
 				$class = $this->modelClass;
 				$model = $class::create($row);
 			}
@@ -145,7 +145,7 @@ class ActiveQuery extends Query
 	 */
 	public function createCommand($db = null)
 	{
-		/** @var $modelClass ActiveRecord */
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 		if ($db === null) {
 			$db = $modelClass::getDb();
@@ -253,7 +253,7 @@ class ActiveQuery extends Query
 				$models[$key] = $row;
 			}
 		} else {
-			/** @var $class ActiveRecord */
+			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
 			if ($this->indexBy === null) {
 				foreach ($rows as $row) {

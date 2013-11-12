@@ -367,7 +367,7 @@ class BaseYii
 		}
 
 		if (($n = func_num_args()) > 1) {
-			/** @var $reflection \ReflectionClass */
+			/** @var \ReflectionClass $reflection */
 			if (isset($reflections[$class])) {
 				$reflection = $reflections[$class];
 			} else {

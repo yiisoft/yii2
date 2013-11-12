@@ -4,8 +4,8 @@ use yii\helpers\Html;
 use yii\gii\CodeFile;
 
 /**
- * @var $this \yii\web\View
- * @var $generator \yii\gii\Generator
+ * @var \yii\web\View $this
+ * @var \yii\gii\Generator $generator
  * @var CodeFile[] $files
  * @var array $answers
  */

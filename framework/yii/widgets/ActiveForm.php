@@ -220,7 +220,7 @@ class ActiveForm extends Widget
 
 		$lines = [];
 		foreach ($models as $model) {
-			/** @var $model Model */
+			/** @var Model $model */
 			foreach ($model->getFirstErrors() as $error) {
 				$lines[] = Html::encode($error);
 			}

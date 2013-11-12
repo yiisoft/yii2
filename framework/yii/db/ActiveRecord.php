@@ -1321,9 +1321,9 @@ class ActiveRecord extends Model
 				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
 			}
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
+				/** @var ActiveRecord $viaClass */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
@@ -1396,9 +1396,9 @@ class ActiveRecord extends Model
 
 		if ($relation->via !== null) {
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
+				/** @var ActiveRecord $viaClass */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				unset($this->_related[$viaName]);
@@ -1444,7 +1444,7 @@ class ActiveRecord extends Model
 		if (!$relation->multiple) {
 			unset($this->_related[$name]);
 		} elseif (isset($this->_related[$name])) {
-			/** @var $b ActiveRecord */
+			/** @var ActiveRecord $b */
 			foreach ($this->_related[$name] as $a => $b) {
 				if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
 					unset($this->_related[$name][$a]);
