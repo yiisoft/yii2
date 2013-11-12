@@ -42,17 +42,17 @@ class Generator extends \yii\gii\Generator
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			['moduleID, controllerClass, modelClass, searchModelClass, baseControllerClass', 'filter', 'filter' => 'trim'],
-			['modelClass, searchModelClass, controllerClass, baseControllerClass, indexWidgetType', 'required'],
-			['searchModelClass', 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
-			['modelClass, controllerClass, baseControllerClass, searchModelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['modelClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
-			['baseControllerClass', 'validateClass', 'params' => ['extends' => Controller::className()]],
-			['controllerClass', 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
-			['controllerClass, searchModelClass', 'validateNewClass'],
-			['indexWidgetType', 'in', 'range' => ['grid', 'list']],
-			['modelClass', 'validateModelClass'],
-			['moduleID', 'validateModuleID'],
+			[['moduleID', 'controllerClass', 'modelClass', 'searchModelClass', 'baseControllerClass'], 'filter', 'filter' => 'trim'],
+			[['modelClass', 'searchModelClass', 'controllerClass', 'baseControllerClass', 'indexWidgetType'], 'required'],
+			[['searchModelClass'], 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
+			[['modelClass', 'controllerClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			[['modelClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
+			[['baseControllerClass'], 'validateClass', 'params' => ['extends' => Controller::className()]],
+			[['controllerClass'], 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
+			[['controllerClass', 'searchModelClass'], 'validateNewClass'],
+			[['indexWidgetType'], 'in', 'range' => ['grid', 'list']],
+			[['modelClass'], 'validateModelClass'],
+			[['moduleID'], 'validateModuleID'],
 		]);
 	}
 

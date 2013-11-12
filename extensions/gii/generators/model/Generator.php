@@ -53,17 +53,17 @@ class Generator extends \yii\gii\Generator
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			['db, ns, tableName, modelClass, baseClass', 'filter', 'filter' => 'trim'],
-			['db, ns, tableName, baseClass', 'required'],
-			['db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
-			['ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
-			['db', 'validateDb'],
-			['ns', 'validateNamespace'],
-			['tableName', 'validateTableName'],
-			['modelClass', 'validateModelClass', 'skipOnEmpty' => false],
-			['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
-			['generateRelations, generateLabelsFromComments', 'boolean'],
+			[['db', 'ns', 'tableName', 'modelClass', 'baseClass'], 'filter', 'filter' => 'trim'],
+			[['db', 'ns', 'tableName', 'baseClass'], 'required'],
+			[['db', 'modelClass'], 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
+			[['ns', 'baseClass'], 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			[['tableName'], 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
+			[['db'], 'validateDb'],
+			[['ns'], 'validateNamespace'],
+			[['tableName'], 'validateTableName'],
+			[['modelClass'], 'validateModelClass', 'skipOnEmpty' => false],
+			[['baseClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
+			[['generateRelations', 'generateLabelsFromComments'], 'boolean'],
 		]);
 	}
 

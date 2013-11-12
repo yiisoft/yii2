@@ -178,8 +178,8 @@ abstract class Generator extends Model
 	public function rules()
 	{
 		return [
-			['template', 'required', 'message' => 'A code template must be selected.'],
-			['template', 'validateTemplate'],
+			[['template'], 'required', 'message' => 'A code template must be selected.'],
+			[['template'], 'validateTemplate'],
 		];
 	}
 
