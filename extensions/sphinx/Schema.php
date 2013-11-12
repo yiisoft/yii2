@@ -7,7 +7,6 @@
 
 namespace yii\sphinx;
 
-use yii\db\ColumnSchema;
 use yii\db\TableSchema;
 
 /**
@@ -101,15 +100,9 @@ class Schema extends \yii\db\mysql\Schema
 		$column = new ColumnSchema;
 
 		$column->name = $info['Field'];
-		$column->isPrimaryKey = ($column->name == 'id');
-		// Not supported :
-		//$column->allowNull = $info['Null'] === 'YES';
-		//$column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;
-		//$column->comment = $info['Comment'];
-
-
 		$column->dbType = $info['Type'];
-		//$column->unsigned = strpos($column->dbType, 'unsigned') !== false;
+
+		$column->isPrimaryKey = ($column->name == 'id');
 
 		$type = $info['Type'];
 		if (isset($this->typeMap[$type])) {
@@ -118,11 +111,12 @@ class Schema extends \yii\db\mysql\Schema
 			$column->type = self::TYPE_STRING;
 		}
 
-		$column->phpType = $this->getColumnPhpType($column);
+		$column->isField = ($type == 'field');
+		$column->isAttribute = !$column->isField;
 
-		/*if ($column->type !== 'timestamp' || $info['Default'] !== 'CURRENT_TIMESTAMP') {
-			$column->defaultValue = $column->typecast($info['Default']);
-		}*/
+		$column->isMva = ($type == 'mva');
+
+		$column->phpType = $this->getColumnPhpType($column);
 
 		return $column;
 	}
