@@ -26,7 +26,7 @@ NavBar::begin([
 	'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
 ]);
 echo Nav::widget([
-	'options' => ['class' => 'nav navbar-nav pull-right'],
+	'options' => ['class' => 'nav navbar-nav navbar-right'],
 	'items' => [
 		['label' => 'Home', 'url' => ['default/index']],
 		['label' => 'Help', 'url' => 'http://www.yiiframework.com/doc/guide/topics.gii'],
