@@ -42,7 +42,7 @@ use yii\db\ActiveRecord;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-trait ActiveQuery
+trait ActiveQueryTrait
 {
 	/**
 	 * @var string the name of the ActiveRecord class.

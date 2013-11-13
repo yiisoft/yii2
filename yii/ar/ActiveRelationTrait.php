@@ -25,7 +25,7 @@ use yii\db\ActiveRecord;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-trait ActiveRelation
+trait ActiveRelationTrait
 {
 	/**
 	 * @var boolean whether this relation should populate all query results into AR instances.
