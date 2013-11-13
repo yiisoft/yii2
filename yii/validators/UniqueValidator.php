@@ -60,7 +60,7 @@ class UniqueValidator extends Validator
 			return;
 		}
 
-		/** @var $className \yii\db\ActiveRecord */
+		/** @var \yii\db\ActiveRecord $className */
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 

@@ -10,6 +10,8 @@ namespace yii\base;
 use Yii;
 
 /**
+ * Component is the base class that implements the *property*, *event* and *behavior* features.
+ *
  * @include @yii/base/Component.md
  *
  * @property Behavior[] $behaviors List of behaviors attached to this component. This property is read-only.
@@ -41,7 +43,7 @@ class Component extends Object
 	 * @return mixed the property value or the value of a behavior's property
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @throws InvalidCallException if the property is write-only.
-	 * @see __set
+	 * @see __set()
 	 */
 	public function __get($name)
 	{
@@ -80,7 +82,7 @@ class Component extends Object
 	 * @param mixed $value the property value
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @throws InvalidCallException if the property is read-only.
-	 * @see __get
+	 * @see __get()
 	 */
 	public function __set($name, $value)
 	{
@@ -225,8 +227,8 @@ class Component extends Object
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property is defined
-	 * @see canGetProperty
-	 * @see canSetProperty
+	 * @see canGetProperty()
+	 * @see canSetProperty()
 	 */
 	public function hasProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
@@ -246,7 +248,7 @@ class Component extends Object
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property can be read
-	 * @see canSetProperty
+	 * @see canSetProperty()
 	 */
 	public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
@@ -276,7 +278,7 @@ class Component extends Object
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property can be written
-	 * @see canGetProperty
+	 * @see canGetProperty()
 	 */
 	public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
@@ -492,7 +494,7 @@ class Component extends Object
 	 *  - an object configuration array that will be passed to [[Yii::createObject()]] to create the behavior object.
 	 *
 	 * @return Behavior the behavior object
-	 * @see detachBehavior
+	 * @see detachBehavior()
 	 */
 	public function attachBehavior($name, $behavior)
 	{
@@ -505,7 +507,7 @@ class Component extends Object
 	 * Each behavior is indexed by its name and should be a [[Behavior]] object,
 	 * a string specifying the behavior class, or an configuration array for creating the behavior.
 	 * @param array $behaviors list of behaviors to be attached to the component
-	 * @see attachBehavior
+	 * @see attachBehavior()
 	 */
 	public function attachBehaviors($behaviors)
 	{

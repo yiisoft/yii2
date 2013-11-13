@@ -281,7 +281,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			$file = $path . '/' . call_user_func($this->fileTransportCallback, $this, $message);
 		} else {
 			$time = microtime(true);
-			$file = $path . '/' . date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.txt';
+			$file = $path . '/' . date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
 		}
 		file_put_contents($file, $message->toString());
 		return true;

@@ -15,7 +15,7 @@ use yii\base\InvalidParamException;
  * Session provides session data management and the related configurations.
  *
  * Session is a Web application component that can be accessed via `Yii::$app->session`.
-
+ *
  * To start the session, call [[open()]]; To complete and send out session data, call [[close()]];
  * To destroy the session, call [[destroy()]].
  *
@@ -82,6 +82,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public $flashVar = '__flash';
 	/**
 	 * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
+	 * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httpOnly'
 	 * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
 	 */
 	private $_cookieParams = ['httpOnly' => true];

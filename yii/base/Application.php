@@ -616,10 +616,8 @@ abstract class Application extends Module
 	{
 		$category = get_class($exception);
 		if ($exception instanceof HttpException) {
-			/** @var $exception HttpException */
 			$category .= '\\' . $exception->statusCode;
 		} elseif ($exception instanceof \ErrorException) {
-			/** @var $exception \ErrorException */
 			$category .= '\\' . $exception->getSeverity();
 		}
 		Yii::error((string)$exception, $category);

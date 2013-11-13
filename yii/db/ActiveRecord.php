@@ -372,7 +372,7 @@ class ActiveRecord extends Model
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
 	 * @return mixed property value
-	 * @see getAttribute
+	 * @see getAttribute()
 	 */
 	public function __get($name)
 	{
@@ -576,7 +576,7 @@ class ActiveRecord extends Model
 	 * null will be returned.
 	 * @param string $name the attribute name
 	 * @return mixed the attribute value. Null if the attribute is not set or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getAttribute($name)
 	{
@@ -588,7 +588,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setAttribute($name, $value)
 	{
@@ -625,7 +625,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @return mixed the old attribute value. Null if the attribute is not loaded before
 	 * or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getOldAttribute($name)
 	{
@@ -637,7 +637,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the old attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setOldAttribute($name, $value)
 	{
@@ -1030,7 +1030,7 @@ class ActiveRecord extends Model
 	/**
 	 * Sets the value indicating whether the record is new.
 	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
-	 * @see getIsNewRecord
+	 * @see getIsNewRecord()
 	 */
 	public function setIsNewRecord($value)
 	{
@@ -1321,9 +1321,9 @@ class ActiveRecord extends Model
 				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
 			}
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
+				/** @var ActiveRecord $viaClass */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
@@ -1396,9 +1396,9 @@ class ActiveRecord extends Model
 
 		if ($relation->via !== null) {
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
+				/** @var ActiveRecord $viaClass */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				unset($this->_related[$viaName]);
@@ -1444,7 +1444,7 @@ class ActiveRecord extends Model
 		if (!$relation->multiple) {
 			unset($this->_related[$name]);
 		} elseif (isset($this->_related[$name])) {
-			/** @var $b ActiveRecord */
+			/** @var ActiveRecord $b */
 			foreach ($this->_related[$name] as $a => $b) {
 				if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
 					unset($this->_related[$name][$a]);

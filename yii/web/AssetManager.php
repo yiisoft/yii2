@@ -16,6 +16,22 @@ use yii\helpers\FileHelper;
 /**
  * AssetManager manages asset bundles and asset publishing.
  *
+ * AssetManager is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->assetManager`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'assetManager' => [
+ *     'bundles' => [
+ *         // you can override AssetBundle configs here
+ *     ],
+ *     //'linkAssets' => true,
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property AssetConverterInterface $converter The asset converter. Note that the type of this property
  * differs in getter and setter. See [[getConverter()]] and [[setConverter()]] for details.
  *

@@ -10,7 +10,10 @@ namespace yii\base;
 use Yii;
 
 /**
+ * Object is the base class that implements the *property* feature.
+ *
  * @include @yii/base/Object.md
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -64,7 +67,7 @@ class Object implements Arrayable
 	 * @return mixed the property value
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @throws InvalidCallException if the property is write-only
-	 * @see __set
+	 * @see __set()
 	 */
 	public function __get($name)
 	{
@@ -87,7 +90,7 @@ class Object implements Arrayable
 	 * @param mixed $value the property value
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @throws InvalidCallException if the property is read-only
-	 * @see __get
+	 * @see __get()
 	 */
 	public function __set($name, $value)
 	{
@@ -168,8 +171,8 @@ class Object implements Arrayable
 	 * @param string $name the property name
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property is defined
-	 * @see canGetProperty
-	 * @see canSetProperty
+	 * @see canGetProperty()
+	 * @see canSetProperty()
 	 */
 	public function hasProperty($name, $checkVars = true)
 	{
@@ -187,7 +190,7 @@ class Object implements Arrayable
 	 * @param string $name the property name
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property can be read
-	 * @see canSetProperty
+	 * @see canSetProperty()
 	 */
 	public function canGetProperty($name, $checkVars = true)
 	{
@@ -205,7 +208,7 @@ class Object implements Arrayable
 	 * @param string $name the property name
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property can be written
-	 * @see canGetProperty
+	 * @see canGetProperty()
 	 */
 	public function canSetProperty($name, $checkVars = true)
 	{

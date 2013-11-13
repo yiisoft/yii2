@@ -22,6 +22,22 @@ use yii\base\InvalidConfigException;
  *
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  *
+ * View is configured as an application component in [[yii\base\Application]] by default.
+ * You can access that instance via `Yii::$app->view`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'view' => [
+ *     'theme' => 'app\themes\MyTheme',
+ *     'renderers' => [
+ *         // you may add Smarty or Twig renderer here
+ *     ]
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property \yii\web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
  * component.
  *
@@ -72,7 +88,7 @@ class View extends \yii\base\View
 	/**
 	 * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
 	 * are the registered [[AssetBundle]] objects.
-	 * @see registerAssetBundle
+	 * @see registerAssetBundle()
 	 */
 	public $assetBundles = [];
 	/**
@@ -81,32 +97,32 @@ class View extends \yii\base\View
 	public $title;
 	/**
 	 * @var array the registered meta tags.
-	 * @see registerMetaTag
+	 * @see registerMetaTag()
 	 */
 	public $metaTags;
 	/**
 	 * @var array the registered link tags.
-	 * @see registerLinkTag
+	 * @see registerLinkTag()
 	 */
 	public $linkTags;
 	/**
 	 * @var array the registered CSS code blocks.
-	 * @see registerCss
+	 * @see registerCss()
 	 */
 	public $css;
 	/**
 	 * @var array the registered CSS files.
-	 * @see registerCssFile
+	 * @see registerCssFile()
 	 */
 	public $cssFiles;
 	/**
 	 * @var array the registered JS code blocks
-	 * @see registerJs
+	 * @see registerJs()
 	 */
 	public $js;
 	/**
 	 * @var array the registered JS files.
-	 * @see registerJsFile
+	 * @see registerJsFile()
 	 */
 	public $jsFiles;
 
