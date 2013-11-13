@@ -437,6 +437,58 @@ class Command extends Component
 	}
 
 	/**
+	 * Creates an REPLACE command.
+	 * For example,
+	 *
+	 * ~~~
+	 * $connection->createCommand()->insert('idx_user', [
+	 *     'name' => 'Sam',
+	 *     'age' => 30,
+	 * ])->execute();
+	 * ~~~
+	 *
+	 * The method will properly escape the column names, and bind the values to be replaced.
+	 *
+	 * Note that the created command is not executed until [[execute()]] is called.
+	 *
+	 * @param string $index the index that new rows will be replaced into.
+	 * @param array $columns the column data (name => value) to be replaced into the index.
+	 * @return static the command object itself
+	 */
+	public function replace($index, $columns)
+	{
+		$params = [];
+		$sql = $this->db->getQueryBuilder()->replace($index, $columns, $params);
+		return $this->setSql($sql)->bindValues($params);
+	}
+
+	/**
+	 * Creates a batch REPLACE command.
+	 * For example,
+	 *
+	 * ~~~
+	 * $connection->createCommand()->batchInsert('idx_user', ['name', 'age'], [
+	 *     ['Tom', 30],
+	 *     ['Jane', 20],
+	 *     ['Linda', 25],
+	 * ])->execute();
+	 * ~~~
+	 *
+	 * Note that the values in each row must match the corresponding column names.
+	 *
+	 * @param string $index the index that new rows will be replaced.
+	 * @param array $columns the column names
+	 * @param array $rows the rows to be batch replaced in the index
+	 * @return static the command object itself
+	 */
+	public function batchReplace($index, $columns, $rows)
+	{
+		$params = [];
+		$sql = $this->db->getQueryBuilder()->batchReplace($index, $columns, $rows, $params);
+		return $this->setSql($sql)->bindValues($params);
+	}
+
+	/**
 	 * Creates an UPDATE command.
 	 * For example,
 	 *

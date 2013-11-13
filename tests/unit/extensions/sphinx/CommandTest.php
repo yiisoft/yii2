@@ -206,6 +206,85 @@ class CommandTest extends SphinxTestCase
 	/**
 	 * @depends testInsert
 	 */
+	public function testReplace()
+	{
+		$db = $this->getConnection();
+
+		$command = $db->createCommand()->replace('yii2_test_rt_index', [
+			'title' => 'Test title',
+			'content' => 'Test content',
+			'type_id' => 2,
+			'category' => [1, 2],
+			'id' => 1,
+		]);
+		$this->assertEquals(1, $command->execute(), 'Unable to execute replace!');
+
+		$rows = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
+		$this->assertEquals(1, count($rows), 'No row inserted!');
+
+		$newTypeId = 5;
+		$command = $db->createCommand()->replace('yii2_test_rt_index',[
+			'type_id' => $newTypeId,
+			'category' => [3, 4],
+			'id' => 1,
+		]);
+		$this->assertEquals(1, $command->execute(), 'Unable to update via replace!');
+
+		list($row) = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
+		$this->assertEquals($newTypeId, $row['type_id'], 'Unable to update attribute value!');
+	}
+
+	/**
+	 * @depends testReplace
+	 */
+	public function testBatchReplace()
+	{
+		$db = $this->getConnection();
+
+		$command = $db->createCommand()->batchReplace(
+			'yii2_test_rt_index',
+			[
+				'title',
+				'content',
+				'type_id',
+				'category',
+				'id',
+			],
+			[
+				[
+					'Test title 1',
+					'Test content 1',
+					1,
+					[1, 2],
+					1,
+				],
+				[
+					'Test title 2',
+					'Test content 2',
+					2,
+					[3, 4],
+					2,
+				],
+			]
+		);
+		$this->assertEquals(2, $command->execute(), 'Unable to execute batch replace!');
+
+		$rows = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
+		$this->assertEquals(2, count($rows), 'No rows inserted!');
+
+		$newTypeId = 5;
+		$command = $db->createCommand()->replace('yii2_test_rt_index',[
+			'type_id' => $newTypeId,
+			'id' => 1,
+		]);
+		$this->assertEquals(1, $command->execute(), 'Unable to update via replace!');
+		list($row) = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
+		$this->assertEquals($newTypeId, $row['type_id'], 'Unable to update attribute value!');
+	}
+
+	/**
+	 * @depends testInsert
+	 */
 	public function testUpdate()
 	{
 		$db = $this->getConnection();
