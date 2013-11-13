@@ -11,16 +11,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 
 /**
- * ActiveRelation represents a relation between two Active Record classes.
- *
- * ActiveRelation instances are usually created by calling [[ActiveRecord::hasOne()]] and
- * [[ActiveRecord::hasMany()]]. An Active Record class declares a relation by defining
- * a getter method which calls one of the above methods and returns the created ActiveRelation object.
- *
- * A relation is specified by [[link]] which represents the association between columns
- * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
- *
- * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
+ * ActiveRelationTrait implements the common methods and properties for active record relation classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>

@@ -10,30 +10,7 @@ namespace yii\ar;
 use yii\db\ActiveRecord;
 
 /**
- * ActiveQueryTrait implements the common set of methods that are used by DB queries associated with an Active Record class.
- *
- * ActiveQuery mainly provides the following methods to retrieve the query results:
- *
- * - [[one()]]: returns a single record populated with the first row of data.
- * - [[all()]]: returns all records based on the query results.
- * - [[count()]]: returns the number of records.
- * - [[scalar()]]: returns the value of the first column in the first row of the query result.
- * - [[exists()]]: returns a value indicating whether the query result has data or not.
- *
- * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],
- * [[orderBy()]] to customize the query options.
- *
- * ActiveQuery also provides the following additional query options:
- *
- * - [[with()]]: list of relations that this query should be performed with.
- * - [[indexBy()]]: the name of the column by which the query result should be indexed.
- * - [[asArray()]]: whether to return each record as an array.
- *
- * These options can be configured using methods of the same name. For example:
- *
- * ~~~
- * $customers = Customer::find()->with('orders')->asArray()->all();
- * ~~~
+ * ActiveQueryTrait implements the common methods and properties for active record query classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>

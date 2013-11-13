@@ -9,7 +9,7 @@ namespace yii\ar;
 use yii\db\QueryInterface;
 
 /**
- * ActiveQueryInterface defines the common interface to be implemented by active record relation classes.
+ * ActiveQueryInterface defines the common interface to be implemented by active record query classes.
  *
  * A class implementing this interface should also use [[ActiveQueryTrait]].
  *
